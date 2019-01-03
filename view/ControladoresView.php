@@ -1,108 +1,21 @@
 <!DOCTYPE HTML>
 <html lang="es">
       <head>
-        <meta charset="utf-8"/>
-        <title>Controladores - Template 2018</title>
-
-		
-		<link rel="stylesheet" href="view/css/estilos.css">
-		<link rel="stylesheet" href="view/vendors/table-sorter/themes/blue/style.css">
-	
-	
-	
-		    <!-- Bootstrap -->
-    		<link href="view/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    		<!-- Font Awesome -->
-		    <link href="view/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-		    <!-- NProgress -->
-		    <link href="view/vendors/nprogress/nprogress.css" rel="stylesheet">
-		    
-		   
-		    <!-- Custom Theme Style -->
-		    <link href="view/build/css/custom.min.css" rel="stylesheet">
-				
-			
-			<!-- Datatables -->
-		    <link href="view/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-		    
-		   		
-
-			<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-		    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-        	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-			<script type="text/javascript" src="view/vendors/table-sorter/jquery.tablesorter.js"></script> 
-        <script src="view/js/jquery.blockUI.js"></script>
-       
-       
-        <script type="text/javascript">
-     
-        	   $(document).ready( function (){
-        		   pone_espera();
-        		   
-	   			});
-
-        	   function pone_espera(){
-
-        		   $.blockUI({ 
-        				message: '<h4><img src="view/images/load.gif" /> Espere por favor, estamos procesando su requerimiento...</h4>',
-        				css: { 
-        		            border: 'none', 
-        		            padding: '15px', 
-        		            backgroundColor: '#000', 
-        		            '-webkit-border-radius': '10px', 
-        		            '-moz-border-radius': '10px', 
-        		            opacity: .5, 
-        		            color: '#fff',
-        		           
-        	        		}
-        	    });
-            	
-		        setTimeout($.unblockUI, 3000); 
-		        
-        	   }
-
-        	   </script>
-       
-       
-       <script >
-		$(document).ready(function(){
-
-		    // cada vez que se cambia el valor del combo
-		    $("#Guardar").click(function() 
-			{
-		   
-		    	var nombre_controladores = $("#nombre_controladores").val();
-		    
-		   				
-		    	if (nombre_controladores == "")
-		    	{
-			    	
-		    		$("#mensaje_nombres").text("Introduzca un controlador");
-		    		$("#mensaje_nombres").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_nombres").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-		    
-			}); 
-
-	
-				$( "#nombre_controladores" ).focus(function() {
-					$("#mensaje_nombres").fadeOut("slow");
-    			});
-				
-	}); 
-
-	</script>
+         
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Capremci</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    
+    
+    
+   <?php include("view/modulos/links_css.php"); ?>	
         
 			        
     </head>
     
     
-    <body class="nav-md"  >
+    <body class="hold-transition skin-blue fixed sidebar-mini"  >
     
     
      <?php
@@ -112,71 +25,53 @@
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
         ?>
     
-    <div class="container body">
-      <div class="main_container">
-        <div class="col-md-3 left_col  menu_fixed">
-          <div class="left_col scroll-view">
-            <?php include("view/modulos/logo.php"); ?>
+    
+      
+    
+    <div class="wrapper">
 
-            <div class="clearfix"></div>
+  <header class="main-header">
+  
+      <?php include("view/modulos/logo.php"); ?>
+      <?php include("view/modulos/head.php"); ?>	
+    
+  </header>
 
-            <!-- menu profile quick info -->
-            <?php include("view/modulos/menu_profile.php"); ?>
-            <!-- /menu profile quick info -->
+   <aside class="main-sidebar">
+    <section class="sidebar">
+     <?php include("view/modulos/menu_profile.php"); ?>
+      <br>
+     <?php include("view/modulos/menu.php"); ?>
+    </section>
+  </aside>
 
-            <br />
-			<?php include("view/modulos/menu.php"); ?>
-            <!-- /menu footer buttons -->
+  <div class="content-wrapper">
+  
+  <section class="content-header">
+      <h1>
+        
+        <small><?php echo $fecha; ?></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Controladores</li>
+      </ol>
+    </section>   
+
+    <section class="content">
+     <div class="box box-primary">
+     <div class="box-header">
+          <h3 class="box-title">Registrar Controladores</h3>
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+              <i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+              <i class="fa fa-times"></i></button>
           </div>
         </div>
-
-        <!-- top navigation -->
-		<?php include("view/modulos/head.php"); ?>	
-        <!-- /top navigation -->
-
-        <!-- page content -->
-		<div class="right_col" role="main">        
-            <?php
-       $sel_menu = "";
-       
-    
-       if($_SERVER['REQUEST_METHOD']=='POST' )
-       {
-       	 
-       	 
-       	$sel_menu=$_POST['criterio'];
-       	
-       	 
-       }
-      
-	 	?>
-    <div class="container">
-   <section class="content-header">
-         <small><?php echo $fecha; ?></small>
-         <ol class=" pull-right breadcrumb">
-         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li class="active">Controladores</li>
-         </ol>
-         </section>
-         
-         
-         
-         
-         
-  	<div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>INSERTAR<small>Controladores</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
+        
+                  
+                  <div class="box-body">
 
 						<form action="<?php echo $helper->url("Controladores","InsertaControladores"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
                               <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
@@ -225,36 +120,33 @@
                        </form>
                       
                   </div>
-                </div>
               </div>
-		
-  
-  
-        <!-- /page content -->
-		
-		<div class="col-md-12 col-lg-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>LISTADO<small>Controladores</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
+              
+              
+              
+        
+      <section class="content">
+      <div class="box box-success">
+        <div class="box-header with-border">
+          <h3 class="box-title">Listado de Controladores Registrados</h3>
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+              <i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+              <i class="fa fa-times"></i></button>
+          </div>
+        </div>
+        
+        <div class="box-body">
                     
 					
-                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                    <table id="example1" class="table table-bordered table-striped">
                       <thead>
                         <tr>
                           <th>#</th>
                           <th>Nombre Controlador</th>
-                          <th></th>
-                          <th></th>
+                          <th>Editar</th>
+                          <th>Borrar</th>
                         </tr>
                       </thead>
 
@@ -283,35 +175,28 @@
                     
                     </tbody>
                     </table>
-                  </div>
-                </div>
-              </div>
+		</div>
+        </div>
+        </section>
+            
+              
+              
+		
+       
       </div>
-    </div>
+    </section>
+  </div>
+ 
+ 	<?php include("view/modulos/footer.php"); ?>	
 
-</div>
-        <!-- jQuery -->
-    
-    <!-- Bootstrap -->
-    <script src="view/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+   <div class="control-sidebar-bg"></div>
+ </div>
     
     
     
-    <!-- NProgress -->
-    <script src="view/vendors/nprogress/nprogress.js"></script>
-   
-   
-    <!-- Datatables -->
-    <script src="view/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
     
     
-    <script src="view/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="view/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    
-    
-    
-    <!-- Custom Theme Scripts -->
-    <script src="view/build/js/custom.min.js"></script>
+        <?php include("view/modulos/links_js.php"); ?>
 	
 	
   </body>

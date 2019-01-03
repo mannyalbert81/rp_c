@@ -7,8 +7,7 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     
-    
-    
+ 
    <?php include("view/modulos/links_css.php"); ?>	
         
 			        
@@ -17,6 +16,7 @@
     
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
     
+
     
      <?php
         
@@ -65,8 +65,7 @@
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-              <i class="fa fa-times"></i></button>
+            
           </div>
         </div>
         
@@ -130,8 +129,7 @@
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-              <i class="fa fa-times"></i></button>
+            
           </div>
         </div>
         
@@ -161,13 +159,13 @@
             		               <td > <?php echo $res->nombre_controladores; ?>     </td> 
             		               <td>
             			           		<div class="right">
-            			                    <a href="<?php echo $helper->url("Controladores","index"); ?>&id_controladores=<?php echo $res->id_controladores; ?>" class="btn btn-warning" style="font-size:65%;"><i class='glyphicon glyphicon-edit'></i></a>
+            			                    <a href="<?php echo $helper->url("Controladores","index"); ?>&id_controladores=<?php echo $res->id_controladores; ?>" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class='glyphicon glyphicon-edit'></i></a>
             			                </div>
             			            
             			             </td>
             			             <td>   
             			                	<div class="right">
-            			                    <a href="<?php echo $helper->url("Controladores","borrarId"); ?>&id_controladores=<?php echo $res->id_controladores; ?>" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a>
+            			                    <a href="<?php echo $helper->url("Controladores","borrarId"); ?>&id_controladores=<?php echo $res->id_controladores; ?>" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a>
             			                </div>
             			              
             		               </td>

@@ -8,40 +8,35 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     
+    <?php include("view/modulos/links_css.php"); ?>		
     
-    
-   <?php include("view/modulos/links_css.php"); ?>		  
-			        
-    </head>
-    
+	</head>
     
     <body class="hold-transition skin-blue fixed sidebar-mini">
     
      <?php
-        
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
-        ?>
-    
+     ?>
     
     
     <div class="wrapper">
 
-  <header class="main-header">
-  
-      <?php include("view/modulos/logo.php"); ?>
-      <?php include("view/modulos/head.php"); ?>	
+      <header class="main-header">
+      
+          <?php include("view/modulos/logo.php"); ?>
+          <?php include("view/modulos/head.php"); ?>	
+        
+      </header>
     
-  </header>
-
-   <aside class="main-sidebar">
-    <section class="sidebar">
-     <?php include("view/modulos/menu_profile.php"); ?>
-      <br>
-     <?php include("view/modulos/menu.php"); ?>
-    </section>
-  </aside>
+       <aside class="main-sidebar">
+        <section class="sidebar">
+         <?php include("view/modulos/menu_profile.php"); ?>
+          <br>
+         <?php include("view/modulos/menu.php"); ?>
+        </section>
+      </aside>
 
   <div class="content-wrapper">
     <section class="content-header">
@@ -59,7 +54,7 @@
 
     <section class="content">
       <div class="box box-primary">
-        <div class="box-header">
+        <div class="box-header with-border">
           <h3 class="box-title">Registrar Permisos</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -229,14 +224,10 @@
                                     </div>
                         		    </div>
                 		    
-										                        		    
-                    			
-                    			
+									
                     			</div>
                     			
-                                 	                    		   
-                    		   
-            	        		                     	           	
+                                 	                     	           	
                     		     <?php } ?>
                     		    <br>  
                     		    <div class="row">
@@ -247,8 +238,7 @@
                     		    </div>
                     		    </div>
                     		      
-                    		        
-                              
+                    		  
               </form>
           
         </div>
@@ -259,10 +249,8 @@
     
     
     
-    
-    
      <section class="content">
-      <div class="box box-success">
+      <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Listado de Permisos Registrados</h3>
           <div class="box-tools pull-right">
@@ -275,7 +263,11 @@
         
         <div class="box-body">
         
-        <table id="example1" class="table table-bordered table-striped">
+        
+       <div class="ibox-content">  
+      <div class="table-responsive">
+        
+        <table  class="table table-striped table-bordered table-hover dataTables-example">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -305,35 +297,32 @@
             		               <td > <?php if ($res->borrar_permisos_rol == "t"){ echo "Si";}else{echo "No";}; ?>  </td>
             		           	   <td>
             			           		<div class="right">
-            			                    <a href="<?php echo $helper->url("PermisosRoles","index"); ?>&id_permisos_rol=<?php echo $res->id_permisos_rol; ?>" class="btn btn-warning" style="font-size:65%;"><i class='glyphicon glyphicon-edit'></i></a>
+            			                    <a href="<?php echo $helper->url("PermisosRoles","index"); ?>&id_permisos_rol=<?php echo $res->id_permisos_rol; ?>" class="btn btn-warning" style="font-size:65%;" data-toggle="tooltip" title="Editar"><i class='glyphicon glyphicon-edit'></i></a>
             			                </div>
             			            
             			             </td>
             			             <td>   
             			                	<div class="right">
-            			                    <a href="<?php echo $helper->url("PermisosRoles","borrarId"); ?>&id_permisos_rol=<?php echo $res->id_permisos_rol; ?>" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a>
+            			                    <a href="<?php echo $helper->url("PermisosRoles","borrarId"); ?>&id_permisos_rol=<?php echo $res->id_permisos_rol; ?>" class="btn btn-danger" style="font-size:65%;" data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a>
             			                </div>
             			                
             		               </td>
             		    		</tr>
             		    		
-            		    		            		    		
-            		    		
             		        <?php } } ?>
-                    
-    					
-    					
-    					
+                    	
     					                    				  	
 
                       </tbody>
                     </table>
+       
+        </div>
+         </div>
+        
         
         </div>
         </div>
         </section>
-    
-    
     
   </div>
  
@@ -344,19 +333,11 @@
     
     <?php include("view/modulos/links_js.php"); ?>
 	
+	
+	
+	
   </body>
 </html>   
-
-
-
-
-
-
-
-
-
-
-
 
 
 

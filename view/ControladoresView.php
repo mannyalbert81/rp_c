@@ -120,13 +120,11 @@
                        </form>
                       
                   </div>
-              </div>
+            </div>
+        </section>
               
-              
-              
-        
-      <section class="content">
-      <div class="box box-success">
+     <section class="content">
+      <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Listado de Controladores Registrados</h3>
           <div class="box-tools pull-right">
@@ -138,9 +136,12 @@
         </div>
         
         <div class="box-body">
-                    
-					
-                    <table id="example1" class="table table-bordered table-striped">
+        
+        
+       <div class="ibox-content">  
+      <div class="table-responsive">
+        
+		<table  class="table table-striped table-bordered table-hover dataTables-example">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -175,16 +176,15 @@
                     
                     </tbody>
                     </table>
-		</div>
+       
+        </div>
+         </div>
+        
+        
+        </div>
         </div>
         </section>
-            
-              
-              
-		
-       
-      </div>
-    </section>
+    
   </div>
  
  	<?php include("view/modulos/footer.php"); ?>	
@@ -192,16 +192,81 @@
    <div class="control-sidebar-bg"></div>
  </div>
     
-    
-    
-    
-    
-        <?php include("view/modulos/links_js.php"); ?>
+    <?php include("view/modulos/links_js.php"); ?>
+	
+<script type="text/javascript">
+     
+        	   $(document).ready( function (){
+        		   pone_espera();
+        		   
+	   			});
+
+        	   function pone_espera(){
+
+        		   $.blockUI({ 
+        				message: '<h4><img src="view/images/load.gif" /> Espere por favor, estamos procesando su requerimiento...</h4>',
+        				css: { 
+        		            border: 'none', 
+        		            padding: '15px', 
+        		            backgroundColor: '#000', 
+        		            '-webkit-border-radius': '10px', 
+        		            '-moz-border-radius': '10px', 
+        		            opacity: .5, 
+        		            color: '#fff',
+        		           
+        	        		}
+        	    });
+            	
+		        setTimeout($.unblockUI, 3000); 
+		        
+        	   }
+
+        	   </script>
+       
+       
+<script type="text/javascript">
+		    // cada vez que se cambia el valor del combo
+		    $(document).ready(function(){
+		    
+		    $("#Guardar").click(function() 
+			{
+		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
+
+		    	var nombre_controladores = $("#nombre_controladores").val();
+		    	
+		    	
+		    	
+		    	if (nombre_controladores == "")
+		    	{
+			    	
+		    		$("#mensaje_nombres").text("Introduzca Controlador");
+		    		$("#mensaje_nombres").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_nombres").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}    
+								    
+
+			}); 
+
+
+		        $( "#nombre_controladores" ).focus(function() {
+				  $("#mensaje_nombres").fadeOut("slow");
+			    });
+				
+				
+		      
+				    
+		}); 
+
+	</script>
+ 	
 	
 	
   </body>
 </html>   
-
-
-
 

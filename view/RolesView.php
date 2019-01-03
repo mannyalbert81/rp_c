@@ -53,8 +53,7 @@
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-                  <i class="fa fa-times"></i></button>
+                
               </div>
             </div>
             
@@ -106,14 +105,13 @@
               <h3 class="box-title">Listado de Roles Registrados</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                  <i class="fa fa-minus"></i></button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-                  <i class="fa fa-times"></i></button>
+                  <i class="fa fa-minus"></i></button>                
               </div>
             </div>
         
-           <div class="box-body">        
-        	<table id="example1" class="table table-bordered table-striped">
+            <div class="ibox-content">  
+      		<div class="table-responsive">       
+        	<table id="example1" class="table table-striped table-bordered table-hover dataTables-example">
                   <thead>
                    <tr>
                       <th>#</th>
@@ -149,6 +147,7 @@
                 </table>
         
             	</div>
+            	</div>
                </div>
             </section>
   		</div>
@@ -162,43 +161,8 @@
     
     
    <?php include("view/modulos/links_js.php"); ?>
- 
- 	
-  </body>
-</html>
-
-<!-- script pagina anterior -->
-<script type="text/javascript">
-     
-        	   $(document).ready( function (){
-        		   pone_espera();
-        		   
-	   			});
-
-        	   function pone_espera(){
-
-        		   $.blockUI({ 
-        				message: '<h4><img src="view/images/load.gif" /> Espere por favor, estamos procesando su requerimiento...</h4>',
-        				css: { 
-        		            border: 'none', 
-        		            padding: '15px', 
-        		            backgroundColor: '#000', 
-        		            '-webkit-border-radius': '10px', 
-        		            '-moz-border-radius': '10px', 
-        		            opacity: .5, 
-        		            color: '#fff',
-        		           
-        	        		}
-        	    });
-            	
-		        setTimeout($.unblockUI, 3000); 
-		        
-        	   }
-
-        	   </script>
-       
-       
-       <script >
+   
+  <script type="text/javascript">
 		    // cada vez que se cambia el valor del combo
 		    $(document).ready(function(){
 		    
@@ -238,6 +202,42 @@
 		}); 
 
 	</script>
+ 	
+  </body>
+</html>
+
+<!-- script pagina anterior -->
+<script type="text/javascript">
+     
+        	   $(document).ready( function (){
+        		   pone_espera();
+        		   
+	   			});
+
+        	   function pone_espera(){
+
+        		   $.blockUI({ 
+        				message: '<h4><img src="view/images/load.gif" /> Espere por favor, estamos procesando su requerimiento...</h4>',
+        				css: { 
+        		            border: 'none', 
+        		            padding: '15px', 
+        		            backgroundColor: '#000', 
+        		            '-webkit-border-radius': '10px', 
+        		            '-moz-border-radius': '10px', 
+        		            opacity: .5, 
+        		            color: '#fff',
+        		           
+        	        		}
+        	    });
+            	
+		        setTimeout($.unblockUI, 3000); 
+		        
+        	   }
+
+ </script>
+       
+       
+      
  
 
 

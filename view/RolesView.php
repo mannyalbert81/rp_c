@@ -1,38 +1,174 @@
-<!DOCTYPE HTML>
-<html lang="es">
-      <head>
-        <meta charset="utf-8"/>
-        <title>Roles - Template 2018</title>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Capremci</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    
+    
+    
+   <?php include("view/modulos/links_css.php"); ?>
+   
+  </head>
 
-		<link rel="stylesheet" href="view/css/estilos.css">
-		<link rel="stylesheet" href="view/vendors/table-sorter/themes/blue/style.css">
-	
-	
-	
-		    <!-- Bootstrap -->
-    		<link href="view/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    		<!-- Font Awesome -->
-		    <link href="view/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-		    <!-- NProgress -->
-		    <link href="view/vendors/nprogress/nprogress.css" rel="stylesheet">
-		    
-		   
-		    <!-- Custom Theme Style -->
-		    <link href="view/build/css/custom.min.css" rel="stylesheet">
-				
-			
-			<!-- Datatables -->
-		    <link href="view/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-		    
-		   		
+  <body class="hold-transition skin-blue fixed sidebar-mini">   
+  <?php
+        
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        ?>
+    
+    <div class="wrapper">
+  		<header class="main-header">
+          <?php include("view/modulos/logo.php"); ?>
+          <?php include("view/modulos/head.php"); ?>	    
+  		</header>
+   		<aside class="main-sidebar">
+    		<section class="sidebar">
+             <?php include("view/modulos/menu_profile.php"); ?>
+              <br>
+             <?php include("view/modulos/menu.php"); ?>
+            </section>
+         </aside>
 
-			<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-		    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-        	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-			<script type="text/javascript" src="view/vendors/table-sorter/jquery.tablesorter.js"></script> 
-        <script src="view/js/jquery.blockUI.js"></script>
-       
-        <script type="text/javascript">
+  	  <div class="content-wrapper">
+        <section class="content-header">
+          <h1>
+            
+            <small><?php echo $fecha; ?></small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Roles</li>
+          </ol>
+        </section>
+        
+        <section class="content">
+          <div class="box box-primary">
+            <div class="box-header">
+              <h3 class="box-title">Registrar Roles</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+                  <i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            
+            <div class="box-body">
+            
+                <form action="<?php echo $helper->url("Roles","InsertaRoles"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+          		 	 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
+              		 	 <div class="row">
+                         	<div class="col-xs-12 col-md-4 col-md-4 ">
+                            	<div class="form-group">
+                                	<label for="nombre_rol" class="control-label">Nombres Rol</label>
+                                    <input type="text" class="form-control" id="nombre_rol" name="nombre_rol" value="<?php echo $resEdit->nombre_rol; ?>"  placeholder="Nombre Rol">
+                                    <input type="hidden" name="id_rol" id="id_rol" value="<?php echo $resEdit->id_rol; ?>" class="form-control"/>
+    					            <div id="mensaje_nombre_rol" class="errores"></div>
+                                 </div>
+                             </div>
+                          </div>
+                      <?php } } else {?>                		    
+                      	  <div class="row">
+                		  	<div class="col-xs-12 col-md-4 col-md-4 ">
+                    			<div class="form-group">
+                                  <label for="nombre_rol" class="control-label">Nombres Rol</label>
+                                  <input type="text" class="form-control" id="nombre_rol" name="nombre_rol" value=""  placeholder="Nombre Rol">
+                                  <div id="mensaje_nombre_rol" class="errores"></div>
+                                 </div>
+                             </div>
+                            </div>	
+                    		            
+                    		            
+                     <?php } ?>
+                     	<div class="row">
+            			    <div class="col-xs-12 col-md-4 col-md-4 " style="margin-top:15px;  text-align: center; ">
+                	   		    <div class="form-group">
+            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Guardar</button>
+        	                    </div>
+    	        		    </div>
+            		    </div>
+          		 	
+          		 	</form>
+          
+        			</div>
+      			</div>
+    		</section>
+    		
+    <!-- seccion para el listado de roles -->
+    	<section class="content">
+          <div class="box box-success">
+            <div class="box-header with-border">
+              <h3 class="box-title">Listado de Roles Registrados</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+                  <i class="fa fa-times"></i></button>
+              </div>
+            </div>
+        
+           <div class="box-body">        
+        	<table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                   <tr>
+                      <th>#</th>
+                      <th>Nombre Rol</th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                      <?php $i=0;?>
+    						<?php if (!empty($resultSet)) {  foreach($resultSet as $res) {?>
+    						<?php $i++;?>
+            	        		<tr>
+            	                   <td > <?php echo $i; ?>  </td>
+            		               <td > <?php echo $res->nombre_rol; ?>     </td> 
+            		               <td>
+            			           		<div class="right">
+            			                    <a href="<?php echo $helper->url("Roles","index"); ?>&id_rol=<?php echo $res->id_rol; ?>" class="btn btn-warning" style="font-size:65%;"><i class='glyphicon glyphicon-edit'></i></a>
+            			                </div>
+            			            
+            			             </td>
+            			             <td>   
+            			                	<div class="right">
+            			                    <a href="<?php echo $helper->url("Roles","borrarId"); ?>&id_rol=<?php echo $res->id_rol; ?>" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a>
+            			                </div>
+            			              
+            		               </td>
+            		    		</tr>
+            		        <?php } } ?>
+                    
+                    </tbody>
+                </table>
+        
+            	</div>
+               </div>
+            </section>
+  		</div>
+  
+  
+ 
+ 	<?php include("view/modulos/footer.php"); ?>	
+
+   <div class="control-sidebar-bg"></div>
+ </div>
+    
+    
+   <?php include("view/modulos/links_js.php"); ?>
+ 
+ 	
+  </body>
+</html>
+
+<!-- script pagina anterior -->
+<script type="text/javascript">
      
         	   $(document).ready( function (){
         		   pone_espera();
@@ -102,213 +238,7 @@
 		}); 
 
 	</script>
-        
-			        
-    </head>
-    
-    
-    <body class="nav-md"  >
-    
-    
-     <?php
-        
-        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
-        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-        $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
-        ?>
-    
-    <div class="container body">
-      <div class="main_container">
-        <div class="col-md-3 left_col  menu_fixed">
-          <div class="left_col scroll-view">
-            <?php include("view/modulos/logo.php"); ?>
-
-            <div class="clearfix"></div>
-
-            <!-- menu profile quick info -->
-            <?php include("view/modulos/menu_profile.php"); ?>
-            <!-- /menu profile quick info -->
-
-            <br />
-			<?php include("view/modulos/menu.php"); ?>
-            <!-- /menu footer buttons -->
-          </div>
-        </div>
-
-        <!-- top navigation -->
-		<?php include("view/modulos/head.php"); ?>	
-        <!-- /top navigation -->
-
-        <!-- page content -->
-		<div class="right_col" role="main">        
-            <?php
-       $sel_menu = "";
-       
-    
-       if($_SERVER['REQUEST_METHOD']=='POST' )
-       {
-       	 
-       	 
-       	$sel_menu=$_POST['criterio'];
-       	
-       	 
-       }
-      
-	 	?>
-    <div class="container">
-  <section class="content-header">
-         <small><?php echo $fecha; ?></small>
-         <ol class=" pull-right breadcrumb">
-         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li class="active">Roles</li>
-         </ol>
-         </section>
-  	<div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>INSERTAR<small>Roles</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-
-						<form action="<?php echo $helper->url("Roles","InsertaRoles"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
-                              <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
-                	        
-                	        	   <div class="row">
-                        		    <div class="col-xs-12 col-md-4 col-md-4 ">
-                            		    <div class="form-group">
-                                                              <label for="nombre_rol" class="control-label">Nombres Rol</label>
-                                                              <input type="text" class="form-control" id="nombre_rol" name="nombre_rol" value="<?php echo $resEdit->nombre_rol; ?>"  placeholder="Nombre Rol">
-                                                               <input type="hidden" name="id_rol" id="id_rol" value="<?php echo $resEdit->id_rol; ?>" class="form-control"/>
-					                                          <div id="mensaje_nombre_rol" class="errores"></div>
-                                        </div>
-                            		  </div>
-                        			</div>	
-                	        
-                	        
-                	        
-                            
-                		     <?php } } else {?>
-                		    
-                  	        	   <div class="row">
-                        		    <div class="col-xs-12 col-md-4 col-md-4 ">
-                            		    <div class="form-group">
-                                                              <label for="nombre_rol" class="control-label">Nombres Rol</label>
-                                                              <input type="text" class="form-control" id="nombre_rol" name="nombre_rol" value=""  placeholder="Nombre Rol">
-                                                              <div id="mensaje_nombre_rol" class="errores"></div>
-                                        </div>
-                            		  </div>
-                        			</div>	
-                		            
-                		            
-                		     <?php } ?>
-                		        
-                           		<div class="row">
-                    			    <div class="col-xs-12 col-md-4 col-md-4 " style="margin-top:15px;  text-align: center; ">
- 		                	   		    <div class="form-group">
-                    	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Guardar</button>
-        	    	                    </div>
-            	        		    </div>
-                    		    </div>
  
-                       </form>
-                      
-                  </div>
-                </div>
-              </div>
-		
-  
-  
-        <!-- /page content -->
-		
-		<div class="col-md-12 col-lg-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>LISTADO<small>Roles</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    
-					
-                    <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Nombre Rol</th>
-                          <th></th>
-                          <th></th>
-                        </tr>
-                      </thead>
-
-
-                      <tbody>
-                      <?php $i=0;?>
-    						<?php if (!empty($resultSet)) {  foreach($resultSet as $res) {?>
-    						<?php $i++;?>
-            	        		<tr>
-            	                   <td > <?php echo $i; ?>  </td>
-            		               <td > <?php echo $res->nombre_rol; ?>     </td> 
-            		               <td>
-            			           		<div class="right">
-            			                    <a href="<?php echo $helper->url("Roles","index"); ?>&id_rol=<?php echo $res->id_rol; ?>" class="btn btn-warning" style="font-size:65%;"><i class='glyphicon glyphicon-edit'></i></a>
-            			                </div>
-            			            
-            			             </td>
-            			             <td>   
-            			                	<div class="right">
-            			                    <a href="<?php echo $helper->url("Roles","borrarId"); ?>&id_rol=<?php echo $res->id_rol; ?>" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a>
-            			                </div>
-            			              
-            		               </td>
-            		    		</tr>
-            		        <?php } } ?>
-                    
-                    </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-      </div>
-    </div>
-
-</div>
-     <!-- Bootstrap -->
-    <script src="view/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    
-    
-    
-    <!-- NProgress -->
-    <script src="view/vendors/nprogress/nprogress.js"></script>
-   
-   
-    <!-- Datatables -->
-    <script src="view/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-    
-    
-    <script src="view/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="view/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    
-    
-    
-    <!-- Custom Theme Scripts -->
-    <script src="view/build/js/custom.min.js"></script>
-	
-  </body>
-</html>   
 
 
 

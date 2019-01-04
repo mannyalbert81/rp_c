@@ -85,8 +85,8 @@
                              </div>
                              <div class="col-xs-6 col-md-4 col-lg-3">
                              	<div class="form-group">
-                                	 <label for="apellido_usuarios" class="control-label">Apellidos:</label>
-                                      <input type="text" class="form-control" id="apellido_usuarios" name="apellido_usuarios" value="<?php echo $resEdit->apellidos_usuarios; ?>" placeholder="nombres..">
+                                	 <label for="apellidos_usuarios" class="control-label">Apellidos:</label>
+                                      <input type="text" class="form-control" id="apellidos_usuarios" name="apellidos_usuarios" value="<?php echo $resEdit->apellidos_usuarios; ?>" placeholder="nombres..">
                                       <div id="mensaje_apellido_usuarios" class="errores"></div>
                                  </div>
                              </div>
@@ -202,80 +202,81 @@
                                 
                       <?php } } else {?>                		    
                       	  <div class="row">
-                		  	<div class="col-xs-6 col-md-4 col-lg-3 ">
+                		  	<div class="col-xs-6 col-md-3 col-lg-3 ">
                     			<div class="form-group">
                                     <label for="cedula_usuarios" class="control-label">Cedula:</label>
                                     <input type="text" class="form-control" id="cedula_usuarios" name="cedula_usuarios" value=""  placeholder="ci-ruc.." >
+                                     <input type="hidden" class="form-control" id="id_usuarios" name="id_usuarios" value="0" >
                                     <div id="mensaje_cedula_usuarios" class="errores"></div>
                                  </div>
                              </div>
-                             <div class="col-xs-6 col-md-4 col-lg-3">
+                             <div class="col-xs-6 col-md-3 col-lg-3">
                              	<div class="form-group">
                                 	 <label for="nombre_usuarios" class="control-label">Nombres:</label>
                                       <input type="text" class="form-control" id="nombre_usuarios" name="nombre_usuarios" value="" placeholder="nombres..">
                                       <div id="mensaje_nombre_usuarios" class="errores"></div>
                                  </div>
                              </div>
-                             <div class="col-xs-6 col-md-4 col-lg-3">
+                             <div class="col-xs-6 col-md-3 col-lg-3">
                              	<div class="form-group">
-                                	 <label for="apellido_usuarios" class="control-label">Apellidos:</label>
-                                      <input type="text" class="form-control" id="apellido_usuarios" name="apellido_usuarios" value="" placeholder="nombres..">
+                                	 <label for="apellidos_usuarios" class="control-label">Apellidos:</label>
+                                      <input type="text" class="form-control" id="apellidos_usuarios" name="apellidos_usuarios" value="" placeholder="apellidos..">
                                       <div id="mensaje_apellido_usuarios" class="errores"></div>
                                  </div>
                              </div>
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                                	<div class="form-group">
+                                    	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
+                                        <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value=""  >
+                                        <div id="fecha_nacimiento_usuarios" class="errores"></div>
+                                     </div>
+                               </div>  
                             </div>
                             
                              <div class="row">
-                             	<div class="col-xs-6 col-md-4 col-lg-3 ">
+                             	<div class="col-xs-6 col-md-3 col-lg-3 ">
                                 	<div class="form-group">
                                     	<label for="usuario_usuarios" class="control-label">Usuario:</label>
                                         <input type="text" class="form-control" id="usuario_usuarios" name="usuario_usuarios" value=""  placeholder="usuario..." >
                                         <div id="usuario_usuarios" class="errores"></div>
                                      </div>
                                  </div> 
-                             	<div class="col-xs-6 col-md-4 col-lg-3 ">
-                                	<div class="form-group">
-                                    	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
-                                        <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value=""  >
-                                        <div id="fecha_nacimiento_usuarios" class="errores"></div>
-                                     </div>
-                                 </div>                             
-                              </div>
-                            
-                            <div class="row">
-                          	<div class="col-xs-6 col-md-4 col-lg-3">
-                        		<div class="form-group">
-                                  <label for="clave_usuarios" class="control-label">Password:</label>
-                                  <input type="password" class="form-control" id="clave_usuarios" name="clave_usuarios" value="" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
-                                  <div id="mensaje_clave_usuarios" class="errores"></div>
+                                 <div class="col-xs-6 col-md-3 col-lg-3">
+                            		<div class="form-group">
+                                      <label for="clave_usuarios" class="control-label">Password:</label>
+                                      <input type="password" class="form-control" id="clave_usuarios" name="clave_usuarios" value="" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
+                                      <div id="mensaje_clave_usuarios" class="errores"></div>
+                                    </div>
+                            	</div>
+                            	
+                            	<div class="col-lg-3 col-xs-6 col-md-3">
+                        		    <div class="form-group">
+                                          <label for="clave_usuarios_r" class="control-label">Repita Password:</label>
+                                          <input type="password" class="form-control" id="clave_usuarios_r" name="clave_usuarios_r" value="" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
+                                          <div id="mensaje_clave_usuarios_r" class="errores"></div>
+                                    </div>
                                 </div>
-                        	</div>
-                        		    
-                		    <div class="col-lg-3 col-xs-6 col-md-4">
-                		    <div class="form-group">
-                                  <label for="clave_usuarios_r" class="control-label">Repita Password:</label>
-                                  <input type="password" class="form-control" id="clave_usuarios_r" name="clave_usuarios_r" value="" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
-                                  <div id="mensaje_clave_usuarios_r" class="errores"></div>
-                            </div>
-                            </div>
-                          </div>
-                          
-                          <div class="row">
-                		       <div class="col-lg-3 col-xs-6 col-md-4">
+                                
+                                <div class="col-lg-3 col-xs-6 col-md-3">
                         		    <div class="form-group">
                                           <label for="telefono_usuarios" class="control-label">Teléfono:</label>
                                           <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  placeholder="teléfono..">
                                           <div id="mensaje_telefono_usuarios" class="errores"></div>
                                     </div>
                         	    </div>
-                    			<div class="col-lg-3 col-xs-6 col-md-4">
+                             	                            
+                              </div>
+                            
+                          
+                          <div class="row">                		      
+                    			<div class="col-lg-3 col-xs-6 col-md-3">
                         		    <div class="form-group">
                                           <label for="celular_usuarios" class="control-label">Celular:</label>
                                           <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value=""  placeholder="celular..">
                                           <div id="mensaje_celular_usuarios" class="errores"></div>
                                     </div>
                                 </div>
-                    		    <div class="col-lg-6 col-xs-12 col-md-4">
+                    		    <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
                                           <label for="correo_usuarios" class="control-label">Correo:</label>
                                           <input type="email" class="form-control" id="correo_usuarios" name="correo_usuarios" value="" placeholder="email..">
@@ -626,7 +627,7 @@
 			    }
 
 		    	
-		    	if (id_rol == 0 )
+		    	/*if (id_rol == 0 )
 		    	{
 			    	
 		    		$("#mensaje_id_rol").text("Seleccione");
@@ -637,11 +638,11 @@
 		    	{
 		    		$("#mensaje_id_rol").fadeOut("slow"); //Muestra mensaje de error
 		            
-				}
+				}*/
 
 
 
-		    	if (id_estado == 0 )
+		    	/*if (id_estado == 0 )
 		    	{
 			    	
 		    		$("#mensaje_id_estado").text("Seleccione");
@@ -652,7 +653,7 @@
 		    	{
 		    		$("#mensaje_id_estado").fadeOut("slow"); //Muestra mensaje de error
 		            
-				}
+				}*/
 		    					    
 
 			}); 
@@ -684,13 +685,13 @@
 					$("#mensaje_correo_usuarios").fadeOut("slow");
     			});
 			
-				$( "#id_rol" ).focus(function() {
+				/*$( "#id_rol" ).focus(function() {
 					$("#mensaje_id_rol").fadeOut("slow");
-    			});
+    			});*/
 
-				$( "#id_estado" ).focus(function() {
+				/*$( "#id_estado" ).focus(function() {
 					$("#mensaje_id_estado").fadeOut("slow");
-    			});
+    			});*/
 				
 		      
 				    

@@ -2538,6 +2538,8 @@ public function index(){
                               claves.clave_claves,
                               usuarios.fotografia_usuarios,
 							  usuarios.creado,
+                              usuarios.fecha_nacimiento_usuarios,
+                              usuarios.usuario_usuarios,
                               rol.id_rol,
                               rol.nombre_rol";
 					
@@ -2768,7 +2770,7 @@ public function index(){
 		{
 			$_cedula_usuarios    = $_POST["cedula_usuarios"];
 			$_nombre_usuarios     = $_POST["nombre_usuarios"];
-			$_apellidos_usuario     = $_POST["apellidos_usuario"];
+			$_apellidos_usuario     = $_POST["apellidos_usuarios"];
 			$_fecha_nacimiento_usuarios = $_POST['fecha_nacimiento_usuarios'];
 			$_usuario_usuarios = $_POST['usuario_usuarios'];
 			$_clave_usuarios      = $usuarios->encriptar($_POST["clave_usuarios"]);
@@ -2867,15 +2869,27 @@ public function index(){
 		    	
 		    	//para datos de usuario
 		    	$rsUsuario = null;
-		    	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios', apellidos_usuarios = '$_apellidos_usuario', correo_usuarios = '$_correo_usuarios', usuario_usuarios='$_usuario_usuarios'"; 
+		    	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios' AND nombre_usuarios = '$_nombre_usuarios' AND apellidos_usuarios = '$_apellidos_usuario'AND correo_usuarios = '$_correo_usuarios'AND usuario_usuarios='$_usuario_usuarios'"; 
 		    	$rsUsuario=$usuarios->getCondiciones('id_usuarios' ,'public.usuarios' , $whereconsulta , 'id_usuarios');
 		    	
-		    	//valor para guardar el id
+		    	//valor para guardar el id_usuarios
 		    	$consulta_id_usuarios = null;
 		    	$consulta_id_usuarios = $rsUsuario[0]->id_usuarios;
 		    	
-		    	echo $consulta_id_usuarios;
-		    
+		    	//para insertado de claves
+		    	$claves = new ClavesModel();
+		    	$funcion = "ins_claves";
+		    	$parametros = "'$consulta_id_usuarios',
+		    				   '$_clave_usuarios',
+                               '$_clave_n_usuarios',
+                               '2010-01-01',
+                               '2010-02-01',
+                               '1'";
+		    	$claves->setFuncion($funcion);
+		    	$claves->setParametros($parametros);
+		    	$resultado=$claves->Insert();	
+		    	
+		    	
 		    }
 		    else
 		    {
@@ -2918,7 +2932,7 @@ public function index(){
 		        	
 		        	//para datos de usuario
 		        	$rsUsuario = null;
-		        	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios', apellidos_usuarios = '$_apellidos_usuario', correo_usuarios = '$_correo_usuarios', usuario_usuarios='$_usuario_usuarios'";
+		        	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios' AND nombre_usuarios = '$_nombre_usuarios' AND apellidos_usuarios = '$_apellidos_usuario' AND correo_usuarios = '$_correo_usuarios' AND usuario_usuarios='$_usuario_usuarios'";
 		        	$rsUsuario=$usuarios->getCondiciones('id_usuarios' ,'public.usuarios' , $whereconsulta , 'id_usuarios');
 		        	
 		        	//valor para guardar el id
@@ -2934,7 +2948,7 @@ public function index(){
 		  
 		  
 		 
-		  $afiliado = new AfiliadoModel();
+		 /* $afiliado = new AfiliadoModel();
 		  $resultAfiliado="";
 		  $resultAfiliado=$afiliado->getBy("cedula='$_cedula_usuarios'");
 		  
@@ -2958,10 +2972,10 @@ public function index(){
 		  	$afiliado->setParametros($parametros);
 		  	$resultado=$afiliado->Insert();
 		  	
-		  }
+		  }*/
 		  
 		  
-		  $participes = new ParticipeModel();
+		 /* $participes = new ParticipeModel();
 		  $resultParticipes="";
 		  $resultParticipes=$participes->getBy("cedula='$_cedula_usuarios'");
 		  if(!empty($resultParticipes)){
@@ -3025,10 +3039,10 @@ public function index(){
 		  	}
 		  	
 		  	 	
-		  }
+		  }*/
 		  
 		   
-		    $this->redirect("Usuarios", "index");
+		  //  $this->redirect("Usuarios", "index");
 		}
 		
 	   }else{

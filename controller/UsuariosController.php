@@ -2503,7 +2503,7 @@ class UsuariosController extends ControladorBase{
 public function index(){
 	
 		session_start();
-		if (isset(  $_SESSION['nombre_usuarios']) )
+		if (isset($_SESSION['nombre_usuarios']) )
 		{
 				//Creamos el objeto usuario
 			$rol=new RolesModel();
@@ -3468,65 +3468,81 @@ public function index(){
     		
     		 
     		
-    		$where = "cedula_usuarios = '$_usuario' AND  clave_usuarios ='$_clave'";
-    	
-    		$result=$usuarios->getBy($where);
-
-    		$usuario_usuario = "";
+    		
+    		$columnas="usuarios.id_usuarios,
+                      usuarios.cedula_usuarios, 
+                      usuarios.nombre_usuarios, 
+                      usuarios.apellidos_usuarios, 
+                      usuarios.correo_usuarios, 
+                      usuarios.celular_usuarios, 
+                      usuarios.telefono_usuarios, 
+                      usuarios.fecha_nacimiento_usuarios, 
+                      usuarios.usuario_usuarios, 
+                      usuarios.estado_usuarios, 
+                      claves.clave_claves, 
+                      claves.estado_claves, 
+                      privilegios.id_rol, 
+                      privilegios.tipo_rol_privilegios, 
+                      privilegios.estado_rol_privilegios";
+    		$tablas="public.claves, 
+                      public.usuarios, 
+                      public.privilegios";
+    		$where="usuarios.id_usuarios = claves.id_usuarios AND
+                    privilegios.id_usuarios = usuarios.id_usuarios AND usuarios.estado_usuarios=1 AND claves.estado_claves=1 AND privilegios.tipo_rol_privilegios=1 AND privilegios.estado_rol_privilegios=1
+                    AND usuarios.cedula_usuarios='$_usuario' AND claves.clave_claves='$_clave' ";
+    		$id="usuarios.cedula_usuarios";
+    		$result=$usuarios->getCondiciones($columnas, $tablas, $where, $id);
+    		
+    		$id_usuarios=0;
+    		$usuario_usuarios = "";
     		$id_rol  = "";
-    		$nombre_usuario = "";
-    		$correo_usuario = "";
-    		$ip_usuario = "";
+    		$nombre_usuarios = "";
+    		$apellido_usuarios = "";
+    		$correo_usuarios = "";
+    		$estado_usuarios=0;
+    		$ip_usuarios = "";
     		
     		if ( !empty($result) )
     		{ 
     			foreach($result as $res) 
     			{
-    				$id_usuario  = $res->id_usuarios;
-    			    $usuario_usuario  = $res->usuario_usuario;
+    				$id_usuarios  = $res->id_usuarios;
+    				$usuario_usuarios  = $res->usuario_usuarios;
 	    			$id_rol           = $res->id_rol;
-	    			$nombre_usuario   = $res->nombre_usuarios;
-	    			$correo_usuario   = $res->correo_usuarios;
-	    			$id_estado        = $res->id_estado;
+	    			$nombre_usuarios   = $res->nombre_usuarios;
+	    			$apellido_usuarios   = $res->apellidos_usuarios;
+	    			$correo_usuarios   = $res->correo_usuarios;
+	    			$estado_usuarios       = $res->estado_usuarios;
 	    			$cedula_usuarios        = $res->cedula_usuarios;
 	    			
     			}	
     			
-    			if($id_estado==1 || $id_estado==2 ){
+    			if($estado_usuarios==1){
     				
     				
     				//obtengo ip
-    				$ip_usuario = $usuarios->getRealIP();
+    				$ip_usuarios = $usuarios->getRealIP();
     				 
     				 
     				///registro sesion
-    				$usuarios->registrarSesion($id_usuario, $usuario_usuario, $id_rol, $nombre_usuario, $correo_usuario, $ip_usuario, $cedula_usuarios);
+    				$usuarios->registrarSesion($id_usuarios, $usuario_usuarios, $id_rol, $nombre_usuarios, $apellido_usuarios, $correo_usuarios, $ip_usuarios, $cedula_usuarios);
     				 
-    				//inserto en la tabla
-    				$_id_usuario = $_SESSION['id_usuarios'];
-    				 
-    				$sesiones = new SesionesModel();
-    				
-    				$funcion = "ins_sesiones";
-    				 
-    				$parametros = " '$_id_usuario' ,'$ip_usuario' ";
-    				$sesiones->setFuncion($funcion);
     				
     				$_id_rol=$_SESSION['id_rol'];
     				$usuarios->MenuDinamico($_id_rol);
+    				
+    				//inserto en la tabla
+    				$_id_usuario = $_SESSION['id_usuarios'];
     				 
-    				$sesiones->setParametros($parametros);
-    				 
-    				 
-    				$resultado=$sesiones->Insert();
+    				
     				 
     				 
     				
-    				if($_id_rol==1 || $_id_rol==42 || $_id_rol==43 || $_id_rol==44 || $_id_rol==45){
+    				if($_id_rol==1){
     					
 
     					$this->view("BienvenidaAdmin",array(
-    							"allusers"=>$_usuario
+    							""=>""
     					));
     					
     					die();
@@ -3534,7 +3550,7 @@ public function index(){
     				}else{
     					
     					$this->view("Bienvenida",array(
-    							"allusers"=>$_usuario
+    							""=>""
     					));
     						
     					die();
@@ -3546,7 +3562,7 @@ public function index(){
     				
     				
     				$error = TRUE;
-    				$mensaje = "Hola $nombre_usuario tu usuario se encuentra inactivo.";
+    				$mensaje = "Hola $nombre_usuarios $apellido_usuarios tu usuario se encuentra inactivo.";
     				 
     				 
     				$this->view("Login",array(

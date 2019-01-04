@@ -263,16 +263,17 @@ class EntidadBase{
     	return $decrypted;  //Devuelve el string desencriptado
     }
     
-    public function registrarSesion($id_usuario, $usuario_usuario, $id_rol, $nombre_usuario, $correo_usuario, $ip_usuario, $cedula_usuarios)
+    public function registrarSesion($id_usuarios, $usuario_usuarios, $id_rol, $nombre_usuarios, $apellido_usuarios, $correo_usuarios, $ip_usuarios, $cedula_usuarios)
     {
     	session_start();
     	$_SESSION["cedula_usuarios"]=$cedula_usuarios;
-    	$_SESSION["id_usuarios"]=$id_usuario;
-    	$_SESSION["usuario_usuario"]=$usuario_usuario;
+    	$_SESSION["id_usuarios"]=$id_usuarios;
+    	$_SESSION["usuario_usuarios"]=$usuario_usuarios;
     	$_SESSION["id_rol"]=$id_rol;
-    	$_SESSION["nombre_usuarios"]=$nombre_usuario;
-    	$_SESSION["correo_usuarios"]=$correo_usuario;
-    	$_SESSION["ip_usuarios"]=$ip_usuario; 	
+    	$_SESSION["nombre_usuarios"]=$nombre_usuarios;
+    	$_SESSION["apellidos_usuarios"]=$apellido_usuarios;
+    	$_SESSION["correo_usuarios"]=$correo_usuarios;
+    	$_SESSION["ip_usuarios"]=$ip_usuarios; 	
 
     	if (substr($ip_usuario, 0, 3) == "192" )
     	{

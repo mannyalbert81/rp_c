@@ -13,26 +13,28 @@ class UsuariosController extends ControladorBase{
     	$usuarios = new UsuariosModel();
     	$where_to="";
     	$columnas = " usuarios.id_usuarios,
-								  usuarios.cedula_usuarios,
-								  usuarios.nombre_usuarios,
-								  usuarios.clave_usuarios,
-								  usuarios.pass_sistemas_usuarios,
-								  usuarios.telefono_usuarios,
-								  usuarios.celular_usuarios,
-								  usuarios.correo_usuarios,
-								  rol.id_rol,
-								  rol.nombre_rol,
-								  estado.id_estado,
-								  estado.nombre_estado,
-								  usuarios.fotografia_usuarios,
-								  usuarios.creado";
+					  usuarios.cedula_usuarios,
+					  usuarios.nombre_usuarios,
+					  claves.clave_claves,
+					  claves.clave_n_claves,
+					  usuarios.telefono_usuarios,
+					  usuarios.celular_usuarios,
+					  usuarios.correo_usuarios,
+					  rol.id_rol,
+					  rol.nombre_rol,
+					  usuarios.estado_usuarios,
+					  usuarios.fotografia_usuarios,
+					  usuarios.creado";
+    	
+    	$tablas = "public.usuarios INNER JOIN public.claves ON claves.id_usuarios = usuarios.id_usuarios
+                   INNER JOIN public.privilegios ON privilegios.id_usuarios=usuarios.id_usuarios
+                   INNER JOIN public.rol ON rol.id_rol=privilegios.id_rol";
     		
-    	$tablas   = "public.usuarios,
-								  public.rol,
-								  public.estado";
+    	/*$tablas   = "public.usuarios,
+					  public.rol,
+					  public.estado";*/
     		
-    	$where    = " rol.id_rol = usuarios.id_rol AND
-								  estado.id_estado = usuarios.id_estado";
+    	$where    = " 1=1";
     		
     	$id       = "usuarios.id_usuarios";
     		
@@ -49,7 +51,7 @@ class UsuariosController extends ControladorBase{
     		if(!empty($search)){
     			 
     			 
-    			$where1=" AND (usuarios.cedula_usuarios LIKE '".$search."%' OR usuarios.nombre_usuarios LIKE '".$search."%' OR usuarios.correo_usuarios LIKE '".$search."%' OR rol.nombre_rol LIKE '".$search."%' OR estado.nombre_estado LIKE '".$search."%')";
+    			$where1=" AND (usuarios.cedula_usuarios LIKE '".$search."%' OR usuarios.nombre_usuarios LIKE '".$search."%' OR usuarios.correo_usuarios LIKE '".$search."%' OR rol.nombre_rol LIKE '".$search."%' )";
     			 
     			$where_to=$where.$where1;
     		}else{
@@ -130,7 +132,7 @@ class UsuariosController extends ControladorBase{
     			$html.='<td style="font-size: 11px;">'.$res->celular_usuarios.'</td>';
     			$html.='<td style="font-size: 11px;">'.$res->correo_usuarios.'</td>';
     			$html.='<td style="font-size: 11px;">'.$res->nombre_rol.'</td>';
-    			$html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
+    			$html.='<td style="font-size: 11px;">'.$res->estado_usuarios.'</td>';
     			
     			if($id_rol==1){
     			
@@ -2502,77 +2504,79 @@ class UsuariosController extends ControladorBase{
     
 public function index(){
 	
-		session_start();
-		if (isset($_SESSION['nombre_usuarios']) )
-		{
-				//Creamos el objeto usuario
-			$rol=new RolesModel();
-			$resultRol = $rol->getAll("nombre_rol");
-			$resultSet="";
-			$estado = new EstadoModel();
-			$resultEst = $estado->getAll("nombre_estado");
-			
-			$usuarios = new UsuariosModel();
+	session_start();
+	
+	if (isset($_SESSION['nombre_usuarios']) )
+	{
+		//Creamos el objeto usuario
+		$rol=new RolesModel();
+		$resultRol = $rol->getAll("nombre_rol");
+		
+		$resultSet="";
+		
+		$usuarios = new UsuariosModel();
 
-			$nombre_controladores = "Usuarios";
-			$id_rol= $_SESSION['id_rol'];
-			$resultPer = $usuarios->getPermisosEditar("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-				
-			if (!empty($resultPer))
-			{
+		$nombre_controladores = "Usuarios";
+		$id_rol= $_SESSION['id_rol'];
+		$resultPer = $usuarios->getPermisosEditar("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
+		if (!empty($resultPer))
+		{
+		    $resultEdit = "";
+		
+				if (isset ($_GET["id_usuarios"])   )
+				{
 					
-					$resultEdit = "";
-			
-					if (isset ($_GET["id_usuarios"])   )
-					{
-						
-						
-						$columnas = " usuarios.id_usuarios,
-								  usuarios.cedula_usuarios,
-								  usuarios.nombre_usuarios,
-								  usuarios.clave_usuarios,
-								  usuarios.pass_sistemas_usuarios,
-								  usuarios.telefono_usuarios,
-								  usuarios.celular_usuarios,
-								  usuarios.correo_usuarios,
-								  rol.id_rol,
-								  rol.nombre_rol,
-								  estado.id_estado,
-								  estado.nombre_estado,
-								  usuarios.fotografia_usuarios,
-								  usuarios.creado";
-						
-						$tablas   = "public.usuarios,
-								  public.rol,
-								  public.estado";
-						
-						$id       = "usuarios.id_usuarios";
-						
-						$_id_usuarios = $_GET["id_usuarios"];
-						$where    = "rol.id_rol = usuarios.id_rol AND estado.id_estado = usuarios.id_estado AND usuarios.id_usuarios = '$_id_usuarios' "; 
-						$resultEdit = $usuarios->getCondiciones($columnas ,$tablas ,$where, $id); 
-					}
-			
 					
-					$this->view("Usuarios",array(
-							"resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit, "resultEst"=>$resultEst
+					$columnas = " usuarios.id_usuarios,
+							  usuarios.cedula_usuarios,
+							  usuarios.nombre_usuarios,
+                              usuarios.apellidos_usuarios,
+							  usuarios.telefono_usuarios,
+							  usuarios.celular_usuarios,
+							  usuarios.correo_usuarios,
+                              claves.clave_claves,
+                              usuarios.fotografia_usuarios,
+							  usuarios.creado,
+                              rol.id_rol,
+                              rol.nombre_rol";
+					
+					$tablas = "public.usuarios INNER JOIN public.claves ON claves.id_usuarios = usuarios.id_usuarios
+                               INNER JOIN public.privilegios ON privilegios.id_usuarios=usuarios.id_usuarios
+                               INNER JOIN public.rol ON rol.id_rol=privilegios.id_rol";
+					//ver la relacion con rol
+					
+					/*$tablas   = "public.usuarios,
+							  public.rol,
+                              public.claves";*/
+					
+					$id       = "usuarios.id_usuarios";
+					
+					$_id_usuarios = $_GET["id_usuarios"];
+					$where    = " usuarios.id_usuarios = '$_id_usuarios' "; 
+					$resultEdit = $usuarios->getCondiciones($columnas ,$tablas ,$where, $id); 
+				}
 				
-					));
+			    
 				
-			}
-			else
-			{
-				$this->view("Error",array(
-						"resultado"=>"No tiene Permisos de Acceso a Usuarios"
+				$this->view("Usuarios",array(
+						"resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit, "resultEst"=>$resultEst
 			
 				));
 			
-			}
-			
+		}
+		else
+		{
+			$this->view("Error",array(
+					"resultado"=>"No tiene Permisos de Acceso a Usuarios"
+		
+			));
 		
 		}
-		else{
+		
+	
+    	}
+    	else{
        	
        	$this->redirect("Usuarios","sesion_caducada");
        	
@@ -2764,15 +2768,16 @@ public function index(){
 		{
 			$_cedula_usuarios    = $_POST["cedula_usuarios"];
 			$_nombre_usuarios     = $_POST["nombre_usuarios"];
-			//$_usuario_usuario     = $_POST["usuario_usuario"];
+			$_apellidos_usuario     = $_POST["apellidos_usuario"];
+			$_fecha_nacimiento_usuarios = $_POST['fecha_nacimiento_usuarios'];
+			$_usuario_usuarios = $_POST['usuario_usuarios'];
 			$_clave_usuarios      = $usuarios->encriptar($_POST["clave_usuarios"]);
-			$_pass_sistemas_usuarios      = $_POST["clave_usuarios"];
+			$_clave_n_usuarios    = $_POST["clave_usuarios"];
 			$_telefono_usuarios   = $_POST["telefono_usuarios"];
 			$_celular_usuarios    = $_POST["celular_usuarios"];
 			$_correo_usuarios     = $_POST["correo_usuarios"];
 		    $_id_rol             = $_POST["id_rol"];
-		    $_id_estado          = $_POST["id_estado"];
-		    
+		    $_id_estado          = $_POST["id_estado"];		    
 		    $_id_usuarios          = $_POST["id_usuarios"];
 		    
 		    
@@ -2782,7 +2787,7 @@ public function index(){
 		    	if ($_FILES['fotografia_usuarios']['tmp_name']!="")
 		    	{
 		    			
-		    		$directorio = $_SERVER['DOCUMENT_ROOT'].'/webcapremci/fotografias_usuarios/';
+		    		$directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/fotografias_usuarios/';
 		    			
 		    		$nombre = $_FILES['fotografia_usuarios']['name'];
 		    		$tipo = $_FILES['fotografia_usuarios']['type'];
@@ -2793,19 +2798,34 @@ public function index(){
 		    		$imagen_usuarios = pg_escape_bytea($data);
 		    			
 		    			
-		    		$colval = "cedula_usuarios= '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios',  clave_usuarios = '$_clave_usuarios', pass_sistemas_usuarios='$_pass_sistemas_usuarios',  telefono_usuarios = '$_telefono_usuarios', celular_usuarios = '$_celular_usuarios', correo_usuarios = '$_correo_usuarios', id_rol = '$_id_rol', id_estado = '$_id_estado', fotografia_usuarios ='$imagen_usuarios'";
+		    		$colval = "cedula_usuarios= '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios',  telefono_usuarios = '$_telefono_usuarios', celular_usuarios = '$_celular_usuarios', correo_usuarios = '$_correo_usuarios', fotografia_usuarios ='$imagen_usuarios'";
 		    		$tabla = "usuarios";
 		    		$where = "id_usuarios = '$_id_usuarios'";
 		    		$resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    		
+		    		$colval = "clave_claves= '$_clave_usuarios', clave_n_claves = '$_clave_n_usuarios'";
+		    		$tabla = "claves";
+		    		$where = "id_usuarios = '$_id_usuarios'";
+		    		$resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    		
+		    		/*$colval = "clave_claves= '$_clave_usuarios', clave_n_claves = '$_clave_n_usuarios'";
+		    		$tabla = "privilegios";
+		    		$where = "id_usuarios = '$_id_usuarios'";
+		    		$resultado=$usuarios->UpdateBy($colval, $tabla, $where);*/
 		    			
 		    	}
 		    	else
 		    	{
 		    	
-		    		$colval = "cedula_usuarios= '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios',  clave_usuarios = '$_clave_usuarios', pass_sistemas_usuarios='$_pass_sistemas_usuarios',  telefono_usuarios = '$_telefono_usuarios', celular_usuarios = '$_celular_usuarios', correo_usuarios = '$_correo_usuarios', id_rol = '$_id_rol', id_estado = '$_id_estado'";
-		    		$tabla = "usuarios";
-		    		$where = "id_usuarios = '$_id_usuarios'";
-		    		$resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    	    $colval = "cedula_usuarios= '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios',  telefono_usuarios = '$_telefono_usuarios', celular_usuarios = '$_celular_usuarios', correo_usuarios = '$_correo_usuarios', fotografia_usuarios ='$imagen_usuarios'";
+		    	    $tabla = "usuarios";
+		    	    $where = "id_usuarios = '$_id_usuarios'";
+		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    	    
+		    	    $colval = "clave_claves= '$_clave_usuarios', clave_n_claves = '$_clave_n_usuarios'";
+		    	    $tabla = "claves";
+		    	    $where = "id_usuarios = '$_id_usuarios'";
+		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
 		    	
 		    	}
 		    	
@@ -2819,7 +2839,7 @@ public function index(){
 		    if ($_FILES['fotografia_usuarios']['tmp_name']!="")
 		    {
 		    
-		    	$directorio = $_SERVER['DOCUMENT_ROOT'].'/webcapremci/fotografias_usuarios/';
+		    	$directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/fotografias_usuarios/';
 		    
 		    	$nombre = $_FILES['fotografia_usuarios']['name'];
 		    	$tipo = $_FILES['fotografia_usuarios']['type'];
@@ -2833,17 +2853,28 @@ public function index(){
 		    	$funcion = "ins_usuarios";
 		    	$parametros = "'$_cedula_usuarios',
 		    				   '$_nombre_usuarios',
-		    				   '$_clave_usuarios',
-		    	               '$_pass_sistemas_usuarios',
+                               '$_apellidos_usuario',
+                               '$_correo_usuarios',
+                               '$_celular_usuarios',
 		    	               '$_telefono_usuarios',
-		    	               '$_celular_usuarios',
-		    	               '$_correo_usuarios',
-		    	               '$_id_rol',
+		    	               '$_fecha_nacimiento_usuarios',
+		    	               '$_usuario_usuarios',
 		    	               '$_id_estado',
 		    	               '$imagen_usuarios'";
 		    	$usuarios->setFuncion($funcion);
 		    	$usuarios->setParametros($parametros);
 		    	$resultado=$usuarios->Insert();
+		    	
+		    	//para datos de usuario
+		    	$rsUsuario = null;
+		    	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios', apellidos_usuarios = '$_apellidos_usuario', correo_usuarios = '$_correo_usuarios', usuario_usuarios='$_usuario_usuarios'"; 
+		    	$rsUsuario=$usuarios->getCondiciones('id_usuarios' ,'public.usuarios' , $whereconsulta , 'id_usuarios');
+		    	
+		    	//valor para guardar el id
+		    	$consulta_id_usuarios = null;
+		    	$consulta_id_usuarios = $rsUsuario[0]->id_usuarios;
+		    	
+		    	echo $consulta_id_usuarios;
 		    
 		    }
 		    else
@@ -2855,10 +2886,16 @@ public function index(){
 		    	if ( !empty($result) )
 		    	{
 		    		 
-		    		$colval = "nombre_usuarios = '$_nombre_usuarios',  clave_usuarios = '$_clave_usuarios', pass_sistemas_usuarios='$_pass_sistemas_usuarios',  telefono_usuarios = '$_telefono_usuarios', celular_usuarios = '$_celular_usuarios', correo_usuarios = '$_correo_usuarios', id_rol = '$_id_rol', id_estado = '$_id_estado'";
-		    		$tabla = "usuarios";
-		    		$where = "cedula_usuarios = '$_cedula_usuarios'";
-		    		$resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    	    $colval = "cedula_usuarios= '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios',  telefono_usuarios = '$_telefono_usuarios', celular_usuarios = '$_celular_usuarios', correo_usuarios = '$_correo_usuarios', fotografia_usuarios ='$imagen_usuarios'";
+		    	    $tabla = "usuarios";
+		    	    $where = "id_usuarios = '$_id_usuarios'";
+		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    	    
+		    	    $colval = "clave_claves= '$_clave_usuarios', clave_n_claves = '$_clave_n_usuarios'";
+		    	    $tabla = "claves";
+		    	    $where = "id_usuarios = '$_id_usuarios'";
+		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    	    
 		    	}
 		        else{
 		        	
@@ -2866,18 +2903,29 @@ public function index(){
 		        	
 		        	$funcion = "ins_usuarios";
 		        	$parametros = "'$_cedula_usuarios',
-		        	'$_nombre_usuarios',
-		        	'$_clave_usuarios',
-		        	'$_pass_sistemas_usuarios',
-		        	'$_telefono_usuarios',
-		        	'$_celular_usuarios',
-		        	'$_correo_usuarios',
-		        	'$_id_rol',
-		        	'$_id_estado',
-		        	'$imagen_usuarios'";
+		    				   '$_nombre_usuarios',
+                               '$_apellidos_usuario',
+                               '$_correo_usuarios',
+                               '$_celular_usuarios',
+		    	               '$_telefono_usuarios',
+		    	               '$_fecha_nacimiento_usuarios',
+		    	               '$_usuario_usuarios',
+		    	               '$_id_estado',
+		    	               '$imagen_usuarios'";
 		        	$usuarios->setFuncion($funcion);
 		        	$usuarios->setParametros($parametros);
 		        	$resultado=$usuarios->Insert();
+		        	
+		        	//para datos de usuario
+		        	$rsUsuario = null;
+		        	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios', apellidos_usuarios = '$_apellidos_usuario', correo_usuarios = '$_correo_usuarios', usuario_usuarios='$_usuario_usuarios'";
+		        	$rsUsuario=$usuarios->getCondiciones('id_usuarios' ,'public.usuarios' , $whereconsulta , 'id_usuarios');
+		        	
+		        	//valor para guardar el id
+		        	$consulta_id_usuarios = null;
+		        	$consulta_id_usuarios = $rsUsuario[0]->id_usuarios;
+		        	
+		        	echo $consulta_id_usuarios;
 		    	}
 		    
 		    }

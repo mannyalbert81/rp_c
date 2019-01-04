@@ -225,7 +225,7 @@
                                 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
                                 
                                 <div class="row">
-                        		    <div class="col-xs-12 col-md-2 col-md-2 ">
+                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="nombre_permisos_rol" class="control-label">Nombres Permiso Rol</label>
                                                           <input type="text" class="form-control" id="nombre_permisos_rol" name="nombre_permisos_rol" value="<?php echo $resEdit->nombre_permisos_rol; ?>"  placeholder="Nombres">
@@ -234,8 +234,9 @@
                                     </div>
                         		    </div>
                         		    
-                        		    <div class="col-xs-12 col-md-2 col-md-2">
+                        		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
+                                                       
                                                           <label for="id_rol" class="control-label">Rol</label>
                                                           <select name="id_rol" id="id_rol"  class="form-control">
                                                             <option value="0" selected="selected">--Seleccione--</option>
@@ -248,7 +249,7 @@
                                     </div>
                         			
                         			
-                        			<div class="col-xs-12 col-md-2 col-md-2">
+                        			<div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="id_controladores" class="control-label">Controladores</label>
                                                           <select name="id_controladores" id="id_controladores"  class="form-control">
@@ -263,7 +264,7 @@
                         		    </div>
                         		    
                         			
-                        	    	<div class="col-xs-12 col-md-2 col-md-2">
+                        	    	<div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="ver_permisos_rol" class="control-label">Ver</label>
                         								  <select name="ver_permisos_rol" id="ver_permisos_rol"  class="form-control">
@@ -274,8 +275,9 @@
                                                            <div id="mensaje_ver_permisos_rol" class="errores"></div>
                                     </div>
                         		    </div>
-                        		    
-                        		    <div class="col-xs-12 col-md-2 col-md-2">
+                        		    </div>
+                        		    <div class="row">
+                        		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="guardar_permisos_rol" class="control-label">Guardar</label>
                         								  <select name="guardar_permisos_rol" id="guardar_permisos_rol"  class="form-control">
@@ -287,7 +289,7 @@
                                     </div>
                         		    </div>
                         		    
-                        			<div class="col-xs-12 col-md-2 col-md-2">
+                        			<div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="editar_permisos_rol" class="control-label">Editar</label>
                         								  <select name="editar_permisos_rol" id="editar_permisos_rol"  class="form-control">
@@ -298,7 +300,7 @@
                                                         <div id="mensaje_editar_permisos_rol" class="errores"></div>
                                     </div>
                         		    </div>    
-                        		    <div class="col-xs-12 col-md-2 col-md-2">
+                        		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="borrar_permisos_rol" class="control-label">Borrar</label>
                         								  <select name="borrar_permisos_rol" id="borrar_permisos_rol"  class="form-control">
@@ -310,8 +312,8 @@
                                     </div>
                         		    </div>
                 		    
-                        		    
-                    			</div>
+                        		     </div>
+                    	
                     			
                                  
                                 
@@ -319,7 +321,7 @@
                     		    
                     		   
 								 <div class="row">
-                        		    <div class="col-xs-12 col-md-2 col-md-2 ">
+                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="nombre_permisos_rol" class="control-label">Nombres Permiso Rol</label>
                                                           <input type="text" class="form-control" id="nombre_permisos_rol" name="nombre_permisos_rol" value=""  placeholder="Nombres">
@@ -327,7 +329,7 @@
                                     </div>
                         		    </div>
                         		    
-                        		    <div class="col-xs-12 col-md-2 col-md-2">
+                        		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="id_rol" class="control-label">Rol</label>
                                                           <select name="id_rol" id="id_rol"  class="form-control">
@@ -341,7 +343,7 @@
                                     </div>
                         			
                         			
-                        			<div class="col-xs-12 col-md-2 col-md-2">
+                        			<div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="id_controladores" class="control-label">Controladores</label>
                                                           <select name="id_controladores" id="id_controladores"  class="form-control">
@@ -357,7 +359,7 @@
                         		    
 									
 									
-							    	<div class="col-xs-12 col-md-2 col-md-2">
+							    	<div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="ver_permisos_rol" class="control-label">Ver</label>
                         								  <select name="ver_permisos_rol" id="ver_permisos_rol"  class="form-control">
@@ -368,8 +370,9 @@
                                                             <div id="mensaje_ver_permisos_rol" class="errores"></div>
                                     </div>
                         		    </div>
-                        		    
-                        		    <div class="col-xs-12 col-md-2 col-md-2">
+                        		    </div>
+                        		    <div class="row">
+                        		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="guardar_permisos_rol" class="control-label">Guardar</label>
                         								  <select name="guardar_permisos_rol" id="guardar_permisos_rol"  class="form-control">
@@ -381,7 +384,7 @@
                                     </div>
                         		    </div>
                         		    
-                        			<div class="col-xs-12 col-md-2 col-md-2">
+                        			<div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="editar_permisos_rol" class="control-label">Editar</label>
                         								  <select name="editar_permisos_rol" id="editar_permisos_rol"  class="form-control">
@@ -392,7 +395,7 @@
                                                          <div id="mensaje_editar_permisos_rol" class="errores"></div>
                                     </div>
                         		    </div>    
-                        		    <div class="col-xs-12 col-md-2 col-md-2">
+                        		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="borrar_permisos_rol" class="control-label">Borrar</label>
                         								  <select name="borrar_permisos_rol" id="borrar_permisos_rol"  class="form-control">
@@ -404,8 +407,9 @@
                                     </div>
                         		    </div>
                 		    
-									
-                    			</div>
+									</div>
+                		    
+                    	
                     			
                                  	                     	           	
                     		     <?php } ?>

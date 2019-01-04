@@ -20,7 +20,8 @@
   <body class="hold-transition login-page">
     <div class="login-box">
       <div class="login-logo">
-        <a href=""><b>FCPC</b> Capremci</a>
+        
+        <img src="view/images/logoerp2.png" class="img-fluid" alt="Logo ERP">
       </div>
 
 

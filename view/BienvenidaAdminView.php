@@ -21,14 +21,14 @@
 
   <header class="main-header">
   
-      <?php include("view/modulos/logo.php"); ?>
+       <?php include("view/modulos/logo.php"); ?> 
       <?php include("view/modulos/head.php"); ?>	
     
   </header>
 
    <aside class="main-sidebar">
     <section class="sidebar">
-     <?php include("view/modulos/menu_profile.php"); ?>
+      <?php include("view/modulos/menu_profile.php"); ?> 
       <br>
      <?php include("view/modulos/menu.php"); ?>
     </section>

@@ -12,7 +12,45 @@
    <?php include("view/modulos/links_css.php"); ?>
    
   </head>
+   <script>
+		    // cada vez que se cambia el valor del combo
+		    $(document).ready(function(){
+		    
+		    $("#Guardar").click(function() 
+			{
+		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
 
+		    	var nombre_controladores = $("#nombre_rol").val();
+		    	
+		    	
+		    	
+		    	if (nombre_controladores == "")
+		    	{
+			    	
+		    		$("#mensaje_nombre_rol").text("Introduzca Un Rol");
+		    		$("#mensaje_nombre_rol").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_nombre_rol").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+
+		    	
+			}); 
+
+
+		        $( "##mensaje_nombre_rol" ).focus(function() {
+				  $("##mensaje_nombre_rol").fadeOut("slow");
+			    });
+		        		      
+				    
+		}); 
+
+	</script>
   <body class="hold-transition skin-blue fixed sidebar-mini">   
   <?php
         
@@ -62,7 +100,7 @@
                 <form action="<?php echo $helper->url("Roles","InsertaRoles"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
           		 	 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
               		 	 <div class="row">
-                         	<div class="col-xs-12 col-md-4 col-md-4 ">
+                         	<div class="col-xs-12 col-md-3 col-md-3 ">
                             	<div class="form-group">
                                 	<label for="nombre_rol" class="control-label">Nombres Rol</label>
                                     <input type="text" class="form-control" id="nombre_rol" name="nombre_rol" value="<?php echo $resEdit->nombre_rol; ?>"  placeholder="Nombre Rol">
@@ -73,7 +111,7 @@
                           </div>
                       <?php } } else {?>                		    
                       	  <div class="row">
-                		  	<div class="col-xs-12 col-md-4 col-md-4 ">
+                		  	<div class="col-xs-12 col-md-3 col-md-3 ">
                     			<div class="form-group">
                                   <label for="nombre_rol" class="control-label">Nombres Rol</label>
                                   <input type="text" class="form-control" id="nombre_rol" name="nombre_rol" value=""  placeholder="Nombre Rol">
@@ -161,48 +199,7 @@
     
     
    <?php include("view/modulos/links_js.php"); ?>
-   
-  <script type="text/javascript">
-		    // cada vez que se cambia el valor del combo
-		    $(document).ready(function(){
-		    
-		    $("#Guardar").click(function() 
-			{
-		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
-
-		    	var nombre_rol = $("#nombre_rol").val();
-		    	
-		    	
-		    	
-		    	if (nombre_rol == "")
-		    	{
-			    	
-		    		$("#mensaje_nombre_rol").text("Introduzca Rol");
-		    		$("#mensaje_nombre_rol").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_nombre_rol").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}    
-								    
-
-			}); 
-
-
-		        $( "#nombre_rol" ).focus(function() {
-				  $("#mensaje_nombre_rol").fadeOut("slow");
-			    });
-				
-				
-		      
-				    
-		}); 
-
-	</script>
- 	
+    	
   </body>
 </html>
 

@@ -20,10 +20,11 @@ class PermisosRolesController extends ControladorBase{
 			
 			$nombre_controladores = "PermisosRoles";
 			$id_rol= $_SESSION['id_rol'];
+			
 			$resultPer = $permisos_rol->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
 
-                    $columnas = "permisos_rol.id_permisos_rol, rol.nombre_rol, permisos_rol.nombre_permisos_rol, controladores.nombre_controladores, permisos_rol.ver_permisos_rol, permisos_rol.editar_permisos_rol, permisos_rol.borrar_permisos_rol  ";
+                    $columnas = "permisos_rol.id_permisos_rol, rol.nombre_rol, permisos_rol.nombre_permisos_rol, controladores.nombre_controladores, permisos_rol.ver_permisos_rol, permisos_rol.guardar_permisos_rol, permisos_rol.editar_permisos_rol, permisos_rol.borrar_permisos_rol  ";
 					$tablas   = "public.controladores,  public.permisos_rol, public.rol";
 					$where    = " controladores.id_controladores = permisos_rol.id_controladores AND permisos_rol.id_rol = rol.id_rol";
 					$id       = " permisos_rol.id_permisos_rol";
@@ -91,8 +92,7 @@ class PermisosRolesController extends ControladorBase{
 			
 			
 			}
-			
-		}
+				}
 	else{
        	
        	$this->redirect("Usuarios","sesion_caducada");
@@ -125,6 +125,9 @@ class PermisosRolesController extends ControladorBase{
 			$_nombre_permisos_rol = $_POST["nombre_permisos_rol"];
 			$_id_controladores = $_POST["id_controladores"];
 			$_ver_permisos_rol = $_POST["ver_permisos_rol"];
+			
+			$_guardar_permisos_rol = $_POST["guardar_permisos_rol"];
+			
 			$_editar_permisos_rol = $_POST["editar_permisos_rol"];
 			$_borrar_permisos_rol = $_POST["borrar_permisos_rol"];
 			$_id_rol = $_POST["id_rol"];
@@ -136,6 +139,7 @@ class PermisosRolesController extends ControladorBase{
 				$columnas = " nombre_permisos_rol = '$_nombre_permisos_rol',
 							  id_controladores ='$_id_controladores',	
 							  ver_permisos_rol = '$_ver_permisos_rol',
+                              guardar_permisos_rol = '$_guardar_permisos_rol',
 							  editar_permisos_rol = '$_editar_permisos_rol',
 							  borrar_permisos_rol = '$_borrar_permisos_rol',
 							  id_rol = '$_id_rol'";
@@ -146,7 +150,7 @@ class PermisosRolesController extends ControladorBase{
 			}else{
 			
 			$funcion = "ins_permisos_rol";
-				$parametros = " '$_nombre_permisos_rol' ,'$_id_controladores' , '$_ver_permisos_rol' , '$_editar_permisos_rol', '$_borrar_permisos_rol', '$_id_rol' ";
+				$parametros = " '$_nombre_permisos_rol' ,'$_id_controladores' , '$_id_rol' , '$_ver_permisos_rol', '$_guardar_permisos_rol', '$_editar_permisos_rol', '$_borrar_permisos_rol'";
 				$permisos_rol->setFuncion($funcion);
 				$permisos_rol->setParametros($parametros);
 				$resultado=$permisos_rol->Insert();

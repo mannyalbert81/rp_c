@@ -7,8 +7,162 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    
+  
     <?php include("view/modulos/links_css.php"); ?>		
+      
+    
+    <script>
+		    // cada vez que se cambia el valor del combo
+		    $(document).ready(function(){
+		    
+		    $("#Guardar").click(function() 
+			{
+		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
+
+		    	var nombre_permisos_rol = $("#nombre_permisos_rol").val();
+		    	var id_rol = $("#id_rol").val();
+		    	var id_controladores = $("#id_controladores").val();
+		    	var ver_permisos_rol = $("#ver_permisos_rol").val();
+		    	var guardar_permisos_rol = $("#guardar_permisos_rol").val();
+		    	var editar_permisos_rol = $("#editar_permisos_rol").val();
+		    	var borrar_permisos_rol = $("#borrar_permisos_rol").val();
+		    	
+		    	
+		    	
+		    	if (nombre_permisos_rol == "")
+		    	{
+			    	
+		    		$("#mensaje_nombre_permisos_rol").text("Introduzca Nombre");
+		    		$("#mensaje_nombre_permisos_rol").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_nombre_permisos_rol").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+
+		    	if (id_rol == 0)
+		    	{
+			    	
+		    		$("#mensaje_id_rol").text("Seleccione Rol");
+		    		$("#mensaje_id_rol").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_id_rol").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}  
+
+
+		    	if (id_controladores == 0)
+		    	{
+			    	
+		    		$("#mensaje_id_controladores").text("Seleccione Controlador");
+		    		$("#mensaje_id_controladores").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_id_controladores").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+
+		    	if (ver_permisos_rol == 0)
+		    	{
+			    	
+		    		$("#mensaje_ver_permisos_rol").text("Seleccione Permiso");
+		    		$("#mensaje_ver_permisos_rol").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_ver_permisos_rol").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+		    	if (guardar_permisos_rol == 0)
+		    	{
+			    	
+		    		$("#mensaje_guardar_permisos_rol").text("Seleccione Permiso");
+		    		$("#mensaje_guardar_permisos_rol").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_guardar_permisos_rol").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+		    	if (editar_permisos_rol == 0)
+		    	{
+			    	
+		    		$("#mensaje_editar_permisos_rol").text("Seleccione Permiso");
+		    		$("#mensaje_editar_permisos_rol").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_editar_permisos_rol").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+		    	if (borrar_permisos_rol == 0)
+		    	{
+			    	
+		    		$("#mensaje_borrar_permisos_rol").text("Seleccione Permiso");
+		    		$("#mensaje_borrar_permisos_rol").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_borrar_permisos_rol").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}  
+								    
+
+			}); 
+
+
+		        $( "#nombre_permisos_rol" ).focus(function() {
+				  $("#mensaje_nombre_permisos_rol").fadeOut("slow");
+			    });
+		        $( "#id_rol" ).focus(function() {
+					  $("#mensaje_id_rol").fadeOut("slow");
+				    });
+		        $( "#id_controladores" ).focus(function() {
+					  $("#mensaje_id_controladores").fadeOut("slow");
+				    });
+		        $( "#ver_permisos_rol" ).focus(function() {
+					  $("#mensaje_ver_permisos_rol").fadeOut("slow");
+				    });
+
+		        $( "#guardar_permisos_rol" ).focus(function() {
+					  $("#mensaje_guardar_permisos_rol").fadeOut("slow");
+				    });
+		        $( "#editar_permisos_rol" ).focus(function() {
+					  $("#mensaje_editar_permisos_rol").fadeOut("slow");
+				    });
+				
+		        $( "#borrar_permisos_rol" ).focus(function() {
+					  $("#mensaje_borrar_permisos_rol").fadeOut("slow");
+				    });
+				
+		      
+				    
+		}); 
+
+	</script>
+        
+    
+    
+    
+    
+    
     
 	</head>
     
@@ -120,6 +274,19 @@
                                                            <div id="mensaje_ver_permisos_rol" class="errores"></div>
                                     </div>
                         		    </div>
+                        		    
+                        		    <div class="col-xs-12 col-md-2 col-md-2">
+                        		    <div class="form-group">
+                                                          <label for="guardar_permisos_rol" class="control-label">Guardar</label>
+                        								  <select name="guardar_permisos_rol" id="guardar_permisos_rol"  class="form-control">
+                        								    <option value="0" selected="selected">--Seleccione--</option>
+                                    										<option value="TRUE"  <?php  if ( $resEdit->guardar_permisos_rol =='t')  echo ' selected="selected" ' ; ?> >Permitir </option>
+                                    						            	<option value="FALSE" <?php  if ( $resEdit->guardar_permisos_rol =='f')  echo ' selected="selected" ' ; ?> >Denegar </option>
+                                    					   </select>	                                  
+                                                           <div id="mensaje_guardar_permisos_rol" class="errores"></div>
+                                    </div>
+                        		    </div>
+                        		    
                         			<div class="col-xs-12 col-md-2 col-md-2">
                         		    <div class="form-group">
                                                           <label for="editar_permisos_rol" class="control-label">Editar</label>
@@ -201,6 +368,19 @@
                                                             <div id="mensaje_ver_permisos_rol" class="errores"></div>
                                     </div>
                         		    </div>
+                        		    
+                        		    <div class="col-xs-12 col-md-2 col-md-2">
+                        		    <div class="form-group">
+                                                          <label for="guardar_permisos_rol" class="control-label">Guardar</label>
+                        								  <select name="guardar_permisos_rol" id="guardar_permisos_rol"  class="form-control">
+                        								    <option value="0" selected="selected">--Seleccione--</option>
+                                    										<option value="TRUE"   >Permitir </option>
+                                    						            	<option value="FALSE"  >Denegar </option>
+                                    					   </select>	                                  
+                                                            <div id="mensaje_guardar_permisos_rol" class="errores"></div>
+                                    </div>
+                        		    </div>
+                        		    
                         			<div class="col-xs-12 col-md-2 col-md-2">
                         		    <div class="form-group">
                                                           <label for="editar_permisos_rol" class="control-label">Editar</label>
@@ -275,6 +455,7 @@
                           <th>Nombre Rol</th>
                           <th>Nombre Controlador</th>
                           <th>Ver</th>
+                           <th>Guardar</th>
                           <th>Editar</th>
                           <th>Borrar</th>
                           
@@ -293,6 +474,7 @@
             		               <td > <?php echo $res->nombre_rol; ?>   </td>
             		               <td > <?php echo $res->nombre_controladores; ?>   </td>
             		               <td > <?php if ($res->ver_permisos_rol =="t"){ echo "Si";}else{echo "No";}; ?>  </td>
+            		               <td > <?php if ($res->guardar_permisos_rol =="t"){ echo "Si";}else{echo "No";}; ?>  </td>
             		               <td > <?php if ($res->editar_permisos_rol == "t"){ echo "Si";}else{echo "No";}; ?>  </td>
             		               <td > <?php if ($res->borrar_permisos_rol == "t"){ echo "Si";}else{echo "No";}; ?>  </td>
             		           	   <td>

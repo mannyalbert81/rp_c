@@ -283,48 +283,7 @@
                                           <div id="mensaje_correo_usuarios" class="errores"></div>
                                     </div>
                     		    </div>
-                        	</div>
-                        	
-                        	<div class="row">
-                    		    <div class="col-lg-4 col-xs-12 col-md-4">
-                        		    <div class="form-group">
-                                          <label for="fotografia_usuarios" class="control-label">Fotografía:</label>
-                                          <input type="file" class="form-control" id="fotografia_usuarios" name="fotografia_usuarios" value="">
-                                          <div id="mensaje_usuario" class="errores"></div>
-                                    </div>
-                    		    </div>
-                    		</div>
-                    		
-                    		<div class="row">                    		    
-                        		<div class="col-xs-12 col-lg-4 col-md-4">
-                        		   <div class="form-group">
-                                      <label for="id_rol" class="control-label">Rol:</label>
-                                      <select name="id_rol" id="id_rol"  class="form-control" >
-                                      <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultRol as $res) {?>
-    										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-                                      <div id="mensaje_id_rols" class="errores"></div>
-                                    </div>
-                                 </div>
-                                    
-                                 <div class="col-xs-12 col-md-4 col-lg-4">
-                        		   <div class="form-group">
-                                      <label for="privilegios_usuario" class="control-label">Listado Roles:</label>
-                                      <select name="privilegios_usuario" id="privilegios_usuario" multiple="multiple"  class="form-control" >
-                                      <?php foreach($resultRol as $res) {?>
-    										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-                                      <div id="privilegios_usuario" class="errores"></div>
-                                    </div>
-                                  </div>
-                                
-                              </div>
-                              
-                              <div class="row">
-                              	<div class="col-xs-12 col-md-4 col-lg-4">
+                    		    <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
                                       <label for="id_estado" class="control-label">Estado:</label>
                                       <select name="id_estado" id="id_estado"  class="form-control" >
@@ -336,8 +295,65 @@
                                       <div id="mensaje_id_estados" class="errores"></div>
                                     </div>
                                   </div>
-                              </div>	
-                    		            
+                                  
+                                  <div class="col-lg-3 col-xs-12 col-md-3">
+                        		    <div class="form-group">
+                                          <label for="fotografia_usuarios" class="control-label">Fotografía:</label>
+                                          <input type="file" class="form-control" id="fotografia_usuarios" name="fotografia_usuarios" value="">
+                                          <div id="mensaje_usuario" class="errores"></div>
+                                    </div>
+                    		    </div>
+                        	</div>
+                        	
+                    		
+                    		<div class="row"> 
+                    		    		    
+                        		<div class="col-xs-12 col-lg-3 col-md-3">
+                        		   <div class="form-group">
+                                      <label for="id_rol_principal" class="control-label">Rol Principal:</label>
+                                      <select name="id_rol_principal" id="id_rol_principal"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultRol as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_rols" class="errores"></div>
+                                    </div>
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-3 col-md-3">
+                        		   <div class="form-group">
+                                      <label for="id_rol" class="control-label">Roles:</label>
+                                      <select name="id_rol" id="id_rol"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultRol as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_rols" class="errores"></div>
+                                    </div>
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <a href="#" name="link_agregar_rol" id="link_agregar_rol">Agregar</a>
+                                      <a href="#" name="link_eliminar_rol" id="link_eliminar_rol">Eliminar</a>
+                                    </div>
+                                  </div>
+                                    
+                                 <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="lista_roles" class="control-label">Listado Roles:</label>
+                                      <select name="lista_roles[]" id="lista_roles" multiple="multiple"  class="form-control" >
+                                      </select> 
+                                      <div id="mensaje_lista_roles" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                  
+                                
+                              </div>
+                              
                     		            
                      <?php } ?>
                      	<div class="row">
@@ -402,6 +418,14 @@
    $(document).ready( function (){
 	   pone_espera();
 	   load_usuarios(1);
+
+	   /*para manejo de multiples roles*/
+	    $("#btn_cc").click(function() {
+              
+	    	 var nombre_usuarios = $("#txt_directorio").val();
+             var id_usuarios = $("#directorio").val();
+          	 var $usuarios_cc = $("#usuarios_cc");
+	    });
 	});
 
    function pone_espera(){

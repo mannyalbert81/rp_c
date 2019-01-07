@@ -15,6 +15,7 @@ class UsuariosController extends ControladorBase{
     	$columnas = " usuarios.id_usuarios,
 					  usuarios.cedula_usuarios,
 					  usuarios.nombre_usuarios,
+                      usuarios.apellidos_usuarios,
 					  claves.clave_claves,
 					  claves.clave_n_claves,
 					  usuarios.telefono_usuarios,
@@ -41,8 +42,6 @@ class UsuariosController extends ControladorBase{
     	
     	$action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
     	$search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
-    	
-    	
     	
     	
     	if($action == 'ajax')
@@ -2518,6 +2517,15 @@ public function index(){
 		if (!empty($resultPer))
 		{
 		    $resultEdit = "";
+		    $result_catalogo_usuario=null;
+		    $resultRolPrincipal = array();
+		    $result_privilegios = array();
+		    
+		    $catalogo=null;
+		    $catalogo = new CatalogoModel();
+		    //para estados de catalogo de usuarios
+		    $whe_catalogo = "tabla_catalogo = 'usuarios' AND columna_catalogo = 'estado_usuarios'";
+		    $result_catalogo_usuario = $catalogo->getBy($whe_catalogo);
 		
 				if (isset ($_GET["id_usuarios"])   )
 				{
@@ -2530,11 +2538,12 @@ public function index(){
 							  usuarios.telefono_usuarios,
 							  usuarios.celular_usuarios,
 							  usuarios.correo_usuarios,
-                              claves.clave_claves,
+                              claves.clave_n_claves,
                               usuarios.fotografia_usuarios,
 							  usuarios.creado,
                               usuarios.fecha_nacimiento_usuarios,
                               usuarios.usuario_usuarios,
+                              usuarios.estado_usuarios,
                               rol.id_rol,
                               rol.nombre_rol";
 					
@@ -2552,12 +2561,32 @@ public function index(){
 					$_id_usuarios = $_GET["id_usuarios"];
 					$where    = " usuarios.id_usuarios = '$_id_usuarios' "; 
 					$resultEdit = $usuarios->getCondiciones($columnas ,$tablas ,$where, $id); 
+					
+					/*para catalogo de rol principal*/
+					$col_rol = "id_rol,nombre_catalogo,valor_catalogo";
+					$tab_rol = "public.privilegios INNER JOIN catalogo ON catalogo.valor_catalogo = privilegios.tipo_rol_privilegios";
+					$where_rol = "tabla_catalogo = 'privilegios' AND columna_catalogo = 'tipo_rol_privilegios' AND id_usuarios='$_id_usuarios'";
+					
+					$resultRolPrincipal = $catalogo->getCondiciones($col_rol,$tab_rol,$where_rol,"tabla_catalogo");
+					
+					/*para catalogo de privilegios*/
+					$col_privilegios = "rol.id_rol,rol.nombre_rol";
+					$tab_privilegios = "public.privilegios INNER JOIN public.rol ON rol.id_rol=privilegios.id_rol
+                                        INNER JOIN public.catalogo ON catalogo.valor_catalogo = privilegios.tipo_rol_privilegios";
+					$where_privilegios = "columna_catalogo='tipo_rol_privilegios' AND nombre_catalogo != 'PRINCIPAL' 
+                                            AND privilegios.id_usuarios='$_id_usuarios'";
+					
+					$result_privilegios = $catalogo->getCondiciones($col_privilegios,$tab_privilegios,$where_privilegios,"tabla_catalogo");
+					
+					
 				}
 				
 			    
 				
 				$this->view("Usuarios",array(
-						"resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit
+				    "resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit ,
+				    "result_catalogo_usuario"=>$result_catalogo_usuario,"resultRolPrincipal"=>$resultRolPrincipal,
+				    "result_privilegios"=>$result_privilegios
 			
 				));
 			
@@ -2966,20 +2995,40 @@ public function index(){
 		    	if ( !empty($result) )
 		    	{
 		    		 
+		    	    $imagen_usuarios = "";
+		    	    $_id_usuarios = $result[0]->id_usuarios;
+		    	    
+		    	    if( $_FILES['fotografia_usuarios']['tmp_name']!="" ){
+		    	        
+		    	        $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/fotografias_usuarios/';
+		    	        
+		    	        $nombre = $_FILES['fotografia_usuarios']['name'];
+		    	        $tipo = $_FILES['fotografia_usuarios']['type'];
+		    	        $tamano = $_FILES['fotografia_usuarios']['size'];
+		    	        
+		    	        move_uploaded_file($_FILES['fotografia_usuarios']['tmp_name'],$directorio.$nombre);
+		    	        $data = file_get_contents($directorio.$nombre);
+		    	        $imagen_usuarios = pg_escape_bytea($data);
+		    	    }
+		    	    
 		    	    $colval = "cedula_usuarios= '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios',  telefono_usuarios = '$_telefono_usuarios', celular_usuarios = '$_celular_usuarios', correo_usuarios = '$_correo_usuarios', fotografia_usuarios ='$imagen_usuarios'";
 		    	    $tabla = "usuarios";
 		    	    $where = "id_usuarios = '$_id_usuarios'";
 		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
 		    	    
-		    	    $colval = "clave_claves= '$_clave_usuarios', clave_n_claves = '$_clave_n_usuarios'";
-		    	    $tabla = "claves";
-		    	    $where = "id_usuarios = '$_id_usuarios'";
-		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    	    /*implementar actualizacion de claves*/
 		    	    
 		    	}
 		        else{
 		        	
 		        	$imagen_usuarios="";
+		        	
+		        	/*consultamos datos de catalogo*/
+		        	//estado usuario catalogo
+		        	$wherecatalogo = "nombre_catalogo='ACTIVO' AND  tabla_catalogo='usuarios' AND columna_catalogo='estado_usuarios'";
+		        	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		        	$_estado_usuarios = $resultCatalogo[0]->valor_catalogo;
+		        	
 		        	
 		        	$funcion = "ins_usuarios";
 		        	$parametros = "'$_cedula_usuarios',
@@ -2990,22 +3039,96 @@ public function index(){
 		    	               '$_telefono_usuarios',
 		    	               '$_fecha_nacimiento_usuarios',
 		    	               '$_usuario_usuarios',
-		    	               '$_id_estado',
+		    	               '$_estado_usuarios',
 		    	               '$imagen_usuarios'";
 		        	$usuarios->setFuncion($funcion);
 		        	$usuarios->setParametros($parametros);
 		        	$resultado=$usuarios->Insert();
 		        	
-		        	//para datos de usuario
+		        	//para datos de usuario traer de BD
 		        	$rsUsuario = null;
-		        	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios' AND nombre_usuarios = '$_nombre_usuarios' AND apellidos_usuarios = '$_apellidos_usuario' AND correo_usuarios = '$_correo_usuarios' AND usuario_usuarios='$_usuario_usuarios'";
+		        	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios' AND nombre_usuarios = '$_nombre_usuarios' AND apellidos_usuarios = '$_apellidos_usuario'AND correo_usuarios = '$_correo_usuarios'AND usuario_usuarios='$_usuario_usuarios'";
 		        	$rsUsuario=$usuarios->getCondiciones('id_usuarios' ,'public.usuarios' , $whereconsulta , 'id_usuarios');
 		        	
-		        	//valor para guardar el id
+		        	//valor para guardar el id_usuarios
 		        	$consulta_id_usuarios = null;
 		        	$consulta_id_usuarios = $rsUsuario[0]->id_usuarios;
 		        	
-		        	echo $consulta_id_usuarios;
+		        	/*consultamos datos de catalogo para claves*/
+		        	//estado usuario catalogo
+		        	$wherecatalogo = "nombre_catalogo='ACTUAL' AND  tabla_catalogo='claves' AND columna_catalogo='estado_claves'";
+		        	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		        	$_estado_claves = $resultCatalogo[0]->valor_catalogo;
+		        	
+		        	//para fecha de insersion clave
+		        	$clave_fecha_hoy = date("Y-m-d");
+		        	$clave_fecha_siguiente_mes = date("Y-m-d",strtotime($clave_fecha_hoy."+ 1 month"));
+		        	//para insertado de claves
+		        	$claves = new ClavesModel();
+		        	$funcion = "ins_claves";
+		        	$parametros = "'$consulta_id_usuarios',
+		    				   '$_clave_usuarios',
+                               '$_clave_n_usuarios',
+                               '$clave_fecha_hoy',
+                               '$clave_fecha_siguiente_mes',
+                               '$_estado_claves'";
+		        	$claves->setFuncion($funcion);
+		        	$claves->setParametros($parametros);
+		        	$resultado=$claves->Insert();
+		        	
+		        	
+		        	//para el ingreso de los privilegios
+		        	$privilegios = null;
+		        	$privilegios = new PrivilegiosModel();
+		        	
+		        	/*consultamos datos de catalogo*/
+		        	//estado catalogo
+		        	$wherecatalogo = "nombre_catalogo='ACTIVO' AND  tabla_catalogo='privilegios' AND columna_catalogo='estado_rol_privilegios'";
+		        	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		        	$_estado_privilegios = $resultCatalogo[0]->valor_catalogo;
+		        	//tipo rol catalogo
+		        	$wherecatalogo = "nombre_catalogo='PRINCIPAL' AND  tabla_catalogo='privilegios' AND columna_catalogo='tipo_rol_privilegios'";
+		        	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		        	$_tipo_rol_privilegios = $resultCatalogo[0]->valor_catalogo;
+		        	
+		        	$funcion = "ins_privilegios";
+		        	
+		        	$parametros = "'$consulta_id_usuarios',
+                               '$_id_rol_principal',
+                               '$_tipo_rol_privilegios',
+                               '$_estado_privilegios'";
+		        	
+		        	$privilegios->setFuncion($funcion);
+		        	$privilegios->setParametros($parametros);
+		        	$resultado=$privilegios->Insert();
+		        	
+		        	//para ingreso de roles secundarios
+		        	if(count($_array_roles)>0){
+		        	    
+		        	    /*consultamos datos de catalogo*/
+		        	    
+		        	    //tipo rol catalogo
+		        	    $wherecatalogo = "nombre_catalogo='SECUNDARIO' AND  tabla_catalogo='privilegios' AND columna_catalogo='tipo_rol_privilegios'";
+		        	    $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		        	    $_tipo_rol_privilegios = $resultCatalogo[0]->valor_catalogo;
+		        	    
+		        	    foreach ($_array_roles as $id_rol){
+		        	        
+		        	        $funcion = "ins_privilegios";
+		        	        
+		        	        $parametros = "'$consulta_id_usuarios',
+                               '$id_rol',
+                               '$_tipo_rol_privilegios',
+                               '$_estado_privilegios'";
+		        	        
+		        	        $privilegios->setFuncion($funcion);
+		        	        $privilegios->setParametros($parametros);
+		        	        $resultado=$privilegios->Insert();
+		        	        
+		        	    }//fin de foreach
+		        	    
+		        	}//fin array de roles
+		        	
 		    	}
 		    
 		    }
@@ -3108,7 +3231,7 @@ public function index(){
 		  }*/
 		  
 		   
-		  //  $this->redirect("Usuarios", "index");
+		   $this->redirect("Usuarios", "index");
 		}
 		
 	   }else{

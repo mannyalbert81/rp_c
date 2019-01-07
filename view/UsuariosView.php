@@ -68,7 +68,7 @@
                 <form action="<?php echo $helper->url("Usuarios","InsertaUsuarios"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
           		 	  <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
               		 	 <div class="row">
-                         	<div class="col-xs-6 col-md-4 col-lg-3 ">
+                         	<div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="cedula_usuarios" class="control-label">Cedula:</label>
                                     <input type="text" class="form-control" id="cedula_usuarios" name="cedula_usuarios" value="<?php echo $resEdit->cedula_usuarios; ?>"  placeholder="ci-ruc.." readonly>
@@ -76,91 +76,116 @@
                                     <div id="mensaje_cedula_usuarios" class="errores"></div>
                                  </div>
                              </div>
-                             <div class="col-xs-6 col-md-4 col-lg-3">
+                             <div class="col-xs-6 col-md-3 col-lg-3">
                              	<div class="form-group">
                                 	 <label for="nombre_usuarios" class="control-label">Nombres:</label>
                                       <input type="text" class="form-control" id="nombre_usuarios" name="nombre_usuarios" value="<?php echo $resEdit->nombre_usuarios; ?>" placeholder="nombres..">
                                       <div id="mensaje_nombre_usuarios" class="errores"></div>
                                  </div>
                              </div>
-                             <div class="col-xs-6 col-md-4 col-lg-3">
+                             <div class="col-xs-6 col-md-3 col-lg-3">
                              	<div class="form-group">
                                 	 <label for="apellidos_usuarios" class="control-label">Apellidos:</label>
                                       <input type="text" class="form-control" id="apellidos_usuarios" name="apellidos_usuarios" value="<?php echo $resEdit->apellidos_usuarios; ?>" placeholder="nombres..">
                                       <div id="mensaje_apellido_usuarios" class="errores"></div>
                                  </div>
                              </div>
-                          </div>
-                          <div class="row">
-                          	<div class="col-xs-6 col-md-4 col-lg-3 ">
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="usuario_usuarios" class="control-label">Usuario:</label>
                                     <input type="text" class="form-control" id="usuario_usuarios" name="usuario_usuarios" value="<?php echo $resEdit->usuario_usuarios; ?>"  placeholder="usuario..." >
                                     <div id="usuario_usuarios" class="errores"></div>
                                  </div>
                              </div> 
-                         	<div class="col-xs-6 col-md-4 col-lg-3 ">
+                          </div>
+                          <div class="row">
+                          	<div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
                                     <input type="text" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="<?php echo $resEdit->fecha_nacimiento_usuarios; ?>"  placeholder="fecha nacimiento" >
                                     <div id="fecha_nacimiento_usuarios" class="errores"></div>
                                  </div>
-                             </div>                             
-                          </div>
-                          <div class="row">
-                          	<div class="col-xs-6 col-md-4 col-lg-3">
+                             </div> 
+                             <div class="col-xs-6 col-md-3 col-lg-3">
                         		<div class="form-group">
                                   <label for="clave_usuarios" class="control-label">Password:</label>
-                                  <input type="password" class="form-control" id="clave_usuarios" name="clave_usuarios" value="<?php echo $resEdit->pass_sistemas_usuarios; ?>" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
+                                  <input type="password" class="form-control" id="clave_usuarios" name="clave_usuarios" value="<?php echo $resEdit->clave_n_claves; ?>" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
                                   <div id="mensaje_clave_usuarios" class="errores"></div>
                                 </div>
                         	</div>
                         		    
-                		    <div class="col-lg-3 col-xs-6 col-md-4">
+                		    <div class="col-lg-3 col-xs-6 col-md-3">
                 		    <div class="form-group">
                                   <label for="clave_usuarios_r" class="control-label">Repita Password:</label>
-                                  <input type="password" class="form-control" id="clave_usuarios_r" name="clave_usuarios_r" value="<?php echo $resEdit->pass_sistemas_usuarios; ?>" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
+                                  <input type="password" class="form-control" id="clave_usuarios_r" name="clave_usuarios_r" value="<?php echo $resEdit->clave_n_claves; ?>" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
                                   <div id="mensaje_clave_usuarios_r" class="errores"></div>
                             </div>
                             </div>
+                            
+                        	<div class="col-lg-3 col-xs-6 col-md-3">
+                    		    <div class="form-group">
+                                      <label for="telefono_usuarios" class="control-label">Teléfono:</label>
+                                      <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  placeholder="teléfono..">
+                                      <div id="mensaje_telefono_usuarios" class="errores"></div>
+                                </div>
+                    	    </div>                            
                           </div>
                           
                           <div class="row">
-                		       <div class="col-lg-3 col-xs-6 col-md-4">
-                        		    <div class="form-group">
-                                          <label for="telefono_usuarios" class="control-label">Teléfono:</label>
-                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  placeholder="teléfono..">
-                                          <div id="mensaje_telefono_usuarios" class="errores"></div>
-                                    </div>
-                        	    </div>
-                    			<div class="col-lg-3 col-xs-6 col-md-4">
+                		       
+                    			<div class="col-lg-3 col-xs-6 col-md-3">
                         		    <div class="form-group">
                                           <label for="celular_usuarios" class="control-label">Celular:</label>
                                           <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>"  placeholder="celular..">
                                           <div id="mensaje_celular_usuarios" class="errores"></div>
                                     </div>
                                 </div>
-                    		    <div class="col-lg-6 col-xs-12 col-md-4">
+                    		    <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
                                           <label for="correo_usuarios" class="control-label">Correo:</label>
                                           <input type="email" class="form-control" id="correo_usuarios" name="correo_usuarios" value="<?php echo $resEdit->correo_usuarios; ?>" placeholder="email..">
                                           <div id="mensaje_correo_usuarios" class="errores"></div>
                                     </div>
                     		    </div>
-                        	</div>
-                        	
-                        	<div class="row">
-                    		    <div class="col-lg-4 col-xs-12 col-md-4">
+                    		    <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado" class="control-label">Estado:</label>
+                                      <select name="id_estado" id="id_estado"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php  foreach($result_catalogo_usuario as $res) {?>
+    										<option value="<?php echo $res->valor_catalogo; ?>" <?php if ($res->valor_catalogo == $resEdit->estado_usuarios )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_catalogo; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estados" class="errores"></div>
+                                    </div>
+                                  </div>
+                    		    <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
                                           <label for="fotografia_usuarios" class="control-label">Fotografía:</label>
                                           <input type="file" class="form-control" id="fotografia_usuarios" name="fotografia_usuarios" value="">
                                           <div id="mensaje_usuario" class="errores"></div>
                                     </div>
                     		    </div>
-                    		</div>
+                        	</div>
+                        	
+                        	
                     		
-                    		<div class="row">                    		    
-                        		<div class="col-xs-12 col-lg-4 col-md-4">
+                    		<div class="row"> 
+                    		
+                    			<div class="col-xs-12 col-lg-3 col-md-3">
+                        		   <div class="form-group">
+                                      <label for="id_rol_principal" class="control-label">Rol Principal:</label>
+                                      <select name="id_rol_principal" id="id_rol_principal"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultRol as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>" <?php if ($res->id_rol == $resEdit->id_rol )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_rol; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_rols" class="errores"></div>
+                                    </div>
+                                 </div> 
+                                                   		    
+                        		<div class="col-xs-12 col-lg-3 col-md-3">
                         		   <div class="form-group">
                                       <label for="id_rol" class="control-label">Roles:</label>
                                       <select name="id_rol" id="id_rol"  class="form-control" >
@@ -172,12 +197,21 @@
                                       <div id="mensaje_id_rols" class="errores"></div>
                                     </div>
                                  </div>
+                                 
+                                 <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                        		   		<button type="button" id="link_agregar_rol" name="link_agregar_rol" class="btn btn-primary">Agregar</button>
+                        		   		<button type="button" id="link_eliminar_rol" name="link_eliminar_rol" class="btn btn-primary">Eliminar</button>
+                                    </div>
+                                  </div>
                                     
-                                 <div class="col-xs-12 col-md-4 col-lg-4">
+                                 <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
                                       <label for="privilegios_usuario" class="control-label">Listado Roles:</label>
                                       <select name="privilegios_usuario" id="privilegios_usuario" multiple="multiple"  class="form-control" >
-    									
+    									<?php foreach($result_privilegios as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>"  ><?php echo $res->nombre_rol; ?> </option>
+    							        <?php } ?>
     								   </select> 
                                       <div id="privilegios_usuario" class="errores"></div>
                                     </div>
@@ -186,18 +220,7 @@
                               </div>
                               
                               <div class="row">
-                              	<div class="col-xs-12 col-md-4 col-lg-4">
-                        		   <div class="form-group">
-                                      <label for="id_estado" class="control-label">Estado:</label>
-                                      <select name="id_estado" id="id_estado"  class="form-control" >
-                                      <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultEst as $res) {?>
-    										<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-                                      <div id="mensaje_id_estados" class="errores"></div>
-                                    </div>
-                                  </div>
+                              	
                               </div>
                                 
                       <?php } } else {?>                		    
@@ -288,8 +311,8 @@
                                       <label for="id_estado" class="control-label">Estado:</label>
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultEst as $res) {?>
-    										<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
+    									<?php foreach($result_catalogo_usuario as $res) {?>
+    										<option value="<?php echo $res->valor_catalogo; ?>" ><?php echo $res->nombre_catalogo; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_estados" class="errores"></div>
@@ -336,8 +359,8 @@
                                  
                                  <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
-                                      <a href="#" name="link_agregar_rol" id="link_agregar_rol">Agregar</a>
-                                      <a href="#" name="link_eliminar_rol" id="link_eliminar_rol">Eliminar</a>
+                        		   		<button type="button" id="link_agregar_rol" name="link_agregar_rol" class="btn btn-primary">Agregar</button>
+                        		   		<button type="button" id="link_eliminar_rol" name="link_eliminar_rol" class="btn btn-primary">Eliminar</button>
                                     </div>
                                   </div>
                                     
@@ -416,17 +439,41 @@
   <script type="text/javascript">
      
    $(document).ready( function (){
-	   pone_espera();
-	   load_usuarios(1);
+	   /*pone_espera();
+	   load_usuarios(1);*/
 
 	   /*para manejo de multiples roles*/
-	    $("#btn_cc").click(function() {
-              
-	    	 var nombre_usuarios = $("#txt_directorio").val();
-             var id_usuarios = $("#directorio").val();
-          	 var $usuarios_cc = $("#usuarios_cc");
+	    /**$("#link_agregar_rol").click(function() {
+			return !($('#id_rol option:selected').clone()).appendTo('#lista_roles'); 
+	    });*/
+	    $('#link_agregar_rol').click(function() { 
+	        copiarOpcion($('#id_rol option:selected').clone(), "#lista_roles");
 	    });
+
+	    $('#link_eliminar_rol').click(function() { 
+	        $('#lista_roles option:selected').remove(); 
+	    });
+
+	    $('#Guardar').click(function(){
+	    	selecionarTodos();
+	    	return false;
+		});
+	    
 	});
+
+    function copiarOpcion(opcion, destino) {
+        var valor = $(opcion).val();
+        if (($(destino + " option[value=" + valor + "] ").length == 0) && valor != 0 ) {
+            $(opcion).appendTo(destino);
+        }
+    }
+
+    function selecionarTodos(){
+    	$("#lista_roles option").each(function(){
+	      $(this).attr("selected", true);
+		 });
+     }
+    
 
    function pone_espera(){
 

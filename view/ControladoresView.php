@@ -10,7 +10,15 @@
  
    <?php include("view/modulos/links_css.php"); ?>
    
-   <script>
+
+        
+			        
+    </head>
+    
+    
+    <body class="hold-transition skin-blue fixed sidebar-mini"  >
+    
+       <script>
 		    // cada vez que se cambia el valor del combo
 		    $(document).ready(function(){
 		    
@@ -26,7 +34,7 @@
 		    	if (nombre_controladores == "")
 		    	{
 			    	
-		    		$("#mensaje_nombres").text("Introduzca Controladores");
+		    		$("#mensaje_nombres").text("Introduzca Un Controlador");
 		    		$("#mensaje_nombres").fadeIn("slow"); //Muestra mensaje de error
 		            return false;
 			    }
@@ -48,16 +56,7 @@
 				    
 		}); 
 
-	</script>	
-        
-			        
-    </head>
-    
-    
-    <body class="hold-transition skin-blue fixed sidebar-mini"  >
-    
-
-    
+	</script>
      <?php
         
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
@@ -118,13 +117,18 @@
              						 <div class="row">
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                             		    <div class="form-group">
+                            		   						 
                                                               <label for="nombre_controladores" class="control-label">Nombres Controladores</label>
-                                                              <input type="text" class="form-control" id="nombre_controladores" name="nombre_controladores" value="<?php echo $resEdit->nombre_controladores; ?>"  placeholder="Nombre Controlador">
+                                                              <input type="text" class="form-control" id="nombre_controladores" name="nombre_controladores" value="<?php echo $resEdit->nombre_controladores; ?>"  placeholder="Nombre Controlador" required/>
                                                                <input type="hidden" name="id_controladores" id="id_controladores" value="<?php echo $resEdit->id_controladores; ?>" class="form-control"/>
 					                                          <div id="mensaje_nombres" class="errores"></div>
+					                                          				                                          
+                            								
+                            					                                          
                                         </div>
                             		  </div>
                         			</div>	
+                        		
             
             
 							    
@@ -135,9 +139,12 @@
 							    	 <div class="row">
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                             		    <div class="form-group">
+                            		    					  
                                                               <label for="nombre_controladores" class="control-label">Nombres Controladores</label>
-                                                              <input type="text" class="form-control" id="nombre_controladores" name="nombre_controladores" value=""  placeholder="Nombre Controlador">
+                                                              <input  type="text" class="form-control" id="nombre_controladores" name="nombre_controladores" value=""  placeholder="Nombre Controlador" required/>
                                                               <div id="mensaje_nombres" class="errores"></div>
+                                                              	
+                                                              
                                         </div>
                             		  </div>
                         			</div>	

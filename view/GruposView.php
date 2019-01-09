@@ -121,6 +121,8 @@
                         <tr>
                           <th>#</th>
                           <th>Nombre Grupos</th>
+                          <th>Editar</th>
+                          <th>Borrar</th>
 
                         </tr>
                       </thead>

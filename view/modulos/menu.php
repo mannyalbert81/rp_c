@@ -47,9 +47,25 @@ $controladores=$_SESSION['controladores'];
             <li style="<?php echo getcontrolador("Estado",$controladores) ?>"><a href="index.php?controller=Estado&action=index"><i class="fa fa-circle-o"></i> Estado</a></li>
             <li style="<?php echo getcontrolador("Privilegios",$controladores) ?>"><a href="index.php?controller=Privilegios&action=index"><i class="fa fa-circle-o"></i> Privilegios</a></li>
             <li style="<?php echo getcontrolador("Actividades",$controladores) ?>"><a href="index.php?controller=Actividades&action=index"><i class="fa fa-circle-o"></i> Actividades</a></li>
+
             
           </ul>
         </li>
+        
+        
+         <li class="treeview"  style="<?php echo getcontrolador("MenuInventario",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder"></i> <span>Inventario</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li style="<?php echo getcontrolador("Grupos",$controladores) ?>"><a href="index.php?controller=Grupos&action=index"><i class="fa fa-circle-o"></i> Grupos</a></li>
+
+          </ul>
+        </li>
+        
        
        
       </ul>

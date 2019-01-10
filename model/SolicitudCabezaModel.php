@@ -1,5 +1,5 @@
 <?php
-class SolicitudDetalleModel extends ModeloBase{
+class SolicitudCabezaModel extends ModeloBase{
 	
 	private $table;
 	private $where;

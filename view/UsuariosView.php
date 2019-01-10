@@ -328,7 +328,43 @@
                     		    </div>
                         	</div>
                         	
-                        	<div
+                        	<div class="row">
+                        		<div class="col-xs-12 col-lg-5 col-md-5">
+                        		   <div class="form-group">
+                                      <label for="id_rol_principal" class="control-label">Roles Disponibles</label>
+                                      <select name="id_rol_principal" id="id_rol_principal" multiple="multiple" class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultRol as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_rols" class="errores"></div>
+                                    </div>
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-2 col-md-2">
+                        		   <div class="btn-group-vertical">
+                                      <button type="button" class="btn btn-default"><i class="fa fa-align-left"></i></button>
+                                      <button type="button" class="btn btn-default"><i class="fa fa-align-center"></i></button>
+                                      <button type="button" class="btn btn-default"><i class="fa fa-align-right"></i></button>
+                                    </div>
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-5 col-md-5">
+                        		   <div class="form-group">
+                                      <label for="id_rol_principal" class="control-label">Roles Disponibles</label>
+                                      <select name="id_rol_principal" id="id_rol_principal" multiple="multiple" class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultRol as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_rols" class="errores"></div>
+                                    </div>
+                                 </div>
+                        	
+                        	</div>
+                        	
                         	
                     		
                     		<div class="row"> 
@@ -336,7 +372,7 @@
                         		<div class="col-xs-12 col-lg-3 col-md-3">
                         		   <div class="form-group">
                                       <label for="id_rol_principal" class="control-label">Rol Principal:</label>
-                                      <select name="id_rol_principal" id="id_rol_principal"  class="form-control" >
+                                      <select name="id_rol_principal" id="id_rol_principal"   class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php foreach($resultRol as $res) {?>
     										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>

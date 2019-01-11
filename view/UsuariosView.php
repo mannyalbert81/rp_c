@@ -198,7 +198,7 @@
                                       <label for="cambiar_clave" class="control-label">Cambiar Clave: </label> &nbsp;&nbsp;
                                       <input type="checkbox"  id="cambiar_clave" name="cambiar_clave" value="1"   /> <br>
                                       <label for="caduca_clave" class="control-label">Caduca  Clave: </label> &nbsp;&nbsp; &nbsp;
-                                      <input type="checkbox"  id="caduca_clave" name="caduca_clave" value="1"  />
+                                      <input type="checkbox"  id="caduca_clave" name="caduca_clave" value="1" <?php  if($resEdit->caduca_claves=='t'){echo 'checked="checked" ';} ?>  />
                                     </div>
                                  </div> 
                                  
@@ -538,7 +538,8 @@
     	            data: {clave_usuarios:clave,id_usuarios:_id_usuarios},
     	            success: function(x){
     	             if(x.trim()!=""){
-    	            	 alert(x);
+    	            	 	$("#mensaje_clave_usuarios").text(x);
+    			    		$("#mensaje_clave_usuarios").fadeIn("slow");
         	            	 $("#clave_usuarios").val("");
         	            	 $("#clave_usuarios_r").val("");
     	                 }
@@ -557,11 +558,39 @@
 
 				           $('#clave_usuarios').removeAttr("readonly");
 				           $('#clave_usuarios_r').removeAttr("readonly");
+				           $('#clave_usuarios').val("");
+				           $('#clave_usuarios_r').val("");
 			        }else{
 			        	$('#clave_usuarios').attr("readonly","readonly");
 				        $('#clave_usuarios_r').attr("readonly","readonly");
 				        }
 			    });
+
+		$("#cedula_usuarios").blur(function(){
+			var _cedula = $("#cedula_usuarios").val();
+			var _id_usuarios = $("#id_usuarios").val();
+
+			if($("#id_usuarios").val()=="0"){
+				$.ajax({
+    	            beforeSend: function(objeto){
+    	              $("#resultadosjq").html('...');
+    	            },
+    	            url: 'index.php?controller=Usuarios&action=ajax_validacedula',
+    	            type: 'POST',
+    	            data: {cedula:_cedula},
+    	            success: function(x){
+    	             if(x.trim()!=""){
+    	            	 	$("#mensaje_cedula_usuarios").text(x);
+    			    		$("#mensaje_cedula_usuarios").fadeIn("slow");
+    	                 }
+    	            },
+    	           error: function(jqXHR,estado,error){
+    	             $("#resultadosjq").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+    	           }
+    	         });
+			}
+			  
+	   });
 	    
 	});
 
@@ -902,6 +931,63 @@
         return false;
      }
     </script> 
+    
+    <script type="text/javascript">
+    var interval, mouseMove;
+
+    $(document).mousemove(function(){
+        //Establezco la última fecha cuando moví el cursor
+        mouseMove = new Date();
+        /* Llamo a esta función para que ejecute una acción pasado x tiempo
+         después de haber dejado de mover el mouse (en este caso pasado 3 seg) */
+        inactividad(function(){
+        	window.location.href = "index.php?controller=Usuarios&amp;action=cerrar_sesion";
+        }, 600);
+      });
+
+    $(document).scroll(function(){
+        //Establezco la última fecha cuando moví el cursor
+        mouseMove = new Date();
+        /* Llamo a esta función para que ejecute una acción pasado x tiempo
+         después de haber dejado de mover el mouse (en este caso pasado 3 seg) */
+        inactividad(function(){
+        	window.location.href = "index.php?controller=Usuarios&amp;action=cerrar_sesion";
+        }, 600);
+      });
+
+      $(document).keydown(function(){
+          //Establezco la última fecha cuando moví el cursor
+          mouseMove = new Date();
+          /* Llamo a esta función para que ejecute una acción pasado x tiempo
+           después de haber dejado de mover el mouse (en este caso pasado 3 seg) */
+          inactividad(function(){
+          	window.location.href = "index.php?controller=Usuarios&amp;action=cerrar_sesion";
+          }, 600);
+        });
+
+     
+
+      /* Función creada para ejecutar una acción (callback), al pasar x segundos 
+         (seconds) de haber dejado de mover el cursor */
+      var inactividad = function(callback, seconds){
+        //Elimino el intervalo para que no se ejecuten varias instancias
+        clearInterval(interval);
+        //Creo el intervalo
+        interval = setInterval(function(){
+           //Hora actual
+           var now = new Date();
+           //Diferencia entre la hora actual y la última vez que se movió el cursor
+           var diff = (now.getTime()-mouseMove.getTime())/1000;
+           //Si la diferencia es mayor o igual al tiempo que pasastes por parámetro
+           if(diff >= seconds){
+            //Borro el intervalo
+            clearInterval(interval);
+            //Ejecuto la función que será llamada al pasar el tiempo de inactividad
+            callback();          
+           }
+        }, 200);
+      }
+    </script>
  	
   </body>
 </html>

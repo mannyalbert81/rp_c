@@ -2549,6 +2549,7 @@ public function index(){
 							  usuarios.celular_usuarios,
 							  usuarios.correo_usuarios,
                               claves.clave_n_claves,
+                              claves.caduca_claves,
                               usuarios.fotografia_usuarios,
 							  usuarios.creado,
                               usuarios.fecha_nacimiento_usuarios,
@@ -7444,6 +7445,23 @@ public function index(){
 	    }
 	}
 	
+	
+    public function ajax_validacedula(){
+        
+        $usuarios = null; $usuarios= new UsuariosModel();
+        
+        if(isset($_POST['cedula']) && $_POST['cedula']!=""){
+            
+            $cedula_usuarios = $_POST['cedula'];
+            
+            $rsUsuarios = $usuarios->getBy(" cedula_usuarios = '$cedula_usuarios'");
+            
+            if(!empty($rsUsuarios)){
+                echo "Cedula!  ya se encuentra registrada...";
+            }
+        }
+	    
+	}
 	
 	
 	

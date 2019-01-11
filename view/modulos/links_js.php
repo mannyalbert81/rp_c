@@ -8,6 +8,7 @@
     <script src="view/bootstrap/dist/js/demo.js"></script>
     
      <script src="view/bootstrap/otros/datatables/datatables.min.js" >  </script>
+     <script src="view/bootstrap/otros/table-sorter/jquery.tablesorter.min.js" >  </script>
 	
 	
 	 <script>

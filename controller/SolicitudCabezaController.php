@@ -12,9 +12,10 @@ class SolicitudCabezaController extends ControladorBase{
 	
 		//Creamos el objeto usuario
 	    $solicitud_cabeza=new SolicitudCabezaModel();
+	    $productos=new ProductosModel();
 					//Conseguimos todos los usuarios
-     	$resultSet=$grupos->getAll("id_grupos");
-				
+	    $resultSet=$solicitud_cabeza->getAll("id_solicitud_cabeza");
+	    $resultProdu=$productos->getAll("id_productos");
 		$resultEdit = "";
 
 		
@@ -24,35 +25,41 @@ class SolicitudCabezaController extends ControladorBase{
 		if (isset(  $_SESSION['nombre_usuarios']) )
 		{
 
-			$nombre_controladores = "Grupos";
+		$nombre_controladores = "SolicitudCabeza";
 			$id_rol= $_SESSION['id_rol'];
-			$resultPer = $grupos->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+			$resultPer = $solicitud_cabeza->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
 			if (!empty($resultPer))
-			{
-				if (isset ($_GET["id_grupos"])   )
+			{ 
+				if (isset ($_GET["id_solicitud_cabeza"])   )
 				{
 
-					$nombre_controladores = "Grupos";
+					$nombre_controladores = "SolicitudCabeza";
 					$id_rol= $_SESSION['id_rol'];
-					$resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+					$resultPer = $solicitud_cabeza->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 						
 					if (!empty($resultPer))
 					{
 					
-					    $_id_grupos = $_GET["id_grupos"];
-						$columnas = " id_grupos, nombre_grupos ";
-						$tablas   = "grupos";
-						$where    = "id_grupos = '$_id_grupos' "; 
-						$id       = "nombre_grupos";
+					    $_id_productos = $_GET["id_productos"];
+						$columnas = " id_grupos,
+                                     codigo_productos,
+                                     marca_productos,
+                                     nombre_productos,
+                                     descripcion_productos,
+                                    unidad_medida_productos,
+                                     ult_precio_productos ";
+						$tablas   = "productos";
+						$where    = "id_productos = '$_id_productos' "; 
+						$id       = "codigo_productos";
 							
-						$resultEdit = $grupos->getCondiciones($columnas ,$tablas ,$where, $id);
+						$resultEdit = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
 
 					}
 					else
 					{
 						$this->view("Error",array(
-								"resultado"=>"No tiene Permisos de Editar Grupos"
+								"resultado"=>"No tiene Permisos de Editar Solicitud Cabeza"
 					
 						));
 					
@@ -62,8 +69,8 @@ class SolicitudCabezaController extends ControladorBase{
 				}
 		
 				
-				$this->view("Grupos",array(
-						"resultSet"=>$resultSet, "resultEdit" =>$resultEdit
+				$this->view("SolicitudCabeza",array(
+				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultProdu" =>$resultProdu,
 			
 				));
 		
@@ -73,7 +80,7 @@ class SolicitudCabezaController extends ControladorBase{
 			else
 			{
 				$this->view("Error",array(
-						"resultado"=>"No tiene Permisos de Acceso a Grupos"
+						"resultado"=>"No tiene Permisos de Acceso a Solicitud Cabeza"
 				
 				));
 				
@@ -132,7 +139,7 @@ class SolicitudCabezaController extends ControladorBase{
 				
 		
 			}
-			$this->redirect("Grupos", "index");
+			$this->redirect("SolicitudCabeza", "index");
 
 		}
 		else

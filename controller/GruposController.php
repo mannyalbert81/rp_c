@@ -19,7 +19,7 @@ class GruposController extends ControladorBase{
 
 		
 		session_start();
-
+        
 	
 		if (isset(  $_SESSION['nombre_usuarios']) )
 		{

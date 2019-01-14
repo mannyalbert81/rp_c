@@ -11,6 +11,7 @@
     <?php include("view/modulos/links_css.php"); ?>		
       
     
+	
     
 	</head>
  
@@ -81,8 +82,8 @@
                                                           <label for="id_grupos" class="control-label">Grupos</label>
                                                           <select name="id_grupos" id="id_grupos"  class="form-control">
                                                             <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultGrup as $resProd) {?>
-				 												<option value="<?php echo $resProd->id_grupos; ?>" <?php if ($resProd->id_grupos == $resEdit->id_grupos )  echo  ' selected="selected" '  ;  ?> ><?php echo $resProd->nombre_grupos; ?> </option>
+																<?php foreach($resultGrup as $resGup) {?>
+				 												<option value="<?php echo $resGup->id_grupos; ?>" <?php if ($resGup->id_grupos == $resEdit->id_grupos )  echo  ' selected="selected" '  ;  ?> ><?php echo $resGup->nombre_grupos; ?> </option>
 													            <?php } ?>
 								    					  </select>
 		   		   										  <div id="mensaje_id_grupos" class="errores"></div>
@@ -129,24 +130,31 @@
                                     </div>
                         		    </div>
                         		    
-                        		<div class="col-xs-12 col-md-3 col-md-3 ">
+                        		<div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
-                                                          <label for="unidad_medida_productos" class="control-label">Unidad De Medida</label>
-                                                          <input type="text" class="form-control" id="unidad_medida_productos" name="unidad_medida_productos" value="<?php echo $resEdit->unidad_medida_productos; ?>"  placeholder="Unidad de Medida">
-                                                          <input type="hidden" name="id_productos" id="id_productos" value="<?php echo $resEdit->id_productos; ?>" class="form-control"/>
-					                                      <div id="mensaje_unidad_medida_productos" class="errores"></div>
+                                                       
+                                                          <label for="id_unidad_medida" class="control-label">Unidad Medida</label>
+                                                          <select name="id_unidad_medida" id="id_unidad_medida"  class="form-control">
+                                                            <option value="0" selected="selected">--Seleccione--</option>
+																<?php foreach($resultUni as $resUni) {?>
+				 												<option value="<?php echo $resUni->id_unidad_medida; ?>" <?php if ($resUni->id_unidad_medida == $resEdit->id_unidad_medida )  echo  ' selected="selected" '  ;  ?> ><?php echo $resUni->nombre_unidad_medida; ?> </option>
+													            <?php } ?>
+								    					  </select>
+		   		   										  <div id="mensaje_id_unidad_medida" class="errores"></div>
                                     </div>
-                        		    </div>
+                                    </div>
                         		    
-                        	   <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="ult_precio_productos" class="control-label">ULT Precio</label>
-                                                          <input type="text" class="form-control" id="ult_precio_productos" name="ult_precio_productos" value="<?php echo $resEdit->ult_precio_productos; ?>"  placeholder="ULT Precio" onkeypress="return numeros(event)">
-                                                          <input type="hidden" name="id_productos" id="id_productos" value="<?php echo $resEdit->id_productos; ?>" class="form-control"/>
-					                                      <div id="mensaje_ult_precio_productos" class="errores"></div>
-                                    </div>
-                        		    </div>
-                    	
+                        		    
+                        		    <div class="col-lg-3 col-xs-12 col-md-3">
+                    		    <div class="form-group">
+                                                      <label for="ult_precio_productos" class="control-label">ULT Precio</label>
+                                                      <input type="text" class="form-control cantidades1" id="ult_precio_productos" name="ult_precio_productos" value='<?php echo $resEdit->ult_precio_productos; ?>' 
+                                                      data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
+                                                      <div id="mensaje_ult_precio_productos" class="errores"></div>
+                                </div>
+                                </div>
+                        		    
+                        	
                     	
                     	
                     	
@@ -165,8 +173,8 @@
                                                           <label for="id_grupos" class="control-label">Grupos</label>
                                                           <select name="id_grupos" id="id_grupos"  class="form-control">
                                                             <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultGrup as $resProd) {?>
-				 												<option value="<?php echo $resProd->id_grupos; ?>"  ><?php echo $resProd->nombre_grupos; ?> </option>
+																<?php foreach($resultGrup as $resGup) {?>
+				 												<option value="<?php echo $resGup->id_grupos; ?>"  ><?php echo $resGup->nombre_grupos; ?> </option>
 													            <?php } ?>
 								    					  </select>
 		   		   										   <div id="mensaje_id_grupos" class="errores"></div>
@@ -213,21 +221,32 @@
                                     </div>
                         		    </div>
                         		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
-                                                          <label for="unidad_medida_productos" class="control-label">Nombres Permiso Rol</label>
-                                                          <input type="text" class="form-control" id="unidad_medida_productos" name="unidad_medida_productos" value=""  placeholder="Unidad De Medida">
-                                                           <div id="mensaje_unidad_medida_productos" class="errores"></div>
+                                                          <label for="id_unidad_medida" class="control-label">Unidad Medida</label>
+                                                          <select name="id_unidad_medida" id="id_unidad_medida"  class="form-control">
+                                                            <option value="0" selected="selected">--Seleccione--</option>
+																<?php foreach($resultUni as $resUni) {?>
+				 												<option value="<?php echo $resUni->id_unidad_medida; ?>"  ><?php echo $resUni->nombre_unidad_medida; ?> </option>
+													            <?php } ?>
+								    					  </select>
+		   		   										   <div id="mensaje_id_unidad_medida" class="errores"></div>
                                     </div>
-                        		    </div>
+                                    </div>
                         		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="ult_precio_productos" class="control-label">ULT Precio</label>
-                                                          <input type="text" class="form-control" id="ult_precio_productos" name="ult_precio_productos" value=""  placeholder="ULT Precio" onkeypress="return numeros(event)">
-                                                           <div id="mensaje_ult_precio_productos" class="errores"></div>
-                                    </div>
-                        		    </div>
+           
+									
+									
+ 								<div class="col-lg-3 col-xs-12 col-md-3">
+                    		    <div class="form-group">
+                                                      <label for="ult_precio_productos" class="control-label">ULT Precio</label>
+                                                      <input type="text" class="form-control cantidades1" id="ult_precio_productos" name="ult_precio_productos" value='0.00' 
+                                                      data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
+                                                      <div id="mensaje_ult_precio_productos" class="errores"></div>
+                                </div>
+                                </div>
+									
+									
 									
 									
 									</div>
@@ -295,12 +314,12 @@
     						<?php $i++;?>
             	        		<tr>
             	                   <td > <?php echo $i; ?>  </td>
-            		               <td > <?php echo $resProd->nombre_grupos; ?>     </td> 
+            		               <td > <?php echo $resGup->nombre_grupos; ?>     </td> 
             		               <td > <?php echo $res->codigo_productos; ?>   </td>
             		               <td > <?php echo $res->marca_productos; ?>   </td>
             		               <td > <?php echo $res->nombre_productos; ?>   </td>
             		               <td > <?php echo $res->descripcion_productos; ?>   </td>
-            		               <td > <?php echo $res->unidad_medida_productos; ?>   </td>
+            		               <td > <?php echo $resUni->nombre_unidad_medida; ?>   </td>
             		               <td > <?php echo $res->ult_precio_productos; ?>   </td>
             		              
             		           	   <td>
@@ -342,28 +361,6 @@
     <?php include("view/modulos/links_js.php"); ?>
 	
 	
-    <script type="text/javascript" >   
-    function numeros(e){
-    key = e.keyCode || e.which;
-    tecla = String.fromCharCode(key).toLowerCase();
-    letras = "0123456789";
-    especiales = [8,37,39,46];
- 
-    tecla_especial = false
-    for(var i in especiales){
-    if(key == especiales[i]){
-     tecla_especial = true;
-     break;
-        } 
-    }
- 
-    if(letras.indexOf(tecla)==-1 && !tecla_especial)
-        return false;
-     }
-    </script> 
-    
-    
-    
     
            <script>
            // Campos Vacíos
@@ -380,12 +377,12 @@
 		    	var marca_productos = $("#marca_productos").val();
 		    	var nombre_productos = $("#nombre_productos").val();
 		    	var descripcion_productos = $("#descripcion_productos").val();
-		    	var unidad_medida_productos = $("#unidad_medida_productos").val();
+		    	var id_unidad_medida = $("#id_unidad_medida").val();
 		    	var ult_precio_productos = $("#ult_precio_productos").val();
 		    	
 		    	
 		    	
-		    	if (id_grupos == "")
+		    	if (id_grupos == 0)
 		    	{
 			    	
 		    		$("#mensaje_id_grupos").text("Introduzca Un Grupo");
@@ -450,20 +447,20 @@
 		            
 				}   
 
-		    	if (unidad_medida_productos == "")
+		    	if (id_unidad_medida == 0)
 		    	{
 			    	
-		    		$("#mensaje_unidad_medida_productos").text("Introduzca Una Unidad de Medida");
-		    		$("#mensaje_unidad_medida_productos").fadeIn("slow"); //Muestra mensaje de error
+		    		$("#mensaje_id_unidad_medida").text("Introduzca Una Unidad de Medida");
+		    		$("#mensaje_id_unidad_medida").fadeIn("slow"); //Muestra mensaje de error
 		            return false;
 			    }
 		    	else 
 		    	{
-		    		$("#mensaje_unidad_medida_productos").fadeOut("slow"); //Muestra mensaje de error
+		    		$("#mensaje_id_unidad_medida").fadeOut("slow"); //Muestra mensaje de error
 		            
 				}   
 
-		    	if (ult_precio_productos == "")
+		    	if (ult_precio_productos == 0.00)
 		    	{
 			    	
 		    		$("#mensaje_ult_precio_productos").text("Introduzca Un Ultimo Precio");
@@ -484,33 +481,42 @@
 			}); 
 
 
-		        $( "##mensaje_id_grupos" ).focus(function() {
-				  $("##mensaje_id_grupos").fadeOut("slow");
+		        $( "#id_grupos" ).focus(function() {
+				  $("#mensaje_id_grupos").fadeOut("slow");
 			    });
 
-		        $( "##mensaje_codigo_productos" ).focus(function() {
-					  $("##mensaje_codigo_productos").fadeOut("slow");
+		        $( "#codigo_productos" ).focus(function() {
+					  $("#mensaje_codigo_productos").fadeOut("slow");
 				    });
-		        $( "##mensaje_marca_productos" ).focus(function() {
-					  $("##mensaje_marca_productos").fadeOut("slow");
+		        $( "#marca_productos" ).focus(function() {
+					  $("#mensaje_marca_productos").fadeOut("slow");
 				    });
-		        $( "##mensaje_nombre_productos" ).focus(function() {
-					  $("##mensaje_nombre_productos").fadeOut("slow");
+		        $( "#nombre_productos" ).focus(function() {
+					  $("#mensaje_nombre_productos").fadeOut("slow");
 				    });
-		        $( "##mensaje_descripcion_productos" ).focus(function() {
-					  $("##mensaje_descripcion_productos").fadeOut("slow");
+		        $( "#descripcion_productos" ).focus(function() {
+					  $("#mensaje_descripcion_productos").fadeOut("slow");
 				    });
-		        $( "##mensaje_unidad_medida_productos" ).focus(function() {
-					  $("##mensaje_unidad_medida_productos").fadeOut("slow");
+		        $( "#unidad_medida_productos" ).focus(function() {
+					  $("#mensaje_unidad_medida_productos").fadeOut("slow");
 				    });
-		        $( "##mensaje_ult_precio_productos" ).focus(function() {
-					  $("##mensaje_ult_precio_productos").fadeOut("slow");
+		        $( "#ult_precio_productos" ).focus(function() {
+					  $("#mensaje_ult_precio_productos").fadeOut("slow");
 				    });
 		        		      
 				    
 		}); 
 
 	</script>	
+	
+	
+	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
+       <script>
+      $(document).ready(function(){
+      $(".cantidades1").inputmask();
+      });
+	  </script>
+	
 	
   </body>
 </html>   

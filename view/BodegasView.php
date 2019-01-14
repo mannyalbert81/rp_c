@@ -442,7 +442,101 @@
     </script> 
     
     
- 
+            <script>
+           // Campos Vacíos
+		    // cada vez que se cambia el valor del combo
+		    $(document).ready(function(){
+		    
+		    $("#Guardar").click(function() 
+			{
+		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
+
+		    	var nombre_bodegas = $("#nombre_bodegas").val();
+		    	var id_provincias = $("#id_provincias").val();
+		    	var id_cantones = $("#id_cantones").val();
+		    	var id_parroquias = $("#id_parroquias").val();
+		    	
+		
+		    	
+		    	
+		    	if (nombre_bodegas == "")
+		    	{
+			    	
+		    		$("#mensaje_nombre_bodegas").text("Introduzca Un Nombre");
+		    		$("#mensaje_nombre_bodegas").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_nombre_bodegas").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+		    	if (id_provincias == 0)
+		    	{
+			    	
+		    		$("#mensaje_id_provincias").text("Introduzca Una Provincia");
+		    		$("#mensaje_id_provincias").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_id_provincias").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+		    	if (id_cantones == 0)
+		    	{
+			    	
+		    		$("#mensaje_id_cantones").text("Introduzca Un Cantón");
+		    		$("#mensaje_id_cantones").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_id_cantones").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+		    	if (id_parroquias == 0)
+		    	{
+			    	
+		    		$("#mensaje_id_parroquias").text("Introduzca Ua Parroquia");
+		    		$("#mensaje_id_parroquias").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_id_parroquias").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+		    	
+				
+
+
+		    	
+			}); 
+
+
+		        $( "#nombre_bodegas" ).focus(function() {
+				  $("#mensaje_nombre_bodegas").fadeOut("slow");
+			    });
+
+		        $( "#id_provincias" ).focus(function() {
+					  $("#mensaje_id_provincias").fadeOut("slow");
+				    });
+		        $( "#id_cantones" ).focus(function() {
+					  $("#mensaje_id_cantones").fadeOut("slow");
+				    });
+		        $( "#id_parroquias" ).focus(function() {
+					  $("#mensaje_id_parroquias").fadeOut("slow");
+				    });
+	
+				    
+		}); 
+
+	</script>	
 	
 	
   </body>

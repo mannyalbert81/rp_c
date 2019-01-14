@@ -22,6 +22,9 @@ class ProductosController extends ControladorBase{
         $grupos=new GruposModel();
         $resultGrup=$grupos->getAll("nombre_grupos");
         
+        $unidad=new UnidadModel();
+        $resultUni=$unidad->getAll("nombre_unidad_medida");
+        
         $resultEdit = "";
         
         if (isset(  $_SESSION['nombre_usuarios']) )
@@ -40,17 +43,21 @@ class ProductosController extends ControladorBase{
                         
                         $_id_productos = $_GET["id_productos"];
                         $columnas = "
-                                      productos.id_productos, 
-                                      grupos.id_grupos, 
-                                      grupos.nombre_grupos, 
-                                      productos.codigo_productos, 
-                                      productos.marca_productos, 
-                                      productos.nombre_productos, 
-                                      productos.descripcion_productos, 
-                                      productos.unidad_medida_productos, 
-                                      productos.ult_precio_productos";
-                        $tablas   = "  public.productos,   public.grupos";
-                        $where    = "grupos.id_grupos = productos.id_grupos AND productos.id_productos = '$_id_productos'";
+                                         productos.id_productos, 
+                                          grupos.id_grupos, 
+                                          grupos.nombre_grupos, 
+                                          unidad_medida.id_unidad_medida, 
+                                          unidad_medida.nombre_unidad_medida, 
+                                          productos.codigo_productos, 
+                                          productos.marca_productos, 
+                                          productos.nombre_productos, 
+                                          productos.descripcion_productos, 
+                                          productos.ult_precio_productos";
+                        $tablas   = " public.productos, 
+                                      public.grupos, 
+                                      public.unidad_medida";
+                        $where    = "  grupos.id_grupos = productos.id_grupos AND
+                                       unidad_medida.id_unidad_medida = productos.id_unidad_medida AND productos.id_productos = '$_id_productos'";
                         $id       = "productos.id_productos";
                         
                         $resultEdit = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
@@ -61,7 +68,7 @@ class ProductosController extends ControladorBase{
                 
                 
                 $this->view("Productos",array(
-                    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultGrup"=>$resultGrup
+                    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultGrup"=>$resultGrup, "resultUni"=>$resultUni
                     
                 ));
                 
@@ -109,11 +116,11 @@ class ProductosController extends ControladorBase{
             {
                 //die('llego');
                 $_id_grupos = $_POST["id_grupos"];
+                $_id_unidad_medida = $_POST["id_unidad_medida"];
                 $_codigo_productos = $_POST["codigo_productos"];
                 $_marca_productos = $_POST["marca_productos"];
                 $_nombre_productos = $_POST["nombre_productos"];
                 $_descripcion_productos = $_POST["descripcion_productos"];
-                $_unidad_medida_productos = $_POST["unidad_medida_productos"];
                 $_ult_precio_productos = $_POST["ult_precio_productos"];
                 
                 
@@ -121,20 +128,23 @@ class ProductosController extends ControladorBase{
                 if($_id_productos > 0){
                     
                     $columnas = " id_grupos = '$_id_grupos',
+                              id_unidad_medida = '$_id_unidad_medida',
 							  codigo_productos ='$_codigo_productos',
 							  marca_productos = '$_marca_productos',
                               nombre_productos = '$_nombre_productos',
 							  descripcion_productos = '$_descripcion_productos',
-							  unidad_medida_productos = '$_unidad_medida_productos',
 							  ult_precio_productos = '$_ult_precio_productos'";
-                    $tabla = "public.productos,   public.grupos";
-                    $where = "grupos.id_grupos = productos.id_grupos AND productos.id_productos = '$_id_productos'";
+                    $tabla = "public.productos, 
+                              public.grupos, 
+                              public.unidad_medida";
+                    $where = "  grupos.id_grupos = productos.id_grupos AND
+                              unidad_medida.id_unidad_medida = productos.id_unidad_medida AND productos.id_productos = '$_id_productos'";
                     $resultado=$productos->UpdateBy($columnas, $tabla, $where);
                     
                 }else{
                     
                     $funcion = "ins_productos";
-                    $parametros = " '$_id_grupos', '$_codigo_productos', '$_marca_productos', '$_nombre_productos', '$_descripcion_productos', '$_unidad_medida_productos', '$_ult_precio_productos'";
+                    $parametros = " '$_id_grupos', '$_id_unidad_medida', '$_codigo_productos', '$_marca_productos', '$_nombre_productos', '$_descripcion_productos', '$_ult_precio_productos'";
                     $productos->setFuncion($funcion);
                     $productos->setParametros($parametros);
                     $resultado=$productos->Insert();

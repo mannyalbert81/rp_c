@@ -68,7 +68,7 @@
                 <form action="<?php echo $helper->url("Usuarios","InsertaUsuarios"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
           		 	  <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
               		 	 <div class="row">
-                         	<div class="col-xs-6 col-md-4 col-lg-3 ">
+                         	<div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="cedula_usuarios" class="control-label">Cedula:</label>
                                     <input type="text" class="form-control" id="cedula_usuarios" name="cedula_usuarios" value="<?php echo $resEdit->cedula_usuarios; ?>"  placeholder="ci-ruc.." readonly>
@@ -76,94 +76,113 @@
                                     <div id="mensaje_cedula_usuarios" class="errores"></div>
                                  </div>
                              </div>
-                             <div class="col-xs-6 col-md-4 col-lg-3">
+                             <div class="col-xs-6 col-md-3 col-lg-3">
                              	<div class="form-group">
                                 	 <label for="nombre_usuarios" class="control-label">Nombres:</label>
                                       <input type="text" class="form-control" id="nombre_usuarios" name="nombre_usuarios" value="<?php echo $resEdit->nombre_usuarios; ?>" placeholder="nombres..">
                                       <div id="mensaje_nombre_usuarios" class="errores"></div>
                                  </div>
                              </div>
-                             <div class="col-xs-6 col-md-4 col-lg-3">
+                             <div class="col-xs-6 col-md-3 col-lg-3">
                              	<div class="form-group">
-                                	 <label for="apellido_usuarios" class="control-label">Apellidos:</label>
-                                      <input type="text" class="form-control" id="apellido_usuarios" name="apellido_usuarios" value="<?php echo $resEdit->apellidos_usuarios; ?>" placeholder="nombres..">
+                                	 <label for="apellidos_usuarios" class="control-label">Apellidos:</label>
+                                      <input type="text" class="form-control" id="apellidos_usuarios" name="apellidos_usuarios" value="<?php echo $resEdit->apellidos_usuarios; ?>" placeholder="nombres..">
                                       <div id="mensaje_apellido_usuarios" class="errores"></div>
                                  </div>
                              </div>
-                          </div>
-                          <div class="row">
-                          	<div class="col-xs-6 col-md-4 col-lg-3 ">
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="usuario_usuarios" class="control-label">Usuario:</label>
                                     <input type="text" class="form-control" id="usuario_usuarios" name="usuario_usuarios" value="<?php echo $resEdit->usuario_usuarios; ?>"  placeholder="usuario..." >
                                     <div id="usuario_usuarios" class="errores"></div>
                                  </div>
                              </div> 
-                         	<div class="col-xs-6 col-md-4 col-lg-3 ">
+                          </div>
+                          <div class="row">
+                          
+                          	<div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
                                     <input type="text" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="<?php echo $resEdit->fecha_nacimiento_usuarios; ?>"  placeholder="fecha nacimiento" >
                                     <div id="fecha_nacimiento_usuarios" class="errores"></div>
                                  </div>
-                             </div>                             
-                          </div>
-                          <div class="row">
-                          	<div class="col-xs-6 col-md-4 col-lg-3">
-                        		<div class="form-group">
-                                  <label for="clave_usuarios" class="control-label">Password:</label>
-                                  <input type="password" class="form-control" id="clave_usuarios" name="clave_usuarios" value="<?php echo $resEdit->pass_sistemas_usuarios; ?>" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
-                                  <div id="mensaje_clave_usuarios" class="errores"></div>
+                             </div> 
+                             
+                             <div class="col-lg-3 col-xs-6 col-md-3">
+                    		    <div class="form-group">
+                                      <label for="celular_usuarios" class="control-label">Celular:</label>
+                                      <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>"  placeholder="celular..">
+                                      <div id="mensaje_celular_usuarios" class="errores"></div>
                                 </div>
-                        	</div>
-                        		    
-                		    <div class="col-lg-3 col-xs-6 col-md-4">
-                		    <div class="form-group">
-                                  <label for="clave_usuarios_r" class="control-label">Repita Password:</label>
-                                  <input type="password" class="form-control" id="clave_usuarios_r" name="clave_usuarios_r" value="<?php echo $resEdit->pass_sistemas_usuarios; ?>" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
-                                  <div id="mensaje_clave_usuarios_r" class="errores"></div>
-                            </div>
-                            </div>
-                          </div>
-                          
-                          <div class="row">
-                		       <div class="col-lg-3 col-xs-6 col-md-4">
-                        		    <div class="form-group">
-                                          <label for="telefono_usuarios" class="control-label">Teléfono:</label>
-                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  placeholder="teléfono..">
-                                          <div id="mensaje_telefono_usuarios" class="errores"></div>
-                                    </div>
-                        	    </div>
-                    			<div class="col-lg-3 col-xs-6 col-md-4">
-                        		    <div class="form-group">
-                                          <label for="celular_usuarios" class="control-label">Celular:</label>
-                                          <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>"  placeholder="celular..">
-                                          <div id="mensaje_celular_usuarios" class="errores"></div>
-                                    </div>
+                             </div>
+                             
+                             <div class="col-lg-3 col-xs-6 col-md-3">
+                    		    <div class="form-group">
+                                      <label for="telefono_usuarios" class="control-label">Teléfono:</label>
+                                      <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  placeholder="teléfono..">
+                                      <div id="mensaje_telefono_usuarios" class="errores"></div>
                                 </div>
-                    		    <div class="col-lg-6 col-xs-12 col-md-4">
+                    	    </div>
+                    	    
+                    	    <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
                                           <label for="correo_usuarios" class="control-label">Correo:</label>
                                           <input type="email" class="form-control" id="correo_usuarios" name="correo_usuarios" value="<?php echo $resEdit->correo_usuarios; ?>" placeholder="email..">
                                           <div id="mensaje_correo_usuarios" class="errores"></div>
                                     </div>
                     		    </div>
-                        	</div>
-                        	
-                        	<div class="row">
-                    		    <div class="col-lg-4 col-xs-12 col-md-4">
+                                
+                        	                            
+                          </div>
+                          
+                          <div class="row">
+                		       
+                		       <div class="col-xs-6 col-md-3 col-lg-3">
+                        		<div class="form-group">
+                                  <label for="clave_usuarios" class="control-label">Password:</label>
+                                  <input type="password" class="form-control caducaclave" id="clave_usuarios" name="clave_usuarios" value="<?php echo $resEdit->clave_n_claves; ?>" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)" readonly>
+                                  <div id="mensaje_clave_usuarios" class="errores"></div>
+                                </div>
+                            	</div>
+                            		    
+                    		    <div class="col-lg-3 col-xs-6 col-md-3">
+                    		    <div class="form-group">
+                                      <label for="clave_usuarios_r" class="control-label">Repita Password:</label>
+                                      <input type="password" class="form-control" id="clave_usuarios_r" name="clave_usuarios_r" value="<?php echo $resEdit->clave_n_claves; ?>" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)" readonly>
+                                      <div id="mensaje_clave_usuarios_r" class="errores"></div>
+                                </div>
+                                </div>
+                    			
+                    		    
+                    		    <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado" class="control-label">Estado:</label>
+                                      <select name="id_estado" id="id_estado"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php  foreach($result_catalogo_usuario as $res) {?>
+    										<option value="<?php echo $res->valor_catalogo; ?>" <?php if ($res->valor_catalogo == $resEdit->estado_usuarios )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_catalogo; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estados" class="errores"></div>
+                                    </div>
+                                  </div>
+                    		    <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
                                           <label for="fotografia_usuarios" class="control-label">Fotografía:</label>
                                           <input type="file" class="form-control" id="fotografia_usuarios" name="fotografia_usuarios" value="">
                                           <div id="mensaje_usuario" class="errores"></div>
                                     </div>
                     		    </div>
-                    		</div>
+                        	</div>
+                        	
+                        	
                     		
-                    		<div class="row">                    		    
-                        		<div class="col-xs-12 col-lg-4 col-md-4">
+                    		<div class="row"> 
+                    		
+                    			<div class="col-xs-12 col-lg-3 col-md-3">
                         		   <div class="form-group">
-                                      <label for="id_rol" class="control-label">Roles:</label>
-                                      <select name="id_rol" id="id_rol"  class="form-control" >
+                                      <label for="id_rol_principal" class="control-label">Rol Principal:</label>
+                                      <select name="id_rol_principal" id="id_rol_principal"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php foreach($resultRol as $res) {?>
     										<option value="<?php echo $res->id_rol; ?>" <?php if ($res->id_rol == $resEdit->id_rol )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_rol; ?> </option>
@@ -171,134 +190,180 @@
     								   </select> 
                                       <div id="mensaje_id_rols" class="errores"></div>
                                     </div>
-                                 </div>
-                                    
-                                 <div class="col-xs-12 col-md-4 col-lg-4">
+                                 </div> 
+                                 
+                                 <div class="col-xs-12 col-lg-3 col-md-3">                                  
                         		   <div class="form-group">
-                                      <label for="privilegios_usuario" class="control-label">Listado Roles:</label>
-                                      <select name="privilegios_usuario" id="privilegios_usuario" multiple="multiple"  class="form-control" >
-    									
-    								   </select> 
-                                      <div id="privilegios_usuario" class="errores"></div>
+                        		   <br>
+                                      <label for="cambiar_clave" class="control-label">Cambiar Clave: </label> &nbsp;&nbsp;
+                                      <input type="checkbox"  id="cambiar_clave" name="cambiar_clave" value="1"   /> <br>
+                                      <label for="caduca_clave" class="control-label">Caduca  Clave: </label> &nbsp;&nbsp; &nbsp;
+                                      <input type="checkbox"  id="caduca_clave" name="caduca_clave" value="1" <?php  if($resEdit->caduca_claves=='t'){echo 'checked="checked" ';} ?>  />
                                     </div>
-                                  </div>
-                                
+                                 </div> 
+                                 
                               </div>
                               
                               <div class="row">
-                              	<div class="col-xs-12 col-md-4 col-lg-4">
+                        		<div class="col-xs-12 col-lg-5 col-md-5">
                         		   <div class="form-group">
-                                      <label for="id_estado" class="control-label">Estado:</label>
-                                      <select name="id_estado" id="id_estado"  class="form-control" >
-                                      <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultEst as $res) {?>
-    										<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
+                                      <label for="id_rol_principal" class="control-label">Roles Disponibles</label>
+                                      <select name="id_rol" id="id_rol" multiple="multiple" class="form-control" >
+    									<?php foreach($resultRol as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_estados" class="errores"></div>
+                                      <div id="mensaje_id_rols" class="errores"></div>
                                     </div>
-                                  </div>
-                              </div>
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-2 col-md-2">
+                                 	<table class="table table-bordered" style="text-align: center;">
+                                        
+                                        <tr>                                          
+                                          <td>
+                                            <div class="btn-group-vertical">
+                                              <button id="link_agregar_rol" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-right"></i></button>
+                                              <button id="link_agregar_roles" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-double-right"></i></button>
+                                              <button id="link_eliminar_rol" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-left"></i></button>
+                                              <button id="link_eliminar_roles" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-double-left"></i></button>
+                                            </div>
+                                          </td>
+                                         </tr>
+                                      </table>
+                                 	 
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-5 col-md-5">
+                        		   <div class="form-group">
+                                      <label for="id_rol_principal" class="control-label">Usuario tiene Rol(es):</label>
+                                      <select name="lista_roles[]" id="lista_roles" multiple="multiple" class="form-control" >
+                                      <?php foreach($result_privilegios as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>" <?php echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_rol; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_rols" class="errores"></div>
+                                    </div>
+                                 </div>
+                        	
+                        	</div>
                                 
                       <?php } } else {?>                		    
                       	  <div class="row">
-                		  	<div class="col-xs-6 col-md-4 col-lg-3 ">
+                		  	<div class="col-xs-6 col-md-3 col-lg-3 ">
                     			<div class="form-group">
                                     <label for="cedula_usuarios" class="control-label">Cedula:</label>
                                     <input type="text" class="form-control" id="cedula_usuarios" name="cedula_usuarios" value=""  placeholder="ci-ruc.." >
+                                     <input type="hidden" class="form-control" id="id_usuarios" name="id_usuarios" value="0" >
                                     <div id="mensaje_cedula_usuarios" class="errores"></div>
                                  </div>
                              </div>
-                             <div class="col-xs-6 col-md-4 col-lg-3">
+                             <div class="col-xs-6 col-md-3 col-lg-3">
                              	<div class="form-group">
                                 	 <label for="nombre_usuarios" class="control-label">Nombres:</label>
                                       <input type="text" class="form-control" id="nombre_usuarios" name="nombre_usuarios" value="" placeholder="nombres..">
                                       <div id="mensaje_nombre_usuarios" class="errores"></div>
                                  </div>
                              </div>
-                             <div class="col-xs-6 col-md-4 col-lg-3">
+                             <div class="col-xs-6 col-md-3 col-lg-3">
                              	<div class="form-group">
-                                	 <label for="apellido_usuarios" class="control-label">Apellidos:</label>
-                                      <input type="text" class="form-control" id="apellido_usuarios" name="apellido_usuarios" value="" placeholder="nombres..">
+                                	 <label for="apellidos_usuarios" class="control-label">Apellidos:</label>
+                                      <input type="text" class="form-control" id="apellidos_usuarios" name="apellidos_usuarios" value="" placeholder="apellidos..">
                                       <div id="mensaje_apellido_usuarios" class="errores"></div>
                                  </div>
                              </div>
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                                	<div class="form-group">
+                                    	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
+                                        <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value=""  >
+                                        <div id="fecha_nacimiento_usuarios" class="errores"></div>
+                                     </div>
+                               </div>  
                             </div>
                             
                              <div class="row">
-                             	<div class="col-xs-6 col-md-4 col-lg-3 ">
+                             	<div class="col-xs-6 col-md-3 col-lg-3 ">
                                 	<div class="form-group">
                                     	<label for="usuario_usuarios" class="control-label">Usuario:</label>
                                         <input type="text" class="form-control" id="usuario_usuarios" name="usuario_usuarios" value=""  placeholder="usuario..." >
                                         <div id="usuario_usuarios" class="errores"></div>
                                      </div>
                                  </div> 
-                             	<div class="col-xs-6 col-md-4 col-lg-3 ">
-                                	<div class="form-group">
-                                    	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
-                                        <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value=""  >
-                                        <div id="fecha_nacimiento_usuarios" class="errores"></div>
-                                     </div>
-                                 </div>                             
-                              </div>
-                            
-                            <div class="row">
-                          	<div class="col-xs-6 col-md-4 col-lg-3">
-                        		<div class="form-group">
-                                  <label for="clave_usuarios" class="control-label">Password:</label>
-                                  <input type="password" class="form-control" id="clave_usuarios" name="clave_usuarios" value="" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
-                                  <div id="mensaje_clave_usuarios" class="errores"></div>
-                                </div>
-                        	</div>
-                        		    
-                		    <div class="col-lg-3 col-xs-6 col-md-4">
-                		    <div class="form-group">
-                                  <label for="clave_usuarios_r" class="control-label">Repita Password:</label>
-                                  <input type="password" class="form-control" id="clave_usuarios_r" name="clave_usuarios_r" value="" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
-                                  <div id="mensaje_clave_usuarios_r" class="errores"></div>
-                            </div>
-                            </div>
-                          </div>
-                          
-                          <div class="row">
-                		       <div class="col-lg-3 col-xs-6 col-md-4">
-                        		    <div class="form-group">
-                                          <label for="telefono_usuarios" class="control-label">Teléfono:</label>
-                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  placeholder="teléfono..">
-                                          <div id="mensaje_telefono_usuarios" class="errores"></div>
-                                    </div>
-                        	    </div>
-                    			<div class="col-lg-3 col-xs-6 col-md-4">
+                                 
+                                 <div class="col-lg-3 col-xs-6 col-md-3">
                         		    <div class="form-group">
                                           <label for="celular_usuarios" class="control-label">Celular:</label>
                                           <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value=""  placeholder="celular..">
                                           <div id="mensaje_celular_usuarios" class="errores"></div>
                                     </div>
                                 </div>
-                    		    <div class="col-lg-6 col-xs-12 col-md-4">
+                                
+                                <div class="col-lg-3 col-xs-6 col-md-3">
+                        		    <div class="form-group">
+                                          <label for="telefono_usuarios" class="control-label">Teléfono:</label>
+                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  placeholder="teléfono..">
+                                          <div id="mensaje_telefono_usuarios" class="errores"></div>
+                                    </div>
+                        	    </div>
+                        	    
+                    		    <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
                                           <label for="correo_usuarios" class="control-label">Correo:</label>
                                           <input type="email" class="form-control" id="correo_usuarios" name="correo_usuarios" value="" placeholder="email..">
                                           <div id="mensaje_correo_usuarios" class="errores"></div>
                                     </div>
                     		    </div>
-                        	</div>
-                        	
-                        	<div class="row">
-                    		    <div class="col-lg-4 col-xs-12 col-md-4">
+                                
+                             	                            
+                              </div>
+                            
+                          
+                          <div class="row">                		      
+                    			
+                    		    <div class="col-xs-6 col-md-3 col-lg-3">
+                            		<div class="form-group">
+                                      <label for="clave_usuarios" class="control-label">Password:</label>
+                                      <input type="password" class="form-control" id="clave_usuarios" name="clave_usuarios" value="" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
+                                      <div id="mensaje_clave_usuarios" class="errores"></div>
+                                    </div>
+                            	</div>
+                            	
+                            	<div class="col-lg-3 col-xs-6 col-md-3">
+                        		    <div class="form-group">
+                                          <label for="clave_usuarios_r" class="control-label">Repita Password:</label>
+                                          <input type="password" class="form-control" id="clave_usuarios_r" name="clave_usuarios_r" value="" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
+                                          <div id="mensaje_clave_usuarios_r" class="errores"></div>
+                                    </div>
+                                </div>
+                                
+                    		    <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado" class="control-label">Estado:</label>
+                                      <select name="id_estado" id="id_estado"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($result_catalogo_usuario as $res) {?>
+    										<option value="<?php echo $res->valor_catalogo; ?>" ><?php echo $res->nombre_catalogo; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estados" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
                                           <label for="fotografia_usuarios" class="control-label">Fotografía:</label>
                                           <input type="file" class="form-control" id="fotografia_usuarios" name="fotografia_usuarios" value="">
                                           <div id="mensaje_usuario" class="errores"></div>
                                     </div>
                     		    </div>
-                    		</div>
-                    		
-                    		<div class="row">                    		    
-                        		<div class="col-xs-12 col-lg-4 col-md-4">
+                        	</div>
+                        	
+                        	<div class="row"> 
+                    		    		    
+                        		<div class="col-xs-12 col-lg-3 col-md-3">
                         		   <div class="form-group">
-                                      <label for="id_rol" class="control-label">Rol:</label>
-                                      <select name="id_rol" id="id_rol"  class="form-control" >
+                                      <label for="id_rol_principal" class="control-label">Rol Principal:</label>
+                                      <select name="id_rol_principal" id="id_rol_principal"   class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php foreach($resultRol as $res) {?>
     										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
@@ -307,36 +372,60 @@
                                       <div id="mensaje_id_rols" class="errores"></div>
                                     </div>
                                  </div>
-                                    
-                                 <div class="col-xs-12 col-md-4 col-lg-4">
+                                 
+                                 <div class="col-xs-12 col-lg-3 col-md-3">                                  
                         		   <div class="form-group">
-                                      <label for="privilegios_usuario" class="control-label">Listado Roles:</label>
-                                      <select name="privilegios_usuario" id="privilegios_usuario" multiple="multiple"  class="form-control" >
-                                      <?php foreach($resultRol as $res) {?>
+                        		   <br>
+                                      <label for="id_rol_principal" class="control-label">Caduca Clave: </label> &nbsp;&nbsp;
+                                      <input type="checkbox" id="caduca_clave" name="caduca_clave" value=""  />
+                                    </div>
+                                 </div> 
+                                 
+                             </div>
+                        	
+                        	<div class="row">
+                        		<div class="col-xs-12 col-lg-5 col-md-5">
+                        		   <div class="form-group">
+                                      <label for="id_rol_principal" class="control-label">Roles Disponibles</label>
+                                      <select name="id_rol" id="id_rol" multiple="multiple" class="form-control" >
+    									<?php foreach($resultRol as $res) {?>
     										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="privilegios_usuario" class="errores"></div>
+                                      <div id="mensaje_id_rols" class="errores"></div>
                                     </div>
-                                  </div>
-                                
-                              </div>
-                              
-                              <div class="row">
-                              	<div class="col-xs-12 col-md-4 col-lg-4">
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-2 col-md-2">
+                                 	<table class="table table-bordered" style="text-align: center;">
+                                        
+                                        <tr>                                          
+                                          <td>
+                                            <div class="btn-group-vertical">
+                                              <button id="link_agregar_rol" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-right"></i></button>
+                                              <button id="link_agregar_roles" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-double-right"></i></button>
+                                              <button id="link_eliminar_rol" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-left"></i></button>
+                                              <button id="link_eliminar_roles" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-double-left"></i></button>
+                                            </div>
+                                          </td>
+                                         </tr>
+                                      </table>
+                                 	 
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-5 col-md-5">
                         		   <div class="form-group">
-                                      <label for="id_estado" class="control-label">Estado:</label>
-                                      <select name="id_estado" id="id_estado"  class="form-control" >
-                                      <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultEst as $res) {?>
-    										<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
-    							        <?php } ?>
+                                      <label for="id_rol_principal" class="control-label">Usuario tiene Rol(es):</label>
+                                      <select name="lista_roles[]" id="lista_roles" multiple="multiple" class="form-control" >
+                                      
     								   </select> 
-                                      <div id="mensaje_id_estados" class="errores"></div>
+                                      <div id="mensaje_id_rols" class="errores"></div>
                                     </div>
-                                  </div>
-                              </div>	
-                    		            
+                                 </div>
+                        	
+                        	</div>
+                        	
+                        	
                     		            
                      <?php } ?>
                      	<div class="row">
@@ -350,6 +439,10 @@
           		 	</form>
           
         			</div>
+      			</div>
+      			
+      			<div id="resultadosjq">
+      			
       			</div>
     		</section>
     		
@@ -399,9 +492,121 @@
   <script type="text/javascript">
      
    $(document).ready( function (){
-	   pone_espera();
+	   /*pone_espera();*/
 	   load_usuarios(1);
+
+	   /*para manejo de multiples roles*/
+	    /**$("#link_agregar_rol").click(function() {
+			return !($('#id_rol option:selected').clone()).appendTo('#lista_roles'); 
+	    });*/
+	    $('#link_agregar_rol').click(function() { 
+	        copiarOpcion($('#id_rol option:selected').clone(), "#lista_roles");
+	    });
+
+	    $('#link_agregar_roles').click(function() { 
+	        $('#id_rol option').each(function() {
+	            copiarOpcion($(this).clone(), "#lista_roles");
+	        }); 
+	    });
+
+	    $('#link_eliminar_rol').click(function() { 
+	        $('#lista_roles option:selected').remove(); 
+	    });
+
+	    $('#link_eliminar_roles').click(function() { 
+	        $('#lista_roles option').each(function() {
+	            $(this).remove(); 
+	        }); 
+	    });
+
+	    $('#Guardar').click(function(){
+	    	selecionarTodos();
+	    	//return false;
+		});
+
+	    $(".caducaclave").blur(function(){
+			var clave = $("#clave_usuarios").val();
+			var _id_usuarios = $("#id_usuarios").val();
+
+			if($('#cambiar_clave').is(':checked')){
+    			$.ajax({
+    	            beforeSend: function(objeto){
+    	              $("#resultadosjq").html('...');
+    	            },
+    	            url: 'index.php?controller=Usuarios&action=ajax_caducaclave',
+    	            type: 'POST',
+    	            data: {clave_usuarios:clave,id_usuarios:_id_usuarios},
+    	            success: function(x){
+    	             if(x.trim()!=""){
+    	            	 	$("#mensaje_clave_usuarios").text(x);
+    			    		$("#mensaje_clave_usuarios").fadeIn("slow");
+        	            	 $("#clave_usuarios").val("");
+        	            	 $("#clave_usuarios_r").val("");
+    	                 }
+    	            },
+    	           error: function(jqXHR,estado,error){
+    	             $("#resultadosjq").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+    	           }
+    	         });
+			}
+    	        
+	   });
+
+		$('#cambiar_clave').change(
+			    function(){
+			        if (this.checked) {
+
+				           $('#clave_usuarios').removeAttr("readonly");
+				           $('#clave_usuarios_r').removeAttr("readonly");
+				           $('#clave_usuarios').val("");
+				           $('#clave_usuarios_r').val("");
+			        }else{
+			        	$('#clave_usuarios').attr("readonly","readonly");
+				        $('#clave_usuarios_r').attr("readonly","readonly");
+				        }
+			    });
+
+		$("#cedula_usuarios").blur(function(){
+			var _cedula = $("#cedula_usuarios").val();
+			var _id_usuarios = $("#id_usuarios").val();
+
+			if($("#id_usuarios").val()=="0"){
+				$.ajax({
+    	            beforeSend: function(objeto){
+    	              $("#resultadosjq").html('...');
+    	            },
+    	            url: 'index.php?controller=Usuarios&action=ajax_validacedula',
+    	            type: 'POST',
+    	            data: {cedula:_cedula},
+    	            success: function(x){
+    	             if(x.trim()!=""){
+    	            	 	$("#mensaje_cedula_usuarios").text(x);
+    			    		$("#mensaje_cedula_usuarios").fadeIn("slow");
+    	                 }
+    	            },
+    	           error: function(jqXHR,estado,error){
+    	             $("#resultadosjq").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+    	           }
+    	         });
+			}
+			  
+	   });
+	    
 	});
+
+    function copiarOpcion(opcion, destino) {
+        var valor = $(opcion).val();
+        if (($(destino + " option[value=" + valor + "] ").length == 0) && valor != 0 ) {
+            $(opcion).appendTo(destino);
+        }
+    }
+
+    function selecionarTodos(){
+    	$("#lista_roles option").each(function(){
+	      $(this).attr("selected", true);
+		 });
+     }
+    
 
    function pone_espera(){
 
@@ -433,6 +638,7 @@
 				  };
 		  
      $("#load_registrados").fadeIn('slow');
+     
      $.ajax({
                beforeSend: function(objeto){
                  $("#load_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
@@ -442,8 +648,9 @@
                data: con_datos,
                success: function(x){
                  $("#users_registrados").html(x);
-               	 $("#tabla_usuarios").tablesorter(); 
                  $("#load_registrados").html("");
+                 $("#tabla_usuarios").tablesorter(); 
+                 
                },
               error: function(jqXHR,estado,error){
                 $("#users_registrados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
@@ -452,6 +659,10 @@
 
 
 	   }
+
+  
+
+   
 </script>
         
         
@@ -626,7 +837,7 @@
 			    }
 
 		    	
-		    	if (id_rol == 0 )
+		    	/*if (id_rol == 0 )
 		    	{
 			    	
 		    		$("#mensaje_id_rol").text("Seleccione");
@@ -637,11 +848,11 @@
 		    	{
 		    		$("#mensaje_id_rol").fadeOut("slow"); //Muestra mensaje de error
 		            
-				}
+				}*/
 
 
 
-		    	if (id_estado == 0 )
+		    	/*if (id_estado == 0 )
 		    	{
 			    	
 		    		$("#mensaje_id_estado").text("Seleccione");
@@ -652,7 +863,7 @@
 		    	{
 		    		$("#mensaje_id_estado").fadeOut("slow"); //Muestra mensaje de error
 		            
-				}
+				}*/
 		    					    
 
 			}); 
@@ -684,13 +895,13 @@
 					$("#mensaje_correo_usuarios").fadeOut("slow");
     			});
 			
-				$( "#id_rol" ).focus(function() {
+				/*$( "#id_rol" ).focus(function() {
 					$("#mensaje_id_rol").fadeOut("slow");
-    			});
+    			});*/
 
-				$( "#id_estado" ).focus(function() {
+				/*$( "#id_estado" ).focus(function() {
 					$("#mensaje_id_estado").fadeOut("slow");
-    			});
+    			});*/
 				
 		      
 				    
@@ -720,6 +931,63 @@
         return false;
      }
     </script> 
+    
+    <script type="text/javascript">
+    var interval, mouseMove;
+
+    $(document).mousemove(function(){
+        //Establezco la última fecha cuando moví el cursor
+        mouseMove = new Date();
+        /* Llamo a esta función para que ejecute una acción pasado x tiempo
+         después de haber dejado de mover el mouse (en este caso pasado 3 seg) */
+        inactividad(function(){
+        	window.location.href = "index.php?controller=Usuarios&amp;action=cerrar_sesion";
+        }, 600);
+      });
+
+    $(document).scroll(function(){
+        //Establezco la última fecha cuando moví el cursor
+        mouseMove = new Date();
+        /* Llamo a esta función para que ejecute una acción pasado x tiempo
+         después de haber dejado de mover el mouse (en este caso pasado 3 seg) */
+        inactividad(function(){
+        	window.location.href = "index.php?controller=Usuarios&amp;action=cerrar_sesion";
+        }, 600);
+      });
+
+      $(document).keydown(function(){
+          //Establezco la última fecha cuando moví el cursor
+          mouseMove = new Date();
+          /* Llamo a esta función para que ejecute una acción pasado x tiempo
+           después de haber dejado de mover el mouse (en este caso pasado 3 seg) */
+          inactividad(function(){
+          	window.location.href = "index.php?controller=Usuarios&amp;action=cerrar_sesion";
+          }, 600);
+        });
+
+     
+
+      /* Función creada para ejecutar una acción (callback), al pasar x segundos 
+         (seconds) de haber dejado de mover el cursor */
+      var inactividad = function(callback, seconds){
+        //Elimino el intervalo para que no se ejecuten varias instancias
+        clearInterval(interval);
+        //Creo el intervalo
+        interval = setInterval(function(){
+           //Hora actual
+           var now = new Date();
+           //Diferencia entre la hora actual y la última vez que se movió el cursor
+           var diff = (now.getTime()-mouseMove.getTime())/1000;
+           //Si la diferencia es mayor o igual al tiempo que pasastes por parámetro
+           if(diff >= seconds){
+            //Borro el intervalo
+            clearInterval(interval);
+            //Ejecuto la función que será llamada al pasar el tiempo de inactividad
+            callback();          
+           }
+        }, 200);
+      }
+    </script>
  	
   </body>
 </html>

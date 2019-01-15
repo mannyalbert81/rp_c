@@ -10,11 +10,14 @@ class UsuariosController extends ControladorBase{
     	 
     	session_start();
     	$id_rol=$_SESSION["id_rol"];
+    	
     	$usuarios = new UsuariosModel();
+    	$catalogo = null; $catalogo = new CatalogoModel();
     	$where_to="";
     	$columnas = " usuarios.id_usuarios,
 					  usuarios.cedula_usuarios,
 					  usuarios.nombre_usuarios,
+                      usuarios.apellidos_usuarios,
 					  claves.clave_claves,
 					  claves.clave_n_claves,
 					  usuarios.telefono_usuarios,
@@ -27,13 +30,12 @@ class UsuariosController extends ControladorBase{
 					  usuarios.creado";
     	
     	$tablas = "public.usuarios INNER JOIN public.claves ON claves.id_usuarios = usuarios.id_usuarios
-                   INNER JOIN public.privilegios ON privilegios.id_usuarios=usuarios.id_usuarios
-                   INNER JOIN public.rol ON rol.id_rol=privilegios.id_rol";
+                    INNER JOIN public.privilegios ON privilegios.id_usuarios=usuarios.id_usuarios
+                    INNER JOIN public.rol ON rol.id_rol=privilegios.id_rol
+                    INNER JOIN public.catalogo ON privilegios.tipo_rol_privilegios = catalogo.valor_catalogo
+                    AND catalogo.nombre_catalogo='PRINCIPAL' AND catalogo.tabla_catalogo ='privilegios' AND catalogo.columna_catalogo = 'tipo_rol_privilegios'";
     		
-    	/*$tablas   = "public.usuarios,
-					  public.rol,
-					  public.estado";*/
-    		
+    	
     	$where    = " 1=1";
     		
     	$id       = "usuarios.id_usuarios";
@@ -43,10 +45,13 @@ class UsuariosController extends ControladorBase{
     	$search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
     	
     	
-    	
-    	
     	if($action == 'ajax')
     	{
+    	    //estado_usuario
+    	    $wherecatalogo = "tabla_catalogo='usuarios' AND columna_catalogo='estado_usuarios'";
+    	    $resultCatalogo = $catalogo->getCondiciones('valor_catalogo,nombre_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+    	   
+    	    
     		
     		if(!empty($search)){
     			 
@@ -66,7 +71,7 @@ class UsuariosController extends ControladorBase{
     		
     		$page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
     		
-    		$per_page = 50; //la cantidad de registros que desea mostrar
+    		$per_page = 10; //la cantidad de registros que desea mostrar
     		$adjacents  = 9; //brecha entre páginas después de varios adyacentes
     		$offset = ($page - 1) * $per_page;
     		
@@ -76,6 +81,7 @@ class UsuariosController extends ControladorBase{
     		$count_query   = $cantidadResult;
     		$total_pages = ceil($cantidadResult/$per_page);
     		
+<<<<<<< HEAD
     			
     		
     		
@@ -150,6 +156,86 @@ class UsuariosController extends ControladorBase{
     				$html.='</tr>';
     		}
     		
+=======
+        	if($cantidadResult>0)
+        	{
+        
+        		$html.='<div class="pull-left" style="margin-left:11px;">';
+        		$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+        		$html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+        		$html.='</div>';
+        		$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+    			$html.='<section style="height:425px; overflow-y:scroll;">';
+        		$html.= "<table id='tabla_usuarios' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+        		$html.= "<thead>";
+        		$html.= "<tr>";
+        		$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+        		$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+        		$html.='<th style="text-align: left;  font-size: 12px;">Cedula</th>';
+        		$html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+        		$html.='<th style="text-align: left;  font-size: 12px;">Teléfono</th>';
+        		$html.='<th style="text-align: left;  font-size: 12px;">Celular</th>';
+        		$html.='<th style="text-align: left;  font-size: 12px;">Correo</th>';
+        		$html.='<th style="text-align: left;  font-size: 12px;">Rol</th>';
+        		$html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+        		
+        		if($id_rol==1){
+    	    		
+        			$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+    	    		$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+    	    		//$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+    	    		
+        		}else{
+        			
+        			
+        			$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+        		}
+        		
+        		$html.='</tr>';
+        		$html.='</thead>';
+        		$html.='<tbody>';
+        		 
+        		$i=0;
+        		
+        		foreach ($resultSet as $res)
+        		{
+        			$i++;
+        			$html.='<tr>';
+        			$html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_usuarios.'&id_nombre=id_usuarios&tabla=usuarios&campo=fotografia_usuarios" width="80" height="60"></td>';
+        			$html.='<td style="font-size: 11px;">'.$i.'</td>';
+        			$html.='<td style="font-size: 11px;">'.$res->cedula_usuarios.'</td>';
+        			$html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
+        			$html.='<td style="font-size: 11px;">'.$res->telefono_usuarios.'</td>';
+        			$html.='<td style="font-size: 11px;">'.$res->celular_usuarios.'</td>';
+        			$html.='<td style="font-size: 11px;">'.$res->correo_usuarios.'</td>';
+        			$html.='<td style="font-size: 11px;">'.$res->nombre_rol.'</td>';
+        			
+        			if(!empty($resultCatalogo)){
+        			    foreach ($resultCatalogo as $r_estado){
+        			        if($r_estado->valor_catalogo == $res->estado_usuarios ){
+        			            $html.='<td style="font-size: 11px;">'.$r_estado->nombre_catalogo.'</td>';
+        			        }
+        			    }
+        			}
+        			
+        			
+        			if($id_rol==1){
+        			
+        				$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=index&id_usuarios='.$res->id_usuarios.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
+        				$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=borrarId&id_usuarios='.$res->id_usuarios.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
+        				//$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=search&cedula='.$res->cedula_usuarios.'" target="_blank" class="btn btn-warning" style="font-size:65%;"><i class="glyphicon glyphicon-eye-open"></i></a></span></td>';
+        			
+        			
+        			}else{
+        			
+        				$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=search&cedula='.$res->cedula_usuarios.'" target="_blank" class="btn btn-warning" style="font-size:65%;"><i class="glyphicon glyphicon-eye-open"></i></a></span></td>';
+        			
+        			}
+        			
+        				$html.='</tr>';
+        		}
+        		
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
     		
     		$html.='</tbody>';
     		$html.='</table>';
@@ -647,11 +733,6 @@ class UsuariosController extends ControladorBase{
        
        
        }
-       
-       
-       
-       
-       
        
        
        
@@ -2523,6 +2604,15 @@ public function index(){
 		if (!empty($resultPer))
 		{
 		    $resultEdit = "";
+		    $result_catalogo_usuario=null;
+		    $resultRolPrincipal = array();
+		    $result_privilegios = array();
+		    
+		    $catalogo=null;
+		    $catalogo = new CatalogoModel();
+		    //para estados de catalogo de usuarios
+		    $whe_catalogo = "tabla_catalogo = 'usuarios' AND columna_catalogo = 'estado_usuarios'";
+		    $result_catalogo_usuario = $catalogo->getBy($whe_catalogo);
 		
 				if (isset ($_GET["id_usuarios"])   )
 				{
@@ -2535,32 +2625,51 @@ public function index(){
 							  usuarios.telefono_usuarios,
 							  usuarios.celular_usuarios,
 							  usuarios.correo_usuarios,
-                              claves.clave_claves,
+                              claves.clave_n_claves,
+                              claves.caduca_claves,
                               usuarios.fotografia_usuarios,
 							  usuarios.creado,
-                              rol.id_rol,
-                              rol.nombre_rol";
+                              usuarios.fecha_nacimiento_usuarios,
+                              usuarios.usuario_usuarios,
+                              usuarios.estado_usuarios,
+                              privilegios.id_rol,
+                              catalogo.nombre_catalogo ";
 					
-					$tablas = "public.usuarios INNER JOIN public.claves ON claves.id_usuarios = usuarios.id_usuarios
-                               INNER JOIN public.privilegios ON privilegios.id_usuarios=usuarios.id_usuarios
-                               INNER JOIN public.rol ON rol.id_rol=privilegios.id_rol";
-					//ver la relacion con rol
+					$tablas = "public.usuarios INNER JOIN public.claves ON usuarios.id_usuarios = claves.id_usuarios
+                                INNER JOIN public.privilegios ON usuarios.id_usuarios = privilegios.id_usuarios
+                                INNER JOIN public.catalogo ON privilegios.tipo_rol_privilegios = catalogo.valor_catalogo 
+                                AND tabla_catalogo = 'privilegios' AND columna_catalogo='tipo_rol_privilegios' 
+                                AND nombre_catalogo='PRINCIPAL'
+                                INNER JOIN public.catalogo c1 ON c1.valor_catalogo = claves.estado_claves 
+                                AND c1.tabla_catalogo = 'claves' AND c1.columna_catalogo='estado_claves' 
+                                AND c1.nombre_catalogo='ACTUAL'";
 					
-					/*$tablas   = "public.usuarios,
-							  public.rol,
-                              public.claves";*/
 					
 					$id       = "usuarios.id_usuarios";
 					
 					$_id_usuarios = $_GET["id_usuarios"];
 					$where    = " usuarios.id_usuarios = '$_id_usuarios' "; 
 					$resultEdit = $usuarios->getCondiciones($columnas ,$tablas ,$where, $id); 
+					
+					
+					/*para catalogo de privilegios (Roles Secundarios)*/
+					$col_privilegios = "rol.id_rol,rol.nombre_rol";
+					$tab_privilegios = "public.privilegios INNER JOIN public.rol ON rol.id_rol=privilegios.id_rol
+                                        INNER JOIN public.catalogo ON catalogo.valor_catalogo = privilegios.tipo_rol_privilegios";
+					$where_privilegios = "columna_catalogo='tipo_rol_privilegios' AND nombre_catalogo != 'PRINCIPAL' 
+                                            AND privilegios.id_usuarios='$_id_usuarios'";
+					
+					$result_privilegios = $catalogo->getCondiciones($col_privilegios,$tab_privilegios,$where_privilegios,"tabla_catalogo");
+					
+					
 				}
 				
 			    
 				
 				$this->view("Usuarios",array(
-						"resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit, "resultEst"=>$resultEst
+				    "resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit ,
+				    "result_catalogo_usuario"=>$result_catalogo_usuario,
+				    "result_privilegios"=>$result_privilegios
 			
 				));
 			
@@ -2760,26 +2869,36 @@ public function index(){
 		session_start();
 		$resultado = null;
 		$usuarios=new UsuariosModel();
+		$_array_roles=array();
+		
+		/*para la consulta de catalogos*/
+		$catalogo = null; $catalogo=new CatalogoModel();
+		$privilegios = null; $privilegios=new PrivilegiosModel();
+		$claves = null; $claves = new ClavesModel();
+		
 		
 		if (isset(  $_SESSION['nombre_usuarios']) )
 		{
 	
 		if (isset ($_POST["cedula_usuarios"]))
 		{
-			$_cedula_usuarios    = $_POST["cedula_usuarios"];
+			$_cedula_usuarios     = $_POST["cedula_usuarios"];
 			$_nombre_usuarios     = $_POST["nombre_usuarios"];
-			$_apellidos_usuario     = $_POST["apellidos_usuario"];
+			$_apellidos_usuario     = $_POST["apellidos_usuarios"];
 			$_fecha_nacimiento_usuarios = $_POST['fecha_nacimiento_usuarios'];
-			$_usuario_usuarios = $_POST['usuario_usuarios'];
+			$_usuario_usuarios    = $_POST['usuario_usuarios'];
 			$_clave_usuarios      = $usuarios->encriptar($_POST["clave_usuarios"]);
 			$_clave_n_usuarios    = $_POST["clave_usuarios"];
 			$_telefono_usuarios   = $_POST["telefono_usuarios"];
 			$_celular_usuarios    = $_POST["celular_usuarios"];
 			$_correo_usuarios     = $_POST["correo_usuarios"];
-		    $_id_rol             = $_POST["id_rol"];
-		    $_id_estado          = $_POST["id_estado"];		    
-		    $_id_usuarios          = $_POST["id_usuarios"];
+		    $_id_rol_principal    = $_POST["id_rol_principal"];
+		    $_array_roles         = isset($_POST["lista_roles"])?$_POST["lista_roles"]:array();
+		    $_id_estado           = $_POST["id_estado"];		    
+		    $_id_usuarios         = $_POST["id_usuarios"];
 		    
+		    $_caduca_clave        = isset($_POST['caduca_clave'])?$_POST['caduca_clave']:"0";
+		    $_cambiar_clave       = isset($_POST['cambiar_clave'])?$_POST['cambiar_clave']:"0";
 		    
 		    if($_id_usuarios > 0){
 		    	
@@ -2798,43 +2917,240 @@ public function index(){
 		    		$imagen_usuarios = pg_escape_bytea($data);
 		    			
 		    			
-		    		$colval = "cedula_usuarios= '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios',  telefono_usuarios = '$_telefono_usuarios', celular_usuarios = '$_celular_usuarios', correo_usuarios = '$_correo_usuarios', fotografia_usuarios ='$imagen_usuarios'";
+		    		$colval = "cedula_usuarios= '$_cedula_usuarios',
+                                nombre_usuarios = '$_nombre_usuarios',
+                                apellidos_usuarios = '$_apellidos_usuario',
+                                telefono_usuarios = '$_telefono_usuarios',
+                                celular_usuarios = '$_celular_usuarios',
+                                correo_usuarios = '$_correo_usuarios',
+                                usuario_usuarios = '$_usuario_usuarios',
+                                fecha_nacimiento_usuarios = '$_fecha_nacimiento_usuarios',
+                                estado_usuarios = '$_id_estado',
+                                fotografia_usuarios = '$imagen_usuarios'";
+		    		
 		    		$tabla = "usuarios";
 		    		$where = "id_usuarios = '$_id_usuarios'";
 		    		$resultado=$usuarios->UpdateBy($colval, $tabla, $where);
 		    		
-		    		$colval = "clave_claves= '$_clave_usuarios', clave_n_claves = '$_clave_n_usuarios'";
-		    		$tabla = "claves";
-		    		$where = "id_usuarios = '$_id_usuarios'";
-		    		$resultado=$usuarios->UpdateBy($colval, $tabla, $where);
 		    		
-		    		/*$colval = "clave_claves= '$_clave_usuarios', clave_n_claves = '$_clave_n_usuarios'";
+		    		//para actualizacion de roles principal y secundario
+		    		$rsCatalogoSecundario = $catalogo->getBy("tabla_catalogo='privilegios' AND columna_catalogo='tipo_rol_privilegios'");
+		    		
+		    		$valor_rol_principal=0;
+		    		$valor_rol_secundario = 0;
+		    		
+		    		if(count($rsCatalogoSecundario)>0){
+		    		    foreach ($rsCatalogoSecundario as $tiporol ){
+		    		        if($tiporol->nombre_catalogo == 'PRINCIPAL'){
+		    		            $valor_rol_principal = $tiporol->valor_catalogo;
+		    		        }
+		    		        if($tiporol->nombre_catalogo == 'SECUNDARIO'){
+		    		            $valor_rol_secundario = $tiporol->valor_catalogo;
+		    		        }
+		    		    }
+		    		}
+		    		
+		    		
+		    		//rol principal
+		    		$colval = "id_rol='$_id_rol_principal'";
 		    		$tabla = "privilegios";
-		    		$where = "id_usuarios = '$_id_usuarios'";
-		    		$resultado=$usuarios->UpdateBy($colval, $tabla, $where);*/
-		    			
+		    		$where = "id_usuarios = '$_id_usuarios' AND tipo_rol_privilegios = '$valor_rol_principal' ";
+		    		$resultado=$privilegios->UpdateBy($colval, $tabla, $where);
+		    		
+		    		//rol secunadrio
+		    		/*consulta estado privilegios de catalogo*/
+		    		$wherecatalogo = "nombre_catalogo='ACTIVO' AND  tabla_catalogo='privilegios' AND columna_catalogo='estado_rol_privilegios'";
+		    		$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    		$_estado_privilegios = $resultCatalogo[0]->valor_catalogo;
+		    		
+		    		//var_dump($_array_roles); die('datos array');
+		    		
+		    		if(count($_array_roles)>0){
+		    		    
+		    		    $resultadoEliminar = $privilegios->deleteById("id_usuarios = '$_id_usuarios' AND tipo_rol_privilegios = '$valor_rol_secundario' ");
+		    		    //var_dump($resultadoEliminar); die('llego');
+		    		    foreach ($_array_roles as $id_rol){
+		    		        
+		    		        $funcion = "ins_privilegios";
+		    		        
+		    		        $parametros = "'$_id_usuarios',
+                               '$id_rol',
+                               '$valor_rol_secundario',
+                               '$_estado_privilegios'";
+		    		        
+		    		        $privilegios->setFuncion($funcion);
+		    		        $privilegios->setParametros($parametros);
+		    		        $resultado=$privilegios->Insert();
+		    		        //var_dump($resultadoEliminar); die('llego');
+		    		    }
+		    		}
+		    		
+		    		//para actualizacion de tabla claves
+		    		if((int)$_cambiar_clave==1 || $_cambiar_clave=="on"){
+		    		    
+		    		    $wherecatalogo = " nombre_catalogo='ACTUAL' AND tabla_catalogo='claves' AND columna_catalogo='estado_claves'";
+		    		    $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    		    $_estado_claves_actual = $resultCatalogo[0]->valor_catalogo;
+		    		    
+		    		    $wherecatalogo = " nombre_catalogo='ANTERIOR' AND tabla_catalogo='claves' AND columna_catalogo='estado_claves'";
+		    		    $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    		    $_estado_claves_anterior = $resultCatalogo[0]->valor_catalogo;
+		    		    
+		    		    //para fecha de insersion clave
+		    		    $clave_fecha_hoy = date("Y-m-d");
+		    		    $clave_fecha_siguiente_mes = date("Y-m-d",strtotime($clave_fecha_hoy."+ 1 month"));
+		    		    $_clave_caduca="0";
+		    		    
+		    		    if((int)$_caduca_clave ==1 || $_caduca_clave=="on"){
+		    		        
+		    		        $_clave_caduca="1";
+		    		    }
+		    		    
+		    		    $colval = "estado_claves='$_estado_claves_anterior'";
+		    		    $tabla = "claves";
+		    		    $where = "id_usuarios = '$_id_usuarios'";
+		    		    $resultado=$claves->UpdateBy($colval, $tabla, $where);
+		    		     
+		    		    //para insertado de claves
+		    		    $claves = new ClavesModel();
+		    		    $funcion = "ins_claves";
+		    		    $parametros = "'$_id_usuarios',
+		    				   '$_clave_usuarios',
+                               '$_clave_n_usuarios',
+                               '$clave_fecha_hoy',
+                               '$clave_fecha_siguiente_mes',
+                               '$_clave_caduca',
+                               '$_estado_claves_actual'";
+		    		    $claves->setFuncion($funcion);
+		    		    $claves->setParametros($parametros);
+		    		    $resultado=$claves->Insert();
+		    		    
+		    		    
+		    		}
+		    		
+		    		
 		    	}
 		    	else
-		    	{
-		    	
-		    	    $colval = "cedula_usuarios= '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios',  telefono_usuarios = '$_telefono_usuarios', celular_usuarios = '$_celular_usuarios', correo_usuarios = '$_correo_usuarios', fotografia_usuarios ='$imagen_usuarios'";
+		    	{  //caso contrario cuando no hay imagen selecionada por el usuario
+		    	 
+		    	  //actualizacion de tabla usuario
+		    	    $colval = "cedula_usuarios= '$_cedula_usuarios', 
+                                nombre_usuarios = '$_nombre_usuarios',
+                                apellidos_usuarios = '$_apellidos_usuario', 
+                                telefono_usuarios = '$_telefono_usuarios', 
+                                celular_usuarios = '$_celular_usuarios', 
+                                correo_usuarios = '$_correo_usuarios',
+                                usuario_usuarios = '$_usuario_usuarios',
+                                fecha_nacimiento_usuarios = '$_fecha_nacimiento_usuarios',
+                                estado_usuarios = '$_id_estado'";
 		    	    $tabla = "usuarios";
 		    	    $where = "id_usuarios = '$_id_usuarios'";
 		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
 		    	    
-		    	    $colval = "clave_claves= '$_clave_usuarios', clave_n_claves = '$_clave_n_usuarios'";
-		    	    $tabla = "claves";
-		    	    $where = "id_usuarios = '$_id_usuarios'";
-		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    	    
+		    	    //para actualizacion de roles principal y secundario
+		    	    $rsCatalogoSecundario = $catalogo->getBy("tabla_catalogo='privilegios' AND columna_catalogo='tipo_rol_privilegios'");
+		    	    
+		    	    $valor_rol_principal=0;
+		    	    $valor_rol_secundario = 0;
+		    	    
+		    	    if(count($rsCatalogoSecundario)>0){
+		    	        foreach ($rsCatalogoSecundario as $tiporol ){
+		    	            if($tiporol->nombre_catalogo == 'PRINCIPAL'){
+		    	                $valor_rol_principal = $tiporol->valor_catalogo;
+		    	            }
+		    	            if($tiporol->nombre_catalogo == 'SECUNDARIO'){
+		    	                $valor_rol_secundario = $tiporol->valor_catalogo;
+		    	            }
+		    	        }
+		    	    }
+		    	    
+		    	    
+		    	    //rol principal
+		    	    $colval = "id_rol='$_id_rol_principal'";
+		    	    $tabla = "privilegios";
+		    	    $where = "id_usuarios = '$_id_usuarios' AND tipo_rol_privilegios = '$valor_rol_principal' ";
+		    	    $resultado=$privilegios->UpdateBy($colval, $tabla, $where);
+		    	    
+		    	    //rol secunadrio
+		    	    /*consulta estado privilegios de catalogo*/
+		    	    $wherecatalogo = "nombre_catalogo='ACTIVO' AND  tabla_catalogo='privilegios' AND columna_catalogo='estado_rol_privilegios'";
+		    	    $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    	    $_estado_privilegios = $resultCatalogo[0]->valor_catalogo;
+		    	    
+		    	    //var_dump($_array_roles); die('datos array');
+		    	    
+		    	    if(count($_array_roles)>0){
+		    	        
+		    	        $resultadoEliminar = $privilegios->deleteById("id_usuarios = '$_id_usuarios' AND tipo_rol_privilegios = '$valor_rol_secundario' ");
+		    	        //var_dump($resultadoEliminar); die('llego');
+		    	        foreach ($_array_roles as $id_rol){
+		    	            //var_dump($id_rol); die('llego');
+		    	            $funcion = "ins_privilegios";
+		    	            
+		    	            $parametros = "'$_id_usuarios',
+                               '$id_rol',
+                               '$valor_rol_secundario',
+                               '$_estado_privilegios'";
+		    	            
+		    	            $privilegios->setFuncion($funcion);
+		    	            $privilegios->setParametros($parametros);
+		    	            $resultado=$privilegios->Insert();
+		    	            //var_dump($resultado); die('llego');
+		    	        }
+		    	    }
+		    	    
+		    	    //para actualizacion de tabla claves
+		    	    if((int)$_cambiar_clave==1 || $_cambiar_clave=="on"){
+		    	        
+		    	        $wherecatalogo = " nombre_catalogo='ACTUAL' AND tabla_catalogo='claves' AND columna_catalogo='estado_claves'";
+		    	        $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    	        $_estado_claves_actual = $resultCatalogo[0]->valor_catalogo;
+		    	        
+		    	        $wherecatalogo = " nombre_catalogo='ANTERIOR' AND tabla_catalogo='claves' AND columna_catalogo='estado_claves'";
+		    	        $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    	        $_estado_claves_anterior = $resultCatalogo[0]->valor_catalogo;
+		    	        
+		    	        //para fecha de insersion clave
+		    	        $clave_fecha_hoy = date("Y-m-d");
+		    	        $clave_fecha_siguiente_mes = date("Y-m-d",strtotime($clave_fecha_hoy."+ 1 month"));
+		    	        $_clave_caduca="0";
+		    	        
+		    	        if((int)$_caduca_clave ==1 || $_caduca_clave=="on"){
+		    	            
+		    	            $_clave_caduca="1";
+		    	        }
+		    	        
+		    	        $colval = "estado_claves='$_estado_claves_anterior'";
+		    	        $tabla = "claves";
+		    	        $where = "id_usuarios = '$_id_usuarios'";
+		    	        $resultado=$claves->UpdateBy($colval, $tabla, $where);
+		    	        
+		    	         
+		    	        //para insertado de claves
+		    	        $claves = new ClavesModel();
+		    	        $funcion = "ins_claves";
+		    	        $parametros = "'$_id_usuarios',
+		    				   '$_clave_usuarios',
+                               '$_clave_n_usuarios',
+                               '$clave_fecha_hoy',
+                               '$clave_fecha_siguiente_mes',
+                               '$_clave_caduca',
+                               '$_estado_claves_actual'";
+		    	        $claves->setFuncion($funcion);
+		    	        $claves->setParametros($parametros);
+		    	        $resultado=$claves->Insert();
+		    	        
+		    	        
+		    	        
+		    	    }
 		    	
 		    	}
 		    	
 		    	
 		    	
-		    }else{
+		    }else{ /*CUANDO NO HAY ID USUARIO SE VA INSERTADO*/
 		    
-		    	
-		    	
 		    	
 		    if ($_FILES['fotografia_usuarios']['tmp_name']!="")
 		    {
@@ -2848,6 +3164,12 @@ public function index(){
 		    	move_uploaded_file($_FILES['fotografia_usuarios']['tmp_name'],$directorio.$nombre);
 		    	$data = file_get_contents($directorio.$nombre);
 		    	$imagen_usuarios = pg_escape_bytea($data);
+		    	
+		    	/*consultamos datos de catalogo*/
+		    	//estado usuario catalogo
+		    	$wherecatalogo = "nombre_catalogo='ACTIVO' AND  tabla_catalogo='usuarios' AND columna_catalogo='estado_usuarios'";
+		    	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    	$_estado_usuarios = $resultCatalogo[0]->valor_catalogo;
 		    
 		    
 		    	$funcion = "ins_usuarios";
@@ -2859,23 +3181,102 @@ public function index(){
 		    	               '$_telefono_usuarios',
 		    	               '$_fecha_nacimiento_usuarios',
 		    	               '$_usuario_usuarios',
-		    	               '$_id_estado',
+		    	               '$_estado_usuarios', 
 		    	               '$imagen_usuarios'";
 		    	$usuarios->setFuncion($funcion);
 		    	$usuarios->setParametros($parametros);
 		    	$resultado=$usuarios->Insert();
 		    	
-		    	//para datos de usuario
-		    	$rsUsuario = null;
-		    	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios', apellidos_usuarios = '$_apellidos_usuario', correo_usuarios = '$_correo_usuarios', usuario_usuarios='$_usuario_usuarios'"; 
+		    	//para datos de usuario traer de BD
+		    	$rsUsuario = null;		    	
+		    	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios' AND nombre_usuarios = '$_nombre_usuarios' AND apellidos_usuarios = '$_apellidos_usuario'AND correo_usuarios = '$_correo_usuarios'AND usuario_usuarios='$_usuario_usuarios'"; 
 		    	$rsUsuario=$usuarios->getCondiciones('id_usuarios' ,'public.usuarios' , $whereconsulta , 'id_usuarios');
 		    	
-		    	//valor para guardar el id
+		    	//valor para guardar el id_usuarios
 		    	$consulta_id_usuarios = null;
 		    	$consulta_id_usuarios = $rsUsuario[0]->id_usuarios;
+		    			    	
+		    	$_clave_caduca="0";
+		    	if((int)$_caduca_clave ==1 || $_caduca_clave=="on"){
+		    	    
+		    	    $_clave_caduca="1";
+		    	}
+		    			    	
+		    	//estado usuario catalogo
+		    	$wherecatalogo = "nombre_catalogo='ACTUAL' AND  tabla_catalogo='claves' AND columna_catalogo='estado_claves'";
+		    	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    	$_estado_claves = $resultCatalogo[0]->valor_catalogo;
 		    	
-		    	echo $consulta_id_usuarios;
-		    
+		    	//para fecha de insersion clave
+		    	$clave_fecha_hoy = date("Y-m-d");
+		    	$clave_fecha_siguiente_mes = date("Y-m-d",strtotime($clave_fecha_hoy."+ 1 month"));
+		    	//para insertado de claves
+		    	$claves = new ClavesModel();
+		    	$funcion = "ins_claves";
+		    	$parametros = "'$consulta_id_usuarios',
+		    				   '$_clave_usuarios',
+                               '$_clave_n_usuarios',
+                               '$clave_fecha_hoy',
+                               '$clave_fecha_siguiente_mes',
+                               '$_clave_caduca',
+                               '$_estado_claves'";
+		    	$claves->setFuncion($funcion);
+		    	$claves->setParametros($parametros);
+		    	$resultado=$claves->Insert();
+		    	
+		    	
+		    	//para el ingreso de los privilegios
+		    	$privilegios = null;
+		    	$privilegios = new PrivilegiosModel();
+		    	
+		    	/*consultamos datos de catalogo*/
+		    	//estado catalogo
+		    	$wherecatalogo = "nombre_catalogo='ACTIVO' AND  tabla_catalogo='privilegios' AND columna_catalogo='estado_rol_privilegios'";
+		    	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    	$_estado_privilegios = $resultCatalogo[0]->valor_catalogo;
+		    	//tipo rol catalogo
+		    	$wherecatalogo = "nombre_catalogo='PRINCIPAL' AND  tabla_catalogo='privilegios' AND columna_catalogo='tipo_rol_privilegios'";
+		    	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    	$_tipo_rol_privilegios = $resultCatalogo[0]->valor_catalogo;
+		    	
+		    	$funcion = "ins_privilegios";
+		    	
+		    	$parametros = "'$consulta_id_usuarios',
+                               '$_id_rol_principal',
+                               '$_tipo_rol_privilegios',
+                               '$_estado_privilegios'";
+		    	
+		    	$privilegios->setFuncion($funcion);
+		    	$privilegios->setParametros($parametros);
+		    	$resultado=$privilegios->Insert();
+		    	
+		    	//para ingreso de roles secundarios
+		    	if(count($_array_roles)>0){
+		    	    
+		    	    /*consultamos datos de catalogo*/
+		    	    
+		    	    //tipo rol catalogo
+		    	    $wherecatalogo = "nombre_catalogo='SECUNDARIO' AND  tabla_catalogo='privilegios' AND columna_catalogo='tipo_rol_privilegios'";
+		    	    $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		    	    $_tipo_rol_privilegios = $resultCatalogo[0]->valor_catalogo;
+		    	    
+		    	    foreach ($_array_roles as $id_rol){
+		    	        
+		    	        $funcion = "ins_privilegios";
+		    	        
+		    	        $parametros = "'$consulta_id_usuarios',
+                               '$id_rol',
+                               '$_tipo_rol_privilegios',
+                               '$_estado_privilegios'";
+		    	        
+		    	        $privilegios->setFuncion($funcion);
+		    	        $privilegios->setParametros($parametros);
+		    	        $resultado=$privilegios->Insert();
+		    	    }
+		    	}
+		    	
+		    	
+		    	
 		    }
 		    else
 		    {
@@ -2886,20 +3287,40 @@ public function index(){
 		    	if ( !empty($result) )
 		    	{
 		    		 
+		    	    /*$imagen_usuarios = "";
+		    	    $_id_usuarios = $result[0]->id_usuarios;
+		    	    
+		    	    if( $_FILES['fotografia_usuarios']['tmp_name']!="" ){
+		    	        
+		    	        $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/fotografias_usuarios/';
+		    	        
+		    	        $nombre = $_FILES['fotografia_usuarios']['name'];
+		    	        $tipo = $_FILES['fotografia_usuarios']['type'];
+		    	        $tamano = $_FILES['fotografia_usuarios']['size'];
+		    	        
+		    	        move_uploaded_file($_FILES['fotografia_usuarios']['tmp_name'],$directorio.$nombre);
+		    	        $data = file_get_contents($directorio.$nombre);
+		    	        $imagen_usuarios = pg_escape_bytea($data);
+		    	    }
+		    	    
 		    	    $colval = "cedula_usuarios= '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios',  telefono_usuarios = '$_telefono_usuarios', celular_usuarios = '$_celular_usuarios', correo_usuarios = '$_correo_usuarios', fotografia_usuarios ='$imagen_usuarios'";
 		    	    $tabla = "usuarios";
 		    	    $where = "id_usuarios = '$_id_usuarios'";
-		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);*/
 		    	    
-		    	    $colval = "clave_claves= '$_clave_usuarios', clave_n_claves = '$_clave_n_usuarios'";
-		    	    $tabla = "claves";
-		    	    $where = "id_usuarios = '$_id_usuarios'";
-		    	    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+		    	    /*implementar actualizacion de claves*/
 		    	    
 		    	}
 		        else{
 		        	
 		        	$imagen_usuarios="";
+		        	
+		        	/*consultamos datos de catalogo*/
+		        	//estado usuario catalogo
+		        	$wherecatalogo = "nombre_catalogo='ACTIVO' AND  tabla_catalogo='usuarios' AND columna_catalogo='estado_usuarios'";
+		        	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		        	$_estado_usuarios = $resultCatalogo[0]->valor_catalogo;
+		        	
 		        	
 		        	$funcion = "ins_usuarios";
 		        	$parametros = "'$_cedula_usuarios',
@@ -2910,22 +3331,104 @@ public function index(){
 		    	               '$_telefono_usuarios',
 		    	               '$_fecha_nacimiento_usuarios',
 		    	               '$_usuario_usuarios',
-		    	               '$_id_estado',
+		    	               '$_estado_usuarios',
 		    	               '$imagen_usuarios'";
 		        	$usuarios->setFuncion($funcion);
 		        	$usuarios->setParametros($parametros);
 		        	$resultado=$usuarios->Insert();
 		        	
-		        	//para datos de usuario
+		        	//para datos de usuario traer de BD
 		        	$rsUsuario = null;
-		        	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios', nombre_usuarios = '$_nombre_usuarios', apellidos_usuarios = '$_apellidos_usuario', correo_usuarios = '$_correo_usuarios', usuario_usuarios='$_usuario_usuarios'";
+		        	$whereconsulta = "cedula_usuarios = '$_cedula_usuarios' AND nombre_usuarios = '$_nombre_usuarios' AND apellidos_usuarios = '$_apellidos_usuario'AND correo_usuarios = '$_correo_usuarios'AND usuario_usuarios='$_usuario_usuarios'";
 		        	$rsUsuario=$usuarios->getCondiciones('id_usuarios' ,'public.usuarios' , $whereconsulta , 'id_usuarios');
 		        	
-		        	//valor para guardar el id
+		        	//valor para guardar el id_usuarios
 		        	$consulta_id_usuarios = null;
 		        	$consulta_id_usuarios = $rsUsuario[0]->id_usuarios;
 		        	
-		        	echo $consulta_id_usuarios;
+		        	/*consultamos datos de catalogo para claves*/
+		        	//estado usuario catalogo
+		        	$wherecatalogo = "nombre_catalogo='ACTUAL' AND  tabla_catalogo='claves' AND columna_catalogo='estado_claves'";
+		        	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		        	$_estado_claves = $resultCatalogo[0]->valor_catalogo;
+		        	
+		        	//para fecha de insersion clave
+		        	$_clave_caduca="0";
+		        	if((int)$_caduca_clave ==1 || $_caduca_clave=="on"){
+		        	    
+		        	    $_clave_caduca="1";
+		        	}
+		        	
+		        	//para fecha de insersion clave
+		        	$clave_fecha_hoy = date("Y-m-d");
+		        	$clave_fecha_siguiente_mes = date("Y-m-d",strtotime($clave_fecha_hoy."+ 1 month"));
+		        	//para insertado de claves
+		        	$claves = new ClavesModel();
+		        	$funcion = "ins_claves";
+		        	$parametros = "'$consulta_id_usuarios',
+		    				   '$_clave_usuarios',
+                               '$_clave_n_usuarios',
+                               '$clave_fecha_hoy',
+                               '$clave_fecha_siguiente_mes',
+                               '$_clave_caduca',
+                               '$_estado_claves'";
+		        	$claves->setFuncion($funcion);
+		        	$claves->setParametros($parametros);
+		        	$resultado=$claves->Insert();
+		        	
+		        	
+		        	//para el ingreso de los privilegios
+		        	$privilegios = null;
+		        	$privilegios = new PrivilegiosModel();
+		        	
+		        	/*consultamos datos de catalogo*/
+		        	//estado catalogo
+		        	$wherecatalogo = "nombre_catalogo='ACTIVO' AND  tabla_catalogo='privilegios' AND columna_catalogo='estado_rol_privilegios'";
+		        	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		        	$_estado_privilegios = $resultCatalogo[0]->valor_catalogo;
+		        	//tipo rol catalogo
+		        	$wherecatalogo = "nombre_catalogo='PRINCIPAL' AND  tabla_catalogo='privilegios' AND columna_catalogo='tipo_rol_privilegios'";
+		        	$resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		        	$_tipo_rol_privilegios = $resultCatalogo[0]->valor_catalogo;
+		        	
+		        	$funcion = "ins_privilegios";
+		        	
+		        	$parametros = "'$consulta_id_usuarios',
+                               '$_id_rol_principal',
+                               '$_tipo_rol_privilegios',
+                               '$_estado_privilegios'";
+		        	
+		        	$privilegios->setFuncion($funcion);
+		        	$privilegios->setParametros($parametros);
+		        	$resultado=$privilegios->Insert();
+		        	
+		        	//para ingreso de roles secundarios
+		        	if(count($_array_roles)>0){
+		        	    
+		        	    /*consultamos datos de catalogo*/
+		        	    
+		        	    //tipo rol catalogo
+		        	    $wherecatalogo = "nombre_catalogo='SECUNDARIO' AND  tabla_catalogo='privilegios' AND columna_catalogo='tipo_rol_privilegios'";
+		        	    $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+		        	    $_tipo_rol_privilegios = $resultCatalogo[0]->valor_catalogo;
+		        	    
+		        	    foreach ($_array_roles as $id_rol){
+		        	        
+		        	        $funcion = "ins_privilegios";
+		        	        
+		        	        $parametros = "'$consulta_id_usuarios',
+                               '$id_rol',
+                               '$_tipo_rol_privilegios',
+                               '$_estado_privilegios'";
+		        	        
+		        	        $privilegios->setFuncion($funcion);
+		        	        $privilegios->setParametros($parametros);
+		        	        $resultado=$privilegios->Insert();
+		        	        
+		        	    }//fin de foreach
+		        	    
+		        	}//fin array de roles
+		        	
 		    	}
 		    
 		    }
@@ -2934,7 +3437,7 @@ public function index(){
 		  
 		  
 		 
-		  $afiliado = new AfiliadoModel();
+		 /* $afiliado = new AfiliadoModel();
 		  $resultAfiliado="";
 		  $resultAfiliado=$afiliado->getBy("cedula='$_cedula_usuarios'");
 		  
@@ -2958,10 +3461,10 @@ public function index(){
 		  	$afiliado->setParametros($parametros);
 		  	$resultado=$afiliado->Insert();
 		  	
-		  }
+		  }*/
 		  
 		  
-		  $participes = new ParticipeModel();
+		 /* $participes = new ParticipeModel();
 		  $resultParticipes="";
 		  $resultParticipes=$participes->getBy("cedula='$_cedula_usuarios'");
 		  if(!empty($resultParticipes)){
@@ -3025,10 +3528,10 @@ public function index(){
 		  	}
 		  	
 		  	 	
-		  }
+		  }*/
 		  
 		   
-		    $this->redirect("Usuarios", "index");
+		   $this->redirect("Usuarios", "index");
 		}
 		
 	   }else{
@@ -3048,17 +3551,31 @@ public function index(){
 	
 	public function borrarId()
 	{
+	    session_start();
+	    $id_usuario_on = (int)$_SESSION['id_usuarios'];
+	    $catalogo = null; $catalogo= new CatalogoModel();
+	    
 		if(isset($_GET["id_usuarios"]))
 		{
 			$id_usuario=(int)$_GET["id_usuarios"];
-	
-			$usuarios=new UsuariosModel();
-				
-			$sesiones= new SesionesModel();
-			$sesiones->deleteBy(" id_usuarios",$id_usuario);
-			$usuarios->deleteBy(" id_usuarios",$id_usuario);
-				
-				
+			
+			if($id_usuario_on!=$id_usuario){
+			    
+			    //estado_usuario
+			    $wherecatalogo = "nombre_catalogo='INACTIVO' AND  tabla_catalogo='usuarios' AND columna_catalogo='estado_usuarios'";
+			    $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+			    $estado_usuarios = $resultCatalogo[0]->valor_catalogo;
+			    
+			    $usuarios=new UsuariosModel();
+			    
+			    $colval = "estado_usuarios='$estado_usuarios'";
+			    $tabla = "usuarios";
+			    $where = "id_usuarios = '$id_usuario'";
+			    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
+			    
+			    
+			}
+			
 		}
 	
 		$this->redirect("Usuarios", "index");
@@ -6979,6 +7496,49 @@ public function index(){
 	
 	}
 	
+	//////////////////////////////////////////////CAMBIO DE CLAVE////////////////////////////////////////////
+	
+	public function ajax_caducaclave(){
+	    
+	    
+	    if(isset($_POST['clave_usuarios']) && isset($_POST['id_usuarios']) ){
+	       
+	        if($_POST['id_usuarios']!=""){
+	            
+	            $claves = null; $claves = new ClavesModel();
+	            
+	            $id_usuario = $_POST['id_usuarios'];
+	            $clave_nueva = $_POST['clave_usuarios'];
+	            
+	            $rsClaves = $claves->getBy("id_usuarios='$id_usuario' AND clave_n_claves='$clave_nueva'");
+	            
+	            if(!empty($rsClaves))
+	            {
+	                echo "clave ya fue utilizada con este usuario !Favor cambiar!";
+	            }
+	            
+	        }
+	        
+	    }
+	}
+	
+	
+    public function ajax_validacedula(){
+        
+        $usuarios = null; $usuarios= new UsuariosModel();
+        
+        if(isset($_POST['cedula']) && $_POST['cedula']!=""){
+            
+            $cedula_usuarios = $_POST['cedula'];
+            
+            $rsUsuarios = $usuarios->getBy(" cedula_usuarios = '$cedula_usuarios'");
+            
+            if(!empty($rsUsuarios)){
+                echo "Cedula!  ya se encuentra registrada...";
+            }
+        }
+	    
+	}
 	
 	
 	

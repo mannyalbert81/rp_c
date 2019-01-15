@@ -11,6 +11,46 @@
     
    <?php include("view/modulos/links_css.php"); ?>
    
+          <script>
+		    // cada vez que se cambia el valor del combo
+		    $(document).ready(function(){
+		    
+		    $("#Guardar").click(function() 
+			{
+		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
+
+		    	var nombre_grupos = $("#nombre_grupos").val();
+		    	
+		    	
+		    	
+		    	if (nombre_grupos == "")
+		    	{
+			    	
+		    		$("#mensaje_nombre_grupos").text("Introduzca Un Grupo");
+		    		$("#mensaje_nombre_grupos").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_nombre_grupos").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+
+		    	
+			}); 
+
+
+		        $( "#nombre_grupos" ).focus(function() {
+				  $("#mensaje_nombre_grupos").fadeOut("slow");
+			    });
+		        		      
+				    
+		}); 
+
+	</script>
+   
   </head>
 
   <body class="hold-transition skin-blue fixed sidebar-mini">   

@@ -141,6 +141,7 @@
     		
     		
     <!-- seccion para el listado de Productos -->
+   
       <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">

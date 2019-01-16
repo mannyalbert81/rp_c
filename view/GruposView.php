@@ -109,6 +109,18 @@
                                     <input type="hidden" name="id_grupos" id="id_grupos" value="<?php echo $resEdit->id_grupos; ?>" class="form-control"/>
     					            <div id="mensaje_nombre_grupos" class="errores"></div>
                                  </div>
+                                 <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado" class="control-label">Estado:</label>
+                                      <select name="id_estado" id="id_estado"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php  foreach($result_catalogo_usuario as $res) {?>
+    										<option value="<?php echo $res->valor_catalogo; ?>" <?php if ($res->valor_catalogo == $resEdit->estado_usuarios )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_catalogo; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estados" class="errores"></div>
+                                    </div>
+                                  </div>
                              </div>
                           </div>
                       <?php } } else {?>                		    
@@ -120,6 +132,19 @@
                                   <div id="mensaje_nombre_grupos" class="errores"></div>
                                  </div>
                              </div>
+                             
+                             <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado" class="control-label">Estado:</label>
+                                      <select name="id_estado" id="id_estado"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($result_catalogo_usuario as $res) {?>
+    										<option value="<?php echo $res->valor_catalogo; ?>" ><?php echo $res->nombre_catalogo; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estados" class="errores"></div>
+                                    </div>
+                                  </div>
                             </div>	
                     		            
                     		            

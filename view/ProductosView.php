@@ -304,6 +304,8 @@
                            <th>Descripcion</th>
                           <th>Unidad De M.</th>
                           <th>ULT Precio</th>
+                          <th>Editar</th>
+                          <th>Eliminar</th>
 
                         </tr>
                       </thead>
@@ -497,8 +499,8 @@
 		        $( "#descripcion_productos" ).focus(function() {
 					  $("#mensaje_descripcion_productos").fadeOut("slow");
 				    });
-		        $( "#unidad_medida_productos" ).focus(function() {
-					  $("#mensaje_unidad_medida_productos").fadeOut("slow");
+		        $( "#id_unidad_medida" ).focus(function() {
+					  $("#mensaje_id_unidad_medida").fadeOut("slow");
 				    });
 		        $( "#ult_precio_productos" ).focus(function() {
 					  $("#mensaje_ult_precio_productos").fadeOut("slow");

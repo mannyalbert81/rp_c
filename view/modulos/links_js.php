@@ -9,6 +9,8 @@
     
      <script src="view/bootstrap/otros/datatables/datatables.min.js" >  </script>
      <script src="view/bootstrap/otros/table-sorter/jquery.tablesorter.min.js" >  </script>
+    <!-- para los mensajes en alert sweetalert -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" >  </script>
 	
 	
 	 <script>

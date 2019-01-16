@@ -2561,7 +2561,6 @@ public function index(){
                                 AND c1.tabla_catalogo = 'claves' AND c1.columna_catalogo='estado_claves' 
                                 AND c1.nombre_catalogo='ACTUAL'";
 					
-					
 					$id       = "usuarios.id_usuarios";
 					
 					$_id_usuarios = $_GET["id_usuarios"];

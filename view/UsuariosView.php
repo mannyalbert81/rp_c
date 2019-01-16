@@ -207,7 +207,7 @@
                               <div class="row">
                         		<div class="col-xs-12 col-lg-5 col-md-5">
                         		   <div class="form-group">
-                                      <label for="id_rol_principal" class="control-label">Roles Disponibles</label>
+                                      <label for="id_rol" class="control-label">Roles Disponibles</label>
                                       <select name="id_rol" id="id_rol" multiple="multiple" class="form-control" >
     									<?php foreach($resultRol as $res) {?>
     										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>

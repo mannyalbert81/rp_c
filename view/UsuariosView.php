@@ -837,33 +837,7 @@
 			    }
 
 		    	
-		    	/*if (id_rol == 0 )
-		    	{
-			    	
-		    		$("#mensaje_id_rol").text("Seleccione");
-		    		$("#mensaje_id_rol").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_rol").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}*/
-
-
-
-		    	/*if (id_estado == 0 )
-		    	{
-			    	
-		    		$("#mensaje_id_estado").text("Seleccione");
-		    		$("#mensaje_id_estado").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_estado").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}*/
+		    
 		    					    
 
 			}); 
@@ -876,9 +850,7 @@
 				$( "#nombre_usuarios" ).focus(function() {
 					$("#mensaje_nombre_usuarios").fadeOut("slow");
     			});
-				/*$( "#usuario_usuario" ).focus(function() {
-					$("#mensaje_usuario_usuario").fadeOut("slow");
-    			});*/
+				
     			
 				$( "#clave_usuarios" ).focus(function() {
 					$("#mensaje_clave_usuarios").fadeOut("slow");
@@ -895,13 +867,6 @@
 					$("#mensaje_correo_usuarios").fadeOut("slow");
     			});
 			
-				/*$( "#id_rol" ).focus(function() {
-					$("#mensaje_id_rol").fadeOut("slow");
-    			});*/
-
-				/*$( "#id_estado" ).focus(function() {
-					$("#mensaje_id_estado").fadeOut("slow");
-    			});*/
 				
 		      
 				    

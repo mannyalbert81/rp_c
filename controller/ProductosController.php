@@ -204,7 +204,93 @@ class ProductosController extends ControladorBase{
         
     }
     
-    
+    public function consulta(){
+        
+        
+        session_start();
+        
+        //Creamos el objeto usuario
+        $productos=new ProductosModel();
+        //Conseguimos todos los usuarios
+        $resultSet=$productos->getAll("id_productos");
+        
+        $grupos=new GruposModel();
+        $resultGrup=$grupos->getAll("nombre_grupos");
+        
+        $unidad=new UnidadModel();
+        $resultUni=$unidad->getAll("nombre_unidad_medida");
+        
+        $resultEdit = "";
+        
+        if (isset(  $_SESSION['nombre_usuarios']) )
+        {
+            
+            $nombre_controladores = "Productos";
+            $id_rol= $_SESSION['id_rol'];
+            $resultPer = $productos->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+            
+            if (!empty($resultPer))
+            {
+                if (isset ($_GET["id_productos"])   )
+                {
+                    
+                    
+                    
+                    $_id_productos = $_GET["id_productos"];
+                    $columnas = "
+                                         productos.id_productos,
+                                          grupos.id_grupos,
+                                          grupos.nombre_grupos,
+                                          unidad_medida.id_unidad_medida,
+                                          unidad_medida.nombre_unidad_medida,
+                                          productos.codigo_productos,
+                                          productos.marca_productos,
+                                          productos.nombre_productos,
+                                          productos.descripcion_productos,
+                                          productos.ult_precio_productos";
+                    $tablas   = " public.productos,
+                                      public.grupos,
+                                      public.unidad_medida";
+                    $where    = "  grupos.id_grupos = productos.id_grupos AND
+                                       unidad_medida.id_unidad_medida = productos.id_unidad_medida AND productos.id_productos = '$_id_productos'";
+                    $id       = "productos.id_productos";
+                    
+                    $resultEdit = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
+                    
+                    
+                    
+                }
+                
+                
+                $this->view("Consulta_Productos",array(
+                    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultGrup"=>$resultGrup, "resultUni"=>$resultUni
+                    
+                ));
+                
+                
+                
+            }
+            else
+            {
+                $this->view("Error",array(
+                    "resultado"=>"No tiene Permisos de Acceso a Grupos"
+                    
+                ));
+                
+                exit();
+            }
+            
+        }
+        else{
+            
+            $this->redirect("Usuarios","sesion_caducada");
+            
+        }
+        
+        
+        
+        
+    }
 
     
     

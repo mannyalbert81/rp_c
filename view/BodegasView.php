@@ -111,22 +111,6 @@
        
 	</script>
 		    
-			
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-		 
-		 
-		 
-    
 	</head>
  
     <body class="hold-transition skin-blue fixed sidebar-mini">

@@ -129,12 +129,14 @@ class ActividadesController extends ControladorBase{
 	            
 	            
 	            
+	            
 	            // aqui solo agrega en el where estos dos campos mijin de ahi dale formato igual a los otros formularios pilas
 	            //y mirale porque no para esta imagen .gif
 	            
 	            $where_to=$where.$where2;
 	            
 	        }
+
 	        
 	        $html="";
 	        $resultSet=$actividades->getCantidad("*", $tablas, $where_to);

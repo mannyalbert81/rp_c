@@ -81,8 +81,7 @@ class UsuariosController extends ControladorBase{
     		$count_query   = $cantidadResult;
     		$total_pages = ceil($cantidadResult/$per_page);
     		
-<<<<<<< HEAD
-    			
+
     		
     		
     		
@@ -156,7 +155,7 @@ class UsuariosController extends ControladorBase{
     				$html.='</tr>';
     		}
     		
-=======
+
         	if($cantidadResult>0)
         	{
         
@@ -235,7 +234,7 @@ class UsuariosController extends ControladorBase{
         				$html.='</tr>';
         		}
         		
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
+
     		
     		$html.='</tbody>';
     		$html.='</table>';
@@ -262,6 +261,7 @@ class UsuariosController extends ControladorBase{
     	} 
     	 
     	 
+    }
     }
     
     

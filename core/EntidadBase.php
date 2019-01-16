@@ -275,7 +275,7 @@ class EntidadBase{
     	$_SESSION["correo_usuarios"]=$correo_usuarios;
     	$_SESSION["ip_usuarios"]=$ip_usuarios; 	
 
-    	if (substr($ip_usuario, 0, 3) == "192" )
+    	if (substr($ip_usuarios, 0, 3) == "192" )
     	{
     		$_SESSION["tipo_usuario"]="usuario_local";
     	}

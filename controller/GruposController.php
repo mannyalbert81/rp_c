@@ -16,6 +16,12 @@ class GruposController extends ControladorBase{
      	$resultSet=$grupos->getAll("id_grupos");
 				
 		$resultEdit = "";
+		
+		$catalogo=null;
+		$catalogo = new CatalogoModel();
+		//para estados de catalogo de usuarios
+		$whe_catalogo = "tabla_catalogo = 'grupos' AND columna_catalogo = 'estado_grupos'";
+		$result_catalogo_usuario = $catalogo->getBy($whe_catalogo);
 
 		
 		session_start();
@@ -63,7 +69,7 @@ class GruposController extends ControladorBase{
 		
 				
 				$this->view("Grupos",array(
-						"resultSet"=>$resultSet, "resultEdit" =>$resultEdit
+				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "result_catalogo_usuario" =>$result_catalogo_usuario
 			
 				));
 		
@@ -149,61 +155,42 @@ class GruposController extends ControladorBase{
 	
 	public function borrarId()
 	{
-
-		session_start();
-		$grupos=new GruposModel();
-		$nombre_controladores = "Grupos";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-			
-		if (!empty($resultPer))
-		{
-			if(isset($_GET["id_grupos"]))
-			{
-			    $id_grupos=(int)$_GET["id_grupos"];
-		
-				
-				
-			    $grupos->deleteBy(" id_grupos",$id_grupos);
-				
-				
-			}
-			
-			$this->redirect("Grupos", "index");
-			
-			
-		}
-		else
-		{
-			$this->view("Error",array(
-				"resultado"=>"No tiene Permisos de Borrar Grupos"
-			
-			));
-		}
-				
-	}
-	
-	
-	public function Reporte(){
-	
-		//Creamos el objeto usuario
+	    
+	    session_start();
 	    $grupos=new GruposModel();
-		//Conseguimos todos los usuarios
-		
-	
-	
-		session_start();
-	
-	
-		if (isset(  $_SESSION['usuario']) )
-		{
-		    $resultRep = $grupos->getByPDF("id_grupos, nombre_grupos", " nombre_grupos != '' ");
-			$this->report("Grupos",array(	"resultRep"=>$resultRep));
-	
-		}
-					
-	
+	    $nombre_controladores = "Grupos";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (!empty($resultPer))
+	    {
+	        if(isset($_GET["id_grupos"]))
+	        {
+	            $id_grupos=(int)$_GET["id_grupos"];
+	            
+	            
+	            
+	            $grupos->deleteBy("id_grupos",$id_grupos);
+	            
+	            
+	        }
+	        
+	        $this->redirect("Grupos", "index");
+	        
+	        
+	    }
+	    else
+	    {
+	        $this->view("Error",array(
+	            "resultado"=>"No tiene Permisos de Borrar Roles"
+	            
+	        ));
+	    }
+	    
 	}
+	
+	
+
 	
 	
 	

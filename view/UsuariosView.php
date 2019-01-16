@@ -54,7 +54,7 @@
         
         <section class="content">
           <div class="box box-primary">
-            <div class="box-header">
+            <div class="box-header with-border">
               <h3 class="box-title">Registrar Usuarios</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -207,7 +207,7 @@
                               <div class="row">
                         		<div class="col-xs-12 col-lg-5 col-md-5">
                         		   <div class="form-group">
-                                      <label for="id_rol_principal" class="control-label">Roles Disponibles</label>
+                                      <label for="id_rol" class="control-label">Roles Disponibles</label>
                                       <select name="id_rol" id="id_rol" multiple="multiple" class="form-control" >
     									<?php foreach($resultRol as $res) {?>
     										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
@@ -286,7 +286,7 @@
                                 	<div class="form-group">
                                     	<label for="usuario_usuarios" class="control-label">Usuario:</label>
                                         <input type="text" class="form-control" id="usuario_usuarios" name="usuario_usuarios" value=""  placeholder="usuario..." >
-                                        <div id="usuario_usuarios" class="errores"></div>
+                                        <div id="mensaje_usuario_usuarios" class="errores"></div>
                                      </div>
                                  </div> 
                                  
@@ -446,35 +446,68 @@
       			</div>
     		</section>
     		
-    		<!-- para el listado de usuarios -->
-    		<section class="content">
-              <div class="box box-primary">
-                <div class="box-header with-border">
-                  <h3 class="box-title">Listado de Usuarios</h3>
-                  <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                      <i class="fa fa-minus"></i></button>
-                  </div>
-                </div>
-        
-        		<div class="box-body">
-                  <div class="ibox-content">
-                  	
-                  	<div class="x_content">
-					
-					<div class="pull-right" style="margin-right:11px;">
+    		
+    		
+    		
+       <section class="content">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Listado Usuarios</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+                
+              </div>
+            </div>
+            
+            <div class="box-body">
+            
+            
+            
+            
+            
+           <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#activos" data-toggle="tab">Usuarios Activos</a></li>
+              <li><a href="#inactivos" data-toggle="tab">Usuarios Inactivos</a></li>
+            </ul>
+            
+            <div class="col-md-12 col-lg-12 col-xs-12">
+            <div class="tab-content">
+            <br>
+              <div class="tab-pane active" id="activos">
+                
+					<div class="pull-right" style="margin-right:15px;">
 						<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_usuarios(1)" placeholder="search.."/>
 					</div>
 					<div id="load_registrados" ></div>	
 					<div id="users_registrados"></div>	
-                  
-                  </div>  
-                  	
-         		  </div>
-        		</div>
-        	  </div>
+                
+              </div>
+              
+              <div class="tab-pane" id="inactivos">
+                
+                    <div class="pull-right" style="margin-right:15px;">
+					<input type="text" value="" class="form-control" id="search_inactivos" name="search_inactivos" onkeyup="load_usuarios_inactivos(1)" placeholder="search.."/>
+					</div>
+					
+					
+					<div id="load_inactivos_registrados" ></div>	
+					<div id="users_inactivos_registrados"></div>
+                
+                
+              </div>
+             
+             
+            </div>
+            </div>
+          </div>
+         
+            
+            </div>
+            </div>
             </section>
-
+    	
     
   </div>
  
@@ -494,6 +527,7 @@
    $(document).ready( function (){
 	   /*pone_espera();*/
 	   load_usuarios(1);
+	   load_usuarios_inactivos(1);
 
 	   /*para manejo de multiples roles*/
 	    /**$("#link_agregar_rol").click(function() {
@@ -519,10 +553,7 @@
 	        }); 
 	    });
 
-	    $('#Guardar').click(function(){
-	    	selecionarTodos();
-	    	//return false;
-		});
+	   
 
 	    $(".caducaclave").blur(function(){
 			var clave = $("#clave_usuarios").val();
@@ -643,7 +674,7 @@
                beforeSend: function(objeto){
                  $("#load_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
                },
-               url: 'index.php?controller=Usuarios&action=index10&search='+search,
+               url: 'index.php?controller=Usuarios&action=consulta_usuarios_activos&search='+search,
                type: 'POST',
                data: con_datos,
                success: function(x){
@@ -660,6 +691,37 @@
 
 	   }
 
+   function load_usuarios_inactivos(pagina){
+
+	   var search=$("#search_inactivos").val();
+       var con_datos={
+				  action:'ajax',
+				  page:pagina
+				  };
+		  
+     $("#load_inactivos_registrados").fadeIn('slow');
+     
+     $.ajax({
+               beforeSend: function(objeto){
+                 $("#load_inactivos_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+               },
+               url: 'index.php?controller=Usuarios&action=consulta_usuarios_inactivos&search='+search,
+               type: 'POST',
+               data: con_datos,
+               success: function(x){
+                 $("#users_inactivos_registrados").html(x);
+                 $("#load_inactivos_registrados").html("");
+                 $("#tabla_usuarios_inactivos").tablesorter(); 
+                 
+               },
+              error: function(jqXHR,estado,error){
+                $("#users_inactivos_registrados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+              }
+            });
+
+
+	   }
+
   
 
    
@@ -669,6 +731,8 @@
          <script type="text/javascript" >
 		    // cada vez que se cambia el valor del combo
 		    $(document).ready(function(){
+
+			    
 		    $("#Cancelar").click(function() 
 			{
 			 $("#cedula_usuarios").val("");
@@ -693,10 +757,12 @@
          
         <script  type="text/javascript">
 		    // cada vez que se cambia el valor del combo
-		    $(document).ready(function(){
-		    
+	    $(document).ready(function(){
+
 		    $("#Guardar").click(function() 
 			{
+		    	selecionarTodos();
+		    	
 		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
 		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
 
@@ -736,20 +802,49 @@
 		    		$("#mensaje_nombre_usuarios").fadeOut("slow"); //Muestra mensaje de error
 		            
 				}
-		    	
-		    	/*if (usuario_usuario == "")
+
+		    	if ($("#apellidos_usuarios").val() == "")
 		    	{
 			    	
-		    		$("#mensaje_usuario_usuario").text("Introduzca un Usuario");
-		    		$("#mensaje_usuario_usuario").fadeIn("slow"); //Muestra mensaje de error
+		    		$("#mensaje_apellido_usuarios").text("Introduzca un apellido");
+		    		$("#mensaje_apellido_usuarios").fadeIn("slow"); //Muestra mensaje de error
 		            return false;
 			    }
 		    	else 
 		    	{
-		    		$("#mensaje_usuario_usuario").fadeOut("slow"); //Muestra mensaje de error
+		    		$("#mensaje_apellido_usuarios").fadeOut("slow"); //Muestra mensaje de error
 		            
-				}   */
-						    	
+				}
+
+				/*para input fecha nacimiento*/				
+				if ($("#fecha_nacimiento_usuarios").val() == "")
+		    	{
+			    	
+		    		$("#fecha_nacimiento_usuarios").text("Introduzca fecha Nacimiento");
+		    		$("#fecha_nacimiento_usuarios").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#fecha_nacimiento_usuarios").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}
+
+				/*para input fecha nacimiento*/				
+				if ($("#usuario_usuarios").val() == "")
+		    	{
+			    	
+		    		$("#mensaje_usuario_usuarios").text("Introduzca Nombre de Usuario");
+		    		$("#mensaje_usuario_usuarios").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_usuario_usuarios").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}
+		    	
+		    	    	
 			
 		    	if (clave_usuarios == "")
 		    	{
@@ -837,33 +932,7 @@
 			    }
 
 		    	
-		    	/*if (id_rol == 0 )
-		    	{
-			    	
-		    		$("#mensaje_id_rol").text("Seleccione");
-		    		$("#mensaje_id_rol").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_rol").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}*/
-
-
-
-		    	/*if (id_estado == 0 )
-		    	{
-			    	
-		    		$("#mensaje_id_estado").text("Seleccione");
-		    		$("#mensaje_id_estado").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_estado").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}*/
+		    
 		    					    
 
 			}); 
@@ -876,9 +945,7 @@
 				$( "#nombre_usuarios" ).focus(function() {
 					$("#mensaje_nombre_usuarios").fadeOut("slow");
     			});
-				/*$( "#usuario_usuario" ).focus(function() {
-					$("#mensaje_usuario_usuario").fadeOut("slow");
-    			});*/
+				
     			
 				$( "#clave_usuarios" ).focus(function() {
 					$("#mensaje_clave_usuarios").fadeOut("slow");
@@ -895,13 +962,6 @@
 					$("#mensaje_correo_usuarios").fadeOut("slow");
     			});
 			
-				/*$( "#id_rol" ).focus(function() {
-					$("#mensaje_id_rol").fadeOut("slow");
-    			});*/
-
-				/*$( "#id_estado" ).focus(function() {
-					$("#mensaje_id_estado").fadeOut("slow");
-    			});*/
 				
 		      
 				    

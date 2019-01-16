@@ -189,7 +189,7 @@ class SolicitudCabezaController extends ControladorBase{
                         unidad_medida.nombre_unidad_medida,
                         productos.ult_precio_productos";
             
-            $tab_productos = "public.productos INNER JOIN public.grupos ON grupos.id_grupos = productos.id_productos
+            $tab_productos = "public.productos INNER JOIN public.grupos ON grupos.id_grupos = productos.id_grupos
                         INNER JOIN public.unidad_medida ON unidad_medida.id_unidad_medida = productos.id_unidad_medida";
             
             $where_productos = "1=1";
@@ -232,9 +232,6 @@ class SolicitudCabezaController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 12px;">Grupo</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Marca</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Uni. M</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Ult. Precio</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                 $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -254,9 +251,6 @@ class SolicitudCabezaController extends ControladorBase{
                     $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->marca_productos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_unidad_medida.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->ult_precio_productos.'</td>';
                     $html.='<td class="col-xs-1"><div class="pull-right">';
                     $html.='<input type="text" class="form-control input-sm"  id="cantidad_'.$res->id_productos.'" value="1"></div></td>';
                     $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_productos.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
@@ -316,7 +310,7 @@ class SolicitudCabezaController extends ControladorBase{
                     temp_solicitud.cantidad_temp_solicitud";
 	        
 	        $tab_temp = "public.temp_solicitud INNER JOIN public.productos ON productos.id_productos = temp_solicitud.id_producto_temp_solicitud
-                    INNER JOIN  public.grupos ON grupos.id_grupos = productos.id_productos";
+                    INNER JOIN  public.grupos ON grupos.id_grupos = productos.id_grupos";
 	        
 	        $where_temp = "1 = 1";
 	        
@@ -587,6 +581,232 @@ class SolicitudCabezaController extends ControladorBase{
 	    return $out;
 	}
 	
+	
+	public function inserta_solicitud(){
+	    
+	    session_start();
+	    $resultado = null;
+	    $usuarios=new UsuariosModel();
+	    $solicitudCabeza = null; $solicitudCabeza = new SolicitudCabezaModel();
+	    
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    { 
+	        if (isset ($_POST["id_clientes"]))
+	        {
+	            
+	            $_id_clientes   = $_POST["id_clientes"];
+	            $_id_mesas      = $_POST['id_mesa_selecionada'];
+	            $_id_usuario    = $_SESSION['id_usuarios'];
+	            $_id_rol        = $_SESSION['id_rol'];
+	            
+	            
+	            //agregar numero pedido
+	            $numero_pedido='0';
+	            
+	            //traer numero pedido
+	            
+	            $columna="*";
+	            $tabla="consecutivos";
+	            $where="nombre_consecutivos='PEDIDOS'";
+	            
+	            $resultado = $pedidos->getCondiciones($columna,$tabla,$where,"id_consecutivos");
+	            
+	            $numero_pedido = $resultado[0]->real_consecutivos;
+	            
+	            $valor_total_pedidos=0.0;
+	            
+	            
+	            $funcion = "ins_pedidos";
+	            
+	            $parametros = "'$_id_clientes',
+		    				   '$_id_usuario',
+		    				   '$_id_mesas',
+		    	               '$numero_pedido',
+		    	               '$valor_total_pedidos'";
+	            
+	            $pedidos->setFuncion($funcion);
+	            $pedidos->setParametros($parametros);
+	            $resultadoinsert=$pedidos->Insert();
+	            
+	            $columna="pedidos.id_clientes,
+                          pedidos.id_usuarios_registra,
+                          pedidos.id_mesas,
+                          pedidos.numero_pedidos,
+                          pedidos.id_pedidos";
+	            
+	            $tabla="public.pedidos";
+	            
+	            $actualizado = $pedidos->UpdateBy("real_consecutivos = real_consecutivos + 1 ","consecutivos","nombre_consecutivos='PEDIDOS'");
+	            
+	            $where="numero_pedidos='$numero_pedido' AND  id_usuarios_registra='$_id_usuario' AND id_clientes = '$_id_clientes' AND id_mesas = '$_id_mesas'";
+	            
+	            $resultado = $pedidos->getCondiciones($columna,$tabla,$where,"id_pedidos");
+	            
+	            $pedido_id = $resultado[0]->id_pedidos;
+	            
+	            if($pedido_id>0){
+	                
+	                $pedidos_detalle = null; $pedidos_detalle = new PedidosDetalleModel();
+	                
+	                $funcion = "ins_pedidos";
+	                
+	                $parametros = "'$_id_clientes',
+		    				   '$_id_usuario',
+		    				   '$_id_mesas',
+		    	               '$numero_pedido',
+		    	               '$valor_total_pedidos'";
+	                
+	                $pedidos->setFuncion($funcion);
+	                $pedidos->setParametros($parametros);
+	                $resultadoinsert=$pedidos->Insert();
+	                
+	            }
+	            
+	            print_r($resultadoinsert);
+	            
+	            die('llego2');
+	            
+	            
+	            
+	            
+	            $this->redirect("Pedidos", "index");
+	        }
+	        
+	    }else{
+	        
+	        $error = TRUE;
+	        $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
+	        
+	        $this->view("Login",array(
+	            "resultSet"=>"$mensaje", "error"=>$error
+	        ));
+	        
+	        
+	        die();
+	        
+	    }
+	}
+	
+	public function ajax_inserta_solicitud(){
+	    
+	    session_start();
+	    $resultado = null;
+	    $usuarios=new UsuariosModel();
+	    $solicitudCabeza = null; $solicitudCabeza = new SolicitudCabezaModel();
+	    
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    {
+	        if (isset ($_POST["id_usuario"]))
+	        {
+	            
+	            $_id_usuarios      = $_POST["id_usuario"];
+	            $_razon_solictud   = (isset($_REQUEST['razon_solicitud'])&& $_REQUEST['razon_solicitud'] !=NULL)?$_REQUEST['razon_solicitud']:'';
+	            
+	            $fecha_solicitud = date("Y-m-d");
+	            
+	            $funcion = "ins_solicitud_cabeza";
+	            
+	            $parametros = "'$_id_usuarios',
+		    				   '$_razon_solictud',
+		    				   '$fecha_solicitud'";
+	            
+	            $solicitudCabeza->setFuncion($funcion);
+	            $solicitudCabeza->setParametros($parametros);
+	            $resultadoinsert=$solicitudCabeza->Insert();
+	            
+	            print_r($parametros);
+	            
+	            print_r($resultadoinsert);
+	            
+	            die('llego');
+	            
+	            
+	            //agregar numero pedido
+	            $numero_pedido='0';
+	            
+	            //traer numero pedido
+	            
+	            $columna="*";
+	            $tabla="consecutivos";
+	            $where="nombre_consecutivos='PEDIDOS'";
+	            
+	            $resultado = $pedidos->getCondiciones($columna,$tabla,$where,"id_consecutivos");
+	            
+	            $numero_pedido = $resultado[0]->real_consecutivos;
+	            
+	            $valor_total_pedidos=0.0;
+	            
+	            
+	            $funcion = "ins_pedidos";
+	            
+	            $parametros = "'$_id_clientes',
+		    				   '$_id_usuario',
+		    				   '$_id_mesas',
+		    	               '$numero_pedido',
+		    	               '$valor_total_pedidos'";
+	            
+	            $pedidos->setFuncion($funcion);
+	            $pedidos->setParametros($parametros);
+	            $resultadoinsert=$pedidos->Insert();
+	            
+	            $columna="pedidos.id_clientes,
+                          pedidos.id_usuarios_registra,
+                          pedidos.id_mesas,
+                          pedidos.numero_pedidos,
+                          pedidos.id_pedidos";
+	            
+	            $tabla="public.pedidos";
+	            
+	            $actualizado = $pedidos->UpdateBy("real_consecutivos = real_consecutivos + 1 ","consecutivos","nombre_consecutivos='PEDIDOS'");
+	            
+	            $where="numero_pedidos='$numero_pedido' AND  id_usuarios_registra='$_id_usuario' AND id_clientes = '$_id_clientes' AND id_mesas = '$_id_mesas'";
+	            
+	            $resultado = $pedidos->getCondiciones($columna,$tabla,$where,"id_pedidos");
+	            
+	            $pedido_id = $resultado[0]->id_pedidos;
+	            
+	            if($pedido_id>0){
+	                
+	                $pedidos_detalle = null; $pedidos_detalle = new PedidosDetalleModel();
+	                
+	                $funcion = "ins_pedidos";
+	                
+	                $parametros = "'$_id_clientes',
+		    				   '$_id_usuario',
+		    				   '$_id_mesas',
+		    	               '$numero_pedido',
+		    	               '$valor_total_pedidos'";
+	                
+	                $pedidos->setFuncion($funcion);
+	                $pedidos->setParametros($parametros);
+	                $resultadoinsert=$pedidos->Insert();
+	                
+	            }
+	            
+	            print_r($resultadoinsert);
+	            
+	            die('llego2');
+	            
+	            
+	            
+	            
+	            $this->redirect("Pedidos", "index");
+	        }
+	        
+	    }else{
+	        
+	        $error = TRUE;
+	        $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
+	        
+	        $this->view("Login",array(
+	            "resultSet"=>"$mensaje", "error"=>$error
+	        ));
+	        
+	        
+	        die();
+	        
+	    }
+	}
 	
 	
 }

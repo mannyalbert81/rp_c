@@ -43,14 +43,16 @@
           </h1>
           <ol class="breadcrumb">
             <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Grupos</li>
+            <li class="active">Solicitud</li>
           </ol>
         </section>
         
-        <section class="content">
+            		
+    		<!-- seccion para ver division de vista -->
+          <section class="content">
           <div class="box box-primary">
-            <div class="box-header">
-              <h3 class="box-title">Solicitud Inventario</h3>
+            <div class="box-header with-border">
+              <h3 class="box-title">Estado Solicitud</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -59,123 +61,69 @@
             </div>
             
             <div class="box-body">
+            	<div class="ibox-content">
+                      	
+                  <div class="x_content">
+                  
+                  <div class="col-lg-6 col-md-6 col-xs-12">
+                      <div class="box box-default box-solid">
+                        <div class="box-header with-border">
+                          <h3 class="box-title">Productos Disponibles</h3>
             
-                <form action="<?php echo $helper->url("SolicitudCabeza","InsertaGrupos"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
-          		 	 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
-              		 	 <div class="row">
-                         	<div class="col-xs-10 col-md-6 col-lg-6 ">
-                            	<div class="form-group">
-                                	<label for="nombre_usuario" class="control-label">Usuario</label>
-                                    <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario" value="<?php echo $resEdit->nombre_grupos; ?>"  placeholder="Nombre Grupos">
-                                    <input type="hidden" name="id_usuario" id="id_usuario" value="<?php echo $resEdit->id_grupos; ?>" class="form-control"/>
-    					            <div id="mensaje_nombre_grupos" class="errores"></div>
-                                 </div>
-                             </div>
-                             <div class="col-xs-2 col-md-2 col-lg-2 offset-md-4 offset-lg-4">
-                            	<div class="form-group">
-                                	<label for="fecha_solicitud" class="control-label">Fecha</label>
-                                    <input type="text" name="fecha_solicitud" id="fecha_solicitud" value="<?php echo $resEdit->id_grupos; ?>" class="form-control"/>
-    					            <div id="mensaje_fecha_solicitud" class="errores"></div>
-                                 </div>
-                             </div>
-                             
+                          <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
                           </div>
-                          <div class="row">
-                          	<div class="col-xs-12 col-md-6 col-md-6 ">
-                            	<div class="form-group">
-                                	<label for="razon_solicitud">Razon:</label>
-  									<textarea class="form-control" rows="5" id="razon_solicitud" name="razon_solicitud" ></textarea>
-                                	<div id="mensaje_razon_solicitud" class="errores"></div>
-                                 </div>
-                             </div>
+
+                          <!-- /.box-tools -->
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                          <div class="pull-right" style="margin-right:11px;">
+        					<input type="text" value="" class="form-control" id="buscador_productos" name="buscador_productos" onkeyup="load_productos_solicitud(1)" placeholder="search.."/>
+        				</div>
+        				<div id="load_productos" ></div>	
+        				<div id="productos_inventario"></div>
+                        </div>
+                        <!-- /.box-body -->
+                      </div>
+                      <!-- /.box -->
+                   </div>
+                  
+                 
+    				
+                    <div class="col-lg-6 col-md-6 col-xs-12">
+                      <div class="box box-default box-solid">
+                        <div class="box-header with-border">
+                          <h3 class="box-title">Productos Solicitados</h3>
+            
+                          <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
                           </div>
-                      <?php } } else {?>
-                      
-                      <?php if(!empty($resultSet)){ foreach ($resultSet as $res){?>                		    
-                      	  <div class="row">
-                		  	<div class="col-xs-10 col-md-6 col-lg-6 ">
-                            	<div class="form-group">
-                                	<label for="nombre_usuario" class="control-label">Usuario</label>
-                                    <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario" value="<?php echo $res->usuario_usuarios; ?>" readonly />
-                                    <input type="hidden" name="id_usuario" id="id_usuario" value="<?php echo $res->id_usuarios; ?>" class="form-control"/>
-    					            <div id="mensaje_nombre_grupos" class="errores"></div>
-                                 </div>
-                             </div>
-                             <div class="col-xs-2 col-md-2  offset-md-4 col-lg-2  offset-lg-4">
-                            	<div class="form-group">
-                                	<label for="fecha_solicitud" class="control-label">Fecha</label>
-                                    <input type="date" name="fecha_solicitud" id="fecha_solicitud" value="<?php echo $fecha_solicitud; ?>" class="form-control" readonly />
-    					            <div id="mensaje_fecha_solicitud" class="errores"></div>
-                                 </div>
-                             </div>
-                             
-                          </div>
-                          <div class="row">
-                          	<div class="col-xs-12 col-md-6 col-lg-6 ">
-                            	<!--  <div class="form-group">-->
-                            		<div class="md-form">
-      									<i class="fas fa-pencil-alt prefix"></i>
-                                		<label for="razon_solicitud">Razon:</label>
-      									<textarea class="md-textarea form-control" rows="5" id="razon_solicitud" name="razon_solicitud" ></textarea>
-                                    	<div id="mensaje_razon_solicitud" class="errores"></div>
-                                    </div>
-                                 <!-- </div> -->
-                             </div>
-                          </div>  
-                    		            
-                     <?php }}} ?>
-                     	<div class="row">
-            			    <div class="col-xs-12 col-md-4 col-md-4 " style="margin-top:15px;  text-align: center; ">
-                	   		    <div class="form-group">
-            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Guardar</button>
-        	                    </div>
-    	        		    </div>
-            		    </div>
-          		 	
-          		 	</form>
-          
-        			</div>
-      			</div>
+                          <!-- /.box-tools -->
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                          <div id="resultados" ></div>
+                        </div>
+                        <!-- /.box-body -->
+            
+                                 	
+                      		
+                  			</div>
+                  	</div>
     		</section>
     		
     		
     		
-    <!-- seccion para el listado de Productos -->
-   
-      <section class="content">
-      <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title">Listado de Productos</h3>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i></button>
-            
-          </div>
-        </div>
-        
-        <div class="box-body">
-        	<div class="ibox-content">
-                  	
-              <div class="x_content">
-				
-				<div class="pull-right" style="margin-right:11px;">
-					<input type="text" value="" class="form-control" id="buscador_productos" name="buscador_productos" onkeyup="load_productos_solicitud(1)" placeholder="search.."/>
-				</div>
-				<div id="load_productos" ></div>	
-				<div id="productos_inventario"></div>	
-              
-              </div>  
-                  	
-     		  </div>
-        </div>
-        </div>
-        </section>
-        
-        <!-- ver resultados -->
-        	<section class="content">
-              <div class="box box-primary">
+    
+    		
+    		
+            <section class="content">
+              <div class="box box-success">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Listado de Productos - Solicitud</h3>
+                  <h3 class="box-title"></h3>
                   <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                       <i class="fa fa-minus"></i></button>
@@ -184,14 +132,41 @@
                 </div>
                 
                 <div class="box-body">
-                	<div class="ibox-content">
-                          	
-                      <div class="x_content">
-        				<div id="resultados" ></div>	
-        				
-                      </div>  
-                          	
-             		  </div>
+                <form id="frm_solicitud_cabeza" action="<?php echo $helper->url("SolicitudCabeza","inserta_solicitud"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+                 <?php if(!empty($resultSet)){ foreach ($resultSet as $res){?>                		    
+                      	  <div class="row">
+                		  	<div class="col-xs-10 col-md-6 col-lg-6 ">
+                            	<div class="form-group">
+                                    <input type="hidden" name="id_usuario" id="id_usuario" value="<?php echo $res->id_usuarios; ?>" class="form-control"/>
+    					            <div id="mensaje_nombre_grupos" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                          </div>
+                         
+                    		            
+                     <?php }}?>
+            	 	<div class="row">
+                      	<div class="col-xs-12 col-md-12 col-lg-12 ">
+                        	<!--  <div class="form-group">-->
+                        		<div class="md-form">
+  									<i class="fas fa-pencil-alt prefix"></i>
+                            		<label for="razon_solicitud">Observacion:</label>
+  									<textarea class="md-textarea form-control" rows="1" id="razon_solicitud" name="razon_solicitud" ></textarea>
+                                	<div id="mensaje_razon_solicitud" class="errores"></div>
+                                </div>
+                             <!-- </div> -->
+                         </div>
+                     </div> 
+                    <div class="row">
+        			    <div class="col-xs-12 col-md-2 col-md-2 " >
+            	   		    <div class="form-group">
+            	   		    	<label for="Guardar">&nbsp;</label>
+        	                  <button type="submit" id="Guardar" name="Guardar" class="form-control btn btn-success">Guardar</button>
+    	                    </div>
+	        		    </div>
+        		    </div>
+                </form>
                 </div>
                 </div>
             </section>
@@ -344,6 +319,36 @@
 
 
   	   }
+
+ 	$( "#frm_solicitud_cabeza" ).submit(function( event ) {
+ 	 	
+ 		 var _id_usuario = $("#id_usuario").val();
+		  var observacion = $("#razon_solicitud").val();
+		  
+		  if (id_usuario==""){
+			  alert("Session Caducada");
+			  $("#razon_solicitud").focus();
+			  return false;
+		  }
+
+		  $.ajax({
+             beforeSend: function(objeto){
+               
+             },
+             url: 'index.php?controller=SolicitudCabeza&action=ajax_inserta_solicitud',
+             type: 'POST',
+             data: {id_usuario:_id_usuario,razon_solicitud:observacion},
+             success: function(x){
+               console.log(x);
+               
+             },
+            error: function(jqXHR,estado,error){
+              //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+            }
+          });
+		  event.preventDefault();
+		  
+		});
 
  	
  	

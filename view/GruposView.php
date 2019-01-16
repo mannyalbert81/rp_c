@@ -114,7 +114,7 @@
                                       <label for="id_estado" class="control-label">Estado:</label>
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php  foreach($result_catalogo_usuario as $res) {?>
+    									<?php  foreach($result_Grupos_estados as $res) {?>
     										<option value="<?php echo $res->valor_catalogo; ?>" <?php if ($res->valor_catalogo == $resEdit->estado_usuarios )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_catalogo; ?> </option>
     							        <?php } ?>
     								   </select> 
@@ -138,7 +138,7 @@
                                       <label for="id_estado" class="control-label">Estado:</label>
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($result_catalogo_usuario as $res) {?>
+    									<?php foreach($result_Grupos_estados as $res) {?>
     										<option value="<?php echo $res->valor_catalogo; ?>" ><?php echo $res->nombre_catalogo; ?> </option>
     							        <?php } ?>
     								   </select> 
@@ -165,66 +165,63 @@
     		
     <!-- seccion para el listado de roles -->
       <section class="content">
-      <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title">Listado de Grupos Registrados</h3>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i></button>
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Listado Grupos</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+                
+              </div>
+            </div>
             
+            <div class="box-body">
+            
+            
+            
+            
+            
+           <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#activos" data-toggle="tab">Grupos Activos</a></li>
+              <li><a href="#inactivos" data-toggle="tab">Grupos Inactivos</a></li>
+            </ul>
+            
+            <div class="col-md-12 col-lg-12 col-xs-12">
+            <div class="tab-content">
+            <br>
+              <div class="tab-pane active" id="activos">
+                
+					<div class="pull-right" style="margin-right:15px;">
+						<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_grupos(1)" placeholder="search.."/>
+					</div>
+					<div id="load_grupos" ></div>	
+					<div id="grupos_registrados"></div>	
+                
+              </div>
+              
+              <div class="tab-pane" id="inactivos">
+                
+                    <div class="pull-right" style="margin-right:15px;">
+					<input type="text" value="" class="form-control" id="search_inactivos" name="search_grupos_inactivos" onkeyup="load_grupos_inactivos(1)" placeholder="search.."/>
+					</div>
+					
+					
+					<div id="load_inactivos_grupos" ></div>	
+					<div id="grupos_inactivos_registrados"></div>
+                
+                
+              </div>
+             
+             
+            </div>
+            </div>
           </div>
-        </div>
-        
-        <div class="box-body">
-        
-        
-       <div class="ibox-content">  
-      <div class="table-responsive">
-        
-		<table  class="table table-striped table-bordered table-hover dataTables-example">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Nombre Grupos</th>
-                          <th>Editar</th>
-                          <th>Borrar</th>
-
-                        </tr>
-                      </thead>
-
-
-                      <tbody>
-                      <?php $i=0;?>
-    						<?php if (!empty($resultSet)) {  foreach($resultSet as $res) {?>
-    						<?php $i++;?>
-            	        		<tr>
-            	                   <td > <?php echo $i; ?>  </td>
-            		               <td > <?php echo $res->nombre_grupos; ?>     </td> 
-            		               <td>
-            			           		<div class="right">
-            			                    <a href="<?php echo $helper->url("Grupos","index"); ?>&id_grupos=<?php echo $res->id_grupos; ?>" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class='glyphicon glyphicon-edit'></i></a>
-            			                </div>
-            			            
-            			             </td>
-            			             <td>   
-            			                	<div class="right">
-            			                    <a href="<?php echo $helper->url("Grupos","borrarId"); ?>&id_grupos=<?php echo $res->id_grupos; ?>" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a>
-            			                </div>
-            			              
-            		               </td>
-            		    		</tr>
-            		        <?php } } ?>
-                    
-                    </tbody>
-                    </table>
-       
-        </div>
-         </div>
-        
-        
-        </div>
-        </div>
-        </section>
+         
+            
+            </div>
+            </div>
+            </section>
   		</div>
   
   
@@ -244,7 +241,8 @@
 <script type="text/javascript">
      
         	   $(document).ready( function (){
-        		   pone_espera();
+        		   //pone_espera();
+        		   load_grupos(1);
         		   
 	   			});
 
@@ -268,7 +266,51 @@
 		        
         	   }
 
+
+	   function load_grupos(pagina){
+
+		   var search=$("#search").val();
+	       var con_datos={
+					  action:'ajax',
+					  page:pagina
+					  };
+			  
+	     $("#load_grupos").fadeIn('slow');
+	     
+	     $.ajax({
+	               beforeSend: function(objeto){
+	                 $("#load_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	               },
+	               url: 'index.php?controller=Grupos&action=consulta_grupos_activos&search='+search,
+	               type: 'POST',
+	               data: con_datos,
+	               success: function(x){
+	                 $("#grupos_registrados").html(x);
+	                 $("#load_grupos").html("");
+	                 $("#tabla_grupos").tablesorter(); 
+	                 
+	               },
+	              error: function(jqXHR,estado,error){
+	                $("#load_grupos").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+	              }
+	            });
+
+
+		   }
+
+
+
+	  
+        	        	   
+
  </script>
+ 
+ 
+<!-- -----cargar la tabla activos e inactivos -->
+
+
+        
+        
        
        
       

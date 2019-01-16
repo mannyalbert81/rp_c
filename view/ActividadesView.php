@@ -82,15 +82,11 @@
         		   var search=$("#search").val();
         		   var desde=$("#desde").val();
         		   var hasta=$("#hasta").val();
-        		   var id_rol=$("#id_rol").val();
-        		   var id_usuarios=$("#id_usuarios").val();
-                   var con_datos={
+        		   var con_datos={
            					  action:'ajax',
            					  page:pagina,
            					  desde:desde,
-           					  hasta:hasta,
-           					  id_usuarios:id_usuarios,
-           					  id_rol:id_rol
+           					  hasta:hasta
            					  };
                  $("#load_registrados").fadeIn('slow');
            	     $.ajax({
@@ -180,33 +176,7 @@
 
 								 	  <div class="row">
                 		  	   
-                               	<div class="col-xs-12 col-lg-3 col-md-3">
-                        		   <div class="form-group">
-                                      <label for="id_rol" class="control-label">Roles:</label>
-                                      <select name="id_rol" id="id_rol"  class="form-control" >
-                                      <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultRol as $res) {?>
-    										<option value="<?php echo $res->id_rol; ?>"  ><?php echo $res->nombre_rol; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-                                      <div id="mensaje_id_rols" class="errores"></div>
-                                    </div>
-                                 </div>
-                                 
-                                 
-                                      
-                          	<div class="col-xs-12 col-md-3 col-lg-3">
-                        		   <div class="form-group">
-                                      <label for="id_usuarios" class="control-label">Usuario:</label>
-                                      <select name="id_usuarios" id="id_usuarios"  class="form-control" >
-                                      <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultUsu as $res) {?>
-    										<option value="<?php echo $res->id_usuarios; ?>"  ><?php echo $res->nombre_usuarios; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-                                      <div id="mensaje_id_estados" class="errores"></div>
-                                    </div>
-                                </div>    	
+                              	
                                     <div class="col-xs-6 col-md-3 col-lg-3">
                                   	<div class="form-group">
                                     	<label for="desde" class="control-label">Desde:</label>

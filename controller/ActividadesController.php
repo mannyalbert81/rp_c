@@ -101,8 +101,6 @@ class ActividadesController extends ControladorBase{
 	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
 	    $desde=  (isset($_REQUEST['desde'])&& $_REQUEST['desde'] !=NULL)?$_REQUEST['desde']:'';
 	    $hasta=  (isset($_REQUEST['hasta'])&& $_REQUEST['hasta'] !=NULL)?$_REQUEST['hasta']:'';
-	    $id_rol=  (isset($_REQUEST['id_rol'])&& $_REQUEST['id_rol'] !=NULL)?$_REQUEST['id_rol']:'';
-	    $id_usuarios_actividades=  (isset($_REQUEST['id_usuarios'])&& $_REQUEST['id_usuarios'] !=NULL)?$_REQUEST['id_usuarios']:'';
 	    
 	    $where2="";
 	    

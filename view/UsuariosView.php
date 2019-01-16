@@ -286,7 +286,7 @@
                                 	<div class="form-group">
                                     	<label for="usuario_usuarios" class="control-label">Usuario:</label>
                                         <input type="text" class="form-control" id="usuario_usuarios" name="usuario_usuarios" value=""  placeholder="usuario..." >
-                                        <div id="usuario_usuarios" class="errores"></div>
+                                        <div id="mensaje_usuario_usuarios" class="errores"></div>
                                      </div>
                                  </div> 
                                  
@@ -503,31 +503,11 @@
             </div>
           </div>
          
-        
-    		
-            
-            
-            
-            
-            
-            
-            
-            
             
             </div>
             </div>
             </section>
-    		
-    		
-    		
-    		
-    		
-    		
-    		
-    		
-    		
-    		
-
+    	
     
   </div>
  
@@ -573,10 +553,7 @@
 	        }); 
 	    });
 
-	    $('#Guardar').click(function(){
-	    	selecionarTodos();
-	    	//return false;
-		});
+	   
 
 	    $(".caducaclave").blur(function(){
 			var clave = $("#clave_usuarios").val();
@@ -716,7 +693,7 @@
 
    function load_usuarios_inactivos(pagina){
 
-	   var search=$("#search").val();
+	   var search=$("#search_inactivos").val();
        var con_datos={
 				  action:'ajax',
 				  page:pagina
@@ -754,6 +731,8 @@
          <script type="text/javascript" >
 		    // cada vez que se cambia el valor del combo
 		    $(document).ready(function(){
+
+			    
 		    $("#Cancelar").click(function() 
 			{
 			 $("#cedula_usuarios").val("");
@@ -778,16 +757,12 @@
          
         <script  type="text/javascript">
 		    // cada vez que se cambia el valor del combo
-		    $(document).ready(function(){
+	    $(document).ready(function(){
 
-		    	/*swal(
-		    			  'The Internet?',
-		    			  'That thing is still around?',
-		    			  'question'
-		    			);*/
-		    
 		    $("#Guardar").click(function() 
 			{
+		    	selecionarTodos();
+		    	
 		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
 		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
 
@@ -827,20 +802,49 @@
 		    		$("#mensaje_nombre_usuarios").fadeOut("slow"); //Muestra mensaje de error
 		            
 				}
-		    	
-		    	/*if (usuario_usuario == "")
+
+		    	if ($("#apellidos_usuarios").val() == "")
 		    	{
 			    	
-		    		$("#mensaje_usuario_usuario").text("Introduzca un Usuario");
-		    		$("#mensaje_usuario_usuario").fadeIn("slow"); //Muestra mensaje de error
+		    		$("#mensaje_apellido_usuarios").text("Introduzca un apellido");
+		    		$("#mensaje_apellido_usuarios").fadeIn("slow"); //Muestra mensaje de error
 		            return false;
 			    }
 		    	else 
 		    	{
-		    		$("#mensaje_usuario_usuario").fadeOut("slow"); //Muestra mensaje de error
+		    		$("#mensaje_apellido_usuarios").fadeOut("slow"); //Muestra mensaje de error
 		            
-				}   */
-						    	
+				}
+
+				/*para input fecha nacimiento*/				
+				if ($("#fecha_nacimiento_usuarios").val() == "")
+		    	{
+			    	
+		    		$("#fecha_nacimiento_usuarios").text("Introduzca fecha Nacimiento");
+		    		$("#fecha_nacimiento_usuarios").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#fecha_nacimiento_usuarios").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}
+
+				/*para input fecha nacimiento*/				
+				if ($("#usuario_usuarios").val() == "")
+		    	{
+			    	
+		    		$("#mensaje_usuario_usuarios").text("Introduzca Nombre de Usuario");
+		    		$("#mensaje_usuario_usuarios").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_usuario_usuarios").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}
+		    	
+		    	    	
 			
 		    	if (clave_usuarios == "")
 		    	{

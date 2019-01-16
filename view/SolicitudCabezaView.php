@@ -43,7 +43,7 @@
           </h1>
           <ol class="breadcrumb">
             <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Grupos</li>
+            <li class="active">Solicitud</li>
           </ol>
         </section>
         
@@ -74,6 +74,7 @@
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
                           </div>
+
                           <!-- /.box-tools -->
                         </div>
                         <!-- /.box-header -->
@@ -91,32 +92,32 @@
                   
                  
     				
-        <div class="col-lg-6 col-md-6 col-xs-12">
-          <div class="box box-default box-solid">
-            <div class="box-header with-border">
-              <h3 class="box-title">Productos Solicitados</h3>
-
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-              </div>
-              <!-- /.box-tools -->
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-              <div id="resultados" ></div>
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
-                  
-                  </div>  
-                      	
-         		  </div>
-            </div>
-            </div>
-            </section>
+                    <div class="col-lg-6 col-md-6 col-xs-12">
+                      <div class="box box-default box-solid">
+                        <div class="box-header with-border">
+                          <h3 class="box-title">Productos Solicitados</h3>
+            
+                          <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                          </div>
+                          <!-- /.box-tools -->
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                          <div id="resultados" ></div>
+                        </div>
+                        <!-- /.box-body -->
+            
+                                 	
+                      		
+                  			</div>
+                  	</div>
+    		</section>
+    		
+    		
+    		
+    
     		
     		
             <section class="content">

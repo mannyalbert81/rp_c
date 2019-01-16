@@ -81,6 +81,82 @@ class UsuariosController extends ControladorBase{
     		$count_query   = $cantidadResult;
     		$total_pages = ceil($cantidadResult/$per_page);
     		
+<<<<<<< HEAD
+    			
+    		
+    		
+    		
+    	if($cantidadResult>0)
+    	{
+    
+    		$html.='<div class="pull-left" style="margin-left:11px;">';
+    		$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+    		$html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+    		$html.='</div>';
+    		$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+			$html.='<section style="height:425px; overflow-y:scroll;">';
+    		$html.= "<table id='tabla_usuarios' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+    		$html.= "<thead>";
+    		$html.= "<tr>";
+    		$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+    		$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+    		$html.='<th style="text-align: left;  font-size: 12px;">Cedula</th>';
+    		$html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+    		$html.='<th style="text-align: left;  font-size: 12px;">Teléfono</th>';
+    		$html.='<th style="text-align: left;  font-size: 12px;">Celular</th>';
+    		$html.='<th style="text-align: left;  font-size: 12px;">Correo</th>';
+    		$html.='<th style="text-align: left;  font-size: 12px;">Rol</th>';
+    		$html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+    		
+    		if($id_rol==1){
+	    		
+    			$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	    		$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	    		$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	    		
+    		}else{
+    			
+    			
+    			$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+    		}
+    		
+    		$html.='</tr>';
+    		$html.='</thead>';
+    		$html.='<tbody>';
+    		 
+    		$i=0;
+    		
+    		foreach ($resultSet as $res)
+    		{
+    			$i++;
+    			$html.='<tr>';
+    			$html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_usuarios.'&id_nombre=id_usuarios&tabla=usuarios&campo=fotografia_usuarios" width="80" height="60"></td>';
+    			$html.='<td style="font-size: 11px;">'.$i.'</td>';
+    			$html.='<td style="font-size: 11px;">'.$res->cedula_usuarios.'</td>';
+    			$html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
+    			$html.='<td style="font-size: 11px;">'.$res->telefono_usuarios.'</td>';
+    			$html.='<td style="font-size: 11px;">'.$res->celular_usuarios.'</td>';
+    			$html.='<td style="font-size: 11px;">'.$res->correo_usuarios.'</td>';
+    			$html.='<td style="font-size: 11px;">'.$res->nombre_rol.'</td>';
+    			$html.='<td style="font-size: 11px;">'.$res->estado_usuarios.'</td>';
+    			
+    			if($id_rol==1){
+    			
+    				$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=index&id_usuarios='.$res->id_usuarios.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
+    				$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=borrarId&id_usuarios='.$res->id_usuarios.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
+    				$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=search&cedula='.$res->cedula_usuarios.'" target="_blank" class="btn btn-warning" style="font-size:65%;"><i class="glyphicon glyphicon-eye-open"></i></a></span></td>';
+    			
+    			
+    			}else{
+    			
+    				$html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=search&cedula='.$res->cedula_usuarios.'" target="_blank" class="btn btn-warning" style="font-size:65%;"><i class="glyphicon glyphicon-eye-open"></i></a></span></td>';
+    			
+    			}
+    			
+    				$html.='</tr>';
+    		}
+    		
+=======
         	if($cantidadResult>0)
         	{
         
@@ -159,6 +235,7 @@ class UsuariosController extends ControladorBase{
         				$html.='</tr>';
         		}
         		
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
     		
     		$html.='</tbody>';
     		$html.='</table>';

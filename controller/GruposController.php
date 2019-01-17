@@ -47,10 +47,19 @@ class GruposController extends ControladorBase{
 					{
 					
 					    $_id_grupos = $_GET["id_grupos"];
-						$columnas = " id_grupos, nombre_grupos ";
-						$tablas   = "grupos";
-						$where    = "id_grupos = '$_id_grupos' "; 
-						$id       = "nombre_grupos";
+						$columnas = " grupos.id_grupos, 
+                                      grupos.nombre_grupos, 
+                                      grupos.estado_grupos, 
+                                      grupos.creado, 
+                                      grupos.modificado, 
+                                      catalogo.id_catalogo, 
+                                      catalogo.nombre_catalogo, 
+                                      catalogo.valor_catalogo";
+						$tablas   = "public.grupos, 
+                                     public.catalogo";
+						$where    = "grupos.estado_grupos = catalogo.valor_catalogo
+                                    AND public.catalogo.tabla_catalogo = 'grupos' AND public.catalogo.columna_catalogo = 'estado_grupos' AND grupos.id_grupos = '$_id_grupos' "; 
+						$id       = "grupos.id_grupos";
 							
 						$resultEdit = $grupos->getCondiciones($columnas ,$tablas ,$where, $id);
 
@@ -99,6 +108,8 @@ class GruposController extends ControladorBase{
 			
 		session_start();
 		$grupos=new GruposModel();
+		
+		
 
 		$nombre_controladores = "Grupos";
 		$id_rol= $_SESSION['id_rol'];
@@ -107,7 +118,7 @@ class GruposController extends ControladorBase{
 		if (!empty($resultPer))
 		{
 		
-		
+		//die("llego");
 		
 			$resultado = null;
 			$grupos=new GruposModel();
@@ -117,20 +128,20 @@ class GruposController extends ControladorBase{
 				
 			    $_nombre_grupos = $_POST["nombre_grupos"];
 			    $_id_grupos =  $_POST["id_grupos"];
-			    $estado_grupos = $_POST["estado_grupos"];
-				
+			    $_id_estado = $_POST["id_estado"];
+			    //die("llego");
 			    if($_id_grupos > 0){
 					
 					$columnas = " nombre_grupos = '$_nombre_grupos',
-                                  estado_grupos = 'estado_grupos'";
-					$tabla = "grupos";
+                                  estado_grupos = '$_id_estado'";
+					$tabla = "  public.grupos";
 					$where = "id_grupos = '$_id_grupos'";
 					$resultado=$grupos->UpdateBy($columnas, $tabla, $where);
 					
 				}else{
 					
 					$funcion = "ins_grupos";
-					$parametros = " '$_nombre_grupos'";
+					$parametros = " '$_nombre_grupos', '$_id_estado'";
 					$grupos->setFuncion($funcion);
 					$grupos->setParametros($parametros);
 					$resultado=$grupos->Insert();
@@ -170,10 +181,9 @@ class GruposController extends ControladorBase{
 	        {
 	            $id_grupos=(int)$_GET["id_grupos"];
 	            
+	            $grupos->UpdateBy("estado_grupos=2","grupos","id_grupos='$id_grupos'");
 	            
-	            
-	            $grupos->deleteBy("id_grupos",$id_grupos);
-	            
+	          
 	            
 	        }
 	        
@@ -267,7 +277,7 @@ class GruposController extends ControladorBase{
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_grupos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tabla_grupos_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -306,8 +316,8 @@ class GruposController extends ControladorBase{
 	                
 	                if($id_rol==1){
 	                    
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=index&id_usuarios='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=borrarId&id_usuarios='.$res->id_grupos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
+	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=index&id_grupos='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
+	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=borrarId&id_grupos='.$res->id_grupos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
 	                    
 	                }
 	                
@@ -320,7 +330,7 @@ class GruposController extends ControladorBase{
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_grupos("index.php", $page, $total_pages, $adjacents,"load_grupos").'';
+	            $html.=''. $this->paginate_grupos_activos("index.php", $page, $total_pages, $adjacents).'';
 	            $html.='</div>';
 	            
 	            
@@ -417,7 +427,7 @@ class GruposController extends ControladorBase{
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_grupos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tabla_grupos_inactivos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -427,8 +437,7 @@ class GruposController extends ControladorBase{
 	            if($id_rol==1){
 	                
 	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                
+	                 
 	            }
 	            
 	            $html.='</tr>';
@@ -456,9 +465,8 @@ class GruposController extends ControladorBase{
 	                
 	                if($id_rol==1){
 	                    
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=index&id_usuarios='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=borrarId&id_usuarios='.$res->id_grupos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
-	                    
+	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=index&id_grupos='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
+	                   
 	                }
 	                
 	                $html.='</tr>';
@@ -470,7 +478,7 @@ class GruposController extends ControladorBase{
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_grupos("index.php", $page, $total_pages, $adjacents,"load_grupos").'';
+	            $html.=''. $this->paginate_grupos_inactivos("index.php", $page, $total_pages, $adjacents).'';
 	            $html.='</div>';
 	            
 	            
@@ -491,7 +499,10 @@ class GruposController extends ControladorBase{
 	    }
 	}
 	
-	public function paginate_grupos($reload, $page, $tpages, $adjacents,$funcion='') {
+	
+	
+	
+	public function paginate_grupos_activos($reload, $page, $tpages, $adjacents) {
 	    
 	    $prevlabel = "&lsaquo; Prev";
 	    $nextlabel = "Next &rsaquo;";
@@ -502,15 +513,15 @@ class GruposController extends ControladorBase{
 	    if($page==1) {
 	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
 	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>$prevlabel</a></span></li>";
 	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(".($page-1).")'>$prevlabel</a></span></li>";
 	        
 	    }
 	    
 	    // first label
 	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>1</a></li>";
 	    }
 	    // interval
 	    if($page>($adjacents+2)) {
@@ -525,9 +536,9 @@ class GruposController extends ControladorBase{
 	        if($i==$page) {
 	            $out.= "<li class='active'><a>$i</a></li>";
 	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>$i</a></li>";
 	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(".$i.")'>$i</a></li>";
 	        }
 	    }
 	    
@@ -540,13 +551,13 @@ class GruposController extends ControladorBase{
 	    // last
 	    
 	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos($tpages)'>$tpages</a></li>";
 	    }
 	    
 	    // next
 	    
 	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(".($page+1).")'>$nextlabel</a></span></li>";
 	    }else {
 	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
 	    }
@@ -554,8 +565,76 @@ class GruposController extends ControladorBase{
 	    $out.= "</ul>";
 	    return $out;
 	}
-
 	
+	
+	
+	
+	
+	
+	
+	public function paginate_grupos_inactivos($reload, $page, $tpages, $adjacents) {
+	    
+	    $prevlabel = "&lsaquo; Prev";
+	    $nextlabel = "Next &rsaquo;";
+	    $out = '<ul class="pagination pagination-large">';
+	    
+	    // previous label
+	    
+	    if($page==1) {
+	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+	    } else if($page==2) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>$prevlabel</a></span></li>";
+	    }else {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(".($page-1).")'>$prevlabel</a></span></li>";
+	        
+	    }
+	    
+	    // first label
+	    if($page>($adjacents+1)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>1</a></li>";
+	    }
+	    // interval
+	    if($page>($adjacents+2)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // pages
+	    
+	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+	    for($i=$pmin; $i<=$pmax; $i++) {
+	        if($i==$page) {
+	            $out.= "<li class='active'><a>$i</a></li>";
+	        }else if($i==1) {
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>$i</a></li>";
+	        }else {
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(".$i.")'>$i</a></li>";
+	        }
+	    }
+	    
+	    // interval
+	    
+	    if($page<($tpages-$adjacents-1)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // last
+	    
+	    if($page<($tpages-$adjacents)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos($tpages)'>$tpages</a></li>";
+	    }
+	    
+	    // next
+	    
+	    if($page<$tpages) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(".($page+1).")'>$nextlabel</a></span></li>";
+	    }else {
+	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+	    }
+	    
+	    $out.= "</ul>";
+	    return $out;
+	}
 	
 	
 }

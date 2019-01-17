@@ -111,7 +111,7 @@
                              <div class="col-lg-3 col-xs-6 col-md-3">
                     		    <div class="form-group">
                                       <label for="celular_usuarios" class="control-label">Celular:</label>
-                                      <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>"  placeholder="celular..">
+                                      <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>"  placeholder="celular.." maxlength="10" onkeypress="return numeros(event)" />
                                       <div id="mensaje_celular_usuarios" class="errores"></div>
                                 </div>
                              </div>
@@ -119,10 +119,11 @@
                              <div class="col-lg-3 col-xs-6 col-md-3">
                     		    <div class="form-group">
                                       <label for="telefono_usuarios" class="control-label">Teléfono:</label>
-                                      <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  placeholder="teléfono..">
+                                      <input type="text" class="form-control cantidades1" id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  placeholder="teléfono.."  maxlength="10" onkeypress="return numeros(event)" />
                                       <div id="mensaje_telefono_usuarios" class="errores"></div>
                                 </div>
                     	    </div>
+                    	    
                     	    
                     	    <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
@@ -276,7 +277,7 @@
                                 	<div class="form-group">
                                     	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
                                         <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value=""  >
-                                        <div id="fecha_nacimiento_usuarios" class="errores"></div>
+                                        <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
                                      </div>
                                </div>  
                             </div>
@@ -293,7 +294,7 @@
                                  <div class="col-lg-3 col-xs-6 col-md-3">
                         		    <div class="form-group">
                                           <label for="celular_usuarios" class="control-label">Celular:</label>
-                                          <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value=""  placeholder="celular..">
+                                          <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value=""  placeholder="celular.." maxlength="10" onkeypress="return numeros(event)">
                                           <div id="mensaje_celular_usuarios" class="errores"></div>
                                     </div>
                                 </div>
@@ -301,10 +302,12 @@
                                 <div class="col-lg-3 col-xs-6 col-md-3">
                         		    <div class="form-group">
                                           <label for="telefono_usuarios" class="control-label">Teléfono:</label>
-                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  placeholder="teléfono..">
+                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  placeholder="teléfono.." maxlength="10" onkeypress="return numeros(event)">
+                                           
                                           <div id="mensaje_telefono_usuarios" class="errores"></div>
                                     </div>
                         	    </div>
+                        	    
                         	    
                     		    <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
@@ -313,6 +316,7 @@
                                           <div id="mensaje_correo_usuarios" class="errores"></div>
                                     </div>
                     		    </div>
+                    		    									
                                 
                              	                            
                               </div>
@@ -353,7 +357,7 @@
                         		    <div class="form-group">
                                           <label for="fotografia_usuarios" class="control-label">Fotografía:</label>
                                           <input type="file" class="form-control" id="fotografia_usuarios" name="fotografia_usuarios" value="">
-                                          <div id="mensaje_usuario" class="errores"></div>
+                                          <div id="mensaje_fotografia_usuario" class="errores"></div>
                                     </div>
                     		    </div>
                         	</div>
@@ -369,7 +373,7 @@
     										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_rols" class="errores"></div>
+                                      <div id="mensaje_id_rol_principal" class="errores"></div>
                                     </div>
                                  </div>
                                  
@@ -768,13 +772,10 @@
 
 		    	var cedula_usuarios = $("#cedula_usuarios").val();
 		    	var nombre_usuarios = $("#nombre_usuarios").val();
-		    	//var usuario_usuario = $("#usuario_usuario").val();
-		    	var clave_usuarios = $("#clave_usuarios").val();
-		    	var cclave_usuarios = $("#clave_usuarios_r").val();
-		    	var celular_usuarios = $("#celular_usuarios").val();
-		    	var correo_usuarios  = $("#correo_usuarios").val();
+		    			    	
 		    	var id_rol  = $("#id_rol").val();
 		    	var id_estado  = $("#id_estado").val();
+		    	var id_rol_principal = $("#id_rol_principal").val();
 		    	
 		    	
 		    	if (cedula_usuarios == "")
@@ -820,17 +821,17 @@
 				if ($("#fecha_nacimiento_usuarios").val() == "")
 		    	{
 			    	
-		    		$("#fecha_nacimiento_usuarios").text("Introduzca fecha Nacimiento");
-		    		$("#fecha_nacimiento_usuarios").fadeIn("slow"); //Muestra mensaje de error
+		    		$("#mensaje_fecha_nacimiento_usuarios").text("Introduzca fecha Nacimiento");
+		    		$("#mensaje_fecha_nacimiento_usuarios").fadeIn("slow"); //Muestra mensaje de error
 		            return false;
 			    }
 		    	else 
 		    	{
-		    		$("#fecha_nacimiento_usuarios").fadeOut("slow"); //Muestra mensaje de error
+		    		$("#mensaje_fecha_nacimiento_usuarios").fadeOut("slow"); //Muestra mensaje de error
 		            
 				}
 
-				/*para input fecha nacimiento*/				
+				/*para input usuario*/				
 				if ($("#usuario_usuarios").val() == "")
 		    	{
 			    	
@@ -843,64 +844,12 @@
 		    		$("#mensaje_usuario_usuarios").fadeOut("slow"); //Muestra mensaje de error
 		            
 				}
-		    	
-		    	    	
-			
-		    	if (clave_usuarios == "")
-		    	{
-		    		
-		    		$("#mensaje_clave_usuarios").text("Introduzca una Clave");
-		    		$("#mensaje_clave_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }else if (clave_usuarios.length<4){
-			    	$("#mensaje_clave_usuarios").text("Introduzca minimo 4 números");
-		    		$("#mensaje_clave_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-				}else if (clave_usuarios.length>4){
-			    	$("#mensaje_clave_usuarios").text("Introduzca máximo 4 números");
-		    		$("#mensaje_clave_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-				}
-		    	else 
-		    	{
-		    		$("#mensaje_clave_usuarios").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-		    	
 
-		    	if (cclave_usuarios == "")
-		    	{
-		    		
-		    		$("#mensaje_clave_usuarios_r").text("Introduzca una Clave");
-		    		$("#mensaje_clave_usuarios_r").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_clave_usuarios_r").fadeOut("slow"); 
-		            
-				}
-		    	
-		    	if (clave_usuarios != cclave_usuarios)
+				/*para input celular*/				
+				if ($("#celular_usuarios").val() == "")
 		    	{
 			    	
-		    		$("#mensaje_clave_usuarios_r").text("Claves no Coinciden");
-		    		$("#mensaje_clave_usuarios_r").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else
-		    	{
-		    		$("#mensaje_clave_usuarios_r").fadeOut("slow"); 
-			        
-		    	}	
-				
-
-				//los telefonos
-		    	
-		    	if (celular_usuarios == "" )
-		    	{
-			    	
-		    		$("#mensaje_celular_usuarios").text("Ingrese un Celular");
+		    		$("#mensaje_celular_usuarios").text("Introduzca Celular");
 		    		$("#mensaje_celular_usuarios").fadeIn("slow"); //Muestra mensaje de error
 		            return false;
 			    }
@@ -910,9 +859,9 @@
 		            
 				}
 
-				// correos
+				/* input correos */
 				
-		    	if (correo_usuarios == "")
+		    	if ($("#correo_usuarios") == "")
 		    	{
 			    	
 		    		$("#mensaje_correo_usuarios").text("Introduzca un correo");
@@ -930,10 +879,81 @@
 		    		$("#mensaje_correo_usuarios").fadeIn("slow"); //Muestra mensaje de error
 		            return false;	
 			    }
-
 		    	
-		    
-		    					    
+		    	    	
+			
+		    	if ($("#clave_usuarios").val() == "")
+		    	{
+		    		
+		    		$("#mensaje_clave_usuarios").text("Introduzca una Clave");
+		    		$("#mensaje_clave_usuarios").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }else if ($("#clave_usuarios").val().length!=4){
+			    	$("#mensaje_clave_usuarios").text("Introduzca minimo 4 números");
+		    		$("#mensaje_clave_usuarios").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+				}
+		    	else 
+		    	{
+		    		$("#mensaje_clave_usuarios").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}
+		    	
+
+		    	if ($("#clave_usuarios_r").val() == "")
+		    	{
+		    		
+		    		$("#mensaje_clave_usuarios_r").text("Introduzca una Clave");
+		    		$("#mensaje_clave_usuarios_r").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_clave_usuarios_r").fadeOut("slow"); 
+		            
+				}
+		    	
+		    	if ($("#clave_usuarios").val() != $("#clave_usuarios_r").val())
+		    	{
+			    	
+		    		$("#mensaje_clave_usuarios_r").text("Claves no Coinciden");
+		    		$("#mensaje_clave_usuarios_r").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else
+		    	{
+		    		$("#mensaje_clave_usuarios_r").fadeOut("slow"); 
+			        
+		    	}	
+
+		    	/*para input_select estado usuario*/
+		    	var id_estado = $("#id_estado").val();
+		    	if (id_estado == 0 )
+		    	{
+			    	
+		    		$("#mensaje_id_estados").text("Seleccione un Estado");
+		    		$("#mensaje_id_estados").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else
+		    	{
+		    		$("#mensaje_id_estados").fadeOut("slow"); 
+			        
+		    	}	
+
+		    	if (id_rol_principal == 0 )
+		    	{
+			    	
+		    		$("#mensaje_id_rol_principal").text("Seleccione Rol Principal");
+		    		$("#mensaje_id_rol_principal").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else
+		    	{
+		    		$("#mensaje_id_rol_principal").fadeOut("slow"); 
+			        
+		    	}	
+					    
 
 			}); 
 
@@ -945,7 +965,14 @@
 				$( "#nombre_usuarios" ).focus(function() {
 					$("#mensaje_nombre_usuarios").fadeOut("slow");
     			});
-				
+
+				$( "#apellidos_usuarios" ).focus(function() {
+					$("#mensaje_apellido_usuarios").fadeOut("slow");
+    			});
+
+				$( "#fecha_nacimiento_usuarios" ).focus(function() {
+					$("#mensaje_fecha_nacimiento_usuarios").fadeOut("slow");
+    			});
     			
 				$( "#clave_usuarios" ).focus(function() {
 					$("#mensaje_clave_usuarios").fadeOut("slow");
@@ -974,21 +1001,22 @@
         
     <script type="text/javascript" >   
     function numeros(e){
-    key = e.keyCode || e.which;
-    tecla = String.fromCharCode(key).toLowerCase();
-    letras = "0123456789";
-    especiales = [8,37,39,46];
- 
-    tecla_especial = false
-    for(var i in especiales){
-    if(key == especiales[i]){
-     tecla_especial = true;
-     break;
-        } 
-    }
- 
-    if(letras.indexOf(tecla)==-1 && !tecla_especial)
-        return false;
+        
+        key = e.keyCode || e.which;
+        tecla = String.fromCharCode(key).toLowerCase();
+        letras = "0123456789";
+        especiales = [8,37,39,46];
+     
+        tecla_especial = false
+        for(var i in especiales){
+        if(key == especiales[i]){
+         tecla_especial = true;
+         break;
+            } 
+        }
+     
+        if(letras.indexOf(tecla)==-1 && !tecla_especial)
+            return false;
      }
     </script> 
     
@@ -1048,6 +1076,16 @@
         }, 200);
       }
     </script>
+    
+    	</script>	
+	
+	
+	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
+       <script>
+      $(document).ready(function(){
+      $(".cantidades1").inputmask();
+      });
+	  </script>
  	
   </body>
 </html>

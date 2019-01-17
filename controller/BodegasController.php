@@ -118,6 +118,8 @@ class BodegasController extends ControladorBase{
         
     }
     
+    
+    
     public function InsertaBodegas(){
         
         session_start();
@@ -242,9 +244,8 @@ class BodegasController extends ControladorBase{
             
             $cantones=new CantonesModel();
             
-            $resultCan = $cantones->getBy(" id_provincias = '$id_provincias'  ");
-            
-            
+            $resultCan = $cantones->getCondiciones("id_cantones,nombre_cantones"," public.cantones ", "id_provincias = '$id_provincias'  ","nombre_cantones");
+                        
         }
         
         if(isset($_POST["id_provincias_asignacion"]))

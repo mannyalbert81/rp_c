@@ -1,5 +1,10 @@
 
     
+       <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+      <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+      
+      
     <script src="view/bootstrap/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="view/bootstrap/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
@@ -45,3 +50,5 @@
         });
 
     </script>
+    
+   

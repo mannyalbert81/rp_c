@@ -1,6 +1,6 @@
 <?php
 
-class MovimientosProductosCabezaController extends ControladorBase{
+class MovimientosInvCabezaController extends ControladorBase{
 
 	public function __construct() {
 		parent::__construct();

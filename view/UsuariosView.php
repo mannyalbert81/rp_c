@@ -796,6 +796,7 @@ $(document).ready(function(){
 			});
 
 			$("#cedula_usuarios").focusout(function(){
+				validarcedula();
 				$.ajax({
 					url:'<?php echo $helper->url("Usuarios","AutocompleteDevuelveNombres"); ?>',
 					type:'POST',
@@ -803,8 +804,7 @@ $(document).ready(function(){
 					data:{cedula_usuarios:$('#cedula_usuarios').val()}
 				}).done(function(respuesta){
 
-					$('#id_usuarios').val(respuesta.id_usuarios);
-					$('#cedula_usuarios').val(respuesta.cedula_usuarios);
+					$('#id_usuarios').val(respuesta.id_usuarios);					
 					$('#nombre_usuarios').val(respuesta.nombre_usuarios);
 					$('#apellidos_usuarios').val(respuesta.apellidos_usuarios);
 					$('#usuario_usuarios').val(respuesta.usuario_usuarios);
@@ -828,9 +828,15 @@ $(document).ready(function(){
 						$('#caduca_clave').attr('checked','checked');
 					}
 
-					$('#lbl_cambiar_clave').text("Cambiar Clave:  ");
-					$('#cambiar_clave').show();
+					if( typeof respuesta.clave_n_usuarios !== "undefined"){
 
+						$('#lbl_cambiar_clave').text("Cambiar Clave:  ");
+						$('#cambiar_clave').show();
+							
+							
+						}
+
+					
 
                     if(respuesta.privilegios.length>0){
                     	 $('#lista_roles').empty();
@@ -846,7 +852,6 @@ $(document).ready(function(){
     			}).fail(function(respuesta) {
 
     				$('#id_usuarios').val("");
-					$('#cedula_usuarios').val("");
 					$('#nombre_usuarios').val("");
 					$('#apellidos_usuarios').val("");
 					$('#usuario_usuarios').val("");
@@ -856,8 +861,7 @@ $(document).ready(function(){
 					$('#correo_usuarios').val("");
 					$('#clave_usuarios').val("");
 					$('#clave_usuarios_r').val("");
-					
-    			    
+					    			    
     			  });
 				 
 				
@@ -1136,6 +1140,40 @@ $(document).ready(function(){
 		}); 
 
 	</script>
+	
+	<script type="text/javascript">
+      function validarcedula() {
+        var cad = document.getElementById("cedula_usuarios").value.trim();
+        var total = 0;
+        var longitud = cad.length;
+        var longcheck = longitud - 1;
+
+        if (cad !== "" && longitud === 10){
+          for(i = 0; i < longcheck; i++){
+            if (i%2 === 0) {
+              var aux = cad.charAt(i) * 2;
+              if (aux > 9) aux -= 9;
+              total += aux;
+            } else {
+              total += parseInt(cad.charAt(i)); // parseInt o concatenará en lugar de sumar
+            }
+          }
+
+          total = total % 10 ? 10 - total % 10 : 0;
+
+          if (cad.charAt(longitud-1) == total) {
+        	  $("#cedula_usuarios").val(cad);
+          }else{
+        	  $("#mensaje_cedula_usuarios").text("Introduzca Identificación Valida");
+	    	$("#mensaje_cedula_usuarios").fadeIn("slow");
+        	  document.getElementById("cedula_usuarios").focus();
+        	  $("#cedula_usuarios").val("");
+        	  
+          }
+        }
+      }
+    </script>
+	
         
         
         

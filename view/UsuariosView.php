@@ -10,7 +10,7 @@
       
       
    <?php include("view/modulos/links_css.php"); ?>
-  
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     
    
   </head>
@@ -103,27 +103,47 @@
                           <div class="row">
                           
                           	<div class="col-xs-6 col-md-3 col-lg-3 ">
-                            	<div class="form-group">
-                                	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
-                                    <input type="text" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="<?php echo $resEdit->fecha_nacimiento_usuarios; ?>"  placeholder="fecha nacimiento" >
-                                    <div id="fecha_nacimiento_usuarios" class="errores"></div>
-                                 </div>
+                          		<div class="form-group">
+                             		 	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
+                                        <div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                          </div>
+                                          <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="<?php echo $resEdit->fecha_nacimiento_usuarios; ?>"  >
+                                          <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
+                                        </div>
+                                        <!-- /.input group -->
+                                      </div>                            	
                              </div> 
                              
                              <div class="col-lg-3 col-xs-6 col-md-3">
-                    		    <div class="form-group">
-                                      <label for="celular_usuarios" class="control-label">Celular:</label>
-                                      <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>"  placeholder="celular.." maxlength="10" onkeypress="return numeros(event)" />
+                             
+                                 <div class="form-group">
+                                    <label>Celular:</label>
+                                    <div class="input-group">
+                                      <div class="input-group-addon">
+                                        <i class="fa fa-tablet"></i>
+                                      </div>
+                                      <input type="text" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>" class="form-control" data-inputmask='"mask": "999-999-9999"' data-mask>
                                       <div id="mensaje_celular_usuarios" class="errores"></div>
-                                </div>
+                                    </div>
+                                    <!-- /.input group -->
+                                  </div>
+                    		    
                              </div>
                              
                              <div class="col-lg-3 col-xs-6 col-md-3">
-                    		    <div class="form-group">
-                                      <label for="telefono_usuarios" class="control-label">Teléfono:</label>
-                                      <input type="text" class="form-control cantidades1" id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  placeholder="teléfono.."  maxlength="10" onkeypress="return numeros(event)" />
-                                      <div id="mensaje_telefono_usuarios" class="errores"></div>
-                                </div>
+                             	<div class="form-group">
+                                        <label>Telefono:</label>
+                                        <div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-phone"></i>
+                                          </div>
+                                          <input type="text" class="form-control"  id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  data-inputmask='"mask": "(99) 9999-999"' data-mask>
+                                        </div>
+                                        <!-- /.input group -->
+                                  </div>
+                    		   
                     	    </div>
                     	    
                     	    
@@ -289,29 +309,47 @@
                              <div class="row">
                              	
                              	<div class="col-xs-6 col-md-3 col-lg-3 ">
-                                	<div class="form-group">
-                                    	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
-                                        <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value=""  >
-                                        <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
-                                     </div>
+                             		 <div class="form-group">
+                             		 	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
+                                        <div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                          </div>
+                                          <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value=""  >
+                                          <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
+                                        </div>
+                                        <!-- /.input group -->
+                                      </div>
+                                	
                                    </div>  
                                 
                                  
                                  <div class="col-lg-3 col-xs-6 col-md-3">
-                        		    <div class="form-group">
-                                          <label for="celular_usuarios" class="control-label">Celular:</label>
-                                          <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value=""  placeholder="celular.." maxlength="10" onkeypress="return numeros(event)">
+                                 	<div class="form-group">
+                                        <label>Celular:</label>
+                                        <div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-tablet"></i>
+                                          </div>
+                                          <input type="text" id="celular_usuarios" name="celular_usuarios" value="" class="form-control" data-inputmask='"mask": "999-999-9999"' data-mask>
                                           <div id="mensaje_celular_usuarios" class="errores"></div>
-                                    </div>
+                                        </div>
+                                        <!-- /.input group -->
+                                      </div>
                                 </div>
                                 
                                 <div class="col-lg-3 col-xs-6 col-md-3">
-                        		    <div class="form-group">
-                                          <label for="telefono_usuarios" class="control-label">Teléfono:</label>
-                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  placeholder="teléfono.." maxlength="10" onkeypress="return numeros(event)">
-                                           
-                                          <div id="mensaje_telefono_usuarios" class="errores"></div>
-                                    </div>
+                                	<div class="form-group">
+                                        <label>Telefono:</label>
+                                        <div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-phone"></i>
+                                          </div>
+                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  data-inputmask='"mask": "(99) 9999-999"' data-mask>
+                                        </div>
+                                        <!-- /.input group -->
+                                      </div>
+                        		    
                         	    </div>
                         	    
                         	    
@@ -534,6 +572,16 @@
     
    <?php include("view/modulos/links_js.php"); ?>
    
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+   
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  
+ 
+   
+   
    <!-- para el autocompletado -->
     
  
@@ -542,9 +590,12 @@
   <script type="text/javascript">
      
    $(document).ready( function (){
+	   
 	   /*pone_espera();*/
 	   load_usuarios(1);
 	   load_usuarios_inactivos(1);
+
+	   $('[data-mask]').inputmask();
 
 	   /*para manejo de multiples roles*/
 	    /**$("#link_agregar_rol").click(function() {

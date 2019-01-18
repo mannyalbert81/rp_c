@@ -11,9 +11,9 @@ class MovimientosInvController extends ControladorBase{
 	public function index(){
 	
 		//Creamos el objeto usuario
-	    $movimientos_productos_cabeza = new MovimientosProductosCabezaModel();
+	    $movimientos_inventario = new MovimientosInvModel();
 					//Conseguimos todos los usuarios
-	    $resultSet=$movimientos_productos_cabeza->getAll("id_movimientos_productos_cabeza");
+	    $resultSet=array();
 				
 		$resultEdit = "";
 
@@ -26,7 +26,7 @@ class MovimientosInvController extends ControladorBase{
 
 			$nombre_controladores = "MovimientosProductosCabeza";
 			$id_rol= $_SESSION['id_rol'];
-			$resultPer = $movimientos_productos_cabeza->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+			$resultPer = $movimientos_inventario->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
 			if (!empty($resultPer))
 			{
@@ -35,7 +35,7 @@ class MovimientosInvController extends ControladorBase{
 
 					$nombre_controladores = "MovimientosProductosCabeza";
 					$id_rol= $_SESSION['id_rol'];
-					$resultPer = $movimientos_productos_cabeza->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+					$resultPer = $movimientos_inventario->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 						
 					if (!empty($resultPer))
 					{
@@ -81,6 +81,13 @@ class MovimientosInvController extends ControladorBase{
        	
        }
 	
+	}
+	
+	public function compras(){
+	    $this->view("Compras",array(
+	        
+	        
+	    ));
 	}
 	
 	

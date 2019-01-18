@@ -2572,7 +2572,7 @@ public function index(){
 					$col_privilegios = "rol.id_rol,rol.nombre_rol";
 					$tab_privilegios = "public.privilegios INNER JOIN public.rol ON rol.id_rol=privilegios.id_rol
                                         INNER JOIN public.catalogo ON catalogo.valor_catalogo = privilegios.tipo_rol_privilegios";
-					$where_privilegios = "columna_catalogo='tipo_rol_privilegios' AND nombre_catalogo != 'PRINCIPAL' 
+					$where_privilegios = "columna_catalogo='tipo_rol_privilegios' 
                                             AND privilegios.id_usuarios='$_id_usuarios'";
 					
 					$result_privilegios = $catalogo->getCondiciones($col_privilegios,$tab_privilegios,$where_privilegios,"tabla_catalogo");
@@ -2867,11 +2867,7 @@ public function index(){
 		    		}
 		    		
 		    		
-		    		//rol principal
-		    		$colval = "id_rol='$_id_rol_principal'";
-		    		$tabla = "privilegios";
-		    		$where = "id_usuarios = '$_id_usuarios' AND tipo_rol_privilegios = '$valor_rol_principal' ";
-		    		$resultado=$privilegios->UpdateBy($colval, $tabla, $where);
+		    		
 		    		
 		    		//rol secunadrio
 		    		/*consulta estado privilegios de catalogo*/
@@ -2883,7 +2879,7 @@ public function index(){
 		    		
 		    		if(count($_array_roles)>0){
 		    		    
-		    		    $resultadoEliminar = $privilegios->deleteById("id_usuarios = '$_id_usuarios' AND tipo_rol_privilegios = '$valor_rol_secundario' ");
+		    		    $resultadoEliminar = $privilegios->deleteById("id_usuarios = '$_id_usuarios' ");
 		    		    //var_dump($resultadoEliminar); die('llego');
 		    		    foreach ($_array_roles as $id_rol){
 		    		        
@@ -2900,6 +2896,13 @@ public function index(){
 		    		        //var_dump($resultadoEliminar); die('llego');
 		    		    }
 		    		}
+		    		
+		    		//rol principal
+		    		$colval = " tipo_rol_privilegios = '$valor_rol_principal'";
+		    		$tabla = "privilegios";
+		    		$where = "id_usuarios = '$_id_usuarios' AND id_rol='$_id_rol_principal'";
+		    		$resultado=$privilegios->UpdateBy($colval, $tabla, $where);
+		    		
 		    		
 		    		//para actualizacion de tabla claves
 		    		if((int)$_cambiar_clave==1 || $_cambiar_clave=="on"){
@@ -2982,13 +2985,7 @@ public function index(){
 		    	    }
 		    	    
 		    	    
-		    	    //rol principal
-		    	    $colval = "id_rol='$_id_rol_principal'";
-		    	    $tabla = "privilegios";
-		    	    $where = "id_usuarios = '$_id_usuarios' AND tipo_rol_privilegios = '$valor_rol_principal' ";
-		    	    $resultado=$privilegios->UpdateBy($colval, $tabla, $where);
-		    	    
-		    	    //rol secunadrio
+		    	    //inserta privilegios
 		    	    /*consulta estado privilegios de catalogo*/
 		    	    $wherecatalogo = "nombre_catalogo='ACTIVO' AND  tabla_catalogo='privilegios' AND columna_catalogo='estado_rol_privilegios'";
 		    	    $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
@@ -2998,7 +2995,7 @@ public function index(){
 		    	    
 		    	    if(count($_array_roles)>0){
 		    	        
-		    	        $resultadoEliminar = $privilegios->deleteById("id_usuarios = '$_id_usuarios' AND tipo_rol_privilegios = '$valor_rol_secundario' ");
+		    	        $resultadoEliminar = $privilegios->deleteById("id_usuarios = '$_id_usuarios' ");
 		    	        //var_dump($resultadoEliminar); die('llego');
 		    	        foreach ($_array_roles as $id_rol){
 		    	            //var_dump($id_rol); die('llego');
@@ -3012,9 +3009,18 @@ public function index(){
 		    	            $privilegios->setFuncion($funcion);
 		    	            $privilegios->setParametros($parametros);
 		    	            $resultado=$privilegios->Insert();
-		    	            //var_dump($resultado); die('llego');
+		    	           
 		    	        }
+		    	        
 		    	    }
+		    	    
+		    	    
+		    	    //rol principal
+		    	    $colval = " tipo_rol_privilegios = '$valor_rol_principal'";
+		    	    $tabla = "privilegios";
+		    	    $where = "id_usuarios = '$_id_usuarios' AND id_rol='$_id_rol_principal' ";
+		    	    $resultado=$privilegios->UpdateBy($colval, $tabla, $where);
+		    	    
 		    	    
 		    	    //para actualizacion de tabla claves
 		    	    if((int)$_cambiar_clave==1 || $_cambiar_clave=="on"){
@@ -7723,8 +7729,7 @@ public function index(){
 	                if($id_rol==1){
 	                    
 	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=index&id_usuarios='.$res->id_usuarios.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Usuarios&action=borrarId&id_usuarios='.$res->id_usuarios.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
-	                    
+	                    	                    
 	                }
 	                
 	                $html.='</tr>';
@@ -7864,6 +7869,118 @@ public function index(){
             }
         }
 	    
+	}
+	
+	public function AutocompleteCedula(){
+	    
+	    $usuarios = new UsuariosModel();
+	    $cedula_usuarios = $_GET['term'];
+	    
+	    $resultSet=$usuarios->getBy("cedula_usuarios LIKE '$cedula_usuarios%'");
+	    
+	    if(!empty($resultSet)){
+	        
+	        foreach ($resultSet as $res){
+	            
+	            $_respuesta[] = $res->cedula_usuarios;
+	        }
+	        echo json_encode($_respuesta);
+	    }
+	    
+	}
+	
+	public function AutocompleteDevuelveNombres(){
+	    
+	    $usuarios = new UsuariosModel();
+	    $catalogo = new CatalogoModel();
+	    
+	    $cedula_usuarios = $_POST['cedula_usuarios'];
+	    
+	    $columna = " usuarios.id_usuarios,
+    	    usuarios.cedula_usuarios,
+    	    usuarios.nombre_usuarios,
+    	    usuarios.apellidos_usuarios,
+            usuarios.usuario_usuarios,
+            usuarios.fecha_nacimiento_usuarios,
+    	    claves.clave_claves,
+    	    claves.clave_n_claves,
+            claves.caduca_claves,
+    	    usuarios.telefono_usuarios,
+    	    usuarios.celular_usuarios,
+    	    usuarios.correo_usuarios,
+    	    rol.id_rol,
+    	    rol.nombre_rol,
+    	    usuarios.estado_usuarios,
+    	    usuarios.fotografia_usuarios,
+    	    usuarios.creado";
+	    
+	    $tablas = " public.usuarios INNER JOIN public.claves ON claves.id_usuarios = usuarios.id_usuarios
+        	    INNER JOIN public.privilegios ON privilegios.id_usuarios=usuarios.id_usuarios
+        	    INNER JOIN public.rol ON rol.id_rol=privilegios.id_rol
+        	    INNER JOIN public.catalogo ON privilegios.tipo_rol_privilegios = catalogo.valor_catalogo
+        	    AND catalogo.nombre_catalogo='PRINCIPAL' AND catalogo.tabla_catalogo ='privilegios' 
+                AND catalogo.columna_catalogo = 'tipo_rol_privilegios'";
+	    
+	    $where = "1=1 AND usuarios.cedula_usuarios = '$cedula_usuarios'";
+	    
+	    $resultSet=$usuarios->getCondiciones($columna,$tablas,$where,"usuarios.cedula_usuarios");
+	    
+	    $columna_privilegios = "
+    	    usuarios.id_usuarios,
+    	    usuarios.cedula_usuarios,
+    	    rol.id_rol,
+    	    rol.nombre_rol,
+    	    catalogo.valor_catalogo";
+	    
+	    $tabla_privilegios = " public.usuarios INNER JOIN public.privilegios ON usuarios.id_usuarios = privilegios.id_usuarios
+            	    INNER JOIN public.rol ON rol.id_rol = privilegios.id_rol
+            	    INNER JOIN public.catalogo ON catalogo.valor_catalogo = privilegios.tipo_rol_privilegios
+            	    AND catalogo.tabla_catalogo = 'privilegios' AND catalogo.columna_catalogo = 'tipo_rol_privilegios'
+                    INNER JOIN public.catalogo c1 ON c1.valor_catalogo = privilegios.estado_rol_privilegios AND c1.nombre_catalogo = 'ACTIVO' 
+                    AND c1.tabla_catalogo = 'privilegios' AND c1.columna_catalogo = 'estado_rol_privilegios'";
+	    
+	    $where_privilegios = "1=1 AND usuarios.cedula_usuarios = '$cedula_usuarios'";
+	    
+	    $resultprivilegios=$usuarios->getCondiciones($columna_privilegios,$tabla_privilegios,$where_privilegios,"privilegios.id_privilegios");
+	    
+	    
+	    $respuesta = new stdClass();
+	    
+	    if(!empty($resultSet)){
+	        
+	        $respuesta->id_usuarios = $resultSet[0]->id_usuarios;
+	        $respuesta->cedula_usuarios = $resultSet[0]->cedula_usuarios;
+	        $respuesta->nombre_usuarios = $resultSet[0]->nombre_usuarios;
+	        $respuesta->apellidos_usuarios = $resultSet[0]->apellidos_usuarios;
+	        $respuesta->usuario_usuarios = $resultSet[0]->usuario_usuarios;
+	        $respuesta->fecha_nacimiento_usuarios = $resultSet[0]->fecha_nacimiento_usuarios;	        
+	        $respuesta->clave_claves = $resultSet[0]->clave_claves;
+	        $respuesta->clave_n_claves = $resultSet[0]->clave_n_claves;
+	        $respuesta->telefono_usuarios = $resultSet[0]->telefono_usuarios;
+	        $respuesta->celular_usuarios = $resultSet[0]->celular_usuarios;
+	        $respuesta->correo_usuarios = $resultSet[0]->correo_usuarios;
+	        $respuesta->caduca_claves = $resultSet[0]->caduca_claves;
+	        $respuesta->id_rol = $resultSet[0]->id_rol;
+	        $respuesta->nombre_rol = $resultSet[0]->nombre_rol;
+	        $respuesta->estado_usuarios = $resultSet[0]->estado_usuarios;
+	        $respuesta->fotografia_usuarios = $resultSet[0]->fotografia_usuarios;
+	        
+	        
+	    }
+	    
+	    if(!empty($resultprivilegios)){
+	        if(is_array($resultprivilegios)){
+	            if(count($resultprivilegios)>0)
+	            {
+	                $respuesta->privilegios=$resultprivilegios;
+	            }else{
+	                $respuesta->privilegios= new stdClass();
+	            }
+	        }else{$respuesta->privilegios= new stdClass();}
+	       
+	    }else{$respuesta->privilegios= new stdClass();}
+	    
+	    echo json_encode($respuesta);
 	}
 	
 	

@@ -315,9 +315,10 @@
                                           <div class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                           </div>
-                                          <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value=""  >
-                                          <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
+                                          <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="" min="2001-01-01" max="<?php echo date("Y-m-d");?>"  step="2" required>
+                                         <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
                                         </div>
+                                         
                                         <!-- /.input group -->
                                       </div>
                                 	
@@ -811,9 +812,7 @@ $(document).ready(function(){
 					$('#fecha_nacimiento_usuarios').val(respuesta.fecha_nacimiento_usuarios);
 					$('#celular_usuarios').val(respuesta.celular_usuarios);
 					$('#telefono_usuarios').val(respuesta.telefono_usuarios);
-					$('#correo_usuarios').val(respuesta.correo_usuarios);
-					$('#clave_usuarios').val(respuesta.clave_n_claves).attr('readonly','readonly');
-					$('#clave_usuarios_r').val(respuesta.clave_n_claves).attr('readonly','readonly');
+					$('#correo_usuarios').val(respuesta.correo_usuarios);					
 					$('#codigo_clave').val(respuesta.clave_n_claves);
 
 					if(respuesta.id_rol>0){
@@ -825,11 +824,13 @@ $(document).ready(function(){
 						}
 
 					if(respuesta.caduca_claves=='t'){
+						
 						$('#caduca_clave').attr('checked','checked');
 					}
 
 					if( typeof respuesta.clave_n_usuarios !== "undefined"){
-
+						$('#clave_usuarios').val(respuesta.clave_n_claves).attr('readonly','readonly');
+						$('#clave_usuarios_r').val(respuesta.clave_n_claves).attr('readonly','readonly');
 						$('#lbl_cambiar_clave').text("Cambiar Clave:  ");
 						$('#cambiar_clave').show();
 							
@@ -1132,6 +1133,10 @@ $(document).ready(function(){
 				
 				$( "#correo_usuarios" ).focus(function() {
 					$("#mensaje_correo_usuarios").fadeOut("slow");
+    			});
+    			
+				$("#id_rol_principal").focus(function() {
+					$("#mensaje_id_rol_principal").fadeOut("slow"); 
     			});
 			
 				

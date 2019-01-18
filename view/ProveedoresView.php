@@ -335,7 +335,8 @@
 
                       </tbody>
                     </table>
-      
+                    
+    
        
         </div>
          </div>
@@ -517,6 +518,84 @@
 
 	</script>	
 	
+		<script type="text/javascript">
+     
+        	   $(document).ready( function (){
+        		   
+        		   load_bodegas_inactivos(1);
+        		   load_bodegas_activos(1);
+        		   
+	   			});
+
+        	
+
+
+	   function load_bodegas_activos(pagina){
+
+		   var search=$("#search_activos").val();
+	       var con_datos={
+					  action:'ajax',
+					  page:pagina
+					  };
+			  
+	     $("#load_bodegas_activos").fadeIn('slow');
+	     
+	     $.ajax({
+	               beforeSend: function(objeto){
+	                 $("#load_bodegas_activos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	               },
+	               url: 'index.php?controller=Bodegas&action=consulta_bodegas_activos&search='+search,
+	               type: 'POST',
+	               data: con_datos,
+	               success: function(x){
+	                 $("#bodegas_activos_registrados").html(x);
+	                 $("#load_bodegas_activos").html("");
+	                 $("#tabla_bodegas_activos").tablesorter(); 
+	                 
+	               },
+	              error: function(jqXHR,estado,error){
+	                $("#bodegas_activos_registrados").html("Ocurrio un error al cargar la informacion de Bodegas Activos..."+estado+"    "+error);
+	              }
+	            });
+
+
+		   }
+
+	   function load_bodegas_inactivos(pagina){
+
+		   var search=$("#search_inactivos").val();
+	       var con_datos={
+					  action:'ajax',
+					  page:pagina
+					  };
+			  
+	     $("#load_bodegas_inactivos").fadeIn('slow');
+	     
+	     $.ajax({
+	               beforeSend: function(objeto){
+	                 $("#load_bodegas_inactivos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	               },
+	               url: 'index.php?controller=Bodegas&action=consulta_bodegas_inactivos&search='+search,
+	               type: 'POST',
+	               data: con_datos,
+	               success: function(x){
+	                 $("#bodegas_inactivos_registrados").html(x);
+	                 $("#load_bodegas_inactivos").html("");
+	                 $("#tabla_bodegas_inactivos").tablesorter(); 
+	                 
+	               },
+	              error: function(jqXHR,estado,error){
+	                $("#bodegas_inactivos_registrados").html("Ocurrio un error al cargar la informacion de Bodegas Inactivos..."+estado+"    "+error);
+	              }
+	            });
+
+
+		   }
+
+	  
+        	        	   
+
+ </script>
 	
   </body>
 </html>   

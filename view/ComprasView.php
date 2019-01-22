@@ -8,9 +8,10 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     
       
-      
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
    <?php include("view/modulos/links_css.php"); ?>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  
     
    
   </head>
@@ -67,46 +68,103 @@
             
             <div class="box-body">
             
-                <form action="<?php echo $helper->url("Usuarios","InsertaUsuarios"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
-          		 	  <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
+                <form action="<?php echo $helper->url("MovimientosInv","InsertarCompra"); ?>" method="post" >
+          		 	 
               		 	 <div class="row">
-                         	
-                             
+              		 	 
+              		 	 	
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
-                                	<label for="usuario_usuarios" class="control-label">Usuario:</label>
-                                    <input type="text" class="form-control" id="usuario_usuarios" name="usuario_usuarios" value="<?php echo $resEdit->usuario_usuarios; ?>"  placeholder="usuario..." >
-                                    <div id="usuario_usuarios" class="errores"></div>
+                                	<label for="numero_compra" class="control-label">Numero Compra:</label>
+                                    <input type="text" class="form-control" id="numero_compra" name="numero_compra" value=""  >
+                                    <div id="mensaje_numero_compra" class="errores"></div>
+                                 </div>
+                             </div> 
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group">
+                                	<label for="fecha_compra" class="control-label">Fecha Compra:</label>
+                                    <input type="date" class="form-control" id="fecha_compra" name="fecha_compra" value=""  >
+                                    <div id="mensaje_numero_compra" class="errores"></div>
+                                 </div>
+                             </div>
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group">
+                                	<label for="cantidad_compra" class="control-label">Cantidad:</label>
+                                    <input type="text" class="form-control" id="cantidad_compra" name="cantidad_compra" value=""  placeholder="cantidad.." >
+                                    <div id="mensaje_cantidad_compra" class="errores"></div>
+                                 </div>
+                             </div> 
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group">
+                                	<label for="importe_compra" class="control-label">Importe:</label>
+                                    <input type="text" class="form-control" id="importe_compra" name="importe_compra" value=""  placeholder="importe.." >
+                                    <div id="mensaje_importe_compra" class="errores"></div>
+                                 </div>
+                             </div> 
+                             
+                          </div>
+                          <div class="row">
+                          
+                          	<div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group">
+                                	<label for="numero_factura_compra" class="control-label">No Factura:</label>
+                                    <input type="text" class="form-control" id="numero_factura_compra" name="numero_factura_compra" value=""  placeholder="no. factura.." >
+                                    <div id="mensaje_numero_factura" class="errores"></div>
+                                 </div>
+                             </div> 
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group">
+                                	<label for="numero_autorizacion_factura" class="control-label">No Autorización:</label>
+                                    <input type="text" class="form-control" id="numero_autorizacion_factura" name="numero_autorizacion_factura" value=""  placeholder="autorizacion" >
+                                    <div id="mensaje_autorizacion_factura" class="errores"></div>
+                                 </div>
+                             </div> 
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group">
+                                	<label for="subtotal_12_compra" class="control-label">Subtotal 12%:</label>
+                                    <input type="text" class="form-control" id="subtotal_12_compra" name="subtotal_12_compra" value=""  placeholder="subtotal" >
+                                    <div id="mensaje_subtotal_12_compra" class="errores"></div>
+                                 </div>
+                             </div> 
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group">
+                                	<label for="subtotal_0_compra" class="control-label">Subtotal 0%:</label>
+                                    <input type="text" class="form-control" id="subtotal_0_compra" name="subtotal_0_compra" value=""  placeholder="" >
+                                    <div id="mensaje_subtotal_0_compra" class="errores"></div>
+                                 </div>
+                             </div> 
+                             
+                          </div>
+                          <div class="row">
+                          
+                          	<div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group">
+                                	<label for="iva_compra" class="control-label">Iva:</label>
+                                    <input type="text" class="form-control" id="iva_compra" name="iva_compra" value=""  placeholder="iva" >
+                                    <div id="mensaje_iva_compra" class="errores"></div>
+                                 </div>
+                             </div> 
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group">
+                                	<label for="descuento_compra" class="control-label">Descuento:</label>
+                                    <input type="text" class="form-control" id="descuento_compra" name="descuento_compra" value=""  placeholder="descuento" >
+                                    <div id="mensaje_descuento_compra" class="errores"></div>
+                                 </div>
+                             </div> 
+                              <div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group">
+                                	<label for="estado_compra" class="control-label">Estado:</label>
+                                    <input type="text" class="form-control" id="estado_compra" name="estado_compra" value=""  placeholder="estado" >
+                                    <div id="mensaje_estado_compras" class="errores"></div>
                                  </div>
                              </div> 
                           </div>
-                          
-                          
-                          
-                    		
-                    		
-                           
-                                
-                      <?php } } else {?>      
-                          
-                          <div class="row">                		      
-                    			
-                    		    <div class="col-xs-6 col-md-3 col-lg-3">
-                            		<div class="form-group">
-                                      <label for="clave_usuarios" class="control-label">Password:</label>
-                                      <input type="password" class="form-control" id="clave_usuarios" name="clave_usuarios" value="" placeholder="(solo números..)" maxlength="4" onkeypress="return numeros(event)">
-                                      <div id="mensaje_clave_usuarios" class="errores"></div>
-                                    </div>
-                            	</div>
-                            	
-                        	</div>
-                        	      
-                     <?php } ?>
+                      
                      	<div class="row">
             			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
             	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
-            	                  <a class="btn btn-danger" href="<?php  echo $helper->url("Usuarios","index"); ?>">CANCELAR</a>
+            	                  <a class="btn btn-danger" href="<?php  echo $helper->url("MovimientosInv","compras"); ?>">CANCELAR</a>
         	                    </div>
     	        		    </div>
     	        		    
@@ -118,6 +176,45 @@
       			</div>
       			
     		</section>
+    		
+    		<section class="content">
+              <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Detalles Compra</h3>
+                  <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                      <i class="fa fa-minus"></i></button>
+                    
+                  </div>
+                </div>
+                
+                <div class="box-body">             
+                	<table class="table" id="table_ins_productos">
+                     <thead>
+                        <tr>
+                          <th>Codigo</th>
+                          <th>Nombre </th>
+                          <th>Cantidad </th>
+                          <th>Un. Medida</th>
+                        </tr>
+                      </thead>
+                      <tbody> 
+                      <tr>
+                      	<td></td> <td></td> <td></td> <td></td>
+                      </tr>                  
+                        
+                      </tbody>
+                    </table>
+                    <span style="float:right">
+                    	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#agregar_nuevo">
+                			Agregar Nuevo
+              			</button>
+              		</span>
+                	
+                
+                </div>
+                </div>
+            </section>
     		
     		
     		
@@ -133,20 +230,29 @@
               </div>
             </div>
             
-            <div class="box-body">
-            <table id="example" class="display" cellspacing="0" width="100%">
-                <thead>
+            <div class="box-body">             
+            	<table class="table" id="makeEditable">
+                 <thead>
                     <tr>
-                        <th></th>
-                        <th>First name</th>
-                        <th>Last name</th>
-                        <th>Position</th>
-                        <th>Office</th>
-                        <th width="18%">Start date</th>
-                        <th>Salary</th>
+                      <th></th>
+                      <th>Codigo</th>
+                      <th>Nombre </th>
+                      <th>Cantidad </th>
+                      <th>Un. Medida</th>
                     </tr>
-                </thead>
-            </table>
+                  </thead>
+                  <tbody>                   
+                    <tr class="active">
+                      <td>Active</td>
+                      <td>Activeson</td>
+                      <td>Active</td>
+                      <td>Activeson</td>
+                      <td>act@example.com</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <span style="float:right"><button id="but_add" class="btn btn-danger">Add New Row</button></span>
+            	
             
             </div>
             </div>
@@ -154,11 +260,39 @@
     	
     
   </div>
+  
  
  	<?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
  </div>
+ 
+ <!-- para los modales -->
+ 
+<div class="modal fade" id="agregar_nuevo">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Default Modal</h4>
+          </div>
+          <div class="modal-body">
+          	<div class="pull-right" style="margin-right:15px;">
+				<input type="text" value="" class="form-control" id="search_productos" name="search_productos" onkeyup="load_productos(1)" placeholder="search.."/>
+			</div>
+          	
+			<div id="load_productos_registrados" ></div>	
+			<div id="productos_registrados"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
     
     
    <?php include("view/modulos/links_js.php"); ?>
@@ -169,6 +303,7 @@
    
    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="view/bootstrap/otros/uitable/bootstable.js"></script>
   
  
    
@@ -177,97 +312,121 @@
     
  
  <!-- funciones javascript para la pagina -->
- 
- <script type="text/javascript">
- var editor; // use a global for the submit and return data rendering in the examples
- 
- $(document).ready(function() {
-     editor = new $.fn.dataTable.Editor( {
-         ajax: "../php/staff.php",
-         table: "#example",
-         fields: [ {
-                 label: "First name:",
-                 name: "first_name"
-             }, {
-                 label: "Last name:",
-                 name: "last_name"
-             }, {
-                 label: "Position:",
-                 name: "position"
-             }, {
-                 label: "Office:",
-                 name: "office"
-             }, {
-                 label: "Extension:",
-                 name: "extn"
-             }, {
-                 label: "Start date:",
-                 name: "start_date",
-                 type: "datetime"
-             }, {
-                 label: "Salary:",
-                 name: "salary"
-             }
-         ]
-     } );
-  
-     // Activate an inline edit on click of a table cell
-     $('#example').on( 'click', 'tbody td:not(:first-child)', function (e) {
-         editor.inline( this );
-     } );
-  
-     $('#example').DataTable( {
-         dom: "Bfrtip",
-         ajax: "../php/staff.php",
-         order: [[ 1, 'asc' ]],
-         columns: [
-             {
-                 data: null,
-                 defaultContent: '',
-                 className: 'select-checkbox',
-                 orderable: false
-             },
-             { data: "first_name" },
-             { data: "last_name" },
-             { data: "position" },
-             { data: "office" },
-             { data: "start_date" },
-             { data: "salary", render: $.fn.dataTable.render.number( ',', '.', 0, '$' ) }
-         ],
-         select: {
-             style:    'os',
-             selector: 'td:first-child'
-         },
-         buttons: [
-             { extend: "create", editor: editor },
-             { extend: "edit",   editor: editor },
-             { extend: "remove", editor: editor }
-         ]
-     } );
- } );
- </script>
- 
-  <script type="text/javascript">
-     
-   $(document).ready( function (){
-	   
-	   /*pone_espera();*/
-	  
-	   /*para manejo de multiples roles*/
-	    /**$("#link_agregar_rol").click(function() {
-			return !($('#id_rol option:selected').clone()).appendTo('#lista_roles'); 
-	    });*/
-	   
+<script type="text/javascript">
+$('#agregar_nuevo').on('show.bs.modal', function (event) {
+	load_productos(1);
+	  var modal = $(this)
+	  modal.find('.modal-title').text('Listado Productos')
 
-		
+	});
 
-		
-});
+function load_productos(pagina){
 
- 
-
+	var search=$("#search_productos").val();
    
+    $("#load_productos_registrados").fadeIn('slow');
+    
+    $.ajax({
+            beforeSend: function(objeto){
+              $("#load_productos_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+            },
+            url: 'index.php?controller=MovimientosInv&action=consulta_productos&search='+search,
+            type: 'POST',
+            data: {action:'ajax', page:pagina},
+            success: function(x){
+              $("#productos_registrados").html(x);
+              $("#load_productos_registrados").html("");
+              $("#tabla_productos").tablesorter(); 
+              
+            },
+           error: function(jqXHR,estado,error){
+             $("#users_registrados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+           }
+     });
+}
+
+function agregar_producto(id){
+
+	var cantidad=document.getElementById('cantidad_'+id).value;
+	//Inicia validacion
+	if (isNaN(cantidad))
+	{
+	alert('Esto no es un numero');
+	document.getElementById('cantidad_'+id).focus();
+	return false;
+	}
+	var $tab_en_edic = $("#table_ins_productos");  //Table to edit
+    var $filas = $tab_en_edic.find('tbody tr');
+    
+    if ($filas.length==0) {
+        //No hay filas de datos. Hay que crearlas completas
+        var $row = $tab_en_edic.find('thead tr');  //encabezado       
+        var $cols = $row.find('th');  //lee campos
+        
+        //construye html
+        var htmlDat = '';
+        $cols.each(function() {
+            if ($(this).attr('name')=='buttons') {
+                //Es columna de botones
+                htmlDat = htmlDat + colEdicHtml;  //agrega botones
+            } else {
+                htmlDat = htmlDat + '<td></td>';
+            }
+        });
+        $tab_en_edic.find('tbody').append('<tr>'+htmlDat+'</tr>');
+    } else {
+        //Hay otras filas, podemos clonar la última fila, para copiar los botones
+        var $ultFila = $tab_en_edic.find('tr:last');
+        $ultFila.clone().appendTo($ultFila.parent()); 
+        $tab_en_edic.find('tr:last').attr('id','editing'); 
+        $ultFila = $tab_en_edic.find('tr:last');
+        var $cols = $ultFila.find('td');  //lee campos
+        
+        
+        $cols.each(function() {
+            if ($(this).attr('name')=='buttons') {
+                //Es columna de botones
+            } else {
+                var div = '<div style="display: none;"></div>';  //guarda contenido
+                var input = '<input class="form-control input-sm"   value="">';
+
+                $(this).html(div + input);  //limpia contenido
+            }
+        });
+         $ultFila.find('td:last').html(saveColHtml);
+
+    }
+	
+	/*$.ajax({
+        type: "POST",
+        url: 'index.php?controller=MovimientosInv&action=insertar_producto',
+        data: "id_productos="+id+"&cantidad="+cantidad,
+    	 beforeSend: function(objeto){
+    		/*$("#resultados").html("Mensaje: Cargando...");*/
+    	 /* },
+        success: function(datos){
+    		$("#resultados").html(datos);
+    	}
+	});*/
+	
+}
 </script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	$('#makeEditable').SetEditable({
+		$addButton: $('#but_add'),
+		columnsEd: null,
+		onEdit: function() {},
+		onDelete: function() {},
+		onBeforeDelete: function() {},
+		onAdd: function() {}
+	});
+						
+});
+</script>
+
 
 <script type="text/javascript">
 

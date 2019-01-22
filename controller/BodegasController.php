@@ -29,6 +29,8 @@ class BodegasController extends ControladorBase{
             
         $resultEdit = "";
         
+        $resultSet = null;
+        
         $catalogo=null;
         $catalogo = new CatalogoModel();
         //para estados de catalogo de usuarios

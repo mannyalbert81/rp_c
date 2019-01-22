@@ -286,6 +286,8 @@ class ProductosController extends ControladorBase{
                       productos.nombre_productos,
                       productos.descripcion_productos,
                       productos.ult_precio_productos,
+                      unidad_medida.id_unidad_medida,
+                      unidad_medida.nombre_unidad_medida,
                       movimientos_inv_detalle.cantidad_movimientos_inv_detalle,
                       movimientos_inv_detalle.saldo_f_movimientos_inv_detalle,
                       movimientos_inv_detalle.saldo_v_movimientos_inv_detalle,
@@ -308,7 +310,8 @@ class ProductosController extends ControladorBase{
                     $tablas1   = " public.productos,
                       public.movimientos_inv_cabeza,
                       public.movimientos_inv_detalle,
-                      public.usuarios";
+                      public.usuarios,
+                      public.unidad_medida";
                     $where1    = "   movimientos_inv_cabeza.id_usuarios = usuarios.id_usuarios AND
                       movimientos_inv_detalle.id_productos = productos.id_productos AND
                       movimientos_inv_detalle.id_movimientos_inv_cabeza = movimientos_inv_cabeza.id_movimientos_inv_cabeza AND productos.id_productos='$_id_productos'";

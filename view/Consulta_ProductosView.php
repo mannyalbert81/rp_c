@@ -1,5 +1,4 @@
-    
-<!DOCTYPE HTML>
+ <!DOCTYPE HTML>
 <html lang="es">
       <head>
          
@@ -60,6 +59,8 @@
       </ol>
     </section>   
     
+    
+    
      <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
@@ -73,7 +74,7 @@
         
         <div class="box-body">
         
-       <form action="<?php echo $helper->url("Productos","consulta"); ?></form>
+       
 
         
         
@@ -143,13 +144,15 @@
         </section>
         
         
+
+        
         
         
         
         <?php if(!empty($resultEdit)){?>
             
             
-         <section class="content">
+       <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Consultar Productos</h3>
@@ -168,7 +171,7 @@
       <div class="table-responsive">
         
 	                
-                    <table  class="table table-striped  dataTables-example">
+                    <table  class="table table-striped table-bordered table-hover dataTables-example">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -287,4 +290,4 @@
   </body>
 </html>   
 
-    
+ 

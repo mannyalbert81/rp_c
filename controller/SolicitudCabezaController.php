@@ -138,29 +138,6 @@ class SolicitudCabezaController extends ControladorBase{
 	}
 	
 	
-	public function Reporte(){
-	
-		//Creamos el objeto usuario
-	    $grupos=new GruposModel();
-		//Conseguimos todos los usuarios
-		
-	
-	
-		session_start();
-	
-	
-		if (isset(  $_SESSION['usuario']) )
-		{
-		    $resultRep = $grupos->getByPDF("id_grupos, nombre_grupos", " nombre_grupos != '' ");
-			$this->report("Grupos",array(	"resultRep"=>$resultRep));
-	
-		}
-					
-	
-	}
-	
-	
-	
 	///////////////////////////////////////////// METODOS AJAX ///////////////////////////////////////
 	
 	public function ajax_trae_productos(){
@@ -224,7 +201,7 @@ class SolicitudCabezaController extends ControladorBase{
                 $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
                 $html.='</div>';
                 $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-                $html.='<section style="height:425px; overflow-y:scroll;">';
+                $html.='<section style="height:180px; overflow-y:scroll;">';
                 $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
@@ -337,7 +314,7 @@ class SolicitudCabezaController extends ControladorBase{
 	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:425px; overflow-y:scroll;">';
+	            $html.='<section style="height:180px; overflow-y:scroll;">';
 	            $html.= "<table id='tabla_temporal' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
@@ -586,90 +563,116 @@ class SolicitudCabezaController extends ControladorBase{
 	    
 	    session_start();
 	    $resultado = null;
-	    $usuarios=new UsuariosModel();
-	    $solicitudCabeza = null; $solicitudCabeza = new SolicitudCabezaModel();
+	    $temp_solicitud = null; 
+	    $temp_solicitud =new TempSolicitudModel();
+	    $movimientos_inv_cabeza = null; 
+	    $movimientos_inv_cabeza = new MovimientosInvCabezaModel();
+	    $movimientos_inv_detalle = null;
+	    $movimientos_inv_detalle = new MovimientosInvDetalleModel();
+	    $consecutivos = new ConsecutivosModel();
 	    
 	    if (isset(  $_SESSION['nombre_usuarios']) )
-	    { 
-	        if (isset ($_POST["id_clientes"]))
+	    {
+	        
+	        if (isset ($_POST["razon_solicitud"]))
 	        {
 	            
-	            $_id_clientes   = $_POST["id_clientes"];
-	            $_id_mesas      = $_POST['id_mesa_selecionada'];
-	            $_id_usuario    = $_SESSION['id_usuarios'];
-	            $_id_rol        = $_SESSION['id_rol'];
+	            $_id_usuarios   = $_SESSION["id_usuarios"];
+	            $_razon_solicitud      = $_POST['razon_solicitud'];
+	    
+	            date_default_timezone_set('America/Guayaquil');
+	            $fechaActual = date('Y-m-d');
 	            
 	            
-	            //agregar numero pedido
-	            $numero_pedido='0';
-	            
-	            //traer numero pedido
-	            
-	            $columna="*";
-	            $tabla="consecutivos";
-	            $where="nombre_consecutivos='PEDIDOS'";
-	            
-	            $resultado = $pedidos->getCondiciones($columna,$tabla,$where,"id_consecutivos");
-	            
-	            $numero_pedido = $resultado[0]->real_consecutivos;
-	            
-	            $valor_total_pedidos=0.0;
+	          
+	            $resultConsecutivos = $consecutivos->getBy("tipo_documento_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
+	             $numero_consecutivos = $resultConsecutivos[0]->numero_consecutivos;
+	             $_id_consecutivos = $resultConsecutivos[0]->id_consecutivos;
 	            
 	            
-	            $funcion = "ins_pedidos";
 	            
-	            $parametros = "'$_id_clientes',
-		    				   '$_id_usuario',
-		    				   '$_id_mesas',
-		    	               '$numero_pedido',
-		    	               '$valor_total_pedidos'";
+	            $funcion = "ins_movimientos_inv_cabeza";
+	            $parametros = "'$_id_usuarios',
+		    				   '$_id_consecutivos',
+		    				   '$numero_consecutivos',
+		    	               '$_razon_solicitud',
+		    	               '$fechaActual',
+                                '0',
+                                '0','0','0','0','0','0','0','0'";
 	            
-	            $pedidos->setFuncion($funcion);
-	            $pedidos->setParametros($parametros);
-	            $resultadoinsert=$pedidos->Insert();
+	            $movimientos_inv_cabeza->setFuncion($funcion);
+	            $movimientos_inv_cabeza->setParametros($parametros);
+	            $resultadoinsert=$movimientos_inv_cabeza->Insert();
 	            
-	            $columna="pedidos.id_clientes,
-                          pedidos.id_usuarios_registra,
-                          pedidos.id_mesas,
-                          pedidos.numero_pedidos,
-                          pedidos.id_pedidos";
+	           
 	            
-	            $tabla="public.pedidos";
 	            
-	            $actualizado = $pedidos->UpdateBy("real_consecutivos = real_consecutivos + 1 ","consecutivos","nombre_consecutivos='PEDIDOS'");
 	            
-	            $where="numero_pedidos='$numero_pedido' AND  id_usuarios_registra='$_id_usuario' AND id_clientes = '$_id_clientes' AND id_mesas = '$_id_mesas'";
+	           $resultInvCabeza = $movimientos_inv_cabeza->getBy("id_usuarios='$_id_usuarios'  AND id_consecutivos='$_id_consecutivos' AND numero_movimientos_inv_cabeza = '$numero_consecutivos'");
+	           $id_movimientos_inv_cabeza = $resultInvCabeza[0]->id_movimientos_inv_cabeza;
 	            
-	            $resultado = $pedidos->getCondiciones($columna,$tabla,$where,"id_pedidos");
 	            
-	            $pedido_id = $resultado[0]->id_pedidos;
+	           $actualizado = $consecutivos->UpdateBy("numero_consecutivos = numero_consecutivos + 1 ","consecutivos","tipo_documento_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
 	            
-	            if($pedido_id>0){
+	           
+	            
+	           if($id_movimientos_inv_cabeza>0){
 	                
-	                $pedidos_detalle = null; $pedidos_detalle = new PedidosDetalleModel();
+	            
 	                
-	                $funcion = "ins_pedidos";
+	             $col_temp = "temp_solicitud.id_temp_solicitud, 
+                          temp_solicitud.id_usuario_temp_solicitud, 
+                          temp_solicitud.id_producto_temp_solicitud, 
+                          temp_solicitud.cantidad_temp_solicitud, 
+                          temp_solicitud.sesion_php_temp_solicitud, 
+                          temp_solicitud.estado_temp_solicitud, 
+                          temp_solicitud.creado";
 	                
-	                $parametros = "'$_id_clientes',
-		    				   '$_id_usuario',
-		    				   '$_id_mesas',
-		    	               '$numero_pedido',
-		    	               '$valor_total_pedidos'";
+	                $tab_temp="public.temp_solicitud";
 	                
-	                $pedidos->setFuncion($funcion);
-	                $pedidos->setParametros($parametros);
-	                $resultadoinsert=$pedidos->Insert();
+	                $where_temp="1=1 AND
+                                temp_solicitud.id_usuario_temp_solicitud='$_id_usuarios'";
+	                
+	                $resultTemp = $temp_solicitud->getCondiciones($col_temp,$tab_temp,$where_temp,"temp_solicitud.id_temp_solicitud");
+	                
+	                if(!empty($resultTemp)){
+	                    
+	                    $funcion = "ins_movimientos_inv_detalle";
+	                    
+	                    foreach ($resultTemp as $res){
+	                        
+	                        $id_producto_temp_solicitud = $res->id_producto_temp_solicitud;
+	                        $cantidad_temp_solicitud = $res->cantidad_temp_solicitud;
+	                       
+	                        
+	                        $valor_producto= 0;
+	                        $valor_total = 0;
+	                        
+	                        
+	                            $parametros = "'$id_movimientos_inv_cabeza',
+		    				   '$id_producto_temp_solicitud',
+		    				   '$cantidad_temp_solicitud',
+		    	               '$valor_producto',
+		    	               '$valor_total'";
+	                        
+	                            $movimientos_inv_detalle->setFuncion($funcion);
+	                            $movimientos_inv_detalle->setParametros($parametros);
+	                            $resultado=$movimientos_inv_detalle->Insert();
+	                    }
+	                    
+	                }
+	                
+	              
+	                $where200 = "id_usuario_temp_solicitud='$_id_usuarios'";
+	                $resultado=$temp_solicitud->deleteById($where200);
+	                
+	                
 	                
 	            }
 	            
-	            print_r($resultadoinsert);
-	            
-	            die('llego2');
 	            
 	            
-	            
-	            
-	            $this->redirect("Pedidos", "index");
+	            $this->redirect("SolicitudCabeza", "index");
 	        }
 	        
 	    }else{

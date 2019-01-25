@@ -160,15 +160,7 @@
                              </div> 
                           </div>
                       
-                     	<div class="row">
-            			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
-                	   		    <div class="form-group">
-            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
-            	                  <a class="btn btn-danger" href="<?php  echo $helper->url("MovimientosInv","compras"); ?>">CANCELAR</a>
-        	                    </div>
-    	        		    </div>
-    	        		    
-            		    </div>
+                     	
           		 	
           		 	</form>
           
@@ -189,28 +181,28 @@
                 </div>
                 
                 <div class="box-body">             
-                	<table class="table" id="table_ins_productos">
-                     <thead>
-                        <tr>
-                          <th>Codigo</th>
-                          <th>Nombre </th>
-                          <th>Cantidad </th>
-                          <th>Un. Medida</th>
-                        </tr>
-                      </thead>
-                      <tbody> 
-                      <tr>
-                      	<td></td> <td></td> <td></td> <td></td>
-                      </tr>                  
-                        
-                      </tbody>
-                    </table>
+                	
                     <span style="float:right">
                     	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#agregar_nuevo">
                 			Agregar Nuevo
               			</button>
               		</span>
                 	
+                 <div class="box-body">
+                          <div id="resultados" ></div>
+                          
+                          <div class="row">
+            			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+                	   		    <div class="form-group">
+            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
+            	                  <a class="btn btn-danger" href="<?php  echo $helper->url("MovimientosInv","compras"); ?>">CANCELAR</a>
+        	                    </div>
+    	        		    </div>
+    	        		    
+            		    </div>
+                        </div>
+                
+                 
                 
                 </div>
                 </div>
@@ -219,44 +211,7 @@
     		
     		
     		
-       <section class="content">
-          <div class="box box-primary">
-            <div class="box-header with-border">
-              <h3 class="box-title">Orden Compra</h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                  <i class="fa fa-minus"></i></button>
-                
-              </div>
-            </div>
-            
-            <div class="box-body">             
-            	<table class="table" id="makeEditable">
-                 <thead>
-                    <tr>
-                      <th></th>
-                      <th>Codigo</th>
-                      <th>Nombre </th>
-                      <th>Cantidad </th>
-                      <th>Un. Medida</th>
-                    </tr>
-                  </thead>
-                  <tbody>                   
-                    <tr class="active">
-                      <td>Active</td>
-                      <td>Activeson</td>
-                      <td>Active</td>
-                      <td>Activeson</td>
-                      <td>act@example.com</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <span style="float:right"><button id="but_add" class="btn btn-danger">Add New Row</button></span>
-            	
-            
-            </div>
-            </div>
-            </section>
+     
     	
     
   </div>
@@ -310,6 +265,15 @@
    
    <!-- para el autocompletado -->
     
+   <script type="text/javascript" >
+		    // cada vez que se cambia el valor del combo
+		    $(document).ready(function(){
+
+		    	load_temp_solicitud(1);
+		    }); 
+			</script>
+ 
+ 
  
  <!-- funciones javascript para la pagina -->
 <script type="text/javascript">
@@ -345,8 +309,12 @@ function load_productos(pagina){
      });
 }
 
-function agregar_producto(id){
 
+
+	function agregar_producto (id)
+{
+
+		
 	var cantidad=document.getElementById('cantidad_'+id).value;
 	//Inicia validacion
 	if (isNaN(cantidad))
@@ -355,76 +323,68 @@ function agregar_producto(id){
 	document.getElementById('cantidad_'+id).focus();
 	return false;
 	}
-	var $tab_en_edic = $("#table_ins_productos");  //Table to edit
-    var $filas = $tab_en_edic.find('tbody tr');
-    
-    if ($filas.length==0) {
-        //No hay filas de datos. Hay que crearlas completas
-        var $row = $tab_en_edic.find('thead tr');  //encabezado       
-        var $cols = $row.find('th');  //lee campos
-        
-        //construye html
-        var htmlDat = '';
-        $cols.each(function() {
-            if ($(this).attr('name')=='buttons') {
-                //Es columna de botones
-                htmlDat = htmlDat + colEdicHtml;  //agrega botones
-            } else {
-                htmlDat = htmlDat + '<td></td>';
-            }
-        });
-        $tab_en_edic.find('tbody').append('<tr>'+htmlDat+'</tr>');
-    } else {
-        //Hay otras filas, podemos clonar la última fila, para copiar los botones
-        var $ultFila = $tab_en_edic.find('tr:last');
-        $ultFila.clone().appendTo($ultFila.parent()); 
-        $tab_en_edic.find('tr:last').attr('id','editing'); 
-        $ultFila = $tab_en_edic.find('tr:last');
-        var $cols = $ultFila.find('td');  //lee campos
-        
-        
-        $cols.each(function() {
-            if ($(this).attr('name')=='buttons') {
-                //Es columna de botones
-            } else {
-                var div = '<div style="display: none;"></div>';  //guarda contenido
-                var input = '<input class="form-control input-sm"   value="">';
-
-                $(this).html(div + input);  //limpia contenido
-            }
-        });
-         $ultFila.find('td:last').html(saveColHtml);
-
-    }
 	
-	/*$.ajax({
+	$.ajax({
         type: "POST",
-        url: 'index.php?controller=MovimientosInv&action=insertar_producto',
+        url: 'index.php?controller=MovimientosInv&action=insertar_temporal_compras',
         data: "id_productos="+id+"&cantidad="+cantidad,
     	 beforeSend: function(objeto){
     		/*$("#resultados").html("Mensaje: Cargando...");*/
-    	 /* },
+    	  },
         success: function(datos){
     		$("#resultados").html(datos);
     	}
-	});*/
-	
-}
-</script>
-
-<script type="text/javascript">
-$(document).ready(function(){
-	
-	$('#makeEditable').SetEditable({
-		$addButton: $('#but_add'),
-		columnsEd: null,
-		onEdit: function() {},
-		onDelete: function() {},
-		onBeforeDelete: function() {},
-		onAdd: function() {}
 	});
-						
-});
+}
+
+	function eliminar_producto (id)
+{
+	
+	$.ajax({
+        type: "POST",
+        url: 'index.php?controller=MovimientosInv&action=eliminar_producto',
+        data: "id_temp_compras="+id,
+    	 beforeSend: function(objeto){
+    		$("#resultados").html("Mensaje: Cargando...");
+    	  },
+        success: function(datos){
+    		$("#resultados").html(datos);
+    	}
+	});
+}
+
+	function load_temp_solicitud(pagina){
+	  
+     var con_datos={
+				  page:pagina
+				  };
+   
+   $.ajax({
+             beforeSend: function(objeto){
+               
+             },
+             url: 'index.php?controller=MovimientosInv&action=trae_temporal',
+             type: 'POST',
+             data: con_datos,
+             success: function(x){
+               $("#resultados").html(x);
+               $("#tabla_temporal").tablesorter(); 
+               
+             },
+            error: function(jqXHR,estado,error){
+              $("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+            }
+          });
+
+
+	   }
+
+
+
+
+
+
+
 </script>
 
 

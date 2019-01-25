@@ -90,6 +90,7 @@ class MovimientosInvController extends ControladorBase{
 	 */
 	
 	public function compras(){
+	    session_start();
 	    $this->view("Compras",array(
 	        
 	        
@@ -233,17 +234,241 @@ class MovimientosInvController extends ControladorBase{
 	}
 	
 	
-	/***
-	 * mod:compras
-	 * title: paginatemultiple
-	 * des: devuelve navegacion de paginacion en hatml
-	 * @param $reload pagina a recargar
-	 * @param $page numero de pagina
-	 * @param $tpages cantidad de paginas a mostrar
-	 * @param $adjacents brecha entre paginas
-	 * @param $funcion que funcion recarga en la vista
-	 * @return string navegacion paginacion en hmtl
-	 */
+	
+	public function insertar_temporal_compras(){
+	    
+	    session_start();
+	    
+	    $_id_usuarios = $_SESSION['id_usuarios'];
+	    
+	    $producto_id = (isset($_REQUEST['id_productos'])&& $_REQUEST['id_productos'] !=NULL)?$_REQUEST['id_productos']:0;
+	    
+	    $cantidad = (isset($_REQUEST['cantidad'])&& $_REQUEST['cantidad'] !=NULL)?$_REQUEST['cantidad']:0;
+	    
+	    
+	    if($_id_usuarios!='' && $producto_id>0){
+	        
+	        $_session_id = session_id();
+	        
+	        //para insertado de temp
+	        $temp_compras = new TempComprasModel();
+	        $funcion = "ins_temp_compras";
+	        $parametros = "'$_id_usuarios',
+		    				   '$producto_id',
+                               '$cantidad',
+                               '$_session_id' ";
+	        /*nota estado de temp no esta insertado por el momento*/
+	        $temp_compras->setFuncion($funcion);
+	        $temp_compras->setParametros($parametros);
+	        $resultado=$temp_compras->Insert();
+	        
+	        $this->trae_temporal($_id_usuarios);
+	        
+	    }
+	}
+	
+	
+	
+	public function trae_temporal($id_usuario = null){
+	    
+	    
+	    $page =  (isset($_REQUEST['page'])&& $_REQUEST['page'] !=NULL)?$_REQUEST['page']:1;
+	    
+	    $id_usuario =  isset($_SESSION['id_usuarios'])?$_SESSION['id_usuarios']:null;
+	    
+	    if($id_usuario==null){ session_start(); $id_usuario=$_SESSION['id_usuarios'];}
+	    
+	    
+	    
+	    if($id_usuario != null)
+	    {
+	        /* consulta a la BD */
+	        
+	        $temp_compras = new TempComprasModel();
+	        
+	        $col_temp=" productos.id_productos,
+                    grupos.nombre_grupos,
+                    productos.codigo_productos,
+                    productos.nombre_productos,
+                    temp_compras.id_temp_compras,
+                    temp_compras.cantidad_temp_compras";
+	        
+	        $tab_temp = "public.temp_compras INNER JOIN public.productos ON productos.id_productos = temp_compras.id_productos
+                    INNER JOIN  public.grupos ON grupos.id_grupos = productos.id_grupos AND temp_compras.id_usuarios= '$id_usuario'";
+	        
+	        $where_temp = "1 = 1";
+	        
+	        
+	        $resultSet=$temp_compras->getCantidad("*", $tab_temp, $where_temp);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet=$temp_compras->getCondicionesPag($col_temp, $tab_temp, $where_temp, "temp_compras.id_temp_compras", $limit);
+	        $count_query   = $cantidadResult;
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        $html="";
+	        if($cantidadResult>0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:11px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:250px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_temporal' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Grupo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->cantidad_temp_compras.'</td>';
+	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="eliminar_producto('.$res->id_temp_compras.')" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
+	                
+	                $html.='</tr>';
+	            }
+	            
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents).'';
+	            $html.='</div>';
+	            
+	            
+	            
+	        }else{
+	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Productos</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        
+	        echo $html;
+	        
+	    }
+	    
+	    
+	}
+	public function eliminar_producto(){
+	    
+	    session_start();
+	    
+	    $_id_usuarios = $_SESSION['id_usuarios'];
+	    
+	    $solicitud_temp_id = (isset($_REQUEST['id_temp_compras'])&& $_REQUEST['id_temp_compras'] !=NULL)?$_REQUEST['id_temp_compras']:0;
+	    
+	    if($_id_usuarios!='' && $solicitud_temp_id>0){
+	        
+	        $_session_id = session_id();
+	        
+	        //para eliminado de temp
+	        $temp_compras = new TempComprasModel();
+	        
+	        $where = "id_usuarios = $_id_usuarios AND id_temp_compras = $solicitud_temp_id ";
+	        $resultado=$temp_compras->deleteById($where);
+	        
+	        $this->trae_temporal($_id_usuarios);
+	    }
+	}
+	
+	
+	public function paginate($reload, $page, $tpages, $adjacents) {
+	    
+	    $prevlabel = "&lsaquo; Prev";
+	    $nextlabel = "Next &rsaquo;";
+	    $out = '<ul class="pagination pagination-large">';
+	    
+	    // previous label
+	    
+	    if($page==1) {
+	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+	    } else if($page==2) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_productos_solicitud(1)'>$prevlabel</a></span></li>";
+	    }else {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_productos_solicitud(".($page-1).")'>$prevlabel</a></span></li>";
+	        
+	    }
+	    
+	    // first label
+	    if($page>($adjacents+1)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_productos_solicitud(1)'>1</a></li>";
+	    }
+	    // interval
+	    if($page>($adjacents+2)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // pages
+	    
+	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+	    for($i=$pmin; $i<=$pmax; $i++) {
+	        if($i==$page) {
+	            $out.= "<li class='active'><a>$i</a></li>";
+	        }else if($i==1) {
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_productos_solicitud(1)'>$i</a></li>";
+	        }else {
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_productos_solicitud(".$i.")'>$i</a></li>";
+	        }
+	    }
+	    
+	    // interval
+	    
+	    if($page<($tpages-$adjacents-1)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // last
+	    
+	    if($page<($tpages-$adjacents)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_productos_solicitud($tpages)'>$tpages</a></li>";
+	    }
+	    
+	    // next
+	    
+	    if($page<$tpages) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_productos_solicitud(".($page+1).")'>$nextlabel</a></span></li>";
+	    }else {
+	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+	    }
+	    
+	    $out.= "</ul>";
+	    return $out;
+	}
+	
+	
+	
+	
+	
 	public function paginatemultiple($reload, $page, $tpages, $adjacents,$funcion='') {
 	    
 	    $prevlabel = "&lsaquo; Prev";
@@ -308,6 +533,135 @@ class MovimientosInvController extends ControladorBase{
 	    return $out;
 	}
 	
+	public function InsertarCompra(){
+	    
+	    session_start();
+	    $resultado = null;
+	    $temp_compras = null;
+	    $temp_compras =new TempComprasModel();
+	    $movimientos_inv_cabeza = null;
+	    $movimientos_inventario = new MovimientosInvModel();
+	    $movimientos_inv_cabeza = new MovimientosInvCabezaModel();
+	    $consecutivos = new ConsecutivosModel();
+	    
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    {
+	        
+	        if (isset ($_POST["razon_solicitud"]))
+	        {
+	            
+	            $_id_usuarios   = $_SESSION["id_usuarios"];
+	            $_razon_solicitud      = $_POST['razon_solicitud'];
+	            
+	            date_default_timezone_set('America/Guayaquil');
+	            $fechaActual = date('Y-m-d');
+	            
+	            
+	            
+	            $resultConsecutivos = $consecutivos->getBy("tipo_documento_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
+	            $numero_consecutivos = $resultConsecutivos[0]->numero_consecutivos;
+	            $_id_consecutivos = $resultConsecutivos[0]->id_consecutivos;
+	            
+	            
+	            
+	            $funcion = "ins_movimientos_inv_cabeza";
+	            $parametros = "'$_id_usuarios',
+		    				   '$_id_consecutivos',
+		    				   '$numero_consecutivos',
+		    	               '$_razon_solicitud',
+		    	               '$fechaActual',
+                                '0',
+                                '0','0','0','0','0','0','0','0'";
+	            
+	            $movimientos_inv_cabeza->setFuncion($funcion);
+	            $movimientos_inv_cabeza->setParametros($parametros);
+	            $resultadoinsert=$movimientos_inv_cabeza->Insert();
+	            
+	            
+	            
+	            
+	            
+	            $resultInvCabeza = $movimientos_inv_cabeza->getBy("id_usuarios='$_id_usuarios'  AND id_consecutivos='$_id_consecutivos' AND numero_movimientos_inv_cabeza = '$numero_consecutivos'");
+	            $id_movimientos_inv_cabeza = $resultInvCabeza[0]->id_movimientos_inv_cabeza;
+	            
+	            
+	            $actualizado = $consecutivos->UpdateBy("numero_consecutivos = numero_consecutivos + 1 ","consecutivos","tipo_documento_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
+	            
+	            
+	            
+	            if($id_movimientos_inv_cabeza>0){
+	                
+	                
+	                
+	                $col_temp = "temp_solicitud.id_temp_solicitud,
+                          temp_solicitud.id_usuario_temp_solicitud,
+                          temp_solicitud.id_producto_temp_solicitud,
+                          temp_solicitud.cantidad_temp_solicitud,
+                          temp_solicitud.sesion_php_temp_solicitud,
+                          temp_solicitud.estado_temp_solicitud,
+                          temp_solicitud.creado";
+	                
+	                $tab_temp="public.temp_solicitud";
+	                
+	                $where_temp="1=1 AND
+                                temp_solicitud.id_usuario_temp_solicitud='$_id_usuarios'";
+	                
+	                $resultTemp = $temp_solicitud->getCondiciones($col_temp,$tab_temp,$where_temp,"temp_solicitud.id_temp_solicitud");
+	                
+	                if(!empty($resultTemp)){
+	                    
+	                    $funcion = "ins_movimientos_inv_detalle";
+	                    
+	                    foreach ($resultTemp as $res){
+	                        
+	                        $id_producto_temp_solicitud = $res->id_producto_temp_solicitud;
+	                        $cantidad_temp_solicitud = $res->cantidad_temp_solicitud;
+	                        
+	                        
+	                        $valor_producto= 0;
+	                        $valor_total = 0;
+	                        
+	                        
+	                        $parametros = "'$id_movimientos_inv_cabeza',
+		    				   '$id_producto_temp_solicitud',
+		    				   '$cantidad_temp_solicitud',
+		    	               '$valor_producto',
+		    	               '$valor_total'";
+	                        
+	                        $movimientos_inv_detalle->setFuncion($funcion);
+	                        $movimientos_inv_detalle->setParametros($parametros);
+	                        $resultado=$movimientos_inv_detalle->Insert();
+	                    }
+	                    
+	                }
+	                
+	                
+	                $where200 = "id_usuario_temp_solicitud='$_id_usuarios'";
+	                $resultado=$temp_solicitud->deleteById($where200);
+	                
+	                
+	                
+	            }
+	            
+	            
+	            
+	            $this->redirect("SolicitudCabeza", "index");
+	        }
+	        
+	    }else{
+	        
+	        $error = TRUE;
+	        $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
+	        
+	        $this->view("Login",array(
+	            "resultSet"=>"$mensaje", "error"=>$error
+	        ));
+	        
+	        
+	        die();
+	        
+	    }
+	}
 	
 	
 	

@@ -93,7 +93,6 @@ class MovimientosInvController extends ControladorBase{
 	    session_start();
 	    $this->view("Compras",array(
 	        
-	        
 	    ));
 	}
 	
@@ -318,7 +317,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            $html.='<div class="pull-left" style="margin-left:11px;">';
 	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query_compras" name="total_query"/>' ;
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:250px; overflow-y:scroll;">';
@@ -378,6 +377,97 @@ class MovimientosInvController extends ControladorBase{
 	    
 	    
 	}
+	
+	/***
+	 * mod: compras,
+	 * title: para cancelar la accion de compras
+	 * return: retorna otra vista 
+	 */
+	public function cancelarcompra(){
+	    
+	    session_start();
+	    
+	    $id_usuario = (isset($_SESSION['id_usuarios']))?$_SESSION['id_usuarios']:0;
+	    
+	    if($id_usuario>0){
+	        
+	        $_session_id = session_id();
+	        
+	        //para eliminado de temp
+	        $temp_compras = new TempComprasModel();
+	        
+	        $where = "id_usuarios = $id_usuario ";
+	        $resultado=$temp_compras->deleteById($where);
+	        
+	        $this->redirect("MovimientosInv","compras");
+	    }
+	}
+	
+	/**
+	 * mod:compras
+	 * title: para isertar compras
+	 * retrun: json de respuesta
+	 */
+	
+	public function inserta_compras(){
+	    
+	    session_start();
+	    
+	    $id_usuarios = (isset($_SESSION['id_usuarios']))?$_SESSION['id_usuarios']:0;
+	    $id_rol = (isset($_SESSION['id_rol']))?$_SESSION['id_rol']:0;
+	    
+	    $movimientosInvCabeza = new MovimientosInvCabezaModel();
+	    
+	    /*valores de la vista*/
+	    $_numero_compra = (isset($_POST['numero_compra']))?$_POST['numero_compra']:'';
+	    $_fecha_compra = (isset($_POST['fecha_compra']))?$_POST['fecha_compra']:'';
+	    $_cantidad_compra = (isset($_POST['cantidad_compra']))?$_POST['cantidad_compra']:'';
+	    $_importe_compra = (isset($_POST['importe_compra']))?$_POST['importe_compra']:'';
+	    $_numero_factura_compra = (isset($_POST['numero_factura_compra']))?$_POST['numero_factura_compra']:'';
+	    $_numero_autorizacion_compra = (isset($_POST['numero_autorizacion_factura']))?$_POST['numero_autorizacion_factura']:'';
+	    $_subtotal_12_compra = (isset($_POST['subtotal_12_compra']))?$_POST['subtotal_12_compra']:'';
+	    $_subtotal_0_compra = (isset($_POST['subtotal_0_compra']))?$_POST['subtotal_0_compra']:'';
+	    $_iva_compra = (isset($_POST['iva_compra']))?$_POST['iva_compra']:'';
+	    $_descuento_compra = (isset($_POST['descuento_compra']))?$_POST['descuento_compra']:'';
+	    $_estado_compra = (isset($_POST['estado_compra']))?$_POST['estado_compra']:0;
+	    
+	    //$id_rol = (isset($_SESSION['id_rol']))?$_SESSION['id_rol']:0;
+	    
+	    /*raise*/
+	    //id consecutivo consultar ?
+	    $_id_consecutivo = 0;
+	    //numero movimiento consultar ?
+	    $_numero_movimiento = 0;
+	    
+	    /*para variables de la funcion*/
+	    $razon_movimientos="compra de productos";
+	    
+	    $funcion = "ins_movimientos_inv_cabeza";
+	    $parametros = "'$id_usuarios','$_id_consecutivo','$_numero_compra','$razon_movimientos',
+                       '$_fecha_compra', '$_cantidad_compra','$_importe_compra','$_numero_factura_compra',
+                       '$_numero_autorizacion_compra','$_subtotal_12_compra','$_subtotal_0_compra',
+                       '$_iva_compra','$_descuento_compra','$_estado_compra'";
+	    
+	    /*$movimientosInvCabeza->setFuncion($funcion);
+	    $movimientosInvCabeza->setParametros($parametros);
+	    $resultset = $movimientosInvCabeza->insert();*/
+	    
+	    $razon_movimientos="compra de productos";
+	    
+	    $funcion = "fn_agrega_compra";
+	    $parametros = "'$id_usuarios','$_id_consecutivo','$_numero_compra','$razon_movimientos',
+                       '$_fecha_compra', '$_cantidad_compra','$_importe_compra','$_numero_factura_compra',
+                       '$_numero_autorizacion_compra','$_subtotal_12_compra','$_subtotal_0_compra',
+                       '$_iva_compra','$_descuento_compra','$_estado_compra'";
+	    
+	    $movimientosInvCabeza->setFuncion($funcion);
+	    $movimientosInvCabeza->setParametros($parametros);
+	    $resultset = $movimientosInvCabeza->llamafuncion();
+	    
+	    print_r($resultset); 
+	    
+	}
+	
 	public function eliminar_producto(){
 	    
 	    session_start();

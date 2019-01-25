@@ -123,13 +123,33 @@ class ModeloBase extends EntidadBase{
     	return $resultSet;
     }
     
+    
+    
+    
+    /*Aqui podemos montarnos metodos para los modelos de consulta*/
+    
+    
+    //----METODO PARA CONSULTAS DE INSERTADO EN CABECERA Y DETALLE  
 
-    
-    
-    
-    //Aqui podemos montarnos metodos para los modelos de consulta
-    
-    
+    public function llamarconsulta($query){
+        $resultSet=array();
+        try{
+            $result=pg_query($this->con, $query);
+            if($result==true){
+                
+                if(pg_num_rows($query)>0)
+                {
+                    while ($row = pg_fetch_object($query)) {
+                        $resultSet[]=$row;
+                    }
+                }
+            }
+        }catch (Exception $Ex){
+            $resultSet=array();
+        }
+        
+        return $resultSet;
+    }
     
     
 }

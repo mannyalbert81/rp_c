@@ -68,7 +68,7 @@
             
             <div class="box-body">
             
-                <form action="<?php echo $helper->url("MovimientosInv","InsertarCompra"); ?>" method="post" >
+                <form id="frm_guardacompra" action="<?php echo $helper->url("MovimientosInv","inserta_compras"); ?>" method="post" >
           		 	 
               		 	 <div class="row">
               		 	 
@@ -90,7 +90,7 @@
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="cantidad_compra" class="control-label">Cantidad:</label>
-                                    <input type="text" class="form-control" id="cantidad_compra" name="cantidad_compra" value=""  placeholder="cantidad.." >
+                                    <input type="text" class="form-control" id="cantidad_compra" name="cantidad_compra" value="0"  placeholder="cantidad.." readonly>
                                     <div id="mensaje_cantidad_compra" class="errores"></div>
                                  </div>
                              </div> 
@@ -194,8 +194,8 @@
                           <div class="row">
             			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
-            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
-            	                  <a class="btn btn-danger" href="<?php  echo $helper->url("MovimientosInv","compras"); ?>">CANCELAR</a>
+            	                  <button type="submit" form="frm_guardacompra" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
+            	                  <a class="btn btn-danger" href="<?php  echo $helper->url("MovimientosInv","cancelarcompra"); ?>">CANCELAR</a>
         	                    </div>
     	        		    </div>
     	        		    
@@ -333,6 +333,7 @@ function load_productos(pagina){
     	  },
         success: function(datos){
     		$("#resultados").html(datos);
+    		pone_cantidad();
     	}
 	});
 }
@@ -346,12 +347,17 @@ function load_productos(pagina){
         data: "id_temp_compras="+id,
     	 beforeSend: function(objeto){
     		$("#resultados").html("Mensaje: Cargando...");
+
+    		pone_cantidad();
+    		
     	  },
         success: function(datos){
     		$("#resultados").html(datos);
     	}
 	});
 }
+
+
 
 	function load_temp_solicitud(pagina){
 	  
@@ -368,6 +374,7 @@ function load_productos(pagina){
              data: con_datos,
              success: function(x){
                $("#resultados").html(x);
+               pone_cantidad();
                $("#tabla_temporal").tablesorter(); 
                
              },
@@ -379,7 +386,13 @@ function load_productos(pagina){
 
 	   }
 
-
+function pone_cantidad(){
+	//console.log('ingreso');
+	//console.log($('#total_query_compras').length);
+	if ($('#total_query_compras').length) {
+		$('#cantidad_compra').val($('#total_query_compras').val());
+	}
+}
 
 
 
@@ -392,9 +405,7 @@ function load_productos(pagina){
 
 
 $(document).ready(function(){
-
 	
-
             var cedula_usuarios = $("#cedula_usuarios").val();
 
             if(cedula_usuarios>0){
@@ -486,6 +497,23 @@ $(document).ready(function(){
 		});
 
 
+ </script>
+ 
+ <script type="text/javascript">
+
+$(document).ready(function(){
+ 
+ $( "#frm_guardacompra" ).submit(function( event ) {
+
+	 if($('#cantidad_compra').val()=='' || $('#cantidad_compra').val()==0)
+	 {
+		 event.preventDefault();
+	 }
+	 
+	  
+	});
+	
+ })
  </script>
      
 

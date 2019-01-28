@@ -134,18 +134,23 @@ class ModeloBase extends EntidadBase{
     public function llamarconsulta($query){
         $resultSet=array();
         try{
-            $result=pg_query($this->con, $query);
-            if($result==true){
+            
+            $result=pg_query($this->con(), $query);
+            
+            if( $result === false )
+                throw new Exception( "Error PostgreSQL ".pg_last_error() );
+           
                 
-                if(pg_num_rows($query)>0)
-                {
-                    while ($row = pg_fetch_object($query)) {
-                        $resultSet[]=$row;
-                    }
+            if(pg_num_rows($result)>0)
+            {                  
+                while ($row = pg_fetch_object($result)) {
+                    $resultSet[]=$row;
                 }
             }
+            
         }catch (Exception $Ex){
-            $resultSet=array();
+           
+            $resultSet=null;
         }
         
         return $resultSet;

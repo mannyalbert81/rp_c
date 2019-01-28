@@ -72,14 +72,17 @@
           		 	 
               		 	 <div class="row">
               		 	 
-              		 	 	
-                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+              		 	 	<div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
-                                	<label for="numero_compra" class="control-label">Numero Compra:</label>
-                                    <input type="text" class="form-control" id="numero_compra" name="numero_compra" value=""  >
-                                    <div id="mensaje_numero_compra" class="errores"></div>
+                                	<label for="numero_compra" class="control-label">Proveedor:</label>
+                                    <input type="text" class="form-control" id="proveedor" name="proveedor" value=""  >
+                                    <input type="hidden" class="form-control" id="id_proveedor" name="id_proveedor" value=""  >
+                                    <div id="mensaje_proveedor" class="errores"></div>
                                  </div>
                              </div> 
+                         </div>
+              		 	 
+              		 	  <div class="row">	                            
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="fecha_compra" class="control-label">Fecha Compra:</label>
@@ -118,48 +121,18 @@
                                     <input type="text" class="form-control" id="numero_autorizacion_factura" name="numero_autorizacion_factura" value=""  placeholder="autorizacion" >
                                     <div id="mensaje_autorizacion_factura" class="errores"></div>
                                  </div>
-                             </div> 
-                             <div class="col-xs-6 col-md-3 col-lg-3 ">
-                            	<div class="form-group">
-                                	<label for="subtotal_12_compra" class="control-label">Subtotal 12%:</label>
-                                    <input type="text" class="form-control" id="subtotal_12_compra" name="subtotal_12_compra" value=""  placeholder="subtotal" >
-                                    <div id="mensaje_subtotal_12_compra" class="errores"></div>
-                                 </div>
-                             </div> 
-                             <div class="col-xs-6 col-md-3 col-lg-3 ">
-                            	<div class="form-group">
-                                	<label for="subtotal_0_compra" class="control-label">Subtotal 0%:</label>
-                                    <input type="text" class="form-control" id="subtotal_0_compra" name="subtotal_0_compra" value=""  placeholder="" >
-                                    <div id="mensaje_subtotal_0_compra" class="errores"></div>
-                                 </div>
-                             </div> 
+                             </div>
                              
-                          </div>
-                          <div class="row">
-                          
-                          	<div class="col-xs-6 col-md-3 col-lg-3 ">
-                            	<div class="form-group">
-                                	<label for="iva_compra" class="control-label">Iva:</label>
-                                    <input type="text" class="form-control" id="iva_compra" name="iva_compra" value=""  placeholder="iva" >
-                                    <div id="mensaje_iva_compra" class="errores"></div>
-                                 </div>
-                             </div> 
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
-                            	<div class="form-group">
-                                	<label for="descuento_compra" class="control-label">Descuento:</label>
-                                    <input type="text" class="form-control" id="descuento_compra" name="descuento_compra" value=""  placeholder="descuento" >
-                                    <div id="mensaje_descuento_compra" class="errores"></div>
-                                 </div>
-                             </div> 
-                              <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="estado_compra" class="control-label">Estado:</label>
                                     <input type="text" class="form-control" id="estado_compra" name="estado_compra" value=""  placeholder="estado" >
                                     <div id="mensaje_estado_compras" class="errores"></div>
                                  </div>
                              </div> 
+                             
                           </div>
-                      
+                         
                      	
           		 	
           		 	</form>
@@ -187,9 +160,17 @@
                 			Agregar Nuevo
               			</button>
               		</span>
+              	</div>
                 	
                  <div class="box-body">
-                          <div id="resultados" ></div>
+                      <div id="resultados" ></div>
+                      
+                      <!-- parte inferior de subtotales -->
+                      <div class="row">
+                      	<div class="col-lg-12">
+                      		<input type="text" value="0.0" id="result_subtotal" name="result_subtotal">
+                      	</div>
+                      </div>
                           
                           <div class="row">
             			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
@@ -200,11 +181,9 @@
     	        		    </div>
     	        		    
             		    </div>
-                        </div>
+                   </div>
                 
-                 
                 
-                </div>
                 </div>
             </section>
     		
@@ -260,20 +239,19 @@
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/uitable/bootstable.js"></script>
   
+  <script src="//unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
  
    
    
    <!-- para el autocompletado -->
     
-   <script type="text/javascript" >
-		    // cada vez que se cambia el valor del combo
-		    $(document).ready(function(){
+<script type="text/javascript" >
+    // cada vez que se cambia el valor del combo
+    $(document).ready(function(){
 
-		    	load_temp_solicitud(1);
-		    }); 
-			</script>
- 
- 
+    	load_temp_solicitud(1);
+    }); 
+</script>
  
  <!-- funciones javascript para la pagina -->
 <script type="text/javascript">
@@ -311,7 +289,7 @@ function load_productos(pagina){
 
 
 
-	function agregar_producto (id)
+function agregar_producto (id)
 {
 
 		
@@ -323,11 +301,18 @@ function load_productos(pagina){
 	document.getElementById('cantidad_'+id).focus();
 	return false;
 	}
+	var precio = document.getElementById('pecio_producto_'+id).value;
+	if (isNaN(precio))
+	{
+		document.getElementById('pecio_producto_'+id).focus();
+		swal('Esto no es un numero');
+	return false;
+	}
 	
 	$.ajax({
         type: "POST",
         url: 'index.php?controller=MovimientosInv&action=insertar_temporal_compras',
-        data: "id_productos="+id+"&cantidad="+cantidad,
+        data: "id_productos="+id+"&cantidad="+cantidad+"&precio_u="+precio,
     	 beforeSend: function(objeto){
     		/*$("#resultados").html("Mensaje: Cargando...");*/
     	  },
@@ -385,6 +370,33 @@ function load_productos(pagina){
 
 
 	   }
+	   
+function carga_resultados_temp(pagina){
+	  
+     var con_datos={
+				  page:pagina
+				  };
+   
+   $.ajax({
+             beforeSend: function(objeto){
+               
+             },
+             url: 'index.php?controller=MovimientosInv&action=resultados_temp',
+             type: 'POST',
+             data: con_datos,
+             success: function(x){
+               $("#resultados").html(x);
+               pone_cantidad();
+               $("#tabla_temporal").tablesorter(); 
+               
+             },
+            error: function(jqXHR,estado,error){
+              $("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+            }
+          });
+
+
+}
 
 function pone_cantidad(){
 	//console.log('ingreso');
@@ -398,6 +410,24 @@ function pone_cantidad(){
 
 
 
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	$( "#proveedor" ).autocomplete({
+
+		source: "<?php echo $helper->url("MovimientosInv","busca_proveedor"); ?>",
+		minLength: 4,
+        select: function (event, ui) {
+           // Set selection          
+           $('#id_proveedor').val(ui.item.id);
+           $('#proveedor').val(ui.item.value); // save selected id to input
+           console.log(ui.item.nombre);
+           return false;
+        }
+	});
+});
 </script>
 
 
@@ -502,6 +532,7 @@ $(document).ready(function(){
  <script type="text/javascript">
 
 $(document).ready(function(){
+
  
  $( "#frm_guardacompra" ).submit(function( event ) {
 

@@ -91,6 +91,7 @@ class MovimientosInvController extends ControladorBase{
 	
 	public function compras(){
 	    session_start();
+	   
 	    $this->view("Compras",array(
 	        
 	    ));
@@ -99,6 +100,8 @@ class MovimientosInvController extends ControladorBase{
 	/***
 	 * mod: compras
 	 * title: traer productos para modal
+	 * ajax: si
+	 * fn_ajax: load_productos
 	 * des: buscar productos en la base
 	 */
 
@@ -152,7 +155,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 	        
-	        $per_page = 2; //la cantidad de registros que desea mostrar
+	        $per_page = 5; //la cantidad de registros que desea mostrar
 	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
 	        $offset = ($page - 1) * $per_page;
 	        
@@ -179,8 +182,9 @@ class MovimientosInvController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;">Grupo</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">U. Medida</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Precio U.</th>';	            
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            
 	            $html.='</tr>';
@@ -198,10 +202,13 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_unidad_medida.'</td>';
 	                $html.='<td class="col-xs-1"><div class="pull-right">';
 	                $html.='<input type="text" class="form-control input-sm"  id="cantidad_'.$res->id_productos.'" value="1"></div></td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_unidad_medida.'</td>';
+	                $html.='<td class="col-xs-2"><div class="pull-right">';
+	                $html.='<input type="text" class="form-control input-sm"  id="pecio_producto_'.$res->id_productos.'" value="0.00"></div></td>';
 	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_productos.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
+	                
 	                
 	                
 	                $html.='</tr>';
@@ -244,6 +251,8 @@ class MovimientosInvController extends ControladorBase{
 	    
 	    $cantidad = (isset($_REQUEST['cantidad'])&& $_REQUEST['cantidad'] !=NULL)?$_REQUEST['cantidad']:0;
 	    
+	    $precio_unitario = (isset($_REQUEST['precio_u'])&& $_REQUEST['precio_u'] !=NULL)?$_REQUEST['precio_u']:0;
+	    
 	    
 	    if($_id_usuarios!='' && $producto_id>0){
 	        
@@ -255,7 +264,8 @@ class MovimientosInvController extends ControladorBase{
 	        $parametros = "'$_id_usuarios',
 		    				   '$producto_id',
                                '$cantidad',
-                               '$_session_id' ";
+                               '$_session_id',
+                               '$precio_unitario' ";
 	        /*nota estado de temp no esta insertado por el momento*/
 	        $temp_compras->setFuncion($funcion);
 	        $temp_compras->setParametros($parametros);
@@ -290,7 +300,9 @@ class MovimientosInvController extends ControladorBase{
                     productos.codigo_productos,
                     productos.nombre_productos,
                     temp_compras.id_temp_compras,
-                    temp_compras.cantidad_temp_compras";
+                    temp_compras.cantidad_temp_compras,
+                    temp_compras.precio_u_temp_compras,
+                    temp_compras.total_temp_compras";
 	        
 	        $tab_temp = "public.temp_compras INNER JOIN public.productos ON productos.id_productos = temp_compras.id_productos
                     INNER JOIN  public.grupos ON grupos.id_grupos = productos.id_grupos AND temp_compras.id_usuarios= '$id_usuario'";
@@ -329,6 +341,8 @@ class MovimientosInvController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">P. Unitario</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">P. Total</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            
 	            $html.='</tr>';
@@ -346,6 +360,8 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->cantidad_temp_compras.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->precio_u_temp_compras.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->total_temp_compras.'</td>';
 	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="eliminar_producto('.$res->id_temp_compras.')" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
 	                
 	                $html.='</tr>';
@@ -375,6 +391,35 @@ class MovimientosInvController extends ControladorBase{
 	        
 	    }
 	    
+	    
+	}
+	/**
+	 * mod: compras
+	 * title: resultados_temp
+	 * ajax: si 
+	 * fn_ajax carga_resultados_temp
+	 * 
+	 */
+	public function resultados_temp(){
+	    
+	    session_start();
+	    
+	    $id_usuario = (isset($_SESSION['id_usuarios']))?$_SESSION['id_usuarios']:0;
+	    
+	    if($id_usuario>0){
+	        
+	        $_session_id = session_id();
+	        
+	        //para eliminado de temp
+	        $temp_compras = new TempComprasModel();
+	        
+	        $columnas = "";
+	        $where = "id_usuarios = $id_usuario ";
+	        
+	        $resultado=$temp_compras->getCondiciones($where);
+	        
+	        $this->redirect("MovimientosInv","compras");
+	    }
 	    
 	}
 	
@@ -433,25 +478,20 @@ class MovimientosInvController extends ControladorBase{
 	    
 	    //$id_rol = (isset($_SESSION['id_rol']))?$_SESSION['id_rol']:0;
 	    
+	    // se valida por cantidad si tiene en la tabla temp_compras
+	    if($_cantidad_compra>0){
+	        
+	        
+	        
+	    }
+	    
 	    /*raise*/
 	    //id consecutivo consultar ?
 	    $_id_consecutivo = 0;
 	    //numero movimiento consultar ?
 	    $_numero_movimiento = 0;
 	    
-	    /*para variables de la funcion*/
-	    $razon_movimientos="compra de productos";
-	    
-	    $funcion = "ins_movimientos_inv_cabeza";
-	    $parametros = "'$id_usuarios','$_id_consecutivo','$_numero_compra','$razon_movimientos',
-                       '$_fecha_compra', '$_cantidad_compra','$_importe_compra','$_numero_factura_compra',
-                       '$_numero_autorizacion_compra','$_subtotal_12_compra','$_subtotal_0_compra',
-                       '$_iva_compra','$_descuento_compra','$_estado_compra'";
-	    
-	    /*$movimientosInvCabeza->setFuncion($funcion);
-	    $movimientosInvCabeza->setParametros($parametros);
-	    $resultset = $movimientosInvCabeza->insert();*/
-	    
+	    /*para variables de la funcion*/	   
 	    $razon_movimientos="compra de productos";
 	    
 	    $funcion = "fn_agrega_compra";
@@ -464,8 +504,76 @@ class MovimientosInvController extends ControladorBase{
 	    $movimientosInvCabeza->setParametros($parametros);
 	    $resultset = $movimientosInvCabeza->llamafuncion();
 	    
+	   
+	  
+	    
+	    
 	    print_r($resultset); 
 	    
+	    if(!empty($resultset)){
+	        echo "es array";
+	    }else{
+	        echo "no es array";
+	    }
+	    
+	}
+	
+	/**
+	 * mod: compras
+	 * title: busca proveedores por medio de autocomplete
+	 * ret: dato json
+	 */
+	public function busca_proveedor(){
+	    
+	    $movimientosInvCabeza = new MovimientosInvCabezaModel();
+	    
+	    $columnas = "proveedores.id_proveedores, 
+                  proveedores.nombre_proveedores, 
+                  proveedores.identificacion_proveedores";
+	    
+	   
+	    
+	    $_busqueda = (isset($_REQUEST['term'])&& $_REQUEST['term'] !=NULL)?$_REQUEST['term']:'';
+	    
+	    if($_busqueda!=''){
+	        
+	        $where = " (proveedores.nombre_proveedores LIKE  '$_busqueda%' OR  proveedores.identificacion_proveedores LIKE  '$_busqueda%')";
+	        
+	        $resultset = $movimientosInvCabeza->getCondiciones($columnas,"public.proveedores",$where,"proveedores.nombre_proveedores");
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($resultset)){
+	            
+	            if(count($resultset)>0){
+	                
+	                $_cproveedor = new stdClass;	                
+	                
+	                foreach ($resultset as $res){
+	                    $_cproveedor->id=$res->id_proveedores;
+	                    $_cproveedor->value=$res->identificacion_proveedores;
+	                    $_cproveedor->label=$res->identificacion_proveedores.', '.$res->nombre_proveedores;
+	                    $_cproveedor->nombre=$res->nombre_proveedores;
+	                    $respuesta[] = $_cproveedor;
+	                }
+	                
+	                echo json_encode($respuesta);
+	            }
+	            
+	        }else{
+	            echo '[{"id":0,"value":"sin datos"}]';
+	        }
+	        
+	        
+	    }else{
+	       // $respuesta = array(array('id'=>0,'value'=>'no-llego'));
+	        echo '[{"id":0,"value":"sin datos"}]';
+	    }
+	    
+	    ///echo json_encode($respuesta);
+	    
+	    
+	    //
 	}
 	
 	public function eliminar_producto(){

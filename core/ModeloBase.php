@@ -55,15 +55,13 @@ class ModeloBase extends EntidadBase{
     	$result=pg_query($this->con, $query);
 
     	
-    	if($result==true)
-    	{
+    	if($result==true){
 
     		$resultSet = $result;
     		
-    	}
-    	else
-    	{
-    		$resultSet=null;
+    	}else{
+    		
+    	    $resultSet=null;
     	}
     
     	
@@ -150,6 +148,34 @@ class ModeloBase extends EntidadBase{
             
         }catch (Exception $Ex){
            
+            $resultSet=null;
+        }
+        
+        return $resultSet;
+    }
+    
+    
+    //------METODO PARA ENVIAR EL QUERY
+    
+    public function enviaquery($query){
+        $resultSet=array();
+        try{
+            
+            $result=pg_query($this->con(), $query);
+            
+            if( $result === false )
+                throw new Exception( "Error PostgreSQL ".pg_last_error() );
+                
+                
+                if(pg_num_rows($result)>0)
+                {
+                    while ($row = pg_fetch_object($result)) {
+                        $resultSet[]=$row;
+                    }
+                }
+                
+        }catch (Exception $Ex){
+            
             $resultSet=null;
         }
         

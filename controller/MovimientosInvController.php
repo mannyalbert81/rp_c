@@ -413,12 +413,61 @@ class MovimientosInvController extends ControladorBase{
 	        //para eliminado de temp
 	        $temp_compras = new TempComprasModel();
 	        
-	        $columnas = "";
-	        $where = "id_usuarios = $id_usuario ";
+	        $sql_query = "SELECT 0.00 as \"subtotal12\" ,0.00 as \"subtotal0\", 
+                        sum(total_temp_compras) AS \"subtotal\", 0.00 AS \"descuento\", 
+                        TRUNC(sum(total_temp_compras)* 0.12,2) AS \"iva\"";
 	        
-	        $resultado=$temp_compras->getCondiciones($where);
+	        $sql_query.=" FROM public.temp_compras";	        
+	       
+	        $sql_query .= " WHERE id_usuarios = $id_usuario ";
 	        
-	        $this->redirect("MovimientosInv","compras");
+	        $resultado=$temp_compras->enviaquery($sql_query);
+	        
+	        //print_r($resultado);
+	        
+	        $htmlsubtotales="";
+	        if(!empty($resultado)){
+	            if(is_array($resultado)){
+	                if(count($resultado)>0){
+	                    
+	                    $clasecolumnas='class="col-lg-2 col-md-2"';
+	                    $claseinput = 'class="form-control"';
+	                    foreach ($resultado as $res){
+	                        
+	                        $htmlsubtotales = '<div '.$clasecolumnas.'>';
+	                        $htmlsubtotales .= '<label for="rs_subtotal12" class="control-label">Subtotal 12:</label>';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_subtotal12" id="rs_subtotal12" type="text" value="'.$res->subtotal12.'" />';
+	                        $htmlsubtotales .= '</div>';
+	                        $htmlsubtotales .= '<div '.$clasecolumnas.'>';
+	                        $htmlsubtotales .= '<label for="rs_subtotal0" class="control-label">Subtotal 0:</label>';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_subtotal0" id="rs_subtotal0" type="text" value="'.$res->subtotal0.'" />';
+	                        $htmlsubtotales .= '</div>';
+	                        $htmlsubtotales .= '<div '.$clasecolumnas.'>';
+	                        $htmlsubtotales .= '<label for="rs_subtotal" class="control-label">Subtotal:</label>';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_subtotal" id="rs_subtotal" type="text" value="'.$res->subtotal.'" />';
+	                        $htmlsubtotales .= '</div>';
+	                        $htmlsubtotales .= '<div '.$clasecolumnas.'>';
+	                        $htmlsubtotales .= '<label for="rs_descuento" class="control-label">Descuento:</label>';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_descuento" id="rs_descuento" type="text" value="'.$res->descuento.'" />';
+	                        $htmlsubtotales .= '</div>';
+	                        $htmlsubtotales .= '<div '.$clasecolumnas.'>';
+	                        $htmlsubtotales .= '<label for="rs_iva" class="control-label">I.V.A 12:</label>';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_iva" id="rs_iva" type="text" value="'.$res->iva.'" />';
+	                        $htmlsubtotales .= '</div>';
+	                        $htmlsubtotales .= '<div '.$clasecolumnas.'>';
+	                        $htmlsubtotales .= '<label for="rs_total" class="control-label">Total:</label>';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_total" id="rs_total" type="text" value="'.($res->subtotal+$res->iva).'" />';
+	                        $htmlsubtotales .= '</div>';
+	                    }
+	                    
+	                    
+	                    //echo json_encode($resultado);
+	                    
+	                }
+	            }
+	            
+	            echo $htmlsubtotales;
+	        }
 	    }
 	    
 	}
@@ -547,15 +596,20 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            if(count($resultset)>0){
 	                
-	                $_cproveedor = new stdClass;	                
-	                
 	                foreach ($resultset as $res){
+	                    $_cproveedor = new stdClass;
 	                    $_cproveedor->id=$res->id_proveedores;
 	                    $_cproveedor->value=$res->identificacion_proveedores;
 	                    $_cproveedor->label=$res->identificacion_proveedores.', '.$res->nombre_proveedores;
 	                    $_cproveedor->nombre=$res->nombre_proveedores;
+	                    
+	                   /* $_cproveedor=array('id'=>$res->id_proveedores,
+	                                   'value'=>$res->identificacion_proveedores,
+	                                   'label'=>$res->identificacion_proveedores.', '.$res->nombre_proveedores,
+	                                   'nombre'=>$res->nombre_proveedores);*/
+	                    
 	                    $respuesta[] = $_cproveedor;
-	                }
+	                }	                
 	                
 	                echo json_encode($respuesta);
 	            }

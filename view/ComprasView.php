@@ -156,6 +156,9 @@
                 <div class="box-body">             
                 	
                     <span style="float:right">
+                    	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#mod_agregar_producto">
+                			<span></span>Agregar Producto
+              			</button>
                     	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#agregar_nuevo">
                 			Agregar Nuevo
               			</button>
@@ -166,10 +169,8 @@
                       <div id="resultados" ></div>
                       
                       <!-- parte inferior de subtotales -->
-                      <div class="row">
-                      	<div class="col-lg-12">
-                      		<input type="text" value="0.0" id="result_subtotal" name="result_subtotal">
-                      	</div>
+                      <div class="row pull-left" id="resultados_totales">
+                      	
                       </div>
                           
                           <div class="row">
@@ -227,6 +228,87 @@
       </div>
       <!-- /.modal-dialog -->
 </div>
+
+<div class="modal fade" id="mod_agregar_producto">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">AGREGAR PRODUCTO</h4>
+          </div>
+          <div class="modal-body">
+          <!-- empieza el formulario modal productos -->
+          	<form class="form-horizontal" method="post" id="frm_guardar_producto" name="frm_guardar_producto">
+          	
+          	<div class="form-group">
+				<label for="estado" class="col-sm-3 control-label">Grupos</label>
+				<div class="col-sm-8">
+				 <select class="form-control" id="mod_id_grupo" name="id_grupos" required>
+					<option value="0">-- Selecciona estado --</option>					
+				  </select>
+				</div>
+			  </div>
+			  
+			  <div class="form-group">
+				<label for="estado" class="col-sm-3 control-label">Unidad Medida</label>
+				<div class="col-sm-8">
+				 <select class="form-control" id="mod_unidad_medida" name="ddl_unidad_medida" required>
+					<option value="0">-- Selecciona estado --</option>					
+				  </select>
+				</div>
+			  </div>
+			  	
+			  <div class="form-group">
+				<label for="codigo" class="col-sm-3 control-label">Código</label>
+				<div class="col-sm-8">
+				  <input type="text" class="form-control" id="mod_codigo_producto" name="mod_codigo_producto" placeholder="Código del producto" required>
+				</div>
+			  </div>
+			  
+			  <div class="form-group">
+				<label for="nombre" class="col-sm-3 control-label">Marca</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="mod_marca_producto" name="mod_marca_producto" placeholder="Código del producto" required>
+				</div>
+			  </div>
+			  
+			  <div class="form-group">
+				<label for="nombre" class="col-sm-3 control-label">Nombre</label>
+				<div class="col-sm-8">
+					<textarea class="form-control" id="mod_nombre_producto" name="mod_nombre_producto" placeholder="Nombre del producto" required maxlength="20" ></textarea>
+				  
+				</div>
+			  </div>
+			  
+			  <div class="form-group">
+				<label for="nombre" class="col-sm-3 control-label">Descripcion</label>
+				<div class="col-sm-8">
+					<textarea class="form-control" id="mod_descripcion_producto" name="mod_descripcion_producto" placeholder="Descripcion del producto" required maxlength="20" ></textarea>
+				  
+				</div>
+			  </div>
+			  
+			  <div class="form-group">
+				<label for="nombre" class="col-sm-3 control-label">Ult. precio</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="mod_precio_producto" name="mod_precio_producto" placeholder="Precio de venta del producto" required pattern="^[0-9]{1,5}(\.[0-9]{0,2})?$" title="Ingresa sólo números con 0 ó 2 decimales" maxlength="8">
+				  
+				</div>
+			  </div>
+			  
+          	</form>
+          	<!-- termina el formulario modal productos -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			<button type="submit" form="frm_guardar_producto" class="btn btn-primary" id="guardar_datos">Guardar datos</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
     
     
    <?php include("view/modulos/links_js.php"); ?>
@@ -259,6 +341,13 @@ $('#agregar_nuevo').on('show.bs.modal', function (event) {
 	load_productos(1);
 	  var modal = $(this)
 	  modal.find('.modal-title').text('Listado Productos')
+
+	});
+
+$('#mod_agregar_producto').on('show.bs.modal', function (event) {
+		carga_grupos();
+		carga_unidad_medida()
+	  var modal = $(this);
 
 	});
 
@@ -319,6 +408,7 @@ function agregar_producto (id)
         success: function(datos){
     		$("#resultados").html(datos);
     		pone_cantidad();
+    		carga_resultados_temp();
     	}
 	});
 }
@@ -334,6 +424,8 @@ function agregar_producto (id)
     		$("#resultados").html("Mensaje: Cargando...");
 
     		pone_cantidad();
+
+    		carga_resultados_temp();
     		
     	  },
         success: function(datos){
@@ -361,6 +453,7 @@ function agregar_producto (id)
                $("#resultados").html(x);
                pone_cantidad();
                $("#tabla_temporal").tablesorter(); 
+               carga_resultados_temp();
                
              },
             error: function(jqXHR,estado,error){
@@ -383,17 +476,68 @@ function carga_resultados_temp(pagina){
              },
              url: 'index.php?controller=MovimientosInv&action=resultados_temp',
              type: 'POST',
-             data: con_datos,
+             data: {},
              success: function(x){
-               $("#resultados").html(x);
-               pone_cantidad();
-               $("#tabla_temporal").tablesorter(); 
-               
+            	 $("#resultados_totales").html();
+            	 $("#resultados_totales").html(x);
+ 				//$("#resultados_totales").append(x);
+                 
              },
             error: function(jqXHR,estado,error){
               $("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
             }
           });
+
+
+}
+
+function carga_grupos(){
+	  
+    $.ajax({
+        beforeSend: function(objeto){
+          
+        },
+        url: 'index.php?controller=Grupos&action=carga_grupos',
+        type: 'POST',
+        data: {},
+        dataType:'json',
+        success: function(respuesta){
+        	$("#mod_id_grupo").empty()
+        	$("#mod_id_grupo").append("<option value= \"0\" >--Seleccione--</option>");
+        	$.each(respuesta, function(index, value) {
+ 		 			$("#mod_id_grupo").append("<option value= " +value.id_grupos +" >" + value.nombre_grupos  + "</option>");	
+            		 });            
+        },
+        error: function(jqXHR,estado,error){
+         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+        }
+    });
+    
+
+}
+
+function carga_unidad_medida(){
+
+  $.ajax({
+        beforeSend: function(objeto){
+          
+        },
+        url: 'index.php?controller=Grupos&action=carga_unidadmedida',
+        type: 'POST',
+        data: {},
+        dataType:'json',
+        success: function(respuesta){
+        	$("#mod_unidad_medida").empty()
+        	$("#mod_unidad_medida").append("<option value= \"0\" >--Seleccione--</option>");
+        	$.each(respuesta, function(index, value) {
+		 			$("#mod_unidad_medida").append("<option value= " +value.id_unidad_medida +" >" + value.nombre_unidad_medida  + "</option>");	
+        		 });  
+            
+        },
+       error: function(jqXHR,estado,error){
+         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+       }
+  });
 
 
 }
@@ -425,7 +569,11 @@ $(document).ready(function(){
            $('#proveedor').val(ui.item.value); // save selected id to input
            console.log(ui.item.nombre);
            return false;
-        }
+        },
+        focus: function(event, ui) { var text = ui.item.value; 
+            $('#proveedor').val(text); 
+            return false; 
+        } 
 	});
 });
 </script>
@@ -541,6 +689,33 @@ $(document).ready(function(){
 		 event.preventDefault();
 	 }
 	 
+	  
+	});
+
+ $( "#frm_guardar_producto" ).submit(function( event ) {
+		//swal('hola')
+	$.ajax({
+        beforeSend: function(objeto){
+          
+        },
+        url: 'index.php?controller=Productos&action=carga_grupos',
+        type: 'POST',
+        data: {},
+        dataType:'json',
+        success: function(respuesta){
+        	$("#mod_id_grupo").empty()
+        	$("#mod_id_grupo").append("<option value= \"0\" >--Seleccione--</option>");
+        	$.each(respuesta, function(index, value) {
+ 		 			$("#mod_id_grupo").append("<option value= " +value.id_grupos +" >" + value.nombre_grupos  + "</option>");	
+            		 });            
+        },
+        error: function(jqXHR,estado,error){
+         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+        }
+    });
+	 
+		 event.preventDefault();
+	
 	  
 	});
 	

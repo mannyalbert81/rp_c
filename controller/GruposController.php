@@ -637,5 +637,45 @@ class GruposController extends ControladorBase{
 	}
 	
 	
+	/**
+	 * mod: compras
+	 * title: carga_grupos
+	 * ajax: si
+	 */
+	
+	public function carga_grupos(){
+	    
+	    $grupos = null;
+	    $grupos = new GruposModel();
+	    
+	    $resulset = $grupos->getAll("id_grupos");
+	    
+	    if(!empty($resulset)){
+	        if(is_array($resulset) && count($resulset)>0){
+	            echo json_encode($resulset);
+	        }
+	    }
+	}
+	
+	/**
+	 * mod: compras
+	 * title: carga_unidadmedida
+	 * ajax: si
+	 */
+	
+	public function carga_unidadmedida(){
+	    
+	    $grupos = null;
+	    $grupos = new GruposModel();
+	    
+	    $resulset = $grupos->getCondiciones("*","public.unidad_medida","1=1","id_unidad_medida");
+	    
+	    if(!empty($resulset)){
+	        if(is_array($resulset) && count($resulset)>0){
+	            echo json_encode($resulset);
+	        }
+	    }
+	}
+	
 }
 ?>

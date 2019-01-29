@@ -65,10 +65,10 @@
                 
               </div>
             </div>
-            
+            <form id="frm_guardacompra" action="<?php echo $helper->url("MovimientosInv","inserta_compras"); ?>" method="post" >
             <div class="box-body">
             
-                <form id="frm_guardacompra" action="<?php echo $helper->url("MovimientosInv","inserta_compras"); ?>" method="post" >
+                
           		 	 
               		 	 <div class="row">
               		 	 
@@ -86,7 +86,7 @@
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="fecha_compra" class="control-label">Fecha Compra:</label>
-                                    <input type="date" class="form-control" id="fecha_compra" name="fecha_compra" value=""  >
+                                    <input type="text" class="form-control" id="fecha_compra" name="fecha_compra" value=""  >
                                     <div id="mensaje_numero_compra" class="errores"></div>
                                  </div>
                              </div>
@@ -135,7 +135,7 @@
                          
                      	
           		 	
-          		 	</form>
+          		 	
           
         			</div>
       			</div>
@@ -184,7 +184,7 @@
             		    </div>
                    </div>
                 
-                
+                </form>
                 </div>
             </section>
     		
@@ -244,7 +244,7 @@
           	<div class="form-group">
 				<label for="estado" class="col-sm-3 control-label">Grupos</label>
 				<div class="col-sm-8">
-				 <select class="form-control" id="mod_id_grupo" name="id_grupos" required>
+				 <select class="form-control" id="mod_id_grupo" name="mod_id_grupo" required>
 					<option value="0">-- Selecciona estado --</option>					
 				  </select>
 				</div>
@@ -253,7 +253,7 @@
 			  <div class="form-group">
 				<label for="estado" class="col-sm-3 control-label">Unidad Medida</label>
 				<div class="col-sm-8">
-				 <select class="form-control" id="mod_unidad_medida" name="ddl_unidad_medida" required>
+				 <select class="form-control" id="mod_unidad_medida" name="mod_unidad_medida" required>
 					<option value="0">-- Selecciona estado --</option>					
 				  </select>
 				</div>
@@ -292,7 +292,7 @@
 			  <div class="form-group">
 				<label for="nombre" class="col-sm-3 control-label">Ult. precio</label>
 				<div class="col-sm-8">
-					<input type="text" class="form-control" id="mod_precio_producto" name="mod_precio_producto" placeholder="Precio de venta del producto" required pattern="^[0-9]{1,5}(\.[0-9]{0,2})?$" title="Ingresa sólo números con 0 ó 2 decimales" maxlength="8">
+					<input type="text" class="form-control" id="mod_precio_producto" name="mod_precio_producto" placeholder="Precio de venta del producto" maxlength="10" required  title="Ingresa sólo números con 0 ó 2 decimales" />
 				  
 				</div>
 			  </div>
@@ -313,15 +313,16 @@
     
    <?php include("view/modulos/links_js.php"); ?>
    
-    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
-    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
-    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   
    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/uitable/bootstable.js"></script>
   
   <script src="//unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  
+  <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
  
    
    
@@ -330,7 +331,7 @@
 <script type="text/javascript" >
     // cada vez que se cambia el valor del combo
     $(document).ready(function(){
-
+		//swal('hola');
     	load_temp_solicitud(1);
     }); 
 </script>
@@ -693,32 +694,65 @@ $(document).ready(function(){
 	});
 
  $( "#frm_guardar_producto" ).submit(function( event ) {
-		//swal('hola')
+	//console.log('ingresa->1\n');
+	var parametros = $(this).serialize();	
 	$.ajax({
         beforeSend: function(objeto){
           
         },
-        url: 'index.php?controller=Productos&action=carga_grupos',
+        url: 'index.php?controller=Productos&action=inserta_producto',
         type: 'POST',
-        data: {},
+        data: parametros,
         dataType:'json',
         success: function(respuesta){
-        	$("#mod_id_grupo").empty()
-        	$("#mod_id_grupo").append("<option value= \"0\" >--Seleccione--</option>");
-        	$.each(respuesta, function(index, value) {
- 		 			$("#mod_id_grupo").append("<option value= " +value.id_grupos +" >" + value.nombre_grupos  + "</option>");	
-            		 });            
+
+            if(respuesta.success==1){
+            	$("#frm_guardar_producto")[0].reset();
+            	swal({
+            		  title: "Productos",
+            		  text: respuesta.mensaje,
+            		  icon: "success",
+            		  button: "Aceptar",
+            		});
+				
+                }else{
+                	$("#frm_guardar_producto")[0].reset();
+                	swal({
+              		  title: "Productos",
+              		  text: respuesta.mensaje,
+              		  icon: "warning",
+              		  button: "Aceptar",
+              		});
+                    }
+        	     
         },
         error: function(jqXHR,estado,error){
          //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
         }
     });
 	 
-		 event.preventDefault();
-	
+	event.preventDefault();	
 	  
 	});
-	
+
+ 
+ $("#mod_precio_producto").inputmask({
+	 alias: "decimal",
+	 integerDigits: 5,
+	 digits: 2,
+	 digitsOptional: false,
+	 placeholder: "",
+	 allowMinus: false
+	 });
+
+
+ $("#fecha_compra").inputmask({
+	 alias: "date",
+	 yearrange: { 'minyear': '1990','maxyear': '<?php echo date('Y')?>'},	 
+	 placeholder: "dd/mm/yyyy"
+	 });
+
+ 
  })
  </script>
      

@@ -127,7 +127,8 @@ class ModeloBase extends EntidadBase{
     /*Aqui podemos montarnos metodos para los modelos de consulta*/
     
     
-    //----METODO PARA CONSULTAS DE INSERTADO EN CABECERA Y DETALLE  
+    //----METODO PARA CONSULTAS DE INSERTADO CON DEVOLUCION DE DATOS 
+    
 
     public function llamarconsulta($query){
         $resultSet=array();

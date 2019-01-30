@@ -349,6 +349,74 @@ class ProductosController extends ControladorBase{
         }
         
     }
+    
+    /***
+     * mod:compras
+     * title: inserta_producto
+     * ajax: si
+     * return: json de insertado
+     */    
+    public function inserta_producto(){
+        
+        session_start();
+        
+        $resultado = null;
+        $productos=new ProductosModel();
+        
+        $nombre_controladores = "Productos";
+        $id_rol= $_SESSION['id_rol'];
+        $resultPer = $productos->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
+       
+        if (!empty($resultPer))
+        { 
+            
+            if (isset ($_POST["mod_codigo_producto"]) && isset ($_POST["mod_id_grupo"]))            
+            {
+                $_id_grupos = $_POST["mod_id_grupo"];
+                $_id_unidad_medida = $_POST["mod_unidad_medida"];
+                $_codigo_productos = $_POST["mod_codigo_producto"];
+                $_marca_productos = $_POST["mod_marca_producto"];
+                $_nombre_productos = $_POST["mod_nombre_producto"];
+                $_descripcion_productos = $_POST["mod_descripcion_producto"];
+                $_ult_precio_productos = $_POST["mod_precio_producto"];
+                
+                
+                $funcion = "ins_productos";
+                $parametros = " '$_id_grupos', '$_id_unidad_medida', '$_codigo_productos', '$_marca_productos', '$_nombre_productos', '$_descripcion_productos', '$_ult_precio_productos'";
+                $productos->setFuncion($funcion);
+                $productos->setParametros($parametros);
+                
+                $resultado=$productos->llamafuncion();
+                
+                $mensaje = "";
+                
+                if(!empty($resultado)){
+                    if(is_array($resultado) && count($resultado)>0){
+                        
+                        if((int)$resultado[0]->ins_productos == 0){
+                            $mensaje='{"success":1,"mensaje":"Producto Actualizado correctamente"}';
+                        }
+                        
+                        if((int)$resultado[0]->ins_productos == 1){
+                            $mensaje='{success:1,mensaje:"Producto Agregado correctamente"}';
+                        }
+                        
+                    }
+                }else{  $mensaje='{success:0,mensaje:"Producto Actualizado correctamente"}';}
+               
+                echo $mensaje;
+            }
+            
+           
+        }
+        else
+        {
+           echo "{success:0,mensaje:\"sin permisos para ingresar un producto \"}";            
+            
+        }
+        
+        
+    }
 
     
     

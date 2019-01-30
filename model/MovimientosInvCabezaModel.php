@@ -76,10 +76,8 @@ class MovimientosInvCabezaModel extends ModeloBase{
         $resultado = null;
         
         $resultado=$this->llamarconsulta($query);
-               
+        
         return  $resultado;
     }
-    
-    
 }
 ?>

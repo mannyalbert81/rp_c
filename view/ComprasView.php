@@ -10,6 +10,7 @@
       
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
    <?php include("view/modulos/links_css.php"); ?>
+   <link href="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.2/css/bootstrapValidator.min.css" rel="stylesheet"></link
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   
     
@@ -111,7 +112,10 @@
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="estado_compra" class="control-label">Estado:</label>
-                                    <input type="text" class="form-control" id="estado_compra" name="estado_compra" value=""  placeholder="estado" >
+                                	<select id="estado_compra" name="estado_compra" class="form-control">
+                                		<option value="pagada">PAGADA</option>
+                                		<option value="pendiente">PENDIENTE</option>
+                                	</select>                                    
                                     <div id="mensaje_estado_compras" class="errores"></div>
                                  </div>
                              </div> 
@@ -293,22 +297,26 @@
       </div>
       <!-- /.modal-dialog -->
 </div>
-    
-    
+     
    <?php include("view/modulos/links_js.php"); ?>
-   
+ 
    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/uitable/bootstable.js"></script>
   
   <script src="//unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   
+  
   <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
      <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
- 
+    
+    <script src="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
+    
+    <!-- <script src="view/bootstrap/otros/validate/jquery.validate.js"></script> -->
    
+  
    
    <!-- para el autocompletado -->
     
@@ -366,7 +374,6 @@ function load_productos(pagina){
 function agregar_producto (id)
 {
 
-		
 	var cantidad=document.getElementById('cantidad_'+id).value;
 	//Inicia validacion
 	if (isNaN(cantidad))
@@ -665,28 +672,139 @@ $(document).ready(function(){
  <script type="text/javascript">
 
 $(document).ready(function(){
+/*
+	$("#frm_guardacompra").validate({
+        event: "blur",
+        rules: {'numero_factura_compra': "required"},
+        messages: {'numero_factura_compra': "Por favor indica tu nombre",'email': "Por favor, indica una direcci&oacute;n de e-mail v&aacute;lida",'message': "Por favor, dime algo!"},
+        debug: true,
+        errorElement: "label",
+        submitHandler: function(form){
+            $("#alert").show();
+            $("#alert").html("<img src='images/ajax-loader.gif' style='vertical-align:middle;margin:0 10px 0 0' /><strong>Enviando mensaje...</strong>");
+            setTimeout(function() {
+                $('#alert').fadeOut('slow');
+            }, 5000);
+            
+            $.ajax({
+                type: "POST",
+                url:"send.php",
+                data: "name="+escape($('#name').val())+"&email="+escape($('#email').val())+"&message="+escape($('#message').val()),
+                success: function(msg){
+                    $("#alert").html(msg);
+                    document.getElementById("name").value="";
+                    document.getElementById("email").value="";
+                    document.getElementById("message").value="";
+                    setTimeout(function() {
+                        $('#alert').fadeOut('slow');
+                    }, 5000);
+ 
+                }
+            });
+        }
+    });
+*/
+
+/*$('#frm_guardacompra').bootstrapValidator({
+	 
+	 message: 'Este valor no es valido',
+
+	 feedbackIcons: {
+
+		 valid: 'glyphicon glyphicon-ok',
+
+		 invalid: 'glyphicon glyphicon-remove',
+
+		 validating: 'glyphicon glyphicon-refresh'
+
+	 },
+
+	 fields: {
+
+		 numero_factura_compra: {
+
+			 validators: {
+
+				 notEmpty: {
+
+					 message: 'ingrese un numero de factura'
+
+				 }
+
+			 }
+
+		 },
+
+		 password: {
+
+			 validators: {
+
+				 notEmpty: {
+
+					 message: 'La contraseña es requerida'
+
+				 }
+
+			 }
+
+		 }
+
+	 }
+
+});*/
+
 
  
  $( "#frm_guardacompra" ).submit(function( event ) {
 
+	var dapaso = true;
 	 if($('#cantidad_compra').val()=='' || $('#cantidad_compra').val()==0)
 	 {
-		 event.preventDefault();
+		
+     	swal({
+   		  title: "Compras",
+   		  text: "No ha ingresado productos a la compra",
+   		  icon: "warning",
+   		  button: "Aceptar",
+   		});
+		 dapaso = false;
 	 }
-	 var parametros = $(this).serialize();
-	 $.ajax({
-		 beforeSend:function(){},
-		 url:'index.php?controller=MovimientosInv&action=insertacompra',
-		 type:'POST',
-		 data:parametros,
-		 /*dataType: 'json',*/
-		 success: function(respuesta){
-			 console.log(respuesta)
-		 },
-		 error: function(jqXHR,estado,error){
-	         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
-	        }
-	 })
+	 if(dapaso){		 
+		 
+    	 var parametros = $(this).serialize();
+    	 $.ajax({
+    		 beforeSend:function(){},
+    		 url:'index.php?controller=MovimientosInv&action=insertacompra',
+    		 type:'POST',
+    		 data:parametros,
+    		 /*dataType: 'json',*/
+    		 success: function(respuesta){
+        		console.log(respuesta);
+    			 if(respuesta.success==1){
+    				 $("#frm_guardacompra")[0].reset();
+ 	            		swal({
+    	            		  title: "Compra",
+    	            		  text: respuesta.mensaje,
+    	            		  icon: "success",
+    	            		  button: "Aceptar",
+    	            		});
+    					
+    	                }else{
+    	                	$("#frm_guardacompra")[0].reset();
+    	                	swal({
+    	              		  title: "Compra",
+    	              		  text: respuesta.mensaje,
+    	              		  icon: "warning",
+    	              		  button: "Aceptar",
+    	              		});
+    	             }
+    			 load_temp_solicitud(1);
+    		 },
+    		 error: function(jqXHR,estado,error){
+    	         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+    	        }
+    	 })
+	 }
 	 event.preventDefault(); 
 	});
 
@@ -732,6 +850,8 @@ $(document).ready(function(){
 	  
 	});
 
+ $("#numero_factura_compra").inputmask('9999999999',{placeholder: ""});
+
  
  $("#mod_precio_producto").inputmask({
 	 alias: "decimal",
@@ -752,7 +872,8 @@ $(document).ready(function(){
  
  })
  </script>
-     
+
+
 
              
  	

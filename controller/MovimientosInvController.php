@@ -608,50 +608,46 @@ class MovimientosInvController extends ControladorBase{
 	        $_numero_factura_compra = (isset($_POST['numero_factura_compra']))?$_POST['numero_factura_compra']:'';
 	        $_numero_autorizacion_compra = (isset($_POST['numero_autorizacion_factura']))?$_POST['numero_autorizacion_factura']:'';
 	        $_id_proveedores = (isset($_POST['id_proveedor']))?$_POST['id_proveedor']:0;
+	        $_cantidad_compra = (isset($_POST['cantidad_compra']))?$_POST['cantidad_compra']:0;
+	        
 	        
 	        //raise --verificar como es el ingreso de del estado a la compra 
-	        $_estado_compra = (isset($_POST['estado_compra']))?$_POST['estado_compra']:0;
+	        $_estado_compra = (isset($_POST['estado_compra']))?$_POST['estado_compra']:'';
 	        
-	        //validar datos si hay en temp por el usuario
-	        //raise --por implementar $result
-	        
+	       
 	        //se valida si hay productos en temp
 	        if($_cantidad_compra>0){
-	            
-	            /*raise*/
-	            //id consecutivo consultar ?
-	            $_id_consecutivo = 0;
-	            //numero movimiento consultar ?
-	            $_numero_movimiento = 0;
 	            
 	            /*para variables de la funcion*/
 	            $razon_movimientos="compra de productos";
 	            
 	            $funcion = "fn_agrega_compra";
-	            $parametros = "'$id_usuarios','$_id_consecutivo','$_numero_compra','$razon_movimientos',
-                       '$_fecha_compra', '$_cantidad_compra','$_importe_compra','$_numero_factura_compra',
-                       '$_numero_autorizacion_compra','$_subtotal_12_compra','$_subtotal_0_compra',
-                       '$_iva_compra','$_descuento_compra','$_estado_compra'";
+	           
+	            $parametros = "'$id_usuarios','$_id_proveedores','$_fecha_compra','$_numero_factura_compra',
+                       '$_numero_autorizacion_compra','$_estado_compra'";
 	            
-	            $movimientosInvCabeza->setFuncion($funcion);
-	            $movimientosInvCabeza->setParametros($parametros);
-	           // $resultset = $movimientosInvCabeza->llamafuncion();
+	            $movimientos_inventario->setFuncion($funcion);
+	            $movimientos_inventario->setParametros($parametros);
+	            
+	            $resultset = $movimientos_inventario->llamafuncion();
+	            
+	            if(!empty($resultset)){
+	                if(is_array($resultset) && count($resultset)>0){
+	                    
+	                    if((int)$resultset[0]->fn_agrega_compra >0 ){
+	                       echo json_encode(array('success'=>1,'mensaje'=>'Compra Realizada'));
+	                    }else if((int)$resultset[0]->fn_agrega_compra == 0){
+	                        echo json_encode(array('success'=>0,'mensaje'=>'Error en la compra'));
+	                    }
+	                    
+	                }
+	            }
 	            
 	        }
 	        
-	        
 	    }
 	    
-	    die('llego');
-	    
-	    
-	    print_r($resultset);
-	    
-	    if(!empty($resultset)){
-	        echo "es array";
-	    }else{
-	        echo "no es array";
-	    }
+	  
 	}
 	
 	/**

@@ -12,7 +12,7 @@ class MovimientosInvController extends ControladorBase{
 	
 		//Creamos el objeto usuario
 	    $movimientos_inventario = new MovimientosInvModel();
-					//Conseguimos todos los usuarios
+		//Conseguimos todos los usuarios
 	    $resultSet=array();
 				
 		$resultEdit = "";
@@ -569,6 +569,93 @@ class MovimientosInvController extends ControladorBase{
 	
 	/**
 	 * mod: compras
+	 * title: insertacompra
+	 * ajax: si 
+	 * desc: insertar por ajax medinate una funcion desde la pg
+	 * return: json
+	 */
+	public function insertacompra(){
+	    
+	    //inicia session
+	    session_start();
+	    //creacion de objeto de modelo
+	    $movimientos_inventario = new MovimientosInvCabezaModel();
+	    
+	    $resultSet=array();
+	    
+	    $validacion = false;
+	   
+	    $id_rol= $_SESSION['id_rol'];
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    {
+	        
+	        $nombre_controladores = "MovimientosProductosCabeza";	        
+	        $resultPer = $movimientos_inventario->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	        
+	        if (!empty($resultPer))
+	        {
+	            $validacion = true;
+	        
+	        }
+	    }
+	    
+	    if($validacion){
+	        
+	        $id_usuarios = (isset($_SESSION['id_usuarios']))?$_SESSION['id_usuarios']:0;
+	        
+	        /*valores de la vista*/	       
+	        $_fecha_compra = (isset($_POST['fecha_compra']))?$_POST['fecha_compra']:'';
+	        $_numero_factura_compra = (isset($_POST['numero_factura_compra']))?$_POST['numero_factura_compra']:'';
+	        $_numero_autorizacion_compra = (isset($_POST['numero_autorizacion_factura']))?$_POST['numero_autorizacion_factura']:'';
+	        $_id_proveedores = (isset($_POST['id_proveedor']))?$_POST['id_proveedor']:0;
+	        
+	        //raise --verificar como es el ingreso de del estado a la compra 
+	        $_estado_compra = (isset($_POST['estado_compra']))?$_POST['estado_compra']:0;
+	        
+	        //validar datos si hay en temp por el usuario
+	        //raise --por implementar $result
+	        
+	        //se valida si hay productos en temp
+	        if($_cantidad_compra>0){
+	            
+	            /*raise*/
+	            //id consecutivo consultar ?
+	            $_id_consecutivo = 0;
+	            //numero movimiento consultar ?
+	            $_numero_movimiento = 0;
+	            
+	            /*para variables de la funcion*/
+	            $razon_movimientos="compra de productos";
+	            
+	            $funcion = "fn_agrega_compra";
+	            $parametros = "'$id_usuarios','$_id_consecutivo','$_numero_compra','$razon_movimientos',
+                       '$_fecha_compra', '$_cantidad_compra','$_importe_compra','$_numero_factura_compra',
+                       '$_numero_autorizacion_compra','$_subtotal_12_compra','$_subtotal_0_compra',
+                       '$_iva_compra','$_descuento_compra','$_estado_compra'";
+	            
+	            $movimientosInvCabeza->setFuncion($funcion);
+	            $movimientosInvCabeza->setParametros($parametros);
+	           // $resultset = $movimientosInvCabeza->llamafuncion();
+	            
+	        }
+	        
+	        
+	    }
+	    
+	    die('llego');
+	    
+	    
+	    print_r($resultset);
+	    
+	    if(!empty($resultset)){
+	        echo "es array";
+	    }else{
+	        echo "no es array";
+	    }
+	}
+	
+	/**
+	 * mod: compras
 	 * title: busca proveedores por medio de autocomplete
 	 * ret: dato json
 	 */
@@ -785,7 +872,7 @@ class MovimientosInvController extends ControladorBase{
 	    return $out;
 	}
 	
-	public function InsertarCompra(){
+	public function InsertarCompraSSS(){
 	    
 	    session_start();
 	    $resultado = null;

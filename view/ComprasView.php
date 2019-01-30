@@ -76,7 +76,8 @@
                             	<div class="form-group">
                                 	<label for="numero_compra" class="control-label">Proveedor:</label>
                                     <input type="text" class="form-control" id="proveedor" name="proveedor" value=""  >
-                                    <input type="hidden" class="form-control" id="id_proveedor" name="id_proveedor" value=""  >
+                                    <input type="hidden" id="id_proveedor" name="id_proveedor" value=""  >
+                                    <input type="hidden"  id="cantidad_compra" name="cantidad_compra" value="0"  >
                                     <div id="mensaje_proveedor" class="errores"></div>
                                  </div>
                              </div> 
@@ -90,31 +91,15 @@
                                     <div id="mensaje_numero_compra" class="errores"></div>
                                  </div>
                              </div>
-                             <div class="col-xs-6 col-md-3 col-lg-3 ">
-                            	<div class="form-group">
-                                	<label for="cantidad_compra" class="control-label">Cantidad:</label>
-                                    <input type="text" class="form-control" id="cantidad_compra" name="cantidad_compra" value="0"  placeholder="cantidad.." readonly>
-                                    <div id="mensaje_cantidad_compra" class="errores"></div>
-                                 </div>
-                             </div> 
-                             <div class="col-xs-6 col-md-3 col-lg-3 ">
-                            	<div class="form-group">
-                                	<label for="importe_compra" class="control-label">Importe:</label>
-                                    <input type="text" class="form-control" id="importe_compra" name="importe_compra" value=""  placeholder="importe.." >
-                                    <div id="mensaje_importe_compra" class="errores"></div>
-                                 </div>
-                             </div> 
                              
-                          </div>
-                          <div class="row">
-                          
-                          	<div class="col-xs-6 col-md-3 col-lg-3 ">
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="numero_factura_compra" class="control-label">No Factura:</label>
                                     <input type="text" class="form-control" id="numero_factura_compra" name="numero_factura_compra" value=""  placeholder="no. factura.." >
                                     <div id="mensaje_numero_factura" class="errores"></div>
                                  </div>
                              </div> 
+                             
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="numero_autorizacion_factura" class="control-label">No Autorización:</label>
@@ -131,12 +116,11 @@
                                  </div>
                              </div> 
                              
+                             
+                             
                           </div>
                          
-                     	
-          		 	
-          		 	
-          
+                         
         			</div>
       			</div>
       			
@@ -689,8 +673,21 @@ $(document).ready(function(){
 	 {
 		 event.preventDefault();
 	 }
-	 
-	  
+	 var parametros = $(this).serialize();
+	 $.ajax({
+		 beforeSend:function(){},
+		 url:'index.php?controller=MovimientosInv&action=insertacompra',
+		 type:'POST',
+		 data:parametros,
+		 /*dataType: 'json',*/
+		 success: function(respuesta){
+			 console.log(respuesta)
+		 },
+		 error: function(jqXHR,estado,error){
+	         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+	        }
+	 })
+	 event.preventDefault(); 
 	});
 
  $( "#frm_guardar_producto" ).submit(function( event ) {

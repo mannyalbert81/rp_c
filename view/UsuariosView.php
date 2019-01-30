@@ -7,9 +7,11 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     
-    
-    
+      
+      
    <?php include("view/modulos/links_css.php"); ?>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    
    
   </head>
 
@@ -101,27 +103,47 @@
                           <div class="row">
                           
                           	<div class="col-xs-6 col-md-3 col-lg-3 ">
-                            	<div class="form-group">
-                                	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
-                                    <input type="text" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="<?php echo $resEdit->fecha_nacimiento_usuarios; ?>"  placeholder="fecha nacimiento" >
-                                    <div id="fecha_nacimiento_usuarios" class="errores"></div>
-                                 </div>
+                          		<div class="form-group">
+                             		 	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
+                                        <div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                          </div>
+                                          <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="<?php echo $resEdit->fecha_nacimiento_usuarios; ?>"  >
+                                          <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
+                                        </div>
+                                        <!-- /.input group -->
+                                      </div>                            	
                              </div> 
                              
                              <div class="col-lg-3 col-xs-6 col-md-3">
-                    		    <div class="form-group">
-                                      <label for="celular_usuarios" class="control-label">Celular:</label>
-                                      <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>"  placeholder="celular.." maxlength="10" onkeypress="return numeros(event)" />
+                             
+                                 <div class="form-group">
+                                    <label>Celular:</label>
+                                    <div class="input-group">
+                                      <div class="input-group-addon">
+                                        <i class="fa fa-tablet"></i>
+                                      </div>
+                                      <input type="text" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>" class="form-control" data-inputmask='"mask": "999-999-9999"' data-mask>
                                       <div id="mensaje_celular_usuarios" class="errores"></div>
-                                </div>
+                                    </div>
+                                    <!-- /.input group -->
+                                  </div>
+                    		    
                              </div>
                              
                              <div class="col-lg-3 col-xs-6 col-md-3">
-                    		    <div class="form-group">
-                                      <label for="telefono_usuarios" class="control-label">Teléfono:</label>
-                                      <input type="text" class="form-control cantidades1" id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  placeholder="teléfono.."  maxlength="10" onkeypress="return numeros(event)" />
-                                      <div id="mensaje_telefono_usuarios" class="errores"></div>
-                                </div>
+                             	<div class="form-group">
+                                        <label>Telefono:</label>
+                                        <div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-phone"></i>
+                                          </div>
+                                          <input type="text" class="form-control"  id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  data-inputmask='"mask": "(99) 9999-999"' data-mask>
+                                        </div>
+                                        <!-- /.input group -->
+                                  </div>
+                    		   
                     	    </div>
                     	    
                     	    
@@ -196,6 +218,7 @@
                                  <div class="col-xs-12 col-lg-3 col-md-3">                                  
                         		   <div class="form-group">
                         		   <br>
+                        		   	  <input type="hidden" class="form-control" id="codigo_clave" name="codigo_clave" value="<?php echo $resEdit->clave_n_claves; ?>" >
                                       <label for="cambiar_clave" class="control-label">Cambiar Clave: </label> &nbsp;&nbsp;
                                       <input type="checkbox"  id="cambiar_clave" name="cambiar_clave" value="1"   /> <br>
                                       <label for="caduca_clave" class="control-label">Caduca  Clave: </label> &nbsp;&nbsp; &nbsp;
@@ -237,7 +260,7 @@
                                  
                                  <div class="col-xs-12 col-lg-5 col-md-5">
                         		   <div class="form-group">
-                                      <label for="id_rol_principal" class="control-label">Usuario tiene Rol(es):</label>
+                                      <label for="lista_roles" class="control-label">Usuario tiene Rol(es):</label>
                                       <select name="lista_roles[]" id="lista_roles" multiple="multiple" class="form-control" >
                                       <?php foreach($result_privilegios as $res) {?>
     										<option value="<?php echo $res->id_rol; ?>" <?php echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_rol; ?> </option>
@@ -273,39 +296,61 @@
                                       <div id="mensaje_apellido_usuarios" class="errores"></div>
                                  </div>
                              </div>
+                             
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
-                                	<div class="form-group">
-                                    	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
-                                        <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value=""  >
-                                        <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
-                                     </div>
-                               </div>  
-                            </div>
-                            
-                             <div class="row">
-                             	<div class="col-xs-6 col-md-3 col-lg-3 ">
                                 	<div class="form-group">
                                     	<label for="usuario_usuarios" class="control-label">Usuario:</label>
                                         <input type="text" class="form-control" id="usuario_usuarios" name="usuario_usuarios" value=""  placeholder="usuario..." >
                                         <div id="mensaje_usuario_usuarios" class="errores"></div>
                                      </div>
-                                 </div> 
+                                 </div>
+                             </div>
+                                  
+                             <div class="row">
+                             	
+                             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+                             		 <div class="form-group">
+                             		 	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
+                                        <div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                          </div>
+                                          <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="" min="2001-01-01" max="<?php echo date("Y-m-d");?>"  step="2" required>
+                                         <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
+                                        </div>
+                                         
+                                        <!-- /.input group -->
+                                      </div>
+                                	
+                                   </div>  
+                                
                                  
                                  <div class="col-lg-3 col-xs-6 col-md-3">
-                        		    <div class="form-group">
-                                          <label for="celular_usuarios" class="control-label">Celular:</label>
-                                          <input type="text" class="form-control" id="celular_usuarios" name="celular_usuarios" value=""  placeholder="celular.." maxlength="10" onkeypress="return numeros(event)">
+                                 	<div class="form-group">
+                                        <label>Celular:</label>
+                                        <div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-tablet"></i>
+                                          </div>
+                                          <input type="text" id="celular_usuarios" name="celular_usuarios" value="" class="form-control" data-inputmask='"mask": "999-999-9999"' data-mask>
                                           <div id="mensaje_celular_usuarios" class="errores"></div>
-                                    </div>
+                                        </div>
+                                        <!-- /.input group -->
+                                      </div>
                                 </div>
                                 
                                 <div class="col-lg-3 col-xs-6 col-md-3">
-                        		    <div class="form-group">
-                                          <label for="telefono_usuarios" class="control-label">Teléfono:</label>
-                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  placeholder="teléfono.." maxlength="10" onkeypress="return numeros(event)">
-                                           
-                                          <div id="mensaje_telefono_usuarios" class="errores"></div>
-                                    </div>
+                                	<div class="form-group">
+                                        <label>Telefono:</label>
+                                        <div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-phone"></i>
+                                          </div>
+                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  data-inputmask='"mask": "(99) 9999-999"' data-mask>
+                                        </div>
+                                        <!-- /.input group -->
+                                      </div>
+                        		    
                         	    </div>
                         	    
                         	    
@@ -378,8 +423,11 @@
                                  </div>
                                  
                                  <div class="col-xs-12 col-lg-3 col-md-3">                                  
-                        		   <div class="form-group">
+                        		   <div class="form-group" >
                         		   <br>
+                        		   	  <input type="hidden" class="form-control" id="codigo_clave" name="codigo_clave" value="0" />
+                        		   	  <label for="cambiar_clave" class="control-label" id="lbl_cambiar_clave"></label>&nbsp;&nbsp;
+                        		   	  <input type="checkbox"  id="cambiar_clave" name="cambiar_clave" value="0"  style="display:none" /> <br>
                                       <label for="id_rol_principal" class="control-label">Caduca Clave: </label> &nbsp;&nbsp;
                                       <input type="checkbox" id="caduca_clave" name="caduca_clave" value=""  />
                                     </div>
@@ -419,7 +467,7 @@
                                  
                                  <div class="col-xs-12 col-lg-5 col-md-5">
                         		   <div class="form-group">
-                                      <label for="id_rol_principal" class="control-label">Usuario tiene Rol(es):</label>
+                                      <label for="lista_roles" class="control-label">Usuario tiene Rol(es):</label>
                                       <select name="lista_roles[]" id="lista_roles" multiple="multiple" class="form-control" >
                                       
     								   </select> 
@@ -433,11 +481,13 @@
                     		            
                      <?php } ?>
                      	<div class="row">
-            			    <div class="col-xs-12 col-md-4 col-md-4 " style="margin-top:15px;  text-align: center; ">
+            			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
-            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Guardar</button>
+            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
+            	                  <a class="btn btn-danger" href="<?php  echo $helper->url("Usuarios","index"); ?>">CANCELAR</a>
         	                    </div>
     	        		    </div>
+    	        		    
             		    </div>
           		 	
           		 	</form>
@@ -523,15 +573,30 @@
     
    <?php include("view/modulos/links_js.php"); ?>
    
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+   
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  
+ 
+   
+   
+   <!-- para el autocompletado -->
+    
  
  <!-- funciones javascript para la pagina -->
  
   <script type="text/javascript">
      
    $(document).ready( function (){
+	   
 	   /*pone_espera();*/
 	   load_usuarios(1);
 	   load_usuarios_inactivos(1);
+
+	   $('[data-mask]').inputmask();
 
 	   /*para manejo de multiples roles*/
 	    /**$("#link_agregar_rol").click(function() {
@@ -555,6 +620,10 @@
 	        $('#lista_roles option').each(function() {
 	            $(this).remove(); 
 	        }); 
+	    });
+
+	    $('#id_rol_principal').change(function() { 
+	    	copiarOpcion($('#id_rol_principal option:selected').clone(), "#lista_roles");
 	    });
 
 	   
@@ -588,7 +657,7 @@
 	   });
 
 		$('#cambiar_clave').change(
-			    function(){
+			    function(){				    
 			        if (this.checked) {
 
 				           $('#clave_usuarios').removeAttr("readonly");
@@ -598,36 +667,13 @@
 			        }else{
 			        	$('#clave_usuarios').attr("readonly","readonly");
 				        $('#clave_usuarios_r').attr("readonly","readonly");
+				        $('#clave_usuarios').val($('#codigo_clave').val());
+				        $('#clave_usuarios_r').val($('#codigo_clave').val());
 				        }
 			    });
 
-		$("#cedula_usuarios").blur(function(){
-			var _cedula = $("#cedula_usuarios").val();
-			var _id_usuarios = $("#id_usuarios").val();
-
-			if($("#id_usuarios").val()=="0"){
-				$.ajax({
-    	            beforeSend: function(objeto){
-    	              $("#resultadosjq").html('...');
-    	            },
-    	            url: 'index.php?controller=Usuarios&action=ajax_validacedula',
-    	            type: 'POST',
-    	            data: {cedula:_cedula},
-    	            success: function(x){
-    	             if(x.trim()!=""){
-    	            	 	$("#mensaje_cedula_usuarios").text(x);
-    			    		$("#mensaje_cedula_usuarios").fadeIn("slow");
-    	                 }
-    	            },
-    	           error: function(jqXHR,estado,error){
-    	             $("#resultadosjq").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
-    	           }
-    	         });
-			}
-			  
-	   });
-	    
-	});
+		
+});
 
     function copiarOpcion(opcion, destino) {
         var valor = $(opcion).val();
@@ -730,6 +776,106 @@
 
    
 </script>
+
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+
+	
+
+            var cedula_usuarios = $("#cedula_usuarios").val();
+
+            if(cedula_usuarios>0){
+
+             }else{
+       		
+			$( "#cedula_usuarios" ).autocomplete({
+
+				source: "<?php echo $helper->url("Usuarios","AutocompleteCedula"); ?>",
+  				minLength: 4
+			});
+
+			$("#cedula_usuarios").focusout(function(){
+				validarcedula();
+				$.ajax({
+					url:'<?php echo $helper->url("Usuarios","AutocompleteDevuelveNombres"); ?>',
+					type:'POST',
+					dataType:'json',
+					data:{cedula_usuarios:$('#cedula_usuarios').val()}
+				}).done(function(respuesta){
+
+					$('#id_usuarios').val(respuesta.id_usuarios);					
+					$('#nombre_usuarios').val(respuesta.nombre_usuarios);
+					$('#apellidos_usuarios').val(respuesta.apellidos_usuarios);
+					$('#usuario_usuarios').val(respuesta.usuario_usuarios);
+					$('#fecha_nacimiento_usuarios').val(respuesta.fecha_nacimiento_usuarios);
+					$('#celular_usuarios').val(respuesta.celular_usuarios);
+					$('#telefono_usuarios').val(respuesta.telefono_usuarios);
+					$('#correo_usuarios').val(respuesta.correo_usuarios);					
+					$('#codigo_clave').val(respuesta.clave_n_claves);
+
+					if(respuesta.id_rol>0){
+						$('#id_rol_principal option[value='+respuesta.id_rol+']').attr('selected','selected');
+						}
+
+					if(respuesta.estado_usuarios>0){
+						$('#id_estado option[value='+respuesta.estado_usuarios+']').attr('selected','selected');
+						}
+
+					if(respuesta.caduca_claves=='t'){
+						
+						$('#caduca_clave').attr('checked','checked');
+					}
+
+					if( typeof respuesta.clave_n_usuarios !== "undefined"){
+						$('#clave_usuarios').val(respuesta.clave_n_claves).attr('readonly','readonly');
+						$('#clave_usuarios_r').val(respuesta.clave_n_claves).attr('readonly','readonly');
+						$('#lbl_cambiar_clave').text("Cambiar Clave:  ");
+						$('#cambiar_clave').show();
+							
+							
+						}
+
+					
+
+                    if(respuesta.privilegios.length>0){
+                    	 $('#lista_roles').empty();
+                    	 $.each(respuesta.privilegios, function(k, v) {
+                    		 $('#lista_roles').append("<option value= " +v.id_rol +" >" + v.nombre_rol  + "</option>");
+                 		   
+                    	});
+					}
+					
+					
+					
+				
+    			}).fail(function(respuesta) {
+
+    				$('#id_usuarios').val("");
+					$('#nombre_usuarios').val("");
+					$('#apellidos_usuarios').val("");
+					$('#usuario_usuarios').val("");
+					$('#fecha_nacimiento_usuarios').val("");
+					$('#celular_usuarios').val("");
+					$('#telefono_usuarios').val("");
+					$('#correo_usuarios').val("");
+					$('#clave_usuarios').val("");
+					$('#clave_usuarios_r').val("");
+					    			    
+    			  });
+				 
+				
+			});  
+            }
+
+            
+            
+			
+		});
+
+
+ </script>
         
         
          <script type="text/javascript" >
@@ -988,6 +1134,10 @@
 				$( "#correo_usuarios" ).focus(function() {
 					$("#mensaje_correo_usuarios").fadeOut("slow");
     			});
+    			
+				$("#id_rol_principal").focus(function() {
+					$("#mensaje_id_rol_principal").fadeOut("slow"); 
+    			});
 			
 				
 		      
@@ -995,6 +1145,40 @@
 		}); 
 
 	</script>
+	
+	<script type="text/javascript">
+      function validarcedula() {
+        var cad = document.getElementById("cedula_usuarios").value.trim();
+        var total = 0;
+        var longitud = cad.length;
+        var longcheck = longitud - 1;
+
+        if (cad !== "" && longitud === 10){
+          for(i = 0; i < longcheck; i++){
+            if (i%2 === 0) {
+              var aux = cad.charAt(i) * 2;
+              if (aux > 9) aux -= 9;
+              total += aux;
+            } else {
+              total += parseInt(cad.charAt(i)); // parseInt o concatenará en lugar de sumar
+            }
+          }
+
+          total = total % 10 ? 10 - total % 10 : 0;
+
+          if (cad.charAt(longitud-1) == total) {
+        	  $("#cedula_usuarios").val(cad);
+          }else{
+        	  $("#mensaje_cedula_usuarios").text("Introduzca Identificación Valida");
+	    	$("#mensaje_cedula_usuarios").fadeIn("slow");
+        	  document.getElementById("cedula_usuarios").focus();
+        	  $("#cedula_usuarios").val("");
+        	  
+          }
+        }
+      }
+    </script>
+	
         
         
         
@@ -1076,8 +1260,7 @@
         }, 200);
       }
     </script>
-    
-    	</script>	
+
 	
 	
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
@@ -1086,6 +1269,10 @@
       $(".cantidades1").inputmask();
       });
 	  </script>
+ 	
+ 	
+ 	
+             
  	
   </body>
 </html>

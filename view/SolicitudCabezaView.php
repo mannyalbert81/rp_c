@@ -38,7 +38,6 @@
   	  <div class="content-wrapper">
         <section class="content-header">
           <h1>
-            
             <small><?php echo $fecha; ?></small>
           </h1>
           <ol class="breadcrumb">
@@ -320,35 +319,7 @@
 
   	   }
 
- 	$( "#frm_solicitud_cabeza" ).submit(function( event ) {
- 	 	
- 		 var _id_usuario = $("#id_usuario").val();
-		  var observacion = $("#razon_solicitud").val();
-		  
-		  if (id_usuario==""){
-			  alert("Session Caducada");
-			  $("#razon_solicitud").focus();
-			  return false;
-		  }
-
-		  $.ajax({
-             beforeSend: function(objeto){
-               
-             },
-             url: 'index.php?controller=SolicitudCabeza&action=ajax_inserta_solicitud',
-             type: 'POST',
-             data: {id_usuario:_id_usuario,razon_solicitud:observacion},
-             success: function(x){
-               console.log(x);
-               
-             },
-            error: function(jqXHR,estado,error){
-              //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
-            }
-          });
-		  event.preventDefault();
-		  
-		});
+ 	
 
  	
  	

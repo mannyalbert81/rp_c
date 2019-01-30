@@ -102,33 +102,35 @@
                 <form action="<?php echo $helper->url("Grupos","InsertaGrupos"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
           		 	 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
               		 	 <div class="row">
-                         	<div class="col-xs-12 col-md-3 col-md-3 ">
+                         	<div class="col-xs-12 col-lg-3 col-md-3 ">
                             	<div class="form-group">
                                 	<label for="nombre_grupos" class="control-label">Nombres Grupos</label>
                                     <input type="text" class="form-control" id="nombre_grupos" name="nombre_grupos" value="<?php echo $resEdit->nombre_grupos; ?>"  placeholder="Nombre Grupos">
                                     <input type="hidden" name="id_grupos" id="id_grupos" value="<?php echo $resEdit->id_grupos; ?>" class="form-control"/>
     					            <div id="mensaje_nombre_grupos" class="errores"></div>
                                  </div>
+                                  </div>
                                  <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
                                       <label for="id_estado" class="control-label">Estado:</label>
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php  foreach($result_Grupos_estados as $res) {?>
-    										<option value="<?php echo $res->valor_catalogo; ?>" <?php if ($res->valor_catalogo == $resEdit->estado_usuarios )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_catalogo; ?> </option>
+    										<option value="<?php echo $res->valor_catalogo; ?>" <?php if ($res->valor_catalogo == $resEdit->estado_grupos )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_catalogo; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_estados" class="errores"></div>
                                     </div>
                                   </div>
-                             </div>
+                            
                           </div>
                       <?php } } else {?>                		    
                       	  <div class="row">
-                		  	<div class="col-xs-12 col-md-3 col-md-3 ">
+                		  	<div class="col-xs-12 col-lg-3 col-md-3 ">
                     			<div class="form-group">
                                   <label for="nombre_grupos" class="control-label">Nombres Grupos</label>
                                   <input type="text" class="form-control" id="nombre_grupos" name="nombre_grupos" value=""  placeholder="Nombre Grupos">
+                                   <input type="hidden" name="id_grupos" id="id_grupos" value="" class="form-control"/>
                                   <div id="mensaje_nombre_grupos" class="errores"></div>
                                  </div>
                              </div>
@@ -193,21 +195,21 @@
               <div class="tab-pane active" id="activos">
                 
 					<div class="pull-right" style="margin-right:15px;">
-						<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_grupos(1)" placeholder="search.."/>
+						<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="load_grupos_activos(1)" placeholder="search.."/>
 					</div>
-					<div id="load_grupos" ></div>	
-					<div id="grupos_registrados"></div>	
+					<div id="load_grupos_activos" ></div>	
+					<div id="grupos_activos_registrados"></div>	
                 
               </div>
               
               <div class="tab-pane" id="inactivos">
                 
                     <div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search_inactivos" name="search_grupos_inactivos" onkeyup="load_grupos_inactivos(1)" placeholder="search.."/>
+					<input type="text" value="" class="form-control" id="search_inactivos" name="search_inactivos" onkeyup="load_grupos_inactivos(1)" placeholder="search.."/>
 					</div>
 					
 					
-					<div id="load_inactivos_grupos" ></div>	
+					<div id="load_grupos_inactivos" ></div>	
 					<div id="grupos_inactivos_registrados"></div>
                 
                 
@@ -241,64 +243,76 @@
 <script type="text/javascript">
      
         	   $(document).ready( function (){
-        		   //pone_espera();
-        		   load_grupos(1);
+        		   
+        		   load_grupos_inactivos(1);
+        		   load_grupos_activos(1);
         		   
 	   			});
 
-        	   function pone_espera(){
-
-        		   $.blockUI({ 
-        				message: '<h4><img src="view/images/load.gif" /> Espere por favor, estamos procesando su requerimiento...</h4>',
-        				css: { 
-        		            border: 'none', 
-        		            padding: '15px', 
-        		            backgroundColor: '#000', 
-        		            '-webkit-border-radius': '10px', 
-        		            '-moz-border-radius': '10px', 
-        		            opacity: .5, 
-        		            color: '#fff',
-        		           
-        	        		}
-        	    });
-            	
-		        setTimeout($.unblockUI, 3000); 
-		        
-        	   }
+        	
 
 
-	   function load_grupos(pagina){
+	   function load_grupos_activos(pagina){
 
-		   var search=$("#search").val();
+		   var search=$("#search_activos").val();
 	       var con_datos={
 					  action:'ajax',
 					  page:pagina
 					  };
 			  
-	     $("#load_grupos").fadeIn('slow');
+	     $("#load_grupos_activos").fadeIn('slow');
 	     
 	     $.ajax({
 	               beforeSend: function(objeto){
-	                 $("#load_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	                 $("#load_grupos_activos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	               },
 	               url: 'index.php?controller=Grupos&action=consulta_grupos_activos&search='+search,
 	               type: 'POST',
 	               data: con_datos,
 	               success: function(x){
-	                 $("#grupos_registrados").html(x);
-	                 $("#load_grupos").html("");
-	                 $("#tabla_grupos").tablesorter(); 
+	                 $("#grupos_activos_registrados").html(x);
+	                 $("#load_grupos_activos").html("");
+	                 $("#tabla_grupos_activos").tablesorter(); 
 	                 
 	               },
 	              error: function(jqXHR,estado,error){
-	                $("#load_grupos").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+	                $("#grupos_activos_registrados").html("Ocurrio un error al cargar la informacion de Grupos Activos..."+estado+"    "+error);
 	              }
 	            });
 
 
 		   }
 
+	   function load_grupos_inactivos(pagina){
 
+		   var search=$("#search_inactivos").val();
+	       var con_datos={
+					  action:'ajax',
+					  page:pagina
+					  };
+			  
+	     $("#load_grupos_inactivos").fadeIn('slow');
+	     
+	     $.ajax({
+	               beforeSend: function(objeto){
+	                 $("#load_grupos_inactivos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	               },
+	               url: 'index.php?controller=Grupos&action=consulta_grupos_inactivos&search='+search,
+	               type: 'POST',
+	               data: con_datos,
+	               success: function(x){
+	                 $("#grupos_inactivos_registrados").html(x);
+	                 $("#load_grupos_inactivos").html("");
+	                 $("#tabla_grupos_inactivos").tablesorter(); 
+	                 
+	               },
+	              error: function(jqXHR,estado,error){
+	                $("#grupos_inactivos_registrados").html("Ocurrio un error al cargar la informacion de Grupos Inactivos..."+estado+"    "+error);
+	              }
+	            });
+
+
+		   }
 
 	  
         	        	   

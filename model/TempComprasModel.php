@@ -1,5 +1,5 @@
 <?php
-class ProductosModel extends ModeloBase{
+class TempComprasModel extends ModeloBase{
 	
 	private $table;
 	private $where;
@@ -38,7 +38,7 @@ class ProductosModel extends ModeloBase{
 	
 	
 	public function __construct(){
-		$this->table="productos";
+		$this->table="temp_compras";
 		
 		parent::__construct($this->table);
 	}
@@ -54,15 +54,6 @@ class ProductosModel extends ModeloBase{
 		return  $resultado;
 	}
 	
-	public function llamafuncion(){
-	    
-	    $query = "SELECT ".$this->funcion."(".$this->parametros.")";
-	    $resultado = null;
-	    
-	    $resultado=$this->llamarconsulta($query);
-	    
-	    return  $resultado;
-	}
 	
 	
 }

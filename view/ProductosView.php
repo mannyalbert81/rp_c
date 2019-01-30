@@ -316,12 +316,12 @@
     						<?php $i++;?>
             	        		<tr>
             	                   <td > <?php echo $i; ?>  </td>
-            		               <td > <?php echo $resGup->nombre_grupos; ?>     </td> 
+            		               <td > <?php echo $res->nombre_grupos; ?>     </td> 
             		               <td > <?php echo $res->codigo_productos; ?>   </td>
             		               <td > <?php echo $res->marca_productos; ?>   </td>
             		               <td > <?php echo $res->nombre_productos; ?>   </td>
             		               <td > <?php echo $res->descripcion_productos; ?>   </td>
-            		               <td > <?php echo $resUni->nombre_unidad_medida; ?>   </td>
+            		               <td > <?php echo $res->nombre_unidad_medida; ?>   </td>
             		               <td > <?php echo $res->ult_precio_productos; ?>   </td>
             		              
             		           	   <td>

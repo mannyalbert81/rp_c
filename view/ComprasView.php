@@ -75,13 +75,22 @@
               		 	 
               		 	 	<div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
-                                	<label for="numero_compra" class="control-label">Proveedor:</label>
+                                	<label for="numero_compra" class="control-label">Digite CI/Nombre Proveedor:</label>
                                     <input type="text" class="form-control" id="proveedor" name="proveedor" value=""  >
                                     <input type="hidden" id="id_proveedor" name="id_proveedor" value=""  >
                                     <input type="hidden"  id="cantidad_compra" name="cantidad_compra" value="0"  >
                                     <div id="mensaje_proveedor" class="errores"></div>
                                  </div>
                              </div> 
+                             
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group" id="datos_proveedor" style="display:none;">
+                                	<label for="numero_compra" class="control-label">Proveedor:</label>
+                                    <input type="text" class="form-control" id="nombre_proveedor" name="nombre_proveedor" value=""  >                                   
+                                    <div id="mensaje_proveedor" class="errores"></div>
+                                 </div>
+                             </div> 
+                             
                          </div>
               		 	 
               		 	  <div class="row">	                            
@@ -104,7 +113,7 @@
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="numero_autorizacion_factura" class="control-label">No Autorización:</label>
-                                    <input type="text" class="form-control" id="numero_autorizacion_factura" name="numero_autorizacion_factura" value=""  placeholder="autorizacion" >
+                                    <input type="text" class="form-control" id="numero_autorizacion_factura" name="numero_autorizacion_factura" value="" maxlength="50" placeholder="autorizacion" >
                                     <div id="mensaje_autorizacion_factura" class="errores"></div>
                                  </div>
                              </div>
@@ -307,8 +316,8 @@
   <script src="//unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   
   
-  <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
-    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+  <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>    
+     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
      <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     
@@ -559,13 +568,31 @@ $(document).ready(function(){
            // Set selection          
            $('#id_proveedor').val(ui.item.id);
            $('#proveedor').val(ui.item.value); // save selected id to input
-           console.log(ui.item.nombre);
+           $('#nombre_proveedor').val(ui.item.nombre);
+           $('#datos_proveedor').show();
+           //console.log(ui.item.nombre);
            return false;
         },
-        focus: function(event, ui) { var text = ui.item.value; 
-            $('#proveedor').val(text); 
+        focus: function(event, ui) { 
+            var text = ui.item.value; 
+            $('#proveedor').val();            
             return false; 
         } 
+	}).focusout(function() {
+		$.ajax({
+			url:'<?php echo $helper->url("MovimientosInv","busca_proveedor"); ?>',
+			type:'POST',
+			dataType:'json',
+			data:{term:$('#proveedor').val()}
+		}).done(function(respuesta){
+			console.log(respuesta[0].id);
+			if(respuesta[0].id>0){				
+				$('#id_proveedor').val(respuesta[0].id);
+	           $('#proveedor').val(respuesta[0].value); // save selected id to input
+	           $('#nombre_proveedor').val(respuesta[0].nombre);
+	           $('#datos_proveedor').show();
+			}else{$('#datos_proveedor').hide(); $('#id_proveedor').val('0');  $('#proveedor').val('').focus();}
+		});
 	});
 });
 </script>
@@ -850,18 +877,27 @@ $(document).ready(function(){
 	  
 	});
 
- $("#numero_factura_compra").inputmask('9999999999',{placeholder: ""});
+ $("#numero_factura_compra").inputmask('999-999-999999999',{placeholder: ""});
 
- 
+ $("#numero_autorizacion_factura").inputmask('9999999999',{placeholder: ""});
+
+ //$("#mod_precio_producto").inputmask('currency',{rightAlign: true  });
  $("#mod_precio_producto").inputmask({
-	 alias: "decimal",
-	 integerDigits: 5,
+	 alias: "decimal",	
 	 digits: 2,
-	 digitsOptional: false,
+	 digitsOptional: true,
+	 groupSeparator: ",",
+	 autoGroup:true,
 	 placeholder: "",
-	 allowMinus: false
+	 allowMinus: false,
+	 integerDigits: '5',
+	 defaultValue: "00.00",
+	 prefix: "$"
 	 });
 
+ /*$("#mod_precio_producto").inputmask({ 
+	 alias : "currency", mask : "$ 00.00" 
+		 });*/
 
  $("#fecha_compra").inputmask({
 	 alias: "date",

@@ -1003,11 +1003,389 @@ class MovimientosInvController extends ControladorBase{
 	 * mod: salidas
 	 * title: indexsalida
 	 * desc: redirecciona a la vista de salidas
+	 * return: void
 	 */	
 	public function indexsalida(){
 	    
+	    session_start();
 	    $this->View('SalidasProductos',array());
 	    
+	}
+	
+	/**
+	 * mod: salidas
+	 * title: carga_solicitud
+	 * desc: busca la solicitudes pendientes
+	 * return: html
+	 */
+	public function carga_solicitud(){
+	    
+	    session_start();
+	    
+	    $salidas = null; $salidas = new MovimientosInvCabezaModel();
+	    
+	    /*variables que vienes de peticion ajax*/
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['buscador'])&& $_REQUEST['buscador'] !=NULL)?$_REQUEST['buscador']:'';
+	    $page =  (isset($_REQUEST['page'])&& $_REQUEST['page'] !=NULL)?$_REQUEST['page']:1;
+	    
+	    if($action == 'ajax')
+	    {
+	        /* consulta a la BD */
+	        
+	        $col_salidas="movimientos_inv_cabeza.id_movimientos_inv_cabeza, 
+                      usuarios.nombre_usuarios, 
+                      usuarios.id_usuarios, 
+                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza, 
+                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza, 
+                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza";
+	        
+	        $tab_salidas = "public.movimientos_inv_cabeza, 
+                      public.usuarios, 
+                      public.consecutivos";
+	        
+	        $where_salidas = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
+                      consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
+                      AND tipo_documento_consecutivos='SOLICITUD' 
+                      AND estado_movimientos_inv_cabeza='PENDIENTE'";
+	        
+	        
+	        if(!empty($search)){
+	            
+	            $where_busqueda=" AND (usuarios.nombre_usuarios LIKE '".$search."%' OR movimientos_inv_cabeza.numero_movimientos_inv_cabeza >= ".$search.")";
+	            
+	            $where_salidas.=$where_busqueda;
+	        }
+	        
+	        $resultSet=$salidas->getCantidad("*", $tab_salidas, $where_salidas);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet=$salidas->getCondicionesPag($col_salidas, $tab_salidas, $where_salidas, "movimientos_inv_cabeza.id_movimientos_inv_cabeza", $limit);
+	        $count_query   = $cantidadResult;
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        $html="";
+	        if($cantidadResult>0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:11px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:180px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_salidas' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitante</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            //$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
+	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=MovimientosInv&action=versolicitud"  class="btn bg-gray-active" title="ver solicitud" style="font-size:65%;"><i class="fa fa-folder-open "></i>Ver</a></span></td>';
+	                
+	                $html.='</tr>';
+	            }
+	            
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginatemultiple("index.php", $page, $total_pages, $adjacents,'carga_solicitud').'';
+	            $html.='</div>';
+	            
+	            
+	            
+	        }else{
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Solicitudes Pendientes</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        
+	        echo $html;
+	        
+	    }
+	}
+	
+	/**
+	 * mod: salidas
+	 * title: carga_solicitud_entregada
+	 * desc: busca la solicitudes rechazadas
+	 * return: html
+	 */
+	public function carga_solicitud_entregada(){
+	    
+	    session_start();
+	    
+	    $salidas = null; $salidas = new MovimientosInvCabezaModel();
+	    
+	    /*variables que vienes de peticion ajax*/
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['buscador'])&& $_REQUEST['buscador'] !=NULL)?$_REQUEST['buscador']:'';
+	    $page =  (isset($_REQUEST['page'])&& $_REQUEST['page'] !=NULL)?$_REQUEST['page']:1;
+	    
+	    if($action == 'ajax')
+	    {
+	        /* consulta a la BD */
+	        
+	        $col_salidas="movimientos_inv_cabeza.id_movimientos_inv_cabeza,
+                      usuarios.nombre_usuarios,
+                      usuarios.id_usuarios,
+                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza";
+	        
+	        $tab_salidas = "public.movimientos_inv_cabeza,
+                      public.usuarios,
+                      public.consecutivos";
+	        
+	        $where_salidas = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
+                      consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
+                      AND tipo_documento_consecutivos='SOLICITUD'
+                      AND estado_movimientos_inv_cabeza='ENTREGADA'";
+	        
+	        
+	        if(!empty($search)){
+	            
+	            $where_busqueda=" AND (usuarios.nombre_usuarios LIKE '".$search."%' OR movimientos_inv_cabeza.numero_movimientos_inv_cabeza >= ".$search.")";
+	            
+	            $where_salidas.=$where_busqueda;
+	        }
+	        
+	        $resultSet=$salidas->getCantidad("*", $tab_salidas, $where_salidas);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet=$salidas->getCondicionesPag($col_salidas, $tab_salidas, $where_salidas, "movimientos_inv_cabeza.id_movimientos_inv_cabeza", $limit);
+	        $count_query   = $cantidadResult;
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        $html="";
+	        if($cantidadResult>0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:11px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:180px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_salidas' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitante</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            //$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
+	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_movimientos_inv_cabeza.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
+	                
+	                $html.='</tr>';
+	            }
+	            
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginatemultiple("index.php", $page, $total_pages, $adjacents,'carga_solicitud_entregada').'';
+	            $html.='</div>';
+	            
+	            
+	            
+	        }else{
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Solicitud Entregada</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        
+	        echo $html;
+	        
+	    }
+	}
+	
+	/**
+	 * mod: salidas
+	 * title: carga_solicitud_rechazada
+	 * desc: busca la solicitudes rechazada
+	 * return: html
+	 */
+	public function carga_solicitud_rechazada(){
+	    
+	    session_start();
+	    
+	    $salidas = null; $salidas = new MovimientosInvCabezaModel();
+	    
+	    /*variables que vienes de peticion ajax*/
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['buscador'])&& $_REQUEST['buscador'] !=NULL)?$_REQUEST['buscador']:'';
+	    $page =  (isset($_REQUEST['page'])&& $_REQUEST['page'] !=NULL)?$_REQUEST['page']:1;
+	    
+	    if($action == 'ajax')
+	    {
+	        /* consulta a la BD */
+	        
+	        $col_salidas="movimientos_inv_cabeza.id_movimientos_inv_cabeza,
+                      usuarios.nombre_usuarios,
+                      usuarios.id_usuarios,
+                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza";
+	        
+	        $tab_salidas = "public.movimientos_inv_cabeza,
+                      public.usuarios,
+                      public.consecutivos";
+	        
+	        $where_salidas = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
+                      consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
+                      AND tipo_documento_consecutivos='SOLICITUD'
+                      AND estado_movimientos_inv_cabeza='RECHAZADA'";
+	        
+	        
+	        if(!empty($search)){
+	            
+	            $where_busqueda=" AND (usuarios.nombre_usuarios LIKE '".$search."%' OR movimientos_inv_cabeza.numero_movimientos_inv_cabeza >= ".$search.")";
+	            
+	            $where_salidas.=$where_busqueda;
+	        }
+	        
+	        $resultSet=$salidas->getCantidad("*", $tab_salidas, $where_salidas);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet=$salidas->getCondicionesPag($col_salidas, $tab_salidas, $where_salidas, "movimientos_inv_cabeza.id_movimientos_inv_cabeza", $limit);
+	        $count_query   = $cantidadResult;
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        $html="";
+	        if($cantidadResult>0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:11px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:180px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_salidas_rechazada' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitante</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            //$html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
+	                $html.='<td style="font-size: 18px;"><a href="#" class="btn btn-info" role="button">Link Button</a></td>';
+	                $html.='<td "><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_movimientos_inv_cabeza.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
+	                
+	                $html.='</tr>';
+	            }
+	            
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginatemultiple("index.php", $page, $total_pages, $adjacents,'carga_solicitud').'';
+	            $html.='</div>';
+	            
+	            
+	            
+	        }else{
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Solicitud Rechazada</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        
+	        echo $html;
+	        
+	    }
 	}
 	
 	

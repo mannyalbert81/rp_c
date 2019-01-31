@@ -999,6 +999,16 @@ class MovimientosInvController extends ControladorBase{
 	}
 	
 	
+	/**
+	 * mod: salidas
+	 * title: indexsalida
+	 * desc: redirecciona a la vista de salidas
+	 */	
+	public function indexsalida(){
+	    
+	    $this->View('SalidasProductos',array());
+	    
+	}
 	
 	
 }

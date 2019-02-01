@@ -59,139 +59,67 @@
               </div>
             </div>
             
-            <div class="box-body">
-            	<div class="ibox-content">
-                      	
-                  <div class="x_content">
-                  
-                  <div class="col-lg-6 col-md-6 col-xs-12">
-                      <div class="box box-default box-solid">
-                        <div class="box-header with-border">
-                          <h3 class="box-title">Solicitud Pendientes</h3>
-            
-                          <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                            </button>
-                          </div>
-
-                          <!-- /.box-tools -->
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
+            <div class="row">
+        <div class="col-md-12">
+          <!-- Custom Tabs -->
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#tab_1" data-toggle="tab">Solicitud Pendiente</a></li>
+              <li><a href="#tab_2" data-toggle="tab">Solicitud Entregada</a></li>
+              <li><a href="#tab_3" data-toggle="tab">Solicitud Rechazada</a></li>
+              
+              <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="tab_1">
+                <div class="box-body">
                           <div class="pull-right" style="margin-right:11px;">
         					<input type="text" value="" class="form-control" id="buscador_solicitud" name="buscador_solicitud" onkeyup="carga_solicitud(1)" placeholder="search.."/>
         				</div>
         				<div id="load_solicitud" ></div>	
         				<div id="resultados_solicitud"></div>
                         </div>
-                        <!-- /.box-body -->
-                      </div>
-                      <!-- /.box -->
-                   </div>
-                  
-                 
-    				
-                    <div class="col-lg-6 col-md-6 col-xs-12">
-                      <div class="box box-default box-solid">
-                        <div class="box-header with-border">
-                          <h3 class="box-title">Solicitud Entregada</h3>
-            
-                          <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                            </button>
-                          </div>
-
-                          <!-- /.box-tools -->
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_2">
+                <div class="box-body">
                           <div class="pull-right" style="margin-right:11px;">
         					<input type="text" value="" class="form-control" id="buscador_solicitud_entregada" name="buscador_solicitud_entregada" onkeyup="carga_solicitud_entregada(1)" placeholder="search.."/>
         				</div>
         				<div id="load_solicitud_entregada" ></div>	
         				<div id="resultados_solicitud_entregada"></div>
                         </div>
-                        <!-- /.box-body -->
-                      </div>
-                      <!-- /.box -->
-                   </div>
-                  	
-                  	<div class="col-lg-6 col-md-6 col-xs-12">
-                      <div class="box box-default box-solid">
-                        <div class="box-header with-border">
-                          <h3 class="box-title">Solicitud Rechazad</h3>
-            
-                          <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                            </button>
-                          </div>
-
-                          <!-- /.box-tools -->
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_3">
+                <div class="box-body">
                           <div class="pull-right" style="margin-right:11px;">
         					<input type="text" value="" class="form-control" id="buscador_solicitud_rechazada" name="buscador_solicitud_rechazada" onkeyup="carga_solicitud_rechazada(1)" placeholder="search.."/>
         				</div>
         				<div id="load_solicitud_rechazada" ></div>	
         				<div id="resultados_solicitud_rechazada"></div>
                         </div>
-                        <!-- /.box-body -->
-                      </div>
-                      <!-- /.box -->
-                   </div>
+              </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- nav-tabs-custom -->
+        </div>
+        <!-- /.col -->
+        <!-- /.col -->
+      </div>
+            
+            <div class="box-body">
+            	<div class="ibox-content">
+                      	
+                  <div class="x_content">
+                  
+                  	
+                  	
     		</section>
     		
-            <section class="content">
-              <div class="box box-success">
-                <div class="box-header with-border">
-                  <h3 class="box-title"></h3>
-                  <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                      <i class="fa fa-minus"></i></button>
-                    
-                  </div>
-                </div>
-                
-                <div class="box-body">
-                <form id="frm_solicitud_cabeza" action="<?php echo $helper->url("SolicitudCabeza","inserta_solicitud"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
-                 <?php if(!empty($resultSet)){ foreach ($resultSet as $res){?>                		    
-                      	  <div class="row">
-                		  	<div class="col-xs-10 col-md-6 col-lg-6 ">
-                            	<div class="form-group">
-                                    <input type="hidden" name="id_usuario" id="id_usuario" value="<?php echo $res->id_usuarios; ?>" class="form-control"/>
-    					            <div id="mensaje_nombre_grupos" class="errores"></div>
-                                 </div>
-                             </div>
-                             
-                          </div>
-                         
-                    		            
-                     <?php }}?>
-            	 	<div class="row">
-                      	<div class="col-xs-12 col-md-12 col-lg-12 ">
-                        	<!--  <div class="form-group">-->
-                        		<div class="md-form">
-  									<i class="fas fa-pencil-alt prefix"></i>
-                            		<label for="razon_solicitud">Observacion:</label>
-  									<textarea class="md-textarea form-control" rows="1" id="razon_solicitud" name="razon_solicitud" ></textarea>
-                                	<div id="mensaje_razon_solicitud" class="errores"></div>
-                                </div>
-                             <!-- </div> -->
-                         </div>
-                     </div> 
-                    <div class="row">
-        			    <div class="col-xs-12 col-md-2 col-md-2 " >
-            	   		    <div class="form-group">
-            	   		    	<label for="Guardar">&nbsp;</label>
-        	                  <button type="submit" id="Guardar" name="Guardar" class="form-control btn btn-success">Guardar</button>
-    	                    </div>
-	        		    </div>
-        		    </div>
-                </form>
-                </div>
-                </div>
-            </section>
+            
             
   		</div>
   

@@ -1417,35 +1417,65 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        $where_solicitud = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND tipo_documento_consecutivos='SOLICITUD'
+                      AND nombre_consecutivos='SOLICITUD'
                       AND movimientos_inv_cabeza.id_movimientos_inv_cabeza=$id_movimiento";
 	        
 	        $resultsolicitud = $salidas->getCondiciones($col_solicitud,$tab_solicitud,$where_solicitud,"id_movimientos_inv_cabeza");
 	        
+	        $temp_salida = null; $temp_salida = new InvTempSalidaModel();
 	        
-	        $col_detalle="movimientos_inv_detalle.id_productos, 
-                      movimientos_inv_detalle.saldo_f_movimientos_inv_detalle, 
-                      movimientos_inv_detalle.saldo_v_movimientos_inv_detalle, 
-                      movimientos_inv_detalle.cantidad_movimientos_inv_detalle, 
-                      grupos.nombre_grupos, 
+	        $funcion = "fn_agrega_salida";
+	        $parametros = "'$id_movimiento'";
+	        
+	        $temp_salida->setFuncion($funcion);
+	        
+	        $temp_salida->setParametros($parametros);
+	        
+	        $resultado = $temp_salida->llamafuncion();
+	        
+	        $insertado =0;
+	        
+	        if(!empty($resultado)){
+	            if(is_array($resultado) && count($resultado)>0){
+	                
+	                $insertado = (int)$resultado[0]->fn_agrega_salida;
+	                
+	            }
+	        }
+	        
+	        if($insertado>0){
+	            
+	            $col_detalle="grupos.nombre_grupos, 
+                      grupos.id_grupos, 
+                      unidad_medida.nombre_unidad_medida, 
                       productos.codigo_productos, 
+                      productos.marca_productos, 
                       productos.nombre_productos, 
                       productos.ult_precio_productos, 
-                      productos.id_productos, 
-                      movimientos_inv_detalle.id_movimientos_inv_detalle, 
-                      unidad_medida.nombre_unidad_medida";
-	        
-	        $tab_detalle = "public.movimientos_inv_detalle, 
+                      inv_temp_salida.cantidad_temp_salida, 
+                      inv_temp_salida.id_temp_salida, 
+                      inv_temp_salida.id_movimientos_inv_cabeza";
+	            
+	            $tab_detalle = "public.inv_temp_salida, 
                       public.productos, 
                       public.grupos, 
                       public.unidad_medida";
+	            
+	            $where_detalle = "productos.id_productos = inv_temp_salida.id_productos AND
+                      grupos.id_grupos = productos.id_grupos AND
+                      unidad_medida.id_unidad_medida = productos.id_unidad_medida
+                      AND inv_temp_salida.id_movimientos_inv_cabeza=$id_movimiento";
+	            
+	            $resultdetalle = $salidas->getCondiciones($col_detalle,$tab_detalle,$where_detalle,"productos.nombre_productos");
+	            
+	            
+	        }
 	        
-	        $where_detalle = "productos.id_productos = movimientos_inv_detalle.id_productos AND
-                          grupos.id_grupos = productos.id_grupos AND
-                          unidad_medida.id_unidad_medida = productos.id_unidad_medida
-                          AND movimientos_inv_detalle.id_movimientos_inv_cabeza=$id_movimiento";
 	        
-	        $resultdetalle = $salidas->getCondiciones($col_detalle,$tab_detalle,$where_detalle,"productos.nombre_productos");
+	        
+	        
+	        
+	        
 	        
 	        
 	        $this->View('AprobarSalidas',array(
@@ -1454,6 +1484,151 @@ class MovimientosInvController extends ControladorBase{
 	    }
 	    
 	   
+	}
+	
+	/***
+	 * mod: salidas
+	 * title: apruebaproducto
+	 * ajax: si
+	 * desc: aprueba cantidad de productos de solicitud
+	 * return: json
+	 */
+	public function apruebaproducto(){	   
+        
+        $fila = (isset($_REQUEST['fila'])&& $_REQUEST['fila'] !=NULL)?$_REQUEST['fila']:0;
+        
+        if($fila>0){
+            
+            $id_temp_salida = (isset($_REQUEST['id_temp_salida'])&& $_REQUEST['id_temp_salida'] !=NULL)?$_REQUEST['id_temp_salida']:0;
+            
+            $cantidad = (isset($_REQUEST['cantidad'])&& $_REQUEST['cantidad'] !=NULL)?$_REQUEST['cantidad']:0;
+            
+            if($id_temp_salida>0){
+                
+                //para actualizacion de temp
+                $temp_salida = new InvTempSalidaModel();
+                
+                $set = "cantidad_temp_salida=$cantidad, estado_temp_salida = 'APROBADO'";
+                $where="id_temp_salida=$id_temp_salida";
+                $tabla="inv_temp_salida";
+                
+                $resultado=$temp_salida->UpdateBy($set,$tabla,$where);
+                
+                print_r($resultado);
+                
+            }
+            
+            
+        }else{
+            
+            
+        }
+        
+	   
+	}
+	
+	/***
+	 * mod: salidas
+	 * title: rechazaproducto
+	 * ajax: si
+	 * desc: aprueba cantidad de productos de solicitud
+	 * return: json
+	 */
+	public function rechazaproducto(){
+	    
+	    
+        $id_temp_salida = (isset($_REQUEST['id_temp_salida'])&& $_REQUEST['id_temp_salida'] !=NULL)?$_REQUEST['id_temp_salida']:0;
+         
+        if($id_temp_salida>0){
+            
+            //para actualizacion de temp
+            $temp_salida = new InvTempSalidaModel();
+            
+            $set = " estado_temp_salida = 'RECHAZADO'";
+            $where="id_temp_salida=$id_temp_salida";
+            $tabla="inv_temp_salida";
+            
+            $resultado=$temp_salida->UpdateBy($set,$tabla,$where);
+            
+            print_r($resultado);
+            
+        }
+	    
+	}
+	
+	
+	/***
+	 * mod: salida
+	 * title: inserta_salida
+	 * desc: inserta un nuevo movimiento
+	 * return: redirecciona a una vista
+	 */
+	public function inserta_salida(){
+	    
+	    //inicia session
+	    session_start();
+	    //creacion de objeto de modelo
+	    $movimientos_inventario = new MovimientosInvCabezaModel();
+	    
+	    $resultSet=array();
+	    
+	    $validacion = false;
+	    
+	    $id_rol= $_SESSION['id_rol'];
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    {
+	        
+	        $nombre_controladores = "MovimientosProductosCabeza";
+	        $resultPer = $movimientos_inventario->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	        
+	        if (!empty($resultPer))
+	        {
+	            $validacion = true;
+	            
+	        }
+	    }
+	    
+	    if($validacion){
+	        
+	        $id_usuarios = (isset($_SESSION['id_usuarios']))?$_SESSION['id_usuarios']:0;
+	        
+	        /*valores de la vista*/
+	        $_id_movimiento_solicitud = (isset($_POST['id_movimiento_solicitud']))?$_POST['id_movimiento_solicitud']:0;
+	       
+	        //se valida si hay productos en temp
+	        if($_id_movimiento_solicitud>0){
+	            
+	            $_fecha_compra = date('Y-m-d');
+	            
+	            /*para variables de la funcion*/
+	            $razon_movimientos="aprobacion solicitud productos";
+	            
+	            $funcion = "fn_agrega_compra";
+	            
+	            $parametros = "'$id_usuarios','$_id_proveedores','$_fecha_compra','$_numero_factura_compra',
+                       '$_numero_autorizacion_compra','$_estado_compra'";
+	            
+	            $movimientos_inventario->setFuncion($funcion);
+	            $movimientos_inventario->setParametros($parametros);
+	            
+	            $resultset = $movimientos_inventario->llamafuncion();
+	            
+	            if(!empty($resultset)){
+	                if(is_array($resultset) && count($resultset)>0){
+	                    
+	                    if((int)$resultset[0]->fn_agrega_compra >0 ){
+	                        echo json_encode(array('success'=>1,'mensaje'=>'Compra Realizada'));
+	                    }else if((int)$resultset[0]->fn_agrega_compra == 0){
+	                        echo json_encode(array('success'=>0,'mensaje'=>'Error en la compra'));
+	                    }
+	                    
+	                }
+	            }
+	            
+	        }
+	        
+	    }
+	    
 	}
 	
 	

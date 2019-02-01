@@ -893,8 +893,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            
 	            
-	            $resultConsecutivos = $consecutivos->getBy("tipo_documento_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
-	            $numero_consecutivos = $resultConsecutivos[0]->numero_consecutivos;
+	           $numero_consecutivos = $resultConsecutivos[0]->numero_consecutivos;
 	            $_id_consecutivos = $resultConsecutivos[0]->id_consecutivos;
 	            
 	            

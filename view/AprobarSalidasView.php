@@ -46,12 +46,12 @@
           </ol>
         </section>
         
-            		
+         	
     		<!-- seccion para ver division de vista -->
           <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title"> Solicitudes </h3>
+              <h3 class="box-title">Aprobar/Rechazar Solicitudes </h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -64,83 +64,116 @@
                       	
                   <div class="x_content">
                   
-                  <div class="col-lg-6 col-md-6 col-xs-12">
-                      <div class="box box-default box-solid">
-                        <div class="box-header with-border">
-                          <h3 class="box-title">Solicitud Pendientes</h3>
-            
-                          <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                            </button>
-                          </div>
-
-                          <!-- /.box-tools -->
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                          <div class="pull-right" style="margin-right:11px;">
-        					<input type="text" value="" class="form-control" id="buscador_solicitud" name="buscador_solicitud" onkeyup="carga_solicitud(1)" placeholder="search.."/>
-        				</div>
-        				<div id="load_solicitud" ></div>	
-        				<div id="resultados_solicitud"></div>
-                        </div>
-                        <!-- /.box-body -->
-                      </div>
-                      <!-- /.box -->
-                   </div>
-                  
-                 
-    				
-                    <div class="col-lg-6 col-md-6 col-xs-12">
-                      <div class="box box-default box-solid">
-                        <div class="box-header with-border">
-                          <h3 class="box-title">Solicitud Entregada</h3>
-            
-                          <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                            </button>
-                          </div>
-
-                          <!-- /.box-tools -->
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                          <div class="pull-right" style="margin-right:11px;">
-        					<input type="text" value="" class="form-control" id="buscador_solicitud_entregada" name="buscador_solicitud_entregada" onkeyup="carga_solicitud_entregada(1)" placeholder="search.."/>
-        				</div>
-        				<div id="load_solicitud_entregada" ></div>	
-        				<div id="resultados_solicitud_entregada"></div>
-                        </div>
-                        <!-- /.box-body -->
-                      </div>
-                      <!-- /.box -->
-                   </div>
+                  <div class="row">
+                  	<div class="col-md-3 col-lg-3">
+                  		<div class="form-group">
+                        	<label for="nombre_usuario" class="control-label">Usuario Solicitante:</label>
+                            <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario" value="<?php echo $resultsolicitud[0]->nombre_usuarios; ?>"  >
+                            <div id="mensaje_nombre_usuario" class="errores"></div>
+                         </div>
+                  	</div>
                   	
-                  	<div class="col-lg-6 col-md-6 col-xs-12">
-                      <div class="box box-default box-solid">
-                        <div class="box-header with-border">
-                          <h3 class="box-title">Solicitud Rechazad</h3>
-            
-                          <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                            </button>
-                          </div>
-
-                          <!-- /.box-tools -->
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body">
-                          <div class="pull-right" style="margin-right:11px;">
-        					<input type="text" value="" class="form-control" id="buscador_solicitud_rechazada" name="buscador_solicitud_rechazada" onkeyup="carga_solicitud_rechazada(1)" placeholder="search.."/>
-        				</div>
-        				<div id="load_solicitud_rechazada" ></div>	
-        				<div id="resultados_solicitud_rechazada"></div>
-                        </div>
-                        <!-- /.box-body -->
-                      </div>
-                      <!-- /.box -->
-                   </div>
+                  	<div class="col-md-3 col-lg-3">
+                  		<div class="form-group">
+                        	<label for="numero_solicitud" class="control-label">No. Solicitud:</label>
+                            <input type="text" class="form-control" id="numero_solicitud" name="numero_solicitud" value="<?php echo $resultsolicitud[0]->numero_movimientos_inv_cabeza; ?>"  >
+                            <div id="mensaje_numero_solicitud" class="errores"></div>
+                         </div>
+                  	</div>
+                  	
+                  	<div class="col-md-3 col-lg-3">
+                  		<div class="form-group">
+                        	<label for="fecha_solicitud" class="control-label">fecha Solicitud:</label>
+                            <input type="text" class="form-control" id="fecha_solicitud" name="fecha_solicitud" value="<?php echo $resultsolicitud[0]->fecha_movimientos_inv_cabeza; ?>"  >
+                            <div id="mensaje_nombre_usuario" class="errores"></div>
+                         </div>
+                  	</div>
+                  	
+                  	<div class="col-md-3 col-lg-3">
+                  		<div class="form-group">
+                        	<label for="estado_solicitud" class="control-label">Estado Solicitud:</label>
+                            <input type="text" class="form-control" id="estado_solicitud" name="estado_solicitud" value="<?php echo $resultsolicitud[0]->estado_movimientos_inv_cabeza; ?>"  >
+                            <div id="mensaje_estado_solicitud" class="errores"></div>
+                         </div>
+                  	</div>
+                  	
+                  </div>
+                  	
     		</section>
+    		
+    		   <section class="content">
+                  <div class="box box-primary">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">Listado de Productos Solicitados</h3>
+                      <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                          <i class="fa fa-minus"></i></button>
+                        
+                    </div>
+                    
+                    <div class="box-body">
+                    
+                    
+                   <div class="ibox-content">  
+                  <div class="table-responsive">
+                  
+                    <table  class="table table-striped table-bordered table-hover dataTables-example">
+                                  <thead>
+                                    <tr>
+                                      <th>#</th>
+                                      <th>Grupos</th>
+                                      <th>Código</th>
+                                      <th>Nombre</th>
+                                       <th>Descripcion</th>
+                                      <th>Unidad De M.</th>
+                                      <th>ULT Precio</th>
+                                      <th>Aprobar</th>
+                                      <th>Rechazar</th>
+            
+                                    </tr>
+                                  </thead>
+            
+                                  <tbody>
+                					<?php $i=0;?>
+                						<?php if (!empty($resultdetalle)) {  foreach($resultdetalle as $res) {?>
+                						<?php $i++;?>
+                        	        		<tr>
+                        	                   <td > <?php echo $i; ?>  </td>
+                        		               <td > <?php echo $res->nombre_grupos; ?>     </td> 
+                        		               <td > <?php echo $res->codigo_productos; ?>   </td>
+                        		               <td > <?php echo $res->nombre_productos; ?>   </td>
+                        		               <td class="col-xs-1 col-md-1 col-lg-1" > <input type="text" class="form-control" value="<?php echo $res->cantidad_movimientos_inv_detalle; ?>" id="cantidad_producto_<?php echo $res->id_productos;?>" />    </td>
+                        		               <td > <?php echo $res->nombre_unidad_medida; ?>   </td>
+                        		               <td > <?php echo $res->ult_precio_productos; ?>   </td>
+                        		              
+                        		           	   <td>
+                        			           		<div class="right">
+                        			                    <a href="#"  onclick="aprobar_producto(<?php echo $res->id_productos; ?>)" class="btn btn-success" style="font-size:65%;" data-toggle="tooltip" title="Aprobar"><i class='fa fa-check-square-o'></i></a>
+                        			                </div>
+                        			            
+                        			             </td>
+                        			             <td>   
+                        			                	<div class="right">
+                        			                    <a href="#" onclick="rechazar_producto(<?php echo $res->id_productos; ?>)" class="btn btn-danger" style="font-size:65%;" data-toggle="tooltip" title="Rechazar"><i class="fa fa-remove"></i></a>
+                        			                </div>
+                        			                
+                        		               </td>
+                        		    		</tr>
+                        		    		
+                        		        <?php } } ?>
+                                	
+                					                    				  	
+            
+                                  </tbody>
+                                </table>
+                   
+                    </div>
+                     </div>
+                    
+                    
+                    </div>
+                    </div>
+                    </section>
     		
             <section class="content">
               <div class="box box-success">

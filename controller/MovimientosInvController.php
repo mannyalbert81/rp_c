@@ -1107,7 +1107,7 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
-	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=MovimientosInv&action=versolicitud"  class="btn bg-gray-active" title="ver solicitud" style="font-size:65%;"><i class="fa fa-folder-open "></i>Ver</a></span></td>';
+	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=MovimientosInv&action=versolicitud&id_movimiento='.$res->id_movimientos_inv_cabeza.'"  class="btn bg-gray-active" title="ver solicitud" style="font-size:65%;"><i class="fa fa-folder-open "></i>Ver</a></span></td>';
 	                
 	                $html.='</tr>';
 	            }
@@ -1386,6 +1386,74 @@ class MovimientosInvController extends ControladorBase{
 	        echo $html;
 	        
 	    }
+	}
+	
+	/**
+	 * mod: salidas
+	 * title: versolicitud
+	 * desc: aprobar/rechazar solicitudes
+	 * return: vista
+	 */
+	public function versolicitud(){
+	    
+	    session_start();
+	    
+	    $salidas = null; $salidas= new MovimientosInvCabezaModel();
+	    
+	    $id_movimiento = (isset($_REQUEST['id_movimiento']))?$_REQUEST['id_movimiento']:0;
+	    
+	    if($id_movimiento>0){
+	        
+	        $col_solicitud="movimientos_inv_cabeza.id_movimientos_inv_cabeza,
+                      usuarios.nombre_usuarios,
+                      usuarios.id_usuarios,
+                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza";
+	        
+	        $tab_solicitud = "public.movimientos_inv_cabeza,
+                      public.usuarios,
+                      public.consecutivos";
+	        
+	        $where_solicitud = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
+                      consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
+                      AND tipo_documento_consecutivos='SOLICITUD'
+                      AND movimientos_inv_cabeza.id_movimientos_inv_cabeza=$id_movimiento";
+	        
+	        $resultsolicitud = $salidas->getCondiciones($col_solicitud,$tab_solicitud,$where_solicitud,"id_movimientos_inv_cabeza");
+	        
+	        
+	        $col_detalle="movimientos_inv_detalle.id_productos, 
+                      movimientos_inv_detalle.saldo_f_movimientos_inv_detalle, 
+                      movimientos_inv_detalle.saldo_v_movimientos_inv_detalle, 
+                      movimientos_inv_detalle.cantidad_movimientos_inv_detalle, 
+                      grupos.nombre_grupos, 
+                      productos.codigo_productos, 
+                      productos.nombre_productos, 
+                      productos.ult_precio_productos, 
+                      productos.id_productos, 
+                      movimientos_inv_detalle.id_movimientos_inv_detalle, 
+                      unidad_medida.nombre_unidad_medida";
+	        
+	        $tab_detalle = "public.movimientos_inv_detalle, 
+                      public.productos, 
+                      public.grupos, 
+                      public.unidad_medida";
+	        
+	        $where_detalle = "productos.id_productos = movimientos_inv_detalle.id_productos AND
+                          grupos.id_grupos = productos.id_grupos AND
+                          unidad_medida.id_unidad_medida = productos.id_unidad_medida
+                          AND movimientos_inv_detalle.id_movimientos_inv_cabeza=$id_movimiento";
+	        
+	        $resultdetalle = $salidas->getCondiciones($col_detalle,$tab_detalle,$where_detalle,"productos.nombre_productos");
+	        
+	        
+	        $this->View('AprobarSalidas',array(
+	            'resultsolicitud'=>$resultsolicitud,'resultdetalle'=>$resultdetalle
+	        ));
+	    }
+	    
+	   
 	}
 	
 	

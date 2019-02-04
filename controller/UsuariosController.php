@@ -4028,7 +4028,7 @@ public function index(){
     				if($_id_rol==1){
     					
 
-    					$this->view("BienvenidaAdmin",array(
+    					$this->view("Administracion/BienvenidaAdmin",array(
     							""=>""
     					));
     					
@@ -4036,7 +4036,7 @@ public function index(){
     					
     				}else{
     					
-    					$this->view("Bienvenida",array(
+    					$this->view("Administracion/Bienvenida",array(
     							""=>""
     					));
     						
@@ -4052,7 +4052,7 @@ public function index(){
     				$mensaje = "Hola $nombre_usuarios $apellido_usuarios tu usuario se encuentra inactivo.";
     				 
     				 
-    				$this->view("Login",array(
+    				$this->view("Administracion/Login",array(
     						"resultSet"=>"$mensaje", "error"=>$error
     				));
     				 
@@ -4068,7 +4068,7 @@ public function index(){
     			$mensaje = "Este Usuario no existe resgistrado en nuestro sistema.";
     			
     			
-	    		$this->view("Login",array(
+	    		$this->view("Administracion/Login",array(
 	    				"resultSet"=>"$mensaje", "error"=>$error
 	    		));
 	    		
@@ -4083,7 +4083,7 @@ public function index(){
     			$mensaje = "Ingrese su cedula y su clave.";
     			
     			
-	    		$this->view("Login",array(
+	    		$this->view("Administracion/Login",array(
 	    				"resultSet"=>"$mensaje", "error"=>$error
 	    		));
 	    		

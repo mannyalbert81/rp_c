@@ -91,7 +91,7 @@
                           <th>Marca</th>
                           <th>Nombre</th>
                            <th>Descripcion</th>
-                          <th>Unidad De M.</th>
+                          <th>Unidad De Medida</th>
                           <th>ULT Precio</th>
                           <th></th>
                           <th>Consultar</th>
@@ -179,7 +179,7 @@
                           <th>Marca</th>
                           <th>Nombre</th>
                            <th>Descripcion</th>
-                          <th>Unidad De M.</th>
+                          <th>Unidad De Medida</th>
                           <th>ULT Precio</th>
                           <th>Cantidad</th>
                           <th>Saldo_f</th>

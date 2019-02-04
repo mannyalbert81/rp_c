@@ -1591,6 +1591,14 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        $id_usuarios = (isset($_SESSION['id_usuarios']))?$_SESSION['id_usuarios']:0;
 	        
+	        $_estado_salida="";
+	        
+	        switch ( $_POST['btnForm'] ){
+	            case 'APROBAR': $_estado_salida='APROBADA'; break;
+	            case 'REPROBAR': $_estado_salida='REPROBADA'; break;
+	        }        
+	        
+	        
 	        /*valores de la vista*/
 	        $_id_movimiento_solicitud = (isset($_POST['id_movimiento_solicitud']))?$_POST['id_movimiento_solicitud']:0;
 	       
@@ -1599,11 +1607,11 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            $_fecha_salida = date('Y-m-d');
 	            
-	            $_estado_salida="APROBADA";
-	            
 	            $funcion = "fn_agrega_movimiento_salida";
 	            
 	            $parametros = "'$_id_movimiento_solicitud','$id_usuarios','$_fecha_salida','$_estado_salida'";
+	            
+	            //print_r($parametros); die();
 	            
 	            $movimientos_inventario->setFuncion($funcion);
 	            $movimientos_inventario->setParametros($parametros);
@@ -1624,10 +1632,10 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            if($resultadofuncion>0){
 	                
-	                $respuesta_a_view =  "<script type=\"text/javascript\">alert(\"Fotos guardadas\");</script>"; 
+	                $respuesta_a_view =  "<script type=\"text/javascript\">swal(\"Fotos guardadas\");</script>"; 
 	               
 	            }else{
-	                $respuesta_a_view =  "<script type=\"text/javascript\">alert(\"Fotos guardadas\");</script>"; 
+	                $respuesta_a_view =  "<script type=\"text/javascript\">swal(\"Fotos guardadas\");</script>"; 
 	            }
 	            
 	            
@@ -1638,6 +1646,8 @@ class MovimientosInvController extends ControladorBase{
 	    }
 	    
 	}
+	
+	
 	
 	
 }

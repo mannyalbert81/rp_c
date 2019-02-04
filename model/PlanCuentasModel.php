@@ -1,5 +1,5 @@
 <?php
-class CComprobantesModel extends ModeloBase{
+class PlanCuentasModel extends ModeloBase{
 	
 	private $table;
 	private $where;
@@ -38,7 +38,7 @@ class CComprobantesModel extends ModeloBase{
 	
 	
 	public function __construct(){
-		$this->table="ccomprobantes";
+		$this->table="plan_cuentas";
 		
 		parent::__construct($this->table);
 	}

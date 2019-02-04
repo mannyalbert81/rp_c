@@ -73,7 +73,6 @@
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
                           </div>
-
                           <!-- /.box-tools -->
                         </div>
                         <!-- /.box-header -->
@@ -114,12 +113,7 @@
                   	</div>
     		</section>
     		
-    		
-    		
-    
-    		
-    		
-            <section class="content">
+    	        <section class="content">
               <div class="box box-success">
                 <div class="box-header with-border">
                   <h3 class="box-title"></h3>
@@ -172,9 +166,7 @@
             
   		</div>
   
-  
- 
- 	<?php include("view/modulos/footer.php"); ?>	
+  <?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
  </div>

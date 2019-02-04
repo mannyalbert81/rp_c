@@ -919,7 +919,7 @@ class MovimientosInvController extends ControladorBase{
 	            $id_movimientos_inv_cabeza = $resultInvCabeza[0]->id_movimientos_inv_cabeza;
 	            
 	            
-	            $actualizado = $consecutivos->UpdateBy("numero_consecutivos = numero_consecutivos + 1 ","consecutivos","tipo_documento_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
+	            $actualizado = $consecutivos->UpdateBy("numero_consecutivos = numero_consecutivos + 1 ","consecutivos","nombre_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
 	            
 	            
 	            
@@ -1045,7 +1045,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        $where_salidas = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND tipo_documento_consecutivos='SOLICITUD' 
+                      AND nombre_consecutivos='SOLICITUD' 
                       AND estado_movimientos_inv_cabeza='PENDIENTE'";
 	        
 	        
@@ -1170,8 +1170,8 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        $where_salidas = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND tipo_documento_consecutivos='SOLICITUD'
-                      AND estado_movimientos_inv_cabeza='ENTREGADA'";
+                      AND nombre_consecutivos='SOLICITUD'
+                      AND estado_movimientos_inv_cabeza='APROBADA'";
 	        
 	        
 	        if(!empty($search)){
@@ -1295,7 +1295,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        $where_salidas = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND tipo_documento_consecutivos='SOLICITUD'
+                      AND nombre_consecutivos='SOLICITUD'
                       AND estado_movimientos_inv_cabeza='RECHAZADA'";
 	        
 	        
@@ -1597,34 +1597,43 @@ class MovimientosInvController extends ControladorBase{
 	        //se valida si hay productos en temp
 	        if($_id_movimiento_solicitud>0){
 	            
-	            $_fecha_compra = date('Y-m-d');
+	            $_fecha_salida = date('Y-m-d');
 	            
-	            /*para variables de la funcion*/
-	            $razon_movimientos="aprobacion solicitud productos";
+	            $_estado_salida="APROBADA";
 	            
-	            $funcion = "fn_agrega_compra";
+	            $funcion = "fn_agrega_movimiento_salida";
 	            
-	            $parametros = "'$id_usuarios','$_id_proveedores','$_fecha_compra','$_numero_factura_compra',
-                       '$_numero_autorizacion_compra','$_estado_compra'";
+	            $parametros = "'$_id_movimiento_solicitud','$id_usuarios','$_fecha_salida','$_estado_salida'";
 	            
 	            $movimientos_inventario->setFuncion($funcion);
 	            $movimientos_inventario->setParametros($parametros);
 	            
 	            $resultset = $movimientos_inventario->llamafuncion();
 	            
+	            $resultadofuncion = 0;
+	            
+	            //print_r($resultset);
+	            
 	            if(!empty($resultset)){
 	                if(is_array($resultset) && count($resultset)>0){
 	                    
-	                    if((int)$resultset[0]->fn_agrega_compra >0 ){
-	                        echo json_encode(array('success'=>1,'mensaje'=>'Compra Realizada'));
-	                    }else if((int)$resultset[0]->fn_agrega_compra == 0){
-	                        echo json_encode(array('success'=>0,'mensaje'=>'Error en la compra'));
-	                    }
-	                    
+	                    $resultadofuncion=(int)$resultset[0]->fn_agrega_movimiento_salida;
+	                   
 	                }
 	            }
 	            
+	            if($resultadofuncion>0){
+	                
+	                $respuesta_a_view =  "<script type=\"text/javascript\">alert(\"Fotos guardadas\");</script>"; 
+	               
+	            }else{
+	                $respuesta_a_view =  "<script type=\"text/javascript\">alert(\"Fotos guardadas\");</script>"; 
+	            }
+	            
+	            
 	        }
+	        
+	        $this->redirect("MovimientosInv","indexsalida");
 	        
 	    }
 	    

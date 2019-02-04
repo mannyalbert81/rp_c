@@ -52,7 +52,7 @@ class ProveedoresController extends ControladorBase{
 					}
 					else
 					{
-						$this->view("Error",array(
+					    $this->view_Inventario("Error",array(
 								"resultado"=>"No tiene Permisos de Editar Proveedores"
 					
 						));
@@ -63,7 +63,7 @@ class ProveedoresController extends ControladorBase{
 				}
 		
 				
-				$this->view("Proveedores",array(
+				$this->view_Inventario("Proveedores",array(
 				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit
 			
 				));
@@ -73,7 +73,7 @@ class ProveedoresController extends ControladorBase{
 			}
 			else
 			{
-				$this->view("Error",array(
+			    $this->view_Inventario("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Proveedores"
 				
 				));
@@ -151,7 +151,7 @@ class ProveedoresController extends ControladorBase{
 		}
 		else
 		{
-			$this->view("Error",array(
+		    $this->view_Inventario("Error",array(
 					"resultado"=>"No tiene Permisos de Insertar Proveedores"
 		
 			));
@@ -189,7 +189,7 @@ class ProveedoresController extends ControladorBase{
 	    }
 	    else
 	    {
-	        $this->view("Error",array(
+	        $this->view_Inventario("Error",array(
 	            "resultado"=>"No tiene Permisos de Borrar Proveedores"
 	            
 	        ));

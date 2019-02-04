@@ -57,7 +57,7 @@ class SolicitudCabezaController extends ControladorBase{
 					}
 					else
 					{
-						$this->view("Error",array(
+					    $this->view_Inventario("Error",array(
 								"resultado"=>"No tiene Permisos de Editar Solicitud Cabeza"
 					
 						));
@@ -72,7 +72,7 @@ class SolicitudCabezaController extends ControladorBase{
 				
 		
 				
-				$this->view("SolicitudCabeza",array(
+				$this->view_Inventario("SolicitudCabeza",array(
 				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultProdu" =>$resultProdu,
 			
 				));
@@ -82,7 +82,7 @@ class SolicitudCabezaController extends ControladorBase{
 			}
 			else
 			{
-				$this->view("Error",array(
+			    $this->view_Inventario("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Solicitud Cabeza"
 				
 				));
@@ -129,7 +129,7 @@ class SolicitudCabezaController extends ControladorBase{
 		}
 		else
 		{
-			$this->view("Error",array(
+		    $this->view_Inventario("Error",array(
 				"resultado"=>"No tiene Permisos de Borrar Grupos"
 			
 			));
@@ -680,7 +680,7 @@ class SolicitudCabezaController extends ControladorBase{
 	        $error = TRUE;
 	        $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
 	        
-	        $this->view("Login",array(
+	        $this->view_Inventario("Login",array(
 	            "resultSet"=>"$mensaje", "error"=>$error
 	        ));
 	        
@@ -801,7 +801,7 @@ class SolicitudCabezaController extends ControladorBase{
 	        $error = TRUE;
 	        $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
 	        
-	        $this->view("Login",array(
+	        $this->view_Inventario("Login",array(
 	            "resultSet"=>"$mensaje", "error"=>$error
 	        ));
 	        

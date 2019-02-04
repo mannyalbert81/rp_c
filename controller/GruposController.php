@@ -66,7 +66,7 @@ class GruposController extends ControladorBase{
 					}
 					else
 					{
-						$this->view("Error",array(
+					    $this->view_Inventario("Error",array(
 								"resultado"=>"No tiene Permisos de Editar Grupos"
 					
 						));
@@ -77,7 +77,7 @@ class GruposController extends ControladorBase{
 				}
 		
 				
-				$this->view("Grupos",array(
+				$this->view_Inventario("Grupos",array(
 				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "result_Grupos_estados" =>$result_Grupos_estados
 			
 				));
@@ -87,7 +87,7 @@ class GruposController extends ControladorBase{
 			}
 			else
 			{
-				$this->view("Error",array(
+			    $this->view_Inventario("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Grupos"
 				
 				));
@@ -156,7 +156,7 @@ class GruposController extends ControladorBase{
 		}
 		else
 		{
-			$this->view("Error",array(
+		    $this->view_Inventario("Error",array(
 					"resultado"=>"No tiene Permisos de Insertar Grupos"
 		
 			));
@@ -193,7 +193,7 @@ class GruposController extends ControladorBase{
 	    }
 	    else
 	    {
-	        $this->view("Error",array(
+	        $this->view_Inventario("Error",array(
 	            "resultado"=>"No tiene Permisos de Borrar Roles"
 	            
 	        ));

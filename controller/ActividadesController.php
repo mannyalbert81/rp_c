@@ -36,7 +36,7 @@ class ActividadesController extends ControladorBase{
 				
 				
 				
-				$this->view("Actividades",array(
+			    $this->view_Administracion("Actividades",array(
 				    "resultRol"=>$resultRol, "resultUsu"=>$resultUsu
 			
 				));
@@ -44,7 +44,7 @@ class ActividadesController extends ControladorBase{
 			}
 			else
 			{
-				$this->view("Error",array(
+			    $this->view_Administracion("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Actividades"
 				
 				));

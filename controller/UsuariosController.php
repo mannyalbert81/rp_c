@@ -125,7 +125,7 @@ class UsuariosController extends ControladorBase{
         		{
         			$i++;
         			$html.='<tr>';
-        			$html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_usuarios.'&id_nombre=id_usuarios&tabla=usuarios&campo=fotografia_usuarios" width="80" height="60"></td>';
+        			$html.='<td style="font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_usuarios.'&id_nombre=id_usuarios&tabla=usuarios&campo=fotografia_usuarios" width="80" height="60"></td>';
         			$html.='<td style="font-size: 11px;">'.$i.'</td>';
         			$html.='<td style="font-size: 11px;">'.$res->cedula_usuarios.'</td>';
         			$html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
@@ -281,7 +281,7 @@ class UsuariosController extends ControladorBase{
 		       	
 		       	
 		       	
-		       	$this->view("ConsultasCuentaIndividualAdmin",array(
+		       	$this->view_Administracion("ConsultasCuentaIndividualAdmin",array(
 		       			 "resultSexo"=>$resultSexo, "resultEstado_civil"=>$resultEstado_civil, "resultTipo_sangre"=>$resultTipo_sangre, "resultEstado"=>$resultEstado, "resultEntidades"=>$resultEntidades,
 					    "resultProvincias"=>$resultProvincias,
 						"resultParroquias"=>$resultParroquias, "resultCantones"=>$resultCantones, 
@@ -292,7 +292,7 @@ class UsuariosController extends ControladorBase{
 	       	
        	 }else{
        	 	
-       	 	$this->view("Error",array(
+       	     $this->view_Administracion("Error",array(
        	 			"resultado"=>"No tiene Permisos de Acceso a Consultas"
 		
        	 	));
@@ -2582,7 +2582,7 @@ public function index(){
 				
 			    
 				
-				$this->view("Usuarios",array(
+				$this->view_Administracion("Usuarios",array(
 				    "resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit ,
 				    "result_catalogo_usuario"=>$result_catalogo_usuario,
 				    "result_privilegios"=>$result_privilegios
@@ -2592,7 +2592,7 @@ public function index(){
 		}
 		else
 		{
-			$this->view("Error",array(
+		    $this->view_Administracion("Error",array(
 					"resultado"=>"No tiene Permisos de Acceso a Usuarios"
 		
 			));
@@ -2672,7 +2672,7 @@ public function index(){
 	 }
 	 
 	 
-	 $this->view("SubirFotosUsuarios",array(
+	 $this->view_Administracion("SubirFotosUsuarios",array(
 	 		"resultSet"=>""
 	 
 	 ));
@@ -3461,7 +3461,7 @@ public function index(){
 	   	$error = TRUE;
 	   	$mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
 	   		
-	   	$this->view("Login",array(
+	   	$this->view_Administracion("Login",array(
 	   			"resultSet"=>"$mensaje", "error"=>$error
 	   	));
 	   		
@@ -3599,7 +3599,7 @@ public function index(){
 				
 		}
 		
-		$this->view("ResetUsuarios",array(
+		$this->view_Administracion("ResetUsuarios",array(
 				"resultSet"=>$mensaje , "error"=>$error
 		));
 		
@@ -3699,7 +3699,7 @@ public function index(){
 					$mensaje = "Hola $nombre_usuario tu usuario se encuentra inactivo.";
 	
 	
-					$this->view("Login",array(
+					$this->view_Administracion("Login",array(
 							"resultSet"=>"$mensaje", "error"=>$error
 					));
 	
@@ -3715,7 +3715,7 @@ public function index(){
 					
 			}
 	
-			$this->view("Login",array(
+			$this->view_Administracion("Login",array(
 					"resultSet"=>"$mensaje", "error"=>$error
 			));
 	
@@ -3730,7 +3730,7 @@ public function index(){
 	
 	
 	
-		$this->view("ResetUsuariosInicio",array(
+		$this->view_Administracion("ResetUsuariosInicio",array(
 				"resultSet"=>$mensaje , "error"=>$error
 		));
 	
@@ -3842,7 +3842,7 @@ public function index(){
 					$mensaje = "Hola $nombre_usuario tu usuario se encuentra inactivo.";
 						
 						
-					$this->view("Login",array(
+					$this->view_Administracion("Login",array(
 							"resultSet"=>"$mensaje", "error"=>$error
 					));
 						
@@ -3853,7 +3853,7 @@ public function index(){
 				
 			}
 			 
-			$this->view("Login",array(
+			$this->view_Administracion("Login",array(
 					"resultSet"=>"$mensaje", "error"=>$error
 			));
 			 
@@ -3868,7 +3868,7 @@ public function index(){
 	
 	
 	
-		$this->view("ResetUsuariosInicio",array(
+		$this->view_Administracion("ResetUsuariosInicio",array(
 				"resultSet"=>$mensaje , "error"=>$error
 		));
 	
@@ -3878,7 +3878,7 @@ public function index(){
 	
 		session_start();
 		
-		$this->view("Login",array(
+		$this->view_Administracion("Login",array(
 				"allusers"=>""
 		));
 	}
@@ -3893,7 +3893,7 @@ public function index(){
     	$allusers=$usuarios->getLogin();
     	 
     	//Cargamos la vista index y l e pasamos valores
-    	$this->view("Login",array(
+    	$this->view_Administracion("Login",array(
     			"allusers"=>$allusers
     	));
     }
@@ -3913,7 +3913,7 @@ public function index(){
     		if($_id_rol==1 || $_id_rol==42 || $_id_rol==43 || $_id_rol==44 || $_id_rol==45){
     				
     		
-    			$this->view("BienvenidaAdmin",array(
+    		    $this->view_Administracion("BienvenidaAdmin",array(
     					"allusers"=>$_usuario
     			));
     				
@@ -3921,7 +3921,7 @@ public function index(){
     				
     		}else{
     				
-    			$this->view("Bienvenida",array(
+    		    $this->view_Administracion("Bienvenida",array(
     					"allusers"=>$_usuario
     			));
     		
@@ -4028,7 +4028,7 @@ public function index(){
     				if($_id_rol==1){
     					
 
-    					$this->view("Administracion/BienvenidaAdmin",array(
+    				    $this->view_Administracion("BienvenidaAdmin",array(
     							""=>""
     					));
     					
@@ -4036,7 +4036,7 @@ public function index(){
     					
     				}else{
     					
-    					$this->view("Administracion/Bienvenida",array(
+    				    $this->view_Administracion("Bienvenida",array(
     							""=>""
     					));
     						
@@ -4052,7 +4052,7 @@ public function index(){
     				$mensaje = "Hola $nombre_usuarios $apellido_usuarios tu usuario se encuentra inactivo.";
     				 
     				 
-    				$this->view("Administracion/Login",array(
+    				$this->view_Administracion("Login",array(
     						"resultSet"=>"$mensaje", "error"=>$error
     				));
     				 
@@ -4068,7 +4068,7 @@ public function index(){
     			$mensaje = "Este Usuario no existe resgistrado en nuestro sistema.";
     			
     			
-	    		$this->view("Administracion/Login",array(
+    			$this->view_Administracion("Login",array(
 	    				"resultSet"=>"$mensaje", "error"=>$error
 	    		));
 	    		
@@ -4083,7 +4083,7 @@ public function index(){
     			$mensaje = "Ingrese su cedula y su clave.";
     			
     			
-	    		$this->view("Administracion/Login",array(
+    			$this->view_Administracion("Login",array(
 	    				"resultSet"=>"$mensaje", "error"=>$error
 	    		));
 	    		
@@ -4106,7 +4106,7 @@ public function index(){
     	$error = TRUE;
 	    $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
 	    	
-	    $this->view("Login",array(
+	    $this->view_Administracion("Login",array(
 	    		"resultSet"=>"$mensaje", "error"=>$error
 	    ));
 	    	
@@ -4125,7 +4125,7 @@ public function index(){
 		$mensaje = "Te has desconectado de nuestro sistema.";
 		 
 		 
-		$this->view("Login",array(
+		$this->view_Administracion("Login",array(
 				"resultSet"=>"$mensaje", "error"=>$error
 		));
 		 
@@ -4145,7 +4145,7 @@ public function index(){
 		$error = FALSE;
 		$mensaje = "Actualizaste tus datos, vuelve a iniciar sesión.";	
 			
-		$this->view("Login",array(
+		$this->view_Administracion("Login",array(
 				"resultSet"=>"$mensaje", "error"=>$error
 		));
 			
@@ -4280,7 +4280,7 @@ public function index(){
 				}
 				else
 				{
-					$this->view("ActualizarUsuarios",array(
+				    $this->view_Administracion("ActualizarUsuarios",array(
 							"resultEdit" =>$resultEdit, "resultRol"=>$resultRol, "resultEst"=>$resultEst
 								
 					));
@@ -7531,7 +7531,7 @@ public function index(){
 	            {
 	                $i++;
 	                $html.='<tr>';
-	                $html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_usuarios.'&id_nombre=id_usuarios&tabla=usuarios&campo=fotografia_usuarios" width="80" height="60"></td>';
+	                $html.='<td style="font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_usuarios.'&id_nombre=id_usuarios&tabla=usuarios&campo=fotografia_usuarios" width="80" height="60"></td>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->cedula_usuarios.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
@@ -7708,7 +7708,7 @@ public function index(){
 	            {
 	                $i++;
 	                $html.='<tr>';
-	                $html.='<td style="font-size: 11px;"><img src="view/DevuelveImagenView.php?id_valor='.$res->id_usuarios.'&id_nombre=id_usuarios&tabla=usuarios&campo=fotografia_usuarios" width="80" height="60"></td>';
+	                $html.='<td style="font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_usuarios.'&id_nombre=id_usuarios&tabla=usuarios&campo=fotografia_usuarios" width="80" height="60"></td>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->cedula_usuarios.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
@@ -7995,7 +7995,7 @@ public function index(){
 	public function inicializar(){
 		
 		session_start();				
-		$this->view("Documentos",array(
+		$this->view_Administracion("Documentos",array(
 					"resultSet"=>""
 		));
 	
@@ -8006,7 +8006,7 @@ public function index(){
 	public function home(){
 	
 		session_start();
-		$this->view("Home",array(
+		$this->view_Administracion("Home",array(
 				"resultSet"=>""
 		));
 	

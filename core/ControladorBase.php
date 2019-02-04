@@ -25,6 +25,40 @@ class ControladorBase{
         require_once 'view/'.$vista.'View.php';
     }
     
+    public function view_Administracion($vista,$datos){
+        foreach ($datos as $id_assoc => $valor) {
+            ${$id_assoc}=$valor;
+        }
+        
+        require_once 'core/AyudaVistas.php';
+        $helper=new AyudaVistas();
+        
+        require_once 'view/Administracion/'.$vista.'View.php';
+    }
+    
+    public function view_Inventario($vista,$datos){
+        foreach ($datos as $id_assoc => $valor) {
+            ${$id_assoc}=$valor;
+        }
+        
+        require_once 'core/AyudaVistas.php';
+        $helper=new AyudaVistas();
+        
+        require_once 'view/Inventario/'.$vista.'View.php';
+    }
+    
+    public function view_Contable($vista,$datos){
+        foreach ($datos as $id_assoc => $valor) {
+            ${$id_assoc}=$valor;
+        }
+        
+        require_once 'core/AyudaVistas.php';
+        $helper=new AyudaVistas();
+        
+        require_once 'view/Contable/'.$vista.'View.php';
+    }
+    
+    
     public function report($vista,$datos){
     	foreach ($datos as $id_assoc => $valor) {
     		${$id_assoc}=$valor;

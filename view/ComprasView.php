@@ -10,6 +10,7 @@
       
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
    <?php include("view/modulos/links_css.php"); ?>
+   <link href="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.2/css/bootstrapValidator.min.css" rel="stylesheet"></link
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   
     
@@ -74,12 +75,22 @@
               		 	 
               		 	 	<div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
-                                	<label for="numero_compra" class="control-label">Proveedor:</label>
+                                	<label for="numero_compra" class="control-label">Digite CI/Nombre Proveedor:</label>
                                     <input type="text" class="form-control" id="proveedor" name="proveedor" value=""  >
-                                    <input type="hidden" class="form-control" id="id_proveedor" name="id_proveedor" value=""  >
+                                    <input type="hidden" id="id_proveedor" name="id_proveedor" value=""  >
+                                    <input type="hidden"  id="cantidad_compra" name="cantidad_compra" value="0"  >
                                     <div id="mensaje_proveedor" class="errores"></div>
                                  </div>
                              </div> 
+                             
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
+                            	<div class="form-group" id="datos_proveedor" style="display:none;">
+                                	<label for="numero_compra" class="control-label">Proveedor:</label>
+                                    <input type="text" class="form-control" id="nombre_proveedor" name="nombre_proveedor" value=""  >                                   
+                                    <div id="mensaje_proveedor" class="errores"></div>
+                                 </div>
+                             </div> 
+                             
                          </div>
               		 	 
               		 	  <div class="row">	                            
@@ -90,35 +101,19 @@
                                     <div id="mensaje_numero_compra" class="errores"></div>
                                  </div>
                              </div>
-                             <div class="col-xs-6 col-md-3 col-lg-3 ">
-                            	<div class="form-group">
-                                	<label for="cantidad_compra" class="control-label">Cantidad:</label>
-                                    <input type="text" class="form-control" id="cantidad_compra" name="cantidad_compra" value="0"  placeholder="cantidad.." readonly>
-                                    <div id="mensaje_cantidad_compra" class="errores"></div>
-                                 </div>
-                             </div> 
-                             <div class="col-xs-6 col-md-3 col-lg-3 ">
-                            	<div class="form-group">
-                                	<label for="importe_compra" class="control-label">Importe:</label>
-                                    <input type="text" class="form-control" id="importe_compra" name="importe_compra" value=""  placeholder="importe.." >
-                                    <div id="mensaje_importe_compra" class="errores"></div>
-                                 </div>
-                             </div> 
                              
-                          </div>
-                          <div class="row">
-                          
-                          	<div class="col-xs-6 col-md-3 col-lg-3 ">
+                             <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="numero_factura_compra" class="control-label">No Factura:</label>
                                     <input type="text" class="form-control" id="numero_factura_compra" name="numero_factura_compra" value=""  placeholder="no. factura.." >
                                     <div id="mensaje_numero_factura" class="errores"></div>
                                  </div>
                              </div> 
+                             
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="numero_autorizacion_factura" class="control-label">No Autorización:</label>
-                                    <input type="text" class="form-control" id="numero_autorizacion_factura" name="numero_autorizacion_factura" value=""  placeholder="autorizacion" >
+                                    <input type="text" class="form-control" id="numero_autorizacion_factura" name="numero_autorizacion_factura" value="" maxlength="50" placeholder="autorizacion" >
                                     <div id="mensaje_autorizacion_factura" class="errores"></div>
                                  </div>
                              </div>
@@ -126,17 +121,19 @@
                              <div class="col-xs-6 col-md-3 col-lg-3 ">
                             	<div class="form-group">
                                 	<label for="estado_compra" class="control-label">Estado:</label>
-                                    <input type="text" class="form-control" id="estado_compra" name="estado_compra" value=""  placeholder="estado" >
+                                	<select id="estado_compra" name="estado_compra" class="form-control">
+                                		<option value="pagada">PAGADA</option>
+                                		<option value="pendiente">PENDIENTE</option>
+                                	</select>                                    
                                     <div id="mensaje_estado_compras" class="errores"></div>
                                  </div>
                              </div> 
                              
+                             
+                             
                           </div>
                          
-                     	
-          		 	
-          		 	
-          
+                         
         			</div>
       			</div>
       			
@@ -309,22 +306,26 @@
       </div>
       <!-- /.modal-dialog -->
 </div>
-    
-    
+     
    <?php include("view/modulos/links_js.php"); ?>
-   
+ 
    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/uitable/bootstable.js"></script>
   
   <script src="//unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   
-  <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
-    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+  
+  <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>    
+     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
      <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
- 
+    
+    <script src="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
+    
+    <!-- <script src="view/bootstrap/otros/validate/jquery.validate.js"></script> -->
    
+  
    
    <!-- para el autocompletado -->
     
@@ -382,7 +383,6 @@ function load_productos(pagina){
 function agregar_producto (id)
 {
 
-		
 	var cantidad=document.getElementById('cantidad_'+id).value;
 	//Inicia validacion
 	if (isNaN(cantidad))
@@ -568,13 +568,31 @@ $(document).ready(function(){
            // Set selection          
            $('#id_proveedor').val(ui.item.id);
            $('#proveedor').val(ui.item.value); // save selected id to input
-           console.log(ui.item.nombre);
+           $('#nombre_proveedor').val(ui.item.nombre);
+           $('#datos_proveedor').show();
+           //console.log(ui.item.nombre);
            return false;
         },
-        focus: function(event, ui) { var text = ui.item.value; 
-            $('#proveedor').val(text); 
+        focus: function(event, ui) { 
+            var text = ui.item.value; 
+            $('#proveedor').val();            
             return false; 
         } 
+	}).focusout(function() {
+		$.ajax({
+			url:'<?php echo $helper->url("MovimientosInv","busca_proveedor"); ?>',
+			type:'POST',
+			dataType:'json',
+			data:{term:$('#proveedor').val()}
+		}).done(function(respuesta){
+			console.log(respuesta[0].id);
+			if(respuesta[0].id>0){				
+				$('#id_proveedor').val(respuesta[0].id);
+	           $('#proveedor').val(respuesta[0].value); // save selected id to input
+	           $('#nombre_proveedor').val(respuesta[0].nombre);
+	           $('#datos_proveedor').show();
+			}else{$('#datos_proveedor').hide(); $('#id_proveedor').val('0');  $('#proveedor').val('').focus();}
+		});
 	});
 });
 </script>
@@ -681,16 +699,140 @@ $(document).ready(function(){
  <script type="text/javascript">
 
 $(document).ready(function(){
+/*
+	$("#frm_guardacompra").validate({
+        event: "blur",
+        rules: {'numero_factura_compra': "required"},
+        messages: {'numero_factura_compra': "Por favor indica tu nombre",'email': "Por favor, indica una direcci&oacute;n de e-mail v&aacute;lida",'message': "Por favor, dime algo!"},
+        debug: true,
+        errorElement: "label",
+        submitHandler: function(form){
+            $("#alert").show();
+            $("#alert").html("<img src='images/ajax-loader.gif' style='vertical-align:middle;margin:0 10px 0 0' /><strong>Enviando mensaje...</strong>");
+            setTimeout(function() {
+                $('#alert').fadeOut('slow');
+            }, 5000);
+            
+            $.ajax({
+                type: "POST",
+                url:"send.php",
+                data: "name="+escape($('#name').val())+"&email="+escape($('#email').val())+"&message="+escape($('#message').val()),
+                success: function(msg){
+                    $("#alert").html(msg);
+                    document.getElementById("name").value="";
+                    document.getElementById("email").value="";
+                    document.getElementById("message").value="";
+                    setTimeout(function() {
+                        $('#alert').fadeOut('slow');
+                    }, 5000);
+ 
+                }
+            });
+        }
+    });
+*/
+
+/*$('#frm_guardacompra').bootstrapValidator({
+	 
+	 message: 'Este valor no es valido',
+
+	 feedbackIcons: {
+
+		 valid: 'glyphicon glyphicon-ok',
+
+		 invalid: 'glyphicon glyphicon-remove',
+
+		 validating: 'glyphicon glyphicon-refresh'
+
+	 },
+
+	 fields: {
+
+		 numero_factura_compra: {
+
+			 validators: {
+
+				 notEmpty: {
+
+					 message: 'ingrese un numero de factura'
+
+				 }
+
+			 }
+
+		 },
+
+		 password: {
+
+			 validators: {
+
+				 notEmpty: {
+
+					 message: 'La contraseña es requerida'
+
+				 }
+
+			 }
+
+		 }
+
+	 }
+
+});*/
+
 
  
  $( "#frm_guardacompra" ).submit(function( event ) {
 
+	var dapaso = true;
 	 if($('#cantidad_compra').val()=='' || $('#cantidad_compra').val()==0)
 	 {
-		 event.preventDefault();
+		
+     	swal({
+   		  title: "Compras",
+   		  text: "No ha ingresado productos a la compra",
+   		  icon: "warning",
+   		  button: "Aceptar",
+   		});
+		 dapaso = false;
 	 }
-	 
-	  
+	 if(dapaso){		 
+		 
+    	 var parametros = $(this).serialize();
+    	 $.ajax({
+    		 beforeSend:function(){},
+    		 url:'index.php?controller=MovimientosInv&action=insertacompra',
+    		 type:'POST',
+    		 data:parametros,
+    		 /*dataType: 'json',*/
+    		 success: function(respuesta){
+        		console.log(respuesta);
+    			 if(respuesta.success==1){
+    				 $("#frm_guardacompra")[0].reset();
+ 	            		swal({
+    	            		  title: "Compra",
+    	            		  text: respuesta.mensaje,
+    	            		  icon: "success",
+    	            		  button: "Aceptar",
+    	            		});
+    					
+    	                }else{
+    	                	$("#frm_guardacompra")[0].reset();
+    	                	swal({
+    	              		  title: "Compra",
+    	              		  text: respuesta.mensaje,
+    	              		  icon: "warning",
+    	              		  button: "Aceptar",
+    	              		});
+    	             }
+    			 load_temp_solicitud(1);
+    		 },
+    		 error: function(jqXHR,estado,error){
+    	         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+    	        }
+    	 })
+	 }
+	 event.preventDefault(); 
 	});
 
  $( "#frm_guardar_producto" ).submit(function( event ) {
@@ -735,16 +877,27 @@ $(document).ready(function(){
 	  
 	});
 
- 
+ $("#numero_factura_compra").inputmask('999-999-999999999',{placeholder: ""});
+
+ $("#numero_autorizacion_factura").inputmask('9999999999',{placeholder: ""});
+
+ //$("#mod_precio_producto").inputmask('currency',{rightAlign: true  });
  $("#mod_precio_producto").inputmask({
-	 alias: "decimal",
-	 integerDigits: 5,
+	 alias: "decimal",	
 	 digits: 2,
-	 digitsOptional: false,
+	 digitsOptional: true,
+	 groupSeparator: ",",
+	 autoGroup:true,
 	 placeholder: "",
-	 allowMinus: false
+	 allowMinus: false,
+	 integerDigits: '5',
+	 defaultValue: "00.00",
+	 prefix: "$"
 	 });
 
+ /*$("#mod_precio_producto").inputmask({ 
+	 alias : "currency", mask : "$ 00.00" 
+		 });*/
 
  $("#fecha_compra").inputmask({
 	 alias: "date",
@@ -755,7 +908,8 @@ $(document).ready(function(){
  
  })
  </script>
-     
+
+
 
              
  	

@@ -8,6 +8,138 @@ class ComprobanteContableController extends ControladorBase{
 
 //maycol
 
+	public function consulta_temp_comprobantes()
+	{
+	    
+	    session_start();
+	    $id_rol=$_SESSION["id_rol"];
+	    
+	    $temp_comprobantes = null; $temp_comprobantes = new ComprobantesTemporalModel();
+	    $where_to="";
+	    $columnas = "temp_comprobantes.id_usuario_registra,
+                      temp_comprobantes.id_plan_cuentas,
+                      temp_comprobantes.observacion_temp_comprobantes,
+                      temp_comprobantes.debe_temp_comprobantes,
+                      temp_comprobantes.haber_temp_comprobantes";
+	    
+	    $tablas = " public.temp_comprobantes";
+	    
+	    $where    = "";
+	    
+	    $id       = "productos.id_usuario_registra";
+	    
+	    
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        if(!empty($search)){
+	            
+	            $where1=" AND (temp_comprobantes.observacion_temp_comprobantes LIKE '".$search."%' OR temp_comprobantes.debe_temp_comprobantes LIKE '".$search."%')";
+	            
+	            $where_to=$where.$where1;
+	            
+	        }else{
+	            
+	            $where_to=$where;
+	            
+	        }
+	        
+	        
+	        $html="";
+	        $resultSet=$productos->getCantidad("*", $tablas, $where_to);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 5; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet=$productos->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $count_query   = $cantidadResult;
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        
+	        if($cantidadResult>0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:15px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:300px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Observación</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Debe</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Haber</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody >';
+	            
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->id_usuario_registra.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->id_plan_cuentas.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->observacion_temp_comprobantes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->debe_temp_comprobantes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->haber_temp_comprobantes.'</td>';
+	                $html.='<td class="col-xs-1"><div class="pull-right">';
+	                $html.='<input type="text" class="form-control input-sm"  id="cantidad_'.$res->id_productos.'" value="1"></div></td>';
+	                $html.='<td class="col-xs-2"><div class="pull-right">';
+	                $html.='<input type="text" class="form-control input-sm"  id="pecio_producto_'.$res->id_productos.'" value="0.00"></div></td>';
+	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_productos.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
+	                
+	                
+	                
+	                $html.='</tr>';
+	            }
+	            $html.='</tbody>';
+	            
+	            $html.='</table>';
+	            $html.='<table><tr>';
+	            $html.='<td colspan="7"><span class="pull-right">';
+	            $html.=''. $this->paginatemultiple("index.php", $page, $total_pages, $adjacents,"load_productos").'';
+	            $html.='</span>';
+	            $html.='</table></tr>';
+	            $html.='</section></div>';
+	            
+	        }else{
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay productos registrados...</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        
+	        echo $html;
+	        
+	    }
+	    
+	}
+	
+	
 	
 	
 	public function consulta_plan_cuentas(){
@@ -222,6 +354,7 @@ class ComprobanteContableController extends ControladorBase{
 		    $_id_usuarios= $_SESSION['id_usuarios'];
 		    
 			$arrayGet=array();
+			     
 			$temp_comprobantes=new ComprobantesTemporalModel();
 			$d_comprobantes = new DComprobantesModel();
 			
@@ -267,11 +400,7 @@ class ComprobanteContableController extends ControladorBase{
 					$resultado = $temp_comprobantes->deleteByWhere($where);
 						
 				
-					$traza=new TrazasModel();
-					$_nombre_controlador = "ComprobanteContable";
-					$_accion_trazas  = "Borrar";
-					$_parametros_trazas = $id_temp_comprobantes;
-					$resultado = $traza->AuditoriaControladores($_accion_trazas, $_parametros_trazas, $_nombre_controlador);
+					
 				}
 				
 				if(isset($_POST["plan_cuentas"])){
@@ -306,6 +435,25 @@ class ComprobanteContableController extends ControladorBase{
 					
 				}
 				}
+				
+				$columnas_res = " temp_comprobantes.id_temp_comprobantes,
+				          plan_cuentas.id_plan_cuentas,
+		    		      plan_cuentas.codigo_plan_cuentas,
+						  plan_cuentas.nombre_plan_cuentas,
+						  temp_comprobantes.observacion_temp_comprobantes,
+						  temp_comprobantes.debe_temp_comprobantes,
+						  temp_comprobantes.haber_temp_comprobantes";
+				$tablas_res ="public.temp_comprobantes,
+						  public.usuarios,
+						  public.plan_cuentas,
+						  public.entidades";
+				$where_res ="temp_comprobantes.id_plan_cuentas = plan_cuentas.id_plan_cuentas AND
+				usuarios.id_usuarios = temp_comprobantes.id_usuario_registra AND
+				usuarios.id_entidades = entidades.id_entidades AND
+				entidades.id_entidades = plan_cuentas.id_entidades AND usuarios.id_usuarios='$_id_usuarios'";
+				$id_res="temp_comprobantes.id_temp_comprobantes";
+				
+				$resultRes=$d_comprobantes->getCondiciones($columnas_res ,$tablas_res ,$where_res, $id_res);
 				
 				
 				
@@ -497,16 +645,11 @@ class ComprobanteContableController extends ControladorBase{
    						$_fecha_actual=$_fecha_año.'-'.$_fecha_mes.'-'.$_fecha_dia;
    							
    						////llamas a la funcion mayoriza();
-   						$resul = $dcomprobantes->Mayoriza($_id_plan_cuentas, $_id_ccomprobantes, $_fecha_actual, $_debe_dcomprobantes, $_haber_dcomprobantes, $_saldo_ini);
-   						$_cadena = $_id_plan_cuentas .'-'. $_id_ccomprobantes .'-'. $_fecha_actual .'-'. $_debe_dcomprobantes .'-'. $_haber_dcomprobantes .'-'. $_saldo_ini;
+   						//$resul = $dcomprobantes->Mayoriza($_id_plan_cuentas, $_id_ccomprobantes, $_fecha_actual, $_debe_dcomprobantes, $_haber_dcomprobantes, $_saldo_ini);
+   						//$_cadena = $_id_plan_cuentas .'-'. $_id_ccomprobantes .'-'. $_fecha_actual .'-'. $_debe_dcomprobantes .'-'. $_haber_dcomprobantes .'-'. $_saldo_ini;
    							
    							
    						///LAS TRAZAS
-   						$traza=new TrazasModel();
-   						$_nombre_controlador = "ComprobanteContable";
-   						$_accion_trazas  = "Guardar";
-   						$_parametros_trazas = $_id_plan_cuentas;
-   						$resulta = $traza->AuditoriaControladores($_accion_trazas, $_parametros_trazas, $_nombre_controlador);
    							
    						
    						///borro de las solicitudes el carton
@@ -551,53 +694,7 @@ class ComprobanteContableController extends ControladorBase{
    }
    
     
-   /*
    
-   public function borrarId()
-   {
-   
-   	session_start();
-   
-   	$permisos_rol=new PermisosRolesModel();
-   	$nombre_controladores = "Comprobantes";
-   	$id_rol= $_SESSION['id_rol'];
-   	$resultPer = $permisos_rol->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-   		
-   	if (!empty($resultPer))
-   	{
-   		if(isset($_GET["id_temp_comprobantes"]))
-   		{
-   			$id_temp_comprobantes=(int)$_GET["id_temp_comprobantes"];
-   
-   			$temp_comprobantes=new ComprobantesTemporalModel();
-   			
-   			$temp_comprobantes->deleteBy(" id_temp_comprobantes",$id_temp_comprobantes);
-   
-   			$traza=new TrazasModel();
-   			$_nombre_controlador = "Comprobantes";
-   			$_accion_trazas  = "Borrar";
-   			$_parametros_trazas = $id_temp_comprobantes;
-   			$resultado = $traza->AuditoriaControladores($_accion_trazas, $_parametros_trazas, $_nombre_controlador);
-   		}
-   			
-   		$this->redirect("Comprobantes", "index");
-   			
-   			
-   	}
-   	else
-   	{
-   		$this->view("Error",array(
-   				"resultado"=>"No tiene Permisos de Borrar Comprobantes"
-		
-   		));
-   	}
-   
-   }
-   
-    
-   */
-   
-  
 		
 	
 	public function AutocompleteComprobantesCodigo(){

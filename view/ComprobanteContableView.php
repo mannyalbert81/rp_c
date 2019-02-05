@@ -8,20 +8,83 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   
     <?php include("view/modulos/links_css.php"); ?>		
-       <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+     
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
        
+
    
  
 	</head>
  
     <body class="hold-transition skin-blue fixed sidebar-mini">
-    
-     <?php
-        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
-        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-        $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
-     ?>
-    
+
+     <?php   
+       
+       $array_get=urlencode(serialize($arrayGet));
+       $sel_concepto_ccomprobantes="";
+       $sel_fecha_ccomprobantes="";
+       
+      
+       
+       if($_SERVER['REQUEST_METHOD']=='POST' )
+       {
+        $sel_concepto_ccomprobantes=$_POST['concepto_ccomprobantes'];
+        $sel_fecha_ccomprobantes=$_POST['fecha_ccomprobantes'];
+       }
+      	
+      if($_SERVER['REQUEST_METHOD']=='GET')
+      {
+      
+      	if(isset($_GET['arrayGet']))
+      	{
+      		$a=stripslashes($_GET['arrayGet']);
+      
+      		$_dato=urldecode($a);
+      
+      		$_dato=unserialize($a);
+      
+      		$sel_concepto_ccomprobantes=$_dato['array_concepto_ccomprobantes'];
+      		$sel_fecha_ccomprobantes=$_dato['array_fecha_ccomprobantes'];
+      		
+      	}
+      
+      } 
+     
+      ?>
+                 <?php 
+                  
+                   $sumador_debe_total=0;
+                   $sumador_haber_total=0;
+                  
+                   foreach($resultRes as $res) 
+					
+                    {
+	        	 	$suma_debe= $res->debe_temp_comprobantes; 
+	                $suma_debe_f=number_format($suma_debe,2);
+	                $suma_debe_r=str_replace(",","",$suma_debe_f);//Reemplazo las comas
+	                $sumador_debe_total+=$suma_debe_r;//Sumador
+	                
+	                $suma_haber= $res->haber_temp_comprobantes;
+	                $suma_haber_f=number_format($suma_haber,2);
+	                $suma_haber_r=str_replace(",","",$suma_haber_f);//Reemplazo las comas
+	                $sumador_haber_total+=$suma_haber_r;//Sumador
+	                }	
+	                
+	                $subtotal_debe=number_format($sumador_debe_total,2,'.','');
+	                $subtotal_haber=number_format($sumador_haber_total,2,'.','');
+	                 ?>
+             
+      
+            
+              
+       <?php
+            $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+            $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+            $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+         ?>
+ 
+ 
+       
      <div class="wrapper">
 
       <header class="main-header">
@@ -38,7 +101,7 @@
          <?php include("view/modulos/menu.php"); ?>
         </section>
       </aside>
-
+   
   <div class="content-wrapper">
     <section class="content-header">
       <h1>
@@ -50,6 +113,7 @@
         <li class="active">Productos</li>
       </ol>
     </section>
+   
 
    <section class="content">
       <div class="box box-primary">
@@ -65,7 +129,7 @@
         
         <div class="box-body">
       
-        <form id="form-comprobante-contable" action="<?php echo $helper->url("ComprobanteContable","index"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12">
+        <form  action="<?php echo $helper->url("ComprobanteContable","index"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12">
             <br>	
             
            
@@ -77,11 +141,13 @@
 	         <div class="panel panel-info">
 	         <div class="panel-heading">
 	         <div class="row">
+	         	                 
 	         <div class="form-group" style="margin-left: 20px">
-			                      <label for="nuevo_comprobante" class="control-label"><h4><i class='glyphicon glyphicon-edit'></i>  Nuevo Comprobante N° <?php echo $res->numero_consecutivos; ?></h4></label>
-				                  <input type="hidden" class="form-control" id="id_entidades" name="id_entidades" value="<?php echo $res->id_entidades; ?>">
+	          <label for="nuevo_comprobante" class="control-label"><h4><i class='glyphicon glyphicon-edit'></i>  Nuevo Comprobante N° <?php echo $res->numero_consecutivos; ?></h4></label>
+			
+			                      <input type="hidden" class="form-control" id="id_entidades" name="id_entidades" value="<?php echo $res->id_entidades; ?>">
                                  
-             <div class="col-md-3 col-lg-3 col-xs-4" style="margin-top: 5px">
+             <div class="col-md-3 col-lg-3 col-xs-12" style="margin-top: 5px">
 					           <select name="id_tipo_comprobantes" id="id_tipo_comprobantes"  class="form-control" readonly>
                                   <?php foreach($resultTipCom as $res) {?>
 										<option value="<?php echo $res->id_tipo_comprobantes; ?>" ><?php echo $res->nombre_tipo_comprobantes; ?> </option>
@@ -91,7 +157,7 @@
              
              </div>
              
-		     <div class="col-md-3 col-lg-3 col-xs-4" style="margin-top: 5px">
+		     <div class="col-md-3 col-lg-3 col-xs-12" style="margin-top: 5px">
 		                          <div class="input-group date" id="datetimePicker">
 					              <input type="date" class="form-control" id="fecha_ccomprobantes" name="fecha_ccomprobantes" data-date-format="YYYY-MM-DD" value="" placeholder="Inserte Fecha">
                                   <span class="">
@@ -249,33 +315,29 @@
 				<input type="hidden" class="form-control" id="valor_ccomprobantes" name="valor_ccomprobantes" value="<?php echo $subtotal_debe?>">
                 <input type="text" class="form-control" id="valor_letras" name="valor_letras" value="<?php echo $subtotal_debe ? numtoletras ($subtotal_debe) : ''; ?>" readonly>
         		</td>
-				<td class='text-left'><?php echo number_format($subtotal_debe,2);?></td>
-				<td class='text-left'><?php echo number_format($subtotal_haber,2);?></td>
-			</tr>
-   	     </div>
-	         </div>
-	         </div>
+        					<td class='text-left'><?php echo number_format($subtotal_debe,2);?></td>
+				    		<td class='text-left'><?php echo number_format($subtotal_haber,2);?></td>
+	
+					</tr>
+   	   
 	 	  <?php } else {?>
 		  <?php } ?>
-		 </br>
-		 </br>
-		 </br>
-	      <?php if(!empty($resultRes)&&($subtotal_debe==$subtotal_haber))  {?>
+		   </table>
+		
+		       <?php if(!empty($resultRes)&&($subtotal_debe==$subtotal_haber))  {?>
+	
 		   <div class="row">
 		   <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; margin-top:20px" > 
            <div class="form-group">
             					  <button type="submit" id="Guardar" name="Guardar" onclick="this.form.action='<?php echo $helper->url("ComprobanteContable","InsertaComprobanteContable"); ?>'" class="btn btn-success" >Guardar</button>
            </div>
            </div>
-           </div>          
-		  <?php } else {?>
+           </div>     
+           	  <?php } else {?>
+		  
 		  <?php } ?> 
-	        </form>
-         </div>
-       </div>
-    </section>
-  </div>
- 
+	     
+	 </div></div></div></form></div></div></section></div>
  
  
  
@@ -314,10 +376,41 @@
 				</div>
 			  </div>
 			</div>
-	
+	<script>
  
- 
- 
+  $('#agregar_nuevo').on('show.bs.modal', function (event) {
+	load_temp_comprobantes(1);
+	  var modal = $(this)
+	  modal.find('.modal-title').text('Listado Comporbantes')
+
+	});
+
+function load_temp_comprobantes(pagina){
+
+	var search=$("#search_temp_comprobantes").val();
+   
+    $("#load_temp_comprobantes_registrados").fadeIn('slow');
+    
+    $.ajax({
+            beforeSend: function(objeto){
+              $("#load_temp_comprobantes_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+            },
+            url: 'index.php?controller=ComprobanteContable&action=consulta_temp_comprobantes&search='+search,
+            type: 'POST',
+            data: {action:'ajax', page:pagina},
+            success: function(x){
+              $("#temp_comprobantes_registrados").html(x);
+              $("#load_temp_comprobantes_registrados").html("");
+              $("#tabla_temp_comprobantes").tablesorter(); 
+              
+            },
+           error: function(jqXHR,estado,error){
+             $("#users_registrados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+           }
+     });
+}
+</script>
+  
  
  
  	<?php include("view/modulos/footer.php"); ?>	
@@ -330,7 +423,8 @@
    	 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      
+     
+	   
 	<script>
 	$(document).ready(function(){ 	 	
 
@@ -457,8 +551,170 @@
       		 </script>  
       		
 
-	  
    
+   
+    <?php 
+    function numtoletras($xcifra)
+    {
+    	$xarray = array(0 => "Cero",
+    			1 => "UN", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE",
+    			"DIEZ", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE", "DIECISEIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE",
+    			"VEINTI", 30 => "TREINTA", 40 => "CUARENTA", 50 => "CINCUENTA", 60 => "SESENTA", 70 => "SETENTA", 80 => "OCHENTA", 90 => "NOVENTA",
+    			100 => "CIENTO", 200 => "DOSCIENTOS", 300 => "TRESCIENTOS", 400 => "CUATROCIENTOS", 500 => "QUINIENTOS", 600 => "SEISCIENTOS", 700 => "SETECIENTOS", 800 => "OCHOCIENTOS", 900 => "NOVECIENTOS"
+    	);
+    	//
+    	$xcifra = trim($xcifra);
+    	$xlength = strlen($xcifra);
+    	$xpos_punto = strpos($xcifra, ".");
+    	$xaux_int = $xcifra;
+    	$xdecimales = "00";
+    	if (!($xpos_punto === false)) {
+    		if ($xpos_punto == 0) {
+    			$xcifra = "0" . $xcifra;
+    			$xpos_punto = strpos($xcifra, ".");
+    		}
+    		$xaux_int = substr($xcifra, 0, $xpos_punto); // obtengo el entero de la cifra a covertir
+    		$xdecimales = substr($xcifra . "00", $xpos_punto + 1, 2); // obtengo los valores decimales
+    	}
+    
+    	$XAUX = str_pad($xaux_int, 18, " ", STR_PAD_LEFT); // ajusto la longitud de la cifra, para que sea divisible por centenas de miles (grupos de 6)
+    	$xcadena = "";
+    	for ($xz = 0; $xz < 3; $xz++) {
+    		$xaux = substr($XAUX, $xz * 6, 6);
+    		$xi = 0;
+    		$xlimite = 6; // inicializo el contador de centenas xi y establezco el límite a 6 dígitos en la parte entera
+    		$xexit = true; // bandera para controlar el ciclo del While
+    		while ($xexit) {
+    			if ($xi == $xlimite) { // si ya llegó al límite máximo de enteros
+    				break; // termina el ciclo
+    			}
+    
+    			$x3digitos = ($xlimite - $xi) * -1; // comienzo con los tres primeros digitos de la cifra, comenzando por la izquierda
+    			$xaux = substr($xaux, $x3digitos, abs($x3digitos)); // obtengo la centena (los tres dígitos)
+    			for ($xy = 1; $xy < 4; $xy++) { // ciclo para revisar centenas, decenas y unidades, en ese orden
+    				switch ($xy) {
+    					case 1: // checa las centenas
+    						if (substr($xaux, 0, 3) < 100) { // si el grupo de tres dígitos es menor a una centena ( < 99) no hace nada y pasa a revisar las decenas
+    
+    						} else {
+    							$key = (int) substr($xaux, 0, 3);
+    							if (TRUE === array_key_exists($key, $xarray)){  // busco si la centena es número redondo (100, 200, 300, 400, etc..)
+    								$xseek = $xarray[$key];
+    								$xsub = subfijo($xaux); // devuelve el subfijo correspondiente (Millón, Millones, Mil o nada)
+    								if (substr($xaux, 0, 3) == 100)
+    									$xcadena = " " . $xcadena . " CIEN " . $xsub;
+    									else
+    										$xcadena = " " . $xcadena . " " . $xseek . " " . $xsub;
+    										$xy = 3; // la centena fue redonda, entonces termino el ciclo del for y ya no reviso decenas ni unidades
+    							}
+    							else { // entra aquí si la centena no fue numero redondo (101, 253, 120, 980, etc.)
+    								$key = (int) substr($xaux, 0, 1) * 100;
+    								$xseek = $xarray[$key]; // toma el primer caracter de la centena y lo multiplica por cien y lo busca en el arreglo (para que busque 100,200,300, etc)
+    								$xcadena = " " . $xcadena . " " . $xseek;
+    							} // ENDIF ($xseek)
+    						} // ENDIF (substr($xaux, 0, 3) < 100)
+    						break;
+    					case 2: // checa las decenas (con la misma lógica que las centenas)
+    						if (substr($xaux, 1, 2) < 10) {
+    
+    						} else {
+    							$key = (int) substr($xaux, 1, 2);
+    							if (TRUE === array_key_exists($key, $xarray)) {
+    								$xseek = $xarray[$key];
+    								$xsub = subfijo($xaux);
+    								if (substr($xaux, 1, 2) == 20)
+    									$xcadena = " " . $xcadena . " VEINTE " . $xsub;
+    									else
+    										$xcadena = " " . $xcadena . " " . $xseek . " " . $xsub;
+    										$xy = 3;
+    							}
+    							else {
+    								$key = (int) substr($xaux, 1, 1) * 10;
+    								$xseek = $xarray[$key];
+    								if (20 == substr($xaux, 1, 1) * 10)
+    									$xcadena = " " . $xcadena . " " . $xseek;
+    									else
+    										$xcadena = " " . $xcadena . " " . $xseek . " Y ";
+    							} // ENDIF ($xseek)
+    						} // ENDIF (substr($xaux, 1, 2) < 10)
+    						break;
+    					case 3: // checa las unidades
+    						if (substr($xaux, 2, 1) < 1) { // si la unidad es cero, ya no hace nada
+    
+    						} else {
+    							$key = (int) substr($xaux, 2, 1);
+    							$xseek = $xarray[$key]; // obtengo directamente el valor de la unidad (del uno al nueve)
+    							$xsub = subfijo($xaux);
+    							$xcadena = " " . $xcadena . " " . $xseek . " " . $xsub;
+    						} // ENDIF (substr($xaux, 2, 1) < 1)
+    						break;
+    				} // END SWITCH
+    			} // END FOR
+    			$xi = $xi + 3;
+    		} // ENDDO
+    
+    		if (substr(trim($xcadena), -5, 5) == "ILLON") // si la cadena obtenida termina en MILLON o BILLON, entonces le agrega al final la conjuncion DE
+    			$xcadena.= " DE";
+    
+    			if (substr(trim($xcadena), -7, 7) == "ILLONES") // si la cadena obtenida en MILLONES o BILLONES, entoncea le agrega al final la conjuncion DE
+    				$xcadena.= " DE";
+    
+    				// ----------- esta línea la puedes cambiar de acuerdo a tus necesidades o a tu país -------
+    				if (trim($xaux) != "") {
+    					switch ($xz) {
+    						case 0:
+    							if (trim(substr($XAUX, $xz * 6, 6)) == "1")
+    								$xcadena.= "UN BILLON ";
+    								else
+    									$xcadena.= " BILLONES ";
+    									break;
+    						case 1:
+    							if (trim(substr($XAUX, $xz * 6, 6)) == "1")
+    								$xcadena.= "UN MILLON ";
+    								else
+    									$xcadena.= " MILLONES ";
+    									break;
+    						case 2:
+    							if ($xcifra < 1) {
+    								$xcadena = "CERO DOLARES $xdecimales/100********";
+    							}
+    							if ($xcifra >= 1 && $xcifra < 2) {
+    								$xcadena = "UN DOLAR $xdecimales/100********";
+    							}
+    							if ($xcifra >= 2) {
+    								$xcadena.= " DOLARES $xdecimales/100*******"; //
+    							}
+    							break;
+    					} // endswitch ($xz)
+    				} // ENDIF (trim($xaux) != "")
+    				// ------------------      en este caso, para México se usa esta leyenda     ----------------
+    				$xcadena = str_replace("VEINTI ", "VEINTI", $xcadena); // quito el espacio para el VEINTI, para que quede: VEINTICUATRO, VEINTIUN, VEINTIDOS, etc
+    				$xcadena = str_replace("  ", " ", $xcadena); // quito espacios dobles
+    				$xcadena = str_replace("UN UN", "UN", $xcadena); // quito la duplicidad
+    				$xcadena = str_replace("  ", " ", $xcadena); // quito espacios dobles
+    				$xcadena = str_replace("BILLON DE MILLONES", "BILLON DE", $xcadena); // corrigo la leyenda
+    				$xcadena = str_replace("BILLONES DE MILLONES", "BILLONES DE", $xcadena); // corrigo la leyenda
+    				$xcadena = str_replace("DE UN", "UN", $xcadena); // corrigo la leyenda
+    	} // ENDFOR ($xz)
+    	return trim($xcadena);
+    }
+    
+    // END FUNCTION
+    
+    function subfijo($xx)
+    { // esta función regresa un subfijo para la cifra
+    $xx = trim($xx);
+    $xstrlen = strlen($xx);
+    if ($xstrlen == 1 || $xstrlen == 2 || $xstrlen == 3)
+    	$xsub = "";
+    	//
+    	if ($xstrlen == 4 || $xstrlen == 5 || $xstrlen == 6)
+    		$xsub = "MIL";
+    		//
+    		return $xsub;
+    }
+    ?>
+            
 	 
 	
  </body>

@@ -41,7 +41,7 @@ class ComprobantesTemporalModel extends ModeloBase{
 	
 	
 	public function __construct(){
-		$this->table="tipo_comprobantes";
+		$this->table="temp_comprobantes";
 
 		
 		parent::__construct($this->table);

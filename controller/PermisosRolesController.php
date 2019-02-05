@@ -63,7 +63,7 @@ class PermisosRolesController extends ControladorBase{
 						}
 						else
 						{
-							$this->view("Error",array(
+						    $this->view_Administracion("Error",array(
 									"resultado"=>"No tiene Permisos de Editar Permisos Roles"
 						
 									
@@ -77,7 +77,7 @@ class PermisosRolesController extends ControladorBase{
 					}
 			
 					
-					$this->view("PermisosRoles",array(
+					$this->view_Administracion("PermisosRoles",array(
 							"resultCon"=>$resultCon, "resultSet"=>$resultSet,  "resultEdit"=>$resultEdit, "resultRol"=>$resultRol
 					));
 			
@@ -85,7 +85,7 @@ class PermisosRolesController extends ControladorBase{
 			}
 			else
 			{
-				$this->view("Error",array(
+			    $this->view_Administracion("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Permisos Rol"
 			
 				));
@@ -162,7 +162,7 @@ class PermisosRolesController extends ControladorBase{
 		}
 		else
 		{
-			$this->view("Error",array(
+		    $this->view_Administracion("Error",array(
 					"resultado"=>"No tiene Permisos Para Crear Permisos Roles"
 		
 			));
@@ -200,7 +200,7 @@ class PermisosRolesController extends ControladorBase{
 		}
 		else
 		{
-			$this->view("Error",array(
+		    $this->view_Administracion("Error",array(
 					"resultado"=>"No tiene Permisos de Borrar Permisos Roles"
 		
 			));

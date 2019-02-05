@@ -48,7 +48,7 @@ else
 					echo pg_unescape_bytea($raw);
 				}else 
 				{
-					$archivo=$_SERVER['DOCUMENT_ROOT'].'/webcapremci/view/images/'.'nodisponible.jpg';
+					$archivo=$_SERVER['DOCUMENT_ROOT'].'/rp_c/view/images/'.'nodisponible.jpg';
 				
 					header("Content-type: image/jpeg");
 					header("Content-length: ".filesize($archivo));
@@ -59,7 +59,7 @@ else
 			
 		}else 
 		{
-			$archivo=$_SERVER['DOCUMENT_ROOT'].'/webcapremci/view/images/'.'nodisponible.jpg';
+			$archivo=$_SERVER['DOCUMENT_ROOT'].'/rp_c/view/images/'.'nodisponible.jpg';
 			
 			header("Content-type: image/jpeg");
 			header("Content-length: ".filesize($archivo));

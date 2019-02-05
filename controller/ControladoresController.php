@@ -52,7 +52,7 @@ class ControladoresController extends ControladorBase{
 					}
 					else
 					{
-						$this->view("Error",array(
+					    $this->view_Administracion("Error",array(
 								"resultado"=>"No tiene Permisos de Editar Controladores"
 					
 						));
@@ -63,7 +63,7 @@ class ControladoresController extends ControladorBase{
 				}
 				
 				
-				$this->view("Controladores",array(
+				$this->view_Administracion("Controladores",array(
 						"resultSet"=>$resultSet, "resultEdit" =>$resultEdit
 			
 				));
@@ -71,7 +71,7 @@ class ControladoresController extends ControladorBase{
 			}
 			else
 			{
-				$this->view("Error",array(
+			    $this->view_Administracion("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Controladores"
 				
 				));
@@ -142,7 +142,7 @@ class ControladoresController extends ControladorBase{
 		}
 		else
 		{
-			$this->view("Error",array(
+		    $this->view_Administracion("Error",array(
 					
 					"resultado"=>"No tiene Permisos de Insertar Controladores"
 		
@@ -181,7 +181,7 @@ class ControladoresController extends ControladorBase{
 		}
 		else
 		{
-			$this->view("Error",array(
+		    $this->view_Administracion("Error",array(
 				"resultado"=>"No tiene Permisos de Borrar Controladores"
 			
 			));

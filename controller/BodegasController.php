@@ -87,7 +87,7 @@ class BodegasController extends ControladorBase{
                 }
                 
                 
-                $this->view("Bodegas",array(
+                $this->view_Inventario("Bodegas",array(
                     "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultProv"=>$resultProv, "resultCant"=>$resultCant, "resultParr"=>$resultParr, "result_Bodegas_estados" =>$result_Bodegas_estados
                     
                 ));
@@ -97,7 +97,7 @@ class BodegasController extends ControladorBase{
             }
             else
             {
-                $this->view("Error",array(
+                $this->view_Inventario("Error",array(
                     "resultado"=>"No tiene Permisos de Acceso a Bodegas"
                     
                 ));
@@ -183,7 +183,7 @@ class BodegasController extends ControladorBase{
         }
         else
         {
-            $this->view("Error",array(
+            $this->view_Inventario("Error",array(
                 "resultado"=>"No tiene Permisos Para Crear Bodegas"
                 
             ));
@@ -222,7 +222,7 @@ class BodegasController extends ControladorBase{
         }
         else
         {
-            $this->view("Error",array(
+            $this->view_Inventario("Error",array(
                 "resultado"=>"No tiene Permisos de Borrar Bodegas"
                 
             ));

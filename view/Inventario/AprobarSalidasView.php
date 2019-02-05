@@ -201,13 +201,7 @@
         			    <div class="col-xs-12 col-md-2 col-md-2 " >
             	   		    <div class="form-group">
             	   		    	<label for="Guardar">&nbsp;</label>
-            	   		    	<input type="submit" id="btnForm" name="btnForm" value="APROBAR" class="form-control btn btn-success" />
-    	                    </div>
-	        		    </div>
-	        		    <div class="col-xs-12 col-md-2 col-md-2 " >
-            	   		    <div class="form-group">
-            	   		    	<label for="Guardar">&nbsp;</label>
-            	   		    	<input type="submit" id="btnForm" name="btnForm" value="REPROBAR" class="form-control btn btn-danger" />
+        	                  <button type="submit" id="Guardar" name="Guardar" class="form-control btn btn-success">APROBAR</button>
     	                    </div>
 	        		    </div>
         		    </div>

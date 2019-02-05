@@ -91,7 +91,7 @@ class ProductosController extends ControladorBase{
                 }
                 
                 
-                $this->view("Productos",array(
+                $this->view_Inventario("Productos",array(
                     "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultGrup"=>$resultGrup, "resultUni"=>$resultUni
                     
                 ));
@@ -101,7 +101,7 @@ class ProductosController extends ControladorBase{
             }
             else
             {
-                $this->view("Error",array(
+                $this->view_Inventario("Error",array(
                     "resultado"=>"No tiene Permisos de Acceso a Grupos"
                     
                 ));
@@ -180,7 +180,7 @@ class ProductosController extends ControladorBase{
         }
         else
         {
-            $this->view("Error",array(
+            $this->view_Inventario("Error",array(
                 "resultado"=>"No tiene Permisos Para Crear Productos"
                 
             ));
@@ -220,7 +220,7 @@ class ProductosController extends ControladorBase{
         }
         else
         {
-            $this->view("Error",array(
+            $this->view_Inventario("Error",array(
                 "resultado"=>"No tiene Permisos de Borrar Grupos"
                 
             ));
@@ -324,7 +324,7 @@ class ProductosController extends ControladorBase{
                 }
                 
                 
-                $this->view("Consulta_Productos",array(
+                $this->view_Inventario("Consulta_Productos",array(
                     "resultSet"=>$resultSet, "resultEdit"=>$resultEdit
                 ));
                 
@@ -333,7 +333,7 @@ class ProductosController extends ControladorBase{
             }
             else
             {
-                $this->view("Error",array(
+                $this->view_Inventario("Error",array(
                     "resultado"=>"No tiene Permisos de Acceso a Consulta Productos"
                     
                 ));

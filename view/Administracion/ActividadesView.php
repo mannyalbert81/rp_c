@@ -156,7 +156,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Controladores</li>
+        <li class="active">Actividades</li>
       </ol>
     </section>   
 

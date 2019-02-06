@@ -1595,7 +1595,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        switch ( $_POST['btnForm'] ){
 	            case 'APROBAR': $_estado_salida='APROBADA'; break;
-	            case 'REPROBAR': $_estado_salida='REPROBADA'; break;
+	            case 'REPROBAR': $_estado_salida='RECHAZADA'; break;
 	        }        
 	        
 	        
@@ -1630,14 +1630,6 @@ class MovimientosInvController extends ControladorBase{
 	                }
 	            }
 	            
-	            if($resultadofuncion>0){
-	                
-	                $respuesta_a_view =  "<script type=\"text/javascript\">swal(\"Fotos guardadas\");</script>"; 
-	               
-	            }else{
-	                $respuesta_a_view =  "<script type=\"text/javascript\">swal(\"Fotos guardadas\");</script>"; 
-	            }
-	            
 	            
 	        }
 	        
@@ -1647,7 +1639,232 @@ class MovimientosInvController extends ControladorBase{
 	    
 	}
 	
+	/***
+	 * mod: solicitudes
+	 * title: index_solicitudes
+	 * desc: redrecciona a la pagina de solicitudes
+	 * return: void 
+	 */
+	public function index_solicitudes(){
+	    
+	    //Creamos el objeto usuario
+	    $solicitud_cabeza=new SolicitudCabezaModel();
+	    $productos=new ProductosModel();
+	    $usuarios = null; $usuarios= new UsuariosModel();
+	    
+	    $resultSet=null;
+	    $resultEdit = "";
+	    
+	    session_start();
+	    
+	    
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    {
+	        
+	        $nombre_controladores = "SolicitudCabeza";
+	        $id_rol= $_SESSION['id_rol'];
+	        $resultPer = $solicitud_cabeza->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	        
+	        if (!empty($resultPer))
+	        {
+	            if (isset ($_GET["id_solicitud_cabeza"])   )
+	            {
+	                
+	                $nombre_controladores = "SolicitudCabeza";
+	                $id_rol= $_SESSION['id_rol'];
+	                $resultPer = $solicitud_cabeza->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	                
+	                if (!empty($resultPer))
+	                {
+	                    
+	                    $_id_productos = $_GET["id_productos"];
+	                    $columnas = " id_grupos,
+                                     codigo_productos,
+                                     marca_productos,
+                                     nombre_productos,
+                                     descripcion_productos,
+                                    unidad_medida_productos,
+                                     ult_precio_productos ";
+	                    $tablas   = "productos";
+	                    $where    = "id_productos = '$_id_productos' ";
+	                    $id       = "codigo_productos";
+	                    
+	                    $resultEdit = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
+	                    
+	                }
+	                else
+	                {
+	                    $this->view_Inventario("Error",array(
+	                        "resultado"=>"No tiene Permisos de Editar Solicitudes"
+	                        
+	                    ));
+	                    
+	                    
+	                }
+	                
+	            }else{
+	                $_id_usuarios = $_SESSION['id_usuarios'];
+	                $resultSet = $usuarios->getBy("id_usuarios = $_id_usuarios");
+	            }
+	            
+	            
+	            
+	            $this->view_Inventario("Solicitud",array(
+	                "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultProdu" =>$resultProdu,
+	                
+	            ));
+	            
+	            
+	            
+	        }
+	        else
+	        {
+	            $this->view_Inventario("Error",array(
+	                "resultado"=>"No tiene Permisos de Acceso a Solicitud Cabeza"
+	                
+	            ));
+	            
+	            exit();
+	        }
+	        
+	    }
+	    else{
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        
+	    }
+	}
 	
+	public function inserta_solicitud(){
+	    
+	    session_start();
+	    $resultado = null;
+	    $temp_solicitud = null;
+	    $temp_solicitud =new TempSolicitudModel();
+	    $movimientos_inv_cabeza = null;
+	    $movimientos_inv_cabeza = new MovimientosInvCabezaModel();
+	    $movimientos_inv_detalle = null;
+	    $movimientos_inv_detalle = new MovimientosInvDetalleModel();
+	    $consecutivos = new ConsecutivosModel();
+	    
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    {
+	        
+	        if (isset ($_POST["razon_solicitud"]))
+	        {
+	            
+	            $_id_usuarios   = $_SESSION["id_usuarios"];
+	            $_razon_solicitud      = $_POST['razon_solicitud'];
+	            
+	            date_default_timezone_set('America/Guayaquil');
+	            $fechaActual = date('Y-m-d');
+	            
+	            
+	            
+	            $resultConsecutivos = $consecutivos->getBy("tipo_documento_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
+	            $numero_consecutivos = $resultConsecutivos[0]->numero_consecutivos;
+	            $_id_consecutivos = $resultConsecutivos[0]->id_consecutivos;
+	            
+	            
+	            
+	            $funcion = "ins_movimientos_inv_cabeza";
+	            $parametros = "'$_id_usuarios',
+		    				   '$_id_consecutivos',
+		    				   '$numero_consecutivos',
+		    	               '$_razon_solicitud',
+		    	               '$fechaActual',
+                                '0',
+                                '0','0','0','0','0','0','0','0'";
+	            
+	            $movimientos_inv_cabeza->setFuncion($funcion);
+	            $movimientos_inv_cabeza->setParametros($parametros);
+	            $resultadoinsert=$movimientos_inv_cabeza->Insert();
+	            
+	            
+	            
+	            
+	            
+	            $resultInvCabeza = $movimientos_inv_cabeza->getBy("id_usuarios='$_id_usuarios'  AND id_consecutivos='$_id_consecutivos' AND numero_movimientos_inv_cabeza = '$numero_consecutivos'");
+	            $id_movimientos_inv_cabeza = $resultInvCabeza[0]->id_movimientos_inv_cabeza;
+	            
+	            
+	            $actualizado = $consecutivos->UpdateBy("numero_consecutivos = numero_consecutivos + 1 ","consecutivos","tipo_documento_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
+	            
+	            
+	            
+	            if($id_movimientos_inv_cabeza>0){
+	                
+	                
+	                
+	                $col_temp = "temp_solicitud.id_temp_solicitud,
+                          temp_solicitud.id_usuario_temp_solicitud,
+                          temp_solicitud.id_producto_temp_solicitud,
+                          temp_solicitud.cantidad_temp_solicitud,
+                          temp_solicitud.sesion_php_temp_solicitud,
+                          temp_solicitud.estado_temp_solicitud,
+                          temp_solicitud.creado";
+	                
+	                $tab_temp="public.temp_solicitud";
+	                
+	                $where_temp="1=1 AND
+                                temp_solicitud.id_usuario_temp_solicitud='$_id_usuarios'";
+	                
+	                $resultTemp = $temp_solicitud->getCondiciones($col_temp,$tab_temp,$where_temp,"temp_solicitud.id_temp_solicitud");
+	                
+	                if(!empty($resultTemp)){
+	                    
+	                    $funcion = "ins_movimientos_inv_detalle";
+	                    
+	                    foreach ($resultTemp as $res){
+	                        
+	                        $id_producto_temp_solicitud = $res->id_producto_temp_solicitud;
+	                        $cantidad_temp_solicitud = $res->cantidad_temp_solicitud;
+	                        
+	                        
+	                        $valor_producto= 0;
+	                        $valor_total = 0;
+	                        
+	                        
+	                        $parametros = "'$id_movimientos_inv_cabeza',
+		    				   '$id_producto_temp_solicitud',
+		    				   '$cantidad_temp_solicitud',
+		    	               '$valor_producto',
+		    	               '$valor_total'";
+	                        
+	                        $movimientos_inv_detalle->setFuncion($funcion);
+	                        $movimientos_inv_detalle->setParametros($parametros);
+	                        $resultado=$movimientos_inv_detalle->Insert();
+	                    }
+	                    
+	                }
+	                
+	                
+	                $where200 = "id_usuario_temp_solicitud='$_id_usuarios'";
+	                $resultado=$temp_solicitud->deleteById($where200);
+	                
+	                
+	                
+	            }
+	            
+	            
+	            
+	            $this->redirect("SolicitudCabeza", "index");
+	        }
+	        
+	    }else{
+	        
+	        $error = TRUE;
+	        $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
+	        
+	        $this->view_Inventario("Login",array(
+	            "resultSet"=>"$mensaje", "error"=>$error
+	        ));
+	        
+	        
+	        die();
+	        
+	    }
+	}
 	
 	
 }

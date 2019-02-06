@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>{titulopag}</title>
+<style type="text/css" media="all">
+td {
+border:hidden;
+}
+table {
+border: 1px solid #000000;
+}
+</style> 
+ </head>
+<body>
+
+<table align="center" border="0" height=60 width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="5%" height="60" valign="top"></td>
+		<td width="30%" height="60" valign="top">
+		<p><img src="../../view/images/logorpt.png" alt="" width="50" height="50" /></p>
+    	<p><strong>All</strong>delivery</p></td>
+		<td width="30%" height="60" valign="top">
+		<h2>&nbsp;{empresa}</h2>
+   		<p>&nbsp;</p>
+   		</td>
+		<td width="30%" height="60" valign="top">
+		<p>Total paginas:{numpag}</p>
+		<p>Total registros:{totregistros}</p>
+		<p>Impreso:{datetoday}</p>
+		</td>
+		<td width="5%" height="60" valign="top"></td>
+	</tr>
+</table>
+
+
+<hr />
+
+<table align="center" border="0" height=60 width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="25%" height="60" valign="top">Ruc/Identificacion:{identificacion}</td>
+		<td width="25%" height="60" valign="top">Cliente:{cliente}</td>
+		<td width="25%" height="60" valign="top">Pedido Num:{numpedido}	<p>&nbsp;</p></td>
+		<td width="25%" height="60" valign="top">Fecha:{fecha}</td>
+		<td width="25%" height="60" valign="top"></td>
+	</tr>
+	<tr>
+		<td width="25%" height="60" valign="top">Direccion:{direccion}</td>
+
+		<td width="25%" height="60" valign="top">Telefono:{telefono}:{cliente}</td>
+		<td width="25%" height="60" valign="top">Pedido Num:{numpedido}	<p>&nbsp;</p></td>
+		<td width="25%" height="60" valign="top">Fecha:{fecha}</td>
+		<td width="25%" height="60" valign="top"></td>
+	</tr>
+</table>
+
+
+<table style="height: 21px; float: left; width:494">
+<tbody>
+<tr>
+<td>Ruc/Identificacion:{identificacion}</td>
+<td>Cliente:{cliente}</td>
+<td>Pedido Num:{numpedido}</td>
+<td>Fecha:{fecha}</td>
+</tr>
+<tr>
+<td>Direccion:{direccion}</td>
+<td></td>
+<td>&nbsp;</td>
+<td>Vendedor:{usuario}</td>
+</tr>
+</tbody>
+</table>
+<br>
+<br>
+<br>
+<hr />
+<p>&nbsp;</p>
+<table style="height: 21px; width:494">
+<tbody>
+<tr>
+<td>&nbsp;Codigo</td>
+<td>Nombre</td>
+<td>Imp</td>
+<td>Presenta</td>
+<td>Cant</td>
+<td>P. Unitario</td>
+<td>P. Total&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<div><br />
+<table style="height: 21px; width:494" >
+<tbody>
+{detalle}
+</tbody>
+</table>
+
+		<td width="25%" height="60" valign="top">Telefono:{telefono}</td>
+		<td width="25%" height="60" valign="top">&nbsp;<p>&nbsp;</p></td>
+		<td width="25%" height="60" valign="top">Fecha:Vendedor:{usuario}</td>
+		<td width="25%" height="60" valign="top"></td>
+	</tr>
+	
+</table>
+
+<hr />
+
+<table align="center" border="0" height=60 width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+<td>&nbsp;Codigo</td>
+<td>Nombre</td>
+<td>Imp</td>
+<td>Presenta</td>
+<td>Cant</td>
+<td>P. Unitario</td>
+<td>P. Total&nbsp;</td>
+</tr>
+{detalle}
+</table>
+
+
+<div>&nbsp;</div>
+</div>
+</body>
+</html>

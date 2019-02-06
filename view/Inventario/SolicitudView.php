@@ -316,6 +316,59 @@
  	
  	
 </script>
+
+<script type="text/javascript">
+
+$(document).ready( function (){
+
+	$('#frm_solicitud_cabeza').submit(function( event ) {
+
+		var parametros = $(this).serialize();
+
+		
+       	 $.ajax({
+       		 beforeSend:function(){},
+       		 url:'index.php?controller=MovimientosInv&action=inserta_solicitud',
+       		 type:'POST',
+       		 data:parametros+'&peticion=ajax',
+       		 dataType: 'json',
+       		 success: function(respuesta){
+           		console.log(respuesta.mensaje);
+       			 if(respuesta.status==1){
+       				 $("#frm_solicitud_cabeza")[0].reset();
+    	            		swal({
+       	            		  title: "Solicitud",
+       	            		  text: respuesta.mensaje,
+       	            		  icon: "success",
+       	            		  button: "Aceptar",
+       	            		});
+       					
+       	                }else{
+       	                	$("#frm_solicitud_cabeza")[0].reset();
+       	                	swal({
+       	              		  title: "Solicitud",
+       	              		  text: respuesta.mensaje,
+       	              		  icon: "warning",
+       	              		  button: "Aceptar",
+       	              		});
+       	             }
+       			load_temp_solicitud(1)
+       			
+       		 },
+       		 error: function(jqXHR,estado,error){
+       	        
+       	        }
+       	 })
+
+		event.preventDefault(); 
+		})
+
+	 
+	   
+	});
+
+
+</script>
        
        
       

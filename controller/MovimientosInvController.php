@@ -1007,7 +1007,7 @@ class MovimientosInvController extends ControladorBase{
 	public function indexsalida(){
 	    
 	    session_start();
-	    $this->View('SalidasProductos',array());
+	    $this->view_Inventario("SalidasProductos",array());
 	    
 	}
 	
@@ -1735,6 +1735,12 @@ class MovimientosInvController extends ControladorBase{
 	    }
 	}
 	
+	/***
+	 * mod: solicitudes
+	 * title: inserta_solicitud
+	 * desc: redrecciona a la pagina de solicitudes
+	 * return: void/json
+	 */
 	public function inserta_solicitud(){
 	    
 	    session_start();
@@ -1753,104 +1759,48 @@ class MovimientosInvController extends ControladorBase{
 	        if (isset ($_POST["razon_solicitud"]))
 	        {
 	            
-	            $_id_usuarios   = $_SESSION["id_usuarios"];
-	            $_razon_solicitud      = $_POST['razon_solicitud'];
+	            $_id_usuarios      = $_SESSION["id_usuarios"];
+	            $_razon_solicitud  = $_POST['razon_solicitud'];
+	            $_estado_solicitud = 'PENDIENTE';
 	            
 	            date_default_timezone_set('America/Guayaquil');
 	            $fechaActual = date('Y-m-d');
 	            
-	            
-	            
-	            $resultConsecutivos = $consecutivos->getBy("tipo_documento_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
-	            $numero_consecutivos = $resultConsecutivos[0]->numero_consecutivos;
-	            $_id_consecutivos = $resultConsecutivos[0]->id_consecutivos;
-	            
-	            
-	            
-	            $funcion = "ins_movimientos_inv_cabeza";
+	            $funcion = 'fn_agrega_movimiento_solicitud';
 	            $parametros = "'$_id_usuarios',
-		    				   '$_id_consecutivos',
-		    				   '$numero_consecutivos',
 		    	               '$_razon_solicitud',
 		    	               '$fechaActual',
-                                '0',
-                                '0','0','0','0','0','0','0','0'";
+                               '$_estado_solicitud'";
+	            
 	            
 	            $movimientos_inv_cabeza->setFuncion($funcion);
 	            $movimientos_inv_cabeza->setParametros($parametros);
-	            $resultadoinsert=$movimientos_inv_cabeza->Insert();
+	            $resultadoinsert=$movimientos_inv_cabeza->llamafuncion();
 	            
+	            //para solicitud por ajax
 	            
-	            
-	            
-	            
-	            $resultInvCabeza = $movimientos_inv_cabeza->getBy("id_usuarios='$_id_usuarios'  AND id_consecutivos='$_id_consecutivos' AND numero_movimientos_inv_cabeza = '$numero_consecutivos'");
-	            $id_movimientos_inv_cabeza = $resultInvCabeza[0]->id_movimientos_inv_cabeza;
-	            
-	            
-	            $actualizado = $consecutivos->UpdateBy("numero_consecutivos = numero_consecutivos + 1 ","consecutivos","tipo_documento_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
-	            
-	            
-	            
-	            if($id_movimientos_inv_cabeza>0){
+	            if(isset($_POST['peticion']) && $_POST['peticion'] == 'ajax' ){
 	                
-	                
-	                
-	                $col_temp = "temp_solicitud.id_temp_solicitud,
-                          temp_solicitud.id_usuario_temp_solicitud,
-                          temp_solicitud.id_producto_temp_solicitud,
-                          temp_solicitud.cantidad_temp_solicitud,
-                          temp_solicitud.sesion_php_temp_solicitud,
-                          temp_solicitud.estado_temp_solicitud,
-                          temp_solicitud.creado";
-	                
-	                $tab_temp="public.temp_solicitud";
-	                
-	                $where_temp="1=1 AND
-                                temp_solicitud.id_usuario_temp_solicitud='$_id_usuarios'";
-	                
-	                $resultTemp = $temp_solicitud->getCondiciones($col_temp,$tab_temp,$where_temp,"temp_solicitud.id_temp_solicitud");
-	                
-	                if(!empty($resultTemp)){
+	                if(!empty($resultadoinsert)){
 	                    
-	                    $funcion = "ins_movimientos_inv_detalle";
-	                    
-	                    foreach ($resultTemp as $res){
-	                        
-	                        $id_producto_temp_solicitud = $res->id_producto_temp_solicitud;
-	                        $cantidad_temp_solicitud = $res->cantidad_temp_solicitud;
-	                        
-	                        
-	                        $valor_producto= 0;
-	                        $valor_total = 0;
-	                        
-	                        
-	                        $parametros = "'$id_movimientos_inv_cabeza',
-		    				   '$id_producto_temp_solicitud',
-		    				   '$cantidad_temp_solicitud',
-		    	               '$valor_producto',
-		    	               '$valor_total'";
-	                        
-	                        $movimientos_inv_detalle->setFuncion($funcion);
-	                        $movimientos_inv_detalle->setParametros($parametros);
-	                        $resultado=$movimientos_inv_detalle->Insert();
+	                    if($resultadoinsert[0]->fn_agrega_movimiento_solicitud>0)
+	                    {
+	                       echo json_encode(array('status'=>'1','mensaje'=>'Solicitud Ingresada'));
+	                    }else{
+	                        echo json_encode(array('status'=>'0','mensaje'=>'Solicitud Rechazada'));
 	                    }
-	                    
 	                }
+	               
+	            }else{
 	                
-	                
-	                $where200 = "id_usuario_temp_solicitud='$_id_usuarios'";
-	                $resultado=$temp_solicitud->deleteById($where200);
-	                
-	                
-	                
+	                $this->redirect("SolicitudCabeza", "index");
 	            }
 	            
 	            
+	          }
 	            
-	            $this->redirect("SolicitudCabeza", "index");
-	        }
-	        
+	           
+	      
 	    }else{
 	        
 	        $error = TRUE;
@@ -1865,7 +1815,6 @@ class MovimientosInvController extends ControladorBase{
 	        
 	    }
 	}
-	
 	
 }
 ?>

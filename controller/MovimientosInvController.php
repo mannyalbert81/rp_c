@@ -632,6 +632,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            $resultset = $movimientos_inventario->llamafuncion();
 	            
+	             
 	            if(!empty($resultset)){
 	                if(is_array($resultset) && count($resultset)>0){
 	                    

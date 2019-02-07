@@ -519,29 +519,30 @@ function carga_grupos(){
 
 function carga_unidad_medida(){
 
-  $.ajax({
-        beforeSend: function(objeto){
-          
-        },
-        url: 'index.php?controller=Grupos&action=carga_unidadmedida',
-        type: 'POST',
-        data: {},
-        dataType:'json',
-        success: function(respuesta){
-        	$("#mod_unidad_medida").empty()
-        	$("#mod_unidad_medida").append("<option value= \"0\" >--Seleccione--</option>");
-        	$.each(respuesta, function(index, value) {
-		 			$("#mod_unidad_medida").append("<option value= " +value.id_unidad_medida +" >" + value.nombre_unidad_medida  + "</option>");	
-        		 });  
-            
-        },
-       error: function(jqXHR,estado,error){
-         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
-       }
-  });
+	  $.ajax({
+	        beforeSend: function(objeto){
+	          
+	        },
+	        url: 'index.php?controller=Grupos&action=carga_unidadmedida',
+	        type: 'POST',
+	        data: {},
+	        dataType:'json',
+	        success: function(respuesta){
+	        	$("#mod_unidad_medida").empty()
+	        	$("#mod_unidad_medida").append("<option value= \"0\" >--Seleccione--</option>");
+	        	$.each(respuesta, function(index, value) {
+			 			$("#mod_unidad_medida").append("<option value= " +value.id_unidad_medida +" >" + value.nombre_unidad_medida  + "</option>");	
+	        		 });  
+	            
+	        },
+	       error: function(jqXHR,estado,error){
+	         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+	       }
+	  });
 
 
 }
+
 
 function pone_cantidad(){
 	//console.log('ingreso');
@@ -550,9 +551,6 @@ function pone_cantidad(){
 		$('#cantidad_compra').val($('#total_query_compras').val());
 	}
 }
-
-
-
 
 
 </script>
@@ -595,6 +593,9 @@ $(document).ready(function(){
 		});
 	});
 });
+
+
+	
 </script>
 
 
@@ -804,7 +805,7 @@ $(document).ready(function(){
     		 url:'index.php?controller=MovimientosInv&action=insertacompra',
     		 type:'POST',
     		 data:parametros,
-    		 /*dataType: 'json',*/
+    		 dataType: 'json',
     		 success: function(respuesta){
         		console.log(respuesta);
     			 if(respuesta.success==1){

@@ -92,7 +92,7 @@ class MovimientosInvController extends ControladorBase{
 	public function compras(){
 	    session_start();
 	   
-	    $this->view("Compras",array(
+	    $this->view_Inventario("Compras",array(
 	        
 	    ));
 	}
@@ -117,7 +117,8 @@ class MovimientosInvController extends ControladorBase{
                       grupos.nombre_grupos,
                       productos.codigo_productos,
                       productos.nombre_productos,
-                      unidad_medida.nombre_unidad_medida";
+                      unidad_medida.nombre_unidad_medida,
+                      productos.ult_precio_productos";
 	    
 	    $tablas = " public.productos,
                       public.grupos,
@@ -206,7 +207,7 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td class="col-xs-1"><div class="pull-right">';
 	                $html.='<input type="text" class="form-control input-sm"  id="cantidad_'.$res->id_productos.'" value="1"></div></td>';
 	                $html.='<td class="col-xs-2"><div class="pull-right">';
-	                $html.='<input type="text" class="form-control input-sm"  id="pecio_producto_'.$res->id_productos.'" value="0.00"></div></td>';
+	                $html.='<input type="text" class="form-control input-sm"  id="pecio_producto_'.$res->id_productos.'" value="'.$res->ult_precio_productos.'"></div></td>';
 	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_productos.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
 	                
 	                
@@ -1212,9 +1213,6 @@ class MovimientosInvController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            //$html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -1231,8 +1229,6 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
-	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_movimientos_inv_cabeza.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
-	                
 	                $html.='</tr>';
 	            }
 	            
@@ -1337,9 +1333,6 @@ class MovimientosInvController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            //$html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -1356,8 +1349,6 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
-	                $html.='<td style="font-size: 18px;"><a href="#" class="btn btn-info" role="button">Link Button</a></td>';
-	                $html.='<td "><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_movimientos_inv_cabeza.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
 	                
 	                $html.='</tr>';
 	            }
@@ -1468,18 +1459,22 @@ class MovimientosInvController extends ControladorBase{
 	            $resultdetalle = $salidas->getCondiciones($col_detalle,$tab_detalle,$where_detalle,"productos.nombre_productos");
 	            
 	            
+	            $this->view_Inventario('AprobarSalidas',array(
+	                'resultsolicitud'=>$resultsolicitud,'resultdetalle'=>$resultdetalle
+	            ));
+	            
+	        }else{
+	            
+	            $this->redirect('MovimientosInv','indexsalida');
+	            
 	        }
 	        
 	        
+	       
+	    }else{
 	        
+	        $this->redirect('MovimientosInv','indexsalida');	        
 	        
-	        
-	        
-	        
-	        
-	        $this->View('AprobarSalidas',array(
-	            'resultsolicitud'=>$resultsolicitud,'resultdetalle'=>$resultdetalle
-	        ));
 	    }
 	    
 	   

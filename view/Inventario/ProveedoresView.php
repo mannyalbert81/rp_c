@@ -395,6 +395,7 @@
 		    	var telefono_proveedores = $("#telefono_proveedores").val();
 		    	var email_proveedores = $("#email_proveedores").val();
 		    	var fecha_nacimiento_proveedores = $("#fecha_nacimiento_proveedores").val();
+		    	var fecha_actual = new Date();
 		    	
 		    	
 		    	
@@ -484,9 +485,6 @@
 		    		
 			            return false;	
 			    }
-
-		    	
-		    	
 				
 
 		    	if (fecha_nacimiento_proveedores =="")
@@ -501,10 +499,12 @@
 		    		$("#mensaje_fecha_nacimiento_proveedores").fadeOut("slow"); //Muestra mensaje de error
 		            
 				} 
-
+		    	
+		    	//var fecha=hoyFecha()
+		    	
+		    	
 		    	if (fecha_nacimiento_proveedores >= hoyFecha())
 		    	{
-		        	
 		    		$("#mensaje_fecha_nacimiento_proveedores").text("Introduzca una fecha Correcta");
 		    		$("#mensaje_fecha_nacimiento_proveedores").fadeIn("slow"); //Muestra mensaje de error
 		            return false;
@@ -514,8 +514,6 @@
 		    		$("#mensaje_fecha_nacimiento_proveedores").fadeOut("slow"); //Muestra mensaje de error
 		            
 		    	}
-		    				
-
 		    	
 			}); 
 
@@ -556,10 +554,14 @@
 	        var mm = hoy.getMonth()+1;
 	        var yyyy = hoy.getFullYear();
 	        
-	        dd = addZero(dd);
-	        mm = addZero(mm);
+	        if (dd < 10) {
+	        	  dd = '0' + dd;
+	        	} 
+	        	if (mm < 10) {
+	        	  mm = '0' + mm;
+	        	}
 	 
-	        return dd+'/'+mm+'/'+yyyy;
+	        return yyyy+'-'+mm+'-'+dd;
 	}
 	</script>
 	

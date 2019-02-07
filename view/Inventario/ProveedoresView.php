@@ -21,7 +21,9 @@
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
-     ?>
+     
+        ?>
+        
     
     
     <div class="wrapper">
@@ -114,6 +116,7 @@
                         		    </div>                     			
                         	
                         	    </div>
+                        	    
                     			
                     			
                     			<div class="row">
@@ -121,22 +124,19 @@
                     			    
                         		<div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
-                                        <label>Telefono:</label>
-                                        <div class="input-group">
-                                          <div class="input-group-addon">
-                                            <i class="fa fa-phone"></i>
-                                          </div>
-                                          <input type="text" class="form-control" size="7" maxlength="7" id="telefono_proveedores" name="telefono_proveedores" value="<?php echo $resEdit->telefono_proveedores; ?>"  data-inputmask='"mask": "(99) 9999-999"' data-mask onKeyPress="return numeros(event)" onkeypress="return aceptNum(event)" onpaste="return false;">
-                                        </div>
-                                        <!-- /.input group -->
-                                  </div>
+                                                <label for="telefono_proveedores" class="control-label">Teléfono Proveedores</label>
+                                                          <input type="text" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value="<?php echo $resEdit->telefono_proveedores; ?>"  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
+                                                          <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
+					                                      <div id="mensaje_telefono_proveedores" class="errores"></div>
+                                  
+                                    </div>
                                     </div>
                         		    
                         		    
                         		    <div class="col-lg-3 col-xs-12 col-md-3">
                         		     <div class="form-group">
                                                 <label for="email_proveedores" class="control-label">Email Proveedores</label>
-                                                          <input type="email" class="form-control" id="email_proveedores" name="email_proveedores" value="<?php echo $resEdit->email_proveedores; ?>"  placeholder="Email Proveedores" >
+                                                          <input type="email" class="form-control" id="email_proveedores" name="email_proveedores" value="<?php echo $resEdit->email_proveedores; ?>"  placeholder="Email Proveedores" onKeyUp="javascript:validateMail('id_mail')" >
                                                           <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
 					                                      <div id="mensaje_email_proveedores" class="errores"></div>
                                   
@@ -147,7 +147,7 @@
                     		         <div class="col-lg-3 col-xs-12 col-md-3">
                         		     <div class="form-group">
                                                 <label for="fecha_nacimiento_proveedores" class="control-label">Fecha Nacimiento Proveedores</label>
-                                                          <input type="text" class="form-control" id="fecha_nacimiento_proveedores" name="fecha_nacimiento_proveedores" value="<?php echo $resEdit->fecha_nacimiento_proveedores; ?>"  placeholder="Fecha Proveedores">
+                                                          <input type="date" class="form-control" id="fecha_nacimiento_proveedores" name="fecha_nacimiento_proveedores" value="<?php echo $resEdit->fecha_nacimiento_proveedores; ?>"  placeholder="Fecha Proveedores">
                                                           <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
 					                                      <div id="mensaje_fecha_nacimiento_proveedores" class="errores"></div>
                                   
@@ -185,7 +185,7 @@
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="identificacion_proveedores" class="control-label">Ruc Proveedores</label>
-                                                          <input type="text" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="Ruc Proveedores" onKeyPress="return numeros(event)">
+                                                          <input type="number" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="ruc.." onKeyPress="return numeros(event)">
                                                            <div id="mensaje_identificacion_proveedores" class="errores"></div>
                                     </div>
                         		    </div>
@@ -213,28 +213,24 @@
 									
 									<div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
-                                        <label>Telefono:</label>
-                                        <div class="input-group">
-                                          <div class="input-group-addon">
-                                            <i class="fa fa-phone"></i>
-                                          </div>
-                                          <input type="text" class="form-control" id="telefono_proveedores" name="telefono_proveedores" size="7" maxlength="7" value=""  data-inputmask='"mask": "(99) 9999-999"' data-mask  onKeyPress="return numeros(event)">
-                                        </div>
-                                        <!-- /.input group -->
-                                      </div>
+                                                          <label for="telefono_proveedores" class="control-label">Teléfono Proveedores</label>
+                                                          <input type="number" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value=""  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
+                                                           <div id="mensaje_telefono_proveedores" class="errores"></div>
+                                    </div>
                         		    </div>
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="email_proveedores" class="control-label">Email Proveedores</label>
-                                                          <input type="email" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores" >
+                                                          <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores" onKeyUp="javascript:validateMail('id_mail')"  >
                                                            <div id="mensaje_email_proveedores" class="errores"></div>
+                                                           
                                     </div>
                         		    </div>
                         		    
                         		     <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="fecha_nacimiento_proveedores" class="control-label">Fecha Proveedores</label>
-                                                          <input type="date" class="form-control" id="fecha_nacimiento_proveedores" name="fecha_nacimiento_proveedores" value=""  placeholder="Fecha Proveedores">
+                                                          <input type="date" class="form-control" id="fecha_nacimiento_proveedores" name="fecha_nacimiento_proveedores" value=""  placeholder="fecha..">
                                                            <div id="mensaje_fecha_nacimiento_proveedores" class="errores"></div>
                                     </div>
                         		    </div>
@@ -363,7 +359,12 @@
     
     <?php include("view/modulos/links_js.php"); ?>
 	
-	
+<script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+   
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>	
     
            
 	
@@ -461,23 +462,37 @@
 		    		$("#mensaje_telefono_proveedores").fadeOut("slow"); //Muestra mensaje de error
 		            
 				}   
+		     
+
 		    	if (email_proveedores == "")
 		    	{
 			    	
-		    		$("#mensaje_email_proveedores").text("Introduzca Un Email");
+		    		$("#mensaje_email_proveedores").text("Introduzca un correo");
 		    		$("#mensaje_email_proveedores").fadeIn("slow"); //Muestra mensaje de error
+		    		
 		            return false;
 			    }
-		    	else 
+		    	else if (regex.test($('#email_proveedores').val().trim()))
 		    	{
 		    		$("#mensaje_email_proveedores").fadeOut("slow"); //Muestra mensaje de error
 		            
-				}   
+				}
+		    	else 
+		    	{
+		    		$("#mensaje_email_proveedores").text("Introduzca un correo Valido");
+		    		$("#mensaje_email_proveedores").fadeIn("slow"); //Muestra mensaje de error
+		    		
+			            return false;	
+			    }
 
-		    	if (fecha_nacimiento_proveedores == "")
+		    	
+		    	
+				
+
+		    	if (fecha_nacimiento_proveedores =="")
 		    	{
 			    	
-		    		$("#mensaje_fecha_nacimiento_proveedores").text("Introduzca Una Fecha");
+		    		$("#mensaje_fecha_nacimiento_proveedores").text("Introduzca una fecha ");
 		    		$("#mensaje_fecha_nacimiento_proveedores").fadeIn("slow"); //Muestra mensaje de error
 		            return false;
 			    }
@@ -485,13 +500,21 @@
 		    	{
 		    		$("#mensaje_fecha_nacimiento_proveedores").fadeOut("slow"); //Muestra mensaje de error
 		            
-				}   
+				} 
 
-		    	
-
-		    	
-				
-
+		    	if (fecha_nacimiento_proveedores >= hoyFecha())
+		    	{
+		        	
+		    		$("#mensaje_fecha_nacimiento_proveedores").text("Introduzca una fecha Correcta");
+		    		$("#mensaje_fecha_nacimiento_proveedores").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+		        }
+		    	else 
+		    	{
+		    		$("#mensaje_fecha_nacimiento_proveedores").fadeOut("slow"); //Muestra mensaje de error
+		            
+		    	}
+		    				
 
 		    	
 			}); 
@@ -525,6 +548,22 @@
 		}); 
 
 	</script>	
+	
+	<script type="text/javascript">
+	function hoyFecha(){
+	    var hoy = new Date();
+	        var dd = hoy.getDate();
+	        var mm = hoy.getMonth()+1;
+	        var yyyy = hoy.getFullYear();
+	        
+	        dd = addZero(dd);
+	        mm = addZero(mm);
+	 
+	        return dd+'/'+mm+'/'+yyyy;
+	}
+	</script>
+	
+	
 	
 		<script type="text/javascript">
      
@@ -604,6 +643,7 @@
         	        	   
 
  </script>
+
  
      <script type="text/javascript" >   
     function numeros(e){
@@ -626,13 +666,7 @@
      }
     </script>
     
-    <script>
-var nav4 = window.Event ? true : false;
-function aceptNum(evt){
-var key = nav4 ? evt.which : evt.keyCode;
-return (key <= 13 || (key>= 48 && key <= 57));
-}
-</script>
+ 
 
 <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
        <script>
@@ -640,603 +674,11 @@ return (key <= 13 || (key>= 48 && key <= 57));
       $(".cantidades1").inputmask();
       });
 	  </script>
+	 
+
+
 	  
-        <script >
-		    // cada vez que se cambia el valor del combo
-		    $(document).ready(function(){
-		    
-		    $("#Guardar").click(function() 
-			{
-
-
-				
-		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-		    	var pat= /^(?=.*\d)(?=.*[a-záéíóúüñ]).*[A-ZÁÉÍÓÚÜÑ]/;
-		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
-
-		    	var nombre_proveedores = $("#nombre_proveedores").val();
-		    	var identificacion_proveedores = $("#identificacion_proveedores").val();
-		    	//var usuario_usuario = $("#usuario_usuario").val();
-		    	var contactos_proveedores = $("#contactos_proveedores").val();
-		    	var direccion_proveedores = $("#direccion_proveedores").val();
-		    	var telefono_proveedores = $("#telefono_proveedores").val();
-		    	var email_proveedores  = $("#email_proveedores").val();
-		    	var fecha_nacimiento_proveedores  = $("#fecha_nacimiento_proveedores").val();
-		    	
-
-
-
-		    	  var numeros="0123456789";
-		    	  var mayusculas="QWERTYUIOPASDFGHJKLZXCVBNMÑ"
-			      var minusculas = "abcdefghijklmnopqrstuvwxyz";
-		    	  var num=false;
-		    	  var may=false;
-		    	  var min=false;
-
-		    	  
-		    	 
-
-
-		    	
-		    	var contador=0;
-		    	var tiempo = tiempo || 1000;
-		    	 
-
-
-
-
-		    	var suma = 0;      
-		        var residuo = 0;      
-		        var pri = false;      
-		        var pub = false;            
-		        var nat = false;      
-		        var numeroProvincias = 22;                  
-		        var modulo = 11;
-		                    
-		        /* Verifico que el campo no contenga letras */                  
-		        var ok=1;
-
-
-		        for (i=0; i<identificacion_proveedores.length && ok==1 ; i++){
-		            var n = parseInt(identificacion_proveedores.charAt(i));
-		            if (isNaN(n)) ok=0;
-		         }
-
-
-		        /* Los primeros dos digitos corresponden al codigo de la provincia */
-		        provincia = identificacion_proveedores.substr(0,2);
-
-
-		        /* Aqui almacenamos los digitos de la cedula en variables. */
-		        d1  = identificacion_proveedores.substr(0,1);         
-		        d2  = identificacion_proveedores.substr(1,1);         
-		        d3  = identificacion_proveedores.substr(2,1);         
-		        d4  = identificacion_proveedores.substr(3,1);         
-		        d5  = identificacion_proveedores.substr(4,1);         
-		        d6  = identificacion_proveedores.substr(5,1);         
-		        d7  = identificacion_proveedores.substr(6,1);         
-		        d8  = identificacion_proveedores.substr(7,1);         
-		        d9  = identificacion_proveedores.substr(8,1);         
-		        d10 = identificacion_proveedores.substr(9,1);                
-		           
-		        /* El tercer digito es: */                           
-		        /* 9 para sociedades privadas y extranjeros   */         
-		        /* 6 para sociedades publicas */         
-		        /* menor que 6 (0,1,2,3,4,5) para personas naturales */ 
-
-
-
-
-
-		        /* Solo para personas naturales (modulo 10) */         
-		        if (d3 < 6){           
-		           nat = true;            
-		           p1 = d1 * 2;  if (p1 >= 10) p1 -= 9;
-		           p2 = d2 * 1;  if (p2 >= 10) p2 -= 9;
-		           p3 = d3 * 2;  if (p3 >= 10) p3 -= 9;
-		           p4 = d4 * 1;  if (p4 >= 10) p4 -= 9;
-		           p5 = d5 * 2;  if (p5 >= 10) p5 -= 9;
-		           p6 = d6 * 1;  if (p6 >= 10) p6 -= 9; 
-		           p7 = d7 * 2;  if (p7 >= 10) p7 -= 9;
-		           p8 = d8 * 1;  if (p8 >= 10) p8 -= 9;
-		           p9 = d9 * 2;  if (p9 >= 10) p9 -= 9;             
-		           modulo = 10;
-		        }         
-		        /* Solo para sociedades publicas (modulo 11) */                  
-		        /* Aqui el digito verficador esta en la posicion 9, en las otras 2 en la pos. 10 */
-		        else if(d3 == 6){           
-		           pub = true;             
-		           p1 = d1 * 3;
-		           p2 = d2 * 2;
-		           p3 = d3 * 7;
-		           p4 = d4 * 6;
-		           p5 = d5 * 5;
-		           p6 = d6 * 4;
-		           p7 = d7 * 3;
-		           p8 = d8 * 2;            
-		           p9 = 0;            
-		        }         
-		           
-		        /* Solo para entidades privadas (modulo 11) */         
-		        else if(d3 == 9) {           
-		           pri = true;                                   
-		           p1 = d1 * 4;
-		           p2 = d2 * 3;
-		           p3 = d3 * 2;
-		           p4 = d4 * 7;
-		           p5 = d5 * 6;
-		           p6 = d6 * 5;
-		           p7 = d7 * 4;
-		           p8 = d8 * 3;
-		           p9 = d9 * 2;            
-		        }
-		                  
-		        suma = p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9;                
-		        residuo = suma % modulo;                                         
-		        /* Si residuo=0, dig.ver.=0, caso contrario 10 - residuo*/
-		        digitoVerificador = residuo==0 ? 0: modulo - residuo; 
-
-
-
-
-		       
-
-		    	
-		    	if (identificacion_proveedores == "")
-		    	{
-			    	
-		    		$("#mensaje_identificacion_proveedores").text("Introduzca Identificación");
-		    		$("#mensaje_identificacion_proveedores").fadeIn("slow"); //Muestra mensaje de error
-
-		    		$("html, body").animate({ scrollTop: $(mensaje_identificacion_proveedores).offset().top }, tiempo);
-			        return false;
-			    }
-		    	else 
-		    	{
-
-
-		    		 if (ok==0){
-						 $("#mensaje_identificacion_proveedores").text("Ingrese solo números");
-				    		$("#mensaje_identificacion_proveedores").fadeIn("slow"); //Muestra mensaje de error
-				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_proveedores).offset().top }, tiempo);
-				            return false;
-				      }else{
-
-							$("#mensaje_identificacion_proveedores").fadeOut("slow"); //Muestra mensaje de error
-					
-					  }
-					
-
-			    	
-		    		if(identificacion_proveedores.length<10){
-
-						
-						$("#mensaje_identificacion_proveedores").text("Ingrese al menos 10 dígitos");
-			    		$("#mensaje_identificacion_proveedores").fadeIn("slow"); //Muestra mensaje de error
-			           
-			            $("html, body").animate({ scrollTop: $(mensaje_identificacion_proveedores).offset().top }, tiempo);
-			            return false;
-						}else{
-						
-							$("#mensaje_identificacion_proveedores").fadeOut("slow"); //Muestra mensaje de error
-							
-					}
-
-
-		    		if (provincia < 1 || provincia > numeroProvincias){           
-						$("#mensaje_identificacion_proveedores").text("El código de la provincia (dos primeros dígitos) es inválido");
-			    		$("#mensaje_identificacion_proveedores").fadeIn("slow"); //Muestra mensaje de error
-			           
-			            $("html, body").animate({ scrollTop: $(mensaje_identificacion_proveedores).offset().top }, tiempo);
-			            return false;
-
-				      }else{
-
-				    		$("#mensaje_identificacion_proveedores").fadeOut("slow"); //Muestra mensaje de error
-							
-					  }
-
-
-		    		if (d3==7 || d3==8){           
-
-						$("#mensaje_identificacion_proveedores").text("El tercer dígito ingresado es inválido");
-			    		$("#mensaje_identificacion_proveedores").fadeIn("slow"); //Muestra mensaje de error
-			           
-			            $("html, body").animate({ scrollTop: $(mensaje_identificacion_proveedores).offset().top }, tiempo);
-			            return false;
-				      }
-					else{
-
-						$("#mensaje_identificacion_proveedores").fadeOut("slow"); //Muestra mensaje de error
-						
-						}
-
-
-
-
-		    		if (pub==true){      
-
-
-				         /* El ruc de las empresas del sector publico terminan con 0001*/         
-			         if ( identificacion_proveedores.substr(9,4) != '0001' ){                    
-
-			        	 $("#mensaje_identificacion_proveedores").text("El ruc de la empresa del sector público debe terminar con 0001");
-				    		$("#mensaje_identificacion_proveedores").fadeIn("slow"); //Muestra mensaje de error
-				           
-				            $("html, body").animate({ scrollTop: $(mensaje_identificacion_proveedores).offset().top }, tiempo);
-				            return false;
-
-				     }else{
-				    	 $("#mensaje_identificacion_proveedores").fadeOut("slow"); //Muestra mensaje de error
-					}
-					       
-				         if (digitoVerificador != d9){                          
-								$("#mensaje_identificacion_proveedores").text("El ruc de la empresa del sector público es incorrecto.");
-					    		$("#mensaje_identificacion_proveedores").fadeIn("slow"); //Muestra mensaje de error
-					           
-					            $("html, body").animate({ scrollTop: $(mensaje_identificacion_proveedores).offset().top }, tiempo);
-					            return false;
-					           
-				         } else{
-				        	 $("#mensaje_identificacion_proveedores").fadeOut("slow"); //Muestra mensaje de error
-								
-					     }                 
-
-				 }else{
-
-		        	 $("#mensaje_identificacion_proveedores").fadeOut("slow"); //Muestra mensaje de error
-		     }
-
-			               
-
-			       if(pri == true){    
-			    	   if ( cedula_usuarios.substr(10,3) != '001' ){   
-
-			    		   $("#mensaje_cedula_usuarios").text("El ruc de la empresa del sector privado debe terminar con 001");
-				    		$("#mensaje_cedula_usuarios").fadeIn("slow"); //Muestra mensaje de error
-				           
-				            $("html, body").animate({ scrollTop: $(mensaje_cedula_usuarios).offset().top }, tiempo);
-				            return false;
-				                             
-				            
-				         }else{
-				        	 $("#mensaje_cedula_usuarios").fadeOut("slow"); //Muestra mensaje de error
-								
-					         }
-				              
-				         if (digitoVerificador != d10){                          
-
-				        	 $("#mensaje_cedula_usuarios").text("El ruc de la empresa del sector privado es incorrecto");
-					    		$("#mensaje_cedula_usuarios").fadeIn("slow"); //Muestra mensaje de error
-					           
-					            $("html, body").animate({ scrollTop: $(mensaje_cedula_usuarios).offset().top }, tiempo);
-					            return false;
-
-					     } else{
-				        	 $("#mensaje_cedula_usuarios").fadeOut("slow"); //Muestra mensaje de error
-								
-				         }        
-				         
-				      } else{
-
-				        	 $("#mensaje_cedula_usuarios").fadeOut("slow"); //Muestra mensaje de error
-				     }
-
-
-				if(nat == true){         
-
-					if (cedula_usuarios.length >10 && cedula_usuarios.substr(10,3) != '001' ){                    
-			         
-			            $("#mensaje_cedula_usuarios").text("El ruc de la persona natural debe terminar con 001.");
-			    		$("#mensaje_cedula_usuarios").fadeIn("slow"); //Muestra mensaje de error
-			           
-			            $("html, body").animate({ scrollTop: $(mensaje_cedula_usuarios).offset().top }, tiempo);
-			            return false;
-			            
-			         }else{
-
-			        	 if(cedula_usuarios.length >13){
-			        		 $("#mensaje_cedula_usuarios").text("El ruc de la persona natural es incorrecto.");
-					    		$("#mensaje_cedula_usuarios").fadeIn("slow"); //Muestra mensaje de error
-					           
-					            $("html, body").animate({ scrollTop: $(mensaje_cedula_usuarios).offset().top }, tiempo);
-					            return false;
-
-				        	 }else{
-				         
-			        	 $("#mensaje_cedula_usuarios").fadeOut("slow"); //Muestra mensaje de error
-				        	 }
-
-				         }
-
-					
-			         if (digitoVerificador != d10){    
-
-			        	 if(cedula_usuarios.length >10){
-			        		 $("#mensaje_cedula_usuarios").text("El ruc de la persona natural es incorrecto.");
-					    		$("#mensaje_cedula_usuarios").fadeIn("slow"); //Muestra mensaje de error
-					           
-					            $("html, body").animate({ scrollTop: $(mensaje_cedula_usuarios).offset().top }, tiempo);
-					            return false;
-
-				        	 }else{
-				         
-			        	 $("#mensaje_cedula_usuarios").fadeOut("slow"); //Muestra mensaje de error
-				        	 }
-
-
-			        	 if(cedula_usuarios.length <11){
-			        		 $("#mensaje_cedula_usuarios").text("El número de cédula de la persona natural es incorrecto.");
-					    		$("#mensaje_cedula_usuarios").fadeIn("slow"); //Muestra mensaje de error
-					           
-					            $("html, body").animate({ scrollTop: $(mensaje_cedula_usuarios).offset().top }, tiempo);
-					            return false;
-
-				        	 }else{
-				         
-			        	 $("#mensaje_cedula_usuarios").fadeOut("slow"); //Muestra mensaje de error
-				        	 }
-
-
-				       
-			         }else{
-
-				        	 $("#mensaje_cedula_usuarios").fadeOut("slow"); //Muestra mensaje de error
-				     }  
-
-
-				}else{
-
-		        	 $("#mensaje_cedula_usuarios").fadeOut("slow"); //Muestra mensaje de error
-		     }
-			
-					
-		            
-				}    
-			
-		    	if (nombre_usuarios == "")
-		    	{
-			    	
-		    		$("#mensaje_nombre_usuarios").text("Introduzca un Nombre");
-		    		$("#mensaje_nombre_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_nombre_usuarios).offset().top }, tiempo);
-			        
-			            return false;
-			    }
-		    	else 
-		    	{
-
-		    		contador=0;
-		    		numeroPalabras=0;
-		    		contador = nombre_usuarios.split(" ");
-		    		numeroPalabras = contador.length;
-		    		
-					if(numeroPalabras==2 || numeroPalabras==3 || numeroPalabras==4){
-
-						$("#mensaje_nombre_usuarios").fadeOut("slow"); //Muestra mensaje de error
-				                     
-			             
-					}else{
-						$("#mensaje_nombre_usuarios").text("Introduzca Nombres y Apellidos");
-			    		$("#mensaje_nombre_usuarios").fadeIn("slow"); //Muestra mensaje de error
-			           
-			            $("html, body").animate({ scrollTop: $(mensaje_nombre_usuarios).offset().top }, tiempo);
-			            return false;
-					}
-			    	
-		    		
-		            
-				}
-		    			    	
-		    
-		    	if (clave_usuarios == "")
-		    	{
-		    		
-		    		$("#mensaje_clave_usuarios").text("Introduzca una Clave");
-		    		$("#mensaje_clave_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_clave_usuarios).offset().top }, tiempo);
-				       
-			            return false;
-			    }else 
-		    	{
-		    		$("#mensaje_clave_usuarios").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-
-
-			     if (clave_usuarios.length<8){
-			    	$("#mensaje_clave_usuarios").text("Introduzca minimo 8 caracteres");
-		    		$("#mensaje_clave_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_clave_usuarios).offset().top }, tiempo);
-				    
-		            return false;
-				}else 
-		    	{
-		    		$("#mensaje_clave_usuarios").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-
-				 if (clave_usuarios.length>15){
-			    	$("#mensaje_clave_usuarios").text("Introduzca máximo 15 caracteres");
-		    		$("#mensaje_clave_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_clave_usuarios).offset().top }, tiempo);
-					   
-		            return false;
-				}else 
-		    	{
-		    		$("#mensaje_clave_usuarios").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-
-				 
-
-			
-					
-				
-
-		    	if (cclave_usuarios == "")
-		    	{
-		    		
-		    		$("#mensaje_clave_usuarios_r").text("Introduzca una Clave");
-		    		$("#mensaje_clave_usuarios_r").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_clave_usuarios_r).offset().top }, tiempo);
-					
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_clave_usuarios_r").fadeOut("slow"); 
-		            
-				}
-		    	
-		    	if (clave_usuarios != cclave_usuarios)
-		    	{
-			    	
-		    		$("#mensaje_clave_usuarios_r").text("Claves no Coinciden");
-		    		$("#mensaje_clave_usuarios_r").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_clave_usuarios_r).offset().top }, tiempo);
-					
-		            return false;
-			    }
-		    	else
-		    	{
-		    		$("#mensaje_clave_usuarios_r").fadeOut("slow"); 
-			        
-		    	}	
-				
-
-				//los telefonos
-		    	
-		    	if (celular_usuarios == "" )
-		    	{
-			    	
-		    		$("#mensaje_celular_usuarios").text("Ingrese un Celular");
-		    		$("#mensaje_celular_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_celular_usuarios).offset().top }, tiempo);
-					
-			            return false;
-			    }
-		    	else 
-		    	{
-
-
-		    		if(celular_usuarios.length==10){
-
-						$("#mensaje_celular_usuarios").fadeOut("slow"); //Muestra mensaje de error
-					}else{
-						
-						$("#mensaje_celular_usuarios").text("Ingrese 10 dígitos");
-			    		$("#mensaje_celular_usuarios").fadeIn("slow"); //Muestra mensaje de error
-			           
-			            $("html, body").animate({ scrollTop: $(mensaje_celular_usuarios).offset().top }, tiempo);
-			            return false;
-					}
-
-			    	
-		    		
-				}
-
-				// correos
-				
-		    	if (correo_usuarios == "")
-		    	{
-			    	
-		    		$("#mensaje_correo_usuarios").text("Introduzca un correo");
-		    		$("#mensaje_correo_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_correo_usuarios).offset().top }, tiempo);
-					
-		            return false;
-			    }
-		    	else if (regex.test($('#correo_usuarios').val().trim()))
-		    	{
-		    		$("#mensaje_correo_usuarios").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-		    	else 
-		    	{
-		    		$("#mensaje_correo_usuarios").text("Introduzca un correo Valido");
-		    		$("#mensaje_correo_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_correo_usuarios).offset().top }, tiempo);
-					
-			            return false;	
-			    }
-
-		    	
-		    	if (id_rol == 0 )
-		    	{
-			    	
-		    		$("#mensaje_id_rol").text("Seleccione");
-		    		$("#mensaje_id_rol").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_rol).offset().top }, tiempo);
-					
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_rol").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-
-
-
-		    	if (id_estado == 0 )
-		    	{
-			    	
-		    		$("#mensaje_id_estado").text("Seleccione");
-		    		$("#mensaje_id_estado").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_estado).offset().top }, tiempo);
-					
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_estado").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}
-		    				    
-
-			}); 
-
-
-		        $( "#cedula_usuarios" ).focus(function() {
-				  $("#mensaje_cedula_usuarios").fadeOut("slow");
-			    });
-				
-				$( "#nombre_usuarios" ).focus(function() {
-					$("#mensaje_nombre_usuarios").fadeOut("slow");
-    			});
-				
-    			
-				$( "#clave_usuarios" ).focus(function() {
-					$("#mensaje_clave_usuarios").fadeOut("slow");
-    			});
-				$( "#clave_usuarios_r" ).focus(function() {
-					$("#mensaje_clave_usuarios_r").fadeOut("slow");
-    			});
-				
-				$( "#celular_usuarios" ).focus(function() {
-					$("#mensaje_celular_usuarios").fadeOut("slow");
-    			});
-				
-				$( "#correo_usuarios" ).focus(function() {
-					$("#mensaje_correo_usuarios").fadeOut("slow");
-    			});
-			
-				$( "#id_rol" ).focus(function() {
-					$("#mensaje_id_rol").fadeOut("slow");
-    			});
-
-				$( "#id_estado" ).focus(function() {
-					$("#mensaje_id_estado").fadeOut("slow");
-    			});
-				
-		      
-				    
-		}); 
-
-	</script>
-        
+       
    
  
 	

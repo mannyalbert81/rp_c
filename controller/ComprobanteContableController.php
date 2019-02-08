@@ -6,27 +6,32 @@ class ComprobanteContableController extends ControladorBase{
 		parent::__construct();
 	}
 
-//maycol
-
+	
+	
 	public function consulta_temp_comprobantes()
 	{
 	    
 	    session_start();
-	    $id_rol=$_SESSION["id_rol"];
-	    
-	    $temp_comprobantes = null; $temp_comprobantes = new ComprobantesTemporalModel();
+	    $_id_usuarios = $_SESSION["id_usuarios"];
+	    $temp_comprobantes = new ComprobantesTemporalModel();
 	    $where_to="";
-	    $columnas = "temp_comprobantes.id_usuario_registra,
-                      temp_comprobantes.id_plan_cuentas,
-                      temp_comprobantes.observacion_temp_comprobantes,
-                      temp_comprobantes.debe_temp_comprobantes,
-                      temp_comprobantes.haber_temp_comprobantes";
-	    
-	    $tablas = " public.temp_comprobantes";
-	    
-	    $where    = "";
-	    
-	    $id       = "productos.id_usuario_registra";
+	  
+	    $columnas = " temp_comprobantes.id_temp_comprobantes,
+				          plan_cuentas.id_plan_cuentas,
+		    		      plan_cuentas.codigo_plan_cuentas,
+						  plan_cuentas.nombre_plan_cuentas,
+						  temp_comprobantes.observacion_temp_comprobantes,
+						  temp_comprobantes.debe_temp_comprobantes,
+						  temp_comprobantes.haber_temp_comprobantes";
+	    $tablas ="public.temp_comprobantes,
+						  public.usuarios,
+						  public.plan_cuentas,
+						  public.entidades";
+	    $where ="temp_comprobantes.id_plan_cuentas = plan_cuentas.id_plan_cuentas AND
+				usuarios.id_usuarios = temp_comprobantes.id_usuario_registra AND
+				usuarios.id_entidades = entidades.id_entidades AND
+				entidades.id_entidades = plan_cuentas.id_entidades AND usuarios.id_usuarios='$_id_usuarios'";
+	    $id="temp_comprobantes.id_temp_comprobantes";
 	    
 	    
 	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -38,30 +43,30 @@ class ComprobanteContableController extends ControladorBase{
 	        
 	        if(!empty($search)){
 	            
-	            $where1=" AND (temp_comprobantes.observacion_temp_comprobantes LIKE '".$search."%' OR temp_comprobantes.debe_temp_comprobantes LIKE '".$search."%')";
+	            $where1=" AND (plan_cuentas.codigo_plan_cuentas LIKE '".$search."%' OR plan_cuentas.nombre_plan_cuentas LIKE '".$search."%' OR temp_comprobantes.observacion_temp_comprobantes LIKE '".$search."%')";
 	            
 	            $where_to=$where.$where1;
 	            
 	        }else{
 	            
 	            $where_to=$where;
-	            
+	       
 	        }
 	        
 	        
 	        $html="";
-	        $resultSet=$productos->getCantidad("*", $tablas, $where_to);
+	        $resultSet=$temp_comprobantes->getCantidad("*", $tablas, $where_to);
 	        $cantidadResult=(int)$resultSet[0]->total;
 	        
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 	        
-	        $per_page = 5; //la cantidad de registros que desea mostrar
+	        $per_page = 10; //la cantidad de registros que desea mostrar
 	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
 	        $offset = ($page - 1) * $per_page;
 	        
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	        
-	        $resultSet=$productos->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $resultSet=$temp_comprobantes->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
 	        $count_query   = $cantidadResult;
 	        $total_pages = ceil($cantidadResult/$per_page);
 	        
@@ -69,65 +74,74 @@ class ComprobanteContableController extends ControladorBase{
 	        if($cantidadResult>0)
 	        {
 	            
-	            $html.='<div class="pull-left" style="margin-left:15px;">';
-	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:300px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.='<section style="height:250px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_temp_comprobantes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Observación</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Debe</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Haber</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Cuenta</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Nombre de la Cuenta</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Descripción</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Debe</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Haber</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;"></th>';
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
 	            $html.='<tbody >';
 	            
-	            
 	            $i=0;
+	            
+	            $sumador_debe_total=0;
+	            $sumador_haber_total=0;
 	            
 	            foreach ($resultSet as $res)
 	            {
+	                $suma_debe= $res->debe_temp_comprobantes;
+	                $suma_debe_f=number_format($suma_debe,2);
+	                $suma_debe_r=str_replace(",","",$suma_debe_f);
+	                $sumador_debe_total+=$suma_debe_r;
+	                
+	                $suma_haber= $res->haber_temp_comprobantes;
+	                $suma_haber_f=number_format($suma_haber,2);
+	                $suma_haber_r=str_replace(",","",$suma_haber_f);
+	                $sumador_haber_total+=$suma_haber_r;
+	                
 	                $i++;
 	                $html.='<tr>';
-	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->id_usuario_registra.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->id_plan_cuentas.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->observacion_temp_comprobantes.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->debe_temp_comprobantes.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->haber_temp_comprobantes.'</td>';
-	                $html.='<td class="col-xs-1"><div class="pull-right">';
-	                $html.='<input type="text" class="form-control input-sm"  id="cantidad_'.$res->id_productos.'" value="1"></div></td>';
-	                $html.='<td class="col-xs-2"><div class="pull-right">';
-	                $html.='<input type="text" class="form-control input-sm"  id="pecio_producto_'.$res->id_productos.'" value="0.00"></div></td>';
-	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_productos.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
-	                
-	                
-	                
+	                $html.='<td style="font-size: 12px;">'.$res->codigo_plan_cuentas.'</td>';
+	                $html.='<td style="font-size: 12px;">'.$res->nombre_plan_cuentas.'</td>';
+	                $html.='<td style="font-size: 12px;">'.$res->observacion_temp_comprobantes.'</td>';
+	                $html.='<td style="font-size: 12px;">'.$res->debe_temp_comprobantes.'</td>';
+	                $html.='<td style="font-size: 12px;">'.$res->haber_temp_comprobantes.'</td>';
+	                $html.='<td style="font-size: 16px;"><a href="#" data-toggle="tooltip" title="Eliminar" onclick="eliminar_temp_comprobantes('.$res->id_temp_comprobantes.')"><i class="glyphicon glyphicon-trash"></i></a></td>';
 	                $html.='</tr>';
 	            }
-	            $html.='</tbody>';
 	            
+	            $subtotal_debe=number_format($sumador_debe_total,2,'.','');
+	            $subtotal_haber=number_format($sumador_haber_total,2,'.','');
+	            
+	            $letras = $temp_comprobantes->numtoletras($subtotal_debe);
+	            
+	            $html.='<tr>';
+	            $html.='<td style="font-size: 12px;" class="text-right" colspan=1>TOTAL $</td>';
+	            $html.='<td style="font-size: 12px;" colspan=2><input type="text" class="form-control" id="valor_letras" name="valor_letras" value="'.$letras.'" readonly></td>';
+	            $html.='<td style="font-size: 12px;" class="text-left">'.$subtotal_debe.'</td>';
+	            $html.='<td style="font-size: 12px;" class="text-left">'.$subtotal_haber.'</td>';
+	            $html.='</tr>';
+	            
+	            $html.='</tbody>';
 	            $html.='</table>';
-	            $html.='<table><tr>';
-	            $html.='<td colspan="7"><span class="pull-right">';
-	            $html.=''. $this->paginatemultiple("index.php", $page, $total_pages, $adjacents,"load_productos").'';
-	            $html.='</span>';
-	            $html.='</table></tr>';
 	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginate_temp_comprobantes("index.php", $page, $total_pages, $adjacents).'';
+	            $html.='</div>';
 	            
 	        }else{
-	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay productos registrados...</b>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay cuentas registradas...</b>';
 	            $html.='</div>';
 	            $html.='</div>';
 	        }
@@ -138,7 +152,6 @@ class ComprobanteContableController extends ControladorBase{
 	    }
 	    
 	}
-	
 	
 	
 	
@@ -263,7 +276,7 @@ class ComprobanteContableController extends ControladorBase{
 	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay cuentas registradas...</b>';
 	            $html.='</div>';
 	            $html.='</div>';
 	        }
@@ -277,7 +290,10 @@ class ComprobanteContableController extends ControladorBase{
 	}
 	
 	
-	public function paginate_plan_cuentas($reload, $page, $tpages, $adjacents) {
+	
+	
+	
+	public function paginate_temp_comprobantes($reload, $page, $tpages, $adjacents) {
 	    
 	    $prevlabel = "&lsaquo; Prev";
 	    $nextlabel = "Next &rsaquo;";
@@ -288,15 +304,15 @@ class ComprobanteContableController extends ControladorBase{
 	    if($page==1) {
 	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
 	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_comprobantes(1)'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_temp_comprobantes(1)'>$prevlabel</a></span></li>";
 	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_comprobantes(".($page-1).")'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_temp_comprobantes(".($page-1).")'>$prevlabel</a></span></li>";
 	        
 	    }
 	    
 	    // first label
 	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes(1)'>1</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_temp_comprobantes(1)'>1</a></li>";
 	    }
 	    // interval
 	    if($page>($adjacents+2)) {
@@ -311,9 +327,9 @@ class ComprobanteContableController extends ControladorBase{
 	        if($i==$page) {
 	            $out.= "<li class='active'><a>$i</a></li>";
 	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes(1)'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_temp_comprobantes(1)'>$i</a></li>";
 	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes(".$i.")'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_temp_comprobantes(".$i.")'>$i</a></li>";
 	        }
 	    }
 	    
@@ -326,13 +342,13 @@ class ComprobanteContableController extends ControladorBase{
 	    // last
 	    
 	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes($tpages)'>$tpages</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_temp_comprobantes($tpages)'>$tpages</a></li>";
 	    }
 	    
 	    // next
 	    
 	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_comprobantes(".($page+1).")'>$nextlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_temp_comprobantes(".($page+1).")'>$nextlabel</a></span></li>";
 	    }else {
 	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
 	    }
@@ -342,12 +358,118 @@ class ComprobanteContableController extends ControladorBase{
 	}
 	
 	
+	
+	public function paginate_plan_cuentas($reload, $page, $tpages, $adjacents) {
+	    
+	    $prevlabel = "&lsaquo; Prev";
+	    $nextlabel = "Next &rsaquo;";
+	    $out = '<ul class="pagination pagination-large">';
+	    
+	    // previous label
+	    
+	    if($page==1) {
+	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+	    } else if($page==2) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_plan_cuentas(1)'>$prevlabel</a></span></li>";
+	    }else {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_plan_cuentas(".($page-1).")'>$prevlabel</a></span></li>";
+	        
+	    }
+	    
+	    // first label
+	    if($page>($adjacents+1)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_plan_cuentas(1)'>1</a></li>";
+	    }
+	    // interval
+	    if($page>($adjacents+2)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // pages
+	    
+	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+	    for($i=$pmin; $i<=$pmax; $i++) {
+	        if($i==$page) {
+	            $out.= "<li class='active'><a>$i</a></li>";
+	        }else if($i==1) {
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_plan_cuentas(1)'>$i</a></li>";
+	        }else {
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_plan_cuentas(".$i.")'>$i</a></li>";
+	        }
+	    }
+	    
+	    // interval
+	    
+	    if($page<($tpages-$adjacents-1)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // last
+	    
+	    if($page<($tpages-$adjacents)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_plan_cuentas($tpages)'>$tpages</a></li>";
+	    }
+	    
+	    // next
+	    
+	    if($page<$tpages) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_plan_cuentas(".($page+1).")'>$nextlabel</a></span></li>";
+	    }else {
+	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+	    }
+	    
+	    $out.= "</ul>";
+	    return $out;
+	}
+	
+	
+	
+	public function  consulta_consecutivos(){
+	    
+	    
+	    session_start();
+	    $_id_usuarios = $_SESSION["id_usuarios"];
+	    $d_comprobantes = new DComprobantesModel();
+	    
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $id_tipo_comprobantes =  (isset($_REQUEST['id_tipo_comprobantes'])&& $_REQUEST['id_tipo_comprobantes'] !=NULL)?$_REQUEST['id_tipo_comprobantes']:0;
+	    
+	    if($action == 'ajax' && $_id_usuarios>0 && $id_tipo_comprobantes > 0)
+	    {
+	        
+    	    $columnas_enc = "entidades.id_entidades,
+      							entidades.nombre_entidades,
+    		    		        consecutivos.numero_consecutivos";
+    	    $tablas_enc ="public.usuarios,
+    						  public.entidades,
+    		    		      public.consecutivos";
+    	    $where_enc ="consecutivos.id_entidades = entidades.id_entidades AND entidades.id_entidades = usuarios.id_entidades 
+                         AND consecutivos.id_tipo_comprobantes='$id_tipo_comprobantes' 
+                         AND usuarios.id_usuarios='$_id_usuarios'";
+    	    $id_enc="entidades.nombre_entidades";
+    	    $resultSet=$d_comprobantes->getCondiciones($columnas_enc ,$tablas_enc ,$where_enc, $id_enc);
+    	    
+    	    if(!empty($resultSet)){
+    	        
+    	        $_numero    =$resultSet[0]->numero_consecutivos;
+    	        
+    	        
+    	        
+    	        echo $_numero;
+    	    }
+    	    
+	    
+	   }
+	    
+	}
 
+	
+	
+	
 	public function index(){
 	
 		session_start();
-		
-		
 		if (isset(  $_SESSION['usuario_usuarios']) )
 		{
 		    
@@ -359,108 +481,19 @@ class ComprobanteContableController extends ControladorBase{
 			$d_comprobantes = new DComprobantesModel();
 			
 			$tipo_comprobante=new TipoComprobantesModel();
-			$resultTipCom = $tipo_comprobante->getBy("nombre_tipo_comprobantes='CONTABLE'");
-			
-			$columnas_enc = "entidades.id_entidades,
-  							entidades.nombre_entidades,
-		    		        consecutivos.numero_consecutivos";
-			$tablas_enc ="public.usuarios,
-						  public.entidades,
-		    		      public.consecutivos";
-			$where_enc ="consecutivos.id_entidades = entidades.id_entidades AND entidades.id_entidades = usuarios.id_entidades AND consecutivos.nombre_consecutivos='CONTABLE' AND usuarios.id_usuarios='$_id_usuarios'";
-			$id_enc="entidades.nombre_entidades";
-			$resultSet=$d_comprobantes->getCondiciones($columnas_enc ,$tablas_enc ,$where_enc, $id_enc);
-			
+			$resultTipCom = $tipo_comprobante->getAll("nombre_tipo_comprobantes");
 				
 		    $permisos_rol = new PermisosRolesModel();
 			$nombre_controladores = "ComprobanteContable";
 			$id_rol= $_SESSION['id_rol'];
-			$resultPer = $permisos_rol->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+			$resultPer = $temp_comprobantes->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 				
 			if (!empty($resultPer))
 			{
 				
-				if (isset($_POST['concepto_ccomprobantes'])){
-						
-					$_concepto_ccomprobantes =$_POST['concepto_ccomprobantes'];
-					$_fecha_ccomprobantes =$_POST['fecha_ccomprobantes'];
-					$arrayGet['array_concepto_ccomprobantes']=$_concepto_ccomprobantes;
-					$arrayGet['array_fecha_ccomprobantes']=$_fecha_ccomprobantes;
-					
-				}
-				
-				
-					
-				if(isset($_GET["id_temp_comprobantes"]))
-				{
-					$_id_usuarios= $_SESSION['id_usuarios'];
-					$id_temp_comprobantes=(int)$_GET["id_temp_comprobantes"];
-						
-					$where = "id_usuario_registra = '$_id_usuarios' AND id_temp_comprobantes = '$id_temp_comprobantes'  ";
-					$resultado = $temp_comprobantes->deleteByWhere($where);
-						
-				
-					
-				}
-				
-				if(isset($_POST["plan_cuentas"])){
-				$_id_plan_cuentas= $_POST["plan_cuentas"];
-				
-				if($_id_plan_cuentas==""){
-					
-				}else 
-				{
-						$_descripcion_dcomprobantes= $_POST["descripcion_dcomprobantes"];
-						
-						$_debe_dcomprobantes= $_POST["debe_dcomprobantes"];
-					
-						if ($_debe_dcomprobantes=="")
-						{
-							$_debe_dcomprobantes=0;
-								
-						}
-						$_haber_dcomprobantes= $_POST["haber_dcomprobantes"];
-					
-						if ($_haber_dcomprobantes=="")
-						{
-							$_haber_dcomprobantes=0;
-					
-						}
-					
-						$funcion = "ins_temp_comprobantes";
-						$parametros = "'$_id_usuarios','$_id_plan_cuentas','$_descripcion_dcomprobantes','$_debe_dcomprobantes','$_haber_dcomprobantes'";
-						$temp_comprobantes->setFuncion($funcion);
-						$temp_comprobantes->setParametros($parametros);
-						$resultado=$temp_comprobantes->Insert();
-					
-				}
-				}
-				
-				$columnas_res = " temp_comprobantes.id_temp_comprobantes,
-				          plan_cuentas.id_plan_cuentas,
-		    		      plan_cuentas.codigo_plan_cuentas,
-						  plan_cuentas.nombre_plan_cuentas,
-						  temp_comprobantes.observacion_temp_comprobantes,
-						  temp_comprobantes.debe_temp_comprobantes,
-						  temp_comprobantes.haber_temp_comprobantes";
-				$tablas_res ="public.temp_comprobantes,
-						  public.usuarios,
-						  public.plan_cuentas,
-						  public.entidades";
-				$where_res ="temp_comprobantes.id_plan_cuentas = plan_cuentas.id_plan_cuentas AND
-				usuarios.id_usuarios = temp_comprobantes.id_usuario_registra AND
-				usuarios.id_entidades = entidades.id_entidades AND
-				entidades.id_entidades = plan_cuentas.id_entidades AND usuarios.id_usuarios='$_id_usuarios'";
-				$id_res="temp_comprobantes.id_temp_comprobantes";
-				
-				$resultRes=$d_comprobantes->getCondiciones($columnas_res ,$tablas_res ,$where_res, $id_res);
-				
-				
-				
-				 
 					
 				$this->view("ComprobanteContable",array(
-				    "resultSet"=>$resultSet, "resultRes"=>$resultRes, "resultTipCom"=>$resultTipCom, "arrayGet"=>$arrayGet
+				    "resultTipCom"=>$resultTipCom
 					));
 			
 			
@@ -486,62 +519,13 @@ class ComprobanteContableController extends ControladorBase{
 	 
 	
 	
-	/*
-	public function InsertarTemporal(){
-		
-		session_start();
-		$_id_usuarios= $_SESSION['id_usuarios'];
-		
-		
-		$temp_comprobantes=new ComprobantesTemporalModel();
-		$nombre_controladores = "Comprobantes";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $temp_comprobantes->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-		
-		
-		
-		
-		if (isset ($_POST["plan_cuentas"]) && isset ($_POST["descripcion_dcomprobantes"]) && isset ($_POST["debe_dcomprobantes"]) && isset($_POST["haber_dcomprobantes"])  )
-		{
-		
-		
-			$_id_plan_cuentas= $_POST["plan_cuentas"];
-			$_descripcion_dcomprobantes= $_POST["descripcion_dcomprobantes"];
-			$_debe_dcomprobantes= $_POST["debe_dcomprobantes"];
-		
-			if ($_debe_dcomprobantes=="")
-			{
-				$_debe_dcomprobantes=0;
-					
-			}
-			$_haber_dcomprobantes= $_POST["haber_dcomprobantes"];
-		
-			if ($_haber_dcomprobantes=="")
-			{
-				$_haber_dcomprobantes=0;
-		
-			}
-		
-			$funcion = "ins_temp_comprobantes";
-			$parametros = "'$_id_usuarios','$_id_plan_cuentas','$_descripcion_dcomprobantes','$_debe_dcomprobantes','$_haber_dcomprobantes'";
-			$temp_comprobantes->setFuncion($funcion);
-			$temp_comprobantes->setParametros($parametros);
-			$resultado=$temp_comprobantes->Insert();
-		
-		}
-	}
-		
-   */
 	
    public function InsertaComprobanteContable(){
    
    	session_start();
-   
    	$resultado = null;
    	$permisos_rol=new PermisosRolesModel();
-   
    	$plan_cuentas= new PlanCuentasModel();
-   	 
    	$forma_pago = new FormaPagoModel();
    	$consecutivos = new ConsecutivosModel();
     $ccomprobantes = new CComprobantesModel();
@@ -604,18 +588,13 @@ class ComprobanteContableController extends ControladorBase{
    				
    				
    				$resultConsecutivo=$consecutivos->UpdateBy("numero_consecutivos='$_update_numero_consecutivo'", "consecutivos", "id_consecutivos='$_id_consecutivos'");
-   				
-   				
-   				//$print="'$_id_entidades','$_id_tipo_comprobantes', '$_numero_consecutivos','$_ruc_ccomprobantes','$_nombres_ccomprobantes' ,'$_retencion_ccomprobantes' ,'$_valor_ccomprobantes' ,'$_concepto_ccomprobantes', '$_id_usuario_creador'";
-   				//$this->view("Error",array("resultado"=>$print));	
-   				//die();
    
+   				
    				///INSERTAMOS DETALLE  DEL MOVIMIENTO
    					
    				foreach($resultCom as $res)
    				{
-   
-   					//busco si existe este nuevo id
+   					
    					try
    					{
    						$_id_plan_cuentas = $res->id_plan_cuentas;
@@ -625,7 +604,6 @@ class ComprobanteContableController extends ControladorBase{
    
    						$resultComprobantes = $ccomprobantes->getBy("numero_ccomprobantes ='$_numero_consecutivos' AND id_entidades ='$_id_entidades' AND id_tipo_comprobantes='$_id_tipo_comprobantes'");
    						$_id_ccomprobantes=$resultComprobantes[0]->id_ccomprobantes;
-   						
    						
    						
    						$funcion = "ins_dcomprobantes";
@@ -649,9 +627,6 @@ class ComprobanteContableController extends ControladorBase{
    						//$_cadena = $_id_plan_cuentas .'-'. $_id_ccomprobantes .'-'. $_fecha_actual .'-'. $_debe_dcomprobantes .'-'. $_haber_dcomprobantes .'-'. $_saldo_ini;
    							
    							
-   						///LAS TRAZAS
-   							
-   						
    						///borro de las solicitudes el carton
    						$where_del = "id_usuario_registra= '$_id_usuarios'";
    						$tem_comprobantes->deleteByWhere($where_del);
@@ -667,13 +642,11 @@ class ComprobanteContableController extends ControladorBase{
    						
    				}					
    					
-   					
    			}
    			catch (Exception $e)
    			{
    
    			}
-   		
    
    		}	
    		
@@ -686,15 +659,73 @@ class ComprobanteContableController extends ControladorBase{
    
    		));
    
-   
    	}
-   
-   
    
    }
    
     
    
+       public function eliminar_temp_comprobantes(){
+           
+           session_start();
+           
+           $_id_usuarios = $_SESSION['id_usuarios'];
+           
+           $id_temp_comprobantes = (isset($_REQUEST['id_temp_comprobantes'])&& $_REQUEST['id_temp_comprobantes'] !=NULL)?$_REQUEST['id_temp_comprobantes']:0;
+           
+           if($_id_usuarios!='' && $id_temp_comprobantes>0){
+               
+               $temp_comprobantes = new ComprobantesTemporalModel();
+               
+               $where = "id_temp_comprobantes = $id_temp_comprobantes AND id_usuario_registra = $_id_usuarios ";
+               $resultado=$temp_comprobantes->deleteById($where);
+               
+               echo "1";
+              
+           }
+       }
+       
+       
+       
+       
+       public function insertar_temp_comprobantes(){
+           
+           session_start();
+           $_id_usuarios = $_SESSION['id_usuarios'];
+           $_id_plan_cuentas = (isset($_REQUEST['plan_cuentas'])&& $_REQUEST['plan_cuentas'] !=NULL)?$_REQUEST['plan_cuentas']:0;
+           $_descripcion_dcomprobantes = (isset($_REQUEST['descripcion_dcomprobantes'])&& $_REQUEST['descripcion_dcomprobantes'] !=NULL)?$_REQUEST['descripcion_dcomprobantes']:'';
+           $_debe_dcomprobantes = (isset($_REQUEST['debe_dcomprobantes'])&& $_REQUEST['debe_dcomprobantes'] !=NULL)?$_REQUEST['debe_dcomprobantes']:0;
+           $_haber_dcomprobantes = (isset($_REQUEST['haber_dcomprobantes'])&& $_REQUEST['haber_dcomprobantes'] !=NULL)?$_REQUEST['haber_dcomprobantes']:0;
+           
+           $temp_comprobantes = new ComprobantesTemporalModel();
+           
+           if($_id_usuarios!='' && $_id_plan_cuentas>0){
+                       
+                       if ($_debe_dcomprobantes=="")
+                       {
+                           $_debe_dcomprobantes=0;
+                           
+                       }
+                      
+                       if ($_haber_dcomprobantes=="")
+                       {
+                           $_haber_dcomprobantes=0;
+                           
+                       }
+                       
+                       $funcion = "ins_temp_comprobantes";
+                       $parametros = "'$_id_usuarios','$_id_plan_cuentas','$_descripcion_dcomprobantes','$_debe_dcomprobantes','$_haber_dcomprobantes'";
+                       $temp_comprobantes->setFuncion($funcion);
+                       $temp_comprobantes->setParametros($parametros);
+                       $resultado=$temp_comprobantes->Insert();
+                   
+                       echo "1";
+               
+           }
+           
+       }
+       
+       
 		
 	
 	public function AutocompleteComprobantesCodigo(){
@@ -709,7 +740,7 @@ class ComprobanteContableController extends ControladorBase{
 				  public.entidades, 
 				  public.plan_cuentas";
 		$where ="plan_cuentas.codigo_plan_cuentas LIKE '$codigo_plan_cuentas%' AND entidades.id_entidades = usuarios.id_entidades AND
- 				 plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas='4'";
+ 				 plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas in ('4', '5')";
 		$id ="plan_cuentas.codigo_plan_cuentas";
 		
 		
@@ -746,7 +777,7 @@ class ComprobanteContableController extends ControladorBase{
 				  public.entidades,
 				  public.plan_cuentas";
 		$where ="plan_cuentas.codigo_plan_cuentas = '$codigo_plan_cuentas' AND entidades.id_entidades = usuarios.id_entidades AND
-		plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas='4'";
+		plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas in ('4', '5')";
 		$id ="plan_cuentas.codigo_plan_cuentas";
 		
 		
@@ -786,7 +817,7 @@ class ComprobanteContableController extends ControladorBase{
 				  public.entidades,
 				  public.plan_cuentas";
 		$where ="plan_cuentas.nombre_plan_cuentas LIKE '$nombre_plan_cuentas%' AND entidades.id_entidades = usuarios.id_entidades AND
-		plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas='4'";
+		plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas in ('4', '5')";
 		$id ="plan_cuentas.codigo_plan_cuentas";
 	
 	
@@ -824,7 +855,7 @@ class ComprobanteContableController extends ControladorBase{
 				  public.entidades,
 				  public.plan_cuentas";
 		$where ="plan_cuentas.nombre_plan_cuentas = '$nombre_plan_cuentas' AND entidades.id_entidades = usuarios.id_entidades AND
-		plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas='4'";
+		plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas in ('4', '5')";
 		$id ="plan_cuentas.codigo_plan_cuentas";
 		
 		

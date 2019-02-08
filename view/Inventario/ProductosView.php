@@ -145,7 +145,7 @@
                                     </div>
                         		    
                         		    
-                        		    <div class="col-lg-3 col-xs-12 col-md-3">
+                        		<div class="col-lg-3 col-xs-12 col-md-3">
                     		    <div class="form-group">
                                                       <label for="ult_precio_productos" class="control-label">ULT Precio</label>
                                                       <input type="text" class="form-control cantidades1" id="ult_precio_productos" name="ult_precio_productos" value='<?php echo $resEdit->ult_precio_productos; ?>' 

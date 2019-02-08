@@ -21,7 +21,9 @@
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
-     ?>
+     
+        ?>
+        
     
     
     <div class="wrapper">
@@ -89,7 +91,7 @@
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="identificacion_proveedores" class="control-label">Ruc Proveedores</label>
-                                                          <input type="text" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value="<?php echo $resEdit->identificacion_proveedores; ?>"  placeholder="Ruc Proveedores">
+                                                          <input type="text" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value="<?php echo $resEdit->identificacion_proveedores; ?>"  placeholder="Ruc Proveedores" onKeyPress="return numeros(event)">
                                                           <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
 					                                      <div id="mensaje_identificacion_proveedores" class="errores"></div>
                                     </div>
@@ -114,6 +116,7 @@
                         		    </div>                     			
                         	
                         	    </div>
+                        	    
                     			
                     			
                     			<div class="row">
@@ -122,7 +125,7 @@
                         		<div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                 <label for="telefono_proveedores" class="control-label">Teléfono Proveedores</label>
-                                                          <input type="text" class="form-control" id="telefono_proveedores" name="telefono_proveedores" value="<?php echo $resEdit->telefono_proveedores; ?>"  placeholder="Teléfono Proveedores">
+                                                          <input type="text" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value="<?php echo $resEdit->telefono_proveedores; ?>"  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
                                                           <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
 					                                      <div id="mensaje_telefono_proveedores" class="errores"></div>
                                   
@@ -133,7 +136,7 @@
                         		    <div class="col-lg-3 col-xs-12 col-md-3">
                         		     <div class="form-group">
                                                 <label for="email_proveedores" class="control-label">Email Proveedores</label>
-                                                          <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" value="<?php echo $resEdit->email_proveedores; ?>"  placeholder="Email Proveedores">
+                                                          <input type="email" class="form-control" id="email_proveedores" name="email_proveedores" value="<?php echo $resEdit->email_proveedores; ?>"  placeholder="Email Proveedores" onKeyUp="javascript:validateMail('id_mail')" >
                                                           <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
 					                                      <div id="mensaje_email_proveedores" class="errores"></div>
                                   
@@ -144,7 +147,7 @@
                     		         <div class="col-lg-3 col-xs-12 col-md-3">
                         		     <div class="form-group">
                                                 <label for="fecha_nacimiento_proveedores" class="control-label">Fecha Nacimiento Proveedores</label>
-                                                          <input type="text" class="form-control" id="fecha_nacimiento_proveedores" name="fecha_nacimiento_proveedores" value="<?php echo $resEdit->fecha_nacimiento_proveedores; ?>"  placeholder="Fecha Proveedores">
+                                                          <input type="date" class="form-control" id="fecha_nacimiento_proveedores" name="fecha_nacimiento_proveedores" value="<?php echo $resEdit->fecha_nacimiento_proveedores; ?>"  placeholder="Fecha Proveedores">
                                                           <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
 					                                      <div id="mensaje_fecha_nacimiento_proveedores" class="errores"></div>
                                   
@@ -182,7 +185,7 @@
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="identificacion_proveedores" class="control-label">Ruc Proveedores</label>
-                                                          <input type="text" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="Ruc Proveedores">
+                                                          <input type="number" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="ruc.." onKeyPress="return numeros(event)">
                                                            <div id="mensaje_identificacion_proveedores" class="errores"></div>
                                     </div>
                         		    </div>
@@ -211,22 +214,23 @@
 									<div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="telefono_proveedores" class="control-label">Teléfono Proveedores</label>
-                                                          <input type="text" class="form-control" id="telefono_proveedores" name="telefono_proveedores" value=""  placeholder="Teléfono Proveedores">
+                                                          <input type="number" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value=""  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
                                                            <div id="mensaje_telefono_proveedores" class="errores"></div>
                                     </div>
                         		    </div>
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="email_proveedores" class="control-label">Email Proveedores</label>
-                                                          <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores">
+                                                          <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores" onKeyUp="javascript:validateMail('id_mail')"  >
                                                            <div id="mensaje_email_proveedores" class="errores"></div>
+                                                           
                                     </div>
                         		    </div>
                         		    
                         		     <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="fecha_nacimiento_proveedores" class="control-label">Fecha Proveedores</label>
-                                                          <input type="date" class="form-control" id="fecha_nacimiento_proveedores" name="fecha_nacimiento_proveedores" value=""  placeholder="Fecha Proveedores">
+                                                          <input type="date" class="form-control" id="fecha_nacimiento_proveedores" name="fecha_nacimiento_proveedores" value=""  placeholder="fecha..">
                                                            <div id="mensaje_fecha_nacimiento_proveedores" class="errores"></div>
                                     </div>
                         		    </div>
@@ -355,7 +359,12 @@
     
     <?php include("view/modulos/links_js.php"); ?>
 	
-	
+<script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+   
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>	
     
            
 	
@@ -386,6 +395,7 @@
 		    	var telefono_proveedores = $("#telefono_proveedores").val();
 		    	var email_proveedores = $("#email_proveedores").val();
 		    	var fecha_nacimiento_proveedores = $("#fecha_nacimiento_proveedores").val();
+		    	var fecha_actual = new Date();
 		    	
 		    	
 		    	
@@ -453,23 +463,34 @@
 		    		$("#mensaje_telefono_proveedores").fadeOut("slow"); //Muestra mensaje de error
 		            
 				}   
+		     
+
 		    	if (email_proveedores == "")
 		    	{
 			    	
-		    		$("#mensaje_email_proveedores").text("Introduzca Un Email");
+		    		$("#mensaje_email_proveedores").text("Introduzca un correo");
 		    		$("#mensaje_email_proveedores").fadeIn("slow"); //Muestra mensaje de error
+		    		
 		            return false;
 			    }
-		    	else 
+		    	else if (regex.test($('#email_proveedores').val().trim()))
 		    	{
 		    		$("#mensaje_email_proveedores").fadeOut("slow"); //Muestra mensaje de error
 		            
-				}   
+				}
+		    	else 
+		    	{
+		    		$("#mensaje_email_proveedores").text("Introduzca un correo Valido");
+		    		$("#mensaje_email_proveedores").fadeIn("slow"); //Muestra mensaje de error
+		    		
+			            return false;	
+			    }
+				
 
-		    	if (fecha_nacimiento_proveedores == "")
+		    	if (fecha_nacimiento_proveedores =="")
 		    	{
 			    	
-		    		$("#mensaje_fecha_nacimiento_proveedores").text("Introduzca Una Fecha");
+		    		$("#mensaje_fecha_nacimiento_proveedores").text("Introduzca una fecha ");
 		    		$("#mensaje_fecha_nacimiento_proveedores").fadeIn("slow"); //Muestra mensaje de error
 		            return false;
 			    }
@@ -477,14 +498,22 @@
 		    	{
 		    		$("#mensaje_fecha_nacimiento_proveedores").fadeOut("slow"); //Muestra mensaje de error
 		            
-				}   
-
+				} 
 		    	
-
+		    	//var fecha=hoyFecha()
 		    	
-				
-
-
+		    	
+		    	if (fecha_nacimiento_proveedores >= hoyFecha())
+		    	{
+		    		$("#mensaje_fecha_nacimiento_proveedores").text("Introduzca una fecha Correcta");
+		    		$("#mensaje_fecha_nacimiento_proveedores").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+		        }
+		    	else 
+		    	{
+		    		$("#mensaje_fecha_nacimiento_proveedores").fadeOut("slow"); //Muestra mensaje de error
+		            
+		    	}
 		    	
 			}); 
 
@@ -517,6 +546,26 @@
 		}); 
 
 	</script>	
+	
+	<script type="text/javascript">
+	function hoyFecha(){
+	    var hoy = new Date();
+	        var dd = hoy.getDate();
+	        var mm = hoy.getMonth()+1;
+	        var yyyy = hoy.getFullYear();
+	        
+	        if (dd < 10) {
+	        	  dd = '0' + dd;
+	        	} 
+	        	if (mm < 10) {
+	        	  mm = '0' + mm;
+	        	}
+	 
+	        return yyyy+'-'+mm+'-'+dd;
+	}
+	</script>
+	
+	
 	
 		<script type="text/javascript">
      
@@ -596,6 +645,44 @@
         	        	   
 
  </script>
+
+ 
+     <script type="text/javascript" >   
+    function numeros(e){
+        
+        key = e.keyCode || e.which;
+        tecla = String.fromCharCode(key).toLowerCase();
+        letras = "0123456789";
+        especiales = [8,37,39,46];
+     
+        tecla_especial = false
+        for(var i in especiales){
+        if(key == especiales[i]){
+         tecla_especial = true;
+         break;
+            } 
+        }
+     
+        if(letras.indexOf(tecla)==-1 && !tecla_especial)
+            return false;
+     }
+    </script>
+    
+ 
+
+<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
+       <script>
+      $(document).ready(function(){
+      $(".cantidades1").inputmask();
+      });
+	  </script>
+	 
+
+
+	  
+       
+   
+ 
 	
   </body>
 </html>   

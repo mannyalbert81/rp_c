@@ -92,7 +92,7 @@ class MovimientosInvController extends ControladorBase{
 	public function compras(){
 	    session_start();
 	   
-	    $this->view("Compras",array(
+	    $this->view_Inventario("Compras",array(
 	        
 	    ));
 	}
@@ -117,7 +117,8 @@ class MovimientosInvController extends ControladorBase{
                       grupos.nombre_grupos,
                       productos.codigo_productos,
                       productos.nombre_productos,
-                      unidad_medida.nombre_unidad_medida";
+                      unidad_medida.nombre_unidad_medida,
+                      productos.ult_precio_productos";
 	    
 	    $tablas = " public.productos,
                       public.grupos,
@@ -206,7 +207,7 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td class="col-xs-1"><div class="pull-right">';
 	                $html.='<input type="text" class="form-control input-sm"  id="cantidad_'.$res->id_productos.'" value="1"></div></td>';
 	                $html.='<td class="col-xs-2"><div class="pull-right">';
-	                $html.='<input type="text" class="form-control input-sm"  id="pecio_producto_'.$res->id_productos.'" value="0.00"></div></td>';
+	                $html.='<input type="text" class="form-control input-sm"  id="pecio_producto_'.$res->id_productos.'" value="'.$res->ult_precio_productos.'"></div></td>';
 	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_productos.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
 	                
 	                
@@ -631,6 +632,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            $resultset = $movimientos_inventario->llamafuncion();
 	            
+	             
 	            if(!empty($resultset)){
 	                if(is_array($resultset) && count($resultset)>0){
 	                    
@@ -1007,7 +1009,7 @@ class MovimientosInvController extends ControladorBase{
 	public function indexsalida(){
 	    
 	    session_start();
-	    $this->View('SalidasProductos',array());
+	    $this->view_Inventario("SalidasProductos",array());
 	    
 	}
 	
@@ -1212,9 +1214,6 @@ class MovimientosInvController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            //$html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -1231,8 +1230,6 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
-	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_movimientos_inv_cabeza.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
-	                
 	                $html.='</tr>';
 	            }
 	            
@@ -1337,9 +1334,6 @@ class MovimientosInvController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            //$html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -1356,8 +1350,6 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
-	                $html.='<td style="font-size: 18px;"><a href="#" class="btn btn-info" role="button">Link Button</a></td>';
-	                $html.='<td "><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_movimientos_inv_cabeza.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
 	                
 	                $html.='</tr>';
 	            }
@@ -1468,18 +1460,22 @@ class MovimientosInvController extends ControladorBase{
 	            $resultdetalle = $salidas->getCondiciones($col_detalle,$tab_detalle,$where_detalle,"productos.nombre_productos");
 	            
 	            
+	            $this->view_Inventario('AprobarSalidas',array(
+	                'resultsolicitud'=>$resultsolicitud,'resultdetalle'=>$resultdetalle
+	            ));
+	            
+	        }else{
+	            
+	            $this->redirect('MovimientosInv','indexsalida');
+	            
 	        }
 	        
 	        
+	       
+	    }else{
 	        
+	        $this->redirect('MovimientosInv','indexsalida');	        
 	        
-	        
-	        
-	        
-	        
-	        $this->View('AprobarSalidas',array(
-	            'resultsolicitud'=>$resultsolicitud,'resultdetalle'=>$resultdetalle
-	        ));
 	    }
 	    
 	   
@@ -1595,7 +1591,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        switch ( $_POST['btnForm'] ){
 	            case 'APROBAR': $_estado_salida='APROBADA'; break;
-	            case 'REPROBAR': $_estado_salida='REPROBADA'; break;
+	            case 'REPROBAR': $_estado_salida='RECHAZADA'; break;
 	        }        
 	        
 	        
@@ -1630,14 +1626,6 @@ class MovimientosInvController extends ControladorBase{
 	                }
 	            }
 	            
-	            if($resultadofuncion>0){
-	                
-	                $respuesta_a_view =  "<script type=\"text/javascript\">swal(\"Fotos guardadas\");</script>"; 
-	               
-	            }else{
-	                $respuesta_a_view =  "<script type=\"text/javascript\">swal(\"Fotos guardadas\");</script>"; 
-	            }
-	            
 	            
 	        }
 	        
@@ -1647,8 +1635,182 @@ class MovimientosInvController extends ControladorBase{
 	    
 	}
 	
+	/***
+	 * mod: solicitudes
+	 * title: index_solicitudes
+	 * desc: redrecciona a la pagina de solicitudes
+	 * return: void 
+	 */
+	public function index_solicitudes(){
+	    
+	    //Creamos el objeto usuario
+	    $solicitud_cabeza=new SolicitudCabezaModel();
+	    $productos=new ProductosModel();
+	    $usuarios = null; $usuarios= new UsuariosModel();
+	    
+	    $resultSet=null;
+	    $resultEdit = "";
+	    
+	    session_start();
+	    
+	    
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    {
+	        
+	        $nombre_controladores = "SolicitudCabeza";
+	        $id_rol= $_SESSION['id_rol'];
+	        $resultPer = $solicitud_cabeza->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	        
+	        if (!empty($resultPer))
+	        {
+	            if (isset ($_GET["id_solicitud_cabeza"])   )
+	            {
+	                
+	                $nombre_controladores = "SolicitudCabeza";
+	                $id_rol= $_SESSION['id_rol'];
+	                $resultPer = $solicitud_cabeza->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	                
+	                if (!empty($resultPer))
+	                {
+	                    
+	                    $_id_productos = $_GET["id_productos"];
+	                    $columnas = " id_grupos,
+                                     codigo_productos,
+                                     marca_productos,
+                                     nombre_productos,
+                                     descripcion_productos,
+                                    unidad_medida_productos,
+                                     ult_precio_productos ";
+	                    $tablas   = "productos";
+	                    $where    = "id_productos = '$_id_productos' ";
+	                    $id       = "codigo_productos";
+	                    
+	                    $resultEdit = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
+	                    
+	                }
+	                else
+	                {
+	                    $this->view_Inventario("Error",array(
+	                        "resultado"=>"No tiene Permisos de Editar Solicitudes"
+	                        
+	                    ));
+	                    
+	                    
+	                }
+	                
+	            }else{
+	                $_id_usuarios = $_SESSION['id_usuarios'];
+	                $resultSet = $usuarios->getBy("id_usuarios = $_id_usuarios");
+	            }
+	            
+	            
+	            
+	            $this->view_Inventario("Solicitud",array(
+	                "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultProdu" =>$resultProdu,
+	                
+	            ));
+	            
+	            
+	            
+	        }
+	        else
+	        {
+	            $this->view_Inventario("Error",array(
+	                "resultado"=>"No tiene Permisos de Acceso a Solicitud Cabeza"
+	                
+	            ));
+	            
+	            exit();
+	        }
+	        
+	    }
+	    else{
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        
+	    }
+	}
 	
-	
+	/***
+	 * mod: solicitudes
+	 * title: inserta_solicitud
+	 * desc: redrecciona a la pagina de solicitudes
+	 * return: void/json
+	 */
+	public function inserta_solicitud(){
+	    
+	    session_start();
+	    $resultado = null;
+	    $temp_solicitud = null;
+	    $temp_solicitud =new TempSolicitudModel();
+	    $movimientos_inv_cabeza = null;
+	    $movimientos_inv_cabeza = new MovimientosInvCabezaModel();
+	    $movimientos_inv_detalle = null;
+	    $movimientos_inv_detalle = new MovimientosInvDetalleModel();
+	    $consecutivos = new ConsecutivosModel();
+	    
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    {
+	        
+	        if (isset ($_POST["razon_solicitud"]))
+	        {
+	            
+	            $_id_usuarios      = $_SESSION["id_usuarios"];
+	            $_razon_solicitud  = $_POST['razon_solicitud'];
+	            $_estado_solicitud = 'PENDIENTE';
+	            
+	            date_default_timezone_set('America/Guayaquil');
+	            $fechaActual = date('Y-m-d');
+	            
+	            $funcion = 'fn_agrega_movimiento_solicitud';
+	            $parametros = "'$_id_usuarios',
+		    	               '$_razon_solicitud',
+		    	               '$fechaActual',
+                               '$_estado_solicitud'";
+	            
+	            
+	            $movimientos_inv_cabeza->setFuncion($funcion);
+	            $movimientos_inv_cabeza->setParametros($parametros);
+	            $resultadoinsert=$movimientos_inv_cabeza->llamafuncion();
+	            
+	            //para solicitud por ajax
+	            
+	            if(isset($_POST['peticion']) && $_POST['peticion'] == 'ajax' ){
+	                
+	                if(!empty($resultadoinsert)){
+	                    
+	                    if($resultadoinsert[0]->fn_agrega_movimiento_solicitud>0)
+	                    {
+	                       echo json_encode(array('status'=>'1','mensaje'=>'Solicitud Ingresada'));
+	                    }else{
+	                        echo json_encode(array('status'=>'0','mensaje'=>'Solicitud Rechazada'));
+	                    }
+	                }
+	               
+	            }else{
+	                
+	                $this->redirect("SolicitudCabeza", "index");
+	            }
+	            
+	            
+	          }
+	            
+	           
+	      
+	    }else{
+	        
+	        $error = TRUE;
+	        $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
+	        
+	        $this->view_Inventario("Login",array(
+	            "resultSet"=>"$mensaje", "error"=>$error
+	        ));
+	        
+	        
+	        die();
+	        
+	    }
+	}
 	
 }
 ?>

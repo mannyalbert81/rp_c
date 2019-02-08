@@ -73,7 +73,7 @@ class TipoComprobantesController extends ControladorBase{
 				}
 		
 				
-				$this->view("TipoComprobantes",array(
+				$this->view_Inventario("TipoComprobantes",array(
 						"resultSet"=>$resultSet, "resultEdit" =>$resultEdit
 			
 				));
@@ -83,7 +83,7 @@ class TipoComprobantesController extends ControladorBase{
 			}
 			else
 			{
-				$this->view("Error",array(
+			    $this->view_Inventario("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Tipos de Comprobantes"
 				
 				));
@@ -94,7 +94,7 @@ class TipoComprobantesController extends ControladorBase{
 		}
 		else 
 		{
-				$this->view("ErrorSesion",array(
+		    $this->view_Inventario("ErrorSesion",array(
 						"resultSet"=>""
 			
 				));

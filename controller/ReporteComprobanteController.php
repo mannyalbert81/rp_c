@@ -339,6 +339,8 @@ class ReporteComprobanteController extends ControladorBase{
 							      entidades.id_entidades,
 								  entidades.nombre_entidades,
                                   entidades.direccion_entidades,
+                                  entidades.telefono_entidades,
+                                  entidades.ruc_entidades,
 								  ccomprobantes.valor_letras,
 								  ccomprobantes.fecha_ccomprobantes,
 								  ccomprobantes.numero_ccomprobantes,
@@ -350,7 +352,10 @@ class ReporteComprobanteController extends ControladorBase{
 								  ccomprobantes.numero_cuenta_banco_ccomprobantes,
 								  ccomprobantes.numero_cheque_ccomprobantes,
 								  ccomprobantes.observaciones_ccomprobantes,
-								  forma_pago.nombre_forma_pago";
+                                  dcomprobantes.descripcion_dcomprobantes,
+								  forma_pago.nombre_forma_pago,
+                                  proveedores.nombre_proveedores
+			        ";
 	            
 	            
 	            
@@ -358,17 +363,22 @@ class ReporteComprobanteController extends ControladorBase{
 							  public.entidades,
 							  public.usuarios,
 							  public.tipo_comprobantes,
-							  public.forma_pago";
+							  public.forma_pago,
+                              public.dcomprobantes,
+                              public.proveedores";
 	            
 	            $where="ccomprobantes.id_forma_pago = forma_pago.id_forma_pago AND
 							  entidades.id_entidades = usuarios.id_entidades AND
 							  usuarios.id_usuarios = ccomprobantes.id_usuarios AND
+	                          ccomprobantes.id_proveedores = proveedores.id_proveedores AND
+                              dcomprobantes.id_ccomprobantes = ccomprobantes.id_ccomprobantes AND
 							  tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes AND ccomprobantes.id_ccomprobantes='$_id_ccomprobantes'";
 	            
 	            $id="ccomprobantes.numero_ccomprobantes";
 	            
 	            
 	           
+	            
 	            
 	            $resultSetCabeza=$ccomprobantes->getCondiciones($columnas, $tablas, $where, $id);
 	            
@@ -381,6 +391,8 @@ class ReporteComprobanteController extends ControladorBase{
 	                $_nombre_usuarios     =$resultSetCabeza[0]->nombre_usuarios;
 	                $_nombre_entidades     =$resultSetCabeza[0]->nombre_entidades;
 	                $_direccion_entidades     =$resultSetCabeza[0]->direccion_entidades;
+	                $_telefono_entidades     =$resultSetCabeza[0]->telefono_entidades;
+	                $_ruc_entidades     =$resultSetCabeza[0]->ruc_entidades;
 	                $_valor_letras     =$resultSetCabeza[0]->valor_letras;
 	                $_fecha_ccomprobantes     =$resultSetCabeza[0]->fecha_ccomprobantes;
 	                $_numero_ccomprobantes     =$resultSetCabeza[0]->numero_ccomprobantes;
@@ -393,33 +405,118 @@ class ReporteComprobanteController extends ControladorBase{
 	                $_numero_cheque_ccomprobantes     =$resultSetCabeza[0]->numero_cheque_ccomprobantes;
 	                $_observaciones_ccomprobantes     =$resultSetCabeza[0]->observaciones_ccomprobantes;
 	                $_nombre_forma_pago     =$resultSetCabeza[0]->nombre_forma_pago;
+	                $_nombre_proveedores     =$resultSetCabeza[0]->nombre_proveedores;
+	                $_descripcion_dcomprobantes     =$resultSetCabeza[0]->descripcion_dcomprobantes;
+	                
+	                
+	                $columnas1 = "plan_cuentas.nombre_plan_cuentas,
+                                  plan_cuentas.codigo_plan_cuentas,
+                                  dcomprobantes.descripcion_dcomprobantes, 
+                                  dcomprobantes.debe_dcomprobantes, 
+                                  dcomprobantes.haber_dcomprobantes, 
+                                  dcomprobantes.numero_dcomprobantes";
+                                	                
+	                $tablas1   = "   public.dcomprobantes, 
+                                     public.plan_cuentas";
+	                
+	                  
+	                
+	                $where1    = "plan_cuentas.id_plan_cuentas = dcomprobantes.id_plan_cuentas AND dcomprobantes.id_ccomprobantes='$_id_ccomprobantes' ";
+	           
+	                $id1       = "dcomprobantes.id_dcomprobantes";
+	                
+	                $resultSetDetalle=$dcomprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	                
 	                
 	                
-	                $html.='<p style="text-align: center; font-size: 30px; margin-top:0px;"><b>'.$_nombre_entidades.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 15px; margin-top:0px;"><b>'.direccion_entidades.'</b></p>';
-	                
-	                $html.='<p style="text-align: right;">'.$logo.'<hr style="height: 2px; background-color: black;"></p>';
-	                $html.='<p style="text-align: right; font-size: 13px;"><b>Fecha Factura:</b> '.$fechaactual.'</p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_nombre_tipo_comprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_concepto_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_nombre_usuarios.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_valor_letras.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_fecha_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_numero_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_ruc_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_nombres_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_retencion_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_valor_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_referencia_doc_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_numero_cuenta_banco_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_numero_cheque_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_observaciones_ccomprobantes.'</b></p>';
-	                $html.='<p style="text-align: center; font-size: 16px; margin-top:60px;"><b>Factura No. '.$_nombre_forma_pago.'</b></p>';
-	                
-	              
 	                
 	                
+	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                $html.= "<tr>";
+	                $html.='<th style="text-align: center; font-size: 25px; "><b>'.$_nombre_entidades.'</b></br>';
+	                $html.='<p style="text-align: center; font-size: 13px; ">'.$_direccion_entidades.'';
+	                $html.='<br style="text-align: center; ">'.$_telefono_entidades.'';
+	                $html.='<br style="text-align: center; ">COMPROBANTE DE EGRESOS CONTABLE Nº: '.$_numero_ccomprobantes.'</p>';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; RUC: '.$_ruc_entidades.'&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Fecha Factura: '.$_fecha_ccomprobantes.'';
+	                $html.='</tr>';
+	                $html.='</table>';
+	                
+	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE: </b>'.$_nombre_proveedores.'  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Nº RET:</b> '.$_retencion_ccomprobantes.'';
+	                $html.='<br colspan="12" style="text-align: left; font-size: 13px; "><b>&nbsp;&nbsp;LA CANTIDAD DE: </b>'.$_valor_ccomprobantes.'</th>';
+	                
+	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                $html.= "<tr>";
+	                $html.='<th colspan="12" style="text-align: left; height:30px; font-size: 13px;" ><b>&nbsp;CONCEPTO: </b>'.$_concepto_ccomprobantes.'';
+	                $html.="</tr>";
+	                
+	               
+	                if(!empty($resultSetDetalle)){
+	                    
+	                  
+	                    $html.= "<tr>";
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Centro</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Cuenta</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Descripción</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">NIM</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Debe</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Haber</th>';
+	                    $html.='</tr>';
+	                    
+	                    $i=0;
+	                    $i=0; $valor_total_db=0; $valor_total_vista=0;
+	                    $i=0;
+	                    $i=0; $valor_total_db1=0; $valor_total_vista=0;
+	                    
+	                    
+	                    foreach ($resultSetDetalle as $res)
+	                    {
+	                        $valor_total_db=$res->debe_dcomprobantes;
+	                        $valor_total_vista=$valor_total_vista+$valor_total_db;
+	                        $valor_total_db1=$res->haber_dcomprobantes;
+	                        $valor_total_vista1=$valor_total_vista1+$valor_total_db1;
+	                        
+	                    
+	                  $html.= "<tr>";
+	                 
+	                $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
+	                $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->codigo_plan_cuentas.'</td>';
+	                $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
+	                $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
+	                $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->debe_dcomprobantes.'</td>';
+	                $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->haber_dcomprobantes.'</td>';
+	                $html.='</tr>';
+	                $valor_total_db=0;
+	                $valor_total_db1=0;
+	                
+	                    }
+	             
+	                    $valor_total_vista= number_format($valor_total_vista, 2, '.', ',');
+	                    $valor_total_vista1= number_format($valor_total_vista, 2, '.', ',');
+	                    
+	                $html.='</table>';
+	                $html.='<p style="text-align: left; font-size: 13px;"><b>&nbsp; PICHINCHA CH Nº: </b>'.$_numero_cheque_ccomprobantes.' &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>COTZ:</b> '.$_retencion_ccomprobantes.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>TOTAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista1.'';
+	                   
+	                $html.="<table style='width: 100%; margin-top:50px;' border=1 cellspacing=0>";
+	                
+	                $html.='<tr>';
+	                $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Elaborado por:</th>';
+	                $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Es Conforme:</th>';
+	                $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Visto Bueno:</th>';
+	                $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Recibi Conforme:</th>';
+	                $html.='</tr>';
+	                
+	                $html.='<tr>';
+	                
+	                $html.='<td colspan="4" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">'.$_nombre_usuarios.'</td>';
+	                $html.='<td colspan="4" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">CONTADOR</td>';
+	                $html.='<td colspan="2" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">GERENTE</td>';
+	                $html.='<td colspan="2" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">---------------------------</td>';
+	                
+	                $html.='</tr>';
+	                $html.='</table>';
+	                
+	                
+	                }
 	                
 	             
 	                

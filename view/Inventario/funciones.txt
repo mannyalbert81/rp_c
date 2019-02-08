@@ -1,0 +1,322 @@
+CREATE OR REPLACE FUNCTION public.fn_agrega_movimiento_salida(
+    _id_movimientos_inv_cabeza_solicitud integer,
+    _id_usuarios integer,
+    _fecha_movimientos_inv_cabeza date,
+    _razon_movimiento character varying
+    _estado_movimientos_inv_cabeza character varying)
+  RETURNS integer AS
+$BODY$
+DECLARE
+cantidad_productos_temporal integer;
+var_id_entidad integer;
+var_secuencial_documento varchar;
+var_id_documento integer;
+var_tipo_documento varchar;
+var_id_proveedor integer;
+v_id_movimiento_cab integer;
+rc_temporales record;
+r_id_productos int;
+r_cantidad_productos int;
+r_id_saldo_productos int;
+r_cantidad_disponible int;
+
+BEGIN
+
+	--consulta cantidad en temporal de acuerdo al usuario pasado por parametros
+	SELECT COUNT(*) INTO cantidad_productos_temporal FROM inv_temp_salida WHERE id_movimientos_inv_cabeza=_id_movimientos_inv_cabeza_solicitud;
+
+	IF cantidad_productos_temporal > 0 THEN
+	
+		raise notice 'CANTIDAD DE TEMPORAL: %', cantidad_productos_temporal;
+
+		--CONSULTA CONSECUTIVO DE SALIDA
+		SELECT  id_consecutivos, numero_consecutivos,nombre_consecutivos INTO var_id_documento, var_secuencial_documento, var_tipo_documento 
+		FROM  public.usuarios, public.entidades, public.consecutivos
+		WHERE  consecutivos.id_entidades = usuarios.id_entidades AND consecutivos.id_entidades = entidades.id_entidades 
+		AND nombre_consecutivos='SALIDA' AND usuarios.id_usuarios=_id_usuarios LIMIT 1;	
+
+		--CONSULTA PROVEEDOR
+		SELECT id_proveedores INTO var_id_proveedor FROM proveedores 
+		WHERE identificacion_proveedores ='9999999999';	
+		
+		raise notice 'valor1: % valor2: % valor3: % ',var_id_documento,var_secuencial_documento,var_tipo_documento;
+
+		--INSERTA DATOS EN LA CABECERA
+
+		INSERT INTO movimientos_inv_cabeza(
+			id_usuarios,
+			id_proveedores,
+			id_consecutivos,
+			numero_movimientos_inv_cabeza,
+			razon_movimientos_inv_cabeza,	
+			fecha_movimientos_inv_cabeza,
+			cantidad_movimientos_inv_cabeza,
+			importe_movimientos_inv_cabeza,
+			numero_factura_movimientos_inv_cabeza,
+			numero_autorizacion_movimientos_inv_cabeza,
+			subtotal_doce_movimientos_inv_cabeza,
+			iva_movimientos_inv_cabeza,
+			subtotal_cero_movimientos_inv_cabeza,
+			descuento_movimientos_inv_cabeza,
+			estado_movimientos_inv_cabeza)
+
+		VALUES (_id_usuarios,
+			var_id_proveedor,
+			var_id_documento,
+			CAST (var_secuencial_documento AS INTEGER),
+			_razon_movimiento,
+			_fecha_movimientos_inv_cabeza,
+			cantidad_productos_temporal,
+			0.00,
+			00000,
+			00000,
+			0.00,
+			0.00,
+			0.00,
+			0.00,
+			_estado_movimientos_inv_cabeza)
+			
+		RETURNING id_movimientos_inv_cabeza INTO v_id_movimiento_cab;
+
+		
+		--RECORRER TODOS DATOS DE TEMPORAL
+		FOR rc_temporales IN
+		SELECT inv_temp_salida.id_productos,inv_temp_salida.cantidad_temp_salida,saldo_productos.id_saldo_productos
+		FROM inv_temp_salida INNER JOIN saldo_productos
+		ON saldo_productos.id_productos = inv_temp_salida.id_productos		
+		AND inv_temp_salida.estado_temp_salida = 'PENDIENTE'
+		AND inv_temp_salida.id_movimientos_inv_cabeza=_id_movimientos_inv_cabeza_solicitud		 
+		LOOP 
+
+		r_id_productos := rc_temporales.id_productos;
+		r_cantidad_productos := rc_temporales.cantidad_temp_salida;
+		r_id_saldo_productos := rc_temporales.id_saldo_productos;
+		
+		
+		SELECT   INTO r_cantidad_disponible FROM saldo_productos  WHERE id_productos = r_id_productos;
+
+		IF  r_cantidad_disponible >= r_cantidad_productos THEN 
+
+			UPDATE saldo_productos salidas_f_saldo_productos = COALESCE(salidas_f_saldo_productos,0) + inv_temp_salida.cantidad_temp_salida,
+salidas_v_saldo_productos = entradas_v_saldo_productos
+
+		ELSE
+			UPDATE saldo_productos SET entradas_f_saldo_productos=entradas_f_saldo_productos+_cantidad_productos,
+			entradas_v_saldo_productos=_precio_unitario WHERE id_productos=_id_productos;
+
+			--raise notice 'MODIFICO %',_id_productos;
+		
+		END IF;
+			--raise notice 'valor de id es %',_id_productos;
+		END LOOP;
+		
+
+		--INSERTA EN DETALLE DE SALIDA "MOVIMIENTOS_INV_DETALLE"
+		INSERT INTO movimientos_inv_detalle(id_movimientos_inv_cabeza,id_productos,
+			cantidad_movimientos_inv_detalle)
+		SELECT v_id_movimiento_cab,id_productos,cantidad_temp_salida
+		FROM inv_temp_salida
+		WHERE id_movimientos_inv_cabeza=_id_movimientos_inv_cabeza_solicitud;
+
+		
+		--ELIMINACION DE TEMPORAL
+		DELETE FROM inv_temp_salida WHERE id_movimientos_inv_cabeza=_id_movimientos_inv_cabeza_solicitud;
+
+		--ACTUALIZACION DE SECUENCIAL SALIDA
+		UPDATE consecutivos SET numero_consecutivos= CAST(numero_consecutivos AS INTEGER)+1
+		WHERE id_consecutivos=var_id_documento;
+
+		--ACTUALIZACION DE MOVIMIENTO SOLICITUD QUE SE PROCESO.
+		UPDATE movimientos_inv_cabeza SET estado_movimientos_inv_cabeza = _estado_movimientos_inv_cabeza
+		WHERE id_movimientos_inv_cabeza=_id_movimientos_inv_cabeza_solicitud;
+
+		-- RETORNA PK  INSERRTADA EN LA CABECERA
+		RETURN v_id_movimiento_cab;
+	ELSE
+		--ACTUALIZACION DE MOVIMIENTO SOLICITUD QUE SE PROCESO.
+		UPDATE movimientos_inv_cabeza SET estado_movimientos_inv_cabeza = _estado_movimientos_inv_cabeza
+		WHERE id_movimientos_inv_cabeza=_id_movimientos_inv_cabeza_solicitud;
+		
+		raise  notice 'eliminacion de datos';
+		
+		RETURN 0;
+		
+	END IF;
+
+	
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION public.fn_agrega_movimiento_salida(integer, integer, date, character varying)
+  OWNER TO postgres;
+
+  
+  /////////////////////////////////////////////////////
+  
+  
+select * from inv_temp_salida;
+
+select id_movimientos_inv_cabeza,count(id_movimientos_inv_cabeza), estado_temp_salida
+from inv_temp_salida
+group by id_movimientos_inv_cabeza,estado_temp_salida;
+
+SELECT 1,id_productos,cantidad_temp_salida,*
+FROM inv_temp_salida
+WHERE id_movimientos_inv_cabeza= 52
+AND estado_temp_salida in ('PENDIENTE','APROBADO') ; "PENDIENTE"
+
+select * from saldo_productos;
+
+update saldo_productos set entradas_f_saldo_productos=entradas_f_saldo_productos+10
+where id_productos = 8
+
+select * from inv_temp_salida where id_movimientos_inv_cabeza=52;
+
+update inv_temp_salida set id_productos = 10 where id_movimientos_inv_cabeza=52;
+
+SELECT inv_temp_salida.id_productos,inv_temp_salida.id_movimientos_inv_cabeza,cantidad_temp_salida
+FROM saldo_productos 
+INNER JOIN inv_temp_salida
+ON saldo_productos.id_productos = inv_temp_salida.id_productos
+AND inv_temp_salida.estado_temp_salida = 'PENDIENTE'
+AND inv_temp_salida.id_movimientos_inv_cabeza=52;
+
+UPDATE saldo_productos 
+SET salidas_f_saldo_productos = COALESCE(salidas_f_saldo_productos,0) + inv_temp_salida.cantidad_temp_salida,
+salidas_v_saldo_productos = entradas_v_saldo_productos
+FROM inv_temp_salida
+WHERE saldo_productos.id_productos = inv_temp_salida.id_productos
+AND inv_temp_salida.estado_temp_salida = 'PENDIENTE'
+AND inv_temp_salida.id_movimientos_inv_cabeza=52; 
+
+UPDATE inv_temp_salida
+SET salidas_f_saldo_productos = COALESCE(salidas_f_saldo_productos,0) + inv_temp_salida.cantidad_temp_salida,
+salidas_v_saldo_productos = entradas_v_saldo_productos
+FROM saldo_productos 
+WHERE saldo_productos.id_productos = inv_temp_salida.id_productos
+AND inv_temp_salida.estado_temp_salida = 'PENDIENTE'
+AND inv_temp_salida.id_movimientos_inv_cabeza=52; 
+
+SELECT inv_temp_salida.id_productos,inv_temp_salida.cantidad_temp_salida,saldo_productos.id_saldo_productos
+		FROM inv_temp_salida INNER JOIN saldo_productos
+		ON saldo_productos.id_productos = inv_temp_salida.id_productos		
+		AND inv_temp_salida.estado_temp_salida = 'PENDIENTE'
+		AND inv_temp_salida.id_movimientos_inv_cabeza=52;
+  
+  
+  /////////////////////////////////////////////////////////////////
+  
+  
+select * from inv_temp_salida
+where id_temp_salida = 211;
+
+select count(saldo_productos.id_productos) from public.saldo_productos
+inner join public.inv_temp_salida
+on saldo_productos.id_productos = inv_temp_salida.id_productos
+and inv_temp_salida.id_temp_salida = 211;
+
+
+select *
+from saldo_productos;
+
+select colease()
+
+SELECT * FROM inv_temp_salida WHERE ID_PRODUCTOS = 10;
+
+select * from inv_temp_salida inner join saldo_productos on saldo_productos.id_productos = inv_temp_salida.id_productos;
+
+SELECT (COALESCE(entradas_f_saldo_productos,0) - COALESCE(salidas_f_saldo_productos,0)) INTO _disponible		
+FROM inv_temp_salida INNER JOIN saldo_productos ON saldo_productos.id_productos = inv_temp_salida.id_productos  
+WHERE saldo_productos.id_productos = 146;
+
+SELECT (COALESCE(entradas_f_saldo_productos,0) - COALESCE(salidas_f_saldo_productos,0)) 		
+FROM inv_temp_salida INNER JOIN saldo_productos ON saldo_productos.id_productos = inv_temp_salida.id_productos  
+WHERE inv_temp_salida.id_temp_salida = 146;
+
+SELECT (COALESCE(entradas_f_saldo_productos,0) - COALESCE(salidas_f_saldo_productos,0)),saldo_productos.id_saldo_productos ,*	
+FROM inv_temp_salida INNER JOIN saldo_productos ON saldo_productos.id_productos = inv_temp_salida.id_productos  
+WHERE inv_temp_salida.id_temp_salida = 146;
+
+select * from inv_temp_salida where id_temp_salida = 202;
+--*cantidad = 2
+--producto 10
+
+select * from saldo_productos where id_productos = 10;
+--salida = 0
+
+
+/////////////////////////////////////////////////////////////////////////
+
+
+DO $$ 
+DECLARE
+cantidad_temp_salida INT;
+_id_usuarios INT;
+_id_temp_salida INT;
+_cantidad_productos INT;
+_disponible NUMERIC;
+_resultados INT;
+_id_saldo_productos INT;
+_mensaje CHARACTER VARYING;
+BEGIN 
+
+	_id_usuarios:=15;
+	_id_temp_salida:=146;
+	_cantidad_productos:=1;
+	_mensaje := 'hola'||'matrix';
+
+	raise notice 'mensaje es -> %',_mensaje;
+
+	SELECT COUNT(*) INTO cantidad_temp_salida 
+	FROM public.saldo_productos
+	INNER JOIN public.inv_temp_salida
+	ON saldo_productos.id_productos = inv_temp_salida.id_productos
+	AND inv_temp_salida.id_temp_salida = _id_temp_salida;
+
+	IF cantidad_temp_salida > 0 THEN
+
+		raise notice 'cantidad de datos %',cantidad_temp_salida;
+
+		SELECT (COALESCE(entradas_f_saldo_productos,0) - COALESCE(salidas_f_saldo_productos,0)),
+		saldo_productos.id_saldo_productos,inv_temp_salida.cantidad_temp_salida INTO _disponible,_id_saldo_productos,_cantidad_productos		
+		FROM inv_temp_salida INNER JOIN saldo_productos ON saldo_productos.id_productos = inv_temp_salida.id_productos  
+		WHERE inv_temp_salida.id_temp_salida = _id_temp_salida;
+
+		raise notice 'producto %',_id_saldo_productos;
+
+		IF _disponible > 0  THEN
+
+			IF _disponible >= _cantidad_productos THEN
+
+				--ACTUALIZA LA TABLA TEMP SALIDA
+				UPDATE inv_temp_salida SET estado_temp_salida = 'APROBADO'
+				WHERE id_temp_salida = _id_temp_salida;
+
+				--ACTUALIZA LA SALIDA EN FISICO DE saldo_productos
+				UPDATE saldo_productos 
+				SET salidas_f_saldo_productos = COALESCE(salidas_f_saldo_productos,0) + _cantidad_productos,
+				salidas_v_saldo_productos = entradas_v_saldo_productos
+				WHERE id_saldo_productos = _id_saldo_productos;
+				
+				get diagnostics _resultados = ROW_COUNT;
+				
+				raise notice 'cantidad de DISPONIBLE %',_disponible;
+
+				raise notice 'resultado %',_resultados;
+
+			END IF;
+
+		ELSE
+
+			raise notice 'cantidad de DISPONIBLE EN CERO %',_disponible;
+		END IF;
+	ELSE
+		raise notice 'no hay datos';
+	END IF;
+
+END $$; 
+
+--select * from temp_solicitud;
+
+--select * from  saldo_productos;

@@ -190,12 +190,12 @@
                 <div class="box-body">
                 <form id="frm_solicitud_cabeza" action="<?php echo $helper->url("MovimientosInv","inserta_salida"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
                 	<div class="row">
-        			    <div class="col-xs-12 col-md-2 col-md-2 " >
+            		    <div class="col-xs-12 col-md-2 col-md-2 " >
             	   		    <div class="form-group">
             	   		    	<input type="hidden"  value="<?php echo $resultsolicitud[0]->id_movimientos_inv_cabeza; ?>" id="id_movimiento_solicitud"  name="id_movimiento_solicitud" />
-    	                    </div>
-	        		    </div>
-        		    </div>
+                            </div>
+            		    </div>
+            	    </div>
             	 	
                     <div class="row">
         			    <div class="col-xs-12 col-md-2 col-md-2 " >
@@ -214,14 +214,14 @@
   
   
  
- 	<?php include("view/modulos/footer.php"); ?>	
-
-   <div class="control-sidebar-bg"></div>
- </div>
+    <?php include("view/modulos/footer.php"); ?>	
+    
+    <div class="control-sidebar-bg"></div>
+    </div>
     
     
    <?php include("view/modulos/links_js.php"); ?>
-    	
+  <script src="view/bootstrap/otros/inventario/movimientos_salidas_detalle.js" ></script>
   </body>
 </html>
 
@@ -254,54 +254,7 @@
         	   }
 
  </script>
- <<script type="text/javascript">
-$(document).ready(function(){
-	
-});
-
-function rechazar_producto(id){
-	
-	var cantidad=document.getElementById('cantidad_producto_'+id).value;
-	
-	$.ajax({
-        type: "POST",
-        url: 'index.php?controller=MovimientosInv&action=rechazaproducto',
-        data: "id_temp_salida="+id,
-    	 beforeSend: function(objeto){
-    		/*$("#resultados").html("Mensaje: Cargando...");*/
-    	  },
-        success: function(datos){
-    		console.log(datos);
-    	}
-	});
-}
-
-function aprobar_producto(id){
-
-	var cantidad=document.getElementById('cantidad_producto_'+id).value;
-	//Inicia validacion
-	if (isNaN(cantidad))
-	{
-		swal('no es cantidad')
-    	document.getElementById('cantidad_producto_'+id).focus();
-    	return false;
-	}
-	
-	$.ajax({
-        type: "POST",
-        url: 'index.php?controller=MovimientosInv&action=apruebaproducto',
-        data: "fila=1&id_temp_salida="+id+"&cantidad="+cantidad,
-    	 beforeSend: function(objeto){
-    		/*$("#resultados").html("Mensaje: Cargando...");*/
-    	  },
-        success: function(datos){
-    		console.log(datos)
-    	}
-	});
-}
-</script>
-       
-       
+ 
       
  
 

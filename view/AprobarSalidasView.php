@@ -51,7 +51,7 @@
           <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Aprobar/Rechazar Solicitudes </h3>
+              <h3 class="box-title">Aprobar/Rechazar Solicitudes dsasdasdasd </h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -205,8 +205,10 @@
     	                    </div>
 	        		    </div>
 	        		    <div class="col-xs-12 col-md-2 col-md-2 " >
+	        		    
             	   		    <div class="form-group">
             	   		    	<label for="Guardar">&nbsp;</label>
+            	   		    	 hoohñlfñkñlfksdfkñlaskdflñkasdñfkñldskfñlkaf
             	   		    	<input type="submit" id="btnForm" name="btnForm" value="REPROBAR" class="form-control btn btn-danger" />
     	                    </div>
 	        		    </div>
@@ -215,6 +217,7 @@
                 </div>
                 </div>
             </section>
+           
             
   		</div>
   
@@ -227,85 +230,39 @@
     
     
    <?php include("view/modulos/links_js.php"); ?>
+   
     	
   </body>
 </html>
 
+<!-- <script src="view/bootstrap/otros/inventario/movimientos_salidas_detalle.js" ></script>
+    -->
+
 <!-- script pagina anterior -->
 <script type="text/javascript">
-     
-        	   $(document).ready( function (){
-        		   //pone_espera();
-        		   
-	   			});
 
-        	   function pone_espera(){
+function pone_espera(){
 
-        		   $.blockUI({ 
-        				message: '<h4><img src="view/images/load.gif" /> Espere por favor, estamos procesando su requerimiento...</h4>',
-        				css: { 
-        		            border: 'none', 
-        		            padding: '15px', 
-        		            backgroundColor: '#000', 
-        		            '-webkit-border-radius': '10px', 
-        		            '-moz-border-radius': '10px', 
-        		            opacity: .5, 
-        		            color: '#fff',
-        		           
-        	        		}
-        	    });
-            	
-		        setTimeout($.unblockUI, 3000); 
-		        
-        	   }
-
- </script>
- <<script type="text/javascript">
-$(document).ready(function(){
-	
+   $.blockUI({ 
+		message: '<h4><img src="view/images/load.gif" /> Espere por favor, estamos procesando su requerimiento...</h4>',
+		css: { 
+            border: 'none', 
+            padding: '15px', 
+            backgroundColor: '#000', 
+            '-webkit-border-radius': '10px', 
+            '-moz-border-radius': '10px', 
+            opacity: .5, 
+            color: '#fff',
+           
+    		}
 });
 
-function rechazar_producto(id){
-	
-	var cantidad=document.getElementById('cantidad_producto_'+id).value;
-	
-	$.ajax({
-        type: "POST",
-        url: 'index.php?controller=MovimientosInv&action=rechazaproducto',
-        data: "id_temp_salida="+id,
-    	 beforeSend: function(objeto){
-    		/*$("#resultados").html("Mensaje: Cargando...");*/
-    	  },
-        success: function(datos){
-    		console.log(datos);
-    	}
-	});
+setTimeout($.unblockUI, 3000); 
+
 }
 
-function aprobar_producto(id){
+ </script>
 
-	var cantidad=document.getElementById('cantidad_producto_'+id).value;
-	//Inicia validacion
-	if (isNaN(cantidad))
-	{
-		swal('no es cantidad')
-    	document.getElementById('cantidad_producto_'+id).focus();
-    	return false;
-	}
-	
-	$.ajax({
-        type: "POST",
-        url: 'index.php?controller=MovimientosInv&action=apruebaproducto',
-        data: "fila=1&id_temp_salida="+id+"&cantidad="+cantidad,
-    	 beforeSend: function(objeto){
-    		/*$("#resultados").html("Mensaje: Cargando...");*/
-    	  },
-        success: function(datos){
-    		console.log(datos)
-    	}
-	});
-}
-</script>
        
        
       

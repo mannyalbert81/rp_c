@@ -482,7 +482,10 @@ class ComprobanteContableController extends ControladorBase{
 			
 			$tipo_comprobante=new TipoComprobantesModel();
 			$resultTipCom = $tipo_comprobante->getAll("nombre_tipo_comprobantes");
-				
+		
+			$forma_pago=new FormaPagoModel();
+			$resultFormaPago = $forma_pago->getAll("nombre_forma_pago");
+			
 		    $permisos_rol = new PermisosRolesModel();
 			$nombre_controladores = "ComprobanteContable";
 			$id_rol= $_SESSION['id_rol'];
@@ -493,7 +496,7 @@ class ComprobanteContableController extends ControladorBase{
 				
 					
 				$this->view("ComprobanteContable",array(
-				    "resultTipCom"=>$resultTipCom
+				    "resultTipCom"=>$resultTipCom , "resultFormaPago"=>$resultFormaPago
 					));
 			
 			
@@ -552,36 +555,55 @@ class ComprobanteContableController extends ControladorBase{
    			
    			$_id_entidades =$_POST['id_entidades'];
    			$_id_tipo_comprobantes =$_POST['id_tipo_comprobantes'];
-   			
    			$resultConsecutivos = $consecutivos->getBy("nombre_consecutivos LIKE '%CONTABLE%' AND id_entidades='$_id_entidades' AND id_tipo_comprobantes='$_id_tipo_comprobantes'");
    			$_id_consecutivos=$resultConsecutivos[0]->id_consecutivos;
-   			
    			$_numero_consecutivos=$resultConsecutivos[0]->numero_consecutivos;
    			$_update_numero_consecutivo=((int)$_numero_consecutivos)+1;
    			$_update_numero_consecutivo=str_pad($_update_numero_consecutivo,6,"0",STR_PAD_LEFT);
-   			
-   			$_ruc_ccomprobantes ="";
-   			$_nombres_ccomprobantes ="";
-   			$_retencion_ccomprobantes ="";
+   			$_ruc_ccomprobantes ="ruc_ccomprobantes";
+   			$_nombres_ccomprobantes ="nombres_ccomprobantes";
+   			$_retencion_ccomprobantes ="retencion_ccomprobantes";
    			$_valor_ccomprobantes =$_POST['valor_ccomprobantes'];
    			$_concepto_ccomprobantes =$_POST['concepto_ccomprobantes'];
    			$_id_usuario_creador=$_SESSION['id_usuarios'];
    			$_valor_letras =$_POST['valor_letras'];
             $_fecha_ccomprobantes = $_POST['fecha_ccomprobantes']; 
-            $_referencia_doc_ccomprobantes ="";
+            $_referencia_doc_ccomprobantes ="referencia_doc_ccomprobantes";
             $resultFormaPago = $forma_pago->getBy("nombre_forma_pago LIKE '%NINGUNA%'");
             $_id_forma_pago=$resultFormaPago[0]->id_forma_pago;
-            $_numero_cuenta_banco_ccomprobantes="";
-            $_numero_cheque_ccomprobantes="";
-            $_observaciones_ccomprobantes="";
+            $_numero_cuenta_banco_ccomprobantes="numero_cuenta_banco_ccomprobantes";
+            $_numero_cheque_ccomprobantes="numero_cheque_ccomprobantes";
+            $_observaciones_ccomprobantes="observaciones_ccomprobantes";
+            
+            
+            
+            
    			
    			
    			///PRIMERO INSERTAMOS LA CABEZA DEL COMPROBANTE
    			try
    			{
    					
-   				$funcion = "ins_ccomprobantes";
-   				$parametros = "'$_id_entidades','$_id_tipo_comprobantes', '$_numero_consecutivos','$_ruc_ccomprobantes','$_nombres_ccomprobantes' ,'$_retencion_ccomprobantes' ,'$_valor_ccomprobantes' ,'$_concepto_ccomprobantes', '$_id_usuario_creador', '$_valor_letras' , '$_fecha_ccomprobantes', '$_id_forma_pago', '$_referencia_doc_ccomprobantes', '$_numero_cuenta_banco_ccomprobantes', '$_numero_cheque_ccomprobantes', '$_observaciones_ccomprobantes' ";
+   				 $funcion = "ins_ccomprobantes";
+   				 $parametros = "'$_id_entidades',
+                '$_id_tipo_comprobantes',
+                '$_numero_consecutivos',
+                '$_ruc_ccomprobantes',
+                '$_nombres_ccomprobantes',
+                '$_retencion_ccomprobantes',
+                '$_valor_ccomprobantes',
+                '$_concepto_ccomprobantes',
+                '$_id_usuario_creador',
+                '$_valor_letras',
+                '$_fecha_ccomprobantes',
+                '$_id_forma_pago',
+                '$_referencia_doc_ccomprobantes',
+                '$_numero_cuenta_banco_ccomprobantes',
+                '$_numero_cheque_ccomprobantes',
+                '$_observaciones_ccomprobantes' ";
+   				 
+   				 
+   				 
    				$ccomprobantes->setFuncion($funcion);
    				$ccomprobantes->setParametros($parametros);
    				$resultado=$ccomprobantes->Insert();

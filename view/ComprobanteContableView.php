@@ -99,11 +99,79 @@
              					   <div id="mensaje_fecha_ccomprobantes" class="errores"></div>
              </div>
 	         
-  		     <div class="col-xs-12 col-md-6 col-lg-6">
+  		     <div class="col-xs-12 col-md-8 col-lg-8">
 		     <div class="form-group">
 		                          <label for="concepto_ccomprobantes" class="control-label">Concepto de Pago:</label>
                                   <input type="text" class="form-control" id="concepto_ccomprobantes" name="concepto_ccomprobantes" value=""  placeholder="Concepto de Pago">
                                   <div id="mensaje_concepto_ccomprobantes" class="errores"></div> 
+             </div>
+		     </div>
+		
+		    <div class="col-xs-2 col-md-2 col-lg-2">
+		     <div class="form-group">
+		                          <label for="nombre_proveedores" class="control-label">Nombre de Proveedor:</label>
+                                  <input type="text" class="form-control" id="nombre_proveedores" name="nombre_proveedores" value=""  placeholder="Nombre Proveedores">
+                                  <div id="mensaje_nombre_proveedores" class="errores"></div> 
+             </div>
+		     </div>
+	
+		   <div class="col-xs-12 col-md-2 col-lg-2">
+		     <div class="form-group">
+		                          <label for="identificacion_proveedores" class="control-label">Ruc de Proveedor:</label>
+                                  <input type="text" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="Ruc Proveedores">
+                                  <div id="mensaje_identificacion_proveedores" class="errores"></div> 
+             </div>
+		     </div>
+	
+	   <div class="col-xs-12 col-md-2 col-lg-2">
+		     <div class="form-group">
+		                          <label for="retencion_ccomprobantes" class="control-label">Retención Proveedor:</label>
+                                  <input type="text" class="form-control" id="retencion_ccomprobantes" name="retencion_ccomprobantes" value=""  placeholder="Retencion Comprobantes">
+                                  <div id="mensaje_retencion_ccomprobantes" class="errores"></div> 
+             </div>
+		     </div>
+	
+	  <div class="col-xs-12 col-md-2 col-lg-2">
+		     <div class="form-group">
+		                          <label for="referencia_doc_ccomprobantes" class="control-label">Referencia Doc:</label>
+                                  <input type="text" class="form-control" id="referencia_doc_ccomprobantes" name="referencia_doc_ccomprobantes" value=""  placeholder="Referencia Comprobantes">
+                                  <div id="mensaje_referencia_doc_ccomprobantes" class="errores"></div> 
+             </div>
+		     </div>
+	
+	   <div class="col-md-2 col-lg-2 col-xs-2">
+	              <label for="id_forma_pago" class="control-label">Forma de Pago:</label>
+				  <select name="id_forma_pago" id="id_forma_pago"  class="form-control">
+				  <option value="0" selected="selected">--Seleccione--</option>
+                     <?php foreach($resultFormaPago as $res) {?>
+					  <option value="<?php echo $res->id_forma_pago; ?>" ><?php echo $res->nombre_forma_pago; ?> </option>
+					 <?php } ?>
+				   </select> 
+                   <div id="mensaje_id_forma_pago" class="errores"></div>
+             </div>
+     
+	
+	  <div class="col-xs-12 col-md-2 col-lg-2">
+		     <div class="form-group">
+		                          <label for="numero_cuenta_banco_ccomprobantes" class="control-label">Número de Cuenta:</label>
+                                  <input type="text" class="form-control" id="numero_cuenta_banco_ccomprobantes" name="numero_cuenta_banco_ccomprobantes" value=""  placeholder="Número Cuenta">
+                                  <div id="mensaje_numero_cuenta_banco_ccomprobantes" class="errores"></div> 
+             </div>
+		     </div>
+	
+	  <div class="col-xs-12 col-md-2 col-lg-2">
+		     <div class="form-group">
+		                          <label for="numero_cheque_ccomprobantes" class="control-label">Número de Cheque:</label>
+                                  <input type="text" class="form-control" id="numero_cheque_ccomprobantes" name="numero_cheque_ccomprobantes" value=""  placeholder="Número Cheque">
+                                  <div id="mensaje_numero_cheque_ccomprobantes" class="errores"></div> 
+             </div>
+		     </div>
+	
+	  <div class="col-xs-12 col-md-10 col-lg-10">
+		     <div class="form-group">
+		                          <label for="observaciones_ccomprobantes" class="control-label">Observación:</label>
+                                  <input type="text" class="form-control" id="observaciones_ccomprobantes" name="observaciones_ccomprobantes" value=""  placeholder="Observación">
+                                  <div id="mensaje_observaciones_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
 		    
@@ -154,6 +222,7 @@
                                   <span class="help-block"></span>
              </div>
 		     </div>
+		
 		     
 		     <div class="form-group">
              <div class="col-xs-2 col-md-2 col-lg-2">

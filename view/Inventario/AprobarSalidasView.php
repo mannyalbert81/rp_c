@@ -198,10 +198,16 @@
             	    </div>
             	 	
                     <div class="row">
-        			    <div class="col-xs-12 col-md-2 col-md-2 " >
+        			    <div class="col-xs-12 col-md-3 col-md-3 " >
             	   		    <div class="form-group">
             	   		    	<label for="Guardar">&nbsp;</label>
         	                  <button type="submit" id="Guardar" name="Guardar" class="form-control btn btn-success">APROBAR</button>
+    	                    </div>
+	        		    </div>
+	        		    <div class="col-xs-12 col-md-3 col-md-3 " >
+            	   		    <div class="form-group">
+            	   		    	<label for="Guardar">&nbsp;</label>
+        	                  <button type="submit" id="Cancelar" name="Cancelar" class="form-control btn btn-warning">CANCELAR</button>
     	                    </div>
 	        		    </div>
         		    </div>

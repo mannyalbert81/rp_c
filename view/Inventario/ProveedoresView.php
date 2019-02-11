@@ -505,7 +505,7 @@
 		    	
 		    	if (fecha_nacimiento_proveedores >= hoyFecha())
 		    	{
-		    		$("#mensaje_fecha_nacimiento_proveedores").text("Introduzca una fecha Correcta");
+		    		$("#mensaje_fecha_nacimiento_proveedores").text("La fecha no debe ser mayor o igual a la actual");
 		    		$("#mensaje_fecha_nacimiento_proveedores").fadeIn("slow"); //Muestra mensaje de error
 		            return false;
 		        }

@@ -1503,13 +1503,22 @@ class MovimientosInvController extends ControladorBase{
                 //para actualizacion de temp
                 $temp_salida = new InvTempSalidaModel();
                 
-                $set = "cantidad_temp_salida=$cantidad, estado_temp_salida = 'APROBADO'";
-                $where="id_temp_salida=$id_temp_salida";
-                $tabla="inv_temp_salida";
+                $funcion = "fn_inv_movimiento_salidas";
+                $parametros = "$id_temp_salida,$cantidad";
                 
-                $resultado=$temp_salida->UpdateBy($set,$tabla,$where);
+                $temp_salida->setFuncion($funcion);                
+                $temp_salida->setParametros($parametros);
                 
-                print_r($resultado);
+                $resultado=$temp_salida->llamafuncion();
+                
+                $respuesta = array('mesaje'=> 'No se pudo procesar su solicitud');
+                
+                if(is_array($resultado) && count($resultado)>0){
+                    
+                    $respuesta = array('mensaje' => $resultado[0]->fn_inv_movimiento_salidas);
+                }
+                
+                echo json_encode($respuesta);
                 
             }
             
@@ -1539,13 +1548,22 @@ class MovimientosInvController extends ControladorBase{
             //para actualizacion de temp
             $temp_salida = new InvTempSalidaModel();
             
-            $set = " estado_temp_salida = 'RECHAZADO'";
-            $where="id_temp_salida=$id_temp_salida";
-            $tabla="inv_temp_salida";
+            $funcion = "fn_inv_movimiento_salidas_r";
+            $parametros = "$id_temp_salida";
             
-            $resultado=$temp_salida->UpdateBy($set,$tabla,$where);
+            $temp_salida->setFuncion($funcion);
+            $temp_salida->setParametros($parametros);
             
-            print_r($resultado);
+            $resultado=$temp_salida->llamafuncion();
+            
+            $respuesta = array('mesaje'=> 'No se pudo procesar su solicitud');
+            
+            if(is_array($resultado) && count($resultado)>0){
+                
+                $respuesta = array('mensaje' => $resultado[0]->fn_inv_movimiento_salidas_r);
+            }
+            
+            echo json_encode($respuesta);
             
         }
 	    

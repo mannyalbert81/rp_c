@@ -1230,6 +1230,7 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
+	                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=MovimientosInv&action=generar_reporte_solicitud_aprobada&id_movimientos_inv_cabeza='.$res->id_movimientos_inv_cabeza.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
 	                $html.='</tr>';
 	            }
 	            
@@ -1334,6 +1335,7 @@ class MovimientosInvController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+	           
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -1350,7 +1352,7 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
-	                
+	                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=MovimientosInv&action=generar_reporte_solicitud_rechazada&id_movimientos_inv_cabeza='.$res->id_movimientos_inv_cabeza.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
 	                $html.='</tr>';
 	            }
 	            
@@ -1608,8 +1610,14 @@ class MovimientosInvController extends ControladorBase{
 	        $_estado_salida="";
 	        
 	        switch ( $_POST['btnForm'] ){
-	            case 'APROBAR': $_estado_salida='APROBADA'; break;
-	            case 'REPROBAR': $_estado_salida='RECHAZADA'; break;
+	            case 'APROBAR': 
+	                $_estado_salida='APROBADA';
+	                $funcion = "fn_agrega_movimiento_salida";
+	                break;
+	            case 'REPROBAR': 
+	                $_estado_salida='RECHAZADA'; 
+	                $funcion = "fn_agrega_movimiento_salida_rechazada";
+	                break;
 	        }        
 	        
 	        
@@ -1619,13 +1627,9 @@ class MovimientosInvController extends ControladorBase{
 	        //se valida si hay productos en temp
 	        if($_id_movimiento_solicitud>0){
 	            
-	            $_fecha_salida = date('Y-m-d');
-	            
-	            $funcion = "fn_agrega_movimiento_salida";
+	            $_fecha_salida = date('Y-m-d');	            
 	            
 	            $parametros = "'$_id_movimiento_solicitud','$id_usuarios','$_fecha_salida','$_estado_salida'";
-	            
-	            //print_r($parametros); die();
 	            
 	            $movimientos_inventario->setFuncion($funcion);
 	            $movimientos_inventario->setParametros($parametros);
@@ -1634,7 +1638,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            $resultadofuncion = 0;
 	            
-	            //print_r($resultset);
+	            print_r($resultset);
 	            
 	            if(!empty($resultset)){
 	                if(is_array($resultset) && count($resultset)>0){
@@ -1647,12 +1651,13 @@ class MovimientosInvController extends ControladorBase{
 	            
 	        }
 	        
-	        $this->redirect("MovimientosInv","indexsalida");
+	        //$this->redirect("MovimientosInv","indexsalida");
 	        
 	    }
 	    
 	}
 	
+
 	/***
 	 * mod: solicitudes
 	 * title: index_solicitudes
@@ -1755,6 +1760,334 @@ class MovimientosInvController extends ControladorBase{
 	 * desc: redrecciona a la pagina de solicitudes
 	 * return: void/json
 	 */
+	
+	
+	public function  generar_reporte_solicitud_aprobada(){
+	    
+	    session_start();
+	    
+	    $salidas = new MovimientosInvCabezaModel();
+	    $salidas_detalle = new MovimientosInvDetalleModel();
+	    
+	    
+	    $html="";
+	    $cedula_usuarios = $_SESSION["cedula_usuarios"];
+	    $fechaactual = getdate();
+	    $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+	    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	    $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+	    
+	    $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
+	    $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
+	    $domLogo=$directorio.'/view/images/logo.png';
+	    $logo = '<img src="'.$domLogo.'" alt="Responsive image" width="130" height="70">';
+	    
+	    
+	    
+	    if(!empty($cedula_usuarios)){
+	        
+	        
+	        if(isset($_GET["id_movimientos_inv_cabeza"])){
+	            
+	            
+	            $_id_movimientos_inv_cabeza = $_GET["id_movimientos_inv_cabeza"];
+	            
+	            
+	            $columnas="movimientos_inv_cabeza.id_movimientos_inv_cabeza,
+                      usuarios.nombre_usuarios,
+                      usuarios.id_usuarios,
+                      movimientos_inv_cabeza.razon_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza";
+	            
+	            $tablas = "public.movimientos_inv_cabeza,
+                      public.usuarios,
+                      public.consecutivos";
+	            
+	            $where = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
+                      consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
+                      AND nombre_consecutivos='SOLICITUD'
+                      AND estado_movimientos_inv_cabeza='APROBADA' AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'";
+	            
+	            $id="movimientos_inv_cabeza.numero_movimientos_inv_cabeza";
+	            
+	            $resultSetCabeza=$salidas->getCondiciones($columnas, $tablas, $where, $id);
+	            
+	            
+	            if(!empty($resultSetCabeza)){
+	                
+	                
+	                $_id_movimientos_inv_cabeza     =$resultSetCabeza[0]->id_movimientos_inv_cabeza;
+	                $_nombre_usuarios     =$resultSetCabeza[0]->nombre_usuarios;
+	                $_numero_movimientos_inv_cabeza     =$resultSetCabeza[0]->numero_movimientos_inv_cabeza;
+	                $_fecha_movimientos_inv_cabeza     =$resultSetCabeza[0]->fecha_movimientos_inv_cabeza;
+	                $_estado_movimientos_inv_cabeza    =$resultSetCabeza[0]->estado_movimientos_inv_cabeza;
+	                $_razon_movimientos_inv_cabeza    =$resultSetCabeza[0]->razon_movimientos_inv_cabeza;
+	                
+	                $columnas1 = "  movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                	                productos.codigo_productos,
+                	                productos.nombre_productos,
+                	                movimientos_inv_detalle.cantidad_movimientos_inv_detalle,
+                	                movimientos_inv_detalle.saldo_f_movimientos_inv_detalle,
+                	                movimientos_inv_detalle.saldo_v_movimientos_inv_detalle";
+	                
+	                $tablas1   = "public.movimientos_inv_detalle,
+            	                  public.movimientos_inv_cabeza,
+            	                  public.productos";
+	                
+	                
+	                
+	                $where1    = "movimientos_inv_cabeza.id_movimientos_inv_cabeza = movimientos_inv_detalle.id_movimientos_inv_cabeza AND
+                                  productos.id_productos = movimientos_inv_detalle.id_productos AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'  ";
+	                
+	                $id1       = "movimientos_inv_cabeza.id_movimientos_inv_cabeza";
+	                
+	                $resultSetDetalle=$salidas_detalle->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	                
+	                
+	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                $html.= "<tr>";
+	                $html.='<th style="text-align: center; font-size: 25px; ">CAPREMCI</br>';
+	                $html.='<p style="text-align: center; font-size: 13px; "> Av. Baquerico Moreno E-9781 y Leonidas Plaza';
+	                $html.='<p style="text-align: center; font-size: 18px; ">Solicitud N°: &nbsp;'.$_numero_movimientos_inv_cabeza.'</br>';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; ESTADO: '.$_estado_movimientos_inv_cabeza.'&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Fecha: '.$_fecha_movimientos_inv_cabeza.'';
+	                $html.='</tr>';
+	                $html.='</table>';
+	                
+	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE: </b>'.$_nombre_usuarios.'';
+	                
+	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                $html.= "<tr>";
+	                $html.='<th colspan="12" style="text-align: left; height:30px; font-size: 13px;" ><b>&nbsp;CONCEPTO:  &nbsp;'.$_razon_movimientos_inv_cabeza.'';
+	                $html.="</th>";
+	                $html.="</tr>";
+	                $html.='</table>';
+	                
+	                if(!empty($resultSetDetalle)){
+	                    
+	                    $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                    
+	                    $html.= "<tr>";
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Código</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Nombre Producto</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Cantidad</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Saldo en Físico</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Saldo en Valores</th>';
+	                    $html.='</tr>';
+	                    
+	                    
+	                    
+	                    foreach ($resultSetDetalle as $res)
+	                    {
+	                        $html.= "<tr>";
+	                        
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->codigo_productos.'</td>';
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->nombre_productos.'</td>';
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->cantidad_movimientos_inv_detalle.'</td>';
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->saldo_f_movimientos_inv_detalle.'</td>';
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->saldo_v_movimientos_inv_detalle.'</td>';
+	                        $html.='</tr>';
+	                        
+	                    }
+	                    $html.='</table>';
+	                    
+	                    
+	                    
+	                }
+	                
+	                
+	                
+	            }
+	            
+	            
+	            
+	            $this->report("SolicitudAprobada",array( "resultSet"=>$html));
+	            die();
+	            
+	        }
+	        
+	        
+	        
+	        
+	    }else{
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        
+	    }
+	    
+	    
+	    
+	    
+	    
+	}
+	
+	
+	public function  generar_reporte_solicitud_rechazada(){
+	    
+	    session_start();
+	    
+	    $salidas = new MovimientosInvCabezaModel();
+	    $salidas_detalle = new MovimientosInvDetalleModel();
+	    
+	    
+	    $html="";
+	    $cedula_usuarios = $_SESSION["cedula_usuarios"];
+	    $fechaactual = getdate();
+	    $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+	    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	    $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+	    
+	    $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
+	    $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
+	    $domLogo=$directorio.'/view/images/logo.png';
+	    $logo = '<img src="'.$domLogo.'" alt="Responsive image" width="130" height="70">';
+	    
+	    
+	    
+	    if(!empty($cedula_usuarios)){
+	        
+	        
+	        if(isset($_GET["id_movimientos_inv_cabeza"])){
+	            
+	            
+	            $_id_movimientos_inv_cabeza = $_GET["id_movimientos_inv_cabeza"];
+	            
+	            
+	            $columnas="movimientos_inv_cabeza.id_movimientos_inv_cabeza,
+                      usuarios.nombre_usuarios,
+                      usuarios.id_usuarios,
+                      movimientos_inv_cabeza.razon_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza";
+	            
+	            $tablas = "public.movimientos_inv_cabeza,
+                      public.usuarios,
+                      public.consecutivos";
+	            
+	            $where = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
+                      consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
+                      AND nombre_consecutivos='SOLICITUD'
+                      AND estado_movimientos_inv_cabeza='RECHAZADA'AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'";
+	            
+	            $id="movimientos_inv_cabeza.numero_movimientos_inv_cabeza";
+	            
+	            $resultSetCabeza=$salidas->getCondiciones($columnas, $tablas, $where, $id);
+	            
+	            
+	            if(!empty($resultSetCabeza)){
+	                
+	                
+	                $_id_movimientos_inv_cabeza     =$resultSetCabeza[0]->id_movimientos_inv_cabeza;
+	                $_nombre_usuarios     =$resultSetCabeza[0]->nombre_usuarios;
+	                $_numero_movimientos_inv_cabeza     =$resultSetCabeza[0]->numero_movimientos_inv_cabeza;
+	                $_fecha_movimientos_inv_cabeza     =$resultSetCabeza[0]->fecha_movimientos_inv_cabeza;
+	                $_estado_movimientos_inv_cabeza    =$resultSetCabeza[0]->estado_movimientos_inv_cabeza;
+	                $_razon_movimientos_inv_cabeza    =$resultSetCabeza[0]->razon_movimientos_inv_cabeza;
+	                
+	                $columnas1 = "  movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                	                productos.codigo_productos,
+                	                productos.nombre_productos,
+                	                movimientos_inv_detalle.cantidad_movimientos_inv_detalle,
+                	                movimientos_inv_detalle.saldo_f_movimientos_inv_detalle,
+                	                movimientos_inv_detalle.saldo_v_movimientos_inv_detalle";
+	                
+	                $tablas1   = "public.movimientos_inv_detalle,
+            	                  public.movimientos_inv_cabeza,
+            	                  public.productos";
+	                
+	                
+	                
+	                $where1    = "movimientos_inv_cabeza.id_movimientos_inv_cabeza = movimientos_inv_detalle.id_movimientos_inv_cabeza AND
+                                  productos.id_productos = movimientos_inv_detalle.id_productos AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'  ";
+	                
+	                $id1       = "movimientos_inv_cabeza.id_movimientos_inv_cabeza";
+	                
+	                $resultSetDetalle=$salidas_detalle->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	                
+	                
+	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                $html.= "<tr>";
+	                $html.='<th style="text-align: center; font-size: 25px; ">CAPREMCI</br>';
+	                $html.='<p style="text-align: center; font-size: 13px; "> Av. Baquerico Moreno E-9781 y Leonidas Plaza';
+	                $html.='<p style="text-align: center; font-size: 18px; ">Solicitud N°: &nbsp;'.$_numero_movimientos_inv_cabeza.'</br>';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; ESTADO: '.$_estado_movimientos_inv_cabeza.'&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Fecha: '.$_fecha_movimientos_inv_cabeza.'';
+	                $html.='</tr>';
+	                
+	                $html.='</table>';
+	                
+	                
+	                
+	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE: </b>'.$_nombre_usuarios.'';
+	                
+	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                $html.= "<tr>";
+	                $html.='<th colspan="12" style="text-align: left; height:30px; font-size: 13px;" ><b>&nbsp;CONCEPTO:  &nbsp;'.$_razon_movimientos_inv_cabeza.'';
+	                $html.="</th>";
+	                $html.="</tr>";
+	                $html.='</table>';
+	                
+	                if(!empty($resultSetDetalle)){
+	                    
+	                    $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                    
+	                    $html.= "<tr>";
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Código</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Nombre Producto</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Cantidad</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Saldo en Físico</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Saldo en Valores</th>';
+	                    $html.='</tr>';
+	                    
+	                    
+	                    
+	                    foreach ($resultSetDetalle as $res)
+	                    {
+	                        $html.= "<tr>";
+	                        
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->codigo_productos.'</td>';
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->nombre_productos.'</td>';
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->cantidad_movimientos_inv_detalle.'</td>';
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->saldo_f_movimientos_inv_detalle.'</td>';
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->saldo_v_movimientos_inv_detalle.'</td>';
+	                        $html.='</tr>';
+	                        
+	                    }
+	                    $html.='</table>';
+	                    
+	                    
+	                    
+	                }
+	                
+	                
+	                
+	            }
+	            
+	            
+	            
+	            $this->report("SolicitudRechazada",array( "resultSet"=>$html));
+	            die();
+	            
+	        }
+	        
+	        
+	        
+	        
+	    }else{
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        
+	    }
+	    
+	    
+	    
+	    
+	    
+	}
+	
+	
+	
 	public function inserta_solicitud(){
 	    
 	    session_start();

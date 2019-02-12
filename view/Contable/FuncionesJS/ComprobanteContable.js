@@ -3,6 +3,8 @@
 	  
       $(document).ready(function(){ 	 
 	     load_temp_comprobantes(1);
+	
+	     
 	  }); 
 
     
@@ -187,6 +189,7 @@
 			var debe_dcomprobantes=document.getElementById('debe_dcomprobantes').value;
 			var haber_dcomprobantes=document.getElementById('haber_dcomprobantes').value;
 			
+
 			var error="TRUE";
 			
 			if (plan_cuentas == 0)
@@ -210,7 +213,7 @@
 		    	
 	    		$("#mensaje_debe_dcomprobantes").text("Ingrese Valor en Debe o en Haber");
 	    		$("#mensaje_debe_dcomprobantes").fadeIn("slow"); //Muestra mensaje de error
-	            error ="TRUE";
+	    	   error ="TRUE";
 	            return false;
 		    }
 	    	else 
@@ -330,7 +333,7 @@
 				var id_tipo_comprobantes=document.getElementById('id_tipo_comprobantes').value;
 				var fecha_ccomprobantes=document.getElementById('fecha_ccomprobantes').value;
 				var concepto_ccomprobantes=document.getElementById('concepto_ccomprobantes').value;
-				
+				var tiempo = tiempo || 1000;
 				var error="TRUE";
 				
 				if (id_tipo_comprobantes == 0)
@@ -338,7 +341,8 @@
 			    	
 		    		$("#mensaje_id_tipo_comprobantes").text("Seleccione Tipo");
 		    		$("#mensaje_id_tipo_comprobantes").fadeIn("slow"); //Muestra mensaje de error
-		            
+		    		$("html, body").animate({ scrollTop: $(mensaje_id_tipo_comprobantes).offset().top-120 }, tiempo);
+			         
 		    		error ="TRUE";
 		    		return false;
 			    }
@@ -357,7 +361,38 @@
 				  $("#mensaje_id_tipo_comprobantes").fadeOut("slow");
 			  });
 		      
-		      
+//PARA EL INSERTADO DE COMPROBANTE
+
+ $("#btn_inserta_comprobante" ).on( "click", function() {
+	  //toma de parametros
+	 
+	 var parametros = {
+			 action						: 'ajax',
+			 id_tipo_comprobantes 		: $('#id_tipo_comprobantes').val(),
+			 ruc_ccomprobantes 			: $('#identificacion_proveedores').val(),
+			 nombres_ccomprobantes		: $('#nombre_proveedores').val(),
+			 retencion_ccomprobantes	: $('#retencion_ccomprobantes').val(),
+			 fecha_ccomprobantes 		: $('#fecha_ccomprobantes').val(),
+			 referencia_ccomprobantes 	: $('#referencia_doc_ccomprobantes').val(),
+			 id_forma_pago 				: $('#id_forma_pago').val(),
+			 num_cuenta_ccomprobantes	: $('#numero_cuenta_banco_ccomprobantes').val(),
+			 num_cheque_ccomprobantes 	: $('#numero_cheque_ccomprobantes').val(),
+			 observacion_ccomprobantes 	: $('#observaciones_ccomprobantes').val(),
+			 concepto_ccomprobantes		: $('#concepto_ccomprobantes').val(),
+			 valor_letras				: $('#valor_letras').val()
+	 }
+	 
+	 $.ajax({
+         url: 'index.php?controller=ComprobanteContable&action=insertacomprobante',
+         type: 'POST',
+         data: parametros,
+         success: function(x){
+           console.log(x)
+           
+         }
+	 });
+});
+  
 		      
 		  
 		    

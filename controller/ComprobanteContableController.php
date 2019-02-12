@@ -897,6 +897,82 @@ class ComprobanteContableController extends ControladorBase{
 	}
 	
 	
+	
+	public function insertacomprobante(){
+	    
+	    session_start();
+	    $resultado = null;
+	    
+	    $ccomprobantes = new CComprobantesModel();    
+	    
+	    $nombre_controladores = "ComprobanteContable";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $ccomprobantes->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
+	    
+	    
+	    if (!empty($resultPer))
+	    {
+	        
+	        if(isset($_POST['action']) && $_POST['action']=='ajax'){
+	            
+	            //datos de la vista
+	            $_id_tipo_comprobantes         = $_POST['id_tipo_comprobantes'];	            
+	            $_ruc_ccomprobantes            = $_POST['ruc_ccomprobantes'];
+	            $_nombres_ccomprobantes        = $_POST['nombres_ccomprobantes'];
+	            $_retencion_ccomprobantes      = $_POST['retencion_ccomprobantes'];
+	            
+	            //valores por verificar
+	            $_valor_ccomprobantes          = 0;  //$_POST['valor_ccomprobantes'];	
+	            $_valor_letras                 = $_POST['valor_letras'];
+	            
+	            $_concepto_ccomprobantes       = $_POST['concepto_ccomprobantes'];	            
+	            $_fecha_ccomprobantes          = $_POST['fecha_ccomprobantes'];	            
+	            $_referencia_doc_ccomprobantes = $_POST['referencia_ccomprobantes'];
+	            $_id_forma_pago                = $_POST['id_forma_pago'];
+	            $_num_cuenta_ban_ccomprobantes = $_POST['num_cuenta_ccomprobantes'];
+	            $_num_cheque_ccomprobantes     = $_POST['num_cheque_ccomprobantes'];
+	            $_observacion_ccomprobantes    = $_POST['observacion_ccomprobantes'];
+	            $_id_usuarios                  = $_SESSION['id_usuarios'];
+	            //comienza insertado de comprobante
+	            
+	            $funcion = "fn_con_agrega_comprobante";
+	            
+	            $parametros = "'$_id_usuarios',
+                '$_id_tipo_comprobantes',
+                '$_ruc_ccomprobantes',
+                '$_nombres_ccomprobantes',
+                '$_retencion_ccomprobantes',
+                '$_valor_ccomprobantes',
+                '$_concepto_ccomprobantes',
+                '$_valor_letras',
+                '$_fecha_ccomprobantes',
+                '$_id_forma_pago',
+                '$_referencia_doc_ccomprobantes',
+                '$_num_cuenta_ban_ccomprobantes',
+                '$_num_cheque_ccomprobantes',
+                '$_observacion_ccomprobantes' ";            
+	            
+	            
+	            $ccomprobantes->setFuncion($funcion);
+	            $ccomprobantes->setParametros($parametros);
+	            $resultado=$ccomprobantes->llamafuncion();
+	            
+	            if(!empty($resultado))  {
+	                
+	            }
+	           
+	        }
+	        
+	    }
+	    else
+	    {
+	            echo "No tiene Permisos de Guardar Comprobante Contable";
+	       
+	    }
+	    
+	}
+	
+	
 
 	
 	

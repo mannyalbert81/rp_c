@@ -1608,8 +1608,14 @@ class MovimientosInvController extends ControladorBase{
 	        $_estado_salida="";
 	        
 	        switch ( $_POST['btnForm'] ){
-	            case 'APROBAR': $_estado_salida='APROBADA'; break;
-	            case 'REPROBAR': $_estado_salida='RECHAZADA'; break;
+	            case 'APROBAR': 
+	                $_estado_salida='APROBADA';
+	                $funcion = "fn_agrega_movimiento_salida";
+	                break;
+	            case 'REPROBAR': 
+	                $_estado_salida='RECHAZADA'; 
+	                $funcion = "fn_agrega_movimiento_salida_rechazada";
+	                break;
 	        }        
 	        
 	        
@@ -1619,13 +1625,9 @@ class MovimientosInvController extends ControladorBase{
 	        //se valida si hay productos en temp
 	        if($_id_movimiento_solicitud>0){
 	            
-	            $_fecha_salida = date('Y-m-d');
-	            
-	            $funcion = "fn_agrega_movimiento_salida";
+	            $_fecha_salida = date('Y-m-d');	            
 	            
 	            $parametros = "'$_id_movimiento_solicitud','$id_usuarios','$_fecha_salida','$_estado_salida'";
-	            
-	            //print_r($parametros); die();
 	            
 	            $movimientos_inventario->setFuncion($funcion);
 	            $movimientos_inventario->setParametros($parametros);
@@ -1634,7 +1636,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            $resultadofuncion = 0;
 	            
-	            //print_r($resultset);
+	            print_r($resultset);
 	            
 	            if(!empty($resultset)){
 	                if(is_array($resultset) && count($resultset)>0){
@@ -1647,12 +1649,13 @@ class MovimientosInvController extends ControladorBase{
 	            
 	        }
 	        
-	        $this->redirect("MovimientosInv","indexsalida");
+	        //$this->redirect("MovimientosInv","indexsalida");
 	        
 	    }
 	    
 	}
 	
+
 	/***
 	 * mod: solicitudes
 	 * title: index_solicitudes

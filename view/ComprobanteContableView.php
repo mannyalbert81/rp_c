@@ -269,7 +269,7 @@
 		   <div class="row">
 		   <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; margin-top:20px" > 
            <div class="form-group">
-            					  <button type="button" onclick="insertar_comprobantes();" class="btn btn-success">Guardar</button>
+           <button type="button" id="btnForm" name="btnForm" value="valor" onclick="insertar_comprobantes();" class="btn btn-success">Guardar</button>
            </div>
            </div>
            </div>     
@@ -296,17 +296,17 @@
 				  </div>
 				
 				  <div class="modal-body">
-					<form class="form-horizontal">
+					
 					  <div class="form-group">
 						<div class="col-sm-6">
 						  <input type="text" class="form-control" id="q" placeholder="Buscar Plan de Cuentas" onkeyup="load_plan_cuentas(1)">
 						</div>
-						<button type="button" class="btn btn-default" onclick="load_plan_cuentas(1)"><span class='glyphicon glyphicon-search'></span></button>
+						<button type="button"  class="btn btn-default" onclick="load_plan_cuentas(1)"><span class='glyphicon glyphicon-search'></span></button>
 					  </div>
 					
 					<div id="load_plan_cuentas" ></div>
 					<div id="cargar_plan_cuentas" ></div>
-					</form>
+					
 				  </div>
 				<br>
 				  <div class="modal-footer">
@@ -329,7 +329,7 @@
    	 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Contable/FuncionesJS/ComprobanteContable.js"></script>
+    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?2.1"></script>
     
    
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>

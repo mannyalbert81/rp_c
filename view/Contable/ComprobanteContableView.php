@@ -74,36 +74,35 @@
 	         <div class="col-lg-1">
 	         </div>
 	         <div class="col-lg-10">
-	         <div class="panel panel-info">
-	         <div class="panel-heading">
-	         <div class="row">
-	         <div class="form-group" style="margin-left: 20px">
-			                      <label for="nuevo_comprobante" class="control-label"><h4><i class='glyphicon glyphicon-edit'></i>  Nuevo Comprobante N° <?php echo $res->numero_consecutivos; ?></h4></label>
-				                  <input type="hidden" class="form-control" id="id_entidades" name="id_entidades" value="<?php echo $res->id_entidades; ?>">
-                                 
-             <div class="col-md-3 col-lg-3 col-xs-4" style="margin-top: 5px">
-					           <select name="id_tipo_comprobantes" id="id_tipo_comprobantes"  class="form-control" readonly>
-                                  <?php foreach($resultTipCom as $res) {?>
-										<option value="<?php echo $res->id_tipo_comprobantes; ?>" ><?php echo $res->nombre_tipo_comprobantes; ?> </option>
-							        <?php } ?>
-								   </select> 
+    	         <div class="panel panel-info">
+        	         <div class="panel-heading">
+            	         <div class="row">
+                	         <div class="form-group" style="margin-left: 20px">
+                              	<label for="nuevo_comprobante" class="control-label"><h4><i class='glyphicon glyphicon-edit'></i>  Nuevo Comprobante N° <?php echo $res->numero_consecutivos; ?></h4></label>
+                              	<input type="hidden" class="form-control" id="id_entidades" name="id_entidades" value="<?php echo $res->id_entidades; ?>">
+                                             
+                         		<div class="col-md-3 col-lg-3 col-xs-4" style="margin-top: 5px">
+                		           <select name="id_tipo_comprobantes" id="id_tipo_comprobantes"  class="form-control" readonly>
+                                      <?php foreach($resultTipCom as $res) {?>
+                							<option value="<?php echo $res->id_tipo_comprobantes; ?>" ><?php echo $res->nombre_tipo_comprobantes; ?> </option>
+                				        <?php } ?>
+                					   </select> 
                                   <span class="help-block"></span>	
-             
-             </div>
-             
-		     <div class="col-md-3 col-lg-3 col-xs-4" style="margin-top: 5px">
-		                          <div class="input-group date" id="datetimePicker">
-					              <input type="date" class="form-control" id="fecha_ccomprobantes" name="fecha_ccomprobantes" data-date-format="YYYY-MM-DD" value="" placeholder="Inserte Fecha">
-                                  <span class="">
-                                  <span class=""></span>
-                                  </span>
-                                 </div>
-                                  
-		     </div>
-		     </div>
-		     </div>
-	         </div>
-	         </div>
+                             
+                             	</div>
+                             
+                    		     <div class="col-md-3 col-lg-3 col-xs-4" style="margin-top: 5px">
+                                      <div class="input-group date" id="datetimePicker">
+                    	              <input type="date" class="form-control" id="fecha_ccomprobantes" name="fecha_ccomprobantes" data-date-format="YYYY-MM-DD" value="" placeholder="Inserte Fecha">
+                                      <span class="">
+                                      <span class=""></span>
+                                      </span>
+                                     </div>                                      
+                    		     </div>
+                		     </div>
+            		     </div>
+        	         </div>
+    	         </div>
 	         </div>
 	         
 	         <div class="col-lg-1">

@@ -84,13 +84,6 @@
                    <div id="mensaje_id_tipo_comprobantes" class="errores"></div>
              </div>
              
-             <div id="div_datos" style="display: none;">
-             <div class="col-md-2 col-lg-2 col-xs-12">
-		     					   <label for="numero_ccomprobantes" class="control-label">Número:</label>
-		        				   <input type="text" class="form-control" id="numero_ccomprobantes" name="numero_ccomprobantes" value=""  readonly>
-             </div>
-	         </div>
-             
              <div class="col-md-2 col-lg-2 col-xs-12">
 		     					   <label for="fecha_ccomprobantes" class="control-label">Fecha:</label>
 		
@@ -98,6 +91,13 @@
 		        				   <input type="date" class="form-control" id="fecha_ccomprobantes" name="fecha_ccomprobantes" min="<?php echo date('Y-m-d', mktime(0,0,0, date('m'), date("d", mktime(0,0,0, date('m'), 1, date('Y'))), date('Y'))); ?>" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
              					   <div id="mensaje_fecha_ccomprobantes" class="errores"></div>
              </div>
+             
+             <div id="div_datos" style="display: none;">
+             <div class="col-md-2 col-lg-2 col-xs-12">
+		     					   <label for="numero_ccomprobantes" class="control-label">Número:</label>
+		        				   <input type="text" class="form-control" id="numero_ccomprobantes" name="numero_ccomprobantes" value=""  readonly>
+             </div>
+	         </div>
 	         
   		     <div class="col-xs-12 col-md-8 col-lg-8">
 		     <div class="form-group">
@@ -106,19 +106,24 @@
                                   <div id="mensaje_concepto_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
+		     
+		    </div>
+		    
+		    <div class="row">
 		
-		    <div class="col-xs-2 col-md-2 col-lg-2">
+		    <div class="col-xs-12 col-md-2 col-lg-2">
 		     <div class="form-group">
-		                          <label for="nombre_proveedores" class="control-label">Nombre de Proveedor:</label>
-                                  <input type="text" class="form-control" id="nombre_proveedores" name="nombre_proveedores" value=""  placeholder="Nombre Proveedores">
-                                  <div id="mensaje_nombre_proveedores" class="errores"></div> 
+                  <label for="proveedor" class="control-label">Digite Proveedor:</label>
+                  <input type="text" class=" form-control" id="proveedor" name="proveedor" value=""  placeholder="Nombre Proveedores">
+                  <input type="hidden" value="0" id="id_proveedor" name="id_proveedor">
+                  <div id="mensaje_nombre_proveedores" class="errores"></div> 
              </div>
 		     </div>
 	
-		   <div class="col-xs-12 col-md-2 col-lg-2">
+		   <div id="datos_proveedor" class="col-xs-12 col-md-2 col-lg-2">
 		     <div class="form-group">
-		                          <label for="identificacion_proveedores" class="control-label">Ruc de Proveedor:</label>
-                                  <input type="text" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="Ruc Proveedores">
+		                          <label for="identificacion_proveedores" class=" item_autocomplete control-label">Nombre de Proveedor:</label>
+                                  <input type="text" class="form-control" id="nombre_proveedor" name="nombre_proveedor" value=""  placeholder="Ruc Proveedores">
                                   <div id="mensaje_identificacion_proveedores" class="errores"></div> 
              </div>
 		     </div>
@@ -177,6 +182,9 @@
 		    
   		     <div class="col-md-12 col-lg-12 col-xs-12">
 					<div class="pull-right">
+					     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalproveedor">
+						 <span class="fa fa-pencil-square"></span> Ingresa Proveedores
+						</button>
 						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
 						 <span class="glyphicon glyphicon-search"></span> Buscar Cuentas
 						</button>
@@ -316,6 +324,83 @@
 				</div>
 			  </div>
 			</div>
+			
+<!-- modal de proveedores -->
+
+<div class="modal fade bs-example-modal-lg" id="modalproveedor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Buscar Cuentas</h4>
+				  </div>
+				
+				  <div class="modal-body">
+				  
+				  <form class="form-horizontal" method="post" id="frm_guardar_proveedor" name="frm_guardar_proveedor">
+          	
+                  	
+        			  <div class="form-group">
+        				<label for="nombre_proveedores" class="col-sm-3 control-label">Nombre Proveedores: </label>
+        				<div class="col-sm-8">
+        				  <input type="text" class="form-control" id="nombre_proveedores" name="nombre_proveedores" value=""  placeholder="Nombre Proveedores" >
+                          <div id="mensaje_nombre_proveedores" class="errores"></div>
+        				</div>
+        			  </div>
+			  
+        			  <div class="form-group">
+        				<label for="identificacion_proveedores" class="col-sm-3 control-label">Ruc Proveedores: </label>
+        				<div class="col-sm-8">
+        					<input type="text" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="Ruc Proveedores" onKeyPress="return numeros(event)">
+                          <div id="mensaje_identificacion_proveedores" class="errores"></div>
+        				</div>
+        			  </div>
+        			  
+        			  <div class="form-group">
+        				<label for="contactos_proveedores" class="col-sm-3 control-label">Contactos Proveedores: </label>
+        				<div class="col-sm-8">
+        					<input type="text" class="form-control" id="contactos_proveedores" name="contactos_proveedores" value=""  placeholder="Contactos Proveedores">
+                            <div id="mensaje_contactos_proveedores" class="errores"></div>
+        				</div>
+        			  </div>
+        			  
+        			  <div class="form-group">
+        				<label for="direccion_proveedores" class="col-sm-3 control-label">Dirección Proveedores: </label>
+        				<div class="col-sm-8">
+        					<input type="text" class="form-control" id="direccion_proveedores" name="direccion_proveedores" value=""  placeholder="Dirección Proveedores">
+                            <div id="mensaje_direccion_proveedores" class="errores"></div>
+        				</div>
+        			  </div>
+			  
+        			  <div class="form-group">
+        				<label for="telefono_proveedores" class="col-sm-3 control-label">Teléfono Proveedores: </label>
+        				<div class="col-sm-8">
+        					<input type="text" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value=""  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
+                              <div id="mensaje_telefono_proveedores" class="errores"></div>  
+        				</div>
+        			  </div>
+        			  
+        			  <div class="form-group">
+        				<label for="email_proveedores" class="col-sm-3 control-label">Email Proveedores: </label>
+        				<div class="col-sm-8">
+        					<input type="email" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores" onKeyUp="javascript:validateMail('id_mail')" >
+                           <div id="mensaje_email_proveedores" class="errores"></div>
+        				</div>
+        			  </div>
+			  
+          	</form>
+					  
+			</div>
+			
+				<br>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+					<button type="submit" form="frm_guardar_proveedor" class="btn btn-primary" id="guardar_datos">Guardar datos</button>
+				  </div>
+				
+				</div>
+			  </div>
+			</div>
 	
 	
  
@@ -329,7 +414,7 @@
    	 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?2.1"></script>
+    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?2.3"></script>
     
    
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>

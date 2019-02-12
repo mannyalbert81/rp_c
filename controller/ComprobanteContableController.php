@@ -454,8 +454,6 @@ class ComprobanteContableController extends ControladorBase{
     	        
     	        $_numero    =$resultSet[0]->numero_consecutivos;
     	        
-    	        
-    	        
     	        echo $_numero;
     	    }
     	    

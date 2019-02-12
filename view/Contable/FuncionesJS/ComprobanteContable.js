@@ -3,7 +3,7 @@
 	  
       $(document).ready(function(){ 	 
 	     load_temp_comprobantes(1);
-	
+	     $('#datos_proveedor').hide();
 	     
 	  }); 
 
@@ -286,41 +286,41 @@
         }
 	    
 	    
-	    // PARA HABILITAR NUMERO DE COMPROBANTES    
-    
-	      $("#id_tipo_comprobantes").click(function() {
-			
-	    	  var id_tipo_comprobantes = $(this).val();
-				
-	          if(id_tipo_comprobantes > 0 )
-	          {
-	           load_consecutivo_comprobantes(id_tipo_comprobantes);
-	       	   $("#div_datos").fadeIn("slow");
-	       	   
-	          }
-	       	  else
-	          {
-	       	   $("#div_datos").fadeOut("slow");
-	          }
-	         
-		    });
-		    
-		    $("#id_tipo_comprobantes").change(function() {
-				  
-	              var id_tipo_comprobantes = $(this).val();
-					
-	              if(id_tipo_comprobantes > 0)
-	              {
-	               load_consecutivo_comprobantes(id_tipo_comprobantes);
-	   	       	   $("#div_datos").fadeIn("slow");
-	              }
-	              else
-	              {
-	           	   $("#div_datos").fadeOut("slow");
-	              }
-	              
-	        });
+// PARA HABILITAR NUMERO DE COMPROBANTES    
+
+$("#id_tipo_comprobantes").click(function() {
+
+  var id_tipo_comprobantes = $(this).val();
+	
+  if(id_tipo_comprobantes > 0 )
+  {
+   load_consecutivo_comprobantes(id_tipo_comprobantes);
+   $("#div_datos").fadeIn("slow");
+   
+  }
+  else
+  {
+   $("#div_datos").fadeOut("slow");
+  }
+ 
+});
+
+$("#id_tipo_comprobantes").change(function() {
+	  
+      var id_tipo_comprobantes = $(this).val();
 		
+      if(id_tipo_comprobantes > 0)
+      {
+       load_consecutivo_comprobantes(id_tipo_comprobantes);
+   	   $("#div_datos").fadeIn("slow");
+      }
+      else
+      {
+   	   $("#div_datos").fadeOut("slow");
+      }
+      
+});
+
 	      
 		    
 		
@@ -392,7 +392,95 @@
          }
 	 });
 });
+ 
+ /***
+  * autocompelte proveedores
+  */
+ $( "#proveedor" ).autocomplete({
+
+		source: 'index.php?controller=MovimientosInv&action=busca_proveedor',
+		minLength: 4,
+     select: function (event, ui) {
+        // Set selection          
+        $('#id_proveedor').val(ui.item.id);
+        $('#proveedor').val(ui.item.value); // save selected id to input
+        $('#nombre_proveedor').val(ui.item.nombre);
+        $('#datos_proveedor').show();
+        //console.log(ui.item.nombre);
+        return false;
+     },
+     focus: function(event, ui) { 
+         var text = ui.item.value; 
+         $('#proveedor').val();            
+         return false; 
+     } 
+	}).focusout(function() {
+		$.ajax({
+			url:'index.php?controller=MovimientosInv&action=busca_proveedor',
+			type:'POST',
+			dataType:'json',
+			data:{term:$('#proveedor').val()}
+		}).done(function(respuesta){
+			console.log(respuesta[0].id);
+			if(respuesta[0].id>0){				
+				$('#id_proveedor').val(respuesta[0].id);
+	           $('#proveedor').val(respuesta[0].value); // save selected id to input
+	           $('#nombre_proveedor').val(respuesta[0].nombre);
+	           $('#datos_proveedor').show();
+			}else{$('#datos_proveedor').hide(); $('#id_proveedor').val('0');  }
+		});
+	});
   
+//PARA CARGAR CONSULTA PLAN DE CUENTAS AL MODAL
+ 
+ $('#modalproveedor').on('show.bs.modal', function (event) {
+	load_plan_cuentas(1);
+	  var modal = $(this)
+	  modal.find('.modal-title').text('PROVEEDORES')
+
+	});
+ 
+ $( "#frm_guardar_proveedor" ).submit(function( event ) {
+		//console.log('ingresa->1\n');
+		var parametros = $(this).serialize();	
+		$.ajax({
+	        beforeSend: function(objeto){
+	          
+	        },
+	        url: 'index.php?controller=Proveedores&action=ins_proveedor',
+	        type: 'POST',
+	        data: parametros,
+	        dataType:'json',
+	        success: function(respuesta){
+	        	
+	            if(respuesta.success==1){
+	            	$("#frm_guardar_proveedor")[0].reset();
+	            	swal({
+	            		  title: "Proveedores",
+	            		  text: respuesta.mensaje,
+	            		  icon: "success",
+	            		  button: "Aceptar",
+	            		});
+					
+	                }else{
+	                	$("#frm_guardar_proveedor")[0].reset();
+	                	swal({
+	              		  title: "Proveedores",
+	              		  text: respuesta.mensaje,
+	              		  icon: "warning",
+	              		  button: "Aceptar",
+	              		});
+	                    }
+	        	     
+	        },
+	        error: function(jqXHR,estado,error){
+	         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+	        }
+	    });
+		 
+		event.preventDefault();	
+		  
+});
 		      
 		  
 		    

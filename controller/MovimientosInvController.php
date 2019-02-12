@@ -1833,18 +1833,21 @@ class MovimientosInvController extends ControladorBase{
 	                $columnas1 = "  movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
                 	                productos.codigo_productos,
                 	                productos.nombre_productos,
+                	                grupos.id_grupos,
+                	                grupos.nombre_grupos,
                 	                movimientos_inv_detalle.cantidad_movimientos_inv_detalle,
                 	                movimientos_inv_detalle.saldo_f_movimientos_inv_detalle,
                 	                movimientos_inv_detalle.saldo_v_movimientos_inv_detalle";
 	                
 	                $tablas1   = "public.movimientos_inv_detalle,
             	                  public.movimientos_inv_cabeza,
+            	                  public.grupos,
             	                  public.productos";
 	                
 	                
 	                
 	                $where1    = "movimientos_inv_cabeza.id_movimientos_inv_cabeza = movimientos_inv_detalle.id_movimientos_inv_cabeza AND
-                                  productos.id_productos = movimientos_inv_detalle.id_productos AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'  ";
+                                  productos.id_productos = movimientos_inv_detalle.id_productos AND grupos.id_grupos  = productos.id_grupos AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'  ";
 	                
 	                $id1       = "movimientos_inv_cabeza.id_movimientos_inv_cabeza";
 	                
@@ -1860,7 +1863,7 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='</tr>';
 	                $html.='</table>';
 	                
-	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE: </b>'.$_nombre_usuarios.'';
+	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE Solicitante: </b>'.$_nombre_usuarios.'';
 	                
 	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
 	                $html.= "<tr>";
@@ -1875,10 +1878,9 @@ class MovimientosInvController extends ControladorBase{
 	                    
 	                    $html.= "<tr>";
 	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Código</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Grupo</th>';
 	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Nombre Producto</th>';
 	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Cantidad</th>';
-	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Saldo en Físico</th>';
-	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Saldo en Valores</th>';
 	                    $html.='</tr>';
 	                    
 	                    
@@ -1888,10 +1890,9 @@ class MovimientosInvController extends ControladorBase{
 	                        $html.= "<tr>";
 	                        
 	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->codigo_productos.'</td>';
-	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->nombre_productos.'</td>';
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->nombre_grupos.'</td>';
+	                        $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->nombre_productos.'</td>';
 	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->cantidad_movimientos_inv_detalle.'</td>';
-	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->saldo_f_movimientos_inv_detalle.'</td>';
-	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->saldo_v_movimientos_inv_detalle.'</td>';
 	                        $html.='</tr>';
 	                        
 	                    }
@@ -1994,18 +1995,21 @@ class MovimientosInvController extends ControladorBase{
 	                $columnas1 = "  movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
                 	                productos.codigo_productos,
                 	                productos.nombre_productos,
+                	                grupos.id_grupos,
+                	                grupos.nombre_grupos,
                 	                movimientos_inv_detalle.cantidad_movimientos_inv_detalle,
                 	                movimientos_inv_detalle.saldo_f_movimientos_inv_detalle,
                 	                movimientos_inv_detalle.saldo_v_movimientos_inv_detalle";
 	                
 	                $tablas1   = "public.movimientos_inv_detalle,
             	                  public.movimientos_inv_cabeza,
+            	                  public.grupos,
             	                  public.productos";
 	                
 	                
 	                
 	                $where1    = "movimientos_inv_cabeza.id_movimientos_inv_cabeza = movimientos_inv_detalle.id_movimientos_inv_cabeza AND
-                                  productos.id_productos = movimientos_inv_detalle.id_productos AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'  ";
+                                  productos.id_productos = movimientos_inv_detalle.id_productos AND grupos.id_grupos  = productos.id_grupos AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'  ";
 	                
 	                $id1       = "movimientos_inv_cabeza.id_movimientos_inv_cabeza";
 	                
@@ -2039,10 +2043,9 @@ class MovimientosInvController extends ControladorBase{
 	                    
 	                    $html.= "<tr>";
 	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Código</th>';
+	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Grupos</th>';
 	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Nombre Producto</th>';
 	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Cantidad</th>';
-	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Saldo en Físico</th>';
-	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Saldo en Valores</th>';
 	                    $html.='</tr>';
 	                    
 	                    
@@ -2052,10 +2055,9 @@ class MovimientosInvController extends ControladorBase{
 	                        $html.= "<tr>";
 	                        
 	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->codigo_productos.'</td>';
-	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->nombre_productos.'</td>';
+	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->nombre_grupos.'</td>';
+	                        $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->nombre_productos.'</td>';
 	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->cantidad_movimientos_inv_detalle.'</td>';
-	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->saldo_f_movimientos_inv_detalle.'</td>';
-	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->saldo_v_movimientos_inv_detalle.'</td>';
 	                        $html.='</tr>';
 	                        
 	                    }

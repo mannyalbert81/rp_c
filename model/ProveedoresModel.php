@@ -70,6 +70,16 @@ class ProveedoresModel extends ModeloBase{
     	return  $resultado;
     }
     
+    public function llamafuncion(){
+        
+        $query = "SELECT ".$this->funcion."(".$this->parametros.")";
+        $resultado = null;
+        
+        $resultado=$this->llamarconsulta($query);
+        
+        return  $resultado;
+    }
+    
     
 }
 ?>

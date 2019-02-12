@@ -1618,9 +1618,9 @@ class MovimientosInvController extends ControladorBase{
 	                $_estado_salida='RECHAZADA'; 
 	                $funcion = "fn_agrega_movimiento_salida_rechazada";
 	                break;
-	        }        
+	        }    
 	        
-	        
+	         
 	        /*valores de la vista*/
 	        $_id_movimiento_solicitud = (isset($_POST['id_movimiento_solicitud']))?$_POST['id_movimiento_solicitud']:0;
 	       
@@ -1639,19 +1639,24 @@ class MovimientosInvController extends ControladorBase{
 	            $resultadofuncion = 0;
 	            
 	            print_r($resultset);
-	            
+	           
 	            if(!empty($resultset)){
 	                if(is_array($resultset) && count($resultset)>0){
 	                    
-	                    $resultadofuncion=(int)$resultset[0]->fn_agrega_movimiento_salida;
+	                    foreach ($resultset[0] as $key=>$desc){
+	                    
+	                        $resultadofuncion =  $desc;
+	                    }
 	                   
 	                }
 	            }
 	            
+	            //echo $resultadofuncion;
+	            
 	            
 	        }
 	        
-	        //$this->redirect("MovimientosInv","indexsalida");
+	        $this->redirect("MovimientosInv","indexsalida");
 	        
 	    }
 	    

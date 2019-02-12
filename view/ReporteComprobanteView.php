@@ -231,18 +231,17 @@
 		                    		</div>
             	        		    </div>
                     		    	</div>
- 
-                      
-                  	
-									<div style="height: 200px; display: block;">
+                    		
+                    		   		<div style="height: 0px; display: block;">
 									<h4 style="color:#ec971f;"></h4>
 									<div id="comprobantes" style="position: absolute;	text-align: center;	top: 10px;	width: 100%;display:none;"></div><!-- Carga gif animado -->
 									<div class="div_comprobantes" >
 					 				</div>
-					    			</div>         
-                      
-                      
-         	         </div>
+					    			</div>    
+ 	   						
+ 	   						        </div>
+ 	   						        
+         	         			     
             </div>
         </section>
               

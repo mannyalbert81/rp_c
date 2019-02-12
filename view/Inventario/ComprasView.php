@@ -122,8 +122,9 @@
                             	<div class="form-group">
                                 	<label for="estado_compra" class="control-label">Estado:</label>
                                 	<select id="estado_compra" name="estado_compra" class="form-control">
-                                		<option value="pagada">PAGADA</option>
-                                		<option value="pendiente">PENDIENTE</option>
+                                		<option value="PENDIENTE">PENDIENTE</option>
+                                		<option value="PAGADA">PAGADA</option>
+                                		
                                 	</select>                                    
                                     <div id="mensaje_estado_compras" class="errores"></div>
                                  </div>
@@ -910,7 +911,118 @@ $(document).ready(function(){
  })
  </script>
 
+ <script>
+           // Campos Vacíos
+		    // cada vez que se cambia el valor del combo
+		    $(document).ready(function(){
+		    
+		    $("#Guardar").click(function() 
+			{
+		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
 
+		    	var id_proveedor = $("#id_proveedor").val();
+		    	var fecha_compra = $("#fecha_compra").val();
+		    	var numero_factura_compra = $("#numero_factura_compra").val();
+		    	var numero_autorizacion_factura = $("#numero_autorizacion_factura").val();
+		    	var estado_compra = $("#estado_compra").val();
+		    	
+		    	
+		    	
+		    	
+		    	if (id_proveedor == "")
+		    	{
+			    	
+		    		$("#mensaje_proveedor").text("Introduzca Un Proveedor");
+		    		$("#mensaje_proveedor").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_proveedor").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+		    	if (fecha_compra == "")
+		    	{
+			    	
+		    		$("#mensaje_numero_compra").text("Introduzca Una fecha");
+		    		$("#mensaje_numero_compra").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_numero_compra").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+		    	if (numero_factura_compra == "")
+		    	{
+			    	
+		    		$("#mensaje_numero_factura").text("Introduzca Un número de factura");
+		    		$("#mensaje_numero_factura").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_numero_factura").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+		    	if (numero_autorizacion_factura == "")
+		    	{
+			    	
+		    		$("#mensaje_autorizacion_factura").text("Introduzca Un N° de Autorización");
+		    		$("#mensaje_autorizacion_factura").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_autorizacion_factura").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
+		    	if (estado_compra == "")
+		    	{
+			    	
+		    		$("#mensaje_estado_compra").text("Introduzca Un Estado");
+		    		$("#mensaje_estado_compra").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_estado_compra").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+		     
+
+		    	
+			}); 
+
+
+		        $( "#id_proveedor" ).focus(function() {
+				  $("#mensaje_proveedor").fadeOut("slow");
+			    });
+
+		        $( "#fecha_compra" ).focus(function() {
+					  $("#mensaje_numero_compra").fadeOut("slow");
+				    });
+		        $( "#numero_factura_compra" ).focus(function() {
+					  $("#mensaje_numero_factura").fadeOut("slow");
+				    });
+		        $( "#numero_autorizacion_factura" ).focus(function() {
+					  $("#mensaje_autorizacion_factura").fadeOut("slow");
+				    });
+		        $( "#estado_compra" ).focus(function() {
+					  $("#mensaje_estado_compra").fadeOut("slow");
+				    });
+		        
+		        		      
+
+			    
+		}); 
+
+	</script>
 
              
  	

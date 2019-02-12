@@ -45,10 +45,9 @@
 			});
 	});
 
-	
-	function load_comprobantes(pagina){
+		function load_comprobantes(pagina){
 		
-		//iniciar variables
+		 //iniciar variables
 		 var con_id_entidades=$("#id_entidades").val();
 		 var con_id_tipo_comprobantes=$("#id_tipo_comprobantes").val();
 		 var con_numero_ccomprobantes=$("#numero_ccomprobantes").val();
@@ -88,9 +87,7 @@
 
    <?php include("view/modulos/links_css.php"); ?>
 	
- 
-  
-			        
+ 			        
     </head>
     
     
@@ -116,16 +113,13 @@
        
        }
        ?>
-    
+       
      <?php
         
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
         ?>
-    
-    
-      
     
     <div class="wrapper">
 
@@ -168,12 +162,11 @@
           </div>
         </div>
         
-                  
-                  <div class="box-body">
+                     <div class="box-body">
 
 								 	<div class="row">
 								 	  
-                                    <div class="col-xs-6 col-md-3 col-lg-3">
+                                    <div class="col-xs-6 col-md-2 col-lg-2">
                                   	<div class="form-group">
                                    	<label for="desde" class="control-label">Entidad:</label>
                  				  	<select name="id_entidades" id="id_entidades"  class="form-control" readonly>
@@ -206,7 +199,7 @@
                                     </div>
                               		</div> 
                               		        	
-                                    <div class="col-xs-6 col-md-3 col-lg-3">
+                                    <div class="col-xs-6 col-md-2 col-lg-2">
                                   	<div class="form-group">
                                    	<label for="desde" class="control-label">Desde:</label>
                                	  	<input type="date"  name="fecha_desde" id="fecha_desde" value="<?php echo $sel_fecha_desde;?>" class="form-control "/> 
@@ -214,7 +207,7 @@
                                     </div>
                                     </div>
                                     
-                                    <div class="col-xs-6 col-md-3 col-lg-3 ">
+                                    <div class="col-xs-6 col-md-2 col-lg-2">
                                 	<div class="form-group">
                                     <label for="hasta" class="control-label">Hasta:</label>
                        		  	    <input type="date"  name="fecha_hasta" id="fecha_hasta" value="<?php echo $sel_fecha_hasta;?>" class="form-control "/> 
@@ -241,24 +234,17 @@
  	   						
  	   						        </div>
  	   						        
-         	         			     
             </div>
         </section>
               
-    
-    
-  </div>
+ 		 </div>
   
-  
- 
  	<?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
  </div>
     
     <?php include("view/modulos/links_js.php"); ?>
-	
-
 	
 	
   </body>

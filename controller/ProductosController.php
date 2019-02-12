@@ -29,12 +29,15 @@ class ProductosController extends ControladorBase{
                                       productos.descripcion_productos,
                                       productos.ult_precio_productos,
                                       productos.creado,
-                                      productos.modificado";
-        $tablas   = "   public.productos,
+                                      productos.modificado,
+                                      bodegas.id_bodegas";
+                      $tablas   = "   public.productos,
                                       public.grupos,
-                                      public.unidad_medida";
+                                      public.unidad_medida,
+                                      public.bodegas";
         $where    = "  grupos.id_grupos = productos.id_grupos AND
-                                       unidad_medida.id_unidad_medida = productos.id_unidad_medida ";
+                                       unidad_medida.id_unidad_medida = productos.id_unidad_medida AND 
+                                       bodegas.id_bodegas = productos.id_bodegas";
         $id       = "productos.id_productos";
         
         $resultSet = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
@@ -76,11 +79,14 @@ class ProductosController extends ControladorBase{
                                       productos.descripcion_productos, 
                                       productos.ult_precio_productos, 
                                       productos.creado, 
-                                      productos.modificado";
+                                      productos.modificado,
+                                      bodegas.id_bodegas";
                         $tablas   = "   public.productos, 
                                       public.grupos, 
-                                      public.unidad_medida";
-                        $where    = "  grupos.id_grupos = productos.id_grupos AND
+                                      public.unidad_medida,
+                                      public.bodegas";
+                        $where    = "  grupos.id_grupos = productos.id_grupos AND 
+                                       bodegas.id_bodegas = productos.id_bodegasAND
                                        unidad_medida.id_unidad_medida = productos.id_unidad_medida AND productos.id_productos = '$_id_productos'";
                         $id       = "productos.id_productos";
                         
@@ -146,6 +152,7 @@ class ProductosController extends ControladorBase{
                 $_nombre_productos = $_POST["nombre_productos"];
                 $_descripcion_productos = $_POST["descripcion_productos"];
                 $_ult_precio_productos = $_POST["ult_precio_productos"];
+                $_id_bodegas = $_POST["id_bodegas"];
                 
                 
                 
@@ -157,18 +164,21 @@ class ProductosController extends ControladorBase{
 							  marca_productos = '$_marca_productos',
                               nombre_productos = '$_nombre_productos',
 							  descripcion_productos = '$_descripcion_productos',
-							  ult_precio_productos = '$_ult_precio_productos'";
+							  ult_precio_productos = '$_ult_precio_productos',
+                              id_bodegas = '$_id_bodegas'";
                     $tabla = "public.productos, 
                               public.grupos, 
-                              public.unidad_medida";
-                    $where = "  grupos.id_grupos = productos.id_grupos AND
+                              public.unidad_medida,
+                              public.bodegas";
+                    $where = "grupos.id_grupos = productos.id_grupos AND
+                              bodegas.id_bodegas = productos.id_bodegasAND
                               unidad_medida.id_unidad_medida = productos.id_unidad_medida AND productos.id_productos = '$_id_productos'";
                     $resultado=$productos->UpdateBy($columnas, $tabla, $where);
                     
                 }else{
                     
                     $funcion = "ins_productos";
-                    $parametros = " '$_id_grupos', '$_id_unidad_medida', '$_codigo_productos', '$_marca_productos', '$_nombre_productos', '$_descripcion_productos', '$_ult_precio_productos'";
+                    $parametros = " '$_id_grupos', '$_id_unidad_medida', '$_codigo_productos', '$_marca_productos', '$_nombre_productos', '$_descripcion_productos', '$_ult_precio_productos', '$_id_bodegas'";
                     $productos->setFuncion($funcion);
                     $productos->setParametros($parametros);
                     $resultado=$productos->Insert();
@@ -188,6 +198,8 @@ class ProductosController extends ControladorBase{
             
         }
         
+        
+        //          $this->redirect("Productos", "index");
         
         
     }
@@ -262,11 +274,14 @@ class ProductosController extends ControladorBase{
                                       productos.descripcion_productos,
                                       productos.ult_precio_productos,
                                       productos.creado,
-                                      productos.modificado";
+                                      productos.modificado,
+                                      bodegas.id_bodegas";
                 $tablas   = "   public.productos,
                                       public.grupos,
-                                      public.unidad_medida";
+                                      public.unidad_medida,
+                                      public.bodegas";
                 $where    = "  grupos.id_grupos = productos.id_grupos AND
+                                bodegas.id_bodegas = productos.id_bodegasAND
                                        unidad_medida.id_unidad_medida = productos.id_unidad_medida ";
                 $id       = "productos.id_productos";
                 
@@ -306,14 +321,17 @@ class ProductosController extends ControladorBase{
                       usuarios.cedula_usuarios,
                       usuarios.nombre_usuarios,
                       usuarios.apellidos_usuarios,
-                      usuarios.usuario_usuarios";
+                      usuarios.usuario_usuarios,
+                      bodegas.id_bodegas";
                     $tablas1   = " public.productos,
                       public.movimientos_inv_cabeza,
                       public.movimientos_inv_detalle,
                       public.usuarios,
-                      public.unidad_medida";
+                      public.unidad_medida,
+                      public.bodegas";
                     $where1    = "   movimientos_inv_cabeza.id_usuarios = usuarios.id_usuarios AND
                       movimientos_inv_detalle.id_productos = productos.id_productos AND
+                      bodegas.id_bodegas = productos.id_bodegasAND
                       movimientos_inv_detalle.id_movimientos_inv_cabeza = movimientos_inv_cabeza.id_movimientos_inv_cabeza AND productos.id_productos='$_id_productos'";
                     $id1       = "productos.id_productos";
                     
@@ -379,10 +397,11 @@ class ProductosController extends ControladorBase{
                 $_nombre_productos = $_POST["mod_nombre_producto"];
                 $_descripcion_productos = $_POST["mod_descripcion_producto"];
                 $_ult_precio_productos = $_POST["mod_precio_producto"];
+                $_id_bodegas = $_POST["mod_id_bodegas"];
                 
                 
                 $funcion = "ins_productos";
-                $parametros = " '$_id_grupos', '$_id_unidad_medida', '$_codigo_productos', '$_marca_productos', '$_nombre_productos', '$_descripcion_productos', '$_ult_precio_productos'";
+                $parametros = " '$_id_grupos', '$_id_unidad_medida', '$_codigo_productos', '$_marca_productos', '$_nombre_productos', '$_descripcion_productos', '$_ult_precio_productos', '$_id_bodegas'";
                 $productos->setFuncion($funcion);
                 $productos->setParametros($parametros);
                 

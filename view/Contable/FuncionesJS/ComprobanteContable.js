@@ -365,6 +365,21 @@ $("#id_tipo_comprobantes").change(function() {
 		    		error ="FALSE";
 				}
 				
+				if (concepto_ccomprobantes == 0)
+		    	{
+			    	
+		    		$("#mensaje_concepto_ccomprobantes").text("Inserte un concepto de pago");
+		    		$("#mensaje_concepto_ccomprobantes").fadeIn("slow"); //Muestra mensaje de error
+		    		
+		    		error ="TRUE";
+		    		return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_concepto_ccomprobantes").fadeOut("slow"); //Oculta mensaje de error
+		    		error ="FALSE";
+				}
+				
 								
 							
 			}
@@ -374,6 +389,9 @@ $("#id_tipo_comprobantes").change(function() {
 				  $("#mensaje_id_tipo_comprobantes").fadeOut("slow");
 			  });
 		      
+			 $( "#concepto_ccomprobantes" ).focus(function() {
+				  $("#mensaje_concepto_ccomprobantes").fadeOut("slow");
+			  });
 //PARA EL INSERTADO DE COMPROBANTE
 
  $("#btn_inserta_comprobante" ).on( "click", function() {
@@ -394,7 +412,7 @@ $("#id_tipo_comprobantes").change(function() {
 			 valor_letras				: $('#valor_letras').val(),
 			 valor_ccomprobantes		: $('#valor_total_temp').val()
 	 }
-	 $.ajax({
+	/* $.ajax({
          url: 'index.php?controller=ComprobanteContable&action=insertacomprobante',
          type: 'POST',
          data: parametros,
@@ -402,7 +420,8 @@ $("#id_tipo_comprobantes").change(function() {
          success: function(x){
         	 swal(x.mensaje);
          }
-	 });
+	 });	
+*/
 });
  
  /***

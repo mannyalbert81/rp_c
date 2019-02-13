@@ -983,6 +983,41 @@ class ComprobanteContableController extends ControladorBase{
 	}
 	
 	
+	
+	public function generapdf(){
+	    
+	        require dirname(__FILE__).'\..\view\fpdf\fpdf.php';
+	        
+	        
+	        $pdf = new FPDF();
+	        
+            $pdf->AddPage();
+            $pdf->SetAutoPageBreak(true, 20);
+            
+            //para ubicaciones
+            
+            $y = $pdf->GetY();
+            //$x = $pdf->GetX();
+            $mid_x = $pdf->GetPageWidth() / 2;
+            $octavo_y = $pdf->GetPageHeight()/3;
+           
+            $tama�o = 10; //Tama�o de Pixel
+            $level = 'L'; //Precisi�n Baja
+            $framSize = 3; //Tama�o en blanco
+            $contenido = 'pasante'; //Texto
+            
+           
+            
+            $pdf->SetFont('Arial','',50);
+            //$y = $pdf->GetY();
+            $pdf->SetXY(20, $y+90);
+            $pdf->MultiCell(0,30, utf8_decode($contenido) ,1,'L');
+            
+	        $pdf->Output();
+	    
+	    
+	}
+	
 
 	
 	

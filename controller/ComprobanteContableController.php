@@ -121,11 +121,19 @@ class ComprobanteContableController extends ControladorBase{
 	            $subtotal_debe=number_format($sumador_debe_total,2,'.','');
 	            $subtotal_haber=number_format($sumador_haber_total,2,'.','');
 	            
+	            //para manejar igualdades en debe y haber si es cero las cantidades no coiciden
+	            //caso scontrario si vale 1 las cantidades coinciden "CUDRADO"
+	            $valor_temporal=0;
+	            if($subtotal_debe==$subtotal_haber){
+	                $valor_temporal=1;
+	            }
+	            
 	            $letras = $temp_comprobantes->numtoletras($subtotal_debe);
 	            
 	            $html.='<tr>';
 	            $html.='<td style="font-size: 12px;" class="text-right" colspan=1>TOTAL $</td>';
-	            $html.='<td style="font-size: 12px;" colspan=2><input type="text" class="form-control" id="valor_letras" name="valor_letras" value="'.$letras.'" readonly></td>';
+	            $html.='<td style="font-size: 12px;" colspan=2><input type="text" class="form-control" id="valor_letras" name="valor_letras" value="'.$letras.'" readonly>
+                        <input type="hidden" id="valor_total_temp" name="valor_total_temp" value="'.$valor_temporal.'"/> </td>';
 	            $html.='<td style="font-size: 12px;" class="text-left">'.$subtotal_debe.'</td>';
 	            $html.='<td style="font-size: 12px;" class="text-left">'.$subtotal_haber.'</td>';
 	            $html.='</tr>';
@@ -440,7 +448,8 @@ class ComprobanteContableController extends ControladorBase{
 	        
     	    $columnas_enc = "entidades.id_entidades,
       							entidades.nombre_entidades,
-    		    		        consecutivos.numero_consecutivos";
+    		    		        consecutivos.numero_consecutivos,
+                                consecutivos.nombre_consecutivos";
     	    $tablas_enc ="public.usuarios,
     						  public.entidades,
     		    		      public.consecutivos";
@@ -452,9 +461,11 @@ class ComprobanteContableController extends ControladorBase{
     	    
     	    if(!empty($resultSet)){
     	        
-    	        $_numero    =$resultSet[0]->numero_consecutivos;
+    	        $_numero               = $resultSet[0]->numero_consecutivos;    	        
+    	        $_nombre_consecutivo   = $resultSet[0]->nombre_consecutivos;
     	        
-    	        echo $_numero;
+    	        echo json_encode(array('numero'=>$_numero,'nombre'=>$_nombre_consecutivo));
+    	        //echo '{"numero":"'.$_numero.'","nombre":"'.$_nombre_consecutivo.'"}';
     	    }
     	    
 	    
@@ -915,14 +926,10 @@ class ComprobanteContableController extends ControladorBase{
 	            
 	            //datos de la vista
 	            $_id_tipo_comprobantes         = $_POST['id_tipo_comprobantes'];	            
-	            $_ruc_ccomprobantes            = $_POST['ruc_ccomprobantes'];
-	            $_nombres_ccomprobantes        = $_POST['nombres_ccomprobantes'];
-	            $_retencion_ccomprobantes      = $_POST['retencion_ccomprobantes'];
-	            
-	            //valores por verificar
-	            $_valor_ccomprobantes          = 0;  //$_POST['valor_ccomprobantes'];	
-	            $_valor_letras                 = $_POST['valor_letras'];
-	            
+	            $_id_proveedores               = $_POST['id_proveedores'];
+	            $_retencion_ccomprobantes      = $_POST['retencion_proveedor'];
+	            $_valor_ccomprobantes          = $_POST['valor_ccomprobantes'];  
+	            $_valor_letras                 = $_POST['valor_letras'];	            
 	            $_concepto_ccomprobantes       = $_POST['concepto_ccomprobantes'];	            
 	            $_fecha_ccomprobantes          = $_POST['fecha_ccomprobantes'];	            
 	            $_referencia_doc_ccomprobantes = $_POST['referencia_ccomprobantes'];
@@ -936,9 +943,7 @@ class ComprobanteContableController extends ControladorBase{
 	            $funcion = "fn_con_agrega_comprobante";
 	            
 	            $parametros = "'$_id_usuarios',
-                '$_id_tipo_comprobantes',
-                '$_ruc_ccomprobantes',
-                '$_nombres_ccomprobantes',
+                '$_id_tipo_comprobantes', 
                 '$_retencion_ccomprobantes',
                 '$_valor_ccomprobantes',
                 '$_concepto_ccomprobantes',
@@ -948,16 +953,23 @@ class ComprobanteContableController extends ControladorBase{
                 '$_referencia_doc_ccomprobantes',
                 '$_num_cuenta_ban_ccomprobantes',
                 '$_num_cheque_ccomprobantes',
-                '$_observacion_ccomprobantes' ";            
-	            
+                '$_observacion_ccomprobantes',
+                '$_id_proveedores' ";
 	            
 	            $ccomprobantes->setFuncion($funcion);
 	            $ccomprobantes->setParametros($parametros);
-	            $resultado=$ccomprobantes->llamafuncion();
+	            $resultado=$ccomprobantes->llamafuncion();	            
 	            
-	            if(!empty($resultado))  {
+	            $respuesta='';
+	            
+	            if(!empty($resultado) && count($resultado) > 0)  {
 	                
+	                foreach ($resultado as $k => $v)
+	                    $respuesta = $v;
 	            }
+	            
+	            echo json_encode(array('success'=>0,'mensaje'=>$respuesta));
+	           
 	           
 	        }
 	        

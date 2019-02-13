@@ -278,8 +278,21 @@
                     url: 'index.php?controller=ComprobanteContable&action=consulta_consecutivos',
                     type: 'POST',
                     data: {action:'ajax', id_tipo_comprobantes:id_tipo_comprobantes},
+                    dataType:'json',
                     success: function(x){
-                      $("#numero_ccomprobantes").val(x);
+
+                      $("#numero_ccomprobantes").val(x.numero);
+                      if(x.nombre == 'CONTABLE'){
+                    	  $('#id_proveedor').val('0')
+                    	  $('#nombre_proveedor').val('').attr("readonly","readonly")
+                    	  $('#proveedor').val('').attr("readonly","readonly")
+                    	  $('#retencion_proveedor').val('').attr("readonly","readonly")
+                      }else{
+                    	  $('#id_proveedor').val('0')
+                    	  $('#nombre_proveedor').val('').removeAttr("readonly")
+                    	  $('#proveedor').val('').removeAttr("readonly")
+                    	  $('#retencion_proveedor').val('').removeAttr("readonly")
+                      }
                       
                     }
              });
@@ -288,7 +301,7 @@
 	    
 // PARA HABILITAR NUMERO DE COMPROBANTES    
 
-$("#id_tipo_comprobantes").click(function() {
+/*$("#id_tipo_comprobantes").click(function() {
 
   var id_tipo_comprobantes = $(this).val();
 	
@@ -303,7 +316,7 @@ $("#id_tipo_comprobantes").click(function() {
    $("#div_datos").fadeOut("slow");
   }
  
-});
+});*/
 
 $("#id_tipo_comprobantes").change(function() {
 	  
@@ -365,13 +378,12 @@ $("#id_tipo_comprobantes").change(function() {
 
  $("#btn_inserta_comprobante" ).on( "click", function() {
 	  //toma de parametros
-	 
+	
 	 var parametros = {
 			 action						: 'ajax',
 			 id_tipo_comprobantes 		: $('#id_tipo_comprobantes').val(),
-			 ruc_ccomprobantes 			: $('#identificacion_proveedores').val(),
-			 nombres_ccomprobantes		: $('#nombre_proveedores').val(),
-			 retencion_ccomprobantes	: $('#retencion_ccomprobantes').val(),
+			 id_proveedores				: $('#id_proveedor').val(),
+			 retencion_proveedor 		: $('#retencion_proveedor').val(),
 			 fecha_ccomprobantes 		: $('#fecha_ccomprobantes').val(),
 			 referencia_ccomprobantes 	: $('#referencia_doc_ccomprobantes').val(),
 			 id_forma_pago 				: $('#id_forma_pago').val(),
@@ -379,16 +391,16 @@ $("#id_tipo_comprobantes").change(function() {
 			 num_cheque_ccomprobantes 	: $('#numero_cheque_ccomprobantes').val(),
 			 observacion_ccomprobantes 	: $('#observaciones_ccomprobantes').val(),
 			 concepto_ccomprobantes		: $('#concepto_ccomprobantes').val(),
-			 valor_letras				: $('#valor_letras').val()
+			 valor_letras				: $('#valor_letras').val(),
+			 valor_ccomprobantes		: $('#valor_total_temp').val()
 	 }
-	 
 	 $.ajax({
          url: 'index.php?controller=ComprobanteContable&action=insertacomprobante',
          type: 'POST',
          data: parametros,
+         dataType:'json',
          success: function(x){
-           console.log(x)
-           
+        	 swal(x.mensaje);
          }
 	 });
 });
@@ -421,7 +433,7 @@ $("#id_tipo_comprobantes").change(function() {
 			dataType:'json',
 			data:{term:$('#proveedor').val()}
 		}).done(function(respuesta){
-			console.log(respuesta[0].id);
+			//console.log(respuesta[0].id);
 			if(respuesta[0].id>0){				
 				$('#id_proveedor').val(respuesta[0].id);
 	           $('#proveedor').val(respuesta[0].value); // save selected id to input

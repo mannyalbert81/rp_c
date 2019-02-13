@@ -122,7 +122,7 @@
 	
 		   <div id="datos_proveedor" class="col-xs-12 col-md-2 col-lg-2">
 		     <div class="form-group">
-		                          <label for="identificacion_proveedores" class=" item_autocomplete control-label">Nombre de Proveedor:</label>
+		                          <label for="nombre_proveedor" class="  control-label">Nombre de Proveedor:</label>
                                   <input type="text" class="form-control" id="nombre_proveedor" name="nombre_proveedor" value=""  placeholder="Ruc Proveedores">
                                   <div id="mensaje_identificacion_proveedores" class="errores"></div> 
              </div>
@@ -130,8 +130,8 @@
 	
 	   <div class="col-xs-12 col-md-2 col-lg-2">
 		     <div class="form-group">
-		                          <label for="retencion_ccomprobantes" class="control-label">Retención Proveedor:</label>
-                                  <input type="text" class="form-control" id="retencion_ccomprobantes" name="retencion_ccomprobantes" value=""  placeholder="Retencion Comprobantes">
+		                          <label for="retencion_proveedor" class="control-label">Retención Proveedor:</label>
+                                  <input type="text" class="form-control" id="retencion_proveedor" name="retencion_proveedor" value=""  placeholder="Retencion Comprobantes">
                                   <div id="mensaje_retencion_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
@@ -277,7 +277,7 @@
 		   <div class="row">
 		   <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; margin-top:20px" > 
            <div class="form-group">
-           <button type="button" id="btnForm" name="btnForm" value="valor" onclick="insertar_comprobantes();" class="btn btn-success">Guardar</button>
+           <button type="button" id="btn_inserta_comprobante" name="btn_inserta_comprobante" value="valor" onclick="insertar_comprobantes();" class="btn btn-success">Guardar</button>
            </div>
            </div>
            </div>     
@@ -414,7 +414,7 @@
    	 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?2.3"></script>
+    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?2.4"></script>
     
    
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>

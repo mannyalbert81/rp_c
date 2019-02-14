@@ -1859,7 +1859,8 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<th style="text-align: center; font-size: 25px; ">CAPREMCI</br>';
 	                $html.='<p style="text-align: center; font-size: 13px; "> Av. Baquerico Moreno E-9781 y Leonidas Plaza';
 	                $html.='<p style="text-align: center; font-size: 18px; ">Solicitud N°: &nbsp;'.$_numero_movimientos_inv_cabeza.'</br>';
-	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; ESTADO: '.$_estado_movimientos_inv_cabeza.'&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Fecha: '.$_fecha_movimientos_inv_cabeza.'';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; Fecha de solicitud: &nbsp; &nbsp; &nbsp; '.$_fecha_movimientos_inv_cabeza.'';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; ESTADO: '.$_estado_movimientos_inv_cabeza.'&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Fecha de aprobación:&nbsp; '.$_fecha_movimientos_inv_cabeza.'';
 	                $html.='</tr>';
 	                $html.='</table>';
 	                
@@ -1921,9 +1922,6 @@ class MovimientosInvController extends ControladorBase{
 	        $this->redirect("Usuarios","sesion_caducada");
 	        
 	    }
-	    
-	    
-	    
 	    
 	    
 	}

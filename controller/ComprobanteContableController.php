@@ -958,13 +958,14 @@ class ComprobanteContableController extends ControladorBase{
 	            
 	            $ccomprobantes->setFuncion($funcion);
 	            $ccomprobantes->setParametros($parametros);
-	            $resultado=$ccomprobantes->llamafuncion();	            
+	            //$resultado=$ccomprobantes->llamafuncion();	            
 	            
+	            print_r($parametros);
 	            $respuesta='';
 	            
 	            if(!empty($resultado) && count($resultado) > 0)  {
 	                
-	                foreach ($resultado as $k => $v)
+	                foreach ($resultado[0] as $k => $v)
 	                    $respuesta = $v;
 	            }
 	            

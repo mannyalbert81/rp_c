@@ -234,10 +234,6 @@
   </body>
 </html>
 
-<!-- <script src="view/bootstrap/otros/inventario/movimientos_salidas_detalle.js" ></script>
-    -->
-
-<!-- script pagina anterior -->
 <script type="text/javascript">
 
 function pone_espera(){

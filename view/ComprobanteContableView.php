@@ -75,6 +75,7 @@
 		     <div class="row">
 	         <div class="col-md-2 col-lg-2 col-xs-12">
 	              <label for="id_tipo_comprobantes" class="control-label">Tipo:</label>
+	              <input type="hidden" id="nombre_comprobante" value="" />
 				  <select name="id_tipo_comprobantes" id="id_tipo_comprobantes"  class="form-control">
 				  <option value="0" selected="selected">--Seleccione--</option>
                      <?php foreach($resultTipCom as $res) {?>
@@ -85,25 +86,25 @@
              </div>
              
              <div class="col-md-2 col-lg-2 col-xs-12">
-		     					   <label for="fecha_ccomprobantes" class="control-label">Fecha:</label>
-		
-		     					   
-		        				   <input type="date" class="form-control" id="fecha_ccomprobantes" name="fecha_ccomprobantes" min="<?php echo date('Y-m-d', mktime(0,0,0, date('m'), date("d", mktime(0,0,0, date('m'), 1, date('Y'))), date('Y'))); ?>" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
-             					   <div id="mensaje_fecha_ccomprobantes" class="errores"></div>
+			   <label for="fecha_ccomprobantes" class="control-label">Fecha:</label>
+
+			   
+			   <input type="date" class="form-control" id="fecha_ccomprobantes" name="fecha_ccomprobantes" min="<?php echo date('Y-m-d', mktime(0,0,0, date('m'), date("d", mktime(0,0,0, date('m'), 1, date('Y'))), date('Y'))); ?>" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
+			   <div id="mensaje_fecha_ccomprobantes" class="errores"></div>
              </div>
              
              <div id="div_datos" style="display: none;">
              <div class="col-md-2 col-lg-2 col-xs-12">
-		     					   <label for="numero_ccomprobantes" class="control-label">Número:</label>
-		        				   <input type="text" class="form-control" id="numero_ccomprobantes" name="numero_ccomprobantes" value=""  readonly>
+			   <label for="numero_ccomprobantes" class="control-label">Número:</label>
+			   <input type="text" class="form-control" id="numero_ccomprobantes" name="numero_ccomprobantes" value=""  readonly>
              </div>
 	         </div>
 	         
   		     <div class="col-xs-12 col-md-8 col-lg-8">
 		     <div class="form-group">
-		                          <label for="concepto_ccomprobantes" class="control-label">Concepto de Pago:</label>
-                                  <input type="text" class="form-control" id="concepto_ccomprobantes" name="concepto_ccomprobantes" value=""  placeholder="Concepto de Pago">
-                                  <div id="mensaje_concepto_ccomprobantes" class="errores"></div> 
+              <label for="concepto_ccomprobantes" class="control-label">Concepto de Pago:</label>
+              <input type="text" class="form-control" id="concepto_ccomprobantes" maxlength="200" name="concepto_ccomprobantes" value=""  placeholder="Concepto de Pago">
+              <div id="mensaje_concepto_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
 		     
@@ -130,16 +131,16 @@
 	
 	   <div class="col-xs-12 col-md-2 col-lg-2">
 		     <div class="form-group">
-		                          <label for="retencion_proveedor" class="control-label">Retención Proveedor:</label>
-                                  <input type="text" class="form-control" id="retencion_proveedor" name="retencion_proveedor" value=""  placeholder="Retencion Comprobantes">
-                                  <div id="mensaje_retencion_ccomprobantes" class="errores"></div> 
+                  <label for="retencion_proveedor" class="control-label">Retención Proveedor:</label>
+                  <input type="text" class="form-control" id="retencion_proveedor" maxlength="50" name="retencion_proveedor" value=""  placeholder="Retencion Comprobantes">
+                  <div id="mensaje_retencion_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
 	
 	  <div class="col-xs-12 col-md-2 col-lg-2">
 		     <div class="form-group">
 		                          <label for="referencia_doc_ccomprobantes" class="control-label">Referencia Doc:</label>
-                                  <input type="text" class="form-control" id="referencia_doc_ccomprobantes" name="referencia_doc_ccomprobantes" value=""  placeholder="Referencia Comprobantes">
+                                  <input type="text" class="form-control" maxlength="50" id="referencia_doc_ccomprobantes" name="referencia_doc_ccomprobantes" value=""  placeholder="Referencia Comprobantes">
                                   <div id="mensaje_referencia_doc_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
@@ -159,7 +160,7 @@
 	  <div class="col-xs-12 col-md-2 col-lg-2">
 		     <div class="form-group">
 		                          <label for="numero_cuenta_banco_ccomprobantes" class="control-label">Número de Cuenta:</label>
-                                  <input type="text" class="form-control" id="numero_cuenta_banco_ccomprobantes" name="numero_cuenta_banco_ccomprobantes" value=""  placeholder="Número Cuenta">
+                                  <input type="text" class="form-control" maxlength="20" id="numero_cuenta_banco_ccomprobantes" name="numero_cuenta_banco_ccomprobantes" value=""  placeholder="Número Cuenta">
                                   <div id="mensaje_numero_cuenta_banco_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
@@ -167,7 +168,7 @@
 	  <div class="col-xs-12 col-md-2 col-lg-2">
 		     <div class="form-group">
 		                          <label for="numero_cheque_ccomprobantes" class="control-label">Número de Cheque:</label>
-                                  <input type="text" class="form-control" id="numero_cheque_ccomprobantes" name="numero_cheque_ccomprobantes" value=""  placeholder="Número Cheque">
+                                  <input type="text" class="form-control" maxlength="20" id="numero_cheque_ccomprobantes" name="numero_cheque_ccomprobantes" value=""  placeholder="Número Cheque">
                                   <div id="mensaje_numero_cheque_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
@@ -175,7 +176,7 @@
 	  <div class="col-xs-12 col-md-10 col-lg-10">
 		     <div class="form-group">
 		                          <label for="observaciones_ccomprobantes" class="control-label">Observación:</label>
-                                  <input type="text" class="form-control" id="observaciones_ccomprobantes" name="observaciones_ccomprobantes" value=""  placeholder="Observación">
+                                  <input type="text" class="form-control" id="observaciones_ccomprobantes" maxlength="200" name="observaciones_ccomprobantes" value=""  placeholder="Observación">
                                   <div id="mensaje_observaciones_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
@@ -235,8 +236,8 @@
 		     <div class="form-group">
              <div class="col-xs-2 col-md-2 col-lg-2">
 		                          <label for="debe_dcomprobantes" class="control-label">Debe: </label>
-                                  <input type="text" class="form-control cantidades1" id="debe_dcomprobantes" name="debe_dcomprobantes" value='0.00' 
-                                        data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false" onfocus="validardebe(this);">
+                                  <input type="text" class="form-control cantidades1" id="debe_dcomprobantes" name="debe_dcomprobantes" placeholder="0.00" 
+                                        onfocus="validardebe(this);">
                                    <div id="mensaje_debe_dcomprobantes" class="errores"></div>
                                  
              </div>
@@ -246,8 +247,8 @@
 		     <div class="form-group">
              <div class="col-xs-2 col-md-2 col-lg-2">
 		                          <label for="haber_dcomprobantes" class="control-label">Haber: </label>
-                                   <input type="text" class="form-control cantidades1" id="haber_dcomprobantes" name="haber_dcomprobantes" value='0.00' 
-                                        data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false" onfocus="validardebe(this);">
+                                   <input type="text" class="form-control cantidades1" id="haber_dcomprobantes" name="haber_dcomprobantes" placeholder="0.00"
+                                         onfocus="validardebe(this);">
                                    <div id="mensaje_haber_dcomprobantes" class="errores"></div>
              </div>
 		     </div>
@@ -267,7 +268,8 @@
 						<input type="text" value="" class="form-control" id="search_temp_comprobantes" name="search_temp_comprobantes" onkeyup="load_temp_comprobantes(1)" placeholder="search.."/>
 					</div>
 					<div id="load_temp_comprobantes_registrados" ></div>	
-					<div id="temp_comprobantes_registrados"></div>	
+					<div id="temp_comprobantes_registrados"></div>
+					<div id="mensaje_detalle_dcomprobantes" class="errores"></div>	
 		    </div>
 		    </div>
 	        </div>
@@ -277,7 +279,7 @@
 		   <div class="row">
 		   <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; margin-top:20px" > 
            <div class="form-group">
-           <button type="button" id="btn_inserta_comprobante" name="btn_inserta_comprobante" value="valor" onclick="insertar_comprobantes();" class="btn btn-success">Guardar</button>
+           <button type="button" id="btn_inserta_comprobante" name="btn_inserta_comprobante" value="valor"  class="btn btn-success">Guardar</button>
            </div>
            </div>
            </div>     
@@ -343,7 +345,7 @@
         			  <div class="form-group">
         				<label for="nombre_proveedores" class="col-sm-3 control-label">Nombre Proveedores: </label>
         				<div class="col-sm-8">
-        				  <input type="text" class="form-control" id="nombre_proveedores" name="nombre_proveedores" value=""  placeholder="Nombre Proveedores" >
+        				  <input type="text" class="form-control" id="nombre_proveedores" name="nombre_proveedores" value=""  placeholder="Nombre Proveedores" autocomplete="off" />
                           <div id="mensaje_nombre_proveedores" class="errores"></div>
         				</div>
         			  </div>
@@ -351,7 +353,7 @@
         			  <div class="form-group">
         				<label for="identificacion_proveedores" class="col-sm-3 control-label">Ruc Proveedores: </label>
         				<div class="col-sm-8">
-        					<input type="text" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="Ruc Proveedores" onKeyPress="return numeros(event)">
+        					<input type="text" class="form-control" minlength="10" maxlength="13" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="Ruc Proveedores" >
                           <div id="mensaje_identificacion_proveedores" class="errores"></div>
         				</div>
         			  </div>
@@ -375,7 +377,7 @@
         			  <div class="form-group">
         				<label for="telefono_proveedores" class="col-sm-3 control-label">Teléfono Proveedores: </label>
         				<div class="col-sm-8">
-        					<input type="text" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value=""  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
+        					<input type="text" class="form-control" id="telefono_proveedores" minlength="7" maxlength="10" name="telefono_proveedores" value=""  placeholder="Teléfono Proveedores" />
                               <div id="mensaje_telefono_proveedores" class="errores"></div>  
         				</div>
         			  </div>
@@ -414,7 +416,8 @@
    	 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?2.4"></script>
+    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?3.3"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     
    
 

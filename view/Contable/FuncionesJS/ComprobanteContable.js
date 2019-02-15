@@ -1,12 +1,20 @@
 	
-  // INICIALIZAR EL JAVA SCRIPT
-	  
-      $(document).ready(function(){ 	 
-	     load_temp_comprobantes(1);
-	     $('#datos_proveedor').hide();
-	     
-	  }); 
+// INICIALIZAR EL JAVA SCRIPT
+  
+  $(document).ready(function(){ 	 
+     load_temp_comprobantes(1);
+     $('#datos_proveedor').hide();
+     $('input[name="debe_dcomprobantes"]').mask("#,##0.00", {reverse: true});
+     $('input[name="haber_dcomprobantes"]').mask("#,##0.00", {reverse: true});
+     $('input[name="numero_cuenta_banco_ccomprobantes"]').mask("00000000000000000000", {reverse: true});
+     $('input[name="numero_cheque_ccomprobantes"]').mask("00000000000000000000", {reverse: true});
+     $('input[name="telefono_proveedores"]').mask("0000000000", {reverse: true});
+     $('input[name="identificacion_proveedores"]').mask("0000000000", {reverse: true});
+     
+     
+  }); 
 
+  
     
    
    // FUNCIONES USADAS EN TODO EL FORMULARIO COMPROBANTES CONTABLES
@@ -287,11 +295,13 @@
                     	  $('#nombre_proveedor').val('').attr("readonly","readonly")
                     	  $('#proveedor').val('').attr("readonly","readonly")
                     	  $('#retencion_proveedor').val('').attr("readonly","readonly")
+                    	  $('#nombre_comprobante').val('CONTABLE')
                       }else{
                     	  $('#id_proveedor').val('0')
                     	  $('#nombre_proveedor').val('').removeAttr("readonly")
                     	  $('#proveedor').val('').removeAttr("readonly")
                     	  $('#retencion_proveedor').val('').removeAttr("readonly")
+                    	  $('#nombre_comprobante').val('')
                       }
                       
                     }
@@ -334,69 +344,174 @@ $("#id_tipo_comprobantes").change(function() {
       
 });
 
-	      
-		    
-		
-		    
-		 // INSERTAR COMPROBANTES PROCESO FINAL
-		       
-			function insertar_comprobantes()
-			{
-					
-				var id_tipo_comprobantes=document.getElementById('id_tipo_comprobantes').value;
-				var fecha_ccomprobantes=document.getElementById('fecha_ccomprobantes').value;
-				var concepto_ccomprobantes=document.getElementById('concepto_ccomprobantes').value;
-				var tiempo = tiempo || 1000;
-				var error="TRUE";
-				
-				if (id_tipo_comprobantes == 0)
-		    	{
-			    	
-		    		$("#mensaje_id_tipo_comprobantes").text("Seleccione Tipo");
-		    		$("#mensaje_id_tipo_comprobantes").fadeIn("slow"); //Muestra mensaje de error
-		    		$("html, body").animate({ scrollTop: $(mensaje_id_tipo_comprobantes).offset().top-120 }, tiempo);
-			         
-		    		error ="TRUE";
-		    		return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_tipo_comprobantes").fadeOut("slow"); //Oculta mensaje de error
-		    		error ="FALSE";
-				}
-				
-				if (concepto_ccomprobantes == 0)
-		    	{
-			    	
-		    		$("#mensaje_concepto_ccomprobantes").text("Inserte un concepto de pago");
-		    		$("#mensaje_concepto_ccomprobantes").fadeIn("slow"); //Muestra mensaje de error
-		    		
-		    		error ="TRUE";
-		    		return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_concepto_ccomprobantes").fadeOut("slow"); //Oculta mensaje de error
-		    		error ="FALSE";
-				}
-				
-								
-							
-			}
-		  
-		      
-			 $( "#id_tipo_comprobantes" ).focus(function() {
-				  $("#mensaje_id_tipo_comprobantes").fadeOut("slow");
-			  });
-		      
-			 $( "#concepto_ccomprobantes" ).focus(function() {
-				  $("#mensaje_concepto_ccomprobantes").fadeOut("slow");
-			  });
-//PARA EL INSERTADO DE COMPROBANTE
+
+
+$( "#id_tipo_comprobantes" ).focus(function() {
+	  $("#mensaje_id_tipo_comprobantes").fadeOut("slow");
+});
+
+$( "#concepto_ccomprobantes" ).focus(function() {
+	  $("#mensaje_concepto_ccomprobantes").fadeOut("slow");
+});
+
+$( "#proveedor" ).focus(function() {
+	  $("#mensaje_nombre_proveedores").fadeOut("slow");
+});
+
+$( "#nombre_proveedor" ).focus(function() {
+	  $("#mensaje_nombre_proveedores").fadeOut("slow");
+});
+
+$( "#retencion_proveedor" ).focus(function() {
+	  $("#mensaje_retencion_ccomprobantes").fadeOut("slow");
+});
+
+$( "#referencia_doc_ccomprobantes" ).focus(function() {
+	  $("#mensaje_referencia_doc_ccomprobantes").fadeOut("slow");
+});
+
+$( "#id_forma_pago" ).focus(function() {
+	  $("#mensaje_id_forma_pago").fadeOut("slow");
+});
+
+$( "#numero_cuenta_banco_ccomprobantes" ).focus(function() {
+	  $("#mensaje_numero_cuenta_banco_ccomprobantes").fadeOut("slow");
+});
+
+$( "#numero_cheque_ccomprobantes" ).focus(function() {
+	  $("#mensaje_numero_cheque_ccomprobantes").fadeOut("slow");
+});
+
+$( "#observaciones_ccomprobantes" ).focus(function() {
+	  $("#mensaje_observaciones_ccomprobantes").fadeOut("slow");
+})
+
+
+// INSERTAR COMPROBANTES PROCESO FINAL
 
  $("#btn_inserta_comprobante" ).on( "click", function() {
-	  //toma de parametros
-	
+	 
+	 var id_tipo_comprobantes=document.getElementById('id_tipo_comprobantes').value;
+		var fecha_ccomprobantes=document.getElementById('fecha_ccomprobantes').value;
+		var concepto_ccomprobantes=document.getElementById('concepto_ccomprobantes').value;
+		var tiempo = tiempo || 1000;
+		
+		if (id_tipo_comprobantes == 0)
+		{
+	    	
+			$("#mensaje_id_tipo_comprobantes").text("Seleccione Tipo");
+			$("#mensaje_id_tipo_comprobantes").fadeIn("slow"); //Muestra mensaje de error
+			$("html, body").animate({ scrollTop: $(mensaje_id_tipo_comprobantes).offset().top-120 }, tiempo);
+	        
+			return false;
+	    }
+		else 
+		{
+			$("#mensaje_id_tipo_comprobantes").fadeOut("slow"); //Oculta mensaje de error
+			
+		}
+		
+		if (concepto_ccomprobantes == 0)
+		{
+	    	
+			$("#mensaje_concepto_ccomprobantes").text("Inserte un concepto de pago");
+			$("#mensaje_concepto_ccomprobantes").fadeIn("slow");
+			$("html, body").animate({ scrollTop: $(mensaje_concepto_ccomprobantes).offset().top-120 }, tiempo);
+			return false
+	    }
+		else 
+		{
+			$("#mensaje_concepto_ccomprobantes").fadeOut("slow"); //Oculta mensaje de error
+			error ="FALSE";
+		}
+		
+		
+		if(document.getElementById('nombre_comprobante').value != 'CONTABLE'){
+			
+			if(document.getElementById('proveedor').value == ''){
+				
+				$("#mensaje_nombre_proveedores").text("Digite RUC/NOMBRE Proveedor");
+				$("#mensaje_nombre_proveedores").fadeIn("slow");
+				$("html, body").animate({ scrollTop: $(mensaje_nombre_proveedores).offset().top-150 }, tiempo);
+				return false
+			}
+			
+			if(document.getElementById('nombre_proveedor').value == ''){
+				
+				$("#mensaje_nombre_proveedores").text("Digite RUC/NOMBRE Proveedor");
+				$("#mensaje_nombre_proveedores").fadeIn("slow"); 
+				$("html, body").animate({ scrollTop: $(mensaje_nombre_proveedores).offset().top-150 }, tiempo);
+				return false
+			}
+			
+			if(document.getElementById('retencion_proveedor').value == ''){
+				
+				$("#mensaje_retencion_ccomprobantes").text("Digite Retencion Proveedor");
+				$("#mensaje_retencion_ccomprobantes").fadeIn("slow"); 
+				$("html, body").animate({ scrollTop: $(mensaje_retencion_ccomprobantes).offset().top-150 }, tiempo);
+				return false
+			}
+		}
+		
+		if(document.getElementById('referencia_doc_ccomprobantes').value == ''){
+			$("#mensaje_referencia_doc_ccomprobantes").text("Digite Retencion Proveedor");
+			$("#mensaje_referencia_doc_ccomprobantes").fadeIn("slow"); 
+			$("html, body").animate({ scrollTop: $(mensaje_referencia_doc_ccomprobantes).offset().top-150 }, tiempo);
+			return false
+		}
+		
+		if(document.getElementById('id_forma_pago').value == 0){
+			$("#mensaje_id_forma_pago").text("Seleccione Forma de Pago");
+			$("#mensaje_id_forma_pago").fadeIn("slow"); 
+			$("html, body").animate({ scrollTop: $(mensaje_id_forma_pago).offset().top-150 }, tiempo);
+			return false
+		}
+		
+		if(document.getElementById('numero_cuenta_banco_ccomprobantes').value == ''){
+			$("#mensaje_numero_cuenta_banco_ccomprobantes").text("Ingrese Numero de Cuenta");
+			$("#mensaje_numero_cuenta_banco_ccomprobantes").fadeIn("slow"); 
+			$("html, body").animate({ scrollTop: $(mensaje_numero_cuenta_banco_ccomprobantes).offset().top-150 }, tiempo);
+			return false
+		}
+		
+		if(document.getElementById('numero_cheque_ccomprobantes').value == ''){
+			$("#mensaje_numero_cheque_ccomprobantes").text("Ingrese Numero de Cheque");
+			$("#mensaje_numero_cheque_ccomprobantes").fadeIn("slow"); 
+			$("html, body").animate({ scrollTop: $(mensaje_numero_cheque_ccomprobantes).offset().top-150 }, tiempo);
+			return false
+		}
+		
+		if(document.getElementById('observaciones_ccomprobantes').value == ''){
+			$("#mensaje_observaciones_ccomprobantes").text("Ingrese Observacion");
+			$("#mensaje_observaciones_ccomprobantes").fadeIn("slow"); 
+			$("html, body").animate({ scrollTop: $(mensaje_observaciones_ccomprobantes).offset().top-150 }, tiempo);
+			return false
+		}
+		
+		if(!document.getElementById("valor_total_temp")){
+			swal({
+		   		  title: "Movimientos",
+		   		  text: "Registre Movimiento",
+		   		  icon: "error",
+		   		  button: "Aceptar",
+		   		})
+			return false
+			
+			}
+		
+		if(document.getElementById("valor_total_temp").value == 0){
+			swal({
+		   		  title: "Movimientos",
+		   		  text: "Debe/Haber no Coinciden",
+		   		  icon: "warning",
+		   		  button: "Aceptar",
+		   		})
+			return false
+			
+			}
+	 
+	 //toma de parametros
+		
 	 var parametros = {
 			 action						: 'ajax',
 			 id_tipo_comprobantes 		: $('#id_tipo_comprobantes').val(),
@@ -409,19 +524,20 @@ $("#id_tipo_comprobantes").change(function() {
 			 num_cheque_ccomprobantes 	: $('#numero_cheque_ccomprobantes').val(),
 			 observacion_ccomprobantes 	: $('#observaciones_ccomprobantes').val(),
 			 concepto_ccomprobantes		: $('#concepto_ccomprobantes').val(),
-			 valor_letras				: $('#valor_letras').val(),
-			 valor_ccomprobantes		: $('#valor_total_temp').val()
+			 valor_letras				: $('#valor_letras').val()
 	 }
-	/* $.ajax({
+	 
+	 $.ajax({
          url: 'index.php?controller=ComprobanteContable&action=insertacomprobante',
          type: 'POST',
          data: parametros,
          dataType:'json',
          success: function(x){
         	 swal(x.mensaje);
+        	 //console.log(x)
          }
 	 });	
-*/
+
 });
  
  /***
@@ -473,7 +589,8 @@ $("#id_tipo_comprobantes").change(function() {
  
  $( "#frm_guardar_proveedor" ).submit(function( event ) {
 		//console.log('ingresa->1\n');
-		var parametros = $(this).serialize();	
+		var parametros = $(this).serialize();
+		
 		$.ajax({
 	        beforeSend: function(objeto){
 	          
@@ -512,7 +629,36 @@ $("#id_tipo_comprobantes").change(function() {
 		event.preventDefault();	
 		  
 });
-		      
+
+ function validarcedula(ced) {
+     var cad = document.getElementById(ced).value.trim();
+     var total = 0;
+     var longitud = cad.length;
+     var longcheck = longitud - 1;
+
+     if (cad !== "" && longitud === 10){
+       for(i = 0; i < longcheck; i++){
+         if (i%2 === 0) {
+           var aux = cad.charAt(i) * 2;
+           if (aux > 9) aux -= 9;
+           total += aux;
+         } else {
+           total += parseInt(cad.charAt(i)); // parseInt o concatenará en lugar de sumar
+         }
+       }
+
+       total = total % 10 ? 10 - total % 10 : 0;
+
+       if (cad.charAt(longitud-1) == total) {
+     	  $(ced).val(cad);
+     	  return true;
+       }else{
+			  document.getElementById(ced).focus();
+     	  $(ced).val("");
+     	  return false;
+       }
+     }
+   }
 		  
 		    
 		    

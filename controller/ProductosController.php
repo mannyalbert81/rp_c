@@ -11,7 +11,6 @@ class ProductosController extends ControladorBase{
     public function index(){
         
       
-        
         session_start();
         
         //Creamos el objeto usuario

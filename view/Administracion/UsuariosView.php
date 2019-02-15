@@ -20,6 +20,7 @@
  <?php  $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        $DateString = (string)$fecha;
   ?>
     
     
@@ -528,10 +529,13 @@
             
             <div class="col-md-12 col-lg-12 col-xs-12">
             <div class="tab-content">
+             
             <br>
               <div class="tab-pane active" id="activos">
+              
                 
 					<div class="pull-right" style="margin-right:15px;">
+					
 						<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_usuarios(1)" placeholder="search.."/>
 					</div>
 					<div id="load_registrados" ></div>	
@@ -552,7 +556,7 @@
                 
               </div>
              
-             
+              <button type="submit" id="btExportar" name="exportar" class="btn btn-info">Exportar</button>
             </div>
             </div>
           </div>
@@ -595,6 +599,13 @@
 	   /*pone_espera();*/
 	   load_usuarios(1);
 	   load_usuarios_inactivos(1);
+	   var ct="Usuarios Activos";
+	   
+	   $('.nav-tabs a').on('shown.bs.tab', function(e){
+           var currentTab = $(e.target).text();
+           ct=currentTab;
+           //console.log(currentTab);
+           });
 
 	   $('[data-mask]').inputmask();
 
@@ -605,6 +616,112 @@
 	    $('#link_agregar_rol').click(function() { 
 	        copiarOpcion($('#id_rol option:selected').clone(), "#lista_roles");
 	    });
+
+	    $("#btExportar").click(function()
+				{
+			var fecha = "<?php echo $DateString?>";
+			
+	    	var activeTab = ct;
+	    	
+	    	//console.log(activeTab);
+	    	
+			if (activeTab == "Usuarios Activos")
+			{
+			var arreglo_usuarios= new Array();
+			$("table#tabla_usuarios tr").each(
+			function(){
+				var arrayOfThisRow = [];
+			    var tableData = $(this).find('td');
+			    if (tableData.length > 0) {
+			        tableData.each(function() { arrayOfThisRow.push($(this).text()); });
+			        arreglo_usuarios.push(arrayOfThisRow);
+			    }
+						}
+					);
+
+	    	   //console.log(arreglo_usuarios);
+	    	   var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"
+		    	   docdescarga +=" \tCedula\tNombre\tTelefono\tCelular\tCorreo\tRol\tEstado\n";
+	    	   var len = arreglo_usuarios.length;
+	    	   for (var i=0; i<len; i++)
+	    	   {
+		    	   for (var j=1; j<9; j++)
+		    	   {
+		    		   docdescarga +=arreglo_usuarios[i][j];
+		    		   if(j!=8) docdescarga += "\t";			    	   
+			    	   }
+		    	   docdescarga += "\n";
+				
+		    	   }
+	    	   //console.log(docdescarga);
+
+	    	    if (len>0)
+	    	    {
+
+	    	   var encodeUri = encodeURI(docdescarga);
+				var link = document.createElement("a");
+				link.setAttribute("href", encodeUri);
+				var nombre_de_arch = "ReporteUsuariosActivos"+fecha+".xls";
+				link.setAttribute("download", nombre_de_arch);
+				document.body.appendChild(link); // Required for FF
+
+				link.click();
+	    	    }
+	    	    else
+	    	    {
+		    	    alert("No hay información para descargar");
+		    	    }
+			}
+
+			else
+			{
+				var arreglo_usuarios_inact= new Array();
+				$("table#tabla_usuarios_inactivos tr").each(
+				function(){
+					var arrayOfThisRow = [];
+				    var tableData = $(this).find('td');
+				    if (tableData.length > 0) {
+				        tableData.each(function() { arrayOfThisRow.push($(this).text()); });
+				        arreglo_usuarios_inact.push(arrayOfThisRow);
+				    }
+							}
+						);
+
+		    	  // console.log(arreglo_usuarios_inact);
+		    	   var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"
+			    	   docdescarga +=" \tCedula\tNombre\tTelefono\tCelular\tCorreo\tRol\tEstado\n";
+		    	   var len = arreglo_usuarios_inact.length;
+		    	   for (var i=0; i<len; i++)
+		    	   {
+			    	   for (var j=1; j<9; j++)
+			    	   {
+			    		   docdescarga +=arreglo_usuarios[i][j];
+			    		   if(j!=8) docdescarga += "\t";			    	   
+				    	   }
+			    	   docdescarga += "\n";
+					
+			    	   }
+		    	   if (len>0)
+		    	    {
+
+		    	   var encodeUri = encodeURI(docdescarga);
+					//console.log(encodeUri);
+					var link = document.createElement("a");
+					link.setAttribute("href", encodeUri);
+					var nombre_de_arch = "ReporteUsuariosInactivos"+fecha+".xls";
+					link.setAttribute("download", nombre_de_arch);
+					document.body.appendChild(link); // Required for FF
+
+					link.click();
+		    	    }
+		    	    else
+		    	    {
+			    	    alert("No hay información para descargar");
+			    	    }
+		    	   
+				
+				}
+				});
 
 	    $('#link_agregar_roles').click(function() { 
 	        $('#id_rol option').each(function() {

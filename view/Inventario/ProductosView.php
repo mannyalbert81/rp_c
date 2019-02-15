@@ -1,5 +1,7 @@
-    
+
     <!DOCTYPE HTML>
+
+    
 	<html lang="es">
     <head>
         
@@ -21,6 +23,7 @@
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        $DateString = (string)$fecha;
      ?>
     
     
@@ -279,6 +282,7 @@
       <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Listado de Productos Registrados</h3>
+          <button type="submit" id="btExportar" name="exportar" class="btn btn-info">Exportar</button>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -290,10 +294,10 @@
         <div class="box-body">
         
         
-       <div class="ibox-content">  
+       <div class="ibox-content">
       <div class="table-responsive">
         
-        <table  class="table table-striped table-bordered table-hover dataTables-example">
+        <table id="podructtable" class="table table-striped table-bordered table-hover dataTables-example">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -301,7 +305,7 @@
                           <th>Código</th>
                           <th>Marca</th>
                           <th>Nombre</th>
-                           <th>Descripcion</th>
+                           <th>Descripción</th>
                           <th>Unidad De M.</th>
                           <th>ULT Precio</th>
                           <th>Editar</th>
@@ -311,6 +315,7 @@
                       </thead>
 
                       <tbody>
+                      
     					<?php $i=0;?>
     						<?php if (!empty($resultSet)) {  foreach($resultSet as $res) {?>
     						<?php $i++;?>
@@ -368,6 +373,61 @@
            // Campos Vacíos
 		    // cada vez que se cambia el valor del combo
 		    $(document).ready(function(){
+
+		    	var fecha = "<?php echo $DateString?>";
+
+			$("#btExportar").click(function()
+					{
+				
+				
+				var table = $('#podructtable').DataTable();
+
+				var arreglo_completo = table.rows( {order:'index', search:'applied'} ).data();
+							
+				var docdescarga ="data:application/vnd.ms-excel; charset=utf-8," 
+					"data:text/csv;charset=utf-8,"; 
+				docdescarga+="Grupos\tCodigo\tMarca\tNombre\tDescripcion\tUnidad_de_M\tULT_Precio\n";
+				var len = arreglo_completo.length;
+				for (var i = 0; i < len; i++) {
+					for(var j=1; j<8; j++)
+					{
+						
+						if(j==7)
+						{
+						docdescarga+=arreglo_completo[i][j].replace(".", ",");
+							}
+						else
+						{docdescarga+=arreglo_completo[i][j];}
+						if (j!=7)
+						{	
+						docdescarga+="\t";
+						}
+					}	
+					
+					docdescarga+="\n"; 
+				}
+
+				//console.log(docdescarga);
+
+				var encodeUri = encodeURI(docdescarga);
+				console.log(encodeUri);
+				var link = document.createElement("a");
+				link.setAttribute("href", encodeUri);
+				var nombre_de_arch = "Reporte Productos Registrados"+fecha+".xls";
+				link.setAttribute("download", nombre_de_arch);
+				document.body.appendChild(link); // Required for FF
+
+				link.click();
+
+				
+				
+			
+				
+			    
+		
+			
+				
+				});
 		    
 		    $("#Guardar").click(function() 
 			{

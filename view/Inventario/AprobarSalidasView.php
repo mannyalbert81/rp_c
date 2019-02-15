@@ -69,7 +69,7 @@
                   	<div class="col-md-3 col-lg-3">
                   		<div class="form-group">
                         	<label for="nombre_usuario" class="control-label">Usuario Solicitante:</label>
-                            <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario" value="<?php echo $resultsolicitud[0]->nombre_usuarios; ?>"  >
+                            <input type="text" readonly="readonly" class="form-control" id="nombre_usuario" name="nombre_usuario" value="<?php echo $resultsolicitud[0]->nombre_usuarios; ?>"  >
                             <div id="mensaje_nombre_usuario" class="errores"></div>
                          </div>
                   	</div>
@@ -77,7 +77,7 @@
                   	<div class="col-md-3 col-lg-3">
                   		<div class="form-group">
                         	<label for="numero_solicitud" class="control-label">No. Solicitud:</label>
-                            <input type="text" class="form-control" id="numero_solicitud" name="numero_solicitud" value="<?php echo $resultsolicitud[0]->numero_movimientos_inv_cabeza; ?>"  >
+                            <input type="text" readonly="readonly" class="form-control" id="numero_solicitud" name="numero_solicitud" value="<?php echo $resultsolicitud[0]->numero_movimientos_inv_cabeza; ?>"  >
                             <div id="mensaje_numero_solicitud" class="errores"></div>
                          </div>
                   	</div>
@@ -85,7 +85,7 @@
                   	<div class="col-md-3 col-lg-3">
                   		<div class="form-group">
                         	<label for="fecha_solicitud" class="control-label">fecha Solicitud:</label>
-                            <input type="text" class="form-control" id="fecha_solicitud" name="fecha_solicitud" value="<?php echo $resultsolicitud[0]->fecha_movimientos_inv_cabeza; ?>"  >
+                            <input type="text" readonly="readonly" class="form-control" id="fecha_solicitud" name="fecha_solicitud" value="<?php echo $resultsolicitud[0]->fecha_movimientos_inv_cabeza; ?>"  >
                             <div id="mensaje_nombre_usuario" class="errores"></div>
                          </div>
                   	</div>
@@ -93,7 +93,7 @@
                   	<div class="col-md-3 col-lg-3">
                   		<div class="form-group">
                         	<label for="estado_solicitud" class="control-label">Estado Solicitud:</label>
-                            <input type="text" class="form-control" id="estado_solicitud" name="estado_solicitud" value="<?php echo $resultsolicitud[0]->estado_movimientos_inv_cabeza; ?>"  >
+                            <input type="text" readonly="readonly"  class="form-control" id="estado_solicitud" name="estado_solicitud" value="<?php echo $resultsolicitud[0]->estado_movimientos_inv_cabeza; ?>"  >
                             <div id="mensaje_estado_solicitud" class="errores"></div>
                          </div>
                   	</div>
@@ -198,16 +198,16 @@
             	    </div>
             	 	
                     <div class="row">
-        			    <div class="col-xs-12 col-md-3 col-md-3 " >
+        			    <div class="col-xs-12 col-md-2 col-md-2 " >
             	   		    <div class="form-group">
             	   		    	<label for="Guardar">&nbsp;</label>
-        	                  <button type="submit" id="Guardar" name="Guardar" class="form-control btn btn-success">APROBAR</button>
+        	                  <button type="submit" id="btnForm" name="btnForm" value="APROBAR" class="form-control btn btn-success">APROBAR</button>
     	                    </div>
 	        		    </div>
-	        		    <div class="col-xs-12 col-md-3 col-md-3 " >
+	        		    <div class="col-xs-12 col-md-2 col-md-2 " >
             	   		    <div class="form-group">
             	   		    	<label for="Guardar">&nbsp;</label>
-        	                  <button type="submit" id="Cancelar" name="Cancelar" class="form-control btn btn-warning">CANCELAR</button>
+        	                  <button type="submit" id="btnForm" name="btnForm" value="REPROBAR" class="form-control btn btn-danger">CANCELAR</button>
     	                    </div>
 	        		    </div>
         		    </div>

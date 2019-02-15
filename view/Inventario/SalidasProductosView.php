@@ -7,7 +7,7 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     
-    
+  
     
    <?php include("view/modulos/links_css.php"); ?>
    
@@ -88,7 +88,10 @@
         				</div>
         				<div id="load_solicitud_entregada" ></div>	
         				<div id="resultados_solicitud_entregada"></div>
+        				
                         </div>
+                               
+                      
               </div>
               <!-- /.tab-pane -->
               <div class="tab-pane" id="tab_3">
@@ -98,7 +101,11 @@
         				</div>
         				<div id="load_solicitud_rechazada" ></div>	
         				<div id="resultados_solicitud_rechazada"></div>
+        				
+        				
                         </div>
+                                
+                      
               </div>
               <!-- /.tab-pane -->
             </div>

@@ -144,17 +144,7 @@
                                  
                         		    
                     		        </div>
-                    		         <div class="col-lg-3 col-xs-12 col-md-3">
-                        		     <div class="form-group">
-                                                <label for="fecha_nacimiento_proveedores" class="control-label">Fecha Nacimiento Proveedores</label>
-                                                          <input type="date" class="form-control" id="fecha_nacimiento_proveedores" name="fecha_nacimiento_proveedores" value="<?php echo $resEdit->fecha_nacimiento_proveedores; ?>"  placeholder="Fecha Proveedores">
-                                                          <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
-					                                      <div id="mensaje_fecha_nacimiento_proveedores" class="errores"></div>
-                                  
-                                    </div>
-                                 
-                        		    
-                    		        </div>
+                    		         
                         		    
                         	
                     	
@@ -227,13 +217,7 @@
                                     </div>
                         		    </div>
                         		    
-                        		     <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="fecha_nacimiento_proveedores" class="control-label">Fecha Proveedores</label>
-                                                          <input type="date" class="form-control" id="fecha_nacimiento_proveedores" name="fecha_nacimiento_proveedores" value=""  placeholder="fecha..">
-                                                           <div id="mensaje_fecha_nacimiento_proveedores" class="errores"></div>
-                                    </div>
-                        		    </div>
+                        		   
                         		    
                         		    
                         		    
@@ -298,7 +282,7 @@
                           <th>Dirección</th>
                           <th>Teléfono</th>
                           <th>Email</th>
-                          <th>Fecha</th>
+                          
                           <th></th>
                           <th></th>
                          
@@ -317,7 +301,7 @@
             		               <td > <?php echo $res->direccion_proveedores; ?>   </td>
             		               <td > <?php echo $res->telefono_proveedores; ?>   </td>
             		               <td > <?php echo $res->email_proveedores; ?>   </td>
-            		               <td > <?php echo $res->fecha_nacimiento_proveedores; ?>   </td>
+            		               
             		              
             		           	   <td>
             			           		<div class="right">

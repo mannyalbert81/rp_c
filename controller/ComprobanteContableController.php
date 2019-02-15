@@ -146,7 +146,7 @@ class ComprobanteContableController extends ControladorBase{
 	            $html.='</div>';
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay cuentas registradas...</b>';
@@ -927,8 +927,7 @@ class ComprobanteContableController extends ControladorBase{
 	            //datos de la vista
 	            $_id_tipo_comprobantes         = $_POST['id_tipo_comprobantes'];	            
 	            $_id_proveedores               = $_POST['id_proveedores'];
-	            $_retencion_ccomprobantes      = $_POST['retencion_proveedor'];
-	            $_valor_ccomprobantes          = $_POST['valor_ccomprobantes'];  
+	            $_retencion_ccomprobantes      = $_POST['retencion_proveedor']; 
 	            $_valor_letras                 = $_POST['valor_letras'];	            
 	            $_concepto_ccomprobantes       = $_POST['concepto_ccomprobantes'];	            
 	            $_fecha_ccomprobantes          = $_POST['fecha_ccomprobantes'];	            
@@ -945,7 +944,6 @@ class ComprobanteContableController extends ControladorBase{
 	            $parametros = "'$_id_usuarios',
                 '$_id_tipo_comprobantes', 
                 '$_retencion_ccomprobantes',
-                '$_valor_ccomprobantes',
                 '$_concepto_ccomprobantes',
                 '$_valor_letras',
                 '$_fecha_ccomprobantes',
@@ -958,9 +956,9 @@ class ComprobanteContableController extends ControladorBase{
 	            
 	            $ccomprobantes->setFuncion($funcion);
 	            $ccomprobantes->setParametros($parametros);
-	            //$resultado=$ccomprobantes->llamafuncion();	            
+	            $resultado=$ccomprobantes->llamafuncion();	            
 	            
-	            print_r($parametros);
+	            //print_r($parametros);
 	            $respuesta='';
 	            
 	            if(!empty($resultado) && count($resultado) > 0)  {

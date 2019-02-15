@@ -10,7 +10,7 @@
     <?php include("view/modulos/links_css.php"); ?>		
      
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  
+  	 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
    
  
 	</head>
@@ -100,84 +100,86 @@
              </div>
 	         </div>
 	         
-  		     <div class="col-xs-12 col-md-8 col-lg-8">
-		     <div class="form-group">
-              <label for="concepto_ccomprobantes" class="control-label">Concepto de Pago:</label>
-              <input type="text" class="form-control" id="concepto_ccomprobantes" maxlength="200" name="concepto_ccomprobantes" value=""  placeholder="Concepto de Pago">
-              <div id="mensaje_concepto_ccomprobantes" class="errores"></div> 
-             </div>
+		
+    		    <div class="col-xs-12 col-md-2 col-lg-2 clsproveedor">
+    		     <div class="form-group">
+                      <label for="proveedor" class="control-label ">Digite Proveedor:</label>
+                      <input type="text" class=" form-control" id="proveedor" name="proveedor" value=""  placeholder="Digite Ruc/Ci/Nombre ">
+                      <input type="hidden" value="0" id="id_proveedor" name="id_proveedor">
+                      <div id="mensaje_nombre_proveedores" class="errores"></div> 
+                 </div>
+    		     </div>
+    	
+    		   	<div id="datos_proveedor" class="col-xs-12 col-md-2 col-lg-2 " >
+        		     <div class="form-group">
+                          <label for="nombre_proveedor" class="  control-label">Nombre de Proveedor:</label>
+                          <input type="text" class="form-control" id="nombre_proveedor" name="nombre_proveedor" value=""  placeholder="Ruc Proveedores">
+                          <div id="mensaje_identificacion_proveedores" class="errores"></div> 
+                     </div>
+    		     </div>
+    	 
+    	   		<div class="col-xs-12 col-md-2 col-lg-2 clsproveedor">
+    		     <div class="form-group">
+                      <label for="retencion_proveedor" class="control-label">Retención Proveedor:</label>
+                      <input type="text" class="form-control" id="retencion_proveedor" maxlength="50" name="retencion_proveedor" value=""  placeholder="Retencion Comprobantes">
+                      <div id="mensaje_retencion_ccomprobantes" class="errores"></div> 
+                 </div>
+    		     </div>
+	
+    	  		<div class="col-xs-12 col-md-2 col-lg-2">
+        		     <div class="form-group">
+                          <label for="referencia_doc_ccomprobantes" class="control-label">Referencia Doc:</label>
+                          <input type="text" class="form-control" maxlength="50" id="referencia_doc_ccomprobantes" name="referencia_doc_ccomprobantes" value=""  placeholder="Referencia Comprobantes">
+                          <div id="mensaje_referencia_doc_ccomprobantes" class="errores"></div> 
+                     </div>
+    		     </div>
+    		     
+    		     <div class="col-xs-12 col-md-2 col-lg-2">
+        		     <div class="form-group">
+                          <label for="numero_cuenta_banco_ccomprobantes" class="control-label">Número de Cuenta:</label>
+                          <input type="text" class="form-control" maxlength="20" id="numero_cuenta_banco_ccomprobantes" name="numero_cuenta_banco_ccomprobantes" value=""  placeholder="Número Cuenta">
+                          <div id="mensaje_numero_cuenta_banco_ccomprobantes" class="errores"></div> 
+                     </div>
+        		     </div>
+        		  
+        		   <div class="col-xs-12 col-md-2 col-lg-2">
+                         <div class="form-group">
+                              <label for="numero_cheque_ccomprobantes" class="control-label">Número de Cheque:</label>
+                              <input type="text" class="form-control" maxlength="20" id="numero_cheque_ccomprobantes" name="numero_cheque_ccomprobantes" value=""  placeholder="Número Cheque">
+                              <div id="mensaje_numero_cheque_ccomprobantes" class="errores"></div> 
+                    	</div>
+                    </div>
+	
+	   			<div class="col-xs-12 col-md-2 col-lg-2 ">
+	   				<div class="form-group">
+    	              <label for="id_forma_pago" class="control-label">Forma de Pago:</label>
+    				  <select name="id_forma_pago" id="id_forma_pago"  class="form-control">
+    				  <option value="0" selected="selected">--Seleccione--</option>
+                         <?php foreach($resultFormaPago as $res) {?>
+    					  <option value="<?php echo $res->id_forma_pago; ?>" ><?php echo $res->nombre_forma_pago; ?> </option>
+    					 <?php } ?>
+    				   </select> 
+                       <div id="mensaje_id_forma_pago" class="errores"></div>
+                   </div>
+             	</div> 
+             	      	
 		     </div>
 		     
-		    </div>
-		    
-		    <div class="row">
-		
-		    <div class="col-xs-12 col-md-2 col-lg-2">
+		     
+		     <div class="row">
+		      <div class="col-xs-12 col-md-6 col-lg-6">
 		     <div class="form-group">
-                  <label for="proveedor" class="control-label">Digite Proveedor:</label>
-                  <input type="text" class=" form-control" id="proveedor" name="proveedor" value=""  placeholder="Nombre Proveedores">
-                  <input type="hidden" value="0" id="id_proveedor" name="id_proveedor">
-                  <div id="mensaje_nombre_proveedores" class="errores"></div> 
+                  <label for="concepto_ccomprobantes" class="control-label">Concepto de Pago:</label>
+                  <textarea rows="2"  class="form-control" id="concepto_ccomprobantes"  placeholder="Concepto de Pago" cols="" maxlength="200" ></textarea>
+                  <div id="mensaje_concepto_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
 	
-		   <div id="datos_proveedor" class="col-xs-12 col-md-2 col-lg-2">
+	         <div class="col-xs-12 col-md-6 col-lg-6">
 		     <div class="form-group">
-		                          <label for="nombre_proveedor" class="  control-label">Nombre de Proveedor:</label>
-                                  <input type="text" class="form-control" id="nombre_proveedor" name="nombre_proveedor" value=""  placeholder="Ruc Proveedores">
-                                  <div id="mensaje_identificacion_proveedores" class="errores"></div> 
-             </div>
-		     </div>
-	
-	   <div class="col-xs-12 col-md-2 col-lg-2">
-		     <div class="form-group">
-                  <label for="retencion_proveedor" class="control-label">Retención Proveedor:</label>
-                  <input type="text" class="form-control" id="retencion_proveedor" maxlength="50" name="retencion_proveedor" value=""  placeholder="Retencion Comprobantes">
-                  <div id="mensaje_retencion_ccomprobantes" class="errores"></div> 
-             </div>
-		     </div>
-	
-	  <div class="col-xs-12 col-md-2 col-lg-2">
-		     <div class="form-group">
-		                          <label for="referencia_doc_ccomprobantes" class="control-label">Referencia Doc:</label>
-                                  <input type="text" class="form-control" maxlength="50" id="referencia_doc_ccomprobantes" name="referencia_doc_ccomprobantes" value=""  placeholder="Referencia Comprobantes">
-                                  <div id="mensaje_referencia_doc_ccomprobantes" class="errores"></div> 
-             </div>
-		     </div>
-	
-	   <div class="col-md-2 col-lg-2 col-xs-2">
-	              <label for="id_forma_pago" class="control-label">Forma de Pago:</label>
-				  <select name="id_forma_pago" id="id_forma_pago"  class="form-control">
-				  <option value="0" selected="selected">--Seleccione--</option>
-                     <?php foreach($resultFormaPago as $res) {?>
-					  <option value="<?php echo $res->id_forma_pago; ?>" ><?php echo $res->nombre_forma_pago; ?> </option>
-					 <?php } ?>
-				   </select> 
-                   <div id="mensaje_id_forma_pago" class="errores"></div>
-             </div>
-     
-	
-	  <div class="col-xs-12 col-md-2 col-lg-2">
-		     <div class="form-group">
-		                          <label for="numero_cuenta_banco_ccomprobantes" class="control-label">Número de Cuenta:</label>
-                                  <input type="text" class="form-control" maxlength="20" id="numero_cuenta_banco_ccomprobantes" name="numero_cuenta_banco_ccomprobantes" value=""  placeholder="Número Cuenta">
-                                  <div id="mensaje_numero_cuenta_banco_ccomprobantes" class="errores"></div> 
-             </div>
-		     </div>
-	
-	  <div class="col-xs-12 col-md-2 col-lg-2">
-		     <div class="form-group">
-		                          <label for="numero_cheque_ccomprobantes" class="control-label">Número de Cheque:</label>
-                                  <input type="text" class="form-control" maxlength="20" id="numero_cheque_ccomprobantes" name="numero_cheque_ccomprobantes" value=""  placeholder="Número Cheque">
-                                  <div id="mensaje_numero_cheque_ccomprobantes" class="errores"></div> 
-             </div>
-		     </div>
-	
-	  <div class="col-xs-12 col-md-10 col-lg-10">
-		     <div class="form-group">
-		                          <label for="observaciones_ccomprobantes" class="control-label">Observación:</label>
-                                  <input type="text" class="form-control" id="observaciones_ccomprobantes" maxlength="200" name="observaciones_ccomprobantes" value=""  placeholder="Observación">
-                                  <div id="mensaje_observaciones_ccomprobantes" class="errores"></div> 
+                  <label for="observaciones_ccomprobantes" class="control-label">Observación:</label>
+                  <textarea rows="2"  class="form-control" placeholder="Observación" maxlength="200" name="observaciones_ccomprobantes" id="observaciones_ccomprobantes" cols=""></textarea>
+                  <div id="mensaje_observaciones_ccomprobantes" class="errores"></div> 
              </div>
 		     </div>
 		    
@@ -334,7 +336,7 @@
 				<div class="modal-content">
 				  <div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="myModalLabel">Buscar Cuentas</h4>
+					<h4 class="modal-title" id="myModalLabel">Proveedores</h4>
 				  </div>
 				
 				  <div class="modal-body">
@@ -346,7 +348,7 @@
         				<label for="nombre_proveedores" class="col-sm-3 control-label">Nombre Proveedores: </label>
         				<div class="col-sm-8">
         				  <input type="text" class="form-control" id="nombre_proveedores" name="nombre_proveedores" value=""  placeholder="Nombre Proveedores" autocomplete="off" />
-                          <div id="mensaje_nombre_proveedores" class="errores"></div>
+                          <div id="mod_mensaje_nombre_proveedores" class="errores"></div>
         				</div>
         			  </div>
 			  
@@ -354,7 +356,7 @@
         				<label for="identificacion_proveedores" class="col-sm-3 control-label">Ruc Proveedores: </label>
         				<div class="col-sm-8">
         					<input type="text" class="form-control" minlength="10" maxlength="13" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="Ruc Proveedores" >
-                          <div id="mensaje_identificacion_proveedores" class="errores"></div>
+                          <div id="mod_mensaje_identificacion_proveedores" class="errores"></div>
         				</div>
         			  </div>
         			  
@@ -362,7 +364,7 @@
         				<label for="contactos_proveedores" class="col-sm-3 control-label">Contactos Proveedores: </label>
         				<div class="col-sm-8">
         					<input type="text" class="form-control" id="contactos_proveedores" name="contactos_proveedores" value=""  placeholder="Contactos Proveedores">
-                            <div id="mensaje_contactos_proveedores" class="errores"></div>
+                            <div id="mod_mensaje_contactos_proveedores" class="errores"></div>
         				</div>
         			  </div>
         			  
@@ -370,7 +372,7 @@
         				<label for="direccion_proveedores" class="col-sm-3 control-label">Dirección Proveedores: </label>
         				<div class="col-sm-8">
         					<input type="text" class="form-control" id="direccion_proveedores" name="direccion_proveedores" value=""  placeholder="Dirección Proveedores">
-                            <div id="mensaje_direccion_proveedores" class="errores"></div>
+                            <div id="mod_mensaje_direccion_proveedores" class="errores"></div>
         				</div>
         			  </div>
 			  
@@ -378,7 +380,7 @@
         				<label for="telefono_proveedores" class="col-sm-3 control-label">Teléfono Proveedores: </label>
         				<div class="col-sm-8">
         					<input type="text" class="form-control" id="telefono_proveedores" minlength="7" maxlength="10" name="telefono_proveedores" value=""  placeholder="Teléfono Proveedores" />
-                              <div id="mensaje_telefono_proveedores" class="errores"></div>  
+                              <div id="mod_mensaje_telefono_proveedores" class="errores"></div>  
         				</div>
         			  </div>
         			  
@@ -386,7 +388,7 @@
         				<label for="email_proveedores" class="col-sm-3 control-label">Email Proveedores: </label>
         				<div class="col-sm-8">
         					<input type="email" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores" onKeyUp="javascript:validateMail('id_mail')" >
-                           <div id="mensaje_email_proveedores" class="errores"></div>
+                           <div id="mod_mensaje_email_proveedores" class="errores"></div>
         				</div>
         			  </div>
 			  
@@ -413,10 +415,10 @@
      
    
     <?php include("view/modulos/links_js.php"); ?>
-   	 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    
+   
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?3.3"></script>
+    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?4.2"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     
    

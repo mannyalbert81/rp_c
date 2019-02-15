@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  	<meta charset="utf-8"/>
+  	<title>{NOMBREFICHA} {TITULOPAG}</title>
+  <style>
+  
+	div.izq{
+	left:0px;  margin-top:-20px; width:49%; /*border: 1px solid blue;*/ float:left;
+	}
+	div.der{
+	right:0px; margin-top:-10px; width:49%; /*border: 1px solid blue;*/ float:left;
+	}
+	#divSerp{
+	 width:100%; /*border: 1px solid red;*/ padding:0px 5px;
+	}
+	.prueba{/* border:1px dashed green;*/}
+	td.infotd {
+	border:hidden;
+	}
+	table.info{
+	border: 1px solid black;
+	}
+	footer
+	{
+    margin-top:50px;
+    width:100%;
+    height:200px;
+    background-color:red;
+	}
+  </style>
+  
+  </head>
+  <body>
+  
+	<div style="font-family: Arial; font-size:16pt; color:#000000; width: 100%; text-align: center; ">
+	<h2> <strong>{NOMBREFICHA}</strong></h2>
+	</div>
+
+	<div style="width:100%">
+	<div class="izq">
+	
+		<div id="divSerp" style="{cafa}">
+			<div style="margin-top:10px;  color:#000000; font-family:verdana; font-size:75%; width:100%;">
+				<strong> CATEGORÍA FARMACOLÓGICA: </strong>
+			</div>
+			<div style="color:#010a01; font-family:Times New Roman; font-size:60%; width:100%; text-align: center;">
+			<p style="text-align: justify;">{CLASIFICACION}</p>
+			</div>
+		</div>
+		<div  id="divSerp"  style="{fofa}" >
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+  			<strong> FORMA FARMACÉUTICA: </strong>
+  		</div>
+        <div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%; text-align: center;">
+  		<p style="text-align: justify;">{FORMA}</p>
+  		</div>
+	    </div>
+	
+		<div id="divSerp"  style="{esde}">
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; text-align:center; width:100%;">
+		<strong> ESPECIES DE DESTINO: </strong>
+		</div>
+		 <div style=" margin-top:10px; text-align: center; font-family: Times New Roman; font-size:55%;  width:100%;" >
+		 {TABLAESPECIES}
+		</div>
+		</div>
+		
+		<div id="divSerp"  style="{comp}">
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+			<strong> COMPOSICIÓN: </strong>
+		</div>
+		<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+			<p>{ENCABEZADO}</p>	
+		</div>
+					
+		<div style="color:#010a01; font-family: Times New Roman; font-size:55%; width:100%;">
+			{TABLACOMP} 
+		</div>
+		</div>
+		
+		<div id="divSerp"  style="{cara}">
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+  			<strong> CARACTERISTICAS:  </strong>
+  		</div>
+  		<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+  			<p style="text-align: justify;">{ACCIONTERAPEUTICA}</p>
+  		</div>
+		</div>
+	
+		<div id="divSerp"  style="{mede}">
+			<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+				<strong> MECANISMOS DE ACCIÓN:  </strong>
+			</div>
+			<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+				<p style="text-align: justify;">{MECANISMOACCION}</p>
+			</div>
+		</div>
+	
+		<div id="divSerp"  style="{inde}">
+			<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+				<strong> INDICACIONES DE USO:   </strong>
+			</div>
+			<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+				<p style="text-align: justify;">{INDICACIONES}</p>
+			</div>
+		</div>
+	
+		<div id="divSerp"  style="{dode}">
+			<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+				<strong> DOSIFICACIÓN DE {NOMBREFICHA} </strong>
+				
+			</div>
+			<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+				<p style="text-align: justify;">{DOSIFICACION}</p>		
+			</div>
+			<div style="color:#010a01; font-family: Times New Roman; font-size:55%; width:100%;">
+			{TABLADOSI} 
+		    </div>
+		</div>
+	
+		<div id="divSerp"  style="{pede}">
+			<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+			<strong> PERIODO DE RETIRO:   </strong>
+			</div>
+			<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+			<p style="text-align: justify;">{PERIODORETIRO}</p>
+			</div>
+		</div>
+	
+		<div id="divSerp"  style="{adve}">
+			<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+			<strong> ADVERTENCIAS: </strong>
+			</div>
+			<div style="margin-top:0px; color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+			<p style="text-align: justify;">{ADVERTENCIAS} </p>
+			</div>
+		</div>
+	
+		
+		
+	</div>
+	
+	<div class="der">
+		<div id="divSerp"  style="{vercategoria}">
+		<div  class="imag" style="text-align:center; margin-top: 20px;">
+		 &nbsp;<img src="view/DevuelveImagen.php?id_valor={IDFICHA}&id_nombre=id_fichas&tabla=fichas_fotos&campo=foto_fichas_fotos" width="160px" height="190px" />
+		</div>
+		</div>
+		
+		<div id="divSerp"  style="{admi}">
+			<div style="color:#000000; font-family: verdana; font-size:75%; width:100%;">
+				<strong> VÍA DE ADMINISTRACIÓN: </strong>
+			</div>
+			<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+				 {TABLAADMINISTRACION} 
+			</div>
+		</div>
+		
+		<div id="divSerp"  style="{inte}">
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+		<strong> INTERACCIONES:   </strong>
+		</div>
+		<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+		<p style="text-align: justify;">{INTERACIONES}</p>
+		</div>
+		</div>
+	
+	<div id="divSerp"  style="{cont}">
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+		<strong> CONTRAINDICACIONES:   </strong>
+		</div>
+		<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+		<p style="text-align: justify;">{CONTRAINDICACIONES}</p>
+		</div>
+	</div>
+	
+	<div id="divSerp"  style="{efco}">
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+		<strong> EFECTOS COLATERALES:   </strong>
+		</div>
+		<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+		<p style="text-align: justify;">{EFECTOS}</p>
+		</div>
+	</div>
+	
+	<div id="divSerp"  style="{cons}">
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+		<strong> CONSERVACIÓN:   </strong>
+		</div>
+		<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+		<p style="text-align: justify;">{CONSERVACION}</p>
+		</div>
+	</div>
+	
+	<div id="divSerp"  style="{pres}">
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+		<strong> PRESENTACIONES:   </strong>
+		</div>
+		<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+		<p style="text-align: justify;">{PRESENTACION}</p>
+		</div>
+	</div>
+	
+	<div id="divSerp"  style="{reag}">
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+			<strong> REGISTRO AGROCALIDAD: </strong>
+		</div>
+		<div style="margin-top:0px; color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+			<p style="text-align: justify;">{REGISTO} </p>
+		</div>
+	</div>
+	
+	
+    </div>
+	
+	</div>
+	
+	<div style="width:100%; float:left; border:1px dashed white; {fapo}" >
+	<div style="width:20%; border:1px dashed white; float:left;">
+	
+	</div>
+	<div style="width:50%; border:1px dashed white; float:left;" >
+		
+  		<div style="color:#010a01; font-family: Times New Roman; width:100%;">
+  		 {FABRICADOPOR}
+  		</div>
+	</div>
+	<div style="width:20%; border:1px dashed white; float:left;">
+	<p> &nbsp;</p>
+	</div>
+	</div>
+	
+	<div style="width:100%; float:left; border:1px dashed white; {dipo}" >
+	<div style="width:20%; border:1px dashed white; float:left;">
+	
+	</div>
+	<div style="width:50%; border:1px dashed white; float:left;" >
+		<div style="margin-top:10px; color:#000000; font-family: verdana; font-size:75%; width:100%;">
+  		<strong> DISTRIBUIDO POR:   </strong>
+  		</div>
+  		<div style="color:#010a01; font-family: Times New Roman; font-size:60%; width:100%;">
+  		{DISTIBUIDOPOR}
+  		</div>
+	</div>
+	<div style="width:20%; border:1px dashed white; float:left;">
+	<p> &nbsp;</p>
+	</div>
+	</div>
+	
+	<div style="width:98%; float:left;  margin:10px; 0px;" >
+		<table class="info" style="width:100%;"><tr>
+		<td class="infotd" style="font-size: 60%; padding: 5px;" align="justify">
+		<strong> DECLARACIÓN LEGAL: </strong>
+		<br>
+		El contenido de este sitio es sólo para motivos informativos y de ninguna manera
+		se debe utilizar sin consultar a un médico veterinario Toda la información es 
+		proporcionada por el fabricante y / o distribuidor del producto por lo tanto Vademano
+		no asume responsabilidad por errores u omisiones en los contenidos que se publican aquí.
+		</td>
+     </tr></table>
+	</div>
+	
+		
+	
+  </body>
+  </html>

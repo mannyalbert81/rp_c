@@ -98,10 +98,7 @@ $controladores=$_SESSION['controladores'];
 			</li>
           </ul>
         </li>
-       
-          </ul>
-        </li>
-       
-       
-      </ul>
-
+        
+          
+            </ul>
+    

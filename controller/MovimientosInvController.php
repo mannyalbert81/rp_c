@@ -1802,6 +1802,7 @@ class MovimientosInvController extends ControladorBase{
                       usuarios.nombre_usuarios,
                       usuarios.id_usuarios,
                       movimientos_inv_cabeza.razon_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.modificado,
                       movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
                       movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
                       movimientos_inv_cabeza.estado_movimientos_inv_cabeza";
@@ -1829,6 +1830,7 @@ class MovimientosInvController extends ControladorBase{
 	                $_fecha_movimientos_inv_cabeza     =$resultSetCabeza[0]->fecha_movimientos_inv_cabeza;
 	                $_estado_movimientos_inv_cabeza    =$resultSetCabeza[0]->estado_movimientos_inv_cabeza;
 	                $_razon_movimientos_inv_cabeza    =$resultSetCabeza[0]->razon_movimientos_inv_cabeza;
+	                $_modificado    =  $resultSetCabeza[0]->modificado;
 	                
 	                $columnas1 = "  movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
                 	                productos.codigo_productos,
@@ -1860,7 +1862,7 @@ class MovimientosInvController extends ControladorBase{
 	                $html.='<p style="text-align: center; font-size: 13px; "> Av. Baquerico Moreno E-9781 y Leonidas Plaza';
 	                $html.='<p style="text-align: center; font-size: 18px; ">Solicitud N°: &nbsp;'.$_numero_movimientos_inv_cabeza.'</br>';
 	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; Fecha de solicitud: &nbsp; &nbsp; &nbsp; '.$_fecha_movimientos_inv_cabeza.'';
-	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; ESTADO: '.$_estado_movimientos_inv_cabeza.'&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Fecha de aprobación:&nbsp; '.$_fecha_movimientos_inv_cabeza.'';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; ESTADO: '.$_estado_movimientos_inv_cabeza.'&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Fecha de aprobación:&nbsp; '.$_modificado.'';
 	                $html.='</tr>';
 	                $html.='</table>';
 	                

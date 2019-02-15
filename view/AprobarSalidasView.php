@@ -208,7 +208,6 @@
 	        		    
             	   		    <div class="form-group">
             	   		    	<label for="Guardar">&nbsp;</label>
-            	   		    	 hoohñlfñkñlfksdfkñlaskdflñkasdñfkñldskfñlkaf
             	   		    	<input type="submit" id="btnForm" name="btnForm" value="REPROBAR" class="form-control btn btn-danger" />
     	                    </div>
 	        		    </div>

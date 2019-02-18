@@ -9,7 +9,6 @@ $("#numero_factura_compra").inputmask('999-999-999999999',{placeholder: ""});
 
 $("#numero_autorizacion_factura").inputmask('9999999999',{placeholder: ""});
 
-//$("#mod_precio_producto").inputmask('currency',{rightAlign: true  });
 $("#mod_precio_producto").inputmask({
 	 alias: "decimal",	
 	 digits: 2,
@@ -23,9 +22,6 @@ $("#mod_precio_producto").inputmask({
 	 prefix: "$"
 	 });
 
-/*$("#mod_precio_producto").inputmask({ 
-	 alias : "currency", mask : "$ 00.00" 
-		 });*/
 
 $("#fecha_compra").inputmask({
 	 alias: "date",
@@ -71,8 +67,7 @@ $( "#proveedor" ).autocomplete({
        $('#datos_proveedor').show();
        //console.log(ui.item.nombre);
        return false;
-    },
-    focus: function(event, ui) { 
+    },focus: function(event, ui) { 
         var text = ui.item.value; 
         $('#proveedor').val();            
         return false; 
@@ -286,101 +281,16 @@ function pone_cantidad(){
 }
 
 
-
-
-
-
-$(document).ready(function(){
-/*
-	$("#frm_guardacompra").validate({
-        event: "blur",
-        rules: {'numero_factura_compra': "required"},
-        messages: {'numero_factura_compra': "Por favor indica tu nombre",'email': "Por favor, indica una direcci&oacute;n de e-mail v&aacute;lida",'message': "Por favor, dime algo!"},
-        debug: true,
-        errorElement: "label",
-        submitHandler: function(form){
-            $("#alert").show();
-            $("#alert").html("<img src='images/ajax-loader.gif' style='vertical-align:middle;margin:0 10px 0 0' /><strong>Enviando mensaje...</strong>");
-            setTimeout(function() {
-                $('#alert').fadeOut('slow');
-            }, 5000);
-            
-            $.ajax({
-                type: "POST",
-                url:"send.php",
-                data: "name="+escape($('#name').val())+"&email="+escape($('#email').val())+"&message="+escape($('#message').val()),
-                success: function(msg){
-                    $("#alert").html(msg);
-                    document.getElementById("name").value="";
-                    document.getElementById("email").value="";
-                    document.getElementById("message").value="";
-                    setTimeout(function() {
-                        $('#alert').fadeOut('slow');
-                    }, 5000);
- 
-                }
-            });
-        }
-    });
-*/
-
-/*$('#frm_guardacompra').bootstrapValidator({
+/**
+ * FORMULARIO PARA AGREGAR LA COMPRA
+ * @param event
+ * @returns
+ */
+ $( "#frm_guardacompra" ).submit(function( event ) {
 	 
-	 message: 'Este valor no es valido',
-
-	 feedbackIcons: {
-
-		 valid: 'glyphicon glyphicon-ok',
-
-		 invalid: 'glyphicon glyphicon-remove',
-
-		 validating: 'glyphicon glyphicon-refresh'
-
-	 },
-
-	 fields: {
-
-		 numero_factura_compra: {
-
-			 validators: {
-
-				 notEmpty: {
-
-					 message: 'ingrese un numero de factura'
-
-				 }
-
-			 }
-
-		 },
-
-		 password: {
-
-			 validators: {
-
-				 notEmpty: {
-
-					 message: 'La contraseña es requerida'
-
-				 }
-
-			 }
-
-		 }
-
-	 }
-
-});*/
-
-$('#Guardar').on('click',function(){
-	
-	if(document.getElementById('id_proveedor').value ==''){
-		$('#mensaje_proveedor').text('Ingrese Proveedor');
-		$("#mensaje_proveedor").fadeIn("slow"); //Muestra mensaje de error
-        return false;
-	}
-	
-	if(document.getElementById('cantidad_compra').value =='' || document.getElementById('cantidad_compra').value==0)
+	 var tiempo = tiempo || 1000;
+	 
+	 if(document.getElementById('cantidad_compra').value =='' || document.getElementById('cantidad_compra').value==0)
 	 {
     	swal({
   		  title: "Compras",
@@ -390,16 +300,35 @@ $('#Guardar').on('click',function(){
   		});
 		
 	 }
-})
 
- 
- $( "#frm_guardacompra" ).submit(function( event ) {
+	 if(document.getElementById('id_proveedor').value ==''){
+			$('#mensaje_proveedor').text('Ingrese Proveedor');
+			$("#mensaje_proveedor").fadeIn("slow"); //Muestra mensaje de error
+			$("html, body").animate({ scrollTop: $(mensaje_proveedor).offset().top-150 }, tiempo);
+	        return false;
+		}
 
-	 console.log('ingreso')
+	 if(document.getElementById('fecha_compra').value ==''){
+			$('#mensaje_fecha_compra').text('Ingrese fecha');
+			$("#mensaje_fecha_compra").fadeIn("slow"); //Muestra mensaje de error
+			$("html, body").animate({ scrollTop: $(mensaje_fecha_compra).offset().top-150 }, tiempo);
+	        return false;
+		}
 	 
-	 
-		 
-	return false
+	 if(document.getElementById('numero_factura_compra').value ==''){
+			$('#mensaje_numero_factura').text('Ingrese Numero Factura');
+			$("#mensaje_numero_factura").fadeIn("slow"); //Muestra mensaje de error
+			$("html, body").animate({ scrollTop: $(mensaje_numero_factura).offset().top-150 }, tiempo);
+	        return false;
+		}
+		
+	if(document.getElementById('numero_autorizacion_factura').value ==''){
+		$('#mensaje_autorizacion_factura').text('Ingrese Numero Autorizacion');
+		$("#mensaje_autorizacion_factura").fadeIn("slow"); //Muestra mensaje de error
+		$("html, body").animate({ scrollTop: $(mensaje_autorizacion_factura).offset().top-150 }, tiempo);
+        return false;
+	}
+		
 	
     	 var parametros = $(this).serialize();
     	 
@@ -407,7 +336,7 @@ $('#Guardar').on('click',function(){
     		 beforeSend:function(){},
     		 url:'index.php?controller=MovimientosInv&action=insertacompra',
     		 type:'POST',
-    		 data:parametros,
+    		 data:'action=ajax&'+parametros,
     		 dataType: 'json',
     		 success: function(respuesta){
         		console.log(respuesta);
@@ -431,14 +360,23 @@ $('#Guardar').on('click',function(){
     	             }
     			 load_temp_solicitud(1);
     		 },
-    		 error: function(jqXHR,estado,error){
-    	         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+    		 error: function(xhr,estado,error){    			 
+    			 console.log(xhr.responseText);
+    			 var err=xhr.responseText
+    			 
+    			 swal({
+             		  title: "Error",
+             		  text: "Error conectar con el Servidor \n "+err,
+             		  icon: "error",
+             		  button: "Aceptar",
+             		});
     	        }
     	 })
 	
 	 event.preventDefault(); 
  });
 
+/*FORMULARIO DE REGISTRAR PRODUCTO*/
  $( "#frm_guardar_producto" ).submit(function( event ) {
 	//console.log('ingresa->1\n');
 	var parametros = $(this).serialize();	
@@ -472,8 +410,16 @@ $('#Guardar').on('click',function(){
                     }
         	     
         },
-        error: function(jqXHR,estado,error){
-         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+        error: function(xhr,estado,error){
+        	console.log(xhr.responseText);
+			 var err=xhr.responseText
+			 
+			 swal({
+        		  title: "Error",
+        		  text: "Error conectar con el Servidor \n "+err,
+        		  icon: "error",
+        		  button: "Aceptar",
+        		});
         }
     });
 	 
@@ -482,12 +428,9 @@ $('#Guardar').on('click',function(){
 	});
 
 
- 
- })
-
            // Campos Vacíos
 		    // cada vez que se cambia el valor del combo
-		    $(document).ready(function(){
+		    /*$(document).ready(function(){
 		    
 		    $("#Guardarrr").click(function() 
 			{
@@ -572,22 +515,24 @@ $('#Guardar').on('click',function(){
 		    	
 			}); 
 
+		}); */
+ 
+  $( "#proveedor" ).focus(function() {
+  $("#mensaje_proveedor").fadeOut("slow");
+});
+   
+$( "#fecha_compra" ).focus(function() {
+  $("#mensaje_fecha_compra").fadeOut("slow");
+});
 
-		       
-		        $( "#fecha_compra" ).focus(function() {
-					  $("#mensaje_numero_compra").fadeOut("slow");
-				    });
-		        $( "#numero_factura_compra" ).focus(function() {
-					  $("#mensaje_numero_factura").fadeOut("slow");
-				    });
-		        $( "#numero_autorizacion_factura" ).focus(function() {
-					  $("#mensaje_autorizacion_factura").fadeOut("slow");
-				    });
-		        $( "#estado_compra" ).focus(function() {
-					  $("#mensaje_estado_compra").fadeOut("slow");
-				    });
-		        
-		        		      
+$( "#numero_factura_compra" ).focus(function() {
+  $("#mensaje_numero_factura").fadeOut("slow");
+    });
 
-			    
-		}); 
+$( "#numero_autorizacion_factura" ).focus(function() {
+  $("#mensaje_autorizacion_factura").fadeOut("slow");
+    });
+
+$( "#estado_compra" ).focus(function() {
+  $("#mensaje_estado_compra").fadeOut("slow");
+});

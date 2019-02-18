@@ -420,7 +420,7 @@ class ProductosController extends ControladorBase{
                         }
                         
                     }
-                }else{  $mensaje='{success:0,mensaje:"Producto Actualizado correctamente"}';}
+                }else{  $mensaje='{success:0,mensaje:"Error al registrar producto"}';}
                
                 echo $mensaje;
             }

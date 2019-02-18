@@ -414,8 +414,8 @@ class MovimientosInvController extends ControladorBase{
 	        //para eliminado de temp
 	        $temp_compras = new TempComprasModel();
 	        
-	        $sql_query = "SELECT 0.00 as \"subtotal12\" ,0.00 as \"subtotal0\", 
-                        sum(total_temp_compras) AS \"subtotal\", 0.00 AS \"descuento\", 
+	        $sql_query = "SELECT SUM(total_temp_compras) as \"subtotal12\" ,0.00 as \"subtotal0\", 
+                        SUM(total_temp_compras) AS \"subtotal\", 0.00 AS \"descuento\", 
                         TRUNC(sum(total_temp_compras)* 0.12,2) AS \"iva\"";
 	        
 	        $sql_query.=" FROM public.temp_compras";	        
@@ -437,27 +437,27 @@ class MovimientosInvController extends ControladorBase{
 	                        
 	                        $htmlsubtotales = '<div '.$clasecolumnas.'>';
 	                        $htmlsubtotales .= '<label for="rs_subtotal12" class="control-label">Subtotal 12:</label>';
-	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_subtotal12" id="rs_subtotal12" type="text" value="'.$res->subtotal12.'" />';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_subtotal12" id="rs_subtotal12" type="text" value="'.$res->subtotal12.'" readonly/>';
 	                        $htmlsubtotales .= '</div>';
 	                        $htmlsubtotales .= '<div '.$clasecolumnas.'>';
 	                        $htmlsubtotales .= '<label for="rs_subtotal0" class="control-label">Subtotal 0:</label>';
-	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_subtotal0" id="rs_subtotal0" type="text" value="'.$res->subtotal0.'" />';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_subtotal0" id="rs_subtotal0" type="text" value="'.$res->subtotal0.'" readonly />';
 	                        $htmlsubtotales .= '</div>';
 	                        $htmlsubtotales .= '<div '.$clasecolumnas.'>';
 	                        $htmlsubtotales .= '<label for="rs_subtotal" class="control-label">Subtotal:</label>';
-	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_subtotal" id="rs_subtotal" type="text" value="'.$res->subtotal.'" />';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_subtotal" id="rs_subtotal" type="text" value="'.$res->subtotal.'" readonly />';
 	                        $htmlsubtotales .= '</div>';
 	                        $htmlsubtotales .= '<div '.$clasecolumnas.'>';
 	                        $htmlsubtotales .= '<label for="rs_descuento" class="control-label">Descuento:</label>';
-	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_descuento" id="rs_descuento" type="text" value="'.$res->descuento.'" />';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_descuento" id="rs_descuento" type="text" value="'.$res->descuento.'" readonly />';
 	                        $htmlsubtotales .= '</div>';
 	                        $htmlsubtotales .= '<div '.$clasecolumnas.'>';
 	                        $htmlsubtotales .= '<label for="rs_iva" class="control-label">I.V.A 12:</label>';
-	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_iva" id="rs_iva" type="text" value="'.$res->iva.'" />';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_iva" id="rs_iva" type="text" value="'.$res->iva.'"  readonly />';
 	                        $htmlsubtotales .= '</div>';
 	                        $htmlsubtotales .= '<div '.$clasecolumnas.'>';
 	                        $htmlsubtotales .= '<label for="rs_total" class="control-label">Total:</label>';
-	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_total" id="rs_total" type="text" value="'.($res->subtotal+$res->iva).'" />';
+	                        $htmlsubtotales .= '<input '.$claseinput.' name="rs_total" id="rs_total" type="text" value="'.($res->subtotal+$res->iva).'" readonly />';
 	                        $htmlsubtotales .= '</div>';
 	                    }
 	                    
@@ -598,6 +598,11 @@ class MovimientosInvController extends ControladorBase{
 	            $validacion = true;
 	        
 	        }
+	    }
+	    
+	    if(!isset($_POST['action']) && $_POST['action']!='')
+	    {
+	        return ;
 	    }
 	    
 	    if($validacion){

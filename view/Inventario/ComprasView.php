@@ -66,7 +66,7 @@
                 
               </div>
             </div>
-            <form id="frm_guardacompra" action="<?php echo $helper->url("MovimientosInv","inserta_compras"); ?>" method="post" >
+            <form id="frm_guardacompra" action="<?php echo $helper->url("MovimientosInv","insertacompra"); ?>" method="post" >
                  <div class="box-body">
             
                 
@@ -98,7 +98,7 @@
                             	<div class="form-group">
                                 	<label for="fecha_compra" class="control-label">Fecha Compra:</label>
                                     <input type="text" class="form-control" id="fecha_compra" name="fecha_compra" value=""  >
-                                    <div id="mensaje_numero_compra" class="errores"></div>
+                                    <div id="mensaje_fecha_compra" class="errores"></div>
                                  </div>
                              </div>
                              
@@ -248,10 +248,19 @@
           	<form class="form-horizontal" method="post" id="frm_guardar_producto" name="frm_guardar_producto">
           	
           	<div class="form-group">
-				<label for="estado" class="col-sm-3 control-label">Grupos</label>
+				<label for="estado" class="col-sm-3 control-label">Grupos:</label>
 				<div class="col-sm-8">
 				 <select class="form-control" id="mod_id_grupo" name="mod_id_grupo" required>
 					<option value="0">-- Selecciona estado --</option>					
+				  </select>
+				</div>
+			  </div>
+			 
+			 <div class="form-group">
+				<label for="estado" class="col-sm-3 control-label">Bodega:</label>
+				<div class="col-sm-8">
+				 <select class="form-control" id="mod_id_grupo" name="mod_id_grupo" required>
+					<option value="0">-- Selecciona Bodega --</option>					
 				  </select>
 				</div>
 			  </div>
@@ -333,7 +342,7 @@
     <script src="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
     
     <!-- <script src="view/bootstrap/otros/validate/jquery.validate.js"></script> -->
-    <script src="view/bootstrap/otros/inventario/compras.js?1.3"></script> 
+    <script src="view/bootstrap/otros/inventario/compras.js?1.8"></script> 
    
   
    

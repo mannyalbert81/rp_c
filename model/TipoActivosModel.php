@@ -1,5 +1,5 @@
 <?php
-class TipoActivosFijosModel extends ModeloBase{
+class TipoActivosModel extends ModeloBase{
 	private $table;
 	private $where;
 	private $funcion;

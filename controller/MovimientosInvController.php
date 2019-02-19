@@ -379,7 +379,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Productos</b>';
@@ -1177,7 +1177,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        $where_salidas = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND nombre_consecutivos='SOLICITUD'
+                      AND nombre_consecutivos='SALIDA'
                       AND estado_movimientos_inv_cabeza='APROBADA'";
 	        
 	        
@@ -1298,7 +1298,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        $where_salidas = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND nombre_consecutivos='SOLICITUD'
+                      AND nombre_consecutivos='SALIDA'
                       AND estado_movimientos_inv_cabeza='RECHAZADA'";
 	        
 	        
@@ -1658,6 +1658,10 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            //echo $resultadofuncion;
 	            
+	            print_r($resultset);
+	            print_r($resultadofuncion);
+	            die();
+	            
 	            
 	        }
 	        
@@ -1696,8 +1700,11 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        if (!empty($resultPer))
 	        {
+	            $resultProdu=null;
+	            
 	            if (isset ($_GET["id_solicitud_cabeza"])   )
 	            {
+	                
 	                
 	                $nombre_controladores = "SolicitudCabeza";
 	                $id_rol= $_SESSION['id_rol'];
@@ -1818,7 +1825,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            $where = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND nombre_consecutivos='SOLICITUD'
+                      AND nombre_consecutivos='SALIDA'
                       AND estado_movimientos_inv_cabeza='APROBADA' AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'";
 	            
 	            $id="movimientos_inv_cabeza.numero_movimientos_inv_cabeza";
@@ -1979,7 +1986,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            $where = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND nombre_consecutivos='SOLICITUD'
+                      AND nombre_consecutivos='SALIDA'
                       AND estado_movimientos_inv_cabeza='RECHAZADA'AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'";
 	            
 	            $id="movimientos_inv_cabeza.numero_movimientos_inv_cabeza";

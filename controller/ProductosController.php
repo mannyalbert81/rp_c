@@ -406,23 +406,24 @@ class ProductosController extends ControladorBase{
                 
                 $resultado=$productos->llamafuncion();
                 
-                $mensaje = "";
+                $mensaje = array();
                 
                 if(!empty($resultado)){
                     if(is_array($resultado) && count($resultado)>0){
                         
                         if((int)$resultado[0]->ins_productos == 0){
-                            $mensaje='{"success":1,"mensaje":"Producto Actualizado correctamente"}';
+                            
+                            $mensaje=array("success"=>1,"mensaje"=>"Producto Actualizado correctamente");
                         }
                         
                         if((int)$resultado[0]->ins_productos == 1){
-                            $mensaje='{success:1,mensaje:"Producto Agregado correctamente"}';
+                            $mensaje=array('success'=>1,'mensaje'=>"Producto Agregado correctamente");
                         }
                         
                     }
                 }else{  $mensaje='{success:0,mensaje:"Error al registrar producto"}';}
                
-                echo $mensaje;
+                echo json_encode($mensaje);
             }
             
            

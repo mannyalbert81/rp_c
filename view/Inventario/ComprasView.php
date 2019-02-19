@@ -259,7 +259,7 @@
 			 <div class="form-group">
 				<label for="estado" class="col-sm-3 control-label">Bodega:</label>
 				<div class="col-sm-8">
-				 <select class="form-control" id="mod_id_grupo" name="mod_id_grupo" required>
+				 <select class="form-control" id="mod_id_bodegas" name="mod_id_bodegas" required>
 					<option value="0">-- Selecciona Bodega --</option>					
 				  </select>
 				</div>
@@ -342,7 +342,7 @@
     <script src="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
     
     <!-- <script src="view/bootstrap/otros/validate/jquery.validate.js"></script> -->
-    <script src="view/bootstrap/otros/inventario/compras.js?1.8"></script> 
+    <script src="view/bootstrap/otros/inventario/compras.js?2.0"></script> 
    
   
    

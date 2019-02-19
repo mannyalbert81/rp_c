@@ -41,6 +41,7 @@ load_productos(1);
 $('#mod_agregar_producto').on('show.bs.modal', function (event) {
 	carga_grupos();
 	carga_unidad_medida()
+	carga_bodegas()
   var modal = $(this);
 
 });
@@ -236,6 +237,31 @@ function carga_grupos(){
         	$("#mod_id_grupo").append("<option value= \"0\" >--Seleccione--</option>");
         	$.each(respuesta, function(index, value) {
  		 			$("#mod_id_grupo").append("<option value= " +value.id_grupos +" >" + value.nombre_grupos  + "</option>");	
+            		 });            
+        },
+        error: function(jqXHR,estado,error){
+         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+        }
+    });
+    
+
+}
+
+function carga_bodegas(){
+	  
+    $.ajax({
+        beforeSend: function(objeto){
+          
+        },
+        url: 'index.php?controller=Bodegas&action=carga_grupos',
+        type: 'POST',
+        data: {},
+        dataType:'json',
+        success: function(respuesta){
+        	$("#mod_id_bodegas").empty()
+        	$("#mod_id_bodegas").append("<option value= \"0\" >--Seleccione--</option>");
+        	$.each(respuesta, function(index, value) {
+ 		 			$("#mod_id_bodegas").append("<option value= " +value.id_bodegas +" >" + value.nombre_bodegas  + "</option>");	
             		 });            
         },
         error: function(jqXHR,estado,error){

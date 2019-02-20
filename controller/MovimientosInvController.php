@@ -963,10 +963,9 @@ class MovimientosInvController extends ControladorBase{
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitante</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">No. Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            //$html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            
@@ -1087,9 +1086,9 @@ class MovimientosInvController extends ControladorBase{
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitante</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Aprobado Por</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">No Salida</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Salida</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            
 	            $html.='</tr>';
@@ -1208,9 +1207,9 @@ class MovimientosInvController extends ControladorBase{
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitante</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Encargado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">No Salida</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Salida</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	           
 	            

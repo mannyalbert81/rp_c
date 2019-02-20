@@ -556,7 +556,7 @@
                 
               </div>
              
-              <button type="submit" id="btExportar" name="exportar" class="btn btn-info">Exportar</button>
+              <button type="submit" id="btExportar" name="exportar" class="btn btn-info"><i class="fa fa-file-excel-o"></i></button>
             </div>
             </div>
           </div>

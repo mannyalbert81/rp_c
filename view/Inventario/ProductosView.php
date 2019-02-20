@@ -282,7 +282,7 @@
       <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Listado de Productos Registrados</h3>
-          <button type="submit" id="btExportar" name="exportar" class="btn btn-info">Exportar</button>
+          <button type="submit" id="btExportar" name="exportar" class="btn btn-info"><i class="fa fa-file-excel-o"></i></button>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -384,8 +384,7 @@
 
 				var arreglo_completo = table.rows( {order:'index', search:'applied'} ).data();
 							
-				var docdescarga ="data:application/vnd.ms-excel; charset=utf-8," 
-					"data:text/csv;charset=utf-8,"; 
+				var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"; 
 				docdescarga+="Grupos\tCodigo\tMarca\tNombre\tDescripcion\tUnidad_de_M\tULT_Precio\n";
 				var len = arreglo_completo.length;
 				for (var i = 0; i < len; i++) {

@@ -930,7 +930,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        if(!empty($search)){
 	            
-	            $where_busqueda=" AND (usuarios.nombre_usuarios LIKE '".$search."%' OR movimientos_inv_cabeza.numero_movimientos_inv_cabeza >= ".$search.")";
+	            $where_busqueda=" AND (usuarios.nombre_usuarios LIKE '".$search."%' OR CAST(movimientos_inv_cabeza.numero_movimientos_inv_cabeza AS VARCHAR) LIKE '".$search."%')";
 	            
 	            $where_salidas.=$where_busqueda;
 	        }
@@ -1054,7 +1054,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        if(!empty($search)){
 	            
-	            $where_busqueda=" AND (usuarios.nombre_usuarios LIKE '".$search."%' OR movimientos_inv_cabeza.numero_movimientos_inv_cabeza >= ".$search.")";
+	            $where_busqueda=" AND (usuarios.nombre_usuarios LIKE '".$search."%' OR CAST(movimientos_inv_cabeza.numero_movimientos_inv_cabeza AS VARCHAR) LIKE '".$search."%')";
 	            
 	            $where_salidas.=$where_busqueda;
 	        }
@@ -1175,7 +1175,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        if(!empty($search)){
 	            
-	            $where_busqueda=" AND (usuarios.nombre_usuarios LIKE '".$search."%' OR movimientos_inv_cabeza.numero_movimientos_inv_cabeza >= ".$search.")";
+	            $where_busqueda=" AND (usuarios.nombre_usuarios LIKE '".$search."%' OR CAST(movimientos_inv_cabeza.numero_movimientos_inv_cabeza AS VARCHAR ) LIKE '".$search."%')";
 	            
 	            $where_salidas.=$where_busqueda;
 	        }

@@ -387,7 +387,7 @@ function pone_cantidad(){
     			 load_temp_solicitud(1);
     		 },
     		 error: function(xhr,estado,error){    			 
-    			 console.log(xhr.responseText);
+    			 //console.log(xhr.responseText);
     			 var err=xhr.responseText
     			 
     			 swal({

@@ -312,10 +312,6 @@
 
   	   }
 
- 	
-
- 	
- 	
 </script>
 
 <script type="text/javascript">
@@ -330,6 +326,7 @@ $(document).ready( function (){
 		   		  text: "Agregue un registro a la solicitud",
 		   		  icon: "error",
 		   		  button: "Aceptar",
+		   		  closeOnClickOutside:false,
 		   		})
 			return false
 			

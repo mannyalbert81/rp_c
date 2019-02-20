@@ -206,7 +206,8 @@
         	   }
 
  </script>
- <<script type="text/javascript">
+ 
+ <script type="text/javascript">
  	$(document).ready(function(){
  		load_productos_solicitud(1);
  		load_temp_solicitud(1);
@@ -311,10 +312,6 @@
 
   	   }
 
- 	
-
- 	
- 	
 </script>
 
 <script type="text/javascript">
@@ -322,6 +319,25 @@
 $(document).ready( function (){
 
 	$('#frm_solicitud_cabeza').submit(function( event ) {
+
+		if(!document.getElementById("total_query_temp_solicitud")){
+			swal({
+		   		  title: "Solicitud",
+		   		  text: "Agregue un registro a la solicitud",
+		   		  icon: "error",
+		   		  button: "Aceptar",
+		   		  closeOnClickOutside:false,
+		   		})
+			return false
+			
+			}
+
+		if(document.getElementById('razon_solicitud').value == '')
+		{
+			$('#mensaje_razon_solicitud').text('Ingrese una razon')
+			$('#mensaje_razon_solicitud').fadeIn('slow')
+			return false
+		}
 
 		var parametros = $(this).serialize();
 
@@ -366,6 +382,10 @@ $(document).ready( function (){
 	 
 	   
 	});
+
+$('#razon_solicitud').on('focus',function(){
+	$('#mensaje_razon_solicitud').fadeOut('slow')
+})
 
 
 </script>

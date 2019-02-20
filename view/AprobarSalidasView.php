@@ -208,7 +208,6 @@
 	        		    
             	   		    <div class="form-group">
             	   		    	<label for="Guardar">&nbsp;</label>
-            	   		    	 hoohñlfñkñlfksdfkñlaskdflñkasdñfkñldskfñlkaf
             	   		    	<input type="submit" id="btnForm" name="btnForm" value="REPROBAR" class="form-control btn btn-danger" />
     	                    </div>
 	        		    </div>
@@ -235,10 +234,6 @@
   </body>
 </html>
 
-<!-- <script src="view/bootstrap/otros/inventario/movimientos_salidas_detalle.js" ></script>
-    -->
-
-<!-- script pagina anterior -->
 <script type="text/javascript">
 
 function pone_espera(){

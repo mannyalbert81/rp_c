@@ -6,6 +6,8 @@ function rechazar_producto(id){
 	
 	var cantidad=document.getElementById('cantidad_producto_'+id).value;
 	
+	//return false
+	
 	$.ajax({
         type: "POST",
         url: 'index.php?controller=MovimientosInv&action=rechazaproducto',
@@ -16,7 +18,22 @@ function rechazar_producto(id){
     	  },
         success: function(datos){
         	swal(datos.mensaje);
-    	}
+        	//$('#cantidad_producto_'+id).parent('tr').hide()
+        	$('#cantidad_producto_'+id).parent().parent('tr').css({"background-color":"#FF0000"})
+        	console.log($('#cantidad_producto_'+id).parent().parent('tr'))
+        	//console.log(id);
+    	},
+    	error: function(xhr,estado,error){    			 
+			 //console.log(xhr.responseText);
+			 var err=xhr.responseText
+			 
+			 swal({
+        		  title: "Error",
+        		  text: "Error conectar con el Servidor \n "+err,
+        		  icon: "error",
+        		  button: "Aceptar",
+        		});
+	        }
 	});
 }
 
@@ -43,4 +60,84 @@ function aprobar_producto(id){
     		swal(datos.mensaje);
     	}
 	});
+}
+
+$('.enviarsalida').on('click',function(){
+	$('#btnForm').val($(this).val())
+	//console.log($(this).val())
+})
+
+$('#frm_agrega_salida').on('submit',function(event){
+	
+	var parametros = $(this).serialize();	
+	
+	//console.log('accion=ajax&'+parametros)
+	
+	var btnform = document.getElementById('btnForm').value
+	
+	$.ajax({
+        beforeSend: function(objeto){
+          
+        },
+        url: 'index.php?controller=MovimientosInv&action=inserta_salida',
+        type: 'POST',
+        data: 'accion=ajax&'+parametros,
+        dataType:'json',
+        success: function(respuesta){
+        	
+        	//console.log(respuesta)
+        	
+        	//$("#frm_guardar_producto")[0].reset();
+        	var valrespuesta = respuesta.mensaje.includes("ok")||false
+        	
+            if(valrespuesta){
+            	
+            	swal({
+            		  title: "Salidas",
+            		  text: respuesta.mensaje,
+            		  icon: "success",
+            		  buttons: {Aceptar: {text: "Aceptar",value: "ok" }}
+            		})
+            		.then((value) => {
+        			  switch (value) {            			  
+        			    case "ok":
+        			    	window.location="index.php?controller=MovimientosInv&action=indexsalida"
+        			      break;            			 
+        			  }
+            		});
+				
+                }else{
+                	
+                	swal({
+              		  title: "Salidas",
+              		  text: respuesta.mensaje,
+              		  icon: "warning",
+              		  button: "Aceptar",
+              		  closeOnClickOutside: false,
+              		});
+                }
+        	
+        	
+        		//setTimeout("redireccionarPagina()", 5000);
+        
+        	     
+        },
+        error: function(xhr,estado,error){
+        	//console.log(xhr.responseText);
+			 var err=xhr.responseText
+			 
+			 swal({
+        		  title: "Error",
+        		  text: "Error conectar con el Servidor \n "+err,
+        		  icon: "error",
+        		  button: "Aceptar",
+        		});
+        }
+    });
+	
+	event.preventDefault();	
+})
+
+function redireccionarPagina() {
+	window.location="index.php?controller=MovimientosInv&action=indexsalida"
 }

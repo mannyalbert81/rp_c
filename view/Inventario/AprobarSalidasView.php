@@ -125,7 +125,7 @@
                                       <th>Grupos</th>
                                       <th>Código</th>
                                       <th>Nombre</th>
-                                       <th>Descripcion</th>
+                                      <th>Cantidad Solicitud</th>
                                       <th>Unidad De M.</th>
                                       <th>ULT Precio</th>
                                       <th>Aprobar</th>
@@ -188,11 +188,12 @@
                 </div>
                 
                 <div class="box-body">
-                <form id="frm_solicitud_cabeza" action="<?php echo $helper->url("MovimientosInv","inserta_salida"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+                <form id="frm_agrega_salida" action="<?php echo $helper->url("MovimientosInv","inserta_salida"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
                 	<div class="row">
             		    <div class="col-xs-12 col-md-2 col-md-2 " >
             	   		    <div class="form-group">
             	   		    	<input type="hidden"  value="<?php echo $resultsolicitud[0]->id_movimientos_inv_cabeza; ?>" id="id_movimiento_solicitud"  name="id_movimiento_solicitud" />
+            	   		    	<input type="hidden"  value="APROBAR" id="btnForm"  name="btnForm" />
                             </div>
             		    </div>
             	    </div>
@@ -201,13 +202,13 @@
         			    <div class="col-xs-12 col-md-2 col-md-2 " >
             	   		    <div class="form-group">
             	   		    	<label for="Guardar">&nbsp;</label>
-        	                  <button type="submit" id="btnForm" name="btnForm" value="APROBAR" class="form-control btn btn-success">APROBAR</button>
+        	                  <button type="submit" id="btn_aprobar" name="btn_aprobar" value="APROBAR" class="enviarsalida form-control btn btn-success">APROBAR</button>
     	                    </div>
 	        		    </div>
 	        		    <div class="col-xs-12 col-md-2 col-md-2 " >
             	   		    <div class="form-group">
             	   		    	<label for="Guardar">&nbsp;</label>
-        	                  <button type="submit" id="btnForm" name="btnForm" value="REPROBAR" class="form-control btn btn-danger">CANCELAR</button>
+        	                  <button type="submit" id="btn_rechazar" name="btn_rechazar" value="REPROBAR" class="enviarsalida form-control btn btn-danger">CANCELAR</button>
     	                    </div>
 	        		    </div>
         		    </div>
@@ -227,7 +228,7 @@
     
     
    <?php include("view/modulos/links_js.php"); ?>
-  <script src="view/bootstrap/otros/inventario/movimientos_salidas_detalle.js" ></script>
+  <script src="view/bootstrap/otros/inventario/movimientos_salidas_detalle.js?3.1" ></script>
   </body>
 </html>
 

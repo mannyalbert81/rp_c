@@ -791,6 +791,27 @@ class BodegasController extends ControladorBase{
         $out.= "</ul>";
         return $out;
     }
+    
+    /**
+     * mod: compras
+     * title: carga_bodegas
+     * ajax: si
+     */
+    
+    public function carga_grupos(){
+        
+        $bodegas = null;
+        $bodegas = new BodegasModel();
+        
+        $resulset = $bodegas->getAll("nombre_bodegas");
+        
+        if(!empty($resulset)){
+            if(is_array($resulset) && count($resulset)>0){
+                echo json_encode($resulset);
+            }
+        }
+    }
+    
 
     
     

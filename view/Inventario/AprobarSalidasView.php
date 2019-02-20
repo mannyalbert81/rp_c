@@ -125,7 +125,7 @@
                                       <th>Grupos</th>
                                       <th>Código</th>
                                       <th>Nombre</th>
-                                       <th>Descripcion</th>
+                                      <th>Cantidad Solicitud</th>
                                       <th>Unidad De M.</th>
                                       <th>ULT Precio</th>
                                       <th>Aprobar</th>
@@ -228,7 +228,7 @@
     
     
    <?php include("view/modulos/links_js.php"); ?>
-  <script src="view/bootstrap/otros/inventario/movimientos_salidas_detalle.js?2.1" ></script>
+  <script src="view/bootstrap/otros/inventario/movimientos_salidas_detalle.js?3.1" ></script>
   </body>
 </html>
 

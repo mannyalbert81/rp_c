@@ -6,6 +6,8 @@ function rechazar_producto(id){
 	
 	var cantidad=document.getElementById('cantidad_producto_'+id).value;
 	
+	//return false
+	
 	$.ajax({
         type: "POST",
         url: 'index.php?controller=MovimientosInv&action=rechazaproducto',
@@ -16,7 +18,22 @@ function rechazar_producto(id){
     	  },
         success: function(datos){
         	swal(datos.mensaje);
-    	}
+        	//$('#cantidad_producto_'+id).parent('tr').hide()
+        	$('#cantidad_producto_'+id).parent().parent('tr').css({"background-color":"#FF0000"})
+        	console.log($('#cantidad_producto_'+id).parent().parent('tr'))
+        	//console.log(id);
+    	},
+    	error: function(xhr,estado,error){    			 
+			 //console.log(xhr.responseText);
+			 var err=xhr.responseText
+			 
+			 swal({
+        		  title: "Error",
+        		  text: "Error conectar con el Servidor \n "+err,
+        		  icon: "error",
+        		  button: "Aceptar",
+        		});
+	        }
 	});
 }
 

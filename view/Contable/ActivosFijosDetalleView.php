@@ -205,17 +205,9 @@
                     		   
 								 <div class="row">
                         		    
-                        		     <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="codigo_activos_fijos" class="control-label">Usuario:</label>
-                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="usuario..." readonly>
-                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
-                                    </div>
-                        		    </div> 
-                        		    
                         		   <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
-                                                          <label for="codigo_activos_fijos" class="control-label">Activos Fijos:</label>
+                                                          <label for="codigo_activos_fijos" class="control-label">Nombre Activos Fijos:</label>
                                                           <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="tipo de activo..." readonly>
                                                            <div id="mensaje_codigo_activos_fijos" class="errores"></div>
                                     </div>
@@ -223,139 +215,22 @@
                                     
 									<div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
-                                                          <label for="codigo_activos_fijos" class="control-label">Año depreciacion Activos Fijos:</label>
-                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="año..." readonly>
+                                                          <label for="codigo_activos_fijos" class="control-label">Año:</label>
+                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="año..." >
                                                            <div id="mensaje_codigo_activos_fijos" class="errores"></div>
                                     </div>
                         		    </div> 
+                        		    
+                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    <div class="form-group">
+                                                          <label for="codigo_activos_fijos" class="control-label">Mes a Depreciar:</label>
+                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="año..." >
+                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
+                                    </div>
+                        		    </div>
                         		    </div>
 
-                        		    <div class="row">
-                        		   <div class="col-xs-12 col-md-12 col-md-12 "> 
                         		   
-                        		    <div class="btn-group">
-                        		    
-                                      <button type="button" class="btn btn-default dropdown-toggle"
-                                              data-toggle="dropdown" >
-                                        DEPRESIACIÓN DE ENERO <span class="caret"></span>
-                                      </button>
-                                    
-                                      <ul class="dropdown-menu" role="menu">
-                                      
-									<table border="3">
-                                    <thead>
-                                        <tr>
-                                         
-                        		    <div class="form-group">
-                                                          <label for="codigo_activos_fijos" class="control-label"><li><a href="#">Cantidad en Meses:</a></li></label>
-                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="meses...">
-                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
-                                    </div>
-                        		              
-                                            
-                                        </tr>
-                                        
-                                    </thead>
-                                    
-									</table> 
-									<table border="3">
-                                    <thead>
-                                        <tr>
-                                          
-                        		    <div class="form-group">
-                                                          <label for="nombre_activos_fijos" class="control-label"><li><a href="#">Cantidad en dias:</a></li></label>
-                                                          <input type="text" class="form-control" size="30" id="nombre_activos_fijos" name="nombre_activos_fijos" value=""  placeholder="días...">
-                                                           <div id="mensaje_nombre_activos_fijos" class="errores"></div>
-                                    </div>
-                        		    
-                        		   
-                                        </tr>
-                                        
-                                    </thead>
-                                    
-									</table> 
-									<table border="3">
-                                    <thead>
-                                        <tr>
-                                        
-                        		    <div class="form-group">
-                                                          <label for="valor_activos_fijos" class="control-label"><li><a href="#">Valor de depreciación:</a></li></label>
-                                                          <input type="text" class="form-control cantidades1" id="valor_activos_fijos" name="valor_activos_fijos" value='0.00' 
-                                                          data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
-                                                          <div id="mensaje_valor_activos_fijos" class="errores"></div>
-                                    </div>
-                                       
-                                        </tr>
-                                        
-                                    </thead>
-                                    
-									</table> 
-                                      </ul>
-                                    
-                                    </div>
-                                    
-                                    <div class="btn-group">
-                        		    
-                                      <button type="button" class="btn btn-default dropdown-toggle"
-                                              data-toggle="dropdown" >
-                                        DEPRESIACIÓN DE FEBRERO <span class="caret"></span>
-                                      </button>
-                                    
-                                      <ul class="dropdown-menu" role="menu">
-                                      
-									<table border="3">
-                                    <thead>
-                                        <tr>
-                                         
-                        		    <div class="form-group">
-                                                          <label for="codigo_activos_fijos" class="control-label"><li><a href="#">Cantidad en Meses:</a></li></label>
-                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="meses...">
-                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
-                                    </div>
-                        		              
-                                            
-                                        </tr>
-                                        
-                                    </thead>
-                                    
-									</table> 
-									<table border="3">
-                                    <thead>
-                                        <tr>
-                                          
-                        		    <div class="form-group">
-                                                          <label for="nombre_activos_fijos" class="control-label"><li><a href="#">Cantidad en dias:</a></li></label>
-                                                          <input type="text" class="form-control" size="30" id="nombre_activos_fijos" name="nombre_activos_fijos" value=""  placeholder="días...">
-                                                           <div id="mensaje_nombre_activos_fijos" class="errores"></div>
-                                    </div>
-                        		    
-                        		   
-                                        </tr>
-                                        
-                                    </thead>
-                                    
-									</table> 
-									<table border="3">
-                                    <thead>
-                                        <tr>
-                                        
-                        		    <div class="form-group">
-                                                          <label for="valor_activos_fijos" class="control-label"><li><a href="#">Valor de depreciación:</a></li></label>
-                                                          <input type="text" class="form-control cantidades1" id="valor_activos_fijos" name="valor_activos_fijos" value='0.00' 
-                                                          data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
-                                                          <div id="mensaje_valor_activos_fijos" class="errores"></div>
-                                    </div>
-                                       
-                                        </tr>
-                                        
-                                    </thead>
-                                    
-									</table> 
-                                      </ul>
-                                    
-                                    </div>
-                                    </div>
-                                   
   
    									
    	         	                     	           	

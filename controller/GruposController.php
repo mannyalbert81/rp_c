@@ -17,13 +17,10 @@ class GruposController extends ControladorBase{
 				
 		$resultEdit = "";
 		
-		$catalogo=null;
-		$catalogo = new CatalogoModel();
-		//para estados de catalogo de usuarios
-		$whe_catalogo = "tabla_catalogo = 'grupos' AND columna_catalogo = 'estado_grupos'";
-		$result_Grupos_estados = $catalogo->getBy($whe_catalogo);
-
-		
+		$estado= null;
+		$estado = new EstadoModel();
+		$whe_estado = "tabla_estado = 'GRUPOS'";
+		$result_Grupos_estados = $estado->getBy($whe_estado);
 		session_start();
         
 	
@@ -49,16 +46,15 @@ class GruposController extends ControladorBase{
 					    $_id_grupos = $_GET["id_grupos"];
 						$columnas = " grupos.id_grupos, 
                                       grupos.nombre_grupos, 
-                                      grupos.estado_grupos, 
+                                      estado.id_estado, 
+                                      estado.nombre_estado, 
+                                      estado.tabla_estado, 
                                       grupos.creado, 
-                                      grupos.modificado, 
-                                      catalogo.id_catalogo, 
-                                      catalogo.nombre_catalogo, 
-                                      catalogo.valor_catalogo";
+                                      grupos.modificado";
 						$tablas   = "public.grupos, 
-                                     public.catalogo";
-						$where    = "grupos.estado_grupos = catalogo.valor_catalogo
-                                    AND public.catalogo.tabla_catalogo = 'grupos' AND public.catalogo.columna_catalogo = 'estado_grupos' AND grupos.id_grupos = '$_id_grupos' "; 
+                                     public.estado";
+						$where    = "estado.id_estado = grupos.id_estado
+                                     AND grupos.id_grupos = '$_id_grupos' "; 
 						$id       = "grupos.id_grupos";
 							
 						$resultEdit = $grupos->getCondiciones($columnas ,$tablas ,$where, $id);
@@ -133,7 +129,7 @@ class GruposController extends ControladorBase{
 			    if($_id_grupos > 0){
 					
 					$columnas = " nombre_grupos = '$_nombre_grupos',
-                                  estado_grupos = '$_id_estado'";
+                                  id_estado = '$_id_estado'";
 					$tabla = "  public.grupos";
 					$where = "id_grupos = '$_id_grupos'";
 					$resultado=$grupos->UpdateBy($columnas, $tabla, $where);
@@ -181,7 +177,7 @@ class GruposController extends ControladorBase{
 	        {
 	            $id_grupos=(int)$_GET["id_grupos"];
 	            
-	            $grupos->UpdateBy("estado_grupos=2","grupos","id_grupos='$id_grupos'");
+	            $grupos->UpdateBy("id_estado=2","grupos","id_grupos='$id_grupos'");
 	            
 	          
 	            
@@ -207,16 +203,19 @@ class GruposController extends ControladorBase{
 	    $id_rol=$_SESSION["id_rol"];
 	    
 	    $usuarios = new UsuariosModel();
-	    $catalogo = null; $catalogo = new CatalogoModel();
+	   
+	    $estado = null; $estado = new EstadoModel();
 	    $where_to="";
-	    $columnas = " grupos.id_grupos,
+	    $columnas = " grupos.id_grupos, 
                       grupos.nombre_grupos, 
-                      grupos.estado_grupos, 
-                      catalogo.nombre_catalogo";
+                      estado.id_estado, 
+                      estado.nombre_estado, 
+                      estado.tabla_estado, 
+                      grupos.creado, 
+                      grupos.modificado";
 	    
-	    $tablas = "public.grupos INNER JOIN public.catalogo ON grupos.estado_grupos = catalogo.valor_catalogo
-                    AND catalogo.nombre_catalogo='ACTIVO' AND catalogo.tabla_catalogo ='grupos' 
-                    AND catalogo.columna_catalogo = 'estado_grupos'";
+	    $tablas = "public.grupos INNER JOIN public.estado ON estado.nombre_estado='ACTIVO' AND estado.tabla_estado ='GRUPOS' 
+                    ";
 	    
 	    
 	    $where    = " 1=1";
@@ -231,8 +230,8 @@ class GruposController extends ControladorBase{
 	    if($action == 'ajax')
 	    {
 	        //estado_usuario
-	        $wherecatalogo = "tabla_catalogo='grupos' AND columna_catalogo='estado_grupos'";
-	        $resultCatalogo = $catalogo->getCondiciones('valor_catalogo,nombre_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+	        $whereestado = "tabla_estado='GRUPOS'";
+	        $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
 	        
 	        
 	        
@@ -304,15 +303,9 @@ class GruposController extends ControladorBase{
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
 	                
-	                if(!empty($resultCatalogo)){
-	                    foreach ($resultCatalogo as $r_estado){
-	                        if($r_estado->valor_catalogo == $res->estado_grupos ){
-	                            $html.='<td style="font-size: 11px;">'.$r_estado->nombre_catalogo.'</td>';
-	                        }
-	                    }
-	                }
-	                
+	             
 	                
 	                if($id_rol==1){
 	                    
@@ -357,16 +350,18 @@ class GruposController extends ControladorBase{
 	    $id_rol=$_SESSION["id_rol"];
 	    
 	    $usuarios = new UsuariosModel();
-	    $catalogo = null; $catalogo = new CatalogoModel();
+	    $estado = null; $estado = new EstadoModel();
 	    $where_to="";
-	    $columnas = " grupos.id_grupos,
-                      grupos.nombre_grupos,
-                      grupos.estado_grupos,
-                      catalogo.nombre_catalogo";
+	    $columnas = " grupos.id_grupos, 
+                      grupos.nombre_grupos, 
+                      estado.id_estado, 
+                      estado.nombre_estado, 
+                      estado.tabla_estado, 
+                      grupos.creado, 
+                      grupos.modificado";
 	    
-	    $tablas = "public.grupos INNER JOIN public.catalogo ON grupos.estado_grupos = catalogo.valor_catalogo
-                    AND catalogo.nombre_catalogo='INACTIVO' AND catalogo.tabla_catalogo ='grupos'
-                    AND catalogo.columna_catalogo = 'estado_grupos'";
+	    $tablas = "public.grupos INNER JOIN public.estado ON estado.nombre_estado='INACTIVO' AND estado.tabla_estado ='grupos'
+                    AND estado.nombre_estado = 'id_estado'";
 	    
 	    
 	    $where    = " 1=1";
@@ -381,8 +376,8 @@ class GruposController extends ControladorBase{
 	    if($action == 'ajax')
 	    {
 	        //estado_usuario
-	        $wherecatalogo = "tabla_catalogo='grupos' AND columna_catalogo='estado_grupos'";
-	        $resultCatalogo = $catalogo->getCondiciones('valor_catalogo,nombre_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+	        $whereestado = "tabla_estado='grupos' AND nombre_estado ='id_estado'";
+	        $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
 	        
 	        
 	        
@@ -454,14 +449,13 @@ class GruposController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
 	                
-	                if(!empty($resultCatalogo)){
-	                    foreach ($resultCatalogo as $r_estado){
-	                        if($r_estado->valor_catalogo == $res->estado_grupos ){
-	                            $html.='<td style="font-size: 11px;">'.$r_estado->nombre_catalogo.'</td>';
+	                if(!empty($resultEstado)){
+	                    foreach ($resultEstado as $r_estado){
+	                        if($r_estado->tabla_estado == $res->GRUPOS ){
+	                            $html.='<td style="font-size: 11px;">'.$r_estado->nombre_estado.'</td>';
 	                        }
 	                    }
 	                }
-	                
 	                
 	                if($id_rol==1){
 	                    

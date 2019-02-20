@@ -89,7 +89,7 @@
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php  foreach($result_Bodegas_estados as $res) {?>
-    										<option value="<?php echo $res->valor_catalogo; ?>" <?php if ($res->valor_catalogo == $resEdit->estado_bodegas )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_catalogo; ?> </option>
+    										<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_estados" class="errores"></div>
@@ -170,7 +170,7 @@
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php foreach($result_Bodegas_estados as $res) {?>
-    										<option value="<?php echo $res->valor_catalogo; ?>" ><?php echo $res->nombre_catalogo; ?> </option>
+    										<option value="<?php echo $res->id_estado; ?>" ><?php echo $res->nombre_estado; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_estados" class="errores"></div>

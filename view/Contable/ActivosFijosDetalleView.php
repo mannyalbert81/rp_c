@@ -48,7 +48,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Contabilidad</a></li>
-        <li class="active">Activos Fijos</li>
+        <li class="active">Detalle de Activos</li>
       </ol>
     </section>
 
@@ -57,7 +57,7 @@
     <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Activos Fijos</h3>
+          <h3 class="box-title">Detalle de Activos</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Minimizar">
               <i class="fa fa-minus"></i></button>
@@ -68,7 +68,7 @@
         <div class="box-body">
           
         
-        <form action="<?php echo $helper->url("ActivosFijos","InsertaActivosFijos"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+        <form action="<?php echo $helper->url("ActivosFijosDetalle","InsertaActivosFijos"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
                                 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
                                 
                                 <div class="row">
@@ -78,7 +78,7 @@
                         		   <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                        
-                                                          <label for="id_oficina" class="control-label">Oficina:</label>
+                                                          <label for="id_oficina" class="control-label">Activos Fijos:</label>
                                                           <select name="id_oficina" id="id_oficina"  class="form-control">
                                                             <option value="0" selected="selected">--Seleccione--</option>
 																<?php foreach($resultOfi as $res) {?>
@@ -208,7 +208,7 @@
                         		    
                         		   <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
-                                                          <label for="id_oficina" class="control-label">Oficina:</label>
+                                                          <label for="id_oficina" class="control-label">Activos Fijos:</label>
                                                           <select name="id_oficina" id="id_oficina"  class="form-control">
                                                             <option value="0" selected="selected">--Seleccione--</option>
 																<?php foreach($resultOfi as $res) {?>
@@ -218,117 +218,95 @@
 		   		   										   <div id="mensaje_id_oficina" class="errores"></div>
                                     </div>
                                     </div>
-									
-                        			
-                        			<div class="col-xs-12 col-md-3 col-md-3">
+                                    
+									<div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
-                                                          <label for="id_tipo_activos_fijos" class="control-label">Tipo Activos Fijos:</label>
-                                                          <select name="id_tipo_activos_fijos" id="id_tipo_activos_fijos"  class="form-control">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultTipoac as $res) {?>
-				 												<option value="<?php echo $res->id_tipo_activos_fijos; ?>"  ><?php echo $res->nombre_tipo_activos_fijos; ?> </option>
-													            <?php } ?>
-								    					  </select>
-		   		   										   <div id="mensaje_id_tipo_activos_fijos" class="errores"></div>
-                                    </div>
-                                    </div>
-                        		    
-                        		   
-                                   
-                                   <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="codigo_activos_fijos" class="control-label">Código:</label>
-                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="código...">
+                                                          <label for="codigo_activos_fijos" class="control-label">Año depreciacion Activos Fijos:</label>
+                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="año...">
                                                            <div id="mensaje_codigo_activos_fijos" class="errores"></div>
                                     </div>
                         		    </div> 
-                                   
-                        		   <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    </div>
+
+                        		    <div class="row">
+                        		   <div class="col-xs-12 col-md-12 col-md-12 "> 
+                        		   
+                        		    <div class="btn-group">
+                        		    
+                                      <button type="button" class="btn btn-default dropdown-toggle"
+                                              data-toggle="dropdown" style="background:">
+                                        DEPRESIACIÓN DE ENERO <span class="caret"></span>
+                                      </button>
+                                    
+                                      <ul class="dropdown-menu" role="menu">
+                                      
+									<table border="3">
+                                    <thead>
+                                        <tr>
+                                         
                         		    <div class="form-group">
-                                                          <label for="nombre_activos_fijos" class="control-label">Nombre Activos:</label>
-                                                          <input type="text" class="form-control" id="nombre_activos_fijos" name="nombre_activos_fijos" value=""  placeholder="nombre...">
+                                                          <label for="codigo_activos_fijos" class="control-label"><li><a href="#">Cantidad en Meses:</a></li></label>
+                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="meses...">
+                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
+                                    </div>
+                        		              
+                                            
+                                        </tr>
+                                        
+                                    </thead>
+                                    
+									</table> 
+									<table border="3">
+                                    <thead>
+                                        <tr>
+                                          
+                        		    <div class="form-group">
+                                                          <label for="nombre_activos_fijos" class="control-label"><li><a href="#">Cantidad en dias:</a></li></label>
+                                                          <input type="text" class="form-control" size="30" id="nombre_activos_fijos" name="nombre_activos_fijos" value=""  placeholder="días...">
                                                            <div id="mensaje_nombre_activos_fijos" class="errores"></div>
                                     </div>
-                        		    </div> 
+                        		    
                         		   
-                        		  </div>
-                        		  
-                        		  <div class="row">
-                        		    
-                        		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
+                                        </tr>
+                                        
+                                    </thead>
+                                    
+									</table> 
+									<table border="3">
+                                    <thead>
+                                        <tr>
+                                        
                         		    <div class="form-group">
-                                                          <label for="fecha_compra_activos_fijos" class="control-label">Fecha:</label>
-                                                          <input type="date" class="form-control" id="fecha_compra_activos_fijos" name="fecha_compra_activos_fijos" min="<?php echo date('Y-m-d', mktime(0,0,0, date('m'), date("d", mktime(0,0,0, date('m'), 1, date('Y'))), date('Y'))); ?>" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
-                    			                         <div id="mensaje_fecha_compra_activos_fijos" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="cantidad_activos_fijos" class="control-label">Cantidad de activos:</label>
-                                                          <input type="text" class="form-control" id="cantidad_activos_fijos" name="cantidad_activos_fijos" value=""  placeholder="cantidad..." onkeypress="return numeros(event)">
-                                                           <div id="mensaje_cantidad_activos_fijos" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    
-                        		    
-                            		<div class="col-lg-3 col-xs-12 col-md-3">
-                        		    <div class="form-group">
-                                                          <label for="valor_activos_fijos" class="control-label">Valor de activos:</label>
+                                                          <label for="valor_activos_fijos" class="control-label"><li><a href="#">Valor de depreciación:</a></li></label>
                                                           <input type="text" class="form-control cantidades1" id="valor_activos_fijos" name="valor_activos_fijos" value='0.00' 
                                                           data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
                                                           <div id="mensaje_valor_activos_fijos" class="errores"></div>
                                     </div>
+                                       
+                                        </tr>
+                                        
+                                    </thead>
+                                    
+									</table> 
+                                      </ul>
                                     </div>
-                        		    
-                        		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="meses_depreciacion_activos_fijos" class="control-label">Meses de Depreciación</label>
-                                                          <input type="text" class="form-control" id="meses_depreciacion_activos_fijos" name="meses_depreciacion_activos_fijos" value=""  placeholder="meses..." onkeypress="return numeros(event)">
-                                                           <div id="mensaje_meses_depreciacion_activos_fijos" class="errores"></div>
+                                    </div> 
                                     </div>
-                        		    </div>
-                        		    
-                        		  </div>
-                        		  
-                        		  <div class="row">
-                        		    
-                        		    
-                        		   <div class="col-lg-3 col-xs-12 col-md-3">
-                        		    <div class="form-group">
-                                                          <label for="depreciacion_mensual_activos_fijos" class="control-label">Valor de la Depreciación Mensual:</label>
-                                                          <input type="text" class="form-control cantidades1" id="depreciacion_mensual_activos_fijos" name="depreciacion_mensual_activos_fijos" value='0.00' 
-                                                          data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
-                                                          <div id="mensaje_depreciacion_mensual_activos_fijos" class="errores"></div>
-                                    </div>
-                                    </div>
-                        		    
-                        		    
-                        		     <div class="col-xs-12 col-md-3 col-md-3">
-                        		    <div class="form-group">
-                                                          <label for="id_estado" class="control-label">Estado:</label>
-                                                          <select name="id_estado" id="id_estado"  class="form-control">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultEst as $res) {?>
-				 												<option value="<?php echo $res->id_estado; ?>"  ><?php echo $res->nombre_estado; ?> </option>
-													            <?php } ?>
-								    					  </select>
-		   		   										   <div id="mensaje_id_estado" class="errores"></div>
-                                    </div>
-                                    </div>
-                        		    
-                        		  </div>
-									
-									
-									
-									
-								
-                		    
-                    	
-                    			
-                                 	                     	           	
+   									
+   									<optgroup label="Opciones básicas">
+      <option value="1" label="Opcion 1">
+    </optgroup>
+    <optgroup label="Opciones avanzadas">
+      <option value="2" label="Opcion 2">
+      <option value="3" label="Opcion 3">
+    </optgroup>
+                      <ul id="navegador">
+    <li><a href="#">&Aacute;rea candidatos</a></li>
+    <li><a href="#">&Aacute;rea empresas</a></li>
+    <li><a href="#">Buscar ofertas</a></li>
+    <li><a href="#">Ofertas por empresas</a></li>
+    <li><a href="#">Contactar</a></li>
+</ul>           	                     	           	
                     		     <?php } ?>
                     		    <br>  
                     		    <div class="row">

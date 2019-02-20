@@ -19,9 +19,10 @@ function rechazar_producto(id){
         success: function(datos){
         	swal(datos.mensaje);
         	//$('#cantidad_producto_'+id).parent('tr').hide()
-        	$('#cantidad_producto_'+id).parent().parent('tr').css({"background-color":"#FF0000"})
+        	$('#cantidad_producto_'+id).parents('tr:first').css({"color": "red", "border": "2px solid red"})
         	console.log($('#cantidad_producto_'+id).parent().parent('tr'))
         	//console.log(id);
+        	console.log($('#cantidad_producto_'+id).parents('tr:first').children('td:first').text())
     	},
     	error: function(xhr,estado,error){    			 
 			 //console.log(xhr.responseText);

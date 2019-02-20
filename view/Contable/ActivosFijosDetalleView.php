@@ -205,24 +205,26 @@
                     		   
 								 <div class="row">
                         		    
-                        		    
-                        		   <div class="col-xs-12 col-md-3 col-md-3">
+                        		     <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
-                                                          <label for="id_oficina" class="control-label">Activos Fijos:</label>
-                                                          <select name="id_oficina" id="id_oficina"  class="form-control">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultOfi as $res) {?>
-				 												<option value="<?php echo $res->id_oficina; ?>"  ><?php echo $res->nombre_oficina; ?> </option>
-													            <?php } ?>
-								    					  </select>
-		   		   										   <div id="mensaje_id_oficina" class="errores"></div>
+                                                          <label for="codigo_activos_fijos" class="control-label">Usuario:</label>
+                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="usuario..." readonly>
+                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
                                     </div>
+                        		    </div> 
+                        		    
+                        		   <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    <div class="form-group">
+                                                          <label for="codigo_activos_fijos" class="control-label">Activos Fijos:</label>
+                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="tipo de activo..." readonly>
+                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
                                     </div>
+                        		    </div> 
                                     
 									<div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="codigo_activos_fijos" class="control-label">Año depreciacion Activos Fijos:</label>
-                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="año...">
+                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="año..." readonly>
                                                            <div id="mensaje_codigo_activos_fijos" class="errores"></div>
                                     </div>
                         		    </div> 
@@ -234,7 +236,7 @@
                         		    <div class="btn-group">
                         		    
                                       <button type="button" class="btn btn-default dropdown-toggle"
-                                              data-toggle="dropdown" style="background:">
+                                              data-toggle="dropdown" >
                                         DEPRESIACIÓN DE ENERO <span class="caret"></span>
                                       </button>
                                     
@@ -289,24 +291,74 @@
                                     
 									</table> 
                                       </ul>
+                                    
                                     </div>
-                                    </div> 
+                                    
+                                    <div class="btn-group">
+                        		    
+                                      <button type="button" class="btn btn-default dropdown-toggle"
+                                              data-toggle="dropdown" >
+                                        DEPRESIACIÓN DE FEBRERO <span class="caret"></span>
+                                      </button>
+                                    
+                                      <ul class="dropdown-menu" role="menu">
+                                      
+									<table border="3">
+                                    <thead>
+                                        <tr>
+                                         
+                        		    <div class="form-group">
+                                                          <label for="codigo_activos_fijos" class="control-label"><li><a href="#">Cantidad en Meses:</a></li></label>
+                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="meses...">
+                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
                                     </div>
+                        		              
+                                            
+                                        </tr>
+                                        
+                                    </thead>
+                                    
+									</table> 
+									<table border="3">
+                                    <thead>
+                                        <tr>
+                                          
+                        		    <div class="form-group">
+                                                          <label for="nombre_activos_fijos" class="control-label"><li><a href="#">Cantidad en dias:</a></li></label>
+                                                          <input type="text" class="form-control" size="30" id="nombre_activos_fijos" name="nombre_activos_fijos" value=""  placeholder="días...">
+                                                           <div id="mensaje_nombre_activos_fijos" class="errores"></div>
+                                    </div>
+                        		    
+                        		   
+                                        </tr>
+                                        
+                                    </thead>
+                                    
+									</table> 
+									<table border="3">
+                                    <thead>
+                                        <tr>
+                                        
+                        		    <div class="form-group">
+                                                          <label for="valor_activos_fijos" class="control-label"><li><a href="#">Valor de depreciación:</a></li></label>
+                                                          <input type="text" class="form-control cantidades1" id="valor_activos_fijos" name="valor_activos_fijos" value='0.00' 
+                                                          data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
+                                                          <div id="mensaje_valor_activos_fijos" class="errores"></div>
+                                    </div>
+                                       
+                                        </tr>
+                                        
+                                    </thead>
+                                    
+									</table> 
+                                      </ul>
+                                    
+                                    </div>
+                                    </div>
+                                   
+  
    									
-   									<optgroup label="Opciones básicas">
-      <option value="1" label="Opcion 1">
-    </optgroup>
-    <optgroup label="Opciones avanzadas">
-      <option value="2" label="Opcion 2">
-      <option value="3" label="Opcion 3">
-    </optgroup>
-                      <ul id="navegador">
-    <li><a href="#">&Aacute;rea candidatos</a></li>
-    <li><a href="#">&Aacute;rea empresas</a></li>
-    <li><a href="#">Buscar ofertas</a></li>
-    <li><a href="#">Ofertas por empresas</a></li>
-    <li><a href="#">Contactar</a></li>
-</ul>           	                     	           	
+   	         	                     	           	
                     		     <?php } ?>
                     		    <br>  
                     		    <div class="row">

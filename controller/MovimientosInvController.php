@@ -1,7 +1,7 @@
 <?php
 
 class MovimientosInvController extends ControladorBase{
-
+    
 	public function __construct() {
 		parent::__construct();
 	}
@@ -379,7 +379,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Productos</b>';
@@ -875,135 +875,7 @@ class MovimientosInvController extends ControladorBase{
 	    return $out;
 	}
 	
-	public function InsertarCompraSSS(){
-	    
-	    session_start();
-	    $resultado = null;
-	    $temp_compras = null;
-	    $temp_compras =new TempComprasModel();
-	    $movimientos_inv_cabeza = null;
-	    $movimientos_inventario = new MovimientosInvModel();
-	    $movimientos_inv_cabeza = new MovimientosInvCabezaModel();
-	    $consecutivos = new ConsecutivosModel();
-	    
-	    if (isset(  $_SESSION['nombre_usuarios']) )
-	    {
-	        
-	        if (isset ($_POST["razon_solicitud"]))
-	        {
-	            
-	            $_id_usuarios   = $_SESSION["id_usuarios"];
-	            $_razon_solicitud      = $_POST['razon_solicitud'];
-	            
-	            date_default_timezone_set('America/Guayaquil');
-	            $fechaActual = date('Y-m-d');
-	            
-	            
-	            
-	           $numero_consecutivos = $resultConsecutivos[0]->numero_consecutivos;
-	            $_id_consecutivos = $resultConsecutivos[0]->id_consecutivos;
-	            
-	            
-	            
-	            $funcion = "ins_movimientos_inv_cabeza";
-	            $parametros = "'$_id_usuarios',
-		    				   '$_id_consecutivos',
-		    				   '$numero_consecutivos',
-		    	               '$_razon_solicitud',
-		    	               '$fechaActual',
-                                '0',
-                                '0','0','0','0','0','0','0','0'";
-	            
-	            $movimientos_inv_cabeza->setFuncion($funcion);
-	            $movimientos_inv_cabeza->setParametros($parametros);
-	            $resultadoinsert=$movimientos_inv_cabeza->Insert();
-	            
-	            
-	            
-	            
-	            
-	            $resultInvCabeza = $movimientos_inv_cabeza->getBy("id_usuarios='$_id_usuarios'  AND id_consecutivos='$_id_consecutivos' AND numero_movimientos_inv_cabeza = '$numero_consecutivos'");
-	            $id_movimientos_inv_cabeza = $resultInvCabeza[0]->id_movimientos_inv_cabeza;
-	            
-	            
-	            $actualizado = $consecutivos->UpdateBy("numero_consecutivos = numero_consecutivos + 1 ","consecutivos","nombre_consecutivos='SOLICITUD' AND modulo_documento_consecutivos = 'INVENTARIO MATERIALES'");
-	            
-	            
-	            
-	            if($id_movimientos_inv_cabeza>0){
-	                
-	                
-	                
-	                $col_temp = "temp_solicitud.id_temp_solicitud,
-                          temp_solicitud.id_usuario_temp_solicitud,
-                          temp_solicitud.id_producto_temp_solicitud,
-                          temp_solicitud.cantidad_temp_solicitud,
-                          temp_solicitud.sesion_php_temp_solicitud,
-                          temp_solicitud.estado_temp_solicitud,
-                          temp_solicitud.creado";
-	                
-	                $tab_temp="public.temp_solicitud";
-	                
-	                $where_temp="1=1 AND
-                                temp_solicitud.id_usuario_temp_solicitud='$_id_usuarios'";
-	                
-	                $resultTemp = $temp_solicitud->getCondiciones($col_temp,$tab_temp,$where_temp,"temp_solicitud.id_temp_solicitud");
-	                
-	                if(!empty($resultTemp)){
-	                    
-	                    $funcion = "ins_movimientos_inv_detalle";
-	                    
-	                    foreach ($resultTemp as $res){
-	                        
-	                        $id_producto_temp_solicitud = $res->id_producto_temp_solicitud;
-	                        $cantidad_temp_solicitud = $res->cantidad_temp_solicitud;
-	                        
-	                        
-	                        $valor_producto= 0;
-	                        $valor_total = 0;
-	                        
-	                        
-	                        $parametros = "'$id_movimientos_inv_cabeza',
-		    				   '$id_producto_temp_solicitud',
-		    				   '$cantidad_temp_solicitud',
-		    	               '$valor_producto',
-		    	               '$valor_total'";
-	                        
-	                        $movimientos_inv_detalle->setFuncion($funcion);
-	                        $movimientos_inv_detalle->setParametros($parametros);
-	                        $resultado=$movimientos_inv_detalle->Insert();
-	                    }
-	                    
-	                }
-	                
-	                
-	                $where200 = "id_usuario_temp_solicitud='$_id_usuarios'";
-	                $resultado=$temp_solicitud->deleteById($where200);
-	                
-	                
-	                
-	            }
-	            
-	            
-	            
-	            $this->redirect("SolicitudCabeza", "index");
-	        }
-	        
-	    }else{
-	        
-	        $error = TRUE;
-	        $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
-	        
-	        $this->view("Login",array(
-	            "resultSet"=>"$mensaje", "error"=>$error
-	        ));
-	        
-	        
-	        die();
-	        
-	    }
-	}
-	
+
 	
 	/**
 	 * mod: salidas
@@ -1091,10 +963,9 @@ class MovimientosInvController extends ControladorBase{
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitante</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">No. Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            //$html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            
@@ -1177,7 +1048,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        $where_salidas = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND nombre_consecutivos='SOLICITUD'
+                      AND nombre_consecutivos='SALIDA'
                       AND estado_movimientos_inv_cabeza='APROBADA'";
 	        
 	        
@@ -1215,9 +1086,9 @@ class MovimientosInvController extends ControladorBase{
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitante</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Aprobado Por</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">No Salida</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Salida</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            
 	            $html.='</tr>';
@@ -1298,7 +1169,7 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        $where_salidas = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND nombre_consecutivos='SOLICITUD'
+                      AND nombre_consecutivos='SALIDA'
                       AND estado_movimientos_inv_cabeza='RECHAZADA'";
 	        
 	        
@@ -1336,9 +1207,9 @@ class MovimientosInvController extends ControladorBase{
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitante</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">No Solicitud</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Solicitud</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Encargado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">No Salida</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Salida</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	           
 	            
@@ -1608,27 +1479,30 @@ class MovimientosInvController extends ControladorBase{
 	        }
 	    }
 	    
-	    if($validacion){
+	   
+	    
+	    if($validacion && isset($_POST['accion']) && $_POST['accion']='ajax'){
+	        
+	       
 	        
 	        $id_usuarios = (isset($_SESSION['id_usuarios']))?$_SESSION['id_usuarios']:0;
 	        
-	        $_estado_salida="";
+	        $_estado_salida='';	        
 	        
 	        switch ( $_POST['btnForm'] ){
-	            case 'APROBAR': 
+	            case 'APROBAR':
 	                $_estado_salida='APROBADA';
 	                $funcion = "fn_agrega_movimiento_salida";
 	                break;
-	            case 'REPROBAR': 
-	                $_estado_salida='RECHAZADA'; 
+	            case 'REPROBAR':
+	                $_estado_salida='RECHAZADA';
 	                $funcion = "fn_agrega_movimiento_salida_rechazada";
 	                break;
-	        }    
+	        } 
 	        
-	         
 	        /*valores de la vista*/
 	        $_id_movimiento_solicitud = (isset($_POST['id_movimiento_solicitud']))?$_POST['id_movimiento_solicitud']:0;
-	       
+	        
 	        //se valida si hay productos en temp
 	        if($_id_movimiento_solicitud>0){
 	            
@@ -1637,14 +1511,13 @@ class MovimientosInvController extends ControladorBase{
 	            $parametros = "'$_id_movimiento_solicitud','$id_usuarios','$_fecha_salida','$_estado_salida'";
 	            
 	            $movimientos_inventario->setFuncion($funcion);
+	            
 	            $movimientos_inventario->setParametros($parametros);
 	            
 	            $resultset = $movimientos_inventario->llamafuncion();
 	            
 	            $resultadofuncion = 0;
 	            
-	            print_r($resultset);
-	           
 	            if(!empty($resultset)){
 	                if(is_array($resultset) && count($resultset)>0){
 	                    
@@ -1656,13 +1529,18 @@ class MovimientosInvController extends ControladorBase{
 	                }
 	            }
 	            
-	            //echo $resultadofuncion;
+	            echo json_encode(array('mensaje'=>$resultadofuncion));
 	            
 	            
+	        }else{
+	            
+	            echo json_encode(array('mensaje'=>'Error al enviar datos'));
 	        }
 	        
-	        $this->redirect("MovimientosInv","indexsalida");
+	       
+	    }else {
 	        
+	        echo json_encode(array('mensaje'=>'Problemas al conectarse con el servidor'));
 	    }
 	    
 	}
@@ -1696,8 +1574,11 @@ class MovimientosInvController extends ControladorBase{
 	        
 	        if (!empty($resultPer))
 	        {
+	            $resultProdu=null;
+	            
 	            if (isset ($_GET["id_solicitud_cabeza"])   )
 	            {
+	                
 	                
 	                $nombre_controladores = "SolicitudCabeza";
 	                $id_rol= $_SESSION['id_rol'];
@@ -1818,7 +1699,7 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            $where = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND nombre_consecutivos='SOLICITUD'
+                      AND nombre_consecutivos='SALIDA'
                       AND estado_movimientos_inv_cabeza='APROBADA' AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'";
 	            
 	            $id="movimientos_inv_cabeza.numero_movimientos_inv_cabeza";
@@ -1979,15 +1860,31 @@ class MovimientosInvController extends ControladorBase{
 	            
 	            $where = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
                       consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND nombre_consecutivos='SOLICITUD'
+                      AND nombre_consecutivos='SALIDA'
                       AND estado_movimientos_inv_cabeza='RECHAZADA'AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$_id_movimientos_inv_cabeza'";
 	            
 	            $id="movimientos_inv_cabeza.numero_movimientos_inv_cabeza";
 	            
 	            $resultSetCabeza=$salidas->getCondiciones($columnas, $tablas, $where, $id);
 	            
+	            $html='';
+	            $_numero_movimientos_inv_cabeza='';
+	            $_estado_movimientos_inv_cabeza='';
+	            $_fecha_movimientos_inv_cabeza='';
 	            
-	            if(!empty($resultSetCabeza)){
+	            $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: center; font-size: 25px; ">CAPREMCI</br>';
+	            $html.='<p style="text-align: center; font-size: 13px; "> Av. Baquerico Moreno E-9781 y Leonidas Plaza';
+	            $html.='<p style="text-align: center; font-size: 18px; ">Solicitud N°: &nbsp;'.$_numero_movimientos_inv_cabeza.'</br>';
+	            $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; ESTADO: '.$_estado_movimientos_inv_cabeza.'&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Fecha: '.$_fecha_movimientos_inv_cabeza.'';
+	            $html.='</tr>';
+	            
+	            $html.='</table>';
+	            
+	            
+	            if(!empty($resultSetCabeza) && count($resultSetCabeza)>0){
+	                
 	                
 	                
 	                $_id_movimientos_inv_cabeza     =$resultSetCabeza[0]->id_movimientos_inv_cabeza;
@@ -2020,17 +1917,8 @@ class MovimientosInvController extends ControladorBase{
 	                
 	                $resultSetDetalle=$salidas_detalle->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	                
-	                
-	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
-	                $html.= "<tr>";
-	                $html.='<th style="text-align: center; font-size: 25px; ">CAPREMCI</br>';
-	                $html.='<p style="text-align: center; font-size: 13px; "> Av. Baquerico Moreno E-9781 y Leonidas Plaza';
-	                $html.='<p style="text-align: center; font-size: 18px; ">Solicitud N°: &nbsp;'.$_numero_movimientos_inv_cabeza.'</br>';
-	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; ESTADO: '.$_estado_movimientos_inv_cabeza.'&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Fecha: '.$_fecha_movimientos_inv_cabeza.'';
-	                $html.='</tr>';
-	                
-	                $html.='</table>';
-	                
+	                //comienza dibujar pdf
+	             
 	                
 	                
 	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE: </b>'.$_nombre_usuarios.'';
@@ -2076,8 +1964,7 @@ class MovimientosInvController extends ControladorBase{
 	                
 	            }
 	            
-	            
-	            
+	           
 	            $this->report("SolicitudRechazada",array( "resultSet"=>$html));
 	            die();
 	            
@@ -2175,5 +2062,31 @@ class MovimientosInvController extends ControladorBase{
 	    }
 	}
 	
+	/***
+	 * mod: salidas
+	 * title: generarptsalida
+	 * return: void::pdf
+	 */
+	public function generaRptSalidas(){
+	    
+	       
+	    require dirname(__FILE__).'\..\view\fpdf\pdfInventario.php';	
+	    
+	    $pdf = new pdf();
+	    $pdf->AddPage('P','A4');
+	    $pdf->setFont('Arial','B',14);
+	    $pdf->Cell(0,5,'Listado de salidas Aprobadas',1);
+	    $pdf->SetAutoPageBreak(true, 20);
+	    
+	    $pdf->AddPage('P','A4');
+	    
+	    
+	    $pdf->Output();
+	}
+	
+	
 }
+
+
+
 ?>

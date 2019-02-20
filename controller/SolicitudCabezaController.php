@@ -311,7 +311,7 @@ class SolicitudCabezaController extends ControladorBase{
 	            
 	            $html.='<div class="pull-left" style="margin-left:11px;">';
 	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query_temp_solicitud" name="total_query"/>' ;
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:180px; overflow-y:scroll;">';

@@ -349,7 +349,7 @@
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php foreach($resEstado as $res) {?>
-    										<option value="<?php echo $res->id_esatdo; ?>" ><?php echo $res->nombre_estado; ?> </option>
+    										<option value="<?php echo $res->id_estado; ?>" ><?php echo $res->nombre_estado; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_estados" class="errores"></div>

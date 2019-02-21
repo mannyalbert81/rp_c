@@ -531,6 +531,18 @@ class UsuariosController extends ControladorBase{
 		        $imagen_usuarios = pg_escape_bytea($data);
 		    }
 		    
+		    //para fecha de insersion clave
+		    $clave_fecha_hoy = date("Y-m-d");		    
+		    $clave_fecha_siguiente_mes = null;
+		    
+		    $_clave_caduca="0";
+		    
+		    if((int)$_caduca_clave ==1 || $_caduca_clave=="on"){
+		        
+		        $_clave_caduca="1";
+		        $clave_fecha_siguiente_mes = date("Y-m-d",strtotime($clave_fecha_hoy."+ 1 month"));
+		    }
+		    
 		    if($_id_usuarios>0){
 		        //para actualizacion de usuarios
 		        
@@ -538,8 +550,34 @@ class UsuariosController extends ControladorBase{
 		    }else{
 		        //para insertado de usuarios
 		        
+		        $funcion = "ins_usuarios";
+		        $parametros = "'$_cedula_usuarios',
+		    				   '$_nombre_usuarios',
+                               '$_apellidos_usuario',
+                               '$_correo_usuarios',
+                               '$_celular_usuarios',
+		    	               '$_telefono_usuarios',
+		    	               '$_fecha_nacimiento_usuarios',
+		    	               '$_usuario_usuarios',
+		    	               '$_id_estado',
+		    	               '$imagen_usuarios',
+                               '$_id_rol_principal',
+                               '$_clave_usuarios',
+                               '$_clave_n_usuarios',
+                               '$clave_fecha_hoy',
+                               '$clave_fecha_siguiente_mes',
+                               '$_clave_caduca'";
+		        $usuarios->setFuncion($funcion);
+		        $usuarios->setParametros($parametros);
+		        
+		        $resultado=$usuarios->llamafuncion();
+		        
+		        print_r($resultado);
+		        
+		        
 		    }
 		    
+		    die();
 		    
 		   
 		    if($_id_usuarios > 0){

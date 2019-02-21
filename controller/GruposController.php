@@ -214,7 +214,7 @@ class GruposController extends ControladorBase{
                       grupos.creado, 
                       grupos.modificado";
 	    
-	    $tablas = "public.grupos INNER JOIN public.estado ON estado.nombre_estado='ACTIVO' AND estado.tabla_estado ='GRUPOS' 
+	    $tablas = "public.grupos INNER JOIN public.estado ON estado.id_estado = grupos.id_estado AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado ='GRUPOS' 
                     ";
 	    
 	    
@@ -361,7 +361,8 @@ class GruposController extends ControladorBase{
                       grupos.creado,
                       grupos.modificado";
 	    
-	    $tablas = "public.grupos INNER JOIN public.estado ON estado.nombre_estado='INACTIVO' AND estado.tabla_estado ='GRUPOS'
+	    $tablas = "public.grupos INNER JOIN public.estado ON estado.id_estado=grupos.id_estado
+                   AND estado.nombre_estado='INACTIVO' AND estado.tabla_estado ='GRUPOS'
                     ";
 	    
 	    
@@ -409,8 +410,6 @@ class GruposController extends ControladorBase{
 	        $resultSet=$usuarios->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
 	        $count_query   = $cantidadResult;
 	        $total_pages = ceil($cantidadResult/$per_page);
-	        
-	        
 	        
 	        
 	        

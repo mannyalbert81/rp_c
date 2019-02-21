@@ -177,9 +177,9 @@ class GruposController extends ControladorBase{
 	        {
 	            $id_grupos=(int)$_GET["id_grupos"];
 	            
-	            $grupos->UpdateBy("id_estado=2","grupos","id_grupos='$id_grupos'");
 	            
-	          
+	            
+	            $grupos->deleteBy(" id_grupos",$id_grupos);
 	            
 	        }
 	        
@@ -190,7 +190,7 @@ class GruposController extends ControladorBase{
 	    else
 	    {
 	        $this->view_Inventario("Error",array(
-	            "resultado"=>"No tiene Permisos de Borrar Roles"
+	            "resultado"=>"No tiene Permisos de Borrar Bodegas"
 	            
 	        ));
 	    }
@@ -350,18 +350,19 @@ class GruposController extends ControladorBase{
 	    $id_rol=$_SESSION["id_rol"];
 	    
 	    $usuarios = new UsuariosModel();
+	    
 	    $estado = null; $estado = new EstadoModel();
 	    $where_to="";
-	    $columnas = " grupos.id_grupos, 
-                      grupos.nombre_grupos, 
-                      estado.id_estado, 
-                      estado.nombre_estado, 
-                      estado.tabla_estado, 
-                      grupos.creado, 
+	    $columnas = " grupos.id_grupos,
+                      grupos.nombre_grupos,
+                      estado.id_estado,
+                      estado.nombre_estado,
+                      estado.tabla_estado,
+                      grupos.creado,
                       grupos.modificado";
 	    
-	    $tablas = "public.grupos INNER JOIN public.estado ON estado.nombre_estado='INACTIVO' AND estado.tabla_estado ='grupos'
-                    AND estado.nombre_estado = 'id_estado'";
+	    $tablas = "public.grupos INNER JOIN public.estado ON estado.nombre_estado='INACTIVO' AND estado.tabla_estado ='GRUPOS'
+                    ";
 	    
 	    
 	    $where    = " 1=1";
@@ -376,7 +377,7 @@ class GruposController extends ControladorBase{
 	    if($action == 'ajax')
 	    {
 	        //estado_usuario
-	        $whereestado = "tabla_estado='grupos' AND nombre_estado ='id_estado'";
+	        $whereestado = "tabla_estado='GRUPOS'";
 	        $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
 	        
 	        
@@ -422,7 +423,7 @@ class GruposController extends ControladorBase{
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_grupos_inactivos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tabla_grupos_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -432,7 +433,8 @@ class GruposController extends ControladorBase{
 	            if($id_rol==1){
 	                
 	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                 
+	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	                
 	            }
 	            
 	            $html.='</tr>';
@@ -448,19 +450,15 @@ class GruposController extends ControladorBase{
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
 	                
-	                if(!empty($resultEstado)){
-	                    foreach ($resultEstado as $r_estado){
-	                        if($r_estado->tabla_estado == $res->GRUPOS ){
-	                            $html.='<td style="font-size: 11px;">'.$r_estado->nombre_estado.'</td>';
-	                        }
-	                    }
-	                }
+	                
 	                
 	                if($id_rol==1){
 	                    
 	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=index&id_grupos='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-	                   
+	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=borrarId&id_grupos='.$res->id_grupos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
+	                    
 	                }
 	                
 	                $html.='</tr>';
@@ -472,7 +470,7 @@ class GruposController extends ControladorBase{
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_grupos_inactivos("index.php", $page, $total_pages, $adjacents).'';
+	            $html.=''. $this->paginate_grupos_activos("index.php", $page, $total_pages, $adjacents).'';
 	            $html.='</div>';
 	            
 	            

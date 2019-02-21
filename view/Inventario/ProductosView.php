@@ -4,17 +4,15 @@
     
 	<html lang="es">
     <head>
-        
+    <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
+    <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   
     <?php include("view/modulos/links_css.php"); ?>		
-      
-    
-	
-    
+
 	</head>
  
     <body class="hold-transition skin-blue fixed sidebar-mini">
@@ -146,8 +144,7 @@
 		   		   										  <div id="mensaje_id_unidad_medida" class="errores"></div>
                                     </div>
                                     </div>
-                        		    
-                        		    
+      
                         		<div class="col-lg-3 col-xs-12 col-md-3">
                     		    <div class="form-group">
                                                       <label for="ult_precio_productos" class="control-label">ULT Precio</label>
@@ -156,10 +153,6 @@
                                                       <div id="mensaje_ult_precio_productos" class="errores"></div>
                                 </div>
                                 </div>
-                        		    
-                        	
-                    	
-                    	
                     	
                         		    </div>
                     			
@@ -236,11 +229,7 @@
 		   		   										   <div id="mensaje_id_unidad_medida" class="errores"></div>
                                     </div>
                                     </div>
-                        		    
-           
-									
-									
- 								<div class="col-lg-3 col-xs-12 col-md-3">
+								<div class="col-lg-3 col-xs-12 col-md-3">
                     		    <div class="form-group">
                                                       <label for="ult_precio_productos" class="control-label">ULT Precio</label>
                                                       <input type="text" class="form-control cantidades1" id="ult_precio_productos" name="ult_precio_productos" value='0.00' 
@@ -248,15 +237,9 @@
                                                       <div id="mensaje_ult_precio_productos" class="errores"></div>
                                 </div>
                                 </div>
-									
-									
-									
-									
+	
 									</div>
-                		    
-                    	
-                    			
-                                 	                     	           	
+                    	           	
                     		     <?php } ?>
                     		    <br>  
                     		    <div class="row">
@@ -276,9 +259,7 @@
       </div>
     </section>
     
-    
-    
-     <section class="content">
+ <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Listado de Productos Registrados</h3>
@@ -369,214 +350,11 @@
 	
 	
     
-           <script>
-           // Campos Vacíos
-		    // cada vez que se cambia el valor del combo
-		    $(document).ready(function(){
-
-		    	var fecha = "<?php echo $DateString?>";
-
-			$("#btExportar").click(function()
-					{
-				
-				
-				var table = $('#podructtable').DataTable();
-
-				var arreglo_completo = table.rows( {order:'index', search:'applied'} ).data();
-							
-				var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"; 
-				docdescarga+="Grupos\tCodigo\tMarca\tNombre\tDescripcion\tUnidad_de_M\tULT_Precio\n";
-				var len = arreglo_completo.length;
-				for (var i = 0; i < len; i++) {
-					for(var j=1; j<8; j++)
-					{
-						
-						if(j==7)
-						{
-						docdescarga+=arreglo_completo[i][j].replace(".", ",");
-							}
-						else
-						{docdescarga+=arreglo_completo[i][j];}
-						if (j!=7)
-						{	
-						docdescarga+="\t";
-						}
-					}	
-					
-					docdescarga+="\n"; 
-				}
-
-				//console.log(docdescarga);
-
-				var encodeUri = encodeURI(docdescarga);
-				console.log(encodeUri);
-				var link = document.createElement("a");
-				link.setAttribute("href", encodeUri);
-				var nombre_de_arch = "Reporte Productos Registrados"+fecha+".xls";
-				link.setAttribute("download", nombre_de_arch);
-				document.body.appendChild(link); // Required for FF
-
-				link.click();
-
-				
-				
-			
-				
-			    
-		
-			
-				
-				});
-		    
-		    $("#Guardar").click(function() 
-			{
-		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
-
-		    	var id_grupos = $("#id_grupos").val();
-		    	var codigo_productos = $("#codigo_productos").val();
-		    	var marca_productos = $("#marca_productos").val();
-		    	var nombre_productos = $("#nombre_productos").val();
-		    	var descripcion_productos = $("#descripcion_productos").val();
-		    	var id_unidad_medida = $("#id_unidad_medida").val();
-		    	var ult_precio_productos = $("#ult_precio_productos").val();
-		    	
-		    	
-		    	
-		    	if (id_grupos == 0)
-		    	{
-			    	
-		    		$("#mensaje_id_grupos").text("Introduzca Un Grupo");
-		    		$("#mensaje_id_grupos").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_grupos").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (codigo_productos == "")
-		    	{
-			    	
-		    		$("#mensaje_codigo_productos").text("Introduzca Un Código");
-		    		$("#mensaje_codigo_productos").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_codigo_productos").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (marca_productos == "")
-		    	{
-			    	
-		    		$("#mensaje_marca_productos").text("Introduzca Una Marca");
-		    		$("#mensaje_marca_productos").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_marca_productos").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (nombre_productos == "")
-		    	{
-			    	
-		    		$("#mensaje_nombre_productos").text("Introduzca Un Nombre");
-		    		$("#mensaje_nombre_productos").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_nombre_productos").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (descripcion_productos == "")
-		    	{
-			    	
-		    		$("#mensaje_descripcion_productos").text("Introduzca Una Descripcion");
-		    		$("#mensaje_descripcion_productos").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_descripcion_productos").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (id_unidad_medida == 0)
-		    	{
-			    	
-		    		$("#mensaje_id_unidad_medida").text("Introduzca Una Unidad de Medida");
-		    		$("#mensaje_id_unidad_medida").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_id_unidad_medida").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (ult_precio_productos == 0.00)
-		    	{
-			    	
-		    		$("#mensaje_ult_precio_productos").text("Introduzca Un Ultimo Precio");
-		    		$("#mensaje_ult_precio_productos").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_ult_precio_productos").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	
-				
-
-
-		    	
-			}); 
-
-
-		        $( "#id_grupos" ).focus(function() {
-				  $("#mensaje_id_grupos").fadeOut("slow");
-			    });
-
-		        $( "#codigo_productos" ).focus(function() {
-					  $("#mensaje_codigo_productos").fadeOut("slow");
-				    });
-		        $( "#marca_productos" ).focus(function() {
-					  $("#mensaje_marca_productos").fadeOut("slow");
-				    });
-		        $( "#nombre_productos" ).focus(function() {
-					  $("#mensaje_nombre_productos").fadeOut("slow");
-				    });
-		        $( "#descripcion_productos" ).focus(function() {
-					  $("#mensaje_descripcion_productos").fadeOut("slow");
-				    });
-		        $( "#id_unidad_medida" ).focus(function() {
-					  $("#mensaje_id_unidad_medida").fadeOut("slow");
-				    });
-		        $( "#ult_precio_productos" ).focus(function() {
-					  $("#mensaje_ult_precio_productos").fadeOut("slow");
-				    });
-		        		      
-				    
-		}); 
-
-	</script>	
+           
 	
 	
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-       <script>
-      $(document).ready(function(){
-      $(".cantidades1").inputmask();
-      });
-	  </script>
+    <script src="view/Contable/FuncionesJS/Productos.js?1"></script>  
 	
 	
   </body>

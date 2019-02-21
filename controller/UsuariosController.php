@@ -397,15 +397,12 @@ class UsuariosController extends ControladorBase{
 		if (!empty($resultPer))
 		{
 		    $resultEdit = "";
-		    $result_catalogo_usuario=null;
-		    $resultRolPrincipal = array();
-		    $result_privilegios = array();
 		    
-		    $catalogo=null;
-		    $catalogo = new CatalogoModel();
-		    //para estados de catalogo de usuarios
-		    $whe_catalogo = "tabla_catalogo = 'usuarios' AND columna_catalogo = 'estado_usuarios'";
-		    $result_catalogo_usuario = $catalogo->getBy($whe_catalogo);
+		    $resultRolPrincipal = array();		    
+		    $resEstado = array();
+		    
+		    $resEstado = $usuarios->getCondiciones('*','estado',"tabla_estado='USUARIOS'",'id_estado');
+		   
 		
 				if (isset ($_GET["id_usuarios"])   )
 				{
@@ -459,9 +456,8 @@ class UsuariosController extends ControladorBase{
 			    
 				
 				$this->view_Administracion("Usuarios",array(
-				    "resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit ,
-				    "result_catalogo_usuario"=>$result_catalogo_usuario,
-				    "result_privilegios"=>$result_privilegios
+				    "resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit,
+				    "resEstado"=>$resEstado
 			
 				));
 			
@@ -491,19 +487,19 @@ class UsuariosController extends ControladorBase{
 		session_start();
 		$resultado = null;
 		$usuarios=new UsuariosModel();
-		$_array_roles=array();
+		$_array_roles=array();	
 		
-		/*para la consulta de catalogos*/
-		$catalogo = null; $catalogo=new CatalogoModel();
-		$privilegios = null; $privilegios=new PrivilegiosModel();
-		$claves = null; $claves = new ClavesModel();
 		
+		/*para la consulta de catalogos*/		
+		$claves = null; $claves = new ClavesModel();		
 		
 		if (isset(  $_SESSION['nombre_usuarios']) )
 		{
+		    
 	
 		if (isset ($_POST["cedula_usuarios"]))
 		{
+		   
 			$_cedula_usuarios     = $_POST["cedula_usuarios"];
 			$_nombre_usuarios     = $_POST["nombre_usuarios"];
 			$_apellidos_usuario     = $_POST["apellidos_usuarios"];
@@ -522,6 +518,90 @@ class UsuariosController extends ControladorBase{
 		    $_caduca_clave        = isset($_POST['caduca_clave'])?$_POST['caduca_clave']:"0";
 		    $_cambiar_clave       = isset($_POST['cambiar_clave'])?$_POST['cambiar_clave']:"0";
 		    
+		    
+		    //para la imagen del usuario
+		    $imagen_usuarios='';
+		    
+		    		    
+		    if ($_FILES['fotografia_usuarios']['tmp_name']!="")
+		    {
+		        $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/fotografias_usuarios/';
+		        
+		        $nombre = $_FILES['fotografia_usuarios']['name'];
+		        $tipo = $_FILES['fotografia_usuarios']['type'];
+		        $tamano = $_FILES['fotografia_usuarios']['size'];
+		        
+		        move_uploaded_file($_FILES['fotografia_usuarios']['tmp_name'],$directorio.$nombre);
+		        $data = file_get_contents($directorio.$nombre);
+		        $imagen_usuarios = pg_escape_bytea($data);
+		        		        
+		    }
+		    
+		    
+		    
+		    //para fecha de insersion clave
+		    $clave_fecha_hoy = date("Y-m-d");		    
+		    $clave_fecha_siguiente_mes = null;
+		    
+		    $_clave_caduca="0";
+		    
+		    if((int)$_caduca_clave ==1 || $_caduca_clave=="on"){
+		        
+		        $_clave_caduca="1";
+		        $clave_fecha_siguiente_mes = date("Y-m-d",strtotime($clave_fecha_hoy."+ 1 month"));
+		    }
+		    
+		    if($_id_usuarios>0){
+		        //para actualizacion de usuarios
+		        
+		        
+		    }else{
+		        //para insertado de usuarios
+		        
+		        $funcion = "ins_usuarios";
+		        $parametros = "'$_cedula_usuarios',
+		    				   '$_nombre_usuarios',
+                               '$_apellidos_usuario',
+                               '$_correo_usuarios',
+                               '$_celular_usuarios',
+		    	               '$_telefono_usuarios',
+		    	               '$_fecha_nacimiento_usuarios',
+		    	               '$_usuario_usuarios',
+		    	               '$_id_estado',
+		    	               '$imagen_usuarios',
+                               '$_id_rol_principal',
+                               '$_clave_usuarios',
+                               '$_clave_n_usuarios',
+                               '$clave_fecha_hoy',
+                               '$clave_fecha_siguiente_mes',
+                               '$_clave_caduca'";
+		        $usuarios->setFuncion($funcion);
+		        $usuarios->setParametros($parametros);
+		        
+		        $resultado=$usuarios->llamafuncion();
+		        
+		        $respuesta = '';
+		        
+		        if(!empty($resultado) && count($resultado)){
+		            
+		            foreach ($resultado[0] as $k => $v)
+		            {
+		                $respuesta=$v;
+		            }
+		            
+		            if (strpos($respuesta, 'OK') !== false) {
+		               
+		                echo json_encode(array('success'=>1,'mensaje'=>$respuesta));
+		            }
+		            
+		        }
+		            
+		        
+		    }
+		    
+		    die();
+		    
+		   
 		    if($_id_usuarios > 0){
 		    	
 		    	
@@ -1875,9 +1955,9 @@ class UsuariosController extends ControladorBase{
 					  usuarios.telefono_usuarios,
 					  usuarios.celular_usuarios,
 					  usuarios.correo_usuarios,
+                      usuarios.id_estado,
 					  rol.id_rol,
 					  rol.nombre_rol,
-					  usuarios.estado_usuarios,
 					  usuarios.fotografia_usuarios,
 					  usuarios.creado,
                       estado.nombre_estado";
@@ -1917,6 +1997,7 @@ class UsuariosController extends ControladorBase{
 	        $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
 	        $cantidadResult=(int)$resultSet[0]->total;
 	        
+	       
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 	        
 	        $per_page = 10; //la cantidad de registros que desea mostrar
@@ -1929,10 +2010,7 @@ class UsuariosController extends ControladorBase{
 	        $count_query   = $cantidadResult;
 	        $total_pages = ceil($cantidadResult/$per_page);
 	        
-	        
-	        
-	        
-	        
+	       	        
 	        if($cantidadResult>0)
 	        {
 	            
@@ -2007,7 +2085,7 @@ class UsuariosController extends ControladorBase{
 	            
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
@@ -2042,7 +2120,6 @@ class UsuariosController extends ControladorBase{
 					  usuarios.correo_usuarios,
 					  rol.id_rol,
 					  rol.nombre_rol,
-					  usuarios.estado_usuarios,
 					  usuarios.fotografia_usuarios,
 					  usuarios.creado,
                       estado.nombre_estado";
@@ -2165,7 +2242,7 @@ class UsuariosController extends ControladorBase{
 	            
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
@@ -2424,6 +2501,87 @@ class UsuariosController extends ControladorBase{
 				"resultSet"=>""
 		));
 	
+	}
+	
+	public function Exportar_usuariosExcel()
+	{
+	    session_start();
+	    $id_rol=$_SESSION["id_rol"];
+	    $usuario_actual =$_POST['users'];
+	    
+	    $usuarios = new UsuariosModel();
+	    $catalogo = null; $catalogo = new CatalogoModel();
+	    $where_to="";
+	    $columnas = " usuarios.id_usuarios,
+					  usuarios.cedula_usuarios,
+					  usuarios.nombre_usuarios,
+                      usuarios.apellidos_usuarios,
+					  claves.clave_claves,
+					  claves.clave_n_claves,
+					  usuarios.telefono_usuarios,
+					  usuarios.celular_usuarios,
+					  usuarios.correo_usuarios,
+                      usuarios.id_estado,
+					  rol.id_rol,
+					  rol.nombre_rol,
+					  usuarios.fotografia_usuarios,
+					  usuarios.creado,
+                      estado.nombre_estado";
+	    
+	    $tablas = "public.usuarios
+            INNER JOIN public.claves ON claves.id_usuarios = usuarios.id_usuarios
+            LEFT JOIN public.rol ON rol.id_rol = usuarios.id_rol
+            INNER JOIN public.estado ON estado.id_estado = usuarios.id_estado";
+	    
+	    if ($usuario_actual == 'activos')
+	    {
+	        $where    = "estado.nombre_estado = 'ACTIVO'";
+	    }
+	    else
+	    {
+	        $where    = "estado.nombre_estado = 'INACTIVO'";
+	    }
+	    
+	    $id       = "usuarios.id_usuarios";
+	    
+	    
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1=" AND (usuarios.cedula_usuarios LIKE '".$search."%' OR usuarios.nombre_usuarios LIKE '".$search."%' OR usuarios.correo_usuarios LIKE '".$search."%' OR rol.nombre_rol LIKE '".$search."%' )";
+	            
+	            $where_to=$where.$where1;
+	        }else{
+	            
+	            $where_to=$where;
+	            
+	        }
+	        
+	        
+	        $resultSet=$usuarios->getCondiciones($columnas, $tablas, $where_to, $id);
+	        $_respuesta=array();
+	        
+	        array_push($_respuesta, 'Cédula', 'Nombre', 'Teléfono','Celular','Correo','Rol','Estado');
+	        
+	        if(!empty($resultSet)){
+	            
+	            foreach ($resultSet as $res){
+	                
+	                array_push($_respuesta, $res->cedula_usuarios, $res->nombre_usuarios, $res->telefono_usuarios,
+	                    $res->celular_usuarios,$res->correo_usuarios,$res->nombre_rol,$res->nombre_estado);
+	            }
+	            echo json_encode($_respuesta);
+	        }
+	    }
+	    
 	}
 	
 	

@@ -220,7 +220,151 @@ class ActivosFijosController extends ControladorBase{
         
     }
     
+    public function generarReporteID()
+    {
+        session_start();
+        
+        $activosf=new ActivosFijosModel();
+        /*$oficina=new OficinaModel();        
+        $tipoactivos=new TipoActivosModel();
+        $estado=new EstadoModel();
+        $usuarios=new UsuariosModel();*/
+        
+        $html="";
+        
+        $fechaactual = getdate();
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        
+        $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
+        $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
+        $domLogo=$directorio.'/view/images/logo.png';
+        $logo = '<img src="'.$domLogo.'" alt="Responsive image" width="130" height="70">';
+        
+        if (isset(  $_SESSION['nombre_usuarios']) )
+        {
+            
+            $nombre_controladores = "ActivosFijos";
+            $id_rol= $_SESSION['id_rol'];
+            $resultPer = $activosf->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+            
+            if (!empty($resultPer))
+            {
+                if (isset ($_GET["id_activos_fijos"])   )
+                {
+                    $_id_activos_fijos = $_GET["id_activos_fijos"];
+                    $columnas = "
+                                      activos_fijos.id_activos_fijos,
+                                      oficina.id_oficina,
+                                      oficina.nombre_oficina,
+                                      tipo_activos_fijos.id_tipo_activos_fijos,
+                                      tipo_activos_fijos.nombre_tipo_activos_fijos,
+                                      estado.id_estado,
+                                      estado.nombre_estado,
+                                      usuarios.id_usuarios,
+                                      usuarios.nombre_usuarios,
+                                      activos_fijos.nombre_activos_fijos,
+                                      activos_fijos.codigo_activos_fijos,
+                                      activos_fijos.fecha_compra_activos_fijos,
+                                      activos_fijos.cantidad_activos_fijos,
+                                      activos_fijos.valor_activos_fijos,
+                                      activos_fijos.meses_depreciacion_activos_fijos,
+                                      activos_fijos.depreciacion_mensual_activos_fijos,
+                                      activos_fijos.creado,
+                                      activos_fijos.modificado
+                        
+                                    ";
+                    
+                    $tablas   = " public.activos_fijos,
+                                      public.oficina,
+                                      public.tipo_activos_fijos,
+                                      public.estado,
+                                      public.usuarios";
+                    $where    = " oficina.id_oficina = activos_fijos.id_oficina AND
+                                      tipo_activos_fijos.id_tipo_activos_fijos = activos_fijos.id_tipo_activos_fijos AND
+                                      estado.id_estado = activos_fijos.id_estado AND
+                                      usuarios.id_usuarios = activos_fijos.id_usuarios
+                                      AND activos_fijos.id_activos_fijos = '$_id_activos_fijos'";
+                    $id       = "activos_fijos.id_activos_fijos";
+                    
+                    $resultRep = $activosf->getCondiciones($columnas ,$tablas ,$where, $id);
+                    
+                    $html.= "<table align='center' style='width: 100%; border:1px black' border=1 cellspacing=0>";
+                    $html.= "<tr>";
+                    $html.='<th  style="text-align: center; font-size: 25px; ">CAPREMCI</br>';
+                    $html.='<p style="text-align: center; font-size: 13px; "> Av. Baquerico Moreno E-9781 y Leonidas Plaza';
+                    $html.='</tr>';
+                    $html.='</table>';                    
+                    
+                    
+                    if(!empty($resultRep)){
+                        
+                        foreach ($resultRep as $res)
+                        {
+                
+                            
+                            
+                       
+                        $html.='<table align="center" style="width: 100%; border:1px black solid;margin-top:10px">';
+                        $html.='<tr>';
+                        $html.='<td colspan="8">&nbsp;</td>';
+                        $html.='</tr>';
+                        $html.='<tr>';
+                        $html.='<td colspan="2" style="text-align: left; font-size: 16px; "><b>Oficina:</b> '.$res->nombre_oficina.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><b>Tipo de Activo:</b> '.$res->nombre_tipo_activos_fijos.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><b>Estado:</b> '.$res->nombre_estado.'</td>';
+                        $html.='</tr>';
+                        $html.='<tr>';
+                        $html.='<td colspan="2" style="text-align: left; font-size: 16px; "><br><b>Usuario:</b> '.$res->nombre_usuarios.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Código:</b> '.$res->codigo_activos_fijos.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Nombre:</b> '.$res->nombre_activos_fijos.'</td>';
+                        $html.='</tr>';
+                        $html.='<tr>';
+                        $html.='<td colspan="2" style="text-align: left; font-size: 16px; "><br><b>Fecha:</b> '.$res->fecha_compra_activos_fijos.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Cantidad de activos:</b> '.$res->cantidad_activos_fijos.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Valor activos:</b> '.$res->valor_activos_fijos.'</td>';
+                        $html.='</tr>';
+                        $html.='<tr>';
+                        $html.='<td colspan="5" style="text-align: left; font-size: 16px; "><br><b>Meses de depreciación:</b>'.$res->meses_depreciacion_activos_fijos.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Depreciación:</b> '.$res->depreciacion_mensual_activos_fijos.'</p>'.'</td>';
+                        $html.='<tr>';
+                        $html.='<td colspan="8">&nbsp;</td>';
+                        $html.='</tr>';
+                        $html.='</tr>';
+                       
     
+                    }
+                    $html.='</table>';
+                    }
+                    
+                    
+                    
+                    $this->report("ActivosFijos",array( "resultSet"=>$html));
+                    die();
+                    
+                }
+                    
+                    
+                    
+                }    
+            }
+            else
+            {
+                $this->view_Contable("Error",array(
+                    "resultado"=>"No tiene Permisos de Acceso a Bodegas"
+                    
+                ));
+                
+                exit();
+            }
+            
+        }
+        
+        
+        
+        
+
     
     
     
@@ -256,6 +400,90 @@ class ActivosFijosController extends ControladorBase{
                 
             ));
         }
+        
+    }
+    
+    public function exportar_activos_fijos(){
+        
+        
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        
+        $usuarios = new UsuariosModel();
+        $catalogo = new CatalogoModel();
+        $where_to="";
+        $columnas = "
+                      activos_fijos.id_activos_fijos,
+                      oficina.id_oficina,
+                      oficina.nombre_oficina,
+                      tipo_activos_fijos.id_tipo_activos_fijos,
+                      tipo_activos_fijos.nombre_tipo_activos_fijos,
+                      estado.id_estado,
+                      estado.nombre_estado,
+                      usuarios.id_usuarios,
+                      usuarios.nombre_usuarios,
+                      activos_fijos.nombre_activos_fijos,
+                      activos_fijos.codigo_activos_fijos,
+                      activos_fijos.fecha_compra_activos_fijos,
+                      activos_fijos.cantidad_activos_fijos,
+                      activos_fijos.valor_activos_fijos,
+                      activos_fijos.meses_depreciacion_activos_fijos,
+                      activos_fijos.depreciacion_mensual_activos_fijos,
+                      activos_fijos.creado,
+                      activos_fijos.modificado";
+        $tablas   = "
+                      public.activos_fijos,
+                      public.oficina,
+                      public.tipo_activos_fijos,
+                      public.estado,
+                      public.usuarios
+                    ";
+        $where    = " oficina.id_oficina = activos_fijos.id_oficina AND
+                      tipo_activos_fijos.id_tipo_activos_fijos = activos_fijos.id_tipo_activos_fijos AND
+                      estado.id_estado = activos_fijos.id_estado AND
+                      usuarios.id_usuarios = activos_fijos.id_usuarios
+                      ";
+        $id       = "activos_fijos.id_activos_fijos";
+        
+        
+        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        
+        if($action == 'ajax')
+        {
+            
+            if(!empty($search)){
+                
+                
+                $where1=" AND (activos_fijos.nombre_activos_fijos LIKE '".$search."%' )";
+                
+                $where_to=$where.$where1;
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            $resultSet=$usuarios->getCondiciones($columnas, $tablas, $where_to, $id);
+            $_respuesta=array();
+            
+            array_push($_respuesta, 'Oficina', 'Tipo de Activo', 'Estado','Usuario','Código','Nombre','Fecha','Cantidad de activos',
+                'Valor activos','Meses de depreciación','Depreciación');
+            foreach ($resultSet as $res)
+                {
+                    array_push($_respuesta, $res->nombre_oficina,$res->nombre_tipo_activos_fijos,$res->nombre_estado,$res->nombre_usuarios,
+                        $res->codigo_activos_fijos,$res->nombre_activos_fijos,$res->fecha_compra_activos_fijos,$res->cantidad_activos_fijos,
+                        $res->valor_activos_fijos,$res->meses_depreciacion_activos_fijos,$res->depreciacion_mensual_activos_fijos);
+                }
+            
+            
+                echo json_encode($_respuesta);
+            die();
+            
+        }
+        
+        
+        
         
     }
     
@@ -405,6 +633,7 @@ class ActivosFijosController extends ControladorBase{
                         
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=index&id_activos_fijos='.$res->id_activos_fijos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=borrarId&id_activos_fijos='.$res->id_activos_fijos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=generarReporteID&id_activos_fijos='.$res->id_activos_fijos.'" class="btn btn-primary" style="font-size:65%;" target = "blank"><i class="fa fa-file-pdf-o"></i></a></span></td>';
                         
                     }
                     

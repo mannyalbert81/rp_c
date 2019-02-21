@@ -1,6 +1,9 @@
     <!DOCTYPE HTML>
 	<html lang="es">
     <head>
+    
+    <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
+    <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>
         
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -369,28 +372,26 @@
             
             <div class="col-md-5 col-lg-12 col-xs-5">
             <div class="tab-content">
+            
             <br>
               <div class="tab-pane active" id="activos">
+              
                 
 					<div class="pull-right" style="margin-right:15px;">
 						<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="load_activos_fijos(1)" placeholder="search.."/>
+						
 					</div>
-					<div id="load_activos_fijos" ></div>	
+					<div id="load_activos_fijos" ></div>
 					<div id="activos_fijos_registrados"></div>	
-                
-              </div>
-              
-             
-             
-             
-            </div>
+                <button type="button" id="exportar" name="exportar" value="Exportar"   class="btn btn-primary" ><i class="fa fa-file-excel-o"></i></button>
+               </div>
+    		 </div>
             </div>
           </div>
-         
-            
             </div>
             </div>
             </section>
+            
     
      
     
@@ -423,6 +424,57 @@
         		   
         		   
 	   			});
+				$("#exportar").click( function (){
+					get_data_for_xls();
+	   			});
+
+   		function get_data_for_xls()
+   		{
+   		var search=$("#search_activos").val();
+   		var con_datos={
+				  action:'ajax'
+				  };
+   	 	 $.ajax({
+          url: 'index.php?controller=ActivosFijos&action=exportar_activos_fijos&search='+search,
+          type: 'POST',
+          data: con_datos,
+          success: function(data){
+        	  var array = JSON.parse(data);
+			  var newArr = [];
+			  while(array.length) newArr.push(array.splice(0,11));
+			   for (var i=1; i<newArr.length; i++)
+				   {
+				   newArr[i][8]=parseFloat(newArr[i][8]);
+				   newArr[i][10]=parseFloat(newArr[i][10]);
+				   newArr[i][9]=parseInt(newArr[i][9]);
+				   newArr[i][7]=parseInt(newArr[i][7]);
+				   }
+               var dt = new Date();
+			   var m=dt.getMonth();
+			   m+=1;
+			   var y=dt.getFullYear();
+			   var d=dt.getDate();
+			   var fecha=d.toString()+"/"+m.toString()+"/"+y.toString();
+			   var wb =XLSX.utils.book_new();
+			   wb.SheetNames.push("Reporte Activos Fijos");
+			   var ws = XLSX.utils.aoa_to_sheet(newArr);
+			   wb.Sheets["Reporte Activos Fijos"] = ws;
+			   var wbout = XLSX.write(wb,{bookType:'xlsx', type:'binary'});
+			   function s2ab(s) { 
+	                var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+	                var view = new Uint8Array(buf);  //create uint8array as viewer
+	                for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+	                return buf;    
+			   }
+		       saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'ReporteActivosFijos'+fecha+'.xlsx');                      
+          },
+         error: function(jqXHR,estado,error){
+           alert("Ocurrio un error al cargar la informacion de Bodegas Activos..."+estado+"    "+error);
+         }
+       });
+		  
+   		
+   	   	}		
 
         	
 

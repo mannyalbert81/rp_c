@@ -4,7 +4,8 @@
     
 	<html lang="es">
     <head>
-        
+    <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
+    <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
@@ -378,54 +379,40 @@
 
 			$("#btExportar").click(function()
 					{
-				
-				
+
 				var table = $('#podructtable').DataTable();
 
 				var arreglo_completo = table.rows( {order:'index', search:'applied'} ).data();
-							
-				var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"; 
-				docdescarga+="Grupos\tCodigo\tMarca\tNombre\tDescripcion\tUnidad_de_M\tULT_Precio\n";
+				
+				var arrayHead=["","Grupos","Codigo","Marca","Nombre","Descripcion","Unidad_de_M","ULT_Precio","",""];
+				arreglo_completo.unshift(arrayHead);
 				var len = arreglo_completo.length;
-				for (var i = 0; i < len; i++) {
-					for(var j=1; j<8; j++)
-					{
-						
-						if(j==7)
-						{
-						docdescarga+=arreglo_completo[i][j].replace(".", ",");
-							}
-						else
-						{docdescarga+=arreglo_completo[i][j];}
-						if (j!=7)
-						{	
-						docdescarga+="\t";
-						}
-					}	
+				
+				for (var i = 1; i < len; i++) {
 					
-					docdescarga+="\n"; 
-				}
-
-				//console.log(docdescarga);
-
-				var encodeUri = encodeURI(docdescarga);
-				console.log(encodeUri);
-				var link = document.createElement("a");
-				link.setAttribute("href", encodeUri);
-				var nombre_de_arch = "Reporte Productos Registrados"+fecha+".xls";
-				link.setAttribute("download", nombre_de_arch);
-				document.body.appendChild(link); // Required for FF
-
-				link.click();
-
-				
-				
-			
-				
-			    
-		
-			
-				
+					
+					arreglo_completo[i][7]=parseFloat(arreglo_completo[i][7]);
+					arreglo_completo[i][8]="";
+					arreglo_completo[i][9]="";
+						}
+				   var dt = new Date();
+				   var m=dt.getMonth();
+				   m+=1;
+				   var y=dt.getFullYear();
+				   var d=dt.getDate();
+				   var fecha=d.toString()+"/"+m.toString()+"/"+y.toString();
+				   var wb =XLSX.utils.book_new();
+				   wb.SheetNames.push("Reporte Productos");
+				   var ws = XLSX.utils.aoa_to_sheet(arreglo_completo);
+				   wb.Sheets["Reporte Productos"] = ws;
+				   var wbout = XLSX.write(wb,{bookType:'xlsx', type:'binary'});
+				   function s2ab(s) { 
+		                var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+		                var view = new Uint8Array(buf);  //create uint8array as viewer
+		                for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+		                return buf;    
+				   }
+			       saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'ReporteProductos'+fecha+'.xlsx'); 
 				});
 		    
 		    $("#Guardar").click(function() 

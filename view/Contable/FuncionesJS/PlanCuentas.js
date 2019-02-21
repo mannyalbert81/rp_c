@@ -42,7 +42,7 @@ $("#exportar").click(function(){
 			   while(array.length) newArr.push(array.splice(0,3));
 			   for (var i=1; i<newArr.length; i++)
 				   {
-				   newArr[i][2]=parseFloat(newArr[i][2]);//newArr[i][2].replace(".", ",");
+				   newArr[i][2]=parseFloat(newArr[i][2]);
 				   }
 			   var dt = new Date();
 			   var m=dt.getMonth();

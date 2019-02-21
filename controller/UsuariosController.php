@@ -397,15 +397,12 @@ class UsuariosController extends ControladorBase{
 		if (!empty($resultPer))
 		{
 		    $resultEdit = "";
-		    $result_catalogo_usuario=null;
-		    $resultRolPrincipal = array();
-		    $result_privilegios = array();
 		    
-		    $catalogo=null;
-		    $catalogo = new CatalogoModel();
-		    //para estados de catalogo de usuarios
-		    $whe_catalogo = "tabla_catalogo = 'usuarios' AND columna_catalogo = 'estado_usuarios'";
-		    $result_catalogo_usuario = $catalogo->getBy($whe_catalogo);
+		    $resultRolPrincipal = array();		    
+		    $resEstado = array();
+		    
+		    $resEstado = $usuarios->getCondiciones('*','estado',"tabla_estado='USUARIOS'",'id_estado');
+		   
 		
 				if (isset ($_GET["id_usuarios"])   )
 				{
@@ -459,9 +456,8 @@ class UsuariosController extends ControladorBase{
 			    
 				
 				$this->view_Administracion("Usuarios",array(
-				    "resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit ,
-				    "result_catalogo_usuario"=>$result_catalogo_usuario,
-				    "result_privilegios"=>$result_privilegios
+				    "resultSet"=>$resultSet, "resultRol"=>$resultRol, "resultEdit" =>$resultEdit,
+				    "resEstado"=>$resEstado
 			
 				));
 			
@@ -493,11 +489,8 @@ class UsuariosController extends ControladorBase{
 		$usuarios=new UsuariosModel();
 		$_array_roles=array();
 		
-		/*para la consulta de catalogos*/
-		$catalogo = null; $catalogo=new CatalogoModel();
-		$privilegios = null; $privilegios=new PrivilegiosModel();
-		$claves = null; $claves = new ClavesModel();
-		
+		/*para la consulta de catalogos*/		
+		$claves = null; $claves = new ClavesModel();		
 		
 		if (isset(  $_SESSION['nombre_usuarios']) )
 		{
@@ -522,6 +515,33 @@ class UsuariosController extends ControladorBase{
 		    $_caduca_clave        = isset($_POST['caduca_clave'])?$_POST['caduca_clave']:"0";
 		    $_cambiar_clave       = isset($_POST['cambiar_clave'])?$_POST['cambiar_clave']:"0";
 		    
+		    
+		    //para la imagen del usuario
+		    $imagen_usuarios='';
+		    if ($_FILES['fotografia_usuarios']['tmp_name']!="")
+		    {
+		        $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/fotografias_usuarios/';
+		        
+		        $nombre = $_FILES['fotografia_usuarios']['name'];
+		        $tipo = $_FILES['fotografia_usuarios']['type'];
+		        $tamano = $_FILES['fotografia_usuarios']['size'];
+		        
+		        move_uploaded_file($_FILES['fotografia_usuarios']['tmp_name'],$directorio.$nombre);
+		        $data = file_get_contents($directorio.$nombre);
+		        $imagen_usuarios = pg_escape_bytea($data);
+		    }
+		    
+		    if($_id_usuarios>0){
+		        //para actualizacion de usuarios
+		        
+		        
+		    }else{
+		        //para insertado de usuarios
+		        
+		    }
+		    
+		    
+		   
 		    if($_id_usuarios > 0){
 		    	
 		    	
@@ -1875,9 +1895,9 @@ class UsuariosController extends ControladorBase{
 					  usuarios.telefono_usuarios,
 					  usuarios.celular_usuarios,
 					  usuarios.correo_usuarios,
+                      usuarios.id_estado,
 					  rol.id_rol,
 					  rol.nombre_rol,
-					  usuarios.estado_usuarios,
 					  usuarios.fotografia_usuarios,
 					  usuarios.creado,
                       estado.nombre_estado";
@@ -1917,6 +1937,7 @@ class UsuariosController extends ControladorBase{
 	        $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
 	        $cantidadResult=(int)$resultSet[0]->total;
 	        
+	       
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 	        
 	        $per_page = 10; //la cantidad de registros que desea mostrar
@@ -1929,10 +1950,7 @@ class UsuariosController extends ControladorBase{
 	        $count_query   = $cantidadResult;
 	        $total_pages = ceil($cantidadResult/$per_page);
 	        
-	        
-	        
-	        
-	        
+	       	        
 	        if($cantidadResult>0)
 	        {
 	            
@@ -2007,7 +2025,7 @@ class UsuariosController extends ControladorBase{
 	            
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
@@ -2042,7 +2060,6 @@ class UsuariosController extends ControladorBase{
 					  usuarios.correo_usuarios,
 					  rol.id_rol,
 					  rol.nombre_rol,
-					  usuarios.estado_usuarios,
 					  usuarios.fotografia_usuarios,
 					  usuarios.creado,
                       estado.nombre_estado";
@@ -2165,7 +2182,7 @@ class UsuariosController extends ControladorBase{
 	            
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';

@@ -16,6 +16,7 @@
 		
          	<script>
 			$(document).ready(function(){
+			$("#div_entidad").hide()
 			$("#fecha_hasta").change(function(){
 				 var startDate = new Date($('#fecha_desde').val());
 
@@ -75,11 +76,15 @@
             async: true,			
 			data: con_datos,
 			 beforeSend: function(objeto){
-			$("#comprobantes").html('<img src="view/images/ajax-loader.gif"> Cargando...');
+			   $("#comprobantes").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	            
 			},
 			success:function(data){
-				$(".div_comprobantes").html(data).fadeIn('slow');
-				$("#comprobantes").html("");
+			
+			     $("#div_comprobantes").html(data);
+                 $("#comprobantes").html("");
+                 $("#tabla_comprobantes").tablesorter(); 
+				
 			}
 		})
 	}
@@ -96,27 +101,7 @@
     
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
     
-         <?php
-       
-       $sel_id_entidades = "";
-       $sel_id_tipo_comprobantes="";
-       $sel_numero_ccomprobantes="";
-       $sel_referencia_doc_ccomprobantes="";
-       $sel_fecha_desde="";
-       $sel_fecha_hasta="";
-        
-       if($_SERVER['REQUEST_METHOD']=='POST' )
-       {
-       	$sel_id_entidades = $_POST['id_entidades'];
-        $sel_id_tipo_comprobantes=$_POST['id_tipo_comprobantes'];
-       	$sel_numero_ccomprobantes=$_POST['numero_ccomprobantes'];
-       	$sel_referencia_doc_ccomprobantes=$_POST['referencia_doc_ccomprobantes'];
-       	$sel_fecha_desde=$_POST['fecha_desde'];
-       	$sel_fecha_hasta=$_POST['fecha_hasta'];
-       
-       }
-       ?>
-    
+     
      <?php
         
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
@@ -160,7 +145,7 @@
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Buscar Actividades</h3>
+          <h3 class="box-title">Buscar Comprobantes</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -173,12 +158,12 @@
 
 								 	<div class="row">
 								 	  
-                                    <div class="col-xs-6 col-md-3 col-lg-3">
+                                    <div class="col-xs-6 col-md-3 col-lg-3" id="div_entidad">
                                   	<div class="form-group">
                                    	<label for="desde" class="control-label">Entidad:</label>
                  				  	<select name="id_entidades" id="id_entidades"  class="form-control" readonly>
 			  						<?php foreach($resultEnt as $res) {?>
-									<option value="<?php echo $res->id_entidades; ?>"<?php if($sel_id_entidades==$res->id_entidades){echo "selected";}?>><?php echo $res->nombre_entidades;  ?> </option>
+									<option value="<?php echo $res->id_entidades; ?>"><?php echo $res->nombre_entidades;  ?> </option>
 			          			    <?php } ?>
 									</select>
                                     <div id="desde" class="errores"></div>
@@ -191,7 +176,7 @@
                  				    <select name="id_tipo_comprobantes" id="id_tipo_comprobantes"  class="form-control" >
 			  						<option value="0"><?php echo "--TODOS--";  ?> </option>
 									<?php foreach($resultTipCom as $res) {?>
-									<option value="<?php echo $res->id_tipo_comprobantes; ?>"<?php if($sel_id_tipo_comprobantes==$res->id_tipo_comprobantes){echo "selected";}?> ><?php echo $res->nombre_tipo_comprobantes;  ?> </option>
+									<option value="<?php echo $res->id_tipo_comprobantes; ?>"><?php echo $res->nombre_tipo_comprobantes;  ?> </option>
 			            			<?php } ?>
 									</select>
 									<div id="desde" class="errores"></div>
@@ -201,7 +186,7 @@
                                     <div class="col-xs-6 col-md-3 col-lg-3">
                                   	<div class="form-group">
                                     <label for="desde" class="control-label">Nº Comprobante:</label>
-                             	  	<input type="text"  name="numero_ccomprobantes" id="numero_ccomprobantes" value="<?php echo $sel_numero_ccomprobantes;?>" class="form-control"/> 
+                             	  	<input type="text"  name="numero_ccomprobantes" id="numero_ccomprobantes" value="" class="form-control"/> 
     						        <div id="desde" class="errores"></div>
                                     </div>
                               		</div> 
@@ -209,7 +194,7 @@
                                     <div class="col-xs-6 col-md-3 col-lg-3">
                                   	<div class="form-group">
                                    	<label for="desde" class="control-label">Desde:</label>
-                               	  	<input type="date"  name="fecha_desde" id="fecha_desde" value="<?php echo $sel_fecha_desde;?>" class="form-control "/> 
+                               	  	<input type="date"  name="fecha_desde" id="fecha_desde" value="" class="form-control "/> 
 							        <div id="desde" class="errores"></div>
                                     </div>
                                     </div>
@@ -217,7 +202,7 @@
                                     <div class="col-xs-6 col-md-3 col-lg-3 ">
                                 	<div class="form-group">
                                     <label for="hasta" class="control-label">Hasta:</label>
-                       		  	    <input type="date"  name="fecha_hasta" id="fecha_hasta" value="<?php echo $sel_fecha_hasta;?>" class="form-control "/> 
+                       		  	    <input type="date"  name="fecha_hasta" id="fecha_hasta" value="" class="form-control "/> 
 	                                <div id="hasta" class="errores"></div>
                                     </div>
                                     </div>  
@@ -231,18 +216,14 @@
 		                    		</div>
             	        		    </div>
                     		    	</div>
- 
-                      
-                  	
-									<div style="height: 200px; display: block;">
-									<h4 style="color:#ec971f;"></h4>
-									<div id="comprobantes" style="position: absolute;	text-align: center;	top: 10px;	width: 100%;display:none;"></div><!-- Carga gif animado -->
-									<div class="div_comprobantes" >
-					 				</div>
-					    			</div>         
-                      
-                      
-         	         </div>
+    
+   			
+   							
+                      	
+                      	
+                      	<div id="comprobantes" ></div>	
+					<div id="div_comprobantes"></div>
+                      	   
             </div>
         </section>
               

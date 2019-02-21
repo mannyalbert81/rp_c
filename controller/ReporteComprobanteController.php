@@ -108,7 +108,7 @@ class ReporteComprobanteController extends ControladorBase{
 			        
 			        if($numero_ccomprobantes!=""){$where_2=" AND ccomprobantes.numero_ccomprobantes LIKE '%$numero_ccomprobantes%'";}
 			   
-			        if($fechadesde!="" && $fechahasta!=""){$where_4=" AND  ccomprobantes.fecha_ccomprobantes BETWEEN '$fechadesde' AND '$fechahasta'";}
+			        if($fechadesde!="" && $fechahasta!=""){$where_4=" AND  date(ccomprobantes.fecha_ccomprobantes) BETWEEN '$fechadesde' AND '$fechahasta'";}
 			        
 			        
 			        $where_to  = $where . $where_0 . $where_1 . $where_2. $where_4;
@@ -141,50 +141,65 @@ class ReporteComprobanteController extends ControladorBase{
 			            {
 			
 			                
-			                $html.='<div class="pull-left">';
+			                
+			                
+			                $html.='<div class="pull-left" style="margin-left:15px;">';
 			                $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
 			                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-			                $html.='</div><br><br>';
-			                $html.='<section style="height:250px; overflow-y:scroll;">';
-			                $html.='<table class="table table-hover">';
-			                $html.='<thead>';
-			                $html.='<tr class="info">';
-			                $html.='<th>Tipo</th>';
-			                $html.='<th>Concepto</th>';
-			                $html.='<th>Entidad</th>';
-			                $html.='<th>Valor</th>';
-			                $html.='<th>Fecha</th>';
-			                $html.='<th>Numero de Comprobante</th>';
-			                $html.='<th>Forma de Pago</th>';
-			                $html.='<th></th>';
+			                $html.='</div>';
+			                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+			                $html.='<section style="height:425px; overflow-y:scroll;">';
+			                $html.= "<table id='tabla_comprobantes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+			                $html.= "<thead>";
+			                $html.= "<tr>";
+			                $html.='<th style="text-align: left;  font-size: 12px;">Tipo</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Concepto</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Entidad</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Fecha</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Numero de Comprobante</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Forma de Pago</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Reporte</th>';
+			                
+			              
+			                
 			                $html.='</tr>';
 			                $html.='</thead>';
 			                $html.='<tbody>';
 			                
-			                foreach ($resultSet as $res)
+			                
+			              
+			                
+			                       foreach ($resultSet as $res)
 			                {
 			                       
+			                        
+			                    
 			                    $html.='<tr>';
-			                    $html.='<td style="color:#000000;font-size:80%;">'.$res->nombre_tipo_comprobantes.'</td>';
-			                    $html.='<td style="color:#000000;font-size:80%;">'.$res->concepto_ccomprobantes.'</td>';
-			                    $html.='<td style="color:#000000;font-size:80%;">'.$res->nombre_entidades.'</td>';
-			                    $html.='<td style="color:#000000;font-size:80%;">'.$res->valor_letras.'</td>';
-			                    $html.='<td style="color:#000000;font-size:80%;">'.$res->fecha_ccomprobantes.'</td>';
-			                    $html.='<td style="color:#000000;font-size:80%;">'.$res->numero_ccomprobantes.'</td>';
-			                    $html.='<td style="color:#000000;font-size:80%;">'.$res->nombre_forma_pago.'</td>';
-			                    $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=ReporteComprobante&action=generar_reporte_comprobante&id_ccomprobantes='.$res->id_ccomprobantes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_comprobantes.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->concepto_ccomprobantes.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->nombre_entidades.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->valor_letras.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->fecha_ccomprobantes.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->numero_ccomprobantes.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->nombre_forma_pago.'</td>';
+			                    $html.='<td style="font-size: 11px;"><span class="pull-right"><a href="index.php?controller=ReporteComprobante&action=generar_reporte_comprobante&id_ccomprobantes='.$res->id_ccomprobantes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+			                    
 			                    $html.='</tr>';
+			                    
+			                    
 			                    
 			                }
 			                
+			              
+			                
+			                
 			                $html.='</tbody>';
 			                $html.='</table>';
-			                $html.='</section>';
+			                $html.='</section></div>';
 			                $html.='<div class="table-pagination pull-right">';
 			                $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents).'';
 			                $html.='</div>';
-			                $html.='</section>';
-			                
 			                
 			            }else{
 			                

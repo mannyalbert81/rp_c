@@ -1006,6 +1006,7 @@ class MovimientosInvController extends ControladorBase{
 	            $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Solicitudes Pendientes</b>';
 	            $html.='</div>';
 	            $html.='</div>';
+	            
 	        }
 	        
 	        
@@ -1716,8 +1717,7 @@ class MovimientosInvController extends ControladorBase{
 	                $_fecha_movimientos_inv_cabeza     =$resultSetCabeza[0]->fecha_movimientos_inv_cabeza;
 	                $_estado_movimientos_inv_cabeza    =$resultSetCabeza[0]->estado_movimientos_inv_cabeza;
 	                $_razon_movimientos_inv_cabeza    =$resultSetCabeza[0]->razon_movimientos_inv_cabeza;
-	                $_modificado    =  $resultSetCabeza[0]->modificado;
-	                
+	         
 	                $columnas1 = "  movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
                 	                productos.codigo_productos,
                 	                productos.nombre_productos,

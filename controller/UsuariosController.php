@@ -487,16 +487,19 @@ class UsuariosController extends ControladorBase{
 		session_start();
 		$resultado = null;
 		$usuarios=new UsuariosModel();
-		$_array_roles=array();
+		$_array_roles=array();	
+		
 		
 		/*para la consulta de catalogos*/		
 		$claves = null; $claves = new ClavesModel();		
 		
 		if (isset(  $_SESSION['nombre_usuarios']) )
 		{
+		    
 	
 		if (isset ($_POST["cedula_usuarios"]))
 		{
+		   
 			$_cedula_usuarios     = $_POST["cedula_usuarios"];
 			$_nombre_usuarios     = $_POST["nombre_usuarios"];
 			$_apellidos_usuario     = $_POST["apellidos_usuarios"];
@@ -518,6 +521,8 @@ class UsuariosController extends ControladorBase{
 		    
 		    //para la imagen del usuario
 		    $imagen_usuarios='';
+		    
+		    		    
 		    if ($_FILES['fotografia_usuarios']['tmp_name']!="")
 		    {
 		        $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/fotografias_usuarios/';
@@ -529,7 +534,10 @@ class UsuariosController extends ControladorBase{
 		        move_uploaded_file($_FILES['fotografia_usuarios']['tmp_name'],$directorio.$nombre);
 		        $data = file_get_contents($directorio.$nombre);
 		        $imagen_usuarios = pg_escape_bytea($data);
+		        		        
 		    }
+		    
+		    
 		    
 		    //para fecha de insersion clave
 		    $clave_fecha_hoy = date("Y-m-d");		    
@@ -572,8 +580,22 @@ class UsuariosController extends ControladorBase{
 		        
 		        $resultado=$usuarios->llamafuncion();
 		        
-		        print_r($resultado);
+		        $respuesta = '';
 		        
+		        if(!empty($resultado) && count($resultado)){
+		            
+		            foreach ($resultado[0] as $k => $v)
+		            {
+		                $respuesta=$v;
+		            }
+		            
+		            if (strpos($respuesta, 'OK') !== false) {
+		               
+		                echo json_encode(array('success'=>1,'mensaje'=>$respuesta));
+		            }
+		            
+		        }
+		            
 		        
 		    }
 		    
@@ -2479,6 +2501,87 @@ class UsuariosController extends ControladorBase{
 				"resultSet"=>""
 		));
 	
+	}
+	
+	public function Exportar_usuariosExcel()
+	{
+	    session_start();
+	    $id_rol=$_SESSION["id_rol"];
+	    $usuario_actual =$_POST['users'];
+	    
+	    $usuarios = new UsuariosModel();
+	    $catalogo = null; $catalogo = new CatalogoModel();
+	    $where_to="";
+	    $columnas = " usuarios.id_usuarios,
+					  usuarios.cedula_usuarios,
+					  usuarios.nombre_usuarios,
+                      usuarios.apellidos_usuarios,
+					  claves.clave_claves,
+					  claves.clave_n_claves,
+					  usuarios.telefono_usuarios,
+					  usuarios.celular_usuarios,
+					  usuarios.correo_usuarios,
+                      usuarios.id_estado,
+					  rol.id_rol,
+					  rol.nombre_rol,
+					  usuarios.fotografia_usuarios,
+					  usuarios.creado,
+                      estado.nombre_estado";
+	    
+	    $tablas = "public.usuarios
+            INNER JOIN public.claves ON claves.id_usuarios = usuarios.id_usuarios
+            LEFT JOIN public.rol ON rol.id_rol = usuarios.id_rol
+            INNER JOIN public.estado ON estado.id_estado = usuarios.id_estado";
+	    
+	    if ($usuario_actual == 'activos')
+	    {
+	        $where    = "estado.nombre_estado = 'ACTIVO'";
+	    }
+	    else
+	    {
+	        $where    = "estado.nombre_estado = 'INACTIVO'";
+	    }
+	    
+	    $id       = "usuarios.id_usuarios";
+	    
+	    
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1=" AND (usuarios.cedula_usuarios LIKE '".$search."%' OR usuarios.nombre_usuarios LIKE '".$search."%' OR usuarios.correo_usuarios LIKE '".$search."%' OR rol.nombre_rol LIKE '".$search."%' )";
+	            
+	            $where_to=$where.$where1;
+	        }else{
+	            
+	            $where_to=$where;
+	            
+	        }
+	        
+	        
+	        $resultSet=$usuarios->getCondiciones($columnas, $tablas, $where_to, $id);
+	        $_respuesta=array();
+	        
+	        array_push($_respuesta, 'Cédula', 'Nombre', 'Teléfono','Celular','Correo','Rol','Estado');
+	        
+	        if(!empty($resultSet)){
+	            
+	            foreach ($resultSet as $res){
+	                
+	                array_push($_respuesta, $res->cedula_usuarios, $res->nombre_usuarios, $res->telefono_usuarios,
+	                    $res->celular_usuarios,$res->correo_usuarios,$res->nombre_rol,$res->nombre_estado);
+	            }
+	            echo json_encode($_respuesta);
+	        }
+	    }
+	    
 	}
 	
 	

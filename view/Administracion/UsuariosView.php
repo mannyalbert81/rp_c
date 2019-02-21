@@ -71,7 +71,7 @@
             
             <div class="box-body">
             
-                <form action="<?php echo $helper->url("Usuarios","InsertaUsuarios"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
+                <form id="frm_ins_usuario" action="<?php echo $helper->url("Usuarios","InsertaUsuarios"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
           		 	  <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
               		 	 <div class="row">
                          	<div class="col-xs-6 col-md-3 col-lg-3 ">
@@ -388,9 +388,9 @@
                         		   <br>
                         		   	  <input type="hidden" class="form-control" id="codigo_clave" name="codigo_clave" value="0" />
                         		   	  <label for="cambiar_clave" class="control-label" id="lbl_cambiar_clave"></label>&nbsp;&nbsp;
-                        		   	  <input type="checkbox"  id="cambiar_clave" name="cambiar_clave" value="0"  style="display:none" /> <br>
-                                      <label for="id_rol_principal" class="control-label">Caduca Clave: </label> &nbsp;&nbsp;
-                                      <input type="checkbox" id="caduca_clave" name="caduca_clave" value=""  />
+                        		   	  <input type="checkbox"  id="cambiar_clave" name="cambiar_clave" value="1"  style="display:none" /> <br>
+                                      <label for="caduca_clave" class="control-label">Caduca Clave: </label> &nbsp;&nbsp;
+                                      <input type="checkbox" id="caduca_clave" name="caduca_clave" value="1"  />
                                     </div>
                                  </div> 
                                  
@@ -491,7 +491,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-   <script src="view/Contable/FuncionesJS/Usuarios.js?1"></script>         	
+   <script src="view/Administracion/js/Usuarios.js?1.0"></script>         	
   </body>
 </html>
 

@@ -296,7 +296,7 @@ class ProveedoresController extends ControladorBase{
 	           
                 $respuesta=0;
                 
-                print_r($resultado);
+                //print_r($resultado);
                 
                 if(!empty($resultado) && count($resultado)>0)
                 {
@@ -305,9 +305,10 @@ class ProveedoresController extends ControladorBase{
                 }
                 
                 if($respuesta==0){
-                    echo "{success:0,mensaje:'Error al insertar proveedores'}";
+                    echo json_encode(array('success'=>$respuesta,'mensaje'=>'Error al insertar proveedores'));
+                    
                 }else{
-                    echo "{success:1,mensaje:'Proveedor ingresado con exito'}";
+                    echo json_encode(array('success'=>$respuesta,'mensaje'=>'Proveedor ingresado con exito'));
                 }
                 
              }
@@ -316,7 +317,7 @@ class ProveedoresController extends ControladorBase{
 	    }
 	    else
 	    {
-	        echo "{success:0,mensaje:'Error de permisos'}";
+	        echo json_encode(array('success'=>0,'mensaje'=>'Error de permisos'));
 	    }
 	    
 	}

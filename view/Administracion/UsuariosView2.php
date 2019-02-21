@@ -205,7 +205,7 @@
                     		
                     			<div class="col-xs-12 col-lg-3 col-md-3">
                         		   <div class="form-group">
-                                      <label for="id_rol_principal" class="control-label">Rol :</label>
+                                      <label for="id_rol_principal" class="control-label">Rol Principal:</label>
                                       <select name="id_rol_principal" id="id_rol_principal"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php foreach($resultRol as $res) {?>
@@ -229,6 +229,49 @@
                                  
                               </div>
                               
+                              <div class="row">
+                        		<div class="col-xs-12 col-lg-5 col-md-5">
+                        		   <div class="form-group">
+                                      <label for="id_rol" class="control-label">Roles Disponibles</label>
+                                      <select name="id_rol" id="id_rol" multiple="multiple" class="form-control" >
+    									<?php foreach($resultRol as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_rols" class="errores"></div>
+                                    </div>
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-2 col-md-2">
+                                 	<table class="table table-bordered" style="text-align: center;">
+                                        
+                                        <tr>                                          
+                                          <td>
+                                            <div class="btn-group-vertical">
+                                              <button id="link_agregar_rol" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-right"></i></button>
+                                              <button id="link_agregar_roles" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-double-right"></i></button>
+                                              <button id="link_eliminar_rol" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-left"></i></button>
+                                              <button id="link_eliminar_roles" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-double-left"></i></button>
+                                            </div>
+                                          </td>
+                                         </tr>
+                                      </table>
+                                 	 
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-5 col-md-5">
+                        		   <div class="form-group">
+                                      <label for="lista_roles" class="control-label">Usuario tiene Rol(es):</label>
+                                      <select name="lista_roles[]" id="lista_roles" multiple="multiple" class="form-control" >
+                                      <?php foreach($result_privilegios as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>" <?php echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_rol; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_rols" class="errores"></div>
+                                    </div>
+                                 </div>
+                        	
+                        	</div>
                                 
                       <?php } } else {?>                		    
                       	  <div class="row">
@@ -369,7 +412,7 @@
                     		    		    
                         		<div class="col-xs-12 col-lg-3 col-md-3">
                         		   <div class="form-group">
-                                      <label for="id_rol_principal" class="control-label">Rol:</label>
+                                      <label for="id_rol_principal" class="control-label">Rol Principal:</label>
                                       <select name="id_rol_principal" id="id_rol_principal"   class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php foreach($resultRol as $res) {?>
@@ -393,7 +436,47 @@
                                  
                              </div>
                         	
+                        	<div class="row">
+                        		<div class="col-xs-12 col-lg-5 col-md-5">
+                        		   <div class="form-group">
+                                      <label for="id_rol_principal" class="control-label">Roles Disponibles</label>
+                                      <select name="id_rol" id="id_rol" multiple="multiple" class="form-control" >
+    									<?php foreach($resultRol as $res) {?>
+    										<option value="<?php echo $res->id_rol; ?>" ><?php echo $res->nombre_rol; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_rols" class="errores"></div>
+                                    </div>
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-2 col-md-2">
+                                 	<table class="table table-bordered" style="text-align: center;">
+                                        
+                                        <tr>                                          
+                                          <td>
+                                            <div class="btn-group-vertical">
+                                              <button id="link_agregar_rol" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-right"></i></button>
+                                              <button id="link_agregar_roles" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-double-right"></i></button>
+                                              <button id="link_eliminar_rol" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-left"></i></button>
+                                              <button id="link_eliminar_roles" type="button" class="btn btn-default"><i class="fa fa-fw fa-angle-double-left"></i></button>
+                                            </div>
+                                          </td>
+                                         </tr>
+                                      </table>
+                                 	 
+                                 </div>
+                                 
+                                 <div class="col-xs-12 col-lg-5 col-md-5">
+                        		   <div class="form-group">
+                                      <label for="lista_roles" class="control-label">Usuario tiene Rol(es):</label>
+                                      <select name="lista_roles[]" id="lista_roles" multiple="multiple" class="form-control" >
+                                      
+    								   </select> 
+                                      <div id="mensaje_id_rols" class="errores"></div>
+                                    </div>
+                                 </div>
                         	
+                        	</div>
                         	
                         	
                     		            
@@ -473,7 +556,7 @@
                 
               </div>
              
-              <button type="submit" id="btExportar" name="exportar" class="btn btn-info">Exportar</button>
+              <button type="submit" id="btExportar" name="exportar" class="btn btn-info"><i class="fa fa-file-excel-o"></i></button>
             </div>
             </div>
           </div>

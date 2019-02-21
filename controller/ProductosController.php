@@ -280,8 +280,8 @@ class ProductosController extends ControladorBase{
                                       public.unidad_medida,
                                       public.bodegas";
                 $where    = "  grupos.id_grupos = productos.id_grupos AND
-                                bodegas.id_bodegas = productos.id_bodegasAND
-                                       unidad_medida.id_unidad_medida = productos.id_unidad_medida ";
+                                bodegas.id_bodegas = productos.id_bodegas AND
+                                       unidad_medida.id_unidad_medida = productos.id_unidad_medida";
                 $id       = "productos.id_productos";
                 
                 $resultSet = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
@@ -330,7 +330,7 @@ class ProductosController extends ControladorBase{
                       public.bodegas";
                     $where1    = "   movimientos_inv_cabeza.id_usuarios = usuarios.id_usuarios AND
                       movimientos_inv_detalle.id_productos = productos.id_productos AND
-                      bodegas.id_bodegas = productos.id_bodegasAND
+                      bodegas.id_bodegas = productos.id_bodegas AND
                       movimientos_inv_detalle.id_movimientos_inv_cabeza = movimientos_inv_cabeza.id_movimientos_inv_cabeza AND productos.id_productos='$_id_productos'";
                     $id1       = "productos.id_productos";
                     
@@ -406,23 +406,24 @@ class ProductosController extends ControladorBase{
                 
                 $resultado=$productos->llamafuncion();
                 
-                $mensaje = "";
+                $mensaje = array();
                 
                 if(!empty($resultado)){
                     if(is_array($resultado) && count($resultado)>0){
                         
                         if((int)$resultado[0]->ins_productos == 0){
-                            $mensaje='{"success":1,"mensaje":"Producto Actualizado correctamente"}';
+                            
+                            $mensaje=array("success"=>1,"mensaje"=>"Producto Actualizado correctamente");
                         }
                         
                         if((int)$resultado[0]->ins_productos == 1){
-                            $mensaje='{success:1,mensaje:"Producto Agregado correctamente"}';
+                            $mensaje=array('success'=>1,'mensaje'=>"Producto Agregado correctamente");
                         }
                         
                     }
-                }else{  $mensaje='{success:0,mensaje:"Producto Actualizado correctamente"}';}
+                }else{  $mensaje='{success:0,mensaje:"Error al registrar producto"}';}
                
-                echo $mensaje;
+                echo json_encode($mensaje);
             }
             
            

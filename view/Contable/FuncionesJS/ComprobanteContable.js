@@ -296,37 +296,22 @@
                     	  $('#proveedor').val('').attr("readonly","readonly")
                     	  $('#retencion_proveedor').val('').attr("readonly","readonly")
                     	  $('#nombre_comprobante').val('CONTABLE')
+                    	  $('.clsproveedor').hide();
+                    	  
                       }else{
                     	  $('#id_proveedor').val('0')
                     	  $('#nombre_proveedor').val('').removeAttr("readonly")
                     	  $('#proveedor').val('').removeAttr("readonly")
                     	  $('#retencion_proveedor').val('').removeAttr("readonly")
                     	  $('#nombre_comprobante').val('')
+                    	  $('.clsproveedor').show();
                       }
                       
                     }
              });
         }
 	    
-	    
-// PARA HABILITAR NUMERO DE COMPROBANTES    
 
-/*$("#id_tipo_comprobantes").click(function() {
-
-  var id_tipo_comprobantes = $(this).val();
-	
-  if(id_tipo_comprobantes > 0 )
-  {
-   load_consecutivo_comprobantes(id_tipo_comprobantes);
-   $("#div_datos").fadeIn("slow");
-   
-  }
-  else
-  {
-   $("#div_datos").fadeOut("slow");
-  }
- 
-});*/
 
 $("#id_tipo_comprobantes").change(function() {
 	  
@@ -411,20 +396,6 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
 			
 		}
 		
-		if (concepto_ccomprobantes == 0)
-		{
-	    	
-			$("#mensaje_concepto_ccomprobantes").text("Inserte un concepto de pago");
-			$("#mensaje_concepto_ccomprobantes").fadeIn("slow");
-			$("html, body").animate({ scrollTop: $(mensaje_concepto_ccomprobantes).offset().top-120 }, tiempo);
-			return false
-	    }
-		else 
-		{
-			$("#mensaje_concepto_ccomprobantes").fadeOut("slow"); //Oculta mensaje de error
-			error ="FALSE";
-		}
-		
 		
 		if(document.getElementById('nombre_comprobante').value != 'CONTABLE'){
 			
@@ -459,14 +430,7 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
 			$("html, body").animate({ scrollTop: $(mensaje_referencia_doc_ccomprobantes).offset().top-150 }, tiempo);
 			return false
 		}
-		
-		if(document.getElementById('id_forma_pago').value == 0){
-			$("#mensaje_id_forma_pago").text("Seleccione Forma de Pago");
-			$("#mensaje_id_forma_pago").fadeIn("slow"); 
-			$("html, body").animate({ scrollTop: $(mensaje_id_forma_pago).offset().top-150 }, tiempo);
-			return false
-		}
-		
+				
 		if(document.getElementById('numero_cuenta_banco_ccomprobantes').value == ''){
 			$("#mensaje_numero_cuenta_banco_ccomprobantes").text("Ingrese Numero de Cuenta");
 			$("#mensaje_numero_cuenta_banco_ccomprobantes").fadeIn("slow"); 
@@ -479,6 +443,27 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
 			$("#mensaje_numero_cheque_ccomprobantes").fadeIn("slow"); 
 			$("html, body").animate({ scrollTop: $(mensaje_numero_cheque_ccomprobantes).offset().top-150 }, tiempo);
 			return false
+		}
+		
+		if(document.getElementById('id_forma_pago').value == 0){
+			$("#mensaje_id_forma_pago").text("Seleccione Forma de Pago");
+			$("#mensaje_id_forma_pago").fadeIn("slow"); 
+			$("html, body").animate({ scrollTop: $(mensaje_id_forma_pago).offset().top-150 }, tiempo);
+			return false
+		}
+		
+		if (concepto_ccomprobantes == 0)
+		{
+	    	
+			$("#mensaje_concepto_ccomprobantes").text("Inserte un concepto de pago");
+			$("#mensaje_concepto_ccomprobantes").fadeIn("slow");
+			$("html, body").animate({ scrollTop: $(mensaje_concepto_ccomprobantes).offset().top-120 }, tiempo);
+			return false
+	    }
+		else 
+		{
+			$("#mensaje_concepto_ccomprobantes").fadeOut("slow"); //Oculta mensaje de error
+			
 		}
 		
 		if(document.getElementById('observaciones_ccomprobantes').value == ''){
@@ -533,6 +518,7 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
          data: parametros,
          dataType:'json',
          success: function(x){
+        	 setearForm()
         	 swal(x.mensaje);
         	 //console.log(x)
          }
@@ -588,7 +574,45 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
 	});
  
  $( "#frm_guardar_proveedor" ).submit(function( event ) {
-		//console.log('ingresa->1\n');
+	 
+	 
+	 	if(document.getElementById('nombre_proveedores').value == ''){
+	 		$("#mod_mensaje_nombre_proveedores").text("Ingrese Nombre Proveedor");
+	 		$("#mod_mensaje_nombre_proveedores").fadeIn('slow'); 
+			return false
+		}
+	 	
+	 	if(document.getElementById('identificacion_proveedores').value == ''){
+	 		$("#mod_mensaje_identificacion_proveedores").text("Ingrese Identificacion Proveedor");
+	 		$("#mod_mensaje_identificacion_proveedores").fadeIn('slow'); 
+			return false
+		}
+	 	
+	 	if(document.getElementById('contactos_proveedores').value == ''){
+	 		$("#mod_mensaje_contactos_proveedores").text("Ingrese Persona Contacto");
+	 		$("#mod_mensaje_contactos_proveedores").fadeIn('slow'); 
+			return false
+		}
+	 	
+	 	if(document.getElementById('direccion_proveedores').value == ''){
+	 		$("#mod_mensaje_direccion_proveedores").text("Ingrese Direccion");
+	 		$("#mod_mensaje_direccion_proveedores").fadeIn('slow'); 
+			return false
+		}
+	 	
+	 	if(document.getElementById('telefono_proveedores').value == ''){
+	 		$("#mod_mensaje_telefono_proveedores").text("Ingrese Numero Telefono");
+	 		$("#mod_mensaje_telefono_proveedores").fadeIn('slow'); 
+			return false
+		}
+	 	
+	 	if(document.getElementById('email_proveedores').value == ''){
+	 		$("#mod_mensaje_email_proveedores").text("Ingrese Correo");
+	 		$("#mod_mensaje_email_proveedores").fadeIn('slow'); 
+			return false
+		}
+	 	
+	 
 		var parametros = $(this).serialize();
 		
 		$.ajax({
@@ -600,7 +624,7 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
 	        data: parametros,
 	        dataType:'json',
 	        success: function(respuesta){
-	        	
+	        	console.log(respuesta)
 	            if(respuesta.success==1){
 	            	$("#frm_guardar_proveedor")[0].reset();
 	            	swal({
@@ -659,7 +683,45 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
        }
      }
    }
-		  
+ 
+ function setearForm(){
+	
+	 $('#id_tipo_comprobantes').val(0)
+	 $('#id_proveedor').val('0')
+	 $('#retencion_proveedor').val('')
+	 $('#referencia_doc_ccomprobantes').val('')
+	 $('#id_forma_pago').val(0)
+	 $('#numero_cuenta_banco_ccomprobantes').val('')
+	 $('#numero_cheque_ccomprobantes').val('')
+	 $('#observaciones_ccomprobantes').val('')
+	 $('#concepto_ccomprobantes').val('')
+ }
+ 
+ 
+ $('#nombre_proveedores').focus(function(){
+	 $("#mod_mensaje_nombre_proveedores").fadeOut("slow");
+ })
+ 
+  $('#identificacion_proveedores').focus(function(){
+	 $("#mod_mensaje_identificacion_proveedores").fadeOut("slow");
+ })
+ 
+  $('#contactos_proveedores').focus(function(){
+	 $("#mod_mensaje_contactos_proveedores").fadeOut("slow");
+ })
+ 
+  $('#direccion_proveedores').focus(function(){
+	 $("#mod_mensaje_direccion_proveedores").fadeOut("slow");
+ })
+ 
+  $('#telefono_proveedores').focus(function(){
+	 $("#mod_mensaje_telefono_proveedores").fadeOut("slow");
+ })
+
+   $('#email_proveedores').focus(function(){
+	 $("#mod_mensaje_email_proveedores").fadeOut("slow");
+ })
+	
 		    
 		    
 		    

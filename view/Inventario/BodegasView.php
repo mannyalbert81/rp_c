@@ -76,7 +76,7 @@
                         		    
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
-                                                          <label for="nombre_bodegas" class="control-label">Nombre Productos</label>
+                                                          <label for="nombre_bodegas" class="control-label">Nombre Bodegas</label>
                                                           <input type="text" class="form-control" id="nombre_bodegas" name="nombre_bodegas" value="<?php echo $resEdit->nombre_bodegas; ?>"  placeholder="Nombre Bodegas">
                                                           <input type="hidden" name="id_bodegas" id="id_bodegas" value="<?php echo $resEdit->id_bodegas; ?>" class="form-control"/>
 					                                      <div id="mensaje_nombre_bodegas" class="errores"></div>
@@ -89,7 +89,7 @@
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php  foreach($result_Bodegas_estados as $res) {?>
-    										<option value="<?php echo $res->valor_catalogo; ?>" <?php if ($res->valor_catalogo == $resEdit->estado_bodegas )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_catalogo; ?> </option>
+    										<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_estados" class="errores"></div>
@@ -170,7 +170,7 @@
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php foreach($result_Bodegas_estados as $res) {?>
-    										<option value="<?php echo $res->valor_catalogo; ?>" ><?php echo $res->nombre_catalogo; ?> </option>
+    										<option value="<?php echo $res->id_estado; ?>" ><?php echo $res->nombre_estado; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_estados" class="errores"></div>

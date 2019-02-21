@@ -31,11 +31,10 @@ class BodegasController extends ControladorBase{
         
         $resultSet = null;
         
-        $catalogo=null;
-        $catalogo = new CatalogoModel();
-        //para estados de catalogo de usuarios
-        $whe_catalogo = "tabla_catalogo = 'bodegas' AND columna_catalogo = 'estado_bodegas'";
-        $result_Bodegas_estados = $catalogo->getBy($whe_catalogo);
+        $estado= null;
+        $estado = new EstadoModel();
+        $whe_estado = "tabla_estado = 'BODEGAS'";
+        $result_Bodegas_estados = $estado->getBy($whe_estado);
         
         if (isset(  $_SESSION['nombre_usuarios']) )
         {
@@ -60,9 +59,9 @@ class BodegasController extends ControladorBase{
                                       cantones.nombre_cantones, 
                                       parroquias.id_parroquias, 
                                       parroquias.nombre_parroquias, 
-                                      catalogo.id_catalogo, 
-                                      catalogo.nombre_catalogo, 
-                                      catalogo.valor_catalogo, 
+                                      estado.id_estado, 
+                                      estado.nombre_estado, 
+                                      estado.tabla_estado, 
                                       bodegas.nombre_bodegas, 
                                       bodegas.estado_bodegas, 
                                       bodegas.creado, 
@@ -71,12 +70,11 @@ class BodegasController extends ControladorBase{
                                       public.provincias, 
                                       public.cantones, 
                                       public.parroquias, 
-                                      public.catalogo";
+                                      public.estado";
                         $where    = " provincias.id_provincias = bodegas.id_provincias AND
                                       cantones.id_cantones = bodegas.id_cantones AND
                                       parroquias.id_parroquias = bodegas.id_parroquias AND
-                                      bodegas.estado_bodegas = catalogo.valor_catalogo AND
-                                      public.catalogo.tabla_catalogo = 'bodegas' AND public.catalogo.columna_catalogo = 'estado_bodegas' 
+                                      estado.id_estado = bodegas.id_estado 
                                          AND bodegas.id_bodegas = '$_id_bodegas'";
                         $id       = "bodegas.id_bodegas";
                         
@@ -153,7 +151,7 @@ class BodegasController extends ControladorBase{
 							  id_cantones = '$_id_cantones',
                               id_parroquias = '$_id_parroquias',
                               nombre_bodegas = '$_nombre_bodegas',
-                              estado_bodegas = '$_id_estado'
+                              id_estado = '$_id_estado'
 							  
 							  ";
                     $tabla = "    public.bodegas, 
@@ -164,8 +162,7 @@ class BodegasController extends ControladorBase{
                               cantones.id_cantones = bodegas.id_cantones AND
                               parroquias.id_parroquias = bodegas.id_parroquias AND
                               bodegas.estado_bodegas = catalogo.valor_catalogo AND
-                              public.catalogo.tabla_catalogo = 'bodegas' AND public.catalogo.columna_catalogo = 'estado_bodegas' 
-                             AND bodegas.id_bodegas = '$_id_bodegas'";
+                              estado.id_estado = bodegas.id_estado AND bodegas.id_bodegas = '$_id_bodegas'";
                     $resultado=$bodegas->UpdateBy($columnas, $tabla, $where);
                     
                 }else{
@@ -791,6 +788,27 @@ class BodegasController extends ControladorBase{
         $out.= "</ul>";
         return $out;
     }
+    
+    /**
+     * mod: compras
+     * title: carga_bodegas
+     * ajax: si
+     */
+    
+    public function carga_grupos(){
+        
+        $bodegas = null;
+        $bodegas = new BodegasModel();
+        
+        $resulset = $bodegas->getAll("nombre_bodegas");
+        
+        if(!empty($resulset)){
+            if(is_array($resulset) && count($resulset)>0){
+                echo json_encode($resulset);
+            }
+        }
+    }
+    
 
     
     

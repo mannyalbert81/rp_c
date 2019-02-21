@@ -425,6 +425,7 @@ class ReporteComprobanteController extends ControladorBase{
 	           
 	                $id1       = "dcomprobantes.id_dcomprobantes";
 	                
+	                
 	                $resultSetDetalle=$dcomprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	               
 	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";

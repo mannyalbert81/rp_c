@@ -12,10 +12,7 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   
     <?php include("view/modulos/links_css.php"); ?>		
-      
-    
-	
-    
+
 	</head>
  
     <body class="hold-transition skin-blue fixed sidebar-mini">
@@ -147,8 +144,7 @@
 		   		   										  <div id="mensaje_id_unidad_medida" class="errores"></div>
                                     </div>
                                     </div>
-                        		    
-                        		    
+      
                         		<div class="col-lg-3 col-xs-12 col-md-3">
                     		    <div class="form-group">
                                                       <label for="ult_precio_productos" class="control-label">ULT Precio</label>
@@ -157,10 +153,6 @@
                                                       <div id="mensaje_ult_precio_productos" class="errores"></div>
                                 </div>
                                 </div>
-                        		    
-                        	
-                    	
-                    	
                     	
                         		    </div>
                     			
@@ -237,11 +229,7 @@
 		   		   										   <div id="mensaje_id_unidad_medida" class="errores"></div>
                                     </div>
                                     </div>
-                        		    
-           
-									
-									
- 								<div class="col-lg-3 col-xs-12 col-md-3">
+								<div class="col-lg-3 col-xs-12 col-md-3">
                     		    <div class="form-group">
                                                       <label for="ult_precio_productos" class="control-label">ULT Precio</label>
                                                       <input type="text" class="form-control cantidades1" id="ult_precio_productos" name="ult_precio_productos" value='0.00' 
@@ -249,15 +237,9 @@
                                                       <div id="mensaje_ult_precio_productos" class="errores"></div>
                                 </div>
                                 </div>
-									
-									
-									
-									
+	
 									</div>
-                		    
-                    	
-                    			
-                                 	                     	           	
+                    	           	
                     		     <?php } ?>
                     		    <br>  
                     		    <div class="row">
@@ -277,9 +259,7 @@
       </div>
     </section>
     
-    
-    
-     <section class="content">
+ <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Listado de Productos Registrados</h3>

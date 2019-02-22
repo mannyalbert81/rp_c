@@ -3,9 +3,7 @@
 	   load_usuarios(1);
 	   load_usuarios_inactivos(1);
 	   var ct="Usuarios Activos";
-	   
-	   $(".cantidades1").inputmask();
-
+	  
 	   $('[data-mask]').inputmask();
 	   
 	   

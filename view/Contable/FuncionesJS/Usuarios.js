@@ -134,111 +134,7 @@
 				$("#mensaje_id_rol_principal").fadeOut("slow"); 
 			});
 
-	    $("#btExportar").click(function()
-				{
-			/*var fecha = "<?php echo $DateString?>";
-			
-	    	var activeTab = ct;
-	    	
-	    	//console.log(activeTab);
-	    	
-			if (activeTab == "Usuarios Activos")
-			{
-			var arreglo_usuarios= new Array();
-			$("table#tabla_usuarios tr").each(
-			function(){
-				var arrayOfThisRow = [];
-			    var tableData = $(this).find('td');
-			    if (tableData.length > 0) {
-			        tableData.each(function() { arrayOfThisRow.push($(this).text()); });
-			        arreglo_usuarios.push(arrayOfThisRow);
-			    }
-						}
-					);
-
-	    	   //console.log(arreglo_usuarios);
-	    	   var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"
-		    	   docdescarga +=" \tCedula\tNombre\tTelefono\tCelular\tCorreo\tRol\tEstado\n";
-	    	   var len = arreglo_usuarios.length;
-	    	   for (var i=0; i<len; i++)
-	    	   {
-		    	   for (var j=1; j<9; j++)
-		    	   {
-		    		   docdescarga +=arreglo_usuarios[i][j];
-		    		   if(j!=8) docdescarga += "\t";			    	   
-			    	   }
-		    	   docdescarga += "\n";
-				
-		    	   }
-	    	   //console.log(docdescarga);
-
-	    	    if (len>0)
-	    	    {
-
-	    	   var encodeUri = encodeURI(docdescarga);
-				var link = document.createElement("a");
-				link.setAttribute("href", encodeUri);
-				var nombre_de_arch = "ReporteUsuariosActivos"+fecha+".xls";
-				link.setAttribute("download", nombre_de_arch);
-				document.body.appendChild(link); // Required for FF
-
-				link.click();
-	    	    }
-	    	    else
-	    	    {
-		    	    alert("No hay información para descargar");
-		    	    }
-			}
-
-			else
-			{
-				var arreglo_usuarios_inact= new Array();
-				$("table#tabla_usuarios_inactivos tr").each(
-				function(){
-					var arrayOfThisRow = [];
-				    var tableData = $(this).find('td');
-				    if (tableData.length > 0) {
-				        tableData.each(function() { arrayOfThisRow.push($(this).text()); });
-				        arreglo_usuarios_inact.push(arrayOfThisRow);
-				    }
-							}
-						);
-
-		    	  // console.log(arreglo_usuarios_inact);
-		    	   var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"
-			    	   docdescarga +=" \tCedula\tNombre\tTelefono\tCelular\tCorreo\tRol\tEstado\n";
-		    	   var len = arreglo_usuarios_inact.length;
-		    	   for (var i=0; i<len; i++)
-		    	   {
-			    	   for (var j=1; j<9; j++)
-			    	   {
-			    		   docdescarga +=arreglo_usuarios[i][j];
-			    		   if(j!=8) docdescarga += "\t";			    	   
-				    	   }
-			    	   docdescarga += "\n";
-					
-			    	   }
-		    	   if (len>0)
-		    	    {
-
-		    	   var encodeUri = encodeURI(docdescarga);
-					//console.log(encodeUri);
-					var link = document.createElement("a");
-					link.setAttribute("href", encodeUri);
-					var nombre_de_arch = "ReporteUsuariosInactivos"+fecha+".xls";
-					link.setAttribute("download", nombre_de_arch);
-					document.body.appendChild(link); // Required for FF
-
-					link.click();
-		    	    }
-		    	    else
-		    	    {
-			    	    alert("No hay información para descargar");
-			    	    }
-		    	   
-				
-				}*/
-				});
+	    
 	    
 	    $("#Cancelar").click(function() 
 				{
@@ -322,6 +218,126 @@
 				        }
 			    });
 		});//docreadyend
+ 
+ $("#btExportar").click(function()
+			{
+	
+	 get_data_for_xls();
+ 	
+			});
+ 
+
+ 
+ 
+
+ 
+ 
+ function get_data_for_xls()
+ {
+	 var activeTab = $('.nav-tabs .active').text();
+	 var search=$("#search").val();
+	 	
+	 	
+			if (activeTab == "Usuarios Activos")
+			{
+				var users ="activos";
+				var con_datos={
+						  search:search,
+						  users:users,
+						  action:'ajax'
+						  };
+				$.ajax({
+					url:'index.php?controller=Usuarios&action=Exportar_usuariosExcel',
+			        type : "POST",
+			        async: true,			
+					data: con_datos,
+					success:function(data){
+						
+							
+						if(data.length>3)
+						   {
+				  var array = JSON.parse(data);
+				  var newArr = [];
+				   while(array.length) newArr.push(array.splice(0,7));
+				   console.log(newArr);
+				   
+				   var dt = new Date();
+				   var m=dt.getMonth();
+				   m+=1;
+				   var y=dt.getFullYear();
+				   var d=dt.getDate();
+				   var fecha=d.toString()+"/"+m.toString()+"/"+y.toString();
+				   var wb =XLSX.utils.book_new();
+				   wb.SheetNames.push("Reporte Usuarios Activos");
+				   var ws = XLSX.utils.aoa_to_sheet(newArr);
+				   wb.Sheets["Reporte Usuarios Activos"] = ws;
+				   var wbout = XLSX.write(wb,{bookType:'xlsx', type:'binary'});
+				   function s2ab(s) { 
+			            var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+			            var view = new Uint8Array(buf);  //create uint8array as viewer
+			            for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+			            return buf;    
+				   }
+			       saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'ReporteUsuariosActivos'+fecha+'.xlsx');
+					   }
+				   else{
+					   alert("No hay información para descargar");
+				   }
+					}
+				});
+				}
+			else
+			{
+				var users ="inactivos";
+				var con_datos={
+						  search:search,
+						  users:users,
+						  action:'ajax'
+						  };
+				$.ajax({
+					url:'index.php?controller=Usuarios&action=Exportar_usuariosExcel',
+			        type : "POST",
+			        async: true,			
+					data: con_datos,
+					success:function(data){
+						
+							
+						if(data.length>3)
+						   {
+				  var array = JSON.parse(data);
+				  var newArr = [];
+				   while(array.length) newArr.push(array.splice(0,7));
+				   console.log(newArr);
+				   
+				   var dt = new Date();
+				   var m=dt.getMonth();
+				   m+=1;
+				   var y=dt.getFullYear();
+				   var d=dt.getDate();
+				   var fecha=d.toString()+"/"+m.toString()+"/"+y.toString();
+				   var wb =XLSX.utils.book_new();
+				   wb.SheetNames.push("Reporte Usuarios Inactivos");
+				   var ws = XLSX.utils.aoa_to_sheet(newArr);
+				   wb.Sheets["Reporte Usuarios Inactivos"] = ws;
+				   var wbout = XLSX.write(wb,{bookType:'xlsx', type:'binary'});
+				   function s2ab(s) { 
+			            var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+			            var view = new Uint8Array(buf);  //create uint8array as viewer
+			            for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+			            return buf;    
+				   }
+			       saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'ReporteUsuariosInactivos'+fecha+'.xlsx');
+					   }
+				   else{
+					   alert("No hay información para descargar");
+				   }
+					}
+				});
+				
+				
+				
+				}
+ }
 
  function copiarOpcion(opcion, destino) {
       var valor = $(opcion).val();

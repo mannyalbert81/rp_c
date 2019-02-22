@@ -5,126 +5,26 @@
 	   var ct="Usuarios Activos";
 	   
 	   $(".cantidades1").inputmask();
-	   
-	   
 
 	   $('[data-mask]').inputmask();
-
-	  
-	    $("#btExportar").click(function()
-				{
-			/*var fecha = "<?php echo $DateString?>";
-			
-	    	var activeTab = ct;
-	    	
-	    	//console.log(activeTab);
-	    	
-			if (activeTab == "Usuarios Activos")
-			{
-			var arreglo_usuarios= new Array();
-			$("table#tabla_usuarios tr").each(
-			function(){
-				var arrayOfThisRow = [];
-			    var tableData = $(this).find('td');
-			    if (tableData.length > 0) {
-			        tableData.each(function() { arrayOfThisRow.push($(this).text()); });
-			        arreglo_usuarios.push(arrayOfThisRow);
-			    }
-						}
-					);
-
-	    	   //console.log(arreglo_usuarios);
-	    	   var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"
-		    	   docdescarga +=" \tCedula\tNombre\tTelefono\tCelular\tCorreo\tRol\tEstado\n";
-	    	   var len = arreglo_usuarios.length;
-	    	   for (var i=0; i<len; i++)
-	    	   {
-		    	   for (var j=1; j<9; j++)
-		    	   {
-		    		   docdescarga +=arreglo_usuarios[i][j];
-		    		   if(j!=8) docdescarga += "\t";			    	   
-			    	   }
-		    	   docdescarga += "\n";
-				
-		    	   }
-	    	   //console.log(docdescarga);
-
-	    	    if (len>0)
-	    	    {
-
-	    	   var encodeUri = encodeURI(docdescarga);
-				var link = document.createElement("a");
-				link.setAttribute("href", encodeUri);
-				var nombre_de_arch = "ReporteUsuariosActivos"+fecha+".xls";
-				link.setAttribute("download", nombre_de_arch);
-				document.body.appendChild(link); // Required for FF
-
-				link.click();
-	    	    }
-	    	    else
-	    	    {
-		    	    alert("No hay información para descargar");
-		    	    }
-			}
-
-			else
-			{
-				var arreglo_usuarios_inact= new Array();
-				$("table#tabla_usuarios_inactivos tr").each(
-				function(){
-					var arrayOfThisRow = [];
-				    var tableData = $(this).find('td');
-				    if (tableData.length > 0) {
-				        tableData.each(function() { arrayOfThisRow.push($(this).text()); });
-				        arreglo_usuarios_inact.push(arrayOfThisRow);
+	   
+	   
+	   $('#fecha_nacimiento_usuarios').inputmask(
+			   'yyyy/mm/dd', { 
+				   'placeholder': 'yyyy/mm/dd',				   
+				   'clearIncomplete': true,
+				   'oncomplete': function () {
+					   //console.log($(this).val())
+				        if($(this).val() >= $('[data-fechaactual]').data('fechaactual')){
+				        	$('#mensaje_fecha_nacimiento_usuarios').text('Fecha no valida')
+				        	$('#mensaje_fecha_nacimiento_usuarios').fadeIn()
+				        	$(this).val('')
+				        }else{
+				        	$('#mensaje_fecha_nacimiento_usuarios').fadeOut()
+				        }
 				    }
-							}
-						);
-
-		    	  // console.log(arreglo_usuarios_inact);
-		    	   var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"
-			    	   docdescarga +=" \tCedula\tNombre\tTelefono\tCelular\tCorreo\tRol\tEstado\n";
-		    	   var len = arreglo_usuarios_inact.length;
-		    	   for (var i=0; i<len; i++)
-		    	   {
-			    	   for (var j=1; j<9; j++)
-			    	   {
-			    		   docdescarga +=arreglo_usuarios[i][j];
-			    		   if(j!=8) docdescarga += "\t";			    	   
-				    	   }
-			    	   docdescarga += "\n";
-					
-			    	   }
-		    	   if (len>0)
-		    	    {
-
-		    	   var encodeUri = encodeURI(docdescarga);
-					//console.log(encodeUri);
-					var link = document.createElement("a");
-					link.setAttribute("href", encodeUri);
-					var nombre_de_arch = "ReporteUsuariosInactivos"+fecha+".xls";
-					link.setAttribute("download", nombre_de_arch);
-					document.body.appendChild(link); // Required for FF
-
-					link.click();
-		    	    }
-		    	    else
-		    	    {
-			    	    alert("No hay información para descargar");
-			    	    }
-		    	   
-				
-				}*/
-				});
-	    
-	    
-
-	    
-
-	   
-
-	   
-
+			   })
+	  //'yearrange': { 'minyear': '1950', 'maxyear': '2018' },
 		
 });//docreadyend
 
@@ -349,7 +249,7 @@ $('#frm_ins_usuario').on('submit',function(e){
 		 contentType: false, //importante enviar este parametro en false
          processData: false,  //importante enviar este parametro en false
 		 success: function(respuesta){
-			 //$("#frm_ins_usuario")[0].reset();
+			 $("#frm_ins_usuario")[0].reset();
 			 //console.log(respuesta);
 			 if(respuesta.success==1){
 				

@@ -408,31 +408,30 @@ class UsuariosController extends ControladorBase{
 				{
 					
 					
-					$columnas = " usuarios.id_usuarios,
-							  usuarios.cedula_usuarios,
-							  usuarios.nombre_usuarios,
-                              usuarios.apellidos_usuarios,
-							  usuarios.telefono_usuarios,
-							  usuarios.celular_usuarios,
-							  usuarios.correo_usuarios,
-                              claves.clave_n_claves,
-                              claves.caduca_claves,
-                              usuarios.fotografia_usuarios,
-							  usuarios.creado,
-                              usuarios.fecha_nacimiento_usuarios,
-                              usuarios.usuario_usuarios,
-                              usuarios.estado_usuarios,
-                              privilegios.id_rol,
-                              catalogo.nombre_catalogo ";
+					$columnas = "usuarios.id_usuarios,
+                        usuarios.cedula_usuarios,
+                        usuarios.nombre_usuarios,
+                        usuarios.apellidos_usuarios,
+                        usuarios.telefono_usuarios,
+                        usuarios.celular_usuarios,
+                        usuarios.correo_usuarios,
+                        claves.clave_n_claves,
+                        claves.caduca_claves,
+                        usuarios.fotografia_usuarios,
+                        usuarios.creado,
+                        usuarios.fecha_nacimiento_usuarios,
+                        usuarios.usuario_usuarios,
+                        eusuarios.nombre_estado,
+                        usuarios.id_estado,
+                        rol.id_rol,
+                        rol.nombre_rol";
 					
-					$tablas = "public.usuarios INNER JOIN public.claves ON usuarios.id_usuarios = claves.id_usuarios
-                                INNER JOIN public.privilegios ON usuarios.id_usuarios = privilegios.id_usuarios
-                                INNER JOIN public.catalogo ON privilegios.tipo_rol_privilegios = catalogo.valor_catalogo 
-                                AND tabla_catalogo = 'privilegios' AND columna_catalogo='tipo_rol_privilegios' 
-                                AND nombre_catalogo='PRINCIPAL'
-                                INNER JOIN public.catalogo c1 ON c1.valor_catalogo = claves.estado_claves 
-                                AND c1.tabla_catalogo = 'claves' AND c1.columna_catalogo='estado_claves' 
-                                AND c1.nombre_catalogo='ACTUAL'";
+					$tablas = "public.usuarios 
+                        INNER JOIN public.claves ON usuarios.id_usuarios = claves.id_usuarios
+                        LEFT JOIN public.rol ON usuarios.id_rol = rol.id_rol
+                        INNER JOIN public.estado ON estado.id_estado = claves.id_estado 
+                        AND estado.tabla_estado = 'CLAVES' AND estado.nombre_estado='ACTIVO'
+                        INNER JOIN public.estado eusuarios ON eusuarios.id_estado = usuarios.id_estado";
 					
 					$id       = "usuarios.id_usuarios";
 					
@@ -440,17 +439,7 @@ class UsuariosController extends ControladorBase{
 					$where    = " usuarios.id_usuarios = '$_id_usuarios' "; 
 					$resultEdit = $usuarios->getCondiciones($columnas ,$tablas ,$where, $id); 
 					
-					
-					/*para catalogo de privilegios (Roles Secundarios)*/
-					$col_privilegios = "rol.id_rol,rol.nombre_rol";
-					$tab_privilegios = "public.privilegios INNER JOIN public.rol ON rol.id_rol=privilegios.id_rol
-                                        INNER JOIN public.catalogo ON catalogo.valor_catalogo = privilegios.tipo_rol_privilegios";
-					$where_privilegios = "columna_catalogo='tipo_rol_privilegios' 
-                                            AND privilegios.id_usuarios='$_id_usuarios'";
-					
-					$result_privilegios = $catalogo->getCondiciones($col_privilegios,$tab_privilegios,$where_privilegios,"tabla_catalogo");
-					
-					
+									
 				}
 				
 			    
@@ -535,6 +524,15 @@ class UsuariosController extends ControladorBase{
     		        $data = file_get_contents($directorio.$nombre);
     		        $imagen_usuarios = pg_escape_bytea($data);
     		        		        
+    		    }else{
+    		        
+    		        $directorio = dirname(__FILE__).'\..\view\images\usuario.jpg';
+    		        
+    		        if( is_file( $directorio )){
+    		            $data = file_get_contents($directorio);
+    		            $imagen_usuarios = pg_escape_bytea($data);
+    		        }   		       
+    		        
     		    }
     		    
     		    
@@ -670,7 +668,7 @@ class UsuariosController extends ControladorBase{
 	{
 	    session_start();
 	    $id_usuario_on = (int)$_SESSION['id_usuarios'];
-	    $catalogo = null; $catalogo= new CatalogoModel();
+	    $usuarios = null; $usuarios= new UsuariosModel();
 	    
 		if(isset($_GET["id_usuarios"]))
 		{
@@ -679,17 +677,15 @@ class UsuariosController extends ControladorBase{
 			if($id_usuario_on!=$id_usuario){
 			    
 			    //estado_usuario
-			    $wherecatalogo = "nombre_catalogo='INACTIVO' AND  tabla_catalogo='usuarios' AND columna_catalogo='estado_usuarios'";
-			    $resultCatalogo = $catalogo->getCondiciones('valor_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
-			    $estado_usuarios = $resultCatalogo[0]->valor_catalogo;
-			    
-			    $usuarios=new UsuariosModel();
-			    
-			    $colval = "estado_usuarios='$estado_usuarios'";
+			    $whereestado = "nombre_estado='INACTIVO' AND  tabla_estado='USUARIOS'";
+			    $resultEstado = $usuarios->getCondiciones('id_estado' ,'public.estado' , $whereestado , 'id_estado');
+			    $estado_usuarios = $resultEstado[0]->id_estado;
+			   
+			    $colval = "id_estado='$estado_usuarios'";
 			    $tabla = "usuarios";
 			    $where = "id_usuarios = '$id_usuario'";
-			    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
 			    
+			    $resultado=$usuarios->UpdateBy($colval, $tabla, $where);
 			    
 			}
 			
@@ -1374,10 +1370,13 @@ class UsuariosController extends ControladorBase{
 	    $tablas = "public.usuarios 
             INNER JOIN public.claves ON claves.id_usuarios = usuarios.id_usuarios
             LEFT JOIN public.rol ON rol.id_rol = usuarios.id_rol
-            INNER JOIN public.estado ON estado.id_estado = usuarios.id_estado";
+            INNER JOIN public.estado ON estado.id_estado = usuarios.id_estado
+            INNER JOIN public.estado ec ON ec.id_estado = claves.id_estado";
 	    
 	    
-	    $where    = "estado.nombre_estado = 'ACTIVO'";
+	    $where    = "estado.nombre_estado = 'ACTIVO'
+                AND estado.tabla_estado = 'USUARIOS'
+                AND ec.nombre_estado = 'ACTIVO'";
 	    
 	    $id       = "usuarios.id_usuarios";
 	    
@@ -1522,8 +1521,6 @@ class UsuariosController extends ControladorBase{
 					  usuarios.cedula_usuarios,
 					  usuarios.nombre_usuarios,
                       usuarios.apellidos_usuarios,
-					  claves.clave_claves,
-					  claves.clave_n_claves,
 					  usuarios.telefono_usuarios,
 					  usuarios.celular_usuarios,
 					  usuarios.correo_usuarios,
@@ -1533,7 +1530,7 @@ class UsuariosController extends ControladorBase{
 					  usuarios.creado,
                       estado.nombre_estado";
 	    
-	    $tablas = "public.usuarios INNER JOIN public.claves ON claves.id_usuarios = usuarios.id_usuarios
+	    $tablas = "public.usuarios
                     LEFT JOIN public.rol ON rol.id_rol=usuarios.id_rol
                     INNER JOIN public.estado ON estado.id_estado = usuarios.id_estado";
 	    

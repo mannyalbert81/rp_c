@@ -260,47 +260,68 @@ class ActivosFijosDetalleController extends ControladorBase{
     }
     
     
-    public function consulta_activos_fijos(){
+    public function consulta_activos_fijos_detalle(){
         
         
         session_start();
         $id_rol=$_SESSION["id_rol"];
-        
+        $activos_fijos = new ActivosFijosModel();
         $usuarios = new UsuariosModel();
-        $catalogo = null; $catalogo = new CatalogoModel();
+        $activos_detalle = null; $activos_detalle = new ActivosFijosDetalleModel();
         $where_to="";
         $columnas = "
+                      activos_fijos_detalle.id_activos_fijos_detalle, 
                       activos_fijos.id_activos_fijos, 
-                      oficina.id_oficina, 
-                      oficina.nombre_oficina, 
-                      tipo_activos_fijos.id_tipo_activos_fijos, 
-                      tipo_activos_fijos.nombre_tipo_activos_fijos, 
-                      estado.id_estado, 
-                      estado.nombre_estado, 
-                      usuarios.id_usuarios, 
-                      usuarios.nombre_usuarios, 
                       activos_fijos.nombre_activos_fijos, 
                       activos_fijos.codigo_activos_fijos, 
                       activos_fijos.fecha_compra_activos_fijos, 
-                      activos_fijos.cantidad_activos_fijos, 
-                      activos_fijos.valor_activos_fijos, 
-                      activos_fijos.meses_depreciacion_activos_fijos, 
-                      activos_fijos.depreciacion_mensual_activos_fijos, 
-                      activos_fijos.creado, 
-                      activos_fijos.modificado";
+                      activos_fijos_detalle.anio_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_enero_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_enero_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_enero_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_febrero_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_febrero_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_febrero_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_marzo_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_marzo_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_marzo_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_abril_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_abril_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_abril_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_mayo_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_mayo_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_mayo_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_junio_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_junio_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_junio_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_julio_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_julio_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_julio_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_agosto_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_agosto_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_agosto_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_septiembre_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_septiembre_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_septiembre_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_octubre_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_octubre_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_octubre_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_noviembre_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_noviembre_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_noviembre_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_diciembre_depreciacion_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_meses_diciembre_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.cant_dias_diciembre_reales_depre_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_depreciacion_acumulada_anio_activos_fijos_detalle, 
+                      activos_fijos_detalle.valor_a_depreciar_siguiente_anio_activos_fijos_detalle, 
+                      activos_fijos_detalle.creado, 
+                      activos_fijos_detalle.modificado";
         $tablas   = " 
-                      public.activos_fijos, 
-                      public.oficina, 
-                      public.tipo_activos_fijos, 
-                      public.estado, 
-                      public.usuarios
+                     public.activos_fijos, 
+                     public.activos_fijos_detalle
                     ";
-        $where    = " oficina.id_oficina = activos_fijos.id_oficina AND
-                      tipo_activos_fijos.id_tipo_activos_fijos = activos_fijos.id_tipo_activos_fijos AND
-                      estado.id_estado = activos_fijos.id_estado AND
-                      usuarios.id_usuarios = activos_fijos.id_usuarios 
-                      ";
-        $id       = "activos_fijos.id_activos_fijos";
+        $where    = " activos_fijos_detalle.id_activos_fijos = activos_fijos.id_activos_fijos ";
+        $id       = "activos_fijos_detalle.id_activos_fijos_detalle ";
         
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -351,29 +372,23 @@ class ActivosFijosDetalleController extends ControladorBase{
                 $html.='</div>';
                 $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                 $html.='<section style="height:425px; overflow-y:scroll;">';
-                $html.= "<table id='tabla_activos_fijos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<table id='tabla_activos_fijos_detalle' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
                 $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Oficina</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Tipo de Activo</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Fecha</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Cantidad de activos</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Valor activos</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Meses de depreciación</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Depreciación</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Año Depreciación</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Mes Depreciación</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Cantidad en Mes</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Cantidad en Días</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Valor Depreciado</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Valor Acumulado Anualmente</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Valor a Depreciación el Año Siguiente</th>';
                 
-                if($id_rol==1){
-                    
-                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-                    
-                }
                 
+              
                 $html.='</tr>';
                 $html.='</thead>';
                 $html.='<tbody>';
@@ -386,28 +401,22 @@ class ActivosFijosDetalleController extends ControladorBase{
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="font-size: 11px;">'.$i.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_oficina.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->codigo_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->fecha_compra_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->anio_depreciacion_activos_fijos_detalle.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->codigo_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->fecha_compra_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->cantidad_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->valor_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->meses_depreciacion_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->depreciacion_mensual_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->valor_diciembre_depreciacion_activos_fijos_detalle.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->valor_depreciacion_acumulada_anio_activos_fijos_detalle.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->valor_a_depreciar_siguiente_anio_activos_fijos_detalle.'</td>';
+                    
                     
                     
                   
                     
-                    if($id_rol==1){
-                        
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=index&id_activos_fijos='.$res->id_activos_fijos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=borrarId&id_activos_fijos='.$res->id_activos_fijos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
-                        
-                    }
-                    
+                  
                     $html.='</tr>';
                 }
                 
@@ -507,9 +516,71 @@ class ActivosFijosDetalleController extends ControladorBase{
         return $out;
     }
     
-
     
+    public function AutocompleteActivosFijosCodigo(){
+        
+        session_start();
+        $_id_usuarios= $_SESSION['id_usuarios'];
+        $plan_cuentas = new PlanCuentasModel();
+        $codigo_plan_cuentas = $_GET['term'];
+        
+        $columnas ="plan_cuentas.codigo_plan_cuentas";
+        $tablas =" public.usuarios,
+				  public.entidades,
+				  public.plan_cuentas";
+        $where ="plan_cuentas.codigo_plan_cuentas LIKE '$codigo_plan_cuentas%' AND entidades.id_entidades = usuarios.id_entidades AND
+ 				 plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas in ('4', '5')";
+        $id ="plan_cuentas.codigo_plan_cuentas";
+        
+        
+        $resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        if(!empty($resultSet)){
+            
+            foreach ($resultSet as $res){
+                
+                $_respuesta[] = $res->codigo_plan_cuentas;
+            }
+            echo json_encode($_respuesta);
+        }
+        
+    }
     
+    public function AutocompleteComprobantesDevuelveNombreActivos(){
+        session_start();
+        $_id_usuarios= $_SESSION['id_usuarios'];
+        
+        
+        $plan_cuentas = new PlanCuentasModel();
+        $codigo_plan_cuentas = $_POST['codigo_plan_cuentas'];
+        
+        
+        $columnas ="plan_cuentas.codigo_plan_cuentas,
+				  plan_cuentas.nombre_plan_cuentas,
+				  plan_cuentas.id_plan_cuentas";
+        $tablas =" public.usuarios,
+				  public.entidades,
+				  public.plan_cuentas";
+        $where ="plan_cuentas.codigo_plan_cuentas = '$codigo_plan_cuentas' AND entidades.id_entidades = usuarios.id_entidades AND
+		plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas in ('4', '5')";
+        $id ="plan_cuentas.codigo_plan_cuentas";
+        
+        
+        $resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $respuesta = new stdClass();
+        
+        if(!empty($resultSet)){
+            
+            $respuesta->nombre_plan_cuentas = $resultSet[0]->nombre_plan_cuentas;
+            $respuesta->id_plan_cuentas = $resultSet[0]->id_plan_cuentas;
+            
+            echo json_encode($respuesta);
+        }
+        
+    }
     
 }
 ?>

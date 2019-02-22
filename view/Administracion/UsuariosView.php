@@ -239,7 +239,7 @@
                     			<div class="form-group">
                                     <label for="cedula_usuarios" class="control-label">Cedula:</label>
                                     <input type="text" class="form-control" id="cedula_usuarios" name="cedula_usuarios" value=""  placeholder="ci-ruc.." >
-                                     <input type="hidden" class="form-control" id="id_usuarios" name="id_usuarios" value="0" >
+                                     <input type="hidden"  id="id_usuarios" name="id_usuarios" value="0" >
                                     <div id="mensaje_cedula_usuarios" class="errores"></div>
                                  </div>
                              </div>

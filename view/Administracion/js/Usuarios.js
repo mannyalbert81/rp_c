@@ -127,21 +127,83 @@
 
 		
 });//docreadyend
- 
-function vertyuii(){
-	 var cedula_usuarios = $("#cedula_usuarios").val();
 
-     if(cedula_usuarios>0){
+/**
+ * para autocomplete de usuarios
+ * @param pagina
+ * @returns json
+ */
+$( "#cedula_usuarios" ).autocomplete({
 
-      }else{
-		
-		$( "#cedula_usuarios" ).autocomplete({
+	source: "index.php?controller=Usuarios&action=AutocompleteCedula",
+	minLength: 4,
+    select: function (event, ui) {
+       // Set selection          
+       $('#id_usuarios').val(ui.item.id);
+       $('#cedula_usuarios').val(ui.item.value); // save selected id to input      
+       return false;
+    },focus: function(event, ui) { 
+        var text = ui.item.value; 
+        $('#cedula_usuarios').val();            
+        return false; 
+    } 
+}).focusout(function() {
+	validarcedula();
+	if(document.getElementById('cedula_usuarios').value != ''){
+		$.ajax({
+			url:'index.php?controller=Usuarios&action=AutocompleteCedula',
+			type:'POST',
+			dataType:'json',
+			data:{term:$('#cedula_usuarios').val()}
+		}).done(function(respuesta){
+			//console.log(respuesta[0].id);
+			
+			$('#id_usuarios').val(respuesta.id_usuarios);					
+			$('#nombre_usuarios').val(respuesta.nombre_usuarios);
+			$('#apellidos_usuarios').val(respuesta.apellidos_usuarios);
+			$('#usuario_usuarios').val(respuesta.usuario_usuarios);
+			$('#fecha_nacimiento_usuarios').val(respuesta.fecha_nacimiento_usuarios);
+			$('#celular_usuarios').val(respuesta.celular_usuarios);
+			$('#telefono_usuarios').val(respuesta.telefono_usuarios);
+			$('#correo_usuarios').val(respuesta.correo_usuarios);					
+			$('#codigo_clave').val(respuesta.clave_n_claves);
 
-			source: 'index.php?controller=Usuarios&action=AutocompleteCedula',
-				minLength: 4
+			if(respuesta.id_rol>0){
+				$('#id_rol_principal option[value='+respuesta.id_rol+']').attr('selected','selected');
+				}
+
+			if(respuesta.id_estado>0){
+				$('#id_estado option[value='+respuesta.id_estado+']').attr('selected','selected');
+				}
+
+			if(respuesta.caduca_claves=='t'){
+				
+				$('#caduca_clave').attr('checked','checked');
+			}
+
+			if(  respuesta.clave_usuarios != ""){
+				$('#clave_usuarios').val(respuesta.clave_n_claves).attr('readonly','readonly');
+				$('#clave_usuarios_r').val(respuesta.clave_n_claves).attr('readonly','readonly');
+				$('#lbl_cambiar_clave').text("Cambiar Clave:  ");
+				$('#cambiar_clave').show();					
+					
+				}
+			
+			//console.log(respuesta)
+			/*if(respuesta[0].id>0){				
+				$('#id_proveedor').val(respuesta[0].id);
+	           $('#proveedor').val(respuesta[0].value); // save selected id to input
+	           $('#nombre_proveedor').val(respuesta[0].nombre);
+	           $('#datos_proveedor').show();
+			}else{$('#datos_proveedor').hide(); $('#id_proveedor').val('0');  $('#proveedor').val('').focus();}*/
+			
+		}).fail( function( xhr , status, error ){
+			 var err=xhr.responseText
+			console.log(err)
 		});
-      }
-}
+	}
+	
+});
 
 /**
  * FORMULARIO PARA AGREGAR USUARIOS
@@ -277,21 +339,18 @@ $('#frm_ins_usuario').on('submit',function(e){
 	
 	parametros.append('action','ajax')
 	
-	formData.forEach((value,key) => {
-      console.log(key+" "+value)
-	});
-	
+		
 	 $.ajax({
 		 beforeSend:function(){},
 		 url:'index.php?controller=Usuarios&action=InsertaUsuarios',
 		 type:'POST',
 		 data:parametros,
-		 /*dataType: 'json',*/
+		 dataType: 'json',
 		 contentType: false, //importante enviar este parametro en false
          processData: false,  //importante enviar este parametro en false
 		 success: function(respuesta){
 			 //$("#frm_ins_usuario")[0].reset();
-			 console.log(respuesta);
+			 //console.log(respuesta);
 			 if(respuesta.success==1){
 				
             		swal({
@@ -300,8 +359,13 @@ $('#frm_ins_usuario').on('submit',function(e){
 	            		  icon: "success",
 	            		  button: "Aceptar",
 	            		});
+            		
+            		load_usuarios(1);
+            		load_usuarios_inactivos(1);
 					
-	                }else{
+	                }
+			 
+			 if(respuesta.success==0){
 	                	
 	                	swal({
 	              		  title: "Usuarios",
@@ -309,8 +373,8 @@ $('#frm_ins_usuario').on('submit',function(e){
 	              		  icon: "warning",
 	              		  button: "Aceptar",
 	              		});
-	             }
-			
+	             }			 
+			 
 		 },
 		 error: function(xhr,estado,error){    			 
 			 //console.log(xhr.responseText);
@@ -325,6 +389,9 @@ $('#frm_ins_usuario').on('submit',function(e){
 	        }
 	 })
 	
+	parametros.forEach((value,key) => {
+      console.log(key+" "+value)
+	});
 	
 	e.preventDefault();
 	
@@ -336,6 +403,7 @@ $('#frm_ins_usuario').on('submit',function(e){
      copiarOpcion($('#id_rol option:selected').clone(), "#lista_roles");
  });
  
+/*
  $("#cedula_usuarios").focusout(function(){
 		validarcedula();
 		$.ajax({
@@ -399,7 +467,7 @@ $('#frm_ins_usuario').on('submit',function(e){
 		  });
 
 	});  
-
+*/
  
  $( "#cedula_usuarios" ).focus(function() {
 	  $("#mensaje_cedula_usuarios").fadeOut("slow");

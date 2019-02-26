@@ -28,6 +28,7 @@
 		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
 
 		    	var nombre_controladores = $("#nombre_controladores").val();
+		    	var id_modulos = $("#id_modulos").val();
 		    	
 		    	
 		    	
@@ -44,7 +45,17 @@
 		            
 				}   
 
-
+		     	if (id_modulos == "")
+		    	{
+			    	
+		    		$("#mensaje_id_modulos").text("Introduzca Un Modulo");
+		    		$("#mensaje_id_modulos").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_id_modulos").fadeOut("slow"); //Muestra mensaje de error
+		            
 		    	
 			}); 
 
@@ -52,9 +63,14 @@
 		        $( "##mensaje_nombres" ).focus(function() {
 				  $("##mensaje_nombres").fadeOut("slow");
 			    });
-		        		      
+		        $( "#mensaje_id_modulos" ).focus(function() {
+					  $("#mensaje_id_modulos").fadeOut("slow");
+				    });   		      
 				    
 		}); 
+
+
+		    mensaje_id_modulos
 
 	</script>
      <?php
@@ -127,13 +143,23 @@
                             					                                          
                                         </div>
                             		  </div>
-                        			</div>	
-                        		
-            
-            
+                        				    <div class="col-xs-12 col-md-3 col-md-3">
+                        		    <div class="form-group">
+                                                       
+                                                          <label for="id_modulos" class="control-label">Modulo</label>
+                                                          <select name="id_modulos" id="id_modulos"  class="form-control">
+                                                            <option value="0" selected="selected">--Seleccione--</option>
+																<?php foreach($resultMod as $resMod) {?>
+				 												<option value="<?php echo $resMod->id_modulos; ?>" <?php if ($resMod->id_modulos == $resEdit->id_modulos )  echo  ' selected="selected" '  ;  ?> ><?php echo $resMod->nombre_modulos; ?> </option>
+													            <?php } ?>
+								    					  </select>
+		   		   										  <div id="mensaje_id_modulos" class="errores"></div>
+                                    </div>
+                                    </div>
+                        		</div>	
+         
 							    
 							     <?php } } else {?>
-							    
 							    
 							    
 							    	 <div class="row">
@@ -147,12 +173,22 @@
                                                               
                                         </div>
                             		  </div>
-                        			</div>	
-							    
-								   
-							    
+                        		 
+								    <div class="col-xs-12 col-md-3 col-md-3">
+                        		    <div class="form-group">
+                                                          <label for="id_modulos" class="control-label">Modulos</label>
+                                                          <select name="id_modulos" id="id_modulos"  class="form-control">
+                                                            <option value="0" selected="selected">--Seleccione--</option>
+																<?php foreach($resultMod as $resMod) {?>
+				 												<option value="<?php echo $resMod->id_modulos; ?>"  ><?php echo $resMod->nombre_modulos; ?> </option>
+													            <?php } ?>
+								    					  </select>
+		   		   										   <div id="mensaje_id_modulos" class="errores"></div>
+                                    </div>
+                                    </div>
+                      	   	</div>	
 							   
-					               	
+										               	
 							     <?php } ?>
 					                		        
                            		<div class="row">
@@ -191,11 +227,11 @@
                         <tr>
                           <th>#</th>
                           <th>Nombre Controlador</th>
+                          <th>Nombre Modulos</th>
                           <th>Editar</th>
                           <th>Borrar</th>
                         </tr>
                       </thead>
-
 
                       <tbody>
                       <?php $i=0;?>
@@ -204,7 +240,10 @@
             	        		<tr>
             	                   <td > <?php echo $i; ?>  </td>
             		               <td > <?php echo $res->nombre_controladores; ?>     </td> 
+            		               <td > <?php echo $res->nombre_modulos; ?>     </td> 
+            		               
             		               <td>
+            			           
             			           		<div class="right">
             			                    <a href="<?php echo $helper->url("Controladores","index"); ?>&id_controladores=<?php echo $res->id_controladores; ?>" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class='glyphicon glyphicon-edit'></i></a>
             			                </div>
@@ -225,7 +264,7 @@
         </div>
          </div>
         
-        
+       
         </div>
         </div>
         </section>

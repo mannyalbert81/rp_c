@@ -3,9 +3,7 @@
 	   load_usuarios(1);
 	   load_usuarios_inactivos(1);
 	   var ct="Usuarios Activos";
-	   
-	   $(".cantidades1").inputmask();
-
+	  
 	   $('[data-mask]').inputmask();
 	   
 	   
@@ -57,38 +55,40 @@ $( "#cedula_usuarios" ).autocomplete({
 			data:{term:$('#cedula_usuarios').val()}
 		}).done(function(respuesta){
 			//console.log(respuesta[0].id);
-			
-			$('#id_usuarios').val(respuesta.id_usuarios);					
-			$('#nombre_usuarios').val(respuesta.nombre_usuarios);
-			$('#apellidos_usuarios').val(respuesta.apellidos_usuarios);
-			$('#usuario_usuarios').val(respuesta.usuario_usuarios);
-			$('#fecha_nacimiento_usuarios').val(respuesta.fecha_nacimiento_usuarios);
-			$('#celular_usuarios').val(respuesta.celular_usuarios);
-			$('#telefono_usuarios').val(respuesta.telefono_usuarios);
-			$('#correo_usuarios').val(respuesta.correo_usuarios);					
-			$('#codigo_clave').val(respuesta.clave_n_claves);
-
-			if(respuesta.id_rol>0){
-				$('#id_rol_principal option[value='+respuesta.id_rol+']').attr('selected','selected');
-				}
-
-			if(respuesta.id_estado>0){
-				$('#id_estado option[value='+respuesta.id_estado+']').attr('selected','selected');
-				}
-
-			if(respuesta.caduca_claves=='t'){
-				
-				$('#caduca_clave').attr('checked','checked');
-			}
-
-			if(  respuesta.clave_usuarios != ""){
-				$('#clave_usuarios').val(respuesta.clave_n_claves).attr('readonly','readonly');
-				$('#clave_usuarios_r').val(respuesta.clave_n_claves).attr('readonly','readonly');
-				$('#lbl_cambiar_clave').text("Cambiar Clave:  ");
-				$('#cambiar_clave').show();					
+			//valida if( !$.isEmptyObject(respuesta)){
+			if(JSON.stringify(respuesta)!='{}'){
+			//if (Object.entries(respuesta).length === 0) {
+				$('#id_usuarios').val(respuesta.id_usuarios);					
+				$('#nombre_usuarios').val(respuesta.nombre_usuarios);
+				$('#apellidos_usuarios').val(respuesta.apellidos_usuarios);
+				$('#usuario_usuarios').val(respuesta.usuario_usuarios);
+				$('#fecha_nacimiento_usuarios').val(respuesta.fecha_nacimiento_usuarios);
+				$('#celular_usuarios').val(respuesta.celular_usuarios);
+				$('#telefono_usuarios').val(respuesta.telefono_usuarios);
+				$('#correo_usuarios').val(respuesta.correo_usuarios);					
+				$('#codigo_clave').val(respuesta.clave_n_claves);
+	
+				if(respuesta.id_rol>0){
+					$('#id_rol_principal option[value='+respuesta.id_rol+']').attr('selected','selected');
+					}
+	
+				if(respuesta.id_estado>0){
+					$('#id_estado option[value='+respuesta.id_estado+']').attr('selected','selected');
+					}
+	
+				if(respuesta.caduca_claves=='t'){
 					
+					$('#caduca_clave').attr('checked','checked');
 				}
-			
+	
+				if( respuesta.clave_usuarios != ""){
+					$('#clave_usuarios').val(respuesta.clave_n_claves).attr('readonly','readonly');
+					$('#clave_usuarios_r').val(respuesta.clave_n_claves).attr('readonly','readonly');
+					$('#lbl_cambiar_clave').text("Cambiar Clave:  ");
+					$('#cambiar_clave').show();					
+						
+					}
+			}
 			//console.log(respuesta)
 			/*if(respuesta[0].id>0){				
 				$('#id_proveedor').val(respuesta[0].id);

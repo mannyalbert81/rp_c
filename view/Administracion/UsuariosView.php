@@ -123,7 +123,7 @@
                              
                                  <div class="form-group">
                                     <label for="celular_usuarios" class="control-label">Celular:</label>
-                                    <input type="text" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>" class="form-control" data-inputmask='"mask": "999-999-9999"' data-mask>
+                                    <input type="text" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>" class="form-control" data-inputmask='"mask": "999-999-9999","clearIncomplete" : true' data-mask>
                                     <div id="mensaje_celular_usuarios" class="errores"></div>
                                     
                                   </div>
@@ -133,7 +133,7 @@
                              <div class="col-lg-3 col-xs-6 col-md-3">
                              	<div class="form-group">
                                     <label for="telefono_usuarios" class="control-label">Telefono:</label>                                        
-                                    <input type="text" class="form-control"  id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  data-inputmask='"mask": "(99) 9999-999"' data-mask>
+                                    <input type="text" class="form-control"  id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  data-inputmask='"mask": "(99) 9999-999","clearIncomplete" : true' data-mask>
                                        
                                   </div>
                     		   
@@ -287,7 +287,7 @@
                                  	<div class="form-group">
                                  	
                                         <label for="celular_usuarios" class="control-label">Celular:</label>
-                                        <input type="text" id="celular_usuarios" name="celular_usuarios" value="" class="form-control" data-inputmask='"mask": "999-999-9999"' data-mask>
+                                        <input type="text" id="celular_usuarios" name="celular_usuarios" value="" class="form-control" data-inputmask='"mask": "999-999-9999","clearIncomplete" : true' data-mask>
                                         <div id="mensaje_celular_usuarios" class="errores"></div>
                                         
                                       </div>
@@ -296,7 +296,7 @@
                                 <div class="col-lg-3 col-xs-6 col-md-3">
                                 	<div class="form-group">
                                         <label for="telefono_usuarios" class="control-label">Telefono:</label>
-                                        <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  data-inputmask='"mask": "(99) 9999-999"' data-mask>
+                                        <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  data-inputmask='"mask": "(99) 9999-999","clearIncomplete" : true ' data-mask>
                                        
                                       </div>
                         		    

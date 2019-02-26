@@ -3,145 +3,107 @@
 	   load_usuarios(1);
 	   load_usuarios_inactivos(1);
 	   var ct="Usuarios Activos";
-	   
-	   $(".cantidades1").inputmask();
-	   
-	   
-
-	   $('[data-mask]').inputmask();
-
 	  
-	    $("#btExportar").click(function()
-				{
-			/*var fecha = "<?php echo $DateString?>";
-			
-	    	var activeTab = ct;
-	    	
-	    	//console.log(activeTab);
-	    	
-			if (activeTab == "Usuarios Activos")
-			{
-			var arreglo_usuarios= new Array();
-			$("table#tabla_usuarios tr").each(
-			function(){
-				var arrayOfThisRow = [];
-			    var tableData = $(this).find('td');
-			    if (tableData.length > 0) {
-			        tableData.each(function() { arrayOfThisRow.push($(this).text()); });
-			        arreglo_usuarios.push(arrayOfThisRow);
-			    }
-						}
-					);
-
-	    	   //console.log(arreglo_usuarios);
-	    	   var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"
-		    	   docdescarga +=" \tCedula\tNombre\tTelefono\tCelular\tCorreo\tRol\tEstado\n";
-	    	   var len = arreglo_usuarios.length;
-	    	   for (var i=0; i<len; i++)
-	    	   {
-		    	   for (var j=1; j<9; j++)
-		    	   {
-		    		   docdescarga +=arreglo_usuarios[i][j];
-		    		   if(j!=8) docdescarga += "\t";			    	   
-			    	   }
-		    	   docdescarga += "\n";
-				
-		    	   }
-	    	   //console.log(docdescarga);
-
-	    	    if (len>0)
-	    	    {
-
-	    	   var encodeUri = encodeURI(docdescarga);
-				var link = document.createElement("a");
-				link.setAttribute("href", encodeUri);
-				var nombre_de_arch = "ReporteUsuariosActivos"+fecha+".xls";
-				link.setAttribute("download", nombre_de_arch);
-				document.body.appendChild(link); // Required for FF
-
-				link.click();
-	    	    }
-	    	    else
-	    	    {
-		    	    alert("No hay información para descargar");
-		    	    }
-			}
-
-			else
-			{
-				var arreglo_usuarios_inact= new Array();
-				$("table#tabla_usuarios_inactivos tr").each(
-				function(){
-					var arrayOfThisRow = [];
-				    var tableData = $(this).find('td');
-				    if (tableData.length > 0) {
-				        tableData.each(function() { arrayOfThisRow.push($(this).text()); });
-				        arreglo_usuarios_inact.push(arrayOfThisRow);
+	   $('[data-mask]').inputmask();
+	   
+	   
+	   $('#fecha_nacimiento_usuarios').inputmask(
+			   'yyyy/mm/dd', { 
+				   'placeholder': 'yyyy/mm/dd',				   
+				   'clearIncomplete': true,
+				   'oncomplete': function () {
+					   //console.log($(this).val())
+				        if($(this).val() >= $('[data-fechaactual]').data('fechaactual')){
+				        	$('#mensaje_fecha_nacimiento_usuarios').text('Fecha no valida')
+				        	$('#mensaje_fecha_nacimiento_usuarios').fadeIn()
+				        	$(this).val('')
+				        }else{
+				        	$('#mensaje_fecha_nacimiento_usuarios').fadeOut()
+				        }
 				    }
-							}
-						);
-
-		    	  // console.log(arreglo_usuarios_inact);
-		    	   var docdescarga ="data:application/vnd.ms-excel; charset=utf-8,"
-			    	   docdescarga +=" \tCedula\tNombre\tTelefono\tCelular\tCorreo\tRol\tEstado\n";
-		    	   var len = arreglo_usuarios_inact.length;
-		    	   for (var i=0; i<len; i++)
-		    	   {
-			    	   for (var j=1; j<9; j++)
-			    	   {
-			    		   docdescarga +=arreglo_usuarios[i][j];
-			    		   if(j!=8) docdescarga += "\t";			    	   
-				    	   }
-			    	   docdescarga += "\n";
-					
-			    	   }
-		    	   if (len>0)
-		    	    {
-
-		    	   var encodeUri = encodeURI(docdescarga);
-					//console.log(encodeUri);
-					var link = document.createElement("a");
-					link.setAttribute("href", encodeUri);
-					var nombre_de_arch = "ReporteUsuariosInactivos"+fecha+".xls";
-					link.setAttribute("download", nombre_de_arch);
-					document.body.appendChild(link); // Required for FF
-
-					link.click();
-		    	    }
-		    	    else
-		    	    {
-			    	    alert("No hay información para descargar");
-			    	    }
-		    	   
-				
-				}*/
-				});
-	    
-	    
-
-	    
-
-	   
-
-	   
-
+			   })
+	  //'yearrange': { 'minyear': '1950', 'maxyear': '2018' },
 		
 });//docreadyend
- 
-function vertyuii(){
-	 var cedula_usuarios = $("#cedula_usuarios").val();
 
-     if(cedula_usuarios>0){
+/**
+ * para autocomplete de usuarios
+ * @param pagina
+ * @returns json
+ */
+$( "#cedula_usuarios" ).autocomplete({
 
-      }else{
-		
-		$( "#cedula_usuarios" ).autocomplete({
-
-			source: 'index.php?controller=Usuarios&action=AutocompleteCedula',
-				minLength: 4
+	source: "index.php?controller=Usuarios&action=AutocompleteCedula",
+	minLength: 4,
+    select: function (event, ui) {
+       // Set selection          
+       $('#id_usuarios').val(ui.item.id);
+       $('#cedula_usuarios').val(ui.item.value); // save selected id to input      
+       return false;
+    },focus: function(event, ui) { 
+        var text = ui.item.value; 
+        $('#cedula_usuarios').val();            
+        return false; 
+    } 
+}).focusout(function() {
+	validarcedula();
+	if(document.getElementById('cedula_usuarios').value != ''){
+		$.ajax({
+			url:'index.php?controller=Usuarios&action=AutocompleteCedula',
+			type:'POST',
+			dataType:'json',
+			data:{term:$('#cedula_usuarios').val()}
+		}).done(function(respuesta){
+			//console.log(respuesta[0].id);
+			//valida if( !$.isEmptyObject(respuesta)){
+			if(JSON.stringify(respuesta)!='{}'){
+			//if (Object.entries(respuesta).length === 0) {
+				$('#id_usuarios').val(respuesta.id_usuarios);					
+				$('#nombre_usuarios').val(respuesta.nombre_usuarios);
+				$('#apellidos_usuarios').val(respuesta.apellidos_usuarios);
+				$('#usuario_usuarios').val(respuesta.usuario_usuarios);
+				$('#fecha_nacimiento_usuarios').val(respuesta.fecha_nacimiento_usuarios);
+				$('#celular_usuarios').val(respuesta.celular_usuarios);
+				$('#telefono_usuarios').val(respuesta.telefono_usuarios);
+				$('#correo_usuarios').val(respuesta.correo_usuarios);					
+				$('#codigo_clave').val(respuesta.clave_n_claves);
+	
+				if(respuesta.id_rol>0){
+					$('#id_rol_principal option[value='+respuesta.id_rol+']').attr('selected','selected');
+					}
+	
+				if(respuesta.id_estado>0){
+					$('#id_estado option[value='+respuesta.id_estado+']').attr('selected','selected');
+					}
+	
+				if(respuesta.caduca_claves=='t'){
+					
+					$('#caduca_clave').attr('checked','checked');
+				}
+	
+				if( respuesta.clave_usuarios != ""){
+					$('#clave_usuarios').val(respuesta.clave_n_claves).attr('readonly','readonly');
+					$('#clave_usuarios_r').val(respuesta.clave_n_claves).attr('readonly','readonly');
+					$('#lbl_cambiar_clave').text("Cambiar Clave:  ");
+					$('#cambiar_clave').show();					
+						
+					}
+			}
+			//console.log(respuesta)
+			/*if(respuesta[0].id>0){				
+				$('#id_proveedor').val(respuesta[0].id);
+	           $('#proveedor').val(respuesta[0].value); // save selected id to input
+	           $('#nombre_proveedor').val(respuesta[0].nombre);
+	           $('#datos_proveedor').show();
+			}else{$('#datos_proveedor').hide(); $('#id_proveedor').val('0');  $('#proveedor').val('').focus();}*/
+			
+		}).fail( function( xhr , status, error ){
+			 var err=xhr.responseText
+			console.log(err)
 		});
-      }
-}
+	}
+	
+});
 
 /**
  * FORMULARIO PARA AGREGAR USUARIOS
@@ -277,21 +239,18 @@ $('#frm_ins_usuario').on('submit',function(e){
 	
 	parametros.append('action','ajax')
 	
-	formData.forEach((value,key) => {
-      console.log(key+" "+value)
-	});
-	
+		
 	 $.ajax({
 		 beforeSend:function(){},
 		 url:'index.php?controller=Usuarios&action=InsertaUsuarios',
 		 type:'POST',
 		 data:parametros,
-		 /*dataType: 'json',*/
+		 dataType: 'json',
 		 contentType: false, //importante enviar este parametro en false
          processData: false,  //importante enviar este parametro en false
 		 success: function(respuesta){
-			 //$("#frm_ins_usuario")[0].reset();
-			 console.log(respuesta);
+			 $("#frm_ins_usuario")[0].reset();
+			 //console.log(respuesta);
 			 if(respuesta.success==1){
 				
             		swal({
@@ -300,8 +259,13 @@ $('#frm_ins_usuario').on('submit',function(e){
 	            		  icon: "success",
 	            		  button: "Aceptar",
 	            		});
+            		
+            		load_usuarios(1);
+            		load_usuarios_inactivos(1);
 					
-	                }else{
+	                }
+			 
+			 if(respuesta.success==0){
 	                	
 	                	swal({
 	              		  title: "Usuarios",
@@ -309,8 +273,8 @@ $('#frm_ins_usuario').on('submit',function(e){
 	              		  icon: "warning",
 	              		  button: "Aceptar",
 	              		});
-	             }
-			
+	             }			 
+			 
 		 },
 		 error: function(xhr,estado,error){    			 
 			 //console.log(xhr.responseText);
@@ -325,6 +289,9 @@ $('#frm_ins_usuario').on('submit',function(e){
 	        }
 	 })
 	
+	parametros.forEach((value,key) => {
+      console.log(key+" "+value)
+	});
 	
 	e.preventDefault();
 	
@@ -336,6 +303,7 @@ $('#frm_ins_usuario').on('submit',function(e){
      copiarOpcion($('#id_rol option:selected').clone(), "#lista_roles");
  });
  
+/*
  $("#cedula_usuarios").focusout(function(){
 		validarcedula();
 		$.ajax({
@@ -399,7 +367,7 @@ $('#frm_ins_usuario').on('submit',function(e){
 		  });
 
 	});  
-
+*/
  
  $( "#cedula_usuarios" ).focus(function() {
 	  $("#mensaje_cedula_usuarios").fadeOut("slow");

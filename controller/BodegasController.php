@@ -63,7 +63,7 @@ class BodegasController extends ControladorBase{
                                       estado.nombre_estado, 
                                       estado.tabla_estado, 
                                       bodegas.nombre_bodegas, 
-                                      bodegas.estado_bodegas, 
+                                      bodegas.id_estado, 
                                       bodegas.creado, 
                                       bodegas.modificado";
                         $tablas   = " public.bodegas, 
@@ -207,9 +207,9 @@ class BodegasController extends ControladorBase{
             {
                 $id_bodegas=(int)$_GET["id_bodegas"];
                 
-                $bodegas->UpdateBy("estado_bodegas=2","bodegas","id_bodegas='$id_bodegas'");
                 
                 
+                $bodegas->deleteBy(" id_bodegas",$id_bodegas);
                 
             }
             
@@ -310,7 +310,7 @@ class BodegasController extends ControladorBase{
         $id_rol=$_SESSION["id_rol"];
         
         $usuarios = new UsuariosModel();
-        $catalogo = null; $catalogo = new CatalogoModel();
+        $estado = null; $estado = new EstadoModel();
         $where_to="";
         $columnas = "
                                       bodegas.id_bodegas,
@@ -320,24 +320,24 @@ class BodegasController extends ControladorBase{
                                       cantones.nombre_cantones,
                                       parroquias.id_parroquias,
                                       parroquias.nombre_parroquias,
-                                      catalogo.id_catalogo,
-                                      catalogo.nombre_catalogo,
-                                      catalogo.valor_catalogo,
+                                      estado.id_estado, 
+                                      estado.nombre_estado, 
+                                      estado.tabla_estado,
                                       bodegas.nombre_bodegas,
-                                      bodegas.estado_bodegas,
+                                      bodegas.id_estado,
                                       bodegas.creado,
                                       bodegas.modificado";
         $tablas   = " public.bodegas,
                                       public.provincias,
                                       public.cantones,
                                       public.parroquias,
-                                      public.catalogo";
+                                      public.estado";
         $where    = " provincias.id_provincias = bodegas.id_provincias AND
                                       cantones.id_cantones = bodegas.id_cantones AND
                                       parroquias.id_parroquias = bodegas.id_parroquias AND
-                                      bodegas.estado_bodegas = catalogo.valor_catalogo AND
-                                      public.catalogo.tabla_catalogo = 'bodegas' AND public.catalogo.columna_catalogo = 'estado_bodegas'
-                                      AND public.catalogo.nombre_catalogo='ACTIVO' ";
+                                      estado.id_estado = bodegas.id_estado AND
+                                      public.estado.tabla_estado = 'BODEGAS' 
+                                      AND public.estado.nombre_estado='ACTIVO' ";
         $id       = "bodegas.id_bodegas";
         
         
@@ -348,8 +348,9 @@ class BodegasController extends ControladorBase{
         if($action == 'ajax')
         {
             //estado_usuario
-            $wherecatalogo = "tabla_catalogo='bodegas' AND columna_catalogo='estado_bodegas'";
-            $resultCatalogo = $catalogo->getCondiciones('valor_catalogo,nombre_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+            $whereestado = "tabla_estado='BODEGAS'";
+            $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
+            
             
             
             
@@ -427,15 +428,9 @@ class BodegasController extends ControladorBase{
                     $html.='<td style="font-size: 11px;">'.$res->nombre_provincias.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_cantones.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_parroquias.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
                     
                     
-                    if(!empty($resultCatalogo)){
-                        foreach ($resultCatalogo as $r_estado){
-                            if($r_estado->valor_catalogo == $res->estado_bodegas ){
-                                $html.='<td style="font-size: 11px;">'.$r_estado->nombre_catalogo.'</td>';
-                            }
-                        }
-                    }
                     
                     
                     if($id_rol==1){
@@ -486,11 +481,14 @@ class BodegasController extends ControladorBase{
     
     public function consulta_bodegas_inactivos(){
         
+        
+        
+        
         session_start();
         $id_rol=$_SESSION["id_rol"];
         
         $usuarios = new UsuariosModel();
-        $catalogo = null; $catalogo = new CatalogoModel();
+        $estado = null; $estado = new EstadoModel();
         $where_to="";
         $columnas = "
                                       bodegas.id_bodegas,
@@ -500,24 +498,24 @@ class BodegasController extends ControladorBase{
                                       cantones.nombre_cantones,
                                       parroquias.id_parroquias,
                                       parroquias.nombre_parroquias,
-                                      catalogo.id_catalogo,
-                                      catalogo.nombre_catalogo,
-                                      catalogo.valor_catalogo,
+                                      estado.id_estado,
+                                      estado.nombre_estado,
+                                      estado.tabla_estado,
                                       bodegas.nombre_bodegas,
-                                      bodegas.estado_bodegas,
+                                      bodegas.id_estado,
                                       bodegas.creado,
                                       bodegas.modificado";
         $tablas   = " public.bodegas,
                                       public.provincias,
                                       public.cantones,
                                       public.parroquias,
-                                      public.catalogo";
+                                      public.estado";
         $where    = " provincias.id_provincias = bodegas.id_provincias AND
                                       cantones.id_cantones = bodegas.id_cantones AND
                                       parroquias.id_parroquias = bodegas.id_parroquias AND
-                                      bodegas.estado_bodegas = catalogo.valor_catalogo AND
-                                      public.catalogo.tabla_catalogo = 'bodegas' AND public.catalogo.columna_catalogo = 'estado_bodegas'
-                                      AND public.catalogo.nombre_catalogo='INACTIVO' ";
+                                      estado.id_estado = bodegas.id_estado AND
+                                      public.estado.tabla_estado = 'BODEGAS'
+                                      AND public.estado.nombre_estado='INACTIVO' ";
         $id       = "bodegas.id_bodegas";
         
         
@@ -528,8 +526,9 @@ class BodegasController extends ControladorBase{
         if($action == 'ajax')
         {
             //estado_usuario
-            $wherecatalogo = "tabla_catalogo='bodegas' AND columna_catalogo='estado_bodegas'";
-            $resultCatalogo = $catalogo->getCondiciones('valor_catalogo,nombre_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
+            $whereestado = "tabla_estado='BODEGAS'";
+            $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
+            
             
             
             
@@ -574,7 +573,7 @@ class BodegasController extends ControladorBase{
                 $html.='</div>';
                 $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                 $html.='<section style="height:425px; overflow-y:scroll;">';
-                $html.= "<table id='tabla_bodegas_inactivos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<table id='tabla_bodegas_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
                 $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -586,6 +585,7 @@ class BodegasController extends ControladorBase{
                 
                 if($id_rol==1){
                     
+                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                     $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                     
                 }
@@ -606,21 +606,15 @@ class BodegasController extends ControladorBase{
                     $html.='<td style="font-size: 11px;">'.$res->nombre_provincias.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_cantones.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_parroquias.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
                     
-
                     
-                    if(!empty($resultCatalogo)){
-                        foreach ($resultCatalogo as $r_estado){
-                            if($r_estado->valor_catalogo == $res->estado_bodegas ){
-                                $html.='<td style="font-size: 11px;">'.$r_estado->nombre_catalogo.'</td>';
-                            }
-                        }
-                    }
                     
                     
                     if($id_rol==1){
                         
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Bodegas&action=index&id_bodegas='.$res->id_bodegas.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Bodegas&action=borrarId&id_bodegas='.$res->id_bodegas.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
                         
                     }
                     
@@ -633,7 +627,7 @@ class BodegasController extends ControladorBase{
                 $html.='</table>';
                 $html.='</section></div>';
                 $html.='<div class="table-pagination pull-right">';
-                $html.=''. $this->paginate_bodegas_inactivos("index.php", $page, $total_pages, $adjacents).'';
+                $html.=''. $this->paginate_bodegas_activos("index.php", $page, $total_pages, $adjacents).'';
                 $html.='</div>';
                 
                 
@@ -642,7 +636,7 @@ class BodegasController extends ControladorBase{
                 $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
                 $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
                 $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay Bodegas registrados...</b>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
                 $html.='</div>';
                 $html.='</div>';
             }
@@ -652,6 +646,10 @@ class BodegasController extends ControladorBase{
             die();
             
         }
+        
+        
+        
+        
     }
     
     

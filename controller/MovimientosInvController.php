@@ -1717,6 +1717,7 @@ class MovimientosInvController extends ControladorBase{
 	                $_fecha_movimientos_inv_cabeza     =$resultSetCabeza[0]->fecha_movimientos_inv_cabeza;
 	                $_estado_movimientos_inv_cabeza    =$resultSetCabeza[0]->estado_movimientos_inv_cabeza;
 	                $_razon_movimientos_inv_cabeza    =$resultSetCabeza[0]->razon_movimientos_inv_cabeza;
+	                $_modificado    =  date("Y-m-d", strtotime($resultSetCabeza[0]->modificado));
 	         
 	                $columnas1 = "  movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
                 	                productos.codigo_productos,

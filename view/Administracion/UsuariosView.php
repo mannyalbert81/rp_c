@@ -15,6 +15,7 @@
       
    <?php include("view/modulos/links_css.php"); ?>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="view/bootstrap/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
     
    
   </head>
@@ -93,7 +94,7 @@
                              <div class="col-xs-6 col-md-3 col-lg-3">
                              	<div class="form-group">
                                 	 <label for="apellidos_usuarios" class="control-label">Apellidos:</label>
-                                      <input type="text" class="form-control" id="apellidos_usuarios" name="apellidos_usuarios" value="<?php echo $resEdit->apellidos_usuarios; ?>" placeholder="nombres..">
+                                      <input type="text" class="form-control" id="apellidos_usuarios" name="apellidos_usuarios" value="<?php echo $resEdit->apellidos_usuarios; ?>" placeholder="apellidos..">
                                       <div id="mensaje_apellido_usuarios" class="errores"></div>
                                  </div>
                              </div>
@@ -101,52 +102,39 @@
                             	<div class="form-group">
                                 	<label for="usuario_usuarios" class="control-label">Usuario:</label>
                                     <input type="text" class="form-control" id="usuario_usuarios" name="usuario_usuarios" value="<?php echo $resEdit->usuario_usuarios; ?>"  placeholder="usuario..." >
-                                    <div id="usuario_usuarios" class="errores"></div>
+                                    <div id="mensaje_usuario_usuarios" class="errores"></div>
                                  </div>
                              </div> 
                           </div>
+                          
                           <div class="row">
+                          
                           
                           	<div class="col-xs-6 col-md-3 col-lg-3 ">
                           		<div class="form-group">
                              		 	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
-                                        <div class="input-group">
-                                          <div class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                          </div>
-                                          <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="<?php echo $resEdit->fecha_nacimiento_usuarios; ?>"  >
-                                          <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
-                                        </div>
-                                        <!-- /.input group -->
-                                      </div>                            	
+                                        <input type="text" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="<?php echo $resEdit->fecha_nacimiento_usuarios ?>"  data-fechaactual="<?php echo date('Y/m/d');?>" >
+                                        <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
+                                       
+                                </div>                            	
                              </div> 
-                             
+                             <?php //echo $resEdit->fecha_nacimiento_usuarios; ?> 
                              <div class="col-lg-3 col-xs-6 col-md-3">
                              
                                  <div class="form-group">
-                                    <label>Celular:</label>
-                                    <div class="input-group">
-                                      <div class="input-group-addon">
-                                        <i class="fa fa-tablet"></i>
-                                      </div>
-                                      <input type="text" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>" class="form-control" data-inputmask='"mask": "999-999-9999"' data-mask>
-                                      <div id="mensaje_celular_usuarios" class="errores"></div>
-                                    </div>
-                                    <!-- /.input group -->
+                                    <label for="celular_usuarios" class="control-label">Celular:</label>
+                                    <input type="text" id="celular_usuarios" name="celular_usuarios" value="<?php echo $resEdit->celular_usuarios; ?>" class="form-control" data-inputmask='"mask": "999-999-9999","clearIncomplete" : true' data-mask>
+                                    <div id="mensaje_celular_usuarios" class="errores"></div>
+                                    
                                   </div>
                     		    
                              </div>
                              
                              <div class="col-lg-3 col-xs-6 col-md-3">
                              	<div class="form-group">
-                                        <label>Telefono:</label>
-                                        <div class="input-group">
-                                          <div class="input-group-addon">
-                                            <i class="fa fa-phone"></i>
-                                          </div>
-                                          <input type="text" class="form-control"  id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  data-inputmask='"mask": "(99) 9999-999"' data-mask>
-                                        </div>
-                                        <!-- /.input group -->
+                                    <label for="telefono_usuarios" class="control-label">Telefono:</label>                                        
+                                    <input type="text" class="form-control"  id="telefono_usuarios" name="telefono_usuarios" value="<?php echo $resEdit->telefono_usuarios; ?>"  data-inputmask='"mask": "(99) 9999-999","clearIncomplete" : true' data-mask>
+                                       
                                   </div>
                     		   
                     	    </div>
@@ -187,18 +175,19 @@
                                       <label for="id_estado" class="control-label">Estado:</label>
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php  foreach($result_catalogo_usuario as $res) {?>
-    										<option value="<?php echo $res->valor_catalogo; ?>" <?php if ($res->valor_catalogo == $resEdit->estado_usuarios )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_catalogo; ?> </option>
+    									<?php  foreach($resEstado as $res) {?>
+    										<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_estados" class="errores"></div>
                                     </div>
                                   </div>
+                    		    
                     		    <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
                                           <label for="fotografia_usuarios" class="control-label">Fotografía:</label>
-                                          <input type="file" class="form-control" id="fotografia_usuarios" name="fotografia_usuarios" value="">
-                                          <div id="mensaje_usuario" class="errores"></div>
+                                          <input type="file" class="form-control" id="fotografia_usuarios" name="fotografia_usuarios" accept="image/png, .jpeg, .jpg" />
+                                          <div id="mensaje_fotografia_usuario" class="errores"></div>
                                     </div>
                     		    </div>
                         	</div>
@@ -216,7 +205,7 @@
     										<option value="<?php echo $res->id_rol; ?>" <?php if ($res->id_rol == $resEdit->id_rol )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_rol; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_rols" class="errores"></div>
+                                      <div id="mensaje_id_rol_principal" class="errores"></div>
                                     </div>
                                  </div> 
                                  
@@ -231,6 +220,17 @@
                                     </div>
                                  </div> 
                                  
+                                 <div class="col-lg-offset-3 col-md-offset-3 col-xs-12 col-lg-3 col-md-3 ">
+                                 	<div class="form-group">                                 		
+                                 		<?php if(isset($resultEdits)){ 
+                                 		    $imdata=base64_encode(pg_unescape_bytea($resultEdit[0]->fotografia_usuarios));
+                                 		    ?>
+                                 		<img class="img-rounded" width="100" height="100" alt="<?php echo $resultEdit[0]->usuario_usuarios;?>" src="data:image/jpg;base64,<?php echo $imdata;?>">
+                                 		<?php }?>                                		    
+                    
+                                 	</div>
+                                 </div>
+                                 
                               </div>
                               
                                 
@@ -240,7 +240,7 @@
                     			<div class="form-group">
                                     <label for="cedula_usuarios" class="control-label">Cedula:</label>
                                     <input type="text" class="form-control" id="cedula_usuarios" name="cedula_usuarios" value=""  placeholder="ci-ruc.." >
-                                     <input type="hidden" class="form-control" id="id_usuarios" name="id_usuarios" value="0" >
+                                     <input type="hidden"  id="id_usuarios" name="id_usuarios" value="0" >
                                     <div id="mensaje_cedula_usuarios" class="errores"></div>
                                  </div>
                              </div>
@@ -271,17 +271,13 @@
                              <div class="row">
                              	
                              	<div class="col-xs-6 col-md-3 col-lg-3 ">
+                             		 
                              		 <div class="form-group">
+                             		 
                              		 	<label for="fecha_nacimiento_usuarios" class="control-label">Fecha Nacimiento:</label>
-                                        <div class="input-group">
-                                          <div class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                          </div>
-                                          <input type="date" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="" min="2001-01-01" max="<?php echo date("Y-m-d");?>"  step="2" required>
-                                         <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
-                                        </div>
-                                         
-                                        <!-- /.input group -->
+                                        <input type="text" class="form-control" id="fecha_nacimiento_usuarios" name="fecha_nacimiento_usuarios" value="" data-fechaactual="<?php echo date('Y/m/d');?>"   />
+                                        <div id="mensaje_fecha_nacimiento_usuarios" class="errores"></div>
+                                        
                                       </div>
                                 	
                                    </div>  
@@ -289,28 +285,19 @@
                                  
                                  <div class="col-lg-3 col-xs-6 col-md-3">
                                  	<div class="form-group">
-                                        <label>Celular:</label>
-                                        <div class="input-group">
-                                          <div class="input-group-addon">
-                                            <i class="fa fa-tablet"></i>
-                                          </div>
-                                          <input type="text" id="celular_usuarios" name="celular_usuarios" value="" class="form-control" data-inputmask='"mask": "999-999-9999"' data-mask>
-                                          <div id="mensaje_celular_usuarios" class="errores"></div>
-                                        </div>
-                                        <!-- /.input group -->
+                                 	
+                                        <label for="celular_usuarios" class="control-label">Celular:</label>
+                                        <input type="text" id="celular_usuarios" name="celular_usuarios" value="" class="form-control" data-inputmask='"mask": "999-999-9999","clearIncomplete" : true' data-mask>
+                                        <div id="mensaje_celular_usuarios" class="errores"></div>
+                                        
                                       </div>
                                 </div>
                                 
                                 <div class="col-lg-3 col-xs-6 col-md-3">
                                 	<div class="form-group">
-                                        <label>Telefono:</label>
-                                        <div class="input-group">
-                                          <div class="input-group-addon">
-                                            <i class="fa fa-phone"></i>
-                                          </div>
-                                          <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  data-inputmask='"mask": "(99) 9999-999"' data-mask>
-                                        </div>
-                                        <!-- /.input group -->
+                                        <label for="telefono_usuarios" class="control-label">Telefono:</label>
+                                        <input type="text" class="form-control" id="telefono_usuarios" name="telefono_usuarios" value=""  data-inputmask='"mask": "(99) 9999-999","clearIncomplete" : true ' data-mask>
+                                       
                                       </div>
                         		    
                         	    </div>
@@ -360,10 +347,10 @@
                                     </div>
                                   </div>
                                   
-                                  <div class="col-lg-3 col-xs-12 col-md-3">
+                                <div class="col-lg-3 col-xs-12 col-md-3">
                         		    <div class="form-group">
                                           <label for="fotografia_usuarios" class="control-label">Fotografía:</label>
-                                          <input type="file" class="form-control" id="fotografia_usuarios" name="fotografia_usuarios" value="">
+                                          <input  class="form-control"  type="file" id="fotografia_usuarios" name="fotografia_usuarios" accept="image/png, .jpeg, .jpg" />
                                           <div id="mensaje_fotografia_usuario" class="errores"></div>
                                     </div>
                     		    </div>
@@ -401,7 +388,8 @@
                         	
                         	
                     		            
-                     <?php } ?>
+                     <?php } ?>                     
+                     
                      	<div class="row">
             			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
@@ -490,9 +478,9 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+    <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-   <script src="view/Administracion/js/Usuarios.js?1.0"></script>         	
+   <script src="view/Administracion/js/Usuarios.js?3.1"></script>         	
   </body>
 </html>
 

@@ -515,72 +515,154 @@ class ActivosFijosDetalleController extends ControladorBase{
         $out.= "</ul>";
         return $out;
     }
+    //AUTOCOMPLETAR CODIGO
     
-    
-    public function AutocompleteActivosFijosCodigo(){
+    public function AutocompleteCodigoActivos(){
         
+       
         session_start();
         $_id_usuarios= $_SESSION['id_usuarios'];
-        $plan_cuentas = new PlanCuentasModel();
-        $codigo_plan_cuentas = $_GET['term'];
+        $activosf=new ActivosFijosModel();
+        $codigo_activos_fijos = $_GET['term'];
         
-        $columnas ="plan_cuentas.codigo_plan_cuentas";
-        $tablas =" public.usuarios,
-				  public.entidades,
-				  public.plan_cuentas";
-        $where ="plan_cuentas.codigo_plan_cuentas LIKE '$codigo_plan_cuentas%' AND entidades.id_entidades = usuarios.id_entidades AND
- 				 plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas in ('4', '5')";
-        $id ="plan_cuentas.codigo_plan_cuentas";
+        $columnas ="activos_fijos.id_activos_fijos, 
+                  activos_fijos.nombre_activos_fijos, 
+                  activos_fijos.codigo_activos_fijos";
+        $tablas =" public.activos_fijos
+				  ";
+        $where ="activos_fijos.codigo_activos_fijos LIKE '$codigo_activos_fijos%' ";
+        $id ="activos_fijos.codigo_activos_fijos";
         
         
-        $resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
+        $resultSet=$activosf->getCondiciones($columnas, $tablas, $where, $id);
         
         
         if(!empty($resultSet)){
             
             foreach ($resultSet as $res){
                 
-                $_respuesta[] = $res->codigo_plan_cuentas;
+                $_respuesta[] = $res->codigo_activos_fijos;
             }
             echo json_encode($_respuesta);
         }
-        
+        else{
+            echo  json_encode(array('value'=>'','label'=>'CODIGO INCORRECTO'));
+        }
     }
     
-    public function AutocompleteComprobantesDevuelveNombreActivos(){
+    
+    //DEVUELVE EL NOMBRE
+    
+    public function DevuelveNombreActivos(){
         session_start();
         $_id_usuarios= $_SESSION['id_usuarios'];
         
         
-        $plan_cuentas = new PlanCuentasModel();
-        $codigo_plan_cuentas = $_POST['codigo_plan_cuentas'];
+        $activosf=new ActivosFijosModel();
+        $codigo_activos_fijos = $_POST['nombre_activos_fijos'];
         
         
-        $columnas ="plan_cuentas.codigo_plan_cuentas,
-				  plan_cuentas.nombre_plan_cuentas,
-				  plan_cuentas.id_plan_cuentas";
-        $tablas =" public.usuarios,
-				  public.entidades,
-				  public.plan_cuentas";
-        $where ="plan_cuentas.codigo_plan_cuentas = '$codigo_plan_cuentas' AND entidades.id_entidades = usuarios.id_entidades AND
-		plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas in ('4', '5')";
-        $id ="plan_cuentas.codigo_plan_cuentas";
+        $columnas ="activos_fijos.id_activos_fijos, 
+                  activos_fijos.nombre_activos_fijos, 
+                  activos_fijos.codigo_activos_fijos";
+        $tablas =" public.activos_fijos ";
+        $where ="activos_fijos.nombre_activos_fijos = '$codigo_activos_fijos' ";
+        $id ="activos_fijos.codigo_activos_fijos";
         
         
-        $resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
+        $resultSet=$activosf->getCondiciones($columnas, $tablas, $where, $id);
         
         
         $respuesta = new stdClass();
         
         if(!empty($resultSet)){
             
-            $respuesta->nombre_plan_cuentas = $resultSet[0]->nombre_plan_cuentas;
-            $respuesta->id_plan_cuentas = $resultSet[0]->id_plan_cuentas;
+            $respuesta->codigo_activos_fijos = $resultSet[0]->codigo_activos_fijos;
+            $respuesta->nombre_activos_fijos = $resultSet[0]->nombre_activos_fijos;
+            $respuesta->id_activos_fijos = $resultSet[0]->id_activos_fijos;
+           
             
             echo json_encode($respuesta);
         }
         
     }
+    
+    //AUTOCOMPLETE NOMBRE
+    
+    public function AutocompleteNombreActivos(){
+        
+        session_start();
+        $_id_usuarios= $_SESSION['id_usuarios'];
+        $activosf=new ActivosFijosModel();
+        $nombre_activos_fijos = $_GET['term'];
+        
+        //$resultSet=$plan_cuentas->getBy("codigo_plan_cuentas LIKE '$codigo_plan_cuentas%'");
+        
+        
+        $columnas ="activos_fijos.id_activos_fijos, 
+                  activos_fijos.nombre_activos_fijos, 
+                  activos_fijos.codigo_activos_fijos";
+        $tablas =" public.activos_fijos
+				  ";
+        $where ="activos_fijos.nombre_activos_fijos LIKE '$nombre_activos_fijos%' ";
+        $id ="activos_fijos.nombre_activos_fijos";
+        
+        
+        $resultSet=$activosf->getCondiciones($columnas, $tablas, $where, $id);
+        
+        // die();
+       
+        if(!empty($resultSet)){
+            
+            foreach ($resultSet as $res){
+                
+                $respuesta[] = $res->nombre_activos_fijos;
+            }
+            echo json_encode($respuesta);
+        }else{
+            echo  json_encode(array('value'=>'','label'=>'NOMBRE INCORRECTO'));
+        }
+        
+    }
+    
+  //AUTOCOMPLETE CODIGO
+  
+    public function DevuelveCodigoActivos(){
+        
+        session_start();
+        $_id_usuarios= $_SESSION['id_usuarios'];
+        
+        $activosf=new ActivosFijosModel();
+        
+        $nombre_activos_fijos = $_POST['codigo_activos_fijos'];
+        
+        
+        
+        $columnas ="activos_fijos.id_activos_fijos,
+                  activos_fijos.nombre_activos_fijos,
+                  activos_fijos.codigo_activos_fijos";
+        $tablas =" public.activos_fijos ";
+        $where ="activos_fijos.codigo_activos_fijos = '$nombre_activos_fijos' ";
+        $id ="activos_fijos.codigo_activos_fijos";
+        
+        $resultSet=$activosf->getCondiciones($columnas, $tablas, $where, $id);
+        
+        //print_r($resultSet);
+        $respuesta = new stdClass();
+        
+        if(!empty($resultSet)){
+            
+            $respuesta->codigo_activos_fijos = $resultSet[0]->codigo_activos_fijos;
+            $respuesta->nombre_activos_fijos = $resultSet[0]->nombre_activos_fijos;
+            $respuesta->id_activos_fijos = $resultSet[0]->id_activos_fijos;
+         
+            echo json_encode($respuesta);
+        }else{
+            echo 'ashjkhasjd';
+        }
+        
+    }
+    
     
 }
 ?>

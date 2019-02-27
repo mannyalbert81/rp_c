@@ -219,7 +219,7 @@ class ReporteComprobanteController extends ControladorBase{
 			    }
 			    
 					
-				$this->view("ReporteComprobante",array(
+			    $this->view_Contable("ReporteComprobante",array(
 				    "resultSet"=>$resultSet, "resultTipCom"=> $resultTipCom,
 				    "resultEnt"=>$resultEnt
 				    
@@ -228,7 +228,7 @@ class ReporteComprobanteController extends ControladorBase{
 			
 			}else{
 				
-				$this->view("Error",array(
+			    $this->view_Contable("Error",array(
 						"resultado"=>"No tiene Permisos de Consultar Comprobantes"
 				
 					

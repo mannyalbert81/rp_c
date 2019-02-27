@@ -1,4 +1,4 @@
-    <!DOCTYPE HTML>
+<!DOCTYPE HTML>
 	<html lang="es">
     <head>
         
@@ -77,26 +77,25 @@
 								 <div class="row">
 								 <form id ="my_form" action= "<?php echo $pgurl;?>" method="POST" target="_blank">
 								 	
-								 <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          
-                                                         <label for="codigo_activos_fijos" class="control-label">Código</label>
-                                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="código...">
-                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
-                                                          <input type="hidden" class="form-control" id="id_activos_fijos" name="id_activos_fijos" value="0"  placeholder="Search">
-                                   
-                                    </div>
-                        		    </div>
-                        		    
-                        		   <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          
-                                                         <label for="nombre_activos_fijos" class="control-label">Nombre Activos Fijos:</label>
-                                                          <input type="text" class="form-control" id="nombre_activos_fijos" name="nombre_activos_fijos" value=""  placeholder="nombre...">
-                                                           <div id="mensaje_nombre_activos_fijos" class="errores"></div>
-                                                            
-                                    </div>
-                        		    </div> 
+								 <div class="col-xs-12 col-md-2 col-lg-2">
+                        		     <div class="form-group">
+                                          <label for="codigo_activos_fijos" class="control-label">Código:</label>
+                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="Código">
+                                          <div id="mensaje_codigo_activos_fijos" class="errores"></div> 
+                                     <input type="hidden" class="form-control" id="activos_fijos" name="activos_fijos" value="0"  placeholder="Search">
+                                  <span class="help-block"></span>
+ 									</div>
+                        		     </div>
+                        		     
+                        		     <div class="col-xs-12 col-md-2 col-lg-2">
+                        		     <div class="form-group">
+                                          <label for="nombre_activos_fijos" class="control-label">Nombre Activos Fijos:</label>
+                                          <input type="text" class=" form-control" id="nombre_activos_fijos" name="nombre_activos_fijos" value=""  placeholder="Nombre">
+                                           <div id="mensaje_nombre_activos_fijos" class="errores"></div> 
+                                           <input type="hidden" class="form-control" id="activos_fijos2" name="activos_fijos2" value="0"  placeholder="Search">
+                                  <span class="help-block"></span>
+                                     </div>
+                        		     </div>
                                     
 									<div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
@@ -272,77 +271,18 @@
     })
     </script>  
 
-<script type="text/javascript">
 
-//AUTOCOMPLETE CODIGO ACTIVOS FIJOS 
-
-$( "#codigo_activos_fijos" ).autocomplete({
-	source: 'index.php?controller=ActivosFijosDetalle&action=AutocompleteCodigoActivos',
-	minLength: 1
-});
-
-$("#codigo_activos_fijos").focusout(function(){
-
-    $.ajax({
-    	url:'index.php?controller=ActivosFijosDetalle&action=DevuelveCodigoActivos',
-    	type:'POST',
-    	dataType:'json',
-    	data:{codigo_activos_fijos:$('#codigo_activos_fijos').val()}
-    }).done(function(respuesta){
-    	console.log(respuesta)
-    	$('#nombre_activos_fijos').val(respuesta.nombre_activos_fijos);
-    	$('#codigo_activos_fijos').val(respuesta.codigo_activos_fijos);
-    
-    }).fail(function(xhr,respuesta,error) {
-    	  
-    	
-    	$('#codigo_activos_fijos').val("");
-    
-    	
-    });
-
-});   
-
-
-
-// AUTOCOMPLETE NOMBRE ACTIVOS FIJOS
-
-	
-		$("#nombre_activos_fijos").autocomplete({
-				source: 'index.php?controller=ActivosFijosDetalle&action=AutocompleteNombreActivos',
-				minLength: 1
-		});
-
-		$("#nombre_activos_fijos").focusout(function(){
-			$.ajax({
-				url:'index.php?controller=ActivosFijosDetalle&action=DevuelveNombreActivos',
-				type:'POST',
-				dataType:'json',
-				data:{nombre_activos_fijos:$('#nombre_activos_fijos').val()}
-			}).done(function(respuesta){
-				console.log(respuesta)
-				$('#id_activos_fijos').val(respuesta.id_activos_fijos);
-				$('#nombre_activos_fijos').val(respuesta.nombre_activos_fijos);
-		    	$('#codigo_activos_fijos').val(respuesta.codigo_activos_fijos);
-			
-		    }).fail(function(xhr,respuesta,error) {
-		    	  
-		    	console.log(xhr.responseText)
-		    	$('#nombre_activos_fijos').val("");
-		    
-		    	
-		    });
-			
-		});   
-		
-
-
-
-</script>
 	  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
       
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+      <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      
+    <script src="view/Contable/FuncionesJS/ActivosFijosD.js?1"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+    
+    
     
     
     
@@ -350,5 +290,8 @@ $("#codigo_activos_fijos").focusout(function(){
 	
   </body>
 </html>   
+
+ 
+
 
  

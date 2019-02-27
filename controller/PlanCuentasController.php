@@ -49,14 +49,14 @@ class PlanCuentasController extends ControladorBase{
 			    
 			    
 					
-				$this->view("PlanCuentas",array(
+			    $this->view_Contable("PlanCuentas",array(
 				    "resultSet"=>$resultSet, "resultSet2"=>$resultSet2,
 				));
 			
 			
 			}else{
 				
-				$this->view("Error",array(
+			    $this->view_Contable("Error",array(
 						"resultado"=>"No tiene Permisos de Consultar Comprobantes"
 				
 					

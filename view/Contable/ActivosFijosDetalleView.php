@@ -107,9 +107,9 @@
                         		    
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
-                                                          <label for="codigo_activos_fijos" class="control-label">Mes a Depreciar:</label>
-                                                          <select id="estado_compra" name="estado_compra" class="form-control" ng-model="month" class="form-control" ng-options="m for m in months"></select>
-                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
+                                                          <label for="Mes_a_depreciar" class="control-label">Mes a Depreciar:</label>
+                                                          <select id="Mes_a_depreciar" name="Mes_a_depreciar" class="form-control" ng-model="month" class="form-control" ng-options="m for m in months"></select>
+                                                           <div id="mensaje_Mes_a_depreciar" class="errores"></div>
                                     </div>
                         		    </div>
                         		    </div>

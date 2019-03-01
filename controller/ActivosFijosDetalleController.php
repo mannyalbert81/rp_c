@@ -662,6 +662,21 @@ class ActivosFijosDetalleController extends ControladorBase{
         
     }
     
+    public function Depreciar(){
+        
+        $Mes_a_depreciar=;
+        
+        switch($Mes_a_depreciar)
+        {
+            
+            
+            
+        }
+        
+        
+        
+    }
+    
     
 }
 ?>

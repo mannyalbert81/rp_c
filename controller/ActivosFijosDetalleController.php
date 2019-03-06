@@ -519,18 +519,20 @@ class ActivosFijosDetalleController extends ControladorBase{
     
     public function AutocompleteCodigoActivos(){
         
-       
         session_start();
         $_id_usuarios= $_SESSION['id_usuarios'];
         $activosf=new ActivosFijosModel();
         $codigo_activos_fijos = $_GET['term'];
         
-        $columnas ="activos_fijos.id_activos_fijos, 
-                  activos_fijos.nombre_activos_fijos, 
-                  activos_fijos.codigo_activos_fijos";
-        $tablas =" public.activos_fijos
-				  ";
-        $where ="activos_fijos.codigo_activos_fijos LIKE '$codigo_activos_fijos%' ";
+        $columnas ="  activos_fijos_detalle.id_activos_fijos_detalle, 
+                      activos_fijos.id_activos_fijos, 
+                      activos_fijos.nombre_activos_fijos, 
+                      activos_fijos.codigo_activos_fijos, 
+                      activos_fijos.creado, 
+                      activos_fijos.modificado";
+        $tablas ="public.activos_fijos_detalle, 
+                  public.activos_fijos";
+        $where ="activos_fijos.codigo_activos_fijos LIKE '$codigo_activos_fijos%'";
         $id ="activos_fijos.codigo_activos_fijos";
         
         
@@ -545,9 +547,7 @@ class ActivosFijosDetalleController extends ControladorBase{
             }
             echo json_encode($_respuesta);
         }
-        else{
-            echo  json_encode(array('value'=>'','label'=>'CODIGO INCORRECTO'));
-        }
+        
     }
     
     
@@ -556,17 +556,19 @@ class ActivosFijosDetalleController extends ControladorBase{
     public function DevuelveNombreActivos(){
         session_start();
         $_id_usuarios= $_SESSION['id_usuarios'];
-        
-        
         $activosf=new ActivosFijosModel();
-        $codigo_activos_fijos = $_POST['nombre_activos_fijos'];
+        $codigo_activos_fijos = $_POST['codigo_activos_fijos'];
         
         
-        $columnas ="activos_fijos.id_activos_fijos, 
-                  activos_fijos.nombre_activos_fijos, 
-                  activos_fijos.codigo_activos_fijos";
-        $tablas =" public.activos_fijos ";
-        $where ="activos_fijos.nombre_activos_fijos = '$codigo_activos_fijos' ";
+        $columnas ="activos_fijos_detalle.id_activos_fijos_detalle, 
+                      activos_fijos.id_activos_fijos, 
+                      activos_fijos.nombre_activos_fijos, 
+                      activos_fijos.codigo_activos_fijos, 
+                      activos_fijos.creado, 
+                      activos_fijos.modificado";
+        $tablas ="public.activos_fijos_detalle, 
+                  public.activos_fijos";
+        $where ="activos_fijos.codigo_activos_fijos = '$codigo_activos_fijos'";
         $id ="activos_fijos.codigo_activos_fijos";
         
         
@@ -577,10 +579,8 @@ class ActivosFijosDetalleController extends ControladorBase{
         
         if(!empty($resultSet)){
             
-            $respuesta->codigo_activos_fijos = $resultSet[0]->codigo_activos_fijos;
             $respuesta->nombre_activos_fijos = $resultSet[0]->nombre_activos_fijos;
-            $respuesta->id_activos_fijos = $resultSet[0]->id_activos_fijos;
-           
+            $respuesta->codigo_activos_fijos = $resultSet[0]->codigo_activos_fijos;
             
             echo json_encode($respuesta);
         }
@@ -596,31 +596,28 @@ class ActivosFijosDetalleController extends ControladorBase{
         $activosf=new ActivosFijosModel();
         $nombre_activos_fijos = $_GET['term'];
         
-        //$resultSet=$plan_cuentas->getBy("codigo_plan_cuentas LIKE '$codigo_plan_cuentas%'");
-        
-        
-        $columnas ="activos_fijos.id_activos_fijos, 
-                  activos_fijos.nombre_activos_fijos, 
-                  activos_fijos.codigo_activos_fijos";
-        $tablas =" public.activos_fijos
-				  ";
-        $where ="activos_fijos.nombre_activos_fijos LIKE '$nombre_activos_fijos%' ";
+        $columnas ="activos_fijos_detalle.id_activos_fijos_detalle, 
+                      activos_fijos.id_activos_fijos, 
+                      activos_fijos.nombre_activos_fijos, 
+                      activos_fijos.codigo_activos_fijos, 
+                      activos_fijos.creado, 
+                      activos_fijos.modificado";
+        $tablas =" public.activos_fijos_detalle, 
+                  public.activos_fijos";
+        $where ="activos_fijos.nombre_activos_fijos ILIKE '$nombre_activos_fijos%'";
         $id ="activos_fijos.nombre_activos_fijos";
         
         
         $resultSet=$activosf->getCondiciones($columnas, $tablas, $where, $id);
         
-        // die();
-       
+        
         if(!empty($resultSet)){
             
             foreach ($resultSet as $res){
                 
-                $respuesta[] = $res->nombre_activos_fijos;
+                $_respuesta[] = $res->nombre_activos_fijos;
             }
-            echo json_encode($respuesta);
-        }else{
-            echo  json_encode(array('value'=>'','label'=>'NOMBRE INCORRECTO'));
+            echo json_encode($_respuesta);
         }
         
     }
@@ -628,38 +625,55 @@ class ActivosFijosDetalleController extends ControladorBase{
   //AUTOCOMPLETE CODIGO
   
     public function DevuelveCodigoActivos(){
-        
         session_start();
         $_id_usuarios= $_SESSION['id_usuarios'];
-        
         $activosf=new ActivosFijosModel();
-        
-        $nombre_activos_fijos = $_POST['codigo_activos_fijos'];
-        
+        $nombre_activos_fijos = $_POST['nombre_activos_fijos'];
         
         
-        $columnas ="activos_fijos.id_activos_fijos,
-                  activos_fijos.nombre_activos_fijos,
-                  activos_fijos.codigo_activos_fijos";
-        $tablas =" public.activos_fijos ";
-        $where ="activos_fijos.codigo_activos_fijos = '$nombre_activos_fijos' ";
-        $id ="activos_fijos.codigo_activos_fijos";
+        
+        $columnas ="activos_fijos_detalle.id_activos_fijos_detalle, 
+                      activos_fijos.id_activos_fijos, 
+                      activos_fijos.nombre_activos_fijos, 
+                      activos_fijos.codigo_activos_fijos, 
+                      activos_fijos.creado, 
+                      activos_fijos.modificado";
+        $tablas ="public.activos_fijos_detalle, 
+                  public.activos_fijos";
+        $where ="activos_fijos.nombre_activos_fijos = '$nombre_activos_fijos'";
+        $id ="activos_fijos.nombre_activos_fijos";
+        
         
         $resultSet=$activosf->getCondiciones($columnas, $tablas, $where, $id);
         
-        //print_r($resultSet);
+        
         $respuesta = new stdClass();
         
         if(!empty($resultSet)){
             
+            
+            
             $respuesta->codigo_activos_fijos = $resultSet[0]->codigo_activos_fijos;
             $respuesta->nombre_activos_fijos = $resultSet[0]->nombre_activos_fijos;
-            $respuesta->id_activos_fijos = $resultSet[0]->id_activos_fijos;
-         
+            
+            
             echo json_encode($respuesta);
-        }else{
-            echo 'ashjkhasjd';
         }
+        
+    }
+    
+    public function Depreciar(){
+        
+        $Mes_a_depreciar=;
+        
+        switch($Mes_a_depreciar)
+        {
+            
+            
+            
+        }
+        
+        
         
     }
     

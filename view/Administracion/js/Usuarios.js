@@ -88,7 +88,7 @@ $( "#cedula_usuarios" ).autocomplete({
 					$('#cambiar_clave').show();					
 						
 					}
-			}
+			}else{ $("#frm_ins_usuario")[0].reset(); }
 			//console.log(respuesta)
 			/*if(respuesta[0].id>0){				
 				$('#id_proveedor').val(respuesta[0].id);

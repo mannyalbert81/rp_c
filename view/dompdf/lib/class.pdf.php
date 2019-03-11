@@ -11,7 +11,7 @@
  * @author  Helmut Tischer <htischer@weihenstephan.org>
  * @author  Ryan H. Masten <ryan.masten@gmail.com>
  * @author  Brian Sweeney <eclecticgeek@gmail.com>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @author  Fabien Mï¿½nager <fabien.menager@gmail.com>
  * @version $Id: class.pdf.php 469 2012-02-05 22:25:30Z fabien.menager $
  * @license Public Domain http://creativecommons.org/licenses/publicdomain/
  * @package Cpdf
@@ -4289,18 +4289,18 @@ EOT;
     
     // Use PECL gmagick + Graphics Magic to process transparent PNG images
     if (extension_loaded("gmagick")) {
-      $gmagick = new Gmagick($file);
+    //  $gmagick = new Gmagick($file);
       $gmagick->setimageformat('png');
       
       // Get opacity channel (negative of alpha channel)
       $alpha_channel_neg = clone $gmagick;
-      $alpha_channel_neg->separateimagechannel(Gmagick::CHANNEL_OPACITY);
+     // $alpha_channel_neg->separateimagechannel(Gmagick::CHANNEL_OPACITY);
       
       // Negate opacity channel
-      $alpha_channel = new Gmagick();
+     // $alpha_channel = new Gmagick();
       $alpha_channel->newimage($wpx, $hpx, "#FFFFFF", "png");
-      $alpha_channel->compositeimage($alpha_channel_neg, Gmagick::COMPOSITE_DIFFERENCE, 0, 0);
-      $alpha_channel->separateimagechannel(Gmagick::CHANNEL_RED);
+    //  $alpha_channel->compositeimage($alpha_channel_neg, Gmagick::COMPOSITE_DIFFERENCE, 0, 0);
+     // $alpha_channel->separateimagechannel(Gmagick::CHANNEL_RED);
       $alpha_channel->writeimage($tempfile_alpha);
       
       // Cast to 8bit+palette
@@ -4310,13 +4310,13 @@ EOT;
       imagepng($imgalpha, $tempfile_alpha);
       
       // Make opaque image
-      $color_channels = new Gmagick();
+    /*  $color_channels = new Gmagick();
       $color_channels->newimage($wpx, $hpx, "#FFFFFF", "png");
       $color_channels->compositeimage($gmagick, Gmagick::COMPOSITE_COPYRED, 0, 0);
       $color_channels->compositeimage($gmagick, Gmagick::COMPOSITE_COPYGREEN, 0, 0);
       $color_channels->compositeimage($gmagick, Gmagick::COMPOSITE_COPYBLUE, 0, 0);
       $color_channels->writeimage($tempfile_plain);
-      
+      */
       $imgplain = imagecreatefrompng($tempfile_plain);
     }
     

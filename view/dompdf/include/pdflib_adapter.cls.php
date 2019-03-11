@@ -43,7 +43,7 @@ class PDFLib_Adapter implements Canvas {
   /**
    * Instance of PDFLib class
    *
-   * @var PDFlib
+
    */
   private $_pdf;
 
@@ -64,7 +64,7 @@ class PDFLib_Adapter implements Canvas {
   /**
    * PDF height, in points
    *
-   * @var height
+
    */
   private $_height;
 
@@ -153,7 +153,7 @@ class PDFLib_Adapter implements Canvas {
     $this->_width = $size[2] - $size[0];
     $this->_height= $size[3] - $size[1];
 
-    $this->_pdf = new PDFLib();
+   // $this->_pdf = new PDFLib();
 
     if ( defined("DOMPDF_PDFLIB_LICENSE") )
       $this->_pdf->set_parameter( "license", DOMPDF_PDFLIB_LICENSE);
@@ -242,7 +242,7 @@ class PDFLib_Adapter implements Canvas {
   /**
    * Returns the PDFLib instance
    *
-   * @return PDFLib
+
    */
   function get_pdflib() { return $this->_pdf; }
 

@@ -50,9 +50,7 @@ class HTML5_InputStream {
      */
     public $errors = array();
 
-    /**
-     * @param $data Data to parse
-     */
+  
     public function __construct($data) {
 
         /* Given an encoding, the bytes in the input stream must be
@@ -236,7 +234,7 @@ class HTML5_InputStream {
     /**
      * Matches as far as possible until we reach a certain set of bytes
      * and returns the matched substring.
-     * @param $bytes Bytes to match.
+
      */
     public function charsUntil($bytes, $max = null) {
         if ($this->char < $this->EOF) {
@@ -256,7 +254,7 @@ class HTML5_InputStream {
     /**
      * Matches as far as possible with a certain set of bytes
      * and returns the matched substring.
-     * @param $bytes Bytes to match.
+  
      */
     public function charsWhile($bytes, $max = null) {
         if ($this->char < $this->EOF) {

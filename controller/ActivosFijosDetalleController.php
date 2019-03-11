@@ -664,15 +664,75 @@ class ActivosFijosDetalleController extends ControladorBase{
     
     public function Depreciar(){
         
-        $Mes_a_depreciar=;
+        session_start();
         
-        switch($Mes_a_depreciar)
+        $resultado = null;
+        $activosfdetalle=new ActivosFijosDetalleModel();
+        
+        $nombre_controladores = "ActivosFijosDetalle";
+        $id_rol= $_SESSION['id_rol'];
+        $resultPer = $activosfdetalle->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
+        
+        
+        if (!empty($resultPer))
         {
             
+            if ( isset ($_POST["id_activos_fijos_detalle"]))
+            
+            {
+                //die('llego');
+                
+                
+                $_id_activos_fijos = $_POST["id_activos_fijos"];
+                $_codigo_activos_fijos = $_POST["codigo_activos_fijos"];
+                $_nombre_activos_fijos= $_POST["nombre_activos_fijos"];
+                $_anio_depreciacion_activos_fijos_detalle = $_POST["anio_depreciacion_activos_fijos_detalle"];
+                $_mes_a_depreciar_activos_fijos_detalle= $_POST["mes_a_depreciar_activos_fijos_detalle"];
+                //die('llego');
+                
+                
+                if($id_activos_fijos_detalle > 0){
+                    //die('llego');
+                    
+                    $columnas = "
+                              activos_fijos_detalle.id_activos_fijos_detalle = '$id_activos_fijos_detalle',
+							  activos_fijos_detalle.id_activos_fijos = '$id_activos_fijos', 
+                              activos_fijos.codigo_activos_fijos = '$codigo_activos_fijos', 
+                              activos_fijos.nombre_activos_fijos = '$nombre_activos_fijos', 
+                              activos_fijos_detalle.anio_depreciacion_activos_fijos_detalle = '$anio_depreciacion_activos_fijos_detalle', 
+                              activos_fijos_detalle.mes_a_depreciar_activos_fijos_detalle = '$mes_a_depreciar_activos_fijos_detalle'
+                              ";
+                    
+                    $tabla = "  public.activos_fijos, 
+                                public.activos_fijos_detalle";
+                    
+                    $where = "activos_fijos.id_activos_fijos = activos_fijos_detalle.id_activos_fijos
+                              AND activos_fijos_detalle.id_activos_fijos_detalle = '$_id_activos_fijos_detalle'";
+                    $resultado=$activosfdetalle->UpdateBy($columnas, $tabla, $where);
+                    
+                }else{
+                    
+                    $funcion = "ins_activos_fijos_detalle";
+                    $parametros = "'$_id_oficina', '$_id_tipo_activos_fijos', '$_id_estado', '$_id_usuarios', '$_nombre_activos_fijos', '$_codigo_activos_fijos', '$_fecha_compra_activos_fijos', '$_cantidad_activos_fijos', '$_valor_activos_fijos', '$_meses_depreciacion_activos_fijos', '$_depreciacion_mensual_activos_fijos'";
+                    $activosf->setFuncion($funcion);
+                    $activosf->setParametros($parametros);
+                    $resultado=$activosf->Insert();
+                }
+                
+            }
+            
+            $this->redirect("ActivosFijosDetalle", "index");
+        }
+        else
+        {
+            $this->view_Contable("Error",array("resultado"=>"No tiene Permisos Para Crear Bodegas"
+                
+            ));
             
             
         }
         
+       
         
         
     }

@@ -21,6 +21,8 @@ class ReporteMayorController extends ControladorBase{
 		    $registrosTotales = 0;
 		    $arraySel = "";
 		    
+		    $ccomprobantes = new CComprobantesModel();
+		    $dcomprobantes = new DComprobantesModel();
 		    $tipo_comprobantes = new TipoComprobantesModel();
 		    $entidades = new EntidadesModel();
 		    $mayor = new MayorModel();
@@ -37,9 +39,10 @@ class ReporteMayorController extends ControladorBase{
 		    $id_enc="entidades.nombre_entidades";
 		    $resultEnt=$entidades->getCondiciones($columnas_enc ,$tablas_enc ,$where_enc, $id_enc);
 		    
+		    
 				
 		    $permisos_rol = new PermisosRolesModel();
-			$nombre_controladores = "ReporteMayor";
+			$nombre_controladores = "Mayor";
 			$id_rol= $_SESSION['id_rol'];
 			$resultPer = $permisos_rol->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 				
@@ -51,28 +54,23 @@ class ReporteMayorController extends ControladorBase{
 			        
 			        $id_entidades=$_POST['id_entidades'];
 			        $id_tipo_comprobantes=$_POST['id_tipo_comprobantes'];
+			        $numero_ccomprobantes=$_POST['numero_ccomprobantes'];
 			        $fechadesde=$_POST['fecha_desde'];
 			        $fechahasta=$_POST['fecha_hasta'];
 			        
 			        
 			        
 			        
-			        $columnas = " con_mayor.fecha_mayor, 
+			        $columnas = "  con_mayor.id_mayor, 
+                                  con_mayor.fecha_mayor, 
                                   con_mayor.debe_mayor, 
-                                  con_mayor.haber_mayor, 
-                                  con_mayor.saldo_mayor, 
-                                  con_mayor.saldo_ini_mayor, 
-                                  plan_cuentas.codigo_plan_cuentas, 
-                                  plan_cuentas.nombre_plan_cuentas";
+                                  con_mayor.haber_mayor";
                                 			        
 			        
 			        
-			        $tablas="  public.con_mayor, 
-                               public.plan_cuentas";
+			        $tablas="public.con_mayor";
 			        
-			        $where="plan_cuentas.id_plan_cuentas = con_mayor.id_plan_cuentas AND usuarios.id_usuarios='$_id_usuarios'";
-			        
-			        $id="plan_cuentas.codigo_plan_cuentas";
+			         $id="con_mayor.id_mayor";
 			        
 			        
 			        $where_0 = "";
@@ -85,10 +83,12 @@ class ReporteMayorController extends ControladorBase{
 			        
 			        if($id_tipo_comprobantes!=0){$where_1=" AND tipo_comprobantes.id_tipo_comprobantes='$id_tipo_comprobantes'";}
 			        
-			        if($fechadesde!="" && $fechahasta!=""){$where_4=" AND  date(con_mayor.fecha_mayor) BETWEEN '$fechadesde' AND '$fechahasta'";}
+			        if($numero_ccomprobantes!=""){$where_2=" AND ccomprobantes.numero_ccomprobantes LIKE '%$numero_ccomprobantes%'";}
+			   
+			        if($fechadesde!="" && $fechahasta!=""){$where_4=" AND  date(ccomprobantes.fecha_ccomprobantes) BETWEEN '$fechadesde' AND '$fechahasta'";}
 			        
 			        
-			        $where_to  = $where . $where_0 . $where_1 . $where_4;
+			        $where_to  = $where . $where_0 . $where_1 . $where_2. $where_4;
 			        
 			        
 			        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -96,19 +96,19 @@ class ReporteMayorController extends ControladorBase{
 			        if($action == 'ajax')
 			        {
 			            $html="";
-			            $resultSet=$mayor->getCantidad("*", $tablas, $where_to);
+			            $resultSet=$ccomprobantes->getCantidad("*", $tablas, $where_to);
 			            $cantidadResult=(int)$resultSet[0]->total;
 			            
 			            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 			            
-			            $per_page = 50;   //la cantidad de registros que desea mostrar
-			            $adjacents  = 9;  //brecha entre páginas después de varios adyacentes
+			            $per_page = 50; //la cantidad de registros que desea mostrar
+			            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
 			            $offset = ($page - 1) * $per_page;
 			            
 			            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 			            
 			            
-			            $resultSet=$mayor->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+			            $resultSet=$ccomprobantes->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
 			            
 			            $count_query   = $cantidadResult;
 			            
@@ -116,9 +116,7 @@ class ReporteMayorController extends ControladorBase{
 			            
 			            if ($cantidadResult>0)
 			            {
-			
-			                
-			                
+			        
 			                
 			                $html.='<div class="pull-left" style="margin-left:15px;">';
 			                $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
@@ -126,19 +124,17 @@ class ReporteMayorController extends ControladorBase{
 			                $html.='</div>';
 			                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 			                $html.='<section style="height:425px; overflow-y:scroll;">';
-			                $html.= "<table id='tabla_mayor' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+			                $html.= "<table id='tabla_comprobantes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 			                $html.= "<thead>";
 			                $html.= "<tr>";
-			                $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
-			                $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-			                $html.='<th style="text-align: left;  font-size: 12px;">Saldo Inicial</th>';
-			                $html.='<th style="text-align: left;  font-size: 12px;">Debe</th>';
-			                $html.='<th style="text-align: left;  font-size: 12px;">Haber</th>';
-			                $html.='<th style="text-align: left;  font-size: 12px;">Saldo Final</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Tipo</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Concepto</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Entidad</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
 			                $html.='<th style="text-align: left;  font-size: 12px;">Fecha</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Numero de Comprobante</th>';
+			                $html.='<th style="text-align: left;  font-size: 12px;">Forma de Pago</th>';
 			                $html.='<th style="text-align: left;  font-size: 12px;">Reporte</th>';
-			                   
-			                
 			                $html.='</tr>';
 			                $html.='</thead>';
 			                $html.='<tbody>';
@@ -152,13 +148,13 @@ class ReporteMayorController extends ControladorBase{
 			                        
 			                    
 			                    $html.='<tr>';
-			                    $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
-			                    $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
-			                    $html.='<td style="font-size: 11px;">'.$res->saldo_ini_mayor.'</td>';
-			                    $html.='<td style="font-size: 11px;">'.$res->debe_mayor.'</td>';
-			                    $html.='<td style="font-size: 11px;">'.$res->haber_mayor.'</td>';
-			                    $html.='<td style="font-size: 11px;">'.$res->saldo_ini_mayor.'</td>';
-			                    $html.='<td style="font-size: 11px;">'.$res->fecha_mayor.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_comprobantes.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->concepto_ccomprobantes.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->nombre_entidades.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->valor_letras.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->fecha_ccomprobantes.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->numero_ccomprobantes.'</td>';
+			                    $html.='<td style="font-size: 11px;">'.$res->nombre_forma_pago.'</td>';
 			                    $html.='<td style="font-size: 11px;"><span class="pull-right"><a href="index.php?controller=ReporteComprobante&action=generar_reporte_comprobante&id_ccomprobantes='.$res->id_ccomprobantes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
 			                    
 			                    $html.='</tr>';
@@ -233,15 +229,15 @@ class ReporteMayorController extends ControladorBase{
 	    if($page==1) {
 	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
 	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_mayor(1)'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_comprobantes(1)'>$prevlabel</a></span></li>";
 	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_mayor(".($page-1).")'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_comprobantes(".($page-1).")'>$prevlabel</a></span></li>";
 	        
 	    }
 	    
 	    // first label
 	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_mayor(1)'>1</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes(1)'>1</a></li>";
 	    }
 	    // interval
 	    if($page>($adjacents+2)) {
@@ -256,9 +252,9 @@ class ReporteMayorController extends ControladorBase{
 	        if($i==$page) {
 	            $out.= "<li class='active'><a>$i</a></li>";
 	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_mayor(1)'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes(1)'>$i</a></li>";
 	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_mayor(".$i.")'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes(".$i.")'>$i</a></li>";
 	        }
 	    }
 	    
@@ -271,13 +267,13 @@ class ReporteMayorController extends ControladorBase{
 	    // last
 	    
 	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_mayor($tpages)'>$tpages</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes($tpages)'>$tpages</a></li>";
 	    }
 	    
 	    // next
 	    
 	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_mayor(".($page+1).")'>$nextlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_comprobantes(".($page+1).")'>$nextlabel</a></span></li>";
 	    }else {
 	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
 	    }
@@ -388,26 +384,18 @@ class ReporteMayorController extends ControladorBase{
 	                $_nombre_proveedores     =$resultSetCabeza[0]->nombre_proveedores;
 	                $_descripcion_dcomprobantes     =$resultSetCabeza[0]->descripcion_dcomprobantes;
 	                
-	                $columnas1 = "mayor.id_mayor, ccomprobantes.id_ccomprobantes,usuarios.nombre_usuarios, " +
-                               "tipo_comprobantes.nombre_tipo_comprobantes, entidades.nombre_entidades, " +
-                                "entidades.ruc_entidades, entidades.telefono_entidades, entidades.direccion_entidades, " +
-                                "entidades.ciudad_entidades, ccomprobantes.concepto_ccomprobantes, ccomprobantes.numero_ccomprobantes," +
-                                "ccomprobantes.ruc_ccomprobantes, ccomprobantes.nombres_ccomprobantes, ccomprobantes.retencion_ccomprobantes, " +
-                                "ccomprobantes.valor_ccomprobantes,  ccomprobantes.valor_letras, ccomprobantes.fecha_ccomprobantes, " +
-                                "ccomprobantes.referencia_doc_ccomprobantes,  ccomprobantes.numero_cuenta_banco_ccomprobantes, " +
-                                "ccomprobantes.numero_cheque_ccomprobantes, ccomprobantes.observaciones_ccomprobantes,  " +
-                                "plan_cuentas.id_plan_cuentas, plan_cuentas.codigo_plan_cuentas,  plan_cuentas.nombre_plan_cuentas, " +
-                                "plan_cuentas.saldo_fin_plan_cuentas, plan_cuentas.n_plan_cuentas, mayor.fecha_mayor, " +
-                                "mayor.debe_mayor,  mayor.haber_mayor,  mayor.saldo_mayor, mayor.saldo_ini_mayor,  mayor.creado, entidades.logo_entidades";
+	                $columnas1 = "plan_cuentas.nombre_plan_cuentas,
+                                  plan_cuentas.codigo_plan_cuentas,
+                                  dcomprobantes.descripcion_dcomprobantes, 
+                                  dcomprobantes.debe_dcomprobantes, 
+                                  dcomprobantes.haber_dcomprobantes, 
+                                  dcomprobantes.numero_dcomprobantes";
                                 	                
-	                $tablas1   = "public.ccomprobantes, public.mayor, public.plan_cuentas,  public.tipo_comprobantes,  public.usuarios,   public.entidades";
-	                $where1    = "ccomprobantes.id_usuarios = usuarios.id_usuarios AND " +
-                              "mayor.id_ccomprobantes = ccomprobantes.id_ccomprobantes AND " +
-                              "plan_cuentas.id_plan_cuentas = mayor.id_plan_cuentas AND " +
-                              "tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes AND " +
-                              "entidades.id_entidades = ccomprobantes.id_entidades' ";
+	                $tablas1   = "   public.dcomprobantes, 
+                                     public.plan_cuentas";
+	                $where1    = "plan_cuentas.id_plan_cuentas = dcomprobantes.id_plan_cuentas AND dcomprobantes.id_ccomprobantes='$_id_ccomprobantes' ";
 	           
-	                $id1       = "plan_cuentas.codigo_plan_cuentas, ccomprobantes.creado";
+	                $id1       = "dcomprobantes.id_dcomprobantes";
 	                
 	                
 	                $resultSetDetalle=$dcomprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
@@ -430,6 +418,7 @@ class ReporteMayorController extends ControladorBase{
 	                
 	                if(!empty($resultSetDetalle)){
 	                  
+	                    $html.= "<tr>";
 	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Centro</th>';
 	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Cuenta</th>';
 	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Descripción</th>';
@@ -496,7 +485,7 @@ class ReporteMayorController extends ControladorBase{
 	            
 	          
 	            
-	            $this->report("Mayor",array( "resultSet"=>$html));
+	            $this->report("Comprobante",array( "resultSet"=>$html));
 	            die();
 	            
 	        }

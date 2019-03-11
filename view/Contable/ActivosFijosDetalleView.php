@@ -70,13 +70,10 @@
         
         <div class="box-body">
           
-        
-        
-                    		    
-                    		   
+        <form action="<?php echo $helper->url("ActivosFijosDetalle","Depreciar"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+                               
 								 <div class="row">
-								 <form id ="my_form" action= "<?php echo $pgurl;?>" method="POST" target="_blank">
-								 	
+								
 								 <div class="col-xs-12 col-md-2 col-lg-2">
                         		     <div class="form-group">
                                           <label for="codigo_activos_fijos" class="control-label">Código:</label>
@@ -107,14 +104,15 @@
                         		    
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
-                                                          <label for="Mes_a_depreciar" class="control-label">Mes a Depreciar:</label>
-                                                          <select id="Mes_a_depreciar" name="Mes_a_depreciar" class="form-control" ng-model="month" class="form-control" ng-options="m for m in months"></select>
-                                                           <div id="mensaje_Mes_a_depreciar" class="errores"></div>
+                                                          <label for="mes_a_depreciar_activos_fijos_detalle" class="control-label">Mes a Depreciar:</label>
+                                                          <select id="mes_a_depreciar_activos_fijos_detalle" name="mes_a_depreciar_activos_fijos_detalle" class="form-control" ng-model="month" class="form-control" ng-options="m for m in months"></select>
+                                                           <div id="mensaje_mes_a_depreciar_activos_fijos_detalle" class="errores"></div>
                                     </div>
                         		    </div>
                         		    </div>
-
-                        		   
+									
+									 
+                        		     <?php  ?>
   
    									
    	         	                     	           	
@@ -289,9 +287,4 @@
     
 	
   </body>
-</html>   
-
- 
-
-
- 
+</html>  

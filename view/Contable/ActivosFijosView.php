@@ -121,8 +121,7 @@
                         		    <div class="form-group">
                                                           <label for="nombre_activos_fijos" class="control-label">Nombre Activos:</label>
                                                           <input type="text" class="form-control" id="nombre_activos_fijos" name="nombre_activos_fijos" value="<?php echo $resEdit->nombre_activos_fijos; ?>"  placeholder="Nombre...">
-                                                          <input type="hidden" name="id_activos_fijos" id="id_activos_fijos" value="<?php echo $resEdit->id_activos_fijos; ?>" class="form-control"/>
-					                                      <div id="mensaje_nombre_activos_fijos" class="errores"></div>
+                                                          <div id="mensaje_nombre_activos_fijos" class="errores"></div>
                                     </div>
                         		    </div>
                                     
@@ -149,8 +148,7 @@
                         		    <div class="form-group">
                                                           <label for="cantidad_activos_fijos" class="control-label">Cantidad de Activos</label>
                                                           <input type="text" class="form-control" id="cantidad_activos_fijos" name="cantidad_activos_fijos" value="<?php echo $resEdit->cantidad_activos_fijos; ?>"  placeholder="Cantidad..." onkeypress="return numeros(event)">
-                                                          <input type="hidden" name="id_activos_fijos" id="id_activos_fijos" value="<?php echo $resEdit->id_activos_fijos; ?>" class="form-control"/>
-					                                      <div id="mensaje_cantidad_activos_fijos" class="errores"></div>
+                                                          <div id="mensaje_cantidad_activos_fijos" class="errores"></div>
                                     </div>
                         		    </div>
                         		    
@@ -168,8 +166,7 @@
                         		    <div class="form-group">
                                                           <label for="meses_depreciacion_activos_fijos" class="control-label">Meses de Depreciación</label>
                                                           <input type="text" class="form-control" id="meses_depreciacion_activos_fijos" name="meses_depreciacion_activos_fijos" value="<?php echo $resEdit->meses_depreciacion_activos_fijos; ?>"  placeholder="Meses..." onkeypress="return numeros(event)">
-                                                          <input type="hidden" name="id_activos_fijos" id="id_activos_fijos" value="<?php echo $resEdit->id_activos_fijos; ?>" class="form-control"/>
-					                                      <div id="mensaje_meses_depreciacion_activos_fijos" class="errores"></div>
+                                                          <div id="mensaje_meses_depreciacion_activos_fijos" class="errores"></div>
                                     </div>
                         		    </div>
                         		    
@@ -177,14 +174,7 @@
                         		    
                         		    <div class="row">
                         		    
-                        		    <div class="col-lg-3 col-xs-12 col-md-3">
-                        		    <div class="form-group">
-                                                          <label for="depreciacion_mensual_activos_fijos" class="control-label">Valor de activos:</label>
-                                                          <input type="text" class="form-control cantidades1" id="depreciacion_mensual_activos_fijos" name="depreciacion_mensual_activos_fijos" value='<?php echo $resEdit->depreciacion_mensual_activos_fijos; ?>' 
-                                                          data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
-                                                          <div id="mensaje_depreciacion_mensual_activos_fijos" class="errores"></div>
-                                    </div>
-                                    </div>
+                        		   
                         		    
                         		   
                         		     <div class="col-xs-12 col-md-3 col-md-3">
@@ -193,7 +183,7 @@
                                                           <label for="id_estado" class="control-label">Estado:</label>
                                                           <select name="id_estado" id="id_estado"  class="form-control">
                                                             <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultEst as $res) {?>
+																<?php foreach($result_Activos_estados as $res) {?>
 				 												<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
 													            <?php } ?>
 								    					  </select>
@@ -242,7 +232,8 @@
                         		    <div class="form-group">
                                                           <label for="codigo_activos_fijos" class="control-label">Código:</label>
                                                           <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="código...">
-                                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div>
+                                                          <input type="hidden" name="id_activos_fijos" id="id_activos_fijos" value="0" class="form-control"/>
+					                                       <div id="mensaje_codigo_activos_fijos" class="errores"></div>
                                     </div>
                         		    </div> 
                                    
@@ -299,22 +290,12 @@
                         		  <div class="row">
                         		    
                         		    
-                        		   <div class="col-lg-3 col-xs-12 col-md-3">
-                        		    <div class="form-group">
-                                                          <label for="depreciacion_mensual_activos_fijos" class="control-label">Valor de la Depreciación Mensual:</label>
-                                                          <input type="text" class="form-control cantidades1" id="depreciacion_mensual_activos_fijos" name="depreciacion_mensual_activos_fijos" value='0.00' 
-                                                          data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
-                                                          <div id="mensaje_depreciacion_mensual_activos_fijos" class="errores"></div>
-                                    </div>
-                                    </div>
-                        		    
-                        		    
                         		     <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="id_estado" class="control-label">Estado:</label>
                                                           <select name="id_estado" id="id_estado"  class="form-control">
                                                             <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultEst as $res) {?>
+																<?php foreach($result_Activos_estados as $res) {?>
 				 												<option value="<?php echo $res->id_estado; ?>"  ><?php echo $res->nombre_estado; ?> </option>
 													            <?php } ?>
 								    					  </select>

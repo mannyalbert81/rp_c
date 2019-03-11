@@ -11,7 +11,7 @@ class MovimientosInvController extends ControladorBase{
 	public function index(){
 	
 		//Creamos el objeto usuario
-	    $movimientos_inventario = new MovimientosInvModel();
+	  $movimientos_inventario = new MovimientosInvModel();
 		//Conseguimos todos los usuarios
 	    $resultSet=array();
 				

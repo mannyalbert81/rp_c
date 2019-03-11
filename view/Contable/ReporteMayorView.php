@@ -41,45 +41,49 @@
 	$(document).ready(function(){
 		$("#buscar").click(function(){
 
-			load_mayor(1);
+			load_comprobantes(1);
 			
 			});
 	});
 
 	
-	function load_mayor(pagina){
+	function load_comprobantes(pagina){
 		
 		//iniciar variables
 		 var con_id_entidades=$("#id_entidades").val();
 		 var con_id_tipo_comprobantes=$("#id_tipo_comprobantes").val();
-			 var con_fecha_desde=$("#fecha_desde").val();
+		 var con_numero_ccomprobantes=$("#numero_ccomprobantes").val();
+		 var con_referencia_doc_ccomprobantes=$("#referencia_doc_ccomprobantes").val();
+		 var con_fecha_desde=$("#fecha_desde").val();
 		 var con_fecha_hasta=$("#fecha_hasta").val();
 
 		  var con_datos={
 				  id_entidades:con_id_entidades,
 				  id_tipo_comprobantes:con_id_tipo_comprobantes,
-					  fecha_desde:con_fecha_desde,
+				  numero_ccomprobantes:con_numero_ccomprobantes,
+				  referencia_doc_ccomprobantes:con_referencia_doc_ccomprobantes,
+				  fecha_desde:con_fecha_desde,
 				  fecha_hasta:con_fecha_hasta,
 				  action:'ajax',
 				  page:pagina
 				  };
 
 
-		$("#mayor").fadeIn('slow');
+		$("#comprobantes").fadeIn('slow');
 		$.ajax({
-			url:"<?php echo $helper->url("ReporteMayor","index");?>",
+			url:"<?php echo $helper->url("ReporteComprobante","index");?>",
             type : "POST",
             async: true,			
 			data: con_datos,
 			 beforeSend: function(objeto){
-			   $("#mayor").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+			   $("#comprobantes").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	            
 			},
 			success:function(data){
 			
-			     $("#div_maypr").html(data);
-                 $("#mayor").html("");
-                 $("#tabla_mayor").tablesorter(); 
+			     $("#div_comprobantes").html(data);
+                 $("#comprobantes").html("");
+                 $("#tabla_comprobantes").tablesorter(); 
 				
 			}
 		})
@@ -134,14 +138,14 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Mayor</li>
+        <li class="active">Comprobantes</li>
       </ol>
     </section>   
 
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Buscar Mayores</h3>
+          <h3 class="box-title">Buscar Comprobantes</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -179,7 +183,14 @@
                                     </div>
                                     </div> 
                              
-                                		        	
+                                    <div class="col-xs-6 col-md-3 col-lg-3">
+                                  	<div class="form-group">
+                                    <label for="desde" class="control-label">Nº Comprobante:</label>
+                             	  	<input type="text"  name="numero_ccomprobantes" id="numero_ccomprobantes" value="" class="form-control"/> 
+    						        <div id="desde" class="errores"></div>
+                                    </div>
+                              		</div> 
+                              		        	
                                     <div class="col-xs-6 col-md-3 col-lg-3">
                                   	<div class="form-group">
                                    	<label for="desde" class="control-label">Desde:</label>
@@ -210,8 +221,8 @@
    							
                       	
                       	
-                      	<div id="mayor" ></div>	
-					<div id="div_mayor"></div>
+                      	<div id="comprobantes" ></div>	
+					<div id="div_comprobantes"></div>
                       	   
             </div>
         </section>

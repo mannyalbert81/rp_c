@@ -1,6 +1,6 @@
 <?php
 
-class LibroMayorController extends ControladorBase{
+class LibroDiarioController extends ControladorBase{
 
 	public function __construct() {
 		parent::__construct();
@@ -63,7 +63,7 @@ class LibroMayorController extends ControladorBase{
 				}
 		
 				
-				$this->view_Contable("LibroMayor",array(
+				$this->view_Contable("LibroDiario",array(
 				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit
 			
 				));
@@ -500,13 +500,90 @@ class LibroMayorController extends ControladorBase{
 	}
 	
 	
-	public function mayorContable(){
+	public function diarioContable(){
 	    
+	    $mayor = new MayorModel();	    
 	    
+	    if(!isset($_POST['action'])){
+	        
+	        echo 'sin datos';
+	        return;
+	    }
 	    
+	   
 	    
+	    $id_plan_cuentas = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:'0';
 	    
-	    echo json_encode(array('1'));
+	    $columna = 'SELECT id_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas';
+	    
+	    $tabla = ' FROM vw_diario_contable';
+	    
+	    $where = ' WHERE 1=1';
+	    
+	    $grupo = ' GROUP BY id_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas';
+	    
+	    $orden = ' ORDER BY codigo_plan_cuentas';
+	    
+	    $where = ($id_plan_cuentas>0)?$where.' AND id_plan_cuentas='.$id_plan_cuentas:$where;
+	    
+	    $query=$columna.$tabla.$where.$grupo.$orden;
+	    
+	    $result = $mayor->enviaquery($query);
+	    
+	    $html='';
+	    
+	    if(!empty($result) && count($result)>0){
+	        
+	        $html.='<table class="table">';
+	        
+	        for($i=0;$i<count($result);$i++){
+	           
+	            $codigo = $result[$i]->id_plan_cuentas;
+	            
+	            $html.='<tr style="font-weight:bold; text-transform: uppercase;" class="active">';
+	            $html.='<td>';
+	            $html.= $result[$i]->codigo_plan_cuentas;
+	            $html.='</td>';
+	            $html.='<td colspan="3">';
+	            $html.= $result[$i]->nombre_plan_cuentas;
+	            $html.='</td>';
+	            $html.='</tr>';
+	            
+	            $query="SELECT * FROM vw_diario_contable WHERE id_plan_cuentas = $codigo ORDER BY codigo_plan_cuentas";
+	            
+	            $resultdetalle = $mayor->enviaquery($query);
+	            
+	            if(!empty($resultdetalle) && count($result)>0){
+	                
+	                $j = 0;
+	                foreach ($resultdetalle as $res){
+	                    
+	                    $j+=1;
+	                    $html.='<tr>';
+	                    $html.='<td>';
+	                    $html.= $j;
+	                    $html.='</td>';
+	                    $html.='<td>';
+	                    $html.= $res->fecha_mayor;
+	                    $html.='</td>';
+	                    $html.='<td>';
+	                    $html.= $res->sumadebe;
+	                    $html.='</td>';
+	                    $html.='<td>';
+	                    $html.= $res->sumahaber;
+	                    $html.='</td>';	                   
+	                    $html.='</tr>';
+	                    
+	                }
+	            }
+	            
+	           
+	        }
+	        
+	        $html.='</table>';
+	    }
+	    
+	    echo $html;
 	}
 	
 	

@@ -142,7 +142,7 @@ class EntidadBase{
     	{
     		$query=pg_query($this->con,"DELETE FROM $this->table WHERE $column='$value' ");
     	}
-    	catch (Exeption $Ex)
+    	catch (Exception $Ex)
     	{
     		
     		
@@ -228,7 +228,7 @@ class EntidadBase{
     	     $query=pg_query($this->con, "UPDATE $tabla SET  $colval   WHERE $where ");
     	     
     	}
-    	catch (Exeption  $Ex)
+    	catch (Exception  $Ex)
     	{
     		
     		
@@ -445,28 +445,7 @@ class EntidadBase{
     
     
     
-    public function  Inser_Tipo_Notificaciones($descripcion_notificacion, $id_impulsor, $id_secretario){
-    	 
-    	$cantidad_notificacion=1;
-    	$tipo_notificaciones = new TipoNotificacionModel();
-    	$funcion = "ins_tipo_notificaciones_liventy";
-    	$parametros = "'$descripcion_notificacion', '$cantidad_notificacion', '$id_impulsor', '$id_secretario'  ";
-    	$tipo_notificaciones->setFuncion($funcion);
-    	$tipo_notificaciones->setParametros($parametros);
-    	$resultadoT=$tipo_notificaciones->Insert();
-    	 
-    }
-    
-    public function  Inser_Notificaciones($id_juicios, $id_tipo_notificaciones, $nombre_documentos){
-    	
-    	$notificaciones = new NotificacionesModel();
-    	$funcion = "ins_notificaciones_liventy";
-    	$parametros = "'$id_juicios', '$id_tipo_notificaciones', '$nombre_documentos'";
-    	$notificaciones->setFuncion($funcion);
-    	$notificaciones->setParametros($parametros);
-    	$resultadoT=$notificaciones->Insert();
-    }
-    
+
     
     
     
@@ -476,146 +455,6 @@ class EntidadBase{
     
     
     
-    
-    //funciones  de notificaciones anterior
-    function verNotificaciones(){
-    	//session_start();
-    	$id_usuario=$_SESSION['id_usuarios'];
-    	$notificaciones=new NotificacionesModel();
-    	$where_notificacion = " id_usuarios = '$id_usuario' AND visto_notificaciones=false";
-    	$result_notificaciones=$notificaciones->getBy($where_notificacion);
-    	
-    	return $result_notificaciones;
-    }
-    
-	public function InsertaNotificaciones($id_tipo_notificacion ,$id_usuarios_dirigido_notificacion, $descripcion_notificaciones )
-    {
-    
-    
-    	$notificaciones=new NotificacionesModel();
-    	
-    	$usuarios = new UsuariosModel();
-    		
-    	$funcion = "ins_notificaciones";
-    
-    	$id_usuarios=$_SESSION['id_usuarios'];
-    	
-    	$resultUsuario=$usuarios->getBy("id_usuarios='$id_usuarios'");
-    	
-    	$descripcion_notificaciones.=" (".$resultUsuario[0]->usuario_usuarios.")";
-    
-    	
-    	$parametros = "'$id_tipo_notificacion','$id_usuarios_dirigido_notificacion', '$descripcion_notificaciones'";
-    	
-    	    
-    	$notificaciones->setFuncion($funcion);
-    		
-    	$notificaciones->setParametros($parametros);
-    		
-    	$resultadoN=$notificaciones->Insert();
-    	
-    
-    }
-    //termina funciones anteriores notificaciones
-    
-    
-    
-    
-    
-    
-    
-    public function MostrarNotificaciones($id_usuario)
-    {
-    	//session_start();
-    	 /*
-    	$notificaciones= new NotificacionesModel();
-    	 
-    	$columnas=" notificaciones.id_notificaciones,
-			  notificaciones.descripcion_notificaciones,
-			  notificaciones.usuario_destino_notificaciones,
-			  notificaciones.usuario_origen_notificaciones,
-			  notificaciones.numero_movimiento_notificaciones,
-			  notificaciones.cantidad_cartones_notificaciones,
-    		  notificaciones.creado,
-    		  usuarios.id_usuarios,
-			  usuarios.usuario_usuarios,
-			  usuarios.nombre_usuarios,
-			  notificaciones.visto_notificaciones,
-			  tipo_notificacion.controlador_tipo_notificacion,
-			  tipo_notificacion.accion_tipo_notificacion,
-    		  tipo_notificacion.descripcion_notificacion";
-    	 
-    	$tablas=" public.notificaciones,
-				  public.usuarios,
-				  public.tipo_notificacion";
-    	 
-    	$where="notificaciones.usuario_origen_notificaciones = usuarios.id_usuarios AND
-    	tipo_notificacion.id_tipo_notificacion = notificaciones.id_tipo_notificacion
-    	AND  notificaciones.visto_notificaciones='FALSE'
-    	AND notificaciones.usuario_destino_notificaciones='$id_usuario'";
-    	 
-    	$resultNotificaciones=$notificaciones->getCondiciones($columnas, $tablas, $where, "notificaciones.id_notificaciones");
-    	 
-    	$cantidad_notificaciones=count($resultNotificaciones);
-    	 
-    	 
-    	if($cantidad_notificaciones<0)
-    	{
-    		$cantidad_notificaciones=0;
-    		$resultNotificaciones=array();
-    	}
-    	
-    	$contar=array();
-    	$result=array();
-    	 
-    	foreach($resultNotificaciones as $linea=>$value)
-    	{
-    		
-    		 
-    		if(isset($contar[$value->descripcion_notificacion]))
-    		{
-    			 
-    			$contar[$value->descripcion_notificacion]+=1;
-    			
-    			
-    		}else{
-    			 
-    			array_push($result, $resultNotificaciones[$linea]);
-    			 
-    			$contar[$value->descripcion_notificacion]=1;
-    			
-    			
-    		}
-    		
-    		
-    		 
-    	}
-    	 
-    	
-    	$_SESSION['cantidad']=$cantidad_notificaciones;
-    	$_SESSION["resultNotificaciones"]=$result;
-    	$_SESSION["cantidad_fila_notificaciones"]=$contar;
-    	*/
-    }
-    
-    
-    public  function CrearNotificacion($id_tipoNotificacion,$usuarioDestino,$descripcion,$numero_movimiento,$cantidad_cartones)
-    {
-    	$notificaciones = new NotificacionesModel();
-    	 
-    	$funcion = "ins_notificaciones";
-    	 
-    	$_usuario_origen=$_SESSION['id_usuarios'];
-    	 
-    
-    	$parametros = "'$id_tipoNotificacion', '$_usuario_origen', '$usuarioDestino', '$descripcion','$numero_movimiento','$cantidad_cartones' ";
-    	 
-    	$notificaciones->setFuncion($funcion);
-    	 
-    	$notificaciones->setParametros($parametros);
-    	 
-    	$resultadoT=$notificaciones->Insert();
-    }
     
     
     public function MenuDinamico($_id_rol)

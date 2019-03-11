@@ -210,93 +210,12 @@ class PermisosRolesController extends ControladorBase{
 		
 	}
 	
-	public function devuelveAcciones()
-	{
-		$resultAcc = array();
-	
-		if(isset($_POST["id_controladores"]))
-		{
-	
-			$id_controladores=(int)$_POST["id_controladores"];
-	
-			$acciones=new AccionesModel();
-	
-			$resultAcc = $acciones->getBy(" id_controladores = '$id_controladores'  ");
-	
-	
-		}
-	
-		echo json_encode($resultAcc);
-	
-	}
-	
-	
-	public function devuelveSubByAcciones()
-	{
-		$resultAcc = array();
-	
-		if(isset($_POST["id_acciones"]))
-		{
-	
-			$id_acciones=(int)$_POST["id_acciones"];
-	
-			$acciones=new AccionesModel();
-	
-			$resultAcc = $acciones->getBy(" id_acciones = '$id_acciones'  ");
-	
-	
-		}
-	
-		echo json_encode($resultAcc);
-	
-	}
 	
 	
 	
 	
 	
 	
-	public function devuelveAllAcciones()
-	{
-		$resultAcc = array();
-	
-		$acciones=new AccionesModel();
-	
-		$resultAcc = $acciones->getAll(" id_controladores, nombre_acciones");
-	
-		echo json_encode($resultAcc);
-	
-	}
-	
-
-	
-	
-	public function Reporte(){
-	
-		//Creamos el objeto usuario
-		$subcategorias=new SubCategoriasModel();
-		//Conseguimos todos los usuarios
-	
-	
-		$columnas = " subcategorias.id_subcategorias, categorias.nombre_categorias, subcategorias.nombre_subcategorias, subcategorias.path_subcategorias";
-		$tablas   = "public.subcategorias, public.categorias";
-		$where    = "subcategorias.id_categorias = categorias.id_categorias";
-		$id       = "categorias.nombre_categorias,subcategorias.nombre_subcategorias";
-		
-	
-		session_start();
-	
-	
-		if (isset(  $_SESSION['usuario']) )
-		{
-			$resultRep = $subcategorias->getCondicionesPDF($columnas, $tablas, $where, $id);
-			
-			$this->report("SubCategorias",array(	"resultRep"=>$resultRep));
-	
-		}
-			
-	
-	}
 	
 
 	

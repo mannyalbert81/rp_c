@@ -289,9 +289,9 @@ $('#frm_ins_usuario').on('submit',function(e){
 	        }
 	 })
 	
-	parametros.forEach((value,key) => {
+	/*parametros.forEach((value,key) => {
       console.log(key+" "+value)
-	});
+	});*/
 	
 	e.preventDefault();
 	

@@ -82,7 +82,7 @@ class HTML5_Tokenizer {
     const WHITESPACE  = "\t\n\x0c ";
 
     /**
-     * @param $data Data to parse
+   
      */
     public function __construct($data, $builder = null) {
         $this->stream = new HTML5_InputStream($data);

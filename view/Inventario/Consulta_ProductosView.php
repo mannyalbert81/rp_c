@@ -6,29 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    
- 
    <?php include("view/modulos/links_css.php"); ?>
-   
-
-        
-			        
     </head>
-    
-    
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
     
-
      <?php
         
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
         ?>
-    
-    
-      
-    
     <div class="wrapper">
 
   <header class="main-header">
@@ -59,8 +46,6 @@
       </ol>
     </section>   
     
-    
-    
      <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
@@ -73,11 +58,6 @@
         </div>
         
         <div class="box-body">
-        
-       
-
-        
-        
        <div class="ibox-content">  
       <div class="table-responsive">
         
@@ -95,8 +75,6 @@
                           <th>ULT Precio</th>
                           <th></th>
                           <th>Consultar</th>
-                        
-
                         </tr>
                       </thead>
 
@@ -117,41 +95,26 @@
             			             <td> 
             		           	   <td>
             		           	   
-            		           	   
             			           		<div class="right">
             			                    <a href="<?php echo $helper->url("Productos","consulta"); ?>&id_productos=<?php echo $res->id_productos; ?>" class="btn btn-info" style="font-size:65%;" data-toggle="tooltip" title="Consultar"><i class='glyphicon glyphicon-edit'></i></a>
             			                </div>
-            			            
-            			               
-            			                	
-            			                
+            			           
             		               </td>
             		    		</tr>
             		    		
             		        <?php } } ?>
-                    	
-    					                    				  	
-
-                      </tbody>
+	                 </tbody>
                     </table>
        
         </div>
          </div>
-        
-        
+      
         </div>
         </div>
         </section>
         
-        
-
-        
-        
-        
-        
         <?php if(!empty($resultEdit)){?>
-            
-            
+       
        <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
@@ -164,9 +127,7 @@
         </div>
         
         <div class="box-body">
-        
-       
-        
+      
        <div class="ibox-content">  
       <div class="table-responsive">
         
@@ -244,33 +205,19 @@
             		    		</tr>
             		    		
             		        <?php } } ?>
-                    	
-    					                    				  	
 
                       </tbody>
                     </table>
        
         </div>
          </div>
-        
-        
+       
         </div>
         </div>
         </section>    
-            
-            
-            
-            
-            
-            
-            
+           
         <?php }?>
-        
-         
-        
-        
-       
-    
+
   </div>
  
  	<?php include("view/modulos/footer.php"); ?>	
@@ -279,14 +226,7 @@
  </div>
     
     <?php include("view/modulos/links_js.php"); ?>
-	
 
-       
-       
-
- 	
-	
-	
   </body>
 </html>   
 

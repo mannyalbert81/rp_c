@@ -6,9 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    
-    
-    
    <?php include("view/modulos/links_css.php"); ?>
    
   </head>
@@ -328,13 +325,8 @@
                           <th>Tipo Documento</th>
                           <th>Proveedor</th>
                           <th>Usuario Salida</th>
-                          
-
                         </tr>
-                      </thead>
-
-
-                      <tbody>
+                      </thead>                      <tbody>
                       <?php $i=0;?>
     						<?php if (!empty($resultSet)) {  foreach($resultSet as $res) {?>
     						<?php $i++;?>
@@ -374,60 +366,16 @@
        
         </div>
          </div>
-        
-        
         </div>
         </div>
         </section>
   		</div>
-  
-  
- 
  	<?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
  </div>
     
-    
    <?php include("view/modulos/links_js.php"); ?>
-    	
+   <script src="view/Inventario/js/MovimientosProductosCabeza.js?3.1" ></script> 	
   </body>
 </html>
-
-<!-- script pagina anterior -->
-<script type="text/javascript">
-     
-        	   $(document).ready( function (){
-        		   pone_espera();
-        		   
-	   			});
-
-        	   function pone_espera(){
-
-        		   $.blockUI({ 
-        				message: '<h4><img src="view/images/load.gif" /> Espere por favor, estamos procesando su requerimiento...</h4>',
-        				css: { 
-        		            border: 'none', 
-        		            padding: '15px', 
-        		            backgroundColor: '#000', 
-        		            '-webkit-border-radius': '10px', 
-        		            '-moz-border-radius': '10px', 
-        		            opacity: .5, 
-        		            color: '#fff',
-        		           
-        	        		}
-        	    });
-            	
-		        setTimeout($.unblockUI, 3000); 
-		        
-        	   }
-
- </script>
-       
-       
-      
- 
-
-
-
-

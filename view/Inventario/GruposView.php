@@ -6,50 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    
-    
-    
    <?php include("view/modulos/links_css.php"); ?>
-   
-          <script>
-		    // cada vez que se cambia el valor del combo
-		    $(document).ready(function(){
-		    
-		    $("#Guardar").click(function() 
-			{
-		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
-
-		    	var nombre_grupos = $("#nombre_grupos").val();
-		    	
-		    	
-		    	
-		    	if (nombre_grupos == "")
-		    	{
-			    	
-		    		$("#mensaje_nombre_grupos").text("Introduzca Un Grupo");
-		    		$("#mensaje_nombre_grupos").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_nombre_grupos").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-
-		    	
-			}); 
-
-
-		        $( "#nombre_grupos" ).focus(function() {
-				  $("#mensaje_nombre_grupos").fadeOut("slow");
-			    });
-		        		      
-				    
-		}); 
-
-	</script>
    
   </head>
 
@@ -147,8 +104,7 @@
                                       <div id="mensaje_id_estados" class="errores"></div>
                                     </div>
                                   </div>
-                            </div>	
-                    		            
+                            </div>	 
                     		            
                      <?php } ?>
                      	<div class="row">
@@ -178,11 +134,6 @@
             </div>
             
             <div class="box-body">
-            
-            
-            
-            
-            
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <li class="active"><a href="#activos" data-toggle="tab">Grupos Activos</a></li>
@@ -211,125 +162,20 @@
 					
 					<div id="load_grupos_inactivos" ></div>	
 					<div id="grupos_inactivos_registrados"></div>
-                
-                
               </div>
-             
-             
+             </div>
             </div>
-            </div>
-          </div>
+           </div>
          
-            
             </div>
             </div>
             </section>
   		</div>
-  
-  
- 
  	<?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
  </div>
-    
-    
    <?php include("view/modulos/links_js.php"); ?>
-    	
+   <script src="view/Inventario/js/Grupos.js?3.1" ></script>
   </body>
 </html>
-
-<!-- script pagina anterior -->
-<script type="text/javascript">
-     
-        	   $(document).ready( function (){
-        		   
-        		   load_grupos_inactivos(1);
-        		   load_grupos_activos(1);
-        		   
-	   			});
-
-        	
-
-
-	   function load_grupos_activos(pagina){
-
-		   var search=$("#search_activos").val();
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_grupos_activos").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_grupos_activos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=Grupos&action=consulta_grupos_activos&search='+search,
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#grupos_activos_registrados").html(x);
-	                 $("#load_grupos_activos").html("");
-	                 $("#tabla_grupos_activos").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#grupos_activos_registrados").html("Ocurrio un error al cargar la informacion de Grupos Activos..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
-	   function load_grupos_inactivos(pagina){
-
-		   var search=$("#search_inactivos").val();
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_grupos_inactivos").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_grupos_inactivos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=Grupos&action=consulta_grupos_inactivos&search='+search,
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#grupos_inactivos_registrados").html(x);
-	                 $("#load_grupos_inactivos").html("");
-	                 $("#tabla_grupos_inactivos").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#grupos_inactivos_registrados").html("Ocurrio un error al cargar la informacion de Grupos Inactivos..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
-	  
-        	        	   
-
- </script>
- 
- 
-<!-- -----cargar la tabla activos e inactivos -->
-
-
-        
-        
-       
-       
-      
- 
-
-
-
-

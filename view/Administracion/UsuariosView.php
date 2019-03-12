@@ -421,11 +421,7 @@
       			
       			</div>
     		</section>
-    		
-    		
-    		
-    		
-       <section class="content">
+      <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Listado Usuarios</h3>

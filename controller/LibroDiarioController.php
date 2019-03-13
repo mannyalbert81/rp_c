@@ -90,76 +90,6 @@ class LibroDiarioController extends ControladorBase{
 	
 	}
 	
-	public function InsertaProveedores(){
-			
-		session_start();
-		$proveedores=new ProveedoresModel();
-
-		$nombre_controladores = "Proveedores";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $proveedores->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-			
-		if (!empty($resultPer))
-		{
-		
-		
-		
-			$resultado = null;
-			$proveedores=new ProveedoresModel();
-		
-			if (isset ($_POST["nombre_proveedores"])   )
-			{
-			    $_id_proveedores =  $_POST["id_proveedores"];
-			    $_nombre_proveedores = $_POST["nombre_proveedores"];
-			    $_identificacion_proveedores = $_POST["identificacion_proveedores"];
-			    $_contactos_proveedores = $_POST["contactos_proveedores"];
-			    $_direccion_proveedores = $_POST["direccion_proveedores"];
-			    $_telefono_proveedores = $_POST["telefono_proveedores"];
-			    $_email_proveedores = $_POST["email_proveedores"];
-			    $_fecha_nacimiento_proveedores = $_POST["fecha_nacimiento_proveedores"];
-			   
-			  
-				
-			    if($_id_proveedores > 0){
-					
-					$columnas = " nombre_proveedores = '$_nombre_proveedores',
-                                  identificacion_proveedores = '$_identificacion_proveedores',
-                                  contactos_proveedores = '$_contactos_proveedores',
-                                    direccion_proveedores = '$_direccion_proveedores',
-                                    telefono_proveedores = '$_telefono_proveedores',
-                                    email_proveedores = '$_email_proveedores',
-                                    fecha_nacimiento_proveedores = '$_fecha_nacimiento_proveedores'";
-					$tabla = "proveedores";
-					$where = "id_proveedores = '$_id_proveedores'";
-					$resultado=$proveedores->UpdateBy($columnas, $tabla, $where);
-					
-				}else{
-					
-					$funcion = "ins_proveedores";
-					$parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores','$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores','$_fecha_nacimiento_proveedores'";
-					$proveedores->setFuncion($funcion);
-					$proveedores->setParametros($parametros);
-					$resultado=$proveedores->Insert();
-				}
-				
-				
-				
-		
-			}
-			$this->redirect("Proveedores", "index");
-
-		}
-		else
-		{
-		    $this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Proveedores"
-		
-			));
-		
-		
-		}
-		
-	}
 	
 	public function borrarId()
 	{
@@ -510,7 +440,9 @@ class LibroDiarioController extends ControladorBase{
 	        return;
 	    }
 	    
-	   
+	    /*comenzar desde cero*/
+	    
+	       
 	    
 	    $id_plan_cuentas = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:'0';
 	    

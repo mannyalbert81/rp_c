@@ -444,6 +444,8 @@ class ActivosFijosDetalleController extends ControladorBase{
             echo json_encode($_respuesta);
         }
         
+        
+        
     }
     
     

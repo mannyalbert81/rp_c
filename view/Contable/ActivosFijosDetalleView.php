@@ -79,9 +79,7 @@
                                           <label for="codigo_activos_fijos" class="control-label">Código:</label>
                                           <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="Código">
                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div> 
-                                     <input type="hidden" class="form-control" id="id_activos_fijos" name="id_activos_fijos
-                                     
-                                     " value="0"  placeholder="Search">
+                                          <input type="hidden" class="form-control" id="id_activos_fijos" name="id_activos_fijos" value="0" >
                                   <span class="help-block"></span>
  									</div>
                         		     </div>
@@ -272,7 +270,7 @@
       <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
       <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
       
-    <script src="view/Contable/FuncionesJS/ActivosFijosD.js?1"></script>
+    <script src="view/Contable/FuncionesJS/ActivosFijosD.js?1.0"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     
     

@@ -420,13 +420,13 @@ class ActivosFijosDetalleController extends ControladorBase{
         $activosf=new ActivosFijosModel();
         $codigo_activos_fijos = $_GET['term'];
         
-        $columnas ="  activos_fijos_detalle.id_activos_fijos_detalle, 
+        $columnas ="  
                       activos_fijos.id_activos_fijos, 
                       activos_fijos.nombre_activos_fijos, 
                       activos_fijos.codigo_activos_fijos, 
                       activos_fijos.creado, 
                       activos_fijos.modificado";
-        $tablas ="public.activos_fijos_detalle, 
+        $tablas ="
                   public.activos_fijos";
         $where ="activos_fijos.codigo_activos_fijos LIKE '$codigo_activos_fijos%'";
         $id ="activos_fijos.codigo_activos_fijos";
@@ -458,13 +458,13 @@ class ActivosFijosDetalleController extends ControladorBase{
         $codigo_activos_fijos = $_POST['codigo_activos_fijos'];
         
         
-        $columnas ="activos_fijos_detalle.id_activos_fijos_detalle, 
+        $columnas ="
                       activos_fijos.id_activos_fijos, 
                       activos_fijos.nombre_activos_fijos, 
                       activos_fijos.codigo_activos_fijos, 
                       activos_fijos.creado, 
                       activos_fijos.modificado";
-        $tablas ="public.activos_fijos_detalle, 
+        $tablas =" 
                   public.activos_fijos";
         $where ="activos_fijos.codigo_activos_fijos = '$codigo_activos_fijos'";
         $id ="activos_fijos.codigo_activos_fijos";
@@ -494,13 +494,13 @@ class ActivosFijosDetalleController extends ControladorBase{
         $activosf=new ActivosFijosModel();
         $nombre_activos_fijos = $_GET['term'];
         
-        $columnas ="activos_fijos_detalle.id_activos_fijos_detalle, 
+        $columnas ="
                       activos_fijos.id_activos_fijos, 
                       activos_fijos.nombre_activos_fijos, 
                       activos_fijos.codigo_activos_fijos, 
                       activos_fijos.creado, 
                       activos_fijos.modificado";
-        $tablas =" public.activos_fijos_detalle, 
+        $tablas =" 
                   public.activos_fijos";
         $where ="activos_fijos.nombre_activos_fijos ILIKE '$nombre_activos_fijos%'";
         $id ="activos_fijos.nombre_activos_fijos";
@@ -530,13 +530,13 @@ class ActivosFijosDetalleController extends ControladorBase{
         
         
         
-        $columnas ="activos_fijos_detalle.id_activos_fijos_detalle, 
+        $columnas ="
                       activos_fijos.id_activos_fijos, 
                       activos_fijos.nombre_activos_fijos, 
                       activos_fijos.codigo_activos_fijos, 
                       activos_fijos.creado, 
                       activos_fijos.modificado";
-        $tablas ="public.activos_fijos_detalle, 
+        $tablas =" 
                   public.activos_fijos";
         $where ="activos_fijos.nombre_activos_fijos = '$nombre_activos_fijos'";
         $id ="activos_fijos.nombre_activos_fijos";

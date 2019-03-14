@@ -165,7 +165,7 @@ class ActivosFijosController extends ControladorBase{
                 if($_id_activos_fijos > 0){
                     //die('llego');
                     
-                    $_depreciacion_mensual_activos_fijos= ((int) $res->valor_activos_fijos)/((int) $res->meses_depreciacion_activos_fijos);
+                    $_depreciacion_mensual_activos_fijos= ((int) $_valor_activos_fijos)/((int) $_meses_depreciacion_activos_fijos);
                     $_anio = date("Y", $_fecha_compra_activos_fijos);
                     $_fecha_cierre_anio_activos_fijos=$_anio.'12-31';
                     $diferencia = $_fecha_cierre_anio_activos_fijos->diff($_fecha_compra_activos_fijos);

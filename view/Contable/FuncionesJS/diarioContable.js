@@ -118,15 +118,8 @@ $('#frm_libro_diario').on('submit',function(event){
         data:parametros
 		}).done(function(respuesta){
 			
-			PDFObject.embed(respuesta, "#detalle_diario");
-			
-			//PDFObject.embed("view/reportes/ejemplo.pdf", "#verpdf");
-			//console.log(respuesta);
-			$('#pdf_respuesta').data = 'data:application/pdf;base64,'+respuesta;
-			
-			//PDFObject.embed(respuesta, "#detalle_diario");
-			
-			//$('#detalle_diario').html(respuesta) 
+			//PDFObject.embed(respuesta, "#detalle_diario");		
+			window.open('','_blank');
 			
 		}).fail(function(){})
 		

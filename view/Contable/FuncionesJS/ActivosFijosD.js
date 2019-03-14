@@ -16,6 +16,7 @@ data:{codigo_activos_fijos:$('#codigo_activos_fijos').val()}
                     		
 	$('#nombre_activos_fijos').val(respuesta.nombre_activos_fijos);
 	$('#codigo_activos_fijos').val(respuesta.codigo_activos_fijos);
+	$('#id_activos_fijos').val(respuesta.id_activos_fijos)
                     						
                     					
 }).fail(function(respuesta) {

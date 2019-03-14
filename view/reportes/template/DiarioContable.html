@@ -41,14 +41,14 @@
   </head>
   <body>
   	
-  	<div>
+  	<div style="border:1 solid;">
   		<div style="font-family: Arial;  color:#000000; width: 100%; text-align: center; ">
   			<h2 style="margin-bottom: 0;">{NOMBREEMPRESA}</h2>
   			<div><span>{DIRECCIONEMPRESA}</span></div>
   			<div><span>{TELEFONOEMPRESA}</span></div>
   				
   		</div>  		
-  		<div><h6>{RUCEMPRESA}</h6><h6>{FECHAEMPRESA}</h6></div>
+  		<div style="margin-left:20pt;"><h6>{RUCEMPRESA}</h6><h6>{FECHAEMPRESA}</h6></div>
   		<div></div>
   	</div>
   	
@@ -59,10 +59,30 @@
   		<div><span>PERIODO:{PERIODO}</span></div>
   	</div>
   	
+  	<hr>
+  	
   	<div style="width:100%">
-  		
+  		<table autosize="2.4">
+  			<thead>
+  				<tr>
+	  				<th>#</th>
+	  				<th>FECHA</th>
+	  				<th>TIPO COMPROBANTE</th>
+	  				<th>CODIGO</th>
+	  				<th>CUENTA</th>
+	  				<th>DETALLE</th>
+	  				<th>DEBE</th>
+	  				<th>HABER</th>
+  				</tr>
+  			</thead>
+  			<tbody>
+  				{TABLADETALLE}
+  			</tbody>
+  			<tfoot></tfoot>
+  		</table>
   	</div>
   	
+  	<hr>
   	
 	<div style="width:100%">
 	<div class="izq">

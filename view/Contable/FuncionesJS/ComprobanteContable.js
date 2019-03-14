@@ -240,9 +240,14 @@
 		            data: "plan_cuentas="+plan_cuentas+"&descripcion_dcomprobantes="+descripcion_dcomprobantes+"&debe_dcomprobantes="+debe_dcomprobantes+"&haber_dcomprobantes="+haber_dcomprobantes,
 		        	
 		            success: function(datos){
+		            	//console.log(datos)
 		            	limpiar();
 		            	load_temp_comprobantes(1);
 		            	
+		            },
+		            error: function(xhr,status,error){
+		            	var err = xhr.responseText;
+		            	console.log(err)
 		            }
 				});
 				

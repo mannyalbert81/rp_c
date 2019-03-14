@@ -418,7 +418,7 @@
     
    
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?4.4"></script>
+    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?4.7"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     
    

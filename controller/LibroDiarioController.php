@@ -435,7 +435,7 @@ class LibroDiarioController extends ControladorBase{
 	    $mayor = new MayorModel();
 	    $entidades = new EntidadesModel();
 	    
-	    if(!isset($_POST['action'])){
+	    if(!isset($_GET['action'])){
 	        
 	        echo 'sin datos';
 	        return;
@@ -444,6 +444,7 @@ class LibroDiarioController extends ControladorBase{
 	    //llenado de datos
 	    
 	    $datos_empresa = array();
+	    $datos_detalle = array();
 	    
 	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
 	    
@@ -452,14 +453,22 @@ class LibroDiarioController extends ControladorBase{
 	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
 	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
 	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d');
+	    }
+	    
+	    $query_detalle = "SELECT * FROM vw_diariocontable";
+	    
+	    $rsdetalle = $entidades->enviaquery($query_detalle);
+	    
+	    if(!empty($rsdetalle) && count($rsdetalle)>0){
+	        
+	        $datos_detalle=$rsdetalle;
 	    }
 	    
 	    
-	    $this->verReporte("DiarioContable", array('datos_empresa'=>$datos_empresa));
+	    $this->verReporte("DiarioContable", array('datos_empresa'=>$datos_empresa,'datos_detalle'=>$datos_detalle));
 	   
-	    
-	    
-	    
 	       
 	    
 	    $id_plan_cuentas = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:'0';

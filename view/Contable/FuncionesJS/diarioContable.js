@@ -109,7 +109,7 @@ $('#frm_libro_diario').on('submit',function(event){
 		return false
 	}
 	
-	window.open('index.php?controller=LibroDiario&action=diarioContable','_blank');
+	window.open('index.php?controller=LibroDiario&action=diarioContable&action=ajax','_blank');
 	
 	$.ajax({
 		url:'index.php?controller=LibroDiario&action=diarioContable', 

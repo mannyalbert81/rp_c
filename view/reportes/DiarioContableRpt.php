@@ -4,7 +4,7 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
  
 //echo getcwd().''; //para ver ubicacion de directorio
 
-$template = file_get_contents('view/reportes/template/FichaAlimentos.html');
+$template = file_get_contents('view/reportes/template/DiarioContable.html');
 
 //$template = file_get_contents('template/DiarioContable.html');
 
@@ -21,7 +21,32 @@ if(!empty($dicContenido))
 	}
 }
 
-//ob_end_clean();
+if(!empty($datos_empresa)){
+    
+    foreach ($datos_empresa as $clave=>$valor) {
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
+
+if(!empty($datos_detalle)){
+    
+    $tablahtml = '';
+    $i=0;
+    foreach ($datos_detalle as $res){
+        $i+=1;
+        $tablahtml.='<tr>';
+        $tablahtml.='<td>'.$i.'</td>';
+        $tablahtml.='<td>'.$res->fecha_comprobantes.'</td>';
+        $tablahtml.='</tr>';
+    }
+    
+    $template = str_replace('{TABLADETALLE}', $tablahtml, $template);
+    
+}
+
+//echo $template; die();
+
+ob_end_clean();
 //creacion del pdf
 //$mpdf=new mPDF('c','A4','','' , 0 , 0 , 0 , 0 , 0 , 0);
 $mpdf=new mPDF();

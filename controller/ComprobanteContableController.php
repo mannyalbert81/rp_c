@@ -954,6 +954,8 @@ class ComprobanteContableController extends ControladorBase{
                 '$_observacion_ccomprobantes',
                 '$_id_proveedores' ";
 	            
+	            //print $parametros;
+	            //die();
 	            $ccomprobantes->setFuncion($funcion);
 	            $ccomprobantes->setParametros($parametros);
 	            $resultado=$ccomprobantes->llamafuncion();	            
@@ -968,7 +970,6 @@ class ComprobanteContableController extends ControladorBase{
 	            }
 	            
 	            echo json_encode(array('success'=>0,'mensaje'=>$respuesta));
-	           
 	           
 	        }
 	        

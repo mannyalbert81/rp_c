@@ -35,25 +35,9 @@
   </aside>
 
   <div class="content-wrapper">
-    <section class="content-header">
-     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Layout</a></li>
-        <li class="active">Fixed</li>
-      </ol>
-    
-     
-    </section>
 
-    <section class="content">
-     
-  
-    </section>
-    <br>
-    <br><br>
-    <div align="center" class="login100-pic js-tilt" data-tilt>
-					<img src="view/images/logoerp.png" alt="IMG">
-				</div>
+
+
   </div>
   
  

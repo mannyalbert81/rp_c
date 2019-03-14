@@ -100,15 +100,16 @@ $('#frm_libro_diario').on('submit',function(event){
 	
 	parametros.append('action','ajax')
 	
-	parametros.forEach((value,key) => {
+	/*parametros.forEach((value,key) => {
       console.log(key+" "+value)
-	});
+	});*/
 	
 	
 	if(!validafecha()){
 		return false
 	}
 	
+	window.open('index.php?controller=LibroDiario&action=diarioContable','_blank');
 	
 	$.ajax({
 		url:'index.php?controller=LibroDiario&action=diarioContable', 
@@ -119,7 +120,7 @@ $('#frm_libro_diario').on('submit',function(event){
 		}).done(function(respuesta){
 			
 			//PDFObject.embed(respuesta, "#detalle_diario");		
-			window.open('','_blank');
+			//window.open('','_blank');
 			
 		}).fail(function(){})
 		

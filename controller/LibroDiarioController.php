@@ -432,7 +432,8 @@ class LibroDiarioController extends ControladorBase{
 	
 	public function diarioContable(){
 	    
-	    $mayor = new MayorModel();	    
+	    $mayor = new MayorModel();
+	    $entidades = new EntidadesModel();
 	    
 	    if(!isset($_POST['action'])){
 	        
@@ -440,8 +441,21 @@ class LibroDiarioController extends ControladorBase{
 	        return;
 	    }
 	    
+	    //llenado de datos
 	    
-	    $this->verReporte("DiarioContable", array());
+	    $datos_empresa = array();
+	    
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	    }
+	    
+	    
+	    $this->verReporte("DiarioContable", array('datos_empresa'=>$datos_empresa));
 	   
 	    
 	    

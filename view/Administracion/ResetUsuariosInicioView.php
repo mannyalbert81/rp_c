@@ -9,6 +9,7 @@
 	  		<link rel="stylesheet" href="view/css/estilos.css">
 	  
   	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  	<link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

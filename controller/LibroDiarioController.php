@@ -440,7 +440,11 @@ class LibroDiarioController extends ControladorBase{
 	        return;
 	    }
 	    
-	    /*comenzar desde cero*/
+	    
+	    $this->verReporte("DiarioContable", array());
+	   
+	    
+	    
 	    
 	       
 	    

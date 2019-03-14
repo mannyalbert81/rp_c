@@ -117,7 +117,17 @@ $('#frm_libro_diario').on('submit',function(event){
         type:'POST',
         data:parametros
 		}).done(function(respuesta){
-			$('#detalle_diario').html(respuesta) 
+			
+			PDFObject.embed(respuesta, "#detalle_diario");
+			
+			//PDFObject.embed("view/reportes/ejemplo.pdf", "#verpdf");
+			//console.log(respuesta);
+			$('#pdf_respuesta').data = 'data:application/pdf;base64,'+respuesta;
+			
+			//PDFObject.embed(respuesta, "#detalle_diario");
+			
+			//$('#detalle_diario').html(respuesta) 
+			
 		}).fail(function(){})
 		
 	event.preventDefault();

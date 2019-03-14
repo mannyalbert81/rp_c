@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+ <!DOCTYPE HTML>
 <html lang="es">
       <head>
          
@@ -52,16 +52,14 @@
 		//iniciar variables
 		 var con_id_entidades=$("#id_entidades").val();
 		 var con_id_tipo_comprobantes=$("#id_tipo_comprobantes").val();
-		 var con_numero_ccomprobantes=$("#numero_ccomprobantes").val();
-		 var con_referencia_doc_ccomprobantes=$("#referencia_doc_ccomprobantes").val();
+		 var codigo_plan_cuentas=$("#codigo_plan_cuentas").val();
 		 var con_fecha_desde=$("#fecha_desde").val();
 		 var con_fecha_hasta=$("#fecha_hasta").val();
 
 		  var con_datos={
 				  id_entidades:con_id_entidades,
 				  id_tipo_comprobantes:con_id_tipo_comprobantes,
-				  numero_ccomprobantes:con_numero_ccomprobantes,
-				  referencia_doc_ccomprobantes:con_referencia_doc_ccomprobantes,
+				  codigo_plan_cuentas:codigo_plan_cuentas,
 				  fecha_desde:con_fecha_desde,
 				  fecha_hasta:con_fecha_hasta,
 				  action:'ajax',
@@ -160,7 +158,7 @@
 								 	  
                                     <div class="col-xs-6 col-md-3 col-lg-3" id="div_entidad">
                                   	<div class="form-group">
-                                   	<label for="desde" class="control-label">Entidad:</label>
+                                   	<label for="id_entidades" class="control-label">Entidad:</label>
                  				  	<select name="id_entidades" id="id_entidades"  class="form-control" readonly>
 			  						<?php foreach($resultEnt as $res) {?>
 									<option value="<?php echo $res->id_entidades; ?>"><?php echo $res->nombre_entidades;  ?> </option>
@@ -172,7 +170,7 @@
                                
                                     <div class="col-xs-6 col-md-3 col-lg-3">
                                   	<div class="form-group">
-                                   	<label for="desde" class="control-label">Tipo Comprobante:</label>
+                                   	<label for="id_tipo_comprobantes" class="control-label">Tipo Comprobante:</label>
                  				    <select name="id_tipo_comprobantes" id="id_tipo_comprobantes"  class="form-control" >
 			  						<option value="0"><?php echo "--TODOS--";  ?> </option>
 									<?php foreach($resultTipCom as $res) {?>
@@ -185,8 +183,8 @@
                              
                                     <div class="col-xs-6 col-md-3 col-lg-3">
                                   	<div class="form-group">
-                                    <label for="desde" class="control-label">Nº Comprobante:</label>
-                             	  	<input type="text"  name="numero_ccomprobantes" id="numero_ccomprobantes" value="" class="form-control"/> 
+                                    <label for="codigo_plan_cuentas" class="control-label">Nº Cuenta:</label>
+                             	  	<input type="text"  name="codigo_plan_cuentas" id="codigo_plan_cuentas" value="" class="form-control"/> 
     						        <div id="desde" class="errores"></div>
                                     </div>
                               		</div> 

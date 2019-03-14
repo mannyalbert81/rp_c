@@ -53,7 +53,7 @@ class ReporteMayorController extends ControladorBase{
 			        
 			        $id_entidades=$_POST['id_entidades'];
 			        $id_tipo_comprobantes=$_POST['id_tipo_comprobantes'];
-			        $numero_ccomprobantes=$_POST['numero_ccomprobantes'];
+			        $codigo_plan_cuentas=$_POST['codigo_plan_cuentas'];
 			        $fechadesde=$_POST['fecha_desde'];
 			        $fechahasta=$_POST['fecha_hasta'];
 			        
@@ -89,7 +89,7 @@ class ReporteMayorController extends ControladorBase{
                                     			        
 			        
 			        
-			        $tablas="      public.con_mayor, 
+			        $tablas="     public.con_mayor, 
                                   public.plan_cuentas, 
                                   public.entidades, 
                                   public.ccomprobantes, 
@@ -115,12 +115,12 @@ class ReporteMayorController extends ControladorBase{
 			        
 			        if($id_tipo_comprobantes!=0){$where_1=" AND tipo_comprobantes.id_tipo_comprobantes='$id_tipo_comprobantes'";}
 			        
-			        if($numero_ccomprobantes!=""){$where_2=" AND ccomprobantes.numero_ccomprobantes LIKE '%$numero_ccomprobantes%'";}
+			        if($codigo_plan_cuentas!=""){$where_2=" AND plan_cuentas.codigo_plan_cuentas LIKE '%$codigo_plan_cuentas%'";}
 			   
 			        if($fechadesde!="" && $fechahasta!=""){$where_4=" AND  date(con_mayor.fecha_mayor) BETWEEN '$fechadesde' AND '$fechahasta'";}
 			        
 			        
-			        $where_to  = $where . $where_0 . $where_1 . $where_2. $where_4;
+			        $where_to  = $where . $where_0 . $where_2 . $where_1 . $where_4;
 			        
 			        
 			        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -349,112 +349,83 @@ class ReporteMayorController extends ControladorBase{
 	    if(!empty($cedula_usuarios)){
 	        
 	        
-	        if(isset($_GET["id_mayor"])){
+	        if(!isset($_POST['action'])){
 	            
+	            echo 'sin datos';
+	            return;
+	        }
+	        
+	        
+	        
+	        $id_plan_cuentas = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:'0';
+	        
+	        $columna = 'SELECT id_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas';
+	        
+	        $tabla = ' FROM vw_diario_contable';
+	        
+	        $where = ' WHERE 1=1';
+	        
+	        $grupo = ' GROUP BY id_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas';
+	        
+	        $orden = ' ORDER BY codigo_plan_cuentas';
+	        
+	        $where = ($id_plan_cuentas>0)?$where.' AND id_plan_cuentas='.$id_plan_cuentas:$where;
+	        
+	        $query=$columna.$tabla.$where.$grupo.$orden;
+	        
+	        $result = $mayor->enviaquery($query);
+	        
+	        $html='';
+	        
+	        if(!empty($result) && count($result)>0){
 	            
-	            $_id_mayor = $_GET["id_mayor"];
+	            $html.='<table class="table">';
 	            
-	            
-	            $columnas = " con_mayor.fecha_mayor,
-                                  con_mayor.haber_mayor,
-                                  con_mayor.debe_mayor,
-                                  plan_cuentas.codigo_plan_cuentas,
-                                  plan_cuentas.nombre_plan_cuentas,
-                                  con_mayor.saldo_mayor,
-                                  con_mayor.saldo_ini_mayor,
-                                  con_mayor.creado,
-                                  con_mayor.modificado,
-                                  plan_cuentas.n_plan_cuentas,
-                                  plan_cuentas.t_plan_cuentas,
-                                  plan_cuentas.nivel_plan_cuentas,
-                                  plan_cuentas.fecha_ini_plan_cuentas,
-                                  plan_cuentas.saldo_plan_cuentas,
-                                  plan_cuentas.fecha_fin_plan_cuentas,
-                                  plan_cuentas.saldo_fin_plan_cuentas,
-                                  con_mayor.id_mayor,
-                                  entidades.ruc_entidades,
-                                  entidades.nombre_entidades,
-                                  ccomprobantes.numero_ccomprobantes,
-                                  ccomprobantes.ruc_ccomprobantes,
-                                  ccomprobantes.nombres_ccomprobantes,
-                                  tipo_comprobantes.nombre_tipo_comprobantes,
-                                  usuarios.nombre_usuarios,
-                                  usuarios.apellidos_usuarios,
-                                  ccomprobantes.concepto_ccomprobantes";
-	            
-	            
-	            
-	            $tablas="      public.con_mayor,
-                                  public.plan_cuentas,
-                                  public.entidades,
-                                  public.ccomprobantes,
-                                  public.tipo_comprobantes,
-                                  public.usuarios";
-	            
-	            $where="    plan_cuentas.id_plan_cuentas = con_mayor.id_plan_cuentas AND
-                                  entidades.id_entidades = plan_cuentas.id_entidades AND
-                                  ccomprobantes.id_ccomprobantes = con_mayor.id_ccomprobantes AND
-                                  tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes AND
-                                  con_mayor.id_mayor = '$_id_mayor'";
-	            
-	            $id="con_mayor.id_mayor";
-	            
-	            $resultSetCabeza=$mayor->getCondiciones($columnas, $tablas, $where, $id);
-	           
-	            if(!empty($resultSetCabeza)){
+	            for($i=0;$i<count($result);$i++){
 	                
-	                $_fecha_mayor     =$resultSetCabeza[0]->fecha_mayor;
-	                $_haber_mayor     =$resultSetCabeza[0]->haber_mayor;
-	                $_debe_mayor     =$resultSetCabeza[0]->debe_mayor;
-	                $_codigo_plan_cuentas     =$resultSetCabeza[0]->codigo_plan_cuentas;
-	                $_nombre_plan_cuentas     =$resultSetCabeza[0]->nombre_plan_cuentas;
-	                $_saldo_mayor     =$resultSetCabeza[0]->saldo_mayor;
-	                $_saldo_ini_mayor     =$resultSetCabeza[0]->saldo_ini_mayor;
-	                $_n_plan_cuentas     =$resultSetCabeza[0]->n_plan_cuentas;
-	                $_t_plan_cuentas     =$resultSetCabeza[0]->t_plan_cuentas;
-	                $_nivel_plan_cuentas     =$resultSetCabeza[0]->nivel_plan_cuentas;
-	                $_fecha_ini_plan_cuentas     =$resultSetCabeza[0]->fecha_ini_plan_cuentas;
-	                $_saldo_plan_cuentas     =$resultSetCabeza[0]->saldo_plan_cuentas;
-	                $_fecha_fin_plan_cuentas     =$resultSetCabeza[0]->fecha_fin_plan_cuentas;
-	                $_saldo_fin_plan_cuentas     =$resultSetCabeza[0]->saldo_fin_plan_cuentas;
-	                $_id_mayor     =$resultSetCabeza[0]->id_mayor;
-	                $_ruc_entidades     =$resultSetCabeza[0]->ruc_entidades;
-	                $_nombre_entidades     =$resultSetCabeza[0]->nombre_entidades;
-	                $_numero_ccomprobantes     =$resultSetCabeza[0]->numero_ccomprobantes;
-	                $_ruc_ccomprobantes     =$resultSetCabeza[0]->ruc_ccomprobantes;
-	                $_nombres_ccomprobantes     =$resultSetCabeza[0]->nombres_ccomprobantes;
-	                $_nombre_tipo_comprobantes     =$resultSetCabeza[0]->nombre_tipo_comprobantes;
-	                $_nombre_usuarios     =$resultSetCabeza[0]->nombre_usuarios;
-	                $_apellidos_usuarios     =$resultSetCabeza[0]->apellidos_usuarios;
-	                $_concepto_ccomprobantes     =$resultSetCabeza[0]->concepto_ccomprobantes;
+	                $codigo = $result[$i]->id_plan_cuentas;
 	                
-	             
-	               
-	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
-	                $html.= "<tr>";
-	                $html.='<th style="text-align: center; font-size: 25px; "><b>'.$_nombre_entidades.'</b></br>';
-	                $html.='<p style="text-align: center; font-size: 13px; ">MAYOR DETALLADO';
-	                $html.='<br style="text-align: center; ">RUC: '.$_ruc_entidades.'';
+	                $html.='<tr style="font-weight:bold; text-transform: uppercase;" class="active">';
+	                $html.='<td>';
+	                $html.= $result[$i]->codigo_plan_cuentas;
+	                $html.='</td>';
+	                $html.='<td colspan="3">';
+	                $html.= $result[$i]->nombre_plan_cuentas;
+	                $html.='</td>';
 	                $html.='</tr>';
-	                $html.='</table>';
-	                $html.='<p style="text-align: left; font-size: 13px; "><b> NOMBRE: </b>'.$_nombre_proveedores.'  ;<b>Nº RET:</b> '.$_nombre_entidades.'';
-	                $html.='<br colspan="12" style="text-align: left; font-size: 13px; "><b>LA CANTIDAD DE: </b>'.$_valor_ccomprobantes.'</th>';
-	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
-	                $html.= "<tr>";
-	                $html.='<th colspan="12" style="text-align: left; height:30px; font-size: 13px;" ><b>&nbsp;CONCEPTO: </b>'.$_concepto_ccomprobantes.'';
-	                $html.="</tr>";
 	                
-	            
+	                $query="SELECT * FROM vw_diario_contable WHERE id_plan_cuentas = $codigo ORDER BY codigo_plan_cuentas";
 	                
-	             
+	                $resultdetalle = $mayor->enviaquery($query);
+	                
+	                if(!empty($resultdetalle) && count($result)>0){
+	                    
+	                    $j = 0;
+	                    foreach ($resultdetalle as $res){
+	                        
+	                        $j+=1;
+	                        $html.='<tr>';
+	                        $html.='<td>';
+	                        $html.= $j;
+	                        $html.='</td>';
+	                        $html.='<td>';
+	                        $html.= $res->fecha_mayor;
+	                        $html.='</td>';
+	                        $html.='<td>';
+	                        $html.= $res->sumadebe;
+	                        $html.='</td>';
+	                        $html.='<td>';
+	                        $html.= $res->sumahaber;
+	                        $html.='</td>';
+	                        $html.='</tr>';
+	                        
+	                    }
+	                }
+	                
 	                
 	            }
 	            
-	          
-	            
-	            $this->report("Mayor",array( "resultSet"=>$html));
-	            die();
-	            
+	            $html.='</table>';
 	        }
 	        
 	        
@@ -471,5 +442,7 @@ class ReporteMayorController extends ControladorBase{
 	    
 	    
 	}
+	
+	
 	}
 ?>

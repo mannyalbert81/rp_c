@@ -116,7 +116,7 @@
                     		    <div class="row">
                     		    <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; ">
                     		    <div class="form-group">
-                                                      <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Consultar</button>
+                                                      <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Calcular</button>
                                 </div>
                     		    </div>
                     		    </div>

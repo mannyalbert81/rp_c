@@ -477,6 +477,7 @@ class ActivosFijosDetalleController extends ControladorBase{
             
             $respuesta->nombre_activos_fijos = $resultSet[0]->nombre_activos_fijos;
             $respuesta->codigo_activos_fijos = $resultSet[0]->codigo_activos_fijos;
+            $respuesta->id_activos_fijos = $resultSet[0]->id_activos_fijos;
             
             echo json_encode($respuesta);
         }
@@ -563,8 +564,40 @@ class ActivosFijosDetalleController extends ControladorBase{
         session_start();
        
         //die('llego');
+        $activosf=new ActivosFijosModel();
         $resultado = null;
         $activosfdetalle=new ActivosFijosDetalleModel();
+        
+        $columnas = "
+                      activos_fijos.id_activos_fijos,
+                      activos_fijos.nombre_activos_fijos,
+                      activos_fijos.codigo_activos_fijos,
+                      activos_fijos.valor_activos_fijos,
+                      activos_fijos.meses_depreciacion_activos_fijos,
+                      activos_fijos.depreciacion_mensual_activos_fijos,
+                      activos_fijos_detalle.anio_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_enero_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_febrero_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_marzo_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_abril_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_mayo_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_junio_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_julio_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_agosto_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_septiembre_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_octubre_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_noviembre_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_diciembre_depreciacion_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_depreciacion_acumulada_anio_activos_fijos_detalle,
+                      activos_fijos_detalle.valor_a_depreciar_siguiente_anio_activos_fijos_detalle,
+                      activos_fijos_detalle.creado,
+                      activos_fijos_detalle.modificado";
+        $tablas   = "   public.activos_fijos_detalle,
+  		  public.activos_fijos";
+        $where    = " activos_fijos.id_activos_fijos = activos_fijos_detalle.id_activos_fijos AND activos_fijos_detalle.id_activos_fijos_detalle = '$_id_activos_fijos_detalle'";
+        $id="activos_fijos_detalle.id_activos_fijos_detalle";
+        
+        
         
         $nombre_controladores = "ActivosFijosDetalle";
         $id_rol= $_SESSION['id_rol'];
@@ -574,21 +607,19 @@ class ActivosFijosDetalleController extends ControladorBase{
         
         if (!empty($resultPer))
         {
-            
-            if ( isset ($_POST["id_activos_fijos_detalle"]))
-            
+            //die('llego');
+            if ( isset ($_POST["anio_depreciacion_activos_fijos_detalle"]))            
             {
-                //die('llego');
                 
-                
-                $_id_activos_fijos_detalle = $_POST["id_activos_fijos_detalle"];
+                $_id_activos_fijos = $_POST["id_activos_fijos"];
                 $_anio_depreciacion_activos_fijos_detalle = $_POST["anio_depreciacion_activos_fijos_detalle"];
                
-                //die('llego');
+                /*mandar consulytar del detalle con where id ac tivos fijos*/
                 
-                if($_id_activos_fijos_detalle > 0){
-                    //die('llego');
+                
+                if($_id_activos_fijos > 0){
                     
+                  
                     
                     $_valor_enero_depreciacion_activos_fijos_detalle = 0;
                     $_valor_enero_depreciacion_activos_fijos_detalle = $_depreciacion_mensual_activos_fijos;
@@ -657,10 +688,10 @@ class ActivosFijosDetalleController extends ControladorBase{
                                 AND activos_fijos_detalle.id_activos_fijos_detalle = '$_id_activos_fijos_detalle'";
                     $resultado=$activosfdetalle->UpdateBy($columnas, $tabla, $where);
                     
+                    print_r($resultado); die();
+                    
                 }else{
                     
-                   
-                    $_valor_enero_depreciacion_activos_fijos_detalle = 0;
                     $_valor_enero_depreciacion_activos_fijos_detalle = $_depreciacion_mensual_activos_fijos;
                     $_valor_febrero_depreciacion_activos_fijos_detalle = 0;
                     $_valor_marzo_depreciacion_activos_fijos_detalle = $_valor_febrero_depreciacion_activos_fijos_detalle;

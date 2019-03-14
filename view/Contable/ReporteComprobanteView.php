@@ -8,6 +8,7 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
           <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>  
+          <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
      
  		<script>
 		    webshims.setOptions('forms-ext', {types: 'date'});

@@ -8,7 +8,7 @@
 		
 		<link rel="stylesheet" href="view/css/estilos.css">
 		<link rel="stylesheet" href="view/vendors/table-sorter/themes/blue/style.css">
-	
+	<link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
 	
 	
 		    <!-- Bootstrap -->

@@ -259,7 +259,6 @@ class ActivosFijosDetalleController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Año Depreciación</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Mes Depreciación</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Valor Enero</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Valor Febrero</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Valor Marzo</th>';
@@ -292,7 +291,6 @@ class ActivosFijosDetalleController extends ControladorBase{
                     $html.='<td style="font-size: 11px;">'.$res->codigo_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->anio_depreciacion_activos_fijos_detalle.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->mes_a_depreciar_activos_fijos_detalle.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->valor_enero_depreciacion_activos_fijos_detalle.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->valor_febrero_depreciacion_activos_fijos_detalle.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->valor_marzo_depreciacion_activos_fijos_detalle.'</td>';
@@ -563,7 +561,8 @@ class ActivosFijosDetalleController extends ControladorBase{
     public function Depreciar(){
         
         session_start();
-        
+       
+        //die('llego');
         $resultado = null;
         $activosfdetalle=new ActivosFijosDetalleModel();
         
@@ -571,6 +570,7 @@ class ActivosFijosDetalleController extends ControladorBase{
         $id_rol= $_SESSION['id_rol'];
         $resultPer = $activosfdetalle->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
         
+        //die('llego');
         
         if (!empty($resultPer))
         {
@@ -581,39 +581,126 @@ class ActivosFijosDetalleController extends ControladorBase{
                 //die('llego');
                 
                 
-                $_id_activos_fijos = $_POST["id_activos_fijos"];
-                $_codigo_activos_fijos = $_POST["codigo_activos_fijos"];
-                $_nombre_activos_fijos= $_POST["nombre_activos_fijos"];
+                $_id_activos_fijos_detalle = $_POST["id_activos_fijos_detalle"];
                 $_anio_depreciacion_activos_fijos_detalle = $_POST["anio_depreciacion_activos_fijos_detalle"];
                
                 //die('llego');
                 
-                
-                if($id_activos_fijos_detalle > 0){
+                if($_id_activos_fijos_detalle > 0){
                     //die('llego');
                     
+                    
+                    $_valor_enero_depreciacion_activos_fijos_detalle = 0;
+                    $_valor_enero_depreciacion_activos_fijos_detalle = $_depreciacion_mensual_activos_fijos;
+                    $_valor_febrero_depreciacion_activos_fijos_detalle = 0;
+                    $_valor_marzo_depreciacion_activos_fijos_detalle = $_valor_febrero_depreciacion_activos_fijos_detalle;
+                    $_valor_abril_depreciacion_activos_fijos_detalle = $_valor_marzo_depreciacion_activos_fijos_detalle;
+                    $_valor_mayo_depreciacion_activos_fijos_detalle = $_valor_abril_depreciacion_activos_fijos_detalle;
+                    $_valor_junio_depreciacion_activos_fijos_detalle = $_valor_mayo_depreciacion_activos_fijos_detalle;
+                    $_valor_julio_depreciacion_activos_fijos_detalle = $_valor_junio_depreciacion_activos_fijos_detalle;
+                    $_valor_agosto_depreciacion_activos_fijos_detalle = $_valor_julio_depreciacion_activos_fijos_detalle;
+                    $_valor_septiembre_depreciacion_activos_fijos_detalle = $_valor_agosto_depreciacion_activos_fijos_detalle;
+                    $_valor_octubre_depreciacion_activos_fijos_detalle = $_valor_septiembre_depreciacion_activos_fijos_detalle;
+                    $_valor_noviembre_depreciacion_activos_fijos_detalle = $_valor_octubre_depreciacion_activos_fijos_detalle;
+                    $_valor_valor_diciembre_depreciacion_activos_fijos_detalle = $_valor_noviembre_depreciacion_activos_fijos_detalle;
+                    
+                    $_valor_depreciacion_acumulada_anio_activos_fijos_detalle = ((int) $_valor_enero_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_febrero_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_marzo_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_abril_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_mayo_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_junio_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_julio_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_agosto_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_septiembre_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_octubre_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_noviembre_depreciacion_activos_fijos_detalle)
+                                                                               +((int) $_valor_valor_diciembre_depreciacion_activos_fijos_detalle)
+                    ;
+                    
+                                                                               
+                  $_valor_a_depreciar_siguiente_anio_activos_fijos_detalle = ((int) $_valor_activos_fijos)- ((int) $_valor_depreciacion_acumulada_anio_activos_fijos_detalle);
+                    
+                    
                     $columnas = "
-                              activos_fijos_detalle.id_activos_fijos_detalle = '$id_activos_fijos_detalle',
-							  activos_fijos_detalle.id_activos_fijos = '$id_activos_fijos', 
-                              activos_fijos.codigo_activos_fijos = '$codigo_activos_fijos', 
-                              activos_fijos.nombre_activos_fijos = '$nombre_activos_fijos', 
-                              activos_fijos_detalle.anio_depreciacion_activos_fijos_detalle = '$anio_depreciacion_activos_fijos_detalle', 
+                              id_activos_fijos = '$_id_activos_fijos', 
+                              id_tipo_activos_fijos ='$_id_tipo_activos_fijos', 
+                              nombre_tipo_activos_fijos = '$_nombre_tipo_activos_fijos', 
+                              nombre_activos_fijos  ='$_nombre_activos_fijos', 
+                              codigo_activos_fijos  ='$_codigo_activos_fijos', 
+                              valor_activos_fijos  = '$_valor_activos_fijos', 
+                              depreciacion_mensual_activos_fijos = '$_depreciacion_mensual_activos_fijos', 
+                              id_activos_fijos_detalle  =  '$_id_activos_fijos_detalle',
+                              anio_depreciacion_activos_fijos_detalle  = '$_anio_depreciacion_activos_fijos_detalle', 
+                              valor_enero_depreciacion_activos_fijos_detalle = '$_valor_enero_depreciacion_activos_fijos_detalle', 
+                              valor_febrero_depreciacion_activos_fijos_detalle = '$_valor_febrero_depreciacion_activos_fijos_detalle', 
+                              valor_marzo_depreciacion_activos_fijos_detalle = '$_valor_marzo_depreciacion_activos_fijos_detalle', 
+                              valor_abril_depreciacion_activos_fijos_detalle = '$_valor_abril_depreciacion_activos_fijos_detalle', 
+                              valor_mayo_depreciacion_activos_fijos_detalle = '$_valor_mayo_depreciacion_activos_fijos_detalle', 
+                              valor_junio_depreciacion_activos_fijos_detalle = '$_valor_junio_depreciacion_activos_fijos_detalle', 
+                              valor_julio_depreciacion_activos_fijos_detalle = '$_valor_julio_depreciacion_activos_fijos_detalle', 
+                              valor_agosto_depreciacion_activos_fijos_detalle = '$_valor_agosto_depreciacion_activos_fijos_detalle', 
+                              valor_septiembre_depreciacion_activos_fijos_detalle = '$_valor_septiembre_depreciacion_activos_fijos_detalle', 
+                              valor_octubre_depreciacion_activos_fijos_detalle = '$_valor_octubre_depreciacion_activos_fijos_detalle', 
+                              valor_noviembre_depreciacion_activos_fijos_detalle = '$_valor_noviembre_depreciacion_activos_fijos_detalle', 
+                              valor_diciembre_depreciacion_activos_fijos_detalle = '$_valor_valor_diciembre_depreciacion_activos_fijos_detalle', 
+                              valor_depreciacion_acumulada_anio_activos_fijos_detalle = '$_valor_depreciacion_acumulada_anio_activos_fijos_detalle', 
+                              valor_a_depreciar_siguiente_anio_activos_fijos_detalle = '$_valor_a_depreciar_siguiente_anio_activos_fijos_detalle' 
                               ";
                     
-                    $tabla = "  public.activos_fijos, 
-                                public.activos_fijos_detalle";
+                    $tabla = "public.activos_fijos, 
+                              public.activos_fijos_detalle, 
+                              public.tipo_activos_fijos";
                     
-                    $where = "activos_fijos.id_activos_fijos = activos_fijos_detalle.id_activos_fijos
-                              AND activos_fijos_detalle.id_activos_fijos_detalle = '$_id_activos_fijos_detalle'";
+                    $where = "  activos_fijos.id_activos_fijos = activos_fijos_detalle.id_activos_fijos AND
+                                activos_fijos.id_tipo_activos_fijos = tipo_activos_fijos.id_tipo_activos_fijos
+                                AND activos_fijos_detalle.id_activos_fijos_detalle = '$_id_activos_fijos_detalle'";
                     $resultado=$activosfdetalle->UpdateBy($columnas, $tabla, $where);
                     
                 }else{
                     
+                   
+                    $_valor_enero_depreciacion_activos_fijos_detalle = 0;
+                    $_valor_enero_depreciacion_activos_fijos_detalle = $_depreciacion_mensual_activos_fijos;
+                    $_valor_febrero_depreciacion_activos_fijos_detalle = 0;
+                    $_valor_marzo_depreciacion_activos_fijos_detalle = $_valor_febrero_depreciacion_activos_fijos_detalle;
+                    $_valor_abril_depreciacion_activos_fijos_detalle = $_valor_marzo_depreciacion_activos_fijos_detalle;
+                    $_valor_mayo_depreciacion_activos_fijos_detalle = $_valor_abril_depreciacion_activos_fijos_detalle;
+                    $_valor_junio_depreciacion_activos_fijos_detalle = $_valor_mayo_depreciacion_activos_fijos_detalle;
+                    $_valor_julio_depreciacion_activos_fijos_detalle = $_valor_junio_depreciacion_activos_fijos_detalle;
+                    $_valor_agosto_depreciacion_activos_fijos_detalle = $_valor_julio_depreciacion_activos_fijos_detalle;
+                    $_valor_septiembre_depreciacion_activos_fijos_detalle = $_valor_agosto_depreciacion_activos_fijos_detalle;
+                    $_valor_octubre_depreciacion_activos_fijos_detalle = $_valor_septiembre_depreciacion_activos_fijos_detalle;
+                    $_valor_noviembre_depreciacion_activos_fijos_detalle = $_valor_octubre_depreciacion_activos_fijos_detalle;
+                    $_valor_valor_diciembre_depreciacion_activos_fijos_detalle = $_valor_noviembre_depreciacion_activos_fijos_detalle;
+                    
+                    $_valor_depreciacion_acumulada_anio_activos_fijos_detalle = ((int) $_valor_enero_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_febrero_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_marzo_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_abril_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_mayo_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_junio_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_julio_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_agosto_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_septiembre_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_octubre_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_noviembre_depreciacion_activos_fijos_detalle)
+                    +((int) $_valor_valor_diciembre_depreciacion_activos_fijos_detalle)
+                    ;
+                    
+                    
+                    $_valor_a_depreciar_siguiente_anio_activos_fijos_detalle = ((int) $_valor_activos_fijos)- ((int) $_valor_depreciacion_acumulada_anio_activos_fijos_detalle);
+                    
+                    
+                    
+                    
+                    
+                    
                     $funcion = "ins_activos_fijos_detalle";
-                    $parametros = "'$_id_oficina', '$_id_tipo_activos_fijos', '$_id_estado', '$_id_usuarios', '$_nombre_activos_fijos', '$_codigo_activos_fijos', '$_fecha_compra_activos_fijos', '$_cantidad_activos_fijos', '$_valor_activos_fijos', '$_meses_depreciacion_activos_fijos', '$_depreciacion_mensual_activos_fijos'";
-                    $activosf->setFuncion($funcion);
-                    $activosf->setParametros($parametros);
-                    $resultado=$activosf->Insert();
+                    $parametros = "'$_id_activos_fijos', '$_anio_depreciacion_activos_fijos_detalle', '$_valor_enero_depreciacion_activos_fijos_detalle', '$_valor_febrero_depreciacion_activos_fijos_detalle', '$_valor_marzo_depreciacion_activos_fijos_detalle', '$_valor_abril_depreciacion_activos_fijos_detalle', '$_valor_mayo_depreciacion_activos_fijos_detalle', '$_valor_junio_depreciacion_activos_fijos_detalle', '$_valor_julio_depreciacion_activos_fijos_detalle', '$_valor_agosto_depreciacion_activos_fijos_detalle', '$_valor_septiembre_depreciacion_activos_fijos_detalle', '$_valor_octubre_depreciacion_activos_fijos_detalle', '$_valor_noviembre_depreciacion_activos_fijos_detalle', '$_valor_valor_diciembre_depreciacion_activos_fijos_detalle', '$_valor_depreciacion_acumulada_anio_activos_fijos_detalle', '$_valor_a_depreciar_siguiente_anio_activos_fijos_detalle'";
+                    $activosfdetalle->setFuncion($funcion);
+                    $activosfdetalle->setParametros($parametros);
+                    $resultado=$activosfdetalle->Insert();
                 }
                 
             }
@@ -622,7 +709,7 @@ class ActivosFijosDetalleController extends ControladorBase{
         }
         else
         {
-            $this->view_Contable("Error",array("resultado"=>"No tiene Permisos Para Crear Bodegas"
+            $this->view_Contable("Error",array("resultado"=>"No tiene Permisos Para Crear Depreciaciones"
                 
             ));
             

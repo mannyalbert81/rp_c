@@ -13,11 +13,7 @@ class IniciarController extends ControladorBase{
 	
 		session_start();
 		
-		
-			$encuestas = new EncuestasModel();
-			$encuestas_cabeza= new EncuestasCabezaModel();
-	
-			
+
 			
 				
 	

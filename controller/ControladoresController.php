@@ -12,8 +12,24 @@ class ControladoresController extends ControladorBase{
 	
 	
 		$controladores = new ControladoresModel();
-	    $resultSet=$controladores->getAll("id_controladores");
+		
+		$columnas="controladores.id_controladores, 
+                  controladores.nombre_controladores, 
+                  modulos.id_modulos, 
+                  modulos.nombre_modulos, 
+                  controladores.creado, 
+                  controladores.modificado";
+		$tablas="public.controladores, 
+                 public.modulos";
+		$where="modulos.id_modulos = controladores.id_modulos";
+		$id="controladores.id_controladores";
+		$resultSet=$controladores->getCondiciones($columnas, $tablas, $where, $id);
+		
+		
+		
 		$resultEdit = "";
+		$modulos = new ModulosModel();
+		$resultMod=$modulos->getAll("nombre_modulos");
 
 		session_start();
 		
@@ -21,7 +37,7 @@ class ControladoresController extends ControladorBase{
 		{
 			$controladores = new ControladoresModel();
 			//NOTIFICACIONES
-			$controladores->MostrarNotificaciones($_SESSION['id_usuarios']);
+			//$controladores->MostrarNotificaciones($_SESSION['id_usuarios']);
 			
 			$nombre_controladores = "Controladores";
 			$id_rol= $_SESSION['id_rol'];
@@ -29,7 +45,6 @@ class ControladoresController extends ControladorBase{
 			
 			if (!empty($resultPer))
 			{
-				
 				
 				if (isset ($_GET["id_controladores"]))
 				{
@@ -42,7 +57,7 @@ class ControladoresController extends ControladorBase{
 					{
 					
 						$_id_controladores = $_GET["id_controladores"];
-						$columnas = " id_controladores, nombre_controladores";
+						$columnas = " id_controladores, nombre_controladores, id_modulos";
 						$tablas   = "controladores";
 						$where    = "id_controladores = '$_id_controladores' "; 
 						$id       = "nombre_controladores";
@@ -64,7 +79,7 @@ class ControladoresController extends ControladorBase{
 				
 				
 				$this->view_Administracion("Controladores",array(
-						"resultSet"=>$resultSet, "resultEdit" =>$resultEdit
+				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultMod" =>$resultMod
 			
 				));
 		
@@ -94,6 +109,10 @@ class ControladoresController extends ControladorBase{
 
 		$permisos_rol=new PermisosRolesModel();
 		$controladores=new ControladoresModel();
+		$modulos = new ModulosModel();
+		$resultMod=$modulos->getAll("nombre_modulos");
+		
+		
 		$nombre_controladores = "Controladores";
 		$id_rol= $_SESSION['id_rol'];
 		$resultPer = $permisos_rol->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
@@ -112,11 +131,12 @@ class ControladoresController extends ControladorBase{
 				
 				$_nombre_controladores = $_POST["nombre_controladores"];
 				$_id_controladores = $_POST["id_controladores"];
+				$_id_modulos = $_POST["id_modulos"];
 				
 				if($_id_controladores>0) 
 				{
 					
-					$colval = " nombre_controladores = '$_nombre_controladores'   ";
+					$colval = " nombre_controladores = '$_nombre_controladores', id_modulos = '$_id_modulos'   ";
 					$tabla = "controladores";
 					$where = "id_controladores = '$_id_controladores'    ";
 					
@@ -129,7 +149,7 @@ class ControladoresController extends ControladorBase{
 			
 				
 				$funcion = "ins_controladores";
-				$parametros = " '$_nombre_controladores'  ";
+				$parametros = " '$_nombre_controladores', '$_id_modulos'  ";
 				$controladores->setFuncion($funcion);
 				$controladores->setParametros($parametros);
 				$resultado=$controladores->Insert();
@@ -158,12 +178,8 @@ class ControladoresController extends ControladorBase{
 
 		session_start();
 		
-		$permisos_rol=new PermisosRolesModel();
-		$nombre_controladores = "Controladores";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $permisos_rol->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
-		if (!empty($resultPer))
+		if (isset($_SESSION["id_usuarios"]))
 		{
 			if(isset($_GET["id_controladores"]))
 			{
@@ -181,10 +197,10 @@ class ControladoresController extends ControladorBase{
 		}
 		else
 		{
-		    $this->view_Administracion("Error",array(
-				"resultado"=>"No tiene Permisos de Borrar Controladores"
-			
-			));
+		    
+		    $this->redirect("Usuarios", "cerrar_sesion");
+		    
+		    
 		}
 				
 	}

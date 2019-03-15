@@ -1,5 +1,5 @@
 <?php
-class AActivosFijosDetalleModel extends ModeloBase{
+class ActivosFijosDetalleModel extends ModeloBase{
 	private $table;
 	private $where;
 	private $funcion;

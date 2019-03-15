@@ -219,7 +219,7 @@ class ReporteComprobanteController extends ControladorBase{
 			    }
 			    
 					
-				$this->view("ReporteComprobante",array(
+			    $this->view_Contable("ReporteComprobante",array(
 				    "resultSet"=>$resultSet, "resultTipCom"=> $resultTipCom,
 				    "resultEnt"=>$resultEnt
 				    
@@ -228,7 +228,7 @@ class ReporteComprobanteController extends ControladorBase{
 			
 			}else{
 				
-				$this->view("Error",array(
+			    $this->view_Contable("Error",array(
 						"resultado"=>"No tiene Permisos de Consultar Comprobantes"
 				
 					
@@ -434,10 +434,10 @@ class ReporteComprobanteController extends ControladorBase{
 	                $html.='<p style="text-align: center; font-size: 13px; ">'.$_direccion_entidades.'';
 	                $html.='<br style="text-align: center; ">Teléfono: '.$_telefono_entidades.'';
 	                $html.='<br style="text-align: center; ">COMPROBANTE '.$_nombre_tipo_comprobantes.' Nº: '.$_numero_ccomprobantes.'</p>';
-	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; RUC: '.$_ruc_entidades.'&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Fecha Factura: '.$_fecha_ccomprobantes.'';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; RUC: '.$_ruc_entidades.'&nbsp;  &nbsp;Fecha Factura: '.$_fecha_ccomprobantes.'';
 	                $html.='</tr>';
 	                $html.='</table>';
-	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE: </b>'.$_nombre_proveedores.'  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Nº RET:</b> '.$_retencion_ccomprobantes.'';
+	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE: </b>'.$_nombre_proveedores.'  ;<b>Nº RET:</b> '.$_retencion_ccomprobantes.'';
 	                $html.='<br colspan="12" style="text-align: left; font-size: 13px; "><b>&nbsp;&nbsp;LA CANTIDAD DE: </b>'.$_valor_ccomprobantes.'</th>';
 	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
 	                $html.= "<tr>";

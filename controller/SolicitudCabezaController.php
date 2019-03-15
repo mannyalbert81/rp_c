@@ -770,7 +770,8 @@ class SolicitudCabezaController extends ControladorBase{
 	            
 	            if($pedido_id>0){
 	                
-	                $pedidos_detalle = null; $pedidos_detalle = new PedidosDetalleModel();
+	                $pedidos_detalle = null; 
+	                //$pedidos_detalle = new PedidosDetalleModel();
 	                
 	                $funcion = "ins_pedidos";
 	                

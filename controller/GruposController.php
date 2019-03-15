@@ -190,7 +190,7 @@ class GruposController extends ControladorBase{
 	    else
 	    {
 	        $this->view_Inventario("Error",array(
-	            "resultado"=>"No tiene Permisos de Borrar Bodegas"
+	            "resultado"=>"No tiene Permisos de Borrar Grupos"
 	            
 	        ));
 	    }

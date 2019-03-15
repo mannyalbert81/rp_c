@@ -165,7 +165,7 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/pdf/pdfObject.js" type="text/javascript"></script>
-   <script src="view/Contable/FuncionesJS/diarioContable.js?2.2"></script>         	
+   <script src="view/Contable/FuncionesJS/diarioContable.js?2.3"></script>         	
   </body>
 </html>
 

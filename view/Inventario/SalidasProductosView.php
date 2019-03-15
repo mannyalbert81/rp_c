@@ -43,7 +43,7 @@
           </h1>
           <ol class="breadcrumb">
             <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Solicitud</li>
+            <li class="active">Solicitudes</li>
           </ol>
         </section>
         
@@ -52,12 +52,12 @@
           <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title"> Solicitudes </h3>
+              <h3 class="box-title">Solicitudes</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
-                
-              </div>
+             </div>
+            </div>
             </div>
             
             <div class="row">
@@ -65,9 +65,9 @@
           <!-- Custom Tabs -->
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab_1" data-toggle="tab">Solicitud Pendiente</a></li>
-              <li><a href="#tab_2" data-toggle="tab">Solicitud Entregada</a></li>
-              <li><a href="#tab_3" data-toggle="tab">Solicitud Rechazada</a></li>
+              <li class="active"><a href="#tab_1" data-toggle="tab">Solicitudes Pendientes</a></li>
+              <li><a href="#tab_2" data-toggle="tab">Solicitudes Entregadas</a></li>
+              <li><a href="#tab_3" data-toggle="tab">Solicitudes Rechazadas</a></li>
               
               <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-th"></i></a></li>
             </ul>
@@ -108,28 +108,12 @@
                                 
                       
               </div>
-              <!-- /.tab-pane -->
             </div>
-            <!-- /.tab-content -->
           </div>
-          <!-- nav-tabs-custom -->
+         </div>
         </div>
-        <!-- /.col -->
-        <!-- /.col -->
-      </div>
-            
-            <div class="box-body">
-            	<div class="ibox-content">
-                      	
-                  <div class="x_content">
-                  
-                  	
-                  	
-    		</section>
-    		
-            
-            
-  		</div>
+     </section>
+   </div>
   
   
  
@@ -145,8 +129,8 @@
   </body>
 </html>
 
-<!-- script pagina anterior -->
-<script type="text/javascript">
+
+	<script type="text/javascript">
      
         	   $(document).ready( function (){
         		   //pone_espera();

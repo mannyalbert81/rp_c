@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
   
     <?php include("view/modulos/links_css.php"); ?>		
     
@@ -77,7 +78,7 @@
                         		  <div class="form-group">
                                   <label for="nombre_tipo_comprobantes" class="control-label">Nombre</label>
                                   <input type="text" class="form-control" id="nombre_tipo_comprobantes" name="nombre_tipo_comprobantes" value="<?php echo $resEdit->nombre_tipo_comprobantes; ?>"  placeholder="Nombre de Comprobante">
-                                  <span class="help-block"></span>
+                                  <div id="mensaje_nombre_tipo_comprobantes" class="errores"></div>
                                     </div>
                         		    </div>   
                         		    
@@ -88,31 +89,26 @@
                     		     <?php } } else {?>
                     		    
                     		   
-								 <div class="row">
-                        		    
-                        		    
-                        		 		
-                        			
-                        			<div class="col-xs-12 col-md-3 col-md-3 ">
+		                    <div class="row">
+                              <div class="col-xs-12 col-md-3 col-md-3 ">
                         	    <div class="form-group">
                                   <label for="nombre_tipo_comprobantes" class="control-label">Nombre</label>
-                                  <input type="text" class="form-control" id="nombre_tipo_comprobantes" name="nombre_tipo_comprobantes" value=""  placeholder="Nombre de Comprobante">
-                                  <span class="help-block"></span>
+                                  <input type="text" class="form-control" id="nombre_tipo_comprobantes" name="nombre_tipo_comprobantes" value=""  placeholder="nombre de tipo comprobante..">
+                                   <div id="mensaje_nombre_tipo_comprobantes" class="errores"></div>
             					</div>
-	       		    </div>
-                        		    
-                     				</div>
+	       		               </div>
+	       		            </div>
                 		    
-                    	
-                    			
-                                 	                     	           	
+                    	         	                     	           	
                     		     <?php } ?>
+                    		
                     		    <br>  
                     		    <div class="row">
-                    		    <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; ">
+                    		    <div class="col-xs-12 col-md-4 col-lg-4" style="text-align: left;">
                     		    <div class="form-group">
-                                                      <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Guardar</button>
-                                </div>
+                                                      <button type="submit" id="Guardar" name="Guardar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
+                                                      <a href="index.php?controller=Tipo Comprobantes&action=index" class="btn btn-primary"><i class='glyphicon glyphicon-remove'></i> Cancelar</a>
+        	                    </div>
                     		    </div>
                     		    </div>
                     		      
@@ -126,7 +122,7 @@
      <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Listado de Tipo de Comprobantes</h3>
+          <h3 class="box-title">Tipo de Comprobantes Registrados</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -217,152 +213,42 @@
 		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
 		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
 
-		    	var nombre_proveedores = $("#nombre_proveedores").val();
-		    	var identificacion_proveedores = $("#identificacion_proveedores").val();
-		    	var contactos_proveedores = $("#contactos_proveedores").val();
-		    	var direccion_proveedores = $("#direccion_proveedores").val();
-		    	var telefono_proveedores = $("#telefono_proveedores").val();
-		    	var email_proveedores = $("#email_proveedores").val();
-		    	var fecha_nacimiento_proveedores = $("#fecha_nacimiento_proveedores").val();
+		    	var nombre_tipo_comprobantes = $("#nombre_tipo_comprobantes").val();
 		    	
+		    	if (nombre_tipo_comprobantes == "")
+		    	{
+		    		$("#mensaje_nombre_tipo_comprobantes").text("Introduzca Un Nombre");
+		    		$("#mensaje_nombre_tipo_comprobantes").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_nombre_tipo_comprobantes").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+
 		    	
-		    	
-		    	if (nombre_proveedores == 0)
-		    	{
-			    	
-		    		$("#mensaje_nombre_proveedores").text("Introduzca Un Nombre");
-		    		$("#mensaje_nombre_proveedores").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_nombre_proveedores").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (identificacion_proveedores == "")
-		    	{
-			    	
-		    		$("#mensaje_identificacion_proveedores").text("Introduzca Un Ruc");
-		    		$("#mensaje_identificacion_proveedores").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_identificacion_proveedores").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (contactos_proveedores == "")
-		    	{
-			    	
-		    		$("#mensaje_contactos_proveedores").text("Introduzca Un Contacto");
-		    		$("#mensaje_contactos_proveedores").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_contactos_proveedores").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (direccion_proveedores == "")
-		    	{
-			    	
-		    		$("#mensaje_direccion_proveedores").text("Introduzca Una Dirección");
-		    		$("#mensaje_direccion_proveedores").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_direccion_proveedores").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (telefono_proveedores == "")
-		    	{
-			    	
-		    		$("#mensaje_telefono_proveedores").text("Introduzca Un teléfono");
-		    		$("#mensaje_telefono_proveedores").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_telefono_proveedores").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-		    	if (email_proveedores == "")
-		    	{
-			    	
-		    		$("#mensaje_email_proveedores").text("Introduzca Un Email");
-		    		$("#mensaje_email_proveedores").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_email_proveedores").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (fecha_nacimiento_proveedores == "")
-		    	{
-			    	
-		    		$("#mensaje_fecha_nacimiento_proveedores").text("Introduzca Una Fecha");
-		    		$("#mensaje_fecha_nacimiento_proveedores").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_fecha_nacimiento_proveedores").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
 		    	
 		    	
 			}); 
 
 
-		        $( "#nombre_proveedores" ).focus(function() {
-				  $("#mensaje_nombre_proveedores").fadeOut("slow");
+		        $( "#nombre_tipo_comprobantes" ).focus(function() {
+				  $("#mensaje_nombre_tipo_comprobantes").fadeOut("slow");
 			    });
-
-		        $( "#identificacion_proveedores" ).focus(function() {
-					  $("#mensaje_identificacion_proveedores").fadeOut("slow");
-				    });
-		        $( "#contactos_proveedores" ).focus(function() {
-					  $("#mensaje_contactos_proveedores").fadeOut("slow");
-				    });
-		        $( "#direccion_proveedores" ).focus(function() {
-					  $("#mensaje_direccion_proveedores").fadeOut("slow");
-				    });
-		        $( "#telefono_proveedores" ).focus(function() {
-					  $("#mensaje_telefono_proveedores").fadeOut("slow");
-				    });
-		        $( "#email_proveedores" ).focus(function() {
-					  $("#mensaje_email_proveedores").fadeOut("slow");
-				    });
-		        $( "#fecha_nacimiento_proveedores" ).focus(function() {
-					  $("#mensaje_fecha_nacimiento_proveedores").fadeOut("slow");
-				    });
-		        		      
-
-			    
 		}); 
 
 	</script>	
 	
 		<script type="text/javascript">
      
-        	   $(document).ready( function (){
-        		   
-        		   load_bodegas_inactivos(1);
-        		   load_bodegas_activos(1);
-        		   
-	   			});
-
-        	
-
-
+	   $(document).ready( function (){
+		   
+		   load_bodegas_inactivos(1);
+		   load_bodegas_activos(1);
+		   
+		});
+        
 	   function load_bodegas_activos(pagina){
 
 		   var search=$("#search_activos").val();

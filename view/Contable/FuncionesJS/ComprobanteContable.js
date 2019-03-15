@@ -240,9 +240,14 @@
 		            data: "plan_cuentas="+plan_cuentas+"&descripcion_dcomprobantes="+descripcion_dcomprobantes+"&debe_dcomprobantes="+debe_dcomprobantes+"&haber_dcomprobantes="+haber_dcomprobantes,
 		        	
 		            success: function(datos){
+		            	//console.log(datos)
 		            	limpiar();
 		            	load_temp_comprobantes(1);
 		            	
+		            },
+		            error: function(xhr,status,error){
+		            	var err = xhr.responseText;
+		            	console.log(err)
 		            }
 				});
 				
@@ -521,6 +526,17 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
         	 setearForm()
         	 swal(x.mensaje);
         	 //console.log(x)
+        	 load_temp_comprobantes(1)
+         },
+         error:function(xhr,estado,error){
+        	 var err=xhr.responseText
+        	 
+        	 swal({
+        		  title: "Error",
+        		  text: "Error conectar con el Servidor \n "+err,
+        		  icon: "error",
+        		  button: "Aceptar",
+        		});
          }
 	 });	
 
@@ -645,8 +661,10 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
 	                    }
 	        	     
 	        },
-	        error: function(jqXHR,estado,error){
-	         //$("#resultados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+	        error: function(xhr,estado,error){
+	        	 var err=xhr.responseText
+	        	 
+	        
 	        }
 	    });
 		 

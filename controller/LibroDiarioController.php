@@ -90,76 +90,6 @@ class LibroDiarioController extends ControladorBase{
 	
 	}
 	
-	public function InsertaProveedores(){
-			
-		session_start();
-		$proveedores=new ProveedoresModel();
-
-		$nombre_controladores = "Proveedores";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $proveedores->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-			
-		if (!empty($resultPer))
-		{
-		
-		
-		
-			$resultado = null;
-			$proveedores=new ProveedoresModel();
-		
-			if (isset ($_POST["nombre_proveedores"])   )
-			{
-			    $_id_proveedores =  $_POST["id_proveedores"];
-			    $_nombre_proveedores = $_POST["nombre_proveedores"];
-			    $_identificacion_proveedores = $_POST["identificacion_proveedores"];
-			    $_contactos_proveedores = $_POST["contactos_proveedores"];
-			    $_direccion_proveedores = $_POST["direccion_proveedores"];
-			    $_telefono_proveedores = $_POST["telefono_proveedores"];
-			    $_email_proveedores = $_POST["email_proveedores"];
-			    $_fecha_nacimiento_proveedores = $_POST["fecha_nacimiento_proveedores"];
-			   
-			  
-				
-			    if($_id_proveedores > 0){
-					
-					$columnas = " nombre_proveedores = '$_nombre_proveedores',
-                                  identificacion_proveedores = '$_identificacion_proveedores',
-                                  contactos_proveedores = '$_contactos_proveedores',
-                                    direccion_proveedores = '$_direccion_proveedores',
-                                    telefono_proveedores = '$_telefono_proveedores',
-                                    email_proveedores = '$_email_proveedores',
-                                    fecha_nacimiento_proveedores = '$_fecha_nacimiento_proveedores'";
-					$tabla = "proveedores";
-					$where = "id_proveedores = '$_id_proveedores'";
-					$resultado=$proveedores->UpdateBy($columnas, $tabla, $where);
-					
-				}else{
-					
-					$funcion = "ins_proveedores";
-					$parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores','$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores','$_fecha_nacimiento_proveedores'";
-					$proveedores->setFuncion($funcion);
-					$proveedores->setParametros($parametros);
-					$resultado=$proveedores->Insert();
-				}
-				
-				
-				
-		
-			}
-			$this->redirect("Proveedores", "index");
-
-		}
-		else
-		{
-		    $this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Proveedores"
-		
-			));
-		
-		
-		}
-		
-	}
 	
 	public function borrarId()
 	{
@@ -502,16 +432,45 @@ class LibroDiarioController extends ControladorBase{
 	
 	public function diarioContable(){
 	    
-	    $mayor = new MayorModel();	    
+	    $mayor = new MayorModel();
+	    $entidades = new EntidadesModel();
 	    
-	    if(!isset($_POST['action'])){
+	    if(!isset($_GET['peticion'])){
 	        
 	        echo 'sin datos';
 	        return;
 	    }
 	    
-	   
+	    //llenado de datos
 	    
+	    $datos_empresa = array();
+	    $datos_detalle = array();
+	    
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d');
+	    }
+	    
+	    $query_detalle = "SELECT * FROM vw_diariocontable";
+	    
+	    $rsdetalle = $entidades->enviaquery($query_detalle);
+	    
+	    if(!empty($rsdetalle) && count($rsdetalle)>0){
+	        
+	        $datos_detalle=$rsdetalle;
+	    }
+	    
+	    
+	    $this->verReporte("DiarioContable", array('datos_empresa'=>$datos_empresa,'datos_detalle'=>$datos_detalle));
+	   
+	       
+	    die();
 	    $id_plan_cuentas = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:'0';
 	    
 	    $columna = 'SELECT id_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas';

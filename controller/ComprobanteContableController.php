@@ -743,7 +743,10 @@ class ComprobanteContableController extends ControladorBase{
                            $_haber_dcomprobantes=0;
                            
                        }
-                       
+           //para validar valores sin coma
+           $_debe_dcomprobantes= str_replace(',', '', $_debe_dcomprobantes);
+           $_haber_dcomprobantes= str_replace(',', '', $_haber_dcomprobantes);
+           
                        $funcion = "ins_temp_comprobantes";
                        $parametros = "'$_id_usuarios','$_id_plan_cuentas','$_descripcion_dcomprobantes','$_debe_dcomprobantes','$_haber_dcomprobantes'";
                        $temp_comprobantes->setFuncion($funcion);
@@ -954,6 +957,8 @@ class ComprobanteContableController extends ControladorBase{
                 '$_observacion_ccomprobantes',
                 '$_id_proveedores' ";
 	            
+	            //print $parametros;
+	            //die();
 	            $ccomprobantes->setFuncion($funcion);
 	            $ccomprobantes->setParametros($parametros);
 	            $resultado=$ccomprobantes->llamafuncion();	            
@@ -968,7 +973,6 @@ class ComprobanteContableController extends ControladorBase{
 	            }
 	            
 	            echo json_encode(array('success'=>0,'mensaje'=>$respuesta));
-	           
 	           
 	        }
 	        

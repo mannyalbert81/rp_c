@@ -159,14 +159,18 @@ class ActivosFijosController extends ControladorBase{
                 $_valor_activos_fijos = $_POST["valor_activos_fijos"];
                 $_meses_depreciacion_activos_fijos = $_POST["meses_depreciacion_activos_fijos"];
                 
-                
                 //die('llego');
                 
                 
-                if($id_activos_fijos > 0){
+                if($_id_activos_fijos > 0){
                     //die('llego');
                     
-                    $_depreciacion_mensual_activos_fijos= ((int) $res->valor_activos_fijos)/((int) $res->meses_depreciacion_activos_fijos);
+                    $_depreciacion_mensual_activos_fijos= ((int) $_valor_activos_fijos)/((int) $_meses_depreciacion_activos_fijos);
+                    $_anio = date("Y", $_fecha_compra_activos_fijos);
+                    $_fecha_cierre_anio_activos_fijos=$_anio.'12-31';
+                    $diferencia = $_fecha_cierre_anio_activos_fijos->diff($_fecha_compra_activos_fijos);
+                    $dias = ( $diferencia->y * 365 ) + $diferencia->d;
+                    $_cant_meses_dep_activos_fijos=($dias)/30;
                     $columnas = "
                               
 							  id_oficina ='$_id_oficina',
@@ -179,7 +183,9 @@ class ActivosFijosController extends ControladorBase{
 							  cantidad_activos_fijos = '$_cantidad_activos_fijos',
                               valor_activos_fijos = '$_valor_activos_fijos',
                               meses_depreciacion_activos_fijos = '$_meses_depreciacion_activos_fijos',
-                              depreciacion_mensual_activos_fijos = '$_depreciacion_mensual_activos_fijos'
+                              depreciacion_mensual_activos_fijos = '$_depreciacion_mensual_activos_fijos',
+                              cant_meses_dep_activos_fijos      = '$_cant_meses_dep_activos_fijos',
+                              fecha_cierre_anio_activos_fijos   = '$_fecha_cierre_anio_activos_fijos'
                               ";
                     
                     $tabla = "public.activos_fijos, 
@@ -196,13 +202,32 @@ class ActivosFijosController extends ControladorBase{
                     
                 }else{
                     //die('llego');
-                    $_depreciacion_mensual_activos_fijos= ((int) $res->valor_activos_fijos)/((int) $res->meses_depreciacion_activos_fijos);
+                    $_depreciacion_mensual_activos_fijos= ((int) $_valor_activos_fijos)/((int) $_meses_depreciacion_activos_fijos);
+                    
+                    $_anio = date("Y", strtotime ($_fecha_compra_activos_fijos));
+                  
+                    $_fecha_cierre_anio_activos_fijos= new DateTime ($_anio.'12-31');
+                    
+                    $_fecha_compra_activos_fijos = new DateTime($_fecha_compra_activos_fijos);
+                    
+                    $diferencia = $_fecha_cierre_anio_activos_fijos->diff($_fecha_compra_activos_fijos);
+                    $dias = ( $diferencia->y * 365 ) + $diferencia->d;
+                    $_cant_meses_dep_activos_fijos=($dias)/30;
+                    $_cant_meses_dep_activos_fijos= round ($_cant_meses_dep_activos_fijos*1);
+                    
+                    $_fecha_cierre_anio_activos_fijos = $_fecha_cierre_anio_activos_fijos ->format('Y-m-d');
+                    $_fecha_compra_activos_fijos = $_fecha_compra_activos_fijos ->format('Y-m-d');
+                    
+                    
+                   
                     
                     $funcion = "ins_activos_fijos";
-                    $parametros = "'$_id_oficina', '$_id_tipo_activos_fijos', '$_id_estado', '$_id_usuarios', '$_nombre_activos_fijos', '$_codigo_activos_fijos', '$_fecha_compra_activos_fijos', '$_cantidad_activos_fijos', '$_valor_activos_fijos', '$_meses_depreciacion_activos_fijos', '$_depreciacion_mensual_activos_fijos'";
+                    $parametros = "'$_id_oficina', '$_id_tipo_activos_fijos', '$_id_estado', '$_id_usuarios', '$_nombre_activos_fijos', '$_codigo_activos_fijos', '$_fecha_compra_activos_fijos', '$_cantidad_activos_fijos', '$_valor_activos_fijos', '$_meses_depreciacion_activos_fijos', '$_depreciacion_mensual_activos_fijos', '$_cant_meses_dep_activos_fijos', '$_fecha_cierre_anio_activos_fijos'";
                     $activosf->setFuncion($funcion);
                     $activosf->setParametros($parametros);
                     $resultado=$activosf->Insert();
+                    
+                    
                 }
                 
             }
@@ -275,7 +300,9 @@ class ActivosFijosController extends ControladorBase{
                                       activos_fijos.meses_depreciacion_activos_fijos,
                                       activos_fijos.depreciacion_mensual_activos_fijos,
                                       activos_fijos.creado,
-                                      activos_fijos.modificado
+                                      activos_fijos.modificado,
+                                      activos_fijos.cant_meses_dep_activos_fijos, 
+                                      activos_fijos.fecha_cierre_anio_activos_fijos
                         
                                     ";
                     
@@ -518,7 +545,9 @@ class ActivosFijosController extends ControladorBase{
                       activos_fijos.meses_depreciacion_activos_fijos, 
                       activos_fijos.depreciacion_mensual_activos_fijos, 
                       activos_fijos.creado, 
-                      activos_fijos.modificado";
+                      activos_fijos.modificado,
+                      activos_fijos.cant_meses_dep_activos_fijos, 
+                      activos_fijos.fecha_cierre_anio_activos_fijos";
         $tablas   = " 
                       public.activos_fijos, 
                       public.oficina, 
@@ -596,7 +625,9 @@ class ActivosFijosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 12px;">Cantidad de activos</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Valor activos</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Meses de depreciación</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Cantidad Meses</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Depreciación Mensual</th>';
+                
                 
                 if($id_rol==1){
                     
@@ -612,6 +643,7 @@ class ActivosFijosController extends ControladorBase{
                 
                 $i=0;
                 $depreciacionmensual=0;
+                
                 foreach ($resultSet as $res)
                 {
                     $i++;
@@ -628,6 +660,7 @@ class ActivosFijosController extends ControladorBase{
                     $html.='<td style="font-size: 11px;">'.$res->cantidad_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->valor_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->meses_depreciacion_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->cant_meses_dep_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$depreciacionmensual= number_format($depreciacionmensual, 2, '.', ' ').'</td>';
                     
                     

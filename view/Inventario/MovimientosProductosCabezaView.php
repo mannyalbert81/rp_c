@@ -6,6 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<<<<<<< HEAD
+=======
+    <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+    
+    
+    
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
    <?php include("view/modulos/links_css.php"); ?>
    
   </head>

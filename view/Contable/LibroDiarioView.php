@@ -10,6 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
     
       
       
@@ -145,7 +146,7 @@
             </div>
             
             <div class="box-body">
-			
+            
 				<div id="detalle_diario">
 				</div>
             
@@ -163,7 +164,8 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-   <script src="view/Contable/FuncionesJS/diarioContable.js?1.0"></script>         	
+    <script src="view/bootstrap/otros/pdf/pdfObject.js" type="text/javascript"></script>
+   <script src="view/Contable/FuncionesJS/diarioContable.js?2.3"></script>         	
   </body>
 </html>
 

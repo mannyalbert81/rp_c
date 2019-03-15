@@ -11,6 +11,7 @@
      
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   	 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  	 <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
    
  
 	</head>
@@ -418,7 +419,7 @@
     
    
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?4.2"></script>
+    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?4.7"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     
    

@@ -53,7 +53,7 @@ class ReporteMayorController extends ControladorBase{
 			        
 			        $id_entidades=$_POST['id_entidades'];
 			        $id_tipo_comprobantes=$_POST['id_tipo_comprobantes'];
-			        $numero_ccomprobantes=$_POST['numero_ccomprobantes'];
+			        $codigo_plan_cuentas=$_POST['codigo_plan_cuentas'];
 			        $fechadesde=$_POST['fecha_desde'];
 			        $fechahasta=$_POST['fecha_hasta'];
 			        
@@ -89,7 +89,7 @@ class ReporteMayorController extends ControladorBase{
                                     			        
 			        
 			        
-			        $tablas="      public.con_mayor, 
+			        $tablas="     public.con_mayor, 
                                   public.plan_cuentas, 
                                   public.entidades, 
                                   public.ccomprobantes, 
@@ -115,12 +115,12 @@ class ReporteMayorController extends ControladorBase{
 			        
 			        if($id_tipo_comprobantes!=0){$where_1=" AND tipo_comprobantes.id_tipo_comprobantes='$id_tipo_comprobantes'";}
 			        
-			        if($numero_ccomprobantes!=""){$where_2=" AND ccomprobantes.numero_ccomprobantes LIKE '%$numero_ccomprobantes%'";}
+			        if($codigo_plan_cuentas!=""){$where_2=" AND plan_cuentas.codigo_plan_cuentas LIKE '%$codigo_plan_cuentas%'";}
 			   
 			        if($fechadesde!="" && $fechahasta!=""){$where_4=" AND  date(con_mayor.fecha_mayor) BETWEEN '$fechadesde' AND '$fechahasta'";}
 			        
 			        
-			        $where_to  = $where . $where_0 . $where_1 . $where_2. $where_4;
+			        $where_to  = $where . $where_0 . $where_2 . $where_1 . $where_4;
 			        
 			        
 			        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -348,7 +348,6 @@ class ReporteMayorController extends ControladorBase{
 	    
 	    if(!empty($cedula_usuarios)){
 	        
-	        
 	        if(isset($_GET["id_mayor"])){
 	            
 	            
@@ -384,7 +383,7 @@ class ReporteMayorController extends ControladorBase{
 	            
 	            
 	            
-	            $tablas="      public.con_mayor,
+	            $tablas="     public.con_mayor,
                                   public.plan_cuentas,
                                   public.entidades,
                                   public.ccomprobantes,
@@ -400,8 +399,9 @@ class ReporteMayorController extends ControladorBase{
 	            $id="con_mayor.id_mayor";
 	            
 	            $resultSetCabeza=$mayor->getCondiciones($columnas, $tablas, $where, $id);
-	           
+	            
 	            if(!empty($resultSetCabeza)){
+	                
 	                
 	                $_fecha_mayor     =$resultSetCabeza[0]->fecha_mayor;
 	                $_haber_mayor     =$resultSetCabeza[0]->haber_mayor;
@@ -410,6 +410,8 @@ class ReporteMayorController extends ControladorBase{
 	                $_nombre_plan_cuentas     =$resultSetCabeza[0]->nombre_plan_cuentas;
 	                $_saldo_mayor     =$resultSetCabeza[0]->saldo_mayor;
 	                $_saldo_ini_mayor     =$resultSetCabeza[0]->saldo_ini_mayor;
+	                $_creado     =$resultSetCabeza[0]->creado;
+	                $_modificado     =$resultSetCabeza[0]->modificado;
 	                $_n_plan_cuentas     =$resultSetCabeza[0]->n_plan_cuentas;
 	                $_t_plan_cuentas     =$resultSetCabeza[0]->t_plan_cuentas;
 	                $_nivel_plan_cuentas     =$resultSetCabeza[0]->nivel_plan_cuentas;
@@ -421,36 +423,66 @@ class ReporteMayorController extends ControladorBase{
 	                $_ruc_entidades     =$resultSetCabeza[0]->ruc_entidades;
 	                $_nombre_entidades     =$resultSetCabeza[0]->nombre_entidades;
 	                $_numero_ccomprobantes     =$resultSetCabeza[0]->numero_ccomprobantes;
-	                $_ruc_ccomprobantes     =$resultSetCabeza[0]->ruc_ccomprobantes;
-	                $_nombres_ccomprobantes     =$resultSetCabeza[0]->nombres_ccomprobantes;
 	                $_nombre_tipo_comprobantes     =$resultSetCabeza[0]->nombre_tipo_comprobantes;
 	                $_nombre_usuarios     =$resultSetCabeza[0]->nombre_usuarios;
 	                $_apellidos_usuarios     =$resultSetCabeza[0]->apellidos_usuarios;
 	                $_concepto_ccomprobantes     =$resultSetCabeza[0]->concepto_ccomprobantes;
-	                
-	             
-	               
+	                 
 	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
 	                $html.= "<tr>";
 	                $html.='<th style="text-align: center; font-size: 25px; "><b>'.$_nombre_entidades.'</b></br>';
-	                $html.='<p style="text-align: center; font-size: 13px; ">MAYOR DETALLADO';
-	                $html.='<br style="text-align: center; ">RUC: '.$_ruc_entidades.'';
+	                $html.='<p style="text-align: center; font-size: 15px; ">DIARIO DETALLADO';
+	                $html.='<br style="text-align: center; ">Teléfono: '.$_nombre_entidades.'';
+	                $html.='<br style="text-align: center; ">COMPROBANTE '.$_nombre_tipo_comprobantes.' Nº: '.$_numero_ccomprobantes.'</p>';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; RUC: '.$_ruc_entidades.'&nbsp;  &nbsp;Fecha Factura: '.$_fecha_mayor.'';
 	                $html.='</tr>';
 	                $html.='</table>';
-	                $html.='<p style="text-align: left; font-size: 13px; "><b> NOMBRE: </b>'.$_nombre_proveedores.'  ;<b>Nº RET:</b> '.$_nombre_entidades.'';
-	                $html.='<br colspan="12" style="text-align: left; font-size: 13px; "><b>LA CANTIDAD DE: </b>'.$_valor_ccomprobantes.'</th>';
-	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE DE CUENTA: </b>'.$_nombre_plan_cuentas.'';
+	                $html.= "<table style='width: 100%; margin-top:0px;' border=1 cellspacing=0>";
 	                $html.= "<tr>";
-	                $html.='<th colspan="12" style="text-align: left; height:30px; font-size: 13px;" ><b>&nbsp;CONCEPTO: </b>'.$_concepto_ccomprobantes.'';
+	                $html.='<th colspan="12" style="text-align: left; height:0px; font-size: 13px;" ><b>&nbsp;NUMERO DE CUENTA: </b>'.$_codigo_plan_cuentas.'';
 	                $html.="</tr>";
 	                
-	            
+	           
+	              
+	                        
+	                    $html.='</table>';
+	               //     $html.='<p style="text-align: left; font-size: 13px;"><b>&nbsp; PICHINCHA CH Nº: </b>'.$_nombre_usuarios.' &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>COTZ:</b> '.$_retencion_ccomprobantes.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>TOTAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista1.'';
+	                    $html.="<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">FECHA:</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">CENTRO :</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">DOC:</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">NOMBRE:</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">DESCRIPCION:</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">FACTURA:</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">CHEQUE:</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">DEBE:</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">HABER:</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">SALDO:</th>';
+	                    
+	                    $html.='</tr>';
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px; ">'.$_fecha_mayor.'</td>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px; ">'.$_nombre_entidades.'</td>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_numero_ccomprobantes.'</td>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_nombre_usuarios.'</td>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_concepto_ccomprobantes.'</td>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; "></td>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; "></td>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_debe_mayor.'</td>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_haber_mayor.'</td>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_saldo_mayor.'</td>';
+	                    
+	                    $html.='</tr>';
+	                    $html.='</table>';
+	                    
+	           
 	                
-	             
 	                
 	            }
 	            
-	          
+	            
 	            
 	            $this->report("Mayor",array( "resultSet"=>$html));
 	            die();
@@ -471,5 +503,7 @@ class ReporteMayorController extends ControladorBase{
 	    
 	    
 	}
+	
+	
 	}
 ?>

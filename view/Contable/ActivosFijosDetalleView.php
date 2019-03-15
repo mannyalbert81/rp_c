@@ -9,7 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    
+    <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
     <?php include("view/modulos/links_css.php"); ?>		
       
     	
@@ -79,7 +79,7 @@
                                           <label for="codigo_activos_fijos" class="control-label">Código:</label>
                                           <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="Código">
                                           <div id="mensaje_codigo_activos_fijos" class="errores"></div> 
-                                     <input type="hidden" class="form-control" id="activos_fijos" name="activos_fijos" value="0"  placeholder="Search">
+                                          <input type="hidden" class="form-control" id="id_activos_fijos" name="id_activos_fijos" value="0" >
                                   <span class="help-block"></span>
  									</div>
                         		     </div>
@@ -102,14 +102,7 @@
                                     </div>
                         		    </div> 
                         		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="mes_a_depreciar_activos_fijos_detalle" class="control-label">Mes a Depreciar:</label>
-                                                          <select id="mes_a_depreciar_activos_fijos_detalle" name="mes_a_depreciar_activos_fijos_detalle" class="form-control" ng-model="month" class="form-control" ng-options="m for m in months"></select>
-                                                           <div id="mensaje_mes_a_depreciar_activos_fijos_detalle" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    </div>
+                        		    
 									
 									 
                         		     <?php  ?>
@@ -121,7 +114,7 @@
                     		    <div class="row">
                     		    <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; ">
                     		    <div class="form-group">
-                                                      <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Depreciar</button>
+                                                      <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Calcular</button>
                                 </div>
                     		    </div>
                     		    </div>
@@ -290,7 +283,7 @@
       <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
       <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
       
-    <script src="view/Contable/FuncionesJS/ActivosFijosD.js?1"></script>
+    <script src="view/Contable/FuncionesJS/ActivosFijosD.js?1.0"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     
     

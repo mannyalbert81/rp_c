@@ -36,7 +36,14 @@ if(!empty($datos_detalle)){
         $i+=1;
         $tablahtml.='<tr>';
         $tablahtml.='<td>'.$i.'</td>';
-        $tablahtml.='<td>'.$res->fecha_comprobantes.'</td>';
+        $tablahtml.='<td>'.$res->fecha_ccomprobantes.'</td>';
+        $tablahtml.='<td>'.$res->tipo_comprobantes.'</td>';
+        $tablahtml.='<td>'.$res->codigo_plan_cuentas.'</td>';
+        $tablahtml.='<td>'.$res->nombre_plan_cuentas.'</td>';
+        $tablahtml.='<td>'.$res->descripcion_dcomprobantes.'</td>';
+        $tablahtml.='<td>'.$res->debe_dcomprobantes.'</td>';
+        $tablahtml.='<td>'.$res->haber_dcomprobantes.'</td>';
+       
         $tablahtml.='</tr>';
     }
     

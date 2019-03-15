@@ -435,7 +435,7 @@ class LibroDiarioController extends ControladorBase{
 	    $mayor = new MayorModel();
 	    $entidades = new EntidadesModel();
 	    
-	    if(!isset($_GET['action'])){
+	    if(!isset($_GET['peticion'])){
 	        
 	        echo 'sin datos';
 	        return;
@@ -470,7 +470,7 @@ class LibroDiarioController extends ControladorBase{
 	    $this->verReporte("DiarioContable", array('datos_empresa'=>$datos_empresa,'datos_detalle'=>$datos_detalle));
 	   
 	       
-	    
+	    die();
 	    $id_plan_cuentas = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:'0';
 	    
 	    $columna = 'SELECT id_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas';

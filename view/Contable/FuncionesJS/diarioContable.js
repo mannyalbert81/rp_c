@@ -94,7 +94,7 @@ $( "#nombre_cuenta" ).autocomplete({
 })
 
 
-$('#frm_libro_diario').on('submit',function(event){
+$('#frm_libro_diarios').on('submit',function(event){
 
 	var parametros = new FormData(this)
 	
@@ -140,6 +140,19 @@ function validafecha(){
 	
 	return true
 }
+
+$('#frm_libro_diario').on('submit',function(event){
+
+	var parametros = new FormData(this)
+	
+	parametros.append('action','ajax')
+	
+	
+	if(!validafecha()){
+		return false
+	}
+	
+})
 
 $('#desde_diario').on('focus',function(){$('#mensaje_desde_diario').text('').fadeOut();})
 

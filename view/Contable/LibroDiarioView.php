@@ -117,7 +117,7 @@
                      	<div class="row">
             			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
-            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GENERAR DIARIO</button>
+            	                  <button type="submit" formtarget="_blank" formaction="<?php echo $helper->url("LibroDiario","diarioContable"); ?>" id="Guardar" name="Guardar" class="btn btn-success">CONSULTAR DIARIO</button>
             	                  <a class="btn btn-danger" href="<?php  echo $helper->url("LibroMayor","index"); ?>">CANCELAR</a>
         	                    </div>
     	        		    </div>
@@ -134,6 +134,7 @@
     		
     		
     		
+       <!-- 
        <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
@@ -152,7 +153,8 @@
             
             </div>
             </div>
-            </section>
+            </section> 
+        -->
   </div>
  	<?php include("view/modulos/footer.php"); ?>	
    <div class="control-sidebar-bg"></div>
@@ -165,7 +167,7 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/pdf/pdfObject.js" type="text/javascript"></script>
-   <script src="view/Contable/FuncionesJS/diarioContable.js?2.3"></script>         	
+   <script src="view/Contable/FuncionesJS/diarioContable.js?2.5"></script>         	
   </body>
 </html>
 

@@ -451,8 +451,6 @@ class ReporteMayorController extends ControladorBase{
 	                $html.="</tr>";
 	                
 	           
-	                $query="SELECT * FROM vw_diario_contable WHERE id_plan_cuentas = $codigo ORDER BY codigo_plan_cuentas";
-	                        
 	                    $html.='</table>';
 	                    $html.="<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
 	                    $html.='<tr>';
@@ -466,6 +464,9 @@ class ReporteMayorController extends ControladorBase{
 	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">HABER:</th>';
 	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">SALDO:</th>';
 	                    
+	                    
+	                 
+	                    
 	                    $html.='</tr>';
 	                    $html.='<tr>';
 	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_fecha_mayor.'</td>';
@@ -477,6 +478,9 @@ class ReporteMayorController extends ControladorBase{
 	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_debe_mayor.'</td>';
 	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_haber_mayor.'</td>';
 	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_saldo_mayor.'</td>';
+	                    $html.='<p style="text-align: left; font-size: 13px;">&nbsp;&nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>TOTAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	                    
+	                   
 	                    
 	                    $html.='</tr>';
 	                    $html.='</table>';

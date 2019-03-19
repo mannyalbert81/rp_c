@@ -118,6 +118,7 @@
             			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
             	                  <button type="submit" formtarget="_blank" formaction="<?php echo $helper->url("LibroDiario","diarioContable"); ?>" id="Guardar" name="Guardar" class="btn btn-success">CONSULTAR DIARIO</button>
+            	                  <button type="button"   id="btn_export_excel" name="btn_export_excel" class="btn btn-default"><i class="fa fa-file-excel-o"></i> EXPORTAR DIARIO</button>
             	                  <a class="btn btn-danger" href="<?php  echo $helper->url("LibroMayor","index"); ?>">CANCELAR</a>
         	                    </div>
     	        		    </div>
@@ -167,7 +168,9 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/pdf/pdfObject.js" type="text/javascript"></script>
-   <script src="view/Contable/FuncionesJS/diarioContable.js?2.5"></script>         	
+    <script src="view/Contable/FuncionesJS/xlsx.full.min.js?"></script> 
+    <script src="view/Contable/FuncionesJS/FileSaver.min.js?"></script> 
+   <script src="view/Contable/FuncionesJS/diarioContable.js?3.4"></script>         	
   </body>
 </html>
 

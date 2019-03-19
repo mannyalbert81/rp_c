@@ -128,7 +128,43 @@
                                     
                                  </div>
                                  
+                                 <div class="row">
                                  
+                                 <div class="col-lg-3 col-xs-12 col-md-2">
+                        		    <div class="form-group">
+                                                          <label for="imagen_activos_fijos" class="control-label">Imagen Activos:</label>
+                                                          <input type="file" class="form-control" id="imagen_activos_fijos" name="imagen_activos_fijos" value="">
+                                                          <div id="mensaje_imagen_activos_fijos" class="errores"></div>
+                                    </div>
+                        		    </div>
+                        		    
+                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    <div class="form-group">
+                                                          <label for="color_activos_fijos" class="control-label">Color:</label>
+                                                          <input type="text" class="form-control" id="color_activos_fijos" name="color_activos_fijos" value="<?php echo $resEdit->color_activos_fijos; ?>"  placeholder="">
+                                                          <div id="mensaje_color_activos_fijos" class="errores"></div>
+                                    </div>
+                        		    </div>
+                        		    
+                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    <div class="form-group">
+                                                          <label for="material_activos_fijos" class="control-label">Material:</label>
+                                                          <input type="text" class="form-control" id="material_activos_fijos" name="material_activos_fijos" value="<?php echo $resEdit->material_activos_fijos; ?>"  placeholder="">
+                                                          <div id="mensaje_material_activos_fijos" class="errores"></div>
+                                    </div>
+                        		    </div>
+                        		    
+                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    <div class="form-group">
+                                                          <label for="dimension_activos_fijos" class="control-label">Dimensión:</label>
+                                                          <input type="text" class="form-control" id="dimension_activos_fijos" name="dimension_activos_fijos" value="<?php echo $resEdit->dimension_activos_fijos; ?>"  placeholder="">
+                                                          <div id="mensaje_dimension_activos_fijos" class="errores"></div>
+                                    </div>
+                        		    </div>
+                                 
+                                 
+                                 
+                                 </div>
                                  
                                  <div class="row">
                         		    
@@ -247,6 +283,48 @@
                         		    </div> 
                         		   
                         		  </div>
+                        		  
+                        		  <div class="row">
+                        		  
+                        		  
+                        		  <div class="col-lg-3 col-xs-12 col-md-3">
+                        		    <div class="form-group">
+                                                          <label for="imagen_activos_fijos" class="control-label">Imagen Activos:</label>
+                                                          <input type="file" class="form-control" id="imagen_activos_fijos" name="imagen_activos_fijos" value="">
+                                                          <div id="mensaje_imagen_activos_fijos" class="errores"></div>
+                                    </div>
+                        		    </div>
+                        		  
+                        		  
+                        		 <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    <div class="form-group">
+                                                          <label for="color_activos_fijos" class="control-label">color:</label>
+                                                          <input type="text" class="form-control" id="color_activos_fijos" name="color_activos_fijos" value=""  placeholder="color...">
+                                                           <div id="mensaje_color_activos_fijos" class="errores"></div>
+                                    </div>
+                        		    </div> 
+                        		   
+                        		
+                        		  <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    <div class="form-group">
+                                                          <label for="material_activos_fijos" class="control-label">Material:</label>
+                                                          <input type="text" class="form-control" id="material_activos_fijos" name="material_activos_fijos" value=""  placeholder="material...">
+                                                           <div id="mensaje_material_activos_fijos" class="errores"></div>
+                                    </div>
+                        		    </div> 
+                        		   
+                        		  
+                        		  <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    <div class="form-group">
+                                                          <label for="dimension_activos_fijos" class="control-label">Dimensión:</label>
+                                                          <input type="text" class="form-control" id="dimension_activos_fijos" name="dimension_activos_fijos" value=""  placeholder="dimensión...">
+                                                           <div id="mensaje_dimension_activos_fijos" class="errores"></div>
+                                    </div>
+                        		    </div> 
+                        		   
+                        		  
+                        		    
+                        		    </div>
                         		  
                         		  <div class="row">
                         		    

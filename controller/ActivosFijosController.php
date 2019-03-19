@@ -139,13 +139,14 @@ class ActivosFijosController extends ControladorBase{
         $id_rol= $_SESSION['id_rol'];
         $resultPer = $activosf->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
         
+        //die('llego');
         if (!empty($resultPer))
         {
-            
+            //die('llego');
             if ( isset ($_POST["nombre_activos_fijos"]))
             
             {
-                //die('llego');
+               //die('llego');
                 
                 $_id_activos_fijos = $_POST["id_activos_fijos"];
                 $_id_oficina = $_POST["id_oficina"];
@@ -158,8 +159,40 @@ class ActivosFijosController extends ControladorBase{
                 $_cantidad_activos_fijos = $_POST["cantidad_activos_fijos"]; 
                 $_valor_activos_fijos = $_POST["valor_activos_fijos"];
                 $_meses_depreciacion_activos_fijos = $_POST["meses_depreciacion_activos_fijos"];
+                $_color_activos_fijos = $_POST["color_activos_fijos"];
+                $_material_activos_fijos = $_POST["material_activos_fijos"];
+                $_dimension_activos_fijos = $_POST["dimension_activos_fijos"];
+                
                 
                 //die('llego');
+                
+                
+                $imagen_activos='';
+                
+                
+                if ($_FILES['imagen_activos_fijos']['tmp_name']!="")
+                {
+                    $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/Imagenes_activos/';
+                    
+                    $nombre = $_FILES['imagen_activos_fijos']['name'];
+                    $tipo = $_FILES['imagen_activos_fijos']['type'];
+                    $tamano = $_FILES['imagen_activos_fijos']['size'];
+                    
+                    move_uploaded_file($_FILES['imagen_activos_fijos']['tmp_name'],$directorio.$nombre);
+                    $data = file_get_contents($directorio.$nombre);
+                    $imagen_activos = pg_escape_bytea($data);
+                    
+                }else{
+                    
+                    $directorio = dirname(__FILE__).'\..\view\images\nofoto.png';
+                    
+                    if( is_file( $directorio )){
+                        $data = file_get_contents($directorio);
+                        $imagen_activos = pg_escape_bytea($data);
+                    }
+                    
+                }
+                
                 
                 
                 if($_id_activos_fijos > 0){
@@ -185,7 +218,11 @@ class ActivosFijosController extends ControladorBase{
                               meses_depreciacion_activos_fijos = '$_meses_depreciacion_activos_fijos',
                               depreciacion_mensual_activos_fijos = '$_depreciacion_mensual_activos_fijos',
                               cant_meses_dep_activos_fijos      = '$_cant_meses_dep_activos_fijos',
-                              fecha_cierre_anio_activos_fijos   = '$_fecha_cierre_anio_activos_fijos'
+                              fecha_cierre_anio_activos_fijos   = '$_fecha_cierre_anio_activos_fijos',
+                              imagen_activos_fijos      = '$imagen_activos',
+                              color_activos_fijos   = '$_color_activos_fijos',
+                              material_activos_fijos   = '$_material_activos_fijos',
+                              dimension_activos_fijos   = '$_dimension_activos_fijos'
                               ";
                     
                     $tabla = "public.activos_fijos, 
@@ -218,16 +255,34 @@ class ActivosFijosController extends ControladorBase{
                     $_fecha_cierre_anio_activos_fijos = $_fecha_cierre_anio_activos_fijos ->format('Y-m-d');
                     $_fecha_compra_activos_fijos = $_fecha_compra_activos_fijos ->format('Y-m-d');
                     
-                    
+                  
+                        
                    
                     
                     $funcion = "ins_activos_fijos";
-                    $parametros = "'$_id_oficina', '$_id_tipo_activos_fijos', '$_id_estado', '$_id_usuarios', '$_nombre_activos_fijos', '$_codigo_activos_fijos', '$_fecha_compra_activos_fijos', '$_cantidad_activos_fijos', '$_valor_activos_fijos', '$_meses_depreciacion_activos_fijos', '$_depreciacion_mensual_activos_fijos', '$_cant_meses_dep_activos_fijos', '$_fecha_cierre_anio_activos_fijos'";
+                    $parametros = "'$_id_oficina',
+                                   '$_id_tipo_activos_fijos',
+                                   '$_id_estado', 
+                                   '$_id_usuarios',
+                                   '$_nombre_activos_fijos',
+                                   '$_codigo_activos_fijos',
+                                   '$_fecha_compra_activos_fijos',
+                                   '$_cantidad_activos_fijos',
+                                   '$_valor_activos_fijos',
+                                   '$_meses_depreciacion_activos_fijos',
+                                   '$_depreciacion_mensual_activos_fijos',
+                                   '$_cant_meses_dep_activos_fijos',
+                                   '$_fecha_cierre_anio_activos_fijos',
+                                   '$imagen_activos',
+                                   '$_color_activos_fijos',
+                                   '$_material_activos_fijos',
+                                   '$_dimension_activos_fijos'";
                     $activosf->setFuncion($funcion);
                     $activosf->setParametros($parametros);
                     $resultado=$activosf->Insert();
                     
-                    
+                    //print_r($resultado);
+                    //die('llego');
                 }
                 
             }
@@ -547,7 +602,11 @@ class ActivosFijosController extends ControladorBase{
                       activos_fijos.creado, 
                       activos_fijos.modificado,
                       activos_fijos.cant_meses_dep_activos_fijos, 
-                      activos_fijos.fecha_cierre_anio_activos_fijos";
+                      activos_fijos.fecha_cierre_anio_activos_fijos,
+                      imagen_activos_fijos,
+                      color_activos_fijos,
+                      material_activos_fijos,
+                      dimension_activos_fijos ";
         $tablas   = " 
                       public.activos_fijos, 
                       public.oficina, 

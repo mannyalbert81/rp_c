@@ -2086,6 +2086,127 @@ class MovimientosInvController extends ControladorBase{
 	}
 	
 	
+	/***
+	 * mod: ingreso Materiales
+	 * title: IngresoMateriales
+	 * return: void::view
+	 */
+	public function IngresoMateriales(){
+	    
+	    session_start();
+	    //parametros
+	    $this->view_Inventario('IngresoMateriales', array());
+	}
+	
+	/***
+	 * mod: ingreso materiales
+	 * title: buscaFacturas
+	 * return: void::html
+	 */
+	public function buscaFacturas(){
+	    
+	    if(isset($_POST['peticion'])){
+	        echo 'sin conexion';
+	        return;
+	    }
+	    
+	    $page = (isset($_REQUEST['page']))?isset($_REQUEST['page']):1;
+	    
+	    $movimientos = new MovimientosInvModel();
+	    
+	    $query = "SELECT 
+                ccomprobantes.id_ccomprobantes,ccomprobantes.fecha_ccomprobantes,ccomprobantes.id_tipo_comprobantes,
+                tipo_comprobantes.nombre_tipo_comprobantes,ccomprobantes.numero_ccomprobantes,
+                ccomprobantes.referencia_doc_ccomprobantes,ccomprobantes.concepto_ccomprobantes,
+                ccomprobantes.valor_ccomprobantes
+                FROM ccomprobantes
+                INNER JOIN tipo_comprobantes
+                ON tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes
+                AND tipo_comprobantes.nombre_tipo_comprobantes = 'EGRESOS'
+                WHERE 1=1 ";
+
+	    $rsResultado = $movimientos->enviaquery($query);
+	    
+	    $cantidad = 0;
+	    $html = "";
+	    $per_page = 10; //la cantidad de registros que desea mostrar
+	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	    $offset = ($page - 1) * $per_page;
+	    
+	    if(!is_null($rsResultado) && !empty($rsResultado) && count($rsResultado)>0){
+	        $cantidad = count($rsResultado);	        
+	    }
+	    
+	    $query .= " LIMIT   '$per_page' OFFSET '$offset'";
+	    
+	    $resultSet = $movimientos->enviaquery($query);
+	    
+	    $total_pages = ceil($cantidad/$per_page);
+	    
+	    if($cantidad>0)
+	    {
+	        
+	        $html.='<div class="pull-left" style="margin-left:11px;">';
+	        $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidad.'</span>';
+	        $html.='<input type="hidden" value="'.$cantidad.'" id="total_query" name="total_query"/>' ;
+	        $html.='</div>';
+	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $html.='<section style="height:180px; overflow-y:scroll;">';
+	        $html.= "<table id='tabla_salidas_rechazada' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	        $html.= "<thead>";
+	        $html.= "<tr>";
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Fecha</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Num Comprobante</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Referencia (FACTURA)</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Concepto</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">...</th>';	        
+	        
+	        $html.='</tr>';
+	        $html.='</thead>';
+	        $html.='<tbody>';
+	        
+	        $i=0;
+	        
+	        foreach ($resultSet as $res)
+	        {
+	            $i++;
+	            $html.='<tr>';
+	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->fecha_ccomprobantes.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->numero_ccomprobantes.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->referencia_doc_ccomprobantes.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->concepto_ccomprobantes.'</td>';
+	            $html.='<td align="right" style="font-size: 11px;"> $'.$res->valor_ccomprobantes.'</td>';
+	            $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=MovimientosInv&action=generar_reporte_solicitud_rechazada&id_ccomprobantes='.$res->id_ccomprobantes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+	            $html.='</tr>';
+	        }
+	        
+	        
+	        $html.='</tbody>';
+	        $html.='</table>';
+	        $html.='</section></div>';
+	        $html.='<div class="table-pagination pull-right">';
+	        $html.=''. $this->paginatemultiple("index.php", $page, $total_pages, $adjacents,'carga_solicitud').'';
+	        $html.='</div>';
+	        
+	        
+	        
+	    }else{
+	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	        $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	        $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Solicitud Rechazada</b>';
+	        $html.='</div>';
+	        $html.='</div>';
+	    }
+	    
+	    echo $html;
+	    
+	}
+	
+	
 }
 
 

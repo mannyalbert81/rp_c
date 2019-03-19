@@ -473,7 +473,7 @@ class LibroDiarioController extends ControladorBase{
 	            $query_detalle.=' AND ( fecha_ccomprobantes BETWEEN \''.$_fecha_desde.'\' AND \''.$_fecha_hasta.'\' ) ';
 	        }
 	        if($_fecha_desde != '' && $_fecha_hasta == ''){
-	            $query_detalle .= ' AND fecha_ccomprobantes >= \''.$_fecha_desde.'\'';
+	            $query_detalle .= " AND fecha_ccomprobantes >= '$_fecha_desde'";
 	        }
 	        if($_fecha_desde == '' && $_fecha_hasta != ''){
 	            $query_detalle .= ' AND fecha_ccomprobantes <= \''.$_fecha_hasta.'\' ';

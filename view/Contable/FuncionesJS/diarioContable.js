@@ -179,7 +179,7 @@ $('#btn_export_excel').on('click',function(){
 		   for(var i=1; i<newArr.length; i++){
 			   
 			   if(newArr[i][6]!=" "){
-				   newArr[i][6]=parseFloat(newArr[i][6]).toFixed(2);
+				   newArr[i][6]=parseFloat(newArr[i][6]);
 				   console.log(newArr[i][6]);
 			   }
 			   if(newArr[i][7]!=" "){

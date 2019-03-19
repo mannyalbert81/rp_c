@@ -12,46 +12,7 @@
     
    <?php include("view/modulos/links_css.php"); ?>
    
-          <script>
-		    // cada vez que se cambia el valor del combo
-		    $(document).ready(function(){
-		    
-		    $("#Guardar").click(function() 
-			{
-		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
-
-		    	var nombre_grupos = $("#nombre_grupos").val();
-		    	
-		    	
-		    	
-		    	if (nombre_grupos == "")
-		    	{
-			    	
-		    		$("#mensaje_nombre_grupos").text("Introduzca Un Grupo");
-		    		$("#mensaje_nombre_grupos").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_nombre_grupos").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-
-		    	
-			}); 
-
-
-		        $( "#nombre_grupos" ).focus(function() {
-				  $("#mensaje_nombre_grupos").fadeOut("slow");
-			    });
-		        		      
-				    
-		}); 
-
-	</script>
-   
+          
   </head>
 
   <body class="hold-transition skin-blue fixed sidebar-mini">   
@@ -89,7 +50,7 @@
         
         <section class="content">
           <div class="box box-primary">
-            <div class="box-header">
+            <div class="box-header with-border">
               <h3 class="box-title">Registrar Grupos</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -145,17 +106,19 @@
     										<option value="<?php echo $res->id_estado; ?>" ><?php echo $res->nombre_estado; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_estados" class="errores"></div>
+                                      <div id="mensaje_id_estado" class="errores"></div>
                                     </div>
                                   </div>
                             </div>	
                     		            
                     		            
                      <?php } ?>
+                     	
                      	<div class="row">
-            			    <div class="col-xs-12 col-md-4 col-md-4 " style="margin-top:15px;  text-align: center; ">
+            			    <div class="col-xs-12 col-md-6 col-md-6" style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
-            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Guardar</button>
+            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
+        	                      <a href="index.php?controller=Grupos&action=index" class="btn btn-primary"><i class='glyphicon glyphicon-remove'></i> Cancelar</a>
         	                    </div>
     	        		    </div>
             		    </div>
@@ -179,9 +142,6 @@
             </div>
             
             <div class="box-body">
-            
-            
-            
             
             
            <div class="nav-tabs-custom">
@@ -240,9 +200,9 @@
   </body>
 </html>
 
-<!-- script pagina anterior -->
-<script type="text/javascript">
-     
+
+	<script type="text/javascript">
+
         	   $(document).ready( function (){
         		   
         		   load_grupos_inactivos(1);
@@ -316,16 +276,58 @@
 		   }
 
 	  
-        	        	   
+	   $(document).ready(function(){
+		    
+		    $("#Guardar").click(function() 
+			{
+		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
+
+		    	var nombre_grupos = $("#nombre_grupos").val();
+                var id_estado = $("#id_estado").val();
+
+		    	
+		    	if (nombre_grupos == "")
+		    	{
+			    	
+		    		$("#mensaje_nombre_grupos").text("Introduzca Un Grupo");
+		    		$("#mensaje_nombre_grupos").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_nombre_grupos").fadeOut("slow"); //Muestra mensaje de error
+		            
+				} 
+		    	if (id_estado == 0)
+		    	{
+			    	
+		    		$("#mensaje_id_estado").text("Seleccione");
+		    		$("#mensaje_id_estado").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_id_estado").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}   
+		    	
+			}); 
+
+		        $( "#nombre_grupos" ).focus(function() {
+				  $("#mensaje_nombre_grupos").fadeOut("slow");
+			    });
+
+		        $( "#id_estado" ).focus(function() {
+					  $("#mensaje_id_estado").fadeOut("slow");
+				});
+
+		            
+		}); 
+       	        	   
 
  </script>
  
- 
-<!-- -----cargar la tabla activos e inactivos -->
-
-
-        
-        
        
        
       

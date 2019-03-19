@@ -34,9 +34,10 @@
     </section>
   </aside>
 
-  <div class="content-wrapper">
-
-
+  <div class="content-wrapper" style="margin-top: 50px">
+<center>
+<img src="view/images/logoerp.png" alt="IMG">
+ </center>
 
   </div>
   
@@ -45,8 +46,6 @@
 
    <div class="control-sidebar-bg"></div>
  </div>
-    
-    
    <?php include("view/modulos/links_js.php"); ?>
  
  	

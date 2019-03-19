@@ -373,6 +373,7 @@ class ReporteMayorController extends ControladorBase{
                                   con_mayor.id_mayor,
                                   entidades.ruc_entidades,
                                   entidades.nombre_entidades,
+                                  entidades.telefono_entidades,
                                   ccomprobantes.numero_ccomprobantes,
                                   ccomprobantes.ruc_ccomprobantes,
                                   ccomprobantes.nombres_ccomprobantes,
@@ -427,52 +428,59 @@ class ReporteMayorController extends ControladorBase{
 	                $_nombre_usuarios     =$resultSetCabeza[0]->nombre_usuarios;
 	                $_apellidos_usuarios     =$resultSetCabeza[0]->apellidos_usuarios;
 	                $_concepto_ccomprobantes     =$resultSetCabeza[0]->concepto_ccomprobantes;
+	                $_telefono_entidades     =$resultSetCabeza[0]->telefono_entidades;
+	                $_fecha_hoy =date('Y-m-d');
 	                 
 	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
 	                $html.= "<tr>";
 	                $html.='<th style="text-align: center; font-size: 25px; "><b>'.$_nombre_entidades.'</b></br>';
-	                $html.='<p style="text-align: center; font-size: 15px; ">DIARIO DETALLADO';
-	                $html.='<br style="text-align: center; ">Teléfono: '.$_nombre_entidades.'';
-	                $html.='<br style="text-align: center; ">COMPROBANTE '.$_nombre_tipo_comprobantes.' Nº: '.$_numero_ccomprobantes.'</p>';
-	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; RUC: '.$_ruc_entidades.'&nbsp;  &nbsp;Fecha Factura: '.$_fecha_mayor.'';
+	                $html.='<p style="text-align: center; font-size: 18px; ">DETALLADO TOTAL</p>';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; Ruc: '.$_ruc_entidades.'</p>';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; Desde: </p>';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; Hasta: </p>';
+	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; Fecha: '.$_fecha_hoy.'</p>';
 	                $html.='</tr>';
 	                $html.='</table>';
-	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE DE CUENTA: </b>'.$_nombre_plan_cuentas.'';
-	                $html.= "<table style='width: 100%; margin-top:0px;' border=1 cellspacing=0>";
+	          
+	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
 	                $html.= "<tr>";
-	                $html.='<th colspan="12" style="text-align: left; height:0px; font-size: 13px;" ><b>&nbsp;NUMERO DE CUENTA: </b>'.$_codigo_plan_cuentas.'';
+	                $html.='<th style="text-align: left; font-size: 13px; "><b>&nbsp; Número de cuenta: </b>'.$_codigo_plan_cuentas.'';
+	                $html.='<th style="text-align: left; font-size: 13px;" ><b>&nbsp; Nombre de cuenta: </b>'.$_nombre_plan_cuentas.'';
+	                $html.='<th style="text-align: left; font-size: 13px;" ><b>&nbsp; Saldo Anterior: </b>'.$_saldo_ini_mayor.'';
+	                
 	                $html.="</tr>";
 	                
 	           
-	              
-	                        
 	                    $html.='</table>';
-	               //     $html.='<p style="text-align: left; font-size: 13px;"><b>&nbsp; PICHINCHA CH Nº: </b>'.$_nombre_usuarios.' &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>COTZ:</b> '.$_retencion_ccomprobantes.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>TOTAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista1.'';
 	                    $html.="<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
 	                    $html.='<tr>';
-	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">FECHA:</th>';
-	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">CENTRO :</th>';
-	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">DOC:</th>';
-	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">NOMBRE:</th>';
-	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">DESCRIPCION:</th>';
-	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">FACTURA:</th>';
-	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">CHEQUE:</th>';
-	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">DEBE:</th>';
-	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">HABER:</th>';
-	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">SALDO:</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">FECHA:</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">DOC:</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">NOMBRE:</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">DESCRIPCION:</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">FACTURA:</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">CHEQUE:</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">DEBE:</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">HABER:</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">SALDO:</th>';
+	                    
+	                    
+	                 
 	                    
 	                    $html.='</tr>';
 	                    $html.='<tr>';
-	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px; ">'.$_fecha_mayor.'</td>';
-	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px; ">'.$_nombre_entidades.'</td>';
-	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_numero_ccomprobantes.'</td>';
-	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_nombre_usuarios.'</td>';
-	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_concepto_ccomprobantes.'</td>';
-	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; "></td>';
-	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; "></td>';
-	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_debe_mayor.'</td>';
-	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_haber_mayor.'</td>';
-	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px; ">'.$_saldo_mayor.'</td>';
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_fecha_mayor.'</td>';
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_numero_ccomprobantes.'</td>';
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_nombre_usuarios.'</td>';
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_concepto_ccomprobantes.'</td>';
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; "></td>';
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; "></td>';
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_debe_mayor.'</td>';
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_haber_mayor.'</td>';
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px; ">'.$_saldo_mayor.'</td>';
+	                    $html.='<p style="text-align: left; font-size: 13px;">&nbsp;&nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>TOTAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	                    
+	                   
 	                    
 	                    $html.='</tr>';
 	                    $html.='</table>';

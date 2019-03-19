@@ -29,8 +29,7 @@
   ?>
     
     
-    <div class="wrapper">
-
+  <div class="wrapper">
   <header class="main-header">
   
       <?php include("view/modulos/logo.php"); ?>

@@ -94,7 +94,7 @@ $( "#nombre_cuenta" ).autocomplete({
 })
 
 
-$('#frm_libro_diario').on('submit',function(event){
+$('#frm_libro_diarios').on('submit',function(event){
 
 	var parametros = new FormData(this)
 	
@@ -141,5 +141,80 @@ function validafecha(){
 	return true
 }
 
+$('#frm_libro_diario').on('submit',function(event){
+
+	var parametros = new FormData(this)
+	
+	parametros.append('action','ajax')
+	
+	
+	if(!validafecha()){
+		return false
+	}
+	
+})
+
 $('#desde_diario').on('focus',function(){$('#mensaje_desde_diario').text('').fadeOut();})
+
+$('#btn_export_excel').on('click',function(){
+	
+	var formulario = $('#frm_libro_diario')
+	var parametros = formulario.serialize();
+	
+	
+	$.ajax({
+		url:'index.php?controller=LibroDiario&action=dataToExcel',
+		type:'POST',
+		dataType:'json',
+		data:parametros+'&peticion=js'
+	}).done(function(data){
+		
+		
+		if(data.cantidad>0){
+			
+		   var newArr = [];
+		  
+		   while(data.datos_detalle.length) newArr.push(data.datos_detalle.splice(0,8));
+		   
+		   for(var i=1; i<newArr.length; i++){
+			   
+			   if(newArr[i][6]!=" "){
+				   newArr[i][6]=parseFloat(newArr[i][6]).toFixed(2);
+				   console.log(newArr[i][6]);
+			   }
+			   if(newArr[i][7]!=" "){
+				   newArr[i][7]=parseFloat(newArr[i][7]);
+			   }
+			   
+		   }
+		   
+		   var dt = new Date();
+		   var m=dt.getMonth();
+		   m+=1;
+		   var y=dt.getFullYear();
+		   var d=dt.getDate();
+		   var fecha=d.toString()+"/"+m.toString()+"/"+y.toString();
+		   var wb =XLSX.utils.book_new();
+		   wb.SheetNames.push("DiarioContable");
+		   var ws = XLSX.utils.aoa_to_sheet(newArr);
+		   wb.Sheets["DiarioContable"] = ws;
+		   var wbout = XLSX.write(wb,{bookType:'xlsx', type:'binary'});
+		   function s2ab(s) { 
+	            var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+	            var view = new Uint8Array(buf);  //create uint8array as viewer
+	            for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+	            return buf;    
+		   }
+	       saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'DiarioContable'+fecha+'.xlsx');
+		}
+		 
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText;
+		//alert(err)
+	})
+	
+	return false;
+	
+})
 

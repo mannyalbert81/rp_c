@@ -88,7 +88,7 @@
 						
 					</div>
 					<div id="load_productos" ></div>
-					<div id="productos_registrados"></div>	
+					<div id="Load_productos_registrados"></div>	
                 </div>
     		 </div>
             </div>
@@ -111,42 +111,6 @@
     
 	
     
-    
-    
-	<script type="text/javascript">
-
-      function load_productos(pagina){
-
-		   var search=$("#search_productos").val();
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_productos").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_productos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=Productos&action=consulta_productos&search='+search,
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#productos_registrados").html(x);
-	                 $("#load_productos").html("");
-	                 $("#tabla_productos").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#productos_registrados").html("Ocurrio un error al cargar la informacion de Productos Activos..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
- </script>
 	
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
        <script>
@@ -155,7 +119,7 @@
       });
 	  </script>
 	  
-  
+  <script src="view/Inventario/FuncionesJS/Productos.js?1.1"></script> 
 	
   </body>
 </html>  

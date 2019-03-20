@@ -1,15 +1,24 @@
 $(document).ready(function(){
-	carga_solicitud();
-	carga_producto()
-
 	
+	buscaProductos()
 });
 
+function buscaProductos(pagina=1){
+	
+	$.ajax({
+		url:'index.php?controller=Productos&action=consulta_productos',
+		type:'POST',
+		data:{page:pagina,peticion:'ajax'},
+	}).done(function(data){
+		$('#Load_productos_registrados').html(data);
+	}).fail(function(xhr,status,error){
+		var err = responseText;
+		alert(err);
+	})
+}
 
 
-
-
-function carga_productos(pagina){
+function load_productos(pagina){
 
     var search=$("#buscador_productos").val();
     var con_datos={
@@ -37,10 +46,3 @@ function carga_productos(pagina){
             }
           });
 }
-
-
-
-
-
-
-

@@ -2151,7 +2151,7 @@ class MovimientosInvController extends ControladorBase{
 	        $html.='<input type="hidden" value="'.$cantidad.'" id="total_query" name="total_query"/>' ;
 	        $html.='</div>';
 	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	        $html.='<section style="height:180px; overflow-y:scroll;">';
+	        $html.='<section style="height:300px; overflow-y:scroll;">';
 	        $html.= "<table id='tabla_salidas_rechazada' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
 	        $html.= "<thead>";
 	        $html.= "<tr>";
@@ -2161,7 +2161,8 @@ class MovimientosInvController extends ControladorBase{
 	        $html.='<th style="text-align: left;  font-size: 12px;">Referencia (FACTURA)</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Concepto</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
-	        $html.='<th style="text-align: left;  font-size: 12px;">...</th>';	        
+	        $html.='<th style="text-align: left;  font-size: 12px;">...</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">...</th>';	    
 	        
 	        $html.='</tr>';
 	        $html.='</thead>';
@@ -2179,7 +2180,8 @@ class MovimientosInvController extends ControladorBase{
 	            $html.='<td style="font-size: 11px;">'.$res->referencia_doc_ccomprobantes.'</td>';
 	            $html.='<td style="font-size: 11px;">'.$res->concepto_ccomprobantes.'</td>';
 	            $html.='<td align="right" style="font-size: 11px;"> $'.$res->valor_ccomprobantes.'</td>';
-	            $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=MovimientosInv&action=generar_reporte_solicitud_rechazada&id_ccomprobantes='.$res->id_ccomprobantes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+	            $html.='<td align="right" style="color:#000000;"><a data-valor="12" data-toggle="tooltip" data-op="registrar" title="Registrar Factura" href="#"><i class="fa fa-chain-broken" aria-hidden="true"></i></a></td>';
+	            $html.='<td style="color:#000000;"><span class="pull-right"><a data-toggle="tooltip" title="Registrar Factura" href="index.php?controller=MovimientosInv&action=registrarFactura&codigo='.$res->id_ccomprobantes.'" ><i class="fa fa-chain-broken" aria-hidden="true"></i></a></span></td>';
 	            $html.='</tr>';
 	        }
 	        
@@ -2188,7 +2190,7 @@ class MovimientosInvController extends ControladorBase{
 	        $html.='</table>';
 	        $html.='</section></div>';
 	        $html.='<div class="table-pagination pull-right">';
-	        $html.=''. $this->paginatemultiple("index.php", $page, $total_pages, $adjacents,'carga_solicitud').'';
+	        $html.=''. $this->paginatemultiple("index.php", $page, $total_pages, $adjacents,'buscaFacturas').'';
 	        $html.='</div>';
 	        
 	        
@@ -2204,6 +2206,101 @@ class MovimientosInvController extends ControladorBase{
 	    
 	    echo $html;
 	    
+	}
+	
+	
+	public function registrarFactura(){
+	    
+	    session_start();
+	    
+	    $registro = null; $registro= new MovimientosInvCabezaModel();
+	    
+	    $id_movimiento = (isset($_REQUEST['id_movimiento']))?$_REQUEST['id_movimiento']:0;
+	    
+	    if($id_movimiento>0){
+	        
+	        $col_solicitud="movimientos_inv_cabeza.id_movimientos_inv_cabeza,
+                      usuarios.nombre_usuarios,
+                      usuarios.id_usuarios,
+                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza";
+	        
+	        $tab_solicitud = "public.movimientos_inv_cabeza,
+                      public.usuarios,
+                      public.consecutivos";
+	        
+	        $where_solicitud = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
+                      consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
+                      AND nombre_consecutivos='SOLICITUD'
+                      AND movimientos_inv_cabeza.id_movimientos_inv_cabeza=$id_movimiento";
+	        
+	        $resultsolicitud = $salidas->getCondiciones($col_solicitud,$tab_solicitud,$where_solicitud,"id_movimientos_inv_cabeza");
+	        
+	        $temp_salida = null; $temp_salida = new InvTempSalidaModel();
+	        
+	        $funcion = "fn_agrega_salida";
+	        $parametros = "'$id_movimiento'";
+	        
+	        $temp_salida->setFuncion($funcion);
+	        
+	        $temp_salida->setParametros($parametros);
+	        
+	        $resultado = $temp_salida->llamafuncion();
+	        
+	        $insertado =0;
+	        
+	        if(!empty($resultado)){
+	            if(is_array($resultado) && count($resultado)>0){
+	                
+	                $insertado = (int)$resultado[0]->fn_agrega_salida;
+	                
+	            }
+	        }
+	        
+	        if($insertado>0){
+	            
+	            $col_detalle="grupos.nombre_grupos,
+                      grupos.id_grupos,
+                      unidad_medida.nombre_unidad_medida,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.ult_precio_productos,
+                      inv_temp_salida.cantidad_temp_salida,
+                      inv_temp_salida.id_temp_salida,
+                      inv_temp_salida.id_movimientos_inv_cabeza";
+	            
+	            $tab_detalle = "public.inv_temp_salida,
+                      public.productos,
+                      public.grupos,
+                      public.unidad_medida";
+	            
+	            $where_detalle = "productos.id_productos = inv_temp_salida.id_productos AND
+                      grupos.id_grupos = productos.id_grupos AND
+                      unidad_medida.id_unidad_medida = productos.id_unidad_medida
+                      AND inv_temp_salida.id_movimientos_inv_cabeza=$id_movimiento";
+	            
+	            $resultdetalle = $salidas->getCondiciones($col_detalle,$tab_detalle,$where_detalle,"productos.nombre_productos");
+	            
+	            
+	            $this->view_Inventario('AprobarSalidas',array(
+	                'resultsolicitud'=>$resultsolicitud,'resultdetalle'=>$resultdetalle
+	            ));
+	            
+	        }else{
+	            
+	            $this->redirect('MovimientosInv','indexsalida');
+	            
+	        }
+	        
+	        
+	        
+	    }else{
+	        
+	        $this->redirect('MovimientosInv','indexsalida');
+	        
+	    }
 	}
 	
 	

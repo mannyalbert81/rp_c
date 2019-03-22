@@ -1,21 +1,31 @@
 $(document).ready(function(){
 	
+	$('[data-toggle="tooltip"]').tooltip(); 
+	
 	buscaComprobante()
 });
 
 function buscaComprobante(pagina=1){
 	
 	$.ajax({
+		beforeSend:function(obj){
+			$("#data_comprobantes").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+		},
 		url:'index.php?controller=MovimientosInv&action=buscaFacturas',
 		type:'POST',
 		data:{page:pagina},
 	}).done(function(data){
-		$('#resultados').html(data);
+		$('#data_comprobantes').html(data);
 	}).fail(function(xhr,status,error){
 		var err = responseText;
 		alert(err);
 	})
 }
+
+$('#data_comprobantes').on('click','[data-op="registrar"]',function(){
+	//$(this).data('valor');
+	alert($(this).data('valor'))
+})
 
 var anio = (new Date).getFullYear();
 

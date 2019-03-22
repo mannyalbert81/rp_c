@@ -2161,7 +2161,6 @@ class MovimientosInvController extends ControladorBase{
 	        $html.='<th style="text-align: left;  font-size: 12px;">Referencia (FACTURA)</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Concepto</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
-	        $html.='<th style="text-align: left;  font-size: 12px;">...</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">...</th>';	    
 	        
 	        $html.='</tr>';
@@ -2179,8 +2178,7 @@ class MovimientosInvController extends ControladorBase{
 	            $html.='<td style="font-size: 11px;">'.$res->numero_ccomprobantes.'</td>';
 	            $html.='<td style="font-size: 11px;">'.$res->referencia_doc_ccomprobantes.'</td>';
 	            $html.='<td style="font-size: 11px;">'.$res->concepto_ccomprobantes.'</td>';
-	            $html.='<td align="right" style="font-size: 11px;"> $'.$res->valor_ccomprobantes.'</td>';
-	            $html.='<td align="right" style="color:#000000;"><a data-valor="12" data-toggle="tooltip" data-op="registrar" title="Registrar Factura" href="#"><i class="fa fa-chain-broken" aria-hidden="true"></i></a></td>';
+	            $html.='<td align="right" style="font-size: 11px;"> $'.$res->valor_ccomprobantes.'</td>';	            
 	            $html.='<td style="color:#000000;"><span class="pull-right"><a data-toggle="tooltip" title="Registrar Factura" href="index.php?controller=MovimientosInv&action=registrarFactura&codigo='.$res->id_ccomprobantes.'" ><i class="fa fa-chain-broken" aria-hidden="true"></i></a></span></td>';
 	            $html.='</tr>';
 	        }
@@ -2208,101 +2206,472 @@ class MovimientosInvController extends ControladorBase{
 	    
 	}
 	
-	
+	/***
+	 * mod: registro Materiales
+	 * title: registrarFactura
+	 * return void:view
+	 */
 	public function registrarFactura(){
 	    
 	    session_start();
 	    
 	    $registro = null; $registro= new MovimientosInvCabezaModel();
 	    
-	    $id_movimiento = (isset($_REQUEST['id_movimiento']))?$_REQUEST['id_movimiento']:0;
+	    $id_comprobante = (isset($_REQUEST['codigo']) && $_REQUEST['codigo'] != null)?$_REQUEST['codigo']:0;
 	    
-	    if($id_movimiento>0){
+	    
+	    if($id_comprobante>0){
 	        
-	        $col_solicitud="movimientos_inv_cabeza.id_movimientos_inv_cabeza,
-                      usuarios.nombre_usuarios,
-                      usuarios.id_usuarios,
-                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
-                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
-                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza";
+	        $columas_comp = "ccomprobantes.id_ccomprobantes,ccomprobantes.fecha_ccomprobantes,ccomprobantes.id_tipo_comprobantes,
+        	        tipo_comprobantes.nombre_tipo_comprobantes,ccomprobantes.numero_ccomprobantes,
+        	        ccomprobantes.referencia_doc_ccomprobantes,ccomprobantes.concepto_ccomprobantes,
+        	        ccomprobantes.valor_ccomprobantes";
 	        
-	        $tab_solicitud = "public.movimientos_inv_cabeza,
-                      public.usuarios,
-                      public.consecutivos";
+	        $tablas_comp = "ccomprobantes
+        	        INNER JOIN tipo_comprobantes
+        	        ON tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes
+        	        AND tipo_comprobantes.nombre_tipo_comprobantes = 'EGRESOS'";
 	        
-	        $where_solicitud = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
-                      consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
-                      AND nombre_consecutivos='SOLICITUD'
-                      AND movimientos_inv_cabeza.id_movimientos_inv_cabeza=$id_movimiento";
+	        $where_comp = "ccomprobantes.id_ccomprobantes=$id_comprobante";
 	        
-	        $resultsolicitud = $salidas->getCondiciones($col_solicitud,$tab_solicitud,$where_solicitud,"id_movimientos_inv_cabeza");
 	        
-	        $temp_salida = null; $temp_salida = new InvTempSalidaModel();
+	        $rscomprobante = $registro->getCondiciones($columas_comp,$tablas_comp,$where_comp,"ccomprobantes.id_ccomprobantes");
 	        
-	        $funcion = "fn_agrega_salida";
-	        $parametros = "'$id_movimiento'";
+	       
 	        
-	        $temp_salida->setFuncion($funcion);
-	        
-	        $temp_salida->setParametros($parametros);
-	        
-	        $resultado = $temp_salida->llamafuncion();
-	        
-	        $insertado =0;
-	        
-	        if(!empty($resultado)){
-	            if(is_array($resultado) && count($resultado)>0){
-	                
-	                $insertado = (int)$resultado[0]->fn_agrega_salida;
-	                
-	            }
-	        }
-	        
-	        if($insertado>0){
 	            
-	            $col_detalle="grupos.nombre_grupos,
-                      grupos.id_grupos,
-                      unidad_medida.nombre_unidad_medida,
-                      productos.codigo_productos,
-                      productos.marca_productos,
-                      productos.nombre_productos,
-                      productos.ult_precio_productos,
-                      inv_temp_salida.cantidad_temp_salida,
-                      inv_temp_salida.id_temp_salida,
-                      inv_temp_salida.id_movimientos_inv_cabeza";
-	            
-	            $tab_detalle = "public.inv_temp_salida,
-                      public.productos,
-                      public.grupos,
-                      public.unidad_medida";
-	            
-	            $where_detalle = "productos.id_productos = inv_temp_salida.id_productos AND
-                      grupos.id_grupos = productos.id_grupos AND
-                      unidad_medida.id_unidad_medida = productos.id_unidad_medida
-                      AND inv_temp_salida.id_movimientos_inv_cabeza=$id_movimiento";
-	            
-	            $resultdetalle = $salidas->getCondiciones($col_detalle,$tab_detalle,$where_detalle,"productos.nombre_productos");
-	            
-	            
-	            $this->view_Inventario('AprobarSalidas',array(
-	                'resultsolicitud'=>$resultsolicitud,'resultdetalle'=>$resultdetalle
+	            $this->view_Inventario('RegistrarFactura',array(
+	                'rscomprobante'=>$rscomprobante
 	            ));
-	            
-	        }else{
-	            
-	            $this->redirect('MovimientosInv','indexsalida');
-	            
-	        }
-	        
-	        
+	         
 	        
 	    }else{
 	        
-	        $this->redirect('MovimientosInv','indexsalida');
+	        $this->redirect('MovimientosInv','IngresoMateriales');
 	        
 	    }
 	}
 	
+	/***
+	 * mod: ingreso materiales
+	 * title: insertaDetalleFactura
+	 * return: json
+	 */
+	public function insertaDetalleFactura(){
+	    
+	    session_start();
+	    
+	    $_id_usuarios = $_SESSION['id_usuarios'];
+	    
+	    $producto_id = (isset($_REQUEST['id_productos'])&& $_REQUEST['id_productos'] !=NULL)?$_REQUEST['id_productos']:0;
+	    
+	    $cantidad = (isset($_REQUEST['cantidad'])&& $_REQUEST['cantidad'] !=NULL)?$_REQUEST['cantidad']:0;
+	    
+	    $precio_unitario = (isset($_REQUEST['precio_u'])&& $_REQUEST['precio_u'] !=NULL)?$_REQUEST['precio_u']:0;
+	    
+	    $comprobante_id = (isset($_REQUEST['comprobante_id'])&& $_REQUEST['comprobante_id'] !=NULL)?$_REQUEST['comprobante_id']:0;
+	    
+	    
+	    if($_id_usuarios!='' && $producto_id>0){
+	        
+	        //$_session_id = session_id();
+	        
+	        //para insertado de temp
+	        $tempFactura = new TempFacturaModel();
+	        
+	        $funcion = "ins_temp_factura";
+	        
+	        /*para implementarlo luego*/
+	        $descuento = 0.00;	        
+	        
+	        $parametros = "'$_id_usuarios',
+	    				   '$producto_id',
+                           '$comprobante_id',
+                           '$precio_unitario',
+                            '$descuento',
+                           '$cantidad'";
+	        
+	        //print_r($parametros); die();
+	        /*nota estado de temp no esta insertado por el momento*/
+	        $tempFactura->setFuncion($funcion);
+	        $tempFactura->setParametros($parametros);
+	        
+	        $resultado=$tempFactura->llamafuncion();
+	        
+	        $respuesta = 0;
+	        
+	        if(!empty($resultado) && count($resultado)>0){	            
+	            
+	            foreach ($resultado[0] as $k=>$v){
+	                $respuesta=$v;
+	            }
+	        }
+	        
+	        echo  json_encode(array('mensaje'=>$respuesta));
+	        
+	    }
+	    
+	}
+	
+	/***
+	 * mod: ingresoMateriales
+	 * title: traerfacturas
+	 * return: view::html
+	 */
+	public function detalleFactura(){
+	    
+	    session_start();
+	    
+	    $id_usuarios = (isset($_SESSION['id_usuarios']))?$_SESSION['id_usuarios']:0;
+	    
+	    $comprobante_id = (isset($_POST['comprobante_id']))?$_POST['comprobante_id']:0;
+	    
+	    $page = (isset($_POST['page']))?$_POST['page']:0;
+	    
+	    $tempFactura = new TempFacturaModel();
+	    
+	    $col_temp = 'con_temp_factura.id_temp_factura,
+    	    con_temp_factura.id_ccomprobantes,
+    	    usuarios.id_usuarios,
+    	    usuarios.nombre_usuarios,
+    	    productos.codigo_productos,
+    	    productos.nombre_productos,
+    	    con_temp_factura.cantidad_temp_factura,
+    	    con_temp_factura.precio_temp_factura,
+    	    (con_temp_factura.precio_temp_factura * con_temp_factura.cantidad_temp_factura) "temp_total"';
+	    
+	    $tab_temp = 'con_temp_factura
+    	    INNER JOIN productos
+    	    ON productos.id_productos = con_temp_factura.id_productos
+    	    INNER join usuarios
+    	    ON usuarios.id_usuarios = con_temp_factura.id_usuarios';
+	    
+	    $where_temp = "usuarios.id_usuarios = $id_usuarios
+	        and con_temp_factura.id_ccomprobantes = $comprobante_id";
+	    
+	    
+	    $resultSet=$tempFactura->getCantidad("*", $tab_temp, $where_temp);
+	    
+	    $cantidadResult=(int)$resultSet[0]->total;
+	    
+	    $per_page = 10; //la cantidad de registros que desea mostrar
+	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	    $offset = ($page - 1) * $per_page;
+	    
+	    $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	    
+	    $resultSet=$tempFactura->getCondicionesPag($col_temp, $tab_temp, $where_temp, "con_temp_factura.id_temp_factura", $limit);
+	    
+	    $total_pages = ceil($cantidadResult/$per_page);
+	    
+	    $html="";
+	    if($cantidadResult>0)
+	    {
+	        
+	        $html.='<div class="pull-left" style="margin-left:11px;">';
+	        $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	        $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query_factura" name="total_query"/>' ;
+	        $html.='</div>';
+	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $html.='<section style="height:250px; overflow-y:scroll;">';
+	        $html.= "<table id='tabla_temporal' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	        $html.= "<thead>";
+	        $html.= "<tr>";
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">P. Unitario</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">P. Total</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        
+	        $html.='</tr>';
+	        $html.='</thead>';
+	        $html.='<tbody>';
+	        
+	        $i=0;
+	        
+	        foreach ($resultSet as $res)
+	        {
+	            $i++;
+	            $html.='<tr>';
+	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->cantidad_temp_factura.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->precio_temp_factura.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->temp_total.'</td>';
+	            $html.='<td style="font-size: 18px;" align="right" ><a href="#" onclick="eliminar_producto('.$res->id_temp_factura.')" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></td>';
+	            
+	            $html.='</tr>';
+	        }
+	        
+	        
+	        $html.='</tbody>';
+	        $html.='</table>';
+	        $html.='</section></div>';
+	        $html.='<div class="table-pagination pull-right">';
+	        $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents).'';
+	        $html.='</div>';
+	        
+	        
+	        
+	    }else{
+	            
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Productos</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        
+	    }
+	    
+	    
+	    echo $html;	    
+	
+	}
+	
+	/***
+	 * mod: ingresoMateriales
+	 * title: buscarProductosRegistroMaterial
+	 * return: view::html
+	 * desc: busca productos para ingresar en temp_factura
+	 */
+	public function buscarProductosRegistroMaterial(){
+	    
+	    session_start();
+	    $id_rol=$_SESSION["id_rol"];
+	    
+	    $productos = null; $productos = new ProductosModel();
+	    $where_to="";
+	    $columnas = "productos.id_productos,
+                      grupos.nombre_grupos,
+                      productos.codigo_productos,
+                      productos.nombre_productos,
+                      unidad_medida.nombre_unidad_medida,
+                      productos.ult_precio_productos";
+	    
+	    $tablas = " public.productos,
+                      public.grupos,
+                      public.unidad_medida";
+	    
+	    $where    = "grupos.id_grupos = productos.id_grupos AND
+                     unidad_medida.id_unidad_medida = productos.id_unidad_medida";
+	    
+	    $id       = "productos.nombre_productos";
+	    
+	    
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        if(!empty($search)){
+	            
+	            $where1=" AND (productos.nombre_productos LIKE '".$search."%' OR productos.codigo_productos LIKE '".$search."%')";
+	            
+	            $where_to=$where.$where1;
+	            
+	        }else{
+	            
+	            $where_to=$where;
+	            
+	        }
+	        
+	        
+	        $html="";
+	        $resultSet=$productos->getCantidad("*", $tablas, $where_to);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 5; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet=$productos->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $count_query   = $cantidadResult;
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        
+	        if($cantidadResult>0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:15px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:300px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Grupo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">U. Medida</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Precio U.</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody >';
+	            
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_unidad_medida.'</td>';
+	                $html.='<td class="col-xs-1"><div class="pull-right">';
+	                $html.='<input type="text" class="form-control input-sm"  id="cantidad_'.$res->id_productos.'" value="1"></div></td>';
+	                $html.='<td class="col-xs-2"><div class="pull-right">';
+	                $html.='<input type="text" class="form-control input-sm"  id="pecio_producto_'.$res->id_productos.'" value="'.$res->ult_precio_productos.'"></div></td>';
+	                $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="add_producto('.$res->id_productos.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
+	                
+	                
+	                
+	                $html.='</tr>';
+	            }
+	            $html.='</tbody>';
+	            
+	            $html.='</table>';
+	            $html.='<table><tr>';
+	            $html.='<td colspan="7"><span class="pull-right">';
+	            $html.=''. $this->paginatemultiple("index.php", $page, $total_pages, $adjacents,"load_productos").'';
+	            $html.='</span>';
+	            $html.='</table></tr>';
+	            $html.='</section></div>';
+	            
+	        }else{
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay productos registrados...</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        
+	        echo $html;
+	        
+	    }
+	}
+	
+	/***
+	 * mod: ingresoMateriales
+	 * title: buscarProductosRegistroMaterial
+	 * return: view::html
+	 * desc: busca productos para ingresar en temp_factura
+	 */
+	public function eliminaTempFactura(){
+	    
+	    session_start();
+	    
+	    $_id_usuarios = (isset($_SESSION['id_usuarios'])&& $_SESSION['id_usuarios'] !=NULL)?$_SESSION['id_usuarios']:0; 
+	    
+	    $_id_temp_factura = (isset($_REQUEST['id_temp_factura'])&& $_REQUEST['id_temp_factura'] !=NULL)?$_REQUEST['id_temp_factura']:0;
+	    
+	    if($_id_usuarios >0 && $_id_temp_factura>0){
+	        
+	        //$_session_id = session_id();
+	        
+	        //para eliminado de temp
+	        $tempFactura= new TempFacturaModel();
+	        
+	        $where = "id_usuarios = $_id_usuarios AND id_temp_factura = $_id_temp_factura ";
+	        $resultado=$tempFactura->deleteById($where);
+	        
+	        $respuesta=0;
+	        
+	        if(!empty($resultado) && count($resultado)>0){
+	            foreach ($resultado[0] as $k=>$v){
+	                $respuesta=$v;
+	            }
+	        }
+	        
+	        echo $respuesta;
+	    }
+	}
+	
+	public function RegistraFactura(){
+	    
+	    //inicia session
+	    session_start();
+	    //creacion de objeto de modelo
+	    $movimientos_inventario = new MovimientosInvCabezaModel();	    
+	  
+	    $id_rol= $_SESSION['id_rol'];
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    {
+	        
+	        $nombre_controladores = "MovimientosProductosCabeza";
+	        $resultPer = $movimientos_inventario->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	        
+	        if (empty($resultPer) || count($resultPer) < 1)
+	        {	            
+	            echo 'sin permisos';
+	            return;
+	            
+	        }
+	    }
+	    
+	    if(!isset($_POST['peticion']) && $_POST['peticion']!='')
+	    {
+	        echo 'peticion no soportada';
+	        return ;
+	    }
+	    
+	   
+	        
+        $id_usuarios = (isset($_SESSION['id_usuarios']))?$_SESSION['id_usuarios']:0;
+        
+        /*valores de la vista*/
+        $_fecha_compra = (isset($_POST['fecha_compra'])) ? $_POST['fecha_compra'] : '';
+        $_id_comprobantes = (isset($_POST['comprobante_id'])) ? $_POST['comprobante_id'] : 0;
+        $_cantidad_compra = (isset($_POST['cantidad_factura'])) ? $_POST['cantidad_factura'] : 0;
+        
+       
+	        
+	        //se valida si hay productos en temp
+        if($_cantidad_compra>0){
+            
+            $funcion = "fn_ingresa_factura";
+            
+            $parametros = "'$id_usuarios','$_id_comprobantes','$_fecha_compra'";            
+           
+            $movimientos_inventario->setFuncion($funcion);
+            $movimientos_inventario->setParametros($parametros);
+            
+            $resultset = $movimientos_inventario->llamafuncion();
+            $respuesta = 0;
+            
+            if(!empty($resultset) && count($resultset)>0){
+                
+                foreach ($resultset[0] as $k => $v){
+                    $respuesta = $v;
+                }
+                
+            }
+            
+            echo json_encode(array('mensaje'=>$respuesta));
+        
+        }
+	    
+	}
 	
 }
 

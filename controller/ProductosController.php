@@ -450,6 +450,7 @@ class ProductosController extends ControladorBase{
     
     public function consulta_productos(){
         
+        
         if(!isset($_POST['peticion'])){
             echo 'sin conexion';
             return;
@@ -457,11 +458,10 @@ class ProductosController extends ControladorBase{
         
         $page = (isset($_REQUEST['page']))?isset($_REQUEST['page']):1;
         
-        $grupos=new GruposModel;
-        $unidadmedida= new UnidadModel();
+       
         $productos=new ProductosModel();
         
-        $where_to="";
+        /*$where_to="";
         $columnas = "
                       productos.id_productos,
                       grupos.id_grupos,
@@ -496,11 +496,55 @@ class ProductosController extends ControladorBase{
             $cantidad = count($rsResultado);
         }
         
-        $query .= " LIMIT   '$per_page' OFFSET '$offset'";
+        //$query .= " LIMIT   '$per_page' OFFSET '$offset'";
         
         $resultSet = $productos->getCondiciones($columnas, $tablas, $where, $id);
         
-        $total_pages = ceil($cantidad/$per_page);
+        $total_pages = ceil($cantidad/$per_page);*/
+        
+        
+        $query = "SELECT
+                productos.id_productos,
+                      grupos.id_grupos,
+                      grupos.nombre_grupos,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.descripcion_productos,
+                      unidad_medida.nombre_unidad_medida,
+                      productos.ult_precio_productos,
+                      productos.creado,
+                      productos.modificado
+                FROM public.productos,
+                      public.grupos,
+                      public.unidad_medida
+                
+                WHERE productos.id_unidad_medida = unidad_medida.id_unidad_medida AND
+                      grupos.id_grupos = productos.id_grupos
+";
+        
+        $rsResultado = $productos->enviaquery($query);
+        
+        $cantidad = 0;
+        $html = "";
+        $per_page = 10; //la cantidad de registros que desea mostrar
+        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+        $offset = ($page - 1) * $per_page;
+        
+        if(!is_null($rsResultado) && !empty($rsResultado) && count($rsResultado)>0){
+            $cantidad = count($rsResultado);
+        }
+        
+        $query .= " LIMIT   '$per_page' OFFSET '$offset'";
+        
+        $resultSet = $productos->enviaquery($query);
+        
+        $tpages = ceil($cantidad/$per_page);
+        
+        
+        
+        
+        
         
         if($cantidad>0)
         {
@@ -541,6 +585,8 @@ class ProductosController extends ControladorBase{
                 $html.='<td style="font-size: 11px;">'.$res->descripcion_productos.'</td>';
                 $html.='<td style="font-size: 11px;">'.$res->ult_precio_productos.'</td>';
                 $html.='<td style="font-size: 11px;">'.$res->nombre_unidad_medida.'</td>';
+                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=Productos&action=generar_reporte_productos&id_productos='.$res->id_productos.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+                $html.='</tr>';
                 
             }
             
@@ -549,7 +595,7 @@ class ProductosController extends ControladorBase{
             $html.='</table>';
             $html.='</section></div>';
             $html.='<div class="table-pagination pull-right">';
-            $html.=''. $this->paginate_productos("index.php", $page, $total_pages, $adjacents,'carga_solicitud').'';
+            $html.=''. $this->paginate_productos("index.php", $page, $tpages, $adjacents).'';
             $html.='</div>';
             
             
@@ -564,7 +610,6 @@ class ProductosController extends ControladorBase{
         }
         
         echo $html;
-        
     }
 
     public function paginate_productos($reload, $page, $tpages, $adjacents) {
@@ -633,6 +678,226 @@ class ProductosController extends ControladorBase{
     
     
     
+    public function generar_reporte_productos () {
+        
+        
+        session_start();
+        
+        $grupos=new GruposModel;
+        $usuario = new UsuariosModel();
+        $unidadmedida= new UnidadModel();
+        $productos=new ProductosModel();
+        $movdetalle=new MovimientosInvDetalleModel();
+        $movcabeza= new MovimientosInvCabezaModel();
+        
+        
+        
+        $html="";
+        $cedula_usuarios = $_SESSION["cedula_usuarios"];
+        $fechaactual = getdate();
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        
+        $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
+        $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
+        $domLogo=$directorio.'/view/images/logo.png';
+        $logo = '<img src="'.$domLogo.'" alt="Responsive image" width="130" height="70">';
+        
+        
+        
+        if(!empty($cedula_usuarios)){
+            
+            
+            if(isset($_GET["id_productos"])){
+                
+                
+                $_id_productos = $_GET["id_productos"];
+                
+                
+                $columnas="productos.id_productos,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.descripcion_productos,
+                      productos.ult_precio_productos,
+                      unidad_medida.id_unidad_medida,
+                      unidad_medida.nombre_unidad_medida,
+                      movimientos_inv_detalle.cantidad_movimientos_inv_detalle,
+                      movimientos_inv_detalle.saldo_f_movimientos_inv_detalle,
+                      movimientos_inv_detalle.saldo_v_movimientos_inv_detalle,
+                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.razon_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.cantidad_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.importe_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.numero_factura_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.numero_autorizacion_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.subtotal_doce_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.iva_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.subtotal_cero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.descuento_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza,
+                      usuarios.cedula_usuarios,
+                      usuarios.nombre_usuarios,
+                      usuarios.apellidos_usuarios,
+                      usuarios.usuario_usuarios,
+                      bodegas.id_bodegas";
+                
+                $tablas = "public.productos,
+                      public.movimientos_inv_cabeza,
+                      public.movimientos_inv_detalle,
+                      public.usuarios,
+                      public.unidad_medida,
+                      public.bodegas";
+                
+                $where = "movimientos_inv_cabeza.id_usuarios = usuarios.id_usuarios AND
+                      movimientos_inv_detalle.id_productos = productos.id_productos AND
+                      bodegas.id_bodegas = productos.id_bodegas AND
+                      movimientos_inv_detalle.id_movimientos_inv_cabeza = movimientos_inv_cabeza.id_movimientos_inv_cabeza AND productos.id_productos='$_id_productos'";
+                
+                $id="productos.id_productos";
+                
+                $resultSetCabeza=$movdetalle->getCondiciones($columnas, $tablas, $where, $id);
+                
+                
+                if(!empty($resultSetCabeza)){
+                    
+                    
+                    $_id_productos    =$resultSetCabeza[0]->id_productos;
+                    $_nombre_productos     =$resultSetCabeza[0]->nombre_productos;
+                    $_fecha_movimientos_inv_cabeza    =$resultSetCabeza[0]->fecha_movimientos_inv_cabeza;
+                    $_cantidad_movimientos_inv_detalle     =$resultSetCabeza[0]->cantidad_movimientos_inv_detalle;
+                    $_ult_precio_productos    =$resultSetCabeza[0]->ult_precio_productos;
+                    $_importe_movimientos_inv_cabeza    =$resultSetCabeza[0]->importe_movimientos_inv_cabeza;
+                    $_numero_movimientos_inv_cabeza    =$resultSetCabeza[0]->numero_movimientos_inv_cabeza;
+                    $_nombre_usuarios    =$resultSetCabeza[0]->nombre_usuarios;
+                    $_codigo_productos    =$resultSetCabeza[0]->codigo_productos;
+                    
+                    $columnas1 = "  productos.id_productos,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.descripcion_productos,
+                      productos.ult_precio_productos,
+                      unidad_medida.id_unidad_medida,
+                      unidad_medida.nombre_unidad_medida,
+                      movimientos_inv_detalle.cantidad_movimientos_inv_detalle,
+                      movimientos_inv_detalle.saldo_f_movimientos_inv_detalle,
+                      movimientos_inv_detalle.saldo_v_movimientos_inv_detalle,
+                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.razon_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.cantidad_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.importe_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.numero_factura_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.numero_autorizacion_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.subtotal_doce_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.iva_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.subtotal_cero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.descuento_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza,
+                      usuarios.cedula_usuarios,
+                      usuarios.nombre_usuarios,
+                      usuarios.apellidos_usuarios,
+                      usuarios.usuario_usuarios,
+                      bodegas.id_bodegas";
+                    
+                    $tablas1   = "public.productos,
+                      public.movimientos_inv_cabeza,
+                      public.movimientos_inv_detalle,
+                      public.usuarios,
+                      public.unidad_medida,
+                      public.bodegas";
+                    
+                    
+                    
+                    $where1    = "movimientos_inv_cabeza.id_usuarios = usuarios.id_usuarios AND
+                      movimientos_inv_detalle.id_productos = productos.id_productos AND
+                      bodegas.id_bodegas = productos.id_bodegas AND
+                      movimientos_inv_detalle.id_movimientos_inv_cabeza = movimientos_inv_cabeza.id_movimientos_inv_cabeza AND productos.id_productos='$_id_productos'";
+                    
+                    $id1       = "productos.id_productos";
+                    
+                    $resultSetDetalle=$movdetalle->getCondiciones($columnas1, $tablas1, $where1, $id1);
+                    
+                    
+                    $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+                    $html.= "<tr>";
+                    $html.='<th style="text-align: center; font-size: 25px; ">CAPREMCI</br>';
+                    $html.='<p style="text-align: center; font-size: 13px; "> Av. Baquerico Moreno E-9781 y Leonidas Plaza';
+                    $html.='<p style="text-align: left; font-size: 13px; "> &nbsp; &nbsp;Código: &nbsp; '.$_numero_movimientos_inv_cabeza.' &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp; &nbsp; Fecha de Compra:  &nbsp; '.$_fecha_movimientos_inv_cabeza.'';
+                    $html.='</tr>';
+                    $html.='</table>';
+                    
+                    $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; USUARIO: </b>'.$_nombre_usuarios.' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b> PRODUCTO:</b> &nbsp;'.$_nombre_productos.'';
+                    
+                    $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+                    $html.= "<tr>";
+                    $html.='<th colspan="12" style="text-align: left; height:30px; font-size: 13px;" ><b>&nbsp;SALDO INICIAL:  &nbsp;'.$_ult_precio_productos.'';
+                    $html.="</th>";
+                    $html.="</tr>";
+                    $html.='</table>';
+                    
+                    if(!empty($resultSetDetalle)){
+                        
+                        $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+                        
+                        $html.= "<tr>";
+                        $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Tipo de Movimiento</th>';
+                        $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Fecha</th>';
+                        $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Cantidad</th>';
+                        $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Precio</th>';
+                        $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Importe</th>';
+                        $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Numero Factura</th>';
+                        $html.='</tr>';
+                        
+                        
+                        
+                        foreach ($resultSetDetalle as $res)
+                        {
+                            $html.= "<tr>";
+                            
+                            $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->razon_movimientos_inv_cabeza.'</td>';
+                            $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
+                            $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->cantidad_movimientos_inv_cabeza.'</td>';
+                            $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->ult_precio_productos.'</td>';
+                            $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->importe_movimientos_inv_cabeza.'</td>';
+                            $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->numero_factura_movimientos_inv_cabeza.'</td>';
+                            $html.='</tr>';
+                            
+                        }
+                        $html.='</table>';
+                        
+                        
+                        
+                    }
+                    
+                    
+                    
+                }
+                
+                
+                
+                $this->report("ProductosReporte",array( "resultSet"=>$html));
+                die();
+                
+            }
+            
+            
+            
+            
+        }else{
+            
+            $this->redirect("Usuarios","sesion_caducada");
+            
+        }
+        
+        
+        
+        
+        
+    }
     
     
 }

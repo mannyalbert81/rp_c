@@ -73,8 +73,18 @@
                  <div class="box-body">
                  
                  <?php if(isset($rscomprobante)){?>
+                 
+                 <?php //print_r($rscomprobante); ?>
                  	
                  	<div class="row">
+                 	
+                 		<div class="col-xs-12 col-md-3 col-lg-3 ">
+                        	<div class="form-group">
+                            	<label for="numero_factura" class="control-label"># Comprobante</label>
+                                <input type="text" class="form-control" id="numero_comprobante" name="numero_comprobante" value="<?php echo $rscomprobante[0]->numero_ccomprobantes; ?>"  >
+                             </div>
+                         </div> 
+                         
                  	 	<div class="col-xs-12 col-md-3 col-lg-3 ">
                         	<div class="form-group">
                             	<label for="numero_factura" class="control-label"># Factura</label>
@@ -103,12 +113,9 @@
                  <?php }?>
                  
                  <!-- ocultos para el almacenamiento de informacion -->
-                 <input type="hidden" id="rs_cantidad_detalle" name="rs_cantidad_detalle" value="0">
-                 <input type="hidden" id="rs_suma_detalle" name="rs_suma_detalle" value="20">
-                 <input type="hidden" id="" name="" value="">
-                 <input type="hidden" id="" name="" value="">
                  
             
+                         <hr>
                           
                          <div class="row">
                          	<div class="col-md-12 col-lg-12 col-xs-12">
@@ -289,7 +296,7 @@
     <script src="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
     
     <!-- <script src="view/bootstrap/otros/validate/jquery.validate.js"></script> -->
-    <script src="view/bootstrap/otros/inventario/registroFacturas.js?2.1"></script> 
+    <script src="view/bootstrap/otros/inventario/registroFacturas.js?2.7"></script> 
    
   
    

@@ -2104,7 +2104,7 @@ class MovimientosInvController extends ControladorBase{
 	 * return: void::html
 	 */
 	public function buscaFacturas(){
-	    
+	    /*dc 2019-03-21*/
 	    if(isset($_POST['peticion'])){
 	        echo 'sin conexion';
 	        return;
@@ -2114,16 +2114,20 @@ class MovimientosInvController extends ControladorBase{
 	    
 	    $movimientos = new MovimientosInvModel();
 	    
+	    /*consulta que busca la relacion comprobantes con movimientos*/
+	    /*si existe en movimientos no puede volverse a buscar*/
 	    $query = "SELECT 
-                ccomprobantes.id_ccomprobantes,ccomprobantes.fecha_ccomprobantes,ccomprobantes.id_tipo_comprobantes,
-                tipo_comprobantes.nombre_tipo_comprobantes,ccomprobantes.numero_ccomprobantes,
-                ccomprobantes.referencia_doc_ccomprobantes,ccomprobantes.concepto_ccomprobantes,
-                ccomprobantes.valor_ccomprobantes
-                FROM ccomprobantes
-                INNER JOIN tipo_comprobantes
-                ON tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes
-                AND tipo_comprobantes.nombre_tipo_comprobantes = 'EGRESOS'
-                WHERE 1=1 ";
+            ccomprobantes.id_ccomprobantes,ccomprobantes.fecha_ccomprobantes,ccomprobantes.id_tipo_comprobantes,
+            tipo_comprobantes.nombre_tipo_comprobantes,ccomprobantes.numero_ccomprobantes,
+            ccomprobantes.referencia_doc_ccomprobantes,ccomprobantes.concepto_ccomprobantes,
+            ccomprobantes.valor_ccomprobantes
+            FROM ccomprobantes
+            INNER JOIN tipo_comprobantes
+            ON tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes
+            AND tipo_comprobantes.nombre_tipo_comprobantes = 'EGRESOS'
+            LEFT JOIN movimientos_inv_cabeza
+            ON movimientos_inv_cabeza.id_ccomprobantes = ccomprobantes.id_ccomprobantes
+            WHERE movimientos_inv_cabeza.id_ccomprobantes IS NULL";
 
 	    $rsResultado = $movimientos->enviaquery($query);
 	    
@@ -2197,7 +2201,7 @@ class MovimientosInvController extends ControladorBase{
 	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	        $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	        $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	        $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Solicitud Rechazada</b>';
+	        $html.='<h4>Aviso!!!</h4> <b> SIN FACTURAS A REGISTRAR </b>';
 	        $html.='</div>';
 	        $html.='</div>';
 	    }
@@ -2364,6 +2368,22 @@ class MovimientosInvController extends ControladorBase{
 	    
 	    $total_pages = ceil($cantidadResult/$per_page);
 	    
+	    /*para enviar el total de la sumatoria del temporal*/
+	    
+	    $querysuma = "SELECT SUM(cantidad_temp_factura * precio_temp_factura) \"total\"
+                        FROM con_temp_factura
+                        WHERE id_usuarios = $id_usuarios
+                        AND id_ccomprobantes = $comprobante_id";
+	        
+	    $rsSumaDetalle = $tempFactura->enviaquery($querysuma);
+	    
+	    $sumaDetalle = 0.00;
+	    	    
+	    if(!empty($rsSumaDetalle) && count($rsSumaDetalle)>0){
+	        
+	        $sumaDetalle = $rsSumaDetalle[0]->total;
+	    }
+	    
 	    $html="";
 	    if($cantidadResult>0)
 	    {
@@ -2371,6 +2391,7 @@ class MovimientosInvController extends ControladorBase{
 	        $html.='<div class="pull-left" style="margin-left:11px;">';
 	        $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
 	        $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query_factura" name="total_query"/>' ;
+	        $html.='<input type="hidden" value="'.$sumaDetalle.'" id="total_suma_detalle" name="total_query"/>' ;
 	        $html.='</div>';
 	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	        $html.='<section style="height:250px; overflow-y:scroll;">';

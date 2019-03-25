@@ -446,18 +446,17 @@ $( "#estado_compra" ).focus(function() {
  */
 $('#frm_registraFactura').on('submit',function(event){
 	
+	var sumElementos = document.getElementById("rs_suma_detalle").value;	
 	var valComprobante = document.getElementById("valor_factura").value;
 	
 	var cantidadDetalle = ($('#total_query_factura').length>0)?$('#total_query_factura').val():0;
-	
-	var valorDetalle = ($('#total_suma_detalle').length>0)?$('#total_suma_detalle').val():0;
 	
 	if(cantidadDetalle==0){   	
 		imprimeMensaje('No ha ingresado productos a la compra');
 		return false;		
 	 }
 	
-	if( parseFloat(valComprobante) != parseFloat(valorDetalle) ){		
+	if( parseFloat(valComprobante) != parseFloat(sumElementos) ){		
 		imprimeMensaje('VALOR FACTURA NO COINCIDE');		
 		return false;
 	}
@@ -479,21 +478,8 @@ $('#frm_registraFactura').on('submit',function(event){
 			
 			if(data.mensaje > 0){
 				
-				swal({
-					text:"Factura se encuentra registrada",
-					icon:"success",
-					title:"INFO",
-					buttons:{Aceptar:"Aceptar"}
-					}).then((value) => {
-					  switch (value) {					 
-					    case "Aceptar":
-					    	window.open('index.php?controller=MovimientosInv&action=IngresoMateriales','_self')
-					      break;
-					    default:
-					    	return false
-					  }
-					});			
-				
+				imprimeMensajeOk('Factura se encuentra registrada');
+				loadDetalleFactura();
 			}
 			
 		}).fail(function(xhr,status,error){

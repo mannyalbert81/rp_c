@@ -10,7 +10,8 @@ class ControladoresController extends ControladorBase{
 
 	public function index(){
 	
-	
+	    session_start();
+	    
 		$controladores = new ControladoresModel();
 		
 		$columnas="controladores.id_controladores, 
@@ -26,18 +27,15 @@ class ControladoresController extends ControladorBase{
 		$resultSet=$controladores->getCondiciones($columnas, $tablas, $where, $id);
 		
 		
-		
 		$resultEdit = "";
 		$modulos = new ModulosModel();
 		$resultMod=$modulos->getAll("nombre_modulos");
-
-		session_start();
 		
 		if (isset($_SESSION['nombre_usuarios']))
 		{
 			$controladores = new ControladoresModel();
 			//NOTIFICACIONES
-			$controladores->MostrarNotificaciones($_SESSION['id_usuarios']);
+			//$controladores->MostrarNotificaciones($_SESSION['id_usuarios']);
 			
 			$nombre_controladores = "Controladores";
 			$id_rol= $_SESSION['id_rol'];

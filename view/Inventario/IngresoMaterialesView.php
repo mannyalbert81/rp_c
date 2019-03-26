@@ -126,7 +126,7 @@
     
     <script src="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
     
-    <script src="view/bootstrap/otros/inventario/ingresoMateriales.js?1.4"></script>
+    <script src="view/Inventario/FuncionesJS/ingresoMateriales.js?1.1"></script>
     
     <!-- <script src="view/bootstrap/otros/validate/jquery.validate.js"></script> -->
      

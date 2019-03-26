@@ -603,7 +603,10 @@ class ActivosFijosController extends ControladorBase{
                       activos_fijos.modificado,
                       activos_fijos.cant_meses_dep_activos_fijos, 
                       activos_fijos.fecha_cierre_anio_activos_fijos,
-                      imagen_activos_fijos,
+                      activos_fijos.imagen_activos_fijos, 
+                      activos_fijos.color_activos_fijos, 
+                      activos_fijos.material_activos_fijos, 
+                      activos_fijos.dimension_activos_fijos,
                       color_activos_fijos,
                       material_activos_fijos,
                       dimension_activos_fijos ";
@@ -674,6 +677,7 @@ class ActivosFijosController extends ControladorBase{
                 $html.= "<thead>";
                 $html.= "<tr>";
                 $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Oficina</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Tipo de Activo</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
@@ -709,6 +713,7 @@ class ActivosFijosController extends ControladorBase{
                     $depreciacionmensual=((int) $res->valor_activos_fijos)/((int) $res->meses_depreciacion_activos_fijos);
                     $html.='<tr>';
                     $html.='<td style="font-size: 11px;">'.$i.'</td>';
+                    $html.='<td style="font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_usuarios.'&id_nombre=id_usuarios&tabla=usuarios&campo=fotografia_usuarios" width="80" height="60"></td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_oficina.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';

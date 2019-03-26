@@ -1,37 +1,84 @@
 $(document).ready(function(){
 	
-	$('[data-toggle="tooltip"]').tooltip(); 
-	
-	buscaComprobante()
+	loadDetalleFactura();
+		
 });
 
-function buscaComprobante(pagina=1){
-	
-	$.ajax({
-		beforeSend:function(obj){
-			$("#data_comprobantes").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-		},
-		url:'index.php?controller=MovimientosInv&action=buscaFacturas',
-		type:'POST',
-		data:{page:pagina},
-	}).done(function(data){
-		$('#data_comprobantes').html(data);
-	}).fail(function(xhr,status,error){
-		var err = responseText;
-		alert(err);
-	})
-}
+$('#agregar_nuevo').on('show.bs.modal', function (event) {
+	load_productos(1);
+	  var modal = $(this)
+	  modal.find('.modal-title').text('Listado Productos')
 
-$('#data_comprobantes').on('click','[data-op="registrar"]',function(){
-	//$(this).data('valor');
-	alert($(this).data('valor'))
+	});
+
+$('#frm_registraFactura').on('submit',function(event){
+	
+	event.preventDefault();
 })
 
+function loadDetalleFactura(pagina=1){
+	
+	$.ajax({
+		type: "POST",
+        url: 'index.php?controller=MovimientosInv&action=detalleFactura',
+        data: {page:pagina,comprobante_id:$('#id_comprobante').val()},
+    	beforeSend: function(objeto){
+    		/*$("#resultados").html("Mensaje: Cargando...");*/
+    	  },
+	}).done(function(data){
+		$('#detalle_factura').html(data);
+	}).fail(function(){
+		
+	})
+	
+}
+
+function add_producto(id)
+{
+	var cantidad=document.getElementById('cantidad_'+id).value;
+	//Inicia validacion
+	if (isNaN(cantidad)){
+		alert('Esto no es un numero');
+		document.getElementById('cantidad_'+id).focus();
+		return false;
+	}
+	
+	var precio = document.getElementById('pecio_producto_'+id).value;
+	
+	if (isNaN(precio)){
+		document.getElementById('pecio_producto_'+id).focus();
+		swal('Esto no es un numero');
+	return false;
+	}
+	
+	var comprobante = document.getElementById('id_comprobante').value;
+	
+	if(comprobante==0){
+		return false;
+	}
+	
+	$.ajax({
+        type: "POST",
+        url: 'index.php?controller=MovimientosInv&action=insertaDetalleFactura',
+        data: "id_productos="+id+"&cantidad="+cantidad+"&precio_u="+precio+"&comprobante_id="+$('#id_comprobante').val(),
+    	beforeSend: function(objeto){
+    		/*$("#resultados").html("Mensaje: Cargando...");*/
+    	},
+    	dataType:'json'
+    	}).done(function(data){
+    		
+    		loadDetalleFactura();
+    		
+    		
+    	}).fail(function(xhr,status,error){
+    		var err = xhr.responseText;
+    		console.log(err);
+    		loadDetalleFactura();
+    	});
+    	  
+}
+
 var anio = (new Date).getFullYear();
-
-$("#numero_factura_compra").inputmask('999-999-999999999',{placeholder: ""});
-
-$("#numero_autorizacion_factura").inputmask('9999999999',{placeholder: ""});
 
 $("#mod_precio_producto").inputmask({
 	 alias: "decimal",	
@@ -46,22 +93,6 @@ $("#mod_precio_producto").inputmask({
 	 prefix: "$"
 	 });
 
-
-$("#fecha_compra").inputmask({
-	 alias: "date",
-	 yearrange: { 'minyear': '1990','maxyear': anio },	 
-	 placeholder: "dd/mm/yyyy"
-	 });
-
-
-
-$('#agregar_nuevo').on('show.bs.modal', function (event) {
-load_productos(1);
-  var modal = $(this)
-  modal.find('.modal-title').text('Listado Productos')
-
-});
-
 $('#mod_agregar_producto').on('show.bs.modal', function (event) {
 	carga_grupos();
 	carga_unidad_medida()
@@ -70,49 +101,6 @@ $('#mod_agregar_producto').on('show.bs.modal', function (event) {
 
 });
 
-$("#id_proveedor").focus(function() {
-	console.log('fg')
-	  $("#mensaje_proveedor").fadeOut("slow")
-});
-
-/**
- * para autocomplte de proveedores
- * @param pagina
- * @returns json
- */
-$( "#proveedor" ).autocomplete({
-
-	source: "index.php?controller=MovimientosInv&action=busca_proveedor",
-	minLength: 4,
-    select: function (event, ui) {
-       // Set selection          
-       $('#id_proveedor').val(ui.item.id);
-       $('#proveedor').val(ui.item.value); // save selected id to input
-       $('#nombre_proveedor').val(ui.item.nombre);
-       $('#datos_proveedor').show();
-       //console.log(ui.item.nombre);
-       return false;
-    },focus: function(event, ui) { 
-        var text = ui.item.value; 
-        $('#proveedor').val();            
-        return false; 
-    } 
-}).focusout(function() {
-	$.ajax({
-		url:'index.php?controller=MovimientosInv&action=busca_proveedor',
-		type:'POST',
-		dataType:'json',
-		data:{term:$('#proveedor').val()}
-	}).done(function(respuesta){
-		//console.log(respuesta[0].id);
-		if(respuesta[0].id>0){				
-			$('#id_proveedor').val(respuesta[0].id);
-           $('#proveedor').val(respuesta[0].value); // save selected id to input
-           $('#nombre_proveedor').val(respuesta[0].nombre);
-           $('#datos_proveedor').show();
-		}else{$('#datos_proveedor').hide(); $('#id_proveedor').val('0');  $('#proveedor').val('').focus();}
-	});
-});
 
 
 function load_productos(pagina){
@@ -125,7 +113,7 @@ function load_productos(pagina){
             beforeSend: function(objeto){
               $("#load_productos_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
             },
-            url: 'index.php?controller=MovimientosInv&action=consulta_productos&search='+search,
+            url: 'index.php?controller=MovimientosInv&action=buscarProductosRegistroMaterial&search='+search,
             type: 'POST',
             data: {action:'ajax', page:pagina},
             success: function(x){
@@ -140,60 +128,29 @@ function load_productos(pagina){
      });
 }
 
-function agregar_producto (id)
-{
-
-	var cantidad=document.getElementById('cantidad_'+id).value;
-	//Inicia validacion
-	if (isNaN(cantidad))
-	{
-	alert('Esto no es un numero');
-	document.getElementById('cantidad_'+id).focus();
-	return false;
-	}
-	var precio = document.getElementById('pecio_producto_'+id).value;
-	if (isNaN(precio))
-	{
-		document.getElementById('pecio_producto_'+id).focus();
-		swal('Esto no es un numero');
-	return false;
-	}
-	
-	$.ajax({
-        type: "POST",
-        url: 'index.php?controller=MovimientosInv&action=insertar_temporal_compras',
-        data: "id_productos="+id+"&cantidad="+cantidad+"&precio_u="+precio,
-    	 beforeSend: function(objeto){
-    		/*$("#resultados").html("Mensaje: Cargando...");*/
-    	  },
-        success: function(datos){
-    		$("#resultados").html(datos);
-    		pone_cantidad();
-    		carga_resultados_temp();
-    	}
-	});
-}
-
 function eliminar_producto (id)
 {
 	
 	$.ajax({
         type: "POST",
-    url: 'index.php?controller=MovimientosInv&action=eliminar_producto',
-    data: "id_temp_compras="+id,
-	 beforeSend: function(objeto){
-		$("#resultados").html("Mensaje: Cargando...");
-
-		pone_cantidad();
-
-		carga_resultados_temp();
+	    url: 'index.php?controller=MovimientosInv&action=eliminaTempFactura',
+	    data: "id_temp_factura="+id,
+		dataType:'json'
+	}).done(function(data){
 		
-	  },
-    success: function(datos){
-		$("#resultados").html(datos);
-    	}
-	});
+		loadDetalleFactura();
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		
+		console.log(err)
+		
+		loadDetalleFactura();
+		
+	})
+    
 }
+
 
 function load_temp_solicitud(pagina){
 	  
@@ -322,13 +279,7 @@ function carga_unidad_medida(){
 
 }
 
-function pone_cantidad(){
-	//console.log('ingreso');
-	//console.log($('#total_query_compras').length);
-	if ($('#total_query_compras').length) {
-		$('#cantidad_compra').val($('#total_query_compras').val());
-	}
-}
+
 
 
 /**
@@ -477,108 +428,6 @@ function pone_cantidad(){
 	  
 	});
 
-
-           // Campos Vacíos
-		    // cada vez que se cambia el valor del combo
-		    /*$(document).ready(function(){
-		    
-		    $("#Guardarrr").click(function() 
-			{
-		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
-
-		    	var id_proveedor = $("#id_proveedor").val();
-		    	var fecha_compra = $("#fecha_compra").val();
-		    	var numero_factura_compra = $("#numero_factura_compra").val();
-		    	var numero_autorizacion_factura = $("#numero_autorizacion_factura").val();
-		    	var estado_compra = $("#estado_compra").val();
-		    	
-		    	
-		    	
-		    	
-		    	if (id_proveedor == "")
-		    	{
-			    	
-		    		$("#mensaje_proveedor").text("Introduzca Un Proveedor");
-		    		$("#mensaje_proveedor").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_proveedor").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (fecha_compra == "")
-		    	{
-			    	
-		    		$("#mensaje_numero_compra").text("Introduzca Una fecha");
-		    		$("#mensaje_numero_compra").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_numero_compra").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (numero_factura_compra == "")
-		    	{
-			    	
-		    		$("#mensaje_numero_factura").text("Introduzca Un número de factura");
-		    		$("#mensaje_numero_factura").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_numero_factura").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (numero_autorizacion_factura == "")
-		    	{
-			    	
-		    		$("#mensaje_autorizacion_factura").text("Introduzca Un N° de Autorización");
-		    		$("#mensaje_autorizacion_factura").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_autorizacion_factura").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-
-		    	if (estado_compra == "")
-		    	{
-			    	
-		    		$("#mensaje_estado_compra").text("Introduzca Un Estado");
-		    		$("#mensaje_estado_compra").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_estado_compra").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}   
-		     
-
-		    	
-			}); 
-
-		}); */
- 
-  $( "#proveedor" ).focus(function() {
-  $("#mensaje_proveedor").fadeOut("slow");
-});
-   
-$( "#fecha_compra" ).focus(function() {
-  $("#mensaje_fecha_compra").fadeOut("slow");
-});
-
-$( "#numero_factura_compra" ).focus(function() {
-  $("#mensaje_numero_factura").fadeOut("slow");
-    });
-
 $( "#numero_autorizacion_factura" ).focus(function() {
   $("#mensaje_autorizacion_factura").fadeOut("slow");
     });
@@ -586,3 +435,84 @@ $( "#numero_autorizacion_factura" ).focus(function() {
 $( "#estado_compra" ).focus(function() {
   $("#mensaje_estado_compra").fadeOut("slow");
 });
+
+
+/********* PARA EL INGRESO DE FACTURAS COMO MOVIMIENTO *********************/
+
+/**
+ * FUNCION QUE ACTIVA AL HACER SUBMIT
+ * @param event
+ * @returns
+ */
+$('#frm_registraFactura').on('submit',function(event){
+	
+	var valComprobante = document.getElementById("valor_factura").value;
+	
+	var cantidadDetalle = ($('#total_query_factura').length>0)?$('#total_query_factura').val():0;
+	
+	var valorDetalle = ($('#total_suma_detalle').length>0)?$('#total_suma_detalle').val():0;
+	
+	if(cantidadDetalle==0){   	
+		imprimeMensaje('No ha ingresado productos a la compra');
+		return false;		
+	 }
+	
+	if( parseFloat(valComprobante) != parseFloat(valorDetalle) ){		
+		imprimeMensaje('VALOR FACTURA NO COINCIDE');		
+		return false;
+	}
+	
+	var parametros={
+			peticion:'ajax',
+			comprobante_id : $('#id_comprobante').val(),
+			fecha_compra : $('#fecha_factura').val(),
+			cantidad_factura :cantidadDetalle
+	}
+	
+	$.ajax({
+		url:'index.php?controller=MovimientosInv&action=RegistraFactura',
+		type:'POST',
+		dataType:'json',
+		data:parametros,
+		beforeSend:function(){}
+		}).done(function(data){
+			
+			if(data.mensaje > 0){
+				
+				swal({
+					text:"Factura se encuentra registrada",
+					icon:"success",
+					title:"INFO",
+					buttons:{Aceptar:"Aceptar"}
+					}).then((value) => {
+					  switch (value) {					 
+					    case "Aceptar":
+					    	window.open('index.php?controller=MovimientosInv&action=IngresoMateriales','_self')
+					      break;
+					    default:
+					    	return false
+					  }
+					});			
+				
+			}
+			
+		}).fail(function(xhr,status,error){
+			var err = xhr.responseText
+			console.log(err);
+			loadDetalleFactura();
+		})
+	
+	
+	event.preventDefault()
+})
+
+/*********************************UTILITARIOS************************************/
+function imprimeMensaje(mtext=''){swal({icon: "info", title: "INFO", button: "Aceptar", text: mtext });}
+function imprimeMensajeOk(mtext=''){swal({icon: "success", title: "INFO", button: "Aceptar", text: mtext });}
+
+function pone_cantidad(){
+	
+	if ($('#total_query_compras').length) {
+		$('#cantidad_compra').val($('#total_query_compras').val());
+	}
+}

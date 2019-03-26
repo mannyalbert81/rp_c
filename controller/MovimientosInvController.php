@@ -1262,7 +1262,7 @@ class MovimientosInvController extends ControladorBase{
 	 * mod: salidas
 	 * title: versolicitud
 	 * desc: aprobar/rechazar solicitudes
-	 * return: vista
+	 * return: void::view
 	 */
 	public function versolicitud(){
 	    
@@ -1324,7 +1324,9 @@ class MovimientosInvController extends ControladorBase{
                       productos.ult_precio_productos, 
                       inv_temp_salida.cantidad_temp_salida, 
                       inv_temp_salida.id_temp_salida, 
-                      inv_temp_salida.id_movimientos_inv_cabeza";
+                      inv_temp_salida.id_movimientos_inv_cabeza,
+                      (SELECT saldos_f_saldo_productos FROM saldo_productos
+				        WHERE id_productos = productos.id_productos) \"disponible\"";
 	            
 	            $tab_detalle = "public.inv_temp_salida, 
                       public.productos, 

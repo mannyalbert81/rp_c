@@ -10,135 +10,53 @@ echo $clave_fecha_siguiente_mes;*/
 ?>
 
 <?php
-header('Content-Type: text/plain; charset=utf-8');
-$datos = array (
- 0 => array
-    ( 'ANO' => 2016,
-    'NOMBRE' => 'ANDONI ALDA',
-    'USCOD' => '000001',
-    'ENCARGADO' => 'ANDONI ALDA',
-    'USRTELEFONO' => 685358487,
-    'DIASEMANA' => 1,
-    'PARADAS' =>
-    array ( 0 => array
-        ('HORA' => 855,
-        'PARADA' => 1,
-        'CALLE' => 'C/MAYOR',
-        ),
-        1 => array
-        ( 'HORA' => 1040,
-        'PARADA' => 1,
-        'CALLE' => 'C/MENOR',
-        ),
-    ),
-),
- 1 => array
-    ( 'ANO' => 2016,
-    'NOMBRE' => 'ANDONI ALDA',
-    'USCOD' => '000001',
-    'ENCARGADO' => 'ANDONI ALDA',
-    'USRTELEFONO' => 685358487,
-    'DIASEMANA' => 2,
-    'PARADAS' =>
-    array ( 0 => array
-        ('HORA' => 855,
-        'PARADA' => 1,
-        'CALLE' => 'C/MAYOR',
-        ),
-        1 => array
-        ( 'HORA' => 1040,
-        'PARADA' => 1,
-        'CALLE' => 'C/MENOR',
-        ),
-    ),
-),
 
-2 => array
-    ( 'ANO' => 2016,
-    'NOMBRE' => 'ANDONI ALDA',
-    'USCOD' => '000001',
-    'ENCARGADO' => 'ANDONI ALDA',
-    'USRTELEFONO' => 685358487,
-    'DIASEMANA' => 3,
-    'PARADAS' =>
-    array ( 0 => array
-        ('HORA' => 855,
-        'PARADA' => 1,
-        'CALLE' => 'C/MAYOR',
-        ),
-        1 => array
-        ( 'HORA' => 1040,
-        'PARADA' => 1,
-        'CALLE' => 'C/MENOR',
-        ),
-    ),
-),
-3 => array
-    ( 'ANO' => 2016,
-    'NOMBRE' => 'ANDONI ALDA',
-    'USCOD' => '000001',
-    'ENCARGADO' => 'ANDONI ALDA',
-    'USRTELEFONO' => 685358487,
-    'DIASEMANA' => 4,
-    'PARADAS' =>
-    array ( 0 => array
-        ('HORA' => 855,
-        'PARADA' => 1,
-        'CALLE' => 'C/MAYOR',
-        ),
-        1 => array
-        ( 'HORA' => 1040,
-        'PARADA' => 1,
-        'CALLE' => 'C/MENOR',
-        ),
-    ),
-),
-4 => array
-    ( 'ANO' => 2016,
-    'NOMBRE' => 'ANDONI ALDA',
-    'USCOD' => '000001',
-    'ENCARGADO' => 'ANDONI ALDA',
-    'USRTELEFONO' => 685358487,
-    'DIASEMANA' => 5,
-    'PARADAS' =>
-    array ( 0 => array
-        ('HORA' => 855,
-        'PARADA' => 1,
-        'CALLE' => 'CALLE C/PUERTOURRACO',
-        ),
-        1 => array
-        ( 'HORA' => 1040,
-        'PARADA' => 1,
-        'CALLE' => 'Avenida de la playa',
-        ),
-    ),
-));
-$resultado = [];
-foreach($datos as $dato) {
-    if (!isset($resultado[$dato['USCOD']])) {
-        $resultado[$dato['USCOD']] = $dato;
-        unset(
-          $resultado[$dato['USCOD']]['DIASEMANA'],
-          $resultado[$dato['USCOD']]['PARADAS']
-        );
-        $resultado[$dato['USCOD']]['RUTAS'] = [];
-    }
-    $clave = [];
-    foreach($dato['PARADAS'] as $parada) {
-        array_push($clave, $parada['HORA'], $parada['CALLE']);
-    }
-    $clave = implode(':', $clave);
-    if (!isset($resultado[$dato['USCOD']]['RUTAS'][$clave])) {
-        $resultado[$dato['USCOD']]['RUTAS'][$clave] = [
-            'DIAS' => [],
-            'PARADAS' => $dato['PARADAS'],
-        ];
-    }
-    array_push($resultado[$dato['USCOD']]['RUTAS'][$clave]['DIAS'], $dato['DIASEMANA']);
+$monto = 4000.00;
+$tasa = 3.85; //en porcentaje %
+$plazo = 24;
+
+$htmlTabla = '<table border="1">';
+
+$htmlTabla.='<tr>';
+$htmlTabla.='<td>Mes</td>';
+$htmlTabla.='<td>Fecha</td>';
+$htmlTabla.='<td>Saldo Inicial</td>';
+$htmlTabla.='<td>Interes|</td>';
+$htmlTabla.='<td>Amortizacion</td>';
+$htmlTabla.='<td>Pago</td>';
+$htmlTabla.='<td>Saldo Actual</td>';
+$htmlTabla.='</tr>';
+
+/*para operaciones*/
+$cuota = 0;
+$saldoIni = 0.0;
+$saldoFinal = 0.00;
+$amortizacion = $monto/$plazo;
+$saldoIni = $monto;
+$interes = 0.0;
+$pago = 0.00;
+$saldoFinal = $saldoIni;
+
+for($i = 0; $i < $plazo; $i++){
+    
+    $cuota = $i+1;
+    $interes = $saldoFinal*($tasa/100);
+    $saldoFinal = round($saldoIni-$amortizacion,2,PHP_ROUND_HALF_UP);    
+    $pago = $interes + $amortizacion;
+        
+    $htmlTabla.='<tr>';
+    $htmlTabla.='<td>'.$cuota.'</td>';
+    $htmlTabla.='<td>Mes-'.$cuota.'</td>';
+    $htmlTabla.='<td>'.$saldoIni.'</td>';
+    $htmlTabla.='<td>'.$interes.'</td>';
+    $htmlTabla.='<td>'.$amortizacion.'</td>';
+    $htmlTabla.='<td>'.$pago.'</td>';
+    $htmlTabla.='<td>'.$saldoFinal.'</td>';
+    $htmlTabla.='</tr>';
+    
+    $saldoIni=$saldoFinal;
 }
 
-foreach($resultado as $clave => $valor) {
-  $resultado[$clave]['RUTAS'] = array_values($valor['RUTAS']);
-}
-$resultado = array_values($resultado);
-echo json_encode($resultado, JSON_PRETTY_PRINT);
+echo $htmlTabla;
+
+?>

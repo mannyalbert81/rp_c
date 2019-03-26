@@ -50,87 +50,16 @@
         <small><?php echo $fecha; ?></small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Contabilidad</a></li>
-        <li class="active">Detalle de Activos</li>
+        <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Inventario</a></li>
+        <li class="active">Productos</li>
       </ol>
     </section>
 
-
-
-    <section class="content">
-      <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title">Depreciación de Activos</h3>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Minimizar">
-              <i class="fa fa-minus"></i></button>
-            
-          </div>
-        </div>
-        
-        <div class="box-body">
-          
-        <form action="<?php echo $helper->url("BuscarProducto","Depreciar"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
-                               
-								 <div class="row">
-								
-								 <div class="col-xs-12 col-md-2 col-lg-2">
-                        		     <div class="form-group">
-                                          <label for="codigo_activos_fijos" class="control-label">Código:</label>
-                                          <input type="text" class="form-control" id="codigo_activos_fijos" name="codigo_activos_fijos" value=""  placeholder="Código">
-                                          <div id="mensaje_codigo_activos_fijos" class="errores"></div> 
-                                          <input type="hidden" class="form-control" id="id_activos_fijos" name="id_activos_fijos" value="0" >
-                                  <span class="help-block"></span>
- 									</div>
-                        		     </div>
-                        		     
-                        		     <div class="col-xs-12 col-md-2 col-lg-2">
-                        		     <div class="form-group">
-                                          <label for="nombre_activos_fijos" class="control-label">Nombre Activos Fijos:</label>
-                                          <input type="text" class=" form-control" id="nombre_activos_fijos" name="nombre_activos_fijos" value=""  placeholder="Nombre">
-                                           <div id="mensaje_nombre_activos_fijos" class="errores"></div> 
-                                           <input type="hidden" class="form-control" id="activos_fijos2" name="activos_fijos2" value="0"  placeholder="Search">
-                                  <span class="help-block"></span>
-                                     </div>
-                        		     </div>
-                                    
-									<div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="anio_depreciacion_activos_fijos_detalle" class="control-label">Año:</label>
-                                                          <select id="anio_depreciacion_activos_fijos_detalle" name="anio_depreciacion_activos_fijos_detalle" class="form-control" ng-model="year" class="form-control" ng-options="y for y in years"></select>
-                                                           <div id="mensaje_anio_depreciacion_activos_fijos_detalle" class="errores"></div>
-                                    </div>
-                        		    </div> 
-                        		    
-                        		    
-									
-									 
-                        		     <?php  ?>
-  
-   									
-   	         	                     	           	
-                    		     
-                    		    <br>  
-                    		    <div class="row">
-                    		    <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; ">
-                    		    <div class="form-group">
-                                                      <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Calcular</button>
-                                </div>
-                    		    </div>
-                    		    </div>
-                    		      
-             </form>
-          
-        </div>
-        
-        
-      </div>
-    </section>
     
     <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Listado de Productos</h3>
+              <h3 class="box-title">Listado Productos</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Minimizar">
                   <i class="fa fa-minus"></i></button>
@@ -142,7 +71,7 @@
             
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#activos" data-toggle="tab"> Consuta Productos</a></li>
+              <li class="active"><a href="#activos" data-toggle="tab"> Productos Registrados</a></li>
               
             </ul>
             
@@ -221,7 +150,7 @@
 	               beforeSend: function(objeto){
 	                 $("#load_activos_fijos_detalle").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	               },
-	               url: 'index.php?controller=ActivosFijosDetalle&action=consulta_activos_fijos_detalle&search='+search,
+	               url: 'index.php?controller=BuscarProducto&action=consulta_activos_fijos_detalle&search='+search,
 	               type: 'POST',
 	               data: con_datos,
 	               success: function(x){

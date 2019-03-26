@@ -512,6 +512,6 @@ class ReporteMayorController extends ControladorBase{
 	    
 	}
 	
-	
-	}
+
+    	}
 ?>

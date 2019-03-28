@@ -129,7 +129,7 @@
                      	<div class="row">
             			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
-            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GENERAR MAYORES</button>
+            	                  <button type="submit" id="btnMayores" name="btnMayores" class="btn btn-default"><i class="fa fa-file-pdf-o " aria-hidden="true"></i> &nbsp; GENERAR MAYORES</button>
             	                  <a class="btn btn-danger" href="<?php  echo $helper->url("LibroMayor","index"); ?>">CANCELAR</a>
         	                    </div>
     	        		    </div>
@@ -143,77 +143,17 @@
       			
     		</section>
     		
-    		
-    		
-    		
-       <section class="content">
-          <div class="box box-primary">
-            <div class="box-header with-border">
-              <h3 class="box-title">Listado Usuarios</h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                  <i class="fa fa-minus"></i></button>
-                
-              </div>
-            </div>
-            
-            <div class="box-body">
-			<div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#activos" data-toggle="tab">Usuarios Activos</a></li>
-              <li><a href="#inactivos" data-toggle="tab">Usuarios Inactivos</a></li>
-            </ul>
-            
-            <div class="col-md-12 col-lg-12 col-xs-12">
-            <div class="tab-content">
-             
-            <br>
-              <div class="tab-pane active" id="activos">
-              
-                
-					<div class="pull-right" style="margin-right:15px;">
-					
-						<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_usuarios(1)" placeholder="search.."/>
-					</div>
-					<div id="load_registrados" ></div>	
-					<div id="users_registrados"></div>	
-                
-              </div>
-              
-              <div class="tab-pane" id="inactivos">
-                
-                    <div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search_inactivos" name="search_inactivos" onkeyup="load_usuarios_inactivos(1)" placeholder="search.."/>
-					</div>
-					
-					
-					<div id="load_inactivos_registrados" ></div>	
-					<div id="users_inactivos_registrados"></div>
-                
-                
-              </div>
-             
-              <button type="submit" id="btExportar" name="exportar" class="btn btn-info">Exportar</button>
-            </div>
-            </div>
-          </div>
-         
-            
-            </div>
-            </div>
-            </section>
   </div>
  	<?php include("view/modulos/footer.php"); ?>	
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?> 
-   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-   <script src="view/Contable/FUNCIONESJS/lmayor.js?1.5"></script>         	
+   <script src="view/Contable/FUNCIONESJS/mayorcontable.js?0.0"></script>         	
   </body>
 </html>
 

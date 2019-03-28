@@ -95,8 +95,13 @@ $( "#nombre_cuenta" ).autocomplete({
 
 
 $('#frm_libro_mayor').on('submit',function(event){
+	
+	var formulario = $(this)
+	
+	formulario.attr('target','_blank');
+	
+	formulario.attr('action','index.php?controller=LibroMayor&action=mayorContable');
 
-	$.ajax({url:'index.php?controller=LibroMayor&action=mayorContable',dataType:'json',Type:'POST',data:null}).done(function(respuesta){console.log(respuesta)}).fail(function(){})
-	event.preventDefault();
+	//event.preventDefault();
 })
 

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  	<meta charset="utf-8"/>
+  	<title>MAYOR CONTABLE</title>
+  <style>
+  
+	div.izq{
+	left:0px;  margin-top:-20px; width:49%; /*border: 1px solid blue;*/ float:left;
+	}
+	div.der{
+	right:0px; margin-top:-10px; width:49%; /*border: 1px solid blue;*/ float:left;
+	}
+	#divSerp{
+	 width:100%; /*border: 1px solid red;*/ padding:0px 5px;
+	}
+	.prueba{/* border:1px dashed green;*/}
+	td.infotd {
+	border:hidden;
+	}
+	table {
+	border: 1px solid black;
+	font-size:12px;
+	width:100%;
+	}
+	
+	td{
+		font-size:10px;
+		padding-left:5px;
+	}	
+	
+	footer
+	{
+    margin-top:50px;
+    width:100%;
+    height:200px;
+    background-color:red;
+	}
+	
+	.numero{
+		text-align:right;
+	}
+	
+	table thead th { 
+	background-color: #EEEEEE;
+    text-align: center;
+    font-variant: small-caps;
+	}
+	
+	.centrado{
+		text-align: center;
+	}
+	
+	td .inferior{
+	 border-bottom: 1px solid red;
+	}
+	
+  </style>
+  
+  </head>
+  <body>
+  	
+  	<div style="border:1 solid;">
+  		<div style="font-family: Arial;  color:#000000; width: 100%; text-align: center; ">
+  			<h2 style="margin-bottom: 0;">{NOMBREEMPRESA}</h2>
+  			<div><span>{DIRECCIONEMPRESA}</span></div>
+  			<div><span>{TELEFONOEMPRESA}</span></div>
+  				
+  		</div>  		
+  		<div style="margin-left:5pt; font-size:10px"><b>Ruc: </b><span>{RUCEMPRESA}</span></div>
+  		<div style="margin-left:5pt; font-size:10px"><b>Fecha Impresión: </b><span>{FECHAEMPRESA}</span></div>
+  		<div style="margin-left:5pt; font-size:10px"><b>Usuario: </b><span>{USUARIOEMPRESA}</span></div>
+  	</div>
+  	
+  	<div>
+  		<div style="font-family: Arial;  color:#000000; width: 100%; text-align: center; ">
+  			<h3>MAYOR CONTABLE</h3>  			
+  		</div>  		
+  	</div>
+  	
+  	<hr>
+  	
+  	
+  	<div style="width:100%">  	
+  		{TABLAMAYOR}
+  		
+  		<table >
+  			<caption></caption>
+  			<thead>
+  				<tr >
+	  				<th>#</th>
+	  				<th>FECHA</th>
+	  				<th>COMPROBANTE</th>
+	  				<th>CODIGO</th>
+	  				<th>CUENTA</th>
+	  				<th>DETALLE</th>
+	  				<th>DEBE</th>
+	  				<th>HABER</th>
+  				</tr>
+  			</thead>
+  			<tbody>
+  				
+  			</tbody>
+  			<tfoot></tfoot>
+  		</table>
+  	</div>
+  	
+  	<hr>
+  	
+	<div style="width:100%">
+	
+	</div>
+	
+	
+  </body>
+  </html>

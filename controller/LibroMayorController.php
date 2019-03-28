@@ -502,12 +502,60 @@ class LibroMayorController extends ControladorBase{
 	
 	public function mayorContable(){
 	    
+	    session_start();
+	    
+	    $entidades = new EntidadesModel();
+	    
+	    $datos_empresa = array();
+	    $datos_detalle = array();
+	    
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	    }
+	    
+	    $query_columnas = "SELECT *  ";
+	    $query_from = " FROM vw_mayorcontable_cuenta";
+	    $query_where = " WHERE 1 = 1";
+	    $query_orden = " ORDER BY id_plan_cuentas,id_mayor";
+	    
+	    //tomar datos vista
+	    $_anio = (isset($_POST['anio_l_mayor']) && is_int($_POST['anio_l_mayor']))?$_POST['anio_l_mayor']: date('Y');
+	    $_mes = (isset($_POST['mes_l_mayor']) && is_int($_POST['anio_l_mayor']) )?$_POST['mes_l_mayor']: date('m');
+	    $_id_cuenta = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:0;
+	    
+	    if($_id_cuenta > 0){
+	        $query_where.=" AND id_plan_cuentas = $_id_cuenta";
+	    }	    	    
+	    
+	    $this->verReporte("MayorContable", array('datos_empresa'=>$datos_empresa,'datos_detalle'=>$datos_detalle));
+	    
+	    /*formacion consulta final*/
+	    $query = "";
+	    $query = $query_columnas.$query_from.$query_where.$query_orden;
+	    
+	    $rsdetalle = $entidades->enviaquery($query);
+	    
+	    if(!empty($rsdetalle) && count($rsdetalle)>0){
+	        
+	        $datos_detalle=$rsdetalle;
+	    }
+	    
+	    //print_r($rsdetalle); die();
+	    
+	    $this->verReporte("DiarioContable", array('datos_empresa'=>$datos_empresa,'datos_detalle'=>$datos_detalle));
 	    
 	    
 	    
-	    
-	    echo json_encode(array('1'));
 	}
+	
 	
 	
 	

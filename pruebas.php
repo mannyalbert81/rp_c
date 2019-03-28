@@ -41,17 +41,17 @@ for($i = 0; $i < $plazo; $i++){
     
     $cuota = $i+1;
     $interes = $saldoFinal*($tasa/100);
-    $saldoFinal = round($saldoIni-$amortizacion,2,PHP_ROUND_HALF_UP);    
+    $saldoFinal = $saldoIni-$amortizacion;    
     $pago = $interes + $amortizacion;
         
     $htmlTabla.='<tr>';
     $htmlTabla.='<td>'.$cuota.'</td>';
     $htmlTabla.='<td>Mes-'.$cuota.'</td>';
-    $htmlTabla.='<td>'.$saldoIni.'</td>';
-    $htmlTabla.='<td>'.$interes.'</td>';
-    $htmlTabla.='<td>'.$amortizacion.'</td>';
-    $htmlTabla.='<td>'.$pago.'</td>';
-    $htmlTabla.='<td>'.$saldoFinal.'</td>';
+    $htmlTabla.='<td>'.round($saldoIni,2).'</td>';
+    $htmlTabla.='<td>'.round($interes,2).'</td>';
+    $htmlTabla.='<td>'.round($amortizacion,2).'</td>';
+    $htmlTabla.='<td>'.round($pago,2).'</td>';
+    $htmlTabla.='<td>'.round($saldoFinal,2).'</td>';
     $htmlTabla.='</tr>';
     
     $saldoIni=$saldoFinal;

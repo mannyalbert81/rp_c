@@ -1,4 +1,4 @@
-<?php
+<<?php
 
 class ReporteMayorController extends ControladorBase{
 
@@ -20,7 +20,7 @@ class ReporteMayorController extends ControladorBase{
 		    $resultSet="";
 		    $registrosTotales = 0;
 		    $arraySel = "";
-		    
+	
 		    $ccomprobantes = new CComprobantesModel();
 		    $dcomprobantes = new DComprobantesModel();
 		    $tipo_comprobantes = new TipoComprobantesModel();

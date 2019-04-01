@@ -168,12 +168,24 @@
                                  
                                  <div class="row">
                         		    
-                        		    
+                        		 <div class="col-xs-12 col-md-3 col-md-3">
+                        		    <div class="form-group">
+                                                       
+                                                          <label for="id_estado" class="control-label">Estado:</label>
+                                                          <select name="id_estado" id="id_estado"  class="form-control">
+                                                            <option value="0" selected="selected">--Seleccione--</option>
+																<?php foreach($result_Activos_estados as $res) {?>
+				 												<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
+													            <?php } ?>
+								    					  </select>
+		   		   										  <div id="mensaje_id_estado" class="errores"></div>
+                                    </div>
+                                    </div>   
                         		  
                                  <div class="col-xs-12 col-md-3 col-md-3 ">
                                  <div class="form-group">
                     			   <label for="fecha_compra_activos_fijos" class="control-label">Fecha:</label>
-                    			   <input type="date" class="form-control" id="fecha_compra_activos_fijos" name="fecha_compra_activos_fijos" min="<?php echo date('Y-m-d', mktime(0,0,0, date('m'), date("d", mktime(0,0,0, date('m'), 1, date('Y'))), date('Y'))); ?>" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
+                    			   <input type="date" class="form-control" id="fecha_compra_activos_fijos" name="fecha_compra_activos_fijos"  value="<?php echo date('Y-m-d');?>" >
                     			   <div id="mensaje_fecha_compra_activos_fijos" class="errores"></div>
                                  </div>  
                                  </div>
@@ -199,7 +211,13 @@
                                     </div>
                             		    
                         		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    
+                        		    
+                        		    </div>
+                        		  
+                        		   <div class="row">
+                        		    
+                        		   <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="meses_depreciacion_activos_fijos" class="control-label">Meses de Depreciación</label>
                                                           <input type="text" class="form-control" id="meses_depreciacion_activos_fijos" name="meses_depreciacion_activos_fijos" value="<?php echo $resEdit->meses_depreciacion_activos_fijos; ?>"  placeholder="Meses..." onkeypress="return numeros(event)">
@@ -207,26 +225,8 @@
                                     </div>
                         		    </div>
                         		    
-                        		    </div>
-                        		    
-                        		    <div class="row">
-                        		    
                         		   
-                        		    
-                        		   
-                        		     <div class="col-xs-12 col-md-3 col-md-3">
-                        		    <div class="form-group">
-                                                       
-                                                          <label for="id_estado" class="control-label">Estado:</label>
-                                                          <select name="id_estado" id="id_estado"  class="form-control">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($result_Activos_estados as $res) {?>
-				 												<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
-													            <?php } ?>
-								    					  </select>
-		   		   										  <div id="mensaje_id_estado" class="errores"></div>
-                                    </div>
-                                    </div>
+                        		     
                         		    </div>
                         		  
                                 
@@ -328,11 +328,24 @@
                         		  
                         		  <div class="row">
                         		    
+                        		     <div class="col-xs-12 col-md-3 col-md-3">
+                        		    <div class="form-group">
+                                                          <label for="id_estado" class="control-label">Estado:</label>
+                                                          <select name="id_estado" id="id_estado"  class="form-control">
+                                                            <option value="0" selected="selected">--Seleccione--</option>
+																<?php foreach($result_Activos_estados as $res) {?>
+				 												<option value="<?php echo $res->id_estado; ?>"  ><?php echo $res->nombre_estado; ?> </option>
+													            <?php } ?>
+								    					  </select>
+		   		   										   <div id="mensaje_id_estado" class="errores"></div>
+                                    </div>
+                                    </div>
+                        		    
                         		    
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
-                                                          <label for="fecha_compra_activos_fijos" class="control-label">Fecha:</label>
-                                                          <input type="date" class="form-control" id="fecha_compra_activos_fijos" name="fecha_compra_activos_fijos" min="<?php echo date('Y-m-d', mktime(0,0,0, date('m'), date("d", mktime(0,0,0, date('m'), 1, date('Y'))), date('Y'))); ?>" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
+                                                          <label for="fecha_compra_activos_fijos" class="control-label">Fecha de Compra:</label>
+                                                          <input type="date" class="form-control" id="fecha_compra_activos_fijos" name="fecha_compra_activos_fijos"  value="<?php echo date('Y-m-d');?>" >
                     			                         <div id="mensaje_fecha_compra_activos_fijos" class="errores"></div>
                                     </div>
                         		    </div>
@@ -356,7 +369,14 @@
                                     </div>
                         		    
                         		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		   
+                        		    
+                        		  </div>
+                        		  
+                        		  <div class="row">
+                        		    
+                        		    
+                        		     <div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="meses_depreciacion_activos_fijos" class="control-label">Meses de Depreciación</label>
                                                           <input type="text" class="form-control" id="meses_depreciacion_activos_fijos" name="meses_depreciacion_activos_fijos" value=""  placeholder="meses..." onkeypress="return numeros(event)">
@@ -364,23 +384,7 @@
                                     </div>
                         		    </div>
                         		    
-                        		  </div>
-                        		  
-                        		  <div class="row">
                         		    
-                        		    
-                        		     <div class="col-xs-12 col-md-3 col-md-3">
-                        		    <div class="form-group">
-                                                          <label for="id_estado" class="control-label">Estado:</label>
-                                                          <select name="id_estado" id="id_estado"  class="form-control">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($result_Activos_estados as $res) {?>
-				 												<option value="<?php echo $res->id_estado; ?>"  ><?php echo $res->nombre_estado; ?> </option>
-													            <?php } ?>
-								    					  </select>
-		   		   										   <div id="mensaje_id_estado" class="errores"></div>
-                                    </div>
-                                    </div>
                         		    
                         		  </div>
 									
@@ -593,7 +597,11 @@
 		    	var id_estado = $("#id_estado").val();
 		    	var id_usuarios = $("#id_usuarios").val();
 		    	var nombre_activos_fijos = $("#nombre_activos_fijos").val();
-		    	var codigo_activos_fijos = $("#codigo_activos_fijos").val();
+		    	var imagen_activos_fijos = $("#imagen_activos_fijos").val();
+		    	var imagen_activos_fijos = $("#imagen_activos_fijos").val();
+		    	var color_activos_fijos = $("#color_activos_fijos").val();
+		    	var material_activos_fijos = $("#material_activos_fijos").val();
+		    	var dimension_activos_fijos = $("#dimension_activos_fijos").val();
 		    	var cantidad_activos_fijos = $("#cantidad_activos_fijos").val();
 		    	var valor_activos_fijos = $("#valor_activos_fijos").val();
 		    	var meses_depreciacion_activos_fijos = $("#meses_depreciacion_activos_fijos").val();
@@ -648,6 +656,61 @@
 		    		$("#mensaje_nombre_activos_fijos").fadeOut("slow"); //Muestra mensaje de error
 		            
 				}
+
+		    	if (imagen_activos_fijos == "")
+		    	{
+			    	
+		    		$("#mensaje_imagen_activos_fijos").text("Introduzca Una Imagen");
+		    		$("#mensaje_imagen_activos_fijos").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_imagen_activos_fijos").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}
+
+		    	if (color_activos_fijos == "")
+		    	{
+			    	
+		    		$("#mensaje_color_activos_fijos").text("Introduzca Un Color");
+		    		$("#mensaje_color_activos_fijos").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_color_activos_fijos").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}
+
+		    	if (material_activos_fijos == "")
+		    	{
+			    	
+		    		$("#mensaje_material_activos_fijos").text("Introduzca Un Material");
+		    		$("#mensaje_material_activos_fijos").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_material_activos_fijos").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}
+
+		    	if (dimension_activos_fijos == "")
+		    	{
+			    	
+		    		$("#mensaje_dimension_activos_fijos").text("Introduzca Una Dimensión");
+		    		$("#mensaje_dimension_activos_fijos").fadeIn("slow"); //Muestra mensaje de error
+		            return false;
+			    }
+		    	else 
+		    	{
+		    		$("#mensaje_dimension_activos_fijos").fadeOut("slow"); //Muestra mensaje de error
+		            
+				}
+
+		    	
+				 
 				 
 		    	if (cantidad_activos_fijos == "")
 		    	{
@@ -737,6 +800,22 @@
 					  $("#mensaje_nombre_activos_fijos").fadeOut("slow");
 				});
 
+		        $( "#imagen_activos_fijos" ).focus(function() {
+					  $("#mensaje_imagen_activos_fijos").fadeOut("slow");
+				});
+
+		        $( "#color_activos_fijos" ).focus(function() {
+					  $("#mensaje_color_activos_fijos").fadeOut("slow");
+				});
+
+		        $( "#material_activos_fijos" ).focus(function() {
+					  $("#mensaje_material_activos_fijos").fadeOut("slow");
+				});
+
+		        $( "#dimension_activos_fijos" ).focus(function() {
+					  $("#mensaje_dimension_activos_fijos").fadeOut("slow");
+				});
+				
 		        $( "#cantidad_activos_fijos" ).focus(function() {
 					  $("#mensaje_cantidad_activos_fijos").fadeOut("slow");
 				});

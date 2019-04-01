@@ -637,11 +637,7 @@ class LibroDiarioController extends ControladorBase{
 	                            $res->haber_dcomprobantes
 	                        );
 	                    
-	                    /*
-	                     * str_replace('.', ',', $res->debe_dcomprobantes),
-	                           str_replace('.', ',', $res->haber_dcomprobantes)
-	                     */
-	                    
+	                        
 	                   
 	                }else{
 	                    

@@ -40,7 +40,7 @@ class LibroDiarioController extends ControladorBase{
 						
 					if (!empty($resultPer))
 					{
-					
+					//hola
 					    $_id_proveedores = $_GET["id_proveedores"];
 						$columnas = " id_proveedores, nombre_proveedores, identificacion_proveedores, contactos_proveedores, direccion_proveedores, telefono_proveedores, email_proveedores, fecha_nacimiento_proveedores ";
 						$tablas   = "proveedores";

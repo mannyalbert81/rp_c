@@ -194,65 +194,7 @@ class LibroDiarioController extends ControladorBase{
 	}
 
 	
-	public function ins_proveedor(){
-	    
-	    session_start();
-	    $proveedores=new ProveedoresModel();
-	    
-	    $nombre_controladores = "Proveedores";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $proveedores->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if (!empty($resultPer))
-	    {  
-	        
-	        $resultado = null;
-	        $proveedores=new ProveedoresModel();
-	        
-	        if (isset ($_POST["nombre_proveedores"])   )
-	        {
-	            $_nombre_proveedores = $_POST["nombre_proveedores"];
-	            $_identificacion_proveedores = $_POST["identificacion_proveedores"];
-	            $_contactos_proveedores = $_POST["contactos_proveedores"];
-	            $_direccion_proveedores = $_POST["direccion_proveedores"];
-	            $_telefono_proveedores = $_POST["telefono_proveedores"];
-	            $_email_proveedores = $_POST["email_proveedores"];
-	              
-                $funcion = "ins_proveedores";
-                $parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores','$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores'";
-                $proveedores->setFuncion($funcion);
-                $proveedores->setParametros($parametros);
-                $resultado=$proveedores->llamafuncion();
-	           
-                $respuesta=0;
-                
-                //print_r($resultado);
-                
-                if(!empty($resultado) && count($resultado)>0)
-                {
-                    foreach ($resultado[0] as $k => $v)
-                        $respuesta=$v;
-                }
-                
-                if($respuesta==0){
-                    echo json_encode(array('success'=>$respuesta,'mensaje'=>'Error al insertar proveedores'));
-                    
-                }else{
-                    echo json_encode(array('success'=>$respuesta,'mensaje'=>'Proveedor ingresado con exito'));
-                }
-                
-             }
-	       
-	        
-	    }
-	    else
-	    {
-	        echo json_encode(array('success'=>0,'mensaje'=>'Error de permisos'));
-	    }
-	    
-	}
-	
-	
+
 	
 	public function AutocompleteCodigo(){
 	    

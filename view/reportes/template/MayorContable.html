@@ -41,10 +41,23 @@
 		text-align:right;
 	}
 	
-	table thead th { 
+	table tr.grupocuenta td  { 
 	background-color: #EEEEEE;
-    text-align: center;
-    font-variant: small-caps;
+	font-variant: small-caps;
+    font-weight: bold;
+    text-transform: uppercase;   
+    
+	}
+	
+	table tr.grupototales td  {
+	font-variant: small-caps;
+    font-weight: bold; 
+    
+	}
+	
+	table tr.titulos td  {
+    font-weight: bold; 
+    /*text-decoration: underline;*/
 	}
 	
 	.centrado{
@@ -53,6 +66,10 @@
 	
 	td .inferior{
 	 border-bottom: 1px solid red;
+	}
+	
+	.numero{
+		text-align:right;
 	}
 	
   </style>
@@ -82,30 +99,11 @@
   	
   	
   	<div style="width:100%">  	
-  		{TABLAMAYOR}
   		
-  		<table >
-  			<caption></caption>
-  			<thead>
-  				<tr >
-	  				<th>#</th>
-	  				<th>FECHA</th>
-	  				<th>COMPROBANTE</th>
-	  				<th>CODIGO</th>
-	  				<th>CUENTA</th>
-	  				<th>DETALLE</th>
-	  				<th>DEBE</th>
-	  				<th>HABER</th>
-  				</tr>
-  			</thead>
-  			<tbody>
-  				
-  			</tbody>
-  			<tfoot></tfoot>
-  		</table>
+  		{TABLAMAYOR}
+  		  		
   	</div>
   	
-  	<hr>
   	
 	<div style="width:100%">
 	

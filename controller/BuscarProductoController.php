@@ -127,42 +127,6 @@ class BuscarProductoController extends ControladorBase{
 
     
     
-    public function borrarId()
-    {
-        
-        session_start();
-        $activosf=new ActivosFijosModel();
-        $nombre_controladores = "ActivosFijos";
-        $id_rol= $_SESSION['id_rol'];
-        $resultPer = $activosf->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-        
-        if (!empty($resultPer))
-        {
-            if(isset($_GET["id_activos_fijos"]))
-            {
-                $id_activos_fijos=(int)$_GET["id_activos_fijos"];
-                
-             
-                
-                $activosf->deleteBy(" id_activos_fijos",$id_activos_fijos);
-                
-            }
-            
-            $this->redirect("BuscarProductos", "index");
-            
-            
-        }
-        else
-        {
-            $this->view_Inventario("Error",array(
-                "resultado"=>"No tiene Permisos de Borrar Bodegas"
-                
-            ));
-        }
-        
-    }
-    
-    
     public function consulta_activos_fijos_detalle(){
         
         
@@ -254,8 +218,8 @@ class BuscarProductoController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Marca</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Descripción</th>';
-                $html.='<th style="text-align: center;  font-size: 12px;">Precio</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Unidad Medida</th>';
+                $html.='<th style="text-align: center; font-size: 12px;">Precio</th>';
+                $html.='<th style="text-align: center; font-size: 12px;">Unidad Medida</th>';
                 
                 
                 
@@ -271,15 +235,15 @@ class BuscarProductoController extends ControladorBase{
                 {
                     $i++;
                     $html.='<tr>';
-                    $html.='<td style="font-size: 11px;">'.$i.'</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$i.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->marca_productos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->descripcion_productos.'</td>';
-                    $html.='<td style="text-align: center;" style="font-size: 11px;">'.$res->ult_precio_productos.'</td>';
-                    $html.='<td style="text-align: center;" style="font-size: 11px;">'.$res->nombre_unidad_medida.'</td>';
-                    $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=Productos&action=generar_reporte_productos&id_productos='.$res->id_productos.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$res->ult_precio_productos.'</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_unidad_medida.'</td>';
+                    $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=BuscarProducto&action=generar_reporte_productos&id_productos='.$res->id_productos.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
                     
                     
                     
@@ -539,7 +503,7 @@ class BuscarProductoController extends ControladorBase{
                     $html.='</tr>';
                     $html.='</table>';
                     
-                    $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; USUARIO: </b>'.$_nombre_usuarios.' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b> PRODUCTO:</b> &nbsp;'.$_nombre_productos.'';
+                    $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; USUARIO: </b>'.$_nombre_usuarios.' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b> PRODUCTO:</b> &nbsp;'.$_nombre_productos.'';
                     
                     $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
                     $html.= "<tr>";
@@ -553,25 +517,26 @@ class BuscarProductoController extends ControladorBase{
                         $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
                         
                         $html.= "<tr>";
+                        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                         $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Tipo de Movimiento</th>';
                         $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Fecha</th>';
                         $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Cantidad</th>';
                         $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Precio</th>';
-                        $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Importe</th>';
                         $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Numero Factura</th>';
                         $html.='</tr>';
                         
                         
+                        $i=0;
                         
                         foreach ($resultSetDetalle as $res)
                         {
+                            $i++;
                             $html.= "<tr>";
-                            
-                            $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->razon_movimientos_inv_cabeza.'</td>';
-                            $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
+                            $html.='<td style="text-align: center; font-size: 13px;">'.$i.'</td>';
+                            $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->razon_movimientos_inv_cabeza.'</td>';
+                            $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
                             $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->cantidad_movimientos_inv_cabeza.'</td>';
                             $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->ult_precio_productos.'</td>';
-                            $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->importe_movimientos_inv_cabeza.'</td>';
                             $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->numero_factura_movimientos_inv_cabeza.'</td>';
                             $html.='</tr>';
                             

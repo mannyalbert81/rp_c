@@ -110,7 +110,7 @@ class ReporteMayorController extends ControladorBase{
 			        $where_2 = "";
 			        $where_4 = "";
 			        
-			        
+			     //hola   
 		            if($id_entidades!=0){$where_0=" AND entidades.id_entidades='$id_entidades'";}
 			        
 			        if($id_tipo_comprobantes!=0){$where_1=" AND tipo_comprobantes.id_tipo_comprobantes='$id_tipo_comprobantes'";}

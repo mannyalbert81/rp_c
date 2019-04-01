@@ -127,7 +127,7 @@ class LibroDiarioController extends ControladorBase{
 	    
 	}
 	
-
+//hola
 	
 	public function paginate_grupos($reload, $page, $tpages, $adjacents,$funcion='') {
 	    

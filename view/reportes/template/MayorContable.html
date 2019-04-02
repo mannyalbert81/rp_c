@@ -3,25 +3,16 @@
  <head>
   	<meta charset="utf-8"/>
   	<title>MAYOR CONTABLE</title>
-  <style>
-  
-	div.izq{
-	left:0px;  margin-top:-20px; width:49%; /*border: 1px solid blue;*/ float:left;
-	}
-	div.der{
-	right:0px; margin-top:-10px; width:49%; /*border: 1px solid blue;*/ float:left;
-	}
-	#divSerp{
-	 width:100%; /*border: 1px solid red;*/ padding:0px 5px;
-	}
-	.prueba{/* border:1px dashed green;*/}
-	td.infotd {
-	border:hidden;
-	}
+  <style>  
+	 @page {
+        margin-top: 1cm;
+        margin-bottom: 1cm;
+    }
+    
 	table {
-	border: 1px solid black;
-	font-size:12px;
-	width:100%;
+		border: 1px solid black;
+		font-size:12px;
+		width:100%;
 	}
 	
 	td{
@@ -31,9 +22,9 @@
 	
 	footer
 	{
-    margin-top:50px;
+    margin-top:20px;
     width:100%;
-    height:200px;
+    height:100px;
     background-color:red;
 	}
 	
@@ -52,12 +43,18 @@
 	table tr.grupototales td  {
 	font-variant: small-caps;
     font-weight: bold; 
+    /*text-decoration: underline;*/
+    /*border-bottom: 1px solid #333333;*/
     
 	}
 	
 	table tr.titulos td  {
-    font-weight: bold; 
-    /*text-decoration: underline;*/
+	    font-weight: bold; 
+    
+	}
+	
+	table tr td.ul  {
+		border-bottom: 1px solid #333333;    
 	}
 	
 	.centrado{
@@ -78,13 +75,17 @@
   <body>
   	
   	<div style="border:1 solid;">
-  		<div style="font-family: Arial;  color:#000000; width: 100%; text-align: center; ">
+  		<div style="font-family: Arial;  color:#000000; width: 90%; text-align: center; float:left;">
   			<h2 style="margin-bottom: 0;">{NOMBREEMPRESA}</h2>
   			<div><span>{DIRECCIONEMPRESA}</span></div>
   			<div><span>{TELEFONOEMPRESA}</span></div>
   				
-  		</div>  		
-  		<div style="margin-left:5pt; font-size:10px"><b>Ruc: </b><span>{RUCEMPRESA}</span></div>
+  		</div>  
+  		<div style="width: 9%; float:left;">
+  			<p style="width: 100%;"><img  style="width: 100%; float:left;" align="right" src="view/images/logo.png" width="50" height="70"></p>
+  			<!-- style="margin-top:20px; margin-right:10px;"  -->
+  		</div>		
+  		<div style="margin-left:5pt; font-size:10px; float:none;"><b>Ruc: </b><span>{RUCEMPRESA}</span></div>
   		<div style="margin-left:5pt; font-size:10px"><b>Fecha Impresión: </b><span>{FECHAEMPRESA}</span></div>
   		<div style="margin-left:5pt; font-size:10px"><b>Usuario: </b><span>{USUARIOEMPRESA}</span></div>
   	</div>
@@ -95,9 +96,7 @@
   		</div>  		
   	</div>
   	
-  	<hr>
-  	
-  	
+  	  	
   	<div style="width:100%">  	
   		
   		{TABLAMAYOR}

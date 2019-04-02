@@ -628,10 +628,10 @@ class LibroMayorController extends ControladorBase{
 	                            
 	                            $tablaMayor .= "<tr class=\"grupototales\">";
 	                            $tablaMayor .= "<td colspan=\"4\" align=\"right\">$tituloMes</td>";
-	                            $tablaMayor .= "<td colspan=\"1\">Total:</td>";
-	                            $tablaMayor .= "<td class=\"numero\" >". number_format($sumaDebe, 2, ',', ' ')."</td>";
-	                            $tablaMayor .= "<td class=\"numero\" >". number_format($sumaHaber, 2, ',', ' ')."</td>";
-	                            $tablaMayor .= "<td class=\"numero\" >". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
+	                            $tablaMayor .= "<td colspan=\"1\" class=\" ul\">Total:</td>";
+	                            $tablaMayor .= "<td class=\"numero ul\" >". number_format($sumaDebe, 2, ',', ' ')."</td>";
+	                            $tablaMayor .= "<td class=\"numero ul\" >". number_format($sumaHaber, 2, ',', ' ')."</td>";
+	                            $tablaMayor .= "<td class=\"numero ul\" >". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
 	                            $tablaMayor .= "</tr>";
 	                            
 	                            $sumaTotalDebe += $sumaDebe;
@@ -646,10 +646,10 @@ class LibroMayorController extends ControladorBase{
 	                        
 	                        $tablaMayor .= "<tr class=\"grupototales\">";
 	                        $tablaMayor .= "<td colspan=\"4\" align=\"right\">$tituloMes</td>";
-	                        $tablaMayor .= "<td colspan=\"1\">Total:</td>";
-	                        $tablaMayor .= "<td class=\"numero\" >". number_format($sumaDebe, 2, ',', ' ')."</td>";
-	                        $tablaMayor .= "<td class=\"numero\" >". number_format($sumaHaber, 2, ',', ' ')."</td>";
-	                        $tablaMayor .= "<td class=\"numero\" >". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
+	                        $tablaMayor .= "<td colspan=\"1\" class=\" ul\">Total:</td>";
+	                        $tablaMayor .= "<td class=\"numero ul\" >". number_format($sumaDebe, 2, ',', ' ')."</td>";
+	                        $tablaMayor .= "<td class=\"numero ul\" >". number_format($sumaHaber, 2, ',', ' ')."</td>";
+	                        $tablaMayor .= "<td class=\"numero ul\" >". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
 	                        $tablaMayor .= "</tr>";
 	                        
 	                        $sumaTotalDebe += $sumaDebe;
@@ -683,10 +683,10 @@ class LibroMayorController extends ControladorBase{
 	                            
 	                            $tablaMayor .= "<tr class=\"grupototales\">";
 	                            $tablaMayor .= "<td colspan=\"4\" align=\"right\">$tituloMes</td>";
-	                            $tablaMayor .= "<td colspan=\"1\">Total:</td>";
-	                            $tablaMayor .= "<td class=\"numero\" >". number_format($sumaDebe, 2, ',', ' ')."</td>";
-	                            $tablaMayor .= "<td class=\"numero\" >". number_format($sumaHaber, 2, ',', ' ')."</td>";
-	                            $tablaMayor .= "<td class=\"numero\" >". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
+	                            $tablaMayor .= "<td colspan=\"1\" class=\" ul\">Total:</td>";
+	                            $tablaMayor .= "<td class=\"numero ul\" >". number_format($sumaDebe, 2, ',', ' ')."</td>";
+	                            $tablaMayor .= "<td class=\"numero ul\" >". number_format($sumaHaber, 2, ',', ' ')."</td>";
+	                            $tablaMayor .= "<td class=\"numero ul\" >". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
 	                            $tablaMayor .= "</tr>";
 	                            
 	                            $sumaTotalDebe += $sumaDebe;
@@ -701,10 +701,10 @@ class LibroMayorController extends ControladorBase{
 	                        
 	                        $tablaMayor .= "<tr class=\"grupototales\">";
 	                        $tablaMayor .= "<td colspan=\"4\" align=\"right\">$tituloMes</td>";
-	                        $tablaMayor .= "<td colspan=\"1\">Total:</td>";
-	                        $tablaMayor .= "<td class=\"numero\" >". number_format($sumaDebe, 2, ',', ' ')."</td>";
-	                        $tablaMayor .= "<td class=\"numero\" >". number_format($sumaHaber, 2, ',', ' ')."</td>";
-	                        $tablaMayor .= "<td class=\"numero\" >". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
+	                        $tablaMayor .= "<td colspan=\"1\" class=\" ul\" >Total:</td>";
+	                        $tablaMayor .= "<td class=\"numero ul\" >". number_format($sumaDebe, 2, ',', ' ')."</td>";
+	                        $tablaMayor .= "<td class=\"numero ul\" >". number_format($sumaHaber, 2, ',', ' ')."</td>";
+	                        $tablaMayor .= "<td class=\"numero ul\" >". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
 	                        $tablaMayor .= "</tr>";
 	                        
 	                        $sumaTotalDebe += $sumaDebe;
@@ -720,10 +720,10 @@ class LibroMayorController extends ControladorBase{
 	                    
 	                    $tablaMayor .= "<tr class=\"grupototales\">";
 	                    $tablaMayor .= "<td colspan=\"4\" align=\"right\"></td>";
-	                    $tablaMayor .= "<td colspan=\"1\">Saldo Total:</td>";
-	                    $tablaMayor .= "<td class=\"numero\" >". number_format($sumaTotalDebe, 2, ',', ' ')."</td>";
-	                    $tablaMayor .= "<td class=\"numero\" >". number_format($sumaTotalHaber, 2, ',', ' ')."</td>";
-	                    $tablaMayor .= "<td class=\"numero\" >". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
+	                    $tablaMayor .= "<td colspan=\"1\" class=\" ul\" >Saldo Total:</td>";
+	                    $tablaMayor .= "<td class=\"numero ul \" >". number_format($sumaTotalDebe, 2, ',', ' ')."</td>";
+	                    $tablaMayor .= "<td class=\"numero ul \" >". number_format($sumaTotalHaber, 2, ',', ' ')."</td>";
+	                    $tablaMayor .= "<td class=\"numero ul \" >". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
 	                    $tablaMayor .= "</tr>";
 	                    
 	                }

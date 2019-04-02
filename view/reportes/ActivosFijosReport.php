@@ -11,7 +11,7 @@ $html =$resultSet;
 $dompdf = new DOMPDF();
 $dompdf->load_html(utf8_decode($html));
 $dompdf->set_base_path("/");
-$dompdf->set_paper("A4");
+$dompdf->set_paper("A4","landscape");
 $pdf = $dompdf->render();
 $canvas = $dompdf->get_canvas();
 $font = Font_Metrics::get_font("helvetica", "bold");

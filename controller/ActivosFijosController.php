@@ -427,12 +427,55 @@ class ActivosFijosController extends ControladorBase{
                         $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Valor activos:</b> '.$res->valor_activos_fijos.'</td>';
                         $html.='</tr>';
                         $html.='<tr>';
-                        $html.='<td colspan="5" style="text-align: left; font-size: 16px; "><br><b>Meses de depreciación:</b>'.$res->meses_depreciacion_activos_fijos.'</td>';
-                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Depreciación:</b> '.$res->depreciacion_mensual_activos_fijos.'</p>'.'</td>';
+                        $html.='<td colspan="5" style="text-align: left; font-size: 16px; "><br><b>Meses de depreciación:&nbsp;</b>'.$res->meses_depreciacion_activos_fijos.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Depreciación Mensual:</b> '.$res->depreciacion_mensual_activos_fijos.'</p>'.'</td>';
                         $html.='<tr>';
                         $html.='<td colspan="8">&nbsp;</td>';
                         $html.='</tr>';
                         $html.='</tr>';
+                        $html.='</table>';
+                        
+                        
+                        $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+                        $html.= "<tr>";
+                        $html.='<th colspan="2" style="text-align: center; font-size: 25px;">Depreciación Mensual</th>';
+                        $html.='</tr>';
+                       
+                        
+                        if(!empty($resultRep)){
+                            
+                            $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+                            
+                            $html.= "<tr>";
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Enero</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Febrero</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Marzo</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Abril</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Mayo</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Junio</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Julio</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Agosto</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Septiembre</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Octubre</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Noviembre</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Diciembre</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">D.Acumulada</th>';
+                            
+                            $html.='</tr>';
+                            
+                            
+                            
+                            foreach ($resultRep as $res)
+                            {
+                               
+                                
+                            }
+                            $html.='</table>';
+                            
+                            
+                            
+                        }
+                        
                        
     
                     }

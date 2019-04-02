@@ -842,7 +842,14 @@
 		}); 
 
 	</script>		  
-	  
+	
+	function mayus(e) {
+
+    var tecla=e.value;
+    var tecla2=tecla.toUpperCase();
+    
+    alert(tecla2);
+}  
 	
   </body>
 </html>   

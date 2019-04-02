@@ -28,97 +28,14 @@ if(!empty($datos_empresa)){
     }
 }
 
-$tablaMayor = "<table border=1 >";
-$tablaMayor .= "<tr><td>COLUMNA1</td><td>COLUMNA2</td><td>COLUMNA3</td><td>COLUMNA4</td></tr>";
-
-if(!empty($datos_detalle)){
-    
-    /*variable para agrupacion*/
-    $anio_detalle = 0;
-    $mes_detalle = 0;
-    $id_cuenta_detalle = 0;
-    $comprobante_detalle = 0;
-    
-    foreach ($datos_detalle as $res){        
-   
-        if($res->id_ccomprobantes!=$id_cuenta_detalle){
-            
-            if($i!=1){
-                $tablahtml.='<tr><td colspan="8" class="inferior">&nbsp;</td></tr>';
-            }
-            
-            $id_cuenta_detalle = $res->id_plan_cuentas;
-            
-            $tablaMayor .= "<tr>";
-            $tablaMayor .= "<td>Codigo:</td>";
-            $tablaMayor .= "<td>$res->codigo_plan_cuentas</td>";
-            $tablaMayor .= "<td>Cuenta:</td>";
-            $tablaMayor .= "<td>$res->nombre_plan_cuentas</td>";
-            $tablaMayor .= "</tr>";
-            
-        }
-    }
-    
-}
-$tablaMayor .= "</table>";
-
-print_r($datos_detalle); die('llego');
-
-$template = str_replace('{TABLAMAYOR}', $tablaMayor, $template);
 
 
 if(!empty($datos_detalle)){
     
-    $tablahtml = '';
-    $i=0;
-    $tmparray=$datos_detalle;
-    $iTmp=0;
-    $variable=0;
-    
-    foreach ($datos_detalle as $res){
-        $i+=1;
-        
-        if($res->id_ccomprobantes!=$variable){
-            if($i!=1){
-                $tablahtml.='<tr><td colspan="8" class="inferior">&nbsp;</td></tr>';
-            }
-            
-            $variable=$res->id_ccomprobantes;
-           
-            $iTmp +=1;
-            $tablahtml.='<tr>';
-            $tablahtml.='<td>'.$iTmp.'</td>';
-            $tablahtml.='<td>'.$res->fecha_ccomprobantes.'</td>';
-            $tablahtml.='<td>'.$res->tipo_comprobantes.' - '.$res->numero_ccomprobantes.'</td>';
-            $tablahtml.='<td>'.$res->codigo_plan_cuentas.'</td>';
-            $tablahtml.='<td>'.$res->nombre_plan_cuentas.'</td>';
-            $tablahtml.='<td>'.$res->descripcion_dcomprobantes.'</td>';
-            $tablahtml.='<td class="numero">'.$res->debe_dcomprobantes.'</td>';
-            $tablahtml.='<td class="numero"> '.$res->haber_dcomprobantes.'</td>';
-            $tablahtml.='</tr>';
-            
-        }else{
-            
-            $tablahtml.='<tr>';
-            $tablahtml.='<td class="centrado">-</td>';
-            $tablahtml.='<td class="centrado">-</td>';
-            $tablahtml.='<td class="centrado">-</td>';
-            $tablahtml.='<td>'.$res->codigo_plan_cuentas.'</td>';
-            $tablahtml.='<td>'.$res->nombre_plan_cuentas.'</td>';
-            $tablahtml.='<td>'.$res->descripcion_dcomprobantes.'</td>';
-            $tablahtml.='<td class="numero">'.$res->debe_dcomprobantes.'</td>';
-            $tablahtml.='<td class="numero"> '.$res->haber_dcomprobantes.'</td>';
-            $tablahtml.='</tr>';
-           
-        }
-        
-    }
-    
-    $template = str_replace('{TABLADETALLE}', $tablahtml, $template);
+    $template = str_replace('{TABLAMAYOR}', $datos_detalle, $template);
     
 }
 
-//echo $template; die();
 
 ob_end_clean();
 //creacion del pdf

@@ -11,6 +11,16 @@ echo $clave_fecha_siguiente_mes;*/
 
 <?php
 
+//echo round(0.000,2);
+
+$numero = 0.00;
+
+$numero = number_format($numero, 2, ',', ' ');
+
+echo $numero;
+
+exit();
+
 $monto = 4000.00;
 $tasa = 3.85; //en porcentaje %
 $plazo = 24;

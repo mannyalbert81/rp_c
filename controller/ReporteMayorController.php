@@ -1,4 +1,4 @@
-<?php
+<<?php
 
 class ReporteMayorController extends ControladorBase{
 
@@ -20,7 +20,7 @@ class ReporteMayorController extends ControladorBase{
 		    $resultSet="";
 		    $registrosTotales = 0;
 		    $arraySel = "";
-		    
+	
 		    $ccomprobantes = new CComprobantesModel();
 		    $dcomprobantes = new DComprobantesModel();
 		    $tipo_comprobantes = new TipoComprobantesModel();
@@ -109,8 +109,7 @@ class ReporteMayorController extends ControladorBase{
 			        $where_1 = "";
 			        $where_2 = "";
 			        $where_4 = "";
-			        
-			        
+			 
 		            if($id_entidades!=0){$where_0=" AND entidades.id_entidades='$id_entidades'";}
 			        
 			        if($id_tipo_comprobantes!=0){$where_1=" AND tipo_comprobantes.id_tipo_comprobantes='$id_tipo_comprobantes'";}

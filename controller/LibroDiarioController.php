@@ -40,7 +40,7 @@ class LibroDiarioController extends ControladorBase{
 						
 					if (!empty($resultPer))
 					{
-					
+					//hola
 					    $_id_proveedores = $_GET["id_proveedores"];
 						$columnas = " id_proveedores, nombre_proveedores, identificacion_proveedores, contactos_proveedores, direccion_proveedores, telefono_proveedores, email_proveedores, fecha_nacimiento_proveedores ";
 						$tablas   = "proveedores";
@@ -127,7 +127,7 @@ class LibroDiarioController extends ControladorBase{
 	    
 	}
 	
-
+//hola
 	
 	public function paginate_grupos($reload, $page, $tpages, $adjacents,$funcion='') {
 	    
@@ -637,11 +637,7 @@ class LibroDiarioController extends ControladorBase{
 	                            $res->haber_dcomprobantes
 	                        );
 	                    
-	                    /*
-	                     * str_replace('.', ',', $res->debe_dcomprobantes),
-	                           str_replace('.', ',', $res->haber_dcomprobantes)
-	                     */
-	                    
+	                        
 	                   
 	                }else{
 	                    

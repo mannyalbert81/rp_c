@@ -74,7 +74,7 @@ $controladores=$_SESSION['controladores'];
 			
        </ul>
         </li>
-=======
+
              <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder"></i> <span>Administración</span>
@@ -104,7 +104,7 @@ $controladores=$_SESSION['controladores'];
     			<li style="<?php echo getcontrolador("SolicitudCabeza",$controladores) ?>"><a href="index.php?controller=MovimientosInv&action=indexsalida"><i class="fa fa-circle-o"></i> Salida de Materiales</a></li>
              </ul>
             </li>
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
+
         
         <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
           <a href="#">
@@ -115,10 +115,14 @@ $controladores=$_SESSION['controladores'];
           </a>
           <ul class="treeview-menu">
             <li style="<?php echo getcontrolador("Productos",$controladores) ?>"><a href="index.php?controller=Productos&action=consulta"><i class="fa fa-circle-o"></i> Consulta Productos</a></li>
-		  </ul>
+            <li style="<?php echo getcontrolador("Empleados",$controladores) ?>"><a href="index.php?controller=Empleados&action=index"><i class="fa fa-circle-o"></i> Empleados</a></li>
+		    <li style="<?php echo getcontrolador("Marcaciones",$controladores) ?>"><a href="index.php?controller=Marcaciones&action=index"><i class="fa fa-circle-o"></i> Marcaciones</a></li>
+            <li style="<?php echo getcontrolador("Horarios",$controladores) ?>"><a href="index.php?controller=Horarios&action=index"><i class="fa fa-circle-o"></i> Horarios</a></li>
+            </ul>
+		  
         </li>
        </ul>
-      </li>
+      
         
        
          <li class="treeview"  style="<?php echo getcontrolador("MenuContabilidad",$controladores) ?>"  >

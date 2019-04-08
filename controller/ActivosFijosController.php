@@ -973,9 +973,12 @@ class ActivosFijosController extends ControladorBase{
         
         $EstadosActivo = new EstadoModel();
         $rsEstadoAct = $EstadosActivo->getBy("tabla_estado = 'ACTIVOS' ");   
+        
+        $departamento = new DepartamentoModel();
+        $rsDepartamento = $departamento -> getBy("1 = 1");
        
         
-        $this->view_Activos('ActivosFijos', array('resultOfi'=>$resultOfi,'resultTipoac'=>$resultTipoac,'rsEstadoAct'=>$rsEstadoAct));
+        $this->view_Activos('ActivosFijos', array('resultOfi'=>$resultOfi,'resultTipoac'=>$resultTipoac,'rsEstadoAct'=>$rsEstadoAct,'rsDepartamento'=>$rsDepartamento));
     }
     
     public function insActivos(){
@@ -1049,16 +1052,19 @@ class ActivosFijosController extends ControladorBase{
             
             $respuesta = "";
             
-            if(!empty($resultado) && count($resultado)){
+            if(!empty($resultado) && count($resultado) > 0){
                 
                 foreach ($resultado[0] as $k => $v){
                     $respuesta = $v;
                 }
             }
             
-            $valor = ($respuesta=="")?0:1;
             
-            if($valor == 1){                
+            if( $respuesta > 0){                
+                
+                $depreciacion = new DepreciacionModel();
+                
+                $id_act_fijo = $respuesta;
                 
                 $funcion = "fn_act_depreciacion";
                 $fecha_hoy = date('Y-m-d');
@@ -1067,12 +1073,21 @@ class ActivosFijosController extends ControladorBase{
                            '$fecha_hoy'";
                 
                 //print_r($parametros); die();
-                $activos->setFuncion($funcion);
-                $activos->setParametros($parametros);
+                $depreciacion->setFuncion($funcion);
+                $depreciacion->setParametros($parametros);
                 
-                $resultado=$activos->llamafuncion();
+                $resultadoDepreciacion = $depreciacion->llamafuncion();
                 
             }
+            
+            if(!empty($resultadoDepreciacion) && count($resultadoDepreciacion)> 0){
+                
+                foreach ($resultadoDepreciacion[0] as $k => $v){
+                    $respuesta = $v;
+                }
+            }
+            
+            $valor = ($respuesta=="")?0:1;
             
             echo json_encode(array('valor'=>$valor,'mensaje'=>$respuesta));
             
@@ -1303,6 +1318,33 @@ class ActivosFijosController extends ControladorBase{
             $datosActivo['RESPACTIVO'] = $rsDatosActivo[0]->responsable_activos_fijos;
             $datosActivo['IDACTIVO'] = $rsDatosActivo[0]->id_activos_fijos;
         }
+        
+        /*para obtener la depreciacion del activo*/
+        $queryAcivo = "SELECT
+                        ofi.id_oficina,
+                        ofi.nombre_oficina,
+                        ta.id_tipo_activos_fijos,
+                        ta.nombre_tipo_activos_fijos,
+                    	ta.meses_tipo_activos_fijos,
+                        es.id_estado,
+                        es.nombre_estado,
+                        ac.id_activos_fijos,
+                        ac.responsable_activos_fijos,
+                        ac.nombre_activos_fijos,
+                        ac.codigo_activos_fijos,
+                        ac.fecha_activos_fijos,
+                        ac.detalle_activos_fijos,
+                        ac.imagen_activos_fijos,
+                        ac.valor_activos_fijos
+                       FROM act_activos_fijos ac
+                         JOIN tipo_activos_fijos ta ON  ta.id_tipo_activos_fijos = ac.id_tipo_activos_fijos
+                         JOIN estado es ON es.id_estado = ac.id_estado
+                         JOIN oficina ofi ON ofi.id_oficina = ac.id_oficina
+                      WHERE 1 = 1 AND ac.id_activos_fijos = $_id_activo_fijo ";
+        
+        /*OBTIENE RS DE CONSULTA*/
+        $rsDatosActivo = $activos->enviaquery($queryAcivo);
+        
         
         $this->verReporte("ActFijos", array('datos_empresa'=>$datos_empresa,'datosActivo' => $datosActivo));
     }

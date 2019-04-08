@@ -9,8 +9,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-<<<<<<< HEAD
-=======
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
   
     <?php include("view/modulos/links_css.php"); ?>		
@@ -20,26 +18,24 @@
 		    
 	</head>
  
-<<<<<<< HEAD
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
+
    <?php include("view/modulos/links_css.php"); ?>
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
-=======
+
     <body class="hold-transition skin-blue fixed sidebar-mini">
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
     
      <?php
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
-<<<<<<< HEAD
+
         ?>
 =======
      ?>
     
     
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
+
     <div class="wrapper">
 
       <header class="main-header">
@@ -70,7 +66,7 @@
     </section>
 
     
-<<<<<<< HEAD
+
      <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
@@ -78,7 +74,7 @@
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
-=======
+
     <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
@@ -89,7 +85,7 @@
                 
               </div>
             </div>
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
+
             
             <div class="box-body">
             
@@ -116,7 +112,7 @@
     		 </div>
             </div>
           </div>
-<<<<<<< HEAD
+
         </div>
         
         <div class="box-body">
@@ -280,7 +276,6 @@
            
         <?php }?>
 
-=======
             </div>
             </div>
             </section>
@@ -288,7 +283,7 @@
     
      
     
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
+
   </div>
  
  	<?php include("view/modulos/footer.php"); ?>	
@@ -297,9 +292,7 @@
  </div>
     
     <?php include("view/modulos/links_js.php"); ?>
-<<<<<<< HEAD
 
-=======
     
 	
     
@@ -313,6 +306,5 @@
 	  
   <script src="view/Inventario/FuncionesJS/Productos.js?1.1"></script> 
 	
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
   </body>
 </html>  

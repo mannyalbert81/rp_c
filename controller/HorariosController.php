@@ -99,12 +99,14 @@ class HorariosController extends ControladorBase{
         $id_grupo = $_POST['id_grupo'];
         $id_estado = $_POST['id_estado_f'];
         $tiempo_gracia= $_POST['tiempo_gracia'];
+        $id_oficina = $_POST['id_oficina'];
         $columnas = " horarios_empleados.hora_entrada_empleados,
                       horarios_empleados.hora_salida_almuerzo_empleados,
                       horarios_empleados.hora_entrada_almuerzo_empleados,
                       horarios_empleados.hora_salida_empleados,
                       horarios_empleados.tiempo_gracia_empleados,
                       horarios_empleados.id_grupo_empleados,
+                      horarios_empleados.id_oficina,
                       estado.nombre_estado
                       ";
         
@@ -128,7 +130,8 @@ class HorariosController extends ControladorBase{
                     && $res->hora_entrada_almuerzo_empleados == $hora_entrada_almuerzo
                     && $res->hora_salida_empleados == $hora_salida
                     && $res->tiempo_gracia_empleados == $tiempo_gracia
-                    && $res->id_grupo_empleados != $id_grupo)
+                    && $res->id_grupo_empleados != $id_grupo
+                    && $res->id_oficina == $id_oficina)
                 {
                   $existe = 1;  
                 }
@@ -143,6 +146,7 @@ class HorariosController extends ControladorBase{
                        '$hora_entrada_almuerzo',
                        '$hora_salida',
                        '$id_grupo',
+                        '$id_oficina',
                        '$id_estado',
                         '$tiempo_gracia'";
         $horario->setFuncion($funcion);
@@ -208,7 +212,7 @@ class HorariosController extends ControladorBase{
         
         $where    = "horarios_empleados.id_estado=".$id_estado;
         
-        $id       = "horarios_empleados.id_horarios_empleados";
+        $id       = "horarios_empleados.id_oficina";
         
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';

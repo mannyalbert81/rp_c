@@ -61,8 +61,7 @@ function EliminarGrupo()
 			  		  icon: "success",
 			  		  button: "Aceptar",
 			  		});
-					$("#eliminar_grupo_empleados option[value='"+idgrupo+"']").remove();
-					$("#turno_empleados option[value='"+idgrupo+"']").remove();
+					$('#turno_empleados').empty().append('<option value="" selected="selected">Seleccione oficina</option>');
 					
 			}
 		else
@@ -199,7 +198,7 @@ function AgregarGrupo()
 			  		  icon: "success",
 			  		  button: "Aceptar",
 			  		});
-				
+				$('#turno_empleados').empty().append('<option value="" selected="selected">Seleccione oficina</option>');
 				}
 			
 			}
@@ -248,7 +247,15 @@ function InsertarHorario()
   var salidaal = $("#hora_salida_almuerzo").val();
   var entradaal = $("#hora_entrada_almuerzo").val();
   var idestado = $("#estado_horarios_reg").val();
+  var idofic = $("#oficina_horarios_reg").val();
   var gracia = $("#hora_espera").val();
+ 
+  if (idofic== "")
+	{    	
+		$("#mensaje_oficina_horaios").text("Seleccione Oficina");
+		$("#mensaje_oficina_horaios").fadeIn("slow");
+		$("#mensaje_oficina_horaios").fadeOut("slow");
+ }
   if (gracia== "" || gracia.includes("_"))
 	{    	
 		$("#mensaje_hora_espera").text("Introduzca tiempo de gracia");
@@ -305,6 +312,7 @@ function InsertarHorario()
 	    	   hora_salida: salida,
 	    	   hora_salida_almuerzo: salidaal,
 	    	   hora_entrada_almuerzo: entradaal,
+	    	   id_oficina:idofic,
 	    	   id_estado_f:idestado,
 	    	   tiempo_gracia:gracia
 	    },
@@ -407,7 +415,7 @@ function EliminarHorarios(idgrupo)
 
 function LimpiarCampos()
 {
-	$("#turno_empleados").val("");
+	$('#turno_empleados').empty().append('<option value="" selected="selected">Seleccione oficina</option>');
 	$("#hora_entrada").val("");
 	$("#hora_salida").val("");
 	$("#hora_salida_almuerzo").val("");

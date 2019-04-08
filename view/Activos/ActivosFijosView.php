@@ -163,7 +163,8 @@
     		    <div class="col-xs-12 col-md-3 col-lg-3 ">
     		    <div class="form-group">
                       <label for="valor_activos_fijos" class="control-label">Valor Activo:</label>
-                      <input type="text" class="form-control" id="valor_activos_fijos" name="valor_activos_fijos" value="" >
+                      <input type="text" class="form-control cantidades1" id="valor_activos_fijos" name="valor_activos_fijos" value='0.00'
+                      data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
                       <div id="mensaje_valor_activos_fijos" class="errores"></div>
                 </div>
     		    </div>
@@ -274,7 +275,7 @@
      }
     </script> 
     
-   
+  
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
        <script>
       $(document).ready(function(){

@@ -57,7 +57,7 @@
      <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Registrar Comprobantes</h3>
+          <i class='glyphicon glyphicon-edit'> Registrar Comprobantes </i>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -67,14 +67,8 @@
         </div>
         
         <div class="box-body">
-             <div class="col-lg-12 col-md-12 col-xs-12">
-	         <div class="panel panel-primary">
-	         <div class="panel-heading">
-	          <h4><i class='glyphicon glyphicon-edit'></i>  Nuevo Comprobante</h4>
-			 </div>
-		     <div class="panel-body">
-		     <div class="row">
-	         <div class="col-md-2 col-lg-2 col-xs-12">
+		     
+	         <div class="col-xs-12 col-lg-3 col-md-3 ">
 	              <label for="id_tipo_comprobantes" class="control-label">Tipo:</label>
 	              <input type="hidden" id="nombre_comprobante" value="" />
 				  <select name="id_tipo_comprobantes" id="id_tipo_comprobantes"  class="form-control">
@@ -86,7 +80,7 @@
                    <div id="mensaje_id_tipo_comprobantes" class="errores"></div>
              </div>
              
-             <div class="col-md-2 col-lg-2 col-xs-12">
+             <div class="col-xs-12 col-lg-3 col-md-3 ">
 			   <label for="fecha_ccomprobantes" class="control-label">Fecha:</label>
 
 			   
@@ -95,14 +89,14 @@
              </div>
              
              <div id="div_datos" style="display: none;">
-             <div class="col-md-2 col-lg-2 col-xs-12">
+             <div class="col-xs-12 col-lg-3 col-md-3 ">
 			   <label for="numero_ccomprobantes" class="control-label">Número:</label>
 			   <input type="text" class="form-control" id="numero_ccomprobantes" name="numero_ccomprobantes" value=""  readonly>
              </div>
 	         </div>
 	         
 		
-    		    <div class="col-xs-12 col-md-2 col-lg-2 clsproveedor">
+    		    <div class="col-xs-12 col-lg-3 col-md-3 ">
     		     <div class="form-group">
                       <label for="proveedor" class="control-label ">Digite Proveedor:</label>
                       <input type="text" class=" form-control" id="proveedor" name="proveedor" value=""  placeholder="Digite Ruc/Ci/Nombre ">
@@ -111,7 +105,7 @@
                  </div>
     		     </div>
     	
-    		   	<div id="datos_proveedor" class="col-xs-12 col-md-2 col-lg-2 " >
+    		   	<div id="datos_proveedor" class="col-xs-12 col-lg-3 col-md-3 " >
         		     <div class="form-group">
                           <label for="nombre_proveedor" class="  control-label">Nombre de Proveedor:</label>
                           <input type="text" class="form-control" id="nombre_proveedor" name="nombre_proveedor" value=""  placeholder="Ruc Proveedores">
@@ -119,7 +113,7 @@
                      </div>
     		     </div>
     	 
-    	   		<div class="col-xs-12 col-md-2 col-lg-2 clsproveedor">
+    	   		<div class="col-xs-12 col-lg-3 col-md-3  clsproveedor">
     		     <div class="form-group">
                       <label for="retencion_proveedor" class="control-label">Retención Proveedor:</label>
                       <input type="text" class="form-control" id="retencion_proveedor" maxlength="50" name="retencion_proveedor" value=""  placeholder="Retencion Comprobantes">
@@ -127,7 +121,7 @@
                  </div>
     		     </div>
 	
-    	  		<div class="col-xs-12 col-md-2 col-lg-2">
+    	  		<div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="referencia_doc_ccomprobantes" class="control-label">Referencia Doc:</label>
                           <input type="text" class="form-control" maxlength="50" id="referencia_doc_ccomprobantes" name="referencia_doc_ccomprobantes" value=""  placeholder="Referencia Comprobantes">
@@ -135,7 +129,7 @@
                      </div>
     		     </div>
     		     
-    		     <div class="col-xs-12 col-md-2 col-lg-2">
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="numero_cuenta_banco_ccomprobantes" class="control-label">Número de Cuenta:</label>
                           <input type="text" class="form-control" maxlength="20" id="numero_cuenta_banco_ccomprobantes" name="numero_cuenta_banco_ccomprobantes" value=""  placeholder="Número Cuenta">
@@ -143,7 +137,7 @@
                      </div>
         		     </div>
         		  
-        		   <div class="col-xs-12 col-md-2 col-lg-2">
+        		   <div class="col-xs-12 col-lg-3 col-md-3 ">
                          <div class="form-group">
                               <label for="numero_cheque_ccomprobantes" class="control-label">Número de Cheque:</label>
                               <input type="text" class="form-control" maxlength="20" id="numero_cheque_ccomprobantes" name="numero_cheque_ccomprobantes" value=""  placeholder="Número Cheque">
@@ -151,7 +145,7 @@
                     	</div>
                     </div>
 	
-	   			<div class="col-xs-12 col-md-2 col-lg-2 ">
+	   			<div class="col-xs-12 col-lg-3 col-md-3 ">
 	   				<div class="form-group">
     	              <label for="id_forma_pago" class="control-label">Forma de Pago:</label>
     				  <select name="id_forma_pago" id="id_forma_pago"  class="form-control">
@@ -163,12 +157,8 @@
                        <div id="mensaje_id_forma_pago" class="errores"></div>
                    </div>
              	</div> 
-             	      	
-		     </div>
-		     
-		     
-		     <div class="row">
-		      <div class="col-xs-12 col-md-6 col-lg-6">
+             
+		      <div class="col-xs-12 col-md-3 col-lg-3">
 		     <div class="form-group">
                   <label for="concepto_ccomprobantes" class="control-label">Concepto de Pago:</label>
                   <textarea rows="2"  class="form-control" id="concepto_ccomprobantes"  placeholder="Concepto de Pago" cols="" maxlength="200" ></textarea>
@@ -176,7 +166,7 @@
              </div>
 		     </div>
 	
-	         <div class="col-xs-12 col-md-6 col-lg-6">
+	         <div class="col-xs-12 col-md-3 col-lg-3">
 		     <div class="form-group">
                   <label for="observaciones_ccomprobantes" class="control-label">Observación:</label>
                   <textarea rows="2"  class="form-control" placeholder="Observación" maxlength="200" name="observaciones_ccomprobantes" id="observaciones_ccomprobantes" cols=""></textarea>
@@ -184,29 +174,29 @@
              </div>
 		     </div>
 		    
+		    
+		    
   		     <div class="col-md-12 col-lg-12 col-xs-12">
-					<div class="pull-right">
+  		    		<div class="pull-right">
 					     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalproveedor">
 						 <span class="fa fa-pencil-square"></span> Ingresa Proveedores
 						</button>
 						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
 						 <span class="glyphicon glyphicon-search"></span> Buscar Cuentas
 						</button>
+						
 					</div>	
+					
+					<div style="text-align: center" > 
+  		     			<button type="button" id="btn_inserta_comprobante" name="btn_inserta_comprobante" value="valor"  class="btn btn-success">Generar Comprobante</button>
+           			</div>
 			 </div>	
-			 	
-		 </div> 
-		</div>
-	   </div>
-	  </div>
-	         
-	       
-  			 
+	       </div>
 	         <div class="col-lg-12 col-md-12 col-xs-12">
 	         <div class="panel panel-primary">
-	         <div class="panel-heading">
-	         <h4><i class='glyphicon glyphicon-edit'></i> Buscar Cuentas</h4>
-	         </div>
+	         <div class="box-header with-border">
+             <i class='glyphicon glyphicon-edit'> Buscar Cuentas </i>
+             </div>
 	         <div class="panel-body">
   			 <div class="row">
   			 <div class="form-group" style="margin-top:13px">
@@ -282,7 +272,6 @@
 		   <div class="row">
 		   <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; margin-top:20px" > 
            <div class="form-group">
-           <button type="button" id="btn_inserta_comprobante" name="btn_inserta_comprobante" value="valor"  class="btn btn-success">Guardar</button>
            </div>
            </div>
            </div>     
@@ -291,7 +280,7 @@
 	
 	 </div>
 	 </div>
-	 </section>
+	
 	 </div>
  
  

@@ -194,7 +194,7 @@
                 <i class="fa fa-minus"></i></button>
             </div>
         </div> 
-        <div class="box-body">
+        <div class="box-body">        
         	<div id="load_reporte" ></div>
         	<div id="reporte" ></div>
        </div> 	
@@ -215,7 +215,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-    <script src="view/Administracion/js/Marcaciones.js?0.16"></script>
+    <script src="view/Administracion/js/Marcaciones.js?0.18"></script>
 	
 	
   </body>

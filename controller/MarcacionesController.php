@@ -291,7 +291,9 @@ class MarcacionesController extends ControladorBase{
             $html.= "<table id='tabla_marcaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
             $html.= "<thead>";
             $html.= "<tr>";
-            $html.='<th style="text-align: left;  font-size: 16px;"></th>';
+            $html.='<th style="text-align: left;  font-size: 16px;"><button type="button" class="btn btn-success" id="subir_reporte" name="subir_reporte" onclick="SubirReporte()">
+					<i class="glyphicon glyphicon-upload"></i>
+					</button></th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Empleado</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Oficina</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Asistencia(días)</th>';

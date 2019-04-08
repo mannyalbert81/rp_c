@@ -370,6 +370,11 @@ function ActualizarRegistros(arr, dcontrol, idofi)
 	
 } 
 
+function SubirReporte()
+{
+console.log('subir reporte');	
+}
+
 function SubirArchivo()
 {
 	

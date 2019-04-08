@@ -94,6 +94,17 @@ class ControladorBase{
     
     	require_once 'view/reportes/'.$vista.'Rpt.php';
     }
+    
+    public function view_Activos($vista,$datos){
+        foreach ($datos as $id_assoc => $valor) {
+            ${$id_assoc}=$valor;
+        }
+        
+        require_once 'core/AyudaVistas.php';
+        $helper=new AyudaVistas();
+        
+        require_once 'view/Activos/'.$vista.'View.php';
+    }
 
 }
 ?>

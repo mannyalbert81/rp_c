@@ -23,6 +23,64 @@ if(isset($datosActivo)){
     }
 }
 
+$tablaDepreciacion="";
+		
+
+if(isset($rsDatosDepreciacion)){
+    
+    $tablaDepreciacion = "<table>";	
+
+    $tablaDepreciacion .= "<caption>DEPRECIACION DETALLE</caption>";
+    
+    $tablaDepreciacion .= "<tr>
+                        <td>AÑO</td>
+                        <td>ENERO</td>
+                        <td>FEBRERO</td>
+                        <td>MARZO</td>
+                        <td>ABRIL</td>
+                        <td>MAYO</td>
+                        <td>JUNIO</td>
+                        <td>JULIO</td>
+                        <td>AGOSTO</td>
+                        <td>SEPTIEMBRE</td>
+                        <td>OCTUBRE</td>
+                        <td>NOVIEMBRE</td>
+                        <td>DICIEMBRE</td>
+                        <td>VALOR DEPRECIADO</td>
+                        </tr>";
+    
+   
+    
+    foreach ($rsDatosDepreciacion as $res) {
+        
+        $tablaDepreciacion .= "<tr>
+                        <td> $res->anio_depreciacion </td>
+                        <td>$res->enero_depreciacion</td>
+                        <td>$res->febrero_depreciacion</td>
+                        <td>$res->marzo_depreciacion</td>
+                        <td>$res->abril_depreciacion</td>
+                        <td>$res->mayo_depreciacion</td>
+                        <td>$res->junio_depreciacion</td>
+                        <td>$res->julio_depreciacion</td>
+                        <td>$res->agosto_depreciacion</td>
+                        <td>$res->septiembre_depreciacion</td>
+                        <td>$res->octubre_depreciacion</td>
+                        <td>$res->noviembre_depreciacion</td>
+                        <td>$res->diciembre_depreciacion</td>
+                        <td>$res->saldo_depreciacion</td>                         
+                        </tr>";
+        
+        
+    }
+    
+    $tablaDepreciacion .= "</table>" ;
+    
+    $template = str_replace('{TABLADEPRECIACION}', $tablaDepreciacion, $template);
+    
+}
+
+
+
 
 $anio = date('Y');
 

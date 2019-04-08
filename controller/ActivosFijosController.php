@@ -1320,33 +1320,23 @@ class ActivosFijosController extends ControladorBase{
         }
         
         /*para obtener la depreciacion del activo*/
-        $queryAcivo = "SELECT
-                        ofi.id_oficina,
-                        ofi.nombre_oficina,
-                        ta.id_tipo_activos_fijos,
-                        ta.nombre_tipo_activos_fijos,
-                    	ta.meses_tipo_activos_fijos,
-                        es.id_estado,
-                        es.nombre_estado,
-                        ac.id_activos_fijos,
-                        ac.responsable_activos_fijos,
-                        ac.nombre_activos_fijos,
-                        ac.codigo_activos_fijos,
-                        ac.fecha_activos_fijos,
-                        ac.detalle_activos_fijos,
-                        ac.imagen_activos_fijos,
-                        ac.valor_activos_fijos
-                       FROM act_activos_fijos ac
-                         JOIN tipo_activos_fijos ta ON  ta.id_tipo_activos_fijos = ac.id_tipo_activos_fijos
-                         JOIN estado es ON es.id_estado = ac.id_estado
-                         JOIN oficina ofi ON ofi.id_oficina = ac.id_oficina
-                      WHERE 1 = 1 AND ac.id_activos_fijos = $_id_activo_fijo ";
+        $queryDepreciacion = "SELECT  id_activos_fijos ,
+        anio_depreciacion ,ROUND(enero_depreciacion,2) enero_depreciacion ,
+        ROUND(febrero_depreciacion,2) febrero_depreciacion,ROUND(marzo_depreciacion,2) marzo_depreciacion,
+        ROUND(abril_depreciacion,2) abril_depreciacion,ROUND(mayo_depreciacion,2) mayo_depreciacion,
+        ROUND(junio_depreciacion,2) junio_depreciacion,ROUND(julio_depreciacion,2) julio_depreciacion,
+        ROUND(agosto_depreciacion,2) agosto_depreciacion,ROUND(septiembre_depreciacion,2) septiembre_depreciacion,
+        ROUND(octubre_depreciacion,2) octubre_depreciacion,ROUND(noviembre_depreciacion,2) noviembre_depreciacion,
+        ROUND(diciembre_depreciacion,2) diciembre_depreciacion,ROUND(total_depreciacion,2) total_depreciacion,
+        ROUND(valor_depreciacion,2) valor_depreciacion,ROUND(saldo_depreciacion,2) saldo_depreciacion,
+        estado_depreciacion
+        FROM act_depreciacion WHERE id_activos_fijos = $_id_activo_fijo ";
         
         /*OBTIENE RS DE CONSULTA*/
-        $rsDatosActivo = $activos->enviaquery($queryAcivo);
+        $rsDatosDepreciacion = $activos->enviaquery($queryDepreciacion);
         
         
-        $this->verReporte("ActFijos", array('datos_empresa'=>$datos_empresa,'datosActivo' => $datosActivo));
+        $this->verReporte("ActFijos", array('datos_empresa'=>$datos_empresa,'datosActivo' => $datosActivo,'rsDatosDepreciacion'=>$rsDatosDepreciacion));
     }
     
     

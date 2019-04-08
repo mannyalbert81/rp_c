@@ -27,51 +27,8 @@
     <!-- Custom Theme Style -->
     <link href="view/build/css/custom.min.css" rel="stylesheet">
     
-    
-    
 			<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 		    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    
-       <script >
-		    // cada vez que se cambia el valor del combo
-		    $(document).ready(function(){
-		    
-		    $("#Guardar").click(function() 
-			{
-		    	var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-		    	var validaFecha = /([0-9]{4})\-([0-9]{2})\-([0-9]{2})/;
-
-		    	var cedula_usuarios = $("#cedula_usuarios").val();
-		    	
-		    	
-		    	if (cedula_usuarios == "")
-		    	{
-			    	
-		    		$("#mensaje_cedula_usuarios").text("Introduzca Cedula");
-		    		$("#mensaje_cedula_usuarios").fadeIn("slow"); //Muestra mensaje de error
-		            return false;
-			    }
-		    	else 
-		    	{
-		    		$("#mensaje_cedula_usuarios").fadeOut("slow"); //Muestra mensaje de error
-		            
-				}    
-				
-		    	
-		    					    
-
-			}); 
-
-
-		        $( "#cedula_usuarios" ).focus(function() {
-				  $("#mensaje_cedula_usuarios").fadeOut("slow");
-			    });
-				
-			
-				    
-		}); 
-
-	</script>
     
   </head>
 
@@ -140,7 +97,13 @@
 
               </div>
     </div>
-    
+     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+   <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
+   <script src="view/Administracion/js/ResetUsuariosInicio.js?1.0"></script> 
   
   </body>
 </html>

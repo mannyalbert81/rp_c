@@ -181,6 +181,19 @@
  </div>
     
     <?php include("view/modulos/links_js.php"); ?>
+
+  <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
+       
+  
+	  
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+   <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
+   <script src="view/Contable/FuncionesJS/ActivosFijosDetalle.js?1.0"></script> 
+
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     
 	
@@ -279,5 +292,6 @@
     
     
 	
+
   </body>
 </html>  

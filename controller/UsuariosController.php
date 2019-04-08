@@ -8,7 +8,7 @@ class UsuariosController extends ControladorBase{
     
     public function index10(){
     	 
-    	session_start();
+    	   
     	$id_rol=$_SESSION["id_rol"];
     	
     	$usuarios = new UsuariosModel();

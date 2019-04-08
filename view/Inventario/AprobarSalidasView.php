@@ -208,39 +208,17 @@
     
     
    <?php include("view/modulos/links_js.php"); ?>
+<<<<<<< HEAD
+  <script src="view/bootstrap/otros/inventario/movimientos_salidas_detalle.js?3.1" ></script>
+  <script src="view/Inventario/js/AprobarSalidas.js?3.1" ></script>
+=======
   <script src="view/Inventario/FuncionesJS/movimientos_salidas_detalle.js?1.2" ></script>
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
   </body>
 </html>
 
 <!-- script pagina anterior -->
-<script type="text/javascript">
-     
-        	   $(document).ready( function (){
-        		   //pone_espera();
-        		   
-	   			});
 
-        	   function pone_espera(){
-
-        		   $.blockUI({ 
-        				message: '<h4><img src="view/images/load.gif" /> Espere por favor, estamos procesando su requerimiento...</h4>',
-        				css: { 
-        		            border: 'none', 
-        		            padding: '15px', 
-        		            backgroundColor: '#000', 
-        		            '-webkit-border-radius': '10px', 
-        		            '-moz-border-radius': '10px', 
-        		            opacity: .5, 
-        		            color: '#fff',
-        		           
-        	        		}
-        	    });
-            	
-		        setTimeout($.unblockUI, 3000); 
-		        
-        	   }
-
- </script>
  
       
  

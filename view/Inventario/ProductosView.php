@@ -1,7 +1,5 @@
-
     <!DOCTYPE HTML>
 
-    
 	<html lang="es">
     <head>
     <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
@@ -24,8 +22,6 @@
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
         $DateString = (string)$fecha;
      ?>
-    
-    
     <div class="wrapper">
 
       <header class="main-header">
@@ -54,9 +50,6 @@
         <li class="active">Productos</li>
       </ol>
     </section>
-
-
-
     <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
@@ -71,13 +64,10 @@
         
         <div class="box-body">
           
-        
         <form action="<?php echo $helper->url("Productos","InsertaProductos"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
                                 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
                                 
                                 <div class="row">
-                        		    
-                        		    
                         		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                        
@@ -156,15 +146,8 @@
                                 </div>
                     	
                         		    </div>
-                    			
-                                 
-                                
                     		     <?php } } else {?>
-                    		    
-                    		   
 								 <div class="row">
-                        		    
-                        		    
                         		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                           <label for="id_grupos" class="control-label">Grupos</label>
@@ -202,10 +185,6 @@
                                                            <div id="mensaje_nombre_productos" class="errores"></div>
                                     </div>
                         		    </div>
-                        		    
-                        		    
-                        		
-                		    
 									</div>
 									
 									<div class="row">
@@ -255,8 +234,6 @@
               </form>
           
         </div>
-        
-        
       </div>
     </section>
     
@@ -274,8 +251,6 @@
         </div>
         
         <div class="box-body">
-        
-        
        <div class="ibox-content">
       <div class="table-responsive">
         
@@ -326,15 +301,11 @@
             		    		</tr>
             		    		
             		        <?php } } ?>
-                    	
-    					                    				  	
-
                       </tbody>
                     </table>
        
         </div>
          </div>
-        
         
         </div>
         </div>
@@ -348,16 +319,8 @@
  </div>
     
     <?php include("view/modulos/links_js.php"); ?>
-	
-	
-    
-           
-	
-	
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-    <script src="view/Contable/FuncionesJS/Productos.js?1"></script>  
-	
-	
+    <script src="view/Inventario/js/Productos.js?1"></script>  
   </body>
 </html>   
 

@@ -12,10 +12,7 @@
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
   
     <?php include("view/modulos/links_css.php"); ?>		
-      
-    	
-	
-		    
+  	    
 	</head>
  
     <body class="hold-transition skin-blue fixed sidebar-mini">
@@ -25,8 +22,7 @@
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
      ?>
-    
-    
+     
     <div class="wrapper">
 
       <header class="main-header">
@@ -56,8 +52,6 @@
       </ol>
     </section>
 
-
-
     <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
@@ -76,9 +70,6 @@
                                 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
                                 
                                 <div class="row">
-                        		    
-                        		    
-                        		    
                         		   <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
                                                        
@@ -128,6 +119,8 @@
                                     
                                  </div>
                                  
+<<<<<<< HEAD
+=======
                                  <div class="row">
                                  
                                  <div class="col-lg-3 col-xs-12 col-md-2">
@@ -166,7 +159,10 @@
                                  
                                  </div>
                                  
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
                                  <div class="row">
+<<<<<<< HEAD
+=======
                         		    
                         		 <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
@@ -181,6 +177,7 @@
 		   		   										  <div id="mensaje_id_estado" class="errores"></div>
                                     </div>
                                     </div>   
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
                         		  
                                  <div class="col-xs-12 col-md-3 col-md-3 ">
                                  <div class="form-group">
@@ -388,15 +385,7 @@
                         		    
                         		  </div>
 									
-									
-									
-									
-								
-                		    
-                    	
-                    			
-                                 	                     	           	
-                    		     <?php } ?>
+								<?php } ?>
                     		    <br>  
                     		    <div class="row">
                     		    <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; ">
@@ -405,8 +394,7 @@
                                 </div>
                     		    </div>
                     		    </div>
-                    		      
-                    		  
+                    		        		  
               </form>
           
         </div>
@@ -456,9 +444,6 @@
             </div>
             </section>
             
-    
-     
-    
   </div>
  
  	<?php include("view/modulos/footer.php"); ?>	
@@ -467,6 +452,10 @@
  </div>
     
     <?php include("view/modulos/links_js.php"); ?>
+<<<<<<< HEAD
+    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
+	<script src="view/Contable/FuncionesJS/ActivosFijos.js?1"></script> 
+=======
     
 	
     <script type="text/javascript" >   
@@ -850,6 +839,7 @@
     
     alert(tecla2);
 }  
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
 	
   </body>
 </html>   

@@ -1890,12 +1890,12 @@ class MovimientosInvController extends ControladorBase{
 	                
 	                
 	                
-	                $_id_movimientos_inv_cabeza     =$resultSetCabeza[0]->id_movimientos_inv_cabeza;
-	                $_nombre_usuarios     =$resultSetCabeza[0]->nombre_usuarios;
-	                $_numero_movimientos_inv_cabeza     =$resultSetCabeza[0]->numero_movimientos_inv_cabeza;
-	                $_fecha_movimientos_inv_cabeza     =$resultSetCabeza[0]->fecha_movimientos_inv_cabeza;
-	                $_estado_movimientos_inv_cabeza    =$resultSetCabeza[0]->estado_movimientos_inv_cabeza;
-	                $_razon_movimientos_inv_cabeza    =$resultSetCabeza[0]->razon_movimientos_inv_cabeza;
+	                $_id_movimientos_inv_cabeza            =   $resultSetCabeza[0]->id_movimientos_inv_cabeza;
+	                $_nombre_usuarios                      =   $resultSetCabeza[0]->nombre_usuarios;
+	                $_numero_movimientos_inv_cabeza        =   $resultSetCabeza[0]->numero_movimientos_inv_cabeza;
+	                $_fecha_movimientos_inv_cabeza         =   $resultSetCabeza[0]->fecha_movimientos_inv_cabeza;
+	                $_estado_movimientos_inv_cabeza        =   $resultSetCabeza[0]->estado_movimientos_inv_cabeza;
+	                $_razon_movimientos_inv_cabeza         =   $resultSetCabeza[0]->razon_movimientos_inv_cabeza;
 	                
 	                $columnas1 = "  movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
                 	                productos.codigo_productos,

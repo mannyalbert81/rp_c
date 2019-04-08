@@ -743,7 +743,7 @@ class ComprobanteContableController extends ControladorBase{
                            $_haber_dcomprobantes=0;
                            
                        }
-           //para validar valores sin coma
+           
            $_debe_dcomprobantes= str_replace(',', '', $_debe_dcomprobantes);
            $_haber_dcomprobantes= str_replace(',', '', $_haber_dcomprobantes);
            

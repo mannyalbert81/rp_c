@@ -118,16 +118,7 @@ $controladores=$_SESSION['controladores'];
 			
        </ul>
         </li>
-
-            
-            
-            
-            
-
-        
-        
-		  
-            <li style="<?php echo getcontrolador("BuscarProducto",$controladores) ?>"><a href="index.php?controller=BuscarProducto&action=index"><i class="fa fa-circle-o"></i> Consultar Productos</a></li>
+<li style="<?php echo getcontrolador("BuscarProducto",$controladores) ?>"><a href="index.php?controller=BuscarProducto&action=index"><i class="fa fa-circle-o"></i> Consultar Productos</a></li>
 		 
 		  </ul>
       

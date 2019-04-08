@@ -157,19 +157,26 @@ class SolicitudCabezaController extends ControladorBase{
         {
             /* consulta a la BD */
             
-            $col_productos="productos.id_productos,
-                        grupos.id_grupos,
-                        grupos.nombre_grupos,
-                        productos.codigo_productos,
-                        productos.nombre_productos,
-                        productos.marca_productos,
-                        unidad_medida.nombre_unidad_medida,
-                        productos.ult_precio_productos";
+            $col_productos="  saldo_productos.id_saldo_productos, 
+                              productos.id_productos, 
+                              productos.codigo_productos, 
+                              productos.marca_productos, 
+                              productos.nombre_productos, 
+                              productos.descripcion_productos, 
+                              productos.ult_precio_productos, 
+                              unidad_medida.id_unidad_medida, 
+                              unidad_medida.nombre_unidad_medida, 
+                              grupos.id_grupos, 
+                              grupos.nombre_grupos";
             
-            $tab_productos = "public.productos INNER JOIN public.grupos ON grupos.id_grupos = productos.id_grupos
-                        INNER JOIN public.unidad_medida ON unidad_medida.id_unidad_medida = productos.id_unidad_medida";
+            $tab_productos = "public.productos, 
+                              public.saldo_productos, 
+                              public.unidad_medida, 
+                              public.grupos";
             
-            $where_productos = "1=1";
+            $where_productos = "productos.id_unidad_medida = unidad_medida.id_unidad_medida AND
+                              saldo_productos.id_productos = productos.id_productos AND
+                              grupos.id_grupos = productos.id_grupos ";
             
             
             if(!empty($search)){

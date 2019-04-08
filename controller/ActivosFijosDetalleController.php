@@ -573,6 +573,7 @@ class ActivosFijosDetalleController extends ControladorBase{
                       activos_fijos.nombre_activos_fijos,
                       activos_fijos.codigo_activos_fijos,
                       activos_fijos.valor_activos_fijos,
+                      activos_fijos.cant_meses_dep_activos_fijos,
                       activos_fijos.meses_depreciacion_activos_fijos,
                       activos_fijos.depreciacion_mensual_activos_fijos,
                       activos_fijos_detalle.anio_depreciacion_activos_fijos_detalle,
@@ -594,9 +595,10 @@ class ActivosFijosDetalleController extends ControladorBase{
                       activos_fijos_detalle.modificado";
         $tablas   = "   public.activos_fijos_detalle,
   		  public.activos_fijos";
-        $where    = " activos_fijos.id_activos_fijos = activos_fijos_detalle.id_activos_fijos AND activos_fijos_detalle.id_activos_fijos_detalle = '$_id_activos_fijos_detalle'";
+        $where    = " activos_fijos.id_activos_fijos = activos_fijos_detalle.id_activos_fijos";
         $id="activos_fijos_detalle.id_activos_fijos_detalle";
         
+        $resultdep=$activosfdetalle->getCondiciones($columnas, $tablas, $where, $id);
         
         
         $nombre_controladores = "ActivosFijosDetalle";
@@ -605,18 +607,36 @@ class ActivosFijosDetalleController extends ControladorBase{
         
         //die('llego');
         
-        if (!empty($resultPer))
+        if (!empty($resultdep))
+     
         {
-            //die('llego');
-            if ( isset ($_POST["anio_depreciacion_activos_fijos_detalle"]))            
-            {
-                
-                $_id_activos_fijos = $_POST["id_activos_fijos"];
-                $_anio_depreciacion_activos_fijos_detalle = $_POST["anio_depreciacion_activos_fijos_detalle"];
-               
-                /*mandar consulytar del detalle con where id ac tivos fijos*/
-                
-                
+            //die('llego')
+         
+            $_id_activos_fijos     =$resultdep[0]->id_activos_fijos;
+            $_nombre_activos_fijos     =$resultdep[0]->nombre_activos_fijos;
+            $_codigo_activos_fijos     =$resultdep[0]->codigo_activos_fijos;
+            $_valor_activos_fijos     =$resultdep[0]->valor_activos_fijos;
+            $_cant_meses_dep_activos_fijos     =$resultdep[0]->cant_meses_dep_activos_fijos;
+            $_depreciacion_mensual_activos_fijos     =$resultdep[0]->depreciacion_mensual_activos_fijos;
+            $_anio_depreciacion_activos_fijos_detalle     =$resultdep[0]->anio_depreciacion_activos_fijos_detalle;
+            $_valor_enero_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_enero_depreciacion_activos_fijos_detalle;
+            $_valor_febrero_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_febrero_depreciacion_activos_fijos_detalle;
+            $_valor_marzo_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_marzo_depreciacion_activos_fijos_detalle;
+            $_valor_abril_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_abril_depreciacion_activos_fijos_detalle;
+            $_valor_mayo_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_mayo_depreciacion_activos_fijos_detalle;
+            $_valor_junio_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_junio_depreciacion_activos_fijos_detalle;
+            $_valor_julio_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_julio_depreciacion_activos_fijos_detalle;
+            $_valor_agosto_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_agosto_depreciacion_activos_fijos_detalle;
+            $_valor_septiembre_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_septiembre_depreciacion_activos_fijos_detalle;
+            $_valor_octubre_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_octubre_depreciacion_activos_fijos_detalle;
+            $_valor_noviembre_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_noviembre_depreciacion_activos_fijos_detalle;
+            $_valor_diciembre_depreciacion_activos_fijos_detalle     =$resultdep[0]->valor_diciembre_depreciacion_activos_fijos_detalle;
+            $_valor_depreciacion_acumulada_anio_activos_fijos_detalle     =$resultdep[0]->valor_depreciacion_acumulada_anio_activos_fijos_detalle;
+            $_valor_a_depreciar_siguiente_anio_activos_fijos_detalle     =$resultdep[0]->valor_a_depreciar_siguiente_anio_activos_fijos_detalle;
+            
+            
+            
+            
                 if($_id_activos_fijos > 0){
                     
                   
@@ -738,19 +758,7 @@ class ActivosFijosDetalleController extends ControladorBase{
             
             $this->redirect("ActivosFijosDetalle", "index");
         }
-        else
-        {
-            $this->view_Contable("Error",array("resultado"=>"No tiene Permisos Para Crear Depreciaciones"
-                
-            ));
-            
-            
-        }
-        
-       
-        
-        
-    }
+
     
     
 }

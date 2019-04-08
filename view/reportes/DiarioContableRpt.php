@@ -28,23 +28,54 @@ if(!empty($datos_empresa)){
     }
 }
 
+
+
+
 if(!empty($datos_detalle)){
     
     $tablahtml = '';
     $i=0;
+    $tmparray=$datos_detalle;
+    $iTmp=0;
+    $variable=0;
+    
     foreach ($datos_detalle as $res){
         $i+=1;
-        $tablahtml.='<tr>';
-        $tablahtml.='<td>'.$i.'</td>';
-        $tablahtml.='<td>'.$res->fecha_ccomprobantes.'</td>';
-        $tablahtml.='<td>'.$res->tipo_comprobantes.'</td>';
-        $tablahtml.='<td>'.$res->codigo_plan_cuentas.'</td>';
-        $tablahtml.='<td>'.$res->nombre_plan_cuentas.'</td>';
-        $tablahtml.='<td>'.$res->descripcion_dcomprobantes.'</td>';
-        $tablahtml.='<td>'.$res->debe_dcomprobantes.'</td>';
-        $tablahtml.='<td>'.$res->haber_dcomprobantes.'</td>';
-       
-        $tablahtml.='</tr>';
+        
+        if($res->id_ccomprobantes!=$variable){
+            if($i!=1){
+                $tablahtml.='<tr><td colspan="8" class="inferior">&nbsp;</td></tr>';
+            }
+            
+            $variable=$res->id_ccomprobantes;
+           
+            $iTmp +=1;
+            $tablahtml.='<tr>';
+            $tablahtml.='<td>'.$iTmp.'</td>';
+            $tablahtml.='<td>'.$res->fecha_ccomprobantes.'</td>';
+            $tablahtml.='<td>'.$res->tipo_comprobantes.' - '.$res->numero_ccomprobantes.'</td>';
+            $tablahtml.='<td>'.$res->codigo_plan_cuentas.'</td>';
+            $tablahtml.='<td>'.$res->nombre_plan_cuentas.'</td>';
+            $tablahtml.='<td>'.$res->descripcion_dcomprobantes.'</td>';
+            $tablahtml.='<td class="numero">'.$res->debe_dcomprobantes.'</td>';
+            $tablahtml.='<td class="numero"> '.$res->haber_dcomprobantes.'</td>';
+            $tablahtml.='</tr>';
+            
+        }else{
+            
+            $tablahtml.='<tr>';
+            $tablahtml.='<td class="centrado">-</td>';
+            $tablahtml.='<td class="centrado">-</td>';
+            $tablahtml.='<td class="centrado">-</td>';
+            $tablahtml.='<td>'.$res->codigo_plan_cuentas.'</td>';
+            $tablahtml.='<td>'.$res->nombre_plan_cuentas.'</td>';
+            $tablahtml.='<td>'.$res->descripcion_dcomprobantes.'</td>';
+            $tablahtml.='<td class="numero">'.$res->debe_dcomprobantes.'</td>';
+            $tablahtml.='<td class="numero"> '.$res->haber_dcomprobantes.'</td>';
+            $tablahtml.='</tr>';
+           
+        }
+        
     }
     
     $template = str_replace('{TABLADETALLE}', $tablahtml, $template);
@@ -60,6 +91,8 @@ $mpdf=new mPDF();
 $mpdf->SetDisplayMode('fullpage');
 $mpdf->allow_charset_conversion = true;
 $mpdf->charset_in = 'UTF-8';
+$mpdf->setAutoTopMargin = 'stretch';
+$mpdf->setAutoBottomMargin = 'stretch';
 $mpdf->SetHTMLFooter($footer);
 $mpdf->WriteHTML($template);
 $mpdf->debug = true;

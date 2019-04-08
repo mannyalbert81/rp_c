@@ -40,7 +40,7 @@ class LibroDiarioController extends ControladorBase{
 						
 					if (!empty($resultPer))
 					{
-					
+					//hola
 					    $_id_proveedores = $_GET["id_proveedores"];
 						$columnas = " id_proveedores, nombre_proveedores, identificacion_proveedores, contactos_proveedores, direccion_proveedores, telefono_proveedores, email_proveedores, fecha_nacimiento_proveedores ";
 						$tablas   = "proveedores";
@@ -127,7 +127,7 @@ class LibroDiarioController extends ControladorBase{
 	    
 	}
 	
-
+//hola
 	
 	public function paginate_grupos($reload, $page, $tpages, $adjacents,$funcion='') {
 	    
@@ -194,65 +194,7 @@ class LibroDiarioController extends ControladorBase{
 	}
 
 	
-	public function ins_proveedor(){
-	    
-	    session_start();
-	    $proveedores=new ProveedoresModel();
-	    
-	    $nombre_controladores = "Proveedores";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $proveedores->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if (!empty($resultPer))
-	    {  
-	        
-	        $resultado = null;
-	        $proveedores=new ProveedoresModel();
-	        
-	        if (isset ($_POST["nombre_proveedores"])   )
-	        {
-	            $_nombre_proveedores = $_POST["nombre_proveedores"];
-	            $_identificacion_proveedores = $_POST["identificacion_proveedores"];
-	            $_contactos_proveedores = $_POST["contactos_proveedores"];
-	            $_direccion_proveedores = $_POST["direccion_proveedores"];
-	            $_telefono_proveedores = $_POST["telefono_proveedores"];
-	            $_email_proveedores = $_POST["email_proveedores"];
-	              
-                $funcion = "ins_proveedores";
-                $parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores','$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores'";
-                $proveedores->setFuncion($funcion);
-                $proveedores->setParametros($parametros);
-                $resultado=$proveedores->llamafuncion();
-	           
-                $respuesta=0;
-                
-                //print_r($resultado);
-                
-                if(!empty($resultado) && count($resultado)>0)
-                {
-                    foreach ($resultado[0] as $k => $v)
-                        $respuesta=$v;
-                }
-                
-                if($respuesta==0){
-                    echo json_encode(array('success'=>$respuesta,'mensaje'=>'Error al insertar proveedores'));
-                    
-                }else{
-                    echo json_encode(array('success'=>$respuesta,'mensaje'=>'Proveedor ingresado con exito'));
-                }
-                
-             }
-	       
-	        
-	    }
-	    else
-	    {
-	        echo json_encode(array('success'=>0,'mensaje'=>'Error de permisos'));
-	    }
-	    
-	}
-	
-	
+
 	
 	public function AutocompleteCodigo(){
 	    
@@ -432,14 +374,15 @@ class LibroDiarioController extends ControladorBase{
 	
 	public function diarioContable(){
 	    
-	    $mayor = new MayorModel();
+	    session_start();
+	    
 	    $entidades = new EntidadesModel();
 	    
-	    if(!isset($_GET['peticion'])){
+	    /*if(!isset($_GET['peticion'])){
 	        
 	        echo 'sin datos';
 	        return;
-	    }
+	    }*/
 	    
 	    //llenado de datos
 	    
@@ -454,10 +397,46 @@ class LibroDiarioController extends ControladorBase{
 	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
 	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
 	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
-	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d');
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
 	    }
 	    
-	    $query_detalle = "SELECT * FROM vw_diariocontable";
+	    $query_detalle = "SELECT * FROM vw_diariocontable WHERE 1=1 ";
+	    
+	    //tomar datos vista
+	    $_fecha_desde = (isset($_POST['desde_diario']))?$_POST['desde_diario']:'';
+	    $_fecha_hasta = (isset($_POST['hasta_diario']))?$_POST['hasta_diario']:'';
+	    $_id_cuenta = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:0;
+	    
+	    $_fecha = date('d-m-Y');
+	    
+	    if($_fecha_desde != '' || $_fecha_hasta != ''){
+	        if($_fecha_desde != '' && $_fecha_hasta != ''){
+	            $query_detalle.=' AND ( fecha_ccomprobantes BETWEEN \''.$_fecha_desde.'\' AND \''.$_fecha_hasta.'\' ) ';
+	        }
+	        if($_fecha_desde != '' && $_fecha_hasta == ''){
+	            $query_detalle .= " AND fecha_ccomprobantes >= '$_fecha_desde'";
+	        }
+	        if($_fecha_desde == '' && $_fecha_hasta != ''){
+	            $query_detalle .= ' AND fecha_ccomprobantes <= \''.$_fecha_hasta.'\' ';
+	        }
+	    }
+	    
+	    if($_id_cuenta>0){
+	        
+	        $query_detalle.=' AND id_ccomprobantes IN ( SELECT ccomprobantes.id_ccomprobantes
+                                                        FROM ccomprobantes
+                                                        INNER JOIN dcomprobantes
+                                                        ON ccomprobantes.id_ccomprobantes = dcomprobantes.id_ccomprobantes
+                                                        WHERE dcomprobantes.id_plan_cuentas = '.$_id_cuenta.'
+                                                        GROUP BY ccomprobantes.id_ccomprobantes
+                                                        ORDER BY ccomprobantes.id_ccomprobantes )';
+	       
+	    }
+	    
+	    $query_detalle.= ' ORDER BY id_ccomprobantes';
+	    
+	    //print_r($query_detalle); die();
 	    
 	    $rsdetalle = $entidades->enviaquery($query_detalle);
 	    
@@ -466,11 +445,13 @@ class LibroDiarioController extends ControladorBase{
 	        $datos_detalle=$rsdetalle;
 	    }
 	    
+	    //print_r($rsdetalle); die();
 	    
 	    $this->verReporte("DiarioContable", array('datos_empresa'=>$datos_empresa,'datos_detalle'=>$datos_detalle));
 	   
-	       
-	    die();
+	    
+	    //reporte interno
+	    /*
 	    $id_plan_cuentas = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:'0';
 	    
 	    $columna = 'SELECT id_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas';
@@ -542,11 +523,146 @@ class LibroDiarioController extends ControladorBase{
 	        $html.='</table>';
 	    }
 	    
-	    echo $html;
+	    echo $html;*/
 	}
 	
 	
+	/***
+	 * title: validafecha
+	 * mod: contable
+	 * return: bolean
+	 */
+	public function validafecha($fecha=null){
+	    if(is_null($fecha) || empty($fecha)){
+	        return false;
+	    }
+	    
+	}
 	
+	public function dataToExcel(){
+	    session_start();
+	    
+	    $entidades = new EntidadesModel();
+	   
+	    if(!isset($_POST['peticion'])){
+	    
+	    echo 'sin datos';
+	    return;
+	    }
+	    
+	    //llenado de datos
+	    
+	    $datos_empresa = array();
+	    $datos_detalle = array();
+	    
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	    }
+	    
+	    $query_detalle = "SELECT * FROM vw_diariocontable WHERE 1=1 ";
+	    
+	    //tomar datos vista
+	    $_fecha_desde = (isset($_POST['desde_diario']))?$_POST['desde_diario']:'';
+	    $_fecha_hasta = (isset($_POST['hasta_diario']))?$_POST['hasta_diario']:'';
+	    $_id_cuenta = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:0;
+	    
+	    if($_fecha_desde != '' || $_fecha_hasta != ''){
+	        if($_fecha_desde != '' && $_fecha_hasta != ''){
+	            $query_detalle.=' AND ( fecha_ccomprobantes BETWEEN \''.$_fecha_desde.'\' AND \''.$_fecha_hasta.'\' ) ';
+	        }
+	        if($_fecha_desde != '' && $_fecha_hasta == ''){
+	            $query_detalle .= ' AND fecha_ccomprobantes >= \''.$_fecha_desde.'\'';
+	        }
+	        if($_fecha_desde == '' && $_fecha_hasta != ''){
+	            $query_detalle .= ' AND fecha_ccomprobantes <= \''.$_fecha_hasta.'\' ';
+	        }
+	    }
+	    
+	    if($_id_cuenta>0){
+	        
+	        $query_detalle.=' AND id_ccomprobantes IN ( SELECT ccomprobantes.id_ccomprobantes
+                                                        FROM ccomprobantes
+                                                        INNER JOIN dcomprobantes
+                                                        ON ccomprobantes.id_ccomprobantes = dcomprobantes.id_ccomprobantes
+                                                        WHERE dcomprobantes.id_plan_cuentas = '.$_id_cuenta.'
+                                                        GROUP BY ccomprobantes.id_ccomprobantes
+                                                        ORDER BY ccomprobantes.id_ccomprobantes )';
+	        
+	    }
+	    
+	    $query_detalle.= ' ORDER BY id_ccomprobantes';
+	    
+	    //print_r($query_detalle); die();
+	    
+	    $rsdetalle = $entidades->enviaquery($query_detalle);
+	    
+	    /* se dibuja la hoja */
+	    $datos_detalle = array();
+	    
+	    array_push($datos_detalle,'#','Fecha','Comprobante','Codigo','Cuenta','Detalle','Debe','Haber');
+	    
+	    if(!empty($rsdetalle) && count($rsdetalle)>0){
+	           
+	            $i=0;
+	            $iTmp=0;
+	            $variable=0;
+	            
+	            foreach ($rsdetalle as $res){
+	                $i+=1;
+	                
+	                if($res->id_ccomprobantes!=$variable){
+	                    if($i!=1){
+	                        array_push($datos_detalle, ' ',' ',' ',' ',' ',' ',' ',' ');
+	                    }
+	                    
+	                    $iTmp +=1;
+	                    
+	                    $variable=$res->id_ccomprobantes;
+	                    
+	                    array_push($datos_detalle,
+	                        $iTmp,$res->fecha_ccomprobantes,
+	                            $res->tipo_comprobantes.' - '.$res->numero_ccomprobantes,
+	                            $res->codigo_plan_cuentas,
+	                            $res->nombre_plan_cuentas,
+	                            $res->descripcion_dcomprobantes,
+	                            $res->debe_dcomprobantes,
+	                            $res->haber_dcomprobantes
+	                        );
+	                    
+	                        
+	                   
+	                }else{
+	                    
+	                    array_push($datos_detalle,
+	                        ' ',' ',
+	                            ' ',
+	                            $res->codigo_plan_cuentas,
+	                            $res->nombre_plan_cuentas,
+	                            $res->descripcion_dcomprobantes,
+	                           $res->debe_dcomprobantes,
+	                           $res->haber_dcomprobantes
+	                            
+	                        );
+	                    
+	                }
+	                
+	            }
+	       
+	    }
+	    
+	    $cantidad = count($datos_detalle);
+	    
+	    
+	    echo json_encode(array('cantidad'=>$cantidad,'datos_empresa'=>$datos_empresa,'datos_detalle'=>$datos_detalle));
+	}
 	
 }
 ?>

@@ -70,7 +70,13 @@ class ActivosFijosController extends ControladorBase{
                                       activos_fijos.meses_depreciacion_activos_fijos, 
                                       activos_fijos.depreciacion_mensual_activos_fijos, 
                                       activos_fijos.creado, 
-                                      activos_fijos.modificado
+                                      activos_fijos.modificado,
+                                      activos_fijos.cant_meses_dep_activos_fijos, 
+                                      activos_fijos.fecha_cierre_anio_activos_fijos, 
+                                      activos_fijos.imagen_activos_fijos, 
+                                      activos_fijos.color_activos_fijos, 
+                                      activos_fijos.material_activos_fijos, 
+                                      activos_fijos.dimension_activos_fijos
                                     
                                     ";
                         
@@ -139,13 +145,14 @@ class ActivosFijosController extends ControladorBase{
         $id_rol= $_SESSION['id_rol'];
         $resultPer = $activosf->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
         
+        //die('llego');
         if (!empty($resultPer))
         {
-            
+            //die('llego');
             if ( isset ($_POST["nombre_activos_fijos"]))
             
             {
-                //die('llego');
+               //die('llego');
                 
                 $_id_activos_fijos = $_POST["id_activos_fijos"];
                 $_id_oficina = $_POST["id_oficina"];
@@ -158,19 +165,63 @@ class ActivosFijosController extends ControladorBase{
                 $_cantidad_activos_fijos = $_POST["cantidad_activos_fijos"]; 
                 $_valor_activos_fijos = $_POST["valor_activos_fijos"];
                 $_meses_depreciacion_activos_fijos = $_POST["meses_depreciacion_activos_fijos"];
+                $_color_activos_fijos = $_POST["color_activos_fijos"];
+                $_material_activos_fijos = $_POST["material_activos_fijos"];
+                $_dimension_activos_fijos = $_POST["dimension_activos_fijos"];
+                
                 
                 //die('llego');
+                
+                
+                $imagen_activos='';
+                
+                
+                if ($_FILES['imagen_activos_fijos']['tmp_name']!="")
+                {
+                    $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/Imagenes_activos/';
+                    
+                    $nombre = $_FILES['imagen_activos_fijos']['name'];
+                    $tipo = $_FILES['imagen_activos_fijos']['type'];
+                    $tamano = $_FILES['imagen_activos_fijos']['size'];
+                    
+                    move_uploaded_file($_FILES['imagen_activos_fijos']['tmp_name'],$directorio.$nombre);
+                    $data = file_get_contents($directorio.$nombre);
+                    $imagen_activos = pg_escape_bytea($data);
+                    
+                }else{
+                    
+                    $directorio = dirname(__FILE__).'\..\view\images\nofoto.png';
+                    
+                    if( is_file( $directorio )){
+                        $data = file_get_contents($directorio);
+                        $imagen_activos = pg_escape_bytea($data);
+                    }
+                    
+                }
+                
                 
                 
                 if($_id_activos_fijos > 0){
                     //die('llego');
                     
                     $_depreciacion_mensual_activos_fijos= ((int) $_valor_activos_fijos)/((int) $_meses_depreciacion_activos_fijos);
-                    $_anio = date("Y", $_fecha_compra_activos_fijos);
-                    $_fecha_cierre_anio_activos_fijos=$_anio.'12-31';
-                    $diferencia = $_fecha_cierre_anio_activos_fijos->diff($_fecha_compra_activos_fijos);
-                    $dias = ( $diferencia->y * 365 ) + $diferencia->d;
-                    $_cant_meses_dep_activos_fijos=($dias)/30;
+                    $_anio = explode("-", $_fecha_compra_activos_fijos);
+                    $_anio1= $_anio[0];
+                    //die($_anio1);
+                    $_fecha_cierre_anio_activos_fijos=(int) $_anio1.'-12-31';
+                    
+                    $fecha1 = new DateTime($_fecha_cierre_anio_activos_fijos);
+                    $fecha2 = new DateTime($_fecha_compra_activos_fijos);
+                    $diferencia = $fecha2->diff($fecha1);
+                    
+                    $dias_diferencia = $diferencia ->days;
+                    $años = $diferencia ->y;
+                    
+                    $dias = ((int) $años * 365 ) + ((int) $dias_diferencia);
+                    $_cant_meses_dep_activos=($dias)/30;
+                    
+                    $_cant_meses_dep_activos_fijos =((int)$_cant_meses_dep_activos);
+                    
                     $columnas = "
                               
 							  id_oficina ='$_id_oficina',
@@ -185,49 +236,69 @@ class ActivosFijosController extends ControladorBase{
                               meses_depreciacion_activos_fijos = '$_meses_depreciacion_activos_fijos',
                               depreciacion_mensual_activos_fijos = '$_depreciacion_mensual_activos_fijos',
                               cant_meses_dep_activos_fijos      = '$_cant_meses_dep_activos_fijos',
-                              fecha_cierre_anio_activos_fijos   = '$_fecha_cierre_anio_activos_fijos'
+                              fecha_cierre_anio_activos_fijos   = '$_fecha_cierre_anio_activos_fijos',
+                              imagen_activos_fijos      = '$imagen_activos',
+                              color_activos_fijos   = '$_color_activos_fijos',
+                              material_activos_fijos   = '$_material_activos_fijos',
+                              dimension_activos_fijos   = '$_dimension_activos_fijos'
                               ";
                     
-                    $tabla = "public.activos_fijos, 
-                              public.oficina, 
-                              public.tipo_activos_fijos, 
-                              public.estado, 
-                              public.usuarios";
-                    $where = "oficina.id_oficina = activos_fijos.id_oficina AND
-                              tipo_activos_fijos.id_tipo_activos_fijos = activos_fijos.id_tipo_activos_fijos AND
-                              estado.id_estado = activos_fijos.id_estado AND
-                              usuarios.id_usuarios = activos_fijos.id_usuarios 
-                              AND activos_fijos.id_activos_fijos = '$_id_activos_fijos'";
+                    $tabla = "public.activos_fijos";
+                    $where = "activos_fijos.id_activos_fijos = '$_id_activos_fijos'";
                     $resultado=$activosf->UpdateBy($columnas, $tabla, $where);
                     
                 }else{
-                    //die('llego');
+                   
                     $_depreciacion_mensual_activos_fijos= ((int) $_valor_activos_fijos)/((int) $_meses_depreciacion_activos_fijos);
                     
-                    $_anio = date("Y", strtotime ($_fecha_compra_activos_fijos));
-                  
-                    $_fecha_cierre_anio_activos_fijos= new DateTime ($_anio.'12-31');
+                    $_anio = explode("-", $_fecha_compra_activos_fijos);
+                    $_anio1= $_anio[0];
+                    //die($_anio1);
+                    $_fecha_cierre_anio_activos_fijos=(int) $_anio1.'-12-31';
                     
-                    $_fecha_compra_activos_fijos = new DateTime($_fecha_compra_activos_fijos);
+                    $fecha1 = new DateTime($_fecha_cierre_anio_activos_fijos);
+                    $fecha2 = new DateTime($_fecha_compra_activos_fijos);
+                    $diferencia = $fecha2->diff($fecha1);
                     
-                    $diferencia = $_fecha_cierre_anio_activos_fijos->diff($_fecha_compra_activos_fijos);
-                    $dias = ( $diferencia->y * 365 ) + $diferencia->d;
-                    $_cant_meses_dep_activos_fijos=($dias)/30;
-                    $_cant_meses_dep_activos_fijos= round ($_cant_meses_dep_activos_fijos*1);
+                    $dias_diferencia = $diferencia ->days;
+                    $años = $diferencia ->y;
+                    
+                    $dias = ((int) $años * 365 ) + ((int) $dias_diferencia);
+                    $_cant_meses_dep_activos=($dias)/30;
+                    
+                    $_cant_meses_dep_activos_fijos =((int)$_cant_meses_dep_activos);
                     
                     $_fecha_cierre_anio_activos_fijos = $_fecha_cierre_anio_activos_fijos ->format('Y-m-d');
                     $_fecha_compra_activos_fijos = $_fecha_compra_activos_fijos ->format('Y-m-d');
                     
-                    
+                  
+                        
                    
                     
                     $funcion = "ins_activos_fijos";
-                    $parametros = "'$_id_oficina', '$_id_tipo_activos_fijos', '$_id_estado', '$_id_usuarios', '$_nombre_activos_fijos', '$_codigo_activos_fijos', '$_fecha_compra_activos_fijos', '$_cantidad_activos_fijos', '$_valor_activos_fijos', '$_meses_depreciacion_activos_fijos', '$_depreciacion_mensual_activos_fijos', '$_cant_meses_dep_activos_fijos', '$_fecha_cierre_anio_activos_fijos'";
+                    $parametros = "'$_id_oficina',
+                                   '$_id_tipo_activos_fijos',
+                                   '$_id_estado', 
+                                   '$_id_usuarios',
+                                   '$_nombre_activos_fijos',
+                                   '$_codigo_activos_fijos',
+                                   '$_fecha_compra_activos_fijos',
+                                   '$_cantidad_activos_fijos',
+                                   '$_valor_activos_fijos',
+                                   '$_meses_depreciacion_activos_fijos',
+                                   '$_depreciacion_mensual_activos_fijos',
+                                   '$_cant_meses_dep_activos_fijos',
+                                   '$_fecha_cierre_anio_activos_fijos',
+                                   '$imagen_activos',
+                                   '$_color_activos_fijos',
+                                   '$_material_activos_fijos',
+                                   '$_dimension_activos_fijos'";
                     $activosf->setFuncion($funcion);
                     $activosf->setParametros($parametros);
                     $resultado=$activosf->Insert();
                     
-                    
+                    //print_r($resultado);
+                    //die('llego');
                 }
                 
             }
@@ -356,12 +427,55 @@ class ActivosFijosController extends ControladorBase{
                         $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Valor activos:</b> '.$res->valor_activos_fijos.'</td>';
                         $html.='</tr>';
                         $html.='<tr>';
-                        $html.='<td colspan="5" style="text-align: left; font-size: 16px; "><br><b>Meses de depreciación:</b>'.$res->meses_depreciacion_activos_fijos.'</td>';
-                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Depreciación:</b> '.$res->depreciacion_mensual_activos_fijos.'</p>'.'</td>';
+                        $html.='<td colspan="5" style="text-align: left; font-size: 16px; "><br><b>Meses de depreciación:&nbsp;</b>'.$res->meses_depreciacion_activos_fijos.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 16px; "><br><b>Depreciación Mensual:</b> '.$res->depreciacion_mensual_activos_fijos.'</p>'.'</td>';
                         $html.='<tr>';
                         $html.='<td colspan="8">&nbsp;</td>';
                         $html.='</tr>';
                         $html.='</tr>';
+                        $html.='</table>';
+                        
+                        
+                        $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+                        $html.= "<tr>";
+                        $html.='<th colspan="2" style="text-align: center; font-size: 25px;">Depreciación Mensual</th>';
+                        $html.='</tr>';
+                       
+                        
+                        if(!empty($resultRep)){
+                            
+                            $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+                            
+                            $html.= "<tr>";
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Enero</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Febrero</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Marzo</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Abril</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Mayo</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Junio</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Julio</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Agosto</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Septiembre</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Octubre</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Noviembre</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Diciembre</th>';
+                            $html.='<th colspan="2" style="text-align: center; font-size: 13px;">D.Acumulada</th>';
+                            
+                            $html.='</tr>';
+                            
+                            
+                            
+                            foreach ($resultRep as $res)
+                            {
+                               
+                                
+                            }
+                            $html.='</table>';
+                            
+                            
+                            
+                        }
+                        
                        
     
                     }
@@ -547,7 +661,14 @@ class ActivosFijosController extends ControladorBase{
                       activos_fijos.creado, 
                       activos_fijos.modificado,
                       activos_fijos.cant_meses_dep_activos_fijos, 
-                      activos_fijos.fecha_cierre_anio_activos_fijos";
+                      activos_fijos.fecha_cierre_anio_activos_fijos,
+                      activos_fijos.imagen_activos_fijos, 
+                      activos_fijos.color_activos_fijos, 
+                      activos_fijos.material_activos_fijos, 
+                      activos_fijos.dimension_activos_fijos,
+                      color_activos_fijos,
+                      material_activos_fijos,
+                      dimension_activos_fijos ";
         $tablas   = " 
                       public.activos_fijos, 
                       public.oficina, 
@@ -615,15 +736,16 @@ class ActivosFijosController extends ControladorBase{
                 $html.= "<thead>";
                 $html.= "<tr>";
                 $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Oficina</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Tipo de Activo</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Fecha</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Cantidad de activos</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Valor activos</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Tipo&nbsp;de&nbsp;Activo</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Estado&nbsp;del&nbsp;Activo</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Fecha&nbsp;de&nbsp;Ingreso&nbsp;</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Cantidad&nbsp;de&nbsp;activos</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Valor&nbsp;</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Meses de depreciación</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Cantidad Meses</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Depreciación Mensual</th>';
@@ -650,17 +772,18 @@ class ActivosFijosController extends ControladorBase{
                     $depreciacionmensual=((int) $res->valor_activos_fijos)/((int) $res->meses_depreciacion_activos_fijos);
                     $html.='<tr>';
                     $html.='<td style="font-size: 11px;">'.$i.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_oficina.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
+                    $html.='<td style="font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_activos_fijos.'&id_nombre=id_activos_fijos&tabla=activos_fijos&campo=imagen_activos_fijos" width="80" height="60"></td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombre_oficina.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->codigo_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->fecha_compra_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->cantidad_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->valor_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->meses_depreciacion_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->cant_meses_dep_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombre_estado.'</td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->fecha_compra_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->cantidad_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->valor_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->meses_depreciacion_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->cant_meses_dep_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$depreciacionmensual= number_format($depreciacionmensual, 2, '.', ' ').'</td>';
                     
                     
@@ -773,8 +896,416 @@ class ActivosFijosController extends ControladorBase{
         return $out;
     }
     
-
+    public function paginate($reload, $page, $tpages, $adjacents , $function='') {
+        
+        $prevlabel = "&lsaquo; Prev";
+        $nextlabel = "Next &rsaquo;";
+        $out = '<ul class="pagination pagination-large">';
+        
+        // previous label
+        
+        if($page==1) {
+            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+        } else if($page==2) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$function(1)'>$prevlabel</a></span></li>";
+        }else {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$function(".($page-1).")'>$prevlabel</a></span></li>";
+            
+        }
+        
+        // first label
+        if($page>($adjacents+1)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='$function(1)'>1</a></li>";
+        }
+        // interval
+        if($page>($adjacents+2)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // pages
+        
+        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+        for($i=$pmin; $i<=$pmax; $i++) {
+            if($i==$page) {
+                $out.= "<li class='active'><a>$i</a></li>";
+            }else if($i==1) {
+                $out.= "<li><a href='javascript:void(0);' onclick='$function(1)'>$i</a></li>";
+            }else {
+                $out.= "<li><a href='javascript:void(0);' onclick='$function(".$i.")'>$i</a></li>";
+            }
+        }
+        
+        // interval
+        
+        if($page<($tpages-$adjacents-1)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // last
+        
+        if($page<($tpages-$adjacents)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='$function($tpages)'>$tpages</a></li>";
+        }
+        
+        // next
+        
+        if($page<$tpages) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$function(".($page+1).")'>$nextlabel</a></span></li>";
+        }else {
+            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+        }
+        
+        $out.= "</ul>";
+        return $out;
+    }
     
+    /*dc 20190402 */
+    public function index1(){
+        
+        session_start();
+        
+        $oficina = new OficinaModel();        
+        $resultOfi = $oficina->getBy("1=1");
+        
+        $tipo_activo = new TipoActivosModel();
+        $resultTipoac = $tipo_activo->getBy("1=1");
+        
+        $EstadosActivo = new EstadoModel();
+        $rsEstadoAct = $EstadosActivo->getBy("tabla_estado = 'ACTIVOS' ");   
+       
+        
+        $this->view_Activos('ActivosFijos', array('resultOfi'=>$resultOfi,'resultTipoac'=>$resultTipoac,'rsEstadoAct'=>$rsEstadoAct));
+    }
+    
+    public function insActivos(){
+        
+        session_start();
+        
+        $activos = new ActivosFijosModel();
+        
+        $id_usuario = (isset($_SESSION['id_usuarios'])) ? $_SESSION['id_usuarios'] : 0 ;
+        
+        $_id_oficina = (isset($_POST['id_oficina'])) ? $_POST['id_oficina'] : 0;
+        $_id_tipo_activo = (isset($_POST['id_tipo_activos_fijos'])) ? $_POST['id_tipo_activos_fijos'] : 0;
+        $_id_departamento = (isset($_POST['id_departamento'])) ? $_POST['id_departamento'] : 0;
+        $_id_estado = (isset($_POST['id_estado'])) ? $_POST['id_estado'] : 0;
+        $_responsable = (isset($_POST['responsable_activos_fijos'])) ? $_POST['responsable_activos_fijos'] : 0;
+        $_nombre_activo = (isset($_POST['nombre_activos_fijos'])) ? $_POST['nombre_activos_fijos'] : 0;
+        $_fecha_activo = (isset($_POST['fecha_activos_fijos'])) ? $_POST['fecha_activos_fijos'] : 0;
+        $_detalles_activo = (isset($_POST['detalle_activos_fijos'])) ? $_POST['detalle_activos_fijos'] : 0;
+        $_valor_activo = (isset($_POST['valor_activos_fijos'])) ? $_POST['valor_activos_fijos'] : 0;
+        
+        $_codigo_activo = "";
+        
+        //para la imagen de activos
+        $_imagen_activos = '';        
+        
+        if ($_FILES['imagen_activos_fijos']['tmp_name']!="")
+        {
+            $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/fotografias_usuarios/';
+            
+            $nombre = $_FILES['imagen_activos_fijos']['name'];
+            $tipo = $_FILES['imagen_activos_fijos']['type'];
+            $tamano = $_FILES['imagen_activos_fijos']['size'];
+            
+            move_uploaded_file($_FILES['imagen_activos_fijos']['tmp_name'],$directorio.$nombre);
+            $data = file_get_contents($directorio.$nombre);
+            $_imagen_activos = pg_escape_bytea($data);
+            
+        }else{
+            
+            $directorio = dirname(__FILE__).'\..\view\images\nodisponible.jpg';
+            
+            if( is_file( $directorio )){
+                $data = file_get_contents($directorio);
+                $_imagen_activos = pg_escape_bytea($data);
+            }
+            
+        }
+        
+        if(isset($_POST['Guardar'])){
+            
+            $funcion = "ins_activosfijos";
+            
+            $parametros = "'$id_usuario',
+                           '$_id_oficina',
+	    				   '$_id_tipo_activo',
+                           '$_id_departamento',
+                           '$_id_estado',
+                           '$_responsable',
+	    	               '$_nombre_activo',
+	    	               '$_codigo_activo',
+	    	               '$_fecha_activo',
+	    	               '$_detalles_activo',
+	    	               '$_imagen_activos',
+                           '$_valor_activo'";        
+             
+            //print_r($parametros); die();
+            $activos->setFuncion($funcion);
+            $activos->setParametros($parametros);            
+            
+            $resultado=$activos->llamafuncion();
+            
+            $respuesta = "";
+            
+            if(!empty($resultado) && count($resultado)){
+                
+                foreach ($resultado[0] as $k => $v){
+                    $respuesta = $v;
+                }
+            }
+            
+            $valor = ($respuesta=="")?0:1;
+            
+            if($valor == 1){                
+                
+                $funcion = "fn_act_depreciacion";
+                $fecha_hoy = date('Y-m-d');
+                
+                $parametros = "'$id_act_fijo',
+                           '$fecha_hoy'";
+                
+                //print_r($parametros); die();
+                $activos->setFuncion($funcion);
+                $activos->setParametros($parametros);
+                
+                $resultado=$activos->llamafuncion();
+                
+            }
+            
+            echo json_encode(array('valor'=>$valor,'mensaje'=>$respuesta));
+            
+        }
+        
+        
+    }
+    
+    public function cunsultaActivos(){
+        
+        session_start();
+        
+        $usuarios = new UsuariosModel();
+        
+        $id_rol = $_SESSION['id_rol'];
+        
+        $activos = new ActivosFijosModel();
+        
+        $where_to="";
+        
+        $columnas = "*";
+        
+        $tablas   = "vw_activos_fijos";
+        
+        $where    = " 1 = 1 ";
+        
+        $id       = "id_activos_fijos";
+        
+        
+        $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        
+        if($action == 'ajax')
+        {
+            
+            if(!empty($search)){
+                
+                
+                $where1=" AND (nombre_activos_fijos LIKE '".$search."%' )";
+                
+                $where_to=$where.$where1;
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            
+            $html="";
+            $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
+            $cantidadResult=(int)$resultSet[0]->total;
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 10; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            
+            $resultSet=$usuarios->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+            $total_pages = ceil($cantidadResult/$per_page);            
+            
+            if($cantidadResult>0)
+            {
+                
+                $html.='<div class="pull-left" style="margin-left:15px;">';
+                $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                $html.='</div>';
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<section style="height:425px; overflow-y:scroll;">';
+                $html.= "<table id='tabla_activos_fijos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<thead>";
+                $html.= "<tr>";
+                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Oficina</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Tipo</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Fecha Ingreso</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Responsable</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;"></th>'; 
+                
+                if($id_rol==1){
+                    
+                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                    
+                }
+                
+                $html.='</tr>';
+                $html.='</thead>';
+                $html.='<tbody>';
+                
+                
+                $i=0;
+                
+                foreach ($resultSet as $res)
+                {
+                    $i++;
+                    
+                    $html.='<tr>';
+                    $html.='<td style="font-size: 11px;">'.$i.'</td>';
+                    $html.='<td style="font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_activos_fijos.'&id_nombre=id_activos_fijos&tabla=act_activos_fijos&campo=imagen_activos_fijos" width="80" height="60"></td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombre_oficina.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->codigo_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->valor_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombre_estado.'</td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->fecha_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->responsable_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=verDetalles&id_activos_fijos='.$res->id_activos_fijos.'" class="" style="font-size:65%;"><i class="fa fa-window-maximize " aria-hidden="true"></i> Ver Detalles</a></span></td>';
+                    
+                    
+                    
+                    
+                    if($id_rol==1){
+                        
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><a target="_blank" href="index.php?controller=ActivosFijos&action=verDepreciacionInd&id_activos_fijos='.$res->id_activos_fijos.'" class="" style="font-size:65%;"><i class="fa fa-sitemap"></i> Ver Depreciacion</a></span></td>';
+                        
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=generarReporteID&id_activos_fijos='.$res->id_activos_fijos.'" class="btn btn-primary" style="font-size:65%;" target = "blank"><i class="fa fa-file-pdf-o"></i></a></span></td>';
+                        
+                    }
+                    
+                    $html.='</tr>';
+                }
+                
+                
+                
+                $html.='</tbody>';
+                $html.='</table>';
+                $html.='</section></div>';
+                $html.='<div class="table-pagination pull-right">';
+                $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents," ").'';
+                $html.='</div>';
+                
+                
+                
+            }else{
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                $html.='<h4>Aviso!!!</h4> <b> Datos No Encontrados</b>';
+                $html.='</div>';
+                $html.='</div>';
+            }
+            
+            
+            echo $html;
+            die();
+            
+        }
+        
+    }
+    
+    public function verDepreciacionInd(){
+        session_start();
+        
+        $anio = date('Y');
+        
+        $entidades = new EntidadesModel();
+        $activos = new ActivosFijosModel();
+        
+        $_id_activo_fijo = $_GET['id_activos_fijos'];
+        
+        $datosActivo = array();
+        
+        $datos_empresa = array();
+        
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        /*para tomar datos de activo*/
+        
+        $queryAcivo = "SELECT 
+                        ofi.id_oficina,
+                        ofi.nombre_oficina,
+                        ta.id_tipo_activos_fijos,
+                        ta.nombre_tipo_activos_fijos,
+                    	ta.meses_tipo_activos_fijos,
+                        es.id_estado,
+                        es.nombre_estado,
+                        ac.id_activos_fijos,
+                        ac.responsable_activos_fijos,
+                        ac.nombre_activos_fijos,
+                        ac.codigo_activos_fijos,
+                        ac.fecha_activos_fijos,
+                        ac.detalle_activos_fijos,
+                        ac.imagen_activos_fijos,
+                        ac.valor_activos_fijos
+                       FROM act_activos_fijos ac
+                         JOIN tipo_activos_fijos ta ON  ta.id_tipo_activos_fijos = ac.id_tipo_activos_fijos
+                         JOIN estado es ON es.id_estado = ac.id_estado
+                         JOIN oficina ofi ON ofi.id_oficina = ac.id_oficina
+                      WHERE 1 = 1 AND ac.id_activos_fijos = $_id_activo_fijo ";
+        
+        /*OBTIENE RS DE CONSULTA*/
+        $rsDatosActivo = $activos->enviaquery($queryAcivo);
+        
+        //TRABAJAR CON RESULTADO DE CONSULTA
+        if(!empty($rsDatosActivo) && count($rsDatosActivo)>0){
+            //LLENAR ARRAY QUE VA HTML CON SUS NOMBRES
+            $datosActivo['GRUPOACTIVO']=$rsDatosActivo[0]->nombre_tipo_activos_fijos." ( ".$rsDatosActivo[0]->meses_tipo_activos_fijos." )";
+            $datosActivo['ESTADOACTIVO']=$rsDatosActivo[0]->nombre_estado;
+            $datosActivo['CODIGOACTIVO']=$rsDatosActivo[0]->codigo_activos_fijos;
+            $datosActivo['CANTIDADACTIVO']=count($rsDatosActivo);
+            $datosActivo['NOMBREACTIVO']=$rsDatosActivo[0]->nombre_activos_fijos;
+            $datosActivo['FECHAACTIVO'] = $rsDatosActivo[0]->fecha_activos_fijos;
+            $datosActivo['VALORACTIVO'] = $rsDatosActivo[0]->valor_activos_fijos;
+            $datosActivo['DESCACTIVO'] = $rsDatosActivo[0]->detalle_activos_fijos;
+            $datosActivo['UBIACTIVO'] = ""; /*despues de creacion tabla departamento*/
+            $datosActivo['RESPACTIVO'] = $rsDatosActivo[0]->responsable_activos_fijos;
+            $datosActivo['IDACTIVO'] = $rsDatosActivo[0]->id_activos_fijos;
+        }
+        
+        $this->verReporte("ActFijos", array('datos_empresa'=>$datos_empresa,'datosActivo' => $datosActivo));
+    }
     
     
 }

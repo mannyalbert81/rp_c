@@ -119,7 +119,7 @@ class PermisosRolesController extends ControladorBase{
 	        $permisos_rol = new PermisosRolesModel();
 	        $rol = new RolesModel();
 	        $controladores = new ControladoresModel();
-	        
+	        $html='';
 	        $nombre_controladores = "PermisosRoles";
 	        $id_rol= $_SESSION['id_rol'];
 	        if (isset($_POST['selected_rol']))
@@ -141,6 +141,7 @@ class PermisosRolesController extends ControladorBase{
 	         if ($selrol!='0') 
 	         {
 	             $rolId = $rol->getCondiciones($columnas1 ,$tablas1 ,$where1, $id1);
+	             
 	             $columnas = "controladores.nombre_controladores, modulos.id_modulos,
                          permisos_rol.ver_permisos_rol,
                          permisos_rol.guardar_permisos_rol,
@@ -152,7 +153,7 @@ class PermisosRolesController extends ControladorBase{
 	             $id       = "controladores.id_modulos, controladores.nombre_controladores ";
 	             
 	             $resultSet=$permisos_rol->getCondiciones($columnas ,$tablas ,$where, $id);
-	             
+	             	             
 	             $columnas1 = "controladores.nombre_controladores, controladores.id_modulos";
 	             $tablas1   = "public.controladores ";
 	             $where1    = "1=1";
@@ -177,7 +178,7 @@ class PermisosRolesController extends ControladorBase{
 	             {
 	                 
 	                 //roles
-	                 $html='';
+	                
 	                 
 	                 if (!empty($rolId))
 	                 {
@@ -244,19 +245,19 @@ class PermisosRolesController extends ControladorBase{
 	                         foreach ($resultMod as $rm)
 	                         {
 	                         $html.='<li><input type="checkbox" onclick= "RevisaModulos(&quot;'.$rm->nombre_modulos.'&quot;)" class="sup" name="modulo" value="'.$rm->nombre_modulos.'">'.$rm->nombre_modulos.'<span class="caret"></span>';
-	                         $html.='<ul class ="nested active">';
+	                         $html.='<ul id="contlist'.$indm.'" class ="nested active">';
 	                         $ind=1;
 	                         foreach ($resultSetV as $res)
 	                         {
 	                             if($res->id_modulos == $rm->id_modulos)
 	                             {
 	                                 
-	                                 $html.='<li><input type="checkbox" onclick="RevisaControladores(&quot;'.$resultCtr[$i]->nombre_controladores.'&quot;)" class ="cont'.$rm->id_modulos.''.$ind.'" name="controlador" value="'.$resultCtr[$i]->nombre_controladores.'">'.$resultCtr[$i]->nombre_controladores.'<span class="caret"></span>';
-	                                 $html.='<ul class ="nested">';
-	                                 $html.='<li><input type="checkbox" onclick="RevisaCheck()" class="permck'.$rm->id_modulos.''.$ind.'" name="ver" value="ver">Ver</li>';
-	                                 $html.='<li><input type="checkbox" onclick="RevisaCheck()" class="permck'.$rm->id_modulos.''.$ind.'" name="guardar" value="guardar">Guardar</li>';
-	                                 $html.='<li><input type="checkbox" onclick="RevisaCheck()" class="permck'.$rm->id_modulos.''.$ind.'" name="editar" value="editar">Editar</li>';
-	                                 $html.='<li><input type="checkbox" onclick="RevisaCheck()" class="permck'.$rm->id_modulos.''.$ind.'" name="borrar" value="borrar">Borrar</li>';
+	                                 $html.='<li><input type="checkbox" onclick="RevisaControladores(&quot;'.$res->nombre_controladores.'&quot;)" class ="cont'.$indm.''.$ind.'" name="controlador" value="'.$res->nombre_controladores.'">'.$res->nombre_controladores.'<span class="caret"></span>';
+	                                 $html.='<ul id="permlist'.$indm.''.$ind.'" class ="nested">';
+	                                 $html.='<li><input type="checkbox" onclick="RevisaCheck()" class="permck'.$indm.''.$ind.'" name="ver" value="ver">Ver</li>';
+	                                 $html.='<li><input type="checkbox" onclick="RevisaCheck()" class="permck'.$indm.''.$ind.'" name="guardar" value="guardar">Guardar</li>';
+	                                 $html.='<li><input type="checkbox" onclick="RevisaCheck()" class="permck'.$indm.''.$ind.'" name="editar" value="editar">Editar</li>';
+	                                 $html.='<li><input type="checkbox" onclick="RevisaCheck()" class="permck'.$indm.''.$ind.'" name="borrar" value="borrar">Borrar</li>';
 	                                 $html.='</ul>';
 	                                 $html.='</li>';
 	                                 ++$ind;
@@ -424,61 +425,70 @@ class PermisosRolesController extends ControladorBase{
  {
      
      session_start();
+  
+     $permisos_rol = new PermisosRolesModel();
+     $rol = new RolesModel();
      if(isset($_POST['condiciones_permisos']))
      {
          $arreglo = $_POST['condiciones_permisos'];
-         echo $arreglo[0][2][0];
+         
      }
      
-     /*$resultado = null;
-     $permisos_rol=new PermisosRolesModel();
-     $_modulo=$_POST["modulo"];
-     die ($_modulo);
+     $nombre_rol= $_POST['nombre_rol'];
      
-     
-     $nombre_controladores = "PermisosRoles";
      $id_rol= $_SESSION['id_rol'];
-     $resultPer = $permisos_rol->getPermisosEditar("nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
-     
+     $nombre_controladores = "PermisosRoles";
+     $resultPer = $permisos_rol->getPermisosBorrar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
+     $rolId=null;
+          
      if (!empty($resultPer))
      {
-         
-         
-         //_nombre_categorias character varying, _path_categorias character varying
-         if (isset ($_POST["id_rol"]))
-         {
-             
-             $_id_rol = $_POST["id_rol"];
-             $_id_controladores = $_POST["id_controladores"];
-           
-                 $funcion = "ins_permisos_rol";
-                 $parametros = " '$_nombre_permisos_rol' ,'$_id_controladores' , '$_id_rol' , '$_ver_permisos_rol', '$_guardar_permisos_rol', '$_editar_permisos_rol', '$_borrar_permisos_rol'";
-                 $permisos_rol->setFuncion($funcion);
-                 $permisos_rol->setParametros($parametros);
-                 $resultado=$permisos_rol->Insert();
-            
-             
-         }
-         
-         $this->redirect("PermisosRoles", "index");
-     }
-     else
+     
+     $columnas1 = "rol.id_rol";
+     $tablas1   = "public.rol";
+     $where1    = "rol.nombre_rol='".$nombre_rol."'";
+     $id1       = "rol.id_rol";
+     
+     $rolId = $rol->getCondiciones($columnas1 ,$tablas1 ,$where1, $id1);
+     
+     $permisos_rol->deleteBy(" id_rol",$rolId[0]->id_rol);
+
+    
+     $resultPer2 = $permisos_rol->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
+     
+     if (!empty($resultPer2))
      {
-         $this->view_Administracion("Error",array(
-             "resultado"=>"No tiene Permisos Para Crear Permisos Roles"
-             
-         ));
+        $controladores = new ControladoresModel();
+       foreach ($arreglo as $res)
+       {
+         $columnasctr ="controladores.id_controladores";
+         $tablasctr = "public.controladores";
+         $wherectr = "controladores.nombre_controladores = '".$res[1]."'";
+         $idctr = "controladores.id_controladores";
+
+         $id_controlador= $controladores->getCondiciones($columnasctr, $tablasctr, $wherectr, $idctr);
          
+         $nombre_permisos_rol = $nombre_rol." - ".$res[1];
+         $ver = (string)$res[2];
+         $guardar = (string)$res[3];
+         $editar = (string)$res[4];
+         $borrar = (string)$res[5];
+         $_idrol =(string)$rolId[0]->id_rol;
+         $_idctr =(string)$id_controlador[0]->id_controladores;
+         $funcion = "ins_permisos_rol";
+         $parametros = " '$nombre_permisos_rol' ,'$_idctr' , '$_idrol' , '$ver', '$guardar', '$editar', '$borrar'";
+         $permisos_rol->setFuncion($funcion);
+         $permisos_rol->setParametros($parametros);
+         $resultado=$permisos_rol->Insert();
+         $html='';
+         echo $html;
          
-     }*/
+       }
+     }
      
+     }
      
-     
-     
-     
-     
-     
-     
+    
  }
 	
 	

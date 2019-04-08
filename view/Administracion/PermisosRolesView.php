@@ -147,7 +147,7 @@ div.l1 {
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-   <script src="view/Administracion/js/PermisoRoles.js?1.4"></script> 
+   <script src="view/Administracion/js/PermisoRoles.js?1.6"></script> 
 	
 	
   </body>

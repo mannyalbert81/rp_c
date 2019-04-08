@@ -67,7 +67,7 @@ function RevisaModulos(nombreModulo)
 
 function RevisaControladores(nombreControlador)
 {
-	
+		
 	var m = document.getElementsByClassName("sup");
 	for(var i=0; i<m.length; i++)
 		{
@@ -75,12 +75,14 @@ function RevisaControladores(nombreControlador)
 		var l=$("#permlist"+(i+1)+"1 li").length;
 		var c=$("#contlist"+(i+1)+" li").length;
 		var cc= c/(l+1);
+		
 		for (var j=1; j<=cc; j++)
 		 {
 		 
 		 var nomcont = "cont"+(i+1)+j;
 		 var nomperm = "permck"+(i+1)+j;
 		 var x=document.getElementsByClassName(nomcont);
+		 
 		 var x1=document.getElementsByClassName(nomperm);
 		 if (x[0].checked) cantcontrol++;
 		 if (x[0].checked && x[0].value==nombreControlador)
@@ -99,6 +101,13 @@ function RevisaControladores(nombreControlador)
 				{
 				 x1[k].checked=false;
 				}
+				 }
+			 if (x[0].checked &&  nombreControlador=="" )
+				 {
+				 for(var k=0; k<x1.length; k++)
+					{
+					 x1[k].checked=true;
+					}
 				 }
 			 }
 			 }
@@ -134,7 +143,7 @@ function RevisaCheck()
 			}
 		}
 	
-	RevisaControladores("");
+	RevisaControladores("s");
 
 }
 
@@ -143,7 +152,10 @@ function MandarDatos()
 	var rolsel=$("#id_rol").val();
 	var mod;
 	var contr;
-	var permisos=[];
+	var pver;
+	var pedit;
+	var psave;
+	var pborrar;
 	
 	var Arreglo =[];
 	var m = document.getElementsByClassName("sup");
@@ -167,12 +179,38 @@ function MandarDatos()
 	 				contr=x[0].value;
 	 				for(var k=0; k<l; k++)
 	 				{
-	 				if (x1[k].checked) permisos.push(x1[k].value+" t");
-	 				else permisos.push(x1[k].value+" f");
+	 				if (x1[k].checked && x1[k].value=="ver") pver="t";
+	 				else
+	 				{
+	 					if (!x1[k].checked && x1[k].value=="ver") pver="f";
+	 					else
+	 					{
+	 						if (x1[k].checked && x1[k].value=="guardar") psave="t";
+	 						else
+	 							{
+	 							if (!x1[k].checked && x1[k].value=="guardar") psave="f";
+	 							else
+	 								{
+	 								if (x1[k].checked && x1[k].value=="editar") pedit="t";
+	 								else
+	 									{
+	 									if (!x1[k].checked && x1[k].value=="editar") pedit="f";
+	 									else
+	 										{
+	 										if (x1[k].checked && x1[k].value=="borrar") pborrar="t";
+	 										else
+	 											{
+	 											if (!x1[k].checked && x1[k].value=="borrar") pborrar="f";
+	 											}
+	 										}
+	 									}
+	 								}
+	 							}
+	 					}
+	 				}
 	 				
 	 				}
-	 				Arreglo.push([mod,contr,permisos]);	
-	 				permisos=[];
+	 				Arreglo.push([mod,contr,pver, psave, pedit, pborrar]);	
 	 		   }
 			}
 			
@@ -180,18 +218,23 @@ function MandarDatos()
 			}
 		
 	}
-	
+
+	if(Arreglo.length>0)
+		{
 	$.ajax({
 		url: 'index.php?controller=PermisosRoles&action=ActualizarPermisos',
         type: 'POST',
-        data: {condiciones_permisos:Arreglo},
+        data: {
+        	nombre_rol:rolsel,
+        	condiciones_permisos:Arreglo},
         success: function (data){
-        	console.log(data);
+        	$("#id_rol").val("0");
+        	$("#arbol_roles").html(data);
         },
         error: function (){
         	console.log("fracaso");
         }
-	});
+	});}
 }
 
 

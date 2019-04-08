@@ -109,8 +109,8 @@
                   <label for="id_departamento" class="control-label">Departamento:</label>
                   <select name="id_departamento" id="id_departamento"  class="form-control">
                     <option value="0" selected="selected">--Seleccione--</option>
-						<?php foreach($resultDept as $res) {?>
-						<option value="<?php echo $res->id_tipo_activos_fijos; ?>"><?php echo $res->nombre_tipo_activos_fijos; ?> </option>
+						<?php foreach($rsDepartamento as $res) {?>
+						<option value="<?php echo $res->id_departamento; ?>"><?php echo $res->nombre_departamento; ?> </option>
 			            <?php } ?>
 				  </select>
 				  <div id="mensaje_id_departamento" class="errores"></div>

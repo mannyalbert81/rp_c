@@ -212,4 +212,33 @@ $(document).ready(function(){
 		    
 }); 
 
+$("#activos_fijos_registrados").on("click",".editaActivo",function(event){
+	
+	var parametros = {
+			peticion : "ajax",
+			activoId : $(this).attr("id")
+	}
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=ActivosFijos&action=editActivo",
+		type:"POST",
+		dataType:"json",
+		data:parametros
+	}).done(function(datos){
+		
+		if(datos.value == 1){
+			
+			console.log(datos.data);
+		}
+		
+	}).fail(function(xhr,status,error){
+		
+		var err = xhr.responseText
+		alert(err);
+	})
+	
+	event.preventDefault()
+})
+
 

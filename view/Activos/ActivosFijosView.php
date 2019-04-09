@@ -137,7 +137,7 @@
     		   <div class="col-xs-12 col-md-3 col-lg-3 ">
     		    <div class="form-group">
                       <label for="fecha_activos_fijos" class="control-label">Fecha Compra:</label>
-                      <input type="text" class="form-control" id="fecha_activos_fijos" name="fecha_activos_fijos" value="<?php echo date('Y-m-d');?>" >
+                      <input type="date" class="form-control" id="fecha_activos_fijos" name="fecha_activos_fijos" value="<?php echo date('Y-m-d');?>" >
                       <div id="mensaje_fecha_activos_fijos" class="errores"></div>
                 </div>
     		    </div>

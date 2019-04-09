@@ -976,8 +976,8 @@ class ActivosFijosController extends ControladorBase{
         
         $departamento = new DepartamentoModel();
         $rsDepartamento = $departamento -> getBy("1 = 1");
-       
-        
+               
+               
         $this->view_Activos('ActivosFijos', array('resultOfi'=>$resultOfi,'resultTipoac'=>$resultTipoac,'rsEstadoAct'=>$rsEstadoAct,'rsDepartamento'=>$rsDepartamento));
     }
     
@@ -1104,7 +1104,7 @@ class ActivosFijosController extends ControladorBase{
         
         $id_rol = $_SESSION['id_rol'];
         
-        $activos = new ActivosFijosModel();
+        //$activos = new ActivosFijosModel();
         
         $where_to="";
         
@@ -1174,7 +1174,6 @@ class ActivosFijosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Fecha Ingreso</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Responsable</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;"></th>'; 
                 
                 if($id_rol==1){
                     
@@ -1206,16 +1205,13 @@ class ActivosFijosController extends ControladorBase{
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombre_estado.'</td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->fecha_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->responsable_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=verDetalles&id_activos_fijos='.$res->id_activos_fijos.'" class="" style="font-size:65%;"><i class="fa fa-window-maximize " aria-hidden="true"></i> Ver Detalles</a></span></td>';
-                    
-                    
-                    
+                     
                     
                     if($id_rol==1){
                         
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><a target="_blank" href="index.php?controller=ActivosFijos&action=verDepreciacionInd&id_activos_fijos='.$res->id_activos_fijos.'" class="" style="font-size:65%;"><i class="fa fa-sitemap"></i> Ver Depreciacion</a></span></td>';
                         
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=generarReporteID&id_activos_fijos='.$res->id_activos_fijos.'" class="btn btn-primary" style="font-size:65%;" target = "blank"><i class="fa fa-file-pdf-o"></i></a></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><a id="'.$res->id_activos_fijos.'" href="#" target="blank" class="editaActivo" style="font-size:65%;" ><i class="fa fa-pencil-square-o"></i> Editar </a></span></td>';
                         
                     }
                     
@@ -1293,20 +1289,32 @@ class ActivosFijosController extends ControladorBase{
                         ac.fecha_activos_fijos,
                         ac.detalle_activos_fijos,
                         ac.imagen_activos_fijos,
-                        ac.valor_activos_fijos
+                        ROUND(ac.valor_activos_fijos,2) valor_activos_fijos ,
+                        dep.nombre_departamento
                        FROM act_activos_fijos ac
                          JOIN tipo_activos_fijos ta ON  ta.id_tipo_activos_fijos = ac.id_tipo_activos_fijos
                          JOIN estado es ON es.id_estado = ac.id_estado
                          JOIN oficina ofi ON ofi.id_oficina = ac.id_oficina
+                         JOIN act_departamento dep ON dep.id_departamento = ac.id_departamento
                       WHERE 1 = 1 AND ac.id_activos_fijos = $_id_activo_fijo ";
         
         /*OBTIENE RS DE CONSULTA*/
         $rsDatosActivo = $activos->enviaquery($queryAcivo);
         
+        //PARA VER EL ESTADO DEL ACTIVO 
+        $queryEstado = "SELECT estado_depreciacion 
+                        FROM act_depreciacion 
+                        WHERE id_activos_fijos = $_id_activo_fijo 
+                        ORDER BY anio_depreciacion DESC LIMIT 1";
+        
+        $rsEstadoActivo = $activos->enviaquery($queryEstado);
+        
+        $estadoActivo = ($rsEstadoActivo[0]->estado_depreciacion == "t")?"ACTIVO DEPRECIADO":"";
+        
         //TRABAJAR CON RESULTADO DE CONSULTA
         if(!empty($rsDatosActivo) && count($rsDatosActivo)>0){
             //LLENAR ARRAY QUE VA HTML CON SUS NOMBRES
-            $datosActivo['GRUPOACTIVO']=$rsDatosActivo[0]->nombre_tipo_activos_fijos." ( ".$rsDatosActivo[0]->meses_tipo_activos_fijos." )";
+            $datosActivo['GRUPOACTIVO']=$rsDatosActivo[0]->nombre_tipo_activos_fijos." ( ".$rsDatosActivo[0]->meses_tipo_activos_fijos." MESES )";
             $datosActivo['ESTADOACTIVO']=$rsDatosActivo[0]->nombre_estado;
             $datosActivo['CODIGOACTIVO']=$rsDatosActivo[0]->codigo_activos_fijos;
             $datosActivo['CANTIDADACTIVO']=count($rsDatosActivo);
@@ -1314,9 +1322,10 @@ class ActivosFijosController extends ControladorBase{
             $datosActivo['FECHAACTIVO'] = $rsDatosActivo[0]->fecha_activos_fijos;
             $datosActivo['VALORACTIVO'] = $rsDatosActivo[0]->valor_activos_fijos;
             $datosActivo['DESCACTIVO'] = $rsDatosActivo[0]->detalle_activos_fijos;
-            $datosActivo['UBIACTIVO'] = ""; /*despues de creacion tabla departamento*/
+            $datosActivo['UBIACTIVO'] = $rsDatosActivo[0]->nombre_departamento; /*despues de creacion tabla departamento*/
             $datosActivo['RESPACTIVO'] = $rsDatosActivo[0]->responsable_activos_fijos;
             $datosActivo['IDACTIVO'] = $rsDatosActivo[0]->id_activos_fijos;
+            $datosActivo['ISDEPRECIADO'] = $estadoActivo;
         }
         
         /*para obtener la depreciacion del activo*/
@@ -1339,6 +1348,70 @@ class ActivosFijosController extends ControladorBase{
         $this->verReporte("ActFijos", array('datos_empresa'=>$datos_empresa,'datosActivo' => $datosActivo,'rsDatosDepreciacion'=>$rsDatosDepreciacion));
     }
     
+    public function editActivo(){
+        
+        if(!isset($_POST['peticion']) ){ 
+            
+            echo "peticion fallida";
+            return;
+        }
+        
+        if(!isset($_POST['activoId']) ){
+            
+            echo "parametros incorrectos";
+            return;
+        }
+        
+        
+        $activos = new ActivosFijosModel();
+        
+        $_id_activo_fijo =  $_POST['activoId'];
+        
+        print_r($_POST);
+        
+        $queryAcivo = "SELECT
+                        ofi.id_oficina,
+                        ofi.nombre_oficina,
+                        ta.id_tipo_activos_fijos,
+                        ta.nombre_tipo_activos_fijos,
+                    	ta.meses_tipo_activos_fijos,
+                        es.id_estado,
+                        es.nombre_estado,
+                        ac.id_activos_fijos,
+                        ac.responsable_activos_fijos,
+                        ac.nombre_activos_fijos,
+                        ac.codigo_activos_fijos,
+                        ac.fecha_activos_fijos,
+                        ac.detalle_activos_fijos,
+                        ac.imagen_activos_fijos,
+                        ROUND(ac.valor_activos_fijos,2) valor_activos_fijos ,
+                        dep.nombre_departamento
+                       FROM act_activos_fijos ac
+                         JOIN tipo_activos_fijos ta ON  ta.id_tipo_activos_fijos = ac.id_tipo_activos_fijos
+                         JOIN estado es ON es.id_estado = ac.id_estado
+                         JOIN oficina ofi ON ofi.id_oficina = ac.id_oficina
+                         JOIN act_departamento dep ON dep.id_departamento = ac.id_departamento
+                      WHERE 1 = 1 AND ac.id_activos_fijos = $_id_activo_fijo ";
+        
+        /*OBTIENE RS DE CONSULTA*/
+        $rsDatosActivo = $activos->enviaquery($queryAcivo);             
+        
+        /*parametros de salida*/
+        $outActivo = new stdClass();
+        
+        if(!empty($rsDatosActivo) && count($rsDatosActivo)>0){
+            
+            $outActivo->id_activos_fijos =  $rsDatosActivo[0]->id_activos_fijos;
+        }
+        
+        echo json_encode(array('value' => 1,'mensaje' => 'Exito','data'=>$outActivo));
+    }
+    
+    public function depreciacionActivos(){
+        
+        echo 'llego'; 
+        
+    }
     
 }
 ?>

@@ -1293,11 +1293,13 @@ class ActivosFijosController extends ControladorBase{
                         ac.fecha_activos_fijos,
                         ac.detalle_activos_fijos,
                         ac.imagen_activos_fijos,
-                        ac.valor_activos_fijos
+                        ROUND(ac.valor_activos_fijos,2) valor_activos_fijos ,
+                        dep.nombre_departamento
                        FROM act_activos_fijos ac
                          JOIN tipo_activos_fijos ta ON  ta.id_tipo_activos_fijos = ac.id_tipo_activos_fijos
                          JOIN estado es ON es.id_estado = ac.id_estado
                          JOIN oficina ofi ON ofi.id_oficina = ac.id_oficina
+                         JOIN act_departamento dep ON dep.id_departamento = ac.id_departamento
                       WHERE 1 = 1 AND ac.id_activos_fijos = $_id_activo_fijo ";
         
         /*OBTIENE RS DE CONSULTA*/
@@ -1314,7 +1316,7 @@ class ActivosFijosController extends ControladorBase{
             $datosActivo['FECHAACTIVO'] = $rsDatosActivo[0]->fecha_activos_fijos;
             $datosActivo['VALORACTIVO'] = $rsDatosActivo[0]->valor_activos_fijos;
             $datosActivo['DESCACTIVO'] = $rsDatosActivo[0]->detalle_activos_fijos;
-            $datosActivo['UBIACTIVO'] = ""; /*despues de creacion tabla departamento*/
+            $datosActivo['UBIACTIVO'] = $rsDatosActivo[0]->nombre_departamento; /*despues de creacion tabla departamento*/
             $datosActivo['RESPACTIVO'] = $rsDatosActivo[0]->responsable_activos_fijos;
             $datosActivo['IDACTIVO'] = $rsDatosActivo[0]->id_activos_fijos;
         }

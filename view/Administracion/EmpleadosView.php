@@ -91,18 +91,25 @@
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="cargo_empleados" class="control-label">Cargo:</label>
-                    	<input type="text" class="form-control" id="cargo_empleados" name="cargo_empleados" placeholder="Cargo">
-                        <div id="mensaje_cargo_empleados" class="errores"></div>
+                		<label for="dpto_empleados" class="control-label">Departamento:</label>
+                    	<select name="dpto_empleados" id="dpto_empleados"  class="form-control" onchange = "SelecCargo(&quot;&quot;)">
+                                      <option value="" selected="selected">--Seleccione--</option>
+                                      <?php  foreach($resultdpto as $res) {?>
+									  <option value="<?php echo $res->id_departamento; ?>"><?php echo $res->nombre_departamento; ?> </option>
+			        				  <?php } ?>
+                        </select> 
+                        <div id="mensaje_dpto_empleados" class="errores"></div>
                  	</div>
              	</div>
           	</div>
           	<div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="dpto_empleados" class="control-label">Departamento:</label>
-                    	<input type="text" class="form-control" id="dpto_empleados" name="dpto_empleados" placeholder="Departamento">
-                        <div id="mensaje_dpto_empleados" class="errores"></div>
+                		<label for="cargo_empleados" class="control-label">Cargo:</label>
+                           	<select name="cargo_empleados" id="cargo_empleados"  class="form-control">
+                             <option value="" selected="selected">Seleccione departamento</option>
+    					</select>
+                        <div id="mensaje_cargo_empleados" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">

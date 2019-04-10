@@ -4,6 +4,14 @@ class EmpleadosController extends ControladorBase{
         session_start();
         $grupo_empleados = new GrupoEmpleadosModel();
         $estado = new EstadoModel();
+        $departamentos = new DepartamentoModel();
+        
+        $tabladpto ="public.departamentos INNER JOIN public.estado
+                     ON departamentos.id_estado = estado.id_estado";
+        $wheredpto = "estado.nombre_estado = 'ACTIVO'";
+        $iddpto = "departamentos.nombre_departamento";
+        $resultdpto = $departamentos->getCondiciones("*", $tabladpto, $wheredpto, $iddpto);
+        
         $tablaest= "public.estado";
         $whereest= "estado.tabla_estado='EMPLEADOS'";
         $idest = "estado.id_estado";
@@ -24,7 +32,8 @@ class EmpleadosController extends ControladorBase{
         $this->view_Administracion("Empleados",array(
             "resultSet"=>$resultSet,
             "resultEst"=>$resultEst,
-            "resultOfic"=>$resultOfic
+            "resultOfic"=>$resultOfic,
+            "resultdpto"=>$resultdpto
         ));
     }
     
@@ -36,7 +45,21 @@ class EmpleadosController extends ControladorBase{
                  ON grupo_empleados.id_estado_grupo_empleados = estado.id_estado
                  INNER JOIN public.oficina ON oficina.id_oficina = grupo_empleados.id_oficina";
         $where= "estado.nombre_estado='ACTIVO'";
-        $id = "grupo_empleados.id_oficina";
+        $id = "grupo_empleados.id_grupo_empleados";
+        
+        $resultSet = $grupo_empleados->getCondiciones("*", $tabla, $where, $id);
+        
+        echo json_encode($resultSet);
+    }
+    
+    public function GetCargos()
+    {
+        session_start();
+        $cargos = new CargosModel();
+        $tabla= "public.cargos_empleados INNER JOIN public.estado
+                 ON cargos_empleados.id_estado = estado.id_estado";
+        $where= "estado.nombre_estado='ACTIVO'";
+        $id = "grupo_empleados.id_grupo_empleados";
         
         $resultSet = $grupo_empleados->getCondiciones("*", $tabla, $where, $id);
         
@@ -80,21 +103,27 @@ class EmpleadosController extends ControladorBase{
         $where_to="";
         $columnas = " empleados.numero_cedula_empleados,
 					  empleados.nombres_empleados,
-                      empleados.cargo_empleados,
-                      empleados.departamento_empleados,
+                      empleados.id_cargo_empleado,
+                      empleados.id_departamento,
                       grupo_empleados.nombre_grupo_empleados,
                       empleados.id_grupo_empleados,
                       empleados.id_estado,
                       estado.nombre_estado,
                       oficina.id_oficina,
-                      oficina.nombre_oficina";
+                      oficina.nombre_oficina,
+                      departamentos.nombre_departamento,
+                      cargos_empleados.nombre_cargo";
         
         $tablas = "public.empleados INNER JOIN public.grupo_empleados
                    ON grupo_empleados.id_grupo_empleados = empleados.id_grupo_empleados
                    INNER JOIN public.estado 
                    ON empleados.id_estado = estado.id_estado
                    INNER JOIN public.oficina
-                   ON oficina.id_oficina = empleados.id_oficina";
+                   ON oficina.id_oficina = empleados.id_oficina
+                   INNER JOIN public.departamentos
+                   ON empleados.id_departamento = departamentos.id_departamento
+                   INNER JOIN public.cargos_empleados
+                   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         
         
         $where    = "empleados.id_estado=".$id_estado;
@@ -181,13 +210,13 @@ class EmpleadosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->numero_cedula_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->cargo_empleados.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->departamento_empleados.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->nombre_cargo.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->nombre_departamento.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_grupo_empleados.'</td>';
                     if($id_rol==1){
                         
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarEmpleado('.$res->numero_cedula_empleados.',&quot;'.$res->nombres_empleados.'&quot;,&quot;'.$res->cargo_empleados.'&quot;,&quot;'.$res->departamento_empleados.'&quot;,&quot;'.$res->id_grupo_empleados.'&quot; , '.$res->id_estado.', '.$res->id_oficina.')"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarEmpleado('.$res->numero_cedula_empleados.',&quot;'.$res->nombres_empleados.'&quot;,&quot;'.$res->id_cargo_empleado.'&quot;,&quot;'.$res->id_departamento.'&quot;,&quot;'.$res->id_grupo_empleados.'&quot; , '.$res->id_estado.', '.$res->id_oficina.')"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
                     if($res->nombre_estado=="ACTIVO")
                     {
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="EliminarEmpleado('.$res->numero_cedula_empleados.')"><i class="glyphicon glyphicon-trash"></i></button></span></td>';

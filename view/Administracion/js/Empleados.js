@@ -120,6 +120,45 @@ function SelecGrupo(idgrupo)
 	
 }
 
+function SelecCargo(idcargo)
+{
+	var oficina = $("#dpto_empleados").val();
+		$.ajax({
+	    url: 'index.php?controller=Empleados&action=GetCargos',
+	    type: 'POST',
+	    data: {   
+	    },
+	})
+	.done(function(x) {
+			var grupos = JSON.parse(x);
+			if (oficina=="")
+			{
+			$('#turno_empleados').empty().append('<option value="" selected="selected">Seleccione oficina</option>');
+			}
+		else
+			{
+			$('#turno_empleados').empty().append('<option value="" selected="selected">--Seleccione--</option>');
+			for (var i = 0 ; i<grupos.length ; i++)
+				{
+				var opt = "<option value=\"";
+				if (grupos[i]["id_oficina"]==oficina) 
+					{
+					opt += grupos[i]["id_grupo_empleados"];
+					opt += "\" >" + grupos[i]["nombre_grupo_empleados"]+"</option>";
+					$('#turno_empleados').append(opt);
+					$('#turno_empleados').val(idgrupo);
+					}
+				}
+			}
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	    
+	});
+	
+}
+
 function InsertarEmpleado()
 {
 var ci = $("#cedula_empleado").val();

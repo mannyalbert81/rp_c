@@ -59,9 +59,9 @@ class EmpleadosController extends ControladorBase{
         $tabla= "public.cargos_empleados INNER JOIN public.estado
                  ON cargos_empleados.id_estado = estado.id_estado";
         $where= "estado.nombre_estado='ACTIVO'";
-        $id = "grupo_empleados.id_grupo_empleados";
+        $id = "cargos_empleados.nombre_cargo";
         
-        $resultSet = $grupo_empleados->getCondiciones("*", $tabla, $where, $id);
+        $resultSet = $cargos->getCondiciones("*", $tabla, $where, $id);
         
         echo json_encode($resultSet);
     }
@@ -216,7 +216,7 @@ class EmpleadosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->nombre_grupo_empleados.'</td>';
                     if($id_rol==1){
                         
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarEmpleado('.$res->numero_cedula_empleados.',&quot;'.$res->nombres_empleados.'&quot;,&quot;'.$res->id_cargo_empleado.'&quot;,&quot;'.$res->id_departamento.'&quot;,&quot;'.$res->id_grupo_empleados.'&quot; , '.$res->id_estado.', '.$res->id_oficina.')"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarEmpleado('.$res->numero_cedula_empleados.',&quot;'.$res->nombres_empleados.'&quot;,'.$res->id_cargo_empleado.','.$res->id_departamento.',&quot;'.$res->id_grupo_empleados.'&quot; , '.$res->id_estado.', '.$res->id_oficina.')"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
                     if($res->nombre_estado=="ACTIVO")
                     {
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="EliminarEmpleado('.$res->numero_cedula_empleados.')"><i class="glyphicon glyphicon-trash"></i></button></span></td>';

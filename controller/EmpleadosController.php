@@ -142,7 +142,7 @@ class EmpleadosController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND (CAST(empleados.numero_cedula_empleados AS TEXT) LIKE '".$search."%' OR empleados.nombres_empleados ILIKE '".$search."%' OR empleados.cargo_empleados ILIKE '".$search."%' OR empleados.departamento_empleados ILIKE '".$search."%' 
+                $where1=" AND (CAST(empleados.numero_cedula_empleados AS TEXT) LIKE '".$search."%' OR empleados.nombres_empleados ILIKE '".$search."%' OR cargos_empleados.nombre_cargo ILIKE '".$search."%' OR departamentos.nombre_departamento ILIKE '".$search."%' 
                  OR grupo_empleados.nombre_grupo_empleados ILIKE '".$search."%')";
                 
                 $where_to=$where.$where1;

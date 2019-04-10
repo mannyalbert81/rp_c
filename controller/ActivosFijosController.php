@@ -1407,10 +1407,75 @@ class ActivosFijosController extends ControladorBase{
         echo json_encode(array('value' => 1,'mensaje' => 'Exito','data'=>$outActivo));
     }
     
-    public function depreciacionActivos(){
+    
+    public function depreciacionActivosIndex(){
         
-        echo 'llego'; 
+        //dcarrillo 2019-04-09
         
+        /* para validacion de acceso al preoceso */
+        
+        /*-----*/
+        
+        session_start();
+        
+        $this->view_Activos("DepreciacionActivos", array());
+        
+       
+    }
+    
+    public function depreciacionAnual(){
+        
+       session_start();
+       
+       $depreciacion = new DepreciacionModel();
+       
+       $anio = date('Y');
+       
+       /*buscar anio en depreciacion historial*/
+       
+       $queryDepreciacion = "SELECT 1 AS RESULTADO FROM act_depreciacion WHERE anio_depreciacion = $anio LIMIT 1";
+       
+       $rsDepreciacion = $depreciacion->enviaquery($queryDepreciacion); 
+       
+       $salida = 0; 
+       
+       if(empty($rsDepreciacion) && count($rsDepreciacion)==0){
+           
+           $funcion = "fn_act_depreciacion_general";
+           $parametros = "$anio";
+           $depreciacion->setFuncion($funcion);
+           $depreciacion->setParametros($parametros);
+           $resultado = $depreciacion->llamafuncion();
+           
+           if(!empty($resultado) && count($resultado) > 0){
+               
+               foreach ($resultado[0] as $k => $v ){
+                   $salida = $v;
+               }
+               
+               if($salida == 1){
+                   
+                   echo json_encode(array('value' => 1 , 'mensaje' => "DEPRECIACION REALIZADA / REVISAR REPORTE DE ACTIVOS"));
+                   
+               }
+           }
+           
+       }else{
+           
+           echo json_encode(array('value' => 2, 'mensaje' => "AÑO SOLICITADO YA SE ENCUENTRA INGRESADO AL SISTEMA / REVISAR REPORTE DE ACTIVOS"));
+       }
+       
+       
+    }
+    
+    
+    public function VerDepreciacion(){
+        
+        print('Implementando...... LAMENTAMOS LOS INCONVENIENTES...');      
+        
+        //return;
+        
+        $this->verReporte("Depreciacion", array());
     }
     
 }

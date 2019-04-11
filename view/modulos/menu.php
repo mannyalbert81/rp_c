@@ -266,6 +266,7 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
                  <li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=ActivosFijos&action=index"><i class="fa fa-circle-o"></i>Registro de Activos Fijos</a></li>
+                 <li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=TipoActivos&action=index"><i class="fa fa-circle-o"></i>Tipo Activos Fijos</a></li>
                  <li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=ActivosFijos&action=index1"><i class="fa fa-circle-o"></i>Ingresar Activos Fijos</a></li>
               </ul>
             </li>

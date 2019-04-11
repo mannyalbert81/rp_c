@@ -122,7 +122,7 @@ function SelecGrupo(idgrupo)
 
 function SelecCargo(idcargo)
 {
-	var oficina = $("#dpto_empleados").val();
+	var dpto = $("#dpto_empleados").val();
 		$.ajax({
 	    url: 'index.php?controller=Empleados&action=GetCargos',
 	    type: 'POST',
@@ -130,23 +130,24 @@ function SelecCargo(idcargo)
 	    },
 	})
 	.done(function(x) {
+		    console.log(x);
 			var grupos = JSON.parse(x);
-			if (oficina=="")
+			if (dpto=="")
 			{
-			$('#turno_empleados').empty().append('<option value="" selected="selected">Seleccione oficina</option>');
+			$('#cargo_empleados').empty().append('<option value="" selected="selected">Seleccione departamento</option>');
 			}
 		else
 			{
-			$('#turno_empleados').empty().append('<option value="" selected="selected">--Seleccione--</option>');
+			$('#cargo_empleados').empty().append('<option value="" selected="selected">--Seleccione--</option>');
 			for (var i = 0 ; i<grupos.length ; i++)
 				{
 				var opt = "<option value=\"";
-				if (grupos[i]["id_oficina"]==oficina) 
+				if (grupos[i]["id_departamento"]==dpto) 
 					{
-					opt += grupos[i]["id_grupo_empleados"];
-					opt += "\" >" + grupos[i]["nombre_grupo_empleados"]+"</option>";
-					$('#turno_empleados').append(opt);
-					$('#turno_empleados').val(idgrupo);
+					opt += grupos[i]["id_cargo"];
+					opt += "\" >" + grupos[i]["nombre_cargo"]+"</option>";
+					$('#cargo_empleados').append(opt);
+					$('#cargo_empleados').val(idcargo);
 					}
 				}
 			}
@@ -292,11 +293,11 @@ function LimpiarCampos()
 	$("#cedula_empleado").val("");
 	$("#nombre_empleados").val("");
 	$("#apellido_empleados").val("");
-	$("#cargo_empleados").val("");
 	$("#dpto_empleados").val("");
-	$("#turno_empleados").val("");
 	$("#estado_empleados_reg").val("");
 	$("#oficina_empleados").val("");
+	SelecGrupo("");
+	SelecCargo("");
 }
 
 function EditarEmpleado(cedula, nombres, cargo, dpto, idgrupo, idestado, idofic)
@@ -307,11 +308,11 @@ var apellido = res[2]+" "+res[3];
 $("#cedula_empleado").val(cedula);
 $("#nombre_empleados").val(nombre);
 $("#apellido_empleados").val(apellido);
-$("#cargo_empleados").val(cargo);
 $("#dpto_empleados").val(dpto);
 $("#estado_empleados_reg").val(idestado);
 $("#oficina_empleados").val(idofic);
 SelecGrupo(idgrupo);
+SelecCargo(cargo);
 $('html, body').animate({ scrollTop: 0 }, 'fast');
 }
 function EliminarEmpleado(cedula)

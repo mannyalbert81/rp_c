@@ -975,7 +975,7 @@ class ActivosFijosController extends ControladorBase{
         $rsEstadoAct = $EstadosActivo->getBy("tabla_estado = 'ACTIVOS' ");   
         
         $departamento = new DepartamentosModel();
-        $rsDepartamento = $departamento -> getBy("1 = 1");
+        $rsDepartamento = $departamento -> getBy(" id_estado = ( SELECT id_estado FROM estado WHERE tabla_estado = 'DEPARTAMENTOS' AND nombre_estado = 'ACTIVO')");
         
         $Empleados = new EmpleadosModel();
         $resultEmp = $Empleados->getBy("1=1");
@@ -1037,7 +1037,6 @@ class ActivosFijosController extends ControladorBase{
             $parametros = "'$id_usuario',
                            '$_id_oficina',
 	    				   '$_id_tipo_activo',
-                           '$_id_departamento',
                            '$_id_estado',
                            '$_id_empleados',
 	    	               '$_nombre_activo',
@@ -1045,7 +1044,8 @@ class ActivosFijosController extends ControladorBase{
 	    	               '$_fecha_activo',
 	    	               '$_detalles_activo',
 	    	               '$_imagen_activos',
-                           '$_valor_activo'";        
+                           '$_valor_activo',
+                           '0'";        
              
             //print_r($parametros); die();
             $activos->setFuncion($funcion);
@@ -1207,7 +1207,7 @@ class ActivosFijosController extends ControladorBase{
                     $html.='<td style="font-size: 11px;">'.$res->valor_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombre_estado.'</td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->fecha_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->responsable_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombres_empleados.'</td>';
                      
                     
                     if($id_rol==1){
@@ -1285,20 +1285,21 @@ class ActivosFijosController extends ControladorBase{
                     	ta.meses_tipo_activos_fijos,
                         es.id_estado,
                         es.nombre_estado,
-                        ac.id_activos_fijos,
-                        ac.responsable_activos_fijos,
+                        ac.id_activos_fijos,                        
                         ac.nombre_activos_fijos,
                         ac.codigo_activos_fijos,
                         ac.fecha_activos_fijos,
                         ac.detalle_activos_fijos,
                         ac.imagen_activos_fijos,
                         ROUND(ac.valor_activos_fijos,2) valor_activos_fijos ,
-                        dep.nombre_departamento
+                        dep.nombre_departamento,
+                        emp.nombres_empleados
                        FROM act_activos_fijos ac
                          JOIN tipo_activos_fijos ta ON  ta.id_tipo_activos_fijos = ac.id_tipo_activos_fijos
                          JOIN estado es ON es.id_estado = ac.id_estado
                          JOIN oficina ofi ON ofi.id_oficina = ac.id_oficina
-                         JOIN act_departamento dep ON dep.id_departamento = ac.id_departamento
+                         JOIN empleados emp ON emp.id_empleados = ac.id_empleados
+                         JOIN departamentos dep ON dep.id_departamento = emp.id_departamento
                       WHERE 1 = 1 AND ac.id_activos_fijos = $_id_activo_fijo ";
         
         /*OBTIENE RS DE CONSULTA*/
@@ -1326,7 +1327,7 @@ class ActivosFijosController extends ControladorBase{
             $datosActivo['VALORACTIVO'] = $rsDatosActivo[0]->valor_activos_fijos;
             $datosActivo['DESCACTIVO'] = $rsDatosActivo[0]->detalle_activos_fijos;
             $datosActivo['UBIACTIVO'] = $rsDatosActivo[0]->nombre_departamento; /*despues de creacion tabla departamento*/
-            $datosActivo['RESPACTIVO'] = $rsDatosActivo[0]->responsable_activos_fijos;
+            $datosActivo['RESPACTIVO'] = $rsDatosActivo[0]->nombre_empleados;
             $datosActivo['IDACTIVO'] = $rsDatosActivo[0]->id_activos_fijos;
             $datosActivo['ISDEPRECIADO'] = $estadoActivo;
         }
@@ -1347,7 +1348,7 @@ class ActivosFijosController extends ControladorBase{
         /*OBTIENE RS DE CONSULTA*/
         $rsDatosDepreciacion = $activos->enviaquery($queryDepreciacion);
         
-        
+        //die();
         $this->verReporte("ActFijos", array('datos_empresa'=>$datos_empresa,'datosActivo' => $datosActivo,'rsDatosDepreciacion'=>$rsDatosDepreciacion));
     }
     

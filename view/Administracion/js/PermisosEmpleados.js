@@ -1,76 +1,57 @@
 $(document).ready( function (){
-	load_empleados(1);
+	load_solicitudes(1);
 	$(":input").inputmask();
+	getUsuario();
+	
 	
 
 });
 
-$( "#cedula_empleado" ).autocomplete({
-
-	source: "index.php?controller=Empleados&action=AutocompleteCedula",
-	minLength: 3,
-    select: function (event, ui) {
-       // Set selection          
-       $('#id_usuarios').val(ui.item.id);
-       $('#cedula_empleado').val(ui.item.value); // save selected id to input      
-       return false;
-    },focus: function(event, ui) { 
-        var text = ui.item.value; 
-        $('#cedula_empleado').val();            
-        return false; 
-    } 
-}).focusout(function() {
-		if(document.getElementById('cedula_empleado').value != ''){
-		$.ajax({
-			url:'index.php?controller=Empleados&action=AutocompleteCedula',
-			type:'POST',
-			dataType:'json',
-			data:{term:$('#cedula_empleado').val()}
-		}).done(function(respuesta){
-			if(JSON.stringify(respuesta)!='{}'){
-			
-							
-				$('#nombre_empleados').val(respuesta.nombre_empleados);
-				$('#apellido_empleados').val(respuesta.apellidos_empleados);
-				$('#cargo_empleados').val(respuesta.cargo_empleados);
-				$('#dpto_empleados').val(respuesta.dpto_empleados);
-				$('#turno_empleados').val(respuesta.id_grupo_empleados);
-				$('#estado_empleados_reg').val(respuesta.id_estado);
-	
-			
-			}else{ $("#cedula_usuarios").val("");}
-			
-		}).fail( function( xhr , status, error ){
-			 var err=xhr.responseText
-			console.log(err)
-		});
-	}
-	
-});
 
 
-function load_empleados(pagina){
+function getUsuario()
+{
+	$.ajax({
+		url:'index.php?controller=PermisosEmpleados&action=getUsuario',
+		type:'POST',
+		dataType:'json',
+		data:{}
+	}).done(function(respuesta){
+		if(JSON.stringify(respuesta)!='{}'){
+			
+			$('#nombre_empleados').val(respuesta.nombre_empleados);
+			$('#dpto_empleados').val(respuesta.dpto_empleados);
+			$('#cargo_empleados').val(respuesta.cargo_empleados);
+		}
+		
+	}).fail( function( xhr , status, error ){
+		 var err=xhr.responseText
+		console.log(err)
+	});
+}
+
+function load_solicitudes(pagina){
 
 	   var search=$("#search").val();
-	   var idestado=$("#estado_empleados").val();
+	   var idestado=$("#estado_solicitudes").val();
   var con_datos={
 				  action:'ajax',
 				  page:pagina
 				  };
 		  
-$("#load_empleados").fadeIn('slow');
+$("#load_solicitudes").fadeIn('slow');
 
 $.ajax({
           beforeSend: function(objeto){
-            $("#load_empleados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+            $("#load_solicitudes").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
           },
-          url: 'index.php?controller=Empleados&action=consulta_empleados&search='+search+'&id_estado='+idestado,
+          url: 'index.php?controller=PermisosEmpleados&action=consulta_solicitudes&search='+search+'&id_estado='+idestado,
           type: 'POST',
           data: con_datos,
           success: function(x){
-            $("#empleados_registrados").html(x);
-            $("#load_empleados").html("");
-            $("#tabla_empleados").tablesorter(); 
+            $("#solicitudes_registrados").html(x);
+            $("#load_solicitudes").html("");
+            $("#tabla_solicitudes").tablesorter(); 
             
           },
          error: function(jqXHR,estado,error){
@@ -81,190 +62,198 @@ $.ajax({
 
 	   }
 
-function SelecGrupo(idgrupo)
+function validarhora()
 {
-	var oficina = $("#oficina_empleados").val();
-		$.ajax({
-	    url: 'index.php?controller=Empleados&action=GetGrupos',
-	    type: 'POST',
-	    data: {   
-	    },
-	})
-	.done(function(x) {
-			var grupos = JSON.parse(x);
-			if (oficina=="")
-			{
-			$('#turno_empleados').empty().append('<option value="" selected="selected">Seleccione oficina</option>');
-			}
-		else
-			{
-			$('#turno_empleados').empty().append('<option value="" selected="selected">--Seleccione--</option>');
-			for (var i = 0 ; i<grupos.length ; i++)
-				{
-				var opt = "<option value=\"";
-				if (grupos[i]["id_oficina"]==oficina) 
-					{
-					opt += grupos[i]["id_grupo_empleados"];
-					opt += "\" >" + grupos[i]["nombre_grupo_empleados"]+"</option>";
-					$('#turno_empleados').append(opt);
-					$('#turno_empleados').val(idgrupo);
-					}
-				}
-			}
-		
-	})
-	.fail(function() {
-	    console.log("error");
-	    
-	});
-	
+	var hdesde = $("#hora_desde").val();
+	var hhasta = $("#hora_hasta").val();
+	var h1 = hdesde.split(":");
+	var h2 = hhasta.split(":");
+	var date1 = new Date(2000, 0, 1,  h1[0], h1[1]);
+	var date2 = new Date(2000, 0, 1, h2[0], h2[1]);
+    var diff = date2-date1;
+    if(diff <=0)
+    	{
+    	return false;
+    	}
+    else
+    	{
+    	return true;
+    	}
 }
 
-function SelecCargo(idcargo)
+function TodoElDia()
 {
-	var dpto = $("#dpto_empleados").val();
-		$.ajax({
-	    url: 'index.php?controller=Empleados&action=GetCargos',
-	    type: 'POST',
-	    data: {   
-	    },
-	})
-	.done(function(x) {
-		    console.log(x);
-			var grupos = JSON.parse(x);
-			if (dpto=="")
-			{
-			$('#cargo_empleados').empty().append('<option value="" selected="selected">Seleccione departamento</option>');
-			}
-		else
-			{
-			$('#cargo_empleados').empty().append('<option value="" selected="selected">--Seleccione--</option>');
-			for (var i = 0 ; i<grupos.length ; i++)
-				{
-				var opt = "<option value=\"";
-				if (grupos[i]["id_departamento"]==dpto) 
-					{
-					opt += grupos[i]["id_cargo"];
-					opt += "\" >" + grupos[i]["nombre_cargo"]+"</option>";
-					$('#cargo_empleados').append(opt);
-					$('#cargo_empleados').val(idcargo);
-					}
-				}
-			}
-		
-	})
-	.fail(function() {
-	    console.log("error");
-	    
-	});
-	
+
+ if (document.getElementById('dia').className == "btn btn-light")
+	 {
+	 document.getElementById('dia').className = "btn btn-primary";
+	 document.getElementById('diaicon').className = "glyphicon glyphicon-check";
+	 $.ajax({
+		    url: 'index.php?controller=PermisosEmpleados&action=GetHoras',
+		    type: 'POST',
+		    data: {
+		    	   
+		    },
+		})
+		.done(function(x) {
+			
+			var res = $.parseJSON(x);
+			console.log(res);
+			$("#hora_desde").val(res[0]['hora_entrada_empleados']);
+			$("#hora_hasta").val(res[0]['hora_salida_empleados']);
+			
+			})
+		.fail(function() {
+		    console.log("error");
+		    	
+		});
+	 
+	 }
+ else
+	 {
+	 document.getElementById('dia').className = "btn btn-light";
+	 document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
+	 $("#hora_desde").val("");
+     $("#hora_hasta").val("");
+	 }
+ 
 }
 
-function InsertarEmpleado()
+function validarfecha(fecha)
 {
-var ci = $("#cedula_empleado").val();
-var nombre = $("#nombre_empleados").val();
-var apellido = $("#apellido_empleados").val();
-var cargo = $("#cargo_empleados").val();
-var dpto = $("#dpto_empleados").val();
-var idgrup = $("#turno_empleados").val();
-var estado = $("#estado_empleados_reg").val();
-var idofic = $("#oficina_empleados").val();
-var nombres = nombre+" "+apellido;
-
-if(idofic=="")
+	var hoy = new Date().getDate();
+	var year = new Date().getFullYear();
+	var mes = new Date().getMonth()+1;
+	var fechael = fecha.split("-");
+	if(fechael[0] < year)
+		{
+		return false;
+		}
+	else if (fechael[1] < mes)
+		{
+		return false;
+		}
+	else if (fechael[2] <= hoy)
 	{
-	$("#mensaje_oficina_empleados").text("Seleccione oficina");
-	$("#mensaje_oficina_empleados").fadeIn("slow");
-	$("#mensaje_oficina_empleados").fadeOut("slow");
+		return false;
 	}
-if (estado== "")
-{    	
-	$("#mensaje_estado_empleados").text("Seleccione estado");
-	$("#mensaje_estado_empleados").fadeIn("slow");
-	$("#mensaje_estado_empleados").fadeOut("slow");
-}
-if (idgrup== "")
-{    	
-	$("#mensaje_turno_empleados").text("Seleccione turno");
-	$("#mensaje_turno_empleados").fadeIn("slow");
-	$("#mensaje_turno_empleados").fadeOut("slow");
+	else
+		{
+		return true;
+		}
 }
 
-if (nombre== "")
-{    	
-	$("#mensaje_nombre_empleados").text("Introduzca nombres");
-	$("#mensaje_nombre_empleados").fadeIn("slow");
-	$("#mensaje_nombre_empleados").fadeOut("slow");
-}
 
-if (apellido== "")
-{    	
-	$("#mensaje_apellido_empleados").text("Introduzca apellidos");
-	$("#mensaje_apellido_empleados").fadeIn("slow");
-	$("#mensaje_apellido_empleados").fadeOut("slow");
-}
 
-if (cargo== "")
-{    	
-	$("#mensaje_cargo_empleados").text("Introduzca cargo");
-	$("#mensaje_cargo_empleados").fadeIn("slow");
-	$("#mensaje_cargo_empleados").fadeOut("slow");
-}
+function InsertarSolicitud()
+{
+var fecha = $("#fecha_permiso").val();
+var desde = $("#hora_desde").val();
+var hasta = $("#hora_hasta").val();
+var causa = $("#causa_permiso").val();
+var desc = $("#descripcion_causa").val();
 
-if (dpto== "")
-{    	
-	$("#mensaje_dpto_empleados").text("Introduzca departamento");
-	$("#mensaje_dpto_empleados").fadeIn("slow");
-	$("#mensaje_dpto_empleados").fadeOut("slow");
-}
-
-if (ci== "" || ci.includes("_"))
-{    	
-	$("#mensaje_cedula_usuarios").text("Introduzca cedula");
-	$("#mensaje_cedula_usuarios").fadeIn("slow");
-	$("#mensaje_cedula_usuarios").fadeOut("slow");
-}
-
-if (ci!="" && cargo!="" && dpto!="" && nombre!="" && apellido!="" && idgrup!="" && estado!="" && !ci.includes("_") && idofic!="")
+if (!validarhora())
 	{
+	$("#mensaje_hora_desde").text("Hora invalida");
+	$("#mensaje_hora_desde").fadeIn("slow");
+	$("#mensaje_hora_desde").fadeOut("slow");
+	$("#mensaje_hora_hasta").text("Hora invalida");
+	$("#mensaje_hora_hasta").fadeIn("slow");
+	$("#mensaje_hora_hasta").fadeOut("slow");
+	}
+
+if((causa == 6 || causa == 3) && desc == "" )
+	{
+	$("#mensaje_descripcion_causa").text("Escriba una descripción");
+	$("#mensaje_descripcion_causa").fadeIn("slow");
+	$("#mensaje_descripcion_causa").fadeOut("slow");
+	}
+
+if (desde== "" || desde.includes("_"))
+{    	
+	$("#mensaje_hora_desde").text("Introduzca hora");
+	$("#mensaje_hora_desde").fadeIn("slow");
+	$("#mensaje_hora_desde").fadeOut("slow");
+}
+if (hasta== "" || hasta.includes("_"))
+{    	
+	$("#mensaje_hora_hasta").text("Introduzca hora");
+	$("#mensaje_hora_hasta").fadeIn("slow");
+	$("#mensaje_hora_hasta").fadeOut("slow");
+}
+
+if (causa== "")
+{    	
+	$("#mensaje_causa_permiso").text("Seleccione causa");
+	$("#mensaje_causa_permiso").fadeIn("slow");
+	$("#mensaje_causa_permiso").fadeOut("slow");
+}
+
+if (fecha== "" || !validarfecha(fecha))
+{    	
+	$("#mensaje_fecha_permiso").text("Seleccione fecha");
+	$("#mensaje_fecha_permiso").fadeIn("slow");
+	$("#mensaje_fecha_permiso").fadeOut("slow");
+}
+
+if ( desde!="" && hasta!="" && causa!="" && fecha!="" && !desde.includes("_") && !hasta.includes("_") && validarfecha(fecha) && validarhora())
+	{
+	
 	$.ajax({
-	    url: 'index.php?controller=Empleados&action=AgregarEmpleado',
+	    url: 'index.php?controller=PermisosEmpleados&action=AgregarSolicitud',
 	    type: 'POST',
 	    data: {
-	    	   numero_cedula: ci,
-	    	   cargo: cargo,
-	    	   dpto: dpto,
-	    	   nombre_empleado: nombres,
-	    	   id_grupo:idgrup,
-	    	   estado:estado,
-	    	   id_oficina:idofic
+	    	   fecha_solicitud: fecha,
+	    	   hora_desde: desde,
+	    	   hora_hasta: hasta,
+	    	   id_causa: causa,
+	    	   descripcion_causa:desc
 	    },
 	})
 	.done(function(x) {
-		$("#cedula_empleado").val("");
-		$("#nombre_empleados").val("");
-		$("#apellido_empleados").val("");
-		$("#cargo_empleados").val("");
-		$("#dpto_empleados").val("");
-		$("#turno_empleados").val("");
-		$('#estado_empleados_reg').val("");
-		$("#oficina_empleados").val("");
+		$("#fecha_permiso").val("");
+		$("#hora_desde").val("");
+		$("#hora_hasta").val("");
+		$("#causa_permiso").val("");
+		$("#descripcion_causa").val("");
+		console.log(x);
 		if (x==1)
 			{
 			swal({
-		  		  title: "Empleado",
-		  		  text: "Empleado registrado exitosamente",
+		  		  title: "Solicitud",
+		  		  text: "Solicitud registrada exitosamente",
 		  		  icon: "success",
 		  		  button: "Aceptar",
 		  		});
-				load_empleados(1);
+				load_solicitudes(1);
 			}
 		else
 			{
+			if (x.includes("Warning"))
+			{
+			if(x.includes("sin encontrar RETURN"))
+				{
+				swal({
+			  		  title: "Solicitud",
+			  		  text: "Ya existe una solicitud para el día indicado",
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+				}else
+					{
+					swal({
+				  		  title: "Solicitud",
+				  		  text: "Error al agregar solicitud",
+				  		  icon: "warning",
+				  		  button: "Aceptar",
+				  		});
+					}
+			
+			}
 			swal({
-		  		  title: "Empleado",
-		  		  text: "Hubo un error al registrar al empleado",
+		  		  title: "Solicitud",
+		  		  text: "Hubo un error al registrar solicitud",
 		  		  icon: "warning",
 		  		  button: "Aceptar",
 		  		});
@@ -277,8 +266,8 @@ if (ci!="" && cargo!="" && dpto!="" && nombre!="" && apellido!="" && idgrup!="" 
 	.fail(function() {
 	    console.log("error");
 	    swal({
-	  		  title: "Empleado",
-	  		  text: "Hubo un error al registrar al empleado",
+	  		  title: "Solicitud",
+	  		  text: "Hubo un error al registrar solicitud",
 	  		  icon: "warning",
 	  		  button: "Aceptar",
 	  		});
@@ -288,15 +277,24 @@ if (ci!="" && cargo!="" && dpto!="" && nombre!="" && apellido!="" && idgrup!="" 
 	
 }
 
+function HabilitarDescripcion()
+{
+	var causa = $("#causa_permiso").val();
+	if (causa != 6 && causa != 3) document.getElementById('descripcion_causa').readOnly = true;
+	else document.getElementById('descripcion_causa').readOnly = false;
+}
+
 function LimpiarCampos()
 {
 	$("#cedula_empleado").val("");
 	$("#nombre_empleados").val("");
-	$("#apellido_empleados").val("");
 	$("#dpto_empleados").val("");
-	$("#estado_empleados_reg").val("");
-	$("#oficina_empleados").val("");
-	SelecGrupo("");
+	$("#fecha_permiso").val("");
+	$("#hora_desde").val("");
+	$("#hora_hasta").val("");
+	$("#causa_permiso").val("");
+	$("#descripcion_causa").val("");
+	document.getElementById('descripcion_causa').readOnly = true;
 	SelecCargo("");
 }
 
@@ -314,32 +312,4 @@ $("#oficina_empleados").val(idofic);
 SelecGrupo(idgrupo);
 SelecCargo(cargo);
 $('html, body').animate({ scrollTop: 0 }, 'fast');
-}
-function EliminarEmpleado(cedula)
-{
-	$.ajax({
-	    url: 'index.php?controller=Empleados&action=EliminarValor',
-	    type: 'POST',
-	    data: {
-	    	   numero_cedula: cedula
-	    },
-	})
-	.done(function(x) {
-		load_empleados(1);
-		$("#cedula_empleado").val("");
-		$("#nombre_empleados").val("");
-		$("#apellido_empleados").val("");
-		$("#cargo_empleados").val("");
-		$("#dpto_empleados").val("");
-		$("#turno_empleados").val("");
-		swal({
-	  		  title: "Empleado",
-	  		  text: "Empleado eliminado",
-	  		  icon: "success",
-	  		  button: "Aceptar",
-	  		});
-	})
-	.fail(function() {
-	    console.log("error");
-	});		
 }

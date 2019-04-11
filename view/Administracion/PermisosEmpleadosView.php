@@ -68,88 +68,81 @@
          </div>
          <div class="box-body">
           	<div class="row">
-          		<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="cedula_usuarios" class="control-label">Cedula:</label>
-                    	<input type="text" data-inputmask="'mask': '9999999999'" class="form-control" id="cedula_empleado" name="cedula_empleado" placeholder="C.I.">
-                        <div id="mensaje_cedula_usuarios" class="errores"></div>
-                 	</div>
-             	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="nombre_empleados" class="control-label">Nombres:</label>
-                    	<input type="text" class="form-control" id="nombre_empleados" name="nombre_empleados" placeholder="Nombres">
+                    	<input type="text" class="form-control" id="nombre_empleados" name="nombre_empleados" placeholder="Nombres" readonly>
                         <div id="mensaje_nombre_empleados" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="apellido_empleados" class="control-label">Apellidos:</label>
-                    	<input type="text" class="form-control" id="apellido_empleados" name="apellido_empleados" placeholder="Apellidos">
-                        <div id="mensaje_apellido_empleados" class="errores"></div>
+                		<label for="dpto_empleados" class="control-label">Departamento:</label>
+                    	<input type="text" class="form-control" id="dpto_empleados" name="dpto_empleados" placeholder="Departamento" readonly>
+                        <div id="mensaje_dpto_empleados" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="dpto_empleados" class="control-label">Departamento:</label>
-                    	<select name="dpto_empleados" id="dpto_empleados"  class="form-control" onchange = "SelecCargo(&quot;&quot;)">
-                                      <option value="" selected="selected">--Seleccione--</option>
-                                      <?php  foreach($resultdpto as $res) {?>
-									  <option value="<?php echo $res->id_departamento; ?>"><?php echo $res->nombre_departamento; ?> </option>
-			        				  <?php } ?>
-                        </select> 
-                        <div id="mensaje_dpto_empleados" class="errores"></div>
+                		<label for="cargo_empleados" class="control-label">Cargo:</label>
+                           	<input type="text" class="form-control" id="cargo_empleados" name="cargo_empleados" placeholder="Cargo" readonly>
+                        <div id="mensaje_cargo_empleados" class="errores"></div>
                  	</div>
              	</div>
           	</div>
           	<div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="cargo_empleados" class="control-label">Cargo:</label>
-                           	<select name="cargo_empleados" id="cargo_empleados"  class="form-control">
-                             <option value="" selected="selected">Seleccione departamento</option>
-    					</select>
-                        <div id="mensaje_cargo_empleados" class="errores"></div>
+                		<label for="fecha_permiso" class="control-label">Fecha:</label>
+                    	<input type="date"  class="form-control" id="fecha_permiso" name="fecha_permiso" placeholder="Fecha">
+                        <div id="mensaje_fecha_permiso" class="errores"></div>
+                 	</div>
+             	</div>
+          		<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="hora_desde" class="control-label">Desde:</label>
+                    	<input type="text" data-inputmask="'mask': 'h:s:s'" class="form-control" id="hora_desde" name="hora_desde" placeholder="Hora">
+                        <div id="mensaje_hora_desde" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="dpto_empleados" class="control-label">Oficina:</label>
-                    	<select name="oficina_empleados" id="oficina_empleados"  class="form-control" onchange = "SelecGrupo(&quot;&quot;)">
-                                      <option value="" selected="selected">--Seleccione--</option>
-    									<?php  foreach($resultOfic as $res) {?>
-    										<option value="<?php echo $res->id_oficina; ?>"><?php echo $res->nombre_oficina; ?> </option>
-    							        <?php } ?>
-    					</select> 
-                        <div id="mensaje_oficina_empleados" class="errores"></div>
+                		<label for="hora_hasta" class="control-label">Hasta:</label>
+                    	<input type="text" data-inputmask="'mask': 'h:s:s'" class="form-control" id="hora_hasta" name="hora_hasta" placeholder="Hora">
+                        <div id="mensaje_hora_hasta" class="errores"></div>
                  	</div>
-             	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+             	</div>    
+             	<div class="col-xs-6 col-md-3 col-lg-3" style="margin-top:25px;">
             		<div class="form-group">
-                		<label for="dpto_empleados" class="control-label">Turno:</label>
-                    	<select name="turno_empleados" id="turno_empleados"  class="form-control">
-                             <option value="" selected="selected">Seleccione oficina</option>
-    					</select> 
-                        <div id="mensaje_turno_empleados" class="errores"></div>
+                		<button type="button" id="dia" name="dia" class="btn btn-light" onclick="TodoElDia()"><i id="diaicon" class="glyphicon glyphicon-unchecked"></i>TODO EL DIA</button>
                  	</div>
-             	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="dpto_empleados" class="control-label">Estado:</label>
-                    	<select name="estado_empleados_reg" id="estado_empleados_reg"  class="form-control">
-                                      <option value="" selected="selected">--Seleccione--</option>
-    								  <?php  foreach($resultEst as $res) {?>
-									  <option value="<?php echo $res->id_estado; ?>"><?php echo $res->nombre_estado; ?> </option>
-			        				  <?php } ?>
-    					</select> 
-                        <div id="mensaje_estado_empleados" class="errores"></div>
-                 	</div>
-             	</div>
+             	</div>         
           	</div>
           	<div class="row">
-           	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+          		<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="causa_permiso" class="control-label">Causa:</label>
+                    	<select name="causa_permiso" id="causa_permiso"  class="form-control" onchange = "HabilitarDescripcion()">
+                                      <option value="" selected="selected">--Seleccione--</option>
+                                      <?php  foreach($resultcau as $res) {?>
+									  <option value="<?php echo $res->id_causa; ?>"><?php echo $res->nombre_causa; ?> </option>
+			        				  <?php } ?>
+                        </select> 
+                        <div id="mensaje_causa_permiso" class="errores"></div>
+                 	</div>
+             	</div> 
+          		<div class="col-xs-9 col-md-9 col-md-9">
+          			<div class="form-group">
+                		<label for="descripcion_causa" class="control-label">Descripción:</label>
+                    	<input type="text"  maxlength="100" class="form-control" id="descripcion_causa" name="descripcion_causa" placeholder="Descripción" readonly>
+                        <div id="mensaje_descripcion_causa" class="errores"></div>
+                 	</div>
+          		</div>
+          	</div>
+          	<div class="row">
+           	 <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
-                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success" onclick="InsertarEmpleado()">GUARDAR</button>
+                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success" onclick="InsertarSolicitud()">GUARDAR</button>
                   <button type="button" class="btn btn-danger" id="Cancelar" name="Cancelar" onclick="LimpiarCampos()">CANCELAR</button>
                 </div>
              </div>	    
@@ -160,7 +153,7 @@
   <section class="content">
   	<div class="box box-primary">
   		<div class="box-header with-border">
-  			<h3 class="box-title">Listado de Empleados</h3>
+  			<h3 class="box-title">Listado de Solicitudes</h3>
   			<div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                 <i class="fa fa-minus"></i></button>
@@ -168,17 +161,18 @@
         </div> 
         <div class="box-body">
 			<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_empleados(1)" placeholder="Buscar.."/>
+					<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_solicitudes(1)" placeholder="Buscar.."/>
 			</div>
 			<div class="pull-right" style="margin-right:15px;">
-        			<select name="turno_empleados" id="estado_empleados"  class="form-control" onchange="load_empleados(1)">
-                  		<?php  foreach($resultEst as $res) {?>
+        			<select name="turno_empleados" id="estado_solicitudes"  class="form-control" onchange="load_solicitudes(1)">
+        				<option value="0" selected="selected">TODOS</option>
+                  		<?php  foreach($resultes as $res) {?>
 						<option value="<?php echo $res->id_estado; ?>"><?php echo $res->nombre_estado; ?> </option>
 			        	<?php } ?>
     				</select>
     		</div>
-        	<div id="load_empleados" ></div>
-        	<div id="empleados_registrados" ></div>
+        	<div id="load_solicitudes" ></div>
+        	<div id="solicitudes_registrados" ></div>
         </div> 	
   	</div>
   </section> 
@@ -197,7 +191,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Administracion/js/PermisosEmpleados.js?0.1"></script>
+    <script src="view/Administracion/js/PermisosEmpleados.js?0.2"></script>
 	
 	
   </body>

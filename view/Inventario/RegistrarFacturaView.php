@@ -80,14 +80,14 @@
                  	
                  		<div class="col-xs-12 col-md-3 col-lg-3 ">
                         	<div class="form-group">
-                            	<label for="numero_factura" class="control-label"># Comprobante</label>
+                            	<label for="numero_factura" class="control-label"># Comprobante:</label>
                                 <input type="text" class="form-control" id="numero_comprobante" name="numero_comprobante" value="<?php echo $rscomprobante[0]->numero_ccomprobantes; ?>"  >
                              </div>
                          </div> 
                          
                  	 	<div class="col-xs-12 col-md-3 col-lg-3 ">
                         	<div class="form-group">
-                            	<label for="numero_factura" class="control-label"># Factura</label>
+                            	<label for="numero_factura" class="control-label"># Factura:</label>
                                 <input type="text" class="form-control" id="numero_factura" name="numero_factura" value="<?php echo $rscomprobante[0]->referencia_doc_ccomprobantes; ?>"  >
                                 <input type="hidden" id="id_comprobante" name="id_comprobante" value="<?php echo $rscomprobante[0]->id_ccomprobantes; ?>"  >
                                 <input type="hidden"  id="cantidad_compra" name="cantidad_compra" value="0"  >
@@ -96,19 +96,21 @@
                          
                          <div class="col-xs-12 col-md-3 col-lg-3 ">
                         	<div class="form-group">
-                            	<label for="fecha_factura" class="control-label">Fecha Comprobante</label>
+                            	<label for="fecha_factura" class="control-label">Fecha Comprobante:</label>
                                 <input type="text" class="form-control" id="fecha_factura" name="fecha_factura" value="<?php echo $rscomprobante[0]->fecha_ccomprobantes; ?>"  >
                            </div>
                          </div> 
                          
                          <div class="col-xs-12 col-md-3 col-lg-3 ">
                         	<div class="form-group">
-                            	<label for="valor_factura" class="control-label">Valor Factura</label>
+                            	<label for="valor_factura" class="control-label">Valor Factura:</label>
                                 <input type="text" class="form-control" id="valor_factura" name="valor_factura" value="<?php echo $rscomprobante[0]->valor_ccomprobantes; ?>"  >
                            </div>
                          </div> 
                          
                  	</div>
+                 	
+                 	
                  	
                  <?php }?>
                  
@@ -134,23 +136,34 @@
                                </div>	
     						</div>
                          </div>
-                         
-        			</div>
-        			
-        			        			
-        			<div class="  box-body">
+            		</div>
+        	 </div>
+    		</section>
+    		
+    		
+    		
+    		<section class="content">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">DETALLE DE LA FACTURA</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+                
+              </div>
+            </div>
+            
+                 <div class="  box-body">
         				<div id="detalle_factura">
         				
         				</div>
         			</div>
-        			
         			
       			
       		 </div>
     		</section>
     		
     		
-            
             </form>
     		
     
@@ -163,6 +176,8 @@
  </div>
  
  <!-- para los modales -->
+ 
+ 
  
 <div class="modal fade" id="agregar_nuevo">
       <div class="modal-dialog">

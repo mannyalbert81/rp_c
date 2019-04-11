@@ -148,16 +148,19 @@ class BuscarProductoController extends ControladorBase{
                       productos.descripcion_productos,
                       productos.ult_precio_productos,
                       productos.creado,
-                      productos.modificado
+                      productos.modificado,
+                      saldo_productos.saldos_f_saldo_productos, 
+                      saldo_productos.precio_costo_saldo_productos
                       
                       ";
         $tablas   = " 
                      public.productos,
                       public.grupos,
-                      public.unidad_medida
+                      public.unidad_medida,
+                     public.saldo_productos
                     ";
         $where    = "productos.id_unidad_medida = unidad_medida.id_unidad_medida AND
-                      grupos.id_grupos = productos.id_grupos ";
+                      grupos.id_grupos = productos.id_grupos AND saldo_productos.id_productos = productos.id_productos ";
         $id       = "productos.id_productos";
         
         
@@ -218,8 +221,11 @@ class BuscarProductoController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Marca</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Descripción</th>';
-                $html.='<th style="text-align: center; font-size: 12px;">Precio</th>';
                 $html.='<th style="text-align: center; font-size: 12px;">Unidad Medida</th>';
+                $html.='<th style="text-align: center; font-size: 12px;">Cantidad en Físico</th>';
+                $html.='<th style="text-align: center; font-size: 12px;">Precio de Costo</th>';
+                $html.='<th style="text-align: center; font-size: 12px;">Importe</th>';
+                
                 
                 
                 
@@ -230,21 +236,23 @@ class BuscarProductoController extends ControladorBase{
                 
                 
                 $i=0;
-                
+                $importe=0;
                 foreach ($resultSet as $res)
                 {
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="text-align: center; font-size: 11px;">'.$i.'</td>';
+                    $importe=( $res->saldos_f_saldo_productos)*( $res->precio_costo_saldo_productos);
                     $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->marca_productos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->descripcion_productos.'</td>';
-                    $html.='<td style="text-align: center; font-size: 11px;">'.$res->ult_precio_productos.'</td>';
                     $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_unidad_medida.'</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.(int)$res->saldos_f_saldo_productos.'</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$res->precio_costo_saldo_productos.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$importe= number_format($importe, 2, '.', ' ').'</td>';
                     $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=BuscarProducto&action=generar_reporte_productos&id_productos='.$res->id_productos.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
-                    
                     
                     
                     

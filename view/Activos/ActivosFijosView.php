@@ -137,17 +137,22 @@
     		   <div class="col-xs-12 col-md-3 col-lg-3 ">
     		    <div class="form-group">
                       <label for="fecha_activos_fijos" class="control-label">Fecha Compra:</label>
-                      <input type="date" class="form-control" id="fecha_activos_fijos" name="fecha_activos_fijos" value="<?php echo date('Y-m-d');?>" >
-                      <div id="mensaje_fecha_activos_fijos" class="errores"></div>
+                      <input type="date" class="form-control" id="fecha_activos_fijos" name="fecha_activos_fijos" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
+			          <div id="mensaje_fecha_activos_fijos" class="errores"></div>
                 </div>
     		    </div>
                 
                 <div class="col-xs-12 col-md-3 col-lg-3 ">
     		    <div class="form-group">
-                      <label for="responsable_activos_fijos" class="control-label">Responsable:</label>
-                      <input type="text" class="form-control" id="responsable_activos_fijos" name="responsable_activos_fijos" value=""  placeholder="Responsable">
-                      <input type="hidden" name="id_activos_fijos" id="id_activos_fijos" value="" class="form-control"/>
-                      <div id="mensaje_codigo_activos_fijos" class="errores"></div>
+                                   
+                  <label for="id_empleados" class="control-label">Empleados:</label>
+                  <select name="id_empleados" id="id_empleados"  class="form-control">
+                    <option value="0" selected="selected">--Seleccione--</option>
+						<?php foreach($resultEmp as $res) {?>
+						<option value="<?php echo $res->id_empleados; ?>" ><?php echo $res->nombres_empleados; ?> </option>
+			            <?php } ?>
+				  </select>
+				  <div id="mensaje_id_empleados" class="errores"></div>
                 </div>
     		    </div>
     		    
@@ -199,6 +204,8 @@
               			<button type="submit" id="Guardar" name="Guardar" class="btn btn-success"><i class="fa " aria-hidden="true"></i>Registrar Activo</button>
             		</div>
 		    	</div>
+		    	
+		    	
 		    </div>
                     		      
                     		  
@@ -284,13 +291,7 @@
 	  </script>
 	  
 
-	function mayus(e) {
-
-    var tecla=e.value;
-    var tecla2=tecla.toUpperCase();
-    
-    alert(tecla2);
-}  
+  
 	
   </body>
 </html>   

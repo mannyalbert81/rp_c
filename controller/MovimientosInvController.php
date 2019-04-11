@@ -10,13 +10,9 @@ class MovimientosInvController extends ControladorBase{
 
 	public function index(){
 	
-		//Creamos el objeto usuario
-	  $movimientos_inventario = new MovimientosInvModel();
-		//Conseguimos todos los usuarios
-	    $resultSet=array();
-				
-		$resultEdit = "";
-
+    	//Creamos el objeto usuario
+        $movimientos_inventario = new MovimientosInvModel();
+    	//Conseguimos todos los usuarios
 		
 		session_start();
 
@@ -2130,6 +2126,27 @@ class MovimientosInvController extends ControladorBase{
             LEFT JOIN movimientos_inv_cabeza
             ON movimientos_inv_cabeza.id_ccomprobantes = ccomprobantes.id_ccomprobantes
             WHERE movimientos_inv_cabeza.id_ccomprobantes IS NULL";
+	    
+	    $buscador = (isset($_POST['search']))?$_POST['search']:"";
+	    
+	    if($buscador != ""){
+	        
+	        
+	        $query = "SELECT
+            ccomprobantes.id_ccomprobantes,ccomprobantes.fecha_ccomprobantes,ccomprobantes.id_tipo_comprobantes,
+            tipo_comprobantes.nombre_tipo_comprobantes,ccomprobantes.numero_ccomprobantes,
+            ccomprobantes.referencia_doc_ccomprobantes,ccomprobantes.concepto_ccomprobantes,
+            ccomprobantes.valor_ccomprobantes
+            FROM ccomprobantes
+            INNER JOIN tipo_comprobantes
+            ON tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes
+            AND tipo_comprobantes.nombre_tipo_comprobantes = 'EGRESOS'
+            LEFT JOIN movimientos_inv_cabeza
+            ON movimientos_inv_cabeza.id_ccomprobantes = ccomprobantes.id_ccomprobantes
+            WHERE movimientos_inv_cabeza.id_ccomprobantes IS NULL 
+            AND ccomprobantes.referencia_doc_ccomprobantes ILIKE '%".$_POST['search']."%'";
+	        
+	    }
 
 	    $rsResultado = $movimientos->enviaquery($query);
 	    

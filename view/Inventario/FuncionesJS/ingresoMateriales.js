@@ -5,7 +5,14 @@ $(document).ready(function(){
 	buscaComprobante()
 });
 
+$("#buscadorComprobante").on("keyup",function(){
+	
+	buscaComprobante();
+});
+
 function buscaComprobante(pagina=1){
+	
+	var buscador = $("#buscadorComprobante").val();
 	
 	$.ajax({
 		beforeSend:function(obj){
@@ -13,7 +20,7 @@ function buscaComprobante(pagina=1){
 		},
 		url:'index.php?controller=MovimientosInv&action=buscaFacturas',
 		type:'POST',
-		data:{page:pagina},
+		data:{page:pagina,search:buscador},
 	}).done(function(data){
 		$('#data_comprobantes').html(data);
 	}).fail(function(xhr,status,error){

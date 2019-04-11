@@ -78,6 +78,10 @@
               	</div>
                 	
                  <div class="box-body">
+                 		<div class="pull-right" style="margin-right:15px;">
+        					<input type="text" value="" class="form-control" id="buscadorComprobante" name="buscadorComprobante" placeholder="Buscar.."/>
+            			</div>
+            			
                  	  <div id="load_comprobantes"></div>
                       <div id="data_comprobantes" ></div>
                       
@@ -126,7 +130,7 @@
     
     <script src="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
     
-    <script src="view/Inventario/FuncionesJS/ingresoMateriales.js?1.1"></script>
+    <script src="view/Inventario/FuncionesJS/ingresoMateriales.js?1.3"></script>
     
     <!-- <script src="view/bootstrap/otros/validate/jquery.validate.js"></script> -->
      

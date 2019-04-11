@@ -974,7 +974,7 @@ class ActivosFijosController extends ControladorBase{
         $EstadosActivo = new EstadoModel();
         $rsEstadoAct = $EstadosActivo->getBy("tabla_estado = 'ACTIVOS' ");   
         
-        $departamento = new DepartamentoModel();
+        $departamento = new DepartamentosModel();
         $rsDepartamento = $departamento -> getBy("1 = 1");
         
         $Empleados = new EmpleadosModel();

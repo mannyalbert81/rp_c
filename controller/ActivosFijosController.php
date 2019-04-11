@@ -976,9 +976,12 @@ class ActivosFijosController extends ControladorBase{
         
         $departamento = new DepartamentoModel();
         $rsDepartamento = $departamento -> getBy("1 = 1");
+        
+        $Empleados = new EmpleadosModel();
+        $resultEmp = $Empleados->getBy("1=1");
                
                
-        $this->view_Activos('ActivosFijos', array('resultOfi'=>$resultOfi,'resultTipoac'=>$resultTipoac,'rsEstadoAct'=>$rsEstadoAct,'rsDepartamento'=>$rsDepartamento));
+        $this->view_Activos('ActivosFijos', array('resultOfi'=>$resultOfi,'resultTipoac'=>$resultTipoac,'rsEstadoAct'=>$rsEstadoAct,'rsDepartamento'=>$rsDepartamento,'resultEmp'=>$resultEmp));
     }
     
     public function insActivos(){
@@ -993,7 +996,7 @@ class ActivosFijosController extends ControladorBase{
         $_id_tipo_activo = (isset($_POST['id_tipo_activos_fijos'])) ? $_POST['id_tipo_activos_fijos'] : 0;
         $_id_departamento = (isset($_POST['id_departamento'])) ? $_POST['id_departamento'] : 0;
         $_id_estado = (isset($_POST['id_estado'])) ? $_POST['id_estado'] : 0;
-        $_responsable = (isset($_POST['responsable_activos_fijos'])) ? $_POST['responsable_activos_fijos'] : 0;
+        $_id_empleados = (isset($_POST['id_empleados'])) ? $_POST['id_empleados'] : 0;
         $_nombre_activo = (isset($_POST['nombre_activos_fijos'])) ? $_POST['nombre_activos_fijos'] : 0;
         $_fecha_activo = (isset($_POST['fecha_activos_fijos'])) ? $_POST['fecha_activos_fijos'] : 0;
         $_detalles_activo = (isset($_POST['detalle_activos_fijos'])) ? $_POST['detalle_activos_fijos'] : 0;
@@ -1036,7 +1039,7 @@ class ActivosFijosController extends ControladorBase{
 	    				   '$_id_tipo_activo',
                            '$_id_departamento',
                            '$_id_estado',
-                           '$_responsable',
+                           '$_id_empleados',
 	    	               '$_nombre_activo',
 	    	               '$_codigo_activo',
 	    	               '$_fecha_activo',
@@ -1477,6 +1480,43 @@ class ActivosFijosController extends ControladorBase{
         
         $this->verReporte("Depreciacion", array());
     }
+    
+    
+    public function devuelveEmpleado()
+    {
+        session_start();
+        $resultEmp = array();
+        
+        
+        if(isset($_POST["id_departamento_vivienda"]))
+        {
+            
+            $id_departamento =(int)$_POST["id_departamento_vivienda"];
+            
+            $empleados=new EmpleadosModel();
+            
+            $resultEmp = $empleados->getCondiciones("id_empleados,nombres_empleados"," public.empleados ", "id_departamento = '$id_departamento'  ","nombres_empleados");
+            
+        }
+        
+        if(isset($_POST["id_departamento_asignacion"]))
+        {
+            
+            $id_departamento=(int)$_POST["id_departamento_asignacion"];
+            
+            $empleados=new EmpleadosModel();
+            
+            $resultEmp = $empleados->getBy(" id_departamento = '$id_departamento'  ");
+            
+            
+        }
+        
+        echo json_encode($resultEmp);
+        
+    }
+    
+    
+    
     
 }
 ?>

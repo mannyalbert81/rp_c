@@ -53,6 +53,8 @@ $(document).ready(function(){
     	var valor_activos_fijos = $("#valor_activos_fijos").val();
     	var imagen_activos_fijos = $("#imagen_activos_fijos").val();
     	
+    	
+    	
     	if (id_oficina == 0)
     	{
 	    	
@@ -104,10 +106,12 @@ $(document).ready(function(){
             
 		}
     	
-    	if (fecha_activos_fijos == "")
+    	
+    	
+    	if (fecha_activos_fijos =="")
     	{
 	    	
-    		$("#mensaje_fecha_activos_fijos").text("Introduzca Una Fecha");
+    		$("#mensaje_fecha_activos_fijos").text("Inserte una Fecha");
     		$("#mensaje_fecha_activos_fijos").fadeIn("slow"); //Muestra mensaje de error
             return false;
 	    }
@@ -240,5 +244,83 @@ $("#activos_fijos_registrados").on("click",".editaActivo",function(event){
 	
 	event.preventDefault()
 })
+
+
+$("#id_departamento").change(function(){
+	            // obtenemos el combo de resultado combo 2
+	           var $id_empleados_vivienda = $("#id_empleados");
+	       	
+	            // lo vaciamos
+	           var id_departamento_vivienda = $(this).val();
+	          
+	          
+	            if(id_departamento_vivienda != 0)
+	            {
+		            
+	            	$id_empleados_vivienda.empty();
+	            	
+	            	 var datos = {
+	                   	   
+	            			 id_departamento_vivienda:$(this).val()
+	                  };
+
+	            	 $.ajax({
+	 	                    beforeSend: function(objeto){
+	 	                      /*buscar una funcion de cargando*/
+	 	                    },
+	 	                    url: 'index.php?controller=ActivosFijos&action=devuelveEmpleado',
+	 	                    type: 'POST',
+	 	                    data: datos,
+	 	                    success: function(resultado){
+	 	                    	try {
+	 	                    		resultado = resultado.replace('<', "");
+		 	                    	resultado = resultado.replace(/\\n/g, "\\n")  
+		 	                       .replace(/\\'/g, "\\'")
+		 	                       .replace(/\\"/g, '\\"')
+		 	                       .replace(/\\&/g, "\\&")
+		 	                       .replace(/\\r/g, "\\r")
+		 	                       .replace(/\\t/g, "\\t")
+		 	                       .replace(/\\b/g, "\\b")
+		 	                       .replace(/\\f/g, "\\f");
+	                	 	        // remove non-printable and other non-valid JSON chars
+	                	 	        resultado = resultado.replace(/[\u0000-\u0019]+/g,"");
+	                	 	        
+	                                objeto = JSON.parse(resultado);
+
+	                               
+	                                if(objeto.length==0)
+	         	          		   {
+	                                	$id_empleados_vivienda.append("<option value='0' >--Seleccione--</option>");	
+	         	             	   }else{
+	         	             		 $id_empleados_vivienda.append("<option value='0' >--Seleccione--</option>");
+	         	          		 		$.each(objeto, function(index, value) {
+	         	          		 		$id_empleados_vivienda.append("<option value= " +value.id_empleados +" >" + value.nombres_empleados  + "</option>");	
+	         	                     		 });
+	         	             	   }	
+
+	                                
+	                            }
+	                            catch (error) {
+	                                if(error instanceof SyntaxError) {
+	                                    let mensaje = error.message;
+	                                    console.log('ERROR EN LA SINTAXIS:', mensaje);
+	                                } else {
+	                                    throw error; // si es otro error, que lo siga lanzando
+	                                }
+	                            }
+	 	                   },
+		                   error: function(jqXHR,estado,error){
+		                    /*alertar error*/
+		                   }
+		                 });
+
+	         	  
+	         		  
+	            }else{
+	            	console.log('ERROR EN LA SINTAXIS:', mensaje);
+	            	
+	            }
+	            
+			});
 
 

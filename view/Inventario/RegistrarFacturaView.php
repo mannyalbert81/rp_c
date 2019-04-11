@@ -137,9 +137,8 @@
                          
         			</div>
         			
-        			<hr style="background-color: #fff;border-top: 2px dashed #8c8b8b;">
-        			
-        			<div class="box-body">
+        			        			
+        			<div class="  box-body">
         				<div id="detalle_factura">
         				
         				</div>

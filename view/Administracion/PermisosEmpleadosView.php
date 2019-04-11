@@ -54,13 +54,13 @@
     </h1>
     <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Empleados</li>
+        <li class="active">Solicitud de permisos</li>
     </ol>
   </section>
   <section class="content">
   	<div class="box box-primary">
   		<div class="box-header with-border">
-  			<h3 class="box-title">Registrar Empleados</h3>
+  			<h3 class="box-title">Registrar Solicitud</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                 <i class="fa fa-minus"></i></button>
@@ -197,7 +197,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Administracion/js/Empleados.js?0.9"></script>
+    <script src="view/Administracion/js/PermisosEmpleados.js?0.1"></script>
 	
 	
   </body>

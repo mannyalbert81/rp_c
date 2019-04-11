@@ -136,7 +136,7 @@ class DepartamentosAdminController extends ControladorBase{
         $departamentos = new DepartamentoModel();
         $columnaest = "estado.id_estado";
         $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='CARGOS' AND estado.nombre_estado = 'ACTIVO'";
+        $whereest= "estado.tabla_estado='DEPARTAMENTOS' AND estado.nombre_estado = 'ACTIVO'";
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
@@ -275,7 +275,17 @@ class DepartamentosAdminController extends ControladorBase{
             
             $resultSet=$departamentos->getCondiciones('*', $tablas, $where_to, $id);
             
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
             
+            $per_page = 10; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            
+            $resultSet=$departamentos->getCondicionesPag('*', $tablas, $where_to, $id, $limit);
+            $count_query   = $cantidadResult;
+            $total_pages = ceil($cantidadResult/$per_page);
            
             
               
@@ -284,7 +294,10 @@ class DepartamentosAdminController extends ControladorBase{
             {
                 
                     
-                    
+                    $html.='<div class="pull-left" style="margin-left:15px;">';
+                    $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+                    $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                    $html.='</div>';
                     $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                     $html.='<section style="height:425px; overflow-y:scroll;">';
                     $html.= "<table id='tabla_marcaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
@@ -315,13 +328,26 @@ class DepartamentosAdminController extends ControladorBase{
                         $i++;
                         $html.='<tr>';
                         $html.='<td style="font-size: 14px;">'.$i.'</td>';
-                        $html.='<td style="font-size: 14px;">'.$res->nombre_departamento.'<b><span class="pull-right"><button  type="button" class="btn btn-success" data-toggle="modal" data-target="#myModalEdit" onclick="EditarDpto(&quot;'.$res->nombre_departamento.'&quot;)"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
+                        $html.='<td style="font-size: 14px;">'.$res->nombre_departamento;
+                        if ($res->nombre_estado == "ACTIVO")
+                        {
+                        $html.='<span class="pull-right"><button  type="button" class="btn btn-danger" onclick="EliminarDpto('.$res->id_departamento.')"><i class="glyphicon glyphicon-trash"></i></button></span><span class="pull-right"><button  type="button" class="btn btn-success" data-toggle="modal" data-target="#myModalEdit" onclick="EditarDpto(&quot;'.$res->nombre_departamento.'&quot;)"><i class="glyphicon glyphicon-edit"></i></button></span>';
+                        }
+                        else
+                        {
+                        $html.='<span class="pull-right"><button  type="button" class="btn btn-primary" onclick="RestaurarDpto('.$res->id_departamento.')"><i class="glyphicon glyphicon-repeat"></i></button></span>';
+                        }
+                        $html.='</td>';
                         
-                  
+                        
                         $html.='</tr>';
                     }
                     $html.='</tbody>';
                     $html.='</table>';
+                    $html.='</section></div>';
+                    $html.='<div class="table-pagination pull-right">';
+                    $html.=''. $this->paginate_departamentos("index.php", $page, $total_pages, $adjacents,"load_departamentos").'';
+                    $html.='</div>';
                 }
                 
             else{
@@ -339,6 +365,70 @@ class DepartamentosAdminController extends ControladorBase{
             
         }
         
+    }
+   
+    public function paginate_departamentos($reload, $page, $tpages, $adjacents,$funcion='') {
+        
+        $prevlabel = "&lsaquo; Prev";
+        $nextlabel = "Next &rsaquo;";
+        $out = '<ul class="pagination pagination-large">';
+        
+        // previous label
+        
+        if($page==1) {
+            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+        } else if($page==2) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
+        }else {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
+            
+        }
+        
+        // first label
+        if($page>($adjacents+1)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
+        }
+        // interval
+        if($page>($adjacents+2)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // pages
+        
+        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+        for($i=$pmin; $i<=$pmax; $i++) {
+            if($i==$page) {
+                $out.= "<li class='active'><a>$i</a></li>";
+            }else if($i==1) {
+                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
+            }else {
+                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
+            }
+        }
+        
+        // interval
+        
+        if($page<($tpages-$adjacents-1)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // last
+        
+        if($page<($tpages-$adjacents)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
+        }
+        
+        // next
+        
+        if($page<$tpages) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
+        }else {
+            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+        }
+        
+        $out.= "</ul>";
+        return $out;
     }
     
     

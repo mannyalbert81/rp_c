@@ -32,11 +32,9 @@ $( "#cedula_empleado" ).autocomplete({
 							
 				$('#nombre_empleados').val(respuesta.nombre_empleados);
 				$('#apellido_empleados').val(respuesta.apellidos_empleados);
-				console.log(respuesta.cargo_empleados);
-				//SelecCargo(respuesta.cargo_empleados);
+				$('#cargo_empleados').val(respuesta.cargo_empleados);
 				$('#dpto_empleados').val(respuesta.dpto_empleados);
-				console.log(respuesta.id_grupo_empleados);
-				//SelecGrupo(respuesta.id_grupo_empleados);
+				$('#turno_empleados').val(respuesta.id_grupo_empleados);
 				$('#estado_empleados_reg').val(respuesta.id_estado);
 	
 			
@@ -132,6 +130,7 @@ function SelecCargo(idcargo)
 	    },
 	})
 	.done(function(x) {
+		    console.log(x);
 			var grupos = JSON.parse(x);
 			if (dpto=="")
 			{

@@ -136,7 +136,7 @@ class DepartamentosController extends ControladorBase{
         $departamentos = new DepartamentoModel();
         $columnaest = "estado.id_estado";
         $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='CARGOS' AND estado.nombre_estado = 'ACTIVO'";
+        $whereest= "estado.tabla_estado='DEPARTAMENTOS' AND estado.nombre_estado = 'ACTIVO'";
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
@@ -225,15 +225,7 @@ class DepartamentosController extends ControladorBase{
         $wheree= "estado.id_estado=".$id_estado;
         $ide = "estado.id_estado";
         
-        $tablasc = "public.cargos_empleados INNER JOIN public.estado
-                    ON cargos_empleados.id_estado = estado.id_estado 
-                    INNER JOIN public.departamentos
-                    ON cargos_empleados.id_departamento = departamentos.id_departamento";
-        
-        
-        $wherec   = "estado.nombre_estado='ACTIVO'";
-        
-        $idc       = "cargos_empleados.nombre_cargo";
+        $resultE=$estado->getCondiciones('*', $tablase, $wheree, $ide);
         
         
         $where_to="";
@@ -245,6 +237,17 @@ class DepartamentosController extends ControladorBase{
         $where    = "departamentos.id_estado=".$id_estado;
         
         $id       = "departamentos.nombre_departamento";
+        
+        $tablasc = "public.cargos_empleados INNER JOIN public.estado
+                    ON cargos_empleados.id_estado = estado.id_estado
+                    INNER JOIN public.departamentos
+                    ON cargos_empleados.id_departamento = departamentos.id_departamento";
+        
+        $sd=$resultE[0]->nombre_estado;
+        
+        
+        $wherec   = "estado.nombre_estado='$sd'";
+        $idc       = "cargos_empleados.nombre_cargo";
         
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -270,7 +273,8 @@ class DepartamentosController extends ControladorBase{
             $html="";
             $resultSet=$departamentos->getCantidad("*", $tablas, $where_to);
             $cantidadResult=(int)$resultSet[0]->total;
-            
+            $resultC=$cargos->getCantidad('*', $tablasc, $wherec);
+            $cantidadResult.=(int)$resultC[0]->total;
             
             
             $resultSet=$departamentos->getCondiciones('*', $tablas, $where_to, $id);
@@ -293,6 +297,7 @@ class DepartamentosController extends ControladorBase{
                     $wherec   = "estado.nombre_estado='ACTIVO'";
                     
                     $idc       = "cargos_empleados.nombre_cargo";
+                    
                     $resultC=$cargos->getCondiciones('*', $tablasc, $wherec, $idc);
                     
                     $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
@@ -361,7 +366,6 @@ class DepartamentosController extends ControladorBase{
                     
                     $idc       = "cargos_empleados.nombre_cargo";
                     $resultC=$cargos->getCondiciones('*', $tablasc, $wherec, $idc);
-                    
                     $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                     $html.='<section style="height:425px; overflow-y:scroll;">';
                     $html.= "<table id='tabla_marcaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
@@ -419,6 +423,7 @@ class DepartamentosController extends ControladorBase{
                     
                     $html.='</tbody>';
                     $html.='</table>';
+                    
                 
                 }
             }else{

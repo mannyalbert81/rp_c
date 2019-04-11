@@ -1,5 +1,5 @@
 <?php
-class EmpleadosController extends ControladorBase{
+class PermisosEmpleadosController extends ControladorBase{
     public function index(){
         session_start();
         $grupo_empleados = new GrupoEmpleadosModel();
@@ -29,7 +29,7 @@ class EmpleadosController extends ControladorBase{
         
         $resultOfic = $grupo_empleados->getCondiciones("*", $tabla, $where, $id);
         
-        $this->view_Administracion("Empleados",array(
+        $this->view_Administracion("PermisosEmpleados",array(
             "resultSet"=>$resultSet,
             "resultEst"=>$resultEst,
             "resultOfic"=>$resultOfic,
@@ -358,8 +358,8 @@ class EmpleadosController extends ControladorBase{
             
             $columna = "empleados.numero_cedula_empleados,
 					  empleados.nombres_empleados,
-                      empleados.id_cargo_empleado,
-                      empleados.id_departamento,
+                      empleados.cargo_empleados,
+                      empleados.departamento_empleados,
                       empleados.id_grupo_empleados,
                       empleados.id_estado";
             
@@ -378,8 +378,8 @@ class EmpleadosController extends ControladorBase{
                 $nombresep = explode(" ", $nombres);
                 $respuesta->nombre_empleados = $nombresep[0].' '.$nombresep[1];
                 $respuesta->apellidos_empleados = $nombresep[2].' '.$nombresep[3];;
-                $respuesta->cargo_empleados = $resultSet[0]->id_cargo_empleado;
-                $respuesta->dpto_empleados = $resultSet[0]->id_departamento;
+                $respuesta->cargo_empleados = $resultSet[0]->cargo_empleados;
+                $respuesta->dpto_empleados = $resultSet[0]->departamento_empleados;
                 $respuesta->id_grupo_empleados = $resultSet[0]->id_grupo_empleados;
                 $respuesta->id_estado = $resultSet[0]->id_estado;
                 

@@ -79,7 +79,7 @@
           	<div class="row">
            	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
-                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success" onclick="InsertarCargo()">GUARDAR</button>
+                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success" onclick="AgregarDpto()">GUARDAR</button>
                   <button type="button" class="btn btn-danger" id="Cancelar" name="Cancelar" onclick="LimpiarCampos()">CANCELAR</button>
                 </div>
              </div>	    
@@ -114,59 +114,6 @@
   </section> 
  </div>
  
- <!-- Modal Agregar Dpto -->
- 
- <div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
- 	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-	    	<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Agregar Departamento</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<div class="row">
-			    		<div class="col-sm-6" style="width: 80%">
-				    		<input type="text" class="form-control" id="nuevo_dpto" placeholder="Nuevo Departamento">
-				    		<div id="mensaje_agregar_dpto" class="errores"></div>
-						</div>
-						<button type="button"  class="btn btn-default" onclick="AgregarDpto()"><span class='glyphicon glyphicon-plus'></span></button>
-					</div>		
-				</div>
-				<br>
-			</div>			
-		</div>
-	</div>
-</div>
-
- <!-- Modal Eliminar Dpto -->
- 
- <div class="modal fade bs-example-modal-lg" id="myModalElim" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
- 	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-	    	<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Eliminar Departamento</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-			    	<div class="col-sm-6" style="width: 80%">
-				    	<select name="eliminar_dpto_empleados" id="eliminar_dpto_empleados"  class="form-control" >
-                        	<option value="" selected="selected">--Seleccione--</option>
-    						<?php  foreach($resultdpto as $res) {?>
-									  <option value="<?php echo $res->id_departamento; ?>"><?php echo $res->nombre_departamento; ?> </option>
-			        				  <?php } ?>
-    					</select>
-				    	<div id="mensaje_eliminar_dpto_horarios" class="errores"></div>
-					</div>
-					<button type="button"  class="btn btn-default" onclick="EliminarDpto()"><span class='glyphicon glyphicon-trash'></span></button>
-				</div>
-				<br>
-			</div>			
-		</div>
-	</div>
-</div>
-
 <!-- Modal Editar Dpto -->
  
  <div class="modal fade bs-example-modal-lg" id="myModalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

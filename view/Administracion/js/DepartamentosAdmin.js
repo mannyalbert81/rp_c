@@ -35,8 +35,7 @@ $.ajax({
 
 function AgregarDpto()
 {
-	var modal = $('#myModal');
-	var dpto = modal.find('#nuevo_dpto').val();
+	var dpto = $('#dpto_empleados').val();
 	if (dpto!="")
 	{
     
@@ -72,7 +71,6 @@ function AgregarDpto()
 			}
 		else
 			{
-			modal.modal('hide');
 			if (x==1)
 				{
 				swal({
@@ -82,7 +80,8 @@ function AgregarDpto()
 			  		  button: "Aceptar",
 			  		});
 				load_departamentos(1);
-				SelecDpto();
+				$('#dpto_empleados').val("");
+	
 				}	
 			}
 	})
@@ -99,15 +98,12 @@ function AgregarDpto()
 	}
 	else
 	{
-		if(dpto=="")
-			{
-			$("#mensaje_agregar_dpto").text("Ingrese nombre del departamento");
-			$("#mensaje_agregar_dpto").fadeIn("slow");
-			$("#mensaje_agregar_dpto").fadeOut("slow");
-			}
-		
+			$("#mensaje_dpto_empleados").text("Ingrese nombre del departamento");
+			$("#mensaje_dpto_empleados").fadeIn("slow");
+			$("#mensaje_dpto_empleados").fadeOut("slow");
+
 	}
-	modal.find('#nuevo_dpto').val("");
+	
 }
 
 function SelecDpto()
@@ -148,13 +144,9 @@ function SelecDpto()
 	
 }
 
-function EliminarDpto()
+function EliminarDpto(iddpto)
 {
-	var modal = $('#myModalElim');
-	var iddpto = modal.find('#eliminar_dpto_empleados').val();
-	if (iddpto!="" )
-	{
-    
+	   
 	$.ajax({
 	    url: 'index.php?controller=DepartamentosAdmin&action=EliminarDpto',
 	    type: 'POST',
@@ -166,14 +158,12 @@ function EliminarDpto()
 		console.log(x);
 		if (x==1)
 			{
-			modal.modal('hide');
 					swal({
 			  		  title: "Departamento",
 			  		  text: "Departamento eliminado",
 			  		  icon: "success",
 			  		  button: "Aceptar",
 			  		});
-					SelecDpto();
 					load_departamentos(1);
 					
 			}
@@ -197,14 +187,7 @@ function EliminarDpto()
 	  		});
 	});
 	
-	}
-	else
-	{
-		$("#mensaje_eliminar_dpto_horarios").text("Seleccione nombre del departamento");
-		$("#mensaje_eliminar_dpto_horarios").fadeIn("slow");
-		$("#mensaje_eliminar_dpto_horarios").fadeOut("slow");
-	}
-	modal.find('#nuevo_grupo').val("");
+	
 }
 
 
@@ -292,164 +275,14 @@ function EditarDpto(nombdpto)
 		}
 	}
 
-function InsertarCargo()
-{
-	var dpto = $("#dpto_empleados").val();
-	var cargo = $("#cargo_empleados").val();
-	var salario = $("#salario_empleados").val();
-	var estado = $("#estado_cargo").val();
-	
-	if(dpto=="")
-		{
-		$("#mensaje_dpto_empleados").text("Seleccione el departamento");
-		$("#mensaje_dpto_empleados").fadeIn("slow");
-		$("#mensaje_dpto_empleados").fadeOut("slow");
-		}
-	if(cargo=="")
-	{
-	$("#mensaje_cargo_empleados").text("Introduzca nombre del cargo");
-	$("#mensaje_cargo_empleados").fadeIn("slow");
-	$("#mensaje_cargo_empleados").fadeOut("slow");
-	}
-	if(salario=="")
-	{
-	$("#mensaje_salario_empleados").text("Introduzca el salario");
-	$("#mensaje_salario_empleados").fadeIn("slow");
-	$("#mensaje_salario_empleados").fadeOut("slow");
-	}
-	if(estado=="")
-	{
-	$("#mensaje_estado_cargo").text("Seleccione el estado");
-	$("#mensaje_estado_cargo").fadeIn("slow");
-	$("#mensaje_estado_cargo").fadeOut("slow");
-	}
-	
-	if (dpto!="" && cargo!="" && salario!="" && estado!="")
-		{
-		$.ajax({
-		    url: 'index.php?controller=DepartamentosAdmin&action=AgregarCargo',
-		    type: 'POST',
-		    data: {
-		    		nombre_cargo: cargo,
-		    		salario_cargo: salario,
-		    		id_departamento: dpto,
-		    		id_estado: estado
-		    },
-		})
-		.done(function(x) {
-			console.log(x);
-			if (x.includes("Warning") || x.includes("Notice"))
-				{
-				
-				if(x.includes("sin encontrar RETURN"))
-				{
-				swal({
-			  		  title: "Cargo",
-			  		  text: "Cargo ya existe",
-			  		  icon: "warning",
-			  		  button: "Aceptar",
-			  		});
-				}else
-					{
-					swal({
-				  		  title: "Cargo",
-				  		  text: "Error al agregar cargo",
-				  		  icon: "warning",
-				  		  button: "Aceptar",
-				  		});
-					}
-				}
-			else
-				{
-				if (x==1)
-					{
-					swal({
-				  		  title: "Cargo",
-				  		  text: "Cargo añadido",
-				  		  icon: "success",
-				  		  button: "Aceptar",
-				  		});
-					load_departamentos();
-					$("#dpto_empleados").val("");
-					$("#cargo_empleados").val("");
-					$("#salario_empleados").val("");
-					$("#estado_cargo").val("");
-					}	
-				}
-		})
-		.fail(function() {
-		    console.log("error");
-		    swal({
-		    	title: "Cargo",
-		  		  text: "Error al añadir cargo",
-		  		  icon: "warning",
-		  		  button: "Aceptar",
-		  		});
-		});
-		}
-}
 
-function EditarCargo(ncargo,salario,iddpto,idestado)
-{
-	console.log(ncargo+" "+salario+" "+iddpto+" "+idestado);
-	$("#dpto_empleados").val(iddpto);
-	$("#cargo_empleados").val(ncargo);
-	$("#salario_empleados").val(salario);
-	$("#estado_cargo").val(idestado);
-	
-	$('html, body').animate({ scrollTop: 0 }, 'fast')
-}
+
+
 
 function LimpiarCampos()
 {
 	$("#dpto_empleados").val("");
-	$("#cargo_empleados").val("");
-	$("#salario_empleados").val("");
-	$("#estado_cargo").val("");
-}
-
-function EliminarCargo(idcargo)
-{
 	
-	 $.ajax({
-	    url: 'index.php?controller=DepartamentosAdmin&action=EliminarCargo',
-	    type: 'POST',
-	    data: {
-	    	   id_cargo: idcargo
-	    },
-	})
-	.done(function(x) {
-		console.log(x);
-		if (x==1)
-			{
-			swal({
-			  		  title: "Cargo",
-			  		  text: "Cargo eliminado",
-			  		  icon: "success",
-			  		  button: "Aceptar",
-			  		});
-					load_departamentos(1);
-					
-			}
-		else
-			{
-			swal({
-		  		  title: "Cargo",
-			  		  text: "Error al eliminar cargo",
-			  		  icon: "warning",
-			  		  button: "Aceptar",
-			  		});
-			}
-		})
-	.fail(function() {
-	    console.log("error");
-	    swal({
-	  		  title: "Cargo",
-	  		  text: "Error al eliminar cargo",
-	  		  icon: "warning",
-	  		  button: "Aceptar",
-	  		});
-	});
 }
 
 function RestaurarDpto(iddpto)

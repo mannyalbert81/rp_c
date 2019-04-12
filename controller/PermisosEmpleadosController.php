@@ -2,133 +2,158 @@
 class PermisosEmpleadosController extends ControladorBase{
     public function index(){
         session_start();
-        $grupo_empleados = new GrupoEmpleadosModel();
+        $causas = new CausasPermisosModel();
         $estado = new EstadoModel();
-        $departamentos = new DepartamentoModel();
         
-        $tabladpto ="public.departamentos INNER JOIN public.estado
-                     ON departamentos.id_estado = estado.id_estado";
-        $wheredpto = "estado.nombre_estado = 'ACTIVO'";
-        $iddpto = "departamentos.nombre_departamento";
-        $resultdpto = $departamentos->getCondiciones("*", $tabladpto, $wheredpto, $iddpto);
+        $tablaes ="public.estado";
+        $wherees = "estado.tabla_estado = 'PERMISO_EMPLEADO'";
+        $ides = "estado.id_estado";
+        $resultes = $estado->getCondiciones("*", $tablaes, $wherees, $ides);
         
-        $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='EMPLEADOS'";
-        $idest = "estado.id_estado";
-        $resultEst = $estado->getCondiciones("*", $tablaest, $whereest, $idest);
-        
-        $tabla= "public.grupo_empleados";
-        $where= "1=1";
-        $id = "grupo_empleados.id_grupo_empleados";
-        
-        $resultSet = $grupo_empleados->getCondiciones("*", $tabla, $where, $id);
-        
-        $tabla= "public.oficina";
-        $where= "1=1";
-        $id = "oficina.id_oficina";
-        
-        $resultOfic = $grupo_empleados->getCondiciones("*", $tabla, $where, $id);
-        
+        $tablacau ="public.causas_permisos";
+        $wherecau = "1=1";
+        $idcau = "causas_permisos.id_causa";
+        $resultcau = $causas->getCondiciones("*", $tablacau, $wherecau, $idcau);
+      
         $this->view_Administracion("PermisosEmpleados",array(
-            "resultSet"=>$resultSet,
-            "resultEst"=>$resultEst,
-            "resultOfic"=>$resultOfic,
-            "resultdpto"=>$resultdpto
+            "resultcau"=>$resultcau,
+            "resultes" => $resultes,
+            "cedula_usuario" => $cedula_usuario
         ));
     }
     
-    public function GetGrupos()
+    public function getUsuario()
     {
         session_start();
-        $grupo_empleados = new GrupoEmpleadosModel();
-        $tabla= "public.grupo_empleados INNER JOIN public.estado
-                 ON grupo_empleados.id_estado_grupo_empleados = estado.id_estado
-                 INNER JOIN public.oficina ON oficina.id_oficina = grupo_empleados.id_oficina";
-        $where= "estado.nombre_estado='ACTIVO'";
-        $id = "grupo_empleados.id_grupo_empleados";
+        $empleados = new EmpleadosModel();
+        $cedula_usuario = $_SESSION["cedula_usuarios"];
+        $columna = "empleados.numero_cedula_empleados,
+					  empleados.nombres_empleados,
+                      cargos_empleados.nombre_cargo,
+                      departamentos.nombre_departamento";
         
-        $resultSet = $grupo_empleados->getCondiciones("*", $tabla, $where, $id);
+        $tablas = "public.empleados INNER JOIN public.departamentos
+                       ON empleados.id_departamento=departamentos.id_departamento
+                       INNER JOIN public.cargos_empleados
+                       ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         
+        $where = "empleados.numero_cedula_empleados = $cedula_usuario";
+        
+        $resultSet=$empleados->getCondiciones($columna,$tablas,$where,"empleados.numero_cedula_empleados");
+        
+        $respuesta = new stdClass();
+        
+        if(!empty($resultSet)){
+            
+            $respuesta->numero_cedula_empleados = $resultSet[0]->numero_cedula_empleados;
+            $nombres = (string)$resultSet[0]->nombres_empleados;
+            $nombresep = explode(" ", $nombres);
+            $respuesta->nombre_empleados = $nombresep[0].' '.$nombresep[2];
+            $respuesta->cargo_empleados = $resultSet[0]->nombre_cargo;
+            $respuesta->dpto_empleados = $resultSet[0]->nombre_departamento;
+        }
+        
+        echo json_encode($respuesta);
+        
+    }
+  
+    public function AgregarSolicitud()
+    {
+        session_start();
+        $funcion= "ins_solicitud_empleado";
+        $permisos_empleados = new PermisosEmpleadosModel();
+        $empleado= new EmpleadosModel();
+        $tablas="public.empleados";
+        $cedula = $_SESSION['cedula_usuarios'];
+        $where = "empleados.numero_cedula_empleados =".$cedula;
+        $id = "empleados.id_empleados";
+        $result = $empleado->getCondiciones("*", $tablas, $where, $id);
+        $id_empleado = $result[0]->id_empleados;
+        $fecha_solicitud = $_POST['fecha_solicitud'];
+        $hora_desde= $_POST['hora_desde'];
+        $hora_hasta= $_POST['hora_hasta'];
+        $id_causa= $_POST['id_causa'];
+        $descripcion_causa= $_POST['descripcion_causa'];
+        if (!(empty($descripcion_causa)))
+        {
+        $parametros = "'$id_empleado',
+                     '$fecha_solicitud',
+                     '$hora_desde',
+                     '$hora_hasta',
+                     '$id_causa',
+                     '$descripcion_causa'";
+        }
+        else
+        {
+            $parametros = "'$id_empleado',
+                     '$fecha_solicitud',
+                     '$hora_desde',
+                     '$hora_hasta',
+                     '$id_causa',
+                     NULL";
+        }
+        $permisos_empleados->setFuncion($funcion);
+        $permisos_empleados->setParametros($parametros);
+        $resultado=$permisos_empleados->Insert();
+        echo 1;
+    }
+    
+    public function GetHoras()
+    {
+        session_start();
+        $horarios = new HorariosEmpleadosModel();
+        $cedula_usuario = $_SESSION["cedula_usuarios"];
+        $columna = "horarios_empleados.hora_entrada_empleados,
+                    horarios_empleados.hora_salida_empleados";
+        
+        $tablas = "public.horarios_empleados INNER JOIN public.empleados
+                       ON empleados.id_grupo_empleados=horarios_empleados.id_grupo_empleados";
+                       
+        
+        $where = "empleados.numero_cedula_empleados = $cedula_usuario";
+        
+        $resultSet=$horarios->getCondiciones($columna,$tablas,$where,"empleados.numero_cedula_empleados");
+                
         echo json_encode($resultSet);
     }
     
-    public function GetCargos()
-    {
-        session_start();
-        $cargos = new CargosModel();
-        $tabla= "public.cargos_empleados INNER JOIN public.estado
-                 ON cargos_empleados.id_estado = estado.id_estado";
-        $where= "estado.nombre_estado='ACTIVO'";
-        $id = "cargos_empleados.nombre_cargo";
-        
-        $resultSet = $cargos->getCondiciones("*", $tabla, $where, $id);
-        
-        echo json_encode($resultSet);
-    }
-   
-    
-    public function AgregarEmpleado()
-    {
-      session_start();
-      $empleados = new EmpleadosModel();
-      $numero_cedula=$_POST['numero_cedula'];
-      $cargo=$_POST['cargo'];
-      $dpto=$_POST['dpto'];
-      $nombre_empleado=$_POST['nombre_empleado'];
-      $id_grupo=$_POST['id_grupo'];
-      $estado=$_POST['estado'];
-      $id_oficina=$_POST['id_oficina'];
-      $funcion = "ins_empleado";
-      $parametros = "'$cargo',
-                     '$dpto',
-                     '$numero_cedula',
-                     '$nombre_empleado',
-                     '$id_grupo',
-                     '$estado',
-                     '$id_oficina'";
-      $empleados->setFuncion($funcion);
-      $empleados->setParametros($parametros);
-      $resultado=$empleados->Insert();
-      echo 1;
-    }
-    
-    public function consulta_empleados(){
+    public function consulta_solicitudes(){
         
         session_start();
         $id_rol=$_SESSION["id_rol"];
         $id_estado = (isset($_REQUEST['id_estado'])&& $_REQUEST['id_estado'] !=NULL)?$_REQUEST['id_estado']:'';
         
-        $empleados = new EmpleadosModel();
-                
-        $where_to="";
-        $columnas = " empleados.numero_cedula_empleados,
-					  empleados.nombres_empleados,
-                      empleados.id_cargo_empleado,
-                      empleados.id_departamento,
-                      grupo_empleados.nombre_grupo_empleados,
-                      empleados.id_grupo_empleados,
-                      empleados.id_estado,
-                      estado.nombre_estado,
-                      oficina.id_oficina,
-                      oficina.nombre_oficina,
-                      departamentos.nombre_departamento,
-                      cargos_empleados.nombre_cargo";
+        $permisos_empleados = new PermisosEmpleadosModel();
         
-        $tablas = "public.empleados INNER JOIN public.grupo_empleados
-                   ON grupo_empleados.id_grupo_empleados = empleados.id_grupo_empleados
-                   INNER JOIN public.estado 
-                   ON empleados.id_estado = estado.id_estado
-                   INNER JOIN public.oficina
-                   ON oficina.id_oficina = empleados.id_oficina
+        $where_to="";
+        $columnas = " empleados.nombres_empleados,
+                      cargos_empleados.nombre_cargo,
+                      departamentos.nombre_departamento,
+                      permisos_empleados.fecha_solicitud,
+                        permisos_empleados.hora_desde,
+                        permisos_empleados.hora_hasta,
+                        causas_permisos.nombre_causa,
+                        permisos_empleados.descripcion_causa,
+                        estado.nombre_estado";
+        
+        $tablas = "public.permisos_empleados INNER JOIN public.empleados
+                   ON permisos_empleados.id_empleado = empleados.id_empleados
+                   INNER JOIN public.estado
+                   ON permisos_empleados.id_estado = estado.id_estado
+                   INNER JOIN public.causas_permisos
+                   ON permisos_empleados.id_causa = causas_permisos.id_causa
                    INNER JOIN public.departamentos
-                   ON empleados.id_departamento = departamentos.id_departamento
+                   ON departamentos.id_departamento = empleados.id_departamento
                    INNER JOIN public.cargos_empleados
                    ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         
+        if ($id_estado != "0")
+        {   
+            $where    = "permisos_empleados.id_estado=".$id_estado;
+        }
+        else $where    ="1=1";
         
-        $where    = "empleados.id_estado=".$id_estado;
-        
-        $id       = "empleados.id_empleados";
+        $id       = "permisos_empleados.id_permisos_empleados";
         
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -142,8 +167,8 @@ class PermisosEmpleadosController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND (CAST(empleados.numero_cedula_empleados AS TEXT) LIKE '".$search."%' OR empleados.nombres_empleados ILIKE '".$search."%' OR cargos_empleados.nombre_cargo ILIKE '".$search."%' OR departamentos.nombre_departamento ILIKE '".$search."%' 
-                 OR grupo_empleados.nombre_grupo_empleados ILIKE '".$search."%')";
+                $where1=" AND cargos_empleados.nombre_cargo  ILIKE '".$search."%' OR empleados.nombres_empleados ILIKE '".$search."%' OR causas_permisos.nombre_causa ILIKE'".$search."%' OR departamentos.nombre_departamento ILIKE '".$search."%'";
+
                 
                 $where_to=$where.$where1;
             }else{
@@ -153,7 +178,7 @@ class PermisosEmpleadosController extends ControladorBase{
             }
             
             $html="";
-            $resultSet=$empleados->getCantidad("*", $tablas, $where_to);
+            $resultSet=$permisos_empleados->getCantidad("*", $tablas, $where_to);
             $cantidadResult=(int)$resultSet[0]->total;
             
             $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
@@ -164,7 +189,7 @@ class PermisosEmpleadosController extends ControladorBase{
             
             $limit = " LIMIT   '$per_page' OFFSET '$offset'";
             
-            $resultSet=$empleados->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+            $resultSet=$permisos_empleados->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
             $count_query   = $cantidadResult;
             $total_pages = ceil($cantidadResult/$per_page);
             
@@ -178,16 +203,19 @@ class PermisosEmpleadosController extends ControladorBase{
                 $html.='</div>';
                 $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                 $html.='<section style="height:570px; overflow-y:scroll;">';
-                $html.= "<table id='tabla_empleados' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<table id='tabla_solicitudes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
                 $html.='<th style="text-align: left;  font-size: 15px;"></th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Cédula</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Cargo</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Departamento</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Oficina</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Grupo</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Fecha</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Desde</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Hasta</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Causa</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Descripción</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Estado</th>';
                 
                 if($id_rol==1){
                     
@@ -208,19 +236,22 @@ class PermisosEmpleadosController extends ControladorBase{
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->numero_cedula_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_cargo.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_departamento.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_grupo_empleados.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->fecha_solicitud.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->hora_desde.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->hora_hasta.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->nombre_causa.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->descripcion_causa.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
                     if($id_rol==1){
                         
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarEmpleado('.$res->numero_cedula_empleados.',&quot;'.$res->nombres_empleados.'&quot;,'.$res->id_cargo_empleado.','.$res->id_departamento.',&quot;'.$res->id_grupo_empleados.'&quot; , '.$res->id_estado.', '.$res->id_oficina.')"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
-                    if($res->nombre_estado=="ACTIVO")
-                    {
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="EliminarEmpleado('.$res->numero_cedula_empleados.')"><i class="glyphicon glyphicon-trash"></i></button></span></td>';
-                    }
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick=""><i class="glyphicon glyphicon-edit"></i></button></span></td>';
+                        if($res->nombre_estado=="ACTIVO")
+                        {
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick=""><i class="glyphicon glyphicon-trash"></i></button></span></td>';
+                        }
                     }
                     $html.='</tr>';
                 }
@@ -231,7 +262,7 @@ class PermisosEmpleadosController extends ControladorBase{
                 $html.='</table>';
                 $html.='</section></div>';
                 $html.='<div class="table-pagination pull-right">';
-                $html.=''. $this->paginate_empleados("index.php", $page, $total_pages, $adjacents,"load_empleados").'';
+                $html.=''. $this->paginate_solicitudes("index.php", $page, $total_pages, $adjacents,"load_solicitudes").'';
                 $html.='</div>';
                 
                 
@@ -240,7 +271,7 @@ class PermisosEmpleadosController extends ControladorBase{
                 $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                 $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
                 $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay empleados registrados...</b>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay solicitudes registradas...</b>';
                 $html.='</div>';
                 $html.='</div>';
             }
@@ -253,7 +284,7 @@ class PermisosEmpleadosController extends ControladorBase{
         
     }
     
-    public function paginate_empleados($reload, $page, $tpages, $adjacents,$funcion='') {
+    public function paginate_solicitudes($reload, $page, $tpages, $adjacents,$funcion='') {
         
         $prevlabel = "&lsaquo; Prev";
         $nextlabel = "Next &rsaquo;";
@@ -317,79 +348,7 @@ class PermisosEmpleadosController extends ControladorBase{
         return $out;
     }
     
-    public function AutocompleteCedula(){
-        
-        $empleados = new EmpleadosModel();
-        
-        if(isset($_GET['term'])){
-            
-            $cedula_empleado = $_GET['term'];
-            
-           $resultSet=$empleados->getBy("CAST(empleados.numero_cedula_empleados AS TEXT) LIKE '$cedula_empleado%'");
-            
-            $respuesta = array();
-            
-            if(!empty($resultSet)){
-                
-                if(count($resultSet)>0){
-                    
-                    foreach ($resultSet as $res){
-                        
-                        $_cls_usuarios = new stdClass;
-                        $_cls_usuarios->value=$res->numero_cedula_empleados;
-                        $nombres= (string)$res->nombres_empleados;
-                        $nombresep = explode(" ", $nombres);                        
-                        $_cls_usuarios->label=$res->numero_cedula_empleados.' - '.$nombresep[0].' '.$nombresep[2];
-                        $_cls_usuarios->nombre=$nombresep[0].' '.$nombresep[1];
-                        
-                        $respuesta[] = $_cls_usuarios;
-                    }
-                    
-                    echo json_encode($respuesta);
-                }
-                
-            }else{
-                echo '[{"id":0,"value":"sin datos"}]';
-            }
-            
-        }else{
-            
-            $cedula_usuarios = (isset($_POST['term']))?$_POST['term']:'';
-            
-            $columna = "empleados.numero_cedula_empleados,
-					  empleados.nombres_empleados,
-                      empleados.cargo_empleados,
-                      empleados.departamento_empleados,
-                      empleados.id_grupo_empleados,
-                      empleados.id_estado";
-            
-            $tablas = "public.empleados";
-            
-            $where = "empleados.numero_cedula_empleados = $cedula_usuarios";
-            
-            $resultSet=$empleados->getCondiciones($columna,$tablas,$where,"empleados.numero_cedula_empleados");
-            
-            $respuesta = new stdClass();
-            
-            if(!empty($resultSet)){
-                
-                $respuesta->numero_cedula_empleados = $resultSet[0]->numero_cedula_empleados;
-                $nombres = (string)$resultSet[0]->nombres_empleados;
-                $nombresep = explode(" ", $nombres);
-                $respuesta->nombre_empleados = $nombresep[0].' '.$nombresep[1];
-                $respuesta->apellidos_empleados = $nombresep[2].' '.$nombresep[3];;
-                $respuesta->cargo_empleados = $resultSet[0]->cargo_empleados;
-                $respuesta->dpto_empleados = $resultSet[0]->departamento_empleados;
-                $respuesta->id_grupo_empleados = $resultSet[0]->id_grupo_empleados;
-                $respuesta->id_estado = $resultSet[0]->id_estado;
-                
-            }
-            
-            echo json_encode($respuesta);
-            
-        }
-
-    }
+    
     
     public function EliminarValor()
     {
@@ -408,7 +367,7 @@ class PermisosEmpleadosController extends ControladorBase{
         $colval = "id_estado=".$resultEst[0]->id_estado;
         $empleados->UpdateBy($colval, $tabla, $where);
     }
-        
+    
 }
 
 ?>

@@ -361,7 +361,8 @@ class EmpleadosController extends ControladorBase{
                       empleados.id_cargo_empleado,
                       empleados.id_departamento,
                       empleados.id_grupo_empleados,
-                      empleados.id_estado";
+                      empleados.id_estado,
+                      empleados.id_oficina";
             
             $tablas = "public.empleados";
             
@@ -382,6 +383,7 @@ class EmpleadosController extends ControladorBase{
                 $respuesta->dpto_empleados = $resultSet[0]->id_departamento;
                 $respuesta->id_grupo_empleados = $resultSet[0]->id_grupo_empleados;
                 $respuesta->id_estado = $resultSet[0]->id_estado;
+                $respuesta->id_oficina = $resultSet[0]->id_oficina;
                 
             }
             

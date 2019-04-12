@@ -12,16 +12,10 @@ class TipoActivosController extends ControladorBase{
 	
 		//Creamos el objeto usuario
      	$grupos=new GruposModel();
-		//Conseguimos todos los usuarios
-     	$resultSet=$grupos->getAll("id_grupos");
+		     	
+     	$tiposActivosFijos = new TipoActivosModel();
 				
-		$resultEdit = "";
-		
-		$estado= null;
-		$estado = new EstadoModel();
-		$whe_estado = "tabla_estado = 'GRUPOS'";
-		$result_Grupos_estados = $estado->getBy($whe_estado);
-		
+				
 		session_start();
         
 	
@@ -32,7 +26,7 @@ class TipoActivosController extends ControladorBase{
 			$id_rol= $_SESSION['id_rol'];
 			$resultPer = $grupos->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
-			print_r($resultPer);
+			$rsTipoActivos = $tiposActivosFijos->getBy(" 1 = 1 ");
 			
 			if (!empty($resultPer))
 			{
@@ -43,41 +37,11 @@ class TipoActivosController extends ControladorBase{
 					$id_rol= $_SESSION['id_rol'];
 					$resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 						
-					if (!empty($resultPer))
-					{
-					
-					    $_id_grupos = $_GET["id_grupos"];
-						$columnas = " grupos.id_grupos, 
-                                      grupos.nombre_grupos, 
-                                      estado.id_estado, 
-                                      estado.nombre_estado, 
-                                      estado.tabla_estado, 
-                                      grupos.creado, 
-                                      grupos.modificado";
-						$tablas   = "public.grupos, 
-                                     public.estado";
-						$where    = "estado.id_estado = grupos.id_estado
-                                     AND grupos.id_grupos = '$_id_grupos' "; 
-						$id       = "grupos.id_grupos";
-							
-						$resultEdit = $grupos->getCondiciones($columnas ,$tablas ,$where, $id);
-
-					}
-					else
-					{
-					    $this->view_Activos("Error",array(
-								"resultado"=>"No tiene Permisos de Editar Grupos"
-					
-						));
-					
-					
-					}
-					
 				}
 		
 				
 				$this->view_Activos("TipoActivos",array(
-				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "result_Grupos_estados" =>$result_Grupos_estados
+				    "resultSet"=>$rsTipoActivos
 			
 				));
 		
@@ -103,55 +67,51 @@ class TipoActivosController extends ControladorBase{
 	
 	}
 	
-	public function InsertaGrupos(){
+	
+	public function InsertaTiposActivos(){
 			
 		session_start();
-		$grupos=new GruposModel();
 		
+		$tiposActivos = new TipoActivosModel();
 		
-
-		$nombre_controladores = "Grupos";
+		$nombre_controladores = "TipoActivos";
 		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+		$resultPer = $tiposActivos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
-		if (!empty($resultPer))
-		{
-		
-		//die("llego");
-		
-			$resultado = null;
-			$grupos=new GruposModel();
-		
-			if (isset ($_POST["nombre_grupos"])   )
-			{
-				
-			    $_nombre_grupos = $_POST["nombre_grupos"];
-			    $_id_grupos =  $_POST["id_grupos"];
-			    $_id_estado = $_POST["id_estado"];
-			    //die("llego");
-			    if($_id_grupos > 0){
-					
-					$columnas = " nombre_grupos = '$_nombre_grupos',
-                                  id_estado = '$_id_estado'";
-					$tabla = "  public.grupos";
-					$where = "id_grupos = '$_id_grupos'";
-					$resultado=$grupos->UpdateBy($columnas, $tabla, $where);
-					
-				}else{
-					
-					$funcion = "ins_grupos";
-					$parametros = " '$_nombre_grupos', '$_id_estado'";
-					$grupos->setFuncion($funcion);
-					$grupos->setParametros($parametros);
-					$resultado=$grupos->Insert();
-				}
-				
-				
-				
-		
+		if (!empty($resultPer)){	
+		    
+		    $_nombre_tipo = (isset($_POST["nombre_tipo_activo"])) ? $_POST["nombre_tipo_activo"] : "";
+		    $_meses_tipo = (isset($_POST["meses_tipo_activo"])) ? $_POST["meses_tipo_activo"] : 0;
+		    $_id_tipo_activo = (isset($_POST["id_tipo_activo"])) ? $_POST["id_tipo_activo"] : 0 ;
+		    
+		    /*si es insertado enviar en cero el id_tipo_activo a la funcion*/
+							
+			$funcion = "ins_tipos_activosfijos";
+			$parametros = " '$_nombre_tipo', '$_meses_tipo', '$_id_tipo_activo'";
+			$tiposActivos->setFuncion($funcion);
+			$tiposActivos->setParametros($parametros);
+			$resultado = $tiposActivos->llamafuncion();
+			
+			$respuesta = 0 ;
+			
+			if(!empty($resultado) && count($resultado) > 0 ){
+			    
+			    foreach ( $resultado[0] as $k => $v){
+			        
+			        $respuesta = $v;
+			    }
+			    
 			}
-			$this->redirect("Grupos", "index");
-
+			
+			if($respuesta > 0 ){
+			    
+			    echo json_encode(array('mensaje'=>"Tipo de Activo Ingresado Correctamente"));
+			    exit();
+			}
+			
+			echo "Error al Ingresar Tipo Activo";
+			exit();
+			
 		}
 		else
 		{
@@ -630,46 +590,49 @@ class TipoActivosController extends ControladorBase{
 	    return $out;
 	}
 	
-	
-	/**
-	 * mod: compras
-	 * title: carga_grupos
-	 * ajax: si
+	/***
+	 * return: json
+	 * title: editTipoActivo
+	 * fcha: 2019-04-11
 	 */
-	
-	public function carga_grupos(){
+	public function editTipoActivo(){
 	    
-	    $grupos = null;
-	    $grupos = new GruposModel();
-	    
-	    $resulset = $grupos->getAll("id_grupos");
-	    
-	    if(!empty($resulset)){
-	        if(is_array($resulset) && count($resulset)>0){
-	            echo json_encode($resulset);
+	    session_start();
+	    $tipoActivos = new TipoActivosModel();
+	    $nombre_controladores = "TipoActivos";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $tipoActivos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    	     
+	    if (!empty($resultPer))
+	    {
+	        
+	        
+	        if(isset($_POST["id_tipo_activo"])){
+	            
+	            $id_tipo = (int)$_POST["id_tipo_activo"];
+	            
+	            $query = "SELECT * FROM tipo_activos_fijos WHERE id_tipo_activos_fijos = $id_tipo";
+
+	            $resultado  = $tipoActivos->enviaquery($query);
+	            
+	           
+	            echo json_encode(array('data'=>$resultado));         
+	            
+	            
 	        }
+	       	        
+	        
 	    }
+	    else
+	    {
+	        echo "Usuario no tiene permisos-Editar";
+	    }
+	    
+	    
+	    
 	}
 	
-	/**
-	 * mod: compras
-	 * title: carga_unidadmedida
-	 * ajax: si
-	 */
 	
-	public function carga_unidadmedida(){
-	    
-	    $grupos = null;
-	    $grupos = new GruposModel();
-	    
-	    $resulset = $grupos->getCondiciones("*","public.unidad_medida","1=1","id_unidad_medida");
-	    
-	    if(!empty($resulset)){
-	        if(is_array($resulset) && count($resulset)>0){
-	            echo json_encode($resulset);
-	        }
-	    }
-	}
 	
 }
 ?>

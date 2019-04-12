@@ -67,37 +67,33 @@ class ActividadesController extends ControladorBase{
 	    session_start();
 	    $actividades = new ActividadesModel();
 	    $where_to="";
-	    $columnas = "usuarios.id_usuarios, 
-                      usuarios.cedula_usuarios, 
-                      usuarios.nombre_usuarios, 
-                      usuarios.apellidos_usuarios, 
+	    $columnas = "us.id_usuarios, 
+                      us.cedula_usuarios, 
+                      us.nombre_usuarios, 
+                      us.apellidos_usuarios, 
                       rol.id_rol, 
                       rol.nombre_rol, 
-                      actividades.id_actividades, 
-                      actividades.ip_usuarios_actividades, 
-                      actividades.fecha_usuarios_actividades, 
-                      actividades.descripcion_actividades, 
-                      actividades.tabla_actividades, 
-                      actividades.campo_actividades, 
-                      actividades.valor_actividades, 
-                      actividades.creado";
+                      ac.id_actividades, 
+                      ac.ip_usuarios_actividades, 
+                      ac.fecha_usuarios_actividades, 
+                      ac.descripcion_actividades, 
+                      ac.tabla_actividades, 
+                      ac.campo_actividades, 
+                      ac.valor_actividades, 
+                      ac.creado";
 	    
-	    $tablas   = "public.actividades, 
-                      public.usuarios, 
-                      public.privilegios, 
-                      public.rol";
+	    $tablas   = "actividades ac
+                    INNER JOIN usuarios us
+                    ON ac.id_usuarios = us.id_usuarios
+                    INNER JOIN rol 
+                    ON rol.id_rol = us.id_rol";
 	    
-	    $where    = "usuarios.id_usuarios = actividades.id_usuarios AND
-                  privilegios.id_usuarios = usuarios.id_usuarios AND
-                  privilegios.id_rol = rol.id_rol";
+	    $where    = " 1 = 1 ";
 	    
-	    $id       = "usuarios.id_usuarios";
-	    
+	    $id       = "us.id_usuarios";
 	    
 	    
-	    
-	    
-	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
 	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
 	    $desde=  (isset($_REQUEST['desde'])&& $_REQUEST['desde'] !=NULL)?$_REQUEST['desde']:'';
 	    $hasta=  (isset($_REQUEST['hasta'])&& $_REQUEST['hasta'] !=NULL)?$_REQUEST['hasta']:'';
@@ -108,31 +104,28 @@ class ActividadesController extends ControladorBase{
 	    if($action == 'ajax')
 	    {
 	        
+	       
 	        if(!empty($search)){
 	            
 	            
 	            if($desde!="" && $hasta!=""){
 	                
-	                $where2=" AND DATE(actividades.fecha_usuarios_actividades)  BETWEEN '$desde' AND '$hasta'";
+	                $where2=" AND DATE(ac.fecha_usuarios_actividades)  BETWEEN '$desde' AND '$hasta'";
 	                
 	            }
 	            
-	            $where1=" AND (usuarios.cedula_usuarios LIKE '".$search."%' OR usuarios.nombre_usuarios LIKE '".$search."%' OR usuarios.apellidos_usuarios LIKE '".$search."%' OR actividades.descripcion_actividades LIKE '".$search."%')";
+	            $where1=" AND (us.cedula_usuarios LIKE '".$search."%' OR us.nombre_usuarios LIKE '".$search."%' OR us.apellidos_usuarios LIKE '".$search."%' OR ac.descripcion_actividades LIKE '".$search."%')";
 	            
 	            $where_to=$where.$where1.$where2;
+	            
 	        }else{
+	            
 	            if($desde!="" && $hasta!=""){
 	                
-	                $where2=" AND DATE(actividades.fecha_usuarios_actividades)  BETWEEN '$desde' AND '$hasta'";
+	                $where2=" AND DATE(ac.fecha_usuarios_actividades)  BETWEEN '$desde' AND '$hasta'";
 	                
 	            }
-	            
-	            
-	            
-	            
-	            // aqui solo agrega en el where estos dos campos mijin de ahi dale formato igual a los otros formularios pilas
-	            //y mirale porque no para esta imagen .gif
-	            
+	            	            
 	            $where_to=$where.$where2;
 	            
 	        }
@@ -151,11 +144,7 @@ class ActividadesController extends ControladorBase{
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	        
 	        $resultSet=$actividades->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
-	        $count_query   = $cantidadResult;
 	        $total_pages = ceil($cantidadResult/$per_page);
-	        
-	        
-	        
 	        
 	        
 	        if($cantidadResult>0)
@@ -209,7 +198,7 @@ class ActividadesController extends ControladorBase{
 	            
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay actividades registradas...</b>';

@@ -103,7 +103,6 @@ div.l1 {
       
                         
         <label for="id_rol" class="control-label">Roles</label>
-        <h4>NO VALE!</h4>
         <br>
         <div class ="l1">
         
@@ -115,7 +114,7 @@ div.l1 {
 			  
 			  </select>
 			  </div>
-			  <!--<button type="button" id="btUpdate" name="btUpdate" class="btn btn-info">Subir Cambios</button>-->
+			  <button type="button" id="btUpdate" name="btUpdate" class="btn btn-info">Subir Cambios</button>
 			  
 			  
 			  <div id="mensaje_id_grupos" class="errores"></div>

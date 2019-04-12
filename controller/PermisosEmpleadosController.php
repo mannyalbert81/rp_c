@@ -4,11 +4,14 @@ class PermisosEmpleadosController extends ControladorBase{
         session_start();
         $causas = new CausasPermisosModel();
         $estado = new EstadoModel();
+        $id_rol = $_SESSION['id_rol'];
         
         $tablaes ="public.estado";
         $wherees = "estado.tabla_estado = 'PERMISO_EMPLEADO'";
         $ides = "estado.id_estado";
         $resultes = $estado->getCondiciones("*", $tablaes, $wherees, $ides);
+        
+        
         
         $tablacau ="public.causas_permisos INNER JOIN public.estado
                     ON causas_permisos.id_estado = estado.id_estado";
@@ -18,8 +21,7 @@ class PermisosEmpleadosController extends ControladorBase{
       
         $this->view_Administracion("PermisosEmpleados",array(
             "resultcau"=>$resultcau,
-            "resultes" => $resultes,
-            "cedula_usuario" => $cedula_usuario
+            "resultes" => $resultes
         ));
     }
     
@@ -122,9 +124,43 @@ class PermisosEmpleadosController extends ControladorBase{
         
         session_start();
         $id_rol=$_SESSION["id_rol"];
+        $cedula =$_SESSION["cedula_usuarios"];
         $id_estado = (isset($_REQUEST['id_estado'])&& $_REQUEST['id_estado'] !=NULL)?$_REQUEST['id_estado']:'';
         
         $permisos_empleados = new PermisosEmpleadosModel();
+        $rol = new RolesModel();
+        $departamento = new DepartamentoModel();
+        
+        $tablar = "public.rol";
+        $wherer = "rol.nombre_rol='Gerente'";
+        $idr = "rol.id_rol";
+        $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+        $id_gerente = $resultr[0]->id_rol;
+        $wherer = "rol.nombre_rol='Contador / Jefe de RR.HH'";
+        $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+        $id_rh = $resultr[0]->id_rol;
+        
+        $columnadep = "departamentos.nombre_departamento";
+        $tablasdep = "public.departamentos INNER JOIN public.cargos_empleados
+                      ON departamentos.id_departamento = cargos_empleados.id_departamento
+                      INNER JOIN public.empleados
+                      ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+        $wheredep= "empleados.numero_cedula_empleados =".$cedula;
+        $iddep = "departamentos.id_departamento";
+        $resultdep = $departamento->getCondiciones($columnadep, $tablasdep, $wheredep, $iddep);
+        
+        $tablar = "usuarios INNER JOIN empleados
+                        ON usuarios.cedula_usuarios = CAST (empleados.numero_cedula_empleados AS TEXT)
+                        INNER JOIN departamentos 
+                        ON departamentos.id_departamento = empleados.id_departamento
+                        INNER JOIN cargos_empleados
+                        ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+        $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND cargos_empleados.nombre_cargo ILIKE 'Jefe%'";
+        $idr = "usuarios.id_rol";
+        $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+        $id_jefi = $resultr[0]->id_rol;
+        
+        echo $id_gerente; echo " "; echo $id_rh; echo " "; echo $id_jefi;
         
         $where_to="";
         $columnas = " empleados.nombres_empleados,
@@ -149,10 +185,26 @@ class PermisosEmpleadosController extends ControladorBase{
                    ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         
         if ($id_estado != "0")
-        {   
-            $where    = "permisos_empleados.id_estado=".$id_estado;
+        {   if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
+            {
+                $where    = "permisos_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados=".$cedula;
+            }
+            else {
+                $where    = "permisos_empleados.id_estado=".$id_estado;
+            }
+            
         }
-        else $where    ="1=1";
+        else 
+        {
+            if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
+            {
+                $where    = " empleados.numero_cedula_empleados=".$cedula;
+            }
+            else {
+                $where    = "1=1";
+            }
+        }
+           
         
         $id       = "permisos_empleados.id_permisos_empleados";
         
@@ -218,7 +270,8 @@ class PermisosEmpleadosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 15px;">Descripción</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Estado</th>';
                 
-                if($id_rol==1){
+                if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
+                {
                     
                     $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                     $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -246,13 +299,12 @@ class PermisosEmpleadosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->nombre_causa.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->descripcion_causa.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
-                    if($id_rol==1){
+                    if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
+                    {
                         
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick=""><i class="glyphicon glyphicon-edit"></i></button></span></td>';
-                        if($res->nombre_estado=="ACTIVO")
-                        {
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick=""><i class="glyphicon glyphicon-trash"></i></button></span></td>';
-                        }
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick=""><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick=""><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                       
                     }
                     $html.='</tr>';
                 }

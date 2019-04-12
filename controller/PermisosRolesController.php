@@ -454,10 +454,9 @@ class PermisosRolesController extends ControladorBase{
      $permisos_rol->deleteBy(" id_rol",$rolId[0]->id_rol);
 
     
-     $resultPer2 = $permisos_rol->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
      
-     if (!empty($resultPer2))
-     {
+     
+     
         $controladores = new ControladoresModel();
        foreach ($arreglo as $res)
        {
@@ -484,7 +483,6 @@ class PermisosRolesController extends ControladorBase{
          echo $html;
          
        }
-     }
      
      }
      

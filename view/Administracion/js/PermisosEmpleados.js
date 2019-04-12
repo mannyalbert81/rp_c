@@ -36,7 +36,7 @@ function load_solicitudes(pagina){
 	   var idestado=$("#estado_solicitudes").val();
   var con_datos={
 				  action:'ajax',
-				  page:pagina
+				  page:pagina,
 				  };
 		  
 $("#load_solicitudes").fadeIn('slow');
@@ -289,9 +289,8 @@ function HabilitarDescripcion()
 
 function LimpiarCampos()
 {
-	$("#cedula_empleado").val("");
-	$("#nombre_empleados").val("");
-	$("#dpto_empleados").val("");
+	
+	
 	$("#fecha_permiso").val("");
 	$("#hora_desde").val("");
 	$("#hora_hasta").val("");

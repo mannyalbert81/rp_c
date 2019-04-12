@@ -42,6 +42,8 @@ $controladores=$_SESSION['controladores'];
             <li style="<?php echo getcontrolador("Privilegios",$controladores) ?>"><a href="index.php?controller=Privilegios&action=index"><i class="fa fa-circle-o"></i> Privilegios</a></li>
             <li style="<?php echo getcontrolador("Actividades",$controladores) ?>"><a href="index.php?controller=Actividades&action=index"><i class="fa fa-circle-o"></i> Actividades</a></li>
             <li style="<?php echo getcontrolador("DepartamentosAdmin",$controladores) ?>"><a href="index.php?controller=DepartamentosAdmin&action=index"><i class="fa fa-circle-o"></i>Departamentos</a></li>
+            <li style="<?php echo getcontrolador("Estados",$controladores) ?>"><a href="index.php?controller=Estados&action=index"><i class="fa fa-circle-o"></i>Estados</a></li>
+           
            </ul>
         </li>
         
@@ -64,7 +66,6 @@ $controladores=$_SESSION['controladores'];
                 <li style="<?php echo getcontrolador("Departamentos",$controladores) ?>"><a href="index.php?controller=Departamentos&action=index"><i class="fa fa-circle-o"></i> Departamentos</a></li>
                 <li style="<?php echo getcontrolador("Empleados",$controladores) ?>"><a href="index.php?controller=Empleados&action=index"><i class="fa fa-circle-o"></i> Empleados</a></li>
                 <li style="<?php echo getcontrolador("Horarios",$controladores) ?>"><a href="index.php?controller=Horarios&action=index"><i class="fa fa-circle-o"></i> Horarios</a></li>
-                <li style="<?php echo getcontrolador("CausasPermisos",$controladores) ?>"><a href="index.php?controller=CausasPermisos&action=index"><i class="fa fa-circle-o"></i> Causas Permisos</a></li>
     		  </ul>
             </li>
             

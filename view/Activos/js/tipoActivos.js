@@ -1,5 +1,7 @@
 $(document).ready(function(){
-
+	
+	consultaTipoActivo();
+	
 })
 
 $("#frm_tipo_activos").on("submit",function(event){
@@ -19,18 +21,25 @@ $("#frm_tipo_activos").on("submit",function(event){
 		
 		
 	swal({
-  		  title: "Depreciacion",
+  		  title: "Tipo Activos",
   		  text: datos.mensaje,
   		  icon: "success",
   		  button: "Aceptar",
   		});
-		
+	
 		
 	}).fail(function(xhr,status,error){
 		
 		var err = xhr.responseText
 		console.log(err);
+		
+	}).always(function(){
+		
+		document.getElementById("frm_tipo_activos").reset();	
+		consultaTipoActivo();
 	})
+
+	
 	
 	event.preventDefault()
 })
@@ -40,7 +49,7 @@ function editTipo(id = 0){
 	var tiempo = tiempo || 1000;
 		
 	$.ajax({
-		beforeSend:function(){},
+		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
 		url:"index.php?controller=TipoActivos&action=editTipoActivo",
 		type:"POST",
 		dataType:"json",
@@ -64,9 +73,80 @@ function editTipo(id = 0){
 		
 		var err = xhr.responseText
 		console.log(err);
+	}).always(function(){
+		
+		$("#divLoaderPage").removeClass("loader")
+		consultaTipoActivo();
 	})
 	
 	return false;
+	
+}
+
+/***
+ * funcion para eliminar tipo de activo
+ */
+function delTipo(id){
+	
+		
+	$.ajax({
+		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+		url:"index.php?controller=TipoActivos&action=delTipoActivo",
+		type:"POST",
+		dataType:"json",
+		data:{id_tipo_activo:id}
+	}).done(function(datos){		
+		
+		if(datos.data > 0){
+			
+			swal({
+		  		  title: "Tipo Activos",
+		  		  text: "",
+		  		  icon: "success",
+		  		  button: "Aceptar",
+		  		});
+					
+		}
+		
+		
+		
+	}).fail(function(xhr,status,error){
+		
+		var err = xhr.responseText
+		console.log(err);
+	}).always(function(){
+		
+		$("#divLoaderPage").removeClass("loader")
+		consultaTipoActivo();
+	})
+	
+	return false;
+}
+
+
+
+function consultaTipoActivo(_page = 1){
+	
+	var buscador = $("#buscador").val();
+	$.ajax({
+		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+		url:"index.php?controller=TipoActivos&action=consultaTipoActivos",
+		type:"POST",
+		data:{page:_page,search:buscador,peticion:'ajax'}
+	}).done(function(datos){		
+		
+		$("#tipos_activos_registrados").html(datos)		
+		
+	}).fail(function(xhr,status,error){
+		
+		var err = xhr.responseText
+		console.log(err);
+		
+	}).always(function(){
+		
+		$("#divLoaderPage").removeClass("loader")
+		
+	})
 	
 }
 

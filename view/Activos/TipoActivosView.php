@@ -9,7 +9,19 @@
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     
- 
+ 	<style type="text/css">
+ 	  .loader {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
+        opacity: .8;
+        }
+ 	  
+ 	</style>
    <?php include("view/modulos/links_css.php"); ?>
   			        
     </head>
@@ -110,7 +122,7 @@
                           <input  type="text" class="form-control" id="nombre_tipo_activo" name="nombre_tipo_activo" value=""  placeholder="Nombre Controlador" required/>
                           <input type="hidden" name="id_tipo_activo" id="id_tipo_activo" value="0" />
                           <div id="mensaje_nombre_tipo_activo" class="errores"></div>
-                                              	
+                          <div id="divLoaderPage" ></div>                     	
                                               
                         </div>
             		  </div>
@@ -142,68 +154,18 @@
     </section>
               
      <section class="content">
-      <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title">Listado de Controladores Registrados</h3>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i></button>
-            
-          </div>
-        </div>
-        
-        <div class="box-body">
-        
-        
-       <div class="ibox-content">  
-      <div class="table-responsive">
- 
-		<table  class="table table-striped table-bordered table-hover dataTables-example">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Tipo Activo Fijo</th>
-                          <th>Meses Depreciacion</th>
-                          <th>Editar</th>
-                          <th>Borrar</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                      <?php $i=0;?>
-    						<?php if (!empty($resultSet)) {  foreach($resultSet as $res) {?>
-    						<?php $i++;?>
-            	        		<tr>
-            	                   <td > <?php echo $i; ?>  </td>
-            		               <td > <?php echo $res->nombre_tipo_activos_fijos; ?>     </td> 
-            		               <td > <?php echo $res->meses_tipo_activos_fijos; ?>     </td> 
-            		               
-            		               <td>
-            			           
-            			           		<div class="right">
-            			                    <a onclick="editTipo(<?php echo $res->id_tipo_activos_fijos; ?>)" id="<?php echo $res->id_tipo_activos_fijos; ?>" href="#" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class='glyphicon glyphicon-edit'></i></a>
-            			                </div>
-            			            
-            			             </td>
-            			             <td>   
-            			                <div class="right">
-            			                    <a href="<?php echo $helper->url("TipoActivos","borrarId"); ?>&id_tipo=<?php echo $res->id_tipo_activos_fijos; ?>" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a>
-            			                </div>
-            			              
-            		               </td>
-            		    		</tr>
-            		        <?php } } ?>
-                    
-                    </tbody>
-                    </table>
-       
-        </div>
-         </div>
-        
-       
-        </div>
-        </div>
-        </section>
+      	<div class="box box-primary">
+      		<div class="box-header with-border">
+      			<h3 class="box-title">Listado de Tipos Activos</h3>      			
+            </div> 
+            <div class="box-body">
+    			<div class="pull-right" style="margin-right:15px;">
+					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaTipoActivo(1)" placeholder="Buscar.."/>
+    			</div>            	
+            	<div id="tipos_activos_registrados" ></div>
+            </div> 	
+      	</div>
+      </section> 
     
   </div>
   
@@ -218,7 +180,7 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/Activos/js/TipoActivos.js?0.1"></script> 
+   <script src="view/Activos/js/TipoActivos.js?0.8"></script> 
        
        
 

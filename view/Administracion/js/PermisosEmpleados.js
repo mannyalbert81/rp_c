@@ -101,7 +101,8 @@ function TodoElDia()
 			console.log(res);
 			$("#hora_desde").val(res[0]['hora_entrada_empleados']);
 			$("#hora_hasta").val(res[0]['hora_salida_empleados']);
-			
+			document.getElementById('hora_desde').readOnly = true;
+			document.getElementById('hora_hasta').readOnly = true;
 			})
 		.fail(function() {
 		    console.log("error");
@@ -115,6 +116,8 @@ function TodoElDia()
 	 document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
 	 $("#hora_desde").val("");
      $("#hora_hasta").val("");
+     document.getElementById('hora_desde').readOnly = false;
+		document.getElementById('hora_hasta').readOnly = false;
 	 }
  
 }
@@ -295,21 +298,9 @@ function LimpiarCampos()
 	$("#causa_permiso").val("");
 	$("#descripcion_causa").val("");
 	document.getElementById('descripcion_causa').readOnly = true;
+	 document.getElementById('dia').className = "btn btn-light";
+	 document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
+     document.getElementById('hora_desde').readOnly = false;
+		document.getElementById('hora_hasta').readOnly = false;
 	SelecCargo("");
-}
-
-function EditarEmpleado(cedula, nombres, cargo, dpto, idgrupo, idestado, idofic)
-{
-var res = nombres.split(" ")
-var nombre = res[0]+" "+res[1];
-var apellido = res[2]+" "+res[3];
-$("#cedula_empleado").val(cedula);
-$("#nombre_empleados").val(nombre);
-$("#apellido_empleados").val(apellido);
-$("#dpto_empleados").val(dpto);
-$("#estado_empleados_reg").val(idestado);
-$("#oficina_empleados").val(idofic);
-SelecGrupo(idgrupo);
-SelecCargo(cargo);
-$('html, body').animate({ scrollTop: 0 }, 'fast');
 }

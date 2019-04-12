@@ -10,8 +10,9 @@ class PermisosEmpleadosController extends ControladorBase{
         $ides = "estado.id_estado";
         $resultes = $estado->getCondiciones("*", $tablaes, $wherees, $ides);
         
-        $tablacau ="public.causas_permisos";
-        $wherecau = "1=1";
+        $tablacau ="public.causas_permisos INNER JOIN public.estado
+                    ON causas_permisos.id_estado = estado.id_estado";
+        $wherecau = "estado.nombre_estado='ACTIVO'";
         $idcau = "causas_permisos.id_causa";
         $resultcau = $causas->getCondiciones("*", $tablacau, $wherecau, $idcau);
       

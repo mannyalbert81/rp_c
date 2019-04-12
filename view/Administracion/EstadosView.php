@@ -164,10 +164,7 @@
             <div class="box-body">
             
            <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#estados" data-toggle="tab">Activos Fijos</a></li>
-              
-            </ul>
+            
             
             <div class="col-md-5 col-lg-12 col-xs-5">
             <div class="tab-content">
@@ -182,8 +179,7 @@
 					</div>
 					<div id="load_estados" ></div>
 					<div id="estados_registrados"></div>	
-                <button type="button" id="exportar" name="exportar" value="Exportar"   class="btn btn-primary" ><i class="fa fa-file-excel-o"></i></button>
-               </div>
+                </div>
     		 </div>
             </div>
           </div>

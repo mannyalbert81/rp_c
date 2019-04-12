@@ -64,6 +64,7 @@ $controladores=$_SESSION['controladores'];
                 <li style="<?php echo getcontrolador("Departamentos",$controladores) ?>"><a href="index.php?controller=Departamentos&action=index"><i class="fa fa-circle-o"></i> Departamentos</a></li>
                 <li style="<?php echo getcontrolador("Empleados",$controladores) ?>"><a href="index.php?controller=Empleados&action=index"><i class="fa fa-circle-o"></i> Empleados</a></li>
                 <li style="<?php echo getcontrolador("Horarios",$controladores) ?>"><a href="index.php?controller=Horarios&action=index"><i class="fa fa-circle-o"></i> Horarios</a></li>
+                <li style="<?php echo getcontrolador("CausasPermisos",$controladores) ?>"><a href="index.php?controller=CausasPermisos&action=index"><i class="fa fa-circle-o"></i> Causas Permisos</a></li>
     		  </ul>
             </li>
             

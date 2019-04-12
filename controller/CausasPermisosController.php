@@ -1,126 +1,97 @@
 <?php
-class DepartamentosAdminController extends ControladorBase{
+class CausasPermisosController extends ControladorBase{
     
     public function index(){
         session_start();
-        $departamentos = new DepartamentoModel();
         $estado = new EstadoModel();
         $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='CARGOS'";
+        $whereest= "estado.tabla_estado='CAUSA'";
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones("*", $tablaest, $whereest, $idest);
         
-        $tablaest1= "public.estado";
-        $whereest1= "estado.tabla_estado='DEPARTAMENTOS'";
-        $idest1 = "estado.id_estado";
-        $resultEst1 = $estado->getCondiciones("*", $tablaest1, $whereest1, $idest1);
-        
-        $tabladpto ="public.departamentos INNER JOIN public.estado
-                     ON departamentos.id_estado = estado.id_estado";
-        $wheredpto = "estado.nombre_estado = 'ACTIVO'";
-        $iddpto = "departamentos.nombre_departamento";
-        $resultdpto = $departamentos->getCondiciones("*", $tabladpto, $wheredpto, $iddpto);
-        $this->view_Administracion("DepartamentosAdmin",array(
-            "resultEst"=> $resultEst,
-            "resultEst1"=> $resultEst1,
-            "resultdpto"=>$resultdpto
+       
+        $this->view_Administracion("CausasPermisos",array(
+            "resultEst"=> $resultEst
         ));
     }
     
-    
-    public function AgregarDpto()
-    {
-        session_start();
-        $departamentos = new DepartamentoModel();
-        $funcion = "ins_departamentos";
-        $nombre_dpto= $_POST['nombre_dpto'];
-        $parametros = "'$nombre_dpto'";
-        $departamentos->setFuncion($funcion);
-        $departamentos->setParametros($parametros);
-        $resultado=$departamentos->Insert();
-        
-        echo 1;
-    }
-    
-  
-    
-    public function EliminarDpto()
-    {
-        session_start();
-        $departamento = new DepartamentoModel();
-        $cargo = new CargosModel();
-        $estado = new EstadoModel();
-        $columnaest = "estado.id_estado";
-        $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='DEPARTAMENTOS' AND estado.nombre_estado = 'INACTIVO'";
-        $idest = "estado.id_estado";
-        $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
-        
-        $columnaest1 = "estado.id_estado";
-        $tablaest1= "public.estado";
-        $whereest1= "estado.tabla_estado='CARGOS' AND estado.nombre_estado = 'INACTIVO'";
-        $idest1 = "estado.id_estado";
-        $resultEst1 = $estado->getCondiciones($columnaest1, $tablaest1, $whereest1, $idest1);
-        
-        $id_departamento= $_POST['id_departamento'];
-        $where = "id_departamento=".$id_departamento;
-        $tabla = "departamentos";
-        $colval = "id_estado=".$resultEst[0]->id_estado;
-        $departamento->UpdateBy($colval, $tabla, $where);
-        
-        $where = "id_departamento=".$id_departamento;
-        $tabla = "cargos_empleados";
-        $colval = "id_estado=".$resultEst1[0]->id_estado;
-        $cargo->UpdateBy($colval, $tabla, $where);
-        
-        echo 1;
-    }
-    
    
-    
-    public function RestaurarDpto()
+    public function AgregarCausa()
+    {
+        session_start();
+        $causa = new CausasPermisosModel();
+        $funcion = "ins_causa_permisos";
+        $nombre_causa= $_POST['nombre_causa'];
+        $parametros = "'$nombre_causa'";
+        $causa->setFuncion($funcion);
+        $causa->setParametros($parametros);
+        $resultado=$causa->Insert();
+        
+        echo 1;
+    }
+     
+    public function EliminarCausa()
+    {
+        session_start();
+        $causa = new CausasPermisosModel();
+        $estado = new EstadoModel();
+        $columnaest = "estado.id_estado";
+        $tablaest= "public.estado";
+        $whereest= "estado.tabla_estado='CAUSA' AND estado.nombre_estado = 'INACTIVO'";
+        $idest = "estado.id_estado";
+        $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+               
+        $id_causa= $_POST['id_causa'];
+        $where = "id_causa=".$id_causa;
+        $tabla = "causas_permisos";
+        $colval = "id_estado=".$resultEst[0]->id_estado;
+        $causa->UpdateBy($colval, $tabla, $where);
+              
+        echo 1;
+    }
+       
+    public function RestaurarCausa()
     {
         session_start();
         $estado = new EstadoModel();
-        $id_departamento = $_POST['id_departamento'];
-        $departamentos = new DepartamentoModel();
+        $id_causa = $_POST['id_causa'];
+        $causas = new CausasPermisosModel();
         $columnaest = "estado.id_estado";
         $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='DEPARTAMENTOS' AND estado.nombre_estado = 'ACTIVO'";
+        $whereest= "estado.tabla_estado='CAUSA' AND estado.nombre_estado = 'ACTIVO'";
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
         
-            $where = "id_departamento=".$id_departamento;
-            $tabla = "departamentos";
+            $where = "id_causa=".$id_causa;
+            $tabla = "causas_permisos";
             $colval = "id_estado=".$resultEst[0]->id_estado;
-            $departamentos->UpdateBy($colval, $tabla, $where);
+            $causas->UpdateBy($colval, $tabla, $where);
             
             echo 1;
         
     }
     
-    
-    public function EditarDpto()
+    public function EditarCausa()
     {
         session_start();
-        $departamento = new DepartamentoModel();
+        $causa = new CausasPermisosModel();
             
-        $nombre_departamento= $_POST['nombre_departamento'];
+        $nombre_causa= $_POST['nombre_causa'];
         $nuevo_nombre= $_POST['nuevo_nombre'];
         
-        $cols="departamentos.nombre_departamento";
-        $whe="departamentos.nombre_departamento='".$nuevo_nombre."'";
-        $id="departamentos.nombre_departamento";
+        $cols="causas_permisos.nombre_causa";
+        $whe="causas_permisos.nombre_causa='".$nuevo_nombre."'";
+        $id="causas_permisos.nombre_causa";
         
-        $resultSet=$departamento->getCondiciones($cols, "public.departamentos", $whe, $id);
+        $resultSet=$causa->getCondiciones($cols, "public.causas_permisos", $whe, $id);
         
         if (empty($resultSet))
         {
-        $where = "nombre_departamento='".$nombre_departamento."'";
-        $tabla = "departamentos";
-        $colval = "nombre_departamento='".$nuevo_nombre."'";
-        $departamento->UpdateBy($colval, $tabla, $where);
+        $where = "nombre_causa='".$nombre_causa."'";
+        $tabla = "causas_permisos";
+        $colval = "nombre_causa='".$nuevo_nombre."'";
+        $causa->UpdateBy($colval, $tabla, $where);
         
         echo 1;
         }
@@ -130,23 +101,23 @@ class DepartamentosAdminController extends ControladorBase{
         }
     }
     
-    public function consulta_departamentos(){
+    public function consulta_causas(){
         
         session_start();
         $id_rol=$_SESSION["id_rol"];
         $id_estado = (isset($_REQUEST['id_estado'])&& $_REQUEST['id_estado'] !=NULL)?$_REQUEST['id_estado']:'';
         
-        $departamentos = new DepartamentoModel();
-                
+        $causas = new CausasPermisosModel();
+        
         $where_to="";
         
-        $tablas = "public.departamentos INNER JOIN public.estado
-                   ON departamentos.id_estado = estado.id_estado";
+        $tablas = "public.causas_permisos INNER JOIN public.estado
+                   ON causas_permisos.id_estado = estado.id_estado";
         
         
-        $where    = "departamentos.id_estado=".$id_estado;
+        $where    = "causas_permisos.id_estado=".$id_estado;
         
-        $id       = "departamentos.nombre_departamento";
+        $id       = "causas_permisos.id_causa";
         
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -160,7 +131,7 @@ class DepartamentosAdminController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND departamentos.nombre_departamento ILIKE '".$search."%'";
+                $where1=" AND causas_permisos.nombre_causa ILIKE '".$search."%'";
                 
                 $where_to=$where.$where1;
             }else{
@@ -170,12 +141,12 @@ class DepartamentosAdminController extends ControladorBase{
             }
             
             $html="";
-            $resultSet=$departamentos->getCantidad("*", $tablas, $where_to);
+            $resultSet=$causas->getCantidad("*", $tablas, $where_to);
             $cantidadResult=(int)$resultSet[0]->total;
             
             
             
-            $resultSet=$departamentos->getCondiciones('*', $tablas, $where_to, $id);
+            $resultSet=$causas->getCondiciones('*', $tablas, $where_to, $id);
             
             $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
             
@@ -185,8 +156,7 @@ class DepartamentosAdminController extends ControladorBase{
             
             $limit = " LIMIT   '$per_page' OFFSET '$offset'";
             
-            $resultSet=$departamentos->getCondicionesPag('*', $tablas, $where_to, $id, $limit);
-            $count_query   = $cantidadResult;
+            $resultSet=$causas->getCondicionesPag('*', $tablas, $where_to, $id, $limit);
             $total_pages = ceil($cantidadResult/$per_page);
            
             
@@ -202,7 +172,7 @@ class DepartamentosAdminController extends ControladorBase{
                     $html.='</div>';
                     $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                     $html.='<section style="height:425px; overflow-y:scroll;">';
-                    $html.= "<table id='tabla_departamentos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                    $html.= "<table id='tabla_causas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                     $html.= "<thead>";
                     $html.= "<tr>";
                     $html.='<th style="text-align: left;  font-size: 16px;"></th>';
@@ -230,14 +200,14 @@ class DepartamentosAdminController extends ControladorBase{
                         $i++;
                         $html.='<tr>';
                         $html.='<td style="font-size: 14px;">'.$i.'</td>';
-                        $html.='<td style="font-size: 14px;">'.$res->nombre_departamento;
+                        $html.='<td style="font-size: 14px;">'.$res->nombre_causa;
                         if ($res->nombre_estado == "ACTIVO")
                         {
-                        $html.='<span class="pull-right"><button  type="button" class="btn btn-danger" onclick="EliminarDpto('.$res->id_departamento.')"><i class="glyphicon glyphicon-trash"></i></button></span><span class="pull-right"><button  type="button" class="btn btn-success" data-toggle="modal" data-target="#myModalEdit" onclick="EditarDpto(&quot;'.$res->nombre_departamento.'&quot;)"><i class="glyphicon glyphicon-edit"></i></button></span>';
+                        $html.='<span class="pull-right"><button  type="button" class="btn btn-danger" onclick="EliminarCausa('.$res->id_causa.')"><i class="glyphicon glyphicon-trash"></i></button></span><span class="pull-right"><button  type="button" class="btn btn-success" data-toggle="modal" data-target="#myModalEdit" onclick="EditarCausa(&quot;'.$res->nombre_causa.'&quot;)"><i class="glyphicon glyphicon-edit"></i></button></span>';
                         }
                         else
                         {
-                        $html.='<span class="pull-right"><button  type="button" class="btn btn-primary" onclick="RestaurarDpto('.$res->id_departamento.')"><i class="glyphicon glyphicon-repeat"></i></button></span>';
+                        $html.='<span class="pull-right"><button  type="button" class="btn btn-primary" onclick="RestaurarCausa('.$res->id_causa.')"><i class="glyphicon glyphicon-repeat"></i></button></span>';
                         }
                         $html.='</td>';
                         
@@ -248,7 +218,7 @@ class DepartamentosAdminController extends ControladorBase{
                     $html.='</table>';
                     $html.='</section></div>';
                     $html.='<div class="table-pagination pull-right">';
-                    $html.=''. $this->paginate_departamentos("index.php", $page, $total_pages, $adjacents,"load_departamentos").'';
+                    $html.=''. $this->paginate_causas("index.php", $page, $total_pages, $adjacents,"load_causas").'';
                     $html.='</div>';
                 }
                 
@@ -269,7 +239,7 @@ class DepartamentosAdminController extends ControladorBase{
         
     }
    
-    public function paginate_departamentos($reload, $page, $tpages, $adjacents,$funcion='') {
+    public function paginate_causas($reload, $page, $tpages, $adjacents,$funcion='') {
         
         $prevlabel = "&lsaquo; Prev";
         $nextlabel = "Next &rsaquo;";

@@ -6,20 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-<<<<<<< HEAD
-=======
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-    
-    
-    
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
    <?php include("view/modulos/links_css.php"); ?>
    
-<<<<<<< HEAD
-=======
-          
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
-  </head>
+
 
   <body class="hold-transition skin-blue fixed sidebar-mini">   
   <?php
@@ -147,11 +137,7 @@
             </div>
             
             <div class="box-body">
-<<<<<<< HEAD
-=======
-            
-            
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
+
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <li class="active"><a href="#activos" data-toggle="tab">Grupos Activos</a></li>
@@ -196,9 +182,9 @@
    <?php include("view/modulos/links_js.php"); ?>
    <script src="view/Inventario/js/Grupos.js?3.1" ></script>
   </body>
-<<<<<<< HEAD
+
 </html>
-=======
+
 </html>
 
 
@@ -328,13 +314,4 @@
        	        	   
 
  </script>
- 
-       
-       
-      
- 
 
-
-
-
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git

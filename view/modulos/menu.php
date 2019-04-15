@@ -180,6 +180,8 @@ $controladores=$_SESSION['controladores'];
           </a>
           <ul class="treeview-menu">
       		<li style="<?php echo getcontrolador("ComprobanteContable",$controladores) ?>"><a href="index.php?controller=ComprobanteContable&action=index"><i class="fa fa-circle-o"></i>Comprobantes Contable</a></li>
+     		<li style="<?php echo getcontrolador("ComprobanteTipo",$controladores) ?>"><a href="index.php?controller=ComprobanteTipo&action=index"><i class="fa fa-circle-o"></i>Comprobantes Tipo</a></li>
+    
     	  </ul>
         </li>
         

@@ -1,6 +1,6 @@
 <?php
 
-class ComprobanteContableController extends ControladorBase{
+class ComprobanteTipoController extends ControladorBase{
 
 	public function __construct() {
 		parent::__construct();
@@ -504,7 +504,7 @@ class ComprobanteContableController extends ControladorBase{
 			{
 				
 					
-				$this->view("ComprobanteContable",array(
+				$this->view("ComprobanteTipo",array(
 				    "resultTipCom"=>$resultTipCom , "resultFormaPago"=>$resultFormaPago
 					));
 			
@@ -680,7 +680,7 @@ class ComprobanteContableController extends ControladorBase{
    
    		}	
    		
-   		$this->redirect("ComprobanteContable","index")	;
+   		$this->redirect("ComprobanteTipo","index")	;
    	}
    	else
    	{

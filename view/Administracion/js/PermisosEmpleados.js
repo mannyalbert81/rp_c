@@ -303,3 +303,134 @@ function LimpiarCampos()
 		document.getElementById('hora_hasta').readOnly = false;
 	SelecCargo("");
 }
+
+function Aprobar(idsol,nomest)
+{
+	
+	var url="";
+	var msg="";
+	if (nomest == "EN REVISION") 
+		{
+		url = 'index.php?controller=PermisosEmpleados&action=VBSolicitud';
+		msg = 'Estado de solicitud cambiado a visto bueno';
+		}
+	if (nomest == "VISTO BUENO") 
+	{
+		url = 'index.php?controller=PermisosEmpleados&action=AprobarSolicitud';
+		msg = 'Estado de solicitud cambiado a aprobado';
+	}
+	if (nomest == "APROBADO")
+	{
+		url = 'index.php?controller=PermisosEmpleados&action=GerenciaSolicitud';
+		msg = 'Estado de solicitud cambiado a aprobado gerencia';
+	}
+	console.log(url);
+	$.ajax({
+	    url: url,
+	    type: 'POST',
+	    data: {
+	    	   id_solicitud: idsol
+	    },
+	})
+	.done(function(x) {
+		
+		console.log(x);
+		if (x==1)
+			{
+			swal({
+		  		  title: "Solicitud",
+		  		  text: msg,
+		  		  icon: "success",
+		  		  button: "Aceptar",
+		  		});
+				load_solicitudes(1);
+			}
+		else
+			{
+			if (x.includes("Warning"))
+			{
+				swal({
+				  		  title: "Solicitud",
+				  		  text: "Error al cambiar estado de solicitud",
+				  		  icon: "warning",
+				  		  button: "Aceptar",
+				  		});
+			}
+			swal({
+		  		  title: "Solicitud",
+		  		  text: "Error al cambiar estado de solicitud",
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+				
+			}
+		
+		
+			
+	})
+	.fail(function() {
+	    console.log("error");
+	    swal({
+	  		  title: "Solicitud",
+	  		  text: "Error al cambiar estado de solicitud",
+	  		  icon: "warning",
+	  		  button: "Aceptar",
+	  		});
+	});
+}
+
+function Negar(idsol)
+{
+	$.ajax({
+	    url: 'index.php?controller=PermisosEmpleados&action=NegarSolicitud',
+	    type: 'POST',
+	    data: {
+	    	   id_solicitud: idsol
+	    },
+	})
+	.done(function(x) {
+		
+		console.log(x);
+		if (x==1)
+			{
+			swal({
+		  		  title: "Solicitud",
+		  		  text: "Solicitud negada",
+		  		  icon: "success",
+		  		  button: "Aceptar",
+		  		});
+				load_solicitudes(1);
+			}
+		else
+			{
+			if (x.includes("Warning"))
+			{
+				swal({
+				  		  title: "Solicitud",
+				  		  text: "Error al cambiar estado de solicitud",
+				  		  icon: "warning",
+				  		  button: "Aceptar",
+				  		});
+			}
+			swal({
+		  		  title: "Solicitud",
+		  		  text: "Error al cambiar estado de solicitud",
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+				
+			}
+		
+		
+			
+	})
+	.fail(function() {
+	    console.log("error");
+	    swal({
+	  		  title: "Solicitud",
+	  		  text: "Error al cambiar estado de solicitud",
+	  		  icon: "warning",
+	  		  button: "Aceptar",
+	  		});
+	});
+}

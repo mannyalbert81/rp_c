@@ -126,6 +126,8 @@ class PermisosEmpleadosController extends ControladorBase{
         $id_rol=$_SESSION["id_rol"];
         $cedula =$_SESSION["cedula_usuarios"];
         $id_estado = (isset($_REQUEST['id_estado'])&& $_REQUEST['id_estado'] !=NULL)?$_REQUEST['id_estado']:'';
+        $id_jefi=0;
+        $id_rh=0;
         
         $permisos_empleados = new PermisosEmpleadosModel();
         $rol = new RolesModel();
@@ -136,7 +138,9 @@ class PermisosEmpleadosController extends ControladorBase{
         $idr = "rol.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         $id_gerente = $resultr[0]->id_rol;
-        $wherer = "rol.nombre_rol='Contador / Jefe de RR.HH'";
+        if ($id_rol != $id_gerente)
+        {
+        $wherer = "rol.nombre_rol ILIKE '%Jefe de RR.HH'";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         $id_rh = $resultr[0]->id_rol;
         
@@ -159,13 +163,14 @@ class PermisosEmpleadosController extends ControladorBase{
         $idr = "usuarios.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         $id_jefi = $resultr[0]->id_rol;
-        
-        echo $id_gerente; echo " "; echo $id_rh; echo " "; echo $id_jefi;
-        
+        $id_dpto_jefe = $resultr[0]->id_departamento;
+        }
         $where_to="";
         $columnas = " empleados.nombres_empleados,
                       cargos_empleados.nombre_cargo,
                       departamentos.nombre_departamento,
+                        departamentos.id_departamento,
+                        permisos_empleados.id_permisos_empleados,
                       permisos_empleados.fecha_solicitud,
                         permisos_empleados.hora_desde,
                         permisos_empleados.hora_hasta,
@@ -301,10 +306,23 @@ class PermisosEmpleadosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
                     if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
                     {
+                        if ($id_rol==$id_jefi && $res->nombre_estado=="EN REVISION" && $id_dpto_jefe == $res->id_departamento)
+                        {
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        }
                         
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick=""><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick=""><i class="glyphicon glyphicon-remove"></i></button></span></td>';
-                       
+                         else if ($id_rol==$id_rh && $res->nombre_estado=="VISTO BUENO")
+                        {
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        }
+                        
+                        else if ($id_rol==$id_gerente && $res->nombre_estado=="APROBADO")
+                        {
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        }
                     }
                     $html.='</tr>';
                 }
@@ -421,6 +439,86 @@ class PermisosEmpleadosController extends ControladorBase{
         $empleados->UpdateBy($colval, $tabla, $where);
     }
     
+    
+    public function VBSolicitud()
+    {
+        session_start();
+        $id_solicitud=$_POST['id_solicitud'];
+        $permisos = new PermisosEmpleadosModel();
+        $estado = new EstadoModel();
+        $columnaest = "estado.id_estado";
+        $tablaest= "public.estado";
+        $whereest= "estado.tabla_estado='PERMISO_EMPLEADO' AND estado.nombre_estado = 'VISTO BUENO'";
+        $idest = "estado.id_estado";
+        $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+        
+        $where = "id_permisos_empleados=".$id_solicitud;
+        $tabla = "permisos_empleados";
+        $colval = "id_estado=".$resultEst[0]->id_estado;
+        $permisos->UpdateBy($colval, $tabla, $where);
+        
+        echo 1;
+    }
+    
+    public function AprobarSolicitud()
+    {
+        session_start();
+        $id_solicitud=$_POST['id_solicitud'];
+        $permisos = new PermisosEmpleadosModel();
+        $estado = new EstadoModel();
+        $columnaest = "estado.id_estado";
+        $tablaest= "public.estado";
+        $whereest= "estado.tabla_estado='PERMISO_EMPLEADO' AND estado.nombre_estado = 'APROBADO'";
+        $idest = "estado.id_estado";
+        $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+        
+        $where = "id_permisos_empleados=".$id_solicitud;
+        $tabla = "permisos_empleados";
+        $colval = "id_estado=".$resultEst[0]->id_estado;
+        $permisos->UpdateBy($colval, $tabla, $where);
+        
+        
+        echo 1;
+    }
+    public function GerenciaSolicitud()
+    {
+        session_start();
+        $id_solicitud=$_POST['id_solicitud'];
+        $permisos = new PermisosEmpleadosModel();
+        $estado = new EstadoModel();
+        $columnaest = "estado.id_estado";
+        $tablaest= "public.estado";
+        $whereest= "estado.tabla_estado='PERMISO_EMPLEADO' AND estado.nombre_estado = 'APROBADO GERENCIA'";
+        $idest = "estado.id_estado";
+        $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+        
+        $where = "id_permisos_empleados=".$id_solicitud;
+        $tabla = "permisos_empleados";
+        $colval = "id_estado=".$resultEst[0]->id_estado;
+        $permisos->UpdateBy($colval, $tabla, $where);
+     
+     echo 1;
+    }
+    
+    public function NegarSolicitud()
+    {
+        session_start();
+        $id_solicitud=$_POST['id_solicitud'];
+        $permisos = new PermisosEmpleadosModel();
+        $estado = new EstadoModel();
+        $columnaest = "estado.id_estado";
+        $tablaest= "public.estado";
+        $whereest= "estado.tabla_estado='PERMISO_EMPLEADO' AND estado.nombre_estado = 'NEGADO'";
+        $idest = "estado.id_estado";
+        $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+        
+        $where = "id_permisos_empleados=".$id_solicitud;
+        $tabla = "permisos_empleados";
+        $colval = "id_estado=".$resultEst[0]->id_estado;
+        $permisos->UpdateBy($colval, $tabla, $where);
+        
+        echo 1;
+    }
 }
 
 ?>

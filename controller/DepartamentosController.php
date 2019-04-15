@@ -261,7 +261,7 @@ class DepartamentosController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND departamentos.nombre_departamento ILIKE '".$search."%')";
+                $where1=" AND departamentos.nombre_departamento ILIKE '".$search."%'";
                 
                 $where_to=$where.$where1;
             }else{

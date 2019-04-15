@@ -42,6 +42,8 @@ $controladores=$_SESSION['controladores'];
             <li style="<?php echo getcontrolador("Privilegios",$controladores) ?>"><a href="index.php?controller=Privilegios&action=index"><i class="fa fa-circle-o"></i> Privilegios</a></li>
             <li style="<?php echo getcontrolador("Actividades",$controladores) ?>"><a href="index.php?controller=Actividades&action=index"><i class="fa fa-circle-o"></i> Actividades</a></li>
             <li style="<?php echo getcontrolador("DepartamentosAdmin",$controladores) ?>"><a href="index.php?controller=DepartamentosAdmin&action=index"><i class="fa fa-circle-o"></i>Departamentos</a></li>
+            <li style="<?php echo getcontrolador("Estados",$controladores) ?>"><a href="index.php?controller=Estados&action=index"><i class="fa fa-circle-o"></i>Estados</a></li>
+           
            </ul>
         </li>
         
@@ -267,7 +269,6 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-                 <li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=ActivosFijos&action=index"><i class="fa fa-circle-o"></i>Registro de Activos Fijos</a></li>
                  <li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=TipoActivos&action=index"><i class="fa fa-circle-o"></i>Tipo Activos Fijos</a></li>
                  <li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=ActivosFijos&action=index1"><i class="fa fa-circle-o"></i>Ingresar Activos Fijos</a></li>
               </ul>
@@ -282,7 +283,6 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li style="<?php echo getcontrolador("ActivosFijosDetalle",$controladores) ?>"><a href="index.php?controller=ActivosFijosDetalle&action=index"><i class="fa fa-circle-o"></i>Depreciación de Activos Fijos</a></li>
                 <li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=ActivosFijos&action=depreciacionActivosIndex"><i class="fa fa-circle-o"></i>Depreciacion Activos</a></li>
     		  </ul>
             </li>

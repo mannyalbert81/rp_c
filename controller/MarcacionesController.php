@@ -10,11 +10,6 @@ class MarcacionesController extends ControladorBase{
     public function MostrarNotificacion()
     {
        $html='';
-       
-      
-       
-       
-       
        session_start();
        $marcacion = new RegistroRelojEmpleadosModel();
        $fecha_inicio = $_POST['fecha_inicio'];
@@ -273,12 +268,15 @@ class MarcacionesController extends ControladorBase{
         
         $numregistros=0;
         
-        $numdiastrabajo=0;
+        $horastrabajo=0;
         
         $numdiassintrabajo=0;
         
         $advertencias=0;
         
+        $hent=0;
+        
+        $hsal=0;
         
         $currentdate=0;
         
@@ -296,7 +294,7 @@ class MarcacionesController extends ControladorBase{
 					</button></th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Empleado</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Oficina</th>';
-            $html.='<th style="text-align: left;  font-size: 16px;">Asistencia(días)</th>';
+            $html.='<th style="text-align: left;  font-size: 16px;">Trabajado</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Faltas(días)</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Advertencias</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Atraso</th>';
@@ -314,6 +312,11 @@ class MarcacionesController extends ControladorBase{
         foreach($resultSet as $res)
         {   
             $dayOfWeek = date("D", strtotime($res->fecha_marcacion_empleados));
+            
+            if ($res->tipo_registro_empleados== "Entrada") $hent=$res->hora_marcacion_empleados;
+            
+            if ($res->tipo_registro_empleados== "Salida") $hsal=$res->hora_marcacion_empleados;
+            
             if($res->numero_cedula_empleados == $emp->numero_cedula_empleados)
             {
                 
@@ -339,7 +342,15 @@ class MarcacionesController extends ControladorBase{
                 }
                 if ($numregistros==4)
                 {
-                    $numdiastrabajo++;
+                    $to_time = strtotime($hsal);
+                    $from_time = strtotime($hent);
+                    $diferenci= round((($to_time - $from_time) / 60),0, PHP_ROUND_HALF_DOWN);
+                    
+                    if ($diferenci>0)
+                    {
+                        $horastrabajo=$horastrabajo+$diferenci;
+                    }
+                   
                 }
                 
                 
@@ -355,6 +366,7 @@ class MarcacionesController extends ControladorBase{
                         $from_time = strtotime("+".$hor->tiempo_gracia_empleados." minutes", strtotime($horactr));
 
                         $diferenci= round((($to_time - $from_time) / 60),0, PHP_ROUND_HALF_DOWN);
+
                         if ($diferenci>0)
                         {
                             $tatraso=$tatraso+$diferenci;
@@ -384,6 +396,7 @@ class MarcacionesController extends ControladorBase{
                 
             }
             
+            
             $horasatraso = intval(($tatraso / 60));
             $horasatraso .= "h".$tatraso%60;
             $horasextra = intval(($textra / 60));
@@ -393,12 +406,15 @@ class MarcacionesController extends ControladorBase{
              
        
        }
+       $horastrabajo = intval(($horastrabajo / 60));
+       $horastrabajo .= "h".$horastrabajo%60;
+       
        $i++;
        $html.='<tr>';
        $html.='<td style="font-size: 15px;">'.$i.'</td>';
        $html.='<td style="font-size: 15px;">'.$emp->nombres_empleados.'</td>';
        $html.='<td style="font-size: 15px;">'.$emp->nombre_oficina.'</td>';
-       $html.='<td style="font-size: 15px;">'.$numdiastrabajo.'</td>';
+       $html.='<td style="font-size: 15px;">'.$horastrabajo.'</td>';
        $html.='<td style="font-size: 15px;">'.$numdiassintrabajo.'</td>';
        $html.='<td style="font-size: 15px;">'.$advertencias.'</td>';
        $html.='<td style="font-size: 15px;">'.$horasatraso.'</td>';
@@ -406,7 +422,7 @@ class MarcacionesController extends ControladorBase{
        $html.='<td style="font-size: 15px;">'.$horasdcto.'</td>';
        $html.='</tr>';
        
-       $numdiastrabajo=0;
+       $horastrabajo=0;
        
        $numdiassintrabajo=0;
        

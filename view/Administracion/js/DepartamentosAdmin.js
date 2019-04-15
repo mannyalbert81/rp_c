@@ -1,10 +1,10 @@
 var ideditdpto = 0; 
 
 $(document).ready( function (){
-	load_departamentos();	
+	load_departamentos(1);	
 });
 
-function load_departamentos(){
+function load_departamentos(pagina){
 
 	   var search=$("#search").val();
 	   var idestado=$("#estado_dpto").val();
@@ -25,7 +25,7 @@ $.ajax({
        success: function(x){
          $("#dptos_registrados").html(x);
          $("#load_dptos").html(""); 
-         
+         $("#tabla_departamentos").tablesorter();
        },
       error: function(jqXHR,estado,error){
         $("#dptos_registrados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
@@ -227,7 +227,6 @@ function EditarDpto(nombdpto)
 					  		  icon: "success",
 					  		  button: "Aceptar",
 					  		});
-							SelecDpto();
 							load_departamentos(1);
 							
 							

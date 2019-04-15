@@ -10,6 +10,20 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+    
+    <style type="text/css">
+ 	  .loader {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
+        opacity: .8;
+        }
+ 	  
+ 	</style>
   
     <?php include("view/modulos/links_css.php"); ?>		
   	    
@@ -66,83 +80,46 @@
         <div class="box-body">
           
         
-        <form action="<?php echo $helper->url("Estados","InsertaEstados"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
-                                <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
-                                
-                                <div class="row">
-                        		  
-                                  
-                        		   
-                                    
-                                    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="nombre_estado" class="control-label">Nombre del Estado:</label>
-                                                          <input type="text" class="form-control" id="nombre_estado" name="nombre_estado" value="<?php echo $resEdit->nombre_estado; ?>"  placeholder="nombre...">
-                                                          <input type="hidden" name="id_estado" id="id_estado" value="<?php echo $resEdit->id_estado; ?>" class="form-control"/>
-					                                      <div id="mensaje_nombre_estado" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    
-                        		     <div class="col-xs-12 col-md-3 col-md-3">
-                        		    <div class="form-group">
-                                                       
-                                                          <label for="id_modulos" class="control-label">Nombre de la tabla:</label>
-                                                          <select name="id_modulos" id="id_modulos"  class="form-control">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultMod as $resMod) {?>
-				 												<option value="<?php echo $resMod->id_modulos; ?>" <?php if ($resMod->id_modulos == $resEdit->id_modulos )  echo  ' selected="selected" '  ;  ?> ><?php echo $resMod->nombre_modulos; ?> </option>
-													            <?php } ?>
-								    					  </select>
-		   		   										  <div id="mensaje_id_modulos" class="errores"></div>
-                                    </div>
-                                    </div>
-                                    
-                                 </div>
-
-                                 
-                                
-                    		     <?php } } else {?>
-                    		    
+        <form id="frm_estados" action="<?php echo $helper->url("Estados","Index"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+           		    
                     		   
-								 <div class="row">
-                        		    
-                        		   <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="nombre_estado" class="control-label">Nombre del Estado:</label>
-                                                          <input type="text" class="form-control" id="nombre_estado" name="nombre_estado" value=""  placeholder="nombre...">
-                                                          <input type="hidden" name="id_estado" id="id_estado" value="0" class="form-control"/>
-					                                       <div id="mensaje_nombre_estado" class="errores"></div>
-                                    </div>
-                        		    </div> 
-                                   
-                        		    <div class="col-xs-12 col-md-3 col-md-3">
-                        		    <div class="form-group">
-                                                          <label for="id_modulos" class="control-label">Nombre de la tabla:</label>
-                                                          <select name="id_modulos" id="id_modulos"  class="form-control">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultMod as $resMod) {?>
-				 												<option value="<?php echo $resMod->id_modulos; ?>"  ><?php echo $resMod->nombre_modulos; ?> </option>
-													            <?php } ?>
-								    					  </select>
-		   		   										   <div id="mensaje_id_modulos" class="errores"></div>
-                                    </div>
-                                    </div>
-                        		   
-                        		  </div>
-                        		  
-                        
-									
-								<?php } ?>
-                    		    <br>  
-                    		    <div class="row">
-                    		    <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; ">
-                    		    <div class="form-group">
-                                                      <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Guardar</button>
-                                </div>
-                    		    </div>
-                    		    </div>
+		 <div class="row">
+		    
+		   <div class="col-xs-12 col-md-3 col-md-3 ">
+		    <div class="form-group">
+                  <label for="nombre_estado" class="control-label">Nombre del Estado:</label>
+                  <input type="text" class="form-control" id="nombre_estado" name="nombre_estado" value=""  placeholder="nombre...">
+                  <input type="hidden" name="id_estado" id="id_estado" value="0" class="form-control"/>
+                   <div id="mensaje_nombre_estado" class="errores"></div>
+            </div>
+		    </div> 
+           
+		    <div class="col-xs-12 col-md-3 col-md-3">
+		    <div class="form-group">
+		    
+              <label for="nombre_tabla" class="control-label">Nombre de la tabla:</label>
+              <select name="nombre_tabla" id="nombre_tabla"  class="form-control">
+                <option value="0" selected="selected">--Seleccione--</option>						
+		       </select>
+			   <div id="mensaje_nombre_tabla" class="errores"></div>
+				   
+            </div>
+            </div>
+		   
+		  </div>
+		  
+		  <div id="divLoaderPage" ></div>
+            
+		    <br>  
+		    <div class="row">
+		    <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; ">
+		    <div class="form-group">
+            	<button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Guardar</button>
+            </div>
+		    </div>
+		    </div>
                     		        		  
-              </form>
+          </form>
           
         </div>
         
@@ -174,10 +151,9 @@
               
                 
 					<div class="pull-right" style="margin-right:15px;">
-						<input type="text" value="" class="form-control" id="search_estados" name="search_estados" onkeyup="load_estados(1)" placeholder="search.."/>
+						<input type="text" value="" class="form-control" id="search_estados" name="search_estados" onkeyup="consultaEstados(1)" placeholder="search.."/>
 						
 					</div>
-					<div id="load_estados" ></div>
 					<div id="estados_registrados"></div>	
                 </div>
     		 </div>
@@ -197,71 +173,8 @@
     <?php include("view/modulos/links_js.php"); ?>
 
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-	<script src="view/Contable/FuncionesJS/ActivosFijos.js?1"></script> 
+	<script src="view/Administracion/js/Estados.js?0.2"></script> 
 
-    
-	
-    <script type="text/javascript" >   
-    
-    	function numeros(e){
-    		  var key = window.event ? e.which : e.keyCode;
-    		  if (key < 48 || key > 57) {
-    		    e.preventDefault();
-    		  }
-     }
-    </script> 
-    
-    
-	<script type="text/javascript">
-     
-        	   $(document).ready( function (){
-        		   
-        		   load_estados(1);
-        		   
-        		   
-	   			});
-	   			
-   		
-   	   	}		
-
-        	
-
-
-	   function load_estados(pagina){
-
-		   var search=$("#search_estados").val();
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_estados").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_estados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=Estados&action=consulta_estados&search='+search,
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#estados_registrados").html(x);
-	                 $("#load_estados").html("");
-	                 $("#tabla_estados").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#estados_registrados").html("Ocurrio un error al cargar la informacion de Estados Activos..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
- </script>
-	
-	
-	  
 
   </body>
 </html>   

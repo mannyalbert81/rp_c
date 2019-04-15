@@ -27,48 +27,10 @@ class EstadosController extends ControladorBase{
 			
 			if (!empty($resultPer))
 			{
-				if (isset ($_GET["id_estado"])   )
-				{
-
-					$nombre_controladores = "Estados";
-					$id_rol= $_SESSION['id_rol'];
-					$resultPer = $estados->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-						
-					if (!empty($resultPer))
-					{
-					
-					    $_id_estados = $_GET["id_estado"];
-						$columnas = " grupos.id_grupos, 
-                                      grupos.nombre_grupos, 
-                                      estado.id_estado, 
-                                      estado.nombre_estado, 
-                                      estado.tabla_estado, 
-                                      grupos.creado, 
-                                      grupos.modificado";
-						$tablas   = "public.grupos, 
-                                     public.estado";
-						$where    = "estado.id_estado = grupos.id_estado
-                                     AND grupos.id_grupos = '$_id_estados' "; 
-						$id       = "grupos.id_grupos";
-							
-						$resultEdit = $grupos->getCondiciones($columnas ,$tablas ,$where, $id);
-
-					}
-					else
-					{
-					    $this->view_Administracion("Error",array(
-								"resultado"=>"No tiene Permisos de Editar Grupos"
-					
-						));
-					
-					
-					}
-					
-				}
-		
+				
 				
 				$this->view_Administracion("Estados",array(
-				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit
+				    "resultEdit" =>$resultEdit
 			
 				));
 		
@@ -94,63 +56,51 @@ class EstadosController extends ControladorBase{
 	
 	}
 	
-	public function InsertaGrupos(){
+	
+	/***
+	 * return jason,
+	 * desc: insertar un estado 
+	 */
+	public function InsertEstado(){
 			
 		session_start();
-		$grupos=new GruposModel();
+		$estado = new EstadoModel();
 		
-		
-
-		$nombre_controladores = "Grupos";
+		$nombre_controladores = "Estados";
 		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+		$resultPer = $estado->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
-		if (!empty($resultPer))
-		{
+		if (!empty($resultPer)){		
 		
-		//die("llego");
+		    $_nombreEstado = (isset($_POST['nombre_estado'])) ? $_POST['nombre_estado'] : '';
+		    $_tablaEstado = (isset($_POST['tabla_estado'])) ? $_POST['tabla_estado'] : '';
+		    
+		    $_id_estado = (isset($_POST['id_estado'])) ? $_POST['id_estado'] : '0';
 		
-			$resultado = null;
-			$grupos=new GruposModel();
-		
-			if (isset ($_POST["nombre_grupos"])   )
-			{
-				
-			    $_nombre_grupos = $_POST["nombre_grupos"];
-			    $_id_grupos =  $_POST["id_grupos"];
-			    $_id_estado = $_POST["id_estado"];
-			    //die("llego");
-			    if($_id_grupos > 0){
-					
-					$columnas = " nombre_grupos = '$_nombre_grupos',
-                                  id_estado = '$_id_estado'";
-					$tabla = "  public.grupos";
-					$where = "id_grupos = '$_id_grupos'";
-					$resultado=$grupos->UpdateBy($columnas, $tabla, $where);
-					
-				}else{
-					
-					$funcion = "ins_grupos";
-					$parametros = " '$_nombre_grupos', '$_id_estado'";
-					$grupos->setFuncion($funcion);
-					$grupos->setParametros($parametros);
-					$resultado=$grupos->Insert();
-				}
-				
-				
-				
-		
+			$funcion = "ins_estado";			
+			$parametros = "'$_nombreEstado','$_tablaEstado',$_id_estado";
+			
+			$estado->setFuncion($funcion);
+			$estado->setParametros($parametros);
+						
+			$resultado = $estado->llamafuncion();
+			
+			$respuesta = -1;
+			
+			if(!empty($resultado) && count($resultado) > 0 ){
+			    
+			    foreach ($resultado[0] as $k => $v){
+			        
+			        $respuesta = $v;
+			        
+			    }
 			}
-			$this->redirect("Grupos", "index");
+			
+			echo json_encode(array('value' => $respuesta));
 
-		}
-		else
-		{
-		    $this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Grupos"
-		
-			));
-		
+		}else{
+		    
+		   echo "no tiene permisos Insertar";
 		
 		}
 		
@@ -191,50 +141,69 @@ class EstadosController extends ControladorBase{
 	    
 	}
 	
-	public function consulta_grupos_activos(){
+
+
+	
+	
+	/**
+	 * mod: admin
+	 * title: cargar tablas de BD
+	 * ajax: si
+	 * dc:2019-04-15
+	 */	
+	public function cargaTablasBd(){
+	    
+	    $estados = null;
+	    $estados = new EstadoModel();
+	    
+	    $query = " SELECT table_name FROM information_schema.tables 
+            WHERE table_catalog = 'rp_capremci' AND table_schema = 'public' AND table_type = 'BASE TABLE'
+            ORDER BY table_name";
+	    
+	    $resulset = $estados->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+            echo json_encode(array('data'=>$resulset));
+	       
+	    }
+	}
+	
+	/***
+	 * return:html
+	 * desc: traer datos de estados
+	 * dc 2019-04-15
+	 */
+	public function consultaEstados(){
 	    
 	    session_start();
 	    $id_rol=$_SESSION["id_rol"];
 	    
-	    $usuarios = new UsuariosModel();
-	   
-	    $estado = null; $estado = new EstadoModel();
+	    $estados = new EstadoModel();
+	    
 	    $where_to="";
-	    $columnas = " grupos.id_grupos, 
-                      grupos.nombre_grupos, 
-                      estado.id_estado, 
-                      estado.nombre_estado, 
-                      estado.tabla_estado, 
-                      grupos.creado, 
-                      grupos.modificado";
+	    $columnas  = " id_estado, nombre_estado, tabla_estado, creado";
 	    
-	    $tablas = "public.grupos INNER JOIN public.estado ON estado.id_estado = grupos.id_estado AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado ='GRUPOS' 
-                    ";
+	    $tablas    = "public.estado";
+	    
+	    $where     = " 1 = 1";
+	    
+	    $id        = "estado.tabla_estado";
 	    
 	    
-	    $where    = " 1=1";
-	    
-	    $id       = "grupos.id_grupos";
-	    
-	    
-	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
 	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
 	    
-	    
 	    if($action == 'ajax')
-	    {
-	        //estado_usuario
-	        $whereestado = "tabla_estado='GRUPOS'";
-	        $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
-	        
-	        
+	    {	        
 	        
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND (grupos.nombre_grupos LIKE '".$search."%' )";
+	            $where1=" AND ( nombre_estado ILIKE '".$search."%' OR tabla_estado ILIKE '".$search."%' )";
 	            
 	            $where_to=$where.$where1;
+	            
 	        }else{
 	            
 	            $where_to=$where;
@@ -242,7 +211,7 @@ class EstadosController extends ControladorBase{
 	        }
 	        
 	        $html="";
-	        $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
+	        $resultSet = $estados->getCantidad("*", $tablas, $where_to);
 	        $cantidadResult=(int)$resultSet[0]->total;
 	        
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
@@ -253,15 +222,10 @@ class EstadosController extends ControladorBase{
 	        
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	        
-	        $resultSet=$usuarios->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
-	        $count_query   = $cantidadResult;
+	        $resultSet=$estados->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
 	        $total_pages = ceil($cantidadResult/$per_page);
 	        
-	        
-	        
-	        
-	        
-	        if($cantidadResult>0)
+	        if($cantidadResult > 0)
 	        {
 	            
 	            $html.='<div class="pull-left" style="margin-left:15px;">';
@@ -269,13 +233,14 @@ class EstadosController extends ControladorBase{
 	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_grupos_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.='<section style="height:400px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_estados' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Nombre Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Tabla </th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Creado</th>';
 	            
 	            if($id_rol==1){
 	                
@@ -295,19 +260,19 @@ class EstadosController extends ControladorBase{
 	            {
 	                $i++;
 	                $html.='<tr>';
-	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
-	                
-	             
+	                $html.='<td style="font-size: 14px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->tabla_estado.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->creado.'</td>';
 	                
 	                if($id_rol==1){
 	                    
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=index&id_grupos='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=borrarId&id_grupos='.$res->id_grupos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
+	                    $html.='<td style="font-size: 18px;">
+                                <a onclick="editEstado('.$res->id_estado.')" href="#" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class="glyphicon glyphicon-edit"></i></a></td>';
+	                    $html.='<td style="font-size: 18px;">
+                                <a onclick="delEstado('.$res->id_estado.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a></td>';
 	                    
 	                }
-	                
 	                $html.='</tr>';
 	            }
 	            
@@ -317,350 +282,169 @@ class EstadosController extends ControladorBase{
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_grupos_activos("index.php", $page, $total_pages, $adjacents).'';
+	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"consultaEstados").'';
 	            $html.='</div>';
 	            
 	            
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay empleados registrados...</b>';
 	            $html.='</div>';
 	            $html.='</div>';
 	        }
 	        
 	        
 	        echo $html;
-	        die();
 	        
 	    }
 	}
 	
-	public function consulta_grupos_inactivos(){
+	public function paginate($reload, $page, $tpages, $adjacents, $funcion) {
+	    
+	    
+	    $prevlabel = "&lsaquo; Prev";
+	    $nextlabel = "Next &rsaquo;";
+	    $out = '<ul class="pagination pagination-large">';
+	    
+	    // previous label
+	    
+	    if($page==1) {
+	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+	    } else if($page==2) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
+	    }else {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
+	        
+	    }
+	    
+	    // first label
+	    if($page>($adjacents+1)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
+	    }
+	    // interval
+	    if($page>($adjacents+2)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // pages
+	    
+	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+	    for($i=$pmin; $i<=$pmax; $i++) {
+	        if($i==$page) {
+	            $out.= "<li class='active'><a>$i</a></li>";
+	        }else if($i==1) {
+	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
+	        }else {
+	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
+	        }
+	    }
+	    
+	    // interval
+	    
+	    if($page<($tpages-$adjacents-1)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // last
+	    
+	    if($page<($tpages-$adjacents)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
+	    }
+	    
+	    // next
+	    
+	    if($page<$tpages) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
+	    }else {
+	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+	    }
+	    
+	    $out.= "</ul>";
+	    return $out;
+	    
+	}
+	
+	public function editEstado(){
 	    
 	    session_start();
-	    $id_rol=$_SESSION["id_rol"];
+	    $estados = new TipoActivosModel();
+	    $nombre_controladores = "Estados";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $estados->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	    
-	    $usuarios = new UsuariosModel();
-	    
-	    $estado = null; $estado = new EstadoModel();
-	    $where_to="";
-	    $columnas = " grupos.id_grupos,
-                      grupos.nombre_grupos,
-                      estado.id_estado,
-                      estado.nombre_estado,
-                      estado.tabla_estado,
-                      grupos.creado,
-                      grupos.modificado";
-	    
-	    $tablas = "public.grupos INNER JOIN public.estado ON estado.id_estado=grupos.id_estado
-                   AND estado.nombre_estado='INACTIVO' AND estado.tabla_estado ='GRUPOS'
-                    ";
-	    
-	    
-	    $where    = " 1=1";
-	    
-	    $id       = "grupos.id_grupos";
-	    
-	    
-	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
-	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
-	    
-	    
-	    if($action == 'ajax')
+	    if (!empty($resultPer))
 	    {
-	        //estado_usuario
-	        $whereestado = "tabla_estado='GRUPOS'";
-	        $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
 	        
 	        
-	        
-	        if(!empty($search)){
+	        if(isset($_POST["id_estado"])){
 	            
+	            $id_estado = (int)$_POST["id_estado"];
 	            
-	            $where1=" AND (grupos.nombre_grupos LIKE '".$search."%' )";
+	            $query = "SELECT * FROM estado WHERE id_estado = $id_estado";
 	            
-	            $where_to=$where.$where1;
-	        }else{
+	            $resultado  = $estados->enviaquery($query);
 	            
-	            $where_to=$where;
+	            echo json_encode(array('data'=>$resultado));
 	            
 	        }
 	        
-	        $html="";
-	        $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
-	        $cantidadResult=(int)$resultSet[0]->total;
 	        
-	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	    }
+	    else
+	    {
+	        echo "Usuario no tiene permisos-Editar";
+	    }
+	    
+	}
+	
+	/***
+	 * return: json
+	 * title: delEstados
+	 * fcha: 2019-04-15
+	 */
+	public function delEstados(){
+	    
+	    session_start();
+	    $estado = new EstadoModel();
+	    $nombre_controladores = "Estados";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $estado->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (!empty($resultPer)){
 	        
-	        $per_page = 10; //la cantidad de registros que desea mostrar
-	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-	        $offset = ($page - 1) * $per_page;
-	        
-	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-	        
-	        $resultSet=$usuarios->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
-	        $count_query   = $cantidadResult;
-	        $total_pages = ceil($cantidadResult/$per_page);
-	        
-	        
-	        
-	        if($cantidadResult>0)
-	        {
+	        if(isset($_POST["id_estado"])){
 	            
-	            $html.='<div class="pull-left" style="margin-left:15px;">';
-	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-	            $html.='</div>';
-	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_grupos_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
-	            $html.= "<thead>";
-	            $html.= "<tr>";
-	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+	            $id_tipo = (int)$_POST["id_estado"];
 	            
-	            if($id_rol==1){
-	                
-	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                
-	            }
+	            $resultado  = $estado->eliminarBy(" id_estado ",$id_tipo);
 	            
-	            $html.='</tr>';
-	            $html.='</thead>';
-	            $html.='<tbody>';
-	            
-	            
-	            $i=0;
-	            
-	            foreach ($resultSet as $res)
-	            {
-	                $i++;
-	                $html.='<tr>';
-	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
+	            if( $resultado > 0 ){
 	                
+	                echo json_encode(array('data'=>$resultado));
 	                
+	            }else{
 	                
-	                if($id_rol==1){
-	                    
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=index&id_grupos='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=borrarId&id_grupos='.$res->id_grupos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
-	                    
-	                }
-	                
-	                $html.='</tr>';
+	                echo $resultado;
 	            }
 	            
 	            
 	            
-	            $html.='</tbody>';
-	            $html.='</table>';
-	            $html.='</section></div>';
-	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_grupos_activos("index.php", $page, $total_pages, $adjacents).'';
-	            $html.='</div>';
-	            
-	            
-	            
-	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
-	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
-	            $html.='</div>';
-	            $html.='</div>';
 	        }
 	        
 	        
-	        echo $html;
-	        die();
+	    }else{
 	        
+	        echo "Usuario no tiene permisos-Eliminar";
 	    }
+	    
+	    
+	    
 	}
 	
-	
-	
-	
-	public function paginate_grupos_activos($reload, $page, $tpages, $adjacents) {
-	    
-	    $prevlabel = "&lsaquo; Prev";
-	    $nextlabel = "Next &rsaquo;";
-	    $out = '<ul class="pagination pagination-large">';
-	    
-	    // previous label
-	    
-	    if($page==1) {
-	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>$prevlabel</a></span></li>";
-	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(".($page-1).")'>$prevlabel</a></span></li>";
-	        
-	    }
-	    
-	    // first label
-	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>1</a></li>";
-	    }
-	    // interval
-	    if($page>($adjacents+2)) {
-	        $out.= "<li><a>...</a></li>";
-	    }
-	    
-	    // pages
-	    
-	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-	    for($i=$pmin; $i<=$pmax; $i++) {
-	        if($i==$page) {
-	            $out.= "<li class='active'><a>$i</a></li>";
-	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>$i</a></li>";
-	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(".$i.")'>$i</a></li>";
-	        }
-	    }
-	    
-	    // interval
-	    
-	    if($page<($tpages-$adjacents-1)) {
-	        $out.= "<li><a>...</a></li>";
-	    }
-	    
-	    // last
-	    
-	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos($tpages)'>$tpages</a></li>";
-	    }
-	    
-	    // next
-	    
-	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(".($page+1).")'>$nextlabel</a></span></li>";
-	    }else {
-	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-	    }
-	    
-	    $out.= "</ul>";
-	    return $out;
-	}
-	
-	
-	
-	
-	
-	
-	
-	public function paginate_grupos_inactivos($reload, $page, $tpages, $adjacents) {
-	    
-	    $prevlabel = "&lsaquo; Prev";
-	    $nextlabel = "Next &rsaquo;";
-	    $out = '<ul class="pagination pagination-large">';
-	    
-	    // previous label
-	    
-	    if($page==1) {
-	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>$prevlabel</a></span></li>";
-	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(".($page-1).")'>$prevlabel</a></span></li>";
-	        
-	    }
-	    
-	    // first label
-	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>1</a></li>";
-	    }
-	    // interval
-	    if($page>($adjacents+2)) {
-	        $out.= "<li><a>...</a></li>";
-	    }
-	    
-	    // pages
-	    
-	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-	    for($i=$pmin; $i<=$pmax; $i++) {
-	        if($i==$page) {
-	            $out.= "<li class='active'><a>$i</a></li>";
-	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>$i</a></li>";
-	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(".$i.")'>$i</a></li>";
-	        }
-	    }
-	    
-	    // interval
-	    
-	    if($page<($tpages-$adjacents-1)) {
-	        $out.= "<li><a>...</a></li>";
-	    }
-	    
-	    // last
-	    
-	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos($tpages)'>$tpages</a></li>";
-	    }
-	    
-	    // next
-	    
-	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(".($page+1).")'>$nextlabel</a></span></li>";
-	    }else {
-	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-	    }
-	    
-	    $out.= "</ul>";
-	    return $out;
-	}
-	
-	
-	/**
-	 * mod: compras
-	 * title: carga_grupos
-	 * ajax: si
-	 */
-	
-	public function carga_grupos(){
-	    
-	    $grupos = null;
-	    $grupos = new GruposModel();
-	    
-	    $resulset = $grupos->getAll("id_grupos");
-	    
-	    if(!empty($resulset)){
-	        if(is_array($resulset) && count($resulset)>0){
-	            echo json_encode($resulset);
-	        }
-	    }
-	}
-	
-	/**
-	 * mod: compras
-	 * title: carga_unidadmedida
-	 * ajax: si
-	 */
-	
-	public function carga_unidadmedida(){
-	    
-	    $grupos = null;
-	    $grupos = new GruposModel();
-	    
-	    $resulset = $grupos->getCondiciones("*","public.unidad_medida","1=1","id_unidad_medida");
-	    
-	    if(!empty($resulset)){
-	        if(is_array($resulset) && count($resulset)>0){
-	            echo json_encode($resulset);
-	        }
-	    }
-	}
 	
 }
 ?>

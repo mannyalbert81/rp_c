@@ -28,11 +28,7 @@ class ActivosFijosController extends ControladorBase{
         $whe_activos = "tabla_estado = 'ACTIVOS'";
         $result_Activos_estados = $activos->getBy($whe_activos);
         
-        $usuarios=new UsuariosModel();
-        $resultParr=$usuarios->getAll("nombre_usuarios");
-        
-        
-            
+      
         $resultEdit = "";
         
         $resultSet = null;
@@ -1475,11 +1471,33 @@ class ActivosFijosController extends ControladorBase{
     
     public function VerDepreciacion(){
         
-        print('Implementando...... LAMENTAMOS LOS INCONVENIENTES...');      
+        session_start();
         
-        //return;
+        $anio = date('Y');
         
-        $this->verReporte("Depreciacion", array());
+        $entidades = new EntidadesModel();
+        $activos = new ActivosFijosModel();
+        
+        $_id_activo_fijo = $_GET['id_activos_fijos'];
+        
+        $datosActivo = array();
+        
+        $datos_empresa = array();
+        
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+       
+        $this->verReporte("Depreciacion", array('datos_empresa'=>$datos_empresa));
     }
     
     
@@ -1516,7 +1534,7 @@ class ActivosFijosController extends ControladorBase{
         
     }
     
-    
+     
     
     
 }

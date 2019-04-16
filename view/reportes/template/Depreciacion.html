@@ -53,12 +53,12 @@
     
 	}
 	
-	table tr td.ul  {
-		border-bottom: 1px solid #333333;    
-	}
-	
-	.centrado{
-		text-align: center;
+	table tr.tipocuenta td  { 
+	background-color: #EEEEEE;
+	font-variant: small-caps;
+    font-weight: bold;
+    text-transform: uppercase;   
+    
 	}
 	
 	td .inferior{
@@ -67,6 +67,11 @@
 	
 	.numero{
 		text-align:right;
+	}
+	
+	table tr td.ul {
+		border-bottom: 1px solid #333333;  
+		font-weight: bold;   
 	}
 	
   </style>
@@ -96,61 +101,47 @@
   		</div>  		
   	</div>
   	
-  	  	
-  	<div style="width:100%">  	
-  		
-  		<table>
-  			<caption>DEPRECIACION GENERAL </caption>
-  			<thead>
-  				<tr>
-  					<th>GRUPO : {GRUPOACTIVO}</th>
-  					<th>ESTADO : {ESTADOACTIVO}</th>
-  				</tr>
-  				
-  			</thead>
-  				<tr>
-  					<td><img src="view/Administracion/DevuelveImagenView.php?id_valor={IDACTIVO}&id_nombre=id_activos_fijos&tabla=act_activos_fijos&campo=imagen_activos_fijos" alt="" width="40" height="30"/></td>
-  					
-  				</tr>
-  				<tr>
-  					<td>CODIGO : {CODIGOACTIVO}</td><td>CANTIDAD : {CANTIDADACTIVO}</td>
-  					
-  				</tr>
-  				<tr>
-  					<td>NOMBRE : {NOMBREACTIVO}</td>
-  				</tr>
-  				<tr>
-  					<td>FECHA INGRESO : {FECHAACTIVO}</td>
-  				</tr>
-  				<tr>
-  					<td>VALOR : {VALORACTIVO}</td>
-  				</tr>
-  				<tr>
-  					<td>DESCRIPCION : {DESCACTIVO}</td>
-  				</tr>
-  				<tr>
-  					<td>UBICACION : {UBIACTIVO}</td>
-  				</tr>
-  				<tr>
-  					<td>RESPONSABLE : {RESPACTIVO}</td>
-  					<td> {ISDEPRECIADO}</td>
-  				</tr>
-  				
-  			<tbody>
-  			</tbody>
-  			<tfoot>
-  			</tfoot>
-  			
-  		</table>
-  		  		
-  	</div>
-  	
-  	<br>
+  	<!--  <img src="view/Administracion/DevuelveImagenView.php?id_valor={IDACTIVO}&id_nombre=id_activos_fijos&tabla=act_activos_fijos&campo=imagen_activos_fijos" alt="" width="40" height="30"/>  -->
   	
 	<div style="width:100%">
-		
-		{TABLADEPRECIACION}
-		
+	
+		<table>
+			<thead>
+				<tr>
+				<th colspan="10"></th>
+				<th colspan="14" align="center"> DEPRECIACION MENSUAL-{APERIODO}</th>
+				</tr>
+				<tr>
+				<th>Cod.</th>
+				<th>Fecha Ingreso</th>
+				<th>Cant.</th>
+				<th>Descripcion</th>
+				<th>Ubicacion</th>
+				<th>Responsable</th>
+				<th>Valor</th>
+				<th>Meses Depre.</th>
+				<th>Meses Depre 31-12-{APERIODO}</th>
+				<th>Depre. Mensual</th>
+				<th>Depre. Acumulada 31-12-{APERIODOANT}</th>
+				<th>ENE</th>
+				<th>FEB</th>
+				<th>MAR</th>
+				<th>ABR</th>
+				<th>MAY</th>
+				<th>JUN</th>
+				<th>JUL</th>
+				<th>AGO</th>
+				<th>SEP</th>
+				<th>OCT</th>
+				<th>NOV</th>
+				<th>DIC</th>
+				<th>TOTAL</th>
+				<th>VALOR a Depre.</th>
+				</tr>
+			</thead>
+			{TABLADETALLE}
+		</table>
+	
 	</div>
 	
 	

@@ -16,75 +16,106 @@ if(!empty($datos_empresa)){
     }
 }
 
-if(isset($datosActivo)){
-    
-    foreach ($datosActivo as $clave=>$valor) {
-        $template = str_replace('{'.$clave.'}', $valor, $template);
-    }
-}
+
 
 $tablaDepreciacion="";
 		
 
-if(isset($rsDatosDepreciacion)){
+if(isset($datosActivo)){
     
-    $tablaDepreciacion = "<table>";	
-
-    $tablaDepreciacion .= "<caption>DEPRECIACION DETALLE</caption>";
+    $tablaDepreciacion = "<tbody>";	
+    $_id_tipo_activo = 0;
+    $_valor_por_depreciar = 0.00;
     
-    $tablaDepreciacion .= "<tr>
-                        <td>AÑO</td>
-                        <td>ENERO</td>
-                        <td>FEBRERO</td>
-                        <td>MARZO</td>
-                        <td>ABRIL</td>
-                        <td>MAYO</td>
-                        <td>JUNIO</td>
-                        <td>JULIO</td>
-                        <td>AGOSTO</td>
-                        <td>SEPTIEMBRE</td>
-                        <td>OCTUBRE</td>
-                        <td>NOVIEMBRE</td>
-                        <td>DICIEMBRE</td>
-                        <td>VALOR DEPRECIADO</td>
+    $_suma_valor_depreciacion = 0.00;
+    $_suma_valor_acumulado = 0.00;
+    $_suma_valor_activo = 0.00;
+    $_suma_valor_anual = 0.00;
+    $_suma_valor_x_depreciar = 0.00;
+    
+    
+    foreach ($datosActivo as $res) {
+        
+        $_valor_por_depreciar = number_format((double)($res->valor_activos_fijos) - (double)($res->actual), 2, ",", ".");
+        
+        if($_id_tipo_activo != $res->id_tipo_activos_fijos){
+            
+            $titulo = $res->nombre_tipo_activos_fijos."( ".$res->meses_tipo_activos_fijos." MESES )";
+            
+            $tablaDepreciacion .= "<tr class=\"tipocuenta\" >
+                        <td colspan=\"25\"  >$titulo</td>                        
                         </tr>";
-    
-   
-    
-    foreach ($rsDatosDepreciacion as $res) {
+            
+            $_suma_valor_depreciacion = (double)0;
+            $_suma_valor_acumulado = 0.00;
+            $_suma_valor_activo = 0.00;
+            $_suma_valor_anual = 0.00;
+            $_suma_valor_x_depreciar =  (double)0;
+            
+        }
         
         $tablaDepreciacion .= "<tr>
-                        <td> $res->anio_depreciacion </td>
-                        <td>$res->enero_depreciacion</td>
-                        <td>$res->febrero_depreciacion</td>
-                        <td>$res->marzo_depreciacion</td>
-                        <td>$res->abril_depreciacion</td>
-                        <td>$res->mayo_depreciacion</td>
-                        <td>$res->junio_depreciacion</td>
-                        <td>$res->julio_depreciacion</td>
-                        <td>$res->agosto_depreciacion</td>
-                        <td>$res->septiembre_depreciacion</td>
-                        <td>$res->octubre_depreciacion</td>
-                        <td>$res->noviembre_depreciacion</td>
-                        <td>$res->diciembre_depreciacion</td>
-                        <td>$res->saldo_depreciacion</td>                         
+                        <td> $res->codigo_activos_fijos </td>
+                        <td>$res->fecha_activos_fijos</td>
+                        <td>1</td>
+                        <td>$res->detalle_activos_fijos</td>
+                        <td>$res->nombre_departamento</td>
+                        <td>$res->nombres_empleados</td>
+                        <td class=\"numero\" >$res->valor_activos_fijos</td>
+                        <td>$res->meses_tipo_activos_fijos</td>
+                        <td>$res->diferencia_mes</td>
+                        <td class=\"numero\" >$res->valor_depreciacion</td>
+                        <td class=\"numero\" >$res->acumulada</td>
+                        <td class=\"numero\" >$res->enero</td>
+                        <td class=\"numero\" >$res->febrero</td>
+                        <td class=\"numero\" >$res->marzo</td>
+                        <td class=\"numero\" >$res->abril</td>
+                        <td class=\"numero\" >$res->mayo</td>
+                        <td class=\"numero\" >$res->junio</td>
+                        <td class=\"numero\" >$res->julio</td>
+                        <td class=\"numero\" >$res->agosto</td>
+                        <td class=\"numero\" >$res->septiembre</td>
+                        <td class=\"numero\" >$res->octubre</td>
+                        <td class=\"numero\" >$res->noviembre</td>
+                        <td class=\"numero\" >$res->diciembre</td>
+                        <td class=\"numero\" >$res->actual</td>
+                        <td class=\"numero\" >$_valor_por_depreciar</td>                 
                         </tr>";
+        
+        $_suma_valor_depreciacion += $res->valor_depreciacion;
+        $_suma_valor_acumulado += $res->acumulada;
+        $_suma_valor_activo += $res->valor_activos_fijos;
+        $_suma_valor_anual += $res->actual;
+        $_suma_valor_x_depreciar += number_format($_valor_por_depreciar, 2, ",", ".");
+        
+        if($_id_tipo_activo != $res->id_tipo_activos_fijos){
+
+            
+            $tablaDepreciacion .= "<tr >
+                        <td colspan=\"6\"></td>                        
+                        <td class=\"numero ul\" >$_suma_valor_activo</td>
+                        <td colspan=\"2\" ></td>
+                        <td class=\"numero ul\" >$_suma_valor_depreciacion</td>
+                        <td class=\"numero ul\" >$_suma_valor_acumulado</td>
+                        <td class=\"numero ul\" >$res->enero</td>
+                        <td colspan=\"11\"></td>
+                        <td class=\"numero ul\" >$_suma_valor_anual</td>
+                        <td class=\"numero ul\" >$_suma_valor_x_depreciar</td>
+                        </tr>";
+            
+        }
+        
+       /*para variables cambiantes*/
+        $_id_tipo_activo = $res->id_tipo_activos_fijos;
         
         
     }
     
-    $tablaDepreciacion .= "</table>" ;
+    $tablaDepreciacion .= "</tbody>" ;
     
-    $template = str_replace('{TABLADEPRECIACION}', $tablaDepreciacion, $template);
+    $template = str_replace('{TABLADETALLE}', $tablaDepreciacion, $template);
     
 }
-
-
-
-
-$anio = date('Y');
-
-$template = str_replace('{APERIODO}', $anio, $template);
 
 
 //echo $template; die();
@@ -92,7 +123,7 @@ $template = str_replace('{APERIODO}', $anio, $template);
 ob_end_clean();
 //creacion del pdf
 //$mpdf=new mPDF('c','A4','','' , 0 , 0 , 0 , 0 , 0 , 0);
-$mpdf=new mPDF();
+$mpdf=new mPDF('c', 'A4-L');
 $mpdf->SetDisplayMode('fullpage');
 $mpdf->allow_charset_conversion = true;
 $mpdf->charset_in = 'UTF-8';

@@ -182,7 +182,7 @@ class EstadosController extends ControladorBase{
 	    $estados = new EstadoModel();
 	    
 	    $where_to="";
-	    $columnas  = " id_estado, nombre_estado, tabla_estado, creado";
+	    $columnas  = " id_estado, nombre_estado, tabla_estado, DATE(creado) creado";
 	    
 	    $tablas    = "public.estado";
 	    

@@ -28,11 +28,7 @@ class ActivosFijosController extends ControladorBase{
         $whe_activos = "tabla_estado = 'ACTIVOS'";
         $result_Activos_estados = $activos->getBy($whe_activos);
         
-        $usuarios=new UsuariosModel();
-        $resultParr=$usuarios->getAll("nombre_usuarios");
-        
-        
-            
+      
         $resultEdit = "";
         
         $resultSet = null;
@@ -1472,14 +1468,72 @@ class ActivosFijosController extends ControladorBase{
        
     }
     
-    
     public function VerDepreciacion(){
+        session_start();
+        $estado = new EstadoModel();
+        $nombre_controladores = "ActivosFijos";
+        $id_rol= $_SESSION['id_rol'];
+        $resultPer = $estado->getPermisosVer("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
         
-        print('Implementando...... LAMENTAMOS LOS INCONVENIENTES...');      
+        if (!empty($resultPer)){
+            
+           $this->view_Activos('DepreciacionGeneral', array());
+        }
+    }
+    
+    public function DepreciacionGeneral(){
         
-        //return;
+        session_start();
         
-        $this->verReporte("Depreciacion", array());
+        $anio = (isset($_POST['anio_depreciacion'])) ? $_POST['anio_depreciacion'] : date('Y');
+        
+        $entidades = new EntidadesModel();
+        $activos = new ActivosFijosModel();
+        
+        $datosActivo = array();
+        
+        $datos_empresa = array();
+        
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+            $datos_empresa['APERIODO']=$anio;
+            $datos_empresa['APERIODOANT']=$anio-1;
+        }
+        
+        /*para datos de activos*/
+        
+        $columnasActivos = " ac.id_tipo_activos_fijos, ac.codigo_activos_fijos, ac.nombre_activos_fijos, ac.fecha_activos_fijos, ac.detalle_activos_fijos,
+				ac.imagen_activos_fijos, ROUND(ac.valor_activos_fijos,2) valor_activos_fijos,
+				ofi.nombre_oficina,ofi.id_oficina,ta.id_tipo_activos_fijos,ta.nombre_tipo_activos_fijos,ta.meses_tipo_activos_fijos,
+				emp.id_empleados,emp.nombres_empleados, dep.nombre_departamento,vde.*";
+
+        $tablasActivos = " act_activos_fijos ac
+                INNER JOIN oficina ofi
+                ON ac.id_oficina = ofi.id_oficina
+                INNER JOIN tipo_activos_fijos ta
+                ON ta.id_tipo_activos_fijos = ac.id_tipo_activos_fijos
+                INNER JOIN empleados emp
+                ON emp.id_empleados = ac.id_empleados
+                INNER JOIN departamentos dep
+                ON dep.id_departamento = emp.id_departamento
+                INNER JOIN vw_depreciacion vde
+                ON vde.id_activos_fijos = ac.id_activos_fijos";
+        
+        $whereActivos = " 1 = 1 AND vde.anio_depreciacion = $anio ";
+        
+        $orderActivos = " ac.id_tipo_activos_fijos";
+        
+        $datosActivo = $activos->getCondiciones($columnasActivos, $tablasActivos, $whereActivos, $orderActivos);
+        
+        $this->verReporte("Depreciacion", array('datos_empresa'=>$datos_empresa,'datosActivo' => $datosActivo));
     }
     
     
@@ -1516,7 +1570,7 @@ class ActivosFijosController extends ControladorBase{
         
     }
     
-    
+     
     
     
 }

@@ -265,6 +265,7 @@ class PermisosEmpleadosController extends ControladorBase{
                 $html.= "<thead>";
                 $html.= "<tr>";
                 $html.='<th style="text-align: left;  font-size: 15px;"></th>';
+                $html.='<th style="text-align: left;  font-size: 15px;"></th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Cargo</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Departamento</th>';
@@ -295,6 +296,7 @@ class PermisosEmpleadosController extends ControladorBase{
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
+                    $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="Imprimir('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-print"></i></button></span></td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_cargo.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_departamento.'</td>';
@@ -309,7 +311,7 @@ class PermisosEmpleadosController extends ControladorBase{
                         if ($id_rol==$id_jefi && $res->nombre_estado=="EN REVISION" && $id_dpto_jefe == $res->id_departamento)
                         {
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                         }
                         
                          else if ($id_rol==$id_rh && $res->nombre_estado=="VISTO BUENO")
@@ -321,7 +323,7 @@ class PermisosEmpleadosController extends ControladorBase{
                         else if ($id_rol==$id_gerente && $res->nombre_estado=="APROBADO")
                         {
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';                            
                         }
                     }
                     $html.='</tr>';
@@ -419,27 +421,6 @@ class PermisosEmpleadosController extends ControladorBase{
         return $out;
     }
     
-    
-    
-    public function EliminarValor()
-    {
-        session_start();
-        $empleados = new EmpleadosModel();
-        $estado = new EstadoModel();
-        $columnaest = "estado.id_estado";
-        $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='EMPLEADOS' AND estado.nombre_estado = 'INACTIVO'";
-        $idest = "estado.id_estado";
-        $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
-        
-        $numero_cedula = $_POST['numero_cedula'];
-        $where = "numero_cedula_empleados=".$numero_cedula;
-        $tabla = "empleados";
-        $colval = "id_estado=".$resultEst[0]->id_estado;
-        $empleados->UpdateBy($colval, $tabla, $where);
-    }
-    
-    
     public function VBSolicitud()
     {
         session_start();
@@ -518,6 +499,56 @@ class PermisosEmpleadosController extends ControladorBase{
         $permisos->UpdateBy($colval, $tabla, $where);
         
         echo 1;
+    }
+    
+    public function HojaPermiso()
+    {
+        session_start();
+        
+        $permisos = new PermisosEmpleadosModel();
+        $id_permiso = $_POST['id_permiso'];
+        
+        $datos_reporte = array();
+        
+        $columnas = " empleados.nombres_empleados,
+                      cargos_empleados.nombre_cargo,
+                      departamentos.nombre_departamento,
+                      permisos_empleados.fecha_solicitud,
+                        permisos_empleados.hora_desde,
+                        permisos_empleados.hora_hasta,
+                        causas_permisos.nombre_causa,
+                        permisos_empleados.descripcion_causa";
+        
+        $tablas = "public.permisos_empleados INNER JOIN public.empleados
+                   ON permisos_empleados.id_empleado = empleados.id_empleados
+                   INNER JOIN public.estado
+                   ON permisos_empleados.id_estado = estado.id_estado
+                   INNER JOIN public.causas_permisos
+                   ON permisos_empleados.id_causa = causas_permisos.id_causa
+                   INNER JOIN public.departamentos
+                   ON departamentos.id_departamento = empleados.id_departamento
+                   INNER JOIN public.cargos_empleados
+                   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+        $where= "permisos_empleados.id_permisos_empleados=".$id_permiso;
+        $id="permisos_empleados.id_permisos_empleados";
+        
+        $rsdatos = $permisos->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $datos_reporte['NOMBREEMPLEADO']=$rsdatos[0]->nombres_empleados;
+        $datos_reporte['CARGOEMPLEADO']=$rsdatos[0]->nombre_cargo;
+        $datos_reporte['DPTOEMPLEADO']=$rsdatos[0]->nombre_departamento;
+        $datos_reporte['FECHASOLICITUD']=$rsdatos[0]->fecha_solicitud;
+        $datos_reporte['HORADESDE']=$rsdatos[0]->hora_desde;
+        $datos_reporte['HORAHASTA']=$rsdatos[0]->hora_hasta;
+        $datos_reporte['CAUSAPERMISO']=$rsdatos[0]->nombre_causa;
+        if (!(empty($rsdatos[0]->descripcion_causa)))
+        {
+            $datos_reporte['DESCRIPCION']="Motivo: ".$rsdatos[0]->descripcion_causa;
+        }
+        else $datos_reporte['DESCRIPCION']="";
+        
+        $this->verReporte("HojaPermiso", array('datos_reporte'=>$datos_reporte));
+            
     }
 }
 

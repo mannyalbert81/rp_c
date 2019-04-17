@@ -64,21 +64,67 @@ $.ajax({
 
 function validarhora()
 {
+	
+	
 	var hdesde = $("#hora_desde").val();
 	var hhasta = $("#hora_hasta").val();
 	var h1 = hdesde.split(":");
 	var h2 = hhasta.split(":");
 	var date1 = new Date(2000, 0, 1,  h1[0], h1[1]);
 	var date2 = new Date(2000, 0, 1, h2[0], h2[1]);
-    var diff = date2-date1;
-    if(diff <=0)
-    	{
-    	return false;
-    	}
-    else
-    	{
-    	return true;
-    	}
+	$.ajax({
+	    url: 'index.php?controller=PermisosEmpleados&action=GetHoras',
+	    type: 'POST',
+	    data: {
+	    	   
+	    },
+	})
+	.done(function(x) {
+		
+		var res = $.parseJSON(x);
+		console.log(res);
+		var h1ctr=res[0]['hora_entrada_empleados'].split(":");
+		var h2ctr=res[0]['hora_salida_empleados'].split(":");
+		var datectr1 = new Date(2000, 0, 1,  h1ctr[0], h1ctr[1]);
+		var datectr2 = new Date(2000, 0, 1, h2ctr[0], h2ctr[1]);
+		var diffent = date1-datectr1;
+		if (diffent < 0) return false;
+		else
+			{
+			var diff = date2-date1;
+		    if(diff <=0)
+		    	{
+		    	return false;
+		    	}
+		    else
+		    	{
+		    	return true;
+		    	}
+			}
+		})
+	.fail(function() {
+	    console.log("error");
+	    	
+	});
+	
+}
+
+function Imprimir(idperm)
+{
+	 $.ajax({
+		    url: 'index.php?controller=PermisosEmpleados&action=HojaPermiso',
+		    type: 'POST',
+		    data: {
+		    	   id_permiso: idperm
+		    },
+		})
+		.done(function(x) {
+			console.log(x);
+			})
+		.fail(function() {
+		    console.log("error");
+		    	
+		});
 }
 
 function TodoElDia()
@@ -220,6 +266,11 @@ if ( desde!="" && hasta!="" && causa!="" && fecha!="" && !desde.includes("_") &&
 		$("#hora_hasta").val("");
 		$("#causa_permiso").val("");
 		$("#descripcion_causa").val("");
+		document.getElementById('descripcion_causa').readOnly = true;
+		document.getElementById('dia').className = "btn btn-light";
+		document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
+		document.getElementById('hora_desde').readOnly = false;
+	    document.getElementById('hora_hasta').readOnly = false;
 		console.log(x);
 		if (x==1)
 			{
@@ -254,12 +305,7 @@ if ( desde!="" && hasta!="" && causa!="" && fecha!="" && !desde.includes("_") &&
 					}
 			
 			}
-			swal({
-		  		  title: "Solicitud",
-		  		  text: "Hubo un error al registrar solicitud",
-		  		  icon: "warning",
-		  		  button: "Aceptar",
-		  		});
+			
 				
 			}
 		
@@ -301,7 +347,7 @@ function LimpiarCampos()
 	 document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
      document.getElementById('hora_desde').readOnly = false;
 		document.getElementById('hora_hasta').readOnly = false;
-	SelecCargo("");
+	
 }
 
 function Aprobar(idsol,nomest)

@@ -943,6 +943,7 @@ class ComprobanteTipoController extends ControladorBase{
 	            
 	            $funcion = "fn_con_agrega_comprobante";
 	            
+	            
 	            $parametros = "'$_id_usuarios',
                 '$_id_tipo_comprobantes', 
                 '$_retencion_ccomprobantes',

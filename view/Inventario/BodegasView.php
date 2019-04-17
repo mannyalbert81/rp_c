@@ -282,7 +282,7 @@
     
     <?php include("view/modulos/links_js.php"); ?>
     
-	<script src="view/Inventario/js/Bodegas.js?3.1" ></script>
+	<script src="view/Inventario/js/Bodegas.js?3.2" ></script>
   </body>
 </html>   
 

@@ -5,150 +5,6 @@
         		   
 	   			});
 
-$("#id_provincias").change(function(){
-	            // obtenemos el combo de resultado combo 2
-	           var $id_cantones_vivienda = $("#id_cantones");
-	       	
-	            // lo vaciamos
-	           var id_provincias_vivienda = $(this).val();
-	          
-	          
-	            if(id_provincias_vivienda != 0)
-	            {
-		            
-	            	 $id_cantones_vivienda.empty();
-	            	
-	            	 var datos = {
-	                   	   
-	            			 id_provincias_vivienda:$(this).val()
-	                  };
-
-	            	 $.ajax({
-	 	                    beforeSend: function(objeto){
-	 	                      /*buscar una funcion de cargando*/
-	 	                    },
-	 	                    url: 'index.php?controller=Bodegas&action=devuelveCanton',
-	 	                    type: 'POST',
-	 	                    data: datos,
-	 	                    success: function(resultado){
-	 	                    	try {
-	 	                    		resultado = resultado.replace('<', "");
-		 	                    	resultado = resultado.replace(/\\n/g, "\\n")  
-		 	                       .replace(/\\'/g, "\\'")
-		 	                       .replace(/\\"/g, '\\"')
-		 	                       .replace(/\\&/g, "\\&")
-		 	                       .replace(/\\r/g, "\\r")
-		 	                       .replace(/\\t/g, "\\t")
-		 	                       .replace(/\\b/g, "\\b")
-		 	                       .replace(/\\f/g, "\\f");
-	                	 	        // remove non-printable and other non-valid JSON chars
-	                	 	        resultado = resultado.replace(/[\u0000-\u0019]+/g,"");
-	                	 	        
-	                                objeto = JSON.parse(resultado);
-
-	                               
-	                                if(objeto.length==0)
-	         	          		   {
-	         	          				$id_cantones_vivienda.append("<option value='0' >--Seleccione--</option>");	
-	         	             	   }else{
-	         	             		    $id_cantones_vivienda.append("<option value='0' >--Seleccione--</option>");
-	         	          		 		$.each(objeto, function(index, value) {
-	         	          		 			$id_cantones_vivienda.append("<option value= " +value.id_cantones +" >" + value.nombre_cantones  + "</option>");	
-	         	                     		 });
-	         	             	   }	
-
-	                                
-	                            }
-	                            catch (error) {
-	                                if(error instanceof SyntaxError) {
-	                                    let mensaje = error.message;
-	                                    console.log('ERROR EN LA SINTAXIS:', mensaje);
-	                                } else {
-	                                    throw error; // si es otro error, que lo siga lanzando
-	                                }
-	                            }
-	 	                   },
-		                   error: function(jqXHR,estado,error){
-		                    /*alertar error*/
-		                   }
-		                 });
-
-	         	  
-	         		  
-	            }else{
-	            	var id_cantones_vivienda=$("#id_cantones");
-	            	id_cantones_vivienda.find('option').remove().end().append("<option value='0' >--Seleccione--</option>").val('0');
-	            	var id_parroquias_vivienda=$("#id_parroquias");
-	            	id_parroquias_vivienda.find('option').remove().end().append("<option value='0' >--Seleccione--</option>").val('0');
-	            	
-	            	
-	            	
-	            }
-	            
-			});
-
-$("#id_cantones").change(function(){
-    // obtenemos el combo de resultado combo 2
-   var $id_parroquias_vivienda = $("#id_parroquias");
-	
-    // lo vaciamos
-   var id_cantones_vivienda = $(this).val();
-  
-  
-    if(id_cantones_vivienda != 0)
-    {
-    	 $id_parroquias_vivienda.empty();
-    	
-    	 var datos = {
-           	   
-    			 id_cantones_vivienda:$(this).val()
-          };
-
- 	   $.post("<?php echo $helper->url("Bodegas","devuelveParroquias"); ?>", datos, function(resultado) {
-
- 		  try {
-       		resultado = resultado.replace('<', "");
-            	resultado = resultado.replace(/\\n/g, "\\n")  
-               .replace(/\\'/g, "\\'")
-               .replace(/\\"/g, '\\"')
-               .replace(/\\&/g, "\\&")
-               .replace(/\\r/g, "\\r")
-               .replace(/\\t/g, "\\t")
-               .replace(/\\b/g, "\\b")
-               .replace(/\\f/g, "\\f");
-	 	        // remove non-printable and other non-valid JSON chars
-	 	        resultado = resultado.replace(/[\u0000-\u0019]+/g,"");
-	 	        
-              objeto = JSON.parse(resultado);
-
-              if(objeto.length==0)
-     		   {
-     				$id_parroquias_vivienda.append("<option value='0' >--Seleccione--</option>");	
-        	   }else{
-        		    $id_parroquias_vivienda.append("<option value='0' >--Seleccione--</option>");
-     		 		$.each(objeto, function(index, value) {
-     		 			$id_parroquias_vivienda.append("<option value= " +value.id_parroquias +" >" + value.nombre_parroquias  + "</option>");	
-                		 });
-        	   }	
-              
-          }
-          catch (error) {
-              if(error instanceof SyntaxError) {
-                  let mensaje = error.message;
-                  console.log('ERROR EN LA SINTAXIS:', mensaje);
-              } else {
-                  throw error; // si es otro error, que lo siga lanzando
-              }
-          }
-     	   
-    	      
- 		  });
-    }else{
-    	var id_parroquias_vivienda=$("#id_parroquias");
-    	id_parroquias_vivienda.find('option').remove().end().append("<option value='0' >--Seleccione--</option>").val('0');
-    }
-    
-});
 
 $("#Guardar").click(function() 
 		{
@@ -322,3 +178,167 @@ function load_bodegas_inactivos(pagina){
          });
 
 	   }
+
+
+
+$("#id_provincias").change(function(){
+    // obtenemos el combo de resultado combo 2
+   var $id_cantones_vivienda = $("#id_cantones");
+	
+    // lo vaciamos
+   var id_provincias_vivienda = $(this).val();
+  
+  
+    if(id_provincias_vivienda != 0)
+    {
+        
+    	$id_cantones_vivienda.empty();
+    	
+    	 var datos = {
+           	   
+    			 id_provincias_vivienda:$(this).val()
+          };
+
+    	 $.ajax({
+                 beforeSend: function(objeto){
+                   /*buscar una funcion de cargando*/
+                 },
+                 url: 'index.php?controller=Bodegas&action=devuelveCanton',
+                 type: 'POST',
+                 data: datos,
+                 success: function(resultado){
+                 	try {
+                 		resultado = resultado.replace('<', "");
+	                    	resultado = resultado.replace(/\\n/g, "\\n")  
+	                       .replace(/\\'/g, "\\'")
+	                       .replace(/\\"/g, '\\"')
+	                       .replace(/\\&/g, "\\&")
+	                       .replace(/\\r/g, "\\r")
+	                       .replace(/\\t/g, "\\t")
+	                       .replace(/\\b/g, "\\b")
+	                       .replace(/\\f/g, "\\f");
+        	 	        // remove non-printable and other non-valid JSON chars
+        	 	        resultado = resultado.replace(/[\u0000-\u0019]+/g,"");
+        	 	        
+                        objeto = JSON.parse(resultado);
+
+                       
+                        if(objeto.length==0)
+ 	          		   {
+                        	$id_cantones_vivienda.append("<option value='0' >--Seleccione--</option>");	
+ 	             	   }else{
+ 	             		 $id_cantones_vivienda.append("<option value='0' >--Seleccione--</option>");
+ 	          		 		$.each(objeto, function(index, value) {
+ 	          		 		$id_cantones_vivienda.append("<option value= " +value.id_cantones +" >" + value.nombre_cantones  + "</option>");	
+ 	                     		 });
+ 	             	   }	
+
+                        
+                    }
+                    catch (error) {
+                        if(error instanceof SyntaxError) {
+                            let mensaje = error.message;
+                            console.log('ERROR EN LA SINTAXIS:', mensaje);
+                        } else {
+                            throw error; // si es otro error, que lo siga lanzando
+                        }
+                    }
+                },
+               error: function(jqXHR,estado,error){
+                /*alertar error*/
+               }
+             });
+
+ 	  
+ 		  
+    }else{
+    	var id_cantones_vivienda=$("#id_cantones");
+    	id_cantones_vivienda.find('option').remove().end().append("<option value='0' >--Seleccione--</option>").val('0');
+    	var id_parroquias_vivienda=$("#id_parroquias");
+    	id_parroquias_vivienda.find('option').remove().end().append("<option value='0' >--Seleccione--</option>").val('0');
+    }
+    
+});
+
+
+$("#id_cantones").change(function(){
+    // obtenemos el combo de resultado combo 2
+   var $id_parroquias_vivienda = $("#id_parroquias");
+	
+    // lo vaciamos
+   var id_cantones_vivienda = $(this).val();
+  
+  
+    if(id_cantones_vivienda != 0)
+    {
+        
+    	$id_parroquias_vivienda.empty();
+    	
+    	 var datos = {
+           	   
+    			 id_cantones_vivienda:$(this).val()
+          };
+
+    	 $.ajax({
+                 beforeSend: function(objeto){
+                   /*buscar una funcion de cargando*/
+                 },
+                 url: 'index.php?controller=Bodegas&action=devuelveParroquias',
+                 type: 'POST',
+                 data: datos,
+                 success: function(resultado){
+                 	try {
+                 		resultado = resultado.replace('<', "");
+	                    	resultado = resultado.replace(/\\n/g, "\\n")  
+	                       .replace(/\\'/g, "\\'")
+	                       .replace(/\\"/g, '\\"')
+	                       .replace(/\\&/g, "\\&")
+	                       .replace(/\\r/g, "\\r")
+	                       .replace(/\\t/g, "\\t")
+	                       .replace(/\\b/g, "\\b")
+	                       .replace(/\\f/g, "\\f");
+        	 	        // remove non-printable and other non-valid JSON chars
+        	 	        resultado = resultado.replace(/[\u0000-\u0019]+/g,"");
+        	 	        
+                        objeto = JSON.parse(resultado);
+
+                       
+                        if(objeto.length==0)
+ 	          		   {
+                        	$id_parroquias_vivienda.append("<option value='0' >--Seleccione--</option>");	
+ 	             	   }else{
+ 	             		 $id_parroquias_vivienda.append("<option value='0' >--Seleccione--</option>");
+ 	          		 		$.each(objeto, function(index, value) {
+ 	          		 		$id_parroquias_vivienda.append("<option value= " +value.id_parroquias +" >" + value.nombre_parroquias  + "</option>");	
+ 	                     		 });
+ 	             	   }	
+
+                        
+                    }
+                    catch (error) {
+                        if(error instanceof SyntaxError) {
+                            let mensaje = error.message;
+                            console.log('ERROR EN LA SINTAXIS:', mensaje);
+                        } else {
+                            throw error; // si es otro error, que lo siga lanzando
+                        }
+                    }
+                },
+               error: function(jqXHR,estado,error){
+                /*alertar error*/
+               }
+             });
+
+ 	  
+ 		  
+    }else{
+    	var id_parroquias_vivienda=$("#id_parroquias");
+    	id_parroquias_vivienda.find('option').remove().end().append("<option value='0' >--Seleccione--</option>").val('0');
+    }
+    
+});
+
+
+
+
+

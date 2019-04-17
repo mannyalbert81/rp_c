@@ -26,6 +26,7 @@ if(isset($datosActivo)){
     $tablaDepreciacion = "<tbody>";	
     $_id_tipo_activo = 0;
     $_valor_por_depreciar = 0.00;
+    $_valor_por_depreciar_imp = ''; 
     
     $_suma_valor_depreciacion = 0.00;
     $_suma_valor_acumulado = 0.00;
@@ -33,10 +34,12 @@ if(isset($datosActivo)){
     $_suma_valor_anual = 0.00;
     $_suma_valor_x_depreciar = 0.00;
     
+    $i = 0;
+    
     
     foreach ($datosActivo as $res) {
         
-        $_valor_por_depreciar = number_format((double)($res->valor_activos_fijos) - (double)($res->actual), 2, ",", ".");
+        $_valor_por_depreciar = (double)($res->valor_activos_fijos) - (double)($res->actual);
         
         if($_id_tipo_activo != $res->id_tipo_activos_fijos){
             
@@ -61,52 +64,55 @@ if(isset($datosActivo)){
                         <td>$res->detalle_activos_fijos</td>
                         <td>$res->nombre_departamento</td>
                         <td>$res->nombres_empleados</td>
-                        <td class=\"numero\" >$res->valor_activos_fijos</td>
+                        <td class=\"numero\" >".number_format($res->valor_activos_fijos,2,',','.')."</td>
                         <td>$res->meses_tipo_activos_fijos</td>
                         <td>$res->diferencia_mes</td>
-                        <td class=\"numero\" >$res->valor_depreciacion</td>
-                        <td class=\"numero\" >$res->acumulada</td>
-                        <td class=\"numero\" >$res->enero</td>
-                        <td class=\"numero\" >$res->febrero</td>
-                        <td class=\"numero\" >$res->marzo</td>
-                        <td class=\"numero\" >$res->abril</td>
-                        <td class=\"numero\" >$res->mayo</td>
-                        <td class=\"numero\" >$res->junio</td>
-                        <td class=\"numero\" >$res->julio</td>
-                        <td class=\"numero\" >$res->agosto</td>
-                        <td class=\"numero\" >$res->septiembre</td>
-                        <td class=\"numero\" >$res->octubre</td>
-                        <td class=\"numero\" >$res->noviembre</td>
-                        <td class=\"numero\" >$res->diciembre</td>
-                        <td class=\"numero\" >$res->actual</td>
-                        <td class=\"numero\" >$_valor_por_depreciar</td>                 
+                        <td class=\"numero\" >".number_format($res->valor_depreciacion,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->acumulada,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->enero,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->febrero,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->marzo,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->abril,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->mayo,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->junio,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->julio,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->agosto,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->septiembre,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->octubre,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->noviembre,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->diciembre,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($res->actual,2,',','.')."</td>
+                        <td class=\"numero\" >".number_format($_valor_por_depreciar,2,',','.')."</td>                 
                         </tr>";
         
         $_suma_valor_depreciacion += $res->valor_depreciacion;
         $_suma_valor_acumulado += $res->acumulada;
         $_suma_valor_activo += $res->valor_activos_fijos;
         $_suma_valor_anual += $res->actual;
-        $_suma_valor_x_depreciar += number_format($_valor_por_depreciar, 2, ",", ".");
+        $_suma_valor_x_depreciar += $_valor_por_depreciar;
         
-        if($_id_tipo_activo != $res->id_tipo_activos_fijos){
-
-            
-            $tablaDepreciacion .= "<tr >
-                        <td colspan=\"6\"></td>                        
-                        <td class=\"numero ul\" >$_suma_valor_activo</td>
-                        <td colspan=\"2\" ></td>
-                        <td class=\"numero ul\" >$_suma_valor_depreciacion</td>
-                        <td class=\"numero ul\" >$_suma_valor_acumulado</td>
-                        <td class=\"numero ul\" >$res->enero</td>
-                        <td colspan=\"11\"></td>
-                        <td class=\"numero ul\" >$_suma_valor_anual</td>
-                        <td class=\"numero ul\" >$_suma_valor_x_depreciar</td>
-                        </tr>";
-            
-        }
+       
         
        /*para variables cambiantes*/
         $_id_tipo_activo = $res->id_tipo_activos_fijos;
+        $i += 1;
+        
+        if( @$_id_tipo_activo != $datosActivo[$i]->id_tipo_activos_fijos){
+            
+            
+            $tablaDepreciacion .= "<tr >
+                        <td colspan=\"6\"></td>
+                        <td class=\"numero ul\" >".number_format($_suma_valor_activo,2,',','.')."</td>
+                        <td colspan=\"2\" ></td>
+                        <td class=\"numero ul\" >".number_format($_suma_valor_depreciacion,2,',','.')."</td>
+                        <td class=\"numero ul\" >".number_format($_suma_valor_acumulado,2,',','.')."</td>
+                        <td class=\"numero ul\" >".number_format($res->enero,2,',','.')."</td>
+                        <td colspan=\"11\"></td>
+                        <td class=\"numero ul\" >".number_format($_suma_valor_anual,2,',','.')."</td>
+                        <td class=\"numero ul\" >".number_format($_suma_valor_x_depreciar,2,',','.')."</td>
+                        </tr>";
+            
+        }
         
         
     }

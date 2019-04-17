@@ -13,6 +13,20 @@ echo $clave_fecha_siguiente_mes;*/
 
 //echo round(0.000,2);
 
+$num1 = 9.70;
+$num2 = 533.33;
+
+$conv1 = number_format($num1, 2, ',', ' ');
+$conv2 = number_format($num2, 2, ',', ' ');
+
+echo  $num1 + $num2;
+
+echo '<br>';
+
+echo  $conv1 + $conv2;
+
+exit();
+
 $numero = 0.00;
 
 $numero = number_format($numero, 2, ',', ' ');

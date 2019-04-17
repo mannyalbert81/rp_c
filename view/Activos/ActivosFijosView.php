@@ -12,6 +12,20 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+    
+    <style type="text/css">
+ 	  .loader {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
+        opacity: .8;
+        }
+ 	  
+ 	</style>
   
     <?php include("view/modulos/links_css.php"); ?>		
       
@@ -73,7 +87,7 @@
         
         <div class="box-body">
         
-        <form action="<?php echo $helper->url("ActivosFijos","insActivos"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+        <form id="frm_activos_fijos" action="<?php echo $helper->url("ActivosFijos","index1"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
         	
         	<div class="row">
     		  
@@ -88,8 +102,11 @@
 				            <?php } ?>
 					  </select>
 					  <div id="mensaje_id_oficina" class="errores"></div>
+					  <input type="hidden" name="id_activos_fijos" id="id_activos_fijos" value="0">
                 </div>
                 </div> 
+                
+                <div id="divLoaderPage" ></div>
               
 				<div class="col-xs-12 col-md-3 col-lg-3">
     		    <div class="form-group">
@@ -272,7 +289,7 @@
     
     <?php include("view/modulos/links_js.php"); ?>
     
-    <script type="text/javascript" src="view/Activos/js/activosFijos.js?1.0"></script>
+    <script type="text/javascript" src="view/Activos/js/activosFijos.js?1.4"></script>
 	
     <script type="text/javascript" >   
     

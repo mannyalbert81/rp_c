@@ -159,7 +159,9 @@ $(document).ready(function(){
             
 		}
     	
-    	if (imagen_activos_fijos == "")
+    	var id_activos_fijos = document.getElementById("id_activos_fijos").value
+    	
+    	if (imagen_activos_fijos == "" && id_activos_fijos == 0)
     	{
 	    	
     		$("#mensaje_imagen_activos_fijos").text("Introduzca Una Imagen");
@@ -218,13 +220,15 @@ $(document).ready(function(){
 
 $("#activos_fijos_registrados").on("click",".editaActivo",function(event){
 	
+	var tiempo = tiempo || 1000;
+	
 	var parametros = {
 			peticion : "ajax",
 			activoId : $(this).attr("id")
 	}
 	
 	$.ajax({
-		beforeSend:function(){},
+		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
 		url:"index.php?controller=ActivosFijos&action=editActivo",
 		type:"POST",
 		dataType:"json",
@@ -233,15 +237,33 @@ $("#activos_fijos_registrados").on("click",".editaActivo",function(event){
 		
 		if(datos.value == 1){
 			
-			console.log(datos.data);
+			var array = datos.data[0]
+			
+			$("#id_activos_fijos").val(array.id_activos_fijos)
+			$("#id_oficina").val(array.id_oficina)
+			$("#id_tipo_activos_fijos").val(array.id_tipo_activos_fijos)
+			$("#id_departamento").val(array.id_departamento)
+			$("#id_estado").val(array.id_estado)
+			$("#fecha_activos_fijos").val(array.fecha_activos_fijos)
+			$("#id_empleados").val(array.id_empleados)
+			$("#nombre_activos_fijos").val(array.nombre_activos_fijos)
+			$("#valor_activos_fijos").val(array.valor_activos_fijos)
+			$("#detalle_activos_fijos").val(array.detalle_activos_fijos)
+			
+			$("html, body").animate({ scrollTop: $(id_oficina).offset().top-150 }, tiempo);
+			
 		}
 		
 	}).fail(function(xhr,status,error){
 		
 		var err = xhr.responseText
 		alert(err);
+		
+	}).always(function(){
+		
+		$("#divLoaderPage").removeClass("loader")
+		consultaActivos();
 	})
-	
 	event.preventDefault()
 })
 
@@ -322,5 +344,52 @@ $("#id_departamento").change(function(){
 	            }
 	            
 			});
+
+
+$("#frm_activos_fijos").on("submit",function(event){
+	
+	var parametros = new FormData(this)
+	
+	parametros.append('action','ajax')
+	
+	$.ajax({
+		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+		url:"index.php?controller=ActivosFijos&action=insActivos",
+		type:"POST",
+		dataType:"json",
+		contentType: false,
+        processData: false,
+		data:parametros
+	}).done(function(datos){
+		
+		if(datos.valor == 1){
+			
+			swal({
+      		  title: "Activos Fijos",
+      		  text: datos.mensaje,
+      		  icon: "success",
+      		  button: "Aceptar",
+      		});
+			
+		}
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		alert('Error al insertar Activo')
+		swal({
+    		  title: "Activos Fijos",
+    		  text: "Error al insertar Activo",
+    		  icon: "error",
+    		  button: "Aceptar",
+    		});
+		console.log(err)
+	}).always(function(){
+		$("#divLoaderPage").removeClass("loader")
+		document.getElementById("frm_activos_fijos").reset();
+		consultaActivos();
+	})
+	
+	event.preventDefault();
+})
 
 

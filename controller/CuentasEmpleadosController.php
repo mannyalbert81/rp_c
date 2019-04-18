@@ -1,46 +1,24 @@
 <?php
-class EmpleadosController extends ControladorBase{
+class CuentasEmpleadosController extends ControladorBase{
     public function index(){
         session_start();
-        $grupo_empleados = new GrupoEmpleadosModel();
-        $estado = new EstadoModel();
-        $departamentos = new DepartamentoModel();
-        
-        $tabladpto ="public.departamentos INNER JOIN public.estado
-                     ON departamentos.id_estado = estado.id_estado";
-        $wheredpto = "estado.nombre_estado = 'ACTIVO'";
-        $iddpto = "departamentos.nombre_departamento";
-        $resultdpto = $departamentos->getCondiciones("*", $tabladpto, $wheredpto, $iddpto);
+        $empleados = new EmpleadosModel();
         
         $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='EMPLEADOS'";
+        $whereest= "estado.tabla_estado='CUENTAS_EMPLEADOS'";
         $idest = "estado.id_estado";
-        $resultEst = $estado->getCondiciones("*", $tablaest, $whereest, $idest);
+        $resultEst = $empleados->getCondiciones("*", $tablaest, $whereest, $idest);
         
-        $tabla= "public.grupo_empleados";
-        $where= "1=1";
-        $id = "grupo_empleados.id_grupo_empleados";
+        $tabla= "public.empleados INNER JOIN public.metodo_pago_empleados
+                ON empleados.id_metodo_pago = metodo_pago_empleados.id_metodo_pago";
+        $where= "metodo_pago_empleados.nombre_metodo_pago = 'CTA. BANCO'";
+        $id = "empleados.nombres_empleados";
         
-        $resultSet = $grupo_empleados->getCondiciones("*", $tabla, $where, $id);
+        $resultEmp = $empleados->getCondiciones("*", $tabla, $where, $id);
         
-        $tabla= "public.oficina";
-        $where= "1=1";
-        $id = "oficina.id_oficina";
-        
-        $resultOfic = $grupo_empleados->getCondiciones("*", $tabla, $where, $id);
-        
-        $tabla= "public.metodo_pago_empleados";
-        $where= "1=1";
-        $id = "metodo_pago_empleados.id_metodo_pago";
-        
-        $resultMet = $grupo_empleados->getCondiciones("*", $tabla, $where, $id);
-        
-        $this->view_Administracion("Empleados",array(
-            "resultSet"=>$resultSet,
-            "resultEst"=>$resultEst,
-            "resultOfic"=>$resultOfic,
-            "resultdpto"=>$resultdpto,
-            "resultMet" =>$resultMet
+        $this->view_Administracion("CuentasEmpleados",array(
+            "resultEmp"=>$resultEmp,
+            "resultEst"=>$resultEst
         ));
     }
     
@@ -74,34 +52,26 @@ class EmpleadosController extends ControladorBase{
     }
    
     
-    public function AgregarEmpleado()
+    public function AgregarCuenta()
     {
       session_start();
-      $empleados = new EmpleadosModel();
-      $numero_cedula=$_POST['numero_cedula'];
-      $cargo=$_POST['cargo'];
-      $dpto=$_POST['dpto'];
-      $nombre_empleado=$_POST['nombre_empleado'];
-      $id_grupo=$_POST['id_grupo'];
-      $estado=$_POST['estado'];
-      $id_oficina=$_POST['id_oficina'];
-      $id_metodo=$_POST['id_metodo'];
-      $funcion = "ins_empleado";
-      $parametros = "'$cargo',
-                     '$dpto',
-                     '$numero_cedula',
-                     '$nombre_empleado',
-                     '$id_grupo',
-                     '$estado',
-                     '$id_oficina',
-                     '$id_metodo'";
-      $empleados->setFuncion($funcion);
-      $empleados->setParametros($parametros);
-      $resultado=$empleados->Insert();
+      $cuentas = new CuentasBancariasModel();
+      $id_empleado=$_POST['id_empleado'];
+      $nombre_banco=$_POST['nombre_banco'];
+      $tipo_cuenta=$_POST['tipo_cuenta'];
+      $numero_cuenta=$_POST['numero_cuenta'];
+      $funcion = "ins_cuenta_bancaria";
+      $parametros = "'$id_empleado',
+                     '$nombre_banco',
+                     '$tipo_cuenta',
+                     '$numero_cuenta'";
+      $cuentas->setFuncion($funcion);
+      $cuentas->setParametros($parametros);
+      $resultado=$cuentas->Insert();
       echo 1;
     }
     
-    public function consulta_empleados(){
+    public function consulta_cuentas(){
         
         session_start();
         $id_rol=$_SESSION["id_rol"];
@@ -110,38 +80,23 @@ class EmpleadosController extends ControladorBase{
         $empleados = new EmpleadosModel();
                 
         $where_to="";
-        $columnas = " empleados.numero_cedula_empleados,
-					  empleados.nombres_empleados,
-                      empleados.id_cargo_empleado,
-                      empleados.id_departamento,
-                      grupo_empleados.nombre_grupo_empleados,
-                      empleados.id_grupo_empleados,
-                      empleados.id_estado,
-                      estado.nombre_estado,
-                      oficina.id_oficina,
-                      oficina.nombre_oficina,
-                      departamentos.nombre_departamento,
-                      cargos_empleados.nombre_cargo,
-                      empleados.id_metodo_pago,
-                      metodo_pago_empleados.nombre_metodo_pago";
+        $columnas = " empleados.nombres_empleados,
+                      empleados.id_empleados,
+                      cuentas_bancarias_empleados.nombre_banco,
+                      cuentas_bancarias_empleados.tipo_cuenta,
+                      cuentas_bancarias_empleados.numero_cuenta,
+                      cuentas_bancarias_empleados.id_cuenta,
+                      estado.nombre_estado";
         
-        $tablas = "public.empleados INNER JOIN public.grupo_empleados
-                   ON grupo_empleados.id_grupo_empleados = empleados.id_grupo_empleados
-                   INNER JOIN public.estado 
-                   ON empleados.id_estado = estado.id_estado
-                   INNER JOIN public.oficina
-                   ON oficina.id_oficina = empleados.id_oficina
-                   INNER JOIN public.departamentos
-                   ON empleados.id_departamento = departamentos.id_departamento
-                   INNER JOIN public.cargos_empleados
-                   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo
-                   INNER JOIN public.metodo_pago_empleados
-                   ON metodo_pago_empleados.id_metodo_pago = empleados.id_metodo_pago";
+        $tablas = "public.empleados INNER JOIN public.cuentas_bancarias_empleados
+                   ON empleados.id_empleados = cuentas_bancarias_empleados.id_empleado
+                   INNER JOIN public.estado
+                   ON cuentas_bancarias_empleados.id_estado = estado.id_estado";
         
         
-        $where    = "empleados.id_estado=".$id_estado;
+        $where    = "cuentas_bancarias_empleados.id_estado=".$id_estado;
         
-        $id       = "empleados.id_empleados";
+        $id       = "empleados.nombres_empleados";
         
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -155,8 +110,8 @@ class EmpleadosController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND (CAST(empleados.numero_cedula_empleados AS TEXT) LIKE '".$search."%' OR empleados.nombres_empleados ILIKE '".$search."%' OR cargos_empleados.nombre_cargo ILIKE '".$search."%' OR departamentos.nombre_departamento ILIKE '".$search."%' 
-                 OR grupo_empleados.nombre_grupo_empleados ILIKE '".$search."%')";
+                $where1=" AND (CAST(empleados.numero_cedula_empleados AS TEXT) LIKE '".$search."%' OR empleados.nombres_empleados ILIKE '".$search."%' OR cuentas_bancarias_empleados.nombre_banco ILIKE '".$search."%' OR cuentas_bancarias_empleados.tipo_cuenta ILIKE '".$search."%' 
+                 OR cuentas_bancarias_empleados.numero_cuenta ILIKE '".$search."%')";
                 
                 $where_to=$where.$where1;
             }else{
@@ -195,14 +150,10 @@ class EmpleadosController extends ControladorBase{
                 $html.= "<thead>";
                 $html.= "<tr>";
                 $html.='<th style="text-align: left;  font-size: 15px;"></th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Cédula</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Cargo</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Departamento</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Oficina</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Grupo</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Metodo Pago</th>';
-                
+                $html.='<th style="text-align: left;  font-size: 15px;">Empleado</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Banco</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Cuenta</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Número</th>';
                 
                 if($id_rol==1){
                     
@@ -223,19 +174,16 @@ class EmpleadosController extends ControladorBase{
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->numero_cedula_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_cargo.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_departamento.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_grupo_empleados.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_metodo_pago.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->nombre_banco.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->tipo_cuenta.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->numero_cuenta.'</td>';
                     if($id_rol==1){
                         
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarEmpleado('.$res->numero_cedula_empleados.',&quot;'.$res->nombres_empleados.'&quot;,'.$res->id_cargo_empleado.','.$res->id_departamento.',&quot;'.$res->id_grupo_empleados.'&quot; , '.$res->id_estado.', '.$res->id_oficina.','.$res->id_metodo_pago.')"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarCuenta('.$res->id_empleados.',&quot;'.$res->nombre_banco.'&quot;,&quot;'.$res->tipo_cuenta.'&quot; ,&quot;'.$res->numero_cuenta.'&quot;)"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
                     if($res->nombre_estado=="ACTIVO")
                     {
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="EliminarEmpleado('.$res->numero_cedula_empleados.')"><i class="glyphicon glyphicon-trash"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="EliminarCuenta('.$res->id_cuenta.')"><i class="glyphicon glyphicon-trash"></i></button></span></td>';
                     }
                     }
                     $html.='</tr>';
@@ -247,7 +195,7 @@ class EmpleadosController extends ControladorBase{
                 $html.='</table>';
                 $html.='</section></div>';
                 $html.='<div class="table-pagination pull-right">';
-                $html.=''. $this->paginate_empleados("index.php", $page, $total_pages, $adjacents,"load_empleados").'';
+                $html.=''. $this->paginate_cuentas("index.php", $page, $total_pages, $adjacents,"load_cuentas").'';
                 $html.='</div>';
                 
                 
@@ -256,7 +204,7 @@ class EmpleadosController extends ControladorBase{
                 $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                 $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
                 $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay empleados registrados...</b>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay cuentas registradas...</b>';
                 $html.='</div>';
                 $html.='</div>';
             }
@@ -269,7 +217,7 @@ class EmpleadosController extends ControladorBase{
         
     }
     
-    public function paginate_empleados($reload, $page, $tpages, $adjacents,$funcion='') {
+    public function paginate_cuentas($reload, $page, $tpages, $adjacents,$funcion='') {
         
         $prevlabel = "&lsaquo; Prev";
         $nextlabel = "Next &rsaquo;";
@@ -412,19 +360,21 @@ class EmpleadosController extends ControladorBase{
     public function EliminarValor()
     {
         session_start();
-        $empleados = new EmpleadosModel();
+        $cuentas = new CuentasBancariasModel();
         $estado = new EstadoModel();
         $columnaest = "estado.id_estado";
         $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='EMPLEADOS' AND estado.nombre_estado = 'INACTIVO'";
+        $whereest= "estado.tabla_estado='CUENTAS_EMPLEADOS' AND estado.nombre_estado = 'INACTIVO'";
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
-        $numero_cedula = $_POST['numero_cedula'];
-        $where = "numero_cedula_empleados=".$numero_cedula;
-        $tabla = "empleados";
+        $id_cuenta = $_POST['id_cuenta'];
+        $where = "id_cuenta=".$id_cuenta;
+        $tabla = "cuentas_bancarias_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
-        $empleados->UpdateBy($colval, $tabla, $where);
+        $cuentas->UpdateBy($colval, $tabla, $where);
+        
+        echo 1;
     }
         
 }

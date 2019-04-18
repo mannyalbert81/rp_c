@@ -46,7 +46,7 @@ $.ajax({
           beforeSend: function(objeto){
             $("#load_solicitudes").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
           },
-          url: 'index.php?controller=PermisosEmpleados&action=consulta_solicitudes&search='+search+'&id_estado='+idestado,
+          url: 'index.php?controller=VacacionesEmpleados&action=consulta_solicitudes&search='+search+'&id_estado='+idestado,
           type: 'POST',
           data: con_datos,
           success: function(x){
@@ -220,96 +220,43 @@ function validarfecha(fecha)
 
 function InsertarSolicitud()
 {
-console.log(validardesde());	
-var fecha = $("#fecha_permiso").val();
-var desde = $("#hora_desde").val();
-var hasta = $("#hora_hasta").val();
-var causa = $("#causa_permiso").val();
-var desc = $("#descripcion_causa").val();
+	
 
-if (!validarhasta() && hasta!="")
+var desde = $("#fecha_desde").val();
+var hasta = $("#fecha_hasta").val();
+
+
+if (hasta=="")
 {
-$("#mensaje_hora_hasta").text("Hora invalida");
-$("#mensaje_hora_hasta").fadeIn("slow");
-$("#mensaje_hora_hasta").fadeOut("slow");
+$("#mensaje_fecha_hasta").text("Elija fecha");
+$("#mensaje_fecha_hasta").fadeIn("slow");
+$("#mensaje_fecha_hasta").fadeOut("slow");
 }
-if (!validardesde() && desde!="")
-	{
-	$("#mensaje_hora_desde").text("Hora invalida");
-	$("#mensaje_hora_desde").fadeIn("slow");
-	$("#mensaje_hora_desde").fadeOut("slow");
-	}
-
-if (!validarhora() && desde!="" && hasta!="")
-	{
-	$("#mensaje_hora_desde").text("Hora invalida");
-	$("#mensaje_hora_desde").fadeIn("slow");
-	$("#mensaje_hora_desde").fadeOut("slow");
-	$("#mensaje_hora_hasta").text("Hora invalida");
-	$("#mensaje_hora_hasta").fadeIn("slow");
-	$("#mensaje_hora_hasta").fadeOut("slow");
-	}
-
-if((causa == 6 || causa == 3) && desc == "" )
-	{
-	$("#mensaje_descripcion_causa").text("Escriba una descripción");
-	$("#mensaje_descripcion_causa").fadeIn("slow");
-	$("#mensaje_descripcion_causa").fadeOut("slow");
-	}
-
-if (desde== "" || desde.includes("_"))
+if (desde== "")
 {    	
-	$("#mensaje_hora_desde").text("Introduzca hora");
-	$("#mensaje_hora_desde").fadeIn("slow");
-	$("#mensaje_hora_desde").fadeOut("slow");
-}
-if (hasta== "" || hasta.includes("_"))
-{    	
-	$("#mensaje_hora_hasta").text("Introduzca hora");
-	$("#mensaje_hora_hasta").fadeIn("slow");
-	$("#mensaje_hora_hasta").fadeOut("slow");
+	$("#mensaje_fecha_desde").text("Elija fecha");
+	$("#mensaje_fecha_desde").fadeIn("slow");
+	$("#mensaje_fecha_desde").fadeOut("slow");
 }
 
-if (causa== "")
-{    	
-	$("#mensaje_causa_permiso").text("Seleccione causa");
-	$("#mensaje_causa_permiso").fadeIn("slow");
-	$("#mensaje_causa_permiso").fadeOut("slow");
-}
 
-if (fecha== "" || !validarfecha(fecha))
-{    	
-	$("#mensaje_fecha_permiso").text("Seleccione fecha");
-	$("#mensaje_fecha_permiso").fadeIn("slow");
-	$("#mensaje_fecha_permiso").fadeOut("slow");
-}
-
-if ( desde!="" && hasta!="" && causa!="" && fecha!="" && !desde.includes("_") && !hasta.includes("_") && validarfecha(fecha) && validarhora()
-		&& validardesde() && validarhasta())
+if ( desde!="" && hasta!="")
 	{
 	
 	$.ajax({
-	    url: 'index.php?controller=PermisosEmpleados&action=AgregarSolicitud',
+	    url: 'index.php?controller=VacacionesEmpleados&action=AgregarSolicitud',
 	    type: 'POST',
 	    data: {
-	    	   fecha_solicitud: fecha,
-	    	   hora_desde: desde,
-	    	   hora_hasta: hasta,
-	    	   id_causa: causa,
-	    	   descripcion_causa:desc
+	    	   fecha_desde: desde,
+	    	   fecha_hasta: hasta
+	    	   
 	    },
 	})
 	.done(function(x) {
-		$("#fecha_permiso").val("");
-		$("#hora_desde").val("");
-		$("#hora_hasta").val("");
-		$("#causa_permiso").val("");
-		$("#descripcion_causa").val("");
-		document.getElementById('descripcion_causa').readOnly = true;
-		document.getElementById('dia').className = "btn btn-light";
-		document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
-		document.getElementById('hora_desde').readOnly = false;
-	    document.getElementById('hora_hasta').readOnly = false;
+		
+		$("#fecha_desde").val("");
+		$("#fecha_hasta").val("");
+		
 		console.log(x);
 		if (x==1)
 			{
@@ -365,27 +312,14 @@ if ( desde!="" && hasta!="" && causa!="" && fecha!="" && !desde.includes("_") &&
 	
 }
 
-function HabilitarDescripcion()
-{
-	var causa = $("#causa_permiso").val();
-	if (causa != 6 && causa != 3) document.getElementById('descripcion_causa').readOnly = true;
-	else document.getElementById('descripcion_causa').readOnly = false;
-}
-
 function LimpiarCampos()
 {
 	
 	
-	$("#fecha_permiso").val("");
-	$("#hora_desde").val("");
-	$("#hora_hasta").val("");
-	$("#causa_permiso").val("");
-	$("#descripcion_causa").val("");
-	document.getElementById('descripcion_causa').readOnly = true;
-	 document.getElementById('dia').className = "btn btn-light";
-	 document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
-     document.getElementById('hora_desde').readOnly = false;
-		document.getElementById('hora_hasta').readOnly = false;
+	
+	$("#fecha_desde").val("");
+	$("#fecha_hasta").val("");
+	
 	
 }
 
@@ -396,17 +330,17 @@ function Aprobar(idsol,nomest)
 	var msg="";
 	if (nomest == "EN REVISION") 
 		{
-		url = 'index.php?controller=PermisosEmpleados&action=VBSolicitud';
+		url = 'index.php?controller=VacacionesEmpleados&action=VBSolicitud';
 		msg = 'Estado de solicitud cambiado a visto bueno';
 		}
 	if (nomest == "VISTO BUENO") 
 	{
-		url = 'index.php?controller=PermisosEmpleados&action=AprobarSolicitud';
+		url = 'index.php?controller=VacacionesEmpleados&action=AprobarSolicitud';
 		msg = 'Estado de solicitud cambiado a aprobado';
 	}
 	if (nomest == "APROBADO")
 	{
-		url = 'index.php?controller=PermisosEmpleados&action=GerenciaSolicitud';
+		url = 'index.php?controller=VacacionesEmpleados&action=GerenciaSolicitud';
 		msg = 'Estado de solicitud cambiado a aprobado gerencia';
 	}
 	console.log(url);
@@ -467,7 +401,7 @@ function Aprobar(idsol,nomest)
 function Negar(idsol)
 {
 	$.ajax({
-	    url: 'index.php?controller=PermisosEmpleados&action=NegarSolicitud',
+	    url: 'index.php?controller=VacacionesEmpleados&action=NegarSolicitud',
 	    type: 'POST',
 	    data: {
 	    	   id_solicitud: idsol

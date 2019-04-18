@@ -4,7 +4,7 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
  
 //echo getcwd().''; //para ver ubicacion de directorio
 
-$template = file_get_contents('view/reportes/template/HojaPermiso.html');
+$template = file_get_contents('view/reportes/template/SolicitudPermiso.html');
 
 $footer = file_get_contents('view/reportes/template/pieficha.html');
 

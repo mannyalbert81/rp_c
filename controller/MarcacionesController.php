@@ -242,8 +242,6 @@ class MarcacionesController extends ControladorBase{
         horarios_empleados.tiempo_gracia_empleados,
         horarios_empleados.id_oficina";
         
-       
-        
         $tablas= "public.horarios_empleados INNER JOIN public.estado
                    ON horarios_empleados.id_estado = estado.id_estado";
         $where="estado.nombre_estado='ACTIVO'";
@@ -256,7 +254,9 @@ class MarcacionesController extends ControladorBase{
         $tablas = "public.empleados INNER JOIN public.estado
                    ON empleados.id_estado = estado.id_estado
                    INNER JOIN public.oficina
-                   ON empleados.id_oficina = oficina.id_oficina";
+                   ON empleados.id_oficina = oficina.id_oficina
+                   INNER JOIN cargos_empleados
+                   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         $where = "estado.nombre_estado='ACTIVO'";
         
         $id = "empleados.id_empleados";
@@ -298,7 +298,8 @@ class MarcacionesController extends ControladorBase{
             $html.='<th style="text-align: left;  font-size: 16px;">Faltas(días)</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Advertencias</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Atraso</th>';
-            $html.='<th style="text-align: left;  font-size: 16px;">Tiempo Extra</th>';
+            $html.='<th style="text-align: left;  font-size: 16px;">Tiempo Extra 50%</th>';
+            $html.='<th style="text-align: left;  font-size: 16px;">Tiempo Extra 100%</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Tiempo Dcto</th>';
             $html.='</tr>';
             $html.='</thead>';
@@ -308,6 +309,7 @@ class MarcacionesController extends ControladorBase{
         {
         $tatraso=0;
         $textra=0;
+        $textrac=0;
         $tdescuento=0;
         foreach($resultSet as $res)
         {   
@@ -342,15 +344,24 @@ class MarcacionesController extends ControladorBase{
                 }
                 if ($numregistros==4)
                 {
-                    $to_time = strtotime($hsal);
-                    $from_time = strtotime($hent);
-                    $diferenci= round((($to_time - $from_time) / 60),0, PHP_ROUND_HALF_DOWN);
-                    
-                    if ($diferenci>0)
+                    if ($dayOfWeek!="Sat" && $dayOfWeek!="Sun")
                     {
-                        $horastrabajo=$horastrabajo+$diferenci;
+                        $to_time = strtotime($hsal);
+                        $from_time = strtotime($hent);
+                        $diferenci= round((($to_time - $from_time) / 60),0, PHP_ROUND_HALF_DOWN);
+                        
+                        if ($diferenci>0)
+                        {
+                            $horastrabajo=$horastrabajo+$diferenci;
+                        }
                     }
-                   
+                    else
+                    {
+                        $to_time = strtotime($hsal);
+                        $from_time = strtotime($hent);
+                        $diferenci= round((($to_time - $from_time) / 60),0, PHP_ROUND_HALF_DOWN);
+                        $textrac=$textrac+$diferenci;
+                    }
                 }
                 
                 
@@ -377,7 +388,7 @@ class MarcacionesController extends ControladorBase{
                         && !(empty($res->hora_marcacion_empleados)))
                     {
                         $horactr=$hor->hora_salida_empleados;
-                        
+                        $to_time = strtotime("2008-12-13 10:42:00");
                         $horasalida=$res->hora_marcacion_empleados;
                         $to_time = strtotime($horasalida);
                         $from_time = strtotime($horactr);
@@ -400,7 +411,9 @@ class MarcacionesController extends ControladorBase{
             $horasatraso = intval(($tatraso / 60));
             $horasatraso .= "h".$tatraso%60;
             $horasextra = intval(($textra / 60));
-            $horasextra .= "h".$textra%60; 
+            $horasextra .= "h".$textra%60;
+            $horasextrac = intval(($textrac / 60));
+            $horasextrac .= "h".$textrac%60; 
             $horasdcto = intval(($tdescuento / 60));
             $horasdcto .= "h".$tdescuento%60; 
              
@@ -419,6 +432,7 @@ class MarcacionesController extends ControladorBase{
        $html.='<td style="font-size: 15px;">'.$advertencias.'</td>';
        $html.='<td style="font-size: 15px;">'.$horasatraso.'</td>';
        $html.='<td style="font-size: 15px;">'.$horasextra.'</td>';
+       $html.='<td style="font-size: 15px;">'.$horasextrac.'</td>';
        $html.='<td style="font-size: 15px;">'.$horasdcto.'</td>';
        $html.='</tr>';
        
@@ -569,6 +583,7 @@ class MarcacionesController extends ControladorBase{
         $dia_final = $_POST['dia_final'];
         $numero_cedula = $_POST['numero_cedula'];
         $estado_registros= $_POST['estado_registros'];
+        $dias = array("Do","Lu","Ma","Mi","Ju","Vi","Sa");
         $registro_reloj = new RegistroRelojEmpleadosModel();
         $where_to="";
         $columnas = "empleados.nombres_empleados,
@@ -662,6 +677,8 @@ class MarcacionesController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 16px;">Hora</th>';
                 $html.='<th style="text-align: left;  font-size: 16px;">Fecha</th>';
                 $html.='<th style="text-align: left;  font-size: 16px;">Tipo</th>';
+                $html.='<th style="text-align: left;  font-size: 16px;">Día</th>';
+                
                
                 
                 if($id_rol==1){
@@ -688,7 +705,10 @@ class MarcacionesController extends ControladorBase{
                     $html.='<td style="font-size: 15px;">'.$res->numero_cedula_empleados.'</td>';
                     $html.='<td style="font-size: 15px;">'.$res->hora_marcacion_empleados.'</td>';
                     $html.='<td style="font-size: 15px;">'.$res->fecha_marcacion_empleados.'</td>';
-                    $html.='<td style="font-size: 15px;">'.$res->tipo_registro_empleados.'</td>';
+                    $html.='<td style="font-size: 15px;">'.$res->tipo_registro_empleados.'</td>';                    
+                    $dayOfWeek = date("w", strtotime($res->fecha_marcacion_empleados));
+                    $html.='<td style="font-size: 15px;">'.$dias[$dayOfWeek].'</td>';
+                    
                     
                     if($id_rol==1){
                         

@@ -12,6 +12,8 @@ echo $clave_fecha_siguiente_mes;*/
 <?php
 
 //echo round(0.000,2);
+session_start();
+print_r($_SESSION); die();
 
 $num1 = 9.70;
 $num2 = 533.33;

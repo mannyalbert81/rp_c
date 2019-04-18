@@ -302,17 +302,13 @@
     </script> 
     
   
-	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-       <script>
-      $(document).ready(function(){
-      $(".cantidades1").inputmask();
-      });
-	  </script>
-	  
-
-  
-	
-  </body>
+<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
+<script>
+    $(document).ready(function(){
+    	$(".cantidades1").inputmask();
+    });
+</script>
+</body>
 </html>   
 
  

@@ -92,6 +92,11 @@ $( "#cedula_empleado1" ).autocomplete({
 	
 });
 
+function LimpiarCedula()
+{
+	$('#cedula_empleado1').val("");
+}
+
 function EditAdvertencias(cedula){
 	$('#cedula_empleado1').val(cedula);
 	$('#estado_registro').val(2);

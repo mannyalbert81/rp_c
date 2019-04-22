@@ -82,6 +82,7 @@ $controladores=$_SESSION['controladores'];
                 <li style="<?php echo getcontrolador("Marcaciones",$controladores) ?>"><a href="index.php?controller=Marcaciones&action=index"><i class="fa fa-circle-o"></i> Marcaciones</a></li>
                 <li style="<?php echo getcontrolador("PermisosEmpleados",$controladores) ?>"><a href="index.php?controller=PermisosEmpleados&action=index"><i class="fa fa-circle-o"></i>Solicitud Permiso</a></li>
 				<li style="<?php echo getcontrolador("VacacionesEmpleados",$controladores) ?>"><a href="index.php?controller=VacacionesEmpleados&action=index"><i class="fa fa-circle-o"></i>Solicitud Vacaciones</a></li>             
+            	<li style="<?php echo getcontrolador("HorasExtrasEmpleados",$controladores) ?>"><a href="index.php?controller=HorasExtrasEmpleados&action=index"><i class="fa fa-circle-o"></i>Solicitud Horas Extra</a></li>
              </ul>
             </li>
         

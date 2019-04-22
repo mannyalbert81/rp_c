@@ -382,8 +382,8 @@ class BuscarProductoController extends ControladorBase{
         
         $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
         $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
-        $domLogo=$directorio.'/view/images/logo.png';
-        $logo = '<img src="'.$domLogo.'" alt="Responsive image" width="130" height="70">';
+        $domLogo=$directorio.'/view/images/logoCapremci.png';
+        $logo = '<img src="'.$domLogo.'" alt="Responsive image" width="150" height="35">';
         
         
         
@@ -505,7 +505,7 @@ class BuscarProductoController extends ControladorBase{
                     
                     $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
                     $html.= "<tr>";
-                    $html.='<th style="text-align: center; font-size: 25px; ">CAPREMCI</br>';
+                    $html.='<th style="text-align: center; font-size: 25px; ">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CAPREMCI  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;'.$logo.'</br>';
                     $html.='<p style="text-align: center; font-size: 13px; "> Av. Baquerico Moreno E-9781 y Leonidas Plaza';
                     $html.='<p style="text-align: left; font-size: 13px; "> &nbsp; &nbsp;Código: &nbsp; '.$_numero_movimientos_inv_cabeza.' &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp; &nbsp; Fecha de Compra:  &nbsp; '.$_fecha_movimientos_inv_cabeza.'';
                     $html.='</tr>';
@@ -513,12 +513,6 @@ class BuscarProductoController extends ControladorBase{
                     
                     $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; USUARIO: </b>'.$_nombre_usuarios.' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b> PRODUCTO:</b> &nbsp;'.$_nombre_productos.'';
                     
-                    $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
-                    $html.= "<tr>";
-                    $html.='<th colspan="12" style="text-align: left; height:30px; font-size: 13px;" ><b>&nbsp;SALDO INICIAL:  &nbsp;'.$_ult_precio_productos.'';
-                    $html.="</th>";
-                    $html.="</tr>";
-                    $html.='</table>';
                     
                     if(!empty($resultSetDetalle)){
                         

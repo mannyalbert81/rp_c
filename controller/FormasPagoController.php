@@ -1,6 +1,6 @@
 <?php
 
-class FormaPagoController extends ControladorBase{
+class FormasPagoController extends ControladorBase{
 
 	public function __construct() {
 		parent::__construct();
@@ -45,33 +45,32 @@ class FormaPagoController extends ControladorBase{
 	}
 	
 	
-	public function InsertaBancos(){
+	public function InsertaFormasPago(){
 			
 		session_start();
 		
-		$bancos = new BancosModel();
+		$formasPago = new FormaPagoModel();
 		
 		$nombre_controladores = "Bancos";
 		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $bancos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+		$resultPer = $formasPago->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
 		if (!empty($resultPer)){	
 		    
-		    $_nombre_bancos = (isset($_POST["nombre_bancos"])) ? $_POST["nombre_bancos"] : "";
-		    $_id_estado = (isset($_POST["id_estado"])) ? $_POST["id_estado"] : 0 ;
-		    $_id_bancos = (isset($_POST["id_bancos"])) ? $_POST["id_bancos"] : 0 ;
+		    $_nombre_forma_pago = (isset($_POST["nombre_forma_pago"])) ? $_POST["nombre_forma_pago"] : "";
+		    $_id_forma_pago = (isset($_POST["id_forma_pago"])) ? $_POST["id_forma_pago"] : 0 ;
 		    
 		    /*si es insertado enviar en cero el id_banco a la funcion*/							
-			$funcion = "ins_tes_bancos";
+			$funcion = "ins_formas_pago";
 			$respuesta = 0 ;
 			$mensaje = ""; 
 			
-			if($_id_bancos == 0){
+			if($_id_forma_pago == 0){
 			    
-			    $parametros = " '$_nombre_bancos','$_id_estado', '$_id_bancos'";
-			    $bancos->setFuncion($funcion);
-			    $bancos->setParametros($parametros);
-			    $resultado = $bancos->llamafuncion();
+			    $parametros = " '$_nombre_forma_pago','$_id_forma_pago'";
+			    $formasPago->setFuncion($funcion);
+			    $formasPago->setParametros($parametros);
+			    $resultado = $formasPago->llamafuncion();
 			    
 			    if(!empty($resultado) && count($resultado) > 0 ){
 			        
@@ -80,15 +79,15 @@ class FormaPagoController extends ControladorBase{
 			            $respuesta = $v;
 			        }
 			        
-			        $mensaje = "Banco Ingresado Correctamente";
+			        $mensaje = "Formas Pago Ingresado Correctamente";
 			        
 			    }
-			}elseif ($_id_bancos > 0){
+			}elseif ($_id_forma_pago > 0){
 			    
-			    $parametros = " '$_nombre_bancos','$_id_estado', '$_id_bancos'";
-			    $bancos->setFuncion($funcion);
-			    $bancos->setParametros($parametros);
-			    $resultado = $bancos->llamafuncion();
+			    $parametros = "'$_nombre_forma_pago','$_id_forma_pago'";
+			    $formasPago->setFuncion($funcion);
+			    $formasPago->setParametros($parametros);
+			    $resultado = $formasPago->llamafuncion();
 			    
 			    if(!empty($resultado) && count($resultado) > 0 ){
 			        
@@ -97,7 +96,7 @@ class FormaPagoController extends ControladorBase{
 			            $respuesta = $v;
 			        }
 			        
-			        $mensaje = "Banco Actualizado Correctamente";
+			        $mensaje = "Formas Pago Actualizado Correctamente";
 			        
 			    }
 			}
@@ -196,25 +195,25 @@ class FormaPagoController extends ControladorBase{
 	 * title: editBancos
 	 * fcha: 2019-04-22
 	 */
-	public function editBancos(){
+	public function editFormasPago(){
 	    
 	    session_start();
-	    $bancos = new BancosModel();
-	    $nombre_controladores = "Bancos";
+	    $formasPago = new FormaPagoModel();
+	    $nombre_controladores = "FormasPago";
 	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $bancos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    $resultPer = $formasPago->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	    	     
 	    if (!empty($resultPer))
 	    {
 	        
 	        
-	        if(isset($_POST["id_bancos"])){
+	        if(isset($_POST["id_forma_pago"])){
 	            
-	            $id_bancos = (int)$_POST["id_bancos"];
+	            $id_forma_pago = (int)$_POST["id_forma_pago"];
 	            
-	            $query = "SELECT * FROM tes_bancos WHERE id_bancos = $id_bancos";
+	            $query = "SELECT id_forma_pago, nombre_forma_pago FROM forma_pago WHERE id_forma_pago = $id_forma_pago";
 
-	            $resultado  = $bancos->enviaquery($query);	            
+	            $resultado  = $formasPago->enviaquery($query);	            
 	           
 	            echo json_encode(array('data'=>$resultado));	            
 	            
@@ -235,21 +234,21 @@ class FormaPagoController extends ControladorBase{
 	 * title: delBancos
 	 * fcha: 2019-04-22
 	 */
-	public function delBancos(){
+	public function delFormasPago(){
 	    
 	    session_start();
-	    $bancos = new BancosModel();
-	    $nombre_controladores = "Bancos";
+	    $formasPago = new FormaPagoModel();
+	    $nombre_controladores = "FormasPago";
 	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $bancos->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    $resultPer = $formasPago->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	    
 	    if (!empty($resultPer)){	        
 	        
-	        if(isset($_POST["id_bancos"])){
+	        if(isset($_POST["id_forma_pago"])){
 	            
-	            $id_bancos = (int)$_POST["id_bancos"];
+	            $id_forma_pago = (int)$_POST["id_forma_pago"];
 	            
-	            $resultado  = $bancos->eliminarBy(" id_bancos ",$id_bancos);
+	            $resultado  = $formasPago->eliminarBy(" id_forma_pago ",$id_forma_pago);
 	           
 	            if( $resultado > 0 ){
 	                
@@ -259,7 +258,6 @@ class FormaPagoController extends ControladorBase{
 	                
 	                echo $resultado;
 	            }
-	            
 	            
 	            
 	        }
@@ -275,21 +273,22 @@ class FormaPagoController extends ControladorBase{
 	}
 	
 	
-	public function consultaBancos(){
+	public function consultaFormasPago(){
 	    
 	    session_start();
+	    
 	    $id_rol=$_SESSION["id_rol"];
 	    
-	    $bancos = new BancosModel();
+	    $formasPago = new FormaPagoModel();
 	    
 	    $where_to="";
-	    $columnas  = " id_bancos, nombre_bancos, nombre_estado ";
+	    $columnas  = " id_forma_pago, nombre_forma_pago";
 	    
-	    $tablas    = "public.tes_bancos INNER JOIN public.estado ON estado.id_estado = tes_bancos.id_estado";
+	    $tablas    = "public.forma_pago ";
 	    
 	    $where     = " 1 = 1";
 	    
-	    $id        = "tes_bancos.nombre_bancos";
+	    $id        = "forma_pago.nombre_forma_pago";
 	    
 	    
 	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
@@ -313,7 +312,7 @@ class FormaPagoController extends ControladorBase{
 	        }
 	        
 	        $html="";
-	        $resultSet=$bancos->getCantidad("*", $tablas, $where_to);
+	        $resultSet=$formasPago->getCantidad("*", $tablas, $where_to);
 	        $cantidadResult=(int)$resultSet[0]->total;
 	        
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
@@ -324,7 +323,7 @@ class FormaPagoController extends ControladorBase{
 	        
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	        
-	        $resultSet=$bancos->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $resultSet=$formasPago->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
 	        $total_pages = ceil($cantidadResult/$per_page);	        
 	        
 	        if($cantidadResult > 0)
@@ -340,8 +339,7 @@ class FormaPagoController extends ControladorBase{
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
-	            $html.='<th style="text-align: left;  font-size: 15px;">Banco</th>';
-	            $html.='<th style="text-align: left;  font-size: 15px;">Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Forma Pago</th>';
 	            
 	            /*para administracion definir administrador MenuOperaciones Edit - Eliminar*/
 	                
@@ -361,16 +359,15 @@ class FormaPagoController extends ControladorBase{
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 14px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 14px;">'.$res->nombre_bancos.'</td>';
-	                $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->nombre_forma_pago.'</td>';
 	                
 	               
 	                /*comentario up */
 	                
                     $html.='<td style="font-size: 18px;">
-                            <a onclick="editBanco('.$res->id_bancos.')" href="#" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class="glyphicon glyphicon-edit"></i></a></td>';
+                            <a onclick="editFormasPago('.$res->id_forma_pago.')" href="#" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class="glyphicon glyphicon-edit"></i></a></td>';
                     $html.='<td style="font-size: 18px;">
-                            <a onclick="delBanco('.$res->id_bancos.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                            <a onclick="delFormasPago('.$res->id_forma_pago.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a></td>';
 	                    
 	               
 	                $html.='</tr>';

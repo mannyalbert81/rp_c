@@ -1,7 +1,127 @@
 $(document).ready(function(){
-	
+	$(".cantidades1").inputmask();
+	devuelveConsecutivoCxP();
+	cargaFormasPago();
+	cargaBancos();
 	consultaActivos();
+		
 })
+
+function numeros(e){
+	  var key = window.event ? e.which : e.keyCode;
+	  if (key < 48 || key > 57) {
+	    e.preventDefault();
+	  }
+ }
+
+/***
+ * function to upload formas pago
+ * dc 2019-04-18
+ * @returns
+ */
+function cargaFormasPago(){
+	let $formapago = $("#id_forma_pago");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=CuentasPagar&action=cargaFormasPago",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$formapago.empty();
+		$formapago.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$formapago.append("<option value= " +value.id_forma_pago +" >" + value.nombre_forma_pago  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$formapago.empty();
+	})
+}
+
+/***
+ * function to upload bancos
+ * dc 2019-04-18
+ * @returns
+ */
+function cargaBancos(){
+	let $bancos = $("#id_bancos");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=CuentasPagar&action=cargaBancos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$bancos.empty();
+		$bancos.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$bancos.append("<option value= " +value.id_bancos +" >" + value.nombre_bancos  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$bancos.empty();
+	})
+}
+
+/***
+ * function to search proveedores
+ * @returns
+ */
+$( "#cedula_proveedor" ).autocomplete({
+
+	source: "index.php?controller=Proveedores&action=buscaProveedorByCedula",
+	minLength: 6,
+    select: function (event, ui) {
+       // Set selection          
+       $('#id_proveedor').val(ui.item.id);
+       $('#cedula_proveedor').val(ui.item.value);
+       $("#nombre_proveedor").val(ui.item.nombre);
+       $("#email_proveedor").val(ui.item.email);
+       return false;
+    },focus: function(event, ui) { 
+        var text = ui.item.value; 
+        $('#cedula_usuarios').val();            
+        return false; 
+    } 
+}).focusout(function() {
+	
+});
+
+function devuelveConsecutivoCxP(){
+	
+	let $numeroPago = $("#numero_pago");
+	let $idconsecutivo = $("#id_consecutivo");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=CuentasPagar&action=DevuelveConsecutivoCxP",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		let array = datos.data[0];
+		
+		$numeroPago.val(array.numero_consecutivos);
+		$idconsecutivo.val(array.id_consecutivos);
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log('revisar consecutivos de Cuentas X Pagar');
+		
+	})
+}
 
 /*
  * fn para poner en mayusculas

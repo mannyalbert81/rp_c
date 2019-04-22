@@ -176,8 +176,15 @@
 						<option value="3">Registros completos</option>
     				</select>
     		</div>
-    		<div class="pull-right" style="margin-right:15px;">
-            	<input type="text" data-inputmask="'mask': '9999999999'" onfocusout="load_marcaciones(1)" class="form-control" id="cedula_empleado1" name="cedula_empleado1" placeholder="Cédula">	
+    		<div class="pull-right col-xs-4 col-md-2 col-lg-2 " style="margin-left:15px;" >
+    			<div class="input-group">
+    				<span class="input-group-btn">
+    			    	<button type="button" class="btn btn-danger" id="borrar_campo" name="borrar_campo" onclick="LimpiarCedula()">
+						<i class="glyphicon glyphicon-erase"></i>
+						</button>
+					</span>
+            		<input type="text" data-inputmask="'mask': '9999999999'" onfocusout="load_marcaciones(1)" class="form-control" id="cedula_empleado1" name="cedula_empleado1" placeholder="Cédula">	
+    			</div>
     		</div>
     		
         	<div id="load_marcaciones" ></div>
@@ -215,7 +222,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-    <script src="view/Administracion/js/Marcaciones.js?0.18"></script>
+    <script src="view/Administracion/js/Marcaciones.js?0.19"></script>
 	
 	
   </body>

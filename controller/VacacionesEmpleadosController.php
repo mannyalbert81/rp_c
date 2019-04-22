@@ -1,8 +1,7 @@
 <?php
-class PermisosEmpleadosController extends ControladorBase{
+class VacacionesEmpleadosController extends ControladorBase{
     public function index(){
         session_start();
-        $causas = new CausasPermisosModel();
         $estado = new EstadoModel();
         $id_rol = $_SESSION['id_rol'];
         
@@ -13,14 +12,9 @@ class PermisosEmpleadosController extends ControladorBase{
         
         
         
-        $tablacau ="public.causas_permisos INNER JOIN public.estado
-                    ON causas_permisos.id_estado = estado.id_estado";
-        $wherecau = "estado.nombre_estado='ACTIVO'";
-        $idcau = "causas_permisos.id_causa";
-        $resultcau = $causas->getCondiciones("*", $tablacau, $wherecau, $idcau);
+        
       
-        $this->view_Administracion("PermisosEmpleados",array(
-            "resultcau"=>$resultcau,
+        $this->view_Administracion("VacacionesEmpleados",array(
             "resultes" => $resultes
         ));
     }
@@ -63,8 +57,8 @@ class PermisosEmpleadosController extends ControladorBase{
     public function AgregarSolicitud()
     {
         session_start();
-        $funcion= "ins_solicitud_empleado";
-        $permisos_empleados = new PermisosEmpleadosModel();
+        $funcion= "ins_solicitud_vacacion_empleado";
+        $vacaciones_empleados = new SolicitudVacacionesEmpleadosModel();
         $empleado= new EmpleadosModel();
         $tablas="public.empleados";
         $cedula = $_SESSION['cedula_usuarios'];
@@ -72,32 +66,18 @@ class PermisosEmpleadosController extends ControladorBase{
         $id = "empleados.id_empleados";
         $result = $empleado->getCondiciones("*", $tablas, $where, $id);
         $id_empleado = $result[0]->id_empleados;
-        $fecha_solicitud = $_POST['fecha_solicitud'];
-        $hora_desde= $_POST['hora_desde'];
-        $hora_hasta= $_POST['hora_hasta'];
-        $id_causa= $_POST['id_causa'];
-        $descripcion_causa= $_POST['descripcion_causa'];
-        if (!(empty($descripcion_causa)))
-        {
+        $fecha_desde= $_POST['fecha_desde'];
+        $fecha_hasta= $_POST['fecha_hasta'];
+        
+        
         $parametros = "'$id_empleado',
-                     '$fecha_solicitud',
-                     '$hora_desde',
-                     '$hora_hasta',
-                     '$id_causa',
-                     '$descripcion_causa'";
-        }
-        else
-        {
-            $parametros = "'$id_empleado',
-                     '$fecha_solicitud',
-                     '$hora_desde',
-                     '$hora_hasta',
-                     '$id_causa',
-                     NULL";
-        }
-        $permisos_empleados->setFuncion($funcion);
-        $permisos_empleados->setParametros($parametros);
-        $resultado=$permisos_empleados->Insert();
+                     '$fecha_desde',
+                     '$fecha_hasta'";
+       
+        
+        $vacaciones_empleados->setFuncion($funcion);
+        $vacaciones_empleados->setParametros($parametros);
+        $resultado=$vacaciones_empleados->Insert();
         echo 1;
     }
     
@@ -170,20 +150,15 @@ class PermisosEmpleadosController extends ControladorBase{
                       cargos_empleados.nombre_cargo,
                       departamentos.nombre_departamento,
                         departamentos.id_departamento,
-                        permisos_empleados.id_permisos_empleados,
-                      permisos_empleados.fecha_solicitud,
-                        permisos_empleados.hora_desde,
-                        permisos_empleados.hora_hasta,
-                        causas_permisos.nombre_causa,
-                        permisos_empleados.descripcion_causa,
+                        solicitud_vacaciones_empleados.id_solicitud,
+                        solicitud_vacaciones_empleados.fecha_desde,
+                        solicitud_vacaciones_empleados.fecha_hasta,
                         estado.nombre_estado";
         
-        $tablas = "public.permisos_empleados INNER JOIN public.empleados
-                   ON permisos_empleados.id_empleado = empleados.id_empleados
+        $tablas = "public.solicitud_vacaciones_empleados INNER JOIN public.empleados
+                   ON solicitud_vacaciones_empleados.id_empleado = empleados.id_empleados
                    INNER JOIN public.estado
-                   ON permisos_empleados.id_estado = estado.id_estado
-                   INNER JOIN public.causas_permisos
-                   ON permisos_empleados.id_causa = causas_permisos.id_causa
+                   ON solicitud_vacaciones_empleados.id_estado = estado.id_estado
                    INNER JOIN public.departamentos
                    ON departamentos.id_departamento = empleados.id_departamento
                    INNER JOIN public.cargos_empleados
@@ -192,10 +167,10 @@ class PermisosEmpleadosController extends ControladorBase{
         if ($id_estado != "0")
         {   if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
             {
-                $where    = "permisos_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados=".$cedula;
+                $where    = "solicitud_vacaciones_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados=".$cedula;
             }
             else {
-                $where    = "permisos_empleados.id_estado=".$id_estado;
+                $where    = "solicitud_vacaciones_empleados.id_estado=".$id_estado;
             }
             
         }
@@ -211,7 +186,7 @@ class PermisosEmpleadosController extends ControladorBase{
         }
            
         
-        $id       = "permisos_empleados.id_permisos_empleados";
+        $id       = "solicitud_vacaciones_empleados.id_solicitud";
         
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -225,7 +200,7 @@ class PermisosEmpleadosController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND cargos_empleados.nombre_cargo  ILIKE '".$search."%' OR empleados.nombres_empleados ILIKE '".$search."%' OR causas_permisos.nombre_causa ILIKE'".$search."%' OR departamentos.nombre_departamento ILIKE '".$search."%'";
+                $where1=" AND cargos_empleados.nombre_cargo  ILIKE '".$search."%' OR empleados.nombres_empleados ILIKE '".$search."%' OR departamentos.nombre_departamento ILIKE '".$search."%'";
 
                 
                 $where_to=$where.$where1;
@@ -269,11 +244,8 @@ class PermisosEmpleadosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Cargo</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Departamento</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Fecha</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Desde</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Hasta</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Causa</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Descripción</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Estado</th>';
                 
                 if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
@@ -296,34 +268,31 @@ class PermisosEmpleadosController extends ControladorBase{
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
-                    $html.='<td style="font-size: 18px;"><a href="index.php?controller=PermisosEmpleados&action=HojaPermiso&id_permiso='.$res->id_permisos_empleados.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></td>';
+                    $html.='<td style="font-size: 18px;"><a href="index.php?controller=VacacionesEmpleados&action=HojaSolicitud&id_permiso='.$res->id_solicitud.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_cargo.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_departamento.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->fecha_solicitud.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->hora_desde.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->hora_hasta.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_causa.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->descripcion_causa.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->fecha_desde.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->fecha_hasta.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
                     if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
                     {
                         if ($id_rol==$id_jefi && $res->nombre_estado=="EN REVISION" && $id_dpto_jefe == $res->id_departamento)
                         {
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_solicitud.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_solicitud.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                         }
                         
                          else if ($id_rol==$id_rh && $res->nombre_estado=="VISTO BUENO")
                         {
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_solicitud.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_solicitud.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                         }
                         
                         else if ($id_rol==$id_gerente && $res->nombre_estado=="APROBADO")
                         {
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';                            
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_solicitud.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_solicitud.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';                            
                         }
                     }
                     $html.='</tr>';
@@ -425,7 +394,7 @@ class PermisosEmpleadosController extends ControladorBase{
     {
         session_start();
         $id_solicitud=$_POST['id_solicitud'];
-        $permisos = new PermisosEmpleadosModel();
+        $vacaciones = new SolicitudVacacionesEmpleadosModel();
         $estado = new EstadoModel();
         $columnaest = "estado.id_estado";
         $tablaest= "public.estado";
@@ -433,10 +402,10 @@ class PermisosEmpleadosController extends ControladorBase{
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
-        $where = "id_permisos_empleados=".$id_solicitud;
-        $tabla = "permisos_empleados";
+        $where = "id_solicitud=".$id_solicitud;
+        $tabla = "solicitud_vacaciones_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
-        $permisos->UpdateBy($colval, $tabla, $where);
+        $vacaciones->UpdateBy($colval, $tabla, $where);
         
         echo 1;
     }
@@ -445,7 +414,7 @@ class PermisosEmpleadosController extends ControladorBase{
     {
         session_start();
         $id_solicitud=$_POST['id_solicitud'];
-        $permisos = new PermisosEmpleadosModel();
+        $vacaciones = new SolicitudVacacionesEmpleadosModel();
         $estado = new EstadoModel();
         $columnaest = "estado.id_estado";
         $tablaest= "public.estado";
@@ -453,10 +422,10 @@ class PermisosEmpleadosController extends ControladorBase{
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
-        $where = "id_permisos_empleados=".$id_solicitud;
-        $tabla = "permisos_empleados";
+        $where = "id_solicitud=".$id_solicitud;
+        $tabla = "solicitud_vacaciones_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
-        $permisos->UpdateBy($colval, $tabla, $where);
+        $vacaciones->UpdateBy($colval, $tabla, $where);
         
         
         echo 1;
@@ -465,7 +434,7 @@ class PermisosEmpleadosController extends ControladorBase{
     {
         session_start();
         $id_solicitud=$_POST['id_solicitud'];
-        $permisos = new PermisosEmpleadosModel();
+        $vacaciones = new SolicitudVacacionesEmpleadosModel();
         $estado = new EstadoModel();
         $columnaest = "estado.id_estado";
         $tablaest= "public.estado";
@@ -473,10 +442,10 @@ class PermisosEmpleadosController extends ControladorBase{
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
-        $where = "id_permisos_empleados=".$id_solicitud;
-        $tabla = "permisos_empleados";
+        $where = "id_solicitud=".$id_solicitud;
+        $tabla = "solicitud_vacaciones_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
-        $permisos->UpdateBy($colval, $tabla, $where);
+        $vacaciones->UpdateBy($colval, $tabla, $where);
      
      echo 1;
     }
@@ -485,7 +454,7 @@ class PermisosEmpleadosController extends ControladorBase{
     {
         session_start();
         $id_solicitud=$_POST['id_solicitud'];
-        $permisos = new PermisosEmpleadosModel();
+        $vacaciones = new SolicitudVacacionesEmpleadosModel();
         $estado = new EstadoModel();
         $columnaest = "estado.id_estado";
         $tablaest= "public.estado";
@@ -493,15 +462,15 @@ class PermisosEmpleadosController extends ControladorBase{
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
-        $where = "id_permisos_empleados=".$id_solicitud;
-        $tabla = "permisos_empleados";
+        $where = "id_solicitud=".$id_solicitud;
+        $tabla = "solicitud_vacaciones_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
-        $permisos->UpdateBy($colval, $tabla, $where);
+        $vacaciones->UpdateBy($colval, $tabla, $where);
         
         echo 1;
     }
     
-    public function HojaPermiso()
+    public function HojaSolicitud()
     {
         session_start();
         
@@ -515,43 +484,34 @@ class PermisosEmpleadosController extends ControladorBase{
         $columnas = " empleados.nombres_empleados,
                       cargos_empleados.nombre_cargo,
                       departamentos.nombre_departamento,
-                      permisos_empleados.fecha_solicitud,
-                        permisos_empleados.hora_desde,
-                        permisos_empleados.hora_hasta,
-                        causas_permisos.nombre_causa,
-                        permisos_empleados.descripcion_causa";
+                        solicitud_vacaciones_empleados.fecha_desde,
+                        solicitud_vacaciones_empleados.fecha_hasta";
         
-        $tablas = "public.permisos_empleados INNER JOIN public.empleados
-                   ON permisos_empleados.id_empleado = empleados.id_empleados
+        $tablas = "public.solicitud_vacaciones_empleados INNER JOIN public.empleados
+                   ON solicitud_vacaciones_empleados.id_empleado = empleados.id_empleados
                    INNER JOIN public.estado
-                   ON permisos_empleados.id_estado = estado.id_estado
-                   INNER JOIN public.causas_permisos
-                   ON permisos_empleados.id_causa = causas_permisos.id_causa
+                   ON solicitud_vacaciones_empleados.id_estado = estado.id_estado
                    INNER JOIN public.departamentos
                    ON departamentos.id_departamento = empleados.id_departamento
                    INNER JOIN public.cargos_empleados
                    ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $where= "permisos_empleados.id_permisos_empleados=".$id_permiso;
-        $id="permisos_empleados.id_permisos_empleados";
+        $where= "solicitud_vacaciones_empleados.id_solicitud=".$id_permiso;
+        $id="solicitud_vacaciones_empleados.id_solicitud";
         
         $rsdatos = $permisos->getCondiciones($columnas, $tablas, $where, $id);
         echo $rsdatos;
         $datos_reporte['NOMBREEMPLEADO']=$rsdatos[0]->nombres_empleados;
         $datos_reporte['CARGOEMPLEADO']=$rsdatos[0]->nombre_cargo;
         $datos_reporte['DPTOEMPLEADO']=$rsdatos[0]->nombre_departamento;
-        $fechaelem = explode("-", $rsdatos[0]->fecha_solicitud);
+        $fechaelem = explode("-", $rsdatos[0]->fecha_desde);
         $ind = intval($fechaelem[1])-1;
-        $datos_reporte['FECHASOLICITUD']=$fechaelem[2]." de ".$meses[$ind]." de ".$fechaelem[0];
-        $datos_reporte['HORADESDE']=$rsdatos[0]->hora_desde;
-        $datos_reporte['HORAHASTA']=$rsdatos[0]->hora_hasta;
-        $datos_reporte['CAUSAPERMISO']=$rsdatos[0]->nombre_causa;
-        if (!(empty($rsdatos[0]->descripcion_causa)))
-        {
-            $datos_reporte['DESCRIPCION']="Motivo: ".$rsdatos[0]->descripcion_causa;
-        }
-        else $datos_reporte['DESCRIPCION']="";
+        $datos_reporte['FECHADESDE']=$fechaelem[2]." de ".$meses[$ind]." de ".$fechaelem[0];
+        $fechaelem = explode("-", $rsdatos[0]->fecha_hasta);
+        $ind = intval($fechaelem[1])-1;
+        $datos_reporte['FECHAHASTA']=$fechaelem[2]." de ".$meses[$ind]." de ".$fechaelem[0];
         
-        $this->verReporte("HojaPermiso", array('datos_reporte'=>$datos_reporte));
+                
+        $this->verReporte("SolicitudPermiso", array('datos_reporte'=>$datos_reporte));
         
         
             

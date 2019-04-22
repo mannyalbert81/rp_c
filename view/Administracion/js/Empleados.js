@@ -170,8 +170,15 @@ var dpto = $("#dpto_empleados").val();
 var idgrup = $("#turno_empleados").val();
 var estado = $("#estado_empleados_reg").val();
 var idofic = $("#oficina_empleados").val();
+var idmetod = $("#pago_empleados_reg").val();
 var nombres = nombre+" "+apellido;
 
+if(idmetod=="")
+	{
+	$("#mensaje_pago_empleados").text("Seleccione forma");
+	$("#mensaje_pago_empleados").fadeIn("slow");
+	$("#mensaje_pago_empleados").fadeOut("slow");
+	}
 if(idofic=="")
 	{
 	$("#mensaje_oficina_empleados").text("Seleccione oficina");
@@ -226,7 +233,7 @@ if (ci== "" || ci.includes("_"))
 	$("#mensaje_cedula_usuarios").fadeOut("slow");
 }
 
-if (ci!="" && cargo!="" && dpto!="" && nombre!="" && apellido!="" && idgrup!="" && estado!="" && !ci.includes("_") && idofic!="")
+if (ci!="" && cargo!="" && dpto!="" && nombre!="" && apellido!="" && idgrup!="" && estado!="" && !ci.includes("_") && idofic!="" && idmetod!="")
 	{
 	$.ajax({
 	    url: 'index.php?controller=Empleados&action=AgregarEmpleado',
@@ -238,7 +245,8 @@ if (ci!="" && cargo!="" && dpto!="" && nombre!="" && apellido!="" && idgrup!="" 
 	    	   nombre_empleado: nombres,
 	    	   id_grupo:idgrup,
 	    	   estado:estado,
-	    	   id_oficina:idofic
+	    	   id_oficina:idofic,
+	    	   id_metodo:idmetod
 	    },
 	})
 	.done(function(x) {
@@ -251,6 +259,7 @@ if (ci!="" && cargo!="" && dpto!="" && nombre!="" && apellido!="" && idgrup!="" 
 		$("#turno_empleados").val("");
 		$('#estado_empleados_reg').val("");
 		$("#oficina_empleados").val("");
+		$("#pago_empleados_reg").val("");
 		if (x==1)
 			{
 			swal({
@@ -297,11 +306,12 @@ function LimpiarCampos()
 	$("#dpto_empleados").val("");
 	$("#estado_empleados_reg").val("");
 	$("#oficina_empleados").val("");
+    $("#pago_empleados_reg").val("");
 	SelecGrupo("");
 	SelecCargo("");
 }
 
-function EditarEmpleado(cedula, nombres, cargo, dpto, idgrupo, idestado, idofic)
+function EditarEmpleado(cedula, nombres, cargo, dpto, idgrupo, idestado, idofic, idmetod)
 {
 var res = nombres.split(" ")
 var nombre = res[0]+" "+res[1];
@@ -312,6 +322,7 @@ $("#apellido_empleados").val(apellido);
 $("#dpto_empleados").val(dpto);
 $("#estado_empleados_reg").val(idestado);
 $("#oficina_empleados").val(idofic);
+$("#pago_empleados_reg").val(idmetod);
 SelecGrupo(idgrupo);
 SelecCargo(cargo);
 $('html, body').animate({ scrollTop: 0 }, 'fast');

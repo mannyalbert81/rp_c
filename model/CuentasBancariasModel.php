@@ -1,5 +1,5 @@
 <?php
-class ConsecutivosModel extends ModeloBase{
+class CuentasBancariasModel extends ModeloBase{
 	private $table;
 	private $where;
 	private $funcion;
@@ -36,7 +36,7 @@ class ConsecutivosModel extends ModeloBase{
 
 
 	public function __construct(){
-		$this->table="consecutivos";
+		$this->table="cuentas_bancarias_empleados";
 	
 		parent::__construct($this->table);
 	}
@@ -70,15 +70,6 @@ class ConsecutivosModel extends ModeloBase{
     	return  $resultado;
     }
     
-    public function llamafuncion(){
-        
-        $query = "SELECT ".$this->funcion."(".$this->parametros.")";
-        $resultado = null;
-        
-        $resultado=$this->llamarconsulta($query);
-        
-        return  $resultado;
-    }
     
 }
 ?>

@@ -323,6 +323,50 @@ class ProveedoresController extends ControladorBase{
 	}
 	
 	
+	/***
+	 * dc 2019-04-18
+	 * title: buscaProveedorByCedula
+	 * mod: tesoreria
+	 * return: json
+	 */
+	public function buscaProveedorByCedula(){
+	    
+	    $proveedores = new ProveedoresModel();
+	    
+	    if(isset($_GET['term'])){
+	        
+	        $cedula_proveedores = $_GET['term'];
+	        
+	        $rsProveedores=$proveedores->getBy("identificacion_proveedores ILIKE '$cedula_proveedores%'");
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($rsProveedores) && count($rsProveedores) > 0 ){	            
+	                
+	            foreach ($rsProveedores as $res){
+                    
+                    $_cls_proveedores = new stdClass;
+                    $_cls_proveedores->id = $res->id_proveedores;
+                    $_cls_proveedores->value = $res->identificacion_proveedores;
+                    $_cls_proveedores->label = $res->identificacion_proveedores.' - '.$res->nombre_proveedores;
+                    $_cls_proveedores->nombre = $res->nombre_proveedores;
+                    $_cls_proveedores->email = $res->email_proveedores;
+                    
+                    $respuesta[] = $_cls_proveedores;
+                }
+	                
+	                echo json_encode($respuesta);
+	            
+	        }else{
+	            echo '[{"id":0,"value":"sin datos"}]';
+	        }
+	        
+	    }
+	        
+	    
+	}
+	
+	
 	
 }
 ?>

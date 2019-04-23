@@ -84,7 +84,7 @@
         
         <div class="box-body">
         
-        <form id="frm_cuentas_pagar" action="<?php echo $helper->url("ActivosFijos","index1"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+        <form id="frm_cuentas_pagar" action="<?php echo $helper->url("CuentasPagar","PagosManualesIndex"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
         	
         	<div class="row">
     		  
@@ -278,7 +278,7 @@
 <?php include("view/modulos/links_js.php"); ?>
 <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript" src="view/tesoreria/js/in_pago_manual.js?0.4"></script>
+<script type="text/javascript" src="view/tesoreria/js/in_pago_manual.js?0.5"></script>
 	
     <script type="text/javascript" >   
     

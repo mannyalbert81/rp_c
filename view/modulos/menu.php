@@ -324,7 +324,7 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
                 <li style="<?php echo getcontrolador("Bancos",$controladores) ?>"><a href="index.php?controller=Bancos&action=index"><i class="fa fa-circle-o"></i> Bancos </a></li>
-                <li style="<?php echo getcontrolador("FormaPago",$controladores) ?>"><a href="index.php?controller=Bancos&action=index"><i class="fa fa-circle-o"></i> Forma Pago </a></li>
+                <li style="<?php echo getcontrolador("FormasPago",$controladores) ?>"><a href="index.php?controller=FormasPago&action=index"><i class="fa fa-circle-o"></i> Formas Pago </a></li>
         	    
     		  </ul>
             </li>
@@ -338,7 +338,7 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=EntradaPagosIndex"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
+                <li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=PagosManualesIndex"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
     			
              </ul>
             </li>

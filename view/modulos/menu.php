@@ -337,7 +337,7 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=EntradaPagosIndex"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
+                <li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=PagosManualesIndex"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
     			
              </ul>
             </li>

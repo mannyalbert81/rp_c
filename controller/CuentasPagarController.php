@@ -9,82 +9,59 @@ class CuentasPagarController extends ControladorBase{
 
 
 	public function index(){
-	
-	    //Creamos el objeto usuario
-	    $estados=new EstadoModel();
-	    //Conseguimos todos los usuarios
-	    $resultEdit = "";
 	    
 	    session_start();
 	    
+	    $CxPagar = new CuentasPagarModel();  
 	    
-	    if (isset(  $_SESSION['nombre_usuarios']) )
-	    {
-	        
-	        $nombre_controladores = "Estados";
-	        $id_rol= $_SESSION['id_rol'];
-	        $resultPer = $estados->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	        
-	        if (!empty($resultPer))
-	        {
-	            
-	            
-	            $this->view_tesoreria("EntradaTransaccion",array(
-	                "resultEdit" =>$resultEdit
-	                
-	            ));
-	            
-	            
-	            
-	        }
-	        else
-	        {
-	            $this->view_Administracion("Error",array(
-	                "resultado"=>"No tiene Permisos de Acceso a Grupos"
-	                
-	            ));
-	            
-	            exit();
-	        }
-	        
-	    }
-	    else{
-	        
-	        $this->redirect("Usuarios","sesion_caducada");
-	        
-	    }
-	
-	}
-	
-	public function EntradaPagosIndex(){
-	    
-	    $estados=new EstadoModel();	
-	    
-	    session_start();
-	    
-	    if (!isset(  $_SESSION['nombre_usuarios']) ){
+	    if(empty($_SESSION)){
 	        
 	        $this->redirect("Usuarios","sesion_caducada");
 	        return;
 	    }
+	    
+	    $nombre_controladores = "Estados";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $CxPagar->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (empty($resultPer)){
 	        
-        $nombre_controladores = "EntradaPagosManuales";
-        $id_rol= $_SESSION['id_rol'];
-        $resultPer = $estados->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-        
-        if (empty($resultPer)){
-            
-            $this->view_Administracion("Bienvenida",array());           
-            return;
-           
-        }
-        
-        $this->view_tesoreria("EntradaPagosManuales",array(
-            "resultado"=>"No tiene Permisos de Acceso a Grupos"
-            
-        ));
-            
-        
+	        $this->view("Error",array(
+	            "resultado"=>"No tiene Permisos de Acceso a Pagos Manuales Cuentas x Pagar"	            
+	        ));
+	        exit();
+	    }
+	    
+	    $this->view_tesoreria("EntradaTransaccion",array());
+	    	    
+	
+	}
+	
+	public function PagosManualesIndex(){
+	    
+	    session_start();
+	    
+	    $CxPagar = new CuentasPagarModel();
+	    
+	    if(empty($_SESSION)){
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        return;
+	    }
+	    
+	    $nombre_controladores = "EntradaPagosManuales";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $CxPagar->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (empty($resultPer)){
+	        
+	        $this->view("Error",array(
+	            "resultado"=>"No tiene Permisos de Acceso a Pagos Manuales Cuentas x Pagar"
+	        ));
+	        exit();
+	    }
+	    
+	    $this->view_tesoreria("EntradaPagosManuales",array());        
 	    
 	}
 	
@@ -138,42 +115,7 @@ class CuentasPagarController extends ControladorBase{
 		
 	}
 	
-	public function borrarId()
-	{
-	    
-	    session_start();
-	    $grupos=new GruposModel();
-	    $nombre_controladores = "Grupos";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if (!empty($resultPer))
-	    {
-	        if(isset($_GET["id_grupos"]))
-	        {
-	            $id_grupos=(int)$_GET["id_grupos"];
-	            
-	            
-	            
-	            $grupos->deleteBy(" id_grupos",$id_grupos);
-	            
-	        }
-	        
-	        $this->redirect("Grupos", "index");
-	        
-	        
-	    }
-	    else
-	    {
-	        $this->view_Inventario("Error",array(
-	            "resultado"=>"No tiene Permisos de Borrar Grupos"
-	            
-	        ));
-	    }
-	    
-	}
 	
-
 
 	
 	
@@ -238,6 +180,28 @@ class CuentasPagarController extends ControladorBase{
                 WHERE id_entidades = 1 AND nombre_consecutivos='CxP'";
 	    
 	    $resulset = $consecutivos->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
+	
+	/**
+	 * mod: tesoreria
+	 * title: cargar tablas de BD
+	 * ajax: si
+	 * dc:2019-04-22
+	 */
+	public function cargaMoneda(){
+	    
+	    $estados = null;
+	    $estados = new EstadoModel();
+	    
+	    $query = " SELECT id_moneda,nombre_moneda,signo_moneda FROM tes_moneda ORDER BY creado";
+	    
+	    $resulset = $estados->enviaquery($query);
 	    
 	    if(!empty($resulset) && count($resulset)>0){
 	        

@@ -1,5 +1,5 @@
 <?php
-class HorasExtrasEmpleadosController extends ControladorBase{
+class AvancesEmpleadosController extends ControladorBase{
     public function index(){
         session_start();
         $estado = new EstadoModel();
@@ -14,7 +14,7 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         
         
       
-        $this->view_Administracion("HorasExtrasEmpleados",array(
+        $this->view_Administracion("AvancesEmpleados",array(
             "resultes" => $resultes
         ));
     }
@@ -57,8 +57,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
     public function AgregarSolicitud()
     {
         session_start();
-        $funcion= "ins_solicitud_hora_extra_empleado";
-        $horas_extras = new SolicitudHorasExtraEmpleadosModel();
+        $funcion= "ins_solicitud_avance_empleado";
+        $avance = new AnticipoSueldoEmpleadosModel();
         $empleado= new EmpleadosModel();
         $tablas="public.empleados";
         $cedula = $_SESSION['cedula_usuarios'];
@@ -66,18 +66,20 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         $id = "empleados.id_empleados";
         $result = $empleado->getCondiciones("*", $tablas, $where, $id);
         $id_empleado = $result[0]->id_empleados;
-        $fecha_solicitud= $_POST['fecha_solicitud'];
-        $hora_solicitud= $_POST['hora_solicitud'];
+        $fecha_anticipo= $_POST['fecha_anticipo'];
+        $monto_anticipo= $_POST['monto_anticipo'];
+        $tiempo_diferido= $_POST['tiempo_diferido'];
         
         
         $parametros = "'$id_empleado',
-                     '$fecha_solicitud',
-                     '$hora_solicitud'";
+                     '$fecha_anticipo',
+                     '$monto_anticipo',
+                     '$tiempo_diferido'";
        
         
-        $horas_extras->setFuncion($funcion);
-        $horas_extras->setParametros($parametros);
-        $resultado=$horas_extras->Insert();
+        $avance->setFuncion($funcion);
+        $avance->setParametros($parametros);
+        $resultado=$avance->Insert();
         echo 1;
     }
     
@@ -150,15 +152,16 @@ class HorasExtrasEmpleadosController extends ControladorBase{
                       cargos_empleados.nombre_cargo,
                       departamentos.nombre_departamento,
                         departamentos.id_departamento,
-                        solicitud_horas_extras_empleados.id_solicitud,
-                        solicitud_horas_extras_empleados.fecha_solicitud,
-                        solicitud_horas_extras_empleados.hora_solicitud,
+                        anticipo_sueldo_empleados.id_anticipo,
+                        anticipo_sueldo_empleados.fecha_anticipo,
+                        anticipo_sueldo_empleados.monto_anticipo,
+                        anticipo_sueldo_empleados.tiempo_diferido,
                         estado.nombre_estado";
         
-        $tablas = "public.solicitud_horas_extras_empleados INNER JOIN public.empleados
-                   ON solicitud_horas_extras_empleados.id_empleado = empleados.id_empleados
+        $tablas = "public.anticipo_sueldo_empleados INNER JOIN public.empleados
+                   ON anticipo_sueldo_empleados.id_empleado = empleados.id_empleados
                    INNER JOIN public.estado
-                   ON solicitud_horas_extras_empleados.id_estado = estado.id_estado
+                   ON anticipo_sueldo_empleados.id_estado = estado.id_estado
                    INNER JOIN public.departamentos
                    ON departamentos.id_departamento = empleados.id_departamento
                    INNER JOIN public.cargos_empleados
@@ -167,10 +170,10 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         if ($id_estado != "0")
         {   if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
             {
-                $where    = "solicitud_horas_extras_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados=".$cedula;
+                $where    = "anticipo_sueldo_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados=".$cedula;
             }
             else {
-                $where    = "solicitud_horas_extras_empleados.id_estado=".$id_estado;
+                $where    = "anticipo_sueldo_empleados.id_estado=".$id_estado;
             }
             
         }
@@ -186,7 +189,9 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         }
            
         
-        $id       = "solicitud_horas_extras_empleados.id_solicitud";
+        $id       = "anticipo_sueldo_empleados.id_anticipo
+
+";
         
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -245,7 +250,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 15px;">Cargo</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Departamento</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Fecha</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Hora Salida</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Monto</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Diferido</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Estado</th>';
                 
                 if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
@@ -268,31 +274,32 @@ class HorasExtrasEmpleadosController extends ControladorBase{
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
-                    $html.='<td style="font-size: 18px;"><a href="index.php?controller=HorasExtrasEmpleados&action=HojaSolicitud&id_permiso='.$res->id_solicitud.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></td>';
+                    $html.='<td style="font-size: 18px;"><a href="index.php?controller=AvancesEmpleados&action=HojaSolicitud&id_permiso='.$res->id_anticipo.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_cargo.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_departamento.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->fecha_solicitud.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->hora_solicitud.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->fecha_anticipo.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->monto_anticipo.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->tiempo_diferido.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
                     if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
                     {
                         if ($id_rol==$id_jefi && $res->nombre_estado=="EN REVISION" && $id_dpto_jefe == $res->id_departamento)
                         {
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_solicitud.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_solicitud.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_anticipo.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_anticipo.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                         }
                         
                          else if ($id_rol==$id_rh && $res->nombre_estado=="VISTO BUENO")
                         {
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_solicitud.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_solicitud.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_anticipo.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_anticipo.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                         }
                         
                         else if ($id_rol==$id_gerente && $res->nombre_estado=="APROBADO")
                         {
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_solicitud.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_solicitud.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';                            
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_anticipo.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_anticipo.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';                            
                         }
                     }
                     $html.='</tr>';
@@ -402,8 +409,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
-        $where = "id_solicitud=".$id_solicitud;
-        $tabla = "solicitud_horas_extras_empleados";
+        $where = "id_anticipo=".$id_solicitud;
+        $tabla = "anticipo_sueldo_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
         $horas_extras->UpdateBy($colval, $tabla, $where);
         
@@ -422,8 +429,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
-        $where = "id_solicitud=".$id_solicitud;
-        $tabla = "solicitud_horas_extras_empleados";
+        $where = "id_anticipo=".$id_solicitud;
+        $tabla = "anticipo_sueldo_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
         $horas_extras->UpdateBy($colval, $tabla, $where);
         
@@ -442,8 +449,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
-        $where = "id_solicitud=".$id_solicitud;
-        $tabla = "solicitud_horas_extras_empleados";
+        $where = "id_anticipo=".$id_solicitud;
+        $tabla = "anticipo_sueldo_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
         $horas_extras->UpdateBy($colval, $tabla, $where);
      

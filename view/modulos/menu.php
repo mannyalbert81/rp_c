@@ -299,6 +299,7 @@ $controladores=$_SESSION['controladores'];
               <ul class="treeview-menu">
               
               	<li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=ActivosFijos&action=VerDepreciacion"><i class="fa fa-circle-o"></i>Depreciacion Activos</a></li>
+                <li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=ActivosFijos&action=VerResumen"><i class="fa fa-circle-o"></i>Resúmen de Activos</a></li>
               
               </ul>
            </li>

@@ -46,7 +46,7 @@ $("#frm_bancos").on("submit",function(event){
 		console.log(err);
 		
 	}).always(function(){
-		
+		$("#id_bancos").val(0);
 		document.getElementById("frm_bancos").reset();	
 		consultaBancos();
 	})

@@ -63,14 +63,14 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Bancos</li>
+        <li class="active">Tipo Documento</li>
       </ol>
     </section>   
 
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Registrar Bancos</h3>
+          <h3 class="box-title">Registrar Tipo Documento</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -81,7 +81,7 @@
                   
   		<div class="box-body">
 
-			<form id="frm_bancos" action="<?php echo $helper->url("Bancos","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+			<form id="frm_tipo_documento" action="<?php echo $helper->url("TipoDocumento","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
              
 							    
 							    
@@ -89,23 +89,22 @@
         		    <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
             		    					  
-                          <label for="nombre_bancos" class="control-label">Nombre Bancos:</label>
-                          <input  type="text" class="form-control" id="nombre_bancos" name="nombre_bancos" value=""  placeholder="Nombre Bancos" required/>
-                          <input type="hidden" name="id_bancos" id="id_bancos" value="0" />
-                          <div id="mensaje_nombre_bancos" class="errores"></div>
+                          <label for="abrev_tipo_documento" class="control-label">Abreviacion Tipo Documento:</label>
+                          <input  type="text" class="form-control" id="abrev_tipo_documento" name="abrev_tipo_documento" value=""  placeholder="Abreviacion" required/>
+                          <input type="hidden" name="id_tipo_documento" id="id_tipo_documento" value="0" />
+                          <div id="mensaje_abrev_tipo_documento" class="errores"></div>
                           <div id="divLoaderPage" ></div>                     	
                                               
                         </div>
             		  </div>
             		  
-            		  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		 <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
             		    					  
-                          <label for="id_estado" class="control-label">Estado Bancos:</label>
-                          <select  class="form-control" id="id_estado" name="id_estado" required>
-                          	<option value="0">--Seleccione--</option>
-                          </select>                         
-                          <div id="mensaje_id_estado" class="errores"></div>
+                          <label for="nombre_tipo_documento" class="control-label">Nombre Tipo Documento:</label>
+                          <input  type="text" class="form-control" id="nombre_tipo_documento" name="nombre_tipo_documento" value=""  placeholder="Nombre" required/>
+                          <div id="mensaje_nombre_tipo_documento" class="errores"></div>
+                                              
                         </div>
             		  </div>
                         		 
@@ -116,7 +115,7 @@
     			    <div class="col-xs-12 col-md-4 col-lg-4 " style="text-align: center; ">
         	   		    <div class="form-group">
     	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
-    	                  <a href="<?php echo $helper->url("Bancos","Index"); ?>" class="btn btn-danger">CANCELAR</a>
+    	                  <a href="<?php echo $helper->url("TipoDocumento","Index"); ?>" class="btn btn-danger">CANCELAR</a>
 	                    </div>
 	                    
         		    </div>        		    
@@ -131,13 +130,13 @@
      <section class="content">
       	<div class="box box-primary">
       		<div class="box-header with-border">
-      			<h3 class="box-title">Listado de Bancos</h3>      			
+      			<h3 class="box-title">Listado Tipo Documento</h3>      			
             </div> 
             <div class="box-body">
     			<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaBancos(1)" placeholder="Buscar.."/>
+					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaTipoDocumento(1)" placeholder="Buscar.."/>
     			</div>            	
-            	<div id="bancos_registrados" ></div>
+            	<div id="tipoDocumento_registrados" ></div>
             </div> 	
       	</div>
       </section> 
@@ -155,7 +154,7 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/tesoreria/js/Bancos.js?0.5"></script> 
+   <script src="view/tesoreria/js/TipoDocumento.js?0.1"></script> 
        
        
 

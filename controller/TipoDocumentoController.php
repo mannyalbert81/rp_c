@@ -10,7 +10,7 @@ class TipoDocumentoController extends ControladorBase{
 
 	public function index(){
 	
-		$bancos = new BancosModel();
+		$tipoDocumento = new TipoDocumentoModel();
 				
 		session_start();
 		
@@ -20,9 +20,9 @@ class TipoDocumentoController extends ControladorBase{
 		    return;
 		}
 		
-		$nombre_controladores = "Bancos";
+		$nombre_controladores = "TipoDocumento";
 		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $bancos->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+		$resultPer = $tipoDocumento->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
 		if (empty($resultPer)){
 		    
@@ -33,45 +33,40 @@ class TipoDocumentoController extends ControladorBase{
 		    exit();
 		}		    
 			
-		$rsBancos = $bancos->getBy(" 1 = 1 ");
-		
 				
-		$this->view_tesoreria("TipoDocumento",array(
-		    "resultSet"=>$rsBancos
-	
-		));
+		$this->view_tesoreria("TipoDocumento",array());
 			
 	
 	}
 	
 	
-	public function InsertaBancos(){
+	public function InsertaTipoDocumento(){
 			
 		session_start();
 		
-		$bancos = new BancosModel();
+		$tipoDocumento = new TipoDocumentoModel();
 		
-		$nombre_controladores = "Bancos";
+		$nombre_controladores = "TipoDocumento";
 		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $bancos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+		$resultPer = $tipoDocumento->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
 		if (!empty($resultPer)){	
 		    
-		    $_nombre_bancos = (isset($_POST["nombre_bancos"])) ? $_POST["nombre_bancos"] : "";
-		    $_id_estado = (isset($_POST["id_estado"])) ? $_POST["id_estado"] : 0 ;
-		    $_id_bancos = (isset($_POST["id_bancos"])) ? $_POST["id_bancos"] : 0 ;
+		    $_abrev_tipo_documento = (isset($_POST["abrev_tipo_documento"])) ? $_POST["abrev_tipo_documento"] : "";
+		    $_nombre_tipo_documento = (isset($_POST["nombre_tipo_documento"])) ? $_POST["nombre_tipo_documento"] : "";
+		    $_id_tipo_documento = (isset($_POST["id_tipo_documento"])) ? $_POST["id_tipo_documento"] : 0 ;
 		    
-		    /*si es insertado enviar en cero el id_banco a la funcion*/							
-			$funcion = "ins_tes_bancos";
+		    /*si es insertado enviar en cero el id_tipo_documento a la funcion*/							
+			$funcion = "tes_ins_tipo_documento";
 			$respuesta = 0 ;
 			$mensaje = ""; 
 			
-			if($_id_bancos == 0){
+			if($_id_tipo_documento == 0){
 			    
-			    $parametros = " '$_nombre_bancos','$_id_estado', '$_id_bancos'";
-			    $bancos->setFuncion($funcion);
-			    $bancos->setParametros($parametros);
-			    $resultado = $bancos->llamafuncion();
+			    $parametros = " '$_abrev_tipo_documento','$_nombre_tipo_documento', '$_id_tipo_documento'";
+			    $tipoDocumento->setFuncion($funcion);
+			    $tipoDocumento->setParametros($parametros);
+			    $resultado = $tipoDocumento->llamafuncion();
 			    
 			    if(!empty($resultado) && count($resultado) > 0 ){
 			        
@@ -80,15 +75,15 @@ class TipoDocumentoController extends ControladorBase{
 			            $respuesta = $v;
 			        }
 			        
-			        $mensaje = "Banco Ingresado Correctamente";
+			        $mensaje = "Tipo Documento Ingresado Correctamente";
 			        
 			    }
-			}elseif ($_id_bancos > 0){
+			}elseif ($_id_tipo_documento > 0){
 			    
-			    $parametros = " '$_nombre_bancos','$_id_estado', '$_id_bancos'";
-			    $bancos->setFuncion($funcion);
-			    $bancos->setParametros($parametros);
-			    $resultado = $bancos->llamafuncion();
+			    $parametros = " '$_abrev_tipo_documento','$_nombre_tipo_documento', '$_id_tipo_documento'";
+			    $tipoDocumento->setFuncion($funcion);
+			    $tipoDocumento->setParametros($parametros);
+			    $resultado = $tipoDocumento->llamafuncion();
 			    
 			    if(!empty($resultado) && count($resultado) > 0 ){
 			        
@@ -97,7 +92,7 @@ class TipoDocumentoController extends ControladorBase{
 			            $respuesta = $v;
 			        }
 			        
-			        $mensaje = "Banco Actualizado Correctamente";
+			        $mensaje = "Tipo Documento Actualizado Correctamente";
 			        
 			    }
 			}
@@ -109,16 +104,13 @@ class TipoDocumentoController extends ControladorBase{
 			    exit();
 			}
 			
-			echo "Error al Ingresar Tipo Activo";
+			echo "Error al Ingresar Tipo Documento";
 			exit();
 			
 		}
 		else
 		{
-		    $this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Grupos"
-		
-			));
+		    echo "Permisos denegados para INSERTAR Tipo Documento";
 		
 		
 		}
@@ -193,28 +185,27 @@ class TipoDocumentoController extends ControladorBase{
 	
 	/***
 	 * return: json
-	 * title: editBancos
-	 * fcha: 2019-04-22
+	 * title: editTipoDocumento
+	 * fcha: 2019-04-24
 	 */
-	public function editBancos(){
+	public function editTipoDocumento(){
 	    
 	    session_start();
-	    $bancos = new BancosModel();
-	    $nombre_controladores = "Bancos";
+	    $tipoDocumento = new TipoDocumentoModel();
+	    $nombre_controladores = "TipoDocumento";
 	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $bancos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    $resultPer = $tipoDocumento->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	    	     
 	    if (!empty($resultPer))
 	    {
-	        
-	        
-	        if(isset($_POST["id_bancos"])){
+	        	        
+	        if(isset($_POST["id_tipo_documento"])){
 	            
-	            $id_bancos = (int)$_POST["id_bancos"];
+	            $id_tipo_documento = (int)$_POST["id_tipo_documento"];
 	            
-	            $query = "SELECT * FROM tes_bancos WHERE id_bancos = $id_bancos";
+	            $query = "SELECT * FROM tes_tipo_documento WHERE id_tipo_documento = $id_tipo_documento";
 
-	            $resultado  = $bancos->enviaquery($query);	            
+	            $resultado  = $tipoDocumento->enviaquery($query);	            
 	           
 	            echo json_encode(array('data'=>$resultado));	            
 	            
@@ -224,7 +215,7 @@ class TipoDocumentoController extends ControladorBase{
 	    }
 	    else
 	    {
-	        echo "Usuario no tiene permisos-Editar";
+	        echo "Usuario no tiene Permisos-Editar";
 	    }
 	    
 	}
@@ -232,24 +223,24 @@ class TipoDocumentoController extends ControladorBase{
 	
 	/***
 	 * return: json
-	 * title: delBancos
-	 * fcha: 2019-04-22
+	 * title: delTipoDocumento
+	 * fcha: 2019-04-24
 	 */
-	public function delBancos(){
+	public function delTipoDocumento(){
 	    
 	    session_start();
-	    $bancos = new BancosModel();
-	    $nombre_controladores = "Bancos";
+	    $tipoDocumento = new TipoDocumentoModel();
+	    $nombre_controladores = "TipoDocumento";
 	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $bancos->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    $resultPer = $tipoDocumento->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	    
 	    if (!empty($resultPer)){	        
 	        
-	        if(isset($_POST["id_bancos"])){
+	        if(isset($_POST["id_tipo_documento"])){
 	            
-	            $id_bancos = (int)$_POST["id_bancos"];
+	            $id_tipo_documento = (int)$_POST["id_tipo_documento"];
 	            
-	            $resultado  = $bancos->eliminarBy(" id_bancos ",$id_bancos);
+	            $resultado  = $tipoDocumento->eliminarBy(" id_tipo_documento ",$id_tipo_documento);
 	           
 	            if( $resultado > 0 ){
 	                
@@ -267,7 +258,7 @@ class TipoDocumentoController extends ControladorBase{
 	        
 	    }else{
 	        
-	        echo "Usuario no tiene permisos-Eliminar";
+	        echo "Usuario no tiene Permisos-Eliminar";
 	    }
 	    
 	    
@@ -275,21 +266,21 @@ class TipoDocumentoController extends ControladorBase{
 	}
 	
 	
-	public function consultaBancos(){
+	public function consultaTipoDocumento(){
 	    
 	    session_start();
 	    $id_rol=$_SESSION["id_rol"];
 	    
-	    $bancos = new BancosModel();
+	    $tipoDocumento = new TipoDocumentoModel();
 	    
 	    $where_to="";
-	    $columnas  = " id_bancos, nombre_bancos, nombre_estado ";
+	    $columnas  = " id_tipo_documento, abreviacion_tipo_documento, nombre_tipo_documento ";
 	    
-	    $tablas    = "public.tes_bancos INNER JOIN public.estado ON estado.id_estado = tes_bancos.id_estado";
+	    $tablas    = "public.tes_tipo_documento";
 	    
 	    $where     = " 1 = 1";
 	    
-	    $id        = "tes_bancos.nombre_bancos";
+	    $id        = "tes_tipo_documento.creado";
 	    
 	    
 	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
@@ -302,7 +293,7 @@ class TipoDocumentoController extends ControladorBase{
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND nombre_bancos ILIKE '".$search."%'";
+	            $where1=" AND nombre_tipo_documento ILIKE '".$search."%'";
 	            
 	            $where_to=$where.$where1;
 	            
@@ -313,7 +304,7 @@ class TipoDocumentoController extends ControladorBase{
 	        }
 	        
 	        $html="";
-	        $resultSet=$bancos->getCantidad("*", $tablas, $where_to);
+	        $resultSet = $tipoDocumento->getCantidad("*", $tablas, $where_to);
 	        $cantidadResult=(int)$resultSet[0]->total;
 	        
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
@@ -324,7 +315,7 @@ class TipoDocumentoController extends ControladorBase{
 	        
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	        
-	        $resultSet=$bancos->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $resultSet = $tipoDocumento->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
 	        $total_pages = ceil($cantidadResult/$per_page);	        
 	        
 	        if($cantidadResult > 0)
@@ -336,12 +327,12 @@ class TipoDocumentoController extends ControladorBase{
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:400px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_bancos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tabla_tipo_documento' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
-	            $html.='<th style="text-align: left;  font-size: 15px;">Banco</th>';
-	            $html.='<th style="text-align: left;  font-size: 15px;">Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Abreviacion</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Nombre</th>';
 	            
 	            /*para administracion definir administrador MenuOperaciones Edit - Eliminar*/
 	                
@@ -361,16 +352,16 @@ class TipoDocumentoController extends ControladorBase{
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 14px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 14px;">'.$res->nombre_bancos.'</td>';
-	                $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->abreviacion_tipo_documento.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_documento.'</td>';
 	                
 	               
 	                /*comentario up */
 	                
                     $html.='<td style="font-size: 18px;">
-                            <a onclick="editBanco('.$res->id_bancos.')" href="#" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class="glyphicon glyphicon-edit"></i></a></td>';
+                            <a onclick="editTipoDocumento('.$res->id_tipo_documento.')" href="#" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class="glyphicon glyphicon-edit"></i></a></td>';
                     $html.='<td style="font-size: 18px;">
-                            <a onclick="delBanco('.$res->id_bancos.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                            <a onclick="delTipoDocumento('.$res->id_tipo_documento.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a></td>';
 	                    
 	               
 	                $html.='</tr>';
@@ -382,7 +373,7 @@ class TipoDocumentoController extends ControladorBase{
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"consultaBancos").'';
+	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"consultaTipoDocumento").'';
 	            $html.='</div>';
 	            
 	            

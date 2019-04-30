@@ -36,6 +36,37 @@ class CuentasPagarController extends ControladorBase{
 	    	    
 	
 	}
+	/***
+	 * dc 2019-04-24
+	 * desc: ingresar cuentas por pagar
+	 */
+	public function CuentasPagarIndex(){
+	    
+	    session_start();
+	    
+	    $CxPagar = new CuentasPagarModel();
+	    
+	    if(empty($_SESSION)){
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        return;
+	    }
+	    
+	    $nombre_controladores = "IngresoCuentasPagar";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $CxPagar->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (empty($resultPer)){
+	        
+	        $this->view("Error",array(
+	            "resultado"=>"No tiene Permisos de Acceso a Pagos Manuales Cuentas x Pagar"
+	        ));
+	        exit();
+	    }
+	    
+	    $this->view_tesoreria("EntradaCuentasPagar",array());
+	    
+	}
 	
 	public function PagosManualesIndex(){
 	    
@@ -157,6 +188,30 @@ class CuentasPagarController extends ControladorBase{
                 WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos'";
 	    
 	    $resulset = $estados->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
+	
+	/**
+	 * mod: tesoreria
+	 * title: cargar frecuencia_lote 
+	 * ajax: si
+	 * dc:2019-04-29
+	 */
+	public function cargaFrecuenciaLote(){
+	    
+	    $frecuenciaLote = null;
+	    $frecuenciaLote = new FrecuenciaLoteModel();
+	    
+	    $query = " SELECT id_frecuencia_lote, nombre_frecuencia_lote
+                FROM tes_frecuencia_lote
+                ORDER BY creado";
+	    
+	    $resulset = $frecuenciaLote->enviaquery($query);
 	    
 	    if(!empty($resulset) && count($resulset)>0){
 	        
@@ -488,6 +543,44 @@ class CuentasPagarController extends ControladorBase{
 	    
 	}
 	
+	/***
+	 * dc 2019-04-29
+	 * agregar lote
+	 * return json
+	 * desc agrega un lote y devuelve valor trx
+	 */
+	public function generaLote(){
+	    
+	    session_start();
+	    $lote = new LoteModel();
+	    
+	    //controlador IngresoCuentasPagar	
+        
+        $_id_estado = (isset($_POST['id_estado'])) ? $_POST['id_estado'] : '0';
+        
+        $funcion = "tes_genera_lote";
+        $parametros = "";
+        
+        $lote->setFuncion($funcion);
+        $lote->setParametros($parametros);
+        
+        $resultado = $lote->llamafuncion();
+        
+        $respuesta = -1;
+        
+        if(!empty($resultado) && count($resultado) > 0 ){
+            
+            foreach ($resultado[0] as $k => $v){
+                
+                $respuesta = $v;
+                
+            }
+        }
+        
+        echo json_encode(array('value' => $respuesta));
+	  
+	    
+	}
 	
 }
 ?>

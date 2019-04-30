@@ -1,5 +1,5 @@
 <?php
-class FormaPagoModel extends ModeloBase{
+class LoteModel extends ModeloBase{
 	private $table;
 	private $where;
 	private $funcion;
@@ -36,29 +36,10 @@ class FormaPagoModel extends ModeloBase{
 
 
 	public function __construct(){
-		$this->table="forma_pago";
+		$this->table="tes_lote";
 	
 		parent::__construct($this->table);
 	}
-	
-	
-	
-    public function getLogin(){
-    	
-    	$query="SELECT * FROM usuarios WHERE ".$this->where." ;";
-    	$usuario=$this->ConsultaSql($query);
-    	
-    	$resultado = count($usuario);
-    	if ($resultado > 0)
-    	{
-    		return true;
-    	}
-    	else 
-    	{
-    		return false;
-    	}
-    	
-    }
     
     public function Insert(){
     
@@ -79,6 +60,5 @@ class FormaPagoModel extends ModeloBase{
         
         return  $resultado;
     }
-    
 }
 ?>

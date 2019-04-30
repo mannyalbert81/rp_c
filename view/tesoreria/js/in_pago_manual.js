@@ -4,6 +4,7 @@ $(document).ready(function(){
 	cargaFormasPago();
 	cargaBancos();
 	consultaActivos();
+	cargaMoneda();
 		
 })
 
@@ -71,6 +72,35 @@ function cargaBancos(){
 		var err = xhr.responseText
 		console.log(err)
 		$bancos.empty();
+	})
+}
+
+/***
+ * function to listar Moneda
+ * dc 2019-04-18
+ * @returns
+ */
+function cargaMoneda(){
+	let $moneda = $("#id_moneda");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=CuentasPagar&action=cargaMoneda",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$moneda.empty();
+		
+		$.each(datos.data, function(index, value) {
+			$moneda.append("<option value= " +value.id_moneda +" >" + value.signo_moneda+"-"+value.nombre_moneda  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$moneda.empty();
 	})
 }
 

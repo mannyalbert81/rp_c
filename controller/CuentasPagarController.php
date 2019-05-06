@@ -36,6 +36,37 @@ class CuentasPagarController extends ControladorBase{
 	    	    
 	
 	}
+	/***
+	 * dc 2019-04-24
+	 * desc: ingresar cuentas por pagar
+	 */
+	public function CuentasPagarIndex(){
+	    
+	    session_start();
+	    
+	    $CxPagar = new CuentasPagarModel();
+	    
+	    if(empty($_SESSION)){
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        exit();
+	    }
+	    
+	    $nombre_controladores = "IngresoCuentasPagar";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $CxPagar->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (empty($resultPer)){
+	        
+	        $this->view("Error",array(
+	            "resultado"=>"No tiene Permisos de Acceso a Pagos Manuales Cuentas x Pagar"
+	        ));
+	        exit();
+	    }
+	    
+	    $this->view_tesoreria("EntradaCuentasPagar",array());
+	    
+	}
 	
 	public function PagosManualesIndex(){
 	    
@@ -157,6 +188,30 @@ class CuentasPagarController extends ControladorBase{
                 WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos'";
 	    
 	    $resulset = $estados->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
+	
+	/**
+	 * mod: tesoreria
+	 * title: cargar frecuencia_lote 
+	 * ajax: si
+	 * dc:2019-04-29
+	 */
+	public function cargaFrecuenciaLote(){
+	    
+	    $frecuenciaLote = null;
+	    $frecuenciaLote = new FrecuenciaLoteModel();
+	    
+	    $query = " SELECT id_frecuencia_lote, nombre_frecuencia_lote
+                FROM tes_frecuencia_lote
+                ORDER BY creado";
+	    
+	    $resulset = $frecuenciaLote->enviaquery($query);
 	    
 	    if(!empty($resulset) && count($resulset)>0){
 	        
@@ -486,6 +541,193 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    
 	    
+	}
+	
+	/***
+	 * dc 2019-04-29
+	 * agregar lote
+	 * return json
+	 * desc agrega un lote y devuelve valor trx
+	 */
+	public function generaLote(){
+	    
+	    session_start();
+	    $lote = new LoteModel();
+	    
+	    //controlador IngresoCuentasPagar
+	    
+	    //variables desde fn JS submit frm_genera_lote
+	    //dc 2019-04-30
+	    
+	    $_id_lote =(isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0;
+	    $_nombre_lote =(isset($_POST['nombre_lote'])) ? $_POST['nombre_lote'] : "";
+	    $_descripcion_lote =(isset($_POST['decripcion_lote'])) ? $_POST['decripcion_lote'] : "";
+	    $_id_frecuencia =(isset($_POST['id_frecuencia'])) ? $_POST['id_frecuencia'] : 0;	  
+	    
+	    if( $_id_lote > 0){  echo "lote no generado. "; return;}
+	    
+        $funcion = "tes_genera_lote";
+        $parametros = "'$_nombre_lote','$_descripcion_lote', $_id_frecuencia ";
+        
+        $lote->setFuncion($funcion);
+        $lote->setParametros($parametros);
+        
+        $resultado = $lote->llamafuncion();
+        
+        $respuesta = -1;
+        
+        if(!empty($resultado) && count($resultado) > 0 ){
+            
+            foreach ($resultado[0] as $k => $v){
+                
+                $respuesta = $v;
+                
+            }
+        }
+        
+        if( $respuesta > 0 ){
+            echo json_encode(array('valor' => $respuesta));
+           return;
+        }
+        
+        $pgError = pg_last_error();  
+        
+        echo "lote no generado. ".$pgError;
+	  
+	    
+	}
+	
+	/***
+	 * return:html
+	 * desc: lista de impuestoa
+	 * dc 2019-05-02
+	 */
+	public function listarImpuestos(){
+	    
+	    session_start();
+	    $id_rol=$_SESSION["id_rol"];
+	    
+	    $estados = new EstadoModel();
+	    
+	    $where_to="";
+	    $columnas  = " id_estado, nombre_estado, tabla_estado, DATE(creado) creado";
+	    
+	    $tablas    = "public.estado";
+	    
+	    $where     = " 1 = 1";
+	    
+	    $id        = "estado.tabla_estado";
+	    
+	    
+	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1=" AND ( nombre_estado ILIKE '".$search."%' OR tabla_estado ILIKE '".$search."%' )";
+	            
+	            $where_to=$where.$where1;
+	            
+	        }else{
+	            
+	            $where_to=$where;
+	            
+	        }
+	        
+	        $html="";
+	        $resultSet = $estados->getCantidad("*", $tablas, $where_to);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet=$estados->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        if($cantidadResult > 0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:15px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:400px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_estados' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Nombre Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Tabla </th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Creado</th>';
+	            
+	            if($id_rol==1){
+	                
+	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	                
+	            }
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 14px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->tabla_estado.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->creado.'</td>';
+	                
+	                if($id_rol==1){
+	                    
+	                    $html.='<td style="font-size: 18px;">
+                                <a onclick="editEstado('.$res->id_estado.')" href="#" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class="glyphicon glyphicon-edit"></i></a></td>';
+	                    $html.='<td style="font-size: 18px;">
+                                <a onclick="delEstado('.$res->id_estado.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a></td>';
+	                    
+	                }
+	                $html.='</tr>';
+	            }
+	            
+	            
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"consultaEstados").'';
+	            $html.='</div>';
+	            
+	            
+	            
+	        }else{
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay empleados registrados...</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        
+	        echo $html;
+	        
+	    }
 	}
 	
 	

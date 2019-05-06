@@ -94,7 +94,7 @@ function cargaMoneda(){
 		$moneda.empty();
 		
 		$.each(datos.data, function(index, value) {
-			$moneda.append("<option value= " +value.id_moneda +" >" + value.nombre_moneda+"-"+value.signo_moneda  + "</option>");	
+			$moneda.append("<option value= " +value.id_moneda +" >" + value.signo_moneda+"-"+value.nombre_moneda  + "</option>");	
   		});
 		
 	}).fail(function(xhr,status,error){

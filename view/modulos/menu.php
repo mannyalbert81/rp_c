@@ -95,7 +95,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-            
+            <li style="<?php echo getcontrolador("ReporteNomina",$controladores) ?>"><a href="index.php?controller=ReporteNomina&action=index"><i class="fa fa-circle-o"></i>Reporte Nomina</a></li>
 		  </ul>
         </li>
        </ul>

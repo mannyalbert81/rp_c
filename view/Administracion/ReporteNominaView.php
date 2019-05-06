@@ -62,6 +62,145 @@
   <section class="content">
   	<div class="box box-primary">
   		<div class="box-header with-border">
+  			<h3 class="box-title">Editar Nomina</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                <i class="fa fa-minus"></i></button>
+              </div>
+         </div>
+         <div class="box-body">
+         <div class="row">
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="nombre_empleados" class="control-label">Nombres:</label>
+                    	<input type="text" class="form-control" id="nombre_empleados" name="nombre_empleados" placeholder="Nombres" readonly>
+                        <div id="mensaje_nombre_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="dpto_empleados" class="control-label">Oficina:</label>
+                    	<input type="text" class="form-control" id="oficina_empleados" name="oficina_empleados" placeholder="Oficina" readonly>
+                        <div id="mensaje_dpto_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+          	</div>
+         	<h3 class="box-title">Ingresos</h3>
+          	<div class="row">
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="nombre_empleados" class="control-label">Salario:</label>
+                    	<input type="text" class="form-control" id="salario_empleados" name="salario_empleados" placeholder="Salario" readonly>
+                        <div id="mensaje_salario_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="dpto_empleados" class="control-label">Horas Extra 50%:</label>
+                    	<input type="number" step="0.01"  class="form-control" id="h50_empleados" name="h50_empleados" placeholder="Horas Extra 50%">
+                        <div id="mensaje_dpto_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="cargo_empleados" class="control-label">Horas Extra 100%:</label>
+                           	<input type="number" step="0.01"  class="form-control" id="h100_empleados" name="h100_empleados" placeholder="Horas Extra 100%" >
+                        <div id="mensaje_cargo_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="fecha_permiso" class="control-label">Fondos de reserva:</label>
+                    	<input type="number" step="0.01"  class="form-control" id="fondos" name="fondos" placeholder="Fondos de reserva">
+                        <div id="mensaje_fecha" class="errores"></div>
+                 	</div>
+             	</div>
+          	</div>
+          	<div class="row">          		
+          		<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="fecha_permiso" class="control-label">14to Sueldo:</label>
+                    	<input type="number" step="0.01"  class="form-control" id="dec_cuarto_sueldo" name="dec_cuarto_sueldo" placeholder="14to Sueldo">
+                        <div id="mensaje_hora_salida" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="fecha_permiso" class="control-label">13ro Sueldo:</label>
+                    	<input type="number" step="0.01"  class="form-control" id="dec_tercero_sueldo" name="dec_tercero_sueldo" placeholder="13ro Sueldo">
+                        <div id="mensaje_hora_salida" class="errores"></div>
+                 	</div>
+             	</div>
+          	</div>
+          	<h3 class="box-title">Egresos</h3>
+          	<div class="row">
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="nombre_empleados" class="control-label">Anticipo:</label>
+                    	<input type="number" step="0.01" class="form-control" id="anticipo_empleados" name="anticipo_empleados" placeholder="Anticipo">
+                        <div id="mensaje_nombre_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="dpto_empleados" class="control-label">Aporte IESS:</label>
+                    	<input type="number" step="0.01" class="form-control" id="apt_iess_empleados" name="apt_iess_empleados" placeholder="Aporte IESS">
+                        <div id="mensaje_dpto_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="cargo_empleados" class="control-label">ASOCAP:</label>
+                           	<input type="number" step="0.01" class="form-control" id="asocap_empleados" name="asocap_empleados" placeholder="ASOCAP">
+                        <div id="mensaje_cargo_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="cargo_empleados" class="control-label">Comisión asuntos sociales:</label>
+                           	<input type="text" class="form-control" id="asuntos_empleados" name="asuntos_empleados" placeholder="Comisión asuntos sociales" readonly>
+                        <div id="mensaje_cargo_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+          	</div>
+          	<div class="row">
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="nombre_empleados" class="control-label">Prestamo Qirografario IESS:</label>
+                    	<input type="number" step="0.01" class="form-control" id="quiro_iess_empleados" name="quiro_iess_empleados" placeholder="Prestamo Qirografario IESS">
+                        <div id="mensaje_nombre_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="dpto_empleados" class="control-label">Prestamo Hipotecario IESS:</label>
+                    	<input type="number" step="0.01" class="form-control" id="hipo_iess_empleados" name="hipo_iess_empleados" placeholder="Prestamo Hipotecario IESS">
+                        <div id="mensaje_dpto_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="cargo_empleados" class="control-label">Descuento Sueldo:</label>
+                           	<input type="number" step="0.01" class="form-control" id="dcto_sueldo_empleados" name="dcto_sueldo_empleados" placeholder="Descuento Sueldo">
+                        <div id="mensaje_cargo_empleados" class="errores"></div>
+                 	</div>
+             	</div>
+          	</div>
+          	<div class="row">
+           	 <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
+            	<div class="form-group">
+                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success" onclick="ActualizarRegistros()">GUARDAR</button>
+                  <button type="button" class="btn btn-danger" id="Cancelar" name="Cancelar" onclick="LimpiarCampos()">CANCELAR</button>
+                </div>
+             </div>	    
+            </div>
+          </div>
+          
+  	</div>
+  </section>
+  <section class="content">
+  	<div class="box box-primary">
+  		<div class="box-header with-border">
   			<h3 class="box-title">Reporte Nomina</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -69,28 +208,6 @@
               </div>
          </div>
          <div class="box-body">
-         	<div class = "row">
-         		<div class="col-xs-6 col-md-3 col-lg-3 " style="margin-left:15px;">
-        			<div class="input-group">
-        				<input type="text" id= "nombre_archivo" class="form-control" placeholder = "Archivo" readonly>
-        				<span class="input-group-btn">
-                    		<label class="btn btn-primary">
-    						<i class="glyphicon glyphicon-plus"></i>
-    						<input type="file" id="archivo_registro" style="display: none;">
-							</label>
-							<button type="button" class="btn btn-success" id="subir_archivo" name="subir_archivo" onclick="SubirArchivo()">
-							<i class="glyphicon glyphicon-upload"></i>
-							</button>
-						</span>
-					</div>
-        		</div>
-        		<div class="col-xs-6 col-md-3 col-lg-3 " style="margin-left:15px;" >
-                	<div id="load_boton_notificaciones" ></div>	
-        		</div>
-        		<div id="mensaje_archivo" class="errores"></div>
-			</div>
-			<br>
-			<div id="cabecera_marcaciones" ></div>
 			<div class="pull-right" style="margin-right:15px;">
         		<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_marcaciones(1)" placeholder="Buscar.."/>
 			</div>
@@ -106,38 +223,12 @@
 						<option value="2">Registros en blanco</option>
 						<option value="3">Registros completos</option>
     				</select>
-    		</div>
-    		<div class="pull-right col-xs-4 col-md-2 col-lg-2 " style="margin-left:15px;" >
-    			<div class="input-group">
-    				<span class="input-group-btn">
-    			    	<button type="button" class="btn btn-danger" id="borrar_campo" name="borrar_campo" onclick="LimpiarCedula()">
-						<i class="glyphicon glyphicon-erase"></i>
-						</button>
-					</span>
-            		<input type="text" data-inputmask="'mask': '9999999999'" onfocusout="load_marcaciones(1)" class="form-control" id="cedula_empleado1" name="cedula_empleado1" placeholder="Cédula">	
-    			</div>
-    		</div>
-    		
-        	<div id="load_marcaciones" ></div>
-        	<div id="marcaciones" ></div>
+    		</div>   
+        	<div id="load_reporte" ></div>
+        	<div id="reporte" ></div>
        </div>
   	</div>
   </section>
-  <section class="content">
-  	<div class="box box-primary">
-  		<div class="box-header with-border">
-  			<h3 class="box-title">Reporte</h3>
-  			<div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                <i class="fa fa-minus"></i></button>
-            </div>
-        </div> 
-        <div class="box-body">        
-        	<div id="load_reporte" ></div>
-        	<div id="reporte" ></div>
-       </div> 	
-  	</div>
-  </section>  
   </div>
  
  	<?php include("view/modulos/footer.php"); ?>	
@@ -153,7 +244,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-    <script src="view/Administracion/js/ReporteNomina.js?0.1"></script>
+    <script src="view/Administracion/js/ReporteNomina.js?0.5"></script>
 	
 	
   </body>

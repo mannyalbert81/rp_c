@@ -226,11 +226,6 @@ var fecha = $("#fecha").val();
 var monto = $("#monto_avance").val();
 var diferido = $("#cuotas").val();
 
-console.log(fecha + " fecha");
-console.log(monto + " monto");
-console.log(diferido+" diferido")
-
-
 if (fecha=="")
 {
 $("#mensaje_fecha").text("Elija fecha");
@@ -243,12 +238,11 @@ if (monto== "")
 	$("#mensaje_monto_avance").fadeIn("slow");
 	$("#mensaje_monto_avance").fadeOut("slow");
 }
-if (diferido=="")
+if (diferido=="" || diferido=="0")
 {
-	$("#mensaje_cuotas").text("Ingrese cantidad");
-	$("#mensaje_cuotas").fadeIn("slow");
-	$("#mensaje_cuotas").fadeOut("slow");
+	diferido=1;
 }
+console.log(diferido);
 
 if ( fecha!="" && monto!="" && diferido!="")
 	{
@@ -266,7 +260,8 @@ if ( fecha!="" && monto!="" && diferido!="")
 	.done(function(x) {
 		
 		$("#fecha").val("");
-		$("#hora_salida").val("");
+		$("#monto_avance").val("");
+		$("#cuotas").val("");	
 		
 		console.log(x);
 		if (x==1)
@@ -287,7 +282,7 @@ if ( fecha!="" && monto!="" && diferido!="")
 				{
 				swal({
 			  		  title: "Solicitud",
-			  		  text: "Ya existe una solicitud para el día indicado",
+			  		  text: "Ya existe una solicitud en proceso de revision o por pagar",
 			  		  icon: "warning",
 			  		  button: "Aceptar",
 			  		});
@@ -324,13 +319,9 @@ if ( fecha!="" && monto!="" && diferido!="")
 
 function LimpiarCampos()
 {
-	
-	
-	
 	$("#fecha").val("");
-	$("#hora_salida").val("");
-	
-	
+	$("#monto_avance").val("");
+	$("#cuotas").val("");	
 }
 
 function Aprobar(idsol,nomest)

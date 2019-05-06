@@ -195,8 +195,6 @@ function devuelveConsecutivoCxP(){
 	})
 }
  
-
- 
  /* PARA EVITAR SOBRECARGA DE PAGINA */
  
  /*$(window).on('beforeunload', function(){
@@ -209,18 +207,20 @@ function devuelveConsecutivoCxP(){
  /*PARA VENTANAS MODALES*/
   
  $('#mod_lote').on('show.bs.modal', function (event) {
-	 	
-	 let nombreLote = $("#nombre_lote").val();
+	 
+	 $("#mod_descripcion_lote").val("");
+	 let $id_lote = $("#id_lote").val();
+	 if( $id_lote > 0 ){ $("#mensaje_id_lote").text("Lote Generado").fadeIn("slow"); return false; }
+	 let nombreLote = $("#nombre_lote").val();	 
 	 if(nombreLote.length == 0){ $("#mensaje_id_lote").text("ingrese nombre lote").fadeIn("slow"); return false;}
 	 var modal = $(this)
 	 modal.find('#mod_nombre_lote').val($("#nombre_lote").val())
 
  });
  
- $('#agregar_nuevo').on('show.bs.modal', function (event) {
-	 load_productos(1);
+ $('#mod_impuestos').on('show.bs.modal', function (event) {
+	 load_impuestos_cpagar(1);
 	   var modal = $(this)
-	   modal.find('.modal-title').text('Listado Productos')
 
 	 });
 
@@ -261,29 +261,67 @@ function devuelveConsecutivoCxP(){
   */
 $("#frm_genera_lote").on("submit",function(event){
 	
+	let $id_lote = $("#id_lote").val();
+	let $nombre_lote = $("#mod_nombre_lote").val();
+	let $id_frecuencia = $("#mod_id_frecuencia").val();
+	let $descripcion_lote = $("#mod_descripcion_lote").val();
 	
-	$.ajax({
-		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
-		url:"index.php?controller=CuentasPagar&action=consultaBancos",
-		type:"POST",
-		data:{page:_page,search:buscador,peticion:'ajax'}
-	}).done(function(datos){		
+	var parametros = {id_lote:$id_lote,nombre_lote:$nombre_lote,decripcion_lote:$descripcion_lote,id_frecuencia:$id_frecuencia}
+	
+	var $div_respuesta = $("#msg_frm_lote"); $div_respuesta.text("").removeClass();
+	
+	if($id_lote > 0){ $div_respuesta.html("<strong>¡Cuidado!<strong> Lote ya esta Generado").addClass("alert alert-warning"); return false;}	
 		
-		$("#bancos_registrados").html(datos)		
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=CuentasPagar&action=generaLote",
+		type:"POST",
+		dataType:"json",
+		data:parametros
+	}).done(function(respuesta){
+				
+		if(respuesta.valor > 0){			
+			$("#id_lote").val(respuesta.valor);
+			$("#msg_frm_lote").text("Lote Generado").addClass("alert alert-success");
+		}
+		
 		
 	}).fail(function(xhr,status,error){
 		
 		var err = xhr.responseText
 		console.log(err);
 		
+		$("#id_lote").val("0");
+		$div_respuesta.text("Error al generar Lote").addClass("alert alert-warning");
+		
 	}).always(function(){
-		
-		$("#divLoaderPage").removeClass("loader")
-		
+				
 	})
 	
 	event.preventDefault();
 })
+
+/* PARA LISTA EN MODALES*/
+/*Listar impuestos aplicados*/
+
+/***
+ *dc 2019-05-02
+ *funcion listar impuestos aplicados a cuentas por pagar 
+ * @returns
+ */
+function load_impuestos_cpagar(page=1){
+	
+	let parametros = null;
+	
+	$.ajax({
+		sendBefore: function(){},
+		url:"index.php?controller=CuentasPagar&action=listarImpuestos",
+		data:parametros
+	}).done(function(respuesta){
+		$("#impuestos_cuentas_pagar").html(respuesta);
+	})
+	
+}
 
 
 /*PARA DIV CON MENSAJES DE ERROR*/

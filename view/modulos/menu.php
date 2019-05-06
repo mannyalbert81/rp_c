@@ -355,6 +355,7 @@ $controladores=$_SESSION['controladores'];
           </a>
           <ul class="treeview-menu">
             <li style="<?php echo getcontrolador("BuscarProducto",$controladores) ?>"><a href="index.php?controller=BuscarProducto&action=index"><i class="fa fa-circle-o"></i> Consultar Productos</a></li>
+		    <li style="<?php echo getcontrolador("Cheque",$controladores) ?>"><a href="index.php?controller=Cheque&action=index"><i class="fa fa-circle-o"></i> Generar Cheque</a></li>
 		 
 		  </ul>
         </li>

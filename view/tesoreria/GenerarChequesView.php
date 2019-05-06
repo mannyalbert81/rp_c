@@ -63,7 +63,7 @@
         <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Resumen Activos</h3>
+              <h3 class="box-title">Cheques</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -73,7 +73,7 @@
             
             <div class="box-body">
             
-                <form id="frm_depreciacionGeneral" action="<?php echo $helper->url("ActivosFijos","ResumenActivos"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
+                <form id="frm_generarcheque" action="<?php echo $helper->url("Cheque","generar_reporte_productos"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
                 
                 	    
                      	<div class="row">
@@ -82,7 +82,7 @@
                 	   		    <div class="form-group">
             	                  <input type="image" src="view/images/pdf.png" alt="Submit" width="100" height="100" formtarget="_blank" id="btngenerar" name="btngenerar" class="btn btn-default">
             	                   <br> 
-            	                   <label  class="control-label">GENERAR RESÚMEN</label>
+            	                   <label  class="control-label">GENERAR CHEQUE</label>
             	                  </div>
     	        		    </div>
             		    </div>

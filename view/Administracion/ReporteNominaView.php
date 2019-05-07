@@ -111,7 +111,7 @@
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="fecha_permiso" class="control-label">Fondos de reserva:</label>
-                    	<input type="number" step="0.01"  class="form-control" id="fondos" name="fondos" placeholder="Fondos de reserva">
+                    	<input type="number" step="0.01"  class="form-control" id="fondos" name="fondos" placeholder="Fondos de reserva" readonly>
                         <div id="mensaje_fecha" class="errores"></div>
                  	</div>
              	</div>
@@ -209,23 +209,24 @@
          </div>
          <div class="box-body">
 			<div class="pull-right" style="margin-right:15px;">
-        		<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_marcaciones(1)" placeholder="Buscar.."/>
+        		<input type="text" value="" class="form-control" id="search" name="search" onkeyup="ReporteNomina(1)" placeholder="Buscar.."/>
 			</div>
 			<div class="pull-right" style="margin-right:15px;">
-        			<select name="periodo_marcaciones" id="periodo_marcaciones"  class="form-control" onchange="load_marcaciones(1)">
+        			<select name="periodo_marcaciones" id="periodo_marcaciones"  class="form-control" onchange="ReporteNomina(1)">
+                  		<option value="2">Periodo actual</option>
                   		<option value="1">Todos los periodos</option>
-						<option value="2">Periodo actual</option>
-    				</select>
-    		</div>
-    		<div class="pull-right" style="margin-right:15px;">
-        			<select name="estado_registro" id="estado_registro"  class="form-control" onchange="load_marcaciones(1)">
-                  		<option value="1">Todos los registros</option>
-						<option value="2">Registros en blanco</option>
-						<option value="3">Registros completos</option>
     				</select>
     		</div>   
         	<div id="load_reporte" ></div>
         	<div id="reporte" ></div>
+        	<div class="row">
+           	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+            	<div class="form-group">
+            	
+            	 <button type="button" id="Print" name="Print" class="btn btn-primary" onclick="ImprimirReporte()"><i class="glyphicon glyphicon-print"></i>  Reporte</button>
+                </div>
+             </div>	    
+            </div>
        </div>
   	</div>
   </section>
@@ -244,7 +245,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-    <script src="view/Administracion/js/ReporteNomina.js?0.5"></script>
+    <script src="view/Administracion/js/ReporteNomina.js?0.8"></script>
 	
 	
   </body>

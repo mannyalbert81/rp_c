@@ -1,4 +1,4 @@
-<?php
+ <?php
 class HorasExtrasEmpleadosController extends ControladorBase{
     public function index(){
         session_start();

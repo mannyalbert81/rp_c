@@ -20,11 +20,12 @@ class ReporteNominaController extends ControladorBase{
     public function ActualizarRegistros()
     {
         session_start();
-        $empleados = new EmpleadosModel();
         $reportenomina  = new ReporteNominaEmpleadosModel();
+        $salario=$_POST['salario'];
+        $id_empleado=$_POST['id_empleado'];
         $horasextra50=$_POST['h50'];
         $horasextra100=$_POST['h100'];
-        $fondosreserva=$_POST['fondos_reserva'];
+        $fondosreserva=($salario+$horasextra50+$horasextra100)*0.0833;
         $sueldo14=$_POST['decimo_cuarto'];
         $sueldo13=$_POST['decimo_tercero'];
         $dctoavance=$_POST['anticipo_sueldo'];
@@ -33,8 +34,9 @@ class ReporteNominaController extends ControladorBase{
         $quiroiess=$_POST['quiro_iess'];
         $hipoiess=$_POST['hipo_iess'];
         $dctosalario=$_POST['dcto_sueldo'];
+        $periodo=$_POST['periodo'];
         $funcion = "ins_reporte_nomina_empleado";
-        $parametros = "'$emp->id_empleados',
+        $parametros = "'$id_empleado',
                                 '$horasextra50',
                                 '$horasextra100',
                                 '$fondosreserva',
@@ -58,6 +60,12 @@ class ReporteNominaController extends ControladorBase{
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $reporte_nomina = new ReporteNominaEmpleadosModel();
         
+        $periodo=$_POST['periodo'];
+        $fechai=$_POST['fechai'];
+        $fechaf=$_POST['fechaf'];
+        
+        $periodoactual=$fechai."-".$fechaf;
+        
         $tablas = "public.descuentos_salarios_empleados";
         $where = "1=1";
         
@@ -71,7 +79,8 @@ class ReporteNominaController extends ControladorBase{
                 	   reporte_nomina_empleados.dec_tercero_sueldo, reporte_nomina_empleados.anticipo_sueldo,
                 	   reporte_nomina_empleados.aporte_iess1, reporte_nomina_empleados.asocap,
                 	   reporte_nomina_empleados.prest_quirog_iess, reporte_nomina_empleados.prest_hipot_iess,
-                	   reporte_nomina_empleados.dcto_salario, reporte_nomina_empleados.periodo_registro";
+                	   reporte_nomina_empleados.dcto_salario, reporte_nomina_empleados.periodo_registro,
+                       empleados.id_empleados";
         
         $tablas= "public.reporte_nomina_empleados INNER JOIN public.empleados
             	   ON reporte_nomina_empleados.id_empleado = empleados.id_empleados
@@ -79,10 +88,22 @@ class ReporteNominaController extends ControladorBase{
             	   ON empleados.id_oficina = oficina.id_oficina
             	   INNER JOIN public.cargos_empleados
             	   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+        if($periodo=="1") $where="1=1";
         
-        $where="1=1";
+        if($periodo=="2") $where="reporte_nomina_empleados.periodo_registro='".$periodoactual."'";
         
         $id="reporte_nomina_empleados.id_registro";
+        
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        if(!empty($search)){
+            
+            
+            $where1=" AND (empleados.nombres_empleados ILIKE '".$search."%' OR oficina.nombre_oficina ILIKE '".$search."%'
+            OR reporte_nomina_empleados.periodo_registro ILIKE '%".$search."')";
+            
+            $where.=$where1;
+        }
         
         $resultSet = $reporte_nomina->getCondiciones($columnas, $tablas, $where, $id);
         
@@ -126,11 +147,15 @@ class ReporteNominaController extends ControladorBase{
             $html.= "<thead>";            
             $html.='<tr>';
               $html.='<td rowspan="2"></td>';
-              $html.='<th colspan="2" bgcolor="'.$colorInfo1.'" scope="colgroup">Informacion Empleado</th>';
+              $html.='<th colspan="';
+              if ($periodo=='2') $html.='3';
+              else $html.='2';
+              $html.='" bgcolor="'.$colorInfo1.'" scope="colgroup">Informacion Empleado</th>';
               $html.='<th colspan="7" bgcolor="'.$coloringresos1.'" scope="colgroup">Ingresos</th>';
              $html.=' <th colspan="8" bgcolor="'.$coloregresos1.'" scope="colgroup">Egresos</th>';
              $html.='</tr>';
              $html.='<tr>';
+             if($periodo=="2") $html.='<th bgcolor="'.$colorInfo1.'" style="text-align: left;  font-size: 14px;"></th>';
              $html.='<th bgcolor="'.$colorInfo1.'" style="text-align: left;  font-size: 14px;">Empleado</th>';
              $html.='<th bgcolor="'.$colorInfo1.'" style="text-align: left;  font-size: 14px;">Oficina</th>';
              $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Salario</th>';             
@@ -162,13 +187,17 @@ class ReporteNominaController extends ControladorBase{
        $i++;
        $html.='<tr>';
        $html.='<td style="font-size: 15px;">'.$i.'</td>';
+        if($periodo=="2")
+        {
        $html.='<td bgcolor="'.$colorInfo2.'" style="font-size: 15px;"><button  type="button" class="btn btn-success" onclick="';
        $html.='EditarNomina(&quot;'.$res->nombres_empleados.'&quot,&quot;'.$res->nombre_oficina.'&quot,&quot;'.$res->salario_cargo.'&quot;,&quot;'.$res->horas_ext50.'&quot;';
        $html.=',&quot;'.$res->horas_ext100.'&quot;,&quot;'.$res->fondos_reserva.'&quot;,&quot;'.$res->dec_cuarto_sueldo.'&quot;';
        $html.=',&quot;'.$res->dec_tercero_sueldo.'&quot;,&quot;'.$res->anticipo_sueldo.'&quot;,&quot;'.$res->aporte_iess1.'&quot;';
        $html.=',&quot;'.$res->asocap.'&quot;,&quot;'.$resultDSE[0]->asuntos_sociales.'&quot;,&quot;'.$res->prest_quirog_iess.'&quot;,&quot;'.$res->prest_hipot_iess.'&quot;';
-       $html.=',&quot;'.$res->dcto_salario.'&quot;,&quot;'.$res->periodo_registro.'&quot;)';
-       $html.='"><i class="glyphicon glyphicon-edit"></i></button>'.$res->nombres_empleados.'</td>';
+       $html.=',&quot;'.$res->dcto_salario.'&quot;,&quot;'.$res->periodo_registro.'&quot;,'.$res->id_empleados.')';
+       $html.='"><i class="glyphicon glyphicon-edit"></i></button></td>';
+        }   
+       $html.='<td bgcolor="'.$colorInfo2.'" style="font-size: 15px;">'.$res->nombres_empleados.'</td>';
        $html.='<td bgcolor="'.$colorInfo2.'" style="font-size: 15px;">'.$res->nombre_oficina.'</td>';
        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;">'.$res->salario_cargo.'</td>';
        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;">'.$res->horas_ext50.'</td>';
@@ -280,5 +309,252 @@ class ReporteNominaController extends ControladorBase{
        return $out;
    }
     
+   public function ImprimirReporte()
+   {
+       session_start();
+       
+       $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+       
+       
+       $periodoactual=(isset($_REQUEST['fecha'])&& $_REQUEST['fecha'] !=NULL)?$_REQUEST['fecha']:'';
+       $periodo=(isset($_REQUEST['periodo'])&& $_REQUEST['periodo'] !=NULL)?$_REQUEST['periodo']:'';
+       
+     
+       $elementos=explode("/", $periodoactual);
+       $periodonomina=$meses[($elementos[3]-1)]." DE ".$elementos[4];
+       
+       $reporte_nomina = new ReporteNominaEmpleadosModel();
+       
+       $datos_reporte = array();
+       $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+       
+       $tablas = "public.descuentos_salarios_empleados";
+       $where = "1=1";
+       
+       $id = "descuentos_salarios_empleados.id_descuento";
+       
+       $resultDSE= $reporte_nomina->getCondiciones("*", $tablas, $where, $id);
+       
+       $columnas=    "empleados.nombres_empleados,empleados.numero_cedula_empleados,
+                        oficina.nombre_oficina, cargos_empleados.salario_cargo, cargos_empleados.nombre_cargo,
+                	   reporte_nomina_empleados.horas_ext50, reporte_nomina_empleados.horas_ext100,
+                	   reporte_nomina_empleados.fondos_reserva, reporte_nomina_empleados.dec_cuarto_sueldo,
+                	   reporte_nomina_empleados.dec_tercero_sueldo, reporte_nomina_empleados.anticipo_sueldo,
+                	   reporte_nomina_empleados.aporte_iess1, reporte_nomina_empleados.asocap,
+                	   reporte_nomina_empleados.prest_quirog_iess, reporte_nomina_empleados.prest_hipot_iess,
+                	   reporte_nomina_empleados.dcto_salario, reporte_nomina_empleados.periodo_registro,
+                       empleados.id_empleados";
+       
+       $tablas= "public.reporte_nomina_empleados INNER JOIN public.empleados
+            	   ON reporte_nomina_empleados.id_empleado = empleados.id_empleados
+            	   INNER JOIN public.oficina
+            	   ON empleados.id_oficina = oficina.id_oficina
+            	   INNER JOIN public.cargos_empleados
+            	   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+       
+       $where="reporte_nomina_empleados.periodo_registro='".$periodoactual."'";
+       
+       $id="reporte_nomina_empleados.id_registro";
+       
+       $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+       
+       if(!empty($search)){
+           
+           
+           $where1=" AND (empleados.nombres_empleados ILIKE '".$search."%' OR oficina.nombre_oficina ILIKE '".$search."%'
+            OR reporte_nomina_empleados.periodo_registro ILIKE '%".$search."')";
+           
+           $where.=$where1;
+       }
+       
+       $resultSet = $reporte_nomina->getCondiciones($columnas, $tablas, $where, $id);
+       
+       $datos_reporte['PERIODO']=$periodonomina;
+       
+       $horasextra50=0;
+       $horasextra100=0;
+       $sueldobasico=0;
+       $fondosreserva=0;
+       $sueldo14=0;
+       $sueldo13=0;
+       $totalingresos=0;
+       $dctoavance=0;
+       $aporteiess1=0;
+       $asocap=0;
+       $sociales=0;
+       $quiroiess=0;
+       $hipoiess=0;
+       $totalegresos=0;
+       $totalapagar=0;
+          
+       $headerfont="7px";
+       $tdfont="9px";
+      
+       $color1="#DFE0E0";
+       
+       $datos_tabla.= '<table>';
+       $datos_tabla.='<tr>';
+       $datos_tabla.='<th width="6%" rowspan="2" style="text-align: center; font-size: '.$headerfont.';">CEDULA</th>';
+       $datos_tabla.='<th width="15%" rowspan="2"  style="text-align: center;  font-size: '.$headerfont.';">APELLIDOS Y NOMBRES</th>';
+       $datos_tabla.='<th width="10%" rowspan="2" style="text-align: center;  font-size: '.$headerfont.';">CARGO</th>';
+       $datos_tabla.='<th bgcolor="'.$color1.'" colspan="7" scope="colgroup" style="text-align: center;  font-size: '.$headerfont.';">INGRESOS</th>';
+       $datos_tabla.='<th bgcolor="'.$color1.'" colspan="7" scope="colgroup" style="text-align: center;  font-size: '.$headerfont.';">EGRESOS</th>';
+       $datos_tabla.='<th  width="5%" rowspan="2" style="text-align: center;  font-size: '.$headerfont.';">A PAGAR</th>';
+       $datos_tabla.='</tr>';
+       $datos_tabla.='<tr>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">HORAS EXTRA 50%</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">HORAS EXTRA 100%</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">SUELDO BASICO</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">FONDOS DE RESERVA</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">14TO SUELDO</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">13RO SUELDO</th>';
+       $datos_tabla.='<th  width="5%" style="text-align: center;  font-size: '.$headerfont.';">TOTAL</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">ANTICIPO SUELDOS</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">APORTE IESS '.$resultDSE[0]->descuento_iess1.'%</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">ASOCAP</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">COMISION ASUNTOS SOCIALES</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">PREST. QUIROG. IESS</th>';
+       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">PREST.HIPOT. IESS</th>';
+       $datos_tabla.='<th  width="5%" style="text-align: center;  font-size: '.$headerfont.';">TOTAL</th>';
+       $datos_tabla.='</tr>';
+       foreach ($resultSet as $res)
+       {
+           $datos_tabla.='<tr>';
+           $datos_tabla.='<td  style="text-align: center;  font-size: '.$tdfont.';">'.$res->numero_cedula_empleados.'</td>';
+           $datos_tabla.='<td  style="text-align: left;  font-size: '.$tdfont.';">'.$res->nombres_empleados.'</td>';
+           $datos_tabla.='<td  style="text-align: center;  font-size: '.$tdfont.';">'.$res->nombre_cargo.'</td>';
+           
+           $h50="";
+           if ($res->horas_ext50!="0") $h50=$res->horas_ext50;
+           $horasextra50+=$res->horas_ext50;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$h50.'</td>';
+           
+           $h100="";
+           if ($res->horas_ext100!="0") $h100=$res->horas_ext100;
+           $horasextra100+=$res->horas_ext100;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$h100.'</td>';
+           
+           $sueldobasico+=$res->salario_cargo;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$res->salario_cargo.'</td>';
+           
+           $fondosreserva+=$res->fondos_reserva;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$res->fondos_reserva.'</td>';
+           
+           $d14="";
+           if ($res->dec_cuarto_sueldo!="0") $d14=$res->dec_cuarto_sueldo;
+           $sueldo14+=$res->dec_cuarto_sueldo;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$d14.'</td>';
+           
+           $d13="";
+           if ($res->dec_tercero_sueldo!="0") $d13=$res->dec_tercero_sueldo;
+           $sueldo13+=$res->dec_tercero_sueldo;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$d13.'</td>';
+           
+           $totaling=$res->horas_ext50+$res->horas_ext100+$res->salario_cargo+$res->fondos_reserva+$res->dec_cuarto_sueldo+$res->dec_tercero_sueldo;
+           $totalingresos+=$totaling;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$totaling.'</td>';
+           
+           $ant="";
+           if ($res->anticipo_sueldo!="0") $ant=$res->anticipo_sueldo;
+           $dctoavance+=$res->anticipo_sueldo;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$ant.'</td>';
+           
+           $aporteiess1+=$res->aporte_iess1;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$res->aporte_iess1.'</td>';
+           
+           $aso="";
+           if ($res->asocap!="0") $aso=$res->asocap;
+           $asocap+=$res->asocap;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$aso.'</td>';
+           
+           $sociales+=$resultDSE[0]->asuntos_sociales;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$resultDSE[0]->asuntos_sociales.'</td>';
+           
+           $qiess="";
+           if ($res->prest_quirog_iess!="0") $qiess=$res->prest_quirog_iess;
+           $quiroiess+=0;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$qiess.'</td>';
+           
+           $hiess="";
+           if ($res->prest_hipot_iess!="0") $hiess=$res->prest_hipot_iess;
+           $hipoiess+=0;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$hiess.'</td>';
+           
+           $totaleg=$res->anticipo_sueldo+$res->aporte_iess1+$res->asocap+$resultDSE[0]->asuntos_sociales+$res->prest_quirog_iess+$res->prest_hipot_iess;
+           $totalegresos+=$totaleg;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$totaleg.'</td>';
+           
+           $apagar=$totaling-$totaleg;
+           $totalapagar+=$apagar;
+           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$apagar.'</td>';
+           $datos_tabla.='</tr>';
+          
+       }
+       
+       $datos_tabla.='<tr>';
+       $datos_tabla.='<td colspan="3" style="text-align: center;  font-size: '.$tdfont.';">TOTALES</td>';
+       $h50="-";
+       if($horasextra50!="0") $h50=$horasextra50;
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$h50.'</td>';
+       
+       $h100="-";
+       if($horasextra100!="0") $h100=$horasextra100;
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$h100.'</td>';
+       
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$sueldobasico.'</td>';
+       
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$fondosreserva.'</td>';
+       
+       $d14="-";
+       if($sueldo14!="0") $d14=$sueldo14;
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$d14.'</td>';
+       
+       $d13="-";
+       if($sueldo13!="0") $d13=$sueldo13;
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$d13.'</td>';       
+       
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$totalingresos.'</td>';
+       
+       $ant="-";
+       if($dctoavance!="0") $ant=$dctoavance;
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$ant.'</td>';
+       
+       
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$aporteiess1.'</td>';
+       
+       $aso="-";
+       if($asocap!="0") $aso=$asocap;
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$aso.'</td>';
+       
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$sociales.'</td>';
+       
+       $qiess="-";
+       if($quiroiess!="0") $qiess=$quiroiess;
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$qiess.'</td>';
+       
+       $hiess="-";
+       if($hipoiess!="0") $hiess=$hipoiess;
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$hiess.'</td>';
+       
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$totalegresos.'</td>';
+       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$totalapagar.'</td>';
+       $datos_tabla.='</tr>';
+     
+       $datos_tabla.= "</table>";
+       $datos_tabla.= "<br>";
+       $datos_tabla.= '<table class="firmas">';
+       $datos_tabla.='<tr>';
+       $datos_tabla.='<td   class="firmas"  width="6%"  style="text-align: left; font-size: '.$headerfont.';"></td>';
+       $datos_tabla.='<td   class="firmas" width="26%" style="text-align: left; font-size: '.$headerfont.';">Elaborado por:<br>Lcdo. Byron Bolaños<br>Jefe de RR-HH</td>';
+       $datos_tabla.='<td   class="firmas" style="text-align: left;  font-size: '.$headerfont.';">Aprobado por:<br>Ing. Stephany Zurita<br>Representante Legal</td>';
+    
+       $datos_tabla.= "</table>";
+       
+       $this->verReporte("ReporteNomina", array('datos_reporte'=>$datos_reporte
+           ,'datos_tabla'=>$datos_tabla));
+       
+       
+       
+   }
 }
 ?>

@@ -2,9 +2,6 @@ $(document).ready( function (){
 	load_solicitudes(1);
 	$(":input").inputmask();
 	getUsuario();
-	var h1ctr;
-	var h2ctr;
-	sethoras();
 
 });
 
@@ -63,157 +60,58 @@ $.ajax({
 
 }
 
-
-function validarhora()
-{
-	
-	
-	var hdesde = $("#hora_desde").val();
-	var hhasta = $("#hora_hasta").val();
-	var h1 = hdesde.split(":");
-	var h2 = hhasta.split(":");
-	var date1 = new Date(2000, 0, 1,  h1[0], h1[1]);
-	var date2 = new Date(2000, 0, 1, h2[0], h2[1]);
-	var diff = date2-date1;
-    if(diff <=0)
-    	{
-    	return false;
-    	}
-    else
-    	{
-    	return true;
-    	}
-	
-	
-}
-
-function sethoras()
-{
-	$.ajax({
-	    url: 'index.php?controller=PermisosEmpleados&action=GetHoras',
-	    type: 'POST',
-	    data: {
-	    	   
-	    },
-	})
-	.done(function(x) {
-		
-		var res = $.parseJSON(x);
-		h1ctr=res[0]['hora_entrada_empleados'].split(":");
-		h2ctr=res[0]['hora_salida_empleados'].split(":");
-		})
-	.fail(function() {
-	    console.log("error");
-	    	
-	});	
-}
-
-function validardesde()
-{
-	var hdesde = $("#hora_desde").val();
-	var h1 = hdesde.split(":");
-	var date1 = new Date(2000, 0, 1,  h1[0], h1[1]);
-	var datectr1 = new Date(2000, 0, 1,  h1ctr[0], h1ctr[1]);
-	var datectr2 = new Date(2000, 0, 1, h2ctr[0], h2ctr[1]);
-	var diffent = date1-datectr1;
-	console.log(diffent);
-	if (diffent < 0) return false;
-	else
-		{
-		diffent = datectr2 - date1;
-		if (diffent < 0)
-			{
-			return false;
-			}
-		return true;
-		}
-}
-
-function validarhasta()
-{
-	var hdesde = $("#hora_hasta").val();
-	var h1 = hdesde.split(":");
-	var date1 = new Date(2000, 0, 1,  h1[0], h1[1]);
-	var datectr1 = new Date(2000, 0, 1,  h1ctr[0], h1ctr[1]);
-	var datectr2 = new Date(2000, 0, 1, h2ctr[0], h2ctr[1]);
-	var diffent = date1-datectr1;
-	console.log(diffent);
-	if (diffent < 0) return false;
-	else
-		{
-		diffent = datectr2 - date1;
-		if (diffent < 0)
-			{
-			return false;
-			}
-		return true;
-		}
-}
-
-
-function TodoElDia()
-{
-
- if (document.getElementById('dia').className == "btn btn-light")
-	 {
-	 document.getElementById('dia').className = "btn btn-primary";
-	 document.getElementById('diaicon').className = "glyphicon glyphicon-check";
-	 $.ajax({
-		    url: 'index.php?controller=PermisosEmpleados&action=GetHoras',
-		    type: 'POST',
-		    data: {
-		    	   
-		    },
-		})
-		.done(function(x) {
-			
-			var res = $.parseJSON(x);
-			console.log(res);
-			$("#hora_desde").val(res[0]['hora_entrada_empleados']);
-			$("#hora_hasta").val(res[0]['hora_salida_empleados']);
-			document.getElementById('hora_desde').readOnly = true;
-			document.getElementById('hora_hasta').readOnly = true;
-			})
-		.fail(function() {
-		    console.log("error");
-		    	
-		});
-	 
-	 }
- else
-	 {
-	 document.getElementById('dia').className = "btn btn-light";
-	 document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
-	 $("#hora_desde").val("");
-     $("#hora_hasta").val("");
-     document.getElementById('hora_desde').readOnly = false;
-		document.getElementById('hora_hasta').readOnly = false;
-	 }
- 
-}
-
-function validarfecha(fecha)
+function validarfechas(fecha1,fecha2)
 {
 	var hoy = new Date().getDate();
 	var year = new Date().getFullYear();
 	var mes = new Date().getMonth()+1;
-	var fechael = fecha.split("-");
-	if(fechael[0] < year)
+	var fechael1 = fecha1.split("-");
+	var date1  = new Date(fechael1[0], fechael1[1]-1, fechael1[2]);
+	var fechael2 = fecha2.split("-");
+	var date2  = new Date(fechael2[0], fechael2[1]-1, fechael2[2]);
+	if(fechael1[0] < year)
+		{
+		return false; 
+		}
+	else if (fechael1[1] < mes)
 		{
 		return false;
 		}
-	else if (fechael[1] < mes)
-		{
-		return false;
-		}
-	else if (fechael[1]== mes && fechael[2] <= hoy)
+	else if (fechael1[1]== mes && fechael1[2] <= hoy)
 	{
 		return false;
 	}
 	else
 		{
-		return true;
+		if(fechael2[0] < year)
+		{
+		return false; 
 		}
+	else if (fechael2[1] < mes)
+		{
+		return false;
+		}
+	else if (fechael2[1]== mes && fechael2[2] <= hoy)
+	{
+		return false;
+	}
+	else
+		{
+		var fecha1ms=date1.getTime();
+		var fecha2ms=date2.getTime();
+		var diff = fecha2ms-fecha1ms;
+		
+		if (diff<0)
+			{
+			return false; 
+			}
+		else
+			{
+
+			return true;
+			}
+		}
+	}
 }
 
 
@@ -221,10 +119,8 @@ function validarfecha(fecha)
 function InsertarSolicitud()
 {
 	
-
 var desde = $("#fecha_desde").val();
 var hasta = $("#fecha_hasta").val();
-
 
 if (hasta=="")
 {
@@ -238,9 +134,18 @@ if (desde== "")
 	$("#mensaje_fecha_desde").fadeIn("slow");
 	$("#mensaje_fecha_desde").fadeOut("slow");
 }
+if (!validarfechas(desde, hasta))
+	{
+	$("#mensaje_fecha_hasta").text("Fecha incorrecta");
+	$("#mensaje_fecha_hasta").fadeIn("slow");
+	$("#mensaje_fecha_hasta").fadeOut("slow");
+	$("#mensaje_fecha_desde").text("Fecha incorrecta");
+	$("#mensaje_fecha_desde").fadeIn("slow");
+	$("#mensaje_fecha_desde").fadeOut("slow");
+	}
 
 
-if ( desde!="" && hasta!="")
+if ( desde!="" && hasta!="" && validarfechas(desde, hasta))
 	{
 	
 	$.ajax({
@@ -256,7 +161,7 @@ if ( desde!="" && hasta!="")
 		
 		$("#fecha_desde").val("");
 		$("#fecha_hasta").val("");
-		
+	
 		console.log(x);
 		if (x==1)
 			{
@@ -306,7 +211,7 @@ if ( desde!="" && hasta!="")
 	  		  icon: "warning",
 	  		  button: "Aceptar",
 	  		});
-	});
+	});*/
 	
 	}
 	

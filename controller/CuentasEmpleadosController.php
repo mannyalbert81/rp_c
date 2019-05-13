@@ -172,7 +172,7 @@ class CuentasEmpleadosController extends ControladorBase{
                 foreach ($resultSet as $res)
                 {
                     $i++;
-                    $html.='<tr>';Z
+                    $html.='<tr>';
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_banco.'</td>';

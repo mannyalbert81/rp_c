@@ -172,7 +172,7 @@ class CuentasEmpleadosController extends ControladorBase{
                 foreach ($resultSet as $res)
                 {
                     $i++;
-                    $html.='<tr>';
+                    $html.='<tr>';Z
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_banco.'</td>';
@@ -238,7 +238,7 @@ class CuentasEmpleadosController extends ControladorBase{
         if($page>($adjacents+1)) {
             $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
         }
-        // interval
+        // interval    
         if($page>($adjacents+2)) {
             $out.= "<li><a>...</a></li>";
         }
@@ -283,7 +283,7 @@ class CuentasEmpleadosController extends ControladorBase{
     
     public function AutocompleteCedula(){
         
-        $empleados = new EmpleadosModel();
+        $empleados = new EmpleadosModel();  
         
         if(isset($_GET['term'])){
             

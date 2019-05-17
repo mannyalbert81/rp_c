@@ -63,14 +63,14 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Bancos</li>
+        <li class="active">Impuestos</li>
       </ol>
     </section>   
 
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Registrar Bancos</h3>
+          <h3 class="box-title">Registrar Impuestos</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -81,19 +81,20 @@
                   
   		<div class="box-body">
 
-			<form id="frm_bancos" action="<?php echo $helper->url("Bancos","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
-             
-							    
-							    
+			<form id="frm_impuestos" action="<?php echo $helper->url("Impuestos","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+             	
+             	<!-- para el loader de procesos -->
+             	<div id="divLoaderPage" ></div>
+             	<!-- termina loader --> 
+             					    
 		    	 <div class="row">
         		    <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
             		    					  
-                          <label for="nombre_bancos" class="control-label">Nombre Bancos:</label>
-                          <input  type="text" class="form-control" id="nombre_bancos" name="nombre_bancos" value=""  placeholder="Nombre Bancos" required/>
-                          <input type="hidden" name="id_bancos" id="id_bancos" value="0" />
-                          <div id="mensaje_nombre_bancos" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
+                          <label for="plan_cuentas" class="control-label">Cuenta - (Plan Cuentas):</label>
+                          <input  type="text" class="form-control" id="plan_cuentas" name="plan_cuentas" value=""  placeholder="Ingrese Nombre/codigo Cuenta" required/>
+                          <input type="hidden" name="id_plan_cuentas" id="id_plan_cuentas" value="0" />
+                          <div id="mensaje_plan_cuentas" class="errores"></div>
                                               
                         </div>
             		  </div>
@@ -101,11 +102,21 @@
             		  <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
             		    					  
-                          <label for="id_estado" class="control-label">Estado Bancos:</label>
-                          <select  class="form-control" id="id_estado" name="id_estado" required>
-                          	<option value="0">--Seleccione--</option>
-                          </select>                         
-                          <div id="mensaje_id_estado" class="errores"></div>
+                          <label for="nombre_impuestos" class="control-label">Nombre Impuestos:</label>
+                          <input  type="text" class="form-control" id="nombre_impuestos" name="nombre_impuestos" value=""  placeholder="Digite Nombre" required/>
+                          <input type="hidden" name="id_impuestos" id="id_impuestos" value="0" />
+                          <div id="mensaje_nombre_impuestos" class="errores"></div>
+                                               
+                        </div>
+            		  </div>
+            		  
+            		   <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="porcentaje_impuestos" class="control-label">Porcentaje Impuestos (%):</label>
+                          <input  type="text" class="form-control" id="porcentaje_impuestos" name="porcentaje_impuestos" value=""  placeholder="Ingrese Porcentaje" required/>
+                          <div id="mensaje_porcentaje_impuestos" class="errores"></div>
+                                               
                         </div>
             		  </div>
                         		 
@@ -131,13 +142,13 @@
      <section class="content">
       	<div class="box box-primary">
       		<div class="box-header with-border">
-      			<h3 class="box-title">Listado de Bancos</h3>      			
+      			<h3 class="box-title">Listado de Impuestos</h3>      			
             </div> 
             <div class="box-body">
     			<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaBancos(1)" placeholder="Buscar.."/>
+					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaImpuestos(1)" placeholder="Buscar.."/>
     			</div>            	
-            	<div id="bancos_registrados" ></div>
+            	<div id="impuestos_registrados" ></div>
             </div> 	
       	</div>
       </section> 
@@ -155,7 +166,8 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/tesoreria/js/ImpuestosCxP.js?0.0"></script> 
+   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+   <script src="view/tesoreria/js/ImpuestosCxP.js?0.6"></script> 
 	
   </body>
 </html>   

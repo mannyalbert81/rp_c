@@ -1,39 +1,68 @@
+/***
+ * dc 2019-05-06
+ * @returns
+ */
 $(document).ready(function(){
 	
-	consultaBancos();
-	cargaEstado();
+	consultaImpuestos();
 	
 })
 
+/**
+ * para autocomplete de plan cuentas
+ * dc 2019-05-06
+ * @param pagina
+ * @returns json
+ */
+$( "#plan_cuentas" ).autocomplete({
+
+	source: "index.php?controller=Impuestos&action=AutocompletePlanCuentas",
+	minLength: 8,
+    select: function (event, ui) {
+       // Set selection          
+       $('#id_plan_cuentas').val(ui.item.id);
+       $('#plan_cuentas').val(ui.item.value); // save selected id to input      
+       return false;
+    },focus: function(event, ui) { 
+        var text = ui.item.value; 
+        $('#plan_cuentas').val();            
+        return false; 
+    } 
+}).focusout(function() {
+	
+	
+});
+
 /***
- * function to add record into table test_bancos
- * dc 2019-04-22
+ * function to save impuestos
+ * dc 2019-05-06
  * @param event
  * @returns
  */
-$("#frm_bancos").on("submit",function(event){
+$("#frm_impuestos").on("submit",function(event){
 	
-	let _nombre_bancos = document.getElementById('nombre_bancos').value;
-	let _id_estado = document.getElementById('id_estado').value;
-	var _id_bancos = document.getElementById('id_bancos').value;
-	var parametros = {nombre_bancos:_nombre_bancos,id_bancos:_id_bancos,id_estado:_id_estado}
+	let _id_plan_cuentas = $("#id_plan_cuentas").val();
+	let _nombre_impuestos = $("#nombre_impuestos").val();
+	let _valor_pocentaje = $("#porcentaje_impuestos").val();
+	let _id_impuestos = $("#id_impuestos").val();
+	var parametros = {id_plan_cuentas:_id_plan_cuentas,nombre_impuestos:_nombre_impuestos,porcentaje_impuestos:_valor_pocentaje,
+			id_impuestos:_id_impuestos}
 	
-	if(_id_estado == 0){
-		$("#mensaje_id_estado").text("Seleccione un Estado").fadeIn("Slow");
+	if(_id_plan_cuentas == 0){
+		$("#mensaje_plan_cuentas").text("Digite plan Cuentas").fadeIn("Slow");
 		return false;
 	}
 	
 	$.ajax({
 		beforeSend:function(){},
-		url:"index.php?controller=Bancos&action=InsertaBancos",
+		url:"index.php?controller=Impuestos&action=InsertaImpuestos",
 		type:"POST",
 		dataType:"json",
 		data:parametros
-	}).done(function(datos){
-		
+	}).done(function(datos){		
 		
 	swal({
-  		  title: "Bancos",
+  		  title: "MENSAJE",
   		  text: datos.mensaje,
   		  icon: "success",
   		  button: "Aceptar",
@@ -42,56 +71,66 @@ $("#frm_bancos").on("submit",function(event){
 		
 	}).fail(function(xhr,status,error){
 		
+		
 		var err = xhr.responseText
 		console.log(err);
 		
+		swal({
+	  		  title: "MENSAJE",
+	  		  text: "Error al Insertar Impuesto",
+	  		  icon: "success",
+	  		  button: "Aceptar",
+	  		});
+		
 	}).always(function(){
-		$("#id_bancos").val(0);
-		document.getElementById("frm_bancos").reset();	
-		consultaBancos();
+		$("#id_plan_cuentas").val(0);
+		document.getElementById("frm_impuestos").reset();	
+		consultaImpuestos();
 	})
 
 	event.preventDefault()
 })
 
 /***
- * function to update Table Bancos
- * dc 20119-04-22
+ * function to update 
+ * dc 2019-05-06
  * @param id
  * @returns
  */
-function editBanco(id = 0){
+function editImpuestos(id = 0){
 	
 	var tiempo = tiempo || 1000;
 		
 	$.ajax({
 		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
-		url:"index.php?controller=Bancos&action=editBancos",
+		url:"index.php?controller=Impuestos&action=editImpuesto",
 		type:"POST",
 		dataType:"json",
-		data:{id_bancos:id}
+		data:{id_impuestos:id}
 	}).done(function(datos){
 		
 		if(!jQuery.isEmptyObject(datos.data)){
 			
 			var array = datos.data[0];		
-			$("#nombre_bancos").val(array.nombre_bancos);			
-			$("#id_bancos").val(array.id_bancos);
-			$("#id_estado").val(array.id_estado);
+			$("#id_plan_cuentas").val(array.id_plan_cuentas);	
+			$("#plan_cuentas").val(array.codigo_plan_cuentas);
+			$("#id_impuestos").val(array.id_impuestos);
+			$("#nombre_impuestos").val(array.nombre_impuestos);
+			$("#porcentaje_impuestos").val(array.porcentaje_impuestos);
 			
-			$("html, body").animate({ scrollTop: $(nombre_bancos).offset().top-120 }, tiempo);			
-		}
-		
+			$("html, body").animate({ scrollTop: $(nombre_impuestos).offset().top-120 }, tiempo);			
+		}		
 		
 		
 	}).fail(function(xhr,status,error){
 		
 		var err = xhr.responseText
 		console.log(err);
+		
 	}).always(function(){
 		
 		$("#divLoaderPage").removeClass("loader")
-		consultaBancos();
+		consultaImpuestos();
 	})
 	
 	return false;
@@ -100,25 +139,25 @@ function editBanco(id = 0){
 
 /***
  * function to delete record of Banco's table
- * dc 2019-04-22
+ * dc 2019-05-06
  * @param id
  * @returns
  */
-function delBanco(id){
+function delImpuestos(id){
 	
 		
 	$.ajax({
 		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
-		url:"index.php?controller=Bancos&action=delBancos",
+		url:"index.php?controller=Impuestos&action=delImpuesto",
 		type:"POST",
 		dataType:"json",
-		data:{id_bancos:id}
+		data:{id_impuestos:id}
 	}).done(function(datos){		
 		
 		if(datos.data > 0){
 			
 			swal({
-		  		  title: "Bancos",
+		  		  title: "MENSAJE",
 		  		  text: "Registro Eliminado",
 		  		  icon: "success",
 		  		  button: "Aceptar",
@@ -135,7 +174,7 @@ function delBanco(id){
 	}).always(function(){
 		
 		$("#divLoaderPage").removeClass("loader")
-		consultaBancos();
+		consultaImpuestos();
 	})
 	
 	return false;
@@ -148,17 +187,17 @@ function delBanco(id){
  * @param _page
  * @returns
  */
-function consultaBancos(_page = 1){
+function consultaImpuestos(_page = 1){
 	
 	var buscador = $("#buscador").val();
 	$.ajax({
 		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
-		url:"index.php?controller=Bancos&action=consultaBancos",
+		url:"index.php?controller=Impuestos&action=consultaImpuestos",
 		type:"POST",
 		data:{page:_page,search:buscador,peticion:'ajax'}
 	}).done(function(datos){		
 		
-		$("#bancos_registrados").html(datos)		
+		$("#impuestos_registrados").html(datos)		
 		
 	}).fail(function(xhr,status,error){
 		
@@ -173,40 +212,12 @@ function consultaBancos(_page = 1){
 	
 }
 
-/***
- * funcion para cargar estado de tes_bancos
- * dc 2019-04-22
- * @returns
- */
-function cargaEstado(){
-	
-	let $ddlEstado = $("#id_estado");
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=Bancos&action=cargaEstadoBancos",
-		type:"POST",
-		dataType:"json",
-		data:null
-	}).done(function(datos){		
-		
-		$ddlEstado.empty();
-		$ddlEstado.append("<option value='0' >--Seleccione--</option>");
-		
-		$.each(datos.data, function(index, value) {
-			$ddlEstado.append("<option value= " +value.id_estado +" >" + value.nombre_estado  + "</option>");	
-  		});
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
-		$ddlEstado.empty();
-	})
-	
-}
+$("#plan_cuentas").on("focus",function(){
+	$("#mensaje_plan_cuentas").text("").fadeOut("");
+})
 
-$("#id_estado").on("focus",function(){
-	$("#mensaje_id_estado").text("").fadeOut("");
+$("#nombre_impuestos").on("focus",function(){
+	$("#mensaje_nombre_impuestos").text("").fadeOut("");
 })
 
 $("#nombre_bancos").on("keyup",function(){

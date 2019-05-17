@@ -1,6 +1,6 @@
 <?php
-class ModeloModel extends ModeloBase{
-    private $table = "usuarios";
+class CuentasPagarImpuestosModel extends ModeloBase{
+    private $table ;
     private $where;
     private $funcion;
     private $parametros;
@@ -42,6 +42,8 @@ class ModeloModel extends ModeloBase{
 	}
 	
 	public function __construct(){
+	    
+	    $this->setTable("tes_cuentas_pagar_impuestos");
 	    
 	    parent::__construct($this->getTable());
 	}

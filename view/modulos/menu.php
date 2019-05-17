@@ -327,6 +327,7 @@ $controladores=$_SESSION['controladores'];
                 <li style="<?php echo getcontrolador("Bancos",$controladores) ?>"><a href="index.php?controller=Bancos&action=index"><i class="fa fa-circle-o"></i> Bancos </a></li>
                 <li style="<?php echo getcontrolador("FormasPago",$controladores) ?>"><a href="index.php?controller=FormasPago&action=index"><i class="fa fa-circle-o"></i> Formas Pago </a></li>
                 <li style="<?php echo getcontrolador("TipoDocumento",$controladores) ?>"><a href="index.php?controller=TipoDocumento&action=index"><i class="fa fa-circle-o"></i> Tipo Documento </a></li>
+                <li style="<?php echo getcontrolador("ImpuestosCxP",$controladores) ?>"><a href="index.php?controller=Impuestos&action=index"><i class="fa fa-circle-o"></i> Impuestos CxP </a></li>
         	    
     		  </ul>
             </li>

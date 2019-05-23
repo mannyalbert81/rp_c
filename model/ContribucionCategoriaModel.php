@@ -38,7 +38,7 @@ class ContribucionCategoriaModel extends ModeloBase{
 	
 	
 	public function __construct(){
-		$this->table="contribucion_categoria";
+		$this->table="core_contribucion_categoria";
 		
 		parent::__construct($this->table);
 	}

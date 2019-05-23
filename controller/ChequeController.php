@@ -139,23 +139,20 @@ class ChequeController extends ControladorBase{
 	        $html.="<tr>";
 	        $html.='<td style="width:100px;">&nbsp;</td>';
 	        $html.="</tr>";
-	        $html.="<tr>";
-	        $html.='<td style="width:100px;">&nbsp;</td>';
-	        $html.="</tr>";
 	        $html.='</table>';
 	        $html.='<table>';
 	        $html.="<tr>";
 	        $html.='<td style="width:70px;">&nbsp;</td>';
 	        $html.='<td style="width:300px;font-size: 11px;">'.$concepto.'</td>';
 	        $html.='<td style="width:80px;font-size: 11px;">'.$formap.'</td>';
-	        $html.='<td style="width:70px;font-size: 11px;"><b>No.</b></td>';
+	        $html.='<td style="width:110px;font-size: 11px;"><b>No.</b></td>';
 	        $html.='<td style="width:10px;font-size: 11px;">'.$numeroch.'</td>';
 	        $html.="</tr>";
 	        $html.="<tr>";
 	        $html.='<td style="width:70px;">&nbsp;</td>';
 	        $html.='<td style="width:300px;font-size: 11px;">'.$cliente.'</td>';
 	        $html.='<td style="width:80px;font-size: 11px;">&nbsp;</td>';
-	        $html.='<td style="width:70px;font-size: 11px;">&nbsp;</td>';
+	        $html.='<td style="width:110px;font-size: 11px;">&nbsp;</td>';
 	        $html.='<td style="width:10px;font-size: 11px;">'.$US.'</td>';
 	        $html.="</tr>";
 	        $html.='</table>';
@@ -216,7 +213,6 @@ class ChequeController extends ControladorBase{
 	        $html.='<td style="width:100px;font-size: 11px; text-align: center;">&nbsp;</td>';
 	        $html.="</tr>";
 	        $html.="</table>";
-	        
 	        $html.="<table style='width: 100%; margin-top:10px;' border=hidden cellspacing=0>";
 	        $html.="<tr>";
 	        $html.='<td style="width:100px;">&nbsp;</td>';
@@ -226,7 +222,7 @@ class ChequeController extends ControladorBase{
 	        $html.="</tr>";
 	        $html.="<tr>";
 	        $html.='<td style="width:100px;">&nbsp;</td>';
-	        $html.="</tr>";
+	        $html.="</tr>";    
 	        $html.="<tr>";
 	        $html.='<td style="width:100px;">&nbsp;</td>';
 	        $html.="</tr>";
@@ -256,7 +252,6 @@ class ChequeController extends ControladorBase{
 	        $html.="</tr>";
 	        $html.="<tr>";
 	        $html.='</table>';
-	        
 	        $html.="<table style='width: 100%; margin-top:10px;' border=hidden cellspacing=0>";
 	        $html.="<tr>";
 	        $html.='<td style="width:100px;font-size: 11px; text-align: center;">&nbsp;</td>';

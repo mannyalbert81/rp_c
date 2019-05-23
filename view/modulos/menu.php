@@ -356,11 +356,61 @@ $controladores=$_SESSION['controladores'];
           <ul class="treeview-menu">
             <li style="<?php echo getcontrolador("BuscarProducto",$controladores) ?>"><a href="index.php?controller=BuscarProducto&action=index"><i class="fa fa-circle-o"></i> Consultar Productos</a></li>
 		    <li style="<?php echo getcontrolador("Cheque",$controladores) ?>"><a href="index.php?controller=Cheque&action=index"><i class="fa fa-circle-o"></i> Generar Cheque</a></li>
+		 	<li style="<?php echo getcontrolador("Retencion",$controladores) ?>"><a href="index.php?controller=Retencion&action=index"><i class="fa fa-circle-o"></i> Generar Retención</a></li>
 		 
 		  </ul>
         </li>
        </ul>
       </li>
+      
+      <li class="treeview"  style="<?php echo getcontrolador("MenuTributario",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder"></i> <span>Tributario</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+             <li class="treeview"  style="<?php echo getcontrolador("AdministracionTributario",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                
+    		  </ul>
+            </li>
+            
+            
+            <li class="treeview"  style="<?php echo getcontrolador("ProcesosTributario",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+              	
+             </ul>
+            </li>
+        
+        <li class="treeview"  style="<?php echo getcontrolador("ReportesTributario",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder-open-o"></i> <span>Reportes</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+           <li style="<?php echo getcontrolador("Retencion",$controladores) ?>"><a href="index.php?controller=Retencion&action=index"><i class="fa fa-circle-o"></i> Generar Retención</a></li>
+		  </ul>
+        </li>
+       </ul>
+      </li>
+      
+      
       
     </ul>
     

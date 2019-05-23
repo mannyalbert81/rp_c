@@ -142,3 +142,8 @@ $('#form_balance_comprobacion').on('submit',function(event){
 
 $('.nivel1').on('click',function(e){alert('hola'); e.preventDefault()})
 
+function ImprimirReporte()
+{
+	var enlace = 'index.php?controller=BalanceComprobacion&action=GenerarReporte';
+	window.open(enlace, '_blank');
+}

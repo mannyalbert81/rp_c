@@ -458,6 +458,37 @@ $controladores=$_SESSION['controladores'];
         </li>
        </ul>
       </li>
+         <li class="treeview"  style="<?php echo getcontrolador("MenuInventario",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder"></i> <span>Informacion</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+             <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Superintendencia<br>de Bancos</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+               <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li style="<?php echo getcontrolador("B17",$controladores) ?>"><a href="index.php?controller=B17&action=index"><i class="fa fa-circle-o"></i>B17</a></li>
+                </ul>
+               </ul>
+            </li>
+            
+       </ul>
+      </li>
 
     </ul>
     

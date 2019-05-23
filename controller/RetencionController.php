@@ -2,7 +2,7 @@
 class RetencionController extends ControladorBase{
     public function index(){
         
-        $bancos = new BancosModel();
+        $retenciones = new RetencionesModel( );
         $mensaje="";
         $error="";
         session_start();
@@ -15,7 +15,7 @@ class RetencionController extends ControladorBase{
         
         $nombre_controladores = "Retencion";
         $id_rol= $_SESSION['id_rol'];
-        $resultPer = $bancos->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+        $resultPer = $retenciones->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
         
         if (empty($resultPer)){
             
@@ -86,7 +86,7 @@ class RetencionController extends ControladorBase{
                       tri_retenciones.infoadicional_campoadicional, 
                       tri_retenciones.infoadicional_campoadicional_dos, 
                       tri_retenciones.infoadicional_campoadicional_tres,
-                      (tri_retenciones.fecha_autorizacion, 'DD-MM-YYYY HH24:MI:SS') AS fecha_autorizacion";
+                      tri_retenciones.fecha_autorizacion";
         
         $tablas = "  public.tri_retenciones";
         $where= "tri_retenciones.id_tri_retenciones='$id_tri_retenciones'";

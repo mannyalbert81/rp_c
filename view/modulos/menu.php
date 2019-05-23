@@ -174,10 +174,7 @@ $controladores=$_SESSION['controladores'];
           <ul class="treeview-menu">
             <li style="<?php echo getcontrolador("TipoComprobantes",$controladores) ?>"><a href="index.php?controller=TipoComprobantes&action=index"><i class="fa fa-circle-o"></i>Tipo Comprobantes</a></li>
             <li style="<?php echo getcontrolador("Proveedores",$controladores) ?>"><a href="index.php?controller=Proveedores&action=index"><i class="fa fa-circle-o"></i> Proveedores</a></li>
-       	  <li style="<?php echo getcontrolador("ContribucionCategoria",$controladores) ?>"><a href="index.php?controller=ContribucionCategoria&action=index"><i class="fa fa-circle-o"></i>Contribucion Categoria</a></li>
-       	  <li style="<?php echo getcontrolador("Estatus",$controladores) ?>"><a href="index.php?controller=Estatus&action=index"><i class="fa fa-circle-o"></i>Estatus</a></li>
-       	  <li style="<?php echo getcontrolador("ContribucionTipo",$controladores) ?>"><a href="index.php?controller=ContribucionTipo&action=index"><i class="fa fa-circle-o"></i>Contribucion Tipo</a></li>
-      
+       	
            	  </ul>
         </li>
         
@@ -369,7 +366,52 @@ $controladores=$_SESSION['controladores'];
         </li>
        </ul>
       </li>
-      
+            <li class="treeview"  style="<?php echo getcontrolador("MenuCore",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder"></i> <span>Core</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+
+         <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+          	    <li style="<?php echo getcontrolador("CoreEstado",$controladores) ?>"><a href="index.php?controller=CoreEstado&action=index"><i class="fa fa-circle-o"></i> Estado</a></li>
+	  			<li style="<?php echo getcontrolador("ContribucionCategoria",$controladores) ?>"><a href="index.php?controller=ContribucionCategoria&action=index"><i class="fa fa-circle-o"></i>Contribucion Categoria</a></li>
+       	  		<li style="<?php echo getcontrolador("Estatus",$controladores) ?>"><a href="index.php?controller=Estatus&action=index"><i class="fa fa-circle-o"></i>Estatus</a></li>
+       	  		<li style="<?php echo getcontrolador("ContribucionTipo",$controladores) ?>"><a href="index.php?controller=ContribucionTipo&action=index"><i class="fa fa-circle-o"></i>Contribucion Tipo</a></li>
+           	  </ul>
+        </li>
+        <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+      			  </ul>
+        </li>
+        
+        <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder-open-o"></i> <span>Reporte</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            </ul>
+        </li>
+        </ul>
+     </li>
       <li class="treeview"  style="<?php echo getcontrolador("MenuTributario",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder"></i> <span>Tributario</span>
@@ -416,8 +458,37 @@ $controladores=$_SESSION['controladores'];
         </li>
        </ul>
       </li>
-      
-      
-      
+         <li class="treeview"  style="<?php echo getcontrolador("MenuInventario",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder"></i> <span>Informacion</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+             <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Superintendencia<br>de Bancos</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+               <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li style="<?php echo getcontrolador("B17",$controladores) ?>"><a href="index.php?controller=B17&action=index"><i class="fa fa-circle-o"></i>B17</a></li>
+                </ul>
+               </ul>
+            </li>
+            
+       </ul>
+      </li>
+
     </ul>
     

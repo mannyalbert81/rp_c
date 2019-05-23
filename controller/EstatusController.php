@@ -39,7 +39,7 @@ class EstatusController extends ControladorBase{
 					
 					    $_id_estatus = $_GET["id_estatus"];
 						$columnas = "id_estatus, nombre_estatus";
-						$tablas   = "estatus";
+						$tablas   = "core_estatus";
 						$where    = "id_estatus = '$_id_estatus' "; 
 						$id       = "nombre_estatus";
 							
@@ -57,14 +57,14 @@ class EstatusController extends ControladorBase{
 					
 				}
 				
-				$this->view_Contable("Estatus",array(
+				$this->view_Core("Estatus",array(
 						"resultSet"=>$resultSet, "resultEdit" =>$resultEdit
 				));
 				
 			}
 			else
 			{
-			    $this->view_Contable("Error",array(
+			    $this->view_Core("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Estatus"
 				
 				));
@@ -113,7 +113,7 @@ class EstatusController extends ControladorBase{
 					
 				    $_id_estatus = $_POST["id_estatus"];
 					$colval = " nombre_estatus = '$_nombre_estatus'   ";
-					$tabla = "estatus";
+					$tabla = "core_estatus";
 					$where = "id_estatus = '$_id_estatus'    ";
 					
 					$resultado=$_id_estatus->UpdateBy($colval, $tabla, $where);
@@ -165,7 +165,7 @@ class EstatusController extends ControladorBase{
 			{
 			    $id_estatus=(int)$_GET["id_estatus"];
 			    $estatus =new EstatusModel();
-			    $estatus->deleteBy(" id_estatus",$id_estatus);
+			    $estatus->deleteBy("id_estatus",$id_estatus);
 				
 			}
 			

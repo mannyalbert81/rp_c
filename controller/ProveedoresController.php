@@ -358,7 +358,7 @@ class ProveedoresController extends ControladorBase{
 	                echo json_encode($respuesta);
 	            
 	        }else{
-	            echo '[{"id":0,"value":"sin datos"}]';
+	            echo '[{"id":"","value":"Proveedor No Encontrado"}]';
 	        }
 	        
 	    }

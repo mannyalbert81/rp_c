@@ -39,7 +39,7 @@ class ContribucionCategoriaController extends ControladorBase{
 					
 					    $_id_contribucion_categoria = $_GET["id_contribucion_categoria"];
 						$columnas = "id_contribucion_categoria, nombre_contribucion_categoria";
-						$tablas   = "contribucion_categoria";
+						$tablas   = "core_contribucion_categoria";
 						$where    = "id_contribucion_categoria = '$_id_contribucion_categoria' "; 
 						$id       = "nombre_contribucion_categoria";
 							
@@ -57,14 +57,14 @@ class ContribucionCategoriaController extends ControladorBase{
 					
 				}
 				
-				$this->view_Contable("ContribucionCategoria",array(
+				$this->view_Core("ContribucionCategoria",array(
 						"resultSet"=>$resultSet, "resultEdit" =>$resultEdit
 				));
 				
 			}
 			else
 			{
-			    $this->view_Contable("Error",array(
+			    $this->view_Core("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Contribucion de Categoria"
 				
 				));
@@ -113,7 +113,7 @@ class ContribucionCategoriaController extends ControladorBase{
 					
 				    $_id_contribucion_categoria = $_POST["id_contribucion_categoria"];
 					$colval = " nombre_contribucion_categoria = '$_nombre_contribucion_categoria'   ";
-					$tabla = "contribucion_categoria";
+					$tabla = "core_contribucion_categoria";
 					$where = "id_contribucion_categoria = '$_id_contribucion_categoria'    ";
 					
 					$resultado=$contribucion_categoria->UpdateBy($colval, $tabla, $where);

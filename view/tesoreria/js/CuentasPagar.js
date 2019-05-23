@@ -1,30 +1,61 @@
 $(document).ready(function(){
 	
-	/* para ver clase de errores, cambiar stilo cuando son de grupo*/	
-	$("div.input-group").children("div.errores").css({"margin-top":"-10px","margin-left":"0px","margin-right":"0px"});
-	$(".field-sm").css({"font-size":"12px"});
 	
-	$(".cantidades1").inputmask();
+	init();
+	
 	devuelveConsecutivoCxP();
 	cargaTipoDocumento();
 	cargaFormasPago();
 	cargaBancos();
 	cargaMoneda();
 	
-	/*para carga de modales*/
+	/* para carga de modales */
 	cargaFrecuenciaLote();
 	
-	/*para carga de listados*/
-	consultaActivos();
+	/* para carga de listados */
+	//consultaActivos();
 	cargaModImpuestos();
 	
-	/*$("#nombre_lote").notify(
-			  "I'm to the right of this box", 
-			  { position:"buttom" }
-			);
-	*/	
+	
 		
 })
+
+/*******************************************************************************
+ * funcion para iniciar el formulario
+ * 
+ * @returns
+ */
+function init(){
+	
+	//$(".inputDecimal").val('0.00');
+	
+	/* para ver clase de errores, cambiar stilo cuando son de grupo */	
+	$("div.input-group").children("div.errores").css({"margin-top":"-10px","margin-left":"0px","margin-right":"0px"});
+	$(".field-sm").css({"font-size":"12px"});
+	
+	$(".inputDecimal").inputmask({
+		alias: "numeric",
+		digitsOptional: false,
+		groupSeparator:"",
+		autoGroup: true,
+		digits: 2,
+		integerDigits: 10,
+		placeholder:"0",
+		autoUnmask: true,
+	});
+	
+	$("#numero_documento").inputmask({
+		mask: "999-999-9{1,8}", 
+		placeholder: "_",
+		clearIncomplete: true,
+		rightAlign: true
+	});
+	//mask: "9{1,10}.99",
+	$("#impuestos_cuentas_pagar").hide();
+	
+	bloqueaControles();
+	
+}
 
 function numeros(e){
 	  var key = window.event ? e.which : e.keyCode;
@@ -33,9 +64,9 @@ function numeros(e){
 	  }
  }
 
-/***
- * function to upload formas pago
- * dc 2019-04-18
+/*******************************************************************************
+ * function to upload formas pago dc 2019-04-18
+ * 
  * @returns
  */
 function cargaFormasPago(){
@@ -64,9 +95,9 @@ function cargaFormasPago(){
 	})
 }
 
-/***
- * function to upload formas pago
- * dc 2019-04-18
+/*******************************************************************************
+ * function to upload formas pago dc 2019-04-18
+ * 
  * @returns
  */
 function cargaTipoDocumento(){
@@ -96,9 +127,9 @@ function cargaTipoDocumento(){
 }
 
 
-/***
- * function to upload bancos
- * dc 2019-04-18
+/*******************************************************************************
+ * function to upload bancos dc 2019-04-18
+ * 
  * @returns
  */
 function cargaBancos(){
@@ -126,9 +157,9 @@ function cargaBancos(){
 	})
 }
 
-/***
- * function to listar Moneda
- * dc 2019-04-18
+/*******************************************************************************
+ * function to listar Moneda dc 2019-04-18
+ * 
  * @returns
  */
 function cargaMoneda(){
@@ -155,26 +186,38 @@ function cargaMoneda(){
 	})
 }
 
-/***
+/*******************************************************************************
  * function to search proveedores
+ * 
  * @returns
  */
-$( "#cedula_proveedor" ).autocomplete({
+$("#cedula_proveedor" ).autocomplete({
 
 	source: "index.php?controller=Proveedores&action=buscaProveedorByCedula",
 	minLength: 6,
     select: function (event, ui) {
-       // Set selection          
-       $('#id_proveedor').val(ui.item.id);
-       $('#cedula_proveedor').val(ui.item.value);
-       $("#nombre_proveedor").val(ui.item.nombre);
-       $("#email_proveedor").val(ui.item.email);
-       return false;
-    },focus: function(event, ui) { 
-        var text = ui.item.value; 
-        $('#cedula_usuarios').val();            
-        return false; 
-    } 
+       // Set selection
+    	if(ui.item.id == ''){
+    		$("#cedula_proveedor" ).notify("CI / RUC no Válido",{ position:"top right"});
+			 return;
+		}
+		
+	       $('#id_proveedor').val(ui.item.id);
+	       $('#cedula_proveedor').val(ui.item.value);
+	       $("#nombre_proveedor").val(ui.item.nombre);
+	       $("#email_proveedor").val(ui.item.email);
+      
+    },
+    change: function(event,ui){
+    	
+		   if(ui.item == null){			   
+			   $("#cedula_proveedor" ).notify("Digite CI / RUC Válido",{ position:"top right"});    			
+			   $('#id_proveedor').val('');
+		       $('#cedula_proveedor').val('');
+		       $("#nombre_proveedor").val('');
+		       $("#email_proveedor").val('');
+		   }
+	   }
 }).focusout(function() {
 	
 });
@@ -215,7 +258,7 @@ function devuelveConsecutivoCxP(){
 	 $(this).val($(this).val().toUpperCase());
  })
  
- /* PARA LISTADO DE DATOS*/
+ /* PARA LISTADO DE DATOS */
  function consultaActivos(page=1){
 	
 	parametros = {search:'',peticion:'ajax'}
@@ -239,32 +282,75 @@ function devuelveConsecutivoCxP(){
  
  /* PARA EVITAR SOBRECARGA DE PAGINA */
  
- /*$(window).on('beforeunload', function(){
-	  return "Good Bye";
-	});*/
- /*function myFunction() {
-	  return "Write something clever here...";
-	}*/
+ /*
+	 * $(window).on('beforeunload', function(){ return "Good Bye"; });
+	 */
+ /*
+	 * function myFunction() { return "Write something clever here..."; }
+	 */
 
- /*PARA VENTANAS MODALES*/
-  
+ /* PARA VENTANAS MODALES */
+ /***************************************************************************
+	 * funcion abre modal para generacion de lote
+	 * 
+	 * @param event
+	 * @returns
+	 */
  $('#mod_lote').on('show.bs.modal', function (event) {
-	 
+	 	 
 	 $("#mod_descripcion_lote").val("");
 	 let $id_lote = $("#id_lote").val();
 	 if( $id_lote > 0 ){ $("#nombre_lote").notify("Lote ya Generado",{ position:"buttom left"}); return false; }
 	 let nombreLote = $("#nombre_lote").val();	 
 	 if(nombreLote.length == 0){ $("#nombre_lote").notify("ingrese nombre lote",{ position:"buttom left"});  return false;}
+	 		 
 	 var modal = $(this)
 	 modal.find('#mod_nombre_lote').val($("#nombre_lote").val())
 
- });
+ }); 
  
+ /***************************************************************************
+	 * funcion abre modal de ingreso de los impuestos a la factura
+	 * 
+	 * @param event
+	 * @returns
+	 */
  $('#mod_impuestos').on('show.bs.modal', function (event) {
 	 
-	 let _monto_cuentas_pagar = $("#monto_cuentas_pagar").val();
+	 var modal = $(this);
+	 
+	// toma de datos
 	 let $id_lote = $("#id_lote").val();
-	 if( $id_lote == 0 || $id_lote.length == 0 || isNaN($id_lote) ){ $("#nombre_lote").notify("Lote No generado",{ position:"buttom"}); return false; }
+	 if( $id_lote == 0 || $id_lote.length == 0 || isNaN($id_lote) ){
+		 $("html, body").animate({ scrollTop: $(nombre_lote).offset().top-120 }, 1000);
+		 $("#nombre_lote").notify("Lote No generado",{ position:"buttom"}); 
+		 return false; 
+	 }
+	 if($("#id_tipo_documento").val() == 0 ){ 
+		 $("html, body").animate({ scrollTop: $(nombre_lote).offset().top-120 }, 1000);
+		 $("#id_tipo_documento").notify("Seleccione Tipo Documento",{ position:"buttom left"});  
+		 return false;
+	 }
+	 let tipoDocumento = $("#id_tipo_documento option:selected").text();	 
+	 $("#mod_tipo_documento").val(tipoDocumento);
+	 
+	 if($("#numero_documento").val() == '' || $("#numero_documento").val().length == 0 ){
+		 $("html, body").animate({ scrollTop: $(nombre_lote).offset().top-120 }, 1000);
+		 $("#numero_documento").notify("Ingrese Num Documento",{ position:"buttom left"});  return false;
+		 }
+	 let numeroDocumento = $("#numero_documento").val();
+	 $("#mod_numero_documento").val(numeroDocumento);
+	 
+	 let _id_bancos = $("#id_bancos").val();
+	 
+	 if( _id_bancos == 0 ){
+		 
+		 $("#id_bancos").notify("Seleccione Banco",{ position:"buttom left"});
+		 return false;
+	 }
+	 
+	 let _monto_cuentas_pagar = $("#monto_cuentas_pagar").val();
+	 
 	 if( isNaN(_monto_cuentas_pagar) || _monto_cuentas_pagar == "" || _monto_cuentas_pagar.length == 0){
 		 swal({text: "ingrese un monto (base de compra)",
 	  		  icon: "info",
@@ -273,9 +359,11 @@ function devuelveConsecutivoCxP(){
 		 return false;
 	 }
 	 
-	 var modal = $(this);
-	 
 	 modal.find('#mod_monto_documento').val(_monto_cuentas_pagar);
+	 
+	 $("#monto_cuentas_pagar").attr('readonly',true);
+	 
+	 modListaImpuestosCxP();
 
 	 });
  
@@ -283,13 +371,65 @@ function devuelveConsecutivoCxP(){
 	 
 	 let modal = $(this);
 	 
+	// toma de datos
+	 let $id_lote = $("#id_lote").val();
+	 if( $id_lote == 0 || $id_lote.length == 0 || isNaN($id_lote) ){
+		 $("html, body").animate({ scrollTop: $(nombre_lote).offset().top-120 }, 1000);
+		 $("#nombre_lote").notify("Lote No generado",{ position:"buttom"}); 
+		 return false; 
+	 }
+	 if($("#id_tipo_documento").val() == 0 ){ 
+		 $("html, body").animate({ scrollTop: $(nombre_lote).offset().top-120 }, 1000);
+		 $("#id_tipo_documento").notify("Seleccione Tipo Documento",{ position:"buttom left"});  
+		 return false;
+	 }
+	 let tipoDocumento = $("#id_tipo_documento option:selected").text();	 
+	 $("#mod_dis_tipo_documento").val(tipoDocumento);
+	 
+	 if($("#numero_documento").val() == '' || $("#numero_documento").val().length == 0 ){
+		 $("html, body").animate({ scrollTop: $(nombre_lote).offset().top-120 }, 1000);
+		 $("#numero_documento").notify("Ingrese Num Documento",{ position:"buttom left"});  return false;
+		 }
+	 let numeroDocumento = $("#numero_documento").val();
+	 $("#mod_numero_documento").val(numeroDocumento);
+	 
+	 let _monto_cuentas_pagar = $("#monto_cuentas_pagar").val();
+	 
+	 if( isNaN(_monto_cuentas_pagar) || _monto_cuentas_pagar == "" || _monto_cuentas_pagar.length == 0){
+		 swal({text: "ingrese un monto (base de compra)",
+	  		  icon: "info",
+	  		  button: "Aceptar",
+	  		});
+		 return false;
+	 }
+	 
+	 modal.find('#mod_monto_compra').val(_monto_cuentas_pagar);
+	 
+	 let $id_proveedor = $("#id_proveedor").val();
+	 if( $id_proveedor == '' || $id_proveedor.length == 0 || isNaN($id_proveedor) ){
+		 $("html, body").animate({ scrollTop: $(cedula_proveedor).offset().top-120 }, 1000);
+		 $("#cedula_proveedor").notify("Digite Proveedor",{ position:"buttom left"}); 
+		 return false; 
+	 }
+	 
+	 let $nombre_proveedor = $("#nombre_proveedor").val();
+	 let $cedula_proveedor = $("#cedula_proveedor").val();
+	 let $moneda = $("#id_moneda option:selected").text();
+	 let $numComprobante = $("#num_comprobante").val();
+	 modal.find('#mod_nombre_proveedor').val($nombre_proveedor);
+	 modal.find('#mod_codigo_proveedor').val($cedula_proveedor);
+	 modal.find('#mod_nombre_moneda').val($moneda);
+	 modal.find('#mod_num_comprobante').val($numComprobante);
+	 
+	 //modListaImpuestosCxP();
+	 
  });
 
- /***
-  * dc 2019-04-29
-  * para carga de frecuencia en lote 
-  * @returns
-  */
+ /***************************************************************************
+	 * dc 2019-04-29 para carga de frecuencia en lote
+	 * 
+	 * @returns
+	 */
  function cargaFrecuenciaLote(){
 		let $frecuencia = $("#mod_id_frecuencia");
 		
@@ -314,12 +454,11 @@ function devuelveConsecutivoCxP(){
 		})
 	}
 
- /*PARA SUBMIT DE MODALES*/
+ /* PARA SUBMIT DE MODALES */
  
- /***
-  * dc 2019-04-29
-  * formulario de lote
-  */
+ /***************************************************************************
+	 * dc 2019-04-29 formulario de lote
+	 */
 $("#frm_genera_lote").on("submit",function(event){
 	
 	let $id_lote = $("#id_lote").val();
@@ -341,9 +480,12 @@ $("#frm_genera_lote").on("submit",function(event){
 		data:parametros
 	}).done(function(respuesta){
 				
-		if(respuesta.valor > 0){			
+		if(respuesta.valor > 0){
+			
 			$("#id_lote").val(respuesta.valor);
 			$("#msg_frm_lote").text("Lote Generado").addClass("alert alert-success");
+			
+			desbloqueaControles();
 		}
 		
 		
@@ -362,9 +504,8 @@ $("#frm_genera_lote").on("submit",function(event){
 	event.preventDefault();
 })
 
-/***
- * dc 2019-05-06
- * desc: agregar impuestos a la cuenta por pagar
+/*******************************************************************************
+ * dc 2019-05-06 desc: agregar impuestos a la cuenta por pagar
  */
 $("#btn_mod_agrega_impuestos").on("click",function(event){
 	
@@ -414,17 +555,17 @@ $("#btn_mod_agrega_impuestos").on("click",function(event){
 			modListaImpuestosCxP()
 	})
 	
-	//console.log('click en guardar impuesto')
+	// console.log('click en guardar impuesto')
 	event.preventDefault();
 	
 })
 
-/* PARA LISTA EN MODALES*/
-/*Listar impuestos aplicados*/
+/* PARA LISTA EN MODALES */
+/* Listar impuestos aplicados */
 
-/***
- *dc 2019-05-02
- *funcion listar impuestos aplicados a cuentas por pagar 
+/*******************************************************************************
+ * dc 2019-05-02 funcion listar impuestos aplicados a cuentas por pagar
+ * 
  * @returns
  */
 function load_impuestos_cpagar(page=1){
@@ -441,8 +582,9 @@ function load_impuestos_cpagar(page=1){
 	
 }
 
-/***
+/*******************************************************************************
  * dc 2019-05-06
+ * 
  * @returns
  */
 function cargaModImpuestos(){
@@ -472,9 +614,9 @@ function cargaModImpuestos(){
 	})
 }
 
-/***
- * dc 2019-05-07
- * desc para cargar impuestos en cuentas por cobrar
+/*******************************************************************************
+ * dc 2019-05-07 desc para cargar impuestos en cuentas por cobrar
+ * 
  * @returns
  */
 function modListaImpuestosCxP(_page = 1){
@@ -502,9 +644,10 @@ function modListaImpuestosCxP(_page = 1){
 	
 }
 
-/***
- * dc 2019-05-07
- * desc: elimina registro de los impuestos agregados a las ctas. pagar.
+/*******************************************************************************
+ * dc 2019-05-07 desc: elimina registro de los impuestos agregados a las ctas.
+ * pagar.
+ * 
  * @returns
  */
 function delImpuestosCxP(id){
@@ -543,11 +686,12 @@ function delImpuestosCxP(id){
 	
 }
 
-/*	PARA ACTIVAR BTN DISTRIBUCION */
+/* PARA ACTIVAR BTN DISTRIBUCION */
 /* cuando se haga click en boton btn_distribucion */
 
-/***
+/*******************************************************************************
  * funcion que envia datos para realizar la funcion de distribucion
+ * 
  * @returns
  */
 function generaDistribucion(){
@@ -555,13 +699,21 @@ function generaDistribucion(){
 	
 	var $lote_num = $("#id_lote").val();
 	
+	if($lote_num.length == 0 || $lote_num == 0 ){
+		$("#nombre_lote").notify("Lote No generado",{ position:"buttom left"});
+		$("html, body").animate({ scrollTop: $(nombre_lote).offset().top-120 }, 1000);
+		return false;
+	}
+	
+	let _base_compra = $("#monto_cuentas_pagar").val()
+	
 	$.ajax({
 		beforeSend:function(){},
 		url:"index.php?controller=CuentasPagar&action=generaDistribucion",
 		type: "POST",
 		dataType: "json",
 		async: false,
-		data: {id_lote:$lote_num}
+		data: {id_lote:$lote_num,monto_cuentas_pagar:_base_compra}
 	}).done(function(respuesta){
 		
 		$respuesta = true;
@@ -575,8 +727,9 @@ function generaDistribucion(){
 	return $respuesta;
 } 
 
-/***
+/*******************************************************************************
  * funcion que envia datos para realizar consulta de distribucion
+ * 
  * @returns
  */
 function ListaDistribucion( _page = 1){
@@ -585,6 +738,9 @@ function ListaDistribucion( _page = 1){
 	var $lote_num = $("#id_lote").val();
 	
 	var $divtabla = $("#distribucion_cuentas_pagar")
+	
+	//tomar datos de referencia de descripcion de cuentas pagar
+	let $referencia_cuentas_pagar = $("#descripcion_cuentas_pagar").val();
 	
 	$.ajax({
 		beforeSend:function(){},
@@ -596,6 +752,8 @@ function ListaDistribucion( _page = 1){
 		
 		$divtabla.html(respuesta);
 		
+		$divtabla.find("input[name='mod_dis_referencia']").val($referencia_cuentas_pagar);
+		
 	}).fail(function(xhr, status, error){
 		var err = xhr.responseText
 		console.log(err);
@@ -605,13 +763,14 @@ function ListaDistribucion( _page = 1){
 	return $respuesta;
 }
 
-/****
+/*******************************************************************************
  * dc 2019-05-12
+ * 
  * @returns
  */
 $("#btn_distribucion").on("click",function(event){
 	
-	//aqui genera la distribucion de los pagos
+	// aqui genera la distribucion de los pagos
 	var $respuesta_distribucion = generaDistribucion();
 	
 	if(!$respuesta_distribucion){		
@@ -622,8 +781,8 @@ $("#btn_distribucion").on("click",function(event){
 		
 })
 
-//PARA EVENTO KEYPRESS 
-/*para input con clase distribucion*/
+// PARA EVENTO KEYPRESS
+/* para input con clase distribucion */
 
 $("#distribucion_cuentas_pagar").on("focus","input.distribucion.distribucion_autocomplete[type=text]",function(e) {
 	
@@ -649,7 +808,7 @@ $("#distribucion_cuentas_pagar").on("focus","input.distribucion.distribucion_aut
     			})
     		},
     		select: function (event, ui) {
-     	       	// Set selection  
+     	       	// Set selection
     			let fila = _elemento.closest("tr");
     			let in_nombre_plan_cuentas = fila.find("input:text[name='mod_dis_nombre']")
     			let in_id_plan_cuentas = fila.find("input:hidden[name='mod_dis_id_plan_cuentas']")
@@ -671,7 +830,8 @@ $("#distribucion_cuentas_pagar").on("focus","input.distribucion.distribucion_aut
      		   if(ui.item == null){
      			   
      			 _elemento.closest("tr").find("input:hidden[name='mod_dis_id_plan_cuentas']").val("");
-     			 _elemento.closest("table").notify("Digite Cod. Cuenta Valido",{ position:"top center"});    			
+     			 _elemento.closest("table").notify("Digite Cod. Cuenta Valido",{ position:"top center"});
+     			_elemento.val('');
      			 
      		   }
      	   }
@@ -683,7 +843,7 @@ $("#distribucion_cuentas_pagar").on("focus","input.distribucion.distribucion_aut
 });
 
 /* PARA MODAL DE DISTRIBUCION */
-//metodo se submit
+// metodo se submit
 $("#btn_distribucion_aceptar").on("click",function(){
 	
 	let divPadre = $("#distribucion_cuentas_pagar");
@@ -710,7 +870,7 @@ $("#btn_distribucion_aceptar").on("click",function(){
 		}		
 	})
 	
-	//validar datos antes de enviar al controlador
+	// validar datos antes de enviar al controlador
 	
 	parametros 	= new FormData();
 	arrayDatos 	= JSON.stringify(data);
@@ -738,8 +898,8 @@ $("#btn_distribucion_aceptar").on("click",function(){
 	
 })
 
-//PARA INPUT DE REFERENCIA
-/*poner mismo texto a todos*/
+// PARA INPUT DE REFERENCIA
+/* poner mismo texto a todos */
 $("#distribucion_cuentas_pagar").on("keyup","input:text[name='mod_dis_referencia']",function(){
 		
 	let valorPrincipal = $(this).val();
@@ -752,8 +912,8 @@ $("#distribucion_cuentas_pagar").on("keyup","input:text[name='mod_dis_referencia
 
 
 
-/*PARA DIV CON MENSAJES DE ERROR*/
-/*SE ACTIVAN AL ENFOCAR EN INPUT RELACIONADO*/
+/* PARA DIV CON MENSAJES DE ERROR */
+/* SE ACTIVAN AL ENFOCAR EN INPUT RELACIONADO */
 
 $("#nombre_lote").on("focus",function(){
 	$("#mensaje_id_lote").fadeOut().text("");
@@ -763,7 +923,20 @@ $("#mod_monto_documento").on("focus",function(){
 	$("#mensaje_mod_monto_documento").fadeOut().text("");
 })
 
-$("#btn_mostrar_lista_impuestos").on("click",function(){ $("#impuestos_cuentas_pagar").toggle("slow");})
+$("#btn_mostrar_lista_impuestos").on("click",function(){	
+	
+	if($(this).find("i").hasClass("fa fa-search-plus")){
+		
+		$(this).find("span").text("Ocultar lista");
+		$(this).find("i").removeClass().addClass("fa fa-search-minus");	
+	}else{
+		$(this).find("span").text("Ver lista");
+		$(this).find("i").removeClass().addClass("fa fa-search-plus");
+	}
+	
+	$("#impuestos_cuentas_pagar").toggle("slow");
+	
+})
 
 function generaMensaje(mensaje,clase){
 	let $div = $("<div></div>");
@@ -773,4 +946,80 @@ function generaMensaje(mensaje,clase){
 	$div.addClass(clase);
 	$div.append($btnClose);
 	return $div;
+}
+
+
+// PARA EL SUBMIT DE GUARDADO PRINCIPAL
+/* guardar cuentas por pagar */
+
+/*******************************************************************************
+ * dc 2019-05-17
+ */
+$("#frm_cuentas_pagar").on("submit",function(event){
+	
+	console.log('llego')
+	
+	var parametros = $(this).serialize();
+	
+	$.ajax({
+		beforeSend:null,
+		url:"index.php?controller=CuentasPagar&action=InsertCuentasPagar",
+		type:"POST",
+		dataType:"json",
+		data:parametros
+	}).done(function(x){
+		
+		console.log(x);
+		
+	}).fail(function(xhr,status,error){
+		
+		let err = xhr.responseText
+		
+		console.log(err);
+	})
+	
+	
+	
+	event.preventDefault()
+})
+
+/********************************************************************************
+ * dc 2019-05-22
+ * @returns
+ */
+function bloqueaControles(){
+	
+	let arrayInput = ["cedula_proveedor","condiciones_pago_cuentas_pagar", "id_bancos", "id_moneda","numero_documento",
+		"numero_ord_compra", "metodo_envio_cuentas_pagar", "monto_cuentas_pagar", "desc_comercial_cuentas_pagar", "flete_cuentas_pagar",
+		"miscelaneos_cuentas_pagar", "impuesto_cuentas_pagar", "total_cuentas_pagar", "monto1099_cuentas_pagar",
+		"efectivo_cuentas_pagar", "cheque_cuentas_pagar", "tarjeta_credito_cuentas_pagar",
+		"condonaciones_cuentas_pagar","saldo_cuentas_pagar"];
+	
+	$.each(arrayInput, function(i,v){
+		$("#"+v).attr('readonly','readonly');
+	})
+	
+	/*$("input:text, select").each(function(i,value){
+		console.log($(this).attr('name'));
+	})*/
+	
+}
+
+/********************************************************************************
+ * dc 2019-05-22
+ * @returns
+ */
+function desbloqueaControles(){
+	
+	let arrayInput = ["cedula_proveedor","condiciones_pago_cuentas_pagar", "id_bancos", "id_moneda","numero_documento",
+		"numero_ord_compra", "metodo_envio_cuentas_pagar", "monto_cuentas_pagar", "desc_comercial_cuentas_pagar", "flete_cuentas_pagar",
+		"miscelaneos_cuentas_pagar", "impuesto_cuentas_pagar", "total_cuentas_pagar", "monto1099_cuentas_pagar",
+		"efectivo_cuentas_pagar", "cheque_cuentas_pagar", "tarjeta_credito_cuentas_pagar",
+		"condonaciones_cuentas_pagar","saldo_cuentas_pagar"];
+	
+	$.each(arrayInput, function(i,v){
+		$("#"+v).attr('readonly',false);
+	})
+	
+	
 }

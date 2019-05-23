@@ -285,7 +285,7 @@ class RetencionController extends ControladorBase{
                     ";
         $where    = "tri_retenciones.id_tri_retenciones=id_tri_retenciones";
         
-        $id       = "tri_retenciones.id_tri_retenciones";
+        $id       = "tri_retenciones.fecha_autorizacion ";
         
         
        
@@ -300,7 +300,8 @@ class RetencionController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND (infocompretencion_razonsocialsujetoretenido LIKE '".$search."%' OR infocompretencion_identificacionsujetoretenido LIKE '".$search."%' OR infotributaria_secuencial LIKE '%".$search."%')";
+                $where1=" AND (infocompretencion_razonsocialsujetoretenido LIKE '%".$search."%' OR infocompretencion_identificacionsujetoretenido LIKE '%".$search."%' OR infotributaria_secuencial LIKE '%".$search."%')
+                ";
                 
                 $where_to=$where.$where1;
             }else{
@@ -321,7 +322,7 @@ class RetencionController extends ControladorBase{
             
             $limit = " LIMIT   '$per_page' OFFSET '$offset'";
             
-            $resultSet=$usuarios->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+            $resultSet=$usuarios->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
             $count_query   = $cantidadResult;
             $total_pages = ceil($cantidadResult/$per_page);
             

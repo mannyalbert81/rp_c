@@ -98,56 +98,94 @@ class CuentasPagarController extends ControladorBase{
 	
 	
 	/***
+	 * dc 2019-05-21
 	 * return jason,
-	 * desc: insertar un estado 
+	 * desc: insertar una cuenta por pagar 
 	 */
-	public function InsertEstado(){
+	public function InsertCuentasPagar(){
 			
 		session_start();
-		$estado = new EstadoModel();
+		$cuentasPagar = new CuentasPagarModel();
 		
-		$nombre_controladores = "Estados";
+		$nombre_controladores = "IngresoCuentasPagar";
+		
 		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $estado->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-			
-		if (!empty($resultPer)){		
+		$resultPer = $cuentasPagar->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 		
-		    $_nombreEstado = (isset($_POST['nombre_estado'])) ? $_POST['nombre_estado'] : '';
-		    $_tablaEstado = (isset($_POST['tabla_estado'])) ? $_POST['tabla_estado'] : '';
+		if(empty($resultPer)){
 		    
-		    $_id_estado = (isset($_POST['id_estado'])) ? $_POST['id_estado'] : '0';
-		
-			$funcion = "ins_estado";			
-			$parametros = "'$_nombreEstado','$_tablaEstado',$_id_estado";
-			
-			$estado->setFuncion($funcion);
-			$estado->setParametros($parametros);
-						
-			$resultado = $estado->llamafuncion();
-			
-			$respuesta = -1;
-			
-			if(!empty($resultado) && count($resultado) > 0 ){
-			    
-			    foreach ($resultado[0] as $k => $v){
-			        
-			        $respuesta = $v;
-			        
-			    }
-			}
-			
-			echo json_encode(array('value' => $respuesta));
-
-		}else{
-		    
-		   echo "no tiene permisos Insertar";
-		
+		    echo 'Usuario no tine Permisos Insertar Cuentas Pagar';
+		    exit();
 		}
 		
+		//toma de datos
+		
+		$_id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : null;
+		$_id_consecutivo = (isset($_POST['id_consecutivo'])) ? $_POST['id_consecutivo'] : null;
+		$_id_cuentas_pagar = (isset($_POST['id_cuentas_pagar'])) ? $_POST['id_cuentas_pagar'] : null;
+		$_id_tipo_documento = (isset($_POST['id_tipo_documento'])) ? $_POST['id_tipo_documento'] : null;
+		$_id_proveedor = (isset($_POST['id_proveedor'])) ? $_POST['id_proveedor'] : null;
+		$_id_bancos = (isset($_POST['id_bancos'])) ? $_POST['id_bancos'] : null;
+		$_id_moneda = (isset($_POST['id_moneda'])) ? $_POST['id_moneda'] : null;
+		$_descripcion_cuentas_pagar = (isset($_POST['descripcion_cuentas_pagar'])) ? $_POST['descripcion_cuentas_pagar'] : null;
+		$_fecha_cuentas_pagar = (isset($_POST['fecha_cuentas_pagar'])) ? $_POST['fecha_cuentas_pagar'] : null;
+		$_condiciones_pago_cuentas_pagar = (isset($_POST['condiciones_pago_cuentas_pagar'])) ? $_POST['condiciones_pago_cuentas_pagar'] : null;
+		$_num_documento_cuentas_pagar = (isset($_POST['numero_documento'])) ? $_POST['numero_documento'] : null;
+		$_num_ord_compra_cuentas_pagar = (isset($_POST['numero_ord_compra'])) ? $_POST['numero_ord_compra'] : null;
+		$_metodo_envio_cuentas_pagar = (isset($_POST['metodo_envio_cuentas_pagar'])) ? $_POST['metodo_envio_cuentas_pagar'] : null;
+		$_compra_cuentas_pagar = (isset($_POST['monto_cuentas_pagar'])) ? $_POST['monto_cuentas_pagar'] : null;
+		$_desc_comercial = (isset($_POST['desc_comercial_cuentas_pagar'])) ? $_POST['desc_comercial_cuentas_pagar'] : null;
+		$_flete_cuentas_pagar = (isset($_POST['flete_cuentas_pagar'])) ? $_POST['flete_cuentas_pagar'] : null;
+		$_miscelaneos_cuentas_pagar = (isset($_POST['miscelaneos_cuentas_pagar'])) ? $_POST['miscelaneos_cuentas_pagar'] : null;
+		$_impuesto_cuentas_pagar = (isset($_POST['impuesto_cuentas_pagar'])) ? $_POST['impuesto_cuentas_pagar'] : null;
+		$_total_cuentas_pagar = (isset($_POST['total_cuentas_pagar'])) ? $_POST['total_cuentas_pagar'] : null;
+		$_monto1099_cuentas_pagar = (isset($_POST['monto1099_cuentas_pagar'])) ? $_POST['monto1099_cuentas_pagar'] : null;
+		$_efectivo_cuentas_pagar = (isset($_POST['efectivo_cuentas_pagar'])) ? $_POST['efectivo_cuentas_pagar'] : null;
+		$_cheque_cuentas_pagar = (isset($_POST['cheque_cuentas_pagar'])) ? $_POST['cheque_cuentas_pagar'] : null;
+		$_tarjeta_credito_cuentas_pagar = (isset($_POST['tarjeta_credito_cuentas_pagar'])) ? $_POST['tarjeta_credito_cuentas_pagar'] : null;
+		$_condonaciones_cuentas_pagar = (isset($_POST['condonaciones_cuentas_pagar'])) ? $_POST['condonaciones_cuentas_pagar'] : null;
+		$_saldo_cuentas_pagar = (isset($_POST['saldo_cuentas_pagar'])) ? $_POST['saldo_cuentas_pagar'] : null;
+		
+		$funcion = "tes_ins_cuentas_pagar";
+		$parametros = "
+                    '$_id_lote',
+                    '$_id_consecutivo',
+                    '$_id_tipo_documento',
+                    '$_id_proveedor',
+                    '$_id_bancos',
+                    '$_id_moneda',
+                    '$_descripcion_cuentas_pagar',
+                    '$_fecha_cuentas_pagar',
+                    '$_condiciones_pago_cuentas_pagar',
+                    '$_num_documento_cuentas_pagar',
+                    '$_num_ord_compra_cuentas_pagar',
+                    '$_metodo_envio_cuentas_pagar',
+                    '$_compra_cuentas_pagar',
+                    '$_desc_comercial',
+                    '$_flete_cuentas_pagar',
+                    '$_miscelaneos_cuentas_pagar',
+                    '$_impuesto_cuentas_pagar',
+                    '$_total_cuentas_pagar',
+                    '$_monto1099_cuentas_pagar',
+                    '$_efectivo_cuentas_pagar',
+                    '$_cheque_cuentas_pagar',
+                    '$_tarjeta_credito_cuentas_pagar',
+                    '$_condonaciones_cuentas_pagar',
+                    '$_saldo_cuentas_pagar',
+                    '$_id_cuentas_pagar'
+                    ";
+		
+		$cuentasPagar->setFuncion($funcion);
+		$cuentasPagar->setParametros($parametros);
+		
+		$resultado = $cuentasPagar->llamafuncionPG();
+		
+		echo $parametros;
+		
+		echo json_encode(array('value' => $resultado));
+			
+		
 	}
-	
-	
-
 	
 	
 	/**
@@ -257,7 +295,7 @@ class CuentasPagarController extends ControladorBase{
 	    $consecutivos = null;
 	    $consecutivos = new ConsecutivosModel();
 	    
-	    $query = "SELECT id_consecutivos, numero_consecutivos FROM consecutivos 
+	    $query = "SELECT id_consecutivos, LPAD(valor_consecutivos::TEXT,espacio_consecutivos,'0') AS numero_consecutivos FROM consecutivos 
                 WHERE id_entidades = 1 AND nombre_consecutivos='CxP'";
 	    
 	    $resulset = $consecutivos->enviaquery($query);
@@ -582,8 +620,15 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    //controlador IngresoCuentasPagar
 	    
+	    //valida usuario logeado  dc 2019-05-20
+	    if(!isset($_SESSION['id_usuarios'])){
+	        echo 'Session Caducada';
+	        exit();
+	    }	    
 	    //variables desde fn JS submit frm_genera_lote
 	    //dc 2019-04-30
+	    
+	    $_id_usuarios = $_SESSION['id_usuarios']; 
 	    
 	    $_id_lote =(isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0;
 	    $_nombre_lote =(isset($_POST['nombre_lote'])) ? $_POST['nombre_lote'] : "";
@@ -593,7 +638,7 @@ class CuentasPagarController extends ControladorBase{
 	    if( $_id_lote > 0){  echo "lote no generado. "; return;}
 	    
         $funcion = "tes_genera_lote";
-        $parametros = "'$_nombre_lote','$_descripcion_lote', $_id_frecuencia ";
+        $parametros = "'$_nombre_lote','$_descripcion_lote', $_id_frecuencia , $_id_usuarios";
         
         $lote->setFuncion($funcion);
         $lote->setParametros($parametros);
@@ -1020,6 +1065,8 @@ class CuentasPagarController extends ControladorBase{
 	    $cuentasPagar = new CuentasPagarModel();
 	    
 	    $id_lote = ( isset($_POST['id_lote']) ) ? $_POST['id_lote'] : 0;
+	    
+	    $base_compra = ( isset($_POST['monto_cuentas_pagar']) ) ? $_POST['monto_cuentas_pagar'] : 0;
 	    
 	    //var_dump($id_lote);
 	    

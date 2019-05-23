@@ -1,9 +1,17 @@
 <?php
-class CuentasPagarModel extends ModeloBase{
-	private $table;
+class ImpuestosModel extends ModeloBase{
+	private $table ;
 	private $where;
 	private $funcion;
 	private $parametros;
+		
+	public function getTable() {
+	    return $this->table;
+	}
+	
+	public function setTable($table) {
+	    $this->table = $table;
+	}
 	
 	public function getWhere() {
 		return $this->where;
@@ -33,12 +41,10 @@ class CuentasPagarModel extends ModeloBase{
 		$this->parametros = $parametros;
 	}
 	
-
-
 	public function __construct(){
-		$this->table="tes_cuentas_pagar";
-	
-		parent::__construct($this->table);
+	    $this->table="tes_impuestos";
+	    
+	    parent::__construct($this->table);
 	}
 	
     public function Insert(){
@@ -57,16 +63,6 @@ class CuentasPagarModel extends ModeloBase{
         $resultado = null;
         
         $resultado=$this->llamarconsulta($query);
-        
-        return  $resultado;
-    }
-    
-    public function llamafuncionPG(){
-        
-        $query = "SELECT ".$this->funcion."(".$this->parametros.")";
-        $resultado = null;
-        
-        $resultado=$this->llamarconsultaPG($query);
         
         return  $resultado;
     }

@@ -172,6 +172,32 @@ class CuentasPagarController extends ControladorBase{
 	    }
 	}
 	
+	
+	/**
+	 * mod: tesoreria
+	 * title: cargaTipoDocumento  
+	 * ajax: si
+	 * dc:2019-05-09
+	 * desc: carga todos los tipos de documento
+	 */
+	public function cargaTipoDocumento(){
+	    
+	    $tipoDocumento = null;
+	    $tipoDocumento = new TipoDocumentoModel();
+	    
+	    $query = " SELECT id_tipo_documento, abreviacion_tipo_documento, nombre_tipo_documento 
+                FROM public.tes_tipo_documento	    
+                WHERE 1 = 1";
+	    
+	    $resulset = $tipoDocumento->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
+	
 	/**
 	 * mod: tesoreria
 	 * title: cargar tablas de BD
@@ -730,6 +756,507 @@ class CuentasPagarController extends ControladorBase{
 	    }
 	}
 	
+	/***
+	 * dc 2019-05-06
+	 * desc: realiza carga de datos en modal (en select)
+	 * return: json
+	 */
+	public function cargaModImpuestos(){
+	    
+	    $impuestos = null;
+	    $impuestos = new ModeloModel();
+	    
+	    $query = " SELECT id_impuestos, nombre_impuestos
+                FROM tes_impuestos
+                ORDER BY nombre_impuestos";
+	    
+	    $resulset = $impuestos->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
 	
+	/***
+	 * dc 2019-05-06
+	 * mod: Tesoreria
+	 * desc: agregar impuesto a la cuenta por pagar
+	 */
+	public function ModAgregaImpuestos(){
+	    
+	    session_start();
+	    $impuestosCxP = new ModeloModel();
+	    $impuestosCxP->setTable("tes_cuentas_pagar_impuestos");
+	    
+	    $nombre_controladores = "ImpuestosCxP";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $impuestosCxP->getPermisosEditar(" controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (empty($resultPer)){
+	        
+	        echo 'Usuario no tiene permisos';
+	        return;
+	    }	    
+	        
+	    $_id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0;
+	    $_id_impuestos = (isset($_POST['id_impuestos'])) ? $_POST['id_impuestos'] : 0;
+        $_base_cxp_impuestos = (isset($_POST['base_impuestos'])) ? $_POST['base_impuestos'] : 0 ;
+        
+        //nota al agregar solo se puede agregar una vez el impuesto por el lote
+      
+        $funcion = "tes_ins_cuentas_pagar_impuestos";
+        $parametros = "'$_id_impuestos','$_id_lote','$_base_cxp_impuestos'";
+        
+        $impuestosCxP->setFuncion($funcion);
+        $impuestosCxP->setParametros($parametros);
+	        
+        @$resultado = $impuestosCxP->llamafuncionPG();
+        
+        if(empty($resultado)){
+            
+            //$error = pg_last_error();            
+            //echo $error;
+            echo 'Se genero un error';
+            exit();
+        }
+        
+        if(!is_int((int)$resultado[0])){
+            
+            echo "error en la conversion de respuesta Servidor";
+            exit();
+        }
+        
+        //se toma la respuesta de la funcion
+        $respuesta = $resultado[0];
+        
+        $mensaje = ($respuesta == 0) ? "Impuesto ya se encuentra registrado" : (($respuesta > 0 ) ? "Impuesto agregado correctamente":"");
+        
+        echo json_encode(array('respuesta'=> 1 , 'valor' => $respuesta, 'mensaje'=> $mensaje ));
+	    
+	}
+	
+	/***
+	 * dc 2019-05-07
+	 * mod: tesoreria
+	 * desc: enlista los impuests que van a una cuenta por pagar
+	 */
+	public function modListaImpuestosCxP(){
+	    
+	    $impuestosCxP = new ModeloModel();
+	    $impuestosCxP->setTable("tes_cuentas_pagar_impuestos");
+	    
+	    $id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0;
+	    
+	    $columnas = "cpi.id_cuentas_pagar_impuestos, pn.codigo_plan_cuentas, imp.nombre_impuestos, imp.porcentaje_impuestos
+	       ,cpi.base_cuentas_pagar_impuestos, cpi.valor_cuentas_pagar_impuestos, DATE(cpi.creado) AS creado";
+	    
+	    $tablas = "tes_cuentas_pagar_impuestos cpi
+            INNER JOIN tes_impuestos imp 
+            ON cpi.id_impuestos = imp.id_impuestos
+            INNER JOIN plan_cuentas pn
+            ON pn.id_plan_cuentas = imp.id_plan_cuentas";
+	    
+	    $where = "1 = 1 AND cpi.id_lote = $id_lote ";
+	    
+	    $id = " cpi.creado";
+	    
+	    $where_to = "";
+	    
+	    
+	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1=" AND ( nombre_estado ILIKE '".$search."%' OR tabla_estado ILIKE '".$search."%' )";
+	            
+	            $where_to=$where.$where1;
+	            
+	        }else{
+	            
+	            $where_to=$where;
+	            
+	        }
+	        
+	        $html="";
+	        $resultSet = $impuestosCxP->getCantidad("*", $tablas, $where_to);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet = $impuestosCxP->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        if($cantidadResult > 0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:15px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:200px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_impuestos_cxp' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 11px;">#</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Codigo Cta.</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Nombre Imp. </th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">%</th>';	            
+	            $html.='<th style="text-align: left;  font-size: 11px;">Base</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Valor Imp.</th>';   
+                $html.='<th style="text-align: left;  font-size: 11px;"></th>';	           
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_impuestos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->porcentaje_impuestos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->base_cuentas_pagar_impuestos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->valor_cuentas_pagar_impuestos.'</td>';
+                    $html.='<td style="font-size: 15px;">
+                            <a onclick="delImpuestosCxP('.$res->id_cuentas_pagar_impuestos.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a></td>';
+	               
+	                $html.='</tr>';
+	            }
+	            
+	            
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"modListaImpuestosCxP").'';
+	            $html.='</div>';
+	            
+	            
+	            
+	        }else{
+	            
+	            
+	        }
+	        
+	        
+	        echo $html;
+	        
+	    }
+	    
+	}
+	
+	/***
+	 * dc 2019-05-07
+	 * mod: tesoreria
+	 * desc: eliminar regitro de impuestos referenciados a ctas x pagar
+	 */
+	public function modDelImpuestosCxP(){
+	    
+	    session_start();
+	    
+	    $impuestosCxP = new CuentasPagarImpuestosModel();
+	    	    
+	    $nombre_controladores = "ImpuestosCxP";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $impuestosCxP->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (!empty($resultPer)){
+	        
+	        if(isset($_POST["id_cuentas_pagar_impuestos"])){
+	            
+	            $id_cuentas_pagar_cxp = (int)$_POST["id_cuentas_pagar_impuestos"];
+	            
+	            $resultado  = $impuestosCxP->eliminarBy(" id_cuentas_pagar_impuestos ",$id_cuentas_pagar_cxp);
+	            
+	            if( $resultado > 0 ){
+	                
+	                echo json_encode(array('data'=>$resultado));
+	                
+	            }else{
+	                
+	                echo $resultado;
+	            }
+	            
+	            
+	        }
+	        
+	        
+	    }else{
+	        
+	        echo "Usuario no tiene permisos-Eliminar";
+	    }
+	    
+	    
+	    
+	}
+	
+	/***
+	 * dc 2019-05-13
+	 * desc: para generar dsitribucion
+	 * title: generaDistribucion
+	 */
+	public function generaDistribucion(){
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    $id_lote = ( isset($_POST['id_lote']) ) ? $_POST['id_lote'] : 0;
+	    
+	    //var_dump($id_lote);
+	    
+	    if($id_lote == 0 || $id_lote == "" ){
+	        echo 'datos no enviados';
+	        exit();
+	    }
+	    
+	    
+	    $funcion = "tes_ins_distribucion";
+	    $parametros = "'$id_lote'";
+	    
+	    $cuentasPagar->setFuncion($funcion);
+	    $cuentasPagar->setParametros($parametros);
+	    
+	    $resultado = $cuentasPagar->llamafuncionPG();
+	    
+	    echo json_encode($resultado[0]);
+	    
+	}
+	
+	/***
+	 * dc 2019-05-13
+	 * desc: para listar distribucion
+	 * title: listarDistribucion
+	 */
+	public function listaDistribucion(){
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    session_start();
+	    $id_rol = $_SESSION["id_rol"];
+	    
+	    $_id_lote =  (isset($_REQUEST['id_lote']) && $_REQUEST['id_lote'] != NULL) ? $_REQUEST['id_lote']: 0;
+	        
+	    $where_to = "";
+	    
+	    $columnas  = "dis.id_distribucion_cuentas_pagar, dis.id_lote, pc.id_plan_cuentas, pc.codigo_plan_cuentas, pc.nombre_plan_cuentas,
+            dis.tipo_distribucion_cuentas_pagar, round(dis.debito_distribucion_cuentas_pagar,2) AS debito_distribucion,
+            round(dis.credito_distribucion_cuentas_pagar,2) AS credito_distribucion, dis.ord_distribucion_cuentas_pagar";
+	    
+	    $tablas    = "tes_distribucion_cuentas_pagar dis
+                LEFT JOIN plan_cuentas pc
+                ON dis.id_plan_cuentas = pc.id_plan_cuentas";
+	    
+	    $where     = " dis.id_lote = $_id_lote ";
+	    
+	    $id        = "dis.ord_distribucion_cuentas_pagar";	    
+	    
+	    $action = (isset($_REQUEST['peticion']) && $_REQUEST['peticion'] != NULL) ? $_REQUEST['peticion']:'';
+	    $search =  (isset($_REQUEST['search']) && $_REQUEST['search'] != NULL) ? $_REQUEST['search']:'';
+	    
+	    //declaracion de variable de salida 
+	    $html = ""; 
+	    
+	    if( $action != "ajax" ){
+	        echo $html;
+	        exit();
+	    }
+	    
+	    if(empty($search)){
+	        $where_to=$where;
+	    }else{
+	        
+	        $where_to=$where;
+	        
+	    }
+	    
+	    
+	    
+	    $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	    
+	    $per_page = 10; //la cantidad de registros que desea mostrar
+	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	    $offset = ($page - 1) * $per_page;
+	    
+	    $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	    
+	    $resultSet = $cuentasPagar->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	    
+	    if(empty($resultSet)){
+	        
+	        $html = '';	        
+	        echo $html;
+	        exit();
+	    }
+	    
+	    $cantidadResult=count($resultSet);
+	    
+	    if( $cantidadResult <= 0 ){
+	        
+	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	        $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	        $html.='<h4>Aviso!!!</h4> <b></b>';
+	        $html.='</div>';
+	        $html.='</div>';
+	        
+	        echo $html;
+	        exit();
+	    }
+	    
+        $total_pages = ceil($cantidadResult/$per_page);
+	            
+        $html.='<div class="pull-left" style="margin-left:15px;">';
+        $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+        $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+        $html.='</div>';
+        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+        $html.='<section style="height:200px; overflow-y:scroll;">';
+        $html.= "<table id='tabla_estados' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+        $html.= "<thead>";
+        $html.= "<tr>";
+        $html.='<th style="text-align: left;  font-size: 13px;">#</th>';
+        $html.='<th style="text-align: left;  font-size: 13px;">Referencia</th>';
+        $html.='<th style="text-align: left;  font-size: 13px;">Codigo Cuenta</th>';
+        $html.='<th style="text-align: left;  font-size: 13px;">Nombre</th>';
+        $html.='<th style="text-align: left;  font-size: 13px;">Tipo </th>';
+        $html.='<th style="text-align: left;  font-size: 13px;">debito</th>';
+        $html.='<th style="text-align: left;  font-size: 13px;">credito</th>';	        
+        $html.='</tr>';
+        
+        $html.='</thead>';
+        $html.='<tbody>';	            
+	            
+        $i=0;
+        
+        //select para tipo
+        $selectHtml = '<select><option value="PAGOS">PAGOS</option><option value="PAGOS">PAGOS</option></select>';
+        //no implementado
+        
+        
+        foreach ($resultSet as $res)
+        {
+            $i++;
+            $html.='<tr id="tr_'.$res->id_distribucion_cuentas_pagar.'">';
+            $html.='<td style="font-size: 12px;">'.$i.'</td>'; 
+            $html.='<td style="font-size: 12px;"><input type="text" class="form-control input-sm distribucion" name="mod_dis_referencia" value=""></td>';
+            $html.='<td style="font-size: 12px;"><input type="text" class="form-control input-sm distribucion distribucion_autocomplete" name="mod_dis_codigo" value="'.$res->codigo_plan_cuentas.'"></td>';
+            $html.='<td style="font-size: 12px;"><input type="text" style="border: 0;" class="form-control input-sm" value="'.$res->nombre_plan_cuentas.'" name="mod_dis_nombre">
+                    <input type="hidden" name="mod_dis_id_plan_cuentas" value="'.$res->id_plan_cuentas.'" ></td>';
+            $html.='<td style="font-size: 12px;">'.$res->tipo_distribucion_cuentas_pagar.'</td>';
+            $html.='<td style="font-size: 12px;">'.$res->debito_distribucion.'</td>';
+            $html.='<td style="font-size: 12px;">'.$res->credito_distribucion.'</td>';
+            $html.='</tr>';
+            
+           
+        }    
+	            
+        $html.='</tbody>';
+        $html.='</table>';
+        $html.='</section></div>';
+        $html.='<div class="table-pagination pull-right">';
+        $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"ListaDistribucion").'';
+        $html.='</div>';	      
+	        
+	    echo $html;
+	        
+	   
+	}
+	
+	/***
+	 * dc 2019-05-14
+	 * 
+	 */
+	public function autompletePlanCuentas(){
+	    
+	    $planCuentas = new PlanCuentasModel();
+	    
+	    //print_r($_REQUEST);
+	    
+	    if(isset($_GET['term'])){
+	        
+	        $codigo_plan_cuentas = $_GET['term'];
+	        
+	        $rsPlanCuentas = $planCuentas->getBy("codigo_plan_cuentas LIKE '$codigo_plan_cuentas%'");
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($rsPlanCuentas) ){
+	            
+	            foreach ($rsPlanCuentas as $res){
+	                
+	                $_cls_plan_cuentas = new stdClass;
+	                $_cls_plan_cuentas->id = $res->id_plan_cuentas;
+	                $_cls_plan_cuentas->value = $res->codigo_plan_cuentas;
+	                $_cls_plan_cuentas->label = $res->codigo_plan_cuentas.' | '.$res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->nombre = $res->nombre_plan_cuentas;
+	                
+	                $respuesta[] = $_cls_plan_cuentas;
+	            }
+	            
+	            echo json_encode($respuesta);
+	            
+	        }else{
+	            
+	            echo '[{"id":"","value":"Cuenta No Encontrada"}]';
+	        }
+	        
+	    }
+	}
+	
+	public function InsertaDistribucion(){
+	    
+	    // se utiliza transacciones de pg para php 
+	    //para multiples transacciones
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    $cuentasPagar->beginTran();	
+	    
+	    $datos = json_decode($_POST['lista_distribucion']);	    
+	   
+	    foreach ($datos as $data){	        
+	        
+	        $columnas = "id_plan_cuentas = ".$data->id_plan_cuentas.",
+                        referencia_distribucion_cuentas_pagar = '".$data->referencia_distribucion."'";
+	        
+	        $tabla = "tes_distribucion_cuentas_pagar";
+	        
+	        $where = "id_distribucion_cuentas_pagar = '".$data->id_distribucion."' ";	        
+	        
+	        $actualizado = $cuentasPagar->editBy($columnas, $tabla, $where);	        
+	        
+	        if(!is_int($actualizado)){
+	            
+	            $cuentasPagar->endTran('ROLLBACK');
+	            break;
+	            
+	        }
+	        
+	    }
+	    
+	    $cuentasPagar->endTran('COMMIT');
+	       
+	    
+	    echo 'llego';
+	}
 }
 ?>

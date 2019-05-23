@@ -155,6 +155,28 @@ class ModeloBase extends EntidadBase{
         return $resultSet;
     }
     
+    public function llamarconsultaPG($query){
+        $resultSet=array();
+        try{
+            
+            $result=pg_query($this->con(), $query);
+            
+            if( $result === false )
+                $resultSet = null;                
+                
+                if(pg_num_rows($result)>0)
+                {
+                    $resultSet =  pg_fetch_array($result, 0, PGSQL_NUM);
+                }
+                
+        }catch (Exception $Ex){
+            
+            $resultSet=null;
+        }
+        
+        return $resultSet;
+    }
+    
     
     //------METODO PARA ENVIAR EL QUERY
     

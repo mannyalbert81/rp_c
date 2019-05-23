@@ -939,6 +939,7 @@ function ReporteNomina()
  var mes = new Date().getMonth();
  var year = new Date().getFullYear();
  mes--;
+ mes--;
  var diainicio = 22;
  var diafinal = 21;
  var fechai = diainicio+"/"+mes+"/"+year;
@@ -1012,5 +1013,56 @@ function MostrarNotificacion()
 	});
  	
  
+}
+
+function GenerarReporte()
+{
+	 var mes = new Date().getMonth();
+	 var year = new Date().getFullYear();
+	 mes--;
+	 mes--;
+	 var diainicio = 22;
+	 var diafinal = 21;
+	 var fechai = diainicio+"/"+mes+"/"+year;
+	 console.log(fechai);
+	 mes++;
+	 if (mes>12){
+		mes=1;
+		year++;
+		var fechaf = diafinal+"/"+mes+"/"+year;
+	 }
+	 else var fechaf = diafinal+"/"+mes+"/"+year;
+	 console.log(fechaf);
+	 $.ajax({
+		    url: 'index.php?controller=Marcaciones&action=SubirReporte',
+		    type: 'POST',
+		    data: {
+		    	   fecha_inicio:fechai,
+		    	   fecha_final:fechaf
+		    },
+		})
+		.done(function(x) {
+					if (!(x.includes("Warning")) && !(x.includes("Notice")))
+				{
+						swal({
+					  		  title: "Registro",
+					  		  text: "Reporte de nomina generado",
+					  		  icon: "success",
+					  		  button: "Aceptar",
+					  		});
+				}
+			else
+				{
+				swal({
+			  		  title: "Registro",
+			  		  text: "Error al obtener el reporte: "+x,
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+				}
+		})
+		.fail(function() {
+		    console.log("error");
+		});
 }
 

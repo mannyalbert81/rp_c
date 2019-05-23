@@ -195,7 +195,7 @@
   <section class="content">
   	<div class="box box-primary">
   		<div class="box-header with-border">
-  			<h3 class="box-title">Reporte</h3>
+  			<h3 class="box-title">Detalles</h3>
   			<div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                 <i class="fa fa-minus"></i></button>
@@ -204,6 +204,13 @@
         <div class="box-body">        
         	<div id="load_reporte" ></div>
         	<div id="reporte" ></div>
+        	<div class="row">
+           	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+            	<div class="form-group">
+                  <button type="button" id="GenReport" name="GenReport" class="btn btn-primary" onclick="GenerarReporte()">Generar Reporte</button>
+                </div>
+             </div>	    
+            </div>
        </div> 	
   	</div>
   </section>  
@@ -222,7 +229,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-    <script src="view/Administracion/js/Marcaciones.js?0.19"></script>
+    <script src="view/Administracion/js/Marcaciones.js?0.22"></script>
 	
 	
   </body>

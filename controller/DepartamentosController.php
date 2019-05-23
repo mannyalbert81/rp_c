@@ -1,4 +1,4 @@
-<?php
+ <?php
 class DepartamentosController extends ControladorBase{
     
     public function index(){
@@ -282,9 +282,7 @@ class DepartamentosController extends ControladorBase{
             
             $resultE=$estado->getCondiciones('*', $tablase, $wheree, $ide);
             
-              
-            
-            if($cantidadResult>0)
+             if($cantidadResult>0)
             {
                 if($resultE[0]->nombre_estado == "ACTIVO")
                 {

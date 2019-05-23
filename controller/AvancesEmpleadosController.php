@@ -67,12 +67,29 @@ class AvancesEmpleadosController extends ControladorBase{
         $result = $empleado->getCondiciones("*", $tablas, $where, $id);
         $id_empleado = $result[0]->id_empleados;
         $fecha_anticipo= $_POST['fecha_anticipo'];
+        $fechaelem =  explode("-", $fecha_anticipo);
+        if($fechaelem[2]<22)
+        {
+            $fechaelem[1]--;
+         if($fechaelem[1]=="0")
+         {
+          $fechaelem[1]=="12";
+          $fechaelem[0]--;
+         }
+        }  
         $monto_anticipo= $_POST['monto_anticipo'];
         $tiempo_diferido= $_POST['tiempo_diferido'];
+        $fechaelem[1]=$fechaelem[1]+$tiempo_diferido;
+        if ($fechaelem[1]>12) 
+        {$fechaelem[1]=$fechaelem[1]-12;
+         $fechaelem[0]++;
+        }
+        $fecha_fin_diferido = $fechaelem[0]."-".$fechaelem[1]."-21";
         
         
         $parametros = "'$id_empleado',
                      '$fecha_anticipo',
+                     '$fecha_fin_diferido',
                      '$monto_anticipo',
                      '$tiempo_diferido'";
        

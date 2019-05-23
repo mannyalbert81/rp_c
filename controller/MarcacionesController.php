@@ -208,6 +208,408 @@ class MarcacionesController extends ControladorBase{
      return $datos[2]."-".$datos[1]."-".$datos[0];
     }
     
+    public function SubirReporte()
+    {
+        session_start();
+        $reportenomina= new ReporteNominaEmpleadosModel();
+        $marcacion = new RegistroRelojEmpleadosModel();
+        $fecha_inicio = $_POST['fecha_inicio'];
+        $fecha_final = $_POST['fecha_final'];
+        
+        $columnasPago="estado.id_estado";
+        
+        $tablasPago="public.estado";
+        
+        $wherePago="estado.nombre_estado='PAGADO' AND estado.tabla_estado='ANTICIPO_EMPLEADOS'";
+        
+        $idPago="estado.id_estado";
+        
+        $resultPago=$marcacion->getCondiciones($columnasPago, $tablasPago, $wherePago, $idPago);
+        
+        $columnas="empleados.nombres_empleados,
+                     empleados.numero_cedula_empleados,
+                     registro_reloj_empleados.hora_marcacion_empleados,
+                     registro_reloj_empleados.fecha_marcacion_empleados,
+                     registro_reloj_empleados.tipo_registro_empleados,
+                     oficina.nombre_oficina,
+                     empleados.id_grupo_empleados";
+        $tablas= "public.empleados INNER JOIN public.registro_reloj_empleados
+                  ON empleados.id_empleados = registro_reloj_empleados.id_empleados
+                  INNER JOIN public.oficina
+                  ON empleados.id_oficina = oficina.id_oficina";
+        $where="fecha_marcacion_empleados BETWEEN '".$this->FormatoFecha($fecha_inicio)."'
+                AND '".$this->FormatoFecha($fecha_final)."'";
+        $id = "empleados.numero_cedula_empleados,registro_reloj_empleados.fecha_marcacion_empleados, registro_reloj_empleados.hora_marcacion_empleados";
+        
+        $resultSet=$marcacion->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $columnasper="empleados.numero_cedula_empleados, permisos_empleados.fecha_solicitud,
+	                  permisos_empleados.hora_desde, permisos_empleados.hora_hasta";
+        
+        $tablasper= "public.empleados INNER JOIN public.permisos_empleados
+                  ON empleados.id_empleados = permisos_empleados.id_empleado
+                    INNER JOIN public.estado
+				  ON permisos_empleados.id_estado=estado.id_estado";
+        $whereper="permisos_empleados.fecha_solicitud BETWEEN '".$this->FormatoFecha($fecha_inicio)."'
+                AND '".$this->FormatoFecha($fecha_final)."' AND estado.nombre_estado='APROBADO GERENCIA'";
+        $idper = "empleados.numero_cedula_empleados";
+        
+        $resultPer=$marcacion->getCondiciones($columnasper, $tablasper, $whereper, $idper);
+        
+        
+        $columnasav="empleados.numero_cedula_empleados, anticipo_sueldo_empleados.fecha_anticipo,
+                	 anticipo_sueldo_empleados.tiempo_diferido, anticipo_sueldo_empleados.monto_anticipo,
+                	 anticipo_sueldo_empleados.fecha_fin_diferido,
+                     anticipo_sueldo_empleados.id_anticipo";
+        
+        $tablasav= "anticipo_sueldo_empleados INNER JOIN empleados
+	                ON anticipo_sueldo_empleados.id_empleado = empleados.id_empleados
+	                INNER JOIN estado
+	                ON anticipo_sueldo_empleados.id_estado = estado.id_estado";
+        
+        $whereav="estado.nombre_estado = 'APROBADO GERENCIA'";
+        
+        $idav = "anticipo_sueldo_empleados.id_anticipo";
+        
+        $resultAv=$marcacion->getCondiciones($columnasav, $tablasav, $whereav, $idav);
+        
+        $columnasext="empleados.numero_cedula_empleados,
+                       empleados.id_grupo_empleados,
+                       solicitud_horas_extras_empleados.fecha_solicitud,
+	                   solicitud_horas_extras_empleados.hora_solicitud";
+        
+        $tablasext= "solicitud_horas_extras_empleados INNER JOIN empleados
+                	   ON solicitud_horas_extras_empleados.id_empleado = empleados.id_empleados
+                	   INNER JOIN estado
+                	   ON solicitud_horas_extras_empleados.id_estado = estado.id_estado";
+        
+        $whereext="solicitud_horas_extras_empleados.fecha_solicitud
+            
+ BETWEEN '".$this->FormatoFecha($fecha_inicio)."'
+                AND '".$this->FormatoFecha($fecha_final)."' AND estado.nombre_estado='APROBADO GERENCIA'";
+        
+        $idext = "solicitud_horas_extras_empleados.id_solicitud";
+        
+        $resultExt=$marcacion->getCondiciones($columnasext, $tablasext, $whereext, $idext);
+        
+        $horarios = new HorariosEmpleadosModel();
+        $columnas="horarios_empleados.hora_entrada_empleados,
+        horarios_empleados.hora_salida_almuerzo_empleados,
+        horarios_empleados.hora_entrada_almuerzo_empleados,
+        horarios_empleados.hora_salida_empleados,
+        horarios_empleados.id_grupo_empleados,
+        horarios_empleados.tiempo_gracia_empleados,
+        horarios_empleados.id_oficina";
+        
+        $tablas= "public.horarios_empleados INNER JOIN public.estado
+                   ON horarios_empleados.id_estado = estado.id_estado";
+        $where="estado.nombre_estado='ACTIVO'";
+        $id = "horarios_empleados.id_horarios_empleados";
+        
+        $resultHor=$horarios->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $empleados = new EmpleadosModel();
+        
+        $tablas = "public.descuentos_salarios_empleados";
+        $where = "1=1";
+        
+        $id = "descuentos_salarios_empleados.id_descuento";
+        
+        $resultDSE= $empleados->getCondiciones("*", $tablas, $where, $id);
+        
+        $tablas = "public.empleados INNER JOIN public.estado
+                   ON empleados.id_estado = estado.id_estado
+                   INNER JOIN public.oficina
+                   ON empleados.id_oficina = oficina.id_oficina
+                   INNER JOIN cargos_empleados
+                   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+        $where = "estado.nombre_estado='ACTIVO'";
+        
+        $id = "empleados.id_empleados";
+        
+        $resultEmp = $empleados->getCondiciones("*", $tablas, $where, $id);        
+        
+        $numregistros=0;
+        
+        $diastrabajo=0;
+        
+        $numdiassintrabajo=0;
+        
+        $advertencias=0;
+        
+        $hent=0;
+        
+        $hsal=0;
+        
+        $currentdate=0;
+        
+        $horasextra50=0;
+        
+        $horasextra100=0;
+        
+        $html="";
+        
+        if (!(empty($resultSet)))
+        {
+            foreach($resultEmp as $emp)
+            {
+                $salario=$emp->salario_cargo;
+                $salariodia=$salario/30;
+                $salariohora=$salariodia/8;
+                $salariomin=$salariohora/60;
+                $tatraso=0;
+                $tdescuento=0;
+                $dctosalario=0;
+                $dctoavance=0;
+                foreach($resultSet as $res)
+                {
+                    $dayOfWeek = date("D", strtotime($res->fecha_marcacion_empleados));
+                    
+                    if ($res->tipo_registro_empleados== "Entrada") $hent=$res->hora_marcacion_empleados;
+                    
+                    if ($res->tipo_registro_empleados== "Salida") $hsal=$res->hora_marcacion_empleados;
+                    
+                    if($res->numero_cedula_empleados == $emp->numero_cedula_empleados)
+                    {
+                        
+                        if ($currentdate!= $res->fecha_marcacion_empleados)
+                        {
+                            
+                            if($numregistros>0 && $numregistros<4)
+                            {
+                                $advertencias++;
+                            }
+                            if ($numregistros==0 && ($dayOfWeek!="Sat" && $dayOfWeek!="Sun") && $currentdate !=0)
+                            {
+                                $numdiassintrabajo++;
+                            }
+                            $numregistros=0;
+                            $currentdate= $res->fecha_marcacion_empleados;
+                            
+                        }
+                        
+                        if (!(empty($res->hora_marcacion_empleados)))
+                        {
+                            $numregistros++;
+                        }
+                        if ($numregistros==4)
+                        {
+                            if ($dayOfWeek!="Sat" && $dayOfWeek!="Sun")
+                            {
+                                $diastrabajo++;
+                            }
+                        }
+                        
+                        foreach ($resultHor as $hor)
+                        {
+                            if ($res->id_grupo_empleados== $hor->id_grupo_empleados && $res->tipo_registro_empleados=="Entrada"
+                                && !(empty($res->hora_marcacion_empleados)))
+                            {
+                                $horactr=$hor->hora_entrada_empleados;
+                                
+                                $horaentrada=$res->hora_marcacion_empleados;
+                                $to_time = strtotime($horaentrada);
+                                $from_time = strtotime("+".$hor->tiempo_gracia_empleados." minutes", strtotime($horactr));
+                                
+                                $diferenci= round((($to_time - $from_time) / 60),0, PHP_ROUND_HALF_DOWN);
+                                
+                                
+                                if ($diferenci>0)
+                                {
+                                    $tatraso=$tatraso+$diferenci;
+                                }
+                            }
+                            
+                            if ($res->id_grupo_empleados== $hor->id_grupo_empleados && $res->tipo_registro_empleados=="Salida"
+                                && !(empty($res->hora_marcacion_empleados)))
+                            {
+                                $horactr=$hor->hora_salida_empleados;
+                                $horasalida=$res->hora_marcacion_empleados;
+                                $to_time = strtotime($horasalida);
+                                $from_time = strtotime($horactr);
+                                
+                                $diferenci= intval((($to_time - $from_time) / 60));
+                                if ($diferenci<0)
+                                {
+                                    $tdescuento=$tdescuento+abs($diferenci);
+                                }
+                            }
+                            
+                            if (!(empty($resultExt)))
+                            {
+                                foreach ($resultExt as $ext)
+                                {
+                                    if ($res->tipo_registro_empleados == "Entrada") $horaentradafinde=$res->hora_marcacion_empleados;
+                                    if($ext->numero_cedula_empleados == $emp->numero_cedula_empleados)
+                                    {
+                                        if($ext->fecha_solicitud == $res->fecha_marcacion_empleados && $res->tipo_registro_empleados=="Salida")
+                                        {
+                                            if ($res->id_grupo_empleados== $hor->id_grupo_empleados)
+                                            {
+                                                $dayOfWeek = date("D", strtotime($ext->fecha_solicitud));
+                                                
+                                                if($dayOfWeek != "Sat" && $dayOfWeek != "Sun")
+                                                {
+                                                    $desde=$hor->hora_salida_empleados;
+                                                    $hasta=$ext->hora_solicitud;
+                                                    $to_time = strtotime($hasta);
+                                                    $from_time = strtotime($desde);
+                                                    
+                                                    $diferenci= intval((($to_time - $from_time) / 60));
+                                                    if($diferenci > 0)
+                                                    {
+                                                        $horasextra50=$horasextra50+($diferenci*($salariomin/2));
+                                                    }
+                                                    else
+                                                    {
+                                                        $desde=$hor->hora_salida_empleados;
+                                                        $hasta="23:59:59";
+                                                        $to_time = strtotime($hasta);
+                                                        $from_time = strtotime($desde);
+                                                        $dif= intval((($to_time - $from_time) / 60));
+                                                        $horasextra50=$horasextra50+($dif*($salariomin/2));
+                                                        
+                                                        $desde="00:00:00";
+                                                        $hasta=$ext->hora_solicitud;
+                                                        $to_time = strtotime($hasta);
+                                                        $from_time = strtotime($desde);
+                                                        $dif= intval((($to_time - $from_time) / 60));
+                                                        $horasextra100=$horasextra100+($dif*$salariomin);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    $desde=$horaentradafinde;
+                                                    $hasta=$ext->hora_solicitud;
+                                                    $to_time = strtotime($hasta);
+                                                    $from_time = strtotime($desde);
+                                                    
+                                                    $diferenci= intval((($to_time - $from_time) / 60));
+                                                    if($diferenci > 0)
+                                                    {
+                                                        $horasextra100=$horasextra100+($diferenci*($salariomin));
+                                                    }
+                                                    else
+                                                    {   echo "despues de las 12";
+                                                    $desde=$hor->hora_entrada_empleados;
+                                                    $hasta="23:59:59";
+                                                    $to_time = strtotime($hasta);
+                                                    $from_time = strtotime($desde);
+                                                    $dif= intval((($to_time - $from_time) / 60));
+                                                    $horasextra100=$horasextra100+($dif*($salariomin));
+                                                    
+                                                    $desde="00:00:00";
+                                                    $hasta=$ext->hora_solicitud;
+                                                    $to_time = strtotime($hasta);
+                                                    $from_time = strtotime($desde);
+                                                    $dif= intval((($to_time - $from_time) / 60));
+                                                    $horasextra100=$horasextra100+($dif*$salariomin);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    $dctosalarioatr = $tatraso*$salariomin;
+                    $dctosalariodcto= $tdescuento*$salariomin;
+                    $dctosalario=$dctosalarioatr+$dctosalariodcto;
+                    $dctosalariofalta=$numdiassintrabajo*8*60*$salariomin;
+                    $dctosalario=$dctosalario+$dctosalariofalta;
+                }
+                if (!(empty($resultPer)))
+                {
+                    foreach ($resultPer as $per)
+                    {
+                        if($per->numero_cedula_empleados == $emp->numero_cedula_empleados)
+                        {
+                            $horahasta=$per->hora_hasta;
+                            $horadesde=$per->hora_desde;
+                            $to_time = strtotime($horahasta);
+                            $from_time = strtotime($horadesde);
+                            
+                            $diferenci= intval((($to_time - $from_time) / 60));
+                            if ($diferenci>0)
+                            {
+                                $dctosalario = $dctosalario + ($diferenci*$salariomin);
+                            }
+                        }
+                    }
+                }
+                if(!(empty($resultAv)))
+                {
+                    foreach ($resultAv as $av)
+                    {
+                        if ($av->numero_cedula_empleados == $emp->numero_cedula_empleados)
+                        {
+                            $cuotaapagar=$av->monto_anticipo/$av->tiempo_diferido;
+                            $diafindiferido = date("Y-m-d", strtotime($av->fecha_fin_diferido));
+                            $diafinperiodo = date("Y-m-d", strtotime($fecha_final));
+                            if($diafindiferido>$diafinperiodo)
+                            {
+                                $dctoavance=$cuotaapagar;
+                            }
+                            else if ($diafindiferido==$diafinperiodo)
+                            {
+                                $dctoavance=$cuotaapagar;
+                                session_start();
+                                $id_solicitud=$av->id_anticipo;
+                                $horas_extras = new SolicitudHorasExtraEmpleadosModel();
+                                
+                                $where = "id_anticipo=".$id_solicitud;
+                                $tabla = "anticipo_sueldo_empleados";
+                                $colval = "id_estado=".$resultPago[0]->id_estado;
+                                $horas_extras->UpdateBy($colval, $tabla, $where);
+                            }
+                        }
+                    }
+                }
+                
+                $dctosalario=number_format((float)$dctosalario, 2, '.', '');
+                $horasextra50=number_format((float)$horasextra50, 2, '.', '');
+                $horasextra100=number_format((float)$horasextra100, 2, '.', '');
+                $fondosreserva=($emp->salario_cargo+$horasextra50+$horasextra100)*0.0833;
+                $fondosreserva=number_format((float)$fondosreserva, 2, '.', '');
+                $aporteiess1=($emp->salario_cargo+$horasextra50+$horasextra100)*($resultDSE[0]->descuento_iess1*0.01);
+                $aporteiess1=number_format((float)$aporteiess1, 2, '.', '');
+                $sueldo14=0.00;
+                $sueldo13=0.00;
+                $asocap=0.00;
+                $quiroiess=0.00;
+                $hipoiess=0.00;
+                $periodo=$fecha_inicio."-".$fecha_final;
+                
+                $funcion = "ins_reporte_nomina_empleado";
+                $parametros = "'$emp->id_empleados',
+                                '$horasextra50',
+                                '$horasextra100',
+                                '$fondosreserva',
+                                '$sueldo14',
+                                '$sueldo13',
+                                '$dctoavance',
+                                '$aporteiess1',
+                                '$asocap',
+                                '$quiroiess',
+                                '$hipoiess',
+                                '$dctosalario',
+                                '$periodo'";
+                $reportenomina->setFuncion($funcion);
+                $reportenomina->setParametros($parametros);
+                $resultado=$reportenomina->Insert();
+               
+                
+                $diastrabajo=0;
+                $numdiassintrabajo=0;
+                $advertencias=0;
+                $horasextra50=0;
+                $horasextra100=0;
+            }
+        }
+    }
+    
     
     public function GetReporte()
     {
@@ -261,16 +663,15 @@ class MarcacionesController extends ControladorBase{
         
         $id = "empleados.id_empleados";
         
-        $resultEmp = $empleados->getCondiciones("*", $tablas, $where, $id);
-        
-        $reportearray= new ArrayObject();
-        
+        $resultEmp = $empleados->getCondiciones("*", $tablas, $where, $id);        
         
         $numregistros=0;
         
         $horastrabajo=0;
         
         $numdiassintrabajo=0;
+        
+        $numdiastrabajo=0;
         
         $advertencias=0;
         
@@ -289,17 +690,13 @@ class MarcacionesController extends ControladorBase{
             $html.= "<table id='tabla_marcaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
             $html.= "<thead>";
             $html.= "<tr>";
-            $html.='<th style="text-align: left;  font-size: 16px;"><button type="button" class="btn btn-success" id="subir_reporte" name="subir_reporte" onclick="SubirReporte()">
-					<i class="glyphicon glyphicon-upload"></i>
-					</button></th>';
+            $html.='<th style="text-align: left;  font-size: 16px;"></th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Empleado</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Oficina</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Trabajado</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Faltas(días)</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Advertencias</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Atraso</th>';
-            $html.='<th style="text-align: left;  font-size: 16px;">Tiempo Extra 50%</th>';
-            $html.='<th style="text-align: left;  font-size: 16px;">Tiempo Extra 100%</th>';
             $html.='<th style="text-align: left;  font-size: 16px;">Tiempo Dcto</th>';
             $html.='</tr>';
             $html.='</thead>';
@@ -344,6 +741,7 @@ class MarcacionesController extends ControladorBase{
                 }
                 if ($numregistros==4)
                 {
+                    $numdiastrabajo++;
                     if ($dayOfWeek!="Sat" && $dayOfWeek!="Sun")
                     {
                         $to_time = strtotime($hsal);
@@ -410,10 +808,6 @@ class MarcacionesController extends ControladorBase{
             
             $horasatraso = intval(($tatraso / 60));
             $horasatraso .= "h".$tatraso%60;
-            $horasextra = intval(($textra / 60));
-            $horasextra .= "h".$textra%60;
-            $horasextrac = intval(($textrac / 60));
-            $horasextrac .= "h".$textrac%60; 
             $horasdcto = intval(($tdescuento / 60));
             $horasdcto .= "h".$tdescuento%60; 
              
@@ -427,18 +821,18 @@ class MarcacionesController extends ControladorBase{
        $html.='<td style="font-size: 15px;">'.$i.'</td>';
        $html.='<td style="font-size: 15px;">'.$emp->nombres_empleados.'</td>';
        $html.='<td style="font-size: 15px;">'.$emp->nombre_oficina.'</td>';
-       $html.='<td style="font-size: 15px;">'.$horastrabajo.'</td>';
+       $html.='<td style="font-size: 15px;">'.$numdiastrabajo.'</td>';
        $html.='<td style="font-size: 15px;">'.$numdiassintrabajo.'</td>';
        $html.='<td style="font-size: 15px;">'.$advertencias.'</td>';
        $html.='<td style="font-size: 15px;">'.$horasatraso.'</td>';
-       $html.='<td style="font-size: 15px;">'.$horasextra.'</td>';
-       $html.='<td style="font-size: 15px;">'.$horasextrac.'</td>';
        $html.='<td style="font-size: 15px;">'.$horasdcto.'</td>';
        $html.='</tr>';
        
        $horastrabajo=0;
        
        $numdiassintrabajo=0;
+       
+       $numdiastrabajo=0;
        
        $advertencias=0;
         

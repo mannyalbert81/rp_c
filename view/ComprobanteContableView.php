@@ -163,7 +163,7 @@
                   <label for="concepto_ccomprobantes" class="control-label">Concepto de Pago:</label>
                   <textarea rows="2"  class="form-control" id="concepto_ccomprobantes"  placeholder="Concepto de Pago" cols="" maxlength="200" ></textarea>
                   <div id="mensaje_concepto_ccomprobantes" class="errores"></div> 
-             </div>
+             </div> 
 		     </div>
 	
 	         <div class="col-xs-12 col-md-3 col-lg-3">
@@ -190,7 +190,7 @@
 					<div style="text-align: center" > 
   		     			<button type="button" id="btn_inserta_comprobante" name="btn_inserta_comprobante" value="valor"  class="btn btn-success">Generar Comprobante</button>
            			</div>
-			 </div>	
+			 </di   v>	
 	       </div>
 	         <div class="col-lg-12 col-md-12 col-xs-12">
 	         <div class="panel panel-primary">
@@ -209,7 +209,7 @@
              </div>
              </div>
 		     
-		     <div class="form-group">
+		     <div class="form-group">  
 		     <div class="col-xs-3 col-md-3 col-lg-3">                     
                                   <label for="nombre_plan_cuentas" class="control-label">Nombre: </label>
                                   <input type="text" class="form-control" id="nombre_plan_cuentas" name="nombre_plan_cuentas" value=""  placeholder="Search">
@@ -321,7 +321,7 @@
 			
 <!-- modal de proveedores -->
 
-<div class="modal fade bs-example-modal-lg" id="modalproveedor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<d iv class="modal fade bs-example-modal-lg" id="modalproveedor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			  <div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
 				  <div class="modal-header">
@@ -389,7 +389,7 @@
 				<br>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<button type="submit" form="frm_guardar_proveedor" class="btn btn-primary" id="guardar_datos">Guardar datos</button>
+					<button type="submit" form="frm_guardar_proveedor" class="btn btn-primary" id="guardar_datos">Guardar 		Datos</button>
 				  </div>
 				
 				</div>

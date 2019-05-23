@@ -34,6 +34,34 @@ class EntidadBase{
         return $this->db;
     }
     
+    /***
+     * dc 2019-05-17
+     * desc: para empezar una trasaccion en pg
+     * @return resource
+     */
+    public function beginTran(){
+        
+        $pg_query = pg_query($this->con,"BEGIN");        
+        
+        return $pg_query;
+       
+    }
+    
+    /***
+     * dc 2019-05-17
+     * desc: para finalizar una trasaccion en pg
+     * @return resource
+     */
+    public function endTran($trans="ROLLBACK"){
+        
+        @$pg_query = pg_query($this->con,$trans);
+        
+        pg_close(); 
+        
+        return $pg_query;
+        
+    }
+    
     public function getNuevo($secuencia){
     
     	$query=pg_query($this->con, "SELECT NEXTVAL('$secuencia')");
@@ -159,7 +187,7 @@ class EntidadBase{
         
         if(!$query){
             
-            $cantidadAfectada = pg_last_error();;
+            $cantidadAfectada = pg_last_error();
             
         }else{
             
@@ -253,6 +281,25 @@ class EntidadBase{
     		
     		
     	}
+    }
+    
+    public function editBy($colval ,$tabla , $where){
+        
+        $cantidadAfectada = null;
+        
+        $query=pg_query($this->con,"UPDATE $tabla SET  $colval   WHERE $where ");
+        
+        if(!$query){
+            
+            $cantidadAfectada = pg_last_error();
+            
+        }else{
+            
+            $cantidadAfectada = pg_affected_rows($query);
+        }
+        
+        return $cantidadAfectada;
+        
     }
     
     

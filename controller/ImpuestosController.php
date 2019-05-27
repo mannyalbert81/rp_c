@@ -287,7 +287,7 @@ class ImpuestosController extends ControladorBase{
 	public function delImpuesto(){
 	    
 	    session_start();
-	    $impuestos = new ModeloModel();
+	    $impuestos = new ImpuestosModel();
 	    $nombre_controladores = "ImpuestosCxP";
 	    $id_rol= $_SESSION['id_rol'];
 	    $resultPer = $impuestos->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );

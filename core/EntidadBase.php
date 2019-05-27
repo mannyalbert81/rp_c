@@ -199,6 +199,21 @@ class EntidadBase{
         return $cantidadAfectada;
     }
     
+    public function eliminarByColumn($table,$column,$value){
+        
+        $cantidadAfectada = null;
+        
+        $query=pg_query($this->con,"DELETE FROM $table WHERE $column='$value' ");
+        
+        if($query){
+            
+            $cantidadAfectada = pg_affected_rows($query);
+            
+        }
+        
+        return $cantidadAfectada;
+    }
+    
 
     public function getCondiciones($columnas ,$tablas , $where, $id){
     	

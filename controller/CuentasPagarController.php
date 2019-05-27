@@ -1076,8 +1076,8 @@ class CuentasPagarController extends ControladorBase{
 	    }
 	    
 	    
-	    $funcion = "tes_ins_distribucion";
-	    $parametros = "'$id_lote'";
+	    $funcion = "tes_ins_distribucion_cuentas_pagar";
+	    $parametros = "'$id_lote', '$base_compra'";
 	    
 	    $cuentasPagar->setFuncion($funcion);
 	    $cuentasPagar->setParametros($parametros);
@@ -1276,6 +1276,9 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    $cuentasPagar = new CuentasPagarModel();
 	    
+	    //validar respuesta
+	    $respuesta = true;
+	    
 	    $cuentasPagar->beginTran();	
 	    
 	    $datos = json_decode($_POST['lista_distribucion']);	    
@@ -1292,7 +1295,7 @@ class CuentasPagarController extends ControladorBase{
 	        $actualizado = $cuentasPagar->editBy($columnas, $tabla, $where);	        
 	        
 	        if(!is_int($actualizado)){
-	            
+	            $respuesta = false;
 	            $cuentasPagar->endTran('ROLLBACK');
 	            break;
 	            
@@ -1300,10 +1303,47 @@ class CuentasPagarController extends ControladorBase{
 	        
 	    }
 	    
-	    $cuentasPagar->endTran('COMMIT');
-	       
+	    if($respuesta){
+	       $cuentasPagar->endTran('COMMIT');
+	    }
 	    
-	    echo 'llego';
+	    echo json_encode(array("respuesta"=>$respuesta));
+	  
+	}
+	
+	public function CambiarMontoCompra(){
+	    
+	    $cuentasPagar = new CuentasPagarModel();	    
+	    $id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0 ;
+	    
+	    if($id_lote ==0 ){
+	        echo 'lote no identificado';
+	    }
+	    
+	    $error = false;
+	    
+	    $cuentasPagar->beginTran();
+	    
+	    $resultado = $cuentasPagar->eliminarByColumn("tes_cuentas_pagar_impuestos","id_lote",$id_lote);
+	    
+	    if(empty($resultado)){
+	        $error = true;
+	        $cuentasPagar->endTran('ROLLBACK');
+	    }
+	    
+	    $resultado = $cuentasPagar->eliminarByColumn("tes_distribucion_cuentas_pagar","id_lote",$id_lote);
+	    
+	    if(empty($resultado)){
+	        $error = true;
+	        $cuentasPagar->endTran('ROLLBACK');
+	    }
+	    
+	    if(!$error){
+	        $cuentasPagar->endTran('COMMIT');
+	    }else{
+	        echo 'error al cambiar monto' ;
+	    }
+	    
 	}
 	
 	Public function Reporte_Cuentas_Por_Pagar(){

@@ -97,7 +97,7 @@
             				<label for="nombre_lote" class="col-sm-4 control-label" > Id. lote:</label>
             				<div class="col-sm-8">
             				  <div class="input-group ">
-                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote" autofocus value="">
+                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="" autofocus>
                               <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" data-toggle="modal" data-target="#mod_lote">
                                 <i class="fa fa-arrow-right"></i>
@@ -152,7 +152,7 @@
             			 <div class="form-group-sm">
             				<label for="descripcion_cuentas_pagar" class="col-sm-4 control-label" > Descripcion:</label>
             				<div class="col-sm-8">
-            				  <input type="text" class="form-control" id="descripcion_cuentas_pagar" name="descripcion_cuentas_pagar" value="" placeholder="Descripcion" required>
+            				  <input type="text" class="form-control" id="descripcion_cuentas_pagar" name="descripcion_cuentas_pagar" value="" placeholder="Descripcion" autocomplete="off" required>
             				  <div id="mensaje_descripcion_cuentas_pagar" class="errores"></div>
             				</div>
             			 </div>        			 
@@ -204,7 +204,7 @@
             			 <div class="form-group-sm">
             				<label for="condiciones_pago_cuentas_pagar" class="col-sm-4 control-label" > Condiciones Pago:</label>
             				<div class="col-sm-8">
-            				  <input type="text" class="form-control" id="condiciones_pago_cuentas_pagar" name="condiciones_pago_cuentas_pagar" value=""  placeholder="">
+            				  <input type="text" class="form-control" id="condiciones_pago_cuentas_pagar" name="condiciones_pago_cuentas_pagar" value="" autocomplete="off"  placeholder="">
 			          		  <div id="mensaje_condiciones_pago_cuentas_pagar" class="errores"></div>
             				</div>
             			 </div>        			 
@@ -253,7 +253,7 @@
                 			 <div class="form-group-sm">
                 				<label for="numero_ord_compra" class="col-sm-4 control-label" > Numero Orden Compra:</label>
                 				<div class="col-sm-8">
-                				 <input type="text" class="form-control " id="numero_ord_compra" name="numero_ord_compra">                      
+                				 <input type="text" class="form-control " id="numero_ord_compra" name="numero_ord_compra" autocomplete="off">                      
                       			 <div id="mensaje_numero_ord_compra" class="errores"></div>
                 				</div>
                 			 </div>        			 
@@ -263,7 +263,7 @@
                 			 <div class="form-group-sm">
                 				<label for="metodo_envio_cuentas_pagar" class="col-sm-4 control-label" > Metodo Envio:</label>
                 				<div class="col-sm-8">
-                				 <input type="text" class="form-control " id="metodo_envio_cuentas_pagar" name="metodo_envio_cuentas_pagar">                      
+                				 <input type="text" class="form-control " id="metodo_envio_cuentas_pagar" name="metodo_envio_cuentas_pagar" autocomplete="off">                      
                       			 <div id="mensaje_metodo_envio_cuentas_pagar" class="errores"></div>
                 				</div>
                 			 </div>        			 
@@ -275,7 +275,7 @@
                 				<label for="id_impuestos" class="col-sm-4 control-label" > plan Impuestos:</label>
                 				<div class="col-sm-8">
                 				 <div class="input-group ">
-                                  <input type="text" class="form-control" readonly>
+                                  <input type="text" class="form-control" id="plan_impuesto" readonly>
                                   <span class="input-group-btn">
                                     <button class="btn btn-default" type="button" data-toggle="modal" data-target="#mod_impuestos">
                                     <i class="fa fa-arrow-right"></i> 
@@ -719,7 +719,7 @@
 <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?0.97"></script>
+<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.02"></script>
 
     
 

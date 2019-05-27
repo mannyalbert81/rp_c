@@ -38,7 +38,7 @@ class EstatusModel extends ModeloBase{
 	
 	
 	public function __construct(){
-		$this->table="estatus";
+		$this->table="core_estatus";
 		
 		parent::__construct($this->table);
 	}

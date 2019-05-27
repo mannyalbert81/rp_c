@@ -144,9 +144,18 @@
 	    	
 	    	</table>
 	    </div>
+	     <div class="row">
+	      	<div class="col-md-offset-5 col-lg-offset-5 col-md-2 col-lg-2 col-xs-12">
+	      		<div class="form-group">
+	      			<button type="button" id="Print" name="Print" class="btn btn-primary" onclick="ImprimirReporte()"><i class="glyphicon glyphicon-print"></i>  Reporte</button>     		
+	      		</div>
+	      	</div>
+	      </div>
+	    
         
        </div>
     </section>
+        
   </div>
  
  <!-- para modales -->
@@ -195,7 +204,7 @@
     <?php include("view/modulos/links_js.php"); ?>
    	 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.3"></script>   
+    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.4"></script>   
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   
 	

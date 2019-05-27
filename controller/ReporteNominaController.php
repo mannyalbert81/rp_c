@@ -547,7 +547,7 @@ class ReporteNominaController extends ControladorBase{
        $datos_tabla.='<td   class="firmas"  width="6%"  style="text-align: left; font-size: '.$headerfont.';"></td>';
        $datos_tabla.='<td   class="firmas" width="26%" style="text-align: left; font-size: '.$headerfont.';">Elaborado por:<br>Lcdo. Byron Bolaños<br>Jefe de RR-HH</td>';
        $datos_tabla.='<td   class="firmas" style="text-align: left;  font-size: '.$headerfont.';">Aprobado por:<br>Ing. Stephany Zurita<br>Representante Legal</td>';
-    
+       $datos_tabla.='</tr>';
        $datos_tabla.= "</table>";
        
        $this->verReporte("ReporteNomina", array('datos_reporte'=>$datos_reporte

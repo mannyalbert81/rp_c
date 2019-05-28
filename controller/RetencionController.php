@@ -537,6 +537,19 @@ class RetencionController extends ControladorBase{
                 
                 
                 
+                include('../view/dompdf/pdf_adjunta_mail/pdf.php');
+                $file_name = md5(rand()) . '.pdf';
+                $html_code = '<link rel="stylesheet" href="../view/dompdf/pdf_adjunta_mail/bootstrap.min.css">';
+                $html_code .= fetch_customer_data($connect);
+                
+                
+                
+                $pdf = new Pdf();
+                $pdf->load_html($html_code);
+                $pdf->render();
+                $file = $pdf->output();
+                file_put_contents($file_name, $file);
+                
                 
                 
                 

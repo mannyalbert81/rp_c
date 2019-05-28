@@ -496,14 +496,6 @@ class EntidadBase{
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
     public function AuditoriaControladores($_accion_trazas, $_parametros_trazas, $_nombre_controlador,$id_usario=null)
     {
     
@@ -525,6 +517,16 @@ class EntidadBase{
     
     }
     
+    
+    public function InsertComprobanteContable($datos=array()){
+        
+        if(empty($datos))
+            return;
+        
+        //toma de datos
+        $fecha = ('');
+        
+    }
     
     
 

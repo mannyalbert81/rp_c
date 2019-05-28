@@ -515,6 +515,7 @@ $("#btn_mod_agrega_impuestos").on("click",function(event){
 	let _id_impuestos = $("#mod_id_impuestos").val();
 	let _id_lote = $("#id_lote").val();
 	let _mod_base_impuestos = $("#mod_monto_documento").val();
+	let _mod_naturaleza_impuestos = $("#mod_naturaleza_impuestos").val();
 	
 	if(_id_lote == 0){
 		$("#nombre_lote").notify("Lote No generado",{ position:"buttom"})
@@ -531,7 +532,8 @@ $("#btn_mod_agrega_impuestos").on("click",function(event){
 		return null;
 	}
 	
-	var parametros = {base_impuestos:_base_impuestos_cxp, id_impuestos:_id_impuestos, id_lote:_id_lote}
+	var parametros = {base_impuestos:_base_impuestos_cxp, id_impuestos:_id_impuestos, id_lote:_id_lote,
+			naturaleza_impuestos_cxp:_mod_naturaleza_impuestos}
 	
 	$("#msg_frm_impuestos").html("");
 	
@@ -983,15 +985,7 @@ function generaMensaje(mensaje,clase){
  * dc 2019-05-17
  */
 $("#frm_cuentas_pagar").on("submit",function(event){
-	
-	$(".inputDecimal").each(function(i,v){
-		let valorInput = $(this).val();
 		
-		if(valorInput.length == 0 || valorInput == ''){
-			$(this).val('0.00');
-		}
-	});
-	
 	var parametros = $(this).serialize();
 	
 	$.ajax({
@@ -1001,6 +995,23 @@ $("#frm_cuentas_pagar").on("submit",function(event){
 		dataType:"json",
 		data:parametros
 	}).done(function(x){
+		
+		if(x.error != ''){
+			
+			swal({text: x.error,
+		  		  icon: "error",
+		  		  button: "Aceptar",
+		  		  dangerMode: true
+		  		});
+		}
+		
+		if(x.hasOwnProperty('respuesta')){
+			
+			swal({text: x.mensaje,
+		  		  icon: "success",
+		  		  button: "Aceptar",
+		  		});
+		}
 		
 		console.log(x);
 		
@@ -1089,22 +1100,25 @@ $("#btn_cambiar_compras").on("click",function(event){
 		 
 		    case "cancelar":
 		      return;
-		    case "aceptar":
-		      
+		    case "aceptar":		      
 		    	
 		    	$.ajax({
 		    		url:"index.php?controller=CuentasPagar&action=CambiarMontoCompra",
-		    		dataTpe:"json",
+		    		dataType:"json",
 		    		type:"POST",
 		    		data:{id_lote:lote}		    		
 		    	}).done(function(x){
-		    		if(x.respuesta == 1){
-		    			swal({text: "Valor Cambiado",
+		    		console.log(x);
+		    		if(x.respuesta == 1){		    			
+		    			$("#monto_cuentas_pagar").attr("readonly",false);
+		    			$("#monto_cuentas_pagar").val('');
+		    			$("#plan_impuesto").val('');
+		    			swal({text: "Valor Cambiado, Ingrese Nuevos Datos",
 		  		  		  icon: "info",
 		  		  		  button: "Aceptar",
 		  		  		});
 		    		}
-		    		console.log(x);
+		    		
 		    	}).fail(function(xhr,status,error){
 		    		var err = xhr.responseText
 		    		console.log(err)
@@ -1119,4 +1133,65 @@ $("#btn_cambiar_compras").on("click",function(event){
 		  }
 		});
 	
+})
+
+$("#btn_cancelar").on("click",function(event){
+	
+	let botonMain = $(this);
+	
+	botonMain.attr('disabled',true);
+	
+	let lote = $("#id_lote").val();
+	
+	if(isNaN(lote) || lote.length == 0 ){
+		
+		swal({text: "Lote No Identificado",
+	  		  icon: "info",
+	  		  button: "Aceptar",
+	  		});
+		
+		return false;
+	}
+	
+	swal("¿Esta seguro de Cancelar?", {
+		 dangerMode: true,
+		 text:" se cancelará todo los datos ingresados  ",
+		  buttons: {
+		    cancelar: "Cancelar",
+		    aceptar: "Aceptar",
+		  },
+		})
+		.then((value) => {
+		  switch (value) {
+		 
+		    case "cancelar":
+		      return;
+		    case "aceptar":		      
+		    	
+		    	$.ajax({
+		    		url:"index.php?controller=CuentasPagar&action=CancelarCuentasPagar",
+		    		dataType:"json",
+		    		type:"POST",
+		    		data:{id_lote:lote}		    		
+		    	}).done(function(x){
+		    		botonMain.attr('disabled',false);
+		    		swal({title:"Peticion Cancelada",text:"",icon:"info", dangerMode:true})
+		    		.then((value) => {
+		    		  window.open("index.php?controller=CuentasPagar&action=CuentasPagarIndex","_self")
+		    		});
+		    			
+		    		
+		    	}).fail(function(xhr,status,error){
+		    		var err = xhr.responseText
+		    		console.log(err)
+		    		swal({text: "Error al cambiar el monto",
+		  		  		  icon: "info",
+		  		  		  button: "Aceptar",
+		  		  		});
+		    	})
+		 
+		    default:
+		      return;
+		  }
+		});
 })

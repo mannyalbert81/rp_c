@@ -97,6 +97,8 @@ class CuentasPagarController extends ControladorBase{
 	}
 	
 	
+	
+	
 	/***
 	 * dc 2019-05-21
 	 * return jason,
@@ -146,6 +148,31 @@ class CuentasPagarController extends ControladorBase{
 		$_condonaciones_cuentas_pagar = (isset($_POST['condonaciones_cuentas_pagar'])) ? $_POST['condonaciones_cuentas_pagar'] : null;
 		$_saldo_cuentas_pagar = (isset($_POST['saldo_cuentas_pagar'])) ? $_POST['saldo_cuentas_pagar'] : null;
 		
+		//validar datos de dsitribucion de datos
+		$query = "SELECT 1 FROM tes_distribucion_cuentas_pagar WHERE id_plan_cuentas is null AND id_lote = $_id_lote ";
+		
+        $rsDistribucion = $cuentasPagar->enviaquery($query);
+        
+        if(!empty($rsDistribucion)){
+            
+            echo  json_encode(array('error'=>'No existe distribución de Cuentas'));
+            exit();
+        }
+		
+		//para tranformar a datos solicitdos por funcion postgresql a numeric
+		$_compra_cuentas_pagar = ( is_numeric($_compra_cuentas_pagar)) ? $_compra_cuentas_pagar : 0.00;
+		$_desc_comercial = ( is_numeric($_desc_comercial)) ? $_desc_comercial : 0.00;
+		$_flete_cuentas_pagar = ( is_numeric($_flete_cuentas_pagar)) ? $_flete_cuentas_pagar : 0.00;
+		$_miscelaneos_cuentas_pagar = ( is_numeric($_miscelaneos_cuentas_pagar)) ? $_miscelaneos_cuentas_pagar : 0.00;
+		$_impuesto_cuentas_pagar = ( is_numeric($_impuesto_cuentas_pagar)) ? $_impuesto_cuentas_pagar : 0.00;
+		$_total_cuentas_pagar = ( is_numeric($_total_cuentas_pagar)) ? $_total_cuentas_pagar : 0.00;
+		$_monto1099_cuentas_pagar = ( is_numeric($_monto1099_cuentas_pagar)) ? $_monto1099_cuentas_pagar : 0.00;
+		$_efectivo_cuentas_pagar = ( is_numeric($_efectivo_cuentas_pagar)) ? $_efectivo_cuentas_pagar : 0.00;
+		$_cheque_cuentas_pagar = ( is_numeric($_cheque_cuentas_pagar)) ? $_cheque_cuentas_pagar : 0.00;
+		$_tarjeta_credito_cuentas_pagar = ( is_numeric($_tarjeta_credito_cuentas_pagar)) ? $_tarjeta_credito_cuentas_pagar : 0.00;
+		$_condonaciones_cuentas_pagar = ( is_numeric($_condonaciones_cuentas_pagar)) ? $_condonaciones_cuentas_pagar : 0.00;
+		$_saldo_cuentas_pagar = ( is_numeric($_saldo_cuentas_pagar)) ? $_saldo_cuentas_pagar : 0.00;
+		
 		$funcion = "tes_ins_cuentas_pagar";
 		$parametros = "
                     '$_id_lote',
@@ -180,10 +207,23 @@ class CuentasPagarController extends ControladorBase{
 		
 		$resultado = $cuentasPagar->llamafuncionPG();
 		
-		echo $parametros;
+		$respuestaTexto = "";
+		$datosrespuesta = array();
 		
-		echo json_encode(array('value' => $resultado));
-			
+		if(is_int($resultado[0])){
+		    
+		    if($resultado[0] == 1){
+		        $respuestaTexto = "Cuenta por Pagar Ingresada";
+		    }
+		    if($resultado[0] == 0){
+		        $respuestaTexto = "Cuenta por Pagar Ingresada";
+		    }
+		    
+		    $datosrespuesta['mensaje']=$respuestaTexto;
+		    $datosrespuesta['respuesta']=$resultado[0];
+		}
+		
+		echo json_encode($datosrespuesta);	
 		
 	}
 	
@@ -847,12 +887,17 @@ class CuentasPagarController extends ControladorBase{
 	        
 	    $_id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0;
 	    $_id_impuestos = (isset($_POST['id_impuestos'])) ? $_POST['id_impuestos'] : 0;
-        $_base_cxp_impuestos = (isset($_POST['base_impuestos'])) ? $_POST['base_impuestos'] : 0 ;
-        
+	    $_base_cxp_impuestos = (isset($_POST['base_impuestos'])) ? $_POST['base_impuestos'] : 0 ; 
+	    $_naturaleza = (isset($_POST['naturaleza_impuestos_cxp'])) ? $_POST['naturaleza_impuestos_cxp'] : 0 ;
         //nota al agregar solo se puede agregar una vez el impuesto por el lote
+        $naturaleza_impuesto = 'A';
+        
+	    //para la naturaleza del impuesto relacionado
+        $naturaleza_impuesto = ($_naturaleza == 0) ? 'A' : 'D';
+        
       
         $funcion = "tes_ins_cuentas_pagar_impuestos";
-        $parametros = "'$_id_impuestos','$_id_lote','$_base_cxp_impuestos'";
+        $parametros = "'$_id_impuestos','$_id_lote','$_base_cxp_impuestos','$naturaleza_impuesto'";
         
         $impuestosCxP->setFuncion($funcion);
         $impuestosCxP->setParametros($parametros);
@@ -1320,28 +1365,77 @@ class CuentasPagarController extends ControladorBase{
 	        echo 'lote no identificado';
 	    }
 	    
-	    $error = false;
+	    $error = 0;
+	    	   
+	    $cuentasPagar->beginTran();
+	    
+	    $resultado = $cuentasPagar->eliminarByColumn("tes_cuentas_pagar_impuestos","id_lote",$id_lote);
+	    
+	    if(is_null($resultado)){
+	        $error = 1;
+	        $cuentasPagar->endTran('ROLLBACK');
+	        echo 'error al cambiar monto' ;
+	        exit();
+	    }
+	    
+	    $resultado = $cuentasPagar->eliminarByColumn("tes_distribucion_cuentas_pagar","id_lote",$id_lote);
+	    
+	    if(is_null($resultado)){
+	        $error = 1;
+	        $cuentasPagar->endTran('ROLLBACK');
+	        echo 'error al cambiar monto' ;
+	        exit();
+	    }	       
+	    
+	    if($error == 0){
+	        
+	        $cuentasPagar->endTran('COMMIT');
+	        echo json_encode(array('respuesta'=>1));
+	        
+	    }else{
+	        echo 'error al cambiar monto' ;
+	    }
+	    
+	}
+	
+	public function CancelarCuentasPagar(){
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    $id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0 ;
+	    
+	    if($id_lote ==0 ){
+	        echo 'lote no identificado';
+	    }
+	    
+	    $error = 0;
 	    
 	    $cuentasPagar->beginTran();
 	    
 	    $resultado = $cuentasPagar->eliminarByColumn("tes_cuentas_pagar_impuestos","id_lote",$id_lote);
 	    
-	    if(empty($resultado)){
-	        $error = true;
+	    if(is_null($resultado)){
+	        $error = 1;
 	        $cuentasPagar->endTran('ROLLBACK');
+	        echo 'error al cancelar' ;
+	        exit();
 	    }
 	    
 	    $resultado = $cuentasPagar->eliminarByColumn("tes_distribucion_cuentas_pagar","id_lote",$id_lote);
 	    
-	    if(empty($resultado)){
-	        $error = true;
+	    if(is_null($resultado)){
+	        $error = 1;
 	        $cuentasPagar->endTran('ROLLBACK');
+	        echo 'error al cancelar' ;
+	        exit();
 	    }
 	    
-	    if(!$error){
+	    if($error == 0){
+	        
 	        $cuentasPagar->endTran('COMMIT');
+	        echo json_encode(array('respuesta'=>1));
+	        
 	    }else{
-	        echo 'error al cambiar monto' ;
+	        echo 'error al cancelar peticion' ;
 	    }
 	    
 	}

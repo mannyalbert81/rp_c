@@ -449,6 +449,7 @@
 		    		<div class="form-group">
               			<button type="submit" id="aplicar" name="aplicar" class="btn btn-default"><i class="fa " aria-hidden="true"></i>Aplicar</button>
               			<button type="button" id="btn_distribucion" name="btn_distribucion"  class="btn btn-default" data-toggle="modal" data-target="#mod_distribucion"><i class="fa " aria-hidden="true" ></i>  Distribucion</button>
+              			<button type="button" id="btn_cancelar" name="btn_cancelar"  class="btn btn-default" ><i class="fa " aria-hidden="true" ></i> Cancelar</button>
             		</div>
 		    	</div>
 		    	
@@ -587,6 +588,18 @@
 			  </div>
 			  </div><!-- terminacion de div de grupo -->
 			  
+			  <div class="form-group">
+				<label for="mod_naturaleza_impuestos" class="col-sm-3 control-label input-sm">Seleccione Naturaleza:</label>
+				<div class="col-sm-8">
+					<div class="input-group ">
+                     <select class="form-control" id="mod_naturaleza_impuestos" name="mod_naturaleza_impuestos" >
+    					<option value="0">Disminuye Sobre Base</option>
+    					<option value="1">Aumenta sobre Base</option>					
+    				  </select>                                          
+                    </div>				 
+				</div>
+			  </div>
+			  
 			   <div class="form-group">
 				<label for="mod_id_impuestos" class="col-sm-3 control-label input-sm">Selecione Impuesto:</label>
 				<div class="col-sm-8">
@@ -602,6 +615,7 @@
                     </div>				 
 				</div>
 			  </div>
+			  
 			   <div id="msg_frm_impuestos" ></div>
 			   <div class="pull-right" style="margin-right:15px;">
 			   	<button type="button" id="btn_mostrar_lista_impuestos" class="btn btn-default"><span>Ver Listado</span> <i class="fa fa-search-plus" aria-hidden="true"></i></button>
@@ -719,7 +733,7 @@
 <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.02"></script>
+<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.06"></script>
 
     
 

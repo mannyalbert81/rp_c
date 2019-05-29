@@ -733,7 +733,7 @@
 <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.06"></script>
+<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.07"></script>
 
     
 

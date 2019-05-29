@@ -1007,10 +1007,11 @@ $("#frm_cuentas_pagar").on("submit",function(event){
 		
 		if(x.hasOwnProperty('respuesta')){
 			
-			swal({text: x.mensaje,
-		  		  icon: "success",
-		  		  button: "Aceptar",
-		  		});
+			swal({title:"",text:x.mensaje,icon:"success"})
+    		.then((value) => {
+    		  window.open("index.php?controller=CuentasPagar&action=CuentasPagarIndex","_self")
+    		});
+			
 		}
 		
 		console.log(x);

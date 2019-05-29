@@ -518,27 +518,6 @@ class EntidadBase{
     }
     
     
-    public function InsertComprobanteContable($datos=array()){
-        
-        if(empty($datos))
-            return;
-        
-        //toma de datos
-        $fecha = ('');
-        
-    }
-    
-    
-
-    
-    
-    
- 
-  
-
-    
-    
-    
     
     
     public function MenuDinamico($_id_rol)

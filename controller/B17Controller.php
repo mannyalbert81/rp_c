@@ -222,7 +222,7 @@ class B17Controller extends ControladorBase{
 	    $plan_cuentas= new PlanCuentasModel();
 	    
 	    
-	    $columnas = "codigo_plan_cuentas, nombre_plan_cuentas, saldo_plan_cuentas, nivel_plan_cuentas, id_plan_cuentas";
+	    $columnas = "codigo_plan_cuentas, nombre_plan_cuentas, saldo_plan_cuentas, nivel_plan_cuentas, id_plan_cuentas, n_plan_cuentas";
 	    
 	    $tablas= "public.plan_cuentas INNER JOIN public.estado
                   ON plan_cuentas.id_estado_reporte = estado.id_estado";
@@ -233,17 +233,70 @@ class B17Controller extends ControladorBase{
 	    
 	    $resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
 	    
-	    $columnas = "id_plan_cuentas, fecha_mayor, saldo_mayor";
+	    $columnas = "plan_cuentas.codigo_plan_cuentas, con_mayor.fecha_mayor, con_mayor.debe_mayor,
+	  	con_mayor.haber_mayor, con_mayor.saldo_ini_mayor, con_mayor.saldo_mayor, plan_cuentas.n_plan_cuentas";
 	    
-	    $tablas= "public.con_mayor";
+	    $tablas= "public.con_mayor INNER JOIN public.plan_cuentas
+		ON con_mayor.id_plan_cuentas = plan_cuentas.id_plan_cuentas";
 	    
 	    $where= "con_mayor.fecha_mayor BETWEEN '2019-03-01' AND '2019-03-31'";
 	    
-	    $id= "con_mayor.fecha_mayor";
+	    $id= "plan_cuentas.codigo_plan_cuentas, con_mayor.fecha_mayor";
 	    
 	    $resultMayor=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
 	    
-	    $headerfont="16px";
+	    $verifSaldos=array();
+	    
+	    $Saldos=array();
+	    
+	    $prueba="";
+	    
+	    foreach ($resultSet as $res)
+	    {
+	        $saldoini="vacio";
+
+	        $totaldebe=0;
+	        
+	        $totalhaber=0;
+	        
+	        $saldomayor=0;
+	        
+	     foreach ($resultMayor as $resM)
+	     {
+	         if ($resM->codigo_plan_cuentas == $res->codigo_plan_cuentas)
+	         {
+	           if($saldoini=="vacio") $saldoini=$resM->saldo_ini_mayor;
+	           $totaldebe+=$resM->debe_mayor;
+	           $totalhaber+=$resM->haber_mayor;
+	           $saldomayor=$resM->saldo_mayor;
+	         }
+	     }
+	     if($saldoini!="vacio")
+	     {
+    	     if($res->n_plan_cuentas=="D")
+    	     {
+    	      $saldoini=$saldoini+$totaldebe;
+    	      $saldoini=$saldoini-$totalhaber;
+    	     }
+    	     else if ($res->n_plan_cuentas=="A")
+    	     {
+    	         $saldoini=$saldoini-$totaldebe;
+    	         $saldoini=$saldoini+$totalhaber;
+    	     }
+    	     $comp="";
+    	     if ($saldoini!=$saldomayor) $comp="ERROR";
+    	     $prueba.="<h4>".$res->codigo_plan_cuentas."*".$res->nombre_plan_cuentas."*".$saldomayor.$comp."</h4>";
+	     }
+	     else
+	     {
+	         //$prueba.="<h4>".$res->codigo_plan_cuentas."*".$res->nombre_plan_cuentas."*-</h4>";
+	     }
+	     
+	    }
+	    
+	    echo $prueba;
+	    
+	   /* $headerfont="16px";
 	    $tdfont="14px";
 	    $boldi="";
 	    $boldf="";
@@ -416,7 +469,7 @@ class B17Controller extends ControladorBase{
              </div>
             </div>';
 	    
-	    echo $datos_tabla;
+	    //echo $datos_tabla;*/
 	    
 	    
 	}

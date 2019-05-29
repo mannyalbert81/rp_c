@@ -207,23 +207,69 @@ class CuentasPagarController extends ControladorBase{
 		
 		$resultado = $cuentasPagar->llamafuncionPG();
 		
-		$respuestaTexto = "";
-		$datosrespuesta = array();
+		//print_r( $resultado);
 		
-		if(is_int($resultado[0])){
+		if(empty($resultado[0])){
 		    
-		    if($resultado[0] == 1){
-		        $respuestaTexto = "Cuenta por Pagar Ingresada";
-		    }
-		    if($resultado[0] == 0){
-		        $respuestaTexto = "Cuenta por Pagar Ingresada";
-		    }
-		    
-		    $datosrespuesta['mensaje']=$respuestaTexto;
-		    $datosrespuesta['respuesta']=$resultado[0];
+		    echo json_encode(array('error'=>'Error al insertar Cuenta por Pagar'));
+		    exit();
 		}
 		
-		echo json_encode($datosrespuesta);	
+		
+		//genero valores para crear cuenta contable
+		$_id_usuario = (isset($_SESSION['id_usuarios'])) ?  $_SESSION['id_usuarios'] : null;
+		//lote ya viene de cuentas por pagar
+		//proveedor viene de cuentas por pagar
+		$_retencion_ccomprobantes = '';
+		//concepto viene a ser la descripcion cuentas pagar
+		$_concepto_ccomprobantes = 'Cuentas por Pagar | '.$_descripcion_cuentas_pagar;
+		$_valor_letras_ccomprobantes  = $cuentasPagar->numtoletras($_compra_cuentas_pagar);
+		$_fecha_ccomprobantes = $_fecha_cuentas_pagar;
+		//buscar formas de pago
+		$_id_forma_pago_ccomprobantes = 1;
+		$_referencia_ccomprobantes = $_num_documento_cuentas_pagar;
+		$_numero_cuenta_ccomprobantes = "";
+		$_numero_cheque_ccomprobantes = "";
+		$_observaciones_ccomprobantes = "";
+		
+		$funcion = "tes_agrega_comprobante_cuentas_pagar";
+		
+		$parametros = "
+                    '$_id_usuario',
+                    '$_id_lote',
+                    '$_id_proveedor',
+                    '$_retencion_ccomprobantes',
+                    '$_concepto_ccomprobantes',
+                    '$_valor_letras_ccomprobantes',                    
+                    '$_fecha_ccomprobantes',
+                    '$_id_forma_pago_ccomprobantes',
+                    '$_referencia_ccomprobantes',
+                    '$_numero_cuenta_ccomprobantes',
+                    '$_numero_cheque_ccomprobantes',
+                    '$_observaciones_ccomprobantes'
+                    ";
+		
+		
+		$cuentasPagar->setFuncion($funcion);
+		$cuentasPagar->setParametros($parametros);
+		
+		@$resultadoccomprobantes = $cuentasPagar->llamafuncionPG();
+				
+		
+		if(empty($resultadoccomprobantes[0])){
+		    
+		    //realizar eliminacion de CXP si hay error
+		    echo json_encode(array('error'=>"Error Actualizando comprobante"));
+		    exit();
+		}
+		
+		if((int)$resultadoccomprobantes[0] == 1 && (int)$resultado[0] == 1 ){
+		    
+    		echo json_encode(array('respuesta'=>1,'mensaje'=>"Cuenta por Pagar Ingresada Correctamente"));
+    		exit();
+		}
+		
+		echo json_encode(array('error'=>"Revisar Datos Enviados"));	
 		
 	}
 	
@@ -1438,6 +1484,14 @@ class CuentasPagarController extends ControladorBase{
 	        echo 'error al cancelar peticion' ;
 	    }
 	    
+	}
+	
+	public function conexionview(){
+	    
+	    $variable = '1';
+	    
+	    if(!is_int($variable))
+	        echo "es integrer";
 	}
 	
 	Public function Reporte_Cuentas_Por_Pagar(){

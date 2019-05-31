@@ -75,7 +75,7 @@
               
             </ul>
             
-            <div class="col-md-5 col-lg-12 col-xs-5">
+            
             <div class="tab-content">
             <br>
               <div class="tab-pane active" id="activos">
@@ -92,7 +92,7 @@
              
              
             </div>
-            </div>
+            
           </div>
          
             

@@ -261,6 +261,8 @@ class B17Controller extends ControladorBase{
 	        
 	        $saldomayor=0;
 	        
+	        $fila="";
+	        
 	     foreach ($resultMayor as $resM)
 	     {
 	         if ($resM->codigo_plan_cuentas == $res->codigo_plan_cuentas)
@@ -285,18 +287,26 @@ class B17Controller extends ControladorBase{
     	     }
     	     $comp="";
     	     if ($saldoini!=$saldomayor) $comp="ERROR";
-    	     $prueba.="<h4>".$res->codigo_plan_cuentas."*".$res->nombre_plan_cuentas."*".$saldomayor.$comp."</h4>";
+    	     else $comp="OK";
+    	     
+    	     $fila=$res->codigo_plan_cuentas."|".$saldomayor."|".$comp;
 	     }
-	     else
+	     else 
 	     {
-	         //$prueba.="<h4>".$res->codigo_plan_cuentas."*".$res->nombre_plan_cuentas."*-</h4>";
+	         $fila=$res->codigo_plan_cuentas."|".$res->saldo_plan_cuentas."|OK";
 	     }
-	     
+	        array_push($Saldos, $fila);
 	    }
+	    
+	    $prueba.="<h4>".sizeof($Saldos)."</h4>";
+	   foreach ($Saldos as $sal)
+	   {
+	       $prueba.="<h4>".$sal."</h4>";
+	   }
 	    
 	    echo $prueba;
 	    
-	   /* $headerfont="16px";
+	  /*$headerfont="16px";
 	    $tdfont="14px";
 	    $boldi="";
 	    $boldf="";

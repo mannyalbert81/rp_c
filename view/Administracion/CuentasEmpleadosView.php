@@ -83,14 +83,23 @@
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="banco_empleados" class="control-label">Nombre del Banco:</label>
-                           	<input type="text"  class="form-control" id="banco_empleados" name="banco_empleados" placeholder="Nombre banco">
+                           	<select name="banco_empleados" id="banco_empleados"  class="form-control">
+                                      <option value="" selected="selected">--Seleccione--</option>
+                                      <?php  foreach($resultBc as $res) {?>
+									  <option value="<?php echo $res->id_bancos; ?>"><?php echo $res->nombre_bancos; ?> </option>
+			        				  <?php } ?>
+                        </select> 
                         <div id="mensaje_banco_empleados" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="tipo_cuenta_empleados" class="control-label">Tipo de cuenta:</label>
-                           	<input type="text"  class="form-control" id="tipo_cuenta_empleados" name="tipo_cuenta_empleados" placeholder="Tipo cuenta">
+                           <select name="tipo_cuenta_empleados" id="tipo_cuenta_empleados"  class="form-control">
+                                      <option value="" selected="selected">--Seleccione--</option>
+									  <option value="CORRIENTE">CORRIENTE</option>
+									  <option value="AHORROS">AHORROS</option>
+                        </select>
                         <div id="mensaje_tipo_cuenta_empleados" class="errores"></div>
                  	</div>
              	</div>

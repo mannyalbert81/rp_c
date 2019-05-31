@@ -149,11 +149,23 @@ class CuentasPagarController extends ControladorBase{
 		$_saldo_cuentas_pagar = (isset($_POST['saldo_cuentas_pagar'])) ? $_POST['saldo_cuentas_pagar'] : null;
 		
 		//validar datos de dsitribucion de datos
-		$query = "SELECT 1 FROM tes_distribucion_cuentas_pagar WHERE id_plan_cuentas is null AND id_lote = $_id_lote ";
+		$query = "SELECT 1 FROM tes_distribucion_cuentas_pagar WHERE id_lote = $_id_lote ";
 		
         $rsDistribucion = $cuentasPagar->enviaquery($query);
         
         if(!empty($rsDistribucion)){
+            
+            //validacion cuentas vacias en distribucion
+            $query = "SELECT 1 FROM tes_distribucion_cuentas_pagar WHERE id_plan_cuentas is null AND id_lote = $_id_lote ";
+            $rsDistribucionVacias = $cuentasPagar->enviaquery($query);
+            
+            if(!empty($rsDistribucionVacias)){
+                
+                echo  json_encode(array('error'=>'Cuentas no definidas en Distribucion Cuentas x Pagar'));
+                exit();
+            }
+            
+        }else{
             
             echo  json_encode(array('error'=>'No existe distribución de Cuentas'));
             exit();
@@ -209,7 +221,7 @@ class CuentasPagarController extends ControladorBase{
 		
 		//print_r( $resultado);
 		
-		if(empty($resultado[0])){
+		if(is_null($resultado)){
 		    
 		    echo json_encode(array('error'=>'Error al insertar Cuenta por Pagar'));
 		    exit();
@@ -223,6 +235,7 @@ class CuentasPagarController extends ControladorBase{
 		$_retencion_ccomprobantes = '';
 		//concepto viene a ser la descripcion cuentas pagar
 		$_concepto_ccomprobantes = 'Cuentas por Pagar | '.$_descripcion_cuentas_pagar;
+		$_valor_ccomprobantes = $_compra_cuentas_pagar;
 		$_valor_letras_ccomprobantes  = $cuentasPagar->numtoletras($_compra_cuentas_pagar);
 		$_fecha_ccomprobantes = $_fecha_cuentas_pagar;
 		//buscar formas de pago
@@ -240,6 +253,7 @@ class CuentasPagarController extends ControladorBase{
                     '$_id_proveedor',
                     '$_retencion_ccomprobantes',
                     '$_concepto_ccomprobantes',
+                    '$_valor_ccomprobantes',
                     '$_valor_letras_ccomprobantes',                    
                     '$_fecha_ccomprobantes',
                     '$_id_forma_pago_ccomprobantes',
@@ -253,20 +267,23 @@ class CuentasPagarController extends ControladorBase{
 		$cuentasPagar->setFuncion($funcion);
 		$cuentasPagar->setParametros($parametros);
 		
-		@$resultadoccomprobantes = $cuentasPagar->llamafuncionPG();
+		$resultadoccomprobantes = $cuentasPagar->llamafuncionPG();
 				
-		
-		if(empty($resultadoccomprobantes[0])){
+		//print_r($resultadoccomprobantes);
+		if((int)($resultadoccomprobantes[0]) == 0 || is_null($resultadoccomprobantes)){
 		    
 		    //realizar eliminacion de CXP si hay error
 		    echo json_encode(array('error'=>"Error Actualizando comprobante"));
 		    exit();
 		}
 		
-		if((int)$resultadoccomprobantes[0] == 1 && (int)$resultado[0] == 1 ){
-		    
-    		echo json_encode(array('respuesta'=>1,'mensaje'=>"Cuenta por Pagar Ingresada Correctamente"));
-    		exit();
+		if(empty($resultadoccomprobantes) && empty($resultado) ){
+		    echo json_encode(array('error'=>"Error al Registrar 'Cuenta por Pagar'"));
+		    exit();
+    		
+		}else{
+		    echo json_encode(array('respuesta'=>1,'mensaje'=>"Cuenta por Pagar Ingresada Correctamente"));
+		    exit();
 		}
 		
 		echo json_encode(array('error'=>"Revisar Datos Enviados"));	
@@ -927,23 +944,17 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    if (empty($resultPer)){
 	        
-	        echo 'Usuario no tiene permisos';
+	        echo  json_encode(array('error'=>'Usuario no tiene permisos'));
 	        return;
 	    }	    
 	        
 	    $_id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0;
 	    $_id_impuestos = (isset($_POST['id_impuestos'])) ? $_POST['id_impuestos'] : 0;
 	    $_base_cxp_impuestos = (isset($_POST['base_impuestos'])) ? $_POST['base_impuestos'] : 0 ; 
-	    $_naturaleza = (isset($_POST['naturaleza_impuestos_cxp'])) ? $_POST['naturaleza_impuestos_cxp'] : 0 ;
-        //nota al agregar solo se puede agregar una vez el impuesto por el lote
-        $naturaleza_impuesto = 'A';
-        
-	    //para la naturaleza del impuesto relacionado
-        $naturaleza_impuesto = ($_naturaleza == 0) ? 'A' : 'D';
-        
+	    
       
         $funcion = "tes_ins_cuentas_pagar_impuestos";
-        $parametros = "'$_id_impuestos','$_id_lote','$_base_cxp_impuestos','$naturaleza_impuesto'";
+        $parametros = "'$_id_impuestos','$_id_lote','$_base_cxp_impuestos'";
         
         $impuestosCxP->setFuncion($funcion);
         $impuestosCxP->setParametros($parametros);
@@ -1333,7 +1344,13 @@ class CuentasPagarController extends ControladorBase{
 	        
 	        $codigo_plan_cuentas = $_GET['term'];
 	        
-	        $rsPlanCuentas = $planCuentas->getBy("codigo_plan_cuentas LIKE '$codigo_plan_cuentas%'");
+	        $columnas = "id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	        $tablas = "public.plan_cuentas";
+	        $where = "codigo_plan_cuentas LIKE '$codigo_plan_cuentas%' AND nivel_plan_cuentas > 3";
+	        $id = "codigo_plan_cuentas ";
+	        $limit = "LIMIT 10";
+	        
+	        $rsPlanCuentas = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
 	        
 	        $respuesta = array();
 	        

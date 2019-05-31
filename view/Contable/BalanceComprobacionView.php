@@ -101,21 +101,12 @@
                      <div id="mensaje_mes_balance" class="errores"></div>
 	         	</div>
 	         </div>
-	         
-	         <div class="col-md-3 col-lg-3 col-xs-12">
-	         	<div class="form-group">
-	         		<label for="estado_balance" class="control-label">Estado :</label>
-                    <input type="text" name="estado_balance" id="estado_balance"  class="form-control"  placeholder="Estado Balance" readonly>                        
-                     <div id="mensaje_anio_balance" class="errores"></div>
-	         	</div>
-	         </div>
-	         
 	      </div>
 	      
 	      <div class="row">
 	      	<div class="col-md-offset-5 col-lg-offset-5 col-md-2 col-lg-2 col-xs-12">
 	      		<div class="form-group">
-	      			<input type="submit" value="Generar" class="form-control btn btn-default"/>	      		
+	      			<button type="button" id="Buscar" name="Buscar" class="btn btn-success" onclick="BuscarReporte()">GENERAR</button>    		
 	      		</div>
 	      	</div>
 	      </div>
@@ -140,60 +131,13 @@
         </div>        
          
 	    <div class="box-body">
-	    	<table id="tabla_balance_comprobacion">
-	    	
-	    	</table>
+	    	<div id="load_cuentas" ></div>
+        	<div id="plan_cuentas" ></div>
 	    </div>
-	     <div class="row">
-	      	<div class="col-md-offset-5 col-lg-offset-5 col-md-2 col-lg-2 col-xs-12">
-	      		<div class="form-group">
-	      			<button type="button" id="Print" name="Print" class="btn btn-primary" onclick="ImprimirReporte()"><i class="glyphicon glyphicon-print"></i>  Reporte</button>     		
-	      		</div>
-	      	</div>
-	      </div>
-	    
-        
-       </div>
+	   </div>
     </section>
         
   </div>
- 
- <!-- para modales -->
- 
- 
- 
- 	<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			  <div class="modal-dialog modal-lg" role="document">
-				<div class="modal-content">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="myModalLabel">Buscar Cuentas</h4>
-				  </div>
-				  <div class="modal-body">
-					<form class="form-horizontal">
-					  <div class="form-group">
-						<div class="col-sm-6">
-						  <input type="text" class="form-control" id="q" placeholder="Buscar Plan de Cuentas" onkeyup="load_comprobantes(1)">
-						</div>
-						<button type="button" class="btn btn-default" onclick="load_comprobantes(1)"><span class='glyphicon glyphicon-search'></span> Buscar</button>
-					  </div>
-					</form>
-					<div id="loader" ></div><!-- Carga gif animado -->
-					<div class="outer_div" ></div><!-- Datos ajax Final -->
-				  </div>
-				  <br>
-				  <div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					
-				  </div>
-				</div>
-			  </div>
-			</div>
-	
- 
- 
- 
- 
  
  	<?php include("view/modulos/footer.php"); ?>	
 
@@ -204,7 +148,7 @@
     <?php include("view/modulos/links_js.php"); ?>
    	 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.4"></script>   
+    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.6"></script>   
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   
 	

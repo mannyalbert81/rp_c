@@ -33,117 +33,168 @@ function periodoactual(){
 	});
 }
 
-
-
-$('#form_balance_comprobacion').on('submit',function(event){
-	
-	var parametros = new FormData(this)	
-	parametros.append('ajax','1');
-	
-	$.ajax({
-			url:'index.php?controller=BalanceComprobacion&action=generarbalance',
-			type:'POST',
-			dataType:'json',
-			data:parametros,
-			contentType: false, 
-	        processData: false, 
-		}).done(function(respuesta){			
-
-			
-			if(respuesta.mensaje == 1 && !$.isEmptyObject(respuesta)){
-				
-				$('#tabla_balance_comprobacion ').empty();
-				
-				$("#tabla_balance_comprobacion").addClass('table');
-				
-				//codigos style="font-weight: bold;"
-				                                                                                                                                                                                                                                                
-				$("#tabla_balance_comprobacion").append('<thead><tr >'+
-						'<th> </td>'+
-						'<th align="center">CODIGO</td>' + 
-					    '<th align="center">CUENTA</td>' + 
-					    '<th>SUMA DEBE </td>'+
-					    '<th>SUMA HABER </td>'+
-					    '<th>SALDO ACREEDOR </td>'+
-					    '<th>SALDO DEUDOR </td><tr></thead>');
-				
-				var $tbody = $('<tbody></tbody>');
-				
-				var nivel_cuenta = 0;
-				
-			    for (i = 0; i < respuesta.detalle.length; i++){
-			    	
-			    	nivel_cuenta = respuesta.detalle[i].nivel_plan_cuentas;
-			    	
-			    	var $fila = $('<tr></tr>');
-			    	
-			    	switch(nivel_cuenta){
-			    	case '1':			    		
-			    		$fila.append('<td align="left" ><a class="nivel1"  href="#">+</a></td>')
-			    		break;
-			    	case '2':
-			    		$fila.addClass('nivel2 hide');
-			    		break;
-			    	case '3':
-			    		$fila.addClass('nivel3 hide');
-			    		break;			    	
-			    	case '4':
-			    		$fila.addClass('nivel4 hide');
-			    		break;
-			    	case '4':
-			    		$fila.addClass('nivel5 hide');
-			    		break;
-		    		default:
-		    			$fila.addClass('hide');
-		    			$fila.append('<td align="left"></a></td>')
-		    		
-			    	}
-			    	
-			    	$fila.data('codigo', respuesta.detalle[i].codigo_plan_cuentas);
-			    	
-			    	$fila.append(
-							'<td align="left" style="dislay: none;">'+respuesta.detalle[i].codigo_plan_cuentas+'</td>'+
-						    '<td align="left" style="dislay: none;">'+respuesta.detalle[i].nombre_plan_cuentas+'</td>'+
-						    '<td align="right" style="dislay: none;">'+respuesta.detalle[i].suma_debe_dbalance_comprobacion+'</td>'+
-						    '<td align="right" style="dislay: none;">'+respuesta.detalle[i].suma_haber_dbalance_comprobacion+'</td>'+
-						    '<td align="right" style="dislay: none;">'+respuesta.detalle[i].saldo_acreedor_dbalance_comprobacion+'</td>'+
-						    '<td align="right" style="dislay: none;">'+respuesta.detalle[i].saldo_deudor_dbalance_comprobacion+'</td>')
-			    	
-			    	
-			    	$tbody.append($fila);
-			    	
-			    }
-			    	
-			    	
-			    
-			    
-			    $("#tabla_balance_comprobacion").append($tbody);
-					    
-			    $("#tabla_balance_comprobacion").append(
-						'<tr>' + 
-						'<td colspan="3" align="right">TOTAL</td>'+
-					    '<td align="right" >'+respuesta.totales.totaldebe+'</td>'+
-					    '<td align="right" >'+respuesta.totales.totalhaber+'</td>'+
-					    '<td align="right" >'+respuesta.totales.saldoa+'</td>'+
-					    '<td align="right" >'+respuesta.totales.saldod+'</td></tr>'); 
-			}
-			
-			//console.log(respuesta);
-			
-		}).fail( function( xhr , status, error ){
-			 var err=xhr.responseText
-			console.log(err)
-		});
-	
-	
-	
-	event.preventDefault()
-})
-
-$('.nivel1').on('click',function(e){alert('hola'); e.preventDefault()})
-
-function ImprimirReporte()
+function BuscarReporte()
 {
-	var enlace = 'index.php?controller=BalanceComprobacion&action=GenerarReporte';
-	window.open(enlace, '_blank');
+	var mesbalance = $("#mes_balance").val();
+	var aniobalance = $("#anio_balance").val();
+	$.ajax({
+	    url: 'index.php?controller=BalanceComprobacion&action=GenerarReporte',
+	    type: 'POST',
+	    data: {
+	    	   mes: mesbalance,
+	    	   anio: aniobalance
+	    },
+	})
+	.done(function(x) {
+				if (!(x.includes("Warning")) && !(x.includes("Notice")))
+			{
+			$("#plan_cuentas").html(x);
+			//$("#tabla_reporte").tablesorter(); 
+			
+			}
+		else
+			{
+			swal({
+		  		  title: "Registro",
+		  		  text: "Error al obtener el reporte: "+x,
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+			}
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+	
 }
+
+function ExpandirTabla(clase,idbt,parent)
+{
+var i;
+	var filas = document.getElementsByClassName(clase);
+	var filasxcerrar = document.getElementsByTagName("TR");
+	var botones = document.getElementsByName("boton");
+	for (i = 0; i < filasxcerrar.length; i++) {
+		if (filasxcerrar[i].className!=parent && $(filasxcerrar[i]).is(':visible'))
+	{
+		$(filasxcerrar[i]).slideToggle(200);
+	}
+	
+	}
+	
+	for (i = 0; i < botones.length; i++) {
+		if(botones[i].id!=idbt)
+		  botones[i].className="fa fa-plus";
+		}
+	for (i = 0; i < filas.length; i++) {
+	  
+	  if (!($(filas[i]).is(':visible'))) $(filas[i]).slideToggle(200);  
+	}
+	
+	if (document.getElementById(idbt).className == "fa fa-minus") document.getElementById(idbt).className = "fa fa-plus";
+	else document.getElementById(idbt).className = "fa fa-minus";
+	
+}
+
+function ExpandirTabla(clase,idbt)
+{
+	var i;
+	var filas = document.getElementsByClassName(clase);
+	var filasxcerrar = document.getElementsByTagName("TR");
+	var botones = document.getElementsByName("boton");
+	var botones1 = document.getElementsByName("boton1");
+	var botones2 = document.getElementsByName("boton2");
+	for (i = 0; i < filasxcerrar.length; i++) {
+		if (filasxcerrar[i].className!="" && $(filasxcerrar[i]).is(':visible'))
+	{
+		$(filasxcerrar[i]).slideToggle(200);
+	}
+	
+	}
+	
+	for (i = 0; i < botones.length; i++) {
+		if(botones[i].id!=idbt)
+		  botones[i].className="fa fa-plus";
+		}
+	for (i = 0; i < botones1.length; i++) {
+		if(botones1[i].id!=idbt)
+		  botones1[i].className="fa fa-plus";
+		}
+	for (i = 0; i < botones2.length; i++) {
+		if(botones2[i].id!=idbt)
+		  botones2[i].className="fa fa-plus";
+		}
+	for (i = 0; i < filas.length; i++) {
+	  
+	  if (!($(filas[i]).is(':visible'))) $(filas[i]).slideToggle(200);  
+	}
+	
+	if (document.getElementById(idbt).className == "fa fa-minus") document.getElementById(idbt).className = "fa fa-plus";
+	else document.getElementById(idbt).className = "fa fa-minus";
+	
+}
+
+function ExpandirTabla2(clase,idbt,parent)
+{
+	console.log(parent);
+	console.log(clase);
+	var i;
+	var filas = document.getElementsByClassName(clase);
+	var filasxcerrar = document.getElementsByTagName("TR");
+	var botones = document.getElementsByName("boton1");
+	for (i = 0; i < filasxcerrar.length; i++) {
+		console.log(filasxcerrar[i].className+"|"+parent)
+		if (filasxcerrar[i].className!="" && filasxcerrar[i].className!=parent && $(filasxcerrar[i]).is(':visible'))
+	{
+		$(filasxcerrar[i]).slideToggle(200);
+	}
+	
+	}
+	
+	for (i = 0; i < botones.length; i++) {
+		if(botones[i].id!=idbt)
+		  botones[i].className="fa fa-plus";
+		}
+	for (i = 0; i < filas.length; i++) {
+	  
+	  if (!($(filas[i]).is(':visible'))) $(filas[i]).slideToggle(200);  
+	}
+	
+	if (document.getElementById(idbt).className == "fa fa-minus") document.getElementById(idbt).className = "fa fa-plus";
+	else document.getElementById(idbt).className = "fa fa-minus";
+	
+}
+function ExpandirTabla3(clase,idbt,parent)
+{
+console.log(parent);
+console.log(clase);
+var newStr = parent.substring(0, parent.length-1);
+console.log(newStr+" parent parent");
+var i;
+var filas = document.getElementsByClassName(clase);
+var filasxcerrar = document.getElementsByTagName("TR");
+var botones = document.getElementsByName("boton2");
+for (i = 0; i < filasxcerrar.length; i++) {
+	//console.log(filasxcerrar[i].className+"|"+parent)
+	if (filasxcerrar[i].className!="" && filasxcerrar[i].className!=parent && filasxcerrar[i].className!=newStr && $(filasxcerrar[i]).is(':visible'))
+{
+	$(filasxcerrar[i]).slideToggle(200);
+}
+
+}
+
+for (i = 0; i < botones.length; i++) {
+	if(botones[i].id!=idbt)
+	  botones[i].className="fa fa-plus";
+	}
+for (i = 0; i < filas.length; i++) {
+  
+  if (!($(filas[i]).is(':visible'))) $(filas[i]).slideToggle(200);  
+}
+
+if (document.getElementById(idbt).className == "fa fa-minus") document.getElementById(idbt).className = "fa fa-plus";
+else document.getElementById(idbt).className = "fa fa-minus";
+
+}
+
+

@@ -121,7 +121,7 @@ $controladores=$_SESSION['controladores'];
                 <li style="<?php echo getcontrolador("Grupos",$controladores) ?>"><a href="index.php?controller=Grupos&action=index"><i class="fa fa-circle-o"></i> Grupos</a></li>
         	    <li style="<?php echo getcontrolador("Productos",$controladores) ?>"><a href="index.php?controller=Productos&action=index"><i class="fa fa-circle-o"></i> Productos</a></li>
       			<li style="<?php echo getcontrolador("Bodegas",$controladores) ?>"><a href="index.php?controller=Bodegas&action=index"><i class="fa fa-circle-o"></i> Bodegas</a></li>
-    		  </ul>
+      		  </ul>
             </li>
             
             
@@ -174,7 +174,9 @@ $controladores=$_SESSION['controladores'];
           <ul class="treeview-menu">
             <li style="<?php echo getcontrolador("TipoComprobantes",$controladores) ?>"><a href="index.php?controller=TipoComprobantes&action=index"><i class="fa fa-circle-o"></i>Tipo Comprobantes</a></li>
             <li style="<?php echo getcontrolador("Proveedores",$controladores) ?>"><a href="index.php?controller=Proveedores&action=index"><i class="fa fa-circle-o"></i> Proveedores</a></li>
-       	
+       		<li style="<?php echo getcontrolador("CoreTipoCredito",$controladores) ?>"><a href="index.php?controller=CoreTipoCredito&action=index"><i class="fa fa-circle-o"></i> Tipo Crédito</a></li>
+    		<li style="<?php echo getcontrolador("CoreDiarioTipoCabeza",$controladores) ?>"><a href="index.php?controller=CoreDiarioTipoCabeza&action=index"><i class="fa fa-circle-o"></i> Diarios Tipo</a></li>
+    	
            	  </ul>
         </li>
         

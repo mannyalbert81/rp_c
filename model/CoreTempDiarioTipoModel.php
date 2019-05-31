@@ -1,5 +1,5 @@
 <?php
-class CoreEstadoModel extends ModeloBase{
+class CoreTempDiarioTipoModel extends ModeloBase{
 	
 	private $table;
 	private $where;
@@ -38,7 +38,7 @@ class CoreEstadoModel extends ModeloBase{
 	
 	
 	public function __construct(){
-		$this->table="core_estado";
+		$this->table="core_temp_diario_tipo";
 		
 		parent::__construct($this->table);
 	}
@@ -54,7 +54,15 @@ class CoreEstadoModel extends ModeloBase{
 		return  $resultado;
 	}
 	
-	
+	public function llamafuncion(){
+	    
+	    $query = "SELECT ".$this->funcion."(".$this->parametros.")";
+	    $resultado = null;
+	    
+	    $resultado=$this->llamarconsulta($query);
+	    
+	    return  $resultado;
+	}
 	
 }
 ?>

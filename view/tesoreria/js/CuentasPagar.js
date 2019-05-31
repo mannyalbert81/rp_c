@@ -194,7 +194,7 @@ function cargaMoneda(){
 $("#cedula_proveedor" ).autocomplete({
 
 	source: "index.php?controller=Proveedores&action=buscaProveedorByCedula",
-	minLength: 6,
+	minLength: 3,
     select: function (event, ui) {
        // Set selection
     	if(ui.item.id == ''){
@@ -515,7 +515,6 @@ $("#btn_mod_agrega_impuestos").on("click",function(event){
 	let _id_impuestos = $("#mod_id_impuestos").val();
 	let _id_lote = $("#id_lote").val();
 	let _mod_base_impuestos = $("#mod_monto_documento").val();
-	let _mod_naturaleza_impuestos = $("#mod_naturaleza_impuestos").val();
 	
 	if(_id_lote == 0){
 		$("#nombre_lote").notify("Lote No generado",{ position:"buttom"})
@@ -532,8 +531,7 @@ $("#btn_mod_agrega_impuestos").on("click",function(event){
 		return null;
 	}
 	
-	var parametros = {base_impuestos:_base_impuestos_cxp, id_impuestos:_id_impuestos, id_lote:_id_lote,
-			naturaleza_impuestos_cxp:_mod_naturaleza_impuestos}
+	var parametros = {base_impuestos:_base_impuestos_cxp, id_impuestos:_id_impuestos, id_lote:_id_lote}
 	
 	$("#msg_frm_impuestos").html("");
 	
@@ -543,7 +541,14 @@ $("#btn_mod_agrega_impuestos").on("click",function(event){
 		type:"POST",
 		dataType:"json",
 		data:parametros
-	}).done(function(respuesta){	
+	}).done(function(respuesta){
+		
+		if( respuesta.hasOwnProperty('error') && respuesta.error != '' ){
+			
+			var $divMensaje = generaMensaje(respuesta.error,"alert alert-danger");
+			$("#msg_frm_impuestos").append($divMensaje);
+			
+		}
 		
 		if(respuesta.respuesta == 1){
 			
@@ -797,7 +802,7 @@ $("#distribucion_cuentas_pagar").on("focus","input.distribucion.distribucion_aut
     if ( !_elemento.data("autocomplete") ) {
     	    	
     	_elemento.autocomplete({
-    		minLength: 6,    	    
+    		minLength: 3,    	    
     		source:function (request, response) {
     			$.ajax({
     				url:"index.php?controller=CuentasPagar&action=autompletePlanCuentas",
@@ -975,6 +980,8 @@ function generaMensaje(mensaje,clase){
 	$div.addClass(clase);
 	$div.append($btnClose);
 	return $div;
+	
+	
 }
 
 
@@ -1009,7 +1016,7 @@ $("#frm_cuentas_pagar").on("submit",function(event){
 			
 			swal({title:"",text:x.mensaje,icon:"success"})
     		.then((value) => {
-    		  window.open("index.php?controller=CuentasPagar&action=CuentasPagarIndex","_self")
+    			window.location.reload();
     		});
 			
 		}

@@ -10,11 +10,12 @@ $(document).ready( function (){
 function getUsuario()
 {
 	$.ajax({
-		url:'index.php?controller=PermisosEmpleados&action=getUsuario',
+		url:'index.php?controller=VacacionesEmpleados&action=getUsuario',
 		type:'POST',
 		dataType:'json',
 		data:{}
 	}).done(function(respuesta){
+		console.log(respuesta);
 		if(JSON.stringify(respuesta)!='{}'){
 			
 			$('#nombre_empleados').val(respuesta.nombre_empleados);
@@ -211,7 +212,7 @@ if ( desde!="" && hasta!="" && validarfechas(desde, hasta))
 	  		  icon: "warning",
 	  		  button: "Aceptar",
 	  		});
-	});*/
+	});
 	
 	}
 	

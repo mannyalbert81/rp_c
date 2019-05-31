@@ -496,14 +496,6 @@ class EntidadBase{
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
     public function AuditoriaControladores($_accion_trazas, $_parametros_trazas, $_nombre_controlador,$id_usario=null)
     {
     
@@ -524,17 +516,6 @@ class EntidadBase{
     	$resultadoT=$traza->Insert();
     
     }
-    
-    
-    
-
-    
-    
-    
- 
-  
-
-    
     
     
     

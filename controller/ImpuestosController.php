@@ -66,9 +66,11 @@ class ImpuestosController extends ControladorBase{
                 	 OR nombre_plan_cuentas LIKE '$buscador%'
                 	 )";
 	    
-	    $id = "codigo_plan_cuentas";	    
+	    $id = "codigo_plan_cuentas";
+	    
+	    $limit = "LIMIT 10";
 	  
-	    $rsPlanCuentas = $impuestos->getCondiciones($columnas, $tablas, $where, $id);
+	    $rsPlanCuentas = $impuestos->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
 	    
 	    if( !empty($rsPlanCuentas) && count($rsPlanCuentas)>0 ){
 	        
@@ -79,7 +81,7 @@ class ImpuestosController extends ControladorBase{
 	            $_cls_respuesta = new stdClass;
 	            $_cls_respuesta->id=$res->id_plan_cuentas;
 	            $_cls_respuesta->value=$res->codigo_plan_cuentas;
-	            $_cls_respuesta->label=$res->nombre_plan_cuentas.' - '.$res->codigo_plan_cuentas;
+	            $_cls_respuesta->label=$res->nombre_plan_cuentas.' | '.$res->codigo_plan_cuentas;
 	            $_cls_respuesta->nombre=$res->nombre_plan_cuentas;
 	            
 	            $respuesta[] = $_cls_respuesta;
@@ -118,6 +120,7 @@ class ImpuestosController extends ControladorBase{
 		$_nombre_impuestos = (isset($_POST["nombre_impuestos"])) ? $_POST["nombre_impuestos"] : "";
 		$_porcentaje_impuestos = (isset($_POST["porcentaje_impuestos"])) ? $_POST["porcentaje_impuestos"] : 0 ;
 		$_id_impuestos = (isset($_POST["id_impuestos"])) ? $_POST["id_impuestos"] : 0 ;
+		$_tipo_impuestos = (isset($_POST["tipo_impuestos"])) ? $_POST["tipo_impuestos"] : 0 ;
 		
 		$funcion = "tes_ins_impuestos";
 		$respuesta = 0 ;
@@ -125,11 +128,12 @@ class ImpuestosController extends ControladorBase{
 		
 		if($_id_impuestos == 0){
 		    
-		    $parametros = " '$_id_plan_cuentas','$_nombre_impuestos', '$_porcentaje_impuestos','$_id_impuestos'";
+		    $parametros = " '$_id_plan_cuentas','$_nombre_impuestos', '$_porcentaje_impuestos','$_id_impuestos','$_tipo_impuestos'";
 		    $impuestos->setFuncion($funcion);
 		    $impuestos->setParametros($parametros);
 		    $resultado = $impuestos->llamafuncion();
 		    
+		   
 		    if(!empty($resultado) && count($resultado) > 0 ){
 		        
 		        foreach ( $resultado[0] as $k => $v){
@@ -143,7 +147,7 @@ class ImpuestosController extends ControladorBase{
 		    
 		}elseif ($_id_impuestos > 0){
 		    
-		    $parametros = " '$_id_plan_cuentas','$_nombre_impuestos', '$_porcentaje_impuestos','$_id_impuestos'";
+		    $parametros = " '$_id_plan_cuentas','$_nombre_impuestos', '$_porcentaje_impuestos','$_id_impuestos','$_tipo_impuestos'";
 		    $impuestos->setFuncion($funcion);
 		    $impuestos->setParametros($parametros);
 		    $resultado = $impuestos->llamafuncion();
@@ -263,7 +267,7 @@ class ImpuestosController extends ControladorBase{
 	        $id_impuestos = (int)$_POST["id_impuestos"];
 	        
 	        $query = " SELECT imp.id_impuestos, pc.codigo_plan_cuentas, pc.id_plan_cuentas
-                        ,imp.nombre_impuestos, imp.porcentaje_impuestos
+                        ,imp.nombre_impuestos, imp.porcentaje_impuestos, imp.tipo_impuestos
         	        FROM tes_impuestos imp
         	        INNER JOIN plan_cuentas pc
         	        ON imp.id_plan_cuentas = pc.id_plan_cuentas
@@ -332,7 +336,7 @@ class ImpuestosController extends ControladorBase{
 	    
 	    $where_to="";
 	    $columnas  = " imp.id_impuestos, pc.nombre_plan_cuentas, imp.nombre_impuestos, imp.porcentaje_impuestos,
-                       to_char(imp.creado, 'YYYY-MM-DD') AS creado ";
+                       to_char(imp.creado, 'YYYY-MM-DD') AS creado, imp.tipo_impuestos ";
 	    
 	    $tablas    = " tes_impuestos imp 
                     INNER JOIN plan_cuentas pc
@@ -393,6 +397,7 @@ class ImpuestosController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
 	            $html.='<th style="text-align: left;  font-size: 15px;">Afectación Plan Cuentas</th>';
 	            $html.='<th style="text-align: left;  font-size: 15px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Tipo</th>';
 	            $html.='<th style="text-align: left;  font-size: 15px;">Creado</th>';
 	            
 	            /*para administracion definir administrador MenuOperaciones Edit - Eliminar*/
@@ -415,6 +420,7 @@ class ImpuestosController extends ControladorBase{
 	                $html.='<td style="font-size: 14px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->nombre_plan_cuentas.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->nombre_impuestos.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->tipo_impuestos.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->creado.'</td>';
 	               
 	                /*comentario up */

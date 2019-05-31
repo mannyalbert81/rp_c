@@ -99,7 +99,7 @@
             				  <div class="input-group ">
                               <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="" autofocus>
                               <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" data-toggle="modal" data-target="#mod_lote">
+                                <button class="btn btn-default input-sm" type="button" data-toggle="modal" data-target="#mod_lote">
                                 <i class="fa fa-arrow-right"></i>
                                 </button>
                               </span>
@@ -277,7 +277,7 @@
                 				 <div class="input-group ">
                                   <input type="text" class="form-control" id="plan_impuesto" readonly>
                                   <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" data-toggle="modal" data-target="#mod_impuestos">
+                                    <button class="btn btn-default input-sm" type="button" data-toggle="modal" data-target="#mod_impuestos" >
                                     <i class="fa fa-arrow-right"></i> 
                                     </button>
                                   </span>
@@ -315,7 +315,7 @@
             				  <div class="input-group ">
                               <input type="text" class="form-control inputDecimal" id="monto_cuentas_pagar" name="monto_cuentas_pagar" value="">
                               <span class="input-group-btn">
-                                <button class="btn btn-danger" type="button"  id="btn_cambiar_compras">
+                                <button class="btn btn-danger input-sm" type="button"  id="btn_cambiar_compras">
                                 <i class="fa fa-times"></i>
                                 </button>
                               </span>                              
@@ -588,17 +588,6 @@
 			  </div>
 			  </div><!-- terminacion de div de grupo -->
 			  
-			  <div class="form-group">
-				<label for="mod_naturaleza_impuestos" class="col-sm-3 control-label input-sm">Seleccione Naturaleza:</label>
-				<div class="col-sm-8">
-					<div class="input-group ">
-                     <select class="form-control" id="mod_naturaleza_impuestos" name="mod_naturaleza_impuestos" >
-    					<option value="0">Disminuye Sobre Base</option>
-    					<option value="1">Aumenta sobre Base</option>					
-    				  </select>                                          
-                    </div>				 
-				</div>
-			  </div>
 			  
 			   <div class="form-group">
 				<label for="mod_id_impuestos" class="col-sm-3 control-label input-sm">Selecione Impuesto:</label>
@@ -733,7 +722,7 @@
 <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.07"></script>
+<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.09"></script>
 
     
 

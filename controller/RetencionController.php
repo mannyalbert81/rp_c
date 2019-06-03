@@ -286,7 +286,7 @@ class RetencionController extends ControladorBase{
                     ";
         $where    = "tri_retenciones.id_tri_retenciones=id_tri_retenciones";
         
-        $id       = "tri_retenciones.fecha_autorizacion ";
+        $id       = "tri_retenciones.fecha_autorizacion";
         
         
        

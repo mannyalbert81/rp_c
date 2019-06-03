@@ -153,7 +153,54 @@
                                     </div>
                                     </div>
 	       		               
-	       		            </div>
+	       		            
+	          <div class="col-lg-12">
+	         <div class="col-lg-12">
+	         <div class="panel panel-info">
+	         <div class="panel-heading">
+	         <h4><i class='glyphicon glyphicon-edit'></i> Buscar Cuentas</h4>
+	         </div>
+	         <div class="panel-body">
+  			 <div class="row">
+  			 <div class="form-group" style="margin-top:13px">
+             <div class="col-xs-2 col-md-2">
+             
+                                  <label for="id_plan_cuentas" class="control-label" >#Cuenta: </label>
+                                  <input type="text" class="form-control" id="id_plan_cuentas" name="id_plan_cuentas" value=""  placeholder="Search">
+                                  <input type="hidden" class="form-control" id="plan_cuentas" name="plan_cuentas" value=""  placeholder="Search">
+                                  <span class="help-block"></span>
+             </div>
+             </div>
+		     
+		     <div class="form-group">
+		     <div class="col-xs-3 col-md-3">                     
+                                  <label for="nombre_plan_cuentas" class="control-label">Nombre: </label>
+                                  <input type="text" class="form-control" id="nombre_plan_cuentas" name="nombre_plan_cuentas" value=""  placeholder="Search">
+                                  <span class="help-block"></span>
+             </div>
+		     </div>
+		     
+		     <div class="form-group">
+             <div class="col-xs-3 col-md-3">
+		                          <label for="descripcion_dcomprobantes" class="control-label">Descripción: </label>
+                                  <input type="text" class="form-control" id="descripcion_dcomprobantes" name="descripcion_dcomprobantes" value=""  placeholder="">
+                                  <span class="help-block"></span>
+             </div>
+		     </div>
+		     
+			     </div>
+		    <div class="row">
+		    <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center;">
+		    <div class="form-group">
+                  <button type="submit" id="Agregar" name="Agregar" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i></button>
+             </div>
+		    </div>
+		    </div>
+		    </div>
+	        </div>
+	        </div>
+	        </div>
+	        </div>
                 		    
                     	         	                     	           	
                     		     <?php } ?>

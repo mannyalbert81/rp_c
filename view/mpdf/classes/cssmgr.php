@@ -1133,7 +1133,14 @@ function MergeCSS($inherit,$tag,$attr) {
 	if (isset($attr['CLASS'])) {
 		$classes = preg_split('/\s+/',$attr['CLASS']);
 	}
-	if (!isset($attr['ID'])) { $attr['ID']=''; }
+	////cambiado por manuel	
+	//if (!isset($attr['ID'])) { $attr['ID']=''; }
+	
+	$attr=array();
+if (!isset($attr['ID'])) {
+$attr['ID'] = '';
+}
+	
 	// mPDF 6
 	$shortlang = '';
 	if (!isset($attr['LANG'])) { $attr['LANG']=''; }

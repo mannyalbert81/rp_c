@@ -508,32 +508,40 @@ class AvancesEmpleadosController extends ControladorBase{
         $columnas = " empleados.nombres_empleados,
                       cargos_empleados.nombre_cargo,
                       departamentos.nombre_departamento,
-                        solicitud_horas_extras_empleados.fecha_solicitud,
-                        solicitud_horas_extras_empleados.hora_solicitud";
+                        anticipo_sueldo_empleados.fecha_anticipo,
+                        anticipo_sueldo_empleados.tiempo_diferido,
+                        anticipo_sueldo_empleados.monto_anticipo";
         
-        $tablas = "public.solicitud_horas_extras_empleados INNER JOIN public.empleados
-                   ON solicitud_horas_extras_empleados.id_empleado = empleados.id_empleados
+        $tablas = "public.anticipo_sueldo_empleados INNER JOIN public.empleados
+                   ON anticipo_sueldo_empleados.id_empleado = empleados.id_empleados
                    INNER JOIN public.estado
-                   ON solicitud_horas_extras_empleados.id_estado = estado.id_estado
+                   ON anticipo_sueldo_empleados.id_estado = estado.id_estado
                    INNER JOIN public.departamentos
                    ON departamentos.id_departamento = empleados.id_departamento
                    INNER JOIN public.cargos_empleados
                    ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $where= "solicitud_horas_extras_empleados.id_solicitud=".$id_permiso;
-        $id="solicitud_horas_extras_empleados.id_solicitud";
+        $where= "anticipo_sueldo_empleados.id_anticipo=".$id_permiso;
+        $id="anticipo_sueldo_empleados.id_anticipo";
         
         $rsdatos = $permisos->getCondiciones($columnas, $tablas, $where, $id);
         echo $rsdatos;
         $datos_reporte['NOMBREEMPLEADO']=$rsdatos[0]->nombres_empleados;
         $datos_reporte['CARGOEMPLEADO']=$rsdatos[0]->nombre_cargo;
         $datos_reporte['DPTOEMPLEADO']=$rsdatos[0]->nombre_departamento;
-        $fechaelem = explode("-", $rsdatos[0]->fecha_solicitud);
+        $fechaelem = explode("-", $rsdatos[0]->fecha_anticipo);
         $ind = intval($fechaelem[1])-1;
-        $datos_reporte['FECHASOLICITUD']=$fechaelem[2]." de ".$meses[$ind]." de ".$fechaelem[0];
-        $datos_reporte['HORASOLICITUD']=$rsdatos[0]->hora_solicitud;
+        $datos_reporte['FECHA']=$fechaelem[2]." de ".$meses[$ind]." de ".$fechaelem[0];
+        $datos_reporte['MONTO']=$rsdatos[0]->monto_anticipo;
+        $diferido=$rsdatos[0]->tiempo_diferido;
+        if ($diferido>1)
+        {
+         $diferido.=" meses";   
+        }
+        else $diferido.=" mes";
+        $datos_reporte['DIFERIDO']=$diferido;
         
                 
-        $this->verReporte("SolicitudHoraExtra", array('datos_reporte'=>$datos_reporte));
+        $this->verReporte("SolicitudAvance", array('datos_reporte'=>$datos_reporte));
         
         
             

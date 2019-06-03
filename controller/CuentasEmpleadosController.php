@@ -16,9 +16,16 @@ class CuentasEmpleadosController extends ControladorBase{
         
         $resultEmp = $empleados->getCondiciones("*", $tabla, $where, $id);
         
+        $tabla= "public.tes_bancos";
+        $where= "1=1";
+        $id = "tes_bancos.id_bancos";
+        
+        $resultBc = $empleados->getCondiciones("*", $tabla, $where, $id);
+        
         $this->view_Administracion("CuentasEmpleados",array(
             "resultEmp"=>$resultEmp,
-            "resultEst"=>$resultEst
+            "resultEst"=>$resultEst,
+            "resultBc"=>$resultBc
         ));
     }
     
@@ -82,7 +89,8 @@ class CuentasEmpleadosController extends ControladorBase{
         $where_to="";
         $columnas = " empleados.nombres_empleados,
                       empleados.id_empleados,
-                      cuentas_bancarias_empleados.nombre_banco,
+                      tes_bancos.nombre_bancos,
+                      tes_bancos.id_bancos,
                       cuentas_bancarias_empleados.tipo_cuenta,
                       cuentas_bancarias_empleados.numero_cuenta,
                       cuentas_bancarias_empleados.id_cuenta,
@@ -91,7 +99,9 @@ class CuentasEmpleadosController extends ControladorBase{
         $tablas = "public.empleados INNER JOIN public.cuentas_bancarias_empleados
                    ON empleados.id_empleados = cuentas_bancarias_empleados.id_empleado
                    INNER JOIN public.estado
-                   ON cuentas_bancarias_empleados.id_estado = estado.id_estado";
+                   ON cuentas_bancarias_empleados.id_estado = estado.id_estado
+                   INNER JOIN public.tes_bancos
+                   ON cuentas_bancarias_empleados.id_bancos = tes_bancos.id_bancos";
         
         
         $where    = "cuentas_bancarias_empleados.id_estado=".$id_estado;
@@ -175,12 +185,12 @@ class CuentasEmpleadosController extends ControladorBase{
                     $html.='<tr>';
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_banco.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->nombre_bancos.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->tipo_cuenta.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->numero_cuenta.'</td>';
                     if($id_rol==1){
                         
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarCuenta('.$res->id_empleados.',&quot;'.$res->nombre_banco.'&quot;,&quot;'.$res->tipo_cuenta.'&quot; ,&quot;'.$res->numero_cuenta.'&quot;)"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarCuenta('.$res->id_empleados.',&quot;'.$res->id_bancos.'&quot;,&quot;'.$res->tipo_cuenta.'&quot; ,&quot;'.$res->numero_cuenta.'&quot;)"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
                     if($res->nombre_estado=="ACTIVO")
                     {
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="EliminarCuenta('.$res->id_cuenta.')"><i class="glyphicon glyphicon-trash"></i></button></span></td>';

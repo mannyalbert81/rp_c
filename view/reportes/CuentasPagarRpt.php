@@ -5,6 +5,17 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
 //echo getcwd().''; //para ver ubicacion de directorio
 
 $template = file_get_contents('view/reportes/template/CuentasPagar.html');
+$header = file_get_contents('view/reportes/template/Cabecera.html');
+
+if(!empty($datos_empresa))
+{
+    
+    foreach ($datos_empresa as $clave=>$valor) {
+        echo $clave; echo "\n";
+        $header = str_replace('{'.$clave.'}', $valor, $header);
+    }
+}
+
 
 $footer = file_get_contents('view/reportes/template/pieret.html');
 
@@ -27,6 +38,7 @@ $mpdf->allow_charset_conversion = true;
 $mpdf->charset_in = 'UTF-8';
 $mpdf->setAutoTopMargin = 'stretch';
 $mpdf->setAutoBottomMargin = 'stretch';
+$mpdf->SetHTMLHeader($header);
 $mpdf->SetHTMLFooter($footer);
 $mpdf->WriteHTML($template);
 $mpdf->debug = true;

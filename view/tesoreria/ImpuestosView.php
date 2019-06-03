@@ -120,6 +120,19 @@
                                                
                         </div>
             		  </div>
+            		  
+            		  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="porcentaje_impuestos" class="control-label">Tipo Impuestos (%):</label>
+                          <select class="form-control" id="tipo_impuestos" name="tipo_impuestos">
+                          	<option value="iva">IVA</option>
+                          	<option value="retencion">RETENCION</option>
+                          </select>
+                          <div id="mensaje_tipo_impuestos" class="errores"></div>
+                                               
+                        </div>
+            		  </div>
                         		 
 				    
           	   	</div>	
@@ -128,7 +141,7 @@
     			    <div class="col-xs-12 col-md-4 col-lg-4 " style="text-align: center; ">
         	   		    <div class="form-group">
     	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
-    	                  <a href="<?php echo $helper->url("Bancos","Index"); ?>" class="btn btn-danger">CANCELAR</a>
+    	                  <a href="<?php echo $helper->url("Impuestos","Index"); ?>" class="btn btn-danger">CANCELAR</a>
 	                    </div>
 	                    
         		    </div>        		    
@@ -168,7 +181,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-   <script src="view/tesoreria/js/ImpuestosCxP.js?0.6"></script> 
+   <script src="view/tesoreria/js/ImpuestosCxP.js?0.7"></script> 
 	
   </body>
 </html>   

@@ -189,3 +189,28 @@ function ImprimirReporte()
 	var enlace = 'index.php?controller=ReporteNomina&action=ImprimirReporte&periodo='+periodo+'&search='+search+'&fecha='+fecha;
 	window.open(enlace, '_blank');	
 }
+
+function ImprimirReporteIndividual(idregistro)
+{
+	console.log(idregistro);
+	var search=$("#search").val();
+	var mes = new Date().getMonth();
+	var year = new Date().getFullYear();
+	mes--;
+	mes--;
+	var diainicio = 22;
+	var diafinal = 21;
+	var fechai = diainicio+"/"+mes+"/"+year;
+	console.log(fechai);
+	mes++;
+	if (mes>12){
+		mes=1;
+		year++;
+		var fechaf = diafinal+"/"+mes+"/"+year;
+	}
+	else var fechaf = diafinal+"/"+mes+"/"+year;
+	var fecha = fechai+'-'+fechaf;
+	var periodo=$("#periodo_marcaciones").val();
+	var enlace = 'index.php?controller=ReporteNomina&action=ImprimirReporteIndividual&id_registro='+idregistro;
+	window.open(enlace, '_blank');	
+}

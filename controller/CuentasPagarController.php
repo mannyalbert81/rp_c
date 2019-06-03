@@ -149,11 +149,23 @@ class CuentasPagarController extends ControladorBase{
 		$_saldo_cuentas_pagar = (isset($_POST['saldo_cuentas_pagar'])) ? $_POST['saldo_cuentas_pagar'] : null;
 		
 		//validar datos de dsitribucion de datos
-		$query = "SELECT 1 FROM tes_distribucion_cuentas_pagar WHERE id_plan_cuentas is null AND id_lote = $_id_lote ";
+		$query = "SELECT 1 FROM tes_distribucion_cuentas_pagar WHERE id_lote = $_id_lote ";
 		
         $rsDistribucion = $cuentasPagar->enviaquery($query);
         
         if(!empty($rsDistribucion)){
+            
+            //validacion cuentas vacias en distribucion
+            $query = "SELECT 1 FROM tes_distribucion_cuentas_pagar WHERE id_plan_cuentas is null AND id_lote = $_id_lote ";
+            $rsDistribucionVacias = $cuentasPagar->enviaquery($query);
+            
+            if(!empty($rsDistribucionVacias)){
+                
+                echo  json_encode(array('error'=>'Cuentas no definidas en Distribucion Cuentas x Pagar'));
+                exit();
+            }
+            
+        }else{
             
             echo  json_encode(array('error'=>'No existe distribución de Cuentas'));
             exit();
@@ -209,7 +221,7 @@ class CuentasPagarController extends ControladorBase{
 		
 		//print_r( $resultado);
 		
-		if(empty($resultado[0])){
+		if(is_null($resultado)){
 		    
 		    echo json_encode(array('error'=>'Error al insertar Cuenta por Pagar'));
 		    exit();
@@ -223,6 +235,7 @@ class CuentasPagarController extends ControladorBase{
 		$_retencion_ccomprobantes = '';
 		//concepto viene a ser la descripcion cuentas pagar
 		$_concepto_ccomprobantes = 'Cuentas por Pagar | '.$_descripcion_cuentas_pagar;
+		$_valor_ccomprobantes = $_compra_cuentas_pagar;
 		$_valor_letras_ccomprobantes  = $cuentasPagar->numtoletras($_compra_cuentas_pagar);
 		$_fecha_ccomprobantes = $_fecha_cuentas_pagar;
 		//buscar formas de pago
@@ -240,6 +253,7 @@ class CuentasPagarController extends ControladorBase{
                     '$_id_proveedor',
                     '$_retencion_ccomprobantes',
                     '$_concepto_ccomprobantes',
+                    '$_valor_ccomprobantes',
                     '$_valor_letras_ccomprobantes',                    
                     '$_fecha_ccomprobantes',
                     '$_id_forma_pago_ccomprobantes',
@@ -253,20 +267,23 @@ class CuentasPagarController extends ControladorBase{
 		$cuentasPagar->setFuncion($funcion);
 		$cuentasPagar->setParametros($parametros);
 		
-		@$resultadoccomprobantes = $cuentasPagar->llamafuncionPG();
+		$resultadoccomprobantes = $cuentasPagar->llamafuncionPG();
 				
-		
-		if(empty($resultadoccomprobantes[0])){
+		//print_r($resultadoccomprobantes);
+		if((int)($resultadoccomprobantes[0]) == 0 || is_null($resultadoccomprobantes)){
 		    
 		    //realizar eliminacion de CXP si hay error
 		    echo json_encode(array('error'=>"Error Actualizando comprobante"));
 		    exit();
 		}
 		
-		if((int)$resultadoccomprobantes[0] == 1 && (int)$resultado[0] == 1 ){
-		    
-    		echo json_encode(array('respuesta'=>1,'mensaje'=>"Cuenta por Pagar Ingresada Correctamente"));
-    		exit();
+		if(empty($resultadoccomprobantes) && empty($resultado) ){
+		    echo json_encode(array('error'=>"Error al Registrar 'Cuenta por Pagar'"));
+		    exit();
+    		
+		}else{
+		    echo json_encode(array('respuesta'=>1,'mensaje'=>"Cuenta por Pagar Ingresada Correctamente"));
+		    exit();
 		}
 		
 		echo json_encode(array('error'=>"Revisar Datos Enviados"));	
@@ -927,23 +944,17 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    if (empty($resultPer)){
 	        
-	        echo 'Usuario no tiene permisos';
+	        echo  json_encode(array('error'=>'Usuario no tiene permisos'));
 	        return;
 	    }	    
 	        
 	    $_id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0;
 	    $_id_impuestos = (isset($_POST['id_impuestos'])) ? $_POST['id_impuestos'] : 0;
 	    $_base_cxp_impuestos = (isset($_POST['base_impuestos'])) ? $_POST['base_impuestos'] : 0 ; 
-	    $_naturaleza = (isset($_POST['naturaleza_impuestos_cxp'])) ? $_POST['naturaleza_impuestos_cxp'] : 0 ;
-        //nota al agregar solo se puede agregar una vez el impuesto por el lote
-        $naturaleza_impuesto = 'A';
-        
-	    //para la naturaleza del impuesto relacionado
-        $naturaleza_impuesto = ($_naturaleza == 0) ? 'A' : 'D';
-        
+	    
       
         $funcion = "tes_ins_cuentas_pagar_impuestos";
-        $parametros = "'$_id_impuestos','$_id_lote','$_base_cxp_impuestos','$naturaleza_impuesto'";
+        $parametros = "'$_id_impuestos','$_id_lote','$_base_cxp_impuestos'";
         
         $impuestosCxP->setFuncion($funcion);
         $impuestosCxP->setParametros($parametros);
@@ -1333,7 +1344,13 @@ class CuentasPagarController extends ControladorBase{
 	        
 	        $codigo_plan_cuentas = $_GET['term'];
 	        
-	        $rsPlanCuentas = $planCuentas->getBy("codigo_plan_cuentas LIKE '$codigo_plan_cuentas%'");
+	        $columnas = "id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	        $tablas = "public.plan_cuentas";
+	        $where = "codigo_plan_cuentas LIKE '$codigo_plan_cuentas%' AND nivel_plan_cuentas > 3";
+	        $id = "codigo_plan_cuentas ";
+	        $limit = "LIMIT 10";
+	        
+	        $rsPlanCuentas = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
 	        
 	        $respuesta = array();
 	        
@@ -1494,14 +1511,63 @@ class CuentasPagarController extends ControladorBase{
 	        echo "es integrer";
 	}
 	
+	public function ReporteIndex(){
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    $mensaje="";
+	    $error="";
+	    session_start();
+	    
+	    if(empty( $_SESSION)){
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        return;
+	    }
+	    
+	    $nombre_controladores = "ReportesTesoreria";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $cuentasPagar->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (empty($resultPer)){
+	        
+	        $this->view("Error",array(
+	            "resultado"=>"No tiene Permisos de Acceso Reporte de Cuentas Pagar"
+	            
+	        ));
+	        exit();
+	    }
+	    
+	    $this->view_tesoreria("CuentasPagar",array( ));
+	    
+	}
+	
+	public function nodatapdf(){
+	    include dirname(__FILE__).'\..\view\fpdf\fpdf.php';
+	    $pdf = new FPDF();
+	    $pdf->AddPage();
+	    $pdf->SetFont("Times", "B", 14);
+	    $ancho = $pdf->GetPageWidth()-20;
+	    $alto = $pdf->GetPageHeight()/3;
+	    $pdf->Cell( $ancho, $alto,'Documento No Encontrado',0,1,'C');
+	    
+	    $pdf->Output();
+	}
+	
 	Public function Reporte_Cuentas_Por_Pagar(){
-	    
-	    
 	    
 	    session_start();
 	    
-	    $entidades = new EntidadesModel();
+	    /*$_id_cuentas_pagar = (isset($_GET['id_cuentas_pagar'])) ? $_GET['id_cuentas_pagar'] : null;
 	    
+	    if(is_null($_id_cuentas_pagar) ){
+	        
+	        $this->nodatapdf();
+	            
+	        exit();
+	    }*/
+	    
+	    //PARA OBTENER DATOS DE LA EMPRESA
+	    $entidades = new EntidadesModel();	    
 	    $datos_empresa = array();
 	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
 	    
@@ -1515,7 +1581,10 @@ class CuentasPagarController extends ControladorBase{
 	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
 	    }
 	    
-	    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	    
+	    
+	    //PARA DATOS DE SEGUNDA CABECERA
+	    $datos_cabecera = array();
 	    
 	    $retenciones = new RetencionesModel( );
 	    $id_tri_retenciones =  (isset($_REQUEST['id_tri_retenciones'])&& $_REQUEST['id_tri_retenciones'] !=NULL)?$_REQUEST['id_tri_retenciones']:'';
@@ -1693,12 +1762,132 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    
 	    $this->verReporte("CuentasPagar", array('datos_reporte'=>$datos_reporte,'datos_empresa'=>$datos_empresa));
+	   
+	    
+	}
+	
+	public function ListaCuentasPagar(){
+	    
+	    $cuentasPagar = new CuentasPagarModel();	    
+	    
+	    $id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0;
+	    
+	    $columnas = " id_cuentas_pagar, numero_cuentas_pagar, id_tipo_documento,
+                    descripcion_cuentas_pagar, id_lote,  DATE(fecha_cuentas_pagar) fecha_cuentas_pagar, 
+                    id_proveedor, condiciones_pago, id_banco, id_moneda, numero_documento_cuentas_pagar,
+                    numero_orden_compra_cuentas_pagar, compras_cuentas_pagar";
+	    
+	    $tablas = "tes_cuentas_pagar";
+	    
+	    $where = "1 = 1 ";
+	    
+	    $id = " fecha_cuentas_pagar";
+	    
+	    $where_to = "";
 	    
 	    
+	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
 	    
-	    
-	    
-	    
+	    if($action == 'ajax')
+	    {
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1=" AND ( numero_documento_cuentas_pagar LIKE '".$search."%' )";
+	            
+	            $where_to=$where.$where1;
+	            
+	        }else{
+	            
+	            $where_to=$where;
+	            
+	        }
+	        
+	        $html="";
+	        $resultSet = $cuentasPagar->getCantidad("*", $tablas, $where_to);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet = $cuentasPagar->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        if($cantidadResult > 0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:15px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:200px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_impuestos_cxp' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 11px;">#</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Numero</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Documento </th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Fecha Ingreso</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Proveedor</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Banco</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Documento Num.</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Compra</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;"></th>';
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_cuentas_pagar.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->id_tipo_documento.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_cuentas_pagar.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->id_proveedor.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->id_banco.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_documento_cuentas_pagar.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->compras_cuentas_pagar.'</td>';
+	                $html.='<td style="font-size: 15px;">
+                            <a data-id="'.$res->id_cuentas_pagar.'"   href="#" class="btn btn-default input-sm showpdf" style="font-size:65%;" data-toggle="tooltip" title="Ver pdf"><i class="glyphicon glyphicon-print"></i></a></td>';
+	                
+	                $html.='</tr>';
+	                
+	            }
+	            
+	            
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"cargaCuentasPagar").'';
+	            $html.='</div>';
+	            
+	            
+	            
+	        }else{
+	            
+	            
+	        }
+	        
+	        
+	        echo $html;
+	        
+	    }
 	}
 }
 ?>

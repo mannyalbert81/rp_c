@@ -45,8 +45,9 @@ $("#frm_impuestos").on("submit",function(event){
 	let _nombre_impuestos = $("#nombre_impuestos").val();
 	let _valor_pocentaje = $("#porcentaje_impuestos").val();
 	let _id_impuestos = $("#id_impuestos").val();
+	let _tipo_impuestos = $("#tipo_impuestos").val();
 	var parametros = {id_plan_cuentas:_id_plan_cuentas,nombre_impuestos:_nombre_impuestos,porcentaje_impuestos:_valor_pocentaje,
-			id_impuestos:_id_impuestos}
+			id_impuestos:_id_impuestos,tipo_impuestos:_tipo_impuestos}
 	
 	if(_id_plan_cuentas == 0){
 		$("#mensaje_plan_cuentas").text("Digite plan Cuentas").fadeIn("Slow");
@@ -117,6 +118,7 @@ function editImpuestos(id = 0){
 			$("#id_impuestos").val(array.id_impuestos);
 			$("#nombre_impuestos").val(array.nombre_impuestos);
 			$("#porcentaje_impuestos").val(array.porcentaje_impuestos);
+			$("#tipo_impuestos").val(array.tipo_impuestos);
 			
 			$("html, body").animate({ scrollTop: $(nombre_impuestos).offset().top-120 }, tiempo);			
 		}		

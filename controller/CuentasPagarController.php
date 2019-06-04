@@ -1514,8 +1514,7 @@ class CuentasPagarController extends ControladorBase{
 	public function ReporteIndex(){
 	    
 	    $cuentasPagar = new CuentasPagarModel();
-	    $mensaje="";
-	    $error="";
+	   
 	    session_start();
 	    
 	    if(empty( $_SESSION)){
@@ -1541,33 +1540,38 @@ class CuentasPagarController extends ControladorBase{
 	    
 	}
 	
-	public function nodatapdf(){
+	public function nodatapdf($mensaje=""){
+	    
+	    $texto = ($mensaje=="") ? "Documento No Encontrado" : $mensaje;
+	    
 	    include dirname(__FILE__).'\..\view\fpdf\fpdf.php';
 	    $pdf = new FPDF();
 	    $pdf->AddPage();
 	    $pdf->SetFont("Times", "B", 14);
 	    $ancho = $pdf->GetPageWidth()-20;
 	    $alto = $pdf->GetPageHeight()/3;
-	    $pdf->Cell( $ancho, $alto,'Documento No Encontrado',0,1,'C');
+	    $pdf->Cell( $ancho, $alto,$texto,0,1,'C');
 	    
 	    $pdf->Output();
 	}
 	
 	Public function Reporte_Cuentas_Por_Pagar(){
 	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    $entidades = new EntidadesModel();	
+	    
 	    session_start();
 	    
-	    /*$_id_cuentas_pagar = (isset($_GET['id_cuentas_pagar'])) ? $_GET['id_cuentas_pagar'] : null;
+	    $_id_cuentas_pagar = (isset($_GET['id_cuentas_pagar'])) ? $_GET['id_cuentas_pagar'] : null;
 	    
 	    if(is_null($_id_cuentas_pagar) ){
 	        
 	        $this->nodatapdf();
 	            
 	        exit();
-	    }*/
+	    }
 	    
-	    //PARA OBTENER DATOS DE LA EMPRESA
-	    $entidades = new EntidadesModel();	    
+	    //PARA OBTENER DATOS DE LA EMPRESA	        
 	    $datos_empresa = array();
 	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
 	    
@@ -1581,62 +1585,182 @@ class CuentasPagarController extends ControladorBase{
 	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
 	    }
 	    
-	    
-	    
-	    //PARA DATOS DE SEGUNDA CABECERA
+	    //NOTICE DATA
 	    $datos_cabecera = array();
+	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+	    $datos_cabecera['FECHA'] = date('Y/m/d');
+	    $datos_cabecera['HORA'] = date('h:i:s');
 	    
-	    $retenciones = new RetencionesModel( );
-	    $id_tri_retenciones =  (isset($_REQUEST['id_tri_retenciones'])&& $_REQUEST['id_tri_retenciones'] !=NULL)?$_REQUEST['id_tri_retenciones']:'';
+	    $datos_cuentas_pagar = array();
 	    
-	    $datos_reporte = array();
+	    $columnascxp = "id_cuentas_pagar, numero_cuentas_pagar, descripcion_cuentas_pagar, fecha_cuentas_pagar,		
+                  numero_documento_cuentas_pagar, compras_cuentas_pagar, condonaciones_cuentas_pagar, 
+                  saldo_cuenta_cuentas_pagar, descuento_comercial_cuentas_pagar, flete_cuentas_pagar, 
+                  miscelaneos_cuentas_pagar,impuesto_cuentas_pagar, cp.id_tipo_documento, td.abreviacion_tipo_documento,
+                  lo.id_lote, lo.nombre_lote, lo.descripcion_lote, lo.numero_lote, fre.nombre_frecuencia_lote, 
+                  cp.id_proveedor, pro.nombre_proveedores, pro.identificacion_proveedores";
 	    
-	    $columnas = " tri_retenciones.id_tri_retenciones,
-                      tri_retenciones.infotributaria_ambiente,
-                      tri_retenciones.infotributaria_tipoemision,
-                      tri_retenciones.infotributaria_razonsocial,
-                      tri_retenciones.infotributaria_nombrecomercial,
-                      tri_retenciones.infotributaria_ruc,
-                      tri_retenciones.infotributaria_claveacceso,
-                      tri_retenciones.infotributaria_coddoc,
-                      tri_retenciones.infotributaria_estab,
-                      tri_retenciones.infotributaria_secuencial,
-                      tri_retenciones.infotributaria_dirmatriz,
-                      tri_retenciones.infocompretencion_fechaemision,
-                      tri_retenciones.infocompretencion_direstablecimiento,
-                      tri_retenciones.infocompretencion_contribuyenteespecial,
-                      tri_retenciones.infocompretencion_obligadocontabilidad,
-                      tri_retenciones.infocompretencion_tipoidentificacionsujetoretenido,
-                      tri_retenciones.infocompretencion_razonsocialsujetoretenido,
-                      tri_retenciones.infocompretencion_identificacionsujetoretenido,
-                      tri_retenciones.infocompretencion_periodofiscal,
-                      tri_retenciones.impuesto_codigo,
-                      tri_retenciones.impuesto_codigoretencion,
-                      tri_retenciones.impuestos_baseimponible,
-                      tri_retenciones.impuestos_porcentajeretener,
-                      tri_retenciones.impuestos_valorretenido,
-                      tri_retenciones.impuestos_coddocsustento,
-                      tri_retenciones.impuestos_numdocsustento,
-                      tri_retenciones.impuesto_fechaemisiondocsustento,
-                      tri_retenciones.impuesto_codigo_dos,
-                      tri_retenciones.impuesto_codigoretencion_dos,
-                      tri_retenciones.impuestos_baseimponible_dos,
-                      tri_retenciones.impuestos_porcentajeretener_dos,
-                      tri_retenciones.impuestos_valorretenido_dos,
-                      tri_retenciones.impuestos_coddocsustento_dos,
-                      tri_retenciones.impuestos_numdocsustento_dos,
-                      tri_retenciones.impuesto_fechaemisiondocsustento_dos,
-                      tri_retenciones.infoadicional_campoadicional,
-                      tri_retenciones.infoadicional_campoadicional_dos,
-                      tri_retenciones.infoadicional_campoadicional_tres,
-                      (tri_retenciones.fecha_autorizacion, 'DD-MM-YYYY HH24:MI:SS') AS fecha_autorizacion";
+	    $tablascxp = "public.tes_cuentas_pagar cp
+                INNER JOIN tes_tipo_documento td
+                ON cp.id_tipo_documento = td.id_tipo_documento
+                INNER JOIN tes_lote lo
+                ON lo.id_lote = cp.id_lote
+                INNER JOIN proveedores pro
+                ON pro.id_proveedores = cp.id_proveedor
+                INNER JOIN tes_frecuencia_lote fre
+                ON fre.id_frecuencia_lote = lo.id_frecuencia";
 	    
-	    $tablas = "  public.tri_retenciones";
-	    $where= "tri_retenciones.id_tri_retenciones='$id_tri_retenciones'";
-	    $id="tri_retenciones.id_tri_retenciones";
+	    $wherecxp = "cp.id_cuentas_pagar = $_id_cuentas_pagar ";
 	    
-	    $rsdatos = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
+	    $idcxp = "cp.id_cuentas_pagar";
 	    
+	    $rsDatosCxp = $cuentasPagar->getCondiciones($columnascxp, $tablascxp, $wherecxp, $idcxp);
+	    
+	    if(empty($rsDatosCxp)){
+	        
+	        $this->nodatapdf("Cuenta x pagar no encontrada");
+	        exit();
+	    }
+	    
+	    $datos_cuentas_pagar['NOMBRELOTE'] = $rsDatosCxp[0]->nombre_lote;
+	    $datos_cuentas_pagar['DESCLOTE'] = $rsDatosCxp[0]->descripcion_lote;
+	    $datos_cuentas_pagar['FRECUENCIA'] = $rsDatosCxp[0]->nombre_frecuencia_lote;
+	    $datos_cuentas_pagar['NUMEROLOTE'] = $rsDatosCxp[0]->numero_lote;
+	    $datos_cuentas_pagar['TIPODOCUMENTO'] = $rsDatosCxp[0]->abreviacion_tipo_documento;
+	    $datos_cuentas_pagar['NUMEROCOMPROBANTE'] = $rsDatosCxp[0]->numero_cuentas_pagar;
+	    $datos_cuentas_pagar['NUMERODOCUMENTO'] = $rsDatosCxp[0]->numero_documento_cuentas_pagar;
+	    $datos_cuentas_pagar['FECHADOCUMENTO'] = $rsDatosCxp[0]->fecha_cuentas_pagar;
+	    $datos_cuentas_pagar['IDEPROVEEDOR'] = $rsDatosCxp[0]->identificacion_proveedores;
+	    $datos_cuentas_pagar['NOMBREPROVEEDOR'] = $rsDatosCxp[0]->nombre_proveedores;
+	    $datos_cuentas_pagar['CONDONACIONES'] = $rsDatosCxp[0]->condonaciones_cuentas_pagar;
+	    $datos_cuentas_pagar['SALDOCUENTA'] = $rsDatosCxp[0]->saldo_cuenta_cuentas_pagar;
+	    $datos_cuentas_pagar['COMPRAS'] = $rsDatosCxp[0]->compras_cuentas_pagar;
+	    $datos_cuentas_pagar['DESCCOMERCIAL'] = $rsDatosCxp[0]->descuento_comercial_cuentas_pagar;
+	    $datos_cuentas_pagar['FLETE'] = $rsDatosCxp[0]->flete_cuentas_pagar;
+	    $datos_cuentas_pagar['MISCELANEOS'] = $rsDatosCxp[0]->miscelaneos_cuentas_pagar;
+	    $datos_cuentas_pagar['IMPUESTO'] = $rsDatosCxp[0]->impuesto_cuentas_pagar;
+	    $datos_cuentas_pagar['DF'] = $rsDatosCxp[0]->descripcion_lote;
+	    $datos_cuentas_pagar['GH'] = $rsDatosCxp[0]->nombre_frecuencia_lote;
+	    $datos_cuentas_pagar['KL'] = $rsDatosCxp[0]->numero_lote;
+	    
+	    //DISTRIBUCION DE CONTABILIDAD
+	    
+	    $id_lote = $rsDatosCxp[0]->id_lote;
+	    
+	    $columnasDistribucion= "id_distribucion_cuentas_pagar, id_lote, pc.id_plan_cuentas, pc.codigo_plan_cuentas,
+    		pc.nombre_plan_cuentas, tipo_distribucion_cuentas_pagar, 
+    		debito_distribucion_cuentas_pagar,  credito_distribucion_cuentas_pagar";
+	    
+	    $tablasDistribucion = "tes_distribucion_cuentas_pagar dis
+            inner join plan_cuentas pc 
+            on dis.id_plan_cuentas = pc.id_plan_cuentas";
+	    
+	    $whereDistribucion = " dis.id_lote = $id_lote ";
+	    
+	    $idDistribucion = " dis.ord_distribucion_cuentas_pagar ";
+	    
+	    $rsdatosDistribucion = $cuentasPagar->getCondiciones($columnasDistribucion, $tablasDistribucion, $whereDistribucion, $idDistribucion);
+	    
+	    if( empty($rsdatosDistribucion) ){
+	        
+	        $this->nodatapdf("Distribucion No Realizada");
+	        exit();
+	        
+	    }
+	    
+	    if(!empty($rsdatosDistribucion)){
+	        
+	        $tabladistribucion = "<table> <caption> Distribuciones de Contabilidad </caption> ";
+	        $sumaDebito = 0.00;
+	        $sumaCredito = 0.00;
+	        $tabladistribucion .= "<tr>";
+	        $tabladistribucion .= "<th>Cuenta</th>";
+	        $tabladistribucion .= "<th>Descripcion Cuenta</th>";
+	        $tabladistribucion .= "<th>Tipo de Cuenta</th>";
+	        $tabladistribucion .= "<th>Monto débito</th>";
+	        $tabladistribucion .= "<th>Monto crédito</th>";
+	        $tabladistribucion .= "</tr>";	        
+	                
+	        foreach ($rsdatosDistribucion as $res){
+	            $tabladistribucion .= "<tr>";
+	            $tabladistribucion .= "<td>".$res->codigo_plan_cuentas."</td>";
+	            $tabladistribucion .= "<td>".$res->nombre_plan_cuentas."</td>";
+	            $tabladistribucion .= "<td>".$res->tipo_distribucion_cuentas_pagar."</td>";
+	            $tabladistribucion .= "<td>".$res->debito_distribucion_cuentas_pagar."</td>";
+	            $tabladistribucion .= "<td>".$res->credito_distribucion_cuentas_pagar."</td>";
+	            $tabladistribucion .= "</tr>";
+	            
+	            $sumaCredito += $res->credito_distribucion_cuentas_pagar;
+	            $sumaDebito += $res->debito_distribucion_cuentas_pagar;
+	        }
+	        
+	        $tabladistribucion .= "<tr>";
+	        $tabladistribucion .= "<td colspan=\"3\"></td>";
+	        $tabladistribucion .= "<td>----------------</td>";
+	        $tabladistribucion .= "<td>----------------</td>";
+	        $tabladistribucion .= "</tr>";
+	        
+	        $tabladistribucion .= "<tr>";
+	        $tabladistribucion .= "<td colspan=\"3\"></td>";
+	        $tabladistribucion .= "<td>".$sumaDebito."</td>";
+	        $tabladistribucion .= "<td>".$sumaCredito."</td>";
+	        $tabladistribucion .= "</tr>";
+	        
+	        $tabladistribucion .= "</table>";
+	    }
+	    
+	    $datos_cuentas_pagar['TABLADISTRIBUCION'] = $tabladistribucion;
+	    
+	    //DISTRIBUCION DETALLE IMPUESTOS
+	   
+	    $columnasImpuestos= "imp.id_impuestos, imp.nombre_impuestos, id_lote, base_cuentas_pagar_impuestos, valor_cuentas_pagar_impuestos";
+	    
+	    $tablasImpuestos = "public.tes_cuentas_pagar_impuestos icp 
+                    INNER JOIN public.tes_impuestos imp
+                    ON icp.id_impuestos = imp.id_impuestos";
+	    
+	    $whereImpuestos = " icp.id_lote = $id_lote ";
+	    
+	    $idImpuestos = " imp.id_impuestos ";
+	    
+	    $rsdatosImpuestos = $cuentasPagar->getCondiciones($columnasImpuestos, $tablasImpuestos, $whereImpuestos, $idImpuestos);
+	    	    	    
+	    if(!empty($rsdatosImpuestos)){
+	        
+	        $tablaImpuesto = "<table> <caption> Distribuciones de detalle de impuestos </caption> ";
+	        $sumaImpuesto = 0.00;
+	        $tablaImpuesto .= "<tr>";
+	        $tablaImpuesto .= "<th>Id. detalle impuesto</th>";
+	        $tablaImpuesto .= "<th>Descripcion detalle impuesto</th>";
+	        $tablaImpuesto .= "<th>Monto impuesto</th>";
+	        $tablaImpuesto .= "</tr>";
+	        
+	        foreach ($rsdatosImpuestos as $res){
+	            $tablaImpuesto .= "<tr>";
+	            $tablaImpuesto .= "<td>".$res->id_impuestos."</td>";
+	            $tablaImpuesto .= "<td>".$res->nombre_impuestos."</td>";
+	            $tablaImpuesto .= "<td>".$res->valor_cuentas_pagar_impuestos."</td>";
+	            $tablaImpuesto .= "</tr>";
+	            
+	            $sumaImpuesto += $res->valor_cuentas_pagar_impuestos;
+	        }
+	        
+	        $tablaImpuesto .= "<tr>";
+	        $tablaImpuesto .= "<td colspan=\"2\"></td>";
+	        $tablaImpuesto .= "<td>----------------</td>";
+	        $tablaImpuesto .= "</tr>";
+	        
+	        $tablaImpuesto .= "<tr>";
+	        $tablaImpuesto .= "<td colspan=\"2\"></td>";
+	        $tablaImpuesto .= "<td>".$sumaImpuesto."</td>";
+	        $tablaImpuesto .= "</tr>";
+	        
+	        $tablaImpuesto .= "</table>";
+	    }
+	    
+	    $datos_cuentas_pagar['TABLAIMPUESTOS'] = $tablaImpuesto;
+	    
+	    /*
 	    
 	    $datos_reporte['AMBIENTE']=$rsdatos[0]->infotributaria_ambiente;
 	    $datos_reporte['EMISION']=$rsdatos[0]->infotributaria_tipoemision;
@@ -1690,78 +1814,13 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    
 	    $datos_reporte['FECAUTORIZACION']=$rsdatos[0]->fecha_autorizacion;
+	    */
 	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    if (  $datos_reporte['AMBIENTE'] =="2"){
-	        
-	        $datos_reporte['AMBIENTE']="PRODUCCIÓN";
-	        
-	    }
-	    
-	    if (  $datos_reporte['EMISION'] =="1"){
-	        
-	        $datos_reporte['EMISION']="NORMAL";
-	        
-	    }
-	    
-	    if (  $datos_reporte['IMPCODIGO'] =="1"){
-	        
-	        $datos_reporte['IMPCODIGO']="RENTA";
-	        
-	    }
-	    
-	    if (  $datos_reporte['CODIGODOS'] =="2"){
-	        
-	        $datos_reporte['CODIGODOS']="IVA";
-	        
-	    }
-	    if (  $datos_reporte['CODSUSTENTO'] =="01"){
-	        
-	        $datos_reporte['CODSUSTENTO']="FACTURA";
-	        
-	    }
-	    if (  $datos_reporte['CODSUSTDOS'] =="01"){
-	        
-	        $datos_reporte['CODSUSTDOS']="FACTURA";
-	        
-	    }
-	    
-	    if (  $datos_reporte['CODSUSTENTO'] ==""){
-	        
-	        $datos_reporte['CODSUSTENTO']="-";
-	        $datos_reporte['NUMDOCSUST']="-";
-	        $datos_reporte['FECHEMDOCSUST']="-";
-	        $datos_reporte['IMPBASIMPONIBLE']="-";
-	        $datos_reporte['PERIODOFISCAL']="-";
-	        $datos_reporte['IMPCODIGO']="-";
-	        $datos_reporte['IMPPORCATENER']="-";
-	        $datos_reporte['VALRETENIDO']="-";
-	        
-	    }
-	    if (  $datos_reporte['CODSUSTDOS'] ==""){
-	        
-	        $datos_reporte['CODSUSTDOS']="-";
-	        $datos_reporte['NUMSUSTDOS']="-";
-	        $datos_reporte['FECHEMISIONDOS']="-";
-	        $datos_reporte['BASEIMPDOS']="-";
-	        $datos_reporte['PERIODOFISCALDOS']="-";
-	        $datos_reporte['CODIGODOS']="-";
-	        $datos_reporte['IMPPORCDOS']="-";
-	        $datos_reporte['VALRETDOS']="-";
-	        
-	    }
-	    
+	 
 	    //para imagen codigo barras
 	    
 	    
-	    
-	    $this->verReporte("CuentasPagar", array('datos_reporte'=>$datos_reporte,'datos_empresa'=>$datos_empresa));
+	    $this->verReporte("CuentasPagar", array('datos_cuentas_pagar'=>$datos_cuentas_pagar,'datos_empresa'=>$datos_empresa,'datos_cabecera'=>$datos_cabecera));
 	   
 	    
 	}

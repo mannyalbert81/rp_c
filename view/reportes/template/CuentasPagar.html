@@ -67,11 +67,11 @@
 		 <td class="infotd" style="font-size: 60%; width:10px; padding: 5px;" >
 		 <strong>Sistema:</strong> 
 		 </td>
-		 <td class="infotd" style="font-size: 60%; width:25px; padding: 5px;" >{}
-		 24/4/2019
+		 <td class="infotd" style="font-size: 60%; width:25px; padding: 5px;" >
+		 {FECHA}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:25px; padding: 5px;" >
-		 8:25:45
+		{HORA}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:350px; padding: 5px; " align="center">
 		 &nbsp;
@@ -91,7 +91,7 @@
 		 <strong>Fecha Usuario: </strong>
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:50px; padding: 5px;" >
-		 24/4/2019
+		 {FECHA}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:370px; padding: 5px; " align="center">
 		 &nbsp;
@@ -100,7 +100,7 @@
 		 <strong>Id de usuario:</strong> 
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:100px; padding: 5px;" >
-		 1 
+		 {USUARIO}
 		 </td>
 		</tr>
 	    </table>                                                              		
@@ -121,7 +121,7 @@
 		 <strong>Id. de Lote:</strong>
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:200px; padding: 5px;" >
-		 PAGOS
+		 {NOMBRELOTE}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:150px; padding: 5px;" >
 		 &nbsp;
@@ -130,7 +130,7 @@
 		 <strong>Frecuencia de lote:</strong>
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:90px; padding: 5px;" >
-		 Uso único
+		 {FRECUENCIA}
 		 </td>
 		</tr>
 		<tr>
@@ -138,7 +138,7 @@
 		 <strong>Comentario de lote:</strong>
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:250px; padding: 5px;" >
-		 SERVICIO DE TRANSPORTE EN TAXIS MARZO 2019
+		 {DESCLOTE}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:50px; padding: 5px;" >
 		 &nbsp;
@@ -147,7 +147,7 @@
 		 <strong>Código de Auditoría:</strong>
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:90px; padding: 5px;" >
-		 PMTRX0000716
+		 {NUMEROLOTE}
 		 </td>
 		</tr>
 	    </table>
@@ -171,7 +171,7 @@
 		 <strong>Total real lote:</strong>
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:50px; padding: 5px;">
-		 $611.49
+		 {SALDOCUENTA}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:85px; padding: 5px;" align="left">
 		 <strong>Control total lote:</strong>
@@ -210,7 +210,7 @@
 		 <b>Tipo</b>
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Núm.comprobante</b>
+		 <b>Núm. comprobante</b>
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
 		 <b>Núm. de documento</b>
@@ -248,247 +248,59 @@
 		</tr>
 		<tr>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 INV
+		 {TIPODOCUMENTO}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 00000001713409567
+		 {NUMEROCOMPROBANTE}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		001-001-00005634
+		 {NUMERODOCUMENTO}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:55px;" align="center">
-		 5/4/2019
+		 {FECHADOCUMENTO}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 1790950255001
+		 {IDEPROVEEDOR}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 COOP. DE TRANSAPORTE
+		 {NOMBREPROVEEDOR}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
-		 $0.00
+		 {CONDONACIONES}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:55px;" align="right">
-		 $611.49
+		 {SALDOCUENTA}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
-		 $611.67
+		 {COMPRAS}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
-		 $0.00
+		 {DESCCOMERCIAL}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
-		 $0.00
+		 {FLETE}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
-		 $0.00
+		 {MISCELANEOS}
 		 </td>
 		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
-		 $-6.18
+		 {IMPUESTO}
 		 </td>
 		</tr>
 	    </table>
 	    <br>
+	    {TABLADISTRIBUCION}
 	    <br>
-	    <table class="info" style="width:100%;">
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px; padding: 5px;" >
-		 <strong>Distribuciones de Contabilidad</strong>
-		 </td>
-		</tr>
-	    </table>
-	    <table class="info" style="width:98%;" >
-	    <tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="center";>
-		 <b>Cuenta</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 <b>Descripción Cuenta</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 <b>Tipo de Cuenta</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>Monto Debito</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>Monto Credito</b>
-		 </td>
-		</tr>
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="center";>
-		 4-4-01-90-10-00-00
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 Movilización
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		  COMPRA
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 617.67
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 0.00
-		 </td>
-		</tr>
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="center";>
-		 2-3-04-10-02-01-00
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 Retenciones Fuente 1%
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		  IMPTOS
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 0.00
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 6.18
-		 </td>
-		</tr>
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="center";>
-		 2-3-90-10-03-00-00
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 Valores por liquidar Proveedor
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 PAGO
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 0.00
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 611.49
-		 </td>
-		</tr>
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="center";>
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-		 </td>
-		</tr>
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="center";>
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 617.67
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 617.67
-		 </td>
-		</tr>
-	    </table>
-	    <table class="info" style="width:100%;">
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px; padding: 5px;" >
-		 <strong>Distribuciones de detalles de impu</strong>
-		 </td>
-		</tr>
-	    </table>
-	    <table class="info" style="width:98%;" >
-	    <tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="center";>
-		 <b>Id. detalle impuesto</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 <b>Descripción detalle impuesto</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 <b>&nbsp;</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>Monto impuesto</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>&nbsp;</b>
-		 </td>
-		</tr>
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="center";>
-		 340
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 Aplicables el 1%
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 -6.18
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 &nbsp;
-		 </td>
-		 </tr>
-		 <tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="center";>
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 &nbsp;
-		 </td>
-		</tr>
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="center";>
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 -6.18
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:125px;" align="right";>
-		  &nbsp;
-		 </td>
-		</tr>
-	    </table>
-	    <table class="info" style="width:100%;">
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px; padding: 5px;" >
-		 <strong>Monto de compras</strong>
-		 </td>
-		</tr>
-	    </table>
+	    
+	    {TABLAIMPUESTOS}
+	   
+	   <br>
+	    
+	    
 	    <table class="info" style="width:98%;" >
 	    <tr>
 		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>&nbsp;</b>
+		 <b>Monto de compras</b>
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
 		 <b>Dpto. comercial</b>
@@ -538,25 +350,25 @@
 		<tr>
 		
 		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 $617.67
+		 {COMPRAS}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 $0.00
+		 {DESCCOMERCIAL}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 $0.00
+		 {FLETE}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 $0.00
+		 {MISCELANEOS}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 -$6.18
+		 {IMPUESTO}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 $0.00
+		 {CONDONACIONES}
 		 </td>
 		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 $611.49
+		 {SALDOCUENTA}
 		 </td>
 		 
 		</tr>

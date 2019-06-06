@@ -391,6 +391,9 @@ $controladores=$_SESSION['controladores'];
 	  			<li style="<?php echo getcontrolador("ContribucionCategoria",$controladores) ?>"><a href="index.php?controller=ContribucionCategoria&action=index"><i class="fa fa-circle-o"></i>Contribucion Categoria</a></li>
        	  		<li style="<?php echo getcontrolador("Estatus",$controladores) ?>"><a href="index.php?controller=Estatus&action=index"><i class="fa fa-circle-o"></i>Estatus</a></li>
        	  		<li style="<?php echo getcontrolador("ContribucionTipo",$controladores) ?>"><a href="index.php?controller=ContribucionTipo&action=index"><i class="fa fa-circle-o"></i>Contribucion Tipo</a></li>
+ 				<li style="<?php echo getcontrolador("EstadoMarital",$controladores) ?>"><a href="index.php?controller=EstadoMarital&action=index"><i class="fa fa-circle-o"></i>Estado Marital</a></li>
+           	    <li style="<?php echo getcontrolador("CoreEmpleo",$controladores) ?>"><a href="index.php?controller=CoreEmpleo&action=index"><i class="fa fa-circle-o"></i>Empleo</a></li>
+           	            	  
            	  </ul>
         </li>
         <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >

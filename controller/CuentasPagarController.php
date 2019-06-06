@@ -725,7 +725,7 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    //valida usuario logeado  dc 2019-05-20
 	    if(!isset($_SESSION['id_usuarios'])){
-	        echo 'Session Caducada';
+	        echo json_encode(array('error'=>'Session Caducada')) ;
 	        exit();
 	    }	    
 	    //variables desde fn JS submit frm_genera_lote
@@ -948,10 +948,9 @@ class CuentasPagarController extends ControladorBase{
 	        return;
 	    }	    
 	        
-	    $_id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0;
-	    $_id_impuestos = (isset($_POST['id_impuestos'])) ? $_POST['id_impuestos'] : 0;
-	    $_base_cxp_impuestos = (isset($_POST['base_impuestos'])) ? $_POST['base_impuestos'] : 0 ; 
-	    
+	    $_id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0 ;
+	    $_id_impuestos = (isset($_POST['id_impuestos'])) ? $_POST['id_impuestos'] : 0 ;
+	    $_base_cxp_impuestos = (isset($_POST['base_impuestos'])) ? $_POST['base_impuestos'] : 0 ; 	    
       
         $funcion = "tes_ins_cuentas_pagar_impuestos";
         $parametros = "'$_id_impuestos','$_id_lote','$_base_cxp_impuestos'";
@@ -980,7 +979,23 @@ class CuentasPagarController extends ControladorBase{
         
         $mensaje = ($respuesta == 0) ? "Impuesto ya se encuentra registrado" : (($respuesta > 0 ) ? "Impuesto agregado correctamente":"");
         
-        echo json_encode(array('respuesta'=> 1 , 'valor' => $respuesta, 'mensaje'=> $mensaje ));
+        //para devolver los resultados de ingresar un impuesto
+        $arrayResultados = array();
+        $query = " SELECT SUM( valor_cuentas_pagar_impuestos ) AS suma_impuestos FROM tes_cuentas_pagar_impuestos WHERE id_lote = $_id_lote ";
+        
+        $rsResultados = $impuestosCxP->enviaquery($query);
+        
+        if( !empty($rsResultados)){
+            
+            $resultadoSaldo = floatval( $rsResultados[0]->suma_impuestos );
+            $resultadoCuenta = $_base_cxp_impuestos - $resultadoSaldo;
+            
+            $arrayResultados['impuestos'] = $resultadoSaldo;
+            $arrayResultados['saldo'] = $resultadoCuenta;
+            
+        }
+        
+        echo json_encode(array('respuesta'=> 1 , 'valor' => $respuesta, 'mensaje' => $mensaje, 'resultados' => $arrayResultados ));
 	    
 	}
 	
@@ -1169,14 +1184,11 @@ class CuentasPagarController extends ControladorBase{
 	    $id_lote = ( isset($_POST['id_lote']) ) ? $_POST['id_lote'] : 0;
 	    
 	    $base_compra = ( isset($_POST['monto_cuentas_pagar']) ) ? $_POST['monto_cuentas_pagar'] : 0;
-	    
-	    //var_dump($id_lote);
-	    
+	     
 	    if($id_lote == 0 || $id_lote == "" ){
 	        echo 'datos no enviados';
 	        exit();
 	    }
-	    
 	    
 	    $funcion = "tes_ins_distribucion_cuentas_pagar";
 	    $parametros = "'$id_lote', '$base_compra'";
@@ -1562,7 +1574,19 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    session_start();
 	    
+	    $_id_lote = (isset($_GET['id_lote'])) ? $_GET['id_lote'] : null;
+	    
 	    $_id_cuentas_pagar = (isset($_GET['id_cuentas_pagar'])) ? $_GET['id_cuentas_pagar'] : null;
+	    
+	    if(!is_null($_id_lote)){
+	        
+	        $query = "SELECT id_cuentas_pagar FROM public.tes_cuentas_pagar where id_lote = $_id_lote LIMIT 1";
+	        
+	        $rs_Cuentas_pagar = $cuentasPagar->enviaquery($query);
+	        
+	        if(!empty($rs_Cuentas_pagar))
+	            $_id_cuentas_pagar = $rs_Cuentas_pagar[0]->id_cuentas_pagar;
+	    }
 	    
 	    if(is_null($_id_cuentas_pagar) ){
 	        
@@ -1948,5 +1972,39 @@ class CuentasPagarController extends ControladorBase{
 	        
 	    }
 	}
+	
+	/***
+	 * dc 2019-06-06
+	 * mod: Tesoreria
+	 * desc: devolver resultados de la compra
+	 */
+	public function devolverResultados(){
+	    
+	    session_start();
+	    $impuestosCxP = new ImpuestosModel();
+	   
+	    $_id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0 ;	    
+	    $_base_compra = (isset($_POST['base_compra'])) ? $_POST['base_compra'] : 0 ;
+	   
+	    //para devolver los resultados de ingresar un impuesto
+	    $arrayResultados = array();
+	    $query = " SELECT SUM( valor_cuentas_pagar_impuestos ) AS suma_impuestos FROM tes_cuentas_pagar_impuestos WHERE id_lote = $_id_lote ";
+	    
+	    $rsResultados = $impuestosCxP->enviaquery($query);
+	    
+	    if( !empty($rsResultados)){
+	        
+	        $resultadoSaldo = floatval( $rsResultados[0]->suma_impuestos );
+	        $resultadoCuenta = $_base_compra - $resultadoSaldo;
+	        
+	        $arrayResultados['impuestos'] = $resultadoSaldo;
+	        $arrayResultados['saldo'] = $resultadoCuenta;
+	        
+	    }
+	    
+	    echo json_encode(array( 'resultados' => $arrayResultados ));
+	    
+	}
+	
 }
 ?>

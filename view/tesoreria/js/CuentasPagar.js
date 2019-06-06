@@ -300,7 +300,7 @@ function devuelveConsecutivoCxP(){
 	 	 
 	 $("#mod_descripcion_lote").val("");
 	 let $id_lote = $("#id_lote").val();
-	 if( $id_lote > 0 ){ $("#nombre_lote").notify("Lote ya Generado",{ position:"buttom left"}); return false; }
+	 if( $id_lote > 0 ){ $("#nombre_lote").notify("Lote ya Generado",{ className: "warn", position:"buttom left"}); return false; }
 	 let nombreLote = $("#nombre_lote").val();	 
 	 if(nombreLote.length == 0){ $("#nombre_lote").notify("ingrese nombre lote",{ position:"buttom left"});  return false;}
 	 		 
@@ -354,10 +354,24 @@ function devuelveConsecutivoCxP(){
 	 let _monto_cuentas_pagar = $("#monto_cuentas_pagar").val();
 	 
 	 if( isNaN(_monto_cuentas_pagar) || _monto_cuentas_pagar == "" || _monto_cuentas_pagar.length == 0){
-		 swal({text: "ingrese un monto (base de compra)",
-	  		  icon: "info",
-	  		  button: "Aceptar",
-	  		});
+		 
+		 swal("", {
+			 dangerMode: true,
+			 text: "ingrese un monto (base de compra)",
+			  buttons: {cancelar: "Cancelar",aceptar: "Aceptar",},
+			}).then((value) => {
+			  switch (value) {
+			 
+			    case "cancelar":
+			      return;
+			    case "aceptar":	
+			    	$("#monto_cuentas_pagar").focus();
+			    	$("#monto_cuentas_pagar").notify("ingrese un monto");
+			    default:
+			      return;
+			  }
+			});
+		 
 		 return false;
 	 }
 	 
@@ -472,7 +486,13 @@ $("#frm_genera_lote").on("submit",function(event){
 	
 	var $div_respuesta = $("#msg_frm_lote"); $div_respuesta.text("").removeClass();
 	
-	if($id_lote > 0){ $div_respuesta.html("<strong>¡Cuidado!<strong> Lote ya esta Generado").addClass("alert alert-warning"); return false;}	
+	if($id_lote > 0){ 		
+		//cambiado
+		//$div_respuesta.html("<strong>¡Cuidado!<strong> Lote ya esta Generado").addClass("alert alert-warning");
+		//por
+		$("#msg_frm_lote").notify("!Cuidado! Lote ya esta Generado",{ className: "warn",position:"button" });
+		 return false;
+		}	
 		
 	$.ajax({
 		beforeSend:function(){},
@@ -481,12 +501,23 @@ $("#frm_genera_lote").on("submit",function(event){
 		dataType:"json",
 		data:parametros
 	}).done(function(respuesta){
+		
+		if( respuesta.hasOwnProperty('error') && respuesta.error != '' ){
+			//cambio dc 05-06-2019
+			//var $divMensaje = generaMensaje(respuesta.error,"alert alert-danger");
+			//$("#msg_frm_lote").append($divMensaje);
+			//por
+			$("#msg_frm_lote").notify(respuesta.error,{ className: "warn",position:"button" });
+			
+		}
 				
 		if(respuesta.valor > 0){
 			
+			//cambio
+			//$("#msg_frm_lote").text("Lote Generado").addClass("alert alert-success");
+			//por
+			$("#msg_frm_lote").notify("Lote Generado",{ className: "success",position:"button" });
 			$("#id_lote").val(respuesta.valor);
-			$("#msg_frm_lote").text("Lote Generado").addClass("alert alert-success");
-			
 			desbloqueaControles();
 		}
 		
@@ -497,7 +528,11 @@ $("#frm_genera_lote").on("submit",function(event){
 		console.log(err);
 		
 		$("#id_lote").val("");
-		$div_respuesta.text("Error al generar Lote").addClass("alert alert-warning");
+		//cambio dc 05-06-2019
+		//$div_respuesta.text("Error al generar Lote").addClass("alert alert-warning");
+		//por
+		$("#msg_frm_lote").notify("Error al generar Lote",{ className: "error",position:"button" });
+		
 		
 	}).always(function(){
 				
@@ -517,17 +552,18 @@ $("#btn_mod_agrega_impuestos").on("click",function(event){
 	let _mod_base_impuestos = $("#mod_monto_documento").val();
 	
 	if(_id_lote == 0){
-		$("#nombre_lote").notify("Lote No generado",{ position:"buttom"})
+		$("#msg_frm_impuestos").notify("Lote No generado",{ className: "warn",position:"button" })
 		return null;
 	}
 	
 	if(_id_impuestos == 0){
-		alert('Seleccione impuesto')
+		
+		$("#mod_id_impuestos").notify("Seleccione Un impuesto",{className: "warn",position:"button"});
 		return null;
 	}
 	
 	if(_mod_base_impuestos.length == 0 || _mod_base_impuestos == "" || isNaN(_mod_base_impuestos) ){
-		$("#mensaje_mod_monto_documento").text("Ingrese un valor").fadeIn("slow");
+		$("#mod_monto_documento").notify("Seleccione Un impuesto",{className: "warn",position:"button"});
 		return null;
 	}
 	
@@ -545,17 +581,33 @@ $("#btn_mod_agrega_impuestos").on("click",function(event){
 		
 		if( respuesta.hasOwnProperty('error') && respuesta.error != '' ){
 			
-			var $divMensaje = generaMensaje(respuesta.error,"alert alert-danger");
-			$("#msg_frm_impuestos").append($divMensaje);
+			//cambiado
+			//var $divMensaje = generaMensaje(respuesta.error,"alert alert-danger");
+			//$("#msg_frm_impuestos").append($divMensaje);
+			//por
+			$("#msg_frm_impuestos").notify(respuesta.error,{ className: "warn",position:"button" });
 			
 		}
 		
 		if(respuesta.respuesta == 1){
-			
-			var $divMensaje = generaMensaje(respuesta.mensaje,"alert alert-success");
-			$("#msg_frm_impuestos").append($divMensaje);
-			
+			//cambiado
+			//var $divMensaje = generaMensaje(respuesta.mensaje,"alert alert-success");
+			//$("#msg_frm_impuestos").append($divMensaje);
+			//por
+			$("#msg_frm_impuestos").notify(respuesta.mensaje,{ className: "success",position:"button" });
 			$("#plan_impuesto").val("Impuesto Agregado");
+		}
+		
+		if( respuesta.hasOwnProperty('resultados') ){
+			
+			let resultados = respuesta.resultados;
+			
+			$("#impuesto_cuentas_pagar").val( resultados.impuestos );
+			$("#total_cuentas_pagar").val( resultados.saldo);
+			
+			$("#impuesto_cuentas_pagar").attr("readonly",true);
+			$("#total_cuentas_pagar").attr("readonly",true)
+			
 		}
 		
 	}).fail(function(xhr,status,error){
@@ -699,6 +751,44 @@ function delImpuestosCxP(id){
 
 /* PARA ACTIVAR BTN DISTRIBUCION */
 /* cuando se haga click en boton btn_distribucion */
+/*******************************************************************************
+ * funcion que envia datos para realizar la funcion de distribucion
+ * 
+ * @returns
+ */
+function retornaSaldoCuenta(){
+	var $respuesta = false;
+	
+	var $lote_num = $("#id_lote").val();
+	
+	if($lote_num.length == 0 || $lote_num == 0 ){
+		$("#nombre_lote").notify("Lote No generado",{ position:"buttom left"});
+		$("html, body").animate({ scrollTop: $(nombre_lote).offset().top-120 }, 1000);
+		return false;
+	}
+	
+	let _base_compra = $("#monto_cuentas_pagar").val()
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=CuentasPagar&action=generaDistribucion",
+		type: "POST",
+		dataType: "json",
+		async: false,
+		data: {id_lote:$lote_num,monto_cuentas_pagar:_base_compra}
+	}).done(function(respuesta){
+		
+		$respuesta = true;
+		
+	}).fail(function(xhr, status, error){
+		var err = xhr.responseText
+		console.log(err);
+		
+	})
+	
+	return $respuesta; 
+} 
+
 
 /*******************************************************************************
  * funcion que envia datos para realizar la funcion de distribucion
@@ -716,7 +806,20 @@ function generaDistribucion(){
 		return false;
 	}
 	
-	let _base_compra = $("#monto_cuentas_pagar").val()
+	let _base_compra = $("#monto_cuentas_pagar").val();
+	
+	if( _base_compra.length == 0 || _base_compra == 0 ){
+		
+		$("#monto_cuentas_pagar").focus();
+		
+		swal({text: "Ingrese Monto (base compras)",
+	  		  icon: "warning",
+	  		  button: "Aceptar",
+	  		});
+		
+		$("html, body").animate({ scrollTop: $(monto_cuentas_pagar).offset().top-120 }, 1000);
+		return false;
+	}
 	
 	$.ajax({
 		beforeSend:function(){},
@@ -781,6 +884,7 @@ function ListaDistribucion( _page = 1){
  */
 $("#btn_distribucion").on("click",function(event){
 	
+	
 	// aqui genera la distribucion de los pagos
 	var $respuesta_distribucion = generaDistribucion();
 	
@@ -788,6 +892,7 @@ $("#btn_distribucion").on("click",function(event){
 		return false;
 	}
 	
+	resultadosCompra();
 	ListaDistribucion();
 		
 })
@@ -992,6 +1097,12 @@ function generaMensaje(mensaje,clase){
  * dc 2019-05-17
  */
 $("#frm_cuentas_pagar").on("submit",function(event){
+	
+	if($("#id_lote").val().length == 0 && !isNaN($("#id_lote").val())){
+		$("#nombre_lote").notify("Debe ingresar el lote",{position:"button"});
+		$("html, body").animate({ scrollTop: $(nombre_lote).offset().top-120 }, 1000);
+		return false;
+	}
 		
 	var parametros = $(this).serialize();
 	
@@ -1016,6 +1127,9 @@ $("#frm_cuentas_pagar").on("submit",function(event){
 			
 			swal({title:"",text:x.mensaje,icon:"success"})
     		.then((value) => {
+    			let loteUrl = $("#id_lote").val();
+    			let urlReporte = "index.php?controller=CuentasPagar&action=Reporte_Cuentas_Por_Pagar&id_lote="+loteUrl;
+    			window.open(urlReporte,"_blank");
     			window.location.reload();
     		});
 			
@@ -1121,11 +1235,15 @@ $("#btn_cambiar_compras").on("click",function(event){
 		    			$("#monto_cuentas_pagar").attr("readonly",false);
 		    			$("#monto_cuentas_pagar").val('');
 		    			$("#plan_impuesto").val('');
+	    				$("#impuesto_cuentas_pagar").val('');
+	    				$("#total_cuentas_pagar").val('');
+		    				
 		    			swal({text: "Valor Cambiado, Ingrese Nuevos Datos",
 		  		  		  icon: "info",
 		  		  		  button: "Aceptar",
 		  		  		});
 		    		}
+		    		
 		    		
 		    	}).fail(function(xhr,status,error){
 		    		var err = xhr.responseText
@@ -1134,7 +1252,7 @@ $("#btn_cambiar_compras").on("click",function(event){
 		  		  		  icon: "info",
 		  		  		  button: "Aceptar",
 		  		  		});
-		    	})
+		    	}) 
 		 
 		    default:
 		      return;
@@ -1203,3 +1321,31 @@ $("#btn_cancelar").on("click",function(event){
 		  }
 		});
 })
+
+/********************************************************************************************************
+ * funcion para traer Resultados*
+ * dc 2019-06-05
+********************************************************************************************************/
+function resultadosCompra(){
+	
+	$.ajax({
+		url:"index.php?controller=CuentasPagar&action=devolverResultados",
+		dataType:"json",
+		type:"POST",
+		data:{id_lote:$("#id_lote").val(), base_compra: $("#monto_cuentas_pagar").val()}
+	}).done(function(datos){
+		
+		if( datos.hasOwnProperty('resultados') ){
+			
+			let resultados = datos.resultados;
+			
+			$("#impuesto_cuentas_pagar").val( resultados.impuestos );
+			$("#total_cuentas_pagar").val( resultados.saldo);
+			
+			$("#impuesto_cuentas_pagar").attr("readonly",true);
+			$("#total_cuentas_pagar").attr("readonly",true)
+			
+		}
+		
+	})
+}

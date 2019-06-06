@@ -105,7 +105,7 @@
                               </span>
                               <div id="mensaje_id_lote" class="errores"></div>
                             </div>
-                            <input type="hidden" id="id_lote" name="id_lote" value="0">
+                            <input type="hidden" id="id_lote" name="id_lote" value="">
             				</div>
             			 </div>        			 
         			</div>
@@ -114,7 +114,7 @@
             			 <div class="form-group-sm">
             				<label for="id_tipo_activos_fijos" class="col-sm-4 control-label" > Fecha Doc:</label>
             				<div class="col-sm-8">
-            				  <input type="date" class="form-control" id="fecha_cuentas_pagar" name="fecha_cuentas_pagar" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
+            				  <input type="date" class="form-control" id="fecha_cuentas_pagar" name="fecha_cuentas_pagar" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" readonly >
             				  <div id="mensaje_fecha_cuentas_pagar" class="errores"></div>
             				</div>
             			 </div>        			 
@@ -152,7 +152,7 @@
             			 <div class="form-group-sm">
             				<label for="descripcion_cuentas_pagar" class="col-sm-4 control-label" > Descripcion:</label>
             				<div class="col-sm-8">
-            				  <input type="text" class="form-control" id="descripcion_cuentas_pagar" name="descripcion_cuentas_pagar" value="" placeholder="Descripcion" autocomplete="off" required>
+            				  <input type="text" class="form-control" id="descripcion_cuentas_pagar" name="descripcion_cuentas_pagar" value="" placeholder="Descripcion" autocomplete="off" >
             				  <div id="mensaje_descripcion_cuentas_pagar" class="errores"></div>
             				</div>
             			 </div>        			 
@@ -296,21 +296,10 @@
     		    
     		    <div class="row">
     		        <div class="col-lg-6 col-md-6 col-xs-12">
-    		        
-    		         <!--  <div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="monto_cuentas_pagar" class="col-sm-4 control-label" > Compras:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="monto_cuentas_pagar" name="monto_cuentas_pagar" value=""  placeholder="" >
-			          		  <div id="mensaje_numero_movimiento" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			-->
         			
         			<div class="form-group "> 
             			 <div class="form-group-sm">
-            				<label for="monto_cuentas_pagar" class="col-sm-4 control-label" > Compras:</label>
+            				<label for="monto_cuentas_pagar" class="col-sm-4 control-label" >Monto (base Compras):</label>
             				<div class="col-sm-8">
             				  <div class="input-group ">
                               <input type="text" class="form-control inputDecimal" id="monto_cuentas_pagar" name="monto_cuentas_pagar" value="">
@@ -722,7 +711,7 @@
 <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.09"></script>
+<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.17"></script>
 
     
 

@@ -1,6 +1,6 @@
 <?php
 
-class CuentasPagarController extends ControladorBase{
+class CuentasPagar2Controller extends ControladorBase{
 
 	public function __construct() {
 		parent::__construct();
@@ -64,7 +64,7 @@ class CuentasPagarController extends ControladorBase{
 	        exit();
 	    }
 	    
-	    $this->view_tesoreria("EntradaCuentasPagar",array());
+	    $this->view_tesoreria("EntradaCuentasPagar2",array());
 	    
 	}
 	

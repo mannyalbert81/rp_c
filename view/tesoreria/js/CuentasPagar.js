@@ -723,16 +723,13 @@ function delImpuestosCxP(id){
 		type:"POST",
 		dataType:"json",
 		data:{id_cuentas_pagar_impuestos:id}
-	}).done(function(datos){		
-		
-		var $divMensaje = generaMensaje("Registro Eliminado","alert alert-warning");
+	}).done(function(datos){
 		
 		if(datos.data > 0){
 			
-			$("#msg_frm_impuestos").append($divMensaje);
-		}
-		
-		
+			$("#msg_frm_impuestos").notify( "Registro Eliminado" ,{ className: "error",position:"button",autoHideDelay: 1500 });
+			
+		}		
 		
 	}).fail(function(xhr,status,error){
 		

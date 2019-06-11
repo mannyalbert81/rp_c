@@ -206,6 +206,8 @@ function AgregarNuevaCuenta()
 						
 						load_planes_cuenta();
 						id_plan_cuentas=0;
+						modal.find('#nuevo_codigo').val("");
+						modal.find('#nuevo_nombre').val("");
 						modal.modal('hide');
 						swal({
 					  		  title: "Plan Cuentas",

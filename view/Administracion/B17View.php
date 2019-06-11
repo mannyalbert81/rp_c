@@ -4,6 +4,21 @@
   
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <style>
+    .scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+	ul{
+        list-style-type:none;
+      }
+  li{
+    list-style-type:none;
+    }
+    
+    </style>
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
@@ -59,10 +74,10 @@
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="dpto_empleados" class="control-label">Mes:</label>
-                    	<select name="estado_cargo" id="estado_cargo"  class="form-control">
+                    	<select name="estado_cargo" id="mes_reporte"  class="form-control">
                                       <option value="" selected="selected">--Seleccione--</option>
-    								  <?php  foreach($meses as $res) {?>
-									  <option value="<?php echo $res; ?>"><?php echo $res; ?> </option>
+    								  <?php  foreach($meses as $key=>$res) {?>
+									  <option value="<?php echo $key; ?>"><?php echo $res; ?> </option>
 			        				  <?php } ?>
     					</select> 
                         <div id="mensaje_estado_cargo" class="errores"></div>
@@ -71,7 +86,7 @@
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="dpto_empleados" class="control-label">Año:</label>
-              			<input type=number step=1 class="form-control" id="a_reporte" name="a_reporte" placeholder="Salario" value="2019">
+              			<input type=number step=1 class="form-control" id="a_reporte" name="a_reporte" value="2019">
                         <div id="mensaje_estado_cargo" class="errores"></div>
                  	</div>
              	</div>
@@ -145,7 +160,7 @@
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?>
-   <script src="view/Administracion/js/B17.js?0.8" ></script>
+   <script src="view/Administracion/js/B17.js?0.10" ></script>
   </body>
 
 </html>

@@ -12,8 +12,8 @@ echo $clave_fecha_siguiente_mes;*/
 <?php
 
 //echo round(0.000,2);
-session_start();
-print_r($_SESSION); die();
+//session_start();
+//print_r($_SESSION); die();
 
 $num1 = 9.70;
 $num2 = 533.33;
@@ -21,21 +21,21 @@ $num2 = 533.33;
 $conv1 = number_format($num1, 2, ',', ' ');
 $conv2 = number_format($num2, 2, ',', ' ');
 
-echo  $num1 + $num2;
+//echo  $num1 + $num2;
 
-echo '<br>';
+// '<br>';
 
-echo  $conv1 + $conv2;
+//echo  $conv1 + $conv2;
 
-exit();
+//exit();
 
 $numero = 0.00;
 
 $numero = number_format($numero, 2, ',', ' ');
 
-echo $numero;
+//echo $numero;
 
-exit();
+//exit();
 
 $monto = 4000.00;
 $tasa = 3.85; //en porcentaje %
@@ -83,6 +83,178 @@ for($i = 0; $i < $plazo; $i++){
     $saldoIni=$saldoFinal;
 }
 
-echo $htmlTabla;
+//echo $htmlTabla;
 
+require dirname(__FILE__).'\core\EntidadBase.php';
+
+$model = new EntidadBase("tes_cuentas_pagar");
+
+$columnas = "codigo_plan_cuentas, nivel_plan_cuentas, saldo_plan_cuentas";
+$tablas = " public.plan_cuentas ";
+$where = " 1 = 1  AND id_entidades = 1 ";
+$id = " codigo_plan_cuentas";
+
+$resultado = $model->getCondiciones($columnas, $tablas, $where, $id);
+
+   //echo balance($resultado,5);
+
+    function re($data) {
+       $items = [];
+       
+       foreach ($data as $node) {
+           if (is_array($node)) {
+               $items []= '<li>' . re($node) . '</li>';
+           } else {
+               $items []= '<li>' . $node . '</li>';
+           }
+       }
+       
+       return '<ul>' . join('', $items) . '</ul>';
+   }
+    
+   function tieneHijo($nivel, $codigo, $resultado)
+   {
+       $elementos_codigo=explode(".", $codigo);
+       $nivel1=$nivel;
+       $nivel1--;
+       $verif="";
+       for ($i=0; $i<$nivel1; $i++)
+       {
+           $verif.=$elementos_codigo[$i];
+       }
+       
+       foreach ($resultado as $res)
+       {
+           $verif1="";
+           $elementos1_codigo=explode(".", $res->codigo_plan_cuentas);
+           if (sizeof($elementos1_codigo)>=$nivel1)
+               for ($i=0; $i<$nivel1; $i++)
+               {
+                   $verif1.=$elementos1_codigo[$i];
+               }
+           if ($res->nivel_plan_cuentas==$nivel && $verif==$verif1)
+           {
+               return true;
+           }
+       }
+       return false;
+   }
+   
+   function Balance($nivel, $resultset, $limit)
+   {
+       $sumatoria=0;
+       $suma=0;
+       
+       foreach($resultset as $res)
+       {
+           if ($res->nivel_plan_cuentas == $nivel)
+           {
+               echo "<h4>".$res->codigo_plan_cuentas." ".$nivel."</h4>";
+               
+               if($nivel<$limit) $nivel++;
+               
+               if ($this->tieneHijo($nivel,$res->codigo_plan_cuentas, $resultset)){
+                  
+                   echo "hijo ".$res->codigo_plan_cuentas;
+                   $suma = $this->Balance($nivel, $resultset, $limit);
+                   echo $suma;
+               }
+               
+               if($res->nivel_plan_cuentas!=1){
+                   
+                   $sumatoria+=$res->saldo_plan_cuentas;
+               }
+               $nivel--;
+           }
+       }
+       return $sumatoria;
+   }
+   
+   //consulta general 
+   
+   function consultaMain($nivel=1, $codigo='',$entidad = 1){
+       
+       $modelo = new EntidadBase("tes_cuentas_pagar");
+       
+       $columnasMain = "codigo_plan_cuentas, nivel_plan_cuentas, saldo_plan_cuentas";
+       
+       $tablasMain = " public.plan_cuentas";
+       
+       $whereMain = "nivel_plan_cuentas = $nivel AND id_entidades = $entidad AND codigo_plan_cuentas like '$codigo%'";
+       
+       $idMain = "codigo_plan_cuentas";
+       
+       $resultado = $modelo->getCondiciones($columnasMain, $tablasMain, $whereMain, $idMain);
+       
+       if(!empty($resultado))
+           return $resultado;
+       else 
+           return 0;
+       
+   }
+   
+   require dirname(__FILE__).'\core\ModeloBase.php';
+   
+   function plan_cuentas($data = array()){   
+              
+       if(empty($data)){
+           echo 1;
+       }else{
+           
+           foreach ($data as $res){
+               
+               $nivel = $res->nivel_plan_cuentas;
+               $codigo = $res->codigo_plan_cuentas;
+               
+               $nivel++;
+               
+               
+           }
+           
+       }
+     
+   }
+   
+   $dulce = array('a' => 'manzana', 'b' => 'banano');
+   $frutas = array('dulce' => $dulce, 'acido' => 'limón');
+   
+   function prueba_imprimir($item, $clave)
+   {
+       echo "$clave contiene $item\n";
+   }
+   
+   //array_walk_recursive($frutas, 'prueba_imprimir');
+   
+   function factorial($n){
+       if($n==1)
+           return 1;
+       else
+       return $n * factorial($n-1);
+   }
+   
+   //$resultado = factorial(5);
+   //echo $resultado
+  
+   $var = array (1, 2, 5, 8, array(2,3, array(1,2)));
+   
+   function recorrido($arg){
+       $suma = 0;
+       foreach ($arg as $key => $value) {
+           if (is_array($value)){
+               $array2 = $arg[$key];
+               $suma = $suma + recorrido($array2);
+           }else {
+               $suma = $suma + $value;
+           }
+       }
+       return $suma;
+   }
+   
+   $total = recorrido($var);
+   //echo $total;
+   
+   $mmodelo = new ModeloBase();
+   
+   $res = $mmodelo->enviaquery("select codigo_plan_cuentas from plan_cuentas where i")
+   
 ?>

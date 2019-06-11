@@ -47,6 +47,17 @@ class ControladorBase{
         require_once 'view/Inventario/'.$vista.'View.php';
     }
     
+    
+    public function view_Recaudaciones($vista,$datos){
+        foreach ($datos as $id_assoc => $valor) {
+            ${$id_assoc}=$valor;
+        }
+        
+        require_once 'core/AyudaVistas.php';
+        $helper=new AyudaVistas();
+        
+        require_once 'view/Recaudaciones/'.$vista.'View.php';
+    }
     public function temp_report($vista,$datos){
         foreach ($datos as $id_assoc => $valor) {
             ${$id_assoc}=$valor;
@@ -138,5 +149,17 @@ class ControladorBase{
         require_once 'view/Activos/'.$vista.'View.php';
     }
 
+    
+    public function view_tributario($vista,$datos){
+    	foreach ($datos as $id_assoc => $valor) {
+    		${$id_assoc}=$valor;
+    	}
+    
+    	require_once 'core/AyudaVistas.php';
+    	$helper=new AyudaVistas();
+    
+    	require_once 'view/tributario/'.$vista.'View.php';
+    }
+    
 }
 ?>

@@ -128,6 +128,7 @@
                           <select class="form-control" id="tipo_impuestos" name="tipo_impuestos">
                           	<option value="iva">IVA</option>
                           	<option value="retencion">RETENCION</option>
+                          	<option value="retencionIva">RETENCION IVA</option>
                           </select>
                           <div id="mensaje_tipo_impuestos" class="errores"></div>
                                                

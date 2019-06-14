@@ -557,20 +557,13 @@ $("#btn_mod_agrega_impuestos").on("click",function(event){
 	}).done(function(respuesta){
 		
 		if( respuesta.hasOwnProperty('error') && respuesta.error != '' ){
-			
-			//cambiado
-			//var $divMensaje = generaMensaje(respuesta.error,"alert alert-danger");
-			//$("#msg_frm_impuestos").append($divMensaje);
-			//por
+						
 			$("#msg_frm_impuestos").notify(respuesta.error,{ className: "warn",position:"button" });
 			
 		}
 		
 		if(respuesta.respuesta == 1){
-			//cambiado
-			//var $divMensaje = generaMensaje(respuesta.mensaje,"alert alert-success");
-			//$("#msg_frm_impuestos").append($divMensaje);
-			//por
+			
 			$("#msg_frm_impuestos").notify(respuesta.mensaje,{ className: "success",position:"button" });
 			$("#plan_impuesto").val("Impuesto Agregado");
 		}
@@ -581,9 +574,11 @@ $("#btn_mod_agrega_impuestos").on("click",function(event){
 			
 			$("#impuesto_cuentas_pagar").val( resultados.impuestos );
 			$("#total_cuentas_pagar").val( resultados.saldo);
+			$("#saldo_cuentas_pagar").val( resultados.saldo);
 			
 			$("#impuesto_cuentas_pagar").attr("readonly",true);
-			$("#total_cuentas_pagar").attr("readonly",true)
+			$("#total_cuentas_pagar").attr("readonly",true);
+			$("#saldo_cuentas_pagar").attr("readonly",true)
 			
 		}
 		
@@ -705,7 +700,7 @@ function delImpuestosCxP(id){
 		if(datos.data > 0){
 			
 			$("#msg_frm_impuestos").notify( "Registro Eliminado" ,{ className: "error",position:"button",autoHideDelay: 1500 });
-			
+			resultadosCompra();
 		}		
 		
 	}).fail(function(xhr,status,error){
@@ -725,44 +720,6 @@ function delImpuestosCxP(id){
 
 /* PARA ACTIVAR BTN DISTRIBUCION */
 /* cuando se haga click en boton btn_distribucion */
-/*******************************************************************************
- * funcion que envia datos para realizar la funcion de distribucion
- * 
- * @returns
- */
-function retornaSaldoCuenta(){
-	var $respuesta = false;
-	
-	var $lote_num = $("#id_lote").val();
-	
-	if($lote_num.length == 0 || $lote_num == 0 ){
-		$("#nombre_lote").notify("Lote No generado",{ position:"buttom left"});
-		$("html, body").animate({ scrollTop: $(nombre_lote).offset().top-120 }, 1000);
-		return false;
-	}
-	
-	let _base_compra = $("#monto_cuentas_pagar").val()
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=CuentasPagar2&action=generaDistribucion",
-		type: "POST",
-		dataType: "json",
-		async: false,
-		data: {id_lote:$lote_num,monto_cuentas_pagar:_base_compra}
-	}).done(function(respuesta){
-		
-		$respuesta = true;
-		
-	}).fail(function(xhr, status, error){
-		var err = xhr.responseText
-		console.log(err);
-		
-	})
-	
-	return $respuesta; 
-} 
-
 
 /*******************************************************************************
  * funcion que envia datos para realizar la funcion de distribucion
@@ -1317,9 +1274,11 @@ function resultadosCompra(){
 			
 			$("#impuesto_cuentas_pagar").val( resultados.impuestos );
 			$("#total_cuentas_pagar").val( resultados.saldo);
+			$("#saldo_cuentas_pagar").val( resultados.saldo);
 			
 			$("#impuesto_cuentas_pagar").attr("readonly",true);
-			$("#total_cuentas_pagar").attr("readonly",true)
+			$("#total_cuentas_pagar").attr("readonly",true);
+			$("#saldo_cuentas_pagar").attr("readonly",true)
 			
 		}
 		

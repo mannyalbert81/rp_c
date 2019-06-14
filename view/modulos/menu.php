@@ -208,6 +208,7 @@ $controladores=$_SESSION['controladores'];
         	  <li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=LibroDiario&action=index"><i class="fa fa-circle-o"></i>Diario Contable</a></li>
               <li style="<?php echo getcontrolador("PlanCuentas",$controladores) ?>"><a href="index.php?controller=PlanCuentas&action=index"><i class="fa fa-circle-o"></i>Plan Cuentas</a></li>
               <li style="<?php echo getcontrolador("BalanceComprobacion",$controladores) ?>"><a href="index.php?controller=BalanceComprobacion&action=index"><i class="fa fa-circle-o"></i>Balance Comprobación</a></li>
+              <li style="<?php echo getcontrolador("ReporteMovimientos",$controladores) ?>"><a href="index.php?controller=MovimientosContable&action=index"><i class="fa fa-circle-o"></i>Movimientos Contables</a></li>
       	
           </ul>
         </li>

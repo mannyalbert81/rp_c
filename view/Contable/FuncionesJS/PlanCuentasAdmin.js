@@ -1,4 +1,5 @@
 var id_plan_cuentas=0;
+var cargado=false;
 var codigo_cuentas="";
 var id_entidades=0;
 var id_modenas=0;
@@ -15,7 +16,18 @@ $(document).ready(function(){
 
 function load_planes_cuenta()
 {
-	console.log("Ready");
+	if (!cargado)
+		{
+		swal({
+			  title: "Tabala de cuentas",
+			  text: "Cargando tabla de cuentas",
+			  icon: "view/images/capremci_load.gif",
+			  buttons: false,
+			  closeModal: false,
+			  allowOutsideClick: false
+			});
+		}
+	
 	$.ajax({
 	    url: 'index.php?controller=PlanCuentas&action=TablaPlanCuentas',
 	    type: 'POST',
@@ -27,6 +39,16 @@ function load_planes_cuenta()
 				if (!(x.includes("Warning")) && !(x.includes("Notice")))
 			{
 			$("#tabla_plan_cuentas").html(x);
+			
+			if(!cargado)
+				{
+				swal("Tabla cargada", {
+				      icon: "success",
+				      buttons: false,
+				      timer: 1000
+				    });
+				}
+			cargado=true;
 			
 			}
 		else

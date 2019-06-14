@@ -39,17 +39,11 @@ class PlanCuentasController extends ControladorBase{
 	        $resultSet=$plan_cuentas->getCondiciones($columnas ,$tablas ,$where, $id);
 	        $resultSet2=$plan_cuentas->getCondiciones($columnas1 ,$tablas ,$where, $id2);
 	        
-	        
-	        
-	        
 	        if (!empty($resultSet))
 	        {
-	            
-	            
-	            
-	            
 	            $this->view_Contable("PlanCuentasAdmin",array(
 	                "resultSet"=>$resultSet, "resultSet2"=>$resultSet2,
+	                
 	            ));
 	            
 	            

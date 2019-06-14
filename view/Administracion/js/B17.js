@@ -43,18 +43,34 @@ function BuscarReporte()
 
 function BuscarReporte2()
 {
+	swal({
+		  title: "Reporte preliminar",
+		  text: "Preparando el reporte preliminar",
+		  icon: "view/images/ajax-loader.gif",
+		  buttons: false,
+		  closeModal: false,
+		  allowOutsideClick: false
+		});
+	var mes=$('#mes_reporte').val();
+	var anio=$('#a_reporte').val();
+	console.log(mes+" "+anio);
 	$.ajax({
 	    url: 'index.php?controller=B17&action=CargarReporte2',
 	    type: 'POST',
 	    data: {
-	    	      	   
+	    	 mes_reporte:mes,
+	    	 anio_reporte:anio	    	      	   
 	    },
 	})
 	.done(function(x) {
 				if (!(x.includes("Warning")) && !(x.includes("Notice")))
 			{
 			$("#plan_cuentas2").html(x);
-			//$("#tabla_reporte").tablesorter(); 
+			swal("Reporte cargado", {
+			      icon: "success",
+			      buttons: false,
+			      timer: 1000
+			    });
 			
 			}
 		else

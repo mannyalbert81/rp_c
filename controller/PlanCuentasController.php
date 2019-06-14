@@ -8,6 +8,71 @@ class PlanCuentasController extends ControladorBase{
 		parent::__construct();
 		
 	}
+	
+	public function indexAdmin()
+	{
+	    session_start();
+	    
+	    
+	    if (isset(  $_SESSION['usuario_usuarios']) )
+	    {
+	        
+	        $_id_usuarios= $_SESSION['id_usuarios'];
+	        
+	        $resultSet="";
+	        $resultSet2 = "";
+	        
+	        $plan_cuentas = new PlanCuentasModel();
+	        
+	        $columnas = "DISTINCT plan_cuentas.nivel_plan_cuentas";
+	        $columnas1 = "DISTINCT plan_cuentas.n_plan_cuentas";
+	        
+	        
+	        $tablas=" public.plan_cuentas";
+	        
+	        $where="1=1";
+	        
+	        $id = "plan_cuentas.nivel_plan_cuentas";
+	        $id2 = "plan_cuentas.n_plan_cuentas";
+	        
+	        
+	        $resultSet=$plan_cuentas->getCondiciones($columnas ,$tablas ,$where, $id);
+	        $resultSet2=$plan_cuentas->getCondiciones($columnas1 ,$tablas ,$where, $id2);
+	        
+	        
+	        
+	        
+	        if (!empty($resultSet))
+	        {
+	            
+	            
+	            
+	            
+	            $this->view_Contable("PlanCuentasAdmin",array(
+	                "resultSet"=>$resultSet, "resultSet2"=>$resultSet2,
+	            ));
+	            
+	            
+	        }else{
+	            
+	            $this->view_Contable("Error",array(
+	                "resultado"=>"No tiene Permisos de Consultar Comprobantes"
+	                
+	                
+	            ));
+	            exit();
+	        }
+	        
+	        
+	    }
+	    else
+	    {
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	    }
+	    
+	    
+	}
 
 
 	public function index(){
@@ -79,8 +144,260 @@ class PlanCuentasController extends ControladorBase{
 	    
 	}
 	
+	public function tieneHijo($nivel, $codigo, $resultado)
+	{
+	    $elementos_codigo=explode(".", $codigo);
+	    $nivel1=$nivel;
+	    $nivel1--;
+	    $verif="";
+	    for ($i=0; $i<$nivel1; $i++)
+	    {
+	        $verif.=$elementos_codigo[$i];
+	    }
+	    
+	    foreach ($resultado as $res)
+	    {
+	        $verif1="";
+	        $elementos1_codigo=explode(".", $res->codigo_plan_cuentas);
+	        if (sizeof($elementos1_codigo)>=$nivel1)
+	            
+	            for ($i=0; $i<$nivel1; $i++)
+	            {
+	                $verif1.=$elementos1_codigo[$i];
+	            }
+	        
+	        
+	        if ($res->nivel_plan_cuentas==$nivel && $verif==$verif1)
+	        {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 	
+	public function Balance($nivel, $resultset, $limit, $codigo)
+	{
+	    $headerfont="16px";
+	    $tdfont="14px";
+	    $boldi="";
+	    $boldf="";
+	   
+	    $colores= array();
+	    $colores[0]="#D6EAF8";
+	    $colores[1]="#D1F2EB";
+	    $colores[2]="#F6DDCC";
+	    $colores[3]="#FAD7A0";
+	    $colores[4]="#FCF3CF";
+	    $colores[5]="#FDFEFE";
+	    
+	    if ($codigo=="")
+	    {
+	        $sumatoria="";
+	        foreach($resultset as $res)
+	        {
+	            $verif1="";
+	            $elementos1_codigo=explode(".", $res->codigo_plan_cuentas);
+	            if (sizeof($elementos1_codigo)>=$nivel)
+	                for ($i=0; $i<$nivel; $i++)
+	                {
+	                    $verif1.=$elementos1_codigo[$i];
+	                }
+	            if ($res->nivel_plan_cuentas == $nivel)
+	            {
+	                
+	                if($nivel<=$limit)
+	                {$nivel++;
+	                $nivelclase=$nivel-1;
+	                $color=$nivel-2;
+	                if ($color>5) $color=5;
+	                $sumatoria.='<tr id="cod'.$verif1.'">';
+	                $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->codigo_plan_cuentas.$boldf.'</td>';
+	                $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">';
+	                if ($this->tieneHijo($nivel,$res->codigo_plan_cuentas, $resultset))
+	                {
+	                    $sumatoria.='<button type="button" class="btn btn-box-tool" onclick="ExpandirTabla(&quot;nivel'.$verif1.'&quot;,&quot;trbt'.$verif1.'&quot;)">
+                    <i id="trbt'.$verif1.'" class="fa fa-angle-double-right" name="boton"></i></button>';
+	                }
+	                $sumatoria.=$boldi.$res->nombre_plan_cuentas.$boldf.'</td>';
+	                $sumatoria.='</tr>';
+	                if ($this->tieneHijo($nivel,$res->codigo_plan_cuentas, $resultset))
+	                {
+	                    
+	                    $sumatoria.=$this->Balance($nivel, $resultset, $limit, $res->codigo_plan_cuentas);
+	                    
+	                }
+	                
+	                $nivel--;
+	                }
+	            }
+	        }
+	    }
+	    else
+	    {
+	        
+	        $sumatoria="";
+	        $elementos_codigo=explode(".", $codigo);
+	        $nivel1=$nivel;
+	        $nivel1--;
+	        $verif="";
+	        for ($i=0; $i<$nivel1; $i++)
+	        {
+	            $verif.=$elementos_codigo[$i];
+	        }
+	        foreach($resultset as $res)
+	        {
+	            $verif1="";
+	            $verif2="";
+	            $elementos1_codigo=explode(".", $res->codigo_plan_cuentas);
+	            for ($i=0; $i<sizeof($elementos1_codigo); $i++)
+	            {
+	                $verif2.=$elementos1_codigo[$i];
+	            }
+	            if (sizeof($elementos1_codigo)>=$nivel1)
+	                for ($i=0; $i<$nivel1; $i++)
+	                {
+	                    $verif1.=$elementos1_codigo[$i];
+	                }
+	          
+	            if ($res->nivel_plan_cuentas == $nivel && $verif==$verif1)
+	            {
+	                
+	                
+	                if($nivel<=$limit)
+	                {$nivel++;
+	                $nivelclase=$nivel-1;
+	                $color=$nivel-2;
+	                if ($color>5) $color=5;
+	                $sumatoria.='<tr class="nivel'.$verif1.'" id="cod'.$verif2.'" style="display:none">';
+	                $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->codigo_plan_cuentas.$boldf.'</td>';
+	                $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">';
+	                if ($this->tieneHijo($nivel,$res->codigo_plan_cuentas, $resultset))
+	                {
+	                    $sumatoria.='<button type="button" class="btn btn-box-tool" onclick="ExpandirTabla(&quot;nivel'.$verif2.'&quot;,&quot;trbt'.$verif2.'&quot;)">
+                    <i id="trbt'.$verif2.'" class="fa fa-angle-double-right" name="boton"></i></button>';
+	                }
+	                $sumatoria.=$boldi.$res->nombre_plan_cuentas.$boldf;
+	                
+	                if ($res->nivel_plan_cuentas>1)
+	                {
+	                    $sumatoria.='<button  type="button" class="btn btn-box-tool pull-right" style="color:#5499C7" data-toggle="modal" data-target="#myModalAgregar" onclick="AgregarCuenta(&quot;'.$res->codigo_plan_cuentas.'&quot;,'.$res->id_entidades.','.$res->id_modenas.',&quot;'.$res->n_plan_cuentas.'&quot;,'.$res->id_centro_costos.','.$res->nivel_plan_cuentas.')"><i class="glyphicon glyphicon-plus"></i></button>';
+	                if($res->nivel_plan_cuentas>2)
+	                {
+                    $sumatoria.='<button  type="button" class="btn btn btn-box-tool pull-right" style="color:#229954" data-toggle="modal" data-target="#myModalEdit" onclick="EditarCuenta('.$res->id_plan_cuentas.',&quot;'.$res->codigo_plan_cuentas.'&quot;,&quot;'.$res->nombre_plan_cuentas.'&quot;)"><i class="glyphicon glyphicon-pencil"></i></button>';
+	                }
+	                }
+                    $sumatoria.='</td>';
+	                $sumatoria.='</tr>';
+	                if ($this->tieneHijo($nivel,$res->codigo_plan_cuentas, $resultset))
+	                {
+	                    
+	                    $sumatoria.=$this->Balance($nivel, $resultset, $limit, $res->codigo_plan_cuentas);
+	                }
+	                $nivel--;
+	                }
+	            }
+	        }
+	    }
+	    return $sumatoria;
+	}
 	
+	public function TablaPlanCuentas()
+	{
+	    
+	    session_start();
+	    
+	    
+	    if (isset(  $_SESSION['usuario_usuarios']) )
+	    {
+	        $plan_cuentas= new PlanCuentasModel();
+	        	        
+	        $tablas= "public.plan_cuentas";
+	        
+	        $where= "1=1";
+	        
+	        $id= "plan_cuentas.codigo_plan_cuentas";
+	        
+	        $resultSet=$plan_cuentas->getCondiciones("*", $tablas, $where, $id);
+	        
+	        $tablas= "public.plan_cuentas";
+	        
+	        $where= "1=1";
+	        
+	        $id= "max";
+	        
+	        $resultMAX=$plan_cuentas->getCondiciones("MAX(nivel_plan_cuentas)", $tablas, $where, $id);
+	        
+	        $headerfont="16px";
+	        $tdfont="14px";
+	        $boldi="";
+	        $boldf="";
+	        
+	        $colores= array();
+	        $colores[0]="#D6EAF8";
+	        $colores[1]="#D1F2EB";
+	        $colores[2]="#FCF3CF";
+	        $colores[3]="#F8C471";
+	        $colores[4]="#EDBB99";
+	        $colores[5]="#FDFEFE";
+	        
+	        $datos_tabla= "<table id='tabla_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	        $datos_tabla.='<tr  bgcolor="'.$colores[0].'">';
+	        $datos_tabla.='<th bgcolor="'.$colores[0].'" width="1%"  style="width:130px; text-align: center;  font-size: '.$headerfont.';">CÓDIGO</th>';
+	        $datos_tabla.='<th bgcolor="'.$colores[0].'" width="83%" style="text-align: center;  font-size: '.$headerfont.';">CUENTA</th>';
+	        $datos_tabla.='</tr>';
+	        
+	        $datos_tabla.=$this->Balance(1, $resultSet, $resultMAX[0]->max, "");
+	        
+	        $datos_tabla.= "</table>";
+	        
+	        echo $datos_tabla;
+	    }
+	    else
+	    {
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	    }
+	    
+	    
+	}
+	
+	public function EditarNombreCuenta()
+	{
+	    session_start();
+	    $plan_cuentas = new PlanCuentasModel();
+	    
+	    $id_plan_cuentas=$_POST['id_plan_cuentas'];
+	    $nombre_plan_cuentas=$_POST['nombre_plan_cuentas'];
+	    
+	    $colval="nombre_plan_cuentas='".$nombre_plan_cuentas."'";
+	    $tabla="plan_cuentas";
+	    $where="id_plan_cuentas=".$id_plan_cuentas;
+	    $plan_cuentas->UpdateBy($colval, $tabla, $where);
+	}
+	
+	public function AgregarNuevaCuenta()
+	{
+	    session_start();
+	    $plan_cuentas= new PlanCuentasModel();
+	    $funcion = "ins_nueva_cuenta";
+        $codigo_plan_cuentas=$_POST['codigo_plan_cuentas'];
+    	$nombre_plan_cuentas=$_POST['nombre_plan_cuentas'];
+    	$id_entidades=$_POST['id_entidades'];
+    	$id_modenas=$_POST['id_modenas'];
+    	$n_plan_cuentas=$_POST['n_plan_cuentas'];
+    	$id_centro_costos=$_POST['id_centro_costos'];
+    	$nivel_plan_cuentas=$_POST['nivel_plan_cuentas'];
+    	$parametros="'$nombre_plan_cuentas',
+                     '$codigo_plan_cuentas',
+                     '$id_entidades',
+                     '$id_modenas',
+                     '$n_plan_cuentas',
+                     '$id_centro_costos',
+                     '$nivel_plan_cuentas'";
+    	$plan_cuentas->setFuncion($funcion);
+    	$plan_cuentas->setParametros($parametros);
+    	$resultado=$plan_cuentas->Insert();
+	}
 	
 	public function  Consulta()
 	{

@@ -183,19 +183,21 @@ class EntidadBase{
         
         $cantidadAfectada = null;
         
-        $query=pg_query($this->con,"DELETE FROM $this->table WHERE $column='$value' ");
-        
-        if(!$query){
+        try{
             
-            $cantidadAfectada = pg_last_error();
+            $query=pg_query($this->con,"DELETE FROM $this->table WHERE $column='$value' ");
             
-        }else{
+            if( $query === false )
+                throw new Exception( "Error PostgreSQL ".pg_last_error() );
             
             $cantidadAfectada = pg_affected_rows($query);
+            
+        }catch (Exception $Ex){
+            
+            $cantidadAfectada=null;
         }
-       
-        pg_close();
         
+       
         return $cantidadAfectada;
     }
     

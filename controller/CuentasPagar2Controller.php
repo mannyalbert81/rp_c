@@ -1,6 +1,6 @@
 <?php
 
-class CuentasPagarController extends ControladorBase{
+class CuentasPagar2Controller extends ControladorBase{
 
 	public function __construct() {
 		parent::__construct();
@@ -64,7 +64,7 @@ class CuentasPagarController extends ControladorBase{
 	        exit();
 	    }
 	    
-	    $this->view_tesoreria("EntradaCuentasPagar",array());
+	    $this->view_tesoreria("EntradaCuentasPagar2",array());
 	    
 	}
 	
@@ -1590,7 +1590,7 @@ class CuentasPagarController extends ControladorBase{
 	Public function Reporte_Cuentas_Por_Pagar(){
 	    
 	    $cuentasPagar = new CuentasPagarModel();
-	    $entidades = new EntidadesModel();
+	    $entidades = new EntidadesModel();	
 	    
 	    session_start();
 	    
@@ -1611,11 +1611,11 @@ class CuentasPagarController extends ControladorBase{
 	    if(is_null($_id_cuentas_pagar) ){
 	        
 	        $this->nodatapdf();
-	        
+	            
 	        exit();
 	    }
 	    
-	    //PARA OBTENER DATOS DE LA EMPRESA
+	    //PARA OBTENER DATOS DE LA EMPRESA	        
 	    $datos_empresa = array();
 	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
 	    
@@ -1637,11 +1637,11 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    $datos_cuentas_pagar = array();
 	    
-	    $columnascxp = "id_cuentas_pagar, numero_cuentas_pagar, descripcion_cuentas_pagar, fecha_cuentas_pagar,
-                  numero_documento_cuentas_pagar, compras_cuentas_pagar, condonaciones_cuentas_pagar,
-                  saldo_cuenta_cuentas_pagar, descuento_comercial_cuentas_pagar, flete_cuentas_pagar,
+	    $columnascxp = "id_cuentas_pagar, numero_cuentas_pagar, descripcion_cuentas_pagar, fecha_cuentas_pagar,		
+                  numero_documento_cuentas_pagar, compras_cuentas_pagar, condonaciones_cuentas_pagar, 
+                  saldo_cuenta_cuentas_pagar, descuento_comercial_cuentas_pagar, flete_cuentas_pagar, 
                   miscelaneos_cuentas_pagar,impuesto_cuentas_pagar, cp.id_tipo_documento, td.abreviacion_tipo_documento,
-                  lo.id_lote, lo.nombre_lote, lo.descripcion_lote, lo.numero_lote, fre.nombre_frecuencia_lote,
+                  lo.id_lote, lo.nombre_lote, lo.descripcion_lote, lo.numero_lote, fre.nombre_frecuencia_lote, 
                   cp.id_proveedor, pro.nombre_proveedores, pro.identificacion_proveedores";
 	    
 	    $tablascxp = "public.tes_cuentas_pagar cp
@@ -1692,11 +1692,11 @@ class CuentasPagarController extends ControladorBase{
 	    $id_lote = $rsDatosCxp[0]->id_lote;
 	    
 	    $columnasDistribucion= "id_distribucion_cuentas_pagar, id_lote, pc.id_plan_cuentas, pc.codigo_plan_cuentas,
-    		pc.nombre_plan_cuentas, tipo_distribucion_cuentas_pagar,
+    		pc.nombre_plan_cuentas, tipo_distribucion_cuentas_pagar, 
     		debito_distribucion_cuentas_pagar,  credito_distribucion_cuentas_pagar";
 	    
 	    $tablasDistribucion = "tes_distribucion_cuentas_pagar dis
-            inner join plan_cuentas pc
+            inner join plan_cuentas pc 
             on dis.id_plan_cuentas = pc.id_plan_cuentas";
 	    
 	    $whereDistribucion = " dis.id_lote = $id_lote ";
@@ -1723,8 +1723,8 @@ class CuentasPagarController extends ControladorBase{
 	        $tabladistribucion .= "<th>Tipo de Cuenta</th>";
 	        $tabladistribucion .= "<th>Monto débito</th>";
 	        $tabladistribucion .= "<th>Monto crédito</th>";
-	        $tabladistribucion .= "</tr>";
-	        
+	        $tabladistribucion .= "</tr>";	        
+	                
 	        foreach ($rsdatosDistribucion as $res){
 	            $tabladistribucion .= "<tr>";
 	            $tabladistribucion .= "<td>".$res->codigo_plan_cuentas."</td>";
@@ -1756,10 +1756,10 @@ class CuentasPagarController extends ControladorBase{
 	    $datos_cuentas_pagar['TABLADISTRIBUCION'] = $tabladistribucion;
 	    
 	    //DISTRIBUCION DETALLE IMPUESTOS
-	    
+	   
 	    $columnasImpuestos= "imp.id_impuestos, imp.nombre_impuestos, id_lote, base_cuentas_pagar_impuestos, valor_cuentas_pagar_impuestos";
 	    
-	    $tablasImpuestos = "public.tes_cuentas_pagar_impuestos icp
+	    $tablasImpuestos = "public.tes_cuentas_pagar_impuestos icp 
                     INNER JOIN public.tes_impuestos imp
                     ON icp.id_impuestos = imp.id_impuestos";
 	    
@@ -1768,7 +1768,7 @@ class CuentasPagarController extends ControladorBase{
 	    $idImpuestos = " imp.id_impuestos ";
 	    
 	    $rsdatosImpuestos = $cuentasPagar->getCondiciones($columnasImpuestos, $tablasImpuestos, $whereImpuestos, $idImpuestos);
-	    
+	    	    	    
 	    if(!empty($rsdatosImpuestos)){
 	        
 	        $tablaImpuesto = "<table> <caption> Distribuciones de detalle de impuestos </caption> ";
@@ -1860,11 +1860,13 @@ class CuentasPagarController extends ControladorBase{
 	    $datos_reporte['FECAUTORIZACION']=$rsdatos[0]->fecha_autorizacion;
 	    */
 	    
-	    
+	 
 	    //para imagen codigo barras
 	    
 	    
 	    $this->verReporte("CuentasPagar", array('datos_cuentas_pagar'=>$datos_cuentas_pagar,'datos_empresa'=>$datos_empresa,'datos_cabecera'=>$datos_cabecera));
+	   
+	    
 	}
 	
 	public function ListaCuentasPagar(){

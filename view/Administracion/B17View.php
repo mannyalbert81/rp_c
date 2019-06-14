@@ -80,7 +80,7 @@
 									  <option value="<?php echo $key; ?>"><?php echo $res; ?> </option>
 			        				  <?php } ?>
     					</select> 
-                        <div id="mensaje_estado_cargo" class="errores"></div>
+                        <div id="mensaje_mes_balance" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
@@ -92,14 +92,9 @@
              	</div>
           	</div>
             <div class="row">
-           	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
-            	<div class="form-group">
-                  <button type="button" id="Buscar" name="Buscar" class="btn btn-success" onclick="BuscarReporte()"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
-                </div>
-             </div>
              <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
-                  <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="BuscarReporte2()"><i class="glyphicon glyphicon-search"></i> BUSCAR2</button>
+                  <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="BuscarReporte2()"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
                 </div>
              </div>	    
             </div>
@@ -108,33 +103,11 @@
     </section>
     		
     <!-- seccion para el listado de roles -->
-      <section class="content">
-          <div class="box box-primary">
-            <div class="box-header with-border">
-              <h3 class="box-title">Reporte preliminar</h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                  <i class="fa fa-minus"></i></button>
-                
-              </div>
-            </div>
-            
-            <div class="box-body">
-				<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_departamentos(1)" placeholder="Buscar.."/>
-			</div>
-			
-        	<div id="load_cuentas" ></div>
-        	<div id="plan_cuentas" ></div>
-           
-         
-            </div>
-            </div>
-            </section>
+
             <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Reporte preliminar 2</h3>
+              <h3 class="box-title">Reporte preliminar</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -160,7 +133,7 @@
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?>
-   <script src="view/Administracion/js/B17.js?0.10" ></script>
+   <script src="view/Administracion/js/B17.js?0.11" ></script>
   </body>
 
 </html>

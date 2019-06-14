@@ -939,7 +939,7 @@ function ReporteNomina()
  var mes = new Date().getMonth();
  var year = new Date().getFullYear();
  mes--;
- mes--;
+ 
  var diainicio = 22;
  var diafinal = 21;
  var fechai = diainicio+"/"+mes+"/"+year;

@@ -237,7 +237,44 @@
 	
 	
 	<div>
-	 {DETALLE_RETENCION}
+	  <table class="info" style="width:98%;" border=1 >
+	  <tr>
+	  <th colspan="2" style="text-align: center; font-size: 11px;">Comprobante</th>
+	  <th colspan="2" style="text-align: center; font-size: 11px;">Número</th>
+	  <th colspan="2" style="text-align: center; font-size: 11px;">Fecha Emisión</th>
+	  <th colspan="2" style="text-align: center; font-size: 11px;">Ejercicio Fiscal</th>
+	  <th colspan="2" style="text-align: center; font-size: 11px;">Base Imponible para la Retención</th>
+	  <th colspan="2" style="text-align: center; font-size: 11px;">Impuesto</th>
+	  <th colspan="2" style="text-align: center; font-size: 11px;">Porcentaje Retención</th>
+	  <th colspan="2" style="text-align: center; font-size: 11px;">Valor Retenido</th>
+	  </tr>
+	   <?php foreach($retencion_detalle as $res) {?>
+	        		<tr class="filaoculta" >
+	                   <td> <?php echo $res->id_carton_impreso; ?>  </td>
+		               <td> <?php echo $res->numero_carton_impreso; ?>     </td> 
+		               
+		                  <td colspan="2" style="text-align: center; font-size: 13px;">{CODSUSTENTO}</td>
+					      <td colspan="2" style="text-align: center; font-size: 13px;">{NUMDOCSUST}</td>
+					      <td colspan="2" style="text-align: center; font-size: 13px;">{FECHEMDOCSUST}</td>
+					      <td colspan="2" style="text-align: center; font-size: 13px;">{PERIODOFISCAL}</td>
+					      <td colspan="2" style="text-align: center; font-size: 13px;" align="right"><?php echo $res->impuestos_baseimponible; ?> </td>
+					      <td colspan="2" style="text-align: center; font-size: 13px;" align="left"><?php echo $res->impuesto_codigoretencion; ?></td>
+					      <td colspan="2" style="text-align: center; font-size: 13px;" align="right"><?php echo $res->impuestos_porcentajeretener; ?></td>
+					      <td colspan="2" style="text-align: center; font-size: 13px;" align="right"><?php echo $res->impuestos_valorretenido; ?></td>
+		               
+		               <td>
+			           		<div class="right">
+			                  
+			                </div>
+			            
+			             </td>
+			             
+		    		</tr>
+	    <?php } ?>
+		        
+	  
+     
+	  </table>
 	</div>
 	
 	
@@ -269,10 +306,12 @@
 		 <strong>E-mail:&nbsp; &nbsp; </strong>{CAMPADICIONALTRES}
 		 </td>
 		 </tr>
-
+		 <br>
+		 <br>
         </table>
         
 	</div>
-	<div></div> 
+	
+	 
   </body>
   </html>

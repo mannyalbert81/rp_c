@@ -94,6 +94,33 @@ class RetencionController extends ControladorBase{
         
         $rsdatos = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
        
+		
+        
+        
+        
+        //////retencion detalle
+        
+        $columnas = " tri_retenciones_detalle.impuesto_codigo, 
+					  tri_retenciones_detalle.impuesto_codigoretencion, 
+					  tri_retenciones_detalle.impuestos_baseimponible, 
+					  tri_retenciones_detalle.impuestos_porcentajeretener, 
+					  tri_retenciones_detalle.impuestos_valorretenido, 
+					  tri_retenciones_detalle.impuestos_coddocsustento, 
+					  tri_retenciones_detalle.impuestos_numdocsustento, 
+					  tri_retenciones_detalle.impuesto_fechaemisiondocsustento, 
+					  tri_retenciones_detalle.impuesto_codigo_dos, 
+					  tri_retenciones_detalle.id_tri_retenciones";
+        
+        $tablas = "  public.tri_retenciones, 
+  					public.tri_retenciones_detalle";
+        $where= "tri_retenciones_detalle.id_tri_retenciones = tri_retenciones.id_tri_retenciones AND  tri_retenciones_detalle.id_tri_retenciones='$id_tri_retenciones'";
+        $id="tri_retenciones_detalle.id_tri_retenciones_detalle";
+        
+        $retencion_detalle = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
+         
+        
+        
+        
         
         $datos_reporte['AMBIENTE']=$rsdatos[0]->infotributaria_ambiente;
         $datos_reporte['EMISION']=$rsdatos[0]->infotributaria_tipoemision;
@@ -216,9 +243,47 @@ class RetencionController extends ControladorBase{
         
         //para imagen codigo barras
        
+         $html='';
+        
+         
+         $html.='<table class="info" style="width:98%;" border=1 >';
+         $html.='<tr>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Comprobante</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Número</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Fecha Emisión</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Ejercicio Fiscal</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Base Imponible para la Retención</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Código Impuesto</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Porcentaje Retención</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Valor Retenido</th>';
+         $html.='</tr>';
+         
         
         
-        $this->verReporte("Retencion", array('datos_reporte'=>$datos_reporte));
+         
+        foreach ($retencion_detalle as $res)
+        {
+        	
+        	$html.='<tr >';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['CODSUSTENTO'].'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['NUMDOCSUST'].'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['FECHEMDOCSUST'].'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['PERIODOFISCAL'].'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_baseimponible.'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_coddocsustento.'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_porcentajeretener.'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_valorretenido.'</td>';
+        		
+        	
+        	$html.='</td>';
+        	$html.='</tr>';
+        }
+        
+        $html.='</table>';	
+        
+        $datos_reporte['DETALLE_RETENCION']= $html;
+        
+        $this->verReporte("Retencion", array('datos_reporte'=>$datos_reporte ));
         
         
             
@@ -638,6 +703,27 @@ class RetencionController extends ControladorBase{
     	
     	
     	
+    	//////retencion detalle
+    	
+    	$columnas = " tri_retenciones_detalle.impuesto_codigo,
+					  tri_retenciones_detalle.impuesto_codigoretencion,
+					  tri_retenciones_detalle.impuestos_baseimponible,
+					  tri_retenciones_detalle.impuestos_porcentajeretener,
+					  tri_retenciones_detalle.impuestos_valorretenido,
+					  tri_retenciones_detalle.impuestos_coddocsustento,
+					  tri_retenciones_detalle.impuestos_numdocsustento,
+					  tri_retenciones_detalle.impuesto_fechaemisiondocsustento,
+					  tri_retenciones_detalle.impuesto_codigo_dos,
+					  tri_retenciones_detalle.id_tri_retenciones";
+    	
+    	$tablas = "  public.tri_retenciones,
+  					public.tri_retenciones_detalle";
+    	$where= "tri_retenciones_detalle.id_tri_retenciones = tri_retenciones.id_tri_retenciones AND  tri_retenciones_detalle.id_tri_retenciones='$id_tri_retenciones'";
+    	$id="tri_retenciones_detalle.id_tri_retenciones_detalle";
+    	
+    	$retencion_detalle = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
+    	 
+    	
     	
     	
     	
@@ -716,6 +802,50 @@ class RetencionController extends ControladorBase{
     			$camino_nombre_xml = "DOCUMENTOS_ELECTRONICOS/COMPROBANTES AUTORIZADOS/".$infotributaria_claveacceso	 . ".XML";
     			$_nombre_archivo = "DOCUMENTOS_GENERADOS/RETENCIONES/".$infotributaria_claveacceso	 . ".PDF";
     	}
+    	
+    	
+    	//para imagen codigo barras
+    	 
+    	$html='';
+    	
+    	 
+    	$html.='<table class="info" style="width:98%;" border=1 >';
+    	$html.='<tr>';
+    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Comprobante</th>';
+    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Número</th>';
+    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Fecha Emisión</th>';
+    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Ejercicio Fiscal</th>';
+    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Base Imponible para la Retención</th>';
+    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Código Impuesto</th>';
+    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Porcentaje Retención</th>';
+    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Valor Retenido</th>';
+    	$html.='</tr>';
+    	 
+    	
+    	
+    	 
+    	foreach ($retencion_detalle as $res)
+    	{
+    		 
+    		$html.='<tr >';
+    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['CODSUSTENTO'].'</td>';
+    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['NUMDOCSUST'].'</td>';
+    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['FECHEMDOCSUST'].'</td>';
+    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['PERIODOFISCAL'].'</td>';
+    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_baseimponible.'</td>';
+    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_coddocsustento.'</td>';
+    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_porcentajeretener.'</td>';
+    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_valorretenido.'</td>';
+    	
+    		 
+    		$html.='</td>';
+    		$html.='</tr>';
+    	}
+    	
+    	$html.='</table>';
+    	
+    	$datos_reporte['DETALLE_RETENCION']= $html;
+    	
     	
     	$this->verReporte("Retencion", array('datos_reporte'=>$datos_reporte ,'_nombre_archivo'=>$_nombre_archivo));
     	 

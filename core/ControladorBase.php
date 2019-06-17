@@ -58,6 +58,11 @@ class ControladorBase{
         
         require_once 'view/Recaudaciones/'.$vista.'View.php';
     }
+    
+    
+  
+    
+    
     public function temp_report($vista,$datos){
         foreach ($datos as $id_assoc => $valor) {
             ${$id_assoc}=$valor;

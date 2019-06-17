@@ -13,25 +13,19 @@ class CoreDiarioTipoController extends ControladorBase{
 	    
 	    session_start();
 	    $_id_usuarios = $_SESSION["id_usuarios"];
-	    $core_temp_diario_tipo   = new ComprobantesTemporalModel();
+	    $core_temp_diario_tipo   = new CoreTempDiarioTipoModel();
 	    $where_to="";
 	  
-	    $columnas = "temp_comprobantes.id_temp_comprobantes,
-				          plan_cuentas.id_plan_cuentas,
-		    		      plan_cuentas.codigo_plan_cuentas,
-						  plan_cuentas.nombre_plan_cuentas,
-						  temp_comprobantes.observacion_temp_comprobantes,
-						  temp_comprobantes.debe_temp_comprobantes,
-						  temp_comprobantes.haber_temp_comprobantes";
-	    $tablas ="public.temp_comprobantes,
-						  public.usuarios,
-						  public.plan_cuentas,
-						  public.entidades";
-	    $where ="temp_comprobantes.id_plan_cuentas = plan_cuentas.id_plan_cuentas AND
-				usuarios.id_usuarios = temp_comprobantes.id_usuario_registra AND
-				usuarios.id_entidades = entidades.id_entidades AND
-				entidades.id_entidades = plan_cuentas.id_entidades AND usuarios.id_usuarios='$_id_usuarios'";
-	    $id="temp_comprobantes.id_temp_comprobantes";
+	    $columnas = "core_temp_diario_tipo.id_temp_diario_tipo, 
+                     core_temp_diario_tipo.observacion_temp_diario_tipo, 
+                     plan_cuentas.codigo_plan_cuentas, 
+                     plan_cuentas.nombre_plan_cuentas,
+                    core_temp_diario_tipo.debe_temp_diario_tipo,
+                    core_temp_diario_tipo.haber_temp_diario_tipo";
+	    $tablas = "public.core_temp_diario_tipo, 
+                    public.plan_cuentas";
+	    $where = "core_temp_diario_tipo.id_plan_cuentas = plan_cuentas.id_plan_cuentas AND core_temp_diario_tipo.id_usuarios='$_id_usuarios'";
+	    $id="core_temp_diario_tipo.id_temp_diario_tipo";
 	    
 	    
 	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -43,7 +37,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	        
 	        if(!empty($search)){
 	            
-	            $where1=" AND (plan_cuentas.codigo_plan_cuentas LIKE '".$search."%' OR plan_cuentas.nombre_plan_cuentas LIKE '".$search."%' OR temp_comprobantes.observacion_temp_comprobantes LIKE '".$search."%')";
+	            $where1=" AND (plan_cuentas.codigo_plan_cuentas LIKE '".$search."%' OR plan_cuentas.nombre_plan_cuentas LIKE '".$search."%' OR core_temp_diario_tipo.observacion_temp_diario_tipo LIKE '".$search."%')";
 	            
 	            $where_to=$where.$where1;
 	            
@@ -75,13 +69,15 @@ class CoreDiarioTipoController extends ControladorBase{
 	        {
 	            
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:250px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_temp_comprobantes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.='<section style="height:150px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_temp_diario_tipo_registrados' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 13px;">Cuenta</th>';
-	            $html.='<th style="text-align: left;  font-size: 13px;">Nombre de la Cuenta</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Nombre</th>';
 	            $html.='<th style="text-align: left;  font-size: 13px;">Descripción</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Debe</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Haber</th>';
 	            $html.='<th style="text-align: left;  font-size: 13px;"></th>';
 	            
 	            $html.='</tr>';
@@ -89,58 +85,30 @@ class CoreDiarioTipoController extends ControladorBase{
 	            $html.='<tbody >';
 	            
 	            $i=0;
-	            
-	            $sumador_debe_total=0;
-	            $sumador_haber_total=0;
-	            
+	          
 	            foreach ($resultSet as $res)
 	            {
-	                $suma_debe= $res->debe_temp_comprobantes;
-	                $suma_debe_f=number_format($suma_debe,2);
-	                $suma_debe_r=str_replace(",","",$suma_debe_f);
-	                $sumador_debe_total+=$suma_debe_r;
 	                
-	                $suma_haber= $res->haber_temp_comprobantes;
-	                $suma_haber_f=number_format($suma_haber,2);
-	                $suma_haber_r=str_replace(",","",$suma_haber_f);
-	                $sumador_haber_total+=$suma_haber_r;
+	               
 	                
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 12px;">'.$res->codigo_plan_cuentas.'</td>';
 	                $html.='<td style="font-size: 12px;">'.$res->nombre_plan_cuentas.'</td>';
-	                $html.='<td style="font-size: 12px;">'.$res->observacion_temp_comprobantes.'</td>';
-	                $html.='<td style="font-size: 12px;">'.$res->debe_temp_comprobantes.'</td>';
-	                $html.='<td style="font-size: 12px;">'.$res->haber_temp_comprobantes.'</td>';
-	                $html.='<td style="font-size: 16px;"><a href="#" data-toggle="tooltip" title="Eliminar" onclick="eliminar_temp_comprobantes('.$res->id_temp_comprobantes.')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+	                $html.='<td style="font-size: 12px;">'.$res->observacion_temp_diario_tipo.'</td>';
+	                $html.='<td style="font-size: 12px;">'.$res->debe_temp_diario_tipo.'</td>';
+	                $html.='<td style="font-size: 12px;">'.$res->haber_temp_diario_tipo.'</td>';
+	                $html.='<td style="font-size: 16px;"><a href="#" data-toggle="tooltip" title="Eliminar" onclick="eliminar_temp_diario_tipo('.$res->id_temp_diario_tipo.')"><i class="glyphicon glyphicon-trash"></i></a></td>';
 	                $html.='</tr>';
 	            }
 	            
-	            $subtotal_debe=number_format($sumador_debe_total,2,'.','');
-	            $subtotal_haber=number_format($sumador_haber_total,2,'.','');
-	            
-	            //para manejar igualdades en debe y haber si es cero las cantidades no coiciden
-	            //caso scontrario si vale 1 las cantidades coinciden "CUDRADO"
-	            $valor_temporal=0;
-	            if($subtotal_debe==$subtotal_haber){
-	                $valor_temporal=1;
-	            }
-	            
-	            $letras = $temp_comprobantes->numtoletras($subtotal_debe);
-	            
-	            $html.='<tr>';
-	            $html.='<td style="font-size: 12px;" class="text-right" colspan=1>TOTAL $</td>';
-	            $html.='<td style="font-size: 12px;" colspan=2><input type="text" class="form-control" id="valor_letras" name="valor_letras" value="'.$letras.'" readonly>
-                        <input type="hidden" id="valor_total_temp" name="valor_total_temp" value="'.$valor_temporal.'"/> </td>';
-	            $html.='<td style="font-size: 12px;" class="text-left">'.$subtotal_debe.'</td>';
-	            $html.='<td style="font-size: 12px;" class="text-left">'.$subtotal_haber.'</td>';
-	            $html.='</tr>';
+	        
 	            
 	            $html.='</tbody>';
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_temp_comprobantes("index.php", $page, $total_pages, $adjacents).'';
+	            $html.=''. $this->paginate_temp_diario_tipo("index.php", $page, $total_pages, $adjacents).'';
 	            $html.='</div>';
 	            
 	        }else{
@@ -299,7 +267,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	
 	
 	
-	public function paginate_temp_comprobantes($reload, $page, $tpages, $adjacents) {
+	public function paginate_temp_diario_tipo($reload, $page, $tpages, $adjacents) {
 	    
 	    $prevlabel = "&lsaquo; Prev";
 	    $nextlabel = "Next &rsaquo;";
@@ -310,15 +278,15 @@ class CoreDiarioTipoController extends ControladorBase{
 	    if($page==1) {
 	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
 	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_temp_comprobantes(1)'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_temp_diario_tipo_registrados(1)'>$prevlabel</a></span></li>";
 	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_temp_comprobantes(".($page-1).")'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_temp_diario_tipo_registrados(".($page-1).")'>$prevlabel</a></span></li>";
 	        
 	    }
 	    
 	    // first label
 	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_temp_comprobantes(1)'>1</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_temp_diario_tipo_registrados(1)'>1</a></li>";
 	    }
 	    // interval
 	    if($page>($adjacents+2)) {
@@ -333,9 +301,9 @@ class CoreDiarioTipoController extends ControladorBase{
 	        if($i==$page) {
 	            $out.= "<li class='active'><a>$i</a></li>";
 	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_temp_comprobantes(1)'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_temp_diario_tipo_registrados(1)'>$i</a></li>";
 	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_temp_comprobantes(".$i.")'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_temp_diario_tipo_registrados(".$i.")'>$i</a></li>";
 	        }
 	    }
 	    
@@ -348,13 +316,13 @@ class CoreDiarioTipoController extends ControladorBase{
 	    // last
 	    
 	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_temp_comprobantes($tpages)'>$tpages</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_temp_diario_tipo_registrados($tpages)'>$tpages</a></li>";
 	    }
 	    
 	    // next
 	    
 	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_temp_comprobantes(".($page+1).")'>$nextlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_temp_diario_tipo_registrados(".($page+1).")'>$nextlabel</a></span></li>";
 	    }else {
 	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
 	    }
@@ -483,34 +451,31 @@ class CoreDiarioTipoController extends ControladorBase{
 		    $_id_usuarios= $_SESSION['id_usuarios'];
 		    
 			$arrayGet=array();
-			     
-			$temp_comprobantes=new ComprobantesTemporalModel();
-			$d_comprobantes = new DComprobantesModel();
-			
-			$tipo_comprobante=new TipoComprobantesModel();
-			$resultTipCom = $tipo_comprobante->getAll("nombre_tipo_comprobantes");
 		
-			$forma_pago=new FormaPagoModel();
-			$resultFormaPago = $forma_pago->getAll("nombre_forma_pago");
+			$core_temp_diario_tipo   = new ComprobantesTemporalModel();
+			$id_diario_tipo_detalle = new CoreDiarioTipoDetalleModel();
 			
+			$core_diario_tipo_credito=new CoreTipoCreditoModel();
+			$resultTipCre = $core_diario_tipo_credito->getAll("nombre_tipo_credito");
+		
 		    $permisos_rol = new PermisosRolesModel();
-			$nombre_controladores = "ComprobanteContable";
+			$nombre_controladores = "CoreDiarioTipo";
 			$id_rol= $_SESSION['id_rol'];
-			$resultPer = $temp_comprobantes->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+			$resultPer = $core_temp_diario_tipo->getPermisosVer("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 				
 			if (!empty($resultPer))
 			{
 				
 					
-				$this->view("ComprobanteContable",array(
-				    "resultTipCom"=>$resultTipCom , "resultFormaPago"=>$resultFormaPago
+				$this->view_Core("DiarioTipo",array(
+				    "resultTipCre"=>$resultTipCre
 					));
 			
 			
 			}else{
 				
-				$this->view("Error",array(
-						"resultado"=>"No tiene Permisos de Generar Comprobantes"
+			    $this->view_Core("Error",array(
+						"resultado"=>"No tiene Permisos"
 				
 					
 				));
@@ -533,19 +498,19 @@ class CoreDiarioTipoController extends ControladorBase{
    
    	session_start();
    	$resultado = null;
+   	$diario_tipo = new CoreDiarioTipoCabezaModel(); 
    	$permisos_rol=new PermisosRolesModel();
    	$plan_cuentas= new PlanCuentasModel();
-   	$forma_pago = new FormaPagoModel();
-   	$consecutivos = new ConsecutivosModel();
-    $ccomprobantes = new CComprobantesModel();
-   	$dcomprobantes = new DComprobantesModel();
-   	$tem_comprobantes = new ComprobantesTemporalModel();
-   	$tipo_comprobantes = new TipoComprobantesModel();
+   	$tipo_credito = new CoreTipoCreditoModel();
+  	$resulTipoCredito=$tipo_credito -> getAll("nombre_tipo_credito");
+   	
+   	$estado = new EstadoModel();
    
-   
-   	$nombre_controladores = "ComprobanteContable";
+   	
+   	
+   	$nombre_controladores = "CoreDiarioTipo";
    	$id_rol= $_SESSION['id_rol'];
-   	$resultPer = $ccomprobantes->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
+   	$resultPer = $diario_tipo->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
    
    	if (!empty($resultPer))
    	{
@@ -663,7 +628,7 @@ class CoreDiarioTipoController extends ControladorBase{
    					} catch (Exception $e)
    					{
    						$this->view("Error",array(
-   								"resultado"=>"Eror al Insertar Comprobante Contable ->". $id
+   						    "resultado"=>"Eror al Insertar Comprobante Contable ->". $id, "resulTipoCredito"=>$resulTipoCredito
    						));
    						exit();
    					}
@@ -693,20 +658,20 @@ class CoreDiarioTipoController extends ControladorBase{
    
     
    
-       public function eliminar_temp_comprobantes(){
+       public function eliminar_temp_diario_tipo(){
            
            session_start();
            
            $_id_usuarios = $_SESSION['id_usuarios'];
            
-           $id_temp_comprobantes = (isset($_REQUEST['id_temp_comprobantes'])&& $_REQUEST['id_temp_comprobantes'] !=NULL)?$_REQUEST['id_temp_comprobantes']:0;
+           $id_temp_diario_tipo = (isset($_REQUEST['id_temp_diario_tipo'])&& $_REQUEST['id_temp_diario_tipo'] !=NULL)?$_REQUEST['id_temp_diario_tipo']:0;
            
-           if($_id_usuarios!='' && $id_temp_comprobantes>0){
+           if($_id_usuarios!='' && $id_temp_diario_tipo>0){
                
-               $temp_comprobantes = new ComprobantesTemporalModel();
+               $temp_diario_tipo = new CoreTempDiarioTipoModel();
                
-               $where = "id_temp_comprobantes = $id_temp_comprobantes AND id_usuario_registra = $_id_usuarios ";
-               $resultado=$temp_comprobantes->deleteById($where);
+               $where = "id_temp_diario_tipo = $id_temp_diario_tipo AND id_usuarios = $_id_usuarios ";
+               $resultado=$temp_diario_tipo->deleteById($where);
                
                echo "1";
               
@@ -716,48 +681,35 @@ class CoreDiarioTipoController extends ControladorBase{
        
        
        
-       public function insertar_temp_comprobantes(){
+       public function insertar_temp_diario_tipo(){
            
            session_start();
-           $_id_usuarios = $_SESSION['id_usuarios'];
            $_id_plan_cuentas = (isset($_REQUEST['plan_cuentas'])&& $_REQUEST['plan_cuentas'] !=NULL)?$_REQUEST['plan_cuentas']:0;
            $_descripcion_dcomprobantes = (isset($_REQUEST['descripcion_dcomprobantes'])&& $_REQUEST['descripcion_dcomprobantes'] !=NULL)?$_REQUEST['descripcion_dcomprobantes']:'';
+           $_id_usuarios = $_SESSION['id_usuarios'];
            $_debe_dcomprobantes = (isset($_REQUEST['debe_dcomprobantes'])&& $_REQUEST['debe_dcomprobantes'] !=NULL)?$_REQUEST['debe_dcomprobantes']:0;
            $_haber_dcomprobantes = (isset($_REQUEST['haber_dcomprobantes'])&& $_REQUEST['haber_dcomprobantes'] !=NULL)?$_REQUEST['haber_dcomprobantes']:0;
            
-           $temp_comprobantes = new ComprobantesTemporalModel();
+           $temp_diario_tipo = new CoreTempDiarioTipoModel();
            
            if($_id_usuarios!='' && $_id_plan_cuentas>0){
-                       
-                       if ($_debe_dcomprobantes=="")
-                       {
-                           $_debe_dcomprobantes=0;
-                           
-                       }
-                      
-                       if ($_haber_dcomprobantes=="")
-                       {
-                           $_haber_dcomprobantes=0;
-                           
-                       }
            
            $_debe_dcomprobantes= str_replace(',', '', $_debe_dcomprobantes);
            $_haber_dcomprobantes= str_replace(',', '', $_haber_dcomprobantes);
            
-                       $funcion = "ins_temp_comprobantes";
-                       $parametros = "'$_id_usuarios','$_id_plan_cuentas','$_descripcion_dcomprobantes','$_debe_dcomprobantes','$_haber_dcomprobantes'";
-                       $temp_comprobantes->setFuncion($funcion);
-                       $temp_comprobantes->setParametros($parametros);
-                       $resultado=$temp_comprobantes->Insert();
+                       $funcion = "ins_temp_core_diario_tipo";
+                       $parametros = "'$_id_plan_cuentas','$_descripcion_dcomprobantes','$_id_usuarios','$_debe_dcomprobantes','$_haber_dcomprobantes'";
+                       $temp_diario_tipo->setFuncion($funcion);
+                       $temp_diario_tipo->setParametros($parametros);
+                       $resultado=$temp_diario_tipo->Insert();
                    
                        echo "1";
-               
            }
            
        }
        
        
-		
+		      
 	
 	public function AutocompleteComprobantesCodigo(){
 		
@@ -907,16 +859,16 @@ class CoreDiarioTipoController extends ControladorBase{
 	
 	
 	
-	public function insertacomprobante(){
+	public function InsertaDiarioTipo(){
 	    
 	    session_start();
 	    $resultado = null;
 	    
-	    $ccomprobantes = new CComprobantesModel();    
+	    $core_diario_tipo = new CoreDiarioTipoCabezaModel();    
 	    
-	    $nombre_controladores = "ComprobanteContable";
+	    $nombre_controladores = "CoreDiarioTipo";
 	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $ccomprobantes->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
+	    $resultPer = $core_diario_tipo->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
 	    
 	    
 	    if (!empty($resultPer))

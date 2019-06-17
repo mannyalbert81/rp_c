@@ -55,7 +55,7 @@
    <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Balance Comprobacion</h3>
+          <h3 class="box-title">Movimientos Contables</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -67,7 +67,7 @@
            
          <div class="box-body">
          
-         <form id="form_balance_comprobacion" action="<?php echo $helper->url("BalanceComprobacion","generarbalance"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12">
+         <form id="form_movimientos_contable" action="<?php echo $helper->url("MovimientosContable","index"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12">
           
           <div class="row">
 	         <div class="col-md-3 col-lg-3 col-xs-12">
@@ -97,21 +97,6 @@
     					<option value="10" >OCTUBRE</option>
     					<option value="11" >NOVIEMBRE</option>
     					<option value="12" >DICIEMBRE</option>	
-					 </select> 
-                     <div id="mensaje_mes_balance" class="errores"></div>
-	         	</div>
-	         </div>
-	         <div class="col-md-3 col-lg-3 col-xs-12">
-	         	<div class="form-group">
-	         		<label for="mes_balance" class="control-label">NIVEL MAXIMO :</label>
-                    <select name="mes_balance" id="nivel_balance"   class="form-control" >
-                    	<?php  for($i=1; $i<=$resultMAX[0]->max; $i++) {?>
-                    	<?php if($i!=4){?>
-                    	<option value="<?php echo $i; ?>"><?php echo $i; ?> </option>
-			        	<?php } else {?>
-			        	<option value="<?php echo $i; ?>" selected="selected"><?php echo $i; ?> </option>
-			        	<?php } ?>
-			        	<?php } ?>
 					 </select> 
                      <div id="mensaje_mes_balance" class="errores"></div>
 	         	</div>
@@ -163,7 +148,7 @@
     <?php include("view/modulos/links_js.php"); ?>
    	 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.10"></script>   
+    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.6"></script>   
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   
 	

@@ -107,7 +107,6 @@ $(document).ready(function(){
 	  let provedor_id = $("#id_proveedor").val(); 
 	  let banco_id = $("#id_bancos").val();
 	  let numero_documento = $("#numero_documento").val();
-	  let monto_cuentas_pagar = $("#monto_cuentas_pagar").val();
 	  
 	  if( provedor_id == '' || provedor_id.length == 0  || provedor_id == 0 ){
 		  $("#cedula_proveedor").notify("Digite Ruc proveedor",{ position:"buttom left", autoHideDelay: 2000});	 
@@ -121,10 +120,7 @@ $(document).ready(function(){
 		  $("#numero_documento").notify("Ingrese número documento",{ position:"buttom left", autoHideDelay: 2000});	 
 		  return false; 
 		 }
-	  if( monto_cuentas_pagar == '' || monto_cuentas_pagar.length == 0 || monto_cuentas_pagar == 0 ){
-		  $("#monto_cuentas_pagar").notify("Ingrese base compra",{ position:"buttom left", autoHideDelay: 2000});	 
-		  return false; 
-		 }
+	  
 	   return true;
    }
    

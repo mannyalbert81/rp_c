@@ -55,7 +55,7 @@
    <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Registrar Comprobantes Tipo</h3>
+          <h3 class="box-title">Registrar Diario Tipo </h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -66,7 +66,7 @@
         
         <div class="box-body">
       
-        <form id="form-comprobante-contable" action="<?php echo $helper->url("ComprobanteContable","indexComprobanteTipo"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12">
+        <form id="form-comprobante-contable" action="<?php echo $helper->url("CoreDiarioTipo","index"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12">
             <br>	
             
            
@@ -79,7 +79,7 @@
         	         <div class="panel-heading">
             	         <div class="row">
                 	         <div class="form-group" style="margin-left: 20px">
-                              	<label for="nuevo_comprobante" class="control-label"><h4><i class='glyphicon glyphicon-edit'></i>  Nuevo Comprobante N° <?php echo $res->numero_consecutivos; ?></h4></label>
+                              	<label for="nuevo_comprobante" class="control-label"><h4><i class='glyphicon glyphicon-edit'></i>  Nuevo Diario N° <?php echo $res->numero_consecutivos; ?></h4></label>
                               	<input type="hidden" class="form-control" id="id_entidades" name="id_entidades" value="<?php echo $res->id_entidades; ?>">
                                              
                          		<div class="col-md-3 col-lg-3 col-xs-4" style="margin-top: 5px">
@@ -234,7 +234,7 @@
 		                <td style="font-size:80%;"> <?php echo $res->haber_temp_comprobantes; ?>     </td>  
 			           	<td>   
 			               	<div class="right">
-			                    <a href="<?php echo $helper->url("ComprobanteContable","index"); ?>&id_temp_comprobantes=<?php echo $res->id_temp_comprobantes; ?>&arrayGet=<?php echo  $array_get ;?>"><i class="glyphicon glyphicon-trash"></i></a>
+			                    <a href="<?php echo $helper->url("CoreDiarioTipo","index"); ?>&id_temp_comprobantes=<?php echo $res->id_temp_comprobantes; ?>&arrayGet=<?php echo  $array_get ;?>"><i class="glyphicon glyphicon-trash"></i></a>
 			                </div>
 			            </td>
 	   		</tr>

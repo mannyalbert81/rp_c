@@ -213,13 +213,12 @@
                         			 <div class="form-group-sm">
                         				<label for="condiciones_pago_cuentas_pagar" class="col-sm-4 control-label" > Condiciones Pago:</label>
                         				<div class="col-sm-8">
-                        				  <input type="text" class="form-control" id="condiciones_pago_cuentas_pagar" name="condiciones_pago_cuentas_pagar" value="" autocomplete="off"  placeholder="">
+                        				  <input type="text" class="form-control" id="condiciones_pago_cuentas_pagar" name="condiciones_pago_cuentas_pagar" value="efectivo" autocomplete="off"  placeholder="">
             			          		  <div id="mensaje_condiciones_pago_cuentas_pagar" class="errores"></div>
                         				</div>
                         			 </div>        			 
                     			</div>
-        			
-        			
+        			        			
                     			<div class="form-group "> 
                         			 <div class="form-group-sm">
                         				<label for="id_bancos" class="col-sm-4 control-label" > Banco:</label>
@@ -602,8 +601,8 @@
 <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
-<script type="text/javascript" src="view/tesoreria/js/CuentasPagar2.js?0.04"></script>
-<script type="text/javascript" src="view/tesoreria/js/wizardCuentasPagar.js?0.26"></script>
+<script type="text/javascript" src="view/tesoreria/js/CuentasPagar2.js?0.05"></script>
+<script type="text/javascript" src="view/tesoreria/js/wizardCuentasPagar.js?0.27"></script>
 
     
 

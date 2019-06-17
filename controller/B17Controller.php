@@ -22,317 +22,20 @@ class B17Controller extends ControladorBase{
 		
 	}
 	
-	public function tieneHijo($nivel, $codigo, $resultado)
-	{
-	    $elementos_codigo=explode(".", $codigo);
-	    $nivel1=$nivel;
-	    $nivel1--;
-	    $verif="";
-	    for ($i=0; $i<$nivel1; $i++)
-	    {
-	      $verif.=$elementos_codigo[$i];  
-	    }
-	        
-	 foreach ($resultado as $res)
-	     {
-	         $verif1="";
-	         $elementos1_codigo=explode(".", $res->codigo_plan_cuentas);
-	         if (sizeof($elementos1_codigo)>=$nivel1)
-	             
-	         for ($i=0; $i<$nivel1; $i++)
-	         {
-	             $verif1.=$elementos1_codigo[$i];
-	         }
-	         
-	         
-	         if ($res->nivel_plan_cuentas==$nivel && $verif==$verif1)
-	        {
-	         return true;   
-	        }
-	     }
-	     return false;
-	}
-	
-	public function Balance($nivel, $resultset, $limit, $codigo)
-	{
-	    if ($codigo=="")
-	    {
-	    $sumatoria=0;
-	    $suma=0;
-	    foreach($resultset as $res)
-	    {
-	        if ($res->nivel_plan_cuentas == $nivel)
-	        {
-	            echo "<h4>".$res->codigo_plan_cuentas." ".$res->saldo_plan_cuentas."</h4>";
-	            if($nivel<$limit)
-	            {$nivel++;
-	            if ($this->tieneHijo($nivel,$res->codigo_plan_cuentas, $resultset))
-	            {
-	                
-	                $suma=$this->Balance($nivel, $resultset, $limit, $res->codigo_plan_cuentas);
-	                echo $suma;
-	                
-	            }
-	            
-	            if($res->nivel_plan_cuentas!=1)
-	            {
-	                $sumatoria+=$res->saldo_plan_cuentas;
-	            }
-	            $nivel--;
-	            }
-	        }
-	    }
-	    }
-	    else
-	    {
-	        
-	        $sumatoria=0;
-	        $suma=0;
-	        $elementos_codigo=explode(".", $codigo);
-	        $nivel1=$nivel;
-	        $nivel1--;
-	        $verif="";
-	        for ($i=0; $i<$nivel1; $i++)
-	        {
-	            $verif.=$elementos_codigo[$i];
-	        }
-	        foreach($resultset as $res)
-	        {
-	            $verif1="";
-	            $elementos1_codigo=explode(".", $res->codigo_plan_cuentas);
-	            if (sizeof($elementos1_codigo)>=$nivel1)
-	                for ($i=0; $i<$nivel1; $i++)
-	                {
-	                    $verif1.=$elementos1_codigo[$i];
-	                }
-	            if ($res->nivel_plan_cuentas == $nivel && $verif==$verif1)
-	            {
-	                
-	                echo "<h4>".$res->codigo_plan_cuentas."-".$res->saldo_plan_cuentas."</h4>";
-	                if($nivel<$limit) 
-	                {$nivel++;
-	                if ($this->tieneHijo($nivel,$res->codigo_plan_cuentas, $resultset))
-	                {
-	                    
-	                    $suma=$this->Balance($nivel, $resultset, $limit, $res->codigo_plan_cuentas);
-	                    echo "<h4>SUMA ".$res->codigo_plan_cuentas."-".$suma."</h4>";
-	                }
-	                
-	                if($res->nivel_plan_cuentas!=1)
-	                {
-	                    $sumatoria+=$res->saldo_plan_cuentas;
-	                }
-	                $nivel--;
-	                }
-	            }
-	        }
-	    }
-	    return $sumatoria;
-	}
-	
-	public function CargarReporte()
-	{
-	    session_start();
-	    
-	    $plan_cuentas= new PlanCuentasModel();
-	    
-	    
-	    $columnas = "codigo_plan_cuentas, nombre_plan_cuentas, saldo_plan_cuentas, nivel_plan_cuentas";
-	    
-	    $tablas= "public.plan_cuentas";
-	    
-	    $where= "1=1";
-	    
-	    $id= "plan_cuentas.codigo_plan_cuentas";
-	    
-	    $resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
-	    
-	    $headerfont="16px";
-	    $tdfont="14px";
-	    $boldi="";
-	    $boldf="";
-	    
-	    $colornivel1="#D6EAF8";
-	    $colornivel2="#D1F2EB  ";
-	    $colornivel3="#FCF3CF";
-	    $colornivel4="#FDFEFE";
-	    
-	    $this->Balance(1, $resultSet, 6,"");
-	    /*$datos_tabla= "<table id='tabla_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
-	    $datos_tabla.='<tr  bgcolor="'.$colornivel1.'">';
-	    $datos_tabla.='<th width="1%"  style="width:130px; text-align: center;  font-size: '.$headerfont.';">CÓDIGO</th>';
-	    $datos_tabla.='<th width="83%" style="text-align: center;  font-size: '.$headerfont.';">CUENTA</th>';
-	    $datos_tabla.='<th width="1%" style="text-align: center;  font-size: '.$headerfont.';">NOTAS</th>';
-	    $datos_tabla.='<th width="15%" style="text-align: center;  font-size: '.$headerfont.';">SALDO</th>';
-	    $datos_tabla.='</tr>';
-	    $pasivos=0;
-	    $patrimonio=0;
-	    $activos=0;
-	    $i=0;
-	    $sumatotal=0;
-	    
-	    
-	    
-	    
-	    foreach ($resultSet as $res)
-	    {
-	        $i++;
-	        $sumatotal+=$res->saldo_plan_cuentas;
-	        $colorletra="black";
-	        $elementos_codigo=explode(".", $res->codigo_plan_cuentas);
-	        if (sizeof($elementos_codigo)<4 || (sizeof($elementos_codigo)==4 && $elementos_codigo[3]==""))
-	        {
-	            $boldi="<b>";
-	            $boldf="</b>";
-	        }
-	        else
-	        {
-	            $boldi="";
-	            $boldf="";
-	        }
-	        
-	        
-	            if ($res->nombre_plan_cuentas=="PASIVOS") $pasivos=$res->saldo_plan_cuentas;
-	            if ($res->nombre_plan_cuentas=="PATRIMONIO") $patrimonio=$res->saldo_plan_cuentas;
-	            if ($res->nombre_plan_cuentas=="ACTIVOS") $activos=$res->saldo_plan_cuentas;
-	            if (sizeof($elementos_codigo)==1 || (sizeof($elementos_codigo)==2 && $elementos_codigo[1]==""))
-	            {
-	            $total=0;    
-	            foreach ($resultSet as $res1)
-	            {
-	                $elementos1_codigo=explode(".", $res1->codigo_plan_cuentas);
-	             if ($res->codigo_plan_cuentas!=$res1->codigo_plan_cuentas && $res1->nivel_plan_cuentas==2
-	                 && $elementos1_codigo[0]==$elementos_codigo[0])
-	                 {
-	                  $total+=$res1->saldo_plan_cuentas;   
-	                 }
-	            }
-	            
-	            $datos_tabla.='<tr >';
-	            $datos_tabla.='<td bgcolor="'.$colornivel1.'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->codigo_plan_cuentas.$boldf.'</td>';
-	            $datos_tabla.='<td bgcolor="'.$colornivel1.'" style="text-align: left;  font-size: '.$tdfont.';"><button type="button" class="btn btn-box-tool" onclick="ExpandirTabla(&quot;nivel'.$elementos_codigo[0].'&quot;,&quot;trbt'.$elementos_codigo[0].'&quot;)">
-                  <i id="trbt'.$elementos_codigo[0].'" class="fa fa-plus" name="boton"></i></button>'.$boldi.$res->nombre_plan_cuentas.$boldf.'
-                </td>';
-	            $total=number_format((float)$total, 2, ',', '.');
-	            $datos_tabla.='<td  bgcolor="'.$colornivel1.'"style="text-align: center;  font-size: '.$tdfont.';"></td>';
-	            $saldo=$res->saldo_plan_cuentas;
-	            $saldo=number_format((float)$saldo, 2, ',', '.');
-	            if ($total!=$saldo) $colorletra="red";
-	            if ($saldo==0) $saldo="-";
-	            $datos_tabla.='<td  bgcolor="'.$colornivel1.'" style="text-align: right;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$saldo.$boldf.'</font></td>';
-	            $datos_tabla.='</tr>';
-	            }
-	            else if (sizeof($elementos_codigo)==2 || (sizeof($elementos_codigo)==3 && $elementos_codigo[2]==""))
-	            {
-	                $total=0;
-	                foreach ($resultSet as $res1)
-	                {
-	                    $elementos1_codigo=explode(".", $res1->codigo_plan_cuentas);
-	                    if ($res->codigo_plan_cuentas!=$res1->codigo_plan_cuentas && $res1->nivel_plan_cuentas==3
-	                        && $elementos1_codigo[0]==$elementos_codigo[0] && $elementos1_codigo[1]==$elementos_codigo[1])
-	                    {
-	                        $total+=$res1->saldo_plan_cuentas;
-	                    }
-	                }
-	                $total=number_format((float)$total, 2, ',', '.');
-	                $datos_tabla.='<tr  class="nivel'.$elementos_codigo[0].'" style="display:none">';
-	                $datos_tabla.='<td bgcolor="'.$colornivel2.'"  style="  text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->codigo_plan_cuentas.$boldf.'</td>';
-	                if (sizeof($elementos_codigo)==3 && $elementos_codigo[2]=="")
-	                {
-	                $datos_tabla.='<td bgcolor="'.$colornivel2.'" style="text-align: left;  font-size: '.$tdfont.';"><button type="button" class="btn btn-box-tool" onclick="ExpandirTabla2(&quot;nivel'.$elementos_codigo[0].$elementos_codigo[1].'&quot;,&quot;trbt'.$elementos_codigo[0].$elementos_codigo[1].'&quot;,&quot;nivel'.$elementos_codigo[0].'&quot;)">
-                  <i id="trbt'.$elementos_codigo[0].$elementos_codigo[1].'" class="fa fa-plus" name="boton1"></i></button>'.$boldi.$res->nombre_plan_cuentas.$boldf.'
-                    </td>';
-	                }
-	                else
-	                {
-	                    $datos_tabla.='<td bgcolor="'.$colornivel2.'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->nombre_plan_cuentas.$boldf.'
-                    </td>';
-	                }
-	                $datos_tabla.='<td  bgcolor="'.$colornivel2.'" width="10%" style="text-align: center;  font-size: '.$tdfont.';"></td>';
-	                $saldo=$res->saldo_plan_cuentas;
-	                $saldo=number_format((float)$saldo, 2, ',', '.');
-	                if ($total!=$saldo) $colorletra="red";
-	                if(sizeof($elementos_codigo)==2) $colorletra="black";
-	                if ($saldo==0) $saldo="-";
-	                $datos_tabla.='<td  bgcolor="'.$colornivel2.'"  style="text-align: right;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$saldo.$boldf.'</font></td>';
-	                $datos_tabla.='</tr>';
-	            }
-	            else if (sizeof($elementos_codigo)==3 || (sizeof($elementos_codigo)==4 && $elementos_codigo[3]==""))
-	            {
-	                $total=0;
-	                foreach ($resultSet as $res1)
-	                {
-	                    $elementos1_codigo=explode(".", $res1->codigo_plan_cuentas);
-	                    if ($res->codigo_plan_cuentas!=$res1->codigo_plan_cuentas && $res1->nivel_plan_cuentas==4
-	                        && $elementos1_codigo[0]==$elementos_codigo[0] && $elementos1_codigo[1]==$elementos_codigo[1]
-	                        && $elementos1_codigo[2]==$elementos_codigo[2])
-	                    {
-	                        $total+=$res1->saldo_plan_cuentas;
-	                    }
-	                }
-	                $total=number_format((float)$total, 2, ',', '.');
-	                $datos_tabla.='<tr  class="nivel'.$elementos_codigo[0].$elementos_codigo[1].'" style="display:none">';
-	                $datos_tabla.='<td bgcolor="'.$colornivel3.'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->codigo_plan_cuentas.$boldf.'</td>';
-	                if (sizeof($elementos_codigo)==4 && $elementos_codigo[3]=="")
-	                {
-	                    $datos_tabla.='<td bgcolor="'.$colornivel3.'" style="text-align: left;  font-size: '.$tdfont.';"><button type="button" class="btn btn-box-tool" onclick="ExpandirTabla3(&quot;nivel'.$elementos_codigo[0].$elementos_codigo[1].$elementos_codigo[2].'&quot;,&quot;trbt'.$elementos_codigo[0].$elementos_codigo[1].$elementos_codigo[2].'&quot;,&quot;nivel'.$elementos_codigo[0].$elementos_codigo[1].'&quot;)">
-                  <i id="trbt'.$elementos_codigo[0].$elementos_codigo[1].$elementos_codigo[2].'" class="fa fa-plus" name="boton2"></i></button>'.$boldi.$res->nombre_plan_cuentas.$boldf.'
-                    </td>';
-	                }
-	                else
-	                {
-	                    $datos_tabla.='<td bgcolor="'.$colornivel3.'"  style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->nombre_plan_cuentas.$boldf.'</td>';
-	                }
-	                $datos_tabla.='<td bgcolor="'.$colornivel3.'"  style="text-align: center;  font-size: '.$tdfont.';"></td>';
-	                $saldo=$res->saldo_plan_cuentas;
-	                $saldo=number_format((float)$saldo, 2, ',', '.');
-	                if ($total!=$saldo) $colorletra="red";
-	                if(sizeof($elementos_codigo)==3) $colorletra="black";
-	                if ($saldo==0) $saldo="-";
-	                $datos_tabla.='<td bgcolor="'.$colornivel3.'" style="text-align: right;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$saldo.$boldf.'</font></td>';
-	                $datos_tabla.='</tr>';
-	            }
-	            else if (sizeof($elementos_codigo)==4)
-	            {
-	                $datos_tabla.='<tr bgcolor="'.$colornivel4.'" class="nivel'.$elementos_codigo[0].$elementos_codigo[1].$elementos_codigo[2].'" style="display:none">';
-	                $datos_tabla.='<td width="9%" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->codigo_plan_cuentas.$boldf.'</td>';
-	                $datos_tabla.='<td  style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->nombre_plan_cuentas.$boldf.'</td>';
-	                $datos_tabla.='<td width="10%" style="text-align: center;  font-size: '.$tdfont.';"></td>';
-	                $saldo=$res->saldo_plan_cuentas;
-	                $saldo=number_format((float)$saldo, 2, ',', '.');
-	                if ($saldo==0) $saldo="-";
-	                $datos_tabla.='<td width="15%" style="text-align: right;  font-size: '.$tdfont.';">'.$boldi.$saldo.$boldf.'</td>';
-	                $datos_tabla.='</tr>';
-	            }
-	    }
-	
-	    $datos_tabla.= "</table>";
-	    $datos_tabla.= "<h4>".$i."</h4>";
-	    $sumatotal=number_format((float)$sumatotal, 2, '.', '');
-	    $datos_tabla.= "<h4>Suma Total: ".$sumatotal."</h4>";
-	    
-	    $datos_tabla.= '<div class="row">
-           	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
-            	<div class="form-group">
-                  <a href="index.php?controller=B17&action=DescargarReporte" target="_blank"><i class="glyphicon glyphicon-print"></i></a>
-                </div>
-             </div>	    
-            </div>';
-	    
-	    echo $datos_tabla;*/
-	    
-	
-	}
-	
 	public function CargarReporte2()
 	{
 	    session_start();
 	    
 	    $plan_cuentas= new PlanCuentasModel();
+	    $id_usuarios=$_SESSION['id_usuarios'];
+	    echo $id_usuarios;
 	    $mes_reporte=$_POST['mes_reporte'];
-	    $mes_reporte++;
+	   
 	    $anio_reporte=$_POST['anio_reporte'];
+	    $mes_reporte++;
+	    $mes_reporte1=$mes_reporte+1;
 	    if($mes_reporte<10) $mes_reporte="0".$mes_reporte;
+	    if($mes_reporte1<10) $mes_reporte1="0".$mes_reporte1;
 	    
 	    $fecha_inicio=$anio_reporte."-".$mes_reporte."-01";
 	    
@@ -342,10 +45,9 @@ class B17Controller extends ControladorBase{
 	    
 	    $columnas = "codigo_plan_cuentas, nombre_plan_cuentas, saldo_plan_cuentas, nivel_plan_cuentas, id_plan_cuentas, n_plan_cuentas";
 	    
-	    $tablas= "public.plan_cuentas INNER JOIN public.estado
-                  ON plan_cuentas.id_estado_reporte = estado.id_estado";
+	    $tablas= "public.plan_cuentas";
 	    
-	    $where= "estado.nombre_estado = 'INCLUIDO'";
+	    $where= "plan_cuentas.nivel_plan_cuentas <= 4";
 	    
 	    $id= "plan_cuentas.codigo_plan_cuentas";
 	    
@@ -363,6 +65,16 @@ class B17Controller extends ControladorBase{
 	    
 	    $resultMayor=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
 	    
+	    $columnas = "con_cbalance_comprobacion.id_cbalance_comprobacion";
+	    
+	    $tablas= "public.con_cbalance_comprobacion";
+	    
+	    $where= "con_cbalance_comprobacion.con_cbalance_comprobacion.mes_cbalance_comprobacion=".$mes_reporte."AND con_cbalance_comprobacion.anio_cbalance_comprobacion=".$anio_reporte;
+	    
+	    $id= "con_cbalance_comprobacion.id_cbalance_comprobacion";
+	    
+	    $resultCabeza=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
+	    
 	    $Saldos=array();
 	    
 	    $cuentaserror=array();
@@ -378,6 +90,38 @@ class B17Controller extends ControladorBase{
 	    $colornivel2="#D1F2EB  ";
 	    $colornivel3="#FCF3CF";
 	    $colornivel4="#FDFEFE";
+	    
+	    if(!(empty($resultCabeza)))
+	    {
+	        $columnas="plan_cuentas.codigo_plan_cuentas, plan_cuentas.nombre_plan_cuentas, 
+                      (con_dbalance_comprobacion.saldo_acreedor_dbalance_comprobacion+con_dbalance_comprobacion.saldo_deudor_dbalance_comprobacion) AS saldo_plan_cuentas,
+                       plan_cuentas.nivel_plan_cuentas";
+	        
+	        $tablas= "public.con_dbalance_comprobacion INNER JOIN public.plan_cuentas
+                      ON con_dbalance_comprobacion.id_plan_cuentas=plan_cuentas.id_plan_cuentas";
+	        
+	        $where= "con_dbalance_comprobacion.id_cbalance_comprobacion=".$resultCabeza[0]->id_cbalance_comprobacion;
+	        
+	        $id= "con_dbalance_comprobacion.id_plan_cuentas";
+	        
+	        $resultDetalle=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
+	        
+	        foreach ($resultSet as $res)
+	        {
+	            foreach ($resultDetalle as $resD)
+	            {
+	                if ($resD->codigo_plan_cuentas == $res->codigo_plan_cuentas)
+	                {
+	                    
+	                }
+	            }
+	        }
+	        
+	    }
+	    else
+	    {
+	        
+	    }
 	    
 	    foreach ($resultSet as $res)
 	    {
@@ -403,16 +147,10 @@ class B17Controller extends ControladorBase{
 	     }
 	     if($saldoini!="vacio")
 	     {
-    	     if($res->n_plan_cuentas=="D")
-    	     {
+    	     
     	      $saldoini=$saldoini+$totaldebe;
     	      $saldoini=$saldoini-$totalhaber;
-    	     }
-    	     else if ($res->n_plan_cuentas=="A")
-    	     {
-    	         $saldoini=$saldoini-$totaldebe;
-    	         $saldoini=$saldoini+$totalhaber;
-    	     }
+    	   
     	     $comp="";
     	     $saldoini=number_format((float)$saldoini, 2, ',', '.');
     	     $saldomayor=number_format((float)$saldomayor, 2, ',', '.');
@@ -433,7 +171,17 @@ class B17Controller extends ControladorBase{
 	         $tablas= "public.con_mayor INNER JOIN public.plan_cuentas
 		      ON con_mayor.id_plan_cuentas = plan_cuentas.id_plan_cuentas";
 	         
-	         $where= "con_mayor.fecha_mayor BETWEEN '2019-04-01' AND '2019-04-30' AND plan_cuentas.codigo_plan_cuentas='".$res->codigo_plan_cuentas."'";
+	         if($mes_reporte1==13)
+	         {$mes_reporte1="01";
+	         $anio_reporte++;
+	         }
+	         $fecha_inicio=$anio_reporte."-".$mes_reporte1."-01";
+	         
+	         $lastday = date('t',strtotime($fecha_inicio));
+	         
+	         $fecha_fin=$anio_reporte."-".$mes_reporte1."-".$lastday;
+	         
+	         $where= "con_mayor.fecha_mayor BETWEEN '$fecha_inicio' AND '$fecha_fin' AND plan_cuentas.codigo_plan_cuentas='".$res->codigo_plan_cuentas."'";
 	         
 	         $id= "con_mayor.fecha_mayor";
 	         
@@ -614,7 +362,6 @@ class B17Controller extends ControladorBase{
 	       $activos=0;
 	       $sumatotal=0;
 	       $cerror=0;
-	       
 	       
 	       foreach ($Saldos as $res)
 	       {
@@ -815,6 +562,7 @@ class B17Controller extends ControladorBase{
 	       {
 	           
 	           $datos_tabla.= '<div class="row">
+
            	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
                   <a href="index.php?controller=B17&action=DescargarReporte" target="_blank"><i class="glyphicon glyphicon-print"></i></a>

@@ -981,16 +981,31 @@ class CuentasPagar2Controller extends ControladorBase{
         
         //para devolver los resultados de ingresar un impuesto
         $arrayResultados = array();
-        $query = " SELECT SUM( valor_cuentas_pagar_impuestos ) AS suma_impuestos FROM tes_cuentas_pagar_impuestos WHERE id_lote = $_id_lote ";
+        $query = " select 
+    	(	select sum(cpi.valor_cuentas_pagar_impuestos) from tes_cuentas_pagar_impuestos cpi
+        	inner join tes_impuestos imp 
+        	on cpi.id_impuestos = imp.id_impuestos
+        	where  ( imp.tipo_impuestos = 'retencion' or imp.tipo_impuestos = 'retencionIva' )
+        	and cpi.id_lote = $_id_lote
+    	) as suma_retenciones ,
+    	(	select sum(cpi.valor_cuentas_pagar_impuestos) from tes_cuentas_pagar_impuestos cpi
+        	inner join tes_impuestos imp 
+        	on cpi.id_impuestos = imp.id_impuestos
+        	where  imp.tipo_impuestos = 'iva'
+        	and cpi.id_lote = $_id_lote
+    	) as suma_impuestos";
         
         $rsResultados = $impuestosCxP->enviaquery($query);
         
         if( !empty($rsResultados)){
             
-            $resultadoSaldo = floatval( $rsResultados[0]->suma_impuestos );
-            $resultadoCuenta = $_base_cxp_impuestos - $resultadoSaldo;
+            $resultadoImp = floatval( $rsResultados[0]->suma_impuestos );
+            $resultadoRet = floatval( $rsResultados[0]->suma_retenciones );
+            $resultadoCuenta = $_base_cxp_impuestos + $resultadoRet + $resultadoImp;
             
-            $arrayResultados['impuestos'] = $resultadoSaldo;
+            $resultadoImpuestos = $resultadoImp + $resultadoRet ;
+            
+            $arrayResultados['impuestos'] = $resultadoImpuestos;
             $arrayResultados['saldo'] = $resultadoCuenta;
             
         }
@@ -1147,6 +1162,7 @@ class CuentasPagar2Controller extends ControladorBase{
 	        if(isset($_POST["id_cuentas_pagar_impuestos"])){
 	            
 	            $id_cuentas_pagar_cxp = (int)$_POST["id_cuentas_pagar_impuestos"];
+	            $_id_distribucion_cuentas_pagar = 0;
 	            
 	            $queryBuscaIdDistribucion = "SELECT imp.id_impuestos, cpi.id_lote, pc.id_plan_cuentas, dcp.id_distribucion_cuentas_pagar
                     FROM tes_cuentas_pagar_impuestos cpi
@@ -2008,22 +2024,37 @@ class CuentasPagar2Controller extends ControladorBase{
 	   
 	    //para devolver los resultados de ingresar un impuesto
 	    $arrayResultados = array();
-	    $query = " SELECT SUM( valor_cuentas_pagar_impuestos ) AS suma_impuestos FROM tes_cuentas_pagar_impuestos WHERE id_lote = $_id_lote ";
+	    
+	    $query = " SELECT
+    	(	SELECT SUM(cpi.valor_cuentas_pagar_impuestos) FROM tes_cuentas_pagar_impuestos cpi
+        	INNER JOIN  tes_impuestos imp
+        	ON cpi.id_impuestos = imp.id_impuestos
+        	WHERE  ( imp.tipo_impuestos = 'retencion' or imp.tipo_impuestos = 'retencionIva' )
+        	AND cpi.id_lote = $_id_lote
+    	) AS suma_retenciones ,
+    	(	select sum(cpi.valor_cuentas_pagar_impuestos) from tes_cuentas_pagar_impuestos cpi
+        	inner join tes_impuestos imp
+        	on cpi.id_impuestos = imp.id_impuestos
+        	where  imp.tipo_impuestos = 'iva'
+        	and cpi.id_lote = $_id_lote
+    	) AS suma_impuestos";
 	    
 	    $rsResultados = $impuestosCxP->enviaquery($query);
 	    
 	    if( !empty($rsResultados)){
 	        
-	        $resultadoSaldo = floatval( $rsResultados[0]->suma_impuestos );
-	        $resultadoCuenta = $_base_compra - $resultadoSaldo;
+	        $resultadoImp = floatval( $rsResultados[0]->suma_impuestos );
+	        $resultadoRet = floatval( $rsResultados[0]->suma_retenciones );
+	        $resultadoCuenta = $_base_compra + $resultadoRet + $resultadoImp;
 	        
-	        $arrayResultados['impuestos'] = $resultadoSaldo;
+	        $resultadoImpuestos = $resultadoImp + $resultadoRet ;
+	        
+	        $arrayResultados['impuestos'] = $resultadoImpuestos;
 	        $arrayResultados['saldo'] = $resultadoCuenta;
 	        
 	    }
 	    
 	    echo json_encode(array( 'resultados' => $arrayResultados ));
-	    
 	}
 	
 }

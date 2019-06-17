@@ -175,8 +175,6 @@ $controladores=$_SESSION['controladores'];
             <li style="<?php echo getcontrolador("TipoComprobantes",$controladores) ?>"><a href="index.php?controller=TipoComprobantes&action=index"><i class="fa fa-circle-o"></i>Tipo Comprobantes</a></li>
             <li style="<?php echo getcontrolador("Proveedores",$controladores) ?>"><a href="index.php?controller=Proveedores&action=index"><i class="fa fa-circle-o"></i> Proveedores</a></li>
        		<li style="<?php echo getcontrolador("CoreTipoCredito",$controladores) ?>"><a href="index.php?controller=CoreTipoCredito&action=index"><i class="fa fa-circle-o"></i> Tipo Crédito</a></li>
-    		<li style="<?php echo getcontrolador("CoreDiarioTipoCabeza",$controladores) ?>"><a href="index.php?controller=CoreDiarioTipoCabeza&action=index"><i class="fa fa-circle-o"></i> Diarios Tipo</a></li>
-    		<li style="<?php echo getcontrolador("CoreDiarioTipo",$controladores) ?>"><a href="index.php?controller=CoreDiarioTipo&action=index"><i class="fa fa-circle-o"></i> Diario Tipo</a></li>
     	
            	  </ul>
         </li>
@@ -392,6 +390,8 @@ $controladores=$_SESSION['controladores'];
 	  			<li style="<?php echo getcontrolador("ContribucionCategoria",$controladores) ?>"><a href="index.php?controller=ContribucionCategoria&action=index"><i class="fa fa-circle-o"></i>Contribucion Categoria</a></li>
        	  		<li style="<?php echo getcontrolador("Estatus",$controladores) ?>"><a href="index.php?controller=Estatus&action=index"><i class="fa fa-circle-o"></i>Estatus</a></li>
        	  		<li style="<?php echo getcontrolador("ContribucionTipo",$controladores) ?>"><a href="index.php?controller=ContribucionTipo&action=index"><i class="fa fa-circle-o"></i>Contribucion Tipo</a></li>
+     			<li style="<?php echo getcontrolador("CoreDiarioTipo",$controladores) ?>"><a href="index.php?controller=CoreDiarioTipo&action=index"><i class="fa fa-circle-o"></i> Diario Tipo</a></li>
+   
            	  </ul>
         </li>
         <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >

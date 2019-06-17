@@ -37,7 +37,19 @@ class MovimientosContableController extends ControladorBase{
 	
 	public function generaReporte(){
 	    
+	    $planCuentas = new PlanCuentasModel();
 	    
+	    $columnas_pcuentas = "id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	    $tablas_pcuentas = " public.plan_cuentas";
+	    $where_pcuentas = " 1 = 1  AND nivel_plan_cuentas > 2 ";
+	    
+	    //$rs_plan_cuentas = $planCuentas->getBy($where);
+	    
+	    //$
+	}
+	
+	public function index2(){
+	    echo '<html><head></head><body>1</body></html>';
 	}
 
 	public function index1(){

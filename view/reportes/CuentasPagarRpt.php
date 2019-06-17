@@ -10,8 +10,7 @@ $header = file_get_contents('view/reportes/template/Cabecera.html');
 if(!empty($datos_empresa))
 {
     
-    foreach ($datos_empresa as $clave=>$valor) {
-        echo $clave; echo "\n";
+    foreach ($datos_empresa as $clave=>$valor) {        
         $header = str_replace('{'.$clave.'}', $valor, $header);
     }
 }
@@ -20,14 +19,23 @@ if(!empty($datos_empresa))
 $footer = file_get_contents('view/reportes/template/pieret.html');
 
 
-if(!empty($datos_reporte))
+if(!empty($datos_cabecera))
 {
-	
-    foreach ($datos_reporte as $clave=>$valor) {
-        echo $clave; echo "\n";
-		$template = str_replace('{'.$clave.'}', $valor, $template);
-	}
+    
+    foreach ($datos_cabecera as $clave=>$valor) {
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
 }
+
+if(!empty($datos_cuentas_pagar))
+{
+    
+    foreach ($datos_cuentas_pagar as $clave=>$valor) {
+        
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
+
 
 ob_end_clean();
 //creacion del pdf

@@ -54,10 +54,11 @@ function cargaCuentasPagar( pagina=1){
 
 $("#cuentas_pagar_registrados").on('click','a.showpdf',function(event){
 	let enlace = $(this);
+	let _url = "index.php?controller=CuentasPagar&action=Reporte_Cuentas_Por_Pagar&id_cuentas_pagar="+enlace.data().id;
 	
 	if ( enlace.data().id ) {
 		
-		window.open("index.php?controller=CuentasPagar&action=Reporte_Cuentas_Por_Pagar&id_tri_retenciones="+enlace.data().id,"_blank");
+		window.open(_url,"_blank");
 		
 	}
 	

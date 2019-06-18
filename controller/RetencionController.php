@@ -98,29 +98,7 @@ class RetencionController extends ControladorBase{
         
         
         
-        //////retencion detalle
-        
-        $columnas = " tri_retenciones_detalle.impuesto_codigo, 
-					  tri_retenciones_detalle.impuesto_codigoretencion, 
-					  tri_retenciones_detalle.impuestos_baseimponible, 
-					  tri_retenciones_detalle.impuestos_porcentajeretener, 
-					  tri_retenciones_detalle.impuestos_valorretenido, 
-					  tri_retenciones_detalle.impuestos_coddocsustento, 
-					  tri_retenciones_detalle.impuestos_numdocsustento, 
-					  tri_retenciones_detalle.impuesto_fechaemisiondocsustento, 
-					  tri_retenciones_detalle.impuesto_codigo_dos, 
-					  tri_retenciones_detalle.id_tri_retenciones";
-        
-        $tablas = "  public.tri_retenciones, 
-  					public.tri_retenciones_detalle";
-        $where= "tri_retenciones_detalle.id_tri_retenciones = tri_retenciones.id_tri_retenciones AND  tri_retenciones_detalle.id_tri_retenciones='$id_tri_retenciones'";
-        $id="tri_retenciones_detalle.id_tri_retenciones_detalle";
-        
-        $retencion_detalle = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
-         
-        
-        
-        
+       
         
         $datos_reporte['AMBIENTE']=$rsdatos[0]->infotributaria_ambiente;
         $datos_reporte['EMISION']=$rsdatos[0]->infotributaria_tipoemision;
@@ -205,44 +183,41 @@ class RetencionController extends ControladorBase{
             $datos_reporte['CODIGODOS']="IVA";
             
         }
-        if (  $datos_reporte['CODSUSTENTO'] =="01"){
+        $_tipo_comprobante ="FACTURA";
+        if (  $datos_reporte['CODSUSTENTO'] =="07"){
             
-            $datos_reporte['CODSUSTENTO']="FACTURA";
-            
-        }
-        if (  $datos_reporte['CODSUSTDOS'] =="01"){
-            
-            $datos_reporte['CODSUSTDOS']="FACTURA";
+           $_tipo_comprobante="FACTURA";
             
         }
-        
-        if (  $datos_reporte['CODSUSTENTO'] ==""){
-            
-            $datos_reporte['CODSUSTENTO']="-";
-            $datos_reporte['NUMDOCSUST']="-";
-            $datos_reporte['FECHEMDOCSUST']="-";
-            $datos_reporte['IMPBASIMPONIBLE']="-";
-            $datos_reporte['PERIODOFISCAL']="-";
-            $datos_reporte['IMPCODIGO']="-";
-            $datos_reporte['IMPPORCATENER']="-";
-            $datos_reporte['VALRETENIDO']="-";
-            
-        }
-        if (  $datos_reporte['CODSUSTDOS'] ==""){
-            
-            $datos_reporte['CODSUSTDOS']="-";
-            $datos_reporte['NUMSUSTDOS']="-";
-            $datos_reporte['FECHEMISIONDOS']="-";
-            $datos_reporte['BASEIMPDOS']="-";
-            $datos_reporte['PERIODOFISCALDOS']="-";
-            $datos_reporte['CODIGODOS']="-";
-            $datos_reporte['IMPPORCDOS']="-";
-            $datos_reporte['VALRETDOS']="-";
-            
-        }
+      
         
         //para imagen codigo barras
        
+        
+        //////retencion detalle
+        
+        $columnas = " tri_retenciones_detalle.impuesto_codigo,
+					  tri_retenciones_detalle.impuesto_codigoretencion,
+					  tri_retenciones_detalle.impuestos_baseimponible,
+					  tri_retenciones_detalle.impuestos_porcentajeretener,
+					  tri_retenciones_detalle.impuestos_valorretenido,
+					  tri_retenciones_detalle.impuestos_coddocsustento,
+					  tri_retenciones_detalle.impuestos_numdocsustento,
+					  tri_retenciones_detalle.impuesto_fechaemisiondocsustento,
+					  tri_retenciones_detalle.impuesto_codigo_dos,
+					  tri_retenciones_detalle.id_tri_retenciones";
+        
+        $tablas = "  public.tri_retenciones,
+  					public.tri_retenciones_detalle";
+        $where= "tri_retenciones_detalle.id_tri_retenciones = tri_retenciones.id_tri_retenciones AND  tri_retenciones_detalle.id_tri_retenciones='$id_tri_retenciones'";
+        $id="tri_retenciones_detalle.id_tri_retenciones_detalle";
+        
+        $retencion_detalle = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
+         
+        
+        
+        
+        
          $html='';
         
          
@@ -265,8 +240,8 @@ class RetencionController extends ControladorBase{
         {
         	
         	$html.='<tr >';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['CODSUSTENTO'].'</td>';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['NUMDOCSUST'].'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'. $_tipo_comprobante.'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_numdocsustento.'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['FECHEMDOCSUST'].'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['PERIODOFISCAL'].'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_baseimponible.'</td>';
@@ -282,6 +257,9 @@ class RetencionController extends ControladorBase{
         $html.='</table>';	
         
         $datos_reporte['DETALLE_RETENCION']= $html;
+     
+        
+        
         
         $this->verReporte("Retencion", array('datos_reporte'=>$datos_reporte ));
         

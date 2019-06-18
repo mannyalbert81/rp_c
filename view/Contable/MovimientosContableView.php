@@ -149,7 +149,7 @@
   <?php include("view/modulos/links_js.php"); ?>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-  <script src="view/Contable/FuncionesJS/movimientoscontables.js?0.02"></script>
+  <script src="view/Contable/FuncionesJS/movimientoscontables.js?0.04"></script>
   
 	
  </body>

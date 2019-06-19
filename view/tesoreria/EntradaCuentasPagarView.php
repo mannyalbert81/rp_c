@@ -26,7 +26,7 @@
  	
     <?php include("view/modulos/links_css.php"); ?>	
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">   	
-	
+	<link href="view/bootstrap/smartwizard/dist/css/smart_wizard.css" rel="stylesheet" type="text/css" /> 
 		    
 	</head>
  
@@ -67,420 +67,309 @@
         <li class="active">Ingreso Cuentas Pagar</li>
       </ol>
     </section>
-
-
-
+    
     <section class="content">
-      <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title">Cuentas por Pagar</h3>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Minimizar">
-              <i class="fa fa-minus"></i></button>
-            
-          </div>
-        </div>
-        
-        <div class="box-body">
-        
-        <form id="frm_cuentas_pagar" action="<?php echo $helper->url("CuentasPagar","CuentasPagarIndex"); ?>" method="post" enctype="multipart/form-data"  class="form form-horizontal col-lg-12 col-md-12 col-xs-12">
+    <form id="frm_cuentas_pagar" action="<?php echo $helper->url("CuentasPagar","CuentasPagarIndex"); ?>" method="post" enctype="multipart/form-data"  class="form form-horizontal">
+    
+    	<div id="smartwizard">
+            <ul>
+                <li><a href="#step-1">Generacion Lote<br /><small> </small></a></li>
+                <li><a href="#step-2">Datos Documento<br /><small></small></a></li>
+                <li><a href="#step-3">Valores Documento<br /><small></small></a></li>
+            </ul>
+         
+            <div>
+                <div id="step-1" class="">
+                
+                	<div class="box box-primary">
+                        <div class="box-header with-border">
+                          <h3 class="box-title"></h3>
+                          <div class="box-tools pull-right"> </div>
+                        </div>
+                    
+                    <div class="box-body">
+                    	<div class="row">
         	
-        	<!-- para efecto de pantalla cargando -->
-        	<div id="divLoaderPage" ></div>
-        	
-        	<div class="row">
-        	
-        		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="col-lg-6 col-md-6 col-xs-12">
+                		
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="nombre_lote" class="col-sm-4 control-label" > Id. lote:</label>
+                    				<div class="col-sm-8">
+                    				  <div class="input-group ">
+                                      <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="" autofocus>
+                                      <span class="input-group-btn">
+                                        <button class="btn btn-default input-sm" type="button" data-toggle="modal" data-target="#mod_lote">
+                                        <i class="fa fa-arrow-right"></i>
+                                        </button>
+                                      </span>
+                                      <div id="mensaje_id_lote" class="errores"></div>
+                                    </div>
+                                    <input type="hidden" id="id_lote" name="id_lote" value="">
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                         
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="id_tipo_activos_fijos" class="col-sm-4 control-label" > Fecha Doc:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="date" class="form-control" id="fecha_cuentas_pagar" name="fecha_cuentas_pagar" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" readonly >
+                    				  <div id="mensaje_fecha_cuentas_pagar" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                		</div>
+                                	
+                		<div class="col-lg-6 col-md-6 col-xs-12">
+                			
+                			<div class="form-group ">        			
+                    			<div class="form-group-sm">
+                    				<label for="num_comprobante" class="col-sm-4 control-label" >Numero Documento:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" class="form-control" id="num_comprobante" name="num_comprobante" value="" readonly>
+                    				  <div id="mensaje_num_comprobante" class="errores"></div>
+                    				  <input type="hidden" name="id_consecutivo" id="id_consecutivo" value="0">
+            				  	      <input type="hidden" name="id_cuentas_pagar" id="id_cuentas_pagar" value="0">
+                    				</div>
+                    			 </div>
+                    		 </div>
+                    		 
+                    		<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="id_tipo_documento" class="col-sm-4 control-label" > Tipo de Documento:</label>
+                    				<div class="col-sm-8">
+                    				  <select id="id_tipo_documento" name="id_tipo_documento" class="form-control">
+                                      	<option value="0">--SELECCIONE--</option>
+                                      </select>
+                    				  <div id="mensaje_id_tipo_documento" class="errores"></div>
+                    				</div>
+                    			 </div>
+                			 
+                			</div>
+                			
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="descripcion_cuentas_pagar" class="col-sm-4 control-label" > Descripcion:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" class="form-control" id="descripcion_cuentas_pagar" name="descripcion_cuentas_pagar" value="" placeholder="Descripcion" autocomplete="off" >
+                    				  <div id="mensaje_descripcion_cuentas_pagar" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                		
+                		</div>
         		
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="nombre_lote" class="col-sm-4 control-label" > Id. lote:</label>
-            				<div class="col-sm-8">
-            				  <div class="input-group ">
-                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="" autofocus>
-                              <span class="input-group-btn">
-                                <button class="btn btn-default input-sm" type="button" data-toggle="modal" data-target="#mod_lote">
-                                <i class="fa fa-arrow-right"></i>
-                                </button>
-                              </span>
-                              <div id="mensaje_id_lote" class="errores"></div>
-                            </div>
-                            <input type="hidden" id="id_lote" name="id_lote" value="">
-            				</div>
-            			 </div>        			 
-        			</div>
-                 
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="id_tipo_activos_fijos" class="col-sm-4 control-label" > Fecha Doc:</label>
-            				<div class="col-sm-8">
-            				  <input type="date" class="form-control" id="fecha_cuentas_pagar" name="fecha_cuentas_pagar" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" readonly >
-            				  <div id="mensaje_fecha_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        		</div>
-                        	
-        		<div class="col-lg-6 col-md-6 col-xs-12">
+        				</div>
+            			</div>
+                    </div>
+                	
+                	
+                </div>
+                <div id="step-2" class="">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                          <h3 class="box-title"></h3>
+                          <div class="box-tools pull-right"> </div>
+                        </div>
+                    
+                    	<div class="box-body">
+                          <div class="row">
+            	
+                    		<div class="col-lg-6 col-md-6 col-xs-12">
+                    		
+                    		    <div class="form-group "> 
+                        			 <div class="form-group-sm">
+                        				<label for="cedula_proveedor" class="col-sm-4 control-label" > CI/RUC Proveedor:</label>
+                        				<div class="col-sm-8">
+                        				  <input type="text" class="form-control" id="cedula_proveedor" name="cedula_proveedor" value="" >
+            			          		  <div id="mensaje_cedula_proveedor" class="errores"></div>
+            			          		  <input type="hidden" name="id_proveedor" id="id_proveedor" value="">
+                        				</div>
+                        			 </div>        			 
+                    			</div>
         			
-        			<div class="form-group ">        			
-            			<div class="form-group-sm">
-            				<label for="num_comprobante" class="col-sm-4 control-label" >Numero Documento:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control" id="num_comprobante" name="num_comprobante" value="" readonly>
-            				  <div id="mensaje_num_comprobante" class="errores"></div>
-            				  <input type="hidden" name="id_consecutivo" id="id_consecutivo" value="0">
-    				  	      <input type="hidden" name="id_cuentas_pagar" id="id_cuentas_pagar" value="0">
-            				</div>
-            			 </div>
-            		 </div>
-            		 
-            		<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="id_tipo_documento" class="col-sm-4 control-label" > Tipo de Documento:</label>
-            				<div class="col-sm-8">
-            				  <select id="id_tipo_documento" name="id_tipo_documento" class="form-control">
-                              	<option value="0">--SELECCIONE--</option>
-                              </select>
-            				  <div id="mensaje_id_tipo_documento" class="errores"></div>
-            				</div>
-            			 </div>
-        			 
-        			</div>
+                    			 <div class="form-group "> 
+                        			 <div class="form-group-sm">
+                        				<label for="nombre_proveedor" class="col-sm-4 control-label" > Titular Proveedor:</label>
+                        				<div class="col-sm-8">
+                        				  <input type="text" class="form-control" id="nombre_proveedor" name="nombre_proveedor" value="" readonly>
+            				  			  <div id="mensaje_nombre_proveedor" class="errores"></div>
+                        				</div>
+                        			 </div>        			 
+                    			</div>
         			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="descripcion_cuentas_pagar" class="col-sm-4 control-label" > Descripcion:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control" id="descripcion_cuentas_pagar" name="descripcion_cuentas_pagar" value="" placeholder="Descripcion" autocomplete="off" >
-            				  <div id="mensaje_descripcion_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
+                    			 <div class="form-group "> 
+                        			 <div class="form-group-sm">
+                        				<label for="cedula_proveedor" class="col-sm-4 control-label" > Email Proveedor:</label>
+                        				<div class="col-sm-8">
+                        				  <input type="text" class="form-control" id="email_proveedor" name="email_proveedor" value=""  placeholder="" readonly>
+            			          		  <div id="mensaje_email_proveedor" class="errores"></div>
+                        				</div>
+                        			 </div>        			 
+                    			</div>
+        			
+                    			<div class="form-group "> 
+                        			 <div class="form-group-sm">
+                        				<label for="condiciones_pago_cuentas_pagar" class="col-sm-4 control-label" > Condiciones Pago:</label>
+                        				<div class="col-sm-8">
+                        				  <input type="text" class="form-control" id="condiciones_pago_cuentas_pagar" name="condiciones_pago_cuentas_pagar" value="efectivo" autocomplete="off"  placeholder="">
+            			          		  <div id="mensaje_condiciones_pago_cuentas_pagar" class="errores"></div>
+                        				</div>
+                        			 </div>        			 
+                    			</div>
+        			        			
+                    			<div class="form-group "> 
+                        			 <div class="form-group-sm">
+                        				<label for="id_bancos" class="col-sm-4 control-label" > Banco:</label>
+                        				<div class="col-sm-8">
+                        				  <select id="id_bancos" name="id_bancos" class="form-control">
+                                          	<option value="0">--SELECCIONE--</option>
+                                          </select>
+                                          <div id="mensaje_id_bancos" class="errores"></div>
+                        				</div>
+                        			 </div>        			 
+                    			</div>        			
+        			
+    		    			</div>
         		
-        		</div>
-        		
-        		
+                    		<div class="col-lg-6 col-md-6 col-xs-12">
+                		        
+                		        <div class="form-group "> 
+                        			 <div class="form-group-sm">
+                        				<label for="id_moneda" class="col-sm-4 control-label" > Moneda:</label>
+                        				<div class="col-sm-8">
+                        				  <select id="id_moneda" name="id_moneda" class="form-control">
+                                          	<option value="0">--SELECCIONE--</option>
+                                          </select>
+                                          <div id="mensaje_id_moneda" class="errores"></div>
+                        				</div>
+                        			 </div>        			 
+                    			</div>
+            			
+                    			<div class="form-group "> 
+                        			 <div class="form-group-sm">
+                        				<label for="numero_documento" class="col-sm-4 control-label" > Numero Documento:</label>
+                        				<div class="col-sm-8">
+                        				 <input type="text" class="form-control " id="numero_documento" name="numero_documento">                      
+                              		     <div id="mensaje_numero_documento" class="errores"></div>
+                        				</div>
+                        			 </div>        			 
+                    			</div>
+            			
+                    			<div class="form-group "> 
+                        			 <div class="form-group-sm">
+                        				<label for="numero_ord_compra" class="col-sm-4 control-label" > Numero Orden Compra:</label>
+                        				<div class="col-sm-8">
+                        				 <input type="text" class="form-control " id="numero_ord_compra" name="numero_ord_compra" autocomplete="off">                      
+                              			 <div id="mensaje_numero_ord_compra" class="errores"></div>
+                        				</div>
+                        			 </div>        			 
+                    			</div>
+            			
+                    			<div class="form-group "> 
+                        			 <div class="form-group-sm">
+                        				<label for="metodo_envio_cuentas_pagar" class="col-sm-4 control-label" > Metodo Envio:</label>
+                        				<div class="col-sm-8">
+                        				 <input type="text" class="form-control " id="metodo_envio_cuentas_pagar" name="metodo_envio_cuentas_pagar" autocomplete="off">                      
+                              			 <div id="mensaje_metodo_envio_cuentas_pagar" class="errores"></div>
+                        				</div>
+                        			 </div>        			 
+                    			</div>
+            					
+            					 		        
+    		      			</div>
+               
+               			  </div>
+               			</div>
+               		</div>
+                </div>
+                <div id="step-3" class="">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                          <h3 class="box-title"></h3>
+                          <div class="box-tools pull-right"> </div>
+                        </div>
+                    
+                    	<div class="box-body">
+                          <div class="row">
+                          
+                          <div class="col-lg-6 col-md-6 col-xs-12">
+                          
+                          	<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="monto_cuentas_pagar" class="col-sm-4 control-label" >Monto (base Compras):</label>
+                    				<div class="col-sm-8">
+                    				  <div class="input-group ">
+                                      <input type="text" class="form-control inputDecimal" id="monto_cuentas_pagar" name="monto_cuentas_pagar" value="">
+                                      <span class="input-group-btn">
+                                        <button class="btn btn-danger input-sm" type="button"  id="btn_cambiar_compras">
+                                        <i class="fa fa-times"></i>
+                                        </button>
+                                      </span>                              
+                                    </div>                            
+                    				</div>
+                    			 </div>        			 
+                			     </div>
+        			
+                			
+        			
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="total_cuentas_pagar" class="col-sm-4 control-label" > Total:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" class="form-control inputDecimal" id="total_cuentas_pagar" name="total_cuentas_pagar" value=""  placeholder="" >
+                                  <div id="mensaje_total_cuentas_pagar" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+        			
+        				   </div>  
+    		        
+            		       <div class="col-lg-6 col-md-6 col-xs-12">
+            		        
+            		        <div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="impuesto_cuentas_pagar" class="col-sm-4 control-label" > Impuesto:</label>
+                    				<div class="col-sm-8">
+                    				  <div class="input-group ">
+                    				  <input type="text" class="form-control inputDecimal" id="impuesto_cuentas_pagar" name="impuesto_cuentas_pagar" value=""  placeholder="" >
+                    				    <span class="input-group-btn">
+                                            <button class="btn btn-default input-sm" type="button" data-toggle="modal" data-target="#mod_impuestos" >
+                                            <i class="fa fa-arrow-right"></i> 
+                                            </button>
+                                          </span>
+                                      <div id="mensaje_impuesto_cuentas_pagar" class="errores"></div>
+                    				</div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+        			
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="saldo_cuentas_pagar" class="col-sm-4 control-label" > Saldo Cuenta:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" class="form-control inputDecimal" id="saldo_cuentas_pagar" name="saldo_cuentas_pagar" value=""  placeholder="" >
+                                  <div id="mensaje_saldo_cuentas_pagar" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+        			
+        				   </div>  
+                          
+                          </div>
+                        </div>
+                     </div>
+                </div>
+                
             </div>
-               
-               <hr>
-               
-               <div class="row">
-        	
-        		<div class="col-lg-6 col-md-6 col-xs-12">
-        		
-        		    <div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="cedula_proveedor" class="col-sm-4 control-label" > CI/RUC Proveedor:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control" id="cedula_proveedor" name="cedula_proveedor" value="" >
-			          		  <div id="mensaje_cedula_proveedor" class="errores"></div>
-			          		  <input type="hidden" name="id_proveedor" id="id_proveedor" value="">
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			 <div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="nombre_proveedor" class="col-sm-4 control-label" > Titular Proveedor:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control" id="nombre_proveedor" name="nombre_proveedor" value="" readonly>
-				  			  <div id="mensaje_nombre_proveedor" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			 <div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="cedula_proveedor" class="col-sm-4 control-label" > Email Proveedor:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control" id="email_proveedor" name="email_proveedor" value=""  placeholder="" readonly>
-			          		  <div id="mensaje_email_proveedor" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="condiciones_pago_cuentas_pagar" class="col-sm-4 control-label" > Condiciones Pago:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control" id="condiciones_pago_cuentas_pagar" name="condiciones_pago_cuentas_pagar" value="" autocomplete="off"  placeholder="">
-			          		  <div id="mensaje_condiciones_pago_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="id_bancos" class="col-sm-4 control-label" > Banco:</label>
-            				<div class="col-sm-8">
-            				  <select id="id_bancos" name="id_bancos" class="form-control">
-                              	<option value="0">--SELECCIONE--</option>
-                              </select>
-                              <div id="mensaje_id_bancos" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>        			
-        			
-    		    </div>
-        		
-        		<div class="col-lg-6 col-md-6 col-xs-12">
-    		        
-        		        <div class="form-group "> 
-                			 <div class="form-group-sm">
-                				<label for="id_moneda" class="col-sm-4 control-label" > Moneda:</label>
-                				<div class="col-sm-8">
-                				  <select id="id_moneda" name="id_moneda" class="form-control">
-                                  	<option value="0">--SELECCIONE--</option>
-                                  </select>
-                                  <div id="mensaje_id_moneda" class="errores"></div>
-                				</div>
-                			 </div>        			 
-            			</div>
-            			
-            			<div class="form-group "> 
-                			 <div class="form-group-sm">
-                				<label for="numero_documento" class="col-sm-4 control-label" > Numero Documento:</label>
-                				<div class="col-sm-8">
-                				 <input type="text" class="form-control " id="numero_documento" name="numero_documento">                      
-                      		     <div id="mensaje_numero_documento" class="errores"></div>
-                				</div>
-                			 </div>        			 
-            			</div>
-            			
-            			<div class="form-group "> 
-                			 <div class="form-group-sm">
-                				<label for="numero_ord_compra" class="col-sm-4 control-label" > Numero Orden Compra:</label>
-                				<div class="col-sm-8">
-                				 <input type="text" class="form-control " id="numero_ord_compra" name="numero_ord_compra" autocomplete="off">                      
-                      			 <div id="mensaje_numero_ord_compra" class="errores"></div>
-                				</div>
-                			 </div>        			 
-            			</div>
-            			
-            			<div class="form-group "> 
-                			 <div class="form-group-sm">
-                				<label for="metodo_envio_cuentas_pagar" class="col-sm-4 control-label" > Metodo Envio:</label>
-                				<div class="col-sm-8">
-                				 <input type="text" class="form-control " id="metodo_envio_cuentas_pagar" name="metodo_envio_cuentas_pagar" autocomplete="off">                      
-                      			 <div id="mensaje_metodo_envio_cuentas_pagar" class="errores"></div>
-                				</div>
-                			 </div>        			 
-            			</div>
-            			
-            			           			
-            			<div class="form-group "> 
-                			 <div class="form-group-sm">
-                				<label for="id_impuestos" class="col-sm-4 control-label" > plan Impuestos:</label>
-                				<div class="col-sm-8">
-                				 <div class="input-group ">
-                                  <input type="text" class="form-control" id="plan_impuesto" readonly>
-                                  <span class="input-group-btn">
-                                    <button class="btn btn-default input-sm" type="button" data-toggle="modal" data-target="#mod_impuestos" >
-                                    <i class="fa fa-arrow-right"></i> 
-                                    </button>
-                                  </span>
-                                  <div id="mensaje_de_prueba" class="errores"></div>
-                                </div>
-                				</div>
-                			 </div>        			 
-            			</div>
-            			            			    		        
-    		      </div>
-               
-               </div>
-    		    
-    		       		
-    		    <hr>
-    		    
-    		    <div class="row">
-    		        <div class="col-lg-6 col-md-6 col-xs-12">
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="monto_cuentas_pagar" class="col-sm-4 control-label" >Monto (base Compras):</label>
-            				<div class="col-sm-8">
-            				  <div class="input-group ">
-                              <input type="text" class="form-control inputDecimal" id="monto_cuentas_pagar" name="monto_cuentas_pagar" value="">
-                              <span class="input-group-btn">
-                                <button class="btn btn-danger input-sm" type="button"  id="btn_cambiar_compras">
-                                <i class="fa fa-times"></i>
-                                </button>
-                              </span>                              
-                            </div>                            
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			 <div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="desc_comercial_cuentas_pagar" class="col-sm-4 control-label" > Desc Comercial:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="desc_comercial_cuentas_pagar" name="desc_comercial_cuentas_pagar" value=""  placeholder="" >
-                          <div id="mensaje_desc_comercial_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="flete_cuentas_pagar" class="col-sm-4 control-label" > Flete:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="flete_cuentas_pagar" name="flete_cuentas_pagar" value=""  placeholder="" >
-                              <div id="mensaje_flete_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="miscelaneos_cuentas_pagar" class="col-sm-4 control-label" > Miscelaneos:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="miscelaneos_cuentas_pagar" name="miscelaneos_cuentas_pagar" value=""  placeholder="" >
-                          <div id="mensaje_miscelaneos_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="impuesto_cuentas_pagar" class="col-sm-4 control-label" > Impuesto:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="impuesto_cuentas_pagar" name="impuesto_cuentas_pagar" value=""  placeholder="" >
-                          <div id="mensaje_impuesto_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="total_cuentas_pagar" class="col-sm-4 control-label" > Total:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="total_cuentas_pagar" name="total_cuentas_pagar" value=""  placeholder="" >
-                          <div id="mensaje_total_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			</div>  
-    		        
-    		       <div class="col-lg-6 col-md-6 col-xs-12">
-    		        
-    		         <div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="monto1099_cuentas_pagar" class="col-sm-4 control-label" > Monto 1099:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="monto1099_cuentas_pagar" name="monto1099_cuentas_pagar" value=""  placeholder="" >
-			          		  <div id="mensaje_monto1099_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			 <div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="efectivo_cuentas_pagar" class="col-sm-4 control-label" > Efectivo:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="efectivo_cuentas_pagar" name="efectivo_cuentas_pagar" value=""  placeholder="" >
-                          <div id="mensaje_efectivo_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="cheque_cuentas_pagar" class="col-sm-4 control-label" > Cheque:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="cheque_cuentas_pagar" name="cheque_cuentas_pagar" value=""  placeholder="" >
-                              <div id="mensaje_cheque_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="tarjeta_credito_cuentas_pagar" class="col-sm-4 control-label" > Tarjeta Credito:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="tarjeta_credito_cuentas_pagar" name="tarjeta_credito_cuentas_pagar" value=""  placeholder="" >
-                          <div id="mensaje_tarjeta_credito_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="condonaciones_cuentas_pagar" class="col-sm-4 control-label" > Cond. dsctos. Tomados:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="condonaciones_cuentas_pagar" name="condonaciones_cuentas_pagar" value=""  placeholder="" >
-                          <div id="mensaje_condonaciones_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="saldo_cuentas_pagar" class="col-sm-4 control-label" > Saldo Cuenta:</label>
-            				<div class="col-sm-8">
-            				  <input type="text" class="form-control inputDecimal" id="saldo_cuentas_pagar" name="saldo_cuentas_pagar" value=""  placeholder="" >
-                          <div id="mensaje_saldo_cuentas_pagar" class="errores"></div>
-            				</div>
-            			 </div>        			 
-        			</div>
-        			
-        			</div>  
-    		   
-    		    </div>
-    		    
-    		    
-             
-		    <div class="row">
-		    	<div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; ">
-		    		<div class="form-group">
-              			<button type="submit" id="aplicar" name="aplicar" class="btn btn-default"><i class="fa " aria-hidden="true"></i>Aplicar</button>
-              			<button type="button" id="btn_distribucion" name="btn_distribucion"  class="btn btn-default" data-toggle="modal" data-target="#mod_distribucion"><i class="fa " aria-hidden="true" ></i>  Distribucion</button>
-              			<button type="button" id="btn_cancelar" name="btn_cancelar"  class="btn btn-default" ><i class="fa " aria-hidden="true" ></i> Cancelar</button>
-            		</div>
-		    	</div>
-		    	
-		    	
-		    </div>
-                    		      
-                    		  
-        </form>
-          
         </div>
-        
-        
-      </div>
+    		
+    </form>
     </section>
     
-    <!--  <section class="content">
-          <div class="box box-primary">
-            <div class="box-header with-border">
-              <h3 class="box-title">Cuentas por Pagar</h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Minimizar">
-                  <i class="fa fa-minus"></i></button>
-                
-              </div>
-            </div>
-            
-            <div class="box-body">
-            
-            	<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="load_activos_fijos(1)" placeholder="search.."/>
-						
-				</div>
-				
-				<div id="load_activos_fijos" ></div>
-				<div id="activos_fijos_registrados"></div>	
-            
-          
-            </div>
-        </div>
-	</section> -->
-            
-    
+	<div id="divLoaderPage" ></div>
+
   </div>
  
  <?php include("view/modulos/footer.php"); ?>	
@@ -711,7 +600,9 @@
 <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.17"></script>
+<script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
+<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.00"></script>
+<script type="text/javascript" src="view/tesoreria/js/wizardCuentasPagar.js?0.27"></script>
 
     
 

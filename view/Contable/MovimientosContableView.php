@@ -151,7 +151,7 @@
   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
   <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
   <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>
-  <script src="view/Contable/FuncionesJS/movimientoscontables.js?0.16"></script>
+  <script src="view/Contable/FuncionesJS/movimientoscontables.js?0.18"></script>
   
 	
  </body>

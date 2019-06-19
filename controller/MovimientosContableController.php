@@ -194,7 +194,133 @@ class MovimientosContableController extends ControladorBase{
 	    
 	}
 	
-	
+	public function GENERAR_REPORTE(){
+	    session_start();
+	    $entidades = new EntidadesModel();
+	    //PARA OBTENER DATOS DE LA EMPRESA
+	    $datos_empresa = array();
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	    }
+	    
+	    //datos de post
+	    $_mes_movimientos = (isset($_POST['mes_movimientos']) ? $_POST['mes_movimientos'] : '01');
+	    $_anio_movimientos = (isset($_POST['anio_movimientos']) ? $_POST['anio_movimientos'] : date('Y'));
+	    
+	    //aun no implementado
+	    //$_nivel_pcuentas = (isset($_POST['nivel_plan_cuentas']) ? $_POST['nivel_plan_cuentas'] : null);
+	    
+	    $planCuentas = new PlanCuentasModel();
+	    
+	    //variable viene de vista
+	    $fecha = $_anio_movimientos.'-'.$_mes_movimientos;
+	    
+	    $query = "SELECT pc.id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas,
+                    CASE WHEN ini.saldo_ini_mayor ISNULL THEN
+                        pc.saldo_fin_plan_cuentas ELSE  ini.saldo_ini_mayor END ,
+                    CASE WHEN mov.movimiento ISNULL THEN
+                        0.00 ELSE  mov.movimiento end,
+                    CASE WHEN fin.saldo_mayor ISNULL THEN
+                        pc.saldo_fin_plan_cuentas else  fin.saldo_mayor end
+                FROM plan_cuentas pc
+                LEFT JOIN (
+                	SELECT cm.id_plan_cuentas, saldo_ini_mayor
+                	FROM con_mayor cm
+                	INNER JOIN (
+                		SELECT id_plan_cuentas, MIN(creado) as fecha
+                		FROM con_mayor
+                		WHERE TO_CHAR(fecha_mayor,'YYYY-MM') = '$fecha'
+                		GROUP BY id_plan_cuentas
+                		) AS aa
+                	ON aa.id_plan_cuentas = cm.id_plan_cuentas
+                	AND aa.fecha = cm.creado
+                	) AS ini
+                ON ini.id_plan_cuentas = pc.id_plan_cuentas
+                LEFT JOIN (
+                	SELECT id_plan_cuentas, (SUM(debe_mayor) - SUM(haber_mayor)) AS movimiento
+                	FROM con_mayor
+                	WHERE to_char(fecha_mayor,'YYYY-MM') = '$fecha'
+                	GROUP BY id_plan_cuentas
+                	) AS mov
+                ON mov.id_plan_cuentas = pc.id_plan_cuentas
+                LEFT JOIN (
+                	SELECT cm.id_plan_cuentas, saldo_mayor
+                	FROM con_mayor cm
+                	INNER JOIN (
+                		SELECT id_plan_cuentas, max(creado) AS fecha
+                		FROM con_mayor
+                		WHERE to_char(fecha_mayor,'YYYY-MM') = '$fecha'
+                		GROUP BY id_plan_cuentas
+                		) AS aa
+                		ON aa.id_plan_cuentas = cm.id_plan_cuentas
+                		AND aa.fecha = cm.creado
+                	) AS fin
+                ON fin.id_plan_cuentas = pc.id_plan_cuentas
+                WHERE 1 = 1
+                AND pc.nivel_plan_cuentas > 2
+                ORDER BY pc.codigo_plan_cuentas";
+	    
+	    $rs_movimientos = $planCuentas->enviaquery($query);
+	    
+	    //variables para dibujar en vista
+	    $datos_tabla = "";
+	    $tabla_detalle = array();
+	    $cuentaserror = array();
+	    $color_error = "";
+	    
+	    
+	    if( !empty($rs_movimientos) ){
+	        
+	        $datos_tabla= "<table id='tabla_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	        $datos_tabla.='<tr  bgcolor="">';
+	        $datos_tabla.='<th bgcolor="" width="10%"  style="text-align: center; ">CUENTA CONTABLE</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">DETALLE</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">SALDO INICIAL</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">MOV MES</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">SALDO FINAL</th>';
+	        $datos_tabla.='</tr>';
+	        
+	        
+	        foreach ( $rs_movimientos as $res){
+	            
+	            //variable para imprimir
+	            $_id_plan_cuentas = $res->id_plan_cuentas;
+	            $_codigo_plan_cuentas = $res->codigo_plan_cuentas;
+	            $_nombre_plan_cuentas = $res->nombre_plan_cuentas;
+	            $_saldo_inicial = number_format((float)$res->saldo_ini_mayor, 2, ',', '.');
+	            $_movimientos = number_format((float)$res->movimiento, 2, ',', '.');
+	            $_saldo_final = number_format((float)$res->saldo_mayor, 2, ',', '.');
+	            
+	            $datos_tabla.='<tr  bgcolor="">';
+	            $datos_tabla.='<td bgcolor="" width="10%" style="text-align: left; ">'.$_codigo_plan_cuentas.'</td>';
+	            $datos_tabla.='<td bgcolor="" width="20%" style="text-align: left; ">'.$_nombre_plan_cuentas.'</td>';
+	            $datos_tabla.='<td bgcolor="" width="20%" style="text-align: right; ">'.$_saldo_inicial.'</td>';
+	            $datos_tabla.='<td bgcolor="" width="20%" style="text-align: right; ">'.$_movimientos.'</td>';
+	            $datos_tabla.='<td bgcolor="" width="20%" style="text-align: right; ">'.$_saldo_final.'</td>';
+	            $datos_tabla.='</tr>';
+	            
+	            
+	        }
+	        
+	        
+	        $datos_tabla.= "</table>";
+	   
+	    }
+	    
+	    $tabla_detalle = $datos_tabla;
+	    
+	    $this->verReporte("MovimientosContables", array('datos_empresa'=>$datos_empresa,'tabla_detalle'=>$tabla_detalle));
+	    
+	  
+	}
 	public function generaReportepdf(){
 	    
 	    session_start();

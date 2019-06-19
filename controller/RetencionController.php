@@ -261,7 +261,7 @@ class RetencionController extends ControladorBase{
         
         
         
-        $this->verReporte("Retencion", array('datos_reporte'=>$datos_reporte ));
+        $this->verReporte("MovimientosContables", array('datos_reporte'=>$datos_reporte ));
         
         
             

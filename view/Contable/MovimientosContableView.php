@@ -149,7 +149,9 @@
   <?php include("view/modulos/links_js.php"); ?>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-  <script src="view/Contable/FuncionesJS/movimientoscontables.js?0.04"></script>
+  <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
+  <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>
+  <script src="view/Contable/FuncionesJS/movimientoscontables.js?0.16"></script>
   
 	
  </body>

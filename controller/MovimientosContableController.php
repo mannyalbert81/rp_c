@@ -372,12 +372,11 @@ class MovimientosContableController extends ControladorBase{
 	    
 	    $rs_movimientos = $planCuentas->enviaquery($query);
 	    
-	    //variables para dibujar en vista
-	    $datos_tabla = "";
 	    
 	    $arrayCabecera = array('CUENTA CONTABLE','DETALLE', 'SALDO INICIAL', 'MOV MES', 'SALDO FINAL');
 	    $arraydetalle = array();
-	    array_push($arraydetalle,$arrayCabecera);
+	    $arrayfila = array();
+	    //array_push($arraydetalle,$arrayCabecera);
 	    
 	    if( !empty($rs_movimientos) ){
 	        
@@ -391,8 +390,9 @@ class MovimientosContableController extends ControladorBase{
 	            $_movimientos = number_format((float)$res->movimiento, 2, ',', '.');
 	            $_saldo_final = number_format((float)$res->saldo_mayor, 2, ',', '.');
 	            
-	            array_push($arraydetalle, $_codigo_plan_cuentas, $_nombre_plan_cuentas, $_saldo_inicial,
-	                $_movimientos, $_saldo_final);
+	            $arrayfila = array( $_codigo_plan_cuentas, $_nombre_plan_cuentas, $_saldo_inicial,$_movimientos, $_saldo_final);
+	            
+	            array_push($arraydetalle,$arrayfila);
 	            
 	            
 	        }

@@ -16,7 +16,7 @@ if(!empty($datos_empresa))
 
 $template = file_get_contents('view/reportes/template/MovimientosContables.html');
 
-$footer = file_get_contents('view/reportes/template/pieret.html');
+$footer = file_get_contents('view/reportes/template/pieficha.html');
 
 
 
@@ -50,7 +50,7 @@ if ($_nombre_archivo == "")
 	$mpdf->SetHTMLFooter($footer);
 	$mpdf->WriteHTML($template);
 	$mpdf->debug = true;
-	$mpdf->Output('MyPDF.pdf', 'D');
+	//$mpdf->Output('COMPROBANTE_CONTABLE.pdf', 'D');
 	$mpdf->Output();
 	
 }

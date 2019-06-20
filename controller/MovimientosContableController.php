@@ -112,6 +112,7 @@ class MovimientosContableController extends ControladorBase{
 	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">MOV MES</th>';
 	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">SALDO FINAL</th>';
 	        $datos_tabla.='</tr>';
+	       
 	        
 	       	        
 	        foreach ( $rs_movimientos as $res){
@@ -279,7 +280,7 @@ class MovimientosContableController extends ControladorBase{
 	    
 	    if( !empty($rs_movimientos) ){
 	        
-	        $datos_tabla= "<table id='tabla_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	        $datos_tabla= "<table id='tabla_cuentas' style='border-collapse: collapse' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	        $datos_tabla.='<tr  bgcolor="">';
 	        $datos_tabla.='<th bgcolor="" width="10%"  style="text-align: center; ">CUENTA CONTABLE</th>';
 	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">DETALLE</th>';

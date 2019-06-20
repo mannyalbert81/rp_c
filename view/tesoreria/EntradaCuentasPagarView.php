@@ -38,6 +38,7 @@
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
      ?>
     
+    <span id="fechasistema"><?php echo date('Y-m-d');?></span>
     
     <div class="wrapper">
 
@@ -112,9 +113,9 @@
                          
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="id_tipo_activos_fijos" class="col-sm-4 control-label" > Fecha Doc:</label>
+                    				<label for="id_tipo_activos_fijos" class="col-sm-4 control-label" > Fecha Documento:</label>
                     				<div class="col-sm-8">
-                    				  <input type="date" class="form-control" id="fecha_cuentas_pagar" name="fecha_cuentas_pagar" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" readonly >
+                    				  <input type="text" class="form-control" id="fecha_cuentas_pagar" name="fecha_cuentas_pagar" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
                     				  <div id="mensaje_fecha_cuentas_pagar" class="errores"></div>
                     				</div>
                     			 </div>        			 
@@ -602,7 +603,7 @@
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
 <script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.00"></script>
-<script type="text/javascript" src="view/tesoreria/js/wizardCuentasPagar.js?0.27"></script>
+<script type="text/javascript" src="view/tesoreria/js/wizardCuentasPagar.js?0.28"></script>
 
     
 

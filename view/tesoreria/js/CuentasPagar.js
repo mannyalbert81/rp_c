@@ -15,8 +15,6 @@ $(document).ready(function(){
 	/* para carga de listados */
 	//consultaActivos();
 	cargaModImpuestos();
-	
-	
 		
 })
 
@@ -52,6 +50,29 @@ function init(){
 	});
 	//mask: "9{1,10}.99",
 	$("#impuestos_cuentas_pagar").hide();
+	
+	var fechaServidor = $("#fechasistema").text();
+		
+	$("#fecha_cuentas_pagar").inputmask("datetime",{
+	     mask: "y-2-1", 
+	     placeholder: "yyyy-mm-dd", 
+	     leapday: "-02-29", 
+	     separator: "-", 
+	     alias: "dd-mm-yyyy",
+	     clearIncomplete: true,
+		 rightAlign: true,		 
+		 yearrange: {
+				minyear: 1950,
+				maxyear: 2019
+			},
+		oncomplete:function(e){
+			if( (new Date($(this).val()).getTime() > new Date(fechaServidor).getTime()))
+		    {
+				$(this).notify("Fecha no puede ser Mayor",{ position:"buttom left", autoHideDelay: 2000});
+				$(this).val('')
+		    }
+		}
+	});
 	
 	bloqueaControles();
 	
@@ -1060,10 +1081,9 @@ $("#frm_cuentas_pagar").on("submit",function(event){
     		.then((value) => {
     			let loteUrl = $("#id_lote").val();
     			let urlReporte = "index.php?controller=CuentasPagar&action=Reporte_Cuentas_Por_Pagar&id_lote="+loteUrl;
-    			window.open(urlReporte,"_blank");
-    			window.location.reload();
+    			window.open(urlReporte,"_blank");    			
     			$('#smartwizard').smartWizard("reset");
-    			
+    			window.location.reload();
     		});
 			
 		}

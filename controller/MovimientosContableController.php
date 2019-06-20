@@ -17,11 +17,10 @@ class MovimientosContableController extends ControladorBase{
 	    }
 	    
 	    $_id_usuarios = $_SESSION['id_usuarios'];
-	    $_id_rol = $_SESSION['id_rol'];
 	    
+	    $_id_rol = $_SESSION['id_rol'];
 	    $nombre_controladores = "ReporteMovimientos";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $cuentas_pagar->getPermisosVer("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    $resultPer = $cuentas_pagar->getPermisosVer("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$_id_rol' " );
 	    
 	    if( empty($resultPer)){
 	        
@@ -40,7 +39,7 @@ class MovimientosContableController extends ControladorBase{
 	    session_start();
 	    
 	    //datos de post
-	    $_mes_movimientos = (isset($_POST['mes_movimientos']) ? $_POST['mes_movimientos'] : null);
+	    $_mes_movimientos = (isset($_POST['mes_movimientos']) ? $_POST['mes_movimientos'] : '01');
 	    $_anio_movimientos = (isset($_POST['anio_movimientos']) ? $_POST['anio_movimientos'] : date('Y'));
 	    $_nivel_pcuentas = (isset($_POST['nivel_plan_cuentas']) ? $_POST['nivel_plan_cuentas'] : null);
 	    
@@ -152,7 +151,7 @@ class MovimientosContableController extends ControladorBase{
 	    }  
 	    
 	    //para pruebas
-	    $cuentaserror = array();
+	    //$cuentaserror = array();
 	    
 	    $pluralmensaje = "";
 	    $cantidad_errores = count($cuentaserror);
@@ -430,6 +429,136 @@ class MovimientosContableController extends ControladorBase{
 	    echo $datos_tabla;
 	}
 	
+	public function generaReporteExcel(){
+	    
+	    //notice.. cualquier cambio realizado en metodo principal "generaReporte"
+	    //debe reflejar tambien en este metodo en cuanto a consulta a la base de datos 
+	    //o validacion de parametros de filtros
+	    
+	    session_start();
+	    
+	    //datos de post
+	    $_mes_movimientos = (isset($_POST['mes_movimientos']) ? $_POST['mes_movimientos'] : '01');
+	    $_anio_movimientos = (isset($_POST['anio_movimientos']) ? $_POST['anio_movimientos'] : date('Y'));
+	    //no implementado
+	    //$_nivel_pcuentas = (isset($_POST['nivel_plan_cuentas']) ? $_POST['nivel_plan_cuentas'] : null);
+	    
+	    //$nombreArchivo = "MovimientosContables_".$_anio_movimientos.$_mes_movimientos;
+	    
+	    $planCuentas = new PlanCuentasModel();
+	    
+	    //variable viene de vista
+	    $fecha = $_anio_movimientos.'-'.$_mes_movimientos;
+	    
+	    $query = "SELECT pc.id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas,
+                    CASE WHEN ini.saldo_ini_mayor ISNULL THEN
+                        pc.saldo_fin_plan_cuentas ELSE  ini.saldo_ini_mayor END ,
+                    CASE WHEN mov.movimiento ISNULL THEN
+                        0.00 ELSE  mov.movimiento end,
+                    CASE WHEN fin.saldo_mayor ISNULL THEN
+                        pc.saldo_fin_plan_cuentas else  fin.saldo_mayor end
+                FROM plan_cuentas pc
+                LEFT JOIN (
+                	SELECT cm.id_plan_cuentas, saldo_ini_mayor
+                	FROM con_mayor cm
+                	INNER JOIN (
+                		SELECT id_plan_cuentas, MIN(creado) as fecha
+                		FROM con_mayor
+                		WHERE TO_CHAR(fecha_mayor,'YYYY-MM') = '$fecha'
+                		GROUP BY id_plan_cuentas
+                		) AS aa
+                	ON aa.id_plan_cuentas = cm.id_plan_cuentas
+                	AND aa.fecha = cm.creado
+                	) AS ini
+                ON ini.id_plan_cuentas = pc.id_plan_cuentas
+                LEFT JOIN (
+                	SELECT id_plan_cuentas, (SUM(debe_mayor) - SUM(haber_mayor)) AS movimiento
+                	FROM con_mayor
+                	WHERE to_char(fecha_mayor,'YYYY-MM') = '$fecha'
+                	GROUP BY id_plan_cuentas
+                	) AS mov
+                ON mov.id_plan_cuentas = pc.id_plan_cuentas
+                LEFT JOIN (
+                	SELECT cm.id_plan_cuentas, saldo_mayor
+                	FROM con_mayor cm
+                	INNER JOIN (
+                		SELECT id_plan_cuentas, max(creado) AS fecha
+                		FROM con_mayor
+                		WHERE to_char(fecha_mayor,'YYYY-MM') = '$fecha'
+                		GROUP BY id_plan_cuentas
+                		) AS aa
+                		ON aa.id_plan_cuentas = cm.id_plan_cuentas
+                		AND aa.fecha = cm.creado
+                	) AS fin
+                ON fin.id_plan_cuentas = pc.id_plan_cuentas
+                WHERE 1 = 1
+                AND pc.nivel_plan_cuentas > 2
+                ORDER BY pc.codigo_plan_cuentas";
+	    
+	    $rs_movimientos = $planCuentas->enviaquery($query);
+	    
+	    
+	    $arrayCabecera = array('CUENTA CONTABLE','DETALLE', 'SALDO INICIAL', 'MOV MES', 'SALDO FINAL');
+	    $arraydetalle = array();
+	    $arrayfila = array();
+	    //array_push($arraydetalle,$arrayCabecera);
+	    
+	    $datos_tabla = "";
+	    $datos_tabla .= "<table border=1>";
+	    $datos_tabla .= "<thead>";
+	    $datos_tabla .= "<tr >";
+	    $datos_tabla .= "<th bgcolor=\"yellow\" >CUENTA CONTABLE</th>";
+	    $datos_tabla .= "<th bgcolor=\"yellow\" >DETALLE</th>";
+	    $datos_tabla .= "<th bgcolor=\"yellow\" >SALDO INICIAL</th>";
+	    $datos_tabla .= "<th bgcolor=\"yellow\" >MOV MES</th>";
+	    $datos_tabla .= "<th bgcolor=\"yellow\" >SALDO FINAL</th>";
+	    $datos_tabla .= "</tr>";
+	    $datos_tabla .= "</thead>";
+	    
+	    if( !empty($rs_movimientos) ){
+	        
+	        $datos_tabla .= "<tbody>";
+	        
+	        foreach ( $rs_movimientos as $res){
+	            
+	            //variable para imprimir
+	            $_id_plan_cuentas = $res->id_plan_cuentas;
+	            $_codigo_plan_cuentas = $res->codigo_plan_cuentas;
+	            $_nombre_plan_cuentas = $res->nombre_plan_cuentas;
+	            $_saldo_inicial = number_format((float)$res->saldo_ini_mayor, 2, ',', '.');
+	            $_movimientos = number_format((float)$res->movimiento, 2, ',', '.');
+	            $_saldo_final = number_format((float)$res->saldo_mayor, 2, ',', '.');
+	            
+	            $arrayfila = array( $_codigo_plan_cuentas, $_nombre_plan_cuentas, $_saldo_inicial,$_movimientos, $_saldo_final);
+	            
+	            
+	            $datos_tabla .= "<tr>";
+	            $datos_tabla .= "<td>$_codigo_plan_cuentas</td>";
+	            $datos_tabla .= "<td>$_nombre_plan_cuentas</td>";
+	            $datos_tabla .= "<td>$_saldo_inicial</td>";
+	            $datos_tabla .= "<td>$_movimientos</td>";
+	            $datos_tabla .= "<td>$_saldo_final</td>";
+	            $datos_tabla .= "</tr>";
+	            //array_push($arraydetalle,$arrayfila);
+	            
+	        }
+	        
+	        $datos_tabla .= "</tbody>";
+	        
+	    }
+	    
+	    $datos_tabla .= "</table>";
+	    
+	    //para generar archivo excel
+	    $filename = "MovimientosContables_".$fecha;
+	    header("Content-Type: application/vnd.ms-excel");
+	    
+	    header("Content-Disposition: attachment; filename=".$filename.".xls");
+	    
+	    echo utf8_decode($datos_tabla);
+	    
+	}
+	
 	
 	
 	public function generaReporteXls(){
@@ -499,17 +628,16 @@ class MovimientosContableController extends ControladorBase{
 	    
 	    $rs_movimientos = $planCuentas->enviaquery($query);
 	    
-	    //variables para dibujar en vista
-	    $datos_tabla = "";
 	    
 	    $arrayCabecera = array('CUENTA CONTABLE','DETALLE', 'SALDO INICIAL', 'MOV MES', 'SALDO FINAL');
 	    $arraydetalle = array();
-	    array_push($arraydetalle,$arrayCabecera);
+	    $arrayfila = array();
+	    //array_push($arraydetalle,$arrayCabecera);
 	    
 	    if( !empty($rs_movimientos) ){
 	        
 	        foreach ( $rs_movimientos as $res){
-	            	            
+	            
 	            //variable para imprimir
 	            $_id_plan_cuentas = $res->id_plan_cuentas;
 	            $_codigo_plan_cuentas = $res->codigo_plan_cuentas;
@@ -518,8 +646,9 @@ class MovimientosContableController extends ControladorBase{
 	            $_movimientos = number_format((float)$res->movimiento, 2, ',', '.');
 	            $_saldo_final = number_format((float)$res->saldo_mayor, 2, ',', '.');
 	            
-	            array_push($arraydetalle, $_codigo_plan_cuentas, $_nombre_plan_cuentas, $_saldo_inicial,
-	                $_movimientos, $_saldo_final);
+	            $arrayfila = array( $_codigo_plan_cuentas, $_nombre_plan_cuentas, $_saldo_inicial,$_movimientos, $_saldo_final);
+	            
+	            array_push($arraydetalle,$arrayfila);
 	            
 	            
 	        }
@@ -533,7 +662,11 @@ class MovimientosContableController extends ControladorBase{
 	}
 	
 	
-	public function generaReporteExcel(){
+	
+	
+	
+	
+	public function generaReporteExcel__(){
 	    
 	    session_start();
 	    

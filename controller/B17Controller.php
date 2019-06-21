@@ -38,9 +38,12 @@ class B17Controller extends ControladorBase{
 	    
 	    $fecha_inicio=$anio_reporte."-".$mes_reporte."-01";
 	    
+	    
 	    $lastday = date('t',strtotime($fecha_inicio));
 	    
 	    $fecha_fin=$anio_reporte."-".$mes_reporte."-".$lastday;
+	    
+	   
 	    
 	    $columnas = "codigo_plan_cuentas, nombre_plan_cuentas, saldo_plan_cuentas, nivel_plan_cuentas, id_plan_cuentas, n_plan_cuentas";
 	    
@@ -73,6 +76,12 @@ class B17Controller extends ControladorBase{
 	    $id= "con_cbalance_comprobacion.id_cbalance_comprobacion";
 	    
 	    $resultCabeza=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    if($mes_reporte1>12)
+	    {
+	        $mes_reporte1=1;
+	        $anio_reporte++;
+	    }
 	    
 	    $Saldos=array();
 	    
@@ -120,7 +129,7 @@ class B17Controller extends ControladorBase{
 	            {
 	                if ($resD->codigo_plan_cuentas == $res->codigo_plan_cuentas)
 	                {
-	                    $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$res->saldo_plan_cuentas."|OK";
+	                    $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$resD->saldo_plan_cuentas."|OK";
 	                    array_push($Saldos, $fila);
 	                }
 	                
@@ -306,8 +315,9 @@ class B17Controller extends ControladorBase{
 	       
 	       echo $datos_tabla;
 	    }
-	    else
+	    else // si no existe un reporte previamente creado
 	    {
+	        $cuentas_informe=array();
 	        foreach ($resultSet as $res)
 	        {
 	            $saldoini="vacio";
@@ -348,6 +358,7 @@ class B17Controller extends ControladorBase{
 	                else $comp="OK";
 	                
 	                $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$saldomayor."|".$comp;
+	                $fila1=$res->nivel_plan_cuentas."|".$totaldebe."|".$totalhaber."|".$saldomayor;
 	            }
 	            else
 	            {
@@ -375,13 +386,20 @@ class B17Controller extends ControladorBase{
 	                if(!(empty($resultSI)))
 	                {
 	                    $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$resultSI[0]->saldo_ini_mayor."|OK";
+	                    $fila1=$res->nivel_plan_cuentas."|0|0|".$resultSI[0]->saldo_ini_mayor;
 	                }
-	                else $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$res->saldo_plan_cuentas."|OK";
-	            }
+	                else 
+	                {
+	                    $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$res->saldo_plan_cuentas."|OK";
+	                    $fila1=$res->nivel_plan_cuentas."|0|0|".$res->saldo_plan_cuentas;
+	                }
+	                }
 	            array_push($Saldos, $fila);
+	            array_push($cuentas_informe, $fila1);
 	        }
 	        if ($error)
 	        {
+	            
 	            $datos_tabla= "<table id='tabla_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $datos_tabla.='<tr  bgcolor="'.$colornivel1.'">';
 	            $datos_tabla.='<th width="1%"  style="width:130px; text-align: center;  font-size: '.$headerfont.';">CÓDIGO</th>';
@@ -407,10 +425,6 @@ class B17Controller extends ControladorBase{
 	                    $boldf="";
 	                }
 	                
-	                
-	                if ($infosaldos[1]=="PASIVOS") $pasivos=$infosaldos[2];
-	                if ($infosaldos[1]=="PATRIMONIO") $patrimonio=$infosaldos[2];
-	                if ($infosaldos[1]=="ACTIVOS") $activos=$infosaldos[2];
 	                if (sizeof($elementos_codigo)==1 || (sizeof($elementos_codigo)==2 && $elementos_codigo[1]==""))
 	                {
 	                    $datos_tabla.='<tr >';
@@ -486,44 +500,7 @@ class B17Controller extends ControladorBase{
 	            }
 	            
 	            $datos_tabla.= "</table>";
-	            $usu="";
-	            if(sizeof($cuentaserror)>1)
-	            {
-	                $usu="cuentas";
-	            }
-	            else
-	            {
-	                $usu="cuenta";
-	            }
 	            
-	            $datos_tabla.='<li class="dropdown messages-menu">';
-	            $datos_tabla.='<button type="button" class="btn btn-warning" data-toggle="dropdown">';
-	            $datos_tabla.='<i class="glyphicon glyphicon-list"></i>';
-	            $datos_tabla.='</button>';
-	            $datos_tabla.='<span class="label label-danger">'.sizeof($cuentaserror).'</span>';
-	            $datos_tabla.='<ul class="dropdown-menu scrollable-menu">';
-	            $datos_tabla.='<li  class="header">Hay '.sizeof($cuentaserror).' '.$usu.' con advertencias.</li>';
-	            $datos_tabla.='<li>';
-	            $datos_tabla.= '<table style = "width:100%; border-collapse: collapse;" border="1">';
-	            $datos_tabla.='<tbody>';
-	            foreach ($cuentaserror as $us)
-	            {
-	                
-	                
-	                $datos_tabla.='<tr height = "25">';
-	                $datos_tabla.='<td bgcolor="#F5F5F5" style="font-size: 16px; text-align:center;">'.$us.'</td>';
-	                $datos_tabla.='</tr>';
-	                
-	            }
-	            $datos_tabla.='</tbody>';
-	            $datos_tabla.='</table>';
-	            $datos_tabla.='</ul>';
-	            $datos_tabla.='</li>';
-	            
-	            $datos_tabla.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-	            $datos_tabla.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $datos_tabla.='<h4>Aviso!!!</h4> <b>Actualmente no se puede generar un reporte debido a errores en el balance de cuentas...</b>';
-	            $datos_tabla.='</div>';
 	            
 	            
 	            
@@ -561,10 +538,6 @@ class B17Controller extends ControladorBase{
 	                    $boldf="";
 	                }
 	                
-	                
-	                if ($infosaldos[1]=="PASIVOS") $pasivos=$infosaldos[2];
-	                if ($infosaldos[1]=="PATRIMONIO") $patrimonio=$infosaldos[2];
-	                if ($infosaldos[1]=="ACTIVOS") $activos=$infosaldos[2];
 	                if (sizeof($elementos_codigo)==1 || (sizeof($elementos_codigo)==2 && $elementos_codigo[1]==""))
 	                {
 	                    $total=0;
@@ -742,33 +715,84 @@ class B17Controller extends ControladorBase{
 	            }
 	            else
 	            {
+	                $cabecera=$this->AgregarCabecera($mes_reporte, $anio_reporte, $id_usuarios);
+	                foreach ($cuentas_informe as $res)
+	                {
+	                    $infosaldos=explode("|",$res);
+	                    $this->AgregarDetalles($cabecera, $infosaldos[1], $infosaldos[2], $infosaldos[0], $infosaldos[3]);
+	                    
+	                }
+	                
 	                
 	                $datos_tabla.= '<div class="row">
-	                    
            	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
-                  <a href="index.php?controller=B17&action=DescargarReporte&id_cabecera=" target="_blank"><i class="glyphicon glyphicon-print"></i></a>
+                  <a href="index.php?controller=B17&action=DescargarReporte&id_cabecera='.$cabecera.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a>
                 </div>
              </div>
             </div>';
 	            }
+	            echo $datos_tabla;
 	       }
-	       echo $datos_tabla;
+	       
 	      }
 	    
 	}
+	
+	public function AgregarCabecera($mes, $anio, $idusuario)
+	{
+	    session_start();
+	    $plan_cuentas = new PlanCuentasModel();
+	    $funcion = "ins_cbalance_comprobacion";
+	    $parametros = "'$idusuario','$anio','$mes'";
+	    $plan_cuentas->setFuncion($funcion);
+	    $plan_cuentas->setParametros($parametros);
+	    $resultado=$plan_cuentas->Insert();
+	    
+	    $columnas = "con_cbalance_comprobacion.id_cbalance_comprobacion";
+	    
+	    $tablas= "public.con_cbalance_comprobacion";
+	    
+	    $where= "con_cbalance_comprobacion.mes_cbalance_comprobacion=".$mes."AND con_cbalance_comprobacion.anio_cbalance_comprobacion=".$anio;
+	    
+	    $id= "con_cbalance_comprobacion.id_cbalance_comprobacion";
+	    
+	    $resultCabeza=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    return $resultCabeza[0]->id_cbalance_comprobacion;	    
+	}
+	
+	
+	public function AgregarDetalles($cabecera, $sdebe, $shaber, $idcuenta, $saldocuenta)
+	{
+	    session_start();
+	    $plan_cuentas = new PlanCuentasModel();
+	    $sacreedor=0;
+	    $sdeudor=0;
+	    if($sdebe>$shaber) $sdeudor=$saldocuenta;
+	    else if ($shaber>$sdebe) $sacreedor=$saldocuenta;
+	    $funcion = "ins_dbalance_comprobacion";
+	    $parametros = "'$cabecera','$idcuenta','$sdebe',
+                       '$shaber','$sacreedor','$sdeudor'";
+	    $plan_cuentas->setFuncion($funcion);
+	    $plan_cuentas->setParametros($parametros);
+	    $resultado=$plan_cuentas->Insert();
+	}
+	
 
 	public function DescargarReporte()
 	{
 	    session_start();
 	    
 	    $plan_cuentas= new PlanCuentasModel();
+	     $id_cabecera=$_REQUEST['id_cabecera'];
 	    
-	    
-	    $columnas = "plan_cuentas.codigo_plan_cuentas, ";
+	    $columnas = "plan_cuentas.codigo_plan_cuentas, (con_dbalance_comprobacion.saldo_acreedor_dbalnce_comprobacion + con_dbalance_comprobacion.saldo_deudor_dbalance_comprobacion) AS saldo";
 	    
 	    $tablas= "public.plan_cuentas INNER JOIN public.estado
-                   ON plan_cuentas.id_estado_reporte = estado.id_estado";
+                   ON plan_cuentas.id_estado_reporte = estado.id_estado
+                   INNER JOIN public.con_dbalance_comprobacion
+                    ON plan_cuentas.id_plan_cuentas = con_dbalance_comprobacion.id_plan_cuentas";
 	    
 	    $where= "estado.nombre_estado='INCLUIDO'";
 	    
@@ -804,7 +828,7 @@ class B17Controller extends ControladorBase{
 	        {
 	         $codigo.=$elem;   
 	        }
-	        $saldo=number_format((float)$res->saldo_plan_cuentas, 2, '.', '');
+	        $saldo=number_format((float)$res->saldo, 2, '.', '');
 	        $data.=$codigo."\t".$saldo.PHP_EOL;
 	    }
 	    

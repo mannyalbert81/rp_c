@@ -1,59 +1,32 @@
-<div style="border:1 solid; ">
 
-<table  style="width:100%;" >
-<tr>	
-<td class="" style="font-size: 10px; width:300px; padding: 5px; " align="center">
- <strong>
- {NOMBREEMPRESA}<br>
- {DIRECCIONEMPRESA}<br>
- {TELEFONOEMPRESA}
-</strong>
-</td>
-<td class="infotd" style="font-size: 80%; width:25px; padding: 5px; " align="right"><img  src="view/images/Logo-Capremci-h-200.jpg" width="200" height="39"></img></td>
-</tr>
-   </table>
-		<table class="info" style="width:100%;">
-<tr>
- <td class="infotd" style="font-size: 60%; width:10px; padding: 5px;" >
-<strong>Ruc:</strong> 
-</td>
-<td class="infotd" style="font-size: 60%; width:25px; padding: 5px;" >
-{RUCEMPRESA}
-</td>
-<td class="infotd" style="font-size: 60%; width:25px; padding: 5px;" >
-&nbsp;
-</td>
-<td class="infotd" style="font-size: 60%; width:350px; padding: 5px; " align="center">
-&nbsp;
-</td>
-<td class="infotd" style="font-size: 60%; width:110px; padding: 5px;" align=left >
-<strong>Fecha de Impresin: </strong>
-</td>
-<td class="infotd" style="font-size: 60%; width:100; padding: 5px;" >
- {FECHAEMPRESA}
- </td>
-</tr>
-   </table>
-   <table class="info" style="width:100%;">
-<tr>
- <td class="infotd" style="font-size: 60%; width:10px; padding: 5px;" >
-<strong>Usuario:</strong> 
-</td>
-<td class="infotd" style="font-size: 60%; width:25px; padding: 5px;" >
-{USUARIOEMPRESA}
-</td>
-<td class="infotd" style="font-size: 60%; width:25px; padding: 5px;" >
-&nbsp;
-</td>
-<td class="infotd" style="font-size: 60%; width:350px; padding: 5px; " align="center">
-&nbsp;
-</td>
-<td class="infotd" style="font-size: 60%; width:70px; padding: 5px;" align=left >
-<strong> &nbsp;</strong>
-</td>
-<td class="infotd" style="font-size: 60%; width:100; padding: 5px;" >
- &nbsp;
- </td>
-</tr>
-   </table>
-	</div>	
+<div class="clheader">
+
+	<table class="headertable">
+		<tr>	
+			<td class="headertabletd" >
+				 <strong>
+				 {NOMBREEMPRESA}<br>
+				 {DIRECCIONEMPRESA}<br>
+				 {TELEFONOEMPRESA}
+				</strong>
+			</td>
+		<td>
+			<img  class="himagen" src="view/images/Logo-Capremci-h-200.jpg" width="200" height="39"></img>
+		</td>
+		</tr>
+	</table>	
+	<table class="headertable">
+		<tr>
+			<td class="htexto2" >
+				 <p>
+				  <strong>Ruc: </strong> {RUCEMPRESA}<br>
+				  <strong>Fecha de Impresión: </strong> {FECHAEMPRESA}<br>
+				  <strong>Usuario: </strong> {USUARIOEMPRESA}
+				 </p>				 
+			</td>
+			
+		</tr>
+	</table>
+	
+	
+</div>	

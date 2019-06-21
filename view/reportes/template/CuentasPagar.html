@@ -2,383 +2,171 @@
 <html>
  <head>
   	<meta charset="utf-8"/>
-  	<title>Cuentas Por Pagar</title>
-  <style>
-  	
-  	tr.filaoculta{
-  	
-  	display:none;
-  	
-  	}
-  
-	div.izq{
-	left:0px;  margin-top:-20px; width:49%; /*border: 1px solid blue;*/ float:left;
-	}
-	div.izq1{
-	left:0px;  margin-top:-20px; width:100%; border: 1px solid black; float:left;
-	border-radius: 5px;
-	}
-	div.der{
-	right:0px; margin-top:-10px; width:49%; border: 1px solid black; float:left;
-	border-radius: 5px;
-	}
-	#divSerp{
-	 width:100%; /*border: 1px solid red;*/ padding:0px 5px;
-	}
-	.prueba{/* border:1px dashed green;*/}
-	td.infotd {
-	border: hidden;
-	}
-	table.info{
-	border: hidden;
-	}
-	table.inftab{
-	border: 1px solid black;
-	}
-	td.infotdtab {
-	border: 1px solid black;
-	}
-	footer
-	{
-    margin-top:50px;
-    width:100%;
-    height:200px;
-    background-color:red;
-	}
-  </style>
-  
   </head>
+
   <body>
-  	<div style="border:1 solid; border-radius: 5px;">
-  		<table class="info" style="width:100%;">
+ 	<table class="titulobody">
 		<tr>
-		 <td class="infotd" style="font-size: 70%; width:500px; padding: 5px; " align="center">
-		 <strong>
+		 <td>		 
 		 FCPC EMCIS DE FF.AA
 		 DIARIO DE CONTABILIZACIÓN DE TRANSACCIÓN DE CUENTAS POR PAGAR
-		 ADMINISTRACIÓN DE CUENTAS POR PAGAR 
-		</strong>
+		 ADMINISTRACIÓN DE CUENTAS POR PAGAR		
 		</td>
 		</tr>
-	    </table>
+	 </table>
+
   		
-  		<table class="info" style="width:100%;">
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:10px; padding: 5px;" >
-		 <strong>Sistema:</strong> 
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:25px; padding: 5px;" >
-		 {FECHA}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:25px; padding: 5px;" >
-		{HORA}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:350px; padding: 5px; " align="center">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:70px; padding: 5px;" align="left" >
-		 <strong>Página: </strong>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100; padding: 5px;" >
-		 1 
-		 </td>
-		</tr>
-	    </table>
-	   
-	   <table class="info" style="width:100%;">
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:90px; padding: 5px;" >
-		 <strong>Fecha Usuario: </strong>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:50px; padding: 5px;" >
-		 {FECHA}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:370px; padding: 5px; " align="center">
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:75px; padding: 5px;" align="left" >
-		 <strong>Id de usuario:</strong> 
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px; padding: 5px;" >
-		 {USUARIO}
-		 </td>
-		</tr>
-	    </table>                                                              		
-  		</div>  
-  		
-	<div style="width:150%; float:left;" >
+	<div >
 	    
-	    <table class="info" style="width:100%;">
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px; padding: 5px;" >
-		 * Transacción intercopañía
-		 </td>
-		</tr>
+	    <table class="">
+			<tr>
+				 <td class="" >
+				 	* Transacción intercopañía
+				 </td>
+			</tr>
+			<tr>
+				 <td class="" >
+				 	<strong>Id. de Lote: </strong> {NOMBRELOTE}
+				 </td>				 
+				 
+				 <td class="" >
+				  <strong>Frecuencia de lote:</strong>{FRECUENCIA}
+				 </td>
+			</tr>
+			<tr>
+				 <td class="" >
+				 	<strong>Comentario de lote: </strong> {DESCLOTE}
+				 </td>		 
+				 <td class="" >
+				 	<strong>Código de Auditoría: </strong> {NUMEROLOTE}
+				 </td>
+		 
+			</tr>
+			<tr>
+				 <td class="" >
+				 	<strong>Total real trans: </strong> 1
+				 </td>
+				 
+				 <td class="">
+				 	<strong>Total control Trans: </strong>0
+				 </td>
+				 
+			</tr>
+			<tr>
+				 <td class="" >
+				 	<strong>Total real lote: </strong>{SALDOCUENTA}
+				 </td>				 
+				 <td class="" >
+				 <strong>Control total lote: </strong>   $0.00
+				 </td>				 
+			</tr>			
+			<tr>
+			 <td class="" >
+			 	<strong>Aprobado: </strong> NO
+			 </td>				 
+			 <td class="">
+			 	<strong>Aprobado por:</strong>..
+			 </td>			 
+			 <td class="">
+			 	<strong>Fecha Aprobación: </strong> 0/00/0000
+			 </td>			 
+			</tr>
 	    </table>
-	    <table class="info" style="width:100%;">
+	    
+	   
+	   <hr>
+	   
+	    <table class="tabladatos" >
 	    <tr>
-		 <td class="infotd" style="font-size: 60%; width:75px; padding: 5px;" >
-		 <strong>Id. de Lote:</strong>
+		 <td class="" >
+		 	<b>Tipo</b>
 		 </td>
-		 <td class="infotd" style="font-size: 60%; width:200px; padding: 5px;" >
-		 {NOMBRELOTE}
+		 <td class="" >
+		 	<b>Núm. comprobante</b>
 		 </td>
-		 <td class="infotd" style="font-size: 60%; width:150px; padding: 5px;" >
-		 &nbsp;
+		 <td class=""  >
+		 	<b>Núm. de documento</b>
 		 </td>
-		 <td class="infotd" style="font-size: 60%; width:80px; padding: 5px;" >
-		 <strong>Frecuencia de lote:</strong>
+		 <td class=""  >
+		 	<b>Fecha del documento</b>
 		 </td>
-		 <td class="infotd" style="font-size: 60%; width:90px; padding: 5px;" >
-		 {FRECUENCIA}
+		 <td class=""  >
+		 	<b>Id. de proveedor</b>
 		 </td>
-		</tr>
-		<tr>
-		 <td class="infotd" style="font-size: 60%; width:100px; padding: 5px;" >
-		 <strong>Comentario de lote:</strong>
+		 <td class=""  >
+		 	<b>Proveedor</b>
+		 </td>		 
+		 <td class="" >
+		 	<b>Total del documento</b>
 		 </td>
-		 <td class="infotd" style="font-size: 60%; width:250px; padding: 5px;" >
-		 {DESCLOTE}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:50px; padding: 5px;" >
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:110px; padding: 5px;" >
-		 <strong>Código de Auditoría:</strong>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:90px; padding: 5px;" >
-		 {NUMEROLOTE}
-		 </td>
-		</tr>
-	    </table>
-	    <table class="info" style="width:100%;">
-	     <tr>
-		 <td class="infotd" style="font-size: 60%; width:70px; padding: 5px;" >
-		 <strong>Total real trans:</strong>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:50px; padding: 5px;" >
-		 1
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:85px; padding: 5px;" align="left">
-		 <strong>Total control Trans:</strong>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:415px; padding: 5px;" >
-		 0
+		 <td class="" >
+		 	<b>Compras</b>
+		 </td>		 
+		 <td class="" >
+		 	<b>Impuesto</b>
 		 </td>
 		</tr>
 		<tr>
-		 <td class="infotd" style="font-size: 60%; width:70px; padding: 5px;" >
-		 <strong>Total real lote:</strong>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:50px; padding: 5px;">
-		 {SALDOCUENTA}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:85px; padding: 5px;" align="left">
-		 <strong>Control total lote:</strong>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:415px; padding: 5px;">
-		 $0.00
-		 </td>
-		</tr>
-	    </table>
-	    <table class="info" style="width:100%;">
-	     <tr>
-		 <td class="infotd" style="font-size: 64%; width:60px; padding: 5px;" >
-		 <strong>Aprobado:</strong>
-		 </td>
-		 <td class="infotd" style="font-size: 64%; width:102px; padding: 5px;" align="center" >
-		 NO
-		 </td>
-		 <td class="infotd" style="font-size: 64%; width:80px; padding: 5px;" align="left">
-		 <strong>Aprobado por:</strong>
-		 </td>
-		 <td class="infotd" style="font-size: 64%; width:130px; padding: 5px;" >
-		 &nbsp;
-		 </td>
-		 <td class="infotd" style="font-size: 64%; width:110px; padding: 5px;" align="right">
-		 <strong>Fecha Aprobación:</strong>
-		 </td>
-		 <td class="infotd" style="font-size: 64%; width:250px; padding: 5px;" >
-		 0/00/0000
-		 </td>
-		</tr>
-	    </table>
-	    <br>
-	    <table class="inftab" style="width:98%;" border=1 cellspacing=-1>
-	    <tr>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Tipo</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Núm. comprobante</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Núm. de documento</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:55px;" >
-		 <b>Fecha del documento</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Id. de proveedor</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Proveedor</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Cond. dtos. dispon.</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:55px;" >
-		 <b>Total del documento</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Compras</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Desc. comercial</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Flete</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Miscelános</b>
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
-		 <b>Impuesto</b>
-		 </td>
-		</tr>
-		<tr>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
+		 <td class="">
 		 {TIPODOCUMENTO}
 		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
+		 <td class="" >
 		 {NUMEROCOMPROBANTE}
 		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
+		 <td class=""  >
 		 {NUMERODOCUMENTO}
 		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:55px;" align="center">
+		 <td class="">
 		 {FECHADOCUMENTO}
 		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
+		 <td class="">
 		 {IDEPROVEEDOR}
 		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" >
+		 <td class="" >
 		 {NOMBREPROVEEDOR}
 		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
-		 {CONDONACIONES}
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:55px;" align="right">
+		 <td class="">
 		 {SALDOCUENTA}
 		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
+		 <td class="">
 		 {COMPRAS}
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
-		 {DESCCOMERCIAL}
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
-		 {FLETE}
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
-		 {MISCELANEOS}
-		 </td>
-		 <td class="infotdtab" style="font-size: 60%; width:50px;" align="right">
+		 </td>		
+		 <td class="">
 		 {IMPUESTO}
 		 </td>
 		</tr>
 	    </table>
-	    <br>
+	    <hr>
+	    
+	    
 	    {TABLADISTRIBUCION}
-	    <br>
+	    
+		<hr>
 	    
 	    {TABLAIMPUESTOS}
 	   
-	   <br>
+	   
+	    <hr>
 	    
-	    
-	    <table class="info" style="width:98%;" >
-	    <tr>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>Monto de compras</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>Dpto. comercial</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>Monto de flete</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>Montos misc.</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>Monto impuesto</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>Cod. Cont. dispon</b>
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 <b>Total del documento</b>
-		 </td>
-		</tr>
-		
-		 <tr>
-		
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-		 </td>
-		 
-		</tr>
-		<tr>
-		
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 {COMPRAS}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 {DESCCOMERCIAL}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 {FLETE}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 {MISCELANEOS}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 {IMPUESTO}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 {CONDONACIONES}
-		 </td>
-		 <td class="infotd" style="font-size: 60%; width:100px;" align="right";>
-		 {SALDOCUENTA}
-		 </td>
-		 
-		</tr>
+	    <table class="" >
+		    <tr>
+			 <td class="">		 <b>Monto de compras</b>		 </td>		 
+			 <td class="">		 <b>Monto impuesto</b>		     </td>
+			 <td class="">		 <b>Total del documento</b>		 </td>
+			</tr>	
+			<tr>			
+			 <td class="">		---------------------		 </td>
+			 <td class="">		---------------------		 </td>
+			 <td class="">		---------------------		 </td>
+			</tr>
+			<tr>			
+			 <td class="">	 {COMPRAS}					 </td>		 
+			 <td class="">	 {IMPUESTO}			 </td>		 
+			 <td class="">	 {SALDOCUENTA}			 </td>			 
+			</tr>
 	    </table> 
 	    
-	   
 	</div>
-	
-	
-	<br>
 	
   </body>
   </html>

@@ -74,7 +74,8 @@
 	         	<div class="form-group">
 	         		<label for="anio_balance" class="control-label">AÑO :</label>
                     <select name="anio_balance" id="anio_balance"   class="form-control" >
-                        <option value="0" selected="selected">--Seleccione--</option>	
+                        <option value="0" selected="selected">--Seleccione--</option>
+                        <option value="2019">2019</option>		
     					<!-- VALIDAR PA MOSTRAR ANIO DEL SERVIDOR -->		       
 					 </select> 
                      <div id="mensaje_anio_balance" class="errores"></div>
@@ -163,7 +164,7 @@
     <?php include("view/modulos/links_js.php"); ?>
    	 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.10"></script>   
+    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.11"></script>   
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   
 	

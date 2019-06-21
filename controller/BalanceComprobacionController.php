@@ -611,8 +611,8 @@ class BalanceComprobacionController extends ControladorBase{
         
         $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
         
-        $mesbalance = (isset($_REQUEST['mes'])&& $_REQUEST['mes'] !=NULL)?$_REQUEST['mes']:'';
-        $aniobalance = (isset($_REQUEST['anio'])&& $_REQUEST['anio'] !=NULL)?$_REQUEST['anio']:'';
+        $mesbalance = (isset($_REQUEST['mes'])&& $_REQUEST['mes'] !=NULL)?$_REQUEST['mes']:'01';
+        $aniobalance = (isset($_REQUEST['anio'])&& $_REQUEST['anio'] !=NULL)?$_REQUEST['anio']:'2019';
         
         $dateToTest = $aniobalance."-".$mesbalance."-01";
         $lastday = date('t',strtotime($dateToTest));
@@ -634,32 +634,34 @@ class BalanceComprobacionController extends ControladorBase{
         $boldi="";
         $boldf="";
         
-        $datos_tabla.= '<table>';
+        $datos_tabla="";
+        
+        $datos_tabla.= '<table class="table1">';
         $datos_tabla.='<thead>';
-        $datos_tabla.='<tr class="cabeza">';
-        $datos_tabla.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="center"><b>FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA</b></td>';
+        $datos_tabla.='<tr >';
+        $datos_tabla.='<td colspan="4" class="cabeza" ><b>FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA</b></td>';
         $datos_tabla.='</tr>';
-        $datos_tabla.='<tr class="cabeza">';
-        $datos_tabla.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="center"><b>DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FUERZAS ARMADAS CAPREMCI</b></td>';
+        $datos_tabla.='<tr >';
+        $datos_tabla.='<td colspan="4" class="cabeza" ><b>DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FUERZAS ARMADAS CAPREMCI</b></td>';
         $datos_tabla.='</tr>';
-        $datos_tabla.='<tr class="cabeza">';
-        $datos_tabla.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="center"><b>ESTADO DE SITUACIÓN FINANCIERA</b></td>';
+        $datos_tabla.='<tr >';
+        $datos_tabla.='<td colspan="4" class="cabeza" ><b>ESTADO DE SITUACIÓN FINANCIERA</b></td>';
         $datos_tabla.='</tr>';
-        $datos_tabla.='<tr class="cabeza">';
-        $datos_tabla.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="center"><b>AL '.$lastday.' DE '.$meses[$mesbalance-1].' DE '.$aniobalance.'</b></td>';
+        $datos_tabla.='<tr >';
+        $datos_tabla.='<td colspan="4" class="cabeza" ><b>AL '.$lastday.' DE '.$meses[$mesbalance-1].' DE '.$aniobalance.'</b></td>';
         $datos_tabla.='</tr>';
-        $datos_tabla.='<tr class="cabeza">';
-        $datos_tabla.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="right"><b>CÓDIGO: 17</b></td>';
+        $datos_tabla.='<tr >';
+        $datos_tabla.='<td colspan="4" class="cabezafin" ><b>CÓDIGO: 17</b></td>';
         $datos_tabla.='</tr>';
-        $datos_tabla.='<tr class="cabezafin">';
-        $datos_tabla.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="right">&nbsp;</td>';
+        $datos_tabla.='<tr >';
+        $datos_tabla.='<td colspan="4" class="cabezaespacio" >&nbsp;</td>';
         $datos_tabla.='</tr>';
         $datos_tabla.='</thead>';
-        $datos_tabla.='<tr>';
-        $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">CÓDIGO</th>';
-        $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">CUENTA</th>';
-        $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">NOTAS</th>';
-        $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">SALDO</th>';
+        $datos_tabla.='<tr class="iniciotabla" >';
+        $datos_tabla.='<th  > CÓDIGO</th>';
+        $datos_tabla.='<th  > CUENTA</th>';
+        $datos_tabla.='<th  > NOTAS</th>';
+        $datos_tabla.='<th  > SALDO</th>';
         $datos_tabla.='</tr>';
         $pasivos=0;
         $patrimonio=0;
@@ -683,18 +685,18 @@ class BalanceComprobacionController extends ControladorBase{
                 if ($res->nombre_plan_cuentas=="PASIVOS") $pasivos=$res->saldo_plan_cuentas;
                 if ($res->nombre_plan_cuentas=="PATRIMONIO") $patrimonio=$res->saldo_plan_cuentas;
                 if ($res->nombre_plan_cuentas=="ACTIVOS") $activos=$res->saldo_plan_cuentas;
-                $datos_tabla.='<tr>';
+                $datos_tabla.='<tr class="conlineas">';
                 $datos_tabla.='<td width="9%" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->codigo_plan_cuentas.$boldf.'</td>';
                 $datos_tabla.='<td  style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->nombre_plan_cuentas.$boldf.'</td>';
                 $datos_tabla.='<td width="10%" style="text-align: center;  font-size: '.$tdfont.';"></td>';
                 $saldo=$res->saldo_plan_cuentas;
                 $saldo=number_format((float)$saldo, 2, ',', '.');
                 if ($saldo==0) $saldo="-";
-                $datos_tabla.='<td width="15%" style="text-align: right;  font-size: '.$tdfont.';">'.$boldi.$saldo.$boldf.'</td>';
+                $datos_tabla.='<td width="15%" class="decimales" >'.$boldi.$saldo.$boldf.'</td>';
                 $datos_tabla.='</tr>';
             }
         }
-        $datos_tabla.='<tr>';
+        $datos_tabla.='<tr class="conlineas">';
         $datos_tabla.='<td width="9%" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.'2 + 3'.$boldf.'</td>';
         $datos_tabla.='<td  style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.'PASIVO + PATRIMONIO'.$boldf.'</td>';
         $datos_tabla.='<td width="10%" style="text-align: center;  font-size: '.$tdfont.';"></td>';
@@ -702,21 +704,21 @@ class BalanceComprobacionController extends ControladorBase{
         $diferencia=$pasivo_patrimonio-$activos;
         $pasivo_patrimonio=number_format((float)$pasivo_patrimonio, 2, ',', '.');
         if ($saldo==0) $saldo="-";
-        $datos_tabla.='<td width="15%" style="text-align: right;  font-size: '.$tdfont.';">'.$boldi.$pasivo_patrimonio.$boldf.'</td>';
+        $datos_tabla.='<td width="15%" class="decimales" >'.$boldi.$pasivo_patrimonio.$boldf.'</td>';
         $datos_tabla.='</tr>';
-        $datos_tabla.='<tr>';
+        $datos_tabla.='<tr class="conlineas">';
         $datos_tabla.='<td width="9%" style="text-align: left;  font-size: '.$tdfont.';"></td>';
         $datos_tabla.='<td  style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.'DIFERENCIA'.$boldf.'</td>';
         $datos_tabla.='<td width="10%" style="text-align: center;  font-size: '.$tdfont.';"></td>';
         
         $diferencia=number_format((float)$diferencia, 2, ',', '.');
-        $datos_tabla.='<td width="15%" style="text-align: right;  font-size: '.$tdfont.';">'.$boldi.$diferencia.$boldf.'</td>';
+        $datos_tabla.='<td width="15%" class="decimales" >'.$boldi.$diferencia.$boldf.'</td>';
         $datos_tabla.='</tr>';
         $datos_tabla.= "</table>";
         
         $datos_tabla.= "<br>";
         $datos_tabla.= '<table class="firmas">';
-        $datos_tabla.='<tr>';
+        $datos_tabla.='<tr >';
         $datos_tabla.='<td   class="firmas"  width="6%"  style="text-align: left; font-size: '.$headerfont.';">&nbsp;</td>';
         $datos_tabla.='</tr>';
         $datos_tabla.='<tr>';
@@ -731,32 +733,33 @@ class BalanceComprobacionController extends ControladorBase{
         $datos_tabla.='</tr>';
         $datos_tabla.= "</table>";
         
-        $datos_tabla2.= '<table>';
+        $datos_tabla2= '';        
+        $datos_tabla2.= '<table class="table2">';
         $datos_tabla2.='<thead>';
-        $datos_tabla2.='<tr class="cabeza">';
-        $datos_tabla2.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="center"><b>FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA</b></td>';
+        $datos_tabla2.='<tr >';
+        $datos_tabla2.='<td colspan="4" class="cabeza" ><b>FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA</b></td>';
         $datos_tabla2.='</tr>';
-        $datos_tabla2.='<tr class="cabeza">';
-        $datos_tabla2.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="center"><b>DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FUERZAS ARMADAS CAPREMCI</b></td>';
+        $datos_tabla2.='<tr >';
+        $datos_tabla2.='<td colspan="4" class="cabeza" ><b>DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FUERZAS ARMADAS CAPREMCI</b></td>';
         $datos_tabla2.='</tr>';
-        $datos_tabla2.='<tr class="cabeza">';
-        $datos_tabla2.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="center"><b>ESTADO DE RESULTADO INTEGRAL</b></td>';
+        $datos_tabla2.='<tr >';
+        $datos_tabla2.='<td colspan="4" class="cabeza" ><b>ESTADO DE RESULTADO INTEGRAL</b></td>';
         $datos_tabla2.='</tr>';
-        $datos_tabla2.='<tr class="cabeza">';
-        $datos_tabla2.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="center"><b>AL '.$lastday.' DE '.$meses[$mesbalance-1].' DE '.$aniobalance.'</b></td>';
+        $datos_tabla2.='<tr >';
+        $datos_tabla2.='<td colspan="4" class="cabeza" ><b>AL '.$lastday.' DE '.$meses[$mesbalance-1].' DE '.$aniobalance.'</b></td>';
         $datos_tabla2.='</tr>';
-        $datos_tabla2.='<tr class="cabeza">';
-        $datos_tabla2.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="right"><b>CÓDIGO: 17</b></td>';
+        $datos_tabla2.='<tr >';
+        $datos_tabla2.='<td colspan="4" class="cabezafin" ><b>CÓDIGO: 17</b></td>';
         $datos_tabla2.='</tr>';
-        $datos_tabla2.='<tr class="cabezafin">';
-        $datos_tabla2.='<td colspan="4" class="cabeza" style="font-size: 12px; padding-left : 8px;" align="right">&nbsp;</td>';
+        $datos_tabla2.='<tr >';
+        $datos_tabla2.='<td colspan="4" class="cabezaespacio">&nbsp;</td>';
         $datos_tabla2.='</tr>';
         $datos_tabla2.='</thead>';
-        $datos_tabla2.='<tr>';
-        $datos_tabla2.='<th  style="text-align: center;  font-size: '.$headerfont.';">CÓDIGO</th>';
-        $datos_tabla2.='<th  style="text-align: center;  font-size: '.$headerfont.';">CUENTA</th>';
-        $datos_tabla2.='<th  style="text-align: center;  font-size: '.$headerfont.';">NOTAS</th>';
-        $datos_tabla2.='<th  style="text-align: center;  font-size: '.$headerfont.';">SALDO</th>';
+        $datos_tabla2.='<tr class="iniciotabla" >';
+        $datos_tabla2.='<th >CÓDIGO</th>';
+        $datos_tabla2.='<th >CUENTA</th>';
+        $datos_tabla2.='<th >NOTAS</th>';
+        $datos_tabla2.='<th >SALDO</th>';
         $datos_tabla2.='</tr>';
         
         
@@ -776,14 +779,14 @@ class BalanceComprobacionController extends ControladorBase{
             }
             if($elementos_codigo[0]>3)
             {
-                $datos_tabla2.='<tr>';
+                $datos_tabla2.='<tr class="conlineas">';
                 $datos_tabla2.='<td  style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->codigo_plan_cuentas.$boldf.'</td>';
                 $datos_tabla2.='<td  style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$res->nombre_plan_cuentas.$boldf.'</td>';
                 $datos_tabla2.='<td  style="text-align: center;  font-size: '.$tdfont.';"></td>';
                 $saldo=$res->saldo_plan_cuentas;
                 $saldo=number_format((float)$saldo, 2, ',', '.');
                 if ($saldo==0) $saldo="-";
-                $datos_tabla2.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$boldi.$saldo.$boldf.'</td>';
+                $datos_tabla2.='<td  class="decimales" >'.$boldi.$saldo.$boldf.'</td>';
                 $datos_tabla2.='</tr>';
             }
         }
@@ -807,7 +810,22 @@ class BalanceComprobacionController extends ControladorBase{
         $datos_tabla2.='</tr>';
         $datos_tabla2.= "</table>";
         
-        $this->verReporte("ReporteBalanceComprobacion", array('datos_tabla'=>$datos_tabla, 'datos_tabla2'=>$datos_tabla2));
+        //PARA OBTENER DATOS DE LA EMPRESA
+        $datos_empresa = array();
+        $entidades = new EntidadesModel();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        $this->verReporte("ReporteBalanceComprobacion", array('datos_tabla'=>$datos_tabla, 'datos_tabla2'=>$datos_tabla2,'datos_empresa'=>$datos_empresa) );
     }
        
 }

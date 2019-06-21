@@ -1,8 +1,9 @@
+
 <div class="divheader">
 
 	<table class="headertable">
-		<tr>				
-			<td class="central" >
+		<tr >				
+			<td class="central" colspan="2">
 				 <strong>
 				 {NOMBREEMPRESA}<br>
 				 {DIRECCIONEMPRESA}<br>
@@ -10,19 +11,21 @@
 				</strong>
 			</td>		
 		</tr>
-	</table>	
-	<table>
 		<tr>
-			<td class="htexto2" >
+			<td class="htexto1" >
 				 <p>
-				  <strong>Ruc: </strong> {RUCEMPRESA}<br>
-				  <strong>Fecha de Impresión: </strong> {FECHAEMPRESA}<br>
+				  <strong>Ruc: </strong> {RUCEMPRESA}<br>				  
 				  <strong>Usuario: </strong> {USUARIOEMPRESA}
 				 </p>				 
 			</td>
+			<td class="htexto2" >
+				 <p>				  
+				  <strong>Fecha de Impresión: </strong> {FECHAEMPRESA}<br>
+				  <span><strong>Hoja: </strong> {PAGENO}</span>
+				 </p>				 
+			</td>
 			
-		</tr>
-	</table>
-	
-	
+		</tr>		
+	</table>	
+		
 </div>	

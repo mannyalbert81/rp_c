@@ -264,10 +264,11 @@ class BalanceComprobacionController extends ControladorBase{
         $colores[4]="#FCF3CF";
         $colores[5]="#FDFEFE";
         $colorletra="black";
+        $sumatoria=array();
         
         if ($codigo=="")
         {
-            $sumatoria="";
+            $sumatoria[0]="";
             foreach($resultset as $res)
             {
                 
@@ -292,29 +293,30 @@ class BalanceComprobacionController extends ControladorBase{
                     }
                     $color=$nivel-2;
                     if ($color>5) $color=5;
-                    $sumatoria.='<tr id="cod'.$verif1.'">';
-                    $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$elementos_saldo[0].$boldf.'</td>';
-                    $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">';
+                    $sumatoria[0].='<tr id="cod'.$verif1.'">';
+                    $sumatoria[0].='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$elementos_saldo[0].$boldf.'</td>';
+                    $sumatoria[0].='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">';
                     if ($this->tieneHijoA($nivel,$elementos_saldo[0], $resultset) && $nivelclase!=$limit)
                     {
-                        $sumatoria.='<button type="button" class="btn btn-box-tool" onclick="ExpandirTabla(&quot;nivel'.$verif1.'&quot;,&quot;trbt'.$verif1.'&quot;)">
+                        $sumatoria[0].='<button type="button" class="btn btn-box-tool" onclick="ExpandirTabla(&quot;nivel'.$verif1.'&quot;,&quot;trbt'.$verif1.'&quot;)">
                     <i id="trbt'.$verif1.'" class="fa fa-angle-double-right" name="boton"></i></button>';
                     }
-                    $sumatoria.=$boldi.$elementos_saldo[1].$boldf.'</td>';
+                    $sumatoria[0].=$boldi.$elementos_saldo[1].$boldf.'</td>';
                     $shijo=$this->SumaSaldoHijo($nivel, $elementos_saldo[0], $resultset);
                     $shijo=number_format((float)$shijo, 2, ',', '.');
                     $elementos_saldo[2]=number_format((float)$elementos_saldo[2], 2, ',', '.');
                     if($elementos_saldo[2]!=$shijo && $this->tieneHijoA($nivel,$elementos_saldo[0], $resultset)) {
-                        $colorletra="red";}
+                        $colorletra="red";
+                        array_push($sumatoria, $elementos_saldo[0]);}
                         else {
                             $colorletra="black";
                         }
-                        $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$elementos_saldo[2].$boldf.'</font></td>';
-                        $sumatoria.='</tr>';
+                        $sumatoria[0].='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$elementos_saldo[2].$boldf.'</font></td>';
+                        $sumatoria[0].='</tr>';
                     if ($this->tieneHijoA($nivel,$elementos_saldo[0], $resultset))
                     {
                         
-                        $sumatoria.=$this->Balance($nivel, $resultset, $limit, $elementos_saldo[0]);
+                        $sumatoria[0].=$this->Balance($nivel, $resultset, $limit, $elementos_saldo[0]);
                         
                     }
                     
@@ -326,7 +328,7 @@ class BalanceComprobacionController extends ControladorBase{
         else
         {
             
-            $sumatoria="";
+            $sumatoria[0]="";
             $elementos_codigo=explode(".", $codigo);
             $nivel1=$nivel;
             $nivel1--;
@@ -363,7 +365,7 @@ class BalanceComprobacionController extends ControladorBase{
                     }
                     $color=$nivel-2;
                     if ($color>5) $color=5;
-                    $sumatoria.='<tr class="nivel'.$verif1.'" id="cod'.$verif2.'" style="display:none">';
+                    $sumatoria[0].='<tr class="nivel'.$verif1.'" id="cod'.$verif2.'" style="display:none">';
                     $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$elementos_saldo[0].$boldf.'</td>';
                     $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">';
                     if ($this->tieneHijoA($nivel,$elementos_saldo[0], $resultset) && $nivelclase!=$limit)

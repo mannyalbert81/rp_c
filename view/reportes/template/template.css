@@ -1,35 +1,35 @@
 /* para clases de cabecera */ 
-.clheader{
-		border:1 solid; width:100%; 
-	}
+.divheader{
+	border:0px solid; width:100%; 
+}
 	
-	.headertable{
-		width:100%;
-	}
+.headertable{
+	width:100%;
 	
-	.headertabletd{
-		font-size: 10px; width:69%; padding: 5px; 
-		text-align:center;
-	}
-	table tr td .himagen{		
-		background-color:red;
-		padding: 5px; text-align: center;
-		width:19%;
-	}
-	.htexto2{		
-		font-size: 8px; width:20%; padding: 5px; 
-		text-align:left;
-	}
+}
+td.central{
+	background-repeat: no-repeat;
+  	background-size: 10% 100%;
+	background-image: url(view/images/Logo-Capremci-h-170.jpg); 
+	background-position: 100% 100%;
+	font-size: 11px;  
+	padding: 0px; 
+	text-align:center;
+	
+}
+.htexto2{		
+	font-size: 10px; width:30%; padding: 5px; 
+	text-align:left;
+}
+.imgheader{
+	
+}
 
 /***************************/
-div{
-	border-width: 1px;
-	border-color: black;
-	border-style: solid;
-}
+
 .titulobody {
-	width:100%;font-family:verdana, arial, sans-serif;
-  	font-size:0.75em;line-height:2em; border:1px solid black;
+	width:100%;font-family:Times New Roman, sans-serif;
+  	font-size:12px; line-height:normal; border:1px solid black;
 
   }
 
@@ -44,6 +44,38 @@ div{
  	border:hidden;
  }
  
- .
-
+ .tab1principal{
+ 	width:100%;font-family:Times New Roman, sans-serif;
+  	font-size:0.75em;line-height:2em;
+ }
+.tab1principal td{
+  	padding:0 0.5em;
+	border:hidden;
+  }
+.tab2cabecera{
+	width:100%;font-family:Times New Roman, sans-serif;
+ 	font-size:0.75em;line-height:2em;
+ 	border-collapse: separate;
+ 	border-spacing: 10px 0px; 
+}
+.tab2cabecera td{
+  	padding:0 0.5em;
+  }
+ .bordeinferior td {
+  border-bottom: 1px; 
+  border-bottom-style: dotted;
+  
+ }
+ .tab3datos{
+	width:100%;font-family:Times New Roman, sans-serif;
+ 	font-size:0.75em;line-height:2em;
+ 	border-collapse: separate;
+ 	border-spacing: 10px 0px; 
+}
+.tab3datos td{
+  	padding:0 0.5em;
+  }
+ .decimales{
+ 	text-align: right !important;
+ }
 

@@ -49,7 +49,7 @@ $mpdf->setAutoTopMargin = 'stretch';
 $mpdf->setAutoBottomMargin = 'stretch';
 $mpdf->SetHTMLHeader(utf8_encode($header));
 $mpdf->SetHTMLFooter($footer);
-$stylesheet = file_get_contents('view/reportes/template/template.css'); // la ruta a tu css
+$stylesheet = file_get_contents('view/reportes/template/cuentasPagar.css'); // la ruta a tu css
 $mpdf->WriteHTML($stylesheet,1);
 $mpdf->WriteHTML($template,2);
 $mpdf->debug = true;

@@ -133,7 +133,7 @@
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?>
-   <script src="view/Administracion/js/B17.js?0.11" ></script>
+   <script src="view/Administracion/js/B17.js?0.12" ></script>
   </body>
 
 </html>

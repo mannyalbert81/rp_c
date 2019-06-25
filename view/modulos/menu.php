@@ -393,10 +393,16 @@ $controladores=$_SESSION['controladores'];
      			<li style="<?php echo getcontrolador("CoreDiarioTipo",$controladores) ?>"><a href="index.php?controller=CoreDiarioTipo&action=index"><i class="fa fa-circle-o"></i> Diario Tipo</a></li>
  				<li style="<?php echo getcontrolador("EstadoMarital",$controladores) ?>"><a href="index.php?controller=EstadoMarital&action=index"><i class="fa fa-circle-o"></i>Estado Marital</a></li>
            	    <li style="<?php echo getcontrolador("CoreEmpleo",$controladores) ?>"><a href="index.php?controller=CoreEmpleo&action=index"><i class="fa fa-circle-o"></i>Empleo</a></li>
+<<<<<<< HEAD
+           	    <li style="<?php echo getcontrolador("Participes",$controladores) ?>"><a href="index.php?controller=Participes&action=index"><i class="fa fa-circle-o"></i>Participes</a></li>
+         
+           	  </ul>
+=======
                 <li style="<?php echo getcontrolador("CoreEntidadPatronal",$controladores) ?>"><a href="index.php?controller=CoreEntidadPatronal&action=index"><i class="fa fa-circle-o"></i>Entidad Patronal</a></li>
                 
 </ul>
 
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
         </li>
         <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >
           <a href="#">

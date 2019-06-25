@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
    <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
-      <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>
+   <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>
     
     
   

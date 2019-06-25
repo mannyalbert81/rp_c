@@ -306,10 +306,7 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-              
               	<li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=ActivosFijos&action=VerDepreciacion"><i class="fa fa-circle-o"></i>Depreciacion Activos</a></li>
-                <li style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"><a href="index.php?controller=ActivosFijos&action=VerResumen"><i class="fa fa-circle-o"></i>Resúmen de Activos</a></li>
-              
               </ul>
            </li>
         </ul>
@@ -351,7 +348,8 @@ $controladores=$_SESSION['controladores'];
               	<li style="<?php echo getcontrolador("IngresoCuentasPagar",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=CuentasPagarIndex"><i class="fa fa-circle-o"></i> Ingreso Transacciones</a></li>
               	<li style="<?php echo getcontrolador("IngresoCuentasPagar",$controladores) ?>"><a href="index.php?controller=CuentasPagar2&action=CuentasPagarIndex"><i class="fa fa-circle-o"></i> Ingreso Transacciones 2</a></li>
               	<li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=PagosManualesIndex"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
-    			
+    			<li style="<?php echo getcontrolador("GenerarCheque",$controladores) ?>"><a href="index.php?controller=GenerarCheque&action=index"><i class="fa fa-circle-o"></i>Generar Cheque</a></li>
+        	    
              </ul>
             </li>
         
@@ -396,9 +394,16 @@ $controladores=$_SESSION['controladores'];
      			<li style="<?php echo getcontrolador("CoreDiarioTipo",$controladores) ?>"><a href="index.php?controller=CoreDiarioTipo&action=index"><i class="fa fa-circle-o"></i> Diario Tipo</a></li>
  				<li style="<?php echo getcontrolador("EstadoMarital",$controladores) ?>"><a href="index.php?controller=EstadoMarital&action=index"><i class="fa fa-circle-o"></i>Estado Marital</a></li>
            	    <li style="<?php echo getcontrolador("CoreEmpleo",$controladores) ?>"><a href="index.php?controller=CoreEmpleo&action=index"><i class="fa fa-circle-o"></i>Empleo</a></li>
+<<<<<<< HEAD
            	    <li style="<?php echo getcontrolador("Participes",$controladores) ?>"><a href="index.php?controller=Participes&action=index"><i class="fa fa-circle-o"></i>Participes</a></li>
          
            	  </ul>
+=======
+                <li style="<?php echo getcontrolador("CoreEntidadPatronal",$controladores) ?>"><a href="index.php?controller=CoreEntidadPatronal&action=index"><i class="fa fa-circle-o"></i>Entidad Patronal</a></li>
+                
+</ul>
+
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
         </li>
         <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >
           <a href="#">

@@ -3,119 +3,112 @@
  <head>
   	<meta charset="utf-8"/>
   	<title>ESTADOS FINANCIEROS {FECHA}</title>
-  <style>  
-	 @page {
-        margin-top: 1cm;
-        margin-bottom: 1cm;
-    }
-    
-	table {
-		border: 0.5px solid black;
-		border-collapse:collapse;
-		font-size:12px;
-		width:95%;
-	}
+  <style> 
+ /* para clases de cabecera */ 
+.divheader{
+	width:100%; 
+	border:1px solid white;
+}
 	
-	table.firmas
-	{
-	border:0px solid black;
-	}
+.headertable{
+	width:100%;
 	
-	td.firmas{
-		border:0px solid black;
+}
+td.central{
+	background-repeat: no-repeat;
+  	background-size: 10% 100%;
+	background-image: url(view/images/Logo-Capremci-h-170.jpg); 
+	background-position: 100% 100%;
+	font-size: 11px;  
+	padding: 0px; 
+	text-align:center;
+	
+}
+.htexto1{		
+	font-size: 10px;  padding: 5px; 
+	text-align:left;
+	width: 65%;
+}
+.htexto2{		
+	font-size: 10px;  padding: 5px; 
+	text-align:left;
+	width: 33%;
+}
+
+
+/***************************/ 
+
+/****************************
+-------------Body-----------
+****************************/
+
+.table1{
+	border: 0px solid black;
 	border-collapse:collapse;
-	}
-	
-	th{
+	font-size:12px;
+	width:100%;
+}
+.table1 tr.conlineas td{
 	border:0.5px solid black;
+}
+
+.cabeza{
+	font-family:Times New Roman, sans-serif; text-align:center;
+  	font-size:10px; line-height:normal; width: 100%;
+}
+.cabezafin{
+	font-family:Times New Roman, sans-serif; text-align:right;
+  	font-size:10px; line-height:normal; width: 100%;
+  	border: hidden;
+}
+.cabezaespacio{
+	border-top: hidden;
+	border-left: hidden;
+	border-right: hidden;
+	border-bottom-style: solid;
+}
+.iniciotabla th{
+	text-align: center;  font-size: 10px;
+}
+.decimales{
+	text-align:right;
+}
+.table2{
+	border: 0px solid black;
 	border-collapse:collapse;
-	}
+	font-size:12px;
+	width:100%;
+}
+.table2 tr.conlineas td{
+	border:0.5px solid black;
+}
+
 	
-	
-	td{
-		border:0.5px solid black;
+table.firmas
+{
+	border: 0px solid black;
 	border-collapse:collapse;
-	}	
+	font-size:12px;
+	width:95%;
 	
-	footer
-	{
-    margin-top:20px;
-    width:100%;
-    height:100px;
-    background-color:red;
-	}
+}
+
+td.firmas{
+	border:0px solid black;
+	border-collapse:collapse;
+}
+th{
+	border:0.5px solid black;
+}
+
+
+
 	
-	.numero{
-		text-align:right;
-	}
-	
-	table tr.grupocuenta td  { 
-	background-color: #EEEEEE;
-	font-variant: small-caps;
-    font-weight: bold;
-    text-transform: uppercase;   
-    
-	}
-	
-	table tr.grupototales td  {
-	font-variant: small-caps;
-    font-weight: bold; 
-    /*text-decoration: underline;*/
-    /*border-bottom: 1px solid #333333;*/
-    
-	}
-	
-	table tr.titulos td  {
-	    font-weight: bold; 
-    
-	}
-	
-	thead
-	{
-		border:1px solid white;
-		border-bottom: 1px solid black;
-	}
-	
-	thead tr.cabeza
-	{
-		border:1px solid white;
-	}
-	
-	thead tr.cabezafin
-	{
-		border:1px solid white;
-		border-bottom: 1px solid black;
-	}
-	
-	thead td.cabeza
-	{
-		border:1px solid white;
-	}
-	
-	table tr td.ul  {
-		border-bottom: 1px solid #333333;    
-	}
-	
-	.centrado{
-		text-align: center;
-	}
-	
-	td .inferior{
-	 border-bottom: 1px solid red;
-	}
-	
-	.numero{
-		text-align:right;
-	}
-	
-  </style>
+</style>
   
   </head>
   <body>
-  <div style="font-family: Arial;  color:#000000; width: 100%; text-align: center; ">
-    	<p style="width: 100%;"><img  style="width: 100%; height:35px; width:150px; float:left;" align="right" src="view/images/logoCapremci.png" ></p>		
-  </div>
-  	
+  
   <div style="width:100%">  	
   		
   		{REPORTE}

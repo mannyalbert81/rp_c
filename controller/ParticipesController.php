@@ -390,7 +390,7 @@ class ParticipesController extends ControladorBase{
 	   
 	    $estado_participes = null; $estado_participes = new EstadoParticipesModel();
 	    $where_to="";
-	    $columnas = " core_participes.id_participes, 
+	    $columnas = "core_participes.id_participes, 
                                       core_ciudades.id_ciudades, 
                                       core_ciudades.nombre_ciudades, 
                                       core_participes.apellido_participes, 
@@ -435,11 +435,16 @@ class ParticipesController extends ControladorBase{
                                       public.core_genero_participes, 
                                       public.core_estado_civill_participes, 
                                       public.core_entidad_patronal, 
-                                      public.core_tipo_instruccion_participes 
-                    ";
+                                      public.core_tipo_instruccion_participes";
 	    
 	    
-	    $where    = " 1=1";
+	    $where    = "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
+                                      core_ciudades.id_ciudades = core_participes.id_cuidades AND
+                                      core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
+                                      core_estatus.id_estatus = core_participes.id_estatus AND
+                                      core_genero_participes.id_genero_participes = core_participes.id_genero_participes AND
+                                      core_estado_civill_participes.id_estado_civill_participes = core_participes.id_estado_civil_participes AND
+                                      core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND core_estado_participes.nombre_estado_participes = 'Activo'";
 	    
 	    $id       = "core_participes.id_participes";
 	    
@@ -450,16 +455,16 @@ class ParticipesController extends ControladorBase{
 	    
 	    if($action == 'ajax')
 	    {
-	        //estado_usuario
-	        $whereestado = "tabla_estado='GRUPOS'";
-	        $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
+	  
+	        $whereestado = "nombre_estado_participes = 'Activo'";
+	        $resultEstado = $estado_participes->getCondiciones('nombre_estado_participes' ,'public.core_estado_participes' , $whereestado , 'nombre_estado_participes');
 	        
 	        
 	        
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND (grupos.nombre_grupos LIKE '".$search."%' )";
+	            $where1=" AND (core_participes.nombre_participes LIKE '".$search."%' )";
 	            
 	            $where_to=$where.$where1;
 	        }else{
@@ -497,12 +502,37 @@ class ParticipesController extends ControladorBase{
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_grupos_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tabla_participes_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cuidad</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Apellido</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cedula</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nacimiento</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Direeción</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Telefono</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Celular</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ingreso</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Defunción </th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estatus</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Salida</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Genero</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado Civil</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Observación</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Correo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Entidad</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Entrada</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ocupación</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo Instrucción</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Conyugue</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Apellido Conyugue</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cedula Conyugue</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"># Dependencias</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"># Orden</th>';
 	            
 	            if($id_rol==1){
 	                
@@ -523,15 +553,43 @@ class ParticipesController extends ControladorBase{
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_ciudades.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_nacimiento_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->direccion_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->telefono_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->celular_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_ingreso_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_defuncion_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estatus.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_salida_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_genero_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civill_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->observacion_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->correo_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_entidad_patronal.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_entrada_patronal_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->ocupacion_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_instruccion_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_conyugue_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->apellido_esposa_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->cedula_conyugue_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_dependencias_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->codigo_alternativo_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_numero_orden_participes.'</td>';
+	                
+	                
+	                
 	                
 	             
 	                
 	                if($id_rol==1){
 	                    
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=index&id_grupos='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=borrarId&id_grupos='.$res->id_grupos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
+	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=index&id_participes='.$res->id_participes.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
+	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=borrarId&id_participes='.$res->id_participes.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
 	                    
 	                }
 	                
@@ -544,7 +602,7 @@ class ParticipesController extends ControladorBase{
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_grupos_activos("index.php", $page, $total_pages, $adjacents).'';
+	            $html.=''. $this->paginate_participes_activos("index.php", $page, $total_pages, $adjacents).'';
 	            $html.='</div>';
 	            
 	            
@@ -565,31 +623,72 @@ class ParticipesController extends ControladorBase{
 	    }
 	}
 	
-	public function consulta_grupos_inactivos(){
+	public function consulta_participes_inactivos(){
 	    
 	    session_start();
 	    $id_rol=$_SESSION["id_rol"];
 	    
 	    $usuarios = new UsuariosModel();
 	    
-	    $estado = null; $estado = new EstadoModel();
+	    $estado_participes = null; $estado_participes = new EstadoParticipesModel();
 	    $where_to="";
-	    $columnas = " grupos.id_grupos,
-                      grupos.nombre_grupos,
-                      estado.id_estado,
-                      estado.nombre_estado,
-                      estado.tabla_estado,
-                      grupos.creado,
-                      grupos.modificado";
+	    $columnas = "core_participes.id_participes,
+                                      core_ciudades.id_ciudades,
+                                      core_ciudades.nombre_ciudades,
+                                      core_participes.apellido_participes,
+                                      core_participes.nombre_participes,
+                                      core_participes.cedula_participes,
+                                      core_participes.fecha_nacimiento_participes,
+                                      core_participes.direccion_participes,
+                                      core_participes.telefono_participes,
+                                      core_participes.celular_participes,
+                                      core_participes.fecha_ingreso_participes,
+                                      core_participes.fecha_defuncion_participes,
+                                      core_estado_participes.id_estado_participes,
+                                      core_estado_participes.nombre_estado_participes,
+                                      core_estatus.id_estatus,
+                                      core_estatus.nombre_estatus,
+                                      core_participes.fecha_salida_participes,
+                                      core_genero_participes.id_genero_participes,
+                                      core_genero_participes.nombre_genero_participes,
+                                      core_estado_civill_participes.id_estado_civill_participes,
+                                      core_estado_civill_participes.nombre_estado_civill_participes,
+                                      core_participes.observacion_participes,
+                                      core_participes.correo_participes,
+                                      core_entidad_patronal.id_entidad_patronal,
+                                      core_entidad_patronal.nombre_entidad_patronal,
+                                      core_participes.fecha_entrada_patronal_participes,
+                                      core_participes.ocupacion_participes,
+                                      core_tipo_instruccion_participes.id_tipo_instruccion_participes,
+                                      core_tipo_instruccion_participes.nombre_tipo_instruccion_participes,
+                                      core_participes.nombre_conyugue_participes,
+                                      core_participes.apellido_esposa_participes,
+                                      core_participes.cedula_conyugue_participes,
+                                      core_participes.numero_dependencias_participes,
+                                      core_participes.codigo_alternativo_participes,
+                                      core_participes.fecha_numero_orden_participes,
+                                      core_participes.creado,
+                                      core_participes.modificado";
 	    
-	    $tablas = "public.grupos INNER JOIN public.estado ON estado.id_estado=grupos.id_estado
-                   AND estado.nombre_estado='INACTIVO' AND estado.tabla_estado ='GRUPOS'
-                    ";
+	    $tablas = "public.core_participes,
+                                      public.core_ciudades,
+                                      public.core_estado_participes,
+                                      public.core_estatus,
+                                      public.core_genero_participes,
+                                      public.core_estado_civill_participes,
+                                      public.core_entidad_patronal,
+                                      public.core_tipo_instruccion_participes";
 	    
 	    
-	    $where    = " 1=1";
+	    $where    = "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
+                                      core_ciudades.id_ciudades = core_participes.id_cuidades AND
+                                      core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
+                                      core_estatus.id_estatus = core_participes.id_estatus AND
+                                      core_genero_participes.id_genero_participes = core_participes.id_genero_participes AND
+                                      core_estado_civill_participes.id_estado_civill_participes = core_participes.id_estado_civil_participes AND
+                                      core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND core_estado_participes.nombre_estado_participes = 'Inactivo'";
 	    
-	    $id       = "grupos.id_grupos";
+	    $id       = "core_participes.id_participes";
 	    
 	    
 	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -598,16 +697,15 @@ class ParticipesController extends ControladorBase{
 	    
 	    if($action == 'ajax')
 	    {
-	        //estado_usuario
-	        $whereestado = "tabla_estado='GRUPOS'";
-	        $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
-	        
+	    
+	        $whereestado = "nombre_estado_participes = 'Inactivo'";
+	        $resultEstado = $estado_participes->getCondiciones('nombre_estado_participes' ,'public.core_estado_participes' , $whereestado , 'nombre_estado_participes');
 	        
 	        
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND (grupos.nombre_grupos LIKE '".$search."%' )";
+	            $where1=" AND (core_participes.nombre_participes LIKE '".$search."%' )";
 	            
 	            $where_to=$where.$where1;
 	        }else{
@@ -643,13 +741,37 @@ class ParticipesController extends ControladorBase{
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_grupos_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tabla_participes_inactivos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cuidad</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Apellido</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cedula</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nacimiento</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Direeción</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Telefono</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Celular</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ingreso</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Defunción </th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-	            
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estatus</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Salida</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Genero</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado Civil</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Observación</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Correo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Entidad</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Entrada</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ocupación</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo Instrucción</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Conyugue</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Apellido Conyugue</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cedula Conyugue</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"># Dependencias</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"># Orden</th>';
 	            if($id_rol==1){
 	                
 	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -669,15 +791,39 @@ class ParticipesController extends ControladorBase{
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
-	                
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_ciudades.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_nacimiento_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->direccion_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->telefono_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->celular_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_ingreso_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_defuncion_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estatus.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_salida_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_genero_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civill_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->observacion_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->correo_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_entidad_patronal.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_entrada_patronal_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->ocupacion_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_instruccion_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_conyugue_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->apellido_esposa_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->cedula_conyugue_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_dependencias_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->codigo_alternativo_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_numero_orden_participes.'</td>';
 	                
 	                
 	                if($id_rol==1){
 	                    
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=index&id_grupos='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=borrarId&id_grupos='.$res->id_grupos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
+	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=index&id_participes='.$res->id_participes.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
+	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=borrarId&id_participes='.$res->id_participes.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
 	                    
 	                }
 	                
@@ -690,7 +836,7 @@ class ParticipesController extends ControladorBase{
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_grupos_activos("index.php", $page, $total_pages, $adjacents).'';
+	            $html.=''. $this->paginate_participes_inactivos("index.php", $page, $total_pages, $adjacents).'';
 	            $html.='</div>';
 	            
 	            
@@ -714,7 +860,7 @@ class ParticipesController extends ControladorBase{
 	
 	
 	
-	public function paginate_grupos_activos($reload, $page, $tpages, $adjacents) {
+	public function paginate_participes_activos($reload, $page, $tpages, $adjacents) {
 	    
 	    $prevlabel = "&lsaquo; Prev";
 	    $nextlabel = "Next &rsaquo;";
@@ -725,15 +871,15 @@ class ParticipesController extends ControladorBase{
 	    if($page==1) {
 	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
 	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_participes_activos(1)'>$prevlabel</a></span></li>";
 	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(".($page-1).")'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_participes_activos(".($page-1).")'>$prevlabel</a></span></li>";
 	        
 	    }
 	    
 	    // first label
 	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>1</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_participes_activos(1)'>1</a></li>";
 	    }
 	    // interval
 	    if($page>($adjacents+2)) {
@@ -748,9 +894,9 @@ class ParticipesController extends ControladorBase{
 	        if($i==$page) {
 	            $out.= "<li class='active'><a>$i</a></li>";
 	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_participes_activos(1)'>$i</a></li>";
 	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(".$i.")'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_participes_activos(".$i.")'>$i</a></li>";
 	        }
 	    }
 	    
@@ -763,13 +909,13 @@ class ParticipesController extends ControladorBase{
 	    // last
 	    
 	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos($tpages)'>$tpages</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_participes_activos($tpages)'>$tpages</a></li>";
 	    }
 	    
 	    // next
 	    
 	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(".($page+1).")'>$nextlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_participes_activos(".($page+1).")'>$nextlabel</a></span></li>";
 	    }else {
 	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
 	    }
@@ -784,7 +930,7 @@ class ParticipesController extends ControladorBase{
 	
 	
 	
-	public function paginate_grupos_inactivos($reload, $page, $tpages, $adjacents) {
+	public function paginate_participes_inactivos($reload, $page, $tpages, $adjacents) {
 	    
 	    $prevlabel = "&lsaquo; Prev";
 	    $nextlabel = "Next &rsaquo;";
@@ -795,15 +941,15 @@ class ParticipesController extends ControladorBase{
 	    if($page==1) {
 	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
 	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_participes_inactivos(1)'>$prevlabel</a></span></li>";
 	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(".($page-1).")'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_participes_inactivos(".($page-1).")'>$prevlabel</a></span></li>";
 	        
 	    }
 	    
 	    // first label
 	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>1</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_participes_inactivos(1)'>1</a></li>";
 	    }
 	    // interval
 	    if($page>($adjacents+2)) {
@@ -818,9 +964,9 @@ class ParticipesController extends ControladorBase{
 	        if($i==$page) {
 	            $out.= "<li class='active'><a>$i</a></li>";
 	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_participes_inactivos(1)'>$i</a></li>";
 	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(".$i.")'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_participes_inactivos(".$i.")'>$i</a></li>";
 	        }
 	    }
 	    
@@ -833,13 +979,13 @@ class ParticipesController extends ControladorBase{
 	    // last
 	    
 	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos($tpages)'>$tpages</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_participes_inactivos($tpages)'>$tpages</a></li>";
 	    }
 	    
 	    // next
 	    
 	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(".($page+1).")'>$nextlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_participes_inactivos(".($page+1).")'>$nextlabel</a></span></li>";
 	    }else {
 	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
 	    }

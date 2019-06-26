@@ -44,91 +44,50 @@ class GenerarChequeController extends ControladorBase{
 	
 	}
 	
-	
-	public function InsertaEntidad(){
-			
-		session_start();
-		
-		$entidad = new CoreEntidadPatronalModel();
-		
-		$nombre_controladores = "CoreEntidadPatronal";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $entidad->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-			
-		if (!empty($resultPer)){	
-		    
-		    $_nombre_entidad_patronal = (isset($_POST["nombre_entidad_patronal"])) ? $_POST["nombre_entidad_patronal"] : "";
-		    $_ruc_entidad_patronal = (isset($_POST["ruc_entidad_patronal"])) ? $_POST["ruc_entidad_patronal"] : "";
-		    $_codigo_entidad_patronal = (isset($_POST["codigo_entidad_patronal"])) ? $_POST["codigo_entidad_patronal"] : "";
-		    $_tipo_entidad_patronal = (isset($_POST["tipo_entidad_patronal"])) ? $_POST["tipo_entidad_patronal"] : "";
-		    $_acronimo_entidad_patronal = (isset($_POST["acronimo_entidad_patronal"])) ? $_POST["acronimo_entidad_patronal"] : "";
-		    $_direccion_entidad_patronal = (isset($_POST["direccion_entidad_patronal"])) ? $_POST["direccion_entidad_patronal"] : "";
-		    $_id_entidad_patronal = (isset($_POST["id_entidad_patronal"])) ? $_POST["id_entidad_patronal"] : 0 ;
-		    
-		    /*si es insertado enviar en cero el id_banco a la funcion*/							
-			$funcion = "ins_core_entidad_patronal";
-			$respuesta = 0 ;
-			$mensaje = ""; 
-			
-			if($_id_entidad_patronal == 0){
-			    
-			    $parametros = " '$_nombre_entidad_patronal', '$_ruc_entidad_patronal', '$_codigo_entidad_patronal', '$_tipo_entidad_patronal', '$_acronimo_entidad_patronal', '$_direccion_entidad_patronal'";
-			    $entidad->setFuncion($funcion);
-			    $entidad->setParametros($parametros);
-			    $resultado = $entidad->llamafuncion();
-			    
-			    if(!empty($resultado) && count($resultado) > 0 ){
-			        
-			        foreach ( $resultado[0] as $k => $v){
-			            
-			            $respuesta = $v;
-			        }
-			        
-			        $mensaje = "Entidad Ingresado Correctamente";
-			        
-			    }
-			}elseif ($_id_entidad_patronal > 0){
-			    
-			    $parametros = " '$_nombre_entidad_patronal', '$_ruc_entidad_patronal', '$_codigo_entidad_patronal', '$_tipo_entidad_patronal', '$_acronimo_entidad_patronal', '$_direccion_entidad_patronal'";
-			    $entidad->setFuncion($funcion);
-			    $entidad->setParametros($parametros);
-			    $resultado = $entidad->llamafuncion();
-			    
-			    if(!empty($resultado) && count($resultado) > 0 ){
-			        
-			        foreach ( $resultado[0] as $k => $v){
-			            
-			            $respuesta = $v;
-			        }
-			        
-			        $mensaje = "Entidad Actualizada Correctamente";
-			        
-			    }
-			}
-			
-			
-			if($respuesta > 0 ){
-			    
-			    echo json_encode(array('respuesta'=>$respuesta,'mensaje'=>$mensaje));
-			    exit();
-			}
-			
-			echo "Error al Ingresar Entidad";
-			exit();
-			
-		}
-		else
-		{
-		    $this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Entidad"
-		
-			));
-		
-		
-		}
-		
+	public function indexCheque(){
+	    
+	    session_start();
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    $_id_usuarios = (isset($_SESSION['id_usuarios'])) ? $_SESSION['id_usuarios'] : null;
+	    
+	    if( !isset($_GET['id_cuentas_pagar']) ){
+	        
+	        $this->redirect("Pagos","index");
+	        exit();
+	    }
+	    
+	    $_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
+	    
+	    $query = "SELECT l.id_lote, l.nombre_lote, cp.id_cuentas_pagar, cp.numero_cuentas_pagar, cp.descripcion_cuentas_pagar, cp.fecha_cuentas_pagar, 
+                    cp.compras_cuentas_pagar, cp.total_cuentas_pagar, p.id_proveedores, p.nombre_proveedores, p.identificacion_proveedores,
+                    b.id_bancos, b.nombre_bancos, m.id_moneda, m.signo_moneda || '-' || m.nombre_moneda AS moneda
+                FROM tes_cuentas_pagar cp
+                INNER JOIN tes_lote l        
+                ON cp.id_lote = l.id_lote
+                INNER JOIN proveedores p
+                ON p.id_proveedores = cp.id_proveedor
+                INNER JOIN tes_bancos b
+                ON b.id_bancos = cp.id_banco
+                INNER JOIN tes_moneda m
+                ON m.id_moneda = cp.id_moneda
+                WHERE 1 = 1
+                AND cp.id_cuentas_pagar = $_id_cuentas_pagar ";
+	    
+	    $rsCuentasPagar = $cuentasPagar->enviaquery($query);
+	    
+	    // PARA BUSCAR CONSECUTIVO DE PAGO 
+	    
+	    $queryConsecutivo = "SELECT numero_consecutivos FROM consecutivos WHERE nombre_consecutivos = 'PAGOS' AND id_entidades = 1";
+	    
+	    $rsConsecutivos = $cuentasPagar->enviaquery($queryConsecutivo);
+	    
+	    $this->view_tesoreria("GenerarCheque",array(
+	        "resultSet"=>$rsCuentasPagar,"rsConsecutivos"=>$rsConsecutivos
+	    ));
+	    
 	}
-	
 	
 	
 	public function paginate($reload, $page, $tpages, $adjacents, $funcion = "") {
@@ -232,6 +191,20 @@ class GenerarChequeController extends ControladorBase{
 	    }
 	    
 	}
+	
+	public function distribucionCheque(){
+	    
+	    /* se realiza la distribucion de pago
+	     * se realiza insercion
+	     * se realiza suma de valores
+	     */
+	    session_start();
+	    
+	    $_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
+	    
+	    echo "llego";
+	}
+	
 	
 	
 	/***

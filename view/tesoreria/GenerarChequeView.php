@@ -19,13 +19,13 @@
         z-index: 9999;
         background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;
-        }
- 	  
+        } 	  
  	</style>
    <?php include("view/modulos/links_css.php"); ?>
   			        
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
+    <span id="fechasistema"><?php echo date('Y-m-d');?></span>
 
      <?php
         
@@ -70,7 +70,7 @@
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Imprimir Cheque</h3>
+          <h3 class="box-title">Generacion Cheque</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -80,105 +80,124 @@
         
                   
   		<div class="box-body">
+  		
+  		<div id="divLoaderPage" ></div> 
 
-			<form id="frm_entidad" action="<?php echo $helper->url("GenerarCheque","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
-             
-							    
+			<form id="frm_genera_cheque" action="<?php echo $helper->url("GenerarCheque","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+             	
+             	<?php $cuentaspagar = $resultSet[0]; ?>    
 							    
 		    	 <div class="row">
-        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-            		      <label for="nombre_entidad_patronal" class="control-label">Id. Lote:</label>
-                          <input  type="text" class="form-control" id="nombre_entidad_patronal" name="nombre_entidad_patronal" value=""  placeholder="Nombre Entidad" onkeypress="mayus(this);"/>
-                          <input type="hidden" name="id_entidad_patronal" id="id_entidad_patronal" value="0" />
-                          <div id="mensaje_nombre_entidad_patronal" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
-                                              
-                        </div>
-            		  </div>
-            		  
-            		<div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-            		    					  
-                          <label for="ruc_entidad_patronal" class="control-label">Total Lote:</label>
-                          <input  type="text" class="form-control" id="ruc_entidad_patronal" name="ruc_entidad_patronal" value=""  placeholder="Ruc" onKeyPress="return soloNumeros(event)"/>
-                          <input type="hidden" name="id_entidad_patronal" id="id_entidad_patronal" value="0" />
-                          <div id="mensaje_ruc_entidad_patronal" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
-                                              
-                        </div>
-            		  </div>
-            		  
-            		  <div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-            		    					  
-                          <label for="codigo_entidad_patronal" class="control-label">Id. de Chequera:</label>
-                          <input  type="text" class="form-control" id="codigo_entidad_patronal" name="codigo_entidad_patronal" value=""  placeholder="Código"/>
-                          <input type="hidden" name="id_entidad_patronal" id="id_entidad_patronal" value="0" />
-                          <div id="mensaje_codigo_entidad_patronal" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
-                                              
-                        </div>
-            		  </div>
-            		  
-            		  <div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-            		    					  
-                          <label for="tipo_entidad_patronal" class="control-label">Id. de Moneda:</label>
-                          <input  type="text" class="form-control" id="tipo_entidad_patronal" name="tipo_entidad_patronal" value=""  placeholder="Tipo" onKeyPress="return soloNumeros(event)"/>
-                          <input type="hidden" name="id_entidad_patronal" id="id_entidad_patronal" value="0" />
-                          <div id="mensaje_tipo_entidad_patronal" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
-                                              
-                        </div>
-            		  </div>
-            		  
-            		  <div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-            		    					  
-                          <label for="acronimo_entidad_patronal" class="control-label">Número de Cheque:</label>
-                          <input  type="text" class="form-control" id="acronimo_entidad_patronal" name="acronimo_entidad_patronal" value=""  placeholder="Acrónimo" onkeypress="mayus(this);"/>
-                          <input type="hidden" name="id_entidad_patronal" id="id_entidad_patronal" value="0" />
-                          <div id="mensaje_acronimo_entidad_patronal" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
-                                              
-                        </div>
-            		  </div>
-            		  <div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-            		    					  
-                          <label for="acronimo_entidad_patronal" class="control-label">Fecha de Cheque:</label>
-                          <input  type="date" class="form-control" id="acronimo_entidad_patronal" name="acronimo_entidad_patronal" value=""  placeholder="Acrónimo" onkeypress="mayus(this);"/>
-                          <input type="hidden" name="id_entidad_patronal" id="id_entidad_patronal" value="0" />
-                          <div id="mensaje_acronimo_entidad_patronal" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
-                                              
-                        </div>
-            		  </div>
-            		  
-            		  <div class="col-xs-12 col-md-3 col-md-6 ">
-            		    <div class="form-group">
-            		    					  
-                          <label for="acronimo_entidad_patronal" class="control-label">Comentario del Cheque:</label>
-                          <input  type="text" class="form-control" id="acronimo_entidad_patronal" name="acronimo_entidad_patronal" value=""  placeholder="Acrónimo" onkeypress="mayus(this);"/>
-                          <input type="hidden" name="id_entidad_patronal" id="id_entidad_patronal" value="0" />
-                          <div id="mensaje_acronimo_entidad_patronal" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
-                                              
-                        </div>
-            		  </div>	 
-				    
-          	   	</div>	
-							          		        
-           		<div class="row">
-    			    <div class="col-xs-12 col-md-4 col-lg-4 " >
-        	   		    <div class="form-group">
-    	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
-    	                  <a href="<?php echo $helper->url("CoreEntidadPatronal","Index"); ?>" class="btn btn-danger">CANCELAR</a>
+		    	 
+		    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
+		    	 		<div class="form-group ">                 			 
+            				<label for="nombre_lote" class="control-label" > Id. lote:</label>
+            				<div class="form-group-sm">                				
+                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $cuentaspagar->nombre_lote; ?>" autofocus>  
+                              <input type="hidden" id="id_lote" name="id_lote" value="<?php echo $cuentaspagar->id_lote; ?>">
+            				</div>
+                						 
+            			</div>		    	 	
+		    	 	</div>	
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="total_lote" class=" control-label" >Total Lote:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control" id="total_lote" name="total_lote"  value="<?php echo $cuentaspagar->total_cuentas_pagar; ?>" > 
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="nombre_banco" class=" control-label" >Id. de Chequera:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control" id="nombre_banco" name="nombre_banco" value="<?php echo $cuentaspagar->nombre_bancos; ?>" >
+                				 <input type="hidden" class="form-control" id="id_banco" name="id_banco" value="<?php echo $cuentaspagar->id_bancos; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="id_moneda" class=" control-label" >Id. de Moneda:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control" id="id_moneda" name="id_moneda" value="<?php echo $cuentaspagar->moneda; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div>   
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="numero_cheque" class=" control-label" >Número de Cheque:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control" id="numero_cheque" name="numero_cheque" value="" >
+                    		</div>        			 
+            			</div>
+            		</div>  
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="fecha_cheque" class=" control-label" >Fecha de Cheque:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control" id="fecha_cheque" name="fecha_cheque" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
+                    		</div>        			 
+            			</div>
+            		</div>  
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="comentario_cheque" class=" control-label" >Comentario del Cheque:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="comentario_cheque" name="comentario_cheque" value="" >
+                    		</div>        			 
+            			</div>
+            		</div>
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="identificacion_proveedor" class=" control-label" >Identificacion Proveedor:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="<?php echo $cuentaspagar->identificacion_proveedores; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="nombre_proveedor" class=" control-label" >Nombre Proveedor:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $cuentaspagar->nombre_proveedores; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div>
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="comentario_cheque" class=" control-label" >Numero Pago:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $rsConsecutivos[0]->numero_consecutivos; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div>  
+            						    
+          	   	</div>
+          	   	
+          	   	<div class="row">
+          	   		<div class="col-xs-12 col-md-4 col-lg-4" style="text-align: left;">
+                    	<div class="form-group">
+                    	  <button type="submit" id="genera_cheque" name="genera_cheque" class="btn btn-success">
+                          	<i class="glyphicon glyphicon-plus"></i> Aceptar
+                          </button>
+                          <button type="button" id="genera_cheque" name="genera_cheque" class="btn btn-success" data-toggle="modal" data-target="#mod_distribucion_pago" >
+                          	<i class="glyphicon glyphicon-plus"></i> Distribucion
+                          </button>                         
+                          <a href="<?php echo $helper->url("GenerarCheque","Index"); ?>" class="btn btn-primary">
+                          <i class="glyphicon glyphicon-remove"></i> Cancelar</a>
 	                    </div>
-	                    
-        		    </div>        		    
-    		    </div>
+        		    </div>          	   	
+          	   	</div>	
  
            </form>
                       
@@ -188,6 +207,43 @@
     
   </div>
   
+  <!-- Para modales -->
+  <div class="modal fade" id="mod_distribucion_pago" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" style="width:90%">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Lotes Cuentas Pagar</h4>
+          </div>
+          <div class="modal-body">
+          <!-- empieza el formulario modal productos -->
+          	<form class="form " method="post" id="frm_distribucion" name="frm_distribucion">
+          	
+          	<div class="row">
+          		<div id="mod_msg_lote" ></div>
+          	</div>
+          	
+          	<hr>
+          	
+		  	<div class="box-body">        
+				<div id="lista_lote" ></div>
+        	</div>
+			  
+          	</form>
+          	<!-- termina el formulario modal de impuestos -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" id="btn_distribucion_aceptar" class="btn btn-default" >Aceptar</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+    
+  
  
  	<?php include("view/modulos/footer.php"); ?>	
 
@@ -195,29 +251,10 @@
  </div>
     
     <?php include("view/modulos/links_js.php"); ?>
-	
+    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
+	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.02"></script>
 
-   <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
-   <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/Core/js/CoreEntidadPatronal.js?0.5"></script> 
-   <script type="text/javascript">
-// Solo permite ingresar numeros.
-function soloNumeros(e){
-	var key = window.Event ? e.which : e.keyCode
-	return (key >= 48 && key <= 57)
-}
-</script>    
-       
- <script type="text/javascript">
-
- function mayus(e) {
-
-	 e.value = e.value.toUpperCase();
-	}
- </script>
- 	
-	
-	
   </body>
 </html>   
 

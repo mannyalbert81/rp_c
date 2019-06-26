@@ -44,11 +44,50 @@ class GenerarChequeController extends ControladorBase{
 	
 	}
 	
-	public function modListaCuentas(){
+	public function indexCheque(){
 	    
-	    echo 'llego';
+	    session_start();
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    $_id_usuarios = (isset($_SESSION['id_usuarios'])) ? $_SESSION['id_usuarios'] : null;
+	    
+	    if( !isset($_GET['id_cuentas_pagar']) ){
+	        
+	        $this->redirect("Pagos","index");
+	        exit();
+	    }
+	    
+	    $_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
+	    
+	    $query = "SELECT l.id_lote, l.nombre_lote, cp.id_cuentas_pagar, cp.numero_cuentas_pagar, cp.descripcion_cuentas_pagar, cp.fecha_cuentas_pagar, 
+                    cp.compras_cuentas_pagar, cp.total_cuentas_pagar, p.id_proveedores, p.nombre_proveedores, p.identificacion_proveedores,
+                    b.id_bancos, b.nombre_bancos, m.id_moneda, m.signo_moneda || '-' || m.nombre_moneda AS moneda
+                FROM tes_cuentas_pagar cp
+                INNER JOIN tes_lote l        
+                ON cp.id_lote = l.id_lote
+                INNER JOIN proveedores p
+                ON p.id_proveedores = cp.id_proveedor
+                INNER JOIN tes_bancos b
+                ON b.id_bancos = cp.id_banco
+                INNER JOIN tes_moneda m
+                ON m.id_moneda = cp.id_moneda
+                WHERE 1 = 1
+                AND cp.id_cuentas_pagar = $_id_cuentas_pagar ";
+	    
+	    $rsCuentasPagar = $cuentasPagar->enviaquery($query);
+	    
+	    // PARA BUSCAR CONSECUTIVO DE PAGO 
+	    
+	    $queryConsecutivo = "SELECT numero_consecutivos FROM consecutivos WHERE nombre_consecutivos = 'PAGOS' AND id_entidades = 1";
+	    
+	    $rsConsecutivos = $cuentasPagar->enviaquery($queryConsecutivo);
+	    
+	    $this->view_tesoreria("GenerarCheque",array(
+	        "resultSet"=>$rsCuentasPagar,"rsConsecutivos"=>$rsConsecutivos
+	    ));
+	    
 	}
-	
 	
 	
 	public function paginate($reload, $page, $tpages, $adjacents, $funcion = "") {
@@ -152,6 +191,20 @@ class GenerarChequeController extends ControladorBase{
 	    }
 	    
 	}
+	
+	public function distribucionCheque(){
+	    
+	    /* se realiza la distribucion de pago
+	     * se realiza insercion
+	     * se realiza suma de valores
+	     */
+	    session_start();
+	    
+	    $_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
+	    
+	    echo "llego";
+	}
+	
 	
 	
 	/***

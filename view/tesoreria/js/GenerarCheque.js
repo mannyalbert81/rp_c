@@ -3,13 +3,6 @@ $(document).ready(function(){
 	
 	init();
 	
-	devuelveConsecutivoCxP();
-	cargaTipoDocumento();
-	cargaFormasPago();
-	cargaBancos();
-	cargaMoneda();
-	
-	
 	/* para carga de listados */
 	//consultaActivos();
 	cargaModImpuestos();
@@ -74,164 +67,8 @@ function numeros(e){
 	  }
  }
 
-/*******************************************************************************
- * function devuelve sequencial de CxP dc 2019-04-18
- * 
- * @returns
- */
-function devuelveConsecutivoCxP(){
-	
-	let $numeroComprobante = $("#num_comprobante");
-	let $idconsecutivo = $("#id_consecutivo");
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=CuentasPagar&action=DevuelveConsecutivoCxP",
-		type:"POST",
-		dataType:"json",
-		data:null
-	}).done(function(datos){		
-		
-		let array = datos.data[0];
-		
-		$numeroComprobante.val(array.numero_consecutivos);
-		$idconsecutivo.val(array.id_consecutivos);
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log('revisar consecutivos de Cuentas X Pagar');
-		
-	})
-}
-
-/*******************************************************************************
- * function to upload formas pago dc 2019-04-18
- * 
- * @returns
- */
-function cargaFormasPago(){
-	
-	let $formapago = $("#id_forma_pago");
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=CuentasPagar&action=cargaFormasPago",
-		type:"POST",
-		dataType:"json",
-		data:null
-	}).done(function(datos){		
-		
-		$formapago.empty();
-		$formapago.append("<option value='0' >--Seleccione--</option>");
-		
-		$.each(datos.data, function(index, value) {
-			$formapago.append("<option value= " +value.id_forma_pago +" >" + value.nombre_forma_pago  + "</option>");	
-  		});
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
-		$formapago.empty();
-	})
-}
-
-/*******************************************************************************
- * function to upload formas pago dc 2019-04-18
- * 
- * @returns
- */
-function cargaTipoDocumento(){
-	
-	let $tipoDocumento = $("#id_tipo_documento");
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=CuentasPagar&action=cargaTipoDocumento",
-		type:"POST",
-		dataType:"json",
-		data:null
-	}).done(function(datos){		
-		
-		$tipoDocumento.empty();
-		$tipoDocumento.append("<option value='0' >--Seleccione--</option>");
-		
-		$.each(datos.data, function(index, value) {
-			$tipoDocumento.append("<option value= " +value.id_tipo_documento +" >" + value.nombre_tipo_documento  + "</option>");	
-  		});
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
-		$tipoDocumento.empty();
-	})
-}
 
 
-/*******************************************************************************
- * function to upload bancos dc 2019-04-18
- * 
- * @returns
- */
-function cargaBancos(){
-	let $bancos = $("#id_bancos");
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=CuentasPagar&action=cargaBancos",
-		type:"POST",
-		dataType:"json",
-		data:null
-	}).done(function(datos){		
-		
-		$bancos.empty();
-		$bancos.append("<option value='0' >--Seleccione--</option>");
-		
-		$.each(datos.data, function(index, value) {
-			$bancos.append("<option value= " +value.id_bancos +" >" + value.nombre_bancos  + "</option>");	
-  		});
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
-		$bancos.empty();
-	})
-}
-
-/*******************************************************************************
- * function to listar Moneda dc 2019-04-18
- * 
- * @returns
- */
-function cargaMoneda(){
-	let $moneda = $("#id_moneda");
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=CuentasPagar&action=cargaMoneda",
-		type:"POST",
-		dataType:"json",
-		data:null
-	}).done(function(datos){		
-		
-		$moneda.empty();
-		
-		$.each(datos.data, function(index, value) {
-			$moneda.append("<option value= " +value.id_moneda +" >" + value.signo_moneda+"-"+value.nombre_moneda  + "</option>");	
-  		});
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
-		$moneda.empty();
-	})
-}
-
-
-
-
-
-
- 
 
  /* PARA EVITAR SOBRECARGA DE PAGINA */
  
@@ -253,82 +90,9 @@ function cargaMoneda(){
 	 	 
  }); 
  
- /***************************************************************************
-	 * funcion abre modal de ingreso de los impuestos a la factura
-	 * 
-	 * @param event
-	 * @returns
-	 */
  
- 
- 
-
-
-
  /* PARA SUBMIT DE MODALES */
  
- /***************************************************************************
-	 * dc 2019-04-29 formulario de lote
-	 */
-$("#frm_genera_lote").on("submit",function(event){
-	
-	let $id_lote = $("#id_lote").val();
-	let $nombre_lote = $("#mod_nombre_lote").val();
-	let $id_frecuencia = $("#mod_id_frecuencia").val();
-	let $descripcion_lote = $("#mod_descripcion_lote").val();
-	
-	var parametros = {id_lote:$id_lote,nombre_lote:$nombre_lote,decripcion_lote:$descripcion_lote,id_frecuencia:$id_frecuencia}
-	
-	var $div_respuesta = $("#msg_frm_lote"); $div_respuesta.text("").removeClass();
-	
-	if($id_lote > 0){ 		
-		
-		$("#msg_frm_lote").notify("!Cuidado! Lote ya esta Generado",{ className: "warn",position:"button", autoHideDelay: 2000 });
-		 return false;
-		}	
-		
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=CuentasPagar&action=generaLote",
-		type:"POST",
-		dataType:"json",
-		data:parametros
-	}).done(function(respuesta){
-		
-		if( respuesta.hasOwnProperty('error') && respuesta.error != '' ){
-			
-			$("#msg_frm_lote").notify(respuesta.error,{ className: "warn",position:"button", autoHideDelay: 2000 });
-			
-		}
-				
-		if(respuesta.valor > 0){
-			
-			
-			$("#msg_frm_lote").notify("Lote Generado",{ className: "success",position:"button", autoHideDelay: 2000 });
-			$("#id_lote").val(respuesta.valor);
-			desbloqueaControles();
-		}
-		
-		
-	}).fail(function(xhr,status,error){
-		
-		var err = xhr.responseText
-		console.log(err);
-		
-		$("#id_lote").val("");
-		//cambio dc 05-06-2019
-		//$div_respuesta.text("Error al generar Lote").addClass("alert alert-warning");
-		//por
-		$("#msg_frm_lote").notify("Error al generar Lote",{ className: "error",position:"button", autoHideDelay: 2000 });
-		
-		
-	}).always(function(){
-				
-	})
-	
-	event.preventDefault();
-})
-
 
 
 /* PARA LISTA EN MODALES */
@@ -608,44 +372,4 @@ $("#frm_cuentas_pagar").on("submit",function(event){
 	event.preventDefault()
 })
 
-/********************************************************************************
- * dc 2019-05-22
- * @returns
- */
-function bloqueaControles(){
-	
-	let arrayInput = ["cedula_proveedor","condiciones_pago_cuentas_pagar", "id_bancos", "id_moneda","numero_documento",
-		"numero_ord_compra", "metodo_envio_cuentas_pagar", "monto_cuentas_pagar", "desc_comercial_cuentas_pagar", "flete_cuentas_pagar",
-		"miscelaneos_cuentas_pagar", "impuesto_cuentas_pagar", "total_cuentas_pagar", "monto1099_cuentas_pagar",
-		"efectivo_cuentas_pagar", "cheque_cuentas_pagar", "tarjeta_credito_cuentas_pagar",
-		"condonaciones_cuentas_pagar","saldo_cuentas_pagar"];
-	
-	$.each(arrayInput, function(i,v){
-		$("#"+v).attr('readonly','readonly');
-	})
-	
-	/*$("input:text, select").each(function(i,value){
-		console.log($(this).attr('name'));
-	})*/
-	
-}
-
-/********************************************************************************
- * dc 2019-05-22
- * @returns
- */
-function desbloqueaControles(){
-	
-	let arrayInput = ["cedula_proveedor","condiciones_pago_cuentas_pagar", "id_bancos", "id_moneda","numero_documento",
-		"numero_ord_compra", "metodo_envio_cuentas_pagar", "monto_cuentas_pagar", "desc_comercial_cuentas_pagar", "flete_cuentas_pagar",
-		"miscelaneos_cuentas_pagar", "impuesto_cuentas_pagar", "total_cuentas_pagar", "monto1099_cuentas_pagar",
-		"efectivo_cuentas_pagar", "cheque_cuentas_pagar", "tarjeta_credito_cuentas_pagar",
-		"condonaciones_cuentas_pagar","saldo_cuentas_pagar"];
-	
-	$.each(arrayInput, function(i,v){
-		$("#"+v).attr('readonly',false);
-	})
-	
-	
-}
 

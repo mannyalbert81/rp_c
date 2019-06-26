@@ -83,12 +83,19 @@
   		
   		<div id="lista_cuentas_pagar">
   			<div class="row">
+  				<div class=" pull-left " >
+  					<div class=" col-lg-12 form-group-sm">
+                    	<span class="form-control" id="cantidad_busqueda"><strong>Registros: </strong>0</span>
+                    	<input type="hidden" value="" id="total_query" name="total_query"/>
+                	</div>   
+            	</div>
   				<div class="pull-right">
   					<div class=" col-lg-12 form-group-sm">                    				
         				 <input type="text" class="form-control" id="txtbuscarProveedor" name="txtbuscarProveedor" value="" >
             		</div>            			
           		</div>
-  			</div>  			
+  			</div>  
+  			<br>			
   			<div id="tabla_cuentas_pagar">
   			</div>
   		</div>
@@ -110,7 +117,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Pagos.js?0.00"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Pagos.js?0.05"></script>
 
   </body>
 </html>   

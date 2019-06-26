@@ -44,89 +44,9 @@ class GenerarChequeController extends ControladorBase{
 	
 	}
 	
-	
-	public function InsertaEntidad(){
-			
-		session_start();
-		
-		$entidad = new CoreEntidadPatronalModel();
-		
-		$nombre_controladores = "CoreEntidadPatronal";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $entidad->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-			
-		if (!empty($resultPer)){	
-		    
-		    $_nombre_entidad_patronal = (isset($_POST["nombre_entidad_patronal"])) ? $_POST["nombre_entidad_patronal"] : "";
-		    $_ruc_entidad_patronal = (isset($_POST["ruc_entidad_patronal"])) ? $_POST["ruc_entidad_patronal"] : "";
-		    $_codigo_entidad_patronal = (isset($_POST["codigo_entidad_patronal"])) ? $_POST["codigo_entidad_patronal"] : "";
-		    $_tipo_entidad_patronal = (isset($_POST["tipo_entidad_patronal"])) ? $_POST["tipo_entidad_patronal"] : "";
-		    $_acronimo_entidad_patronal = (isset($_POST["acronimo_entidad_patronal"])) ? $_POST["acronimo_entidad_patronal"] : "";
-		    $_direccion_entidad_patronal = (isset($_POST["direccion_entidad_patronal"])) ? $_POST["direccion_entidad_patronal"] : "";
-		    $_id_entidad_patronal = (isset($_POST["id_entidad_patronal"])) ? $_POST["id_entidad_patronal"] : 0 ;
-		    
-		    /*si es insertado enviar en cero el id_banco a la funcion*/							
-			$funcion = "ins_core_entidad_patronal";
-			$respuesta = 0 ;
-			$mensaje = ""; 
-			
-			if($_id_entidad_patronal == 0){
-			    
-			    $parametros = " '$_nombre_entidad_patronal', '$_ruc_entidad_patronal', '$_codigo_entidad_patronal', '$_tipo_entidad_patronal', '$_acronimo_entidad_patronal', '$_direccion_entidad_patronal'";
-			    $entidad->setFuncion($funcion);
-			    $entidad->setParametros($parametros);
-			    $resultado = $entidad->llamafuncion();
-			    
-			    if(!empty($resultado) && count($resultado) > 0 ){
-			        
-			        foreach ( $resultado[0] as $k => $v){
-			            
-			            $respuesta = $v;
-			        }
-			        
-			        $mensaje = "Entidad Ingresado Correctamente";
-			        
-			    }
-			}elseif ($_id_entidad_patronal > 0){
-			    
-			    $parametros = " '$_nombre_entidad_patronal', '$_ruc_entidad_patronal', '$_codigo_entidad_patronal', '$_tipo_entidad_patronal', '$_acronimo_entidad_patronal', '$_direccion_entidad_patronal'";
-			    $entidad->setFuncion($funcion);
-			    $entidad->setParametros($parametros);
-			    $resultado = $entidad->llamafuncion();
-			    
-			    if(!empty($resultado) && count($resultado) > 0 ){
-			        
-			        foreach ( $resultado[0] as $k => $v){
-			            
-			            $respuesta = $v;
-			        }
-			        
-			        $mensaje = "Entidad Actualizada Correctamente";
-			        
-			    }
-			}
-			
-			
-			if($respuesta > 0 ){
-			    
-			    echo json_encode(array('respuesta'=>$respuesta,'mensaje'=>$mensaje));
-			    exit();
-			}
-			
-			echo "Error al Ingresar Entidad";
-			exit();
-			
-		}
-		else
-		{
-		    $this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Entidad"
-		
-			));
-		
-		
-		}
-		
+	public function modListaCuentas(){
+	    
+	    echo 'llego';
 	}
 	
 	

@@ -60,51 +60,336 @@
                 <form action="<?php echo $helper->url("Participes","InsertaParticipes"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
           		 	 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
               		 	 <div class="row">
-                         	<div class="col-xs-12 col-lg-3 col-md-3 ">
-                            	<div class="form-group">
-                                	<label for="nombre_grupos" class="control-label">Nombres Grupos</label>
-                                    <input type="text" class="form-control" id="nombre_grupos" name="nombre_grupos" value="<?php echo $resEdit->nombre_grupos; ?>"  placeholder="Nombre Grupos">
-                                    <input type="hidden" name="id_grupos" id="id_grupos" value="<?php echo $resEdit->id_grupos; ?>" class="form-control"/>
-    					            <div id="mensaje_nombre_grupos" class="errores"></div>
-                                 </div>
-                                  </div>
-                                 <div class="col-xs-12 col-md-3 col-lg-3">
+                               <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
-                                      <label for="id_estado" class="control-label">Estado:</label>
-                                      <select name="id_estado" id="id_estado"  class="form-control" >
+                                      <label for="id_cuidades" class="control-label">Cuidad:</label>
+                                      <select name="id_cuidades" id="id_cuidades"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php  foreach($result_Grupos_estados as $res) {?>
-    										<option value="<?php echo $res->id_estado; ?>" <?php if ($res->id_estado == $resEdit->id_estado )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado; ?> </option>
+    									<?php  foreach($resultCuidades as $res) {?>
+    										<option value="<?php echo $res->id_cuidades; ?>" <?php if ($res->id_cuidades == $resEdit->id_cuidades )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_ciudades; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_estados" class="errores"></div>
+                                      <div id="mensaje_id_cuidades" class="errores"></div>
+                                    </div>
+                                  </div>
+                         	
+                                   	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                            	<div class="form-group">
+                                	<label for="apellido_participes" class="control-label">Apellidos</label>
+                                    <input type="text" class="form-control" id="apellido_participes" name="apellido_participes" value="<?php echo $resEdit->apellido_participes; ?>"  placeholder="Apellidos">
+                                    <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
+    					            <div id="mensaje_apellido_participes" class="errores"></div>
+                                 </div>
+                                  </div>
+                                  
+                                        	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                            	<div class="form-group">
+                                	<label for="nombre_participes" class="control-label">Nombre</label>
+                                    <input type="text" class="form-control" id="nombre_participes" name="nombre_participes" value="<?php echo $resEdit->nombre_participes; ?>"  placeholder="Nombres">
+                                    <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
+    					            <div id="mensaje_nombre_participes" class="errores"></div>
+                                 </div>
+                                  </div>
+                                  
+	                    	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                            	<div class="form-group">
+                                	<label for="cedula_participes" class="control-label">Cedula</label>
+                                    <input type="text" class="form-control" id="cedula_participes" name="cedula_participes" value="<?php echo $resEdit->nombre_participes; ?>"  placeholder="Cedula">
+                                    <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
+    					            <div id="mensaje_cedula_participes" class="errores"></div>
+                                 </div>
+                                  </div>
+                                  
+                                    	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                            	<div class="form-group">
+                                	<label for="fecha_nacimiento_participes" class="control-label">Fecha</label>
+                                    <input type="date" class="form-control" id="fecha_nacimiento_participes" name="fecha_nacimiento_participes" value="<?php echo $resEdit->fecha_nacimiento_participes; ?>"  placeholder="Fecha Nacimiento">
+                                    <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
+    					            <div id="mensaje_fecha_nacimiento_participes" class="errores"></div>
+                                 </div>
+                                  </div>
+                                  
+                                  	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                            	<div class="form-group">
+                                	<label for="direccion_participes" class="control-label">Dirección</label>
+                                    <input type="text" class="form-control" id="direccion_participes" name="direccion_participes" value="<?php echo $resEdit->direccion_participes; ?>"  placeholder="Dirección">
+                                    <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
+    					            <div id="mensaje_direccion_participes" class="errores"></div>
+                                 </div>
+                                  </div>
+                                  
+                             	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                            	<div class="form-group">
+                                	<label for="celular_participes" class="control-label">Teléfono</label>
+                                    <input type="text" class="form-control" id="celular_participes" name="celular_participes" value="<?php echo $resEdit->celular_participes; ?>"  placeholder="Celular">
+                                    <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
+    					            <div id="mensaje_telefono_participes" class="errores"></div>
+                                 </div>
+                                  </div>
+                                  
+                                  	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                            	<div class="form-group">
+                                	<label for="telefono_participes" class="control-label">Celular</label>
+                                    <input type="text" class="form-control" id="telefono_participes" name="telefono_participes" value="<?php echo $resEdit->telefono_participes; ?>"  placeholder="Teléfono">
+                                    <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
+    					            <div id="mensaje_celular_participes" class="errores"></div>
+                                 </div>
+                                  </div>
+                                  
+                                           	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                            	<div class="form-group">
+                                	<label for="fecha_ingreso_participes" class="control-label">Fecha Ingreso</label>
+                                    <input type="date" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $resEdit->fecha_ingreso_participes; ?>"  placeholder="Fecha Ingreso">
+                                    <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
+    					            <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                                 </div>
+                                  </div>
+                                  
+                                            	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                            	<div class="form-group">
+                                	<label for="fecha_defuncion_participes" class="control-label">Fecha Defunción</label>
+                                    <input type="date" class="form-control" id="fecha_defuncion_participes" name="fecha_defuncion_participes" value="<?php echo $resEdit->fecha_defuncion_participes; ?>"  placeholder="Fecha Defunción">
+                                    <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
+    					            <div id="mensaje_fecha_defuncion_participes" class="errores"></div>
+                                 </div>
+                                  </div>
+                                  
+                                        <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado_participes" class="control-label">Estado Participes:</label>
+                                      <select name="id_estado_participes" id="id_estado_participes"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php  foreach($resultEstado as $res) {?>
+    										<option value="<?php echo $res->id_estado_participes; ?>" <?php if ($res->id_estado_participes == $resEdit->id_estado_participes )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado_participes; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estado_participes" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                        <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estatus" class="control-label">Estatus:</label>
+                                      <select name="id_estatus" id="id_estatus"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php  foreach($resultEstatus as $res) {?>
+    										<option value="<?php echo $res->id_estatus; ?>" <?php if ($res->id_estatus == $resEdit->id_estatus )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estatus; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estatus" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                                 	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                            	<div class="form-group">
+                                	<label for="fecha_salida_participes" class="control-label">Fecha Salida</label>
+                                    <input type="date" class="form-control" id="fecha_salida_participes" name="fecha_salida_participes" value="<?php echo $resEdit->fecha_salida_participes; ?>"  placeholder="Fecha Salida">
+                                    <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
+    					            <div id="mensaje_fecha_salida_participes" class="errores"></div>
+                                 </div>
+                                  </div>
+                                  
+                                           <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_genero_participes" class="control-label">Genero:</label>
+                                      <select name="id_genero_participes" id="id_genero_participes"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php  foreach($resultGenero as $res) {?>
+    										<option value="<?php echo $res->id_genero_participes; ?>" <?php if ($res->id_genero_participes == $resEdit->id_genero_participes )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_genero_participes; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_genero_participes" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                                              <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado_civil_participes" class="control-label">Estado Civil:</label>
+                                      <select name="id_estado_civil_participes" id="id_estado_civil_participes"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php  foreach($resultGenero as $res) {?>
+    										<option value="<?php echo $res->id_estado_civil_participes; ?>" <?php if ($res->id_estado_civil_participes == $resEdit->id_estado_civil_participes )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado_civill_participes; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estado_civil_participes" class="errores"></div>
                                     </div>
                                   </div>
                             
                           </div>
                       <?php } } else {?>                		    
                       	  <div class="row">
-                		  	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                		 
+                		     <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_cuidades" class="control-label">Cuidad:</label>
+                                      <select name="id_cuidades" id="id_cuidades"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultCuidades as $res) {?>
+    										<option value="<?php echo $res->id_cuidades; ?>" ><?php echo $res->nombre_ciudades; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_cuidades" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                   	<div class="col-xs-12 col-lg-3 col-md-3 ">
                     			<div class="form-group">
-                                  <label for="nombre_grupos" class="control-label">Nombres Grupos</label>
-                                  <input type="text" class="form-control" id="nombre_grupos" name="nombre_grupos" value=""  placeholder="Nombre Grupos">
-                                   <input type="hidden" name="id_grupos" id="id_grupos" value="" class="form-control"/>
-                                  <div id="mensaje_nombre_grupos" class="errores"></div>
+                                  <label for="apellido_participes" class="control-label">Apellido</label>
+                                  <input type="text" class="form-control" id="apellido_participes" name="apellido_participes" value=""  placeholder="Apellido">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_apellido_participes" class="errores"></div>
                                  </div>
                              </div>
                              
-                             <div class="col-xs-12 col-md-3 col-lg-3">
+                                 <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="nombre_participes" class="control-label">Nombre</label>
+                                  <input type="text" class="form-control" id="nombre_participes" name="nombre_participes" value=""  placeholder="Nombres">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_nombre_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                                         <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="cedula_participes" class="control-label">Cedula</label>
+                                  <input type="text" class="form-control" id="cedula_participes" name="cedula_participes" value=""  placeholder="Cedula">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_cedula_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                                          <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_nacimiento_participes" class="control-label">Fecha</label>
+                                  <input type="date" class="form-control" id="fecha_nacimiento_participes" name="fecha_nacimiento_participes" value=""  placeholder="Fecha Nacimiento">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_nacimiento_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                              <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="direccion_participes" class="control-label">Dirección</label>
+                                  <input type="text" class="form-control" id="direccion_participes" name="direccion_participes" value=""  placeholder="Dirección">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_cedula_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                                  <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="telefono_participes" class="control-label">Teléfono</label>
+                                  <input type="text" class="form-control" id="telefono_participes" name="telefono_participes" value=""  placeholder="Teléfono">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_telefono_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                                         <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="celular_participes" class="control-label">Celular</label>
+                                  <input type="text" class="form-control" id="celular_participes" name="celular_participes" value=""  placeholder="Celular">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_celular_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                                             <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_ingreso_participes" class="control-label">Fecha Ingreso</label>
+                                  <input type="date" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value=""  placeholder="Fecha Ingreso">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                                                               <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_defuncion_participes" class="control-label">Fecha Defunción</label>
+                                  <input type="date" class="form-control" id="fecha_defuncion_participes" name="fecha_defuncion_participes" value=""  placeholder="Fecha Defunción">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_defuncion_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                           <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
-                                      <label for="id_estado" class="control-label">Estado:</label>
-                                      <select name="id_estado" id="id_estado"  class="form-control" >
+                                      <label for="id_estado_participes" class="control-label">Estado Participes:</label>
+                                      <select name="id_estado_participes" id="id_estado_participes"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($result_Grupos_estados as $res) {?>
-    										<option value="<?php echo $res->id_estado; ?>" ><?php echo $res->nombre_estado; ?> </option>
+    									<?php foreach($resultEstado as $res) {?>
+    										<option value="<?php echo $res->id_estado_participes; ?>" ><?php echo $res->nombre_estado_participes; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_estado" class="errores"></div>
+                                      <div id="mensaje_id_estado_participes" class="errores"></div>
                                     </div>
                                   </div>
+                                  
+                                   <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estatus" class="control-label">Estatus:</label>
+                                      <select name="id_estatus" id="id_estatus"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstatus as $res) {?>
+    										<option value="<?php echo $res->id_estatus; ?>" ><?php echo $res->nombre_estatus; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estatus" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                 <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_salida_participes" class="control-label">Fecha Salida</label>
+                                  <input type="date" class="form-control" id="fecha_salida_participes" name="fecha_salida_participes" value=""  placeholder="Fecha Salida">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_salida_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                                <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_genero_participes" class="control-label">Genero:</label>
+                                      <select name="id_genero_participes" id="id_genero_participes"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultGenero as $res) {?>
+    										<option value="<?php echo $res->id_genero_participes; ?>" ><?php echo $res->nombre_genero_participes; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_genero_participes" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_genero_participes" class="control-label">Genero:</label>
+                                      <select name="id_genero_participes" id="id_genero_participes"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultGenero as $res) {?>
+    										<option value="<?php echo $res->id_genero_participes; ?>" ><?php echo $res->nombre_genero_participes; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_genero_participes" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                     <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado_civil_participes" class="control-label">Estado Civil:</label>
+                                      <select name="id_estado_civil_participes" id="id_estado_civil_participes"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstadoCivil as $res) {?>
+    										<option value="<?php echo $res->id_estado_civil_participes; ?>" ><?php echo $res->nombre_estado_civill_participes; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estado_civil_participes" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                  
+                             
+                             
                             </div>	 
                     		            
                      <?php } ?>
@@ -113,7 +398,7 @@
             			    <div class="col-xs-12 col-md-6 col-md-6" style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
             	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
-        	                      <a href="index.php?controller=Grupos&action=index" class="btn btn-primary"><i class='glyphicon glyphicon-remove'></i> Cancelar</a>
+        	                      <a href="index.php?controller=Participes&action=index" class="btn btn-primary"><i class='glyphicon glyphicon-remove'></i> Cancelar</a>
         	                    </div>
     	        		    </div>
             		    </div>
@@ -128,7 +413,7 @@
       <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Listado Grupos</h3>
+              <h3 class="box-title">Listado Participes</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -140,8 +425,11 @@
 
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#activos" data-toggle="tab">Grupos Activos</a></li>
-              <li><a href="#inactivos" data-toggle="tab">Grupos Inactivos</a></li>
+              <li class="active"><a href="#activos" data-toggle="tab">Participes Activos</a></li>
+              <li><a href="#inactivos" data-toggle="tab">Participes Inactivos</a></li>
+              <li><a href="#desafiliado" data-toggle="tab">Participes Desafiliado</a></li>
+              <li><a href="#liquidado_cesante" data-toggle="tab">Participes Liquidado Cesante</a></li>
+         
             </ul>
             
             <div class="col-md-12 col-lg-12 col-xs-12">
@@ -150,22 +438,44 @@
               <div class="tab-pane active" id="activos">
                 
 					<div class="pull-right" style="margin-right:15px;">
-						<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="load_grupos_activos(1)" placeholder="search.."/>
+						<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="load_participes_activos(1)" placeholder="search.."/>
 					</div>
-					<div id="load_grupos_activos" ></div>	
-					<div id="grupos_activos_registrados"></div>	
+					<div id="load_participes_activos" ></div>	
+					<div id="participes_activos_registrados"></div>	
                 
               </div>
               
               <div class="tab-pane" id="inactivos">
                 
                     <div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search_inactivos" name="search_inactivos" onkeyup="load_grupos_inactivos(1)" placeholder="search.."/>
+					<input type="text" value="" class="form-control" id="search_inactivos" name="search_inactivos" onkeyup="load_participes_inactivos(1)" placeholder="search.."/>
 					</div>
 					
 					
-					<div id="load_grupos_inactivos" ></div>	
-					<div id="grupos_inactivos_registrados"></div>
+					<div id="load_participes_inactivos" ></div>	
+					<div id="participes_inactivos_registrados"></div>
+              </div>
+                
+                 <div class="tab-pane" id="desafiliado">
+                
+                    <div class="pull-right" style="margin-right:15px;">
+					<input type="text" value="" class="form-control" id="search_desafiliado" name="search_desafiliado" onkeyup="load_participes_desafiliado(1)" placeholder="search.."/>
+					</div>
+					
+					
+					<div id="load_participes_desafiliado" ></div>	
+					<div id="participes_desafiliado_registrados"></div>
+              </div>
+              
+              <div class="tab-pane" id="liquidado_cesante">
+                
+                    <div class="pull-right" style="margin-right:15px;">
+					<input type="text" value="" class="form-control" id="search_liquidado_cesante" name="search_liquidado_cesante" onkeyup="load_participes_liquidado_cesante(1)" placeholder="search.."/>
+					</div>
+					
+					
+					<div id="load_participes_liquidado_cesante" ></div>	
+					<div id="participes_liquidado_cesante_registrados"></div>
               </div>
              </div>
             </div>
@@ -180,7 +490,7 @@
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?>
-   <script src="view/Inventario/js/Grupos.js?3.1" ></script>
+   <script src="view/Core/js/Participes.js?3.1" ></script>
   </body>
 
 </html>
@@ -192,15 +502,15 @@
 
         	   $(document).ready( function (){
         		   
-        		   load_grupos_inactivos(1);
-        		   load_grupos_activos(1);
+        		   load_participes_inactivos(1);
+        		   load_participes_activos(1);
         		   
 	   			});
 
         	
 
 
-	   function load_grupos_activos(pagina){
+	   function load_participes_activos(pagina){
 
 		   var search=$("#search_activos").val();
 	       var con_datos={
@@ -208,30 +518,30 @@
 					  page:pagina
 					  };
 			  
-	     $("#load_grupos_activos").fadeIn('slow');
+	     $("#load_participes_activos").fadeIn('slow');
 	     
 	     $.ajax({
 	               beforeSend: function(objeto){
-	                 $("#load_grupos_activos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	                 $("#load_participes_activos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	               },
-	               url: 'index.php?controller=Grupos&action=consulta_grupos_activos&search='+search,
+	               url: 'index.php?controller=Participes&action=consulta_participes_activos&search='+search,
 	               type: 'POST',
 	               data: con_datos,
 	               success: function(x){
-	                 $("#grupos_activos_registrados").html(x);
-	                 $("#load_grupos_activos").html("");
-	                 $("#tabla_grupos_activos").tablesorter(); 
+	                 $("#participes_activos_registrados").html(x);
+	                 $("#load_participes_activos").html("");
+	                 $("#tabla_participes_activos").tablesorter(); 
 	                 
 	               },
 	              error: function(jqXHR,estado,error){
-	                $("#grupos_activos_registrados").html("Ocurrio un error al cargar la informacion de Grupos Activos..."+estado+"    "+error);
+	                $("#participes_activos_registrados").html("Ocurrio un error al cargar la informacion de Participes Activos..."+estado+"    "+error);
 	              }
 	            });
 
 
 		   }
 
-	   function load_grupos_inactivos(pagina){
+	   function load_participes_inactivos(pagina){
 
 		   var search=$("#search_inactivos").val();
 	       var con_datos={
@@ -239,23 +549,23 @@
 					  page:pagina
 					  };
 			  
-	     $("#load_grupos_inactivos").fadeIn('slow');
+	     $("#load_participes_inactivos").fadeIn('slow');
 	     
 	     $.ajax({
 	               beforeSend: function(objeto){
-	                 $("#load_grupos_inactivos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	                 $("#load_participes_inactivos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	               },
-	               url: 'index.php?controller=Grupos&action=consulta_grupos_inactivos&search='+search,
+	               url: 'index.php?controller=Participes&action=consulta_participes_inactivos&search='+search,
 	               type: 'POST',
 	               data: con_datos,
 	               success: function(x){
-	                 $("#grupos_inactivos_registrados").html(x);
-	                 $("#load_grupos_inactivos").html("");
-	                 $("#tabla_grupos_inactivos").tablesorter(); 
+	                 $("#participes_inactivos_registrados").html(x);
+	                 $("#load_participes_inactivos").html("");
+	                 $("#tabla_participes_inactivos").tablesorter(); 
 	                 
 	               },
 	              error: function(jqXHR,estado,error){
-	                $("#grupos_inactivos_registrados").html("Ocurrio un error al cargar la informacion de Grupos Inactivos..."+estado+"    "+error);
+	                $("#participes_inactivos_registrados").html("Ocurrio un error al cargar la informacion de Participes Inactivos..."+estado+"    "+error);
 	              }
 	            });
 

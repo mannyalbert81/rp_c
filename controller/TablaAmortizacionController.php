@@ -41,7 +41,6 @@ class TablaAmortizacionController extends ControladorBase{
 	    $entidades = new EntidadesModel();
 	    //PARA OBTENER DATOS DE LA EMPRESA
 	    $datos_empresa = array();
-	    $datos = array();
 	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
 	    
 	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
@@ -52,10 +51,15 @@ class TablaAmortizacionController extends ControladorBase{
 	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
 	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
 	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
-	        $datos['USU']="sadgasddddddddddddddddddddddd";
 	    }
 	    
-	    $this->verReporte("TablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos'=>$datos));
+	    //NOTICE DATA
+	    $datos_cabecera = array();
+	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+	    $datos_cabecera['FECHA'] = date('Y/m/d');
+	    $datos_cabecera['HORA'] = date('h:i:s');
+	    
+	    $this->verReporte("TablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera));
 	    
 	  
 	}

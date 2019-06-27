@@ -20,6 +20,7 @@
 		$('#descripcion_dcomprobantes').val("");
 		$('#debe_dcomprobantes').val("0.00");
 		$('#haber_dcomprobantes').val("0.00");
+		$('input:radio[name="destino_diario"]').prop('checked', false);
       
       }
       
@@ -167,15 +168,12 @@
 		{
 	 		
 	 		
-			var plan_cuentas=document.getElementById('plan_cuentas').value;
-			var descripcion_dcomprobantes=document.getElementById('descripcion_dcomprobantes').value;
-			var debe_dcomprobantes=document.getElementById('debe_dcomprobantes').value;
-			var haber_dcomprobantes=document.getElementById('haber_dcomprobantes').value;
+			var _plan_cuentas=document.getElementById('plan_cuentas').value;
+			var _descripcion_dcomprobantes=document.getElementById('descripcion_dcomprobantes').value;
 			
-
 			var error="TRUE";
 			
-			if (plan_cuentas == 0)
+			if (_plan_cuentas == 0)
 	    	{
 		    	
 	    		$("#mensaje_id_plan_cuentas").text("Seleccione Cuenta");
@@ -188,34 +186,34 @@
 	    	{
 	    		$("#mensaje_id_plan_cuentas").fadeOut("slow"); //Oculta mensaje de error
 	    		error ="FALSE";
-			}   
+			}   			
 			
-			
-			if (debe_dcomprobantes > 0.00 && haber_dcomprobantes > 0.00)
-	    	{
-		    	
-	    		$("#mensaje_debe_dcomprobantes").text("Ingrese Valor en Debe o en Haber");
-	    		$("#mensaje_debe_dcomprobantes").fadeIn("slow"); //Muestra mensaje de error
-	    	   error ="TRUE";
+			if (! $('input:radio[name="destino_diario"]').is(':checked')) {
+				$("#mensaje_destino_diario").text("Seleccione destino cuenta").fadeIn("slow");
+	    	    error ="TRUE";
 	            return false;
-		    }
-	    	else 
-	    	{
-	    		$("#mensaje_debe_dcomprobantes").fadeOut("slow"); //Oculta mensaje de error
-	    		error ="FALSE";
-			}   
+			}
+			
+			var _destino_diario = $('input:radio[name="destino_diario"]:checked').val();
 			
 			
+			var parametros = {
+					plan_cuentas:_plan_cuentas,
+					descripcion_dcomprobantes:_descripcion_dcomprobantes,
+					debe_dcomprobantes:"0.00",
+					haber_dcomprobantes:"0.00",
+					destino_diario: _destino_diario
+			}
 			
 			if(error == "FALSE"){
 				
 				$.ajax({
 		            type: "POST",
 		            url: 'index.php?controller=CoreDiarioTipo&action=insertar_temp_diario_tipo',
-		            data: "plan_cuentas="+plan_cuentas+"&descripcion_dcomprobantes="+descripcion_dcomprobantes+"&debe_dcomprobantes="+debe_dcomprobantes+"&haber_dcomprobantes="+haber_dcomprobantes,
-		        	
+		            data: parametros,
+		            dataType: "json",
 		            success: function(datos){
-		            	//console.log(datos)
+		            	
 		            	limpiar();
 		            	load_temp_diario_tipo(1);
 		            	
@@ -239,7 +237,10 @@
 	 	 $( "#debe_dcomprobantes" ).focus(function() {
 			  $("#mensaje_debe_dcomprobantes").fadeOut("slow");
 		  });
-	 	
+	 	 
+	 	$('input[name="destino_diario"]').focus(function() {
+			  $("#mensaje_destino_diario").fadeOut("slow");
+		  });
 	
 	// ELIMINAR REGISTRO DE TABLA TEMPORAL
 	    
@@ -354,167 +355,82 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
 
 // INSERTAR COMPROBANTES PROCESO FINAL
 
- $("#btn_inserta_comprobante" ).on( "click", function() {
+ $("#btn_inserta_diario" ).on( "click", function() {
 	 
-	 var id_tipo_comprobantes=document.getElementById('id_tipo_comprobantes').value;
-		var fecha_ccomprobantes=document.getElementById('fecha_ccomprobantes').value;
-		var concepto_ccomprobantes=document.getElementById('concepto_ccomprobantes').value;
-		var tiempo = tiempo || 1000;
-		
-		if (id_tipo_comprobantes == 0)
-		{
-	    	
-			$("#mensaje_id_tipo_comprobantes").text("Seleccione Tipo");
-			$("#mensaje_id_tipo_comprobantes").fadeIn("slow"); //Muestra mensaje de error
-			$("html, body").animate({ scrollTop: $(mensaje_id_tipo_comprobantes).offset().top-120 }, tiempo);
-	        
-			return false;
-	    }
-		else 
-		{
-			$("#mensaje_id_tipo_comprobantes").fadeOut("slow"); //Oculta mensaje de error
-			
-		}
-		
-		
-		if(document.getElementById('nombre_comprobante').value != 'CONTABLE'){
-			
-			if(document.getElementById('proveedor').value == ''){
-				
-				$("#mensaje_nombre_proveedores").text("Digite RUC/NOMBRE Proveedor");
-				$("#mensaje_nombre_proveedores").fadeIn("slow");
-				$("html, body").animate({ scrollTop: $(mensaje_nombre_proveedores).offset().top-150 }, tiempo);
-				return false
-			}
-			
-			if(document.getElementById('nombre_proveedor').value == ''){
-				
-				$("#mensaje_nombre_proveedores").text("Digite RUC/NOMBRE Proveedor");
-				$("#mensaje_nombre_proveedores").fadeIn("slow"); 
-				$("html, body").animate({ scrollTop: $(mensaje_nombre_proveedores).offset().top-150 }, tiempo);
-				return false
-			}
-			
-			if(document.getElementById('retencion_proveedor').value == ''){
-				
-				$("#mensaje_retencion_ccomprobantes").text("Digite Retencion Proveedor");
-				$("#mensaje_retencion_ccomprobantes").fadeIn("slow"); 
-				$("html, body").animate({ scrollTop: $(mensaje_retencion_ccomprobantes).offset().top-150 }, tiempo);
-				return false
-			}
-		}
-		
-		if(document.getElementById('referencia_doc_ccomprobantes').value == ''){
-			$("#mensaje_referencia_doc_ccomprobantes").text("Digite Retencion Proveedor");
-			$("#mensaje_referencia_doc_ccomprobantes").fadeIn("slow"); 
-			$("html, body").animate({ scrollTop: $(mensaje_referencia_doc_ccomprobantes).offset().top-150 }, tiempo);
-			return false
-		}
-				
-		if(document.getElementById('numero_cuenta_banco_ccomprobantes').value == ''){
-			$("#mensaje_numero_cuenta_banco_ccomprobantes").text("Ingrese Numero de Cuenta");
-			$("#mensaje_numero_cuenta_banco_ccomprobantes").fadeIn("slow"); 
-			$("html, body").animate({ scrollTop: $(mensaje_numero_cuenta_banco_ccomprobantes).offset().top-150 }, tiempo);
-			return false
-		}
-		
-		if(document.getElementById('numero_cheque_ccomprobantes').value == ''){
-			$("#mensaje_numero_cheque_ccomprobantes").text("Ingrese Numero de Cheque");
-			$("#mensaje_numero_cheque_ccomprobantes").fadeIn("slow"); 
-			$("html, body").animate({ scrollTop: $(mensaje_numero_cheque_ccomprobantes).offset().top-150 }, tiempo);
-			return false
-		}
-		
-		if(document.getElementById('id_forma_pago').value == 0){
-			$("#mensaje_id_forma_pago").text("Seleccione Forma de Pago");
-			$("#mensaje_id_forma_pago").fadeIn("slow"); 
-			$("html, body").animate({ scrollTop: $(mensaje_id_forma_pago).offset().top-150 }, tiempo);
-			return false
-		}
-		
-		if (concepto_ccomprobantes == 0)
-		{
-	    	
-			$("#mensaje_concepto_ccomprobantes").text("Inserte un concepto de pago");
-			$("#mensaje_concepto_ccomprobantes").fadeIn("slow");
-			$("html, body").animate({ scrollTop: $(mensaje_concepto_ccomprobantes).offset().top-120 }, tiempo);
-			return false
-	    }
-		else 
-		{
-			$("#mensaje_concepto_ccomprobantes").fadeOut("slow"); //Oculta mensaje de error
-			
-		}
-		
-		if(document.getElementById('observaciones_ccomprobantes').value == ''){
-			$("#mensaje_observaciones_ccomprobantes").text("Ingrese Observacion");
-			$("#mensaje_observaciones_ccomprobantes").fadeIn("slow"); 
-			$("html, body").animate({ scrollTop: $(mensaje_observaciones_ccomprobantes).offset().top-150 }, tiempo);
-			return false
-		}
-		
-		if(!document.getElementById("valor_total_temp")){
-			swal({
-		   		  title: "Movimientos",
-		   		  text: "Registre Movimiento",
-		   		  icon: "error",
-		   		  button: "Aceptar",
-		   		})
-			return false
-			
-			}
-		
-		if(document.getElementById("valor_total_temp").value == 0){
-			swal({
-		   		  title: "Movimientos",
-		   		  text: "Debe/Haber no Coinciden",
-		   		  icon: "warning",
-		   		  button: "Aceptar",
-		   		})
-			return false
-			
-			}
+	 var _id_modulos = $("#id_modulos").val();
+	 var _id_tipo_proceso = $("#id_tipo_procesos").val();
+	 var _descripcion_diario = $("#descripcion_diario_tipo").val();
+	 var _id_estado = $("#id_estado").val();
 	 
-	 //toma de parametros
+	 if( _id_modulos == 0){
+		 
+		 $("#id_modulos").notify("Seleccione modulo",{ position:"buttom left", autoHideDelay: 2000});
+		 return false;
+	 }
+	 
+	 if( _id_tipo_proceso == 0){
+		 
+		 $("#id_tipo_procesos").notify("Seleccione tipo proceso",{ position:"buttom left", autoHideDelay: 2000});
+		 return false;
+	 }
+	 
+	 if( _descripcion_diario == ''){
+		 
+		 $("#descripcion_diario_tipo").notify("Ingrese Descripcion",{ position:"buttom left", autoHideDelay: 2000});
+		 return false;
+	 }
+	 
+	 if( _id_estado == 0){
+		 
+		 $("#id_estado").notify("Seleccione estado",{ position:"buttom left", autoHideDelay: 2000});
+		 return false;
+	 }
+	 
+	 var nFilas = $("#tabla_temp_diario_tipo_registrados tr").length;
 		
+	if(nFilas < 3){
+		//validacion que haya filas de debe y haber
+		swal( {
+			 title:"Detalle Diario Tipo",
+			 dangerMode: true,
+			 text: "ingrese cuentas en detalle",
+			 icon: "error"
+			}
+		)
+		return false;
+	}
+	 
+			
 	 var parametros = {
-			 action						: 'ajax',
-			 id_tipo_comprobantes 		: $('#id_tipo_comprobantes').val(),
-			 id_proveedores				: $('#id_proveedor').val(),
-			 retencion_proveedor 		: $('#retencion_proveedor').val(),
-			 fecha_ccomprobantes 		: $('#fecha_ccomprobantes').val(),
-			 referencia_ccomprobantes 	: $('#referencia_doc_ccomprobantes').val(),
-			 id_forma_pago 				: $('#id_forma_pago').val(),
-			 num_cuenta_ccomprobantes	: $('#numero_cuenta_banco_ccomprobantes').val(),
-			 num_cheque_ccomprobantes 	: $('#numero_cheque_ccomprobantes').val(),
-			 observacion_ccomprobantes 	: $('#observaciones_ccomprobantes').val(),
-			 concepto_ccomprobantes		: $('#concepto_ccomprobantes').val(),
-			 valor_letras				: $('#valor_letras').val()
+			 id_modulos: _id_modulos,
+			 id_tipo_procesos: _id_tipo_proceso,
+			 descripcion_diario: _descripcion_diario,
+			 id_estado:_id_estado			
 	 }
 	 
 	 $.ajax({
-         url: 'index.php?controller=CoreDiarioTipo&action=insertacomprobante',
+		 url: 'index.php?controller=CoreDiarioTipo&action=insertDiarioTipo',
          type: 'POST',
          data: parametros,
-         dataType:'json',
-         success: function(x){
-        	 setearForm()
-        	 swal(x.mensaje);
-        	 //console.log(x)
-        	 load_temp_comprobantes(1)
-         },
-         error:function(xhr,estado,error){
-        	 var err=xhr.responseText
-        	 
-        	 swal({
-        		  title: "Error",
-        		  text: "Error conectar con el Servidor \n "+err,
-        		  icon: "error",
-        		  button: "Aceptar",
-        		});
-         }
-	 });	
-
+         dataType:'json'
+	 }).done(function(x){
+		 swal({title:"Diario Tipo",text:x.mensaje,icon:"success"})
+ 		.then((value) => { 			
+ 			window.location.reload();
+ 		});
+	 }).fail(function(xhr,status,error){
+		 var err = xhr.responseText
+		 console.log(err)
+		 var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		 var resmsg = mensaje[1];
+		 swal( {
+			 title:"Detalle Diario Tipo",
+			 dangerMode: true,
+			 text: resmsg.replace("|","\n"),
+			 icon: "error"
+			})
+	 })
+	 
 });
  
  
@@ -586,7 +502,35 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
    $('#email_proveedores').focus(function(){
 	 $("#mod_mensaje_email_proveedores").fadeOut("slow");
  })
-	
+ 
+ //PARA LA CABECERA
+ 
+ $("#id_modulos").on("change",function(){
+	 
+	 let moduloId = $(this).val();
+	 let objProcesos = $("#id_tipo_procesos");
+	 
+	 objProcesos.empty();
+	 
+	 $.ajax({
+		 url:"index.php?controller=CoreDiarioTipo&action=consultaTipoProcesos",
+		 type:"POST",
+		 dataType:"json",
+		 data:{id_modulos:moduloId}
+	 }).done(function(x){
+		 //console.log(x)
+		 objProcesos.append('<option value="0">--Seleccione--</option>');
+		 if(x.cantidad > 0){			 
+			 $.each(x.data,function(index,value){
+				 objProcesos.append('<option value="'+value.id_tipo_procesos+'">'+value.nombre_tipo_procesos+'</option>');
+			 })
+		 }
+	 }).fail(function(xhr,status,error){
+		 let err = xhr.responseText;
+		 console.log(err);
+	 })
+	 
+ })
 		    
 		    
 		    

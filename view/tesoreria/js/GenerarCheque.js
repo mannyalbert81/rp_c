@@ -4,7 +4,7 @@ $(document).ready(function(){
 	init();
 	
 	/* para carga de listados */
-	//consultaActivos();
+	// consultaActivos();
 	cargaModImpuestos();
 		
 })
@@ -16,7 +16,7 @@ $(document).ready(function(){
  */
 function init(){
 	
-	//$(".inputDecimal").val('0.00');
+	// $(".inputDecimal").val('0.00');
 	
 	/* para ver clase de errores, cambiar stilo cuando son de grupo */	
 	$("div.input-group").children("div.errores").css({"margin-top":"-10px","margin-left":"0px","margin-right":"0px"});
@@ -47,12 +47,12 @@ function init(){
 		}
 	});
 	
-	bloqueaControles();
 	
 }
 
-/*******
+/*******************************************************************************
  * funcion para poner mayusculas
+ * 
  * @returns
  */
 $("input.mayus").on("keyup",function(){
@@ -68,16 +68,66 @@ function numeros(e){
  }
 
 
+$("#distribucion_cheque").on("click",function(){
+	
+	var _id_cuentas_pagar = $("#id_cuentas_pagar").val();
+	$("#lista_distribucion_cheque").html('');
+	$.ajax({
+		url:"index.php?controller=GenerarCheque&action=distribucionCheque",
+		type:"POST",
+		dataType:"json",
+		data:{id_cuentas_pagar:_id_cuentas_pagar}
+	}).done(function(x){
+		$("#lista_distribucion_cheque").html(x.tabla);
+		console.log(x);
+	}).fail(function(xhr, status, error){
+		var err = xhr.responseText
+		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		if( mensaje !== null ){
+			var resmsg = mensaje[1]
+			swal( {
+				 title:"Generar Cheque",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+				})
+		}
+		 
+	})
+})
 
-
- /* PARA EVITAR SOBRECARGA DE PAGINA */
- 
- /*
-	 * $(window).on('beforeunload', function(){ return "Good Bye"; });
-	 */
- /*
-	 * function myFunction() { return "Write something clever here..."; }
-	 */
+$("#genera_cheque").on("click",function(){
+	
+	var _id_cuentas_pagar = $("#id_cuentas_pagar").val();
+	
+	var parametros = {
+		id_cuentas_pagar:_id_cuentas_pagar
+	}
+	
+	$.ajax({
+		url:"index.php?controller=GenerarCheque&action=generaCheque",
+		type:"POST",
+		dataType:"json",
+		data:parametros
+	}).done(function(x){
+		console.log(x)
+	}).fail(function(xhr, status, error){
+		
+		var err = xhr.responseText
+		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		if( mensaje !== null ){
+			var resmsg = mensaje[1]
+			swal( {
+				 title:"Generar Cheque",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+				})
+		}
+	})
+})
 
  /* PARA VENTANAS MODALES */
  /***************************************************************************
@@ -188,7 +238,7 @@ $("#frm_cuentas_pagar").on("click","#btn_distribucion",function(event){
 
 /* PARA MODAL DE DISTRIBUCION */
 // metodo se submit
-$("#btn_distribucion_aceptar").on("click",function(){
+$("#btn_distribucion_aceptars").on("click",function(){
 	
 	let divPadre = $("#distribucion_cuentas_pagar");	
 	let filas = divPadre.find("table tbody > tr ");	
@@ -241,7 +291,7 @@ $("#btn_distribucion_aceptar").on("click",function(){
 		if(a.respuesta){
 			
 			 $("#mod_distribucion").modal('hide');
-			//ocultar modal padre
+			// ocultar modal padre
 			 swal({text: "Distribucion Realizada",
 		  		  icon: "success",
 		  		  button: "Aceptar",
@@ -255,7 +305,7 @@ $("#btn_distribucion_aceptar").on("click",function(){
 		
 	})
 	
-	//console.log(data);
+	// console.log(data);
 	
 })
 

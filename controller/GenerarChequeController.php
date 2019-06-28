@@ -57,8 +57,11 @@ class GenerarChequeController extends ControladorBase{
 	        $this->redirect("Pagos","index");
 	        exit();
 	    }
-	    
+	    	    
 	    $_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
+	    
+	    $datos=null;
+	    $datos['id_cuentas_pagar'] = $_id_cuentas_pagar;
 	    
 	    $query = "SELECT l.id_lote, l.nombre_lote, cp.id_cuentas_pagar, cp.numero_cuentas_pagar, cp.descripcion_cuentas_pagar, cp.fecha_cuentas_pagar, 
                     cp.compras_cuentas_pagar, cp.total_cuentas_pagar, p.id_proveedores, p.nombre_proveedores, p.identificacion_proveedores,
@@ -84,7 +87,7 @@ class GenerarChequeController extends ControladorBase{
 	    $rsConsecutivos = $cuentasPagar->enviaquery($queryConsecutivo);
 	    
 	    $this->view_tesoreria("GenerarCheque",array(
-	        "resultSet"=>$rsCuentasPagar,"rsConsecutivos"=>$rsConsecutivos
+	        "resultSet"=>$rsCuentasPagar,"rsConsecutivos"=>$rsConsecutivos,"datos"=>$datos
 	    ));
 	    
 	}
@@ -195,6 +198,7 @@ class GenerarChequeController extends ControladorBase{
 	public function distribucionCheque(){
 	    
 	    /* se realiza la distribucion de pago
+	     * se consulta diario enlazado
 	     * se realiza insercion
 	     * se realiza suma de valores
 	     */
@@ -202,7 +206,168 @@ class GenerarChequeController extends ControladorBase{
 	    
 	    $_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
 	    
-	    echo "llego";
+	    $nombreProcesos = "Pago Cheque CxP";
+	    $modulo = "TESORERIA";
+	    
+	    $respuesta = array();
+	    
+	    $_diarioTipo = new CoreDiarioTipoCabezaModel();
+	    
+	    $queryCxP = "SELECT id_cuentas_pagar, id_lote, fecha_cuentas_pagar, compras_cuentas_pagar, impuesto_cuentas_pagar, total_cuentas_pagar
+            FROM tes_cuentas_pagar
+            WHERE id_cuentas_pagar = $_id_cuentas_pagar";
+        
+	    $rsCuentasPagar = $_diarioTipo->enviaquery($queryCxP);
+	    
+	    $total_cuentas_pagar = $rsCuentasPagar[0]->total_cuentas_pagar;
+	    
+	    $queryCabezaDiario = "SELECT cdtc.id_diario_tipo_cabeza
+            FROM core_diario_tipo_cabeza cdtc
+            INNER JOIN modulos m
+            ON cdtc.id_modulos = m.id_modulos
+            INNER JOIN core_tipo_procesos ctp
+            ON ctp.id_modulos = m.id_modulos
+            WHERE 1 = 1
+            AND m.nombre_modulos = '$modulo'
+            AND ctp.nombre_tipo_procesos = '$nombreProcesos'";
+	    
+	    $rsCabezaDiario = $_diarioTipo -> enviaquery($queryCabezaDiario);
+	    
+	    $_id_diario_tipo = $rsCabezaDiario[0]->id_diario_tipo_cabeza;
+	    
+	    $queryDiarioDetalle = "SELECT id_diario_tipo_detalle, pc.id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas, destino_diario_tipo_detalle, e.nombre_entidades
+            FROM public.core_diario_tipo_detalle cdtd
+            INNER JOIN public.plan_cuentas pc
+            ON pc.id_plan_cuentas = cdtd.id_plan_cuentas
+            INNER JOIN public.entidades e
+            ON e.id_entidades = pc.id_entidades
+            WHERE id_diario_tipo_cabeza = $_id_diario_tipo";
+	    
+	    $rsDiarioDetalle = $_diarioTipo -> enviaquery($queryDiarioDetalle); 
+	    
+	    $htmlTabla="";
+	    if(!empty($rsDiarioDetalle)){
+	        
+	        //dibujar tabla de distribucion cheque
+	        $htmlTabla.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $htmlTabla.='<section style="height:150px; overflow-y:scroll;">';
+	        $htmlTabla.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	        $htmlTabla.= "<thead>";
+	        $htmlTabla.= "<tr>";
+	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;">Entidad</th>';
+	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;">Referencia</th>';
+	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;">Cuenta</th>';
+	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;">Descripcion</th>';
+	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;">Debito</th>';
+	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;">Credito</th>';
+	        
+	        $htmlTabla.='</tr>';
+	        $htmlTabla.='</thead>';
+	        $htmlTabla.='<tbody>';
+	        $i=0;
+	        $valor_credito = "0,00";
+	        $valor_debito = "0,00";
+	        foreach ($rsDiarioDetalle as $res){
+	            
+	            $i++;
+	            $htmlTabla.='<tr>';
+	            $htmlTabla.='<td style="font-size: 11px;">'.$i.'</td>';
+	            $htmlTabla.='<td style="font-size: 11px;">'.$res->nombre_entidades.'</td>';
+	            $htmlTabla.='<td style="font-size: 11px;"><input type="text" class="form-control input-sm distribucion" name="mod_dis_referencia" value=""></td>';
+	            $htmlTabla.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
+	            $htmlTabla.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
+	            if( strtoupper($res->destino_diario_tipo_detalle)  == "DEBE"){
+	                $valor_debito = number_format((float)$total_cuentas_pagar, 2, ',', '.');
+	                $valor_credito = "0,00";
+	            }
+	            if( strtoupper($res->destino_diario_tipo_detalle)  == "HABER"){
+	                $valor_credito = number_format((float)$total_cuentas_pagar, 2, ',', '.');
+	                $valor_debito = "0,00";
+	            }
+	            $htmlTabla.='<td style="font-size: 11px; text-align:right">'.$valor_debito.'</td>';
+	            $htmlTabla.='<td style="font-size: 11px; text-align:right">'.$valor_credito.'</td>';
+	           
+	            $htmlTabla.='</tr>';
+	        }
+	        $htmlTabla.='</tbody>';
+	        $htmlTabla.='</table>';
+	        $htmlTabla.='</section></div>';
+	        
+	    }
+	    
+	    $respuesta['tabla'] = (!empty($htmlTabla)) ? $htmlTabla : null;
+	    $respuesta['cuentas_pagar'] = $rsCuentasPagar;
+	    $respuesta['cxp'] = $total_cuentas_pagar;
+	    $respuesta['detallediario'] = $rsDiarioDetalle;
+	    
+	    echo json_encode($respuesta);
+	}
+	
+	
+	
+	public function generaCheque(){
+	    
+	    try{
+	        
+	        $_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
+	        
+	        $_diarioTipo = new CoreDiarioTipoCabezaModel();
+	        
+	        $nombreProcesos = "Pago Cheque CxP";
+	        $modulo = "TESORERIA";
+	        
+	        $queryCxP = "SELECT id_cuentas_pagar, id_lote, fecha_cuentas_pagar, compras_cuentas_pagar, impuesto_cuentas_pagar, total_cuentas_pagar
+                FROM tes_cuentas_pagar
+                WHERE id_cuentas_pagar = $_id_cuentas_pagar";
+	        
+	        $rsCuentasPagar = $_diarioTipo->enviaquery($queryCxP);
+	        
+	        $total_cuentas_pagar = $rsCuentasPagar[0]->total_cuentas_pagar;
+	        
+	        $queryCabezaDiario = "SELECT cdtc.id_diario_tipo_cabeza
+                    FROM core_diario_tipo_cabeza cdtc
+                    INNER JOIN modulos m
+                    ON cdtc.id_modulos = m.id_modulos
+                    INNER JOIN core_tipo_procesos ctp
+                    ON ctp.id_modulos = m.id_modulos
+                    WHERE 1 = 1
+                    AND m.nombre_modulos = '$modulo'
+                    AND ctp.nombre_tipo_procesos = '$nombreProcesos'";
+	        
+	        $rsCabezaDiario = $_diarioTipo -> enviaquery($queryCabezaDiario);
+	        
+	        $_id_diario_tipo = $rsCabezaDiario[0]->id_diario_tipo_cabeza;
+	        
+	        $queryDiarioDetalle = "SELECT id_diario_tipo_detalle, pc.id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas, destino_diario_tipo_detalle, e.nombre_entidades
+                    FROM public.core_diario_tipo_detalle cdtd
+                    INNER JOIN public.plan_cuentas pc
+                    ON pc.id_plan_cuentas = cdtd.id_plan_cuentas
+                    INNER JOIN public.entidades e
+                    ON e.id_entidades = pc.id_entidades
+                    WHERE id_diario_tipo_cabeza = $_id_diario_tipo";
+	        
+	        $rsDiarioDetalle = $_diarioTipo -> enviaquery($queryDiarioDetalle); 
+	        
+	        //insertar en comprobantes 
+	        //en cabecera luego en el detalle 
+	        
+	        //buscar datos de cabecera comprobante
+	        
+	        
+	        $var = 0;
+	        
+	        print_r($_POST);
+	        
+	        if($var==1)
+	            throw new Exception( "var es 2"); 
+	        
+	    }catch (Exception $ex){
+	        
+	        echo "<message>error generando cheque<message>";
+	        
+	    }
+	    
 	}
 	
 	

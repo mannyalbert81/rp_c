@@ -66,7 +66,7 @@ class CoreInformacionParticipesController extends ControladorBase{
                               core_participes.fecha_ingreso_participes,
                               core_participes.ocupacion_participes,
                               core_participes.fecha_nacimiento_participes,
-                              core_estado_civill_participes.nombre_estado_civill_participes,
+                              core_estado_civil_participes.nombre_estado_civil_participes,
                               core_participes.fecha_defuncion_participes, 
                               core_participes.correo_participes, 
                               core_entidad_patronal.nombre_entidad_patronal, 
@@ -91,7 +91,8 @@ class CoreInformacionParticipesController extends ControladorBase{
                               core_parentesco.nombre_parentesco, 
                               core_participes_informacion_adicional.telefono_una_referencia_participes_informacion_adicional, 
                               core_participes_informacion_adicional.contrato_adhesion_participes_informacion_adicional,
-                              core_estado_participes.nombre_estado_participes
+                              core_estado_participes.nombre_estado_participes,
+                              core_participes_informacion_adicional.observaciones_participes_informacion_adicional
                                                     
                                     ";
                     
@@ -103,7 +104,7 @@ class CoreInformacionParticipesController extends ControladorBase{
                               public.core_ciudades, 
                               public.core_entidad_patronal, 
                               public.core_parentesco,
-                              public.core_estado_civill_participes,
+                              public.core_estado_civil_participes,
                               public.core_estado_participes
 
                               ";
@@ -113,7 +114,7 @@ class CoreInformacionParticipesController extends ControladorBase{
                                   core_ciudades.id_ciudades = core_participes_informacion_adicional.id_ciudades AND
                                   core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND
                                   core_parentesco.id_parentesco = core_participes_informacion_adicional.id_parentesco
-                                  AND core_estado_civill_participes.id_estado_civill_participes = core_participes.id_estado_civil_participes 
+                                  AND core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes 
                                   AND core_estado_participes.id_estado_participes = core_participes.id_estado_participes
                                   AND core_participes.id_participes = '$_id_participes'";
                     $id       = "core_participes.id_participes";

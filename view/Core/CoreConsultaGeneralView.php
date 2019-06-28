@@ -4,7 +4,14 @@
   
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <style>
+    <style type="text/css">
+    
+    
+
+#ico{ list-style-image:url(ico.png);}
+#ico a{ font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px; text-decoration:none; color:#047;}
+#ico a:hover{text-decoration:underline; color:#C00;}
+
     .scrollable-menu {
     height: auto;
     max-height: 200px;
@@ -72,136 +79,219 @@
             <div class="box-body">
             <?php if ($resultRep !="" ) { foreach($resultRep as $resEdit) {?>
             
-             <div class="row">
-            <div class="col-xs-12 col-md-6 col-lg-6 ">
-            		<div class="form-group">
-                		<label for="nombre_entidad_patronal" class="control-label">Entidad Patronal:</label>
-              			<input type=text readonly="readonly"  step=1 class="form-control" id="nombre_entidad_patronal" name="nombre_entidad_patronal" value="<?php echo $resEdit->nombre_entidad_patronal; ?>">
-                        <div id="mensaje_nombre_entidad_patronal" class="errores"></div>
-                 	</div>
-             	</div>
-             	
-             <div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="cedula_participes" class="control-label">Identificación:</label>
-              			<input type=text readonly="readonly"  step=1 class="form-control" id="cedula_participes" name="cedula_participes" value="<?php echo $resEdit->cedula_participes; ?>">
-                        <div id="mensaje_cedula_participes" class="errores"></div>
-                 	</div>
-             	</div>
-             	
-             	
-            
-            </div>
-            
             <div class="row">
-            
-            <div class="col-xs-6 col-md-3 col-lg-3 ">
+            <div class="col-xs-6 col-md-6 col-lg-6 ">
             		<div class="form-group">
-                		<label for="ocupacion_participes" class="control-label">Cargo:</label>
-              			<input type=text readonly="readonly"  step=1 class="form-control" id="ocupacion_participes" name="ocupacion_participes" value="<?php echo $resEdit->ocupacion_participes; ?>">
-                        <div id="mensaje_fecha_ocupacion_participes" class="errores"></div>
+                		<div class="form-group-sm">
+                    				<label for="nombre_entidad_patronal" class="col-sm-4 control-label" > Entidad Patronal:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style=" width:405px; height:20px" readonly="readonly" class="form-control" id="nombre_entidad_patronal" name="nombre_entidad_patronal"  value="<?php echo $resEdit->nombre_entidad_patronal; ?>" >
+                    				  <div id="mensaje_nombre_entidad_patronal" class="errores"></div>
+                    				</div>
+                    			 </div> 
                  	</div>
              	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="fecha_nacimiento_participes" class="control-label">Fecha de Nacimiento:</label>
-              			<input type=text readonly="readonly"  step=1 class="form-control" id="fecha_nacimiento_participes" name="fecha_nacimiento_participes" value="<?php echo $resEdit->fecha_nacimiento_participes; ?>">
-                        <div id="mensaje_fecha_nacimiento_participes" class="errores"></div>
-                 	</div>
-             	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="ocupacion_participes" class="control-label">Edad:</label>
-              			<input type=text readonly="readonly"  step=1 class="form-control" id="ocupacion_participes" name="ocupacion_participes" value="<?php echo $resEdit->ocupacion_participes; ?>">
-                        <div id="mensaje_fecha_ocupacion_participes" class="errores"></div>
-                 	</div>
-             	</div>
-             	
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="nombre_estado_civill_participes" class="control-label">Estado Civil:</label>
-              			<input type=text readonly="readonly"  step=1 class="form-control" id="nombre_estado_civill_participes" name="nombre_estado_civill_participes" value="<?php echo $resEdit->nombre_estado_civill_participes; ?>">
-                        <div id="mensaje_nombre_estado_civill_participes" class="errores"></div>
-                 	</div>
-             	</div>
-            
-            
             </div>
-                        <div class="row">
-            
-            <div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="ocupacion_participes" class="control-label">Cuenta Individual:</label>
-              			<input type=text readonly="readonly"  step=1 class="form-control" id="ocupacion_participes" name="ocupacion_participes" value="<?php echo $resEdit->ocupacion_participes; ?>">
-                        <div id="mensaje_fecha_ocupacion_participes" class="errores"></div>
-                 	</div>
-             	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="nombre_estado_participes" class="control-label">Estado:</label>
-              			<input type=text readonly="readonly"  step=1 class="form-control" id="nombre_estado_participes" name="nombre_estado_participes" value="<?php echo $resEdit->nombre_estado_participes; ?>">
-                        <div id="mensaje_nombre_estado_participes" class="errores"></div>
-                 	</div>
-             	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="fecha_ingreso_participes" class="control-label">Fecha de Ingreso:</label>
-              			<input type=text readonly="readonly"  step=1 class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $resEdit->fecha_ingreso_participes; ?>">
-                        <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
-                 	</div>
-             	</div>
-             	
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="nombre_estado_civill_participes" class="control-label">Tiempo de Aportación:</label>
-              			<input type=text readonly="readonly"  step=1 class="form-control" id="nombre_estado_civill_participes" name="nombre_estado_civill_participes" value="<?php echo $resEdit->nombre_estado_civill_participes; ?>">
-                        <div id="mensaje_nombre_estado_civill_participes" class="errores"></div>
-                 	</div>
-             	</div>
-            
-            
-            </div>
+        
+         
+         
+            <div class="row">
+        	
+                	<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="cedula_participes" class="col-sm-4 control-label" > Identificación:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="cedula_participes" name="cedula_participes"  value="<?php echo $resEdit->cedula_participes; ?>" >
+                    				  <div id="mensaje_cedula_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+     		         </div>
+     		         <div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" > Fecha de Ingreso:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes"  value="<?php echo $resEdit->fecha_ingreso_participes; ?>" >
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+     		         </div>
+                                	
+                		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="ocupacion_participes" class="col-sm-4 control-label" >Cargo:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="ocupacion_participes" name="ocupacion_participes" value="<?php echo $resEdit->ocupacion_participes; ?>" >
+                    				  <div id="mensaje_ocupacion_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+                 		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Tiempo de Aportación:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+                 		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_nacimiento_participes" class="col-sm-4 control-label" >Fecha de Nacimiento:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_nacimiento_participes" name="fecha_nacimiento_participes" value="<?php echo $resEdit->fecha_nacimiento_participes; ?>" >
+                    				  <div id="mensaje_fecha_nacimiento_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+                 		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >N° de Aportes:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+                 		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Edad:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+                 		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Acum.de Aport. Pers. :</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+                 		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="nombre_estado_civil_participes" class="col-sm-4 control-label" >Estado Civil:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="nombre_estado_civil_participes" name="nombre_estado_civil_participes" value="<?php echo $resEdit->nombre_estado_civil_participes; ?>" >
+                    				  <div id="mensaje_nombre_estado_civil_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+                 		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Años de Servicio:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+                 		
+                 		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Cuenta Individual:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+                 		
+                 		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Credito Activo:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+                 		<div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Estado:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $resEdit->nombre_estado_participes; ?>" >
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                		</div>
+                 	
+        </div>   
+        
+        <div class=row>
+        <div class="col-lg-6 col-md-6 col-xs-12">
+        <div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Kit Entregado:</label>
+                    				<div class="col-sm-8">
+                    				  <input type="checkbox" name="cb-autos" value="gusta">
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+        </div>
+        </div>
+      <div class="row">
+      
+      <div class="col-lg-6 col-md-6 col-xs-12">
+                			<div class="form-group "> 
+                    			 <div class="form-group-sm">
+                    				<label for="observaciones_participes_informacion_adicional" class="col-sm-4 control-label" >Observaciones:</label>
+                    				<div class="col-sm-8">
+                    				  <textarea name="comentario" value="<?php echo $resEdit->observaciones_participes_informacion_adicional; ?>" readonly="readonly" rows="2" cols="49"></textarea>
+                    				  <div id="mensaje_observaciones_participes_informacion_adicional" class="errores"></div>
+                    				</div>
+                    			 </div>        			 
+                			</div>
+                 		</div>
+      
+      
+      
+      
+      </div>  				
+        				         
+        			
             
             <?php }}?>
            
-                <div class="row">
-          		<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="dpto_empleados" class="control-label">Mes:</label>
-                    	<select name="estado_cargo" id="mes_reporte"  class="form-control">
-                                      <option value="" selected="selected">--Seleccione--</option>
-    								  <?php  foreach($meses as $key=>$res) {?>
-									  <option value="<?php echo $key; ?>"><?php echo $res; ?> </option>
-			        				  <?php } ?>
-    					</select> 
-                        <div id="mensaje_mes_balance" class="errores"></div>
-                 	</div>
-             	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="dpto_empleados" class="control-label">Año:</label>
-              			<input type=number step=1 class="form-control" id="a_reporte" name="a_reporte" value="2019">
-                        <div id="mensaje_estado_cargo" class="errores"></div>
-                 	</div>
-             	</div>
-          	</div>
-            <div class="row">
-             <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
-            	<div class="form-group">
-                  <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="BuscarReporte2()"><i class="glyphicon glyphicon-search"></i> BUSCAR</button>
-                </div>
-             </div>	    
             </div>
-        	</div>
       	</div>
     </section>
     		
     <!-- seccion para el listado de roles -->
 
-            <section class="content">
+         <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Aportaciones Personales</h3>
+              <h3 class="box-title">Aportes</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -210,13 +300,67 @@
             </div>
             
             <div class="box-body">
-				<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_departamentos(1)" placeholder="Buscar.."/>
-			</div>
-			
-        	<div id="load_cuentas" ></div>
-        	<div id="plan_cuentas2" ></div>
+
+           <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+            
+            <li class="active" data-toggle="tab">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Aportes<span class="caret"></span></a>
+              <ul class="dropdown-menu" id="ico">
+              <li><a href="#activos">Personales</a></li>
+              <li><a href="#inactivos">Patronales</a></li> 
+                                 
+              </ul>
+           </li>
+           <li  data-toggle="tab">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Desembolso<span class="caret"></span></a>
+              <ul class="dropdown-menu" id="ico">
+              <li><a href="#activos">Personales</a></li>
+              <li><a href="#inactivos">Patronales</a></li>                      
+              </ul>
+           </li>
            
+              <li><a href="#inactivos" data-toggle="tab">Superavit</a></li>
+              
+           <li  data-toggle="tab">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Saldos<span class="caret"></span></a>
+              <ul class="dropdown-menu" id="ico">
+              <li><a href="#activos">De Aportes Personales</a></li>
+              <li><a href="#inactivos">De Aportes Patronales</a></li>                      
+              </ul>
+           </li>
+              
+           <li><a href="#inactivos" data-toggle="tab">Saldos Creditos</a></li>
+           <li><a href="#inactivos" data-toggle="tab">Herederos</a></li>
+           <li><a href="#inactivos" data-toggle="tab">Garantías Prestadas</a></li>
+           <li><a href="#inactivos"><img style=" height:30px; width:30px;" src="view/images/print.png"></img></a></li>
+                  
+            </ul>
+            
+            <div class="col-md-12 col-lg-12 col-xs-12">
+            <div class="tab-content">
+            <br>
+              <div class="tab-pane active" id="activos">
+                
+					<div class="pull-right" style="margin-right:15px;">
+					</div>
+					<div id="load_grupos_activos" ></div>	
+					<div id="grupos_activos_registrados"></div>	
+                
+              </div>
+              
+              <div class="tab-pane" id="inactivos">
+                
+                    <div class="pull-right" style="margin-right:15px;">
+					</div>
+					
+					<div id="load_grupos_inactivos" ></div>	
+					<div id="grupos_inactivos_registrados"></div>
+              </div>
+             </div>
+            </div>
+           </div>
+
          
             </div>
             </div>

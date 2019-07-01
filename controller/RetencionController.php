@@ -242,7 +242,7 @@ class RetencionController extends ControladorBase{
         	$html.='<tr >';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'. $_tipo_comprobante.'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_numdocsustento.'</td>';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['FECHEMDOCSUST'].'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['FECHAEMISION'].'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['PERIODOFISCAL'].'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_baseimponible.'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_coddocsustento.'</td>';
@@ -556,6 +556,8 @@ class RetencionController extends ControladorBase{
     	$html_code = '<link rel="stylesheet" href="bootstrap.min.css">';
     	//$html_code .= fetch_customer_data($connect);
     	
+    	$_nombre_archivo = "";
+    	
     	$pdf = new Pdf();
     	$pdf->load_html($html_code);
     	$pdf->render();
@@ -579,111 +581,157 @@ class RetencionController extends ControladorBase{
     	
     	$datos_reporte = array();
     	
-    	$columnas = " tri_retenciones.id_tri_retenciones,
-                      tri_retenciones.infotributaria_ambiente,
-                      tri_retenciones.infotributaria_tipoemision,
-                      tri_retenciones.infotributaria_razonsocial,
-                      tri_retenciones.infotributaria_nombrecomercial,
-                      tri_retenciones.infotributaria_ruc,
-                      tri_retenciones.infotributaria_claveacceso,
-                      tri_retenciones.infotributaria_coddoc,
-                      tri_retenciones.infotributaria_estab,
-                      tri_retenciones.infotributaria_secuencial,
-                      tri_retenciones.infotributaria_dirmatriz,
-                      tri_retenciones.infocompretencion_fechaemision,
-                      tri_retenciones.infocompretencion_direstablecimiento,
-                      tri_retenciones.infocompretencion_contribuyenteespecial,
-                      tri_retenciones.infocompretencion_obligadocontabilidad,
-                      tri_retenciones.infocompretencion_tipoidentificacionsujetoretenido,
-                      tri_retenciones.infocompretencion_razonsocialsujetoretenido,
-                      tri_retenciones.infocompretencion_identificacionsujetoretenido,
-                      tri_retenciones.infocompretencion_periodofiscal,
-                      tri_retenciones.impuesto_codigo,
-                      tri_retenciones.impuesto_codigoretencion,
-                      tri_retenciones.impuestos_baseimponible,
-                      tri_retenciones.impuestos_porcentajeretener,
-                      tri_retenciones.impuestos_valorretenido,
-                      tri_retenciones.impuestos_coddocsustento,
-                      tri_retenciones.impuestos_numdocsustento,
-                      tri_retenciones.impuesto_fechaemisiondocsustento,
-                      tri_retenciones.impuesto_codigo_dos,
-                      tri_retenciones.impuesto_codigoretencion_dos,
-                      tri_retenciones.impuestos_baseimponible_dos,
-                      tri_retenciones.impuestos_porcentajeretener_dos,
-                      tri_retenciones.impuestos_valorretenido_dos,
-                      tri_retenciones.impuestos_coddocsustento_dos,
-                      tri_retenciones.impuestos_numdocsustento_dos,
-                      tri_retenciones.impuesto_fechaemisiondocsustento_dos,
-                      tri_retenciones.infoadicional_campoadicional,
-                      tri_retenciones.infoadicional_campoadicional_dos,
+    	
+        
+        $columnas = " tri_retenciones.id_tri_retenciones, 
+                      tri_retenciones.infotributaria_ambiente, 
+                      tri_retenciones.infotributaria_tipoemision, 
+                      tri_retenciones.infotributaria_razonsocial, 
+                      tri_retenciones.infotributaria_nombrecomercial, 
+                      tri_retenciones.infotributaria_ruc, 
+                      tri_retenciones.infotributaria_claveacceso, 
+                      tri_retenciones.infotributaria_coddoc, 
+                      tri_retenciones.infotributaria_estab, 
+                      tri_retenciones.infotributaria_secuencial, 
+                      tri_retenciones.infotributaria_dirmatriz, 
+                      tri_retenciones.infocompretencion_fechaemision, 
+                      tri_retenciones.infocompretencion_direstablecimiento, 
+                      tri_retenciones.infocompretencion_contribuyenteespecial, 
+                      tri_retenciones.infocompretencion_obligadocontabilidad, 
+                      tri_retenciones.infocompretencion_tipoidentificacionsujetoretenido, 
+                      tri_retenciones.infocompretencion_razonsocialsujetoretenido, 
+                      tri_retenciones.infocompretencion_identificacionsujetoretenido, 
+                      tri_retenciones.infocompretencion_periodofiscal, 
+                      tri_retenciones.impuesto_codigo, 
+                      tri_retenciones.impuesto_codigoretencion, 
+                      tri_retenciones.impuestos_baseimponible, 
+                      tri_retenciones.impuestos_porcentajeretener, 
+                      tri_retenciones.impuestos_valorretenido, 
+                      tri_retenciones.impuestos_coddocsustento, 
+                      tri_retenciones.impuestos_numdocsustento, 
+                      tri_retenciones.impuesto_fechaemisiondocsustento, 
+                      tri_retenciones.impuesto_codigo_dos, 
+                      tri_retenciones.impuesto_codigoretencion_dos, 
+                      tri_retenciones.impuestos_baseimponible_dos, 
+                      tri_retenciones.impuestos_porcentajeretener_dos, 
+                      tri_retenciones.impuestos_valorretenido_dos, 
+                      tri_retenciones.impuestos_coddocsustento_dos, 
+                      tri_retenciones.impuestos_numdocsustento_dos, 
+                      tri_retenciones.impuesto_fechaemisiondocsustento_dos, 
+                      tri_retenciones.infoadicional_campoadicional, 
+                      tri_retenciones.infoadicional_campoadicional_dos, 
                       tri_retenciones.infoadicional_campoadicional_tres,
                       tri_retenciones.fecha_autorizacion";
-    	
-    	$tablas = "  public.tri_retenciones";
-    	$where= "tri_retenciones.id_tri_retenciones='$id_tri_retenciones'";
-    	$id="tri_retenciones.id_tri_retenciones";
-    	
-    	$rsdatos = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
-    	 
-    	
-    	$datos_reporte['AMBIENTE']=$rsdatos[0]->infotributaria_ambiente;
-    	$datos_reporte['EMISION']=$rsdatos[0]->infotributaria_tipoemision;
-    	$datos_reporte['RAZONSOCIAL']=$rsdatos[0]->infotributaria_razonsocial;
-    	$datos_reporte['NOMBRECOMERCIAL']=$rsdatos[0]->infotributaria_nombrecomercial;
-    	$datos_reporte['RUC']=$rsdatos[0]->infotributaria_ruc;
-    	 
-    	$datos_reporte['CLAVEACCESO']= $rsdatos[0]->infotributaria_claveacceso;
-    	
-    	include dirname(__FILE__).'\barcode.php';
-    	$nombreimagen = "codigoBarras";
-    	$code = $rsdatos[0]->infotributaria_claveacceso;
-    	$ubicacion =   dirname(__FILE__).'\..\view\images\barcode'.'\\'.$nombreimagen.'.png';
-    	barcode($ubicacion, $code, 50, 'horizontal', 'code128', true);
-    	
-    	$datos_reporte['IMGBARCODE']=$ubicacion;
-    	$datos_reporte['CODIGODOCUMENTO']=$rsdatos[0]->infotributaria_coddoc;
-    	$datos_reporte['ESTABLECIMIENTO']=$rsdatos[0]->infotributaria_estab;
-    	$datos_reporte['SECUENCIAL']=$rsdatos[0]->infotributaria_secuencial;
-    	$datos_reporte['DIRMATRIZ']=$rsdatos[0]->infotributaria_dirmatriz;
-    	$datos_reporte['FECHAEMISION']=$rsdatos[0]->infocompretencion_fechaemision;
-    	$datos_reporte['DIRESTABLECIMIENTO']=$rsdatos[0]->infocompretencion_direstablecimiento;
-    	$datos_reporte['CONTESPECIAL']=$rsdatos[0]->infocompretencion_contribuyenteespecial;
-    	$datos_reporte['OBCONTABILIDAD']=$rsdatos[0]->infocompretencion_obligadocontabilidad;
-    	$datos_reporte['TIPOIDENTIFICACION']=$rsdatos[0]->infocompretencion_tipoidentificacionsujetoretenido;
-    	$datos_reporte['RAZONSOCIALRETENIDO']=$rsdatos[0]->infocompretencion_razonsocialsujetoretenido;
-    	$datos_reporte['IDENTIFICACION']=$rsdatos[0]->infocompretencion_identificacionsujetoretenido;
-    	$datos_reporte['PERIODOFISCAL']=$rsdatos[0]->infocompretencion_periodofiscal;
-    	$datos_reporte['PERIODOFISCALDOS']=$rsdatos[0]->infocompretencion_periodofiscal;
-    	$datos_reporte['IMPCODIGO']=$rsdatos[0]->impuesto_codigo;
-    	$datos_reporte['IMPCODRETENCION']=$rsdatos[0]->impuesto_codigoretencion;
-    	$datos_reporte['IMPBASIMPONIBLE']=$rsdatos[0]->impuestos_baseimponible;
-    	$datos_reporte['IMPPORCATENER']=$rsdatos[0]->impuestos_porcentajeretener;
-    	$datos_reporte['VALRETENIDO']=$rsdatos[0]->impuestos_valorretenido;
-    	$datos_reporte['CODSUSTENTO']=$rsdatos[0]->impuestos_coddocsustento;
-    	$datos_reporte['NUMDOCSUST']=$rsdatos[0]->impuestos_numdocsustento;
-    	$datos_reporte['FECHEMDOCSUST']=$rsdatos[0]->impuesto_fechaemisiondocsustento;
-    	$datos_reporte['CODIGODOS']=$rsdatos[0]->impuesto_codigo_dos;
-    	$datos_reporte['CODRETDOS']=$rsdatos[0]->impuesto_codigoretencion_dos;
-    	$datos_reporte['BASEIMPDOS']=$rsdatos[0]->impuestos_baseimponible_dos;
-    	$datos_reporte['IMPPORCDOS']=$rsdatos[0]->impuestos_porcentajeretener_dos;
-    	$datos_reporte['VALRETDOS']=$rsdatos[0]->impuestos_valorretenido_dos;
-    	$datos_reporte['CODSUSTDOS']=$rsdatos[0]->impuestos_coddocsustento_dos;
-    	$datos_reporte['NUMSUSTDOS']=$rsdatos[0]->impuestos_numdocsustento_dos;
-    	$datos_reporte['FECHEMISIONDOS']=$rsdatos[0]->impuesto_fechaemisiondocsustento_dos;
-    	$datos_reporte['CAMPADICIONAL']=$rsdatos[0]->infoadicional_campoadicional;
-    	$datos_reporte['CAMPADICIONALDOS']=$rsdatos[0]->infoadicional_campoadicional_dos;
-    	$datos_reporte['CAMPADICIONALTRES']=$rsdatos[0]->infoadicional_campoadicional_tres;
-    	 
-    	
-    	
-    	
-    	$datos_reporte['FECAUTORIZACION']=$rsdatos[0]->fecha_autorizacion;
-    	
-    	
-    	
-    	//////retencion detalle
-    	
-    	$columnas = " tri_retenciones_detalle.impuesto_codigo,
+        
+        $tablas = "  public.tri_retenciones";
+        $where= "tri_retenciones.id_tri_retenciones='$id_tri_retenciones'";
+        $id="tri_retenciones.id_tri_retenciones";
+        
+        $rsdatos = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
+       
+		
+        
+        
+        
+       
+        
+        $datos_reporte['AMBIENTE']=$rsdatos[0]->infotributaria_ambiente;
+        $datos_reporte['EMISION']=$rsdatos[0]->infotributaria_tipoemision;
+        $datos_reporte['RAZONSOCIAL']=$rsdatos[0]->infotributaria_razonsocial;
+        $datos_reporte['NOMBRECOMERCIAL']=$rsdatos[0]->infotributaria_nombrecomercial;
+        $datos_reporte['RUC']=$rsdatos[0]->infotributaria_ruc;
+       
+        $datos_reporte['CLAVEACCESO']= $rsdatos[0]->infotributaria_claveacceso;
+        
+        include dirname(__FILE__).'\barcode.php';
+        $nombreimagen = "codigoBarras";
+        $code = $rsdatos[0]->infotributaria_claveacceso;
+        $ubicacion =   dirname(__FILE__).'\..\view\images\barcode'.'\\'.$nombreimagen.'.png';
+        barcode($ubicacion, $code, 50, 'horizontal', 'code128', true);
+        
+        $datos_reporte['IMGBARCODE']=$ubicacion;
+        $datos_reporte['CODIGODOCUMENTO']=$rsdatos[0]->infotributaria_coddoc;
+        $datos_reporte['ESTABLECIMIENTO']=$rsdatos[0]->infotributaria_estab;
+        $datos_reporte['SECUENCIAL']=$rsdatos[0]->infotributaria_secuencial;
+        $datos_reporte['DIRMATRIZ']=$rsdatos[0]->infotributaria_dirmatriz;
+        $datos_reporte['FECHAEMISION']=$rsdatos[0]->infocompretencion_fechaemision;
+        $datos_reporte['DIRESTABLECIMIENTO']=$rsdatos[0]->infocompretencion_direstablecimiento;
+        $datos_reporte['CONTESPECIAL']=$rsdatos[0]->infocompretencion_contribuyenteespecial;
+        $datos_reporte['OBCONTABILIDAD']=$rsdatos[0]->infocompretencion_obligadocontabilidad;
+        $datos_reporte['TIPOIDENTIFICACION']=$rsdatos[0]->infocompretencion_tipoidentificacionsujetoretenido;
+        $datos_reporte['RAZONSOCIALRETENIDO']=$rsdatos[0]->infocompretencion_razonsocialsujetoretenido;
+        $datos_reporte['IDENTIFICACION']=$rsdatos[0]->infocompretencion_identificacionsujetoretenido;
+        $datos_reporte['PERIODOFISCAL']=$rsdatos[0]->infocompretencion_periodofiscal;
+        $datos_reporte['PERIODOFISCALDOS']=$rsdatos[0]->infocompretencion_periodofiscal;
+        $datos_reporte['IMPCODIGO']=$rsdatos[0]->impuesto_codigo;
+        $datos_reporte['IMPCODRETENCION']=$rsdatos[0]->impuesto_codigoretencion;
+        $datos_reporte['IMPBASIMPONIBLE']=$rsdatos[0]->impuestos_baseimponible;
+        $datos_reporte['IMPPORCATENER']=$rsdatos[0]->impuestos_porcentajeretener;
+        $datos_reporte['VALRETENIDO']=$rsdatos[0]->impuestos_valorretenido;
+        $datos_reporte['CODSUSTENTO']=$rsdatos[0]->impuestos_coddocsustento;
+        $datos_reporte['NUMDOCSUST']=$rsdatos[0]->impuestos_numdocsustento;
+        $datos_reporte['FECHEMDOCSUST']=$rsdatos[0]->impuesto_fechaemisiondocsustento;
+        $datos_reporte['CODIGODOS']=$rsdatos[0]->impuesto_codigo_dos;
+        $datos_reporte['CODRETDOS']=$rsdatos[0]->impuesto_codigoretencion_dos;
+        $datos_reporte['BASEIMPDOS']=$rsdatos[0]->impuestos_baseimponible_dos;
+        $datos_reporte['IMPPORCDOS']=$rsdatos[0]->impuestos_porcentajeretener_dos;
+        $datos_reporte['VALRETDOS']=$rsdatos[0]->impuestos_valorretenido_dos;
+        $datos_reporte['CODSUSTDOS']=$rsdatos[0]->impuestos_coddocsustento_dos;
+        $datos_reporte['NUMSUSTDOS']=$rsdatos[0]->impuestos_numdocsustento_dos;
+        $datos_reporte['FECHEMISIONDOS']=$rsdatos[0]->impuesto_fechaemisiondocsustento_dos;
+        $datos_reporte['CAMPADICIONAL']=$rsdatos[0]->infoadicional_campoadicional;
+        $datos_reporte['CAMPADICIONALDOS']=$rsdatos[0]->infoadicional_campoadicional_dos;
+        $datos_reporte['CAMPADICIONALTRES']=$rsdatos[0]->infoadicional_campoadicional_tres;
+       
+        
+        
+        
+        $datos_reporte['FECAUTORIZACION']=$rsdatos[0]->fecha_autorizacion;
+        
+
+        
+        
+        
+        
+        
+        
+        if (  $datos_reporte['AMBIENTE'] =="2"){
+            
+            $datos_reporte['AMBIENTE']="PRODUCCIÓN";
+            
+        }
+        
+        if (  $datos_reporte['EMISION'] =="1"){
+            
+            $datos_reporte['EMISION']="NORMAL";
+            
+        }
+        
+        if (  $datos_reporte['IMPCODIGO'] =="1"){
+            
+            $datos_reporte['IMPCODIGO']="RENTA";
+            
+        }
+        
+        if (  $datos_reporte['CODIGODOS'] =="2"){
+            
+            $datos_reporte['CODIGODOS']="IVA";
+            
+        }
+        $_tipo_comprobante ="FACTURA";
+        if (  $datos_reporte['CODSUSTENTO'] =="07"){
+            
+           $_tipo_comprobante="FACTURA";
+            
+        }
+      
+        
+        //para imagen codigo barras
+       
+        
+        //////retencion detalle
+        
+        $columnas = " tri_retenciones_detalle.impuesto_codigo,
 					  tri_retenciones_detalle.impuesto_codigoretencion,
 					  tri_retenciones_detalle.impuestos_baseimponible,
 					  tri_retenciones_detalle.impuestos_porcentajeretener,
@@ -693,137 +741,61 @@ class RetencionController extends ControladorBase{
 					  tri_retenciones_detalle.impuesto_fechaemisiondocsustento,
 					  tri_retenciones_detalle.impuesto_codigo_dos,
 					  tri_retenciones_detalle.id_tri_retenciones";
-    	
-    	$tablas = "  public.tri_retenciones,
+        
+        $tablas = "  public.tri_retenciones,
   					public.tri_retenciones_detalle";
-    	$where= "tri_retenciones_detalle.id_tri_retenciones = tri_retenciones.id_tri_retenciones AND  tri_retenciones_detalle.id_tri_retenciones='$id_tri_retenciones'";
-    	$id="tri_retenciones_detalle.id_tri_retenciones_detalle";
-    	
-    	$retencion_detalle = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
-    	 
-    	
-    	
-    	
-    	
-    	
-    	
-    	if (  $datos_reporte['AMBIENTE'] =="2"){
-    	
-    		$datos_reporte['AMBIENTE']="PRODUCCIÓN";
-    	
-    	}
-    	
-    	if (  $datos_reporte['EMISION'] =="1"){
-    	
-    		$datos_reporte['EMISION']="NORMAL";
-    	
-    	}
-    	
-    	if (  $datos_reporte['IMPCODIGO'] =="1"){
-    	
-    		$datos_reporte['IMPCODIGO']="RENTA";
-    	
-    	}
-    	
-    	if (  $datos_reporte['CODIGODOS'] =="2"){
-    	
-    		$datos_reporte['CODIGODOS']="IVA";
-    	
-    	}
-    	if (  $datos_reporte['CODSUSTENTO'] =="01"){
-    	
-    		$datos_reporte['CODSUSTENTO']="FACTURA";
-    	
-    	}
-    	if (  $datos_reporte['CODSUSTDOS'] =="01"){
-    	
-    		$datos_reporte['CODSUSTDOS']="FACTURA";
-    	
-    	}
-    	
-    	if (  $datos_reporte['CODSUSTENTO'] ==""){
-    	
-    		$datos_reporte['CODSUSTENTO']="-";
-    		$datos_reporte['NUMDOCSUST']="-";
-    		$datos_reporte['FECHEMDOCSUST']="-";
-    		$datos_reporte['IMPBASIMPONIBLE']="-";
-    		$datos_reporte['PERIODOFISCAL']="-";
-    		$datos_reporte['IMPCODIGO']="-";
-    		$datos_reporte['IMPPORCATENER']="-";
-    		$datos_reporte['VALRETENIDO']="-";
-    	
-    	}
-    	if (  $datos_reporte['CODSUSTDOS'] ==""){
-    	
-    		$datos_reporte['CODSUSTDOS']="-";
-    		$datos_reporte['NUMSUSTDOS']="-";
-    		$datos_reporte['FECHEMISIONDOS']="-";
-    		$datos_reporte['BASEIMPDOS']="-";
-    		$datos_reporte['PERIODOFISCALDOS']="-";
-    		$datos_reporte['CODIGODOS']="-";
-    		$datos_reporte['IMPPORCDOS']="-";
-    		$datos_reporte['VALRETDOS']="-";
-    	
-    	}
-    	
-    	//para imagen codigo barras
-    	 
-    	
-    	
-    	$_nombre_archivo ="";
-    	
-    	$reultRet=$retenciones->getBy("id_tri_retenciones='$id_tri_retenciones'");
-    	$camino_nombre_xml = "";
-    	if(!empty($reultRet)){
-    	
-    			$infotributaria_claveacceso = $reultRet[0]->infotributaria_claveacceso;
-    			$camino_nombre_xml = "DOCUMENTOS_ELECTRONICOS/COMPROBANTES AUTORIZADOS/".$infotributaria_claveacceso	 . ".XML";
-    			$_nombre_archivo = "DOCUMENTOS_GENERADOS/RETENCIONES/".$infotributaria_claveacceso	 . ".PDF";
-    	}
-    	
-    	
-    	//para imagen codigo barras
-    	 
-    	$html='';
-    	
-    	 
-    	$html.='<table class="info" style="width:98%;" border=1 >';
-    	$html.='<tr>';
-    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Comprobante</th>';
-    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Número</th>';
-    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Fecha Emisión</th>';
-    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Ejercicio Fiscal</th>';
-    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Base Imponible para la Retención</th>';
-    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Código Impuesto</th>';
-    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Porcentaje Retención</th>';
-    	$html.='<th colspan="2" style="text-align: center; font-size: 11px;">Valor Retenido</th>';
-    	$html.='</tr>';
-    	 
-    	
-    	
-    	 
-    	foreach ($retencion_detalle as $res)
-    	{
-    		 
-    		$html.='<tr >';
-    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['CODSUSTENTO'].'</td>';
-    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['NUMDOCSUST'].'</td>';
-    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['FECHEMDOCSUST'].'</td>';
-    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['PERIODOFISCAL'].'</td>';
-    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_baseimponible.'</td>';
-    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_coddocsustento.'</td>';
-    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_porcentajeretener.'</td>';
-    		$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_valorretenido.'</td>';
-    	
-    		 
-    		$html.='</td>';
-    		$html.='</tr>';
-    	}
-    	
-    	$html.='</table>';
-    	
-    	$datos_reporte['DETALLE_RETENCION']= $html;
-    	
+        $where= "tri_retenciones_detalle.id_tri_retenciones = tri_retenciones.id_tri_retenciones AND  tri_retenciones_detalle.id_tri_retenciones='$id_tri_retenciones'";
+        $id="tri_retenciones_detalle.id_tri_retenciones_detalle";
+        
+        $retencion_detalle = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
+         
+        
+        
+        
+        
+         $html='';
+        
+         
+         $html.='<table class="info" style="width:98%;" border=1 >';
+         $html.='<tr>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Comprobante</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Número</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Fecha Emisión</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Ejercicio Fiscal</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Base Imponible para la Retención</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Código Impuesto</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Porcentaje Retención</th>';
+         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Valor Retenido</th>';
+         $html.='</tr>';
+         
+        
+        
+         
+        foreach ($retencion_detalle as $res)
+        {
+        	
+        	$html.='<tr >';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'. $_tipo_comprobante.'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_numdocsustento.'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['FECHAEMISION'].'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['PERIODOFISCAL'].'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_baseimponible.'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_coddocsustento.'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_porcentajeretener.'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_valorretenido.'</td>';
+        		
+        	
+        	$html.='</td>';
+        	$html.='</tr>';
+        }
+        
+        $html.='</table>';	
+        
+        $datos_reporte['DETALLE_RETENCION']= $html;
+     
+        
+        $_nombre_archivo = "DOCUMENTOS_GENERADOS/RETENCIONES/" . $rsdatos[0]->infotributaria_claveacceso . ".PDF";
+        
     	
     	$this->verReporte("Retencion", array('datos_reporte'=>$datos_reporte ,'_nombre_archivo'=>$_nombre_archivo));
     	 
@@ -833,6 +805,9 @@ class RetencionController extends ControladorBase{
     	die();
     	*/
     	$reultSet=$retenciones->getBy("id_tri_retenciones='$id_tri_retenciones'");
+    	
+    	
+    	
     	
     	if(!empty($reultSet)){
     	   	

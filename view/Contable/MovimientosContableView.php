@@ -8,8 +8,9 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   
     <?php include("view/modulos/links_css.php"); ?>		
-       <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-       <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+   <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
        
    
  
@@ -72,28 +73,28 @@
           <div class="row">
 	         <div class="col-md-3 col-lg-3 col-xs-12">
 	         	<div class="form-group">
-	         		<label for="anio_balance" class="control-label">AÑO :</label>
-                    <select name="anio_balance" id="anio_balance"   class="form-control" >
+	         		<label for="anio_movimientos" class="control-label">AÑO :</label>
+                    <select name="anio_movimientos" id="anio_movimientos"   class="form-control" >
                         <option value="0" selected="selected">--Seleccione--</option>	
-    					<!-- VALIDAR PA MOSTRAR ANIO DEL SERVIDOR -->		       
+    					<option value="<?php echo date('Y'); ?>" ><?php echo date('Y'); ?></option>		       
 					 </select> 
                      <div id="mensaje_anio_balance" class="errores"></div>
 	         	</div>
 	         </div>
 	         <div class="col-md-3 col-lg-3 col-xs-12">
 	         	<div class="form-group">
-	         		<label for="mes_balance" class="control-label">MES :</label>
-                    <select name="mes_balance" id="mes_balance"   class="form-control" >
+	         		<label for="mes_movimientos" class="control-label">MES :</label>
+                    <select name="mes_movimientos" id="mes_movimientos"   class="form-control" >
                     	<option value="0" selected="selected">--Seleccione--</option>
-						<option value="1" >ENERO</option>
-    					<option value="2" >FEBRERO</option>
-    					<option value="3" >MARZO</option>
-    					<option value="4" >ABRIL</option>
-    					<option value="5" >MAYO</option>						
-    					<option value="6" >JUNIO</option>
-    					<option value="7" >JULIO</option>
-    					<option value="8" >AGOSTO</option>
-    					<option value="9" >SEPTIEMBRE</option>
+						<option value="01" >ENERO</option>
+    					<option value="02" >FEBRERO</option>
+    					<option value="03" >MARZO</option>
+    					<option value="04" >ABRIL</option>
+    					<option value="05" >MAYO</option>						
+    					<option value="06" >JUNIO</option>
+    					<option value="07" >JULIO</option>
+    					<option value="08" >AGOSTO</option>
+    					<option value="09" >SEPTIEMBRE</option>
     					<option value="10" >OCTUBRE</option>
     					<option value="11" >NOVIEMBRE</option>
     					<option value="12" >DICIEMBRE</option>	
@@ -106,7 +107,7 @@
 	      <div class="row">
 	      	<div class="col-md-offset-5 col-lg-offset-5 col-md-2 col-lg-2 col-xs-12">
 	      		<div class="form-group">
-	      			<button type="button" id="Buscar" name="Buscar" class="btn btn-success" onclick="BuscarReporte()">GENERAR</button>    		
+	      			<button type="button" id="buscarmovimientos" name="buscarmovimientos" class="btn btn-success" >GENERAR</button>    		
 	      		</div>
 	      	</div>
 	      </div>
@@ -122,7 +123,7 @@
     <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Balance </h3>
+          <h3 class="box-title">Movimientos Contable Mes </h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -132,7 +133,7 @@
          
 	    <div class="box-body">
 	    	<div id="load_cuentas" ></div>
-        	<div id="plan_cuentas" ></div>
+        	<div id="div_movimientos" ></div>
 	    </div>
 	   </div>
     </section>
@@ -145,11 +146,12 @@
  </div>
      
    
-    <?php include("view/modulos/links_js.php"); ?>
-   	 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.6"></script>   
+  <?php include("view/modulos/links_js.php"); ?>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+  <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
+  <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>
+  <script src="view/Contable/FuncionesJS/movimientoscontables.js?0.18"></script>
   
 	
  </body>

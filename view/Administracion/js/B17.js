@@ -1,6 +1,5 @@
 $(document).ready( function (){
 	
-	console.log("bonesaw is ready!");
 	$('#tabla_cuentas').on('click', 'tr.nivel1',function(){
 	   
 	    console.log("click");
@@ -46,8 +45,9 @@ function BuscarReporte2()
 	
 	var mes=$('#mes_reporte').val();
 	var anio=$('#a_reporte').val();
-	console.log(mes+" "+anio);
-	if (mes=="")
+	var d = new Date();
+	var n = d.getMonth();
+	if (mes=="" || mes>=n)
 		{
 		$("#mensaje_mes_balance").text("Seleccione mes");
 		$("#mensaje_mes_balance").fadeIn("slow");

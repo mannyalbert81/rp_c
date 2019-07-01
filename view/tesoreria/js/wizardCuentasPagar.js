@@ -85,6 +85,7 @@ $(document).ready(function(){
 	   let lote_id = $("#id_lote").val();
 	   let tipo_documento_id = $("#id_tipo_documento").val();
 	   let descripcion = $("#descripcion_cuentas_pagar").val();
+	   let fecha_documento = $("#fecha_cuentas_pagar").val();
 	   
 	   if(lote_id == '' || lote_id == 0){
 		   $("#nombre_lote").notify("Lote No Generado",{ position:"buttom left", autoHideDelay: 2000});
@@ -98,7 +99,10 @@ $(document).ready(function(){
 		   $("#descripcion_cuentas_pagar").notify("Ingrese una descripcion",{ position:"buttom left", autoHideDelay: 2000});
 			return false;
 	   }
-	   
+	   if(fecha_documento.length == 0 || fecha_documento == ''){
+		   $("#fecha_cuentas_pagar").notify("Ingrese fecha documento",{ position:"buttom left", autoHideDelay: 2000});
+		   return false;
+	   }
 	   return true;
    }
    

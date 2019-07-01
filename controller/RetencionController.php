@@ -750,11 +750,21 @@ class RetencionController extends ControladorBase{
         $retencion_detalle = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
          
         
-        
+        $reultRet=$retenciones->getBy("id_tri_retenciones='$id_tri_retenciones'");
+        $camino_nombre_xml = "";
+        if(!empty($reultRet)){
+        	 
+        	$infotributaria_claveacceso = $reultRet[0]->infotributaria_claveacceso;
+        	$camino_nombre_xml = "DOCUMENTOS_ELECTRONICOS/COMPROBANTES AUTORIZADOS/".$infotributaria_claveacceso	 . ".XML";
+        	$_nombre_archivo = "DOCUMENTOS_GENERADOS/RETENCIONES/".$infotributaria_claveacceso	 . ".PDF";
+        }
+         
         
         
          $html='';
         
+        
+          
          
          $html.='<table class="info" style="width:98%;" border=1 >';
          $html.='<tr>';
@@ -794,7 +804,7 @@ class RetencionController extends ControladorBase{
         $datos_reporte['DETALLE_RETENCION']= $html;
      
         
-        $_nombre_archivo = "DOCUMENTOS_GENERADOS/RETENCIONES/" . $rsdatos[0]->infotributaria_claveacceso . ".PDF";
+        //$_nombre_archivo = "DOCUMENTOS_GENERADOS/RETENCIONES/" . $rsdatos[0]->infotributaria_claveacceso . ".PDF";
         
     	
     	$this->verReporte("Retencion", array('datos_reporte'=>$datos_reporte ,'_nombre_archivo'=>$_nombre_archivo));

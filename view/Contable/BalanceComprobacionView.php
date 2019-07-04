@@ -1,9 +1,23 @@
     <!DOCTYPE HTML>
 	<html lang="es">
     <head>
-        
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <style>
+    .scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+	ul{
+        list-style-type:none;
+      }
+  li{
+    list-style-type:none;
+    }
+    </style>
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   
@@ -114,7 +128,7 @@
 			        	<?php } ?>
 			        	<?php } ?>
 					 </select> 
-                     <div id="mensaje_mes_balance" class="errores"></div>
+                     <div id="mensaje_nivel_balance" class="errores"></div>
 	         	</div>
 	         </div>
 	      </div>
@@ -164,7 +178,7 @@
     <?php include("view/modulos/links_js.php"); ?>
    	 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.11"></script>   
+    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.12"></script>   
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   
 	

@@ -402,7 +402,7 @@ $("#mensaje_archivo").fadeOut("slow");
 		swal({
 			  title: "Actualización de registros",
 			  text: "Revisando datos del archivo: "+fileName,
-			  icon: "view/images/ajax-loader.gif",
+			  icon: "view/images/capremci_load.gif",
 			  buttons: false,
 			  closeModal: false,
 			  allowOutsideClick: false

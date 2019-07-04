@@ -1,5 +1,5 @@
 <?php
-class TipoInstruccionParticipesModel extends ModeloBase{
+class CiudadesModel extends ModeloBase{
 	
 	private $table;
 	private $where;
@@ -38,7 +38,7 @@ class TipoInstruccionParticipesModel extends ModeloBase{
 	
 	
 	public function __construct(){
-		$this->table="core_tipo_instruccion_participes";
+		$this->table="core_ciudades";
 		
 		parent::__construct($this->table);
 	}

@@ -264,11 +264,10 @@ class BalanceComprobacionController extends ControladorBase{
         $colores[4]="#FCF3CF";
         $colores[5]="#FDFEFE";
         $colorletra="black";
-        $sumatoria=array();
         
         if ($codigo=="")
         {
-            $sumatoria[0]="";
+            $sumatoria="";
             foreach($resultset as $res)
             {
                 
@@ -293,30 +292,30 @@ class BalanceComprobacionController extends ControladorBase{
                     }
                     $color=$nivel-2;
                     if ($color>5) $color=5;
-                    $sumatoria[0].='<tr id="cod'.$verif1.'">';
-                    $sumatoria[0].='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$elementos_saldo[0].$boldf.'</td>';
-                    $sumatoria[0].='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">';
+                    $sumatoria.='<tr id="cod'.$verif1.'">';
+                    $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$elementos_saldo[0].$boldf.'</td>';
+                    $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">';
                     if ($this->tieneHijoA($nivel,$elementos_saldo[0], $resultset) && $nivelclase!=$limit)
                     {
-                        $sumatoria[0].='<button type="button" class="btn btn-box-tool" onclick="ExpandirTabla(&quot;nivel'.$verif1.'&quot;,&quot;trbt'.$verif1.'&quot;)">
+                        $sumatoria.='<button type="button" class="btn btn-box-tool" onclick="ExpandirTabla(&quot;nivel'.$verif1.'&quot;,&quot;trbt'.$verif1.'&quot;)">
                     <i id="trbt'.$verif1.'" class="fa fa-angle-double-right" name="boton"></i></button>';
                     }
-                    $sumatoria[0].=$boldi.$elementos_saldo[1].$boldf.'</td>';
+                    $sumatoria.=$boldi.$elementos_saldo[1].$boldf.'</td>';
                     $shijo=$this->SumaSaldoHijo($nivel, $elementos_saldo[0], $resultset);
                     $shijo=number_format((float)$shijo, 2, ',', '.');
                     $elementos_saldo[2]=number_format((float)$elementos_saldo[2], 2, ',', '.');
                     if($elementos_saldo[2]!=$shijo && $this->tieneHijoA($nivel,$elementos_saldo[0], $resultset)) {
                         $colorletra="red";
-                        array_push($sumatoria, $elementos_saldo[0]);}
+                    }
                         else {
                             $colorletra="black";
                         }
-                        $sumatoria[0].='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$elementos_saldo[2].$boldf.'</font></td>';
-                        $sumatoria[0].='</tr>';
+                        $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$elementos_saldo[2].$boldf.'</font></td>';
+                        $sumatoria.='</tr>';
                     if ($this->tieneHijoA($nivel,$elementos_saldo[0], $resultset))
                     {
                         
-                        $sumatoria[0].=$this->Balance($nivel, $resultset, $limit, $elementos_saldo[0]);
+                        $sumatoria.=$this->Balance($nivel, $resultset, $limit, $elementos_saldo[0]);
                         
                     }
                     
@@ -328,7 +327,7 @@ class BalanceComprobacionController extends ControladorBase{
         else
         {
             
-            $sumatoria[0]="";
+            $sumatoria="";
             $elementos_codigo=explode(".", $codigo);
             $nivel1=$nivel;
             $nivel1--;
@@ -365,15 +364,15 @@ class BalanceComprobacionController extends ControladorBase{
                     }
                     $color=$nivel-2;
                     if ($color>5) $color=5;
-                    $sumatoria[0].='<tr class="nivel'.$verif1.'" id="cod'.$verif2.'" style="display:none">';
-                    $sumatoria[0].='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$elementos_saldo[0].$boldf.'</td>';
-                    $sumatoria[0].='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">';
+                    $sumatoria.='<tr class="nivel'.$verif1.'" id="cod'.$verif2.'" style="display:none">';
+                    $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">'.$boldi.$elementos_saldo[0].$boldf.'</td>';
+                    $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';">';
                     if ($this->tieneHijoA($nivel,$elementos_saldo[0], $resultset) && $nivelclase!=$limit)
                     {
-                        $sumatoria[0].='<button type="button" class="btn btn-box-tool" onclick="ExpandirTabla(&quot;nivel'.$verif2.'&quot;,&quot;trbt'.$verif2.'&quot;)">
+                        $sumatoria.='<button type="button" class="btn btn-box-tool" onclick="ExpandirTabla(&quot;nivel'.$verif2.'&quot;,&quot;trbt'.$verif2.'&quot;)">
                     <i id="trbt'.$verif2.'" class="fa fa-angle-double-right" name="boton"></i></button>';
                     }
-                    $sumatoria[0].=$boldi.$elementos_saldo[1].$boldf.'</td>';
+                    $sumatoria.=$boldi.$elementos_saldo[1].$boldf.'</td>';
                     $shijo=$this->SumaSaldoHijo($nivel, $elementos_saldo[0], $resultset);
                     $shijo=number_format((float)$shijo, 2, ',', '.');
                     $elementos_saldo[2]=number_format((float)$elementos_saldo[2], 2, ',', '.');
@@ -397,6 +396,158 @@ class BalanceComprobacionController extends ControladorBase{
         return $sumatoria;
     }
     
+    public function BalanceErrores($nivel, $resultset, $limit, $codigo)
+    {
+        if ($codigo=="")
+        {
+            $sumatoria="";
+            foreach($resultset as $res)
+            {
+                
+                $verif1="";
+                $elementos_saldo=explode("|", $res);
+                $elementos1_codigo=explode(".", $elementos_saldo[0]);
+                if (sizeof($elementos1_codigo)>=$nivel)
+                    for ($i=0; $i<$nivel; $i++)
+                    {
+                        $verif1.=$elementos1_codigo[$i];
+                    }
+                if ($elementos_saldo[6] == $nivel)
+                {
+                    
+                    if($nivel<=$limit)
+                    {$nivel++;
+                    $shijo=$this->SumaSaldoHijo($nivel, $elementos_saldo[0], $resultset);
+                    $shijo=number_format((float)$shijo, 2, ',', '.');
+                    $elementos_saldo[2]=number_format((float)$elementos_saldo[2], 2, ',', '.');
+                    if($elementos_saldo[2]!=$shijo && $this->tieneHijoA($nivel,$elementos_saldo[0], $resultset)) {
+                        $sumatoria.=$elementos_saldo[0]."|";
+                    }
+                    
+                    if ($this->tieneHijoA($nivel,$elementos_saldo[0], $resultset))
+                    {
+                        $sumatoria.=$this->BalanceErrores($nivel, $resultset, $limit, $elementos_saldo[0]);
+                    }
+                    $nivel--;
+                    }
+                }
+            }
+        }
+        else
+        {
+            
+            $sumatoria="";
+            $elementos_codigo=explode(".", $codigo);
+            $nivel1=$nivel;
+            $nivel1--;
+            $verif="";
+            for ($i=0; $i<$nivel1; $i++)
+            {
+                $verif.=$elementos_codigo[$i];
+            }
+            foreach($resultset as $res)
+            {
+                $elementos_saldo=explode("|", $res);
+                $verif1="";
+                $verif2="";
+                $elementos1_codigo=explode(".", $elementos_saldo[0]);
+                for ($i=0; $i<sizeof($elementos1_codigo); $i++)
+                {
+                    $verif2.=$elementos1_codigo[$i];
+                }
+                if (sizeof($elementos1_codigo)>=$nivel1)
+                    for ($i=0; $i<$nivel1; $i++)
+                    {
+                        $verif1.=$elementos1_codigo[$i];
+                    }
+                
+                if ($elementos_saldo[6] == $nivel && $verif==$verif1)
+                {
+                    if($nivel<=$limit)
+                    {$nivel++;
+                    $shijo=$this->SumaSaldoHijo($nivel, $elementos_saldo[0], $resultset);
+                    $shijo=number_format((float)$shijo, 2, ',', '.');
+                    $elementos_saldo[2]=number_format((float)$elementos_saldo[2], 2, ',', '.');
+                    if($elementos_saldo[2]!=$shijo  && $this->tieneHijoA($nivel,$elementos_saldo[0], $resultset)) {
+                        $sumatoria.=$elementos_saldo[0]."|";
+                    }
+                    if ($this->tieneHijoA($nivel,$elementos_saldo[0], $resultset))
+                    {
+                        $sumatoria.=$this->BalanceErrores($nivel, $resultset, $limit, $elementos_saldo[0]);
+                    }
+                    $nivel--;
+                    }
+                }
+            }
+        }
+        return $sumatoria;
+    }
+    
+    public function mostrarDescarga($cabecera, $mes_reporte, $anio_reporte)
+    {
+        $datos_tabla='<div class="alert alert-success alert-dismissable" style="margin-top:40px;">';
+        
+        $datos_tabla.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+        $datos_tabla.='<h4>Aviso!</h4>';
+        $datos_tabla.='<b>El reporte se encuentra listo para descarga</b>';
+        $datos_tabla.= '<a href="index.php?controller=BalanceComprobacion&action=DescargarReporte&id_cabecera='.$cabecera.'&mes_reporte='.$mes_reporte.'&anio_reporte='.$anio_reporte.'" target="_blank"><button class="btn btn-primary">Descargar reporte <i class="far fa-file-pdf"></i></button></a>';
+        $datos_tabla.='</div>';
+        
+        echo $datos_tabla;
+    }
+    
+    public function mostrarErrores($errores)
+    {
+        $cuentas_error=explode("|", $errores);
+      
+            $usu="";
+            if(sizeof($cuentas_error)>1)
+            {
+                $usu="cuentas";
+            }
+            else
+            {
+                $usu="cuenta";
+            }
+            
+            $datos_tabla='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+            
+            $datos_tabla.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            $datos_tabla.='<h4>Aviso!!!</h4>';
+            $datos_tabla.='<li class="dropdown messages-menu">';
+            $datos_tabla.='<button type="button" class="btn btn-warning" data-toggle="dropdown">';
+            $datos_tabla.='<i class="glyphicon glyphicon-list"></i>';
+            $datos_tabla.='</button>';
+            $datos_tabla.='<span class="label label-danger">'.(sizeof($cuentas_error)-1).'</span>';
+            $datos_tabla.='<ul class="dropdown-menu scrollable-menu">';
+            $datos_tabla.='<li  class="header"><font color="black">Hay '.(sizeof($cuentas_error)-1).' '.$usu.' con advertencias.</font></li>';
+            $datos_tabla.='<li>';
+            $datos_tabla.= '<table style = "width:100%; border-collapse: collapse;" border="1">';
+            $datos_tabla.='<tbody>';
+            foreach ($cuentas_error as $us)
+            {
+                
+                if(!(empty($us)))
+                {
+                    $datos_tabla.='<tr height = "25">';
+                    $datos_tabla.='<td bgcolor="#F5F5F5" style="font-size: 16px; text-align:center;"><font color="black">'.$us.'</font></td>';
+                    $datos_tabla.='</tr>';
+                }
+            }
+            $datos_tabla.='</tbody>';
+            $datos_tabla.='</table>';
+            $datos_tabla.='</ul>';
+            $datos_tabla.='</li>';
+            $datos_tabla.='<b>Actualmente no se puede generar un reporte debido a errores en el balance de cuentas...</b>';
+            $datos_tabla.='</div>';
+            
+            
+            
+            
+       
+        echo $datos_tabla;
+    }
+       
     
     public function buscarCabecera($mes, $anio)
     {
@@ -556,6 +707,8 @@ class BalanceComprobacionController extends ControladorBase{
             $max_nivel_balance=$_POST['max_nivel_balance'];
             $id_usuarios=$_SESSION['id_usuarios'];
             $plan_cuentas=new PlanCuentasModel();
+            $tabla_reporte="";
+            $resultCabeza=$this->buscarCabecera($mes_reporte, $anio_reporte);
             
             $columnas = "codigo_plan_cuentas, nombre_plan_cuentas, saldo_plan_cuentas, nivel_plan_cuentas, id_plan_cuentas, n_plan_cuentas";
             
@@ -567,12 +720,36 @@ class BalanceComprobacionController extends ControladorBase{
             
             $resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
             
-            $datos=$this->generarDetalleReporte($mes_reporte, $anio_reporte, $resultSet);
+            if ($resultCabeza!=0)
+            {
+                $columnas="plan_cuentas.codigo_plan_cuentas, plan_cuentas.nombre_plan_cuentas,
+                      (con_dbalance_comprobacion.saldo_acreedor_dbalance_comprobacion+con_dbalance_comprobacion.saldo_deudor_dbalance_comprobacion) AS saldo_plan_cuentas,
+                       plan_cuentas.nivel_plan_cuentas";
+                
+                $tablas= "public.con_dbalance_comprobacion INNER JOIN public.plan_cuentas
+                      ON con_dbalance_comprobacion.id_plan_cuentas=plan_cuentas.id_plan_cuentas";
+                
+                $where= "con_dbalance_comprobacion.id_cbalance_comprobacion=".$resultCabeza;
+                
+                $id= "con_dbalance_comprobacion.id_plan_cuentas";
+                
+                $resultDetalle=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
+                
+                $tabla_reporte=$this->BalanceDBalance(1, $resultDetalle, $max_nivel_balance, "");
+                
+            }
+            else 
+            {
+                $datos=$this->generarDetalleReporte($mes_reporte, $anio_reporte, $resultSet);
+                $tabla_reporte=$this->Balance(1, $datos, $max_nivel_balance, "");
+                $errores=$this->BalanceErrores(1, $datos, $max_nivel_balance, "");
+            }
+            
+            
+            
             
             $headerfont="16px";
-            $tdfont="14px";
-            $boldi="";
-            $boldf="";
+            $notificacion="";
             
             $colores= array();
             $colores[0]="#D6EAF8";
@@ -589,11 +766,18 @@ class BalanceComprobacionController extends ControladorBase{
             $datos_tabla.='<th bgcolor="'.$colores[0].'" width="83%" style="text-align: center;  font-size: '.$headerfont.';">SALDO</th>';
             $datos_tabla.='</tr>';
             
-            $datos_tabla.=$this->Balance(1, $datos, $max_nivel_balance, "");
+            $datos_tabla.=$tabla_reporte;
             
             $datos_tabla.= "</table>";
             
-            echo $datos_tabla;
+            
+            
+            if (!(empty($errores)))
+            {
+                $notificacion=$this->mostrarErrores($errores);
+            }
+            $mostrar_reporte=$notificacion.$datos_tabla;
+            echo $mostrar_reporte;
         }
         else
         {
@@ -611,8 +795,9 @@ class BalanceComprobacionController extends ControladorBase{
         
         $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
         
-        $mesbalance = (isset($_REQUEST['mes'])&& $_REQUEST['mes'] !=NULL)?$_REQUEST['mes']:'';
-        $aniobalance = (isset($_REQUEST['anio'])&& $_REQUEST['anio'] !=NULL)?$_REQUEST['anio']:'';
+        $mesbalance = (isset($_REQUEST['mes_reporte'])&& $_REQUEST['mes_reporte'] !=NULL)?$_REQUEST['mes_reporte']:'';
+        $aniobalance = (isset($_REQUEST['anio_reporte'])&& $_REQUEST['anio_reporte'] !=NULL)?$_REQUEST['anio_reporte']:'';
+        $id_cabecera = (isset($_REQUEST['id_cabecera'])&& $_REQUEST['id_cabecera'] !=NULL)?$_REQUEST['id_cabecera']:'';
         
         $dateToTest = $aniobalance."-".$mesbalance."-01";
         $lastday = date('t',strtotime($dateToTest));

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
   <head>
   
@@ -62,14 +62,14 @@
               		 	 <div class="row">
                                <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
-                                      <label for="id_cuidades" class="control-label">Cuidad:</label>
-                                      <select name="id_cuidades" id="id_cuidades"  class="form-control" >
+                                      <label for="id_ciudades" class="control-label">Cuidad:</label>
+                                      <select name="id_ciudades" id="id_ciudades"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php  foreach($resultCuidades as $res) {?>
-    										<option value="<?php echo $res->id_cuidades; ?>" <?php if ($res->id_cuidades == $resEdit->id_cuidades )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_ciudades; ?> </option>
+    									<?php  foreach($resultCiudades as $res) {?>
+    										<option value="<?php echo $res->id_ciudades; ?>" <?php if ($res->id_ciudades == $resEdit->id_ciudades )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_ciudades; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_cuidades" class="errores"></div>
+                                      <div id="mensaje_id_ciudades" class="errores"></div>
                                     </div>
                                   </div>
                          	
@@ -94,7 +94,7 @@
 	                    	<div class="col-xs-12 col-lg-3 col-md-3 ">
                             	<div class="form-group">
                                 	<label for="cedula_participes" class="control-label">Cedula</label>
-                                    <input type="text" class="form-control" id="cedula_participes" name="cedula_participes" value="<?php echo $resEdit->nombre_participes; ?>"  placeholder="Cedula">
+                                    <input type="text" class="form-control" id="cedula_participes" name="cedula_participes" value="<?php echo $resEdit->cedula_participes ; ?>"  placeholder="Cedula">
                                     <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
     					            <div id="mensaje_cedula_participes" class="errores"></div>
                                  </div>
@@ -102,7 +102,7 @@
                                   
                                     	<div class="col-xs-12 col-lg-3 col-md-3 ">
                             	<div class="form-group">
-                                	<label for="fecha_nacimiento_participes" class="control-label">Fecha</label>
+                                	<label for="fecha_nacimiento_participes" class="control-label">Fecha Nacimiento</label>
                                     <input type="date" class="form-control" id="fecha_nacimiento_participes" name="fecha_nacimiento_participes" value="<?php echo $resEdit->fecha_nacimiento_participes; ?>"  placeholder="Fecha Nacimiento">
                                     <input type="hidden" name="id_participes" id="id_participes" value="<?php echo $resEdit->id_participes; ?>" class="form-control"/>
     					            <div id="mensaje_fecha_nacimiento_participes" class="errores"></div>
@@ -207,8 +207,8 @@
                                       <label for="id_estado_civil_participes" class="control-label">Estado Civil:</label>
                                       <select name="id_estado_civil_participes" id="id_estado_civil_participes"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php  foreach($resultGenero as $res) {?>
-    										<option value="<?php echo $res->id_estado_civil_participes; ?>" <?php if ($res->id_estado_civil_participes == $resEdit->id_estado_civil_participes )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado_civill_participes; ?> </option>
+    									<?php  foreach($resultEstadoCivil as $res) {?>
+    										<option value="<?php echo $res->id_estado_civil_participes; ?>" <?php if ($res->id_estado_civil_participes == $resEdit->id_estado_civil_participes )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_estado_civil_participes; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_estado_civil_participes" class="errores"></div>
@@ -238,8 +238,8 @@
                                       <label for="id_entidad_patronal" class="control-label">Entidad Patronal:</label>
                                       <select name="id_entidad_patronal" id="id_entidad_patronal"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php  foreach($resultTipoInstrccion as $res) {?>
-    										<option value="<?php echo $res->id_entidad_patronal; ?>" <?php if ($res->id_entidad_patronal == $resEdit->id_entidad_patronal )  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_tipo_instruccion_participes; ?> </option>
+    									<?php  foreach($resultEntidadPatronal as $res) {?>
+    										<option value="<?php echo $res->id_entidad_patronal; ?>" <?php if ($res->id_entidad_patronal == $resEdit->id_entidad_patronal)  echo  ' selected="selected" '  ;  ?> ><?php echo $res->nombre_entidad_patronal; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_entidad_patronal" class="errores"></div>
@@ -266,7 +266,7 @@
                                 
                                                                                 <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
-                                      <label for="id_tipo_instruccion_participes" class="control-label">Entidad Patronal:</label>
+                                      <label for="id_tipo_instruccion_participes" class="control-label">Instrucción:</label>
                                       <select name="id_tipo_instruccion_participes" id="id_tipo_instruccion_participes"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php  foreach($resultTipoInstrccion as $res) {?>
@@ -275,6 +275,7 @@
     								   </select> 
                                       <div id="mensaje_id_tipo_instruccion_participes" class="errores"></div>
                                     </div>
+                                     </div>
                                   
                                   	<div class="col-xs-12 col-lg-3 col-md-3 ">
                             	<div class="form-group">
@@ -336,14 +337,14 @@
                 		 
                 		     <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
-                                      <label for="id_cuidades" class="control-label">Cuidad:</label>
-                                      <select name="id_cuidades" id="id_cuidades"  class="form-control" >
+                                      <label for="id_ciudades" class="control-label">Cuidad:</label>
+                                      <select name="id_ciudades" id="id_ciudades"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultCuidades as $res) {?>
-    										<option value="<?php echo $res->id_cuidades; ?>" ><?php echo $res->nombre_ciudades; ?> </option>
+    									<?php foreach($resultCiudades as $res) {?>
+    										<option value="<?php echo $res->id_ciudades; ?>" ><?php echo $res->nombre_ciudades; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_cuidades" class="errores"></div>
+                                      <div id="mensaje_id_ciudades" class="errores"></div>
                                     </div>
                                   </div>
                                   
@@ -376,7 +377,7 @@
                              
                                           <div class="col-xs-12 col-lg-3 col-md-3 ">
                     			<div class="form-group">
-                                  <label for="fecha_nacimiento_participes" class="control-label">Fecha</label>
+                                  <label for="fecha_nacimiento_participes" class="control-label">Fecha Nacimiento</label>
                                   <input type="date" class="form-control" id="fecha_nacimiento_participes" name="fecha_nacimiento_participes" value=""  placeholder="Fecha Nacimiento">
                                    <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
                                   <div id="mensaje_fecha_nacimiento_participes" class="errores"></div>
@@ -482,7 +483,7 @@
                                       <select name="id_estado_civil_participes" id="id_estado_civil_participes"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
     									<?php foreach($resultEstadoCivil as $res) {?>
-    										<option value="<?php echo $res->id_estado_civil_participes; ?>" ><?php echo $res->nombre_estado_civill_participes; ?> </option>
+    										<option value="<?php echo $res->id_estado_civil_participes; ?>" ><?php echo $res->nombre_estado_civil_participes; ?> </option>
     							        <?php } ?>
     								   </select> 
                                       <div id="mensaje_id_estado_civil_participes" class="errores"></div>
@@ -641,7 +642,7 @@
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <li class="active"><a href="#activos" data-toggle="tab">Participes Activos</a></li>
-              <li><a href="#inactivos" data-toggle="tab">Participes Inactivos</a></li>
+            <!--  <li><a href="#inactivos" data-toggle="tab">Participes Inactivos</a></li> --> 
               <li><a href="#desafiliado" data-toggle="tab">Participes Desafiliado</a></li>
               <li><a href="#liquidado_cesante" data-toggle="tab">Participes Liquidado Cesante</a></li>
          
@@ -660,7 +661,7 @@
                 
               </div>
               
-        <!--  <div class="tab-pane" id="inactivos">
+              <div class="tab-pane" id="inactivos">
                 
                     <div class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="search_inactivos" name="search_inactivos" onkeyup="load_participes_inactivos(1)" placeholder="search.."/>
@@ -670,7 +671,7 @@
 					<div id="load_participes_inactivos" ></div>	
 					<div id="participes_inactivos_registrados"></div>
               </div>
-               -->
+      
                 
                  <div class="tab-pane" id="desafiliado">
                 
@@ -798,7 +799,19 @@
 
 		    	var nombre_grupos = $("#nombre_grupos").val();
                 var id_estado = $("#id_estado").val();
-
+                var nombre_grupos = $("#nombre_grupos").val();
+                var id_estado = $("#id_estado").val();
+                var nombre_grupos = $("#nombre_grupos").val();
+                var id_estado = $("#id_estado").val();
+                var nombre_grupos = $("#nombre_grupos").val();
+                var id_estado = $("#id_estado").val();
+                var nombre_grupos = $("#nombre_grupos").val();
+                var nombre_grupos = $("#nombre_grupos").val();
+                var nombre_grupos = $("#nombre_grupos").val();
+                var nombre_grupos = $("#nombre_grupos").val();
+                var nombre_grupos = $("#nombre_grupos").val();
+                var nombre_grupos = $("#nombre_grupos").val();
+                
 		    	
 		    	if (nombre_grupos == "")
 		    	{

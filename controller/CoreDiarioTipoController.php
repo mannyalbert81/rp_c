@@ -21,7 +21,8 @@ class CoreDiarioTipoController extends ControladorBase{
                      plan_cuentas.codigo_plan_cuentas, 
                      plan_cuentas.nombre_plan_cuentas,
                     core_temp_diario_tipo.debe_temp_diario_tipo,
-                    core_temp_diario_tipo.haber_temp_diario_tipo";
+                    core_temp_diario_tipo.haber_temp_diario_tipo,
+                    core_temp_diario_tipo.destino_temp_diario_tipo";
 	    $tablas = "public.core_temp_diario_tipo, 
                     public.plan_cuentas";
 	    $where = "core_temp_diario_tipo.id_plan_cuentas = plan_cuentas.id_plan_cuentas AND core_temp_diario_tipo.id_usuarios='$_id_usuarios'";
@@ -76,8 +77,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 13px;">Cuenta</th>';
 	            $html.='<th style="text-align: left;  font-size: 13px;">Nombre</th>';
 	            $html.='<th style="text-align: left;  font-size: 13px;">Descripción</th>';
-	            $html.='<th style="text-align: left;  font-size: 13px;">Debe</th>';
-	            $html.='<th style="text-align: left;  font-size: 13px;">Haber</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Destino</th>';
 	            $html.='<th style="text-align: left;  font-size: 13px;"></th>';
 	            
 	            $html.='</tr>';
@@ -89,15 +89,12 @@ class CoreDiarioTipoController extends ControladorBase{
 	            foreach ($resultSet as $res)
 	            {
 	                
-	               
-	                
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 12px;">'.$res->codigo_plan_cuentas.'</td>';
 	                $html.='<td style="font-size: 12px;">'.$res->nombre_plan_cuentas.'</td>';
 	                $html.='<td style="font-size: 12px;">'.$res->observacion_temp_diario_tipo.'</td>';
-	                $html.='<td style="font-size: 12px;">'.$res->debe_temp_diario_tipo.'</td>';
-	                $html.='<td style="font-size: 12px;">'.$res->haber_temp_diario_tipo.'</td>';
+	                $html.='<td style="font-size: 12px;">'.strtoupper($res->destino_temp_diario_tipo).'</td>';
 	                $html.='<td style="font-size: 16px;"><a href="#" data-toggle="tooltip" title="Eliminar" onclick="eliminar_temp_diario_tipo('.$res->id_temp_diario_tipo.')"><i class="glyphicon glyphicon-trash"></i></a></td>';
 	                $html.='</tr>';
 	            }
@@ -448,27 +445,30 @@ class CoreDiarioTipoController extends ControladorBase{
 		if (isset(  $_SESSION['usuario_usuarios']) )
 		{
 		    
-		    $_id_usuarios= $_SESSION['id_usuarios'];
-		    
-			$arrayGet=array();
-		
+		    $_id_usuarios= $_SESSION['id_usuarios'];		    
+			
 			$core_temp_diario_tipo   = new ComprobantesTemporalModel();
-			$id_diario_tipo_detalle = new CoreDiarioTipoDetalleModel();
 			
 			$core_diario_tipo_credito=new CoreTipoCreditoModel();
 			$resultTipCre = $core_diario_tipo_credito->getAll("nombre_tipo_credito");
-		
-		    $permisos_rol = new PermisosRolesModel();
+
+			$modulos = new ModulosModel();
+			$rsModulos = $modulos->getBy("1=1");
+			
+			$estado = new EstadoModel();
+			$whereEstado = "tabla_estado = 'core_diario_tipo_cabeza'";
+			$rsEstado = $estado->getBy($whereEstado);
+			//print_r($rsEstado); die();
+			
 			$nombre_controladores = "CoreDiarioTipo";
 			$id_rol= $_SESSION['id_rol'];
 			$resultPer = $core_temp_diario_tipo->getPermisosVer("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 				
 			if (!empty($resultPer))
 			{
-				
 					
 				$this->view_Core("DiarioTipo",array(
-				    "resultTipCre"=>$resultTipCre
+				    "resultTipCre"=>$resultTipCre,"rsModulos"=>$rsModulos,"rsEstado"=>$rsEstado
 					));
 			
 			
@@ -492,7 +492,84 @@ class CoreDiarioTipoController extends ControladorBase{
 	
 	}
 	 
-	
+	public function insertDiarioTipo(){
+	    
+	    session_start();
+	    $_id_usuarios = $_SESSION['id_usuarios'];
+	    $respuesta = array();
+	    $diario_tipo = new CoreDiarioTipoCabezaModel();
+	    $nombre_controladores = "CoreDiarioTipo";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $diario_tipo->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
+	    
+	    if( empty($resultPer) ){
+	        
+	        echo "<message> No tiene permisos para insertar diario <message>"; die();
+	    }
+	    
+	    try{
+	        
+	        $_id_modulos = $_POST['id_modulos'];
+	        $_id_tipo_procesos = $_POST['id_tipo_procesos'];
+	        $_descripcion_diario = $_POST['descripcion_diario'];
+	        $_id_estado = $_POST['id_estado'];
+	        
+	        $funcion = "ins_core_diario_tipo_cabeza";
+	        $parametros = "'$_id_modulos',
+                '$_id_tipo_procesos',
+                '$_descripcion_diario',
+                '$_id_estado'";
+	        
+	        $diario_tipo->setFuncion($funcion);
+	        $diario_tipo->setParametros($parametros); 
+	        
+	        $resultado = null;
+	        $resultado = $diario_tipo->llamafuncionPG();
+	        
+	        //tomo cabeceradiario
+	        $cabeceraDiarioTipo = 0;
+	       
+	        if( is_null($resultado) )
+	            throw new Exception( "Error insercion cabeza diario tipo");	        
+	       
+            $_fecha = date('Y-m-d');
+	            
+            //para insertado de detalle
+            if( $resultado[0] > 0 ){
+                
+                $cabeceraDiarioTipo = $resultado[0];
+                
+                $funcionDetalle = "ins_core_diario_tipo_detalle";
+                $parametrosDetalle = "$cabeceraDiarioTipo,$_id_usuarios,'$_fecha'";
+                
+                $queryDetalle = "SELECT ".$funcionDetalle."(".$parametrosDetalle.")";
+                
+                $rsTempDiario = null;
+                                
+                $rsTempDiario = $diario_tipo->llamarconsultaPG($queryDetalle);      
+                
+                //echo $queryDetalle; print_r( $rsTempDiario ); 
+               
+                if( is_null($rsTempDiario) ){
+                    throw new Exception( "Error insercion detalle diario tipo");                    
+                }
+                
+                $respuesta['mensaje'] = " Diario Tipo generado Exitosamente";
+                
+            }else{
+                $respuesta['mensaje'] = " Diario Tipo ya ha sido Generado";
+            }
+            
+            echo json_encode($respuesta);
+	        
+	    }catch (Exception $Ex){
+	        
+	        //falta implementacion de cuando haya error 
+	        
+	        echo "<message> Error insertar Diario Tipo. \n". $Ex->getMessage()." <message>";	        
+	    }
+	    	    	    
+	}
 	
    public function InsertaComprobanteContable(){
    
@@ -689,6 +766,8 @@ class CoreDiarioTipoController extends ControladorBase{
            $_id_usuarios = $_SESSION['id_usuarios'];
            $_debe_dcomprobantes = (isset($_REQUEST['debe_dcomprobantes'])&& $_REQUEST['debe_dcomprobantes'] !=NULL)?$_REQUEST['debe_dcomprobantes']:0;
            $_haber_dcomprobantes = (isset($_REQUEST['haber_dcomprobantes'])&& $_REQUEST['haber_dcomprobantes'] !=NULL)?$_REQUEST['haber_dcomprobantes']:0;
+           $_destino_diario_tipo = ( isset( $_REQUEST['destino_diario'] ) && $_REQUEST['destino_diario'] != NULL ) ? strtoupper($_REQUEST['destino_diario']) : null;
+           
            
            $temp_diario_tipo = new CoreTempDiarioTipoModel();
            
@@ -698,7 +777,7 @@ class CoreDiarioTipoController extends ControladorBase{
            $_haber_dcomprobantes= str_replace(',', '', $_haber_dcomprobantes);
            
                        $funcion = "ins_temp_core_diario_tipo";
-                       $parametros = "'$_id_plan_cuentas','$_descripcion_dcomprobantes','$_id_usuarios','$_debe_dcomprobantes','$_haber_dcomprobantes'";
+                       $parametros = "'$_id_plan_cuentas','$_descripcion_dcomprobantes','$_id_usuarios','$_debe_dcomprobantes','$_haber_dcomprobantes','$_destino_diario_tipo'";
                        $temp_diario_tipo->setFuncion($funcion);
                        $temp_diario_tipo->setParametros($parametros);
                        $resultado=$temp_diario_tipo->Insert();
@@ -970,7 +1049,25 @@ class CoreDiarioTipoController extends ControladorBase{
 	    
 	}
 	
-
+    //para consultas con js    
+	public function consultaTipoProcesos(){
+	    
+	    $modulos = new ModulosModel();
+	    
+	    $_id_modulos = (isset($_POST['id_modulos'])) ? $_POST['id_modulos'] : 0;
+	    
+	    $columnas = "id_tipo_procesos, nombre_tipo_procesos";
+	    $tablas = "core_tipo_procesos"; 
+	    $where = "id_modulos = $_id_modulos ";
+	    $id = "id_modulos";	    
+	    
+	    $rsTipoProceso = $modulos->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    $cantidad = count($rsTipoProceso);
+	    
+	    echo json_encode(array('cantidad'=>$cantidad, 'data'=>$rsTipoProceso));
+	}
+    
 	
 	
 }

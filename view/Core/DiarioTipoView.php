@@ -57,65 +57,67 @@
      <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <i class='glyphicon glyphicon-edit'> Registrar Diarios Tipo</i>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i></button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-              <i class="fa fa-times"></i></button>
-          </div>
+          <i class='glyphicon glyphicon-edit'> Registrar Diarios Tipo</i>          
         </div>
         
         <div class="box-body">
+        
+        	<div class="col-xs-12 col-lg-3 col-md-3 ">
+   				<div class="form-group">
+	              <label for="id_modulos" class="control-label">Modulo:</label>
+				  <select name="id_modulos" id="id_modulos"  class="form-control">
+				  <option value="0" selected="selected">--Seleccione--</option>
+                     <?php foreach($rsModulos as $res) {?>
+					  <option value="<?php echo $res->id_modulos; ?>" ><?php echo $res->nombre_modulos; ?> </option>
+					 <?php } ?>
+				   </select> 
+                   <div id="mensaje_id_forma_pago" class="errores"></div>
+               </div>
+         	</div> 
 		      
-	           	<div class="col-xs-12 col-lg-4 col-md-4 ">
-	   				<div class="form-group">
-    	              <label for="id_forma_pago" class="control-label">Tipo Crédito:</label>
-    				  <select name="id_forma_pago" id="id_forma_pago"  class="form-control">
-    				  <option value="0" selected="selected">--Seleccione--</option>
-                         <?php foreach($resulTipoCredito as $res) {?>
-    					  <option value="<?php echo $res->id_forma_pago; ?>" ><?php echo $res->nombre_forma_pago; ?> </option>
-    					 <?php } ?>
-    				   </select> 
-                       <div id="mensaje_id_forma_pago" class="errores"></div>
-                   </div>
-             	</div> 
+           	<div class="col-xs-12 col-lg-3 col-md-3 ">
+   				<div class="form-group">
+	              <label for="id_tipo_procesos" class="control-label">Tipo Proceso:</label>
+				  <select name="id_tipo_procesos" id="id_tipo_procesos"  class="form-control">
+				  	<option value="0" selected="selected">--Seleccione--</option>                     
+				  </select> 
+                  <div id="mensaje_id_tipo_proceso" class="errores"></div>
+               </div>
+         	</div> 
              
-		      <div class="col-xs-12 col-md-4 col-lg-4">
+		      <div class="col-xs-12 col-md-3 col-lg-3">
 		     <div class="form-group">
-                  <label for="concepto_ccomprobantes" class="control-label">Nombre:</label>
-                  <input type="text" class="form-control" id="descripcion_dcomprobantes" name="descripcion_dcomprobantes" value=""  placeholder="">
-             <div id="mensaje_concepto_ccomprobantes" class="errores"></div> 
+                  <label for="descripcion_diario_tipo" class="control-label">Descripcion:</label>
+                  <input type="text" class="form-control" id="descripcion_diario_tipo" name="descripcion_diario_tipo" value=""  placeholder="">
+             	  <div id="mensaje_descripcion_diario_tipo" class="errores"></div> 
              </div> 
 		     </div>
 	
-	       	<div class="col-xs-12 col-lg-4 col-md-4 ">
+	       	<div class="col-xs-12 col-lg-3 col-md-3 ">
 	   				<div class="form-group">
-    	              <label for="id_forma_pago" class="control-label">Estado:</label>
-    				  <select name="id_forma_pago" id="id_forma_pago"  class="form-control">
+    	              <label for="id_estado" class="control-label">Estado:</label>
+    				  <select name="id_estado" id="id_estado"  class="form-control">
     				  <option value="0" selected="selected">--Seleccione--</option>
-                         <?php foreach($resultFormaPago as $res) {?>
-    					  <option value="<?php echo $res->id_forma_pago; ?>" ><?php echo $res->nombre_forma_pago; ?> </option>
+                         <?php foreach($rsEstado as $res) {?>
+    					  <option value="<?php echo $res->id_estado; ?>" ><?php echo $res->nombre_estado; ?> </option>
     					 <?php } ?>
     				   </select> 
-                       <div id="mensaje_id_forma_pago" class="errores"></div>
+                       <div id="mensaje_id_estado" class="errores"></div>
                    </div>
-             	</div> 
-              
-		    
+             	</div>
+             	
 		    
   		     <div class="col-md-12 col-lg-12 col-xs-12">
-  		    		<div class="pull-right">
-					    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
-						 <span class="glyphicon glyphicon-search"></span> Buscar Cuentas
-						</button>
-						
-					</div>	
+	    		<div class="pull-right">
+				    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+					 <span class="glyphicon glyphicon-search"></span> Buscar Cuentas
+					</button>					
+				</div>	
 					
-					<div style="text-align: center" > 
-  		     			<button type="button" id="btn_inserta_comprobante" name="btn_inserta_comprobante" value="valor"  class="btn btn-success">Guardar Diario</button>
-           			</div>
-			 </div>	
+    			<div style="text-align: center" > 
+         			<button type="button" id="btn_inserta_diario" name="btn_inserta_diario" value="valor"  class="btn btn-success">Guardar Diario</button>
+       			</div>
+			</div>	
 	       </div>
 	         <div class="col-lg-12 col-md-12 col-xs-12">
 	         <div class="panel panel-primary">
@@ -149,8 +151,19 @@
                                   <span class="help-block"></span>
              </div>
 		     </div>
-		
 		     
+		     <div class="form-group">
+                 <div class="col-xs-6 col-md-4 col-lg-4">
+                     <label for="debe_dcomprobantes" class="control-label">Destino: </label>
+                     <div>
+                        <label class="checkbox-inline"><input type="radio" name="destino_diario" id="destinoDebe" value="debe" > Debe</label>
+                        <label class="checkbox-inline"><input type="radio" name="destino_diario" id="destinoHaber" value="haber" > Haber</label>
+                     </div>
+                     <div id="mensaje_destino_diario" class="errores"></div>
+                 </div>
+		     </div>
+		
+		     <!--  
 		     <div class="form-group">
              <div class="col-xs-2 col-md-2 col-lg-2">
 		                          <label for="debe_dcomprobantes" class="control-label">Debe: </label>
@@ -168,7 +181,9 @@
                                    <div id="mensaje_haber_dcomprobantes" class="errores"></div>
              </div>
 		     </div>
+		      -->
 		     </div>
+		    
 		     
 		     
 		    <div class="row">
@@ -249,14 +264,13 @@
  	<?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
- </div>
-     
-   
+ 
     <?php include("view/modulos/links_js.php"); ?>
     
    
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Core/FuncionesJS/DiarioTipo.js?2.1"></script>
+    <script src="view/Core/js/DiarioTipo.js?0.06"></script>
+    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     
    

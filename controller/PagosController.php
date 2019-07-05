@@ -59,12 +59,14 @@ class PagosController extends ControladorBase{
                     cp.fecha_cuentas_pagar, pr.id_proveedores, pr.nombre_proveedores";
         
         $tablas = "tes_lote l
-            inner join tes_cuentas_pagar cp
-            on l.id_lote = cp.id_lote
-            inner join proveedores pr
-            on pr.id_proveedores = cp.id_proveedor";
+            INNER JOIN tes_cuentas_pagar cp
+            ON l.id_lote = cp.id_lote
+            INNER JOIN proveedores pr
+            ON pr.id_proveedores = cp.id_proveedor
+            INNER JOIN estado e
+            ON e.id_estado = cp.id_estado";
         
-        $where = " 1=1";
+        $where = " 1=1 AND e.nombre_estado = 'GENERADO' ";
         
         //para los parametros de where 
         if(!empty($busqueda)){
@@ -152,7 +154,7 @@ class PagosController extends ControladorBase{
             $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
             $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
             $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Solicitud Rechazada</b>';
+            $html.='<h4>Aviso!!!</h4> <b> No hay cuentas por Pagar</b>';
             $html.='</div>';
             $html.='</div>';
         }

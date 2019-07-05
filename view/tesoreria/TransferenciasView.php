@@ -63,14 +63,14 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Entidad Patronal</li>
+        <li class="active">Transferencias</li>
       </ol>
     </section>   
 
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Generacion Cheque</h3>
+          <h3 class="box-title">Transferencias</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -85,7 +85,7 @@
 
 			<form id="frm_genera_cheque" action="<?php echo $helper->url("GenerarCheque","IndexCheque"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
              	
-             	<?php $cuentaspagar = $resultSet[0]; ?>    
+             	<?php  ?>    
 							    
 		    	 <div class="row">
 		    	 
@@ -93,9 +93,9 @@
 		    	 		<div class="form-group ">                 			 
             				<label for="nombre_lote" class="control-label" > Id. lote:</label>
             				<div class="form-group-sm">                				
-                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $cuentaspagar->nombre_lote; ?>" autofocus>  
-                              <input type="hidden" id="id_lote" name="id_lote" value="<?php echo $cuentaspagar->id_lote; ?>">
-                              <input type="hidden" id="id_cuentas_pagar" name="id_cuentas_pagar" value="<?php echo $datos['id_cuentas_pagar']; ?>" >
+                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="" autofocus>  
+                              <input type="hidden" id="id_lote" name="id_lote" value="">
+                              <input type="hidden" id="id_cuentas_pagar" name="id_cuentas_pagar" value="" >
             				</div>
                 						 
             			</div>		    	 	
@@ -105,8 +105,8 @@
             			<div class="form-group ">
             				<label for="nombre_banco" class=" control-label" >Id. de Chequera:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="nombre_banco" name="nombre_banco" value="<?php echo $cuentaspagar->nombre_bancos; ?>" >
-                				 <input type="hidden" class="form-control" id="id_bancos" name="id_bancos" value="<?php echo $cuentaspagar->id_bancos; ?>" >
+                				 <input type="text" class="form-control" id="nombre_banco" name="nombre_banco" value="" >
+                				 <input type="hidden" class="form-control" id="id_bancos" name="id_bancos" value="" >
                     		</div>        			 
             			</div>
             		</div> 
@@ -115,7 +115,7 @@
             			<div class="form-group ">
             				<label for="comentario_cheque" class=" control-label" >Numero Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $rsConsecutivos[0]->numero_consecutivos; ?>" >
+                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="" >
                     		</div>        			 
             			</div>
             		</div> 
@@ -124,7 +124,7 @@
             			<div class="form-group ">
             				<label for="numero_cheque" class=" control-label" >Número de Cheque:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="numero_cheque" name="numero_cheque" value="<?php echo $rsBanco[0]->numero_cheque;?>" >
+                				 <input type="text" class="form-control" id="numero_cheque" name="numero_cheque" value="" >
                     		</div>        			 
             			</div>
             		</div>  
@@ -133,7 +133,7 @@
             			<div class="form-group ">
             				<label for="identificacion_proveedor" class=" control-label" >Identificacion Proveedor:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="<?php echo $cuentaspagar->identificacion_proveedores; ?>" >
+                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="" >
                     		</div>        			 
             			</div>
             		</div> 
@@ -142,7 +142,7 @@
             			<div class="form-group ">
             				<label for="nombre_proveedor" class=" control-label" >Nombre Proveedor:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $cuentaspagar->nombre_proveedores; ?>" >
+                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="" >
                     		</div>        			 
             			</div>
             		</div> 
@@ -151,7 +151,7 @@
             			<div class="form-group ">
             				<label for="id_moneda" class=" control-label" >Id. de Moneda:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="id_moneda" name="id_moneda" value="<?php echo $cuentaspagar->moneda; ?>" >
+                				 <input type="text" class="form-control" id="id_moneda" name="id_moneda" value="" >
                     		</div>        			 
             			</div>
             		</div>   
@@ -160,7 +160,7 @@
             			<div class="form-group ">
             				<label for="total_lote" class=" control-label" >Total Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="total_lote" name="total_lote"  value="<?php echo $cuentaspagar->total_cuentas_pagar; ?>" > 
+                				 <input type="text" class="form-control" id="total_lote" name="total_lote"  value="" > 
                     		</div>        			 
             			</div>
             		</div> 
@@ -402,7 +402,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.11"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.00"></script>
 
   </body>
 </html>   

@@ -36,7 +36,7 @@ class EstadoCivilParticipesModel extends ModeloBase{
 
 
 	public function __construct(){
-		$this->table="core_estado_civill_participes";
+		$this->table="core_estado_civil_participes";
 	
 		parent::__construct($this->table);
 	}

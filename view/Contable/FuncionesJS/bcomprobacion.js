@@ -39,49 +39,65 @@ function BuscarReporte()
 	var aniobalance = $("#anio_balance").val();
 	var maxnivel = $("#nivel_balance").val();
 	
-	swal({
-		  title: "Reporte preliminar",
-		  text: "Preparando el reporte preliminar",
-		  icon: "view/images/capremci_load.gif",
-		  buttons: false,
-		  closeModal: false,
-		  allowOutsideClick: false
+	if (mesbalance==0)
+		{
+		$("#mensaje_mes_balance").text("Seleccione mes");
+		$("#mensaje_mes_balance").fadeIn("slow");
+		$("#mensaje_mes_balance").fadeOut("slow");
+		}
+	if(aniobalance==0)
+		{
+		$("#mensaje_anio_balance").text("Seleccione año");
+		$("#mensaje_anio_balance").fadeIn("slow");
+		$("#mensaje_anio_balance").fadeOut("slow");
+		}
+	if(mesbalance!=0 && aniobalance!=0) 
+	{
+		swal({
+			  title: "Reporte preliminar",
+			  text: "Preparando el reporte preliminar",
+			  icon: "view/images/capremci_load.gif",
+			  buttons: false,
+			  closeModal: false,
+			  allowOutsideClick: false
+			});
+		$.ajax({
+		    url: 'index.php?controller=BalanceComprobacion&action=GenerarReporte',
+		    type: 'POST',
+		    data: {
+		    	   mes: mesbalance,
+		    	   anio: aniobalance,
+		    	   max_nivel_balance: maxnivel 
+		    },
+		})
+		.done(function(x) {
+					if (!(x.includes("Warning")) && !(x.includes("Notice")))
+				{
+				$("#plan_cuentas").html(x);
+				swal("Reporte cargado", {
+				      icon: "success",
+				      buttons: false,
+				      timer: 1000
+				    });
+				//$("#tabla_reporte").tablesorter(); 
+				
+				}
+			else
+				{
+				swal({
+			  		  title: "Registro",
+			  		  text: "Error al obtener el reporte: "+x,
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+				}
+		})
+		.fail(function() {
+		    console.log("error");
 		});
-	$.ajax({
-	    url: 'index.php?controller=BalanceComprobacion&action=GenerarReporte',
-	    type: 'POST',
-	    data: {
-	    	   mes: mesbalance,
-	    	   anio: aniobalance,
-	    	   max_nivel_balance: maxnivel 
-	    },
-	})
-	.done(function(x) {
-				if (!(x.includes("Warning")) && !(x.includes("Notice")))
-			{
-			$("#plan_cuentas").html(x);
-			swal("Reporte cargado", {
-			      icon: "success",
-			      buttons: false,
-			      timer: 1000
-			    });
-			//$("#tabla_reporte").tablesorter(); 
-			
-			}
-		else
-			{
-			swal({
-		  		  title: "Registro",
-		  		  text: "Error al obtener el reporte: "+x,
-		  		  icon: "warning",
-		  		  button: "Aceptar",
-		  		});
-			}
-	})
-	.fail(function() {
-	    console.log("error");
-	});
 	
+	}
+		
 }
 
 function ExpandirTabla(clase,idbt)

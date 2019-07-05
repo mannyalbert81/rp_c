@@ -13,11 +13,11 @@ class ParticipesController extends ControladorBase{
 		//Creamos el objeto usuario
      	$participes=new ParticipesModel();
 		$resultSet=$participes->getAll("id_participes");
-	
+		
 		$resultEdit = "";
 	
-		$cuidades_participes=new CiudadesModel();
-		$resultCuidades=$cuidades_participes->getAll("nombre_ciudades");
+		$ciudades_participes=new CiudadesModel();
+		$resultCiudades=$ciudades_participes->getAll("nombre_ciudades");
 		
 		$estado_participes=new EstadoParticipesModel();
 		$resultEstado=$estado_participes->getAll("nombre_estado_participes");
@@ -29,7 +29,7 @@ class ParticipesController extends ControladorBase{
 		$resultGenero=$genero_participes->getAll("nombre_genero_participes");
 		
 		$estado_civil_participes=new EstadoCivilParticipesModel();
-		$resultEstadoCivil=$estado_civil_participes->getAll("nombre_estado_civill_participes");
+		$resultEstadoCivil=$estado_civil_participes->getAll("nombre_estado_civil_participes");
 	
 		$entidad_patronal_participes=new EntidadPatronalParticipesModel();
 		$resultEntidadPatronal=$entidad_patronal_participes->getAll("nombre_entidad_patronal");
@@ -67,26 +67,26 @@ class ParticipesController extends ControladorBase{
                                       core_participes.apellido_participes, 
                                       core_participes.nombre_participes, 
                                       core_participes.cedula_participes, 
-                                      core_participes.fecha_nacimiento_participes, 
+                                      DATE(core_participes.fecha_nacimiento_participes)fecha_nacimiento_participes, 
                                       core_participes.direccion_participes, 
                                       core_participes.telefono_participes, 
                                       core_participes.celular_participes, 
-                                      core_participes.fecha_ingreso_participes, 
-                                      core_participes.fecha_defuncion_participes, 
+                                      DATE(core_participes.fecha_ingreso_participes)fecha_ingreso_participes, 
+                                      DATE(core_participes.fecha_defuncion_participes)fecha_defuncion_participes, 
                                       core_estado_participes.id_estado_participes, 
                                       core_estado_participes.nombre_estado_participes, 
                                       core_estatus.id_estatus, 
                                       core_estatus.nombre_estatus, 
-                                      core_participes.fecha_salida_participes, 
+                                      DATE(core_participes.fecha_salida_participes)fecha_salida_participes, 
                                       core_genero_participes.id_genero_participes, 
                                       core_genero_participes.nombre_genero_participes, 
-                                      core_estado_civill_participes.id_estado_civill_participes, 
-                                      core_estado_civill_participes.nombre_estado_civill_participes, 
+                                      core_estado_civil_participes.id_estado_civil_participes, 
+                                      core_estado_civil_participes.nombre_estado_civil_participes, 
                                       core_participes.observacion_participes, 
                                       core_participes.correo_participes, 
                                       core_entidad_patronal.id_entidad_patronal, 
                                       core_entidad_patronal.nombre_entidad_patronal, 
-                                      core_participes.fecha_entrada_patronal_participes, 
+                                      DATE(core_participes.fecha_entrada_patronal_participes)fecha_entrada_patronal_participes, 
                                       core_participes.ocupacion_participes, 
                                       core_tipo_instruccion_participes.id_tipo_instruccion_participes, 
                                       core_tipo_instruccion_participes.nombre_tipo_instruccion_participes, 
@@ -95,7 +95,7 @@ class ParticipesController extends ControladorBase{
                                       core_participes.cedula_conyugue_participes, 
                                       core_participes.numero_dependencias_participes, 
                                       core_participes.codigo_alternativo_participes, 
-                                      core_participes.fecha_numero_orden_participes, 
+                                      DATE(core_participes.fecha_numero_orden_participes)fecha_numero_orden_participes, 
                                       core_participes.creado, 
                                       core_participes.modificado";
 						$tablas   =  "public.core_participes, 
@@ -103,18 +103,18 @@ class ParticipesController extends ControladorBase{
                                       public.core_estado_participes, 
                                       public.core_estatus, 
                                       public.core_genero_participes, 
-                                      public.core_estado_civill_participes, 
+                                      public.core_estado_civil_participes, 
                                       public.core_entidad_patronal, 
                                       public.core_tipo_instruccion_participes";
 						$where    =  "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
-                                      core_ciudades.id_ciudades = core_participes.id_cuidades AND
+                                      core_ciudades.id_ciudades = core_participes.id_ciudades AND
                                       core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
                                       core_estatus.id_estatus = core_participes.id_estatus AND
                                       core_genero_participes.id_genero_participes = core_participes.id_genero_participes AND
-                                      core_estado_civill_participes.id_estado_civill_participes = core_participes.id_estado_civil_participes AND
+                                      core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes AND
                                       core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal
                                       AND core_participes.id_participes = '$_id_participes'"; 
-						$id       = "grupos.id_grupos";
+						$id       = "core_participes.id_participes";
 							
 						$resultEdit = $participes->getCondiciones($columnas ,$tablas ,$where, $id);
 
@@ -133,7 +133,7 @@ class ParticipesController extends ControladorBase{
 		
 				
 				$this->view_Core("Participes",array(
-				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultCuidades" =>$resultCuidades, "resultEstado" =>$resultEstado, "resultEstatus" =>$resultEstatus,
+				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultCiudades" =>$resultCiudades, "resultEstado" =>$resultEstado, "resultEstatus" =>$resultEstatus,
 				    "resultGenero" =>$resultGenero, "resultEstadoCivil" =>$resultEstadoCivil, "resultEntidadPatronal" =>$resultEntidadPatronal, "resultTipoInstrccion" =>$resultTipoInstrccion,
 			
 				));
@@ -183,7 +183,7 @@ class ParticipesController extends ControladorBase{
 			{
 			    
 			    $_id_participes = $_POST["id_participes"];
-			    $_id_cuidades =  $_POST["id_cuidades"];
+			    $_id_ciudades =  $_POST["id_ciudades"];
 			    $_apellido_participes = $_POST["apellido_participes"];
 			    $_nombre_participes = $_POST["nombre_participes"];
 			    $_cedula_participes = $_POST["cedula_participes"];
@@ -217,7 +217,7 @@ class ParticipesController extends ControladorBase{
 			    if($_id_participes > 0){
 					
 					$columnas =    "id_participes = '$_id_participes',
-                                    id_cuidades = '$_id_cuidades',
+                                    id_ciudades = '$_id_ciudades',
                                     apellido_participes = '$_apellido_participes',
                                     nombre_participes = '$_nombre_participes',
                                     cedula_participes = '$_cedula_participes',
@@ -249,22 +249,22 @@ class ParticipesController extends ControladorBase{
                                       public.core_estado_participes, 
                                       public.core_estatus, 
                                       public.core_genero_participes, 
-                                      public.core_estado_civill_participes, 
+                                      public.core_estado_civil_participes, 
                                       public.core_entidad_patronal, 
                                       public.core_tipo_instruccion_participes";
 					$where = "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
-                                      core_ciudades.id_ciudades = core_participes.id_cuidades AND
+                                      core_ciudades.id_ciudades = core_participes.id_ciudades AND
                                       core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
                                       core_estatus.id_estatus = core_participes.id_estatus AND
                                       core_genero_participes.id_genero_participes = core_participes.id_genero_participes AND
-                                      core_estado_civill_participes.id_estado_civill_participes = core_participes.id_estado_civil_participes AND
+                                      core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes AND
                                       core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal
                                       AND core_participes.id_participes = '$_id_participes'";
 					$resultado=$participes->UpdateBy($columnas, $tabla, $where);
 					
 				}else{
 				    $_id_participes = $_POST["id_participes"];
-				    $_id_cuidades =  $_POST["id_cuidades"];
+				    $_id_ciudades =  $_POST["id_ciudades"];
 				    $_apellido_participes = $_POST["apellido_participes"];
 				    $_nombre_participes = $_POST["nombre_participes"];
 				    $_cedula_participes = $_POST["cedula_participes"];
@@ -295,7 +295,7 @@ class ParticipesController extends ControladorBase{
 				    
 					$funcion = "ins_core_participes";
 					$parametros = " '$_id_participes',
-                                    '$_id_cuidades',
+                                    '$_id_ciudades',
                                     '$_apellido_participes',
                                     '$_nombre_participes',
                                     '$_cedula_participes',
@@ -409,8 +409,8 @@ class ParticipesController extends ControladorBase{
                                       core_participes.fecha_salida_participes, 
                                       core_genero_participes.id_genero_participes, 
                                       core_genero_participes.nombre_genero_participes, 
-                                      core_estado_civill_participes.id_estado_civill_participes, 
-                                      core_estado_civill_participes.nombre_estado_civill_participes, 
+                                      core_estado_civil_participes.id_estado_civil_participes, 
+                                      core_estado_civil_participes.nombre_estado_civil_participes, 
                                       core_participes.observacion_participes, 
                                       core_participes.correo_participes, 
                                       core_entidad_patronal.id_entidad_patronal, 
@@ -433,17 +433,17 @@ class ParticipesController extends ControladorBase{
                                       public.core_estado_participes, 
                                       public.core_estatus, 
                                       public.core_genero_participes, 
-                                      public.core_estado_civill_participes, 
+                                      public.core_estado_civil_participes, 
                                       public.core_entidad_patronal, 
                                       public.core_tipo_instruccion_participes";
 	    
 	    
 	    $where    = "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
-                                      core_ciudades.id_ciudades = core_participes.id_cuidades AND
+                                      core_ciudades.id_ciudades = core_participes.id_ciudades AND
                                       core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
                                       core_estatus.id_estatus = core_participes.id_estatus AND
                                       core_genero_participes.id_genero_participes = core_participes.id_genero_participes AND
-                                      core_estado_civill_participes.id_estado_civill_participes = core_participes.id_estado_civil_participes AND
+                                      core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes AND
                                       core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND core_estado_participes.nombre_estado_participes = 'Activo'";
 	    
 	    $id       = "core_participes.id_participes";
@@ -567,7 +567,7 @@ class ParticipesController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_estatus.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_salida_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_genero_participes.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civill_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civil_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->observacion_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->correo_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_entidad_patronal.'</td>';
@@ -604,8 +604,6 @@ class ParticipesController extends ControladorBase{
 	            $html.='<div class="table-pagination pull-right">';
 	            $html.=''. $this->paginate_participes_activos("index.php", $page, $total_pages, $adjacents).'';
 	            $html.='</div>';
-	            
-	            
 	            
 	        }else{
 	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
@@ -651,8 +649,8 @@ class ParticipesController extends ControladorBase{
                                       core_participes.fecha_salida_participes,
                                       core_genero_participes.id_genero_participes,
                                       core_genero_participes.nombre_genero_participes,
-                                      core_estado_civill_participes.id_estado_civill_participes,
-                                      core_estado_civill_participes.nombre_estado_civill_participes,
+                                      core_estado_civil_participes.id_estado_civil_participes,
+                                      core_estado_civil_participes.nombre_estado_civil_participes,
                                       core_participes.observacion_participes,
                                       core_participes.correo_participes,
                                       core_entidad_patronal.id_entidad_patronal,
@@ -675,17 +673,17 @@ class ParticipesController extends ControladorBase{
                                       public.core_estado_participes,
                                       public.core_estatus,
                                       public.core_genero_participes,
-                                      public.core_estado_civill_participes,
+                                      public.core_estado_civil_participes,
                                       public.core_entidad_patronal,
                                       public.core_tipo_instruccion_participes";
 	    
 	    
 	    $where    = "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
-                                      core_ciudades.id_ciudades = core_participes.id_cuidades AND
+                                      core_ciudades.id_ciudades = core_participes.id_ciudades AND
                                       core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
                                       core_estatus.id_estatus = core_participes.id_estatus AND
                                       core_genero_participes.id_genero_participes = core_participes.id_genero_participes AND
-                                      core_estado_civill_participes.id_estado_civill_participes = core_participes.id_estado_civil_participes AND
+                                      core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes AND
                                       core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND core_estado_participes.nombre_estado_participes = 'Inactivo'";
 	    
 	    $id       = "core_participes.id_participes";
@@ -805,7 +803,7 @@ class ParticipesController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_estatus.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_salida_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_genero_participes.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civill_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civil_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->observacion_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->correo_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_entidad_patronal.'</td>';
@@ -885,8 +883,8 @@ class ParticipesController extends ControladorBase{
                                       core_participes.fecha_salida_participes,
                                       core_genero_participes.id_genero_participes,
                                       core_genero_participes.nombre_genero_participes,
-                                      core_estado_civill_participes.id_estado_civill_participes,
-                                      core_estado_civill_participes.nombre_estado_civill_participes,
+                                      core_estado_civil_participes.id_estado_civil_participes,
+                                      core_estado_civil_participes.nombre_estado_civil_participes,
                                       core_participes.observacion_participes,
                                       core_participes.correo_participes,
                                       core_entidad_patronal.id_entidad_patronal,
@@ -909,17 +907,17 @@ class ParticipesController extends ControladorBase{
                                       public.core_estado_participes,
                                       public.core_estatus,
                                       public.core_genero_participes,
-                                      public.core_estado_civill_participes,
+                                      public.core_estado_civil_participes,
                                       public.core_entidad_patronal,
                                       public.core_tipo_instruccion_participes";
 	    
 	    
 	    $where    = "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
-                                      core_ciudades.id_ciudades = core_participes.id_cuidades AND
+                                      core_ciudades.id_ciudades = core_participes.id_ciudades AND
                                       core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
                                       core_estatus.id_estatus = core_participes.id_estatus AND
                                       core_genero_participes.id_genero_participes = core_participes.id_genero_participes AND
-                                      core_estado_civill_participes.id_estado_civill_participes = core_participes.id_estado_civil_participes AND
+                                      core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes AND
                                       core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND core_estado_participes.nombre_estado_participes = 'Desafiliado'";
 	    
 	    $id       = "core_participes.id_participes";
@@ -1039,7 +1037,7 @@ class ParticipesController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_estatus.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_salida_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_genero_participes.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civill_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civil_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->observacion_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->correo_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_entidad_patronal.'</td>';
@@ -1119,8 +1117,8 @@ class ParticipesController extends ControladorBase{
                                       core_participes.fecha_salida_participes,
                                       core_genero_participes.id_genero_participes,
                                       core_genero_participes.nombre_genero_participes,
-                                      core_estado_civill_participes.id_estado_civill_participes,
-                                      core_estado_civill_participes.nombre_estado_civill_participes,
+                                      core_estado_civil_participes.id_estado_civil_participes,
+                                      core_estado_civil_participes.nombre_estado_civil_participes,
                                       core_participes.observacion_participes,
                                       core_participes.correo_participes,
                                       core_entidad_patronal.id_entidad_patronal,
@@ -1143,17 +1141,17 @@ class ParticipesController extends ControladorBase{
                                       public.core_estado_participes,
                                       public.core_estatus,
                                       public.core_genero_participes,
-                                      public.core_estado_civill_participes,
+                                      public.core_estado_civil_participes,
                                       public.core_entidad_patronal,
                                       public.core_tipo_instruccion_participes";
 	    
 	    
 	    $where    = "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
-                                      core_ciudades.id_ciudades = core_participes.id_cuidades AND
+                                      core_ciudades.id_ciudades = core_participes.id_ciudades AND
                                       core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
                                       core_estatus.id_estatus = core_participes.id_estatus AND
                                       core_genero_participes.id_genero_participes = core_participes.id_genero_participes AND
-                                      core_estado_civill_participes.id_estado_civill_participes = core_participes.id_estado_civil_participes AND
+                                      core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes AND
                                       core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND core_estado_participes.nombre_estado_participes = 'Liquidado Cesante'";
 	    
 	    $id       = "core_participes.id_participes";
@@ -1273,7 +1271,7 @@ class ParticipesController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_estatus.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_salida_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_genero_participes.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civill_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civil_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->observacion_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->correo_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_entidad_patronal.'</td>';

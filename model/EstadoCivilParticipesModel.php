@@ -36,7 +36,11 @@ class EstadoCivilParticipesModel extends ModeloBase{
 
 
 	public function __construct(){
+<<<<<<< HEAD
 		$this->table="core_estado_civill_participes";
+=======
+		$this->table="core_estado_civil_participes";
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
 	
 		parent::__construct($this->table);
 	}

@@ -1837,7 +1837,7 @@ class CuentasPagarController extends ControladorBase{
                     id_proveedor, condiciones_pago, id_banco, id_moneda, numero_documento_cuentas_pagar,
                     numero_orden_compra_cuentas_pagar, compras_cuentas_pagar";
 	    
-	    $tablas = "tes_cuentas_pagar";
+	    $tablas = "tes_cuentas_pagar ";
 	    
 	    $where = "1 = 1 ";
 	    

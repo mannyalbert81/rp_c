@@ -422,13 +422,15 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
 		 var err = xhr.responseText
 		 console.log(err)
 		 var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
-		 var resmsg = mensaje[1];
-		 swal( {
-			 title:"Detalle Diario Tipo",
-			 dangerMode: true,
-			 text: resmsg.replace("|","\n"),
-			 icon: "error"
-			})
+		 if( mensaje !== null ){
+			 var resmsg = mensaje[1];
+			 swal( {
+				 title:"Detalle Diario Tipo",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+				})
+		 }
 	 })
 	 
 });

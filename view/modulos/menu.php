@@ -312,6 +312,51 @@ $controladores=$_SESSION['controladores'];
         </ul>
       </li>
       
+      <li class="treeview"  style="<?php echo getcontrolador("MenuInventario",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder"></i> <span>Crédito</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+             <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+               </ul>
+            </li>
+            
+            
+            <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li style="<?php echo getcontrolador("BuscarParticipes",$controladores) ?>"><a href="index.php?controller=BuscarParticipes&action=index"><i class="fa fa-circle-o"></i> Buscar Participes</a></li>
+                </ul>
+            </li>
+        
+        <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder-open-o"></i> <span>Reportes</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            </ul>
+        </li>
+       </ul>
+      </li>
+      
       <li class="treeview"  style="<?php echo getcontrolador("MenuTesoreria",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder"></i> <span>Tesoreria</span>
@@ -367,6 +412,17 @@ $controladores=$_SESSION['controladores'];
 		 
 		  </ul>
         </li>
+        <li class="treeview"  style="<?php echo getcontrolador("AdministracionTesoreria",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Bancos</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li style="<?php echo getcontrolador("EstadosCuenta",$controladores) ?>"><a href="index.php?controller=EstadosCuenta&action=index"><i class="fa fa-circle-o"></i>Carga de Archivos</a></li>
+                </ul>
+            </li>
        </ul>
       </li>
             <li class="treeview"  style="<?php echo getcontrolador("MenuCore",$controladores) ?>"  >

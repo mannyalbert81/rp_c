@@ -43,7 +43,7 @@ class CiudadesModel extends ModeloBase{
 	
 	
 	
-    public function getLogin(){
+   public function getLogin(){
     	
     	$query="SELECT * FROM claves WHERE ".$this->where." ;";
     	$usuario=$this->ConsultaSql($query);

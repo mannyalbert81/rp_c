@@ -207,7 +207,7 @@ class TransferenciasController extends ControladorBase{
 	public function generaTxt(){
 	    
 	    $fecha = date('my');
-	    $archivo = __DIR__.'\\..\\view\\PagosController.php';
+	    $archivo = __DIR__.'\\..\\view\\tesoreria\\documentos\\transferencias\\prueba.txt';
 	    //validar archivo si existe en directorio
 	    if( file_exists($archivo))
 	        echo "hay archivo";

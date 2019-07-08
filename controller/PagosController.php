@@ -59,102 +59,6 @@ class PagosController extends ControladorBase{
                     cp.fecha_cuentas_pagar, pr.id_proveedores, pr.nombre_proveedores";
         
         $tablas = "tes_lote l
-<<<<<<< HEAD
-            inner join tes_cuentas_pagar cp
-            on l.id_lote = cp.id_lote
-            inner join proveedores pr
-            on pr.id_proveedores = cp.id_proveedor";
-        
-        $where = " 1=1";
-        
-        //para los parametros de where 
-        if(!empty($busqueda)){
-            
-            $where .= "AND ( nombre_lote = '$busqueda' OR pr.identificacion_proveedores like '$busqueda%' )";
-        }
-        
-        $id = "cp.id_cuentas_pagar";
-        
-        //para obtener cantidad         
-        $rsResultado = $cuentasPagar->getCantidad("1", $tablas, $where, $id);        
-        
-        $cantidad = 0;
-        $html = "";
-        $per_page = 10; //la cantidad de registros que desea mostrar
-        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-        $offset = ($page - 1) * $per_page;
-        
-        if(!is_null($rsResultado) && !empty($rsResultado) && count($rsResultado)>0){
-            $cantidad = $rsResultado[0]->total;
-        }
-        
-        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-        
-        $resultSet = $cuentasPagar->getCondicionesPag( $columnas, $tablas, $where, $id, $limit);
-        
-        $tpages = ceil($cantidad/$per_page);
-        
-        if( $cantidad > 0 ){
-            
-            //$html.='<div class="pull-left" style="margin-left:11px;">';
-            //$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidad.'</span>';
-            //$html.='<input type="hidden" value="'.$cantidad.'" id="total_query" name="total_query"/>' ;
-            //$html.='</div>';
-            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-            $html.='<section style="height:180px; overflow-y:scroll;">';
-            $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
-            $html.= "<thead>";
-            $html.= "<tr>";
-            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-            $html.='<th style="text-align: left;  font-size: 12px;">LOTE</th>';
-            $html.='<th style="text-align: left;  font-size: 12px;">USUARIO</th>';
-            $html.='<th style="text-align: left;  font-size: 12px;">DESCRIPCION</th>';
-            $html.='<th style="text-align: left;  font-size: 12px;">FECHA</th>';
-            $html.='<th style="text-align: left;  font-size: 12px;">PROVEEDOR</th>';
-            $html.='<th colspan="2" style="text-align: left;  font-size: 12px;">PAGOS</th>';
-            
-            $html.='</tr>';
-            $html.='</thead>';
-            $html.='<tbody>';
-            
-            $i=0;
-            
-            foreach ($resultSet as $res)
-            {
-                $i++;
-                $html.='<tr>';
-                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->id_lote.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->id_usuarios.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->descripcion_cuentas_pagar.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->fecha_cuentas_pagar.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->nombre_proveedores.'</td>';
-                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
-                $html.='<a title="Generar Cheque" href="index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
-                $html.='<i class="glyphicon glyphicon-usd"></i></a></span></td>';
-                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
-                $html.='<a title="Realizar Transferencia" href="index.php?controller=Productos&action=generar_reporte_productos&id_productos='.$res->id_cuentas_pagar.'">';
-                $html.='<i class="glyphicon glyphicon-transfer"></i></a></span></td>';
-                $html.='</tr>';
-                
-            }
-            
-            
-            $html.='</tbody>';
-            $html.='</table>';
-            $html.='</section></div>';
-            $html.='<div class="table-pagination pull-right">';
-            $html.=''. $this->paginate("index.php", $page, $tpages, $adjacents,"").'';
-            $html.='</div>';
-            
-            
-            
-        }else{
-            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>Sin Resultados Solicitud Rechazada</b>';
-=======
             INNER JOIN tes_cuentas_pagar cp
             ON l.id_lote = cp.id_lote
             INNER JOIN proveedores pr
@@ -251,7 +155,6 @@ class PagosController extends ControladorBase{
             $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
             $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
             $html.='<h4>Aviso!!!</h4> <b> No hay cuentas por Pagar</b>';
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
             $html.='</div>';
             $html.='</div>';
         }

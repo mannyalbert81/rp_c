@@ -300,6 +300,22 @@ class EntidadBase{
     	}
     }
     
+    public function ActualizarBy($colval ,$tabla , $where){
+        try{
+            
+            $query=pg_query($this->con, "UPDATE $tabla SET  $colval   WHERE $where ");
+            
+            if(!$query)
+                throw new Exception("valor nulor");
+            
+            return pg_affected_rows($query);
+            
+        }catch (Exception  $Ex){
+            return -1;
+            
+        }
+    }
+    
     public function editBy($colval ,$tabla , $where){
         
         $cantidadAfectada = null;

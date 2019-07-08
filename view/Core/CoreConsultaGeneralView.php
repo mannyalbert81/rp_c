@@ -303,38 +303,9 @@
 
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
+          <li class="active"><a href="#activos" data-toggle="tab">Personales</a></li>
+           <li><a href="#inactivos" data-toggle="tab">Patronales</a></li>
             
-            <li class="active" data-toggle="tab">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Aportes<span class="caret"></span></a>
-              <ul class="dropdown-menu" id="ico">
-              <li><a href="#activos">Personales</a></li>
-              <li><a href="#inactivos">Patronales</a></li> 
-                                 
-              </ul>
-           </li>
-           <li  data-toggle="tab">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Desembolso<span class="caret"></span></a>
-              <ul class="dropdown-menu" id="ico">
-              <li><a href="#activos">Personales</a></li>
-              <li><a href="#inactivos">Patronales</a></li>                      
-              </ul>
-           </li>
-           
-              <li><a href="#inactivos" data-toggle="tab">Superavit</a></li>
-              
-           <li  data-toggle="tab">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Saldos<span class="caret"></span></a>
-              <ul class="dropdown-menu" id="ico">
-              <li><a href="#activos">De Aportes Personales</a></li>
-              <li><a href="#inactivos">De Aportes Patronales</a></li>                      
-              </ul>
-           </li>
-              
-           <li><a href="#inactivos" data-toggle="tab">Saldos Creditos</a></li>
-           <li><a href="#inactivos" data-toggle="tab">Herederos</a></li>
-           <li><a href="#inactivos" data-toggle="tab">Garantías Prestadas</a></li>
-           <li><a href="#inactivos"><img style=" height:30px; width:30px;" src="view/images/print.png"></img></a></li>
-                  
             </ul>
             
             <div class="col-md-12 col-lg-12 col-xs-12">

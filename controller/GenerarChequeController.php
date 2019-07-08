@@ -40,7 +40,6 @@ class GenerarChequeController extends ControladorBase{
 		    "resultSet"=>$rsEntidad
 	
 		));
-			
 	
 	}
 	

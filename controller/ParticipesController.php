@@ -12,7 +12,7 @@ class ParticipesController extends ControladorBase{
 	
 		//Creamos el objeto usuario
      	$participes=new ParticipesModel();
-<<<<<<< HEAD
+
 		$resultSet=$participes->getAll("id_participes");
 	
 		$resultEdit = "";
@@ -1276,10 +1276,9 @@ class ParticipesController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_genero_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civill_participes.'</td>';
 
-=======
+
 		$resultSet=$participes->getAll("id_participes");
-		
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
+	
 		$resultEdit = "";
 	
 		$ciudades_participes=new CiudadesModel();
@@ -2540,11 +2539,10 @@ class ParticipesController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_estatus.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_salida_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_genero_participes.'</td>';
-<<<<<<< HEAD
+
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civil_participes.'</td>';
-=======
+
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civil_participes.'</td>';
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
 	                $html.='<td style="font-size: 11px;">'.$res->observacion_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->correo_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_entidad_patronal.'</td>';

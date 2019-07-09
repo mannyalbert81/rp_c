@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	
 	init();
+	devuelveconsecutivos();
 	
 })
 
@@ -38,6 +39,24 @@ function init(){
 	});
 	
 	
+}
+
+/*******************************************************************************
+ * dc 2019-07-08
+ */
+function devuelveconsecutivos(){
+	
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=DevuelveConsecutivos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(x){
+		console.log(x);
+		$("#numero_pago").val(x.pagos.numero);
+	}).fail(function(xhr,status,error){
+		$("#numero_pago").val('');
+	})
 }
 
 /*******************************************************************************

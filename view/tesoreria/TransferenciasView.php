@@ -115,7 +115,7 @@
             			<div class="form-group ">
             				<label for="comentario_cheque" class=" control-label" >Numero Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="" >
+                				 <input type="text" class="form-control mayus" id="numero_pago" name="numero_pago" value="" >
                     		</div>        			 
             			</div>
             		</div> 
@@ -185,10 +185,25 @@
             			</div>
             		</div>
             		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="comentario_cheque" class=" control-label" >Transferir a:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="transferir" name="transferir" value="" >
+                    		</div>        			 
+            			</div>
+            		</div>
             		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="comentario_cheque" class=" control-label" >Cuenta:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="cuenta_banco" name="cuenta_banco" value="" >
+                    		</div>        			 
+            			</div>
+            		</div> 
             		
-            		
-            						    
+            		            						    
           	   	</div>
           	   	
           	   	<div class="row">
@@ -402,7 +417,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.00"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.01"></script>
 
   </body>
 </html>   

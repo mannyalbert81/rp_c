@@ -207,26 +207,100 @@ class TransferenciasController extends ControladorBase{
 	public function generaTxt(){
 	    
 	    $fecha = date('my');
-	    $archivo = __DIR__.'\\..\\view\\tesoreria\\documentos\\transferencias\\prueba.txt';
+	    $nombreArchivo = "CASH_PAGOS_".$fecha."txt";
+	    $archivo = __DIR__.'\\..\\view\\tesoreria\\documentos\\transferencias\\'.$nombreArchivo;
 	    //validar archivo si existe en directorio
-	    if( file_exists($archivo))
-	        echo "hay archivo";
-	    else 
-	        echo "no hay archivo";
 	    
-	    echo $fecha;
-	    echo $archivo;
-	    echo dir($archivo);
-	    die();
-	    $file = fopen("archivo.txt", "r");
-	    
-	    while(!feof($file)) {
+	    $CuentasPagar = new CuentasPagarModel();
+	    $query = "SELECT * FROM public.tes_cuentas_pagar";
+	    $rsCuentasPagar = $CuentasPagar->enviaquery($query);
+	    if( file_exists($archivo)){
 	        
-	        echo fgets($file). "<br />";
+	        if(!empty($rsCuentasPagar)){
+	            
+	            $file = fopen($archivo, "a");
+	            
+	            foreach ($rsCuentasPagar as $res){
+	                fwrite($file, $res->id_cuentas_pagar ."\t");
+	                fwrite($file, number_format((float)$res->total_cuentas_pagar, 2, '', '')."\t");
+	                //fwrite($file, "Esto es una nueva linea de texto" ."\t");
+	                fwrite($file, PHP_EOL);
+	            }
+	            
+	            fclose($file);
+	        }
 	        
+	        $file = fopen($archivo, "a");
+	        
+	        fwrite($file, "Esto es una nueva linea de texto" ."\t");
+	        
+	        fwrite($file, "Otra más" . PHP_EOL);
+	        
+	        fclose($file);
+	        
+	        $file = fopen($archivo, "r");
+	        
+	        while(!feof($file)) {
+	            
+	            echo fgets($file). "<br />";
+	            
+	        }
+	        
+	        fclose($file);
+	        
+	    }else{
+	        
+	        if(!empty($rsCuentasPagar)){
+	            
+	            $file = fopen($archivo, "a");
+	            
+	            foreach ($rsCuentasPagar as $res){
+	                fwrite($file, $res->id_cuentas_pagar ."\t");
+	                fwrite($file, number_format((float)$res->total_cuentas_pagar, 2, '', '')."\t");
+	                //fwrite($file, "Esto es una nueva linea de texto" ."\t");
+	                fwrite($file, PHP_EOL);
+	            }
+	            
+	            fclose($file);
+	        }
+	        
+	        $file = fopen($archivo, "a");
+	        
+	        fwrite($file, "Esto es una nueva linea de texto" ."\t");
+	        
+	        fwrite($file, "Otra más" . PHP_EOL);
+	        
+	        fclose($file);
+	        
+	        $file = fopen($archivo, "r");
+	        
+	        while(!feof($file)) {
+	            
+	            echo fgets($file). "<br />";
+	            
+	        }
+	        
+	        fclose($file);
 	    }
+	        
+        
+       
+	}
+	
+	public function DevuelveConsecutivos(){
 	    
-	    fclose($file);
+	    $Consecutivos = new ConsecutivosModel();
+	    
+	    $query = "SELECT LPAD(valor_consecutivos::text,espacio_consecutivos,'0') numero_consecutivos, id_consecutivos 
+                FROM public.consecutivos WHERE nombre_consecutivos = 'PAGOS'";
+	    
+	    $rsConsecutivos = $Consecutivos->enviaquery($query);
+	    
+	    $respuesta = array();
+	    
+	    $respuesta['pagos'] = array('id'=>$rsConsecutivos[0]->id_consecutivos,'numero'=>$rsConsecutivos[0]->numero_consecutivos);
+	    
+	    echo json_encode($respuesta);
 	}
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 class EstadoParticipesModel extends ModeloBase{
-	
+
 	private $table;
 	private $where;
 	private $funcion;
@@ -34,27 +34,52 @@ class EstadoParticipesModel extends ModeloBase{
 		$this->parametros = $parametros;
 	}
 	
-	
-	
-	
+
+
 	public function __construct(){
 		$this->table="core_estado_participes";
-		
+	
 		parent::__construct($this->table);
 	}
 	
-
-	public function Insert(){
-		
-		$query = "SELECT ".$this->funcion."(".$this->parametros.")";
-		
-		$resultado=$this->enviarFuncion($query);
-			
-			
-		return  $resultado;
-	}
 	
 	
-	
+    public function getLogin(){
+    	
+    	$query="SELECT * FROM claves WHERE ".$this->where." ;";
+    	$usuario=$this->ConsultaSql($query);
+    	
+    	$resultado = count($usuario);
+    	if ($resultado > 0)
+    	{
+    		return true;
+    	}
+    	else 
+    	{
+    		return false;
+    	}
+    	
+    }
+    
+    public function Insert(){
+    
+    	$query = "SELECT ".$this->funcion."(".$this->parametros.")";
+    
+    	$resultado=$this->enviarFuncion($query);
+    		
+    		
+    	return  $resultado;
+    }
+    
+    public function llamafuncion(){
+        
+        $query = "SELECT ".$this->funcion."(".$this->parametros.")";
+        $resultado = null;
+        
+        $resultado=$this->llamarconsulta($query);
+        
+        return  $resultado;
+    }
+    
 }
 ?>

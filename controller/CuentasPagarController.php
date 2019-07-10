@@ -352,7 +352,7 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    $query = " SELECT id_bancos,nombre_bancos 
                 FROM tes_bancos ban INNER JOIN estado ON ban.id_estado = estado.id_estado 
-                WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos'";
+                WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos' AND local_bancos = true";
 	    
 	    $resulset = $estados->enviaquery($query);
 	    
@@ -1837,7 +1837,7 @@ class CuentasPagarController extends ControladorBase{
                     id_proveedor, condiciones_pago, id_banco, id_moneda, numero_documento_cuentas_pagar,
                     numero_orden_compra_cuentas_pagar, compras_cuentas_pagar";
 	    
-	    $tablas = "tes_cuentas_pagar";
+	    $tablas = "tes_cuentas_pagar ";
 	    
 	    $where = "1 = 1 ";
 	    

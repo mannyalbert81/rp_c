@@ -164,17 +164,12 @@ class ParticipesController extends ControladorBase{
 			
 		session_start();
 		$participes=new ParticipesModel();
-		
-		
-
 		$nombre_controladores = "Participes";
 		$id_rol= $_SESSION['id_rol'];
 		$resultPer = $participes->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
 		if (!empty($resultPer))
 		{
-		
-		//die("llego");
 		
 			$resultado = null;
 			$participes=new ParticipesModel();
@@ -211,13 +206,9 @@ class ParticipesController extends ControladorBase{
 			    $_codigo_alternativo_participes = $_POST["codigo_alternativo_participes"];
 			    $_fecha_numero_orden_participes = $_POST["fecha_numero_orden_participes"];
 			    
-			    
-			    
-			    //die("llego");
 			    if($_id_participes > 0){
 					
-					$columnas =    "id_participes = '$_id_participes',
-                                    id_ciudades = '$_id_ciudades',
+					$columnas =    "id_ciudades = '$_id_ciudades',
                                     apellido_participes = '$_apellido_participes',
                                     nombre_participes = '$_nombre_participes',
                                     cedula_participes = '$_cedula_participes',
@@ -244,6 +235,7 @@ class ParticipesController extends ControladorBase{
                                     numero_dependencias_participes = '$_numero_dependencias_participes',
                                     codigo_alternativo_participes = '$_codigo_alternativo_participes',
                                     fecha_numero_orden_participes = '$_fecha_numero_orden_participes'";
+					
 					        $tabla = "public.core_participes, 
                                       public.core_ciudades, 
                                       public.core_estado_participes, 
@@ -252,7 +244,8 @@ class ParticipesController extends ControladorBase{
                                       public.core_estado_civil_participes, 
                                       public.core_entidad_patronal, 
                                       public.core_tipo_instruccion_participes";
-					$where = "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
+					        
+					        $where = "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
                                       core_ciudades.id_ciudades = core_participes.id_ciudades AND
                                       core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
                                       core_estatus.id_estatus = core_participes.id_estatus AND
@@ -260,42 +253,13 @@ class ParticipesController extends ControladorBase{
                                       core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes AND
                                       core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal
                                       AND core_participes.id_participes = '$_id_participes'";
-					$resultado=$participes->UpdateBy($columnas, $tabla, $where);
+					
+					        $resultado=$participes->UpdateBy($columnas, $tabla, $where);
 					
 				}else{
-				    $_id_participes = $_POST["id_participes"];
-				    $_id_ciudades =  $_POST["id_ciudades"];
-				    $_apellido_participes = $_POST["apellido_participes"];
-				    $_nombre_participes = $_POST["nombre_participes"];
-				    $_cedula_participes = $_POST["cedula_participes"];
-				    $_fecha_nacimiento_participes = $_POST["fecha_nacimiento_participes"];
-				    $_direccion_participes = $_POST["direccion_participes"];
-				    $_telefono_participes = $_POST["telefono_participes"];
-				    $_celular_participes = $_POST["celular_participes"];
-				    $_fecha_ingreso_participes = $_POST["fecha_ingreso_participes"];
-				    $_fecha_defuncion_participes = $_POST["fecha_defuncion_participes"];
-				    $_id_estado_participes = $_POST["id_estado_participes"];
-				    $_id_estatus = $_POST["id_estatus"];
-				    $_id_genero_participes = $_POST["id_genero_participes"];
-				    $_fecha_salida_participes = $_POST["fecha_salida_participes"];
-				    $_id_estado_civil_participes = $_POST["id_estado_civil_participes"];
-				    $_observacion_participes = $_POST["observacion_participes"];
-				    $_correo_participes = $_POST["correo_participes"];
-				    $_id_entidad_patronal = $_POST["id_entidad_patronal"];
-				    $_fecha_entrada_patronal_participes = $_POST["fecha_entrada_patronal_participes"];
-				    $_ocupacion_participes = $_POST["ocupacion_participes"];
-				    $_id_tipo_instruccion_participes = $_POST["id_tipo_instruccion_participes"];
-				    $_nombre_conyugue_participes = $_POST["nombre_conyugue_participes"];
-				    $_apellido_esposa_participes = $_POST["apellido_esposa_participes"];
-				    $_cedula_conyugue_participes = $_POST["cedula_conyugue_participes"];
-				    $_numero_dependencias_participes = $_POST["numero_dependencias_participes"];
-				    $_codigo_alternativo_participes = $_POST["codigo_alternativo_participes"];
-				    $_fecha_numero_orden_participes = $_POST["fecha_numero_orden_participes"];
-				    
 				    
 					$funcion = "ins_core_participes";
-					$parametros = " '$_id_participes',
-                                    '$_id_ciudades',
+					$parametros = " '$_id_ciudades',
                                     '$_apellido_participes',
                                     '$_nombre_participes',
                                     '$_cedula_participes',

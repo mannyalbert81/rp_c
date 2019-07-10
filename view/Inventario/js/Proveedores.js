@@ -1,8 +1,129 @@
 $(document).ready(function(){
+	
       $(".cantidades1").inputmask();
-      load_bodegas_inactivos(1);
-	   load_bodegas_activos(1);
-      });//docreasyend
+      cargaBancos();
+      cargaTipoProveedores();
+      cargaTipoCuentas();
+     
+});
+
+/**FUNCIONES PARA INICIO DE PAGINA*/
+/*
+ * FN PARA CARGA DE TIPO PROVEEDOR
+ */
+function cargaTipoProveedores(){
+	
+	let $tipoProveedor = $("#id_tipo_proveedores");
+	
+	$.ajax({
+		url:"index.php?controller=Proveedores&action=cargaTipoProveedores",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(x){
+		
+		$tipoProveedor.empty();
+		$tipoProveedor.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(x.data, function(index, value) {
+			$tipoProveedor.append("<option value= " +value.id_tipo_proveedores +" >" + value.nombre_tipo_proveedores  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$tipoProveedor.empty();
+		$tipoProveedor.append("<option value='0' >--Seleccione--</option>");
+	})
+}
+
+/*
+ * FN PARA CARGA DE TIPO PROVEEDOR
+ */
+function cargaBancos(){
+	
+	let $bancos = $("#id_bancos");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=Proveedores&action=cargaBancos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$bancos.empty();
+		$bancos.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$bancos.append("<option value= " +value.id_bancos +" >" + value.nombre_bancos  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$bancos.empty();
+		$bancos.append("<option value='0' >--Seleccione--</option>");
+	})
+}
+
+
+/*
+ * FN PARA CARGA DE TIPO CUENTA
+ */
+function cargaTipoCuentas(){
+	
+	let $tipoCuentas = $("#id_tipo_cuentas");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=Proveedores&action=cargaTipoCuentas",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$tipoCuentas.empty();
+		$tipoCuentas.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$tipoCuentas.append("<option value= " +value.id_tipo_cuentas +" >" + value.nombre_tipo_cuentas  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$tipoCuentas.empty();
+		$tipoCuentas.append("<option value='0' >--Seleccione--</option>");
+	})
+}
+
+function ListaProveedores(){
+	
+	let $tipoCuentas = $("#id_tipo_cuentas");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=Proveedores&action=ListaProveedores",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$tipoCuentas.empty();
+		$tipoCuentas.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$tipoCuentas.append("<option value= " +value.id_tipo_cuentas +" >" + value.nombre_tipo_cuentas  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$tipoCuentas.empty();
+		$tipoCuentas.append("<option value='0' >--Seleccione--</option>");
+	})
+}
 
 $("#Guardar").click(function() 
 		{
@@ -170,65 +291,8 @@ $( "#nombre_proveedores" ).focus(function() {
 	        return yyyy+'-'+mm+'-'+dd;
 	}
   
-  function load_bodegas_activos(pagina){
-
-	   var search=$("#search_activos").val();
-      var con_datos={
-				  action:'ajax',
-				  page:pagina
-				  };
-		  
-    $("#load_bodegas_activos").fadeIn('slow');
-    
-    $.ajax({
-              beforeSend: function(objeto){
-                $("#load_bodegas_activos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-              },
-              url: 'index.php?controller=Bodegas&action=consulta_bodegas_activos&search='+search,
-              type: 'POST',
-              data: con_datos,
-              success: function(x){
-                $("#bodegas_activos_registrados").html(x);
-                $("#load_bodegas_activos").html("");
-                $("#tabla_bodegas_activos").tablesorter(); 
-                
-              },
-             error: function(jqXHR,estado,error){
-               $("#bodegas_activos_registrados").html("Ocurrio un error al cargar la informacion de Bodegas Activos..."+estado+"    "+error);
-             }
-           });
-	   }
-  
-  
-  function load_bodegas_inactivos(pagina){
-
-	   var search=$("#search_inactivos").val();
-      var con_datos={
-				  action:'ajax',
-				  page:pagina
-				  };
-		  
-    $("#load_bodegas_inactivos").fadeIn('slow');
-    
-    $.ajax({
-              beforeSend: function(objeto){
-                $("#load_bodegas_inactivos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-              },
-              url: 'index.php?controller=Bodegas&action=consulta_bodegas_inactivos&search='+search,
-              type: 'POST',
-              data: con_datos,
-              success: function(x){
-                $("#bodegas_inactivos_registrados").html(x);
-                $("#load_bodegas_inactivos").html("");
-                $("#tabla_bodegas_inactivos").tablesorter(); 
-                
-              },
-             error: function(jqXHR,estado,error){
-               $("#bodegas_inactivos_registrados").html("Ocurrio un error al cargar la informacion de Bodegas Inactivos..."+estado+"    "+error);
-             }
-           });
-	   }
-  
+ 
+ 
   function numeros(e){
       
       key = e.keyCode || e.which;

@@ -24,6 +24,12 @@
   li{
     list-style-type:none;
     }
+    td.fila {
+
+    width: 100px;
+
+}
+    
     
     </style>
     <title>Capremci</title>
@@ -103,6 +109,8 @@
                     				<label for="cedula_participes" class="col-sm-4 control-label" > Identificación:</label>
                     				<div class="col-sm-8">
                     				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="cedula_participes" name="cedula_participes"  value="<?php echo $resEdit->cedula_participes; ?>" >
+                    				  <input type="hidden" style="height:20px" readonly="readonly" class="form-control" id="id_participes" name="id_participes"  value="<?php echo $resEdit->id_participes; ?>" >
+                    				 
                     				  <div id="mensaje_cedula_participes" class="errores"></div>
                     				</div>
                     			 </div>        			 
@@ -303,39 +311,47 @@
 
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-          <li class="active"><a href="#activos" data-toggle="tab">Personales</a></li>
-           <li><a href="#inactivos" data-toggle="tab">Patronales</a></li>
+          <li class="active"><a href="#personales" data-toggle="tab">Personales</a></li>
+           <li><a href="#patronales" data-toggle="tab">Patronales</a></li>
             
             </ul>
             
             <div class="col-md-12 col-lg-12 col-xs-12">
             <div class="tab-content">
             <br>
-              <div class="tab-pane active" id="activos">
+              <div class="tab-pane active" id="personales">
                 
 					<div class="pull-right" style="margin-right:15px;">
+					 					<select name="id_contribucion_tipo" id="id_contribucion_tipo"  onchange="load_personal_cta_individual(1);" class="form-control" >
+                                      <option value="0" selected="selected">--TODOS--</option>
+    									<?php  foreach($resContriTipo as $res) {?>
+    										<option value="<?php echo $res->id_contribucion_tipo; ?>" ><?php echo $res->nombre_contribucion_tipo; ?> </option>
+    							        <?php } ?>
+    								   </select> 
 					</div>
-					<div id="load_grupos_activos" ></div>	
-					<div id="grupos_activos_registrados"></div>	
+					<div id="load_personales_cta_individual" ></div>	
+					<div id="personales_registrados"></div>	
                 
               </div>
               
-              <div class="tab-pane" id="inactivos">
+              <div class="tab-pane" id="patronales">
                 
                     <div class="pull-right" style="margin-right:15px;">
+					<input type="text" value="" class="form-control" id="search_patronales" name="search_patronales" onkeyup="load_patronales_cta_individual(1)" placeholder="search.."/>
 					</div>
-					
-					<div id="load_grupos_inactivos" ></div>	
-					<div id="grupos_inactivos_registrados"></div>
+					<div id="load_patronales_cta_individual" ></div>	
+					<div id="patronales_registrados"></div>
               </div>
              </div>
             </div>
            </div>
 
-         
+        
             </div>
             </div>
             </section>
+            
+
   		</div>
  	<?php include("view/modulos/footer.php"); ?>	
 
@@ -343,6 +359,91 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
    <script src="view/Administracion/js/B17.js?0.12" ></script>
+   
+   	<script type="text/javascript">
+
+        	   $(document).ready( function (){
+
+        		   load_personal_cta_individual(1);
+        		   load_patronales_cta_individual(1);
+        		   
+        		   
+	   			});
+
+        	
+
+
+	   function load_personal_cta_individual(pagina){
+
+		   var id_participes=$("#id_participes").val();
+		   var id_contribucion_tipo= $("id_contribucion_tipo").val();
+		   
+	       var con_datos={
+					  action:'ajax',
+					  page:pagina
+					  };
+			  
+	     $("#load_personales_cta_individual").fadeIn('slow');
+	     
+	     $.ajax({
+	               beforeSend: function(objeto){
+	                 $("#load_personales_cta_individual").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	               },
+	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_personal_cta_individual&id_participes='+id_participes+'&id_contribucion_tipo='+id_contribucion_tipo, 
+	               type: 'POST',
+	               data: con_datos,
+	               success: function(x){
+	                 $("#personales_registrados").html(x);
+	                 $("#load_personales_cta_individual").html("");
+	                 $("#tabla_personal_cta_individual").tablesorter(); 
+	                 
+	               },
+	              error: function(jqXHR,estado,error){
+	                $("#personales_registrados").html("Ocurrio un error al cargar la informacion de Aportes Personales..."+estado+"    "+error);
+	              }
+	            });
+
+
+		   }
+
+	   function load_patronales_cta_individual(pagina){
+
+		   var search=$("#search_patronales").val();
+
+
+
+		   
+	       var con_datos={
+					  action:'ajax',
+					  page:pagina
+					  };
+			  
+	     $("#load_patronales_cta_individual").fadeIn('slow');
+	     
+	     $.ajax({
+	               beforeSend: function(objeto){
+	                 $("#load_patronales_cta_individual").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	               },
+	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_peatronales_cta_individual&search='+search,
+	               type: 'POST',
+	               data: con_datos,
+	               success: function(x){
+	                 $("#patronales_registrados").html(x);
+	                 $("#load_patronales_cta_individual").html("");
+	                 $("#tabla_patronales_cta_individual").tablesorter(); 
+	                 
+	               },
+	              error: function(jqXHR,estado,error){
+	                $("#patronales_registrados").html("Ocurrio un error al cargar la informacion de Aportes Patronales..."+estado+"    "+error);
+	              }
+	            });
+
+
+		   }
+
+	
+ </script>
+   
   </body>
 
 </html>

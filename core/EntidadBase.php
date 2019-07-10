@@ -251,7 +251,23 @@ class EntidadBase{
     
     	return $resultSet;
     }
+    
+    
+ 
    
+    
+    
+    public function getCondicionesSinOrden($columnas ,$tablas , $where, $limit){
+        
+        $query=pg_query($this->con, "SELECT $columnas FROM $tablas WHERE $where $limit");
+        $resultSet = array();
+        while ($row = pg_fetch_object($query)) {
+            $resultSet[]=$row;
+        }
+        
+        return $resultSet;
+    }
+    
     
     public function getCondiciones_grupo($columnas ,$tablas , $where, $grupo, $id){
     	 

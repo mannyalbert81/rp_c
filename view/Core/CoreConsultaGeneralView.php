@@ -334,13 +334,19 @@
                 
               </div>
               
-              <div class="tab-pane" id="patronales">
+              <div class="tab-pane active" id="patronales">
                 
-                    <div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search_patronales" name="search_patronales" onkeyup="load_patronales_cta_individual(1)" placeholder="search.."/>
+					<div class="pull-right" style="margin-right:15px;">
+					 					<select name="id_contribucion_tipo" id="id_contribucion_tipo"  onchange="load_patronal_cta_individual(1);" class="form-control" >
+                                      <option value="0" selected="selected">--TODOS--</option>
+    									<?php  foreach($resContriTipo as $res) {?>
+    										<option value="<?php echo $res->id_contribucion_tipo; ?>" ><?php echo $res->nombre_contribucion_tipo; ?> </option>
+    							        <?php } ?>
+    								   </select> 
 					</div>
-					<div id="load_patronales_cta_individual" ></div>	
-					<div id="patronales_registrados"></div>
+					<div id="load_patronal_cta_individual" ></div>	
+					<div id="patronales_registrados"></div>	
+                
               </div>
              </div>
             </div>
@@ -365,7 +371,7 @@
         	   $(document).ready( function (){
 
         		   load_personal_cta_individual(1);
-        		   load_patronales_cta_individual(1);
+        		   load_patronal_cta_individual(1);
         		   
         		   
 	   			});
@@ -406,31 +412,29 @@
 
 		   }
 
-	   function load_patronales_cta_individual(pagina){
+	   function load_patronal_cta_individual(pagina){
 
-		   var search=$("#search_patronales").val();
-
-
-
-		   
+		   var id_participes=$("#id_participes").val();
+		   var id_contribucion_tipo= $("#id_contribucion_tipo").val();
+		  
 	       var con_datos={
 					  action:'ajax',
 					  page:pagina
 					  };
 			  
-	     $("#load_patronales_cta_individual").fadeIn('slow');
+	     $("#load_patronal_cta_individual").fadeIn('slow');
 	     
 	     $.ajax({
 	               beforeSend: function(objeto){
-	                 $("#load_patronales_cta_individual").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	                 $("#load_patronal_cta_individual").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	               },
-	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_peatronales_cta_individual&search='+search,
+	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_patronal_cta_individual&id_participes='+id_participes+'&id_contribucion_tipo='+id_contribucion_tipo, 
 	               type: 'POST',
 	               data: con_datos,
 	               success: function(x){
 	                 $("#patronales_registrados").html(x);
-	                 $("#load_patronales_cta_individual").html("");
-	                 $("#tabla_patronales_cta_individual").tablesorter(); 
+	                 $("#load_patronal_cta_individual").html("");
+	                 $("#tabla_patronal_cta_individual").tablesorter(); 
 	                 
 	               },
 	              error: function(jqXHR,estado,error){
@@ -440,7 +444,6 @@
 
 
 		   }
-
 	
  </script>
    

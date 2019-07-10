@@ -248,18 +248,8 @@
             </div>
             
             <div class="box-body">
-            
-           <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#activos" data-toggle="tab">Activos Fijos</a></li>
-              
-            </ul>
-            
-            <div class="col-md-5 col-lg-12 col-xs-5">
-            <div class="tab-content">
-            
             <br>
-              <div class="tab-pane active" id="activos">
+          <div class="tab-pane active" id="activos">
               
                 
 					<div class="pull-right" style="margin-right:15px;">
@@ -270,9 +260,6 @@
 					<div id="activos_fijos_registrados"></div>	
                 <button type="button" id="exportar" name="exportar" value="Exportar"   class="btn btn-primary" ><i class="fa fa-file-excel-o"></i></button>
                </div>
-    		 </div>
-            </div>
-          </div>
             </div>
             </div>
             </section>

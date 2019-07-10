@@ -238,78 +238,32 @@
     </section>
     
  <section class="content">
-      <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title">Listado de Productos Registrados</h3>
-          <button type="submit" id="btExportar" name="exportar" class="btn btn-info"><i class="fa fa-file-excel-o"></i></button>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i></button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-              <i class="fa fa-times"></i></button>
-          </div>
-        </div>
-        
-        <div class="box-body">
-       <div class="ibox-content">
-      <div class="table-responsive">
-        
-        <table id="podructtable" class="table table-striped table-bordered table-hover dataTables-example">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Grupos</th>
-                          <th>Código</th>
-                          <th>Marca</th>
-                          <th>Nombre</th>
-                           <th>Descripción</th>
-                          <th>Unidad De M.</th>
-                          <th>ULT Precio</th>
-                          <th>Editar</th>
-                          <th>Eliminar</th>
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Productos Registrados</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+                
+              </div>
+            </div>
+            
+            <div class="box-body">
 
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                      
-    					<?php $i=0;?>
-    						<?php if (!empty($resultSet)) {  foreach($resultSet as $res) {?>
-    						<?php $i++;?>
-            	        		<tr>
-            	                   <td > <?php echo $i; ?>  </td>
-            		               <td > <?php echo $res->nombre_grupos; ?>     </td> 
-            		               <td > <?php echo $res->codigo_productos; ?>   </td>
-            		               <td > <?php echo $res->marca_productos; ?>   </td>
-            		               <td > <?php echo $res->nombre_productos; ?>   </td>
-            		               <td > <?php echo $res->descripcion_productos; ?>   </td>
-            		               <td > <?php echo $res->nombre_unidad_medida; ?>   </td>
-            		               <td > <?php echo $res->ult_precio_productos; ?>   </td>
-            		              
-            		           	   <td>
-            			           		<div class="right">
-            			                    <a href="<?php echo $helper->url("Productos","index"); ?>&id_productos=<?php echo $res->id_productos; ?>" class="btn btn-warning" style="font-size:65%;" data-toggle="tooltip" title="Editar"><i class='glyphicon glyphicon-edit'></i></a>
-            			                </div>
-            			            
-            			             </td>
-            			             <td>   
-            			                	<div class="right">
-            			                    <a href="<?php echo $helper->url("Productos","borrarId"); ?>&id_productos=<?php echo $res->id_productos; ?>" class="btn btn-danger" style="font-size:65%;" data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a>
-            			                </div>
-            			                
-            		               </td>
-            		    		</tr>
-            		    		
-            		        <?php } } ?>
-                      </tbody>
-                    </table>
-       
-        </div>
-         </div>
-        
-        </div>
-        </div>
-        </section>
+           <br>
+              <div class="tab-pane active" id="productos">
+                
+					<div class="pull-right" style="margin-right:15px;">
+						<input type="text" value="" class="form-control" id="search_productos" name="search_productos" onkeyup="load_productos(1)" placeholder="search.."/>
+					</div>
+					<div id="load_productos" ></div>	
+					<div id="productos_registrados"></div>	
+                
+              </div>
+         
+            </div>
+            </div>
+            </section>
     
   </div>
  
@@ -321,6 +275,53 @@
     <?php include("view/modulos/links_js.php"); ?>
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/Inventario/js/Productos.js?1"></script>  
+	<script type="text/javascript">
+
+        	   $(document).ready( function (){
+        		   
+        		 
+        		   load_productos(1);
+        		   
+	   			});
+
+        	
+
+
+	   function load_productos(pagina){
+
+		   var search=$("#search_productos").val();
+	       var con_datos={
+					  action:'ajax',
+					  page:pagina
+					  };
+			  
+	     $("#load_productos").fadeIn('slow');
+	     
+	     $.ajax({
+	               beforeSend: function(objeto){
+	                 $("#load_productos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	               },
+	               url: 'index.php?controller=Productos&action=consulta_productos&search='+search,
+	               type: 'POST',
+	               data: con_datos,
+	               success: function(x){
+	                 $("#productos_registrados").html(x);
+	                 $("#load_productos").html("");
+	                 $("#tabla_productos").tablesorter(); 
+	                 
+	               },
+	              error: function(jqXHR,estado,error){
+	                $("#productos_registrados").html("Ocurrio un error al cargar la informacion de Productos..."+estado+"    "+error);
+	              }
+	            });
+
+
+		   }
+
+
+
+ </script>
+
   </body>
 </html>   
 

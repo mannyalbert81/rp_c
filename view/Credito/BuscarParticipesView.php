@@ -22,6 +22,8 @@
         background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;
         }
+     
+       
  	  
  	</style>
    <?php include("view/modulos/links_css.php"); ?>
@@ -98,64 +100,21 @@
              	</div>
            	</div>
            	<div class="row">
+           		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="participe_encontrado" ></div>
+           		</div>
+           	</div>
+           	<div class="row">
+           		<div class="col-xs-12 col-md-12 col-lg-12 ">
+           		<div id="aportes_participe" ></div>
+           		</div>
            	</div>
           </div>
         </div>
         
     </div>
     </section>
-              
- <section class="content">
-  	<div class="box box-primary">
-  		<div class="box-header with-border">
-  			<h3 class="box-title">Listado de documentos</h3>
-  			<div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                <i class="fa fa-minus"></i></button>
-            </div>
-        </div> 
-        <div class="box-body">
-         	<div class = "row">
-        		<div class="col-xs-6 col-md-3 col-lg-3 " style="margin-left:15px;" >
-                	<div id="load_boton_notificaciones" ></div>	
-        		</div>
-        		<div id="mensaje_archivo" class="errores"></div>
-			</div>
-			<br>
-			<div id="cabecera_marcaciones" ></div>
-			<div class="pull-right" style="margin-right:15px;">
-        			<select name="anio_archivo" id="anio_archivo"  class="form-control" onchange="MostrarDocumentos(1)">
-                  		<option value="0">Todos los años</option>
-                  		<?php  foreach($resultAnios as $res) {?>
-									  <option value="<?php echo $res->anio_archivo_estado_cuenta ?>"><?php echo $res->anio_archivo_estado_cuenta; ?> </option>
-			        				  <?php } ?>
-    				</select>
-    		</div>
-				<div class="pull-right" style="margin-right:15px;">
-        			<select name="mes_archivo" id="mes_archivo"  class="form-control" onchange="MostrarDocumentos(1)">
-                  		<option value="mes">Todos los meses</option>
-						<?php  foreach($meses as $res=>$key) {?>
-									  <option value="<?php echo $res ?>"><?php echo $key; ?> </option>
-			        				  <?php } ?>
-    				</select>
-    		</div>
-    		
-			<div class="pull-right" style="margin-right:15px;">
-        			<select name="banco_archivo" id="banco_archivo"  class="form-control" onchange="MostrarDocumentos(1)">
-                  		<option value="0">Todos los bancos</option>
-						  <?php  foreach($resultBancos as $res) {?>
-									  <option value="<?php echo $res->id_bancos; ?>"><?php echo $res->nombre_bancos; ?> </option>
-			        				  <?php } ?>
-    				</select>
-    		</div>
-    	
-        	<div id="listado_documentos" ></div>
-       </div>
-  	</div>
-  </section>
-    
-  </div>
+   </div>
   
   <!-- Modal VistaPreliminar -->
  
@@ -189,6 +148,6 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/Credito/js/BuscarParticipes.js?0.1"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?0.3"></script> 
    </body>
 </html>   

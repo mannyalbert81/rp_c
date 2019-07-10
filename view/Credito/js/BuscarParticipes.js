@@ -1,3 +1,5 @@
+var id_participe;
+
 $(document).ready( function (){
 	
 	$(":input").inputmask();
@@ -21,19 +23,41 @@ function BuscarParticipe()
 		    url: 'index.php?controller=BuscarParticipes&action=BuscarParticipe',
 		    type: 'POST',
 		    data: {
-		    	   id_registro: regid,
-		    	   hora_marcacion: hora,
-		    	   fecha_marcacion: fecha,
-		    	   numero_cedula: cedula,
-		    	   tipo_registro: tipor
+		    	   cedula: ciparticipe
 		    },
 		})
 		.done(function(x) {
-			console.log(x);
+			
+			var y=$.parseJSON(x);
+			console.log(y);
+			$('#participe_encontrado').html(y[0]);
+		     id_participe=y[1];
+			AportesParticipe(id_participe, 1)
 			
 		})
 		.fail(function() {
 		    console.log("error");
 		});
 		}
+}
+
+function AportesParticipe(id, page)
+{
+	$.ajax({
+	    url: 'index.php?controller=BuscarParticipes&action=AportesParticipe',
+	    type: 'POST',
+	    data: {
+	    	   id_participe: id,
+	    	   page: page
+	    },
+	})
+	.done(function(x) {
+		console.log(x);
+		$('#aportes_participe').html(x);
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
 }

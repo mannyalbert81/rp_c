@@ -352,7 +352,7 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    $query = " SELECT id_bancos,nombre_bancos 
                 FROM tes_bancos ban INNER JOIN estado ON ban.id_estado = estado.id_estado 
-                WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos'";
+                WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos' AND local_bancos = true";
 	    
 	    $resulset = $estados->enviaquery($query);
 	    

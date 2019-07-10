@@ -8,6 +8,7 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
   
     <?php include("view/modulos/links_css.php"); ?>		
       
@@ -74,6 +75,105 @@
           
         
         <form action="<?php echo $helper->url("Proveedores","InsertaProveedores"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+        
+         <div class="row">
+			
+			<div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="form-group">
+                  <label for="nombre_proveedores" class="control-label">Nombre Proveedores</label>
+                  <input type="text" class="form-control" id="nombre_proveedores" name="nombre_proveedores" value=""  placeholder="Nombre Proveedores">
+                  <input type="hidden" name="id_proveedores" id="id_proveedores" value="0" class="form-control"/>
+        
+                   <div id="mensaje_nombre_proveedores" class="errores"></div>
+                </div>
+		    </div>
+		    
+		    <div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="form-group">
+                  <label for="identificacion_proveedores" class="control-label">CI / Ruc Proveedores</label>
+                  <input type="number" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="ruc.." onKeyPress="return numeros(event)">
+                   <div id="mensaje_identificacion_proveedores" class="errores"></div>
+                </div>
+		    </div>
+		    
+		    <div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="form-group">
+                  <label for="contactos_proveedores" class="control-label">Contactos Proveedores</label>
+                  <input type="text" class="form-control" id="contactos_proveedores" name="contactos_proveedores" value=""  placeholder="Contactos Proveedores">
+                  <div id="mensaje_contactos_proveedores" class="errores"></div>
+                </div>
+		    </div>
+		    
+		    <div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="form-group">
+                  <label for="direccion_proveedores" class="control-label">Dirección Proveedores</label>
+                  <input type="text" class="form-control" id="direccion_proveedores" name="direccion_proveedores" value=""  placeholder="Dirección Proveedores">
+                   <div id="mensaje_direccion_proveedores" class="errores"></div>
+                </div>
+		    </div>
+		</div>
+			
+			<div class="row">
+			
+    			<div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="telefono_proveedores" class="control-label">Teléfono Proveedores</label>
+                      <input type="number" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value=""  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
+                       <div id="mensaje_telefono_proveedores" class="errores"></div>
+                    </div>
+    		    </div>
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="email_proveedores" class="control-label">Email Proveedores</label>
+                      <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores" onKeyUp="javascript:validateMail('id_mail')"  >
+                       <div id="mensaje_email_proveedores" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+    		    
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="id_tipo_proveedor" class="control-label">Tipo Proveedores</label>
+                      <select class="form-control" id="id_tipo_proveedores" name="id_tipo_proveedores" >
+                      	<option value="0">--SELECCIONE--</option>
+                      </select>                      
+                      <div id="mensaje_tipo_proveedores" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+    		    
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="id_bancos" class="control-label">Banco:</label>
+                      <select class="form-control" id="id_bancos" name="id_bancos" >
+                      	<option value="0">--SELECCIONE--</option>
+                      </select>
+                       <div id="mensaje_bancos" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+    		    
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="numero_cuenta_proveedores" class="control-label">Numero Cuenta:</label>
+                      <input type="text" class="form-control" id="numero_cuenta_proveedores" name="numero_cuenta_proveedores" value=""  placeholder="Numero Cuenta" >
+                      <div id="mensaje_numero_cuenta" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+    		    
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="id_tipo_cuenta" class="control-label">Tipo Cuenta:</label>
+                      <select class="form-control" id="id_tipo_cuentas" name="id_tipo_cuentas" >
+                      	<option value="0">--SELECCIONE--</option>
+                      </select>
+                      <div id="mensaje_tipo_cuenta" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+			</div>
+        
                                 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
                                 
                                 <div class="row">
@@ -158,66 +258,7 @@
                     		     <?php } } else {?>
                     		    
                     		   
-								 <div class="row">
-                        		    
-                        		    
-                        		 		
-                        			
-                        			<div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="nombre_proveedores" class="control-label">Nombre Proveedores</label>
-                                                          <input type="text" class="form-control" id="nombre_proveedores" name="nombre_proveedores" value=""  placeholder="Nombre Proveedores">
-                                                          <input type="hidden" name="id_proveedores" id="id_proveedores" value="0" class="form-control"/>
-					        
-                                                           <div id="mensaje_nombre_proveedores" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="identificacion_proveedores" class="control-label">Ruc Proveedores</label>
-                                                          <input type="number" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value=""  placeholder="ruc.." onKeyPress="return numeros(event)">
-                                                           <div id="mensaje_identificacion_proveedores" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="contactos_proveedores" class="control-label">Contactos Proveedores</label>
-                                                          <input type="text" class="form-control" id="contactos_proveedores" name="contactos_proveedores" value=""  placeholder="Contactos Proveedores">
-                                                           <div id="mensaje_contactos_proveedores" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		       <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="direccion_proveedores" class="control-label">Dirección Proveedores</label>
-                                                          <input type="text" class="form-control" id="direccion_proveedores" name="direccion_proveedores" value=""  placeholder="Dirección Proveedores">
-                                                           <div id="mensaje_direccion_proveedores" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    
-                        		
-                		    
-									</div>
-									
-									<div class="row">
-									
-									<div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="telefono_proveedores" class="control-label">Teléfono Proveedores</label>
-                                                          <input type="number" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value=""  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
-                                                           <div id="mensaje_telefono_proveedores" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="email_proveedores" class="control-label">Email Proveedores</label>
-                                                          <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores" onKeyUp="javascript:validateMail('id_mail')"  >
-                                                           <div id="mensaje_email_proveedores" class="errores"></div>
-                                                           
-                                    </div>
-                        		    </div>
-									</div>
+								
                 		     	           	
                     		     <?php } ?>
                     		    <br>  
@@ -316,11 +357,10 @@
 	
 <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
-    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>	
-   <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-	<script src="view/Inventario/js/Proveedores.js" ></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>   
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>	
+    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
+	<script src="view/Inventario/js/Proveedores.js?0.00" ></script>
   </body>
 </html>   
 

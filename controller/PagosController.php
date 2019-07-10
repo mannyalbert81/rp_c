@@ -134,7 +134,7 @@ class PagosController extends ControladorBase{
                 $html.='<a title="Generar Cheque" href="index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
                 $html.='<i class="glyphicon glyphicon-usd"></i></a></span></td>';
                 $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
-                $html.='<a title="Realizar Transferencia" href="index.php?controller=Productos&action=generar_reporte_productos&id_productos='.$res->id_cuentas_pagar.'">';
+                $html.='<a title="Realizar Transferencia" href="index.php?controller=Transferencias&action=index&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
                 $html.='<i class="glyphicon glyphicon-transfer"></i></a></span></td>';
                 $html.='</tr>';
                 

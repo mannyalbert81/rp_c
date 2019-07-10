@@ -208,8 +208,7 @@ class ParticipesController extends ControladorBase{
 			    
 			    if($_id_participes > 0){
 					
-					$columnas =    "id_participes = '$_id_participes',
-                                    id_ciudades = '$_id_ciudades',
+					$columnas =    "id_ciudades = '$_id_ciudades',
                                     apellido_participes = '$_apellido_participes',
                                     nombre_participes = '$_nombre_participes',
                                     cedula_participes = '$_cedula_participes',
@@ -260,8 +259,7 @@ class ParticipesController extends ControladorBase{
 				}else{
 				    
 					$funcion = "ins_core_participes";
-					$parametros = " '$_id_participes',
-                                    '$_id_ciudades',
+					$parametros = " '$_id_ciudades',
                                     '$_apellido_participes',
                                     '$_nombre_participes',
                                     '$_cedula_participes',

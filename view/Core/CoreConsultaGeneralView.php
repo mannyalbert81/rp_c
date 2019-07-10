@@ -376,8 +376,8 @@
 	   function load_personal_cta_individual(pagina){
 
 		   var id_participes=$("#id_participes").val();
-		   var id_contribucion_tipo= $("id_contribucion_tipo").val();
-		   
+		   var id_contribucion_tipo= $("#id_contribucion_tipo").val();
+		  
 	       var con_datos={
 					  action:'ajax',
 					  page:pagina

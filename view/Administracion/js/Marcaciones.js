@@ -954,7 +954,7 @@ function ReporteNomina()
  var mes = new Date().getMonth();
  var year = new Date().getFullYear();
  mes--;
- 
+ console.log(mes)
  var diainicio = 22;
  var diafinal = 21;
  var fechai = diainicio+"/"+mes+"/"+year;
@@ -1035,7 +1035,6 @@ function GenerarReporte()
 	 var mes = new Date().getMonth();
 	 var year = new Date().getFullYear();
 	 mes--;
-	 mes--;
 	 var diainicio = 22;
 	 var diafinal = 21;
 	 var fechai = diainicio+"/"+mes+"/"+year;
@@ -1057,6 +1056,7 @@ function GenerarReporte()
 		    },
 		})
 		.done(function(x) {
+			console.log(x);
 					if (!(x.includes("Warning")) && !(x.includes("Notice")))
 				{
 						swal({

@@ -279,6 +279,7 @@ if(rep)
 	    },
 	})
 	.done(function(x) {
+		console.log(x);
 				if (!(x.includes("Warning")) && !(x.includes("Notice")))
 			{
 			$("#reporte").html(x);

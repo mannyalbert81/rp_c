@@ -711,7 +711,13 @@ class MarcacionesController extends ControladorBase{
         $textra=0;
         $textrac=0;
         $tdescuento=0;
+        
         $numregistros=0;
+        
+        $numdiassintrabajo=0;
+        
+        $numdiastrabajo=0;
+        
         $currentdate=0;
         foreach($resultSet as $res)
         {   

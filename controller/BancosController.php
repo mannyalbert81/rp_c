@@ -44,6 +44,31 @@ class BancosController extends ControladorBase{
 	
 	}
 	
+	public function index_cuentas(){
+	    
+	    $tipo_cuentas = new TipoCuentasModel();
+	    
+	    session_start();
+	    
+	    if(empty( $_SESSION)){
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        return;
+	    }
+	    
+	    
+	    
+	    $rsTipoCuentas = $tipo_cuentas->getBy(" 1 = 1 ");
+	    
+	    
+	    $this->view_Core("TipoCuentas",array(
+	        "resultSet"=>$rsTipoCuentas
+	        
+	    ));
+	    
+	    
+	}
+	
 	
 	public function InsertaBancos(){
 			

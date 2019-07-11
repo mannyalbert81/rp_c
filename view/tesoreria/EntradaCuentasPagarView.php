@@ -602,8 +602,8 @@
 <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
-<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?1.00"></script>
-<script type="text/javascript" src="view/tesoreria/js/wizardCuentasPagar.js?0.28"></script>
+<script type="text/javascript" src="view/tesoreria/js/CuentasPagar.js?2.00"></script>
+<script type="text/javascript" src="view/tesoreria/js/wizardCuentasPagar.js?0.30"></script>
 
     
 

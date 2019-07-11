@@ -204,13 +204,7 @@
         <div class="box-body">        
         	<div id="load_reporte" ></div>
         	<div id="reporte" ></div>
-        	<div class="row">
-           	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
-            	<div class="form-group">
-                  <button type="button" id="GenReport" name="GenReport" class="btn btn-primary" onclick="GenerarReporte()">Generar Reporte</button>
-                </div>
-             </div>	    
-            </div>
+        	
        </div> 	
   	</div>
   </section>  
@@ -229,7 +223,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-    <script src="view/Administracion/js/Marcaciones.js?0.24"></script>
+    <script src="view/Administracion/js/Marcaciones.js?0.27"></script>
 	
 	
   </body>

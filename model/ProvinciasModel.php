@@ -36,7 +36,7 @@ class ProvinciasModel extends ModeloBase{
 
 
 	public function __construct(){
-		$this->table="provincias";
+		$this->table="core_provincias";
 	
 		parent::__construct($this->table);
 	}

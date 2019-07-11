@@ -175,6 +175,12 @@ $(document).ready(function(){
 					  $("#mensaje_ult_precio_productos").fadeOut("slow");
 				    });
 		        		      
-		        $(".cantidades1").inputmask();  
+		        $(".cantidades1").inputmask(); 
+		        
+		        
+		        
+		        
 		        
 });//docreadyend
+
+

@@ -819,6 +819,130 @@ class SolicitudCabezaController extends ControladorBase{
 	    }
 	}
 	
+	/* BUSQUEDAS CON AJAX */
+	
+	public function BuscaProductosSolicitud(){
+	    
+	    $busqueda = (isset($_POST['busqueda'])) ? $_POST['busqueda'] : "";
+	    if(!isset($_POST['peticion'])){
+	        echo 'sin conexion';
+	        return;
+	    }
+	    
+	    $page = (isset($_REQUEST['page']))?isset($_REQUEST['page']):1;
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    
+	    $columnas = "  saldo_productos.id_saldo_productos,
+                      productos.id_productos,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.descripcion_productos,
+                      productos.ult_precio_productos,
+                      unidad_medida.id_unidad_medida,
+                      unidad_medida.nombre_unidad_medida,
+                      grupos.id_grupos,
+                      grupos.nombre_grupos";
+	    
+	    $tablas = "public.productos,
+                  public.saldo_productos,
+                  public.unidad_medida,
+                  public.grupos";
+	    
+	    $where = "productos.id_unidad_medida = unidad_medida.id_unidad_medida AND
+                  saldo_productos.id_productos = productos.id_productos AND
+                  grupos.id_grupos = productos.id_grupos ";
+	    
+	    //para los parametros de where
+	    if(!empty($busqueda)){
+	        
+	        $where .= "AND (productos.nombre_productos LIKE '".$busqueda."%' OR productos.codigo_productos LIKE '".$busqueda."%' OR productos.marca_productos LIKE '".$busqueda."%' )";
+	    }
+	    
+	    $id = "productos.nombre_productos";
+	    
+	    //para obtener cantidad
+	    $rsResultado = $cuentasPagar->getCantidad("1", $tablas, $where, $id);
+	    
+	    $cantidad = 0;
+	    $html = "";
+	    $per_page = 10; //la cantidad de registros que desea mostrar
+	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	    $offset = ($page - 1) * $per_page;
+	    
+	    if(!is_null($rsResultado) && !empty($rsResultado) && count($rsResultado)>0){
+	        $cantidad = $rsResultado[0]->total;
+	    }
+	    
+	    $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	    
+	    $resultSet = $cuentasPagar->getCondicionesPag( $columnas, $tablas, $where, $id, $limit);
+	    
+	    $tpages = ceil($cantidad/$per_page);
+	    
+	    if( $cantidad > 0 ){
+	        
+	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $html.='<section style="height:180px; overflow-y:scroll;">';
+	        $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	        $html.= "<thead>";
+	        $html.= "<tr>";
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Grupo</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';	        
+	        $html.='</tr>';
+	        $html.='</thead>';
+	        $html.='<tbody>';
+	        
+	        $i=0;
+	        
+	        foreach ($resultSet as $res)
+	        {
+	            $i++;
+	            $html.='<tr>';
+	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
+	            $html.='<td class="col-xs-1"><div class="pull-right">';
+	            $html.='<input type="text" class="form-control input-sm"  id="cantidad_'.$res->id_productos.'" value="1"></div></td>';
+	            $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="#" onclick="agregar_producto('.$res->id_productos.')" class="btn btn-info" style="font-size:65%;"><i class="glyphicon glyphicon-plus"></i></a></span></td>';
+	            $html.='</tr>';
+	            
+	        }
+	        
+	        
+	        $html.='</tbody>';
+	        $html.='</table>';
+	        $html.='</section></div>';
+	        $html.='<div class="table-pagination pull-right">';
+	        $html.=''. $this->paginate("index.php", $page, $tpages, $adjacents,"buscaProductosSolicitud").'';
+	        $html.='</div>';
+	        
+	        
+	        
+	    }else{
+	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	        $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	        $html.='<h4>Aviso!!!</h4> <b> No existe productos para generar Solicitud</b>';
+	        $html.='</div>';
+	        $html.='</div>';
+	    }
+	    
+	    //array de datos
+	    $respuesta = array();
+	    $respuesta['tablaProductos'] = $html;
+	    $respuesta['valores'] = array('cantidad'=>$cantidad);
+	    echo json_encode($respuesta);
+	}
+	
 	
 }
 ?>

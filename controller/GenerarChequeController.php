@@ -719,6 +719,149 @@ class GenerarChequeController extends ControladorBase{
 	    
 	}
 	
+	public function reporteCheques(){
+	    
+	    $entidad = new CoreEntidadPatronalModel();
+	    
+	    session_start();
+	    
+	    if(empty( $_SESSION)){
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        return;
+	    }
+	    
+	    $nombre_controladores = "GenerarCheque";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $entidad->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (empty($resultPer)){
+	        
+	        $this->view("Error",array(
+	            "resultado"=>"No tiene Permisos de Acceso Empleo"
+	            
+	        ));
+	        exit();
+	    }
+	    
+	    
+	    $this->view_tesoreria("Cheques",array(
+	    ));
+	    
+	}
+	
+	public function listarCheques(){
+	    $busqueda = (isset($_POST['busqueda'])) ? $_POST['busqueda'] : "";
+	    if(!isset($_POST['peticion'])){
+	        echo 'sin conexion';
+	        return;
+	    }
+	    
+	    $page = (isset($_REQUEST['page']))?isset($_REQUEST['page']):1;
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    $columnas = "c.id_ccomprobantes, c.numero_ccomprobantes, tc.nombre_tipo_comprobantes, c.valor_ccomprobantes,
+            		c.concepto_ccomprobantes, c.referencia_doc_ccomprobantes, c.numero_cheque_ccomprobantes, c.id_proveedores,
+            		p.nombre_proveedores";
+	    
+	    $tablas =" ccomprobantes c
+                INNER JOIN tipo_comprobantes tc
+                ON c.id_tipo_comprobantes = tc.id_tipo_comprobantes
+                INNER JOIN proveedores p
+                ON p.id_proveedores = c.id_proveedores";
+	    
+	    $where = " 1 = 1
+                AND c.tipo_cuenta_ccomprobantes = 'cxp'
+                AND c.transaccion_ccomprobantes = 'CHEQUE'";
+	    
+	    //para los parametros de where
+	    if(!empty($busqueda)){
+	        
+	        $where .= "AND ( c.numero_ccomprobantes LIKE '$busqueda' OR c.numero_cheque_ccomprobantes like '$busqueda%' )";
+	    }
+	    
+	    $id = "c.id_ccomprobantes";
+	    
+	    //para obtener cantidad
+	    $rsResultado = $cuentasPagar->getCantidad("1", $tablas, $where, $id);
+	    
+	    $cantidad = 0;
+	    $html = "";
+	    $per_page = 10; //la cantidad de registros que desea mostrar
+	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	    $offset = ($page - 1) * $per_page;
+	    
+	    if(!is_null($rsResultado) && !empty($rsResultado) && count($rsResultado)>0){
+	        $cantidad = $rsResultado[0]->total;
+	    }
+	    
+	    $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	    
+	    $resultSet = $cuentasPagar->getCondicionesPag( $columnas, $tablas, $where, $id, $limit);
+	    
+	    $tpages = ceil($cantidad/$per_page);
+	    
+	    if( $cantidad > 0 ){
+	       
+	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $html.='<section style="height:180px; overflow-y:scroll;">';
+	        $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	        $html.= "<thead>";
+	        $html.= "<tr>";
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">COMPROBANTE</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">TIPO COMP.</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">VALOR</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">CONCEPTO</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">CHEQUE</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">PROVEEDOR</th>';	        
+	        $html.='</tr>';
+	        $html.='</thead>';
+	        $html.='<tbody>';
+	        
+	        $i=0;
+	        
+	        foreach ($resultSet as $res)
+	        {
+	            $i++;
+	            $html.='<tr>';
+	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->numero_ccomprobantes.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_comprobantes.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->valor_ccomprobantes.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->concepto_ccomprobantes.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->numero_cheque_ccomprobantes.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->nombre_proveedores.'</td>';
+	            $html.='</tr>';
+	            
+	        }
+	        
+	        
+	        $html.='</tbody>';
+	        $html.='</table>';
+	        $html.='</section></div>';
+	        $html.='<div class="table-pagination pull-right">';
+	        $html.=''. $this->paginate("index.php", $page, $tpages, $adjacents,"buscaChequesGenerados").'';
+	        $html.='</div>';
+	        
+	        
+	        
+	    }else{
+	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	        $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	        $html.='<h4>Aviso!!!</h4> <b> No existen cheques generados. </b>';
+	        $html.='</div>';
+	        $html.='</div>';
+	    }
+	    
+	    //array de datos
+	    $respuesta = array();
+	    $respuesta['tabladatos'] = $html;
+	    $respuesta['valores'] = array('cantidad'=>$cantidad);
+	    echo json_encode($respuesta);
+	}
 	
 	
 }

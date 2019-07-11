@@ -13,6 +13,7 @@ class ProductosController extends ControladorBase{
       
         session_start();
         
+        
         //Creamos el objeto usuario
         $productos=new ProductosModel();
        
@@ -28,15 +29,12 @@ class ProductosController extends ControladorBase{
                                       productos.descripcion_productos,
                                       productos.ult_precio_productos,
                                       productos.creado,
-                                      productos.modificado,
-                                      bodegas.id_bodegas";
+                                      productos.modificado";
                       $tablas   = "   public.productos,
                                       public.grupos,
-                                      public.unidad_medida,
-                                      public.bodegas";
+                                      public.unidad_medida";
         $where    = "  grupos.id_grupos = productos.id_grupos AND
-                                       unidad_medida.id_unidad_medida = productos.id_unidad_medida AND 
-                                       bodegas.id_bodegas = productos.id_bodegas";
+                                       unidad_medida.id_unidad_medida = productos.id_unidad_medida";
         $id       = "productos.id_productos";
         
         $resultSet = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
@@ -78,14 +76,11 @@ class ProductosController extends ControladorBase{
                                       productos.descripcion_productos, 
                                       productos.ult_precio_productos, 
                                       productos.creado, 
-                                      productos.modificado,
-                                      bodegas.id_bodegas";
+                                      productos.modificado";
                         $tablas   = "   public.productos, 
                                       public.grupos, 
-                                      public.unidad_medida,
-                                      public.bodegas";
+                                      public.unidad_medida";
                         $where    = "  grupos.id_grupos = productos.id_grupos AND 
-                                       bodegas.id_bodegas = productos.id_bodegasAND
                                        unidad_medida.id_unidad_medida = productos.id_unidad_medida AND productos.id_productos = '$_id_productos'";
                         $id       = "productos.id_productos";
                         

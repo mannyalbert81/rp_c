@@ -190,7 +190,7 @@
 					<div style="text-align: center" > 
   		     			<button type="button" id="btn_inserta_comprobante" name="btn_inserta_comprobante" value="valor"  class="btn btn-success">Generar Comprobante</button>
            			</div>
-			 </di   v>	
+			 </div>	
 	       </div>
 	         <div class="col-lg-12 col-md-12 col-xs-12">
 	         <div class="panel panel-primary">

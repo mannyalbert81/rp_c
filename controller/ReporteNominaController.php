@@ -75,6 +75,24 @@ class ReporteNominaController extends ControladorBase{
         
         $periodo=$_POST['periodo'];
         
+        $hoy = getdate();
+        
+        $mes=$hoy['mon'];
+        
+        $anio=$hoy['year'];
+        
+        $anioinicio=$hoy['year'];
+        
+        $mesinicio=$mes-2;
+        
+        if ($mesinicio<1)
+        {
+            $mesinicio=12;
+            $anioinicio--;
+        }
+        $mes--;
+        
+        $periodoactual='22/'.$mesinicio.'/'.$anioinicio.'-21/'.$mes.'/'.$anio;
         $tablas = "public.descuentos_salarios_empleados";
         $where = "1=1";
         
@@ -195,7 +213,7 @@ class ReporteNominaController extends ControladorBase{
        $html.='<td style="font-size: 15px;">'.$i.'</td>';
        $html.='<td bgcolor="'.$colorInfo2.'" style="font-size: 15px;">
        <button type="button" id="Print" name="Print" class="btn btn-primary" onclick="ImprimirReporteIndividual('.$res->id_registro.')"><i class="glyphicon glyphicon-print"></i></button>';
-        if($periodo=="2")
+        if($periodo==$periodoactual)
         {
        $html.='<button  type="button" class="btn btn-success" onclick="';
        $html.='EditarNomina(&quot;'.$res->nombres_empleados.'&quot,&quot;'.$res->nombre_oficina.'&quot,&quot;'.$res->salario_cargo.'&quot;,&quot;'.$res->horas_ext50.'&quot;';

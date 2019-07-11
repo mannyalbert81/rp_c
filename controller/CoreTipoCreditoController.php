@@ -13,19 +13,19 @@ class CoreTipoCreditoController extends ControladorBase{
 	    session_start();
 	    
 	    $core_tipo_credito= new CoreTipoCreditoModel();
-	    $columnas = "core_tipo_credito.nombre_tipo_credito, 
-                     core_tipo_credito.codigo_tipo_credito, 
+	    $columnas = "core_tipo_creditos.nombre_tipo_creditos, 
+                     core_tipo_creditos.codigo_tipo_creditos, 
                      estado.nombre_estado,
-                     core_tipo_credito.id_tipo_credito";
+                     core_tipo_creditos.id_tipo_creditos";
 	    $tablas   = "public.estado, 
-                     public.core_tipo_credito";
-	    $where    = "core_tipo_credito.id_estado = estado.id_estado";
-	    $id       = "core_tipo_credito.id_tipo_credito";
+                     public.core_tipo_creditos";
+	    $where    = "core_tipo_creditos.id_estado = estado.id_estado";
+	    $id       = "core_tipo_creditos.id_tipo_creditos";
 	    $resultSet = $core_tipo_credito->getCondiciones($columnas ,$tablas ,$where, $id);
 	    
 	    $estado= null;
 	    $estado = new EstadoModel();
-	    $whe_estado = "tabla_estado = 'core_tipo_credito'";
+	    $whe_estado = "tabla_estado = 'core_tipo_creditos'";
 	    $resultEst = $estado->getBy($whe_estado);
 	    
 	    $resultEdit = null;
@@ -35,8 +35,7 @@ class CoreTipoCreditoController extends ControladorBase{
 		{
 		    $core_tipo_credito= new CoreTipoCreditoModel();
 			
-		    $permisos_rol = new CoreTipoCreditoModel();
-			$nombre_controladores = "CoreTipoCredito";
+		    $nombre_controladores = "CoreTipoCredito";
 			$id_rol= $_SESSION['id_rol'];
 			$resultPer = $core_tipo_credito->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
@@ -53,10 +52,10 @@ class CoreTipoCreditoController extends ControladorBase{
 					{
 					
 					    $_id_tipo_credito = $_GET["id_tipo_credito"];
-						$columnas = " id_tipo_credito, nombre_tipo_credito, codigo_tipo_credito, id_estado";
-						$tablas   = "core_tipo_credito";
-						$where    = "id_tipo_credito = '$_id_tipo_credito' "; 
-						$id       = "nombre_tipo_credito";
+						$columnas = " id_tipo_creditos, nombre_tipo_creditos, codigo_tipo_creditos, id_estado";
+						$tablas   = "core_tipo_creditos";
+						$where    = "id_tipo_creditos = '$_id_tipo_credito' "; 
+						$id       = "nombre_tipo_creditos";
 							
 						$resultEdit = $core_tipo_credito->getCondiciones($columnas ,$tablas ,$where, $id);
 

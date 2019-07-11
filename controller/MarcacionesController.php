@@ -841,8 +841,12 @@ class MarcacionesController extends ControladorBase{
      $html.='</tbody>';
      $html.='</table>';
      $html.='</section></div>';
+     $html.='<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+     <div class="form-group">
+     <button type="button" id="GenReport" name="GenReport" class="btn btn-primary" onclick="GenerarReporte()">Generar Reporte</button>
+     </div>
+     </div>';
      
-     echo $html;
     }
     else {
         $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
@@ -852,6 +856,7 @@ class MarcacionesController extends ControladorBase{
         $html.='</div>';
         $html.='</div>';
     }
+    echo $html;
    }
     
     public function ActualizarRegistros()
@@ -870,9 +875,10 @@ class MarcacionesController extends ControladorBase{
         AND '".$this->FormatoFecha($fecha_final)."' AND id_empleados IN (SELECT id_empleados FROM empleados WHERE id_oficina=".$id_oficina.")");
         $columnas = "empleados.id_empleados, empleados.numero_cedula_empleados";
         
-        $tablas = "public.empleados";
+        $tablas = "public.empleados INNER JOIN public.estado
+                   ON empleados.id_estado=estado.id_estado";
         
-        $where    = "1=1 AND id_estado=13";
+        $where    = "1=1 AND nombre_estado='ACTIVO'";
         
         $id       = "empleados.id_empleados";
         
@@ -883,8 +889,10 @@ class MarcacionesController extends ControladorBase{
           $id_empleado=0;
           foreach ($resultSet as $eid)
           {
-              if($res["Cédula"]==$eid->numero_cedula_empleados)
+              
+              if($res["Cedula"]==$eid->numero_cedula_empleados)
               {
+                  
                $id_empleado=$eid->id_empleados;   
               }
           }

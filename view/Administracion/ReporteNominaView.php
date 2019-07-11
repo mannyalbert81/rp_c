@@ -98,21 +98,21 @@
             		<div class="form-group">
                 		<label for="dpto_empleados" class="control-label">Horas Extra 50%:</label>
                     	<input type="number" step="0.01"  class="form-control" id="h50_empleados" name="h50_empleados" placeholder="Horas Extra 50%">
-                        <div id="mensaje_dpto_empleados" class="errores"></div>
+                        <div id="mensaje_h50_empleados" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="cargo_empleados" class="control-label">Horas Extra 100%:</label>
                            	<input type="number" step="0.01"  class="form-control" id="h100_empleados" name="h100_empleados" placeholder="Horas Extra 100%" >
-                        <div id="mensaje_cargo_empleados" class="errores"></div>
+                        <div id="mensaje_h100_empleados" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="fecha_permiso" class="control-label">Fondos de reserva:</label>
                     	<input type="number" step="0.01"  class="form-control" id="fondos" name="fondos" placeholder="Fondos de reserva" readonly>
-                        <div id="mensaje_fecha" class="errores"></div>
+                        <div id="mensaje_fondos" class="errores"></div>
                  	</div>
              	</div>
           	</div>
@@ -121,14 +121,14 @@
             		<div class="form-group">
                 		<label for="fecha_permiso" class="control-label">14to Sueldo:</label>
                     	<input type="number" step="0.01"  class="form-control" id="dec_cuarto_sueldo" name="dec_cuarto_sueldo" placeholder="14to Sueldo">
-                        <div id="mensaje_hora_salida" class="errores"></div>
+                        <div id="mensaje_14" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="fecha_permiso" class="control-label">13ro Sueldo:</label>
                     	<input type="number" step="0.01"  class="form-control" id="dec_tercero_sueldo" name="dec_tercero_sueldo" placeholder="13ro Sueldo">
-                        <div id="mensaje_hora_salida" class="errores"></div>
+                        <div id="mensaje_13" class="errores"></div>
                  	</div>
              	</div>
           	</div>
@@ -138,28 +138,28 @@
             		<div class="form-group">
                 		<label for="nombre_empleados" class="control-label">Anticipo:</label>
                     	<input type="number" step="0.01" class="form-control" id="anticipo_empleados" name="anticipo_empleados" placeholder="Anticipo">
-                        <div id="mensaje_nombre_empleados" class="errores"></div>
+                        <div id="mensaje_anticipo_empleados" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="dpto_empleados" class="control-label">Aporte IESS:</label>
                     	<input type="number" step="0.01" class="form-control" id="apt_iess_empleados" name="apt_iess_empleados" placeholder="Aporte IESS">
-                        <div id="mensaje_dpto_empleados" class="errores"></div>
+                        <div id="mensaje_apiess_empleados" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="cargo_empleados" class="control-label">ASOCAP:</label>
                            	<input type="number" step="0.01" class="form-control" id="asocap_empleados" name="asocap_empleados" placeholder="ASOCAP">
-                        <div id="mensaje_cargo_empleados" class="errores"></div>
+                        <div id="mensaje_asocap_empleados" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="cargo_empleados" class="control-label">Comisión asuntos sociales:</label>
                            	<input type="text" class="form-control" id="asuntos_empleados" name="asuntos_empleados" placeholder="Comisión asuntos sociales" readonly>
-                        <div id="mensaje_cargo_empleados" class="errores"></div>
+                        <div id="mensaje_sociales_empleados" class="errores"></div>
                  	</div>
              	</div>
           	</div>
@@ -168,21 +168,22 @@
             		<div class="form-group">
                 		<label for="nombre_empleados" class="control-label">Prestamo Qirografario IESS:</label>
                     	<input type="number" step="0.01" class="form-control" id="quiro_iess_empleados" name="quiro_iess_empleados" placeholder="Prestamo Qirografario IESS">
-                        <div id="mensaje_nombre_empleados" class="errores"></div>
+                        <div id="mensaje_qiess_empleados" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="dpto_empleados" class="control-label">Prestamo Hipotecario IESS:</label>
                     	<input type="number" step="0.01" class="form-control" id="hipo_iess_empleados" name="hipo_iess_empleados" placeholder="Prestamo Hipotecario IESS">
-                        <div id="mensaje_dpto_empleados" class="errores"></div>
+                        <div id="mensaje_hiess_empleados" class="errores"></div>
                  	</div>
+                 	
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="cargo_empleados" class="control-label">Descuento Sueldo:</label>
                            	<input type="number" step="0.01" class="form-control" id="dcto_sueldo_empleados" name="dcto_sueldo_empleados" placeholder="Descuento Sueldo">
-                        <div id="mensaje_cargo_empleados" class="errores"></div>
+                        <div id="mensaje_dcto_empleados" class="errores"></div>
                  	</div>
              	</div>
           	</div>
@@ -211,22 +212,32 @@
 			<div class="pull-right" style="margin-right:15px;">
         		<input type="text" value="" class="form-control" id="search" name="search" onkeyup="ReporteNomina(1)" placeholder="Buscar.."/>
 			</div>
+			
 			<div class="pull-right" style="margin-right:15px;">
         			<select name="periodo_marcaciones" id="periodo_marcaciones"  class="form-control" onchange="ReporteNomina(1)">
-                  		<option value="2">Periodo actual</option>
-                  		<option value="1">Todos los periodos</option>
+                  		<option value="P">Periodo actual</option>
+          				<?php  foreach($meses as $key=>$res) {?>
+						<option value="<?php echo ($key+1); ?>"><?php echo $res; ?> </option>
+			        	<?php } ?>
     				</select>
-    		</div>   
+    				<div id="mensaje_mes_marcaciones" class="errores"></div>
+        			
+    		</div>
+    		<div class="pull-right" style="margin-right:15px;">
+        			<select name="anio_marcaciones" id="anio_marcaciones"  class="form-control" onchange="ReporteNomina(1)">
+                  		<option value="">Seleccione año</option>
+          				<?php  foreach($resultAnios as $res) {?>
+						<option value="<?php echo $res->anio; ?>"><?php echo $res->anio; ?> </option>
+			        	<?php } ?>
+    				</select>
+    				<div id="mensaje_anio_marcaciones" class="errores"></div>
+        			
+    		</div>  
+    		
+			   
         	<div id="load_reporte" ></div>
         	<div id="reporte" ></div>
-        	<div class="row">
-           	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
-            	<div class="form-group">
-            	
-            	 <button type="button" id="Print" name="Print" class="btn btn-primary" onclick="ImprimirReporte()"><i class="glyphicon glyphicon-print"></i>  Reporte</button>
-                </div>
-             </div>	    
-            </div>
+        	
        </div>
   	</div>
   </section>
@@ -245,7 +256,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-    <script src="view/Administracion/js/ReporteNomina.js?0.10"></script>
+    <script src="view/Administracion/js/ReporteNomina.js?0.11"></script>
 	
 	
   </body>

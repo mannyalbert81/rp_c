@@ -199,7 +199,7 @@
                         		    
                         		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
-                                                          <label for="id_unidad_medida" class="control-label">Unidad Medida</label>
+                                                          <label for="id_unidad_medida" class="control-label">Unidad de Medida</label>
                                                           <select name="id_unidad_medida" id="id_unidad_medida"  class="form-control">
                                                             <option value="0" selected="selected">--Seleccione--</option>
 																<?php foreach($resultUni as $resUni) {?>
@@ -211,7 +211,7 @@
                                     </div>
 								<div class="col-lg-3 col-xs-12 col-md-3">
                     		    <div class="form-group">
-                                                      <label for="ult_precio_productos" class="control-label">ULT Precio</label>
+                                                      <label for="ult_precio_productos" class="control-label">Ultimo Precio</label>
                                                       <input type="text" class="form-control cantidades1" id="ult_precio_productos" name="ult_precio_productos" value='0.00' 
                                                       data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
                                                       <div id="mensaje_ult_precio_productos" class="errores"></div>

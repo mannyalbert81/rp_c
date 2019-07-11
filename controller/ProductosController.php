@@ -122,6 +122,7 @@ class ProductosController extends ControladorBase{
         }
         
     }
+      
     
     public function InsertaProductos(){
         
@@ -536,8 +537,8 @@ class ProductosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Marca</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Descripción</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;"align="center">Precio</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;"align="center">Unidad Medida</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;"align="center">Ultimo Precio</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;"align="center">Unidad de Medida</th>';
                 
                 if($id_rol==1){
                     
@@ -891,6 +892,7 @@ class ProductosController extends ControladorBase{
         
         
     }
+
     
     
 }

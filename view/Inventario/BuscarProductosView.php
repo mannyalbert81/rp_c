@@ -69,15 +69,7 @@
             
             <div class="box-body">
             
-           <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#activos" data-toggle="tab"> Productos Registrados</a></li>
-              
-            </ul>
-            
-            
-            <div class="tab-content">
-            <br>
+           <br>
               <div class="tab-pane active" id="activos">
                 
 					<div class="pull-right" style="margin-right:15px;">
@@ -88,12 +80,6 @@
                 
               </div>
               
-             
-             
-             
-            </div>
-            
-          </div>
          
             
             </div>

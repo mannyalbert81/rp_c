@@ -45,6 +45,9 @@ class CoreInformacionParticipesController extends ControladorBase{
         if (isset(  $_SESSION['nombre_usuarios']) )
         {
             
+            $contribucion_tipo = new ContribucionTipoModel();
+            $resContriTipo = $contribucion_tipo->getAll("id_contribucion_tipo");
+            
             $nombre_controladores = "CoreInformacionParticipes";
             $id_rol= $_SESSION['id_rol'];
             $resultPer = $participes->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
@@ -121,15 +124,11 @@ class CoreInformacionParticipesController extends ControladorBase{
                     
                     $resultRep = $participes->getCondiciones($columnas ,$tablas ,$where, $id);
                     
-                    if(!empty($resultRep)){
-                        
-                       
-
-                    }
+                 
                  
                     
                     $this->view_Core("CoreConsultaGeneral",array(
-                        "resultRep"=>$resultRep
+                        "resultRep"=>$resultRep, "resContriTipo"=>$resContriTipo
                         
                         
                     ));
@@ -430,7 +429,582 @@ class CoreInformacionParticipesController extends ControladorBase{
         $out.= "</ul>";
         return $out;
     }
+    
+    
+    public function consulta_personal_cta_individual(){
+        
+        
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        $contribucion = new CoreContribucionModel();
+        
+        
+        $condicion_id_contribucion_tipo="";
+        $where_to="";
+      
+        
+        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+        $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:0;
+        $id_contribucion_tipo  =  (isset($_REQUEST['id_contribucion_tipo'])&& $_REQUEST['id_contribucion_tipo'] !=NULL)?$_REQUEST['id_contribucion_tipo']:0;
+        
+        
+        if($id_contribucion_tipo==0){
+            
+            $condicion_id_contribucion_tipo="";
+            
+        }else{
+            
+            
+            $condicion_id_contribucion_tipo=" and c1.id_contribucion_tipo = '$id_contribucion_tipo'";
+        }
+        
+        
+        $columnas = " aa.anio,
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 1 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"enero\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 2 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"febrero\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 3 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"marzo\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 4 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"abril\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 5 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"mayo\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 6 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"junio\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 7 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"julio\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 8 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"agosto\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 9 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"septiembre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 10 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"octubre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 11 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"noviembre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 12 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"diciembre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"acumulado\"";
+        $tablas   = " (select to_char(fecha_registro_contribucion,'YYYY') as anio
+                	from core_contribucion
+                	where id_participes = '$id_participes'
+                	group by to_char(fecha_registro_contribucion,'YYYY')
+                	order by to_char(fecha_registro_contribucion,'YYYY')
+                	) aa";
+        $where    = "1=1";
+        
+       
 
+        
+        
+        if($action == 'ajax')
+        {
+            
+            if(!empty($search)){
+                
+                
+                $where1=" ";
+                
+                $where_to=$where.$where1;
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            
+            $html="";
+            $resultSet=$contribucion->getCantidad("*", $tablas, $where_to);
+            $cantidadResult=(int)$resultSet[0]->total;
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 20; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            
+            $resultSet=$contribucion->getCondicionesSinOrden($columnas, $tablas, $where_to, $limit);
+            $count_query   = $cantidadResult;
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            
+            
+            
+            
+            if($cantidadResult>0)
+            {
+                
+                $html.='<div class="pull-left" style="margin-left:15px;">';
+                $html.='<span class="form-control"><strong>Años Aportación: </strong>'.$cantidadResult.'</span>';
+                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                $html.='</div>';
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<section style="height:505px; overflow-y:scroll;">';
+                $html.= "<table id='tabla_personal_cta_individual' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<thead>";
+                $html.= "<tr>";
+              
+                $html.='<th style="text-align: center;  font-size: 12px;">Año</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Enero</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Febrero</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Marzo</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Abril</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Mayo</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Junio</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Julio</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Agosto</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Septiembre</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Octubre</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Noviembre</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Diciembre</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Acumulado</th>';
+                
+                
+                
+                $html.='</tr>';
+                $html.='</thead>';
+                $html.='<tbody>';
+                
+                
+                $i=0;
+                foreach ($resultSet as $res)
+                {
+                    
+                    
+                    $i++;
+                    $html.='<tr>';
+                    $html.='<td style="font-size: 10px;">'.$res->anio.'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->enero, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->febrero, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->marzo, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->abril, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->mayo, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->junio, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->julio, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->agosto, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->septiembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->octubre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->noviembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->diciembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->acumulado, 2, ",", ".").'</td>';
+                    
+                    
+                    
+                    
+                    $html.='</tr>';
+                }
+                
+                
+                
+                $html.='</tbody>';
+                $html.='</table>';
+                $html.='</section></div>';
+                $html.='<div class="table-pagination pull-right">';
+                $html.=''. $this->paginate_personal_cta_individual("index.php", $page, $total_pages, $adjacents).'';
+                $html.='</div>';
+                
+                
+                
+            }else{
+                $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay Participes registrados...</b>';
+                $html.='</div>';
+                $html.='</div>';
+            }
+            
+            
+            echo $html;
+            die();
+            
+        }
+        
+        
+    }
+    
+    
+    
+    
+    
+    
+    public function paginate_personal_cta_individual($reload, $page, $tpages, $adjacents) {
+        
+        $prevlabel = "&lsaquo; Prev";
+        $nextlabel = "Next &rsaquo;";
+        $out = '<ul class="pagination pagination-large">';
+        
+        // previous label
+        
+        if($page==1) {
+            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+        } else if($page==2) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_personal_cta_individual(1)'>$prevlabel</a></span></li>";
+        }else {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_personal_cta_individual(".($page-1).")'>$prevlabel</a></span></li>";
+            
+        }
+        
+        // first label
+        if($page>($adjacents+1)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='load_personal_cta_individual(1)'>1</a></li>";
+        }
+        // interval
+        if($page>($adjacents+2)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // pages
+        
+        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+        for($i=$pmin; $i<=$pmax; $i++) {
+            if($i==$page) {
+                $out.= "<li class='active'><a>$i</a></li>";
+            }else if($i==1) {
+                $out.= "<li><a href='javascript:void(0);' onclick='load_personal_cta_individual(1)'>$i</a></li>";
+            }else {
+                $out.= "<li><a href='javascript:void(0);' onclick='load_personal_cta_individual(".$i.")'>$i</a></li>";
+            }
+        }
+        
+        // interval
+        
+        if($page<($tpages-$adjacents-1)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // last
+        
+        if($page<($tpages-$adjacents)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='load_personal_cta_individual($tpages)'>$tpages</a></li>";
+        }
+        
+        // next
+        
+        if($page<$tpages) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_personal_cta_individual(".($page+1).")'>$nextlabel</a></span></li>";
+        }else {
+            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+        }
+        
+        $out.= "</ul>";
+        return $out;
+    }
+
+    public function consulta_patronal_cta_individual(){
+        
+        
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        $contribucion = new CoreContribucionModel();
+        
+        
+        $condicion_id_contribucion_tipo="";
+        $where_to="";
+        
+        
+        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+        $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:0;
+        $id_contribucion_tipo  =  (isset($_REQUEST['id_contribucion_tipo'])&& $_REQUEST['id_contribucion_tipo'] !=NULL)?$_REQUEST['id_contribucion_tipo']:0;
+        
+        
+        if($id_contribucion_tipo==0){
+            
+            $condicion_id_contribucion_tipo="";
+            
+        }else{
+            
+            
+            $condicion_id_contribucion_tipo=" and c1.id_contribucion_tipo = '$id_contribucion_tipo'";
+        }
+        
+        
+        $columnas = " aa.anio,
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 1 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"enero\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 2 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"febrero\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 3 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"marzo\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 4 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"abril\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 5 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"mayo\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 6 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"junio\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 7 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"julio\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 8 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"agosto\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 9 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"septiembre\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 10 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"octubre\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 11 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"noviembre\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 12 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"diciembre\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"acumulado\"";
+        $tablas   = " (select to_char(fecha_registro_contribucion,'YYYY') as anio
+                	from core_contribucion
+                	where id_participes = '$id_participes'
+                	group by to_char(fecha_registro_contribucion,'YYYY')
+                	order by to_char(fecha_registro_contribucion,'YYYY')
+                	) aa";
+        $where    = "1=1";
+        
+        
+        
+        
+        
+        if($action == 'ajax')
+        {
+            
+            if(!empty($search)){
+                
+                
+                $where1=" ";
+                
+                $where_to=$where.$where1;
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            
+            $html="";
+            $resultSet=$contribucion->getCantidad("*", $tablas, $where_to);
+            $cantidadResult=(int)$resultSet[0]->total;
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 20; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            
+            $resultSet=$contribucion->getCondicionesSinOrden($columnas, $tablas, $where_to, $limit);
+            $count_query   = $cantidadResult;
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            
+            
+            
+            
+            if($cantidadResult>0)
+            {
+                
+                $html.='<div class="pull-left" style="margin-left:15px;">';
+                $html.='<span class="form-control"><strong>Años Aportación: </strong>'.$cantidadResult.'</span>';
+                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                $html.='</div>';
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<section style="height:505px; overflow-y:scroll;">';
+                $html.= "<table id='tabla_personal_cta_individual' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<thead>";
+                $html.= "<tr>";
+                
+                $html.='<th style="text-align: center;  font-size: 12px;">Año</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Enero</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Febrero</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Marzo</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Abril</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Mayo</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Junio</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Julio</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Agosto</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Septiembre</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Octubre</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Noviembre</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Diciembre</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Acumulado</th>';
+                
+                
+                
+                $html.='</tr>';
+                $html.='</thead>';
+                $html.='<tbody>';
+                
+                
+                $i=0;
+                foreach ($resultSet as $res)
+                {
+                    
+                    
+                    $i++;
+                    $html.='<tr>';
+                    $html.='<td style="font-size: 10px;">'.$res->anio.'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->enero, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->febrero, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->marzo, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->abril, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->mayo, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->junio, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->julio, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->agosto, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->septiembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->octubre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->noviembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->diciembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;">'.number_format($res->acumulado, 2, ",", ".").'</td>';
+                    
+                    
+                    
+                    
+                    $html.='</tr>';
+                }
+                
+                
+                
+                $html.='</tbody>';
+                $html.='</table>';
+                $html.='</section></div>';
+                $html.='<div class="table-pagination pull-right">';
+                $html.=''. $this->paginate_patronal_cta_individual("index.php", $page, $total_pages, $adjacents).'';
+                $html.='</div>';
+                
+                
+                
+            }else{
+                $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay Participes registrados...</b>';
+                $html.='</div>';
+                $html.='</div>';
+            }
+            
+            
+            echo $html;
+            die();
+            
+        }
+        
+        
+    }
+    
+  
+    public function paginate_patronal_cta_individual($reload, $page, $tpages, $adjacents) {
+        
+        $prevlabel = "&lsaquo; Prev";
+        $nextlabel = "Next &rsaquo;";
+        $out = '<ul class="pagination pagination-large">';
+        
+        // previous label
+        
+        if($page==1) {
+            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+        } else if($page==2) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_patronal_cta_individual(1)'>$prevlabel</a></span></li>";
+        }else {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_patronal_cta_individual(".($page-1).")'>$prevlabel</a></span></li>";
+            
+        }
+        
+        // first label
+        if($page>($adjacents+1)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='load_patronal_cta_individual(1)'>1</a></li>";
+        }
+        // interval
+        if($page>($adjacents+2)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // pages
+        
+        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+        for($i=$pmin; $i<=$pmax; $i++) {
+            if($i==$page) {
+                $out.= "<li class='active'><a>$i</a></li>";
+            }else if($i==1) {
+                $out.= "<li><a href='javascript:void(0);' onclick='load_patronal_cta_individual(1)'>$i</a></li>";
+            }else {
+                $out.= "<li><a href='javascript:void(0);' onclick='load_patronal_cta_individual(".$i.")'>$i</a></li>";
+            }
+        }
+        
+        // interval
+        
+        if($page<($tpages-$adjacents-1)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // last
+        
+        if($page<($tpages-$adjacents)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='load_patronal_cta_individual($tpages)'>$tpages</a></li>";
+        }
+        
+        // next
+        
+        if($page<$tpages) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_patronal_cta_individual(".($page+1).")'>$nextlabel</a></span></li>";
+        }else {
+            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+        }
+        
+        $out.= "</ul>";
+        return $out;
+    }
+    
     
 }
 

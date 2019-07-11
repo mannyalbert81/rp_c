@@ -8,7 +8,8 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css"> 
+    <link rel="stylesheet" href="view/bootstrap/bower_components/select2/dist/css/select2.min.css">
   
     <?php include("view/modulos/links_css.php"); ?>		
       
@@ -172,6 +173,18 @@
                                            
                     </div>
     		    </div>
+    		    
+    		     <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="bancoId" class="control-label">Banco Prueba:</label>
+                      <select class="form-control" id="bancoId" name="bancoId" >
+                      	<option value="0">--SELECCIONE--</option>
+                      </select>
+                       <div id="mensaje_bancos" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+    		    
 			</div>
         
                                 <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
@@ -288,6 +301,25 @@
         
         <div class="box-body">
         
+         <div id="lista_proveedores">
+  			<div class="row">
+  				<div class=" pull-left " >
+  					<div class=" col-lg-12 form-group-sm">
+                    	<span class="form-control" id="cantidad_busqueda"><strong>Registros: </strong>0</span>
+                    	<input type="hidden" value="" id="total_query" name="total_query"/>
+                	</div>   
+            	</div>
+  				<div class="pull-right">
+  					<div class=" col-lg-12 form-group-sm">                    				
+        				 <input type="text" class="form-control" id="txtbuscar" name="txtbuscar" value="" >
+            		</div>            			
+          		</div>
+  			</div>  
+  			<br>			
+  			<div id="tabla_datos_proveedores">
+  			</div>
+  		</div>
+        
         
        <div class="ibox-content">  
       <div class="table-responsive">
@@ -355,12 +387,13 @@
     
     <?php include("view/modulos/links_js.php"); ?>
 	
-<script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
+	<script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
-    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>   
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+	<script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>   
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>	
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-	<script src="view/Inventario/js/Proveedores.js?0.00" ></script>
+	<script src="view/Inventario/js/Proveedores.js?0.02" ></script>
   </body>
 </html>   
 

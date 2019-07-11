@@ -1,11 +1,23 @@
 $(document).ready(function(){
 	
       $(".cantidades1").inputmask();
+      ListaProveedores();
       cargaBancos();
       cargaTipoProveedores();
       cargaTipoCuentas();
+      init();
      
 });
+
+/**FUNCIONES DE INICIO**/
+/*
+ * Inicio de funciones
+ */
+function init(){
+	
+	$("#bancoId").select2({});
+	$("#id_bancos").select2({});
+}
 
 /**FUNCIONES PARA INICIO DE PAGINA*/
 /*
@@ -100,28 +112,35 @@ function cargaTipoCuentas(){
 
 function ListaProveedores(){
 	
-	let $tipoCuentas = $("#id_tipo_cuentas");
+	let $listaProveedores = $("#tabla_datos_proveedores");
+	$listaProveedores.html('');
+	let $cantidadrespuesta = $("#cantidad_busqueda");
+	let $busqueda = $("#txtbuscar");
+	let parametros = {
+			peticion:'',busqueda:$busqueda.val()
+	}
+	
 	
 	$.ajax({
 		beforeSend:function(){},
 		url:"index.php?controller=Proveedores&action=ListaProveedores",
 		type:"POST",
 		dataType:"json",
-		data:null
+		data:parametros
 	}).done(function(datos){		
-		
-		$tipoCuentas.empty();
-		$tipoCuentas.append("<option value='0' >--Seleccione--</option>");
-		
-		$.each(datos.data, function(index, value) {
-			$tipoCuentas.append("<option value= " +value.id_tipo_cuentas +" >" + value.nombre_tipo_cuentas  + "</option>");	
-  		});
+		$cantidadrespuesta.html('<strong>Registros:</strong>&nbsp; '+ datos.valores.cantidad);
+		$listaProveedores.html(datos.tabladatos);
 		
 	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
+		let err = xhr.responseText;
 		console.log(err)
-		$tipoCuentas.empty();
-		$tipoCuentas.append("<option value='0' >--Seleccione--</option>");
+		$cantidadrespuesta.html('<strong>Registros:</strong>&nbsp;  0');
+		let _diverror = ' <div class="col-lg-12 col-md-12 col-xs-12"> <div class="alert alert-danger alert-dismissable" style="margin-top:40px;">';
+			_diverror +='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            _diverror += '<h4>Aviso!!!</h4> <b>Error en conexion a la Base de Datos</b>';
+            _diverror += '</div></div>';
+            
+         $listaProveedores.html(_diverror);
 	})
 }
 

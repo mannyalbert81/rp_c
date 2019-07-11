@@ -14,9 +14,6 @@ $("input.mayus").on("keyup",function(){
 });
 
 
-
-
-
 $("#txtbuscarProveedor").on("keyup",function(){
 	
 	buscaCuentasPagar();

@@ -17,7 +17,7 @@ class ProveedoresController extends ControladorBase{
 				
 		$resultEdit = "";
 		
-	
+		$resultSet = null;
 		
 		session_start();
         
@@ -262,6 +262,70 @@ class ProveedoresController extends ControladorBase{
 	    $out.= "</ul>";
 	    return $out;
 	}
+	
+	public function paginate($reload, $page, $tpages, $adjacents,$funcion='') {
+	    
+	    $prevlabel = "&lsaquo; Prev";
+	    $nextlabel = "Next &rsaquo;";
+	    $out = '<ul class="pagination pagination-large">';
+	    
+	    // previous label
+	    
+	    if($page==1) {
+	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+	    } else if($page==2) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
+	    }else {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
+	        
+	    }
+	    
+	    // first label
+	    if($page>($adjacents+1)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
+	    }
+	    // interval
+	    if($page>($adjacents+2)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // pages
+	    
+	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+	    for($i=$pmin; $i<=$pmax; $i++) {
+	        if($i==$page) {
+	            $out.= "<li class='active'><a>$i</a></li>";
+	        }else if($i==1) {
+	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
+	        }else {
+	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
+	        }
+	    }
+	    
+	    // interval
+	    
+	    if($page<($tpages-$adjacents-1)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // last
+	    
+	    if($page<($tpages-$adjacents)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
+	    }
+	    
+	    // next
+	    
+	    if($page<$tpages) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
+	    }else {
+	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+	    }
+	    
+	    $out.= "</ul>";
+	    return $out;
+	}
 
 	
 	public function ins_proveedor(){
@@ -366,7 +430,201 @@ class ProveedoresController extends ControladorBase{
 	    
 	}
 	
+	/**
+	 * mod: Contabilidad
+	 * title: Cargar Bancos
+	 * ajax: si
+	 * dc:2019-07-09
+	 */
+	public function cargaBancos(){
+	    
+	    $estados = null;
+	    $estados = new EstadoModel();
+	    
+	    $query = " SELECT id_bancos,nombre_bancos
+                FROM tes_bancos ban INNER JOIN estado ON ban.id_estado = estado.id_estado
+                WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos'";
+	    
+	    $resulset = $estados->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
 	
+	/**
+	 * mod: Contabilidad
+	 * title: Cargar Tipo Proveedor
+	 * ajax: si
+	 * dc: 2019-07-09
+	 */
+	public function cargaTipoProveedores(){
+	    
+	    $estados = null;
+	    $estados = new EstadoModel();
+	    
+	    $query = " SELECT id_tipo_proveedores, nombre_tipo_proveedores
+                FROM tes_tipo_proveedores";
+	    
+	    $resulset = $estados->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
+	
+	/**
+	 * mod: Contabilidad
+	 * title: Cargar Tipo Cuenta
+	 * ajax: si
+	 * dc: 2019-07-09
+	 */
+	public function cargaTipoCuentas(){
+	    
+	    $estados = null;
+	    $estados = new EstadoModel();
+	    
+	    $query = " SELECT id_tipo_cuentas, nombre_tipo_cuentas
+                FROM core_tipo_cuentas";
+	    
+	    $resulset = $estados->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
+	
+	/***
+	 * dc 2019-07-09
+	 * mod: Contabilidad
+	 * desc: enlista los proveedores
+	 */
+	public function ListaProveedores(){	    
+	   
+	    $busqueda = (isset($_POST['busqueda'])) ? $_POST['busqueda'] : "";
+	    
+	    if(!isset($_POST['peticion'])){
+	        echo 'sin conexion';
+	        return;
+	    }
+	    
+	    $page = (isset($_REQUEST['page']))?isset($_REQUEST['page']):1;
+	    
+	    $Proveedores = new ProveedoresModel();
+	    
+	    $columnas = "id_proveedores, nombre_proveedores, identificacion_proveedores, contactos_proveedores, direccion_proveedores,
+                    telefono_proveedores, email_proveedores";
+	    
+	    $tablas = "public.proveedores";
+	    
+	    $where = " 1=1 ";
+	    
+	    //para los parametros de where
+	    if(!empty($busqueda)){
+	        
+	        $where .= "AND ( nombre_proveedores LIKE '$busqueda%' OR pr.identificacion_proveedores LIKE '$busqueda%' )";
+	    }
+	    
+	    $id = "nombre_proveedores";
+	    
+	    //para obtener cantidad
+	    $rsResultado = $Proveedores->getCantidad("1", $tablas, $where, $id);
+	    
+	    $cantidad = 0;
+	    $html = "";
+	    $per_page = 10; //la cantidad de registros que desea mostrar
+	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	    $offset = ($page - 1) * $per_page;
+	    
+	    if(!is_null($rsResultado) && !empty($rsResultado) && count($rsResultado)>0){
+	        $cantidad = $rsResultado[0]->total;
+	    }
+	    
+	    $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	    
+	    $resultSet = $Proveedores->getCondicionesPag( $columnas, $tablas, $where, $id, $limit);
+	    
+	    $tpages = ceil($cantidad/$per_page);
+	    
+	    if( $cantidad > 0 ){
+	        
+	        //$html.='<div class="pull-left" style="margin-left:11px;">';
+	        //$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidad.'</span>';
+	        //$html.='<input type="hidden" value="'.$cantidad.'" id="total_query" name="total_query"/>' ;
+	        //$html.='</div>';
+	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $html.='<section style="height:180px; overflow-y:scroll;">';
+	        $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	        $html.= "<thead>";
+	        $html.= "<tr>";
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">IDENTIFICACION</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">NOMBRE</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">CONTACTO</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">DIRECCION</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">TELEFONO</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">CORREO</th>';
+	        $html.='<th colspan="2" style="text-align: left;  font-size: 12px;"></th>';
+	        
+	        $html.='</tr>';
+	        $html.='</thead>';
+	        $html.='<tbody>';
+	        
+	        $i=0;
+	        
+	        foreach ($resultSet as $res)
+	        {
+	            $i++;
+	            $html.='<tr>';
+	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
+	            $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
+	            $html.='<a title="Generar Cheque" href="index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_proveedores.'">';
+	            $html.='<i class="glyphicon glyphicon-usd"></i></a></span></td>';
+	            $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
+	            $html.='<a title="Realizar Transferencia" href="index.php?controller=Transferencias&action=index&id_cuentas_pagar='.$res->id_proveedores.'">';
+	            $html.='<i class="glyphicon glyphicon-transfer"></i></a></span></td>';
+	            $html.='</tr>';
+	            
+	        }
+	        
+	        
+	        $html.='</tbody>';
+	        $html.='</table>';
+	        $html.='</section></div>';
+	        $html.='<div class="table-pagination pull-right">';
+	        $html.=''. $this->paginate("index.php", $page, $tpages, $adjacents,"").'';
+	        $html.='</div>';
+	        
+	        
+	        
+	    }else{
+	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	        $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	        $html.='<h4>Aviso!!!</h4> <b> No hay cuentas por Pagar</b>';
+	        $html.='</div>';
+	        $html.='</div>';
+	    }
+	    
+	    //array de datos
+	    $respuesta = array();
+	    $respuesta['tabladatos'] = $html;
+	    $respuesta['valores'] = array('cantidad'=>$cantidad);
+	    echo json_encode($respuesta);
+	    
+	}
 	
 }
 ?>

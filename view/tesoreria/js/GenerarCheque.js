@@ -126,6 +126,7 @@ $("#genera_cheque").on("click",function(){
 			}).then(function(){
 				FormularioPost("index.php?controller=GenerarCheque&action=generaReporteCheque","blank",datosFomulario);
 				window.open("index.php?controller=Pagos&action=Index","_self");
+				//console.log(datosFomulario);
 			})
 			
 		}
@@ -186,4 +187,10 @@ $("#btn_distribucion_aceptar").on("click",function(){
 	$("#genera_cheque").attr("disabled",false);
 	
 })
+
+/***********************************************PRUEBAS***************/
+function prueba1(){
+	FormularioPost("index.php?controller=GenerarCheque&action=generaReporteCheque","blank",{id_comprobante:76,id_cuentas_pagar:7});
+	window.open("index.php?controller=Pagos&action=Index","_self");
+}
 

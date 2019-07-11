@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	
-	buscaCuentasPagar();	
+	buscaChequesGenerados();	
 		
 })
 
@@ -14,41 +14,40 @@ $("input.mayus").on("keyup",function(){
 });
 
 
-$("#txtbuscarProveedor").on("keyup",function(){
+$("#txtbuscar").on("keyup",function(){
 	
-	buscaCuentasPagar();
+	buscaChequesGenerados();
 	
 })
 
-function buscaCuentasPagar(pagina=1){
+function buscaChequesGenerados(pagina=1){
 	
-	let _busqueda = $("#txtbuscarProveedor").val();
-	let datos={peticion:'',busqueda:_busqueda};
-	let cantidadrespuesta = $("#cantidad_busqueda");
-	
-	$("#tabla_cuentas_pagar").html('');
+	let $busqueda = $("#txtbuscar");
+	let datos={peticion:'',busqueda:$busqueda.val()};
+	let $cantidadrespuesta = $("#cantidad_busqueda");	
+	let $tablaDatos = $("#tabla_datos_cheques");
 	
 	$.ajax({
-		url:"index.php?controller=Pagos&action=indexconsulta",
+		url:"index.php?controller=GenerarCheque&action=listarCheques",
 		dataType:"json",
 		type:"POST",
 		data:datos,
 	}).done(function(x){		
 		
-		cantidadrespuesta.html('<strong>Registros:</strong>&nbsp; '+ x.valores.cantidad);
+		$cantidadrespuesta.html('<strong>Registros:</strong>&nbsp; '+ x.valores.cantidad);
 		
-		$("#tabla_cuentas_pagar").html(x.html);
+		$tablaDatos.html(x.tabladatos);
 		
 	}).fail(function(xhr,status,error){
 		let err = xhr.responseText;
 		console.log(err)
-		cantidadrespuesta.html('<strong>Registros:</strong>&nbsp;  0');
+		$cantidadrespuesta.html('<strong>Registros:</strong>&nbsp;  0');
 		let _diverror = ' <div class="col-lg-12 col-md-12 col-xs-12"> <div class="alert alert-danger alert-dismissable" style="margin-top:40px;">';
 			_diverror +='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
             _diverror += '<h4>Aviso!!!</h4> <b>Error en conexion a la Base de Datos</b>';
             _diverror += '</div></div>';
             
-		$("#tabla_cuentas_pagar").html(_diverror);
+            $tablaDatos.html(_diverror);
 	})
 }
 

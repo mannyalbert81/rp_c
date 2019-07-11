@@ -31,7 +31,7 @@ $(document).ready(function(){
 						    	  disabled:true
 						    	  })						    	  
 						      .append("<i class=\"fa \" aria-hidden=\"true\" ></i>"),
-				$('<button></button>').text('Cancelar')
+				$('<button></button>').text('Anular')
 						      .addClass('btn btn-danger')
 						      .attr({type:"button",id:"btn_cancelar",name:"btn_cancelar"})
 						     

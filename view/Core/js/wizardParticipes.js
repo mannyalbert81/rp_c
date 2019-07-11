@@ -38,11 +38,11 @@ $(document).ready(function(){
 		//console.log(stepDirection);
 		if(stepNumber==0){
 			
-			//return validaPaso1();
+			return validaPaso1();
 		}
 		if(stepNumber==1){
 			
-			//return validaPaso2();
+			return validaPaso2();
 			
 		}
     });
@@ -63,27 +63,28 @@ $(document).ready(function(){
     
    function validaPaso1(){
 	   
-	   let lote_id = $("#id_lote").val();
-	   let tipo_documento_id = $("#id_tipo_documento").val();
+	   let id_entidad_patronal = $("#id_entidad_patronal").val();
+	   let fecha_entrada_patronal_participes = $("#fecha_entrada_patronal_participes").val();
 	   let descripcion = $("#descripcion_cuentas_pagar").val();
 	   let fecha_documento = $("#fecha_cuentas_pagar").val();
 	   
-	   if(lote_id == '' || lote_id == 0){
-		   $("#nombre_lote").notify("Lote No Generado",{ position:"buttom left", autoHideDelay: 2000});
+	   if(id_entidad_patronal == '' || id_entidad_patronal == 0){
+		   $("#id_entidad_patronal").notify("Lote No Generado",{ position:"buttom left", autoHideDelay: 2000});
 			return false;
 	   }
-	   if(tipo_documento_id == 0){
-		   $("#id_tipo_documento").notify("Seleccione Tipo Documento",{ position:"buttom left", autoHideDelay: 2000});
+	   if(fecha_entrada_patronal_participes.length == 0 || fecha_entrada_patronal_participes == ''){
+		   $("#fecha_entrada_patronal_participes").notify("Ingrese fecha",{ position:"buttom left", autoHideDelay: 2000});
+		   return false;
+	   }
+	   if(cedula_participes.length == 0 || cedula_participes == ''){
+		   $("#cedula_participes").notify("Ingrese Cedula",{ position:"buttom left", autoHideDelay: 2000});
 			return false;
 	   }
 	   if(descripcion.length == 0 || descripcion == ''){
 		   $("#descripcion_cuentas_pagar").notify("Ingrese una descripcion",{ position:"buttom left", autoHideDelay: 2000});
 			return false;
 	   }
-	   if(fecha_documento.length == 0 || fecha_documento == ''){
-		   $("#fecha_cuentas_pagar").notify("Ingrese fecha documento",{ position:"buttom left", autoHideDelay: 2000});
-		   return false;
-	   }
+	   
 	   return true;
    }
    

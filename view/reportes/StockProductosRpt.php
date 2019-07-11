@@ -23,20 +23,19 @@ if(!empty($datos_empresa))
     }
 }
 
+if(!empty($datos_reporte))
+{
+    
+    foreach ($datos_reporte as $clave=>$valor) {
+        echo $clave; echo "\n";
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
 
 $footer = file_get_contents('view/reportes/template/pieret.html');
 
 
 
-
-if(!empty($datos_cuentas_pagar))
-{
-    
-    foreach ($datos_cuentas_pagar as $clave=>$valor) {
-        
-        $template = str_replace('{'.$clave.'}', $valor, $template);
-    }
-}
 
 
 ob_end_clean();

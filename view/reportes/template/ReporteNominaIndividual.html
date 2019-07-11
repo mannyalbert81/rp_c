@@ -70,6 +70,68 @@
 		text-align:right;
 	}
 	
+	.nombre
+	{
+	text-align: left;  
+	font-size: 15px;
+	}
+	
+	.cabeza
+	{
+		width:90%; 
+		
+	}
+	
+	.titulos
+	{
+	width:30%;
+	text-align: center; 
+	font-size: 12px; 
+	border: 2px solid white;
+	}
+	
+	.descripcion
+	{
+	text-align: left;  
+	font-size: 10px;
+	}
+	
+	.valores
+	{
+	text-align: right;
+	font-size: 10px;
+	}
+	
+	.total
+	{
+	text-align: right;
+	font-size: 20px;
+	}
+	.totales
+	{
+	text-align: right;  
+	font-size: 10px; 
+	border-top: 1px solid black;
+	}
+	.firmas
+	{
+	text-align: center;  font-size: 15px;
+	}
+	.firmas1
+	{
+	text-align: center;  font-size: 12px;
+	}
+	.roldepagos
+	{
+	font-family: Arial;
+	  color:#000000;
+	   width: 100%;
+	    text-align: center; 
+	}
+	.imagen
+	{
+	float:left;
+	}
   </style>
   
   </head>
@@ -79,8 +141,8 @@
   
     <div>
     
-    	<div style="font-family: Arial;  color:#000000; width: 100%; text-align: center; ">
-    	<p style="width: 100%;"><img  style="width: 100%; margin-left: 35px; height:39px; width:200px; float:left;" align="right" src="view/images/Logo-Capremci-h-200.jpg" ></p>
+    	<div class="roldepagos">
+    	<p style="width: 100%;"><img  class="imagen" align="right" src="view/images/Logo-Capremci-h-200.jpg" ></p>
   			<h3>ROL DE PAGO INDIVIDUAL {FECHA}</h3>  			
   		</div>  		
   	</div>
@@ -88,79 +150,79 @@
   	
   	<div>  	
   		
-  		<table style="width:90%" align="center">
+  		<table class="cabeza" align="center">
   				<tr>
-  					<td style="text-align: left;  font-size: 15px;">Nombre del empleado: <b>{NOMBREEMPLEADO}</b></td>  					
+  					<td class="nombre">Nombre del empleado: <b>{NOMBREEMPLEADO}</b></td>  					
   				</tr>
   				<tr>
-  					<td style="text-align: left;  font-size: 15px;">Cargo: <b>{CARGOEMPLEADO}</b></td>
-  					<td style="text-align: left;  font-size: 15px;">Departamento: <b>{DPTOEMPLEADO}</b></td>
+  					<td class="nombre">Cargo: <b>{CARGOEMPLEADO}</b></td>
+  					<td class="nombre">Departamento: <b>{DPTOEMPLEADO}</b></td>
   				</tr>
   				
   		</table>
   		<br>
-  		<table style="width:90%;" align="center">
+  		<table class="cabeza" align="center">
   				<tr>
-  					<td bgcolor="#CACFD2"  colspan="2" style="text-align: center;  font-size: 12px; border: 2px solid white;"><b>INGRESOS</b></td>
-  					<td bgcolor="#CACFD2" colspan="2" style="text-align: center;  font-size: 12px; border: 2px solid white"><b>EGRESOS</b></td>
-  					<td bgcolor="#CACFD2" style="text-align: center;  font-size: 12px; border: 2px solid white"><b>TOTAL A PAGAR</b></td>
+  					<td bgcolor="#CACFD2"  colspan="2" class="titulos"><b>INGRESOS</b></td>
+  					<td bgcolor="#CACFD2" colspan="2" class="titulos"><b>EGRESOS</b></td>
+  					<td bgcolor="#CACFD2"  class="titulos"><b>TOTAL A PAGAR</b></td>
   				</tr>
   				<tr>
-		  		<td style="text-align: left;  font-size: 10px;">SUELDO</td>
-		  		<td style="text-align: right;  font-size: 10px;">{SUELDO}</td>
-		  		<td style="text-align: left;  font-size: 10px;">ANTICIPO SUELDO</td>
-		  		<td style="text-align: right;  font-size: 10px;">{ASUELDO}</td>
-		  		<td rowspan="2" style="text-align: right;  font-size: 20px;"><b>{TOTAL A PAGAR}</b></td>
+		  		<td class="descripcion">SUELDO</td>
+		  		<td class="valores">{SUELDO}</td>
+		  		<td class="descripcion">ANTICIPO SUELDO</td>
+		  		<td class="valores">{ASUELDO}</td>
+		  		<td rowspan="2"  class="total"><b>{TOTAL A PAGAR}</b></td>
 		  		</tr>
 		  		<tr>
-		  		<td style="text-align: left;  font-size: 10px;">HORAS EXTRA 50%</td>
-		  		<td style="text-align: right;  font-size: 10px;">{EXTRA50}</td>
-		  		<td style="text-align: left;  font-size: 10px;">APORTE IESS {AP}%</td>
-		  		<td style="text-align: right;  font-size: 10px;">{APIESS}</td>
+		  		<td class="descripcion">HORAS EXTRA 50%</td>
+		  		<td class="valores">{EXTRA50}</td>
+		  		<td class="descripcion">APORTE IESS {AP}%</td>
+		  		<td class="valores">{APIESS}</td>
 		  		</tr>
 		  		<tr>
-		  		<td style="text-align: left;  font-size: 10px;">HORAS EXTRA 100%</td>
-		  		<td style="text-align: right;  font-size: 10px;">{EXTRA100}</td>
-		  		<td style="text-align: left;  font-size: 10px;">ASOCAP</td>
-		  		<td style="text-align: right;  font-size: 10px;">{ASOCAP}</td>
+		  		<td class="descripcion">HORAS EXTRA 100%</td>
+		  		<td class="valores">{EXTRA100}</td>
+		  		<td class="descripcion">ASOCAP</td>
+		  		<td class="valores">{ASOCAP}</td>
 		  		</tr>
 		  		<tr>
-		  		<td style="text-align: left;  font-size: 10px;">FONDOS DE RESERVA</td>
-		  		<td style="text-align: right;  font-size: 10px;">{RESERVA}</td>
-		  		<td style="text-align: left;  font-size: 10px;">COMISION ASUNTOS SOCIALES</td>
-		  		<td style="text-align: right;  font-size: 10px;">{SOCIALES}</td>
+		  		<td class="descripcion">FONDOS DE RESERVA</td>
+		  		<td class="valores">{RESERVA}</td>
+		  		<td class="descripcion">COMISION ASUNTOS SOCIALES</td>
+		  		<td class="valores">{SOCIALES}</td>
 		  		</tr>
 		  		<tr>
-		  		<td style="text-align: left;  font-size: 10px;">14TO SUELDO</td>
-		  		<td style="text-align: right;  font-size: 10px;">{SUELDO14}</td>
-		  		<td style="text-align: left;  font-size: 10px;">PREST. QUIROG. IESS</td>
-		  		<td style="text-align: right;  font-size: 10px;">{QUIROIESS}</td>
+		  		<td class="descripcion">14TO SUELDO</td>
+		  		<td class="valores">{SUELDO14}</td>
+		  		<td class="descripcion">PREST. QUIROG. IESS</td>
+		  		<td class="valores">{QUIROIESS}</td>
 		  		</tr>
 		  		<tr>
-		  		<td style="text-align: left;  font-size: 10px;">13RO SUELDO</td>
-		  		<td style="text-align: right;  font-size: 10px;">{SUELDO13}</td>
-		  		<td style="text-align: left;  font-size: 10px;">PREST. HIPOT. IESS</td>
-		  		<td style="text-align: right;  font-size: 10px;">{HIPOIESS}</td>
+		  		<td class="descripcion">13RO SUELDO</td>
+		  		<td class="valores">{SUELDO13}</td>
+		  		<td class="descripcion">PREST. HIPOT. IESS</td>
+		  		<td class="valores">{HIPOIESS}</td>
 		  		</tr>
 		  		<tr>
-		  		<td style="text-align: left;  font-size: 10px;"></td>
-		  		<td style="text-align: right;  font-size: 10px;"></td>
-		  		<td style="text-align: left;  font-size: 10px;">OTROS DCTOS.</td>
-		  		<td style="text-align: right;  font-size: 10px;">{DCTO}</td>
+		  		<td class="descripcion"></td>
+		  		<td class="valores"></td>
+		  		<td class="descripcion">OTROS DCTOS.</td>
+		  		<td class="valores">{DCTO}</td>
 		  		</tr>
 		  		<tr>
-		  		<td colspan="2" style="text-align: right;  font-size: 10px; border-top: 1px solid black;"><b>Total: {TOTALING}</b></td>
-		  		<td colspan="2" style="text-align: right;  font-size: 10px;border-top: 1px solid black;"><b>Total: {TOTALEG}</b></td>
+		  		<td colspan="2" class="totales"><b>Total: {TOTALING}</b></td>
+		  		<td colspan="2" class="totales"><b>Total: {TOTALEG}</b></td>
 		  		</tr>
   				<tr>
-		  		<td colspan="2" style="text-align: center;  font-size: 15px;"><br><br><br><br><b>____________________________</b></td>
-		  		<td colspan="2" style="text-align: center;  font-size: 15px;"><br><br><br><br><b>____________________________</b></td>
-		  		<td style="text-align: center;  font-size: 15px;"><br><br><br><br><b>____________________________</b></td>
+		  		<td colspan="2" class="firmas"><br><br><br><br><b>____________________________</b></td>
+		  		<td colspan="2" class="firmas"><br><br><br><br><b>____________________________</b></td>
+		  		<td class="firmas"><br><br><br><br><b>________________________</b></td>
 		  		</tr>
 		  		<tr>
-		  		<td colspan="2" style="text-align: center;  font-size: 12px;"><b>Elaborado</b></td>
-		  		<td colspan="2" style="text-align: center;  font-size: 12px;"><b>Autorizado</b></td>
-		  		<td style="text-align: center;  font-size: 12px;"><b>Recibo conforme<br>C.I. {CEDULA}</b></td>
+		  		<td colspan="2" class="firmas1"><b>Elaborado</b></td>
+		  		<td colspan="2" class="firmas1"><b>Autorizado</b></td>
+		  		<td class="firmas1"><b>Recibo conforme<br>C.I. {CEDULA}</b></td>
 		  		</tr>
   		</table>
   		  		

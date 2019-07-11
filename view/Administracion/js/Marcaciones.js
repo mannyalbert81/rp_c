@@ -327,7 +327,7 @@ function ActualizarRegistros(arr, dcontrol, idofi)
 	swal({
 		  title: "Actualización de registro",
 		  text: "Copiando datos del archivo: "+fileName,
-		  icon: "view/images/ajax-loader.gif",
+		  icon: "view/images/capremci_load.gif",
 		  buttons: false,
 		  closeModal: false,
 		  allowOutsideClick: false
@@ -423,7 +423,7 @@ $("#mensaje_archivo").fadeOut("slow");
 		        var json_object = JSON.stringify(XL_row_object);
 		        arr=JSON.parse(json_object);
 		        
-		        if(arr[0].hasOwnProperty('Cédula') && arr[0].hasOwnProperty('Nombre')&& arr[0].hasOwnProperty('Fecha')
+		        if(arr[0].hasOwnProperty('Cedula') && arr[0].hasOwnProperty('Nombre')&& arr[0].hasOwnProperty('Fecha')
 				&& arr[0].hasOwnProperty('Horario')&& arr[0].hasOwnProperty('Inicio')&& arr[0].hasOwnProperty('Salida')
 				&& arr[0].hasOwnProperty('Registro Entrada')&& arr[0].hasOwnProperty('Registro Salida'))
 		        {
@@ -432,9 +432,9 @@ $("#mensaje_archivo").fadeOut("slow");
 		        	var cid=null;
 		        	arr.forEach(function (element)
 		        			{
-		        		if (cid!=element["Cédula"] && element["Cédula"]!=" ")
+		        		if (cid!=element["Cedula"] && element["Cedula"]!=" ")
 		        			{
-		        			cid=element["Cédula"];
+		        			cid=element["Cedula"];
 		        			cedulas.push(cid);
 		        			}
 		        	}		
@@ -451,7 +451,19 @@ $("#mensaje_archivo").fadeOut("slow");
 		    				{
 		    				var vercid = 0;
 		    				var incid = [];
+		    				console.log(cedulas);
 		    				const primced = respuesta.find(cedula => cedula.numero_cedula_empleados === cedulas[0]);
+		    				if (typeof(primced) === "undefined")
+		    					{
+		    					swal( {
+			    					  title: "Error",
+			    					  text: "La cédula "+cedulas[0]+" no existe entre los empleados activos",
+								      icon: "error",
+								     });
+		    					$("#archivo_registro").val("");
+			    				$("#nombre_archivo").val("");
+		    					 return false;
+		    					}
 		    				var idof = primced["id_oficina"];
 		    				var nomofi = primced["nombre_oficina"]; 
 		    				respuesta = respuesta.filter(function (value, index, arr)
@@ -465,11 +477,12 @@ $("#mensaje_archivo").fadeOut("slow");
 		    					var cidext = false;
 		    					for (var j = 0; j<respuesta.length ; j++)
 		    						{
-		    						
 		    						if (cedulas[i] == respuesta[j]['numero_cedula_empleados'])
 		    							{
 		    							vercid++;
 		    							cidext = true;
+
+		    		    				
 		    							if (idof != respuesta[j]['id_oficina'])
 		    								{
 		    								mismaoficina=false;
@@ -482,7 +495,7 @@ $("#mensaje_archivo").fadeOut("slow");
 		    						
 		    						}
 		    					}
-		     
+		    				
 		    				if (vercid==cedulas.length)
 		    					{
 		    					 if (vercid == respuesta.length)
@@ -554,18 +567,18 @@ $("#mensaje_archivo").fadeOut("slow");
 						    						var cedprob = [];
 						    						for (var i=0; i<arr.length; i++)
 						    						{
-						    							if (cid==arr[i]["Cédula"] && !farchivo.includes(arr[i]["Fecha"]))
+						    							if (cid==arr[i]["Cedula"] && !farchivo.includes(arr[i]["Fecha"]))
 					    			        			{
 					    			        			farchivo.push(arr[i]["Fecha"]);
 					    			        			}
 					    			        		else
 					    			        			{
-					    			        			if (cid!=arr[i]["Cédula"])
+					    			        			if (cid!=arr[i]["Cedula"])
 					    			        				{
 					    			        				
 					    			        				if (farchivo.length != dcontrol.length)
 				    			        					{
-				    			        				     cedprob.push(arr[i-1]["Cédula"]);
+				    			        				     cedprob.push(arr[i-1]["Cedula"]);
 				    			        					}
 				    			        				else
 				    			        					{
@@ -587,7 +600,7 @@ $("#mensaje_archivo").fadeOut("slow");
 					    			        				 		 var contador = 0
 						    			        				       for (var k=0; k<arr.length; k++)
 						    			        				    	   {
-						    			        				    	   if (cid==arr[k]["Cédula"] && f==arr[k]["Fecha"])
+						    			        				    	   if (cid==arr[k]["Cedula"] && f==arr[k]["Fecha"])
 						    			        				    		   {
 						    			        				    		   contador++;
 						    			        				    		   }
@@ -598,7 +611,7 @@ $("#mensaje_archivo").fadeOut("slow");
 					    			        					 });
 				    			        					  
 				    			        					}
-					    			        				 cid=arr[i]["Cédula"];
+					    			        				 cid=arr[i]["Cedula"];
 					    			        				 
 						    			        			 farchivo=[];
 						    			        			 i--;
@@ -607,7 +620,7 @@ $("#mensaje_archivo").fadeOut("slow");
 				    			        				{
 					    			        				if (farchivo.length != dcontrol.length)
 					    			        					{
-					    			        				     cedprob.push(arr[i]["Cédula"]);
+					    			        				     cedprob.push(arr[i]["Cedula"]);
 					    			        					}
 					    			        				else
 					    			        					{
@@ -628,7 +641,7 @@ $("#mensaje_archivo").fadeOut("slow");
 						    			        				 		var contador = 0
 							    			        				       for (var k=0; k<arr.length; k++)
 							    			        				    	   {
-							    			        				    	   if (cid==arr[k]["Cédula"] && f==arr[k]["Fecha"])
+							    			        				    	   if (cid==arr[k]["Cedula"] && f==arr[k]["Fecha"])
 							    			        				    		   {
 							    			        				    		   contador++;
 							    			        				    		   }
@@ -807,6 +820,7 @@ $("#mensaje_archivo").fadeOut("slow");
 		    					 }
 		    					 else
 		    					 {
+		    						 
 		    						 if(vercid < respuesta.length)
 		    							 {
 		    						 var cedinex=[];
@@ -856,8 +870,9 @@ $("#mensaje_archivo").fadeOut("slow");
 		    					}
 		    				else
 		    					{
+		    					console.log(vercid);
 		    					
-		    						var errmsg = "Las siguientes cedulas no existen, tienen un formato incorrecto o pertenecen a otra oficina :\n|";
+		    						var errmsg = "Las siguientes cédulas no existen, tienen un formato incorrecto o pertenecen a otra oficina :\n|";
 		    						
 			    					for (var i=0; i<incid.length ; i++)
 			    						{
@@ -939,7 +954,7 @@ function ReporteNomina()
  var mes = new Date().getMonth();
  var year = new Date().getFullYear();
  mes--;
- 
+ console.log(mes)
  var diainicio = 22;
  var diafinal = 21;
  var fechai = diainicio+"/"+mes+"/"+year;
@@ -1020,7 +1035,6 @@ function GenerarReporte()
 	 var mes = new Date().getMonth();
 	 var year = new Date().getFullYear();
 	 mes--;
-	 mes--;
 	 var diainicio = 22;
 	 var diafinal = 21;
 	 var fechai = diainicio+"/"+mes+"/"+year;
@@ -1042,6 +1056,7 @@ function GenerarReporte()
 		    },
 		})
 		.done(function(x) {
+			console.log(x);
 					if (!(x.includes("Warning")) && !(x.includes("Notice")))
 				{
 						swal({

@@ -269,7 +269,7 @@ class EmpleadosController extends ControladorBase{
         
     }
     
-    public function paginate_empleados($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
+    public function paginate_empleados($reload, $page, $tpages, $adjacents,$funcion='') {
         
         $prevlabel = "&lsaquo; Prev";
         $nextlabel = "Next &rsaquo;";
@@ -280,15 +280,15 @@ class EmpleadosController extends ControladorBase{
         if($page==1) {
             $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
         } else if($page==2) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion('$id_participe',1)'>$prevlabel</a></span></li>";
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
         }else {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page-1).")'>$prevlabel</a></span></li>";
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
             
         }
         
         // first label
         if($page>($adjacents+1)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion('$id_participe',1)'>1</a></li>";
+            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
         }
         // interval
         if($page>($adjacents+2)) {
@@ -303,9 +303,9 @@ class EmpleadosController extends ControladorBase{
             if($i==$page) {
                 $out.= "<li class='active'><a>$i</a></li>";
             }else if($i==1) {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion('$id_participe',1)'>$i</a></li>";
+                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
             }else {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".$i.")'>$i</a></li>";
+                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
             }
         }
         
@@ -318,13 +318,13 @@ class EmpleadosController extends ControladorBase{
         // last
         
         if($page<($tpages-$adjacents)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion('$id_participe',$tpages)'>$tpages</a></li>";
+            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
         }
         
         // next
         
         if($page<$tpages) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page+1).")'>$nextlabel</a></span></li>";
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
         }else {
             $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
         }

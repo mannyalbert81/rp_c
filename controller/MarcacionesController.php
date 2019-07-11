@@ -69,7 +69,8 @@ class MarcacionesController extends ControladorBase{
            
            foreach($resultEmp as $emp)
            {
-               
+               $currentdate=0;
+               $numregistros=0;
                foreach($resultSet as $res)
                {
                    
@@ -599,7 +600,8 @@ class MarcacionesController extends ControladorBase{
                 $reportenomina->setFuncion($funcion);
                 $reportenomina->setParametros($parametros);
                 $resultado=$reportenomina->Insert();
-               
+                
+                echo $resultado;
                 
                 $diastrabajo=0;
                 $numdiassintrabajo=0;
@@ -617,6 +619,7 @@ class MarcacionesController extends ControladorBase{
         $marcacion = new RegistroRelojEmpleadosModel();
         $fecha_inicio = $_POST['fecha_inicio'];
         $fecha_final = $_POST['fecha_final'];
+        
         
         $columnas="empleados.nombres_empleados,
                      empleados.numero_cedula_empleados,
@@ -708,9 +711,18 @@ class MarcacionesController extends ControladorBase{
         $textra=0;
         $textrac=0;
         $tdescuento=0;
+        
+        $numregistros=0;
+        
+        $numdiassintrabajo=0;
+        
+        $numdiastrabajo=0;
+        
+        $currentdate=0;
         foreach($resultSet as $res)
         {   
-            $dayOfWeek = date("D", strtotime($res->fecha_marcacion_empleados));
+            $dayOfWeek = date("D", strtotime($currentdate));
+           // echo "<h4>".$dayOfWeek."|".$res->fecha_marcacion_empleados."|".$currentdate."|".$res->numero_cedula_empleados."</h4>";
             
             if ($res->tipo_registro_empleados== "Entrada") $hent=$res->hora_marcacion_empleados;
             
@@ -724,10 +736,12 @@ class MarcacionesController extends ControladorBase{
                    
                     if($numregistros>0 && $numregistros<4)
                     {
+                        
                         $advertencias++;
                     }
                     if ($numregistros==0 && ($dayOfWeek!="Sat" && $dayOfWeek!="Sun") && $currentdate !=0)
                     {
+                        
                         $numdiassintrabajo++;
                     }
                     $numregistros=0;
@@ -841,8 +855,12 @@ class MarcacionesController extends ControladorBase{
      $html.='</tbody>';
      $html.='</table>';
      $html.='</section></div>';
+     $html.='<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+     <div class="form-group">
+     <button type="button" id="GenReport" name="GenReport" class="btn btn-primary" onclick="GenerarReporte()">Generar Reporte</button>
+     </div>
+     </div>';
      
-     echo $html;
     }
     else {
         $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
@@ -852,6 +870,7 @@ class MarcacionesController extends ControladorBase{
         $html.='</div>';
         $html.='</div>';
     }
+    echo $html;
    }
     
     public function ActualizarRegistros()
@@ -870,9 +889,10 @@ class MarcacionesController extends ControladorBase{
         AND '".$this->FormatoFecha($fecha_final)."' AND id_empleados IN (SELECT id_empleados FROM empleados WHERE id_oficina=".$id_oficina.")");
         $columnas = "empleados.id_empleados, empleados.numero_cedula_empleados";
         
-        $tablas = "public.empleados";
+        $tablas = "public.empleados INNER JOIN public.estado
+                   ON empleados.id_estado=estado.id_estado";
         
-        $where    = "1=1 AND id_estado=13";
+        $where    = "1=1 AND nombre_estado='ACTIVO'";
         
         $id       = "empleados.id_empleados";
         
@@ -883,15 +903,17 @@ class MarcacionesController extends ControladorBase{
           $id_empleado=0;
           foreach ($resultSet as $eid)
           {
-              if($res["Cédula"]==$eid->numero_cedula_empleados)
+              
+              if($res["Cedula"]==$eid->numero_cedula_empleados)
               {
+                  
                $id_empleado=$eid->id_empleados;   
               }
           }
           $fecha_marcacion=$this->FormatoFecha($res["Fecha"]);
           if (!(array_key_exists("Registro Entrada",$res)) || empty($res["Registro Entrada"]) )
           {
-              if($res["Horario"]=="MAÑANA")
+              if($res["Horario"]=="MAÑANA" || $res["Horario"]=="Mañana")
               {
               $parametros = $id_empleado.",NULL,'".$fecha_marcacion."',".$id_registro.",'Entrada'";
               }
@@ -902,7 +924,7 @@ class MarcacionesController extends ControladorBase{
           }
           else 
           {
-              if($res["Horario"]=="MAÑANA")
+              if($res["Horario"]=="MAÑANA" || $res["Horario"]=="Mañana")
               {
              $hora_marcacion=$res["Registro Entrada"];
           $parametros = "'$id_empleado',
@@ -930,7 +952,7 @@ class MarcacionesController extends ControladorBase{
           if (!(array_key_exists("Registro Salida",$res))|| empty($res["Registro Salida"]) )
           {
               
-              if($res["Horario"]=="MAÑANA")
+              if($res["Horario"]=="MAÑANA" || $res["Horario"]=="Mañana")
               {
                   $parametros = $id_empleado.",NULL,'".$fecha_marcacion."',".$id_registro.",'Salida Almuerzo'";
               }
@@ -941,7 +963,7 @@ class MarcacionesController extends ControladorBase{
           }
           else
           {
-              if($res["Horario"]=="MAÑANA")
+              if($res["Horario"]=="MAÑANA" || $res["Horario"]=="Mañana")
               {
                   $hora_marcacion=$res["Registro Salida"];
                   $parametros = "'$id_empleado',

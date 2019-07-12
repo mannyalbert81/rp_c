@@ -490,7 +490,7 @@ class MovimientosInvController extends ControladorBase{
 	        $where = "id_usuarios = $id_usuario ";
 	        $resultado=$temp_compras->deleteById($where);
 	        
-	        $this->redirect("MovimientosInv","compras");
+	        $this->redirect("MovimientosInv","IngresoMateriales");
 	    }
 	}
 	

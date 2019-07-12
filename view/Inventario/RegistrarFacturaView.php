@@ -130,7 +130,7 @@
                                     	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#mod_agregar_producto">
                                 			<span class="fa fa-pencil-square"></span> Registrar Producto
                               			</button>
-                              			<a class="btn btn-danger" href="<?php  echo $helper->url("MovimientosInv","cancelarcompra"); ?>"><i class="fa fa-long-arrow-right" aria-hidden="true"></i>CANCELAR</a>
+                              			<a class="btn btn-danger" href="<?php  echo $helper->url("MovimientosInv","cancelarcompra"); ?>"><i class="fa fa-long-arrow-right" aria-hidden="true"></i>ANULAR</a>
                                        
                                     </div>
                                </div>	

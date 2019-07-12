@@ -77,7 +77,7 @@
 									<div class="col-xs-12 col-md-3 col-md-3 ">
                         		  <div class="form-group">
                                   <label for="nombre_tipo_credito" class="control-label">Nombre</label>
-                                  <input type="text" class="form-control" id="nombre_tipo_credito" name="nombre_tipo_credito" value="<?php echo $resEdit->nombre_tipo_credito; ?>"  placeholder="Nombre de Crédito">
+                                  <input type="text" class="form-control" id="nombre_tipo_credito" name="nombre_tipo_credito" value="<?php echo $resEdit->nombre_tipo_creditos; ?>"  placeholder="Nombre de Crédito">
                                   <div id="mensaje_nombre_tipo_credito" class="errores"></div>
                                     </div>
                         		    </div>   
@@ -85,7 +85,7 @@
                         		    <div class="col-xs-12 col-md-3 col-md-3 ">
                         		  <div class="form-group">
                                   <label for="codigo_tipo_credito" class="control-label">Código</label>
-                                  <input type="text" class="form-control" id="codigo_tipo_credito" name="codigo_tipo_credito" value="<?php echo $resEdit->codigo_tipo_credito; ?>"  placeholder="Nombre de Código">
+                                  <input type="text" class="form-control" id="codigo_tipo_credito" name="codigo_tipo_credito" value="<?php echo $resEdit->codigo_tipo_creditos; ?>"  placeholder="Nombre de Código">
                                   <div id="mensaje_codigo_tipo_credito" class="errores"></div>
                                     </div>
                         		    </div> 
@@ -202,18 +202,18 @@
     						<?php $i++;?>
             	        		<tr>
             	                   <td > <?php echo $i; ?>  </td>
-            		               <td > <?php echo $res->nombre_tipo_credito; ?>     </td> 
-            		               <td > <?php echo $res->codigo_tipo_credito; ?>     </td> 
+            		               <td > <?php echo $res->nombre_tipo_creditos; ?>     </td> 
+            		               <td > <?php echo $res->codigo_tipo_creditos; ?>     </td> 
             		               <td > <?php echo $res->nombre_estado; ?>     </td> 
             		               <td>
             			           		<div class="right">
-            			                    <a href="<?php echo $helper->url("CoreTipoCredito","index"); ?>&id_tipo_credito=<?php echo $res->id_tipo_credito; ?>" class="btn btn-warning" style="font-size:65%;" data-toggle="tooltip" title="Editar"><i class='glyphicon glyphicon-edit'></i></a>
+            			                    <a href="<?php echo $helper->url("CoreTipoCredito","index"); ?>&id_tipo_credito=<?php echo $res->id_tipo_creditos; ?>" class="btn btn-warning" style="font-size:65%;" data-toggle="tooltip" title="Editar"><i class='glyphicon glyphicon-edit'></i></a>
             			                </div>
             			            
             			             </td>
             			             <td>   
             			                	<div class="right">
-            			                    <a href="<?php echo $helper->url("CoreTipoCredito","borrarId"); ?>&id_tipo_credito=<?php echo $res->id_tipo_credito; ?>" class="btn btn-danger" style="font-size:65%;" data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a>
+            			                    <a href="<?php echo $helper->url("CoreTipoCredito","borrarId"); ?>&id_tipo_credito=<?php echo $res->id_tipo_creditos; ?>" class="btn btn-danger" style="font-size:65%;" data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a>
             			                </div>
             			                
             		               </td>

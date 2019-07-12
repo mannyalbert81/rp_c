@@ -775,8 +775,6 @@ class GenerarChequeController extends ControladorBase{
                 AND c.tipo_cuenta_ccomprobantes = 'cxp'
                 AND c.transaccion_ccomprobantes = 'CHEQUE'";
 	    
-	    
-	    
 	    //para los parametros de where
 	    if(!empty($busqueda)){
 	        

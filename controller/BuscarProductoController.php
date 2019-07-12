@@ -13,17 +13,8 @@ class BuscarProductoController extends ControladorBase{
       
         
         session_start();
-        
-        $activosfdetalle=new ActivosFijosDetalleModel();
-      
-       
-        $oficina=new OficinaModel();
-        $resultOfi=$oficina->getAll("nombre_oficina");
-       
-        $tipoactivos=new TipoActivosModel();
-        $resultTipoac=$tipoactivos->getAll("nombre_tipo_activos_fijos");
-        
-        
+              
+        $productos= new ProductosModel();
         
         
             
@@ -34,9 +25,9 @@ class BuscarProductoController extends ControladorBase{
         if (isset(  $_SESSION['nombre_usuarios']) )
         {
             
-            $nombre_controladores = "ActivosFijosDetalle";
+            $nombre_controladores = "BuscarProducto";
             $id_rol= $_SESSION['id_rol'];
-            $resultPer = $activosfdetalle->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+            $resultPer = $productos->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
             
             if (!empty($resultPer))
             {
@@ -45,48 +36,36 @@ class BuscarProductoController extends ControladorBase{
                     
                   
                         
-                    $_id_activos_fijos = $_GET["id_activos_fijos"];
+                    $id_productos = $_GET["id_productos"];
                         $columnas = "
-                                      activos_fijos.id_activos_fijos, 
-                                      tipo_activos_fijos.id_tipo_activos_fijos, 
-                                      tipo_activos_fijos.nombre_tipo_activos_fijos, 
-                                      activos_fijos.nombre_activos_fijos, 
-                                      activos_fijos.codigo_activos_fijos, 
-                                      activos_fijos.valor_activos_fijos, 
-                                      activos_fijos.depreciacion_mensual_activos_fijos, 
-                                      activos_fijos_detalle.id_activos_fijos_detalle,
-                                      activos_fijos_detalle.anio_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_enero_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_febrero_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_marzo_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_abril_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_mayo_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_junio_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_julio_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_agosto_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_septiembre_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_octubre_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_noviembre_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_diciembre_depreciacion_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_depreciacion_acumulada_anio_activos_fijos_detalle, 
-                                      activos_fijos_detalle.valor_a_depreciar_siguiente_anio_activos_fijos_detalle, 
-                                      activos_fijos_detalle.creado, 
-                                      activos_fijos_detalle.modificado
+                                      productos.id_productos,
+                      grupos.id_grupos,
+                      grupos.nombre_grupos,
+                      unidad_medida.id_unidad_medida,
+                      unidad_medida.nombre_unidad_medida,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.descripcion_productos,
+                      productos.ult_precio_productos,
+                      productos.creado,
+                      productos.modificado,
+                      saldo_productos.saldos_f_saldo_productos, 
+                      saldo_productos.precio_costo_saldo_productos
+                      
                                     
                                     ";
                         
-                        $tablas   = " public.activos_fijos, 
-                                      public.oficina, 
-                                      public.tipo_activos_fijos, 
-                                      public.estado, 
-                                      public.usuarios";
-                        $where    = " public.activos_fijos, 
-                                      public.activos_fijos_detalle, 
-                                      public.tipo_activos_fijos, 
-                                      AND activos_fijos_detalle.id_activos_fijos_detalle, = '$_id_activos_fijos_detalle'";
-                        $id       = "activos_fijos.id_activos_fijos";
+                        $tablas   = " public.productos,
+                                      public.grupos,
+                                      public.unidad_medida,
+                                     public.saldo_productos";
+                        $where    = "productos.id_unidad_medida = unidad_medida.id_unidad_medida AND
+                      grupos.id_grupos = productos.id_grupos AND saldo_productos.id_productos = productos.id_productos 
+      AND public.productos= '$id_productos'";
+                        $id       = "productos.id_productos";
                         
-                        $resultEdit = $activosfdetalle->getCondiciones($columnas ,$tablas ,$where, $id);
+                        $resultEdit = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
                         
                     
                     
@@ -123,240 +102,6 @@ class BuscarProductoController extends ControladorBase{
         
     }
     
-    
-
-    
-    
-    public function consulta_activos_fijos_detalle(){
-        
-        
-        session_start();
-        $id_rol=$_SESSION["id_rol"];
-        $activos_fijos = new ActivosFijosModel();
-        $usuarios = new UsuariosModel();
-        $activos_detalle = null; $activos_detalle = new ActivosFijosDetalleModel();
-        $where_to="";
-        $columnas = "
-                      productos.id_productos,
-                      grupos.id_grupos,
-                      grupos.nombre_grupos,
-                      unidad_medida.id_unidad_medida,
-                      unidad_medida.nombre_unidad_medida,
-                      productos.codigo_productos,
-                      productos.marca_productos,
-                      productos.nombre_productos,
-                      productos.descripcion_productos,
-                      productos.ult_precio_productos,
-                      productos.creado,
-                      productos.modificado,
-                      saldo_productos.saldos_f_saldo_productos, 
-                      saldo_productos.precio_costo_saldo_productos
-                      
-                      ";
-        $tablas   = " 
-                     public.productos,
-                      public.grupos,
-                      public.unidad_medida,
-                     public.saldo_productos
-                    ";
-        $where    = "productos.id_unidad_medida = unidad_medida.id_unidad_medida AND
-                      grupos.id_grupos = productos.id_grupos AND saldo_productos.id_productos = productos.id_productos ";
-        $id       = "productos.id_productos";
-        
-        
-        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
-        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
-        
-        
-        if($action == 'ajax')
-        {
-            
-            if(!empty($search)){
-                
-                
-                $where1=" AND (productos.nombre_productosLIKE '".$search."%' )";
-                
-                $where_to=$where.$where1;
-            }else{
-                
-                $where_to=$where;
-                
-            }
-            
-            $html="";
-            $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
-            $cantidadResult=(int)$resultSet[0]->total;
-            
-            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-            
-            $per_page = 10; //la cantidad de registros que desea mostrar
-            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-            $offset = ($page - 1) * $per_page;
-            
-            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-            
-            $resultSet=$usuarios->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
-            $count_query   = $cantidadResult;
-            $total_pages = ceil($cantidadResult/$per_page);
-            
-            
-            
-            
-            
-            if($cantidadResult>0)
-            {
-                
-                $html.='<div class="pull-left" style="margin-left:15px;">';
-                $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-                $html.='</div>';
-                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-                $html.='<section style="height:425px; overflow-y:scroll;">';
-                $html.= "<table id='tabla_activos_fijos_detalle' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
-                $html.= "<thead>";
-                $html.= "<tr>";
-                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Grupo</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Marca</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Descripción</th>';
-                $html.='<th style="text-align: center; font-size: 12px;">Unidad Medida</th>';
-                $html.='<th style="text-align: center; font-size: 12px;">Cantidad en Físico</th>';
-                $html.='<th style="text-align: center; font-size: 12px;">Precio de Costo</th>';
-                $html.='<th style="text-align: center; font-size: 12px;">Importe</th>';
-                
-                
-                
-                
-              
-                $html.='</tr>';
-                $html.='</thead>';
-                $html.='<tbody>';
-                
-                
-                $i=0;
-                $importe=0;
-                foreach ($resultSet as $res)
-                {
-                    $i++;
-                    $html.='<tr>';
-                    $html.='<td style="text-align: center; font-size: 11px;">'.$i.'</td>';
-                    $importe=( $res->saldos_f_saldo_productos)*( $res->precio_costo_saldo_productos);
-                    $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->marca_productos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->descripcion_productos.'</td>';
-                    $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_unidad_medida.'</td>';
-                    $html.='<td style="text-align: center; font-size: 11px;">'.(int)$res->saldos_f_saldo_productos.'</td>';
-                    $html.='<td style="text-align: center; font-size: 11px;">'.$res->precio_costo_saldo_productos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$importe= number_format($importe, 2, '.', ' ').'</td>';
-                    $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=BuscarProducto&action=generar_reporte_productos&id_productos='.$res->id_productos.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
-                    
-                    
-                    
-                  
-                    
-                  
-                    $html.='</tr>';
-                }
-                
-                
-                
-                $html.='</tbody>';
-                $html.='</table>';
-                $html.='</section></div>';
-                $html.='<div class="table-pagination pull-right">';
-                $html.=''. $this->paginate_activos_fijos("index.php", $page, $total_pages, $adjacents).'';
-                $html.='</div>';
-                
-                
-                
-            }else{
-                $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
-                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay Activos fijos registrados...</b>';
-                $html.='</div>';
-                $html.='</div>';
-            }
-            
-            
-            echo $html;
-            die();
-            
-        }
-        
-        
-        
-        
-    }
-    
-    
-    public function paginate_activos_fijos($reload, $page, $tpages, $adjacents) {
-        
-        $prevlabel = "&lsaquo; Prev";
-        $nextlabel = "Next &rsaquo;";
-        $out = '<ul class="pagination pagination-large">';
-        
-        // previous label
-        
-        if($page==1) {
-            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-        } else if($page==2) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='load_activos_fijos_detalle(1)'>$prevlabel</a></span></li>";
-        }else {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='load_activos_fijos_detalle(".($page-1).")'>$prevlabel</a></span></li>";
-            
-        }
-        
-        // first label
-        if($page>($adjacents+1)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='load_activos_fijos_detalle(1)'>1</a></li>";
-        }
-        // interval
-        if($page>($adjacents+2)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        // pages
-        
-        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-        for($i=$pmin; $i<=$pmax; $i++) {
-            if($i==$page) {
-                $out.= "<li class='active'><a>$i</a></li>";
-            }else if($i==1) {
-                $out.= "<li><a href='javascript:void(0);' onclick='load_activos_fijos_detalle(1)'>$i</a></li>";
-            }else {
-                $out.= "<li><a href='javascript:void(0);' onclick='load_activos_fijos_detalle(".$i.")'>$i</a></li>";
-            }
-        }
-        
-        // interval
-        
-        if($page<($tpages-$adjacents-1)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        // last
-        
-        if($page<($tpages-$adjacents)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='load_activos_fijos_detalle($tpages)'>$tpages</a></li>";
-        }
-        
-        // next
-        
-        if($page<$tpages) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='load_activos_fijos_detalle(".($page+1).")'>$nextlabel</a></span></li>";
-        }else {
-            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-        }
-        
-        $out.= "</ul>";
-        return $out;
-    }
     
     
     public function generar_reporte_productos () {
@@ -574,7 +319,319 @@ class BuscarProductoController extends ControladorBase{
         
         
     }
+   
+    
+    public function consulta_productos(){
+        
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        
+        $productos= new ProductosModel();
+        
+        $where_to="";
+        $columnas = " productos.id_productos,
+                      grupos.id_grupos,
+                      grupos.nombre_grupos,
+                      unidad_medida.id_unidad_medida,
+                      unidad_medida.nombre_unidad_medida,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.descripcion_productos,
+                      productos.ult_precio_productos,
+                      productos.creado,
+                      productos.modificado,
+                      saldo_productos.saldos_f_saldo_productos, 
+                      saldo_productos.precio_costo_saldo_productos,
+                      saldo_productos.entradas_f_saldo_productos , 
+                      saldo_productos.salidas_f_saldo_productos 
+                        
+                      ";
+        
+        $tablas = "  public.productos,
+                      public.grupos,
+                      public.unidad_medida,
+                     public.saldo_productos ";
+        
+        
+        $where    = "productos.id_unidad_medida = unidad_medida.id_unidad_medida AND
+                      grupos.id_grupos = productos.id_grupos AND saldo_productos.id_productos = productos.id_productos";
+        
+        $id       = " productos.id_productos";
+        
+        
+        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        
+        if($action == 'ajax')
+        {
+            
+            
+            if(!empty($search)){
+                
+                
+                $where1=" AND (nombre_productos LIKE '".$search."%' )";
+                
+                $where_to=$where.$where1;
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            
+            $html="";
+            $resultSet=$productos->getCantidad("*", $tablas, $where_to);
+            $cantidadResult=(int)$resultSet[0]->total;
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 10; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            
+            $resultSet=$productos->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+            $count_query   = $cantidadResult;
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            
+            
+            
+            
+            if($cantidadResult>0)
+            {
+                
+                $html.='<div class="pull-left" style="margin-left:15px;">';
+                $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                $html.='</div>';
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<section style="height:425px; overflow-y:scroll;">';
+                $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<thead>";
+                $html.= "<tr>";
+                $html.='<th colspan="2" style=" text-align: center; font-size: 11px;">Código</th>';
+                $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Marca</th>';
+                $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Nombre</th>';
+                $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Descripción</th>';
+                $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Entradas</th>';
+                $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Salidas</th>';
+                $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Disponible</th>';
+                $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Precio Costo</th>';
+                
+                $html.='</tr>';
+                $html.='</thead>';
+                $html.='<tbody>';
+                
+                
+                $i=0;
+                
+                foreach ($resultSet as $res)
+                {
+                    $i++;
+                    $html.='<tr>';
+                    $html.='<tr >';
+                    $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->codigo_productos.'</td>';
+                    $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->marca_productos.'</td>';
+                    $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_productos.'</td>';
+                    $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->descripcion_productos.'</td>';
+                    $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->entradas_f_saldo_productos.'</td>';
+                    $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->salidas_f_saldo_productos.'</td>';
+                    $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->saldos_f_saldo_productos.'</td>';
+                    $html.='<td colspan="2" style=" font-size: 11px;" align="right";>'.$res->precio_costo_saldo_productos.'</td>';
+                    $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=BuscarProducto&action=generar_reporte_productos&id_productos='.$res->id_productos.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+                    
+                    
+                    $html.='</tr>';
+                }
+                
+                
+                
+                $html.='</tbody>';
+                $html.='</table>';
+                $html.='</section></div>';
+                $html.='<div class="table-pagination pull-right">';
+                $html.=''. $this->paginate_productos("index.php", $page, $total_pages, $adjacents).'';
+                $html.='</div>';
+                
+                
+                
+            }else{
+                $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay Productos registrados...</b>';
+                $html.='</div>';
+                $html.='</div>';
+            }
+            
+            
+            echo $html;
+            die();
+            
+        }
+    }
+    
+    
+    
+    public function paginate_productos($reload, $page, $tpages, $adjacents) {
+        
+        $prevlabel = "&lsaquo; Prev";
+        $nextlabel = "Next &rsaquo;";
+        $out = '<ul class="pagination pagination-large">';
+        
+        // previous label
+        
+        if($page==1) {
+            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+        } else if($page==2) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_buscar_productos(1)'>$prevlabel</a></span></li>";
+        }else {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_buscar_productos(".($page-1).")'>$prevlabel</a></span></li>";
+            
+        }
+        
+        // first label
+        if($page>($adjacents+1)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='load_buscar_productos(1)'>1</a></li>";
+        }
+        // interval
+        if($page>($adjacents+2)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // pages
+        
+        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+        for($i=$pmin; $i<=$pmax; $i++) {
+            if($i==$page) {
+                $out.= "<li class='active'><a>$i</a></li>";
+            }else if($i==1) {
+                $out.= "<li><a href='javascript:void(0);' onclick='load_buscar_productos(1)'>$i</a></li>";
+            }else {
+                $out.= "<li><a href='javascript:void(0);' onclick='load_buscar_productos(".$i.")'>$i</a></li>";
+            }
+        }
+        
+        // interval
+        
+        if($page<($tpages-$adjacents-1)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // last
+        
+        if($page<($tpages-$adjacents)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='load_buscar_productos($tpages)'>$tpages</a></li>";
+        }
+        
+        // next
+        
+        if($page<$tpages) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_buscar_productos(".($page+1).")'>$nextlabel</a></span></li>";
+        }else {
+            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+        }
+        
+        $out.= "</ul>";
+        return $out;
+    }
     
    
+    public function reporte_stock_productos(){
+        session_start();
+        $entidades = new EntidadesModel();
+        //PARA OBTENER DATOS DE LA EMPRESA
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        //NOTICE DATA
+        $datos_cabecera = array();
+        $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+        $datos_cabecera['FECHA'] = date('Y/m/d');
+        $datos_cabecera['HORA'] = date('h:i:s');
+        
+        
+        $productos=new SaldoProductosModel();
+        $datos_reporte = array();
+        
+        //////retencion detalle
+        
+        $columnas = " productos.id_productos,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.descripcion_productos,
+                      productos.ult_precio_productos,
+                      saldo_productos.entradas_f_saldo_productos,
+                      saldo_productos.salidas_f_saldo_productos,
+                      saldo_productos.saldos_f_saldo_productos,
+                      saldo_productos.precio_costo_saldo_productos";
+        
+        $tablas = "  public.productos,
+                     public.saldo_productos";
+        $where= "saldo_productos.id_productos = productos.id_productos";
+        $id="productos.id_productos";
+        
+        $productos_detalle = $productos->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $html='';
+        
+        
+        $html.='<table class="info" style="width:98px;" border=1>';
+        $html.='<tr>';
+        $html.='<th colspan="2" style=" text-align: center; font-size: 11px;">Código</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Marca</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Nombre</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Descripción</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Entradas</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Salidas</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Disponible</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Precio Costo</th>';
+        $html.='</tr>';
+        
+        
+        
+        
+        foreach ($productos_detalle as $res)
+        {
+            
+            $html.='<tr >';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->codigo_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->marca_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->descripcion_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="center";>'.(int)$res->entradas_f_saldo_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="center";>'.(int)$res->salidas_f_saldo_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="center";>'.(int)$res->saldos_f_saldo_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="right";>'.$res->precio_costo_saldo_productos.'</td>';
+            
+            
+            $html.='</td>';
+            $html.='</tr>';
+        }
+        
+        $html.='</table>';
+        
+        $datos_reporte['DETALLE_PRODUCTOS']= $html;
+        
+        $this->verReporte("StockProductos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+        
+        
+    }
+    
 }
 ?>

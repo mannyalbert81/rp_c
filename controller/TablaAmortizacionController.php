@@ -59,7 +59,142 @@ class TablaAmortizacionController extends ControladorBase{
 	    $datos_cabecera['FECHA'] = date('Y/m/d');
 	    $datos_cabecera['HORA'] = date('h:i:s');
 	    
-	    $this->verReporte("TablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera));
+	    $tab_amortizacion= new TablaAmortizacionModel();
+	    $id_creditos =  (isset($_REQUEST['id_creditos'])&& $_REQUEST['id_creditos'] !=NULL)?$_REQUEST['id_creditos']:'';
+	    
+	    
+	    $datos_reporte = array();
+	    
+	    $columnas = " core_creditos.id_creditos, 
+                      core_tipo_creditos.codigo_tipo_creditos,
+                      core_creditos.numero_creditos, 
+                      core_creditos.fecha_concesion_creditos, 
+                      core_participes.id_participes, 
+                      core_participes.apellido_participes, 
+                      core_participes.nombre_participes, 
+                      core_participes.cedula_participes, 
+                      core_entidad_patronal.id_entidad_patronal, 
+                      core_entidad_patronal.nombre_entidad_patronal, 
+                      core_tipo_creditos.nombre_tipo_creditos, 
+                      core_creditos.plazo_creditos, 
+                      core_estado_creditos.nombre_estado_creditos, 
+                      core_creditos.monto_otorgado_creditos, 
+                      core_creditos.saldo_actual_creditos, 
+                      core_creditos.monto_neto_entregado_creditos, 
+                      core_creditos.fecha_servidor_creditos, 
+                      core_creditos.interes_creditos";
+	    
+	    $tablas = "   public.core_tipo_creditos, 
+                      public.core_creditos, 
+                      public.core_participes, 
+                      public.core_estado_creditos, 
+                      public.core_entidad_patronal";
+	    $where= "     core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos AND
+                      core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos AND
+                      core_participes.id_participes = core_creditos.id_participes AND
+                      core_participes.id_entidad_patronal = core_entidad_patronal.id_entidad_patronal
+                      AND core_creditos.id_creditos ='$id_creditos'";
+	    $id="core_creditos.id_creditos";
+	    
+	    $rsdatos = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    $datos_reporte['CODCREDITO']=$rsdatos[0]->codigo_tipo_creditos;
+	    $datos_reporte['NUMCREDITO']=$rsdatos[0]->numero_creditos;
+	    $datos_reporte['FECHACONCRED']=$rsdatos[0]->fecha_concesion_creditos;
+	    $datos_reporte['APELLPARTICIPE']=$rsdatos[0]->apellido_participes;
+	    $datos_reporte['NOMPARICIPE']=$rsdatos[0]->nombre_participes;
+	    $datos_reporte['CEDPARTICIPE']=$rsdatos[0]->cedula_participes;
+	    $datos_reporte['ENTIDADPATRON']=$rsdatos[0]->nombre_entidad_patronal;
+	    $datos_reporte['TIPOPRESTAMO']=$rsdatos[0]->nombre_tipo_creditos;
+	    $datos_reporte['PLAZO']=$rsdatos[0]->plazo_creditos;
+	    $datos_reporte['TAZA']=$rsdatos[0]->interes_creditos;
+	    $datos_reporte['ESTADO']=$rsdatos[0]->nombre_estado_creditos;
+	    $datos_reporte['MONTO']=$rsdatos[0]->monto_otorgado_creditos;
+	    $datos_reporte['SALDO']=$rsdatos[0]->saldo_actual_creditos;
+	    $datos_reporte['MONTORECIBIR']=$rsdatos[0]->monto_neto_entregado_creditos;
+	   	    
+
+	    
+	    //////retencion detalle
+	    
+	    $columnas = " core_creditos.id_creditos, 
+                      core_tabla_amortizacion.fecha_tabla_amortizacion, 
+                      core_tabla_amortizacion.capital_tabla_amortizacion, 
+                      core_tabla_amortizacion.interes_tabla_amortizacion, 
+                      core_tabla_amortizacion.mora_tabla_amortizacion, 
+                      core_estado_tabla_amortizacion.nombre_estado_tabla_amortizacion, 
+                      core_tabla_amortizacion.total_valor_tabla_amortizacion";
+	    
+	    $tablas = "   public.core_creditos, 
+                      public.core_tabla_amortizacion, 
+                      public.core_estado_tabla_amortizacion";
+	    $where= "   core_tabla_amortizacion.id_creditos = core_creditos.id_creditos AND
+                    core_estado_tabla_amortizacion.id_estado_tabla_amortizacion = core_tabla_amortizacion.id_estado_tabla_amortizacion
+                    AND core_creditos.id_creditos ='$id_creditos'";
+	    $id="core_creditos.id_creditos";
+	    
+	    $amortizacion_detalle = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    
+	    
+	    
+	    
+	    $html='';
+	    
+	    
+	    $html.='<table class="info" style="width:88%;" border=1 >';
+	    $html.='<tr>';
+	    $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Fecha</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Capital</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Gastos Adm.</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Seguro Desgrav.</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Otros</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Intereses</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Mora</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Cuota</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Saldo Final</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Saldo Capital</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Estado</th>';
+	    $html.='</tr>';
+	    
+	    
+	    $i=0;
+	    
+	    foreach ($amortizacion_detalle as $res)
+	    {
+	     
+	        
+	        $i++;
+	        $html.='<tr >';
+	        $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->interes_tabla_amortizacion.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_estado_tabla_amortizacion.'</td>';
+	        
+	        
+	        
+	        $html.='</td>';
+	        $html.='</tr>';
+	    }
+	    
+	    $html.='</table>';
+	    
+	    $datos_reporte['DETALLE_AMORTIZACION']= $html;
+	    
+	    
+	    
+	    
+	    
+	    $this->verReporte("TablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
 	    
 	  
 	}

@@ -109,6 +109,11 @@
            		<div id="aportes_participe" ></div>
            		</div>
            	</div>
+           	<div class="row">
+           		<div class="col-xs-12 col-md-12 col-lg-12 ">
+           		<div id="creditos_participe" ></div>
+           		</div>
+           	</div>
           </div>
         </div>
         
@@ -148,6 +153,6 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/Credito/js/BuscarParticipes.js?0.3"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?0.4"></script> 
    </body>
 </html>   

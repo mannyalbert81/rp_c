@@ -584,11 +584,11 @@ class ProveedoresController extends ControladorBase{
 	            $html.='<tr>';
 	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
 	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->identificacion_proveedores.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->nombre_proveedores.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->contactos_proveedores.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->direccion_proveedores.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->telefono_proveedores.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->email_proveedores.'</td>';
 	            $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
 	            $html.='<a title="Generar Cheque" href="index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_proveedores.'">';
 	            $html.='<i class="glyphicon glyphicon-usd"></i></a></span></td>';

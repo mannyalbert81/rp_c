@@ -36,7 +36,7 @@ class CoreTipoCreditoModel extends ModeloBase{
 
 
 	public function __construct(){
-		$this->table="core_tipo_credito";
+		$this->table="core_tipo_creditos";
 	
 		parent::__construct($this->table);
 	}

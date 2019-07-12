@@ -14,13 +14,14 @@
 		</tr>
 	    </table>
 	    <br>
+	
 	  <div class="izq" >
 	  <table >
 	  <tr>
 	  <td width=80px><strong>Prestamo No:</strong></td>
-	  <td width=90px>2x1-349</td>
+	  <td width=90px>{CODCREDITO}-{NUMCREDITO}</td>
 	  <td width=90px><strong>Fecha Solicitud:</strong></td>
-	  <td width=20px>20-06-2019</td>
+	  <td width=20px>{FECHACONCRED}</td>
 	  </tr>
 	  </table>
 	  <table >
@@ -28,21 +29,21 @@
 	  <td width=80px>&nbsp;</td>
 	  <td width=90px>&nbsp;</td>
 	  <td width=90px><strong>Fecha-Acreed:</strong></td>
-	  <td width=20px>{Fecha}</td>
+	  <td width=20px>{FECHACONCRED}</td>
 	  </tr>
 	  </table>
 	  <table >
 	  <tr>
 	  <td width=75px><strong>Nombre:</strong></td>
-	  <td width=250px>MONTESDEOCA FLORES JANNET LEONOR</td>
+	  <td width=250px>{APELLPARTICIPE}&nbsp;{NOMPARICIPE}</td>
 	  </tr>
 	  <tr>
 	  <td width=75px><strong>Identificación:</strong></td>
-	  <td width=250px>0912484771</td>
+	  <td width=250px>{CEDPARTICIPE}</td>
 	  </tr>
 	  <tr>
 	  <td width=75px><strong>Entidad Patronal:</strong></td>
-	  <td width=250px>COMANDANCIA GENERAL DE LA FUERZA AÉREA</td>
+	  <td width=250px>{ENTIDADPATRON}</td>
 	  </tr>
 	  </table>
 	  </div>
@@ -50,7 +51,7 @@
 	<table >
 	  <tr>
 	  <td width=100px><strong>Tipo de Préstamo:</strong></td>
-	  <td width=250px>PQ-Crédito 2x1</td>
+	  <td width=250px>{TIPOPRESTAMO}</td>
 	  </tr>
 	  </table>
 	  <table >
@@ -58,19 +59,19 @@
 	  <td width=80px><strong>Típo cuota:</strong></td>
 	  <td width=90px>Fija</td>
 	  <td width=40px><strong>Plazo:</strong></td>
-	  <td width=50px>72 meses</td>
+	  <td width=50px>{PLAZO} meses</td>
 	  </tr>
 	  </table>
 	  <table >
 	  <tr>
 	  <td width=100px><strong>Tasa:</strong></td>
-	  <td width=250px>9.00 % mensuales</td>
+	  <td width=250px>{TAZA} % mensuales</td>
 	  </tr>
 	  </table>
 	  <table >
 	  <tr>
 	  <td width=100px><strong>Estado:</strong></td>
-	  <td width=250px>Cancelado</td>
+	  <td width=250px>{ESTADO}</td>
 	  </tr>
 	  <tr>
 	  <td width=100px><strong>&nbsp;<br>&nbsp;</strong></td>
@@ -88,25 +89,25 @@
 	 <tr>
 	  <tr>
 	  <td width=75px><strong>Nombre:</strong></td>
-	  <td width=250px>MONTESDEOCA FLORES JANNET LEONOR</td>
+	  <td width=250px></td>
 	  </tr>
 	  </table>
 	  <table >
 	  <tr>
 	  <td width=75px><strong>Cédula:</strong></td>
-	  <td width=100px>0912484771</td>
-	  <td width=20px><strong>Cargo:</strong></td>
-	  <td width=30px>CONTADOR</td>
+	  <td width=100px></td>
+	  <td width=20px><strong></strong></td>
+	  <td width=30px></td>
 	  </tr>
 	  </table>
 	  <table >
 	  <tr>
 	  <td width=75px><strong>Entidad Patronal:</strong></td>
-	  <td width=250px>COMANDANCIA GENERAL DE LA FUERZA AÉREA</td>
+	  <td width=250px></td>
 	  </tr>
 	  <tr>
 	  <td width=75px><strong>Teléfono:</strong></td>
-	  <td width=250px>0912484771</td>
+	  <td width=250px></td>
 	  </tr>
 	  </table>
 	  
@@ -121,7 +122,7 @@
 	  <table>
 	  <tr>
 	  <td width=100px><strong>Mónto:</strong></td>
-	  <td width=80px align="right">10,240.00</td>
+	  <td width=80px align="right">{MONTO}</td>
 	  <td width=50px><strong>Moneda:</strong></td>
 	  <td width=25px>DÓLARES</td>
 	  </tr>
@@ -129,18 +130,21 @@
 	  <table>
 	  <tr>
 	  <td width=100px><strong>Saldo:</strong></td>
-	  <td width=80px align="right">0.00</td>
+	  <td width=80px align="right">{SALDO}</td>
 	  <td width=50px><strong>&nbsp;</strong></td>
 	  <td width=25px>&nbsp;</td>
 	  </tr>
 	  <tr>
 	  <td width=100px><strong>Mónto a Recibir:</strong></td>
-	  <td width=80px align="right">0.00</td>
+	  <td width=80px align="right">{MONTORECIBIR}</td>
 	  <td width=50px><strong>&nbsp;</strong></td>
 	  <td width=25px>&nbsp;</td>
 	  </tr>
 	  </table>
-	    
 	</div>
+	</div>
+	<br>
+	 <div>{DETALLE_AMORTIZACION}</div>
+	
   </body>
   </html>

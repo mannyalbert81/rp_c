@@ -33,6 +33,7 @@ function BuscarParticipe()
 			$('#participe_encontrado').html(y[0]);
 		     id_participe=y[1];
 			AportesParticipe(id_participe, 1)
+			CreditosActivosParticipe(id_participe, 1)
 			
 		})
 		.fail(function() {
@@ -54,6 +55,27 @@ function AportesParticipe(id, page)
 	.done(function(x) {
 		console.log(x);
 		$('#aportes_participe').html(x);
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+}
+
+function CreditosActivosParticipe(id, page)
+{
+	$.ajax({
+	    url: 'index.php?controller=BuscarParticipes&action=CreditosActivosParticipe',
+	    type: 'POST',
+	    data: {
+	    	   id_participe: id,
+	    	   page: page
+	    },
+	})
+	.done(function(x) {
+		console.log(x);
+		$('#creditos_participe').html(x);
 		
 		
 	})

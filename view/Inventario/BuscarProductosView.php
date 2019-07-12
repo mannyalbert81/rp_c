@@ -56,32 +56,30 @@
     </section>
 
     
-    <section class="content">
+ <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Listado Productos</h3>
+              <h3 class="box-title">Stock de Productos</h3>
               <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Minimizar">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
                 
               </div>
             </div>
             
             <div class="box-body">
-            
+
            <br>
-              <div class="tab-pane active" id="activos">
+              <div class="tab-pane active" id="productos">
                 
 					<div class="pull-right" style="margin-right:15px;">
-						<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="load_activos_fijos_detalle(1)" placeholder="search.."/>
+						<input type="text" value="" class="form-control" id="search_buscar_productos" name="search_buscar_productos" onkeyup="load_buscar_productos(1)" placeholder="search.."/>
 					</div>
-					<div id="load_activos_fijos_detalle" ></div>	
-					<div id="activos_fijos_registrados_detalle"></div>	
+					<div id="load_buscar_productos" ></div>	
+					<div id="productos_registrados"></div>	
                 
               </div>
-              
-         
-            
+            <a href="index.php?controller=BuscarProducto&action=reporte_stock_productos" target="_blank"><input type="image" src="view/images/print.png" alt="Submit" width="50" height="34" formtarget="_blank" id="btngenerar" name="btngenerar" class="btn btn-default" title="Exportar Pdf"></label></a>
             </div>
             </div>
             </section>
@@ -109,76 +107,55 @@
      }
     </script> 
     
-    
-	<script type="text/javascript">
-     
+<script type="text/javascript">
+
         	   $(document).ready( function (){
         		   
-        		   load_activos_fijos_detalle(1);
-        		   
+        		 
+        		   load_buscar_productos(1);
         		   
 	   			});
 
         	
 
 
-	   function load_activos_fijos_detalle(pagina){
+	   function load_buscar_productos(pagina){
 
-		   var search=$("#search_activos").val();
+		   var search=$("#search_buscar_productos").val();
 	       var con_datos={
 					  action:'ajax',
 					  page:pagina
 					  };
 			  
-	     $("#load_activos_fijos_detalle").fadeIn('slow');
+	     $("#load_buscar_productos").fadeIn('slow');
 	     
 	     $.ajax({
 	               beforeSend: function(objeto){
-	                 $("#load_activos_fijos_detalle").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	                 $("#load_buscar_productos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	               },
-	               url: 'index.php?controller=BuscarProducto&action=consulta_activos_fijos_detalle&search='+search,
+	               url: 'index.php?controller=BuscarProducto&action=consulta_productos&search='+search,
 	               type: 'POST',
 	               data: con_datos,
 	               success: function(x){
-	                 $("#activos_fijos_registrados_detalle").html(x);
-	                 $("#load_activos_fijos_detalle").html("");
-	                 $("#tabla_activos_fijos_detalle").tablesorter(); 
+	                 $("#productos_registrados").html(x);
+	                 $("#load_buscar_productos").html("");
+	                 $("#tabla_productos").tablesorter(); 
 	                 
 	               },
 	              error: function(jqXHR,estado,error){
-	                $("#activos_fijos_registrados_detalle").html("Ocurrio un error al cargar la informacion de Detalle Activos..."+estado+"    "+error);
+	                $("#productos_registrados").html("Ocurrio un error al cargar la informacion de Productos..."+estado+"    "+error);
 	              }
 	            });
 
 
 		   }
 
+
+
  </script>
 	
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-       <script>
-      $(document).ready(function(){
-      $(".cantidades1").inputmask();
-      });
-	  </script>
-	
-	<script>
-      var app = angular.module('myApp', []);
-      app.controller('myCtrl', function($scope, $http) {
-        $scope.years = [];
-        $scope.year = new Date().getFullYear();
-        $scope.months = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
-        $scope.month = $scope.months[new Date().getMonth()];
-        
-        for (var i = 0; i < 1; i++) {
-            $scope.years.push($scope.year-i);
-            //console.log($scope.year-i);
-        }  
-    })
-    </script>  
-
-
-	  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  	  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
       
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>

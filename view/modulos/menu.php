@@ -147,8 +147,7 @@ $controladores=$_SESSION['controladores'];
           </a>
           <ul class="treeview-menu">
             <li style="<?php echo getcontrolador("BuscarProducto",$controladores) ?>"><a href="index.php?controller=BuscarProducto&action=index"><i class="fa fa-circle-o"></i> Consultar Productos</a></li>
-		 	<li style="<?php echo getcontrolador("StockProductos",$controladores) ?>"><a href="index.php?controller=StockProductos&action=index"><i class="fa fa-circle-o"></i>Stock</a></li>
-		  </ul>
+		 	</ul>
         </li>
        </ul>
       </li>
@@ -313,7 +312,7 @@ $controladores=$_SESSION['controladores'];
       
       <li class="treeview"  style="<?php echo getcontrolador("MenuInventario",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Crédito</span>
+            <i class="fa fa-folder"></i> <span>Recaudaciones</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -426,7 +425,7 @@ $controladores=$_SESSION['controladores'];
       </li>
             <li class="treeview"  style="<?php echo getcontrolador("MenuCore",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Core</span>
+            <i class="fa fa-folder"></i> <span>Crédito</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -446,9 +445,7 @@ $controladores=$_SESSION['controladores'];
        	  		<li style="<?php echo getcontrolador("Estatus",$controladores) ?>"><a href="index.php?controller=Estatus&action=index"><i class="fa fa-circle-o"></i>Estatus</a></li>
        	  		<li style="<?php echo getcontrolador("ContribucionTipo",$controladores) ?>"><a href="index.php?controller=ContribucionTipo&action=index"><i class="fa fa-circle-o"></i>Contribucion Tipo</a></li>
      			<li style="<?php echo getcontrolador("CoreDiarioTipo",$controladores) ?>"><a href="index.php?controller=CoreDiarioTipo&action=index"><i class="fa fa-circle-o"></i> Diario Tipo</a></li>
- 				<li style="<?php echo getcontrolador("EstadoMarital",$controladores) ?>"><a href="index.php?controller=EstadoMarital&action=index"><i class="fa fa-circle-o"></i>Estado Marital</a></li>
-           	    <li style="<?php echo getcontrolador("CoreEmpleo",$controladores) ?>"><a href="index.php?controller=CoreEmpleo&action=index"><i class="fa fa-circle-o"></i>Empleo</a></li>
-				<li style="<?php echo getcontrolador("Participes",$controladores) ?>"><a href="index.php?controller=Participes&action=index"><i class="fa fa-circle-o"></i>Participes</a></li>
+ 				<li style="<?php echo getcontrolador("Participes",$controladores) ?>"><a href="index.php?controller=Participes&action=index"><i class="fa fa-circle-o"></i>Participes</a></li>
 				<li style="<?php echo getcontrolador("CoreEntidadPatronal",$controladores) ?>"><a href="index.php?controller=CoreEntidadPatronal&action=index"><i class="fa fa-circle-o"></i>Entidad Patronal</a></li>
 				<li style="<?php echo getcontrolador("Bancos",$controladores) ?>"><a href="index.php?controller=Bancos&action=index_cuentas"><i class="fa fa-circle-o"></i>Tipo Cuentas</a></li>
            </ul>           	 

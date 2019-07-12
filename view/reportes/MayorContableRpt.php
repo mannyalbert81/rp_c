@@ -3,9 +3,24 @@
 include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
  
 //echo getcwd().''; //para ver ubicacion de directorio
-
+$header = file_get_contents('view/reportes/template/CabeceraFinal.html');
 $template = file_get_contents('view/reportes/template/MayorContable.html');
 
+if(!empty($datos_cabecera))
+{
+    
+    foreach ($datos_cabecera as $clave=>$valor) {
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
+
+if(!empty($datos_empresa))
+{
+    
+    foreach ($datos_empresa as $clave=>$valor) {
+        $header = str_replace('{'.$clave.'}', $valor, $header);
+    }
+}
 //$template = file_get_contents('template/DiarioContable.html');
 
 //para la numeracion de pagina
@@ -46,7 +61,10 @@ $mpdf->allow_charset_conversion = true;
 $mpdf->charset_in = 'UTF-8';
 $mpdf->setAutoTopMargin = 'stretch';
 $mpdf->setAutoBottomMargin = 'stretch';
+$mpdf->SetHTMLHeader(utf8_encode($header));
 $mpdf->SetHTMLFooter($footer);
+$stylesheet = file_get_contents('view/reportes/template/mayorContable.css');
+$mpdf->WriteHTML($stylesheet,1);
 $mpdf->WriteHTML($template);
 $mpdf->debug = true;
 $mpdf->Output();

@@ -46,7 +46,7 @@ class BancosController extends ControladorBase{
 	
 	public function index_cuentas(){
 	    
-	    $tipo_cuentas = new CoreTipoCuentasModel();
+	    $tipo_cuentas = new TipoCuentasModel();
 	    
 	    session_start();
 	    

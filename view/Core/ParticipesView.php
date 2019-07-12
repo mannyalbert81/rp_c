@@ -775,7 +775,7 @@
                       <div class="row">
             			    <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
-            	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
+            	                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
         	                      <a href="index.php?controller=Participes&action=index" class="btn btn-primary"><i class='glyphicon glyphicon-remove'></i> Cancelar</a>
         	                    </div>
     	        		    </div>
@@ -882,8 +882,9 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
     <script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
- <script type="text/javascript" src="view/Core/js/wizardParticipes.js?0.22"></script>
- <script src="view/Core/js/Participes.js?3.1" ></script>
+ <script type="text/javascript" src="view/Core/js/wizardParticipes.js?0.25"></script>
+ <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+ <script src="view/Core/js/Participes.js?3.6" ></script>
  <script type="text/javascript">
 
         	   $(document).ready( function (){

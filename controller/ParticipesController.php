@@ -166,7 +166,7 @@ class ParticipesController extends ControladorBase{
 		$participes=new ParticipesModel();
 		$nombre_controladores = "Participes";
 		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $participes->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+		$resultPer = $participes->getPermisosEditar("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
 		if (!empty($resultPer))
 		{
@@ -259,6 +259,7 @@ class ParticipesController extends ControladorBase{
 				}else{
 				    
 					$funcion = "ins_core_participes";
+					
 					$parametros = " '$_id_ciudades',
                                     '$_apellido_participes',
                                     '$_nombre_participes',
@@ -271,8 +272,8 @@ class ParticipesController extends ControladorBase{
                                     '$_fecha_defuncion_participes',
                                     '$_id_estado_participes',
                                     '$_id_estatus',
+                                    '$_fecha_salida_participes',                                   
                                     '$_id_genero_participes',
-                                    '$_fecha_salida_participes',
                                     '$_id_estado_civil_participes',
                                     '$_observacion_participes',
                                     '$_correo_participes',
@@ -286,25 +287,30 @@ class ParticipesController extends ControladorBase{
                                     '$_numero_dependencias_participes',
                                     '$_codigo_alternativo_participes',
                                     '$_fecha_numero_orden_participes'";
+					
 					$participes->setFuncion($funcion);
 					$participes->setParametros($parametros);
 					$resultado=$participes->Insert();
+				
 				}
+				
 				
 				
 				
 		
 			}
-			$this->redirect("Participes", "index");
+			echo 'redireccion';
+			//$this->redirect("Participes", "index");
 
 		}
 		else
 		{
-		    $this->view_Inventario("Error",array(
+		    echo 'no tiene permisos';
+		   /* $this->view_Inventario("Error",array(
 					"resultado"=>"No tiene Permisos de Insertar Participes"
 		
 			));
-		
+		*/
 		
 		}
 		

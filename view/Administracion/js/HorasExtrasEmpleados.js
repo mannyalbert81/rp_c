@@ -50,9 +50,21 @@ $.ajax({
           type: 'POST',
           data: con_datos,
           success: function(x){
-            $("#solicitudes_registrados").html(x);
-            $("#load_solicitudes").html("");
-            $("#tabla_solicitudes").tablesorter(); 
+        	  if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
+    		  {
+    		  swal({
+		  		  title: "Solicitudes",
+		  		  text: "El usuario no es empleado registrado",
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+    		  $("#load_solicitudes").html('');
+    		  }else
+    			  {
+    			  $("#solicitudes_registrados").html(x);
+    	            $("#load_solicitudes").html("");
+    	            $("#tabla_solicitudes").tablesorter(); 
+    			  }
             
           },
          error: function(jqXHR,estado,error){

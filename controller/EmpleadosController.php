@@ -341,7 +341,7 @@ class EmpleadosController extends ControladorBase{
             
             $cedula_empleado = $_GET['term'];
             
-           $resultSet=$empleados->getBy("CAST(empleados.numero_cedula_empleados AS TEXT) LIKE '$cedula_empleado%'");
+            $resultSet=$empleados->getBy("CAST(empleados.numero_cedula_empleados AS TEXT) LIKE '$cedula_empleado%'");
             
             $respuesta = array();
             
@@ -354,7 +354,7 @@ class EmpleadosController extends ControladorBase{
                         $_cls_usuarios = new stdClass;
                         $_cls_usuarios->value=$res->numero_cedula_empleados;
                         $nombres= (string)$res->nombres_empleados;
-                        $nombresep = explode(" ", $nombres);                        
+                        $nombresep = explode(" ", $nombres);
                         $_cls_usuarios->label=$res->numero_cedula_empleados.' - '.$nombresep[0].' '.$nombresep[2];
                         $_cls_usuarios->nombre=$nombresep[0].' '.$nombresep[1];
                         
@@ -406,7 +406,7 @@ class EmpleadosController extends ControladorBase{
             echo json_encode($respuesta);
             
         }
-
+        
     }
     
     public function EliminarValor()

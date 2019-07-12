@@ -225,7 +225,7 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/tesoreria/js/EstadosCuenta.js?0.10"></script> 
+   <script src="view/tesoreria/js/EstadosCuenta.js?0.11"></script> 
    </body>
 </html>   
 

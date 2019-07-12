@@ -450,7 +450,7 @@ class CoreDiarioTipoController extends ControladorBase{
 			$core_temp_diario_tipo   = new ComprobantesTemporalModel();
 			
 			$core_diario_tipo_credito=new CoreTipoCreditoModel();
-			$resultTipCre = $core_diario_tipo_credito->getAll("nombre_tipo_credito");
+			$resultTipCre = $core_diario_tipo_credito->getAll("nombre_tipo_creditos");
 
 			$modulos = new ModulosModel();
 			$rsModulos = $modulos->getBy("1=1");

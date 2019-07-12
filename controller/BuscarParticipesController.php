@@ -231,7 +231,7 @@ class BuscarParticipesController extends ControladorBase{
         }
         else
         {
-            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+            $html.='<div class="alert alert-warning alert-dismissable bg-olive" style="margin-top:40px;">';
             $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
             $html.='<h4>Aviso!!!</h4> <b>El participe no tiene aportaciones</b>';
             $html.='</div>';
@@ -304,6 +304,170 @@ class BuscarParticipesController extends ControladorBase{
         $out.= "</ul>";
         return $out;
     }
+    
+    public function CreditosActivosParticipe()
+    {
+        session_start();
+        $id_participe=$_POST['id_participe'];
+        $html="";
+        $participes= new ParticipesModel();
+        $total=0;
+        
+        $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
+            		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
+            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos, 
+            		core_estado_creditos.nombre_estado_creditos";
+        $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
+        		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
+        		INNER JOIN public.core_estado_creditos
+        		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
+        $where="core_creditos.id_participes=".$id_participe." AND core_creditos.id_estatus=1";
+        $id="core_creditos.fecha_concesion_creditos";
+       
+        $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        if(!(empty($resultCreditos)))
+        {
+                     
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            $resultSet=$participes->getCantidad("*", $tablas, $where);
+            $cantidadResult=(int)$resultSet[0]->total;
+            $per_page = 20; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            $resultCreditos=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
+            $last=sizeof($resultCreditos);
+            
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            $html='<div class="box box-solid bg-olive">
+            <div class="box-header with-border">
+            <h3 class="box-title">Historial Prestamos</h3>
+            </div>
+             <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-olive">
+                        <th width="2%">№</th>
+                        <th width="4%">№ DE PRESTAMO</th>
+                        <th width="15%">FECHA DE PRESTAMO</th>
+                        <th width="15%">TIPO DE PRESTAMO</th>
+                        <th width="14%">MONTO</th>
+                        <th width="14%">SALDO CAPITAL</th>
+                        <th width="14%">SALDO INTERES</th>
+                        <th width="14%">ESTADO</th>
+                        <th width="4%"></th>
+                        <th width="2%"></th>
+                     </tr>
+                   </table>
+                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
+                     <table border="1" width="100%">';
+            for($i=$last-1; $i>0; $i--)
+            {
+                $index=$i+($last-1)*($page-1);
+                $monto=number_format((float)$resultCreditos[$i]->monto_otorgado_creditos, 2, ',', '.');
+                $saldo=number_format((float)$resultCreditos[$i]->saldo_actual_creditos, 2, ',', '.');
+                $saldo_int=number_format((float)$resultCreditos[$i]->interes_creditos, 2, ',', '.');
+                $html.='<tr>
+                        <td bgcolor="white" width="2%"><font color="black">'.$index.'</font></td>
+                         <td bgcolor="white" width="6.5%"><font color="black">'.$resultCreditos[$i]->numero_creditos.'</font></td>
+                         <td bgcolor="white" width="15%"><font color="black">'.$resultCreditos[$i]->fecha_concesion_creditos.'</font></td>
+                        <td bgcolor="white" width="15%"><font color="black">'.$resultCreditos[$i]->nombre_tipo_creditos.'</font></td>
+                        <td bgcolor="white" width="14%"><font color="black">'.$monto.'</font></td>
+                        <td bgcolor="white" width="14%"><font color="black">'.$saldo.'</font></td>
+                        <td bgcolor="white" width="14%"><font color="black">'.$saldo_int.'</font></td>
+                        <td bgcolor="white" width="14%"><font color="black">'.$resultCreditos[$i]->nombre_estado_creditos.'</font></td>
+                        <td bgcolor="white" width="3.5%"><font color="black"><a class="btn btn-primary" href="controller=index.php?TablaAmortizacion&action=GENERAR_REPORTE&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button"><i class="glyphicon glyphicon-print"></i></a></font></td>
+                        </tr>';
+              
+               
+            }
+            $total=number_format((float)$total, 2, ',', '.');
+            $html.='</table>
+                   </div>';
+            $html.='<div class="table-pagination pull-right">';
+            $html.=''. $this->paginate_creditos("index.php", $page, $total_pages, $adjacents,$id_participe,"CreditosActivosParticipe").'';
+            $html.='</div>
+                    </div>';
+            
+            
+            echo $html;
+            
+        }
+        else
+        {
+            $html.='<div class="alert alert-warning alert-dismissable bg-olive" style="margin-top:40px;">';
+            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene creditos activos</b>';
+            $html.='</div>';
+            echo $html;
+        }
+        
+        
+    }
+    
+    public function paginate_creditos($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
+        
+        $prevlabel = "&lsaquo; Prev";
+        $nextlabel = "Next &rsaquo;";
+        $out = '<ul class="pagination pagination-large">';
+        
+        // previous label
+        
+        if($page==1) {
+            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+        } else if($page==2) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$prevlabel</a></span></li>";
+        }else {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page-1).")'>$prevlabel</a></span></li>";
+            
+        }
+        
+        // first label
+        if($page>($adjacents+1)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>1</a></li>";
+        }
+        // interval
+        if($page>($adjacents+2)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // pages
+        
+        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+        for($i=$pmin; $i<=$pmax; $i++) {
+            if($i==$page) {
+                $out.= "<li class='active'><a>$i</a></li>";
+            }else if($i==1) {
+                $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$i</a></li>";
+            }else {
+                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".$i.")'>$i</a></li>";
+            }
+        }
+        
+        // interval
+        
+        if($page<($tpages-$adjacents-1)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // last
+        
+        if($page<($tpages-$adjacents)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,$tpages)'>$tpages</a></li>";
+        }
+        
+        // next
+        
+        if($page<$tpages) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page+1).")'>$nextlabel</a></span></li>";
+        }else {
+            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+        }
+        
+        $out.= "</ul>";
+        return $out;
+    }
+    
     
     
     

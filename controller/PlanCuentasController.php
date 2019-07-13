@@ -860,7 +860,7 @@ class PlanCuentasController extends ControladorBase{
 	            $id="plan_cuentas.id_plan_cuentas";
 	            
 	            $resultSetCabeza=$plan_cuentas->getCondiciones($columnas, $tablas, $where_to, $id);
-
+	            
 	            $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=3>";
 	            $html.= "<tr>";
 	            $html.='<th bgcolor="#cccccc" colspan="6" style="text-align: center; font-size: 24px;">CAPREMCI</b></br>';

@@ -3,7 +3,7 @@
   
   $(document).ready(function(){ 	 
 	  load_temp_diario_tipo(1);
-     
+	  load_diarios_tipo(1);
   }); 
 
   
@@ -98,35 +98,35 @@
 	  // PARA CARGAR CONSULTA PLAN DE CUENTAS AL MODAL
 	  
 	   $('#myModal').on('show.bs.modal', function (event) {
-      	load_plan_cuentas(1);
+		  load_diarios_tipo(1);
       	  var modal = $(this)
-      	  modal.find('.modal-title').text('Plan de Cuentas')
+      	  modal.find('.modal-title').text('Buscar Diarios Tipo')
       
       	});
             
 	
-		function load_plan_cuentas(pagina){
+		function load_diarios_tipo(pagina){
 		 var search=$("#q").val();
 		 var con_datos={
 					  action:'ajax',
 					  page:pagina
 					  };
-		$("#load_plan_cuentas").fadeIn('slow');
+		$("#load_diarios_tipo").fadeIn('slow');
 		$.ajax({
 		         beforeSend: function(objeto){
-		           $("#load_plan_cuentas").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+		           $("#load_diarios_tipo").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 		         },
-		         url: 'index.php?controller=CoreDiarioTipo&action=consulta_plan_cuentas&search='+search,
+		         url: 'index.php?controller=CoreDiarioTipo&action=consulta_diarios_tipo&search='+search,
 		         type: 'POST',
 		         data: con_datos,
 		         success: function(x){
-		           $("#cargar_plan_cuentas").html(x);
-		           $("#load_plan_cuentas").html("");
-		           $("#tabla_plan_cuentas").tablesorter(); 
+		           $("#cargar_diarios_tipo").html(x);
+		           $("#load_diarios_tipo").html("");
+		           $("#tabla_diarios_tipo").tablesorter(); 
 		           
 		         },
 		        error: function(jqXHR,estado,error){
-		          $("#cargar_plan_cuentas").html("Ocurrio un error al cargar la información de Plan de Cuentas..."+estado+"    "+error);
+		          $("#cargar_diarios_tipo").html("Ocurrio un error al cargar la información de Diarios Tipo..."+estado+"    "+error);
 		        }
 		      });
 		

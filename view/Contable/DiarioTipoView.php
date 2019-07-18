@@ -110,7 +110,7 @@
   		     <div class="col-md-12 col-lg-12 col-xs-12">
 	    		<div class="pull-right">
 				    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
-					 <span class="glyphicon glyphicon-search"></span> Buscar Cuentas
+					 <span class="glyphicon glyphicon-search"></span> Buscar Diarios Tipo
 					</button>					
 				</div>	
 					
@@ -233,20 +233,20 @@
 				<div class="modal-content">
 				  <div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="myModalLabel">Buscar Cuentas</h4>
+					<h4 class="modal-title" id="myModalLabel">Buscar Diarios Tipo</h4>
 				  </div>
 				
 				  <div class="modal-body">
 					
 					  <div class="form-group">
 						<div class="col-sm-6">
-						  <input type="text" class="form-control" id="q" placeholder="Buscar Plan de Cuentas" onkeyup="load_plan_cuentas(1)">
+						  <input type="text" class="form-control" id="q" placeholder="Buscar Diario Tipo" onkeyup="load_diarios_tipo(1)">
 						</div>
-						<button type="button"  class="btn btn-default" onclick="load_plan_cuentas(1)"><span class='glyphicon glyphicon-search'></span></button>
+						<button type="button"  class="btn btn-default" onclick="load_diarios_tipo(1)"><span class='glyphicon glyphicon-search'></span></button>
 					  </div>
 					
-					<div id="load_plan_cuentas" ></div>
-					<div id="cargar_plan_cuentas" ></div>
+					<div id="load_diarios_tipo" ></div>
+					<div id="cargar_diarios_tipo" ></div>
 					
 				  </div>
 				<br>
@@ -269,7 +269,7 @@
     
    
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Core/js/DiarioTipo.js?0.06"></script>
+    <script src="view/Contable/FuncionesJS/DiarioTipo.js?0.08"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     

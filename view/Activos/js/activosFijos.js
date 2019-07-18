@@ -15,8 +15,9 @@ $(document).ready(function(){
 	 $(this).val($(this).val().toUpperCase());
  })
  
-function consultaActivos(page=1){
+function consultaActivos(pagina){
 
+	
 	   var search=$("#search_activos").val();
     var con_datos={
 				  action:'ajax',
@@ -33,6 +34,7 @@ function consultaActivos(page=1){
             type: 'POST',
             data: con_datos,
             success: function(x){
+            	console.log(x)
               $("#activos_fijos_registrados").html(x);
               $("#consultaActivos").html("");
               $("#tabla_activos").tablesorter(); 
@@ -46,6 +48,8 @@ function consultaActivos(page=1){
 
 
 $(document).ready(function(){
+	
+	
     
     $("#Guardar").click(function() 
 	{
@@ -395,7 +399,7 @@ $("#frm_activos_fijos").on("submit",function(event){
 	}).always(function(){
 		$("#divLoaderPage").removeClass("loader")
 		document.getElementById("frm_activos_fijos").reset();
-		consultaActivos();
+		consultaActivos(1);
 	})
 	
 	event.preventDefault();

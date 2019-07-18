@@ -541,3 +541,49 @@ function Negar(idsol)
 	  		});
 	});
 }
+
+function Ajustes(id_solicitud, nombre_estado)
+{
+	var modal = $('#myModalAjustes');
+	$.ajax({
+	    url: 'index.php?controller=AvancesEmpleados&action=TablaCuotas',
+	    type: 'POST',
+	    data: {
+	    	   id_solicitud: idsol
+	    },
+	})
+	.done(function(x) {
+		
+		console.log(x);
+		if (x.includes("Warning") || x.includes("Error") || x.includes("Notice"))
+			{
+				swal({
+				  		  title: "Solicitud",
+				  		  text: "Error al cambiar estado de solicitud",
+				  		  icon: "warning",
+				  		  button: "Aceptar",
+				  		});
+			}
+		else 
+		{
+		
+			$("#myModalAjustes").modal()	
+		}
+	
+			
+			
+		
+		
+			
+	})
+	.fail(function() {
+	    console.log("error");
+	    swal({
+	  		  title: "Solicitud",
+	  		  text: "Error al cambiar estado de solicitud",
+	  		  icon: "warning",
+	  		  button: "Aceptar",
+	  		});
+	});
+	
+}

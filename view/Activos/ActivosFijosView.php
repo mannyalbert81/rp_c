@@ -276,7 +276,7 @@
     
     <?php include("view/modulos/links_js.php"); ?>
     
-    <script type="text/javascript" src="view/Activos/js/activosFijos.js?1.4"></script>
+    <script type="text/javascript" src="view/Activos/js/activosFijos.js?1.5"></script>
 	
     <script type="text/javascript" >   
     

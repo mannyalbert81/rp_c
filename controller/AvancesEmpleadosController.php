@@ -392,6 +392,11 @@ class AvancesEmpleadosController extends ControladorBase{
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_anticipo.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_anticipo.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';                            
                         }
+                        else if ($id_rol==$id_rh && $res->nombre_estado=="APROBADO GERENCIA")
+                        {
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="Ajustes('.$res->id_anticipo.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-cog"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"></td>';                            
+                        }
                     }
                     $html.='</tr>';
                 }
@@ -486,6 +491,58 @@ class AvancesEmpleadosController extends ControladorBase{
         
         $out.= "</ul>";
         return $out;
+    }
+    
+    public function TablaCuotas()
+    {
+    session_start();
+    $id_solicitud=$_POST['id_solicitud'];
+    $horas_extras = new SolicitudHorasExtraEmpleadosModel();
+    $html='';
+    $columnas = "cuotas_avances_empleados.fecha_cuota, cuotas_avances_empleados.monto_cuota, cuotas_avances_empleados.saldo_total_operacion, 
+		empleados.nombres_empleados, anticipo_sueldo_empleados.fecha_anticipo, anticipo_sueldo_empleados.monto_anticipo";
+    $tablas= "public.cuotas_avances_empleados INNER JOIN public.anticipo_sueldo_empleados
+            	ON cuotas_avances_empleados.id_solicitud = anticipo_sueldo_empleados.id_anticipo
+            	INNER JOIN public.empleados
+            	ON cuotas_avances_empleados.id_empleados = empleados.id_empleados";
+    $where= "anticipo_sueldo_empleados.id_anticipo=".$id_solicitud;
+    $id = "cuotas_avances_empleados.fecha_cuota";
+    $resultSet = $horas_extras->getCondiciones($columnas, $tablas, $where, $id);
+    
+    $html.= "<table id='tabla_solicitudes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+    $html.= "<tr>";
+    $html.='<th style="text-align: left;  font-size: 15px;">Empleado:</th>';
+    $html.='<td style="text-align: left;  font-size: 15px;">'.$res->nombres_empleados.'</td>';
+    $html.= "</tr>";
+    $html.= "<tr>";
+    $html.='<th style="text-align: left;  font-size: 15px;">Saldo total de la operación</th>';
+    $html.='<td style="text-align: left;  font-size: 15px;">'.$res->nombres_empleados.'</td>';
+    $html.='</tr>';
+    $html.='</table>';
+    $html.= "<table id='tabla_solicitudes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+    $html.= "<thead>";
+    $html.= "<tr>";
+    $html.='<th style="text-align: left;  font-size: 15px;">Fecha de pago</th>';
+    $html.='<th style="text-align: left;  font-size: 15px;">Monto a Pagar</th>';
+    $html.='<th style="text-align: left;  font-size: 15px;">Saldo total de la operación</th>';
+    $html.='</tr>';
+    $html.='</thead>';
+    $html.='<tbody>';
+    foreach ($resultSet as $res)
+    {
+        $html.='<tr>';
+        $html.='<td style="text-align: center;  font-size: 15px;">'.$res->fecha_cuota.'</td>';
+        $res->monto_cuota=number_format((float)$res->monto_cuota, 2,".",",");
+        $html.='<td style="text-align: right;  font-size: 15px;">'.$res->monto_cuota.'</td>';
+        $res->saldo_total_operacion=number_format((float)$res->saldo_total_operacion, 2,".",",");
+        $html.='<td style="text-align: right;  font-size: 15px;">'.$res->saldo_total_operacion.'</td>';
+        $html.='</tr>';
+    }
+    
+    $html.='</tbody>';
+    $html.='</table>';
+    
+        
     }
     
     public function VBSolicitud()

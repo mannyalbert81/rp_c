@@ -5,17 +5,19 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
 //echo getcwd().''; //para ver ubicacion de directorio
 
 $template = file_get_contents('view/reportes/template/ActivosFijos.html');
+$header = file_get_contents('view/reportes/template/CabeceraFinal.html');
 
-$footer = file_get_contents('view/reportes/template/pieficha.html');
 
 
-if(!empty($datos_empresa)){
+if(!empty($datos_empresa))
+{
     
     foreach ($datos_empresa as $clave=>$valor) {
-        $template = str_replace('{'.$clave.'}', $valor, $template);
+        $header = str_replace('{'.$clave.'}', $valor, $header);
     }
 }
 
+$footer = file_get_contents('view/reportes/template/pieret.html');
 if(isset($datosActivo)){
     
     foreach ($datosActivo as $clave=>$valor) {
@@ -30,23 +32,24 @@ if(isset($rsDatosDepreciacion)){
     
     $tablaDepreciacion = "<table>";	
 
-    $tablaDepreciacion .= "<caption>DEPRECIACION DETALLE</caption>";
-    
-    $tablaDepreciacion .= "<tr>
-                        <td>AÑO</td>
-                        <td>ENERO</td>
-                        <td>FEBRERO</td>
-                        <td>MARZO</td>
-                        <td>ABRIL</td>
-                        <td>MAYO</td>
-                        <td>JUNIO</td>
-                        <td>JULIO</td>
-                        <td>AGOSTO</td>
-                        <td>SEPTIEMBRE</td>
-                        <td>OCTUBRE</td>
-                        <td>NOVIEMBRE</td>
-                        <td>DICIEMBRE</td>
-                        <td>VALOR DEPRECIADO</td>
+    $tablaDepreciacion .= "<caption><strong>DEPRECIACION DETALLE</strong></caption>";
+    $tablaDepreciacion .= "
+                        
+                        <tr>
+                        <td><strong>AÑO</strong></td>
+                        <td><strong>ENERO</strong></td>
+                        <td><strong>FEBRERO</strong></td>
+                        <td><strong>MARZO</strong></td>
+                        <td><strong>ABRIL</strong></td>
+                        <td><strong>MAYO</strong></td>
+                        <td><strong>JUNIO</strong></td>
+                        <td><strong>JULIO</strong></td>
+                        <td><strong>AGOSTO</strong></td>
+                        <td><strong>SEPTIEMBRE</strong></td>
+                        <td><strong>OCTUBRE</strong></td>
+                        <td><strong>NOVIEMBRE</strong></td>
+                        <td><strong>DICIEMBRE</strong></td>
+                        <td align=center><strong>VALOR DEPRECIADO</strong></td>
                         </tr>";
     
    
@@ -54,20 +57,20 @@ if(isset($rsDatosDepreciacion)){
     foreach ($rsDatosDepreciacion as $res) {
         
         $tablaDepreciacion .= "<tr>
-                        <td> $res->anio_depreciacion </td>
-                        <td>$res->enero_depreciacion</td>
-                        <td>$res->febrero_depreciacion</td>
-                        <td>$res->marzo_depreciacion</td>
-                        <td>$res->abril_depreciacion</td>
-                        <td>$res->mayo_depreciacion</td>
-                        <td>$res->junio_depreciacion</td>
-                        <td>$res->julio_depreciacion</td>
-                        <td>$res->agosto_depreciacion</td>
-                        <td>$res->septiembre_depreciacion</td>
-                        <td>$res->octubre_depreciacion</td>
-                        <td>$res->noviembre_depreciacion</td>
-                        <td>$res->diciembre_depreciacion</td>
-                        <td>$res->saldo_depreciacion</td>                         
+                        <td align=center>$res->anio_depreciacion </td>
+                        <td align=right>$res->enero_depreciacion</td>
+                        <td align=right>$res->febrero_depreciacion</td>
+                        <td align=right>$res->marzo_depreciacion</td>
+                        <td align=right>$res->abril_depreciacion</td>
+                        <td align=right>$res->mayo_depreciacion</td>
+                        <td align=right>$res->junio_depreciacion</td>
+                        <td align=right>$res->julio_depreciacion</td>
+                        <td align=right>$res->agosto_depreciacion</td>
+                        <td align=right>$res->septiembre_depreciacion</td>
+                        <td align=right>$res->octubre_depreciacion</td>
+                        <td align=right>$res->noviembre_depreciacion</td>
+                        <td align=right>$res->diciembre_depreciacion</td>
+                        <td align=right>$res->saldo_depreciacion</td>                         
                         </tr>";
         
         
@@ -98,7 +101,10 @@ $mpdf->allow_charset_conversion = true;
 $mpdf->charset_in = 'UTF-8';
 $mpdf->setAutoTopMargin = 'stretch';
 $mpdf->setAutoBottomMargin = 'stretch';
+$mpdf->SetHTMLHeader(utf8_encode($header));
 $mpdf->SetHTMLFooter($footer);
+$stylesheet = file_get_contents('view/reportes/template/activosFijos.css'); // la ruta a tu css
+$mpdf->WriteHTML($stylesheet,1);
 $mpdf->WriteHTML($template);
 $mpdf->debug = true;
 $mpdf->Output();

@@ -65,108 +65,149 @@
         <div class="box-body">
           
         <form action="<?php echo $helper->url("Productos","InsertaProductos"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
-                                <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
-                                
-                                <div class="row">
+                <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
+                
+                <div class="row">
+                
+        		    <div class="col-xs-12 col-md-3 col-md-3">
+        		    <div class="form-group">
+        		                                           
+                          <label for="id_bodegas" class="control-label">Bodega</label>
+                          <select name="id_bodegas" id="id_bodegas"  class="form-control">
+                            <option value="0" selected="selected">--Seleccione--</option>
+    							<?php foreach($rsBodegas as $resBod) {?>
+    							<option value="<?php echo $resBod->id_bodegas; ?>" <?php if ($resBod->id_bodegas == $resEdit->id_bodegas )  echo  ' selected="selected" '  ;  ?> ><?php echo $resBod->nombre_bodegas; ?> </option>
+    				            <?php } ?>
+    					  </select>
+                    </div>
+                    </div>
+                    
+                    <div class="col-xs-12 col-md-3 col-md-3">
+        		    <div class="form-group">
+        		                                           
+                          <label for="id_grupos" class="control-label">Grupos</label>
+                          <select name="id_grupos" id="id_grupos"  class="form-control" disabled>
+                            <option value="0" selected="selected">--Seleccione--</option>
+    							<?php foreach($resultGrup as $resGup) {?>
+    							<option value="<?php echo $resGup->id_grupos; ?>" <?php if ($resGup->id_grupos == $resEdit->id_grupos )  echo  ' selected="selected" '  ;  ?> ><?php echo $resGup->nombre_grupos; ?> </option>
+    				            <?php } ?>
+    					  </select>
+    					  <div id="mensaje_id_grupos" class="errores"></div>
+                    </div>
+                    </div>
+                    
+					<div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                          <label for="codigo_productos" class="control-label">Código Productos</label>
+                          <input type="text" class="form-control" id="codigo_productos" name="codigo_productos" value="<?php echo $resEdit->codigo_productos; ?>"  
+                          placeholder="Código Productos" readonly >
+                          <input type="hidden" name="id_productos" id="id_productos" value="<?php echo $resEdit->id_productos; ?>" class="form-control"/>                          
+                          <div id="mensaje_codigo_productos" class="errores"></div>
+                    </div>
+        		    </div>   
+        		    
+        		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                          <label for="marca_productos" class="control-label">Marca Productos</label>
+                          <input type="text" class="form-control" id="marca_productos" name="marca_productos" value="<?php echo $resEdit->marca_productos; ?>"  placeholder="Marca Productos">
+                          
+                          <div id="mensaje_marca_productos" class="errores"></div>
+                    </div>
+        		    </div>
+        		    
+        		                     			
+        	
+        	    </div>
+    			
+    			
+    			<div class="row">
+    			
+    			 <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                          <label for="nombre_productos" class="control-label">Nombres Productos</label>
+                          <input type="text" class="form-control" id="nombre_productos" name="nombre_productos" value="<?php echo $resEdit->nombre_productos; ?>"  placeholder="Nombres Productos">
+                          
+                          <div id="mensaje_nombre_productos" class="errores"></div>
+                    </div>
+        		    </div>   
+    			                   			
+    			<div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                              <label for="descripcion_productos" class="control-label">Descripción Productos</label>
+                              <input type="text" class="form-control" id="descripcion_productos" name="descripcion_productos" value="<?php echo $resEdit->descripcion_productos; ?>"  placeholder="Descripcion">
+                              
+                              <div id="mensaje_descripcion_productos" class="errores"></div>
+                    </div>
+        		    </div>
+        		    
+        		<div class="col-xs-12 col-md-3 col-md-3">
+        		    <div class="form-group">
+                                       
+                                          <label for="id_unidad_medida" class="control-label">Unidad Medida</label>
+                                          <select name="id_unidad_medida" id="id_unidad_medida"  class="form-control">
+                                            <option value="0" selected="selected">--Seleccione--</option>
+												<?php foreach($resultUni as $resUni) {?>
+ 												<option value="<?php echo $resUni->id_unidad_medida; ?>" <?php if ($resUni->id_unidad_medida == $resEdit->id_unidad_medida )  echo  ' selected="selected" '  ;  ?> ><?php echo $resUni->nombre_unidad_medida; ?> </option>
+									            <?php } ?>
+				    					  </select>
+   										  <div id="mensaje_id_unidad_medida" class="errores"></div>
+                    </div>
+                    </div>
+
+        		<div class="col-lg-3 col-xs-12 col-md-3">
+    		    <div class="form-group">
+                                      <label for="ult_precio_productos" class="control-label">ULT Precio</label>
+                                      <input type="text" class="form-control cantidades1" id="ult_precio_productos" name="ult_precio_productos" value='<?php echo $resEdit->ult_precio_productos; ?>' 
+                                      data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
+                                      <div id="mensaje_ult_precio_productos" class="errores"></div>
+                </div>
+                </div>
+    	
+        	</div>
+        	
+        	<div class="row">
+        		<div class="col-lg-3 col-xs-12 col-md-3">
+    		    <div class="form-group">
+                  <label for="minimo_productos" class="control-label">Stock Minimo</label>
+                  <input type="text" class="form-control " id="minimo_productos" name="minimo_productos" value='<?php echo $resEdit->minimo_productos; ?>' >                                  
+                </div>
+                </div>
+        	</div>
+        		 
+    		     <?php } } else {?>
+								 
+        			<div class="row">
+                        			 <div class="col-xs-12 col-md-3 col-md-3">
+                        		    <div class="form-group">
+                                          <label for="id_bodegas" class="control-label">Bodega</label>
+                                          <select name="id_bodegas" id="id_bodegas"  class="form-control">
+                                            <option value="0" selected="selected">--Seleccione--</option>
+												<?php foreach($rsBodegas as $resBod) {?>
+ 												<option value="<?php echo $resBod->id_bodegas; ?>"  ><?php echo $resBod->nombre_bodegas; ?> </option>
+									            <?php } ?>
+				    					  </select>
+                                    </div>
+                                    </div>
+                                    
                         		    <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
-                                                       
-                                                          <label for="id_grupos" class="control-label">Grupos</label>
-                                                          <select name="id_grupos" id="id_grupos"  class="form-control">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultGrup as $resGup) {?>
-				 												<option value="<?php echo $resGup->id_grupos; ?>" <?php if ($resGup->id_grupos == $resEdit->id_grupos )  echo  ' selected="selected" '  ;  ?> ><?php echo $resGup->nombre_grupos; ?> </option>
-													            <?php } ?>
-								    					  </select>
-		   		   										  <div id="mensaje_id_grupos" class="errores"></div>
+                                          <label for="id_grupos" class="control-label">Grupos</label>
+                                          <select name="id_grupos" id="id_grupos"  class="form-control">
+                                            <option value="0" selected="selected">--Seleccione--</option>
+												<?php foreach($resultGrup as $resGup) {?>
+ 												<option value="<?php echo $resGup->id_grupos; ?>"  ><?php echo $resGup->nombre_grupos; ?> </option>
+									            <?php } ?>
+				    					  </select>
+   										   <div id="mensaje_id_grupos" class="errores"></div>
                                     </div>
                                     </div>
-									<div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="codigo_productos" class="control-label">Código Productos</label>
-                                                          <input type="text" class="form-control" id="codigo_productos" name="codigo_productos" value="<?php echo $resEdit->codigo_productos; ?>"  placeholder="Código Productos" readonly onkeypress="return numeros(event)">
-                                                          <input type="hidden" name="id_productos" id="id_productos" value="<?php echo $resEdit->id_productos; ?>" class="form-control"/>
-					                                      <div id="mensaje_codigo_productos" class="errores"></div>
-                                    </div>
-                        		    </div>   
-                        		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="marca_productos" class="control-label">Marca Productos</label>
-                                                          <input type="text" class="form-control" id="marca_productos" name="marca_productos" value="<?php echo $resEdit->marca_productos; ?>"  placeholder="Marca Productos">
-                                                          <input type="hidden" name="id_productos" id="id_productos" value="<?php echo $resEdit->id_productos; ?>" class="form-control"/>
-					                                      <div id="mensaje_marca_productos" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="nombre_productos" class="control-label">Nombres Productos</label>
-                                                          <input type="text" class="form-control" id="nombre_productos" name="nombre_productos" value="<?php echo $resEdit->nombre_productos; ?>"  placeholder="Nombres Productos">
-                                                          <input type="hidden" name="id_productos" id="id_productos" value="<?php echo $resEdit->id_productos; ?>" class="form-control"/>
-					                                      <div id="mensaje_nombre_productos" class="errores"></div>
-                                    </div>
-                        		    </div>                     			
-                        	
-                        	    </div>
-                    			
-                    			
-                    			<div class="row">
-                    			                   			
-                    			<div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="descripcion_productos" class="control-label">Descripción Productos</label>
-                                                          <input type="text" class="form-control" id="descripcion_productos" name="descripcion_productos" value="<?php echo $resEdit->descripcion_productos; ?>"  placeholder="Descripcion">
-                                                          <input type="hidden" name="id_productos" id="id_productos" value="<?php echo $resEdit->id_productos; ?>" class="form-control"/>
-					                                      <div id="mensaje_descripcion_productos" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    
-                        		<div class="col-xs-12 col-md-3 col-md-3">
-                        		    <div class="form-group">
-                                                       
-                                                          <label for="id_unidad_medida" class="control-label">Unidad Medida</label>
-                                                          <select name="id_unidad_medida" id="id_unidad_medida"  class="form-control">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultUni as $resUni) {?>
-				 												<option value="<?php echo $resUni->id_unidad_medida; ?>" <?php if ($resUni->id_unidad_medida == $resEdit->id_unidad_medida )  echo  ' selected="selected" '  ;  ?> ><?php echo $resUni->nombre_unidad_medida; ?> </option>
-													            <?php } ?>
-								    					  </select>
-		   		   										  <div id="mensaje_id_unidad_medida" class="errores"></div>
-                                    </div>
-                                    </div>
-      
-                        		<div class="col-lg-3 col-xs-12 col-md-3">
-                    		    <div class="form-group">
-                                                      <label for="ult_precio_productos" class="control-label">ULT Precio</label>
-                                                      <input type="text" class="form-control cantidades1" id="ult_precio_productos" name="ult_precio_productos" value='<?php echo $resEdit->ult_precio_productos; ?>' 
-                                                      data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
-                                                      <div id="mensaje_ult_precio_productos" class="errores"></div>
-                                </div>
-                                </div>
-                    	
-                        		    </div>
-                    		     <?php } } else {?>
-								 <div class="row">
-                        		    <div class="col-xs-12 col-md-3 col-md-3">
-                        		    <div class="form-group">
-                                                          <label for="id_grupos" class="control-label">Grupos</label>
-                                                          <select name="id_grupos" id="id_grupos"  class="form-control">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
-																<?php foreach($resultGrup as $resGup) {?>
-				 												<option value="<?php echo $resGup->id_grupos; ?>"  ><?php echo $resGup->nombre_grupos; ?> </option>
-													            <?php } ?>
-								    					  </select>
-		   		   										   <div id="mensaje_id_grupos" class="errores"></div>
-                                    </div>
-                                    </div>
-                        			
                         			
                         			<div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
-                                                          <label for="codigo_productos" class="control-label">Código Productos</label>
-                                                          <input type="text" class="form-control" id="codigo_productos" name="codigo_productos" value=""  placeholder="Código Productos" onkeypress="return numeros(event)">
-                                                           <div id="mensaje_codigo_productos" class="errores"></div>
+                                          <label for="codigo_productos" class="control-label">Código Productos</label>
+                                          <input type="text" class="form-control" id="codigo_productos" name="codigo_productos" value="" readonly>
+                                          <input type="hidden" name="id_productos" id="id_productos" value=""/>
+                                           <div id="mensaje_codigo_productos" class="errores"></div>
                                     </div>
                         		    </div>
                         		    
@@ -178,16 +219,18 @@
                                     </div>
                         		    </div>
                         		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
+                        		    
+									</div>
+									
+									<div class="row">
+									
+									<div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
                                                           <label for="nombre_productos" class="control-label">Nombres Productos</label>
                                                           <input type="text" class="form-control" id="nombre_productos" name="nombre_productos" value=""  placeholder="Nombres Productos">
                                                            <div id="mensaje_nombre_productos" class="errores"></div>
                                     </div>
                         		    </div>
-									</div>
-									
-									<div class="row">
 									
 									<div class="col-xs-12 col-md-3 col-md-3 ">
                         		    <div class="form-group">
@@ -219,6 +262,14 @@
                                 </div>
 	
 									</div>
+					<div class="row">
+						<div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+                              <label for="minimo_productos" class="control-label">Stock Minimo</label>
+                              <input type="text" class="form-control " id="minimo_productos" name="minimo_productos" value="0">
+                        </div>
+            		    </div>
+					</div>
                     	           	
                     		     <?php } ?>
                     		    <br>  
@@ -274,54 +325,9 @@
     
     <?php include("view/modulos/links_js.php"); ?>
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-    <script src="view/Inventario/js/Productos.js?1"></script>  
-	<script type="text/javascript">
-
-        	   $(document).ready( function (){
-        		   
-        		 
-        		   load_productos(1);
-        		   
-	   			});
-
-        	
-
-
-	   function load_productos(pagina){
-
-		   var search=$("#search_productos").val();
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_productos").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_productos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=Productos&action=consulta_productos&search='+search,
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#productos_registrados").html(x);
-	                 $("#load_productos").html("");
-	                 $("#tabla_productos").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#productos_registrados").html("Ocurrio un error al cargar la informacion de Productos..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
-
-
- </script>
-
+	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+    <script src="view/Inventario/js/Productos.js?0.06"></script>  
+	
   </body>
 </html>   
 

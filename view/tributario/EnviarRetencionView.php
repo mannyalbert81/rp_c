@@ -109,7 +109,7 @@
               
             </ul>
             
-            <div class="col-md-5 col-lg-12 col-xs-5">
+            <div class="col-md-12 col-lg-12 col-xs-12">
             <div class="tab-content">
             <br>
               <div class="tab-pane active" id="retencion">
@@ -207,26 +207,8 @@
  </script>
 	
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-       <script>
-      $(document).ready(function(){
-      $(".cantidades1").inputmask();
-      });
-	  </script>
-	
-	<script>
-      var app = angular.module('myApp', []);
-      app.controller('myCtrl', function($scope, $http) {
-        $scope.years = [];
-        $scope.year = new Date().getFullYear();
-        $scope.months = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
-        $scope.month = $scope.months[new Date().getMonth()];
-        
-        for (var i = 0; i < 1; i++) {
-            $scope.years.push($scope.year-i);
-            //console.log($scope.year-i);
-        }  
-    })
-    </script>  
+    
+
 
 
 	  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

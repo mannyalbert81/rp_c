@@ -296,10 +296,11 @@
     		
     <!-- seccion para el listado de roles -->
 
-         <section class="content">
+
+     <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Aportes</h3>
+              <h3 class="box-title">Aportaciones</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -311,9 +312,8 @@
 
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-          <li class="active"><a href="#personales" data-toggle="tab">Personales</a></li>
-           <li><a href="#patronales" data-toggle="tab">Patronales</a></li>
-            
+              <li class="active"><a href="#personales" data-toggle="tab">Personales</a></li>
+              <li><a href="#patronales" data-toggle="tab">Patronales</a></li>
             </ul>
             
             <div class="col-md-12 col-lg-12 col-xs-12">
@@ -334,10 +334,10 @@
                 
               </div>
               
-              <div class="tab-pane active" id="patronales">
+              <div class="tab-pane" id="patronales">
                 
-					<div class="pull-right" style="margin-right:15px;">
-					 					<select name="id_contribucion_tipo" id="id_contribucion_tipo"  onchange="load_patronal_cta_individual(1);" class="form-control" >
+                    <div class="pull-right" style="margin-right:15px;">
+					<select name="id_contribucion_tipo" id="id_contribucion_tipo"  onchange="load_patronal_cta_individual(1);" class="form-control" >
                                       <option value="0" selected="selected">--TODOS--</option>
     									<?php  foreach($resContriTipo as $res) {?>
     										<option value="<?php echo $res->id_contribucion_tipo; ?>" ><?php echo $res->nombre_contribucion_tipo; ?> </option>
@@ -345,20 +345,19 @@
     								   </select> 
 					</div>
 					<div id="load_patronal_cta_individual" ></div>	
-					<div id="patronales_registrados"></div>	
-                
+					<div id="patronal_registrados"></div>	
               </div>
              </div>
             </div>
            </div>
-
-        
+         
             </div>
             </div>
             </section>
             
 
-  		</div>
+ </div>
+  		
  	<?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
@@ -432,13 +431,13 @@
 	               type: 'POST',
 	               data: con_datos,
 	               success: function(x){
-	                 $("#patronales_registrados").html(x);
+	                 $("#patronal_registrados").html(x);
 	                 $("#load_patronal_cta_individual").html("");
 	                 $("#tabla_patronal_cta_individual").tablesorter(); 
 	                 
 	               },
 	              error: function(jqXHR,estado,error){
-	                $("#patronales_registrados").html("Ocurrio un error al cargar la informacion de Aportes Patronales..."+estado+"    "+error);
+	                $("#patronal_registrados").html("Ocurrio un error al cargar la informacion de Aportes Patronales..."+estado+"    "+error);
 	              }
 	            });
 

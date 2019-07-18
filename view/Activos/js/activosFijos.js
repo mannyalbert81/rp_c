@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	
-	consultaActivos();
+	consultaActivos(1);
+
 })
 
 /*
@@ -15,24 +16,32 @@ $(document).ready(function(){
  })
  
 function consultaActivos(page=1){
-	
-	parametros = {search:'',peticion:'ajax'}
-	
-	$.ajax({
-		beforeSend:function(x){},
-		url:"index.php?controller=ActivosFijos&action=cunsultaActivos",
-		type:"POST",
-		data:parametros,
-		dataType:"html"
-	}).done(function(data){
-		
-		$("#activos_fijos_registrados").html(data);
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText;
-		
-		console.log(err);
-	})
+
+	   var search=$("#search_activos").val();
+    var con_datos={
+				  action:'ajax',
+				  page:pagina
+				  };
+		  
+  $("#consultaActivos").fadeIn('slow');
+  
+  $.ajax({
+            beforeSend: function(objeto){
+              $("#consultaActivos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+            },
+            url: 'index.php?controller=ActivosFijos&action=cunsultaActivos&search='+search,
+            type: 'POST',
+            data: con_datos,
+            success: function(x){
+              $("#activos_fijos_registrados").html(x);
+              $("#consultaActivos").html("");
+              $("#tabla_activos").tablesorter(); 
+              
+            },
+           error: function(jqXHR,estado,error){
+             $("#activos_fijos_registrados").html("Ocurrio un error al cargar la informacion de Activos..."+estado+"    "+error);
+           }
+         });
 }
 
 

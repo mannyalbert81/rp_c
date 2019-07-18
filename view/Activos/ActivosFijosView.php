@@ -253,10 +253,10 @@
               
                 
 					<div class="pull-right" style="margin-right:15px;">
-						<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="load_activos_fijos(1)" placeholder="search.."/>
+						<input type="text" value="" class="form-control" id="search_activos" name="search_activos" onkeyup="consultaActivos(1)" placeholder="search.."/>
 						
 					</div>
-					<div id="load_activos_fijos" ></div>
+					<div id=consultaActivos ></div>
 					<div id="activos_fijos_registrados"></div>	
                 <button type="button" id="exportar" name="exportar" value="Exportar"   class="btn btn-primary" ><i class="fa fa-file-excel-o"></i></button>
                </div>
@@ -287,6 +287,7 @@
     		  }
      }
     </script> 
+ 
     
   
 <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>

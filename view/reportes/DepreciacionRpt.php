@@ -5,19 +5,22 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
 //echo getcwd().''; //para ver ubicacion de directorio
 
 $template = file_get_contents('view/reportes/template/Depreciacion.html');
+$header = file_get_contents('view/reportes/template/CabeceraFinal.html');
 
-$footer = file_get_contents('view/reportes/template/pieficha.html');
 
 
-if(!empty($datos_empresa)){
+if(!empty($datos_empresa))
+{
     
     foreach ($datos_empresa as $clave=>$valor) {
+        $header = str_replace('{'.$clave.'}', $valor, $header);
         $template = str_replace('{'.$clave.'}', $valor, $template);
     }
 }
 
 
 
+$footer = file_get_contents('view/reportes/template/pieret.html');
 $tablaDepreciacion="";
 		
 
@@ -135,7 +138,10 @@ $mpdf->allow_charset_conversion = true;
 $mpdf->charset_in = 'UTF-8';
 $mpdf->setAutoTopMargin = 'stretch';
 $mpdf->setAutoBottomMargin = 'stretch';
+$mpdf->SetHTMLHeader(utf8_encode($header));
 $mpdf->SetHTMLFooter($footer);
+$stylesheet = file_get_contents('view/reportes/template/activosFijos.css'); // la ruta a tu css
+$mpdf->WriteHTML($stylesheet,1);
 $mpdf->WriteHTML($template);
 $mpdf->debug = true;
 $mpdf->Output();

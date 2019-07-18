@@ -118,9 +118,7 @@
                         		    </div>
                                     
                                  </div>
-                                 
-<<<<<<< HEAD
-=======
+
                                  <div class="row">
                                  
                                  <div class="col-lg-3 col-xs-12 col-md-2">
@@ -159,10 +157,9 @@
                                  
                                  </div>
                                  
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
+
                                  <div class="row">
-<<<<<<< HEAD
-=======
+
                         		    
                         		 <div class="col-xs-12 col-md-3 col-md-3">
                         		    <div class="form-group">
@@ -177,7 +174,7 @@
 		   		   										  <div id="mensaje_id_estado" class="errores"></div>
                                     </div>
                                     </div>   
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
+
                         		  
                                  <div class="col-xs-12 col-md-3 col-md-3 ">
                                  <div class="form-group">
@@ -452,10 +449,10 @@
  </div>
     
     <?php include("view/modulos/links_js.php"); ?>
-<<<<<<< HEAD
+
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/Contable/FuncionesJS/ActivosFijos.js?1"></script> 
-=======
+
     
 	
     <script type="text/javascript" >   
@@ -831,16 +828,7 @@
 		}); 
 
 	</script>		  
-	
-	function mayus(e) {
 
-    var tecla=e.value;
-    var tecla2=tecla.toUpperCase();
-    
-    alert(tecla2);
-}  
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
-	
   </body>
 </html>   
 

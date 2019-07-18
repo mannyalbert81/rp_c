@@ -126,23 +126,35 @@ class CoreDiarioTipoController extends ControladorBase{
 	
 	
 	
-	public function consulta_plan_cuentas(){
+	public function consulta_diarios_tipo(){
 	    
 	    session_start();
-	    $id_rol=$_SESSION["id_rol"];
 	    
-	    $usuarios = new UsuariosModel();
-	    $catalogo = null; $catalogo = new CatalogoModel();
+	    $diario_cabeza = new CoreDiarioTipoCabezaModel();
+	    $diario_detalle = new CoreDiarioTipoDetalleModel();
+	
+	    
 	    $where_to="";
-	    $columnas = "  plan_cuentas.codigo_plan_cuentas, 
-                        plan_cuentas.nombre_plan_cuentas";
+	    $columnas = "   core_diario_tipo_cabeza.id_diario_tipo_cabeza, 
+                          core_diario_tipo_cabeza.id_tipo_procesos, 
+                          core_diario_tipo_cabeza.descripcion_diario_tipo_cabeza, 
+                          core_estatus.nombre_estatus, 
+                          estado.nombre_estado, 
+                          modulos.nombre_modulos, 
+                          core_diario_tipo_cabeza.creado, 
+                          core_diario_tipo_cabeza.modificado";
 	    
-	    $tablas = "public.plan_cuentas";
+	    $tablas = "public.core_diario_tipo_cabeza, 
+                  public.estado, 
+                  public.core_estatus, 
+                  public.modulos";
 	    
 	    
-	    $where    = " 1=1";
+	    $where    = "  core_diario_tipo_cabeza.id_estado = estado.id_estado AND
+  core_diario_tipo_cabeza.id_estatus = core_estatus.id_estatus AND
+  modulos.id_modulos = core_diario_tipo_cabeza.id_modulos";
 	    
-	    $id       = "plan_cuentas.id_plan_cuentas";
+	    $id       = "core_diario_tipo_cabeza.id_diario_tipo_cabeza";
 	    
 	    
 	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -158,7 +170,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND (plan_cuentas.codigo_plan_cuentas LIKE '".$search."%' OR plan_cuentas.nombre_plan_cuentas LIKE '".$search."%' )";
+	            $where1=" AND (core_diario_tipo_cabeza.descripcion_diario_tipo_cabeza LIKE '".$search."%')";
 	            
 	            $where_to=$where.$where1;
 	        }else{
@@ -168,7 +180,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	        }
 	        
 	        $html="";
-	        $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
+	        $resultSet=$diario_cabeza->getCantidad("*", $tablas, $where_to);
 	        $cantidadResult=(int)$resultSet[0]->total;
 	        
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
@@ -179,7 +191,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	        
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	        
-	        $resultSet=$usuarios->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $resultSet=$diario_cabeza->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
 	        $count_query   = $cantidadResult;
 	        $total_pages = ceil($cantidadResult/$per_page);
 	        
@@ -196,17 +208,15 @@ class CoreDiarioTipoController extends ControladorBase{
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_plan_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tabla_diarios_tipo' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
-	            $html.='<th style="text-align: left;  font-size: 12px;">Nº</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Código Cuenta</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre Cuenta</th>';
-	  
-	            
-	            if($id_rol==1){
-	                
-	               }
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ord</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Proceso</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Descripción</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Modulo</th>';
+	       
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -215,21 +225,41 @@ class CoreDiarioTipoController extends ControladorBase{
 	            
 	            $i=0;
 	            
+	            
+	            
 	            foreach ($resultSet as $res)
+	            
+	     
 	            {
+	               $id_diario_tipo_cabeza = $res->id_diario_tipo_cabeza;
+	               
+	               $columnas1 = "    core_diario_tipo_detalle.id_diario_tipo_detalle,
+                                      plan_cuentas.codigo_plan_cuentas, 
+                                      plan_cuentas.nombre_plan_cuentas, 
+                                      core_diario_tipo_detalle.observacion_diario_tipo_detalle, 
+                                      core_diario_tipo_detalle.destino_diario_tipo_detalle";
+	                
+	               $tablas1 = "public.core_diario_tipo_detalle, 
+                                  public.plan_cuentas";
+	                
+            	                
+            	   $where1 = "plan_cuentas.id_plan_cuentas = core_diario_tipo_detalle.id_plan_cuentas AND core_diario_tipo_detalle.id_diario_tipo_cabeza = $id_diario_tipo_cabeza";
+            	                
+                   $id1       = "core_diario_tipo_detalle.id_diario_tipo_detalle";
+                   
+            	           
+                   $resultSet1=$diario_detalle->getCondiciones($columnas1, $tablas1, $where1, $id1);
+            	                
+            	                
+            	                
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
-	                
-	                
-	                
-	                if($id_rol==1){
-	                    
-	                    }
-	                
-	                $html.='</tr>';
+	                $html.='<td style="font-size: 11px;">'.$res->id_tipo_procesos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->descripcion_diario_tipo_cabeza.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
+                    $html.='<td style="font-size: 11px;">'.$res->nombre_modulos.'</td>';
+                    $html.='</tr>';
 	            }
 	            
 	            
@@ -238,7 +268,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_plan_cuentas("index.php", $page, $total_pages, $adjacents).'';
+	            $html.=''. $this->paginate_diarios_tipo("index.php", $page, $total_pages, $adjacents).'';
 	            $html.='</div>';
 	            
 	            
@@ -247,7 +277,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay cuentas registradas...</b>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay diarios tipo registrados...</b>';
 	            $html.='</div>';
 	            $html.='</div>';
 	        }
@@ -330,7 +360,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	
 	
 	
-	public function paginate_plan_cuentas($reload, $page, $tpages, $adjacents) {
+	public function paginate_diarios_tipo($reload, $page, $tpages, $adjacents) {
 	    
 	    $prevlabel = "&lsaquo; Prev";
 	    $nextlabel = "Next &rsaquo;";
@@ -341,15 +371,15 @@ class CoreDiarioTipoController extends ControladorBase{
 	    if($page==1) {
 	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
 	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_plan_cuentas(1)'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_diarios_tipo(1)'>$prevlabel</a></span></li>";
 	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_plan_cuentas(".($page-1).")'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_diarios_tipo(".($page-1).")'>$prevlabel</a></span></li>";
 	        
 	    }
 	    
 	    // first label
 	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_plan_cuentas(1)'>1</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_diarios_tipo(1)'>1</a></li>";
 	    }
 	    // interval
 	    if($page>($adjacents+2)) {
@@ -364,9 +394,9 @@ class CoreDiarioTipoController extends ControladorBase{
 	        if($i==$page) {
 	            $out.= "<li class='active'><a>$i</a></li>";
 	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_plan_cuentas(1)'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_diarios_tipo(1)'>$i</a></li>";
 	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_plan_cuentas(".$i.")'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_diarios_tipo(".$i.")'>$i</a></li>";
 	        }
 	    }
 	    
@@ -379,13 +409,13 @@ class CoreDiarioTipoController extends ControladorBase{
 	    // last
 	    
 	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_plan_cuentas($tpages)'>$tpages</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_diarios_tipo($tpages)'>$tpages</a></li>";
 	    }
 	    
 	    // next
 	    
 	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_plan_cuentas(".($page+1).")'>$nextlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_diarios_tipo(".($page+1).")'>$nextlabel</a></span></li>";
 	    }else {
 	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
 	    }
@@ -467,14 +497,14 @@ class CoreDiarioTipoController extends ControladorBase{
 			if (!empty($resultPer))
 			{
 					
-				$this->view_Core("DiarioTipo",array(
+				$this->view_Contable("DiarioTipo",array(
 				    "resultTipCre"=>$resultTipCre,"rsModulos"=>$rsModulos,"rsEstado"=>$rsEstado
 					));
 			
 			
 			}else{
 				
-			    $this->view_Core("Error",array(
+			    $this->view_Contable("Error",array(
 						"resultado"=>"No tiene Permisos"
 				
 					

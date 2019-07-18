@@ -511,7 +511,14 @@ class CoreInformacionParticipesController extends ControladorBase{
                 (select sum(c1.valor_personal_contribucion) 
                 	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
                 	 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
-                ) as \"acumulado\"";
+                ) as \"acumulado\",
+                
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"total\"
+
+
+";
         $tablas   = " (select to_char(fecha_registro_contribucion,'YYYY') as anio
                 	from core_contribucion
                 	where id_participes = '$id_participes'
@@ -602,19 +609,19 @@ class CoreInformacionParticipesController extends ControladorBase{
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="font-size: 10px;">'.$res->anio.'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->enero, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->febrero, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->marzo, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->abril, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->mayo, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->junio, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->julio, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->agosto, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->septiembre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->octubre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->noviembre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->diciembre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->acumulado, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->enero, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->febrero, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->marzo, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->abril, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->mayo, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->junio, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->julio, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->agosto, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->septiembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->octubre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->noviembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->diciembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->acumulado, 2, ",", ".").'</td>';
                     
                     
                     
@@ -625,6 +632,34 @@ class CoreInformacionParticipesController extends ControladorBase{
                 
                 
                 $html.='</tbody>';
+                $html.='<tfoot>';
+            
+                    
+                   
+                    $html.='<tr>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                    $html.='<td bgcolor="#BABABA" style="font-size: 10px;"align="center"><strong>Total Aportaciones:</strong></td>';
+                    $html.='<td style="font-size: 10px;"align="right"><strong>'.number_format($res->total, 2, ",", ".").'</strong></td>';
+                    
+                    
+                    
+                    
+                    $html.='</tr>';
+              
+                
+                
+                $html.='<tfoot>';
                 $html.='</table>';
                 $html.='</section></div>';
                 $html.='<div class="table-pagination pull-right">';
@@ -800,7 +835,12 @@ class CoreInformacionParticipesController extends ControladorBase{
                 (select sum(c1.valor_patronal_contribucion)
                 	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
                 	 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
-                ) as \"acumulado\"";
+                ) as \"acumulado\",
+                
+                (select sum(c1.valor_patronal_contribucion) 
+                	from core_contribucion c1 where id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"total\"
+";
         $tablas   = " (select to_char(fecha_registro_contribucion,'YYYY') as anio
                 	from core_contribucion
                 	where id_participes = '$id_participes'
@@ -857,7 +897,7 @@ class CoreInformacionParticipesController extends ControladorBase{
                 $html.='</div>';
                 $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                 $html.='<section style="height:505px; overflow-y:scroll;">';
-                $html.= "<table id='tabla_personal_cta_individual' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<table id='tabla_patronal_cta_individual' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
                 
@@ -890,20 +930,20 @@ class CoreInformacionParticipesController extends ControladorBase{
                     
                     $i++;
                     $html.='<tr>';
-                    $html.='<td style="font-size: 10px;">'.$res->anio.'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->enero, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->febrero, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->marzo, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->abril, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->mayo, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->junio, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->julio, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->agosto, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->septiembre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->octubre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->noviembre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->diciembre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;">'.number_format($res->acumulado, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="center">'.$res->anio.'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->enero, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->febrero, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->marzo, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->abril, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->mayo, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->junio, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->julio, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->agosto, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->septiembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->octubre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->noviembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->diciembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->acumulado, 2, ",", ".").'</td>';
                     
                     
                     
@@ -914,6 +954,37 @@ class CoreInformacionParticipesController extends ControladorBase{
                 
                 
                 $html.='</tbody>';
+                
+                $html.='<tfoot>';
+                
+                
+                
+                $html.='<tr>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td style="font-size: 10px;">&nbsp;</td>';
+                $html.='<td bgcolor="#BABABA" style="font-size: 10px;"align="center"><strong>Total Aportaciones:</strong></td>';
+                $html.='<td style="font-size: 10px;"align="right"><strong>'.number_format($res->total, 2, ",", ".").'</strong></td>';
+                
+                
+                
+                
+                $html.='</tr>';
+                
+                
+                
+                $html.='<tfoot>';
+                
+                
                 $html.='</table>';
                 $html.='</section></div>';
                 $html.='<div class="table-pagination pull-right">';

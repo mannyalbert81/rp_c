@@ -74,21 +74,11 @@
   </head>
   <body>
   	
-  	<div style="border:1 solid;">
-  		<div style="font-family: Arial;  color:#000000; width: 85%; text-align: center; float:left;">
-  			<h2 style="margin-bottom: 0;">{NOMBREEMPRESA}</h2>
-  			<div><span>{DIRECCIONEMPRESA}</span></div>
-  			<div><span>{TELEFONOEMPRESA}</span></div>
-  				
-  		</div>  
-  		<div style="width: 14%; float:left;">
-  			<p style="width: 100%;"><img  style="width: 100%; height:25px; float:left;" align="right" src="view/images/logoCapremci.png"></p>
-  			<!-- style="margin-top:20px; margin-right:10px;"  -->
-  		</div>		
-  		<div style="margin-left:5pt; font-size:10px; float:none;"><b>Ruc: </b><span>{RUCEMPRESA}</span></div>
-  		<div style="margin-left:5pt; font-size:10px"><b>Fecha Impresión: </b><span>{FECHAEMPRESA}</span></div>
-  		<div style="margin-left:5pt; font-size:10px"><b>Usuario: </b><span>{USUARIOEMPRESA}</span></div>
-  	</div>
+<br>
+<br>
+<br>
+<br>
+
   	
   	<div>
   		<div style="font-family: Arial;  color:#000000; width: 100%; text-align: center; ">
@@ -100,7 +90,8 @@
   	<div style="width:100%">  	
   		
   		<table>
-  			<caption>DEPRECIACION INDIVIDUAL</caption>
+  			<caption><strong>DEPRECIACION INDIVIDUAL</strong></caption>
+  				
   			<thead>
   				<tr>
   					<th>GRUPO : {GRUPOACTIVO}</th>
@@ -108,32 +99,33 @@
   				</tr>
   				
   			</thead>
+  			
   				<tr>
   					<td><img src="view/Administracion/DevuelveImagenView.php?id_valor={IDACTIVO}&id_nombre=id_activos_fijos&tabla=act_activos_fijos&campo=imagen_activos_fijos" alt="" width="40" height="30"/></td>
   					
   				</tr>
   				<tr>
-  					<td>CODIGO : {CODIGOACTIVO}</td><td>CANTIDAD : {CANTIDADACTIVO}</td>
+  					<td><strong>CODIGO : </strong>{CODIGOACTIVO}</td><td><strong>CANTIDAD :</strong> {CANTIDADACTIVO}</td>
   					
   				</tr>
   				<tr>
-  					<td>NOMBRE : {NOMBREACTIVO}</td>
+  					<td><strong>NOMBRE :</strong> {NOMBREACTIVO}</td>
   				</tr>
   				<tr>
-  					<td>FECHA INGRESO : {FECHAACTIVO}</td>
+  					<td><strong>FECHA INGRESO :</strong> {FECHAACTIVO}</td>
   				</tr>
   				<tr>
-  					<td>VALOR : {VALORACTIVO}</td>
+  					<td><strong>VALOR : </strong>{VALORACTIVO}</td>
   				</tr>
   				<tr>
-  					<td>DESCRIPCION : {DESCACTIVO}</td>
+  					<td><strong>DESCRIPCION :</strong> {DESCACTIVO}</td>
   				</tr>
   				<tr>
-  					<td>UBICACION : {UBIACTIVO}</td>
+  					<td><strong>UBICACION : </strong>{UBIACTIVO}</td>
   				</tr>
   				<tr>
-  					<td>RESPONSABLE : {RESPACTIVO}</td>
-  					<td> {ISDEPRECIADO}</td>
+  					<td><strong>RESPONSABLE :</strong> {RESPACTIVO}</td>
+  					<td><strong> {ISDEPRECIADO}</strong></td>
   				</tr>
   				
   			<tbody>

@@ -375,10 +375,6 @@ function ActualizarRegistros(arr, dcontrol, idofi)
 	
 } 
 
-function SubirReporte()
-{
-console.log('subir reporte');	
-}
 
 function SubirArchivo()
 {
@@ -1057,7 +1053,7 @@ function GenerarReporte()
 		})
 		.done(function(x) {
 			console.log(x);
-					if (!(x.includes("Warning")) && !(x.includes("Notice")))
+					if (!(x.includes("Warning")) && !(x.includes("Notice")) && !(x.includes("Catchable fatal error")))
 				{
 						swal({
 					  		  title: "Registro",

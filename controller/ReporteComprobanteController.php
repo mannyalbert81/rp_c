@@ -332,6 +332,7 @@ class ReporteComprobanteController extends ControladorBase{
 	    $domLogo=$directorio.'/view/images/logo.png';
 	    $logo = '<img src="'.$domLogo.'" alt="Responsive image" width="130" height="70">';
 	    
+	    $valor_total_vista1 = 0;
 	    
 	    
 	    if(!empty($cedula_usuarios)){
@@ -412,6 +413,9 @@ class ReporteComprobanteController extends ControladorBase{
 	                $_nombre_proveedores     =$resultSetCabeza[0]->nombre_proveedores;
 	                $_descripcion_dcomprobantes     =$resultSetCabeza[0]->descripcion_dcomprobantes;
 	                
+	                //echo getcwd(); die();
+	                //echo ''.getcwd().'\\view\\images\\Logo-Capremci-h-170.jpg'; die();
+	                
 	                $columnas1 = "plan_cuentas.nombre_plan_cuentas,
                                   plan_cuentas.codigo_plan_cuentas,
                                   dcomprobantes.descripcion_dcomprobantes, 
@@ -427,18 +431,54 @@ class ReporteComprobanteController extends ControladorBase{
 	                
 	                
 	                $resultSetDetalle=$dcomprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	                
+	                $html.= '<table style="width:100%;" class="headertable">';
+	                $html.= '<tr >';
+	                $html.= '<td style="background-repeat: no-repeat;	background-size: 10% 100%;	background-image: url(http://192.168.1.231/rp_c/view/images/Logo-Capremci-h-170.jpg); 
+                                        background-position: 0% 100%;	font-size: 11px; padding: 0px; 	text-align:center;" class="central" colspan="2">';
+	                $html.= '<strong>';
+	                $html.= $_nombre_entidades.'<br>';
+	                $html.= $_direccion_entidades.'<br>';
+	                $html.= $_telefono_entidades.'';
+	                $html.= '</strong>';
+	                $html.= '</td>';
+	                $html.= '</tr>';
+	                $html.= '<tr>';
+	                $html.= '<td class="htexto1" style="font-size: 10px;  padding: 5px; text-align:left;width: 65%;" >';
+	                $html.= '<p>';
+	                $html.= '<strong>Ruc: </strong> '.$_ruc_entidades.'<br>';
+	                $html.= '<strong>Usuario: </strong>'.$_SESSION['usuario_usuarios'];
+	                $html.= '</p>';
+	                $html.= '</td>';
+	                $html.= '<td class="htexto2" style="font-size: 10px;  padding: 5px; text-align:left; width: 33%;" >';
+	                $html.= '<p>';
+	                $html.= '<strong>Fecha de Impresión: </strong> '.date('Y-m-d').'<br>';
+	                $html.= '<span><strong>Hoja: </strong> 1 </span>';
+	                $html.= '</p>';
+	                $html.= '</td>';	                
+	                $html.= '</tr>';
+	                $html.= '</table>';	
 	               
-	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
+	                $html.= "<table style='width: 100%; margin-top:10px;' border=0 cellspacing=0>";
+	                $html.= "<tr><td>Datos Factura:</td></tr>";
 	                $html.= "<tr>";
-	                $html.='<th style="text-align: center; font-size: 25px; "><b>'.$_nombre_entidades.'</b></br>';
-	                $html.='<p style="text-align: center; font-size: 13px; ">'.$_direccion_entidades.'';
-	                $html.='<br style="text-align: center; ">Teléfono: '.$_telefono_entidades.'';
-	                $html.='<br style="text-align: center; ">COMPROBANTE '.$_nombre_tipo_comprobantes.' Nº: '.$_numero_ccomprobantes.'</p>';
-	                $html.='<p style="text-align: left; font-size: 13px; ">  &nbsp; RUC: '.$_ruc_entidades.'&nbsp;  &nbsp;Fecha Factura: '.$_fecha_ccomprobantes.'';
+	                $html.='<td style="text-align: left; font-size: 12px; ">';	                
+	                $html.='&nbsp;Fecha Factura: '.$_fecha_ccomprobantes.'</td>';
 	                $html.='</tr>';
-	                $html.='</table>';
-	                $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; NOMBRE: </b>'.$_nombre_proveedores.'  ;<b>Nº RET:</b> '.$_retencion_ccomprobantes.'';
-	                $html.='<br colspan="12" style="text-align: left; font-size: 13px; "><b>&nbsp;&nbsp;LA CANTIDAD DE: </b>'.$_valor_ccomprobantes.'</th>';
+	                $html.= "<tr>";
+	                $html.='<td style="text-align: left; font-size: 12px; ">';
+	                $html.='&nbsp;Nombre: '.$_nombre_proveedores.'</td>';
+	                $html.='</tr>';
+	                $html.= "<tr>";
+	                $html.='<td style="text-align: left; font-size: 12px; ">';
+	                $html.='&nbsp;Retencion: '.$_retencion_ccomprobantes.'</td>';
+	                $html.='</tr>';
+	                $html.= "<tr>";
+	                $html.='<td style="text-align: left; font-size: 12px; ">';
+	                $html.='&nbsp;La cantidad de: '.$_valor_ccomprobantes.'</td>';
+	                $html.='</tr>';	                
+	                $html.='</table>';	
+	                
 	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
 	                $html.= "<tr>";
 	                $html.='<th colspan="12" style="text-align: left; height:30px; font-size: 13px;" ><b>&nbsp;CONCEPTO: </b>'.$_concepto_ccomprobantes.'';
@@ -455,59 +495,52 @@ class ReporteComprobanteController extends ControladorBase{
 	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Haber</th>';
 	                    $html.='</tr>';
 	                    
-	                    $i=0;
-	                    $i=0; $valor_total_db=0; $valor_total_vista=0;
-	                    $i=0;
 	                    $i=0; $valor_total_db1=0; $valor_total_vista=0;
 	                    
 	                    
-	                    foreach ($resultSetDetalle as $res)
-	                    {
-	                        $valor_total_db=$res->debe_dcomprobantes;
-	                        $valor_total_vista=$valor_total_vista+$valor_total_db;
-	                        $valor_total_db1=$res->haber_dcomprobantes;
-	                        $valor_total_vista1=$valor_total_vista1+$valor_total_db1;
-	                        
+                    foreach ($resultSetDetalle as $res){
+                        
+                       $valor_total_db=$res->debe_dcomprobantes;
+                       $valor_total_vista=$valor_total_vista+$valor_total_db;
+                       $valor_total_db1=$res->haber_dcomprobantes;
+                       $valor_total_vista1=$valor_total_vista1+$valor_total_db1;
 	                    
-	                  $html.= "<tr>";
+                       $html.= "<tr>";
 	                 
-	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
-	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->codigo_plan_cuentas.'</td>';
-	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
-	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
-	                $html.='<td colspan="2" style="text-align: right; font-size: 13px;">'.$res->debe_dcomprobantes.'</td>';
-	                $html.='<td colspan="2" style="text-align: right; font-size: 13px;">'.$res->haber_dcomprobantes.'</td>';
-	                $html.='</tr>';
-	                $valor_total_db=0;
-	                $valor_total_db1=0;
+    	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
+    	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->codigo_plan_cuentas.'</td>';
+    	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
+    	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
+    	                $html.='<td colspan="2" style="text-align: right; font-size: 13px;">'.$res->debe_dcomprobantes.'</td>';
+    	                $html.='<td colspan="2" style="text-align: right; font-size: 13px;">'.$res->haber_dcomprobantes.'</td>';
+    	                $html.='</tr>';
+    	                $valor_total_db=0;
+    	                $valor_total_db1=0;
 	                
-	                    }
+	                }
 	             
-	                    $valor_total_vista= number_format($valor_total_vista, 2, '.', ',');
-	                    $valor_total_vista1= number_format($valor_total_vista, 2, '.', ',');
+	                    $valor_total_vista1 = $valor_total_vista= number_format($valor_total_vista, 2, '.', ',');	 
 	                    
-	                $html.='</table>';
-	                $html.='<p style="text-align: left; font-size: 13px;"><b>&nbsp; PICHINCHA CH Nº: </b>'.$_numero_cheque_ccomprobantes.' &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>COTZ:</b> '.$_retencion_ccomprobantes.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>TOTAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista1.'';
-	                $html.="<table style='width: 100%; margin-top:50px;' border=1 cellspacing=0>";
-	                $html.='<tr>';
-	                $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Elaborado por:</th>';
-	                $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Es Conforme:</th>';
-	                $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Visto Bueno:</th>';
-	                $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Recibi Conforme:</th>';
-	                $html.='</tr>';
-	                $html.='<tr>';
-	                $html.='<td colspan="4" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">'.$_nombre_usuarios.'</td>';
-	                $html.='<td colspan="4" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">CONTADOR</td>';
-	                $html.='<td colspan="2" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">GERENTE</td>';
-	                $html.='<td colspan="2" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">---------------------------</td>';
-	                
-	                $html.='</tr>';
-	                $html.='</table>';
-	                
+    	                $html.='</table>';
+    	                $html.='<p style="text-align: left; font-size: 13px;"><b>&nbsp; PICHINCHA CH Nº: </b>'.$_numero_cheque_ccomprobantes.' &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>COTZ:</b> '.$_retencion_ccomprobantes.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>TOTAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista1.'';
+    	                $html.="<table style='width: 100%; margin-top:50px;' border=1 cellspacing=0>";
+    	                $html.='<tr>';
+    	                $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Elaborado por:</th>';
+    	                $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Es Conforme:</th>';
+    	                $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Visto Bueno:</th>';
+    	                $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Recibi Conforme:</th>';
+    	                $html.='</tr>';
+    	                $html.='<tr>';
+    	                $html.='<td colspan="4" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">'.$_nombre_usuarios.'</td>';
+    	                $html.='<td colspan="4" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">CONTADOR</td>';
+    	                $html.='<td colspan="2" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">GERENTE</td>';
+    	                $html.='<td colspan="2" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">---------------------------</td>';
+    	                
+    	                $html.='</tr>';
+    	                $html.='</table>';
 	                
 	                }
 	                
-	             
 	                
 	            }
 	            

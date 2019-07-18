@@ -1,3 +1,4 @@
+
 $(document).ready( function (){
 	load_solicitudes(1);
 	$(":input").inputmask();
@@ -228,103 +229,177 @@ function validarfecha(fecha)
 		}
 }
 
-
+function GetMax()
+{
+	$.ajax({
+	    url: 'index.php?controller=AvancesEmpleados&action=ValidarMonto',
+	    type: 'POST',
+	    data: {
+	    	  },
+	})
+	.done(function(x) {
+		console.log(x);
+		swal({
+			  title: "Solicitud",
+			  text: "Monto excede la cantidad permitida \n Monto máximo: "+x.trim(),
+			  icon: "warning",
+			  button: "Aceptar",
+			});
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	   
+	});
+	}
 
 function InsertarSolicitud()
 {
-	
 
 var fecha = $("#fecha").val();
 var monto = $("#monto_avance").val();
 var diferido = $("#cuotas").val();
 
-if (fecha=="")
+if (fecha=="" )
 {
 $("#mensaje_fecha").text("Elija fecha");
 $("#mensaje_fecha").fadeIn("slow");
 $("#mensaje_fecha").fadeOut("slow");
 }
-if (monto== "")
+if (monto== "" || monto.includes("-"))
 {    	
 	$("#mensaje_monto_avance").text("Ingrese monto");
 	$("#mensaje_monto_avance").fadeIn("slow");
 	$("#mensaje_monto_avance").fadeOut("slow");
 }
+if(diferido>12)
+	{
+	$("#mensaje_cuotas").text("Numero invalido");
+	$("#mensaje_cuotas").fadeIn("slow");
+	$("#mensaje_cuotas").fadeOut("slow");
+	}
 if (diferido=="" || diferido=="0")
 {
 	diferido=1;
 }
 console.log(diferido);
 
-if ( fecha!="" && monto!="" && diferido!="")
+if ( fecha!="" && monto!="" && diferido!="" && monto>0 && diferido<12)
 	{
 	
 	$.ajax({
-	    url: 'index.php?controller=AvancesEmpleados&action=AgregarSolicitud',
+	    url: 'index.php?controller=AvancesEmpleados&action=ValidarMonto',
 	    type: 'POST',
 	    data: {
-	    	   fecha_anticipo: fecha,
-	    	   monto_anticipo: monto,
-	    	   tiempo_diferido: diferido
-	    	   
-	    },
+	    	  },
 	})
 	.done(function(x) {
-		
-		$("#fecha").val("");
-		$("#monto_avance").val("");
-		$("#cuotas").val("");	
-		
-		console.log(x);
-		if (x==1)
-			{
-			swal({
-		  		  title: "Solicitud",
-		  		  text: "Solicitud registrada exitosamente",
-		  		  icon: "success",
-		  		  button: "Aceptar",
-		  		});
-				load_solicitudes(1);
-			}
-		else
-			{
-			if (x.includes("Warning"))
-			{
-			if(x.includes("sin encontrar RETURN"))
-				{
-				swal({
-			  		  title: "Solicitud",
-			  		  text: "Ya existe una solicitud en proceso de revision o por pagar",
-			  		  icon: "warning",
-			  		  button: "Aceptar",
-			  		});
-				}else
+		x.trim();
+		x=parseFloat(x);
+		monto=parseFloat(monto);
+		if (monto>x) GetMax();
+		else 
+		{
+			$.ajax({
+			    url: 'index.php?controller=AvancesEmpleados&action=ValidarCantidad',
+			    type: 'POST',
+			    data: {
+			    	  },
+			})
+			.done(function(x) {
+				if (x>2)
 					{
 					swal({
-				  		  title: "Solicitud",
-				  		  text: "Error al agregar solicitud",
-				  		  icon: "warning",
-				  		  button: "Aceptar",
-				  		});
+						  title: "Solicitud",
+						  text: "El usuario exedio la cantidad de avances anuales",
+						  icon: "warning",
+						  button: "Aceptar",
+						});
 					}
-			
-			}
-			
+				else
+					{
+					$.ajax({
+					    url: 'index.php?controller=AvancesEmpleados&action=AgregarSolicitud',
+					    type: 'POST',
+					    data: {
+					    	   fecha_anticipo: fecha,
+					    	   monto_anticipo: monto,
+					    	   tiempo_diferido: diferido
+					    	   
+					    },
+					})
+					.done(function(x) {
+						
+						$("#fecha").val("");
+						$("#monto_avance").val("");
+						$("#cuotas").val("");	
+						console.log(fecha)
+						console.log(x);
+						if (x==1)
+							{
+							swal({
+						  		  title: "Solicitud",
+						  		  text: "Solicitud registrada exitosamente",
+						  		  icon: "success",
+						  		  button: "Aceptar",
+						  		});
+								load_solicitudes(1);
+							}
+						else
+							{
+							if (x.includes("Warning"))
+							{
+							if(x.includes("sin encontrar RETURN"))
+								{
+								swal({
+							  		  title: "Solicitud",
+							  		  text: "Ya existe una solicitud en proceso de revision o por pagar",
+							  		  icon: "warning",
+							  		  button: "Aceptar",
+							  		});
+								}else
+									{
+									swal({
+								  		  title: "Solicitud",
+								  		  text: "Error al agregar solicitud",
+								  		  icon: "warning",
+								  		  button: "Aceptar",
+								  		});
+									}
+							
+							}
+							
+								
+							}
+						
+					})
+					.fail(function() {
+					    console.log("error");
+					    swal({
+					  		  title: "Solicitud",
+					  		  text: "Hubo un error al registrar solicitud",
+					  		  icon: "warning",
+					  		  button: "Aceptar",
+					  		});
+					});
+					}
 				
-			}
-		
-		
+				
+			})
+			.fail(function() {
+			    console.log("error");
+			   
+			});	
 			
+		}
+		
 	})
 	.fail(function() {
 	    console.log("error");
-	    swal({
-	  		  title: "Solicitud",
-	  		  text: "Hubo un error al registrar solicitud",
-	  		  icon: "warning",
-	  		  button: "Aceptar",
-	  		});
+	   
 	});
+	
+	
 	
 	}
 }
@@ -414,7 +489,7 @@ function Aprobar(idsol,nomest)
 function Negar(idsol)
 {
 	$.ajax({
-	    url: 'index.php?controller=HorasExtrasEmpleados&action=NegarSolicitud',
+	    url: 'index.php?controller=AvancesEmpleados&action=NegarSolicitud',
 	    type: 'POST',
 	    data: {
 	    	   id_solicitud: idsol

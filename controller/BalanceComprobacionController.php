@@ -310,7 +310,7 @@ class BalanceComprobacionController extends ControladorBase{
                         else {
                             $colorletra="black";
                         }
-                        $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$elementos_saldo[2].$boldf.'</font></td>';
+                        $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: right;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$elementos_saldo[2].$boldf.'</font></td>';
                         $sumatoria.='</tr>';
                     if ($this->tieneHijoA($nivel,$elementos_saldo[0], $resultset))
                     {
@@ -382,7 +382,7 @@ class BalanceComprobacionController extends ControladorBase{
                         else {
                             $colorletra="black";
                         }
-                    $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: left;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$elementos_saldo[2].$boldf.'</font></td>';
+                    $sumatoria.='<td bgcolor="'.$colores[$color].'" style="text-align: right;  font-size: '.$tdfont.';"><font color="'.$colorletra.'">'.$boldi.$elementos_saldo[2].$boldf.'</font></td>';
                     $sumatoria.='</tr>';
                     if ($this->tieneHijoA($nivel,$elementos_saldo[0], $resultset))
                     {

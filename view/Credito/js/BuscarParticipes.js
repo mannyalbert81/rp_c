@@ -6,6 +6,8 @@ $(document).ready( function (){
 		
 });
 
+
+
 function BuscarParticipe()
 {
 	var ciparticipe=$('#cedula_participe').val();

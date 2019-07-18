@@ -415,6 +415,16 @@ function DatosBase(arr, tipo, idlog)
 	idbanco=idbancosubida;
 	console.log(arr);
 	arr=JSON.stringify(arr);
+	swal({
+		  title: "Archivo",
+		  text: "Subiendo el archivo",
+		  icon: "view/images/capremci_load.gif",
+		  buttons: false,
+		  closeModal: false,
+		  allowOutsideClick: false
+		});
+
+	
 	$.ajax({
 	    url: 'index.php?controller=EstadosCuenta&action=SubirDatosBase',
 	    type: 'POST',
@@ -428,6 +438,26 @@ function DatosBase(arr, tipo, idlog)
 	})
 	.done(function(x) {
 		console.log(x);
+		if(x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
+			{
+			swal({
+				  title: "Archivo",
+				  text: "Error en la subida!: "+x,
+				  icon: "error",
+				  button: "Aceptar"
+				});
+			}
+		else
+			{
+			swal({
+				  title: "Archivo",
+				  text: "Subida exitosa!",
+				  icon: "success",
+				  button: "Aceptar"
+				});
+			MostrarDocumentos(1);
+			}
+		
 		
 		
 		

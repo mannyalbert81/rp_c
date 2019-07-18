@@ -1259,6 +1259,7 @@ class MovimientosInvController extends ControladorBase{
 	 * title: versolicitud
 	 * desc: aprobar/rechazar solicitudes
 	 * return: void::view
+	 * update 2019-07-16
 	 */
 	public function versolicitud(){
 	    
@@ -1332,7 +1333,7 @@ class MovimientosInvController extends ControladorBase{
 	            $where_detalle = "productos.id_productos = inv_temp_salida.id_productos AND
                       grupos.id_grupos = productos.id_grupos AND
                       unidad_medida.id_unidad_medida = productos.id_unidad_medida
-                      AND inv_temp_salida.id_movimientos_inv_cabeza=$id_movimiento";
+                      AND inv_temp_salida.id_movimientos_inv_cabeza = $id_movimiento";
 	            
 	            $resultdetalle = $salidas->getCondiciones($col_detalle,$tab_detalle,$where_detalle,"productos.nombre_productos");
 	            
@@ -1358,6 +1359,170 @@ class MovimientosInvController extends ControladorBase{
 	   
 	}
 	
+	public function GetDetalleSolicitud(){
+	    
+	    $Movimientos = new MovimientosInvModel();
+	    $error = "";
+	    $respuesta = array();
+	    
+	    try{
+	        
+	        $id_movimiento = $_POST['id_movimientos'];
+	        $error = error_get_last();
+	        
+	        if( !empty($error) )
+	            throw new Exception("Viariables no Definidas ".$error['message']);
+	            
+	        
+	        $columnas ="grupos.nombre_grupos,
+                      grupos.id_grupos,
+                      unidad_medida.nombre_unidad_medida,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.ult_precio_productos,
+                      inv_temp_salida.cantidad_temp_salida,
+                      inv_temp_salida.id_temp_salida,
+                      inv_temp_salida.id_movimientos_inv_cabeza,
+                      inv_temp_salida.estado_temp_salida,
+                      (SELECT saldos_f_saldo_productos FROM saldo_productos
+				        WHERE id_productos = productos.id_productos) \"disponible\"";
+	        
+	        $tablas = "public.inv_temp_salida,
+                      public.productos,
+                      public.grupos,
+                      public.unidad_medida";
+	        
+	        $where = "productos.id_productos = inv_temp_salida.id_productos AND
+                      grupos.id_grupos = productos.id_grupos AND
+                      unidad_medida.id_unidad_medida = productos.id_unidad_medida
+                      AND inv_temp_salida.id_movimientos_inv_cabeza = $id_movimiento";
+	        
+	        $id = "productos.nombre_productos";	        
+	        
+	        $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+	        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	        
+	        $html="";
+	        
+	        if($action == 'ajax'){
+	            
+	            if(!empty($search)){	                
+	                
+	                $where1=" ";
+	                
+	                $where_to=$where.$where1;
+	            }else{
+	                
+	                $where_to=$where;
+	                
+	            }
+	            
+	            
+	            $resultSet=$Movimientos->getCantidad("*", $tablas, $where_to);
+	            $cantidadResult=(int)$resultSet[0]->total;
+	            
+	            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	            
+	            $per_page = 10; //la cantidad de registros que desea mostrar
+	            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	            $offset = ($page - 1) * $per_page;	            
+	            $limit = " LIMIT   '$per_page' OFFSET '$offset'";	            
+	            $resultSet=$Movimientos->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);	            
+	            $total_pages = ceil($cantidadResult/$per_page);
+	            
+	            
+	            if($cantidadResult>0){
+	                
+	                //$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	                //$html.='<section style="height:180px; overflow-y:scroll;">';
+	                $html.= "<table id='tbl_detalles_solicitudes' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	                $html.= "<thead>";
+	                $html.= "<tr>";
+	                $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
+	                $html.='<th style="text-align: left;  font-size: 12px;">Grupos</th>';
+	                $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
+	                $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	                $html.='<th style="text-align: left;  font-size: 12px;">Disponible</th>';
+	                $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
+	                $html.='<th style="text-align: left;  font-size: 12px;">U.M.</th>';
+	                $html.='<th style="text-align: left;  font-size: 12px;">Precio</th>';
+	                $html.='<th style="text-align: left;  font-size: 12px;">Aprobar</th>';
+	                $html.='<th style="text-align: left;  font-size: 12px;">Rechazar</th>';
+	            	                
+	                $html.='</tr>';
+	                $html.='</thead>';
+	                $html.='<tbody>';
+	                
+	                //para trabajar con filas aprobadas pendientes y rechazadas
+	                $bgColor="";
+	                $dataEstado="";
+	                	                
+	                $i=0;
+	                
+	                foreach ($resultSet as $res){
+	                    
+	                    $dataEstado = $res->estado_temp_salida;
+	                    $bgColor ="";
+	                    
+	                    if($res->estado_temp_salida == 'APROBADO'){
+	                        $bgColor = "#ABEBC6";	                        
+	                    }
+	                    if($res->estado_temp_salida == 'RECHAZADA'){
+	                        $bgColor = "#F5B7B1";
+	                    }
+	                    
+	                    $disponible = (is_null( $res->disponible)) ? 0 : (int)$res->disponible; 
+	                    
+	                    $i++;
+	                    $html.='<tr style="background-color:'.$bgColor.'"  data-estado="'.$dataEstado.'" id="tr'.$res->id_temp_salida.'" >';
+	                    $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                    $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
+	                    $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';	                    
+	                    $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
+	                    $html.='<td style="font-size: 11px;">'.$disponible.'</td>';
+	                    $html .= '<td style="font-size: 12px;"><input type="text" name="psolicitud" style="border: 0; height:22px;" class="form-control input-sm" value="' . $res->cantidad_temp_salida . '" id="cantidad_producto_'.$res->id_temp_salida.'">
+                                <input type="hidden" name="pdisponible" id="disponible_producto'.$res->id_temp_salida.'" value="' .$disponible . '" ></td>';
+	                    $html.='<td style="font-size: 11px;">'.$res->nombre_unidad_medida.'</td>';
+	                    $html.='<td style="font-size: 11px;">'.$res->ult_precio_productos.'</td>';
+	                    $html.='<td style="font-size: 18px;">
+                            <a  onclick="aprobar_producto('.$res->id_temp_salida.')" href="#" class="btn-sm btn-success" style="font-size:65%;"data-toggle="tooltip" title="APROBAR"><i class="fa fa-check-square-o" aria-hidden="true"></i></a></td>';
+	                    $html.='<td style="font-size: 18px;">
+                            <a onclick="rechazar_producto('.$res->id_temp_salida.')"   href="#" class="btn-sm btn-danger" style="font-size:65%;"data-toggle="tooltip" title="RECHAZAR"><i class="fa fa-remove" aria-hidden="true" ></i></a></td>';
+	                   	                   
+	                    $html.='</tr>';
+	                    	                   
+	                }
+	                
+	                $html.='</tbody>';
+	                $html.='</table>';
+	                //$html.='</section></div>';
+	                ////$html.='<div class="table-pagination pull-right">';
+	                //$html.=''. $this->paginatemultiple("index.php", $page, $total_pages, $adjacents,"").'';
+	                //$html.='</div>';
+	                
+	                
+	                
+	            }else{
+	                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	                $html.='<h4>Aviso!!!</h4> <b> Sin Detalles </b>';
+	                $html.='</div>';
+	                $html.='</div>';
+	            }
+	        }
+	        
+	        $respuesta['tablaHtml']=$html;
+	        
+	        echo json_encode($respuesta);	        
+	        
+	    }catch (Exception $ex){
+	        
+	        echo "<message> Error Grupos. \n". $ex->getMessage()." <message>";
+	    }
+	}
+	
 	/***
 	 * mod: salidas
 	 * title: apruebaproducto
@@ -1377,32 +1542,46 @@ class MovimientosInvController extends ControladorBase{
             
             if($id_temp_salida>0){
                 
-                //para actualizacion de temp
-                $temp_salida = new InvTempSalidaModel();
+                $error = "";
+                $respuesta = array();
                 
-                $funcion = "fn_inv_movimiento_salidas";
-                $parametros = "$id_temp_salida,$cantidad";
-                
-                $temp_salida->setFuncion($funcion);                
-                $temp_salida->setParametros($parametros);
-                
-                $resultado=$temp_salida->llamafuncion();
-                
-                $respuesta = array('mesaje'=> 'No se pudo procesar su solicitud');
-                
-                if(is_array($resultado) && count($resultado)>0){
+                try{
+                    //para actualizacion de temp
+                    $temp_salida = new InvTempSalidaModel();                    
+                    $funcion = "fn_inv_movimiento_salidas";
+                    $parametros = "$id_temp_salida,$cantidad";
                     
-                    $respuesta = array('mensaje' => $resultado[0]->fn_inv_movimiento_salidas);
+                    $temp_salida->setFuncion($funcion);
+                    $temp_salida->setParametros($parametros);
+                    
+                    $resultado=$temp_salida->llamafuncionPG();
+                    
+                    $error = error_get_last();                    
+                                        
+                    if( !empty($error) || is_null($resultado))
+                        throw new Exception("Error Funcion ".$error['message']);
+                    
+                    
+                    $respuesta['respuesta']=1;
+                    $respuesta['mensaje']=$resultado[0];
+                                        
+                    echo json_encode($respuesta);
+                    
+                }catch (Exception $ex){
+                    
+                    echo 'Error Solicitud \n '.$ex->getMessage().'';
                 }
                 
-                echo json_encode($respuesta);
                 
+                
+            }else{
+                echo '<message>Producto No Seleccionado <message>';
             }
             
             
         }else{
             
-            
+            echo '<message>Seleccione una fila<message>';
         }
         
 	   
@@ -1414,6 +1593,7 @@ class MovimientosInvController extends ControladorBase{
 	 * ajax: si
 	 * desc: aprueba cantidad de productos de solicitud
 	 * return: json
+	 * update 2019-07-17
 	 */
 	public function rechazaproducto(){
 	    
@@ -1422,26 +1602,41 @@ class MovimientosInvController extends ControladorBase{
          
         if($id_temp_salida>0){
             
-            //para actualizacion de temp
-            $temp_salida = new InvTempSalidaModel();
+            $respuesta = array();
             
-            $funcion = "fn_inv_movimiento_salidas_r";
-            $parametros = "$id_temp_salida";
-            
-            $temp_salida->setFuncion($funcion);
-            $temp_salida->setParametros($parametros);
-            
-            $resultado=$temp_salida->llamafuncion();
-            
-            $respuesta = array('mesaje'=> 'No se pudo procesar su solicitud');
-            
-            if(is_array($resultado) && count($resultado)>0){
+            try{
                 
-                $respuesta = array('mensaje' => $resultado[0]->fn_inv_movimiento_salidas_r);
+                //para actualizacion de temp
+                $temp_salida = new InvTempSalidaModel();
+                
+                $funcion = "fn_inv_movimiento_salidas_r";
+                $parametros = "$id_temp_salida";
+                
+                $temp_salida->setFuncion($funcion);
+                $temp_salida->setParametros($parametros);
+                
+                $resultado=$temp_salida->llamafuncionPG();
+                
+                $error = error_get_last();
+                
+                if( !empty($error) || is_null($resultado))
+                    throw new Exception("Error Funcion ".$error['message']);
+                
+                $respuesta['respuesta'] = 1;
+                $respuesta['mensaje'] = $resultado[0];                
+               
+                echo json_encode($respuesta);
+                
+                
+            }catch (Exception $ex){
+                echo '<message>Error Solicitud \n'.$ex->getMessage().'<message>';
             }
             
-            echo json_encode($respuesta);
+           
             
+        }else{
+            
+            echo '<message>Producto no definido<message>';
         }
 	    
 	}
@@ -1460,9 +1655,7 @@ class MovimientosInvController extends ControladorBase{
 	    //creacion de objeto de modelo
 	    $movimientos_inventario = new MovimientosInvCabezaModel();
 	    
-	    $resultSet=array();
-	    
-	    $validacion = false;
+	    $respuesta=array();
 	    
 	    $id_rol= $_SESSION['id_rol'];
 	    if (isset(  $_SESSION['nombre_usuarios']) )
@@ -1471,77 +1664,68 @@ class MovimientosInvController extends ControladorBase{
 	        $nombre_controladores = "MovimientosProductosCabeza";
 	        $resultPer = $movimientos_inventario->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	        
-	        if (!empty($resultPer))
-	        {
-	            $validacion = true;
+	        if (empty($resultPer)){
+	            
+	            echo '<message> No tiene permisos <message>';
+	            die();
 	            
 	        }
 	    }
 	    
-	   
-	    
-	    if($validacion && isset($_POST['accion']) && $_POST['accion']='ajax'){
-	        
+	    if(!isset( $_POST['peticion']) || $_POST['peticion'] !='ajax')
+	    {
+	       echo '<message> Variable no definida  <message>';
+	       die();
 	       
+	    }
+	    
+	    $error = "";
+	    
+	    try{
 	        
 	        $id_usuarios = (isset($_SESSION['id_usuarios']))?$_SESSION['id_usuarios']:0;
 	        
-	        $_estado_salida='';	        
+	        $_id_movimiento_solicitud = $_POST['id_movimiento_solicitud'];
+	        $_tipo_solicitud = $_POST['tipo_solicitud'];
 	        
-	        switch ( $_POST['btnForm'] ){
-	            case 'APROBAR':
-	                $_estado_salida='APROBADA';
-	                $funcion = "fn_agrega_movimiento_salida";
-	                break;
-	            case 'REPROBAR':
-	                $_estado_salida='RECHAZADA';
-	                $funcion = "fn_agrega_movimiento_salida_rechazada";
-	                break;
-	        } 
+	        //opciones es -> 'APROBAR' 'ANULAR'
 	        
-	        /*valores de la vista*/
-	        $_id_movimiento_solicitud = (isset($_POST['id_movimiento_solicitud']))?$_POST['id_movimiento_solicitud']:0;
+	        $error = error_get_last();
 	        
-	        //se valida si hay productos en temp
-	        if($_id_movimiento_solicitud>0){
-	            
-	            $_fecha_salida = date('Y-m-d');	            
-	            
-	            $parametros = "'$_id_movimiento_solicitud','$id_usuarios','$_fecha_salida','$_estado_salida'";
-	            
-	            $movimientos_inventario->setFuncion($funcion);
-	            
-	            $movimientos_inventario->setParametros($parametros);
-	            
-	            $resultset = $movimientos_inventario->llamafuncion();
-	            
-	            $resultadofuncion = 0;
-	            
-	            if(!empty($resultset)){
-	                if(is_array($resultset) && count($resultset)>0){
-	                    
-	                    foreach ($resultset[0] as $key=>$desc){
-	                    
-	                        $resultadofuncion =  $desc;
-	                    }
-	                   
-	                }
-	            }
-	            
-	            echo json_encode(array('mensaje'=>$resultadofuncion));
-	            
-	            
-	        }else{
-	            
-	            echo json_encode(array('mensaje'=>'Error al enviar datos'));
-	        }
+	        if( !empty($error) )
+	            throw new Exception("Viariables no Definidas ".$error['message']);
 	        
-	       
-	    }else {
+            $_fecha_salida = date('Y-m-d');
+	        $funcion = "fn_agrega_movimiento_salida";
+	        $parametros = "'$_tipo_solicitud','$_id_movimiento_solicitud','$id_usuarios','$_fecha_salida'";
+	            
+            $movimientos_inventario->setFuncion($funcion);            
+            $movimientos_inventario->setParametros($parametros);            
+            $resultado = $movimientos_inventario->llamafuncionPG();
+            
+            $error = error_get_last();
+            
+            //var_dump($resultado) ; die();
+            
+            if(is_null($resultado) || !empty($error))
+                throw new Exception("Error Funcion ".$error['message']);
+            
+            $respuestaBd = $resultado[0];
+            
+            $respuesta['respuesta'] = 1;
+            $respuesta['mensaje'] = $respuestaBd;
+            
+            if (strpos($respuestaBd, 'ERROR') !== false) {
+                $respuesta['respuesta'] = 0;                
+            }            
+            
+            echo json_encode($respuesta);	        
 	        
-	        echo json_encode(array('mensaje'=>'Problemas al conectarse con el servidor'));
+	    }catch (Exception $ex){
+	        
+	        echo '<message> Error Solicitud \n '.$ex->getMessage().'<message>';
 	    }
-	    
+	    	    
 	}
 	
 
@@ -1775,8 +1959,7 @@ class MovimientosInvController extends ControladorBase{
 	                    
 	                    foreach ($resultSetDetalle as $res)
 	                    {
-	                        $html.= "<tr>";
-	                        
+	                        $html.= "<tr>";	                        
 	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->codigo_productos.'</td>';
 	                        $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->nombre_grupos.'</td>';
 	                        $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->nombre_productos.'</td>';

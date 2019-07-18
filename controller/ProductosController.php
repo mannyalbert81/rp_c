@@ -13,28 +13,34 @@ class ProductosController extends ControladorBase{
       
         session_start();
         
+        $Bodegas = new BodegasModel();
+        $rsBodegas = $Bodegas->getBy(" 1 = 1 ");
         
         //Creamos el objeto usuario
         $productos=new ProductosModel();
        
         $columnas = "
-                                      productos.id_productos,
-                                      grupos.id_grupos,
-                                      grupos.nombre_grupos,
-                                      unidad_medida.id_unidad_medida,
-                                      unidad_medida.nombre_unidad_medida,
-                                      productos.codigo_productos,
-                                      productos.marca_productos,
-                                      productos.nombre_productos,
-                                      productos.descripcion_productos,
-                                      productos.ult_precio_productos,
-                                      productos.creado,
-                                      productos.modificado";
-                      $tablas   = "   public.productos,
+                      productos.id_productos,
+                      grupos.id_grupos,
+                      grupos.nombre_grupos,
+                      unidad_medida.id_unidad_medida,
+                      unidad_medida.nombre_unidad_medida,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.descripcion_productos,
+                      productos.ult_precio_productos,
+                      productos.minimo_productos,
+                      productos.creado,
+                      productos.modificado";
+        
+        $tablas   = "   public.productos,
                                       public.grupos,
                                       public.unidad_medida";
+        
         $where    = "  grupos.id_grupos = productos.id_grupos AND
                                        unidad_medida.id_unidad_medida = productos.id_unidad_medida";
+        
         $id       = "productos.id_productos";
         
         $resultSet = $productos->getCondiciones($columnas ,$tablas ,$where, $id);
@@ -60,8 +66,6 @@ class ProductosController extends ControladorBase{
             {
                 if (isset ($_GET["id_productos"])   )
                 {
-                    
-                  
                         
                         $_id_productos = $_GET["id_productos"];
                         $columnas = "
@@ -74,7 +78,9 @@ class ProductosController extends ControladorBase{
                                       productos.marca_productos, 
                                       productos.nombre_productos, 
                                       productos.descripcion_productos, 
-                                      productos.ult_precio_productos, 
+                                      productos.ult_precio_productos,
+                                      productos.id_bodegas,
+                                      productos.minimo_productos, 
                                       productos.creado, 
                                       productos.modificado";
                         $tablas   = "   public.productos, 
@@ -92,7 +98,7 @@ class ProductosController extends ControladorBase{
                 
                 
                 $this->view_Inventario("Productos",array(
-                    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultGrup"=>$resultGrup, "resultUni"=>$resultUni
+                    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultGrup"=>$resultGrup, "resultUni"=>$resultUni, "rsBodegas"=>$rsBodegas
                     
                 ));
                 
@@ -196,6 +202,111 @@ class ProductosController extends ControladorBase{
         
         //          $this->redirect("Productos", "index");
         
+        
+    }
+    
+    public function AgregaProductos(){
+        
+        session_start();
+        
+        $resultado = null;
+        $productos=new ProductosModel();
+        $respuesta = array();
+        
+        
+        $nombre_controladores = "Productos";
+        $id_rol= $_SESSION['id_rol']; 
+        $resultPer = $productos->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
+        
+        if (!empty($resultPer)){
+            
+            try {
+                
+                $error="";
+                
+                $_id_grupos = $_POST["id_grupos"];
+                $_id_unidad_medida = $_POST["id_unidad_medida"];
+                $_codigo_productos = $_POST["codigo_productos"];
+                $_marca_productos = $_POST["marca_productos"];
+                $_nombre_productos = $_POST["nombre_productos"];
+                $_descripcion_productos = $_POST["descripcion_productos"];
+                $_ult_precio_productos = $_POST["ult_precio_productos"];
+                $_id_bodegas = $_POST["id_bodegas"];
+                $_id_productos = $_POST["id_productos"];
+                $_abreviacion_grupos =  $_POST["abreviacion_grupo"];
+                $_consecutivo_productos = $_POST["consecutivo_productos"];
+                $_minimo_productos = $_POST["minimo_productos"];
+                
+                $error = error_get_last();
+                
+                if( !empty($error) )
+                    throw new Exception("Viariables no Definidas ".$error['message']);
+                
+                if( $_id_productos > 0 ){
+                    
+                                       
+                    $columnas = " id_grupos = '$_id_grupos',
+                              id_unidad_medida = '$_id_unidad_medida',
+							  codigo_productos ='$_codigo_productos',
+							  marca_productos = '$_marca_productos',
+                              nombre_productos = '$_nombre_productos',
+							  descripcion_productos = '$_descripcion_productos',
+							  ult_precio_productos = '$_ult_precio_productos',
+                              id_bodegas = '$_id_bodegas',
+                              minimo_productos = '$_minimo_productos'";
+                    
+                    $tabla = " public.productos";
+                    
+                    $where = " productos.id_productos = '$_id_productos'";
+                    
+                    $resultado=$productos->ActualizarBy($columnas, $tabla, $where);
+                    
+                    if( (int)$resultado < 0 )
+                        throw new Exception("Error Actualizar Datos");
+                        
+                    $respuesta['respuesta'] = 1;
+                    $respuesta['mensaje'] = "Producto Actualizado";
+                    
+                }else{
+                    
+                    $funcion = "ins_productos";
+                    $parametros = " '$_id_grupos',
+                                    '$_id_unidad_medida', 
+                                    '$_codigo_productos', 
+                                    '$_marca_productos', 
+                                    '$_nombre_productos', 
+                                    '$_descripcion_productos', 
+                                    '$_ult_precio_productos', 
+                                    '$_id_bodegas',
+                                    '$_abreviacion_grupos',
+                                    '$_consecutivo_productos',
+                                    '$_minimo_productos'";
+                    $productos->setFuncion($funcion);
+                    $productos->setParametros($parametros);
+                    
+                    $resultado=$productos->llamafuncionPG();
+                    
+                    if( is_null($resultado) )
+                        throw new Exception("Error Insertar Datos");
+                        
+                    $respuesta['respuesta'] = 1;
+                    $respuesta['mensaje'] = "Producto Insertado";
+                    
+                }
+                
+                echo json_encode($respuesta);
+                
+            } catch (Exception $Ex) {
+                echo "<message> Error Productos. \n". $Ex->getMessage()." <message>";
+            }
+            
+            
+          
+        }else{
+            
+            echo "<message> No tiene permisos para Insertar Productos <message>";
+           
+        }
         
     }
     
@@ -885,6 +996,29 @@ class ProductosController extends ControladorBase{
         
         
         
+        
+    }
+    
+    public function getCodigoProducto(){
+        
+        $Grupos = new GruposModel();
+        $id_grupos = $_POST['id_grupos'];
+        $resultGrupos = $Grupos->getBy("id_grupos = $id_grupos");
+        
+        $queryConsecutivos = "SELECT LPAD(valor_consecutivos::TEXT,espacio_consecutivos,'0') numero_consecutivos 
+                            FROM consecutivos WHERE nombre_consecutivos = 'PRODUCTOS'";
+        
+        $resultConsecutivos = $Grupos->enviaquery($queryConsecutivos);
+        
+        $respuesta = array();
+        
+        if( !empty($resultGrupos) && !empty($resultConsecutivos) ){
+            
+            $respuesta['abreviacion'] = $resultGrupos[0]->abreviacion_grupos;
+            $respuesta['consecutivo'] = $resultConsecutivos[0]->numero_consecutivos;
+        }
+        
+        echo json_encode($respuesta);
         
     }
 

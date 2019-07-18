@@ -174,16 +174,6 @@
                     </div>
     		    </div>
     		    
-    		     <div class="col-xs-12 col-md-3 col-md-3 ">
-        		    <div class="form-group">
-                      <label for="bancoId" class="control-label">Banco Prueba:</label>
-                      <select class="form-control" id="bancoId" name="bancoId" >
-                      	<option value="0">--SELECCIONE--</option>
-                      </select>
-                       <div id="mensaje_bancos" class="errores"></div>
-                                           
-                    </div>
-    		    </div>
     		    
 			</div>
         
@@ -390,8 +380,8 @@
 	<script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-	<script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>   
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>	
+	<script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script> 
+	<script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/Inventario/js/Proveedores.js?0.02" ></script>
   </body>

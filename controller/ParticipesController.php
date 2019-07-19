@@ -306,7 +306,7 @@ class ParticipesController extends ControladorBase{
 		else
 		{
 		    echo 'no tiene permisos';
-		   /* $this->view_Inventario("Error",array(
+		    /*$this->view_Inventario("Error",array(
 					"resultado"=>"No tiene Permisos de Insertar Participes"
 		
 			));
@@ -434,7 +434,7 @@ class ParticipesController extends ControladorBase{
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND (core_participes.nombre_participes LIKE '".$search."%' )";
+	            $where1=" AND (core_participes.nombre_participes LIKE '".$search."%' OR core_participes.cedula_participes LIKE '".$search."%')";
 	            
 	            $where_to=$where.$where1;
 	        }else{

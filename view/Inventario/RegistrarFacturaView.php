@@ -180,7 +180,7 @@
  
  
 <div class="modal fade" id="agregar_nuevo">
-      <div class="modal-dialog">
+      <div class="modal-dialog" style="width:90%">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -188,12 +188,18 @@
             <h4 class="modal-title">Default Modal</h4>
           </div>
           <div class="modal-body">
-          	<div class="pull-right" style="margin-right:15px;">
-				<input type="text" value="" class="form-control" id="search_productos" name="search_productos" onkeyup="load_productos(1)" placeholder="search.."/>
+          
+                   
+          
+          	<div class="pull-right" >
+          		<div class=" col-lg-12 form-group-sm">                    				
+    				 <input type="text" class="form-control" id="search_productos" name="search_productos" value=""  onkeyup="load_productos(1)" placeholder="buscar">
+        		</div>				
 			</div>
           	
 			<div id="load_productos_registrados" ></div>	
 			<div id="productos_registrados"></div>
+			<div class="clearfix"></div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -246,7 +252,7 @@
 			  <div class="form-group">
 				<label for="codigo" class="col-sm-3 control-label">Código</label>
 				<div class="col-sm-8">
-				  <input type="text" class="form-control" id="mod_codigo_producto" name="mod_codigo_producto" placeholder="Código del producto" required>
+				  <input type="text" class="form-control" id="mod_codigo_producto" name="mod_codigo_producto" placeholder="Código del producto" required readonly>
 				</div>
 			  </div>
 			  
@@ -281,6 +287,15 @@
 				</div>
 			  </div>
 			  
+			  <div class="form-group">
+				<label for="nombre" class="col-sm-3 control-label">Stock Minimo</label>
+				<div class="col-sm-8">
+					<input type="number" min="1" class="form-control" id="mod_minimo_productos" name="mod_minimo_productos" placeholder="stock minimo" maxlength="3" required  title="Ingresa sólo números " />
+				  
+				</div>
+			  </div>
+			  
+			  
           	</form>
           	<!-- termina el formulario modal productos -->
           </div>
@@ -305,12 +320,9 @@
   <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>    
      <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
      <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
-    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-    
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>    
     <script src="//oss.maxcdn.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>
-    
-    <!-- <script src="view/bootstrap/otros/validate/jquery.validate.js"></script> -->
-    <script src="view/bootstrap/otros/inventario/registroFacturas.js?2.7"></script> 
+    <script src="view/Inventario/js/registroFacturas.js?0.00"></script> 
    
   
    

@@ -157,7 +157,7 @@
     
    <?php include("view/modulos/links_js.php"); ?>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-   <script type="text/javascript" src="view/Inventario/js/Solicitud.js?0.06"></script>
+   <script type="text/javascript" src="view/Inventario/js/Solicitud.js?0.08"></script>
     	
   </body>
 </html>

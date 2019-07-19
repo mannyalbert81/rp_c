@@ -506,31 +506,39 @@ class ProductosController extends ControladorBase{
                 $_descripcion_productos = $_POST["mod_descripcion_producto"];
                 $_ult_precio_productos = $_POST["mod_precio_producto"];
                 $_id_bodegas = $_POST["mod_id_bodegas"];
-                
+                $_abreviacion_productos = "";
+                $_consecutivo = "";
+                $_minimo_productos = $_POST["mod_minimo_productos"];
                 
                 $funcion = "ins_productos";
-                $parametros = " '$_id_grupos', '$_id_unidad_medida', '$_codigo_productos', '$_marca_productos', '$_nombre_productos', '$_descripcion_productos', '$_ult_precio_productos', '$_id_bodegas'";
+                $parametros = " '$_id_grupos', 
+                                '$_id_unidad_medida', 
+                                '$_codigo_productos', 
+                                '$_marca_productos', 
+                                '$_nombre_productos', 
+                                '$_descripcion_productos', 
+                                '$_ult_precio_productos', 
+                                '$_id_bodegas',
+                                '$_abreviacion_productos',
+                                '$_consecutivo',
+                                '$_minimo_productos'";
                 $productos->setFuncion($funcion);
                 $productos->setParametros($parametros);
-                
-                $resultado=$productos->llamafuncion();
-                
+                                          
                 $mensaje = array();
+                $resultado=$productos->llamafuncionPG();
                 
-                if(!empty($resultado)){
-                    if(is_array($resultado) && count($resultado)>0){
-                        
-                        if((int)$resultado[0]->ins_productos == 0){
-                            
-                            $mensaje=array("success"=>1,"mensaje"=>"Producto Actualizado correctamente");
-                        }
-                        
-                        if((int)$resultado[0]->ins_productos == 1){
-                            $mensaje=array('success'=>1,'mensaje'=>"Producto Agregado correctamente");
-                        }
-                        
-                    }
-                }else{  $mensaje='{success:0,mensaje:"Error al registrar producto"}';}
+                if(is_null($resultado))
+                    $mensaje='{success:0,mensaje:"Error al registrar producto"}';
+                
+                if((int)$resultado[0] == 0){                    
+                    $mensaje=array("success"=>1,"mensaje"=>"Producto Actualizado correctamente");
+                }
+                
+                if((int)$resultado[0] == 1){
+                    $mensaje=array('success'=>1,'mensaje'=>"Producto Agregado correctamente");
+                }
+                
                
                 echo json_encode($mensaje);
             }
@@ -1022,6 +1030,53 @@ class ProductosController extends ControladorBase{
         
     }
 
+    public function notificacionProductos(){
+        
+        $Productos = new ProductosModel();
+        
+        $respuesta = array();
+        
+        $query = "SELECT p.id_productos,p.nombre_productos,p.codigo_productos,p.minimo_productos,s.saldos_f_saldo_productos
+                FROM productos p
+                INNER JOIN saldo_productos s
+                ON p.id_productos = s.id_productos
+                WHERE  1 = 1
+                AND p.minimo_productos > s.saldos_f_saldo_productos ";
+        
+        $rsProductos = $Productos->enviaquery($query);
+        
+        $cabeceraNotificacion = '';
+        $detalleNotificacion = '';
+        
+        if(!empty($rsProductos)){
+            
+            $cantidadNotificacion = count($rsProductos);
+            
+            $cabeceraNotificacion = '<li class="header">Tiene '.$cantidadNotificacion.' Productos por Revisar</li>';
+            $detalleNotificacion .= '<li>';
+            $detalleNotificacion .= '<ul class="menu">';            
+            foreach ($rsProductos as $res){
+                $detalleNotificacion .='<li>';
+                $detalleNotificacion .='<a href="#">';
+                $detalleNotificacion .='<i class="fa fa-shopping-cart text-red"></i>';
+                $detalleNotificacion .='Producto '.$res->codigo_productos.' disponible '.(int)$res->saldos_f_saldo_productos.' Requerido '.(int) $res->minimo_productos.'';
+                $detalleNotificacion .='</a>';
+                $detalleNotificacion .='</li>';                
+            }
+            $detalleNotificacion .= '</ul>';
+            $detalleNotificacion .= '</li>';
+            
+            $html = $cabeceraNotificacion.$detalleNotificacion;
+            
+            $respuesta['respuesta']=1;
+            $respuesta['htmlNotificacion']=$html;
+            $respuesta['cantidadNotificaciones']=$cantidadNotificacion;
+            
+        }
+        
+        echo json_encode($respuesta);
+        
+    }
     
     
 }

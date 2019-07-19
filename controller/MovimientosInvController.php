@@ -2896,6 +2896,42 @@ class MovimientosInvController extends ControladorBase{
 	    
 	}
 	
+	public function notificacionSolicitudes(){
+	    
+	    $Movimientos = new MovimientosInvModel();
+	    
+	    $respuesta = array();
+	    
+	    $query = "SELECT id_movimientos_inv_cabeza
+                    FROM movimientos_inv_cabeza
+                    WHERE fecha_movimientos_inv_cabeza='2019-07-19' AND razon_movimientos_inv_cabeza ILIKE 'PETICION%'
+                    ORDER BY id_movimientos_inv_cabeza
+                  ";
+	    
+	    $rsSolicitudes = $Movimientos->enviaquery($query);
+	    
+	    $cabeceraNotificacion = '';
+	    $detalleNotificacion = '';
+	    
+	    if(!empty($rsSolicitudes)){
+	        
+	        $cantidadNotificacion = count($rsSolicitudes);
+	        
+	        $cabeceraNotificacion = '<li class="header">Tiene '.$cantidadNotificacion.' Solicitudes por Revisar</li>';
+	        
+	        
+	        $html = $cabeceraNotificacion.$detalleNotificacion;
+	        
+	        $respuesta['respuesta']=1;
+	        $respuesta['htmlNotificacion']=$html;
+	        $respuesta['cantidadNotificaciones']=$cantidadNotificacion;
+	        
+	    }
+	    
+	    echo json_encode($respuesta);
+	    
+	}
+	
 }
 
 

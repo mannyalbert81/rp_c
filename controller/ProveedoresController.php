@@ -42,7 +42,9 @@ class ProveedoresController extends ControladorBase{
 					{
 					
 					    $_id_proveedores = $_GET["id_proveedores"];
-						$columnas = " id_proveedores, nombre_proveedores, identificacion_proveedores, contactos_proveedores, direccion_proveedores, telefono_proveedores, email_proveedores, fecha_nacimiento_proveedores ";
+						$columnas = " id_proveedores, nombre_proveedores, identificacion_proveedores, contactos_proveedores, direccion_proveedores, telefono_proveedores,
+                                     email_proveedores, id_tipo_proveedores, id_bancos, id_tipo_cuentas, numero_cuenta_proveedores";
+						
 						$tablas   = "proveedores";
 						$where    = "id_proveedores = '$_id_proveedores' "; 
 						$id       = "nombre_proveedores";
@@ -159,6 +161,94 @@ class ProveedoresController extends ControladorBase{
 		
 		}
 		
+	}
+	
+	public function AgregaProveedores(){
+	    
+	    session_start();
+	    $proveedores=new ProveedoresModel();
+	    $respuesta = array();
+	    
+	    $nombre_controladores = "Proveedores";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $proveedores->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (empty($resultPer)){
+	       
+	        echo '<message>No tiene permisos<message>';
+	        die();
+	    }
+	    
+	    $error = "";	    
+	    try {
+	        
+	        $_id_proveedores               =  $_POST["id_proveedores"];
+	        $_nombre_proveedores           = $_POST["nombre_proveedores"];
+	        $_identificacion_proveedores   = $_POST["identificacion_proveedores"];
+	        $_contactos_proveedores        = $_POST["contactos_proveedores"];
+	        $_direccion_proveedores        = $_POST["direccion_proveedores"];
+            $_telefono_proveedores         = $_POST["telefono_proveedores"];
+	        $_email_proveedores            = $_POST["email_proveedores"];
+	        $_fecha_nacimiento_proveedores = $_POST["fecha_nacimiento_proveedores"];
+	        $_id_tipo_proveedores          = $_POST["id_tipo_proveedores"];
+	        $_id_bancos                    = $_POST["id_bancos"];
+	        $_id_tipo_cuentas              = $_POST["id_tipo_cuentas"];
+	        $_numero_cuenta_proveedores    = $_POST["numero_cuenta_proveedores"];
+	       	        
+	        $error = error_get_last();
+	        
+	        if(!empty($error))
+	            throw new Exception(" Variables no definidas ". $error['message'] );
+	        
+            if($_id_proveedores > 0){
+                
+                $columnas = " nombre_proveedores = '$_nombre_proveedores',
+                              identificacion_proveedores = '$_identificacion_proveedores',
+                              contactos_proveedores = '$_contactos_proveedores',
+                              direccion_proveedores = '$_direccion_proveedores',
+                              telefono_proveedores = '$_telefono_proveedores',
+                              email_proveedores = '$_email_proveedores',
+                              id_tipo_proveedores = '$_id_tipo_proveedores',
+                              id_bancos = '$_id_bancos',
+                              id_tipo_cuentas = '$_id_tipo_cuentas',
+                              numero_cuenta_proveedores = '$_numero_cuenta_proveedores'";
+                
+                $tabla = "proveedores";
+                $where = "id_proveedores = '$_id_proveedores'";
+                
+                $resultado=$proveedores->ActualizarBy($columnas, $tabla, $where);
+                
+                if( (int)$resultado < 0 )
+                    throw new Exception("Error Actualizar Datos");
+                    
+                $respuesta['respuesta'] = 1;
+                $respuesta['mensaje'] = "Proveedor Actualizado";
+                
+            }else{
+                
+                $funcion = "ins_proveedores";
+                $parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores',
+                                '$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores',
+                                '$_id_tipo_proveedores', '$_id_bancos', '$_id_tipo_cuentas', '$_numero_cuenta_proveedores'";
+                $proveedores->setFuncion($funcion);
+                $proveedores->setParametros($parametros);
+                $resultado=$proveedores->llamafuncionPG();
+                if( is_null($resultado) )
+                    throw new Exception("Error Insertar Datos");
+                    
+                $respuesta['respuesta'] = 1;
+                $respuesta['mensaje'] = "Proveedor Insertado";
+            }
+	        
+            echo json_encode($respuesta);
+	        
+	        
+	    }catch (Exception $ex){
+	        
+	        echo '<message> Error Proveedores \n'. $ex->getMessage().'<message>';
+	        
+	    }	    
+	    
 	}
 	
 	public function borrarId()
@@ -528,7 +618,7 @@ class ProveedoresController extends ControladorBase{
 	    //para los parametros de where
 	    if(!empty($busqueda)){
 	        
-	        $where .= "AND ( nombre_proveedores LIKE '$busqueda%' OR pr.identificacion_proveedores LIKE '$busqueda%' )";
+	        $where .= "AND ( nombre_proveedores LIKE '$busqueda%' OR identificacion_proveedores LIKE '$busqueda%' )";
 	    }
 	    
 	    $id = "nombre_proveedores";
@@ -558,9 +648,9 @@ class ProveedoresController extends ControladorBase{
 	        //$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidad.'</span>';
 	        //$html.='<input type="hidden" value="'.$cantidad.'" id="total_query" name="total_query"/>' ;
 	        //$html.='</div>';
-	        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	        $html.='<section style="height:180px; overflow-y:scroll;">';
-	        $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	        //$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	        //$html.='<section style="height:200px; overflow-y:scroll;">';
+	        $html.= "<table id='tbl_tabla_proveedores' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
 	        $html.= "<thead>";
 	        $html.= "<tr>";
 	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -570,7 +660,7 @@ class ProveedoresController extends ControladorBase{
 	        $html.='<th style="text-align: left;  font-size: 12px;">DIRECCION</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">TELEFONO</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">CORREO</th>';
-	        $html.='<th colspan="2" style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	        
 	        $html.='</tr>';
 	        $html.='</thead>';
@@ -578,8 +668,8 @@ class ProveedoresController extends ControladorBase{
 	        
 	        $i=0;
 	        
-	        foreach ($resultSet as $res)
-	        {
+	        foreach ($resultSet as $res){
+	            
 	            $i++;
 	            $html.='<tr>';
 	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
@@ -590,11 +680,8 @@ class ProveedoresController extends ControladorBase{
 	            $html.='<td style="font-size: 11px;">'.$res->telefono_proveedores.'</td>';
 	            $html.='<td style="font-size: 11px;">'.$res->email_proveedores.'</td>';
 	            $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
-	            $html.='<a title="Generar Cheque" href="index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_proveedores.'">';
-	            $html.='<i class="glyphicon glyphicon-usd"></i></a></span></td>';
-	            $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
-	            $html.='<a title="Realizar Transferencia" href="index.php?controller=Transferencias&action=index&id_cuentas_pagar='.$res->id_proveedores.'">';
-	            $html.='<i class="glyphicon glyphicon-transfer"></i></a></span></td>';
+	            $html.='<a title="Editar Proveedores" href="index.php?controller=Proveedores&action=index&id_proveedores='.$res->id_proveedores.'" class="btn-sm btn-warning" style="font-size:65%;"data-toggle="tooltip" >';
+	            $html.='<i class="fa  fa-edit" aria-hidden="true" ></i></a></td>';
 	            $html.='</tr>';
 	            
 	        }
@@ -602,7 +689,7 @@ class ProveedoresController extends ControladorBase{
 	        
 	        $html.='</tbody>';
 	        $html.='</table>';
-	        $html.='</section></div>';
+	        //$html.='</section></div>';
 	        $html.='<div class="table-pagination pull-right">';
 	        $html.=''. $this->paginate("index.php", $page, $tpages, $adjacents,"").'';
 	        $html.='</div>';

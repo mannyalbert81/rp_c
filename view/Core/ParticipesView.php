@@ -437,6 +437,7 @@
                         <li><a href="#step-2">Datos del Cónyuge<br /><small></small></a></li>
                         <li><a href="#step-3">Datos Domiciliarios<br /><small></small></a></li>
                         <li><a href="#step-4">Información adicional del Socio <br /><small></small></a></li>
+                        <li><a href="#step-4">Información adicional del Socio <br /><small></small></a></li>
                  
                     </ul>
            	<div>
@@ -678,7 +679,7 @@
                     			<div class="form-group">
                                   <label for="telefono_participes" class="control-label">Teléfono</label>
                                   <input type="text" class="form-control" id="telefono_participes" name="telefono_participes" value=""  placeholder="Teléfono">
-                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control">
                                   <div id="mensaje_telefono_participes" class="errores"></div>
                                  </div>
                              </div>
@@ -697,6 +698,94 @@
                   </div>
                   </div>
                        <div id="step-4" class="">
+                
+                	<div class="box box-success">
+                        <div class="box-header with-border">
+                          <h3 class="box-title"></h3>
+                          <div class="box-tools pull-right"> </div>
+                        </div>
+                    
+                    <div class="box-body">
+                    	<div class="row">
+        		 
+                           
+                               <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_ingreso_participes" class="control-label">Fecha Ingreso</label>
+                                  <input type="date" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value=""  placeholder="Fecha Ingreso">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                                                               <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_defuncion_participes" class="control-label">Fecha Defunción</label>
+                                  <input type="date" class="form-control" id="fecha_defuncion_participes" name="fecha_defuncion_participes" value=""  placeholder="Fecha Defunción">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_defuncion_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                           <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado_participes" class="control-label">Estado Participes:</label>
+                                      <select name="id_estado_participes" id="id_estado_participes"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstado as $res) {?>
+    										<option value="<?php echo $res->id_estado_participes; ?>" ><?php echo $res->nombre_estado_participes; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estado_participes" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                   <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estatus" class="control-label">Estatus:</label>
+                                      <select name="id_estatus" id="id_estatus"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstatus as $res) {?>
+    										<option value="<?php echo $res->id_estatus; ?>" ><?php echo $res->nombre_estatus; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estatus" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                 <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_salida_participes" class="control-label">Fecha Salida</label>
+                                  <input type="date" class="form-control" id="fecha_salida_participes" name="fecha_salida_participes" value=""  placeholder="Fecha Salida">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_salida_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                                                                       <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Fecha Número Orden</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div> 
+                    		                       
+                	
+                      </div>
+                      <div class="row">
+            			    <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
+                	   		    <div class="form-group">
+            	                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
+        	                      <a href="index.php?controller=Participes&action=index" class="btn btn-primary"><i class='glyphicon glyphicon-remove'></i> Cancelar</a>
+        	                    </div>
+    	        		    </div>
+            		    </div>
+                 </div>
+                  </div>
+                  </div>
+                  
+                                   <div id="step-5" class="">
                 
                 	<div class="box box-success">
                         <div class="box-header with-border">
@@ -882,9 +971,9 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
     <script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
- <script type="text/javascript" src="view/Core/js/wizardParticipes.js?0.25"></script>
+ <script type="text/javascript" src="view/Core/js/wizardParticipes.js?0.26"></script>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Core/js/Participes.js?3.6" ></script>
+ <script src="view/Core/js/Participes.js?3.7" ></script>
  <script type="text/javascript">
 
         	   $(document).ready( function (){
@@ -958,18 +1047,6 @@
 
 
 		   };
-
-	  
-	
-       	        	   
-
  </script>
- 
-  </body>
-
+ </body>
 </html>
-
-
-
-	
-

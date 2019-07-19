@@ -2,6 +2,7 @@ $(document).ready(function(){
 	carga_solicitud();
 	carga_solicitud_entregada()
 	carga_solicitud_rechazada()
+	notificacionProductos()
 	
 });
 
@@ -191,3 +192,29 @@ function load_temp_solicitud(pagina){
 
 
    }
+
+function notificacionProductos(){
+	
+	let $ObjNotificacion = $(".notifications-menu");
+	let $cantidadNotificacion = $ObjNotificacion.find("a>span");
+	let $ulDetalle = $ObjNotificacion.find("ul.dropdown-menu");	
+	
+	$.ajax({
+		url:"index.php?controller=Productos&action=notificacionProductos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(x){
+		if( x.respuesta == 1 ){    			
+			$ulDetalle.append(x.htmlNotificacion);
+			$cantidadNotificacion.text(x.cantidadNotificaciones);
+		}
+		
+		//
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log('revisar boot/otros/movimientos_salida .. notificacionProductos')
+	})
+	
+}

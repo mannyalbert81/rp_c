@@ -185,7 +185,7 @@ $("#Guardar").click(function(event){
 
 function load_productos(pagina){
 
-	   var search=$("#search_productos").val();
+	var search=$("#search_productos").val();
     var con_datos={
 				  action:'ajax',
 				  page:pagina

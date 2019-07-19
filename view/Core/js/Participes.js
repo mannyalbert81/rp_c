@@ -213,7 +213,7 @@ $(document).ready( function (){
 			   fecha_numero_orden_participes : $fecha_numero_orden_participes.val()
 			   
 	   }
-	   
+	   // console.log (datos);
 	   console.log(datos);
 	   
 	   $.ajax({

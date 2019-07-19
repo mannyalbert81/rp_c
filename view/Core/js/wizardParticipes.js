@@ -86,7 +86,7 @@
 	   }
 	   if(observacion_participes.length == 0 || observacion_participes == ''){
 		   $("#observacion_participes").notify("Ingrese una Observación",{ position:"buttom left", autoHideDelay: 2000});
-			return false;
+		return false;
 	   }
 	   if(codigo_alternativo_participes.length == 0 || codigo_alternativo_participes == ''){
 		   $("#codigo_alternativo_participes").notify("Ingrese un Código",{ position:"buttom left", autoHideDelay: 2000});

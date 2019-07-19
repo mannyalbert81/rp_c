@@ -64,6 +64,15 @@ class ProductosModel extends ModeloBase{
 	    return  $resultado;
 	}
 	
+	public function llamafuncionPG(){
+	    
+	    $query = "SELECT ".$this->funcion."(".$this->parametros.")";
+	    $resultado = null;
+	    
+	    $resultado=$this->llamarconsultaPG($query);
+	    
+	    return  $resultado;
+	}
 	
 }
 ?>

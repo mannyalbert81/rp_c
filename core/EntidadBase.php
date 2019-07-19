@@ -143,6 +143,7 @@ class EntidadBase{
         return $resultSet;
     }
     
+    
     public function deleteById($id){
     	
         $query=pg_query($this->con,"DELETE FROM $this->table WHERE $id"); 

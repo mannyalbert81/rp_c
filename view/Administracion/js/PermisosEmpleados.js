@@ -337,7 +337,7 @@ if ( desde!="" && hasta!="" && causa!="" && fecha!="" && !desde.includes("_") &&
 			}
 		else
 			{
-			if (x.includes("Warning"))
+			if (x.includes("Warning") || x.includes("Notice") || x.includes("Error"))
 			{
 			if(x.includes("sin encontrar RETURN"))
 				{
@@ -423,6 +423,11 @@ function Aprobar(idsol,nomest)
 		url = 'index.php?controller=PermisosEmpleados&action=GerenciaSolicitud';
 		msg = 'Estado de solicitud cambiado a aprobado gerencia';
 	}
+	if (nomest == "APROBADO GERENCIA")
+	{
+		url = 'index.php?controller=PermisosEmpleados&action=CertificadoMedico';
+		msg = 'Certificado médico presentado';
+	}
 	console.log(url);
 	$.ajax({
 	    url: url,
@@ -446,7 +451,7 @@ function Aprobar(idsol,nomest)
 			}
 		else
 			{
-			if (x.includes("Warning"))
+			if (x.includes("Warning") || x.includes("Notice") || x.includes("Error"))
 			{
 				swal({
 				  		  title: "Solicitud",
@@ -502,7 +507,63 @@ function Negar(idsol)
 			}
 		else
 			{
-			if (x.includes("Warning"))
+			if (x.includes("Warning") || x.includes("Notice") || x.includes("Error"))
+			{
+				swal({
+				  		  title: "Solicitud",
+				  		  text: "Error al cambiar estado de solicitud",
+				  		  icon: "warning",
+				  		  button: "Aceptar",
+				  		});
+			}
+			swal({
+		  		  title: "Solicitud",
+		  		  text: "Error al cambiar estado de solicitud",
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+				
+			}
+		
+		
+			
+	})
+	.fail(function() {
+	    console.log("error");
+	    swal({
+	  		  title: "Solicitud",
+	  		  text: "Error al cambiar estado de solicitud",
+	  		  icon: "warning",
+	  		  button: "Aceptar",
+	  		});
+	});
+}
+
+function SinCertificado(idsol)
+{
+	$.ajax({
+	    url: 'index.php?controller=PermisosEmpleados&action=SinCertificadoMedico',
+	    type: 'POST',
+	    data: {
+	    	   id_solicitud: idsol
+	    },
+	})
+	.done(function(x) {
+		
+		console.log(x);
+		if (x==1)
+			{
+			swal({
+		  		  title: "Solicitud",
+		  		  text: "Certificado médico no fue presentado",
+		  		  icon: "success",
+		  		  button: "Aceptar",
+		  		});
+				load_solicitudes(1);
+			}
+		else
+			{
+			if (x.includes("Warning") || x.includes("Notice") || x.includes("Error"))
 			{
 				swal({
 				  		  title: "Solicitud",

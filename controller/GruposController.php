@@ -45,15 +45,20 @@ class GruposController extends ControladorBase{
 					
 					    $_id_grupos = $_GET["id_grupos"];
 						$columnas = " grupos.id_grupos, 
-                                      grupos.nombre_grupos, 
+                                      grupos.nombre_grupos,
+                                      grupos.abreviacion_grupos, 
                                       estado.id_estado, 
                                       estado.nombre_estado, 
                                       estado.tabla_estado, 
                                       grupos.creado, 
-                                      grupos.modificado";
+                                      grupos.modificado,
+                                      plan_cuentas.id_plan_cuentas,
+                                      plan_cuentas.codigo_plan_cuentas";
 						$tablas   = "public.grupos, 
-                                     public.estado";
+                                     public.estado,
+                                     public.plan_cuentas";
 						$where    = "estado.id_estado = grupos.id_estado
+                                     AND grupos.id_plan_cuentas = plan_cuentas.id_plan_cuentas
                                      AND grupos.id_grupos = '$_id_grupos' "; 
 						$id       = "grupos.id_grupos";
 							
@@ -162,6 +167,84 @@ class GruposController extends ControladorBase{
 		
 	}
 	
+	public function AgregaGrupos(){
+	    
+	    session_start();
+	    $grupos=new GruposModel();
+	    $respuesta = array();
+	    $error ="";
+	    
+	    $nombre_controladores = "Grupos";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if ( !empty($resultPer) ){
+	        
+	        $resultado = null;
+	        
+	        try {
+	            
+	            $_nombre_grupos = $_POST["nombre_grupos"];
+	            $_id_grupos =  $_POST["id_grupos"];
+	            $_id_estado = $_POST["id_estado"];
+	            $_abreviacion_grupos = $_POST["abreviacion_grupos"];
+	            $_id_pla_cuentas = $_POST["id_plan_cuentas"];
+	            
+	            $error = error_get_last();
+	            
+	            if( !empty($error) )
+	                throw new Exception("Viariables no Definidas ".$error['message']);
+	            
+	            
+                $_abreviacion_grupos = strtoupper($_abreviacion_grupos);
+	            
+                if( $_id_grupos > 0 ){
+                    
+                    $columnas = " nombre_grupos = '$_nombre_grupos',
+                                  id_estado = '$_id_estado',
+                                  abreviacion_grupos = '$_abreviacion_grupos',
+                                  id_plan_cuentas = $_id_pla_cuentas";
+                    $tabla = "  public.grupos";
+                    $where = "id_grupos = '$_id_grupos'";
+                    
+                    $resultado=$grupos->ActualizarBy($columnas, $tabla, $where);
+                    
+                    if( (int)$resultado < 0 )
+                        throw new Exception("Error Actualizar Datos");
+                    
+                    $respuesta['respuesta'] = 1;
+                    $respuesta['mensaje'] = "Grupo Actualizado";
+                    
+                }else{
+                    
+                    $funcion = "ins_grupos";
+                    $parametros = " '$_nombre_grupos', '$_id_estado','$_abreviacion_grupos','$_id_pla_cuentas'";
+                    $grupos->setFuncion($funcion);
+                    $grupos->setParametros($parametros);
+                    $resultado=$grupos->llamafuncionPG();
+                    
+                    if( is_null($resultado) )
+                        throw new Exception("Error Insertar Datos");
+                    
+                    $respuesta['respuesta'] = 1;
+                    $respuesta['mensaje'] = "Grupo Insertado";
+                }
+                
+                echo json_encode($respuesta);
+	            
+	        }catch (Exception $ex) {
+	                
+	            echo "<message> Error Grupos. \n". $ex->getMessage()." <message>";
+	        }
+	      
+	    }else{
+	       
+	        echo "<message> No tiene permisos para insertar <message>";
+	        
+	    }
+	    
+	}
+	
 	public function borrarId()
 	{
 	    
@@ -208,17 +291,20 @@ class GruposController extends ControladorBase{
 	    $where_to="";
 	    $columnas = " grupos.id_grupos, 
                       grupos.nombre_grupos, 
+                      grupos.abreviacion_grupos, 
                       estado.id_estado, 
                       estado.nombre_estado, 
                       estado.tabla_estado, 
                       grupos.creado, 
-                      grupos.modificado";
+                      grupos.modificado,
+                      plan_cuentas.id_plan_cuentas,
+                      plan_cuentas.codigo_plan_cuentas,
+                      plan_cuentas.nombre_plan_cuentas";
 	    
-	    $tablas = "public.grupos INNER JOIN public.estado ON estado.id_estado = grupos.id_estado AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado ='GRUPOS' 
-                    ";
+	    $tablas = "public.grupos INNER JOIN public.estado ON estado.id_estado = grupos.id_estado 
+                    INNER JOIN public.plan_cuentas ON plan_cuentas.id_plan_cuentas = grupos.id_plan_cuentas ";	    
 	    
-	    
-	    $where    = " 1=1";
+	    $where    = " 1=1 AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado ='GRUPOS'";
 	    
 	    $id       = "grupos.id_grupos";
 	    
@@ -264,9 +350,6 @@ class GruposController extends ControladorBase{
 	        $total_pages = ceil($cantidadResult/$per_page);
 	        
 	        
-	        
-	        
-	        
 	        if($cantidadResult>0)
 	        {
 	            
@@ -281,6 +364,9 @@ class GruposController extends ControladorBase{
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Abreviacion</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo (Plan Cuentas) </th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre (Plan Cuentas)</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            
 	            if($id_rol==1){
@@ -303,9 +389,11 @@ class GruposController extends ControladorBase{
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->abreviacion_grupos.'</td>';	                
+	                $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
-	                
-	             
+	                	             
 	                
 	                if($id_rol==1){
 	                    
@@ -355,18 +443,20 @@ class GruposController extends ControladorBase{
 	    $where_to="";
 	    $columnas = " grupos.id_grupos,
                       grupos.nombre_grupos,
+                      grupos.abreviacion_grupos,
                       estado.id_estado,
                       estado.nombre_estado,
                       estado.tabla_estado,
                       grupos.creado,
-                      grupos.modificado";
+                      grupos.modificado,
+                      plan_cuentas.id_plan_cuentas,
+                      plan_cuentas.codigo_plan_cuentas,
+                      plan_cuentas.nombre_plan_cuentas";
 	    
 	    $tablas = "public.grupos INNER JOIN public.estado ON estado.id_estado=grupos.id_estado
-                   AND estado.nombre_estado='INACTIVO' AND estado.tabla_estado ='GRUPOS'
-                    ";
+                   INNER JOIN public.plan_cuentas ON plan_cuentas.id_plan_cuentas = grupos.id_plan_cuentas";	    
 	    
-	    
-	    $where    = " 1=1";
+	    $where    = " 1=1 AND estado.nombre_estado='INACTIVO' AND estado.tabla_estado ='GRUPOS'";
 	    
 	    $id       = "grupos.id_grupos";
 	    
@@ -427,6 +517,9 @@ class GruposController extends ControladorBase{
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Abreviacion</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo (Plan Cuentas) </th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre (Plan Cuentas)</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            
 	            if($id_rol==1){
@@ -449,6 +542,9 @@ class GruposController extends ControladorBase{
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->abreviacion_grupos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
 	                
 	                

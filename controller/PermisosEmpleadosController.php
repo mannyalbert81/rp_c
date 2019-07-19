@@ -325,6 +325,11 @@ class PermisosEmpleadosController extends ControladorBase{
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';                            
                         }
+                        else if ($id_rol==$id_rh && $res->nombre_estado=="APROBADO GERENCIA" && $res->nombre_causa=="Enfermedad")
+                        {
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="SinCertificado('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        }
                     }
                     $html.='</tr>';
                 }
@@ -479,6 +484,46 @@ class PermisosEmpleadosController extends ControladorBase{
         $permisos->UpdateBy($colval, $tabla, $where);
      
      echo 1;
+    }
+    
+    public function CertificadoMedico()
+    {
+        session_start();
+        $id_solicitud=$_POST['id_solicitud'];
+        $permisos = new PermisosEmpleadosModel();
+        $estado = new EstadoModel();
+        $columnaest = "estado.id_estado";
+        $tablaest= "public.estado";
+        $whereest= "estado.tabla_estado='PERMISO_EMPLEADO' AND estado.nombre_estado = 'CERTIFICADO PRESENTADO'";
+        $idest = "estado.id_estado";
+        $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+        
+        $where = "id_permisos_empleados=".$id_solicitud;
+        $tabla = "permisos_empleados";
+        $colval = "id_estado=".$resultEst[0]->id_estado;
+        $permisos->UpdateBy($colval, $tabla, $where);
+        
+        echo 1;
+    }
+    
+    public function SinCertificadoMedico()
+    {
+        session_start();
+        $id_solicitud=$_POST['id_solicitud'];
+        $permisos = new PermisosEmpleadosModel();
+        $estado = new EstadoModel();
+        $columnaest = "estado.id_estado";
+        $tablaest= "public.estado";
+        $whereest= "estado.tabla_estado='PERMISO_EMPLEADO' AND estado.nombre_estado = 'SIN CERTIFICADO'";
+        $idest = "estado.id_estado";
+        $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+        
+        $where = "id_permisos_empleados=".$id_solicitud;
+        $tabla = "permisos_empleados";
+        $colval = "id_estado=".$resultEst[0]->id_estado;
+        $permisos->UpdateBy($colval, $tabla, $where);
+        
+        echo 1;
     }
     
     public function NegarSolicitud()

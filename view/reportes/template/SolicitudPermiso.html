@@ -69,6 +69,23 @@
 		text-align:right;
 	}
 	
+	.informacion
+	{
+	 text-align: left;
+	 font-size: 15px;
+	}
+	
+	.tabla
+	{
+	width:90%
+	}
+	
+	.firmas
+	{
+	text-align: center;  
+	font-size: 15px;
+	}
+	
   </style>
   
   </head>
@@ -87,46 +104,46 @@
   	
   	<div>  	
   		
-  		<table style="width:90%" align="center">
+  		<table class="tabla" align="center">
   				<tr>
-  					<td style="text-align: left;  font-size: 15px;">Nombre del empleado: <b>{NOMBREEMPLEADO}</b></td>  					
+  					<td class="informacion">Nombre del empleado: <b>{NOMBREEMPLEADO}</b></td>  					
   				</tr>
   				<tr>
-  					<td style="text-align: left;  font-size: 15px;">Cargo: <b>{CARGOEMPLEADO}</b></td>
-  					<td style="text-align: left;  font-size: 15px;">Departamento: <b>{DPTOEMPLEADO}</b></td>
-  				</tr>
-  				
-  		</table>
-  		<br>
-  		<table style="width:90%" align="center">
-  				<tr>
-  					<td style="text-align: left;  font-size: 15px;">Desde: <b>{FECHADESDE}</b></td>
-  					<td style="text-align: left;  font-size: 15px;">Hasta: <b>{FECHAHASTA}</b></td>
-  				</tr>
-  				<tr>
-  				<td colspan="2" style="text-align: center;  font-size: 15px;"><br><br><br><br><br><br><b>______________________________</b></td>
-  				</tr>
-  				<tr>
-  				<td colspan="2" style="text-align: center;  font-size: 15px;"><b>Firma del solicitante</b></td>
+  					<td class="informacion">Cargo: <b>{CARGOEMPLEADO}</b></td>
+  					<td class="informacion">Departamento: <b>{DPTOEMPLEADO}</b></td>
   				</tr>
   				
   		</table>
   		<br>
-  		<table style="width:90%" align="center">
+  		<table class="tabla" align="center">
+  				<tr>
+  					<td class="informacion">Desde: <b>{FECHADESDE}</b></td>
+  					<td class="informacion">Hasta: <b>{FECHAHASTA}</b></td>
+  				</tr>
+  				<tr>
+  				<td colspan="2" class="firmas"><br><br><br><br><br><br><b>______________________________</b></td>
+  				</tr>
+  				<tr>
+  				<td colspan="2" class="firmas"><b>Firma del solicitante</b></td>
+  				</tr>
+  				
+  		</table>
+  		<br>
+  		<table class="tabla" align="center">
   		<tr>
-  		<td style="text-align: center;  font-size: 15px;"><b>Visto Bueno</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><b>Autorizado</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><b>Autorizado</b></td>
+  		<td class="firmas"><b>Visto Bueno</b></td>
+  		<td class="firmas"><b>Autorizado</b></td>
+  		<td class="firmas"><b>Autorizado</b></td>
   		</tr>
   		<tr>
-  		<td style="text-align: center;  font-size: 15px;"><br><br><br><br><b>____________________________</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><br><br><br><br><b>____________________________</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><br><br><br><br><b>____________________________</b></td>
+  		<td class="firmas"><br><br><br><br><b>____________________________</b></td>
+  		<td class="firmas"><br><br><br><br><b>____________________________</b></td>
+  		<td class="firmas"><br><br><br><br><b>____________________________</b></td>
   		</tr>
   		<tr>
-  		<td style="text-align: center;  font-size: 15px;"><b>JEFE INMEDIATO</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><b>RECURSOS HUMANOS</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><b>GERENCIA</b></td>
+  		<td class="firmas"><b>JEFE INMEDIATO</b></td>
+  		<td class="firmas"><b>RECURSOS HUMANOS</b></td>
+  		<td class="firmas"><b>GERENCIA</b></td>
   		</tr>
   		</table>
   		  		

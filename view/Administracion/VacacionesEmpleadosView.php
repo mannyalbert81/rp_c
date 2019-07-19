@@ -105,6 +105,12 @@
                         <div id="mensaje_fecha_hasta" class="errores"></div>
                  	</div>
              	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+            			<label for="dias_disponibles" class="control-label">Días disponibles: </label>
+                		<input type="text" class="form-control" id="dias_vacaciones" name="dias_vacaciones" placeholder="" readonly>
+                 	</div>
+             	</div>
           	</div>
           	<div class="row">
            	 <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
@@ -158,7 +164,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Administracion/js/VacacionesEmpleados.js?0.5"></script>
+    <script src="view/Administracion/js/VacacionesEmpleados.js?0.6"></script>
 	
 	
   </body>

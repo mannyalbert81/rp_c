@@ -21,6 +21,7 @@ function getUsuario()
 			$('#nombre_empleados').val(respuesta.nombre_empleados);
 			$('#dpto_empleados').val(respuesta.dpto_empleados);
 			$('#cargo_empleados').val(respuesta.cargo_empleados);
+			$('#dias_vacaciones').val(respuesta.dias_vacaciones_empleados);
 		}
 		
 	}).fail( function( xhr , status, error ){

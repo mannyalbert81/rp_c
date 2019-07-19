@@ -9,6 +9,7 @@ class VacacionesEmpleadosController extends ControladorBase{
         $wherees = "estado.tabla_estado = 'PERMISO_EMPLEADO'";
         $ides = "estado.id_estado";
         $resultes = $estado->getCondiciones("*", $tablaes, $wherees, $ides);
+       
         
         
         
@@ -27,7 +28,8 @@ class VacacionesEmpleadosController extends ControladorBase{
         $columna = "empleados.numero_cedula_empleados,
 					  empleados.nombres_empleados,
                       cargos_empleados.nombre_cargo,
-                      departamentos.nombre_departamento";
+                      departamentos.nombre_departamento,
+                        empleados.dias_vacaciones_empleados";
         
         $tablas = "public.empleados INNER JOIN public.departamentos
                        ON empleados.id_departamento=departamentos.id_departamento
@@ -48,6 +50,7 @@ class VacacionesEmpleadosController extends ControladorBase{
             $respuesta->nombre_empleados = $nombresep[0].' '.$nombresep[2];
             $respuesta->cargo_empleados = $resultSet[0]->nombre_cargo;
             $respuesta->dpto_empleados = $resultSet[0]->nombre_departamento;
+            $respuesta->dias_vacaciones_empleados = $resultSet[0]->dias_vacaciones_empleados;
         }
         
         echo json_encode($respuesta);

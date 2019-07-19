@@ -4,6 +4,8 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
  
 //echo getcwd().''; //para ver ubicacion de directorio
 
+$header = file_get_contents('view/reportes/template/CabeceraFinal.html');
+
 $template = file_get_contents('view/reportes/template/HojaPermiso.html');
 
 $footer = file_get_contents('view/reportes/template/pieficha.html');
@@ -27,8 +29,8 @@ $mpdf->allow_charset_conversion = true;
 $mpdf->charset_in = 'UTF-8';
 $mpdf->setAutoTopMargin = 'stretch';
 $mpdf->setAutoBottomMargin = 'stretch';
-$mpdf->SetHTMLFooter($footer);
 $mpdf->WriteHTML($template);
+$mpdf->SetHTMLFooter($footer);
 $mpdf->debug = true;
 $mpdf->Output();
 /*$content = $mpdf->Output('', 'S'); // Saving pdf to attach to email

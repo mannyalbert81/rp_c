@@ -69,6 +69,22 @@
 		text-align:right;
 	}
 	
+	.informacion
+	{
+	 text-align: left;
+	 font-size: 15px;
+	}
+	
+	.tabla
+	{
+	width:90%
+	}
+	
+	.firmas
+	{
+	text-align: center;  
+	font-size: 15px;
+	}
   </style>
   
   </head>
@@ -80,56 +96,56 @@
     
     	<div style="font-family: Arial;  color:#000000; width: 100%; text-align: center; ">
     	<p style="width: 100%;"><img  style="width: 100%; margin-left: 35px; height:39px; width:200px; float:left;" align="right" src="view/images/Logo-Capremci-h-200.jpg" ></p>
-  			<h3>SOLICITUD SOLICITUD DE ANTICIPO DE SUELDOS</h3>  			
+  			<h3>SOLICITUD DE ANTICIPO DE SUELDOS</h3>  			
   		</div>  		
   	</div>
   	
   	
   	<div>  	
   		
-  		<table style="width:90%" align="center">
+  		<table class="tablas" align="center">
   				<tr>
-  					<td style="text-align: left;  font-size: 15px;">Nombre del empleado: <b>{NOMBREEMPLEADO}</b></td>  					
+  					<td class="informacion">Nombre del empleado: <b>{NOMBREEMPLEADO}</b></td>  					
   				</tr>
   				<tr>
-  					<td style="text-align: left;  font-size: 15px;">Cargo: <b>{CARGOEMPLEADO}</b></td>
-  					<td style="text-align: left;  font-size: 15px;">Departamento: <b>{DPTOEMPLEADO}</b></td>
-  				</tr>
-  				
-  		</table>
-  		<br>
-  		<table style="width:90%" align="center">
-  				<tr>
-  					<td style="text-align: left;  font-size: 15px;">Fecha: <b>{FECHA}</b></td>
-  					<td style="text-align: left;  font-size: 15px;">Monto: <b>{MONTO}</b></td>
-  				</tr>
-  				<tr>
-  					<td style="text-align: left;  font-size: 15px;">Diferido: <b>{DIFERIDO}</b></td>
-  				</tr>
-  				<tr>
-  				<td colspan="2" style="text-align: center;  font-size: 15px;"><br><br><br><br><br><br><b>______________________________</b></td>
-  				</tr>
-  				<tr>
-  				<td colspan="2" style="text-align: center;  font-size: 15px;"><b>Firma del solicitante</b></td>
+  					<td class="informacion">Cargo: <b>{CARGOEMPLEADO}</b></td>
+  					<td class="informacion">Departamento: <b>{DPTOEMPLEADO}</b></td>
   				</tr>
   				
   		</table>
   		<br>
-  		<table style="width:90%" align="center">
+  		<table class="tablas" align="center">
+  				<tr>
+  					<td class="informacion">Fecha: <b>{FECHA}</b></td>
+  					<td class="informacion">Monto: <b>{MONTO}</b></td>
+  				</tr>
+  				<tr>
+  					<td class="informacion">Diferido: <b>{DIFERIDO}</b></td>
+  				</tr>
+  				<tr>
+  				<td colspan="2" class="firmas"><br><br><br><br><br><br><b>______________________________</b></td>
+  				</tr>
+  				<tr>
+  				<td colspan="2" class="firmas"><b>Firma del solicitante</b></td>
+  				</tr>
+  				
+  		</table>
+  		<br>
+  		<table class="tablas" align="center">
   		<tr>
-  		<td style="text-align: center;  font-size: 15px;"><b>Visto Bueno</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><b>Autorizado</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><b>Autorizado</b></td>
+  		<td class="firmas"><b>Visto Bueno</b></td>
+  		<td class="firmas"><b>Autorizado</b></td>
+  		<td class="firmas"><b>Autorizado</b></td>
   		</tr>
   		<tr>
-  		<td style="text-align: center;  font-size: 15px;"><br><br><br><br><b>____________________________</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><br><br><br><br><b>____________________________</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><br><br><br><br><b>____________________________</b></td>
+  		<td class="firmas"><br><br><br><br><b>____________________________</b></td>
+  		<td class="firmas"><br><br><br><br><b>____________________________</b></td>
+  		<td class="firmas"><br><br><br><br><b>____________________________</b></td>
   		</tr>
   		<tr>
-  		<td style="text-align: center;  font-size: 15px;"><b>JEFE INMEDIATO</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><b>RECURSOS HUMANOS</b></td>
-  		<td style="text-align: center;  font-size: 15px;"><b>GERENCIA</b></td>
+  		<td class="firmas"><b>JEFE INMEDIATO</b></td>
+  		<td class="firmas"><b>RECURSOS HUMANOS</b></td>
+  		<td class="firmas"><b>GERENCIA</b></td>
   		</tr>
   		</table>
   		  		

@@ -299,18 +299,18 @@ class ParticipesController extends ControladorBase{
 				
 		
 			}
-			echo 'redireccion';
-			//$this->redirect("Participes", "index");
+			//echo 'redireccion';
+			$this->redirect("Participes", "index");
 
 		}
 		else
-		{
-		    echo 'no tiene permisos';
-		   /* $this->view_Inventario("Error",array(
+		{ 
+		   // echo 'no tiene permisos';
+		   $this->view_Inventario("Error",array(
 					"resultado"=>"No tiene Permisos de Insertar Participes"
 		
 			));
-		*/
+		
 		
 		}
 		

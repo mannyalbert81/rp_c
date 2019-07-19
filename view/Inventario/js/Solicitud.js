@@ -3,6 +3,8 @@ $(document).ready(function(){
 	load_productos_solicitud(1);
 	load_temp_solicitud(1);
 	//buscaProductosSolicitud(1);
+	notificacionProductos();
+	notificacionSolicitudes();
 		
 })
 
@@ -220,6 +222,7 @@ $('#frm_solicitud_cabeza').submit(function( event ) {
        	              		});
        	             }
        			load_temp_solicitud(1)
+       			notificacionSolicitudes();
        			
        		 },
        		 error: function(jqXHR,estado,error){
@@ -229,3 +232,56 @@ $('#frm_solicitud_cabeza').submit(function( event ) {
 
 		event.preventDefault(); 
 		})
+		
+		
+function notificacionProductos(){
+	
+	let $ObjNotificacion = $(".notifications-menu");
+	let $cantidadNotificacion = $ObjNotificacion.find("a>span");
+	let $ulDetalle = $ObjNotificacion.find("ul.dropdown-menu");	
+	
+	$.ajax({
+		url:"index.php?controller=Productos&action=notificacionProductos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(x){
+		if( x.respuesta == 1 ){    			
+			$ulDetalle.append(x.htmlNotificacion);
+			$cantidadNotificacion.text(x.cantidadNotificaciones);
+		}
+		
+		//
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log('revisar solicitud .. notificacionProductos')
+	})
+	
+}
+
+function notificacionSolicitudes(){
+	
+	let $ObjNotificacion = $(".tasks-menu");
+	let $cantidadNotificacion = $ObjNotificacion.find("a>span");
+	let $ulDetalle = $ObjNotificacion.find("ul.dropdown-menu");	
+	
+	$.ajax({
+		url:"index.php?controller=MovimientosInv&action=notificacionSolicitudes",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(x){
+		if( x.respuesta == 1 ){    			
+			$ulDetalle.append(x.htmlNotificacion);
+			$cantidadNotificacion.text(x.cantidadNotificaciones);
+		}
+		
+		//
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log('revisar solicitud .. notificacionSolicitudes')
+	})
+	
+}

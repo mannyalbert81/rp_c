@@ -9,7 +9,23 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
          
-         
+         <li class="dropdown notifications-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                <i class="fa fa-bell-o"></i>
+                <span class="label label-warning"></span>
+            </a>
+            <ul class="dropdown-menu">
+            </ul>
+           
+        </li>
+        <li class="dropdown tasks-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-flag-o"></i>
+              <span class="label label-danger"></span>
+            </a>
+            <ul class="dropdown-menu">
+            </ul>
+		</li>
          
           <?php  
 			     $status = session_status();

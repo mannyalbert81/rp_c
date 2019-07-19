@@ -679,7 +679,7 @@
                     			<div class="form-group">
                                   <label for="telefono_participes" class="control-label">Teléfono</label>
                                   <input type="text" class="form-control" id="telefono_participes" name="telefono_participes" value=""  placeholder="Teléfono">
-                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control">
                                   <div id="mensaje_telefono_participes" class="errores"></div>
                                  </div>
                              </div>

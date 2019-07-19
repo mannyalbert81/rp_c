@@ -75,9 +75,120 @@
         <div class="box-body">
           
         
-        <form action="<?php echo $helper->url("Proveedores","InsertaProveedores"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+        <form action="<?php echo $helper->url("Proveedores","index"); ?>" method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
         
-         <div class="row">
+            <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
+            
+            <div class="row">
+			
+			<div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="form-group">
+                  <label for="nombre_proveedores" class="control-label">Nombre Proveedores</label>
+                  <input type="text" class="form-control" id="nombre_proveedores" name="nombre_proveedores" 
+                  value="<?php echo $resEdit->nombre_proveedores; ?>"  placeholder="Nombre Proveedores">
+                  <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
+                </div>
+		    </div>
+		    
+		    <div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="form-group">
+                  <label for="identificacion_proveedores" class="control-label">CI / Ruc Proveedores</label>
+                  <input type="number" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" 
+                  value="<?php echo $resEdit->identificacion_proveedores; ?>"  placeholder="ruc.." onKeyPress="return numeros(event)">
+                </div>
+		    </div>
+		    
+		    <div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="form-group">
+                  <label for="contactos_proveedores" class="control-label">Contactos Proveedores</label>
+                  <input type="text" class="form-control" id="contactos_proveedores" name="contactos_proveedores" 
+                  value="<?php echo $resEdit->contactos_proveedores; ?>"  placeholder="Contactos Proveedores">
+                </div>
+		    </div>
+		    
+		    <div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="form-group">
+                  <label for="direccion_proveedores" class="control-label">Dirección Proveedores</label>
+                  <input type="text" class="form-control" id="direccion_proveedores" name="direccion_proveedores" 
+                  value="<?php echo $resEdit->direccion_proveedores; ?>"  placeholder="Dirección Proveedores">
+                </div>
+		    </div>
+		</div>
+			
+			<div class="row">
+			
+    			<div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="telefono_proveedores" class="control-label">Teléfono Proveedores</label>
+                      <input type="number" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" 
+                      value="<?php echo $resEdit->telefono_proveedores; ?>"  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
+                       <div id="mensaje_telefono_proveedores" class="errores"></div>
+                    </div>
+    		    </div>
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="email_proveedores" class="control-label">Email Proveedores</label>
+                      <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" 
+                      value="<?php echo $resEdit->email_proveedores; ?>"  placeholder="Email Proveedores" >
+                       <div id="mensaje_email_proveedores" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+    		    
+    		    <input type="hidden" value="<?php echo $resEdit->id_tipo_proveedores; ?>" id="hd_tipo_proveedores">
+    		    <input type="hidden" value="<?php echo $resEdit->id_bancos; ?>" id="hd_bancos">
+    		    <input type="hidden" value="<?php echo $resEdit->id_tipo_cuentas; ?>" id="hd_tipo_cuenta">
+    		    
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="id_tipo_proveedor" class="control-label">Tipo Proveedores</label>
+                      <select class="form-control" id="id_tipo_proveedores" name="id_tipo_proveedores" >
+                      	<option value="0">--SELECCIONE--</option>
+                      </select>                      
+                      <div id="mensaje_tipo_proveedores" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+    		    
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="id_bancos" class="control-label">Banco:</label>
+                      <select class="form-control" id="id_bancos" name="id_bancos" >
+                      	<option value="0">--SELECCIONE--</option>
+                      </select>
+                       <div id="mensaje_bancos" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+    		    
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="id_tipo_cuenta" class="control-label">Tipo Cuenta:</label>
+                      <select class="form-control" id="id_tipo_cuentas" name="id_tipo_cuentas" >
+                      	<option value="0">--SELECCIONE--</option>
+                      </select>
+                      <div id="mensaje_tipo_cuenta" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+    		    
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="numero_cuenta_proveedores" class="control-label">Numero Cuenta:</label>
+                      <input type="text" class="form-control" id="numero_cuenta_proveedores" name="numero_cuenta_proveedores" 
+                      value="<?php echo $resEdit->numero_cuenta_proveedores; ?>"  placeholder="Numero Cuenta" >
+                      <div id="mensaje_numero_cuenta" class="errores"></div>
+                                           
+                    </div>
+    		    </div>
+    		    
+    		    
+			</div>
+         
+            
+		     <?php } } else {?>
+		     
+		     <div class="row">
 			
 			<div class="col-xs-12 col-md-3 col-md-3 ">
     		    <div class="form-group">
@@ -126,7 +237,7 @@
     		    <div class="col-xs-12 col-md-3 col-md-3 ">
         		    <div class="form-group">
                       <label for="email_proveedores" class="control-label">Email Proveedores</label>
-                      <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores" onKeyUp="javascript:validateMail('id_mail')"  >
+                      <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores" >
                        <div id="mensaje_email_proveedores" class="errores"></div>
                                            
                     </div>
@@ -156,15 +267,6 @@
     		    
     		    <div class="col-xs-12 col-md-3 col-md-3 ">
         		    <div class="form-group">
-                      <label for="numero_cuenta_proveedores" class="control-label">Numero Cuenta:</label>
-                      <input type="text" class="form-control" id="numero_cuenta_proveedores" name="numero_cuenta_proveedores" value=""  placeholder="Numero Cuenta" >
-                      <div id="mensaje_numero_cuenta" class="errores"></div>
-                                           
-                    </div>
-    		    </div>
-    		    
-    		    <div class="col-xs-12 col-md-3 col-md-3 ">
-        		    <div class="form-group">
                       <label for="id_tipo_cuenta" class="control-label">Tipo Cuenta:</label>
                       <select class="form-control" id="id_tipo_cuentas" name="id_tipo_cuentas" >
                       	<option value="0">--SELECCIONE--</option>
@@ -174,115 +276,28 @@
                     </div>
     		    </div>
     		    
-    		     <div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="col-xs-12 col-md-3 col-md-3 ">
         		    <div class="form-group">
-                      <label for="bancoId" class="control-label">Banco Prueba:</label>
-                      <select class="form-control" id="bancoId" name="bancoId" >
-                      	<option value="0">--SELECCIONE--</option>
-                      </select>
-                       <div id="mensaje_bancos" class="errores"></div>
+                      <label for="numero_cuenta_proveedores" class="control-label">Numero Cuenta:</label>
+                      <input type="text" class="form-control" id="numero_cuenta_proveedores" name="numero_cuenta_proveedores" value=""  placeholder="Numero Cuenta" >
+                      <div id="mensaje_numero_cuenta" class="errores"></div>
                                            
                     </div>
     		    </div>
     		    
+    		    
 			</div>
-        
-                                <?php if ($resultEdit !="" ) { foreach($resultEdit as $resEdit) {?>
-                                
-                                <div class="row">
-                        		    
-                        		    
-                        		
-									<div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="nombre_proveedores" class="control-label">Nombre Proveedores</label>
-                                                          <input type="text" class="form-control" id="nombre_proveedores" name="nombre_proveedores" value="<?php echo $resEdit->nombre_proveedores; ?>"  placeholder="Nombre Proveedores" >
-                                                          <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
-					                                      <div id="mensaje_nombre_proveedores" class="errores"></div>
-                                    </div>
-                        		    </div>   
-                        		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="identificacion_proveedores" class="control-label">Ruc Proveedores</label>
-                                                          <input type="text" class="form-control" id="identificacion_proveedores" name="identificacion_proveedores" value="<?php echo $resEdit->identificacion_proveedores; ?>"  placeholder="Ruc Proveedores" onKeyPress="return numeros(event)">
-                                                          <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
-					                                      <div id="mensaje_identificacion_proveedores" class="errores"></div>
-                                    </div>
-                        		    </div>
-                        		    
-                        		    <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="contactos_proveedores" class="control-label">Contactos Proveedores</label>
-                                                          <input type="text" class="form-control" id="contactos_proveedores" name="contactos_proveedores" value="<?php echo $resEdit->contactos_proveedores; ?>"  placeholder="Contactos Proveedores">
-                                                          <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
-					                                      <div id="mensaje_contactos_proveedores" class="errores"></div>
-                                    </div>
-                        		    </div>    
-                        		    
-                        		     <div class="col-xs-12 col-md-3 col-md-3 ">
-                        		    <div class="form-group">
-                                                          <label for="direccion_proveedores" class="control-label">Dirección Proveedores</label>
-                                                          <input type="text" class="form-control" id="direccion_proveedores" name="direccion_proveedores" value="<?php echo $resEdit->direccion_proveedores; ?>"  placeholder="Dirección Proveedores">
-                                                          <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
-					                                      <div id="mensaje_direccion_proveedores" class="errores"></div>
-                                    </div>
-                        		    </div>                     			
-                        	
-                        	    </div>
-                        	    
-                    			
-                    			
-                    			<div class="row">
-                    			                   			
-                    			    
-                        		<div class="col-xs-12 col-md-3 col-md-3">
-                        		    <div class="form-group">
-                                                <label for="telefono_proveedores" class="control-label">Teléfono Proveedores</label>
-                                                          <input type="text" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value="<?php echo $resEdit->telefono_proveedores; ?>"  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
-                                                          <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
-					                                      <div id="mensaje_telefono_proveedores" class="errores"></div>
-                                  
-                                    </div>
-                                    </div>
-                        		    
-                        		    
-                        		    <div class="col-lg-3 col-xs-12 col-md-3">
-                        		     <div class="form-group">
-                                                <label for="email_proveedores" class="control-label">Email Proveedores</label>
-                                                          <input type="email" class="form-control" id="email_proveedores" name="email_proveedores" value="<?php echo $resEdit->email_proveedores; ?>"  placeholder="Email Proveedores" onKeyUp="javascript:validateMail('id_mail')" >
-                                                          <input type="hidden" name="id_proveedores" id="id_proveedores" value="<?php echo $resEdit->id_proveedores; ?>" class="form-control"/>
-					                                      <div id="mensaje_email_proveedores" class="errores"></div>
-                                  
-                                    </div>
-                                 
-                        		    
-                    		        </div>
-                    		         
-                        		    
-                        	
-                    	
-                    	
-                    	
-                        		    </div>
-                    			
-                                 
-                                
-                    		     <?php } } else {?>
-                    		    
-                    		   
-								
-                		     	           	
-                    		     <?php } ?>
-                    		    <br>  
-                    		    <div class="row">
-                    		    <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; ">
-                    		    <div class="form-group">
-                                                      <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">Guardar</button>
-                                </div>
-                    		    </div>
-                    		    </div>
-              </form>
+               	     	           	
+		     <?php } ?>
+		   <br>  
+    	    <div class="row">
+    		    <div class="col-xs-12 col-md-12 col-lg-12" style="text-align: center; ">
+        		    <div class="form-group">
+                      <button type="button" id="GuardarProveedores" name="Guardar" class="btn btn-success">Guardar</button>
+                    </div>
+    		    </div>
+    	    </div>
+         </form>
           
         </div>
       </div>
@@ -321,59 +336,6 @@
   		</div>
         
         
-       <div class="ibox-content">  
-      <div class="table-responsive">
-      
-  <table  class="table table-striped table-bordered table-hover dataTables-example">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Nombre</th>
-                          <th>Identificación</th>
-                          <th>Contactos</th>
-                          <th>Dirección</th>
-                          <th>Teléfono</th>
-                          <th>Email</th>
-                          
-                          <th></th>
-                          <th></th>
-                         
-                        </tr>
-                      </thead>
-
-                      <tbody>
-    					<?php $i=0;?>
-    						<?php if (!empty($resultSet)) {  foreach($resultSet as $res) {?>
-    						<?php $i++;?>
-            	        		<tr>
-            	                   <td > <?php echo $i; ?>  </td>
-            		               <td > <?php echo $res->nombre_proveedores; ?>     </td> 
-            		               <td > <?php echo $res->identificacion_proveedores; ?>   </td>
-            		               <td > <?php echo $res->contactos_proveedores; ?>   </td>
-            		               <td > <?php echo $res->direccion_proveedores; ?>   </td>
-            		               <td > <?php echo $res->telefono_proveedores; ?>   </td>
-            		               <td > <?php echo $res->email_proveedores; ?>   </td>
-            		           	   <td>
-            			           		<div class="right">
-            			                    <a href="<?php echo $helper->url("Proveedores","index"); ?>&id_proveedores=<?php echo $res->id_proveedores; ?>" class="btn btn-warning" style="font-size:65%;" data-toggle="tooltip" title="Editar"><i class='glyphicon glyphicon-edit'></i></a>
-            			                </div>
-            			            
-            			             </td>
-            			             <td>   
-            			                	<div class="right">
-            			                    <a href="<?php echo $helper->url("Proveedores","borrarId"); ?>&id_proveedores=<?php echo $res->id_proveedores; ?>" class="btn btn-danger" style="font-size:65%;" data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a>
-            			                </div>
-            			                
-            		               </td>
-            		    		</tr>
-            		    		
-            		        <?php } } ?>
-                      </tbody>
-                    </table>
-        </div>
-         </div>
-        
-        
         </div>
         </div>
         </section>
@@ -390,10 +352,11 @@
 	<script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-	<script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>   
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>	
+	<script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script> 
+	<script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-	<script src="view/Inventario/js/Proveedores.js?0.02" ></script>
+    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+	<script src="view/Inventario/js/Proveedores.js?0.04" ></script>
   </body>
 </html>   
 

@@ -53,11 +53,70 @@ class AvancesEmpleadosController extends ControladorBase{
         echo json_encode($respuesta);
         
     }
+    
+    public function ValidarCantidad()
+    {
+        session_start();
+        $empleado= new EmpleadosModel();
+        $tablas="public.empleados";
+        $cedula = $_SESSION['cedula_usuarios'];
+        $where = "empleados.numero_cedula_empleados =".$cedula;
+        $id = "empleados.id_empleados";
+        $result = $empleado->getCondiciones("*", $tablas, $where, $id);
+        $anio = date("Y");
+        $id_empleado = $result[0]->id_empleados;
+        $avance = new AnticipoSueldoEmpleadosModel();
+        $columnas="COUNT(id_anticipo) as total";
+        $where="fecha_anticipo BETWEEN '".$anio."-1-01' AND '".$anio."-12-31' AND id_empleado=".$id_empleado;
+        $tablas="anticipo_sueldo_empleados";
+        $limit="GROUP BY id_anticipo";
+        $resultSet=$avance->getCondicionesSinOrden($columnas, $tablas, $where, $limit);
+        
+        if (!(empty($resultSet[0]->total))) $total=$resultSet[0]->total;
+        else $total=0;
+        echo $total;
+    }
+    
+    public function  ValidarMonto()
+    {
+        session_start();
+        $empleado= new EmpleadosModel();
+        $tablas="public.empleados";
+        $cedula = $_SESSION['cedula_usuarios'];
+        $where = "empleados.numero_cedula_empleados =".$cedula;
+        $id = "empleados.id_empleados";
+        $result = $empleado->getCondiciones("*", $tablas, $where, $id);
+        $id_empleado = $result[0]->id_empleados;
+        $avance = new AnticipoSueldoEmpleadosModel();
+        $columnas="(reporte_nomina_empleados.horas_ext50+reporte_nomina_empleados.horas_ext100+
+		reporte_nomina_empleados.fondos_reserva+reporte_nomina_empleados.dec_cuarto_sueldo+
+		reporte_nomina_empleados.dec_tercero_sueldo+cargos_empleados.salario_cargo)-
+		(reporte_nomina_empleados.anticipo_sueldo+reporte_nomina_empleados.aporte_iess1+
+		reporte_nomina_empleados.asocap+reporte_nomina_empleados.prest_quirog_iess+
+		reporte_nomina_empleados.prest_hipot_iess+reporte_nomina_empleados.dcto_salario+
+		reporte_nomina_empleados.comision_asuntos_sociales) as liquido";
+        $where="reporte_nomina_empleados.id_empleado =".$id_empleado;
+        $tablas="public.reporte_nomina_empleados INNER JOIN public.empleados
+	ON reporte_nomina_empleados.id_empleado = empleados.id_empleados
+	INNER JOIN public.cargos_empleados
+	ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+        $limit="ORDER BY reporte_nomina_empleados.id_registro DESC LIMIT 2";
+        $resultSet=$avance->getCondicionesSinOrden($columnas, $tablas, $where, $limit);
+        
+        $total=0;
+        foreach ($resultSet as $res)
+        {
+            $total+=$res->liquido;
+        }
+        
+        echo $total;
+    }
   
     public function AgregarSolicitud()
     {
         session_start();
         $funcion= "ins_solicitud_avance_empleado";
+        $funcion1= "ins_cuotas_avances_empleado";
         $avance = new AnticipoSueldoEmpleadosModel();
         $empleado= new EmpleadosModel();
         $tablas="public.empleados";
@@ -68,26 +127,39 @@ class AvancesEmpleadosController extends ControladorBase{
         $id_empleado = $result[0]->id_empleados;
         $fecha_anticipo= $_POST['fecha_anticipo'];
         $fechaelem =  explode("-", $fecha_anticipo);
-        if($fechaelem[2]<22)
+        if($fechaelem[2]>22)
         {
-            $fechaelem[1]--;
-         if($fechaelem[1]=="0")
+            $fechaelem[1]++;
+         if($fechaelem[1]=="13")
          {
-          $fechaelem[1]=="12";
-          $fechaelem[0]--;
+          $fechaelem[1]="1";
+          $fechaelem[0]++;
          }
         }  
         $monto_anticipo= $_POST['monto_anticipo'];
         $tiempo_diferido= $_POST['tiempo_diferido'];
-        $fechaelem[1]=$fechaelem[1]+$tiempo_diferido;
-        if ($fechaelem[1]>12) 
-        {$fechaelem[1]=$fechaelem[1]-12;
-         $fechaelem[0]++;
+        $cuota=$monto_anticipo/$tiempo_diferido;
+        $cuota=number_format((float)$cuota, 2, '.', '');
+        $saldo=$monto_anticipo;
+        for ($i=0; $i<$tiempo_diferido; $i++)
+        {
+            if($i>0)
+            {
+            $fechaelem[1]++;
+            }
+            if($i==$tiempo_diferido-1) $cuota = $saldo;
+            $saldo=$saldo-$cuota;
+            if ($fechaelem[1]>12)
+            {$fechaelem[1]=1;
+            $fechaelem[0]++;
+            }
+            
         }
+        
         $fecha_fin_diferido = $fechaelem[0]."-".$fechaelem[1]."-21";
         
         
-        $parametros = "'$id_empleado',
+       $parametros = "'$id_empleado',
                      '$fecha_anticipo',
                      '$fecha_fin_diferido',
                      '$monto_anticipo',
@@ -97,7 +169,9 @@ class AvancesEmpleadosController extends ControladorBase{
         $avance->setFuncion($funcion);
         $avance->setParametros($parametros);
         $resultado=$avance->Insert();
+        
         echo 1;
+        
     }
     
     public function GetHoras()
@@ -318,6 +392,11 @@ class AvancesEmpleadosController extends ControladorBase{
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_anticipo.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_anticipo.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';                            
                         }
+                        else if ($id_rol==$id_rh && $res->nombre_estado=="APROBADO GERENCIA")
+                        {
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="Ajustes('.$res->id_anticipo.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-cog"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"></td>';                            
+                        }
                     }
                     $html.='</tr>';
                 }
@@ -414,6 +493,58 @@ class AvancesEmpleadosController extends ControladorBase{
         return $out;
     }
     
+    public function TablaCuotas()
+    {
+    session_start();
+    $id_solicitud=$_POST['id_solicitud'];
+    $horas_extras = new SolicitudHorasExtraEmpleadosModel();
+    $html='';
+    $columnas = "cuotas_avances_empleados.fecha_cuota, cuotas_avances_empleados.monto_cuota, cuotas_avances_empleados.saldo_total_operacion, 
+		empleados.nombres_empleados, anticipo_sueldo_empleados.fecha_anticipo, anticipo_sueldo_empleados.monto_anticipo";
+    $tablas= "public.cuotas_avances_empleados INNER JOIN public.anticipo_sueldo_empleados
+            	ON cuotas_avances_empleados.id_solicitud = anticipo_sueldo_empleados.id_anticipo
+            	INNER JOIN public.empleados
+            	ON cuotas_avances_empleados.id_empleados = empleados.id_empleados";
+    $where= "anticipo_sueldo_empleados.id_anticipo=".$id_solicitud;
+    $id = "cuotas_avances_empleados.fecha_cuota";
+    $resultSet = $horas_extras->getCondiciones($columnas, $tablas, $where, $id);
+    
+    $html.= "<table id='tabla_solicitudes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+    $html.= "<tr>";
+    $html.='<th style="text-align: left;  font-size: 15px;">Empleado:</th>';
+    $html.='<td style="text-align: left;  font-size: 15px;">'.$res->nombres_empleados.'</td>';
+    $html.= "</tr>";
+    $html.= "<tr>";
+    $html.='<th style="text-align: left;  font-size: 15px;">Saldo total de la operación</th>';
+    $html.='<td style="text-align: left;  font-size: 15px;">'.$res->nombres_empleados.'</td>';
+    $html.='</tr>';
+    $html.='</table>';
+    $html.= "<table id='tabla_solicitudes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+    $html.= "<thead>";
+    $html.= "<tr>";
+    $html.='<th style="text-align: left;  font-size: 15px;">Fecha de pago</th>';
+    $html.='<th style="text-align: left;  font-size: 15px;">Monto a Pagar</th>';
+    $html.='<th style="text-align: left;  font-size: 15px;">Saldo total de la operación</th>';
+    $html.='</tr>';
+    $html.='</thead>';
+    $html.='<tbody>';
+    foreach ($resultSet as $res)
+    {
+        $html.='<tr>';
+        $html.='<td style="text-align: center;  font-size: 15px;">'.$res->fecha_cuota.'</td>';
+        $res->monto_cuota=number_format((float)$res->monto_cuota, 2,".",",");
+        $html.='<td style="text-align: right;  font-size: 15px;">'.$res->monto_cuota.'</td>';
+        $res->saldo_total_operacion=number_format((float)$res->saldo_total_operacion, 2,".",",");
+        $html.='<td style="text-align: right;  font-size: 15px;">'.$res->saldo_total_operacion.'</td>';
+        $html.='</tr>';
+    }
+    
+    $html.='</tbody>';
+    $html.='</table>';
+    
+        
+    }
+    
     public function VBSolicitud()
     {
         session_start();
@@ -470,7 +601,57 @@ class AvancesEmpleadosController extends ControladorBase{
         $tabla = "anticipo_sueldo_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
         $horas_extras->UpdateBy($colval, $tabla, $where);
-     
+            
+        $funcion= "ins_cuotas_avances_empleado";
+        $avance = new AnticipoSueldoEmpleadosModel();
+        $tablas="anticipo_sueldo_empleados,";
+        $where="id_anticipo=".$id_solicitud;
+        $id="id_anticipo";
+        $resultSet=$avance->getCondiciones("*", $tablas, $where, $id);
+        $fecha_anticipo= $resultSet[0]->fecha_anticipo;
+        $id_empleado = $resultSet[0]->id_empleado;
+        $fechaelem =  explode("-", $fecha_anticipo);
+        if($fechaelem[2]>22)
+        {
+            $fechaelem[1]++;
+            if($fechaelem[1]=="13")
+            {
+                $fechaelem[1]="1";
+                $fechaelem[0]++;
+            }
+        }
+        $monto_anticipo= $resultSet[0]->monto_anticipo;
+        $tiempo_diferido=$resultSet[0]->tiempo_diferido;
+        $cuota=$monto_anticipo/$tiempo_diferido;
+        $cuota=number_format((float)$cuota, 2, '.', '');
+        $saldo=$monto_anticipo;
+        for ($i=0; $i<$tiempo_diferido; $i++)
+        {
+            if($i>0)
+            {
+                $fechaelem[1]++;
+            }
+            if($i==$tiempo_diferido-1) $cuota = $saldo;
+            $saldo=$saldo-$cuota;
+            if ($fechaelem[1]>12)
+            {$fechaelem[1]=1;
+            $fechaelem[0]++;
+            }
+            $fecha_cuota=$fechaelem[0]."-".$fechaelem[1]."-21";
+            
+            $parametros = "'$id_empleado',
+                     '$cuota',
+                     '$fecha_cuota',
+                     '$saldo',
+                     '$id_solicitud'";
+            
+            
+            $avance->setFuncion($funcion);
+            $avance->setParametros($parametros);
+            $resultado=$avance->Insert();
+            
+        }
+                  
      echo 1;
     }
     
@@ -486,8 +667,8 @@ class AvancesEmpleadosController extends ControladorBase{
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
-        $where = "id_solicitud=".$id_solicitud;
-        $tabla = "solicitud_horas_extras_empleados";
+        $where = "id_anticipo=".$id_solicitud;
+        $tabla = "anticipo_sueldo_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
         $horas_extras->UpdateBy($colval, $tabla, $where);
         

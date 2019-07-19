@@ -252,7 +252,7 @@ class MarcacionesController extends ControladorBase{
                     INNER JOIN public.estado
 				  ON permisos_empleados.id_estado=estado.id_estado";
         $whereper="permisos_empleados.fecha_solicitud BETWEEN '".$this->FormatoFecha($fecha_inicio)."'
-                AND '".$this->FormatoFecha($fecha_final)."' AND estado.nombre_estado='APROBADO GERENCIA'";
+                AND '".$this->FormatoFecha($fecha_final)."' AND estado.nombre_estado='APROBADO GERENCIA' OR estado.nombre_estado='SIN CERTIFICADO'";
         $idper = "empleados.numero_cedula_empleados";
         
         $resultPer=$marcacion->getCondiciones($columnasper, $tablasper, $whereper, $idper);
@@ -362,9 +362,26 @@ class MarcacionesController extends ControladorBase{
                 $tdescuento=0;
                 $dctosalario=0;
                 $dctoavance=0;
+                $numregistros=0;
+                
+                $diastrabajo=0;
+                
+                $numdiassintrabajo=0;
+                
+                $advertencias=0;
+                
+                $hent=0;
+                
+                $hsal=0;
+                
+                $currentdate=0;
+                
+                $horasextra50=0;
+                
+                $horasextra100=0;
                 foreach($resultSet as $res)
                 {
-                    $dayOfWeek = date("D", strtotime($res->fecha_marcacion_empleados));
+                    $dayOfWeek = date("D", strtotime($currentdate));
                     
                     if ($res->tipo_registro_empleados== "Entrada") $hent=$res->hora_marcacion_empleados;
                     
@@ -515,11 +532,7 @@ class MarcacionesController extends ControladorBase{
                         }
                     }
                     
-                    $dctosalarioatr = $tatraso*$salariomin;
-                    $dctosalariodcto= $tdescuento*$salariomin;
-                    $dctosalario=$dctosalarioatr+$dctosalariodcto;
-                    $dctosalariofalta=$numdiassintrabajo*8*60*$salariomin;
-                    $dctosalario=$dctosalario+$dctosalariofalta;
+                    
                 }
                 if (!(empty($resultPer)))
                 {
@@ -546,9 +559,31 @@ class MarcacionesController extends ControladorBase{
                     {
                         if ($av->numero_cedula_empleados == $emp->numero_cedula_empleados)
                         {
-                            $cuotaapagar=$av->monto_anticipo/$av->tiempo_diferido;
                             $diafindiferido = date("Y-m-d", strtotime($av->fecha_fin_diferido));
-                            $diafinperiodo = date("Y-m-d", strtotime($fecha_final));
+                            $fecha_pago=$fecha_final;
+                            $elem=explode("/", $fecha_pago);
+                            $fecha_pago=$elem[2]."-".$elem[1]."-".$elem[0];
+                            $diafinperiodo = date("Y-m-d", strtotime($fecha_pago));
+                            
+                            $columnasav="cuotas_avances_empleados.monto_cuota";
+                            
+                            $tablasav= "public.cuotas_avances_empleados INNER JOIN public.anticipo_sueldo_empleados
+                                    	ON cuotas_avances_empleados.id_solicitud = anticipo_sueldo_empleados.id_anticipo
+                                    	INNER JOIN public.estado
+                                    	ON anticipo_sueldo_empleados.id_estado = estado.id_estado";
+                            
+                            $whereav="cuotas_avances_empleados.fecha_cuota='".$diafinperiodo."' AND cuotas_avances_empleados.id_empleados=".$emp->id_empleados."
+                                        AND estado.nombre_estado = 'APROBADO GERENCIA'";
+                            
+                            echo $whereav;
+                            
+                            $idav = "anticipo_sueldo_empleados.id_anticipo";
+                            
+                            $cuota=$marcacion->getCondiciones($columnasav, $tablasav, $whereav, $idav);
+                            
+                            if (!(empty($cuota[0]->monto_cuota))) $cuotaapagar=$cuota[0]->monto_cuota;//revisar cuotas
+                            else $cuotaapagar=0;
+                            
                             if($diafindiferido>$diafinperiodo)
                             {
                                 $dctoavance=$cuotaapagar;
@@ -568,7 +603,15 @@ class MarcacionesController extends ControladorBase{
                         }
                     }
                 }
-                
+                $dec_tercero=($salario+$horasextra50+$horasextra100)/12;
+                $dec_cuarto=(394/12);
+                $dec_tercero=number_format((float)$dec_tercero, 2, '.', '');
+                $dec_cuarto=number_format((float)$dec_cuarto, 2, '.', '');
+                $dctosalarioatr = $tatraso*$salariomin;
+                $dctosalariodcto= $tdescuento*$salariomin;
+                $dctosalario=$dctosalarioatr+$dctosalariodcto;
+                $dctosalariofalta=$numdiassintrabajo*8*60*$salariomin;
+                $dctosalario=$dctosalario+$dctosalariofalta;
                 $dctosalario=number_format((float)$dctosalario, 2, '.', '');
                 $horasextra50=number_format((float)$horasextra50, 2, '.', '');
                 $horasextra100=number_format((float)$horasextra100, 2, '.', '');
@@ -576,13 +619,15 @@ class MarcacionesController extends ControladorBase{
                 $fondosreserva=number_format((float)$fondosreserva, 2, '.', '');
                 $aporteiess1=($emp->salario_cargo+$horasextra50+$horasextra100)*($resultDSE[0]->descuento_iess1*0.01);
                 $aporteiess1=number_format((float)$aporteiess1, 2, '.', '');
+                $aporteiess2=($emp->salario_cargo+$horasextra50+$horasextra100)*($resultDSE[0]->descuento_iess2*0.01);
+                $aporteiess2=number_format((float)$aporteiess2, 2, '.', '');
                 $sueldo14=0.00;
                 $sueldo13=0.00;
                 $asocap=0.00;
                 $quiroiess=0.00;
                 $hipoiess=0.00;
                 $periodo=$fecha_inicio."-".$fecha_final;
-                
+                $asuntos_sociales=$resultDSE[0]->asuntos_sociales;
                 $funcion = "ins_reporte_nomina_empleado";
                 $parametros = "'$emp->id_empleados',
                                 '$horasextra50',
@@ -596,12 +641,22 @@ class MarcacionesController extends ControladorBase{
                                 '$quiroiess',
                                 '$hipoiess',
                                 '$dctosalario',
+                                '$asuntos_sociales',
                                 '$periodo'";
                 $reportenomina->setFuncion($funcion);
                 $reportenomina->setParametros($parametros);
                 $resultado=$reportenomina->Insert();
                 
-                echo $resultado;
+                $funcion = "ins_provisiones_nomina_empleado";
+                $parametros = "'$emp->id_empleados',
+                                '$fondosreserva',
+                                '$dec_tercero',
+                                '$dec_cuarto',
+                                '$aporteiess2',
+                                '$periodo'";
+                $reportenomina->setFuncion($funcion);
+                $reportenomina->setParametros($parametros);
+                $resultado=$reportenomina->Insert();
                 
                 $diastrabajo=0;
                 $numdiassintrabajo=0;

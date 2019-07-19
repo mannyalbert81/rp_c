@@ -67,6 +67,113 @@ class ReporteNominaController extends ControladorBase{
         $resultado=$reportenomina->Insert();
     }
     
+    public function TotalesReporte($resultSet, $resultDSE, $coloringresos1, $coloringresos2, $colorInfo1, $colorInfo2, $coloregresos1, $coloregresos2)
+    {
+        
+        $totalsalarios=0;
+        $totalh50=0;
+        $totalh10=0;
+        $totalreservas=0;
+        $total14=0;
+        $total13=0;
+        $totalingresos=0;
+        $totalanticipo=0;
+        $totaliess=0;
+        $totalAsocap=0;
+        $totalsociales=0;
+        $totalqiess=0;
+        $totalhiess=0;
+        $totaldctos=0;
+        $totalegresos=0;
+        $totalapagar=0;
+        
+        foreach ($resultSet as $res)
+        {
+            
+            $freserva=$res->fondos_reserva;
+            $totalreservas+=$freserva;
+            $totaling=$res->salario_cargo+$res->horas_ext50+$res->horas_ext100+$freserva+$res->dec_cuarto_sueldo+$res->dec_tercero_sueldo;
+            $totalingresos+=$totaling;
+            $totaleg=$res->anticipo_sueldo+$res->aporte_iess1+$res->asocap+$res->comision_asuntos_sociales+$res->prest_quirog_iess+$res->prest_hipot_iess+$res->dcto_salario;
+            $totalegresos+=$totaleg;
+            $total=$totaling-$totaleg;
+            $totalapagar+=$total;
+ 
+            $totalsalarios+=$res->salario_cargo;
+            $totalh50+=$res->horas_ext50;
+            $totalh10+=$res->horas_ext100;
+            $total14+=$res->dec_cuarto_sueldo;
+            $total13+=$res->dec_tercero_sueldo;
+            $totalanticipo+=$res->anticipo_sueldo;
+            $totaliess+=$res->aporte_iess1;
+            $totalAsocap+=$res->asocap;
+            $totalsociales+=$res->comision_asuntos_sociales;
+            $totalqiess+=$res->prest_quirog_iess;
+            $totalhiess+=$res->prest_hipot_iess;
+           }
+        
+        $html='';
+        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+        $html.= "<table id='tabla_reporte' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+        $html.= "<thead>";
+        $html.='<tr>';
+        $html.='<th colspan="3" rowspan="8" bgcolor="'.$colorInfo1.'" scope="colgroup">Totales</th>';
+        $html.='<th colspan="8" bgcolor="'.$coloringresos1.'" scope="colgroup">Gastos</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Salario</th>';
+        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Horas Extra 50%</th>';
+        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Horas Extra 100%</th>';
+        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Fondos de reserva</th>';
+        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">14to Sueldo</th>';
+        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">13ro Sueldo</th>';
+        $html.='<th colspan="2" bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Total</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totalsalarios.'</td>';
+        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totalh50.'</td>';
+        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totalh10.'</td>';
+        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totalreservas.'</td>';
+        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$total14.'</td>';
+        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$total13.'</td>';
+        $html.='<td colspan="2" bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totalingresos.'</td>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.=' <th colspan="8" bgcolor="'.$coloregresos1.'" scope="colgroup">Cuentas por pagar a terceros</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Anticipo de sueldo</th>';
+        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Aporte IESS '.$resultDSE[0]->descuento_iess1.'%</th>';
+        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">ASOCAP</th>';
+        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Comision Asuntos sociales</th>';
+        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">PREST.QUROG. IESS</th>';
+        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">PREST. HIPOT. IESS</th>';
+        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Dcto salario</th>';
+        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Total</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        
+        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalanticipo.'</td>';
+        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totaliess.'</td>';
+        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalAsocap.'</td>';
+        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalsociales.'</td>';
+        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalqiess.'</td>';
+        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalhiess.'</td>';
+        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totaldctos.'</td>';
+        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalegresos.'</td>';
+        
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th colspan="7" style="text-align: left;  font-size: 14px;">A Pagar</th>';
+        $html.='<td style="font-size: 15px;" align="right">'.$totalapagar.'</td>';
+        $html.='</tr>';
+        $html.='</tbody>';
+        $html.='</table>';
+        $html.='</div>';
+        
+        return $html;
+    }
+    
     public function GetReporte()
     {
         session_start();
@@ -107,6 +214,7 @@ class ReporteNominaController extends ControladorBase{
                 	   reporte_nomina_empleados.aporte_iess1, reporte_nomina_empleados.asocap,
                 	   reporte_nomina_empleados.prest_quirog_iess, reporte_nomina_empleados.prest_hipot_iess,
                 	   reporte_nomina_empleados.dcto_salario, reporte_nomina_empleados.periodo_registro,
+                       reporte_nomina_empleados.comision_asuntos_sociales,
                        empleados.id_empleados,reporte_nomina_empleados.id_registro";
         
         $tablas= "public.reporte_nomina_empleados INNER JOIN public.empleados
@@ -132,10 +240,10 @@ class ReporteNominaController extends ControladorBase{
             $where.=$where1;
         }
         
-        $resultSet = $reporte_nomina->getCondiciones($columnas, $tablas, $where, $id);
+        $resultSetT = $reporte_nomina->getCondiciones($columnas, $tablas, $where, $id);
         
         
-        $cantidadResult=sizeof($resultSet);
+        $cantidadResult=sizeof($resultSetT);
         
         $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
         
@@ -143,22 +251,26 @@ class ReporteNominaController extends ControladorBase{
         $adjacents  = 9; //brecha entre páginas después de varios adyacentes
         $offset = ($page - 1) * $per_page;
         
-        $coloringresos1="#66CDAA";
+        $coloringresos1="#F5B041";
         
-        $coloringresos2="#AFEEEE";
+        $coloringresos2="#FAD7A0";
         
         $colorInfo1="#A8CEF6";
         
         $colorInfo2="#ADD8E6";
         
-        $coloregresos1="#F08080";
+        $coloregresos1="#F1C40F";
         
-        $coloregresos2="#FFDEDE";
+        $coloregresos2="#F9E79F";
+        
+        
         
         $limit = " LIMIT   '$per_page' OFFSET '$offset'";
         
         $resultSet=$reporte_nomina->getCondicionesPag("*", $tablas, $where, $id, $limit);
         $total_pages = ceil($cantidadResult/$per_page);
+        
+        $totales=$this->TotalesReporte($resultSetT, $resultDSE, $coloringresos1, $coloringresos2, $colorInfo1, $colorInfo2, $coloregresos1, $coloregresos2);
         
         $html="";
         
@@ -166,7 +278,7 @@ class ReporteNominaController extends ControladorBase{
         {
             $html.='<div class="pull-left" style="margin-left:15px;">';
             $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>';            
             $html.='</div>';
             $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
             $html.='<section style="height:425px; overflow-y:scroll;">';
@@ -175,8 +287,8 @@ class ReporteNominaController extends ControladorBase{
             $html.='<tr>';
               $html.='<td rowspan="2"></td>';
               $html.='<th colspan="3" bgcolor="'.$colorInfo1.'" scope="colgroup">Informacion Empleado</th>';
-              $html.='<th colspan="7" bgcolor="'.$coloringresos1.'" scope="colgroup">Ingresos</th>';
-             $html.=' <th colspan="8" bgcolor="'.$coloregresos1.'" scope="colgroup">Egresos</th>';
+              $html.='<th colspan="7" bgcolor="'.$coloringresos1.'" scope="colgroup">Gastos</th>';
+             $html.=' <th colspan="8" bgcolor="'.$coloregresos1.'" scope="colgroup">Cuentas por pagar a terceros</th>';
              $html.='</tr>';
              $html.='<tr>';
              $html.='<th bgcolor="'.$colorInfo1.'" style="text-align: left;  font-size: 14px;"></th>';
@@ -189,7 +301,7 @@ class ReporteNominaController extends ControladorBase{
              $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">14to Sueldo</th>';
              $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">13ro Sueldo</th>';
              $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Total</th>';
-             $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Anticipo</th>';
+             $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Anticipo de sueldo</th>';
              $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Aporte IESS '.$resultDSE[0]->descuento_iess1.'%</th>';
              $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">ASOCAP</th>';
              $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Comision Asuntos sociales</th>';
@@ -199,6 +311,8 @@ class ReporteNominaController extends ControladorBase{
             $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Total</th>';
             $html.='<th style="text-align: left;  font-size: 14px;">A Pagar</th>';
             $html.='<th style="text-align: left;  font-size: 14px;">Periodo</th>';
+            
+          
             
             
             $html.='</tr>';
@@ -219,34 +333,52 @@ class ReporteNominaController extends ControladorBase{
        $html.='EditarNomina(&quot;'.$res->nombres_empleados.'&quot,&quot;'.$res->nombre_oficina.'&quot,&quot;'.$res->salario_cargo.'&quot;,&quot;'.$res->horas_ext50.'&quot;';
        $html.=',&quot;'.$res->horas_ext100.'&quot;,&quot;'.$res->fondos_reserva.'&quot;,&quot;'.$res->dec_cuarto_sueldo.'&quot;';
        $html.=',&quot;'.$res->dec_tercero_sueldo.'&quot;,&quot;'.$res->anticipo_sueldo.'&quot;,&quot;'.$res->aporte_iess1.'&quot;';
-       $html.=',&quot;'.$res->asocap.'&quot;,&quot;'.$resultDSE[0]->asuntos_sociales.'&quot;,&quot;'.$res->prest_quirog_iess.'&quot;,&quot;'.$res->prest_hipot_iess.'&quot;';
+       $html.=',&quot;'.$res->asocap.'&quot;,&quot;'.$res->comision_asuntos_sociales.'&quot;,&quot;'.$res->prest_quirog_iess.'&quot;,&quot;'.$res->prest_hipot_iess.'&quot;';
        $html.=',&quot;'.$res->dcto_salario.'&quot;,&quot;'.$res->periodo_registro.'&quot;,'.$res->id_empleados.')';
        $html.='"><i class="glyphicon glyphicon-edit"></i></button>';
         }
         $html.='</td>';
+        $freserva=$res->fondos_reserva;
+        $totaling=$res->salario_cargo+$res->horas_ext50+$res->horas_ext100+$freserva+$res->dec_cuarto_sueldo+$res->dec_tercero_sueldo;
+        $totaleg=$res->anticipo_sueldo+$res->aporte_iess1+$res->asocap+$resultDSE[0]->asuntos_sociales+$res->prest_quirog_iess+$res->prest_hipot_iess+$res->dcto_salario;
+        $total=$totaling-$totaleg;
        $html.='<td bgcolor="'.$colorInfo2.'" style="font-size: 15px;">'.$res->nombres_empleados.'</td>';
        $html.='<td bgcolor="'.$colorInfo2.'" style="font-size: 15px;">'.$res->nombre_oficina.'</td>';
-       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;">'.$res->salario_cargo.'</td>';
-       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;">'.$res->horas_ext50.'</td>';
-       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;">'.$res->horas_ext100.'</td>';
-       $freserva=$res->fondos_reserva;
-       $freserva=number_format((float)$freserva, 2, ',', '');
-       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;">'.$freserva.'</td>';
-       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;">'.$res->dec_cuarto_sueldo.'</td>';
-       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;">'.$res->dec_tercero_sueldo.'</td>';
-       $totaling=$res->salario_cargo+$res->horas_ext50+$res->horas_ext100+$freserva+$res->dec_cuarto_sueldo+$res->dec_tercero_sueldo;
-       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;">'.$totaling.'</td>';
-       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;">'.$res->anticipo_sueldo.'</td>';
-       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;">'.$res->aporte_iess1.'</td>';
-       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;">'.$res->asocap.'</td>';
-       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;">'.$resultDSE[0]->asuntos_sociales.'</td>';
-       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;">'.$res->prest_quirog_iess.'</td>';
-       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;">'.$res->prest_hipot_iess.'</td>';
-       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;">'.$res->dcto_salario.'</td>';
-       $totaleg=$res->anticipo_sueldo+$res->aporte_iess1+$res->asocap+$resultDSE[0]->asuntos_sociales+$res->prest_quirog_iess+$res->prest_hipot_iess+$res->dcto_salario;
-       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;">'.$totaleg.'</td>';
-       $total=$totaling-$totaleg;
-        $html.='<td  style="font-size: 15px;">'.$total.'</td>';
+       $res->salario_cargo=number_format((float)$res->salario_cargo, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$res->salario_cargo.'</td>';
+       $res->horas_ext50=number_format((float)$res->horas_ext50, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$res->horas_ext50.'</td>';
+       $res->horas_ext100=number_format((float)$res->horas_ext100, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$res->horas_ext100.'</td>';
+       
+       $freserva=number_format((float)$freserva, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$freserva.'</td>';
+       $res->dec_cuarto_sueldo=number_format((float)$res->dec_cuarto_sueldo, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$res->dec_cuarto_sueldo.'</td>';
+       $res->dec_tercero_sueldo=number_format((float)$res->dec_tercero_sueldo, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$res->dec_tercero_sueldo.'</td>';
+       $totaling=number_format((float)$totaling, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totaling.'</td>';
+      
+       $res->anticipo_sueldo=number_format((float)$res->anticipo_sueldo, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$res->anticipo_sueldo.'</td>';
+       $res->aporte_iess1=number_format((float)$res->aporte_iess1, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$res->aporte_iess1.'</td>';
+       $res->asocap=number_format((float)$res->asocap, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$res->asocap.'</td>';
+       $sociales=$res->comision_asuntos_sociales;
+       $sociales=number_format((float)$sociales, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$sociales.'</td>';
+       $res->prest_quirog_iess=number_format((float)$res->prest_quirog_iess, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$res->prest_quirog_iess.'</td>';
+       $res->prest_hipot_iess=number_format((float)$res->prest_hipot_iess, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$res->prest_hipot_iess.'</td>';
+       $res->dcto_salario=number_format((float)$res->dcto_salario, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$res->dcto_salario.'</td>';
+       $totaleg=number_format((float)$totaleg, 2, ',', '.');
+       $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totaleg.'</td>';
+       $total=number_format((float)$total, 2, ',', '.');
+        $html.='<td  style="font-size: 15px;" align="right">'.$total.'</td>';
         $elementos=explode("/", $res->periodo_registro);
         $periodonomina=$meses[($elementos[3]-1)]." ".$elementos[4];
         $html.='<td style="font-size: 15px;">'.$periodonomina.'</td>';
@@ -254,9 +386,13 @@ class ReporteNominaController extends ControladorBase{
        
 
      }
+    
      $html.='</tbody>';
      $html.='</table>';
+     
+     
      $html.='</section></div>';
+     $html.=$totales;
      $html.='<div class="table-pagination pull-right">';
      $html.=''. $this->paginate_reporte("index.php", $page, $total_pages, $adjacents,"ReporteNomina").'';
      $html.='</div>';
@@ -380,6 +516,7 @@ class ReporteNominaController extends ControladorBase{
                 	   reporte_nomina_empleados.aporte_iess1, reporte_nomina_empleados.asocap,
                 	   reporte_nomina_empleados.prest_quirog_iess, reporte_nomina_empleados.prest_hipot_iess,
                 	   reporte_nomina_empleados.dcto_salario, reporte_nomina_empleados.periodo_registro,
+                        reporte_nomina_empleados.comision_asuntos_sociales,
                        empleados.id_empleados";
        
        $tablas= "public.reporte_nomina_empleados INNER JOIN public.empleados
@@ -506,8 +643,8 @@ class ReporteNominaController extends ControladorBase{
            $asocap+=$res->asocap;
            $datos_tabla.='<td  class="numero">'.$aso.'</td>';
            
-           $sociales+=$resultDSE[0]->asuntos_sociales;
-           $datos_tabla.='<td  class="numero">'.$resultDSE[0]->asuntos_sociales.'</td>';
+           $sociales+=$res->comision_asuntos_sociales;
+           $datos_tabla.='<td  class="numero">'.$res->comision_asuntos_sociales.'</td>';
            
            $qiess="";
            if ($res->prest_quirog_iess!="0") $qiess=$res->prest_quirog_iess;
@@ -636,6 +773,7 @@ class ReporteNominaController extends ControladorBase{
                 	   reporte_nomina_empleados.aporte_iess1, reporte_nomina_empleados.asocap,
                 	   reporte_nomina_empleados.prest_quirog_iess, reporte_nomina_empleados.prest_hipot_iess,
                 	   reporte_nomina_empleados.dcto_salario, reporte_nomina_empleados.periodo_registro,
+                        reporte_nomina_empleados.comision_asuntos_sociales,
                        empleados.id_empleados, departamentos.nombre_departamento";
        
        $tablas= "public.reporte_nomina_empleados INNER JOIN public.empleados
@@ -667,262 +805,84 @@ class ReporteNominaController extends ControladorBase{
        
        $ingresos+=$resultSet[0]->salario_cargo;
        $salario=$resultSet[0]->salario_cargo;
-       $salario=number_format((float)$salario, 2, '.', '');
+       $salario=number_format((float)$salario, 2, '.', ',');
        $datos_reporte['SUELDO']=$salario;
        
        $ingresos+=$resultSet[0]->horas_ext50;
        $h50=$resultSet[0]->horas_ext50;
-       $h50=number_format((float)$h50, 2, '.', '');
+       $h50=number_format((float)$h50, 2, '.', ',');
        $datos_reporte['EXTRA50']=$h50;
        
        $ingresos+=$resultSet[0]->horas_ext100;
        $h100=$resultSet[0]->horas_ext100;
-       $h100=number_format((float)$h100, 2, '.', '');
+       $h100=number_format((float)$h100, 2, '.', ',');
        $datos_reporte['EXTRA100']=$h100;
        
        $ingresos+=$resultSet[0]->fondos_reserva;
        $frs=$resultSet[0]->fondos_reserva;
-       $frs=number_format((float)$frs, 2, '.', '');
+       $frs=number_format((float)$frs, 2, '.', ',');
        $datos_reporte['RESERVA']=$frs;
        
        $ingresos+=$resultSet[0]->dec_cuarto_sueldo;
        $s14=$resultSet[0]->dec_cuarto_sueldo;
-       $s14=number_format((float)$s14, 2, '.', '');
+       $s14=number_format((float)$s14, 2, '.', ',');
        $datos_reporte['SUELDO14']=$s14;
        
        $ingresos+=$resultSet[0]->dec_tercero_sueldo;
        $s13=$resultSet[0]->dec_tercero_sueldo;
-       $s13=number_format((float)$s13, 2, '.', '');
+       $s13=number_format((float)$s13, 2, '.', ',');
        $datos_reporte['SUELDO13']=$s13;
        
-       $ingresos=number_format((float)$ingresos, 2, '.', '');
+       $total=$ingresos;
+       
+       $ingresos=number_format((float)$ingresos, 2, '.', ',');
        $datos_reporte['TOTALING']=$ingresos;
        
        $egresos+=$resultSet[0]->anticipo_sueldo;
        $asueldo=$resultSet[0]->anticipo_sueldo;
-       $asueldo=number_format((float)$asueldo, 2, '.', '');
+       $asueldo=number_format((float)$asueldo, 2, '.', ',');
        $datos_reporte['ASUELDO']=$asueldo;
      
        $egresos+=$resultSet[0]->aporte_iess1;
        $aiess=$resultSet[0]->aporte_iess1;
-       $aiess=number_format((float)$aiess, 2, '.', '');
+       $aiess=number_format((float)$aiess, 2, '.', ',');
        $datos_reporte['APIESS']=$aiess;
        $datos_reporte['AP']=$resultDSE[0]->descuento_iess1;
        
        $egresos+=$resultSet[0]->asocap;
        $asocap=$resultSet[0]->asocap;
-       $asocap=number_format((float)$asocap, 2, '.', '');
+       $asocap=number_format((float)$asocap, 2, '.', ',');
        $datos_reporte['ASOCAP']=$asocap;
        
-       $egresos+=$resultDSE[0]->asuntos_sociales;
-       $social=$resultDSE[0]->asuntos_sociales;
-       $social=number_format((float)$social, 2, '.', '');
+       $egresos+=$resultSet[0]->comision_asuntos_sociales;
+       $social=$resultSet[0]->comision_asuntos_sociales;
+       $social=number_format((float)$social, 2, '.', ',');
        $datos_reporte['SOCIALES']=$social;
        
        $egresos+=$resultSet[0]->prest_quirog_iess;
        $qiess=$resultSet[0]->prest_quirog_iess;
-       $qiess=number_format((float)$qiess, 2, '.', '');
+       $qiess=number_format((float)$qiess, 2, '.', ',');
        $datos_reporte['QUIROIESS']=$qiess;
        
        $egresos+=$resultSet[0]->prest_hipot_iess;
        $hiess=$resultSet[0]->prest_hipot_iess;
-       $hiess=number_format((float)$hiess, 2, '.', '');
+       $hiess=number_format((float)$hiess, 2, '.', ',');
        $datos_reporte['HIPOIESS']=$hiess;
        
        $egresos+=$resultSet[0]->dcto_salario;
        $dcto=$resultSet[0]->dcto_salario;
-       $dcto=number_format((float)$dcto, 2, '.', '');
+       $dcto=number_format((float)$dcto, 2, '.', ',');
        $datos_reporte['DCTO']=$dcto;
-       
-       $egresos=number_format((float)$egresos, 2, '.', '');
+       $total=$total-$egresos;
+       $egresos=number_format((float)$egresos, 2, '.', ',');
        $datos_reporte['TOTALEG']=$egresos;
        
-       $total=$ingresos-$egresos;
-       $total=number_format((float)$total, 2, '.', '');
+      
+       $total=number_format((float)$total, 2, '.', ',');
        $datos_reporte['TOTAL A PAGAR']=$total;
        
        $datos_reporte['CEDULA']=$resultSet[0]->numero_cedula_empleados;
-       
-       
-       /*$horasextra50=0;
-       $horasextra100=0;
-       $sueldobasico=0;
-       $fondosreserva=0;
-       $sueldo14=0;
-       $sueldo13=0;
-       $totalingresos=0;
-       $dctoavance=0;
-       $aporteiess1=0;
-       $asocap=0;
-       $sociales=0;
-       $quiroiess=0;
-       $hipoiess=0;
-       $totalegresos=0;
-       $totalapagar=0;
-       
-       $headerfont="7px";
-       $tdfont="9px";
-       
-       $color1="#DFE0E0";
-       
-       $datos_tabla.= '<table>';
-       $datos_tabla.='<tr>';
-       $datos_tabla.='<th width="6%" rowspan="2" style="text-align: center; font-size: '.$headerfont.';">CEDULA</th>';
-       $datos_tabla.='<th width="15%" rowspan="2"  style="text-align: center;  font-size: '.$headerfont.';">APELLIDOS Y NOMBRES</th>';
-       $datos_tabla.='<th width="10%" rowspan="2" style="text-align: center;  font-size: '.$headerfont.';">CARGO</th>';
-       $datos_tabla.='<th bgcolor="'.$color1.'" colspan="7" scope="colgroup" style="text-align: center;  font-size: '.$headerfont.';">INGRESOS</th>';
-       $datos_tabla.='<th bgcolor="'.$color1.'" colspan="7" scope="colgroup" style="text-align: center;  font-size: '.$headerfont.';">EGRESOS</th>';
-       $datos_tabla.='<th  width="5%" rowspan="2" style="text-align: center;  font-size: '.$headerfont.';">A PAGAR</th>';
-       $datos_tabla.='</tr>';
-       $datos_tabla.='<tr>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">HORAS EXTRA 50%</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">HORAS EXTRA 100%</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">SUELDO BASICO</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">FONDOS DE RESERVA</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">14TO SUELDO</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">13RO SUELDO</th>';
-       $datos_tabla.='<th  width="5%" style="text-align: center;  font-size: '.$headerfont.';">TOTAL</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">ANTICIPO SUELDOS</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">APORTE IESS '.$resultDSE[0]->descuento_iess1.'%</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">ASOCAP</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">COMISION ASUNTOS SOCIALES</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">PREST. QUIROG. IESS</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">PREST.HIPOT. IESS</th>';
-       $datos_tabla.='<th  width="5%" style="text-align: center;  font-size: '.$headerfont.';">TOTAL</th>';
-       $datos_tabla.='</tr>';
-       foreach ($resultSet as $res)
-       {
-           $datos_tabla.='<tr>';
-           $datos_tabla.='<td  style="text-align: center;  font-size: '.$tdfont.';">'.$res->numero_cedula_empleados.'</td>';
-           $datos_tabla.='<td  style="text-align: left;  font-size: '.$tdfont.';">'.$res->nombres_empleados.'</td>';
-           $datos_tabla.='<td  style="text-align: center;  font-size: '.$tdfont.';">'.$res->nombre_cargo.'</td>';
-           
-           $h50="";
-           if ($res->horas_ext50!="0") $h50=$res->horas_ext50;
-           $horasextra50+=$res->horas_ext50;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$h50.'</td>';
-           
-           $h100="";
-           if ($res->horas_ext100!="0") $h100=$res->horas_ext100;
-           $horasextra100+=$res->horas_ext100;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$h100.'</td>';
-           
-           $sueldobasico+=$res->salario_cargo;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$res->salario_cargo.'</td>';
-           
-           $fondosreserva+=$res->fondos_reserva;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$res->fondos_reserva.'</td>';
-           
-           $d14="";
-           if ($res->dec_cuarto_sueldo!="0") $d14=$res->dec_cuarto_sueldo;
-           $sueldo14+=$res->dec_cuarto_sueldo;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$d14.'</td>';
-           
-           $d13="";
-           if ($res->dec_tercero_sueldo!="0") $d13=$res->dec_tercero_sueldo;
-           $sueldo13+=$res->dec_tercero_sueldo;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$d13.'</td>';
-           
-           $totaling=$res->horas_ext50+$res->horas_ext100+$res->salario_cargo+$res->fondos_reserva+$res->dec_cuarto_sueldo+$res->dec_tercero_sueldo;
-           $totalingresos+=$totaling;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$totaling.'</td>';
-           
-           $ant="";
-           if ($res->anticipo_sueldo!="0") $ant=$res->anticipo_sueldo;
-           $dctoavance+=$res->anticipo_sueldo;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$ant.'</td>';
-           
-           $aporteiess1+=$res->aporte_iess1;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$res->aporte_iess1.'</td>';
-           
-           $aso="";
-           if ($res->asocap!="0") $aso=$res->asocap;
-           $asocap+=$res->asocap;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$aso.'</td>';
-           
-           $sociales+=$resultDSE[0]->asuntos_sociales;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$resultDSE[0]->asuntos_sociales.'</td>';
-           
-           $qiess="";
-           if ($res->prest_quirog_iess!="0") $qiess=$res->prest_quirog_iess;
-           $quiroiess+=0;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$qiess.'</td>';
-           
-           $hiess="";
-           if ($res->prest_hipot_iess!="0") $hiess=$res->prest_hipot_iess;
-           $hipoiess+=0;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$hiess.'</td>';
-           
-           $totaleg=$res->anticipo_sueldo+$res->aporte_iess1+$res->asocap+$resultDSE[0]->asuntos_sociales+$res->prest_quirog_iess+$res->prest_hipot_iess;
-           $totalegresos+=$totaleg;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$totaleg.'</td>';
-           
-           $apagar=$totaling-$totaleg;
-           $totalapagar+=$apagar;
-           $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$apagar.'</td>';
-           $datos_tabla.='</tr>';
-           
-       }
-       
-       $datos_tabla.='<tr>';
-       $datos_tabla.='<td colspan="3" style="text-align: center;  font-size: '.$tdfont.';">TOTALES</td>';
-       $h50="-";
-       if($horasextra50!="0") $h50=$horasextra50;
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$h50.'</td>';
-       
-       $h100="-";
-       if($horasextra100!="0") $h100=$horasextra100;
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$h100.'</td>';
-       
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$sueldobasico.'</td>';
-       
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$fondosreserva.'</td>';
-       
-       $d14="-";
-       if($sueldo14!="0") $d14=$sueldo14;
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$d14.'</td>';
-       
-       $d13="-";
-       if($sueldo13!="0") $d13=$sueldo13;
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$d13.'</td>';
-       
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$totalingresos.'</td>';
-       
-       $ant="-";
-       if($dctoavance!="0") $ant=$dctoavance;
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$ant.'</td>';
-       
-       
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$aporteiess1.'</td>';
-       
-       $aso="-";
-       if($asocap!="0") $aso=$asocap;
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$aso.'</td>';
-       
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$sociales.'</td>';
-       
-       $qiess="-";
-       if($quiroiess!="0") $qiess=$quiroiess;
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$qiess.'</td>';
-       
-       $hiess="-";
-       if($hipoiess!="0") $hiess=$hipoiess;
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$hiess.'</td>';
-       
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$totalegresos.'</td>';
-       $datos_tabla.='<td  style="text-align: right;  font-size: '.$tdfont.';">'.$totalapagar.'</td>';
-       $datos_tabla.='</tr>';
-       
-       $datos_tabla.= "</table>";
-       $datos_tabla.= "<br>";
-       $datos_tabla.= '<table class="firmas">';
-       $datos_tabla.='<tr>';
-       $datos_tabla.='<td   class="firmas"  width="6%"  style="text-align: left; font-size: '.$headerfont.';"></td>';
-       $datos_tabla.='<td   class="firmas" width="26%" style="text-align: left; font-size: '.$headerfont.';">Elaborado por:<br>Lcdo. Byron Bolaños<br>Jefe de RR-HH</td>';
-       $datos_tabla.='<td   class="firmas" style="text-align: left;  font-size: '.$headerfont.';">Aprobado por:<br>Ing. Stephany Zurita<br>Representante Legal</td>';
-       $datos_tabla.='</tr>';
-       $datos_tabla.= "</table>";*/
-       
+             
        $datos_tabla="";
        
        $this->verReporte("ReporteNominaIndividual", array('datos_reporte'=>$datos_reporte

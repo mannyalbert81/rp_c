@@ -1167,7 +1167,7 @@ class ActivosFijosController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND (nombre_activos_fijos LIKE '".$search."%' )";
+                $where1=" AND (nombre_activos_fijos LIKE '".$search."%' OR nombres_empleados LIKE '".$search."%' OR nombre_oficina LIKE '".$search."%')";
                 
                 $where_to=$where.$where1;
             }else{
@@ -1238,10 +1238,10 @@ class ActivosFijosController extends ControladorBase{
                     $html.='<td style="font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_activos_fijos.'&id_nombre=id_activos_fijos&tabla=act_activos_fijos&campo=imagen_activos_fijos" width="80" height="60"></td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombre_oficina.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->codigo_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;">00'.$res->codigo_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_activos_fijos.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->valor_activos_fijos.'</td>';
+                    $html.='<td style="font-size: 11px;"align="right">'.$res->valor_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombre_estado.'</td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->fecha_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombres_empleados.'</td>';

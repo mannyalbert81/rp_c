@@ -511,12 +511,15 @@ class AvancesEmpleadosController extends ControladorBase{
     
     $html.= "<table id='tabla_solicitudes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
     $html.= "<tr>";
-    $html.='<th style="text-align: left;  font-size: 15px;">Empleado:</th>';
-    $html.='<td style="text-align: left;  font-size: 15px;">'.$res->nombres_empleados.'</td>';
+    $html.='<th colspan="2" style="text-align: left;  font-size: 15px;">Empleado:</th>';
+    $html.='<td colspan="2" style="text-align: left;  font-size: 15px;">'.$resultSet[0]->nombres_empleados.'</td>';
     $html.= "</tr>";
     $html.= "<tr>";
-    $html.='<th style="text-align: left;  font-size: 15px;">Saldo total de la operación</th>';
-    $html.='<td style="text-align: left;  font-size: 15px;">'.$res->nombres_empleados.'</td>';
+    $html.='<th style="text-align: left;  font-size: 15px;">Fecha solicitud:</th>';
+    $html.='<td style="text-align: left;  font-size: 15px;">'.$resultSet[0]->fecha_anticipo.'</td>';
+    $html.='<th style="text-align: left;  font-size: 15px;">Monto solicitado:</th>';
+    $resultSet[0]->monto_anticipo=number_format((float)$resultSet[0]->monto_anticipo, 2,".",",");
+    $html.='<td style="text-align: right;  font-size: 15px;">'.$resultSet[0]->monto_anticipo.'</td>';
     $html.='</tr>';
     $html.='</table>';
     $html.= "<table id='tabla_solicitudes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
@@ -541,7 +544,10 @@ class AvancesEmpleadosController extends ControladorBase{
     
     $html.='</tbody>';
     $html.='</table>';
-    
+    $html.='<div class="pull-right" style="margin-right:15px;">
+    <td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-warning" onclick="PagarAnticipo()"><i class="glyphicon glyphicon-log-in"></i></button></span></td>
+    </div>';
+     echo $html;
         
     }
     

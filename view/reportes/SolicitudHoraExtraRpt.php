@@ -8,7 +8,13 @@ $template = file_get_contents('view/reportes/template/SolicitudHoraExtra.html');
 
 $footer = file_get_contents('view/reportes/template/pieficha.html');
 
-
+if(!empty($datos_empresa))
+{
+    
+    foreach ($datos_empresa as $clave=>$valor) {
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
 if(!empty($datos_reporte))
 {
 	

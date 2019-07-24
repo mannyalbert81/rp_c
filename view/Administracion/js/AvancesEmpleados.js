@@ -549,7 +549,7 @@ function Ajustes(id_solicitud, nombre_estado)
 	    url: 'index.php?controller=AvancesEmpleados&action=TablaCuotas',
 	    type: 'POST',
 	    data: {
-	    	   id_solicitud: idsol
+	    	   id_solicitud: id_solicitud
 	    },
 	})
 	.done(function(x) {
@@ -559,7 +559,7 @@ function Ajustes(id_solicitud, nombre_estado)
 			{
 				swal({
 				  		  title: "Solicitud",
-				  		  text: "Error al cambiar estado de solicitud",
+				  		  text: "Error al cargar la informacion",
 				  		  icon: "warning",
 				  		  button: "Aceptar",
 				  		});
@@ -567,23 +567,41 @@ function Ajustes(id_solicitud, nombre_estado)
 		else 
 		{
 		
-			$("#myModalAjustes").modal()	
+			
+			var modal = $('#myModalAjustes');
+		modal.find('#preliminar_archivo').html(x);
+		$("#myModalAjustes").modal();
 		}
-	
-			
-			
-		
-		
 			
 	})
 	.fail(function() {
 	    console.log("error");
 	    swal({
 	  		  title: "Solicitud",
-	  		  text: "Error al cambiar estado de solicitud",
+	  		  text: "Error al cargar la informacion",
 	  		  icon: "warning",
 	  		  button: "Aceptar",
 	  		});
 	});
 	
+}
+
+function PagarAnticipo()
+{
+	swal({
+		  title: "Cancelar Pago de anticipo",
+		  text: "Se procedera a cancelar el anticipo del empleado",
+		  icon: "warning",
+		  buttons: true,
+		  dangerMode: true,
+		})
+		.then((willDelete) => {
+		  if (willDelete) {
+		    swal("Anticipo cancelado", {
+		      icon: "success",
+		    });
+		  } else {
+		    swal("No se realizaron cambios!");
+		  }
+		});	
 }

@@ -29,7 +29,6 @@ function BuscarParticipe()
 		    },
 		})
 		.done(function(x) {
-			
 			var y=$.parseJSON(x);
 			console.log(y);
 			$('#participe_encontrado').html(y[0]);
@@ -55,7 +54,6 @@ function AportesParticipe(id, page)
 	    },
 	})
 	.done(function(x) {
-		console.log(x);
 		$('#aportes_participe').html(x);
 		
 		
@@ -76,7 +74,6 @@ function CreditosActivosParticipe(id, page)
 	    },
 	})
 	.done(function(x) {
-		console.log(x);
 		$('#creditos_participe').html(x);
 		
 		

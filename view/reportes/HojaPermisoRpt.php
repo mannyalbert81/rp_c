@@ -4,13 +4,18 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
  
 //echo getcwd().''; //para ver ubicacion de directorio
 
-$header = file_get_contents('view/reportes/template/CabeceraFinal.html');
-
 $template = file_get_contents('view/reportes/template/HojaPermiso.html');
 
 $footer = file_get_contents('view/reportes/template/pieficha.html');
 
 
+if(!empty($datos_empresa))
+{
+    
+    foreach ($datos_empresa as $clave=>$valor) {
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
 if(!empty($datos_reporte))
 {
 	

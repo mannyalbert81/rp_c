@@ -40,17 +40,35 @@ class BuscarParticipesController extends ControladorBase{
         
         $resultSet=$participes->getCondiciones($columnas, $tablas, $where, $id);
         
+        
+        
         if(!(empty($resultSet)))
         {if($resultSet[0]->nombre_genero_participes == "HOMBRE") $icon='<i class="fa fa-male fa-3x" style="float: left;"></i>';
         else $icon='<i class="fa fa-female fa-3x" style="float: left;"></i>';
         
+        $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
+            		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
+            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
+            		core_estado_creditos.nombre_estado_creditos";
+        $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
+        		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
+        		INNER JOIN public.core_estado_creditos
+        		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
+        $where="core_creditos.id_participes=".$resultSet[0]->id_participes." AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
+        $id="core_creditos.fecha_concesion_creditos";
+        
+        $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        
         $html.='
-        <div class="box box-widget widget-user-2">
-        <div class="widget-user-header bg-olive">'
+        <div class="box box-widget widget-user-2">';
+        if(!(empty($resultCreditos))) $html.='<a class="btn btn-default pull-right" href="index.php?controller=AnalisisCreditos&action=cuotaParticipe" role="button" target="_blank"><i class="glyphicon glyphicon-stats"></i></a>';
+        $html.='<div class="widget-user-header bg-olive">'
             .$icon.
             '<h3 class="widget-user-username">'.$resultSet[0]->nombre_participes.' '.$resultSet[0]->apellido_participes.'</h3>
+        
          <h5 class="widget-user-desc">Estado: '.$resultSet[0]->nombre_estado_participes.'</h5>
         <h5 class="widget-user-desc">CI: '.$resultSet[0]->cedula_participes.'</h5>
+        
         </div>
         <div class="box-footer no-padding">
         <ul class="nav nav-stacked">
@@ -183,9 +201,9 @@ class BuscarParticipesController extends ControladorBase{
                    </table>
                    <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
                      <table border="1" width="100%">';
-                       for($i=$last-1; $i>0; $i--)
+                       for($i=$last-1; $i>=0; $i--)
                        {    
-                           $index=$i+($last-1)*($page-1);
+                           $index=($i+($last-1)*($page-1))+1;
                            if($resultAportes[$i]->valor_personal_contribucion!=0)
                            {
                                $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
@@ -360,9 +378,9 @@ class BuscarParticipesController extends ControladorBase{
                    </table>
                    <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
                      <table border="1" width="100%">';
-            for($i=$last-1; $i>0; $i--)
+            for($i=$last-1; $i>=0; $i--)
             {
-                $index=$i+($last-1)*($page-1);
+                $index=($i+($last-1)*($page-1))+1;
                 $monto=number_format((float)$resultCreditos[$i]->monto_otorgado_creditos, 2, ',', '.');
                 $saldo=number_format((float)$resultCreditos[$i]->saldo_actual_creditos, 2, ',', '.');
                 $saldo_int=number_format((float)$resultCreditos[$i]->interes_creditos, 2, ',', '.');

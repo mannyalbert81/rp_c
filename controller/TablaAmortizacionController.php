@@ -175,7 +175,7 @@ class TablaAmortizacionController extends ControladorBase{
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->interes_tabla_amortizacion.'</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->total_valor_tabla_amortizacion.'</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_estado_tabla_amortizacion.'</td>';

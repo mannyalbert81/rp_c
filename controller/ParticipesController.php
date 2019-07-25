@@ -36,6 +36,18 @@ class ParticipesController extends ControladorBase{
 		
 		$tipo_instruccion_participes=new TipoInstruccionParticipesModel();
 		$resultTipoInstrccion=$tipo_instruccion_participes->getAll("nombre_tipo_instruccion_participes");
+		
+		$distritos=new DistritosModel();
+		$resultDistritos=$distritos->getAll("nombre_distritos");
+		
+		$provincias=new ProvinciasModel();
+		$resultProvincias=$provincias->getAll("nombre_provincias");
+		
+		$tipo_vivienda=new TipoViviendaModel();
+		$resultTipovivienda=$tipo_vivienda->getAll("nombre_tipo_vivienda");
+		
+		$parentesco=new ParentescoModel();
+		$resultParentesco=$parentesco->getAll("nombre_parentesco");
 	
 		
 		session_start();
@@ -62,57 +74,92 @@ class ParticipesController extends ControladorBase{
 					
 					    $_id_participes = $_GET["id_participes"];
 						$columnas = " core_participes.id_participes, 
-                                      core_ciudades.id_ciudades, 
+                                      core_participes.id_ciudades, 
                                       core_ciudades.nombre_ciudades, 
                                       core_participes.apellido_participes, 
                                       core_participes.nombre_participes, 
                                       core_participes.cedula_participes, 
-                                      DATE(core_participes.fecha_nacimiento_participes)fecha_nacimiento_participes, 
-                                      core_participes.direccion_participes, 
+                                      core_participes.fecha_nacimiento_participes, 
                                       core_participes.telefono_participes, 
+                                      core_participes.direccion_participes, 
                                       core_participes.celular_participes, 
-                                      DATE(core_participes.fecha_ingreso_participes)fecha_ingreso_participes, 
-                                      DATE(core_participes.fecha_defuncion_participes)fecha_defuncion_participes, 
-                                      core_estado_participes.id_estado_participes, 
+                                      core_participes.fecha_ingreso_participes, 
+                                      core_participes.fecha_defuncion_participes, 
+                                      core_participes.id_estado_participes, 
                                       core_estado_participes.nombre_estado_participes, 
-                                      core_estatus.id_estatus, 
+                                      core_participes.id_estatus, 
                                       core_estatus.nombre_estatus, 
-                                      DATE(core_participes.fecha_salida_participes)fecha_salida_participes, 
-                                      core_genero_participes.id_genero_participes, 
+                                      core_participes.fecha_salida_participes, 
+                                      core_participes.id_genero_participes, 
                                       core_genero_participes.nombre_genero_participes, 
-                                      core_estado_civil_participes.id_estado_civil_participes, 
+                                      core_participes.id_estado_civil_participes, 
                                       core_estado_civil_participes.nombre_estado_civil_participes, 
                                       core_participes.observacion_participes, 
                                       core_participes.correo_participes, 
-                                      core_entidad_patronal.id_entidad_patronal, 
+                                      core_participes.id_entidad_patronal, 
                                       core_entidad_patronal.nombre_entidad_patronal, 
-                                      DATE(core_participes.fecha_entrada_patronal_participes)fecha_entrada_patronal_participes, 
+                                      core_participes.fecha_entrada_patronal_participes, 
                                       core_participes.ocupacion_participes, 
-                                      core_tipo_instruccion_participes.id_tipo_instruccion_participes, 
+                                      core_participes.id_tipo_instruccion_participes, 
                                       core_tipo_instruccion_participes.nombre_tipo_instruccion_participes, 
                                       core_participes.nombre_conyugue_participes, 
                                       core_participes.apellido_esposa_participes, 
                                       core_participes.cedula_conyugue_participes, 
                                       core_participes.numero_dependencias_participes, 
                                       core_participes.codigo_alternativo_participes, 
-                                      DATE(core_participes.fecha_numero_orden_participes)fecha_numero_orden_participes, 
-                                      core_participes.creado, 
-                                      core_participes.modificado";
+                                      core_participes.fecha_numero_orden_participes, 
+                                      core_participes_informacion_adicional.id_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.id_distritos, 
+                                      core_distritos.nombre_distritos, 
+                                      core_participes_informacion_adicional.id_provincias, 
+                                      core_provincias.nombre_provincias, 
+                                      core_participes_informacion_adicional.id_ciudades, 
+                                      core_participes_informacion_adicional.parroquia_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.sector_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.ciudadela_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.calle_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.numero_calle_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.interseccion_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.id_tipo_vivienda, 
+                                      core_tipo_vivienda.nombre_tipo_vivienda, 
+                                      core_participes_informacion_adicional.anios_residencia_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.nombre_propietario_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.telefono_propietario_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.direccion_referencia_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.vivienda_hipotecada_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.nombre_una_referencia_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.id_parentesco, 
+                                      core_parentesco.nombre_parentesco, 
+                                      core_participes_informacion_adicional.telefono_una_referencia_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.observaciones_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.kit_participes_informacion_adicional, 
+                                      core_participes_informacion_adicional.contrato_adhesion_participes_informacion_adicional";
 						$tablas   =  "public.core_participes, 
+                                      public.core_participes_informacion_adicional, 
                                       public.core_ciudades, 
+                                      public.core_distritos, 
                                       public.core_estado_participes, 
                                       public.core_estatus, 
                                       public.core_genero_participes, 
                                       public.core_estado_civil_participes, 
                                       public.core_entidad_patronal, 
-                                      public.core_tipo_instruccion_participes";
-						$where    =  "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
+                                      public.core_tipo_instruccion_participes, 
+                                      public.core_provincias, 
+                                      public.core_tipo_vivienda, 
+                                      public.core_parentesco";
+						$where    =  "core_participes.id_participes = core_participes_informacion_adicional.id_participes AND
+                                      core_participes_informacion_adicional.id_ciudades = core_ciudades.id_ciudades AND
                                       core_ciudades.id_ciudades = core_participes.id_ciudades AND
+                                      core_distritos.id_distritos = core_participes_informacion_adicional.id_distritos AND
                                       core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
                                       core_estatus.id_estatus = core_participes.id_estatus AND
                                       core_genero_participes.id_genero_participes = core_participes.id_genero_participes AND
                                       core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes AND
-                                      core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal
+                                      core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND
+                                      core_tipo_instruccion_participes.id_tipo_instruccion_participes = core_participes.id_tipo_instruccion_participes AND
+                                      core_provincias.id_provincias = core_participes_informacion_adicional.id_provincias AND
+                                      core_tipo_vivienda.id_tipo_vivienda = core_participes_informacion_adicional.id_tipo_vivienda AND
+                                      core_parentesco.id_parentesco = core_participes_informacion_adicional.id_parentesco
                                       AND core_participes.id_participes = '$_id_participes'"; 
 						$id       = "core_participes.id_participes";
 							
@@ -134,7 +181,8 @@ class ParticipesController extends ControladorBase{
 				
 				$this->view_Core("Participes",array(
 				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit, "resultCiudades" =>$resultCiudades, "resultEstado" =>$resultEstado, "resultEstatus" =>$resultEstatus,
-				    "resultGenero" =>$resultGenero, "resultEstadoCivil" =>$resultEstadoCivil, "resultEntidadPatronal" =>$resultEntidadPatronal, "resultTipoInstrccion" =>$resultTipoInstrccion,
+				    "resultGenero" =>$resultGenero, "resultEstadoCivil" =>$resultEstadoCivil, "resultEntidadPatronal" =>$resultEntidadPatronal, "resultTipoInstrccion" =>$resultTipoInstrccion, 
+				    "resultDistritos" =>$resultDistritos, "resultProvincias" =>$resultProvincias, "resultTipovivienda" => $resultTipovivienda, "resultParentesco" => $resultParentesco
 			
 				));
 		

@@ -11,19 +11,22 @@ class RecaudacionController extends ControladorBase{
 	public function index(){
 	
 	    session_start();
-		//Creamos el objeto usuario
-     	$grupos=new GruposModel();		
+		
+     	$EntidadPatronal = new EntidadPatronalParticipesModel();
      		
 		if (isset(  $_SESSION['nombre_usuarios']) ){
 
 			$nombre_controladores = "Grupos";
 			$id_rol= $_SESSION['id_rol'];
-			$resultPer = $grupos->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+			$resultPer = $EntidadPatronal->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
 			if (!empty($resultPer)){
+			    
+			    $queryEntidad = "SELECT * FROM core_entidad_patronal ORDER BY nombre_entidad_patronal";			    
+			    $rsEntidadPatronal = $EntidadPatronal->enviaquery($queryEntidad);
 			
 			    $this->view_Recaudaciones("ArchivoEntidadPatronal",array(
-			        			        
+			        'rsEntidadPatronal' => $rsEntidadPatronal
 			    ));
 				
 			}else{
@@ -44,236 +47,292 @@ class RecaudacionController extends ControladorBase{
 	
 	}
 	
-	public function InsertaGrupos(){
-			
-		session_start();
-		$grupos=new GruposModel();
-		
-		
-
-		$nombre_controladores = "Grupos";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-			
-		if (!empty($resultPer))
-		{
-		
-		//die("llego");
-		
-			$resultado = null;
-			$grupos=new GruposModel();
-		
-			if (isset ($_POST["nombre_grupos"])   )
-			{
-				
-			    $_nombre_grupos = $_POST["nombre_grupos"];
-			    $_id_grupos =  $_POST["id_grupos"];
-			    $_id_estado = $_POST["id_estado"];
-			    //die("llego");
-			    if($_id_grupos > 0){
-					
-					$columnas = " nombre_grupos = '$_nombre_grupos',
-                                  id_estado = '$_id_estado'";
-					$tabla = "  public.grupos";
-					$where = "id_grupos = '$_id_grupos'";
-					$resultado=$grupos->UpdateBy($columnas, $tabla, $where);
-					
-				}else{
-					
-					$funcion = "ins_grupos";
-					$parametros = " '$_nombre_grupos', '$_id_estado'";
-					$grupos->setFuncion($funcion);
-					$grupos->setParametros($parametros);
-					$resultado=$grupos->Insert();
-				}
-				
-				
-				
-		
-			}
-			$this->redirect("Grupos", "index");
-
-		}
-		else
-		{
-		    $this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Grupos"
-		
-			));
-		
-		
-		}
-		
-	}
-	
-	public function AgregaGrupos(){
+	public function RecaudacionSimular(){
 	    
-	    session_start();
-	    $grupos=new GruposModel();
+	    $EntidadPatronal = new EntidadPatronalParticipesModel();
 	    $respuesta = array();
-	    $error ="";
+	    $error="";
 	    
-	    $nombre_controladores = "Grupos";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if ( !empty($resultPer) ){
+	    try{
+	       	        
+	        session_start();
+	        $_usuario_usuarios = $_SESSION['usuario_usuarios'];
+	        $_id_entidad_patronal = $_POST['id_entidad_patronal'];
+	        $_anio_recaudacion = $_POST['anio_recaudacion'];
+	        $_mes_recaudacion = $_POST['mes_recaudacion'];
 	        
-	        $resultado = null;
-	        
-	        try {
+	        $error = error_get_last();
+	        if(!empty($error))
+	            throw new Exception('Variables Desconocidas'.$error['message']);
 	            
-	            $_nombre_grupos = $_POST["nombre_grupos"];
-	            $_id_grupos =  $_POST["id_grupos"];
-	            $_id_estado = $_POST["id_estado"];
-	            $_abreviacion_grupos = $_POST["abreviacion_grupos"];
-	            $_id_pla_cuentas = $_POST["id_plan_cuentas"];
+	            //buscar en tabla si hay datos de recaudacion
+	            $queryValidacion = "SELECT * FROM core_archivo_recaudaciones
+                WHERE mes_archivo_recaudaciones = '".$_mes_recaudacion."'
+                AND anio_archivo_recaudaciones = '".$_anio_recaudacion."'
+                AND id_entidad_patronal = '$_id_entidad_patronal'";
 	            
-	            $error = error_get_last();
-	            
-	            if( !empty($error) )
-	                throw new Exception("Viariables no Definidas ".$error['message']);
-	            
-	            
-                $_abreviacion_grupos = strtoupper($_abreviacion_grupos);
-	            
-                if( $_id_grupos > 0 ){
+	            $rsEntidadPatronal = $EntidadPatronal->enviaquery($queryValidacion);
+	            $error = pg_last_error();
+	            if(!empty($error))
+	                throw new Exception('Error busqueda BD '.$error['message']);
+	                
+                //para graficar la tabla
+                $funcion = "ins_archivo_recaudaciones";
+                $parametros = "'$_usuario_usuarios','$_id_entidad_patronal','$_anio_recaudacion','$_mes_recaudacion'";
+	                
+                if(empty($rsEntidadPatronal)){
+                    //realiza insertado de archivo recaudaciones
+                    $consultaPG = "SELECT ".$funcion."(".$parametros.")";
+                    $resultado = $EntidadPatronal->llamarconsultaPG($consultaPG);
+                    $error = pg_last_error();
+                    if(is_null($resultado) || !empty($error))
+                        throw new Exception("Revisar tabla archivo recaudacion ");
                     
-                    $columnas = " nombre_grupos = '$_nombre_grupos',
-                                  id_estado = '$_id_estado',
-                                  abreviacion_grupos = '$_abreviacion_grupos',
-                                  id_plan_cuentas = $_id_pla_cuentas";
-                    $tabla = "  public.grupos";
-                    $where = "id_grupos = '$_id_grupos'";
-                    
-                    $resultado=$grupos->ActualizarBy($columnas, $tabla, $where);
-                    
-                    if( (int)$resultado < 0 )
-                        throw new Exception("Error Actualizar Datos");
-                    
-                    $respuesta['respuesta'] = 1;
-                    $respuesta['mensaje'] = "Grupo Actualizado";
-                    
+                     //volver a consultar 
+                    $rsEntidadPatronal = $EntidadPatronal->enviaquery($queryValidacion);                    
+                    if(!empty($rsEntidadPatronal)){                        
+                        $respuesta['respuesta'] = 1;
+                        $respuesta['mensaje'] = 'Distribucion Realizada';
+                    }else{
+                        $respuesta['respuesta'] = 2;
+                        $respuesta['mensaje'] = 'Distribucion Realizada con cero participes';
+                    }
+                            
                 }else{
                     
-                    $funcion = "ins_grupos";
-                    $parametros = " '$_nombre_grupos', '$_id_estado','$_abreviacion_grupos','$_id_pla_cuentas'";
-                    $grupos->setFuncion($funcion);
-                    $grupos->setParametros($parametros);
-                    $resultado=$grupos->llamafuncionPG();
+                    $generado = $rsEntidadPatronal[0]->generado_archivo_recaudaciones;
+                    $mensaje =  ($generado=="t") ? "Atencion Archivo ya se encuentra generado" : "Revise aportacion participe" ;                 
+                    $respuesta['respuesta']=2;
+                    $respuesta['mensaje'] = $mensaje;
                     
-                    if( is_null($resultado) )
-                        throw new Exception("Error Insertar Datos");
-                    
-                    $respuesta['respuesta'] = 1;
-                    $respuesta['mensaje'] = "Grupo Insertado";
                 }
+	                
+	                echo json_encode($respuesta);
+	                
+	    } catch (Exception $ex) {
+	        
+	        echo '<message>Error Archivo Recaudacion \n'.$ex->getMessage().' <message>';
+	    }	    
+	    
+	}
+	
+	public function editAporte(){
+	    
+	    session_start();
+	    $error="";
+	    $respuesta=array();
+	    try {
+	        
+	        $Participes = new ParticipesModel(); 
+	        $_id_archivo_recaudacion = $_POST['id_archivo_recaudaciones'];
+	        $_valor_archivo_recaudacion = $_POST['valor_final_archivo_recaudaciones'];
+	        
+	        $error=error_get_last();
+	        if(!empty($error))
+	            throw new Exception("Variables no definidas");
+	        
+            $consulta = $Participes->enviaquery("SELECT 1  FROM core_archivo_recaudaciones 
+                        WHERE id_archivo_recaudaciones = '$_id_archivo_recaudacion' AND generado_archivo_recaudaciones = 'f'");
+            
+            $error=pg_last_error();
+            if(!empty($error))
+                throw new Exception("Fila no reconocida");
+            
+            if(sizeof($consulta) > 0 ){                
                 
-                echo json_encode($respuesta);
-	            
-	        }catch (Exception $ex) {
-	                
-	            echo "<message> Error Grupos. \n". $ex->getMessage()." <message>";
-	        }
-	      
-	    }else{
+                $colval = "valor_final_archivo_recaudaciones = '$_valor_archivo_recaudacion' ";
+                $tabla = "core_archivo_recaudaciones";
+                $where = "id_archivo_recaudaciones = '$_id_archivo_recaudacion'";
+                
+                $resultado = $Participes->ActualizarBy($colval, $tabla, $where);
+                
+                if((int)$resultado < 0)
+                    throw new Exception('Error Actualizar Datos');
+                    
+                $respuesta['respuesta']=1;
+                $respuesta['mensaje']="Valor Aporte Actualizado";
+                
+            }else{
+                
+                $respuesta['respuesta']=1;
+                $respuesta['mensaje'] = "Archivo generado no puede modificar el archivo";
+            }
+	        
+	        
+	        echo json_encode($respuesta);
+	        
+	        
+	    } catch (Exception $e) {
+	        echo '<message> Error Recaudacion \n '.$e->getMessage().'<message>';
+	    }
+	}
+	
+	
+	public function gen1(){
+	    
+	    
+	    session_start();
+	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
+	    
+	    $Participes = new ParticipesModel();
+	    
+	    $_id_entidad_patronal = $_POST['id_entidad_patronal'];
+	    $_anio_recaudacion = $_POST['anio_recaudacion'];
+	    $_mes_recaudacion = $_POST['mes_recaudacion'];
+	    
+	    $queryEntidadPatronal = "SELECT * FROM core_entidad_patronal WHERE id_entidad_patronal = '$_id_entidad_patronal'";
+	    $rsEntidad=$Participes->enviaquery($queryEntidadPatronal);	    
+	    $nombre_entidad = $this->limpiarCaracteresEspeciales($rsEntidad[0]->nombre_entidad_patronal);
+	    
+	    $columnas = "car.id_archivo_recaudaciones,
+    	    cct.nombre_contribucion_tipo,
+    	    cp.cedula_participes,
+    	    cp.apellido_participes,
+    	    cp.nombre_participes,
+    	    cctp.sueldo_liquido_contribucion_tipo_participes,
+    	    car.valor_final_archivo_recaudaciones,
+    	    (cctp.sueldo_liquido_contribucion_tipo_participes-cctp.valor_contribucion_tipo_participes) \"total\",
+    	    car.anio_archivo_recaudaciones,
+    	    car.mes_archivo_recaudaciones,
+            car.generado_archivo_recaudaciones";
+	    
+	    $tablas= "core_archivo_recaudaciones car
+    	    INNER JOIN core_contribucion_tipo_participes cctp
+    	    ON car.id_participes = cctp.id_participes
+    	    INNER JOIN core_contribucion_tipo cct
+    	    ON cctp.id_contribucion_tipo = cct.id_contribucion_tipo
+    	    INNER JOIN core_participes cp
+    	    ON cp.id_participes = cctp.id_participes
+    	    INNER JOIN core_tipo_aportacion ctp
+    	    ON ctp.id_tipo_aportacion = cctp.id_tipo_aportacion";
+	    
+	    $where= " 1 = 1
+	       AND cct.nombre_contribucion_tipo = 'Aporte Personal'
+           AND car.anio_archivo_recaudaciones = '$_anio_recaudacion'
+           AND car.mes_archivo_recaudaciones = '$_mes_recaudacion'
+           AND car.id_entidad_patronal = '$_id_entidad_patronal'";
+	    
+	    $id= "cp.nombre_participes";	   
+	    $resultSet=$Participes->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    if( $resultSet[0]->generado_archivo_recaudaciones =="t"){
+	       echo '<message>Archivo ya se encuentra generado<message>';
+	       exit();
+	    }
+	    
+	    $fecha = date('Yd');
+	    $my_file = $nombre_entidad.$fecha.'.txt';
+	    $ubicacion = $_SERVER['DOCUMENT_ROOT'].'/rp_c/DOCUMENTOS_GENERADOS/RECAUDACIONES';
+	    $data = 'NUMERO'.";".'TIPO DESCUENTO'.";".'CEDULA'.";".'NOMBRE'.";".'SUELDO LIQUIDO'.";".'DESCUENTO'.";".'TOTAL'.";".'AÑO DESCUENTO'.";".'MES DESCUENTO'.PHP_EOL;
+	    
+	    //para ubicacion del archivo
+	    $funcionDocumentos = "ins_documentos_recaudaciones";
+	    $parametrosDocumentos = " '$_usuario_usuarios','$my_file', '$ubicacion' ";
+	    $consultaPG = "SELECT ".$funcionDocumentos."(".$parametrosDocumentos.")";
+	    $resultado = $Participes->llamarconsultaPG($consultaPG);
+	    $_id_documentos = ((int)$resultado[0] > 0) ? $resultado[0] : -1;
+	    
+	    //para actualizacion
+	    $actColumnas = "generado_archivo_recaudaciones = 't', id_documentos_recaudaciones = '$_id_documentos'";
+	    $actTablas = "core_archivo_recaudaciones";
+	    foreach ($resultSet as $res){
+	        
+	        $id_archivo = $res->id_archivo_recaudaciones;
+	        $actWhere = "id_archivo_recaudaciones = $id_archivo ";
+	        
+	        $resultado = $Participes->ActualizarBy($actColumnas, $actTablas, $actWhere);
+	    }
+	    
+	    $numero = 0;
+	    foreach($resultSet as $res){
+	        $numero += 1;	        
+	        $tipo_contribucion = $res->nombre_contribucion_tipo;
+	        $cedula_participe =  $res->cedula_participes;
+	        $apellido_participe =  $res->apellido_participes;
+	        $nombre_participe =  $res->nombre_participes;
+	        $sueldo_participe =  $res->sueldo_liquido_contribucion_tipo_participes;
+	        $valor_descuento =  $res->valor_final_archivo_recaudaciones;
+	        $total_descuento =  $res->total;
+	        $anio_recaudacion =  $res->anio_archivo_recaudaciones;
+	        $mes_recaudacion =  $res->mes_archivo_recaudaciones;
+	        
+	        $data.=$numero.";".$tipo_contribucion.";".$cedula_participe.";".$apellido_participe." ".$nombre_participe.";";
+	        $data.=$sueldo_participe.";".$valor_descuento.";".$total_descuento.";".$anio_recaudacion.";".$mes_recaudacion.PHP_EOL;
 	       
-	        echo "<message> No tiene permisos para insertar <message>";
-	        
 	    }
+	    	    
+	    $archivo = fopen($ubicacion.'/'.$my_file, 'w');
+	    fwrite($archivo, $data);
+	    fclose($archivo);
+	    
+	    $error = error_get_last();
+	    if(!empty($error)){
+	        echo '<message>Archivo no generado<message>';
+	    }
+	    
+	    echo json_encode(array("respuesta"=>1,"mensaje"=>"Archivo generado"));
 	    
 	}
 	
-	public function borrarId()
-	{
+	public function indexRecaudacionAP(){
 	    
-	    session_start();
-	    $grupos=new GruposModel();
-	    $nombre_controladores = "Grupos";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $grupos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    $EntidadPatronal = new EntidadPatronalParticipesModel();
 	    
-	    if (!empty($resultPer))
-	    {
-	        if(isset($_GET["id_grupos"]))
-	        {
-	            $id_grupos=(int)$_GET["id_grupos"];
-	            
-	            
-	            
-	            $grupos->deleteBy(" id_grupos",$id_grupos);
-	            
-	        }
-	        
-	        $this->redirect("Grupos", "index");
-	        
-	        
-	    }
-	    else
-	    {
-	        $this->view_Inventario("Error",array(
-	            "resultado"=>"No tiene Permisos de Borrar Grupos"
-	            
-	        ));
-	    }
+	    $_anio_recaudacion = $_POST['anio_recaudacion'];
+	    $_mes_recaudacion = $_POST['mes_recaudacion'];
+	    $_id_entidad_patronal = $_POST['id_entidad_patronal'];	        
+	        	    
+	    $columnas = " car.id_archivo_recaudaciones,
+            		car.usuario_usuarios,
+                    car.valor_final_archivo_recaudaciones,
+                    car.valor_sistema_archivo_recaudaciones,
+            		cctp.id_contribucion_tipo_participes,
+            		cctp.valor_contribucion_tipo_participes,
+            		cctp.sueldo_liquido_contribucion_tipo_participes,
+            		cp.id_participes,
+            		cp.cedula_participes,
+            		cp.apellido_participes,
+            		cp.nombre_participes,
+            		cct.id_contribucion_tipo,
+            		cct.nombre_contribucion_tipo,
+            		ctp.id_tipo_aportacion,
+            		ctp.nombre_tipo_aportacion";
 	    
-	}
-	
-	public function consulta_grupos_activos(){
+	    $tablas = " core_archivo_recaudaciones car
+                    inner join core_contribucion_tipo_participes cctp
+                    on car.id_participes = cctp.id_participes
+                    inner join core_contribucion_tipo cct
+                    on cctp.id_contribucion_tipo = cct.id_contribucion_tipo
+                    inner join core_participes cp
+                    on cp.id_participes = cctp.id_participes
+                    inner join core_tipo_aportacion ctp
+                    on ctp.id_tipo_aportacion = cctp.id_tipo_aportacion
+                    inner join estado e
+                    on e.id_estado = cctp.id_estado";
 	    
-	    session_start();
-	    $id_rol=$_SESSION["id_rol"];
+	    $where    = " 1 = 1
+                    AND e.nombre_estado = 'ACTIVO'
+                    AND cct.nombre_contribucion_tipo = 'Aporte Personal'
+                    AND car.anio_archivo_recaudaciones = '$_anio_recaudacion'
+                   AND car.mes_archivo_recaudaciones = '$_mes_recaudacion'
+                   AND car.id_entidad_patronal = '$_id_entidad_patronal'";
 	    
-	    $usuarios = new UsuariosModel();
-	   
-	    $estado = null; $estado = new EstadoModel();
-	    $where_to="";
-	    $columnas = " grupos.id_grupos, 
-                      grupos.nombre_grupos, 
-                      grupos.abreviacion_grupos, 
-                      estado.id_estado, 
-                      estado.nombre_estado, 
-                      estado.tabla_estado, 
-                      grupos.creado, 
-                      grupos.modificado,
-                      plan_cuentas.id_plan_cuentas,
-                      plan_cuentas.codigo_plan_cuentas,
-                      plan_cuentas.nombre_plan_cuentas";
+	    $id = "cp.apellido_participes";
 	    
-	    $tablas = "public.grupos INNER JOIN public.estado ON estado.id_estado = grupos.id_estado 
-                    INNER JOIN public.plan_cuentas ON plan_cuentas.id_plan_cuentas = grupos.id_plan_cuentas ";	    
+	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+	    $search =  (isset($_REQUEST['busqueda'])&& $_REQUEST['busqueda'] !=NULL)?$_REQUEST['busqueda']:'';
 	    
-	    $where    = " 1=1 AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado ='GRUPOS'";
-	    
-	    $id       = "grupos.id_grupos";
-	    
-	    
-	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
-	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
-	    
-	    
-	    if($action == 'ajax')
-	    {
-	        //estado_usuario
-	        $whereestado = "tabla_estado='GRUPOS'";
-	        $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
-	        
-	        
+	    if($action == 'ajax'){
 	        
 	        if(!empty($search)){
-	            
-	            
-	            $where1=" AND (grupos.nombre_grupos LIKE '".$search."%' )";
-	            
+	            $where1=" AND (cp.cedula_participes ILIKE '".$search."%' OR cp.apellido_participes  ILIKE '".$search."%' OR cp.nombre_participes ILIKE '".$search."%' )";
 	            $where_to=$where.$where1;
 	        }else{
-	            
 	            $where_to=$where;
-	            
 	        }
 	        
-	        $html="";
-	        $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
+	        $html = "";
+	        $resultSet=$EntidadPatronal->getCantidad("*", $tablas, $where_to);
 	        $cantidadResult=(int)$resultSet[0]->total;
 	        
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
@@ -284,63 +343,50 @@ class RecaudacionController extends ControladorBase{
 	        
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	        
-	        $resultSet=$usuarios->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
-	        $count_query   = $cantidadResult;
+	        $resultSet=$EntidadPatronal->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
 	        $total_pages = ceil($cantidadResult/$per_page);
 	        
-	        
-	        if($cantidadResult>0)
-	        {
+	        if($cantidadResult>0){
 	            
-	            $html.='<div class="pull-left" style="margin-left:15px;">';
-	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-	            $html.='</div>';
-	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_grupos_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tbl_archivo_recaudaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Abreviacion</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo (Plan Cuentas) </th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre (Plan Cuentas)</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-	            
-	            if($id_rol==1){
-	                
-	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                
-	            }
-	            
+	            $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Apellidos Participe</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombres Participe </th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo Descuento</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Metodo Descuento</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Valor Sistema</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Valor Archivo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='</tr>';
 	            $html.='</thead>';
 	            $html.='<tbody>';
 	            
-	            
 	            $i=0;
 	            
-	            foreach ($resultSet as $res)
-	            {
+	            foreach ($resultSet as $res){
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->abreviacion_grupos.'</td>';	                
-	                $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
-	                	             
-	                
-	                if($id_rol==1){
-	                    
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=index&id_grupos='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=borrarId&id_grupos='.$res->id_grupos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
-	                    
-	                }
-	                
+	                $html.='<td style="font-size: 11px;">'.$res->usuario_usuarios.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_contribucion_tipo.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_aportacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->valor_sistema_archivo_recaudaciones.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->valor_final_archivo_recaudaciones.'</td>';
+	                $html.='<td style="font-size: 18px;">';
+	                $html.='<span class="pull-right ">
+                                    <a onclick="editAporte(this)" id="" data-idarchivo="'.$res->id_archivo_recaudaciones.'"
+                                    data-valorinicial="'.$res->valor_sistema_archivo_recaudaciones.'" data-valorfinal="'.$res->valor_final_archivo_recaudaciones.'"
+                                    data-metodo_descuento="'.$res->nombre_tipo_aportacion.'"
+                                    href="#" class="btn btn-sm btn-default label label-warning">
+                                    <i class="fa fa-edit" aria-hidden="true" ></i>
+                                    </a></span></td>';
 	                $html.='</tr>';
 	            }
 	            
@@ -348,84 +394,68 @@ class RecaudacionController extends ControladorBase{
 	            
 	            $html.='</tbody>';
 	            $html.='</table>';
-	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_grupos_activos("index.php", $page, $total_pages, $adjacents).'';
-	            $html.='</div>';
-	            
-	            
+	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"").'';
+	            $html.='</div>'; 
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
-	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
-	            $html.='</div>';
-	            $html.='</div>';
+	            
+	            $html.= "<table id='tbl_archivo_recaudaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Apellidos Participe</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombres Participe </th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo Descuento</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Metodo Descuento</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Valor Sistema</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Valor Archivo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            $html.='</tbody>';
+	            $html.='</table>';
 	        }
 	        
-	        
-	        echo $html;
-	        die();
-	        
+	        echo json_encode(array('tablaHtml'=>$html));
 	    }
+	    
 	}
 	
-	public function consulta_grupos_inactivos(){
+	public function indexArchivosAP(){
 	    
-	    session_start();
-	    $id_rol=$_SESSION["id_rol"];
+	    $EntidadPatronal = new EntidadPatronalParticipesModel();	    
 	    
-	    $usuarios = new UsuariosModel();
+	    $columnas = " id_documentos_recaudaciones,
+                    nombre_documentos_recaudaciones,
+                    ruta_documentos_recaudaciones,
+                    usuario_usuarios,
+                    date(creado) creado,
+                    date(modificado) modificado";
 	    
-	    $estado = null; $estado = new EstadoModel();
-	    $where_to="";
-	    $columnas = " grupos.id_grupos,
-                      grupos.nombre_grupos,
-                      grupos.abreviacion_grupos,
-                      estado.id_estado,
-                      estado.nombre_estado,
-                      estado.tabla_estado,
-                      grupos.creado,
-                      grupos.modificado,
-                      plan_cuentas.id_plan_cuentas,
-                      plan_cuentas.codigo_plan_cuentas,
-                      plan_cuentas.nombre_plan_cuentas";
+	    $tablas = " public.core_documentos_recaudaciones";
 	    
-	    $tablas = "public.grupos INNER JOIN public.estado ON estado.id_estado=grupos.id_estado
-                   INNER JOIN public.plan_cuentas ON plan_cuentas.id_plan_cuentas = grupos.id_plan_cuentas";	    
+	    $where    = " 1 = 1";
 	    
-	    $where    = " 1=1 AND estado.nombre_estado='INACTIVO' AND estado.tabla_estado ='GRUPOS'";
+	    $id = "creado";
 	    
-	    $id       = "grupos.id_grupos";
+	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+	    $search =  (isset($_REQUEST['busqueda'])&& $_REQUEST['busqueda'] !=NULL)?$_REQUEST['busqueda']:'';
 	    
-	    
-	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
-	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
-	    
-	    
-	    if($action == 'ajax')
-	    {
-	        //estado_usuario
-	        $whereestado = "tabla_estado='GRUPOS'";
-	        $resultEstado = $estado->getCondiciones('nombre_estado' ,'public.estado' , $whereestado , 'tabla_estado');
-	        
-	        
+	    if($action == 'ajax'){
 	        
 	        if(!empty($search)){
-	            
-	            
-	            $where1=" AND (grupos.nombre_grupos LIKE '".$search."%' )";
-	            
+	            $where1=" AND ( nombre_documentos_recaudaciones ILIKE '".$search."%' )";
 	            $where_to=$where.$where1;
 	        }else{
-	            
 	            $where_to=$where;
-	            
 	        }
 	        
-	        $html="";
-	        $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
+	        $html = "";
+	        $resultSet=$EntidadPatronal->getCantidad("*", $tablas, $where_to);
 	        $cantidadResult=(int)$resultSet[0]->total;
 	        
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
@@ -436,99 +466,78 @@ class RecaudacionController extends ControladorBase{
 	        
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	        
-	        $resultSet=$usuarios->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
-	        $count_query   = $cantidadResult;
+	        $resultSet=$EntidadPatronal->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
 	        $total_pages = ceil($cantidadResult/$per_page);
 	        
-	        
-	        
-	        if($cantidadResult>0)
-	        {
+	        if($cantidadResult>0){
 	            
-	            $html.='<div class="pull-left" style="margin-left:15px;">';
-	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-	            $html.='</div>';
-	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:425px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_grupos_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tbl_documentos_recaudaciones' class='table table-striped table-bordered'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Abreviacion</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Codigo (Plan Cuentas) </th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre (Plan Cuentas)</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-	            
-	            if($id_rol==1){
-	                
-	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                
-	            }
-	            
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ruta</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">creado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">modificado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='</tr>';
 	            $html.='</thead>';
 	            $html.='<tbody>';
 	            
+	           
 	            
 	            $i=0;
 	            
-	            foreach ($resultSet as $res)
-	            {
+	            foreach ($resultSet as $res){
 	                $i++;
+	                $ruta = '..'.substr($res->ruta_documentos_recaudaciones, -35).'/..';
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_grupos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->abreviacion_grupos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
-	                
-	                
-	                
-	                if($id_rol==1){
-	                    
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=index&id_grupos='.$res->id_grupos.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
-	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Grupos&action=borrarId&id_grupos='.$res->id_grupos.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
-	                    
-	                }
-	                
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_documentos_recaudaciones.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$ruta.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->usuario_usuarios.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->creado.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->modificado.'</td>';
+	                $html.='<td style="font-size: 18px;">';
+	                $html.='<span class="pull-right ">
+                                    <a onclick="verArchivo(this)" id="" data-idarchivo="'.$res->id_documentos_recaudaciones.'"                                    
+                                    href="#" class="btn btn-sm btn-default label label-info">
+                                    <i class="fa  fa-file-text" aria-hidden="true" ></i>
+                                    </a></span></td>';
 	                $html.='</tr>';
-	            }
-	            
-	            
-	            
+	            }	            
+	          
 	            $html.='</tbody>';
 	            $html.='</table>';
-	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_grupos_activos("index.php", $page, $total_pages, $adjacents).'';
+	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"consultaArchivos").'';
 	            $html.='</div>';
-	            
-	            
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
-	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
-	            $html.='</div>';
-	            $html.='</div>';
+	            
+	            $html.= "<table id='tbl_documentos_recaudaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ruta</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">creado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">modificado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
 	        }
 	        
-	        
-	        echo $html;
-	        die();
-	        
+	        echo json_encode(array('tablaHtml'=>$html));
 	    }
+	    
 	}
 	
-	
-	
-	
-	public function paginate_grupos_activos($reload, $page, $tpages, $adjacents) {
+	//para paginacion
+	public function paginate($reload, $page, $tpages, $adjacents, $funcion="") {
 	    
 	    $prevlabel = "&lsaquo; Prev";
 	    $nextlabel = "Next &rsaquo;";
@@ -539,15 +548,15 @@ class RecaudacionController extends ControladorBase{
 	    if($page==1) {
 	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
 	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
 	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(".($page-1).")'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
 	        
 	    }
 	    
 	    // first label
 	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>1</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
 	    }
 	    // interval
 	    if($page>($adjacents+2)) {
@@ -562,9 +571,9 @@ class RecaudacionController extends ControladorBase{
 	        if($i==$page) {
 	            $out.= "<li class='active'><a>$i</a></li>";
 	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(1)'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
 	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos(".$i.")'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
 	        }
 	    }
 	    
@@ -577,13 +586,13 @@ class RecaudacionController extends ControladorBase{
 	    // last
 	    
 	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_activos($tpages)'>$tpages</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
 	    }
 	    
 	    // next
 	    
 	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_activos(".($page+1).")'>$nextlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
 	    }else {
 	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
 	    }
@@ -592,116 +601,45 @@ class RecaudacionController extends ControladorBase{
 	    return $out;
 	}
 	
+	public function descargarArchivo(){
+	    
+	    $_id_documento = $_POST['id_documentos_recaudaciones'];
+	    $Participes = new ParticipesModel();
+	    
+	    $query = " SELECT id_documentos_recaudaciones,
+                nombre_documentos_recaudaciones,
+                ruta_documentos_recaudaciones,
+                usuario_usuarios                
+                FROM core_documentos_recaudaciones                
+                WHERE id_documentos_recaudaciones = '$_id_documento'";
+	    
+	    $rsDocumentos = $Participes->enviaquery($query);
+	    
+	    $nombre_documento = $rsDocumentos[0]->nombre_documentos_recaudaciones;
+	    $ruta_documento = $rsDocumentos[0]->ruta_documentos_recaudaciones;
+	    
+	    $ubicacion = $ruta_documento.'/'.$nombre_documento;
+	    
+	    // Define headers
+	    header("Cache-Control: public");
+	    header("Content-Description: File Transfer");
+	    header("Content-Disposition: attachment; filename=$nombre_documento");
+	    header("Content-Type: application/zip");
+	    header("Content-Transfer-Encoding: binary");
+	    
+	    // Read the file
+	    readfile($ubicacion);
+	    exit;
+	    
+	}
 	
-	
-	
-	
-	
-	
-	public function paginate_grupos_inactivos($reload, $page, $tpages, $adjacents) {
-	    
-	    $prevlabel = "&lsaquo; Prev";
-	    $nextlabel = "Next &rsaquo;";
-	    $out = '<ul class="pagination pagination-large">';
-	    
-	    // previous label
-	    
-	    if($page==1) {
-	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>$prevlabel</a></span></li>";
-	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(".($page-1).")'>$prevlabel</a></span></li>";
-	        
-	    }
-	    
-	    // first label
-	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>1</a></li>";
-	    }
-	    // interval
-	    if($page>($adjacents+2)) {
-	        $out.= "<li><a>...</a></li>";
-	    }
-	    
-	    // pages
-	    
-	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-	    for($i=$pmin; $i<=$pmax; $i++) {
-	        if($i==$page) {
-	            $out.= "<li class='active'><a>$i</a></li>";
-	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(1)'>$i</a></li>";
-	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos(".$i.")'>$i</a></li>";
-	        }
-	    }
-	    
-	    // interval
-	    
-	    if($page<($tpages-$adjacents-1)) {
-	        $out.= "<li><a>...</a></li>";
-	    }
-	    
-	    // last
-	    
-	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_grupos_inactivos($tpages)'>$tpages</a></li>";
-	    }
-	    
-	    // next
-	    
-	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_grupos_inactivos(".($page+1).")'>$nextlabel</a></span></li>";
-	    }else {
-	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-	    }
-	    
-	    $out.= "</ul>";
-	    return $out;
+	function limpiarCaracteresEspeciales($string ){
+	    $string = htmlentities($string);
+	    $string = preg_replace('/\&(.)[^;]*;/', '', $string);
+	    return $string;
 	}
 	
 	
-	/**
-	 * mod: compras
-	 * title: carga_grupos
-	 * ajax: si
-	 */
-	
-	public function carga_grupos(){
-	    
-	    $grupos = null;
-	    $grupos = new GruposModel();
-	    
-	    $resulset = $grupos->getAll("id_grupos");
-	    
-	    if(!empty($resulset)){
-	        if(is_array($resulset) && count($resulset)>0){
-	            echo json_encode($resulset);
-	        }
-	    }
-	}
-	
-	/**
-	 * mod: compras
-	 * title: carga_unidadmedida
-	 * ajax: si
-	 */
-	
-	public function carga_unidadmedida(){
-	    
-	    $grupos = null;
-	    $grupos = new GruposModel();
-	    
-	    $resulset = $grupos->getCondiciones("*","public.unidad_medida","1=1","id_unidad_medida");
-	    
-	    if(!empty($resulset)){
-	        if(is_array($resulset) && count($resulset)>0){
-	            echo json_encode($resulset);
-	        }
-	    }
-	}
 	
 }
 ?>

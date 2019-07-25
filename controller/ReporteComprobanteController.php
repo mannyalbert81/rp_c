@@ -310,6 +310,145 @@ class ReporteComprobanteController extends ControladorBase{
 	    return $out;
 	}
 	
+	
+	
+	public function reporte_comprobante(){
+	    
+	    
+	    session_start();
+	    $entidades = new EntidadesModel();
+	    //PARA OBTENER DATOS DE LA EMPRESA
+	    $datos_empresa = array();
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	    }
+	    
+	    //NOTICE DATA
+	    $datos_cabecera = array();
+	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+	    $datos_cabecera['FECHA'] = date('Y/m/d');
+	    $datos_cabecera['HORA'] = date('h:i:s');
+	    
+	    $salidas = new MovimientosInvCabezaModel();
+	    $salidas_detalle = new MovimientosInvDetalleModel();
+	    $id_movimientos_inv_cabeza=  (isset($_REQUEST['id_movimientos_inv_cabeza'])&& $_REQUEST['id_movimientos_inv_cabeza'] !=NULL)?$_REQUEST['id_movimientos_inv_cabeza']:'';
+	    
+	    
+	    $datos_reporte = array();
+	    
+	    $columnas="movimientos_inv_cabeza.id_movimientos_inv_cabeza,
+                      usuarios.nombre_usuarios,
+                      usuarios.id_usuarios,
+                      movimientos_inv_cabeza.razon_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.modificado,
+                      movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.fecha_movimientos_inv_cabeza,
+                      movimientos_inv_cabeza.estado_movimientos_inv_cabeza";
+	    
+	    $tablas = "public.movimientos_inv_cabeza,
+                      public.usuarios,
+                      public.consecutivos";
+	    
+	    $where = "usuarios.id_usuarios = movimientos_inv_cabeza.id_usuarios AND
+                      consecutivos.id_consecutivos = movimientos_inv_cabeza.id_consecutivos
+                      AND nombre_consecutivos='SALIDA'
+                      AND estado_movimientos_inv_cabeza='APROBADA' AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$id_movimientos_inv_cabeza'";
+	    
+	    $id="movimientos_inv_cabeza.numero_movimientos_inv_cabeza";
+	    
+	    $rsdatos = $salidas->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    $datos_reporte['USUARIOS']=$rsdatos[0]->nombre_usuarios;
+	    $datos_reporte['FECHAMOV']=$rsdatos[0]->fecha_movimientos_inv_cabeza;
+	    $datos_reporte['ESTADO']=$rsdatos[0]->estado_movimientos_inv_cabeza;
+	    
+	    
+	    
+	    
+	    
+	    //////retencion detalle
+	    
+	    $columnas = "movimientos_inv_cabeza.id_movimientos_inv_cabeza,
+                    movimientos_inv_cabeza.numero_movimientos_inv_cabeza,
+	                productos.codigo_productos,
+	                productos.nombre_productos,
+	                grupos.id_grupos,
+	                grupos.nombre_grupos,
+	                movimientos_inv_detalle.cantidad_movimientos_inv_detalle,
+	                movimientos_inv_detalle.saldo_f_movimientos_inv_detalle,
+	                movimientos_inv_detalle.saldo_v_movimientos_inv_detalle";
+	    
+	    $tablas = "public.movimientos_inv_detalle,
+                  public.movimientos_inv_cabeza,
+                  public.grupos,
+                  public.productos";
+	    $where= " movimientos_inv_cabeza.id_movimientos_inv_cabeza = movimientos_inv_detalle.id_movimientos_inv_cabeza AND
+                  productos.id_productos = movimientos_inv_detalle.id_productos AND grupos.id_grupos  = productos.id_grupos AND movimientos_inv_cabeza.id_movimientos_inv_cabeza='$id_movimientos_inv_cabeza' ";
+	    $id="movimientos_inv_cabeza.id_movimientos_inv_cabeza";
+	    
+	    $resultSetDetalle = $salidas_detalle->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    
+	    
+	    
+	    $html='';
+	    
+	    
+	    $html.= "<table style='width: 100px; margin-top:10px;' border=1 cellspacing=0>";
+	    
+	    $html.= "<tr>";
+	    $html.='<th style="text-align: left;  font-size: 12px;"width="50">#</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 13px;"width="80"px>Código</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 13px;"width="200">Grupo</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 13px;"width="200">Nombre Producto</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 13px;"width="100">Cantidad</th>';
+	    $html.='</tr>';
+	    
+	    
+	    $i=0;
+	    
+	    foreach ($resultSetDetalle as $res)
+	    {
+	        
+	        
+	        $i++;
+	        $html.='<tr >';
+	        $html.='<td style="font-size: 11px;"width="50" align="center" >'.$i.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"width="80" align="center">'.$res->codigo_productos.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"width="200">'.$res->nombre_grupos.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"width="200">'.$res->nombre_productos.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"width="100" align="center">'.$res->cantidad_movimientos_inv_detalle.'</td>';
+	        
+	        
+	        $html.='</td>';
+	        $html.='</tr>';
+	    }
+	    
+	    $html.='</table>';
+	    
+	    
+	    
+	    $datos_reporte['DETALLE_MOVIMIENTOS']= $html;
+	    
+	    
+	    
+	    
+	    
+	    $this->verReporte("DetalleSolicitudAprobada", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+	    
+	    
+	    
+	    
+	}
+	
 	public function  generar_reporte_comprobante(){
 	    
 	    session_start();

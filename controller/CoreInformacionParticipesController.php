@@ -36,6 +36,9 @@ class CoreInformacionParticipesController extends ControladorBase{
         
         
     }
+    
+
+    
     public function index_consulta_general(){
         
         session_start();
@@ -95,7 +98,7 @@ class CoreInformacionParticipesController extends ControladorBase{
                               core_participes_informacion_adicional.telefono_una_referencia_participes_informacion_adicional, 
                               core_participes_informacion_adicional.contrato_adhesion_participes_informacion_adicional,
                               core_estado_participes.nombre_estado_participes,
-                              core_participes_informacion_adicional.observaciones_participes_informacion_adicional
+                              core_participes_informacion_adicional.observaciones_participes_informacion_adicional 
                                                     
                                     ";
                     
@@ -123,9 +126,6 @@ class CoreInformacionParticipesController extends ControladorBase{
                     $id       = "core_participes.id_participes";
                     
                     $resultRep = $participes->getCondiciones($columnas ,$tablas ,$where, $id);
-                    
-                 
-                 
                     
                     $this->view_Core("CoreConsultaGeneral",array(
                         "resultRep"=>$resultRep, "resContriTipo"=>$resContriTipo

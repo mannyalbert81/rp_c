@@ -81,6 +81,7 @@
                             <li><a href="#step-2">Datos del Cónyuge<br /><small></small></a></li>
                             <li><a href="#step-3">Datos Domiciliarios<br /><small></small></a></li>
                             <li><a href="#step-4">Información adicional del Socio <br /><small></small></a></li>
+                            <li><a href="#step-5">Información adicional del Socio <br /><small></small></a></li>
                      
                         </ul>		
            			
@@ -427,7 +428,235 @@
             		    </div>
                  </div>
                   </div>
-                  </div>                  </div>
+                  </div>
+                              <div id="step-5" class="">
+                
+                	<div class="box box-success">
+                        <div class="box-header with-border">
+                          <h3 class="box-title"></h3>
+                          <div class="box-tools pull-right"> </div>
+                        </div>
+                    
+                    <div class="box-body">
+                    	<div class="row">
+        		 
+                           
+                                <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado_participes" class="control-label">Distritos:</label>
+                                      <select name="id_estado_participes" id="id_estado_participes"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstado as $res) {?>
+    										<option value="<?php echo $res->id_estado_participes; ?>" ><?php echo $res->nombre_estado_participes; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estado_participes" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                      <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado_participes" class="control-label">Provincias:</label>
+                                      <select name="id_estado_participes" id="id_estado_participes"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstado as $res) {?>
+    										<option value="<?php echo $res->id_estado_participes; ?>" ><?php echo $res->nombre_estado_participes; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estado_participes" class="errores"></div>
+                                    </div>
+                                  </div>
+                                      
+                           <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estado_participes" class="control-label">Cuidades:</label>
+                                      <select name="id_estado_participes" id="id_estado_participes"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstado as $res) {?>
+    										<option value="<?php echo $res->id_estado_participes; ?>" ><?php echo $res->nombre_estado_participes; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estado_participes" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                   <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estatus" class="control-label">Parroquia:</label>
+                                      <select name="id_estatus" id="id_estatus"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstatus as $res) {?>
+    										<option value="<?php echo $res->id_estatus; ?>" ><?php echo $res->nombre_estatus; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estatus" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                 <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_salida_participes" class="control-label">Sector</label>
+                                  <input type="date" class="form-control" id="fecha_salida_participes" name="fecha_salida_participes" value=""  placeholder="Fecha Salida">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_salida_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                             
+                                                                       <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Ciudadela</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div> 
+                                                                         <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Calle</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div> 
+                                                                            <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Intersección</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div> 
+                    		           
+                    		             <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estatus" class="control-label">Tipo Vivienda:</label>
+                                      <select name="id_estatus" id="id_estatus"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstatus as $res) {?>
+    										<option value="<?php echo $res->id_estatus; ?>" ><?php echo $res->nombre_estatus; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estatus" class="errores"></div>
+                                    </div>
+                                  </div>   
+                                  
+                                       <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Años Residencia</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div>          
+                	
+                	      <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Nombre Propietario</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div>          
+                	
+                	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Teléfono Propietario</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div>       
+                             
+                              	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Dirección Referencia</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div>      
+                             
+                                        	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Vivienda Hipotecada</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div>   
+                             
+                                                        	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Nombre Referencia</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div> 
+                             
+                             	             <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_estatus" class="control-label">Parentesco:</label>
+                                      <select name="id_estatus" id="id_estatus"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstatus as $res) {?>
+    										<option value="<?php echo $res->id_estatus; ?>" ><?php echo $res->nombre_estatus; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estatus" class="errores"></div>
+                                    </div>
+                                  </div>       
+                                  
+                                                                             	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Teléfono una Referencia</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div>   
+                             
+                                                                                	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Observaciones Participes</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div>     
+                             
+                                                                                                	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Kit Participes</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div>    
+                             
+                                                                             	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Contrato Adhesión</label>
+                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div>      
+                	
+                      </div>
+                      <div class="row">
+            			    <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
+                	   		    <div class="form-group">
+            	                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
+        	                      <a href="index.php?controller=Participes&action=index" class="btn btn-primary"><i class='glyphicon glyphicon-remove'></i> Cancelar</a>
+        	                    </div>
+    	        		    </div>
+            		    </div>
+                 </div>
+                  </div>
+                  </div> 
+                  
+                                  </div>
                    </div>
                       <?php } } else {?>                		    
                       	
@@ -436,8 +665,9 @@
                         <li><a href="#step-1">Información del Socio <br /><small> </small></a></li>
                         <li><a href="#step-2">Datos del Cónyuge<br /><small></small></a></li>
                         <li><a href="#step-3">Datos Domiciliarios<br /><small></small></a></li>
-                        <li><a href="#step-4">Información adicional del Socio <br /><small></small></a></li>
-                        <li><a href="#step-4">Información adicional del Socio <br /><small></small></a></li>
+                        <li><a href="#step-4">Información del Socio <br /><small></small></a></li>
+                        <li><a href="#step-5">Información adicional del Socio <br /><small></small></a></li>
+                        <li><a href="#step-6">Cuenta Bancaria<br /><small></small></a></li>
                  
                     </ul>
            	<div>
@@ -586,7 +816,7 @@
                                   
                    
                               
-                	
+                	 
                 </div>
                  </div>
                   </div>
@@ -797,68 +1027,204 @@
                     	<div class="row">
         		 
                            
-                               <div class="col-xs-12 col-lg-3 col-md-3 ">
-                    			<div class="form-group">
-                                  <label for="fecha_ingreso_participes" class="control-label">Fecha Ingreso</label>
-                                  <input type="date" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value=""  placeholder="Fecha Ingreso">
-                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
-                                  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
-                                 </div>
-                             </div>
-                             
-                                                               <div class="col-xs-12 col-lg-3 col-md-3 ">
-                    			<div class="form-group">
-                                  <label for="fecha_defuncion_participes" class="control-label">Fecha Defunción</label>
-                                  <input type="date" class="form-control" id="fecha_defuncion_participes" name="fecha_defuncion_participes" value=""  placeholder="Fecha Defunción">
-                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
-                                  <div id="mensaje_fecha_defuncion_participes" class="errores"></div>
-                                 </div>
-                             </div>
-                             
-                           <div class="col-xs-12 col-md-3 col-lg-3">
+                                <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
-                                      <label for="id_estado_participes" class="control-label">Estado Participes:</label>
-                                      <select name="id_estado_participes" id="id_estado_participes"  class="form-control" >
+                                      <label for="id_distritos" class="control-label">Distritos:</label>
+                                      <select name="id_distritos" id="id_distritos"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultEstado as $res) {?>
-    										<option value="<?php echo $res->id_estado_participes; ?>" ><?php echo $res->nombre_estado_participes; ?> </option>
+    									<?php foreach($resultDistritos as $res) {?>
+    										<option value="<?php echo $res->id_distritos; ?>" ><?php echo $res->nombre_distritos; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_estado_participes" class="errores"></div>
+                                      <div id="mensaje_id_distritos" class="errores"></div>
                                     </div>
                                   </div>
                                   
-                                   <div class="col-xs-12 col-md-3 col-lg-3">
+                                      <div class="col-xs-12 col-md-3 col-lg-3">
                         		   <div class="form-group">
-                                      <label for="id_estatus" class="control-label">Estatus:</label>
-                                      <select name="id_estatus" id="id_estatus"  class="form-control" >
+                                      <label for="id_provincias" class="control-label">Provincias:</label>
+                                      <select name="id_provincias" id="id_provincias"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultEstatus as $res) {?>
-    										<option value="<?php echo $res->id_estatus; ?>" ><?php echo $res->nombre_estatus; ?> </option>
+    									<?php foreach($resultProvincias as $res) {?>
+    										<option value="<?php echo $res->id_provincias; ?>" ><?php echo $res->nombre_provincias; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_estatus" class="errores"></div>
+                                      <div id="mensaje_id_provincias" class="errores"></div>
                                     </div>
                                   </div>
+                                      
+                        
+                          
                                   
-                                 <div class="col-xs-12 col-lg-3 col-md-3 ">
+                                         <div class="col-xs-12 col-lg-3 col-md-3 ">
                     			<div class="form-group">
-                                  <label for="fecha_salida_participes" class="control-label">Fecha Salida</label>
-                                  <input type="date" class="form-control" id="fecha_salida_participes" name="fecha_salida_participes" value=""  placeholder="Fecha Salida">
-                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
-                                  <div id="mensaje_fecha_salida_participes" class="errores"></div>
+                                  <label for="fecha_salida_participes" class="control-label">Parroquia:</label>
+                                  <input type="text" class="form-control" id="parroquia_participes_informacion_adicional" name="parroquia_participes_informacion_adicional" value=""  placeholder="Parroquia">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_parroquia_participes_informacion_adicional" class="errores"></div>
                                  </div>
                              </div>
+                             
+                           
                              
                                                                        <div class="col-xs-12 col-lg-3 col-md-3 ">
                     			<div class="form-group">
-                                  <label for="fecha_numero_orden_participes" class="control-label">Fecha Número Orden</label>
-                                  <input type="date" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                  <label for="ciudadela_participes_informacion_adicional" class="control-label">Ciudadela</label>
+                                  <input type="text" class="form-control" id="ciudadela_participes_informacion_adicional" name="ciudadela_participes_informacion_adicional" value=""  placeholder="Ciudadela">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_ciudadela_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div> 
+                                                                         <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="calle_participes_informacion_adicional" class="control-label">Calle</label>
+                                  <input type="text" class="form-control" id="calle_participes_informacion_adicional" name="calle_participes_informacion_adicional" value=""  placeholder="Calle">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_calle_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div> 
+                                                                            <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="numero_calle_participes_informacion_adicional" class="control-label">Número de Calle</label>
+                                  <input type="text" class="form-control" id="numero_calle_participes_informacion_adicional" name="numero_calle_participes_informacion_adicional" value=""  placeholder="N° de Calle">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_numero_calle_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div> 
+                             
+                                                                           <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="interseccion_participes_informacion_adicional" class="control-label">Intersección</label>
+                                  <input type="text" class="form-control" id="interseccion_participes_informacion_adicional" name="interseccion_participes_informacion_adicional" value=""  placeholder="Intersección">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_interseccion_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div> 
+                    		           
+                    		             <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_tipo_vivienda" class="control-label">Tipo Vivienda:</label>
+                                      <select name="id_tipo_vivienda" id="id_tipo_vivienda"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultTipovivienda as $res) {?>
+    										<option value="<?php echo $res->id_tipo_vivienda; ?>" ><?php echo $res->nombre_tipo_vivienda; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_tipo_vivienda" class="errores"></div>
+                                    </div>
+                                  </div>   
+                                  
+                                       <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for=anios_residencia_participes_informacion_adicional class="control-label">Años Residencia</label>
+                                  <input type="text" class="form-control" id="anios_residencia_participes_informacion_adicional" name="anios_residencia_participes_informacion_adicional" value=""  placeholder="Años Residencia">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_anios_residencia_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div>          
+                	
+                	      <div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="nombre_propietario_participes_informacion_adicional" class="control-label">Nombre Propietario</label>
+                                  <input type="text" class="form-control" id="nombre_propietario_participes_informacion_adicional" name="nombre_propietario_participes_informacion_adicional" value=""  placeholder="Nombre">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_nombre_propietario_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div>          
+                	
+                	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="telefono_propietario_participes_informacion_adicional" class="control-label">Teléfono Propietario</label>
+                                  <input type="text" class="form-control" id="telefono_propietario_participes_informacion_adicional" name="telefono_propietario_participes_informacion_adicional" value=""  placeholder="Teléfono">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_telefono_propietario_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div>       
+                             
+                              	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="direccion_referencia_participes_informacion_adicional" class="control-label">Dirección Referencia</label>
+                                  <input type="text" class="form-control" id="direccion_referencia_participes_informacion_adicional" name="direccion_referencia_participes_informacion_adicional" value=""  placeholder="Dirección">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_direccion_referencia_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div>      
+                             
+                                        	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Vivienda Hipotecada</label>
+                                  <input type="text" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
                                    <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
                                   <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
                                  </div>
+                             </div>   
+                             
+                                                        	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="vivienda_hipotecada_participes_informacion_adicional" class="control-label">Vivienda Hipotecada</label>
+                                  <input type="text" class="form-control" id="vivienda_hipotecada_participes_informacion_adicional" name="vivienda_hipotecada_participes_informacion_adicional" value=""  placeholder="Vivienda Hipotecada">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_vivienda_hipotecada_participes_informacion_adicional" class="errores"></div>
+                                 </div>
                              </div> 
-                    		                       
+                                                           	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="nombre_una_referencia_participes_informacion_adicional" class="control-label">Nombre Referencia</label>
+                                  <input type="text" class="form-control" id="nombre_una_referencia_participes_informacion_adicional" name="nombre_una_referencia_participes_informacion_adicional" value=""  placeholder="Referencia">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_nombre_una_referencia_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div> 
+                             
+                             	             <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_parentesco" class="control-label">Parentesco:</label>
+                                      <select name="id_parentesco" id="id_parentesco"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultParentesco as $res) {?>
+    										<option value="<?php echo $res->id_parentesco; ?>" ><?php echo $res->nombre_parentesco; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_parentesco" class="errores"></div>
+                                    </div>
+                                  </div>       
+                                  
+                                                                             	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="telefono_una_referencia_participes_informacion_adicional" class="control-label">Teléfono una Referencia</label>
+                                  <input type="text" class="form-control" id="telefono_una_referencia_participes_informacion_adicional" name="telefono_una_referencia_participes_informacion_adicional" value=""  placeholder="Teléfono Referencia">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_telefono_una_referencia_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div>   
+                             
+                                                                                	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="observaciones_participes_informacion_adicional" class="control-label">Observaciones</label>
+                                  <input type="text" class="form-control" id="observaciones_participes_informacion_adicional" name="observaciones_participes_informacion_adicional" value=""  placeholder="Observaciones">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_observaciones_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div>     
+                             
+                                                                                                	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="kit_participes_informacion_adicional" class="control-label">Kit Participes</label>
+                                  <input type="text" class="form-control" id="kit_participes_informacion_adicional" name="kit_participes_informacion_adicional" value=""  placeholder="Kit">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_kit_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div>    
+                             
+                                                                             	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="contrato_adhesion_participes_informacion_adicional" class="control-label">Contrato Adhesión</label>
+                                  <input type="text" class="form-control" id="contrato_adhesion_participes_informacion_adicional" name="contrato_adhesion_participes_informacion_adicional" value=""  placeholder="Contrato de Adhesión">
+                                   <input type="hidden" name="id_participes_informacion_adicional" id="id_participes_informacion_adicional" value="" class="form-control"/>
+                                  <div id="mensaje_contrato_adhesion_participes_informacion_adicional" class="errores"></div>
+                                 </div>
+                             </div>
+                                   
                 	
                       </div>
                       <div class="row">
@@ -869,6 +1235,62 @@
         	                    </div>
     	        		    </div>
             		    </div>
+                 </div>
+                  </div>
+                  </div>
+                  
+                                 <div id="step-6" class="">
+                
+                	<div class="box box-success">
+                        <div class="box-header with-border">
+                          <h3 class="box-title"></h3>
+                          <div class="box-tools pull-right"> </div>
+                        </div>
+                    
+                    <div class="box-body">
+                    	<div class="row">
+        		 
+                      <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_ciudades" class="control-label">Cuenta Bancaria:</label>
+                                      <select name="id_ciudades" id="id_ciudades"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultCiudades as $res) {?>
+    										<option value="<?php echo $res->id_ciudades; ?>" ><?php echo $res->nombre_ciudades; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_ciudades" class="errores"></div>
+                                    </div>
+                                  </div>
+                                  
+                                    <div class="col-xs-12 col-md-3 col-lg-3">
+                        		   <div class="form-group">
+                                      <label for="id_ciudades" class="control-label">Banco:</label>
+                                      <select name="id_ciudades" id="id_ciudades"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultCiudades as $res) {?>
+    										<option value="<?php echo $res->id_ciudades; ?>" ><?php echo $res->nombre_ciudades; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_ciudades" class="errores"></div>
+                                    </div>
+                                  </div>
+                                                                     	<div class="col-xs-12 col-lg-3 col-md-3 ">
+                    			<div class="form-group">
+                                  <label for="fecha_numero_orden_participes" class="control-label">Cuenta Principal</label>
+                                  <input type="text" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
+                                   <input type="hidden" name="id_participes" id="id_participes" value="" class="form-control"/>
+                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                                 </div>
+                             </div>
+                                  
+                    
+                             
+                      
+                             
+                   
+                	
+                </div>
                  </div>
                   </div>
                   </div>

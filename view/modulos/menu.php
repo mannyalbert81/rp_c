@@ -471,6 +471,8 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
+          <li style="<?php echo getcontrolador("CoreFirmasParticipe",$controladores) ?>"><a href="index.php?controller=CoreFirmasParticipe&action=index"><i class="fa fa-circle-o"></i>Firmas</a></li>
+        
             </ul>
         </li>
         </ul>

@@ -222,12 +222,14 @@ class RecaudacionController extends ControladorBase{
 	    
 	    $fecha = date('Yd');
 	    $my_file = $nombre_entidad.$fecha.'.txt';
-	    $ubicacion = $_SERVER['DOCUMENT_ROOT'].'/rp_c/DOCUMENTOS_GENERADOS/RECAUDACIONES';
+	    //no guardar con 'document_root'
+	    //$ubicacionServer = $_SERVER['DOCUMENT_ROOT'];
+	    $ubicacionLocal = '/rp_c/DOCUMENTOS_GENERADOS/RECAUDACIONES';
 	    $data = 'NUMERO'.";".'TIPO DESCUENTO'.";".'CEDULA'.";".'NOMBRE'.";".'SUELDO LIQUIDO'.";".'DESCUENTO'.";".'TOTAL'.";".'AÑO DESCUENTO'.";".'MES DESCUENTO'.PHP_EOL;
 	    
 	    //para ubicacion del archivo
 	    $funcionDocumentos = "ins_documentos_recaudaciones";
-	    $parametrosDocumentos = " '$_usuario_usuarios','$my_file', '$ubicacion' ";
+	    $parametrosDocumentos = " '$_usuario_usuarios','$my_file', '$ubicacionLocal' ";
 	    $consultaPG = "SELECT ".$funcionDocumentos."(".$parametrosDocumentos.")";
 	    $resultado = $Participes->llamarconsultaPG($consultaPG);
 	    $_id_documentos = ((int)$resultado[0] > 0) ? $resultado[0] : -1;
@@ -261,7 +263,7 @@ class RecaudacionController extends ControladorBase{
 	       
 	    }
 	    	    
-	    $archivo = fopen($ubicacion.'/'.$my_file, 'w');
+	    $archivo = fopen($ubicacionLocal.'/'.$my_file, 'w');
 	    fwrite($archivo, $data);
 	    fclose($archivo);
 	    
@@ -618,7 +620,8 @@ class RecaudacionController extends ControladorBase{
 	    $nombre_documento = $rsDocumentos[0]->nombre_documentos_recaudaciones;
 	    $ruta_documento = $rsDocumentos[0]->ruta_documentos_recaudaciones;
 	    
-	    $ubicacion = $ruta_documento.'/'.$nombre_documento;
+	    $ubicacionServer = $_SERVER['DOCUMENT_ROOT'];
+	    $ubicacion = $ubicacionServer.$ruta_documento.'/'.$nombre_documento;
 	    
 	    // Define headers
 	    header("Cache-Control: public");

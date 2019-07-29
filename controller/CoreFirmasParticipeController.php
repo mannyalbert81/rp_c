@@ -180,7 +180,7 @@ class CoreFirmasParticipeController extends ControladorBase{
                     $html.='<tr>';
                     $html.='<tr >';
                     $html.='<td colspan="2" style="text-align: center; font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_firmas_participes.'&id_nombre=id_firmas_participes&tabla=core_firmas_participes&campo=firma_firmas_participes" onmouseover="this.width=100;this.height=80;" onmouseout="this.width=80;this.height=60;" width="80" height="60"></td>';
-                    $html.='<td><a target="_blank" href="index.php?controller=CoreFirmasParticipe&action=verDoc&documento='.$res->id_firmas_participes.'-'.$res->path_archivo_firmas_participes.'-'.$res->nombre_doc.'&id_juicios='. $res->id_juicios.' "><i class="glyphicon glyphicon-print"></i></a></td>';
+                    $html.='<td><a target="_blank" href="index.php?controller=CoreFirmasParticipe&action=verDoc&documento='.urlencode($res->path_archivo_firmas_participes).' "><i class="glyphicon glyphicon-new-window"></i></a></td>';
                     $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->nombre_participes.'</td>';
                     $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->apellido_participes.'</td>';
                     $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->cedula_participes.'</td>';
@@ -289,29 +289,18 @@ class CoreFirmasParticipeController extends ControladorBase{
     public function verDoc()
     {
         session_start();
-        if (isset($_SESSION['usuario_usuarios']) )
+        
+        if (isset($_SESSION['id_usuarios']) )
         {
-            $id_juicios = $_GET['id_juicios'];
-            $documento = $_GET['documento'];
-            $arraydoc = explode('-', $documento);
+           
+            $documento = urldecode($_GET['documento']);
+           
             
-            //para produccion
-            $mi_pdf = 'C:/coactiva/Documentos/'.$arraydoc[1].'/'.$arraydoc[2].'.pdf';
+           
+            $dat = base64_encode(file_get_contents($documento));
+            $src = 'data:'.mime_content_type($documento).';base64,'.$dat;
             
-            //para pruebas
-            //$mi_pdf = 'C:/Users/M/Desktop/paraservidor/'.$arraydoc[1].'/'.$arraydoc[2].'.pdf';
-            //prueba con ruta arbitraria
-            //$mi_pdf = 'C:/Users/M/Desktop/paraservidor/Providencias_Levantamiento/Providencias_Levantamiento1012.pdf';
-            
-            if(file_exists($mi_pdf))
-            {
-                header('Content-type: application/pdf');
-                header('Content-Disposition: inline; filename="'.$mi_pdf.'"');
-                readfile($mi_pdf);
-            }else
-            {
-                echo 'ESTIMADO USUARIO SE PRESENTAN INCONVENIENTES PARA ABRIR SU PDF, INTENTELO MAS TARDE.';
-            }
+            echo "<img src=\"$src\" width=50%; style='text-align:center;'>";
             
             
         }

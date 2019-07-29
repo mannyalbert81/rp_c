@@ -223,7 +223,7 @@ class RecaudacionController extends ControladorBase{
 	    $fecha = date('Yd');
 	    $my_file = $nombre_entidad.$fecha.'.txt';
 	    //no guardar con 'document_root'
-	    //$ubicacionServer = $_SERVER['DOCUMENT_ROOT'];
+	    $ubicacionServer = $_SERVER['DOCUMENT_ROOT'];
 	    $ubicacionLocal = '/rp_c/DOCUMENTOS_GENERADOS/RECAUDACIONES';
 	    $data = 'NUMERO'.";".'TIPO DESCUENTO'.";".'CEDULA'.";".'NOMBRE'.";".'SUELDO LIQUIDO'.";".'DESCUENTO'.";".'TOTAL'.";".'AÑO DESCUENTO'.";".'MES DESCUENTO'.PHP_EOL;
 	    
@@ -263,13 +263,13 @@ class RecaudacionController extends ControladorBase{
 	       
 	    }
 	    	    
-	    $archivo = fopen($ubicacionLocal.'/'.$my_file, 'w');
+	    $archivo = fopen($ubicacionServer.$ubicacionLocal.'/'.$my_file, 'w');
 	    fwrite($archivo, $data);
 	    fclose($archivo);
 	    
 	    $error = error_get_last();
 	    if(!empty($error)){
-	        echo '<message>Archivo no generado<message>';
+	        echo '<message>Archivo no generado<message>'; die();
 	    }
 	    
 	    echo json_encode(array("respuesta"=>1,"mensaje"=>"Archivo generado"));

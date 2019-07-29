@@ -260,8 +260,8 @@
           	<div class="row">
           		<div class="col-lg-12 col-md-12 col-xs-12">        		
         			<div class="form-group "> 
-            			 <div class="form-group-sm">
-            				<label for="mod_metodo_descuento" class="col-sm-4 control-label" >Metodo Descuento:</label>
+            			 <div class="form-group-sm">            			 	
+            				<p class="text-muted col-sm-4 control-label">Metodo Descuento:</p>
             				<div class="col-sm-8">
                               	<input type="text" class="form-control " id="mod_metodo_descuento" name="mod_metodo_descuento" readonly>
                               	<input type="hidden" class="form-control " id="mod_id_archivo" name="mod_id_archivo" >
@@ -272,7 +272,7 @@
 				<div class="col-lg-12 col-md-12 col-xs-12">        		
         			<div class="form-group "> 
             			 <div class="form-group-sm">
-            				<label for="mod_valor_sistema" class="col-sm-4 control-label" >Valor Descuento Sistema:</label>
+            				<p class="text-muted col-sm-4 control-label">Valor Descuento Sistema:</p>
             				<div class="col-sm-8">
                               	<input type="text" class="form-control " id="mod_valor_sistema" name="mod_valor_sistema" readonly>
                              </div>
@@ -282,7 +282,7 @@
 				<div class="col-lg-12 col-md-12 col-xs-12">        		
         			<div class="form-group "> 
             			 <div class="form-group-sm">
-            				<label for="formato_recaudacion" class="col-sm-4 control-label" >Valor Descuento: </label>
+            				<p class="text-muted col-sm-4 control-label">Valor Descuento:</p>
             				<div class="col-sm-8">
                               	<input type="text" class="form-control " id="mod_valor_edit" name="mod_valor_edit" >
                              </div>
@@ -315,7 +315,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script> 
-   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.09"></script> 
+   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.10"></script> 
        
        
 

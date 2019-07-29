@@ -13,6 +13,11 @@ $("#btnSimular").on("click",function(){
 		$anioRecaudacion = $("#anio_recaudacion"),
 		$mesRecaudacion = $("#mes_recaudacion");
 	
+	if($entidadPatronal.val() == 0 ){
+		$entidadPatronal.notify("Seleccione Entidad Patronal",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
 	var parametros ={id_entidad_patronal:$entidadPatronal.val(),
 			anio_recaudacion:$anioRecaudacion.val(),
 			mes_recaudacion:$mesRecaudacion.val()
@@ -136,36 +141,7 @@ function consultaArchivos( pagina,search=""){
 	
 }
 
-function generaTabla(ObjTabla){	
-	
-	$("#"+ObjTabla).DataTable({
-		paging: false,
-        scrollX: true,
-		searching: false,
-        pageLength: 10,
-        responsive: true,
-        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-        dom: '<"html5buttons">lfrtipB',      
-        buttons: [ ],
-        language: {
-            "emptyTable": "No hay información",
-            "info": "Mostrando _START_ a _END_ de _TOTAL_ Registros",
-            "infoEmpty": "Mostrando 0 de 0 de 0 Registros",           
-            "lengthMenu": "Mostrar _MENU_ Registros",
-            "loadingRecords": "Cargando...",
-            "processing": "Procesando...",
-            "search": "Buscar:",
-            "zeroRecords": "Sin resultados encontrados",
-            "paginate": {
-                "first": "Primero",
-                "last": "Ultimo",
-                "next": "Siguiente",
-                "previous": "Anterior"
-            }
-        }
 
-    });
-}
 
 $("#txtBuscar").on("keyup",function(){
 	$valorBuscar = $(this).val();
@@ -208,6 +184,12 @@ $("#btnEditRecaudacion").on("click",function(){
 		$valorNuevo.notify("Ingrese Cantidad Valida",{ position:"buttom left", autoHideDelay: 2000});
 		$miboton.attr("disabled",false);
 		return false;
+	}else{
+		if($valorNuevo.val() <= 0){
+			$valorNuevo.notify("Cantidad no puede ser igual o menor ",{ position:"buttom left", autoHideDelay: 2000});
+			$miboton.attr("disabled",false);
+			return false;
+		}
 	}
 		
 	var parametros = {id_archivo_recaudaciones:$idArchivo.val(),valor_final_archivo_recaudaciones:$valorNuevo.val()}

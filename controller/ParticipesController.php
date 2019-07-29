@@ -339,26 +339,26 @@ class ParticipesController extends ControladorBase{
 					$participes->setFuncion($funcion);
 					$participes->setParametros($parametros);
 					$resultado=$participes->Insert();
+					
+					$error = pg_last_error();
+					if(empty($error)){
+					    
+					    echo json_encode(array("respuesta"=>1,"mensaje"=>"lo que sea"));
+					    die();
+					}
 				
 				}
-				
-				
-				
-				
+							
 		
 			}
 			echo 'redireccion';
-			//$this->redirect("Participes", "index");
+		
 
 		}
 		else
 		{
 		    echo 'no tiene permisos';
-		    /*$this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Participes"
-		
-			));
-		*/
+		  
 		
 		}
 		
@@ -497,8 +497,8 @@ class ParticipesController extends ControladorBase{
 	        
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 	        
-	        $per_page = 10; //la cantidad de registros que desea mostrar
-	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $per_page = 10; 
+	        $adjacents  = 9; 
 	        $offset = ($page - 1) * $per_page;
 	        
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";

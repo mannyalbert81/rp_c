@@ -219,14 +219,24 @@ $(document).ready( function (){
 	   $.ajax({
 		   url:"index.php?controller=Participes&action=InsertaParticipes",
 		   type:"POST",
-		   dataType:"html",
+		   dataType:"json",
 		   data: datos
 	   }).done(function(x){
 		   console.log(x);
+		   if(x.respuesta == 1){
+			   swal({
+				   title:"Ingresado Correctamente",
+				   text:"Ingresado Correctamente",
+				   icon:"success",				   
+			   })
+			   
+		   }
 	   }).fail(function(xhr,status,error){
 		   var err = xhr.responseText
 		   console.log(err)
 	   })
+	   
+	   	
 	   
 	   return false;
    

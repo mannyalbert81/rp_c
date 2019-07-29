@@ -199,9 +199,7 @@ class ProductosController extends ControladorBase{
             
         }
         
-        
-        //          $this->redirect("Productos", "index");
-        
+
         
     }
     

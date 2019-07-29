@@ -1395,7 +1395,7 @@
     <script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
  <script type="text/javascript" src="view/Core/js/wizardParticipes.js?0.26"></script>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Core/js/Participes.js?3.7" ></script>
+ <script src="view/Core/js/Participes.js?3.8" ></script>
  <script type="text/javascript">
 
         	   $(document).ready( function (){

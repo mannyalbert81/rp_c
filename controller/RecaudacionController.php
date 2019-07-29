@@ -624,12 +624,10 @@ class RecaudacionController extends ControladorBase{
 	    $ubicacion = $ubicacionServer.$ruta_documento.'/'.$nombre_documento;
 	    
 	    // Define headers
-	    header("Cache-Control: public");
-	    header("Content-Description: File Transfer");
-	    header("Content-Disposition: attachment; filename=$nombre_documento");
-	    header("Content-Type: application/zip");
-	    header("Content-Transfer-Encoding: binary");
-	    
+	    header("Content-disposition: attachment; filename=$nombre_documento");
+	    header("Content-type: MIME");
+	    ob_clean();	    
+	    flush();
 	    // Read the file
 	    readfile($ubicacion);
 	    exit;

@@ -49,6 +49,37 @@
 
         });
 
+        function generaTabla(ObjTabla){	
+        	
+        	$("#"+ObjTabla).DataTable({
+        		paging: false,
+                scrollX: true,
+        		searching: false,
+                pageLength: 10,
+                responsive: true,
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                dom: '<"html5buttons">lfrtipB',      
+                buttons: [ ],
+                language: {
+                    "emptyTable": "No hay información",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Registros",
+                    "infoEmpty": "Mostrando 0 de 0 de 0 Registros",           
+                    "lengthMenu": "Mostrar _MENU_ Registros",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                }
+
+            });
+        }
+
     </script>
     
    

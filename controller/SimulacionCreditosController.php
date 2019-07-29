@@ -91,10 +91,13 @@ class SimulacionCreditosController extends ControladorBase{
        $res['amortizacion']=round($res['amortizacion'],2);
        $res['interes']=round($res['interes'],2);
        $res['pagos']=round($res['pagos'],2);
+       
        $resultAmortizacion[$len-1]['pagos']=$resultAmortizacion[$len-1]['pagos']+$num;
-       /*$resultAmortizacion[$len-1]['interes']=$resultAmortizacion[$len-1]['pagos']-$resultAmortizacion[$len-1]['amortizacion'];
-       $diferencia=($resultAmortizacion[$len-1]['interes']);
-       $resultAmortizacion[$len-1]['interes']=$diferencia;*/
+  //     $diferencia=($resultAmortizacion[$len-1]['pagos']-$resultAmortizacion[$len-1]['interes']);
+       
+       $resultAmortizacion[$len-1]['amortizacion']=$resultAmortizacion[$len-1]['amortizacion']+$resultAmortizacion[$len-1]['saldo_inicial'];
+       $resultAmortizacion[$len-1]['saldo_inicial']=0.00;
+    //   $resultAmortizacion[$len-1]['interes']=$diferencia;
        $total=0;
        $total1=0;
        foreach ($resultAmortizacion as $res)
@@ -233,7 +236,7 @@ class SimulacionCreditosController extends ControladorBase{
        $capital = $_capital_prestado_amortizacion_cabeza;
        $inter_ant= $interes_mensual;
        $interes=  $capital * $inter_ant;
-       $interes=round($interes,2);
+       $interes=floor($interes * 100) / 100;
        $amortizacion = $valor_cuota - $interes;
        $saldo_inicial= $capital - $amortizacion;
        $resultAmortizacion=array();
@@ -258,6 +261,7 @@ class SimulacionCreditosController extends ControladorBase{
                
                $saldo_inicial_ant = $saldo_inicial_ant - $amortizacion;
                $interes= $saldo_inicial_ant * $inter_ant;
+               $interes=floor($interes * 100) / 100;
                $amortizacion = $valor_cuota - $interes;
                
                $saldo_inicial= $saldo_inicial_ant  - $amortizacion;

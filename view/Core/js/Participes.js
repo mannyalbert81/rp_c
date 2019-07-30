@@ -181,7 +181,27 @@ $(document).ready( function (){
 	   let $direccion_participes = $("#direccion_participes").val();
 	   let $telefono_participes = $("#telefono_participes").val();
 	   let $celular_participes = $("#celular_participes").val();
-   	   
+	   let $id_distritos = $("#id_distritos").val();
+	   let $id_provincia = $("#id_provincias").val();
+	   let $parroquia_participes_informacion_adicional = $("#parroquia_participes_informacion_adicional").val();
+	   let $sector_participes_informacion_adicional = $("#sector_participes_informacion_adicional").val();
+	   let $ciudadela_participes_informacion_adicional = $("#ciudadela_participes_informacion_adicional").val();
+	   let $calle_participes_informacion_adicional = $("#calle_participes_informacion_adicional").val();
+	   let $numero_calle_participes_informacion_adicional = $("#numero_calle_participes_informacion_adicional").val();
+	   let $interseccion_participes_informacion_adicional = $("#interseccion_participes_informacion_adicional").val();
+	   let $id_tipo_vivienda = $("#id_tipo_vivienda").val();
+	   let $anios_residencia_participes_informacion_adicional = $("#anios_residencia_participes_informacion_adicional").val();
+	   let $nombre_propietario_participes_informacion_adicional = $("#nombre_propietario_participes_informacion_adicional").val();
+	   let $telefono_propietario_participes_informacion_adicional = $("#telefono_propietario_participes_informacion_adicional").val();
+	   let $direccion_referencia_participes_informacion_adicional = $("#direccion_referencia_participes_informacion_adicional").val();
+	   let $vivienda_hipotecada_participes_informacion_adicional = $("#vivienda_hipotecada_participes_informacion_adicional").val();
+	   let $nombre_una_referencia_participes_informacion_adicional = $("#nombre_una_referencia_participes_informacion_adicional").val();
+	   let $id_parentesco = $("#id_parentesco").val();
+	   let $telefono_una_referencia_participes_informacion_adicional = $("#telefono_una_referencia_participes_informacion_adicional").val();
+	   let $observaciones_participes_informacion_adicional = $("#observaciones_participes_informacion_adicional").val();
+	   let $kit_participes_informacion_adicional = $("#kit_participes_informacion_adicional").val();
+	   let $contrato_adhesion_participes_informacion_adicional = $("#contrato_adhesion_participes_informacion_adicional").val();
+
 	   let datos = {
 			   id_participes : $id_participes,
 			   id_entidad_patronal : $id_entidad_patronal,
@@ -210,8 +230,30 @@ $(document).ready( function (){
 			   id_estado_participes : $id_estado_participes.val(),
 			   id_estatus : $id_estatus.val(),
 			   fecha_salida_participes : $fecha_salida_participes.val(),
-			   fecha_numero_orden_participes : $fecha_numero_orden_participes.val()
+			   fecha_numero_orden_participes : $fecha_numero_orden_participes.val(),
+			   id_distritos : $id_distritos,
+			   id_provincia : $id_provincia,
+			   parroquia_participes_informacion_adicional : $parroquia_participes_informacion_adicional,
+			   sector_participes_informacion_adicional : $sector_participes_informacion_adicional,
+			   ciudadela_participes_informacion_adicional : $ciudadela_participes_informacion_adicional,
+			   calle_participes_informacion_adicional : $calle_participes_informacion_adicional,
+			   numero_calle_participes_informacion_adicional : $numero_calle_participes_informacion_adicional,
+			   interseccion_participes_informacion_adicional : $interseccion_participes_informacion_adicional,
+			   id_tipo_vivienda : $id_tipo_vivienda,
+			   anios_residencia_participes_informacion_adicional : $anios_residencia_participes_informacion_adicional,
+			   nombre_propietario_participes_informacion_adicional : $nombre_propietario_participes_informacion_adicional,
+			   telefono_propietario_participes_informacion_adicional : $telefono_propietario_participes_informacion_adicional,
+			   direccion_referencia_participes_informacion_adicional : $direccion_referencia_participes_informacion_adicional,
+			   vivienda_hipotecada_participes_informacion_adicional : $vivienda_hipotecada_participes_informacion_adicional,
+			   nombre_una_referencia_participes_informacion_adicional : $nombre_una_referencia_participes_informacion_adicional,
+			   id_parentesco : $id_parentesco,
+			   telefono_una_referencia_participes_informacion_adicional : $telefono_una_referencia_participes_informacion_adicional,
+			   observaciones_participes_informacion_adicional : $observaciones_participes_informacion_adicional,
+			   kit_participes_informacion_adicional : $kit_participes_informacion_adicional,
+			   contrato_adhesion_participes_informacion_adicional : $contrato_adhesion_participes_informacion_adicional
 			   
+		
+				   
 	   }
 	   // console.log (datos);
 	   console.log(datos);
@@ -225,8 +267,8 @@ $(document).ready( function (){
 		   console.log(x);
 		   if(x.respuesta == 1){
 			   swal({
-				   title:"Ingresado Correctamente",
-				   text:"Ingresado Correctamente",
+				   title:"Correctamente",
+				   text:x.mensaje,
 				   icon:"success",				   
 			   })
 			   

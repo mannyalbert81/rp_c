@@ -79,17 +79,17 @@ class ParticipesController extends ControladorBase{
                                       core_participes.apellido_participes, 
                                       core_participes.nombre_participes, 
                                       core_participes.cedula_participes, 
-                                      core_participes.fecha_nacimiento_participes, 
+                                      DATE (core_participes.fecha_nacimiento_participes) AS fecha_nacimiento_participes, 
                                       core_participes.telefono_participes, 
                                       core_participes.direccion_participes, 
                                       core_participes.celular_participes, 
-                                      core_participes.fecha_ingreso_participes, 
-                                      core_participes.fecha_defuncion_participes, 
+                                      DATE (core_participes.fecha_ingreso_participes) AS fecha_ingreso_participes, 
+                                      DATE (core_participes.fecha_defuncion_participes) AS fecha_defuncion_participes, 
                                       core_participes.id_estado_participes, 
                                       core_estado_participes.nombre_estado_participes, 
                                       core_participes.id_estatus, 
                                       core_estatus.nombre_estatus, 
-                                      core_participes.fecha_salida_participes, 
+                                      DATE (core_participes.fecha_salida_participes) AS fecha_salida_participes, 
                                       core_participes.id_genero_participes, 
                                       core_genero_participes.nombre_genero_participes, 
                                       core_participes.id_estado_civil_participes, 
@@ -98,7 +98,7 @@ class ParticipesController extends ControladorBase{
                                       core_participes.correo_participes, 
                                       core_participes.id_entidad_patronal, 
                                       core_entidad_patronal.nombre_entidad_patronal, 
-                                      core_participes.fecha_entrada_patronal_participes, 
+                                      DATE(core_participes.fecha_entrada_patronal_participes) AS fecha_entrada_patronal_participes, 
                                       core_participes.ocupacion_participes, 
                                       core_participes.id_tipo_instruccion_participes, 
                                       core_tipo_instruccion_participes.nombre_tipo_instruccion_participes, 
@@ -107,13 +107,12 @@ class ParticipesController extends ControladorBase{
                                       core_participes.cedula_conyugue_participes, 
                                       core_participes.numero_dependencias_participes, 
                                       core_participes.codigo_alternativo_participes, 
-                                      core_participes.fecha_numero_orden_participes, 
+                                      DATE (core_participes.fecha_numero_orden_participes) AS fecha_numero_orden_participes, 
                                       core_participes_informacion_adicional.id_participes_informacion_adicional, 
                                       core_participes_informacion_adicional.id_distritos, 
                                       core_distritos.nombre_distritos, 
                                       core_participes_informacion_adicional.id_provincias, 
                                       core_provincias.nombre_provincias, 
-                                      core_participes_informacion_adicional.id_ciudades, 
                                       core_participes_informacion_adicional.parroquia_participes_informacion_adicional, 
                                       core_participes_informacion_adicional.sector_participes_informacion_adicional, 
                                       core_participes_informacion_adicional.ciudadela_participes_informacion_adicional, 
@@ -148,7 +147,6 @@ class ParticipesController extends ControladorBase{
                                       public.core_tipo_vivienda, 
                                       public.core_parentesco";
 						$where    =  "core_participes.id_participes = core_participes_informacion_adicional.id_participes AND
-                                      core_participes_informacion_adicional.id_ciudades = core_ciudades.id_ciudades AND
                                       core_ciudades.id_ciudades = core_participes.id_ciudades AND
                                       core_distritos.id_distritos = core_participes_informacion_adicional.id_distritos AND
                                       core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
@@ -253,58 +251,29 @@ class ParticipesController extends ControladorBase{
 			    $_numero_dependencias_participes = $_POST["numero_dependencias_participes"];
 			    $_codigo_alternativo_participes = $_POST["codigo_alternativo_participes"];
 			    $_fecha_numero_orden_participes = $_POST["fecha_numero_orden_participes"];
+			    $_id_distritos = $_POST["id_distritos"];
+			    $_id_provincia = $_POST["id_provincia"];
+			    $_parroquia_participes_informacion_adicional = $_POST["parroquia_participes_informacion_adicional"];
+			    $_sector_participes_informacion_adicional = $_POST["sector_participes_informacion_adicional"];
+			    $_ciudadela_participes_informacion_adicional = $_POST["ciudadela_participes_informacion_adicional"];
+			    $_calle_participes_informacion_adicional = $_POST["calle_participes_informacion_adicional"];
+			    $_numero_calle_participes_informacion_adicional = $_POST["numero_calle_participes_informacion_adicional"];
+			    $_interseccion_participes_informacion_adicional = $_POST["interseccion_participes_informacion_adicional"];
+			    $_id_tipo_vivienda = $_POST["id_tipo_vivienda"];
+			    $_anios_residencia_participes_informacion_adicional = $_POST["anios_residencia_participes_informacion_adicional"];
+			    $_nombre_propietario_participes_informacion_adicional = $_POST["nombre_propietario_participes_informacion_adicional"];
+			    $_telefono_propietario_participes_informacion_adicional = $_POST["telefono_propietario_participes_informacion_adicional"];
+			    $_direccion_referencia_participes_informacion_adicional = $_POST["direccion_referencia_participes_informacion_adicional"];
+			    $_vivienda_hipotecada_participes_informacion_adicional = $_POST["vivienda_hipotecada_participes_informacion_adicional"];
+			    $_nombre_una_referencia_participes_informacion_adicional = $_POST["nombre_una_referencia_participes_informacion_adicional"];
+			    $_id_parentesco = $_POST["id_parentesco"];
+			    $_telefono_una_referencia_participes_informacion_adicional = $_POST["telefono_una_referencia_participes_informacion_adicional"];
+			    $_observaciones_participes_informacion_adicional = $_POST["observaciones_participes_informacion_adicional"];
+			    $_kit_participes_informacion_adicional = $_POST["kit_participes_informacion_adicional"];
+			    $_contrato_adhesion_participes_informacion_adicional = $_POST["contrato_adhesion_participes_informacion_adicional"];
 			    
-			    if($_id_participes > 0){
-					
-					$columnas =    "id_ciudades = '$_id_ciudades',
-                                    apellido_participes = '$_apellido_participes',
-                                    nombre_participes = '$_nombre_participes',
-                                    cedula_participes = '$_cedula_participes',
-                                    fecha_nacimiento_participes = '$_fecha_nacimiento_participes',
-                                    direccion_participes = '$_direccion_participes',
-                                    telefono_participes = '$_telefono_participes',
-                                    celular_participes = '$_celular_participes',
-                                    fecha_ingreso_participes = '$_fecha_ingreso_participes',
-                                    fecha_defuncion_participes = '$_fecha_defuncion_participes',
-                                    id_estado_participes = '$_id_estado_participes',
-                                    id_estatus = '$_id_estatus',
-                                    id_genero_participes = '$_id_genero_participes',
-                                    fecha_salida_participes = '$_fecha_salida_participes',
-                                    id_estado_civil_participes = '$_id_estado_civil_participes',
-                                    observacion_participes = '$_observacion_participes',
-                                    correo_participes = '$_correo_participes',
-                                    id_entidad_patronal = '$_id_entidad_patronal',
-                                    fecha_entrada_patronal_participes = '$_fecha_entrada_patronal_participes',
-                                    ocupacion_participes = '$_ocupacion_participes',
-                                    id_tipo_instruccion_participes = '$_id_tipo_instruccion_participes',
-                                    nombre_conyugue_participes = '$_nombre_conyugue_participes',
-                                    apellido_esposa_participes = '$_apellido_esposa_participes',
-                                    cedula_conyugue_participes = '$_cedula_conyugue_participes',
-                                    numero_dependencias_participes = '$_numero_dependencias_participes',
-                                    codigo_alternativo_participes = '$_codigo_alternativo_participes',
-                                    fecha_numero_orden_participes = '$_fecha_numero_orden_participes'";
-					
-					        $tabla = "public.core_participes, 
-                                      public.core_ciudades, 
-                                      public.core_estado_participes, 
-                                      public.core_estatus, 
-                                      public.core_genero_participes, 
-                                      public.core_estado_civil_participes, 
-                                      public.core_entidad_patronal, 
-                                      public.core_tipo_instruccion_participes";
-					        
-					        $where = "core_participes.id_tipo_instruccion_participes = core_tipo_instruccion_participes.id_tipo_instruccion_participes AND
-                                      core_ciudades.id_ciudades = core_participes.id_ciudades AND
-                                      core_estado_participes.id_estado_participes = core_participes.id_estado_participes AND
-                                      core_estatus.id_estatus = core_participes.id_estatus AND
-                                      core_genero_participes.id_genero_participes = core_participes.id_genero_participes AND
-                                      core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes AND
-                                      core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal
-                                      AND core_participes.id_participes = '$_id_participes'";
-					
-					        $resultado=$participes->UpdateBy($columnas, $tabla, $where);
-					
-				}else{
+			    //print_r($_POST); die();
+			
 				    
 					$funcion = "ins_core_participes";
 					
@@ -334,35 +303,142 @@ class ParticipesController extends ControladorBase{
                                     '$_cedula_conyugue_participes',
                                     '$_numero_dependencias_participes',
                                     '$_codigo_alternativo_participes',
-                                    '$_fecha_numero_orden_participes'";
+                                    '$_fecha_numero_orden_participes',
+			                        '$_id_distritos',
+                					'$_id_provincia',
+                					'$_parroquia_participes_informacion_adicional',
+                					'$_sector_participes_informacion_adicional',
+                					'$_ciudadela_participes_informacion_adicional',
+                					'$_calle_participes_informacion_adicional',
+                					'$_numero_calle_participes_informacion_adicional',
+                					'$_interseccion_participes_informacion_adicional',
+                					'$_id_tipo_vivienda',
+                					'$_anios_residencia_participes_informacion_adicional',
+                					'$_nombre_propietario_participes_informacion_adicional',
+                					'$_telefono_propietario_participes_informacion_adicional',
+                					'$_direccion_referencia_participes_informacion_adicional',
+                					'$_vivienda_hipotecada_participes_informacion_adicional',
+                					'$_nombre_una_referencia_participes_informacion_adicional',
+                					'$_id_parentesco',
+                					'$_telefono_una_referencia_participes_informacion_adicional',
+                					'$_observaciones_participes_informacion_adicional',
+                					'$_kit_participes_informacion_adicional',
+                					'$_contrato_adhesion_participes_informacion_adicional',
+                                    '$_id_participes'";
 					
 					$participes->setFuncion($funcion);
 					$participes->setParametros($parametros);
-					$resultado=$participes->Insert();
-				
-				}
-				
-				
-				
-				
+					$resultado=$participes->llamafuncionPG();
+					
+					$error = pg_last_error();
+					if(!empty($error)){
+					    
+					    echo json_encode(array("respuesta"=>1,"mensaje"=>"lo que sea"));
+					    die();
+					}
+				    
+					$mensaje = $resultado[0] == 1 ? "INGRESADO" :  ($resultado[0] == 0 ? "ACTUALIZADO" : "ERROR");
+					echo json_encode(array("respuesta"=>1,"mensaje"=>$mensaje));
+					die();
+							
 		
 			}
 			echo 'redireccion';
-			//$this->redirect("Participes", "index");
+		
 
 		}
 		else
 		{
 		    echo 'no tiene permisos';
-		    /*$this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Participes"
-		
-			));
-		*/
+		  
 		
 		}
 		
 	}
+	
+	public function InsertaCuentas(){
+	    
+	    session_start();
+	    $participes=new ParticipesModel();
+	    $nombre_controladores = "Participes";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $participes->getPermisosEditar("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (!empty($resultPer))
+	    {
+	        
+	        $resultado = null;
+	        $participes=new ParticipesModel();
+	        
+	        if (isset ($_POST["cedula_participes"])   )
+	        {
+	            
+	            
+
+	            $_id_participes = $_POST["id_participes"];
+	            $_id_bancos = $_POST["id_bancos"];
+	            $_numero_participes_cuentas = $_POST["numero_participes_cuentas"];
+	            $_id_tipo_cuentas = $_POST["id_tipo_cuentas"];
+	            $_cuenta_principal = $_POST["cuenta_principal"];
+	           
+	            
+	            if($_id_participes > 0){
+	                
+	                $columnas =    "id_ciudades = '$_id_bancos',
+                                    apellido_participes = '$_numero_participes_cuentas',
+                                    nombre_participes = '$_id_tipo_cuentas',
+                                    cedula_participes = '$_cuenta_principal'";
+	                
+	                $tabla = "  public.core_participes_cuentas, 
+                                  public.core_participes, 
+                                  public.tes_bancos, 
+                                  public.core_tipo_cuentas";
+	                
+	                $where = "core_participes.id_participes = core_participes_cuentas.id_participes AND
+                              tes_bancos.id_bancos = core_participes_cuentas.id_bancos AND
+                              core_tipo_cuentas.id_tipo_cuentas = core_participes_cuentas.id_tipo_cuentas
+                              AND core_participes.id_participes = '$_id_participes'";
+	                
+	                $resultado=$participes->UpdateBy($columnas, $tabla, $where);
+	                
+	            }else{
+	                
+	                $funcion = "ins_core_participes_cuentas";
+	                
+	                $parametros = " '$_id_bancos',
+                                    '$_numero_participes_cuentas',
+                                    '$_id_tipo_cuentas',
+                                    '$_cuenta_principal'";
+	                
+	                $participes->setFuncion($funcion);
+	                $participes->setParametros($parametros);
+	                $resultado=$participes->Insert();
+	                
+	                $error = pg_last_error();
+	                if(empty($error)){
+	                    
+	                    echo json_encode(array("respuesta"=>1,"mensaje"=>"lo que sea"));
+	                    die();
+	                }
+	                
+	            }
+	            
+	            
+	        }
+	        echo 'redireccion';
+	        
+	        
+	    }
+	    else
+	    {
+	        echo 'no tiene permisos';
+	        
+	        
+	    }
+	    
+	}
+	
+	
 	
 	public function borrarId()
 	{
@@ -497,8 +573,8 @@ class ParticipesController extends ControladorBase{
 	        
 	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 	        
-	        $per_page = 10; //la cantidad de registros que desea mostrar
-	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $per_page = 10; 
+	        $adjacents  = 9; 
 	        $offset = ($page - 1) * $per_page;
 	        
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";

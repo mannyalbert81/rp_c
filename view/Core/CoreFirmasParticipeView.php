@@ -11,12 +11,54 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
     <?php include("view/modulos/links_css.php"); ?>		
-      
+      <link href="lib/animate/animate.min.css" rel="stylesheet"> 
     	
 	
 		    
 	</head>
  
+ 
+ <style type="text/css">
+    .zoom{
+        /* Aumentamos la anchura y altura durante 2 segundos */
+        transition: width 2s, height 2s, transform 2s;
+        -moz-transition: width 2s, height 2s, -moz-transform 2s;
+        -webkit-transition: width 2s, height 2s, -webkit-transform 2s;
+        -o-transition: width 2s, height 2s,-o-transform 2s;
+    }
+    .zoom:hover{
+        /* tranformamos el elemento al pasar el mouse por encima al doble de
+           su tamaño con scale(2). */
+        transform : scale(2);
+        -moz-transform : scale(2);      /* Firefox */
+        -webkit-transform : scale(2);   /* Chrome - Safari */
+        -o-transform : scale(2);        /* Opera */
+        
+        
+    }
+</style>
+
+<style type="text/css"> 
+.thumbnail {position: relative; z-index: 0;} 
+.thumbnail:hover {background-color: transparent; z-index: 50;} 
+.thumbnail span img{ border-width: 0; padding: 2px; } 
+.thumbnail:hover span{ visibility: visible; top: 0; left: 10px; } 
+.thumbnail span{ 
+position: absolute; 
+background-color: #FAFAFA; 
+-webkit-box-shadow: 0 0 4px 2px #D6D6D6; 
+box-shadow: 0 0 5px 2px #D6D6D6; 
+padding: 5px; 
+left: -100px; 
+border: 3px double gray; 
+visibility: hidden; 
+color: #000; 
+text-align:center; 
+text-decoration: none; 
+} 
+</style>
+
+
     <body class="hold-transition skin-blue fixed sidebar-mini" ng-app="myApp" ng-controller="myCtrl">
     
      <?php

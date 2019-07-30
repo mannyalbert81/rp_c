@@ -179,8 +179,8 @@ class CoreFirmasParticipeController extends ControladorBase{
                     $i++;
                     $html.='<tr>';
                     $html.='<tr >';
-                    $html.='<td colspan="2" style="text-align: center; font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_firmas_participes.'&id_nombre=id_firmas_participes&tabla=core_firmas_participes&campo=firma_firmas_participes" onmouseover="this.width=100;this.height=80;" onmouseout="this.width=80;this.height=60;" width="80" height="60"></td>';
-                    $html.='<td><a target="_blank" href="index.php?controller=CoreFirmasParticipe&action=verDoc&documento='.urlencode($res->path_archivo_firmas_participes).' "><i class="glyphicon glyphicon-new-window"></i></a></td>';
+                    $html.='<td colspan="2" style="text-align: left; font-size: 11px;"><a target="_blank" href="index.php?controller=CoreFirmasParticipe&action=verDoc&documento='.urlencode($res->path_archivo_firmas_participes).' "><i class="glyphicon glyphicon-new-window"></i></a></td>';
+                    $html.='<td colspan="1" style="text-align: left; font-size: 11px;"><img class="zoom" src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_firmas_participes.'&id_nombre=id_firmas_participes&tabla=core_firmas_participes&campo=firma_firmas_participes"  width="80" height="60"></td>';
                     $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->nombre_participes.'</td>';
                     $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->apellido_participes.'</td>';
                     $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->cedula_participes.'</td>';
@@ -294,9 +294,6 @@ class CoreFirmasParticipeController extends ControladorBase{
         {
            
             $documento = urldecode($_GET['documento']);
-           
-            
-           
             $dat = base64_encode(file_get_contents($documento));
             $src = 'data:'.mime_content_type($documento).';base64,'.$dat;
             

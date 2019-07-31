@@ -621,49 +621,87 @@
                         </div>
                     
                     <div class="box-body">
-                    	<div class="row">
-        		 
-                      <div class="col-xs-12 col-md-3 col-lg-3">
+                         <div class="row">
+                                    <div class="col-md-6">
+                                    <div class="panel panel-default">
+  								   <div class="panel-body">
                         		   <div class="form-group">
-                                      <label for="id_ciudades" class="control-label">Cuenta Bancaria:</label>
-                                      <select name="id_ciudades" id="id_ciudades"  class="form-control" >
+                                      <label for="id_bancos" class="control-label">Bancos:</label>
+                                      <select name="id_bancos" id="id_bancos"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultCiudades as $res) {?>
-    										<option value="<?php echo $res->id_ciudades; ?>" ><?php echo $res->nombre_ciudades; ?> </option>
+    									<?php foreach($resultBancos as $res) {?>
+    										<option value="<?php echo $res->id_bancos; ?>" ><?php echo $res->nombre_bancos; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_ciudades" class="errores"></div>
+                                      <div id="mensaje_id_bancos" class="errores"></div>
                                     </div>
-                                  </div>
-                                  
-                                    <div class="col-xs-12 col-md-3 col-lg-3">
-                        		   <div class="form-group">
-                                      <label for="id_ciudades" class="control-label">Banco:</label>
-                                      <select name="id_ciudades" id="id_ciudades"  class="form-control" >
+                            
+                                <div class="form-group">
+                                      <label for="id_tipo_cuentas" class="control-label">Tipo Cuentas:</label>
+                                      <select name="id_tipo_cuentas" id="id_tipo_cuentas"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultCiudades as $res) {?>
-    										<option value="<?php echo $res->id_ciudades; ?>" ><?php echo $res->nombre_ciudades; ?> </option>
+    									<?php foreach($resultTipoCuentas as $res) {?>
+    										<option value="<?php echo $res->id_tipo_cuentas; ?>" ><?php echo $res->nombre_tipo_cuentas; ?> </option>
     							        <?php } ?>
     								   </select> 
-                                      <div id="mensaje_id_ciudades" class="errores"></div>
+                                      <div id="mensaje_id_tipo_cuentas" class="errores"></div>
                                     </div>
-                                  </div>
-                                                                     	<div class="col-xs-12 col-lg-3 col-md-3 ">
-                    			<div class="form-group">
-                                  <label for="fecha_numero_orden_participes" class="control-label">Cuenta Principal</label>
-                                  <input type="text" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
-                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
+                           
+                                
+                                 	<div class="form-group">
+                                	<label for="numero_participes_cuentas" class="control-label">Número de cuenta</label>
+                                    <input type="text" class="form-control" id="numero_participes_cuentas" name="numero_participes_cuentas" value=""  placeholder="Número de cuenta">
+                                    <div id="mensaje_numero_participes_cuentas" class="errores"></div>
                                  </div>
-                             </div>
+                             
+                               	   <div class="form-group">
+                                      <label for="cuenta_principal" class="control-label">Cuenta Principal:</label>
+                                      <select name="cuenta_principal" id="cuenta_principal"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    								<option value="TRUE">SI</option>
+			  						<option value="FALSE">NO</option>
+    								   </select> 
+                                      <div id="mensaje_id_tipo_cuentas" class="errores"></div>
+                                    </div>
+                                    
+        
                                   
-                    
-                             
-                      
-                             
-                   
-                	
-                </div>
+                     <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
+                 	   		    <div class="form-group">
+            	                  <button type="button" id="Procesar" name="Procesar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
+        	                      <a href="index.php?controller=Participes&action=index" class="btn btn-primary"><i class='glyphicon glyphicon-remove'></i> Cancelar</a>
+        	                    </div>
+        	                     </div>
+        	                           </div>
+        	                     
+        	                     </div>
+        	                     </div>
+    	        			       <div class="col-md-6">
+    	        			       
+    	        			              <div class="panel panel-default">
+  								   <div class="panel-body">
+                        	
+            <div class="tab-content">
+            <br>
+              <div class="tab-pane active" id="activos">
+                
+					<div class="pull-right" style="margin-right:15px;">
+						<input type="text" value="" class="form-control" id="txtsearchcuentas" name="txtsearchcuentas" onkeyup="load_cuentas_activos(1)" placeholder="search.."/>
+					</div>
+							<div id="load_cuentas_activos" ></div>	
+					<div id="participes_cuentas_registrados"></div>	
+                
+                
+              </div>
+                  </div>
+            </div>      
+              
                  </div>
+                 </div>      
+              
+                 </div>
+                 
+                 
                   </div>
                   </div>
                   
@@ -678,7 +716,6 @@
                         <li><a href="#step-3">Datos Domiciliarios<br /><small></small></a></li>
                         <li><a href="#step-4">Información Extra Socio <br /><small></small></a></li>
                         <li><a href="#step-5">Información Adicional del Socio <br /><small></small></a></li>
-                        <li><a href="#step-6">Cuenta Bancaria<br /><small></small></a></li>
                  
                     </ul>
            	<div>
@@ -1209,60 +1246,7 @@
                   </div>
                   </div>
                   
-                                 <div id="step-6" class="">
-                
-                	<div class="box box-success">
-                        <div class="box-header with-border">
-                          <h3 class="box-title"></h3>
-                          <div class="box-tools pull-right"> </div>
-                        </div>
-                    
-                    <div class="box-body">
-                    	<div class="row">
-        		 
-                      <div class="col-xs-12 col-md-3 col-lg-3">
-                        		   <div class="form-group">
-                                      <label for="id_ciudades" class="control-label">Cuenta Bancaria:</label>
-                                      <select name="id_ciudades" id="id_ciudades"  class="form-control" >
-                                      <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultCiudades as $res) {?>
-    										<option value="<?php echo $res->id_ciudades; ?>" ><?php echo $res->nombre_ciudades; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-                                      <div id="mensaje_id_ciudades" class="errores"></div>
-                                    </div>
-                                  </div>
-                                  
-                                    <div class="col-xs-12 col-md-3 col-lg-3">
-                        		   <div class="form-group">
-                                      <label for="id_ciudades" class="control-label">Banco:</label>
-                                      <select name="id_ciudades" id="id_ciudades"  class="form-control" >
-                                      <option value="0" selected="selected">--Seleccione--</option>
-    									<?php foreach($resultCiudades as $res) {?>
-    										<option value="<?php echo $res->id_ciudades; ?>" ><?php echo $res->nombre_ciudades; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-                                      <div id="mensaje_id_ciudades" class="errores"></div>
-                                    </div>
-                                  </div>
-                                                                     	<div class="col-xs-12 col-lg-3 col-md-3 ">
-                    			<div class="form-group">
-                                  <label for="fecha_numero_orden_participes" class="control-label">Cuenta Principal</label>
-                                  <input type="text" class="form-control" id="fecha_numero_orden_participes" name="fecha_numero_orden_participes" value=""  placeholder="Fecha Número Orden">
-                                  <div id="mensaje_fecha_numero_orden_participes" class="errores"></div>
-                                 </div>
-                             </div>
-                                  
-                    
-                             
                       
-                             
-                   
-                	
-                </div>
-                 </div>
-                  </div>
-                  </div>
                   </div>
                    
               		 </div>
@@ -1364,80 +1348,7 @@
     <script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
  <script type="text/javascript" src="view/Core/js/wizardParticipes.js?0.26"></script>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Core/js/Participes.js?3.14" ></script>
- <script type="text/javascript">
-
-        	   $(document).ready( function (){
-        		   
-        		   load_participes_inactivos(1);
-        		   load_participes_activos(1);
-        		   
-	   			});
-
-        	
-
-
-	   function load_participes_activos(pagina){
-
-		   var search=$("#search_activos").val();
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_participes_activos").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_participes_activos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=Participes&action=consulta_participes_activos&search='+search,
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#participes_activos_registrados").html(x);
-	                 $("#load_participes_activos").html("");
-	                 $("#tabla_participes_activos").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#participes_activos_registrados").html("Ocurrio un error al cargar la informacion de Participes Activos..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
-	   function load_participes_inactivos(pagina){
-
-		   var search=$("#search_inactivos").val();
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_participes_inactivos").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_participes_inactivos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=Participes&action=consulta_participes_inactivos&search='+search,
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#participes_inactivos_registrados").html(x);
-	                 $("#load_participes_inactivos").html("");
-	                 $("#tabla_participes_inactivos").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#participes_inactivos_registrados").html("Ocurrio un error al cargar la informacion de Participes Inactivos..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   };
- </script>
+ <script src="view/Core/js/Participes.js?3.25" ></script>
+ 
  </body>
 </html>

@@ -4,10 +4,10 @@ $(document).ready( function (){
 	load_participes_inactivos(1);
     load_participes_desafiliado(1);
     load_participes_liquidado_cesante(1);
+    load_cuentas_activos(1);
         		   
 	   			});
   
-
   function load_participes_activos(pagina){
 
 	   var search=$("#search_activos").val();
@@ -125,6 +125,38 @@ $(document).ready( function (){
          });
 	   }
   
+  function load_cuentas_activos(pagina){
+
+	   var search=$("#txtsearchcuentas").val();
+     var con_datos={
+				  action:'ajax',
+				  id_participes:$("#id_participes").val(),
+				  page:pagina
+				  };
+		 
+   $("#load_cuentas_activos").fadeIn('slow');
+   
+   $.ajax({
+             beforeSend: function(objeto){
+               $("#load_cuentas_activos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+             },
+             url: 'index.php?controller=Participes&action=consulta_cuentas_activos&search='+search,
+             type: 'POST',
+             data: con_datos,
+             success: function(x){
+               $("#participes_cuentas_registrados").html(x);
+               $("#load_cuentas_activos").html("");
+               $("#tabla_cuentas_activos").tablesorter(); 
+               
+             },
+            error: function(jqXHR,estado,error){
+              $("#participes_cuentas_registrados").html("Ocurrio un error al cargar la informacion de Cuentas..."+estado+"    "+error);
+            }
+          });
+
+
+	   }
+ 
   $("#Guardar").on("click",function(){
 	  
 	  let $fecha_ingreso_participes = $("#fecha_ingreso_participes");		
@@ -251,11 +283,8 @@ $(document).ready( function (){
 			   observaciones_participes_informacion_adicional : $observaciones_participes_informacion_adicional,
 			   kit_participes_informacion_adicional : $kit_participes_informacion_adicional,
 			   contrato_adhesion_participes_informacion_adicional : $contrato_adhesion_participes_informacion_adicional
-			   
-		
 				   
 	   }
-	   // console.log (datos);
 	   console.log(datos);
 	   
 	   $.ajax({
@@ -272,6 +301,8 @@ $(document).ready( function (){
 				   icon:"success",				   
 			   })
 			   
+			   load_participes_activos(1)
+			   
 		   }
 	   }).fail(function(xhr,status,error){
 		   var err = xhr.responseText
@@ -284,7 +315,46 @@ $(document).ready( function (){
    
   })
   
-  
-  
-  
-  
+  $("#Procesar").on("click",function(){
+	  
+	
+	  let $id_participes1 = $("#id_participes").val();
+	  let $id_bancos = $("#id_bancos").val();		
+	  let $id_tipo_cuentas = $("#id_tipo_cuentas").val();		
+	  let $numero_participes_cuentas = $("#numero_participes_cuentas").val();		
+	  let $cuenta_principal = $("#cuenta_principal").val();		
+	   
+	   let datos1 = {
+			   id_participes : $id_participes1,
+			   id_bancos : $id_bancos,
+			   id_tipo_cuentas : $id_tipo_cuentas,
+			   numero_participes_cuentas : $numero_participes_cuentas,
+			   cuenta_principal : $cuenta_principal
+				   
+	   }
+	   // console.log (datos);
+	   console.log(datos1);
+	   
+	   $.ajax({
+		   url:"index.php?controller=Participes&action=InsertaParticipesCuentas",
+		   type:"POST",
+		   dataType:"json",
+		   data: datos1
+	   }).done(function(x){
+		   console.log(x);
+		   if(x.respuesta == 1){
+			   swal({
+				   title:"Correctamente",
+				   text:x.mensaje,
+				   icon:"success",				   
+			   })
+			   
+			  load_cuentas_activos(1);  
+		   }
+	   }).fail(function(xhr,status,error){
+		   var err = xhr.responseText
+		   console.log(err)
+	   })
+	   return false;
+   
+  })

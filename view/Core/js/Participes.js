@@ -358,3 +358,96 @@ $(document).ready( function (){
 	   return false;
    
   })
+  
+  function delCuentas(id){
+	
+		
+	$.ajax({
+		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+		url:"index.php?controller=Participes&action=delCuentas",
+		type:"POST",
+		dataType:"json",
+		data:{id_participes_cuentas:id}
+	}).done(function(datos){		
+		
+		if(datos.data > 0){
+			
+			swal({
+		  		  title: "Cuenta",
+		  		  text: "Registro Eliminado",
+		  		  icon: "success",
+		  		  button: "Aceptar",
+		  		});
+					
+		}
+		
+		
+		
+	}).fail(function(xhr,status,error){
+		
+		var err = xhr.responseText
+		console.log(err);
+	}).always(function(){
+		
+		$("#divLoaderPage").removeClass("loader")
+		load_cuentas_activos();
+	})
+	
+	return false;
+}
+  
+
+  function editCuentas(id = 0){
+  	
+  	var tiempo = tiempo || 1000;
+  		
+  	$.ajax({
+  		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+  		url:"index.php?controller=Participes&action=editCuentas",
+  		type:"POST",
+  		dataType:"json",
+  		data:{id_participes_cuentas:id}
+  	}).done(function(datos){
+  		
+  		if(!jQuery.isEmptyObject(datos.data)){
+	
+  			
+  			var array = datos.data[0];		
+  			$("#id_participes").val(array.id_participes);			
+  			$("#id_bancos").val(array.id_bancos);
+  			$("#id_tipo_cuentas").val(array.id_tipo_cuentas);
+  			$("#numero_participes_cuentas").val(array.numero_participes_cuentas);
+  			
+  			var _cuenta_principal = array.cuenta_principal;
+  			
+  			if (_cuenta_principal == 't'){
+  				
+  				$("#cuenta_principal").val('TRUE');
+  				
+  			}else {
+
+  				$("#cuenta_principal").val('FALSE');
+  				
+  			}
+  			
+  			
+  			$("#id_participes_cuentas").val(array.id_participes_cuentas);
+  			
+  			$("html, body").animate({ scrollTop: $(id_participes).offset().top-120 }, tiempo);			
+  		}
+  		
+  		
+  		
+  	}).fail(function(xhr,status,error){
+  		
+  		var err = xhr.responseText
+  		console.log(err);
+  	}).always(function(){
+  		
+  		$("#divLoaderPage").removeClass("loader")
+  		load_cuentas_activos();
+  	})
+  	
+  	return false;
+  	
+  }

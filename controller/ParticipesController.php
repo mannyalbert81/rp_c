@@ -724,6 +724,9 @@ class ParticipesController extends ControladorBase{
                       core_tipo_cuentas.nombre_tipo_cuentas, 
                       core_participes_cuentas.id_estatus, 
                       core_participes_cuentas.cuenta_principal, 
+
+                      
+
                       core_participes_cuentas.usuario_usuarios, 
                       core_participes_cuentas.direccion_ip";
 	    
@@ -786,17 +789,18 @@ class ParticipesController extends ControladorBase{
 	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:425px; overflow-y:scroll;">';
+	            $html.='<section style="height:227px; overflow-y:scroll;">';
 	            $html.= "<table id='tabla_cuentas_activos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Apellido</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Cedula</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Banco</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo Cuenta</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Numnero</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Principal</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            
                 
 	            
 	            $html.='</tr>';
@@ -811,12 +815,16 @@ class ParticipesController extends ControladorBase{
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_bancos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_cuentas.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->numero_participes_cuentas.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->cuenta_principal.'</td>';
+	                $html.='<td style="font-size: 18px;">
+                            <a onclick="editCuentas('.$res->id_participes_cuentas.')" href="#" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class="glyphicon glyphicon-edit"></i></a></td>';
+	                
+	                $html.='<td style="font-size: 18px;">
+                            <a onclick="delCuentas('.$res->id_participes_cuentas.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a></td>';
+	                
                     
 	                
 	                $html.='</tr>';
@@ -847,6 +855,76 @@ class ParticipesController extends ControladorBase{
 	    }
 	}
 	
+	public function delCuentas(){
+	    
+	    session_start();
+	    $participes_cuentas = new CuentasParticipesModel();
+	    $nombre_controladores = "Participes";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $participes_cuentas->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (!empty($resultPer)){
+	        
+	        if(isset($_POST["id_participes_cuentas"])){
+	            
+	            $id_participes_cuentas = (int)$_POST["id_participes_cuentas"];
+	            
+	            $resultado  = $participes_cuentas->eliminarBy(" id_participes_cuentas ",$id_participes_cuentas);
+	            
+	            if( $resultado > 0 ){
+	                
+	                echo json_encode(array('data'=>$resultado));
+	                
+	            }else{
+	                
+	                echo $resultado;
+	            }
+	            
+	            
+	            
+	        }
+	        
+	        
+	    }else{
+	        
+	        echo "Usuario no tiene Permisos-Eliminar";
+	    }
+	    
+	    
+	    
+	}
+	
+	public function editCuentas(){
+	    
+	    session_start();
+	    $cuentas = new CuentasParticipesModel();
+	    $nombre_controladores = "TipoDocumento";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $cuentas->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (!empty($resultPer))
+	    {
+	        
+	        if(isset($_POST["id_participes_cuentas"])){
+	            
+	            $id_participes_cuentas = (int)$_POST["id_participes_cuentas"];
+	            
+	            $query = "SELECT * FROM core_participes_cuentas WHERE id_participes_cuentas = $id_participes_cuentas";
+	            
+	            $resultado  = $cuentas->enviaquery($query);
+	            
+	            echo json_encode(array('data'=>$resultado));
+	            
+	        }
+	        
+	        
+	    }
+	    else
+	    {
+	        echo "Usuario no tiene Permisos-Editar";
+	    }
+	    
+	}
 	
 	public function consulta_participes_inactivos(){
 	    

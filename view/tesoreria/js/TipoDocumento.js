@@ -4,12 +4,6 @@ $(document).ready(function(){
 	
 })
 
-/***
- * function to add record into table 
- * dc 2019-04-24
- * @param event
- * @returns
- */
 $("#frm_tipo_documento").on("submit",function(event){
 	
 	let _nombre_tipo_documento = document.getElementById('nombre_tipo_documento').value;

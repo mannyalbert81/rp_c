@@ -1051,8 +1051,8 @@ class ActivosFijosController extends ControladorBase{
                            '$_id_activo_fijo'";
                 
                 $activos->setFuncion($funcion);
-                $activos->setParametros($parametros);
-                
+                $activos->setParametros($parametros);                
+               
                 $resultado=$activos->llamafuncion();
                 
                 $respuesta = "";
@@ -1065,6 +1065,18 @@ class ActivosFijosController extends ControladorBase{
                         $respuesta = "Activo Actualizado";
                         $valor = 1;
                     }
+                }                
+                
+                //paea depreciacion
+                $funcionDepreciacion = "fn_act_depreciacion";
+                $fecha_hoy = date('Y-m-d');                
+                $parametrosDepreciacion = "'$_id_activo_fijo','$fecha_hoy'";                
+                $queryDepreciacion = "SELECT ". $funcionDepreciacion." ( ".$parametrosDepreciacion." ) ";
+                $resultadoDepreciacion = $activos->llamarconsultaPG($queryDepreciacion);
+                
+                if(strpos($resultadoDepreciacion[0], "CORRECTAMENTE") === false){
+                    
+                    echo "depreciacion ha fallado"; die();
                 }
                 
                 echo json_encode(array( 'valor'=>$valor,'mensaje'=>$respuesta));

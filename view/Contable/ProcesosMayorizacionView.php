@@ -90,14 +90,14 @@
 	         
 	         <div class="col-md-3 col-lg-3 col-xs-12">
 	         	<div class="form-group">
-	         		<label for="anio_movimientos" class="control-label">AÑO :</label>
-	         		<input type="number" min="2000" max="<?php echo date('Y'); ?>" value="<?php echo date('Y'); ?>" class="form-control">
+	         		<label for="anio_procesos" class="control-label">AÑO :</label>
+	         		<input type="number" id="anio_procesos" name="anio_procesos" min="2000" max="<?php echo date('Y'); ?>" value="<?php echo date('Y'); ?>" class="form-control">
                     </div>
 	         </div>
 	         <div class="col-md-3 col-lg-3 col-xs-12">
 	         	<div class="form-group">
-	         		<label for="mes_movimientos" class="control-label">MES :</label>
-                    <select name="mes_movimientos" id="mes_movimientos"   class="form-control" >                    	
+	         		<label for="mes_procesos" class="control-label">MES :</label>
+                    <select name="mes_procesos" id="mes_procesos"   class="form-control" >                    	
                       	<?php for ( $i=1; $i<=count($meses); $i++){ ?>
                       	<?php if( $i == date('n')){ ?>
                       	<option value="<?php echo $i;?>" selected ><?php echo $meses[$i-1]; ?></option>
@@ -105,7 +105,6 @@
                       	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>
                       	<?php }}?>
 					 </select> 
-                     <div id="mensaje_mes_balance" class="errores"></div>
 	         	</div>
 	         </div>
 	      </div>
@@ -113,12 +112,12 @@
 	      <div class="row">
 	      	<div class="col-md-offset-4 col-lg-offset-4 col-md-2 col-lg-2 col-xs-12">
 	      		<div class="form-group">
-	      			<button type="button" id="btnDetalles" name="btnDetalles" class="btn btn-block btn-default" >Ver Detalle</button>   		
+	      			<button type="button" id="btnDetalles" name="btnDetalles" class="btn btn-block btn-default" ><i class="fa fa-desktop" aria-hidden="true"></i> Ver Detalle</button>   		
 	      		</div>
 	      	</div>
 	      	<div class="col-md-2 col-lg-2 col-xs-12">
 	      		<div class="form-group">
-	      			<button type="button" id="buscarmovimientos" name="buscarmovimientos" class="btn btn-block btn-success" >GENERAR</button>    		
+	      			<button type="button" id="btngenera" name="btngenera" class="btn btn-block btn-success" > <i class="fa fa-check" aria-hidden="true"></i> GENERAR DIARIO</button>    		
 	      		</div>
 	      	</div>
 	      </div>
@@ -153,7 +152,7 @@
   <?php include("view/modulos/links_js.php"); ?>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-  <script src="view/Contable/FuncionesJS/procesosMayorizacion.js?0.02"></script>
+  <script src="view/Contable/FuncionesJS/procesosMayorizacion.js?0.09"></script>
   
 	
  </body>

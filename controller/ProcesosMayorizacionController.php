@@ -110,27 +110,28 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    
 	    if(empty($rsHistorial)){
 	        
+	        $arrayTabla = array();
+	        $cantidad = 0;
+	        
+	        //se genera el array a insertar
+	        switch ($idTipoProcesos){
+	            case "1":
+	                
+	                break;
+	            case "8":
+	                $arrayTabla = $this->generaDiarioProvisionesMensuales($idTipoProcesos,$anioDiario,$mesDiario);
+	                $cantidad = sizeof($arrayTabla);
+	                break;
+	            case "9":
+	                $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
+	                $cantidad = sizeof($arrayTabla);
+	                break;
+	            default:
+	                break;
+	        }
+	        
 	        //validar tipo de accion simular o generar
 	        if($tipoPeticion == 'simulacion'){
-	            
-	            $arrayTabla = array();
-	            $cantidad = 0;
-	            //tipos de procesos si se aumentan agregar mas metodos
-	            switch ($idTipoProcesos){
-	                case "1":
-	                    
-	                    break;
-	                case "8":
-	                    $arrayTabla = $this->generaDiarioProvisionesMensuales($idTipoProcesos,$anioDiario,$mesDiario);
-	                    $cantidad = sizeof($arrayTabla);
-	                    break;
-	                case "9":
-	                    $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
-	                    $cantidad = sizeof($arrayTabla);
-	                    break;
-	                default:
-	                    break;
-	            }
 	            
 	            //array de datos
 	            $respuesta = array();
@@ -141,21 +142,9 @@ class ProcesosMayorizacionController extends ControladorBase{
 	            
 	        }else if( $tipoPeticion == 'generar' ){
 	            //aqui genera el comprobante
-	            switch ($idTipoProcesos){
-	                case "1":
-	                    
-	                    break;
-	                case "8":
-	                    $arrayTabla = $this->generaDiarioProvisionesMensuales($idTipoProcesos,$anioDiario,$mesDiario);
-	                    $cantidad = sizeof($arrayTabla);
-	                    break;
-	                case "9":
-	                    $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
-	                    $cantidad = sizeof($arrayTabla);
-	                    break;
-	                default:
-	                    break;
-	            }
+	            $arrayTabla;
+	            
+	            //generar primero el comprobante
 	            // insert individual .
 	            //para ingresar .. comprobante
 	            echo '<message>En proceso <message>';die();

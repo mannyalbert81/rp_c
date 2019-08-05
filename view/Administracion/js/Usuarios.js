@@ -25,13 +25,133 @@
 	  //'yearrange': { 'minyear': '1950', 'maxyear': '2018' },
 		
 });//docreadyend
+ 
+ /**
+  * autocomplete de usuarios
+  * update 2019-08-05
+  */
+//para autocomplete de cedula de usuarios
+ $("#cedula_usuarios").on("focus",function(e) {
+		
+		let _elemento = $(this);
+		
+	    if ( !_elemento.data("autocomplete") ) {
+	    	    	
+	    	_elemento.autocomplete({
+	    		minLength: 3,    	    
+	    		source:function (request, response) {
+	    			$.ajax({
+	    				url:"index.php?controller=Usuarios&action=AutocompleteCedula",
+	    				dataType:"json",
+	    				type:"GET",
+	    				data:{term:request.term},
+	    			}).done(function(x){
+	    				
+	    				response(x); 
+	    				
+	    			}).fail(function(xhr,status,error){
+	    				var err = xhr.responseText
+	    				console.log(err)
+	    			})
+	    		},
+	    		select: function (event, ui) {	     	       		    			
+	    			if(ui.item.id == ''){
+	    				$("#id_usuarios").val('');
+	    				_elemento.val("");
+	    				_elemento.focus();	   
+	    				 return;
+	    			}
+	    			$("#id_usuarios").val(ui.item.id);
+	    			_elemento.val(ui.item.value);
+	    			
+	    			cedulaSeleccionada(_elemento.val())	    			
+	    			
+	     	    },
+	     	   appendTo: null,
+	     	   change: function(event,ui){	     		   
+	     		   if(ui.item == null){	     			   
+	     			//_elemento.notify("Cedula no se encuentra registrada",{ position:"buttom left", autoHideDelay: 2000});
+	     		   }
+	     	   }
+	    	
+	    	})
+	    }
+	});
+ 
+ $("#cedula_usuarios").on("focusout",function(e) {
+
+	 let elemento = $(this);
+	 let validador = fnvalidaCedula("cedula_usuarios");
+	 if( elemento.val() != "" && validador == true){
+		 
+	 }else{
+		 elemento.notify("Digite Cedula Valida",{ position:"buttom left", autoHideDelay: 2000});
+		 elemento.focus();
+		 $("#frm_ins_usuario")[0].reset(); $('#id_usuarios').val('');
+	 }
+ })
+ 
+ /**
+  * fn para devolver los datos de cedula seleccionada
+  * @param cedula
+  */
+ function cedulaSeleccionada(paramCedula){
+	 
+	 $.ajax({
+			url:'index.php?controller=Usuarios&action=AutocompleteCedula',
+			type:'POST',
+			dataType:'json',
+			data:{term:paramCedula}
+		}).done(function(respuesta){
+			//console.log(respuesta[0].id);
+			//valida if( !$.isEmptyObject(respuesta)){
+			if(JSON.stringify(respuesta)!='{}'){
+			//if (Object.entries(respuesta).length === 0) {
+				$('#id_usuarios').val(respuesta.id_usuarios);					
+				$('#nombre_usuarios').val(respuesta.nombre_usuarios);
+				$('#apellidos_usuarios').val(respuesta.apellidos_usuarios);
+				$('#usuario_usuarios').val(respuesta.usuario_usuarios);
+				$('#fecha_nacimiento_usuarios').val(respuesta.fecha_nacimiento_usuarios);
+				$('#celular_usuarios').val(respuesta.celular_usuarios);
+				$('#telefono_usuarios').val(respuesta.telefono_usuarios);
+				$('#correo_usuarios').val(respuesta.correo_usuarios);					
+				$('#codigo_clave').val(respuesta.clave_n_claves);
+	
+				if(respuesta.id_rol>0){
+					$('#id_rol_principal option[value='+respuesta.id_rol+']').attr('selected','selected');
+					}
+	
+				if(respuesta.id_estado>0){
+					$('#id_estado option[value='+respuesta.id_estado+']').attr('selected','selected');
+					}
+	
+				if(respuesta.caduca_claves=='t'){
+					
+					$('#caduca_clave').attr('checked','checked');
+				}
+	
+				if( respuesta.clave_usuarios != ""){
+					$('#clave_usuarios').val(respuesta.clave_n_claves).attr('readonly','readonly');
+					$('#clave_usuarios_r').val(respuesta.clave_n_claves).attr('readonly','readonly');
+					$('#lbl_cambiar_clave').text("Cambiar Clave:  ");
+					$('#cambiar_clave').show();					
+						
+					}
+			}else{ $("#frm_ins_usuario")[0].reset(); $('#id_usuarios').val(''); }
+			
+			
+		}).fail( function( xhr , status, error ){
+			 var err=xhr.responseText
+			console.log(err)
+		});
+ }
 
 /**
  * para autocomplete de usuarios
  * @param pagina
  * @returns json
  */
-$( "#cedula_usuarios" ).autocomplete({
+$( "#cedula_usuariosw" ).autocomplete({
 
 	source: "index.php?controller=Usuarios&action=AutocompleteCedula",
 	minLength: 4,
@@ -601,8 +721,10 @@ $('#frm_ins_usuario').on('submit',function(e){
           });
 }
 
- function validarcedula() {
-     var cad = document.getElementById("cedula_usuarios").value.trim();
+ function validarcedula(ObjValidador) {
+	 
+	 let elemento = $("#"+ObjValidador);
+     var cad = $.trim(elemento.val());
      var total = 0;
      var longitud = cad.length;
      var longcheck = longitud - 1;
@@ -621,16 +743,15 @@ $('#frm_ins_usuario').on('submit',function(e){
        total = total % 10 ? 10 - total % 10 : 0;
 
        if (cad.charAt(longitud-1) == total) {
-     	  $("#cedula_usuarios").val(cad);
+     	  elemento.val(cad);
        }else{
-     	  $("#mensaje_cedula_usuarios").text("Introduzca Identificación Valida");
-	    	$("#mensaje_cedula_usuarios").fadeIn("slow");
-     	  document.getElementById("cedula_usuarios").focus();
-     	  $("#cedula_usuarios").val("");
-     	  
+    	   elemento.notify("Cedula no Valida",{ position:"buttom left", autoHideDelay: 2000});     	  
+    	   elemento.val("").focus();
+    	   return false;
        }
-     }
-   }
+     }else{ elemento.val("").focus(); return false;}
+     return true;
+  }
  
  function numeros(e){
      

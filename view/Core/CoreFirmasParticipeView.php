@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
     <?php include("view/modulos/links_css.php"); ?>		
-      <link href="lib/animate/animate.min.css" rel="stylesheet"> 
+   
     	
-	
+	     <link href="view/reportes/template/all.min.css" rel="stylesheet">
 		    
 	</head>
  
@@ -120,6 +120,8 @@ text-decoration: none;
 					<div id="load_firmas_participes" ></div>	
 					<div id="firmas_registradas"></div>	
                 
+            
+                
               </div>
             </div>
             </div>
@@ -134,7 +136,17 @@ text-decoration: none;
    <div class="control-sidebar-bg"></div>
  </div>
     
+        <div id="popUp" class="modal">
+                  <span class="close">&times;</span>
+                  <img class="modal-content" id="img01">
+                  <div id="caption"></div>
+        </div>
+    
+    
     <?php include("view/modulos/links_js.php"); ?>
+    
+    
+    
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     
 	
@@ -186,7 +198,27 @@ text-decoration: none;
 
  </script>
 	
-	
+
+<script type="text/javascript">
+
+    
+        $("#firmas_registradas").on("click","#myImg",function(){
+        console.log('ingreso');
+        	let $modal = $("#popUp");
+        	let $caption = $("#caption");
+        	let $modalImg = $("#img01");
+        	 $modal.css({"display":"block"});
+        	 console.log($(this).attr("src")); 	
+        	$modalImg.attr("src",$(this).attr("src"));
+        	 $caption.html($(this).attr("alt"));
+        
+        })
+        $(".close").on("click",function(){
+        console.log('ingreso');
+        	let $modal = $("#popUp");
+        	 $modal.css({"display":"none"});
+})
+</script>	
     
     
     

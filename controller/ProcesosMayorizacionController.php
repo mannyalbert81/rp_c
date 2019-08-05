@@ -81,67 +81,106 @@ class ProcesosMayorizacionController extends ControladorBase{
 	
 	
 	/***
-	 * dc 2019-07-09
+	 * dc 2019-07-29
 	 * mod: Contabilidad
 	 * desc: lista los diario tipo detalle
 	 */
 	public function detallesDiarioTipo(){
 	    
+	    $Participes = new ParticipesModel();
+	    
 	    $idTipoProcesos = (isset($_POST['id_tipo_procesos'])) ? $_POST['id_tipo_procesos'] : "";
+	    $anioDiario = (isset($_POST['anio_procesos'])) ? $_POST['anio_procesos'] : "";
+	    $mesDiario = (isset($_POST['mes_procesos'])) ? $_POST['mes_procesos'] : "";
+	    $tipoPeticion = (isset($_POST['peticion'])) ? $_POST['peticion'] : "";
 	    
 	    if(empty($idTipoProcesos)){
-	        echo 'Variables no enviadas';
+	        echo '<message>Datos no recibidos<message>';
 	        return;
 	    }
-	    //tipos de procesos si se aumentan agregar mas metodos
-	    switch ($idTipoProcesos){
-	        case "1":
+	    //validar los campos recibidos para generar diario 
+	    $colHistorial = "1 existe";
+	    $tabHistorial = "public.core_historial_diarios_tipo";
+	    $wheHistorial = "id_tipo_procesos = $idTipoProcesos
+                AND id_estatus = 1 
+                AND anio_historial_diarios_tipo = $anioDiario
+                AND mes_historial_diarios_tipo = $mesDiario";
+	    $idHistorial = "id_historial_diarios_tipo"; 
+	    $rsHistorial = $Participes->getCondiciones($colHistorial, $tabHistorial, $wheHistorial, $idHistorial);
+	    
+	    if(empty($rsHistorial)){
+	        
+	        //validar tipo de accion simular o generar
+	        if($tipoPeticion == 'simulacion'){
 	            
-	        break;
-	        case "2":
+	            $arrayTabla = array();
+	            $cantidad = 0;
+	            //tipos de procesos si se aumentan agregar mas metodos
+	            switch ($idTipoProcesos){
+	                case "1":
+	                    
+	                    break;
+	                case "8":
+	                    $arrayTabla = $this->generaDiarioProvisionesMensuales($idTipoProcesos,$anioDiario,$mesDiario);
+	                    $cantidad = sizeof($arrayTabla);
+	                    break;
+	                case "9":
+	                    $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
+	                    $cantidad = sizeof($arrayTabla);
+	                    break;
+	                default:
+	                    break;
+	            }
 	            
-	        break;   
+	            //array de datos
+	            $respuesta = array();
+	            $respuesta['tabladatos'] = $this->graficaDiario($arrayTabla);
+	            $respuesta['valores'] = array('cantidad'=>$cantidad);
+	            echo json_encode($respuesta);
+	            die();	    
 	            
+	        }else if( $tipoPeticion == 'generar' ){
+	            //aqui genera el comprobante
+	            switch ($idTipoProcesos){
+	                case "1":
+	                    
+	                    break;
+	                case "8":
+	                    $arrayTabla = $this->generaDiarioProvisionesMensuales($idTipoProcesos,$anioDiario,$mesDiario);
+	                    $cantidad = sizeof($arrayTabla);
+	                    break;
+	                case "9":
+	                    $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
+	                    $cantidad = sizeof($arrayTabla);
+	                    break;
+	                default:
+	                    break;
+	            }
+	            // insert individual .
+	            //para ingresar .. comprobante
+	            echo '<message>En proceso <message>';die();
+	        }else{
+	            echo 'peticion no solicitada';
+	            die();
+	        }
+	        
+	            
+	    }else{
+	        
 	    }
 	    
-	    $page = (isset($_REQUEST['page']))?isset($_REQUEST['page']):1;	    
-	    $Participes = new ParticipesModel();
-	 	    
-	    $columnas = "cdtd.id_diario_tipo_detalle,
-                    pc.id_plan_cuentas,pc.codigo_plan_cuentas,
-                    pc.nombre_plan_cuentas, 
-                    0.00 \"debito\", 0.00 \"credito\"";
+	}
+	
+	/***
+	 * dc 2019-08-02
+	 * @param array $paramArrayDatos
+	 * @return string
+	 */
+	function graficaDiario( $paramArrayDatos){
 	    
-	    $tablas = "core_diario_tipo_detalle cdtd
-        	    inner join core_diario_tipo_cabeza cdtc
-        	    on cdtc.id_diario_tipo_cabeza = cdtd.id_diario_tipo_cabeza
-        	    inner join plan_cuentas pc
-        	    on pc.id_plan_cuentas = cdtd.id_plan_cuentas";
-	    
-	    $where = " cdtc.id_tipo_procesos = '$idTipoProcesos' ";
-	    
-	    $id = "cdtd.creado";
-	    
-	    //para obtener cantidad
-	    $rsResultado = $Participes->getCantidad("1", $tablas, $where, $id);
-	    
-	    $cantidad = 0;
+	    $cantidad = sizeof($paramArrayDatos);
 	    $html = "";
-	    $per_page = 20; //la cantidad de registros que desea mostrar
-	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-	    $offset = ($page - 1) * $per_page;
-	    
-	    if(!is_null($rsResultado) && !empty($rsResultado) && count($rsResultado)>0){
-	        $cantidad = $rsResultado[0]->total;
-	    }
-	    
-	    $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-	    
-	    $resultSet = $Participes->getCondicionesPag( $columnas, $tablas, $where, $id, $limit);
-	    
-	    $tpages = ceil($cantidad/$per_page);
-	    $html= "";
-	    if( $cantidad > 0 ){	        
+	    if( $cantidad > 0 ){
 	        
 	        $html.= "<table id='tbl_detalle_diario' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
 	        $html.= "<thead>";
@@ -151,27 +190,24 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $html.='<th style="text-align: left;  font-size: 12px;">NOMBRE</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">DEBITO</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">CREDITO</th>';
-	        //$html.='<th style="text-align: left;  font-size: 12px;"></th>';	        
+	        //$html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	        $html.='</tr>';
 	        $html.='</thead>';
 	        $html.='<tbody>';
 	        
 	        $i=0;
 	        
-	        foreach ($resultSet as $res){
+	        foreach ($paramArrayDatos as $res){
 	            
 	            $i++;
 	            $html.='<tr>';
 	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->debito.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->credito.'</td>';
-	            //$html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
-	            //$html.='<a title="Editar Proveedores" href="index.php?controller=ProcesosMayorizacion&action=index&codido='.$res->id_diario_tipo_detalle.'" class="btn-sm btn-warning" style="font-size:65%;"data-toggle="tooltip" >';
-	            //$html.='<i class="fa  fa-edit" aria-hidden="true" ></i></a></td>';
-	            $html.='</tr>';	            
-	           
+	            $html.='<td style="font-size: 11px;">'.$res['codigo'].'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res['nombre'].'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res['valor_debe'].'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res['valor_haber'].'</td>';	            
+	            $html.='</tr>';
+	            
 	        }
 	        
 	        
@@ -179,7 +215,6 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $html.='</table>';
 	        
 	        $html.='<div class="table-pagination pull-right">';
-	        $html.=''. $this->paginate("index.php", $page, $tpages, $adjacents,"").'';
 	        $html.='</div>';
 	        
 	        
@@ -193,17 +228,13 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $html.='<th style="text-align: left;  font-size: 12px;">NOMBRE</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">DEBITO</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">CREDITO</th>';
-	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';	        
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	        $html.='</tr>';
 	        $html.='</thead>';
 	        $html.='</table>';
 	    }
 	    
-	    //array de datos
-	    $respuesta = array();
-	    $respuesta['tabladatos'] = $html;
-	    $respuesta['valores'] = array('cantidad'=>$cantidad);
-	    echo json_encode($respuesta);
+	    return $html;
 	    
 	}
 	
@@ -212,10 +243,12 @@ class ProcesosMayorizacionController extends ControladorBase{
 	 * mod: Contabilidad
 	 * desc: lista los diario tipo detalle
 	 */
-	function generaDiarioActivos($idTipoProceso=1,$paramAnio=2019,$paramMes=7){
+	function generaDiarioActivos($idTipoProceso=9,$paramAnio=2019,$paramMes=7){
 	  	    
 	    $Activos = new ActivosFijosModel();
-	    $columnaMes = "1";
+	    $arrayDiarioTipo = array();
+	    $arrayRespuesta = array();
+	    
 	    $arrayColDepreciacion = array("enero_depreciacion","febrero_depreciacion","marzo_depreciacion","abril_depreciacion","mayo_depreciacion",
 	        "junio_depreciacion","julio_depreciacion","agosto_depreciacion","septiembre_depreciacion","octubre_depreciacion","noviembre_depreciacion",
 	        "diciembre_depreciacion");	
@@ -226,57 +259,229 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        }
 	    }
 	    
+	    
 	    //traer activos para depreciacion 
-	    $columnas ="aaf.id_activos_fijos,aaf.id_tipo_activos_fijos,aaf.codigo_activos_fijos,aaf.nombre_activos_fijos,
-                     aaf.valor_activos_fijos, ad.id_depreciacion, $columnaMes \"valor_depreciacion\"";
+	    $columnas ="aaf.id_tipo_activos_fijos,taf.nombre_tipo_activos_fijos,sum(ad.$columnaMes) \"valor_depreciacion\"";
 	    $tablas ="act_activos_fijos aaf
-        	    INNER JOIN act_depreciacion ad
-        	    ON aaf.id_activos_fijos = ad.id_activos_fijos";
+                inner join tipo_activos_fijos taf
+                on taf.id_tipo_activos_fijos = aaf.id_tipo_activos_fijos
+                inner join act_depreciacion ad
+                on aaf.id_activos_fijos = ad.id_activos_fijos";
 	    $where = " 1=1
 	           AND ad.anio_depreciacion = $paramAnio";
+	    $grupo = "aaf.id_tipo_activos_fijos,taf.nombre_tipo_activos_fijos";
         $id="aaf.id_tipo_activos_fijos";
         
-        $rsActivos = $Activos->getCondiciones($columnas, $tablas, $where, $id);
-        $arrayTipoActivos = array();
-        $_id_tipo_activo_fijo = 0;
-        $_sumatoria_valor = 0;
-        //recorrer el array 
-        foreach ($rsActivos as $res){
-            echo 'nevo valor';
-            //validar de acuerdo a su tipo de activo
-            if( $_id_tipo_activo_fijo == $res->id_tipo_activos_fijos ){
-                $_id_tipo_activo_fijo = $res->id_tipo_activos_fijos;
-                $_sumatoria_valor = 0;
-                echo 'nevo valor';
-            }else{
-                $_sumatoria_valor += $res->valor_depreciacion;
-                echo $_sumatoria_valor;
-            }            
+        $rsActivos = $Activos->getCondiciones_grupo($columnas, $tablas, $where, $grupo, $id);
+        
+               
+        //paradatos de diario tipo 
+        $colDiarioTipo = "cdtd.id_diario_tipo_detalle,
+                    pc.id_plan_cuentas,pc.codigo_plan_cuentas,
+                    pc.nombre_plan_cuentas,
+                    destino_diario_tipo_detalle,
+                    0.00 \"debito\", 0.00 \"credito\"";
+        $tabDiarioTipo = "core_diario_tipo_detalle cdtd
+        	    INNER JOIN core_diario_tipo_cabeza cdtc
+        	    ON cdtc.id_diario_tipo_cabeza = cdtd.id_diario_tipo_cabeza
+        	    INNER JOIN plan_cuentas pc
+        	    ON pc.id_plan_cuentas = cdtd.id_plan_cuentas";
+        $wheDiarioTipo = "cdtc.id_tipo_procesos = '$idTipoProceso'";
+        $idDiarioTipo = "cdtd.id_diario_tipo_detalle";        
+        $rsDiarioTipo = $Activos->getCondiciones($colDiarioTipo, $tabDiarioTipo, $wheDiarioTipo, $idDiarioTipo);
+        
+        //consulta tipo de activos
+        $queryTipoActivo = "SELECT * FROM tipo_activos_fijos ";
+        $rsTipoActivos = $Activos->enviaquery($queryTipoActivo);
+       
+        foreach ($rsDiarioTipo as $resDiario){
+            $_id_plan_cuenta_diario = $resDiario->id_plan_cuentas;
+            $_id_tipo_activo = 0;
+            $_sumatoriaDepreciacion = 0;
+            $_valor_debe = 0;
+            $_valor_haber = 0;      
+              
+            if( $resDiario->destino_diario_tipo_detalle == 'DEBE'){                
+                foreach ($rsTipoActivos as $resTipoActivo){
+                    if($resTipoActivo->debe_id_plan_cuentas == $_id_plan_cuenta_diario ){
+                        $_id_tipo_activo = $resTipoActivo->id_tipo_activos_fijos;                        
+                        break;
+                    }                    
+                }
+                foreach ($rsActivos as $resActivos){
+                    if($resActivos->id_tipo_activos_fijos == $_id_tipo_activo ){
+                        $_sumatoriaDepreciacion = $resActivos->valor_depreciacion;
+                        break;
+                    }
+                }
+                $_valor_debe = $_sumatoriaDepreciacion;
+            }
+            if( $resDiario->destino_diario_tipo_detalle == 'HABER'){
+                foreach ($rsTipoActivos as $resTipoActivo){
+                    if($resTipoActivo->haber_id_plan_cuentas == $_id_plan_cuenta_diario ){
+                        $_id_tipo_activo = $resTipoActivo->id_tipo_activos_fijos;
+                        break;
+                    }
+                    
+                }
+                foreach ($rsActivos as $resActivos){
+                    if($resActivos->id_tipo_activos_fijos == $_id_tipo_activo ){
+                        $_sumatoriaDepreciacion = $resActivos->valor_depreciacion;
+                        break;
+                    }
+                }
+                $_valor_haber = $_sumatoriaDepreciacion;                
+            }
+                         
+            $arrayFila = array('id_diario_detalle'=>$resDiario->id_diario_tipo_detalle,'valor_debe'=>$_valor_debe,'valor_haber'=>$_valor_haber);
+            array_push( $arrayDiarioTipo, $arrayFila);
             
         }
         
-        die();
+        //para generar el array de respuesta 
+        $fila = array();
+        foreach ($rsDiarioTipo as $resDiario){
+            foreach ($arrayDiarioTipo as $res){
+                if( $resDiario->id_diario_tipo_detalle == $res['id_diario_detalle']){
+                    $fila=array('id_diario_tipo_detalle'=>$resDiario->id_diario_tipo_detalle,'id_plan_cuentas'=>$resDiario->id_plan_cuentas,
+                        'codigo'=>$resDiario->codigo_plan_cuentas,'nombre'=>$resDiario->nombre_plan_cuentas,'valor_debe'=>$res['valor_debe'],
+                        'valor_haber'=>$res['valor_haber']
+                    );
+                    array_push( $arrayRespuesta, $fila);
+                    break;
+                }
+            }
+           
+          
+        }
         
-        print_r($rsActivos) ; die();
+        return $arrayRespuesta;
+        
+	}
+	
+	function generaDiarioProvisionesMensuales($idTipoProceso,$paramAnio,$paramMes){
 	    
-	  
-	    
-	    
-	    $query = "SELECT id_tipo_activos_fijos,nombre_tipo_activos_fijos FROM act_activos_fijos WHERE 1=1 ORDER BY id_activos_fijos";
-	    $rsTipoActivos = $Activos->enviaquery($query);
-	    if(!empty($rsTipoActivos)){
-	        $idTipoActivo = 0;
-	        foreach ( $rsTipoActivos as $res ){
-	            $idTipoActivo = $res->id_tipo_activos_fijos;
-	            $query="";
-	        }
+	    $mes = $paramMes;
+	    $year = $paramAnio;
+	    $mes--;
+	    if ($mes==0){
+	         $mes=12;  $year--;
+	    }
+	    $diainicio = 22;
+	    $diafinal = 21;
+	    $fechai = $diainicio."/".$mes."/".$year;
+	    $mes++;
+	    if ($mes>12){
+	        $mes=1;
+	        $year++;
+	        $fechaf = $diafinal."/".$mes."/".$year;
+	    }else{
+	        $fechaf = $diafinal."/".$mes."/".$year;
 	    }
 	    
-	    //buscarTipoActivo
-	    $queryConsulta = "SELECT id_tipo_activos_fijos,nombre_tipo_activos_fijos FROM tipo_activos_fijos; ";
-	    echo $columnaMes; die();
-	       
+	    $periodo=$fechai."-".$fechaf;
+	    //codigo aneterior genera fecha para buscar el periodo
+	    
+	    $Participes = new ParticipesModel();
+	    
+	    //paradatos de diario tipo
+	    $colDiarioTipo = "cdtd.id_diario_tipo_detalle,
+                    pc.id_plan_cuentas,pc.codigo_plan_cuentas,
+                    pc.nombre_plan_cuentas,
+                    destino_diario_tipo_detalle,
+                    0.00 \"debito\", 0.00 \"credito\"";
+	    $tabDiarioTipo = "core_diario_tipo_detalle cdtd
+        	    INNER JOIN core_diario_tipo_cabeza cdtc
+        	    ON cdtc.id_diario_tipo_cabeza = cdtd.id_diario_tipo_cabeza
+        	    INNER JOIN plan_cuentas pc
+        	    ON pc.id_plan_cuentas = cdtd.id_plan_cuentas";
+	    $wheDiarioTipo = "cdtc.id_tipo_procesos = '$idTipoProceso'";
+	    $idDiarioTipo = "cdtd.id_diario_tipo_detalle";
+	    $rsDiarioTipo = $Participes->getCondiciones($colDiarioTipo, $tabDiarioTipo, $wheDiarioTipo, $idDiarioTipo);
+	    
+	    //buscar provisiones mensuales	    
+	    $queryProvisiones = "SELECT id_provisiones_nomina, fondos_reserva, dec_tercero_sueldo, dec_cuarto_sueldo,aporte_iess_2,periodo 
+                            FROM provisiones_nomina_empleados WHERE periodo = '$periodo'";	    
+	    $rsProvisiones = $Participes->enviaquery($queryProvisiones);
+	    	    
+	    $_sumAporteIESS = 0;
+	    $_sumaDecimo13 = 0;
+	    $_sumaDecimo14 = 0;
+	    $_sumaFondo = 0;
+	    
+	    foreach ($rsProvisiones as $res){
+	        $_sumAporteIESS = $_sumAporteIESS + $res->aporte_iess_2;
+	        $_sumaDecimo13 = $_sumaDecimo13 + $res->dec_tercero_sueldo;
+	        $_sumaDecimo14 = $_sumaDecimo14 + $res->dec_cuarto_sueldo;
+	        $_sumaFondo = $_sumaFondo + $res->fondos_reserva;
+	    }	    
 	   
+	    $arrayRespuesta = array();
+	    $arrayDiarioTipo = array();
+	    $_valor_debe = 0;
+	    $_valor_haber = 0;
+	    $fila = array();
+	    foreach ($rsDiarioTipo as $resDiario){
+	        $_codigo_plan_cuentas = $resDiario->codigo_plan_cuentas;
+	        $_codigo_plan_cuentas = trim($_codigo_plan_cuentas,'.');
+	        $_valor_debe = 0;
+	        $_valor_haber = 0;
+	        //echo $_codigo_plan_cuentas.'<br>';
+	        switch ($_codigo_plan_cuentas){
+	            case "4.3.01.20" :
+	                $_valor_debe = $_sumAporteIESS;
+	            break;
+	            case "4.3.01.15.02":
+	                $_valor_debe = $_sumaDecimo14;
+	            break;
+	            case "4.3.01.15.01" :
+	                $_valor_debe = $_sumaDecimo13;
+	                break;
+	            case "4.3.01.25":
+	                $_valor_debe = $_sumaFondo;
+	                break;
+	            case "2.5.03.06" :
+	                $_valor_haber = $_sumAporteIESS;
+	                break;
+	            case "2.5.02.02":
+	                $_valor_haber = $_sumaDecimo14;
+	                break;
+	            case "2.5.02.01" :
+	                $_valor_haber = $_sumaDecimo13;
+	                break;
+	            case "2.5.04.01":
+	                $_valor_haber = $_sumaFondo;
+	                break;
+	            default:
+	                $_valor_debe = 0;
+	                $_valor_haber = 0;
+	                break;
+	        }
+	       
+	        $arrayFila = array('id_diario_detalle'=>$resDiario->id_diario_tipo_detalle,'valor_debe'=>$_valor_debe,'valor_haber'=>$_valor_haber);
+	        array_push( $arrayDiarioTipo, $arrayFila);
+	        
+	    }
+	    //die();
+	    //para generar el array de respuesta
+	    $fila = array();
+	    foreach ($rsDiarioTipo as $resDiario){
+	        foreach ($arrayDiarioTipo as $res){
+	            if( $resDiario->id_diario_tipo_detalle == $res['id_diario_detalle']){
+	                $fila=array('id_diario_tipo_detalle'=>$resDiario->id_diario_tipo_detalle,'id_plan_cuentas'=>$resDiario->id_plan_cuentas,
+	                    'codigo'=>$resDiario->codigo_plan_cuentas,'nombre'=>$resDiario->nombre_plan_cuentas,'valor_debe'=>$res['valor_debe'],
+	                    'valor_haber'=>$res['valor_haber']
+	                );
+	                array_push( $arrayRespuesta, $fila);
+	                break;
+	            }
+	        }
+	        
+	        
+	    }
+	    
+	    return $arrayRespuesta;
+	    
 	    
 	}
 	

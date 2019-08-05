@@ -63,15 +63,35 @@ function setTableStyle(ObjTabla){
 
 $("#btnDetalles").on("click",function(event){
 	
-	let $procesos = $("#id_tipo_procesos"),
+	let $modulo = $("#id_modulos"),
+		$procesos = $("#id_tipo_procesos"),
+		$anioProcesos = $("#anio_procesos"),
+		$mesProcesos = $("#mes_procesos"),
 		$divResultados = $("#div_detalle_procesos");
 	$divResultados.html();
+	
+	if($modulo.val() == '0'){
+		$modulo.notify("Seleccione el modulo",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}	
+	if($procesos.val() == '0'){
+		$procesos.notify("Seleccione el proceso",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	if($anioProcesos.val() == ''){
+		$anioProcesos.notify("Digite anio",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	if($mesProcesos.val() == '0'){
+		$mesProcesos.notify("Seleccione mes de proceso",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
 	
 	$.ajax({
 		 url:"index.php?controller=ProcesosMayorizacion&action=detallesDiarioTipo",
 		 type:"POST",
 		 dataType:"json",
-		 data:{id_tipo_procesos:$procesos.val()}
+		 data:{peticion:'simulacion',id_tipo_procesos:$procesos.val(),anio_procesos: $anioProcesos.val(),mes_procesos: $mesProcesos.val()}
 	 }).done(function(x){
 		 //console.log(x)
 		 $divResultados.html(x.tabladatos);
@@ -79,5 +99,95 @@ $("#btnDetalles").on("click",function(event){
 	 }).fail(function(xhr,status,error){
 		 let err = xhr.responseText;
 		 console.log(err);
+		 var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		 if( mensaje !== null ){
+			 var resmsg = mensaje[1];
+			 swal( {
+				 title:"Error",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+				})
+		 }
 	 })
 })
+
+$("#btngenera").on("click",function(event){
+	
+	let $modulo = $("#id_modulos"),
+		$procesos = $("#id_tipo_procesos"),
+		$anioProcesos = $("#anio_procesos"),
+		$mesProcesos = $("#mes_procesos"),
+		$divResultados = $("#div_detalle_procesos");
+	$divResultados.html();
+	
+	if($modulo.val() == '0'){
+		$modulo.notify("Seleccione el modulo",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}	
+	if($procesos.val() == '0'){
+		$procesos.notify("Seleccione el proceso",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	if($anioProcesos.val() == ''){
+		$anioProcesos.notify("Digite anio",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	if($mesProcesos.val() == '0'){
+		$mesProcesos.notify("Seleccione mes de proceso",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	swal({
+		title: "¿Generar Diario?",
+		text: "La siguiente accion no se revertira!",
+		icon:"view/images/capremci_load.gif",
+		dangerMode:true,
+		buttons: {
+		    cancel:"Cancelar",
+		    continuar: "Continuar",		    
+		  },
+	}).then((value) => {
+		  switch (value) {		 
+		    case "cancel":
+		      return;
+		      break;		 
+		    case "continuar":
+		    	generaDiario($modulo.val(), $anioProcesos.val(), $mesProcesos.val());
+		      break;
+		    default:
+		      return;
+		  }
+		});
+	
+	
+	
+})
+
+function generaDiario(in_proceso,in_anio,in_mes){
+	
+	$.ajax({
+		 url:"index.php?controller=ProcesosMayorizacion&action=detallesDiarioTipo",
+		 type:"POST",
+		 dataType:"json",
+		 data:{peticion:"generar",id_tipo_procesos:in_proceso,anio_procesos: in_anio,mes_procesos: in_mes}
+	 }).done(function(x){
+		 //console.log(x)
+		 $divResultados.html(x.tabladatos);
+		 setTableStyle("tbl_detalle_diario");
+	 }).fail(function(xhr,status,error){
+		 let err = xhr.responseText;
+		 console.log(err);
+		 var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		 if( mensaje !== null ){
+			 var resmsg = mensaje[1];
+			 swal( {
+				 title:"Error",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+				})
+		 }
+	 })
+	
+}

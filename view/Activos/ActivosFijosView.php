@@ -1,5 +1,3 @@
-
-
     <!DOCTYPE HTML>
 	<html lang="es">
     <head>
@@ -275,7 +273,7 @@
  </div>
     
     <?php include("view/modulos/links_js.php"); ?>
-    
+    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>    
     <script type="text/javascript" src="view/Activos/js/activosFijos.js?1.5"></script>
 	
     <script type="text/javascript" >   
@@ -290,7 +288,7 @@
  
     
   
-<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
+
 <script>
     $(document).ready(function(){
     	$(".cantidades1").inputmask();

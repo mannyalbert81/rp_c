@@ -54,6 +54,7 @@ class CoreInformacionParticipesController extends ControladorBase{
             $nombre_controladores = "CoreInformacionParticipes";
             $id_rol= $_SESSION['id_rol'];
             $resultPer = $participes->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+            $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:0;
             
             if (!empty($resultPer))
             {
@@ -80,12 +81,11 @@ class CoreInformacionParticipesController extends ControladorBase{
                               core_participes.apellido_esposa_participes, 
                               core_participes.cedula_conyugue_participes, 
                               core_participes.numero_dependencias_participes, 
+                              core_participes.observacion_participes,
                               core_distritos.id_distritos, 
                               core_distritos.nombre_distritos, 
                               core_provincias.id_provincias, 
                               core_provincias.nombre_provincias, 
-                              core_ciudades.id_ciudades, 
-                              core_ciudades.nombre_ciudades, 
                               core_participes_informacion_adicional.parroquia_participes_informacion_adicional, 
                               core_participes_informacion_adicional.anios_residencia_participes_informacion_adicional, 
                               core_participes_informacion_adicional.nombre_propietario_participes_informacion_adicional, 
@@ -98,7 +98,11 @@ class CoreInformacionParticipesController extends ControladorBase{
                               core_participes_informacion_adicional.telefono_una_referencia_participes_informacion_adicional, 
                               core_participes_informacion_adicional.contrato_adhesion_participes_informacion_adicional,
                               core_estado_participes.nombre_estado_participes,
-                              core_participes_informacion_adicional.observaciones_participes_informacion_adicional 
+                              core_participes_informacion_adicional.observaciones_participes_informacion_adicional,
+                             (select sum(c1.valor_personal_contribucion) 
+                            	from core_contribucion c1 where id_participes = '$id_participes' and id_estatus=1 limit 1
+                            ) as \"total\"
+                                                           
                                                     
                                     ";
                     
@@ -107,7 +111,6 @@ class CoreInformacionParticipesController extends ControladorBase{
                               public.core_participes_informacion_adicional, 
                               public.core_distritos, 
                               public.core_provincias, 
-                              public.core_ciudades, 
                               public.core_entidad_patronal, 
                               public.core_parentesco,
                               public.core_estado_civil_participes,
@@ -117,13 +120,16 @@ class CoreInformacionParticipesController extends ControladorBase{
                     $where    = " core_participes_informacion_adicional.id_participes = core_participes.id_participes AND
                                   core_distritos.id_distritos = core_participes_informacion_adicional.id_distritos AND
                                   core_provincias.id_provincias = core_participes_informacion_adicional.id_provincias AND
-                                  core_ciudades.id_ciudades = core_participes_informacion_adicional.id_ciudades AND
                                   core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND
                                   core_parentesco.id_parentesco = core_participes_informacion_adicional.id_parentesco
                                   AND core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes 
                                   AND core_estado_participes.id_estado_participes = core_participes.id_estado_participes
-                                  AND core_participes.id_participes = '$_id_participes'";
+                                  AND core_participes.id_participes = '$_id_participes'
+                                   ";
                     $id       = "core_participes.id_participes";
+                    
+               
+                    
                     
                     $resultRep = $participes->getCondiciones($columnas ,$tablas ,$where, $id);
                     
@@ -178,8 +184,6 @@ class CoreInformacionParticipesController extends ControladorBase{
                       core_distritos.nombre_distritos, 
                       core_provincias.id_provincias, 
                       core_provincias.nombre_provincias, 
-                      core_ciudades.id_ciudades, 
-                      core_ciudades.nombre_ciudades, 
                       core_participes_informacion_adicional.parroquia_participes_informacion_adicional, 
                       core_participes_informacion_adicional.anios_residencia_participes_informacion_adicional, 
                       core_participes_informacion_adicional.nombre_propietario_participes_informacion_adicional, 
@@ -198,7 +202,6 @@ class CoreInformacionParticipesController extends ControladorBase{
                       public.core_participes_informacion_adicional, 
                       public.core_distritos, 
                       public.core_provincias, 
-                      public.core_ciudades, 
                       public.core_entidad_patronal, 
                       public.core_parentesco
 
@@ -206,14 +209,12 @@ class CoreInformacionParticipesController extends ControladorBase{
         $where    = " core_participes_informacion_adicional.id_participes = core_participes.id_participes AND
                       core_distritos.id_distritos = core_participes_informacion_adicional.id_distritos AND
                       core_provincias.id_provincias = core_participes_informacion_adicional.id_provincias AND
-                      core_ciudades.id_ciudades = core_participes_informacion_adicional.id_ciudades AND
                       core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND
                       core_parentesco.id_parentesco = core_participes_informacion_adicional.id_parentesco";
         
         $id       = "core_participes.id_participes";
         
-        
-       
+
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
         $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
@@ -281,7 +282,6 @@ class CoreInformacionParticipesController extends ControladorBase{
                 $html.='<th style="text-align: center; font-size: 12px;">Dependencias</th>';
                 $html.='<th style="text-align: center; font-size: 12px;">Distrito</th>';
                 $html.='<th style="text-align: center; font-size: 12px;">Provincia</th>';
-                $html.='<th style="text-align: center; font-size: 12px;">Ciudad</th>';
                 $html.='<th style="text-align: center; font-size: 12px;">Parroquia</th>';
                 $html.='<th style="text-align: center; font-size: 12px;">Años Residencia</th>';
                 $html.='<th style="text-align: center; font-size: 12px;">Propietario</th>';
@@ -319,7 +319,6 @@ class CoreInformacionParticipesController extends ControladorBase{
                     $html.='<td style="font-size: 11px;">'.$res->numero_dependencias_participes.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_distritos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_provincias.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_ciudades.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->parroquia_participes_informacion_adicional.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->anios_residencia_participes_informacion_adicional.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_propietario_participes_informacion_adicional.'</td>';

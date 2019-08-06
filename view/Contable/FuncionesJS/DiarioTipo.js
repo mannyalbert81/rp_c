@@ -23,12 +23,131 @@
 		$('input:radio[name="destino_diario"]').prop('checked', false);
       
       }
+
+//PARA AUTOCOMPLETE DE PLAN DE CUENTAS x CODIGO
+  $("#id_plan_cuentas").on("focus",function(e) {
+		
+		let _elemento = $(this);
+		
+	    if ( !_elemento.data("autocomplete") ) {
+	    	    	
+	    	_elemento.autocomplete({
+	    		minLength: 3,    	    
+	    		source:function (request, response) {
+	    			$.ajax({
+	    				url:"index.php?controller=CoreDiarioTipo&action=autompletePlanCuentasByCodigo",
+	    				dataType:"json",
+	    				type:"GET",
+	    				data:{term:request.term},
+	    			}).done(function(x){
+	    				
+	    				response(x); 
+	    				
+	    			}).fail(function(xhr,status,error){
+	    				var err = xhr.responseText
+	    				console.log(err)
+	    			})
+	    		},
+	    		select: function (event, ui) {
+	     	       	// Set selection
+	    			let $plan_cuentas = $("#plan_cuentas");
+	    			let $codigo_plan_cuentas = $("#id_plan_cuentas");
+	    			let $nombre_plan_cuentas = $("#nombre_plan_cuentas");	    			
+	    			if(ui.item.id == ''){
+	    				$plan_cuentas.val('');
+		    			$codigo_plan_cuentas.val('');
+		    			$nombre_plan_cuentas.val('');	   
+	    				 return;
+	    			}
+	    			$plan_cuentas.val(ui.item.id);
+	    			$codigo_plan_cuentas.val(ui.item.value);
+	    			$nombre_plan_cuentas.val(ui.item.nombre);	 
+	    			
+	     	    },
+	     	   appendTo: null,
+	     	   change: function(event,ui){
+	     		   
+	     		   if(ui.item == null){
+	     			   
+	     			_elemento.notify("Digite Cod. Cuenta Valido",{ position:"buttom left", autoHideDelay: 2000});
+	     			_elemento.val('');
+	     			$("#nombre_plan_cuentas").val('');
+		    		$("#plan_cuentas").val('0');
+	     			 
+	     		   }
+	     	   }
+	    	
+	    	}).focusout(function() {
+	    		
+	    	})
+	    }
+	});
+  
+//PARA AUTOCOMPLETE DE PLAN DE CUENTAS x Nombre
+  $("#nombre_plan_cuentas").on("focus",function(e) {
+		
+		let _elemento = $(this);
+		
+	    if ( !_elemento.data("autocomplete") ) {
+	    	    	
+	    	_elemento.autocomplete({
+	    		minLength: 3,    	    
+	    		source:function (request, response) {
+	    			$.ajax({
+	    				url:"index.php?controller=CoreDiarioTipo&action=autompletePlanCuentasByNombre",
+	    				dataType:"json",
+	    				type:"GET",
+	    				data:{term:request.term},
+	    			}).done(function(x){
+	    				
+	    				response(x); 
+	    				
+	    			}).fail(function(xhr,status,error){
+	    				var err = xhr.responseText
+	    				console.log(err)
+	    			})
+	    		},
+	    		select: function (event, ui) {
+	     	       	// Set selection
+	    			let $plan_cuentas = $("#plan_cuentas");
+	    			let $codigo_plan_cuentas = $("#id_plan_cuentas");
+	    			let $nombre_plan_cuentas = $("#nombre_plan_cuentas");	    			
+	    			if(ui.item.id == ''){
+	    				$plan_cuentas.val('');
+		    			$codigo_plan_cuentas.val('');
+		    			$nombre_plan_cuentas.val('');	   
+	    				 return;
+	    			}
+	    			$plan_cuentas.val(ui.item.id);
+	    			$codigo_plan_cuentas.val(ui.item.codigo);
+	    			$nombre_plan_cuentas.val(ui.item.nombre);	 
+	    			
+	     	    },
+	     	   appendTo: null,
+	     	   change: function(event,ui){
+	     		   
+	     		   if(ui.item == null){
+	     			   
+	     			_elemento.notify("Digite Cod. Cuenta Valido",{ position:"buttom left", autoHideDelay: 2000});
+	     			_elemento.val('');
+	     			$("#id_plan_cuentas").val('');
+		    		$("#plan_cuentas").val('0');
+	     			 
+	     		   }
+	     	   }
+	    	
+	    	}).focusout(function() {
+	    		
+	    	})
+	    }
+	});
       
+
       
    
    // AUTOCOMPLETE CODIGO PLAN CUENTAS
 	  
-	       $( "#id_plan_cuentas" ).autocomplete({
+/*	       $( "#id_plan_cuentas" ).autocomplete({
 					source: 'index.php?controller=CoreDiarioTipo&action=AutocompleteComprobantesCodigo',
 					minLength: 1
 			});
@@ -57,13 +176,13 @@
 				});
 				
 			});   
-	 	
+	 */	
 
 
 
     // AUTOCOMPLETE NOMBRE PLAN CUENTAS
    
-		
+/*		
 			$("#nombre_plan_cuentas").autocomplete({
 					source: 'index.php?controller=CoreDiarioTipo&action=AutocompleteComprobantesNombre',
 					minLength: 1
@@ -93,73 +212,73 @@
 				
 			});   
 			
-	
+*/	
 	
 	  // PARA CARGAR CONSULTA PLAN DE CUENTAS AL MODAL
 	  
-	   $('#myModal').on('show.bs.modal', function (event) {
-		  load_diarios_tipo(1);
-      	  var modal = $(this)
-      	  modal.find('.modal-title').text('Buscar Diarios Tipo')
-      
-      	});
+$('#myModal').on('show.bs.modal', function (event) {
+	load_diarios_tipo(1);
+	var modal = $(this)
+	modal.find('.modal-title').text('Buscar Diarios Tipo')
+  
+});
             
 	
-		function load_diarios_tipo(pagina){
-		 var search=$("#q").val();
-		 var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-		$("#load_diarios_tipo").fadeIn('slow');
-		$.ajax({
-		         beforeSend: function(objeto){
-		           $("#load_diarios_tipo").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-		         },
-		         url: 'index.php?controller=CoreDiarioTipo&action=consulta_diarios_tipo&search='+search,
-		         type: 'POST',
-		         data: con_datos,
-		         success: function(x){
-		           $("#cargar_diarios_tipo").html(x);
-		           $("#load_diarios_tipo").html("");
-		           $("#tabla_diarios_tipo").tablesorter(); 
-		           
-		         },
-		        error: function(jqXHR,estado,error){
-		          $("#cargar_diarios_tipo").html("Ocurrio un error al cargar la información de Diarios Tipo..."+estado+"    "+error);
-		        }
-		      });
-		
-		 }
+function load_diarios_tipo(pagina){
+	 var search=$("#q").val();
+	 var con_datos={
+				  action:'ajax',
+				  page:pagina
+				  };
+	$("#load_diarios_tipo").fadeIn('slow');
+	$.ajax({
+	         beforeSend: function(objeto){
+	           $("#load_diarios_tipo").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	         },
+	         url: 'index.php?controller=CoreDiarioTipo&action=consulta_diarios_tipo&search='+search,
+	         type: 'POST',
+	         data: con_datos,
+	         success: function(x){
+	           $("#cargar_diarios_tipo").html(x);
+	           $("#load_diarios_tipo").html("");
+	           $("#tabla_diarios_tipo").tablesorter(); 
+	           
+	         },
+	        error: function(jqXHR,estado,error){
+	          $("#cargar_diarios_tipo").html("Ocurrio un error al cargar la información de Diarios Tipo..."+estado+"    "+error);
+	        }
+	      });
+
+ }
 	
 	
 	
-	   // CARGAR TEMPORAL COMPROBANTES REGISTRADOS
-	
-	    function load_temp_diario_tipo(pagina){
-	         
-           	var search=$("#search_temp_diario_tipo").val();
-           
-            $("#load_temp_diario_tipo_registrados").fadeIn('slow');
-            
-            $.ajax({
-                    beforeSend: function(objeto){
-                      $("#load_temp_diario_tipo_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-                    },
-                    url: 'index.php?controller=CoreDiarioTipo&action=consulta_temp_diario_tipo&search='+search,
-                    type: 'POST',
-                    data: {action:'ajax', page:pagina},
-                    success: function(x){
-                      $("#temp_diario_tipo_registrados").html(x);
-                      $("#load_temp_diario_tipo_registrados").html("");
-                      $("#tabla_temp_diario_tipo_registrados").tablesorter(); 
-                      
-                    },
-                   error: function(jqXHR,estado,error){
-                     $("#temp_diario_tipo_registrados").html("Ocurrio un error al cargar la información de Cuentas Registradas..."+estado+"    "+error);
-                   }
-             });
-        }
+// CARGAR TEMPORAL COMPROBANTES REGISTRADOS
+
+function load_temp_diario_tipo(pagina){
+     
+   	var search=$("#search_temp_diario_tipo").val();
+   
+    $("#load_temp_diario_tipo_registrados").fadeIn('slow');
+    
+    $.ajax({
+            beforeSend: function(objeto){
+              $("#load_temp_diario_tipo_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+            },
+            url: 'index.php?controller=CoreDiarioTipo&action=consulta_temp_diario_tipo&search='+search,
+            type: 'POST',
+            data: {action:'ajax', page:pagina},
+            success: function(x){
+              $("#temp_diario_tipo_registrados").html(x);
+              $("#load_temp_diario_tipo_registrados").html("");
+              $("#tabla_temp_diario_tipo_registrados").tablesorter(); 
+              
+            },
+           error: function(jqXHR,estado,error){
+             $("#temp_diario_tipo_registrados").html("Ocurrio un error al cargar la información de Cuentas Registradas..."+estado+"    "+error);
+           }
+     });
+}
 
 	// AGREGAR REGISTRO DE TABLA TEMPORAL
 	    

@@ -4,10 +4,10 @@ $(document).ready( function (){
 	load_participes_inactivos(1);
     load_participes_desafiliado(1);
     load_participes_liquidado_cesante(1);
+    load_cuentas_activos(1);
         		   
 	   			});
   
-
   function load_participes_activos(pagina){
 
 	   var search=$("#search_activos").val();
@@ -125,6 +125,38 @@ $(document).ready( function (){
          });
 	   }
   
+  function load_cuentas_activos(pagina){
+
+	   var search=$("#txtsearchcuentas").val();
+     var con_datos={
+				  action:'ajax',
+				  id_participes:$("#id_participes").val(),
+				  page:pagina
+				  };
+		 
+   $("#load_cuentas_activos").fadeIn('slow');
+   
+   $.ajax({
+             beforeSend: function(objeto){
+               $("#load_cuentas_activos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+             },
+             url: 'index.php?controller=Participes&action=consulta_cuentas_activos&search='+search,
+             type: 'POST',
+             data: con_datos,
+             success: function(x){
+               $("#participes_cuentas_registrados").html(x);
+               $("#load_cuentas_activos").html("");
+               $("#tabla_cuentas_activos").tablesorter(); 
+               
+             },
+            error: function(jqXHR,estado,error){
+              $("#participes_cuentas_registrados").html("Ocurrio un error al cargar la informacion de Cuentas..."+estado+"    "+error);
+            }
+          });
+
+
+	   }
+ 
   $("#Guardar").on("click",function(){
 	  
 	  let $fecha_ingreso_participes = $("#fecha_ingreso_participes");		
@@ -181,7 +213,27 @@ $(document).ready( function (){
 	   let $direccion_participes = $("#direccion_participes").val();
 	   let $telefono_participes = $("#telefono_participes").val();
 	   let $celular_participes = $("#celular_participes").val();
-   	   
+	   let $id_distritos = $("#id_distritos").val();
+	   let $id_provincia = $("#id_provincias").val();
+	   let $parroquia_participes_informacion_adicional = $("#parroquia_participes_informacion_adicional").val();
+	   let $sector_participes_informacion_adicional = $("#sector_participes_informacion_adicional").val();
+	   let $ciudadela_participes_informacion_adicional = $("#ciudadela_participes_informacion_adicional").val();
+	   let $calle_participes_informacion_adicional = $("#calle_participes_informacion_adicional").val();
+	   let $numero_calle_participes_informacion_adicional = $("#numero_calle_participes_informacion_adicional").val();
+	   let $interseccion_participes_informacion_adicional = $("#interseccion_participes_informacion_adicional").val();
+	   let $id_tipo_vivienda = $("#id_tipo_vivienda").val();
+	   let $anios_residencia_participes_informacion_adicional = $("#anios_residencia_participes_informacion_adicional").val();
+	   let $nombre_propietario_participes_informacion_adicional = $("#nombre_propietario_participes_informacion_adicional").val();
+	   let $telefono_propietario_participes_informacion_adicional = $("#telefono_propietario_participes_informacion_adicional").val();
+	   let $direccion_referencia_participes_informacion_adicional = $("#direccion_referencia_participes_informacion_adicional").val();
+	   let $vivienda_hipotecada_participes_informacion_adicional = $("#vivienda_hipotecada_participes_informacion_adicional").val();
+	   let $nombre_una_referencia_participes_informacion_adicional = $("#nombre_una_referencia_participes_informacion_adicional").val();
+	   let $id_parentesco = $("#id_parentesco").val();
+	   let $telefono_una_referencia_participes_informacion_adicional = $("#telefono_una_referencia_participes_informacion_adicional").val();
+	   let $observaciones_participes_informacion_adicional = $("#observaciones_participes_informacion_adicional").val();
+	   let $kit_participes_informacion_adicional = $("#kit_participes_informacion_adicional").val();
+	   let $contrato_adhesion_participes_informacion_adicional = $("#contrato_adhesion_participes_informacion_adicional").val();
+
 	   let datos = {
 			   id_participes : $id_participes,
 			   id_entidad_patronal : $id_entidad_patronal,
@@ -210,29 +262,192 @@ $(document).ready( function (){
 			   id_estado_participes : $id_estado_participes.val(),
 			   id_estatus : $id_estatus.val(),
 			   fecha_salida_participes : $fecha_salida_participes.val(),
-			   fecha_numero_orden_participes : $fecha_numero_orden_participes.val()
-			   
+			   fecha_numero_orden_participes : $fecha_numero_orden_participes.val(),
+			   id_distritos : $id_distritos,
+			   id_provincia : $id_provincia,
+			   parroquia_participes_informacion_adicional : $parroquia_participes_informacion_adicional,
+			   sector_participes_informacion_adicional : $sector_participes_informacion_adicional,
+			   ciudadela_participes_informacion_adicional : $ciudadela_participes_informacion_adicional,
+			   calle_participes_informacion_adicional : $calle_participes_informacion_adicional,
+			   numero_calle_participes_informacion_adicional : $numero_calle_participes_informacion_adicional,
+			   interseccion_participes_informacion_adicional : $interseccion_participes_informacion_adicional,
+			   id_tipo_vivienda : $id_tipo_vivienda,
+			   anios_residencia_participes_informacion_adicional : $anios_residencia_participes_informacion_adicional,
+			   nombre_propietario_participes_informacion_adicional : $nombre_propietario_participes_informacion_adicional,
+			   telefono_propietario_participes_informacion_adicional : $telefono_propietario_participes_informacion_adicional,
+			   direccion_referencia_participes_informacion_adicional : $direccion_referencia_participes_informacion_adicional,
+			   vivienda_hipotecada_participes_informacion_adicional : $vivienda_hipotecada_participes_informacion_adicional,
+			   nombre_una_referencia_participes_informacion_adicional : $nombre_una_referencia_participes_informacion_adicional,
+			   id_parentesco : $id_parentesco,
+			   telefono_una_referencia_participes_informacion_adicional : $telefono_una_referencia_participes_informacion_adicional,
+			   observaciones_participes_informacion_adicional : $observaciones_participes_informacion_adicional,
+			   kit_participes_informacion_adicional : $kit_participes_informacion_adicional,
+			   contrato_adhesion_participes_informacion_adicional : $contrato_adhesion_participes_informacion_adicional
+				   
 	   }
-	   // console.log (datos);
 	   console.log(datos);
 	   
 	   $.ajax({
 		   url:"index.php?controller=Participes&action=InsertaParticipes",
 		   type:"POST",
-		   dataType:"html",
+		   dataType:"json",
 		   data: datos
 	   }).done(function(x){
 		   console.log(x);
+		   if(x.respuesta == 1){
+			   swal({
+				   title:"Correctamente",
+				   text:x.mensaje,
+				   icon:"success",				   
+			   })
+			   
+			   load_participes_activos(1)
+			   
+		   }
 	   }).fail(function(xhr,status,error){
 		   var err = xhr.responseText
 		   console.log(err)
 	   })
 	   
+	   	
+	   
 	   return false;
    
   })
   
+  $("#Procesar").on("click",function(){
+	  
+	
+	  let $id_participes1 = $("#id_participes").val();
+	  let $id_bancos = $("#id_bancos").val();		
+	  let $id_tipo_cuentas = $("#id_tipo_cuentas").val();		
+	  let $numero_participes_cuentas = $("#numero_participes_cuentas").val();		
+	  let $cuenta_principal = $("#cuenta_principal").val();		
+	   
+	   let datos1 = {
+			   id_participes : $id_participes1,
+			   id_bancos : $id_bancos,
+			   id_tipo_cuentas : $id_tipo_cuentas,
+			   numero_participes_cuentas : $numero_participes_cuentas,
+			   cuenta_principal : $cuenta_principal
+				   
+	   }
+	   // console.log (datos);
+	   console.log(datos1);
+	   
+	   $.ajax({
+		   url:"index.php?controller=Participes&action=InsertaParticipesCuentas",
+		   type:"POST",
+		   dataType:"json",
+		   data: datos1
+	   }).done(function(x){
+		   console.log(x);
+		   if(x.respuesta == 1){
+			   swal({
+				   title:"Correctamente",
+				   text:x.mensaje,
+				   icon:"success",				   
+			   })
+			   
+			  load_cuentas_activos(1);  
+		   }
+	   }).fail(function(xhr,status,error){
+		   var err = xhr.responseText
+		   console.log(err)
+	   })
+	   return false;
+   
+  })
   
+  function delCuentas(id){
+	
+		
+	$.ajax({
+		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+		url:"index.php?controller=Participes&action=delCuentas",
+		type:"POST",
+		dataType:"json",
+		data:{id_participes_cuentas:id}
+	}).done(function(datos){		
+		
+		if(datos.data > 0){
+			
+			swal({
+		  		  title: "Cuenta",
+		  		  text: "Registro Eliminado",
+		  		  icon: "success",
+		  		  button: "Aceptar",
+		  		});
+					
+		}
+		
+		
+		
+	}).fail(function(xhr,status,error){
+		
+		var err = xhr.responseText
+		console.log(err);
+	}).always(function(){
+		
+		$("#divLoaderPage").removeClass("loader")
+		load_cuentas_activos();
+	})
+	
+	return false;
+}
   
-  
-  
+
+  function editCuentas(id = 0){
+  	
+  	var tiempo = tiempo || 1000;
+  		
+  	$.ajax({
+  		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+  		url:"index.php?controller=Participes&action=editCuentas",
+  		type:"POST",
+  		dataType:"json",
+  		data:{id_participes_cuentas:id}
+  	}).done(function(datos){
+  		
+  		if(!jQuery.isEmptyObject(datos.data)){
+	
+  			
+  			var array = datos.data[0];		
+  			$("#id_participes").val(array.id_participes);			
+  			$("#id_bancos").val(array.id_bancos);
+  			$("#id_tipo_cuentas").val(array.id_tipo_cuentas);
+  			$("#numero_participes_cuentas").val(array.numero_participes_cuentas);
+  			
+  			var _cuenta_principal = array.cuenta_principal;
+  			
+  			if (_cuenta_principal == 't'){
+  				
+  				$("#cuenta_principal").val('TRUE');
+  				
+  			}else {
+
+  				$("#cuenta_principal").val('FALSE');
+  				
+  			}
+  			
+  			
+  			$("#id_participes_cuentas").val(array.id_participes_cuentas);
+  			
+  			$("html, body").animate({ scrollTop: $(id_participes).offset().top-120 }, tiempo);			
+  		}
+  		
+  		
+  		
+  	}).fail(function(xhr,status,error){
+  		
+  		var err = xhr.responseText
+  		console.log(err);
+  	}).always(function(){
+  		
+  		$("#divLoaderPage").removeClass("loader")
+  		load_cuentas_activos();
+  	})
+  	
+  	return false;
+  	
+  }

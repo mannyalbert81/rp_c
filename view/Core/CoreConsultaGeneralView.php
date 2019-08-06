@@ -32,12 +32,18 @@
     
     
     </style>
+    
+    
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
    <?php include("view/modulos/links_css.php"); ?>
-   
 
+
+   
+   
+   
+</head>
 
   <body class="hold-transition skin-blue fixed sidebar-mini">   
   <?php
@@ -98,9 +104,7 @@
                  	</div>
              	</div>
             </div>
-        
-         
-         
+
             <div class="row">
         	
                 	<div class="col-lg-6 col-md-6 col-xs-12">
@@ -172,6 +176,7 @@
                     			 </div>        			 
                 			</div>
                  		</div>
+                 		
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
@@ -189,8 +194,8 @@
                     			 <div class="form-group-sm">
                     				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Acum.de Aport. Pers. :</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="total" name="total" value="<?php echo number_format($resEdit->total, 2, ",", "."); ?>" >
+                    				  <div id="mensaje_total" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -256,32 +261,20 @@
                  	
         </div>   
         
-        <div class=row>
-        <div class="col-lg-6 col-md-6 col-xs-12">
-        <div class="form-group "> 
-                    			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Kit Entregado:</label>
-                    				<div class="col-sm-8">
-                    				  <input type="checkbox" name="cb-autos" value="gusta">
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
-                    				</div>
-                    			 </div>        			 
-                			</div>
-        </div>
-        </div>
+        
       <div class="row">
       
       <div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="observaciones_participes_informacion_adicional" class="col-sm-4 control-label" >Observaciones:</label>
+                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Observaciones:</label>
                     				<div class="col-sm-8">
-                    				  <textarea name="comentario" value="<?php echo $resEdit->observaciones_participes_informacion_adicional; ?>" readonly="readonly" rows="2" cols="49"></textarea>
-                    				  <div id="mensaje_observaciones_participes_informacion_adicional" class="errores"></div>
+                    				  <input type="text" style="width:315px; height:50px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $resEdit->observacion_participes; ?>" >
+                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
-                 		</div>
+                		</div>
       
       
       
@@ -447,6 +440,8 @@
 		   }
 	
  </script>
+ 
+
    
   </body>
 

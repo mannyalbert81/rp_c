@@ -36,7 +36,7 @@ class CuentasBancariasModel extends ModeloBase{
 
 
 	public function __construct(){
-		$this->table="cuentas_bancarias_empleados";
+		$this->table="core_participes_cuentas";
 	
 		parent::__construct($this->table);
 	}

@@ -474,8 +474,10 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-   <script src="view/Administracion/js/Usuarios.js?3.1"></script>         	
+    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
+    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+    <script src="view/Administracion/js/validaCedula.js?0.02"></script>  
+    <script src="view/Administracion/js/Usuarios.js?3.8"></script>         	
   </body>
 </html>
 

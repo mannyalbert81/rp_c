@@ -87,13 +87,20 @@ class ProcesosMayorizacionController extends ControladorBase{
 	 */
 	public function detallesDiarioTipo(){
 	    
+	    session_start();
+	    
+	    $id_usuarios = $_SESSION['id_usuarios'];
+	    $usuario_usuarios = $_SESSION['usuario_usuarios'];
+	    
 	    $Participes = new ParticipesModel();
 	    
 	    $idTipoProcesos = (isset($_POST['id_tipo_procesos'])) ? $_POST['id_tipo_procesos'] : "";
 	    $anioDiario = (isset($_POST['anio_procesos'])) ? $_POST['anio_procesos'] : "";
 	    $mesDiario = (isset($_POST['mes_procesos'])) ? $_POST['mes_procesos'] : "";
-	    $tipoPeticion = (isset($_POST['peticion'])) ? $_POST['peticion'] : "";
+	    $tipoPeticion = (isset($_POST['peticion'])) ? $_POST['peticion'] : "";	
+	    $idModulos = (isset($_POST['id_modulos'])) ? $_POST['id_modulos'] : null;
 	    
+	   
 	    if(empty($idTipoProcesos)){
 	        echo '<message>Datos no recibidos<message>';
 	        return;
@@ -110,27 +117,31 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    
 	    if(empty($rsHistorial)){
 	        
+	        $arrayTabla = array();
+	        $cantidad = 0;
+	        $conceptoDiario = "Proceso Mensual";
+	        
+	        //se genera el array a insertar
+	        switch ($idTipoProcesos){
+	            case "1":
+	                
+	                break;
+	            case "8":
+	                $arrayTabla = $this->generaDiarioProvisionesMensuales($idTipoProcesos,$anioDiario,$mesDiario);
+	                $cantidad = sizeof($arrayTabla);
+	                $conceptoDiario.=" Provisiones";
+	                break;
+	            case "9":
+	                $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
+	                $cantidad = sizeof($arrayTabla);
+	                $conceptoDiario.=" Activos Fijos";
+	                break;
+	            default:
+	                break;
+	        }
+	        
 	        //validar tipo de accion simular o generar
 	        if($tipoPeticion == 'simulacion'){
-	            
-	            $arrayTabla = array();
-	            $cantidad = 0;
-	            //tipos de procesos si se aumentan agregar mas metodos
-	            switch ($idTipoProcesos){
-	                case "1":
-	                    
-	                    break;
-	                case "8":
-	                    $arrayTabla = $this->generaDiarioProvisionesMensuales($idTipoProcesos,$anioDiario,$mesDiario);
-	                    $cantidad = sizeof($arrayTabla);
-	                    break;
-	                case "9":
-	                    $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
-	                    $cantidad = sizeof($arrayTabla);
-	                    break;
-	                default:
-	                    break;
-	            }
 	            
 	            //array de datos
 	            $respuesta = array();
@@ -140,25 +151,98 @@ class ProcesosMayorizacionController extends ControladorBase{
 	            die();	    
 	            
 	        }else if( $tipoPeticion == 'generar' ){
-	            //aqui genera el comprobante
-	            switch ($idTipoProcesos){
-	                case "1":
-	                    
-	                    break;
-	                case "8":
-	                    $arrayTabla = $this->generaDiarioProvisionesMensuales($idTipoProcesos,$anioDiario,$mesDiario);
-	                    $cantidad = sizeof($arrayTabla);
-	                    break;
-	                case "9":
-	                    $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
-	                    $cantidad = sizeof($arrayTabla);
-	                    break;
-	                default:
-	                    break;
+	            //obtener datos de array
+	            	           	            
+	            $sumaDebe = 0;
+	            $sumaHaber = 0;
+	            $valorLetras = "";
+	            $fechaDiario = date("Y-m-d");
+	            
+	            foreach ($arrayTabla as $res){
+	                $sumaDebe = $sumaDebe + $res['valor_debe'];
+	                $sumaHaber = $sumaHaber + $res['valor_debe'];
 	            }
-	            // insert individual .
-	            //para ingresar .. comprobante
-	            echo '<message>En proceso <message>';die();
+	            
+	            if( $sumaDebe != $sumaHaber ){
+	                echo '<message> Valor comprobante no coincide <message>'; die();	                
+	            }
+	            
+	            try {
+	                
+	                $valorLetras = $Participes->numtoletras($sumaDebe);
+	                $observacionDiario = "";
+	                
+	                //relizar un begin
+	                $Participes->beginTran();
+	                
+	                //aqui genera el comprobante
+	                $funcion = "ins_ccomprobantes_procesos";
+	                $parametros = "'$sumaDebe', '$conceptoDiario', '$id_usuarios', '$valorLetras', '$fechaDiario', '$observacionDiario'";
+	                $consultaPG = "SELECT ". $funcion." ( ".$parametros." )";
+	                //echo $consultaPG;
+	                //generar primero el comprobante
+	                // insert individual .
+	                $ResultComprobante = $Participes->llamarconsultaPG($consultaPG);
+	                
+	                $id_comprobante = (int)$ResultComprobante[0];
+	                
+	                //para ingresar el detalle. se realiza con un ciclo
+	                $_id_plan_cuentas = 0;
+	                $_debe_comprobante = 0;
+	                $_haber_comprobante = 0;
+	                $funcionDet ="ins_dcomprobantes_procesos";
+	               
+	                foreach ($arrayTabla as $res){
+	                    $_id_plan_cuentas = $res['id_plan_cuentas'];
+	                    $_debe_comprobante = $res['valor_debe'];
+	                    $_haber_comprobante = $res['valor_haber'];
+	                    $paramDet = "'$id_comprobante','$_id_plan_cuentas','$conceptoDiario','$_debe_comprobante','$_haber_comprobante'";	
+	                    //query diario
+	                    $queryDetalle = "SELECT ".$funcionDet." ( ".$paramDet." )";
+	                    //insert diario 
+	                    $error = "";
+	                    $ResultDet = $Participes->llamarconsultaPG($queryDetalle);
+	                    $error = pg_last_error();
+	                    if( !empty($error) || (int)$ResultDet[0] <= 0){
+	                        $Participes->endTran();
+	                        throw new Exception("Error ingresando detalle");
+	                    }
+	                }
+	                
+	                //para la mayorizacion
+	                $funcionMayor = "fn_cuadra_plan_cuentas";
+	                foreach ($arrayTabla as $res){
+	                    $_id_plan_cuentas = $res['id_plan_cuentas'];	                   
+	                    $paramMayorizar = "'$_id_plan_cuentas'";
+	                    //query diario
+	                    $queryDetalle = "SELECT ".$funcionMayor." ( ".$paramMayorizar." )";
+	                    //realizar mayorizacion
+	                    $error = "";
+	                    $ResultMayorizar = $Participes->llamarconsultaPG($queryDetalle);
+	                    $error = pg_last_error();
+	                    if( !empty($error) || (int)$ResultMayorizar[0] <= 0){
+	                        $Participes->endTran();
+	                        throw new Exception("Error Mayorizando comprobante");
+	                    }
+	                }	                
+	               
+	                //inserta en historial
+	                $funcionHist = "ins_core_historial_diario";
+	                $paramHist = "'$idTipoProcesos','$idModulos','$id_comprobante','$usuario_usuarios','$anioDiario','$mesDiario'";
+	                $queryHist = "SELECT ".$funcionHist." ( ".$paramHist." )";
+	                $ResultHistorial = $Participes->llamarconsultaPG($queryHist);
+	                
+	                $Participes->endTran("COMMIT");
+	                
+	                echo json_encode( array('valor'=>1,'mensaje'=>"Proceso generado Correctamente"));
+	                
+	            } catch (Exception $ex) {
+	                
+	                echo '<message> Error Procesos '.$ex->getMessage().' <message>';
+	                
+	            }	            
+	            
+	            die();
 	        }else{
 	            echo 'peticion no solicitada';
 	            die();
@@ -167,7 +251,53 @@ class ProcesosMayorizacionController extends ControladorBase{
 	            
 	    }else{
 	        
+	       echo json_encode(array('valor'=>2)); die();
 	    }
+	    
+	}
+	
+	/***
+	 * dc 2019-08-06 
+	 * void grafica tabla
+	 */
+	function graficaDiarioExistente(){
+	   
+	    $Participes = new ParticipesModel();
+	    
+	    $idTipoProcesos = (isset($_POST['id_tipo_procesos'])) ? $_POST['id_tipo_procesos'] : "";
+	    $anioDiario = (isset($_POST['anio_procesos'])) ? $_POST['anio_procesos'] : "";
+	    $mesDiario = (isset($_POST['mes_procesos'])) ? $_POST['mes_procesos'] : "";
+	    $tipoPeticion = (isset($_POST['peticion'])) ? $_POST['peticion'] : "";
+	    $idModulos = (isset($_POST['id_modulos'])) ? $_POST['id_modulos'] : null;
+	    
+	    //consulta comprobante de historial
+	    $colHistorial = "id_ccomprobantes";
+	    $tabHistorial = "public.core_historial_diarios_tipo";
+	    $wheHistorial = "id_tipo_procesos = $idTipoProcesos
+                AND id_estatus = 1
+                AND anio_historial_diarios_tipo = $anioDiario
+                AND mes_historial_diarios_tipo = $mesDiario";
+	    $idHistorial = "id_historial_diarios_tipo";
+	    $rsHistorial = $Participes->getCondiciones($colHistorial, $tabHistorial, $wheHistorial, $idHistorial);
+	    
+	    $_id_comprobante_consulta = $rsHistorial[0]->id_ccomprobantes;
+	    
+	    $colComprobante = "dcomprobantes.id_ccomprobantes,
+            	        dcomprobantes.debe_dcomprobantes,
+            	        dcomprobantes.haber_dcomprobantes,
+            	        plan_cuentas.id_plan_cuentas,
+            	        plan_cuentas.codigo_plan_cuentas,
+            	        plan_cuentas.nombre_plan_cuentas";
+	    $tabComprobante = " public.dcomprobantes
+            	        INNER JOIN public.plan_cuentas
+            	        ON dcomprobantes.id_plan_cuentas = plan_cuentas.id_plan_cuentas";
+	    $wheComprobante = "dcomprobantes.id_ccomprobantes = $_id_comprobante_consulta";
+	    
+	    $idComprobante = "dcomprobantes.id_dcomprobantes";
+	    $rsComprobante = $Participes->getCondiciones($colComprobante, $tabComprobante, $wheComprobante, $idComprobante);
+	    
+	    //dibuja la tabla
+	    
 	    
 	}
 	

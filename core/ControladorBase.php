@@ -107,6 +107,19 @@ class ControladorBase{
         require_once 'view/Contable/'.$vista.'View.php';
     }
     
+    
+    public function view_GestionDocumental($vista,$datos){
+        foreach ($datos as $id_assoc => $valor) {
+            ${$id_assoc}=$valor;
+        }
+        
+        require_once 'core/AyudaVistas.php';
+        $helper=new AyudaVistas();
+        
+        require_once 'view/GestionDocumental/'.$vista.'View.php';
+    }
+    
+    
     public function view_tesoreria($vista,$datos){
         foreach ($datos as $id_assoc => $valor) {
             ${$id_assoc}=$valor;

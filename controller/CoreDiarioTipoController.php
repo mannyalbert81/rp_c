@@ -192,12 +192,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	        
 	        $resultSet=$diario_cabeza->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
-	        $count_query   = $cantidadResult;
 	        $total_pages = ceil($cantidadResult/$per_page);
-	        
-	        
-	        
-	        
 	        
 	        if($cantidadResult>0)
 	        {
@@ -207,7 +202,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:425px; overflow-y:scroll;">';
+	            $html.='<section style="height:250px; overflow-y:scroll;">';
 	            $html.= "<table id='tabla_diarios_tipo' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
@@ -966,6 +961,97 @@ class CoreDiarioTipoController extends ControladorBase{
 	
 	}
 	
+	/***
+	 * dc 2019-07-30
+	 *
+	 */
+	public function autompletePlanCuentasByCodigo(){
+	    
+	    $planCuentas = new PlanCuentasModel();	   
+	    
+	    if(isset($_GET['term'])){
+	        
+	        $parametro = $_GET['term'];
+	        
+	        $columnas = "id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	        $tablas = "public.plan_cuentas";
+	        $where = " codigo_plan_cuentas LIKE '$parametro%' AND nivel_plan_cuentas > 3";
+	        $id = "codigo_plan_cuentas ";
+	        $limit = "LIMIT 10";
+	        
+	        $rsPlanCuentas = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($rsPlanCuentas) ){
+	            
+	            foreach ($rsPlanCuentas as $res){
+	                
+	                $_cls_plan_cuentas = new stdClass;
+	                $_cls_plan_cuentas->id = $res->id_plan_cuentas;
+	                $_cls_plan_cuentas->value = $res->codigo_plan_cuentas;
+	                $_cls_plan_cuentas->label = $res->codigo_plan_cuentas.' | '.$res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->nombre = $res->nombre_plan_cuentas;
+	                
+	                $respuesta[] = $_cls_plan_cuentas;
+	            }
+	            
+	            echo json_encode($respuesta);
+	            
+	        }else{
+	            
+	            echo '[{"id":"","value":"Cuenta No Encontrada"}]';
+	        }
+	        
+	    }
+	}
+	
+	/***
+	 * dc 2019-07-30
+	 *
+	 */
+	public function autompletePlanCuentasByNombre(){
+	    
+	    $planCuentas = new PlanCuentasModel();
+	    
+	    if(isset($_GET['term'])){
+	        
+	        $parametro = $_GET['term'];
+	        
+	        $columnas = "id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	        $tablas = "public.plan_cuentas";
+	        $where = " nombre_plan_cuentas LIKE '%$parametro%' AND nivel_plan_cuentas > 3";
+	        $id = "codigo_plan_cuentas ";
+	        $limit = "LIMIT 10";
+	        
+	        $rsPlanCuentas = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($rsPlanCuentas) ){
+	            
+	            foreach ($rsPlanCuentas as $res){
+	                
+	                $_cls_plan_cuentas = new stdClass;
+	                $_cls_plan_cuentas->id = $res->id_plan_cuentas;
+	                $_cls_plan_cuentas->value = $res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->label = $res->codigo_plan_cuentas.' | '.$res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->nombre = $res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->codigo = $res->codigo_plan_cuentas;
+	                
+	                $respuesta[] = $_cls_plan_cuentas;
+	            }
+	            
+	            echo json_encode($respuesta);
+	            
+	        }else{
+	            
+	            echo '[{"id":"","value":"Cuenta No Encontrada"}]';
+	        }
+	        
+	    }
+	}
+	
 	
 	
 	public function InsertaDiarioTipo(){
@@ -1088,7 +1174,7 @@ class CoreDiarioTipoController extends ControladorBase{
 	    
 	    $columnas = "id_tipo_procesos, nombre_tipo_procesos";
 	    $tablas = "core_tipo_procesos"; 
-	    $where = "id_modulos = $_id_modulos ";
+	    $where = " diarios_tipo_procesos = 't' AND id_modulos = $_id_modulos ";
 	    $id = "id_modulos";	    
 	    
 	    $rsTipoProceso = $modulos->getCondiciones($columnas, $tablas, $where, $id);

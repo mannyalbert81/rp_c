@@ -19,7 +19,7 @@ function load_planes_cuenta()
 	if (!cargado)
 		{
 		swal({
-			  title: "Tabala de cuentas",
+			  title: "Tabla de cuentas",
 			  text: "Cargando tabla de cuentas",
 			  icon: "view/images/capremci_load.gif",
 			  buttons: false,

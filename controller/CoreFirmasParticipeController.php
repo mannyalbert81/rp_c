@@ -111,7 +111,7 @@ class CoreFirmasParticipeController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND (nombre_participes LIKE '".$search."%' )";
+                $where1=" AND (nombre_participes LIKE '".$search."%' OR cedula_participes LIKE '".$search."%')";
                 
                 $where_to=$where.$where1;
             }else{
@@ -179,8 +179,8 @@ class CoreFirmasParticipeController extends ControladorBase{
                     $i++;
                     $html.='<tr>';
                     $html.='<tr >';
-                    $html.='<td colspan="2" style="text-align: left; font-size: 11px;"><a target="_blank" href="index.php?controller=CoreFirmasParticipe&action=verDoc&documento='.urlencode($res->path_archivo_firmas_participes).' "><i class="glyphicon glyphicon-new-window"></i></a></td>';
-                    $html.='<td colspan="1" style="text-align: left; font-size: 11px;"><img class="zoom" src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_firmas_participes.'&id_nombre=id_firmas_participes&tabla=core_firmas_participes&campo=firma_firmas_participes"  width="80" height="60"></td>';
+                    $html.='<td colspan="2" style="text-align: left; font-size: 11px;"><a target="_blank" href="index.php?controller=CoreFirmasParticipe&action=verDoc&documento='.urlencode($res->path_archivo_firmas_participes).' "><i class="glyphicon glyphicon-print"></i></a></td>';
+                    $html.='<td colspan="1" style="text-align: left; font-size: 11px;"><img class="zoom" id="myImg"src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_firmas_participes.'&id_nombre=id_firmas_participes&tabla=core_firmas_participes&campo=firma_firmas_participes" alt="" width="80" height="60"></td>';
                     $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->nombre_participes.'</td>';
                     $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->apellido_participes.'</td>';
                     $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->cedula_participes.'</td>';
@@ -295,9 +295,20 @@ class CoreFirmasParticipeController extends ControladorBase{
            
             $documento = urldecode($_GET['documento']);
             $dat = base64_encode(file_get_contents($documento));
+            $reporteimg= array(); 
+            
+            
+            //die ($documento);
+            
             $src = 'data:'.mime_content_type($documento).';base64,'.$dat;
             
-            echo "<img src=\"$src\" width=50%; style='text-align:center;'>";
+            //echo "<center><img src=\"$src\" width=80%;></img></center>";
+            
+            //$src="\\192.168.1.128\capremci\INDEX\VERIFICACION FIRMAS\ENTRADA\sysadminBatch4641230719_005.png";
+            
+            $reporteimg['REPORTE_IMAGEN']= $src;
+            
+            $this->verReporte("Firmas", array('reporteimg'=>$reporteimg));
             
             
         }

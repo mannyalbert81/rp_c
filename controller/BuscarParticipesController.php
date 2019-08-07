@@ -61,7 +61,8 @@ class BuscarParticipesController extends ControladorBase{
         
         $html.='
         <div class="box box-widget widget-user-2">';
-        if(!(empty($resultCreditos))) $html.='<a class="btn btn-default pull-right" href="index.php?controller=AnalisisCreditos&action=cuotaParticipe" role="button" target="_blank"><i class="glyphicon glyphicon-stats"></i></a>';
+        if(!(empty($resultCreditos))) $html.='<button class="btn btn-default pull-right" title="Analisis credito"  onclick="AnalisisCredito()"><i class="glyphicon glyphicon-stats"></i></button>';
+        if($resultSet[0]->nombre_estado_participes=="Activo")$html.='<button class="btn btn-default pull-right" title="Simulacion credito" onclick="SimulacionCredito()" ><i class="glyphicon glyphicon-briefcase"></i></button>';
         $html.='<div class="widget-user-header bg-olive">'
             .$icon.
             '<h3 class="widget-user-username">'.$resultSet[0]->nombre_participes.' '.$resultSet[0]->apellido_participes.'</h3>

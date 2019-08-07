@@ -593,7 +593,7 @@ class ProveedoresController extends ControladorBase{
 	/***
 	 * dc 2019-07-09
 	 * mod: Contabilidad
-	 * desc: enlista los proveedores
+	 * desc: lista proveedores
 	 */
 	public function ListaProveedores(){	    
 	   

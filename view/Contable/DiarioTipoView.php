@@ -247,7 +247,7 @@
 					
 					<div id="load_diarios_tipo" ></div>
 					<div id="cargar_diarios_tipo" ></div>
-					
+					<div class="clearfix"></div>
 				  </div>
 				<br>
 				  <div class="modal-footer">
@@ -269,7 +269,7 @@
     
    
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Contable/FuncionesJS/DiarioTipo.js?0.08"></script>
+    <script src="view/Contable/FuncionesJS/DiarioTipo.js?1.00"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     

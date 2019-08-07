@@ -134,7 +134,7 @@ $controladores=$_SESSION['controladores'];
               <ul class="treeview-menu">
                 <li style="<?php echo getcontrolador("SolicitudCabeza",$controladores) ?>"><a href="index.php?controller=MovimientosInv&action=index_solicitudes"><i class="fa fa-circle-o"></i> Solicitud de Materiales</a></li>
     			<li style="<?php echo getcontrolador("Productos",$controladores) ?>"><a href="index.php?controller=MovimientosInv&action=IngresoMateriales"><i class="fa fa-circle-o"></i>Ingreso de Materiales</a></li>
-    			<li style="<?php echo getcontrolador("SolicitudCabeza",$controladores) ?>"><a href="index.php?controller=MovimientosInv&action=indexsalida"><i class="fa fa-circle-o"></i> Salida de Materiales</a></li>
+    			<li style="<?php echo getcontrolador("SolicitudCabeza",$controladores) ?>"><a href="index.php?controller=MovimientosInv&action=indexsalida"><i class="fa fa-circle-o"></i> Salida de Materiales</a></li>    			
              </ul>
             </li>
         
@@ -190,7 +190,7 @@ $controladores=$_SESSION['controladores'];
           <ul class="treeview-menu">
       		<li style="<?php echo getcontrolador("ComprobanteContable",$controladores) ?>"><a href="index.php?controller=ComprobanteContable&action=index"><i class="fa fa-circle-o"></i>Comprobantes Contable</a></li>
      		<li style="<?php echo getcontrolador("ComprobanteTipo",$controladores) ?>"><a href="index.php?controller=ComprobanteTipo&action=index"><i class="fa fa-circle-o"></i>Comprobantes Tipo</a></li>
-    
+    		<li style="<?php echo getcontrolador("ProcesosMayorizacion",$controladores) ?>"><a href="index.php?controller=ProcesosMayorizacion&action=index"><i class="fa fa-circle-o"></i> Procesos Mensuales</a></li>
     	  </ul>
         </li>
         

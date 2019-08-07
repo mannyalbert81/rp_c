@@ -152,7 +152,7 @@
   <?php include("view/modulos/links_js.php"); ?>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-  <script src="view/Contable/FuncionesJS/procesosMayorizacion.js?0.10"></script>
+  <script src="view/Contable/FuncionesJS/procesosMayorizacion.js?0.12"></script>
   
 	
  </body>

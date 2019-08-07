@@ -210,17 +210,17 @@
 	            $html.= "<table id='tabla_solicitud_prestamos_registrados' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
-	            $html.='<th style="text-align: left;  font-size: 10px;">Ord.</th>';
-	            $html.='<th style="text-align: left;  font-size: 10px;">Origen</th>';
-	            $html.='<th style="text-align: left;  font-size: 10px;"># Juicio</th>';
-	            $html.='<th style="text-align: left;  font-size: 10px;">Año Juicio</th>';
-	            $html.='<th style="text-align: left;  font-size: 10px;">Nombres Cliente 1</th>';
-	            $html.='<th style="text-align: left;  font-size: 10px;">Sexo 1</th>';
-	            $html.='<th style="text-align: left;  font-size: 10px;">Fecha Última Providencia</th>';
-	            $html.='<th style="text-align: left;  font-size: 10px;">Estrategia a Seguir</th>';
-	            $html.='<th style="text-align: left;  font-size: 10px;">Estado Procesal</th>';
-	            $html.='<th style="text-align: left;  font-size: 10px;">Observaciones</th>';
-	            $html.='<th style="text-align: left;  font-size: 10px;">Impulsor</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ord.</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Origen</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"># Juicio</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Año Juicio</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombres Cliente 1</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Sexo 1</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Última Providencia</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estrategia a Seguir</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado Procesal</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Observaciones</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Impulsor</th>';
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -233,17 +233,17 @@
 	                
 	                $i++;
 	                $html.='<tr>';
-	                $html.='<td style="font-size: 9px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 9px;">'.$res->nombre_origen_juicio.'</td>';
-	                $html.='<td style="font-size: 9px;">'.$res->juicio_referido_titulo_credito.'</td>';
-	                $html.='<td style="font-size: 9px;">'.$res->year_juicios.'</td>';
-	                $html.='<td style="font-size: 9px;">'.$res->nombres_clientes.'</td>';
-	                $html.='<td style="font-size: 9px;">'.$res->sexo_clientes.'</td>';
-	                $html.='<td style="font-size: 9px;">'.$res->fecha_ultima_providencia.'</td>';
-	                $html.='<td style="font-size: 9px;">'.$res->estrategia_seguir.'</td>';
-	                $html.='<td style="font-size: 9px;">'.$res->nombre_estados_procesales_juicios.'</td>';
-	                $html.='<td style="font-size: 9px;">'.$res->observacion.'</td>';
-	                $html.='<td style="font-size: 9px;">'.$res->impulsores.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_origen_juicio.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->juicio_referido_titulo_credito.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->year_juicios.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombres_clientes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->sexo_clientes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_ultima_providencia.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->estrategia_seguir.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estados_procesales_juicios.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->observacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->impulsores.'</td>';
 	                $html.='</tr>';
 	                
 	                

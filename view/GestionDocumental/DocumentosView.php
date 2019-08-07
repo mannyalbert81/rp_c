@@ -55,7 +55,7 @@
           </h1>
           <ol class="breadcrumb">
             <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Participes</li>
+            <li class="active">Documentos</li>
           </ol>
         </section>
         
@@ -83,10 +83,10 @@
               <div class="tab-pane active" id="activos">
                 
 				 <div class="pull-right" style="margin-right:11px;">
-					<input type="text" value="" class="form-control" id="search_solicitud" name="search_solicitud" onkeyup="load_matriz(1)" placeholder="search.."/>
+					<input type="text" value="" class="form-control" id="search_solicitud" name="search_solicitud" onkeyup="load_documentos(1)" placeholder="search.."/>
 					</div>
                     	
-					<div id="load_matriz" ></div>	
+					<div id="load_documentos" ></div>	
 					<div id="solicitud_prestamos_registrados"></div>	
 				  
                 
@@ -116,7 +116,7 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/GestionDocumental/js/MatrizJuicios.js?3.27" ></script>
+ <script src="view/GestionDocumental/js/Documentos.js?3.28" ></script>
  
  </body>
 </html>

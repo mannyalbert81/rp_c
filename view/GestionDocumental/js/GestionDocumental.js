@@ -34,9 +34,6 @@ function cargaCategoria(){
 }
 
 
-
-
-
 function cargaSubCategoria(id_categorias){
 	
 	let $dllSubCategorias = $("#id_subcategorias");
@@ -67,12 +64,6 @@ function cargaSubCategoria(id_categorias){
 }
 
 
-
-
-
-
-
-
   
 $("#id_categorias").click(function() {
 	
@@ -99,5 +90,31 @@ $("#id_categorias").change(function() {
 
 
 
-
-
+$( "#numero_credito" ).autocomplete({
+ source: 'index.php?controller=Indexacion&action=AutocompleteCedula',
+  	minLength: 1
+ });
+                    		
+$("#numero_credito").focusout(function(){
+                    					
+$.ajax({
+url:'index.php?controller=Indexacion&action=DevuelveNombre',
+type:'POST',
+dataType:'json',
+data:{numero_credito:$('#numero_credito').val()}
+}).done(function(respuesta){
+                    		
+	$('#nombres_capremci').val(respuesta.nombres_capremci);
+	$('#numero_credito').val(respuesta.numero_credito);
+	$('#id_capremci').val(respuesta.id_capremci)
+                    						
+                    					
+}).fail(function(respuesta) {
+                    						  
+$('#nombres_capremci').val("");
+$('#numero_credito').val("");
+			                    						
+});
+                    					
+});
+                    				

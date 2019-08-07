@@ -579,6 +579,53 @@ $controladores=$_SESSION['controladores'];
        </ul>
       </li>
       
+<li class="treeview"  style="<?php echo getcontrolador("MenuGestionDoc",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder"></i> <span>Gestion Documental</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+             <li class="treeview"  style="<?php echo getcontrolador("AdministracionGestionDoc",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                
+    		  </ul>
+            </li>
+            
+            
+            <li class="treeview"  style="<?php echo getcontrolador("ProcesosGestionDoc",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+              	
+             </ul>
+            </li>
+        
+        <li class="treeview"  style="<?php echo getcontrolador("ReporteGestionDoc",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder-open-o"></i> <span>Reportes</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+           <li style="<?php echo getcontrolador("Indexacion",$controladores) ?>"><a href="index.php?controller=Indexacion&action=index"><i class="fa fa-circle-o"></i>Indexación</a></li>
+		  </ul>
+        </li>
+       </ul>
+      </li>      
+      
 
     </ul>
     

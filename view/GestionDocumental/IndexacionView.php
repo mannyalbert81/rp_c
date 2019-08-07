@@ -96,26 +96,26 @@
                         </div>
             		  </div>
             		  
-            		<div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-            		      <label for="nombre_bancos" class="control-label">Numero de Credito:</label>
-                          <input  type="text" class="form-control" id="nombre_bancos" name="nombre_bancos" value=""  placeholder="Nombre Bancos" required/>
-                          <input type="hidden" name="id_bancos" id="id_bancos" value="0" />
-                          <div id="mensaje_nombre_bancos" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
-                                              
-                        </div>
-            		  </div>
-            		 <div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-            		      <label for="nombre_bancos" class="control-label">Nombre:</label>
-                          <input  type="text" class="form-control" id="nombre_bancos" name="nombre_bancos" value=""  placeholder="Nombre Bancos" required/>
-                          <input type="hidden" name="id_bancos" id="id_bancos" value="0" />
-                          <div id="mensaje_nombre_bancos" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
-                                              
-                        </div>
-            		  </div>
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+        		     <div class="form-group">
+                          <label for="numero_credito" class="control-label">Número de Credito:</label>
+                          <input type="text" class="form-control" id="numero_credito" name="numero_credito" value=""  placeholder="Número...">
+                          <div id="mensaje_numero_credito" class="errores"></div> 
+                          <input type="hidden" class="form-control" id="id_capremci" name="id_capremci" value="0" >
+                  <span class="help-block"></span>
+					</div>
+        		     </div>
+        		     
+        		     <div class="col-xs-12 col-md-3 col-lg-3">
+        		     <div class="form-group">
+                          <label for="nombres_capremci" class="control-label">Nombre:</label>
+                          <input type="text" class=" form-control" id="nombres_capremci" name="nombres_capremci" value=""  placeholder="Nombre">
+                           <div id="mensaje_nombres_capremci" class="errores"></div> 
+                           <input type="hidden" class="form-control" id="id_capremci" name="id_capremci" value="0"  placeholder="Search">
+                  <span class="help-block"></span>
+                     </div>
+        		     </div>
+                        		     
             		 <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
             		      <label for="nombre_bancos" class="control-label">Cédula:</label>
@@ -152,7 +152,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/GestionDocumental/js/GestionDocumental.js?0.3"></script> 
        
-       
+
 
  	
 	

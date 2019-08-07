@@ -22,6 +22,13 @@
         background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;
         }
+        
+        .codigo {
+        width: 15%;
+        font-size:32px;
+        text-align:center;
+        }
+ 
      
        
  	  
@@ -228,7 +235,7 @@
 		<div class="modal-content">
 	    	<div class="modal-header">
 	    		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Simulación Crédito</h4>
+				<h4 class="modal-title" id="myModalLabel">Insertar Crédito</h4>
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
@@ -281,6 +288,35 @@
 	</div>
 </div>
 
+<!-- Modal Inserta Credito -->
+ 
+ <div class="modal fade bs-example" id="myModalInsertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+	    	<div class="modal-header">
+	    		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Confirmar Crédito</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group" align="center">
+				 <div id="info_credito_confirmar"></div>
+          	 <div class="row">
+          	 		<div class="form-group" align="center">
+          	 		<input type="text" class="codigo" data-inputmask="'mask': '99999'" class="form-control" id="codigo_confirmacion" name="codigo_confirmacion">
+                 </div>
+              </div>
+              <div class="row">
+          	 		<div class="form-group" align="center">
+          	 		<button type="button" id="registrar_credito" name="registrar_credito" class="btn btn-primary" onclick="RegistrarCredito()"> ACEPTAR</button>
+                 </div>
+              </div>
+				</div>
+				<br>
+			</div>			
+		</div>
+	</div>
+</div>
+
 
   
  
@@ -297,6 +333,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?0.10"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?0.11"></script> 
    </body>
 </html>   

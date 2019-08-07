@@ -20,15 +20,21 @@ class ProcesosMayorizacionController extends ControladorBase{
 		if (isset(  $_SESSION['nombre_usuarios']) )
 		{
 
-			$nombre_controladores = "Estados";
+			$nombre_controladores = "ProcesosMayorizacion";
 			$id_rol= $_SESSION['id_rol'];
 			$resultPer = $estados->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
 			if (!empty($resultPer))
 			{
+			    $colModulos = " modulos.id_modulos, modulos.nombre_modulos";
+			    $tabModulos = " public.modulos
+        			    INNER JOIN public.core_tipo_procesos
+        			    ON core_tipo_procesos.id_modulos = modulos.id_modulos ";
+			    $wheModulos = " 1 = 1 ";
+			    $gruModulos = " modulos.id_modulos, modulos.nombre_modulos ";
+			    $idModulos = " modulos.nombre_modulos ";
 			    
-			    $queryModulos = "SELECT * FROM modulos WHERE 1=1";
-			    $rsModulos = $estados->enviaquery($queryModulos);
+			    $rsModulos = $estados->getCondiciones_grupo($colModulos,$tabModulos,$wheModulos,$gruModulos,$idModulos);
 			    
 				
 				
@@ -106,7 +112,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        return;
 	    }
 	    //validar los campos recibidos para generar diario 
-	    $colHistorial = "1 existe";
+	    $colHistorial = "1 existe, id_ccomprobantes";
 	    $tabHistorial = "public.core_historial_diarios_tipo";
 	    $wheHistorial = "id_tipo_procesos = $idTipoProcesos
                 AND id_estatus = 1 
@@ -251,7 +257,9 @@ class ProcesosMayorizacionController extends ControladorBase{
 	            
 	    }else{
 	        
-	       echo json_encode(array('valor'=>2)); die();
+	        $_id_comprobante_consulta = $rsHistorial[0]->id_ccomprobantes;
+	        
+	        echo json_encode(array('valor'=>2,'id_ccomprobantes'=>$_id_comprobante_consulta)); die();
 	    }
 	    
 	}
@@ -264,24 +272,9 @@ class ProcesosMayorizacionController extends ControladorBase{
 	   
 	    $Participes = new ParticipesModel();
 	    
-	    $idTipoProcesos = (isset($_POST['id_tipo_procesos'])) ? $_POST['id_tipo_procesos'] : "";
-	    $anioDiario = (isset($_POST['anio_procesos'])) ? $_POST['anio_procesos'] : "";
-	    $mesDiario = (isset($_POST['mes_procesos'])) ? $_POST['mes_procesos'] : "";
-	    $tipoPeticion = (isset($_POST['peticion'])) ? $_POST['peticion'] : "";
-	    $idModulos = (isset($_POST['id_modulos'])) ? $_POST['id_modulos'] : null;
+	    $_id_ccomprobantes = (isset($_POST['id_ccomprobantes'])) ? $_POST['id_ccomprobantes'] : "";
 	    
-	    //consulta comprobante de historial
-	    $colHistorial = "id_ccomprobantes";
-	    $tabHistorial = "public.core_historial_diarios_tipo";
-	    $wheHistorial = "id_tipo_procesos = $idTipoProcesos
-                AND id_estatus = 1
-                AND anio_historial_diarios_tipo = $anioDiario
-                AND mes_historial_diarios_tipo = $mesDiario";
-	    $idHistorial = "id_historial_diarios_tipo";
-	    $rsHistorial = $Participes->getCondiciones($colHistorial, $tabHistorial, $wheHistorial, $idHistorial);
-	    
-	    $_id_comprobante_consulta = $rsHistorial[0]->id_ccomprobantes;
-	    
+	    //consulta comprobante de historial	    
 	    $colComprobante = "dcomprobantes.id_ccomprobantes,
             	        dcomprobantes.debe_dcomprobantes,
             	        dcomprobantes.haber_dcomprobantes,
@@ -291,13 +284,34 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    $tabComprobante = " public.dcomprobantes
             	        INNER JOIN public.plan_cuentas
             	        ON dcomprobantes.id_plan_cuentas = plan_cuentas.id_plan_cuentas";
-	    $wheComprobante = "dcomprobantes.id_ccomprobantes = $_id_comprobante_consulta";
+	    $wheComprobante = "dcomprobantes.id_ccomprobantes = $_id_ccomprobantes";
 	    
 	    $idComprobante = "dcomprobantes.id_dcomprobantes";
+	    
 	    $rsComprobante = $Participes->getCondiciones($colComprobante, $tabComprobante, $wheComprobante, $idComprobante);
 	    
-	    //dibuja la tabla
-	    
+	    //genera array para enviar datos y se grafique	    
+	   
+	    $arrayRespuesta = array();
+	    $fila = array();
+	    foreach ($rsComprobante as $res){
+	        
+	        $fila=array('id_diario_tipo_detalle'=>0,
+	            'id_plan_cuentas'=>$res->id_plan_cuentas,
+	            'codigo'=>$res->codigo_plan_cuentas,
+	            'nombre'=>$res->nombre_plan_cuentas,
+	            'valor_debe'=>$res->debe_dcomprobantes,
+	            'valor_haber'=>$res->haber_dcomprobantes
+	        );
+	        array_push( $arrayRespuesta, $fila);
+	    }
+	    $cantidad = sizeof($arrayRespuesta);
+	    //array de datos
+	    $respuesta = array();
+	    $respuesta['tabladatos'] = $this->graficaDiario($arrayRespuesta);
+	    $respuesta['valores'] = array('cantidad'=>$cantidad);
+	    echo json_encode($respuesta);
+	    die();
 	    
 	}
 	
@@ -940,8 +954,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                
 	                echo $resultado;
 	            }
-	            
-	            
+	                        
 	            
 	        }
 	        
@@ -952,8 +965,19 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    }
 	    
 	    
+	}
+	
+	public function ActivaCredito(){
+	    
+	    session_start();
+	    $Participes = new ParticipesModel();
+	    $credito;
+	    
+	    	    
+	    //genera la cuenta por pagar
 	    
 	}
+	
 	
 	
 }

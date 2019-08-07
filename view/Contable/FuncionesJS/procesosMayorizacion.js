@@ -150,13 +150,13 @@ $("#btngenera").on("click",function(event){
 		icon:"view/images/capremci_load.gif",
 		dangerMode:true,
 		buttons: {
-		    cancel:"Cancelar",		    
+		    Cancelar:"Cancelar",		    
 		    continuar: "Continuar",		    
 		  },
 	}).then((value) => {
 		  switch (value) {		 
-		    case "cancel":
-		    	$("#btngenera").attr('disabled',false);  alert('hola');
+		    case "Cancelar":
+		    	$("#btngenera").attr('disabled',false);
 		      break;		 
 		    case "continuar":
 		    	generaDiario($procesos.val(), $modulos.val(), $anioProcesos.val(), $mesProcesos.val());
@@ -193,8 +193,10 @@ function generaDiario(in_proceso,in_modulo,in_anio,in_mes){
 			 swal({
 				 title:"Procesos Mensuales",
 				 text:"Diario ya Generado revise los detalles en la tabla",
-				 icon:"success"
+				 icon:"warning"
 			 })
+			 
+			 buscaDiario(x.id_ccomprobantes);
 			 
 		 }
 	 }).fail(function(xhr,status,error){
@@ -213,6 +215,36 @@ function generaDiario(in_proceso,in_modulo,in_anio,in_mes){
 	 })
 	
 }
+
+function buscaDiario(in_comprobante){
+	
+	let $divResultados = $("#div_detalle_procesos");
+	$divResultados.html();
+	
+	$.ajax({
+		 url:"index.php?controller=ProcesosMayorizacion&action=graficaDiarioExistente",
+		 type:"POST",
+		 dataType:"json",
+		 data:{id_ccomprobantes:in_comprobante}
+	 }).done(function(x){
+		 $divResultados.html(x.tabladatos);
+	 }).fail(function(xhr,status,error){
+		 let err = xhr.responseText;
+		 console.log(err);
+		 var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		 if( mensaje !== null ){
+			 var resmsg = mensaje[1];
+			 swal( {
+				 title:"Error",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+				})
+		 }
+	 })
+	
+}
+
 
 function resetFields(){
 	$("#id_modulos").val(0);

@@ -114,27 +114,33 @@ $("#btnDetalles").on("click",function(event){
 
 $("#btngenera").on("click",function(event){
 	
-	let $modulo = $("#id_modulos"),
+	let $modulos = $("#id_modulos"),
 		$procesos = $("#id_tipo_procesos"),
 		$anioProcesos = $("#anio_procesos"),
 		$mesProcesos = $("#mes_procesos"),
 		$divResultados = $("#div_detalle_procesos");
 	$divResultados.html();
 	
-	if($modulo.val() == '0'){
-		$modulo.notify("Seleccione el modulo",{ position:"buttom left", autoHideDelay: 2000});
+	$("#btngenera").attr('disabled',true);
+	
+	if($modulos.val() == '0'){
+		$modulos.notify("Seleccione el modulo",{ position:"buttom left", autoHideDelay: 2000});
+		$("#btngenera").attr('disabled',false);
 		return false;
 	}	
 	if($procesos.val() == '0'){
 		$procesos.notify("Seleccione el proceso",{ position:"buttom left", autoHideDelay: 2000});
+		$("#btngenera").attr('disabled',false);
 		return false;
 	}
 	if($anioProcesos.val() == ''){
 		$anioProcesos.notify("Digite anio",{ position:"buttom left", autoHideDelay: 2000});
+		$("#btngenera").attr('disabled',false);
 		return false;
 	}
 	if($mesProcesos.val() == '0'){
 		$mesProcesos.notify("Seleccione mes de proceso",{ position:"buttom left", autoHideDelay: 2000});
+		$("#btngenera").attr('disabled',false);
 		return false;
 	}
 	
@@ -144,16 +150,17 @@ $("#btngenera").on("click",function(event){
 		icon:"view/images/capremci_load.gif",
 		dangerMode:true,
 		buttons: {
-		    cancel:"Cancelar",
+		    cancel:"Cancelar",		    
 		    continuar: "Continuar",		    
 		  },
 	}).then((value) => {
 		  switch (value) {		 
 		    case "cancel":
-		      return;
+		    	$("#btngenera").attr('disabled',false);  alert('hola');
 		      break;		 
 		    case "continuar":
-		    	generaDiario($modulo.val(), $anioProcesos.val(), $mesProcesos.val());
+		    	generaDiario($procesos.val(), $modulos.val(), $anioProcesos.val(), $mesProcesos.val());
+		    	$("#btngenera").attr('disabled',false);
 		      break;
 		    default:
 		      return;
@@ -164,17 +171,32 @@ $("#btngenera").on("click",function(event){
 	
 })
 
-function generaDiario(in_proceso,in_anio,in_mes){
-	
+function generaDiario(in_proceso,in_modulo,in_anio,in_mes){
+		
 	$.ajax({
 		 url:"index.php?controller=ProcesosMayorizacion&action=detallesDiarioTipo",
 		 type:"POST",
 		 dataType:"json",
-		 data:{peticion:"generar",id_tipo_procesos:in_proceso,anio_procesos: in_anio,mes_procesos: in_mes}
+		 data:{peticion:"generar",id_tipo_procesos:in_proceso,id_modulos:in_modulo,anio_procesos: in_anio,mes_procesos: in_mes}
 	 }).done(function(x){
-		 //console.log(x)
-		 $divResultados.html(x.tabladatos);
-		 setTableStyle("tbl_detalle_diario");
+		 console.log(x)		 
+		 if( x.valor == 1){
+			 resetFields();
+			 swal({
+				 title:"Procesos Mensuales",
+				 text:x.mensaje,
+				 icon:"success"
+			 })
+			 
+		 }
+		 if( x.valor == 2){
+			 swal({
+				 title:"Procesos Mensuales",
+				 text:"Diario ya Generado revise los detalles en la tabla",
+				 icon:"success"
+			 })
+			 
+		 }
 	 }).fail(function(xhr,status,error){
 		 let err = xhr.responseText;
 		 console.log(err);
@@ -190,4 +212,9 @@ function generaDiario(in_proceso,in_anio,in_mes){
 		 }
 	 })
 	
+}
+
+function resetFields(){
+	$("#id_modulos").val(0);
+	$("#id_tipo_procesos").val(0);
 }

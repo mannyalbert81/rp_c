@@ -305,7 +305,7 @@ class CoreInformacionParticipesController extends ControladorBase{
                     
                     $i++;
                     $html.='<tr>';
-                    $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=CoreInformacionParticipes&action=index_consulta_general&id_participes='.$res->id_participes.'" title="Consultar Participe"><img style=" height:30px; width:50px;" src="view/images/Search.png"></img></a></span></td>';
+                    $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=CoreInformacionParticipes&action=index_consulta_general&id_participes='.$res->id_participes.'" title="Consultar Participe"><i class="glyphicon glyphicon-chevron-right"></i></a></span></td>';
                     $html.='<td style="text-align: center; font-size: 11px;">'.$i.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->apellido_participes.'</td>';

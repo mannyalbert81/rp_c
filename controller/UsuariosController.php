@@ -1670,7 +1670,7 @@ class UsuariosController extends ControladorBase{
 	                    $_cls_usuarios = new stdClass;
 	                    $_cls_usuarios->id=$res->id_usuarios;
 	                    $_cls_usuarios->value=$res->cedula_usuarios;
-	                    $_cls_usuarios->label=$res->cedula_usuarios.' - '.$res->nombre_usuarios;
+	                    $_cls_usuarios->label=$res->cedula_usuarios.' | '.$res->nombre_usuarios;
 	                    $_cls_usuarios->nombre=$res->nombre_usuarios;
 	                    
 	                    $respuesta[] = $_cls_usuarios;

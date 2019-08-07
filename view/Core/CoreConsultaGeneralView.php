@@ -125,7 +125,7 @@
                     			 <div class="form-group-sm">
                     				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" > Fecha de Ingreso:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes"  value="<?php echo $resEdit->fecha_ingreso_participes; ?>" >
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes"  value="<?php echo  $resEdit->fecha_ingreso_participes; ?>" >
                     				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
                     				</div>
                     			 </div>        			 

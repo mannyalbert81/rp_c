@@ -111,7 +111,7 @@ class CoreFirmasParticipeController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND (nombre_participes LIKE '".$search."%' )";
+                $where1=" AND (nombre_participes LIKE '".$search."%' OR cedula_participes LIKE '".$search."%')";
                 
                 $where_to=$where.$where1;
             }else{
@@ -297,7 +297,14 @@ class CoreFirmasParticipeController extends ControladorBase{
             $dat = base64_encode(file_get_contents($documento));
             $reporteimg= array(); 
             
+            
+            //die ($documento);
+            
             $src = 'data:'.mime_content_type($documento).';base64,'.$dat;
+            
+            //echo "<center><img src=\"$src\" width=80%;></img></center>";
+            
+            //$src="\\192.168.1.128\capremci\INDEX\VERIFICACION FIRMAS\ENTRADA\sysadminBatch4641230719_005.png";
             
             $reporteimg['REPORTE_IMAGEN']= $src;
             

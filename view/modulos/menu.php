@@ -340,7 +340,6 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li style="<?php echo getcontrolador("BuscarParticipes",$controladores) ?>"><a href="index.php?controller=BuscarParticipes&action=index"><i class="fa fa-circle-o"></i> Buscar Participes</a></li>
                 <li style="<?php echo getcontrolador("BuscarParticipes",$controladores) ?>"><a href="index.php?controller=Recaudacion&action=index"><i class="fa fa-circle-o"></i> Arc. Entidad Patronal</a></li>                
                 </ul>
             </li>
@@ -448,6 +447,8 @@ $controladores=$_SESSION['controladores'];
      			<li style="<?php echo getcontrolador("Participes",$controladores) ?>"><a href="index.php?controller=Participes&action=index"><i class="fa fa-circle-o"></i>Participes</a></li>
 				<li style="<?php echo getcontrolador("CoreEntidadPatronal",$controladores) ?>"><a href="index.php?controller=CoreEntidadPatronal&action=index"><i class="fa fa-circle-o"></i>Entidad Patronal</a></li>
 				<li style="<?php echo getcontrolador("Bancos",$controladores) ?>"><a href="index.php?controller=Bancos&action=index_cuentas"><i class="fa fa-circle-o"></i>Tipo Cuentas</a></li>
+    			<li style="<?php echo getcontrolador("SolicitudPrestamo",$controladores) ?>"><a href="index.php?controller=SolicitudPrestamo&action=index5"><i class="fa fa-circle-o"></i>Solicitud Prestamo</a></li>
+    
            </ul>           	 
         </li>
         <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >
@@ -458,6 +459,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
+          	  <li style="<?php echo getcontrolador("BuscarParticipes",$controladores) ?>"><a href="index.php?controller=BuscarParticipes&action=index"><i class="fa fa-circle-o"></i> Buscar Participes</a></li>
               <li style="<?php echo getcontrolador("CoreInformacionParticipes",$controladores) ?>"><a href="index.php?controller=CoreInformacionParticipes&action=index"><i class="fa fa-circle-o"></i>Consultar Información Participes</a></li>
               <li style="<?php echo getcontrolador("AnalisisCreditos",$controladores) ?>"><a href="index.php?controller=AnalisisCreditos&action=index"><i class="fa fa-circle-o"></i>Análisis Crédito</a></li>
               <li style="<?php echo getcontrolador("SimulacionCreditos",$controladores) ?>"><a href="index.php?controller=SimulacionCreditos&action=index"><i class="fa fa-circle-o"></i>Simulación Crédito</a></li>      

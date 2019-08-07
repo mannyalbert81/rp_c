@@ -29,10 +29,10 @@
     .zoom:hover{
         /* tranformamos el elemento al pasar el mouse por encima al doble de
            su tamaño con scale(2). */
-        transform : scale(2);
-        -moz-transform : scale(2);      /* Firefox */
-        -webkit-transform : scale(2);   /* Chrome - Safari */
-        -o-transform : scale(2);        /* Opera */
+        transform : scale(1.4);
+        -moz-transform : scale(1.4);      /* Firefox */
+        -webkit-transform : scale(1.4);   /* Chrome - Safari */
+        -o-transform : scale(1.4);        /* Opera */
         
         
     }

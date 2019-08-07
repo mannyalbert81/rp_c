@@ -10,7 +10,7 @@ class ConectarService{
      private $port = "";
   
     public function __construct() {
-        $db_cfg = require_once '../config/database.php';
+        $db_cfg = require_once 'config/database.php';
         $this->driver=$db_cfg["driver"];
         $this->host=$db_cfg["host"];
         $this->user=$db_cfg["user"];
@@ -24,7 +24,7 @@ class ConectarService{
         
         if($this->driver=="pgsql" || $this->driver==null){
        
-        	$con = pg_connect("host=192.168.1.128 port=5432 dbname=web_capremci user=postgres password=Capremci2018");
+        	$con = pg_connect("host=192.168.1.231 port=5432 dbname=web_capremci user=postgres password=Programadores2018");
         	if(!$con){
         		echo "No se puedo Conectar a la Base";
         	} else {
@@ -37,7 +37,7 @@ class ConectarService{
         require_once "FluentPDO/FluentPDO.php";
         
         if($this->driver=="pgsql" || $this->driver==null){
-        	$pdo = new PDO('pgsql:host=192.168.1.128;port=5432;dbname=web_capremci', 'postgres', 'Capremci2018' );
+        	$pdo = new PDO('pgsql:host=192.168.1.231;port=5432;dbname=web_capremci', 'postgres', 'Programadores2018' );
             //$pdo = new PDO($this->driver.":dbname=".$this->database, $this->user, $this->pass);
             
             try 

@@ -95,7 +95,7 @@ class SimulacionCreditosController extends ControladorBase{
    <table width="100%">
     <tr>
    <td width="50%">
-    <h4>'.$infoParticipe[0]->nombre_participes.' '.$infoParticipe[0]->apellido_participes.'</h4>
+    <h4 id="nombre_participe_credito">'.$infoParticipe[0]->nombre_participes.' '.$infoParticipe[0]->apellido_participes.'</h4>
    <h4 id="cedula_credito"> Cédula : '.$infoParticipe[0]->cedula_participes.'</h4>
     <h4>Fecha de nacimiento : '.$infoParticipe[0]->fecha_nacimiento_participes.'</h4>
     <h4>Edad : '.$tiempo.'</h4>  
@@ -248,10 +248,11 @@ class SimulacionCreditosController extends ControladorBase{
              <table border="1" width="100%">
                      <tr style="color:white;" class="bg-olive">
                         <th width="5%">Cuota</th>
-                        <th width="16%">Saldo Restante</th>
-                        <th width="16%">Interes a pagar</th>
-                        <th width="16%">Amortización</th>
-                        <th width="16%">A Pagar</th>
+                        <th width="15%">Saldo Restante</th>
+                        <th width="15%">Seg. Desgravamen</th>
+                        <th width="15%">Interes a pagar</th>
+                        <th width="15%">Amortización</th>
+                        <th width="15%">Cuota</th>
                         <th width="18%" >Fecha de Pago</th>
                         <th width="2%"></th>
                      </tr>
@@ -292,15 +293,17 @@ class SimulacionCreditosController extends ControladorBase{
        foreach ($resultAmortizacion as $res)
        {
            $html.='<tr>';
-           $html.='<td width="4.9%" bgcolor="white"><font color="black">'.$res['pagos_trimestrales'].'</font></td>';
+           $html.='<td width="5%" bgcolor="white"><font color="black">'.$res['pagos_trimestrales'].'</font></td>';
            $res['saldo_inicial']=number_format((float)$res['saldo_inicial'],2,".",",");
            $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['saldo_inicial'].'</font></td>';
+           $res['desgravamen']=number_format((float)$res['desgravamen'],2,".",",");
+           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['desgravamen'].'</font></td>';
            $res['interes']=number_format((float)$res['interes'],2,".","");
            $total+=$res['interes'];
            $res['interes']=number_format((float)$res['interes'],2,".",",");
-           $html.='<td width="15.6%" bgcolor="white" align="right"><font color="black">'.$res['interes'].'</font></td>';
+           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['interes'].'</font></td>';
            $res['amortizacion']=number_format((float)$res['amortizacion'],2,".",",");
-           $html.='<td width="15.6%" bgcolor="white" align="right"><font color="black">'.$res['amortizacion'].'</font></td>';
+           $html.='<td width="15.2%" bgcolor="white" align="right"><font color="black">'.$res['amortizacion'].'</font></td>';
            $res['pagos']=number_format((float)$res['pagos'],2,".","");
            $total1+=$res['pagos'];
            $res['pagos']=number_format((float)$res['pagos'],2,".",",");
@@ -328,6 +331,8 @@ class SimulacionCreditosController extends ControladorBase{
        $interes=floor($interes * 100) / 100;
        $amortizacion = $valor_cuota - $interes;
        $saldo_inicial= $capital - $amortizacion;
+       $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+       $desgravamen=floor($desgravamen * 100) / 100;
        $resultAmortizacion=array();
        
        
@@ -342,6 +347,7 @@ class SimulacionCreditosController extends ControladorBase{
                $fecha=date('Y-m-d',$fecha);
                $fecha_corte=$fecha;
                $valor = 0;
+               $desgravamen=0;
                $saldo_inicial_ant = $capital;
            }
            else
@@ -350,7 +356,8 @@ class SimulacionCreditosController extends ControladorBase{
                $interes= $saldo_inicial_ant * $inter_ant;
                $interes=floor($interes * 100) / 100;
                $amortizacion = $valor_cuota - $interes;
-               
+               $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+               $desgravamen=floor($desgravamen * 100) / 100;
                $saldo_inicial= $saldo_inicial_ant  - $amortizacion;
                
                
@@ -366,6 +373,7 @@ class SimulacionCreditosController extends ControladorBase{
                'interes'=>$interes,
                'amortizacion'=>$amortizacion,
                'pagos'=>$valor,
+               'desgravamen'=>$desgravamen,
                'fecha_pago'=>$fecha
            );
            array_push($resultAmortizacion, $arreglo);
@@ -373,6 +381,21 @@ class SimulacionCreditosController extends ControladorBase{
        
        return $resultAmortizacion;
    }
+   
+   public function genera_codigo(){
+       
+       $cadena = "1234567890";
+       $longitudCadena=strlen($cadena);
+       $codigo = "";
+       $longitudPass=5;
+       for($i=1 ; $i<=$longitudPass ; $i++){
+           $pos=rand(0,$longitudCadena-1);
+           $codigo .= substr($cadena,$pos,1);
+       }
+       
+       echo $codigo;
+   }
+   
    
 }
 

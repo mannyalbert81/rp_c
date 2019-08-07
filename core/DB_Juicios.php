@@ -9,7 +9,7 @@ class DB_Juicios {
 	function __construct() {
 		require_once 'ConectarJuicios.php';
 		// connecting to database
-		$db = new ConectarService();
+		$db = new ConectarJuicios();
 		$this->conn = $db->conexion();
 	}
 

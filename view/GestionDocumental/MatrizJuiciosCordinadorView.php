@@ -62,68 +62,48 @@
         <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Prestamos</h3>
+              <h3 class="box-title">Gestión Documental</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
                 
               </div>
             </div>
-            
+              <section class="content">
             <div class="box-body">
+
+           <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#activos" data-toggle="tab">Juicios</a></li>
             
-             	<div class="col-md-12 col-lg-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Solicitud<small>de Prestamos Registradas</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    	
-                    <div class="pull-right" style="margin-right:11px;">
-					<input type="text" value="" class="form-control" id="search_solicitud" name="search_solicitud" onkeyup="load_solicitud_prestamos_registrados(1)" placeholder="search.."/>
+            </ul>
+            
+            <div class="col-md-12 col-lg-12 col-xs-12">
+            <div class="tab-content">
+            <br>
+              <div class="tab-pane active" id="activos">
+                
+				 <div class="pull-right" style="margin-right:11px;">
+					<input type="text" value="" class="form-control" id="search_solicitud" name="search_solicitud" onkeyup="load_matriz(1)" placeholder="search.."/>
 					</div>
                     	
-					<div id="load_registrados" ></div>	
+					<div id="load_matriz" ></div>	
 					<div id="solicitud_prestamos_registrados"></div>	
 				  
-                  </div>
-                </div>
-        </div>
+                
+              </div>
+               </div>
+            </div>
+           </div>
+         
+            </div>
+            </div>
+            </section>
+            <div class="box-body">
+            
+        	
         
-              <div class="col-md-12 col-lg-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Solicitud<small>de Garantías Generadas</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    	
-                    	
-                    <div class="pull-right" style="margin-right:11px;">
-					<input type="text" value="" class="form-control" id="search_garantias" name="search_garantias" onkeyup="load_solicitud_garantias_registrados(1)" placeholder="search.."/>
-					</div>
-                    	
-					<div id="load_garantias_registrados" ></div>	
-					<div id="solicitud_garantias_registrados"></div>	
-				  
-                  </div>
-                </div>
-        </div>
+
         			</div>
       			</div>
     		</section>
@@ -136,10 +116,8 @@
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?>
-    <script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
- <script type="text/javascript" src="view/Core/js/wizardParticipes.js?0.26"></script>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Core/js/Participes.js?3.26" ></script>
+ <script src="view/GestionDocumental/js/MatrizJuicios.js?3.27" ></script>
  
  </body>
 </html>

@@ -30,7 +30,7 @@ class SolicitudPrestamoController extends ControladorBase{
 	    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 	    $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
 	    
-	    $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/webcapremci';
+	    $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
 	    $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
 	    $domLogo=$directorio.'/view/images/logo_contrato_adhesion.jpg';
 	    $logo = '<img src="'.$domLogo.'" width="100%">';

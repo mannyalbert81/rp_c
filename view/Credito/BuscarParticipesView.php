@@ -28,6 +28,9 @@
         font-size:32px;
         text-align:center;
         }
+        .observacion {
+        width: 75%;
+        }
  
      
        
@@ -261,7 +264,7 @@
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="fecha_permiso" class="control-label">Fecha de Corte:</label>
+                		<label for="fecha_permiso" class="control-label">Fecha de Pago:</label>
                     	<input type="date"  class="form-control" id="fecha_corte" name="fecha_corte" placeholder="Fecha">
                         <div id="mensaje_fecha" class="errores"></div>
                  	</div>
@@ -300,6 +303,8 @@
 			<div class="modal-body">
 				<div class="form-group" align="center">
 				 <div id="info_credito_confirmar"></div>
+				 <input type="text" class="observacion" maxlength="200" class="form-control" id="observacion_confirmacion" name="observacion_confirmacion" placeholder="Observación Crédito">
+				 <br>
           	 <div class="row">
           	 		<div class="form-group" align="center">
           	 		<input type="text" class="codigo" data-inputmask="'mask': '99999'" class="form-control" id="codigo_confirmacion" name="codigo_confirmacion">

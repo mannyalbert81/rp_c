@@ -382,6 +382,158 @@ class SimulacionCreditosController extends ControladorBase{
        return $resultAmortizacion;
    }
    
+   public function SubirInformacionCredito()
+   {
+       session_start();
+       $mensage="";
+       $respuesta=true;
+       $credito=new CoreTipoCreditoModel();
+       $usuario=$_SESSION['usuario_usuarios'];
+       $monto_credito=$_POST['monto_credito'];
+       $tasa_interes=$_POST['tasa_interes'];
+       $fecha_pago=$_POST['fecha_pago'];
+       $tasa_interes=$tasa_interes/100;
+       $cuota=$_POST['cuota_credito'];
+       $cedula_participe=$_POST['cedula_participe'];
+       $observacion_credito=$_POST['observacion_credito'];
+       $id_tipo_creditos=0;
+       if($tasa_interes==9) $id_tipo_creditos=4; //quemado cambiar por bd
+       else $id_tipo_creditos=2;
+       $columnas="id_participes";
+       $tablas="core_participes";
+       $where="cedula_participes='".$cedula_participe."'";
+       
+       $id_participe=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $id_participe=$id_participe[0]->id_participes;
+       
+       $columnas="numero_consecutivos";
+       $tablas="consecutivos";
+       $where="nombre_consecutivos='CREDITO'";
+       
+       $numero_credito=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $numero_credito=$numero_credito[0]->numero_consecutivos;
+       $numero_credito++;
+       $hoy=date("Y-m-d");
+       
+       //cambiar numero de credito por numero solicitud
+       $credito->beginTran();
+       $funcion = "ins_core_creditos";       
+       $parametros="'$numero_credito',
+                     '$numero_credito',
+                     '$id_participe',
+                     '$monto_credito',
+                     '$monto_credito',
+                     '$hoy',
+                     1,
+                     '$cuota',
+                     '$monto_credito',
+                     '$id_tipo_creditos',
+                     '$numero_credito', 
+                     '$observacion_credito',
+                     1,
+                     '$usuario',
+                     '$tasa_interes',
+                     '$hoy'";
+       $credito->setFuncion($funcion);
+       $credito->setParametros($parametros);
+       $resultado=$credito->Insert();
+       
+       if($resultado=="Insertado Correctamente")
+       {
+           $interes_mensual = $tasa_interes / 12;
+           $plazo_dias = $cuota * 30;
+           
+           $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$cuota))  ;
+           $valor_cuota=round($valor_cuota,2);
+           $resultAmortizacion=$this->tablaAmortizacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_pago, $tasa_interes);
+           $total=0;
+           $total1=0;
+           foreach ($resultAmortizacion as $res)
+           {
+               
+               $res['saldo_inicial']=number_format((float)$res['saldo_inicial'],2,".","");
+               $res['interes']=number_format((float)$res['interes'],2,".","");
+               $total+=$res['interes'];
+               $res['amortizacion']=number_format((float)$res['amortizacion'],2,".","");
+               $res['pagos']=number_format((float)$res['pagos'],2,".","");
+               $total1+=$res['pagos'];
+               
+               
+           }
+           $total=round($total,2);
+           $total1=round($total1,2);
+           $num=$monto_credito-($total1-$total);
+           $num=round($num,2);
+           $len=sizeof($resultAmortizacion);
+           $res['amortizacion']=round($res['amortizacion'],2);
+           $res['interes']=round($res['interes'],2);
+           $res['pagos']=round($res['pagos'],2);
+            $resultAmortizacion[$len-1]['pagos']=$resultAmortizacion[$len-1]['pagos']+$num;
+           $resultAmortizacion[$len-1]['amortizacion']=$resultAmortizacion[$len-1]['amortizacion']+$resultAmortizacion[$len-1]['saldo_inicial'];
+           $resultAmortizacion[$len-1]['saldo_inicial']=0.00;
+           $total=0;
+           $total1=0;
+           $funcion = "ins_core_tabla_amortizacion";
+           foreach ($resultAmortizacion as $res)
+           {
+               
+              $fecha_pago=$res['fecha_pago'];              
+               $num_cuota=$res['pagos_trimestrales'];
+               $amortizacion=$res['amortizacion'];
+               $intereses=$res['interes'];
+               $saldo_inicial=$res['saldo_inicial'];
+               $desgravamen=$res['desgravamen'];
+               $dividendo=$res['pagos'];
+               $total_valor=$amortizacion+$intereses+$desgravamen;
+               $parametros="'$numero_credito',
+                     '$fecha_pago',
+                     '$num_cuota',
+                     '$amortizacion',
+                     '$intereses',
+                     '$dividendo',
+                     '$saldo_inicial',
+                     '$desgravamen',
+                     '$total_valor',
+                     3,
+                     1,
+                     '$tasa_interes',
+                     '$hoy'";
+               $credito->setFuncion($funcion);
+               $credito->setParametros($parametros);
+              $resultado=$credito->Insert();
+               if($resultado!="Insertado Correctamente")
+               {
+                   $credito->endTran('ROLLBACK');
+                   $respuesta=false;
+                   $mensage="ERROR";
+                   break;
+               }
+               
+           }
+           if($respuesta)
+           {
+               $credito->endTran('COMMIT');
+               $mensage="OK";
+           }
+       }
+       else
+       {
+           $credito->endTran('ROLLBACK');
+           $mensage="ERROR";
+       }
+       
+       if($mensage=="OK")
+       {
+           $plan_cuentas=new PlanCuentasModel();
+           $colval="numero_consecutivos=".$numero_credito;
+           $tabla="consecutivos";
+           $where="nombre_consecutivos='CREDITO'";
+           $plan_cuentas->ActualizarBy($colval, $tabla, $where);
+       }
+       echo $mensage;
+       
+   }
+   
    public function genera_codigo(){
        
        $cadena = "1234567890";

@@ -612,6 +612,36 @@ swal({
 	});
 }
 
+function SubirInformacionCredito()
+{
+	var monto=$("#monto_credito").val();
+	var interes=$("#tipo_credito").val();
+	var fecha_corte=$("#fecha_corte").val();
+	var cuota_credito=$("#cuotas_credito").val();
+	var ciparticipe=$('#cedula_participe').val();
+	var observacion=$('#observacion_confirmacion').val();
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionCredito',
+	    type: 'POST',
+	    data: {
+	    	monto_credito: monto,
+	    	tasa_interes: interes,
+	    	fecha_pago: fecha_corte,
+	    	cuota_credito: cuota_credito,
+	    	cedula_participe: ciparticipe,
+	    	observacion_credito: observacion
+	    },
+	})
+	.done(function(x) {
+		console.log(x);
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+	
+	
+}
+
 function RegistrarCredito()
 {
  var codigo_generado=$("#codigo_generado").html();
@@ -622,10 +652,10 @@ function RegistrarCredito()
 	 }
  else if(codigo_insertado!="" && !(codigo_insertado.includes("_")) && codigo_insertado==codigo_generado)
 	 {
-	 swal("codigo correcto");
+	 	SubirInformacionCredito()
 	 }
  else
 	 {
-	 swal("codigo incorrecto");
+	 swal("Código incorrecto");
 	 }
 }

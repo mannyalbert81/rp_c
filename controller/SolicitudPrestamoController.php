@@ -30,7 +30,7 @@ class SolicitudPrestamoController extends ControladorBase{
 	    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 	    $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
 	    
-	    $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/webcapremci';
+	    $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
 	    $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
 	    $domLogo=$directorio.'/view/images/logo_contrato_adhesion.jpg';
 	    $logo = '<img src="'.$domLogo.'" width="100%">';
@@ -1781,7 +1781,7 @@ class SolicitudPrestamoController extends ControladorBase{
 				$html.='<th style="text-align: left;  font-size: 11px;">Trámite</th>';
 				$html.='<th style="text-align: left;  font-size: 11px;">Fecha T</th>';
 				$html.='<th style="text-align: left;  font-size: 11px;">Oficial C</th>';
-				//$html.='<th style="text-align: right;  font-size: 11px;"></th>';
+				$html.='<th style="text-align: right;  font-size: 11px;"></th>';
 				$html.='<th style="text-align: right;  font-size: 11px;"></th>';
 				$html.='</tr>';
 				$html.='</thead>';
@@ -1850,7 +1850,13 @@ class SolicitudPrestamoController extends ControladorBase{
 					}
 					
 					*/
-					$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$res->id_solicitud_prestamo.'" target="_blank" class="btn btn-warning" style="font-size:65%;" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+					$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$res->id_solicitud_prestamo.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
+					$html.='</td>';
+					$html.='<td style="font-size: 15px;">';
+					if($aprobado_oficial_credito==1){
+					  $html.='<button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="AnalisisCredito()"><i class="glyphicon glyphicon-import"></i></button>';
+					}
+					$html.='</td>';
 					
 					$html.='</tr>';
 	

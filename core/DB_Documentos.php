@@ -1,15 +1,15 @@
 <?php
 
 
-class DB_Juicios {
+class DB_Documentos {
 
 	private $conn;
 
 	// constructor
 	function __construct() {
-		require_once 'ConectarJuicios.php';
+		require_once 'ConectarDocumentos.php';
 		// connecting to database
-		$db = new ConectarJuicios();
+		$db = new ConectarDocumentos();
 		$this->conn = $db->conexion();
 	}
 

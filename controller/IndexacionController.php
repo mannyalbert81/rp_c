@@ -96,105 +96,73 @@ class IndexacionController extends ControladorBase{
     
     public function AutocompleteCedula(){
         
+        session_start();
+        $_id_usuarios= $_SESSION['id_usuarios'];
         require_once 'core/EntidadBase_128.php';
         $db = new EntidadBase_128();
+     
+        $numero_credito = $_GET['term'];
         
-        if(isset($_GET['term'])){
+        $columnas ="  capremci_creditos.id_capremci, 
+                      capremci_creditos.numero_credito, 
+                      capremci_creditos.cedula_capremci, 
+                      capremci_creditos.nombres_capremci, 
+                      capremci_creditos.creado, 
+                      capremci_creditos.modificado";
+        $tablas ="
+                  public.capremci_creditos";
+        $where ="capremci_creditos.numero_credito LIKE '$numero_credito%'";
+       
+        
+        
+        $resultSet = $db->getBy($columnas,$tablas,$where);
+        
+        
+        if(!empty($resultSet)){
             
-            $numero_credito = $_GET['term'];
-            
-            $resultSet=$db->getBy("numero_credito LIKE '$numero_credito%'");
-            
-            $respuesta = array();
-            
-            if(!empty($resultSet)){
+            foreach ($resultSet as $res){
                 
-                if(count($resultSet)>0){
-                    
-                    foreach ($resultSet as $res){
-                        
-                        $_cls_usuarios = new stdClass;
-                        $_cls_usuarios->id=$res->id_usuarios;
-                        $_cls_usuarios->value=$res->cedula_usuarios;
-                        $_cls_usuarios->label=$res->cedula_usuarios.' | '.$res->nombre_usuarios;
-                        $_cls_usuarios->nombre=$res->nombre_usuarios;
-                        
-                        $respuesta[] = $_cls_usuarios;
-                    }
-                    
-                    echo json_encode($respuesta);
-                }
-                
-            }else{
-                echo '[{"id":0,"value":"sin datos"}]';
+                $_respuesta[] = $res->codigo_activos_fijos;
             }
-            
-        }else{
-            
-            $cedula_usuarios = (isset($_POST['term']))?$_POST['term']:'';
-            
-            $columna = "  usuarios.id_usuarios,
-            	    usuarios.cedula_usuarios,
-            	    usuarios.nombre_usuarios,
-            	    usuarios.apellidos_usuarios,
-                    usuarios.usuario_usuarios,
-                    usuarios.fecha_nacimiento_usuarios,
-            	    claves.clave_claves,
-            	    claves.clave_n_claves,
-                    claves.caduca_claves,
-            	    usuarios.telefono_usuarios,
-            	    usuarios.celular_usuarios,
-            	    usuarios.correo_usuarios,
-            	    rol.id_rol,
-            	    rol.nombre_rol,
-            	    usuarios.fotografia_usuarios,
-            	    usuarios.creado,
-                    usuarios.id_estado,
-                    eu.nombre_estado";
-            
-            $tablas = " public.usuarios INNER JOIN public.claves ON claves.id_usuarios = usuarios.id_usuarios
-                    INNER JOIN public.estado ON estado.id_estado = claves.id_estado
-                    INNER JOIN public.estado eu ON eu.id_estado = usuarios.id_estado
-                    LEFT JOIN public.rol ON rol.id_rol = usuarios.id_rol";
-            
-            $where = "estado.nombre_estado = 'ACTIVO'
-                    AND eu.nombre_estado = 'ACTIVO'
-                    AND usuarios.cedula_usuarios = '$cedula_usuarios'";
-            
-            $resultSet=$usuarios->getCondiciones($columna,$tablas,$where,"usuarios.cedula_usuarios");
-            
-            $respuesta = new stdClass();
-            
-            if(!empty($resultSet)){
-                
-                $respuesta->id_usuarios = $resultSet[0]->id_usuarios;
-                $respuesta->cedula_usuarios = $resultSet[0]->cedula_usuarios;
-                $respuesta->nombre_usuarios = $resultSet[0]->nombre_usuarios;
-                $respuesta->apellidos_usuarios = $resultSet[0]->apellidos_usuarios;
-                $respuesta->usuario_usuarios = $resultSet[0]->usuario_usuarios;
-                $respuesta->fecha_nacimiento_usuarios = $resultSet[0]->fecha_nacimiento_usuarios;
-                $respuesta->clave_claves = $resultSet[0]->clave_claves;
-                $respuesta->clave_n_claves = $resultSet[0]->clave_n_claves;
-                $respuesta->telefono_usuarios = $resultSet[0]->telefono_usuarios;
-                $respuesta->celular_usuarios = $resultSet[0]->celular_usuarios;
-                $respuesta->correo_usuarios = $resultSet[0]->correo_usuarios;
-                $respuesta->caduca_claves = $resultSet[0]->caduca_claves;
-                $respuesta->id_rol = $resultSet[0]->id_rol;
-                $respuesta->nombre_rol = $resultSet[0]->nombre_rol;
-                $respuesta->id_estado = $resultSet[0]->id_estado;
-                $respuesta->fotografia_usuarios = $resultSet[0]->fotografia_usuarios;
-                
-            }
-            
-            echo json_encode($respuesta);
-            
+            echo json_encode($_respuesta);
         }
-        
         
         
     }
     
+    public function DevuelveNombre(){
+        session_start();
+        $_id_usuarios= $_SESSION['id_usuarios'];
+        require_once 'core/EntidadBase_128.php';
+        $db = new EntidadBase_128();
+       
+        $nombres_credito = $_POST['nombres_capremci'];
+        
+        
+        $columnas ="  capremci_creditos.id_capremci,
+                      capremci_creditos.numero_credito,
+                      capremci_creditos.cedula_capremci,
+                      capremci_creditos.nombres_capremci,
+                      capremci_creditos.creado,
+                      capremci_creditos.modificado";
+        $tablas ="
+                  public.capremci_creditos";
+        $where ="capremci_creditos.numero_credito LIKE '$nombres_credito%'";
+        $resultSet = $db->getBy($columnas,$tablas,$where);
     
+        
+        $respuesta = new stdClass();
+        
+        if(!empty($resultSet)){
+            
+            $respuesta->nombres_capremci = $resultSet[0]->nombres_capremci;
+            $respuesta->numero_credito = $resultSet[0]->numero_credito;
+            $respuesta->id_capremci = $resultSet[0]->id_capremci;
+            
+            echo json_encode($respuesta);
+        }
+        
+    }
     
     
     

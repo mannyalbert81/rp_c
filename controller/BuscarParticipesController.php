@@ -10,6 +10,81 @@ class BuscarParticipesController extends ControladorBase{
         ));
     }
     
+    public function index1()
+    {
+        session_start();
+        $estado = new EstadoModel();
+        $id_rol = $_SESSION['id_rol'];
+        $cedula_participe=$_GET['cedula_participe'];
+        $id_solicitud=$_GET['id_solicitud'];
+        
+        $this->view_Credito("BuscarParticipes",array(
+            "result" => ""
+            ));
+        echo '<script type="text/javascript">',
+        'InfoSolicitud("'.$cedula_participe.'", '.$id_solicitud.');',
+        '</script>'
+        ;
+    }
+    
+    public function InfoSolicitud()
+    {
+        session_start();
+        $id_solicitud=$_POST['id_solicitud'];
+        require_once 'core/DB_Functions.php';
+        $db = new DB_Functions();
+        
+        $columnas = " solicitud_prestamo.destino_dinero_datos_prestamo,
+					  solicitud_prestamo.nombre_banco_cuenta_bancaria,
+					  solicitud_prestamo.tipo_cuenta_cuenta_bancaria,
+					  solicitud_prestamo.numero_cuenta_cuenta_bancaria,
+					  solicitud_prestamo.tipo_pago_cuenta_bancaria,
+				      tipo_creditos.nombre_tipo_creditos";
+        
+        $tablas   = "public.solicitud_prestamo,
+				     public.tipo_creditos";
+        
+        $where    = "solicitud_prestamo.id_solicitud_prestamo=".$id_solicitud;
+        
+        $resultSet=$db->getCondiciones($columnas, $tablas, $where);
+        
+        $html='<div id="info_solicitud_participe" class="small-box bg-teal">
+               <div class="inner">
+              <table width="100%">
+              <tr>
+              <td colspan="2" align="center">
+                <h3>Información de Solicitud</h3>
+              </td>
+              </tr>
+              <tr>
+              <td width="50%">
+                <h4>Tipo Crédito : '.$resultSet[0]->nombre_tipo_creditos.'</h4>
+              </td>
+              <td width="50%">
+                <h4>Destino Dinero : '.$resultSet[0]->destino_dinero_datos_prestamo.'</h4>
+              </td>
+              <tr>
+              <td width="50%">
+                <h4>Nombre Banco : '.$resultSet[0]->nombre_banco_cuenta_bancaria.'</h4>
+              </td>
+              <td width="50%">
+                <h4>Tipo Cuenta : '.$resultSet[0]->tipo_cuenta_cuenta_bancaria.'</h4>
+               </td>
+              <tr>
+              <td width="50%">
+                <h4>Número Cuenta : '.$resultSet[0]->numero_cuenta_cuenta_bancaria.'</h4>
+               </td>
+              <td width="50%">
+                <h4>Tipo de Pago: '.$resultSet[0]->tipo_pago_cuenta_bancaria.'</h4>
+                </td>
+                </tr>
+                </table>
+               </div>
+               </div>';
+        
+        echo $html;
+    }
+    
     public function BuscarParticipe()
     {
         session_start();
@@ -62,7 +137,6 @@ class BuscarParticipesController extends ControladorBase{
         $html.='
         <div class="box box-widget widget-user-2">';
         if(!(empty($resultCreditos))) $html.='<button class="btn btn-default pull-right" title="Análisis crédito"  onclick="AnalisisCredito()"><i class="glyphicon glyphicon-stats"></i></button>';
-        if($resultSet[0]->nombre_estado_participes=="Activo")$html.='<button class="btn btn-default pull-right" title="Insertar crédito" onclick="SimulacionCredito()" ><i class="glyphicon glyphicon-briefcase"></i></button>';
         $html.='<div class="widget-user-header bg-olive">'
             .$icon.
             '<h3 class="widget-user-username">'.$resultSet[0]->nombre_participes.' '.$resultSet[0]->apellido_participes.'</h3>

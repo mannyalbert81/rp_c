@@ -65,3 +65,9 @@
 
 
            		   }
+        	   
+        	   function EnviarInfo(cedula,id_solicitud)
+        	   {
+        		  console.log(cedula+"-"+id_solicitud); 
+        		  window.open('index.php?controller=BuscarParticipes&action=index1&cedula_participe='+cedula+'&id_solicitud='+id_solicitud, '_blank');
+        	   }

@@ -242,7 +242,8 @@
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-				 <div id="info_participe"></div>
+				<div id="info_solicitud"></div>
+				 <div id="info_participe"></div>				 
           	 <div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">

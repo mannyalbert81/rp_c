@@ -620,15 +620,64 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-           <li style="<?php echo getcontrolador("Indexacion",$controladores) ?>"><a href="index.php?controller=Indexacion&action=index"><i class="fa fa-circle-o"></i>Indexación</a></li>
+           <li style="<?php echo getcontrolador("Indexacion",$controladores) ?>"><a href="index.php?controller=Indexacion&action=index"><i class="fa fa-circle-o"></i>Indexación de Documentos</a></li>
 		    <li style="<?php echo getcontrolador("MatrizJuicios",$controladores) ?>"><a href="index.php?controller=MatrizJuicios&action=index5"><i class="fa fa-circle-o"></i>Matriz</a></li>
-		    <li style="<?php echo getcontrolador("Documentos",$controladores) ?>"><a href="index.php?controller=Documentos&action=index5"><i class="fa fa-circle-o"></i>Documentos</a></li>
+		    <li style="<?php echo getcontrolador("Documentos",$controladores) ?>"><a href="index.php?controller=Documentos&action=index5"><i class="fa fa-circle-o"></i>Búsqueda de Documentos</a></li>
 	
 		
 		  </ul>
         </li>
        </ul>
-      </li>      
+      </li> 
+      
+      <li class="treeview"  style="<?php echo getcontrolador("MenuJuridico",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder"></i> <span>Jurídico</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+             <li class="treeview"  style="<?php echo getcontrolador("AdministracionJuridico",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                
+    		  </ul>
+            </li>
+            
+            
+            <li class="treeview"  style="<?php echo getcontrolador("ProcesosJuridico",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+              	
+             </ul>
+            </li>
+        
+        <li class="treeview"  style="<?php echo getcontrolador("ReporteJuridico",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder-open-o"></i> <span>Reportes</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li style="<?php echo getcontrolador("MatrizJuicios",$controladores) ?>"><a href="index.php?controller=MatrizJuicios&action=index5"><i class="fa fa-circle-o"></i>Matriz de Juicios</a></li>
+		 
+		
+		  </ul>
+        </li>
+       </ul>
+      </li>         
       
 
     </ul>

@@ -1,5 +1,6 @@
 var id_participe;
 var disponible_participe;
+var solicitud;
 
 $(document).ready( function (){
 	
@@ -22,6 +23,7 @@ $("#myModalSimulacion").on("hidden.bs.modal", function () {
 	$("#fecha_corte").val("");
 	$("#select_cuotas").html("");
 	$("#tabla_amortizacion").html("");
+	$("#info_solicitud").html("");
 	
 });
 $("#myModalAnalisis").on("hidden.bs.modal", function () {
@@ -378,6 +380,28 @@ function AnalisisCredito()
 		x=x.trim();
 		console.log("cuota :"+x);
 		CuotaVigente(x);
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+	
+}
+
+function InfoSolicitud(cedula,id_solicitud)
+{
+	$('#cedula_participe').val(cedula);
+	BuscarParticipe();
+	SimulacionCredito();
+	$.ajax({
+	    url: 'index.php?controller=BuscarParticipes&action=InfoSolicitud',
+	    type: 'POST',
+	    data: {
+	    	id_solicitud:id_solicitud
+	    },
+	})
+	.done(function(x) {
+		$("#info_solicitud").html(x);
 		
 	})
 	.fail(function() {

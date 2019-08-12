@@ -50,6 +50,7 @@ $.ajax({
           type: 'POST',
           data: con_datos,
           success: function(x){
+        	  console.log(x);
         	  if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
         		  {
         		  swal({

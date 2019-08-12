@@ -248,12 +248,12 @@ class SimulacionCreditosController extends ControladorBase{
              <table border="1" width="100%">
                      <tr style="color:white;" class="bg-olive">
                         <th width="5%">Cuota</th>
-                        <th width="15%">Saldo Restante</th>
+                        <th width="18%" >Fecha</th>
+                        <th width="15%">Capital</th>
+                        <th width="15%">Interes</th>
                         <th width="15%">Seg. Desgravamen</th>
-                        <th width="15%">Interes a pagar</th>
-                        <th width="15%">Amortización</th>
                         <th width="15%">Cuota</th>
-                        <th width="18%" >Fecha de Pago</th>
+                        <th width="15%">Saldo</th>
                         <th width="2%"></th>
                      </tr>
                    </table>
@@ -261,15 +261,20 @@ class SimulacionCreditosController extends ControladorBase{
                      <table border="1" width="100%">';
        $total=0;
        $total1=0;
+       $total_capital=0;
+       $total_desg=0;
        foreach ($resultAmortizacion as $res)
        {
            
-           $res['saldo_inicial']=number_format((float)$res['saldo_inicial'],2,".","");
+           $res['desgravamen']=number_format((float)$res['desgravamen'],2,".","");
+           $total_desg+=$res['desgravamen'];
            $res['interes']=number_format((float)$res['interes'],2,".","");
            $total+=$res['interes'];           
            $res['amortizacion']=number_format((float)$res['amortizacion'],2,".","");
+           $total_capital+=$res['amortizacion'];
            $res['pagos']=number_format((float)$res['pagos'],2,".","");
            $total1+=$res['pagos'];
+           
            
                      
        }
@@ -278,7 +283,7 @@ class SimulacionCreditosController extends ControladorBase{
        $num=$monto_credito-($total1-$total);
        $num=round($num,2);
        $len=sizeof($resultAmortizacion);
-       $res['amortizacion']=round($res['amortizacion'],2);
+      $res['amortizacion']=round($res['amortizacion'],2);
        $res['interes']=round($res['interes'],2);
        $res['pagos']=round($res['pagos'],2);
        
@@ -287,32 +292,63 @@ class SimulacionCreditosController extends ControladorBase{
        
        $resultAmortizacion[$len-1]['amortizacion']=$resultAmortizacion[$len-1]['amortizacion']+$resultAmortizacion[$len-1]['saldo_inicial'];
        $resultAmortizacion[$len-1]['saldo_inicial']=0.00;
-    //   $resultAmortizacion[$len-1]['interes']=$diferencia;
+    //   $resultAmortizacion[$len-1]['interes']=$diferencia;*/
+    
        $total=0;
        $total1=0;
+       $total_capital=0;
+       $total_desg=0;
        foreach ($resultAmortizacion as $res)
        {
-           $html.='<tr>';
-           $html.='<td width="5%" bgcolor="white"><font color="black">'.$res['pagos_trimestrales'].'</font></td>';
-           $res['saldo_inicial']=number_format((float)$res['saldo_inicial'],2,".",",");
-           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['saldo_inicial'].'</font></td>';
-           $res['desgravamen']=number_format((float)$res['desgravamen'],2,".",",");
-           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['desgravamen'].'</font></td>';
+           
+           $res['desgravamen']=number_format((float)$res['desgravamen'],2,".","");
+           $total_desg+=$res['desgravamen'];
            $res['interes']=number_format((float)$res['interes'],2,".","");
            $total+=$res['interes'];
-           $res['interes']=number_format((float)$res['interes'],2,".",",");
-           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['interes'].'</font></td>';
+           $res['amortizacion']=number_format((float)$res['amortizacion'],2,".","");
+           $total_capital+=$res['amortizacion'];
+           $res['pagos']=number_format((float)$res['pagos'],2,".","");
+           $total1+=$res['pagos']+$res['desgravamen'];
+     
+       }
+      
+       foreach ($resultAmortizacion as $res)
+       {
+           if($res['pagos_trimestrales']!=0)
+           {
+           $html.='<tr>';
+           $html.='<td width="5%" bgcolor="white"><font color="black">'.$res['pagos_trimestrales'].'</font></td>';
+           $html.='<td width="18%" bgcolor="white" align="center"><font color="black">'.$res['fecha_pago'].'</font></td>';
            $res['amortizacion']=number_format((float)$res['amortizacion'],2,".",",");
            $html.='<td width="15.2%" bgcolor="white" align="right"><font color="black">'.$res['amortizacion'].'</font></td>';
-           $res['pagos']=number_format((float)$res['pagos'],2,".","");
-           $total1+=$res['pagos'];
-           $res['pagos']=number_format((float)$res['pagos'],2,".",",");
-           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['pagos'].'</font></td>';
-           $html.='<td width="18%" bgcolor="white" align="center"><font color="black">'.$res['fecha_pago'].'</font></td>';
+           $res['interes']=number_format((float)$res['interes'],2,".",",");
+           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['interes'].'</font></td>';
+           $cuota_pagar=$res['desgravamen']+$res['pagos'];
+           $res['desgravamen']=number_format((float)$res['desgravamen'],2,".",",");
+           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['desgravamen'].'</font></td>';
+           $cuota_pagar=number_format((float)$cuota_pagar,2,".",",");
+           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$cuota_pagar.'</font></td>';
+           $res['saldo_inicial']=number_format((float)$res['saldo_inicial'],2,".",",");
+           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['saldo_inicial'].'</font></td>';
            $html.='</tr>';
+           }
            
        }
      
+       $html.='<tr>';
+       $html.='<td width="5%" bgcolor="white"><font color="black"></font></td>';
+       $html.='<td width="18%" bgcolor="white" align="center"><font color="black">Totales</font></td>';
+       $total_capital=number_format((float)$total_capital,2,".",",");
+       $html.='<td width="15.2%" bgcolor="white" align="right"><font color="black">'.$total_capital.'</font></td>';
+       $total=number_format((float)$total,2,".",",");
+       $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$total.'</font></td>';
+       $total_desg=number_format((float)$total_desg,2,".",",");
+       $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$total_desg.'</font></td>';
+       $total1=number_format((float)$total1,2,".",",");
+       $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$total1.'</font></td>';
+       $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black"></font></td>';
+       $html.='</tr>';
+       
        $html.='</table>
               </div>';
        echo $html;
@@ -529,6 +565,7 @@ class SimulacionCreditosController extends ControladorBase{
            $tabla="consecutivos";
            $where="nombre_consecutivos='CREDITO'";
            $plan_cuentas->ActualizarBy($colval, $tabla, $where);
+           
        }
        echo $mensage;
        

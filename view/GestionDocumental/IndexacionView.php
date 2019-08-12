@@ -58,7 +58,7 @@
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Registrar Bancos</h3>
+          <h3 class="box-title">Gestión Documental</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -69,7 +69,7 @@
                   
   		<div class="box-body">
 
-			<form id="frm_bancos" action="<?php echo $helper->url("Indexacion","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+			<form id="frm_indexacion"  action="<?php echo $helper->url("Indexacion","GenerarReporte"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
              
 							    
 							    
@@ -96,36 +96,43 @@
                         </div>
             		  </div>
             		  
-            		<div class="col-xs-12 col-md-3 col-lg-3">
+            		   <div class="col-xs-12 col-md-3 col-lg-3">
         		     <div class="form-group">
-                          <label for="numero_credito" class="control-label">Número de Credito:</label>
-                          <input type="text" class="form-control" id="numero_credito" name="numero_credito" value=""  placeholder="Número...">
-                          <div id="mensaje_numero_credito" class="errores"></div> 
-                          <input type="hidden" class="form-control" id="id_capremci" name="id_capremci" value="0" >
-                  <span class="help-block"></span>
-					</div>
-        		     </div>
-        		     
-        		     <div class="col-xs-12 col-md-3 col-lg-3">
-        		     <div class="form-group">
-                          <label for="nombres_capremci" class="control-label">Nombre:</label>
-                          <input type="text" class=" form-control" id="nombres_capremci" name="nombres_capremci" value=""  placeholder="Nombre">
-                           <div id="mensaje_nombres_capremci" class="errores"></div> 
-                           <input type="hidden" class="form-control" id="id_capremci" name="id_capremci" value="0"  placeholder="Search">
+                          <label for="cedula_capremci" class="control-label">Cédula:</label>
+                          <input type="text" class=" form-control" id="cedula_capremci" name="cedula_capremci" value=""  placeholder="Cédula..">
+                           <div id="mensaje_cedula_capremci" class="errores"></div> 
                   <span class="help-block"></span>
                      </div>
         		     </div>
+            		  
+            		   <div class="col-xs-12 col-md-3 col-lg-3">
+        		     <div class="form-group">
+                          <label for="nombres_capremci" class="control-label">Nombre:</label>
+                          <input type="text" class=" form-control" id="nombres_capremci" name="nombres_capremci" readonly value=""  placeholder="Nombre..">
+                           <div id="mensaje_nombres_capremci" class="errores"></div> 
+                  <span class="help-block"></span>
+                     </div>
+        		     </div>
+            		  
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+        		     <div class="form-group">
+                          <label for="numero_credito" class="control-label">Número de Credito:</label>
+                          <input type="text" class="form-control" id="numero_credito" name="numero_credito" readonly value=""  placeholder="Número...">
+                          <div id="mensaje_numero_credito" class="errores"></div> 
+                   <span class="help-block"></span>
+				  </div>
+        		     </div>
+        		     
+        		  <div class="row">
+            			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+                	   		    <div class="form-group">
+            	                  <button type="submit" formtarget="_blank"  id="Guardar" name="Guardar" class="btn btn-primary">Generar Reporte</button>
+            	                </div>
+    	        		    </div>
+    	        		    
+            		    </div>
                         		     
-            		 <div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-            		      <label for="nombre_bancos" class="control-label">Cédula:</label>
-                          <input  type="text" class="form-control" id="nombre_bancos" name="nombre_bancos" value=""  placeholder="Nombre Bancos" required/>
-                          <input type="hidden" name="id_bancos" id="id_bancos" value="0" />
-                          <div id="mensaje_nombre_bancos" class="errores"></div>
-                          <div id="divLoaderPage" ></div>                     	
-                                              
-                        </div>
-            		  </div>
+            		
                	</div>
           	
           	   	
@@ -150,7 +157,8 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/GestionDocumental/js/GestionDocumental.js?0.3"></script> 
+   <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
+   <script src="view/GestionDocumental/js/GestionDocumental.js?0.6"></script> 
        
 
 

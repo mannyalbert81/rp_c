@@ -32,4 +32,30 @@ $(document).ready(function(){
 
 
            		   }
+
+function cargaTipoDocuemtos(){
+	
+	let $tipoDocumento = $("#id_tipo_documentos");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=Documentos&action=cargaTipoDocuemtos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$tipoDocumento.empty();
+		$tipoDocumento.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$tipoDocumento.append("<option value= " +value.id_tipo_documentos +" >" + value.nombre_tipo_documentos  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$tipoDocumento.empty();
+	})
+}
 	

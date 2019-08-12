@@ -52,6 +52,23 @@
 	    }
 	    
 	}
+	
+	public function cargaTipoDocuemtos(){
+	    
+	    require_once 'core/DB_Documentos.php';
+	    $db = new DB_Documentos(); 
+	    
+	    $query = " SELECT id_tipo_documentos,nombre_tipo_documentos FROM tipo_documentos ORDER BY nombre_tipo_documentos";
+	    
+	    $resulset = $db->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
+	
 	public function searchadminsuper(){
 	    
 	    session_start();
@@ -60,7 +77,7 @@
 	    $db = new DB_Documentos();
 	    
 	    
-	    
+	    $resultTipo= $db->getBy("tipo_documentos"," 1=1 ");
 	    
 	    $where_to="";
 	    $columnas = "documentos_legal.id_documentos_legal,  documentos_legal.fecha_documentos_legal, categorias.nombre_categorias, subcategorias.nombre_subcategorias, tipo_documentos.nombre_tipo_documentos, cliente_proveedor.nombre_cliente_proveedor, carton_documentos.numero_carton_documentos, documentos_legal.paginas_documentos_legal, documentos_legal.fecha_desde_documentos_legal, documentos_legal.fecha_hasta_documentos_legal, documentos_legal.ramo_documentos_legal, documentos_legal.numero_poliza_documentos_legal, documentos_legal.ciudad_emision_documentos_legal, soat.cierre_ventas_soat,   documentos_legal.creado , documentos_legal.monto_documentos_legal , documentos_legal.numero_credito_documentos_legal, documentos_legal.monto_documentos_legal, documentos_legal.valor_documentos_legal  ";
@@ -80,7 +97,7 @@
 	        
 	        if(!empty($search)){
 	            
-	            $where1=" AND (tipo_documentos.nombre_tipo_documentos LIKE '".$search."%' OR cliente_proveedor.nombre_cliente_proveedor LIKE '".$search."%' OR carton_documentos.numero_carton_documentos LIKE '".$search."%')";
+	            $where1=" AND (cliente_proveedor.ruc_cliente_proveedor LIKE '".$search."%' OR cliente_proveedor.nombre_cliente_proveedor LIKE '".$search."%' OR carton_documentos.numero_carton_documentos LIKE '".$search."%' OR documentos_legal.numero_poliza_documentos_legal LIKE '".$search."%' OR documentos_legal.ramo_documentos_legal LIKE '".$search."%' OR documentos_legal.ciudad_emision_documentos_legal LIKE '".$search."%')";
 	            
 	            $where_to=$where.$where1;
 	        }else{
@@ -177,7 +194,9 @@
 	            
 	            
 	        }else{
-	            
+	            $html.= "<br>";
+	            $html.= "<br>";
+	            $html.= "<br>";
 	            $html.='<div class="alert alert-warning alert-dismissable">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> No hay datos para mostrar';

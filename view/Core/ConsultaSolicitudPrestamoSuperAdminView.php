@@ -132,7 +132,7 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Core/js/SolicitudPrestamo.js?3.27" ></script>
+ <script src="view/Core/js/SolicitudPrestamo.js?3.28" ></script>
  
  </body>
 </html>

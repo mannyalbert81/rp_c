@@ -70,32 +70,30 @@
               </div>
             </div>
               <section class="content">
-            <div class="box-body">
-
-           <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-            
-            </ul>
-            
-            <div class="col-md-12 col-lg-12 col-xs-12">
-            <div class="tab-content">
-            <br>
-              <div class="tab-pane active" id="activos">
-                
-				 <div class="pull-right" style="margin-right:11px;">
-					<input type="text" value="" class="form-control" id="search_solicitud" name="search_solicitud" onkeyup="load_documentos(1)" placeholder="search.."/>
-					</div>
-                    	
-					<div id="load_documentos" ></div>	
-					<div id="solicitud_prestamos_registrados"></div>	
-				  
-                
-              </div>
-               </div>
-            </div>
-           </div>
+                   <div class="tab-pane active" id="activos">
          
-            </div>
+                     <div class="box-body">
+			<div class="pull-right" style="margin-right:15px;">
+			<input type="text" value="" class="form-control" id="search_solicitud" name="search_solicitud" onkeyup="load_documentos(1)" placeholder="Buscar.."/>
+				</div>
+			<div class="pull-right" style="margin-right:15px;">
+        		 		<select name="criterio_busqueda" id="criterio_busqueda"  class="form-control" >
+           		<option value="0"  > --TODOS--</option>
+				<option value="1"  >Ruc Cliente/Proveedor</option>
+				<option value="2"  >Nombre Cliente/Proveedor</option>
+				<option value="3"  >Número Carton</option>
+				<option value="4"  >Número Credito</option>
+				<option value="7"  >Tipo de Documento</option>
+				<option value="8"  >Número de Prestación</option>
+				<option value="9"  >Número de Pagaré</option>
+				<option value="10"  >Número de Cheque</option>
+				<option value="11"  >Asunto</option>
+		 </select>
+    		</div>
+        	<div id="load_documentos" ></div>	
+					<div id="solicitud_prestamos_registrados"></div>	        </div> 	
+         </div>
+          
             </div>
             </section>
             <div class="box-body">

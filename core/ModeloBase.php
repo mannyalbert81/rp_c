@@ -177,6 +177,10 @@ class ModeloBase extends EntidadBase{
         return $resultSet;
     }
     
+    public function getconsultaPG($funcion,$parametros){
+        return "SELECT ". $funcion." ( ".$parametros." )";
+    }
+    
     
     //------METODO PARA ENVIAR EL QUERY
     
@@ -219,6 +223,25 @@ class ModeloBase extends EntidadBase{
         }catch (Exception $Ex){
             
             $resultSet=null;
+        }
+        
+        return $resultSet;
+    }
+    
+    public function executeNonQuery($query){
+        $resultSet=-1;
+        try{
+            
+            $result=pg_query($this->con(), $query);
+            
+            if( $result === false )
+                throw new Exception( "Error PostgreSQL ".pg_last_error() );
+                
+                $resultSet = pg_affected_rows($result);
+                
+        }catch (Exception $Ex){
+            
+            $resultSet=-1;
         }
         
         return $resultSet;

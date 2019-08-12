@@ -1,10 +1,9 @@
 <?php
 
 include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
- 
-//echo getcwd().''; //para ver ubicacion de directorio
 
-$header= file_get_contents('view/reportes/template/Cabecera.html');
+$header = file_get_contents('view/reportes/template/CabeceraFinal.html');
+$template = file_get_contents('view/reportes/template/MovimientosContables.html');
 
 if(!empty($datos_empresa))
 {
@@ -14,66 +13,29 @@ if(!empty($datos_empresa))
     }
 }
 
-$template = file_get_contents('view/reportes/template/MovimientosContables.html');
-
 $footer = file_get_contents('view/reportes/template/pieficha.html');
 
-
-
-if(!empty($tabla_detalle)){
+if(!empty($datos_detalle)){
     
-    $template = str_replace('{TABLADETALLE}', $tabla_detalle, $template);
+    $template = str_replace('{TABLADETALLE}', $datos_detalle, $template);
     
-}
-
-if(!empty($datos_reporte))
-{
-	
-    foreach ($datos_reporte as $clave=>$valor) {
-        echo $clave; echo "\n";
-		$template = str_replace('{'.$clave.'}', $valor, $template);
-	}
 }
 
 ob_end_clean();
-//creacion del pdf
-//$mpdf=new mPDF('c','A4','','' , 0 , 0 , 0 , 0 , 0 , 0);
-if ($_nombre_archivo == "")
-{
-	$mpdf=new mPDF();
-	$mpdf->SetDisplayMode('fullpage');
-	$mpdf->allow_charset_conversion = true;
-	$mpdf->charset_in = 'UTF-8';
-	$mpdf->setAutoTopMargin = 'stretch';
-	$mpdf->setAutoBottomMargin = 'stretch';
-	$mpdf->SetHTMLHeader($header);
-	$mpdf->SetHTMLFooter($footer);
-	$mpdf->WriteHTML($template);
-	$mpdf->debug = true;
-	//$mpdf->Output('COMPROBANTE_CONTABLE.pdf', 'D');
-	$mpdf->Output();
-	
-}
-else 
-{
-	$mpdf=new mPDF();
-	$mpdf->SetDisplayMode('fullpage');
-	$mpdf->allow_charset_conversion = true;
-	$mpdf->charset_in = 'UTF-8';
-	$mpdf->setAutoTopMargin = 'stretch';
-	$mpdf->setAutoBottomMargin = 'stretch';
-	$mpdf->SetHTMLFooter($footer);
-	$mpdf->WriteHTML($template);
-	$mpdf->debug = true;
-	$mpdf->Output($_nombre_archivo );
-	return ;
-	
-}
 
-
-/*$content = $mpdf->Output('', 'S'); // Saving pdf to attach to email
-$content = chunk_split(base64_encode($content));
-$content = 'data:application/pdf;base64,'.$content;
-print_r($content);*/
+$mpdf=new mPDF();
+$mpdf->SetDisplayMode('fullpage');
+$mpdf->allow_charset_conversion = true;
+$mpdf->charset_in = 'UTF-8';
+$mpdf->setAutoTopMargin = 'stretch';
+$mpdf->setAutoBottomMargin = 'stretch';
+$mpdf->SetHTMLHeader(utf8_encode($header));
+$mpdf->SetHTMLFooter($footer);
+$stylesheet = file_get_contents('view/reportes/template/MovimientosContables.css');
+$mpdf->WriteHTML($stylesheet,1);
+$mpdf->WriteHTML($template);
+$mpdf->debug = true;
+$mpdf->Output();
 exit();
 ?>
+

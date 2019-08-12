@@ -967,154 +967,247 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    
 	}
 	
+	/**
+	 * @param number $paramIdCredito
+	 * devuelve string OK;
+	 */
 	public function ActivaCredito( $paramIdCredito = 1){
 	    
-	    session_start();
-	    $Participes = new ParticipesModel();
+	    @session_start();
 	    $Credito = new CreditosModel();
 	    
 	    $id_creditos = (isset($_POST['id_creditos'])) ? $_POST['id_creditos'] : ( $paramIdCredito > 1 ? $paramIdCredito : null );
 	    
-	    if(is_null($id_creditos))
-	        return;
-	    
-	    //creacion de lote
-	    $nombreLote = "USUARIO";
-	    $descripcionLote = "PAGO CREDITO";
-	    $id_frecuencia = 1;
-	    $id_usuarios = 15;
-	    $funcionLote = "tes_genera_lote";
-	    $paramLote = "'$nombreLote','$descripcionLote','$id_frecuencia','$id_usuarios'";
-	    $consultaLote = " SELECT ".$funcionLote." ( ".$paramLote." )";
-	    $ResultLote = $Credito->llamarconsultaPG($consultaLote);
-	    $id_lote = 0;
-	    $error = "";
-	    $error = pg_last_error();
-	    if (!empty($error) || (int)$ResultLote[0] <= 0){
-	        echo "Aqui error";
+	    if(is_null($id_creditos)){
+	        echo '<message> parametros no recibidos <message>';
+	        return;	        
 	    }
-	    $_id_lote = (int)$ResultLote[0];
-	    
-	    /*insertado de cuentas por pagar*/
-	    //busca consecutivo
-	    $queryConsecutivo = "SELECT id_consecutivos, LPAD(valor_consecutivos::TEXT,espacio_consecutivos,'0') AS numero_consecutivos FROM consecutivos
-                WHERE id_entidades = 1 AND nombre_consecutivos='CxP'";	    
-	    $ResultConsecutivo= $Credito->enviaquery($queryConsecutivo);
-	    
-	    $_id_consecutivos = $ResultConsecutivo[0]->id_consecutivos;
-	    
-	    //busca tipo documento 
-	    $queryTipoDoc = "SELECT id_tipo_documento, nombre_tipo_documento FROM tes_tipo_documento
+	        
+	    try {
+	        
+	        $Credito->beginTran();
+	        
+	        //creacion de lote
+	        $nombreLote = "CXP".$_SESSION['usuario_usuarios'];
+	        $descripcionLote = "GENERACION CREDITO";
+	        $id_frecuencia = 1;
+	        $id_usuarios = $_SESSION['id_usuarios'];
+	        $funcionLote = "tes_genera_lote";
+	        $paramLote = "'$nombreLote','$descripcionLote','$id_frecuencia','$id_usuarios'";
+	        $consultaLote = " SELECT ".$funcionLote." ( ".$paramLote." )";
+	        $ResultLote = $Credito->llamarconsultaPG($consultaLote);
+	        $_id_lote = 0;
+	        $error = "";
+	        $error = pg_last_error();
+	        if (!empty($error) || (int)$ResultLote[0] <= 0){
+	           throw new Exception('error ingresando lote');
+	        }
+	        
+	        $_id_lote = (int)$ResultLote[0];
+	        
+	        /*insertado de cuentas por pagar*/
+	        //busca consecutivo
+	        $queryConsecutivo = "SELECT id_consecutivos, LPAD(valor_consecutivos::TEXT,espacio_consecutivos,'0') AS numero_consecutivos FROM consecutivos
+                WHERE id_entidades = 1 AND nombre_consecutivos='CxP'";
+	        $ResultConsecutivo= $Credito->enviaquery($queryConsecutivo);
+	        
+	        $_id_consecutivos = $ResultConsecutivo[0]->id_consecutivos;
+	        
+	        //busca tipo documento
+	        $queryTipoDoc = "SELECT id_tipo_documento, nombre_tipo_documento FROM tes_tipo_documento
                 WHERE abreviacion_tipo_documento = 'MIS' LIMIT 1";
-	    $ResultTipoDoc= $Credito->enviaquery($queryTipoDoc);	    
-	    $_id_tipo_documento = $ResultTipoDoc[0]->id_tipo_documento;
-	    
-	    //busca tipo moneda
-	    $queryMoneda = "SELECT id_moneda, nombre_moneda FROM tes_moneda
+	        $ResultTipoDoc= $Credito->enviaquery($queryTipoDoc);
+	        $_id_tipo_documento = $ResultTipoDoc[0]->id_tipo_documento;
+	        
+	        //busca tipo moneda
+	        $queryMoneda = "SELECT id_moneda, nombre_moneda FROM tes_moneda
                 WHERE nombre_moneda = 'DOLAR' LIMIT 1";
-	    $ResultMoneda= $Credito->enviaquery($queryMoneda);	    
-	    $_id_moneda = $ResultTipoDoc[0]->id_tipo_documento;
-	    
-	    //datos de participes 
-	    $_id_proveedor = 0;
-	    $queryProveedor = "SELECT 1
+	        $ResultMoneda= $Credito->enviaquery($queryMoneda);
+	        $_id_moneda = $ResultMoneda[0]->id_moneda;
+	        
+	        //datos de participes
+	        $_id_proveedor = 0;
+	        $queryProveedor = "SELECT 1,p.id_proveedores
                     FROM core_participes cp
                     INNER JOIN proveedores p
                     ON p.identificacion_proveedores = cp.cedula_participes
                     INNER JOIN core_creditos cc
                     ON cc.id_participes = cp.id_participes
                     WHERE cc.id_creditos = $id_creditos ";
-	    $ResultProveedor= $Credito->enviaquery($queryTipoDoc);
-	    
-	    if(empty($ResultProveedor)){
+	        $ResultProveedor= $Credito->enviaquery($queryProveedor);
 	        
-	        $funcionProveedor = "ins_proveedores_participes";
-	        $parametrosProveedor = " '$id_creditos' ";
-	        $consultaProveedor = " SELECT ".$funcionProveedor." ( ".$parametrosProveedor." )";
-	        $ResultadoProveedor= $Credito->llamarconsultaPG($consultaProveedor);
-	        $_id_proveedor = $ResultadoProveedor[0];
-	    }
-	    
-	    
-	    //para datos de banco
-	    $_id_bancos = 2 ; //seteado para presentacion luego va con deacuerdo el credito
-	    
-	    //datos Cuenta por pagar 
-	    $_descripcion_cuentas_pagar = " CREDITO ORDINARIO";
-	    $_fecha_cuentas_pagar = date('Y-m-d');
-	    $_condiciones_pago_cuentas_pagar = "";
-	    $_num_documento_cuentas_pagar = "";
-	    $_num_ord_compra = "";
-	    $_metodo_envio_cuentas_pagar = "";
-	    $_compra_cuentas_pagar = ""; //valor de credito
-	    $_desc_comercial = 0.00;
-	    $_flete_cuentas_pagar = 0.00;
-	    $_miscelaneos_cuentas_pagar = 0.00;
-	    $_impuesto_cuentas_pagar = 0.00;
-	    $_total_cuentas_pagar = 0.00;
-	    $_monto1099_cuentas_pagar = 0.00;
-	    $_efectivo_cuentas_pagar = 0.00;
-	    $_cheque_cuentas_pagar = 0.00;
-	    $_tarjeta_credito_cuentas_pagar = 0.00;
-	    $_saldo_cuentas_pagar = 0.00;
-	    $_id_cuentas_pagar = 0;
-	    
-	    /*valores para cuenta por pagar*/
-	    //busca datos de credito
-	    $queryCredito = "SELECT cc.id_creditos, cc.monto_otorgado_creditos, cc.monto_neto_entregado_creditos, cc.saldo_actual_creditos,
+	        if(empty($ResultProveedor)){
+	            
+	            $funcionProveedor = "ins_proveedores_participes";
+	            $parametrosProveedor = " '$id_creditos' ";
+	            $consultaProveedor = $Credito->getconsultaPG($funcionProveedor, $parametrosProveedor);
+	            $ResultadoProveedor= $Credito->llamarconsultaPG($consultaProveedor);
+	            $error = "";
+	            $error = pg_last_error();
+	            if (!empty($error) || (int)$ResultadoProveedor[0] <= 0){
+	                throw new Exception('error proveedores');
+	            }
+	            $_id_proveedor = $ResultadoProveedor[0];
+	        }else{
+	            $_id_proveedor = $ResultProveedor[0]->id_proveedores;
+	        }
+	        
+	        //para datos de banco
+	        $_id_bancos = 2 ; //seteado para presentacion luego va con deacuerdo el credito
+	        
+	        //datos Cuenta por pagar
+	        $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito ";
+	        $_fecha_cuentas_pagar = date('Y-m-d');
+	        $_condiciones_pago_cuentas_pagar = "";
+	        $_num_documento_cuentas_pagar = "";
+	        $_num_ord_compra = "";
+	        $_metodo_envio_cuentas_pagar = "";
+	        $_compra_cuentas_pagar = ""; //valor de credito
+	        $_desc_comercial = 0.00;
+	        $_flete_cuentas_pagar = 0.00;
+	        $_miscelaneos_cuentas_pagar = 0.00;
+	        $_impuesto_cuentas_pagar = 0.00;
+	        $_total_cuentas_pagar = 0.00;
+	        $_monto1099_cuentas_pagar = 0.00;
+	        $_efectivo_cuentas_pagar = 0.00;
+	        $_cheque_cuentas_pagar = 0.00;
+	        $_tarjeta_credito_cuentas_pagar = 0.00;
+	        $_condonaciones_cuentas_pagar = 0.00;
+	        $_saldo_cuentas_pagar = 0.00;
+	        $_id_cuentas_pagar = 0;	        
+	        
+	        /*valores para cuenta por pagar*/
+	        //busca datos de credito
+	        $queryCredito = "SELECT cc.id_creditos, cc.monto_otorgado_creditos, cc.monto_neto_entregado_creditos, cc.saldo_actual_creditos,
 		              ctc.id_tipo_creditos, ctc.nombre_tipo_creditos, ctc.codigo_tipo_creditos
                     FROM core_creditos cc
                     INNER JOIN core_tipo_creditos ctc
                     ON cc.id_tipo_creditos = ctc.id_tipo_creditos
                     WHERE cc.id_creditos = $id_creditos ";
-	    $ResultCredito= $Credito->enviaquery($queryCredito);
-	    
-	    $codigo_credito = "";
-	    $monto_credito = 0;
-	    $monto_entregado_credito = 0;
-	    //$id_tipo_credito = 0;
-	    	    
-	    foreach ($ResultCredito as $res){
-	        $codigo_credito=$res->codigo_tipo_creditos;
-	        $monto_credito = $res->monto_otorgado_creditos;
-	        $monto_entregado_credito = $res->monto_neto_entregado_creditos;
-	        //$id_tipo_credito = $res->id_tipo_creditos;
+	        $ResultCredito= $Credito->enviaquery($queryCredito);
 	        
-	    }
-	    
-	    //valores de cuentas por pagar 
-	    $_compra_cuentas_pagar = $monto_credito;
-	    $_total_cuentas_pagar = $_compra_cuentas_pagar - $_impuesto_cuentas_pagar;
-	    $_saldo_cuentas_pagar = $_compra_cuentas_pagar - $_impuesto_cuentas_pagar;
-	    
-	    /*inserccion de cuentas x pagar*/
-	    //generar cuentas contables de cuentas por pagar
-	    
-	    //DIFERENCIAR MONTO SOLICITADO MONTO ENTREGADO
-	    if($monto_credito != $monto_entregado_credito){
-	        //para monto en refinaciacion y otras
-	    }else{
-	        //para insertado normal
-	        switch ($codigo_credito){
-	            case "EME":
-	                //buscar de tabla parametrizacion 
-	                
-	                break;
-	            case "ORD":
-	                break;
+	        $codigo_credito = "";
+	        $monto_credito = 0;
+	        $monto_entregado_credito = 0;
+	        $id_tipo_credito = 0;
+	        
+	        foreach ($ResultCredito as $res){
+	            $codigo_credito=$res->codigo_tipo_creditos;
+	            $monto_credito = $res->monto_otorgado_creditos;
+	            $monto_entregado_credito = $res->monto_neto_entregado_creditos;
+	            $id_tipo_credito = $res->id_tipo_creditos;
+	            
 	        }
-	    }
+	        
+	        //valores de cuentas por pagar
+	        $_compra_cuentas_pagar = $monto_credito;
+	        $_total_cuentas_pagar = $_compra_cuentas_pagar - $_impuesto_cuentas_pagar;
+	        $_saldo_cuentas_pagar = $_compra_cuentas_pagar - $_impuesto_cuentas_pagar;
+	        
+	        /*inserccion de cuentas x pagar*/
+	        //generar cuentas contables de cuentas por pagar
+	        
+	        //DIFERENCIAR MONTO SOLICITADO MONTO ENTREGADO
+	        if($monto_credito != $monto_entregado_credito){
+	            //para monto en refinaciacion y otras
+	        }else{
+	            //para insertado normal
+	            $queryParametrizacion = "SELECT * FROM core_parametrizacion_cuentas
+                                    WHERE id_principal_core_parametrizacion_cuentas = $id_tipo_credito";
+	            $ResultParametrizacion = $Credito -> enviaquery($queryParametrizacion);
+	            
+	            //buscar de tabla parametrizacion
+	            $iorden=0;
+	            foreach ($ResultParametrizacion as $res){
+	                $iorden = 1;
+	                $queryDistribucion = "INSERT INTO tes_distribucion_cuentas_pagar
+                        (id_lote,id_plan_cuentas,tipo_distribucion_cuentas_pagar,debito_distribucion_cuentas_pagar,credito_distribucion_cuentas_pagar,ord_distribucion_cuentas_pagar,referencia_distribucion_cuentas_pagar)
+                        VALUES ( '$_id_lote','$res->id_plan_cuentas_debe','COMPRA','0.00','$monto_entregado_credito','$iorden','$_descripcion_cuentas_pagar')";
+	                $iorden = $iorden + 2;
+	                $ResultDistribucion = $Credito -> executeNonQuery($queryDistribucion);
+	                $error = "";
+	                $error = pg_last_error() || error_get_last();
+	                if(!empty($error) || $ResultDistribucion <= 0 )
+	                    throw new Exception('error distribucion cuentas pagar');
+	            }	            
+	            
+	            foreach ($ResultParametrizacion as $res){
+	                $iorden = 2;
+	                $queryDistribucion = "INSERT INTO tes_distribucion_cuentas_pagar
+                        (id_lote,id_plan_cuentas,tipo_distribucion_cuentas_pagar,debito_distribucion_cuentas_pagar,credito_distribucion_cuentas_pagar,ord_distribucion_cuentas_pagar,referencia_distribucion_cuentas_pagar)
+                        VALUES ( '$_id_lote','$res->id_plan_cuentas_haber','PAGOS','$monto_entregado_credito','0.00','$iorden','$_descripcion_cuentas_pagar')";
+	                $iorden = $iorden + 2;
+	                $ResultDistribucion = $Credito -> executeNonQuery($queryDistribucion);
+	                $error = "";
+	                $error = pg_last_error() || error_get_last();
+	                if(!empty($error) || $ResultDistribucion <= 0 )
+	                    throw new Exception('error distribucion cuentas pagar');	            }
+	            
+	            
+	            
+	            switch ($codigo_credito){
+	                case "EME":
+	                    $_descripcion_cuentas_pagar .= "EMERGENTE";
+	                    
+	                    break;
+	                case "ORD":
+	                    
+	                    $_descripcion_cuentas_pagar .= "ORDINARIO";
+	                    break;
+	            }
+	        }
+	        
+	        $_id_usuarios = 15;
+	        //datos de cuentas x pagar
+	        $funcionCuentasPagar = "tes_ins_cuentas_pagar";
+	        $paramCuentasPagar = "'$_id_lote', '$_id_consecutivos', '$_id_tipo_documento', '$_id_proveedor', '$_id_bancos',
+            '$_id_moneda', '$_descripcion_cuentas_pagar', '$_fecha_cuentas_pagar', '$_condiciones_pago_cuentas_pagar', '$_num_documento_cuentas_pagar',
+            '$_num_ord_compra','$_metodo_envio_cuentas_pagar', '$_compra_cuentas_pagar', '$_desc_comercial','$_flete_cuentas_pagar',
+            '$_miscelaneos_cuentas_pagar','$_impuesto_cuentas_pagar', '$_total_cuentas_pagar','$_monto1099_cuentas_pagar','$_efectivo_cuentas_pagar',
+            '$_cheque_cuentas_pagar', '$_tarjeta_credito_cuentas_pagar', '$_condonaciones_cuentas_pagar', '$_saldo_cuentas_pagar', '$_id_cuentas_pagar'";
+	        
+	        $consultaCuentasPagar = $Credito->getconsultaPG($funcionCuentasPagar, $paramCuentasPagar);
+	        $ResultCuentaPagar = $Credito -> llamarconsultaPG($consultaCuentasPagar);
+	        
+	        $error = "";
+	        $error = pg_last_error() || error_get_last();
+	        if(!empty($error) || $ResultCuentaPagar[0] <= 0 )
+	            throw new Exception('error inserccion cuentas pagar');
+	        	        
+	        $funcionComprobante = "tes_agrega_comprobante_cuentas_pagar";
+	        $parametrosComprobante = "
+                    '$_id_usuarios',
+                    '$_id_lote',
+                    '$_id_proveedor',
+                    '',
+                    '$_descripcion_cuentas_pagar',
+                    '$_total_cuentas_pagar',
+                    'cero',
+                    '$_fecha_cuentas_pagar',
+                    null,
+                    '',
+                    '',
+                    '',
+                    ''
+                    ";
+	        
+	        $consultaComprobante = $Credito ->getconsultaPG($funcionComprobante, $parametrosComprobante);
+	        $resultadComprobantes = $Credito->llamarconsultaPG($consultaComprobante);
+	        
+	        $error = "";
+	        $error = pg_last_error() || error_get_last();
+	        if(!empty($error) || $resultadComprobantes[0] <= 0 )
+	            throw new Exception('error inserccion cuentas pagar');
+	        
+	        $Credito->endTran('COMMIT');
+	        echo 'OK';
+	        
+	    } catch (Exception $e) {
+	        
+	        $Credito->endTran();	        
+	        echo '<message>'.$e->getMessage().'<message>';
+	    }   
 	    
-	    
-	    //datos de cuentas x pagar 
-	    $funcionCuentasPagar = "";
-	    $paramCuentasPagar = "'$_id_lote','$_id_consecutivos','$_id_tipo_documento','$_id_proveedor','$_id_bancos',
-        '$_id_moneda','$_descripcion_cuentas_pagar','$_fecha_cuentas_pagar','$_condiciones_pago_cuentas_pagar','$_num_documento_cuentas_pagar',
-        '$_num_ord_compra','$_metodo_envio_cuentas_pagar', '$_compra_cuentas_pagar', '$_desc_comercial','$_flete_cuentas_pagar',
-        '$_miscelaneos_cuentas_pagar','$_impuesto_cuentas_pagar', '$_total_cuentas_pagar','$_monto1099_cuentas_pagar','$_efectivo_cuentas_pagar',
-        '$_cheque_cuentas_pagar', '$_tarjeta_credito_cuentas_pagar', '$_condiciones_pago_cuentas_pagar', '$_saldo_cuentas_pagar', '$_id_cuentas_pagar'";
-	    	    	    
-	    //genera 
 	    
 	}
 	

@@ -84,7 +84,7 @@ function verificaMetodoPago(obj){
 	
 	
 	console.log(obj);
-	//index.php?controller=Transferencias&action=index&id_cuentas_pagar='.$res->id_cuentas_pagar.'
+	//
 	//index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_cuentas_pagar.'
 	
 	return false;

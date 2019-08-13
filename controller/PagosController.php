@@ -59,7 +59,8 @@ class PagosController extends ControladorBase{
         $rsFormaPago = $cuentasPagar->enviaquery($queryFormasPago);
         
         $columnas = " l.id_lote, l.nombre_lote, l.id_usuarios, cp.id_cuentas_pagar, cp.descripcion_cuentas_pagar, 
-                    cp.fecha_cuentas_pagar, cp.id_forma_pago, pr.id_proveedores, pr.nombre_proveedores";
+                    cp.fecha_cuentas_pagar, cp.id_forma_pago, pr.id_proveedores, pr.nombre_proveedores,
+                    fp.nombre_forma_pago";
         
         $tablas = "tes_lote l
             INNER JOIN tes_cuentas_pagar cp
@@ -67,7 +68,9 @@ class PagosController extends ControladorBase{
             INNER JOIN proveedores pr
             ON pr.id_proveedores = cp.id_proveedor
             INNER JOIN estado e
-            ON e.id_estado = cp.id_estado";
+            ON e.id_estado = cp.id_estado
+            LEFT JOIN forma_pago fp
+            ON fp.id_forma_pago = cp.id_forma_pago";
         
         $where = " 1=1 AND e.nombre_estado = 'GENERADO' ";
         
@@ -123,6 +126,8 @@ class PagosController extends ControladorBase{
             
             $i=0;
             
+            //print_r($resultSet); die();
+            
             foreach ($resultSet as $res)
             {
                 $i++;
@@ -133,13 +138,35 @@ class PagosController extends ControladorBase{
                 $html.='<td style="font-size: 11px;">'.$res->descripcion_cuentas_pagar.'</td>';
                 $html.='<td style="font-size: 11px;">'.$res->fecha_cuentas_pagar.'</td>';
                 $html.='<td style="font-size: 11px;">'.$res->nombre_proveedores.'</td>';
-                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
-                $html.='<a title="Generar Cheque" onclick="verificaMetodoPago(this)" data-metodo="CHEQUE" href="#">';
-                $html.='<i class="glyphicon glyphicon-usd"></i></a></span></td>';
-                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
-                $html.='<a title="Realizar Transferencia" onclick="verificaMetodoPago(this)" data-metodo="TRANSFERENCIA" data-formapago="'.$res->id_cuentas_pagar.'" 
-                data-cuentapagar="'.$res->id_cuentas_pagar.'" href="#">';
-                $html.='<i class="glyphicon glyphicon-transfer"></i></a></span></td>';
+                
+                if($res->id_forma_pago == null || $res->id_forma_pago == "" ){
+                    $html.='<td width="3%" style="font-size:80%;">';
+                    $html.='<a class="btn btn-sm btn-info" title="Generar Cheque" href="index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
+                    $html.='<i class="fa fa-money"></i></a></td>';
+                    $html.='<td width="3%" style="font-size:80%;">';
+                    $html.='<a class="btn btn-sm btn-info" title="Realizar Transferencia"  href="index.php?controller=Transferencias&action=index&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
+                    $html.='<i class="glyphicon glyphicon-transfer"></i></a></td>';
+                }else{
+                
+                    if($res->nombre_forma_pago != 'TRANSFERENCIA'){
+                        
+                        $html.='<td width="3%" style="font-size:80%;">';
+                        $html.='<a class="btn btn-sm btn-info" title="Generar Cheque" href="index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
+                        $html.='<i class="fa fa-money"></i></a></td>';
+                    }else{
+                        $html.='<td ></td>';
+                    }
+                    
+                    if($res->nombre_forma_pago == 'TRANSFERENCIA'){
+                        
+                        $html.='<td width="3%" style="font-size:80%;">';
+                        $html.='<a class="btn btn-sm btn-info" title="Realizar Transferencia"  href="index.php?controller=Transferencias&action=index&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
+                        $html.='<i class="glyphicon glyphicon-transfer"></i></a></td>';
+                    }else{
+                        $html.='<td ></td>';
+                    }
+                }
+                
                 $html.='</tr>';
                 
             }

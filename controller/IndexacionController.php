@@ -57,8 +57,8 @@ class IndexacionController extends ControladorBase{
         $columnas="id_categorias, nombre_categorias";
         $tabla = "categorias";
         $where = "1=1";
-        
-        $resulset = $db->getBy($columnas,$tabla, $where);
+        $id="id_categorias";
+        $resulset = $db->getCondiciones($columnas,$tabla,$where,$id);
         
         if(!empty($resulset) && count($resulset)>0){
             
@@ -81,8 +81,8 @@ class IndexacionController extends ControladorBase{
             $columnas="id_subcategorias, nombre_subcategorias";
             $tabla = "subcategorias";
             $where = "id_categorias='$id_categorias'";
-            
-            $resulset = $db->getBy($columnas,$tabla, $where);
+            $id="id_subcategorias";
+            $resulset = $db->getCondiciones($columnas,$tabla,$where,$id);
             
             if(!empty($resulset) && count($resulset)>0){
                 

@@ -119,9 +119,12 @@ class TablaAmortizacionController extends ControladorBase{
 	    
 	    $columnas = " core_creditos.id_creditos, 
                       core_tabla_amortizacion.fecha_tabla_amortizacion, 
-                      core_tabla_amortizacion.capital_tabla_amortizacion, 
+                      core_tabla_amortizacion.capital_tabla_amortizacion,
+                      core_tabla_amortizacion.seguro_desgravamen_tabla_amortizacion,  
                       core_tabla_amortizacion.interes_tabla_amortizacion, 
-                      core_tabla_amortizacion.mora_tabla_amortizacion, 
+                      core_tabla_amortizacion.mora_tabla_amortizacion,
+                      core_tabla_amortizacion.balance_tabla_amortizacion,
+                      core_tabla_amortizacion.total_balance_tabla_amortizacion,  
                       core_estado_tabla_amortizacion.nombre_estado_tabla_amortizacion, 
                       core_tabla_amortizacion.total_valor_tabla_amortizacion";
 	    
@@ -171,13 +174,13 @@ class TablaAmortizacionController extends ControladorBase{
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->seguro_desgravamen_tabla_amortizacion.'</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->interes_tabla_amortizacion.'</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->mora_tabla_amortizacion.'</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->total_valor_tabla_amortizacion.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->total_balance_tabla_amortizacion.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->balance_tabla_amortizacion.'</td>';
 	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_estado_tabla_amortizacion.'</td>';
 	        
 	        

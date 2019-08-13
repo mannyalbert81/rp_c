@@ -62,7 +62,7 @@
        <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Listado Participes</h3>
+              <h3 class="box-title">Turnos</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -74,8 +74,7 @@
 
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#activos" data-toggle="tab">Matriz de Juicios</a></li>
-              <li><a href="#inactivos" data-toggle="tab">Documentos Generados</a></li> 
+              <li class="active"><a href="#activos" data-toggle="tab">Consulta</a></li>
             
             </ul>
             
@@ -85,24 +84,12 @@
  			 <div class="tab-pane active" id="activos">
                 
 				 <div class="pull-right" style="margin-right:11px;">
-					<input type="text" value="" class="form-control" id="search_solicitud" name="search_solicitud" onkeyup="load_matriz(1)" placeholder="search.."/>
+					<input type="text" value="" class="form-control" id="search_solicitud" name="search_solicitud" onkeyup="load_turnos(1)" placeholder="search.."/>
 					</div>
                     	
-					<div id="load_matriz" ></div>	
+					<div id="load_turnos" ></div>	
 					<div id="solicitud_prestamos_registrados"></div>	
 				  
-                
-              </div>
-              
-              <div class="tab-pane" id="inactivos">
-                
-                   <div class="pull-right" style="margin-right:11px;">
-					<input type="text" value="" class="form-control" id="search_solicitud_doc" name="search_solicitud_doc" onkeyup="load_matriz_doc(1)" placeholder="search.."/>
-					</div>
-                    	
-					<div id="load_matriz_doc" ></div>	
-					<div id="solicitud_prestamos_registrados_doc"></div>	
-					
               </div>
              </div>
             </div>
@@ -119,7 +106,7 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/GestionDocumental/js/MatrizJuicios.js?3.28" ></script>
+ <script src="view/Turnos/js/Turnos.js?3.28" ></script>
  
  </body>
 </html>

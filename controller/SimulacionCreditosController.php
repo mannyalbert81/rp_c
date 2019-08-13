@@ -428,13 +428,16 @@ class SimulacionCreditosController extends ControladorBase{
        $monto_credito=$_POST['monto_credito'];
        $tasa_interes=$_POST['tasa_interes'];
        $fecha_pago=$_POST['fecha_pago'];
+       $interes_credito=$tasa_interes;
+       $id_tipo_creditos=0;
+       if($tasa_interes==9) $id_tipo_creditos=4; //quemado cambiar por bd
+       else $id_tipo_creditos=2;
        $tasa_interes=$tasa_interes/100;
        $cuota=$_POST['cuota_credito'];
        $cedula_participe=$_POST['cedula_participe'];
        $observacion_credito=$_POST['observacion_credito'];
-       $id_tipo_creditos=0;
-       if($tasa_interes==9) $id_tipo_creditos=4; //quemado cambiar por bd
-       else $id_tipo_creditos=2;
+       $id_solicitud=$_POST['id_solicitud'];
+       
        $columnas="id_participes";
        $tablas="core_participes";
        $where="cedula_participes='".$cedula_participe."'";
@@ -468,7 +471,7 @@ class SimulacionCreditosController extends ControladorBase{
                      '$observacion_credito',
                      1,
                      '$usuario',
-                     '$tasa_interes',
+                     '$interes_credito',
                      '$hoy'";
        $credito->setFuncion($funcion);
        $credito->setParametros($parametros);
@@ -548,8 +551,37 @@ class SimulacionCreditosController extends ControladorBase{
            }
            if($respuesta)
            {
-               $credito->endTran('COMMIT');
-               $mensage="OK";
+               $actualizacion_solicitud=$this->ActualizarSolicitud($id_solicitud, $monto_credito, $cuota, $numero_credito);
+               $plan_cuentas=new PlanCuentasModel();
+               $colval="numero_consecutivos=".$numero_credito;
+               $tabla="consecutivos";
+               $where="nombre_consecutivos='CREDITO'";
+               $actualizacion_solicitud= trim($actualizacion_solicitud);
+               if(empty($actualizacion_solicitud))
+               {
+                   ob_start();
+                   $plan_cuentas->ActualizarBy($colval, $tabla, $where);
+                   $actualizacion_consecutivo=ob_get_clean();
+                   $actualizacion_consecutivo= trim($actualizacion_consecutivo);
+                   if(empty($actualizacion_consecutivo))
+                   {
+                       $credito->endTran('COMMIT');
+                       $mensage="OK";
+                   }
+                   else {
+                       $credito->endTran('ROLLBACK');
+                       $mensage="ERROR";
+                   }
+                   
+               }
+               else
+               {
+                   echo "solicitud no aceptada";
+                   $credito->endTran('ROLLBACK');
+                   $mensage="ERROR";
+               }
+               
+    
            }
        }
        else
@@ -557,18 +589,22 @@ class SimulacionCreditosController extends ControladorBase{
            $credito->endTran('ROLLBACK');
            $mensage="ERROR";
        }
-       
-       if($mensage=="OK")
-       {
-           $plan_cuentas=new PlanCuentasModel();
-           $colval="numero_consecutivos=".$numero_credito;
-           $tabla="consecutivos";
-           $where="nombre_consecutivos='CREDITO'";
-           $plan_cuentas->ActualizarBy($colval, $tabla, $where);
-           
-       }
+      
        echo $mensage;
        
+   }
+   
+   public function ActualizarSolicitud($id_solicitud, $monto, $plazo, $id_credito)
+   {
+       ob_start();
+       require_once 'core/DB_Functions.php';
+       $db = new DB_Functions();
+       $colval="id_estado_tramites=2, monto_datos_prestamo=".$monto.", plazo_datos_prestamo=".$plazo.", identificador_consecutivos=".$id_credito;
+       $tabla="solicitud_prestamo";
+       $where="id_solicitud_prestamo=".$id_solicitud;
+       $db->ActualizarBy($colval, $tabla, $where);
+       
+       return ob_get_clean();
    }
    
    public function genera_codigo(){

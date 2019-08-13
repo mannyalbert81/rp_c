@@ -584,6 +584,21 @@ class DB_Functions {
 		return $out;
 	}
 	
+	public function ActualizarBy($colval ,$tabla , $where){
+	    try{
+	        
+	        $query=pg_query($this->conn, "UPDATE $tabla SET  $colval   WHERE $where ");
+	        
+	        if(!$query)
+	            throw new Exception("valor nulor");
+	            
+	            return pg_affected_rows($query);
+	            
+	    }catch (Exception  $Ex){
+	        return -1;
+	        
+	    }
+	}
 	
 	
 	

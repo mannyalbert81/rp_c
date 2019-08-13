@@ -1,10 +1,16 @@
 <?php
-class Conectar_128{
-    private $driver;
-    private $host, $user, $pass, $database, $charset, $port;
+class ConectarService{
+	
+     private $driver = "";
+     private $host = "";
+     private $user = "";
+     private $pass = "";
+     private $database = "";
+     private $charset = "";
+     private $port = "";
   
     public function __construct() {
-        $db_cfg = require_once 'config/database.php';
+        $db_cfg = require_once '../config/database.php';
         $this->driver=$db_cfg["driver"];
         $this->host=$db_cfg["host"];
         $this->user=$db_cfg["user"];
@@ -18,49 +24,36 @@ class Conectar_128{
         
         if($this->driver=="pgsql" || $this->driver==null){
        
-        	$con = pg_connect("host=192.168.1.128 port=5432 dbname=ad_capremci user=postgres password=Capremci2018");
+        	$con = pg_connect("host=localhost port=5433 dbname=rp_capremci user=postgres password=.Romina.2012");
         	if(!$con){
         		echo "No se puedo Conectar a la Base";
-        		exit();
         	} else {
-        		
         	}
-       
         }
-        
         return $con;
-	
     }
-    
-    
     
     public function startFluent(){
         require_once "FluentPDO/FluentPDO.php";
         
         if($this->driver=="pgsql" || $this->driver==null){
-        	
-        	try
-        	{
-        		$pdo = new PDO('pgsql:host=192.168.1.128;port=5432;dbname=ad_capremci', 'postgres', 'Capremci2018' );
-            	
+        	$pdo = new PDO('pgsql:host=localhost;port=5433;dbname=rp_capremci', 'postgres', '.Romina.2012' );
+            //$pdo = new PDO($this->driver.":dbname=".$this->database, $this->user, $this->pass);
             
-         
+            try 
+            {
             	$fpdo = new FluentPDO($pdo);
             	
             }
             
             
-            catch(Exception $err)
+            catch(PDOException $err)
             {
-            	echo "PDO No se puedo Conectar a la Base";
-            	exit();
+            	echo "No se puedo Conectar a la Base";
             }
         }
         
         return $fpdo;
     }
-    
-    
-    
 }
 ?>

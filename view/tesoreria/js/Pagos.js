@@ -52,3 +52,41 @@ function buscaCuentasPagar(pagina=1){
 	})
 }
 
+function verificaMetodoPago(obj){
+	
+	$.ajax({
+		url:"index.php?controller=Pagos&action=validaMetodoPago",
+		dataType:"json",
+		type:"POST",
+		data:{},
+	}).done(function(x){		
+		
+		console.log(x)
+		
+		if(x.respuesta == 'ok'){
+			window.open("","_blank")
+		}
+		
+	}).fail(function(xhr,status,error){
+		let err = xhr.responseText;
+		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+	 	if( mensaje !== null ){
+		 var resmsg = mensaje[1];
+		 swal( {
+			 title:"Error",
+			 dangerMode: true,
+			 text: resmsg.replace("|","\n"),
+			 icon: "error"
+			})
+	 	}
+	})
+	
+	
+	console.log(obj);
+	//index.php?controller=Transferencias&action=index&id_cuentas_pagar='.$res->id_cuentas_pagar.'
+	//index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_cuentas_pagar.'
+	
+	return false;
+}
+

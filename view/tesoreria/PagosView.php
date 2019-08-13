@@ -117,7 +117,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Pagos.js?0.07"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Pagos.js?0.09"></script>
 
   </body>
 </html>   

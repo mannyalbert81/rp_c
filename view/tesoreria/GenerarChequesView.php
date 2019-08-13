@@ -74,8 +74,7 @@
             <div class="box-body">
             
                 <form id="frm_generarcheque" action="<?php echo $helper->url("Cheque","generar_reporte_productos"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
-                
-                	    
+                  
                      	<div class="row">
             			 
     	        		    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">

@@ -25,7 +25,7 @@ class PagosController extends ControladorBase{
         if (empty($resultPer)){
             
             $this->view("Error",array(
-                "resultado"=>"No tiene Permisos de Acceso Empleo"
+                "resultado"=>"No tiene Permisos de Acceso Pagos"
                 
             ));
             exit();
@@ -51,12 +51,15 @@ class PagosController extends ControladorBase{
             return;
         }
         
-        $page = (isset($_REQUEST['page']))?isset($_REQUEST['page']):1;
+        $page = (isset($_REQUEST['page'])) ? $_REQUEST['page'] : 1;
         
         $cuentasPagar = new CuentasPagarModel();
         
+        $queryFormasPago = "SELECT id_forma_pago, nombre_forma_pago FROM forma_pago";
+        $rsFormaPago = $cuentasPagar->enviaquery($queryFormasPago);
+        
         $columnas = " l.id_lote, l.nombre_lote, l.id_usuarios, cp.id_cuentas_pagar, cp.descripcion_cuentas_pagar, 
-                    cp.fecha_cuentas_pagar, pr.id_proveedores, pr.nombre_proveedores";
+                    cp.fecha_cuentas_pagar, cp.id_forma_pago, pr.id_proveedores, pr.nombre_proveedores";
         
         $tablas = "tes_lote l
             INNER JOIN tes_cuentas_pagar cp
@@ -102,7 +105,7 @@ class PagosController extends ControladorBase{
             //$html.='<input type="hidden" value="'.$cantidad.'" id="total_query" name="total_query"/>' ;
             //$html.='</div>';
             $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-            $html.='<section style="height:180px; overflow-y:scroll;">';
+            $html.='<section style="height:280px; overflow-y:scroll;">';
             $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
             $html.= "<thead>";
             $html.= "<tr>";
@@ -111,7 +114,7 @@ class PagosController extends ControladorBase{
             $html.='<th style="text-align: left;  font-size: 12px;">USUARIO</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">DESCRIPCION</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">FECHA</th>';
-            $html.='<th style="text-align: left;  font-size: 12px;">PROVEEDOR</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">BENEFICIARIO</th>';
             $html.='<th colspan="2" style="text-align: left;  font-size: 12px;">PAGOS</th>';
             
             $html.='</tr>';
@@ -131,10 +134,11 @@ class PagosController extends ControladorBase{
                 $html.='<td style="font-size: 11px;">'.$res->fecha_cuentas_pagar.'</td>';
                 $html.='<td style="font-size: 11px;">'.$res->nombre_proveedores.'</td>';
                 $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
-                $html.='<a title="Generar Cheque" href="index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
+                $html.='<a title="Generar Cheque" onclick="verificaMetodoPago(this)" data-metodo="CHEQUE" href="#">';
                 $html.='<i class="glyphicon glyphicon-usd"></i></a></span></td>';
                 $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
-                $html.='<a title="Realizar Transferencia" href="index.php?controller=Transferencias&action=index&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
+                $html.='<a title="Realizar Transferencia" onclick="verificaMetodoPago(this)" data-metodo="TRANSFERENCIA" data-formapago="'.$res->id_cuentas_pagar.'" 
+                data-cuentapagar="'.$res->id_cuentas_pagar.'" href="#">';
                 $html.='<i class="glyphicon glyphicon-transfer"></i></a></span></td>';
                 $html.='</tr>';
                 
@@ -231,6 +235,11 @@ class PagosController extends ControladorBase{
     }
     
    
+    function validaMetodoPago(){
+        
+        $_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
+        
+    }
     
    
 }

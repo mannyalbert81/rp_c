@@ -96,9 +96,9 @@ class EntidadBase_128{
         return $resultSet;
     }
     
-    public function getBy($columnas, $tabla, $where){
+    public function getBy($where){
     	
-    	$query=pg_query($this->con, "SELECT $columnas FROM $tabla WHERE $where ");
+    	$query=pg_query($this->con, "SELECT * FROM $this->table WHERE   $where ");
         $resultSet = array();
     	
            while ($row = pg_fetch_object($query)) {
@@ -106,10 +106,6 @@ class EntidadBase_128{
            }
         return $resultSet;
     }
-    
-    
-    
-    
     
     public function deleteById($id){
     	

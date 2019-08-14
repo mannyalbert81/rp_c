@@ -975,9 +975,11 @@ class ActivosFijosController extends ControladorBase{
         
         $Empleados = new EmpleadosModel();
         $resultEmp = $Empleados->getBy("1=1");
+        
+        $TAG = new RfidTagModel();
+        $resultTag = $TAG->getBy("1=1");
                
-               
-        $this->view_Activos('ActivosFijos', array('resultOfi'=>$resultOfi,'resultTipoac'=>$resultTipoac,'rsEstadoAct'=>$rsEstadoAct,'rsDepartamento'=>$rsDepartamento,'resultEmp'=>$resultEmp));
+        $this->view_Activos('ActivosFijos', array('resultOfi'=>$resultOfi,'resultTipoac'=>$resultTipoac,'rsEstadoAct'=>$rsEstadoAct,'rsDepartamento'=>$rsDepartamento,'resultEmp'=>$resultEmp,'resultTag'=>$resultTag));
     }
     
     public function insActivos(){
@@ -1226,6 +1228,7 @@ class ActivosFijosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Fecha Ingreso</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Responsable</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">TAG</th>';
                 
                 if($id_rol==1){
                     
@@ -1257,7 +1260,8 @@ class ActivosFijosController extends ControladorBase{
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombre_estado.'</td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->fecha_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombres_empleados.'</td>';
-                     
+                    $html.='<td style="font-size: 11px; text-align: center;">'.$res->numero_rfid_tag.'</td>';
+                    
                     
                     if($id_rol==1){
                         

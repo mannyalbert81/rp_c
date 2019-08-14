@@ -199,6 +199,19 @@
                 </div>
     		    </div> 
     		    
+    		    <div class="col-xs-12 col-md-3 col-md-3">
+    		    <div class="form-group">
+                                   
+                  <label for="id_rfid_tag" class="control-label">TAG:</label>
+                  <select name="id_rfid_tag" id="id_rfid_tag"  class="form-control">
+                    <option value="0" selected="selected">--Seleccione--</option>
+						<?php foreach($resultTag as $res) {?>
+						<option value="<?php echo $res->id_rfid_tag; ?>" ><?php echo $res->numero_rfid_tag; ?> </option>
+			            <?php } ?>
+				  </select>
+				  <div id="mensaje_id_rfid_tag" class="errores"></div>
+                </div>
+                </div>
     		    
                 
              </div>

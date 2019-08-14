@@ -998,6 +998,7 @@ class ActivosFijosController extends ControladorBase{
         $_fecha_activo = (isset($_POST['fecha_activos_fijos'])) ? $_POST['fecha_activos_fijos'] : 0;
         $_detalles_activo = (isset($_POST['detalle_activos_fijos'])) ? $_POST['detalle_activos_fijos'] : 0;
         $_valor_activo = (isset($_POST['valor_activos_fijos'])) ? $_POST['valor_activos_fijos'] : 0;
+        $_id_rfid_tag = (isset($_POST['id_rfid_tag'])) ? $_POST['id_rfid_tag'] : 0;
         
         //para saber si existe actualizacion de activo
         $_id_activo_fijo = (isset($_POST['id_activos_fijos'])) ? $_POST['id_activos_fijos'] : 0;
@@ -1050,6 +1051,7 @@ class ActivosFijosController extends ControladorBase{
 	    	               '$_detalles_activo',
 	    	               '$_imagen_activos',
                            '$_valor_activo',
+                           '$_id_rfid_tag',
                            '$_id_activo_fijo'";
                 
                 $activos->setFuncion($funcion);
@@ -1098,6 +1100,7 @@ class ActivosFijosController extends ControladorBase{
 	    	               '$_detalles_activo',
 	    	               '$_imagen_activos',
                            '$_valor_activo',
+                           '$_id_rfid_tag',
                            '0'";
                 
                 $activos->setFuncion($funcion);
@@ -1507,7 +1510,9 @@ class ActivosFijosController extends ControladorBase{
                         emp.nombres_empleados,
                         emp.id_empleados,
                         dep.id_departamento,
-                        dep.nombre_departamento
+                        dep.nombre_departamento,
+                        rf.id_rfid_tag,
+                        rf.numero_rfid_tag
                         
                         FROM act_activos_fijos ac
                         JOIN tipo_activos_fijos ta ON  ta.id_tipo_activos_fijos = ac.id_tipo_activos_fijos
@@ -1515,6 +1520,7 @@ class ActivosFijosController extends ControladorBase{
                         JOIN oficina ofi ON ofi.id_oficina = ac.id_oficina
                         JOIN empleados emp ON emp.id_empleados = ac.id_empleados
                         JOIN departamentos dep ON dep.id_departamento = emp.id_departamento
+                        JOIN rfid_tag rf ON rf.id_rfid_tag = ac.id_rfid_tag
                         
                         WHERE 1 = 1 AND ac.id_activos_fijos = $_id_activo_fijo ";
         

@@ -65,6 +65,7 @@ $(document).ready(function(){
     	var nombre_activos_fijos = $("#nombre_activos_fijos").val();
     	var valor_activos_fijos = $("#valor_activos_fijos").val();
     	var imagen_activos_fijos = $("#imagen_activos_fijos").val();
+    	var id_rfid_tag = $("#id_rfid_tag").val();
     	
     	
     	
@@ -187,6 +188,19 @@ $(document).ready(function(){
             
 		}
     	
+    	if (id_rfid_tag == 0)
+    	{
+	    	
+    		$("#mensaje_id_rfid_tag").text("Introduzca Un TAG");
+    		$("#mensaje_id_rfid_tag").fadeIn("slow"); //Muestra mensaje de error
+            return false;
+	    }
+    	else 
+    	{
+    		$("#mensaje_id_rfid_tag").fadeOut("slow"); //Muestra mensaje de error
+            
+		}
+    	
     	
 
 
@@ -225,6 +239,11 @@ $(document).ready(function(){
         $( "#imagen_activos_fijos" ).focus(function() {
 			  $("#mensaje_imagen_activos_fijos").fadeOut("slow");
 		});
+        
+        $( "#id_rfid_tag" ).focus(function() {
+			  $("#mensaje_id_rfid_tag").fadeOut("slow");
+		});
+  
     
         
 	        	      
@@ -261,6 +280,7 @@ $("#activos_fijos_registrados").on("click",".editaActivo",function(event){
 			$("#id_empleados").val(array.id_empleados)
 			$("#nombre_activos_fijos").val(array.nombre_activos_fijos)
 			$("#valor_activos_fijos").val(array.valor_activos_fijos)
+			$("#id_rfid_tag").val(array.id_rfid_tag)
 			$("#detalle_activos_fijos").val(array.detalle_activos_fijos)
 			
 			$("html, body").animate({ scrollTop: $(id_oficina).offset().top-150 }, tiempo);

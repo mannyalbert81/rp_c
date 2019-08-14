@@ -189,8 +189,7 @@ $controladores=$_SESSION['controladores'];
           </a>
           <ul class="treeview-menu">
       		<li style="<?php echo getcontrolador("ComprobanteContable",$controladores) ?>"><a href="index.php?controller=ComprobanteContable&action=index"><i class="fa fa-circle-o"></i>Comprobantes Contable</a></li>
-     		<li style="<?php echo getcontrolador("ComprobanteTipo",$controladores) ?>"><a href="index.php?controller=ComprobanteTipo&action=index"><i class="fa fa-circle-o"></i>Comprobantes Tipo</a></li>
-    		<li style="<?php echo getcontrolador("ProcesosMayorizacion",$controladores) ?>"><a href="index.php?controller=ProcesosMayorizacion&action=index"><i class="fa fa-circle-o"></i> Procesos Mensuales</a></li>
+     		<li style="<?php echo getcontrolador("ProcesosMayorizacion",$controladores) ?>"><a href="index.php?controller=ProcesosMayorizacion&action=index"><i class="fa fa-circle-o"></i> Procesos Mensuales</a></li>
     	  </ul>
         </li>
         
@@ -440,8 +439,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-          	    <li style="<?php echo getcontrolador("CoreEstado",$controladores) ?>"><a href="index.php?controller=CoreEstado&action=index"><i class="fa fa-circle-o"></i> Estado</a></li>
-	  			<li style="<?php echo getcontrolador("ContribucionCategoria",$controladores) ?>"><a href="index.php?controller=ContribucionCategoria&action=index"><i class="fa fa-circle-o"></i>Contribucion Categoria</a></li>
+          	  <li style="<?php echo getcontrolador("ContribucionCategoria",$controladores) ?>"><a href="index.php?controller=ContribucionCategoria&action=index"><i class="fa fa-circle-o"></i>Contribucion Categoria</a></li>
        	  		<li style="<?php echo getcontrolador("Estatus",$controladores) ?>"><a href="index.php?controller=Estatus&action=index"><i class="fa fa-circle-o"></i>Estatus</a></li>
        	  		<li style="<?php echo getcontrolador("ContribucionTipo",$controladores) ?>"><a href="index.php?controller=ContribucionTipo&action=index"><i class="fa fa-circle-o"></i>Contribucion Tipo</a></li>
      			<li style="<?php echo getcontrolador("Participes",$controladores) ?>"><a href="index.php?controller=Participes&action=index"><i class="fa fa-circle-o"></i>Participes</a></li>

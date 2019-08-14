@@ -451,7 +451,7 @@ $controladores=$_SESSION['controladores'];
     
            </ul>           	 
         </li>
-        <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("ProcesosCore",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
             <span class="pull-right-container">
@@ -467,7 +467,7 @@ $controladores=$_SESSION['controladores'];
 		  </ul>
         </li>
         
-        <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("ReportesCore",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder-open-o"></i> <span>Reporte</span>
             <span class="pull-right-container">

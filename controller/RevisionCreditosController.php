@@ -29,7 +29,7 @@ class RevisionCreditosController extends ControladorBase{
                 ON core_creditos.receptor_solicitud_creditos = usuarios.usuario_usuarios
                 INNER JOIN oficina
                 ON oficina.id_oficina=usuarios.id_oficina";
-        $where="core_estado_creditos.id_estado_creditos=1 AND core_creditos.incluido_reporte_creditos IS NULL";
+        $where="core_estado_creditos.id_estado_creditos=2 AND core_creditos.incluido_reporte_creditos IS NULL";
         $id="core_creditos.numero_creditos";
         $html="";
         $resultSet=$creditos->getCantidad("*", $tablas, $where);
@@ -168,8 +168,7 @@ class RevisionCreditosController extends ControladorBase{
         session_start();
         $id_rol=$_SESSION["id_rol"];
         $reportes=new PlanCuentasModel();
-        if ($id_rol==58)
-        {
+        
             $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
                          dia_creditos_trabajados_cabeza, oficina.nombre_oficina, estado.nombre_estado";
             $tablas="core_creditos_trabajados_cabeza INNER JOIN oficina
@@ -178,11 +177,11 @@ class RevisionCreditosController extends ControladorBase{
             		ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
            
             if($id_rol==58) $where="1=1";
-            if($id_rol==51)$where="estado.nombre_estado=APROBADO CREDITOS";
-            if($id_rol==59)$where="estado.nombre_estado=APROBADO RECAUDACIONES";
-            if($id_rol==48)$where="estado.nombre_estado=APROBADO SISTEMAS";
-            if($id_rol==61)$where="estado.nombre_estado=APROBADO CONTADOR";
-            if($id_rol==53)$where="estado.nombre_estado=APROBADO GERENTE";
+            if($id_rol==51)$where="estado.nombre_estado='APROBADO CREDITOS'";
+            if($id_rol==59)$where="estado.nombre_estado='APROBADO RECAUDACIONES'";
+            if($id_rol==48)$where="estado.nombre_estado='APROBADO SISTEMAS'";
+            if($id_rol==61)$where="estado.nombre_estado='APROBADO CONTADOR'";
+            if($id_rol==53)$where="estado.nombre_estado='APROBADO GERENTE'";
             
             $id="id_creditos_trabajados_cabeza";
             
@@ -258,7 +257,7 @@ class RevisionCreditosController extends ControladorBase{
                  }
                  }*/
                 $html.='</tr>';
-            }
+            
             
             
             
@@ -272,7 +271,7 @@ class RevisionCreditosController extends ControladorBase{
             
             
         }else{
-            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+            $html='<div class="col-lg-12 col-md-12 col-xs-12">';
             $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
             $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
             $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay reportes registrados...</b>';
@@ -602,8 +601,12 @@ class RevisionCreditosController extends ControladorBase{
        
         foreach ($resultSet as $res)
         {
+            $where = "id_creditos=".$res->id_creditos;
+            $tabla = "core_creditos";
+            $colval = "id_estado_creditos=3";
+            $reporte->UpdateBy($colval, $tabla, $where);
             $mensaje=$this->ActivaCredito($res->id_creditos);
-            echo $mensaje , " " , $res->id_creditos,"\n";
+            echo $mensaje;
         }
         
     }

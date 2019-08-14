@@ -39,7 +39,7 @@
    <?php include("view/modulos/links_css.php"); ?>
   			        
     </head>
-    <body class="hold-transition skin-blue fixed sidebar-mini"  >
+    <body id="cuerpo" class="hold-transition skin-blue fixed sidebar-mini"  >
 
      <?php
         
@@ -139,7 +139,7 @@
  <div class="modal fade bs-example-modal-lg" id="myModalAnalisis" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
-	    	<div class="modal-header">
+	    	<div class="modal-header bg-primary">
 	    		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title" id="myModalLabel">Análisis Crédito</h4>
 			</div>
@@ -236,7 +236,7 @@
  <div class="modal fade bs-example-modal-lg" id="myModalSimulacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
-	    	<div class="modal-header">
+	    	<div class="modal-header bg-primary">
 	    		<button type="button" id="cerrar_simulacion" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title" id="myModalLabel">Insertar Crédito</h4>
 			</div>
@@ -297,7 +297,7 @@
  <div class="modal fade bs-example" id="myModalInsertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
-	    	<div class="modal-header">
+	    	<div class="modal-header bg-primary">
 	    		<button type="button" id="cerrar_insertar" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title" id="myModalLabel">Confirmar Crédito</h4>
 			</div>
@@ -339,6 +339,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?0.13"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?0.14"></script> 
    </body>
 </html>   

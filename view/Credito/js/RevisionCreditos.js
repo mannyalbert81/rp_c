@@ -24,6 +24,8 @@ $.ajax({
        type: 'POST',
        data: con_datos,
        success: function(x){
+    	   x=x.trim();
+    	   console.log(x);
      	  if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
      		  {
      		  swal({
@@ -34,6 +36,10 @@ $.ajax({
  		  		});
      		  $("#load_creditos").html('');
      		  }
+     	 else if (x=="NO MOSTRAR CREDITOS")
+ 		  {
+ 		  $("#listado_creditos").html("");
+ 		  }
      	  else
      		  {
      		  $("#creditos_registrados").html(x);
@@ -69,20 +75,18 @@ $.ajax({
     data: con_datos,
     success: function(x){
     	x=x.trim();
+    	console.log(x);
   	  if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
   		  {
   		  swal({
 		  		  title: "Créditos",
-		  		  text: "Hubo un error cargando los créditos",
+		  		  text: "Hubo un error cargando los reportes",
 		  		  icon: "warning",
 		  		  button: "Aceptar",
 		  		});
   		  $("#load_reportes").html('');
   		  }
-  	  else if (x=="NO MOSTRAR CREDITOS")
-  		  {
-  		  $("#listado_creditos").html("");
-  		  }
+  	  
   	  else
   		  {
   		  $("#reportes_registrados").html(x);

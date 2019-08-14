@@ -463,7 +463,7 @@ class SimulacionCreditosController extends ControladorBase{
                      '$monto_credito',
                      '$monto_credito',
                      '$hoy',
-                     1,
+                     2,
                      '$cuota',
                      '$monto_credito',
                      '$id_tipo_creditos',

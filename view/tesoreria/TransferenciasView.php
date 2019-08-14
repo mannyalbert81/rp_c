@@ -89,60 +89,52 @@
 							    
 		    	 <div class="row">
 		    	 
-		    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
-		    	 		<div class="form-group ">                 			 
-            				<label for="nombre_lote" class="control-label" > Id. lote:</label>
-            				<div class="form-group-sm">                				
-                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="" autofocus>  
-                              <input type="hidden" id="id_lote" name="id_lote" value="">
-                              <input type="hidden" id="id_cuentas_pagar" name="id_cuentas_pagar" value="" >
-            				</div>
-                						 
-            			</div>		    	 	
-		    	 	</div>	
-            		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="nombre_banco" class=" control-label" >Id. de Chequera:</label> 
+            				<label for="fecha_transferencia" class=" control-label" >Fecha Transaccion:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="nombre_banco" name="nombre_banco" value="" >
-                				 <input type="hidden" class="form-control" id="id_bancos" name="id_bancos" value="" >
+                				 <input type="text" class="form-control" id="fecha_transferencia" name="fecha_transferencia" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
                     		</div>        			 
             			</div>
             		</div> 
+		    	 
+		    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
+		    	 		<div class="form-group ">                 			 
+            				<label for="nombre_lote" class="control-label" > Lote:</label>
+            				<div class="form-group-sm">                				
+                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $resultSet[0]->nombre_lote; ?>" autofocus>  
+                              <input type="hidden" id="id_lote" name="id_lote" value="<?php echo $resultSet[0]->id_lote; ?>">
+                              <input type="hidden" id="id_cuentas_pagar" name="id_cuentas_pagar" value="<?php echo $resultSet[0]->id_cuentas_pagar; ?>" >
+            				</div>
+                						 
+            			</div>		    	 	
+		    	 	</div>
+            		
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="comentario_cheque" class=" control-label" >Numero Pago:</label> 
+            				<label for="numero_pago" class=" control-label" >Numero Pago:</label> 
                     		<div class="form-group-sm">                    				
                 				 <input type="text" class="form-control mayus" id="numero_pago" name="numero_pago" value="" >
                     		</div>        			 
             			</div>
             		</div> 
             		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="numero_cheque" class=" control-label" >Número de Cheque:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="numero_cheque" name="numero_cheque" value="" >
-                    		</div>        			 
-            			</div>
-            		</div>  
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="identificacion_proveedor" class=" control-label" >Identificacion Proveedor:</label> 
+            				<label for="identificacion_proveedor" class=" control-label" >Identificacion Beneficiario:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="" >
+                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="<?php echo $resultSet[0]->cedula_participes; ?>" >
                     		</div>        			 
             			</div>
             		</div> 
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="nombre_proveedor" class=" control-label" >Nombre Proveedor:</label> 
+            				<label for="nombre_proveedor" class=" control-label" >Nombre Beneficiario:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="" >
+                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $resultSet[0]->apellido_participes.' - '. $resultSet[0]->nombre_participes;  ?>" >
                     		</div>        			 
             			</div>
             		</div> 
@@ -160,59 +152,47 @@
             			<div class="form-group ">
             				<label for="total_lote" class=" control-label" >Total Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="total_lote" name="total_lote"  value="" > 
+                				 <input type="text" class="form-control" id="total_cuentas_pagar" name="total_cuentas_pagar"  value="<?php echo $resultSet[0]->total_cuentas_pagar; ?>" > 
                     		</div>        			 
             			</div>
             		</div> 
-            		
-            		
-            		
+            		            		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="fecha_cheque" class=" control-label" >Fecha de Cheque:</label> 
+            				<label for="nombre_cuenta_banco" class=" control-label" >Transferir a:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="fecha_cheque" name="fecha_cheque" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
-                    		</div>        			 
-            			</div>
-            		</div>  
-            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="comentario_cheque" class=" control-label" >Comentario del Cheque:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="comentario_cheque" name="comentario_cheque" value="" >
+                				 <input type="text" class="form-control mayus" id="nombre_cuenta_banco" name="nombre_cuenta_banco" value="<?php echo $rsSolicitud[0]->nombre_banco_cuenta_bancaria; ?>" >
                     		</div>        			 
             			</div>
             		</div>
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="comentario_cheque" class=" control-label" >Transferir a:</label> 
+            				<label for="cuenta_banco" class=" control-label" >Cuenta:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="transferir" name="transferir" value="" >
-                    		</div>        			 
-            			</div>
-            		</div>
-            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="comentario_cheque" class=" control-label" >Cuenta:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="cuenta_banco" name="cuenta_banco" value="" >
+                				 <input type="text" class="form-control mayus" id="cuenta_banco" name="cuenta_banco" value=" <?php echo $rsSolicitud[0]->numero_cuenta_cuenta_bancaria; ?> " >
                     		</div>        			 
             			</div>
             		</div> 
             		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="tipo_cuenta_banco" class=" control-label" >Tipo Cuenta:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="tipo_cuenta_banco" name="tipo_cuenta_banco" value=" <?php echo $rsSolicitud[0]->tipo_cuenta_cuenta_bancaria; ?> " >
+                    		</div>        			 
+            			</div>
+            		</div>           		
             		            						    
           	   	</div>
           	   	
           	   	<div class="row">
           	   		<div class="col-xs-12 col-md-4 col-lg-4" style="text-align: left;">
                     	<div class="form-group">
-                    	  <button type="button" id="genera_cheque" name="genera_cheque" class="btn btn-success">
+                    	  <button type="button" id="genera_transferencia" name="genera_transferencia" class="btn btn-success">
                           	<i class="glyphicon glyphicon-plus"></i> Aceptar
                           </button>
-                          <button type="button" id="distribucion_cheque" name="distribucion_cheque" class="btn btn-success" data-toggle="modal" data-target="#mod_distribucion_pago" >
+                          <button type="button" id="distribucion_transferencia" name="distribucion_transferencia" class="btn btn-success" data-toggle="modal" data-target="#mod_distribucion_pago" >
                           	<i class="glyphicon glyphicon-plus"></i> Distribucion
                           </button>                         
                           <a href="<?php echo $helper->url("Pagos","Index"); ?>" class="btn btn-primary">
@@ -231,79 +211,74 @@
   
   <!-- Para modales -->
   <div class="modal fade" id="mod_distribucion_pago" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog" style="width:90%">
+      <div class="modal-dialog   modal-lg " role="document" >
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header bg-aqua disabled color-palette">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title">Distribucion Pago</h4>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" >
           <!-- empieza el formulario modal productos -->
-          	<form class="form " method="post" id="frm_distribucion_cheque" name="frm_distribucion_cheque">
+          	<form class="form " method="post" id="frm_distribucion_transferencia" name="frm_distribucion_transferencia">
           	
           	<div class="row">
-          		<div class="col-xs-12 col-md-6 col-lg-6">
-          		<label for="" class="control-label"> Datos Proveedor</label>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_identificacion" class="col-sm-4 control-label"> Identificación:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_identificacion_proveedor" name="mod_identificacion_proveedor" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_nombre" class="col-sm-4 control-label"> Nombre:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_nombre_proveedor" name="mod_nombre_proveedor" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
+          		<div class="col-xs-12 col-lg-12 col-md-12">
+          			<h2 align="center" >Información:</h2>
           		</div>
           		
-          		<div class="col-xs-12 col-md-6 col-lg-6">
-          		<label for="" class="control-label"> </label>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_identificacion" class="col-sm-4 control-label"> Monto:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_total_cuentas_pagar" name="mod_total_cuentas_pagar" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_nombre" class="col-sm-4 control-label"> Moneda:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_id_moneda" name="mod_id_moneda" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          		</div>          	       
+          		<div class="col-xs-12 col-lg-3 col-md-3 ">
+	    	 		<div class="form-group ">                 			 
+        				<label for="nombre_lote" class="control-label" >Identificación:</label>
+        				<div class="form-group-sm">                				
+                          <input type="text" style="height:30px"  class=" form-control" id="mod_identificacion_proveedor" name="mod_identificacion_proveedor" value="">
+        				</div>
+            						 
+        			</div>		    	 	
+	    	 	</div>
+	    	 	
+	    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
+	    	 		<div class="form-group ">                 			 
+        				<label for="nombre_lote" class="control-label" >Nombre:</label>
+        				<div class="form-group-sm">                				
+                          <input type="text" style="height:30px"  class=" form-control" id="mod_nombre_proveedor" name="mod_nombre_proveedor" value="">
+        				</div>
+            						 
+        			</div>		    	 	
+	    	 	</div>
+	    	 	
+	    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
+	    	 		<div class="form-group ">                 			 
+        				<label for="nombre_lote" class="control-label" >Monto:</label>
+        				<div class="form-group-sm">                				
+                          <input type="text" style="height:30px"  class=" form-control" id="mod_total_cuentas_pagar" name="mod_total_cuentas_pagar" value="">
+        				</div>
+            						 
+        			</div>		    	 	
+	    	 	</div>
+	    	 	
+	    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
+	    	 		<div class="form-group ">                 			 
+        				<label for="nombre_lote" class="control-label" >Transferir a:</label>
+        				<div class="form-group-sm">                				
+                          <input type="text" style="height:30px"  class=" form-control" id="mod_banco_transferir" name="mod_banco_transferir" value="">
+        				</div>
+            						 
+        			</div>		    	 	
+	    	 	</div>     
           	</div>
              
-          	
           	<hr>
           	
 		  	<div class="box-body">        
-				<div id="lista_distribucion_cheque" ></div>
+				<div id="lista_distribucion_transferencia" ></div>
         	</div>
 			  
           	</form>
           	<!-- termina el formulario modal de impuestos -->
           </div>
-          <div class="modal-footer">
-            <button type="button" id="btn_distribucion_aceptar" class="btn btn-default" data-dismiss="modal">Aceptar</button>
+          <div class="modal-footer justify-content-center">
+            <button type="button" id="btn_distribucion_aceptar" class="btn bg-aqua waves-light" data-dismiss="modal">Aceptar</button>            
           </div>
         </div>
         <!-- /.modal-content -->
@@ -311,103 +286,7 @@
       <!-- /.modal-dialog -->
 </div>
     
-  <div class="modal fade" id="mod_imprimir_pago" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog" style="width:70%">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Imprimir Cheque</h4>
-          </div>
-          <div class="modal-body">
-          <!-- empieza el formulario modal productos -->
-          	<form class="form " method="post" id="frm_distribucion_cheque" name="frm_distribucion_cheque">
-          	
-          	<div class="row">
-          		<div class="col-xs-12 col-md-6 col-lg-6">
-          		<label for="" class="control-label"> </label>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_print_total" class="col-sm-4 control-label"> Total Pago:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_print_total" name="mod_print_total" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_print_nombre" class="col-sm-4 control-label"> Fecha Cheque:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_print_nombre" name="mod_print_nombre" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          			
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_print_comentario" class="col-sm-4 control-label"> Comentario:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_print_comentario" name="mod_print_comentario" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          		</div>
-          		
-          		<div class="col-xs-12 col-md-6 col-lg-6">
-          		<label for="" class="control-label"> </label>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_print_chequera" class="col-sm-4 control-label"> Chequera:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_print_chequera" name="mod_print_chequera" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_print_num_cheque" class="col-sm-4 control-label"> Numero Cheque:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_print_num_cheque" name="mod_print_num_cheque" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          			
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_print_moneda" class="col-sm-4 control-label"> Moneda:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_print_moneda" name="mod_print_moneda" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          		</div>          	       
-          	</div>
-             			  
-          	</form>
-          	<!-- termina el formulario modal de impuestos -->
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-            <button type="button" id="btn_print_cheque" class="btn btn-default" >Generar</button>
-          </div>
-        </div>
-        <!-- /.modal-content -->
-      </div>
-      <!-- /.modal-dialog -->
-</div>
-    
+
  
  	<?php include("view/modulos/footer.php"); ?>	
 
@@ -416,8 +295,9 @@
     
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
+    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.01"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.07"></script>
 
   </body>
 </html>   

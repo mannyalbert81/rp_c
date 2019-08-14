@@ -81,7 +81,7 @@
           </div>
   	</div>
   </section>
-  <section class="content">
+  <section id="listado_creditos" class="content">
   	<div class="box box-primary">
   		<div class="box-header with-border">
   			<h3 class="box-title">Listado de Créditos</h3>
@@ -142,21 +142,13 @@
 		<div class="modal-content">
 	    	<div class="modal-header">
 	    		<button type="button" id="cerrar_ver" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel"></h4>
+				<h4 class="modal-title" id="myModalLabel">Contenidos del reporte</h4>
 			</div>
 			<div class="modal-body">
 				<div class="form-group" align="center">
-				 <div id="info_credito_confirmar"></div>
-				 <input type="text" class="observacion" maxlength="200" class="form-control" id="observacion_confirmacion" name="observacion_confirmacion" placeholder="Observación Crédito">
-				 <br>
-          	 <div class="row">
+          	 		<div class="row">
           	 		<div class="form-group" align="center">
-          	 		<input type="text" class="codigo" data-inputmask="'mask': '99999'" class="form-control" id="codigo_confirmacion" name="codigo_confirmacion">
-                 </div>
-              </div>
-              <div class="row">
-          	 		<div class="form-group" align="center">
-          	 		<button type="button" id="registrar_credito" name="registrar_credito" class="btn btn-primary" onclick="RegistrarCredito()"> ACEPTAR</button>
+          	 		<div id="datos_reporte"></div>
                  </div>
               </div>
 				</div>
@@ -165,6 +157,7 @@
 		</div>
 	</div>
 </div>
+
 
  
  	<?php include("view/modulos/footer.php"); ?>	
@@ -180,7 +173,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Credito/js/RevisionCreditos.js?0.3"></script>
+    <script src="view/Credito/js/RevisionCreditos.js?0.5"></script>
 	
 	
   </body>

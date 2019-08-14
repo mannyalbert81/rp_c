@@ -36,6 +36,16 @@ $("#myModalAnalisis").on("hidden.bs.modal", function () {
 	modal.find("#ingresos_notarizados").val("");
 	
 });
+$("#myModalAnalisis").on("hidden.bs.modal", function () {
+	var modal = $('#myModalAnalisis');
+	modal.find("#sueldo_liquido").val("");
+	modal.find("#cuota_vigente").val("");
+	modal.find("#fondos").val("");
+	modal.find("#decimos").val("");
+	modal.find("#rancho").val("");
+	modal.find("#ingresos_notarizados").val("");
+	
+});
 
 function BorrarCedula()
 {

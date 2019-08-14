@@ -28,7 +28,7 @@ $controladores=$_SESSION['controladores'];
        <li class="header">MAIN NAVIGATION</li>
          <li class="treeview"  style="<?php echo getcontrolador("MenuAdministracion",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Administración</span>
+            <i class="glyphicon glyphicon-cog"></i> <span>Administración</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -49,7 +49,7 @@ $controladores=$_SESSION['controladores'];
         
         <li class="treeview"  style="<?php echo getcontrolador("ReporteNomina",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Nomina</span>
+            <i class="glyphicon glyphicon-user"></i> <span>Nomina</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -104,7 +104,7 @@ $controladores=$_SESSION['controladores'];
         
          <li class="treeview"  style="<?php echo getcontrolador("MenuInventario",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Inventario de Materiales</span>
+            <i class="glyphicon glyphicon-check"></i> <span>Inventario de Materiales</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -155,7 +155,7 @@ $controladores=$_SESSION['controladores'];
        
          <li class="treeview"  style="<?php echo getcontrolador("MenuContabilidad",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Contabilidad</span>
+            <i class="glyphicon glyphicon-book"></i> <span>Contabilidad</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -266,7 +266,7 @@ $controladores=$_SESSION['controladores'];
       
         <li class="treeview"  style="<?php echo getcontrolador("MenuInventario",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Activos Fijos</span>
+            <i class="glyphicon glyphicon-blackboard"></i> <span>Activos Fijos</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -314,7 +314,7 @@ $controladores=$_SESSION['controladores'];
       
       <li class="treeview"  style="<?php echo getcontrolador("MenuInventario",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Recaudaciones</span>
+            <i class="glyphicon glyphicon-usd"></i> <span>Recaudaciones</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -359,7 +359,7 @@ $controladores=$_SESSION['controladores'];
       
       <li class="treeview"  style="<?php echo getcontrolador("MenuTesoreria",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Tesoreria</span>
+            <i class="glyphicon glyphicon-piggy-bank"></i> <span>Tesoreria</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -425,7 +425,7 @@ $controladores=$_SESSION['controladores'];
       </li>
             <li class="treeview"  style="<?php echo getcontrolador("MenuCore",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Crédito</span>
+            <i class="glyphicon glyphicon-briefcase"></i> <span>Crédito</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -451,7 +451,7 @@ $controladores=$_SESSION['controladores'];
     
            </ul>           	 
         </li>
-        <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("ProcesosCore",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
             <span class="pull-right-container">
@@ -467,7 +467,7 @@ $controladores=$_SESSION['controladores'];
 		  </ul>
         </li>
         
-        <li class="treeview"  style="<?php echo getcontrolador("AdministracionCore",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("ReportesCore",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder-open-o"></i> <span>Reporte</span>
             <span class="pull-right-container">
@@ -483,7 +483,7 @@ $controladores=$_SESSION['controladores'];
      </li>
       <li class="treeview"  style="<?php echo getcontrolador("MenuTributario",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Tributario</span>
+            <i class="glyphicon glyphicon-th-list"></i> <span>Tributario</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -529,7 +529,7 @@ $controladores=$_SESSION['controladores'];
       </li>
          <li class="treeview"  style="<?php echo getcontrolador("MenuInventario",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Informacion</span>
+            <i class="glyphicon glyphicon-info-sign"></i> <span>Informacion</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -582,7 +582,7 @@ $controladores=$_SESSION['controladores'];
       
 <li class="treeview"  style="<?php echo getcontrolador("MenuGestionDoc",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Gestion Documental</span>
+            <i class="glyphicon glyphicon-file"></i> <span>Gestion Documental</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -682,7 +682,7 @@ $controladores=$_SESSION['controladores'];
       
       <li class="treeview"  style="<?php echo getcontrolador("MenuTurnos",$controladores) ?>"  >
           <a href="#">
-            <i class="fa fa-folder"></i> <span>Turnos</span>
+            <i class="glyphicon glyphicon-hand-up"></i> <span>Trámites</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>

@@ -664,168 +664,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    }
 	    
 	}
-	
-
-
-	
-	
-	/**
-	 * mod: admin
-	 * title: cargar tablas de BD
-	 * ajax: si
-	 * dc:2019-04-15
-	 */	
-	public function cargaTablasBd(){
-	    
-	    $estados = null;
-	    $estados = new EstadoModel();
-	    
-	    $query = " SELECT table_name FROM information_schema.tables 
-            WHERE table_catalog = 'rp_capremci' AND table_schema = 'public' AND table_type = 'BASE TABLE'
-            ORDER BY table_name";
-	    
-	    $resulset = $estados->enviaquery($query);
-	    
-	    if(!empty($resulset) && count($resulset)>0){
-	        
-            echo json_encode(array('data'=>$resulset));
-	       
-	    }
-	}
-	
-	/***
-	 * return:html
-	 * desc: traer datos de estados
-	 * dc 2019-04-15
-	 */
-	public function consultaEstados(){
-	    
-	    session_start();
-	    $id_rol=$_SESSION["id_rol"];
-	    
-	    $estados = new EstadoModel();
-	    
-	    $where_to="";
-	    $columnas  = " id_estado, nombre_estado, tabla_estado, DATE(creado) creado";
-	    
-	    $tablas    = "public.estado";
-	    
-	    $where     = " 1 = 1";
-	    
-	    $id        = "estado.tabla_estado";
-	    
-	    
-	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
-	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
-	    
-	    if($action == 'ajax')
-	    {	        
-	        
-	        if(!empty($search)){
-	            
-	            
-	            $where1=" AND ( nombre_estado ILIKE '".$search."%' OR tabla_estado ILIKE '".$search."%' )";
-	            
-	            $where_to=$where.$where1;
-	            
-	        }else{
-	            
-	            $where_to=$where;
-	            
-	        }
-	        
-	        $html="";
-	        $resultSet = $estados->getCantidad("*", $tablas, $where_to);
-	        $cantidadResult=(int)$resultSet[0]->total;
-	        
-	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-	        
-	        $per_page = 10; //la cantidad de registros que desea mostrar
-	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-	        $offset = ($page - 1) * $per_page;
-	        
-	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-	        
-	        $resultSet=$estados->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
-	        $total_pages = ceil($cantidadResult/$per_page);
-	        
-	        if($cantidadResult > 0)
-	        {
-	            
-	            $html.='<div class="pull-left" style="margin-left:15px;">';
-	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-	            $html.='</div>';
-	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:400px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_estados' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
-	            $html.= "<thead>";
-	            $html.= "<tr>";
-	            $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
-	            $html.='<th style="text-align: left;  font-size: 15px;">Nombre Estado</th>';
-	            $html.='<th style="text-align: left;  font-size: 15px;">Tabla </th>';
-	            $html.='<th style="text-align: left;  font-size: 15px;">Creado</th>';
-	            
-	            if($id_rol==1){
-	                
-	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                
-	            }
-	            
-	            $html.='</tr>';
-	            $html.='</thead>';
-	            $html.='<tbody>';
-	            
-	            
-	            $i=0;
-	            
-	            foreach ($resultSet as $res)
-	            {
-	                $i++;
-	                $html.='<tr>';
-	                $html.='<td style="font-size: 14px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
-	                $html.='<td style="font-size: 14px;">'.$res->tabla_estado.'</td>';
-	                $html.='<td style="font-size: 14px;">'.$res->creado.'</td>';
-	                
-	                if($id_rol==1){
-	                    
-	                    $html.='<td style="font-size: 18px;">
-                                <a onclick="editEstado('.$res->id_estado.')" href="#" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class="glyphicon glyphicon-edit"></i></a></td>';
-	                    $html.='<td style="font-size: 18px;">
-                                <a onclick="delEstado('.$res->id_estado.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a></td>';
-	                    
-	                }
-	                $html.='</tr>';
-	            }
-	            
-	            
-	            
-	            $html.='</tbody>';
-	            $html.='</table>';
-	            $html.='</section></div>';
-	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"consultaEstados").'';
-	            $html.='</div>';
-	            
-	            
-	            
-	        }else{
-	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay empleados registrados...</b>';
-	            $html.='</div>';
-	            $html.='</div>';
-	        }
-	        
-	        
-	        echo $html;
-	        
-	    }
-	}
-	
+		
 	public function paginate($reload, $page, $tpages, $adjacents, $funcion) {
 	    
 	    
@@ -892,80 +731,9 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    
 	}
 	
-	public function editEstado(){
-	    
-	    session_start();
-	    $estados = new TipoActivosModel();
-	    $nombre_controladores = "Estados";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $estados->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if (!empty($resultPer))
-	    {
-	        
-	        
-	        if(isset($_POST["id_estado"])){
-	            
-	            $id_estado = (int)$_POST["id_estado"];
-	            
-	            $query = "SELECT * FROM estado WHERE id_estado = $id_estado";
-	            
-	            $resultado  = $estados->enviaquery($query);
-	            
-	            echo json_encode(array('data'=>$resultado));
-	            
-	        }
-	        
-	        
-	    }
-	    else
-	    {
-	        echo "Usuario no tiene permisos-Editar";
-	    }
-	    
-	}
 	
-	/***
-	 * return: json
-	 * title: delEstados
-	 * fcha: 2019-04-15
-	 */
-	public function delEstados(){
-	    
-	    session_start();
-	    $estado = new EstadoModel();
-	    $nombre_controladores = "Estados";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $estado->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if (!empty($resultPer)){
-	        
-	        if(isset($_POST["id_estado"])){
-	            
-	            $id_tipo = (int)$_POST["id_estado"];
-	            
-	            $resultado  = $estado->eliminarBy(" id_estado ",$id_tipo);
-	            
-	            if( $resultado > 0 ){
-	                
-	                echo json_encode(array('data'=>$resultado));
-	                
-	            }else{
-	                
-	                echo $resultado;
-	            }
-	                        
-	            
-	        }
-	        
-	        
-	    }else{
-	        
-	        echo "Usuario no tiene permisos-Eliminar";
-	    }
-	    
-	    
-	}
+	
+	
 	
 	/**
 	 * @param number $paramIdCredito
@@ -976,6 +744,9 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    @session_start();
 	    $Credito = new CreditosModel();
 	    
+	    require_once 'core/DB_Functions.php';
+	    $db = new DB_Functions();
+	    
 	    $id_creditos = (isset($_POST['id_creditos'])) ? $_POST['id_creditos'] : ( $paramIdCredito > 1 ? $paramIdCredito : null );
 	    
 	    if(is_null($id_creditos)){
@@ -984,7 +755,8 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    }
 	        
 	    try {
-	        
+	                
+	       
 	        $Credito->beginTran();
 	        
 	        //creacion de lote
@@ -1157,7 +929,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	            }
 	        }
 	        
-	        $_id_usuarios = 15;
+	        $_id_usuarios = $id_usuarios;
 	        //datos de cuentas x pagar
 	        $funcionCuentasPagar = "tes_ins_cuentas_pagar";
 	        $paramCuentasPagar = "'$_id_lote', '$_id_consecutivos', '$_id_tipo_documento', '$_id_proveedor', '$_id_bancos',
@@ -1168,11 +940,14 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        
 	        $consultaCuentasPagar = $Credito->getconsultaPG($funcionCuentasPagar, $paramCuentasPagar);
 	        $ResultCuentaPagar = $Credito -> llamarconsultaPG($consultaCuentasPagar);
-	        
+	        	        
 	        $error = "";
 	        $error = pg_last_error() || error_get_last();
 	        if(!empty($error) || $ResultCuentaPagar[0] <= 0 )
 	            throw new Exception('error inserccion cuentas pagar');
+	        
+            // secuencial de cuenta por pagar
+            $_id_cuentas_pagar = $ResultCuentaPagar[0];
 	        	        
 	        $funcionComprobante = "tes_agrega_comprobante_cuentas_pagar";
 	        $parametrosComprobante = "
@@ -1199,6 +974,53 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        if(!empty($error) || $resultadComprobantes[0] <= 0 )
 	            throw new Exception('error inserccion cuentas pagar');
 	        
+            // secuencial de comprobante
+            $_id_ccomprobantes = $resultadComprobantes[0];
+	        
+	        //se actualiza la cuenta por pagar con la relacion al comprobante
+	        $columnaCxP = "id_ccomprobantes = $_id_ccomprobantes ";
+	        $tablasCxP = "tes_cuentas_pagar";
+	        $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
+	        $UpdateCuentasPagar = $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
+	        
+	        //se actualiza el credito con su comprobante
+	        $columnaCre = "id_ccomprobantes = $_id_ccomprobantes ";
+	        $tablasCre = "core_creditos";
+	        $whereCre = "id_creditos = $id_creditos";
+	        $UpdateCredito= $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
+	        
+	        //para actualizar la forma de pago en cuentas por pagar
+	        //--buscar 	        
+	        $queryBuscaFormaPago = "SELECT id_creditos,numero_creditos FROM core_creditos WHERE id_creditos = $id_creditos";
+	        $RsCreditoPago = $Credito -> enviaquery($queryBuscaFormaPago);
+	        $numero_de_credito = $RsCreditoPago[0]->numero_creditos;
+	        
+	        $columnas="id_solicitud_prestamo,nombre_banco_cuenta_bancaria,tipo_pago_cuenta_bancaria,numero_cuenta_cuenta_bancaria";
+	        $tabla="solicitud_prestamo";
+	        $where="identificador_consecutivos='".$numero_de_credito."'";
+	        $RsSolicitud = $db->getCondiciones($columnas, $tabla, $where);
+	        $_sol_nombre_banco = $RsSolicitud[0]->nombre_banco_cuenta_bancaria;
+	        $_sol_tipo_pago = $RsSolicitud[0]->tipo_pago_cuenta_bancaria;
+	       
+	        $_id_forma_pago = null;
+	        $queryFormaPago="";
+	        switch ($_sol_tipo_pago){	            
+	            case "Depósito":
+	                $queryFormaPago = "SELECT * FROM forma_pago WHERE nombre_forma_pago = 'TRANSFERENCIA'";
+	                break;
+	            case "Retira Cheque":
+	                $queryFormaPago = "SELECT * FROM forma_pago WHERE nombre_forma_pago = 'CHEQUE'";
+	                break;	                
+	        }
+	        
+	        $rsFormaPago = $Credito->enviaquery($queryFormaPago);
+	        $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
+	        
+	        $columnaPago = "id_forma_pago = $_id_forma_pago ";
+	        $tablasPago = "tes_cuentas_pagar";
+	        $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
+	        $UpdateFormaPago= $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
+	       
 	        $Credito->endTran('COMMIT');
 	        echo 'OK';
 	        

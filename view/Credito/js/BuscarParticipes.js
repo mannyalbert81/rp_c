@@ -36,6 +36,16 @@ $("#myModalAnalisis").on("hidden.bs.modal", function () {
 	modal.find("#ingresos_notarizados").val("");
 	
 });
+$("#myModalInsertar").on("hidden.bs.modal", function () {
+	var modal = $('#myModalInsertar');
+	modal.find("#observacion_confirmacion").val("");
+	modal.find("#codigo_confirmacion").val("");
+	document.getElementById("cuerpo").classList.add('modal-open');
+	
+	
+	
+	
+});
 
 function BorrarCedula()
 {
@@ -222,6 +232,14 @@ function GetCuotas()
 		$("#mensaje_monto_credito").fadeIn("slow");
 		$("#mensaje_monto_credito").fadeOut("slow");
 		}
+	console.log(interes+" interes")
+	if(interes=="12" && parseFloat(monto)>7000)
+	{
+		$("#mensaje_monto_credito").text("Monto no valido");
+		$("#mensaje_monto_credito").fadeIn("slow");
+		$("#mensaje_monto_credito").fadeOut("slow");
+		}
+	
 	if(fecha_corte=="")
 		{
 		$("#mensaje_fecha").text("Escoja una fecha");
@@ -234,7 +252,7 @@ function GetCuotas()
 	$("#mensaje_tipo_credito").fadeIn("slow");
 	$("#mensaje_tipo_credito").fadeOut("slow");
 	}
-	if(monto!="" && monto>150 && monto<limite && interes!="" && fecha_corte!="")
+	if(monto!="" && parseFloat(monto)>150 && parseFloat(monto)<parseFloat(limite) && interes!="" && fecha_corte!="")
 		{
 		if(lista.includes('bg-red'))
 			{
@@ -247,22 +265,32 @@ function GetCuotas()
 			}
 		else
 			{
-			$.ajax({
-			    url: 'index.php?controller=SimulacionCreditos&action=GetCuotas',
-			    type: 'POST',
-			    data: {
-			    	monto_credito:monto
-			    },
-			})
-			.done(function(x) {
-				$("#select_cuotas").html(x);
-				SimularCredito();
+			if(interes=="12" && parseFloat(monto)>7000)
+				{
+				
+				}
+			else
+				{
+				$.ajax({
+				    url: 'index.php?controller=SimulacionCreditos&action=GetCuotas',
+				    type: 'POST',
+				    data: {
+				    	monto_credito:monto
+				    },
+				})
+				.done(function(x) {
+					$("#select_cuotas").html(x);
+					SimularCredito();
+					
+					
+				})
+				.fail(function() {
+				    console.log("error");
+				});
+				}
 				
 				
-			})
-			.fail(function() {
-			    console.log("error");
-			});
+			
 			}
 		
 		}
@@ -393,6 +421,7 @@ function InfoSolicitud(cedula,id_solicitud)
 	$('#cedula_participe').val(cedula);
 	BuscarParticipe();
 	SimulacionCredito();
+	solicitud=id_solicitud;
 	$.ajax({
 	    url: 'index.php?controller=BuscarParticipes&action=InfoSolicitud',
 	    type: 'POST',
@@ -596,7 +625,7 @@ function ConfirmarCodigo()
 				"<h3>Con cédula de identidad número "+ciparticipe+"</h3>" +
 				"<h3>Por el monto de "+monto+" USD</h3>" +
 				"<h3>A un plazo de "+cuota_credito+" meses con interes del "+interes+"%</h3>" +
-				"<h3>Con fecha de corte "+fecha_corte+"</h3>" +
+				"<h3>Con fecha de pago "+fecha_corte+"</h3>" +
 				"<h3>Para confirmar ingrese el siguiente código</h3>" +
 				"<h2 id=\"codigo_generado\">"+x+"</h2>";
 		$("#info_credito_confirmar").html(informacion);	
@@ -644,6 +673,7 @@ function SubirInformacionCredito()
 	var cuota_credito=$("#cuotas_credito").val();
 	var ciparticipe=$('#cedula_participe').val();
 	var observacion=$('#observacion_confirmacion').val();
+	id_solicitud=solicitud;
 	$.ajax({
 	    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionCredito',
 	    type: 'POST',
@@ -653,11 +683,36 @@ function SubirInformacionCredito()
 	    	fecha_pago: fecha_corte,
 	    	cuota_credito: cuota_credito,
 	    	cedula_participe: ciparticipe,
-	    	observacion_credito: observacion
+	    	observacion_credito: observacion,
+	    	id_solicitud:id_solicitud
 	    },
 	})
 	.done(function(x) {
 		console.log(x);
+		x=x.trim();
+		if(x=="OK")
+			{
+			swal({
+		  		  title: "Crédito Registrado",
+		  		  text: "La solicitud de crédito ha sido procesada",
+		  		  icon: "success",
+		  		  button: "Aceptar",
+		  		});
+			 $('#cerrar_simulacion').click();
+			 $('#cerrar_insertar').click();
+			 CreditosActivosParticipe(id_participe, 1);
+			 
+			}
+		else
+			{
+			swal({
+		  		  title: "Advertencia!",
+		  		  text: "Hubo un error en el proceso de la solicitud",
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+			
+			}
 	})
 	.fail(function() {
 	    console.log("error");

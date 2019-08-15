@@ -25,7 +25,6 @@ $.ajax({
        data: con_datos,
        success: function(x){
     	   x=x.trim();
-    	   console.log(x);
      	  if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
      		  {
      		  swal({
@@ -75,7 +74,6 @@ $.ajax({
     data: con_datos,
     success: function(x){
     	x=x.trim();
-    	console.log(x);
   	  if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
   		  {
   		  swal({

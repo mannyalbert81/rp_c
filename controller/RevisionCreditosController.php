@@ -499,12 +499,13 @@ class RevisionCreditosController extends ControladorBase{
         $id_credito=$_POST['id_credito'];
         $id_usuarios=$_SESSION['id_usuarios'];
         $usuario_usuarios=$_SESSION['usuario_usuarios'];
+        
         $columnas="id_oficina";
         $tablas="usuarios";
         $where="id_usuarios=".$id_usuarios;
         $id="id_oficina";
         $id_oficina=$reportes->getCondiciones($columnas, $tablas, $where, $id);
-        $id_oficina=$id_oficina[0]->id_oficina;        
+        $id_oficina=$id_oficina[0]->id_oficina; 
         if ($id_reporte==0)
         {
           $dia= date('d');
@@ -535,6 +536,14 @@ class RevisionCreditosController extends ControladorBase{
           }
           else
           {
+              
+              $columnas="id_creditos_trabajados_cabeza, id_estado_creditos_trabajados_cabeza";
+              $tablas="core_creditos_trabajados_cabeza";
+              $where="anio_creditos_trabajados_cabeza = ".$year."
+                	AND mes_creditos_trabajados_cabeza = ".$mes."
+                	AND dia_creditos_trabajados_cabeza = ".$dia;
+              $id="id_creditos_trabajados_cabeza";
+              $resultRpts=$reportes->getCondiciones($columnas, $tablas, $where, $id);
               $id_estado=$resultRpts[0]->id_estado_creditos_trabajados_cabeza;
               if($id_estado!=98)
               {
@@ -548,11 +557,39 @@ class RevisionCreditosController extends ControladorBase{
                   $where = "id_creditos=".$id_credito;
                   $tabla = "core_creditos";
                   $colval = "incluido_reporte_creditos=1";
-                  if ($inserta_credito=="") $reportes->UpdateBy($colval, $tabla, $where);
+                 
+                  if (empty($inserta_credito))  $reportes->UpdateBy($colval, $tabla, $where);
               }
              
-             
           }
+        }
+        else
+        {
+            $dia= date('d');
+            $mes= date('m');
+            $year= date('Y');
+            $columnas="id_creditos_trabajados_cabeza, id_estado_creditos_trabajados_cabeza";
+            $tablas="core_creditos_trabajados_cabeza";
+            $where="id_creditos_trabajados_cabeza = ".$id_reporte;
+            $id="id_creditos_trabajados_cabeza";
+            $resultRpts=$reportes->getCondiciones($columnas, $tablas, $where, $id);
+            $id_estado=$resultRpts[0]->id_estado_creditos_trabajados_cabeza;
+            if($id_estado!=98)
+            {
+                echo "REPORTE CERRADO";
+            }
+            else
+            {
+                $id_reporte=$resultRpts[0]->id_creditos_trabajados_cabeza;
+                $inserta_credito=$this->AddCreditosToReport($id_reporte, $id_credito);
+                $inserta_credito=trim($inserta_credito);
+                $where = "id_creditos=".$id_credito;
+                $tabla = "core_creditos";
+                $colval = "incluido_reporte_creditos=1";
+                
+                if (empty($inserta_credito))  $reportes->UpdateBy($colval, $tabla, $where);
+            }
+            
         }
         
     }

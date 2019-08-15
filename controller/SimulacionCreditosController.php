@@ -231,7 +231,7 @@ class SimulacionCreditosController extends ControladorBase{
        session_start();
        $monto_credito=$_POST['monto_credito'];
        $tasa_interes=$_POST['tasa_interes'];
-       $fecha_corte=$_POST['fecha_corte'];
+       $fecha_corte=date('Y-m-d');
        $tasa_interes=$tasa_interes/100;
        $cuota=$_POST['plazo_credito'];
        $interes_mensual = $tasa_interes / 12;
@@ -363,6 +363,7 @@ class SimulacionCreditosController extends ControladorBase{
        
        $capital = $_capital_prestado_amortizacion_cabeza;
        $inter_ant= $interes_mensual;
+       $interes_diario=$inter_ant/30;
        $interes=  $capital * $inter_ant;
        $interes=floor($interes * 100) / 100;
        $amortizacion = $valor_cuota - $interes;
@@ -370,7 +371,8 @@ class SimulacionCreditosController extends ControladorBase{
        $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
        $desgravamen=floor($desgravamen * 100) / 100;
        $resultAmortizacion=array();
-       
+       $interes_concesion=0;
+       $diferencia_dias=0;
        
        for( $i = 0; $i <= $numero_cuotas; $i++) {
            
@@ -380,7 +382,11 @@ class SimulacionCreditosController extends ControladorBase{
                $amortizacion = 0;
                $saldo_inicial= $capital;
                $fecha=strtotime('+0 day',strtotime($fecha_corte));
-               $fecha=date('Y-m-d',$fecha);
+               $elementos_fecha=explode("-", $fecha_corte);
+               $lastday = date('t',strtotime($fecha));
+               $diferencia_dias=$lastday-$elementos_fecha[2];
+               $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
+               $fecha=date('Y-m-d',strtotime($fecha_ultimo_dia));
                $fecha_corte=$fecha;
                $valor = 0;
                $desgravamen=0;
@@ -392,13 +398,31 @@ class SimulacionCreditosController extends ControladorBase{
                $interes= $saldo_inicial_ant * $inter_ant;
                $interes=floor($interes * 100) / 100;
                $amortizacion = $valor_cuota - $interes;
+               if($i==1)
+               {
+                $interes_concesion=$interes_diario*$diferencia_dias*$capital;
+                $interes_concesion=round($interes_concesion,2);
+                $interes+=$interes_concesion;
+               }
+               
                $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
                $desgravamen=floor($desgravamen * 100) / 100;
                $saldo_inicial= $saldo_inicial_ant  - $amortizacion;
-               
-               
-               $fecha=strtotime('+1 month',strtotime($fecha_corte));
+               $elementos_fecha_corte=explode("-", $fecha_corte);
+               $elementos_fecha_corte[1]++;
+               $elementos_fecha_corte[2]=15;
+               if($elementos_fecha_corte[1]>12)
+               {
+                $elementos_fecha_corte[1]=1;
+                $elementos_fecha_corte[0]++;
+               }
+               $fecha_corte=$elementos_fecha_corte[0]."-".$elementos_fecha_corte[1]."-".$elementos_fecha_corte[2];
+               $fecha=strtotime('+0 day',strtotime($fecha_corte));
                $fecha=date('Y-m-d',$fecha);
+               $elementos_fecha=explode("-", $fecha);
+               $lastday = date('t',strtotime($fecha));
+               $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
+               $fecha=date('Y-m-d',strtotime($fecha_ultimo_dia));
                $fecha_corte=$fecha;
                $valor = $valor_cuota;
                

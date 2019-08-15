@@ -24,6 +24,7 @@ $("#myModalSimulacion").on("hidden.bs.modal", function () {
 	$("#select_cuotas").html("");
 	$("#tabla_amortizacion").html("");
 	$("#info_solicitud").html("");
+	document.getElementById("cuerpo").classList.remove('modal-open');
 	
 });
 $("#myModalAnalisis").on("hidden.bs.modal", function () {
@@ -191,7 +192,6 @@ function SimularCredito()
 {
 	var monto=$("#monto_credito").val();
 	var interes=$("#tipo_credito").val();
-	var fecha_corte=$("#fecha_corte").val();
 	var cuota_credito=$("#cuotas_credito").val();
 	$.ajax({
 	    url: 'index.php?controller=SimulacionCreditos&action=SimulacionCredito',
@@ -199,7 +199,6 @@ function SimularCredito()
 	    data: {
 	    	monto_credito:monto,
 	    	tasa_interes:interes,
-	    	fecha_corte:fecha_corte,
 	    	plazo_credito:cuota_credito
 	    },
 	})
@@ -218,7 +217,6 @@ function GetCuotas()
 	Redondeo(monto);
 	monto=$("#monto_credito").val();
 	var interes=$("#tipo_credito").val();
-	var fecha_corte=$("#fecha_corte").val();
 	var limite=document.getElementById("monto_disponible").innerHTML;
 	var elementos=limite.split(" : ");
 	var lista=document.getElementById("disponible_participe").classList;
@@ -234,17 +232,10 @@ function GetCuotas()
 		}
 	console.log(interes+" interes")
 	if(interes=="12" && parseFloat(monto)>7000)
-	{
+		{
 		$("#mensaje_monto_credito").text("Monto no valido");
 		$("#mensaje_monto_credito").fadeIn("slow");
 		$("#mensaje_monto_credito").fadeOut("slow");
-		}
-	
-	if(fecha_corte=="")
-		{
-		$("#mensaje_fecha").text("Escoja una fecha");
-		$("#mensaje_fecha").fadeIn("slow");
-		$("#mensaje_fecha").fadeOut("slow");
 		}
 	if(interes=="")
 	{
@@ -252,7 +243,7 @@ function GetCuotas()
 	$("#mensaje_tipo_credito").fadeIn("slow");
 	$("#mensaje_tipo_credito").fadeOut("slow");
 	}
-	if(monto!="" && parseFloat(monto)>150 && parseFloat(monto)<parseFloat(limite) && interes!="" && fecha_corte!="")
+	if(monto!="" && parseFloat(monto)>150 && parseFloat(monto)<parseFloat(limite) && interes!="")
 		{
 		if(lista.includes('bg-red'))
 			{

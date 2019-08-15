@@ -211,8 +211,6 @@ class TransferenciasController extends ControladorBase{
                         '$_concepto_comprobante'";
             	        
         $consultaComprobante = $CuentasPagar->getconsultaPG($funcionComprobante, $parametrosComprobante);
-        //echo $consultaComprobante; die();
-        
         $ResulatadoComprobante = $CuentasPagar->llamarconsultaPG($consultaComprobante);
         
         $_id_comprobante = $ResulatadoComprobante[0];
@@ -220,7 +218,21 @@ class TransferenciasController extends ControladorBase{
         $columnaPago = "id_ccomprobantes = $_id_comprobante ";
         $tablasPago = "tes_pagos";
         $wherePago = "id_pagos = $_id_pagos";
-        $Update_tes_pago = $CuentasPagar -> ActualizarBy($columnaPago, $tablasPago, $wherePago);	    
+        $Update_tes_pago = $CuentasPagar -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
+        
+        /*actualizacion de Cuenta por pagar*/
+        //buscar estado de cuentas por pagar
+        $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
+        $rsEstado = $CuentasPagar -> enviaquery($queryEstado);
+        $_id_estado = $rsEstado[0]->id_estado;
+        $rsActualizacionCuentaPagar = $CuentasPagar->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
+        
+        /*para enviara a celular*/
+        $_celular_mensaje = "0987968467";
+        $_nombres_mensajes = $_nombre_participes." ".$_apellidos_participes;
+        $_codigo_mensajes = str_replace(' ','_',$_numero_cuenta_banco.'-'.$_nombre_cuenta_banco);
+        $_id_mensaje_mensajes = "22443";
+        $this->comsumir_mensaje_plus($_celular_mensaje, $_nombres_mensajes, $_codigo_mensajes, $_id_mensaje_mensajes);
 	   
 	    echo json_encode(array('respuesta'=>1,'mensaje'=>'TRANSACCION REALIZADA'));
 	    
@@ -484,5 +496,68 @@ class TransferenciasController extends ControladorBase{
 	    
 	    echo json_encode($respuesta);
 	}
+	
+	
+	public function comsumir_mensaje_plus($celular, $nombres, $codigo, $id_mensaje){
+	    
+	   /*si mensaje es para transferencia el id_mensaje = 22443
+	    
+	    --$nombres = poner el nombre unidos por guion bajo
+	    --$codigo = # cuenta y banco unidos por guion bajo	    
+	    --si mensaje es para cheque el id_mensaje = 22451
+	    
+	    --$nombres = poner el nombre unidos por guion bajo
+	    --$codigo = enviar vacio;*/
+	    
+	    
+	    $cadena_recortada ="";
+	    $nombres_final="";
+	    $mensaje_retorna="";
+	    
+	    // quito el primero 0
+	    $celular_final=ltrim($celular, "0");
+	    
+	    // relleno espacios en blanco por _
+	    $nombres_final= str_replace(' ','_',$nombres);
+	    // $nombres_final= str_replace('Ñ','N',$nombres);
+	    // genero codigo de verificacion
+	    
+	    
+	    $variables="";
+	    $variables.="<pedido>";
+	    
+	    $variables.="<metodo>SMSEnvio</metodo>";
+	    $variables.="<id_cbm>767</id_cbm>";
+	    $variables.="<token>yPoJWsNjcThx2o0I</token>";
+	    $variables.="<id_transaccion>2002</id_transaccion>";
+	    $variables.="<telefono>$celular_final</telefono>";
+	    
+	    // poner el id_mensaje parametrizado en el sistema
+	    
+	    $variables.="<id_mensaje>$id_mensaje</id_mensaje>";
+	    
+	    // poner 1 si va con variables
+	    // poner 0 si va sin variables y sin la etiquetas datos
+	    $variables.="<dt_variable>1</dt_variable>";
+	    $variables.="<datos>";
+	    
+	    
+	    /// el numero de valores va dependiendo del mensaje si usa 1 o 2 variables.
+	    $variables.="<valor>$nombres_final</valor>";
+	    if (!empty($codigo)){
+	        $variables.="<valor>$codigo</valor>";
+	    }
+	    $variables.="</datos>";
+	    $variables.="</pedido>";
+	    
+	    
+	    $SMSPlusUrl = "https://smsplus.net.ec/smsplus/ws/mensajeria.php?xml={$variables}";
+	    $ResponseData = file_get_contents($SMSPlusUrl);
+	    
+	    
+	    $xml = simplexml_load_string($ResponseData);
+	    
+	}
+	
 }
 ?>

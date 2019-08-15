@@ -533,6 +533,16 @@ class RevisionCreditosController extends ControladorBase{
               $reportes->setFuncion($funcion);
               $reportes->setParametros($parametros);
               $resultado=$reportes->Insert();
+              
+              $resultRpts=$reportes->getCondiciones($columnas, $tablas, $where, $id);
+              $id_reporte=$resultRpts[0]->id_creditos_trabajados_cabeza;
+              $inserta_credito=$this->AddCreditosToReport($id_reporte, $id_credito);
+              $inserta_credito=trim($inserta_credito);
+              $where = "id_creditos=".$id_credito;
+              $tabla = "core_creditos";
+              $colval = "incluido_reporte_creditos=1";
+              
+              if (empty($inserta_credito))  $reportes->UpdateBy($colval, $tabla, $where);
           }
           else
           {

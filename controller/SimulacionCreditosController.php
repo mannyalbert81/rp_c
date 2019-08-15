@@ -451,7 +451,7 @@ class SimulacionCreditosController extends ControladorBase{
        $usuario=$_SESSION['usuario_usuarios'];
        $monto_credito=$_POST['monto_credito'];
        $tasa_interes=$_POST['tasa_interes'];
-       $fecha_pago=$_POST['fecha_pago'];
+       $fecha_pago=date("Y-m-d");
        $interes_credito=$tasa_interes;
        $id_tipo_creditos=0;
        if($tasa_interes==9) $id_tipo_creditos=4; //quemado cambiar por bd
@@ -500,8 +500,10 @@ class SimulacionCreditosController extends ControladorBase{
        $credito->setFuncion($funcion);
        $credito->setParametros($parametros);
        $resultado=$credito->Insert();
+       $errores_credito=ob_get_clean();
+       $errores_credito=trim($errores_credito);
        
-       if($resultado=="Insertado Correctamente")
+       if(empty($errores_credito))
        {
            $interes_mensual = $tasa_interes / 12;
            $plazo_dias = $cuota * 30;
@@ -564,7 +566,9 @@ class SimulacionCreditosController extends ControladorBase{
                $credito->setFuncion($funcion);
                $credito->setParametros($parametros);
               $resultado=$credito->Insert();
-               if($resultado!="Insertado Correctamente")
+              $errores=ob_get_clean();
+              $errores=trim($errores);
+               if(!(empty($errores)))
                {
                    $credito->endTran('ROLLBACK');
                    $respuesta=false;

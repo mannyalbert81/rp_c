@@ -64,9 +64,7 @@ if(isset($datosActivo)){
                         <td> $res->codigo_activos_fijos </td>
                         <td>$res->fecha_activos_fijos</td>
                         <td>1</td>
-                        <td>$res->detalle_activos_fijos</td>
-                        <td>$res->nombre_departamento</td>
-                        <td>$res->nombres_empleados</td>
+                        <td>$res->nombre_activos_fijos</td>
                         <td class=\"numero\" >".number_format($res->valor_activos_fijos,2,',','.')."</td>
                         <td>$res->meses_tipo_activos_fijos</td>
                         <td>$res->diferencia_mes</td>
@@ -104,7 +102,7 @@ if(isset($datosActivo)){
             
             
             $tablaDepreciacion .= "<tr >
-                        <td colspan=\"6\"></td>
+                        <td colspan=\"4\"></td>
                         <td class=\"numero ul\" >".number_format($_suma_valor_activo,2,',','.')."</td>
                         <td colspan=\"2\" ></td>
                         <td class=\"numero ul\" >".number_format($_suma_valor_depreciacion,2,',','.')."</td>

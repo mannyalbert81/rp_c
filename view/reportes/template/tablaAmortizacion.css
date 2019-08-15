@@ -87,6 +87,7 @@ td.central{
 table.1 {
    width: 100%;
    text-align: left;
+   font-size:12px;
    border-collapse: collapse;
    margin: 0 0 1em 0;
    caption-side: top;

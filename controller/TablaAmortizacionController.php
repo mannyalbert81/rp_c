@@ -73,6 +73,8 @@ class TablaAmortizacionController extends ControladorBase{
                       core_participes.apellido_participes, 
                       core_participes.nombre_participes, 
                       core_participes.cedula_participes, 
+                      core_participes.direccion_participes,
+                      core_participes.telefono_participes,
                       core_entidad_patronal.id_entidad_patronal, 
                       core_entidad_patronal.nombre_entidad_patronal, 
                       core_tipo_creditos.nombre_tipo_creditos, 
@@ -104,6 +106,8 @@ class TablaAmortizacionController extends ControladorBase{
 	    $datos_reporte['APELLPARTICIPE']=$rsdatos[0]->apellido_participes;
 	    $datos_reporte['NOMPARICIPE']=$rsdatos[0]->nombre_participes;
 	    $datos_reporte['CEDPARTICIPE']=$rsdatos[0]->cedula_participes;
+	    $datos_reporte['DIRPARTICIPE']=$rsdatos[0]->direccion_participes;
+	    $datos_reporte['TELEFPARTICIPE']=$rsdatos[0]->telefono_participes;
 	    $datos_reporte['ENTIDADPATRON']=$rsdatos[0]->nombre_entidad_patronal;
 	    $datos_reporte['TIPOPRESTAMO']=$rsdatos[0]->nombre_tipo_creditos;
 	    $datos_reporte['PLAZO']=$rsdatos[0]->plazo_creditos;
@@ -122,6 +126,7 @@ class TablaAmortizacionController extends ControladorBase{
                       core_tabla_amortizacion.capital_tabla_amortizacion,
                       core_tabla_amortizacion.seguro_desgravamen_tabla_amortizacion,  
                       core_tabla_amortizacion.interes_tabla_amortizacion, 
+                      core_tabla_amortizacion.total_valor_tabla_amortizacion,
                       core_tabla_amortizacion.mora_tabla_amortizacion,
                       core_tabla_amortizacion.balance_tabla_amortizacion,
                       core_tabla_amortizacion.total_balance_tabla_amortizacion,  
@@ -134,7 +139,7 @@ class TablaAmortizacionController extends ControladorBase{
 	    $where= "   core_tabla_amortizacion.id_creditos = core_creditos.id_creditos AND
                     core_estado_tabla_amortizacion.id_estado_tabla_amortizacion = core_tabla_amortizacion.id_estado_tabla_amortizacion
                     AND core_creditos.id_creditos ='$id_creditos'";
-	    $id="core_creditos.id_creditos";
+	    $id="core_tabla_amortizacion.numero_pago_tabla_amortizacion";
 	    
 	    $amortizacion_detalle = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);
 	    
@@ -145,20 +150,16 @@ class TablaAmortizacionController extends ControladorBase{
 	    $html='';
 	    
 	    
-	    $html.='<table class="info" style="width:88%;" border=1 >';
+	    $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
 	    $html.='<tr>';
 	    $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Fecha</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Capital</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Gastos Adm.</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Seguro Desgrav.</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Otros</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Intereses</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Mora</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Cuota</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Saldo Final</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Saldo Capital</th>';
-	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Estado</th>';
+	    $html.='<th style="text-align: center; font-size: 11px;">Fecha</th>';
+	    $html.='<th style="text-align: center; font-size: 11px;">Capital</th>';
+	    $html.='<th style="text-align: center; font-size: 11px;">Intereses</th>';
+	    $html.='<th style="text-align: center; font-size: 11px;">Seg. Desgrav.</th>';
+	    $html.='<th style="text-align: center; font-size: 11px;">Cuota</th>';
+	    $html.='<th style="text-align: center; font-size: 11px;">Saldo</th>';
+	   
 	    $html.='</tr>';
 	    
 	    
@@ -170,23 +171,19 @@ class TablaAmortizacionController extends ControladorBase{
 	        
 	        $i++;
 	        $html.='<tr >';
-	        $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->seguro_desgravamen_tabla_amortizacion.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">0.00</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->interes_tabla_amortizacion.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->mora_tabla_amortizacion.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->total_valor_tabla_amortizacion.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->total_balance_tabla_amortizacion.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="right">'.$res->balance_tabla_amortizacion.'</td>';
-	        $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_estado_tabla_amortizacion.'</td>';
+	        $html.='<td style="font-size: 11px;"align="center">'.$i.'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->interes_tabla_amortizacion.'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->seguro_desgravamen_tabla_amortizacion.'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->total_valor_tabla_amortizacion.'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->total_balance_tabla_amortizacion.'</td>';
 	        
 	        
 	        
 	        $html.='</td>';
 	        $html.='</tr>';
+	       
 	    }
 	    
 	    $html.='</table>';

@@ -83,3 +83,22 @@ td.central{
 	}
 	body {font-size:10px}
 
+
+table.1 {
+   width: 100%;
+   text-align: left;
+   border-collapse: collapse;
+   margin: 0 0 1em 0;
+   caption-side: top;
+}
+
+table.2 {
+   width: 100%;
+   font-size:12px;
+   text-align : justify;
+}
+table.3 {
+  
+   font-size:12px;
+}
+

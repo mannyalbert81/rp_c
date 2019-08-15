@@ -1,5 +1,6 @@
+var listaCuentas = [];
 $(document).ready(function(){
-	
+		
 	init();
 	devuelveconsecutivos();
 	
@@ -12,12 +13,11 @@ $(document).ready(function(){
  */
 function init(){	
 	
-	$("#impuestos_cuentas_pagar").hide();
-	$("#genera_cheque").attr("disabled",true);
+	$("#genera_transferencia").attr("disabled",true);
 	
 	var fechaServidor = $("#fechasistema").text();
 		
-	$("#fecha_cheque").inputmask("datetime",{
+	$("#fecha_transferencia").inputmask("datetime",{
 	     mask: "y-2-1", 
 	     placeholder: "yyyy-mm-dd", 
 	     leapday: "-02-29", 
@@ -69,92 +69,105 @@ $("input.mayus").on("keyup",function(){
 });
 
 
-$("#distribucion_cheque").on("click",function(){
+$("#distribucion_transferencia").on("click",function(event){
+	
+	console.log('ingreso');
 	
 	var _id_cuentas_pagar = $("#id_cuentas_pagar").val();
-	var obj_comentario_cheque = $("#comentario_cheque");
-	if(obj_comentario_cheque.val().length == 0 || obj_comentario_cheque.val() == ''){
-		obj_comentario_cheque.notify("Ingrese comentario de pago",{ position:"buttom left", autoHideDelay: 2000});
-		return false;
-	}
+	let $modal = $("#mod_distribucion_pago"),
+		$divResultados = null,		
+		$tablaDistribucion = null;
 	
-	$("#mod_distribucion_pago").find("#mod_identificacion_proveedor").val($("#identificacion_proveedor").val());
-	$("#mod_distribucion_pago").find("#mod_id_moneda").val($("#id_moneda").val());
-	$("#mod_distribucion_pago").find("#mod_total_cuentas_pagar").val($("#total_lote").val());
-	$("#mod_distribucion_pago").find("#mod_nombre_proveedor").val($("#nombre_proveedor").val());
+	$divResultados = $modal.find("#lista_distribucion_transferencia");		
+	$divResultados.html('');
 	
-	$("#lista_distribucion_cheque").html('');
-	$.ajax({
-		url:"index.php?controller=GenerarCheque&action=distribucionCheque",
-		type:"POST",
-		dataType:"json",
-		data:{id_cuentas_pagar:_id_cuentas_pagar}
-	}).done(function(x){
-		$("#lista_distribucion_cheque").html(x.tabla);
-		console.log(x);
-		$("#lista_distribucion_cheque").find("input[name='mod_dis_referencia']").val($("#comentario_cheque").val()); 
-	}).fail(function(xhr, status, error){
-		var err = xhr.responseText
-		console.log(err)
-		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
-		if( mensaje !== null ){
-			var resmsg = mensaje[1]
-			swal( {
-				 title:"Generar Cheque",
-				 dangerMode: true,
-				 text: resmsg.replace("|","\n"),
-				 icon: "error"
-				})
-		}
-		 
-	})
+	$modal.find("#mod_identificacion_proveedor").val($("#identificacion_proveedor").val());
+	$modal.find("#mod_total_cuentas_pagar").val($("#total_cuentas_pagar").val());
+	$modal.find("#mod_nombre_proveedor").val($("#nombre_proveedor").val());
+	$modal.find("#mod_banco_transferir").val($("#nombre_cuenta_banco").val());
+	
+	$divResultados.html(graficaTablaDistribucion());
+	
 })
 
-$("#genera_cheque").on("click",function(){
+/**
+ * grafica tabla distribucion
+ * retorna objeto tabla
+ * @returns
+ */
+function graficaTablaDistribucion(){
 	
-	var _id_cuentas_pagar = $("#id_cuentas_pagar").val();	
-	var _numero_cheque = $("#numero_cheque").val();	
-	var _fecha_cheque = $("#fecha_cheque").val();	
-	var _comentario_cheque = $("#comentario_cheque").val();
-	var _id_bancos = $("#id_bancos").val();
+	var $tablaDistribucion = $('<table border="1" class="tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example"></table>');	
+	var $filaHead="<tr>" +
+	"<th>#</th>" +
+	"<th>Referencia</th>" +
+	"<th>Codigo Cuenta</th>" +
+	"<th>Nombre</th>" +
+	"<th>Tipo</th>" +
+	"<th>debito</th>" +
+	"<th>credito</th>" +
+	"</tr>";
+
+	$tablaDistribucion.attr("id","tbl_distribucion2");
+	$tablaDistribucion.append('<thead></thead> <tbody></tbody');
+	$tablaDistribucion.find("> thead").append($filaHead);
+
+	var $filaBody = "";
+	for(var i=0; i<2; i++){
 	
-	var parametros = {
-		id_cuentas_pagar:_id_cuentas_pagar,numero_cheque:_numero_cheque,
-		fecha_cheque:_fecha_cheque,comentario_cheque:_comentario_cheque,
-		id_bancos: _id_bancos
+		$filaBody +="<tr id=\"tr_"+i+" \">"+
+			"<td style=\"font-size: 12px;\" >"+i+"</td>"+ 
+			"<td style=\"font-size: 12px;\" ><input type=\"text\" class=\"form-control input-sm distribucion\" name=\"mod_dis_referencia\" value=\"\"></td>"+
+			"<td style=\"font-size: 12px;\" ><input type=\"text\" class=\"form-control input-sm distribucion distribucion_autocomplete\" name=\"mod_dis_codigo\"  value=\"\"></td>"+
+			"<td style=\"font-size: 12px;\" ><input type=\"text\" style=\"border: 0;\" class=\"form-control input-sm\" value=\"\" name=\"mod_dis_nombre\">"+
+		        "<input type=\"hidden\" name=\"mod_dis_id_plan_cuentas\" value=\"\" ></td>"+
+		    "<td style=\"font-size: 12px;\"></td>"+
+		    "<td style=\"font-size: 12px;\"></td>"+
+		    "<td style=\"font-size: 12px;\"></td>"+
+		    "</tr>"
 	}
+
+	$tablaDistribucion.find('> tbody').append($filaBody);
+
+	return $tablaDistribucion;
+	
+}
+
+$("#genera_transferencia").on("click",function(){
+	
+	var _id_cuentas_pagar = $("#id_cuentas_pagar").val();
+	var _fecha_transferencia = $("#fecha_transferencia").val();
+	var _total_cuentas_pagar = $("#total_cuentas_pagar").val();
+	var _numero_cuenta_banco = $("#cuenta_banco").val();
+	var _tipo_cuenta_banco = $("#tipo_cuenta_banco").val();
+	var _total_cuentas_pagar = $("#total_cuentas_pagar").val();
+	var _nombre_cuenta_banco = $("#id_bancos").val();
+	
+	//esta variable se declara ala cargar la pagina
+	//listaCuentas
+	console.log(listaCuentas);
+	var arrayCuentas = listaCuentas;
+	
+	parametros 	= new FormData();	
+	parametros.append('lista_distribucion', arrayCuentas);
+	parametros.append('id_cuentas_pagar', _id_cuentas_pagar);
+	parametros.append('fecha_transferencia', _fecha_transferencia);
+	parametros.append('total_cuentas_pagar', _total_cuentas_pagar);
+	parametros.append('tipo_cuenta_banco', _tipo_cuenta_banco);
+	parametros.append('nombre_cuenta_banco', _nombre_cuenta_banco);
+	parametros.append('numero_cuenta_banco', _numero_cuenta_banco);
+	
 	
 	$.ajax({
-		url:"index.php?controller=GenerarCheque&action=generaCheque",
+		url:"index.php?controller=Transferencias&action=GeneraTransferencia",
 		type:"POST",
 		dataType:"json",
+		processData: false, 
+		contentType: false,
 		data:parametros
 	}).done(function(x){
 		console.log(x);
-		if(x.comprobante.valor == 1){
-			
-			var cuentas_pagar_id = x.cuentaspagar.id_cuentas_pagar;
-			var comprobante_id = x.comprobante.id_comprobante;
-			var datosFomulario = {id_comprobante:comprobante_id,id_cuentas_pagar:cuentas_pagar_id}
-		    
-			
-			swal({
-				title:"GENERACION CHEQUE",
-				icon:"success",
-				text:x.comprobante.mensaje
-			}).then(function(){
-				FormularioPost("index.php?controller=GenerarCheque&action=generaReporteCheque","blank",datosFomulario);
-				window.open("index.php?controller=Pagos&action=Index","_self");
-			})
-			
-		}
-		if(x.comprobante.valor == -1){
-			swal({
-				title:"GENERACION CHEQUE",
-				icon:"error",
-				text:x.comprobante.mensaje
-			})
-		}
+		
 	}).fail(function(xhr, status, error){
 		
 		var err = xhr.responseText
@@ -163,7 +176,7 @@ $("#genera_cheque").on("click",function(){
 		if( mensaje !== null ){
 			var resmsg = mensaje[1]
 			swal( {
-				 title:"Generar Cheque",
+				 title:"Tansferencia",
 				 dangerMode: true,
 				 text: resmsg.replace("|","\n"),
 				 icon: "error"
@@ -200,9 +213,130 @@ function FormularioPost(url,target,params){
 
 /* VENTANAS MODALES */
 // metodo se submit
-$("#btn_distribucion_aceptar").on("click",function(){
+
+$("#lista_distribucion_transferencia").on("focus","input.distribucion.distribucion_autocomplete[type=text]",function(e) {
 	
-	$("#genera_cheque").attr("disabled",false);
+	let _elemento = $(this);
+	
+    if ( !_elemento.data("autocomplete") ) {
+    	    	
+    	_elemento.autocomplete({
+    		minLength: 3,    	    
+    		source:function (request, response) {
+    			$.ajax({
+    				url:"index.php?controller=CuentasPagar&action=autompletePlanCuentas",
+    				dataType:"json",
+    				type:"GET",
+    				data:{term:request.term},
+    			}).done(function(x){
+    				
+    				response(x); 
+    				
+    			}).fail(function(xhr,status,error){
+    				var err = xhr.responseText
+    				console.log(err)
+    			})
+    		},
+    		select: function (event, ui) {
+     	       	// Set selection
+    			let fila = _elemento.closest("tr");
+    			let in_nombre_plan_cuentas = fila.find("input:text[name='mod_dis_nombre']")
+    			let in_id_plan_cuentas = fila.find("input:hidden[name='mod_dis_id_plan_cuentas']")
+    			let in_codigo_plan_cuentas = fila.find("input:text[name='mod_dis_codigo']")
+    			
+    			if(ui.item.id == ''){
+    				 _elemento.closest("table").notify("Digite Cod. Cuenta Valido",{ position:"top center"});
+    				 in_nombre_plan_cuentas.val('');
+    	    		 in_codigo_plan_cuentas.val('');
+    	    		 in_id_plan_cuentas.val('');
+    				 return;
+    			}
+    			
+    			in_nombre_plan_cuentas.val(ui.item.nombre);
+    			in_codigo_plan_cuentas.val(ui.item.value);
+    			in_id_plan_cuentas.val(ui.item.id);
+    			     	     
+     	    },
+     	   appendTo: "#mod_distribucion_pago",
+     	   change: function(event,ui){
+     		   
+     		   if(ui.item == null){
+     			   
+     			 _elemento.closest("tr").find("input:hidden[name='mod_dis_id_plan_cuentas']").val("");
+     			 _elemento.closest("table").notify("Digite Cod. Cuenta Valido",{ position:"top center"});
+     			_elemento.val('');
+     			let fila = _elemento.closest("tr");
+    			fila.find("input:text[name='mod_dis_nombre']").val('');
+    			fila.find("input:hidden[name='mod_dis_id_plan_cuentas']").val('')
+     			 
+     		   }
+     	   }
+    	
+    	}).focusout(function() {
+    		
+    	})
+    }
+});
+
+//PARA INPUT DE REFERENCIA
+/* poner mismo texto a todos */
+$("#mod_distribucion_pago").on("keyup","input:text[name='mod_dis_referencia']",function(){
+		
+	let valorPrincipal = $(this).val();
+	
+	$("input:text[name='mod_dis_referencia']").each(function(index,value){		
+		$(this).val(valorPrincipal);
+	})
 	
 })
+
+$("#btn_distribucion_aceptar").on("click",function(event){
+	
+	
+	let divPadre = $("#lista_distribucion_transferencia");	
+	let filas = divPadre.find("table tbody > tr ");	
+	let error = true;
+	let data = [];
+	
+	divPadre.find("input:text[name='mod_dis_referencia']").each(function(index,value){		
+		if($(this).val() == ''){
+			divPadre.find("table").notify("Ingrese un referencia",{ position:"top center"});
+			error = false;
+			return;
+		}
+	})
+	
+	if(!error){	return false;}
+	
+	filas.each(function(){
+			
+			var _id_distribucion	= $(this).attr("id").split('_')[1],
+				_desc_distribucion	= $(this).find("input:text[name='mod_dis_referencia']").val(),
+				_id_plan_cuentas 	= $(this).find("input:hidden[name='mod_dis_id_plan_cuentas']").val();
+	
+			item = {};
+		
+			if(!isNaN(_id_distribucion)){
+			
+		        item ["id_distribucion"] 		= _id_distribucion;
+		        item ["referencia_distribucion"]= _desc_distribucion;
+		        item ['id_plan_cuentas'] 		= _id_plan_cuentas;
+		        
+		        data.push(item);
+			}else{			
+				error = false; return false;
+			}
+			
+			if(isNaN(_id_plan_cuentas) || _id_plan_cuentas.length == 0 ){
+				divPadre.find("table").notify("Cuentas Faltantes",{ position:"top center"});
+				error = false; return false;
+			}
+					
+		})
+	if(!error){	return false;}	
+	listaCuentas = JSON.stringify(data); 
+	$("#genera_transferencia").attr("disabled",false);
+})
+
+
 

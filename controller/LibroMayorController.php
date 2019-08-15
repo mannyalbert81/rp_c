@@ -25,7 +25,7 @@ class LibroMayorController extends ControladorBase{
 		if (isset(  $_SESSION['nombre_usuarios']) )
 		{
 
-			$nombre_controladores = "Proveedores";
+			$nombre_controladores = "ReporteMayor";
 			$id_rol= $_SESSION['id_rol'];
 			$resultPer = $proveedores->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			

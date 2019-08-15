@@ -741,7 +741,11 @@ class ProcesosMayorizacionController extends ControladorBase{
 	 */
 	public function ActivaCredito( $paramIdCredito = 1){
 	    
-	    @session_start();
+	    if(!isset($_SESSION)){
+	        session_start();
+	    }
+	    
+	    
 	    $Credito = new CreditosModel();
 	    
 	    require_once 'core/DB_Functions.php';
@@ -898,7 +902,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                $iorden = $iorden + 2;
 	                $ResultDistribucion = $Credito -> executeNonQuery($queryDistribucion);
 	                $error = "";
-	                $error = pg_last_error() || error_get_last();
+	                $error = pg_last_error() || error_get_last()['message'];
 	                if(!empty($error) || $ResultDistribucion <= 0 )
 	                    throw new Exception('error distribucion cuentas pagar');
 	            }	            
@@ -911,7 +915,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                $iorden = $iorden + 2;
 	                $ResultDistribucion = $Credito -> executeNonQuery($queryDistribucion);
 	                $error = "";
-	                $error = pg_last_error() || error_get_last();
+	                $error = pg_last_error() || error_get_last()['message'];
 	                if(!empty($error) || $ResultDistribucion <= 0 )
 	                    throw new Exception('error distribucion cuentas pagar');	            }
 	            
@@ -942,7 +946,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $ResultCuentaPagar = $Credito -> llamarconsultaPG($consultaCuentasPagar);
 	        	        
 	        $error = "";
-	        $error = pg_last_error() || error_get_last();
+	        $error = pg_last_error() || error_get_last()['message'];
 	        if(!empty($error) || $ResultCuentaPagar[0] <= 0 )
 	            throw new Exception('error inserccion cuentas pagar');
 	        
@@ -970,7 +974,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $resultadComprobantes = $Credito->llamarconsultaPG($consultaComprobante);
 	        
 	        $error = "";
-	        $error = pg_last_error() || error_get_last();
+	        $error = pg_last_error() || error_get_last()['message'];
 	        if(!empty($error) || $resultadComprobantes[0] <= 0 )
 	            throw new Exception('error inserccion cuentas pagar');
 	        

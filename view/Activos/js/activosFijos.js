@@ -270,7 +270,7 @@ $("#activos_fijos_registrados").on("click",".editaActivo",function(event){
 		if(datos.value == 1){
 			
 			var array = datos.data[0]
-			
+			console.log (array)
 			$("#id_activos_fijos").val(array.id_activos_fijos)
 			$("#id_oficina").val(array.id_oficina)
 			$("#id_tipo_activos_fijos").val(array.id_tipo_activos_fijos)

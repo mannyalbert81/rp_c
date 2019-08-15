@@ -348,7 +348,7 @@ function AprobarJefeRecaudaciones(id_reporte)
   		  }
   	  else
   		  {
-  		load_creditos(1);
+  		load_reportes_aprobados(1);
 		load_reportes(1);
 		$('#cerrar_ver').click();
 		swal({
@@ -390,7 +390,7 @@ function AprobarJefeSistemas(id_reporte)
   		  }
   	  else
   		  {
-  		load_creditos(1);
+  		load_reportes_aprobados(1);
 		load_reportes(1);
 		$('#cerrar_ver').click();
 		swal({
@@ -432,7 +432,7 @@ function AprobarContador(id_reporte)
   		  }
   	  else
   		  {
-  		load_creditos(1);
+  		load_reportes_aprobados(1);
 		load_reportes(1);
 		$('#cerrar_ver').click();
 		swal({
@@ -474,7 +474,7 @@ function AprobarGerente(id_reporte)
   		  }
   	  else
   		  {
-  		load_creditos(1);
+  		load_reportes_aprobados(1);
 		load_reportes(1);
 		$('#cerrar_ver').click();
 		swal({
@@ -516,7 +516,7 @@ function AprobarTesoreria(id_reporte)
   		  }
   	  else
   		  {
-  		load_creditos(1);
+  		load_reportes_aprobados(1);
 		load_reportes(1);
 		$('#cerrar_ver').click();
 		swal({

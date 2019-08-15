@@ -191,7 +191,7 @@ class TransferenciasController extends ControladorBase{
         $_id_pagos = (int)$ResulatadoPago[0];
         
         //Datos para Comprobante
-        $_concepto_comprobante = " TRANSACCION DE ".$_nombre_cuenta_banco.". TRANSFERENCIA A .".$_nombre_participes." ".$_apellidos_participes.". DEL CREDITO $_numero_credito ";
+        $_concepto_comprobante = " TRANSACCION TRANSFERENCIA A .".$_nombre_participes." ".$_apellidos_participes.". DEL CREDITO $_numero_credito ";
         $valor_letras_pago = $CuentasPagar->numtoletras($_total_cuentas_pagar);
         $funcionComprobante = "tes_agrega_comprobante_pago_transferencia";
         $parametrosComprobante = "'$_id_usuario',
@@ -230,7 +230,8 @@ class TransferenciasController extends ControladorBase{
         /*para enviara a celular*/
         $_celular_mensaje = "0987968467";
         $_nombres_mensajes = $_nombre_participes." ".$_apellidos_participes;
-        $_codigo_mensajes = str_replace(' ','_',$_numero_cuenta_banco.'-'.$_nombre_cuenta_banco);
+        $_num_cuenta = "XXXXXX".substr($_numero_cuenta_banco, 6);
+        $_codigo_mensajes = str_replace(' ','_',$_num_cuenta.'-'.$_nombre_cuenta_banco);
         $_id_mensaje_mensajes = "22443";
         $this->comsumir_mensaje_plus($_celular_mensaje, $_nombres_mensajes, $_codigo_mensajes, $_id_mensaje_mensajes);
 	   
@@ -238,64 +239,7 @@ class TransferenciasController extends ControladorBase{
 	    
 	}
 	
-	public function indexCheque(){
-	    
-	    session_start();
-	    
-	    $cuentasPagar = new CuentasPagarModel();
-	    
-	    $_id_usuarios = (isset($_SESSION['id_usuarios'])) ? $_SESSION['id_usuarios'] : null;
-	    
-	    if( !isset($_GET['id_cuentas_pagar']) ){
-	        
-	        $this->redirect("Pagos","index");
-	        exit();
-	    }
-	    	    
-	    $_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
-	    
-	    $datos=null;
-	    $datos['id_cuentas_pagar'] = $_id_cuentas_pagar;
-	    
-	    $query = "SELECT l.id_lote, l.nombre_lote, cp.id_cuentas_pagar, cp.numero_cuentas_pagar, cp.descripcion_cuentas_pagar, cp.fecha_cuentas_pagar, 
-                    cp.compras_cuentas_pagar, cp.total_cuentas_pagar, p.id_proveedores, p.nombre_proveedores, p.identificacion_proveedores,
-                    b.id_bancos, b.nombre_bancos, m.id_moneda, m.signo_moneda || '-' || m.nombre_moneda AS moneda
-                FROM tes_cuentas_pagar cp
-                INNER JOIN tes_lote l        
-                ON cp.id_lote = l.id_lote
-                INNER JOIN proveedores p
-                ON p.id_proveedores = cp.id_proveedor
-                INNER JOIN tes_bancos b
-                ON b.id_bancos = cp.id_banco
-                INNER JOIN tes_moneda m
-                ON m.id_moneda = cp.id_moneda
-                WHERE 1 = 1
-                AND cp.id_cuentas_pagar = $_id_cuentas_pagar ";
-	    
-	    $rsCuentasPagar = $cuentasPagar->enviaquery($query);
-	    
-	    // PARA BUSCAR CONSECUTIVO DE PAGO 
-	    
-	    $queryConsecutivo = "SELECT numero_consecutivos FROM consecutivos WHERE nombre_consecutivos = 'PAGOS' AND id_entidades = 1";
-	    
-	    $rsConsecutivos = $cuentasPagar->enviaquery($queryConsecutivo);
-	    
-	    //para buscar cheque
-	    $queryBanco = "SELECT id_bancos, lpad(index_bancos::text,espacio_bancos,'0') numero_cheque 
-                FROM tes_bancos ban
-                INNER JOIN tes_cuentas_pagar cp
-                ON ban.id_bancos = cp.id_banco
-                WHERE id_cuentas_pagar = $_id_cuentas_pagar";
-        
-	    $rsBanco= $cuentasPagar->enviaquery($queryBanco);
-	    
-	    $this->view_tesoreria("GenerarCheque",array(
-	        "resultSet"=>$rsCuentasPagar,"rsConsecutivos"=>$rsConsecutivos,"datos"=>$datos,"rsBanco"=>$rsBanco
-	    ));
-	    
-	}
-	
-	
+		
 	public function paginate($reload, $page, $tpages, $adjacents, $funcion = "") {
 	    
 	    $prevlabel = "&lsaquo; Prev";

@@ -119,9 +119,9 @@ class ProcesosMayorizacionController extends ControladorBase{
                 AND mes_historial_diarios_tipo = $mesDiario";
 	    $idHistorial = "id_historial_diarios_tipo"; 
 	    $rsHistorial = $Participes->getCondiciones($colHistorial, $tabHistorial, $wheHistorial, $idHistorial);
-	    
+	    	    
 	    if(empty($rsHistorial)){
-	        
+	        	        
 	        $arrayTabla = array();
 	        $cantidad = 0;
 	        $conceptoDiario = "Proceso Mensual";
@@ -243,12 +243,14 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                
 	            } catch (Exception $ex) {
 	                
+	                $Participes->endTran();
 	                echo '<message> Error Procesos '.$ex->getMessage().' <message>';
 	                
 	            }	            
 	            
 	            die();
 	        }else{
+	            
 	            echo 'peticion no solicitada';
 	            die();
 	        }

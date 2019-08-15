@@ -87,6 +87,12 @@ $("#btnDetalles").on("click",function(event){
 		return false;
 	}
 	
+	if(!validafecha()){
+		$mesProcesos.notify("Fecha Invalida/Fecha Fuera de periodo",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	
 	$.ajax({
 		 url:"index.php?controller=ProcesosMayorizacion&action=detallesDiarioTipo",
 		 type:"POST",
@@ -140,6 +146,12 @@ $("#btngenera").on("click",function(event){
 	}
 	if($mesProcesos.val() == '0'){
 		$mesProcesos.notify("Seleccione mes de proceso",{ position:"buttom left", autoHideDelay: 2000});
+		$("#btngenera").attr('disabled',false);
+		return false;
+	}
+	
+	if(!validafecha()){
+		$mesProcesos.notify("Fecha Invalida/Fecha Fuera de periodo",{ position:"buttom left", autoHideDelay: 2000});
 		$("#btngenera").attr('disabled',false);
 		return false;
 	}
@@ -250,3 +262,27 @@ function resetFields(){
 	$("#id_modulos").val(0);
 	$("#id_tipo_procesos").val(0);
 }
+
+function validafecha(){
+	let $anio = $("#anio_procesos"),
+		$mes = $("#mes_procesos");	
+	 var year = new Date().getFullYear();
+     var mes = new Date().getMonth()+1;
+     	
+	let $fechapeticion = $anio.val()+'-'+$mes.val()+'-'+'01';
+	let $fechaServer = year+'-'+mes+'-'+'01';
+	
+	var datepeticion = new Date($fechapeticion);
+	var datesever  = new Date($fechaServer);
+	
+	 var fecha1ms=datepeticion.getTime();
+     var fecha2ms=datesever.getTime();
+     var diff = fecha2ms-fecha1ms;
+     if (diff < 0){
+            return false; 
+     }else{
+            return true;
+     }
+	
+}
+

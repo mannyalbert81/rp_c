@@ -265,13 +265,6 @@
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="fecha_permiso" class="control-label">Fecha de Pago:</label>
-                    	<input type="date"  class="form-control" id="fecha_corte" name="fecha_corte" placeholder="Fecha">
-                        <div id="mensaje_fecha" class="errores"></div>
-                 	</div>
-             	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
             			<div id="select_cuotas"></div>
                  	</div>
              	</div>
@@ -339,6 +332,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?0.14"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?0.15"></script> 
    </body>
 </html>   

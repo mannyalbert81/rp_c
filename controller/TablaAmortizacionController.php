@@ -173,11 +173,11 @@ class TablaAmortizacionController extends ControladorBase{
 	        $html.='<tr >';
 	        $html.='<td style="font-size: 11px;"align="center">'.$i.'</td>';
 	        $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->capital_tabla_amortizacion.'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->interes_tabla_amortizacion.'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->seguro_desgravamen_tabla_amortizacion.'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->total_valor_tabla_amortizacion.'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->total_balance_tabla_amortizacion.'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->capital_tabla_amortizacion, 2, ",", ".").'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->interes_tabla_amortizacion, 2, ",", ".").'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->seguro_desgravamen_tabla_amortizacion, 2, ",", ".").'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_valor_tabla_amortizacion, 2, ",", ".").'</td>';
+	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_balance_tabla_amortizacion, 2, ",", ".").'</td>';
 	        
 	        
 	        

@@ -999,12 +999,14 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $RsCreditoPago = $Credito -> enviaquery($queryBuscaFormaPago);
 	        $numero_de_credito = $RsCreditoPago[0]->numero_creditos;
 	        
-	        $columnas="id_solicitud_prestamo,nombre_banco_cuenta_bancaria,tipo_pago_cuenta_bancaria,numero_cuenta_cuenta_bancaria";
+	        $columnas="id_solicitud_prestamo,nombre_banco_cuenta_bancaria,tipo_pago_cuenta_bancaria,numero_cuenta_cuenta_bancaria,tipo_cuenta_cuenta_bancaria";
 	        $tabla="solicitud_prestamo";
 	        $where="identificador_consecutivos='".$numero_de_credito."'";
 	        $RsSolicitud = $db->getCondiciones($columnas, $tabla, $where);
 	        $_sol_nombre_banco = $RsSolicitud[0]->nombre_banco_cuenta_bancaria;
 	        $_sol_tipo_pago = $RsSolicitud[0]->tipo_pago_cuenta_bancaria;
+	        $_sol_numero_cuenta = $RsSolicitud[0]->numero_cuenta_cuenta_bancaria;
+	        $_sol_tipo_cuenta_banco = $RsSolicitud[0]->tipo_cuenta_cuenta_bancaria;
 	       
 	        $_id_forma_pago = null;
 	        $queryFormaPago="";
@@ -1024,6 +1026,16 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $tablasPago = "tes_cuentas_pagar";
 	        $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
 	        $UpdateFormaPago= $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
+	        
+	        //para realizar cambios de participe en proveedores
+	        $_id_tipo_cuenta = "1";
+	        if($_sol_tipo_cuenta_banco == "Corriente"){ $_id_tipo_cuenta = 1;}
+	        if($_sol_tipo_cuenta_banco == "Ahorros"){ $_id_tipo_cuenta = 2;}
+	        
+	        $columnaProveedores = "numero_cuenta_proveedores ='$_sol_numero_cuenta', id_tipo_cuentas = '$_id_tipo_cuenta' ";
+	        $tablasProveedores = "proveedores";
+	        $whereProveedores = "id_proveedores = $_id_proveedor";
+	        $UpdateProveedores = $Credito -> ActualizarBy($columnaProveedores, $tablasProveedores, $whereProveedores);
 	       
 	        $Credito->endTran('COMMIT');
 	        echo 'OK';

@@ -297,7 +297,7 @@
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.07"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.08"></script>
 
   </body>
 </html>   

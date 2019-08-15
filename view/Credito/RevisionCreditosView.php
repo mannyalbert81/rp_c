@@ -85,20 +85,20 @@
           </div>
   	</div>
   </section>
-  <section id="listado_creditos" class="content">
+  <section class="content">
   	<div class="box box-primary">
   		<div class="box-header with-border">
-  			<h3 class="box-title">Listado de Créditos</h3>
+  			<h3 id="titulo_box" class="box-title">Listado de Créditos</h3>
   			<div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                 <i class="fa fa-minus"></i></button>
             </div>
         </div> 
         <div class="box-body">
-			<div class="pull-right" style="margin-right:15px;">
+			<div id="search_creditos" class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_creditos(1)" placeholder="Buscar.."/>
 			</div>
-			<div class="pull-right" style="margin-right:15px;">
+			<div id="input_fecha"class="pull-right" style="margin-right:15px;">
                     	<input type="date"  class="form-control" id="fecha_concesion" name="fecha_concesion" placeholder="Fecha" onchange="load_creditos(1)">
                         <div id="mensaje_fecha" class="errores"></div>
     		</div>

@@ -39,7 +39,12 @@ $.ajax({
      		  }
      	 else if (x=="NO MOSTRAR CREDITOS")
  		  {
- 		  $("#listado_creditos").html("");
+ 		  $("#titulo_box").html("Reportes Aprobados");
+ 		 $("#search_creditos").html("");
+ 		$("#input_fecha").html("");
+ 		var input_fecha='<input type="date"  class="form-control" id="fecha_concesion" name="fecha_concesion" placeholder="Fecha" onchange="load_reportes_aprobados(1)">';
+ 		$("#input_fecha").html(input_fecha);	
+ 		load_reportes_aprobados(1);
  		  }
      	  else
      		  {
@@ -56,6 +61,52 @@ $.ajax({
     });
 
 }
+
+function load_reportes_aprobados(pagina){
+	var fecha_reporte=$("#fecha_concesion").val();
+	
+	var con_datos={
+					  action:'ajax',
+					  page:pagina,
+					  fecha_reporte:fecha_reporte
+					  };
+			  
+	$("#load_creditos").fadeIn('slow');
+	$.ajax({
+	    beforeSend: function(objeto){
+	      $("#load_creditos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	    },
+	    url: 'index.php?controller=RevisionCreditos&action=getReportesAprobados',
+	    type: 'POST',
+	    data: con_datos,
+	    success: function(x){
+	    	x=x.trim();
+	  	  if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
+	  		  {
+	  		  swal({
+			  		  title: "Créditos",
+			  		  text: "Hubo un error cargando los reportes",
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+	  		  $("#load_creditos").html('');
+	  		  }
+	  	  
+	  	  else
+	  		  {
+	  		  $("#creditos_registrados").html(x);
+	            $("#load_creditos").html("");
+	            $("#tabla_reportes_aprobados").tablesorter(); 
+	  		  }
+	     
+	      
+	    },
+	   error: function(jqXHR,estado,error){
+	     $("#creditos_registrados").html("Ocurrio un error al cargar la informacion de Usuarios..."+estado+"    "+error);
+	   }
+	 });
+
+	}
 
 function load_reportes(pagina){
 var fecha_reporte=$("#fecha_reportes").val();
@@ -174,6 +225,14 @@ function GetReportes()
 
 function SubirReporte()
 {
+	swal({
+		  title: "Reporte",
+		  text: "Actualizando reporte",
+		  icon: "view/images/capremci_load.gif",
+		  buttons: false,
+		  closeModal: false,
+		  allowOutsideClick: false
+		});
 	var id_reporte=$("#reportes_creditos").val();
 	console.log(id_reporte);
 	$.ajax({

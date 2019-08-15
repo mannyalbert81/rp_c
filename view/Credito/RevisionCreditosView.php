@@ -69,6 +69,10 @@
               </div>
          </div>
          <div class="box-body">
+         <div class="pull-right" style="margin-right:15px;">
+                    	<input type="date"  class="form-control" id="fecha_reportes" name="fecha_concesion" placeholder="Fecha" onchange="load_reportes(1);">
+                        <div id="mensaje_fecha" class="errores"></div>
+    		</div>
           	<div class="row">
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
@@ -92,10 +96,10 @@
         </div> 
         <div class="box-body">
 			<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_solicitudes(1)" placeholder="Buscar.."/>
+					<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_creditos(1)" placeholder="Buscar.."/>
 			</div>
 			<div class="pull-right" style="margin-right:15px;">
-                    	<input type="date"  class="form-control" id="fecha_concesion" name="fecha_concesion" placeholder="Fecha">
+                    	<input type="date"  class="form-control" id="fecha_concesion" name="fecha_concesion" placeholder="Fecha" onchange="load_creditos(1)">
                         <div id="mensaje_fecha" class="errores"></div>
     		</div>
         	<div id="load_creditos" ></div>
@@ -173,7 +177,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Credito/js/RevisionCreditos.js?0.6"></script>
+    <script src="view/Credito/js/RevisionCreditos.js?0.7"></script>
 	
 	
   </body>

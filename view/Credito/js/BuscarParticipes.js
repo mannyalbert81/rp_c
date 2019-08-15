@@ -1,6 +1,7 @@
 var id_participe;
 var disponible_participe;
 var solicitud;
+var modal=0;
 
 $(document).ready( function (){
 	
@@ -24,7 +25,7 @@ $("#myModalSimulacion").on("hidden.bs.modal", function () {
 	$("#select_cuotas").html("");
 	$("#tabla_amortizacion").html("");
 	$("#info_solicitud").html("");
-	document.getElementById("cuerpo").classList.remove('modal-open');
+	if (modal==0) document.getElementById("cuerpo").classList.remove('modal-open');
 	
 });
 $("#myModalAnalisis").on("hidden.bs.modal", function () {
@@ -41,7 +42,8 @@ $("#myModalInsertar").on("hidden.bs.modal", function () {
 	var modal = $('#myModalInsertar');
 	modal.find("#observacion_confirmacion").val("");
 	modal.find("#codigo_confirmacion").val("");
-	document.getElementById("cuerpo").classList.add('modal-open');
+	if (modal==0) document.getElementById("cuerpo").classList.add('modal-open');
+	
 	
 	
 	
@@ -204,6 +206,11 @@ function SimularCredito()
 	})
 	.done(function(x) {
 		$("#tabla_amortizacion").html(x);
+		swal("Tabla cargada", {
+		      icon: "success",
+		      buttons: false,
+		      timer: 1000
+		    });
 		
 	})
 	.fail(function() {
@@ -271,6 +278,14 @@ function GetCuotas()
 				})
 				.done(function(x) {
 					$("#select_cuotas").html(x);
+					swal({
+						  title: "Simulación de Crédito",
+						  text: "Cargando tabla de amortización",
+						  icon: "view/images/capremci_load.gif",
+						  buttons: false,
+						  closeModal: false,
+						  allowOutsideClick: false
+						});
 					SimularCredito();
 					
 					
@@ -688,11 +703,18 @@ function SubirInformacionCredito()
 		  		  text: "La solicitud de crédito ha sido procesada",
 		  		  icon: "success",
 		  		  button: "Aceptar",
-		  		});
-			 $('#cerrar_simulacion').click();
-			 $('#cerrar_insertar').click();
-			 CreditosActivosParticipe(id_participe, 1);
-			 document.getElementById("cuerpo").classList.remove('modal-open');
+		  		}).then((value) => {
+		  			modal=1;
+		  			$('#cerrar_insertar').click();
+					 $('#cerrar_simulacion').click();
+					 CreditosActivosParticipe(id_participe, 1);
+					 modal=0;
+					 
+		  	});
+			 
+			 
+			 
+			 
 			 
 			}
 		else

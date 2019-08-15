@@ -12,6 +12,8 @@ function load_creditos(pagina){
 var con_datos={
 				  action:'ajax',
 				  page:pagina,
+				  fecha_concesion:fecha,
+				  search:search
 				  };
 		  
 $("#load_creditos").fadeIn('slow');
@@ -20,7 +22,7 @@ $.ajax({
        beforeSend: function(objeto){
          $("#load_creditos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
        },
-       url: 'index.php?controller=RevisionCreditos&action=getCreditosRegistrados&search='+search,
+       url: 'index.php?controller=RevisionCreditos&action=getCreditosRegistrados',
        type: 'POST',
        data: con_datos,
        success: function(x){
@@ -56,18 +58,18 @@ $.ajax({
 }
 
 function load_reportes(pagina){
-
-	  
+var fecha_reporte=$("#fecha_reportes").val();
 var con_datos={
 				  action:'ajax',
 				  page:pagina,
+				  fecha_reporte:fecha_reporte
 				  };
 		  
-$("#load_creditos").fadeIn('slow');
+$("#load_reportes").fadeIn('slow');
 
 $.ajax({
     beforeSend: function(objeto){
-      $("#load_creditos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+      $("#load_reportes").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
     },
     url: 'index.php?controller=RevisionCreditos&action=getReportesRegistrados',
     type: 'POST',
@@ -117,6 +119,7 @@ function AbrirReporte(id_reporte)
 
 function GetDatosReporte(id_reporte)
 {
+	$("#datos_reporte").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	var con_datos={
 			  action:'ajax',
 			  id_reporte:id_reporte
@@ -153,6 +156,7 @@ $("#empleados_registrados").html("Ocurrio un error al cargar la informacion de U
 
 function GetReportes()
 {
+	$("#select_reportes").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	$.ajax({
 	    url: 'index.php?controller=RevisionCreditos&action=GetReportes',
 	    type: 'POST',

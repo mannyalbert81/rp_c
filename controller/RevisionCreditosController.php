@@ -13,7 +13,9 @@ class RevisionCreditosController extends ControladorBase{
         $id_rol=$_SESSION["id_rol"];
         require_once 'core/DB_Functions.php';
         $db = new DB_Functions();
-        $creditos=new PlanCuentasModel();
+        $creditos=new PlanCuentasModel();       
+        $fecha_concesion=$_POST['fecha_concesion'];
+        $search=$_POST['search'];
         if ($id_rol==58)
         {
         $columnas="core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
@@ -30,6 +32,16 @@ class RevisionCreditosController extends ControladorBase{
                 INNER JOIN oficina
                 ON oficina.id_oficina=usuarios.id_oficina";
         $where="core_estado_creditos.id_estado_creditos=2 AND core_creditos.incluido_reporte_creditos IS NULL";
+        if(!(empty($fecha_concesion)))
+        {
+            $where.=" AND fecha_concesion_creditos='".$fecha_concesion."'";
+        }
+        if(!(empty($search)))
+        {
+            $where.=" AND (core_participes.cedula_participes LIKE '".$search."%' OR core_participes.nombre_participes ILIKE '".$search."%'
+                       OR core_participes.apellido_participes ILIKE '".$search."%')";
+        }
+        
         $id="core_creditos.numero_creditos";
         $html="";
         $resultSet=$creditos->getCantidad("*", $tablas, $where);
@@ -167,6 +179,7 @@ class RevisionCreditosController extends ControladorBase{
     {
         session_start();
         $id_rol=$_SESSION["id_rol"];
+        $fecha_reporte=$_POST['fecha_reporte'];
         $reportes=new PlanCuentasModel();
         
             $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
@@ -182,7 +195,12 @@ class RevisionCreditosController extends ControladorBase{
             if($id_rol==48)$where="estado.nombre_estado='APROBADO SISTEMAS'";
             if($id_rol==61)$where="estado.nombre_estado='APROBADO CONTADOR'";
             if($id_rol==53)$where="estado.nombre_estado='APROBADO GERENTE'";
-            
+            if(!(empty($fecha_reporte)))
+            {
+                $elementos_fecha=explode("-",$fecha_reporte);
+                $where.=" AND anio_creditos_trabajados_cabeza=".$elementos_fecha[0]." AND  mes_creditos_trabajados_cabeza=".$elementos_fecha[1]." AND
+                         dia_creditos_trabajados_cabeza=".$elementos_fecha[2];
+            }
             $id="id_creditos_trabajados_cabeza";
             
             $html="";

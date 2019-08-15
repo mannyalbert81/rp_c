@@ -314,8 +314,7 @@ class SimulacionCreditosController extends ControladorBase{
       
        foreach ($resultAmortizacion as $res)
        {
-           if($res['pagos_trimestrales']!=0)
-           {
+           
            $html.='<tr>';
            $html.='<td width="5%" bgcolor="white"><font color="black">'.$res['pagos_trimestrales'].'</font></td>';
            $html.='<td width="18%" bgcolor="white" align="center"><font color="black">'.$res['fecha_pago'].'</font></td>';
@@ -331,7 +330,7 @@ class SimulacionCreditosController extends ControladorBase{
            $res['saldo_inicial']=number_format((float)$res['saldo_inicial'],2,".",",");
            $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['saldo_inicial'].'</font></td>';
            $html.='</tr>';
-           }
+           
            
        }
      
@@ -374,26 +373,23 @@ class SimulacionCreditosController extends ControladorBase{
        $interes_concesion=0;
        $diferencia_dias=0;
        
-       for( $i = 0; $i <= $numero_cuotas; $i++) {
+       $interes= 0;
+       $amortizacion = 0;
+       $saldo_inicial= $capital;
+       $fecha=strtotime('+0 day',strtotime($fecha_corte));
+       $elementos_fecha=explode("-", $fecha_corte);
+       $lastday = date('t',strtotime($fecha));
+       $diferencia_dias=$lastday-$elementos_fecha[2];
+       $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
+       $fecha=date('Y-m-d',strtotime($fecha_ultimo_dia));
+       $fecha_corte=$fecha;
+       $valor = 0;
+       $desgravamen=0;
+       $saldo_inicial_ant = $capital;
+       
+       for( $i = 1; $i <= $numero_cuotas; $i++) {
            
-           if ($i == 0)
-           {
-               $interes= 0;
-               $amortizacion = 0;
-               $saldo_inicial= $capital;
-               $fecha=strtotime('+0 day',strtotime($fecha_corte));
-               $elementos_fecha=explode("-", $fecha_corte);
-               $lastday = date('t',strtotime($fecha));
-               $diferencia_dias=$lastday-$elementos_fecha[2];
-               $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
-               $fecha=date('Y-m-d',strtotime($fecha_ultimo_dia));
-               $fecha_corte=$fecha;
-               $valor = 0;
-               $desgravamen=0;
-               $saldo_inicial_ant = $capital;
-           }
-           else
-           {
+           
                $saldo_inicial_ant = $saldo_inicial_ant - $amortizacion;
                $interes= $saldo_inicial_ant * $inter_ant;
                $interes=floor($interes * 100) / 100;
@@ -426,16 +422,16 @@ class SimulacionCreditosController extends ControladorBase{
                $fecha_corte=$fecha;
                $valor = $valor_cuota;
                
-               
-           }
-           $arreglo=array('pagos_trimestrales'=> $i,
-               'saldo_inicial'=>$saldo_inicial,
-               'interes'=>$interes,
-               'amortizacion'=>$amortizacion,
-               'pagos'=>$valor,
-               'desgravamen'=>$desgravamen,
-               'fecha_pago'=>$fecha
-           );
+               $arreglo=array('pagos_trimestrales'=> $i,
+                   'saldo_inicial'=>$saldo_inicial,
+                   'interes'=>$interes,
+                   'amortizacion'=>$amortizacion,
+                   'pagos'=>$valor,
+                   'desgravamen'=>$desgravamen,
+                   'fecha_pago'=>$fecha
+               );
+          
+          
            array_push($resultAmortizacion, $arreglo);
        }
        
@@ -619,7 +615,6 @@ class SimulacionCreditosController extends ControladorBase{
        }
       
        echo $mensage;
-       
    }
    
    public function ActualizarSolicitud($id_solicitud, $monto, $plazo, $id_credito)

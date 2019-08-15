@@ -115,19 +115,21 @@ function graficaTablaDistribucion(){
 	var $filaBody = "";
 	for(var i=0; i<2; i++){
 	
-		$filaBody +="<tr id=\"tr_"+i+" \">"+
+		$filaBody +="<tr id=\"tr_"+i+"\">"+
 			"<td style=\"font-size: 12px;\" >"+i+"</td>"+ 
 			"<td style=\"font-size: 12px;\" ><input type=\"text\" class=\"form-control input-sm distribucion\" name=\"mod_dis_referencia\" value=\"\"></td>"+
 			"<td style=\"font-size: 12px;\" ><input type=\"text\" class=\"form-control input-sm distribucion distribucion_autocomplete\" name=\"mod_dis_codigo\"  value=\"\"></td>"+
 			"<td style=\"font-size: 12px;\" ><input type=\"text\" style=\"border: 0;\" class=\"form-control input-sm\" value=\"\" name=\"mod_dis_nombre\">"+
 		        "<input type=\"hidden\" name=\"mod_dis_id_plan_cuentas\" value=\"\" ></td>"+
-		    "<td style=\"font-size: 12px;\"></td>"+
+		    "<td style=\"font-size: 12px;\"><select id=\"mod_tipo_pago\" name=\"mod_tipo_pago\" class=\" form-control\" ></select></td>"+
 		    "<td style=\"font-size: 12px;\"></td>"+
 		    "<td style=\"font-size: 12px;\"></td>"+
 		    "</tr>"
 	}
 
 	$tablaDistribucion.find('> tbody').append($filaBody);
+	
+	$tablaDistribucion.find("select[name='mod_tipo_pago']").append('<option value="debito" >DEBITO</option><option value="credito" >CREDITO</option>');
 
 	return $tablaDistribucion;
 	
@@ -141,7 +143,7 @@ $("#genera_transferencia").on("click",function(){
 	var _numero_cuenta_banco = $("#cuenta_banco").val();
 	var _tipo_cuenta_banco = $("#tipo_cuenta_banco").val();
 	var _total_cuentas_pagar = $("#total_cuentas_pagar").val();
-	var _nombre_cuenta_banco = $("#id_bancos").val();
+	var _nombre_cuenta_banco = $("#nombre_cuenta_banco").val();
 	
 	//esta variable se declara ala cargar la pagina
 	//listaCuentas
@@ -167,6 +169,18 @@ $("#genera_transferencia").on("click",function(){
 		data:parametros
 	}).done(function(x){
 		console.log(x);
+		
+		if(x.respuesta == 1){
+			
+			swal({				
+				title:"TRANSACION REALIZADA",
+				icon:"success",
+				text:x.mensaje
+			}).then(function(){
+				
+				window.open("index.php?controller=Pagos&action=Index","_self");
+			})
+		}
 		
 	}).fail(function(xhr, status, error){
 		
@@ -312,7 +326,8 @@ $("#btn_distribucion_aceptar").on("click",function(event){
 			
 			var _id_distribucion	= $(this).attr("id").split('_')[1],
 				_desc_distribucion	= $(this).find("input:text[name='mod_dis_referencia']").val(),
-				_id_plan_cuentas 	= $(this).find("input:hidden[name='mod_dis_id_plan_cuentas']").val();
+				_id_plan_cuentas 	= $(this).find("input:hidden[name='mod_dis_id_plan_cuentas']").val(),
+				_tipo_pago		 	= $(this).find("select[name='mod_tipo_pago']").val();
 	
 			item = {};
 		
@@ -321,6 +336,7 @@ $("#btn_distribucion_aceptar").on("click",function(event){
 		        item ["id_distribucion"] 		= _id_distribucion;
 		        item ["referencia_distribucion"]= _desc_distribucion;
 		        item ['id_plan_cuentas'] 		= _id_plan_cuentas;
+		        item ['tipo_pago'] 				= _tipo_pago;
 		        
 		        data.push(item);
 			}else{			
@@ -333,8 +349,24 @@ $("#btn_distribucion_aceptar").on("click",function(event){
 			}
 					
 		})
+	var arrayToCount = data;
+	var _debito=0,_credito=0;
+	for (i = 0; i < arrayToCount.length; i++){
+		if(arrayToCount[i].tipo_pago == "debito"){
+			_debito += 1;
+	    }
+		if(arrayToCount[i].tipo_pago == "credito"){
+			_credito += 1;
+	    }
+	}
+	if(_debito != _credito){
+		divPadre.find("table").notify("error en distribucion",{ position:"top center"});
+		error = false;
+		_debito=0,_credito=0;
+	}
 	if(!error){	return false;}	
-	listaCuentas = JSON.stringify(data); 
+	listaCuentas = JSON.stringify(data);
+	
 	$("#genera_transferencia").attr("disabled",false);
 })
 

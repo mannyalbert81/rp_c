@@ -461,7 +461,7 @@ $controladores=$_SESSION['controladores'];
               <li style="<?php echo getcontrolador("CoreInformacionParticipes",$controladores) ?>"><a href="index.php?controller=CoreInformacionParticipes&action=index"><i class="fa fa-circle-o"></i>Consultar Información Participes</a></li>
               <li style="<?php echo getcontrolador("AnalisisCreditos",$controladores) ?>"><a href="index.php?controller=AnalisisCreditos&action=index"><i class="fa fa-circle-o"></i>Análisis Crédito</a></li>
               <li style="<?php echo getcontrolador("SimulacionCreditos",$controladores) ?>"><a href="index.php?controller=SimulacionCreditos&action=index"><i class="fa fa-circle-o"></i>Simulación Crédito</a></li>
-              <li style="<?php echo getcontrolador("RevisionCreditos",$controladores) ?>"><a href="index.php?controller=RevisionCreditos&action=index"><i class="fa fa-circle-o"></i>Revisión Crédito</a></li>      
+              <li style="<?php echo getcontrolador("RevisionCreditos",$controladores) ?>"><a href="index.php?controller=RevisionCreditos&action=index"><i class="fa fa-circle-o"></i>Revisión de Crédito</a></li>      
 		  </ul>
         </li>
         

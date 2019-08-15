@@ -13,7 +13,9 @@ class RevisionCreditosController extends ControladorBase{
         $id_rol=$_SESSION["id_rol"];
         require_once 'core/DB_Functions.php';
         $db = new DB_Functions();
-        $creditos=new PlanCuentasModel();
+        $creditos=new PlanCuentasModel();       
+        $fecha_concesion=$_POST['fecha_concesion'];
+        $search=$_POST['search'];
         if ($id_rol==58)
         {
         $columnas="core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
@@ -30,6 +32,16 @@ class RevisionCreditosController extends ControladorBase{
                 INNER JOIN oficina
                 ON oficina.id_oficina=usuarios.id_oficina";
         $where="core_estado_creditos.id_estado_creditos=2 AND core_creditos.incluido_reporte_creditos IS NULL";
+        if(!(empty($fecha_concesion)))
+        {
+            $where.=" AND fecha_concesion_creditos='".$fecha_concesion."'";
+        }
+        if(!(empty($search)))
+        {
+            $where.=" AND (core_participes.cedula_participes LIKE '".$search."%' OR core_participes.nombre_participes ILIKE '".$search."%'
+                       OR core_participes.apellido_participes ILIKE '".$search."%')";
+        }
+        
         $id="core_creditos.numero_creditos";
         $html="";
         $resultSet=$creditos->getCantidad("*", $tablas, $where);
@@ -167,6 +179,7 @@ class RevisionCreditosController extends ControladorBase{
     {
         session_start();
         $id_rol=$_SESSION["id_rol"];
+        $fecha_reporte=$_POST['fecha_reporte'];
         $reportes=new PlanCuentasModel();
         
             $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
@@ -182,7 +195,12 @@ class RevisionCreditosController extends ControladorBase{
             if($id_rol==48)$where="estado.nombre_estado='APROBADO SISTEMAS'";
             if($id_rol==61)$where="estado.nombre_estado='APROBADO CONTADOR'";
             if($id_rol==53)$where="estado.nombre_estado='APROBADO GERENTE'";
-            
+            if(!(empty($fecha_reporte)))
+            {
+                $elementos_fecha=explode("-",$fecha_reporte);
+                $where.=" AND anio_creditos_trabajados_cabeza=".$elementos_fecha[0]." AND  mes_creditos_trabajados_cabeza=".$elementos_fecha[1]." AND
+                         dia_creditos_trabajados_cabeza=".$elementos_fecha[2];
+            }
             $id="id_creditos_trabajados_cabeza";
             
             $html="";
@@ -257,6 +275,133 @@ class RevisionCreditosController extends ControladorBase{
                  }
                  }*/
                 $html.='</tr>';
+            
+            
+            
+            
+            $html.='</tbody>';
+            $html.='</table>';
+            $html.='</section></div>';
+            $html.='<div class="table-pagination pull-right">';
+            $html.=''. $this->paginate_creditos("index.php", $page, $total_pages, $adjacents,"load_reportes").'';
+            $html.='</div>';
+            
+            
+            
+        }else{
+            $html='<div class="col-lg-12 col-md-12 col-xs-12">';
+            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay reportes registrados...</b>';
+            $html.='</div>';
+            $html.='</div>';
+        }
+        
+        
+        echo $html;
+        
+    }
+    
+    public function getReportesAprobados()
+    {
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        $fecha_reporte=$_POST['fecha_reporte'];
+        $reportes=new PlanCuentasModel();
+        
+        $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
+                         dia_creditos_trabajados_cabeza, oficina.nombre_oficina, estado.nombre_estado";
+        $tablas="core_creditos_trabajados_cabeza INNER JOIN oficina
+            		ON oficina.id_oficina=core_creditos_trabajados_cabeza.id_oficina
+            		INNER JOIN estado
+            		ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
+        
+        if($id_rol==58) $where="1=1";
+        if($id_rol==51)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($id_rol==59)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($id_rol==48)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($id_rol==61)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($id_rol==53)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if(!(empty($fecha_reporte)))
+        {
+            $elementos_fecha=explode("-",$fecha_reporte);
+            $where.=" AND anio_creditos_trabajados_cabeza=".$elementos_fecha[0]." AND  mes_creditos_trabajados_cabeza=".$elementos_fecha[1]." AND
+                         dia_creditos_trabajados_cabeza=".$elementos_fecha[2];
+        }
+        $id="id_creditos_trabajados_cabeza";
+        
+        $html="";
+        $resultSet=$reportes->getCantidad("*", $tablas, $where);
+        $cantidadResult=(int)$resultSet[0]->total;
+        
+        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+        
+        $per_page = 10; //la cantidad de registros que desea mostrar
+        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+        $offset = ($page - 1) * $per_page;
+        
+        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+        
+        $resultSet=$reportes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
+        $count_query   = $cantidadResult;
+        $total_pages = ceil($cantidadResult/$per_page);
+        if($cantidadResult>0)
+        {
+            
+            $html.='<div class="pull-left" style="margin-left:15px;">';
+            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+            $html.='</div>';
+            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+            $html.='<section style="height:300px; overflow-y:scroll;">';
+            $html.= "<table id='tabla_reportes_aprobados' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+            $html.= "<thead>";
+            $html.= "<tr>";
+            $html.='<th style="text-align: left;  font-size: 15px;">Fecha</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Oficina</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Estado</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;"></th>';
+            $html.='</tr>';
+            $html.='</thead>';
+            $html.='<tbody>';
+            
+            foreach ($resultSet as $res)
+            {
+                
+                
+                $fecha=$res->dia_creditos_trabajados_cabeza."/".$res->mes_creditos_trabajados_cabeza."/".$res->anio_creditos_trabajados_cabeza;
+                $html.='<tr>';
+                $html.='<td style="font-size: 14px;">'.$fecha.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
+                $html.='<td style="font-size: 14px;"><button  type="button" class="btn btn-warning" onclick="AbrirReporte('.$res->id_creditos_trabajados_cabeza.')"><i class="glyphicon glyphicon-open-file"></i></button></span></td>';
+            }
+            /*if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
+             {
+             if ($id_rol==$id_jefi && $res->nombre_estado=="EN REVISION" && $id_dpto_jefe == $res->id_departamento)
+             {
+             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+             }
+             
+             else if ($id_rol==$id_rh && $res->nombre_estado=="VISTO BUENO")
+             {
+             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+             }
+             
+             else if ($id_rol==$id_gerente && $res->nombre_estado=="APROBADO")
+             {
+             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+             }
+             else if ($id_rol==$id_rh && $res->nombre_estado=="APROBADO GERENCIA" && $res->nombre_causa=="Enfermedad")
+             {
+             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="SinCertificado('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+             }
+             }*/
+            $html.='</tr>';
             
             
             
@@ -775,7 +920,10 @@ class RevisionCreditosController extends ControladorBase{
     
     public function ActivaCredito($paramIdCredito){
         
-        @session_start();
+        if(!isset($_SESSION)){
+            session_start();
+        }
+        
         $Credito = new CreditosModel();
         
         require_once 'core/DB_Functions.php';
@@ -862,7 +1010,7 @@ class RevisionCreditosController extends ControladorBase{
             $_id_bancos = 2 ; //seteado para presentacion luego va con deacuerdo el credito
             
             //datos Cuenta por pagar
-            $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito ";
+            $_descripcion_cuentas_pagar = ""; //se llena mas adelante
             $_fecha_cuentas_pagar = date('Y-m-d');
             $_condiciones_pago_cuentas_pagar = "";
             $_num_documento_cuentas_pagar = "";
@@ -884,7 +1032,8 @@ class RevisionCreditosController extends ControladorBase{
             
             /*valores para cuenta por pagar*/
             //busca datos de credito
-            $queryCredito = "SELECT cc.id_creditos, cc.monto_otorgado_creditos, cc.monto_neto_entregado_creditos, cc.saldo_actual_creditos,
+            $queryCredito = "SELECT cc.id_creditos, cc.monto_otorgado_creditos, cc.monto_neto_entregado_creditos,
+                      cc.saldo_actual_creditos, cc.numero_creditos,
 		              ctc.id_tipo_creditos, ctc.nombre_tipo_creditos, ctc.codigo_tipo_creditos
                     FROM core_creditos cc
                     INNER JOIN core_tipo_creditos ctc
@@ -896,6 +1045,9 @@ class RevisionCreditosController extends ControladorBase{
             $monto_credito = 0;
             $monto_entregado_credito = 0;
             $id_tipo_credito = 0;
+            $numero_credito = !empty($ResultCredito) ? $ResultCredito[0]->numero_creditos : 0 ;
+            
+            $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito CREDITO $numero_credito ";
             
             foreach ($ResultCredito as $res){
                 $codigo_credito=$res->codigo_tipo_creditos;
@@ -957,12 +1109,12 @@ class RevisionCreditosController extends ControladorBase{
                 
                 switch ($codigo_credito){
                     case "EME":
-                        $_descripcion_cuentas_pagar .= "EMERGENTE";
+                        $_descripcion_cuentas_pagar .= " Tipo EMERGENTE";
                         
                         break;
                     case "ORD":
                         
-                        $_descripcion_cuentas_pagar .= "ORDINARIO";
+                        $_descripcion_cuentas_pagar .= "Tipo ORDINARIO";
                         break;
                 }
             }
@@ -1060,7 +1212,7 @@ class RevisionCreditosController extends ControladorBase{
                     $tablasPago = "tes_cuentas_pagar";
                     $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
                     $UpdateFormaPago= $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
-                                        
+                    
                     //para realizar cambios de participe en proveedores
                     $_id_tipo_cuenta = "1";
                     if($_sol_tipo_cuenta_banco == "Corriente"){ $_id_tipo_cuenta = 1;}
@@ -1080,8 +1232,6 @@ class RevisionCreditosController extends ControladorBase{
             $Credito->endTran();
             return $e->getMessage();
         }
-        
-        
     }
     
     

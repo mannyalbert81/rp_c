@@ -1714,7 +1714,7 @@ class SolicitudPrestamoController extends ControladorBase{
 		solicitud_prestamo.id_estado_civil_datos_personales = estado_civil.id_estado_civil AND
 		entidades.id_entidades = solicitud_prestamo.id_entidades AND
 		sexo.id_sexo = solicitud_prestamo.id_sexo_datos_personales AND solicitud_prestamo.tipo_participe_datos_prestamo='Deudor'
-        AND solicitud_prestamo.monto_datos_prestamo =0 AND solicitud_prestamo.plazo_datos_prestamo=0";
+        AND solicitud_prestamo.monto_datos_prestamo =0 AND solicitud_prestamo.plazo_datos_prestamo=0 AND usuarios.nombre_usuarios='DIANA NAVARRETE'";
 	
 		$id       = "solicitud_prestamo.id_solicitud_prestamo";
 	

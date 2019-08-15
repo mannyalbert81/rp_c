@@ -692,6 +692,7 @@ function SubirInformacionCredito()
 			 $('#cerrar_simulacion').click();
 			 $('#cerrar_insertar').click();
 			 CreditosActivosParticipe(id_participe, 1);
+			 document.getElementById("cuerpo").classList.remove('modal-open');
 			 
 			}
 		else

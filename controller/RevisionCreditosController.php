@@ -318,10 +318,10 @@ class RevisionCreditosController extends ControladorBase{
         
         if($id_rol==58) $where="1=1";
         if($id_rol==51)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
-        if($id_rol==59)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
-        if($id_rol==48)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
-        if($id_rol==61)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
-        if($id_rol==53)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($id_rol==59)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=93 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($id_rol==48)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=94 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($id_rol==61)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=95 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($id_rol==53)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=96 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if(!(empty($fecha_reporte)))
         {
             $elementos_fecha=explode("-",$fecha_reporte);
@@ -790,15 +790,16 @@ class RevisionCreditosController extends ControladorBase{
         $where="id_cabeza_creditos_trabajados=".$id_reporte;
         $id="id_creditos";
         $resultSet=$reporte->getCondiciones($columnas, $tablas, $where, $id);
-       
+        $i=0;
         foreach ($resultSet as $res)
         {
+            $i++;
             $where = "id_creditos=".$res->id_creditos;
             $tabla = "core_creditos";
             $colval = "id_estado_creditos=3";
             $reporte->UpdateBy($colval, $tabla, $where);
             $mensaje=$this->ActivaCredito($res->id_creditos);
-            echo $mensaje;
+            echo $mensaje, "***", $i;
         }
         
     }

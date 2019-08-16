@@ -261,7 +261,9 @@
 	            
 	            
 	        }else{
-	            
+	            $html.='<br>';
+	            $html.='<br>';
+	            $html.='<br>';
 	            $html.='<div class="alert alert-warning alert-dismissable">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> No hay datos para mostrar';
@@ -383,7 +385,7 @@
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND (clientes.identificacion_clientes LIKE '".$search."%' OR clientes.nombres_clientes LIKE '".$search."%' OR clientes.nombre_garantes LIKE '".$search."%' OR juicios.juicio_referido_titulo_credito LIKE '".$search."%'  OR ciudad.nombre_ciudad LIKE '".$search."%' OR  origen_juicio.nombre_origen_juicio LIKE '".$search."%')";
+	            $where1=" AND (cl.identificacion_clientes LIKE '".$search."%' OR cl.nombres_clientes LIKE '".$search."%' OR cl.nombre_garantes LIKE '".$search."%' OR ju.juicio_referido_titulo_credito LIKE '".$search."%')";
 	            
 	            $where_to=$where.$where1;
 	        }else{
@@ -473,6 +475,9 @@
 	            
 	        }else{
 	            
+	            $html.='<br>';
+	            $html.='<br>';
+	            $html.='<br>';
 	            $html.='<div class="alert alert-warning alert-dismissable">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> No hay datos para mostrar';

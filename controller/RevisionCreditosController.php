@@ -519,7 +519,7 @@ class RevisionCreditosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->plazo_creditos.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_creditos.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
-                    $html.='<td style="font-size: 14px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$id_solicitud.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-file"></i></a></span></td>';
+                    $html.='<td style="font-size: 14px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$id_solicitud.'" target="_blank" class="btn btn-warning" title="Ver Solicitud"><i class="glyphicon glyphicon-file"></i></a></span></td>';
                     
                     
                     if ($id_rol==58 && $estado_reporte==98)
@@ -527,6 +527,11 @@ class RevisionCreditosController extends ControladorBase{
                     $html.='<td style="font-size: 18px;"></td>';
                     $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                     }
+                   /* if ($id_rol==48 && $estado_reporte==93)
+                    {
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" title="Ver Comprobantes" onclick="BuscarComprobantes('.$res->numero_creditos.')"><i class="glyphicon glyphicon-new-window"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"></td>';
+                    }*/
                     
                 
                 

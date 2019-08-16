@@ -91,7 +91,7 @@ class ReporteComprobanteController extends ControladorBase{
 			        $where="ccomprobantes.id_forma_pago = forma_pago.id_forma_pago AND
 							  entidades.id_entidades = usuarios.id_entidades AND
 							  usuarios.id_usuarios = ccomprobantes.id_usuarios AND
-							  tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes AND usuarios.id_usuarios='$_id_usuarios'";
+							  tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes";
 			        
 			        $id="ccomprobantes.numero_ccomprobantes";
 			        
@@ -452,7 +452,7 @@ class ReporteComprobanteController extends ControladorBase{
 	public function  generar_reporte_comprobante(){
 	    
 	    session_start();
-	    $ccomprobantes = new CComprobantesModel();
+	    $ccomprobantes = new CComprobantesModel(); 
 	    $dcomprobantes = new DComprobantesModel();
 	    $tipo_comprobantes = new TipoComprobantesModel();
 	    $entidades = new EntidadesModel();
@@ -506,8 +506,7 @@ class ReporteComprobanteController extends ControladorBase{
 							  ccomprobantes.observaciones_ccomprobantes,
                               dcomprobantes.descripcion_dcomprobantes,
 							  forma_pago.nombre_forma_pago,
-                              proveedores.nombre_proveedores
-		        ";
+                              proveedores.nombre_proveedores";
 	            
 	          $tablas=" public.ccomprobantes,
 						  public.entidades,
@@ -528,8 +527,14 @@ class ReporteComprobanteController extends ControladorBase{
 	            
 	            $resultSetCabeza=$ccomprobantes->getCondiciones($columnas, $tablas, $where, $id);
 	           
+	           
+	            
 	            if(!empty($resultSetCabeza)){
 	                
+	                
+	                
+	                
+	                $_id_ccomprobantes  =$resultSetCabeza[0]->id_ccomprobantes;
 	                $_nombre_tipo_comprobantes     =$resultSetCabeza[0]->nombre_tipo_comprobantes;
 	                $_concepto_ccomprobantes     =$resultSetCabeza[0]->concepto_ccomprobantes;
 	                $_nombre_usuarios     =$resultSetCabeza[0]->nombre_usuarios;
@@ -570,7 +575,7 @@ class ReporteComprobanteController extends ControladorBase{
 	                
 	                
 	                $resultSetDetalle=$dcomprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
-	                
+	              
 	                $html.= '<table style="width:100%;" class="headertable">';
 	                $html.= '<tr >';
 	                $html.= '<td style="background-repeat: no-repeat;	background-size: 10% 100%;	background-image: url(http://192.168.1.231/rp_c/view/images/Logo-Capremci-h-170.jpg); 
@@ -620,21 +625,20 @@ class ReporteComprobanteController extends ControladorBase{
 	                
 	                $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
 	                $html.= "<tr>";
-	                $html.='<th colspan="12" style="text-align: left; height:30px; font-size: 13px;" ><b>&nbsp;CONCEPTO: </b>'.$_concepto_ccomprobantes.'';
+	                $html.='<td colspan="12" style="text-align: left; height:30px; font-size: 10px;" ><b>CONCEPTO: </b>'.$_concepto_ccomprobantes.'</td>';
 	                $html.="</tr>";
 	                
 	                if(!empty($resultSetDetalle)){
+	                    
 	                  
 	                    $html.= "<tr>";
-	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Centro</th>';
-	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Cuenta</th>';
-	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Descripción</th>';
-	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">NIM</th>';
-	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Debe</th>';
-	                    $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Haber</th>';
+	                    $html.='<th colspan="3" style="text-align: center; font-size: 11px;">Código</th>';
+	                    $html.='<th colspan="3" style="text-align: center; font-size: 11px;">Cuenta</th>';
+	                    $html.='<th colspan="3" style="text-align: center; font-size: 11px;">Debe</th>';
+	                    $html.='<th colspan="3" style="text-align: center; font-size: 11px;">Haber</th>';
 	                    $html.='</tr>';
 	                    
-	                    $i=0; $valor_total_db1=0; $valor_total_vista=0;
+	                    $i=0; $valor_total_vista=0; $valor_total_vista1=0;
 	                    
 	                    
                     foreach ($resultSetDetalle as $res){
@@ -646,34 +650,45 @@ class ReporteComprobanteController extends ControladorBase{
 	                    
                        $html.= "<tr>";
 	                 
-    	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
-    	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->codigo_plan_cuentas.'</td>';
-    	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
-    	                $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->descripcion_dcomprobantes.'</td>';
-    	                $html.='<td colspan="2" style="text-align: right; font-size: 13px;">'.$res->debe_dcomprobantes.'</td>';
-    	                $html.='<td colspan="2" style="text-align: right; font-size: 13px;">'.$res->haber_dcomprobantes.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 10px;">'.$res->codigo_plan_cuentas.'</td>';
+                        $html.='<td colspan="3" style="text-align: left; font-size: 10px;">'.$res->nombre_plan_cuentas.'</td>';
+                        $html.='<td colspan="3" style="text-align: right; font-size: 10px;">'.number_format($res->debe_dcomprobantes, 2, '.', ',').'</td>';
+                        $html.='<td colspan="3" style="text-align: right; font-size: 10px;">'.number_format($res->haber_dcomprobantes, 2, '.', ',').'</td>';
     	                $html.='</tr>';
     	                $valor_total_db=0;
     	                $valor_total_db1=0;
 	                
 	                }
-	             
-	                    $valor_total_vista1 = $valor_total_vista= number_format($valor_total_vista, 2, '.', ',');	 
+	                    $valor_total_vista = $valor_total_vista= number_format($valor_total_vista, 2, '.', ',');
+	                    $valor_total_vista1 = $valor_total_vista1= number_format($valor_total_vista1, 2, '.', ',');	 
 	                    
-    	                $html.='</table>';
-    	                $html.='<p style="text-align: left; font-size: 13px;"><b>&nbsp; PICHINCHA CH Nº: </b>'.$_numero_cheque_ccomprobantes.' &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>COTZ:</b> '.$_retencion_ccomprobantes.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>TOTAL:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$valor_total_vista1.'';
+	                    $html.= "<tr>";
+	                    $html.='<td colspan="3" style="text-align: left; font-size: 10px;"></td>';
+	                    $html.='<td colspan="3" style="text-align: left; font-size: 10px;"></td>';
+	                    $html.='<td colspan="3" style="text-align: right; font-size: 10px;">'.$valor_total_vista.'</td>';
+	                    $html.='<td colspan="3" style="text-align: right; font-size: 10px;">'.$valor_total_vista1.'</td>';
+	                    $html.='</tr>';
+	                    
+	                    
+	                    $html.='</table>';
+	                
+	                    
+	                    
+	                    
+	                    
+    	                
     	                $html.="<table style='width: 100%; margin-top:50px;' border=1 cellspacing=0>";
     	                $html.='<tr>';
-    	                $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Elaborado por:</th>';
-    	                $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Es Conforme:</th>';
-    	                $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Visto Bueno:</th>';
-    	                $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Recibi Conforme:</th>';
+    	                $html.='<th colspan="4" style="text-align:center; font-size: 11px;">Elaborado por:</th>';
+    	                $html.='<th colspan="4" style="text-align:center; font-size: 11px;">Es Conforme:</th>';
+    	                $html.='<th colspan="2" style="text-align:center; font-size: 11px;">Visto Bueno:</th>';
+    	                $html.='<th colspan="2" style="text-align:center; font-size: 11px;">Recibi Conforme:</th>';
     	                $html.='</tr>';
     	                $html.='<tr>';
-    	                $html.='<td colspan="4" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">'.$_nombre_usuarios.'</td>';
-    	                $html.='<td colspan="4" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">CONTADOR</td>';
-    	                $html.='<td colspan="2" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">GERENTE</td>';
-    	                $html.='<td colspan="2" style="text-align:center; font-size: 13px; height:70px;" valign="bottom;">---------------------------</td>';
+    	                $html.='<td colspan="4" style="text-align:center; font-size: 10px; height:70px;" valign="bottom;">'.$_nombre_usuarios.'</td>';
+    	                $html.='<td colspan="4" style="text-align:center; font-size: 10px; height:70px;" valign="bottom;">CONTADOR</td>';
+    	                $html.='<td colspan="2" style="text-align:center; font-size: 10px; height:70px;" valign="bottom;">GERENTE</td>';
+    	                $html.='<td colspan="2" style="text-align:center; font-size: 10px; height:70px;" valign="bottom;">---------------------------</td>';
     	                
     	                $html.='</tr>';
     	                $html.='</table>';
@@ -683,7 +698,7 @@ class ReporteComprobanteController extends ControladorBase{
 	                
 	            }
 	            
-	          
+	        
 	            
 	            $this->report("Comprobante",array( "resultSet"=>$html));
 	            die();

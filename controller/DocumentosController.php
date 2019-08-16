@@ -97,7 +97,7 @@
 	        
 	        if(!empty($search)){
 	            
-	            $where1=" AND (cliente_proveedor.ruc_cliente_proveedor LIKE '".$search."%' OR cliente_proveedor.nombre_cliente_proveedor LIKE '".$search."%' OR carton_documentos.numero_carton_documentos LIKE '".$search."%' OR documentos_legal.numero_poliza_documentos_legal LIKE '".$search."%' OR documentos_legal.ramo_documentos_legal LIKE '".$search."%' OR documentos_legal.ciudad_emision_documentos_legal LIKE '".$search."%')";
+	            $where1=" AND (cliente_proveedor.ruc_cliente_proveedor LIKE '".$search."%' OR cliente_proveedor.nombre_cliente_proveedor LIKE '".$search."%' OR carton_documentos.numero_carton_documentos LIKE '".$search."%' OR documentos_legal.numero_poliza_documentos_legal LIKE '".$search."%' OR documentos_legal.ramo_documentos_legal LIKE '".$search."%' OR documentos_legal.ciudad_emision_documentos_legal LIKE '".$search."%' OR tipo_documentos.nombre_tipo_documentos LIKE '".$search."%' OR documentos_legal.numero_credito_documentos_legal LIKE '".$search."%')";
 	            
 	            $where_to=$where.$where1;
 	        }else{
@@ -143,7 +143,7 @@
 	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo Documentos</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Cliente/Proveedor</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Cartón Documentos</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Número</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Número de Crédito</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Monto Documento</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Valor Documento</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha de Subida</th>';

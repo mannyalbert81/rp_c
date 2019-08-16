@@ -1155,7 +1155,7 @@ class RevisionCreditosController extends ControladorBase{
                     '$_total_cuentas_pagar',
                     'cero',
                     '$_fecha_cuentas_pagar',
-                    null,
+                    '3',
                     '',
                     '',
                     '',

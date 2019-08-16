@@ -105,6 +105,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    $tipoPeticion = (isset($_POST['peticion'])) ? $_POST['peticion'] : "";	
 	    $idModulos = (isset($_POST['id_modulos'])) ? $_POST['id_modulos'] : null;
 	    
+	    //$mes_letras = date('n')
 	   
 	    if(empty($idTipoProcesos)){
 	        echo '<message>Datos no recibidos<message>';
@@ -137,6 +138,11 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                $conceptoDiario.=" Provisiones";
 	                break;
 	            case "9":
+	                $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
+	                $cantidad = sizeof($arrayTabla);
+	                $conceptoDiario.=" Activos Fijos";
+	                break;
+	            case "10":
 	                $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
 	                $cantidad = sizeof($arrayTabla);
 	                $conceptoDiario.=" Activos Fijos";
@@ -214,7 +220,20 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                    }
 	                }
 	                
-	                //para la mayorizacion
+	                
+	                //aqui para la mayorizacion	                
+	                $funcionMayoriza = "con_ins_mayoriza";
+	                $parametrosMayoriza = "'$id_comprobante','$fechaDiario'";
+	                $consultaPG = $Participes->getconsultaPG($funcionMayoriza, $parametrosMayoriza);
+	                $ResultMayoriza = $Participes->llamarconsultaPG($consultaPG);
+	                $error = "";	                
+	                $error = pg_last_error();
+	                if( !empty($error) || (int)$ResultMayoriza[0] <= 0){
+	                    $Participes->endTran();
+	                    throw new Exception("Error Mayorizacion");
+	                }
+	                	                
+	                //para el cuadre plan_cuentas
 	                $funcionMayor = "fn_cuadra_plan_cuentas";
 	                foreach ($arrayTabla as $res){
 	                    $_id_plan_cuentas = $res['id_plan_cuentas'];	                   
@@ -243,7 +262,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                
 	            } catch (Exception $ex) {
 	                
-	                $Participes->endTran();
+	               
 	                echo '<message> Error Procesos '.$ex->getMessage().' <message>';
 	                
 	            }	            
@@ -258,7 +277,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	            
 	    }else{
 	        
-	        $_id_comprobante_consulta = $rsHistorial[0]->id_ccomprobantes;
+	        $_id_comprobante_consulta = $rsHistorial[0]->id_ccomprobantes;          
 	        
 	        echo json_encode(array('valor'=>2,'id_ccomprobantes'=>$_id_comprobante_consulta)); die();
 	    }

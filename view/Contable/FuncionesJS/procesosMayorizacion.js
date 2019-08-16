@@ -102,6 +102,7 @@ $("#btnDetalles").on("click",function(event){
 		 //console.log(x)
 		 $divResultados.html(x.tabladatos);
 		 setTableStyle("tbl_detalle_diario");
+		 
 	 }).fail(function(xhr,status,error){
 		 let err = xhr.responseText;
 		 console.log(err);

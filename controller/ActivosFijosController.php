@@ -1184,7 +1184,7 @@ class ActivosFijosController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND (nombre_activos_fijos LIKE '".$search."%' OR nombres_empleados LIKE '".$search."%' OR nombre_oficina LIKE '".$search."%')";
+                $where1=" AND (nombre_activos_fijos LIKE '".$search."%' OR nombres_empleados LIKE '".$search."%' OR nombre_oficina LIKE '".$search."%' OR codigo_activos_fijos LIKE '".$search."%')";
                 
                 $where_to=$where.$where1;
             }else{

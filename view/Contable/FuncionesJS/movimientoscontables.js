@@ -103,3 +103,73 @@ $("#div_movimientos").on('click','#genera_excel',function(){
     document.body.removeChild(form);
 	
 })
+
+$("#div_movimientos").on('click','#visualizarArchivo',function(){
+	
+	let $modal = $("#mod_movimientos_cont");	
+	$modal.modal("show");
+	let $divResultados = $modal.find("#mod_div_resultados");
+	let _anio_movimientos = $('#anio_movimientos').val();
+	let _mes_movimientos = $('#mes_movimientos').val();
+	$divResultados.html('');
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=MovimientosContable&action=VisualizaDatos",
+		type:"POST",
+		dataType:"json",
+		data:{mes_movimientos:_mes_movimientos,anio_movimientos:_anio_movimientos}
+	}).done(function(x){
+		
+		//console.log(x);
+			
+		if( x.hasOwnProperty('error') && x.error != '' ){
+			
+		}
+		if( x.hasOwnProperty('tabla_datos') && x.tabla_datos != '' ){
+			
+			$divResultados.html(x.tabla_datos);
+			setTableStyle(x.nombre_tabla);
+		}
+		
+		
+		
+	}).fail(function(xhr,status,error){
+		let err = xhr.responseText;
+		console.log(err);
+	})
+
+	function setTableStyle(ObjTabla){	
+		
+		$("#"+ObjTabla).DataTable({
+			paging: true,
+	        scrollX: true,
+			searching: true,
+	        pageLength: 5,
+	        rowHeight: 'auto',
+	        responsive: true,
+	        "lengthMenu": [[5,10, 25, 50, 100, -1], [5,10, 25, 50, 100, "All"]],
+	        dom: '<"html5buttons">lfrtipB',      
+	        buttons: [ ],
+	        language: {
+	            "emptyTable": "No hay información",
+	            "info": "Mostrando _START_ a _END_ de _TOTAL_ Registros",
+	            "infoEmpty": "Mostrando 0 de 0 de 0 Registros",           
+	            "lengthMenu": "Mostrar _MENU_ Registros",
+	            "loadingRecords": "Cargando...",
+	            "processing": "Procesando...",
+	            "search": "Buscar:",
+	            "zeroRecords": "Sin resultados encontrados",
+	            "paginate": {
+	                "first": "Primero",
+	                "last": "Ultimo",
+	                "next": "Siguiente",
+	                "previous": "Anterior"
+	            }
+	        }
+
+	    });
+	}
+	
+	
+})

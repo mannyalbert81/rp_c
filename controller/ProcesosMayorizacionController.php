@@ -6,8 +6,6 @@ class ProcesosMayorizacionController extends ControladorBase{
 		parent::__construct();
 	}
 
-
-
 	public function index(){
 	
      	$estados=new EstadoModel();     	
@@ -30,9 +28,10 @@ class ProcesosMayorizacionController extends ControladorBase{
 			    $tabModulos = " public.modulos
         			    INNER JOIN public.core_tipo_procesos
         			    ON core_tipo_procesos.id_modulos = modulos.id_modulos ";
-			    $wheModulos = " 1 = 1 ";
+			    $wheModulos = " 1 = 1 AND diarios_tipo_procesos = 't' ";
 			    $gruModulos = " modulos.id_modulos, modulos.nombre_modulos ";
 			    $idModulos = " modulos.nombre_modulos ";
+			    
 			    
 			    $rsModulos = $estados->getCondiciones_grupo($colModulos,$tabModulos,$wheModulos,$gruModulos,$idModulos);
 			    
@@ -120,9 +119,9 @@ class ProcesosMayorizacionController extends ControladorBase{
                 AND mes_historial_diarios_tipo = $mesDiario";
 	    $idHistorial = "id_historial_diarios_tipo"; 
 	    $rsHistorial = $Participes->getCondiciones($colHistorial, $tabHistorial, $wheHistorial, $idHistorial);
-	    
+	    	    
 	    if(empty($rsHistorial)){
-	        
+	        	        
 	        $arrayTabla = array();
 	        $cantidad = 0;
 	        $conceptoDiario = "Proceso Mensual";
@@ -244,12 +243,14 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                
 	            } catch (Exception $ex) {
 	                
+	                $Participes->endTran();
 	                echo '<message> Error Procesos '.$ex->getMessage().' <message>';
 	                
 	            }	            
 	            
 	            die();
 	        }else{
+	            
 	            echo 'peticion no solicitada';
 	            die();
 	        }
@@ -745,22 +746,21 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        session_start();
 	    }
 	    
-	    
 	    $Credito = new CreditosModel();
 	    
 	    require_once 'core/DB_Functions.php';
 	    $db = new DB_Functions();
 	    
-	    $id_creditos = (isset($_POST['id_creditos'])) ? $_POST['id_creditos'] : ( $paramIdCredito > 1 ? $paramIdCredito : null );
+	    $id_creditos = $paramIdCredito;
 	    
 	    if(is_null($id_creditos)){
 	        echo '<message> parametros no recibidos <message>';
-	        return;	        
+	        return;
 	    }
-	        
+	    
 	    try {
-	                
-	       
+	        
+	        
 	        $Credito->beginTran();
 	        
 	        //creacion de lote
@@ -776,7 +776,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $error = "";
 	        $error = pg_last_error();
 	        if (!empty($error) || (int)$ResultLote[0] <= 0){
-	           throw new Exception('error ingresando lote');
+	            throw new Exception('error ingresando lote');
 	        }
 	        
 	        $_id_lote = (int)$ResultLote[0];
@@ -832,7 +832,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $_id_bancos = 2 ; //seteado para presentacion luego va con deacuerdo el credito
 	        
 	        //datos Cuenta por pagar
-	        $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito ";
+	        $_descripcion_cuentas_pagar = ""; //se llena mas adelante
 	        $_fecha_cuentas_pagar = date('Y-m-d');
 	        $_condiciones_pago_cuentas_pagar = "";
 	        $_num_documento_cuentas_pagar = "";
@@ -850,11 +850,12 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $_tarjeta_credito_cuentas_pagar = 0.00;
 	        $_condonaciones_cuentas_pagar = 0.00;
 	        $_saldo_cuentas_pagar = 0.00;
-	        $_id_cuentas_pagar = 0;	        
+	        $_id_cuentas_pagar = 0;
 	        
 	        /*valores para cuenta por pagar*/
 	        //busca datos de credito
-	        $queryCredito = "SELECT cc.id_creditos, cc.monto_otorgado_creditos, cc.monto_neto_entregado_creditos, cc.saldo_actual_creditos,
+	        $queryCredito = "SELECT cc.id_creditos, cc.monto_otorgado_creditos, cc.monto_neto_entregado_creditos,
+                      cc.saldo_actual_creditos, cc.numero_creditos,
 		              ctc.id_tipo_creditos, ctc.nombre_tipo_creditos, ctc.codigo_tipo_creditos
                     FROM core_creditos cc
                     INNER JOIN core_tipo_creditos ctc
@@ -866,6 +867,9 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $monto_credito = 0;
 	        $monto_entregado_credito = 0;
 	        $id_tipo_credito = 0;
+	        $numero_credito = !empty($ResultCredito) ? $ResultCredito[0]->numero_creditos : 0 ; 
+	        
+	        $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito CREDITO $numero_credito ";
 	        
 	        foreach ($ResultCredito as $res){
 	            $codigo_credito=$res->codigo_tipo_creditos;
@@ -899,13 +903,15 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                $queryDistribucion = "INSERT INTO tes_distribucion_cuentas_pagar
                         (id_lote,id_plan_cuentas,tipo_distribucion_cuentas_pagar,debito_distribucion_cuentas_pagar,credito_distribucion_cuentas_pagar,ord_distribucion_cuentas_pagar,referencia_distribucion_cuentas_pagar)
                         VALUES ( '$_id_lote','$res->id_plan_cuentas_debe','COMPRA','0.00','$monto_entregado_credito','$iorden','$_descripcion_cuentas_pagar')";
+	                
 	                $iorden = $iorden + 2;
 	                $ResultDistribucion = $Credito -> executeNonQuery($queryDistribucion);
 	                $error = "";
-	                $error = pg_last_error() || error_get_last()['message'];
+	                $error ="";
+	                $error = pg_last_error();
 	                if(!empty($error) || $ResultDistribucion <= 0 )
-	                    throw new Exception('error distribucion cuentas pagar');
-	            }	            
+	                    throw new Exception('error distribucion cuentas pagar debe   '.$error);
+	            }
 	            
 	            foreach ($ResultParametrizacion as $res){
 	                $iorden = 2;
@@ -915,20 +921,22 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                $iorden = $iorden + 2;
 	                $ResultDistribucion = $Credito -> executeNonQuery($queryDistribucion);
 	                $error = "";
-	                $error = pg_last_error() || error_get_last()['message'];
+	                $error = pg_last_error();
 	                if(!empty($error) || $ResultDistribucion <= 0 )
-	                    throw new Exception('error distribucion cuentas pagar');	            }
+	                    throw new Exception('error distribucion cuentas pagar haber');
+	            }
+	            
 	            
 	            
 	            
 	            switch ($codigo_credito){
 	                case "EME":
-	                    $_descripcion_cuentas_pagar .= "EMERGENTE";
+	                    $_descripcion_cuentas_pagar .= " Tipo EMERGENTE";
 	                    
 	                    break;
 	                case "ORD":
 	                    
-	                    $_descripcion_cuentas_pagar .= "ORDINARIO";
+	                    $_descripcion_cuentas_pagar .= "Tipo ORDINARIO";
 	                    break;
 	            }
 	        }
@@ -944,17 +952,17 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        
 	        $consultaCuentasPagar = $Credito->getconsultaPG($funcionCuentasPagar, $paramCuentasPagar);
 	        $ResultCuentaPagar = $Credito -> llamarconsultaPG($consultaCuentasPagar);
-	        	        
+	        
 	        $error = "";
-	        $error = pg_last_error() || error_get_last()['message'];
+	        $error = pg_last_error();
 	        if(!empty($error) || $ResultCuentaPagar[0] <= 0 )
 	            throw new Exception('error inserccion cuentas pagar');
-	        
-            // secuencial de cuenta por pagar
-            $_id_cuentas_pagar = $ResultCuentaPagar[0];
-	        	        
-	        $funcionComprobante = "tes_agrega_comprobante_cuentas_pagar";
-	        $parametrosComprobante = "
+	            
+	            // secuencial de cuenta por pagar
+	            $_id_cuentas_pagar = $ResultCuentaPagar[0];
+	            
+	            $funcionComprobante = "tes_agrega_comprobante_cuentas_pagar";
+	            $parametrosComprobante = "
                     '$_id_usuarios',
                     '$_id_lote',
                     '$_id_proveedor',
@@ -969,82 +977,83 @@ class ProcesosMayorizacionController extends ControladorBase{
                     '',
                     ''
                     ";
-	        
-	        $consultaComprobante = $Credito ->getconsultaPG($funcionComprobante, $parametrosComprobante);
-	        $resultadComprobantes = $Credito->llamarconsultaPG($consultaComprobante);
-	        
-	        $error = "";
-	        $error = pg_last_error() || error_get_last()['message'];
-	        if(!empty($error) || $resultadComprobantes[0] <= 0 )
-	            throw new Exception('error inserccion cuentas pagar');
-	        
-            // secuencial de comprobante
-            $_id_ccomprobantes = $resultadComprobantes[0];
-	        
-	        //se actualiza la cuenta por pagar con la relacion al comprobante
-	        $columnaCxP = "id_ccomprobantes = $_id_ccomprobantes ";
-	        $tablasCxP = "tes_cuentas_pagar";
-	        $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
-	        $UpdateCuentasPagar = $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
-	        
-	        //se actualiza el credito con su comprobante
-	        $columnaCre = "id_ccomprobantes = $_id_ccomprobantes ";
-	        $tablasCre = "core_creditos";
-	        $whereCre = "id_creditos = $id_creditos";
-	        $UpdateCredito= $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
-	        
-	        //para actualizar la forma de pago en cuentas por pagar
-	        //--buscar 	        
-	        $queryBuscaFormaPago = "SELECT id_creditos,numero_creditos FROM core_creditos WHERE id_creditos = $id_creditos";
-	        $RsCreditoPago = $Credito -> enviaquery($queryBuscaFormaPago);
-	        $numero_de_credito = $RsCreditoPago[0]->numero_creditos;
-	        
-	        $columnas="id_solicitud_prestamo,nombre_banco_cuenta_bancaria,tipo_pago_cuenta_bancaria,numero_cuenta_cuenta_bancaria,tipo_cuenta_cuenta_bancaria";
-	        $tabla="solicitud_prestamo";
-	        $where="identificador_consecutivos='".$numero_de_credito."'";
-	        $RsSolicitud = $db->getCondiciones($columnas, $tabla, $where);
-	        $_sol_nombre_banco = $RsSolicitud[0]->nombre_banco_cuenta_bancaria;
-	        $_sol_tipo_pago = $RsSolicitud[0]->tipo_pago_cuenta_bancaria;
-	        $_sol_numero_cuenta = $RsSolicitud[0]->numero_cuenta_cuenta_bancaria;
-	        $_sol_tipo_cuenta_banco = $RsSolicitud[0]->tipo_cuenta_cuenta_bancaria;
-	       
-	        $_id_forma_pago = null;
-	        $queryFormaPago="";
-	        switch ($_sol_tipo_pago){	            
-	            case "Depósito":
-	                $queryFormaPago = "SELECT * FROM forma_pago WHERE nombre_forma_pago = 'TRANSFERENCIA'";
-	                break;
-	            case "Retira Cheque":
-	                $queryFormaPago = "SELECT * FROM forma_pago WHERE nombre_forma_pago = 'CHEQUE'";
-	                break;	                
-	        }
-	        
-	        $rsFormaPago = $Credito->enviaquery($queryFormaPago);
-	        $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
-	        
-	        $columnaPago = "id_forma_pago = $_id_forma_pago ";
-	        $tablasPago = "tes_cuentas_pagar";
-	        $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
-	        $UpdateFormaPago= $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
-	        
-	        //para realizar cambios de participe en proveedores
-	        $_id_tipo_cuenta = "1";
-	        if($_sol_tipo_cuenta_banco == "Corriente"){ $_id_tipo_cuenta = 1;}
-	        if($_sol_tipo_cuenta_banco == "Ahorros"){ $_id_tipo_cuenta = 2;}
-	        
-	        $columnaProveedores = "numero_cuenta_proveedores ='$_sol_numero_cuenta', id_tipo_cuentas = '$_id_tipo_cuenta' ";
-	        $tablasProveedores = "proveedores";
-	        $whereProveedores = "id_proveedores = $_id_proveedor";
-	        $UpdateProveedores = $Credito -> ActualizarBy($columnaProveedores, $tablasProveedores, $whereProveedores);
-	       
-	        $Credito->endTran('COMMIT');
-	        echo 'OK';
-	        
+	            
+	            $consultaComprobante = $Credito ->getconsultaPG($funcionComprobante, $parametrosComprobante);
+	            $resultadComprobantes = $Credito->llamarconsultaPG($consultaComprobante);
+	            
+	            $error = "";
+	            $error = pg_last_error();
+	            if(!empty($error) || $resultadComprobantes[0] <= 0 )
+	                throw new Exception('error inserccion cuentas pagar');
+	                
+	                // secuencial de comprobante
+	                $_id_ccomprobantes = $resultadComprobantes[0];
+	                
+	                //se actualiza la cuenta por pagar con la relacion al comprobante
+	                $columnaCxP = "id_ccomprobantes = $_id_ccomprobantes ";
+	                $tablasCxP = "tes_cuentas_pagar";
+	                $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
+	                $UpdateCuentasPagar = $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
+	                
+	                //se actualiza el credito con su comprobante
+	                $columnaCre = "id_ccomprobantes = $_id_ccomprobantes ";
+	                $tablasCre = "core_creditos";
+	                $whereCre = "id_creditos = $id_creditos";
+	                $UpdateCredito= $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
+	                
+	                //para actualizar la forma de pago en cuentas por pagar
+	                //--buscar
+	                $queryBuscaFormaPago = "SELECT id_creditos,numero_creditos FROM core_creditos WHERE id_creditos = $id_creditos";
+	                $RsCreditoPago = $Credito -> enviaquery($queryBuscaFormaPago);
+	                $numero_de_credito = $RsCreditoPago[0]->numero_creditos;
+	                
+	                $columnas="id_solicitud_prestamo,nombre_banco_cuenta_bancaria,tipo_pago_cuenta_bancaria,numero_cuenta_cuenta_bancaria,tipo_cuenta_cuenta_bancaria";
+	                $tabla="solicitud_prestamo";
+	                $where="identificador_consecutivos='".$numero_de_credito."'";
+	                $RsSolicitud = $db->getCondiciones($columnas, $tabla, $where);
+	                $_sol_nombre_banco = $RsSolicitud[0]->nombre_banco_cuenta_bancaria;
+	                $_sol_tipo_pago = $RsSolicitud[0]->tipo_pago_cuenta_bancaria;
+	                $_sol_numero_cuenta = $RsSolicitud[0]->numero_cuenta_cuenta_bancaria;
+	                $_sol_tipo_cuenta_banco = $RsSolicitud[0]->tipo_cuenta_cuenta_bancaria;
+	                
+	                $_id_forma_pago = null;
+	                $queryFormaPago="";
+	                switch ($_sol_tipo_pago){
+	                    case "Depósito":
+	                        $queryFormaPago = "SELECT * FROM forma_pago WHERE nombre_forma_pago = 'TRANSFERENCIA'";
+	                        break;
+	                    case "Retira Cheque":
+	                        $queryFormaPago = "SELECT * FROM forma_pago WHERE nombre_forma_pago = 'CHEQUE'";
+	                        break;
+	                }
+	                
+	                $rsFormaPago = $Credito->enviaquery($queryFormaPago);
+	                $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
+	                
+	                $columnaPago = "id_forma_pago = $_id_forma_pago ";
+	                $tablasPago = "tes_cuentas_pagar";
+	                $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
+	                $UpdateFormaPago= $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
+	                
+	                //para realizar cambios de participe en proveedores
+	                $_id_tipo_cuenta = "1";
+	                if($_sol_tipo_cuenta_banco == "Corriente"){ $_id_tipo_cuenta = 1;}
+	                if($_sol_tipo_cuenta_banco == "Ahorros"){ $_id_tipo_cuenta = 2;}
+	                
+	                $columnaProveedores = "numero_cuenta_proveedores ='$_sol_numero_cuenta', id_tipo_cuentas = '$_id_tipo_cuenta' ";
+	                $tablasProveedores = "proveedores";
+	                $whereProveedores = "id_proveedores = $_id_proveedor";
+	                $UpdateProveedores = $Credito -> ActualizarBy($columnaProveedores, $tablasProveedores, $whereProveedores);
+	                
+	                
+	                $Credito->endTran('COMMIT');
+	                return 'OK';
+	                
 	    } catch (Exception $e) {
 	        
-	        $Credito->endTran();	        
-	        echo '<message>'.$e->getMessage().'<message>';
-	    }   
+	        $Credito->endTran();
+	        return $e->getMessage();
+	    }
 	    
 	    
 	}

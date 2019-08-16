@@ -191,7 +191,7 @@ class TransferenciasController extends ControladorBase{
         $_id_pagos = (int)$ResulatadoPago[0];
         
         //Datos para Comprobante
-        $_concepto_comprobante = " TRANSACCION DE ".$_nombre_cuenta_banco.". TRANSFERENCIA A .".$_nombre_participes." ".$_apellidos_participes.". DEL CREDITO $_numero_credito ";
+        $_concepto_comprobante = " TRANSACCION TRANSFERENCIA A .".$_nombre_participes." ".$_apellidos_participes.". DEL CREDITO $_numero_credito ";
         $valor_letras_pago = $CuentasPagar->numtoletras($_total_cuentas_pagar);
         $funcionComprobante = "tes_agrega_comprobante_pago_transferencia";
         $parametrosComprobante = "'$_id_usuario',
@@ -211,8 +211,6 @@ class TransferenciasController extends ControladorBase{
                         '$_concepto_comprobante'";
             	        
         $consultaComprobante = $CuentasPagar->getconsultaPG($funcionComprobante, $parametrosComprobante);
-        //echo $consultaComprobante; die();
-        
         $ResulatadoComprobante = $CuentasPagar->llamarconsultaPG($consultaComprobante);
         
         $_id_comprobante = $ResulatadoComprobante[0];
@@ -220,70 +218,28 @@ class TransferenciasController extends ControladorBase{
         $columnaPago = "id_ccomprobantes = $_id_comprobante ";
         $tablasPago = "tes_pagos";
         $wherePago = "id_pagos = $_id_pagos";
-        $Update_tes_pago = $CuentasPagar -> ActualizarBy($columnaPago, $tablasPago, $wherePago);	    
+        $Update_tes_pago = $CuentasPagar -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
+        
+        /*actualizacion de Cuenta por pagar*/
+        //buscar estado de cuentas por pagar
+        $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
+        $rsEstado = $CuentasPagar -> enviaquery($queryEstado);
+        $_id_estado = $rsEstado[0]->id_estado;
+        $rsActualizacionCuentaPagar = $CuentasPagar->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
+        
+        /*para enviara a celular*/
+        $_celular_mensaje = "0987968467";
+        $_nombres_mensajes = $_nombre_participes." ".$_apellidos_participes;
+        $_num_cuenta = "XXXXXX".substr($_numero_cuenta_banco, 6);
+        $_codigo_mensajes = str_replace(' ','_',$_num_cuenta.'-'.$_nombre_cuenta_banco);
+        $_id_mensaje_mensajes = "22443";
+        $this->comsumir_mensaje_plus($_celular_mensaje, $_nombres_mensajes, $_codigo_mensajes, $_id_mensaje_mensajes);
 	   
 	    echo json_encode(array('respuesta'=>1,'mensaje'=>'TRANSACCION REALIZADA'));
 	    
 	}
 	
-	public function indexCheque(){
-	    
-	    session_start();
-	    
-	    $cuentasPagar = new CuentasPagarModel();
-	    
-	    $_id_usuarios = (isset($_SESSION['id_usuarios'])) ? $_SESSION['id_usuarios'] : null;
-	    
-	    if( !isset($_GET['id_cuentas_pagar']) ){
-	        
-	        $this->redirect("Pagos","index");
-	        exit();
-	    }
-	    	    
-	    $_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
-	    
-	    $datos=null;
-	    $datos['id_cuentas_pagar'] = $_id_cuentas_pagar;
-	    
-	    $query = "SELECT l.id_lote, l.nombre_lote, cp.id_cuentas_pagar, cp.numero_cuentas_pagar, cp.descripcion_cuentas_pagar, cp.fecha_cuentas_pagar, 
-                    cp.compras_cuentas_pagar, cp.total_cuentas_pagar, p.id_proveedores, p.nombre_proveedores, p.identificacion_proveedores,
-                    b.id_bancos, b.nombre_bancos, m.id_moneda, m.signo_moneda || '-' || m.nombre_moneda AS moneda
-                FROM tes_cuentas_pagar cp
-                INNER JOIN tes_lote l        
-                ON cp.id_lote = l.id_lote
-                INNER JOIN proveedores p
-                ON p.id_proveedores = cp.id_proveedor
-                INNER JOIN tes_bancos b
-                ON b.id_bancos = cp.id_banco
-                INNER JOIN tes_moneda m
-                ON m.id_moneda = cp.id_moneda
-                WHERE 1 = 1
-                AND cp.id_cuentas_pagar = $_id_cuentas_pagar ";
-	    
-	    $rsCuentasPagar = $cuentasPagar->enviaquery($query);
-	    
-	    // PARA BUSCAR CONSECUTIVO DE PAGO 
-	    
-	    $queryConsecutivo = "SELECT numero_consecutivos FROM consecutivos WHERE nombre_consecutivos = 'PAGOS' AND id_entidades = 1";
-	    
-	    $rsConsecutivos = $cuentasPagar->enviaquery($queryConsecutivo);
-	    
-	    //para buscar cheque
-	    $queryBanco = "SELECT id_bancos, lpad(index_bancos::text,espacio_bancos,'0') numero_cheque 
-                FROM tes_bancos ban
-                INNER JOIN tes_cuentas_pagar cp
-                ON ban.id_bancos = cp.id_banco
-                WHERE id_cuentas_pagar = $_id_cuentas_pagar";
-        
-	    $rsBanco= $cuentasPagar->enviaquery($queryBanco);
-	    
-	    $this->view_tesoreria("GenerarCheque",array(
-	        "resultSet"=>$rsCuentasPagar,"rsConsecutivos"=>$rsConsecutivos,"datos"=>$datos,"rsBanco"=>$rsBanco
-	    ));
-	    
-	}
-	
-	
+		
 	public function paginate($reload, $page, $tpages, $adjacents, $funcion = "") {
 	    
 	    $prevlabel = "&lsaquo; Prev";
@@ -484,5 +440,68 @@ class TransferenciasController extends ControladorBase{
 	    
 	    echo json_encode($respuesta);
 	}
+	
+	
+	public function comsumir_mensaje_plus($celular, $nombres, $codigo, $id_mensaje){
+	    
+	   /*si mensaje es para transferencia el id_mensaje = 22443
+	    
+	    --$nombres = poner el nombre unidos por guion bajo
+	    --$codigo = # cuenta y banco unidos por guion bajo	    
+	    --si mensaje es para cheque el id_mensaje = 22451
+	    
+	    --$nombres = poner el nombre unidos por guion bajo
+	    --$codigo = enviar vacio;*/
+	    
+	    
+	    $cadena_recortada ="";
+	    $nombres_final="";
+	    $mensaje_retorna="";
+	    
+	    // quito el primero 0
+	    $celular_final=ltrim($celular, "0");
+	    
+	    // relleno espacios en blanco por _
+	    $nombres_final= str_replace(' ','_',$nombres);
+	    // $nombres_final= str_replace('Ñ','N',$nombres);
+	    // genero codigo de verificacion
+	    
+	    
+	    $variables="";
+	    $variables.="<pedido>";
+	    
+	    $variables.="<metodo>SMSEnvio</metodo>";
+	    $variables.="<id_cbm>767</id_cbm>";
+	    $variables.="<token>yPoJWsNjcThx2o0I</token>";
+	    $variables.="<id_transaccion>2002</id_transaccion>";
+	    $variables.="<telefono>$celular_final</telefono>";
+	    
+	    // poner el id_mensaje parametrizado en el sistema
+	    
+	    $variables.="<id_mensaje>$id_mensaje</id_mensaje>";
+	    
+	    // poner 1 si va con variables
+	    // poner 0 si va sin variables y sin la etiquetas datos
+	    $variables.="<dt_variable>1</dt_variable>";
+	    $variables.="<datos>";
+	    
+	    
+	    /// el numero de valores va dependiendo del mensaje si usa 1 o 2 variables.
+	    $variables.="<valor>$nombres_final</valor>";
+	    if (!empty($codigo)){
+	        $variables.="<valor>$codigo</valor>";
+	    }
+	    $variables.="</datos>";
+	    $variables.="</pedido>";
+	    
+	    
+	    $SMSPlusUrl = "https://smsplus.net.ec/smsplus/ws/mensajeria.php?xml={$variables}";
+	    $ResponseData = file_get_contents($SMSPlusUrl);
+	    
+	    
+	    $xml = simplexml_load_string($ResponseData);
+	    
+	}
+	
 }
 ?>

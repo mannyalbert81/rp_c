@@ -287,7 +287,7 @@
     
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>    
-    <script type="text/javascript" src="view/Activos/js/activosFijos.js?1.5"></script>
+    <script type="text/javascript" src="view/Activos/js/activosFijos.js?1.7"></script>
 	
     <script type="text/javascript" >   
     

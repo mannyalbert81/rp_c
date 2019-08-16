@@ -452,7 +452,7 @@ class ReporteComprobanteController extends ControladorBase{
 	public function  generar_reporte_comprobante(){
 	    
 	    session_start();
-	    $ccomprobantes = new CComprobantesModel();
+	    $ccomprobantes = new CComprobantesModel(); 
 	    $dcomprobantes = new DComprobantesModel();
 	    $tipo_comprobantes = new TipoComprobantesModel();
 	    $entidades = new EntidadesModel();

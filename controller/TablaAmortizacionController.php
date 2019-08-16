@@ -184,7 +184,7 @@ class TablaAmortizacionController extends ControladorBase{
 	        
 	        $i++;
 	        $html.='<tr >';
-	        $html.='<td style="font-size: 11px;"align="center">'.$i.'</td>';
+	        $html.='<td style="font-size: 11px;"align="center">'.$res->numero_pago_tabla_amortizacion.'</td>';
 	        $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
 	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->capital_tabla_amortizacion, 2, ",", ".").'</td>';
 	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->interes_tabla_amortizacion, 2, ",", ".").'</td>';

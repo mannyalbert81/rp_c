@@ -72,33 +72,12 @@
             
             <div class="box-body">
            <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-             
-              
-            </ul>
-            
-            <div class="col-md-5 col-lg-12 col-xs-5">
-            <div class="tab-content">
-            <br>
-              <div class="tab-pane active" id="informacionparticipes">
-                
-					<div class="pull-right" style="margin-right:15px;">
+          				<div class="pull-right" style="margin-right:15px;">
 						<input type="text" value="" class="form-control" id="search_informacionparticipes" name="search_informacionparticipes" onkeyup="load_informacionparticipes(1)" placeholder="search.."/>
 					</div>
 					<div id="load_informacionparticipes" ></div>	
 					<div id="participes_registrados_detalle"></div>	
-                
-              </div>
-              
-             
-             
-             
-            </div>
-            </div>
-          </div>
-         
-            
-            </div>
+                </div>
             </div>
             </section>
     

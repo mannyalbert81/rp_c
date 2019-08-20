@@ -129,6 +129,7 @@ class TablaAmortizacionController extends ControladorBase{
                       core_tabla_amortizacion.total_valor_tabla_amortizacion,
                       core_tabla_amortizacion.mora_tabla_amortizacion,
                       core_tabla_amortizacion.balance_tabla_amortizacion,
+                      core_tabla_amortizacion.numero_pago_tabla_amortizacion, 
                       core_tabla_amortizacion.total_balance_tabla_amortizacion,  
                       core_estado_tabla_amortizacion.nombre_estado_tabla_amortizacion, 
                       core_tabla_amortizacion.total_valor_tabla_amortizacion,
@@ -176,26 +177,30 @@ class TablaAmortizacionController extends ControladorBase{
 	    $html.='</tr>';
 	    
 	    
-	    $i=0;
+
 	    
 	    foreach ($amortizacion_detalle as $res)
 	    {
 	     
+	        if ($res->numero_pago_tabla_amortizacion!=0)
+	        {
+	          
+	            $html.='<tr >';
+	            $html.='<td style="font-size: 11px;"align="center">'.$res->numero_pago_tabla_amortizacion.'</td>';
+	            $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
+	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->capital_tabla_amortizacion, 2, ",", ".").'</td>';
+	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->interes_tabla_amortizacion, 2, ",", ".").'</td>';
+	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->seguro_desgravamen_tabla_amortizacion, 2, ",", ".").'</td>';
+	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_valor_tabla_amortizacion, 2, ",", ".").'</td>';
+	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_balance_tabla_amortizacion, 2, ",", ".").'</td>';
+	            
+	            
+	            
+	            $html.='</td>';
+	            $html.='</tr>';
+	        }
 	        
-	        $i++;
-	        $html.='<tr >';
-	        $html.='<td style="font-size: 11px;"align="center">'.$res->numero_pago_tabla_amortizacion.'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->capital_tabla_amortizacion, 2, ",", ".").'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->interes_tabla_amortizacion, 2, ",", ".").'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->seguro_desgravamen_tabla_amortizacion, 2, ",", ".").'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_valor_tabla_amortizacion, 2, ",", ".").'</td>';
-	        $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_balance_tabla_amortizacion, 2, ",", ".").'</td>';
-	        
-	        
-	        
-	        $html.='</td>';
-	        $html.='</tr>';
+	       
 	       
 	    }
 	    

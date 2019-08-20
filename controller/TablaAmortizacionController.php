@@ -129,6 +129,7 @@ class TablaAmortizacionController extends ControladorBase{
                       core_tabla_amortizacion.total_valor_tabla_amortizacion,
                       core_tabla_amortizacion.mora_tabla_amortizacion,
                       core_tabla_amortizacion.balance_tabla_amortizacion,
+                      core_tabla_amortizacion.numero_pago_tabla_amortizacion, 
                       core_tabla_amortizacion.total_balance_tabla_amortizacion,  
                       core_estado_tabla_amortizacion.nombre_estado_tabla_amortizacion, 
                       core_tabla_amortizacion.total_valor_tabla_amortizacion,

@@ -125,7 +125,7 @@
         <div class="box-header with-border">
           <h3 class="box-title">Movimientos Contable Mes </h3>
           <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+            <button type="button" class="btn btn-box-tool " data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
             
           </div>
@@ -133,12 +133,49 @@
          
 	    <div class="box-body">
 	    	<div id="load_cuentas" ></div>
-        	<div id="div_movimientos" ></div>
+        	<div class="callout callout-default" id="div_movimientos" ></div>
 	    </div>
 	   </div>
     </section>
         
   </div>
+  
+  <!-- Para modales -->
+  <div class="modal fade" id="mod_movimientos_cont" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-lg " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-aqua disabled color-palette">
+            <button type="button" class="close " data-dismiss="modal" aria-label="Close">
+              <span class="text-danger" aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" align="center" >Movimientos Contables</h4>
+          </div>
+          <div class="modal-body" >
+          <!-- empieza el formulario modal productos -->
+          	<form class="form " method="post" id="frm_distribucion_transferencia" name="frm_distribucion_transferencia">
+          	
+          	<div class="row">
+          	
+          		<div class="col-xs-12 col-lg-12 col-md-12">
+          			<h2 align="center" ></h2>
+          		</div>
+          		
+          	</div>
+            
+		  	<div class="box-body">        
+				<div id="mod_div_resultados" ></div>
+        	</div>
+			  
+          	</form>
+          	<!-- termina el formulario modal de impuestos -->
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="button" id="btn_distribucion_aceptar" class="btn bg-aqua waves-light" data-dismiss="modal">Aceptar</button>            
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
  
  	<?php include("view/modulos/footer.php"); ?>	
 
@@ -151,7 +188,7 @@
   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
   <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
   <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>
-  <script src="view/Contable/FuncionesJS/movimientoscontables.js?0.18"></script>
+  <script src="view/Contable/FuncionesJS/movimientoscontables.js?0.22"></script>
   
 	
  </body>

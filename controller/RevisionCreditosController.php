@@ -959,7 +959,7 @@ class RevisionCreditosController extends ControladorBase{
             $id_tipo_credito = 0;
             $numero_credito = !empty($ResultCredito) ? $ResultCredito[0]->numero_creditos : 0 ;
             
-            $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito CREDITO $numero_credito ";
+            $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito $numero_credito ";
             
             foreach ($ResultCredito as $res){
                 $codigo_credito=$res->codigo_tipo_creditos;

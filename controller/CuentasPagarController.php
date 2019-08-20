@@ -185,6 +185,8 @@ class CuentasPagarController extends ControladorBase{
 		$_condonaciones_cuentas_pagar = ( is_numeric($_condonaciones_cuentas_pagar)) ? $_condonaciones_cuentas_pagar : 0.00;
 		$_saldo_cuentas_pagar = ( is_numeric($_saldo_cuentas_pagar)) ? $_saldo_cuentas_pagar : 0.00;
 		
+		$_origen_cuentas_pagar  = "MANUAL";
+		
 		$funcion = "tes_ins_cuentas_pagar";
 		$parametros = "
                     '$_id_lote',
@@ -211,7 +213,8 @@ class CuentasPagarController extends ControladorBase{
                     '$_tarjeta_credito_cuentas_pagar',
                     '$_condonaciones_cuentas_pagar',
                     '$_saldo_cuentas_pagar',
-                    '$_id_cuentas_pagar'
+                    '$_origen_cuentas_pagar',
+                    '$_id_cuentas_pagar'                    
                     ";
 		
 		$cuentasPagar->setFuncion($funcion);
@@ -352,7 +355,7 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    $query = " SELECT id_bancos,nombre_bancos 
                 FROM tes_bancos ban INNER JOIN estado ON ban.id_estado = estado.id_estado 
-                WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos' AND local_bancos = true";
+                WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos' AND local_bancos = true AND pago_bancos_chequera = true";
 	    
 	    $resulset = $estados->enviaquery($query);
 	    

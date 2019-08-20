@@ -14,59 +14,77 @@ class GenerarChequeController extends ControladorBase{
 				
 		session_start();
 		
-		if(empty( $_SESSION)){
+		if(empty( $_SESSION['usuario_usuarios'] )){
 		    
 		    $this->redirect("Usuarios","sesion_caducada");
-		    return;
-		}
-		
-		$nombre_controladores = "GenerarCheque";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $entidad->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-			
-		if (empty($resultPer)){
+		    exit();
 		    
-		    $this->view("Error",array(
-		        "resultado"=>"No tiene Permisos de Acceso Empleo"
+		}else{
+		    
+		    $nombre_controladores = "GenerarCheque";
+		    $id_rol= $_SESSION['id_rol'];
+		    $resultPer = $entidad->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+		    
+		    if (empty($resultPer)){
+		        
+		        $this->view("Error",array(
+		            "resultado"=>"No tiene Permisos de Acceso Empleo"
+		            
+		        ));
+		        exit();
+		    }	
+		    
+		    $rsEntidad = $entidad->getBy(" 1 = 1 ");
+		    
+		    $this->view_tesoreria("GenerarCheque",array(
+		        "resultSet"=>$rsEntidad
 		        
 		    ));
-		    exit();
-		}		    
-			
-		$rsEntidad = $entidad->getBy(" 1 = 1 ");
+		}
 		
-				
-		$this->view_tesoreria("GenerarCheque",array(
-		    "resultSet"=>$rsEntidad
-	
-		));
-	
 	}
 	
 	public function indexCheque(){
 	    
 	    session_start();
-	    
 	    $cuentasPagar = new CuentasPagarModel();
 	    
-	    $_id_usuarios = (isset($_SESSION['id_usuarios'])) ? $_SESSION['id_usuarios'] : null;
-	    
-	    if( !isset($_GET['id_cuentas_pagar']) ){
+	    if(empty( $_SESSION['usuario_usuarios'] )){
 	        
-	        $this->redirect("Pagos","index");
+	        $this->redirect("Usuarios","sesion_caducada");
 	        exit();
-	    }
-	    	    
-	    $_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
-	    
-	    $datos=null;
-	    $datos['id_cuentas_pagar'] = $_id_cuentas_pagar;
-	    
-	    $query = "SELECT l.id_lote, l.nombre_lote, cp.id_cuentas_pagar, cp.numero_cuentas_pagar, cp.descripcion_cuentas_pagar, cp.fecha_cuentas_pagar, 
+	        
+	    }else{
+	        
+	        $nombre_controladores = "GenerarCheque";
+	        $id_rol= $_SESSION['id_rol'];
+	        $resultPer = $cuentasPagar->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	        
+	        if (empty($resultPer)){
+	            
+	            $this->view("Error",array(
+	                "resultado"=>"No tiene Permisos de Acceso Empleo"
+	                
+	            ));
+	            exit();
+	        }
+	       
+	        if( !isset($_GET['id_cuentas_pagar']) ){
+	            
+	            $this->redirect("Pagos","index");
+	            exit();
+	        }
+	        
+	        $_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
+	        
+	        $datos=null;
+	        $datos['id_cuentas_pagar'] = $_id_cuentas_pagar;
+	        
+	        $query = "SELECT l.id_lote, l.nombre_lote, cp.id_cuentas_pagar, cp.numero_cuentas_pagar, cp.descripcion_cuentas_pagar, cp.fecha_cuentas_pagar,
                     cp.compras_cuentas_pagar, cp.total_cuentas_pagar, p.id_proveedores, p.nombre_proveedores, p.identificacion_proveedores,
                     b.id_bancos, b.nombre_bancos, m.id_moneda, m.signo_moneda || '-' || m.nombre_moneda AS moneda
                 FROM tes_cuentas_pagar cp
-                INNER JOIN tes_lote l        
+                INNER JOIN tes_lote l
                 ON cp.id_lote = l.id_lote
                 INNER JOIN proveedores p
                 ON p.id_proveedores = cp.id_proveedor
@@ -76,27 +94,28 @@ class GenerarChequeController extends ControladorBase{
                 ON m.id_moneda = cp.id_moneda
                 WHERE 1 = 1
                 AND cp.id_cuentas_pagar = $_id_cuentas_pagar ";
-	    
-	    $rsCuentasPagar = $cuentasPagar->enviaquery($query);
-	    
-	    // PARA BUSCAR CONSECUTIVO DE PAGO 
-	    
-	    $queryConsecutivo = "SELECT numero_consecutivos FROM consecutivos WHERE nombre_consecutivos = 'PAGOS' AND id_entidades = 1";
-	    
-	    $rsConsecutivos = $cuentasPagar->enviaquery($queryConsecutivo);
-	    
-	    //para buscar cheque
-	    $queryBanco = "SELECT id_bancos, lpad(index_bancos::text,espacio_bancos,'0') numero_cheque 
+	        
+	        $rsCuentasPagar = $cuentasPagar->enviaquery($query);
+	        
+	        // PARA BUSCAR CONSECUTIVO DE PAGO
+	        
+	        $queryConsecutivo = "SELECT numero_consecutivos FROM consecutivos WHERE nombre_consecutivos = 'PAGOS' AND id_entidades = 1";
+	        
+	        $rsConsecutivos = $cuentasPagar->enviaquery($queryConsecutivo);
+	        
+	        //para buscar cheque
+	        $queryBanco = "SELECT id_bancos, lpad(index_bancos_chequera::text,espacio_bancos_chequera,'0') numero_cheque
                 FROM tes_bancos ban
                 INNER JOIN tes_cuentas_pagar cp
                 ON ban.id_bancos = cp.id_banco
                 WHERE id_cuentas_pagar = $_id_cuentas_pagar";
-        
-	    $rsBanco= $cuentasPagar->enviaquery($queryBanco);
-	    
-	    $this->view_tesoreria("GenerarCheque",array(
-	        "resultSet"=>$rsCuentasPagar,"rsConsecutivos"=>$rsConsecutivos,"datos"=>$datos,"rsBanco"=>$rsBanco
-	    ));
+	        
+	        $rsBanco= $cuentasPagar->enviaquery($queryBanco);
+	        
+	        $this->view_tesoreria("GenerarCheque",array(
+	            "resultSet"=>$rsCuentasPagar,"rsConsecutivos"=>$rsConsecutivos,"datos"=>$datos,"rsBanco"=>$rsBanco
+	        ));
+	    }
 	    
 	}
 	

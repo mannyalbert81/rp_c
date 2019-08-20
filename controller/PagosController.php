@@ -12,32 +12,35 @@ class PagosController extends ControladorBase{
         
         session_start();
         
-        if(empty( $_SESSION)){
+        if(empty( $_SESSION['usuario_usuarios'])){
             
             $this->redirect("Usuarios","sesion_caducada");
-            return;
-        }
-        
-        $nombre_controladores = "GenerarCheque";
-        $id_rol= $_SESSION['id_rol'];
-        $resultPer = $entidad->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-        
-        if (empty($resultPer)){
-            
-            $this->view("Error",array(
-                "resultado"=>"No tiene Permisos de Acceso Pagos"
-                
-            ));
             exit();
-        }
-        
-        $rsEntidad = $entidad->getBy(" 1 = 1 ");
-        
-        
-        $this->view_tesoreria("Pagos",array(
-            "resultSet"=>$rsEntidad
+        }else{
             
-        ));
+            $nombre_controladores = "PagosCXP";
+            $id_rol= $_SESSION['id_rol'];
+            $resultPer = $entidad->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );            
+            if (empty($resultPer)){
+                
+                $this->view("Error",array(
+                    "resultado"=>"No tiene Permisos de Acceso Pagos"
+                    
+                ));
+                exit();
+                
+            }else{
+                
+                $rsEntidad = $entidad->getBy(" 1 = 1 ");                
+                
+                $this->view_tesoreria("Pagos",array(
+                    "resultSet"=>$rsEntidad
+                    
+                ));
+                exit();                
+            }
+            
+        }
         
         
     }
@@ -55,32 +58,31 @@ class PagosController extends ControladorBase{
         
         $cuentasPagar = new CuentasPagarModel();
         
-        $queryFormasPago = "SELECT id_forma_pago, nombre_forma_pago FROM forma_pago";
-        $rsFormaPago = $cuentasPagar->enviaquery($queryFormasPago);
+        $columnas = "aa.id_cuentas_pagar, aa.descripcion_cuentas_pagar,aa.fecha_cuentas_pagar, aa.origen_cuentas_pagar, aa.total_cuentas_pagar,
+                	bb.id_lote, bb.nombre_lote, cc.id_proveedores,cc.nombre_proveedores, cc.identificacion_proveedores, ee.id_usuarios, ee.nombre_usuarios,
+                	ff.id_forma_pago, ff.nombre_forma_pago";
         
-        $columnas = " l.id_lote, l.nombre_lote, l.id_usuarios, cp.id_cuentas_pagar, cp.descripcion_cuentas_pagar, 
-                    cp.fecha_cuentas_pagar, cp.id_forma_pago, pr.id_proveedores, pr.nombre_proveedores,
-                    fp.nombre_forma_pago";
+        $tablas = "tes_cuentas_pagar aa
+                INNER JOIN tes_lote bb
+                ON aa.id_lote = bb.id_lote
+                INNER JOIN proveedores cc
+                ON aa.id_proveedor = cc.id_proveedores
+                INNER JOIN estado dd
+                ON aa.id_estado = dd.id_estado
+                INNER JOIN usuarios ee
+                ON bb.id_usuarios = ee.id_usuarios
+                LEFT JOIN forma_pago ff
+                ON aa.id_forma_pago = ff.id_forma_pago";
         
-        $tablas = "tes_lote l
-            INNER JOIN tes_cuentas_pagar cp
-            ON l.id_lote = cp.id_lote
-            INNER JOIN proveedores pr
-            ON pr.id_proveedores = cp.id_proveedor
-            INNER JOIN estado e
-            ON e.id_estado = cp.id_estado
-            LEFT JOIN forma_pago fp
-            ON fp.id_forma_pago = cp.id_forma_pago";
-        
-        $where = " 1=1 AND e.nombre_estado = 'GENERADO' ";
+        $where = " 1=1 AND dd.nombre_estado = 'GENERADO' ";
         
         //para los parametros de where 
         if(!empty($busqueda)){
             
-            $where .= "AND ( nombre_lote = '$busqueda' OR pr.identificacion_proveedores like '$busqueda%' )";
+            $where .= "AND ( bb.nombre_lote = '$busqueda' OR cc.identificacion_proveedores like '$busqueda%' )";
         }
         
-        $id = "cp.id_cuentas_pagar";
+        $id = "aa.id_cuentas_pagar";
         
         //para obtener cantidad         
         $rsResultado = $cuentasPagar->getCantidad("1", $tablas, $where, $id);        
@@ -100,26 +102,23 @@ class PagosController extends ControladorBase{
         $resultSet = $cuentasPagar->getCondicionesPag( $columnas, $tablas, $where, $id, $limit);
         
         $tpages = ceil($cantidad/$per_page);
+        $_nombre_tabla = "tbl_lista_cuentas_pagar";
         
         if( $cantidad > 0 ){
-            
-            //$html.='<div class="pull-left" style="margin-left:11px;">';
-            //$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidad.'</span>';
-            //$html.='<input type="hidden" value="'.$cantidad.'" id="total_query" name="total_query"/>' ;
-            //$html.='</div>';
-            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-            $html.='<section style="height:280px; overflow-y:scroll;">';
-            $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+           
+            $html.= "<table id='$_nombre_tabla' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
             $html.= "<thead>";
             $html.= "<tr>";
             $html.='<th style="text-align: left;  font-size: 12px;"></th>';
             $html.='<th style="text-align: left;  font-size: 12px;">LOTE</th>';
-            $html.='<th style="text-align: left;  font-size: 12px;">USUARIO</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">ORIGEN</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">GENERADO POR</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">DESCRIPCION</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">FECHA</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">BENEFICIARIO</th>';
-            $html.='<th colspan="2" style="text-align: left;  font-size: 12px;">PAGOS</th>';
-            
+            $html.='<th style="text-align: left;  font-size: 12px;">MONTO/VALOR</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">CHEQUE</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">TRANSFERENCIA</th>';            
             $html.='</tr>';
             $html.='</thead>';
             $html.='<tbody>';
@@ -133,11 +132,13 @@ class PagosController extends ControladorBase{
                 $i++;
                 $html.='<tr>';
                 $html.='<td style="font-size: 11px;">'.$i.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->id_lote.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->id_usuarios.'</td>';
+                $html.='<td style="font-size: 11px;">'.$res->nombre_lote.'</td>';
+                $html.='<td style="font-size: 11px;">'.$res->origen_cuentas_pagar.'</td>';
+                $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
                 $html.='<td style="font-size: 11px;">'.$res->descripcion_cuentas_pagar.'</td>';
                 $html.='<td style="font-size: 11px;">'.$res->fecha_cuentas_pagar.'</td>';
                 $html.='<td style="font-size: 11px;">'.$res->nombre_proveedores.'</td>';
+                $html.='<td style="font-size: 11px;">'.$res->total_cuentas_pagar.'</td>';
                 
                 if($res->id_forma_pago == null || $res->id_forma_pago == "" ){
                     $html.='<td width="3%" style="font-size:80%;">';
@@ -174,26 +175,39 @@ class PagosController extends ControladorBase{
             
             $html.='</tbody>';
             $html.='</table>';
-            $html.='</section></div>';
             $html.='<div class="table-pagination pull-right">';
-            $html.=''. $this->paginate("index.php", $page, $tpages, $adjacents,"").'';
+            $html.=''. $this->paginate("index.php", $page, $tpages, $adjacents,"buscaCuentasPagar").'';
             $html.='</div>';
             
             
             
         }else{
-            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b> No hay cuentas por Pagar</b>';
-            $html.='</div>';
-            $html.='</div>';
+            
+            $html.= "<table id='$_nombre_tabla' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+            $html.= "<thead>";
+            $html.= "<tr>";
+            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">LOTE</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">ORIGEN</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">GENERADO POR</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">DESCRIPCION</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">FECHA</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">BENEFICIARIO</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">MONTO/VALOR</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">CHEQUE</th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">TRANSFERENCIA</th>'; 
+            $html.='</tr>';
+            $html.='</thead>';
+            $html.='<tbody>';
+            $html.='</tbody>';
+            $html.='</table>';
         }
         
         //array de datos
         $respuesta = array();
-        $respuesta['html'] = $html;
+        $respuesta['tabla_datos'] = $html;
         $respuesta['valores'] = array('cantidad'=>$cantidad);
+        $respuesta['nombre_tabla'] = $_nombre_tabla;
         echo json_encode($respuesta);
     }
     

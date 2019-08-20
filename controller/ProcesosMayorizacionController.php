@@ -888,7 +888,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $id_tipo_credito = 0;
 	        $numero_credito = !empty($ResultCredito) ? $ResultCredito[0]->numero_creditos : 0 ; 
 	        
-	        $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito CREDITO $numero_credito ";
+	        $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito $numero_credito ";
 	        
 	        foreach ($ResultCredito as $res){
 	            $codigo_credito=$res->codigo_tipo_creditos;
@@ -960,6 +960,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	            }
 	        }
 	        
+	        $_origen_cuentas_pagar = "CREDITOS";
 	        $_id_usuarios = $id_usuarios;
 	        //datos de cuentas x pagar
 	        $funcionCuentasPagar = "tes_ins_cuentas_pagar";
@@ -967,7 +968,7 @@ class ProcesosMayorizacionController extends ControladorBase{
             '$_id_moneda', '$_descripcion_cuentas_pagar', '$_fecha_cuentas_pagar', '$_condiciones_pago_cuentas_pagar', '$_num_documento_cuentas_pagar',
             '$_num_ord_compra','$_metodo_envio_cuentas_pagar', '$_compra_cuentas_pagar', '$_desc_comercial','$_flete_cuentas_pagar',
             '$_miscelaneos_cuentas_pagar','$_impuesto_cuentas_pagar', '$_total_cuentas_pagar','$_monto1099_cuentas_pagar','$_efectivo_cuentas_pagar',
-            '$_cheque_cuentas_pagar', '$_tarjeta_credito_cuentas_pagar', '$_condonaciones_cuentas_pagar', '$_saldo_cuentas_pagar', '$_id_cuentas_pagar'";
+            '$_cheque_cuentas_pagar', '$_tarjeta_credito_cuentas_pagar', '$_condonaciones_cuentas_pagar', '$_saldo_cuentas_pagar', '$_origen_cuentas_pagar', '$_id_cuentas_pagar'";
 	        
 	        $consultaCuentasPagar = $Credito->getconsultaPG($funcionCuentasPagar, $paramCuentasPagar);
 	        $ResultCuentaPagar = $Credito -> llamarconsultaPG($consultaCuentasPagar);

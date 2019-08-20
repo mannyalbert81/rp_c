@@ -36,7 +36,7 @@ class TransferenciasController extends ControladorBase{
 		if (empty($resultPer)){
 		    
 		    $this->view("Error",array(
-		        "resultado"=>"No tiene Permisos de Acceso Empleo"
+		        "resultado"=>"No tiene Permisos de Acceso Transferencias"
 		        
 		    ));
 		    exit();
@@ -228,7 +228,7 @@ class TransferenciasController extends ControladorBase{
         $rsActualizacionCuentaPagar = $CuentasPagar->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
         
         /*para enviara a celular*/
-        $_celular_mensaje = "0987968467";
+        $_celular_mensaje = "";
         $_nombres_mensajes = $_nombre_participes." ".$_apellidos_participes;
         $_num_cuenta = "XXXXXX".substr($_numero_cuenta_banco, 6);
         $_codigo_mensajes = str_replace(' ','_',$_num_cuenta.'-'.$_nombre_cuenta_banco);
@@ -498,9 +498,21 @@ class TransferenciasController extends ControladorBase{
 	    $SMSPlusUrl = "https://smsplus.net.ec/smsplus/ws/mensajeria.php?xml={$variables}";
 	    $ResponseData = file_get_contents($SMSPlusUrl);
 	    
-	    
 	    $xml = simplexml_load_string($ResponseData);
 	    
+	}
+	
+	public function probarMensaje(){
+	    
+	    /*para enviara a celular*/
+	    $_celular_mensaje = "0987474892";
+	    $_nombres_mensajes = "DANNY CAARRillo";
+	    //$_num_cuenta = "XXXXXX".substr("0987654123", 6);
+	    $_codigo_mensajes = str_replace(' ','_',"000".'-'."DE LOJA");
+	    $_id_mensaje_mensajes = "22443";
+	    $this->comsumir_mensaje_plus($_celular_mensaje, $_nombres_mensajes, $_codigo_mensajes, $_id_mensaje_mensajes);
+	    
+	    echo json_encode(array('respuesta'=>1,'mensaje'=>'TRANSACCION REALIZADA'));
 	}
 	
 }

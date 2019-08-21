@@ -120,6 +120,15 @@
             			</div>
             		</div> 
             		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="identificacion_proveedor" class=" control-label" >Descripción:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="descripcion_pago" name="descripcion_pago" value="Credito-|||" >
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
@@ -139,14 +148,6 @@
             			</div>
             		</div> 
             		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="id_moneda" class=" control-label" >Id. de Moneda:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="id_moneda" name="id_moneda" value="" >
-                    		</div>        			 
-            			</div>
-            		</div>   
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
@@ -216,18 +217,16 @@
           <div class="modal-header bg-aqua disabled color-palette">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Distribucion Pago</h4>
+            <h4 class="modal-title" align="center">Información</h4>
           </div>
           <div class="modal-body" >
           <!-- empieza el formulario modal productos -->
           	<form class="form " method="post" id="frm_distribucion_transferencia" name="frm_distribucion_transferencia">
           	
           	<div class="row">
-          		<div class="col-xs-12 col-lg-12 col-md-12">
-          			<h2 align="center" >Información:</h2>
-          		</div>
           		
-          		<div class="col-xs-12 col-lg-3 col-md-3 ">
+          		
+          		<div class="col-xs-12 col-lg-3 col-md-3">
 	    	 		<div class="form-group ">                 			 
         				<label for="nombre_lote" class="control-label" >Identificación:</label>
         				<div class="form-group-sm">                				
@@ -247,7 +246,7 @@
         			</div>		    	 	
 	    	 	</div>
 	    	 	
-	    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
+	    	 	<div class="col-xs-12 col-lg-3 col-md-3">
 	    	 		<div class="form-group ">                 			 
         				<label for="nombre_lote" class="control-label" >Monto:</label>
         				<div class="form-group-sm">                				
@@ -297,7 +296,7 @@
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.08"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.09"></script>
 
   </body>
 </html>   

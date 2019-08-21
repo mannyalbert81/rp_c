@@ -322,7 +322,7 @@ class EntidadBase{
             
             $query=pg_query($this->con, "UPDATE $tabla SET  $colval   WHERE $where ");
             
-            if(!$query)
+            if( $query === false )
                 throw new Exception("valor nulor");
             
             return pg_affected_rows($query);

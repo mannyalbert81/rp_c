@@ -422,6 +422,26 @@ function AnalisisCredito()
 	
 }
 
+function InfoSolicitudActualizar(id_solicitud)
+{
+	solicitud=id_solicitud;
+	$.ajax({
+	    url: 'index.php?controller=BuscarParticipes&action=ActualizarInfoParticipe',
+	    type: 'POST',
+	    data: {
+	    	id_solicitud:id_solicitud
+	    },
+	})
+	.done(function(x) {
+		console.log(x);
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+	
+}
+
 function InfoSolicitud(cedula,id_solicitud)
 {
 	$('#cedula_participe').val(cedula);
@@ -437,7 +457,7 @@ function InfoSolicitud(cedula,id_solicitud)
 	})
 	.done(function(x) {
 		$("#info_solicitud").html(x);
-		
+		InfoSolicitudActualizar(solicitud);
 	})
 	.fail(function() {
 	    console.log("error");

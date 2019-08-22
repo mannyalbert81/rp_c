@@ -71,22 +71,24 @@ $("input.mayus").on("keyup",function(){
 
 $("#distribucion_transferencia").on("click",function(event){
 	
-	console.log('ingreso');
+	//aqui se genera la accion para mostrar el modal
 	
 	var _id_cuentas_pagar = $("#id_cuentas_pagar").val();
 	let $modal = $("#mod_distribucion_pago"),
-		$divResultados = null,		
+		$divResultados = null,
 		$tablaDistribucion = null;
 	
 	$divResultados = $modal.find("#lista_distribucion_transferencia");		
 	$divResultados.html('');
 	
+	$divResultados.html(graficaTablaDistribucion());
+	
 	$modal.find("#mod_identificacion_proveedor").val($("#identificacion_proveedor").val());
 	$modal.find("#mod_total_cuentas_pagar").val($("#total_cuentas_pagar").val());
 	$modal.find("#mod_nombre_proveedor").val($("#nombre_proveedor").val());
 	$modal.find("#mod_banco_transferir").val($("#nombre_cuenta_banco").val());
-	
-	$divResultados.html(graficaTablaDistribucion());
+	$modal.find("input:text[name='mod_dis_referencia']").val($("#descripcion_pago").val());
+	$modal.find("span[name='mod_dis_valor']").text($("#total_cuentas_pagar").val());
 	
 })
 
@@ -104,8 +106,7 @@ function graficaTablaDistribucion(){
 	"<th>Codigo Cuenta</th>" +
 	"<th>Nombre</th>" +
 	"<th>Tipo</th>" +
-	"<th>debito</th>" +
-	"<th>credito</th>" +
+	"<th>valor</th>"
 	"</tr>";
 
 	$tablaDistribucion.attr("id","tbl_distribucion2");
@@ -115,21 +116,21 @@ function graficaTablaDistribucion(){
 	var $filaBody = "";
 	for(var i=0; i<2; i++){
 	
-		$filaBody +="<tr id=\"tr_"+i+"\">"+
-			"<td style=\"font-size: 12px;\" >"+i+"</td>"+ 
+		$filaBody +="<tr id=\"tr_"+(i+1)+"\">"+
+			"<td style=\"font-size: 12px;\" >"+(i+1)+"</td>"+ 
 			"<td style=\"font-size: 12px;\" ><input type=\"text\" class=\"form-control input-sm distribucion\" name=\"mod_dis_referencia\" value=\"\"></td>"+
 			"<td style=\"font-size: 12px;\" ><input type=\"text\" class=\"form-control input-sm distribucion distribucion_autocomplete\" name=\"mod_dis_codigo\"  value=\"\"></td>"+
 			"<td style=\"font-size: 12px;\" ><input type=\"text\" style=\"border: 0;\" class=\"form-control input-sm\" value=\"\" name=\"mod_dis_nombre\">"+
 		        "<input type=\"hidden\" name=\"mod_dis_id_plan_cuentas\" value=\"\" ></td>"+
 		    "<td style=\"font-size: 12px;\"><select id=\"mod_tipo_pago\" name=\"mod_tipo_pago\" class=\" form-control\" ></select></td>"+
-		    "<td style=\"font-size: 12px;\"></td>"+
-		    "<td style=\"font-size: 12px;\"></td>"+
+		    "<td style=\"font-size: 12px;\"><span name=\"mod_dis_valor\" class=\"form-control\"></span></td>"+
 		    "</tr>"
 	}
 
 	$tablaDistribucion.find('> tbody').append($filaBody);
 	
 	$tablaDistribucion.find("select[name='mod_tipo_pago']").append('<option value="debito" >DEBITO</option><option value="credito" >CREDITO</option>');
+	$tablaDistribucion.find("input:text[name='mod_dis_referencia']").append('');
 
 	return $tablaDistribucion;
 	

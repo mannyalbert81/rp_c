@@ -185,6 +185,8 @@ class CuentasPagarController extends ControladorBase{
 		$_condonaciones_cuentas_pagar = ( is_numeric($_condonaciones_cuentas_pagar)) ? $_condonaciones_cuentas_pagar : 0.00;
 		$_saldo_cuentas_pagar = ( is_numeric($_saldo_cuentas_pagar)) ? $_saldo_cuentas_pagar : 0.00;
 		
+		$_origen_cuentas_pagar  = "MANUAL";
+		
 		$funcion = "tes_ins_cuentas_pagar";
 		$parametros = "
                     '$_id_lote',
@@ -211,7 +213,8 @@ class CuentasPagarController extends ControladorBase{
                     '$_tarjeta_credito_cuentas_pagar',
                     '$_condonaciones_cuentas_pagar',
                     '$_saldo_cuentas_pagar',
-                    '$_id_cuentas_pagar'
+                    '$_origen_cuentas_pagar',
+                    '$_id_cuentas_pagar'                    
                     ";
 		
 		$cuentasPagar->setFuncion($funcion);
@@ -219,7 +222,6 @@ class CuentasPagarController extends ControladorBase{
 		
 		$resultado = $cuentasPagar->llamafuncionPG();
 		
-		//print_r( $resultado);
 		
 		if(is_null($resultado)){
 		    
@@ -227,6 +229,8 @@ class CuentasPagarController extends ControladorBase{
 		    exit();
 		}
 		
+		//variable se llena con el resultado de informacion
+		$_id_cuentas_pagar = $resultado[0];		
 		
 		//genero valores para crear cuenta contable
 		$_id_usuario = (isset($_SESSION['id_usuarios'])) ?  $_SESSION['id_usuarios'] : null;
@@ -282,6 +286,15 @@ class CuentasPagarController extends ControladorBase{
 		    exit();
     		
 		}else{
+		    
+		    /*actualizar cuentas pagar*/
+		    $_id_comprobante = (int)($resultadoccomprobantes[0]);
+		    $colvalCuentas = " id_ccomprobantes = $_id_comprobante";
+		    $tabvalCuentas = " tes_cuentas_pagar";
+		    $whevalCuentas = " id_cuentas_pagar = $_id_cuentas_pagar";
+		    
+		    $cuentasPagar ->ActualizarBy($colvalCuentas, $tabvalCuentas, $whevalCuentas);
+		        
 		    echo json_encode(array('respuesta'=>1,'mensaje'=>"Cuenta por Pagar Ingresada Correctamente"));
 		    exit();
 		}
@@ -352,7 +365,7 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    $query = " SELECT id_bancos,nombre_bancos 
                 FROM tes_bancos ban INNER JOIN estado ON ban.id_estado = estado.id_estado 
-                WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos' AND local_bancos = true";
+                WHERE estado.nombre_estado='ACTIVO' AND tabla_estado = 'tes_bancos' AND local_bancos = true AND pago_bancos_chequera = true";
 	    
 	    $resulset = $estados->enviaquery($query);
 	    

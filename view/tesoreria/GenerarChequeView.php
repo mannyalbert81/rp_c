@@ -180,7 +180,7 @@
             			<div class="form-group ">
             				<label for="comentario_cheque" class=" control-label" >Comentario del Cheque:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="comentario_cheque" name="comentario_cheque" value="" >
+                				 <input type="text" class="form-control mayus" id="comentario_cheque" name="comentario_cheque" value="" autocomplete="off" >
                     		</div>        			 
             			</div>
             		</div>
@@ -218,67 +218,58 @@
   <div class="modal fade" id="mod_distribucion_pago" data-backdrop="static" data-keyboard="false">
       <div class="modal-dialog" style="width:90%">
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header bg-aqua disabled color-palette">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Distribucion Pago</h4>
+            <h4 class="modal-title" align="center">Distribucion Pago</h4>
           </div>
           <div class="modal-body">
           <!-- empieza el formulario modal productos -->
           	<form class="form " method="post" id="frm_distribucion_cheque" name="frm_distribucion_cheque">
           	
           	<div class="row">
-          		<div class="col-xs-12 col-md-6 col-lg-6">
-          		<label for="" class="control-label"> Datos Proveedor</label>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_identificacion" class="col-sm-4 control-label"> Identificación:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_identificacion_proveedor" name="mod_identificacion_proveedor" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_nombre" class="col-sm-4 control-label"> Nombre:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_nombre_proveedor" name="mod_nombre_proveedor" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          		</div>
-          		
-          		<div class="col-xs-12 col-md-6 col-lg-6">
-          		<label for="" class="control-label"> </label>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_identificacion" class="col-sm-4 control-label"> Monto:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_total_cuentas_pagar" name="mod_total_cuentas_pagar" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          			<div class="row">
-          				<div class="col-md-12">
-          				<div class="form-group-sm">
-              	  	 	<label for="mod_nombre" class="col-sm-4 control-label"> Moneda:</label>
-        				<div class="col-sm-8">
-        				  <input type="text" style="height:20px"  class="form-control" id="mod_id_moneda" name="mod_id_moneda" value="">
-        				</div>          	  	 
-              	    	</div>
-              	    	</div> 
-          			</div>
-          		</div>          	       
-          	</div>
-             
-          	
-          	<hr>
+          	          	
+          		<div class="col-xs-12 col-lg-3 col-md-3">
+	    	 		<div class="form-group ">                 			 
+        				<label for="nombre_lote" class="control-label" >Identificación:</label>
+        				<div class="form-group-sm">                				
+                          <input type="text" style="height:30px"  class=" form-control" id="mod_identificacion_proveedor" name="mod_identificacion_proveedor" value="">
+        				</div>
+            						 
+        			</div>		    	 	
+	    	 	</div>
+	    	 	
+	    	 	<div class="col-xs-12 col-lg-3 col-md-3">
+	    	 		<div class="form-group ">                 			 
+        				<label for="nombre_lote" class="control-label" >Nombre:</label>
+        				<div class="form-group-sm">                				
+                          <input type="text" style="height:30px"  class=" form-control" id="mod_nombre_proveedor" name="mod_nombre_proveedor" value="">
+        				</div>
+            						 
+        			</div>		    	 	
+	    	 	</div>
+	    	 	
+	    	 	<div class="col-xs-12 col-lg-3 col-md-3">
+	    	 		<div class="form-group ">                 			 
+        				<label for="nombre_lote" class="control-label" >Monto:</label>
+        				<div class="form-group-sm">                				
+                          <input type="text" style="height:30px"  class=" form-control" id="mod_total_cuentas_pagar" name="mod_total_cuentas_pagar" value="">
+        				</div>
+            						 
+        			</div>		    	 	
+	    	 	</div>
+	    	 	
+	    	 	<div class="col-xs-12 col-lg-3 col-md-3">
+	    	 		<div class="form-group ">                 			 
+        				<label for="nombre_lote" class="control-label" >Moneda:</label>
+        				<div class="form-group-sm">                				
+                          <input type="text" style="height:30px"  class=" form-control" id="mod_id_moneda" name="mod_id_moneda" value="">
+        				</div>
+            						 
+        			</div>		    	 	
+	    	 	</div>
+	    	 	
+	    	</div>
           	
 		  	<div class="box-body">        
 				<div id="lista_distribucion_cheque" ></div>
@@ -402,7 +393,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.13"></script>
+	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.21"></script>
 
   </body>
 </html>  

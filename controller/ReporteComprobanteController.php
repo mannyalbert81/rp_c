@@ -183,7 +183,7 @@ class ReporteComprobanteController extends ControladorBase{
 			                    $html.='<td style="font-size: 11px;">'.$res->fecha_ccomprobantes.'</td>';
 			                    $html.='<td style="font-size: 11px;">'.$res->numero_ccomprobantes.'</td>';
 			                    $html.='<td style="font-size: 11px;">'.$res->nombre_forma_pago.'</td>';
-			                    $html.='<td style="font-size: 11px;"><span class="pull-right"><a href="index.php?controller=ReporteComprobante&action=generar_reporte_comprobante&id_ccomprobantes='.$res->id_ccomprobantes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+			                    $html.='<td style="font-size: 11px;"><span class="pull-right"><a href="index.php?controller=ReporteComprobante&action=comprobante_contable_reporte&id_ccomprobantes='.$res->id_ccomprobantes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
 			                    
 			                    $html.='</tr>';
 			                    
@@ -719,5 +719,196 @@ class ReporteComprobanteController extends ControladorBase{
 	    
 	    
 	}
+	
+	public function  comprobante_contable_reporte(){
+	    session_start();
+	    $entidades = new EntidadesModel();
+	    $ccomprobantes = new CComprobantesModel();
+	    $dcomprobantes = new DComprobantesModel();
+	    $tipo_comprobantes = new TipoComprobantesModel();
+	    $entidades = new EntidadesModel();
+	    $tipo_comprobante=new TipoComprobantesModel();
+	    //PARA OBTENER DATOS DE LA EMPRESA
+	    $datos_empresa = array();
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	    }
+	    
+	    //NOTICE DATA
+	    $datos_cabecera = array();
+	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+	    $datos_cabecera['FECHA'] = date('Y/m/d');
+	    $datos_cabecera['HORA'] = date('h:i:s');
+	    
+	   
+	    $_id_ccomprobantes =  (isset($_REQUEST['id_ccomprobantes'])&& $_REQUEST['id_ccomprobantes'] !=NULL)?$_REQUEST['id_ccomprobantes']:'';
+	    
+	    
+	    $datos_reporte = array();
+	    
+	    $columnas = " ccomprobantes.id_ccomprobantes,
+							  tipo_comprobantes.nombre_tipo_comprobantes,
+						      tipo_comprobantes.id_tipo_comprobantes,
+							  ccomprobantes.concepto_ccomprobantes,
+							  usuarios.nombre_usuarios,
+						      entidades.id_entidades,
+							  entidades.nombre_entidades,
+                              entidades.direccion_entidades,
+                              entidades.telefono_entidades,
+                              entidades.ruc_entidades,
+							  ccomprobantes.valor_letras,
+							  ccomprobantes.fecha_ccomprobantes,
+							  ccomprobantes.numero_ccomprobantes,
+							  ccomprobantes.ruc_ccomprobantes,
+							  ccomprobantes.nombres_ccomprobantes,
+							  ccomprobantes.retencion_ccomprobantes,
+							  ccomprobantes.valor_ccomprobantes,
+							  ccomprobantes.referencia_doc_ccomprobantes,
+							  ccomprobantes.numero_cuenta_banco_ccomprobantes,
+							  ccomprobantes.numero_cheque_ccomprobantes,
+							  ccomprobantes.observaciones_ccomprobantes,
+                              dcomprobantes.descripcion_dcomprobantes,
+							  forma_pago.nombre_forma_pago,
+                              proveedores.nombre_proveedores";
+	    
+	    $tablas=" public.ccomprobantes,
+						  public.entidades,
+						  public.usuarios,
+						  public.tipo_comprobantes,
+						  public.forma_pago,
+                          public.dcomprobantes,
+                          public.proveedores";
+	    
+	    $where="ccomprobantes.id_forma_pago = forma_pago.id_forma_pago AND
+					  entidades.id_entidades = usuarios.id_entidades AND
+					  usuarios.id_usuarios = ccomprobantes.id_usuarios AND
+                      ccomprobantes.id_proveedores = proveedores.id_proveedores AND
+                      dcomprobantes.id_ccomprobantes = ccomprobantes.id_ccomprobantes AND
+					  tipo_comprobantes.id_tipo_comprobantes = ccomprobantes.id_tipo_comprobantes AND ccomprobantes.id_ccomprobantes='$_id_ccomprobantes'";
+	    
+	    $id="ccomprobantes.numero_ccomprobantes";
+	    
+	    
+	    $rsdatos = $ccomprobantes->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    $datos_reporte['IDCCOMPROBANTE']=$rsdatos[0]->id_ccomprobantes;
+	    $datos_reporte['NOMBRETIPOCOMPROBANTE']=$rsdatos[0]->nombre_tipo_comprobantes;
+	    $datos_reporte['CONCEPTOCOMPROBANTE']=$rsdatos[0]->concepto_ccomprobantes;
+	    $datos_reporte['USUARIO']=$rsdatos[0]->nombre_usuarios;
+	    $datos_reporte['NOMBREENTIDADES']=$rsdatos[0]->nombre_entidades;
+	    $datos_reporte['DIRECCIONENTIDAD']=$rsdatos[0]->direccion_entidades;
+	    $datos_reporte['TELEFONOENTIDAD']=$rsdatos[0]->telefono_entidades;
+	    $datos_reporte['RUCENTIDAD']=$rsdatos[0]->ruc_entidades;
+	    $datos_reporte['VALORLETRAS']=$rsdatos[0]->valor_letras;
+	    $datos_reporte['FECHACOMPROBANTE']=$rsdatos[0]->fecha_ccomprobantes;
+	    $datos_reporte['NUMEROCOMPROBANTE']=$rsdatos[0]->numero_ccomprobantes;
+	    $datos_reporte['RUCCOMPROBANTE']=$rsdatos[0]->ruc_ccomprobantes;
+	    $datos_reporte['NOMBRECOMPROBANTE']=$rsdatos[0]->nombres_ccomprobantes;
+	    $datos_reporte['RETENCIONCOMPROBANTE']=$rsdatos[0]->retencion_ccomprobantes;
+	    $datos_reporte['VALORCOMPROBANTE']=$rsdatos[0]->valor_ccomprobantes;
+	    $datos_reporte['REFERENCIADOCCOMP']=$rsdatos[0]->referencia_doc_ccomprobantes;
+	    $datos_reporte['NUMEROCUENTA']=$rsdatos[0]->numero_cuenta_banco_ccomprobantes;
+	    $datos_reporte['NUMEROCHEQUE']=$rsdatos[0]->numero_cheque_ccomprobantes;
+	    $datos_reporte['OBSERVACIONES']=$rsdatos[0]->observaciones_ccomprobantes;
+	    $datos_reporte['FORMADEPAGO']=$rsdatos[0]->nombre_forma_pago;
+	    $datos_reporte['PROVEEDORES']=$rsdatos[0]->nombre_proveedores;
+	    $datos_reporte['DESCDCOMPROBANTE']=$rsdatos[0]->descripcion_dcomprobantes;
+	   
+	    
+	    
+	    //////retencion detalle
+	    
+	    $columnas1 = "plan_cuentas.nombre_plan_cuentas,
+                                  plan_cuentas.codigo_plan_cuentas,
+                                  dcomprobantes.descripcion_dcomprobantes,
+                                  dcomprobantes.debe_dcomprobantes,
+                                  dcomprobantes.haber_dcomprobantes,
+                                  dcomprobantes.numero_dcomprobantes";
+	    
+	    $tablas1   = "   public.dcomprobantes,
+                                     public.plan_cuentas";
+	    $where1    = "plan_cuentas.id_plan_cuentas = dcomprobantes.id_plan_cuentas AND dcomprobantes.id_ccomprobantes='$_id_ccomprobantes' ";
+	    
+	    $id1       = "dcomprobantes.id_dcomprobantes";
+	    
+	    
+	    $resultSetDetalle=$dcomprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    
+	    
+	    
+	    
+	    $html='';
+	    
+	    
+	    if(!empty($resultSetDetalle)){
+	        
+	        $html.='<table class="1" >';
+	        $html.= "<tr>";
+	        $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Código</th>';
+	        $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Cuenta</th>';
+	        $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Debe</th>';
+	        $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Haber</th>';
+	        $html.='</tr>';
+	        
+	        $i=0; $valor_total_vista=0; $valor_total_vista1=0;
+	        
+	        
+	        foreach ($resultSetDetalle as $res){
+	            
+	            $valor_total_db=$res->debe_dcomprobantes;
+	            $valor_total_vista=$valor_total_vista+$valor_total_db;
+	            $valor_total_db1=$res->haber_dcomprobantes;
+	            $valor_total_vista1=$valor_total_vista1+$valor_total_db1;
+	            
+	            $html.= "<tr>";
+	            
+	            $html.='<td class="ancho" colspan="3" style="text-align: left; font-size: 10px;">'.$res->codigo_plan_cuentas.'</td>';
+	            $html.='<td class="ancho" colspan="3" style="text-align: left; font-size: 10px;">'.$res->nombre_plan_cuentas.'</td>';
+	            $html.='<td class="ancho" colspan="3" style=" font-size: 10px;" align="right">'.number_format($res->debe_dcomprobantes, 2, '.', ',').'</td>';
+	            $html.='<td class="ancho" colspan="3" style=" font-size: 10px;" align="right">'.number_format($res->haber_dcomprobantes, 2, '.', ',').'</td>';
+	            $html.='</tr>';
+	            $valor_total_db=0;
+	            $valor_total_db1=0;
+	            
+	        }
+	        $valor_total_vista = $valor_total_vista= number_format($valor_total_vista, 2, '.', ',');
+	        $valor_total_vista1 = $valor_total_vista1= number_format($valor_total_vista1, 2, '.', ',');
+	        
+	        $html.= "<tr>";
+	        $html.='<td class="ancho" colspan="3" style="text-align: left; font-size: 10px;"></td>';
+	        $html.='<td class="ancho" colspan="3" style="text-align: left; font-size: 10px;"></td>';
+	        $html.='<td class="bordesup" colspan="3" style="text-align: right; font-size: 10px;"align="right">'.$valor_total_vista.'</td>';
+	        $html.='<td class="bordesup" colspan="3" style="text-align: right; font-size: 10px;"align="right">'.$valor_total_vista1.'</td>';
+	        $html.='</tr>';
+	        
+	       
+	       
+	        
+	    }
+	    
+	   
+	    $html.='</table>';
+	    
+	    $datos_reporte['DETALLE_COMPROBANTE']= $html;
+	    
+	    
+	    
+	    
+	    
+	    $this->verReporte("ComprobanteContableReporte", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+	    
+	    
+	}
+	
+	
 	}
 ?>

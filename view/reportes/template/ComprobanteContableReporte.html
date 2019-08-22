@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  	<meta charset="utf-8"/>
+  	  
+  </head>
+  <body>
+  	<div>
+  		<table class="2">
+		<tr>
+		<td><strong>Comprobante Contable</strong></td>
+		</tr>
+	    </table>
+		<br>	    
+		<table class="3" >
+		<tr>
+		 <td><strong>Datos de la Factura</strong></td>
+		</tr>
+	    </table>
+	    <br>
+	    <table class="4" >
+		<tr>
+		 <td><strong>Fecha de la Factura:</strong></td>
+		 <td>{FECHACOMPROBANTE}</td>
+		</tr>
+		<tr>
+		 <td><strong>Nombre:</strong></td>
+		 <td>{PROVEEDORES}</td>
+		</tr>
+		<tr>
+		 <td><strong>Retención:</strong></td>
+		 <td>{RETENCIONCOMPROBANTE}</td>
+		</tr>
+		<tr>
+		 <td><strong>La Cantidad de:</strong></td>
+		 <td>{VALORCOMPROBANTE}</td>
+		</tr>
+		</table>
+	    <br>
+	    <table class="6">
+		<tr>
+		<td><strong>Concepto:</strong></td>
+		<td>{CONCEPTOCOMPROBANTE}</td>
+		</tr>
+	    </table>
+	</div>	
+	<br> 
+	{DETALLE_COMPROBANTE}
+	<br>
+	<table class="5" >
+		<tr class="inferior">
+		 <td><strong>Elaborado por:</strong></td>
+		 <td><strong>Es Conforme:</strong></td>
+		 <td><strong>Visto Bueno:</strong></td>
+		 <td><strong>Recibí Conforme:</strong></td>
+		</tr>
+		<tr><td>&nbsp; </td></tr>
+		<tr><td>&nbsp; </td></tr>
+		<tr><td>&nbsp; </td></tr>
+		<tr>
+		<td>{USUARIO}</td>
+		<td>CONTADOR</td>
+		<td>GERENTE</td>
+		<td>-----------------------------</td>
+		</tr>
+	    </table>
+
+  </body>
+  </html>

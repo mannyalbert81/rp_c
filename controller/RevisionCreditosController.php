@@ -892,34 +892,24 @@ class RevisionCreditosController extends ControladorBase{
             $_id_moneda = $ResultMoneda[0]->id_moneda;
             
             //datos de participes
+            $funcionProveedor = "ins_proveedores_participes";
+            $parametrosProveedor = " '$id_creditos' ";
+            $consultaProveedor = $Credito->getconsultaPG($funcionProveedor, $parametrosProveedor);
+            $ResultadoProveedor= $Credito->llamarconsultaPG($consultaProveedor);
+            $error = "";
+            $error = pg_last_error();
+            if (!empty($error) ){
+                throw new Exception('error proveedores');
+            }
             $_id_proveedor = 0;
-            $queryProveedor = "SELECT 1,p.id_proveedores
-                    FROM core_participes cp
-                    INNER JOIN proveedores p
-                    ON p.identificacion_proveedores = cp.cedula_participes
-                    INNER JOIN core_creditos cc
-                    ON cc.id_participes = cp.id_participes
-                    WHERE cc.id_creditos = $id_creditos ";
-            $ResultProveedor= $Credito->enviaquery($queryProveedor);
-            
-            if(empty($ResultProveedor)){
-                
-                $funcionProveedor = "ins_proveedores_participes";
-                $parametrosProveedor = " '$id_creditos' ";
-                $consultaProveedor = $Credito->getconsultaPG($funcionProveedor, $parametrosProveedor);
-                $ResultadoProveedor= $Credito->llamarconsultaPG($consultaProveedor);
-                $error = "";
-                $error = pg_last_error();
-                if (!empty($error) || (int)$ResultadoProveedor[0] <= 0){
-                    throw new Exception('error proveedores');
-                }
+            if( (int)$ResultadoProveedor[0] > 0 ){
                 $_id_proveedor = $ResultadoProveedor[0];
             }else{
-                $_id_proveedor = $ResultProveedor[0]->id_proveedores;
+                throw new Exception("Error en proveedor-participe");
             }
-            
+             
             //para datos de banco
-            $_id_bancos = 2 ; //seteado para presentacion luego va con deacuerdo el credito
+            $_id_bancos = 2 ; //seteado para presentacion luego va con deacuerdo el credito //buscar de la tabla del Cnolivos
             
             //datos Cuenta por pagar
             $_descripcion_cuentas_pagar = ""; //se llena mas adelante
@@ -983,7 +973,7 @@ class RevisionCreditosController extends ControladorBase{
             }else{
                 //para insertado normal
                 $queryParametrizacion = "SELECT * FROM core_parametrizacion_cuentas
-                                    WHERE id_principal_core_parametrizacion_cuentas = $id_tipo_credito";
+                                    WHERE id_principal_parametrizacion_cuentas = $id_tipo_credito";
                 $ResultParametrizacion = $Credito -> enviaquery($queryParametrizacion);
                 
                 //buscar de tabla parametrizacion

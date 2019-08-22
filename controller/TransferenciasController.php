@@ -12,27 +12,19 @@ class TransferenciasController extends ControladorBase{
 	
 	    session_start();
 	    
-		$entidad = new CoreEntidadPatronalModel();
 		$CuentasPagar = new CuentasPagarModel();
 		
 		require_once 'core/DB_Functions.php';
 		$db = new DB_Functions();
 		
-		if(empty( $_SESSION)){
-		    
+		if( empty( $_SESSION['usuario_usuarios'] ) ){
 		    $this->redirect("Usuarios","sesion_caducada");
-		    exit();
-		}
-		
-		if( !isset($_GET['id_cuentas_pagar']) ){
-		    
-		    $this->redirect("Pagos","index");
 		    exit();
 		}
 		
 		$nombre_controladores = "GenerarTranferencias";
 		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $entidad->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );			
+		$resultPer = $CuentasPagar->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );			
 		if (empty($resultPer)){
 		    
 		    $this->view("Error",array(
@@ -42,11 +34,32 @@ class TransferenciasController extends ControladorBase{
 		    exit();
 		}
 		
+		if( !isset($_GET['id_cuentas_pagar']) ){
+		    $this->redirect("Pagos","index");
+		    exit();
+		}
+		
 		$_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
 		
-		$datos=null;
+		$datosVista = array(); //variable para almacenar varaiables que se pasaran a la vista 
 		
-		//buscar datos a tranferir
+		/*traer datos de la cuenta por pagar*/
+		$rsCuentasPagar = $CuentasPagar->getBy("id_cuentas_pagar = $_id_cuentas_pagar");
+		
+		$origen_cuentas_pagar =  
+		
+		
+		//datos a necesitar de la vista 
+		//id_lote
+		//id_cuentas_pagar
+		//descripcion
+		//iden_beneficiario
+		//nombre_benefi
+		//apellido benefic
+		//total de la cuenta
+		
+		//SI ES CREDITO
+		
 		$col1 = "aa.id_cuentas_pagar,aa.numero_cuentas_pagar,aa.id_tipo_documento,aa.descripcion_cuentas_pagar,
             aa.id_forma_pago,aa.total_cuentas_pagar,bb.id_ccomprobantes, cc.id_creditos, dd.id_participes,
             cc.numero_creditos,cc.saldo_actual_creditos, dd.cedula_participes, dd.nombre_participes,

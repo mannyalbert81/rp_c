@@ -222,7 +222,6 @@ class CuentasPagarController extends ControladorBase{
 		
 		$resultado = $cuentasPagar->llamafuncionPG();
 		
-		//print_r( $resultado);
 		
 		if(is_null($resultado)){
 		    
@@ -230,6 +229,8 @@ class CuentasPagarController extends ControladorBase{
 		    exit();
 		}
 		
+		//variable se llena con el resultado de informacion
+		$_id_cuentas_pagar = $resultado[0];		
 		
 		//genero valores para crear cuenta contable
 		$_id_usuario = (isset($_SESSION['id_usuarios'])) ?  $_SESSION['id_usuarios'] : null;
@@ -285,6 +286,15 @@ class CuentasPagarController extends ControladorBase{
 		    exit();
     		
 		}else{
+		    
+		    /*actualizar cuentas pagar*/
+		    $_id_comprobante = (int)($resultadoccomprobantes[0]);
+		    $colvalCuentas = " id_ccomprobantes = $_id_comprobante";
+		    $tabvalCuentas = " tes_cuentas_pagar";
+		    $whevalCuentas = " id_cuentas_pagar = $_id_cuentas_pagar";
+		    
+		    $cuentasPagar ->ActualizarBy($colvalCuentas, $tabvalCuentas, $whevalCuentas);
+		        
 		    echo json_encode(array('respuesta'=>1,'mensaje'=>"Cuenta por Pagar Ingresada Correctamente"));
 		    exit();
 		}

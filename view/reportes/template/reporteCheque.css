@@ -1,18 +1,18 @@
 table.fil1 {
    width: 100%;
-   font-size: 12px;
+   font-size: 11px;
 }
 td.1{
 	
-	width: 150px;
+	width: 160px;
 }
 td.2{
 	
-	width: 100px;
+	width: 150px;
 }
 td.3{
 	
-	width: 100px;
+	width: 60px;
 }
 
 td.4{
@@ -34,7 +34,7 @@ td.7{
 }
 td.8{
 	
-	width: 250px;
+	width: 350px;
 }
 td.9{
 	
@@ -52,4 +52,87 @@ td.12{
 	
 	width: 58px;
 }
+td.13{
+	
+	width: 30px;
+}
+td.14{
+	
+	width: 75px;
+}
+td.15{
+	
+	width: 50px;
+}
+td.16{
+	
+	width: 50px;
+}
 
+td.17{
+	
+	width: 100px;
+}
+
+td.18{
+	text-align: right;
+	width: 15px;
+}
+
+td.19{
+	
+	width: 75px;
+}
+
+td.20{
+	
+	width: 300px;
+}
+td.21{
+	
+	width: 200px;
+}
+td.22{
+	
+	width: 50px;
+}
+td.23{
+	text-align: right;
+	width: 100px;
+}
+td.24{
+	text-align: right;
+	width: 50px;
+}
+td.25{
+	
+	width: 50px;
+}
+td.26{
+	
+	width: 40px;
+}
+td.27{
+	
+	width: 30px;
+}
+td.28{
+	
+	width: 96px;
+}
+
+td.anchofila1{
+	height: 85px ;
+}
+td.anchofila2{
+	height: 180px ;
+}
+td.anchofila3{
+	height: 350px ;
+}
+
+div.absolute {
+  position: absolute;
+  top: 900px;
+  left: 50px;
+}

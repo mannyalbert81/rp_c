@@ -545,7 +545,7 @@ class RevisionCreditosController extends ControladorBase{
         $whereest= "estado.tabla_estado='core_creditos_trabajados_detalle' AND estado.nombre_estado = 'ABIERTO'";
         $idest = "estado.id_estado";
         $resultEst = $reportes->getCondiciones($columnaest, $tablaest, $whereest, $idest);
-        $resultEst=$resultEst[0]->nombre_estado;
+        $resultEst=$resultEst[0]->id_estado;
         
         if ($id_reporte==0)
         {
@@ -671,6 +671,11 @@ class RevisionCreditosController extends ControladorBase{
         return ob_get_clean();
     }
     
+    public function UpdateCuentasParticipes()
+    {
+        
+    }
+    
     public function AprobarReporteCredito()
     {
         session_start();
@@ -703,16 +708,18 @@ class RevisionCreditosController extends ControladorBase{
         $where="nombre_estado_creditos='Aprobado'";
         $id="id_estado_creditos";
         $id_estado_creditos=$reporte->getCondiciones($columnas, $tablas, $where, $id);
+        $id_estado_creditos=$id_estado_creditos[0]->id_estado_creditos;
         
         foreach ($resultSet as $res)
         {
             $where = "id_creditos=".$res->id_creditos;
             $tabla = "core_creditos";
-            $colval = "id_estado_creditos=".$id_estado_creditos;// cambiar valor
+            $colval = "id_estado_creditos=".$id_estado_creditos;
             $reporte->UpdateBy($colval, $tabla, $where);
             $mensaje=$this->ActivaCredito($res->id_creditos);
         }
         
+        echo $mensaje;
     }
     
     public function AprobarReporteRecaudaciones()

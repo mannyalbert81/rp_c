@@ -268,10 +268,57 @@
 	    return $out;
 	}
 	
-
-		}
+	
+	public function index(){
+	    
+	    session_start();
+	    if (isset(  $_SESSION['nombre_usuarios']) )
+	    {
+	        $controladores = new ControladoresModel();
+	        $nombre_controladores = "Turnos";
+	        $id_rol= $_SESSION['id_rol'];
+	        $resultPer = $controladores->getPermisosVer("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	        
+	        if (!empty($resultPer))
+	        {
+	            
+	            
+	            
+	            $this->view_Turnos("GeneracionTurnos",array(
+	                ""=>""
+	            ));
+	            
+	        }
+	        else
+	        {
+	            $this->view("Error",array(
+	                "resultado"=>"No tiene Permisos de Acceso a consultar una solicitud de prestamo."
+	                
+	            ));
+	            
+	        }
+	        
+	        
+	    }
+	    else
+	    {
+	        $error = TRUE;
+	        $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
+	        
+	        $this->view("Login",array(
+	            "resultSet"=>"$mensaje", "error"=>$error
+	        ));
+	        
+	        
+	        die();
+	        
+	    }
+	    
+	}
 	
 	
 	
+    }
+    ?>
+	    
 	
-	?>

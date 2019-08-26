@@ -563,8 +563,10 @@ class GenerarChequeController extends ControladorBase{
 	    
 	    try{
 	        //toma de datos
-	        @$_id_comprobante =  $_POST['id_comprobante'];
-	        @$_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
+	        //@$_id_comprobante =  $_POST['id_comprobante'];
+	       // @$_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
+	        @$_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
+	        @$_id_comprobante =  $_GET['id_comprobante'];
 	        
 	        //para pruebas
 	        //$_id_comprobante =  68;

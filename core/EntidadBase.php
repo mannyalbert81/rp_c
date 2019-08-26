@@ -702,13 +702,13 @@ class EntidadBase{
                                         break;
                             case 2:
                                 if ($xcifra < 1) {
-                                    $xcadena = "CERO DOLARES $xdecimales/100********";
+                                    $xcadena = "CERO DOLARES $xdecimales/100";
                                 }
                                 if ($xcifra >= 1 && $xcifra < 2) {
-                                    $xcadena = "UN DOLAR $xdecimales/100********";
+                                    $xcadena = "UN DOLAR $xdecimales/100";
                                 }
                                 if ($xcifra >= 2) {
-                                    $xcadena.= " DOLARES $xdecimales/100*******"; //
+                                    $xcadena.= " DOLARES $xdecimales/100"; //
                                 }
                                 break;
                         } // endswitch ($xz)

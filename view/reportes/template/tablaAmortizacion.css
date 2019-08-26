@@ -75,11 +75,11 @@ td.central{
  }
 /*Styls para dibujar el reporte*/ 
    div.izq{
-	left:0px;   width:320px; height:110px; border: 1px solid black; float:left;
+	left:0px;   width:338px; height:110px; border: 1px solid black; float:left;
 	}
 	
 	div.der{
-	right:0px;  width:320px; height:110px; border: 1px solid black; float:left;
+	right:0px;  width:338px; height:110px; border: 1px solid black; float:left;
 	}
 	body {font-size:10px}
 

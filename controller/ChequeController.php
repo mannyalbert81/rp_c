@@ -63,13 +63,19 @@ class ChequeController extends ControladorBase{
 	    $domLogo=$directorio.'/view/images/logoCapremci.png';
 	    $logo = '<img src="'.$domLogo.'" alt="Responsive image" width="150" height="35">';
 	    
-	    
+	    $cheques= new ProductosModel();
 	    
 	    if(!empty($cedula_usuarios)){
 	        
 	        $cliente2 ="OSCAR CORO";
 	        $cliente ="COOP.DE TRANSPORTE DE PASAJEROS EN TAXIS ROCHDALE";
-	        $US = "611.49";
+	        $US = "2222611.49";
+	        
+	        $monto_letras=$cheques->numtoletras($US);
+	        
+	        echo $monto_letras;
+	        die();
+	        
 	        $valorenletras ="SEICIENTOS ONCE CON 49/100";
 	        $ciudad="QUITO";
 	        $fecha=" 2019 abril 24";
@@ -444,6 +450,176 @@ class ChequeController extends ControladorBase{
 	            
 	            
 	            
+	            
+	            $this->verReporte("ReporteCheque", array('datos_reporte'=>$datos_reporte));
+	            
+	            
+	        }
+	        
+	        public function reporte_cheque_cuentas(){
+	            session_start();
+	            
+	            try{
+	                //toma de datos
+	               // @$_id_comprobante =  $_POST['id_comprobante'];
+	               // @$_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
+	                
+	                @$_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
+	                @$_id_comprobante =  $_GET['id_comprobante'];
+	                
+	                //para pruebas
+	                //$_id_comprobante =  68;
+	                //$_id_cuentas_pagar = 3;
+	                
+	                if( $_id_comprobante == null || $_id_cuentas_pagar == null )
+	                    throw new Exception("Parametros No Recibidos");
+	                    
+	            }catch (Exception $ex){
+	                
+	                echo $ex->getMessage();
+	                die();
+	                
+	            }
+	            
+	            
+	            $id_usuarios = $_SESSION["id_usuarios"];
+	            //$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+	            $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	            //$fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+	            
+	            $datos_reporte = array();
+	            $CuentasPagar = new CuentasPagarModel();
+	            
+	            if(!empty($id_usuarios)){
+	               // echo $id_usuarios; die();
+	                /* DATOS CUENTAS PAGAR */
+	                $colCuentas = "cp.id_cuentas_pagar, cp.descripcion_cuentas_pagar, p.nombre_proveedores, cp.total_cuentas_pagar";
+	                $tabCuentas = "tes_cuentas_pagar cp
+            	       INNER JOIN proveedores p
+            	        ON cp.id_proveedor = p.id_proveedores
+            	        INNER JOIN tes_bancos b
+            	        ON b.id_bancos = cp.id_banco";
+	                $wheCuentas = "1=1 AND cp.id_cuentas_pagar = $_id_cuentas_pagar ";
+	                $idCuentas = "id_cuentas_pagar";
+	                $rscuentasPagar = $CuentasPagar->getCondiciones($colCuentas, $tabCuentas, $wheCuentas, $idCuentas);
+	                
+	                $datos_reporte['portadorCheque']=$rscuentasPagar[0]->nombre_proveedores;
+	                $datos_reporte['valorLetrasCheque']=$CuentasPagar->numtoletras($rscuentasPagar[0]->total_cuentas_pagar);
+	                $datos_reporte['valorCheque']=number_format((float)$rscuentasPagar[0]->total_cuentas_pagar, 2, '.', ',');
+	                $datos_reporte['proveedor']=$rscuentasPagar[0]->nombre_proveedores;
+	               
+	                $oficina = new OficinaModel();
+	                $columnas = " oficina.nombre_oficina";
+	                
+	                $tablas = " public.oficina, public.usuarios";
+	                $where= " usuarios.id_oficina = oficina.id_oficina
+                    AND usuarios.id_usuarios ='$id_usuarios'";
+	                $id="usuarios.id_usuarios";
+	                
+	                $rsoficina = $oficina->getCondiciones($columnas, $tablas, $where, $id);
+	                
+	                $datos_reporte['CIUDAD']=$rsoficina[0]->nombre_oficina;
+	            
+	            
+	                $colComprobante = "id_ccomprobantes, valor_ccomprobantes, concepto_ccomprobantes, fecha_ccomprobantes, numero_cheque_ccomprobantes,
+                                transaccion_ccomprobantes";
+	                $tabComprobante = "public.ccomprobantes";
+	                $wheComprobante = "1=1 AND id_ccomprobantes = $_id_comprobante ";
+	                $idComprobante = "id_ccomprobantes";
+	                $rsComprobante = $CuentasPagar->getCondiciones($colComprobante, $tabComprobante, $wheComprobante, $idComprobante);
+	                
+	                $datos_reporte['conceptoCheque']=$rsComprobante[0]->concepto_ccomprobantes;
+	                $datos_reporte['numeroCheque']=$rsComprobante[0]->numero_cheque_ccomprobantes;
+	                $datos_reporte['transaccion']=$rsComprobante[0]->transaccion_ccomprobantes;
+	                $datos_reporte['fechaComprobante']=$rsComprobante[0]->fecha_ccomprobantes;
+	                
+	                $datos_reporte['fecha']=strtotime($rsComprobante[0]->fecha_ccomprobantes);
+	                
+	                $datos_reporte['fechaCheque']=date('Y',($datos_reporte['fecha'])).' '.strtoupper($meses[date('n',($datos_reporte['fecha']))-1]).' '.date('d',($datos_reporte['fecha']));
+	                $datos_reporte['fechaFooter']=date('d',($datos_reporte['fecha'])).' DE '.strtoupper($meses[date('n',($datos_reporte['fecha']))-1]).' DEL '.date('Y',($datos_reporte['fecha']));
+	            
+	            
+	                /* DATOS CONTABLES */
+	                $CuentasPagar = new CuentasPagarModel();
+	                $colCuentas = "dc.id_dcomprobantes, dc.id_plan_cuentas, pc.codigo_plan_cuentas, pc.nombre_plan_cuentas, dc.debe_dcomprobantes, dc.haber_dcomprobantes,
+                            pc.nivel_plan_cuentas";
+	                $tabCuentas = "dcomprobantes dc
+            	        INNER JOIN plan_cuentas pc
+            	        ON pc.id_plan_cuentas = dc.id_plan_cuentas";
+	                $wheCuentas = "1=1 AND dc.id_ccomprobantes = $_id_comprobante ";
+	                $idCuentas = "id_dcomprobantes";
+	                $rsCuentas = $CuentasPagar->getCondiciones($colCuentas, $tabCuentas, $wheCuentas, $idCuentas);
+	                
+	                
+	                //traer detalles contables
+	                $htmlTabla = '<table class="fil1" style="width: 100%; margin-top:10px;" border=hidden cellspacing=0>';
+	                if(!empty($rsCuentas)){
+	                    $conceptoCheque = $rsComprobante[0]->concepto_ccomprobantes;
+	                    $nivelCuenta=0;
+	                    $codigoCuenta='';
+	                    $codigoPadre='';
+	                    $arraycodigo = array();
+	                    foreach ($rsCuentas as $res){
+	                        //buscar cuenta nivel mayor
+	                        $codigoCuenta= $res->codigo_plan_cuentas;
+	                        $codigoCuenta= trim($codigoCuenta,'.');
+	                        $nivelCuenta = $res->nivel_plan_cuentas;
+	                        $arraycodigo = explode('.', $codigoCuenta);
+	                        for($i=0; $i < (count($arraycodigo)-1); $i++){
+	                            $codigoPadre.=$arraycodigo[$i].'.';
+	                        }
+	                        $nivelCuenta = $nivelCuenta-1;
+	                        $codigoPadre = trim($codigoPadre,'.');
+	                        $queryCuentaPadre = "SELECT codigo_plan_cuentas, nombre_plan_cuentas FROM public.plan_cuentas
+                            WHERE codigo_plan_cuentas LIKE '$codigoPadre%' AND nivel_plan_cuentas = '$nivelCuenta'";
+	                        $rsCuentaPadre = $CuentasPagar -> enviaquery($queryCuentaPadre);
+	                        
+	                        if(!empty($rsCuentaPadre)){
+	                            $htmlTabla.="<tr>";
+	                            $htmlTabla.='<td class="13">&nbsp;</td>';
+	                            $htmlTabla.='<td class="14">'.$rsCuentaPadre[0]->codigo_plan_cuentas.'</td>';
+	                            $htmlTabla.='<td class="15">'.$rsCuentaPadre[0]->nombre_plan_cuentas.'</td>';
+	                            $htmlTabla.='<td class="16">&nbsp;</td>';
+	                            
+	                            $htmlTabla.="</tr>";
+	                        }
+	                        
+	                        $htmlTabla.="<tr>";
+	                        $htmlTabla.='<td class="13">&nbsp;</td>';
+	                        $htmlTabla.='<td class="15">'.$res->codigo_plan_cuentas.'</td>';
+	                        $htmlTabla.='<td class="15">'.$res->nombre_plan_cuentas.'</td>';
+	                        $htmlTabla.='<td class="14" align="right">'.$res->debe_dcomprobantes.'</td>';
+	                        $htmlTabla.='<td class="14" align="right">'.$res->haber_dcomprobantes.'</td>';
+	                        $htmlTabla.='<td class="16">&nbsp;</td>';
+	                        $htmlTabla.='<td class="26">&nbsp;</td>';
+	                        $htmlTabla.="</tr>";
+	                        $htmlTabla.="<tr>";
+	                        $htmlTabla.='<td class="13">&nbsp;</td>';
+	                        $htmlTabla.='<td class="14">&nbsp;</td>';
+	                        $htmlTabla.='<td class="15">'.$conceptoCheque.'</td>';
+	                        $htmlTabla.='<td class="14">&nbsp;</td>';
+	                        $htmlTabla.='<td class="14">&nbsp;</td>';
+	                        $htmlTabla.='<td class="16">&nbsp;</td>';
+	                        $htmlTabla.='<td class="26">&nbsp;</td>';
+	                        
+	                        $htmlTabla.="</tr>";
+	                        
+	                        
+	                        
+	                        $codigoPadre='';
+	                    }
+	                }
+	                $htmlTabla .= '</table>';
+	                
+	                
+	        
+	            
+	            
+	            $datos_reporte['DETALLE_CUENTA_X_PAGAR']= $htmlTabla;
+	            
+	            
+	            
+	            }
 	            
 	            $this->verReporte("ReporteCheque", array('datos_reporte'=>$datos_reporte));
 	            

@@ -58,7 +58,7 @@ class PagosController extends ControladorBase{
         
         $cuentasPagar = new CuentasPagarModel();
         
-        $columnas = "aa.id_cuentas_pagar, aa.descripcion_cuentas_pagar,aa.fecha_cuentas_pagar, aa.origen_cuentas_pagar, aa.total_cuentas_pagar,
+        $columnas = "aa.id_cuentas_pagar, aa.descripcion_cuentas_pagar,aa.fecha_cuentas_pagar, aa.origen_cuentas_pagar, aa.total_cuentas_pagar, aa.saldo_cuenta_cuentas_pagar,
                 	bb.id_lote, bb.nombre_lote, cc.id_proveedores,cc.nombre_proveedores, cc.identificacion_proveedores, ee.id_usuarios, ee.nombre_usuarios,
                 	ff.id_forma_pago, ff.nombre_forma_pago";
         
@@ -138,7 +138,7 @@ class PagosController extends ControladorBase{
                 $html.='<td style="font-size: 11px;">'.$res->descripcion_cuentas_pagar.'</td>';
                 $html.='<td style="font-size: 11px;">'.$res->fecha_cuentas_pagar.'</td>';
                 $html.='<td style="font-size: 11px;">'.$res->nombre_proveedores.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->total_cuentas_pagar.'</td>';
+                $html.='<td style="font-size: 11px;">'.$res->saldo_cuenta_cuentas_pagar.'</td>';
                 
                 if($res->id_forma_pago == null || $res->id_forma_pago == "" ){
                     $html.='<td width="3%" style="font-size:80%;">';

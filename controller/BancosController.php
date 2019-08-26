@@ -85,7 +85,8 @@ class BancosController extends ControladorBase{
 		    $_nombre_bancos = (isset($_POST["nombre_bancos"])) ? $_POST["nombre_bancos"] : "";
 		    $_id_estado = (isset($_POST["id_estado"])) ? $_POST["id_estado"] : 0 ;
 		    $_id_bancos = (isset($_POST["id_bancos"])) ? $_POST["id_bancos"] : 0 ;
-		    
+		    $_codigo_bancos = (isset($_POST["codigo_bancos"])) ? $_POST["codigo_bancos"] : 0 ;
+		    		    
 		    /*si es insertado enviar en cero el id_banco a la funcion*/							
 			$funcion = "ins_tes_bancos";
 			$respuesta = 0 ;
@@ -93,48 +94,41 @@ class BancosController extends ControladorBase{
 			
 			if($_id_bancos == 0){
 			    
-			    $parametros = " '$_nombre_bancos','$_id_estado', '$_id_bancos'";
+			    $parametros = " '$_nombre_bancos','$_codigo_bancos','$_id_estado', '$_id_bancos'";
 			    $bancos->setFuncion($funcion);
 			    $bancos->setParametros($parametros);
-			    $resultado = $bancos->llamafuncion();
+			    $resultado = $bancos->llamafuncionPG();
 			    
-			    if(!empty($resultado) && count($resultado) > 0 ){
-			        
-			        foreach ( $resultado[0] as $k => $v){
-			            
-			            $respuesta = $v;
-			        }
-			        
+			    if(is_int((int)$resultado[0])){
+			        $respuesta = $resultado[0];
 			        $mensaje = "Banco Ingresado Correctamente";
-			        
-			    }
+			    }	
+			    
+			   
 			}elseif ($_id_bancos > 0){
 			    
-			    $parametros = " '$_nombre_bancos','$_id_estado', '$_id_bancos'";
+			    $parametros = " '$_nombre_bancos','$_codigo_bancos','$_id_estado', '$_id_bancos'";
 			    $bancos->setFuncion($funcion);
 			    $bancos->setParametros($parametros);
-			    $resultado = $bancos->llamafuncion();
+			    $resultado = $bancos->llamafuncionPG();
 			    
-			    if(!empty($resultado) && count($resultado) > 0 ){
-			        
-			        foreach ( $resultado[0] as $k => $v){
-			            
-			            $respuesta = $v;
-			        }
-			        
+			    if(is_int((int)$resultado[0])){
+			        $respuesta = $resultado[0];
 			        $mensaje = "Banco Actualizado Correctamente";
-			        
-			    }
+			    }	
+			    
+			    
 			}
 			
 			
-			if($respuesta > 0 ){
+	
+			if((int)$respuesta > 0 ){
 			    
 			    echo json_encode(array('respuesta'=>$respuesta,'mensaje'=>$mensaje));
 			    exit();
 			}
 			
-			echo "Error al Ingresar Tipo Activo";
+			echo "Error al Ingresar Bancos";
 			exit();
 			
 		}
@@ -308,7 +302,7 @@ class BancosController extends ControladorBase{
 	    $bancos = new BancosModel();
 	    
 	    $where_to="";
-	    $columnas  = " id_bancos, nombre_bancos, nombre_estado ";
+	    $columnas  = " id_bancos, nombre_bancos, nombre_estado, codigo_bancos";
 	    
 	    $tablas    = "public.tes_bancos INNER JOIN public.estado ON estado.id_estado = tes_bancos.id_estado";
 	    
@@ -366,6 +360,7 @@ class BancosController extends ControladorBase{
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
 	            $html.='<th style="text-align: left;  font-size: 15px;">Banco</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Codigo</th>';
 	            $html.='<th style="text-align: left;  font-size: 15px;">Estado</th>';
 	            
 	            /*para administracion definir administrador MenuOperaciones Edit - Eliminar*/
@@ -387,6 +382,7 @@ class BancosController extends ControladorBase{
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 14px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->nombre_bancos.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->codigo_bancos.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
 	                
 	               

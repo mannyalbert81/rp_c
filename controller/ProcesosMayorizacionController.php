@@ -968,8 +968,7 @@ class ProcesosMayorizacionController extends ControladorBase{
                 '',
                 '',
                 '',
-                ''
-                ";
+                ''";
 	            
             $consultaComprobante = $Credito ->getconsultaPG($funcionComprobante, $parametrosComprobante);
             $resultadComprobantes = $Credito->llamarconsultaPG($consultaComprobante);
@@ -991,8 +990,7 @@ class ProcesosMayorizacionController extends ControladorBase{
             $columnaCre = "id_ccomprobantes = $_id_ccomprobantes ";
             $tablasCre = "core_creditos";
             $whereCre = "id_creditos = $id_creditos";
-            $UpdateCredito= $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
-                
+            $UpdateCredito= $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);                
                 
             $Credito->endTran('COMMIT');
             return 'OK';

@@ -1,8 +1,9 @@
 <?php
 
 
-	require_once '../core/DB_Functions.php';
-	$db = new DB_Functions();
+	require_once '../core/DB_FunctionsRfid.php';
+	$db = new DB_FunctionsRfid();
+	
 	
 	$accion=(isset($_POST['action']))?$_POST['action']:'';
 	$_cedula_usuarios  = (isset($_POST['cedula_usuarios']))?$_POST['cedula_usuarios']:'';	
@@ -10,12 +11,13 @@
 
 	
 	if($accion=="consulta"){
-		
+	
+
 		
 		
 		if($_cedula_usuarios!="" && $_clave_usuarios!=""){
 			
-			$_clave=$db->encriptar($_clave_usuarios);
+		$_clave=$db->encriptar($_clave_usuarios);
 			
 		$columnas="usuarios.id_usuarios,
                       usuarios.cedula_usuarios, 
@@ -46,6 +48,9 @@
     		
     		$id="usuarios.cedula_usuarios";
     		
+    		
+
+    		
     		$result=$db->getCondiciones($columnas, $tablas, $where, $id);
     		
     		
@@ -53,7 +58,8 @@
     		
     		if ( !empty($result) )
     		{ 
-    			
+    		
+    		
     			foreach($result as $res) 
     			{
 	    			
@@ -68,6 +74,7 @@
 	    		
 	    			echo json_encode($listUsr);
 	    			die();
+	    			
     			}	
 					
 				

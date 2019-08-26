@@ -124,7 +124,7 @@
             			<div class="form-group ">
             				<label for="identificacion_proveedor" class=" control-label" >Descripción:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="descripcion_pago" name="descripcion_pago" value="Credito-|||" >
+                				 <input type="text" class="form-control mayus" id="descripcion_pago" name="descripcion_pago" value="" >
                     		</div>        			 
             			</div>
             		</div> 

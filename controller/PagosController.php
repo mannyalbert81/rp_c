@@ -117,8 +117,8 @@ class PagosController extends ControladorBase{
             $html.='<th style="text-align: left;  font-size: 12px;">FECHA</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">BENEFICIARIO</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">MONTO/VALOR</th>';
-            $html.='<th style="text-align: left;  font-size: 12px;">CHEQUE</th>';
-            $html.='<th style="text-align: left;  font-size: 12px;">TRANSFERENCIA</th>';            
+            $html.='<th >CHEQUE</th>';
+            $html.='<th >TRANSFERENCIA</th>';            
             $html.='</tr>';
             $html.='</thead>';
             $html.='<tbody>';
@@ -155,7 +155,7 @@ class PagosController extends ControladorBase{
                         $html.='<a class="btn btn-sm btn-info" title="Generar Cheque" href="index.php?controller=GenerarCheque&action=indexCheque&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
                         $html.='<i class="fa fa-money"></i></a></td>';
                     }else{
-                        $html.='<td ></td>';
+                        $html.='<td width="3%" ></td>';
                     }
                     
                     if($res->nombre_forma_pago == 'TRANSFERENCIA'){
@@ -164,7 +164,7 @@ class PagosController extends ControladorBase{
                         $html.='<a class="btn btn-sm btn-info" title="Realizar Transferencia"  href="index.php?controller=Transferencias&action=index&id_cuentas_pagar='.$res->id_cuentas_pagar.'">';
                         $html.='<i class="glyphicon glyphicon-transfer"></i></a></td>';
                     }else{
-                        $html.='<td ></td>';
+                        $html.='<td width="3%" ></td>';
                     }
                 }
                 

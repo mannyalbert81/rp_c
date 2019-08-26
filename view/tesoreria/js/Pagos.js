@@ -17,7 +17,7 @@ function setTableStyle(ObjTabla){
         rowHeight: 'auto',
         responsive: true,
         "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-        dom: '<"html5buttons">lfrtipB',      
+        dom: '<"html5buttons">lfrtipB',
         buttons: [ ],
         language: {
             "emptyTable": "No hay información",
@@ -34,8 +34,8 @@ function setTableStyle(ObjTabla){
                 "next": "Siguiente",
                 "previous": "Anterior"
             }
-        }
-
+        },
+        
     });
 }
 

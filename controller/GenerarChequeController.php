@@ -229,60 +229,50 @@ class GenerarChequeController extends ControladorBase{
 	     * se realiza insercion
 	     * se realiza suma de valores
 	     */
-	    session_start();
-	    
+	    session_start();	    
 	    $_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
-	    
-	    $nombreProcesos = "Pago Cheque CxP";
-	    $modulo = "TESORERIA";
-	    
+	    $_id_bancos        = $_POST['id_bancos'];
+	    $_referencia_cheque  = $_POST['referencia_cheque'];
+	    $moduloId = "6";	    
 	    $respuesta = array();
 	    
-	    $_diarioTipo = new CoreDiarioTipoCabezaModel();
+	    $CuentasPagar  = new CuentasPagarModel();
+	    $PlanCuentas   = new PlanCuentasModel(); 
 	    
-	    $queryCxP = "SELECT id_cuentas_pagar, id_lote, fecha_cuentas_pagar, compras_cuentas_pagar, impuesto_cuentas_pagar, total_cuentas_pagar
-            FROM tes_cuentas_pagar
-            WHERE id_cuentas_pagar = $_id_cuentas_pagar";
-        
-	    $rsCuentasPagar = $_diarioTipo->enviaquery($queryCxP);
+	    $columnas1 = " id_cuentas_pagar, id_lote, fecha_cuentas_pagar, compras_cuentas_pagar, impuesto_cuentas_pagar, total_cuentas_pagar";
+	    $tabla1    = " tes_cuentas_pagar";
+	    $where1    = " id_cuentas_pagar = $_id_cuentas_pagar";
+	    $id1       = " id_cuentas_pagar ";
+	    	  
+	    $rsCuentasPagar = $CuentasPagar->getCondiciones($columnas1,$tabla1,$where1,$id1);
+	    /*datos de cuentas por pagar*/
+	    $_total_cuentas_pagar = $rsCuentasPagar[0]->total_cuentas_pagar;    
+	   
+	    /*buscar distribucion de comprobante*/
+	    //para buscar el diario
+	    $colParametrizacion = "id_parametrizacion_cuentas, tabla_parametrizacion_cuentas, id_plan_cuentas_debe, id_plan_cuentas_haber";
+	    $tabParametrizacion = "core_parametrizacion_cuentas";
+	    $WheParametrizacion = "id_modulos = $moduloId AND tabla_parametrizacion_cuentas = 'tes_bancos' AND id_principal_parametrizacion_cuentas = $_id_bancos";
+	    $idParametrizacion = "tabla_parametrizacion_cuentas";
 	    
-	    $total_cuentas_pagar = $rsCuentasPagar[0]->total_cuentas_pagar;
+	    $rsParametrizacion = $CuentasPagar -> getCondiciones($colParametrizacion,$tabParametrizacion,$WheParametrizacion,$idParametrizacion);
+	    $_lista_id_plan_cuentas = "";
+	    if(!empty($rsParametrizacion)){	        
+	        $_lista_id_plan_cuentas = "".$rsParametrizacion[0]->id_plan_cuentas_debe.",".$rsParametrizacion[0]->id_plan_cuentas_haber."";
+	    }else{
+	        echo "<message>Diario Pago no identificado<message>"; exit();
+	    }
 	    
-	    $queryCabezaDiario = "SELECT cdtc.id_diario_tipo_cabeza
-            FROM core_diario_tipo_cabeza cdtc
-            INNER JOIN modulos m
-            ON cdtc.id_modulos = m.id_modulos
-            INNER JOIN core_tipo_procesos ctp
-            ON ctp.id_modulos = m.id_modulos
-            WHERE 1 = 1
-            AND m.nombre_modulos = '$modulo'
-            AND ctp.nombre_tipo_procesos = '$nombreProcesos'";
-	    
-	    $rsCabezaDiario = $_diarioTipo -> enviaquery($queryCabezaDiario);
-	    
-	    $_id_diario_tipo = $rsCabezaDiario[0]->id_diario_tipo_cabeza;
-	    
-	    $queryDiarioDetalle = "SELECT id_diario_tipo_detalle, pc.id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas, destino_diario_tipo_detalle, e.nombre_entidades
-            FROM public.core_diario_tipo_detalle cdtd
-            INNER JOIN public.plan_cuentas pc
-            ON pc.id_plan_cuentas = cdtd.id_plan_cuentas
-            INNER JOIN public.entidades e
-            ON e.id_entidades = pc.id_entidades
-            WHERE id_diario_tipo_cabeza = $_id_diario_tipo";
-	    
-	    $rsDiarioDetalle = $_diarioTipo -> enviaquery($queryDiarioDetalle); 
-	    
-	    $htmlTabla="";
-	    if(!empty($rsDiarioDetalle)){
-	        
-	        //dibujar tabla de distribucion cheque
-	        $htmlTabla.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	        $htmlTabla.='<section style="height:150px; overflow-y:scroll;">';
-	        $htmlTabla.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	    $htmlTabla = "";
+	    $nombreTabla = "tbl_diario_pago_cheque";
+	    if(!empty($_lista_id_plan_cuentas)){
+	        $where2 = " id_plan_cuentas in ( $_lista_id_plan_cuentas )";
+	        $rsDiarioPago = $PlanCuentas->getBy($where2);
+	        //dibujar tabla de distribucion cheque	        
+	        $htmlTabla.= "<table id='$nombreTabla' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
 	        $htmlTabla.= "<thead>";
 	        $htmlTabla.= "<tr>";
 	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;"></th>';
-	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;">Entidad</th>';
 	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;">Referencia</th>';
 	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;">Cuenta</th>';
 	        $htmlTabla.='<th style="text-align: left;  font-size: 12px;">Descripcion</th>';
@@ -295,40 +285,46 @@ class GenerarChequeController extends ControladorBase{
 	        $i=0;
 	        $valor_credito = "0,00";
 	        $valor_debito = "0,00";
-	        foreach ($rsDiarioDetalle as $res){
+	        
+	        if(!empty($rsDiarioPago)){
 	            
-	            $i++;
-	            $htmlTabla.='<tr>';
-	            $htmlTabla.='<td style="font-size: 11px;">'.$i.'</td>';
-	            $htmlTabla.='<td style="font-size: 11px;">'.$res->nombre_entidades.'</td>';
-	            $htmlTabla.='<td style="font-size: 11px;"><input type="text" class="form-control input-sm distribucion" name="mod_dis_referencia" value=""></td>';
-	            $htmlTabla.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
-	            $htmlTabla.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
-	            if( strtoupper($res->destino_diario_tipo_detalle)  == "DEBE"){
-	                $valor_debito = number_format((float)$total_cuentas_pagar, 2, ',', '.');
-	                $valor_credito = "0,00";
-	            }
-	            if( strtoupper($res->destino_diario_tipo_detalle)  == "HABER"){
-	                $valor_credito = number_format((float)$total_cuentas_pagar, 2, ',', '.');
-	                $valor_debito = "0,00";
-	            }
-	            $htmlTabla.='<td style="font-size: 11px; text-align:right">'.$valor_debito.'</td>';
-	            $htmlTabla.='<td style="font-size: 11px; text-align:right">'.$valor_credito.'</td>';
-	           
-	            $htmlTabla.='</tr>';
-	        }
-	        $htmlTabla.='</tbody>';
-	        $htmlTabla.='</table>';
-	        $htmlTabla.='</section></div>';
+	            foreach ($rsDiarioPago as $res){
+                	                        
+                    $i++;
+                    $htmlTabla.='<tr>';
+                    $htmlTabla.='<td style="font-size: 11px;">'.$i.'</td>';
+                    $htmlTabla.='<td style="font-size: 11px;"><span class="">'.$_referencia_cheque.'</span></td>';
+                    $htmlTabla.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
+                    $htmlTabla.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
+                    if( $i == 1 ){
+                        $valor_debito = number_format((float)$_total_cuentas_pagar, 2, ',', '.');
+                        $valor_credito = "0,00";
+                    }
+                    if( $i == 2 ){
+                        $valor_credito = number_format((float)$_total_cuentas_pagar, 2, ',', '.');
+                        $valor_debito = "0,00";
+                    }
+                    $htmlTabla.='<td style="font-size: 11px; text-align:right">'.$valor_debito.'</td>';
+                    $htmlTabla.='<td style="font-size: 11px; text-align:right">'.$valor_credito.'</td>';
+                    
+                    $htmlTabla.='</tr>';
+	               }
+              
+            }
+            
+            $htmlTabla.='</tbody>';
+            $htmlTabla.='</table>';
 	        
 	    }
 	    
-	    $respuesta['tabla'] = (!empty($htmlTabla)) ? $htmlTabla : null;
-	    $respuesta['cuentas_pagar'] = $rsCuentasPagar;
-	    $respuesta['cxp'] = $total_cuentas_pagar;
-	    $respuesta['detallediario'] = $rsDiarioDetalle;
+	    $error = pg_last_error();
+	    if(!empty($error)) {echo "<message>Error en generacion comprobante<message>"; die();}
 	    
-	    echo json_encode($respuesta);
+	    $respuesta['tabla_datos'] = (!empty($htmlTabla)) ? $htmlTabla : null;
+	    $respuesta['nombre_tabla'] = $nombreTabla;
+	    
+	    echo json_encode($respuesta);	    
+	    
 	}
 	
 	
@@ -336,6 +332,7 @@ class GenerarChequeController extends ControladorBase{
 	public function generaCheque(){
 	    
 	    session_start();
+	    $CuentasPagar = new CuentasPagarModel();
 	   
 	    try{
 	        
@@ -344,21 +341,17 @@ class GenerarChequeController extends ControladorBase{
 	        $_id_proveedores = 0;
 	        $_numero_cheque = trim($_POST['numero_cheque']);
 	        $_fecha_cheque = $_POST['fecha_cheque'];
-	        $_numero_cuenta_banco = "";
 	        $_observaciones = "PAGO CON CHEQUE";
-	        $_transaccion = "CHEQUE";
-	        $_retencion = "";
-	        $_concepto = $_POST['comentario_cheque'];
-	        $_id_bancos = $_POST['id_bancos'];
-	        
-	        
-	        $CuentasPagar = new CuentasPagarModel();
-	        
+	        $_concepto_cheque = $_POST['comentario_cheque'];
+	        $_id_bancos = $_POST['id_bancos'];	 
+	        	        
 	        $respuesta = array();
-	       
-	        $nombreProcesos = "Pago Cheque CxP";
-	        $modulo = "TESORERIA";
 	        
+	        $_array_detalle_comrobantes = array();
+	        
+	        //empieza el begin
+	        $CuentasPagar->beginTran();
+	       
 	        $queryCxP = "SELECT id_cuentas_pagar, id_proveedor, id_lote, fecha_cuentas_pagar, compras_cuentas_pagar, impuesto_cuentas_pagar, total_cuentas_pagar
                 FROM tes_cuentas_pagar
                 WHERE id_cuentas_pagar = $_id_cuentas_pagar";
@@ -370,79 +363,195 @@ class GenerarChequeController extends ControladorBase{
 	        $_total_en_letras = $CuentasPagar->numtoletras($_total_cuentas_pagar);
 	        
 	        $queryFormaPago = "SELECT * FROM forma_pago WHERE nombre_forma_pago = 'CHEQUE' LIMIT 1";
-	        $rsFormaPago = $CuentasPagar->enviaquery($queryFormaPago);
-	        
+	        $rsFormaPago = $CuentasPagar->enviaquery($queryFormaPago);	        
 	        $_id_formadePago = $rsFormaPago[0]->id_forma_pago;
+	        $_referencia_ccomprobantes = "CHEQUE";
 	        
-	        //para buscar el diario
-	        $queryCabezaDiario = "SELECT cdtc.id_diario_tipo_cabeza
-                    FROM core_diario_tipo_cabeza cdtc
-                    INNER JOIN modulos m
-                    ON cdtc.id_modulos = m.id_modulos
-                    INNER JOIN core_tipo_procesos ctp
-                    ON ctp.id_modulos = m.id_modulos
-                    WHERE 1 = 1
-                    AND m.nombre_modulos = '$modulo'
-                    AND ctp.nombre_tipo_procesos = '$nombreProcesos'";
-	        
-	        $rsCabezaDiario = $CuentasPagar -> enviaquery($queryCabezaDiario);
-	        
-	        if(empty($rsCabezaDiario))
-	            throw new Exception("No se puede identificar DIARIO CONTABLE de Pago");
-	        
-	        $_id_diario_tipo = $rsCabezaDiario[0]->id_diario_tipo_cabeza;
-	        
-	        
-	        $funcion = "tes_agrega_comprobante_pago_cheque";
-	        $parametros = "$_id_usuarios,$_id_bancos,$_id_cuentas_pagar,$_id_proveedores,$_id_formadePago,$_id_diario_tipo,$_total_cuentas_pagar,
-                           '$_total_en_letras','$_fecha_cheque','$_numero_cheque','$_numero_cuenta_banco','$_numero_cheque',
-                           '$_observaciones','$_transaccion','$_retencion','$_concepto'";
-	        
-	        $queryFuncion = "SELECT $funcion ( $parametros )";
-	        	        
-	        $rsComprobante = $CuentasPagar->llamarconsultaPG($queryFuncion);
-	        
-	        if(is_null($rsComprobante))
-	            throw new Exception( " No se ingresaron los Datos "); 
-	        
-            if( !is_null($rsComprobante) ){
-                
-                if( $rsComprobante[0] > 0 ){
-                    $respuesta['comprobante']['mensaje']="CHEQUE REGISTRADO CORRECTAMENTE";
-                    $respuesta['comprobante']['valor'] = 1;
-                    $respuesta['comprobante']['id_comprobante'] = $rsComprobante[0];
-                    $respuesta['cuentaspagar']['id_cuentas_pagar'] = $_id_cuentas_pagar;
-                }
-                
-                if( $rsComprobante[0] == 0 ){
-                    $respuesta['comprobante']['mensaje']="NO SE REGISTRO CHEQUE";
-                    $respuesta['comprobante']['valor'] = 0;
-                    $respuesta['comprobante']['id_comprobante'] = $rsComprobante[0];
-                }
-                
-                if( $rsComprobante[0] == -1 ){
-                    $respuesta['comprobante']['mensaje']="REVISAR NUMERO DE CHEQUE";
-                    $respuesta['comprobante']['valor'] = 0;
-                    $respuesta['comprobante']['id_comprobante'] = 0;
-                }
-                
-                /*actualizacion de Cuenta por pagar*/
-                //buscar estado de cuentas por pagar
-                $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
-                $rsEstado = $CuentasPagar -> enviaquery($queryEstado);
-                $_id_estado = $rsEstado[0]->id_estado;
-                $rsActualizacion = $CuentasPagar->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
+            //aqui genera el comprobante
+            $funcion = "ins_ccomprobantes_cheques";
+            $parametros = "'$_total_cuentas_pagar',
+                           '$_concepto_cheque', 
+                           '$_id_usuarios', 
+                           '$_total_en_letras', 
+                           '$_fecha_cheque', 
+                           '$_observaciones',
+                           '$_id_formadePago',
+                           '$_referencia_ccomprobantes',
+                           '$_numero_cheque',
+                           '$_id_proveedores',
+                           '$_id_bancos'";
+            $consultaPG = $CuentasPagar->getconsultaPG($funcion, $parametros);	            
+            $ResultComprobante = $CuentasPagar->llamarconsultaPG($consultaPG);
+            $error = "";
+            $error = pg_last_error();
+            if(!empty($error)){
+                throw new Exception("Error ingresando Comprobantes");
+            }
+            if((int)$ResultComprobante[0] == -1 ){
+                throw new Exception(" --REVISAR NUMERO DE CHEQUE-- ");
+            }
+            
+            //obtengo el comprobante generado
+            $id_comprobante = (int)$ResultComprobante[0];
+            //para buscar el diario
+            $colParametrizacion = "id_parametrizacion_cuentas, tabla_parametrizacion_cuentas, id_plan_cuentas_debe, id_plan_cuentas_haber";
+            $tabParametrizacion = "core_parametrizacion_cuentas";
+            $WheParametrizacion = "id_principal_parametrizacion_cuentas = $_id_bancos";
+            $idParametrizacion = "tabla_parametrizacion_cuentas";
+            
+            $rsParametrizacion = $CuentasPagar -> getCondiciones($colParametrizacion,$tabParametrizacion,$WheParametrizacion,$idParametrizacion);
+            
+            //para generar el array de detalle solo hay dos cuentas
+            $fila = array();             
+            foreach ($rsParametrizacion as $res){
+                $fila = array('id_plan_cuentas'=>$res->id_plan_cuentas_debe,'valor_debe'=>$_total_cuentas_pagar,'valor_haber'=>0.00);
+                array_push( $_array_detalle_comrobantes, $fila);
                 
             }
-	        	        
-            echo json_encode($respuesta);
+            foreach ($rsParametrizacion as $res){
+                $fila = array('id_plan_cuentas'=>$res->id_plan_cuentas_haber,'valor_debe'=>0.00,'valor_haber'=>$_total_cuentas_pagar);
+                array_push( $_array_detalle_comrobantes, $fila);
+            }
+            
+            //para ingresar el detalle. se realiza con un ciclo
+            $_id_plan_cuentas = 0;
+            $_debe_comprobante = 0;
+            $_haber_comprobante = 0;
+            $funcionDet ="ins_dcomprobantes_procesos";
+	            
+            foreach ($_array_detalle_comrobantes as $res){
+	                $_id_plan_cuentas = $res['id_plan_cuentas'];
+	                $_debe_comprobante = $res['valor_debe'];
+	                $_haber_comprobante = $res['valor_haber'];
+	                $paramDet = "'$id_comprobante','$_id_plan_cuentas','$_concepto_cheque','$_debe_comprobante','$_haber_comprobante'";
+	                //query diario
+	                $queryDetalle = $CuentasPagar->getconsultaPG($funcionDet, $paramDet);
+	                //insert diario
+	                $error = "";
+	                $ResultDet = $CuentasPagar->llamarconsultaPG($queryDetalle);
+	                $error = pg_last_error();
+	                if( !empty($error) || (int)$ResultDet[0] <= 0){
+	                    throw new Exception("Error ingresando detalle");
+	                }
+	         }
+	            
+	            
+            //aqui para la mayorizacion
+            $funcionMayoriza = "con_ins_mayoriza";
+            $parametrosMayoriza = "'$id_comprobante','$_fecha_cheque'";
+            $consultaPG = $CuentasPagar->getconsultaPG($funcionMayoriza, $parametrosMayoriza);
+            $ResultMayoriza = $CuentasPagar->llamarconsultaPG($consultaPG);
+            $error = "";
+            $error = pg_last_error();
+            if( !empty($error) || (int)$ResultMayoriza[0] <= 0){
+                throw new Exception("Error Mayorizacion");
+            }
+	            
+            //para el cuadre plan_cuentas
+            $funcionMayor = "fn_cuadra_plan_cuentas";
+            foreach ($_array_detalle_comrobantes as $res){
+                $_id_plan_cuentas = $res['id_plan_cuentas'];
+                $paramMayorizar = "'$_id_plan_cuentas'";
+                //query diario
+                $queryDetalle = $CuentasPagar->getconsultaPG($funcionMayor, $paramMayorizar);
+                //realizar mayorizacion
+                $error = "";
+                $ResultMayorizar = $CuentasPagar->llamarconsultaPG($queryDetalle);
+                $error = pg_last_error();
+                if( !empty($error) || (int)$ResultMayorizar[0] <= 0){
+                    throw new Exception("Error Cuadrando comprobantes");
+                }
+            }            
+            
+            //aqui ingresar el pago
+            //id_creditos ya esta referenciada con la cuenta por pagar
+            $_id_creditos = 0;
+            $funcionPago = "ins_tes_pagos";
+            $parametrosPago = "'$_id_cuentas_pagar',
+            	        '$_id_creditos',
+            	        '$_id_proveedores',
+            	        '$id_comprobante',
+            	        '$_id_formadePago',
+            	        '$_fecha_cheque',
+            	        'CHEQUE',
+            	        null,
+            	        '',
+            	        '',
+                        '',
+            	        null";           
+            
+            $consultaPago = $CuentasPagar->getconsultaPG($funcionPago, $parametrosPago);
+            $ResultadoPago = $CuentasPagar->llamarconsultaPG($consultaPago);
+            
+            $error = "";
+            $error = pg_last_error();
+            if(!empty($error) || !is_int((int)$ResultadoPago[0])) throw  new Exception(" Error insercion Pago");
 	        
+            /*actualizacion de Cuenta por pagar*/
+            //buscar estado de cuentas por pagar
+            $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
+            $rsEstado = $CuentasPagar -> enviaquery($queryEstado);
+            $_id_estado = $rsEstado[0]->id_estado;
+            $rsActualizacion = $CuentasPagar->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");            
+            
+            $respuesta['comprobante']['mensaje']="CHEQUE REGISTRADO CORRECTAMENTE";
+            $respuesta['comprobante']['valor'] = 1;
+            $respuesta['comprobante']['id_comprobante'] = $id_comprobante;
+            $respuesta['cuentaspagar']['id_cuentas_pagar'] = $_id_cuentas_pagar;
+            
+            /*Actualizar Consecutivo Pago*/
+            $colvalPago = "numero_consecutivos = lpad((valor_consecutivos+1)::text,espacio_consecutivos,'0'),
+                        valor_consecutivos = valor_consecutivos+1";
+            $tabPago = "consecutivos";
+            $whePago = "id_entidades = 1 and nombre_consecutivos = 'PAGOS'";
+            $UpdatePago = $CuentasPagar->ActualizarBy($colvalPago, $tabPago, $whePago); 
+            
+            
+            /*para enviar al celular -- buscar en tabal credito*/
+            $colCredito = " 1";
+            $tabCredito = " tes_cuentas_pagar aa
+                        INNER JOIN ccomprobantes bb
+                        ON aa.id_ccomprobantes = bb.id_ccomprobantes
+                        INNER JOIN core_creditos cc
+                        ON cc.id_ccomprobantes = bb.id_ccomprobantes
+                        AND cc.id_estatus = 1";
+            $wheCredito = "aa.id_cuentas_pagar = $_id_cuentas_pagar";
+            $idCredito  = "aa.id_cuentas_pagar";
+            $rsCredito = $CuentasPagar->getCondiciones($colCredito, $tabCredito, $wheCredito, $idCredito);
+            
+            if(!empty($rsCredito)){
+                //si la cuenta por pagar viene de un credito
+                /*para enviara a celular*/
+                $_codigo_mensajes = "";
+                $_id_mensaje_mensajes = "22451";
+                /*buscar datos de beneficiario*/
+                $colBeneficiario = " aa.id_participes, aa.cedula_participes, aa.nombre_participes, aa.apellido_participes, aa.celular_participes";
+                $tabBeneficiario = " core_participes aa
+                                INNER JOIN proveedores bb
+                                ON aa.cedula_participes = bb.identificacion_proveedores
+                                AND aa.id_estatus = 1";
+                $wheBeneficiario = "bb.id_proveedores = $_id_proveedores";
+                $idBeneficiario  = "aa.cedula_participes";
+                $rsBeneficiario = $CuentasPagar->getCondiciones($colBeneficiario, $tabBeneficiario, $wheBeneficiario, $idBeneficiario);
+                if(!empty($rsBeneficiario)){
+                    $_nombre_participes = $rsBeneficiario[0]->nombre_participes;
+                    $_apellidos_participes = $rsBeneficiario[0]->apellido_participes;
+                    $_celular_mensaje = "0987474892";//$rsBeneficiario[0]->celular_participes; //cambiar para produccion
+                    $_nombres_mensajes = $_nombre_participes." ".$_apellidos_participes;
+                    $this->comsumir_mensaje_plus($_celular_mensaje, $_nombres_mensajes, $_codigo_mensajes, $_id_mensaje_mensajes);
+                }
+            }
+           
+            $CuentasPagar->endTran("COMMIT");
+                      
+            echo json_encode($respuesta);
+	            
+	       
 	    }catch (Exception $ex){
 	        
+	        $CuentasPagar->endTran();
 	        echo "<message>Error generando cheque ".$ex->getMessage()."<message>";
-	        
-	       // $ex->getMessage();
-	        
+	       
 	    }
 	    
 	}
@@ -884,6 +993,64 @@ class GenerarChequeController extends ControladorBase{
 	    echo json_encode($respuesta);
 	}
 	
+	public function comsumir_mensaje_plus($celular, $nombres, $codigo, $id_mensaje){
+	    
+	    /*si mensaje es para transferencia el id_mensaje = 22443*/
+	    //$nombres = poner el nombre unidos por guion bajo
+	    //$codigo = # cuenta y banco unidos por guion bajo
+	    
+	    /*si mensaje es para cheque el id_mensaje = 22451*/	    
+	    //--$nombres = poner el nombre unidos por guion bajo
+	    //--$codigo = enviar vacio;*/
+	    
+	    
+	    $cadena_recortada ="";
+	    $nombres_final="";
+	    $mensaje_retorna="";
+	    
+	    // quito el primero 0
+	    $celular_final=ltrim($celular, "0");
+	    
+	    // relleno espacios en blanco por _
+	    $nombres_final= str_replace(' ','_',$nombres);
+	    // $nombres_final= str_replace('Ñ','N',$nombres);
+	    // genero codigo de verificacion
+	    
+	    
+	    $variables="";
+	    $variables.="<pedido>";
+	    
+	    $variables.="<metodo>SMSEnvio</metodo>";
+	    $variables.="<id_cbm>767</id_cbm>";
+	    $variables.="<token>yPoJWsNjcThx2o0I</token>";
+	    $variables.="<id_transaccion>2002</id_transaccion>";
+	    $variables.="<telefono>$celular_final</telefono>";
+	    
+	    // poner el id_mensaje parametrizado en el sistema
+	    
+	    $variables.="<id_mensaje>$id_mensaje</id_mensaje>";
+	    
+	    // poner 1 si va con variables
+	    // poner 0 si va sin variables y sin la etiquetas datos
+	    $variables.="<dt_variable>1</dt_variable>";
+	    $variables.="<datos>";
+	    
+	    
+	    /// el numero de valores va dependiendo del mensaje si usa 1 o 2 variables.
+	    $variables.="<valor>$nombres_final</valor>";
+	    if (!empty($codigo)){
+	        $variables.="<valor>$codigo</valor>";
+	    }
+	    $variables.="</datos>";
+	    $variables.="</pedido>";
+	    
+	    
+	    $SMSPlusUrl = "https://smsplus.net.ec/smsplus/ws/mensajeria.php?xml={$variables}";
+	    $ResponseData = file_get_contents($SMSPlusUrl);
+	    
+	    $xml = simplexml_load_string($ResponseData);
+	    
+	}
 	
 }
 ?>

@@ -589,8 +589,30 @@ class SimulacionCreditosController extends ControladorBase{
                    $actualizacion_consecutivo= trim($actualizacion_consecutivo);
                    if(empty($actualizacion_consecutivo))
                    {
-                       $credito->endTran('COMMIT');
-                       $mensage="OK";
+                       $actualizar_cuentas=$this->ActualizarCuentasParticipes($id_solicitud, $numero_credito);
+                       if(empty($actualizar_cuentas))
+                       {
+                           
+                           $actualizar_info_participes=$this->ActualizarInfoParticipe($cedula_participe, $id_solicitud);
+                           if(empty($actualizar_info_participes))
+                           {
+                               $credito->endTran('COMMIT');
+                               
+                               $mensage="OK";
+                           }
+                           else
+                           {
+                               $credito->endTran('ROLLBACK');
+                               $mensage="ERROR ".$actualizar_info_participes;
+                           }
+                           
+                       }
+                       else
+                      {
+                          $credito->endTran('ROLLBACK');
+                          $mensage="ERROR";
+                      }
+                       
                    }
                    else {
                        $credito->endTran('ROLLBACK');
@@ -617,12 +639,250 @@ class SimulacionCreditosController extends ControladorBase{
        echo $mensage;
    }
    
+   public function ActualizarInfoParticipe($cedula_participe, $id_solicitud)
+   {
+       require_once 'core/DB_Functions.php';
+       ob_start();
+       $db = new DB_Functions();
+       $reporte=new PlanCuentasModel();
+       $columnas = " solicitud_prestamo.correo_solicitante_datos_personales,
+					  solicitud_prestamo.fecha_nacimiento_datos_personales,
+					  solicitud_prestamo.id_estado_civil_datos_personales,
+					  solicitud_prestamo.separacion_bienes_datos_personales,
+					  solicitud_prestamo.cargas_familiares_datos_personales,
+                      solicitud_prestamo.numero_hijos_datos_personales,
+					  solicitud_prestamo.nivel_educativo_datos_personales,
+					  solicitud_prestamo.id_provincias_vivienda,
+					  solicitud_prestamo.id_cantones_vivienda,
+					  solicitud_prestamo.id_parroquias_vivienda,
+                      solicitud_prestamo.barrio_sector_vivienda,
+					  solicitud_prestamo.ciudadela_conjunto_etapa_manzana_vivienda,
+					  solicitud_prestamo.calle_vivienda,
+					  solicitud_prestamo.numero_calle_vivienda,
+					  solicitud_prestamo.intersecion_vivienda,
+                      solicitud_prestamo.tipo_vivienda,
+					  solicitud_prestamo.vivienda_hipotecada_vivienda,
+					  solicitud_prestamo.tiempo_residencia_vivienda,
+					  solicitud_prestamo.nombre_propietario_vivienda,
+					  solicitud_prestamo.celular_propietario_vivienda,
+                      solicitud_prestamo.referencia_direccion_domicilio_vivienda,
+					  solicitud_prestamo.numero_casa_solicitante,
+					  solicitud_prestamo.numero_celular_solicitante,
+					  solicitud_prestamo.numero_trabajo_solicitante,
+                      solicitud_prestamo.extension_solicitante,
+					  solicitud_prestamo.apellidos_referencia_personal,
+					  solicitud_prestamo.nombres_referencia_personal,
+					  solicitud_prestamo.relacion_referencia_personal,
+					  solicitud_prestamo.numero_telefonico_referencia_personal,
+					  solicitud_prestamo.apellidos_referencia_familiar,
+					  solicitud_prestamo.nombres_referencia_familiar,
+					  solicitud_prestamo.parentesco_referencia_familiar,
+					  solicitud_prestamo.numero_telefonico_referencia_familiar,
+					  solicitud_prestamo.id_provincias_asignacion,
+					  solicitud_prestamo.id_cantones_asignacion,
+					  solicitud_prestamo.id_parroquias_asignacion,
+					  solicitud_prestamo.numero_telefonico_datos_laborales,
+					  solicitud_prestamo.interseccion_datos_laborales,
+					  solicitud_prestamo.calle_datos_laborales,
+					  solicitud_prestamo.cargo_actual_datos_laborales,
+					  solicitud_prestamo.sueldo_total_info_economica,
+                      solicitud_prestamo.tipo_pago_cuenta_bancaria,
+                      solicitud_prestamo.nombres_conyuge,
+                      solicitud_prestamo.apellidos_conyuge,
+                      solicitud_prestamo.numero_cedula_conyuge,
+                      solicitud_prestamo.numero_hijos_datos_personales,
+                      solicitud_prestamo.tiempo_residencia_vivienda,
+					  solicitud_prestamo.nombre_propietario_vivienda,
+					  solicitud_prestamo.celular_propietario_vivienda,
+					  solicitud_prestamo.referencia_direccion_domicilio_vivienda,
+                      solicitud_prestamo.nombres_referencia_personal,
+					  solicitud_prestamo.numero_telefonico_referencia_personal";
+       
+       $tablas   = "public.solicitud_prestamo,
+				     public.tipo_creditos";
+       
+       $where    = "solicitud_prestamo.id_solicitud_prestamo=".$id_solicitud;
+       
+       $resultSet=$db->getCondiciones($columnas, $tablas, $where);
+       
+       $columnas="id_participes";
+       $tablas="core_participes";
+       $where="cedula_participes='".$cedula_participe."'";
+       $id="id_participes";
+       $id_participes=$reporte->getCondiciones($columnas, $tablas, $where, $id);
+       $id_participes=$id_participes[0]->id_participes;
+       
+       $direccion_participe=$resultSet[0]->barrio_sector_vivienda." ".$resultSet[0]->ciudadela_conjunto_etapa_manzana_vivienda." ".$resultSet[0]->calle_vivienda." ";
+       $direccion_participe.=$resultSet[0]->numero_calle_vivienda." ".$resultSet[0]->intersecion_vivienda;
+       
+       $nombre_conyuge="N/A";
+       if(!(empty($resultSet[0]->nombres_conyuge))) $nombre_conyuge=$resultSet[0]->nombres_conyuge;
+       $apellido_conyuge="N/A";
+       if(!(empty($resultSet[0]->apellidos_conyuge))) $apellido_conyuge=$resultSet[0]->apellidos_conyuge;
+       $cedula_conyuge="N/A";
+       if(!(empty($resultSet[0]->numero_cedula_conyuge))) $cedula_conyuge=$resultSet[0]->numero_cedula_conyuge;
+       
+       $where = "id_participes=".$id_participes;
+       $tabla = "core_participes";
+       $colval = "fecha_nacimiento_participes='".$resultSet[0]->fecha_nacimiento_datos_personales."',
+                   direccion_participes='".$direccion_participe."',
+                   telefono_participes='".$resultSet[0]->numero_casa_solicitante."',
+                   celular_participes='".$resultSet[0]->numero_celular_solicitante."',
+                   ocupacion_participes='".$resultSet[0]->cargo_actual_datos_laborales."',
+                   nombre_conyugue_participes='".$nombre_conyuge."',
+                   apellido_esposa_participes='".$apellido_conyuge."',
+                   cedula_conyugue_participes='".$cedula_conyuge."',
+                   numero_dependencias_participes=".$resultSet[0]->numero_hijos_datos_personales;
+       $reporte->UpdateBy($colval, $tabla, $where);
+       
+       
+       $columnas = "nombre_parroquias";
+       $tablas   = "public.parroquias";
+       
+       $where    = "id_parroquias=".$resultSet[0]->id_parroquias_vivienda;
+       
+       $nombre_parroquias=$db->getCondiciones($columnas, $tablas, $where);
+       $nombre_parroquias=$nombre_parroquias[0]->nombre_parroquias;
+       
+       $anios_residencia=$resultSet[0]->tiempo_residencia_vivienda;
+       $anios_residencia=explode(" ", $anios_residencia);
+       $anios_residencia=$anios_residencia[0];
+       
+       $where = "id_participes=".$id_participes;
+       $tabla = "core_participes_informacion_adicional";
+       $colval = "parroquia_participes_informacion_adicional='".$nombre_parroquias."',
+                    sector_participes_informacion_adicional='".$resultSet[0]->barrio_sector_vivienda."',
+                    ciudadela_participes_informacion_adicional='".$resultSet[0]->ciudadela_conjunto_etapa_manzana_vivienda."',
+                    calle_participes_informacion_adicional='".$resultSet[0]->calle_vivienda."',
+                    numero_calle_participes_informacion_adicional='".$resultSet[0]->numero_calle_vivienda."',
+                    interseccion_participes_informacion_adicional='".$resultSet[0]->intersecion_vivienda."',
+                    anios_residencia_participes_informacion_adicional='".$anios_residencia."',
+                    nombre_propietario_participes_informacion_adicional='".$resultSet[0]->nombre_propietario_vivienda."',
+                    telefono_propietario_participes_informacion_adicional='".$resultSet[0]->celular_propietario_vivienda."',
+                    direccion_referencia_participes_informacion_adicional='".$resultSet[0]->referencia_direccion_domicilio_vivienda."',
+                    nombre_una_referencia_participes_informacion_adicional='".$resultSet[0]->nombres_referencia_personal."',
+                    telefono_una_referencia_participes_informacion_adicional='".$resultSet[0]->numero_telefonico_referencia_personal."'";
+       $reporte->UpdateBy($colval, $tabla, $where);
+     
+       
+       $errores_actualizacion=ob_get_clean();
+       $errores_actualizacion=trim($errores_actualizacion);
+       return $errores_actualizacion;
+   }
+   
+   public function ActualizarCuentasParticipes($id_solicitud, $numero_creditos)
+   {
+       ob_start();
+       $usuario_usuarios=$_SESSION['usuario_usuarios'];
+       require_once 'core/DB_Functions.php';
+       $db = new DB_Functions();
+       $rp_capremci=new PlanCuentasModel();
+       
+       
+       $columnas="		  solicitud_prestamo.nombre_banco_cuenta_bancaria,
+						  solicitud_prestamo.tipo_cuenta_cuenta_bancaria,
+						  solicitud_prestamo.numero_cuenta_cuenta_bancaria,
+						  solicitud_prestamo.numero_cedula_datos_personales,
+                      solicitud_prestamo.tipo_pago_cuenta_bancaria";
+       $tablas=" public.solicitud_prestamo";
+       $where= "solicitud_prestamo.id_solicitud_prestamo='$id_solicitud'";
+       $id="solicitud_prestamo.id_solicitud_prestamo";
+       
+       $resultSoli=$db->getCondicionesDesc($columnas, $tablas, $where, $id);
+       
+       if($resultSoli[0]->tipo_pago_cuenta_bancaria=="Depósito")
+       {
+           $nombre_banco=$resultSoli[0]->nombre_banco_cuenta_bancaria;
+           
+           $columnas="bankid";
+           $tablas="bancos";
+           $where= "nombre_bancos='".$nombre_banco."'";
+           $id="bankid";
+           $id_banco=$db->getCondicionesDesc($columnas, $tablas, $where, $id);
+           $id_banco=$id_banco[0]->bankid;
+           
+           $numero_cuenta=$resultSoli[0]->numero_cuenta_cuenta_bancaria;
+           $numero_cedula=$resultSoli[0]->numero_cedula_datos_personales;
+           $tipo_cuenta=$resultSoli[0]->tipo_cuenta_cuenta_bancaria;
+           
+           $columnas="id_participes";
+           $tablas=" public.core_participes";
+           $where= "cedula_participes='$numero_cedula'";
+           $id="id_participes";
+           
+           $id_participes=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+           $id_participes=$id_participes[0]->id_participes;
+           
+           if($tipo_cuenta=='Ahorros')
+           {
+               $tipo_cuenta='AHORROS';
+           }
+           else
+           {
+               $tipo_cuenta='CORRIENTE';
+           }
+           
+           $columnas="id_tipo_cuentas";
+           $tablas=" public.core_tipo_cuentas";
+           $where= "nombre_tipo_cuentas='$tipo_cuenta'";
+           $id="id_tipo_cuentas";
+           
+           $id_tipo_cuentas=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+           $id_tipo_cuentas=$id_tipo_cuentas[0]->id_tipo_cuentas;
+           
+           $funcion = "ins_core_participes_cuentas";
+           $parametros="'$id_participes',
+                     '$id_banco',
+                     '$numero_cuenta',
+                     '$id_tipo_cuentas',
+                     1,
+                     'true',
+                     '$usuario_usuarios'";
+           $rp_capremci->setFuncion($funcion);
+           $rp_capremci->setParametros($parametros);
+           $resultado=$rp_capremci->Insert();
+           
+           $columnas="id_forma_pago";
+           $tablas=" public.forma_pago";
+           $where= "nombre_forma_pago='TRANSFERENCIA'";
+           $id="id_forma_pago";
+           
+           $id_forma_pagos=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+           $id_forma_pagos=$id_forma_pagos[0]->id_forma_pago;
+           
+           $where = "numero_creditos='".$numero_creditos."'";
+           $tabla = "core_creditos";
+           $colval = "id_tipo_pagos=".$id_forma_pagos;
+           $rp_capremci->UpdateBy($colval, $tabla, $where);
+       }
+       else {
+           $columnas="id_forma_pago";
+           $tablas=" public.forma_pago";
+           $where= "nombre_forma_pago='CHEQUE'";
+           $id="id_forma_pago";
+           
+           $id_forma_pagos=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+           $id_forma_pagos=$id_forma_pagos[0]->id_forma_pago;
+           
+           $where = "numero_creditos='".$numero_creditos."'";
+           $tabla = "core_creditos";
+           $colval = "id_tipo_pagos=".$id_forma_pagos;
+           $rp_capremci->UpdateBy($colval, $tabla, $where);
+       }
+       
+      
+       $errores_cuentas=ob_get_clean();
+       $errores_cuentas=trim($errores_cuentas);
+       
+       return $errores_cuentas;       
+   }
+   
    public function ActualizarSolicitud($id_solicitud, $monto, $plazo, $id_credito)
    {
        ob_start();
        require_once 'core/DB_Functions.php';
        $db = new DB_Functions();
-       $colval="id_estado_tramites=2, monto_datos_prestamo=".$monto.", plazo_datos_prestamo=".$plazo.", identificador_consecutivos=".$id_credito;
+       $colval="id_estado_tramites=2, monto_datos_prestamo=".$monto.", plazo_datos_prestamo=".$plazo.", numero_creditos=".$id_credito;
        $tabla="solicitud_prestamo";
        $where="id_solicitud_prestamo=".$id_solicitud;
        $db->ActualizarBy($colval, $tabla, $where);

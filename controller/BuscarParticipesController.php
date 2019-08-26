@@ -27,6 +27,8 @@ class BuscarParticipesController extends ControladorBase{
         ;
     }
     
+    
+    
     public function InfoSolicitud()
     {
         session_start();

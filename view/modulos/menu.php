@@ -708,8 +708,7 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
          <li style="<?php echo getcontrolador("Turnos",$controladores) ?>"><a href="index.php?controller=Turnos&action=index5"><i class="fa fa-circle-o"></i>Turnos</a></li>
-		         	
-             </ul>
+	         </ul>
             </li>
         
         <li class="treeview"  style="<?php echo getcontrolador("ReporteTurnos",$controladores) ?>"  >

@@ -1,7 +1,7 @@
 <?php
 
 
-class DB_Functions {
+class DB_FunctionsRfid {
 
 	private $conn;
 
@@ -9,7 +9,7 @@ class DB_Functions {
 	function __construct() {
 		require_once 'ConectarServiceRfid.php';
 		// connecting to database
-		$db = new ConectarService();
+		$db = new ConectarServiceRfid();
 		$this->conn = $db->conexion();
 	}
 
@@ -789,6 +789,6 @@ class DB_Functions {
 	
 }
 
-?>
+
 
 

@@ -85,8 +85,8 @@
 
 			<form id="frm_genera_cheque" action="<?php echo $helper->url("GenerarCheque","IndexCheque"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
              	
-             	<?php  ?>    
-							    
+             	<?php  ?>
+             		    
 		    	 <div class="row">
 		    	 
             		<div class="col-xs-12 col-md-3 col-lg-3">
@@ -97,16 +97,16 @@
                     		</div>        			 
             			</div>
             		</div> 
-		    	 
+		    	
 		    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
 		    	 		<div class="form-group ">                 			 
             				<label for="nombre_lote" class="control-label" > Lote:</label>
             				<div class="form-group-sm">                				
-                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $resultSet[0]->nombre_lote; ?>" autofocus>  
-                              <input type="hidden" id="id_lote" name="id_lote" value="<?php echo $resultSet[0]->id_lote; ?>">
-                              <input type="hidden" id="id_cuentas_pagar" name="id_cuentas_pagar" value="<?php echo $resultSet[0]->id_cuentas_pagar; ?>" >
+                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $resultset[0]->nombre_lote; ?>" autofocus>  
+                              <input type="hidden" id="id_lote" name="id_lote" value="<?php echo $resultset[0]->id_lote; ?>">
+                              <input type="hidden" id="id_cuentas_pagar" name="id_cuentas_pagar" value="<?php echo $resultset[0]->id_cuentas_pagar; ?>" >
             				</div>
-                						 
+                					
             			</div>		    	 	
 		    	 	</div>
             		
@@ -124,7 +124,7 @@
             			<div class="form-group ">
             				<label for="identificacion_proveedor" class=" control-label" >Descripción:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="descripcion_pago" name="descripcion_pago" value="" >
+                				 <input type="text" class="form-control mayus" id="descripcion_pago" name="descripcion_pago" value="<?php echo $resultset[0]->descripcion; ?>" >
                     		</div>        			 
             			</div>
             		</div> 
@@ -134,7 +134,7 @@
             			<div class="form-group ">
             				<label for="identificacion_proveedor" class=" control-label" >Identificacion Beneficiario:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="<?php echo $resultSet[0]->cedula_participes; ?>" >
+                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="<?php echo $resultset[0]->identificacion_proveedores; ?>" >
                     		</div>        			 
             			</div>
             		</div> 
@@ -143,7 +143,7 @@
             			<div class="form-group ">
             				<label for="nombre_proveedor" class=" control-label" >Nombre Beneficiario:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $resultSet[0]->apellido_participes.' - '. $resultSet[0]->nombre_participes;  ?>" >
+                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $resultset[0]->apellido_beneficiario.' - '. $resultset[0]->nombre_beneficiario;  ?>" >
                     		</div>        			 
             			</div>
             		</div> 
@@ -153,7 +153,7 @@
             			<div class="form-group ">
             				<label for="total_lote" class=" control-label" >Total Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="total_cuentas_pagar" name="total_cuentas_pagar"  value="<?php echo $resultSet[0]->total_cuentas_pagar; ?>" > 
+                				 <input type="text" class="form-control" id="total_cuentas_pagar" name="total_cuentas_pagar"  value="<?php echo $resultset[0]->total_cuentas_pagar; ?>" > 
                     		</div>        			 
             			</div>
             		</div> 
@@ -162,7 +162,7 @@
             			<div class="form-group ">
             				<label for="nombre_cuenta_banco" class=" control-label" >Transferir a:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="nombre_cuenta_banco" name="nombre_cuenta_banco" value="<?php echo $rsSolicitud[0]->nombre_banco_cuenta_bancaria; ?>" >
+                				 <input type="text" class="form-control mayus" id="nombre_cuenta_banco" name="nombre_cuenta_banco" value="<?php echo $resultset[0]->nombre_banco; ?>" >
                     		</div>        			 
             			</div>
             		</div>
@@ -171,7 +171,7 @@
             			<div class="form-group ">
             				<label for="cuenta_banco" class=" control-label" >Cuenta:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="cuenta_banco" name="cuenta_banco" value=" <?php echo $rsSolicitud[0]->numero_cuenta_cuenta_bancaria; ?> " >
+                				 <input type="text" class="form-control mayus" id="cuenta_banco" name="cuenta_banco" value=" <?php echo $resultset[0]->numero_cuenta_banco; ?> " >
                     		</div>        			 
             			</div>
             		</div> 
@@ -180,7 +180,7 @@
             			<div class="form-group ">
             				<label for="tipo_cuenta_banco" class=" control-label" >Tipo Cuenta:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="tipo_cuenta_banco" name="tipo_cuenta_banco" value=" <?php echo $rsSolicitud[0]->tipo_cuenta_cuenta_bancaria; ?> " >
+                				 <input type="text" class="form-control mayus" id="tipo_cuenta_banco" name="tipo_cuenta_banco" value=" <?php echo $resultset[0]->nombre_tipo_cuenta_banco; ?> " >
                     		</div>        			 
             			</div>
             		</div>           		
@@ -296,7 +296,7 @@
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.09"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.11"></script>
 
   </body>
 </html>   

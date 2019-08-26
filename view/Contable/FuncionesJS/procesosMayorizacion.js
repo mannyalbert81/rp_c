@@ -99,9 +99,14 @@ $("#btnDetalles").on("click",function(event){
 		 dataType:"json",
 		 data:{peticion:'simulacion',id_tipo_procesos:$procesos.val(),anio_procesos: $anioProcesos.val(),mes_procesos: $mesProcesos.val()}
 	 }).done(function(x){
-		 //console.log(x)
-		 $divResultados.html(x.tabladatos);
-		 setTableStyle("tbl_detalle_diario");
+		 if ( x.hasOwnProperty( 'tabladatos' ) || ( x.tabladatos != '' ) ) {
+			 $divResultados.html(x.tabladatos);
+			 setTableStyle("tbl_detalle_diario");
+		 };
+		 if ( x.hasOwnProperty( 'id_ccomprobantes' ) || ( x.id_ccomprobantes != '' ) ) {
+			 buscaDiario(x.id_ccomprobantes);
+		 };
+		 
 		 
 	 }).fail(function(xhr,status,error){
 		 let err = xhr.responseText;

@@ -44,56 +44,115 @@ class TransferenciasController extends ControladorBase{
 		$datosVista = array(); //variable para almacenar varaiables que se pasaran a la vista 
 		
 		/*traer datos de la cuenta por pagar*/
-		$rsCuentasPagar = $CuentasPagar->getBy("id_cuentas_pagar = $_id_cuentas_pagar");
-		
-		$origen_cuentas_pagar =  
-		
-		
-		//datos a necesitar de la vista 
-		//id_lote
-		//id_cuentas_pagar
-		//descripcion
-		//iden_beneficiario
-		//nombre_benefi
-		//apellido benefic
-		//total de la cuenta
-		
-		//SI ES CREDITO
-		
-		$col1 = "aa.id_cuentas_pagar,aa.numero_cuentas_pagar,aa.id_tipo_documento,aa.descripcion_cuentas_pagar,
-            aa.id_forma_pago,aa.total_cuentas_pagar,bb.id_ccomprobantes, cc.id_creditos, dd.id_participes,
-            cc.numero_creditos,cc.saldo_actual_creditos, dd.cedula_participes, dd.nombre_participes,
-            dd.apellido_participes,ee.id_lote, ee.nombre_lote";
+		$col1 = "aa.total_cuentas_pagar, aa.origen_cuentas_pagar, aa.descripcion_cuentas_pagar, aa.id_estado, aa.id_forma_pago,
+		          bb.concepto_ccomprobantes, cc.nombre_lote, cc.id_lote, cc.descripcion_lote, dd.nombre_proveedores, dd.id_bancos,
+                  dd.id_tipo_cuentas, ee.nombre_tipo_proveedores,dd.id_proveedores, dd.numero_cuenta_proveedores,dd.identificacion_proveedores";
 		$tab1 = "tes_cuentas_pagar aa
-        	INNER JOIN ccomprobantes bb
-        	ON aa.id_ccomprobantes = bb.id_ccomprobantes
-        	INNER JOIN core_creditos cc
-        	ON cc.id_ccomprobantes = bb.id_ccomprobantes
-        	INNER JOIN core_participes dd
-        	ON dd.id_participes = cc.id_participes
-        	INNER JOIN tes_lote ee
-        	ON ee.id_lote = aa.id_lote";
-		$whe1 = "aa.id_cuentas_pagar = $_id_cuentas_pagar";
-		$id1 = "aa.id_cuentas_pagar"; 
+        		INNER JOIN ccomprobantes bb
+        		ON aa.id_ccomprobantes = bb.id_ccomprobantes
+        		INNER JOIN tes_lote cc
+        		ON cc.id_lote = aa.id_lote
+                INNER JOIN proveedores dd
+                ON aa.id_proveedor = dd.id_proveedores
+                INNER JOIN tes_tipo_proveedores ee
+    		    ON dd.id_tipo_proveedores = ee.id_tipo_proveedores";
+		$whe1 = " aa.id_cuentas_pagar = $_id_cuentas_pagar ";
+		$id1 = "aa.id_cuentas_pagar";
 		
 		$rsConsulta1 = $CuentasPagar->getCondiciones($col1, $tab1, $whe1, $id1);
 		
-		//variables		
-		$_numero_credito = !empty($rsConsulta1) ? $rsConsulta1[0]->numero_creditos : 0 ;
+		//en caso de generar que no ingresa a la generacion de transferencia no tine todo los solicitado en el inner 
 		
-		//buscar en solicitud
-		$colDb = " id_solicitud_prestamo, nombre_banco_cuenta_bancaria, numero_cuenta_cuenta_bancaria,tipo_cuenta_cuenta_bancaria ";
-		$tabDb = " solicitud_prestamo ";
-		$wheDb = " identificador_consecutivos='".$_numero_credito."'";
-		$rsSolicitud = $db->getCondiciones($colDb, $tabDb, $wheDb);
+		if( empty($rsConsulta1) ){
+		    
+		    $this->redirect("Pagos","index");
+		    exit();
+		    
+		}else{
+		    
+		    $id_proveedores = $rsConsulta1[0]->id_proveedores;
+		    $id_tipo_cuenta = $rsConsulta1[0]->id_tipo_cuentas;
+		    $identificacion_proveedores = $rsConsulta1[0]->identificacion_proveedores;
+		    
+		    $datosVista['id_lote'] = $rsConsulta1[0]->id_lote;
+		    $datosVista['id_cuentas_pagar'] = $_id_cuentas_pagar;
+		    $datosVista['descripcion'] = "";
+		    $datosVista['id_proveedores'] = $id_proveedores;
+		    $datosVista['identificacion_proveedores'] = $identificacion_proveedores;
+		    $datosVista['total_cuentas_pagar'] = $rsConsulta1[0]->total_cuentas_pagar;
+		    $datosVista['nombre_lote'] = $rsConsulta1[0]->nombre_lote;
+		    
+		    $nombre_tipo_proveedores = $rsConsulta1[0]->nombre_tipo_proveedores;		    
+		    if( is_null($nombre_tipo_proveedores) || $nombre_tipo_proveedores == "PAGO PROVEEDORES" || $nombre_tipo_proveedores == "PAGO PROVEEDORES"  ){
+		        //cuando es pago a proveedores
+		        $datosVista['nombre_beneficiario'] = $rsConsulta1[0]->nombre_proveedores;
+		        $datosVista['apellido_beneficiario'] = "";
+		        $datosVista['numero_cuenta_banco'] = $rsConsulta1[0]->numero_cuenta_proveedores;
+		        
+		        $col2 = "aa.id_bancos, aa.nombre_bancos";
+		        $tab2 = "tes_bancos aa LEFT JOIN proveedores bb ON aa.id_bancos = bb.id_bancos";
+		        $whe2 = " bb.id_proveedores = $id_proveedores ";
+		        $id2 = "aa.id_bancos";
+		        $rsConsulta2 = $CuentasPagar->getCondiciones($col2, $tab2, $whe2, $id2);
+		        if(!empty($rsConsulta2)){
+		            $datosVista['nombre_banco'] = $rsConsulta2[0]->nombre_bancos;
+		        }else{
+		            $datosVista['nombre_banco'] = "";
+		        }
+		        
+		        $col3 = "*";
+		        $tab3 = "core_tipo_cuentas";
+		        $whe3 = "id_tipo_cuentas = $id_tipo_cuenta ";
+		        $id3 = "id_tipo_cuentas";
+		        $rsConsulta3 = $CuentasPagar->getCondiciones($col3, $tab3, $whe3, $id3);
+		        if(!empty($rsConsulta3)){
+		            $datosVista['nombre_tipo_cuenta_banco'] = $rsConsulta3[0]->nombre_tipo_cuentas;
+		        }else{
+		            $datosVista['nombre_tipo_cuenta_banco'] = "";
+		        }
+		        
+		    }else if($nombre_tipo_proveedores == "PARTICIPE"){
+		       
+		        $col4 = "aa.nombre_participes,aa.apellido_participes,bb.numero_participes_cuentas,cc.nombre_tipo_cuentas,dd.nombre_bancos";
+		        $tab4 = "core_participes aa
+        		        LEFT JOIN core_participes_cuentas bb
+        		        ON aa.id_participes = bb.id_participes
+        		        AND bb.cuenta_principal = true
+        		        LEFT JOIN core_tipo_cuentas cc
+        		        ON cc.id_tipo_cuentas = bb.id_tipo_cuentas
+        		        LEFT JOIN tes_bancos dd
+        		        ON bb.id_bancos = dd.id_bancos";
+		        $whe4 = "  aa.id_estatus = 1 AND cedula_participes = '$identificacion_proveedores'";
+		        $id4 = "aa.id_participes";
+		        $rsConsulta4 = $CuentasPagar->getCondiciones($col4, $tab4, $whe4, $id4);
+		        if(!empty($rsConsulta4)){
+		            $datosVista['nombre_beneficiario'] = $rsConsulta4[0]->nombre_participes;
+		            $datosVista['apellido_beneficiario'] = $rsConsulta4[0]->apellido_participes;
+		            $datosVista['numero_cuenta_banco'] = $rsConsulta4[0]->numero_participes_cuentas;
+		            $datosVista['nombre_banco'] = $rsConsulta4[0]->nombre_bancos;
+		            $datosVista['nombre_tipo_cuenta_banco'] = $rsConsulta4[0]->nombre_tipo_cuentas;
+		        }else{
+		            $datosVista['nombre_beneficiario'] = "";
+		            $datosVista['apellido_beneficiario'] = "";
+		            $datosVista['numero_cuenta_banco'] = "";
+		            $datosVista['nombre_banco'] = "";
+		            $datosVista['nombre_tipo_cuenta_banco'] = "";
+		        }
+		        
+		        
+		    }//aqui aumentar para mas opciones de transferencias
+		    
+		    //generar array de respuesta a vista
+		    $resultset =  array((object)$datosVista);
+		    
+		    //print_r($resultset);
+		    
+		    $this->view_tesoreria("Transferencias",array(
+		        "resultset"=>$resultset
+		    ));
+ 		   
+		}
 		
-		
-		//print_r($RsSolicitud);
-				
-		$this->view_tesoreria("Transferencias",array(
-		    "resultSet"=>$rsConsulta1,"rsSolicitud" => $rsSolicitud	
-		));
-			
 	
 	}
 	
@@ -105,150 +164,45 @@ class TransferenciasController extends ControladorBase{
 	        echo '<message>Variables no Identificadas <message>'; exit();
 	    }
 	    
-	    $CuentasPagar = new CuentasPagarModel();
-	    
-	    //tomo datos de session
-	    $_id_usuario = $_SESSION['id_usuarios'];
-	    
+	    $CuentasPagar = new CuentasPagarModel();	    
+	   
 	    //tomo datos de vista
 	    $_lista_distribucion = json_decode($_POST['lista_distribucion']);	    
 	    $_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
-	    $_fecha_transferencia =  $_POST['fecha_transferencia'];
-	    $_total_cuentas_pagar = $_POST['total_cuentas_pagar'];
-	    $_tipo_cuenta_banco = $_POST['tipo_cuenta_banco'];
-	    $_nombre_cuenta_banco = $_POST['nombre_cuenta_banco'];
-	    $_numero_cuenta_banco = $_POST['numero_cuenta_banco'];
+	    $_fecha_transferencia =  $_POST['fecha_transferencia'];	   
 	    
-	    $respuesta = false;
-
-	    foreach ($_lista_distribucion as $data){
+	    $col1 = "origen_cuentas_pagar";
+	    $tab1 = "tes_cuentas_pagar";
+	    $whe1 = "id_cuentas_pagar = $_id_cuentas_pagar";
+	    $id1 = "id_cuentas_pagar";
+	    $rsConsulta1 = $CuentasPagar -> getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    $validacion = false;
+	    
+	    if( !empty($rsConsulta1) ){
 	        
-	        $destino_distribucion = "";
-	        if($data->tipo_pago == "debito"){
-	            $destino_distribucion = "DEBE";
-	        }else{  
-	            $destino_distribucion = "HABER"; 
-	        }
-	        
-	        $queryDistribucionPagos = "INSERT INTO tes_distribucion_pagos
-	        (id_cuentas_pagar, id_plan_cuentas, fecha_distribucion_pagos, valor_distibucion_pagos, destino_distribucion_pagos)
-	        VALUES('$_id_cuentas_pagar', '$data->id_plan_cuentas' , '$_fecha_transferencia', $_total_cuentas_pagar, '$destino_distribucion')";	        
-	        
-	        $ResultDistribucionPagos = $CuentasPagar -> executeNonQuery($queryDistribucionPagos);
-	       
-	        if(!is_int($ResultDistribucionPagos) || $ResultDistribucionPagos <= 0 ){
-	            $respuesta = false;
-	            //$cuentasPagar->endTran('ROLLBACK');
-	            break;
+	        //recibir respuesta con mensaje en error
+	        switch ($rsConsulta1[0]->origen_cuentas_pagar){
 	            
+	            case "MANUAL":
+	                $validacion = $this->transferirProveedor($_id_cuentas_pagar, $_fecha_transferencia, $_lista_distribucion);
+	                break;
+	            case "CREDITOS":
+	                $validacion = $this->transferirParticipe($_id_cuentas_pagar, $_fecha_transferencia, $_lista_distribucion);
+	                break;
 	        }
-	        
 	    }
 	    
-	    //buscar datos a tranferir
-	    $col1 = "aa.id_cuentas_pagar,aa.numero_cuentas_pagar,aa.id_tipo_documento,aa.descripcion_cuentas_pagar,
-            aa.id_forma_pago,aa.total_cuentas_pagar,bb.id_ccomprobantes, cc.id_creditos, dd.id_participes,
-            cc.numero_creditos,cc.saldo_actual_creditos, dd.cedula_participes, dd.nombre_participes,
-            dd.apellido_participes,ee.id_lote, ee.nombre_lote, ff.numero_cuenta_proveedores, ff.id_tipo_cuentas, ff.id_bancos,
-            ff.id_proveedores";
-	    $tab1 = "tes_cuentas_pagar aa
-        	INNER JOIN ccomprobantes bb
-        	ON aa.id_ccomprobantes = bb.id_ccomprobantes
-        	INNER JOIN core_creditos cc
-        	ON cc.id_ccomprobantes = bb.id_ccomprobantes
-        	INNER JOIN core_participes dd
-        	ON dd.id_participes = cc.id_participes
-        	INNER JOIN tes_lote ee
-        	ON ee.id_lote = aa.id_lote
-            INNER JOIN proveedores ff
-            ON ff.id_proveedores = aa.id_proveedor";	    
-	    $whe1 = "aa.id_cuentas_pagar = $_id_cuentas_pagar";
-	    $id1 = "aa.id_cuentas_pagar";
-	    
-	    $rsConsulta1 = $CuentasPagar->getCondiciones($col1, $tab1, $whe1, $id1);
-	    
-	    //variables
-	    $_numero_credito = !empty($rsConsulta1) ? $rsConsulta1[0]->numero_creditos : 0 ;
-	    $_id_creditos = !empty($rsConsulta1) ? $rsConsulta1[0]->id_creditos : 0 ;
-	    //esta variable esta relacionada a la tabla participes con proveedores
-	    $_id_participes = !empty($rsConsulta1) ? $rsConsulta1[0]->id_proveedores : 0 ;
-	    $_id_forma_pago = !empty($rsConsulta1) ? $rsConsulta1[0]->id_forma_pago : 0 ;
-	    $_id_bancos = !empty($rsConsulta1) ? $rsConsulta1[0]->id_bancos : 0 ;
-	    $_numero_cuenta_banco = !empty($rsConsulta1) ? $rsConsulta1[0]->numero_cuenta_proveedores : '' ;
-	    $_id_tipo_cuenta_banco = !empty($rsConsulta1) ? $rsConsulta1[0]->id_tipo_cuentas : 0 ;
-	    $_nombre_participes = !empty($rsConsulta1) ? $rsConsulta1[0]->nombre_participes : '' ;
-	    $_apellidos_participes = !empty($rsConsulta1) ? $rsConsulta1[0]->apellido_participes : 0 ;
-	    
-	    $_id_tipo_cuenta_banco = ( $_id_tipo_cuenta_banco == " " || is_null($_id_tipo_cuenta_banco) ) ? 0 : $_id_tipo_cuenta_banco;
-	    $_id_bancos = ( $_id_bancos == " " || is_null($_id_bancos) ) ? 0 : $_id_bancos;
-	    
-	    //para ingresar pago 
-	    $funcionPago = "ins_tes_pagos";
-	    $parametrosPago = "'$_id_cuentas_pagar',
-            	        '$_id_creditos',
-            	        '$_id_participes',
-            	        null,
-            	        '$_id_forma_pago',
-            	        '$_fecha_transferencia',
-            	        'TRANSFERENCIA',
-            	        '0' ,
-            	        '$_nombre_cuenta_banco',
-            	        '$_numero_cuenta_banco',
-                        '$_tipo_cuenta_banco',
-            	        '$_id_tipo_cuenta_banco'";
-	  
-        $consultaPago = $CuentasPagar->getconsultaPG($funcionPago, $parametrosPago);        
-       
-        $ResulatadoPago = $CuentasPagar->llamarconsultaPG($consultaPago);
+	    if($validacion['respuesta']){
+	        echo json_encode(array('respuesta'=>1,'mensaje'=>'TRANSACCION REALIZADA'));
+	        exit();
+	    }else{
+	        echo "<message>".$validacion['mensaje']."<message>";
+	        exit();
+	    }
         
-        $_id_pagos = (int)$ResulatadoPago[0];
-        
-        //Datos para Comprobante
-        $_concepto_comprobante = " TRANSACCION TRANSFERENCIA A .".$_nombre_participes." ".$_apellidos_participes.". DEL CREDITO $_numero_credito ";
-        $valor_letras_pago = $CuentasPagar->numtoletras($_total_cuentas_pagar);
-        $funcionComprobante = "tes_agrega_comprobante_pago_transferencia";
-        $parametrosComprobante = "'$_id_usuario',
-            	        '$_id_bancos',
-            	        '$_id_cuentas_pagar',
-            	        '$_id_participes',
-            	        '$_id_forma_pago',
-                        '$_total_cuentas_pagar',
-                        '$valor_letras_pago',
-            	        '$_fecha_transferencia',
-            	        'TRANSFERENCIA',
-            	        '$_numero_cuenta_banco' ,
-            	        null,
-            	        'PAGO CREDITO $_numero_credito ',
-            	        'PAGO',
-            	        null,
-                        '$_concepto_comprobante'";
-            	        
-        $consultaComprobante = $CuentasPagar->getconsultaPG($funcionComprobante, $parametrosComprobante);
-        $ResulatadoComprobante = $CuentasPagar->llamarconsultaPG($consultaComprobante);
-        
-        $_id_comprobante = $ResulatadoComprobante[0];
-        
-        $columnaPago = "id_ccomprobantes = $_id_comprobante ";
-        $tablasPago = "tes_pagos";
-        $wherePago = "id_pagos = $_id_pagos";
-        $Update_tes_pago = $CuentasPagar -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
-        
-        /*actualizacion de Cuenta por pagar*/
-        //buscar estado de cuentas por pagar
-        $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
-        $rsEstado = $CuentasPagar -> enviaquery($queryEstado);
-        $_id_estado = $rsEstado[0]->id_estado;
-        $rsActualizacionCuentaPagar = $CuentasPagar->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
-        
-        /*para enviara a celular*/
-        $_celular_mensaje = "";
-        $_nombres_mensajes = $_nombre_participes." ".$_apellidos_participes;
-        $_num_cuenta = "XXXXXX".substr($_numero_cuenta_banco, 6);
-        $_codigo_mensajes = str_replace(' ','_',$_num_cuenta.'-'.$_nombre_cuenta_banco);
-        $_id_mensaje_mensajes = "22443";
-        $this->comsumir_mensaje_plus($_celular_mensaje, $_nombres_mensajes, $_codigo_mensajes, $_id_mensaje_mensajes);
-	   
-	    echo json_encode(array('respuesta'=>1,'mensaje'=>'TRANSACCION REALIZADA'));
+	        
+	 
 	    
 	}
 	
@@ -317,43 +271,7 @@ class TransferenciasController extends ControladorBase{
 	    return $out;
 	}
 	
-	/***
-	 * return: json
-	 * title: editBancos
-	 * fcha: 2019-04-22
-	 */
-	public function editEntidad(){
-	    
-	    session_start();
-	    $entidad = new CoreEntidadPatronalModel();
-	    $nombre_controladores = "CoreEntidadPatronal";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $entidad->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    	     
-	    if (!empty($resultPer))
-	    {
-	        
-	        
-	        if(isset($_POST["id_entidad_patronal"])){
-	            
-	            $_id_entidad_patronal = (int)$_POST["id_entidad_patronal"];
-	            
-	            $query = "SELECT * FROM core_entidad_patronal WHERE id_entidad_patronal = $_id_entidad_patronal";
 
-	            $resultado  = $entidad->enviaquery($query);	            
-	           
-	            echo json_encode(array('data'=>$resultado));	            
-	            
-	        }
-	       	        
-	        
-	    }
-	    else
-	    {
-	        echo "Usuario no tiene permisos-Editar";
-	    }
-	    
-	}
 	
 	public function generaTxt(){
 	    
@@ -515,18 +433,382 @@ class TransferenciasController extends ControladorBase{
 	    
 	}
 	
-	public function probarMensaje(){
+	public function transferirParticipe( $_id_cuentas_pagar,$_fecha_transaccion,$_lista_distribucion){
 	    
-	    /*para enviara a celular*/
-	    $_celular_mensaje = "0987474892";
-	    $_nombres_mensajes = "DANNY CAARRillo";
-	    //$_num_cuenta = "XXXXXX".substr("0987654123", 6);
-	    $_codigo_mensajes = str_replace(' ','_',"000".'-'."DE LOJA");
-	    $_id_mensaje_mensajes = "22443";
-	    $this->comsumir_mensaje_plus($_celular_mensaje, $_nombres_mensajes, $_codigo_mensajes, $_id_mensaje_mensajes);
+	    $CuentasPagar = new CuentasPagarModel();
+	    $respuesta_funcion = array();
 	    
-	    echo json_encode(array('respuesta'=>1,'mensaje'=>'TRANSACCION REALIZADA'));
+	    if(!isset($_SESSION)){
+	        session_start();
+	    }
+	    
+	    try {
+	        
+	        $CuentasPagar->beginTran();
+	        
+	        $_id_usuarios = $_SESSION['id_usuarios'];
+	        
+	        //buscar datos a tranferir
+	        $col1 = "aa.id_cuentas_pagar, aa.saldo_cuenta_cuentas_pagar, aa.numero_cuentas_pagar, aa.id_tipo_documento, aa.descripcion_cuentas_pagar,
+        	        aa.id_forma_pago, aa.total_cuentas_pagar, aa.id_proveedor, bb.id_ccomprobantes, cc.id_creditos, dd.id_participes,
+        	        cc.numero_creditos, cc.saldo_actual_creditos, dd.cedula_participes, dd.nombre_participes, dd.apellido_participes, dd.celular_participes,
+        	        ee.id_lote, ee.nombre_lote";
+	        $tab1 = "tes_cuentas_pagar aa
+                    INNER JOIN ccomprobantes bb
+                    ON aa.id_ccomprobantes = bb.id_ccomprobantes
+                    INNER JOIN core_creditos cc
+                    ON cc.id_ccomprobantes = bb.id_ccomprobantes
+                    INNER JOIN core_participes dd
+                    ON dd.id_participes = cc.id_participes
+                    INNER JOIN tes_lote ee
+                    ON ee.id_lote = aa.id_lote
+                    ";
+	        $whe1 = "cc.id_estatus = 1 AND dd.id_estatus=1 AND aa.id_cuentas_pagar = $_id_cuentas_pagar";
+	        $id1 = "aa.id_cuentas_pagar";	        
+	        
+	        $rsConsulta1 = $CuentasPagar->getCondiciones($col1, $tab1, $whe1, $id1);
+	        
+	        if(!empty($rsConsulta1)){
+	            
+	            $_numero_credito       = $rsConsulta1[0]->numero_creditos;
+	            $_id_creditos          = $rsConsulta1[0]->id_creditos;
+                $_id_participes        = $rsConsulta1[0]->id_participes ;
+                $_id_proveedores        = $rsConsulta1[0]->id_proveedor ;
+	            $_nombre_participes    = $rsConsulta1[0]->nombre_participes ;
+	            $_apellidos_participes = $rsConsulta1[0]->apellido_participes ;
+	            $_celular_participes = $rsConsulta1[0]->apellido_participes ;
+	            $_saldo_cuentas_pagar  = $rsConsulta1[0]->saldo_cuenta_cuentas_pagar ;
+	            
+	            
+	        }else{
+	            throw new Exception('Datos no encontrados');
+	        }
+	        
+	        //para traer datos de bancos de participe
+	        $col2 = "aa.id_participes,bb.numero_participes_cuentas,cc.id_tipo_cuentas,cc.nombre_tipo_cuentas,
+                    dd.nombre_bancos, dd.id_bancos";
+	        $tab2 = " core_participes aa
+                    LEFT JOIN core_participes_cuentas bb
+                    ON bb.id_participes = aa.id_participes
+                    AND bb.cuenta_principal = true
+                    AND bb.id_estatus=1
+                    LEFT JOIN core_tipo_cuentas cc
+                    ON cc.id_tipo_cuentas = bb.id_tipo_cuentas
+                    LEFT JOIN tes_bancos dd
+                    ON dd.id_bancos = bb.id_tipo_cuentas";
+	        $whe2 = "aa.id_estatus = 1  AND aa.id_participes = $_id_participes";
+	        $id2 = "aa.id_participes";
+	        
+	        $rsConsulta2 = $CuentasPagar->getCondiciones($col2, $tab2, $whe2, $id2);
+	        
+	        if(!empty($rsConsulta2)){
+	            
+	            $_numero_cuenta_banco      = $rsConsulta2[0]->numero_participes_cuentas;
+	            $_id_bancos                = ( empty($rsConsulta2[0]->id_bancos ) ) ? 0 : $rsConsulta2[0]->id_bancos ;
+	            $_nombre_bancos            = $rsConsulta2[0]->nombre_bancos ;
+	            $_id_tipo_cuenta_banco     = ( empty($rsConsulta2[0]->id_tipo_cuentas ) ) ? 0 : $rsConsulta2[0]->id_tipo_cuentas ;	           
+	            $_nombre_tipo_cuenta_banco = $rsConsulta2[0]->nombre_tipo_cuentas ;
+	            
+	        }else{
+	            $_numero_cuenta_banco      = "";
+	            $_id_bancos                = 0;
+	            $_nombre_bancos            = "" ;
+	            $_id_tipo_cuenta_banco     = 0 ;
+	            $_nombre_tipo_cuenta_banco = "";
+	        }
+	        	       
+	        //traer forma de pago
+	        $col3 = "id_forma_pago,nombre_forma_pago";
+	        $tab3 = "forma_pago";
+	        $whe3 = " nombre_forma_pago = 'TRANSFERENCIA'";
+	        $id3 = "id_forma_pago";
+	        $rsConsulta3 = $CuentasPagar->getCondiciones($col3, $tab3, $whe3, $id3);
+	        
+	        $_id_forma_pago = $rsConsulta3[0]->id_forma_pago;
+	        	        
+	        foreach ($_lista_distribucion as $data){
+	            
+	            $destino_distribucion = "";
+	            if($data->tipo_pago == "debito"){
+	                $destino_distribucion = "DEBE";
+	            }else{
+	                $destino_distribucion = "HABER";
+	            }
+	            
+	            $queryDistribucionPagos = "INSERT INTO tes_distribucion_pagos
+    	        (id_cuentas_pagar, id_plan_cuentas, fecha_distribucion_pagos, valor_distibucion_pagos, destino_distribucion_pagos)
+    	        VALUES('$_id_cuentas_pagar', '$data->id_plan_cuentas' , '$_fecha_transaccion', $_saldo_cuentas_pagar, '$destino_distribucion')";
+	            
+	            $ResultDistribucionPagos = $CuentasPagar -> executeNonQuery($queryDistribucionPagos);
+	            
+	            if(!is_int($ResultDistribucionPagos) || $ResultDistribucionPagos <= 0 ){
+	                throw new Exception("Error distribucion pagos");
+	                break;
+	                
+	            }
+	            
+	        }
+	        
+	        //para ingresar pago
+	        $funcionPago = "ins_tes_pagos";
+	        $parametrosPago = "'$_id_cuentas_pagar',
+            	        '$_id_creditos',
+            	        '$_id_proveedores',
+            	        null,
+            	        '$_id_forma_pago',
+            	        '$_fecha_transaccion',
+            	        'TRANSFERENCIA',
+            	        '$_id_bancos' ,
+            	        '$_nombre_bancos',
+            	        '$_numero_cuenta_banco',
+                        '$_nombre_tipo_cuenta_banco',
+            	        '$_id_tipo_cuenta_banco'";
+	        
+	        $consultaPago = $CuentasPagar->getconsultaPG($funcionPago, $parametrosPago);
+	        $ResulatadoPago = $CuentasPagar->llamarconsultaPG($consultaPago);
+	        
+	        $error = "";
+	        $error = pg_last_error();
+	        if(!empty($error)){
+	            throw new Exception("Error ingresando pagos");
+	        }
+	        
+	        $_id_pagos = (int)$ResulatadoPago[0];
+	        
+	        //Datos para Comprobante
+	        $_concepto_comprobante = " TRANSACCION TRANSFERENCIA A .".$_nombre_participes." ".$_apellidos_participes.". DEL CREDITO $_numero_credito ";
+	        $valor_letras_pago = $CuentasPagar->numtoletras($_saldo_cuentas_pagar);
+	        $funcionComprobante = "tes_agrega_comprobante_pago_transferencia";
+	        $parametrosComprobante = "'$_id_usuarios',
+            	        '$_id_bancos',
+            	        '$_id_cuentas_pagar',
+            	        '$_id_proveedores',
+            	        '$_id_forma_pago',
+                        '$_saldo_cuentas_pagar',
+                        '$valor_letras_pago',
+            	        '$_fecha_transaccion',
+            	        'TRANSFERENCIA',
+            	        '$_numero_cuenta_banco' ,
+            	        null,
+            	        'PAGO CREDITO $_numero_credito ',
+            	        'PAGO',
+            	        null,
+                        '$_concepto_comprobante'";
+	        
+	        $consultaComprobante = $CuentasPagar->getconsultaPG($funcionComprobante, $parametrosComprobante);
+	        $ResulatadoComprobante = $CuentasPagar->llamarconsultaPG($consultaComprobante);
+	        
+	        $error = "";
+	        $error = pg_last_error();
+	        if( !empty($error) ){
+	            throw new Exception('Error ingresado comprobante');
+	        }
+	        
+	        $_id_comprobante = $ResulatadoComprobante[0];
+	        
+	        $columnaPago = "id_ccomprobantes = $_id_comprobante ";
+	        $tablasPago = "tes_pagos";
+	        $wherePago = "id_pagos = $_id_pagos";
+	        $Update_tes_pago = $CuentasPagar -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
+	        
+	        /*actualizacion de Cuenta por pagar*/
+	        //buscar estado de cuentas por pagar
+	        $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
+	        $rsEstado = $CuentasPagar -> enviaquery($queryEstado);
+	        $_id_estado = $rsEstado[0]->id_estado;
+	        $rsActualizacionCuentaPagar = $CuentasPagar->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
+	        
+	        /*para enviara a celular*/
+	        $_celular_mensaje = "0987474892"; //para rpoduccion $_celular_participes
+	        $_nombres_mensajes = $_nombre_participes." ".$_apellidos_participes;
+	        $_num_cuenta = "XXXXXX".substr($_numero_cuenta_banco, 6);
+	        $_codigo_mensajes = str_replace(' ','_',$_num_cuenta.'-'.$_nombre_bancos);
+	        $_id_mensaje_mensajes = "22443";
+	        $this->comsumir_mensaje_plus($_celular_mensaje, $_nombres_mensajes, $_codigo_mensajes, $_id_mensaje_mensajes);
+	        
+	        $CuentasPagar->endTran("COMMIT");
+	        $respuesta_funcion['respuesta']=true;	        
+	        return $respuesta_funcion;
+	        
+	    } catch (Exception $e) {
+	        $CuentasPagar->endTran();
+	        $respuesta_funcion['respuesta'] = false;
+	        $respuesta_funcion['mensaje'] = $e->getMessage();
+	        return $respuesta_funcion;
+	    }
+	    
 	}
+	
+	public function transferirProveedor($_id_cuentas_pagar,$_fecha_transaccion,$_lista_distribucion){
+	    
+	    $CuentasPagar = new CuentasPagarModel();
+	    
+	     $respuesta_funcion = array();
+	    
+	    if(!isset($_SESSION)){
+	        session_start();
+	    }
+	    
+	    try {
+	        
+	        $CuentasPagar->beginTran();
+	        
+	        //variables de session
+	        $_id_usuario = $_SESSION['id_usuarios'];
+	        
+	        //buscar datos a tranferir
+	        /*traer datos de la cuenta por pagar*/
+	        $col1 = "aa.total_cuentas_pagar, aa.saldo_cuenta_cuentas_pagar, aa.origen_cuentas_pagar, aa.descripcion_cuentas_pagar, aa.id_estado, aa.id_forma_pago,
+		          bb.concepto_ccomprobantes, cc.nombre_lote, cc.id_lote, cc.descripcion_lote, dd.nombre_proveedores, dd.id_bancos,
+                  dd.id_tipo_cuentas, ee.nombre_tipo_proveedores,dd.id_proveedores, dd.numero_cuenta_proveedores,dd.identificacion_proveedores";
+	        $tab1 = "tes_cuentas_pagar aa
+        		INNER JOIN ccomprobantes bb
+        		ON aa.id_ccomprobantes = bb.id_ccomprobantes
+        		INNER JOIN tes_lote cc
+        		ON cc.id_lote = aa.id_lote
+                INNER JOIN proveedores dd
+                ON aa.id_proveedor = dd.id_proveedores
+                INNER JOIN tes_tipo_proveedores ee
+    		    ON dd.id_tipo_proveedores = ee.id_tipo_proveedores";
+	        $whe1 = " aa.id_cuentas_pagar = $_id_cuentas_pagar ";
+	        $id1 = "aa.id_cuentas_pagar";	        
+	        $rsConsulta1 = $CuentasPagar->getCondiciones($col1, $tab1, $whe1, $id1);
+	        
+	        $id_proveedores                = $rsConsulta1[0]->id_proveedores;
+	        $id_tipo_cuenta                = $rsConsulta1[0]->id_tipo_cuentas;
+	        $numero_cuenta_proveedores     = $rsConsulta1[0]->numero_cuenta_proveedores;
+	        $nombre_proveedores            = $rsConsulta1[0]->nombre_proveedores;
+	        $total_cuentas_pagar            = $rsConsulta1[0]->total_cuentas_pagar;
+	        $saldo_cuentas_pagar            = $rsConsulta1[0]->saldo_cuenta_cuentas_pagar;
+	        
+	        //traer forma de pago 
+	        $col2 = "id_forma_pago,nombre_forma_pago";
+	        $tab2 = "forma_pago";
+	        $whe2 = " nombre_forma_pago = 'TRANSFERENCIA'";
+	        $id2 = "id_forma_pago";	       
+	        $rsConsulta2 = $CuentasPagar->getCondiciones($col2, $tab2, $whe2, $id2);
+	        
+	        $_id_forma_pago = $rsConsulta2[0]->id_forma_pago;
+	        
+	        //consulta banco 
+	        $col3 = "aa.id_bancos, aa.nombre_bancos";
+	        $tab3 = "tes_bancos aa LEFT JOIN proveedores bb ON aa.id_bancos = bb.id_bancos";
+	        $whe3 = " bb.id_proveedores = $id_proveedores ";
+	        $id3 = "aa.id_bancos";
+	        $rsConsulta3 = $CuentasPagar->getCondiciones($col3, $tab3, $whe3, $id3);
+	        
+	        $_id_bancos = is_null($rsConsulta3[0]->id_bancos) ? 0 : $rsConsulta3[0]->id_bancos ;
+	        $_nombre_cuenta_banco = is_null($rsConsulta3[0]->nombre_bancos) ? "" : $rsConsulta3[0]->nombre_bancos ;
+	        
+	        foreach ($_lista_distribucion as $data){
+	            
+	            $destino_distribucion = "";
+	            if($data->tipo_pago == "debito"){
+	                $destino_distribucion = "DEBE";
+	            }else{
+	                $destino_distribucion = "HABER";
+	            }
+	            
+	            $queryDistribucionPagos = "INSERT INTO tes_distribucion_pagos
+    	        (id_cuentas_pagar, id_plan_cuentas, fecha_distribucion_pagos, valor_distibucion_pagos, destino_distribucion_pagos)
+    	        VALUES('$_id_cuentas_pagar', '$data->id_plan_cuentas' , '$_fecha_transaccion', $saldo_cuentas_pagar, '$destino_distribucion')";
+	            
+	            $ResultDistribucionPagos = $CuentasPagar -> executeNonQuery($queryDistribucionPagos);
+	            
+	            if(!is_int($ResultDistribucionPagos) || $ResultDistribucionPagos <= 0 ){
+	                throw new Exception("Error distribucion pagos");
+	                break;
+	                
+	            }
+	            
+	        }
+	        
+	        
+	        //para ingresar pago
+	        $funcionPago = "ins_tes_pagos";
+	        $parametrosPago = "'$_id_cuentas_pagar',
+            	        null,
+            	        '$id_proveedores',
+            	        null,
+            	        '$_id_forma_pago',
+            	        '$_fecha_transaccion',
+            	        'TRANSFERENCIA',
+            	        '$_id_bancos' ,
+            	        '$_nombre_cuenta_banco',
+            	        '$numero_cuenta_proveedores',
+                        '',
+            	        '$id_tipo_cuenta'";
+	        
+	        $consultaPago = $CuentasPagar->getconsultaPG($funcionPago, $parametrosPago);
+	        $ResulatadoPago = $CuentasPagar->llamarconsultaPG($consultaPago);
+	        
+	        $error = "";
+	        $error = pg_last_error();
+	        if(!empty($error)){
+	            throw new Exception("Error ingresando Pago");
+	        }
+	        
+	        $_id_pagos = (int)$ResulatadoPago[0];
+	        
+	        //Datos para Comprobante
+	        $_concepto_comprobante = " TRANSACCION TRANSFERENCIA A PROVEEDOR .".$nombre_proveedores;
+	        $valor_letras_pago = $CuentasPagar->numtoletras($saldo_cuentas_pagar);
+	        $funcionComprobante = "tes_agrega_comprobante_pago_transferencia";
+	        $parametrosComprobante = "'$_id_usuario',
+            	        '$_id_bancos',
+            	        '$_id_cuentas_pagar',
+            	        '$id_proveedores',
+            	        '$_id_forma_pago',
+                        '$saldo_cuentas_pagar',
+                        '$valor_letras_pago',
+            	        '$_fecha_transaccion',
+            	        'TRANSFERENCIA',
+            	        '$numero_cuenta_proveedores' ,
+            	        null,
+            	        'PAGO PROVEEDOR',
+            	        'PAGO',
+            	        null,
+                        '$_concepto_comprobante'";
+	        
+	        $consultaComprobante = $CuentasPagar->getconsultaPG($funcionComprobante, $parametrosComprobante);
+	        $ResulatadoComprobante = $CuentasPagar->llamarconsultaPG($consultaComprobante);
+	        
+	        $error = "";
+	        $error = pg_last_error();
+	        if( !empty($error) ){
+	            throw new Exception('Error ingresando comprobante');
+	        }
+	        
+	        $_id_comprobante = $ResulatadoComprobante[0];
+	        
+	        $columnaPago = "id_ccomprobantes = $_id_comprobante ";
+	        $tablasPago = "tes_pagos";
+	        $wherePago = "id_pagos = $_id_pagos";
+	        $Update_tes_pago = $CuentasPagar -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
+	        
+	        /*actualizacion de Cuenta por pagar*/
+	        //buscar estado de cuentas por pagar
+	        $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
+	        $rsEstado = $CuentasPagar -> enviaquery($queryEstado);
+	        $_id_estado = $rsEstado[0]->id_estado;
+	        $rsActualizacionCuentaPagar = $CuentasPagar->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
+	        
+	        $CuentasPagar->endTran("COMMIT");
+	        
+	        $respuesta_funcion['respuesta']=true;	        
+	        
+	        return $respuesta_funcion;
+	        
+	    } catch (Exception $e) {
+	        
+	        $CuentasPagar->endTran();
+	        $respuesta_funcion['respuesta'] = false;
+	        $respuesta_funcion['mensaje'] = $e->getMessage();
+	        return $respuesta_funcion;
+	    }
+	    
+	}
+	
 	
 }
 ?>

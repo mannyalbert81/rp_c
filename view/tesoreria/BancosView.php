@@ -108,6 +108,13 @@
                           <div id="mensaje_id_estado" class="errores"></div>
                         </div>
             		  </div>
+            		  
+            		  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">            		    					  
+                          <label for="codigo_bancos" class="control-label">Codigo Bancos:</label>
+                          <input  type="text" class="form-control" id="codigo_bancos" name="codigo_bancos" value=""  placeholder="Codigo Bancos" required/>
+                        </div>
+            		  </div>
                         		 
 				    
           	   	</div>	
@@ -155,7 +162,7 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/tesoreria/js/Bancos.js?0.5"></script> 
+   <script src="view/tesoreria/js/Bancos.js?0.8"></script> 
        
        
 

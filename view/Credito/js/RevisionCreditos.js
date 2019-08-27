@@ -1,9 +1,21 @@
 var numero_credito;
+var idreporte;
 
 $(document).ready( function (){
 	load_creditos(1);
 	load_reportes(1);
 });
+
+$("#myModalObservacion").on("hidden.bs.modal", function () {
+	
+	document.getElementById("cuerpo").classList.add('modal-open');
+	
+});
+$('#observacion_credito').keypress(function(event){
+	  if(event.keyCode == 13){
+	    $('#registrar_observacion').click();
+	  }
+	});
 
 function load_creditos(pagina){
 
@@ -171,6 +183,7 @@ function AbrirReporte(id_reporte)
 
 function GetDatosReporte(id_reporte)
 {
+	console.log("cargando reporte")
 	$("#datos_reporte").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	var con_datos={
 			  action:'ajax',
@@ -246,7 +259,7 @@ function SubirReporte()
 	})
 	.done(function(x) {
 		x=x.trim();
-		console.log(x)
+		console.log(x);
 		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
   		  {
   		  swal({
@@ -297,7 +310,6 @@ function AprobarJefeCreditos(id_reporte)
 	})
 	.done(function(x) {
 		x=x.trim();
-		console.log(x)
 		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
   		  {
   		  swal({
@@ -337,7 +349,6 @@ function AprobarJefeRecaudaciones(id_reporte)
 	})
 	.done(function(x) {
 		x=x.trim();
-		console.log(x)
 		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
   		  {
   		  swal({
@@ -379,7 +390,6 @@ function AprobarJefeSistemas(id_reporte)
 	})
 	.done(function(x) {
 		x=x.trim();
-		console.log(x)
 		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
   		  {
   		  swal({
@@ -421,7 +431,6 @@ function AprobarContador(id_reporte)
 	})
 	.done(function(x) {
 		x=x.trim();
-		console.log(x)
 		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
   		  {
   		  swal({
@@ -463,7 +472,6 @@ function AprobarGerente(id_reporte)
 	})
 	.done(function(x) {
 		x=x.trim();
-		console.log(x)
 		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
   		  {
   		  swal({
@@ -505,7 +513,6 @@ function AprobarTesoreria(id_reporte)
 	})
 	.done(function(x) {
 		x=x.trim();
-		console.log(x)
 		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
   		  {
   		  swal({
@@ -534,4 +541,67 @@ function AprobarTesoreria(id_reporte)
 	.fail(function() {
 	    console.log("error");
 	});
+}
+
+function Negar(id_reporte, id_creditos)
+{
+	idreporte=id_reporte;
+	numero_credito=id_creditos;
+	console.log(id_creditos+" *** "+id_reporte);
+	$("#myModalObservacion").modal();
+}
+
+function ContinuaNegar()
+{
+	var observacion_credito=$('#observacion_credito').val();
+	if (observacion_credito!="")
+		{
+			$('#cerrar_observacion').click();
+			$('#observacion_credito').val("");
+			$.ajax({
+			    url: 'index.php?controller=RevisionCreditos&action=NegarCredito',
+			    type: 'POST',
+			    data: {
+			    	id_reporte: idreporte,
+			    	numero_credito: numero_credito,
+			    	observacion_credito: observacion_credito
+			    },
+			})
+			.done(function(x) {
+				x=x.trim();
+				console.log(x+"===>");
+				if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
+		  		  {
+		  		  swal({
+				  		  title: "Créditos",
+				  		  text: "Hubo un error cambiando el estado del reporte",
+				  		  icon: "warning",
+				  		  button: "Aceptar",
+				  		});
+		  		  }
+		  	  else
+		  		  {
+		  		load_creditos(1);
+				load_reportes(1);
+				$('#cerrar_ver').click();
+				swal({
+			  		  title: "Créditos",
+			  		  text: "Reporte devuelto a revisión",
+			  		  icon: "success",
+			  		  button: "Aceptar",
+			  		});
+		  		  }
+		     
+			})
+			.fail(function() {
+			    console.log("error");
+			});
+		}
+	else
+		{
+		$("#mensaje_observacion_credito").text("Ingrese una observacion");
+		$("#mensaje_observacion_credito").fadeIn("slow");
+		$("#mensaje_observacion_credito").fadeOut("slow");
+		}
+	
 }

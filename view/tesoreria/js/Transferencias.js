@@ -76,7 +76,14 @@ $("#distribucion_transferencia").on("click",function(event){
 	var _id_cuentas_pagar = $("#id_cuentas_pagar").val();
 	let $modal = $("#mod_distribucion_pago"),
 		$divResultados = null,
+		$descripcion = null;
 		$tablaDistribucion = null;
+	
+	$descripcion = $("#descripcion_pago");
+	if($descripcion.val() == ""){
+		$descripcion.notify("Ingrese una descripcion",{ position:"top center"});
+		return false;
+	}
 	
 	$divResultados = $modal.find("#lista_distribucion_transferencia");		
 	$divResultados.html('');

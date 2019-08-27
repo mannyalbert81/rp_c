@@ -852,7 +852,7 @@ class SimulacionCreditosController extends ControladorBase{
            
            $where = "numero_creditos='".$numero_creditos."'";
            $tabla = "core_creditos";
-           $colval = "id_tipo_pagos=".$id_forma_pagos;
+           $colval = "id_forma_pago=".$id_forma_pagos;
            $rp_capremci->UpdateBy($colval, $tabla, $where);
        }
        else {

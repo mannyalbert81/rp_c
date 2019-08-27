@@ -80,5 +80,16 @@ class ConsecutivosModel extends ModeloBase{
         return  $resultado;
     }
     
+    public function getConsecutivoByNombre($nombreConsecutivo){
+        
+        $query = "SELECT id_consecutivos, LPAD(valor_consecutivos::TEXT,espacio_consecutivos,'0') AS numero_consecutivos FROM consecutivos
+                WHERE id_entidades = 1 AND nombre_consecutivos='$nombreConsecutivo'";
+        
+        $resultado=$this->enviaquery($query);
+        
+        return  $resultado;
+        
+    }
+    
 }
 ?>

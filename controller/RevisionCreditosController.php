@@ -91,10 +91,11 @@ class RevisionCreditosController extends ControladorBase{
                 
                     $columnas="id_solicitud_prestamo";
                     $tabla="solicitud_prestamo";
-                    $where="identificador_consecutivos='".$res->numero_creditos."'";
+                    $where="numero_creditos='".$res->numero_creditos."'";
                 $id_solicitud=$db->getCondiciones($columnas, $tabla, $where);
-                $id_solicitud=$id_solicitud[0]->id_solicitud_prestamo;
+                if(!(empty($id_solicitud))) $id_solicitud=$id_solicitud[0]->id_solicitud_prestamo;
            
+                else $id_solicitud=0;
                
                 $html.='<tr>';
                 $html.='<td style="font-size: 14px;">'.$res->numero_creditos.'</td>';

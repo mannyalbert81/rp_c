@@ -1,5 +1,5 @@
 <?php
-class ConectarService{
+class ConectarServiceRfid{
 	
      private $driver = "";
      private $host = "";
@@ -24,7 +24,7 @@ class ConectarService{
         
         if($this->driver=="pgsql" || $this->driver==null){
        
-        	$con = pg_connect("host=localhost port=5433 dbname=rp_capremci user=postgres password=.Romina.2012");
+        	$con = pg_connect("host=192.168.1.231 port=5432 dbname=rp_capremci user=postgres password=Programadores2018");
         	if(!$con){
         		echo "No se puedo Conectar a la Base";
         	} else {
@@ -37,7 +37,7 @@ class ConectarService{
         require_once "FluentPDO/FluentPDO.php";
         
         if($this->driver=="pgsql" || $this->driver==null){
-        	$pdo = new PDO('pgsql:host=localhost;port=5433;dbname=rp_capremci', 'postgres', '.Romina.2012' );
+        	$pdo = new PDO('pgsql:host=192.168.1.231;port=5433;dbname=rp_capremci', 'postgres', 'Programadores2018' );
             //$pdo = new PDO($this->driver.":dbname=".$this->database, $this->user, $this->pass);
             
             try 
@@ -57,3 +57,4 @@ class ConectarService{
     }
 }
 ?>
+_

@@ -352,13 +352,13 @@ class GenerarChequeController extends ControladorBase{
 	        //empieza el begin
 	        $CuentasPagar->beginTran();
 	       
-	        $queryCxP = "SELECT id_cuentas_pagar, id_proveedor, id_lote, fecha_cuentas_pagar, compras_cuentas_pagar, impuesto_cuentas_pagar, total_cuentas_pagar
+	        $queryCxP = "SELECT id_cuentas_pagar, id_proveedor, id_lote, fecha_cuentas_pagar, compras_cuentas_pagar, impuesto_cuentas_pagar, total_cuentas_pagar, saldo_cuenta_cuentas_pagar
                 FROM tes_cuentas_pagar
                 WHERE id_cuentas_pagar = $_id_cuentas_pagar";
 	        
 	        $rsCuentasPagar = $CuentasPagar->enviaquery($queryCxP);
 	         
-	        $_total_cuentas_pagar = $rsCuentasPagar[0]->total_cuentas_pagar;
+	        $_total_cuentas_pagar = $rsCuentasPagar[0]->saldo_cuenta_cuentas_pagar;
 	        $_id_proveedores = $rsCuentasPagar[0]->id_proveedor;
 	        $_total_en_letras = $CuentasPagar->numtoletras($_total_cuentas_pagar);
 	        
@@ -507,7 +507,7 @@ class GenerarChequeController extends ControladorBase{
             $UpdatePago = $CuentasPagar->ActualizarBy($colvalPago, $tabPago, $whePago); 
             
             
-            /*para enviar al celular -- buscar en tabal credito*/
+            /*para enviar al celular -- buscar en tabla credito*/
             $colCredito = " 1";
             $tabCredito = " tes_cuentas_pagar aa
                         INNER JOIN ccomprobantes bb

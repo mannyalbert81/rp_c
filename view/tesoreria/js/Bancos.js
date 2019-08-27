@@ -16,7 +16,8 @@ $("#frm_bancos").on("submit",function(event){
 	let _nombre_bancos = document.getElementById('nombre_bancos').value;
 	let _id_estado = document.getElementById('id_estado').value;
 	var _id_bancos = document.getElementById('id_bancos').value;
-	var parametros = {nombre_bancos:_nombre_bancos,id_bancos:_id_bancos,id_estado:_id_estado}
+	var _codigo_bancos = document.getElementById('codigo_bancos').value;
+	var parametros = {nombre_bancos:_nombre_bancos,id_bancos:_id_bancos,id_estado:_id_estado,codigo_bancos:_codigo_bancos}
 	
 	if(_id_estado == 0){
 		$("#mensaje_id_estado").text("Seleccione un Estado").fadeIn("Slow");
@@ -78,6 +79,7 @@ function editBanco(id = 0){
 			$("#nombre_bancos").val(array.nombre_bancos);			
 			$("#id_bancos").val(array.id_bancos);
 			$("#id_estado").val(array.id_estado);
+			$("#codigo_bancos").val(array.codigo_bancos);
 			
 			$("html, body").animate({ scrollTop: $(nombre_bancos).offset().top-120 }, tiempo);			
 		}

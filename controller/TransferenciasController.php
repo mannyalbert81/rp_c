@@ -14,8 +14,6 @@ class TransferenciasController extends ControladorBase{
 	    
 		$CuentasPagar = new CuentasPagarModel();
 		
-		require_once 'core/DB_Functions.php';
-		$db = new DB_Functions();
 		
 		if( empty( $_SESSION['usuario_usuarios'] ) ){
 		    $this->redirect("Usuarios","sesion_caducada");
@@ -275,95 +273,115 @@ class TransferenciasController extends ControladorBase{
 	
 	public function generaTxt(){
 	    
-	    $url = $this->obtienePath(2019, 01);
+	    $Pagos = new PagosModel();
 	    
-	    if(1==1){
+	    try {
+	        //buscar datos de pago
+	        $id_pago = 13; //seteado para pruebas
+	        $anio = 2019;
+	        $mes  = 2;
 	        
+	        $id_bancos_transferir = 0;
+	        $_nombre_tipo_cuenta = "";
+	        //datos para archivo
+	        $_identificador = "PA";
+	        $_cedula_beneficiario = "";
+	        $_moneda = "USD";
+	        $_valor_pago = "";
+	        $_tipo = "CTA";
+	        $_abrv_tipo_cuenta = "";
+	        $_numero_cuenta = "";
+	        $_descripcion_archivo = "";
+	        $_nombre_beneficiario = "";
+	        $_codigo_banco = "";
+	        
+	        $columnas1 = "aa.id_pagos, aa.valor_pagos, aa.numero_cuenta_bancos_pagos, bb.descripcion_cuentas_pagar, cc.id_tipo_cuentas, cc.nombre_tipo_cuentas,
+            	    dd.id_bancos, dd.nombre_bancos, dd.id_bancos_transferir, ee.id_proveedores, ee.identificacion_proveedores, ee.nombre_proveedores,
+            	    ff.id_tipo_proveedores, ff.nombre_tipo_proveedores, gg.nombre_participes, gg.apellido_participes, hh.id_forma_pago, hh.nombre_forma_pago";
+	        $tablas1   = "tes_pagos aa
+            	    INNER JOIN tes_cuentas_pagar bb
+            	    ON aa.id_cuentas_pagar = bb.id_cuentas_pagar
+            	    INNER JOIN core_tipo_cuentas cc
+            	    ON cc.id_tipo_cuentas = aa.id_tipo_cuenta
+            	    INNER JOIN tes_bancos dd
+            	    ON dd.id_bancos = aa.id_bancos
+            	    INNER JOIN proveedores ee
+            	    ON ee.id_proveedores = aa.id_proveedores
+            	    INNER JOIN tes_tipo_proveedores ff
+            	    ON ff.id_tipo_proveedores = ee.id_tipo_proveedores
+            	    LEFT JOIN core_participes gg
+            	    ON gg.cedula_participes = ee.identificacion_proveedores
+                    AND gg.id_estatus = 1
+            	    INNER JOIN forma_pago hh
+            	    ON hh.id_forma_pago = aa.id_forma_pago";
+	        $where1    = "hh.nombre_forma_pago = 'TRANSFERENCIA' AND aa.id_pagos = $id_pago ";
+	        $id1       = "aa.id_pagos";
+	        
+	        $rsConsulta1 = $Pagos->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	        
+	        //se obtine valores
+	        $_nombre_tipo_proveedor    = $rsConsulta1[0]->nombre_tipo_proveedores;
+	        $_valor_pago               = number_format((float)$rsConsulta1[0]->valor_pagos, 2, '', '');
+	        $_nombre_tipo_cuenta       = $rsConsulta1[0]->nombre_tipo_cuentas;
+	        $_nombre_beneficiario      = $rsConsulta1[0]->nombre_proveedores;
+	        $_cedula_beneficiario      = $rsConsulta1[0]->identificacion_proveedores;
+	        $_numero_cuenta            = $rsConsulta1[0]->numero_cuenta_bancos_pagos;
+	        $_descripcion_archivo      = substr($rsConsulta1[0]->descripcion_cuentas_pagar, 0, 50);
+	        $id_bancos_transferir      = $rsConsulta1[0]->id_bancos_transferir;
+	        
+	        if( $_nombre_tipo_proveedor == "PARTICIPE" ){
+	            
+	            $_nombre_beneficiario = $rsConsulta1[0]->nombre_participes." ".$rsConsulta1[0]->apellido_participes;
+	        }
+	        
+	        //obtener tipo cuenta abreviada
+	        if( $_nombre_tipo_cuenta == "AHORROS" ){
+	            $_abrv_tipo_cuenta = "AHO";
+	        }else{
+	            $_abrv_tipo_cuenta = "CORR";
+	        }
+	        
+	        
+	        //buscar codigo de banco a transferir
+	        $columnas2 = "id_bancos, nombre_bancos, codigo_bancos";
+	        $tablas2   = "tes_bancos";
+	        $where2    = "id_bancos = $id_bancos_transferir";
+	        $id2       = "id_bancos";
+	        $rsConsulta2 = $Pagos->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	        
+	        $_codigo_banco = $rsConsulta2[0]->codigo_bancos;
+	        
+	        $filaArchivo = array($_identificador,$_cedula_beneficiario,$_moneda,$_valor_pago,$_tipo,$_abrv_tipo_cuenta,$_numero_cuenta,$_descripcion_archivo,$_cedula_beneficiario,$_nombre_beneficiario,$_codigo_banco);
+	        $_string_fila = implode("\t", $filaArchivo);
+	        /*Generar arcrivo txt*/
+	        $url = $this->obtienePath($anio, $mes);
+	        
+	        $exists = is_file( $url);
+	        
+	        if(!$exists){
+	            
+	            $file = fopen($url, "r");
+	            fwrite($file, $_string_fila);
+	            fwrite($file, PHP_EOL);
+	            
+	        }else{
+	            
+	            $file = fopen($url, "a");
+	            fwrite($file, $_string_fila);
+	            fwrite($file, PHP_EOL);
+	        }
+	        
+	        $error = ""; $error = error_get_last();
+	        if(!empty($error)) throw new Exception('error generando el archivo');
+	        
+	        return 1;
+	        
+	    } catch (Exception $e) {
+	        
+	        return 0;
 	    }
 	    
-	    echo $url;
 	    
-	    die();
-	    
-	    $fecha = date('my');
-	    $nombreArchivo = "CASH_PAGOS_".$fecha."txt";
-	    $archivo = __DIR__.'\\..\\view\\tesoreria\\documentos\\transferencias\\'.$nombreArchivo;
-	    //validar archivo si existe en directorio
-	    
-	    $CuentasPagar = new CuentasPagarModel();
-	    $query = "SELECT * FROM public.tes_cuentas_pagar";
-	    $rsCuentasPagar = $CuentasPagar->enviaquery($query);
-	    if( file_exists($archivo)){
-	        
-	        if(!empty($rsCuentasPagar)){
-	            
-	            $file = fopen($archivo, "a");
-	            
-	            foreach ($rsCuentasPagar as $res){
-	                fwrite($file, $res->id_cuentas_pagar ."\t");
-	                fwrite($file, number_format((float)$res->total_cuentas_pagar, 2, '', '')."\t");
-	                //fwrite($file, "Esto es una nueva linea de texto" ."\t");
-	                fwrite($file, PHP_EOL);
-	            }
-	            
-	            fclose($file);
-	        }
-	        
-	        $file = fopen($archivo, "a");
-	        
-	        fwrite($file, "Esto es una nueva linea de texto" ."\t");
-	        
-	        fwrite($file, "Otra más" . PHP_EOL);
-	        
-	        fclose($file);
-	        
-	        $file = fopen($archivo, "r");
-	        
-	        while(!feof($file)) {
-	            
-	            echo fgets($file). "<br />";
-	            
-	        }
-	        
-	        fclose($file);
-	        
-	    }else{
-	        
-	        if(!empty($rsCuentasPagar)){
-	            
-	            $file = fopen($archivo, "a");
-	            
-	            foreach ($rsCuentasPagar as $res){
-	                fwrite($file, $res->id_cuentas_pagar ."\t");
-	                fwrite($file, number_format((float)$res->total_cuentas_pagar, 2, '', '')."\t");
-	                //fwrite($file, "Esto es una nueva linea de texto" ."\t");
-	                fwrite($file, PHP_EOL);
-	            }
-	            
-	            fclose($file);
-	        }
-	        
-	        $file = fopen($archivo, "a");
-	        
-	        fwrite($file, "Esto es una nueva linea de texto" ."\t");
-	        
-	        fwrite($file, "Otra más" . PHP_EOL);
-	        
-	        fclose($file);
-	        
-	        $file = fopen($archivo, "r");
-	        
-	        while(!feof($file)) {
-	            
-	            echo fgets($file). "<br />";
-	            
-	        }
-	        
-	        fclose($file);
-	    }
-	        
-        
-       
 	}
 	
 	public function DevuelveConsecutivos(){
@@ -835,7 +853,7 @@ class TransferenciasController extends ControladorBase{
 	        $_carpeta_buscar   = $carpeta_base.$anioArchivo."\\".$mesArchivo;
 	        if( file_exists($_carpeta_buscar)){
 	            
-	            $file_buscar = $_carpeta_buscar.$nombreArchivo;
+	            $file_buscar = $_carpeta_buscar."\\".$nombreArchivo;
 	             
 	           
 	        }else{
@@ -848,7 +866,7 @@ class TransferenciasController extends ControladorBase{
 	    }else{
 	        
 	        mkdir($_carpeta_buscar."\\".$mesArchivo, 0777, true);
-	        $file_buscar = $_carpeta_buscar."\\".$nombreArchivo;
+	        $file_buscar = $_carpeta_buscar."\\".$mesArchivo."\\".$nombreArchivo;
 	    }
 	   	   
 	    return $file_buscar;

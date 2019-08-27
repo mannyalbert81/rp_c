@@ -7,6 +7,9 @@
     .reportes {
         width: 45%;
         }
+         .observacion {
+        width: 75%;
+        }
 
 </style>
         
@@ -23,7 +26,7 @@
        
 	</head>
     
-    <body class="hold-transition skin-blue fixed sidebar-mini">
+    <body id="cuerpo" class="hold-transition skin-blue fixed sidebar-mini">
     
      <?php
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
@@ -185,6 +188,35 @@
 	</div>
 </div>
 
+<!-- Modal Observacion Creditos -->
+ 
+ <div class="modal fade bs-example" id="myModalObservacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+	    	<div class="modal-header bg-primary">
+	    		<button type="button" id="cerrar_observacion" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Contenidos del reporte</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group" align="center">
+          	 		<div class="row">
+          	 		<div class="form-group" align="center">
+          	 		<input type="text" class="observacion" maxlength="200" class="form-control" id="observacion_credito" name="observacion_credito" placeholder="Observación Crédito">
+                 	<div id="mensaje_observacion_credito" class="errores"></div>
+                 	<div class="row">
+          	 		<div class="form-group" align="center">
+          	 		<button type="button" id="registrar_observacion" name="registrar_observacion" class="btn btn-primary" onclick="ContinuaNegar()"> CONTINUAR</button>
+                 	</div>
+              		</div>
+                 </div>
+              </div>
+				</div>
+				<br>
+			</div>			
+		</div>
+	</div>
+</div>
+
 
  
  	<?php include("view/modulos/footer.php"); ?>	
@@ -200,7 +232,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Credito/js/RevisionCreditos.js?0.10"></script>
+    <script src="view/Credito/js/RevisionCreditos.js?0.13"></script>
 	
 	
   </body>

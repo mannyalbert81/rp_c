@@ -734,10 +734,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    
 	    $Credito = new CreditosModel();
 	    $Consecutivos = new ConsecutivosModel();
-	    
-	    require_once 'core/DB_Functions.php';
-	    $db = new DB_Functions();
-	    
+	   	    
 	    $id_creditos = $paramIdCredito;
 	    
 	    if(is_null($id_creditos)){
@@ -803,7 +800,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        }
 	        
 	        //para datos de banco
-	        $_id_bancos = 2 ; //seteado para presentacion luego va con deacuerdo el credito //buscar de la tabla del Cnolivos
+	        $_id_bancos = 0 ; //mas adelenate se modifica con la solicitud del participe
 	        
 	        //datos Cuenta por pagar
 	        $_descripcion_cuentas_pagar = ""; //se llena mas adelante
@@ -937,18 +934,22 @@ class ProcesosMayorizacionController extends ControladorBase{
             // secuencial de cuenta por pagar
             $_id_cuentas_pagar = $ResultCuentaPagar[0];
 	        
-	        //para actualizar la forma de pago en cuentas por pagar
+	        //para actualizar la forma de pago y el banco en cuentas por pagar
 	        //--buscar
-	        $columnas1 = "aa.id_creditos,bb.id_forma_pago, bb.nombre_forma_pago";
+	        $columnas1 = "aa.id_creditos,bb.id_forma_pago, bb.nombre_forma_pago,cc.id_bancos";
 	        $tabla1 = "core_creditos aa
                     INNER JOIN forma_pago bb
-                    ON aa.id_forma_pago = bb.id_forma_pago";
+                    ON aa.id_forma_pago = bb.id_forma_pago
+                    INNER JOIN core_participes_cuentas cc
+                    ON cc.id_participes = aa.id_participes
+                    AND cc.cuenta_principal = true";
 	        $where1 = "aa.id_estatus = 1 AND aa.id_creditos = $id_creditos";
 	        $id1 = "aa.id_creditos";
 	        $rsFormaPago = $Credito->getCondiciones($columnas1, $tabla1, $where1, $id1);
 	        $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
+	        $_id_bancos = $rsFormaPago[0]->id_bancos;
 	        
-	        $columnaPago = "id_forma_pago = $_id_forma_pago ";
+	        $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
 	        $tablasPago = "tes_cuentas_pagar";
 	        $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
 	        $UpdateFormaPago = $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);

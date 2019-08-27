@@ -275,6 +275,16 @@ class TransferenciasController extends ControladorBase{
 	
 	public function generaTxt(){
 	    
+	    $url = $this->obtienePath(2019, 01);
+	    
+	    if(1==1){
+	        
+	    }
+	    
+	    echo $url;
+	    
+	    die();
+	    
 	    $fecha = date('my');
 	    $nombreArchivo = "CASH_PAGOS_".$fecha."txt";
 	    $archivo = __DIR__.'\\..\\view\\tesoreria\\documentos\\transferencias\\'.$nombreArchivo;
@@ -807,6 +817,41 @@ class TransferenciasController extends ControladorBase{
 	        return $respuesta_funcion;
 	    }
 	    
+	}
+	
+	/**
+	 * funcion que devuele el nombre de archivo 'cash_pago' con su respectiva ruta
+	 * @param int $anioArchivo
+	 * @param int $mesArchivo
+	 */
+	private function obtienePath($anioArchivo,$mesArchivo){
+	    
+	    $nombreArchivo     = "CASH_PAGOS_".$mesArchivo.$anioArchivo.".txt";;
+	    $carpeta_base      = __DIR__.'\\..\\view\\tesoreria\\documentos\\transferencias\\';
+	    $_carpeta_buscar   = $carpeta_base.$anioArchivo;
+	    $file_buscar       = "";
+	    if( file_exists($_carpeta_buscar)){
+	        
+	        $_carpeta_buscar   = $carpeta_base.$anioArchivo."\\".$mesArchivo;
+	        if( file_exists($_carpeta_buscar)){
+	            
+	            $file_buscar = $_carpeta_buscar.$nombreArchivo;
+	             
+	           
+	        }else{
+	          
+	            mkdir($_carpeta_buscar, 0777, true);
+	            $file_buscar = $_carpeta_buscar."\\".$nombreArchivo;	            
+	                       
+	        }
+	        
+	    }else{
+	        
+	        mkdir($_carpeta_buscar."\\".$mesArchivo, 0777, true);
+	        $file_buscar = $_carpeta_buscar."\\".$nombreArchivo;
+	    }
+	   	   
+	    return $file_buscar;
 	}
 	
 	

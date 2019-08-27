@@ -230,8 +230,6 @@ class TablaAmortizacionController extends ControladorBase{
 	
 	public function ReporteTablaAmortizacion(){
 	    
-	    
-	    
 	    session_start();
 	    $entidades = new EntidadesModel();
 	    //PARA OBTENER DATOS DE LA EMPRESA

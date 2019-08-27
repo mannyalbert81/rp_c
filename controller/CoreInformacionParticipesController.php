@@ -53,6 +53,7 @@ class CoreInformacionParticipesController extends ControladorBase{
         session_start();
         
         $participes = new CoreInformacionParticipesModel();
+        $core_credito = new CoreCreditoModel();
         
         if (isset(  $_SESSION['nombre_usuarios']) )
         {
@@ -110,8 +111,10 @@ class CoreInformacionParticipesController extends ControladorBase{
                               core_participes_informacion_adicional.observaciones_participes_informacion_adicional,
                              (select sum(c1.valor_personal_contribucion) 
                             	from core_contribucion c1 where id_participes = '$id_participes' and id_estatus=1 limit 1
-                            ) as \"total\"
-                                                           
+                            ) as \"total\",
+                               (select sum(c1.valor_personal_contribucion)+sum(c1.valor_patronal_contribucion) 
+                            	from core_contribucion c1 where id_participes = '$id_participes' and id_estatus=1 limit 1
+                            ) as \"totalaporte\"                            
                                                     
                                     ";
                     
@@ -170,8 +173,26 @@ class CoreInformacionParticipesController extends ControladorBase{
                     
                     array_push($tiempo2, $tiempoaporte);
                     
+                    
+                    $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
+                    $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
+                    $where="core_contribucion.id_participes=".$id_participes." AND core_contribucion.id_contribucion_tipo=1
+                AND core_contribucion.id_estatus=1";
+                    $id="fecha_registro_contribucion";
+                    
+                    $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
+                    
+                    $aportes= array();
+                    
+                    $personales=sizeof($resultAportesPersonales);
+                    
+                    array_push($aportes, $personales);
+                    
+                    
+                    
                     $this->view_Core("CoreConsultaGeneral",array(
-                        "resultRep"=>$resultRep, "resContriTipo"=>$resContriTipo, "tiempo"=>$tiempo, "resultAportes"=>$resultAportes, "tiempo2"=>$tiempo2
+                        "resultRep"=>$resultRep, "resContriTipo"=>$resContriTipo, "tiempo"=>$tiempo, "resultAportes"=>$resultAportes, "tiempo2"=>$tiempo2, "aportes"=>$aportes
                         
                         
                     ));

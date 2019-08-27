@@ -170,7 +170,7 @@
                     			 <div class="form-group-sm">
                     				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >N° de Aportes:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $aportes[0]?>" >
                     				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
                     				</div>
                     			 </div>        			 
@@ -217,7 +217,7 @@
                     			 <div class="form-group-sm">
                     				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Años de Servicio:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $tiempo2[0]?>" >
                     				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
                     				</div>
                     			 </div>        			 
@@ -229,7 +229,7 @@
                     			 <div class="form-group-sm">
                     				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Cuenta Individual:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo number_format($resEdit->totalaporte, 2, ",", "."); ?>" >
                     				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
                     				</div>
                     			 </div>        			 

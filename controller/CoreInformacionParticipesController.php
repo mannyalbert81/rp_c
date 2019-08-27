@@ -37,7 +37,16 @@ class CoreInformacionParticipesController extends ControladorBase{
         
     }
     
-
+    public function dateDifference($date_1 , $date_2 , $differenceFormat = '%y Años, %m Meses, %d Dias' )
+    {
+        $datetime1 = date_create($date_1);
+        $datetime2 = date_create($date_2);
+        
+        $interval = date_diff($datetime1, $datetime2);
+        
+        return $interval->format($differenceFormat);
+        
+    }
     
     public function index_consulta_general(){
         
@@ -128,13 +137,41 @@ class CoreInformacionParticipesController extends ControladorBase{
                                    ";
                     $id       = "core_participes.id_participes";
                     
-               
+                   
                     
                     
                     $resultRep = $participes->getCondiciones($columnas ,$tablas ,$where, $id);
                     
+                    $tiempo= array();
+                    $hoy=date("Y-m-d");
+                    
+                    $tiempo_edad=$this->dateDifference($resultRep[0]->fecha_nacimiento_participes, $hoy);
+                    
+                    array_push($tiempo, $tiempo_edad);
+                    
+                  
+                    
+                    $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
+                    $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
+                    $where="core_contribucion.id_participes=".$id_participes." AND core_contribucion.id_estatus=1";
+                    $id="fecha_registro_contribucion";
+                    
+                    $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
+                    
+                    $tiempo2= array();
+                    $last=sizeof($resultAportes);
+                    $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
+                    $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
+                    $fecha_primer=substr($fecha_primer,0,10);
+                    $fecha_ultimo=substr($fecha_ultimo,0,10);
+                    $tiempoaporte=$this->dateDifference($fecha_primer, $fecha_ultimo);
+                    $last=sizeof($resultAportes);
+                    
+                    array_push($tiempo2, $tiempoaporte);
+                    
                     $this->view_Core("CoreConsultaGeneral",array(
-                        "resultRep"=>$resultRep, "resContriTipo"=>$resContriTipo
+                        "resultRep"=>$resultRep, "resContriTipo"=>$resContriTipo, "tiempo"=>$tiempo, "resultAportes"=>$resultAportes, "tiempo2"=>$tiempo2
                         
                         
                     ));

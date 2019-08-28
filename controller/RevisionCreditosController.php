@@ -1220,6 +1220,70 @@ class RevisionCreditosController extends ControladorBase{
         return $out;
     }
     
+    
+    
+    public function ReporteCreditosaTransferir($param) {
+        
+        
+        session_start();
+        $entidades = new EntidadesModel();
+        $ccomprobantes = new CComprobantesModel();
+        $dcomprobantes = new DComprobantesModel();
+        $tipo_comprobantes = new TipoComprobantesModel();
+        $entidades = new EntidadesModel();
+        $tipo_comprobante=new TipoComprobantesModel();
+        //PARA OBTENER DATOS DE LA EMPRESA
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        //NOTICE DATA
+        $datos_cabecera = array();
+        $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+        $datos_cabecera['FECHA'] = date('Y/m/d');
+        $datos_cabecera['HORA'] = date('h:i:s');
+        
+        
+        
+        $datos_reporte = array();
+        
+        $html='';
+        
+            $html.='<table class="1" >';
+            $html.= "<tr>";
+            $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Código</th>';
+            $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Cuenta</th>';
+            $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Debe</th>';
+            $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Haber</th>';
+            $html.='</tr>';
+            
+           
+      
+        
+        $html.='</table>';
+        
+        $datos_reporte['DETALLE_CREDITOS']= $html;
+        
+        
+        
+        
+        
+        $this->verReporte("ReporteCreditos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+        
+        
+        
+
+    }
+    
    
 }
 

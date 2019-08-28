@@ -960,7 +960,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $rsTipoComprobantes = $TipoComprobantes->getTipoComprobanteByNombre("CONTABLE");
 	        $_id_tipo_comprobantes = (!empty($rsTipoComprobantes)) ? $rsTipoComprobantes[0]->id_tipo_comprobantes : null;
 	            
-            $funcionComprobante     = "con_ins_ccomprobantes";
+            $funcionComprobante     = "core_ins_ccomprobantes_activacion_credito";
             $valor_letras           = $Credito->numtoletras($_total_cuentas_pagar);
             $_concepto_comprobantes = "Consecion Creditos Sol:$numero_credito"; 
             //para parametros hay valores seteados
@@ -1019,10 +1019,24 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    }
 	}
 	
+	public function MayorizaComprobanteCredito($id_credito){
+	    
+	    $Credito = new CreditosModel();
+	    
+	    $columas1  = "";
+	    $tablas1   = "";
+	    $where1    = "";
+	    $id1       = "";
+	    
+	    
+	}
+	
+	
 	public function verfuncion(){
 	    $Consecutivo = new ConsecutivosModel();
+	    $tc = new TipoComprobantesModel();
 	    
-	    $rsBusca = $Consecutivo->getConsecutivoByNombre("PAGOS");
+	    $rsBusca = $tc->getTipoComprobanteByNombre("CONTABLE");
 	    
 	    var_dump($rsBusca);
 	}

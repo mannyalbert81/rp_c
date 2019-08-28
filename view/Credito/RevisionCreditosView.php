@@ -171,8 +171,8 @@
  	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 	    	<div class="modal-header bg-primary">
-	    		<button type="button" id="cerrar_comprobante" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Contenidos del reporte</h4>
+	    		<button type="button" id="cerrar_comprobantes" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Comprobantes</h4>
 			</div>
 			<div class="modal-body">
 				<div class="form-group" align="center">
@@ -218,6 +218,7 @@
 </div>
 
 
+
  
  	<?php include("view/modulos/footer.php"); ?>	
 
@@ -232,7 +233,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Credito/js/RevisionCreditos.js?0.13"></script>
+    <script src="view/Credito/js/RevisionCreditos.js?0.15"></script>
 	
 	
   </body>

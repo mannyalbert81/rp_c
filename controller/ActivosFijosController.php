@@ -141,15 +141,11 @@ class ActivosFijosController extends ControladorBase{
         $id_rol= $_SESSION['id_rol'];
         $resultPer = $activosf->getPermisosEditar("   nombre_controladores = '$nombre_controladores' AND id_rol = '$id_rol' " );
         
-        //die('llego');
         if (!empty($resultPer))
         {
-            //die('llego');
             if ( isset ($_POST["nombre_activos_fijos"]))
             
             {
-               //die('llego');
-                
                 $_id_activos_fijos = $_POST["id_activos_fijos"];
                 $_id_oficina = $_POST["id_oficina"];
                 $_id_tipo_activos_fijos = $_POST["id_tipo_activos_fijos"];
@@ -164,9 +160,6 @@ class ActivosFijosController extends ControladorBase{
                 $_color_activos_fijos = $_POST["color_activos_fijos"];
                 $_material_activos_fijos = $_POST["material_activos_fijos"];
                 $_dimension_activos_fijos = $_POST["dimension_activos_fijos"];
-                
-                
-                //die('llego');
                 
                 
                 $imagen_activos='';
@@ -198,12 +191,10 @@ class ActivosFijosController extends ControladorBase{
                 
                 
                 if($_id_activos_fijos > 0){
-                    //die('llego');
                     
                     $_depreciacion_mensual_activos_fijos= ((int) $_valor_activos_fijos)/((int) $_meses_depreciacion_activos_fijos);
                     $_anio = explode("-", $_fecha_compra_activos_fijos);
                     $_anio1= $_anio[0];
-                    //die($_anio1);
                     $_fecha_cierre_anio_activos_fijos=(int) $_anio1.'-12-31';
                     
                     $fecha1 = new DateTime($_fecha_cierre_anio_activos_fijos);
@@ -249,7 +240,6 @@ class ActivosFijosController extends ControladorBase{
                     
                     $_anio = explode("-", $_fecha_compra_activos_fijos);
                     $_anio1= $_anio[0];
-                    //die($_anio1);
                     $_fecha_cierre_anio_activos_fijos=(int) $_anio1.'-12-31';
                     
                     $fecha1 = new DateTime($_fecha_cierre_anio_activos_fijos);
@@ -293,8 +283,7 @@ class ActivosFijosController extends ControladorBase{
                     $activosf->setParametros($parametros);
                     $resultado=$activosf->Insert();
                     
-                    //print_r($resultado);
-                    //die('llego');
+                
                 }
                 
             }
@@ -1235,8 +1224,9 @@ class ActivosFijosController extends ControladorBase{
                 
                 if($id_rol==1){
                     
-                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                    $html.='<th style="text-align: left;  font-size: 12px;">Depreciar</th>';
+                    $html.='<th style="text-align: left;  font-size: 12px;">Editar</th>';
+                    $html.='<th style="text-align: left;  font-size: 12px;">Generar Ficha</th>';
                     
                 }
                 
@@ -1269,8 +1259,8 @@ class ActivosFijosController extends ControladorBase{
                     if($id_rol==1){
                         
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><a target="_blank" href="index.php?controller=ActivosFijos&action=verDepreciacionInd&id_activos_fijos='.$res->id_activos_fijos.'" class="" style="font-size:65%;"><i class="fa fa-sitemap"></i> Ver Depreciacion</a></span></td>';
-                        
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><a id="'.$res->id_activos_fijos.'" href="#" target="blank" class="editaActivo" style="font-size:65%;" ><i class="fa fa-pencil-square-o"></i> Editar </a></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><a target="_blank" href="index.php?controller=ActivosFijos&action=index2&id_activos_fijos='.$res->id_activos_fijos.'" class="" ><i class="glyphicon glyphicon-folder-open"></i></a></span></td>';
                         
                     }
                     
@@ -1772,7 +1762,210 @@ class ActivosFijosController extends ControladorBase{
         
         $this->verReporte("Depreciacion", array('datos_empresa'=>$datos_empresa,'datosActivo' => $datosActivo));
     }
-     
+    
+    
+    
+    //////////////////////////////////////// FICHA ACTIVOS ///////////////////////////////////////////////
+    
+    public function index2(){
+        
+        
+        
+        session_start();
+        
+        $activosf=new ActivosFijosModel();
+        
+        
+        $oficina=new OficinaModel();
+        $resultOfi=$oficina->getAll("nombre_oficina");
+        
+        $tipoactivos=new TipoActivosModel();
+        $resultTipoac=$tipoactivos->getAll("nombre_tipo_activos_fijos");
+        
+        $activos= null;
+        $activos = new EstadoModel();
+        $whe_activos = "tabla_estado = 'ACTIVOS'";
+        $result_Activos_estados = $activos->getBy($whe_activos);
+        
+        
+        $resultEdit = "";
+        
+        $resultSet = null;
+        
+        if (isset(  $_SESSION['nombre_usuarios']) )
+        {
+            
+            $nombre_controladores = "ActivosFijos";
+            $id_rol= $_SESSION['id_rol'];
+            $resultPer = $activosf->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+            
+            if (!empty($resultPer))
+            {
+                if (isset ($_GET["id_activos_fijos"])   )
+                {
+                    
+                    
+                    
+                    $_id_activos_fijos = $_GET["id_activos_fijos"];
+                    $columnas = "
+                                   act_activos_fijos.id_activos_fijos, 
+                                  act_activos_fijos.id_usuarios, 
+                                  usuarios.nombre_usuarios, 
+                                  act_activos_fijos.id_oficina, 
+                                  oficina.nombre_oficina, 
+                                  act_activos_fijos.id_tipo_activos_fijos, 
+                                  tipo_activos_fijos.nombre_tipo_activos_fijos, 
+                                  act_activos_fijos.id_estado, 
+                                  estado.nombre_estado, 
+                                  act_activos_fijos.id_empleados, 
+                                  empleados.nombres_empleados, 
+                                  act_activos_fijos.nombre_activos_fijos, 
+                                  act_activos_fijos.codigo_activos_fijos, 
+                                  act_activos_fijos.fecha_activos_fijos, 
+                                  act_activos_fijos.detalle_activos_fijos, 
+                                  act_activos_fijos.imagen_activos_fijos, 
+                                  act_activos_fijos.valor_activos_fijos, 
+                                  act_activos_fijos.id_rfid_tag, 
+                                  rfid_tag.numero_rfid_tag
+                                    ";
+                    
+                    $tablas   = "   public.act_activos_fijos, 
+                                      public.usuarios, 
+                                      public.oficina, 
+                                      public.tipo_activos_fijos, 
+                                      public.estado, 
+                                      public.empleados, 
+                                      public.rfid_tag";
+                    $where    = "   usuarios.id_usuarios = act_activos_fijos.id_usuarios AND
+                                      oficina.id_oficina = act_activos_fijos.id_oficina AND
+                                      tipo_activos_fijos.id_tipo_activos_fijos = act_activos_fijos.id_tipo_activos_fijos AND
+                                      estado.id_estado = act_activos_fijos.id_estado AND
+                                      empleados.id_empleados = act_activos_fijos.id_empleados AND
+                                      rfid_tag.id_rfid_tag = act_activos_fijos.id_rfid_tag
+                                      AND act_activos_fijos.id_activos_fijos = '$_id_activos_fijos'";
+                    $id       = "act_activos_fijos.id_activos_fijos";
+                    
+                    $resultEdit = $activosf->getCondiciones($columnas ,$tablas ,$where, $id);
+                    
+                    
+                    
+                }
+                
+                
+                $this->view_Contable("FichaActivosFijos",array(
+                    "resultSet"=>$resultSet,
+                    "resultEdit" =>$resultEdit,
+                    "resultOfi"=>$resultOfi,
+                    "resultTipoac"=>$resultTipoac,
+                    "result_Activos_estados"=>$result_Activos_estados
+                    
+                    
+                ));
+                
+                
+                
+            }
+            else
+            {
+                $this->view_Contable("Error",array(
+                    "resultado"=>"No tiene Permisos de Acceso a Bodegas"
+                    
+                ));
+                
+                exit();
+            }
+            
+        }
+        else{
+            
+            $this->redirect("Usuarios","sesion_caducada");
+            
+        }
+        
+    }
+    
+    public function InsertaFicha(){
+        
+        session_start();
+        
+        $ficha_activos = new FichaActivosModel();
+        
+        $nombre_controladores = "Periodo";
+        $id_rol= $_SESSION['id_rol'];
+        $resultPer = $ficha_activos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+        
+        if (!empty($resultPer)){
+            
+            $_id_ficha_mantenimiento = (isset($_POST["id_ficha_mantenimiento"])) ? $_POST["id_ficha_mantenimiento"] : "0";
+            $_fecha_inicio_ficha_mantenimiento = (isset($_POST["fecha_inicio_ficha_mantenimiento"])) ? $_POST["fecha_inicio_ficha_mantenimiento"] : 0 ;
+            $_danio_ficha_mantenimiento = (isset($_POST["danio_ficha_mantenimiento"])) ? $_POST["danio_ficha_mantenimiento"] : 0 ;
+            $_partes_reemplazado_ficha_mantenimiento = (isset($_POST["partes_reemplazado_ficha_mantenimiento"])) ? $_POST["partes_reemplazado_ficha_mantenimiento"] : 0 ;
+            $_responsable_ficha_mantenimiento = (isset($_POST["responsable_ficha_mantenimiento"])) ? $_POST["responsable_ficha_mantenimiento"] : 0 ;
+            $_id_activos_fijos = (isset($_POST["id_activos_fijos"])) ? $_POST["id_activos_fijos"] : 0 ;
+            $_descripcion_ficha_mantenimiento = (isset($_POST["descripcion_ficha_mantenimiento"])) ? $_POST["descripcion_ficha_mantenimiento"] : 0 ;
+            
+            
+            $funcion = "ins_act_ficha_mantenimiento";
+            $respuesta = 0 ;
+            $mensaje = "";
+            
+            
+            
+            if($_id_ficha_mantenimiento == 0){
+                
+                $parametros = " '$_fecha_inicio_ficha_mantenimiento','$_danio_ficha_mantenimiento','$_partes_reemplazado_ficha_mantenimiento','$_responsable_ficha_mantenimiento','$_id_activos_fijos','$_descripcion_ficha_mantenimiento'";
+                $ficha_activos->setFuncion($funcion);
+                $ficha_activos->setParametros($parametros);
+                $resultado = $ficha_activos->llamafuncionPG();
+                
+                if(is_int((int)$resultado[0])){
+                    $respuesta = $resultado[0];
+                    $mensaje = "Ficha Ingresada Correctamente";
+                }
+                
+                
+                
+            }elseif ($_id_ficha_mantenimiento > 0){
+                
+                $parametros = " '$_fecha_inicio_ficha_mantenimiento','$_danio_ficha_mantenimiento','$_partes_reemplazado_ficha_mantenimiento','$_responsable_ficha_mantenimiento','$_id_activos_fijos','$_descripcion_ficha_mantenimiento'";
+                $ficha_activos->setFuncion($funcion);
+                $ficha_activos->setParametros($parametros);
+                $resultado = $ficha_activos->llamafuncionPG();
+                
+                if(is_int((int)$resultado[0])){
+                    $respuesta = $resultado[0];
+                    $mensaje = "Ficha Actualizada Correctamente";
+                }
+                
+                
+            }
+            
+            
+            
+            //print_r($respuesta);
+            
+            
+            if(is_int((int)$respuesta)){
+                
+                echo json_encode(array('respuesta'=>$respuesta,'mensaje'=>$mensaje));
+                exit();
+            }
+            
+            echo "Error al Ingresar Ficha";
+            exit();
+            
+        }
+        else
+        {
+            $this->view_Inventario("Error",array(
+                "resultado"=>"No tiene Permisos de Insertar Ficha"
+                
+            ));
+            
+            
+        }
+        
+    }
     
     
 }

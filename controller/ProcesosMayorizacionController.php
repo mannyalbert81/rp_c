@@ -1023,12 +1023,35 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    
 	    $Credito = new CreditosModel();
 	    
-	    $columas1  = "";
-	    $tablas1   = "";
-	    $where1    = "";
-	    $id1       = "";
-	    
-	    
+	    try {
+	        $Credito->beginTran();
+	        
+	        $columas1  = "id_creditos, numero_creditos, id_ccomprobantes";
+	        $tablas1   = "core_creditos";
+	        $where1    = "id_creditos = $id_credito ";
+	        $id1       = "id_creditos";
+	        $rsConsulta1 = $Credito->getCondiciones($columas1, $tablas1, $where1, $id1);
+	        
+	        if(empty($rsConsulta1)){ throw new Exception('credito no encontrado');}
+	        
+	        $_id_comprobante       = $rsConsulta1[0]->id_ccomprobantes;
+	        $funcionMayoriza       = "core_ins_mayoriza_activa_credito";
+	        $parametrosMayoriza    = "$_id_comprobante,null";
+	        $consultaMayoriza      = $Credito->getconsultaPG($funcionMayoriza, $parametrosMayoriza);
+	        $ResultadoMayoriza     = $Credito->llamarconsultaPG($consultaMayoriza);
+	        
+	        $error = "";
+	        $error = pg_last_error();
+	        if(!empty($error)){ throw new Exception('mayoriza comprobante credito');}
+	        
+	        $Credito->endTran('COMMIT');
+	        return 'OK';
+	        
+	    } catch (Exception $e) {
+	        $Credito->endTran();
+	        return "ERROR".$e->getMessage();
+	    }	    
+	   
 	}
 	
 	

@@ -58,6 +58,27 @@ class TipoComprobantesModel extends ModeloBase{
 		return  $resultado;
 	}
 	
+	//dc 2019-08-27
+	public function llamafuncionPG(){
+	    
+	    $query = "SELECT ".$this->funcion."(".$this->parametros.")";
+	    $resultado = null;
+	    
+	    $resultado=$this->llamarconsultaPG($query);
+	    
+	    return  $resultado;
+	}
+	
+	//dc 2019-08-28
+	public function getTipoComprobanteByNombre($nTipoComprobante){
+	    
+	    $query = "SELECT id_tipo_comprobantes,nombre_tipo_comprobantes FROM tipo_comprobantes WHERE nombre_tipo_comprobantes = '$nTipoComprobante'";
+	    
+	    $resultado=$this->enviaquery($query);
+	    
+	    return  $resultado;
+	    
+	}
 	
 }
 ?>

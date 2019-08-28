@@ -150,6 +150,13 @@ class RevisionCreditosController extends ControladorBase{
         $fecha_reporte=$_POST['fecha_reporte'];
         $reportes=new PlanCuentasModel();
         
+        $columnas="nombre_rol";
+        $tablas="rol";
+        $where="id_rol=".$id_rol;
+        $id="id_rol";
+        $resultRol=$reportes->getCondiciones($columnas, $tablas, $where, $id);
+        $resultRol=$resultRol[0]->nombre_rol;
+        
             $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
                          dia_creditos_trabajados_cabeza, oficina.nombre_oficina, estado.nombre_estado";
             $tablas="core_creditos_trabajados_cabeza INNER JOIN oficina
@@ -157,12 +164,11 @@ class RevisionCreditosController extends ControladorBase{
             		INNER JOIN estado
             		ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
            
-            if($id_rol==58) $where="1=1";
-            if($id_rol==51)$where="estado.nombre_estado='APROBADO CREDITOS'";
-            if($id_rol==59)$where="estado.nombre_estado='APROBADO RECAUDACIONES'";
-            if($id_rol==48)$where="estado.nombre_estado='APROBADO SISTEMAS'";
-            if($id_rol==61)$where="estado.nombre_estado='APROBADO CONTADOR'";
-            if($id_rol==53)$where="estado.nombre_estado='APROBADO GERENTE'";
+            if($resultRol=="Jefe de crédito y prestaciones") $where="1=1";
+            if($resultRol=="Jefe de recaudaciones")$where="estado.nombre_estado='APROBADO CREDITOS'";
+            if($resultRol=="Contador / Jefe de RR.HH")$where="estado.nombre_estado='APROBADO RECAUDACIONES'";
+            if($resultRol=="Gerente")$where="estado.nombre_estado='APROBADO CONTADOR'";
+            if($resultRol=="Jefe de tesoreria")$where="estado.nombre_estado='APROBADO GERENTE'";
             if(!(empty($fecha_reporte)))
             {
                 $elementos_fecha=explode("-",$fecha_reporte);
@@ -252,6 +258,13 @@ class RevisionCreditosController extends ControladorBase{
         $id_rol=$_SESSION["id_rol"];
         $fecha_reporte=$_POST['fecha_reporte'];
         $reportes=new PlanCuentasModel();
+       
+        $columnas="nombre_rol";
+        $tablas="rol";
+        $where="id_rol=".$id_rol;
+        $id="id_rol";
+        $resultRol=$reportes->getCondiciones($columnas, $tablas, $where, $id);
+        $resultRol=$resultRol[0]->nombre_rol;
         
         $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
                          dia_creditos_trabajados_cabeza, oficina.nombre_oficina, estado.nombre_estado";
@@ -260,12 +273,11 @@ class RevisionCreditosController extends ControladorBase{
             		INNER JOIN estado
             		ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
         
-        if($id_rol==58) $where="1=1";
-        if($id_rol==51)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
-        if($id_rol==59)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=93 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
-        if($id_rol==48)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=94 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
-        if($id_rol==61)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=95 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
-        if($id_rol==53)$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=96 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($resultRol=="Jefe de crédito y prestaciones") $where="1=1";
+        if($resultRol=="Jefe de recaudaciones")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";;
+        if($resultRol=="Contador / Jefe de RR.HH")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=93 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($resultRol=="Gerente")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=95 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($resultRol=="Jefe de tesoreria")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=96 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if(!(empty($fecha_reporte)))
         {
             $elementos_fecha=explode("-",$fecha_reporte);
@@ -366,7 +378,8 @@ class RevisionCreditosController extends ControladorBase{
          $estado_reporte=$estado_reporte[0]->nombre_estado;
             $columnas="core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
                     core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos,
-                    core_tipo_creditos.nombre_tipo_creditos, oficina.nombre_oficina";
+                    core_tipo_creditos.nombre_tipo_creditos, oficina.nombre_oficina, core_creditos_trabajados_detalle.observacion_detalle_creditos_trabajados,
+                    core_creditos.id_ccomprobantes";
             $tablas="core_creditos_trabajados_detalle INNER JOIN core_creditos
                 ON core_creditos_trabajados_detalle.id_creditos = core_creditos.id_creditos
                 INNER JOIN core_estado_creditos
@@ -426,7 +439,7 @@ class RevisionCreditosController extends ControladorBase{
                     
                     $columnas="id_solicitud_prestamo";
                     $tabla="solicitud_prestamo";
-                    $where="identificador_consecutivos='".$res->numero_creditos."'";
+                    $where="numero_creditos='".$res->numero_creditos."'";
                     $id_solicitud=$db->getCondiciones($columnas, $tabla, $where);
                     $id_solicitud=$id_solicitud[0]->id_solicitud_prestamo;
                     
@@ -436,7 +449,8 @@ class RevisionCreditosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->cedula_participes.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->apellido_participes.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_participes.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->monto_otorgado_creditos.'</td>';
+                    $monto=number_format((float)$res->monto_otorgado_creditos,2,".",",");
+                    $html.='<td style="font-size: 14px;">'.$monto.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->plazo_creditos.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_creditos.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
@@ -445,11 +459,37 @@ class RevisionCreditosController extends ControladorBase{
                     
                     if ($resultRol=="Jefe de crédito y prestaciones" && $estado_reporte=="ABIERTO")
                     {
-                    $html.='<td style="font-size: 18px;"></td>';
-                    $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Quitar('.$id_reporte.','.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                    }
+                    if ($resultRol=="Jefe de recaudaciones" && $estado_reporte=="APROBADO CREDITOS")
+                    {
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                    }
+                    if ($resultRol=="Contador / Jefe de RR.HH" && $estado_reporte=="APROBADO RECAUDACIONES")
+                    {
+                        
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" title="Ver Comprobantes" onclick="MostrarComprobantes('.$res->id_ccomprobantes.')"><i class="glyphicon glyphicon-paste"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                      
+                    }
+                    if ($resultRol=="Gerente" && $estado_reporte=="APROBADO CONTADOR")
+                    {
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                    }
+                    if ($resultRol=="Jefe de tesorería" && $estado_reporte=="APROBADO GERENTE")
+                    {
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                     }
                    
                 $html.='</tr>';
+                if ($estado_reporte=="DEVUELTO A REVISION")
+                {
+                    $html.='<tr>';
+                    $html.='<th style="font-size: 15px;">Observación</th>';
+                    $html.='<td colspan="9" style="font-size: 14px;">'.$res->observacion_detalle_creditos_trabajados.'</td>';
+                    $html.='</tr>';
+                }
+                
             }
             
             
@@ -497,13 +537,109 @@ class RevisionCreditosController extends ControladorBase{
         
     }
     
+    public function MostrarComprobantes()
+    {
+        
+        session_start();
+        $id_ccomprobantes=$_POST["id_ccomprobantes"];
+        $creditos=new PlanCuentasModel();
+        $columnas="core_creditos.numero_creditos, 
+                  ccomprobantes.numero_ccomprobantes,
+                  ccomprobantes.concepto_ccomprobantes, 
+                  dcomprobantes.id_dcomprobantes, 
+                  plan_cuentas.id_plan_cuentas, 
+                  plan_cuentas.codigo_plan_cuentas, 
+                  plan_cuentas.nombre_plan_cuentas, 
+                  dcomprobantes.debe_dcomprobantes, 
+                  dcomprobantes.haber_dcomprobantes";
+        $tablas="public.core_creditos, 
+                  public.ccomprobantes, 
+                  public.plan_cuentas, 
+                  public.dcomprobantes";
+        $where="core_creditos.id_ccomprobantes = ccomprobantes.id_ccomprobantes AND
+                  plan_cuentas.id_plan_cuentas = dcomprobantes.id_plan_cuentas AND
+                  dcomprobantes.id_ccomprobantes = ccomprobantes.id_ccomprobantes AND ccomprobantes.id_ccomprobantes=".$id_ccomprobantes;
+        $id="ccomprobantes.id_ccomprobantes";
+        $ResultComprobantes=$creditos->getCondiciones($columnas, $tablas, $where, $id);
+        $cantidadResult=sizeof($ResultComprobantes);
+        $html='';
+        $total_debe=0;
+        $total_haber=0;
+        if($cantidadResult>0)
+        {
+            
+            $html.='<div class="pull-left" style="margin-left:15px;">';
+            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+            $html.='</div>';
+            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+            $html.='<section style="height:570px; overflow-y:scroll;">';
+            $html.= "<table id='tabla_comprobantes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+            $html.= "<thead>";
+            $html.= "<tr>";
+            $html.='<th colspan="5" style="text-align: left;  font-size: 15px;">'.$ResultComprobantes[0]->concepto_ccomprobantes.'</th>';
+            $html.='</tr>';
+            $html.= "<tr>";
+            $html.='<th style="text-align: left;  font-size: 15px;">Comprobante</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">N Cuenta</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Nombre Cuenta</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Debe</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Haber</th>';
+           
+            
+            $html.='</tr>';
+            $html.='</thead>';
+            $html.='<tbody>';
+            
+            foreach ( $ResultComprobantes as $res)
+            {                               
+                $html.='<tr>';
+                $html.='<td style="font-size: 14px;">'.$res->numero_ccomprobantes.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->codigo_plan_cuentas.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->nombre_plan_cuentas.'</td>';
+                $debe=number_format((float)$res->debe_dcomprobantes,2,".",",");
+                $haber=number_format((float)$res->haber_dcomprobantes,2,".",",");
+                $html.='<td align="right" style="font-size: 14px;">'.$debe.'</td>';
+                $total_debe+=$res->debe_dcomprobantes;
+                $total_haber+=$res->haber_dcomprobantes;
+                $html.='<td align="right" style="font-size: 14px;">'.$haber.'</td>';
+                $html.='</tr>';
+            }
+            $total_debe=number_format((float)$total_debe,2,".",",");
+            $total_haber=number_format((float)$total_haber,2,".",",");
+            $html.='<tr>';
+            $html.='<th colspan="3" style="text-align: right;font-size: 15px;">Total:</th>';
+            $html.='<td align="right" style="font-size: 14px;">'.$total_debe.'</td>';
+            $html.='<td align="right" style="font-size: 14px;">'.$total_haber.'</td>';
+            $html.='</tr>';
+              
+            $html.='</tbody>';
+            $html.='</table>';
+            $html.='</section>';
+            $html.='</div>';
+            
+        }else{
+            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay comprobantes registrados...</b>';
+            $html.='</div>';
+            $html.='</div>';
+        }
+        
+        
+        echo $html;
+        
+    }
+    
     public function GetReportes()
     {
         session_start();
         
         $reportes = new PlanCuentasModel();
-        $tablas="public.core_creditos_trabajados_cabeza";
-        $where="1=1";
+        $tablas="public.core_creditos_trabajados_cabeza INNER JOIN estado
+             ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
+        $where="nombre_estado='ABIERTO'";
         $id="core_creditos_trabajados_cabeza.id_creditos_trabajados_cabeza";
         $resultSet=$reportes->getCondiciones("*", $tablas, $where, $id);
         
@@ -554,10 +690,12 @@ class RevisionCreditosController extends ControladorBase{
           $mes= date('m');
           $year= date('Y');
           $columnas="id_creditos_trabajados_cabeza, id_estado_creditos_trabajados_cabeza";
-          $tablas="core_creditos_trabajados_cabeza";
+          $tablas="core_creditos_trabajados_cabeza INNER JOIN estado
+                        ON estado.id_estado = core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
           $where="anio_creditos_trabajados_cabeza = ".$year."
                 	AND mes_creditos_trabajados_cabeza = ".$mes."
-                	AND dia_creditos_trabajados_cabeza = ".$dia;
+                	AND dia_creditos_trabajados_cabeza = ".$dia."
+                    AND nombre_estado='ABIERTO'";
           $id="id_creditos_trabajados_cabeza";
           $resultRpts=$reportes->getCondiciones($columnas, $tablas, $where, $id);
           if (empty($resultRpts))
@@ -594,13 +732,14 @@ class RevisionCreditosController extends ControladorBase{
                         ON estado.id_estado = core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
               $where="anio_creditos_trabajados_cabeza = ".$year."
                 	AND mes_creditos_trabajados_cabeza = ".$mes."
-                	AND dia_creditos_trabajados_cabeza = ".$dia;
+                	AND dia_creditos_trabajados_cabeza = ".$dia."
+                    AND NOT (nombre_estado='DEVUELTO A REVISION')";
               $id="id_creditos_trabajados_cabeza";
               $resultRpts=$reportes->getCondiciones($columnas, $tablas, $where, $id);
               $id_estado=$resultRpts[0]->nombre_estado;
               if($id_estado!="ABIERTO")
               {
-               echo "REPORTE CERRADO";
+                  echo "REPORTE CERRADO";
               }
               else 
               {
@@ -622,7 +761,7 @@ class RevisionCreditosController extends ControladorBase{
             $mes= date('m');
             $year= date('Y');
             $columnas="id_creditos_trabajados_cabeza, nombre_estado";
-            $tablas=" INNER JOIN estado
+            $tablas="core_creditos_trabajados_cabeza INNER JOIN estado
                         ON estado.id_estado = core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
             $where="id_creditos_trabajados_cabeza = ".$id_reporte;
             $id="id_creditos_trabajados_cabeza";
@@ -630,7 +769,7 @@ class RevisionCreditosController extends ControladorBase{
             $id_estado=$resultRpts[0]->nombre_estado;
             if($id_estado!="ABIERTO")
             {
-                echo "REPORTE CERRADO";
+                echo "REPORTE CERRADO".$id_estado."789";
             }
             else
             {
@@ -845,6 +984,7 @@ class RevisionCreditosController extends ControladorBase{
         }
         
         $Credito = new CreditosModel();
+        $Consecutivos = new ConsecutivosModel();
         
         require_once 'core/DB_Functions.php';
         $db = new DB_Functions();
@@ -862,15 +1002,15 @@ class RevisionCreditosController extends ControladorBase{
             $Credito->beginTran();
             
             //creacion de lote
-            $nombreLote = "CXP".$_SESSION['usuario_usuarios'];
+            $nombreLote = "CxP-Creditos";
             $descripcionLote = "GENERACION CREDITO";
             $id_frecuencia = 1;
             $id_usuarios = $_SESSION['id_usuarios'];
             $funcionLote = "tes_genera_lote";
             $paramLote = "'$nombreLote','$descripcionLote','$id_frecuencia','$id_usuarios'";
-            $consultaLote = " SELECT ".$funcionLote." ( ".$paramLote." )";
+            $consultaLote = $Credito->getconsultaPG($funcionLote, $paramLote);
             $ResultLote = $Credito->llamarconsultaPG($consultaLote);
-            $_id_lote = 0;
+            $_id_lote = 0; // es cero para que la funcion reconosca como un ingreso de nuevo lote
             $error = "";
             $error = pg_last_error();
             if (!empty($error) || (int)$ResultLote[0] <= 0){
@@ -881,10 +1021,7 @@ class RevisionCreditosController extends ControladorBase{
             
             /*insertado de cuentas por pagar*/
             //busca consecutivo
-            $queryConsecutivo = "SELECT id_consecutivos, LPAD(valor_consecutivos::TEXT,espacio_consecutivos,'0') AS numero_consecutivos FROM consecutivos
-                WHERE id_entidades = 1 AND nombre_consecutivos='CxP'";
-            $ResultConsecutivo= $Credito->enviaquery($queryConsecutivo);
-            
+            $ResultConsecutivo= $Consecutivos->getConsecutivoByNombre("CxP");
             $_id_consecutivos = $ResultConsecutivo[0]->id_consecutivos;
             
             //busca tipo documento
@@ -915,7 +1052,7 @@ class RevisionCreditosController extends ControladorBase{
             }else{
                 throw new Exception("Error en proveedor-participe");
             }
-             
+            
             //para datos de banco
             $_id_bancos = 2 ; //seteado para presentacion luego va con deacuerdo el credito //buscar de la tabla del Cnolivos
             
@@ -969,7 +1106,7 @@ class RevisionCreditosController extends ControladorBase{
             
             //valores de cuentas por pagar
             $_compra_cuentas_pagar = $monto_credito;
-            $_total_cuentas_pagar = $_compra_cuentas_pagar - $_impuesto_cuentas_pagar;
+            $_total_cuentas_pagar = $_compra_cuentas_pagar;
             $_saldo_cuentas_pagar = $_compra_cuentas_pagar - $_impuesto_cuentas_pagar;
             
             /*inserccion de cuentas x pagar*/
@@ -990,7 +1127,7 @@ class RevisionCreditosController extends ControladorBase{
                     $iorden = 1;
                     $queryDistribucion = "INSERT INTO tes_distribucion_cuentas_pagar
                         (id_lote,id_plan_cuentas,tipo_distribucion_cuentas_pagar,debito_distribucion_cuentas_pagar,credito_distribucion_cuentas_pagar,ord_distribucion_cuentas_pagar,referencia_distribucion_cuentas_pagar)
-                        VALUES ( '$_id_lote','$res->id_plan_cuentas_debe','COMPRA','0.00','$monto_entregado_credito','$iorden','$_descripcion_cuentas_pagar')";
+                        VALUES ( '$_id_lote','$res->id_plan_cuentas_debe','COMPRA','0.00','$monto_credito','$iorden','$_descripcion_cuentas_pagar')";
                     
                     $iorden = $iorden + 2;
                     $ResultDistribucion = $Credito -> executeNonQuery($queryDistribucion);
@@ -1005,7 +1142,7 @@ class RevisionCreditosController extends ControladorBase{
                     $iorden = 2;
                     $queryDistribucion = "INSERT INTO tes_distribucion_cuentas_pagar
                         (id_lote,id_plan_cuentas,tipo_distribucion_cuentas_pagar,debito_distribucion_cuentas_pagar,credito_distribucion_cuentas_pagar,ord_distribucion_cuentas_pagar,referencia_distribucion_cuentas_pagar)
-                        VALUES ( '$_id_lote','$res->id_plan_cuentas_haber','PAGOS','$monto_entregado_credito','0.00','$iorden','$_descripcion_cuentas_pagar')";
+                        VALUES ( '$_id_lote','$res->id_plan_cuentas_haber','PAGOS','$monto_credito','0.00','$iorden','$_descripcion_cuentas_pagar')";
                     $iorden = $iorden + 2;
                     $ResultDistribucion = $Credito -> executeNonQuery($queryDistribucion);
                     $error = "";
@@ -1029,14 +1166,6 @@ class RevisionCreditosController extends ControladorBase{
                 }
             }
             
-            /*$_id_usuarios = $id_usuarios;
-            //datos de cuentas x pagar
-            $funcionCuentasPagar = "tes_ins_cuentas_pagar";
-            $paramCuentasPagar = "'$_id_lote', '$_id_consecutivos', '$_id_tipo_documento', '$_id_proveedor', '$_id_bancos',
-            '$_id_moneda', '$_descripcion_cuentas_pagar', '$_fecha_cuentas_pagar', '$_condiciones_pago_cuentas_pagar', '$_num_documento_cuentas_pagar',
-            '$_num_ord_compra','$_metodo_envio_cuentas_pagar', '$_compra_cuentas_pagar', '$_desc_comercial','$_flete_cuentas_pagar',
-            '$_miscelaneos_cuentas_pagar','$_impuesto_cuentas_pagar', '$_total_cuentas_pagar','$_monto1099_cuentas_pagar','$_efectivo_cuentas_pagar',
-            '$_cheque_cuentas_pagar', '$_tarjeta_credito_cuentas_pagar', '$_condonaciones_cuentas_pagar', '$_saldo_cuentas_pagar', '$_id_cuentas_pagar'";*/
             
             $_origen_cuentas_pagar = "CREDITOS";
             $_id_usuarios = $id_usuarios;
@@ -1054,100 +1183,69 @@ class RevisionCreditosController extends ControladorBase{
             
             $error = "";
             $error = pg_last_error();
-            if(!empty($error) || $ResultCuentaPagar[0] <= 0 )
-                throw new Exception('error inserccion cuentas pagar');
-                
-                // secuencial de cuenta por pagar
-                $_id_cuentas_pagar = $ResultCuentaPagar[0];
-                
-                $funcionComprobante = "tes_agrega_comprobante_cuentas_pagar";
-                $parametrosComprobante = "
-                    '$_id_usuarios',
-                    '$_id_lote',
-                    '$_id_proveedor',
-                    '',
-                    '$_descripcion_cuentas_pagar',
-                    '$_total_cuentas_pagar',
-                    'cero',
-                    '$_fecha_cuentas_pagar',
-                    '3',
-                    '',
-                    '',
-                    '',
-                    ''
-                    ";
-                
-                $consultaComprobante = $Credito ->getconsultaPG($funcionComprobante, $parametrosComprobante);
-                $resultadComprobantes = $Credito->llamarconsultaPG($consultaComprobante);
-                
-                $error = "";
-                $error = pg_last_error();
-                if(!empty($error) || $resultadComprobantes[0] <= 0 )
-                    throw new Exception('error inserccion cuentas pagar');
-                    
-                    // secuencial de comprobante
-                    $_id_ccomprobantes = $resultadComprobantes[0];
-                    
-                    //se actualiza la cuenta por pagar con la relacion al comprobante
-                    $columnaCxP = "id_ccomprobantes = $_id_ccomprobantes ";
-                    $tablasCxP = "tes_cuentas_pagar";
-                    $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
-                    $UpdateCuentasPagar = $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
-                    
-                    //se actualiza el credito con su comprobante
-                    $columnaCre = "id_ccomprobantes = $_id_ccomprobantes ";
-                    $tablasCre = "core_creditos";
-                    $whereCre = "id_creditos = $id_creditos";
-                    $UpdateCredito= $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
-                    
-                    //para actualizar la forma de pago en cuentas por pagar
-                    //--buscar
-                    $queryBuscaFormaPago = "SELECT id_creditos,numero_creditos FROM core_creditos WHERE id_creditos = $id_creditos";
-                    $RsCreditoPago = $Credito -> enviaquery($queryBuscaFormaPago);
-                    $numero_de_credito = $RsCreditoPago[0]->numero_creditos;
-                    
-                    $columnas="id_solicitud_prestamo,nombre_banco_cuenta_bancaria,tipo_pago_cuenta_bancaria,numero_cuenta_cuenta_bancaria,tipo_cuenta_cuenta_bancaria";
-                    $tabla="solicitud_prestamo";
-                    $where="identificador_consecutivos='".$numero_de_credito."'";
-                    $RsSolicitud = $db->getCondiciones($columnas, $tabla, $where);
-                    $_sol_nombre_banco = $RsSolicitud[0]->nombre_banco_cuenta_bancaria;
-                    $_sol_tipo_pago = $RsSolicitud[0]->tipo_pago_cuenta_bancaria;
-                    $_sol_numero_cuenta = $RsSolicitud[0]->numero_cuenta_cuenta_bancaria;
-                    $_sol_tipo_cuenta_banco = $RsSolicitud[0]->tipo_cuenta_cuenta_bancaria;
-                    
-                    $_id_forma_pago = null;
-                    $queryFormaPago="";
-                    switch ($_sol_tipo_pago){
-                        case "Depósito":
-                            $queryFormaPago = "SELECT * FROM forma_pago WHERE nombre_forma_pago = 'TRANSFERENCIA'";
-                            break;
-                        case "Retira Cheque":
-                            $queryFormaPago = "SELECT * FROM forma_pago WHERE nombre_forma_pago = 'CHEQUE'";
-                            break;
-                    }
-                    
-                    $rsFormaPago = $Credito->enviaquery($queryFormaPago);
-                    $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
-                    
-                    $columnaPago = "id_forma_pago = $_id_forma_pago ";
-                    $tablasPago = "tes_cuentas_pagar";
-                    $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
-                    $UpdateFormaPago= $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
-                    
-                    //para realizar cambios de participe en proveedores
-                    $_id_tipo_cuenta = "1";
-                    if($_sol_tipo_cuenta_banco == "Corriente"){ $_id_tipo_cuenta = 1;}
-                    if($_sol_tipo_cuenta_banco == "Ahorros"){ $_id_tipo_cuenta = 2;}
-                    
-                    $columnaProveedores = "numero_cuenta_proveedores ='$_sol_numero_cuenta', id_tipo_cuentas = '$_id_tipo_cuenta' ";
-                    $tablasProveedores = "proveedores";
-                    $whereProveedores = "id_proveedores = $_id_proveedor";
-                    $UpdateProveedores = $Credito -> ActualizarBy($columnaProveedores, $tablasProveedores, $whereProveedores);
-                    
-                    
-                    $Credito->endTran('COMMIT');
-                    return 'OK';
-                    
+            if(!empty($error) || $ResultCuentaPagar[0] <= 0 ){ throw new Exception('error inserccion cuentas pagar');}
+            
+            // secuencial de cuenta por pagar
+            $_id_cuentas_pagar = $ResultCuentaPagar[0];
+            
+            //para actualizar la forma de pago en cuentas por pagar
+            //--buscar
+            $columnas1 = "aa.id_creditos,bb.id_forma_pago, bb.nombre_forma_pago";
+            $tabla1 = "core_creditos aa
+                    INNER JOIN forma_pago bb
+                    ON aa.id_forma_pago = bb.id_forma_pago";
+            $where1 = "aa.id_estatus = 1 AND aa.id_creditos = $id_creditos";
+            $id1 = "aa.id_creditos";
+            $rsFormaPago = $Credito->getCondiciones($columnas1, $tabla1, $where1, $id1);
+            $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
+            
+            $columnaPago = "id_forma_pago = $_id_forma_pago ";
+            $tablasPago = "tes_cuentas_pagar";
+            $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
+            $UpdateFormaPago = $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
+            
+            $funcionComprobante = "tes_agrega_comprobante_cuentas_pagar";
+            $valor_letras = $Credito->numtoletras($_total_cuentas_pagar);
+            $parametrosComprobante = "
+                '$_id_usuarios',
+                '$_id_lote',
+                '$_id_proveedor',
+                '',
+                '$_descripcion_cuentas_pagar',
+                '$_total_cuentas_pagar',
+                '$valor_letras',
+                '$_fecha_cuentas_pagar',
+                '$_id_forma_pago',
+                '',
+                '',
+                '',
+                ''";
+            
+            $consultaComprobante = $Credito ->getconsultaPG($funcionComprobante, $parametrosComprobante);
+            $resultadComprobantes = $Credito->llamarconsultaPG($consultaComprobante);
+            
+            $error = "";
+            $error = pg_last_error();
+            if(!empty($error) || $resultadComprobantes[0] <= 0 ){   throw new Exception('error inserccion comprobante conatable '); }
+            
+            // secuencial de comprobante
+            $_id_ccomprobantes = $resultadComprobantes[0];
+            
+            //se actualiza la cuenta por pagar con la relacion al comprobante
+            $columnaCxP = "id_ccomprobantes = $_id_ccomprobantes ";
+            $tablasCxP = "tes_cuentas_pagar";
+            $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
+            $UpdateCuentasPagar = $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
+            
+            //se actualiza el credito con su comprobante
+            $columnaCre = "id_ccomprobantes = $_id_ccomprobantes ";
+            $tablasCre = "core_creditos";
+            $whereCre = "id_creditos = $id_creditos";
+            $UpdateCredito= $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
+            
+            $Credito->endTran('COMMIT');
+            return 'OK';
+            
         } catch (Exception $e) {
             
             $Credito->endTran();
@@ -1220,6 +1318,7 @@ class RevisionCreditosController extends ControladorBase{
         return $out;
     }
     
+
     
     
     public function ReporteCreditosaTransferir($param) {
@@ -1284,7 +1383,106 @@ class RevisionCreditosController extends ControladorBase{
 
     }
     
-   
+
+    public function NegarCredito()
+    {
+        session_start();
+        ob_start();
+        $id_reporte=$_POST['id_reporte'];
+        $numero_credito=$_POST['numero_credito'];
+        $observacion_credito=$_POST['observacion_credito'];
+        $reporte = new PermisosEmpleadosModel();
+        $columnaest = "estado.id_estado";
+        $tablaest= "public.estado";
+        $whereest= "estado.tabla_estado='core_creditos_trabajados_detalle' AND estado.nombre_estado = 'DEVUELTO A REVISION'";
+        $idest = "estado.id_estado";
+        $resultEst = $reporte->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+        $reporte->beginTran();
+        $where = "id_creditos_trabajados_cabeza=".$id_reporte;
+        $tabla = "core_creditos_trabajados_cabeza";
+        $colval = "id_estado_creditos_trabajados_cabeza=".$resultEst[0]->id_estado;
+        $reporte->UpdateBy($colval, $tabla, $where);
+        
+        $where = "id_cabeza_creditos_trabajados=".$id_reporte;
+        $tabla = "core_creditos_trabajados_detalle";
+        $colval = "id_estado_detalle_creditos_trabajados=".$resultEst[0]->id_estado;
+        $reporte->UpdateBy($colval, $tabla, $where);
+                
+        
+        $where = "id_creditos=".$numero_credito;
+        $tabla = "core_creditos_trabajados_detalle";
+        $colval = "observacion_detalle_creditos_trabajados='".$observacion_credito."'";
+        $reporte->UpdateBy($colval, $tabla, $where);
+        
+        $columnas="id_creditos";
+        $tablas="core_creditos_trabajados_detalle";
+        $where="id_cabeza_creditos_trabajados=".$id_reporte;
+        $id="id_creditos";
+        $resultSet=$reporte->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $columnas="id_estado_creditos";
+        $tablas="core_estado_creditos";
+        $where="nombre_estado_creditos='Pre Aprobado'";
+        $id="id_estado_creditos";
+        $id_estado_creditos=$reporte->getCondiciones($columnas, $tablas, $where, $id);
+        $id_estado_creditos=$id_estado_creditos[0]->id_estado_creditos;
+        
+        foreach ($resultSet as $res)
+        {
+            $where = "id_creditos=".$res->id_creditos;
+            $tabla = "core_creditos";
+            $colval = "id_estado_creditos=".$id_estado_creditos.", incluido_reporte_creditos=null";
+            $reporte->UpdateBy($colval, $tabla, $where);
+        }
+        
+        $errores=ob_get_clean();
+        $errores=trim($errores);
+        if(empty($errores))
+        {
+            $reporte->endTran('COMMIT');
+            $mensaje="OK";
+        }
+        else
+        {
+            $reporte->endTran('ROLLBACK');
+            $mensaje="ERROR".$errores;
+        }
+        echo $mensaje;
+    }
+    
+    public function QuitarCredito()
+    {
+        session_start();
+        ob_start();
+        $id_reporte=$_POST['id_reporte'];
+        $numero_credito=$_POST['numero_credito'];
+        $reporte = new PermisosEmpleadosModel();
+        $creditos_detalle= new CreditosTrabajadosDetalleModel();
+        
+        $query="DELETE FROM core_creditos_trabajados_detalle
+                WHERE  id_cabeza_creditos_trabajados=".$id_reporte." AND id_creditos=".$numero_credito;        
+        $delete=$creditos_detalle->executeNonQuery($query);
+        
+        $where = "numero_creditos='".$numero_credito."'";
+        $tabla = "core_creditos";
+        $colval = "incluido_reporte_creditos=null";
+        $reporte->UpdateBy($colval, $tabla, $where);
+        
+        $errores=ob_get_clean();
+        $errores=trim($errores);
+        if(empty($errores))
+        {
+            $reporte->endTran('COMMIT');
+            $mensaje="OK";
+        }
+        else
+        {
+            $reporte->endTran('ROLLBACK');
+            $mensaje="ERROR".$errores;
+        }
+        echo $mensaje."-".$id_reporte."-".$numero_credito.$query;
+    }
+
 }
 
 ?>

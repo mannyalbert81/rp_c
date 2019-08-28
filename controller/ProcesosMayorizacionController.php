@@ -734,6 +734,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    
 	    $Credito = new CreditosModel();
 	    $Consecutivos = new ConsecutivosModel();
+	    $TipoComprobantes = new TipoComprobantesModel();
 	   	    
 	    $id_creditos = $paramIdCredito;
 	    
@@ -752,6 +753,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $descripcionLote = "GENERACION CREDITO";
 	        $id_frecuencia = 1;
 	        $id_usuarios = $_SESSION['id_usuarios'];
+	        $usuario_usuarios = $_SESSION['usuario_usuarios'];
 	        $funcionLote = "tes_genera_lote";
 	        $paramLote = "'$nombreLote','$descripcionLote','$id_frecuencia','$id_usuarios'";
 	        $consultaLote = $Credito->getconsultaPG($funcionLote, $paramLote);
@@ -936,7 +938,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        
 	        //para actualizar la forma de pago y el banco en cuentas por pagar
 	        //--buscar
-	        $columnas1 = "aa.id_creditos,bb.id_forma_pago, bb.nombre_forma_pago,cc.id_bancos";
+	        $columnas1 = "aa.id_creditos, bb.id_forma_pago, bb.nombre_forma_pago,cc.id_bancos";
 	        $tabla1 = "core_creditos aa
                     INNER JOIN forma_pago bb
                     ON aa.id_forma_pago = bb.id_forma_pago
@@ -953,34 +955,48 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $tablasPago = "tes_cuentas_pagar";
 	        $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
 	        $UpdateFormaPago = $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
+	        
+	        //buscar tipo de comprobante
+	        $rsTipoComprobantes = $TipoComprobantes->getTipoComprobanteByNombre("CONTABLE");
+	        $_id_tipo_comprobantes = (!empty($rsTipoComprobantes)) ? $rsTipoComprobantes[0]->id_tipo_comprobantes : null;
 	            
-            $funcionComprobante = "tes_agrega_comprobante_cuentas_pagar";
-            $valor_letras = $Credito->numtoletras($_total_cuentas_pagar);
+            $funcionComprobante     = "core_ins_ccomprobantes_activacion_credito";
+            $valor_letras           = $Credito->numtoletras($_total_cuentas_pagar);
+            $_concepto_comprobantes = "Consecion Creditos Sol:$numero_credito"; 
+            //para parametros hay valores seteados
             $parametrosComprobante = "
-                '$_id_usuarios',
-                '$_id_lote',
-                '$_id_proveedor',
+                1,
+                $_id_tipo_comprobantes,
                 '',
-                '$_descripcion_cuentas_pagar',
+                '',
+                '',
                 '$_total_cuentas_pagar',
+                '$_concepto_comprobantes',
+                '$_id_usuarios',
                 '$valor_letras',
                 '$_fecha_cuentas_pagar',
                 '$_id_forma_pago',
-                '',
-                '',
-                '',
-                ''";
+                null,
+                null,
+                null,
+                null,
+                '$_id_proveedor',
+                'cxp',
+                '$usuario_usuarios',
+                'credito',
+                '$_id_lote'
+                ";
 	            
             $consultaComprobante = $Credito ->getconsultaPG($funcionComprobante, $parametrosComprobante);
             $resultadComprobantes = $Credito->llamarconsultaPG($consultaComprobante);
 	            
             $error = "";
             $error = pg_last_error();
-            if(!empty($error) || $resultadComprobantes[0] <= 0 ){   throw new Exception('error inserccion comprobante conatable '); }
+            if(!empty($error) || $resultadComprobantes[0] <= 0 ){   throw new Exception('error insercion comprobante contable '); }
 	                
             // secuencial de comprobante
             $_id_ccomprobantes = $resultadComprobantes[0];
-            
+                        
             //se actualiza la cuenta por pagar con la relacion al comprobante
             $columnaCxP = "id_ccomprobantes = $_id_ccomprobantes ";
             $tablasCxP = "tes_cuentas_pagar";
@@ -1003,10 +1019,47 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    }
 	}
 	
+	public function MayorizaComprobanteCredito($id_credito){
+	    
+	    $Credito = new CreditosModel();
+	    
+	    try {
+	        $Credito->beginTran();
+	        
+	        $columas1  = "id_creditos, numero_creditos, id_ccomprobantes";
+	        $tablas1   = "core_creditos";
+	        $where1    = "id_creditos = $id_credito ";
+	        $id1       = "id_creditos";
+	        $rsConsulta1 = $Credito->getCondiciones($columas1, $tablas1, $where1, $id1);
+	        
+	        if(empty($rsConsulta1)){ throw new Exception('credito no encontrado');}
+	        
+	        $_id_comprobante       = $rsConsulta1[0]->id_ccomprobantes;
+	        $funcionMayoriza       = "core_ins_mayoriza_activa_credito";
+	        $parametrosMayoriza    = "$_id_comprobante,null";
+	        $consultaMayoriza      = $Credito->getconsultaPG($funcionMayoriza, $parametrosMayoriza);
+	        $ResultadoMayoriza     = $Credito->llamarconsultaPG($consultaMayoriza);
+	        
+	        $error = "";
+	        $error = pg_last_error();
+	        if(!empty($error)){ throw new Exception('mayoriza comprobante credito');}
+	        
+	        $Credito->endTran('COMMIT');
+	        return 'OK';
+	        
+	    } catch (Exception $e) {
+	        $Credito->endTran();
+	        return "ERROR".$e->getMessage();
+	    }	    
+	   
+	}
+	
+	
 	public function verfuncion(){
 	    $Consecutivo = new ConsecutivosModel();
+	    $tc = new TipoComprobantesModel();
 	    
-	    $rsBusca = $Consecutivo->getConsecutivoByNombre("PAGOS");
+	    $rsBusca = $tc->getTipoComprobanteByNombre("CONTABLE");
 	    
 	    var_dump($rsBusca);
 	}

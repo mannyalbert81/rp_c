@@ -1413,6 +1413,88 @@ class RevisionCreditosController extends ControladorBase{
         return $out;
     }
     
+
+    
+    
+    public function ReporteCreditosaTransferir($param) {
+        
+        
+        session_start();
+        $entidades = new EntidadesModel();
+        $ccomprobantes = new CComprobantesModel();
+        $dcomprobantes = new DComprobantesModel();
+        $tipo_comprobantes = new TipoComprobantesModel();
+        $entidades = new EntidadesModel();
+        $tipo_comprobante=new TipoComprobantesModel();
+        //PARA OBTENER DATOS DE LA EMPRESA
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        //NOTICE DATA
+        $datos_cabecera = array();
+        $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+        $datos_cabecera['FECHA'] = date('Y/m/d');
+        $datos_cabecera['HORA'] = date('h:i:s');
+        
+        
+        
+        $datos_reporte = array();
+        
+        $html='';
+        
+            $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
+            $html.= "<tr>";
+            $html.='<th style="text-align: center; font-size: 11px;">No.</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">No.PRESTAMO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">IDENTIFICACIÓN</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">APELLIDOS DEL AFILIADO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">NOMBRES DEL AFILIADO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">MONTO CONCEDIDO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">RETEN POR APORTE</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">CUENTA INDIVIDUAL</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">PLAZO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">VALOR RETENCION CREDITOS</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">LIQUIDO A RECIBIR</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">TIPO PRESTAMO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">ESTADO PRESTAMO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">FECHA DE PAGO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">FORMA DE PAGO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">NOMBRE DEL BANCO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">No. DE CUENTA</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">TIPO DE CUENTA</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">CELULAR</th>';
+            
+            $html.='</tr>';
+            
+           
+      
+        
+        $html.='</table>';
+        
+        $datos_reporte['DETALLE_CREDITOS']= $html;
+        
+        
+        
+        
+        
+        $this->verReporte("ReporteCreditos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+        
+        
+        
+
+    }
+    
+
     public function NegarCredito()
     {
         session_start();
@@ -1511,6 +1593,7 @@ class RevisionCreditosController extends ControladorBase{
         }
         echo $mensaje."-".$id_reporte."-".$numero_credito.$query;
     }
+
 }
 
 ?>

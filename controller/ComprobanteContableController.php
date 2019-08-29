@@ -504,7 +504,7 @@ class ComprobanteContableController extends ControladorBase{
 			{
 				
 					
-				$this->view("ComprobanteContable",array(
+				$this->view_Contable("ComprobanteContable",array(
 				    "resultTipCom"=>$resultTipCom , "resultFormaPago"=>$resultFormaPago
 					));
 			

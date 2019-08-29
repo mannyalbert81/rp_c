@@ -316,6 +316,7 @@ function AprobarJefeCreditos(id_reporte)
 	})
 	.done(function(x) {
 		x=x.trim();
+		console.log(x);
 		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
   		  {
   		  swal({
@@ -437,6 +438,7 @@ function AprobarContador(id_reporte)
 	})
 	.done(function(x) {
 		x=x.trim();
+		console.log(x);
 		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
   		  {
   		  swal({
@@ -587,7 +589,6 @@ function ContinuaNegar()
 		  		  }
 		  	  else
 		  		  {
-		  		load_creditos(1);
 				load_reportes(1);
 				$('#cerrar_ver').click();
 				swal({

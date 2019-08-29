@@ -11,6 +11,12 @@ $("#myModalObservacion").on("hidden.bs.modal", function () {
 	document.getElementById("cuerpo").classList.add('modal-open');
 	
 });
+$("#myModalComprobantes").on("hidden.bs.modal", function () {
+	
+	document.getElementById("cuerpo").classList.add('modal-open');
+	$("#datos_comprobante").html('');
+	
+});
 $('#observacion_credito').keypress(function(event){
 	  if(event.keyCode == 13){
 	    $('#registrar_observacion').click();
@@ -543,6 +549,7 @@ function AprobarTesoreria(id_reporte)
 	});
 }
 
+
 function Negar(id_reporte, id_creditos)
 {
 	idreporte=id_reporte;
@@ -569,7 +576,6 @@ function ContinuaNegar()
 			})
 			.done(function(x) {
 				x=x.trim();
-				console.log(x+"===>");
 				if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
 		  		  {
 		  		  swal({
@@ -603,5 +609,87 @@ function ContinuaNegar()
 		$("#mensaje_observacion_credito").fadeIn("slow");
 		$("#mensaje_observacion_credito").fadeOut("slow");
 		}
+	
+}
+
+function Quitar(id_reporte, id_creditos)
+{
+	
+		
+			$.ajax({
+			    url: 'index.php?controller=RevisionCreditos&action=QuitarCredito',
+			    type: 'POST',
+			    data: {
+			    	id_reporte: id_reporte,
+			    	numero_credito: id_creditos
+			    },
+			})
+			.done(function(x) {
+				x=x.trim();
+				console.log(x);
+				if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
+		  		  {
+		  		  swal({
+				  		  title: "Créditos",
+				  		  text: "Hubo un error cambiando el estado del credito",
+				  		  icon: "warning",
+				  		  button: "Aceptar",
+				  		});
+		  		  }
+		  	  else
+		  		  {
+		  		load_creditos(1);
+				load_reportes(1);
+				$('#cerrar_ver').click();
+				swal({
+			  		  title: "Créditos",
+			  		  text: "Crédito retirado del reporte",
+			  		  icon: "success",
+			  		  button: "Aceptar",
+			  		});
+		  		  }
+		     
+			})
+			.fail(function() {
+			    console.log("error");
+			});
+}
+
+function MostrarComprobantes(id_comprobantes)
+{
+	
+	
+	$("#datos_comprobante").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	$("#myModalComprobantes").modal();
+	$.ajax({
+	    url: 'index.php?controller=RevisionCreditos&action=MostrarComprobantes',
+	    type: 'POST',
+	    data: {
+	    	id_ccomprobantes: id_comprobantes,
+	    },
+	})
+	.done(function(x) {
+		x=x.trim();
+		console.log(x);
+		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
+  		  {
+			$('#cerrar_comprobantes').click();
+  		  swal({
+		  		  title: "Créditos",
+		  		  text: "Hubo un error cargando los comprobantes",
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+  		  }
+  	  else
+  		  {
+  		
+  		  $("#datos_comprobante").html(x);
+  		  }
+     
+	})
+	.fail(function() {
+	    console.log("error");
+	});
 	
 }

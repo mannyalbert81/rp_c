@@ -1357,12 +1357,28 @@ class RevisionCreditosController extends ControladorBase{
         
         $html='';
         
-            $html.='<table class="1" >';
+            $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
             $html.= "<tr>";
-            $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Código</th>';
-            $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Cuenta</th>';
-            $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Debe</th>';
-            $html.='<th class="ancho" colspan="3" style="text-align: center; font-size: 11px;">Haber</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">No.</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">No.PRESTAMO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">IDENTIFICACIÓN</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">APELLIDOS DEL AFILIADO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">NOMBRES DEL AFILIADO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">MONTO CONCEDIDO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">RETEN POR APORTE</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">CUENTA INDIVIDUAL</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">PLAZO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">VALOR RETENCION CREDITOS</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">LIQUIDO A RECIBIR</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">TIPO PRESTAMO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">ESTADO PRESTAMO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">FECHA DE PAGO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">FORMA DE PAGO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">NOMBRE DEL BANCO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">No. DE CUENTA</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">TIPO DE CUENTA</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">CELULAR</th>';
+            
             $html.='</tr>';
             
            

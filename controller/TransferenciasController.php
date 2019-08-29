@@ -200,8 +200,6 @@ class TransferenciasController extends ControladorBase{
 	    }
         
 	        
-	 
-	    
 	}
 	
 		
@@ -338,7 +336,7 @@ class TransferenciasController extends ControladorBase{
 	        if( $_nombre_tipo_cuenta == "AHORROS" ){
 	            $_abrv_tipo_cuenta = "AHO";
 	        }else{
-	            $_abrv_tipo_cuenta = "CORR";
+	            $_abrv_tipo_cuenta = "CTE";
 	        }
 	        
 	        

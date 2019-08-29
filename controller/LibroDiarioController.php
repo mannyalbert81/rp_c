@@ -295,13 +295,13 @@ class LibroDiarioController extends ControladorBase{
 	        
 	        $nombre_plan_cuentas = $_GET['term'];
 	        
-	        $columnas ="plan_cuentas.id_plan_cuentas,plan_cuentas.nombre_plan_cuentas,plan_cuentas.codigo_plan_cuentas";
-	        $tablas =" public.usuarios,
-				  public.entidades,
-				  public.plan_cuentas";
-	        $where ="plan_cuentas.nombre_plan_cuentas LIKE '$nombre_plan_cuentas%' AND entidades.id_entidades = usuarios.id_entidades AND
- 				 plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas in ('4', '5')";
-	        $id ="plan_cuentas.codigo_plan_cuentas";
+	        $columnas  = " plan_cuentas.id_plan_cuentas,plan_cuentas.nombre_plan_cuentas,plan_cuentas.codigo_plan_cuentas";
+	        $tablas    = " public.usuarios,
+        				   public.entidades,
+        				   public.plan_cuentas";
+	        $where     = "plan_cuentas.nombre_plan_cuentas LIKE '$nombre_plan_cuentas%' AND entidades.id_entidades = usuarios.id_entidades AND
+ 				           plan_cuentas.id_entidades = entidades.id_entidades AND usuarios.id_usuarios='$_id_usuarios' AND plan_cuentas.nivel_plan_cuentas in ('4', '5')";
+	        $id        = "plan_cuentas.codigo_plan_cuentas";
 	        
 	        
 	        $resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
@@ -395,13 +395,6 @@ class LibroDiarioController extends ControladorBase{
 	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
 	    $datos_cabecera['FECHA'] = date('Y/m/d');
 	    $datos_cabecera['HORA'] = date('h:i:s');
-	    /*if(!isset($_GET['peticion'])){
-	        
-	        echo 'sin datos';
-	        return;
-	    }*/
-	    
-	    //llenado de datos
 	    
 	    $datos_empresa = array();
 	    $datos_detalle = array();
@@ -446,14 +439,13 @@ class LibroDiarioController extends ControladorBase{
                                                         INNER JOIN dcomprobantes
                                                         ON ccomprobantes.id_ccomprobantes = dcomprobantes.id_ccomprobantes
                                                         WHERE dcomprobantes.id_plan_cuentas = '.$_id_cuenta.'
+                                                        AND ccomprobantes.aprobado_ccomprobantes = true
                                                         GROUP BY ccomprobantes.id_ccomprobantes
                                                         ORDER BY ccomprobantes.id_ccomprobantes )';
 	       
 	    }
 	    
 	    $query_detalle.= ' ORDER BY id_ccomprobantes';
-	    
-	    //print_r($query_detalle); die();
 	    
 	    $rsdetalle = $entidades->enviaquery($query_detalle);
 	    
@@ -462,85 +454,11 @@ class LibroDiarioController extends ControladorBase{
 	        $datos_detalle=$rsdetalle;
 	    }
 	    
-	    //print_r($rsdetalle); die();
-	    
+	   
 	    $this->verReporte("DiarioContable", array('datos_empresa'=>$datos_empresa,'datos_detalle'=>$datos_detalle, 'datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera,));
 	   
 	    
-	    //reporte interno
-	    /*
-	    $id_plan_cuentas = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:'0';
 	    
-	    $columna = 'SELECT id_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas';
-	    
-	    $tabla = ' FROM vw_diario_contable';
-	    
-	    $where = ' WHERE 1=1';
-	    
-	    $grupo = ' GROUP BY id_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas';
-	    
-	    $orden = ' ORDER BY codigo_plan_cuentas';
-	    
-	    $where = ($id_plan_cuentas>0)?$where.' AND id_plan_cuentas='.$id_plan_cuentas:$where;
-	    
-	    $query=$columna.$tabla.$where.$grupo.$orden;
-	    
-	    $result = $mayor->enviaquery($query);
-	    
-	    $html='';
-	    
-	    if(!empty($result) && count($result)>0){
-	        
-	        $html.='<table class="table">';
-	        
-	        for($i=0;$i<count($result);$i++){
-	           
-	            $codigo = $result[$i]->id_plan_cuentas;
-	            
-	            $html.='<tr style="font-weight:bold; text-transform: uppercase;" class="active">';
-	            $html.='<td>';
-	            $html.= $result[$i]->codigo_plan_cuentas;
-	            $html.='</td>';
-	            $html.='<td colspan="3">';
-	            $html.= $result[$i]->nombre_plan_cuentas;
-	            $html.='</td>';
-	            $html.='</tr>';
-	            
-	            $query="SELECT * FROM vw_diario_contable WHERE id_plan_cuentas = $codigo ORDER BY codigo_plan_cuentas";
-	            
-	            $resultdetalle = $mayor->enviaquery($query);
-	            
-	            if(!empty($resultdetalle) && count($result)>0){
-	                
-	                $j = 0;
-	                foreach ($resultdetalle as $res){
-	                    
-	                    $j+=1;
-	                    $html.='<tr>';
-	                    $html.='<td>';
-	                    $html.= $j;
-	                    $html.='</td>';
-	                    $html.='<td>';
-	                    $html.= $res->fecha_mayor;
-	                    $html.='</td>';
-	                    $html.='<td>';
-	                    $html.= $res->sumadebe;
-	                    $html.='</td>';
-	                    $html.='<td>';
-	                    $html.= $res->sumahaber;
-	                    $html.='</td>';	                   
-	                    $html.='</tr>';
-	                    
-	                }
-	            }
-	            
-	           
-	        }
-	        
-	        $html.='</table>';
-	    }
-	    
-	    echo $html;*/
 	}
 	
 	

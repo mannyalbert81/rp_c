@@ -1489,10 +1489,54 @@ class RevisionCreditosController extends ControladorBase{
             
             $html.='</tr>';
             
-           
+            
       
         
         $html.='</table>';
+        
+        
+        
+        
+        $html.='<table  class="3" cellspacing="0" style="width:100px;" border="1" >';
+        $html.='<tr>';
+        $html.='<td colspan="4"><strong>REPORTE CON VALORES DE CREDITOS A TRANSFERIR</strong></td>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<td><strong>FORMA DE PAGO</strong></td>';
+        $html.='<td><strong>BANCO</strong></td>';
+        $html.='<td><strong>TOTAL TRANSACCIONES</strong></td>';
+        $html.='<td><strong>TOTAL</strong></td>';
+        $html.='</tr>';
+        
+        
+        ///foreach
+        
+        
+        
+        
+        //despues del forech
+        $html.='<tr>';
+        $html.='<td><strong>TOTAL</strong></td>';
+        $html.='<td><strong>&nbsp;</strong></td>';
+        $html.='<td><strong>&nbsp;</strong></td>';
+        $html.='<td align="right"><strong>&nbsp;</strong></td>';
+        $html.='</tr>';
+        $html.='</table>';
+        
+        
+        
+        
+       
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         $datos_reporte['DETALLE_CREDITOS']= $html;
         

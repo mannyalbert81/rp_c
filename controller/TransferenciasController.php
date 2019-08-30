@@ -870,6 +870,9 @@ class TransferenciasController extends ControladorBase{
 	    return $file_buscar;
 	}
 	
+	public function sri(){
+	    $this->view_tesoreria("testvalfirmarenviar", array());
+	}
 	
 }
 ?>

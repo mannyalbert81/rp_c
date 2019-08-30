@@ -695,7 +695,7 @@ class RevisionCreditosController extends ControladorBase{
           $where="anio_creditos_trabajados_cabeza = ".$year."
                 	AND mes_creditos_trabajados_cabeza = ".$mes."
                 	AND dia_creditos_trabajados_cabeza = ".$dia."
-                    AND nombre_estado='ABIERTO'";
+                    AND NOT (nombre_estado='DEVUELTO A REVISION')";
           $id="id_creditos_trabajados_cabeza";
           $resultRpts=$reportes->getCondiciones($columnas, $tablas, $where, $id);
           if (empty($resultRpts))
@@ -769,7 +769,7 @@ class RevisionCreditosController extends ControladorBase{
             $id_estado=$resultRpts[0]->nombre_estado;
             if($id_estado!="ABIERTO")
             {
-                echo "REPORTE CERRADO".$id_estado."789";
+                echo "REPORTE CERRADO";
             }
             else
             {
@@ -821,27 +821,6 @@ class RevisionCreditosController extends ControladorBase{
         session_start();
         $id_reporte=$_POST['id_reporte'];
         $reporte = new PermisosEmpleadosModel();
-        $columnaest = "estado.id_estado";
-        $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='core_creditos_trabajados_detalle' AND estado.nombre_estado = 'APROBADO CREDITOS'";
-        $idest = "estado.id_estado";
-        $resultEst = $reporte->getCondiciones($columnaest, $tablaest, $whereest, $idest);
-        
-        $where = "id_creditos_trabajados_cabeza=".$id_reporte;
-        $tabla = "core_creditos_trabajados_cabeza";
-        $colval = "id_estado_creditos_trabajados_cabeza=".$resultEst[0]->id_estado;
-        $reporte->UpdateBy($colval, $tabla, $where);
-        
-        $where = "id_cabeza_creditos_trabajados=".$id_reporte;
-        $tabla = "core_creditos_trabajados_detalle";
-        $colval = "id_estado_detalle_creditos_trabajados=".$resultEst[0]->id_estado;
-        $reporte->UpdateBy($colval, $tabla, $where);
-        
-        $columnas="id_creditos";
-        $tablas="core_creditos_trabajados_detalle";
-        $where="id_cabeza_creditos_trabajados=".$id_reporte;
-        $id="id_creditos";
-        $resultSet=$reporte->getCondiciones($columnas, $tablas, $where, $id);
         
         $columnas="id_estado_creditos";
         $tablas="core_estado_creditos";
@@ -849,7 +828,12 @@ class RevisionCreditosController extends ControladorBase{
         $id="id_estado_creditos";
         $id_estado_creditos=$reporte->getCondiciones($columnas, $tablas, $where, $id);
         $id_estado_creditos=$id_estado_creditos[0]->id_estado_creditos;
-        
+                
+        $columnas="id_creditos";
+        $tablas="core_creditos_trabajados_detalle";
+        $where="id_cabeza_creditos_trabajados=".$id_reporte;
+        $id="id_creditos";
+        $resultSet=$reporte->getCondiciones($columnas, $tablas, $where, $id);
         foreach ($resultSet as $res)
         {
             $where = "id_creditos=".$res->id_creditos;
@@ -857,6 +841,30 @@ class RevisionCreditosController extends ControladorBase{
             $colval = "id_estado_creditos=".$id_estado_creditos;
             $reporte->UpdateBy($colval, $tabla, $where);
             $mensaje=$this->ActivaCredito($res->id_creditos);
+            if ($mensaje!='OK')
+            {
+                $mensaje="ERROR";
+                break;
+            }
+        }
+        
+        if($mensaje!="ERROR")
+        {
+            $columnaest = "estado.id_estado";
+            $tablaest= "public.estado";
+            $whereest= "estado.tabla_estado='core_creditos_trabajados_detalle' AND estado.nombre_estado = 'APROBADO CREDITOS'";
+            $idest = "estado.id_estado";
+            $resultEst = $reporte->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+            
+            $where = "id_creditos_trabajados_cabeza=".$id_reporte;
+            $tabla = "core_creditos_trabajados_cabeza";
+            $colval = "id_estado_creditos_trabajados_cabeza=".$resultEst[0]->id_estado;
+            $reporte->UpdateBy($colval, $tabla, $where);
+            
+            $where = "id_cabeza_creditos_trabajados=".$id_reporte;
+            $tabla = "core_creditos_trabajados_detalle";
+            $colval = "id_estado_detalle_creditos_trabajados=".$resultEst[0]->id_estado;
+            $reporte->UpdateBy($colval, $tabla, $where);
         }
         
         echo $mensaje;
@@ -885,7 +893,7 @@ class RevisionCreditosController extends ControladorBase{
           
     }
     
-    public function AprobarReporteSistemas()
+    /*public function AprobarReporteSistemas()
     {
         session_start();
         $id_reporte=$_POST['id_reporte'];
@@ -906,28 +914,98 @@ class RevisionCreditosController extends ControladorBase{
         $colval = "id_estado_detalle_creditos_trabajados=".$resultEst[0]->id_estado;
         $reporte->UpdateBy($colval, $tabla, $where);
         
-    }
+    }*/
     
     public function AprobarReporteContador()
     {
         session_start();
+        ob_start();
         $id_reporte=$_POST['id_reporte'];
         $reporte = new PermisosEmpleadosModel();
-        $columnaest = "estado.id_estado";
-        $tablaest= "public.estado";
-        $whereest= "estado.tabla_estado='core_creditos_trabajados_detalle' AND estado.nombre_estado = 'APROBADO CONTADOR'";
-        $idest = "estado.id_estado";
-        $resultEst = $reporte->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+        $reporte->beginTran();
         
-        $where = "id_creditos_trabajados_cabeza=".$id_reporte;
-        $tabla = "core_creditos_trabajados_cabeza";
-        $colval = "id_estado_creditos_trabajados_cabeza=".$resultEst[0]->id_estado;
-        $reporte->UpdateBy($colval, $tabla, $where);
+        $columnas="id_creditos";
+        $tablas="core_creditos_trabajados_detalle";
+        $where="id_cabeza_creditos_trabajados=".$id_reporte;
+        $id="id_creditos";
+        $resultSet=$reporte->getCondiciones($columnas, $tablas, $where, $id);
+        foreach ($resultSet as $res)
+        {
+            $mensaje=$this->MayorizaComprobanteCredito($res->id_creditos);
+            if ($mensaje!='OK')
+            {
+                $mensaje="ERROR";
+                $reporte->endTran("ROLLBACK");
+                break;
+                
+            }
+        }
+        if($mensaje!="ERROR")
+        {
+            $columnaest = "estado.id_estado";
+            $tablaest= "public.estado";
+            $whereest= "estado.tabla_estado='core_creditos_trabajados_detalle' AND estado.nombre_estado = 'APROBADO CONTADOR'";
+            $idest = "estado.id_estado";
+            $resultEst = $reporte->getCondiciones($columnaest, $tablaest, $whereest, $idest);
+            
+            $where = "id_creditos_trabajados_cabeza=".$id_reporte;
+            $tabla = "core_creditos_trabajados_cabeza";
+            $colval = "id_estado_creditos_trabajados_cabeza=".$resultEst[0]->id_estado;
+            $reporte->UpdateBy($colval, $tabla, $where);
+            
+            $where = "id_cabeza_creditos_trabajados=".$id_reporte;
+            $tabla = "core_creditos_trabajados_detalle";
+            $colval = "id_estado_detalle_creditos_trabajados=".$resultEst[0]->id_estado;
+            $reporte->UpdateBy($colval, $tabla, $where);
+            
+            $errores=ob_get_clean();
+            $errores=trim($errores);
+            if(empty($errores))
+            {
+                $reporte->endTran("COMMIT");
+                $mensaje="OK";
+            }
+            else
+            {
+                $reporte->endTran("ROLLBACK");
+                $mensaje="ERROR";
+            }
+        }
         
-        $where = "id_cabeza_creditos_trabajados=".$id_reporte;
-        $tabla = "core_creditos_trabajados_detalle";
-        $colval = "id_estado_detalle_creditos_trabajados=".$resultEst[0]->id_estado;
-        $reporte->UpdateBy($colval, $tabla, $where);
+        
+        echo  $mensaje;
+    }
+    
+    public function MayorizaComprobanteCredito($id_credito){
+        
+        $Credito = new CreditosModel();
+        
+        try {
+            
+            $columas1  = "id_creditos, numero_creditos, id_ccomprobantes";
+            $tablas1   = "core_creditos";
+            $where1    = "id_creditos = $id_credito ";
+            $id1       = "id_creditos";
+            $rsConsulta1 = $Credito->getCondiciones($columas1, $tablas1, $where1, $id1);
+            
+            if(empty($rsConsulta1)){ throw new Exception('credito no encontrado');}
+            
+            $_id_comprobante       = $rsConsulta1[0]->id_ccomprobantes;
+            $funcionMayoriza       = "core_ins_mayoriza_activa_credito";
+            $parametrosMayoriza    = "$_id_comprobante,null";
+            $consultaMayoriza      = $Credito->getconsultaPG($funcionMayoriza, $parametrosMayoriza);
+            $ResultadoMayoriza     = $Credito->llamarconsultaPG($consultaMayoriza);
+            
+            $error = "";
+            $error = pg_last_error();
+            if(!empty($error)){ throw new Exception('mayoriza comprobante credito');}
+            
+            
+            return 'OK';
+            
+        } catch (Exception $e) {
+            return "ERROR".$e->getMessage();
+        }
         
     }
     
@@ -985,9 +1063,7 @@ class RevisionCreditosController extends ControladorBase{
         
         $Credito = new CreditosModel();
         $Consecutivos = new ConsecutivosModel();
-        
-        require_once 'core/DB_Functions.php';
-        $db = new DB_Functions();
+        $TipoComprobantes = new TipoComprobantesModel();
         
         $id_creditos = $paramIdCredito;
         
@@ -1006,6 +1082,7 @@ class RevisionCreditosController extends ControladorBase{
             $descripcionLote = "GENERACION CREDITO";
             $id_frecuencia = 1;
             $id_usuarios = $_SESSION['id_usuarios'];
+            $usuario_usuarios = $_SESSION['usuario_usuarios'];
             $funcionLote = "tes_genera_lote";
             $paramLote = "'$nombreLote','$descripcionLote','$id_frecuencia','$id_usuarios'";
             $consultaLote = $Credito->getconsultaPG($funcionLote, $paramLote);
@@ -1054,7 +1131,7 @@ class RevisionCreditosController extends ControladorBase{
             }
             
             //para datos de banco
-            $_id_bancos = 2 ; //seteado para presentacion luego va con deacuerdo el credito //buscar de la tabla del Cnolivos
+            $_id_bancos = 0 ; //mas adelenate se modifica con la solicitud del participe
             
             //datos Cuenta por pagar
             $_descripcion_cuentas_pagar = ""; //se llena mas adelante
@@ -1188,64 +1265,82 @@ class RevisionCreditosController extends ControladorBase{
             // secuencial de cuenta por pagar
             $_id_cuentas_pagar = $ResultCuentaPagar[0];
             
-            //para actualizar la forma de pago en cuentas por pagar
+            //para actualizar la forma de pago y el banco en cuentas por pagar
             //--buscar
-            $columnas1 = "aa.id_creditos,bb.id_forma_pago, bb.nombre_forma_pago";
+            $columnas1 = "aa.id_creditos, bb.id_forma_pago, bb.nombre_forma_pago,cc.id_bancos";
             $tabla1 = "core_creditos aa
                     INNER JOIN forma_pago bb
-                    ON aa.id_forma_pago = bb.id_forma_pago";
+                    ON aa.id_forma_pago = bb.id_forma_pago
+                    INNER JOIN core_participes_cuentas cc
+                    ON cc.id_participes = aa.id_participes
+                    AND cc.cuenta_principal = true";
             $where1 = "aa.id_estatus = 1 AND aa.id_creditos = $id_creditos";
             $id1 = "aa.id_creditos";
             $rsFormaPago = $Credito->getCondiciones($columnas1, $tabla1, $where1, $id1);
             $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
+            $_id_bancos = $rsFormaPago[0]->id_bancos;
             
-            $columnaPago = "id_forma_pago = $_id_forma_pago ";
+            $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
             $tablasPago = "tes_cuentas_pagar";
             $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
             $UpdateFormaPago = $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
             
-            $funcionComprobante = "tes_agrega_comprobante_cuentas_pagar";
-            $valor_letras = $Credito->numtoletras($_total_cuentas_pagar);
+            //buscar tipo de comprobante
+            $rsTipoComprobantes = $TipoComprobantes->getTipoComprobanteByNombre("CONTABLE");
+            $_id_tipo_comprobantes = (!empty($rsTipoComprobantes)) ? $rsTipoComprobantes[0]->id_tipo_comprobantes : null;
+            
+            $funcionComprobante     = "core_ins_ccomprobantes_activacion_credito";
+            $valor_letras           = $Credito->numtoletras($_total_cuentas_pagar);
+            $_concepto_comprobantes = "Consecion Creditos Sol:$numero_credito";
+            //para parametros hay valores seteados
             $parametrosComprobante = "
-                '$_id_usuarios',
-                '$_id_lote',
-                '$_id_proveedor',
+                1,
+                $_id_tipo_comprobantes,
                 '',
-                '$_descripcion_cuentas_pagar',
+                '',
+                '',
                 '$_total_cuentas_pagar',
+                '$_concepto_comprobantes',
+                '$_id_usuarios',
                 '$valor_letras',
                 '$_fecha_cuentas_pagar',
                 '$_id_forma_pago',
-                '',
-                '',
-                '',
-                ''";
-            
-            $consultaComprobante = $Credito ->getconsultaPG($funcionComprobante, $parametrosComprobante);
-            $resultadComprobantes = $Credito->llamarconsultaPG($consultaComprobante);
-            
-            $error = "";
-            $error = pg_last_error();
-            if(!empty($error) || $resultadComprobantes[0] <= 0 ){   throw new Exception('error inserccion comprobante conatable '); }
-            
-            // secuencial de comprobante
-            $_id_ccomprobantes = $resultadComprobantes[0];
-            
-            //se actualiza la cuenta por pagar con la relacion al comprobante
-            $columnaCxP = "id_ccomprobantes = $_id_ccomprobantes ";
-            $tablasCxP = "tes_cuentas_pagar";
-            $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
-            $UpdateCuentasPagar = $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
-            
-            //se actualiza el credito con su comprobante
-            $columnaCre = "id_ccomprobantes = $_id_ccomprobantes ";
-            $tablasCre = "core_creditos";
-            $whereCre = "id_creditos = $id_creditos";
-            $UpdateCredito= $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
-            
-            $Credito->endTran('COMMIT');
-            return 'OK';
-            
+                null,
+                null,
+                null,
+                null,
+                '$_id_proveedor',
+                'cxp',
+                '$usuario_usuarios',
+                'credito',
+                '$_id_lote'
+                ";
+                
+                $consultaComprobante = $Credito ->getconsultaPG($funcionComprobante, $parametrosComprobante);
+                $resultadComprobantes = $Credito->llamarconsultaPG($consultaComprobante);
+                
+                $error = "";
+                $error = pg_last_error();
+                if(!empty($error) || $resultadComprobantes[0] <= 0 ){   throw new Exception('error insercion comprobante contable '); }
+                
+                // secuencial de comprobante
+                $_id_ccomprobantes = $resultadComprobantes[0];
+                
+                //se actualiza la cuenta por pagar con la relacion al comprobante
+                $columnaCxP = "id_ccomprobantes = $_id_ccomprobantes ";
+                $tablasCxP = "tes_cuentas_pagar";
+                $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
+                $UpdateCuentasPagar = $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
+                
+                //se actualiza el credito con su comprobante
+                $columnaCre = "id_ccomprobantes = $_id_ccomprobantes ";
+                $tablasCre = "core_creditos";
+                $whereCre = "id_creditos = $id_creditos";
+                $UpdateCredito= $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
+                
+                $Credito->endTran('COMMIT');
+                return 'OK';
+                
         } catch (Exception $e) {
             
             $Credito->endTran();

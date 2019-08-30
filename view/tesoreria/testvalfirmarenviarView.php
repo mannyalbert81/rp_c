@@ -16,8 +16,8 @@ $config = array(
     'pathFirma' => '../firma/firma.p12',
     'passFirma' => 'Sirenaice1.W'
 );
-
-
+echo __DIR__ . '/../vendor/autoload.php'; echo '<br>';
+print_r($config); die();
 $comprobante = new \Shara\ComprobantesController($config);
 
 $clave = '2705201901171442249800110010010000000061234567812';

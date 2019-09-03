@@ -33,6 +33,15 @@ if(!empty($datos_reporte))
         $template = str_replace('{'.$clave.'}', $valor, $template);
     }
 }
+if(!empty($datos_garante))
+{
+    
+    foreach ($datos_garante as $clave=>$valor) {
+        
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
+
 
 
 

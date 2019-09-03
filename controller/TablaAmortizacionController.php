@@ -36,8 +36,9 @@ class TablaAmortizacionController extends ControladorBase{
 	
 
 	
-	public function GENERAR_REPORTE(){
+	public function ReportePagare(){
 	    session_start();
+	    $id_usuarios = $_SESSION["id_usuarios"];
 	    $entidades = new EntidadesModel();
 	    //PARA OBTENER DATOS DE LA EMPRESA
 	    $datos_empresa = array();
@@ -69,6 +70,7 @@ class TablaAmortizacionController extends ControladorBase{
                       core_tipo_creditos.codigo_tipo_creditos,
                       core_creditos.numero_creditos, 
                       core_creditos.fecha_concesion_creditos, 
+                      core_creditos.receptor_solicitud_creditos,
                       core_participes.id_participes, 
                       core_participes.apellido_participes, 
                       core_participes.nombre_participes, 
@@ -103,6 +105,7 @@ class TablaAmortizacionController extends ControladorBase{
 	    $datos_reporte['CODCREDITO']=$rsdatos[0]->codigo_tipo_creditos;
 	    $datos_reporte['NUMCREDITO']=$rsdatos[0]->numero_creditos;
 	    $datos_reporte['FECHACONCRED']=$rsdatos[0]->fecha_concesion_creditos;
+	    $receptor=$rsdatos[0]->receptor_solicitud_creditos;
 	    $datos_reporte['APELLPARTICIPE']=$rsdatos[0]->apellido_participes;
 	    $datos_reporte['NOMPARICIPE']=$rsdatos[0]->nombre_participes;
 	    $datos_reporte['CEDPARTICIPE']=$rsdatos[0]->cedula_participes;
@@ -116,8 +119,81 @@ class TablaAmortizacionController extends ControladorBase{
 	    $datos_reporte['MONTO']=$rsdatos[0]->monto_otorgado_creditos;
 	    $datos_reporte['SALDO']=$rsdatos[0]->saldo_actual_creditos;
 	    $datos_reporte['MONTORECIBIR']=$rsdatos[0]->monto_neto_entregado_creditos;
-	   	    
-
+	    $datos_reporte['MONTORECIBIRLETRAS']=$tab_amortizacion->numtoletras($rsdatos[0]->monto_neto_entregado_creditos);
+	  
+	    
+	    //DATOS DE LA CIUDAD 
+	    
+	    $oficina = new OficinaModel();
+	    $columnas = " oficina.nombre_oficina";
+	    
+	    $tablas = " public.oficina, public.usuarios";
+	    $where= " usuarios.id_oficina = oficina.id_oficina
+                    AND usuarios.usuario_usuarios ='$receptor'";
+	    $id="usuarios.id_usuarios";
+	    
+	    $rsoficina = $oficina->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    
+	    if(!empty($rsoficina))
+	    {
+	        
+	        $datos_reporte['CIUDAD']=$rsoficina[0]->nombre_oficina;
+	        
+	        
+	    }
+	    else{
+	        
+	        $datos_reporte['CIUDAD']='QUITO';
+	        
+	        
+	    }
+	  
+	    
+	    
+	    setlocale(LC_ALL,"es_ES@euro","es_ES","esp");
+	    $datos_reporte['fechaactual'] = strftime("%d de %B del %Y", strtotime(date("d/m/Y")));
+	    
+	    
+	    
+	    //DATOS DEL GARANTE
+	    $garante= new ParticipesModel();
+	    
+	    
+	    $datos_garante = array();
+	    
+	    $columnas = " core_creditos_garantias.id_creditos_garantias,
+                      core_participes.id_participes,
+                      core_participes.apellido_participes,
+                      core_participes.nombre_participes,
+                      core_participes.cedula_participes,
+                      core_participes.telefono_participes,
+                      core_entidad_patronal.id_entidad_patronal,
+                      core_entidad_patronal.nombre_entidad_patronal,
+                      core_creditos.id_creditos
+                        ";
+	    
+	    $tablas = "   public.core_creditos_garantias,
+                      public.core_participes,
+                      public.core_entidad_patronal,
+                      public.core_creditos";
+	    $where= "     core_creditos_garantias.id_participes = core_participes.id_participes AND
+                      core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND
+                      core_creditos.id_creditos = core_creditos_garantias.id_creditos
+                      AND core_creditos.id_creditos ='$id_creditos'";
+	    $id="core_creditos.id_creditos";
+	    
+	    $rsdatos = $garante->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    $datos_reporte['NOMGARANTE']=$rsdatos[0]->nombre_participes;
+	    $datos_reporte['CEDULAGARANTE']=$rsdatos[0]->cedula_participes;
+	    $datos_reporte['ENTIDGARANTE']=$rsdatos[0]->nombre_entidad_patronal;
+	    $datos_reporte['TELEFONOGARANTE']=$rsdatos[0]->telefono_participes;
+	    $datos_reporte['APELLGARANTE']=$rsdatos[0]->apellido_participes;
+	    
+	    
+	    
+	    
 	    
 	    //////retencion detalle
 	    
@@ -222,7 +298,7 @@ class TablaAmortizacionController extends ControladorBase{
 	    
 	    
 	    
-	    $this->verReporte("TablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+	    $this->verReporte("TablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante));
 	    
 	  
 	}
@@ -253,6 +329,7 @@ class TablaAmortizacionController extends ControladorBase{
 	    $datos_cabecera['HORA'] = date('h:i:s');
 	    
 	    $tab_amortizacion= new TablaAmortizacionModel();
+	    $garante= new ParticipesModel();
 	    $id_creditos =  (isset($_REQUEST['id_creditos'])&& $_REQUEST['id_creditos'] !=NULL)?$_REQUEST['id_creditos']:'';
 	    
 	    
@@ -305,6 +382,41 @@ class TablaAmortizacionController extends ControladorBase{
 	    $datos_reporte['MONTO']=$rsdatos[0]->monto_otorgado_creditos;
 	    $datos_reporte['SALDO']=$rsdatos[0]->saldo_actual_creditos;
 	    $datos_reporte['MONTORECIBIR']=$rsdatos[0]->monto_neto_entregado_creditos;
+	    
+	    //DATOS DEL GARANTE
+	    $datos_garante = array();
+	    
+	    $columnas = " core_creditos_garantias.id_creditos_garantias, 
+                      core_participes.id_participes, 
+                      core_participes.apellido_participes, 
+                      core_participes.nombre_participes, 
+                      core_participes.cedula_participes, 
+                      core_participes.telefono_participes,
+                      core_entidad_patronal.id_entidad_patronal, 
+                      core_entidad_patronal.nombre_entidad_patronal, 
+                      core_creditos.id_creditos
+                        ";
+	    
+	    $tablas = "   public.core_creditos_garantias, 
+                      public.core_participes, 
+                      public.core_entidad_patronal, 
+                      public.core_creditos";
+	    $where= "     core_creditos_garantias.id_participes = core_participes.id_participes AND
+                      core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND
+                      core_creditos.id_creditos = core_creditos_garantias.id_creditos 
+                      AND core_creditos.id_creditos ='$id_creditos'";
+	    $id="core_creditos.id_creditos";
+	    
+	    $rsdatos = $garante->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    $datos_reporte['NOMGARANTE']=$rsdatos[0]->nombre_participes;
+	    $datos_reporte['CEDULAGARANTE']=$rsdatos[0]->cedula_participes;
+	    $datos_reporte['ENTIDGARANTE']=$rsdatos[0]->nombre_entidad_patronal;
+	    $datos_reporte['TELEFONOGARANTE']=$rsdatos[0]->telefono_participes;
+	    $datos_reporte['APELLGARANTE']=$rsdatos[0]->apellido_participes;
+	    
+	    
+	    
 	    
 	    
 	    
@@ -409,7 +521,7 @@ class TablaAmortizacionController extends ControladorBase{
 	    
 	    
 	    
-	    $this->verReporte("ReporteTablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+	    $this->verReporte("ReporteTablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante));
 	    
 	    
 	    

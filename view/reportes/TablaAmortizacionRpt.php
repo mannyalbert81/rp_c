@@ -34,7 +34,14 @@ if(!empty($datos_reporte))
     }
 }
 
-
+if(!empty($datos_garante))
+{
+    
+    foreach ($datos_garante as $clave=>$valor) {
+        
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
 
 $footer = file_get_contents('view/reportes/template/pieret.html');
 

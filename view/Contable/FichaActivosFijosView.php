@@ -66,12 +66,12 @@
 				<br>			    
 							    
 		    	 <div class="row">
-        		 <input type="hidden" id="id_ficha_mantenimiento" value="0">
+        		 <input type="hidden" id="id_ficha_mantenimiento" value="id_ficha_mantenimiento">
             
-                <div class = 'col-xs-12 col-md-3 col-lg-3'>
+                <div class = 'col-xs-12 col-md-3 col-lg-3' style="display: none">
 				        <div class='form-group'>
 				        <label for='id_activos_fijos' class='control-label'>Activo Fijo</label><br>
-				        <input type='text' class='form-control' id='id_activos_fijos' name='id_activos_fijos' value="<?php echo $resultEdit[0]->id_activos_fijos; ?>" readonly>
+				        <input type='text' class='form-control' id='id_activos_fijos' name='id_activos_fijos'value="<?php echo $resultEdit[0]->id_activos_fijos; ?>" readonly>
 				        </div>
 				        </div> 	
         		
@@ -79,6 +79,8 @@
 	         	<div class="form-group">
 	         		<label for="year_periodo" class="control-label">Fecha :</label>
 	         		<input type="date" id="fecha_inicio_ficha_mantenimiento" name="fecha_inicio_ficha_mantenimiento"  value="" class="form-control">
+                       <div id="mensaje_fecha_inicio_ficha_mantenimiento" class="errores"></div>
+                    
                     </div>
 	         	</div>
 	         	
@@ -86,6 +88,8 @@
 	         	<div class="form-group">
 	         		<label for="danio_ficha_mantenimiento" class="control-label">Daño :</label>
 	         		<input type="text" id="danio_ficha_mantenimiento" name="danio_ficha_mantenimiento"  value="" class="form-control">
+                         <div id="mensaje_danio_ficha_mantenimiento" class="errores"></div>
+                    
                     </div>
 	         	</div>
             	
@@ -93,6 +97,8 @@
 	         	<div class="form-group">
 	         		<label for="partes_reemplazado_ficha_mantenimiento" class="control-label">Partes :</label>
 	         		<input type="text" id="partes_reemplazado_ficha_mantenimiento" name="partes_reemplazado_ficha_mantenimiento"  value="" class="form-control">
+                       <div id="mensaje_partes_reemplazado_ficha_mantenimiento" class="errores"></div>
+                    
                     </div>
 	         	</div>
 	         	
@@ -100,13 +106,17 @@
 	         	<div class="form-group">
 	         		<label for="responsable_ficha_mantenimiento" class="control-label">Responsable :</label>
 	         		<input type="text" id="responsable_ficha_mantenimiento" name="responsable_ficha_mantenimiento"  value="" class="form-control">
+     			 <div id="mensaje_responsable_ficha_mantenimiento" class="errores"></div>
+                                     
                     </div>
 	         	</div>
 	         	
-	         	<div class="col-md-4 col-lg-4 col-xs-12">
+	         	<div class="col-md-8 col-lg-8 col-xs-12">
 	         	<div class="form-group">
 	         		<label for="descripcion_ficha_mantenimiento" class="control-label">Descripcion :</label>
 	         		<input type="text" id="descripcion_ficha_mantenimiento" name="descripcion_ficha_mantenimiento"  value="" class="form-control">
+                         <div id="mensaje_descripcion_ficha_mantenimiento" class="errores"></div>
+                    
                     </div>
 	         	</div>
 	      
@@ -126,6 +136,21 @@
        	
       </div>
     </section>
+    
+        <section class="content">
+      	<div class="box box-primary">
+      		<div class="box-header with-border">
+      			<h3 class="box-title">Listado de Fichas</h3>      			
+            </div> 
+            <div class="box-body">
+    			<div class="pull-right" style="margin-right:15px;">
+					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaFichas(1)" placeholder="Buscar.."/>
+    			</div>            	
+            	<div id="ficha_registrados" ></div>
+            </div> 	
+      	</div>
+      </section> 
+    
   
   </div>
  
@@ -137,7 +162,7 @@
     <?php include("view/modulos/links_js.php"); ?>
 
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-  <script src="view/Contable/FuncionesJS/FichaActivos.js?0.3"></script> 
+  <script src="view/Contable/FuncionesJS/FichaActivos.js?0.6"></script> 
 
   </body>
 </html>   

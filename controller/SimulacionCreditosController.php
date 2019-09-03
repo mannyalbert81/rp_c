@@ -21,12 +21,24 @@ class SimulacionCreditosController extends ControladorBase{
         
     }
     
+    public function dateDifference1($date_1 , $date_2 , $differenceFormat = '%a' )
+    {
+        $datetime1 = date_create($date_1);
+        $datetime2 = date_create($date_2);
+        
+        $interval = date_diff($datetime1, $datetime2);
+        
+        return $interval->format($differenceFormat);
+        
+    }
+    
    public function CreditoParticipe()
    {
    session_start();
    $creditos= new ParticipesModel();
-   $cedula_participes = $_POST['cedula_participe'];
-   $mes=date('m');
+   $cedula_participes = $_POST['cedula_participe'];// controlar los aportes hasta agosto
+   //$mes=date('m');
+   $mes=8;
    $anio=date('Y');
    $mes_fin=--$mes;
    if($mes_fin==0)
@@ -84,6 +96,11 @@ class SimulacionCreditosController extends ControladorBase{
    $hoy=date("Y-m-d");
    
    $tiempo=$this->dateDifference($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
+   $dias_hasta=$this->dateDifference1($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
+   $dias_75=365*75;
+   $diferencia_dias=$dias_75-$dias_hasta;
+   $diferencia_dias=$diferencia_dias/30;
+   $diferencia_dias=floor($diferencia_dias * 1) / 1;
    $edad=explode(",",$tiempo);
    $edad=$edad[0];
    $edad=explode(" ", $edad);
@@ -117,7 +134,7 @@ class SimulacionCreditosController extends ControladorBase{
        session_start();
        $creditos= new ParticipesModel();
        $cedula_garante = $_POST['cedula_garante'];
-       $mes=date('m');
+       $mes=8;//$mes=date('m'); //mirar aportes hasta agosto
        $anio=date('Y');
        $mes_fin=--$mes;
        if($mes_fin==0)
@@ -173,21 +190,44 @@ class SimulacionCreditosController extends ControladorBase{
        
        if (!(empty($infoParticipe)))
        {
-           $hoy=date("Y-m-d");
            
-           $tiempo=$this->dateDifference($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
-           $edad=explode(",",$tiempo);
-           $edad=$edad[0];
-           $edad=explode(" ", $edad);
-           $edad=$edad[0];
-           $html='  <button class="btn btn-default pull-right" onclick="QuitarGarante()"><i class="glyphicon glyphicon-remove"></i></button>
+           $columnas="id_creditos_garantias";
+           
+           $tablas="core_creditos_garantias INNER JOIN core_participes
+                    ON core_creditos_garantias.id_participes = core_participes.id_participes
+                    INNER JOIN estado
+                    ON core_creditos_garantias.id_estado=estado.id_estado";
+           
+           $where="core_participes.cedula_participes='".$cedula_garante."' AND estado.nombre_estado='ACTIVO'";
+           
+           $id="id_creditos_garantias";
+           
+           $Garantias=$creditos->getCondiciones($columnas, $tablas, $where, $id);
+           
+           if(empty($Garantias))
+           {
+               $hoy=date("Y-m-d");
+               
+               $tiempo=$this->dateDifference($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
+               $edad=explode(",",$tiempo);
+               $edad=$edad[0];
+               $edad=explode(" ", $edad);
+               $edad=$edad[0];
+               $html='  <button class="btn btn-default pull-right" onclick="QuitarGarante()"><i class="glyphicon glyphicon-remove"></i></button>
         <h4>'.$infoParticipe[0]->nombre_participes.' '.$infoParticipe[0]->apellido_participes.'(GARANTE)</h4>
    <h4> Cédula : '.$infoParticipe[0]->cedula_participes.'</h4>
     <h4>Fecha de nacimiento : '.$infoParticipe[0]->fecha_nacimiento_participes.'</h4>
     <h4 id="edad_garante">Edad : '.$tiempo.'</h4>
     <h4 id="monto_garante_disponible"> Disponible : '.$disponible.'</h4>';
-    if($num_aporte<3)$html.='<h4 id="aportes_garante">El participe tiene '.$num_aporte.' de los 3 últimos aportes pagados</h4>';
-           echo $html;
+               if($num_aporte<3)$html.='<h4 id="aportes_garante">El participe tiene '.$num_aporte.' de los 3 últimos aportes pagados</h4>';
+               echo $html;
+           }
+           else
+           {
+               echo "Garante no disponible";
+           }
+           
+          
        }
        else echo "Participe no encontrado";
        
@@ -197,8 +237,29 @@ class SimulacionCreditosController extends ControladorBase{
    public function GetCuotas()
    {
        session_start();
+       
        $monto_credito=$_POST['monto_credito'];
+       $cedula_participes=$_POST['cedula_participe'];
        $cuotas = new EstadoModel();
+       $columnas="      core_participes.nombre_participes,
+                    core_participes.apellido_participes,
+                    core_participes.cedula_participes,
+                    core_participes.fecha_nacimiento_participes";
+       $tablas="public.core_participes";
+       
+       $where="core_participes.cedula_participes='".$cedula_participes."'";
+       
+       $id="core_participes.id_participes";
+       
+       $infoParticipe=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
+       
+       $hoy=date("Y-m-d");
+       
+       $dias_hasta=$this->dateDifference1($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
+       $dias_75=365*75;
+       $diferencia_dias=$dias_75-$dias_hasta;
+       $diferencia_dias=$diferencia_dias/30;
+       $diferencia_dias=floor($diferencia_dias * 1) / 1;
        $tablas="public.core_plazos_creditos";
        $where="1=1";
        $id="core_plazos_creditos.id_plazos_creditos";
@@ -216,7 +277,62 @@ class SimulacionCreditosController extends ControladorBase{
        <select name="cuotas_credito" id="cuotas_credito"  class="form-control" onchange="SimularCredito()">';
        for($cuota; $cuota>=3; $cuota-=3)
        {
-          $html.='<option value="'.$cuota.'">'.$cuota.'</option>';
+           if($cuota<=$diferencia_dias) $html.='<option value="'.$cuota.'">'.$cuota.'</option>';
+       }
+       
+       
+       $html.='</select>
+       <div id="mensaje_cuotas_credito" class="errores"></div>';
+       
+       echo $html;
+   }
+   
+   public function GetCuotasGarante()
+   {
+       session_start();
+       
+       $monto_credito=$_POST['monto_credito'];
+       $cedula_garante=$_POST['cedula_garante'];
+       $cuotas = new EstadoModel();
+       $columnas="      core_participes.nombre_participes,
+                    core_participes.apellido_participes,
+                    core_participes.cedula_participes,
+                    core_participes.fecha_nacimiento_participes";
+       $tablas="public.core_participes";
+       
+       $where="core_participes.cedula_participes='".$cedula_garante."' AND core_participes.id_estado_participes=1";
+       
+       $id="core_participes.id_participes";
+       
+       $infoParticipe=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
+       
+       
+       
+       $hoy=date("Y-m-d");
+       
+       $dias_hasta=$this->dateDifference1($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
+       $dias_75=365*75;
+       $diferencia_dias=$dias_75-$dias_hasta;
+       $diferencia_dias=$diferencia_dias/30;
+       $diferencia_dias=floor($diferencia_dias * 1) / 1;
+       $tablas="public.core_plazos_creditos";
+       $where="1=1";
+       $id="core_plazos_creditos.id_plazos_creditos";
+       $resultSet=$cuotas->getCondiciones("*", $tablas, $where, $id);
+       foreach($resultSet as $res)
+       {
+           if($monto_credito>=$res->minimo_rango_plazos_creditos && $monto_credito<=$res->maximo_rango_plazos_creditos)
+           {
+               $cuota=$res->cuotas_rango_plazos_creditos;
+               
+               break;
+           }
+       }
+       $html='<label for="tipo_credito" class="control-label">Número de cuotas:</label>
+       <select name="cuotas_credito" id="cuotas_credito"  class="form-control" onchange="SimularCredito()">';
+       for($cuota; $cuota>=3; $cuota-=3)
+       {
+           if($cuota<=$diferencia_dias) $html.='<option value="'.$cuota.'">'.$cuota.'</option>';
        }
        
        
@@ -441,12 +557,17 @@ class SimulacionCreditosController extends ControladorBase{
    public function SubirInformacionCredito()
    {
        session_start();
+       ob_start();
        $mensage="";
        $respuesta=true;
        $credito=new CoreTipoCreditoModel();
        $usuario=$_SESSION['usuario_usuarios'];
        $monto_credito=$_POST['monto_credito'];
        $tasa_interes=$_POST['tasa_interes'];
+       $con_garante=$_POST['con_garante'];
+       
+       if($con_garante) $id_garante=$_POST['cedula_garante'];
+              
        $fecha_pago=date("Y-m-d");
        $interes_credito=$tasa_interes;
        $id_tipo_creditos=0;
@@ -474,8 +595,18 @@ class SimulacionCreditosController extends ControladorBase{
        $numero_credito++;
        $hoy=date("Y-m-d");
        
+       $columnas="id_estado";
+       $tablas="estado";
+       $where="tabla_estado='tabla_core_creditos_garantias' AND nombre_estado='ACTIVO'";
+       
+       $id_estado=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $id_estado=$id_estado[0]->id_estado;
+       
        //cambiar numero de credito por numero solicitud
        $credito->beginTran();
+       
+       
+       
        $funcion = "ins_core_creditos";       
        $parametros="'$numero_credito',
                      '$numero_credito',
@@ -501,6 +632,21 @@ class SimulacionCreditosController extends ControladorBase{
        
        if(empty($errores_credito))
        {
+           if($con_garante)
+           {
+               $columnas="id_participes";
+               $tablas="core_participes";
+               $where="cedula_participes='".$id_garante."'";
+               
+               $id_garante=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
+               $id_garante=$id_garante[0]->id_participes;
+               
+               $query="INSERT INTO core_creditos_garantias
+                   (id_creditos, id_participes, id_estado, usuario_usuarios)
+                   VALUES(".$numero_credito.", ".$id_garante.", ".$id_estado.", '".$usuario."')";
+               
+               $insert=$credito->executeNonQuery($query);
+           }
            $interes_mensual = $tasa_interes / 12;
            $plazo_dias = $cuota * 30;
            
@@ -636,7 +782,8 @@ class SimulacionCreditosController extends ControladorBase{
            $mensage="ERROR";
        }
       
-       echo $mensage;
+       
+       echo $mensage.$errores_credito;
    }
    
    public function ActualizarInfoParticipe($cedula_participe, $id_solicitud)

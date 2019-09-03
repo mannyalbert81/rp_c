@@ -157,6 +157,8 @@ class RevisionCreditosController extends ControladorBase{
         $resultRol=$reportes->getCondiciones($columnas, $tablas, $where, $id);
         $resultRol=$resultRol[0]->nombre_rol;
         
+        echo $resultRol;
+        
             $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
                          dia_creditos_trabajados_cabeza, oficina.nombre_oficina, estado.nombre_estado";
             $tablas="core_creditos_trabajados_cabeza INNER JOIN oficina
@@ -168,7 +170,7 @@ class RevisionCreditosController extends ControladorBase{
             if($resultRol=="Jefe de recaudaciones")$where="estado.nombre_estado='APROBADO CREDITOS'";
             if($resultRol=="Contador / Jefe de RR.HH")$where="estado.nombre_estado='APROBADO RECAUDACIONES'";
             if($resultRol=="Gerente")$where="estado.nombre_estado='APROBADO CONTADOR'";
-            if($resultRol=="Jefe de tesoreria")$where="estado.nombre_estado='APROBADO GERENTE'";
+            if($resultRol=="Jefe de tesorería")$where="estado.nombre_estado='APROBADO GERENTE'";
             if(!(empty($fecha_reporte)))
             {
                 $elementos_fecha=explode("-",$fecha_reporte);
@@ -277,7 +279,7 @@ class RevisionCreditosController extends ControladorBase{
         if($resultRol=="Jefe de recaudaciones")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";;
         if($resultRol=="Contador / Jefe de RR.HH")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=93 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if($resultRol=="Gerente")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=95 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
-        if($resultRol=="Jefe de tesoreria")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=96 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($resultRol=="Jefe de tesorería")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=96 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if(!(empty($fecha_reporte)))
         {
             $elementos_fecha=explode("-",$fecha_reporte);
@@ -517,6 +519,10 @@ class RevisionCreditosController extends ControladorBase{
             if ($resultRol=="Jefe de tesorería" && $estado_reporte=="APROBADO GERENTE")
             {
                 $html.='<span class="pull-right"><button  type="button" class="btn btn-success" onclick="AprobarTesoreria('.$id_reporte.')">APROBAR <i class="glyphicon glyphicon-ok"></i></button></span>';
+            }
+            if ($resultRol=="Jefe de crédito y prestaciones" && $estado_reporte=="APROBADO TESORERIA")
+            {
+                $html.='<span class="pull-right"><a class="btn btn-primary" href="index.php?controller=RevisionCreditos&action=ReporteCreditosaTransferir&id_reporte='.$id_reporte.'" role="button" target="_blank">IMPRIMIR <i class="glyphicon glyphicon-print"></i></a></span>';
             }
             $html.='</div>';
             
@@ -1442,6 +1448,8 @@ class RevisionCreditosController extends ControladorBase{
         //PARA OBTENER DATOS DE LA EMPRESA
         $datos_empresa = array();
         $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        $rp_capremci= new PlanCuentasModel();
+        $id_reporte=$_GET['id_reporte'];
         
         if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
             //llenar nombres con variables que va en html de reporte
@@ -1462,6 +1470,33 @@ class RevisionCreditosController extends ControladorBase{
         
         
         $datos_reporte = array();
+        
+        $columnas="core_creditos.numero_creditos,core_participes.cedula_participes,core_participes.apellido_participes,core_participes.nombre_participes,
+                    core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos, core_creditos.monto_neto_entregado_creditos,
+                    core_tipo_creditos.nombre_tipo_creditos, core_estado_creditos.nombre_estado_creditos, forma_pago.nombre_forma_pago,
+                    tes_bancos.nombre_bancos, core_tipo_cuentas.nombre_tipo_cuentas,core_participes_cuentas.numero_participes_cuentas, core_participes.celular_participes";
+        $tablas="core_creditos INNER JOIN core_participes
+                    ON core_creditos.id_participes = core_participes.id_participes
+                    INNER JOIN core_creditos_trabajados_detalle
+                    ON core_creditos.id_creditos=core_creditos_trabajados_detalle.id_creditos
+                    INNER JOIN core_creditos_trabajados_cabeza
+                    ON core_creditos_trabajados_cabeza.id_creditos_trabajados_cabeza=core_creditos_trabajados_detalle.id_cabeza_creditos_trabajados
+                    INNER JOIN core_tipo_creditos
+                    ON core_tipo_creditos.id_tipo_creditos=core_creditos.id_tipo_creditos
+                    INNER JOIN core_estado_creditos
+                    ON core_estado_creditos.id_estado_creditos=core_creditos.id_estado_creditos
+                    INNER JOIN forma_pago
+                    ON forma_pago.id_forma_pago=core_creditos.id_forma_pago
+                    INNER JOIN core_participes_cuentas
+                    ON core_participes_cuentas.id_participes = core_participes.id_participes
+                    INNER JOIN tes_bancos
+                    ON tes_bancos.id_bancos = core_participes_cuentas.id_bancos
+                    INNER JOIN core_tipo_cuentas
+                    ON core_tipo_cuentas.id_tipo_cuentas=core_participes_cuentas.id_tipo_cuentas";
+        $where="id_creditos_trabajados_cabeza=".$id_reporte."AND cuenta_principal=true";
+        $id="tes_bancos.nombre_bancos";
+        
+        $resultSet=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
         
         $html='';
         
@@ -1486,16 +1521,111 @@ class RevisionCreditosController extends ControladorBase{
             $html.='<th style="text-align: center; font-size: 11px;">No. DE CUENTA</th>';
             $html.='<th style="text-align: center; font-size: 11px;">TIPO DE CUENTA</th>';
             $html.='<th style="text-align: center; font-size: 11px;">CELULAR</th>';
-            
             $html.='</tr>';
+            $i=0;
+            foreach($resultSet as $res)
+            {
+                $i++;
+                $html.= "<tr>";
+                $html.='<td style="text-align: center; font-size: 11px;">'.$i.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->numero_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->cedula_participes.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->apellido_participes.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_participes.'</td>';
+                $monto=number_format((float)$res->monto_otorgado_creditos,2,".",",");
+                $html.='<td align="right" style="text-align: center; font-size: 11px;">'.$monto.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">-</td>';
+                $columnas="SUM(valor_personal_contribucion)+SUM(valor_patronal_contribucion) AS total";
+                $tablas="core_contribucion INNER JOIN core_participes
+                ON core_contribucion.id_participes  = core_participes.id_participes";
+                $where="core_participes.cedula_participes='".$res->cedula_participes."' AND core_contribucion.id_estatus=1";
+                $totalCtaIndividual=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+                $totalCtaIndividual=$totalCtaIndividual[0]->total;
+                $html.='<td style="text-align: center; font-size: 11px;">'.$totalCtaIndividual.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->plazo_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">-</td>';
+                $monto=number_format((float)$res->monto_neto_entregado_creditos,2,".",",");
+                $html.='<td align="right" style="text-align: center; font-size: 11px;">'.$monto.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_tipo_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_estado_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">-</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_forma_pago.'</td>';
+                if($res->nombre_forma_pago=="TRANSFERENCIA")
+                {
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_bancos.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->numero_participes_cuentas.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_tipo_cuentas.'</td>';
+                }
+                else
+                {
+                    $html.='<td style="text-align: center; font-size: 11px;"></td>';
+                    $html.='<td style="text-align: center; font-size: 11px;"></td>';
+                    $html.='<td style="text-align: center; font-size: 11px;"></td>';
+                }
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->celular_participes.'</td>';
+                $html.='</tr>';
+            }
             
-            
-      
-        
         $html.='</table>';
+        $banco="";
+        $total_transfer=0;
+        $total_transfer1=0;
+        $cantidad=0;
+        $pagos_cheque=0;
+        $total_cheque=0;
+        $total=0;
+        $total_transacciones=0;
+        $transferencias=array();
+        $ultimo=sizeof($resultSet);
+        for($i=0; $i<$ultimo; $i++)
+        {
+            if($resultSet[$i]->nombre_forma_pago=="CHEQUE")
+            {
+                $pagos_cheque++;
+                $total_cheque+=$resultSet[$i]->monto_neto_entregado_creditos;
+                $total_transacciones++;
+            }
+            else if($resultSet[$i]->nombre_forma_pago=="TRANSFERENCIA")
+            {
+                if($resultSet[$i]->nombre_bancos!=$banco)
+                {
+                    if($banco!="")
+                    {
+                        $resultado=array();
+                        array_push($resultado, $banco, $cantidad, $total_transfer);
+                        array_push($transferencias, $resultado);
+                    }
+                    $banco=$resultSet[$i]->nombre_bancos;
+                    $cantidad=1;
+                    $total_transfer=$resultSet[$i]->monto_neto_entregado_creditos;
+                    
+                    if($i==$ultimo-1)
+                    {
+                        $resultado=array();
+                        array_push($resultado, $banco, $cantidad, $total_transfer);
+                        array_push($transferencias, $resultado);
+                    }
+                    
+                }
+                else
+                {
+                    $cantidad++;
+                    $total_transfer+=$resultSet[$i]->monto_neto_entregado_creditos;
+                    if($i==$ultimo-1)
+                    {
+                        $resultado=array();
+                        array_push($resultado, $banco, $cantidad, $total_transfer);
+                        array_push($transferencias, $resultado);
+                    }
+                }
+                $total_transfer1+=$resultSet[$i]->monto_neto_entregado_creditos;
+                $total_transacciones++;
+            }
+            
+        }
         
         
-        
+        $total=$total_cheque+$total_transfer1;
         
         $html.='<table  class="3" cellspacing="0" style="width:100px;" border="1" >';
         $html.='<tr>';
@@ -1512,14 +1642,59 @@ class RevisionCreditosController extends ControladorBase{
         ///foreach
         
         
+       if($pagos_cheque>0)
+       {
+           $html.='<tr>';
+           $html.='<td>CHEQUE</td>';
+           $html.='<td></td>';
+           $html.='<td align="center">'.$pagos_cheque.'</td>';
+           $total_cheque=number_format((float)$total_cheque,2,".",",");
+           $html.='<td>'.$total_cheque.'</td>';
+           $html.='</tr>';
+       }
+       
+       $num_transfer=sizeof($transferencias);
+       
+       if($num_transfer>0)
+       {
+           
+           for($i=0; $i<$num_transfer; $i++)
+           {
+               if($i==0)
+               {
+                   $html.='<tr>';
+                   $html.='<td rowspan="'.$num_transfer.'">TRANSFERENCIA</td>';
+                   $html.='<td>'.$transferencias[$i][0].'</td>';
+                   $html.='<td align="center">'.$transferencias[$i][1].'</td>';
+                   $monto=number_format((float)$transferencias[$i][2],2,".",",");
+                   $html.='<td>'.$monto.'</td>';
+                   $html.='</tr>';
+               }
+               else 
+               {
+                   $html.='<tr>';
+                   $html.='<td>'.$transferencias[$i][0].'</td>';
+                   $html.='<td align="center">'.$transferencias[$i][1].'</td>';
+                   $monto=number_format((float)$transferencias[$i][2],2,".",",");
+                   $html.='<td>'.$monto.'</td>';
+                   $html.='</tr>';
+               }
+               
+           }
+           
+          
+       }
+        
+        
         
         
         //despues del forech
         $html.='<tr>';
+        $html.='<td><strong></strong></td>';
         $html.='<td><strong>TOTAL</strong></td>';
-        $html.='<td><strong>&nbsp;</strong></td>';
-        $html.='<td><strong>&nbsp;</strong></td>';
-        $html.='<td align="right"><strong>&nbsp;</strong></td>';
+        $html.='<td align="center">'.$total_transacciones.'</td>';
+        $total=number_format((float)$total,2,".",",");
+        $html.='<td align="right"><strong>'.$total.'</strong></td>';
         $html.='</tr>';
         $html.='</table>';
         

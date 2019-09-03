@@ -2,6 +2,8 @@ var id_participe;
 var disponible_participe;
 var solicitud;
 var modal=0;
+var garante_seleccionado=false;
+var ci_garante="";
 
 $(document).ready( function (){
 	
@@ -135,6 +137,7 @@ function QuitarGarante()
 		document.getElementById("disponible_participe").classList.add('bg-olive');
 		}
 	$("#monto_disponible").html(monto);
+	garante_seleccionado=false;
 }
 
 function InfoParticipe()
@@ -220,6 +223,7 @@ function SimularCredito()
 
 function GetCuotas()
 {
+	var ciparticipe=$('#cedula_participe').val();
 	var monto=$("#monto_credito").val();
 	Redondeo(monto);
 	monto=$("#monto_credito").val();
@@ -246,7 +250,7 @@ function GetCuotas()
 		}
 	if(interes=="")
 	{
-	$("#mensaje_tipo_credito").text("Escoja una fecha");
+	$("#mensaje_tipo_credito").text("Escoja un tipo");
 	$("#mensaje_tipo_credito").fadeIn("slow");
 	$("#mensaje_tipo_credito").fadeOut("slow");
 	}
@@ -269,30 +273,65 @@ function GetCuotas()
 				}
 			else
 				{
-				$.ajax({
-				    url: 'index.php?controller=SimulacionCreditos&action=GetCuotas',
-				    type: 'POST',
-				    data: {
-				    	monto_credito:monto
-				    },
-				})
-				.done(function(x) {
-					$("#select_cuotas").html(x);
-					swal({
-						  title: "Simulación de Crédito",
-						  text: "Cargando tabla de amortización",
-						  icon: "view/images/capremci_load.gif",
-						  buttons: false,
-						  closeModal: false,
-						  allowOutsideClick: false
-						});
-					SimularCredito();
-					
-					
-				})
-				.fail(function() {
-				    console.log("error");
-				});
+				if (!garante_seleccionado)
+					{
+					$.ajax({
+					    url: 'index.php?controller=SimulacionCreditos&action=GetCuotas',
+					    type: 'POST',
+					    data: {
+					    	monto_credito:monto,
+					    	cedula_participe:ciparticipe
+					    	
+					    },
+					})
+					.done(function(x) {
+						$("#select_cuotas").html(x);
+						swal({
+							  title: "Simulación de Crédito",
+							  text: "Cargando tabla de amortización",
+							  icon: "view/images/capremci_load.gif",
+							  buttons: false,
+							  closeModal: false,
+							  allowOutsideClick: false
+							});
+						SimularCredito();
+						
+						
+					})
+					.fail(function() {
+					    console.log("error");
+					});
+					}
+				else
+					{
+					$.ajax({
+					    url: 'index.php?controller=SimulacionCreditos&action=GetCuotasGarante',
+					    type: 'POST',
+					    data: {
+					    	monto_credito:monto,
+					    	cedula_garante:ci_garante
+					    	
+					    },
+					})
+					.done(function(x) {
+						$("#select_cuotas").html(x);
+						swal({
+							  title: "Simulación de Crédito",
+							  text: "Cargando tabla de amortización",
+							  icon: "view/images/capremci_load.gif",
+							  buttons: false,
+							  closeModal: false,
+							  allowOutsideClick: false
+							});
+						SimularCredito();
+						
+						
+					})
+					.fail(function() {
+					    console.log("error");
+					});
+					}
+				
 				}
 				
 				
@@ -503,6 +542,7 @@ function BuscarParticipe()
 function BuscarGarante()
 {
 	var ciparticipe=$('#cedula_garante').val();
+	ci_garante=ciparticipe;
 	var cicredito=$('#cedula_credito').html();
 	cicredito=cicredito.split(" : ");
 	cicredito=cicredito[1];	
@@ -533,44 +573,60 @@ function BuscarGarante()
 			    },
 			})
 			.done(function(x) {
+				x=x.trim();
 				if(!(x.includes("Participe no encontrado")))
 					{
-					$("#info_garante").html(x);
-					var edad_garante=$("#edad_garante").html();
-					edad_garante=edad_garante.split(" : ");
-					edad_garante=edad_garante[1].split(", ");
-					edad_garante=edad_garante[0].split(" ");
-					edad_garante=edad_garante[0];	
-					console.log(edad_garante);
-					var limite=document.getElementById("monto_disponible").innerHTML;
-					var elementos=limite.split(" : ");
-					limite=elementos[1];
-					var limite_garante=document.getElementById("monto_garante_disponible").innerHTML;
-					elementos=limite_garante.split(" : ");
-					limite_garante=elementos[1];
-					console.log(limite_garante);
-					var limite_total=parseFloat(limite_garante)+parseFloat(limite);
-					var nuevo_monto="Disponible Total : "+limite_total;
-					$("#monto_disponible").html(nuevo_monto);
-					var aportes=document.getElementById("aportes_participes");
-					var aportes_garante=document.getElementById("aportes_garante");
-					console.log(aportes);
-					if (limite_total>150 && edad_garante<75 && aportes==null && aportes_garante==null)
-						{
-						document.getElementById("disponible_participe").classList.remove('bg-red');
-						document.getElementById("disponible_participe").classList.add('bg-olive');
-						}
-					if(edad_garante<75 && aportes_garante!=null)
+					if(x=="Garante no disponible")
 					{
-						document.getElementById("disponible_participe").classList.remove('bg-olive');
-						document.getElementById("disponible_participe").classList.add('bg-red');
 						swal({
 					  		  title: "Advertencia!",
-					  		  text: "El participe no cumple las condiciones\npara ser garante",
+					  		  text: "El participe ya es garante activo",
 					  		  icon: "warning",
 					  		  button: "Aceptar",
 					  		});
 					}
+						else
+						
+						{
+						$("#info_garante").html(x);
+						var edad_garante=$("#edad_garante").html();
+						edad_garante=edad_garante.split(" : ");
+						edad_garante=edad_garante[1].split(", ");
+						edad_garante=edad_garante[0].split(" ");
+						edad_garante=edad_garante[0];	
+						console.log(edad_garante);
+						var limite=document.getElementById("monto_disponible").innerHTML;
+						var elementos=limite.split(" : ");
+						limite=elementos[1];
+						var limite_garante=document.getElementById("monto_garante_disponible").innerHTML;
+						elementos=limite_garante.split(" : ");
+						limite_garante=elementos[1];
+						console.log(limite_garante);
+						var limite_total=parseFloat(limite_garante)+parseFloat(limite);
+						var nuevo_monto="Disponible Total : "+limite_total;
+						$("#monto_disponible").html(nuevo_monto);
+						var aportes=document.getElementById("aportes_participes");
+						var aportes_garante=document.getElementById("aportes_garante");
+						console.log(aportes);
+						if (limite_total>150 && edad_garante<75 && aportes==null && aportes_garante==null)
+							{
+							document.getElementById("disponible_participe").classList.remove('bg-red');
+							document.getElementById("disponible_participe").classList.add('bg-olive');
+							garante_seleccionado=true;
+							}
+						if(edad_garante<75 && aportes_garante!=null)
+						{
+							document.getElementById("disponible_participe").classList.remove('bg-olive');
+							document.getElementById("disponible_participe").classList.add('bg-red');
+							swal({
+						  		  title: "Advertencia!",
+						  		  text: "El participe no cumple las condiciones\npara ser garante",
+						  		  icon: "warning",
+						  		  button: "Aceptar",
+						  		});
+						}
+						}
+					
 				}
 				else
 					{
@@ -708,7 +764,10 @@ function SubirInformacionCredito()
 	    	cuota_credito: cuota_credito,
 	    	cedula_participe: ciparticipe,
 	    	observacion_credito: observacion,
-	    	id_solicitud:id_solicitud
+	    	id_solicitud:id_solicitud,
+	    	con_garante:garante_seleccionado,
+	    	cedula_garante:ci_garante
+	    	
 	    },
 	})
 	.done(function(x) {

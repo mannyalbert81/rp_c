@@ -332,6 +332,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?0.17"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?0.18"></script> 
    </body>
 </html>   

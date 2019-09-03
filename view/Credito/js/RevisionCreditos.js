@@ -694,3 +694,8 @@ function MostrarComprobantes(id_comprobantes)
 	});
 	
 }
+
+function ImprimirReporte(id_reporte)
+{
+	console.log(id_reporte);
+}

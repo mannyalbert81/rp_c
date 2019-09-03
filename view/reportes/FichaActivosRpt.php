@@ -5,7 +5,7 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
 //echo getcwd().''; //para ver ubicacion de directorio
 
 $header = file_get_contents('view/reportes/template/CabeceraFinal.html');
-$template = file_get_contents('view/reportes/template/TablaAmortizacion.html');
+$template = file_get_contents('view/reportes/template/FichaActivosReporte.html');
 
 if(!empty($datos_cabecera))
 {
@@ -23,22 +23,11 @@ if(!empty($datos_empresa))
     }
 }
 
-
-
 if(!empty($datos_reporte))
 {
     
     foreach ($datos_reporte as $clave=>$valor) {
-        
-        $template = str_replace('{'.$clave.'}', $valor, $template);
-    }
-}
-
-if(!empty($datos_garante))
-{
-    
-    foreach ($datos_garante as $clave=>$valor) {
-        
+        echo $clave; echo "\n";
         $template = str_replace('{'.$clave.'}', $valor, $template);
     }
 }
@@ -59,7 +48,7 @@ $mpdf->setAutoTopMargin = 'stretch';
 $mpdf->setAutoBottomMargin = 'stretch';
 $mpdf->SetHTMLHeader(utf8_encode($header));
 $mpdf->SetHTMLFooter($footer);
-$stylesheet = file_get_contents('view/reportes/template/tablaAmortizacion.css');// la ruta a tu css
+$stylesheet = file_get_contents('view/reportes/template/FichaActivos.css'); // la ruta a tu css
 $mpdf->WriteHTML($stylesheet,1);
 $mpdf->WriteHTML($template,2);
 $mpdf->debug = true;

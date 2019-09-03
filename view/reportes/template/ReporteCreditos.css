@@ -36,21 +36,39 @@ td.central{
 
 
 
-table.1 tr:nth-child(even){
+
+table.1 {
    width: 100%;
    text-align: left;
    font-size:12px;
    border-collapse: collapse;
    margin: 0 0 1em 0;
    caption-side: top;
-   
 }
 
-th.ancho{
+table.3 {
+   width: 50%;
+   text-align: left;
+   font-size:12px;
+   border-collapse: collapse;
+   margin: 0 0 1em 0;
+   caption-side: top;
+}
+
+td.bordesup{
 	
-	width: 200px;
-	background: #C0C0C1;
+	border-top: 1px solid;
 	
-	
-	
+}
+
+
+
+table.4 {
+   width: 100%;
+   text-align: center;
+   font-size:12px;
+   border-collapse: collapse;
+   margin: 0 0 1em 0;
+   caption-side: top;
+   
 }

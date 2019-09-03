@@ -47,78 +47,56 @@
         <small><?php echo $fecha; ?></small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Contabilidad</a></li>
-        <li class="active">Activos Fijos</li>
+        <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Créditos</a></li>
+        <li class="active">Garantía</li>
       </ol>
     </section>
 
     <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Ficha Activos Fijos</h3>
+          <h3 class="box-title">Crédito Garante</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Minimizar">
               <i class="fa fa-minus"></i></button>
             
           </div>
-        <form id="frm_ficha" action="<?php echo $helper->url("ActivosFijos","InsertaFicha"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+        <form id="frm_garantia" action="<?php echo $helper->url("GarantiaCredito","InsertaGarantia"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
              
 				<br>			    
 							    
 		    	 <div class="row">
-        		 <input type="hidden" id="id_ficha_mantenimiento" value="id_ficha_mantenimiento">
-            
-                <div class = 'col-xs-12 col-md-3 col-lg-3' style="display: none">
-				        <div class='form-group'>
-				        <label for='id_activos_fijos' class='control-label'>Activo Fijo</label><br>
-				        <input type='text' class='form-control' id='id_activos_fijos' name='id_activos_fijos'value="<?php echo $resultEdit[0]->id_activos_fijos; ?>" readonly>
-				        </div>
-				        </div> 	
-        		
-        		<div class="col-md-4 col-lg-4 col-xs-12">
+        		 <input type="hidden" id="id_creditos_garantias" value="0">
+           
+     	<div class="col-md-2 col-lg-2 col-xs-12">
 	         	<div class="form-group">
-	         		<label for="year_periodo" class="control-label">Fecha :</label>
-	         		<input type="date" id="fecha_inicio_ficha_mantenimiento" name="fecha_inicio_ficha_mantenimiento"  value="" class="form-control">
-                       <div id="mensaje_fecha_inicio_ficha_mantenimiento" class="errores"></div>
+	         		<label for="id_creditos" class="control-label">Numero Credito :</label>
+	         		<input type="text" id="id_creditos" name="id_creditos"  value="" readonly class="form-control">
+                         <div id="mensaje_id_creditos" class="errores"></div>
                     
                     </div>
 	         	</div>
 	         	
-	         	<div class="col-md-4 col-lg-4 col-xs-12">
+	         		<div class="col-md-4 col-lg-4 col-xs-12">
 	         	<div class="form-group">
-	         		<label for="danio_ficha_mantenimiento" class="control-label">Daño :</label>
-	         		<input type="text" id="danio_ficha_mantenimiento" name="danio_ficha_mantenimiento"  value="" class="form-control">
-                         <div id="mensaje_danio_ficha_mantenimiento" class="errores"></div>
+	         		<label for="id_participes" class="control-label">Paticipe :</label>
+	         		<input type="text" id="id_participes" name="id_participes"  value="" readonly class="form-control">
+                         <div id="mensaje_id_participes" class="errores"></div>
                     
                     </div>
 	         	</div>
-            	
-            	<div class="col-md-4 col-lg-4 col-xs-12">
-	         	<div class="form-group">
-	         		<label for="partes_reemplazado_ficha_mantenimiento" class="control-label">Partes :</label>
-	         		<input type="text" id="partes_reemplazado_ficha_mantenimiento" name="partes_reemplazado_ficha_mantenimiento"  value="" class="form-control">
-                       <div id="mensaje_partes_reemplazado_ficha_mantenimiento" class="errores"></div>
-                    
-                    </div>
-	         	</div>
-	         	
-	         	<div class="col-md-4 col-lg-4 col-xs-12">
-	         	<div class="form-group">
-	         		<label for="responsable_ficha_mantenimiento" class="control-label">Responsable :</label>
-	         		<input type="text" id="responsable_ficha_mantenimiento" name="responsable_ficha_mantenimiento"  value="" class="form-control">
-     			 <div id="mensaje_responsable_ficha_mantenimiento" class="errores"></div>
-                                     
-                    </div>
-	         	</div>
-	         	
-	         	<div class="col-md-8 col-lg-8 col-xs-12">
-	         	<div class="form-group">
-	         		<label for="descripcion_ficha_mantenimiento" class="control-label">Descripcion :</label>
-	         		<input type="text" id="descripcion_ficha_mantenimiento" name="descripcion_ficha_mantenimiento"  value="" class="form-control">
-                         <div id="mensaje_descripcion_ficha_mantenimiento" class="errores"></div>
-                    
-                    </div>
-	         	</div>
+	        
+           <div class="col-xs-12 col-md-3 col-md-3">
+            		    <div class="form-group">
+            		    					  
+                          <label for="id_estado" class="control-label">Estado:</label>
+                          <select  class="form-control" id="id_estado" name="id_estado" required>
+                          	<option value="0">--Seleccione--</option>
+                          </select>                         
+                          <div id="mensaje_id_estado" class="errores"></div>
+                        </div>
+            		  </div>
+            		  
 	      
   	   	</div>	
 						<BR>	          		        
@@ -126,6 +104,8 @@
     			    <div class="col-xs-12 col-md-12 col-lg-12 " style="text-align: center; ">
         	   		    <div class="form-group">
     	        <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
+    	        
+    	    
     	                          </div>
 	                    
         		    </div>        		    
@@ -140,13 +120,13 @@
         <section class="content">
       	<div class="box box-primary">
       		<div class="box-header with-border">
-      			<h3 class="box-title">Listado de Fichas</h3>      			
+      			<h3 class="box-title">Listado Créditos Garantias</h3>      			
             </div> 
             <div class="box-body">
     			<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaFichas(1)" placeholder="Buscar.."/>
+					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaGarantia()" placeholder="Buscar.."/>
     			</div>            	
-            	<div id="ficha_registrados" ></div>
+            	<div id="garantia_registrados" ></div>
             </div> 	
       	</div>
       </section> 
@@ -162,7 +142,7 @@
     <?php include("view/modulos/links_js.php"); ?>
 
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-  <script src="view/Contable/FuncionesJS/FichaActivos.js?0.6"></script> 
+  <script src="view/Credito/js/GarantiaCredito.js?0.18"></script> 
 
   </body>
 </html>   

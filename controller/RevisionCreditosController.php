@@ -821,7 +821,7 @@ class RevisionCreditosController extends ControladorBase{
         session_start();
         $id_reporte=$_POST['id_reporte'];
         $reporte = new PermisosEmpleadosModel();
-        
+        $reporte->beginTran();
         $columnas="id_estado_creditos";
         $tablas="core_estado_creditos";
         $where="nombre_estado_creditos='Aprobado'";
@@ -844,6 +844,7 @@ class RevisionCreditosController extends ControladorBase{
             if ($mensaje!='OK')
             {
                 $mensaje="ERROR";
+                $reporte->endTran("ROLLBACK");
                 break;
             }
         }
@@ -865,6 +866,19 @@ class RevisionCreditosController extends ControladorBase{
             $tabla = "core_creditos_trabajados_detalle";
             $colval = "id_estado_detalle_creditos_trabajados=".$resultEst[0]->id_estado;
             $reporte->UpdateBy($colval, $tabla, $where);
+            
+            $errores=ob_get_clean();
+            $errores=trim($errores);
+            if(empty($errores))
+            {
+                $reporte->endTran("COMMIT");
+                $mensaje="OK";
+            }
+            else
+            {
+                $reporte->endTran("ROLLBACK");
+                $mensaje="ERROR";
+            }
         }
         
         echo $mensaje;
@@ -1074,8 +1088,7 @@ class RevisionCreditosController extends ControladorBase{
         
         try {
             
-            
-            $Credito->beginTran();
+            //$Credito->beginTran();
             
             //creacion de lote
             $nombreLote = "CxP-Creditos";
@@ -1338,12 +1351,12 @@ class RevisionCreditosController extends ControladorBase{
                 $whereCre = "id_creditos = $id_creditos";
                 $UpdateCredito= $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
                 
-                $Credito->endTran('COMMIT');
+                //$Credito->endTran('COMMIT');
                 return 'OK';
                 
         } catch (Exception $e) {
             
-            $Credito->endTran();
+            //$Credito->endTran();
             return $e->getMessage();
         }
     }

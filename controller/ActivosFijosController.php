@@ -1967,6 +1967,305 @@ class ActivosFijosController extends ControladorBase{
         
     }
     
+    public function consultaFicha(){
+        
+        session_start();
+        $id_rol=$_SESSION["id_rol"];
+        
+        $ficha = new FichaActivosModel();
+        
+
+        $_id_activos_fijos = $_POST["id_activos_fijos"];
+            
+        $where_to="";
+        $columnas  = "   act_ficha_mantenimiento.id_ficha_mantenimiento, 
+                          act_ficha_mantenimiento.fecha_inicio_ficha_mantenimiento, 
+                          act_ficha_mantenimiento.danio_ficha_mantenimiento, 
+                          act_ficha_mantenimiento.partes_reemplazado_ficha_mantenimiento, 
+                          act_ficha_mantenimiento.responsable_ficha_mantenimiento, 
+                          act_ficha_mantenimiento.descripcion_ficha_mantenimiento , 
+                          act_ficha_mantenimiento.id_activos_fijos, 
+                          act_activos_fijos.nombre_activos_fijos, 
+                          act_activos_fijos.codigo_activos_fijos";
+                            
+        $tablas    = " public.act_ficha_mantenimiento, 
+                         public.act_activos_fijos";
+        
+        $where     = "act_ficha_mantenimiento.id_activos_fijos = act_activos_fijos.id_activos_fijos AND act_ficha_mantenimiento.id_activos_fijos = $_id_activos_fijos";
+        $id        = "act_ficha_mantenimiento.id_ficha_mantenimiento";
+        
+        
+        $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        if($action == 'ajax')
+        {
+            
+            
+            if(!empty($search)){
+                
+                
+                $where1=" AND danio_ficha_mantenimiento ILIKE '".$search."%'";
+                
+                $where_to=$where.$where1;
+                
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            
+            $html="";
+            $resultSet=$ficha->getCantidad("*", $tablas, $where_to);
+            $cantidadResult=(int)$resultSet[0]->total;
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 10; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            
+            $resultSet=$ficha->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            if($cantidadResult > 0)
+            {
+                
+                $html.='<div class="pull-left" style="margin-left:15px;">';
+                $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                $html.='</div>';
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<section style="height:400px; overflow-y:scroll;">';
+                $html.= "<table id='tabla_bancos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<thead>";
+                $html.= "<tr>";
+                $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Fecha</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Daño</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Partes</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Responsable</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Descripcion</th>';
+                
+                /*para administracion definir administrador MenuOperaciones Edit - Eliminar*/
+                
+                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                
+                
+                $html.='</tr>';
+                $html.='</thead>';
+                $html.='<tbody>';
+                
+                
+                $i=0;
+                
+                foreach ($resultSet as $res)
+                
+                
+                {
+                    $i++;
+                    $html.='<tr>';
+                    $html.='<td style="font-size: 14px;">'.$i.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->fecha_inicio_ficha_mantenimiento.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->danio_ficha_mantenimiento.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->partes_reemplazado_ficha_mantenimiento.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->responsable_ficha_mantenimiento.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->descripcion_ficha_mantenimiento.'</td>';
+                    
+                    
+                    /*comentario up */
+                    
+                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=ficha_activos_reporte&id_ficha_mantenimiento='.$res->id_ficha_mantenimiento.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+                    
+                    
+                    $html.='</tr>';
+                }
+                
+                
+                
+                $html.='</tbody>';
+                $html.='</table>';
+                $html.='</section></div>';
+                $html.='<div class="table-pagination pull-right">';
+                $html.=''. $this->paginateFicha("index.php", $page, $total_pages, $adjacents,"consultaPeriodo").'';
+                $html.='</div>';
+                
+                
+                
+            }else{
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay registrados...</b>';
+                $html.='</div>';
+                $html.='</div>';
+            }
+            
+            
+            echo $html;
+            
+        }
+        
+        
+    }
+    
+    
+    public function paginateFicha($reload, $page, $tpages, $adjacents, $funcion = "") {
+        
+        $prevlabel = "&lsaquo; Prev";
+        $nextlabel = "Next &rsaquo;";
+        $out = '<ul class="pagination pagination-large">';
+        
+        // previous label
+        
+        if($page==1) {
+            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+        } else if($page==2) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
+        }else {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
+            
+        }
+        
+        // first label
+        if($page>($adjacents+1)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
+        }
+        // interval
+        if($page>($adjacents+2)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // pages
+        
+        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+        for($i=$pmin; $i<=$pmax; $i++) {
+            if($i==$page) {
+                $out.= "<li class='active'><a>$i</a></li>";
+            }else if($i==1) {
+                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
+            }else {
+                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
+            }
+        }
+        
+        // interval
+        
+        if($page<($tpages-$adjacents-1)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        // last
+        
+        if($page<($tpages-$adjacents)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
+        }
+        
+        // next
+        
+        if($page<$tpages) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
+        }else {
+            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+        }
+        
+        $out.= "</ul>";
+        return $out;
+    }
+    
+    
+    public function  ficha_activos_reporte(){
+        session_start();
+        
+        $activos_fijos=new ActivosFijosModel();
+        $ficha_activos_fijos=new FichaActivosModel();
+        
+        $entidades = new EntidadesModel();
+        //PARA OBTENER DATOS DE LA EMPRESA
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        //NOTICE DATA
+        $datos_cabecera = array();
+        $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+        $datos_cabecera['FECHA'] = date('Y/m/d');
+        $datos_cabecera['HORA'] = date('h:i:s');
+        
+        
+        $_id_ficha_mantenimiento =  (isset($_REQUEST['id_ficha_mantenimiento'])&& $_REQUEST['id_ficha_mantenimiento'] !=NULL)?$_REQUEST['id_ficha_mantenimiento']:'';
+        
+        
+        $datos_reporte = array();
+        
+        $columnas = " act_ficha_mantenimiento.id_ficha_mantenimiento,
+                      act_ficha_mantenimiento.fecha_inicio_ficha_mantenimiento,
+                      act_ficha_mantenimiento.danio_ficha_mantenimiento,
+                      act_ficha_mantenimiento.partes_reemplazado_ficha_mantenimiento,
+                      act_ficha_mantenimiento.responsable_ficha_mantenimiento,
+                      act_ficha_mantenimiento,descripcion_ficha_mantenimiento
+                      act_ficha_mantenimiento.id_activos_fijos,
+                      act_activos_fijos.nombre_activos_fijos,
+                      act_activos_fijos.codigo_activos_fijos";
+        
+        $tablas="  public.act_ficha_mantenimiento,
+                   public.act_activos_fijos";
+        
+        $where="act_activos_fijos.id_activos_fijos = act_ficha_mantenimiento.id_activos_fijos AND act_ficha_mantenimiento.id_ficha_mantenimiento='$_id_ficha_mantenimiento'";
+        
+        $id="act_ficha_mantenimiento.id_ficha_mantenimiento";
+        
+        
+        $rsdatos = $ficha_activos_fijos->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $datos_reporte['IDFICHAMANTENIMIENTO']=$rsdatos[0]->id_ficha_mantenimiento;
+        $datos_reporte['FECHAINICIOMANTENIMIENTO']=$rsdatos[0]->fecha_inicio_ficha_mantenimiento;
+        $datos_reporte['DANIO']=$rsdatos[0]->danio_ficha_mantenimiento;
+        $datos_reporte['USUARIO']=$rsdatos[0]->nombre_usuarios;
+        $datos_reporte['NOMBREENTIDADES']=$rsdatos[0]->nombre_entidades;
+        $datos_reporte['DIRECCIONENTIDAD']=$rsdatos[0]->direccion_entidades;
+        $datos_reporte['TELEFONOENTIDAD']=$rsdatos[0]->telefono_entidades;
+        $datos_reporte['RUCENTIDAD']=$rsdatos[0]->ruc_entidades;
+        $datos_reporte['PARTESREEMPLAZO']=$rsdatos[0]->partes_reemplazado_ficha_mantenimiento;
+        $datos_reporte['RESPONSABLE']=$rsdatos[0]->responsable_ficha_mantenimiento;
+        $datos_reporte['DESCRIPCIONFICHA']=$rsdatos[0]->descripcion_ficha_mantenimiento;
+        
+        
+        
+        
+        
+        
+        $html='';
+        
+        
+        
+        
+        $datos_reporte['DETALLE_COMPROBANTE']= $html;
+        
+        
+            
+        
+        
+        $this->verReporte("FichaActivosReporte", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+        
+        
+    }
+    
+        
+        
+    
     
 }
 ?>

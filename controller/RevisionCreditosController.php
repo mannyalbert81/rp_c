@@ -1467,6 +1467,56 @@ class RevisionCreditosController extends ControladorBase{
         $datos_cabecera['FECHA'] = date('Y/m/d');
         $datos_cabecera['HORA'] = date('h:i:s');
         
+        $Usuarios1= new UsuariosModel();
+        //contador
+        $datos_rol_contador = array();
+        
+        
+        $columnas="  usuarios.id_usuarios, 
+                     usuarios.nombre_usuarios, 
+                     usuarios.apellidos_usuarios, 
+                     rol.id_rol, 
+                     rol.nombre_rol";
+        $tablas="    public.usuarios, 
+                     public.rol";
+        $where="rol.id_rol = usuarios.id_rol AND rol.nombre_rol='Contador / Jefe de RR.HH'";
+        $id="rol.nombre_rol";
+        
+        $resultCont=$Usuarios1->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $datos_rol_contador['NOMCONTA']=ucfirst($resultCont[0]->nombre_usuarios);
+        $datos_rol_contador['APECONTA']=ucfirst($resultCont[0]->apellidos_usuarios);
+        
+        //Gerente
+        $datos_rol_gerente= array();
+        
+        
+        $columnas="  usuarios.id_usuarios,
+                     usuarios.nombre_usuarios,
+                     usuarios.apellidos_usuarios,
+                     rol.id_rol,
+                     rol.nombre_rol";
+        $tablas="    public.usuarios,
+                     public.rol";
+        $where="rol.id_rol = usuarios.id_rol AND rol.nombre_rol='Gerente'";
+        $id="rol.nombre_rol";
+        
+        $resultGer=$Usuarios1->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $datos_rol_gerente['NOMGER']=ucfirst($resultGer[0]->nombre_usuarios);
+        $datos_rol_gerente['APEGER']=ucfirst($resultGer[0]->apellidos_usuarios);
+        
+        //Jefe Credito
+        
+        $datos_rol_jcredito= array();
+
+            $datos_rol_jcredito['NOMJCRE']=(isset($_SESSION['nombre_usuarios']))?$_SESSION['nombre_usuarios']:'';
+            $datos_rol_jcredito['APEJCRE']=(isset($_SESSION['apellidos_usuarios']))?$_SESSION['apellidos_usuarios']:'';
+            
+        
+        //TABLA
         
         
         $datos_reporte = array();
@@ -1627,7 +1677,8 @@ class RevisionCreditosController extends ControladorBase{
         
         $total=$total_cheque+$total_transfer1;
         
-        $html.='<table  class="3" cellspacing="0" style="width:100px;" border="1" >';
+        
+        $html.='<table  class="3" cellspacing="0" style="width:100px;" border="1" align="center">';
         $html.='<tr>';
         $html.='<td colspan="4"><strong>REPORTE CON VALORES DE CREDITOS A TRANSFERIR</strong></td>';
         $html.='</tr>';
@@ -1698,28 +1749,14 @@ class RevisionCreditosController extends ControladorBase{
         $html.='</tr>';
         $html.='</table>';
         
-        
-        
-        
-       
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+    
         $datos_reporte['DETALLE_CREDITOS']= $html;
         
         
         
         
         
-        $this->verReporte("ReporteCreditos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+        $this->verReporte("ReporteCreditos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_rol_contador'=>$datos_rol_contador, 'datos_rol_gerente'=>$datos_rol_gerente, 'datos_rol_jcredito'=>$datos_rol_jcredito));
         
         
         

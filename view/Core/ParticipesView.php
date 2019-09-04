@@ -80,9 +80,10 @@
                             <li><a href="#step-1">Información del Socio <br /><small> </small></a></li>
                             <li><a href="#step-2">Datos del Cónyuge<br /><small></small></a></li>
                             <li><a href="#step-3">Datos Domiciliarios<br /><small></small></a></li>
-                            <li><a href="#step-4">Información Adicional del Socio <br /><small></small></a></li>
-                            <li><a href="#step-5">Información Extra del Socio <br /><small></small></a></li>
+                            <li><a href="#step-4">Información Adicional<br /><small></small></a></li>
+                            <li><a href="#step-5">Información Extra<br /><small></small></a></li>
                             <li><a href="#step-6">Cuenta Bancaria <br /><small></small></a></li>
+                            <li><a href="#step-7">Contribución<br /><small></small></a></li>
                      
                         </ul>		
            			
@@ -622,10 +623,10 @@
                     
                     <div class="box-body">
                          <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                     <div class="panel panel-default">
   								   <div class="panel-body">
-                        		   <div class="form-group">
+                        		   <div class="col-md-3 col-lg-3 col-xs-12">
                                       <label for="id_bancos" class="control-label">Bancos:</label>
                                       <select name="id_bancos" id="id_bancos"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
@@ -635,8 +636,9 @@
     								   </select> 
                                       <div id="mensaje_id_bancos" class="errores"></div>
                                     </div>
-                            
-                                <div class="form-group">
+                                    
+                                                             
+                                <div class="col-md-3 col-lg-3 col-xs-12">
                                       <label for="id_tipo_cuentas" class="control-label">Tipo Cuentas:</label>
                                       <select name="id_tipo_cuentas" id="id_tipo_cuentas"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
@@ -648,13 +650,13 @@
                                     </div>
                            
                                 
-                                 	<div class="form-group">
+                                 <div class="col-md-3 col-lg-3 col-xs-12">
                                 	<label for="numero_participes_cuentas" class="control-label">Número de cuenta</label>
                                     <input type="text" class="form-control" id="numero_participes_cuentas" name="numero_participes_cuentas" value=""  placeholder="Número de cuenta">
                                     <div id="mensaje_numero_participes_cuentas" class="errores"></div>
                                  </div>
                              
-                               	   <div class="form-group">
+                               	 <div class="col-md-3 col-lg-3 col-xs-12">
                                       <label for="cuenta_principal" class="control-label">Cuenta Principal:</label>
                                       <select name="cuenta_principal" id="cuenta_principal"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
@@ -676,7 +678,7 @@
         	                     
         	                     </div>
         	                     </div>
-    	        			       <div class="col-md-6">
+    	        			       <div class="col-md-12">
     	        			       
     	        			              <div class="panel panel-default">
   								   <div class="panel-body">
@@ -690,6 +692,108 @@
 					</div>
 							<div id="load_cuentas_activos" ></div>	
 					<div id="participes_cuentas_registrados"></div>	
+                
+                
+              </div>
+                  </div>
+            </div>      
+              
+                 </div>
+                 </div>      
+              
+                 </div>
+                 
+                 
+                  </div>
+                  </div>
+                  
+                                  </div>
+                                  
+					<div id="step-7" class="">
+                
+                	<div class="box box-success">
+                        <div class="box-header with-border">
+                          <h3 class="box-title"></h3>
+                          <div class="box-tools pull-right"> </div>
+                        </div>
+                    
+                    <div class="box-body">
+                         <div class="row">
+                         		   <div class="panel-body">
+                        		<div class="col-md-3 col-lg-3 col-xs-12">
+	              					<label for="id_contribucion_tipo" class="control-label">Tipo Contribución</label>
+                                      <select name="id_contribucion_tipo" id="id_contribucion_tipo"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultContribucion as $res) {?>
+    										<option value="<?php echo $res->id_contribucion_tipo; ?>" ><?php echo $res->nombre_contribucion_tipo; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_contribucion_tipo" class="errores"></div>
+                                    </div>
+                                    
+					         	<div class="col-md-3 col-lg-3 col-xs-12">
+	              					<label for="id_tipo_aportacion" class="control-label">Tipo Aportación</label>
+                                      <select name="id_tipo_aportacion" id="id_tipo_aportacion"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultTipoAportacion as $res) {?>
+    										<option value="<?php echo $res->id_tipo_aportacion; ?>" ><?php echo $res->nombre_tipo_aportacion; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_tipo_aportacion" class="errores"></div>
+                                    </div>
+                            
+                        	<div class="col-md-2 col-lg-2 col-xs-12">
+	              		        	<label for="valor_contribucion_tipo_participes" class="control-label">Valor</label>
+                                    <input type="text" class="form-control" id="valor_contribucion_tipo_participes" name="valor_contribucion_tipo_participes" value=""  placeholder="$">
+                                    <div id="mensaje_valor_contribucion_tipo_participes" class="errores"></div>
+                                 </div>
+                             
+                             	<div class="col-md-2 col-lg-2 col-xs-12">
+	              		        	<label for="porcentaje_contribucion_tipo_participes" class="control-label">Porcentaje</label>
+                                    <input type="text" class="form-control" id="porcentaje_contribucion_tipo_participes" name="porcentaje_contribucion_tipo_participes" value=""  placeholder="%">
+                                    <div id="mensaje_porcentaje_contribucion_tipo_participes" class="errores"></div>
+                                 </div>
+                             
+                             
+                             
+                                   	<div class="col-md-2 col-lg-2 col-xs-12">
+	              		        	<label for="sueldo_liquido_contribucion_tipo_participes" class="control-label">Sueldo</label>
+                                    <input type="text" class="form-control" id="sueldo_liquido_contribucion_tipo_participes" name="sueldo_liquido_contribucion_tipo_participes" value=""  placeholder="$">
+                                    <div id="mensaje_sueldo_liquido_contribucion_tipo_participes" class="errores"></div>
+                                 </div>
+                                 
+                                    	<div class="col-md-3 col-lg-3 col-xs-12">
+	              					<label for="id_estado" class="control-label">Estado</label>
+                                      <select name="id_estado" id="id_estado"  class="form-control" >
+                                      <option value="0" selected="selected">--Seleccione--</option>
+    									<?php foreach($resultEstadoContribucion as $res) {?>
+    										<option value="<?php echo $res->id_estado; ?>" ><?php echo $res->nombre_estado; ?> </option>
+    							        <?php } ?>
+    								   </select> 
+                                      <div id="mensaje_id_estado" class="errores"></div>
+                                    </div>
+                       
+        
+                                  
+                     <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
+                 	              <button type="button" id="Generar" name="Generar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
+        	                     </div>
+        	                           </div>
+        	                     
+        	         		       <div class="col-xs-12 col-md-12 col-md-12">
+    	        			       
+    	        			              <div class="panel panel-default">
+  								   <div class="panel-body">
+                        	
+            <div class="tab-content">
+            <br>
+              <div class="tab-pane active" id="activos">
+                
+					<div class="pull-right" style="margin-right:15px;">
+						<input type="text" value="" class="form-control" id="txtsearchcontribuciontipo" name="txtsearchcuentas" onkeyup="load_contribucion_tipo(1)" placeholder="search.."/>
+					</div>
+							<div id="load_contribucion_tipo" ></div>	
+							<div id="contribucion_tipo_registrados"></div>	
                 
                 
               </div>
@@ -1348,7 +1452,7 @@
     <script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
  <script type="text/javascript" src="view/Core/js/wizardParticipes.js?0.26"></script>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Core/js/Participes.js?3.26" ></script>
+ <script src="view/Core/js/Participes.js?3.49" ></script>
  
  </body>
 </html>

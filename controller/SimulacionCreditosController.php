@@ -56,6 +56,23 @@ class SimulacionCreditosController extends ControladorBase{
    $fecha_fin=$anio."-".$mes_fin."-01";
    $saldo_credito=0;
    $saldo_cta_individual=0;
+   
+   
+   $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
+            		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
+            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
+            		core_estado_creditos.nombre_estado_creditos";
+   $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
+        		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
+        		INNER JOIN public.core_estado_creditos
+        		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos
+                INNER JOIN core_participes
+                ON core_creditos.id_participes = core_participes.id_participes";
+   $where="core_participes.cedula_participes='".$cedula_participes."' AND core_creditos.id_estatus=1 AND core_estado_creditos.nombre_estado_creditos='Activo'";
+   $id="core_creditos.fecha_concesion_creditos";
+   $Creditos_activos=$creditos->getCondiciones($columnas, $tablas, $where, $id);
+   
+   $num_creditos=sizeof($Creditos_activos);   
    $columnas="SUM(valor_personal_contribucion)+SUM(valor_patronal_contribucion) AS total";
    $tablas="core_contribucion INNER JOIN core_participes
             ON core_contribucion.id_participes  = core_participes.id_participes";
@@ -112,7 +129,7 @@ class SimulacionCreditosController extends ControladorBase{
    <table width="100%">
     <tr>
    <td width="50%">
-    <h4 id="nombre_participe_credito">'.$infoParticipe[0]->nombre_participes.' '.$infoParticipe[0]->apellido_participes.'</h4>
+    <h4 id="nombre_participe_credito">'.$infoParticipe[0]->nombre_participes.' '.$infoParticipe[0]->apellido_participes.' Creditos Activos: '.$num_creditos.'</h4>
    <h4 id="cedula_credito"> Cédula : '.$infoParticipe[0]->cedula_participes.'</h4>
     <h4>Fecha de nacimiento : '.$infoParticipe[0]->fecha_nacimiento_participes.'</h4>
     <h4>Edad : '.$tiempo.'</h4>  

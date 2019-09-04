@@ -5,6 +5,7 @@ $(document).ready( function (){
     load_participes_desafiliado(1);
     load_participes_liquidado_cesante(1);
     load_cuentas_activos(1);
+    load_contribucion_tipo(1);
         		   
 	   			});
   
@@ -451,3 +452,197 @@ $(document).ready( function (){
   	return false;
   	
   }
+  
+  function load_contribucion_tipo(pagina){
+
+	   var search=$("#txtsearchcontribuciontipo").val();
+    var con_datos={
+				  action:'ajax',
+				  id_participes:$("#id_participes").val(),
+				  page:pagina
+				  };
+		 
+  $("#load_contribucion_tipo").fadeIn('slow');
+  
+  $.ajax({
+            beforeSend: function(objeto){
+              $("#load_contribucion_tipo").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+            },
+            url: 'index.php?controller=Participes&action=consulta_contribucion_tipo&search='+search,
+            type: 'POST',
+            data: con_datos,
+            success: function(x){
+              $("#contribucion_tipo_registrados").html(x);
+              $("#load_contribucion_tipo").html("");
+              $("#tabla_contribucion_tipo").tablesorter(); 
+              
+            },
+           error: function(jqXHR,estado,error){
+             $("#contribucion_tipo_registrados").html("Ocurrio un error al cargar la informacion de Contribuciones..."+estado+"    "+error);
+           }
+         });
+
+
+	   }
+
+  $("#Generar").on("click",function(){
+	  
+
+	  let $id_contribucion_tipo = $("#id_contribucion_tipo");
+	  let $id_participes2 = $("#id_participes");		
+	  let $id_tipo_aportacion = $("#id_tipo_aportacion");		
+	  let $valor_contribucion_tipo_participes = $("#valor_contribucion_tipo_participes");		
+	  let $sueldo_liquido_contribucion_tipo_participes = $("#sueldo_liquido_contribucion_tipo_participes");		
+	  let $id_estado = $("#id_estado");
+	  let $porcentaje_contribucion_tipo_participes = $("#porcentaje_contribucion_tipo_participes");
+	  
+	   if( $id_contribucion_tipo.val().length == '' || $id_contribucion_tipo.val() == 0 ){
+		   $id_contribucion_tipo.notify("Ingrese una Contribución",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+	   }
+	   if( $id_tipo_aportacion.val().length == '' || $id_tipo_aportacion.val() == 0 ){
+		   $id_tipo_aportacion.notify("Ingrese una Aportación",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+	   }
+	   if( $valor_contribucion_tipo_participes.val().length == '' || $valor_contribucion_tipo_participes.val() == 0 ){
+		   $valor_contribucion_tipo_participes.notify("Ingrese un Valor",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+	   }
+	   if( $porcentaje_contribucion_tipo_participes.val().length == '' || $porcentaje_contribucion_tipo_participes.val() == 0 ){
+		   $porcentaje_contribucion_tipo_participes.notify("Ingrese un Porcentaje",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+	   }
+	   if( $sueldo_liquido_contribucion_tipo_participes.val().length == '' || $sueldo_liquido_contribucion_tipo_participes.val() == 0 ){
+		   $sueldo_liquido_contribucion_tipo_participes.notify("Ingrese un Sueldo",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+	   }
+	   if( $id_estado.val().length == '' || $id_estado.val() == 0 ){
+		   $id_estado.notify("Ingrese un Estado",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+	   }
+	
+
+	  
+	   let datos2 = {
+			   id_contribucion_tipo : $id_contribucion_tipo.val(),
+			   id_participes : $id_participes2.val(),
+			   id_tipo_aportacion : $id_tipo_aportacion.val(),
+			   valor_contribucion_tipo_participes : $valor_contribucion_tipo_participes.val(),
+			   sueldo_liquido_contribucion_tipo_participes : $sueldo_liquido_contribucion_tipo_participes.val(),
+			   id_estado : $id_estado.val(),
+			   porcentaje_contribucion_tipo_participes : $porcentaje_contribucion_tipo_participes.val()
+				   
+	   }
+	   // console.log (datos);
+	   console.log(datos2);
+	   
+	   $.ajax({
+		   url:"index.php?controller=Participes&action=InsertaContribucionTipo",
+		   type:"POST",
+		   dataType:"json",
+		   data: datos2
+	   }).done(function(x){
+		   console.log(x);
+		   if(x.respuesta == 1){
+			   swal({
+				   title:"CONTRIBUCIÓN",
+				   text:x.mensaje,
+				   icon:"success",				   
+			   })
+			   
+			  load_contribucion_tipo(1);  
+		   }
+	   }).fail(function(xhr,status,error){
+		   var err = xhr.responseText
+		   console.log(err)
+		   
+	   }).always(function(){
+			$("#id_contribucion_tipo_participes").val(0);
+			document.getElementById("frm_participes").reset();	
+			load_contribucion_tipo(1);
+		})
+			event.preventDefault()
+			
+	   return false;
+   
+  })
+
+   function editContribucion(id = 0){
+  	
+  	var tiempo = tiempo || 1000;
+  		
+  	$.ajax({
+  		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+  		url:"index.php?controller=Participes&action=editContribucion",
+  		type:"POST",
+  		dataType:"json",
+  		data:{id_contribucion_tipo_participes:id}
+  	}).done(function(datos){
+  		
+  		if(!jQuery.isEmptyObject(datos.data)){
+	
+  			var array = datos.data[0];		
+  			$("#id_contribucion_tipo").val(array.id_contribucion_tipo);			
+  			$("#id_participes").val(array.id_participes);
+  			$("#id_tipo_aportacion").val(array.id_tipo_aportacion);
+  			$("#valor_contribucion_tipo_participes").val(array.valor_contribucion_tipo_participes);
+  			$("#sueldo_liquido_contribucion_tipo_participes").val(array.sueldo_liquido_contribucion_tipo_participes);
+  			$("#id_estado").val(array.id_estado);
+  			$("#porcentaje_contribucion_tipo_participes").val(array.porcentaje_contribucion_tipo_participes);
+  	
+  			
+  			$("html, body").animate({ scrollTop: $(id_participes).offset().top-120 }, tiempo);			
+  		}
+  		
+  		
+  		
+  	}).fail(function(xhr,status,error){
+  		
+  		var err = xhr.responseText
+  		console.log(err);
+  	}).always(function(){
+  		
+  		$("#divLoaderPage").removeClass("loader")
+  		load_contribucion_tipo(1);
+  	})
+  	
+  	return false;
+  	
+  }
+  
+  function delContribucion(id){
+		
+		
+		$.ajax({
+			beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+			url:"index.php?controller=Participes&action=delContribucion",
+			type:"POST",
+			dataType:"json",
+			data:{id_contribucion_tipo_participes:id}
+		}).done(function(datos){		
+			
+			if(datos.data > 0){
+				
+				swal({
+			  		  title: "CONTRIBUCIÓN",
+			  		  text: "Registro Eliminado",
+			  		  icon: "success",
+			  		  button: "Aceptar",
+			  		});
+						
+			}
+			
+			
+			
+		}).fail(function(xhr,status,error){
+			
+			var err = xhr.responseText
+			console.log(err);
+		}).always(function(){
+			
+			$("#divLoaderPage").removeClass("loader")
+			load_contribucion_tipo(1);
+		})
+		
+		return false;
+	}

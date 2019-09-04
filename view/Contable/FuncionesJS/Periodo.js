@@ -25,10 +25,6 @@ $("#frm_periodo").on("submit",function(event){
 		$("#mensaje_id_tipo_cierre").text("Seleccione un Tipo").fadeIn("Slow");
 		return false;
 	}
-	if(_id_estado == 0){
-		$("#mensaje_id_estado").text("Seleccione un Estado").fadeIn("Slow");
-		return false;
-	}
 
 	
 	

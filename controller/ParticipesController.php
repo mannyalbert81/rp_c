@@ -54,7 +54,18 @@ class ParticipesController extends ControladorBase{
 		
 		$tipo_cuentas=new TipoCuentasModel();
 		$resultTipoCuentas=$tipo_cuentas->getAll("nombre_tipo_cuentas");
+		
+		$contribucion=new TipoContribucionModel();
+		$resultContribucion=$contribucion->getAll("nombre_contribucion_tipo");
 	
+		$tipo_aportacion=new TipoAportacionModel();
+		$resultTipoAportacion=$tipo_aportacion->getAll("nombre_tipo_aportacion");
+		
+		$estado_contribucion=new EstadoModel();
+		$whe_estado_contribucion = "tabla_estado = 'core_contribucion_tipo_participes'";
+		$resultEstadoContribucion = $estado_contribucion->getBy($whe_estado_contribucion);
+		
+		
 		
 		session_start();
         
@@ -186,8 +197,9 @@ class ParticipesController extends ControladorBase{
 				$this->view_Core("Participes",array(
 				     "resultEdit" =>$resultEdit, "resultCiudades" =>$resultCiudades, "resultEstado" =>$resultEstado, "resultEstatus" =>$resultEstatus,
 				    "resultGenero" =>$resultGenero, "resultEstadoCivil" =>$resultEstadoCivil, "resultEntidadPatronal" =>$resultEntidadPatronal, "resultTipoInstrccion" =>$resultTipoInstrccion, 
-				    "resultDistritos" =>$resultDistritos, "resultProvincias" =>$resultProvincias, "resultTipovivienda" =>$resultTipovivienda, "resultParentesco" => $resultParentesco, "resultTipoCuentas" =>$resultTipoCuentas, "resultBancos" =>$resultBancos
-			
+				    "resultDistritos" =>$resultDistritos, "resultProvincias" =>$resultProvincias, "resultTipovivienda" =>$resultTipovivienda, "resultParentesco" => $resultParentesco, "resultTipoCuentas" =>$resultTipoCuentas, 
+				    "resultBancos" =>$resultBancos, "resultContribucion" =>$resultContribucion, "resultTipoAportacion" =>$resultTipoAportacion, "resultEstadoContribucion" =>$resultEstadoContribucion
+				    
 				));
 		
 				
@@ -840,7 +852,7 @@ class ParticipesController extends ControladorBase{
 	            $html.='</div>';
 	            
 	        }else{
-	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
 	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay cuentas registrados...</b>';
@@ -898,7 +910,7 @@ class ParticipesController extends ControladorBase{
 	    
 	    session_start();
 	    $cuentas = new CuentasParticipesModel();
-	    $nombre_controladores = "TipoDocumento";
+	    $nombre_controladores = "Participes";
 	    $id_rol= $_SESSION['id_rol'];
 	    $resultPer = $cuentas->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	    
@@ -1954,46 +1966,359 @@ class ParticipesController extends ControladorBase{
 	}
 	
 	
-	/**
-	 * mod: compras
-	 * title: carga_grupos
-	 * ajax: si
-	 */
-	
-	public function carga_grupos(){
+
+
+	public function consulta_contribucion_tipo(){
 	    
-	    $grupos = null;
-	    $grupos = new GruposModel();
+	    session_start();
+	    $id_rol=$_SESSION["id_rol"];
 	    
-	    $resulset = $grupos->getAll("id_grupos");
+	    $usuarios = new UsuariosModel();
+	    $contribucion_tipo_participes = new ContribucionTipoParticipesModel();
 	    
-	    if(!empty($resulset)){
-	        if(is_array($resulset) && count($resulset)>0){
-	            echo json_encode($resulset);
+	    $id_participes = $_POST["id_participes"];
+	    
+	    $where_to="";
+	    $columnas = " core_contribucion_tipo_participes.id_contribucion_tipo_participes, 
+                      core_contribucion_tipo_participes.id_contribucion_tipo, 
+                      core_contribucion_tipo.nombre_contribucion_tipo, 
+                      core_contribucion_tipo_participes.id_participes, 
+                      core_participes.apellido_participes, 
+                      core_participes.nombre_participes, 
+                      core_participes.cedula_participes, 
+                      core_contribucion_tipo_participes.id_tipo_aportacion, 
+                      core_tipo_aportacion.nombre_tipo_aportacion, 
+                      core_contribucion_tipo_participes.valor_contribucion_tipo_participes, 
+                      core_contribucion_tipo_participes.sueldo_liquido_contribucion_tipo_participes, 
+                      core_contribucion_tipo_participes.id_estado, 
+                      estado.nombre_estado, 
+                      core_contribucion_tipo_participes.porcentaje_contribucion_tipo_participes";
+	    
+	    $tablas =    "public.core_contribucion_tipo_participes, 
+                      public.core_contribucion_tipo, 
+                      public.core_participes, 
+                      public.core_tipo_aportacion, 
+                      public.estado";
+	    
+	    
+	    $where    = " core_contribucion_tipo.id_contribucion_tipo = core_contribucion_tipo_participes.id_contribucion_tipo AND
+                      core_participes.id_participes = core_contribucion_tipo_participes.id_participes AND
+                      core_tipo_aportacion.id_tipo_aportacion = core_contribucion_tipo_participes.id_tipo_aportacion AND
+                      estado.id_estado = core_contribucion_tipo_participes.id_estado
+                      AND core_contribucion_tipo_participes.id_participes = $id_participes";
+	    
+	    $id       = "core_contribucion_tipo_participes.id_contribucion_tipo_participes";
+	    
+	    
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    //print_r($_REQUEST); die();
+	    if($action == 'ajax')
+	    {
+	        
+	        
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1=" AND (core_contribucion_tipo.nombre_contribucion_tipo LIKE '".$search."%' OR core_participes.apellido_participes LIKE '".$search."%')";
+	            
+	            $where_to=$where.$where1;
+	        }else{
+	            
+	            $where_to=$where;
+	            
 	        }
+	        
+	        $html="";
+	        $resultSet=$usuarios->getCantidad("*", $tablas, $where_to);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 10;
+	        $adjacents  = 9;
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $rsContribucion=$contribucion_tipo_participes->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        
+	        if($cantidadResult>0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:15px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:227px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_contribucion_tipo' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Contribución Tipo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo Aportación</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Sueldo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Porcentaje</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            
+	            
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            
+	            $i=0;
+	            
+	            foreach ($rsContribucion as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_contribucion_tipo.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_aportacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->valor_contribucion_tipo_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->sueldo_liquido_contribucion_tipo_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->porcentaje_contribucion_tipo_participes.'</td>';
+	                   
+	                $html.='<td style="font-size: 18px;">
+                            <a onclick="editContribucion('.$res->id_contribucion_tipo_participes.')" href="#" class="btn btn-warning" style="font-size:65%;"data-toggle="tooltip" title="Editar"><i class="glyphicon glyphicon-edit"></i></a></td>';
+	                
+	                $html.='<td style="font-size: 18px;">
+                            <a onclick="delContribucion('.$res->id_contribucion_tipo_participes.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a></td>';
+	                
+	                
+	                
+	                $html.='</tr>';
+	            }
+	            
+	            
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginate_contribucion_tipo("index.php", $page, $total_pages, $adjacents).'';
+	            $html.='</div>';
+	            
+	        }else{
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay datos registrados...</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        
+	        echo $html;
+	        die();
+	        
 	    }
 	}
 	
-	
-	
-	/**
-	 * mod: compras
-	 * title: carga_unidadmedida
-	 * ajax: si
-	 */
-	
-	public function carga_unidadmedida(){
+	public function paginate_contribucion_tipo($reload, $page, $tpages, $adjacents) {
 	    
-	    $grupos = null;
-	    $grupos = new GruposModel();
+	    $prevlabel = "&lsaquo; Prev";
+	    $nextlabel = "Next &rsaquo;";
+	    $out = '<ul class="pagination pagination-large">';
 	    
-	    $resulset = $grupos->getCondiciones("*","public.unidad_medida","1=1","id_unidad_medida");
+	    // previous label
 	    
-	    if(!empty($resulset)){
-	        if(is_array($resulset) && count($resulset)>0){
-	            echo json_encode($resulset);
+	    if($page==1) {
+	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+	    } else if($page==2) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_contribucion_tipo(1)'>$prevlabel</a></span></li>";
+	    }else {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_contribucion_tipo(".($page-1).")'>$prevlabel</a></span></li>";
+	        
+	    }
+	    
+	    // first label
+	    if($page>($adjacents+1)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_contribucion_tipo(1)'>1</a></li>";
+	    }
+	    // interval
+	    if($page>($adjacents+2)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // pages
+	    
+	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+	    for($i=$pmin; $i<=$pmax; $i++) {
+	        if($i==$page) {
+	            $out.= "<li class='active'><a>$i</a></li>";
+	        }else if($i==1) {
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_contribucion_tipo(1)'>$i</a></li>";
+	        }else {
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_contribucion_tipo(".$i.")'>$i</a></li>";
 	        }
 	    }
+	    
+	    // interval
+	    
+	    if($page<($tpages-$adjacents-1)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // last
+	    
+	    if($page<($tpages-$adjacents)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_contribucion_tipo($tpages)'>$tpages</a></li>";
+	    }
+	    
+	    // next
+	    
+	    if($page<$tpages) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_contribucion_tipo(".($page+1).")'>$nextlabel</a></span></li>";
+	    }else {
+	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+	    }
+	    
+	    $out.= "</ul>";
+	    return $out;
+	}
+	
+	public function InsertaContribucionTipo(){
+	    
+	    session_start();
+	    $contribucion_tipo_participes = new ContribucionTipoParticipesModel();
+	    
+	    
+	    
+	    if (isset ($_POST["id_participes"])   )
+	    {
+	        
+
+	        
+	        $_id_contribucion_tipo = $_POST["id_contribucion_tipo"];
+	        $_id_participes =  $_POST["id_participes"];
+	        $_id_tipo_aportacion = $_POST["id_tipo_aportacion"];
+	        $_valor_contribucion_tipo_participes = $_POST["valor_contribucion_tipo_participes"];
+	        $_sueldo_liquido_contribucion_tipo_participes = $_POST["sueldo_liquido_contribucion_tipo_participes"];
+	        $_id_estado = $_POST["id_estado"];
+	        $_porcentaje_contribucion_tipo_participes = $_POST["porcentaje_contribucion_tipo_participes"];
+	        
+	        // print_r($_POST); die();
+	        
+	        
+	        
+	        
+	        $funcion = "ins_core_contribucion_tipo_participes";
+	        
+	        $parametros = " '$_id_contribucion_tipo',
+                                    '$_id_participes',
+                                    '$_id_tipo_aportacion',
+                                    '$_valor_contribucion_tipo_participes',
+                                    '$_sueldo_liquido_contribucion_tipo_participes',
+                                    '$_id_estado',
+                                    '$_porcentaje_contribucion_tipo_participes'";
+	        
+	        $contribucion_tipo_participes->setFuncion($funcion);
+	        $contribucion_tipo_participes->setParametros($parametros);
+	        $resultado=$contribucion_tipo_participes->llamafuncionPG();
+	        
+	        $error = pg_last_error();
+	        if(!empty($error)){
+	            
+	            echo json_encode(array("respuesta"=>1,"mensaje"=>"lo que sea"));
+	            die();
+	        }
+	        
+	        $mensaje = $resultado[0] == 1 ? "Ingresado Correctamente" :  ($resultado[0] == 0 ? " Actualizado Correctamente" : "ERROR");
+	        echo json_encode(array("respuesta"=>1,"mensaje"=>$mensaje));
+	        die();
+	        
+	        
+	        
+	        
+	        
+	    }
+	    echo 'redireccion';
+	    
+	    
+	}
+	
+	public function editContribucion(){
+	    
+	    session_start();
+	    $contribucion_tipo_participes = new ContribucionTipoParticipesModel(); +
+	    $nombre_controladores = "Participes";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $contribucion_tipo_participes->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (!empty($resultPer))
+	    {
+	        
+	        if(isset($_POST["id_contribucion_tipo_participes"])){
+	            
+	            $id_contribucion_tipo_participes = (int)$_POST["id_contribucion_tipo_participes"];
+	            
+	            $query = "SELECT * FROM core_contribucion_tipo_participes WHERE id_contribucion_tipo_participes = $id_contribucion_tipo_participes";
+	            
+	            $resultado  = $contribucion_tipo_participes->enviaquery($query);
+	            
+	            echo json_encode(array('data'=>$resultado));
+	            
+	        }
+	        
+	        
+	    }
+	    else
+	    {
+	        echo "Usuario no tiene Permisos-Editar";
+	    }
+	    
+	}
+	
+	public function delContribucion(){
+	    
+	    session_start();
+	    $contribucion_tipo_participes = new ContribucionTipoParticipesModel(); +
+	    $nombre_controladores = "Participes";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $contribucion_tipo_participes->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (!empty($resultPer)){
+	        
+	        if(isset($_POST["id_contribucion_tipo_participes"])){
+	            
+	            $id_contribucion_tipo_participes = (int)$_POST["id_contribucion_tipo_participes"];
+	            
+	            $resultado  = $contribucion_tipo_participes->eliminarBy(" id_contribucion_tipo_participes ",$id_contribucion_tipo_participes);
+	            
+	            if( $resultado > 0 ){
+	                
+	                echo json_encode(array('data'=>$resultado));
+	                
+	            }else{
+	                
+	                echo $resultado;
+	            }
+	            
+	            
+	            
+	        }
+	        
+	        
+	    }else{
+	        
+	        echo "Usuario no tiene Permisos-Eliminar";
+	    }
+	    
+	    
+	    
 	}
 	
 }

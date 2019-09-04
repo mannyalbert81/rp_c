@@ -470,7 +470,7 @@ class BuscarParticipesController extends ControladorBase{
                         <td bgcolor="white" width="14%"><font color="black">'.$saldo.'</font></td>
                         <td bgcolor="white" width="14%"><font color="black">'.$saldo_int.'</font></td>
                         <td bgcolor="white" width="14%"><font color="black">'.$resultCreditos[$i]->nombre_estado_creditos.'</font></td>
-                        <td bgcolor="white" width="3.5%"><font color="black"><a class="btn btn-primary" href="index.php?controller=TablaAmortizacion&action=GENERAR_REPORTE&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-print"></i></a></font></td>
+                        <td bgcolor="white" width="3.5%"><font color="black"><a class="btn btn-primary" href="index.php?controller=TablaAmortizacion&action=ReportePagare&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-print"></i></a></font></td>
                         </tr>';
               
                

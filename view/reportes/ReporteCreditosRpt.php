@@ -32,6 +32,31 @@ if(!empty($datos_reporte))
     }
 }
 
+if(!empty($datos_rol_contador))
+{
+    
+    foreach ($datos_rol_contador as $clave=>$valor) {
+        echo $clave; echo "\n";
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
+if(!empty($datos_rol_gerente))
+{
+    
+    foreach ($datos_rol_gerente as $clave=>$valor) {
+        echo $clave; echo "\n";
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
+
+if(!empty($datos_rol_jcredito))
+{
+    
+    foreach ($datos_rol_jcredito as $clave=>$valor) {
+        echo $clave; echo "\n";
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
 $footer = file_get_contents('view/reportes/template/pieret.html');
 
 

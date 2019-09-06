@@ -47,6 +47,7 @@ table.1 {
 }
 
 table.3 {
+
    width: 50%;
    text-align: left;
    font-size:12px;
@@ -71,4 +72,11 @@ table.4 {
    margin: 0 0 1em 0;
    caption-side: top;
    
+}
+
+td.1{
+	
+	
+	width: 120px;
+	
 }

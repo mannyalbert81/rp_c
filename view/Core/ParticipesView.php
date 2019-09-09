@@ -671,8 +671,8 @@
                      <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
                  	   		    <div class="form-group">
             	                  <button type="button" id="Procesar" name="Procesar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
-        	                      <a href="index.php?controller=Participes&action=index" class="btn btn-primary"><i class='glyphicon glyphicon-remove'></i> Cancelar</a>
-        	                    </div>
+        	          
+         </div>
         	                     </div>
         	                           </div>
         	                     
@@ -742,27 +742,7 @@
                                       <div id="mensaje_id_tipo_aportacion" class="errores"></div>
                                     </div>
                             
-                        	<div class="col-md-2 col-lg-2 col-xs-12">
-	              		        	<label for="valor_contribucion_tipo_participes" class="control-label">Valor</label>
-                                    <input type="text" class="form-control" id="valor_contribucion_tipo_participes" name="valor_contribucion_tipo_participes" value=""  placeholder="$">
-                                    <div id="mensaje_valor_contribucion_tipo_participes" class="errores"></div>
-                                 </div>
-                             
-                             	<div class="col-md-2 col-lg-2 col-xs-12">
-	              		        	<label for="porcentaje_contribucion_tipo_participes" class="control-label">Porcentaje</label>
-                                    <input type="text" class="form-control" id="porcentaje_contribucion_tipo_participes" name="porcentaje_contribucion_tipo_participes" value=""  placeholder="%">
-                                    <div id="mensaje_porcentaje_contribucion_tipo_participes" class="errores"></div>
-                                 </div>
-                             
-                             
-                             
-                                   	<div class="col-md-2 col-lg-2 col-xs-12">
-	              		        	<label for="sueldo_liquido_contribucion_tipo_participes" class="control-label">Sueldo</label>
-                                    <input type="text" class="form-control" id="sueldo_liquido_contribucion_tipo_participes" name="sueldo_liquido_contribucion_tipo_participes" value=""  placeholder="$">
-                                    <div id="mensaje_sueldo_liquido_contribucion_tipo_participes" class="errores"></div>
-                                 </div>
-                                 
-                                    	<div class="col-md-3 col-lg-3 col-xs-12">
+                                	<div class="col-md-2 col-lg-2 col-xs-12">
 	              					<label for="id_estado" class="control-label">Estado</label>
                                       <select name="id_estado" id="id_estado"  class="form-control" >
                                       <option value="0" selected="selected">--Seleccione--</option>
@@ -772,7 +752,25 @@
     								   </select> 
                                       <div id="mensaje_id_estado" class="errores"></div>
                                     </div>
-                       
+                        	<div class="col-md-2 col-lg-2 col-xs-12">
+	              		        	<label for="valor_contribucion_tipo_participes" class="control-label">Valor</label>
+                                    <input type="text" class="form-control" id="valor_contribucion_tipo_participes" name="valor_contribucion_tipo_participes" value=""  placeholder="$">
+                                    <div id="mensaje_valor_contribucion_tipo_participes" class="errores"></div>
+                                 </div>
+                             
+                                   	<div class="col-md-2 col-lg-2 col-xs-12">
+	              		        	<label for="sueldo_liquido_contribucion_tipo_participes" class="control-label">Sueldo</label>
+                                    <input type="text" class="form-control" id="sueldo_liquido_contribucion_tipo_participes" name="sueldo_liquido_contribucion_tipo_participes" value=""  placeholder="$">
+                                    <div id="mensaje_sueldo_liquido_contribucion_tipo_participes" class="errores"></div>
+                                 </div>
+                                 
+                                
+                                    
+                             	<div id="div_porcentaje" class="col-md-3 col-lg-3 col-xs-12">
+	              		        	<label for="porcentaje_contribucion_tipo_participes" class="control-label">Porcentaje</label>
+                                    <input type="text" class="form-control" id="porcentaje_contribucion_tipo_participes" name="porcentaje_contribucion_tipo_participes" value=""  placeholder="%">
+                                    <div id="mensaje_porcentaje_contribucion_tipo_participes" class="errores"></div>
+                                 </div>
         
                                   
                      <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
@@ -1452,7 +1450,7 @@
     <script type="text/javascript" src="view/bootstrap/smartwizard/dist/js/jquery.smartWizard.min.js"></script>
  <script type="text/javascript" src="view/Core/js/wizardParticipes.js?0.26"></script>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Core/js/Participes.js?3.49" ></script>
+ <script src="view/Core/js/Participes.js?3.60"></script>
  
  </body>
 </html>

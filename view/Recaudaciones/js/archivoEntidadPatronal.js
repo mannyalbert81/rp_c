@@ -251,7 +251,7 @@ function consultaArchivos( pagina,search=""){
 		$divResultados.html('');	
 	
 	$.ajax({
-		url:"index.php?controller=Recaudacion&action=indexArchivosAP",
+		url:"index.php?controller=Recaudacion&action=ConsultaArchivosGenerados",
 		type:"POST",
 		dataType:"json",
 		data:parametros
@@ -451,7 +451,9 @@ function DescargaArchivo(){
 				 title:"RECAUDACIONES",
 				 text: "Archivo generado",
 				 icon: "success"
-				})
+				});
+		
+		consultaArchivos();
 				
 	}).fail(function(xhr,status,error){
 		var err = xhr.responseText
@@ -543,7 +545,7 @@ function verArchivo(linkArchivo){
 	
 	if(parseInt($link.data("idarchivo")) > 0){
 		
-		parametros = {"id_documentos_recaudaciones":$link.data("idarchivo")}
+		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo")}
 		
 	}else{ return false; }	
 	

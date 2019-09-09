@@ -750,24 +750,232 @@ class RecaudacionController extends ControladorBase{
 	            $_id_archivo_recaudaciones = $rsConsulta1[0]->id_archivo_recaudaciones;
 	            if( $_generado_arhivo == 't' ){
 	                /*buscar el archivo en el directorio*/
-	            }else{
+	            }else{	                
 	                
 	                /* buscar nombre entidad patronal */
-	                $nombre = 0;
+	                $columnas2 = "id_entidad_patronal, nombre_entidad_patronal";
+	                $tablas2   = "core_entidad_patronal";
+	                $where2    = "id_entidad_patronal = $_id_entidad_patronal";
+	                $id2       = "id_entidad_patronal";
+	                $rsConsulta2   = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	                $_nombre_entidad_patronal  = $this->limpiarCaracteresEspeciales($rsConsulta2[0]->nombre_entidad_patronal);
+	                $datos_archivo = $this->obtienePath($_nombre_entidad_patronal, $_anio_recaudaciones, $_mes_recaudaciones, "ARCHIVOSENVIAR");
+	                $_nombre_archivo_recaudaciones = $datos_archivo['nombre'];
+	                $_ruta_archivo_recaudaciones   = $datos_archivo['ruta'];
+	                
+	                /*buscar datos de vista para generar el archivo*/
+	                $columnas3 = "id_archivo_recaudaciones,id_participes, formato_archivo_recaudaciones, cedula_participes, nombre_participes, apellido_participes,
+                                valor_recaudaciones, sueldo_liquido_contribucion_tipo_participes, anio_archivo_recaudaciones, mes_archivo_recaudaciones
+                                anio_archivo_recaudaciones, mes_archivo_recaudaciones";
+	                $tablas3   = "public.vw_archivo_recaudaciones";
+	                $where3    = "id_archivo_recaudaciones = $_id_archivo_recaudaciones";
+	                $id3       = "id_participes";
+	                
+	                
+	                $rsConsulta3   = $Contribucion->getCondiciones($columnas3, $tablas3, $where3, $id3);
+	                
+	                $data = 'NUMERO'.";".'TIPO DESCUENTO'.";".'CEDULA'.";".'NOMBRE'.";".'SUELDO LIQUIDO'.";".'DESCUENTO'.";".'TOTAL'.";".'AÑO DESCUENTO'.";".'MES DESCUENTO'.PHP_EOL;
+	                $numero = 0;
+	                foreach($rsConsulta3 as $res){
+	                    $numero += 1;
+	                    $tipo_contribucion     = $res->formato_archivo_recaudaciones;
+	                    $cedula_participe      =  $res->cedula_participes;
+	                    $apellido_participe    =  $res->apellido_participes;
+	                    $nombre_participe      =  $res->nombre_participes;
+	                    $sueldo_participe      =  $res->sueldo_liquido_contribucion_tipo_participes;
+	                    $valor_descuento       =  $res->valor_recaudaciones;
+	                    $total_descuento       =  $res->valor_recaudaciones;
+	                    $anio_recaudacion      =  $res->anio_archivo_recaudaciones;
+	                    $mes_recaudacion       =  $res->mes_archivo_recaudaciones;
+	                    
+	                    $data.=$numero.";".$tipo_contribucion.";".$cedula_participe.";".$apellido_participe." ".$nombre_participe.";";
+	                    $data.=$sueldo_participe.";".$valor_descuento.";".$total_descuento.";".$anio_recaudacion.";".$mes_recaudacion.PHP_EOL;
+	                    
+	                }
+	                
+	                $archivo = fopen($_ruta_archivo_recaudaciones, 'w');
+	                fwrite($archivo, $data);
+	                fclose($archivo);
+	                
+	                $error = error_get_last();
+	                if(!empty($error)){
+	                    throw new Exception('Archivo no generado');
+	                }
+	                
+	                //para actualizacion
+	                $actColumnas = "generado_archivo_recaudaciones = 't', 
+                                ruta_archivo_recaudaciones = '$_ruta_archivo_recaudaciones',
+                                nombre_archivo_recaudaciones = '$_nombre_archivo_recaudaciones'";
+	                $actTablas = "core_archivo_recaudaciones";
+	                $actWhere = "id_archivo_recaudaciones = $_id_archivo_recaudaciones ";
+	                
+	                $resultado = $Contribucion->ActualizarBy($actColumnas, $actTablas, $actWhere);
+	                
+	                echo json_encode(array('mensaje'=>'archivo generado'));
 	                
 	            }
 	            
 	            
+	        }else{
+	            
+	            /*para validar si esxite el archivo*/
+	            throw new Exception('Distribucion No generada !Favor Realizar primero');
 	        }
 	        
-	        print_r($rsConsulta1);
-	        
+	       
 	        
 	    } catch (Exception $e) {
 	        
 	        echo '<message>'.$e->getMessage().'<message>';
 	    }
 	    
+	    
+	}
+	
+	public function ConsultaArchivosGenerados(){
+	    
+	    $EntidadPatronal = new EntidadPatronalParticipesModel();
+	    
+	    $columnas = " id_archivo_recaudaciones,
+                    formato_archivo_recaudaciones,
+                    nombre_archivo_recaudaciones,
+                    ruta_archivo_recaudaciones,
+                    usuario_usuarios,
+                    date(creado) creado,
+                    date(modificado) modificado";
+	    
+	    $tablas = " public.core_archivo_recaudaciones";
+	    
+	    $where    = " 1 = 1 AND generado_archivo_recaudaciones = true ";
+	    
+	    $id = "creado";
+	    
+	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+	    $search =  (isset($_REQUEST['busqueda'])&& $_REQUEST['busqueda'] !=NULL)?$_REQUEST['busqueda']:'';
+	    
+	    if($action == 'ajax'){
+	        
+	        if(!empty($search)){
+	            $where1=" AND ( nombre_documentos_recaudaciones ILIKE '".$search."%' )";
+	            $where_to=$where.$where1;
+	        }else{
+	            $where_to=$where;
+	        }
+	        
+	        $html = "";
+	        $resultSet=$EntidadPatronal->getCantidad("*", $tablas, $where_to);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet=$EntidadPatronal->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        if($cantidadResult>0){
+	            
+	            $html.= "<table id='tbl_documentos_recaudaciones' class='table table-striped table-bordered'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Formato</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ruta</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">creado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">modificado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res){
+	                $i++;
+	                $ruta = '..'.substr($res->ruta_archivo_recaudaciones, 0);
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->formato_archivo_recaudaciones.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_archivo_recaudaciones.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$ruta.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->usuario_usuarios.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->creado.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->modificado.'</td>';
+	                $html.='<td style="font-size: 18px;">';
+	                $html.='<span class="pull-right ">
+                                    <a onclick="verArchivo(this)" id="" data-idarchivo="'.$res->id_archivo_recaudaciones.'"
+                                    href="#" class="btn btn-sm btn-default label label-info">
+                                    <i class="fa  fa-file-text" aria-hidden="true" ></i>
+                                    </a></span></td>';
+	                $html.='</tr>';
+	               
+	            }
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"consultaArchivos").'';
+	            $html.='</div>';
+	            
+	        }else{
+	            
+	            $html.= "<table id='tbl_documentos_recaudaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Formato</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ruta</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">creado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">modificado</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	        }
+	        
+	        echo json_encode(array('tablaHtml'=>$html));
+	    }
+	    
+	}
+	
+	public function descargarArchivo(){
+	    
+	    $_id_archivo_recaudaciones = $_POST['id_archivo_recaudaciones'];
+	    $Participes = new ParticipesModel();
+	    
+	    /* consulta para traer datos del archivo de recaudacones*/
+	    $columnas1 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones, ruta_archivo_recaudaciones";
+	    $tablas1   = "core_archivo_recaudaciones";
+	    $where1 = " id_archivo_recaudaciones = $_id_archivo_recaudaciones";
+	    $id1 = "id_archivo_recaudaciones";
+	    
+	    $rsConsulta1 = $Participes->getCondiciones($columnas1,$tablas1,$where1,$id1);
+	    
+	    $nombre_archivo    = $rsConsulta1[0]->nombre_archivo_recaudaciones;
+	    $ruta_archivo      = $rsConsulta1[0]->ruta_archivo_recaudaciones;       
+	    
+	    $ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\rp_c\\";
+	    $ubicacion = $ubicacionServer.$ruta_archivo;
+	    	    
+	    
+	    // Define headers
+	    header("Content-disposition: attachment; filename=$nombre_archivo");
+	    header("Content-type: MIME");
+	    ob_clean();
+	    flush();
+	    // Read the file
+	    readfile($ubicacion);
+	    exit;
 	    
 	}
 	
@@ -1207,46 +1415,18 @@ class RecaudacionController extends ControladorBase{
 	    return $out;
 	}
 	
-	public function descargarArchivo(){
-	    
-	    $_id_documento = $_POST['id_documentos_recaudaciones'];
-	    $Participes = new ParticipesModel();
-	    
-	    $query = " SELECT id_documentos_recaudaciones,
-                nombre_documentos_recaudaciones,
-                ruta_documentos_recaudaciones,
-                usuario_usuarios                
-                FROM core_documentos_recaudaciones                
-                WHERE id_documentos_recaudaciones = '$_id_documento'";
-	    
-	    $rsDocumentos = $Participes->enviaquery($query);
-	    
-	    $nombre_documento = $rsDocumentos[0]->nombre_documentos_recaudaciones;
-	    $ruta_documento = $rsDocumentos[0]->ruta_documentos_recaudaciones;
-	    
-	    $ubicacionServer = $_SERVER['DOCUMENT_ROOT'];
-	    $ubicacion = $ubicacionServer.$ruta_documento.'/'.$nombre_documento;
-	    
-	    // Define headers
-	    header("Content-disposition: attachment; filename=$nombre_documento");
-	    header("Content-type: MIME");
-	    ob_clean();	    
-	    flush();
-	    // Read the file
-	    readfile($ubicacion);
-	    exit;
-	    
-	}
+	
 	
 	/**
-	 * funcion que devuele el nombre de archivo 'cash_pago' con su respectiva ruta
+	 * funcion que devuele array con el nombre y la ruta de archivo
 	 * @param int $anioArchivo
 	 * @param int $mesArchivo
 	 */
 	private function obtienePath($nombreArchivo,$anioArchivo,$mesArchivo,$folder){
 	    
-	    $nArchivo     = $nombreArchivo.$mesArchivo.$anioArchivo.".txt";;
-	    $carpeta_base      = __DIR__.'\\..\\view\\Recaudaciones\\documentos\\'.$folder.'\\';
+	    $respuesta     = array();
+	    $nArchivo      = $nombreArchivo.$mesArchivo.$anioArchivo.".txt";
+	    $carpeta_base      = 'view\\Recaudaciones\\documentos\\'.$folder.'\\';
 	    $_carpeta_buscar   = $carpeta_base.$anioArchivo;
 	    $file_buscar       = "";
 	    if( file_exists($_carpeta_buscar)){
@@ -1270,13 +1450,20 @@ class RecaudacionController extends ControladorBase{
 	        $file_buscar = $_carpeta_buscar."\\".$mesArchivo."\\".$nArchivo;
 	    }
 	    
-	    return $file_buscar;
+	    $respuesta['nombre']   = $nArchivo;
+	    $respuesta['ruta']     = $file_buscar;
+	    
+	    return $respuesta;
 	}
 	
 	function limpiarCaracteresEspeciales($string ){
 	    $string = htmlentities($string);
 	    $string = preg_replace('/\&(.)[^;]*;/', '', $string);
 	    return $string;
+	}
+	
+	function verPath(){
+	    echo $_SERVER['DOCUMENT_ROOT']."\\rp_c\\";
 	}
 	
 	

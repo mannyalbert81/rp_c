@@ -197,28 +197,7 @@
             
             <div class="box-body">
 
-           <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#his_datos" data-toggle="tab"> Datos Archivos</a></li>
-              <li><a href="#his_archivos" data-toggle="tab">Archivos txt generados</a></li>
-            </ul>
-            
-            <div class="col-md-12 col-lg-12 col-xs-12">
-            <div class="tab-content">
-            <br>
-              <div class="tab-pane active" id="his_datos">
-                
-					<div class="pull-right" >
-					<input type="text" value="" class="form-control" id="txtBuscarDatos" name="txtBuscarDatos"  placeholder="Buscar.."/>
-        			</div>           
-        			<div class="clearfix" ></div> 	
-                	<div id="datos_recaudacion" ></div>
-                
-              </div>
-              
-              <div class="tab-pane" id="his_archivos">
-                
-                <div class="row">
+           		<div class="row">
                 	<div class="col-lg-6 col-md-6 col-xs-12">
                 	</div>
                 	<div class="col-lg-6 col-md-6 col-xs-12">
@@ -234,10 +213,6 @@
                            
     			<div class="clearfix" ></div> 	
             	<div id="div_tabla_archivo_txt" ></div>
-              </div>
-             </div>
-            </div>
-           </div>
          
             </div>
             </div>
@@ -377,7 +352,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script> 
-   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.19"></script> 
+   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.21"></script> 
        
        
 

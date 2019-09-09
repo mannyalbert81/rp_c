@@ -157,7 +157,6 @@ class RevisionCreditosController extends ControladorBase{
         $resultRol=$reportes->getCondiciones($columnas, $tablas, $where, $id);
         $resultRol=$resultRol[0]->nombre_rol;
         
-        echo $resultRol;
         
             $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
                          dia_creditos_trabajados_cabeza, oficina.nombre_oficina, estado.nombre_estado";
@@ -1524,7 +1523,8 @@ class RevisionCreditosController extends ControladorBase{
         $columnas="core_creditos.numero_creditos,core_participes.cedula_participes,core_participes.apellido_participes,core_participes.nombre_participes,
                     core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos, core_creditos.monto_neto_entregado_creditos,
                     core_tipo_creditos.nombre_tipo_creditos, core_estado_creditos.nombre_estado_creditos, forma_pago.nombre_forma_pago,
-                    tes_bancos.nombre_bancos, core_tipo_cuentas.nombre_tipo_cuentas,core_participes_cuentas.numero_participes_cuentas, core_participes.celular_participes";
+                    tes_bancos.nombre_bancos, core_tipo_cuentas.nombre_tipo_cuentas,core_participes_cuentas.numero_participes_cuentas, core_participes.celular_participes,
+                    core_creditos_retenciones.monto_creditos_retenciones";
         $tablas="core_creditos INNER JOIN core_participes
                     ON core_creditos.id_participes = core_participes.id_participes
                     INNER JOIN core_creditos_trabajados_detalle
@@ -1542,7 +1542,9 @@ class RevisionCreditosController extends ControladorBase{
                     INNER JOIN tes_bancos
                     ON tes_bancos.id_bancos = core_participes_cuentas.id_bancos
                     INNER JOIN core_tipo_cuentas
-                    ON core_tipo_cuentas.id_tipo_cuentas=core_participes_cuentas.id_tipo_cuentas";
+                    ON core_tipo_cuentas.id_tipo_cuentas=core_participes_cuentas.id_tipo_cuentas
+                    INNER JOIN core_creditos_retenciones
+                    ON core_creditos_retenciones.id_creditos = core_creditos.id_creditos";
         $where="id_creditos_trabajados_cabeza=".$id_reporte."AND cuenta_principal=true";
         $id="tes_bancos.nombre_bancos";
         
@@ -1593,6 +1595,13 @@ class RevisionCreditosController extends ControladorBase{
                 $totalCtaIndividual=$totalCtaIndividual[0]->total;
                 $html.='<td style="text-align: center; font-size: 11px;">'.$totalCtaIndividual.'</td>';
                 $html.='<td style="text-align: center; font-size: 11px;">'.$res->plazo_creditos.'</td>';
+                if(!(empty($res->monto_creditos_retenciones)))
+                {
+                    $retencion=$res->monto_creditos_retenciones;
+                    $retencion=number_format((float)$retencion,2,".",",");
+                    $html.='<td align="right" style="text-align: center; font-size: 11px;">'.$retencion.'</td>';
+                }
+                else
                 $html.='<td style="text-align: center; font-size: 11px;">-</td>';
                 $monto=number_format((float)$res->monto_neto_entregado_creditos,2,".",",");
                 $html.='<td align="right" style="text-align: center; font-size: 11px;">'.$monto.'</td>';

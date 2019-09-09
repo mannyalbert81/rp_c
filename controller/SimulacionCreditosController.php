@@ -32,6 +32,224 @@ class SimulacionCreditosController extends ControladorBase{
         
     }
     
+    public function GetInfoCreditoRenovar()
+    {
+        session_start();
+        $id_credito=$_POST['id_credito'];
+        $rp_capremci= new ParticipesModel();
+        
+        $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
+            		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
+            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
+            		core_estado_creditos.nombre_estado_creditos";
+        $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
+        		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
+        		INNER JOIN public.core_estado_creditos
+        		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
+        $where="core_creditos.id_creditos=".$id_credito;
+        $id="core_creditos.fecha_concesion_creditos";
+        
+        $resultCreditos=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $html='
+        <div class="input-group">
+        <table width="100%">
+        <tr>
+        <th >№ DE PRESTAMO</th>
+        <th >FECHA DE PRESTAMO</th>
+        <th >SALDO CAPITAL</th>
+        </tr>';
+         $saldo=number_format((float)$resultCreditos[0]->saldo_actual_creditos, 2, ',', '.');
+        $html.='<tr>
+                 <td >'.$resultCreditos[0]->numero_creditos.'</font></td>
+                 <td >'.$resultCreditos[0]->fecha_concesion_creditos.'</font></td>
+                <td id="saldo_credito_a_renovar">'.$saldo.'</font></td>
+                </tr>';
+
+        $html.='</table>
+                <span class="input-group-btn">';
+        $html.='<button type="button" class="btn btn-default" title="Agregar garante" onclick="AgregarGaranteRenovacion()">';
+        $html.='<i class="fa fa-user-plus"></i>';
+        $html.='</button>';
+        $html.='<button type="button" class="btn btn-default" title="Cambiar crédito" onclick="CambiarCreditoRenovacion()">';
+        $html.='<i class="fa fa-refresh"></i>';
+        $html.='</button>';
+        $html.='<button type="button" class="btn btn-default" title="Quitar crédito" onclick="QuitarCreditoRenovacion()">';
+        $html.='<i class="fa fa-close"></i>';
+        $html.='</button>';
+        $html.= '</span>
+                </div>';
+        
+        echo $html;
+        
+        
+    }
+    
+    public function CreditosActivosParticipeRenovacion()
+    {
+        session_start();
+        $id_participe=$_POST['id_participe'];
+        $html="";
+        $participes= new ParticipesModel();
+        $total=0;
+        
+        $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
+            		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
+            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
+            		core_estado_creditos.nombre_estado_creditos";
+        $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
+        		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
+        		INNER JOIN public.core_estado_creditos
+        		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
+        $where="core_creditos.id_participes=".$id_participe." AND core_creditos.id_estatus=1 AND core_estado_creditos.nombre_estado_creditos='Activo'";
+        $id="core_creditos.fecha_concesion_creditos";
+        
+        $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        if(!(empty($resultCreditos)))
+        {
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            $resultSet=$participes->getCantidad("*", $tablas, $where);
+            $cantidadResult=(int)$resultSet[0]->total;
+            $per_page = 20; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            $resultCreditos=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
+            $last=sizeof($resultCreditos);
+            
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            $html='<div class="box box-solid bg-light-blue-active">
+            <div class="box-header with-border">
+            <h3 class="box-title">Historial Prestamos</h3>
+            </div>
+             <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-light-blue-active">
+                        <th width="2%">№</th>
+                        <th width="4%">№ DE PRESTAMO</th>
+                        <th width="15%">FECHA DE PRESTAMO</th>
+                        <th width="15%">TIPO DE PRESTAMO</th>
+                        <th width="14%">MONTO</th>
+                        <th width="14%">SALDO CAPITAL</th>
+                        <th width="14%">SALDO INTERES</th>
+                        <th width="14%">ESTADO</th>
+                        <th width="4%"></th>
+                        <th width="2%"></th>
+                     </tr>
+                   </table>
+                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
+                     <table border="1" width="100%">';
+            for($i=$last-1; $i>=0; $i--)
+            {
+                $index=($i+($last-1)*($page-1))+1;
+                $monto=number_format((float)$resultCreditos[$i]->monto_otorgado_creditos, 2, ',', '.');
+                $saldo=number_format((float)$resultCreditos[$i]->saldo_actual_creditos, 2, ',', '.');
+                $saldo_int=number_format((float)$resultCreditos[$i]->interes_creditos, 2, ',', '.');
+                $html.='<tr>
+                        <td bgcolor="white" width="2%"><font color="black">'.$index.'</font></td>
+                         <td bgcolor="white" width="8%"><font color="black">'.$resultCreditos[$i]->numero_creditos.'</font></td>
+                         <td bgcolor="white" width="15%"><font color="black">'.$resultCreditos[$i]->fecha_concesion_creditos.'</font></td>
+                        <td bgcolor="white" width="15%"><font color="black">'.$resultCreditos[$i]->nombre_tipo_creditos.'</font></td>
+                        <td bgcolor="white" width="14%"><font color="black">'.$monto.'</font></td>
+                        <td bgcolor="white" width="14%"><font color="black">'.$saldo.'</font></td>
+                        <td bgcolor="white" width="14%"><font color="black">'.$saldo_int.'</font></td>
+                        <td bgcolor="white" width="14%"><font color="black">'.$resultCreditos[$i]->nombre_estado_creditos.'</font></td>
+                        <td bgcolor="white" width="3%"><font color="black">';
+                
+                $hoy=date("Y-m-d");
+                $columnas="id_estado_tabla_amortizacion";
+                $tablas="core_tabla_amortizacion INNER JOIN core_creditos
+                        ON core_tabla_amortizacion.id_creditos = core_creditos.id_creditos
+                        INNER JOIN core_estado_creditos
+                        ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
+                $where="core_tabla_amortizacion.id_creditos=".$resultCreditos[$i]->id_creditos." AND core_tabla_amortizacion.id_estatus=1 AND fecha_tabla_amortizacion BETWEEN '".$resultCreditos[$i]->fecha_concesion_creditos."' AND '".$hoy."'
+                        AND nombre_estado_creditos='Activo'";
+                $resultCreditosActivos=$participes->getCondicionesSinOrden($columnas, $tablas, $where, "");
+                if(!(empty($resultCreditosActivos)))
+                {
+                    $cuotas_pagadas=sizeof($resultCreditosActivos);
+                    $mora=false;
+                    foreach ($resultCreditosActivos as $res)
+                    {
+                        if ($res->id_estado_tabla_amortizacion!=2) $mora=true;
+                    }
+                    if($cuotas_pagadas>=6 /*&& $mora==false*/)
+                    {
+                        $html.='<button type="button" class="btn bg-light-blue-active" title="Seleccionar crédito" onclick="SeleccionarCreditoRenovacion('.$resultCreditos[$i]->id_creditos.')">';
+                        $html.='<i class="fa  fa-check"></i>';
+                        $html.='</button>';
+                    }
+                    else
+                    {
+                        $html.='<button type="button" class="btn bg-light-blue-active" title="Crédito no elegible" disabled>';
+                        $html.='<i class="fa  fa-close"></i>';
+                        $html.='</button>';
+                        
+                    }
+                    
+                }
+                
+                
+                /* $hoy=date("Y-m-d");
+                 $columnas="id_estado_tabla_amortizacion";
+                 $tablas="core_tabla_amortizacion INNER JOIN core_creditos
+                 ON core_tabla_amortizacion.id_creditos = core_creditos.id_creditos
+                 INNER JOIN core_estado_creditos
+                 ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
+                 $where="core_tabla_amortizacion.id_creditos=".$resultCreditos[$i]->id_creditos." AND core_tabla_amortizacion.id_estatus=1 AND fecha_tabla_amortizacion BETWEEN '".$resultCreditos[$i]->fecha_concesion_creditos."' AND '".$hoy."'
+                 AND nombre_estado_creditos='Activo'";
+                 $resultCreditosActivos=$participes->getCondicionesSinOrden($columnas, $tablas, $where, "");
+                 if(!(empty($resultCreditosActivos)))
+                 {
+                 $cuotas_pagadas=sizeof($resultCreditosActivos);
+                 $mora=false;
+                 foreach ($resultCreditosActivos as $res)
+                 {
+                 if ($res->id_estado_tabla_amortizacion!=2) $mora=true;
+                 }
+                 if($cuotas_pagadas>=6 && $mora==false)
+                 {
+                 $html.='<tr height = "25">';
+                 $html.='<td><button class="btn bg-olive" title="Renovación de crédito"  onclick="RenovacionCredito()"><i class="glyphicon glyphicon-refresh"></i></button></td>';
+                 $html.='</tr>';
+                 }
+                 
+                 }
+                 $html.='</tbody>';
+                 $html.='</table>';
+                 $html.='</li>';
+                 */
+                
+                $html.='</td>
+                        </tr>';
+                
+                
+            }
+            $total=number_format((float)$total, 2, ',', '.');
+            $html.='</table>
+                   </div>';
+            $html.='<div class="table-pagination pull-right">';
+            $html.=''. $this->paginate_creditos("index.php", $page, $total_pages, $adjacents,$id_participe,"CreditosActivosParticipe").'';
+            $html.='</div>
+                    </div>';
+            
+            
+            echo $html;
+            
+        }
+        else
+        {
+            $html.='<div class="alert alert-warning alert-dismissable bg-light-blue-active" style="margin-top:40px;">';
+            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene creditos activos</b>';
+            $html.='</div>';
+            echo $html;
+        }
+        
+        
+    }
+    
    public function CreditoParticipe()
    {
    session_start();
@@ -129,7 +347,7 @@ class SimulacionCreditosController extends ControladorBase{
    <table width="100%">
     <tr>
    <td width="50%">
-    <h4 id="nombre_participe_credito">'.$infoParticipe[0]->nombre_participes.' '.$infoParticipe[0]->apellido_participes.' Creditos Activos: '.$num_creditos.'</h4>
+    <h4 id="nombre_participe_credito">'.$infoParticipe[0]->nombre_participes.' '.$infoParticipe[0]->apellido_participes.'</h4>
    <h4 id="cedula_credito"> Cédula : '.$infoParticipe[0]->cedula_participes.'</h4>
     <h4>Fecha de nacimiento : '.$infoParticipe[0]->fecha_nacimiento_participes.'</h4>
     <h4>Edad : '.$tiempo.'</h4>  
@@ -141,6 +359,7 @@ class SimulacionCreditosController extends ControladorBase{
     </td>
     </tr>
     </table>
+    <div id="info_credito_renovar"></div>
    </div>
    </div>';
    echo $html;
@@ -522,7 +741,7 @@ class SimulacionCreditosController extends ControladorBase{
        
        for( $i = 1; $i <= $numero_cuotas; $i++) {
            
-           
+               $interes_concesion=0;
                $saldo_inicial_ant = $saldo_inicial_ant - $amortizacion;
                $interes= $saldo_inicial_ant * $inter_ant;
                $interes=floor($interes * 100) / 100;
@@ -561,7 +780,8 @@ class SimulacionCreditosController extends ControladorBase{
                    'amortizacion'=>$amortizacion,
                    'pagos'=>$valor,
                    'desgravamen'=>$desgravamen,
-                   'fecha_pago'=>$fecha
+                   'fecha_pago'=>$fecha,
+                   'interes_concesion'=>$interes_concesion
                );
           
           
@@ -595,6 +815,7 @@ class SimulacionCreditosController extends ControladorBase{
        $cedula_participe=$_POST['cedula_participe'];
        $observacion_credito=$_POST['observacion_credito'];
        $id_solicitud=$_POST['id_solicitud'];
+       $interes_consecion=0;
        
        $columnas="id_participes";
        $tablas="core_participes";
@@ -624,32 +845,10 @@ class SimulacionCreditosController extends ControladorBase{
        
        
        
-       $funcion = "ins_core_creditos";       
-       $parametros="'$numero_credito',
-                     '$numero_credito',
-                     '$id_participe',
-                     '$monto_credito',
-                     '$monto_credito',
-                     '$hoy',
-                     2,
-                     '$cuota',
-                     '$monto_credito',
-                     '$id_tipo_creditos',
-                     '$numero_credito', 
-                     '$observacion_credito',
-                     1,
-                     '$usuario',
-                     '$interes_credito',
-                     '$hoy'";
-       $credito->setFuncion($funcion);
-       $credito->setParametros($parametros);
-       $resultado=$credito->Insert();
-       $errores_credito=ob_get_clean();
-       $errores_credito=trim($errores_credito);
+      
        
-       if(empty($errores_credito))
-       {
-           if($con_garante)
+       
+           if($con_garante=="true")
            {
                $columnas="id_participes";
                $tablas="core_participes";
@@ -697,9 +896,55 @@ class SimulacionCreditosController extends ControladorBase{
            $resultAmortizacion[$len-1]['saldo_inicial']=0.00;
            $total=0;
            $total1=0;
-           $funcion = "ins_core_tabla_amortizacion";
+           
            foreach ($resultAmortizacion as $res)
            {
+               if($res['interes_concesion']!=0)
+               {
+                   $interes_consecion=$res['interes_concesion'];
+                   
+                   $monto_neto= $monto_credito-$interes_consecion;
+                   $funcion = "ins_core_creditos";
+                   $parametros=$numero_credito.',
+                     \''.$numero_credito.'\',
+                     '.$id_participe.',
+                     \''.$monto_credito.'\',
+                     \''.$monto_credito.'\',
+                     \''.$hoy.'\',
+                     2,
+                     '.$cuota.',
+                     \''.$monto_neto.'\',
+                     '.$id_tipo_creditos.',
+                     \''.$numero_credito.'\',
+                     \''.$observacion_credito.'\',
+                     1,
+                     \''.$usuario.'\',
+                     \''.$interes_credito.'\',
+                     \''.$hoy.'\'';
+                   //echo "PARAMETROS ".$parametros;
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   $errores_credito=ob_get_clean();
+                   $errores_credito=trim($errores_credito);
+                   
+                   if(empty($errores_credito))
+                   {
+                       $query="INSERT INTO core_creditos_retenciones
+                            (monto_creditos_retenciones, id_creditos)
+                            VALUES
+                            (".$res['interes_concesion'].", ".$numero_credito.")";
+                   $insert=$credito->executeNonQuery($query);
+                       
+                   }
+                   else
+                   {
+                       $credito->endTran('ROLLBACK');
+                       $respuesta=false;
+                       $mensage="ERROR".$errores_credito;
+                       break;
+                   }   
+               }
                
               $fecha_pago=$res['fecha_pago'];              
                $num_cuota=$res['pagos_trimestrales'];
@@ -709,6 +954,7 @@ class SimulacionCreditosController extends ControladorBase{
                $desgravamen=$res['desgravamen'];
                $dividendo=$res['pagos'];
                $total_valor=$amortizacion+$intereses+$desgravamen;
+               $funcion = "ins_core_tabla_amortizacion";
                $parametros="'$numero_credito',
                      '$fecha_pago',
                      '$num_cuota',
@@ -731,10 +977,10 @@ class SimulacionCreditosController extends ControladorBase{
                {
                    $credito->endTran('ROLLBACK');
                    $respuesta=false;
-                   $mensage="ERROR";
+                   $mensage="ERROR".$errores;
                    break;
                }
-               
+                     
            }
            if($respuesta)
            {
@@ -766,20 +1012,20 @@ class SimulacionCreditosController extends ControladorBase{
                            else
                            {
                                $credito->endTran('ROLLBACK');
-                               $mensage="ERROR ".$actualizar_info_participes;
+                               $mensage="ERROR 1 ".$actualizar_info_participes;
                            }
                            
                        }
                        else
                       {
                           $credito->endTran('ROLLBACK');
-                          $mensage="ERROR";
+                          $mensage="ERROR 2 ".$actualizar_cuentas." ".$id_solicitud." ".$numero_credito;
                       }
                        
                    }
                    else {
                        $credito->endTran('ROLLBACK');
-                       $mensage="ERROR";
+                       $mensage="ERROR 3 ".$actualizacion_consecutivo;
                    }
                    
                }
@@ -787,20 +1033,15 @@ class SimulacionCreditosController extends ControladorBase{
                {
                    echo "solicitud no aceptada";
                    $credito->endTran('ROLLBACK');
-                   $mensage="ERROR";
+                   $mensage="ERROR 4 ".$actualizacion_solicitud;
                }
                
     
            }
-       }
-       else
-       {
-           $credito->endTran('ROLLBACK');
-           $mensage="ERROR";
-       }
+      
       
        
-       echo $mensage.$errores_credito;
+       echo $mensage;
    }
    
    public function ActualizarInfoParticipe($cedula_participe, $id_solicitud)
@@ -953,90 +1194,111 @@ class SimulacionCreditosController extends ControladorBase{
        $id="solicitud_prestamo.id_solicitud_prestamo";
        
        $resultSoli=$db->getCondicionesDesc($columnas, $tablas, $where, $id);
-       
-       if($resultSoli[0]->tipo_pago_cuenta_bancaria=="Depósito")
+       if (!(empty($resultSoli)))
        {
-           $nombre_banco=$resultSoli[0]->nombre_banco_cuenta_bancaria;
-           
-           $columnas="bankid";
-           $tablas="bancos";
-           $where= "nombre_bancos='".$nombre_banco."'";
-           $id="bankid";
-           $id_banco=$db->getCondicionesDesc($columnas, $tablas, $where, $id);
-           $id_banco=$id_banco[0]->bankid;
-           
-           $numero_cuenta=$resultSoli[0]->numero_cuenta_cuenta_bancaria;
-           $numero_cedula=$resultSoli[0]->numero_cedula_datos_personales;
-           $tipo_cuenta=$resultSoli[0]->tipo_cuenta_cuenta_bancaria;
-           
-           $columnas="id_participes";
-           $tablas=" public.core_participes";
-           $where= "cedula_participes='$numero_cedula'";
-           $id="id_participes";
-           
-           $id_participes=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
-           $id_participes=$id_participes[0]->id_participes;
-           
-           if($tipo_cuenta=='Ahorros')
+           if($resultSoli[0]->tipo_pago_cuenta_bancaria=="Depósito")
            {
-               $tipo_cuenta='AHORROS';
-           }
-           else
-           {
-               $tipo_cuenta='CORRIENTE';
-           }
-           
-           $columnas="id_tipo_cuentas";
-           $tablas=" public.core_tipo_cuentas";
-           $where= "nombre_tipo_cuentas='$tipo_cuenta'";
-           $id="id_tipo_cuentas";
-           
-           $id_tipo_cuentas=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
-           $id_tipo_cuentas=$id_tipo_cuentas[0]->id_tipo_cuentas;
-           
-           $funcion = "ins_core_participes_cuentas";
-           $parametros="'$id_participes',
+               
+               
+               $nombre_banco=$resultSoli[0]->nombre_banco_cuenta_bancaria;
+               
+               $columnas="bankid";
+               $tablas="bancos";
+               $where= "nombre_bancos='".$nombre_banco."'";
+               $id="bankid";
+               $id_banco=$db->getCondicionesDesc($columnas, $tablas, $where, $id);
+               $id_banco=$id_banco[0]->bankid;
+               
+               
+               
+               $numero_cuenta=$resultSoli[0]->numero_cuenta_cuenta_bancaria;
+               $numero_cedula=$resultSoli[0]->numero_cedula_datos_personales;
+               $tipo_cuenta=$resultSoli[0]->tipo_cuenta_cuenta_bancaria;
+               
+               $columnas="id_participes";
+               $tablas=" public.core_participes";
+               $where= "cedula_participes='$numero_cedula'";
+               $id="id_participes";
+               
+               $id_participes=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+               $id_participes=$id_participes[0]->id_participes;
+               
+               if($tipo_cuenta=='Ahorros')
+               {
+                   $tipo_cuenta='AHORROS';
+               }
+               else
+               {
+                   $tipo_cuenta='CORRIENTE';
+               }
+               
+               $ip_adress=$_SERVER['REMOTE_ADDR'];
+               $columnas="id_tipo_cuentas";
+               $tablas=" public.core_tipo_cuentas";
+               $where= "nombre_tipo_cuentas='$tipo_cuenta'";
+               $id="id_tipo_cuentas";
+               
+               $id_tipo_cuentas=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+               $id_tipo_cuentas=$id_tipo_cuentas[0]->id_tipo_cuentas;
+               
+               $funcion = "ins_core_participes_cuentas";
+               /*$parametros="'$id_participes',
                      '$id_banco',
                      '$numero_cuenta',
                      '$id_tipo_cuentas',
                      1,
                      'true',
-                     '$usuario_usuarios'";
-           $rp_capremci->setFuncion($funcion);
-           $rp_capremci->setParametros($parametros);
-           $resultado=$rp_capremci->Insert();
+                     '$usuario_usuarios',
+                        '$ip_adress'";*/
+               
+               $parametros=$id_participes.', '.$id_banco.', \''.$numero_cuenta.'\',';
+               $parametros.=$id_tipo_cuentas.',\'true\' ,\''.$usuario_usuarios.'\',\''.$ip_adress.'\'';
+               $rp_capremci->setFuncion($funcion);
+               $rp_capremci->setParametros($parametros);
+               $resultado=$rp_capremci->Insert();
+               
+               $columnas="id_forma_pago";
+               $tablas=" public.forma_pago";
+               $where= "nombre_forma_pago='TRANSFERENCIA'";
+               $id="id_forma_pago";
+               
+               $id_forma_pagos=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+               $id_forma_pagos=$id_forma_pagos[0]->id_forma_pago;
+               
+               $where = "numero_creditos='".$numero_creditos."'";
+               $tabla = "core_creditos";
+               $colval = "id_forma_pago=".$id_forma_pagos;
+               $rp_capremci->UpdateBy($colval, $tabla, $where);
+           }
+           else {
+               $columnas="id_forma_pago";
+               $tablas=" public.forma_pago";
+               $where= "nombre_forma_pago='CHEQUE'";
+               $id="id_forma_pago";
+               
+               $id_forma_pagos=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+               $id_forma_pagos=$id_forma_pagos[0]->id_forma_pago;
+               
+               $where = "numero_creditos='".$numero_creditos."'";
+               $tabla = "core_creditos";
+               $colval = "id_tipo_pagos=".$id_forma_pagos;
+               $rp_capremci->UpdateBy($colval, $tabla, $where);
+           }
            
-           $columnas="id_forma_pago";
-           $tablas=" public.forma_pago";
-           $where= "nombre_forma_pago='TRANSFERENCIA'";
-           $id="id_forma_pago";
+           $errores_cuentas=ob_get_clean();
+           $errores_cuentas=trim($errores_cuentas);
            
-           $id_forma_pagos=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
-           $id_forma_pagos=$id_forma_pagos[0]->id_forma_pago;
-           
-           $where = "numero_creditos='".$numero_creditos."'";
-           $tabla = "core_creditos";
-           $colval = "id_forma_pago=".$id_forma_pagos;
-           $rp_capremci->UpdateBy($colval, $tabla, $where);
-       }
-       else {
-           $columnas="id_forma_pago";
-           $tablas=" public.forma_pago";
-           $where= "nombre_forma_pago='CHEQUE'";
-           $id="id_forma_pago";
-           
-           $id_forma_pagos=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
-           $id_forma_pagos=$id_forma_pagos[0]->id_forma_pago;
-           
-           $where = "numero_creditos='".$numero_creditos."'";
-           $tabla = "core_creditos";
-           $colval = "id_tipo_pagos=".$id_forma_pagos;
-           $rp_capremci->UpdateBy($colval, $tabla, $where);
        }
        
+       else 
+       {
+           $errores_cuentas="NO SE PUDO CONSEGUIR LA INFO";
+       }
+       
+       
+       
       
-       $errores_cuentas=ob_get_clean();
-       $errores_cuentas=trim($errores_cuentas);
+       
        
        return $errores_cuentas;       
    }
@@ -1066,6 +1328,70 @@ class SimulacionCreditosController extends ControladorBase{
        }
        
        echo $codigo;
+   }
+   
+   public function paginate_creditos($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
+       
+       $prevlabel = "&lsaquo; Prev";
+       $nextlabel = "Next &rsaquo;";
+       $out = '<ul class="pagination pagination-large">';
+       
+       // previous label
+       
+       if($page==1) {
+           $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+       } else if($page==2) {
+           $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$prevlabel</a></span></li>";
+       }else {
+           $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page-1).")'>$prevlabel</a></span></li>";
+           
+       }
+       
+       // first label
+       if($page>($adjacents+1)) {
+           $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>1</a></li>";
+       }
+       // interval
+       if($page>($adjacents+2)) {
+           $out.= "<li><a>...</a></li>";
+       }
+       
+       // pages
+       
+       $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+       $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+       for($i=$pmin; $i<=$pmax; $i++) {
+           if($i==$page) {
+               $out.= "<li class='active'><a>$i</a></li>";
+           }else if($i==1) {
+               $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$i</a></li>";
+           }else {
+               $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".$i.")'>$i</a></li>";
+           }
+       }
+       
+       // interval
+       
+       if($page<($tpages-$adjacents-1)) {
+           $out.= "<li><a>...</a></li>";
+       }
+       
+       // last
+       
+       if($page<($tpages-$adjacents)) {
+           $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,$tpages)'>$tpages</a></li>";
+       }
+       
+       // next
+       
+       if($page<$tpages) {
+           $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page+1).")'>$nextlabel</a></span></li>";
+       }else {
+           $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+       }
+       
+       $out.= "</ul>";
+       return $out;
    }
    
    

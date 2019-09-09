@@ -470,7 +470,49 @@ class BuscarParticipesController extends ControladorBase{
                         <td bgcolor="white" width="14%"><font color="black">'.$saldo.'</font></td>
                         <td bgcolor="white" width="14%"><font color="black">'.$saldo_int.'</font></td>
                         <td bgcolor="white" width="14%"><font color="black">'.$resultCreditos[$i]->nombre_estado_creditos.'</font></td>
-                        <td bgcolor="white" width="3.5%"><font color="black"><a class="btn btn-primary" href="index.php?controller=TablaAmortizacion&action=ReportePagare&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-print"></i></a></font></td>
+                        <td bgcolor="white" width="3.5%"><font color="black">';
+                $html.='<li class="dropdown messages-menu">';
+                $html.='<button type="button" class="btn bg-olive" data-toggle="dropdown">';
+                $html.='<i class="fa fa-reorder"></i>';
+                $html.='</button>';
+                $html.='<ul class="dropdown-menu">';
+                $html.='<li>';
+                $html.= '<table style = "width:100%; border-collapse: collapse;" border="1">';
+                $html.='<tbody>';
+                $html.='<tr height = "25">';
+                $html.='<td><a class="btn bg-olive" href="index.php?controller=TablaAmortizacion&action=ReportePagare&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-print"></i></a></font></td>';
+                $html.='</tr>';
+                $hoy=date("Y-m-d");
+                $columnas="id_estado_tabla_amortizacion";
+                $tablas="core_tabla_amortizacion INNER JOIN core_creditos
+                        ON core_tabla_amortizacion.id_creditos = core_creditos.id_creditos
+                        INNER JOIN core_estado_creditos
+                        ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
+                $where="core_tabla_amortizacion.id_creditos=".$resultCreditos[$i]->id_creditos." AND core_tabla_amortizacion.id_estatus=1 AND fecha_tabla_amortizacion BETWEEN '".$resultCreditos[$i]->fecha_concesion_creditos."' AND '".$hoy."'
+                        AND nombre_estado_creditos='Activo'";
+                $resultCreditosActivos=$participes->getCondicionesSinOrden($columnas, $tablas, $where, "");
+                if(!(empty($resultCreditosActivos)))
+                {
+                    $cuotas_pagadas=sizeof($resultCreditosActivos);
+                    $mora=false;
+                    foreach ($resultCreditosActivos as $res)
+                    {
+                        if ($res->id_estado_tabla_amortizacion!=2) $mora=true;
+                    }
+                    if($cuotas_pagadas>=6 && $mora==false)
+                    {
+                        $html.='<tr height = "25">';
+                        $html.='<td><button class="btn bg-olive" title="Renovación de crédito"  onclick="RenovacionCredito()"><i class="glyphicon glyphicon-refresh"></i></button></td>';
+                        $html.='</tr>';
+                    }
+                    
+                }
+                    $html.='</tbody>';
+                $html.='</table>';
+                $html.='</li>';
+                        
+                        
+                        $html.='</td>
                         </tr>';
               
                
@@ -498,6 +540,8 @@ class BuscarParticipesController extends ControladorBase{
         
         
     }
+    
+   
     
     public function paginate_creditos($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
         

@@ -31,6 +31,12 @@
         .observacion {
         width: 75%;
         }
+        ul{
+        list-style-type:none;
+          }
+      li{
+        list-style-type:none;
+        }
  
      
        
@@ -252,6 +258,7 @@
                                       <option value="" selected="selected">--Seleccione--</option>
                                       <option value=9 >ORDINARIO</option>
                                       <option value=12>EMERGENTE</option>
+                                      <option value="R">RENOVACION</option>
     					</select> 
                         <div id="mensaje_tipo_credito" class="errores"></div>
                  	</div>
@@ -316,6 +323,25 @@
 	</div>
 </div>
 
+<!-- Modal Creditos para renovacion -->
+ 
+ <div class="modal fade bs-example-modal-lg" id="myModalCreditosActivos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+	    	<div class="modal-header bg-primary">
+	    		<button type="button" id="cerrar_renovar_credito" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Créditos Activos</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+				 <div id="info_participe_creditos_activos"></div>				 
+            	<div id="tabla_creditos_activos"></div>
+				</div>
+				<br>
+			</div>			
+		</div>
+	</div>
+</div>
 
   
  
@@ -332,6 +358,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?0.18"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?0.21"></script> 
    </body>
 </html>   

@@ -375,6 +375,18 @@ class EntidadBase{
     	return $query;
     }
     
+    public function getSumaColumna($columna,$tabla,$where){
+        
+        //parametro $columna puede ser todo (*) o una columna especifica
+        $query=pg_query($this->con, "SELECT SUM($columna) AS suma FROM $tabla WHERE $where ");
+        $resultSet = array();
+        
+        while ($row = pg_fetch_object($query)) {
+            $resultSet[]=$row;
+        }
+        return $resultSet;
+    }   
+    
     
     
     /*

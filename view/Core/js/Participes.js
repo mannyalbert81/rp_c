@@ -306,7 +306,7 @@ $(document).ready( function (){
 			   
 		   }
 	   }).fail(function(xhr,status,error){
-		   var err = xhr.responseText
+		   var err = xhr.responseText 
 		   console.log(err)
 	   })
 	   
@@ -319,21 +319,40 @@ $(document).ready( function (){
   $("#Procesar").on("click",function(){
 	  
 	
-	  let $id_participes1 = $("#id_participes").val();
-	  let $id_bancos = $("#id_bancos").val();		
-	  let $id_tipo_cuentas = $("#id_tipo_cuentas").val();		
-	  let $numero_participes_cuentas = $("#numero_participes_cuentas").val();		
-	  let $cuenta_principal = $("#cuenta_principal").val();		
+	  let $id_participes1 = $("#id_participes");
+	  let $id_bancos = $("#id_bancos");		
+	  let $id_tipo_cuentas = $("#id_tipo_cuentas");		
+	  let $numero_participes_cuentas = $("#numero_participes_cuentas");		
+	  let $cuenta_principal = $("#cuenta_principal");		
+	  
+	  
+	   if( $id_bancos.val().length == '' || $id_bancos.val() == 0 ){
+		   $id_bancos.notify("Seleccione un Banco",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+	   }
+	   if( $id_tipo_cuentas.val().length == '' || $id_tipo_cuentas.val() == 0 ){
+		   $id_tipo_cuentas.notify("Seleccione un Tipo",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+	   }  
+	   if( $numero_participes_cuentas.val().length == '' || $numero_participes_cuentas.val() == 0 ){
+		   $numero_participes_cuentas.notify("Ingrese un número de cuenta",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+	   }
+	   if( $cuenta_principal.val().length == '' || $cuenta_principal.val() == 0 ){
+		   $cuenta_principal.notify("Seleccione",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+	   }
 	   
+	   
+	  
 	   let datos1 = {
-			   id_participes : $id_participes1,
-			   id_bancos : $id_bancos,
-			   id_tipo_cuentas : $id_tipo_cuentas,
-			   numero_participes_cuentas : $numero_participes_cuentas,
-			   cuenta_principal : $cuenta_principal
+			   id_participes : $id_participes1.val(),
+			   id_bancos : $id_bancos.val(),
+			   id_tipo_cuentas : $id_tipo_cuentas.val(),
+			   numero_participes_cuentas : $numero_participes_cuentas.val(),
+			   cuenta_principal : $cuenta_principal.val()
 				   
 	   }
-	   // console.log (datos);
 	   console.log(datos1);
 	   
 	   $.ajax({
@@ -504,22 +523,24 @@ $(document).ready( function (){
 		   $id_tipo_aportacion.notify("Ingrese una Aportación",{ position:"buttom left", autoHideDelay: 2000});
 			return false;
 	   }
-	   if( $valor_contribucion_tipo_participes.val().length == '' || $valor_contribucion_tipo_participes.val() == 0 ){
-		   $valor_contribucion_tipo_participes.notify("Ingrese un Valor",{ position:"buttom left", autoHideDelay: 2000});
+	   if( $id_estado.val().length == '' || $id_estado.val() == 0 ){
+		   $id_estado.notify("Ingrese un Estado",{ position:"buttom left", autoHideDelay: 2000});
 			return false;
 	   }
-	   if( $porcentaje_contribucion_tipo_participes.val().length == '' || $porcentaje_contribucion_tipo_participes.val() == 0 ){
-		   $porcentaje_contribucion_tipo_participes.notify("Ingrese un Porcentaje",{ position:"buttom left", autoHideDelay: 2000});
+	   if( $valor_contribucion_tipo_participes.val().length == '' || $valor_contribucion_tipo_participes.val() == '' ){
+		   $valor_contribucion_tipo_participes.notify("Ingrese un Valor",{ position:"buttom left", autoHideDelay: 2000});
 			return false;
 	   }
 	   if( $sueldo_liquido_contribucion_tipo_participes.val().length == '' || $sueldo_liquido_contribucion_tipo_participes.val() == 0 ){
 		   $sueldo_liquido_contribucion_tipo_participes.notify("Ingrese un Sueldo",{ position:"buttom left", autoHideDelay: 2000});
 			return false;
 	   }
-	   if( $id_estado.val().length == '' || $id_estado.val() == 0 ){
-		   $id_estado.notify("Ingrese un Estado",{ position:"buttom left", autoHideDelay: 2000});
+	   if( $porcentaje_contribucion_tipo_participes.val().length == '' || $porcentaje_contribucion_tipo_participes.val() == '' ){
+		   $porcentaje_contribucion_tipo_participes.notify("Ingrese un Porcentaje",{ position:"buttom left", autoHideDelay: 2000});
 			return false;
 	   }
+	 
+	 
 	
 
 	  
@@ -646,3 +667,42 @@ $(document).ready( function (){
 		
 		return false;
 	}
+  
+  function cambio(){
+
+
+	  let $id_tipo_aportacion = $("#id_tipo_aportacion");
+	  let $valor_contribucion_tipo_participes = $("#valor_contribucion_tipo_participes");		
+	  let $porcentaje_contribucion_tipo_participes = $("#porcentaje_contribucion_tipo_participes");		
+	  let $sueldo_liquido_contribucion_tipo_participes = $("#sueldo_liquido_contribucion_tipo_participes");		
+	
+  }
+  
+  $("#id_tipo_aportacion").on('change',function(){
+	  
+	  let $elemento = $(this),
+		  $valor_contribucion_tipo_participes = $("#valor_contribucion_tipo_participes"),		
+		  $porcentaje_contribucion_tipo_participes = $("#porcentaje_contribucion_tipo_participes"),	
+		  $sueldo_liquido_contribucion_tipo_participes = $("#sueldo_liquido_contribucion_tipo_participes");
+	  	  $div_porcentaje = $("#div_porcentaje");
+	  
+	  let _texto = $elemento.find("option:selected").html();
+	  
+	  console.log(_texto);
+	  console.log($elemento.find("option:selected").html());
+	  
+	  if(_texto.trim() == 'PORCENTAJE'){
+		  $div_porcentaje.css({display:'inline'});
+		  $valor_contribucion_tipo_participes.attr('readonly',true);
+		  $valor_contribucion_tipo_participes.val('0');
+			
+	  }else if(_texto.trim() == 'VALOR'){
+		
+		  $div_porcentaje.css({display:'none'});
+		  $valor_contribucion_tipo_participes.attr('readonly',false);
+		  $porcentaje_contribucion_tipo_participes.val('0');
+	 
+	  }
+	  
+  })
+  

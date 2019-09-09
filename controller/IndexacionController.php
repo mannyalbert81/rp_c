@@ -31,7 +31,7 @@ class IndexacionController extends ControladorBase{
         if (empty($resultPer)){
             
             $this->view("Error",array(
-                "resultado"=>"No tiene Permisos de Acceso Bancos"
+                "resultado"=>"No tiene Permisos de Acceso Indexacion"
                 
             ));
             exit();
@@ -47,6 +47,64 @@ class IndexacionController extends ControladorBase{
         
         
     }
+  
+    public function cargaBancos(){
+    
+    	require_once 'core/EntidadBase_128.php';
+    	$db = new EntidadBase_128();
+    
+    	$columnas="id_bancos, nombre_bancos";
+    	$tabla = "tes_bancos";
+    	$where = "local_bancos = 'TRUE' ";
+    	$id="nombre_bancos";
+    	$resulset = $db->getCondiciones($columnas,$tabla,$where,$id);
+    
+    	if(!empty($resulset) && count($resulset)>0){
+    
+    		echo json_encode(array('data'=>$resulset));
+    
+    	}
+    }
+    
+
+    public function cargaCartonDocumentos(){
+    
+    	require_once 'core/EntidadBase_128.php';
+    	$db = new EntidadBase_128();
+    
+    	$columnas="id_carton_documentos, numero_carton_documentos";
+    	$tabla = "carton_documentos";
+    	$where = "estado_carton_documentos = 'FALSE'";
+    	$id="numero_carton_documentos";
+    	$resulset = $db->getCondiciones($columnas,$tabla,$where,$id);
+    
+    	if(!empty($resulset) && count($resulset)>0){
+    
+    		echo json_encode(array('data'=>$resulset));
+    
+    	}
+    }
+    
+    public function cargaTipoDocumentos(){
+    
+    	require_once 'core/EntidadBase_128.php';
+    	$db = new EntidadBase_128();
+    
+    	$columnas="id_tipo_documentos, nombre_tipo_documentos";
+    	$tabla = "tipo_documentos";
+    	$where = "1=1";
+    	$id="nombre_tipo_documentos";
+    	$resulset = $db->getCondiciones($columnas,$tabla,$where,$id);
+    
+    	if(!empty($resulset) && count($resulset)>0){
+    
+    		echo json_encode(array('data'=>$resulset));
+    
+    	}
+    	
+    	
+    }
+    
     
   
     public function cargaCategoria(){
@@ -208,8 +266,9 @@ class IndexacionController extends ControladorBase{
         $cedula_capremci = (isset($_POST['cedula_capremci'])) ? $_POST['cedula_capremci'] : '';
         $nombres_capremci = (isset($_POST['nombres_capremci'])) ? $_POST['nombres_capremci'] : '';
         $numero_credito = (isset($_POST['numero_credito'])) ? $_POST['numero_credito'] : '';
-        
-        
+        $nombre_tipo_documentos = (isset($_POST['nombre_tipo_documentos'])) ? $_POST['nombre_tipo_documentos'] : '';
+        $fecha_documentos = (isset($_POST['fecha_documentos'])) ? $_POST['fecha_documentos'] : '';
+        $numero_carton_documentos = (isset($_POST['numero_carton_documentos'])) ? $_POST['numero_carton_documentos'] : '';
         
         $datos_reporte = array();
         

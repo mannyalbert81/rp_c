@@ -1,8 +1,107 @@
 $(document).ready(function(){
 	
 	cargaCategoria();
+	cargaTipoDocumentos();
+	cargaCartonDocumentos();
+	cargaBancos();
 	
 })
+
+
+
+function cargaBancos(){
+	
+	let $ddlBancos = $("#id_bancos");
+
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=Indexacion&action=cargaBancos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$ddlBancos.empty();
+		$ddlBancos.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$ddlBancos.append("<option value= " +value.id_bancos +" >" + value.nombre_bancos  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlBancos.empty();
+		$ddlBancos.append("<option value='0' >--Seleccione--</option>");
+		
+	})
+	
+}
+
+
+
+
+
+function cargaTipoDocumentos(){
+	
+	let $ddlTipoDocumentos = $("#id_tipo_documentos");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=Indexacion&action=cargaTipoDocumentos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$ddlTipoDocumentos.empty();
+		$ddlTipoDocumentos.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$ddlTipoDocumentos.append("<option value= " +value.id_tipo_documentos +" >" + value.nombre_tipo_documentos  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlTipoDocumentos.empty();
+		$ddlTipoDocumentos.append("<option value='0' >--Seleccione--</option>");
+		
+	})
+	
+}
+
+function cargaCartonDocumentos(){
+	
+	let $ddlCartonDocumentos = $("#id_carton_documentos");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=Indexacion&action=cargaCartonDocumentos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$ddlCartonDocumentos.empty();
+		$ddlCartonDocumentos.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$ddlCartonDocumentos.append("<option value= " +value.id_carton_documentos +" >" + value.numero_carton_documentos  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlCartonDocumentos.empty();
+		$ddlCartonDocumentos.append("<option value='0' >--Seleccione--</option>");
+		
+	})
+	
+}
+
+
 
 function cargaCategoria(){
 	
@@ -170,7 +269,9 @@ $("#Guardar").click(function() {
 		$("#mensaje_id_categorias").fadeOut("slow"); //Muestra mensaje de error
 	    	
 		
-		}
+     }
+	
+	
 	
 	
 	if (id_subcategorias  == 0)
@@ -224,7 +325,39 @@ $("#Guardar").click(function() {
 		$("#mensaje_numero_credito").fadeOut("slow"); //Muestra mensaje de error
 		}
 		
+	
+	if (id_carton_documentos  == 0)
+	{    	
+		$("#mensaje_id_carton_documentos").text("Seleccione un  Cartón");
+		$("#mensaje_id_carton_documentos").fadeIn("slow"); //Muestra mensaje de error
+        return false
+    }    
+	
+	else
+		{
 		
+		$("#mensaje_id_carton_documentos").fadeOut("slow"); //Muestra mensaje de error
+	    	
+		
+     }
+	
+	if (id_tipo_documentos  == 0)
+	{    	
+		$("#mensaje_id_tipo_documentos").text("Seleccione un  Tipo Cartón");
+		$("#mensaje_id_tipo_documentos").fadeIn("slow"); //Muestra mensaje de error
+        return false
+    }    
+	
+	else
+		{
+		
+		$("#mensaje_id_tipo_documentos").fadeOut("slow"); //Muestra mensaje de error
+	    	
+		
+     }
+	
+	
+	
                     				
 });
 

@@ -183,13 +183,13 @@ class TablaAmortizacionController extends ControladorBase{
                       AND core_creditos.id_creditos ='$id_creditos'";
 	    $id="core_creditos.id_creditos";
 	    
-	    $rsdatos = $garante->getCondiciones($columnas, $tablas, $where, $id);
+	    $rsdatos1 = $garante->getCondiciones($columnas, $tablas, $where, $id);
 	    
-	    $datos_reporte['NOMGARANTE']=$rsdatos[0]->nombre_participes;
-	    $datos_reporte['CEDULAGARANTE']=$rsdatos[0]->cedula_participes;
-	    $datos_reporte['ENTIDGARANTE']=$rsdatos[0]->nombre_entidad_patronal;
-	    $datos_reporte['TELEFONOGARANTE']=$rsdatos[0]->telefono_participes;
-	    $datos_reporte['APELLGARANTE']=$rsdatos[0]->apellido_participes;
+	    $datos_reporte['NOMGARANTE']=$rsdatos1[0]->nombre_participes;
+	    $datos_reporte['CEDULAGARANTE']=$rsdatos1[0]->cedula_participes;
+	    $datos_reporte['ENTIDGARANTE']=$rsdatos1[0]->nombre_entidad_patronal;
+	    $datos_reporte['TELEFONOGARANTE']=$rsdatos1[0]->telefono_participes;
+	    $datos_reporte['APELLGARANTE']=$rsdatos1[0]->apellido_participes;
 	    
 	    
 	    
@@ -295,10 +295,41 @@ class TablaAmortizacionController extends ControladorBase{
 	    $datos_reporte['DETALLE_AMORTIZACION']= $html;
 	    
 	    
+	    $datos = array();
+	    
+	    $cedula_capremci = $rsdatos[0]->cedula_participes;
+	    $numero_credito = $rsdatos[0]->numero_creditos;
+	    $tipo_documento="Pagaré";
 	    
 	    
+	    require dirname(__FILE__)."\phpqrcode\qrlib.php";
 	    
-	    $this->verReporte("TablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante));
+	    $ubicacion = dirname(__FILE__).'\..\barcode_participes\\';
+	    
+	    //Si no existe la carpeta la creamos
+	    if (!file_exists($ubicacion))
+	        mkdir($ubicacion);
+	        
+	        $i++;
+	        $filename = $ubicacion.$numero_credito.'.png';
+	        
+	        //Parametros de Condiguracion
+	        
+	        $tamaño = 3.5; //Tama�o de Pixel
+	        $level = 'L'; //Precisi�n Baja
+	        $framSize = 3; //Tama�o en blanco
+	        $contenido = $tipo_documento.';'.$numero_credito.';'.$cedula_capremci; //Texto
+	        
+	        //Enviamos los parametros a la Funci�n para generar c�digo QR
+	        QRcode::png($contenido, $filename, $level, $tamaño, $framSize);
+	        
+	        $qr_participes = '<img src="'.$filename.'">';
+	        
+	        
+	        $datos['CODIGO_QR']= $qr_participes;
+	    
+	    
+	        $this->verReporte("TablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante, 'datos'=>$datos));
 	    
 	  
 	}
@@ -327,6 +358,9 @@ class TablaAmortizacionController extends ControladorBase{
 	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
 	    $datos_cabecera['FECHA'] = date('Y/m/d');
 	    $datos_cabecera['HORA'] = date('h:i:s');
+	    
+	    
+	   
 	    
 	    $tab_amortizacion= new TablaAmortizacionModel();
 	    $garante= new ParticipesModel();
@@ -407,13 +441,13 @@ class TablaAmortizacionController extends ControladorBase{
                       AND core_creditos.id_creditos ='$id_creditos'";
 	    $id="core_creditos.id_creditos";
 	    
-	    $rsdatos = $garante->getCondiciones($columnas, $tablas, $where, $id);
+	    $rsdatos1 = $garante->getCondiciones($columnas, $tablas, $where, $id);
 	    
-	    $datos_reporte['NOMGARANTE']=$rsdatos[0]->nombre_participes;
-	    $datos_reporte['CEDULAGARANTE']=$rsdatos[0]->cedula_participes;
-	    $datos_reporte['ENTIDGARANTE']=$rsdatos[0]->nombre_entidad_patronal;
-	    $datos_reporte['TELEFONOGARANTE']=$rsdatos[0]->telefono_participes;
-	    $datos_reporte['APELLGARANTE']=$rsdatos[0]->apellido_participes;
+	    $datos_reporte['NOMGARANTE']=$rsdatos1[0]->nombre_participes;
+	    $datos_reporte['CEDULAGARANTE']=$rsdatos1[0]->cedula_participes;
+	    $datos_reporte['ENTIDGARANTE']=$rsdatos1[0]->nombre_entidad_patronal;
+	    $datos_reporte['TELEFONOGARANTE']=$rsdatos1[0]->telefono_participes;
+	    $datos_reporte['APELLGARANTE']=$rsdatos1[0]->apellido_participes;
 	    
 	    
 	    
@@ -519,9 +553,42 @@ class TablaAmortizacionController extends ControladorBase{
 	    
 	    $datos_reporte['DETALLE_AMORTIZACION']= $html;
 	    
+	    $datos = array();
+	 
+	    $cedula_capremci = $rsdatos[0]->cedula_participes;
+	    $numero_credito = $rsdatos[0]->numero_creditos;
+	    $tipo_documento="Tabla de Amortización";
 	    
 	    
-	    $this->verReporte("ReporteTablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante));
+	    require dirname(__FILE__)."\phpqrcode\qrlib.php";
+	     
+	    $ubicacion = dirname(__FILE__).'\..\barcode_participes\\';
+	    
+	    //Si no existe la carpeta la creamos
+	    if (!file_exists($ubicacion))
+	        mkdir($ubicacion);
+	        
+	        $i++;
+	        $filename = $ubicacion.$numero_credito.'.png';
+	        
+	        //Parametros de Condiguracion
+	        
+	        $tamaño = 3; //Tama�o de Pixel
+	        $level = 'L'; //Precisi�n Baja
+	        $framSize = 3; //Tama�o en blanco
+	        $contenido = $tipo_documento.';'.$numero_credito.';'.$cedula_capremci; //Texto
+	        
+	        //Enviamos los parametros a la Funci�n para generar c�digo QR
+	        QRcode::png($contenido, $filename, $level, $tamaño, $framSize);
+	        
+	        $qr_participes = '<img src="'.$filename.'">';
+	        
+	        
+	        $datos['CODIGO_QR']= $qr_participes;
+	    
+	    
+	    
+	        $this->verReporte("ReporteTablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante, 'datos'=>$datos));
 	    
 	    
 	    

@@ -207,6 +207,7 @@
                 		<div class="pull-right" >
                 			<button id="btn_reload" class="btn btn-default" ><i class="fa fa-refresh" aria-hidden="true"></i></button>
                 		</div>
+                		
                 		               	
                 	</div>
                 </div>

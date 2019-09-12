@@ -330,7 +330,7 @@ class IndexacionController extends ControladorBase{
             
             //Parametros de Condiguracion
             
-            $tamaño = 8; //Tama�o de Pixel
+            $tamaño = 5; //Tama�o de Pixel
             $level = 'L'; //Precisi�n Baja
             $framSize = 3; //Tama�o en blanco
             $contenido = $id_categorias.';'. $id_subcategorias.';'. $cedula_capremci.';'. $nombres_capremci.';'. $numero_credito.';'. $nombre_tipo_documentos.';'. $fecha_documento_legal.';'. $numero_carton_documentos.';'. $id_bancos.';'. $monto_documento.';'. $asunto_documento;    

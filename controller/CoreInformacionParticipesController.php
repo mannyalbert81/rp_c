@@ -620,8 +620,7 @@ class CoreInformacionParticipesController extends ControladorBase{
             $total_pages = ceil($cantidadResult/$per_page);
             
             
-            
-            
+          
             
             if($cantidadResult>0)
             {
@@ -659,26 +658,36 @@ class CoreInformacionParticipesController extends ControladorBase{
                 
                 
                 $i=0;
+                
                 foreach ($resultSet as $res)
                 {
                     
+
                     
+                    if(($res->enero==0)&&($res->febrero==0)&&($res->marzo==0)&&($res->abril==0)&&($res->mayo==0)&&($res->junio==0)&&($res->julio==0)&&($res->agosto==0)&&($res->septiembre==0)&&($res->octubre==0)&&($res->noviembre==0)&&($res->diciembre==0)){
+                        
+                        $res->anio="";
+                        
+                        
+                    }
+                    
+
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="font-size: 10px;">'.$res->anio.'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->enero, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->febrero, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->marzo, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->abril, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->mayo, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->junio, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->julio, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->agosto, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->septiembre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->octubre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->noviembre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->diciembre, 2, ",", ".").'</td>';
-                    $html.='<td style="font-size: 10px;"align="right">'.number_format($res->acumulado, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->enero, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->febrero, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->marzo, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->abril, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->mayo, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->junio, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->julio, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->agosto, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->septiembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->octubre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->noviembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->diciembre, 2, ",", ".").'</td>';
+                    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->acumulado, 2, ",", ".").'</td>';
                     
                     
                     

@@ -11,10 +11,6 @@
 
 	
 	if($accion=="consulta"){
-	
-
-		
-		
 		if($_cedula_usuarios!="" && $_clave_usuarios!=""){
 			
 		$_clave=$db->encriptar($_clave_usuarios);
@@ -47,10 +43,7 @@
                     AND usuarios.cedula_usuarios='$_cedula_usuarios' AND claves.clave_claves='$_clave' ";
     		
     		$id="usuarios.cedula_usuarios";
-    		
-    		
-
-    		
+    	
     		$result=$db->getCondiciones($columnas, $tablas, $where, $id);
     		
     		

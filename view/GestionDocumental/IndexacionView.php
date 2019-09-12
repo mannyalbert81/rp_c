@@ -119,25 +119,23 @@
             		  
             		<div class="col-xs-12 col-md-3 col-lg-3">
         		     	<div class="form-group">
-                          <label for="numero_credito" class="control-label">Número de Credito:</label>
+                          <label for="numero_credito" class="control-label">Número de Documento:</label>
                           <input type="text" class="form-control" id="numero_credito" name="numero_credito" readonly value=""  placeholder="Número...">
                           <div id="mensaje_numero_credito" class="errores"></div> 
                    			<span class="help-block"></span>
 				  		</div>
         		    </div>
-        		    <div class="col-xs-12 col-md-3 col-lg-3">	
+        		    <div class="col-xs-12 col-md-5 col-lg-5">	
         		    	<div class="form-group">
             		    					  
                           <label for="id_tipo_documentos" class="control-label">Tipo Documento:</label>
-                          <select  class="form-control" id="id_tipo_documentos" name="id_tipo_documentos">
-                          	<option value="0">--Seleccione--</option>
-                          </select>                         
+                         <input type="text" class="form-control" id="nombre_tipo_documentos" name="nombre_tipo_documentos"  value=""  placeholder="Tipo Documento...">                         
                           <div id="mensaje_id_tipo_documentos" class="errores"></div>
                         </div>
         		    
         		     </div>
         		     
-        		      <div class="col-xs-12 col-md-3 col-lg-3">
+        		      <div class="col-xs-12 col-md-2 col-lg-2">
         		     <div class="form-group">
                           <label for="fecha_documento_legal" class="control-label">Fecha:</label>
                           <input type="date" class=" form-control" id="fecha_documento_legal" name="fecha_documento_legal"  value=""  placeholder="dd/mm/aaaa">
@@ -146,7 +144,7 @@
                      </div>
               		</div>
               		
-              		<div class="col-xs-12 col-md-3 col-lg-3">	
+              		<div class="col-xs-12 col-md-2 col-lg-2">	
         		    	<div class="form-group">
             		    					  
                           <label for="id_carton_documentos" class="control-label">Cartón:</label>
@@ -175,7 +173,24 @@
         		    
         		     </div>
         		     
-        		   
+        		   	 <div class="col-xs-12 col-md-2 col-lg-2">	
+        		    	<div class="form-group">
+            		    					  
+                          <label for="monto_documento" class="control-label">Monto Documento:</label>
+                         <input type="text" class="form-control" id="monto_documento" name="monto_documento"  value=""  placeholder="0.00">                         
+                          <div id="mensaje_monto_documento" class="errores"></div>
+                        </div>
+        		    
+        		     </div>
+        		     <div class="col-xs-12 col-md-7 col-lg-7">	
+        		    	<div class="form-group">
+            		    					  
+                          <label for="asunto_documento" class="control-label">Asunto Documento:</label>
+                         <input type="text" class="form-control" id="asunto_documento" name="asunto_documento"  value=""  placeholder="asunto del documento ...">                         
+                          <div id="asunto_documento" class="errores"></div>
+                        </div>
+        		    
+        		     </div> 	
               		
         		 </div>
         		     
@@ -212,7 +227,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/GestionDocumental/js/GestionDocumental.js?0.47"></script> 
+   <script src="view/GestionDocumental/js/GestionDocumental.js?0.68"></script> 
        
 
 

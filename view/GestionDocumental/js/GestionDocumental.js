@@ -1,8 +1,108 @@
 $(document).ready(function(){
 	
 	cargaCategoria();
+	//cargaTipoDocumentos();
+	cargaCartonDocumentos();
+	cargaBancos();
 	
 })
+
+
+
+function cargaBancos(){
+	
+	let $ddlBancos = $("#id_bancos");
+
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=Indexacion&action=cargaBancos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$ddlBancos.empty();
+		$ddlBancos.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$ddlBancos.append("<option value= " +value.id_bancos +" >" + value.nombre_bancos  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlBancos.empty();
+		$ddlBancos.append("<option value='0' >--Seleccione--</option>");
+		
+	})
+	
+}
+
+
+
+
+/*
+function cargaTipoDocumentos(){
+	
+	let $ddlTipoDocumentos = $("#id_tipo_documentos");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=Indexacion&action=cargaTipoDocumentos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$ddlTipoDocumentos.empty();
+		$ddlTipoDocumentos.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$ddlTipoDocumentos.append("<option value= " +value.id_tipo_documentos +" >" + value.nombre_tipo_documentos  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlTipoDocumentos.empty();
+		$ddlTipoDocumentos.append("<option value='0' >--Seleccione--</option>");
+		
+	})
+	
+}
+*/
+
+function cargaCartonDocumentos(){
+	
+	let $ddlCartonDocumentos = $("#id_carton_documentos");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=Indexacion&action=cargaCartonDocumentos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$ddlCartonDocumentos.empty();
+		$ddlCartonDocumentos.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$ddlCartonDocumentos.append("<option value= " +value.id_carton_documentos +" >" + value.numero_carton_documentos  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlCartonDocumentos.empty();
+		$ddlCartonDocumentos.append("<option value='0' >--Seleccione--</option>");
+		
+	})
+	
+}
+
+
 
 function cargaCategoria(){
 	
@@ -30,6 +130,31 @@ function cargaCategoria(){
 		$ddlCategorias.append("<option value='0' >--Seleccione--</option>");
 		
 	})
+	
+	
+	
+	let _cedula_capremci	= $("#cedula_capremci");
+	let _nombres_capremci	= $("#nombres_capremci");
+	let _numero_credito		= $("#numero_credito");
+	let _nombre_tipo_documentos	= $("#nombre_tipo_documentos");
+	let _fecha_documento_legal	= $("#fecha_documento_legal");
+	let _id_carton_documentos	= $("#id_carton_documentos");
+	let _id_bancos				= $("#id_bancos");
+	let _monto_documento		= $("#monto_documento");
+	let _asunto_documento		= $("#asunto_documento");
+	let _Guardar		= $("#Guardar");
+	
+	
+	_cedula_capremci.attr('disabled','disabled');
+  	 _nombres_capremci.attr('disabled','disabled');
+    _numero_credito.attr('disabled','disabled');
+    _nombre_tipo_documentos.attr('disabled','disabled');
+    _fecha_documento_legal.attr('disabled','disabled');
+    _id_carton_documentos.attr('disabled','disabled');
+    _id_bancos.attr('disabled','disabled');
+    _monto_documento.attr('disabled','disabled');
+   _asunto_documento.attr('disabled','disabled');
+   _Guardar.attr('disabled','disabled');  
 	
 }
 
@@ -66,26 +191,217 @@ function cargaSubCategoria(id_categorias){
 
   
 $("#id_categorias").click(function() {
+
 	
   var id_categorias = $(this).val();
   let $dllSubCategorias = $("#id_subcategorias");
   $dllSubCategorias.empty();
   cargaSubCategoria(id_categorias);
- 
+
+  
+  
+  
+  
 });
 
 
 
 $("#id_categorias").change(function() {
 	
-      
+	let _cedula_capremci	= $("#cedula_capremci");
+	let _nombres_capremci	= $("#nombres_capremci");
+	let _numero_credito		= $("#numero_credito");
+	let _nombre_tipo_documentos	= $("#nombre_tipo_documentos");
+	let _fecha_documento_legal	= $("#fecha_documento_legal");
+	let _id_carton_documentos	= $("#id_carton_documentos");
+	let _id_bancos				= $("#id_bancos");
+	let _monto_documento		= $("#monto_documento");
+	let _asunto_documento		= $("#asunto_documento");
+	let _Guardar		= $("#Guardar");
+	
       var id_categorias = $(this).val();
       let $dllSubCategorias = $("#id_subcategorias");
       $dllSubCategorias.empty();
       cargaSubCategoria(id_categorias);
       
       
-    });
+      
+  	  _cedula_capremci.attr('disabled','disabled');
+  	  _nombres_capremci.attr('disabled','disabled');
+  	  _numero_credito.attr('disabled','disabled');
+  	  _nombre_tipo_documentos.attr('disabled','disabled');
+  	  _fecha_documento_legal.attr('disabled','disabled');
+  	  _id_carton_documentos.attr('disabled','disabled');
+  	  _id_bancos.attr('disabled','disabled');
+  	  _monto_documento.attr('disabled','disabled');
+  	  _asunto_documento.attr('disabled','disabled');
+  	  _Guardar.attr('disabled','disabled');  
+   });
+
+
+$("#id_subcategorias").click(function() {
+	
+	/*
+	
+	_cedula_capremci.removeAttr('disabled');
+      _nombres_capremci.removeAttr('disabled');
+  	  _numero_credito.removeAttr('disabled');
+  	  _nombre_tipo_documentos.removeAttr('disabled');
+  	  _fecha_documento_legal.removeAttr('disabled');
+  	  _id_carton_documentos.removeAttr('disabled');
+  	  _id_bancos.removeAttr('disabled');
+  	  _monto_documento.removeAttr('disabled');
+  	  _asunto_documento.removeAttr('disabled');
+      
+      
+	*/
+	
+	let _cedula_capremci	= $("#cedula_capremci");
+	let _nombres_capremci	= $("#nombres_capremci");
+	let _numero_credito		= $("#numero_credito");
+	let _nombre_tipo_documentos	= $("#nombre_tipo_documentos");
+	let _fecha_documento_legal	= $("#fecha_documento_legal");
+	let _id_carton_documentos	= $("#id_carton_documentos");
+	let _id_bancos				= $("#id_bancos");
+	let _monto_documento		= $("#monto_documento");
+	let _asunto_documento		= $("#asunto_documento");
+	let _Guardar		= $("#Guardar");
+
+	
+
+	  _cedula_capremci.attr('disabled','disabled');
+	  _nombres_capremci.attr('disabled','disabled');
+	  _numero_credito.attr('disabled','disabled');
+	  _nombre_tipo_documentos.attr('disabled','disabled');
+	  _fecha_documento_legal.attr('disabled','disabled');
+	  _id_carton_documentos.attr('disabled','disabled');
+	  _id_bancos.attr('disabled','disabled');
+	  _monto_documento.attr('disabled','disabled');
+	  _asunto_documento.attr('disabled','disabled');
+	  _Guardar.attr('disabled','disabled');
+	
+	
+    var id_subcategorias = $(this).val();
+	  if ( id_subcategorias == 37 ) //creditos
+	  	{
+		  _cedula_capremci.removeAttr('disabled');
+	      _nombres_capremci.removeAttr('disabled');
+	  	  _numero_credito.removeAttr('disabled');
+	  	  _nombre_tipo_documentos.removeAttr('disabled');
+	  	  _fecha_documento_legal.removeAttr('disabled');
+	  	  _id_carton_documentos.removeAttr('disabled');
+	  	  _monto_documento.removeAttr('disabled');
+	  	  _Guardar.removeAttr('disabled');
+		  
+	  	}
+	  if ( id_subcategorias == 44 ) //prestaciones
+	  	{
+		  _cedula_capremci.removeAttr('disabled');
+	      _nombres_capremci.removeAttr('disabled');
+	  	  _numero_credito.removeAttr('disabled');
+	  	  _nombre_tipo_documentos.removeAttr('disabled');
+	  	  _fecha_documento_legal.removeAttr('disabled');
+	  	  _id_carton_documentos.removeAttr('disabled');
+	  	  _monto_documento.removeAttr('disabled');
+	  	  _Guardar.removeAttr('disabled');
+		  
+	  	}
+	  
+	  if ( id_subcategorias >= 49 && id_subcategorias <= 56 ) //oficios y memos
+	  	{
+		  _nombre_tipo_documentos.removeAttr('disabled');
+	  	  _fecha_documento_legal.removeAttr('disabled');
+	  	  _id_carton_documentos.removeAttr('disabled');
+	  	  _asunto_documento.removeAttr('disabled');
+	  	  _Guardar.removeAttr('disabled');
+		  
+	  	}
+	  	
+	});
+
+
+
+
+$("#id_subcategorias").change(function() {
+	
+	/*
+	
+	_cedula_capremci.removeAttr('disabled');
+      _nombres_capremci.removeAttr('disabled');
+  	  _numero_credito.removeAttr('disabled');
+  	  _nombre_tipo_documentos.removeAttr('disabled');
+  	  _fecha_documento_legal.removeAttr('disabled');
+  	  _id_carton_documentos.removeAttr('disabled');
+  	  _id_bancos.removeAttr('disabled');
+  	  _monto_documento.removeAttr('disabled');
+  	  _asunto_documento.removeAttr('disabled');
+      
+      
+	*/
+	
+	let _cedula_capremci	= $("#cedula_capremci");
+	let _nombres_capremci	= $("#nombres_capremci");
+	let _numero_credito		= $("#numero_credito");
+	let _nombre_tipo_documentos	= $("#nombre_tipo_documentos");
+	let _fecha_documento_legal	= $("#fecha_documento_legal");
+	let _id_carton_documentos	= $("#id_carton_documentos");
+	let _id_bancos				= $("#id_bancos");
+	let _monto_documento		= $("#monto_documento");
+	let _asunto_documento		= $("#asunto_documento");
+	let _Guardar		= $("#Guardar");
+
+	
+
+	  _cedula_capremci.attr('disabled','disabled');
+	  _nombres_capremci.attr('disabled','disabled');
+	  _numero_credito.attr('disabled','disabled');
+	  _nombre_tipo_documentos.attr('disabled','disabled');
+	  _fecha_documento_legal.attr('disabled','disabled');
+	  _id_carton_documentos.attr('disabled','disabled');
+	  _id_bancos.attr('disabled','disabled');
+	  _monto_documento.attr('disabled','disabled');
+	  _asunto_documento.attr('disabled','disabled');
+	  _Guardar.attr('disabled','disabled');
+	
+	
+    var id_subcategorias = $(this).val();
+	  if ( id_subcategorias == 37 ) //creditos
+	  	{
+		  _cedula_capremci.removeAttr('disabled');
+	      _nombres_capremci.removeAttr('disabled');
+	  	  _numero_credito.removeAttr('disabled');
+	  	  _nombre_tipo_documentos.removeAttr('disabled');
+	  	  _fecha_documento_legal.removeAttr('disabled');
+	  	  _id_carton_documentos.removeAttr('disabled');
+	  	  _monto_documento.removeAttr('disabled');
+	  	  _Guardar.attr('disabled','disabled');
+		  
+	  	}
+	  if ( id_subcategorias == 44 ) //prestaciones
+	  	{
+		  _cedula_capremci.removeAttr('disabled');
+	      _nombres_capremci.removeAttr('disabled');
+	  	  _numero_credito.removeAttr('disabled');
+	  	  _nombre_tipo_documentos.removeAttr('disabled');
+	  	  _fecha_documento_legal.removeAttr('disabled');
+	  	  _id_carton_documentos.removeAttr('disabled');
+	  	  _monto_documento.removeAttr('disabled');
+	  	  _Guardar.attr('disabled','disabled');
+		  
+	  	}
+	  
+	  if ( id_subcategorias >= 49 && id_subcategorias <= 56 ) //oficios y memos
+	  	{
+		  _nombre_tipo_documentos.removeAttr('disabled');
+	  	  _fecha_documento_legal.removeAttr('disabled');
+	  	  _id_carton_documentos.removeAttr('disabled');
+	  	  
+	  	  _Guardar.attr('disabled','disabled');
+		  
+	  	}
+	  	
+	});
+
 
 
 
@@ -143,6 +459,10 @@ $("#cedula_capremci").on("focus",function(e) {
     }
 });
 
+
+
+
+
 $("#Guardar").click(function() {
 	//selecionarTodos();
 	
@@ -170,7 +490,9 @@ $("#Guardar").click(function() {
 		$("#mensaje_id_categorias").fadeOut("slow"); //Muestra mensaje de error
 	    	
 		
-		}
+     }
+	
+	
 	
 	
 	if (id_subcategorias  == 0)
@@ -185,7 +507,7 @@ $("#Guardar").click(function() {
 		
 		$("#mensaje_id_subcategorias").fadeOut("slow"); //Muestra mensaje de error
 		}
-	
+	/*
 	if (cedula_capremci  == "")
 	{    	
 		$("#mensaje_cedula_capremci").text("Introduzca una Cédula");
@@ -211,6 +533,7 @@ $("#Guardar").click(function() {
 		
 		$("#mensaje_nombres_capremci").fadeOut("slow"); //Muestra mensaje de error
 		}
+		
 	if (numero_credito  == "")
 	{    	
 		$("#mensaje_numero_credito").text("Introduzca un nombre");
@@ -223,8 +546,26 @@ $("#Guardar").click(function() {
 		
 		$("#mensaje_numero_credito").fadeOut("slow"); //Muestra mensaje de error
 		}
+	*/	
+	
+	if (id_carton_documentos  == 0)
+	{    	
+		$("#mensaje_id_carton_documentos").text("Seleccione un  Cartón");
+		$("#mensaje_id_carton_documentos").fadeIn("slow"); //Muestra mensaje de error
+        return false
+    }    
+	
+	else
+		{
 		
+		$("#mensaje_id_carton_documentos").fadeOut("slow"); //Muestra mensaje de error
+	    	
 		
+     }
+	
+	
+	
+	
                     				
 });
 

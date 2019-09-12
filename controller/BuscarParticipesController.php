@@ -43,8 +43,8 @@ class BuscarParticipesController extends ControladorBase{
 					  solicitud_prestamo.tipo_pago_cuenta_bancaria,
 				      tipo_creditos.nombre_tipo_creditos";
         
-        $tablas   = "public.solicitud_prestamo,
-				     public.tipo_creditos";
+        $tablas   = "public.solicitud_prestamo INNER JOIN public.tipo_creditos
+                     ON solicitud_prestamo.id_tipo_creditos=tipo_creditos.id_tipo_creditos";
         
         $where    = "solicitud_prestamo.id_solicitud_prestamo=".$id_solicitud;
         
@@ -55,29 +55,29 @@ class BuscarParticipesController extends ControladorBase{
               <table width="100%">
               <tr>
               <td colspan="2" align="center">
-                <h3>Información de Solicitud</h3>
+                <font size="4"><b>Información de Solicitud<b></font>
               </td>
               </tr>
               <tr>
               <td width="50%">
-                <h4>Tipo Crédito : '.$resultSet[0]->nombre_tipo_creditos.'</h4>
+                <font size="3">Tipo Crédito : '.$resultSet[0]->nombre_tipo_creditos.'</font>
               </td>
               <td width="50%">
-                <h4>Destino Dinero : '.$resultSet[0]->destino_dinero_datos_prestamo.'</h4>
+                <font size="3">Destino Dinero : '.$resultSet[0]->destino_dinero_datos_prestamo.'</font>
               </td>
               <tr>
               <td width="50%">
-                <h4>Nombre Banco : '.$resultSet[0]->nombre_banco_cuenta_bancaria.'</h4>
+                <font size="3">Nombre Banco : '.$resultSet[0]->nombre_banco_cuenta_bancaria.'</font>
               </td>
               <td width="50%">
-                <h4>Tipo Cuenta : '.$resultSet[0]->tipo_cuenta_cuenta_bancaria.'</h4>
+                <font size="3">Tipo Cuenta : '.$resultSet[0]->tipo_cuenta_cuenta_bancaria.'</font>
                </td>
               <tr>
               <td width="50%">
-                <h4>Número Cuenta : '.$resultSet[0]->numero_cuenta_cuenta_bancaria.'</h4>
+                <font size="3">Número Cuenta : '.$resultSet[0]->numero_cuenta_cuenta_bancaria.'</font>
                </td>
               <td width="50%">
-                <h4>Tipo de Pago: '.$resultSet[0]->tipo_pago_cuenta_bancaria.'</h4>
+                <font size="3">Tipo de Pago: '.$resultSet[0]->tipo_pago_cuenta_bancaria.'</font>
                 </td>
                 </tr>
                 </table>

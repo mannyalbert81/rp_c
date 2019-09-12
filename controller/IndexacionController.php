@@ -233,8 +233,8 @@ class IndexacionController extends ControladorBase{
     
     public function GenerarReporte(){
         
-        require_once 'core/EntidadBaseSQL.php';
-        $db = new EntidadBaseSQL();
+        require_once 'core/EntidadBase_128.php';
+        $db = new EntidadBase_128();
         
         session_start();
         $entidades = new EntidadesModel();
@@ -267,8 +267,12 @@ class IndexacionController extends ControladorBase{
         $nombres_capremci = (isset($_POST['nombres_capremci'])) ? $_POST['nombres_capremci'] : '';
         $numero_credito = (isset($_POST['numero_credito'])) ? $_POST['numero_credito'] : '';
         $nombre_tipo_documentos = (isset($_POST['nombre_tipo_documentos'])) ? $_POST['nombre_tipo_documentos'] : '';
-        $fecha_documentos = (isset($_POST['fecha_documentos'])) ? $_POST['fecha_documentos'] : '';
-        $numero_carton_documentos = (isset($_POST['numero_carton_documentos'])) ? $_POST['numero_carton_documentos'] : '';
+        $fecha_documento_legal = (isset($_POST['fecha_documento_legal'])) ? $_POST['fecha_documento_legal'] : '';
+        $numero_carton_documentos = (isset($_POST['id_carton_documentos'])) ? $_POST['id_carton_documentos'] : '';
+        
+        $id_bancos = (isset($_POST['id_bancos'])) ? $_POST['id_bancos'] : '';
+        $monto_documento = (isset($_POST['monto_documento'])) ? $_POST['monto_documento'] : '';
+        $asunto_documento = (isset($_POST['asunto_documento'])) ? $_POST['asunto_documento'] : '';
         
         $datos_reporte = array();
         
@@ -280,6 +284,39 @@ class IndexacionController extends ControladorBase{
         
         
         
+        if ($cedula_capremci=='')
+        {
+        	$cedula_capremci='0';
+        }
+        if ($nombres_capremci=='')
+        {
+        	$nombres_capremci='0';
+        }
+        if ($numero_credito=='')
+        {
+        	$numero_credito='0';
+        }
+        if ($nombre_tipo_documentos=='')
+        {
+        	$nombre_tipo_documentos='0';
+        }
+        if ($nombre_tipo_documentos=='')
+        {
+        	$nombre_tipo_documentos='0';
+        }
+        if ($id_bancos=='')
+        {
+        	$id_bancos='0';
+        }
+        if ($monto_documento=='')
+        {
+        	$monto_documento='0';
+        }
+        if ($asunto_documento=='')
+        {
+        	$asunto_documento='0';
+        }
+        
         require dirname(__FILE__)."\phpqrcode\qrlib.php";
         
         $ubicacion = dirname(__FILE__).'\..\barcode_participes\\';
@@ -289,14 +326,14 @@ class IndexacionController extends ControladorBase{
             mkdir($ubicacion);
             
             $i++;
-            $filename = $ubicacion.$numero_credito.'.png';
+            $filename = $ubicacion.$id_categorias.'.png';
             
             //Parametros de Condiguracion
             
             $tamaño = 8; //Tama�o de Pixel
             $level = 'L'; //Precisi�n Baja
             $framSize = 3; //Tama�o en blanco
-            $contenido = $id_subcategorias.';'.$numero_credito; //Texto
+            $contenido = $id_categorias.';'. $id_subcategorias.';'. $cedula_capremci.';'. $nombres_capremci.';'. $numero_credito.';'. $nombre_tipo_documentos.';'. $fecha_documento_legal.';'. $numero_carton_documentos.';'. $id_bancos.';'. $monto_documento.';'. $asunto_documento;    
             
             //Enviamos los parametros a la Funci�n para generar c�digo QR
             QRcode::png($contenido, $filename, $level, $tamaño, $framSize);

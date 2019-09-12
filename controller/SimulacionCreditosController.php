@@ -1550,8 +1550,7 @@ class SimulacionCreditosController extends ControladorBase{
                       solicitud_prestamo.nombres_referencia_personal,
 					  solicitud_prestamo.numero_telefonico_referencia_personal";
        
-       $tablas   = "public.solicitud_prestamo,
-				     public.tipo_creditos";
+       $tablas   = "public.solicitud_prestamo";
        
        $where    = "solicitud_prestamo.id_solicitud_prestamo=".$id_solicitud;
        

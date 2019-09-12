@@ -101,20 +101,27 @@ function BorrarCedulaGarante()
 
 function TipoCredito()
 {   
+	
+	$("#select_cuotas").html("");
+	$("#monto_credito").val("");
+	$("#tabla_amortizacion").html("");
 	var interes=$("#tipo_credito").val();
+	$("#capacidad_pago_garante").html("");
+	
 	if(interes!="")
 		{
 		var boton='<div class="col-xs-6 col-md-3 col-lg-3 text-center">'+
 		'<div class="form-group">'+
     		'<label for="monto_credito" class="control-label">Capacidad de pago Participe:</label>'+
     		'<button align="center" class="btn bg-olive" title="Análisis crédito"  onclick="AnalisisCreditoParticipe()"><i class="glyphicon glyphicon-new-window"></i></button>'+
-  			'<!--<input type=number step=1 class="form-control" id="sueldo_participe" name="sueldo_participe" style="background-color: #FFFFF;">  -->'+
   			'<div id="mensaje_sueldo_participe" class="errores"></div></div></div>';
 		$("#capacidad_de_pago_participe").html(boton);
 		}
 	else
 		{
 		$("#capacidad_de_pago_participe").html("");
+		$("#select_cuotas").html("");
+		$("#monto_credito").val("");
 		}
 	var bci="<label for=\"cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
 			"<div id=\"mensaje_cedula_garante\" class=\"errores\"></div>" +
@@ -594,7 +601,7 @@ function EnviarCapacidadPagoParticipe()
 	'<label for="monto_credito" class="control-label">Capacidad de pago Participe:</label>'+
 	'<div id="mensaje_sueldo_participe" class="errores"></div>'+
 	'<div class="input-group">'+
-	'<input type=number step=1 class="form-control" id="sueldo_participe" name="sueldo_participe" style="background-color: #FFFFF;">'
+	'<input type=number step=1 class="form-control" id="sueldo_participe" name="sueldo_participe" style="background-color: #FFFFF;" readonly>'
 	 +'<span class="input-group-btn">'      			
      +'<button type="button" class="btn bg-olive" id="nueva_capacidad_pago" name="nueva_capacidad_pago" onclick="AnalisisCreditoParticipe()">'
      +'<i class="glyphicon glyphicon-refresh"></i>'
@@ -616,7 +623,7 @@ function EnviarCapacidadPagoGarante()
 	'<label for="monto_credito" class="control-label">Capacidad de pago Garante:</label>'+
 	'<div id="mensaje_sueldo_garante" class="errores"></div>'+
 	'<div class="input-group">'+
-	'<input type=number step=1 class="form-control" id="sueldo_garante" name="sueldo_garante" style="background-color: #FFFFF;">'
+	'<input type=number step=1 class="form-control" id="sueldo_garante" name="sueldo_garante" style="background-color: #FFFFF;" readonly>'
 	 +'<span class="input-group-btn">'      			
      +'<button type="button" class="btn bg-olive" id="nueva_capacidad_pago" name="nueva_capacidad_pago" onclick="AnalisisCreditoGarante()">'
      +'<i class="glyphicon glyphicon-refresh"></i>'
@@ -695,25 +702,6 @@ function AnalisisCreditoGarante()
 	
 }
 
-function InfoSolicitudActualizar(id_solicitud)
-{
-	solicitud=id_solicitud;
-	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=ActualizarInfoParticipe',
-	    type: 'POST',
-	    data: {
-	    	id_solicitud:id_solicitud
-	    },
-	})
-	.done(function(x) {
-		console.log(x);
-		
-	})
-	.fail(function() {
-	    console.log("error");
-	});
-	
-}
 
 function InfoSolicitud(cedula,id_solicitud)
 {
@@ -730,7 +718,6 @@ function InfoSolicitud(cedula,id_solicitud)
 	})
 	.done(function(x) {
 		$("#info_solicitud").html(x);
-		InfoSolicitudActualizar(solicitud);
 	})
 	.fail(function() {
 	    console.log("error");

@@ -7,7 +7,7 @@ class CreditosController extends ControladorBase{
 		
 	}
 	
-	public function ActivaCredito($paramIdCredito){
+	public function ActivaCreditoprueba($paramIdCredito){
 	    
 	    if(!isset($_SESSION)){
 	        session_start();
@@ -864,6 +864,8 @@ class CreditosController extends ControladorBase{
 	                
 	                $rsConsulta4   = $Credito->getCondiciones($columnas4, $tablas4, $where4, $id4);
 	                
+	                echo print_r($rsConsulta4);
+	                
 	                if( empty($rsConsulta4) ){
 	                    continue;
 	                }
@@ -874,7 +876,7 @@ class CreditosController extends ControladorBase{
 	                $_error_pg  = pg_last_error();
 	                $_error_php = error_get_last();
 	                
-	                if( empty($_error_pg) || empty($_error_php) ){
+	                if( !empty($_error_pg) || !empty($_error_php) ){
 	                    throw new Exception("Error en insertado de detalle distribucion con creditos a ser renovados ".$_error_pg.$_error_php['message']);
 	                }
 	                
@@ -1192,7 +1194,8 @@ class CreditosController extends ControladorBase{
 	                $_error_pg  = pg_last_error();
 	                $_error_php = error_get_last();
 	                
-	                if( empty($_error_pg) || empty($_error_php) ){
+	                
+	                if( !empty($_error_pg) || !empty($_error_php) ){
 	                    throw new Exception("Error en insertado de detalle distribucion con creditos a ser renovados");
 	                }
 	                

@@ -421,11 +421,15 @@ $("#cedula_capremci").on("focus",function(e) {
     				data:{term:request.term},
     			}).done(function(x){
     				
+    				console.log('hola ok');
+    				
     				response(x); 
     				
     			}).fail(function(xhr,status,error){
     				var err = xhr.responseText
     				console.log(err)
+    				
+    				console.log('hola')
     			})
     		},
     		select: function (event, ui) {	     	       		    			

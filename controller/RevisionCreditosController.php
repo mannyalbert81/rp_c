@@ -845,7 +845,16 @@ class RevisionCreditosController extends ControladorBase{
             $tabla = "core_creditos";
             $colval = "id_estado_creditos=".$id_estado_creditos;
             $reporte->UpdateBy($colval, $tabla, $where);
-            $mensaje=$this->ActivaCredito($res->id_creditos);
+            
+            require_once 'controller/CreditosController.php';
+            
+            $ctr_creditos= new CreditosController();
+            
+            $mensaje=$ctr_creditos->ActivarCredito($res->id_creditos);
+            
+            
+            
+            //$mensaje=$this->ActivaCredito($res->id_creditos);
             if ($mensaje!='OK')
             {
                 $mensaje="ERROR";
@@ -882,7 +891,7 @@ class RevisionCreditosController extends ControladorBase{
             else
             {
                 $reporte->endTran("ROLLBACK");
-                $mensaje="ERROR";
+                $mensaje="ERROR".$errores;
             }
         }
         

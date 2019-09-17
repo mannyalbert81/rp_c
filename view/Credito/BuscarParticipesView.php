@@ -158,13 +158,7 @@
           	 <div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="tipo_credito" class="control-label">Tipo Crédito:</label>
-                    	<select name="tipo_credito" id="tipo_credito"  class="form-control"onchange="TipoCredito()">
-                                      <option value="" selected="selected">--Seleccione--</option>
-                                      <option value=9 >ORDINARIO</option>
-                                      <option value=12>EMERGENTE</option>
-                                      <option value="R">RENOVACION</option>
-    					</select> 
+                		<div id="tipo_creditos"></div>
                         <div id="mensaje_tipo_credito" class="errores"></div>
                  	</div>
              	</div>
@@ -334,6 +328,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?0.30"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?0.36"></script> 
    </body>
 </html>   

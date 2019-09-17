@@ -1234,6 +1234,134 @@ class CreditosController extends ControladorBase{
 	
 	public function HipotecarioNuevo($_id_credito = 0){
 	    
+	    $Credito   = new CreditosModel();
+	    
+	    $_fecha_proceso = date('Y-m-d');
+	    
+	    /* datos de credito */
+	    $columnas1 = " bb.id_tipo_creditos, bb.nombre_tipo_creditos, bb.codigo_tipo_creditos, aa.numero_creditos,
+                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes";
+	    $tablas1   = " core_creditos aa
+            	        INNER JOIN core_tipo_creditos bb
+            	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
+	    $where1    = "id_creditos = $_id_credito ";
+	    $id1       = "aa.id_creditos";
+	    
+	    $rsConsulta1   = $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    $_id_tipo_creditos  = $rsConsulta1[0]->id_tipo_creditos;
+	    $_monto_otorgado_credito    = $rsConsulta1[0]->monto_otorgado_creditos;
+	    $_monto_neto_credito        = $rsConsulta1[0]->monto_neto_entregado_creditos;
+	    $_numero_creditos           = $rsConsulta1[0]->numero_creditos;
+	    
+	    
+	    /* buscar parametrizacion de credito */
+	    $columnas2  = " id_modulos, id_plan_cuentas_debe, id_plan_cuentas_haber";
+	    $tablas2    = " public.core_parametrizacion_cuentas";
+	    $where2     = " tabla_parametrizacion_cuentas = 'core_tipo_creditos'
+                        AND modulo_parametrizacion_cuentas = 'CREDITO'
+                        AND operacion_parametrizacion_cuentas = 'NUEVO'
+                        AND id_principal_parametrizacion_cuentas = $_id_tipo_creditos";
+	    $id2        = " id_parametrizacion_cuentas";
+	    
+	    $rsConsulta2   = $Credito->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	    
+	    $_id_cuenta_debe    = $rsConsulta2[0]->id_plan_cuentas_debe;
+	    $_id_cuenta_haber   = $rsConsulta2[0]->id_plan_cuentas_haber;
+	    
+	    /* buscar retencion de credito */
+	    $columnas3  = " id_creditos_retenciones, monto_creditos_retenciones, id_creditos";
+	    $tablas3    = " public.core_creditos_retenciones";
+	    $where3     = " id_creditos = $_id_credito ";
+	    $id3        = " id_creditos_retenciones";
+	    
+	    $rsConsulta3   = $Credito->getCondiciones($columnas3, $tablas3, $where3, $id3);
+	    
+	    $_monto_retencion   = 0.00;
+	    if( !empty($rsConsulta3) ){
+	        $_monto_retencion    = $rsConsulta3[0]->monto_creditos_retenciones;
+	    }
+	    
+	    /* viene insertado de distribucion cuentas por pagar */
+	    /*valores de credito son valores de credito*/
+	    $_monto_debito  = $_monto_otorgado_credito;
+	    $_monto_credito = $_monto_neto_credito;
+	    $_descripcion_distribucion  = "Concesion Credito Num [".$_numero_creditos."]";
+	    /* se inserta 3 cuentas para ordinario nuevo */
+	    /* cuenta de debito */
+	    $queryCuentaCredito = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_debe, "COMPRA", $_monto_debito, '0.00', 1, $_descripcion_distribucion);
+	    /* cuenta de credito */
+	    $queryCuentaDebito  = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_haber, "PAGOS", '0.00', $_monto_credito, 2, $_descripcion_distribucion);
+	    /* validar si existe retencion */
+	    if( $_monto_retencion > 0 ){
+	        
+	        /* buscar cuenta retencion*/
+	        $columnas4  = " id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	        $tablas4    = " public.plan_cuentas";
+	        $where4     = " nombre_plan_cuentas LIKE 'Interes Crédito Ordinario'";
+	        $id4        = " id_plan_cuentas";
+	        $limit4     = " LIMIT 1";
+	        
+	        $rsConsulta4   = $Credito->getCondicionesPag($columnas4, $tablas4, $where4, $id4,$limit4);
+	        
+	        $_id_cuenta_interes = $rsConsulta4[0]->id_plan_cuentas;
+	        
+	        $queryCuentaRetencion  = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_interes, "PAGOS", '0.00', $_monto_retencion, 3, $_descripcion_distribucion);
+	    }
+	    
+	    $_error_pg  = pg_last_error();
+	    $_error_php = error_get_last();
+	    
+	    if( !empty($_error_pg) || !empty($_error_php) ){
+	        throw new Exception('error en validacion de datos');
+	    }
+	    
+	    /* viene insertado en base de datos*/
+	    $Credito -> executeNonQuery($queryCuentaCredito);
+	    $Credito -> executeNonQuery($queryCuentaDebito);
+	    if( $_monto_retencion > 0 ){
+	        $Credito -> executeNonQuery($queryCuentaRetencion);
+	    }
+	    
+	    /* viene insertado de la CxP */
+	    $_descripcion_cuentas_pagar = " Tipo ORDINARIO";
+	    $_id_cuentas_pagar  = $this->generaCuentaPagarCredito($_id_lote, $_id_credito, $_id_proveedor, $_descripcion_cuentas_pagar );
+	    
+	    /* para actualizar la forma de pago y el banco en cuentas por pagar */
+	    $columnas5  = "aa.id_creditos, bb.id_forma_pago, bb.nombre_forma_pago,cc.id_bancos";
+	    $tablas5    = "core_creditos aa
+                    INNER JOIN forma_pago bb
+                    ON aa.id_forma_pago = bb.id_forma_pago
+                    INNER JOIN core_participes_cuentas cc
+                    ON cc.id_participes = aa.id_participes
+                    AND cc.cuenta_principal = true";
+	    $where5     = "aa.id_estatus = 1 AND aa.id_creditos = $_id_credito";
+	    $id5        = "aa.id_creditos";
+	    $rsFormaPago = $Credito->getCondiciones($columnas5, $tablas5, $where5, $id5);
+	    $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
+	    $_id_bancos = $rsFormaPago[0]->id_bancos;
+	    
+	    $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
+	    $tablasPago = "tes_cuentas_pagar";
+	    $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
+	    $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
+	    
+	    /* viene insertado del comprobante */
+	    $_concepto_comprobantes = "Consecion Creditos Sol:$_numero_creditos";
+	    $_id_comprobantes   = $this->generaComprobante($_id_lote, $_id_proveedor, $_id_forma_pago, $_monto_otorgado_credito, $_concepto_comprobantes, $_fecha_proceso);
+	    
+	    //se actualiza la cuenta por pagar con la relacion al comprobante
+	    $columnaCxP = "id_ccomprobantes = $_id_comprobantes ";
+	    $tablasCxP = "tes_cuentas_pagar";
+	    $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
+	    $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
+	    
+	    //se actualiza el credito con su comprobante
+	    $columnaCre = "id_ccomprobantes = $_id_comprobantes ";
+	    $tablasCre = "core_creditos";
+	    $whereCre = "id_creditos = $_id_credito";
+	    $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
+	    
 	    
 	}
 	

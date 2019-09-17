@@ -215,7 +215,7 @@ class RecaudacionController extends ControladorBase{
 	        
 	        $parametrosDetalle  = "'$_id_archivo_recaudaciones','$_id_participes',null,'$_valor_sistema','$_valor_final','APORTES PERSONALES'";
 	        $queryFuncion   = $Contribucion->getconsultaPG($funcionDetalle, $parametrosDetalle);
-	        $Resultado2     = $Contribucion->llamarconsultaPG($queryFuncion);
+	        $Contribucion->llamarconsultaPG($queryFuncion);
 	        
 	        $error = pg_last_error();
 	        if( !empty($error) ){ break; throw new Exception('Error en la funcion de insertado detalle');}

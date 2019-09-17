@@ -54,10 +54,7 @@ class CargaRecaudacionesController extends ControladorBase{
 		$id_rol= $_SESSION['id_rol'];
 		$resultPer = $carga_recaudaciones->getPermisosEditar("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
-		if (!empty($resultPer)){	
-		    
-
-		    
+		if (!empty($resultPer)){
 		    
 		    $_id_carga_recaudaciones = (isset($_POST["id_carga_recaudaciones"])) ? $_POST["id_carga_recaudaciones"] : "0";
 		    $_id_entidad_patronal = (isset($_POST["id_entidad_patronal"])) ? $_POST["id_entidad_patronal"] : 0 ;
@@ -73,7 +70,7 @@ class CargaRecaudacionesController extends ControladorBase{
 			$respuesta = 0 ;
 			$mensaje = ""; 
 			
-	
+	 //echo '<message>llego<message>';die();
 			
 			if($_id_carga_recaudaciones == 0){
 			    
@@ -431,6 +428,8 @@ class CargaRecaudacionesController extends ControladorBase{
 	        $_formato_carga_recaudaciones  = $_POST['formato_carga_recaudaciones'];
 	        $_nombre_carga_recaudaciones  = $_POST['nombre_carga_recaudaciones'];
 	        
+	        print_r($_FILES); die();
+	        
 	        $error = error_get_last();
 	        if(!empty($error)){    throw new Exception('Variables no recibidas'); }
 	        
@@ -440,8 +439,8 @@ class CargaRecaudacionesController extends ControladorBase{
 	        $_nombre_carga_formato_recaudacion = "";
 	        $columnas1 = "id_carga_recaudaciones, nombre_carga_recaudaciones";
 	        $tablas1   = "core_carga_recaudaciones";
-	        $where1    = "id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_carga_recaudaciones";
-	        $where1    .= " AND mes_archivo_recaudaciones = $_mes_carga_recaudaciones AND nombre_carga_recaudaciones =$_nombre_carga_recaudaciones";
+	        $where1    = "id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones";
+	        $where1    .= " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones";
 	        $id1       = "id_carga_recaudaciones";
 	        
 	        //diferenciar el tipo de recaudacion que va a realizar
@@ -449,8 +448,8 @@ class CargaRecaudacionesController extends ControladorBase{
 	            
 	            case '1':
 	                //para cuando sea para cuenta individual
-	                $_nombre_carga_formato_recaudacion = "DESCUENTOS APORTES";
-	                $where1    .= " AND formato_archivo_recaudaciones = '$_nombre_carga_formato_recaudacion'";
+	                $_nombre_carga_formato_recaudacion = "APORTES";
+	                $where1    .= " AND formato_carga_recaudaciones = '$_nombre_carga_formato_recaudacion'";
 	                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	                
 	                $_id_carga_recaudaciones = 0;
@@ -482,8 +481,8 @@ class CargaRecaudacionesController extends ControladorBase{
 	            case '2':
 	                /*para realizar recaudacion por creditos*/
 	                //primero validar que no exista
-	                $_nombre_formato_recaudacion = "DESCUENTOS CREDITOS";
-	                $where1    .= " AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion'";
+	                $_nombre_formato_recaudacion = "CREDITOS";
+	                $where1    .= " AND formato_carga_recaudaciones = '$_nombre_formato_recaudacion'";
 	                
 	                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	                
@@ -538,6 +537,17 @@ class CargaRecaudacionesController extends ControladorBase{
 	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
 	    
 	    $Contribucion  = new CoreContribucionModel();
+	    
+	    /* tomar datos de archivo*/
+	    //nombre
+	    /* setaer datos para vbase*/
+	    //nombre
+	    //url o path relativo
+	    //
+	    
+	    $_url_path = $this->obtienePath($nombreArchivo, $anioArchivo, $mesArchivo, $folder);
+	    
+	    
 	    
 	    $formato_carga_recaudaciones = "DESCUENTOS APORTES";
 	    

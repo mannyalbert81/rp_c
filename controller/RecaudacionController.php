@@ -79,7 +79,7 @@ class RecaudacionController extends ControladorBase{
 	            case '1':
 	                //para cuando sea para cuenta individual
 	                $_nombre_formato_recaudacion = "DESCUENTOS APORTES";
-	                $where1    .= " AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion'";
+	                $where1    .= " AND formato_carga_recaudaciones = '$_nombre_formato_recaudacion'";
 	                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	                
 	                $_id_archivo_recaudaciones = 0;

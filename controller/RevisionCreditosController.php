@@ -850,7 +850,7 @@ class RevisionCreditosController extends ControladorBase{
             
             $ctr_creditos= new CreditosController();
             
-            $mensaje=$ctr_creditos->ActivaCredito($res->id_creditos);
+            $mensaje=$ctr_creditos->ActivarCredito($res->id_creditos);
             
             
             
@@ -891,7 +891,7 @@ class RevisionCreditosController extends ControladorBase{
             else
             {
                 $reporte->endTran("ROLLBACK");
-                $mensaje="ERROR";
+                $mensaje="ERROR".$errores;
             }
         }
         

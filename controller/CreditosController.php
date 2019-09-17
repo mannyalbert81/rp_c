@@ -858,8 +858,7 @@ class CreditosController extends ControladorBase{
 	                
 	                $rsConsulta4   = $Credito->getCondiciones($columnas4, $tablas4, $where4, $id4);
 	                
-	                echo print_r($rsConsulta4);
-	                
+	               
 	                if( empty($rsConsulta4) ){
 	                    continue;
 	                }

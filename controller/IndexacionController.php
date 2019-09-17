@@ -158,8 +158,6 @@ class IndexacionController extends ControladorBase{
         require_once 'core/EntidadBaseSQL.php';
         $db = new EntidadBaseSQL();
         
-       
-     
       
         if(isset($_GET['term'])){
             
@@ -174,7 +172,7 @@ class IndexacionController extends ControladorBase{
                                     
             $resultSet = $db->getCondiciones_SQL($columnas,$tablas,$where);
             
-           
+            print_r($resultSet);
             
             $respuesta = array();
             
@@ -187,7 +185,7 @@ class IndexacionController extends ControladorBase{
                         $_cls_numero = new stdClass;
                         $_cls_numero->id=$res->CREDIT_ID;
                         $_cls_numero->value=$res->IDENTITY_CARD;
-                        $_cls_numero->label=$res->CREDIT_ID.' | '.$res->NOMBRES;
+                        $_cls_numero->label= $res->CREDIT_ID.' | '.$res->NOMBRES;
                         $_cls_numero->nombre=$res->NOMBRES;
                         $_cls_numero->cedula=$res->IDENTITY_CARD;
                         

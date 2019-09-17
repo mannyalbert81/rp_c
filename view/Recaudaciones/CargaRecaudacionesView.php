@@ -186,7 +186,7 @@
 	
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/Recaudaciones/js/CargaRecaudaciones.js?0.4"></script> 
+   <script src="view/Recaudaciones/js/CargaRecaudaciones.js?0.10"></script> 
 
   </body>
 </html>   

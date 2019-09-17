@@ -415,7 +415,7 @@ class CargaRecaudacionesController extends ControladorBase{
 	public function GenerarCargaRecaudaciones(){
 	    
 	    $Contribucion      = new CoreContribucionModel();
-	    
+	    $carga_recaudaciones = new CargaRecaudacionesModel();
 	    $respuesta         = array();
 	    $error             = "";
 	    
@@ -426,9 +426,9 @@ class CargaRecaudacionesController extends ControladorBase{
 	        $_anio_carga_recaudaciones     = $_POST['anio_carga_recaudaciones'];
 	        $_mes_carga_recaudaciones      = $_POST['mes_carga_recaudaciones'];
 	        $_formato_carga_recaudaciones  = $_POST['formato_carga_recaudaciones'];
-	        $_nombre_carga_recaudaciones  = $_POST['nombre_carga_recaudaciones'];
+	        //$_nombre_carga_recaudaciones  = $_POST['nombre_carga_recaudaciones'];
 	        
-	        print_r($_FILES); die();
+	        $_usuario_usuarios = $_SESSION['usuario_usuarios'];
 	        
 	        $error = error_get_last();
 	        if(!empty($error)){    throw new Exception('Variables no recibidas'); }
@@ -448,7 +448,7 @@ class CargaRecaudacionesController extends ControladorBase{
 	            
 	            case '1':
 	                //para cuando sea para cuenta individual
-	                $_nombre_carga_formato_recaudacion = "APORTES";
+	                $_nombre_carga_formato_recaudacion = "CARGA APORTES";
 	                $where1    .= " AND formato_carga_recaudaciones = '$_nombre_carga_formato_recaudacion'";
 	                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	                
@@ -459,20 +459,62 @@ class CargaRecaudacionesController extends ControladorBase{
 	                
 	                if(empty($rsConsulta1)){
 	                    
-	                    $respuestaArchivo           = $this->RecaudacionAportes($_id_entidad_patronal, $_anio_carga_recaudaciones, $_mes_carga_recaudaciones, $_nombre_carga_recaudaciones);
-	                    $_id_carga_recaudaciones  = $respuestaArchivo;
 	                    
-	                    if((int)$respuestaArchivo > 0){
+	                    
+	                    /* buscar nombre entidad patronal */
+	                    $columnas2 = "id_entidad_patronal, nombre_entidad_patronal";
+	                    $tablas2   = "core_entidad_patronal";
+	                    $where2    = "id_entidad_patronal = $_id_entidad_patronal";
+	                    $id2       = "id_entidad_patronal";
+	                    $rsConsulta2   = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	                    $_nombre_entidad_patronal  = $this->limpiarCaracteresEspeciales($rsConsulta2[0]->nombre_entidad_patronal);
+	                    
+	                    
+	                    
+	                    
+	                    if ($_FILES['nombre_carga_recaudaciones']['tmp_name']!="")
+	                    {
 	                        
-	                        $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
-	                        $respuesta['id_archivo']= $_id_carga_recaudaciones;
-	                        $respuesta['respuesta'] = 1;
+	                        $directorio = $this->crearPath($_anio_carga_recaudaciones, $_mes_carga_recaudaciones, "CARGAARCHIVOS");
+	                        $_ruta_archivo_recaudaciones   = $directorio['ruta'];
+	                        
+	                        $nombre = $_FILES['nombre_carga_recaudaciones']['name'];
+	                        $tipo = $_FILES['nombre_carga_recaudaciones']['type'];
+	                        $tamano = $_FILES['nombre_carga_recaudaciones']['size'];
+	                        
+	                        move_uploaded_file($_FILES['nombre_carga_recaudaciones']['tmp_name'],$_ruta_archivo_recaudaciones.'/'.$nombre);
+	                       // $data = file_get_contents($directorio.$nombre);
+	                        
+	                    }
+	                    
+	                    
+	                    
+	                    
+	                 
+	                    $funcion = "ins_core_carga_recaudaciones";
+	                    $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_recaudaciones','$nombre','$_usuario_usuarios','FALSE', $_nombre_carga_formato_recaudacion";
+	                    $carga_recaudaciones->setFuncion($funcion);
+	                    $carga_recaudaciones->setParametros($parametros);
+	                    $resultado = $carga_recaudaciones->llamafuncionPG();
+	                    
+	                    $erro= pg_last_error();
+	                    if(!empty($erro)){ throw new Exception($erro); }
+	                    
+	                    
+	                    if((int)$resultado > 0){
+	                        
+	                        $respuesta['mensaje']   = "Carga Generada Revise el archivo";
+	                         $respuesta['respuesta'] = 1;
+	                    }else{
+	                        
+	                        $respuesta['mensaje']   = "Error al insertar";
+	                        $respuesta['respuesta'] = 2;
+	                        
 	                    }
 	                    
 	                }else{
 	                    
-	                    $respuesta['mensaje']   = "Revise el Archivo";
-	                    $respuesta['id_archivo']= $rsConsulta1[0]->id_carga_recaudaciones;
+	                    $respuesta['mensaje']   = "Ya existe el Archivo";
 	                    $respuesta['respuesta'] = 2;
 	                    
 	                }
@@ -498,7 +540,7 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    
 	                    if((int)$respuestaArchivo > 0){
 	                        
-	                        $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
+	                        $respuesta['mensaje']   = "Carga Generada Revise el archivo";
 	                        $respuesta['id_archivo']= $_id_carga_recaudaciones;
 	                        $respuesta['respuesta'] = 1;
 	                    }
@@ -522,13 +564,13 @@ class CargaRecaudacionesController extends ControladorBase{
 	        
 	    } catch (Exception $ex) {
 	        $Contribucion->endTran();
-	        echo '<message> Error Archivo Recaudacion '.$ex->getMessage().' <message>';
+	        echo '<message> Error Carga Archivo Recaudacion '.$ex->getMessage().' <message>';
 	    }
 	    
 	}
 	
 	
-	public function RecaudacionAportes( $_id_entidad_patronal,$_anio,$_mes){
+	public function RecaudacionAportes( $_id_entidad_patronal,$_anio,$_mes, $nombreArchivo){
 	    
 	    if(!isset($_SESSION)){
 	        session_start();
@@ -544,8 +586,8 @@ class CargaRecaudacionesController extends ControladorBase{
 	    //nombre
 	    //url o path relativo
 	    //
-	    
-	    $_url_path = $this->obtienePath($nombreArchivo, $anioArchivo, $mesArchivo, $folder);
+	   
+	    $_url_path = $this->obtienePath($nombreArchivo, $_anio, $_mes, $folder);
 	    
 	    
 	    
@@ -815,39 +857,44 @@ class CargaRecaudacionesController extends ControladorBase{
 	    
 	}
 	
-	private function obtienePath($nombreArchivo,$anioArchivo,$mesArchivo,$folder){
+	
+	
+	
+	
+	private function crearPath($anioArchivo, $mes, $folder){
 	    
 	    $respuesta     = array();
-	    $nArchivo      = $nombreArchivo.$mesArchivo.$anioArchivo.".txt";
+	    
 	    $carpeta_base      = 'view\\Recaudaciones\\documentos\\'.$folder.'\\';
 	    $_carpeta_buscar   = $carpeta_base.$anioArchivo;
 	    $file_buscar       = "";
 	    if( file_exists($_carpeta_buscar)){
 	        
-	        $_carpeta_buscar   = $carpeta_base.$anioArchivo."\\".$mesArchivo;
-	        if( file_exists($_carpeta_buscar)){
+	        $_carpeta_buscar1   = $carpeta_base.$anioArchivo."\\".$mes;
+	        if( file_exists($_carpeta_buscar1)){
 	            
-	            $file_buscar = $_carpeta_buscar."\\".$nArchivo;
+	            $file_buscar = $_carpeta_buscar1;
 	            
 	            
 	        }else{
 	            
-	            mkdir($_carpeta_buscar, 0777, true);
-	            $file_buscar = $_carpeta_buscar."\\".$nArchivo;
+	            mkdir($_carpeta_buscar1, 0777, true);
+	            $file_buscar = $_carpeta_buscar1;
 	            
 	        }
 	        
 	    }else{
 	        
-	        mkdir($_carpeta_buscar."\\".$mesArchivo, 0777, true);
-	        $file_buscar = $_carpeta_buscar."\\".$mesArchivo."\\".$nArchivo;
+	        mkdir($_carpeta_buscar."\\".$mes, 0777, true);
+	        $file_buscar = $_carpeta_buscar."\\".$mes;
 	    }
 	    
-	    $respuesta['nombre']   = $nArchivo;
+	  
 	    $respuesta['ruta']     = $file_buscar;
 	    
 	    return $respuesta;
 	}
+	
 	
 	function limpiarCaracteresEspeciales($string ){
 	    $string = htmlentities($string);

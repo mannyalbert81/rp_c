@@ -74,31 +74,38 @@ function consultaCargaRecaudaciones(_page = 1){
 
 $("#btnGenerar").on("click",function(){
 	
-	let $entidadPatronal 	= $("#id_entidad_patronal"),
-		$anioCargaRecaudaciones 	= $("#anio_carga_recaudaciones"),
-		$mesCargaRecaudaciones 	= $("#mes_carga_recaudaciones"),
-		$formatoCargaRecaudaciones	= $("#formato_carga_recaudaciones");
-		$nombreCargaRecaudaciones	= $("#nombre_carga_recaudaciones");
+	let $entidadPatronal 	= $("#id_entidad_patronal");
+	let	$anioCargaRecaudaciones 	= $("#anio_carga_recaudaciones");
+	let	$mesCargaRecaudaciones 	= $("#mes_carga_recaudaciones");
+	let	$formatoCargaRecaudaciones	= $("#formato_carga_recaudaciones");
 	
 	if($entidadPatronal.val() == 0 ){
 		$entidadPatronal.notify("Seleccione Entidad Patronal",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	
-	var parametros ={id_entidad_patronal:$entidadPatronal.val(),
-			anio_carga_recaudaciones:$anioCargaRecaudaciones.val(),
-			mes_carga_recaudaciones:$mesCargaRecaudaciones.val(),
-			formato_carga_recaudaciones:$formatoCargaRecaudaciones.val(),
-			nombre_carga_recaudaciones:$nombreCargaRecaudaciones.val(),
-					
-	}   
+	 
+	
+	var parametros = new FormData();
+	
+	parametros.append('id_entidad_patronal',$entidadPatronal.val());
+	parametros.append('anio_carga_recaudaciones',$anioCargaRecaudaciones.val());
+	parametros.append('mes_carga_recaudaciones',$mesCargaRecaudaciones.val());
+	parametros.append('formato_carga_recaudaciones',$formatoCargaRecaudaciones.val());
+	parametros.append('nombre_carga_recaudaciones', $('input[type=file]')[0].files[0]); 
+	//parametros.append('nombre_carga_recaudaciones', $('#nomv').files[0]); 
+	
 	
 	$.ajax({
 		beforeSend:fnBeforeAction('Estamos procesado la informacion'),
 		url:"index.php?controller=CargaRecaudaciones&action=GenerarCargaRecaudaciones",
 		type:"POST",
 		dataType:"json",
-		data:parametros
+		data:parametros,
+		
+		 contentType: false, //importante enviar este parametro en false
+         processData: false  //importante enviar este parametro en false
+       
 	}).done(function(x){
 		console.log(x)
 		if(x.respuesta == 1){

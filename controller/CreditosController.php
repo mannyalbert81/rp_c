@@ -875,7 +875,7 @@ class CreditosController extends ControladorBase{
 	                $_error_php = error_get_last();
 	                
 	                if( empty($_error_pg) || empty($_error_php) ){
-	                    throw new Exception("Error en insertado de detalle distribucion con creditos a ser renovados ".$_error_pg);
+	                    throw new Exception("Error en insertado de detalle distribucion con creditos a ser renovados ".$_error_pg.$_error_php['message']);
 	                }
 	                
 	            }

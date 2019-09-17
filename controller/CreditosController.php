@@ -429,6 +429,7 @@ class CreditosController extends ControladorBase{
 	    
 	    $Credito           = new CreditosModel();
 	    //creacion de lote
+	    
 	    $nombreLote        = "CxP-Creditos";
 	    $descripcionLote   = "GENERACION CREDITO";
 	    $id_frecuencia     = 1;

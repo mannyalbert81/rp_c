@@ -414,7 +414,7 @@ class CreditosController extends ControladorBase{
 	            default:    
 	                
 	        }
-	        echo 'OK';
+	        return 'OK';
 	    } catch (Exception $e) {
 	        
 	        echo $e->getMessage();
@@ -1192,8 +1192,7 @@ class CreditosController extends ControladorBase{
 	                $queryCuentaCreditoRenovaciones  = $this->getQueryInsertDistribucion($_id_lote, $id_plan_cuenta_renovacion, "PAGOS", '0.00', $suma_credito_renovacion, $_i, $_descripcion_distribucion);
 	                $Credito -> executeNonQuery($queryCuentaCreditoRenovaciones);
 	                $_error_pg  = pg_last_error();
-	                $_error_php = error_get_last();
-	                
+	                $_error_php = error_get_last();	                
 	                
 	                if( !empty($_error_pg) || !empty($_error_php) ){
 	                    throw new Exception("Error en insertado de detalle distribucion con creditos a ser renovados");

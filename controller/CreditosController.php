@@ -310,7 +310,7 @@ class CreditosController extends ControladorBase{
 	    }
 	}
 	
-	public function ActivarCredito($paramIdCredito){
+	public function ActivarCredito($paramIdCredito=0){
 	    
 	    
 	    if(!isset($_SESSION)){
@@ -324,9 +324,7 @@ class CreditosController extends ControladorBase{
 	    $Credito       = new CreditosModel();	    
 	    $id_creditos = $paramIdCredito;
 	    $_es_renovacion    = false;
-	    
-	    /* consulta para ver solicitud */
-	    
+	    	    	    
 	    $columasCreditoNuevo   = " id_creditos_nuevo";
 	    $tablasCreditoNuevo    = " public.core_creditos_renovaciones";
 	    $whereCreditoNuevo     = " id_creditos_nuevo = $id_creditos";
@@ -342,13 +340,9 @@ class CreditosController extends ControladorBase{
 	        $_es_renovacion = true;
 	    }
 	    
-	    //para pruebas 
-	    //$id_creditos   = $_POST['id_creditos'];
-	    //$_es_nuevo_credito = true;
-	    
 	    try {
 	        
-	       
+	        //$Credito->beginTran();
 	        $_id_lote  = 0;
 	        
 	        /* ingresar participe como proveedor */	        
@@ -413,9 +407,10 @@ class CreditosController extends ControladorBase{
 	            default:    
 	                
 	        }
+	        //$Credito->endTran();
 	        return 'OK';
 	    } catch (Exception $e) {
-	        
+	        //$Credito->endTran();
 	        return $e->getMessage();
 	    }
 	}
@@ -822,8 +817,8 @@ class CreditosController extends ControladorBase{
 	    
 	    /* viene registro de distribucion de CXP */
 	    /* parametrizacion de variables*/
-	    $_monto_credito_renovacion = $_monto_neto_credito;
-	    $_monto_saldo_credito_renovacion  = $_monto_neto_credito - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
+	    $_monto_credito_renovacion = $_monto_otorgado_credito;
+	    $_monto_saldo_credito_renovacion  = $_monto_credito_renovacion - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
 	    $_descripcion_distribucion  = "Concesion Credito Num [".$_numero_creditos."]";
 	    
 	    /* obtener query de insercion */
@@ -1142,13 +1137,16 @@ class CreditosController extends ControladorBase{
 	    
 	    /* viene registro de distribucion de CXP */
 	    /* parametrizacion de variables*/
-	    $_monto_credito_renovacion = $_monto_neto_credito;
-	    $_monto_saldo_credito_renovacion  = $_monto_neto_credito - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
+	    $_monto_credito_renovacion = $_monto_otorgado_credito;
+	    $_monto_saldo_credito_renovacion  = $_monto_credito_renovacion - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
 	    $_descripcion_distribucion  = "Concesion Credito Num [".$_numero_creditos."]";
 	    
 	    /* obtener query de insercion */
 	    $queryCuentaDebito  = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_haber, "COMPRA", $_monto_credito_renovacion, '0.00', 1, $_descripcion_distribucion);	    
 	    $queryCuentaCredito = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_debe, "PAGOS", '0.00', $_monto_saldo_credito_renovacion ,2, $_descripcion_distribucion);
+	    
+	    //echo $queryCuentaDebito,'\n',$queryCuentaCredito;
+	    //throw new Exception('prueba');
 	    
 	    $_error_pg  = pg_last_error();
 	    $_error_php = error_get_last();

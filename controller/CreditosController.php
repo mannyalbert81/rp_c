@@ -328,10 +328,10 @@ class CreditosController extends ControladorBase{
 	    
 	    /* consulta para ver solicitud */
 	    
-	    $columasCreditoNuevo   = "id_creditos_nuevo";
-	    $tablasCreditoNuevo    = "public.core_creditos_renovaciones";
-	    $whereCreditoNuevo     = "id_creditos_nuevo = $id_creditos";
-	    $idCreditoNuevo        = "";
+	    $columasCreditoNuevo   = " id_creditos_nuevo";
+	    $tablasCreditoNuevo    = " public.core_creditos_renovaciones";
+	    $whereCreditoNuevo     = " id_creditos_nuevo = $id_creditos";
+	    $idCreditoNuevo        = " id_creditos_nuevo ";
 	    
 	    $rsCreditoNuevo    = $Credito->getCondiciones($columasCreditoNuevo, $tablasCreditoNuevo, $whereCreditoNuevo, $idCreditoNuevo);
 	    

@@ -201,49 +201,7 @@ function buscaAportesCreditos(pagina=1){
 
 
 
-function consultaRecaudaciones( pagina,search=""){
-	
-	let $entidadPatronal = $("#id_entidad_patronal"),
-	$anioRecaudacion = $("#anio_recaudacion"),
-	$mesRecaudacion = $("#mes_recaudacion");
-	
-	let $divResultados = $("#div_tabla_archivo");	
-	$divResultados.html('');
-
-	var parametros ={page:pagina,peticion:'ajax',busqueda:search,
-		id_entidad_patronal:$entidadPatronal.val(),
-		anio_recaudacion:$anioRecaudacion.val(),
-		mes_recaudacion:$mesRecaudacion.val()
-		} 
-	
-	$.ajax({
-		url:"index.php?controller=Recaudacion&action=indexRecaudacionAP",
-		type:"POST",
-		dataType:"json",
-		data:parametros
-	}).done(function(x){
-		console.log(x)
-		$divResultados.html(x.tablaHtml);
-		generaTabla("tbl_archivo_recaudaciones");
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
-		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
-		 	if( mensaje !== null ){
-			 var resmsg = mensaje[1];
-			 swal( {
-				 title:"Error",
-				 dangerMode: true,
-				 text: resmsg.replace("|","\n"),
-				 icon: "error"
-				})
-		 	}
-	})
-	
-}
-
-function consultaArchivos( pagina,search=""){	
+function consultaArchivos( pagina=1,search=""){	
 	
 	var parametros ={page:pagina,peticion:'ajax',busqueda:search,}
 	
@@ -278,11 +236,6 @@ function consultaArchivos( pagina,search=""){
 }
 
 
-
-$("#txtBuscar").on("keyup",function(){
-	$valorBuscar = $(this).val();
-	consultaRecaudaciones(1,$valorBuscar);
-})
 
 $("#txtBuscarhistorial").on("keyup",function(){
 	$valorBuscar = $(this).val();
@@ -473,69 +426,6 @@ function DescargaArchivo(){
 	
 }
 
-$("#btnDescargarArchivo").on("click",function(event){
-	
-	swal({
-        title: "ARCHIVO RECAUDACION",
-        text: "Se procedera a generar el archivo",
-        icon: "warning",
-        buttons: true,
-      })
-      .then((willDelete) => {
-        if (willDelete) {
-        	
-        	let $entidadPatronal = $("#id_entidad_patronal"),
-        	$anioRecaudacion = $("#anio_recaudacion"),
-        	$mesRecaudacion = $("#mes_recaudacion");       	
-        	
-        	var parametros ={
-        		id_entidad_patronal:$entidadPatronal.val(),
-        		anio_recaudacion:$anioRecaudacion.val(),
-        		mes_recaudacion:$mesRecaudacion.val()
-        		} 
-    		
-    	
-    	$.ajax({
-    		url:"index.php?controller=Recaudacion&action=gen1",
-    		type:"POST",
-    		dataType:"json",
-    		data:parametros
-    	}).done(function(x){
-    		console.log(x)    		
-    		swal( {
-    				 title:"RECAUDACIONES",
-    				 text: "Archivo generado",
-    				 icon: "success"
-    				})
-    				
-    	}).fail(function(xhr,status,error){
-    		var err = xhr.responseText
-    		console.log(err)
-    		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
-    		 	if( mensaje !== null ){
-    			 var resmsg = mensaje[1];
-    			 swal( {
-    				 title:"Error",
-    				 dangerMode: true,
-    				 text: resmsg.replace("|","\n"),
-    				 icon: "error"
-    				})
-    		 	}
-    	}).always(function(){ consultaRecaudaciones(1);})    	
-        	
-        	
-        	
-        } else {
-        	swal({
-                title: "ARCHIVO RECAUDACION",
-                text: "Cancelacion generacion archivo",
-                icon: "view/images/capremci_load.gif",
-                dangerMode: true
-              })
-        }
-      }); 
-	
-})
 
 function verArchivo(linkArchivo){
 

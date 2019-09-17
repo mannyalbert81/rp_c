@@ -341,6 +341,8 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
                 <li style="<?php echo getcontrolador("BuscarParticipes",$controladores) ?>"><a href="index.php?controller=Recaudacion&action=index"><i class="fa fa-circle-o"></i> Arc. Entidad Patronal</a></li>                
+                <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Carga Recaudaciones</a></li>                
+             
                 </ul>
             </li>
         
@@ -418,7 +420,8 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li style="<?php echo getcontrolador("EstadosCuenta",$controladores) ?>"><a href="index.php?controller=EstadosCuenta&action=index"><i class="fa fa-circle-o"></i>Carga de Archivos</a></li>
+                <li style="<?php echo getcontrolador("CargaArchivos",$controladores) ?>"><a href="index.php?controller=CargaArchivos&action=index"><i class="fa fa-circle-o"></i>Carga de Archivos</a></li>
+                <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i>Carga Recaudaciones</a></li>
                 </ul>
             </li>
        </ul>
@@ -448,6 +451,7 @@ $controladores=$_SESSION['controladores'];
 				<li style="<?php echo getcontrolador("Bancos",$controladores) ?>"><a href="index.php?controller=Bancos&action=index_cuentas"><i class="fa fa-circle-o"></i>Tipo Cuentas</a></li>
     			<li style="<?php echo getcontrolador("SolicitudPrestamo",$controladores) ?>"><a href="index.php?controller=SolicitudPrestamo&action=index5"><i class="fa fa-circle-o"></i>Solicitud Prestamo</a></li>
     		    <li style="<?php echo getcontrolador("GarantiaCredito",$controladores) ?>"><a href="index.php?controller=GarantiaCredito&action=index"><i class="fa fa-circle-o"></i>Garantia Credito</a></li>
+    		    <li style="<?php echo getcontrolador("TipoCredito",$controladores) ?>"><a href="index.php?controller=TipoCredito&action=index"><i class="fa fa-circle-o"></i>Tipo Crédito</a></li>
     
            </ul>           	 
         </li>
@@ -575,7 +579,10 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
+              
                 <li style="<?php echo getcontrolador("CargarArchivos",$controladores) ?>"><a href="index.php?controller=CargarArchivos&action=index"><i class="fa fa-circle-o"></i>Cargar Archivos</a></li>
+                <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i>Carga Recaudaciones</a></li>
+    
                 </ul>
        </ul>
       </li>

@@ -9,6 +9,7 @@ var renovacion_credito=false;
 $(document).ready( function (){
 	
 	$(":input").inputmask();
+	GetTipoCreditos();
 		
 });
 
@@ -60,9 +61,27 @@ $("#myModalInsertar").on("hidden.bs.modal", function () {
 	var modal = $('#myModalInsertar');
 	modal.find("#observacion_confirmacion").val("");
 	modal.find("#codigo_confirmacion").val("");
-	if (modal==0) document.getElementById("cuerpo").classList.add('modal-open');
+	document.getElementById("cuerpo").classList.add('modal-open');
 	
 });
+
+function GetTipoCreditos()
+{
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=getTipoCredito',
+	    type: 'POST',
+	    data: {
+	    },
+	})
+	.done(function(x) {
+		$('#tipo_creditos').html(x);
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+}
 
 function AgregarGaranteRenovacion()
 {
@@ -107,6 +126,7 @@ function TipoCredito()
 	$("#tabla_amortizacion").html("");
 	var interes=$("#tipo_credito").val();
 	$("#capacidad_pago_garante").html("");
+	renovacion_credito=false;
 	
 	if(interes!="")
 		{
@@ -136,7 +156,7 @@ function TipoCredito()
           +"</button>"
           +"</span>"
           +"</div>";
-	if(interes==9)
+	if(interes=="ORD")
 		{
 		$('#info_credito_renovar').html("");
 		$('#info_garante').html(bci);
@@ -159,7 +179,7 @@ function TipoCredito()
 		{
 		$('#info_credito_renovar').html("");
 		$('#info_garante').html("");
-		var monto="Disponible : "+disponible_participe;
+		var monto="Cta Individual : "+disponible_participe;
 		if (disponible_participe < 150)
 		{
 		document.getElementById("disponible_participe").classList.remove('bg-olive');
@@ -192,16 +212,17 @@ function GetCreditosActivos(id)
 	
 }
 
-function SeleccionarCreditoRenovacion(id_credito)
+function SeleccionarCreditoRenovacion()
 {
-	
+	var interes=$('#tipo_credito').val();
 	$('#cerrar_renovar_credito').click();
-	console.log(id_credito);
+	console.log(id_participe+"===id_participe");
 	$.ajax({
 	    url: 'index.php?controller=SimulacionCreditos&action=GetInfoCreditoRenovar',
 	    type: 'POST',
 	    data: {
-	    	   id_credito: id_credito
+	    	   id_participe: id_participe,
+	    	   tipo_creditos: interes
 	    },
 	})
 	.done(function(x) {
@@ -338,8 +359,9 @@ function SimularCredito()
 	    type: 'POST',
 	    data: {
 	    	monto_credito:monto,
-	    	tasa_interes:interes,
-	    	plazo_credito:cuota_credito
+	    	tipo_credito:interes,
+	    	plazo_credito:cuota_credito,
+	    	renovacion_credito:renovacion_credito
 	    },
 	})
 	.done(function(x) {
@@ -389,16 +411,22 @@ function GetCuotas()
 	var limite=document.getElementById("monto_disponible").innerHTML;
 	var elementos=limite.split(" : ");
 	var lista=document.getElementById("disponible_participe").classList;
-	var renovacion=true;
 	var sueldo_participe=$("#sueldo_participe").val();
 	if(sueldo_participe===undefined) sueldo_participe="";
 	console.log(sueldo_participe+"===>sueldo participe");
 	lista=lista.value;
 	limite=elementos[1];
-	disponible_participes=limite;
+	if(garante_seleccionado)
+		{
+		var limite_garante=document.getElementById("monto_garante_disponible").innerHTML;
+		var elementos1=limite_garante.split(" : ");
+		limite_garante=elementos1[1];
+		limite=parseFloat(elementos[1])+parseFloat(limite_garante);
+		}
 	
+	console.log("LIMITE CREDITO "+limite);
 	
-	if(interes=="R")
+	/*if(interes=="R")
 	{
 	var monto_credito_renovar=document.getElementById("saldo_credito_a_renovar").innerHTML;
 	monto_credito_renovar=monto_credito_renovar.replace('.', '');
@@ -417,14 +445,14 @@ function GetCuotas()
 	  		});
 		
 	}
-	}
+	}*/
 	if(monto=="" || parseFloat(monto)<150 || parseFloat(monto)>parseFloat(limite) )
 		{
 		$("#mensaje_monto_credito").text("Monto no valido");
 		$("#mensaje_monto_credito").fadeIn("slow");
 		$("#mensaje_monto_credito").fadeOut("slow");
 		}
-	if(interes=="12" && parseFloat(monto)>7000)
+	if(interes=="EME" && parseFloat(monto)>7000)
 		{
 		$("#mensaje_monto_credito").text("Monto no valido");
 		$("#mensaje_monto_credito").fadeIn("slow");
@@ -455,7 +483,7 @@ function GetCuotas()
 		$("#mensaje_sueldo_garante").fadeOut("slow");
 		}
 		}
-	if(monto!="" && parseFloat(monto)>150 && parseFloat(monto)<parseFloat(limite) && interes!="" && renovacion && garante_pago && sueldo_participe!="")
+	if(monto!="" && parseFloat(monto)>150 && parseFloat(monto)<parseFloat(limite) && interes!="" && garante_pago && sueldo_participe!="")
 		{
 		if(lista.includes('bg-red'))
 			{
@@ -468,7 +496,7 @@ function GetCuotas()
 			}
 		else
 			{
-			if(interes=="12" && parseFloat(monto)>7000)
+			if(interes=="EME" && parseFloat(monto)>7000)
 				{
 				
 				}
@@ -483,7 +511,7 @@ function GetCuotas()
 					    	monto_credito:monto,
 					    	cedula_participe:ciparticipe,
 					    	sueldo_participe:sueldo_participe,
-					    	tasa_interes:interes
+					    	tipo_credito:interes
 					    	
 					    },
 					})
@@ -517,7 +545,7 @@ function GetCuotas()
 					    	monto_credito:monto,
 					    	cedula_participe:ciparticipe,
 					    	sueldo_participe:sueldo_participe,
-					    	tasa_interes:interes,
+					    	tipo_credito:interes,
 					    	cedula_garante:ci_garante,
 					    	sueldo_garante:sueldo_garante
 					    	
@@ -640,18 +668,18 @@ function AnalisisCreditoParticipe()
 {
 	
 	$("#myModalAnalisis").modal();
+	swal({
+		  icon: "view/images/capremci_load.gif",
+		  buttons: false,
+		  closeModal: false,
+		  allowOutsideClick: false
+		});
 	var boton_enviar='<button type="button" id="enviar_capacidad_pago" name="enviar_capacidad_pago" class="btn btn-primary" onclick="EnviarCapacidadPagoParticipe()"><i class="glyphicon glyphicon-ok"></i> ACEPTAR</button>'
 		$("#boton_capacidad_pago").html(boton_enviar);
 	var interes=$("#tipo_credito").val();
 	var tipo_credito="";
-	if(interes==9)
-		{
-		tipo_credito="ORDINARIO";
-		}
-	else if (interes==12)
-		{
-		tipo_credito="EMERGENTE";
-		}
+	
+		tipo_credito=interes;
 	console.log(tipo_credito);
 	
 	var ciparticipe=$('#cedula_participe').val();
@@ -667,6 +695,28 @@ function AnalisisCreditoParticipe()
 		x=x.trim();
 		console.log("cuota :"+x);
 		CuotaVigente(x);
+		swal({
+				text:" ",
+		      icon: "success",
+		      buttons: false,
+		      timer: 1000
+		    });
+		
+		if(x!=0)
+			{
+			renovacion_credito=true;
+			var limite=document.getElementById("monto_disponible").innerHTML;
+			var elementos=limite.split(" : ");
+			var lista=document.getElementById("disponible_participe").classList;
+			limite=elementos[1];
+			$("#monto_credito").val(limite);
+			
+			SeleccionarCreditoRenovacion();
+			
+			
+			
+			}
+		console.log(renovacion_credito);
 		
 	})
 	.fail(function() {
@@ -679,6 +729,12 @@ function AnalisisCreditoGarante()
 {
 	
 	$("#myModalAnalisis").modal();
+	swal({
+		  icon: "view/images/capremci_load.gif",
+		  buttons: false,
+		  closeModal: false,
+		  allowOutsideClick: false
+		});
 	var boton_enviar='<button type="button" id="enviar_capacidad_pago_garante" name="enviar_capacidad_pago_garante" class="btn btn-primary" onclick="EnviarCapacidadPagoGarante()"><i class="glyphicon glyphicon-ok"></i> ACEPTAR</button>'
 		$("#boton_capacidad_pago").html(boton_enviar);
 		
@@ -694,6 +750,12 @@ function AnalisisCreditoGarante()
 		x=x.trim();
 		console.log("cuota :"+x);
 		CuotaVigente(x);
+		swal({
+			text:" ",
+	      icon: "success",
+	      buttons: false,
+	      timer: 1000
+	    });
 		
 	})
 	.fail(function() {
@@ -823,8 +885,6 @@ function BuscarGarante()
 						elementos=limite_total.split(".");
 						elementos[1]=elementos[1].substring(0, 2);
 						limite_total=elementos[0]+"."+elementos[1];
-						var nuevo_monto="Disponible Total : "+limite_total;
-						$("#monto_disponible").html(nuevo_monto);
 						var aportes=document.getElementById("aportes_participes");
 						var aportes_garante=document.getElementById("aportes_garante");
 						if (limite_total>150 && edad_garante<75 && aportes==null && aportes_garante==null)
@@ -925,16 +985,18 @@ function ConfirmarCodigo()
 	    url: 'index.php?controller=SimulacionCreditos&action=genera_codigo',
 	    type: 'POST',
 	    data: {
+	    	tipo_credito:interes
 	    },
 	})
 	.done(function(x) {
-		x=x.trim();
+		console.log(x);
+		x=JSON.parse(x);
 		var informacion="<h3>Se procedera a generar un crédito para "+nombre_participe+"</h3>" +
 				"<h3>Con cédula de identidad número "+ciparticipe+"</h3>" +
 				"<h3>Por el monto de "+monto+" USD</h3>" +
-				"<h3>A un plazo de "+cuota_credito+" meses con interes del "+interes+"%</h3>" +
+				"<h3>A un plazo de "+cuota_credito+" meses con interes del "+x[1]+"%</h3>" +
 				"<h3>Para confirmar ingrese el siguiente código</h3>" +
-				"<h2 id=\"codigo_generado\">"+x+"</h2>";
+				"<h2 id=\"codigo_generado\">"+x[0]+"</h2>";
 		$("#info_credito_confirmar").html(informacion);	
 	})
 	.fail(function() {
@@ -1022,14 +1084,14 @@ function SubirInformacionCredito()  //proceso para los registros del credito
 	var ciparticipe=$('#cedula_participe').val();
 	var observacion=$('#observacion_confirmacion').val();
 	id_solicitud=solicitud;
-	if (interes!="R")
+	if (!renovacion_credito)
 		{
 		$.ajax({
 		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionCredito',
 		    type: 'POST',
 		    data: {
 		    	monto_credito: monto,
-		    	tasa_interes: interes,
+		    	tipo_credito: interes,
 		    	fecha_pago: fecha_corte,
 		    	cuota_credito: cuota_credito,
 		    	cedula_participe: ciparticipe,
@@ -1074,7 +1136,53 @@ function SubirInformacionCredito()  //proceso para los registros del credito
 		}
 	else
 		{
-		
+		$.ajax({
+		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionRenovacionCredito',
+		    type: 'POST',
+		    data: {
+		    	monto_credito: monto,
+		    	tipo_credito: interes,
+		    	fecha_pago: fecha_corte,
+		    	cuota_credito: cuota_credito,
+		    	cedula_participe: ciparticipe,
+		    	observacion_credito: observacion,
+		    	id_solicitud:id_solicitud,
+		    	con_garante:garante_seleccionado,
+		    	cedula_garante:ci_garante
+		    	
+		    },
+		})
+		.done(function(x) {
+			console.log(x);
+			x=x.trim();
+			if(x=="OK")
+				{
+				swal({
+			  		  title: "Crédito Registrado",
+			  		  text: "La solicitud de crédito ha sido procesada",
+			  		  icon: "success",
+			  		  button: "Aceptar",
+			  		}).then((value) => {
+			  			modal=1;
+			  			$('#cerrar_insertar').click();
+						 $('#cerrar_simulacion').click();
+						 CreditosActivosParticipe(id_participe, 1);
+						 modal=0;
+						 });
+				}
+			else
+				{
+				swal({
+			  		  title: "Advertencia!",
+			  		  text: "Hubo un error en el proceso de la solicitud",
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+				}
+		})
+		.fail(function() {
+		    console.log("error");
+		});
 		}
 	
 	

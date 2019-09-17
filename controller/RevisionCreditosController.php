@@ -883,7 +883,6 @@ class RevisionCreditosController extends ControladorBase{
             $errores=ob_get_clean();
             
             $errores=trim($errores);
-            echo $errores."252555693\n";
             if(empty($errores))
             {
                 $reporte->endTran("COMMIT");

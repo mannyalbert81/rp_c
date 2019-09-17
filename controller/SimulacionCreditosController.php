@@ -1547,6 +1547,14 @@ class SimulacionCreditosController extends ControladorBase{
            
            $insert=$credito->executeNonQuery($query);
            
+           $monto_neto=$monto_credito-$total_retencion;
+           
+           $query="UPDATE core_creditos
+                   SET monto_neto_entregado_creditos='".$monto_neto."'
+                   WHERE id_creditos=".$numero_credito;
+           
+           $insert=$credito->executeNonQuery($query);
+           
            if($con_garante=="true")
            {
                $columnas="id_participes";

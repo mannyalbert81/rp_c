@@ -747,7 +747,7 @@ class CreditosController extends ControladorBase{
 	    $Credito   = new CreditosModel();
 	    
 	    $_id_usuarios      = $_SESSION['id_usuarios'];
-	    $_usuario_usuarios = $_SESSION['id_usuarios'];
+	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
 	    
 	    $_fecha_proceso = date('Y-m-d');
 	    
@@ -757,7 +757,7 @@ class CreditosController extends ControladorBase{
 	    $tablas1   = " core_creditos aa
             	        INNER JOIN core_tipo_creditos bb
             	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
-	    $where1    = "id_creditos = $_id_credito ";
+	    $where1    = "aa.id_creditos = $_id_credito ";
 	    $id1       = "aa.id_creditos";
 	    
 	    $rsConsulta1   = $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);
@@ -1067,7 +1067,7 @@ class CreditosController extends ControladorBase{
 	    $Credito   = new CreditosModel();
 	    
 	    $_id_usuarios      = $_SESSION['id_usuarios'];
-	    $_usuario_usuarios = $_SESSION['id_usuarios'];
+	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
 	    
 	    $_fecha_proceso = date('Y-m-d');
 	    
@@ -1077,7 +1077,7 @@ class CreditosController extends ControladorBase{
 	    $tablas1   = " core_creditos aa
             	        INNER JOIN core_tipo_creditos bb
             	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
-	    $where1    = "id_creditos = $_id_credito ";
+	    $where1    = "aa.id_creditos = $_id_credito ";
 	    $id1       = "aa.id_creditos";
 	    
 	    $rsConsulta1   = $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);

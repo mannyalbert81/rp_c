@@ -839,6 +839,7 @@ class RevisionCreditosController extends ControladorBase{
         $where="id_cabeza_creditos_trabajados=".$id_reporte;
         $id="id_creditos";
         $resultSet=$reporte->getCondiciones($columnas, $tablas, $where, $id);
+        
         foreach ($resultSet as $res)
         {
             $where = "id_creditos=".$res->id_creditos;
@@ -849,18 +850,16 @@ class RevisionCreditosController extends ControladorBase{
             require_once 'controller/CreditosController.php';
             
             $ctr_creditos= new CreditosController();
-            
             $mensaje=$ctr_creditos->ActivarCredito($res->id_creditos);
-            
-            
-            
-            //$mensaje=$this->ActivaCredito($res->id_creditos);
             if ($mensaje!='OK')
-            {
-                $mensaje="ERROR";
-                $reporte->endTran("ROLLBACK");
-                break;
+            {   
+            echo $mensaje."---|id_credito->".$res->id_creditos."||\n";
+            $mensaje="ERROR";
+            $reporte->endTran("ROLLBACK");
+            break;
+            
             }
+            
         }
         
         if($mensaje!="ERROR")
@@ -882,7 +881,9 @@ class RevisionCreditosController extends ControladorBase{
             $reporte->UpdateBy($colval, $tabla, $where);
             
             $errores=ob_get_clean();
+            
             $errores=trim($errores);
+            echo $errores."252555693\n";
             if(empty($errores))
             {
                 $reporte->endTran("COMMIT");
@@ -894,7 +895,6 @@ class RevisionCreditosController extends ControladorBase{
                 $mensaje="ERROR".$errores;
             }
         }
-        
         echo $mensaje;
     }
     

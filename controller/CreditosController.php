@@ -310,29 +310,46 @@ class CreditosController extends ControladorBase{
 	    }
 	}
 	
-	public function ActivarCredito($paramIdCredito=null){
+	public function ActivarCredito($paramIdCredito){
 	    
 	    
 	    if(!isset($_SESSION)){
 	        session_start();
 	    }
 	    
-	    /*if( (int)$paramIdCredito <= 0 || is_null($paramIdCredito) ){
+	    if( (int)$paramIdCredito <= 0 || is_null($paramIdCredito) ){
 	        echo "Datos de credito no recibido";
 	        return;
-	    }*/
+	    }
 	    
 	    $Credito       = new CreditosModel();	    
 	    $id_creditos = $paramIdCredito;
+	    $_es_renovacion    = false;
+	    
+	    /* consulta para ver solicitud */
+	    
+	    $columasCreditoNuevo   = "id_creditos_nuevo";
+	    $tablasCreditoNuevo    = "public.core_creditos_renovaciones";
+	    $whereCreditoNuevo     = "id_creditos_nuevo = $id_creditos";
+	    $idCreditoNuevo        = "";
+	    
+	    $rsCreditoNuevo    = $Credito->getCondiciones($columasCreditoNuevo, $tablasCreditoNuevo, $whereCreditoNuevo, $idCreditoNuevo);
+	    
+	    if(empty($rsCreditoNuevo)){
+	        /* no hay renovacion*/
+	        $_es_renovacion = false;
+	    }else{
+	        /* hay renovacion */
+	        $_es_renovacion = true;
+	    }
 	    
 	    //para pruebas 
-	    $id_creditos   = $_POST['id_creditos'];
+	    //$id_creditos   = $_POST['id_creditos'];
+	    //$_es_nuevo_credito = true;
 	    
-	    $Credito->beginTran();
 	    try {
 	        
-	        /*variables para validar los creditos*/
-	        $_es_nuevo_credito = true;
+	       
 	        $_id_lote  = 0;
 	        
 	        /* ingresar participe como proveedor */	        
@@ -374,34 +391,32 @@ class CreditosController extends ControladorBase{
 	        
 	        switch ($_codigo_tipo_credito){
 	            case 'EME':
-	                if($_es_nuevo_credito){
+	                if($_es_renovacion){
+	                    $this->EmergenteRenovacion($id_creditos, $_id_lote, $_id_proveedor);
+	                }else {	                    
 	                    $this->EmergenteNuevo($id_creditos, $_id_lote, $_id_proveedor);
-	                }else {
-	                    $this->EmergenteRenovacion($id_creditos);
 	                }
 	            break;
 	            case 'ORD':
-	                if($_es_nuevo_credito){	                    
-	                    $this->OrdinarioNuevo($id_creditos,$_id_lote, $_id_proveedor);
-	                }else {
+	                if($_es_renovacion){	                    
 	                    $this->OrdinarioRenovacion($id_creditos,$_id_lote, $_id_proveedor);
+	                }else {	                    
+	                    $this->OrdinarioNuevo($id_creditos,$_id_lote, $_id_proveedor);
 	                }
 	            break;
 	            case 'PH':
-	                if($_es_nuevo_credito){
-	                    $this->HipotecarioNuevo($id_creditos);
+	                if($_es_renovacion){
+	                    $this->HipotecarioRenovacion($id_creditos);	                    
 	                }else {
-	                    $this->HipotecarioRenovacion($id_creditos);
+	                    $this->HipotecarioNuevo($id_creditos);
 	                }
 	            break;
 	            default:    
 	                
 	        }
-	        $Credito->endTran('COMMIT');
 	        echo 'OK';
 	    } catch (Exception $e) {
 	        
-	        $Credito->endTran();
 	        echo $e->getMessage();
 	    }
 	}

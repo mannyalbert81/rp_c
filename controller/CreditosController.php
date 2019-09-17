@@ -318,8 +318,7 @@ class CreditosController extends ControladorBase{
 	    }
 	    
 	    if( (int)$paramIdCredito <= 0 || is_null($paramIdCredito) ){
-	        echo "Datos de credito no recibido";
-	        return;
+	        return "Datos de credito no recibido";
 	    }
 	    
 	    $Credito       = new CreditosModel();	    
@@ -417,7 +416,7 @@ class CreditosController extends ControladorBase{
 	        return 'OK';
 	    } catch (Exception $e) {
 	        
-	        echo $e->getMessage();
+	        return $e->getMessage();
 	    }
 	}
 	

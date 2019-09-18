@@ -7,7 +7,7 @@ class CreditosController extends ControladorBase{
 		
 	}
 	
-	public function ActivaCredito($paramIdCredito){
+	public function ActivaCreditoprueba($paramIdCredito){
 	    
 	    if(!isset($_SESSION)){
 	        session_start();
@@ -310,29 +310,39 @@ class CreditosController extends ControladorBase{
 	    }
 	}
 	
-	public function ActivarCredito($paramIdCredito=null){
+	public function ActivarCredito($paramIdCredito=0){
 	    
 	    
 	    if(!isset($_SESSION)){
 	        session_start();
 	    }
 	    
-	    /*if( (int)$paramIdCredito <= 0 || is_null($paramIdCredito) ){
-	        echo "Datos de credito no recibido";
-	        return;
-	    }*/
+	    if( (int)$paramIdCredito <= 0 || is_null($paramIdCredito) ){
+	        return "Datos de credito no recibido";
+	    }
 	    
 	    $Credito       = new CreditosModel();	    
 	    $id_creditos = $paramIdCredito;
+	    $_es_renovacion    = false;
+	    	    	    
+	    $columasCreditoNuevo   = " id_creditos_nuevo";
+	    $tablasCreditoNuevo    = " public.core_creditos_renovaciones";
+	    $whereCreditoNuevo     = " id_creditos_nuevo = $id_creditos";
+	    $idCreditoNuevo        = " id_creditos_nuevo ";
 	    
-	    //para pruebas 
-	    $id_creditos   = $_POST['id_creditos'];
+	    $rsCreditoNuevo    = $Credito->getCondiciones($columasCreditoNuevo, $tablasCreditoNuevo, $whereCreditoNuevo, $idCreditoNuevo);
 	    
-	    $Credito->beginTran();
+	    if(empty($rsCreditoNuevo)){
+	        /* no hay renovacion*/
+	        $_es_renovacion = false;
+	    }else{
+	        /* hay renovacion */
+	        $_es_renovacion = true;
+	    }
+	    
 	    try {
 	        
-	        /*variables para validar los creditos*/
-	        $_es_nuevo_credito = true;
+	        //$Credito->beginTran();
 	        $_id_lote  = 0;
 	        
 	        /* ingresar participe como proveedor */	        
@@ -374,35 +384,34 @@ class CreditosController extends ControladorBase{
 	        
 	        switch ($_codigo_tipo_credito){
 	            case 'EME':
-	                if($_es_nuevo_credito){
+	                if($_es_renovacion){
+	                    $this->EmergenteRenovacion($id_creditos, $_id_lote, $_id_proveedor);
+	                }else {	                    
 	                    $this->EmergenteNuevo($id_creditos, $_id_lote, $_id_proveedor);
-	                }else {
-	                    $this->EmergenteRenovacion($id_creditos);
 	                }
 	            break;
 	            case 'ORD':
-	                if($_es_nuevo_credito){	                    
-	                    $this->OrdinarioNuevo($id_creditos,$_id_lote, $_id_proveedor);
-	                }else {
+	                if($_es_renovacion){	                    
 	                    $this->OrdinarioRenovacion($id_creditos,$_id_lote, $_id_proveedor);
+	                }else {	                    
+	                    $this->OrdinarioNuevo($id_creditos,$_id_lote, $_id_proveedor);
 	                }
 	            break;
 	            case 'PH':
-	                if($_es_nuevo_credito){
-	                    $this->HipotecarioNuevo($id_creditos);
+	                if($_es_renovacion){
+	                    $this->HipotecarioRenovacion($id_creditos);	                    
 	                }else {
-	                    $this->HipotecarioRenovacion($id_creditos);
+	                    $this->HipotecarioNuevo($id_creditos);
 	                }
 	            break;
 	            default:    
 	                
 	        }
-	        $Credito->endTran('COMMIT');
-	        echo 'OK';
+	        //$Credito->endTran();
+	        return 'OK';
 	    } catch (Exception $e) {
-	        
-	        $Credito->endTran();
-	        echo $e->getMessage();
+	        //$Credito->endTran();
+	        return $e->getMessage();
 	    }
 	}
 	
@@ -414,6 +423,7 @@ class CreditosController extends ControladorBase{
 	    
 	    $Credito           = new CreditosModel();
 	    //creacion de lote
+	    
 	    $nombreLote        = "CxP-Creditos";
 	    $descripcionLote   = "GENERACION CREDITO";
 	    $id_frecuencia     = 1;
@@ -737,7 +747,7 @@ class CreditosController extends ControladorBase{
 	    $Credito   = new CreditosModel();
 	    
 	    $_id_usuarios      = $_SESSION['id_usuarios'];
-	    $_usuario_usuarios = $_SESSION['id_usuarios'];
+	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
 	    
 	    $_fecha_proceso = date('Y-m-d');
 	    
@@ -747,7 +757,7 @@ class CreditosController extends ControladorBase{
 	    $tablas1   = " core_creditos aa
             	        INNER JOIN core_tipo_creditos bb
             	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
-	    $where1    = "id_creditos = $_id_credito ";
+	    $where1    = "aa.id_creditos = $_id_credito ";
 	    $id1       = "aa.id_creditos";
 	    
 	    $rsConsulta1   = $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);
@@ -807,8 +817,8 @@ class CreditosController extends ControladorBase{
 	    
 	    /* viene registro de distribucion de CXP */
 	    /* parametrizacion de variables*/
-	    $_monto_credito_renovacion = $_monto_neto_credito;
-	    $_monto_saldo_credito_renovacion  = $_monto_neto_credito - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
+	    $_monto_credito_renovacion = $_monto_otorgado_credito;
+	    $_monto_saldo_credito_renovacion  = $_monto_credito_renovacion - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
 	    $_descripcion_distribucion  = "Concesion Credito Num [".$_numero_creditos."]";
 	    
 	    /* obtener query de insercion */
@@ -848,6 +858,7 @@ class CreditosController extends ControladorBase{
 	                
 	                $rsConsulta4   = $Credito->getCondiciones($columnas4, $tablas4, $where4, $id4);
 	                
+	               
 	                if( empty($rsConsulta4) ){
 	                    continue;
 	                }
@@ -858,8 +869,8 @@ class CreditosController extends ControladorBase{
 	                $_error_pg  = pg_last_error();
 	                $_error_php = error_get_last();
 	                
-	                if( empty($_error_pg) || empty($_error_php) ){
-	                    throw new Exception("Error en insertado de detalle distribucion con creditos a ser renovados");
+	                if( !empty($_error_pg) || !empty($_error_php) ){
+	                    throw new Exception("Error en insertado de detalle distribucion con creditos a ser renovados ".$_error_pg.$_error_php['message']);
 	                }
 	                
 	            }
@@ -1055,7 +1066,7 @@ class CreditosController extends ControladorBase{
 	    $Credito   = new CreditosModel();
 	    
 	    $_id_usuarios      = $_SESSION['id_usuarios'];
-	    $_usuario_usuarios = $_SESSION['id_usuarios'];
+	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
 	    
 	    $_fecha_proceso = date('Y-m-d');
 	    
@@ -1065,7 +1076,7 @@ class CreditosController extends ControladorBase{
 	    $tablas1   = " core_creditos aa
             	        INNER JOIN core_tipo_creditos bb
             	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
-	    $where1    = "id_creditos = $_id_credito ";
+	    $where1    = "aa.id_creditos = $_id_credito ";
 	    $id1       = "aa.id_creditos";
 	    
 	    $rsConsulta1   = $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);
@@ -1125,13 +1136,16 @@ class CreditosController extends ControladorBase{
 	    
 	    /* viene registro de distribucion de CXP */
 	    /* parametrizacion de variables*/
-	    $_monto_credito_renovacion = $_monto_neto_credito;
-	    $_monto_saldo_credito_renovacion  = $_monto_neto_credito - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
+	    $_monto_credito_renovacion = $_monto_otorgado_credito;
+	    $_monto_saldo_credito_renovacion  = $_monto_credito_renovacion - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
 	    $_descripcion_distribucion  = "Concesion Credito Num [".$_numero_creditos."]";
 	    
 	    /* obtener query de insercion */
 	    $queryCuentaDebito  = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_haber, "COMPRA", $_monto_credito_renovacion, '0.00', 1, $_descripcion_distribucion);	    
 	    $queryCuentaCredito = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_debe, "PAGOS", '0.00', $_monto_saldo_credito_renovacion ,2, $_descripcion_distribucion);
+	    
+	    //echo $queryCuentaDebito,'\n',$queryCuentaCredito;
+	    //throw new Exception('prueba');
 	    
 	    $_error_pg  = pg_last_error();
 	    $_error_php = error_get_last();
@@ -1174,9 +1188,9 @@ class CreditosController extends ControladorBase{
 	                $queryCuentaCreditoRenovaciones  = $this->getQueryInsertDistribucion($_id_lote, $id_plan_cuenta_renovacion, "PAGOS", '0.00', $suma_credito_renovacion, $_i, $_descripcion_distribucion);
 	                $Credito -> executeNonQuery($queryCuentaCreditoRenovaciones);
 	                $_error_pg  = pg_last_error();
-	                $_error_php = error_get_last();
+	                $_error_php = error_get_last();	                
 	                
-	                if( empty($_error_pg) || empty($_error_php) ){
+	                if( !empty($_error_pg) || !empty($_error_php) ){
 	                    throw new Exception("Error en insertado de detalle distribucion con creditos a ser renovados");
 	                }
 	                

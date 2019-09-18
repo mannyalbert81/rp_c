@@ -315,7 +315,8 @@ class TablaAmortizacionController extends ControladorBase{
 	        
 	        //Parametros de Condiguracion
 	        
-	        $tamaño = 3.5; //Tama�o de Pixel
+	        
+	        $tamaño = 2.5; //Tama�o de Pixel
 	        $level = 'L'; //Precisi�n Baja
 	        $framSize = 3; //Tama�o en blanco
 	        $contenido = $tipo_documento.';'.$numero_credito.';'.$cedula_capremci; //Texto
@@ -327,6 +328,8 @@ class TablaAmortizacionController extends ControladorBase{
 	        
 	        
 	        $datos['CODIGO_QR']= $qr_participes;
+	        $datos_empresa['CODIGO_QR']= $qr_participes;
+	        
 	    
 	    
 	        $this->verReporte("TablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante, 'datos'=>$datos));
@@ -573,7 +576,7 @@ class TablaAmortizacionController extends ControladorBase{
 	        
 	        //Parametros de Condiguracion
 	        
-	        $tamaño = 3; //Tama�o de Pixel
+	        $tamaño = 2.5; //Tama�o de Pixel
 	        $level = 'L'; //Precisi�n Baja
 	        $framSize = 3; //Tama�o en blanco
 	        $contenido = $tipo_documento.';'.$numero_credito.';'.$cedula_capremci; //Texto
@@ -585,7 +588,7 @@ class TablaAmortizacionController extends ControladorBase{
 	        
 	        
 	        $datos['CODIGO_QR']= $qr_participes;
-	    
+	        $datos_empresa['CODIGO_QR']= $qr_participes;
 	    
 	    
 	        $this->verReporte("ReporteTablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante, 'datos'=>$datos));

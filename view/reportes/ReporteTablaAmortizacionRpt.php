@@ -4,7 +4,7 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
 
 //echo getcwd().''; //para ver ubicacion de directorio
 
-$header = file_get_contents('view/reportes/template/CabeceraFinal.html');
+$header = file_get_contents('view/reportes/template/CabeceraTablaAmortizacion.html');
 $template = file_get_contents('view/reportes/template/ReporteTablaAmortizacion.html');
 
 if(!empty($datos_cabecera))

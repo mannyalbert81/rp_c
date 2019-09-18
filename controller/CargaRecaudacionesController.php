@@ -374,7 +374,7 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    $_nombre_entidad_patronal  = $this->limpiarCaracteresEspeciales($rsConsulta2[0]->nombre_entidad_patronal);
 	                    
 	                    
-	                    
+	                    $_archivo_procesar = "";
 	                    
 	                    if ($_FILES['nombre_carga_recaudaciones']['tmp_name']!="")
 	                    {
@@ -387,7 +387,10 @@ class CargaRecaudacionesController extends ControladorBase{
 	                        $tamano = $_FILES['nombre_carga_recaudaciones']['size'];
 	                        move_uploaded_file($_FILES['nombre_carga_recaudaciones']['tmp_name'],$_ruta_archivo_recaudaciones.'/'.$nombre);
 	                        
+	                        $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
 	                    }
+	                    
+	                    $_array_archivo = $this->DevuelveLineasTxt($_archivo_procesar);
 	                    
 	                    $funcion = "ins_core_carga_recaudaciones";
 	                    $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_recaudaciones','$nombre','$_usuario_usuarios','FALSE', '$_nombre_carga_formato_recaudacion'";
@@ -397,6 +400,11 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    
 	                    $erro= pg_last_error();
 	                    if(!empty($erro)){ throw new Exception($erro); }
+	                    
+	                    if(is_array($_array_archivo)){
+	                        $respuesta['cantidadLineas']   = $_array_archivo['cantidad_lineas'];
+	                        $respuesta['sumaLineas'] = $_array_archivo['suma_lineas'];
+	                    }
 	                    
 	                    
 	                    if((int)$resultado > 0){
@@ -477,6 +485,44 @@ class CargaRecaudacionesController extends ControladorBase{
 	    echo $_SERVER['DOCUMENT_ROOT']."\\rp_c\\";
 	}
 	
+	/***
+	 * ingresa ruta del archivo y si no es valida ruta devuelve 0 lineas
+	 * @param string $_archivo
+	 * return array de valores cant lineas, suma de columnas especifica;
+	 */
+	public function DevuelveLineasTxt( $_archivo ){
+	    
+	    //$_archivo = "C:/Users/Manuel/git/rp_c/view/Recaudaciones/documentos/CARGAARCHIVOS/2019/09/13 - BI PICHINCHA092019.txt";
+	    
+	    if( !is_file($_archivo)){ return 0; }
+	    
+	    $file = fopen($_archivo, "r") or exit("0");
+	    //Output a line of the file until the end is reached
+	    $_i_linea = 0;
+	    $_cantidad_lineas = 0;
+	    $_suma_linea = 0.00;
+	    while(!feof($file))
+	    {
+	        $_fila = fgets($file);
+	        $_fila = trim($_fila);
+	        if($_i_linea>0){
+	            if(!empty($_fila)){
+	                $_cantidad_lineas++;
+	                $_array_fila   = explode(";", $_fila);
+	                $_suma_linea += (float)$_array_fila[6];
+	                
+	            }
+	        }	       
+	       $_i_linea++;
+	    }
+	    fclose($file);
+	    
+	    $_respuesta = array();
+	    $_respuesta['cantidad_lineas'] = $_cantidad_lineas;
+	    $_respuesta['suma_lineas'] = $_suma_linea;
+	    return $_respuesta;
+	}
+	
 
 
 public function descargarArchivo(){
@@ -495,9 +541,9 @@ public function descargarArchivo(){
     $ruta_archivo      = $rsConsulta1[0]->ruta_carga_recaudaciones;
     
     $ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\rp_c\\";
-    $ubicacion = $ubicacionServer.$ruta_archivo;
+    $ubicacion = $ubicacionServer.$ruta_archivo."\\".$nombre_archivo;
     
-    
+    echo $ubicacion; die();
     // Define headers
     header("Content-disposition: attachment; filename=$nombre_archivo");
     header("Content-type: MIME");

@@ -79,43 +79,50 @@
 
 			<form id="frm_carga_recaudaciones" action="<?php echo $helper->url("CargaRecaudaciones","InsertaCargaRecaudaciones"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
 							    
-		    	 <div class="row">
-        		 <input type="hidden" id="id_carga_recaudaciones" value="0">
+		  	 <input type="hidden" id="id_carga_recaudaciones" value="0">
             		  
-       		  		  <div class="col-xs-12 col-md-4 col-md-4 ">
-            		    <div class="form-group">
-            		    					  
-                          <label for="id_entidad_patronal" class="control-label">Entidad:</label>
-                          <select  class="form-control" id="id_entidad_patronal" name="id_entidad_patronal" required>
-                          	<option value="0">--Seleccione--</option>
-                          </select>                         
-                          <div id="mensaje_id_entidad_patronal" class="errores"></div>
-                        </div>
-            		  </div>
+       		  		
             		  
-            		  <div class="col-md-4 col-lg-4 col-xs-12">
-	         	<div class="form-group">
-	         		<label for="year_periodo" class="control-label">AÑO :</label>
-	         		<input type="number" id="anio_carga_recaudaciones" name="anio_carga_recaudaciones" min="2000" max="<?php echo date('Y'); ?>" value="<?php echo date('Y'); ?>" class="form-control">
-                    </div>
-                        <div id="mensaje_anio_carga_recaudaciones" class="errores"></div>
-                      </div>
+            <div class="row">        	
+        			<div class="col-lg-6 col-md-6 col-xs-12">        		
+            			<div class="form-group "> 
+                			 <div class="form-group-sm">
+                				<label for="id_entidad_patronal" class="col-sm-4 control-label" >Entidad:</label>
+                				<div class="col-sm-8">
+                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control">
+                              	<option value="0">--Seleccione--</option>
+                              	</select>
+                                 </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div>
+        		
+        				<div class="row">        	
+        			<div class="col-lg-6 col-md-6 col-xs-12">        		
+            			<div class="form-group "> 
+                			 <div class="form-group-sm">
+                				<label for="anio_carga_recaudaciones" class="col-sm-4 control-label" >Fechas:</label>
+                				<div class="col-sm-4">
+                                  	<input type="number" max="<?php echo date('Y') ?>" class="form-control" id="anio_carga_recaudaciones" name="anio_carga_recaudaciones"  autocomplete="off" value="<?php echo date('Y') ?>" autofocus>
+                                 </div>
+                                 <div class="col-sm-4">
+                                  	<select id="mes_carga_recaudaciones" name="mes_carga_recaudaciones" class="form-control">
+                                  	<?php for ( $i=1; $i<=count($meses); $i++){ ?>
+                                  	<?php if( $i == date('n')){ ?>
+                                  	<option value="<?php echo $i;?>" selected ><?php echo $meses[$i-1]; ?></option>
+                                  	<?php }else{?>
+                                  	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>
+                                  	<?php }}?>
+                                  	</select>
+                                 </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div>
+            		  
+            
 	         
-	          		  		  <div class="col-xs-12 col-md-4 col-lg-4 ">
-            		    <div class="form-group">
-            		    					  
-                          <label for="mes_carga_recaudaciones" class="control-label">Mes:</label>
-                          <select  class="form-control" id="mes_carga_recaudaciones" name="mes_carga_recaudaciones" required>
-                            	<?php for ( $i=1; $i<=count($meses); $i++){ ?>
-                      	<?php if( $i == date('n')){ ?>
-                      	<option value="<?php echo $i;?>" selected ><?php echo $meses[$i-1]; ?></option>
-                      	<?php }else{?>
-                      	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>
-                      	<?php }}?>
-                          </select>                         
-                          <div id="mensaje_mes_carga_recaudaciones" class="errores"></div>
-                        </div>
-            		  </div>
             		  
             		  	<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
@@ -132,28 +139,38 @@
             			</div>
     				</div>
         		</div>
+        		
+        			  	<div class="row">        	
+        			<div class="col-lg-6 col-md-6 col-xs-12">        		
+            			<div class="form-group "> 
+                			 <div class="form-group-sm">
+                				<label for="nombre_carga_recaudaciones" class="col-sm-4 control-label" >Documento:</label>
+                				<div class="col-sm-8">
+                             	   <input accept="text/plain" type="file" name="nombre_carga_recaudaciones" id="nombre_carga_recaudaciones" value=""  class="form-control"/>     </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div>
             		 
-            		 
-            		     		  <div class="col-md-4 col-lg-4 col-xs-12">
-	         	<div class="form-group">
-	         		<label for="nombre_carga_recaudaciones" class="control-label">Documento :</label>
-	         	   <input type="file" name="nombre_carga_recaudaciones" id="nombre_carga_recaudaciones" value=""  class="form-control"/> 
-		    </div>
-                        <div id="mensaje_nombre_carga_recaudaciones" class="errores"></div>
-                      </div>
+      
     			    
-          	   	</div>	
-						<br>	          		        
-           		<div class="row">
-    			    <div class="col-xs-12 col-md-12 col-lg-12 " style="text-align: center; ">
-        	   		    
-    	                 <div class="col-sm-4">
+      <hr style="border-color:#FFFFFF;">
+        		
+        		<div class="row">        	
+        			<div class="col-lg-6 col-md-6 col-xs-12">        		
+            			<div class="form-group "> 
+                			 <div class="form-group-sm">                				
+                				<div class="col-sm-4">
+                                  	<!-- <button type="button" id="btnDistribuir" name="btnDistribuir" class="btn btn-block btn-sm btn-default">DISTRIBUIR</button> -->
+                                 </div>
+                                 <div class="col-sm-8" >
                                   	<button type="button" id="btnGenerar" name="btnGenerar" class="btn btn-block btn-sm btn-default">GENERAR</button>
                                  </div>
                                 
-	                    
-        		    </div>        		    
-    		    </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div>        		   
  
            </form>
                       
@@ -186,7 +203,8 @@
 	
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/Recaudaciones/js/CargaRecaudaciones.js?0.10"></script> 
+   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+   <script src="view/Recaudaciones/js/CargaRecaudaciones.js?0.13"></script> 
 
   </body>
 </html>   

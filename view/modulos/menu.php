@@ -419,10 +419,7 @@ $controladores=$_SESSION['controladores'];
                   <i class="fa fa-angle-left pull-right"></i>
                 </span>
               </a>
-              <ul class="treeview-menu">
-                <li style="<?php echo getcontrolador("CargaArchivos",$controladores) ?>"><a href="index.php?controller=CargaArchivos&action=index"><i class="fa fa-circle-o"></i>Carga de Archivos</a></li>
-                <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i>Carga Recaudaciones</a></li>
-                </ul>
+       
             </li>
        </ul>
       </li>
@@ -563,29 +560,7 @@ $controladores=$_SESSION['controladores'];
        </ul>
       </li>
       
-      <li class="treeview"  style="<?php echo getcontrolador("MenuRecaudaciones",$controladores) ?>"  >
-          <a href="#">
-            <i class="fa fa-folder"></i> <span>Recaudaciones</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-              <ul class="treeview-menu">
-               <li class="treeview"  style="<?php echo getcontrolador("AdministracionRecaudaciones",$controladores) ?>"  >
-              <a href="#">
-                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
-                <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i>
-                </span>
-              </a>
-              <ul class="treeview-menu">
-              
-                <li style="<?php echo getcontrolador("CargarArchivos",$controladores) ?>"><a href="index.php?controller=CargarArchivos&action=index"><i class="fa fa-circle-o"></i>Cargar Archivos</a></li>
-                <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i>Carga Recaudaciones</a></li>
-    
-                </ul>
-       </ul>
-      </li>
+   
       
 <li class="treeview"  style="<?php echo getcontrolador("MenuGestionDoc",$controladores) ?>"  >
           <a href="#">

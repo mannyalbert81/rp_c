@@ -1246,7 +1246,8 @@ class CreditosController extends ControladorBase{
 	}
 	
 	
-	public function HipotecarioNuevo($_id_credito = 0){
+	public function HipotecarioNuevo($_id_credito, $_id_lote, $_id_proveedor){
+	    
 	    
 	    $Credito   = new CreditosModel();
 	    
@@ -1312,7 +1313,7 @@ class CreditosController extends ControladorBase{
 	        /* buscar cuenta retencion*/
 	        $columnas4  = " id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
 	        $tablas4    = " public.plan_cuentas";
-	        $where4     = " nombre_plan_cuentas LIKE 'Interes Crédito Ordinario'";
+	        $where4     = " nombre_plan_cuentas LIKE 'Intereses Crédito Hipotecario";
 	        $id4        = " id_plan_cuentas";
 	        $limit4     = " LIMIT 1";
 	        
@@ -1338,7 +1339,7 @@ class CreditosController extends ControladorBase{
 	    }
 	    
 	    /* viene insertado de la CxP */
-	    $_descripcion_cuentas_pagar = " Tipo ORDINARIO";
+	    $_descripcion_cuentas_pagar = " Tipo HIPOTECARIO";
 	    $_id_cuentas_pagar  = $this->generaCuentaPagarCredito($_id_lote, $_id_credito, $_id_proveedor, $_descripcion_cuentas_pagar );
 	    
 	    /* para actualizar la forma de pago y el banco en cuentas por pagar */

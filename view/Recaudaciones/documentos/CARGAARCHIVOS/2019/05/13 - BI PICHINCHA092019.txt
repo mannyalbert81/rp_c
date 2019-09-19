@@ -1,0 +1,2 @@
+<br />
+<b>Warning</b>:  readfile(C:/Users/Sistemas/git\rp_c\view\Recaudaciones\documentos\ARCHIVOSENVIAR\2019\09\13 - BI PICHINCHA092019.txt): failed to open stream: No such file or directory in <b>C:\Users\Sistemas\git\rp_c\controller\RecaudacionController.php</b> on line <b>977</b><br />

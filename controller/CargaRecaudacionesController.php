@@ -283,6 +283,40 @@ class CargaRecaudacionesController extends ControladorBase{
 	        $error = error_get_last();
 	        if(!empty($error)){    throw new Exception('Variables no recibidas'); }
 	        
+	        /* validar archivo */
+	        $nombre = "";
+	        $tipo = "";
+	        $tamano = "";
+	        $_archivo_procesar = ""; 
+	        
+	        if ($_FILES['nombre_carga_recaudaciones']['tmp_name']!="")
+	        {
+	            
+	            $directorio = $this->crearPath($_anio_carga_recaudaciones, $_mes_carga_recaudaciones, "CARGAARCHIVOS");
+	            $_ruta_archivo_recaudaciones   = $directorio['ruta'];
+	            
+	            $nombre = $_FILES['nombre_carga_recaudaciones']['name'];
+	            $tipo = $_FILES['nombre_carga_recaudaciones']['type'];
+	            $tamano = $_FILES['nombre_carga_recaudaciones']['size'];
+	            move_uploaded_file($_FILES['nombre_carga_recaudaciones']['tmp_name'],$_ruta_archivo_recaudaciones.'/'.$nombre);
+	            
+	            $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
+	            
+	        }else{
+	            throw new Exception('Archivo txt no recibido/Valido');
+	        }
+	        	        
+	        $_array_archivo = $this->DevuelveLineasTxt($_archivo_procesar);
+	        $_cantidad_lineas = 0;
+	        $_suma_linea = 0;
+	        
+	        if(is_array($_array_archivo)){
+	            $_cantidad_lineas= $_array_archivo['cantidad_lineas'];
+	            $_suma_linea= $_array_archivo['suma_lineas'];
+	        }else{
+	            throw new Exception("El contenido del Archivo no es correcto");
+	        }	        
+	        
 	        $_mes_carga_recaudaciones = str_pad($_mes_carga_recaudaciones, 2, "0", STR_PAD_LEFT);
 	        
 	        $_nombre_carga_formato_recaudacion = "";
@@ -312,34 +346,7 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    $id2       = "id_entidad_patronal";
 	                    $rsConsulta2   = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
 	                    $_nombre_entidad_patronal  = $this->limpiarCaracteresEspeciales($rsConsulta2[0]->nombre_entidad_patronal);
-	                    
-	                    
-	                    $_archivo_procesar = "";
-	                    
-	                    if ($_FILES['nombre_carga_recaudaciones']['tmp_name']!="")
-	                    {
-	                        
-	                        $directorio = $this->crearPath($_anio_carga_recaudaciones, $_mes_carga_recaudaciones, "CARGAARCHIVOS");
-	                        $_ruta_archivo_recaudaciones   = $directorio['ruta'];
-	                        
-	                        $nombre = $_FILES['nombre_carga_recaudaciones']['name'];
-	                        $tipo = $_FILES['nombre_carga_recaudaciones']['type'];
-	                        $tamano = $_FILES['nombre_carga_recaudaciones']['size'];
-	                        move_uploaded_file($_FILES['nombre_carga_recaudaciones']['tmp_name'],$_ruta_archivo_recaudaciones.'/'.$nombre);
-	                        
-	                        $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
-	                    }
-	                    
-	                    $_array_archivo = $this->DevuelveLineasTxt($_archivo_procesar);
-	                    $_cantidad_lineas = 0;
-	                    $_suma_linea = 0;
-	                    
-	                    if(is_array($_array_archivo)){
-	                        $_cantidad_lineas= $_array_archivo['cantidad_lineas'];
-	                        $_suma_linea= $_array_archivo['suma_lineas'];
-	                    }
-	                    
-	                    
+	                    	                    
 	                    $funcion = "ins_core_carga_recaudaciones";
 	                    $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_recaudaciones','$nombre','$_usuario_usuarios','FALSE', '$_nombre_carga_formato_recaudacion','$_cantidad_lineas','$_suma_linea'";
 	                    $carga_recaudaciones->setFuncion($funcion);
@@ -348,8 +355,6 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    
 	                    $erro= pg_last_error();
 	                    if(!empty($erro)){ throw new Exception($erro); }
-	                    
-	                    
 	                    
 	                    
 	                    if((int)$resultado > 0){
@@ -391,32 +396,6 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    $rsConsulta2   = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
 	                    $_nombre_entidad_patronal  = $this->limpiarCaracteresEspeciales($rsConsulta2[0]->nombre_entidad_patronal);
 	                    
-	                    
-	                    $_archivo_procesar = "";
-	                    
-	                    if ($_FILES['nombre_carga_recaudaciones']['tmp_name']!="")
-	                    {
-	                        
-	                        $directorio = $this->crearPath($_anio_carga_recaudaciones, $_mes_carga_recaudaciones, "CARGAARCHIVOS");
-	                        $_ruta_archivo_recaudaciones   = $directorio['ruta'];
-	                        
-	                        $nombre = $_FILES['nombre_carga_recaudaciones']['name'];
-	                        $tipo = $_FILES['nombre_carga_recaudaciones']['type'];
-	                        $tamano = $_FILES['nombre_carga_recaudaciones']['size'];
-	                        move_uploaded_file($_FILES['nombre_carga_recaudaciones']['tmp_name'],$_ruta_archivo_recaudaciones.'/'.$nombre);
-	                        
-	                        $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
-	                    }
-	                    
-	                    $_array_archivo = $this->DevuelveLineasTxt($_archivo_procesar);
-	                    $_cantidad_lineas = 0;
-	                    $_suma_linea = 0;
-	                    
-	                    if(is_array($_array_archivo)){
-	                        $_cantidad_lineas= $_array_archivo['cantidad_lineas'];
-	                        $_suma_linea= $_array_archivo['suma_lineas'];
-	                    }
-	                    
 	                  
 	                    $funcion = "ins_core_carga_recaudaciones";
 	                    $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_recaudaciones','$nombre','$_usuario_usuarios','FALSE', '$_nombre_carga_formato_recaudacion','$_cantidad_lineas','$_suma_linea'";
@@ -426,8 +405,6 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    
 	                    $erro= pg_last_error();
 	                    if(!empty($erro)){ throw new Exception($erro); }
-	                    
-	              
 	                    
 	                    
 	                    if((int)$resultado > 0){
@@ -530,7 +507,10 @@ class CargaRecaudacionesController extends ControladorBase{
 	                $_cantidad_lineas++;
 	                $_array_fila   = explode(";", $_fila);
 	                $_suma_linea += (float)$_array_fila[6];
-	                
+	                $error = error_get_last();
+	                if(!empty($error)){
+	                    throw new  Exception("Contenido no Valido Revise el archivo");	               
+	                }
 	            }
 	        }	       
 	       $_i_linea++;

@@ -505,12 +505,13 @@ class CargaRecaudacionesController extends ControladorBase{
 	        if($_i_linea>0){
 	            if(!empty($_fila)){
 	                $_cantidad_lineas++;
+	                $error = true;
 	                $_array_fila   = explode(";", $_fila);
-	                $_suma_linea += (float)$_array_fila[6];
-	                $error = error_get_last();
-	                if(!empty($error)){
-	                    throw new  Exception("Contenido no Valido Revise el archivo");	               
+	                $error = $error = is_numeric($_array_fila[6]) ? false : true;
+	                if($error){
+	                    throw new  Exception("Contenido no Valido Revise el archivo.. linea ".$_cantidad_lineas);
 	                }
+	                $_suma_linea += (float)$_array_fila[6];
 	            }
 	        }	       
 	       $_i_linea++;

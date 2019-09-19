@@ -705,16 +705,21 @@ class CreditosController extends ControladorBase{
 	    $tablas5    = "core_creditos aa
                     INNER JOIN forma_pago bb
                     ON aa.id_forma_pago = bb.id_forma_pago
-                    INNER JOIN core_participes_cuentas cc
+                    LEFT JOIN core_participes_cuentas cc
                     ON cc.id_participes = aa.id_participes
                     AND cc.cuenta_principal = true";
 	    $where5     = "aa.id_estatus = 1 AND aa.id_creditos = $_id_credito";
 	    $id5        = "aa.id_creditos";
-	    $rsFormaPago = $Credito->getCondiciones($columnas5, $tablas5, $where5, $id5);
+	    $rsFormaPago = $Credito->getCondiciones($columnas5, $tablas5, $where5, $id5);	
 	    $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
 	    $_id_bancos = $rsFormaPago[0]->id_bancos;
 	    
-	    $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
+	    if( is_null($_id_bancos) ){
+	        $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
+	    }else{
+	        $columnaPago = "id_forma_pago = $_id_forma_pago ";
+	    }
+	    
 	    $tablasPago = "tes_cuentas_pagar";
 	    $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
 	    $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);

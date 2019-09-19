@@ -58,7 +58,9 @@ class CargaRecaudacionesController extends ControladorBase{
                       core_carga_recaudaciones.mes_carga_recaudaciones, 
                       core_carga_recaudaciones.anio_carga_recaudaciones, 
                       core_carga_recaudaciones.ruta_carga_recaudaciones, 
-                      core_carga_recaudaciones.nombre_carga_recaudaciones, 
+                      core_carga_recaudaciones.nombre_carga_recaudaciones,
+                      core_carga_recaudaciones.lineas_carga_recuadaciones,
+                      core_carga_recaudaciones.suma_carga_recuadaciones,
                       core_carga_recaudaciones.usuario_usuarios, 
                       core_carga_recaudaciones.generado_carga_recaudaciones, 
                       core_carga_recaudaciones.formato_carga_recaudaciones";
@@ -122,7 +124,8 @@ class CargaRecaudacionesController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Formato</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Lineas</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">lineas</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Total</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -150,6 +153,8 @@ class CargaRecaudacionesController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_carga_recaudaciones.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->usuario_usuarios.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->formato_carga_recaudaciones.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->lineas_carga_recuadaciones.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->suma_carga_recuadaciones.'</td>';
 	                $html.='<td style="font-size: 18px;">';
 	                $html.='<span class="pull-right ">
                                     <a onclick="verArchivo(this)" id="" data-idarchivo="'.$res->id_carga_recaudaciones.'"
@@ -309,7 +314,7 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    $_nombre_entidad_patronal  = $this->limpiarCaracteresEspeciales($rsConsulta2[0]->nombre_entidad_patronal);
 	                    
 	                    
-	                    
+	                    $_archivo_procesar = "";
 	                    
 	                    if ($_FILES['nombre_carga_recaudaciones']['tmp_name']!="")
 	                    {
@@ -322,10 +327,21 @@ class CargaRecaudacionesController extends ControladorBase{
 	                        $tamano = $_FILES['nombre_carga_recaudaciones']['size'];
 	                        move_uploaded_file($_FILES['nombre_carga_recaudaciones']['tmp_name'],$_ruta_archivo_recaudaciones.'/'.$nombre);
 	                        
+	                        $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
 	                    }
 	                    
+	                    $_array_archivo = $this->DevuelveLineasTxt($_archivo_procesar);
+	                    $_cantidad_lineas = 0;
+	                    $_suma_linea = 0;
+	                    
+	                    if(is_array($_array_archivo)){
+	                        $_cantidad_lineas= $_array_archivo['cantidad_lineas'];
+	                        $_suma_linea= $_array_archivo['suma_lineas'];
+	                    }
+	                    
+	                    
 	                    $funcion = "ins_core_carga_recaudaciones";
-	                    $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_recaudaciones','$nombre','$_usuario_usuarios','FALSE', '$_nombre_carga_formato_recaudacion'";
+	                    $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_recaudaciones','$nombre','$_usuario_usuarios','FALSE', '$_nombre_carga_formato_recaudacion','$_cantidad_lineas','$_suma_linea'";
 	                    $carga_recaudaciones->setFuncion($funcion);
 	                    $carga_recaudaciones->setParametros($parametros);
 	                    $resultado = $carga_recaudaciones->llamafuncionPG();
@@ -334,10 +350,12 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    if(!empty($erro)){ throw new Exception($erro); }
 	                    
 	                    
+	                    
+	                    
 	                    if((int)$resultado > 0){
 	                        
 	                        $respuesta['mensaje']   = "Carga Generada Revise el archivo";
-	                         $respuesta['respuesta'] = 1;
+	                        $respuesta['respuesta'] = 1;
 	                    }else{
 	                        
 	                        $respuesta['mensaje']   = "Error al insertar";
@@ -391,9 +409,17 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    }
 	                    
 	                    $_array_archivo = $this->DevuelveLineasTxt($_archivo_procesar);
+	                    $_cantidad_lineas = 0;
+	                    $_suma_linea = 0;
 	                    
+	                    if(is_array($_array_archivo)){
+	                        $_cantidad_lineas= $_array_archivo['cantidad_lineas'];
+	                        $_suma_linea= $_array_archivo['suma_lineas'];
+	                    }
+	                    
+	                  
 	                    $funcion = "ins_core_carga_recaudaciones";
-	                    $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_recaudaciones','$nombre','$_usuario_usuarios','FALSE', '$_nombre_carga_formato_recaudacion'";
+	                    $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_recaudaciones','$nombre','$_usuario_usuarios','FALSE', '$_nombre_carga_formato_recaudacion','$_cantidad_lineas','$_suma_linea'";
 	                    $carga_recaudaciones->setFuncion($funcion);
 	                    $carga_recaudaciones->setParametros($parametros);
 	                    $resultado = $carga_recaudaciones->llamafuncionPG();
@@ -401,10 +427,7 @@ class CargaRecaudacionesController extends ControladorBase{
 	                    $erro= pg_last_error();
 	                    if(!empty($erro)){ throw new Exception($erro); }
 	                    
-	                    if(is_array($_array_archivo)){
-	                        $respuesta['cantidadLineas']   = $_array_archivo['cantidad_lineas'];
-	                        $respuesta['sumaLineas'] = $_array_archivo['suma_lineas'];
-	                    }
+	              
 	                    
 	                    
 	                    if((int)$resultado > 0){
@@ -492,12 +515,9 @@ class CargaRecaudacionesController extends ControladorBase{
 	 */
 	public function DevuelveLineasTxt( $_archivo ){
 	    
-	    //$_archivo = "C:/Users/Manuel/git/rp_c/view/Recaudaciones/documentos/CARGAARCHIVOS/2019/09/13 - BI PICHINCHA092019.txt";
-	    
 	    if( !is_file($_archivo)){ return 0; }
 	    
 	    $file = fopen($_archivo, "r") or exit("0");
-	    //Output a line of the file until the end is reached
 	    $_i_linea = 0;
 	    $_cantidad_lineas = 0;
 	    $_suma_linea = 0.00;
@@ -543,7 +563,6 @@ public function descargarArchivo(){
     $ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\rp_c\\";
     $ubicacion = $ubicacionServer.$ruta_archivo."\\".$nombre_archivo;
     
-    echo $ubicacion; die();
     // Define headers
     header("Content-disposition: attachment; filename=$nombre_archivo");
     header("Content-type: MIME");

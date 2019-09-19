@@ -1601,7 +1601,8 @@ class RevisionCreditosController extends ControladorBase{
                 $where="core_participes.cedula_participes='".$res->cedula_participes."' AND core_contribucion.id_estatus=1";
                 $totalCtaIndividual=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
                 $totalCtaIndividual=$totalCtaIndividual[0]->total;
-                $html.='<td style="text-align: center; font-size: 11px;">'.$totalCtaIndividual.'</td>';
+                $totalCtaIndividual=number_format((float)$totalCtaIndividual,2,".",",");
+                $html.='<td align="right" style="text-align: center; font-size: 11px;">'.$totalCtaIndividual.'</td>';
                 $html.='<td style="text-align: center; font-size: 11px;">'.$res->plazo_creditos.'</td>';
                 if(!(empty($res->monto_creditos_retenciones)))
                 {

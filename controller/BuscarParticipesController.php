@@ -60,7 +60,7 @@ class BuscarParticipesController extends ControladorBase{
               </tr>
               <tr>
               <td width="50%">
-                <font size="3">Tipo Crédito : '.$resultSet[0]->nombre_tipo_creditos.'</font>
+                <font size="3" id="tipo_credito_solicitud">Tipo Crédito : '.$resultSet[0]->nombre_tipo_creditos.'</font>
               </td>
               <td width="50%">
                 <font size="3">Destino Dinero : '.$resultSet[0]->destino_dinero_datos_prestamo.'</font>

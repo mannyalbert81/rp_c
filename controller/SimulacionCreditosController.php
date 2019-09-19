@@ -405,7 +405,7 @@ class SimulacionCreditosController extends ControladorBase{
     <td ><font size="3"> Capital de créditos : '.$saldo_credito.'</font></td>
     </tr>
     <tr>
-    <td ><font size="3"> Disponible : '.$disponible.'</font></td>
+    <td ><font size="3" id="monto_disponible1"> Disponible : '.$disponible.'</font></td>
     </tr>';
     if($num_aporte<3)$html.='<td colspan="2" ><font size="3" id="aportes_participes">El participe tiene '.$num_aporte.' de los 3 últimos aportes pagados</font></td>';
     $html.='</td>
@@ -1108,6 +1108,8 @@ class SimulacionCreditosController extends ControladorBase{
        $columnas="interes_tipo_creditos";
        $tablas="core_tipo_creditos";
        $where="codigo_tipo_creditos='".$tipo_credito."'";
+       $resultSet=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $tasa_interes=$resultSet[0]->interes_tipo_creditos;
        
        $columnas="id_tipo_creditos";
        $tablas="core_tipo_creditos";
@@ -1115,8 +1117,6 @@ class SimulacionCreditosController extends ControladorBase{
        $id_tipo_creditos=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
        $id_tipo_creditos=$id_tipo_creditos[0]->id_tipo_creditos;
        
-       $resultSet=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
-       $tasa_interes=$resultSet[0]->interes_tipo_creditos;
        
        $con_garante=$_POST['con_garante'];
        
@@ -1124,7 +1124,6 @@ class SimulacionCreditosController extends ControladorBase{
               
        $fecha_pago=date("Y-m-d");
        $interes_credito=$tasa_interes;
-       $id_tipo_creditos=0;
        
        $tasa_interes=$tasa_interes/100;
        $cuota=$_POST['cuota_credito'];
@@ -1247,6 +1246,16 @@ class SimulacionCreditosController extends ControladorBase{
                    $credito->setParametros($parametros);
                    $resultado=$credito->Insert();
                    
+                   $funcion = "ins_core_tabla_amortizacion_historico";
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   
+                   $funcion = "ins_core_tabla_amortizacion_pagare";
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   
                    $errores_credito=ob_get_clean();
                    $errores_credito=trim($errores_credito);
                    
@@ -1308,6 +1317,15 @@ class SimulacionCreditosController extends ControladorBase{
                      '$hoy'";
                $credito->setFuncion($funcion);
                $credito->setParametros($parametros);
+              $resultado=$credito->Insert();
+              $funcion = "ins_core_tabla_amortizacion_historico";
+              $credito->setFuncion($funcion);
+              $credito->setParametros($parametros);
+              $resultado=$credito->Insert();
+              
+              $funcion = "ins_core_tabla_amortizacion_pagare";
+              $credito->setFuncion($funcion);
+              $credito->setParametros($parametros);
               $resultado=$credito->Insert();
               $errores=ob_get_clean();
               $errores=trim($errores);
@@ -1427,6 +1445,13 @@ class SimulacionCreditosController extends ControladorBase{
        $id_participe=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
        $id_participe=$id_participe[0]->id_participes;
        
+       $columnas="id_estado_creditos";
+       $tablas="core_estado_creditos";
+       $where="nombre_estado_creditos='En proceso de Renovacion'";
+       
+       $id_estado_renovacion=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $id_estado_renovacion=$id_estado_renovacion[0]->id_estado_creditos;
+       
        $columnas="numero_consecutivos";
        $tablas="consecutivos";
        $where="nombre_consecutivos='CREDITO'";
@@ -1536,6 +1561,10 @@ class SimulacionCreditosController extends ControladorBase{
                             VALUES (".$res1->id_creditos.",".$numero_credito.",".$res1->saldo_actual_creditos.",".$desgravamen.")";
                    $insert=$credito->executeNonQuery($query);
                    
+                   $query="UPDATE core_creditos
+                            SET id_estado_creditos=".$id_estado_renovacion."
+                            WHERE id_creditos=".$res1->id_creditos;
+                   $insert=$credito->executeNonQuery($query);
                }
            }
            $total_retencion=number_format((float)$total_retencion,2,".","");
@@ -1596,6 +1625,16 @@ class SimulacionCreditosController extends ControladorBase{
                      1,
                      '$tasa_interes',
                      '$hoy'";
+               $credito->setFuncion($funcion);
+               $credito->setParametros($parametros);
+               $resultado=$credito->Insert();
+               
+               $funcion = "ins_core_tabla_amortizacion_historico";
+               $credito->setFuncion($funcion);
+               $credito->setParametros($parametros);
+               $resultado=$credito->Insert();
+               
+               $funcion = "ins_core_tabla_amortizacion_pagare";
                $credito->setFuncion($funcion);
                $credito->setParametros($parametros);
                $resultado=$credito->Insert();
@@ -1907,7 +1946,7 @@ class SimulacionCreditosController extends ControladorBase{
                
                $where = "numero_creditos='".$numero_creditos."'";
                $tabla = "core_creditos";
-               $colval = "id_tipo_pagos=".$id_forma_pagos;
+               $colval = "id_forma_pago=".$id_forma_pagos;
                $rp_capremci->UpdateBy($colval, $tabla, $where);
            }
            

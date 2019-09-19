@@ -1854,9 +1854,32 @@ class SolicitudPrestamoController extends ControladorBase{
 					$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$res->id_solicitud_prestamo.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
 					$html.='</td>';
 					$html.='<td style="font-size: 15px;">';
-					if($aprobado_oficial_credito==1){
+					if($aprobado_oficial_credito==1 && $res->nombre_tipo_creditos!="HIPOTECARIO"){
 					    $html.='<button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="EnviarInfo(&quot;'.$res->numero_cedula_datos_personales.'&quot;,'.$res->id_solicitud_prestamo.')"><i class="glyphicon glyphicon-import"></i></button>';
 					}
+					else if($aprobado_oficial_credito==1 && $res->nombre_tipo_creditos=="HIPOTECARIO")
+					{
+					    $rp_capremci= new PlanCuentasModel();
+					    $columnas="estado_escrituras_core_documentos_hipotecario, 
+                                    estado_certificado_core_documentos_hipotecario,
+                                    estado_impuesto_core_documentos_hipotecario,
+                                    estado_avaluo_core_documentos_hipotecario";
+					    $tablas="core_documentos_hipotecario";
+					    $where="id_solicitud_credito=".$res->id_solicitud_prestamo;
+					    $documentos_solicitud=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+					    if(!empty($documentos_solicitud))
+					    {
+					        if($documentos_solicitud[0]->estado_escrituras_core_documentos_hipotecario=="t" &&
+					            $documentos_solicitud[0]->estado_certificado_core_documentos_hipotecario=="t" &&
+					            $documentos_solicitud[0]->estado_impuesto_core_documentos_hipotecario=="t" &&
+					            $documentos_solicitud[0]->estado_avaluo_core_documentos_hipotecario=="t")
+					        {
+					            $html.='<button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="EnviarInfo(&quot;'.$res->numero_cedula_datos_personales.'&quot;,'.$res->id_solicitud_prestamo.')"><i class="glyphicon glyphicon-import"></i></button>';
+					        }
+					    }
+					    				    
+					}
+					
 					$html.='</td>';
 					
 					$html.='</tr>';

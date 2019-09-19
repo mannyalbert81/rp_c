@@ -715,9 +715,9 @@ class CreditosController extends ControladorBase{
 	    $_id_bancos = $rsFormaPago[0]->id_bancos;
 	    
 	    if( is_null($_id_bancos) ){
-	        $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
+	        $columnaPago = "id_forma_pago = $_id_forma_pago ";	        
 	    }else{
-	        $columnaPago = "id_forma_pago = $_id_forma_pago ";
+	        $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
 	    }
 	    
 	    $tablasPago = "tes_cuentas_pagar";

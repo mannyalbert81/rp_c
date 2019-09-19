@@ -58,7 +58,7 @@ $("#txtbuscarProveedor").on("keyup",function(){
 function buscaCuentasPagar(pagina=1){
 	
 	let _busqueda = $("#txtbuscarProveedor").val();
-	let datos={peticion:'',busqueda:_busqueda};
+	let datos={peticion:'',busqueda:_busqueda,page:pagina};
 	let cantidadrespuesta = $("#cantidad_busqueda");
 	let $divResultados = $("#div_lista_cuentas_pagar");
 	

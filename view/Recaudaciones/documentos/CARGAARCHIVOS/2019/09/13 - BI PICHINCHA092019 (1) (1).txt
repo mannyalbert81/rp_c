@@ -1,2 +1,0 @@
-<br />
-<b>Warning</b>:  readfile(C:/Users/Sistemas/git\rp_c\view\Recaudaciones\documentos\CARGAARCHIVOS\2019\09): failed to open stream: Permission denied in <b>C:\Users\Sistemas\git\rp_c\controller\CargaRecaudacionesController.php</b> on line <b>502</b><br />

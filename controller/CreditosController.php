@@ -1266,7 +1266,7 @@ class CreditosController extends ControladorBase{
 	    
 	    /* datos de credito */
 	    $columnas1 = " bb.id_tipo_creditos, bb.nombre_tipo_creditos, bb.codigo_tipo_creditos, aa.numero_creditos,
-                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes
+                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes,
                       aa.id_forma_pago";
 	    $tablas1   = " core_creditos aa
             	        INNER JOIN core_tipo_creditos bb

@@ -570,6 +570,11 @@ class SimulacionCreditosController extends ControladorBase{
        $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
        $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
        
+       if($tipo_credito!="PH")
+       {
+           if($cuota>84) $cuota=84;               
+       }
+       
       $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$cuota));
       $valor_cuota=round($valor_cuota,2);
        
@@ -1966,6 +1971,42 @@ class SimulacionCreditosController extends ControladorBase{
        
        
        return $errores_cuentas;       
+   }
+   
+   public function GetAvaluoHipotecario()
+   {
+       session_start();
+       $rp_capremci= new PlanCuentasModel();
+       $monto_maximo=0;
+       $id_solicitud=$_POST['id_solicitud'];
+       $tipo_credito_hipotecario=$_POST['tipo_credito_hipotecario'];
+       $columnas="valor_avaluo_core_documentos_hipotecario";
+       $tablas="core_documentos_hipotecario";
+       $where="id_solicitud_credito=".$id_solicitud;
+       $avaluo_credito=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $avaluo_credito=$avaluo_credito[0]->valor_avaluo_core_documentos_hipotecario;
+       if($tipo_credito_hipotecario==1)
+       {
+           $monto_maximo=$avaluo_credito*0.8;
+           if($monto_maximo>100000) $monto_maximo=100000;
+       }
+       else
+       {
+           $monto_maximo=$avaluo_credito*0.5;
+           if($monto_maximo>45000) $monto_maximo=45000;
+       }
+       $avaluo_credito=number_format((float)$avaluo_credito,2,".","");
+       $monto_maximo=number_format((float)$monto_maximo,2,".","");
+       $html='<table>
+        <tr>
+        <td><font size="3">Avalúo del bien : '.$avaluo_credito.'</font></td>
+        <td><button  type="button" class="btn btn-default" onclick="TipoCredito()"><i class="glyphicon glyphicon-refresh"></i></button></td>
+        </tr>
+        <tr>
+        <td colspan="2"><font size="3" id="monto_disponible2">Monto máximo a recibir : '.$monto_maximo.'</font></td>
+        </tr>';
+       
+       echo $html;
    }
    
    public function cuotaParticipe(){

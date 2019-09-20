@@ -152,6 +152,7 @@ function TipoCredito()
 	$("#monto_credito").val("");
 	$("#tabla_amortizacion").html("");
 	var interes=$("#tipo_credito").val();
+	console.log(interes+"===>TIPO CREDITO");
 	$("#capacidad_pago_garante").html("");
 	renovacion_credito=false;
 	
@@ -196,9 +197,15 @@ function TipoCredito()
 			});
 		
 		}
-	else if(interes=="HP")
+	else if(interes=="PH")
 		{
-		
+		var tipo_credito_hipotecario="<label for=\"cedula_garante\" class=\"control-label\">Modalidad:</label>" +
+		"<select name=\"tipo_credito_hipotecario\" id=\"tipo_credito_hipotecario\"  class=\"form-control\" onchange=\"ModalidadCreditoHP()\">"+
+		"<option value=\"\" selected=\"selected\">--Seleccione--</option>"+
+		"<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
+		"<option value=\"2\" >MEJORAS Y/O REPAROS</option>"
+		"<div id=\"mensaje_tipo_hipotecario\" class=\"errores\"></div>";
+		$('#info_garante').html(tipo_credito_hipotecario);
 		}
 	else
 		{
@@ -212,6 +219,27 @@ function TipoCredito()
 		}
 		$("#monto_disponible").html(monto);
 		}
+}
+
+function ModalidadCreditoHP()
+{
+	var tipo_ph=$("#tipo_credito_hipotecario").val();
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=GetAvaluoHipotecario',
+	    type: 'POST',
+	    data: {
+	    	id_solicitud: solicitud,
+	    	tipo_credito_hipotecario: tipo_ph
+	    },
+	})
+	.done(function(x) {
+		$('#info_garante').html(x);
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
 }
 
 function GetCreditosActivos(id)
@@ -434,15 +462,22 @@ function GetCuotas()
 	monto=$("#monto_credito").val();
 	var interes=$("#tipo_credito").val();
 	var limite="";
-	console.log(renovacion_credito+"==>renovacion");
-	if(renovacion_credito)
-	{
-		limite=document.getElementById("monto_disponible").innerHTML;
-	}
+	if(interes=="PH")
+		{
+		limite=document.getElementById("monto_disponible2").innerHTML;
+		}
 	else
 		{
-		limite=document.getElementById("monto_disponible1").innerHTML;
+		if(renovacion_credito)
+		{
+			limite=document.getElementById("monto_disponible").innerHTML;
 		}
+		else
+			{
+			limite=document.getElementById("monto_disponible1").innerHTML;
+			}
+		}
+	
 	var elementos=limite.split(" : ");
 	var lista=document.getElementById("disponible_participe").classList;
 	var sueldo_participe=$("#sueldo_participe").val();
@@ -517,7 +552,7 @@ function GetCuotas()
 		$("#mensaje_sueldo_garante").fadeOut("slow");
 		}
 		}
-	if(monto!="" && parseFloat(monto)>150 && parseFloat(monto)<parseFloat(limite) && interes!="" && garante_pago && sueldo_participe!="")
+	if(monto!="" && parseFloat(monto)>150 && parseFloat(monto)<=parseFloat(limite) && interes!="" && garante_pago && sueldo_participe!="")
 		{
 		if(lista.includes('bg-red'))
 			{
@@ -1151,11 +1186,7 @@ function SubirInformacionCredito()  //proceso para los registros del credito
 			  		  icon: "success",
 			  		  button: "Aceptar",
 			  		}).then((value) => {
-			  			modal=1;
-			  			$('#cerrar_insertar').click();
-						 $('#cerrar_simulacion').click();
-						 CreditosActivosParticipe(id_participe, 1);
-						 modal=0;
+			  			window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
 						 });
 				}
 			else
@@ -1201,7 +1232,6 @@ function SubirInformacionCredito()  //proceso para los registros del credito
 			  		  icon: "success",
 			  		  button: "Aceptar",
 			  		}).then((value) => {
-			  			
 			  			window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
 						 });
 				}

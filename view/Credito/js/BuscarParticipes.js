@@ -405,7 +405,7 @@ function SimularCredito()
 {
 	var monto=$("#monto_credito").val();
 	var interes=$("#tipo_credito").val();
-	if (interes=="R") interes=9;	
+	//if (interes=="R") interes=9;	
 	var cuota_credito=$("#cuotas_credito").val();
 	$.ajax({
 	    url: 'index.php?controller=SimulacionCreditos&action=SimulacionCredito',
@@ -414,7 +414,8 @@ function SimularCredito()
 	    	monto_credito:monto,
 	    	tipo_credito:interes,
 	    	plazo_credito:cuota_credito,
-	    	renovacion_credito:renovacion_credito
+	    	renovacion_credito:renovacion_credito,
+	    	id_solicitud:solicitud,
 	    },
 	})
 	.done(function(x) {

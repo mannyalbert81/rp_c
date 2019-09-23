@@ -461,6 +461,7 @@ $controladores=$_SESSION['controladores'];
           </a>
           <ul class="treeview-menu">
           	  <li style="<?php echo getcontrolador("BuscarParticipes",$controladores) ?>"><a href="index.php?controller=BuscarParticipes&action=index"><i class="fa fa-circle-o"></i> Buscar Participes</a></li>
+          	  <li style="<?php echo getcontrolador("BuscarParticipesCesantes",$controladores) ?>"><a href="index.php?controller=BuscarParticipesCesantes&action=index"><i class="fa fa-circle-o"></i> Buscar Participes Cesantes</a></li>
               <li style="<?php echo getcontrolador("CoreInformacionParticipes",$controladores) ?>"><a href="index.php?controller=CoreInformacionParticipes&action=index"><i class="fa fa-circle-o"></i>Consultar Información Participes</a></li>
               <li style="<?php echo getcontrolador("AnalisisCreditos",$controladores) ?>"><a href="index.php?controller=AnalisisCreditos&action=index"><i class="fa fa-circle-o"></i>Análisis Crédito</a></li>
               <li style="<?php echo getcontrolador("SimulacionCreditos",$controladores) ?>"><a href="index.php?controller=SimulacionCreditos&action=index"><i class="fa fa-circle-o"></i>Simulación Crédito</a></li>

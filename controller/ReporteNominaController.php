@@ -92,11 +92,11 @@ class ReporteNominaController extends ControladorBase{
             
             $freserva=$res->fondos_reserva;
             $totalreservas+=$freserva;
-            $totaling=$res->salario_cargo+$res->horas_ext50+$res->horas_ext100+$freserva+$res->dec_cuarto_sueldo+$res->dec_tercero_sueldo;
-            $totalingresos+=$totaling;
-            $totaleg=$res->anticipo_sueldo+$res->aporte_iess1+$res->asocap+$res->comision_asuntos_sociales+$res->prest_quirog_iess+$res->prest_hipot_iess+$res->dcto_salario;
+            $totaleg=$res->salario_cargo+$res->horas_ext50+$res->horas_ext100+$freserva+$res->dec_cuarto_sueldo+$res->dec_tercero_sueldo;
             $totalegresos+=$totaleg;
-            $total=$totaling-$totaleg;
+            $totaling=$res->anticipo_sueldo+$res->aporte_iess1+$res->asocap+$res->comision_asuntos_sociales+$res->prest_quirog_iess+$res->prest_hipot_iess+$res->dcto_salario;
+            $totalingresos+=$totaling;
+            $total=$totaleg-$totaling;
             $totalapagar+=$total;
  
             $totalsalarios+=$res->salario_cargo;
@@ -110,65 +110,223 @@ class ReporteNominaController extends ControladorBase{
             $totalsociales+=$res->comision_asuntos_sociales;
             $totalqiess+=$res->prest_quirog_iess;
             $totalhiess+=$res->prest_hipot_iess;
+            $totaldctos+=$res->dcto_salario;
            }
+           
+           
+           /*<div class="col-md-4">
+           <p class="text-center">
+           <strong>Goal Completion</strong>
+           </p>
+           
+           
+           
+           <div class="progress sm">
+           <div class="progress-bar progress-bar-aqua" style="width: 80%"></div>
+           </div>
+           </div>
+           <!-- /.progress-group -->
+           <div class="progress-group">
+           <span class="progress-text">Complete Purchase</span>
+           <span class="progress-number"><b>310</b>/400</span>
+           
+           <div class="progress sm">
+           <div class="progress-bar progress-bar-red" style="width: 80%"></div>
+           </div>
+           </div>
+           <!-- /.progress-group -->
+           <div class="progress-group">
+           <span class="progress-text">Visit Premium Page</span>
+           <span class="progress-number"><b>480</b>/800</span>
+           
+           <div class="progress sm">
+           <div class="progress-bar progress-bar-green" style="width: 80%"></div>
+           </div>
+           </div>
+           <!-- /.progress-group -->
+           <div class="progress-group">
+           <span class="progress-text">Send Inquiries</span>
+           <span class="progress-number"><b>250</b>/500</span>
+           
+           <div class="progress sm">
+           <div class="progress-bar progress-bar-yellow" style="width: 80%"></div>
+           </div>
+           </div>
+           <!-- /.progress-group -->
+           </div>*/
+           $porcentaje_egresos_salario=($totalsalarios*100)/$totalegresos;
+           $porcentaje_egresos_h50=($totalh50*100)/$totalegresos;
+           $porcentaje_egresos_h10=($totalh10*100)/$totalegresos;
+           $porcentaje_egresos_fr=($totalreservas*100)/$totalegresos;
+           $porcentaje_egresos_13=($total13*100)/$totalegresos;
+           $porcentaje_egresos_14=($total14*100)/$totalegresos;
+           $totalegresos=number_format((float)$totalegresos, 2, ',', '.');
+           $totalsalarios=number_format((float)$totalsalarios, 2, ',', '.');
+        $html='<div class="col-lg-12 col-md-12 col-xs-12">';
+        $html.='<div class="box-body bg-gray">';
+        $html.='<div class="col-lg-6 col-md-6 col-xs-6 bg-silver">';
+        $html.= '<h3 align="center">
+           <strong>Total Gastos: '.$totalegresos.'$</strong>
+           </h3>
+            <div class="progress-group">
+           <span class="progress-text">Salarios</span>
+           <span class="progress-number"><b>'.$totalsalarios.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
         
-        $html='';
-        $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-        $html.= "<table id='tabla_reporte' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
-        $html.= "<thead>";
-        $html.='<tr>';
-        $html.='<th colspan="3" rowspan="8" bgcolor="'.$colorInfo1.'" scope="colgroup">Totales</th>';
-        $html.='<th colspan="8" bgcolor="'.$coloringresos1.'" scope="colgroup">Gastos</th>';
-        $html.='</tr>';
-        $html.='<tr>';
-        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Salario</th>';
-        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Horas Extra 50%</th>';
-        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Horas Extra 100%</th>';
-        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Fondos de reserva</th>';
-        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">14to Sueldo</th>';
-        $html.='<th bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">13ro Sueldo</th>';
-        $html.='<th colspan="2" bgcolor="'.$coloringresos1.'" style="text-align: left;  font-size: 14px;">Total</th>';
-        $html.='</tr>';
-        $html.='<tr>';
-        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totalsalarios.'</td>';
-        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totalh50.'</td>';
-        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totalh10.'</td>';
-        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totalreservas.'</td>';
-        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$total14.'</td>';
-        $html.='<td bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$total13.'</td>';
-        $html.='<td colspan="2" bgcolor="'.$coloringresos2.'" style="font-size: 15px;" align="right">'.$totalingresos.'</td>';
-        $html.='</tr>';
-        $html.='<tr>';
-        $html.=' <th colspan="8" bgcolor="'.$coloregresos1.'" scope="colgroup">Cuentas por pagar a terceros</th>';
-        $html.='</tr>';
-        $html.='<tr>';
-        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Anticipo de sueldo</th>';
-        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Aporte IESS '.$resultDSE[0]->descuento_iess1.'%</th>';
-        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">ASOCAP</th>';
-        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Comision Asuntos sociales</th>';
-        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">PREST.QUROG. IESS</th>';
-        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">PREST. HIPOT. IESS</th>';
-        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Dcto salario</th>';
-        $html.='<th bgcolor="'.$coloregresos1.'" style="text-align: left;  font-size: 14px;">Total</th>';
-        $html.='</tr>';
-        $html.='<tr>';
+         $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_salario.'%"></div>
+           </div>
+           </div>';
+        $totalh50=number_format((float)$totalh50, 2, ',', '.');
         
-        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalanticipo.'</td>';
-        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totaliess.'</td>';
-        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalAsocap.'</td>';
-        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalsociales.'</td>';
-        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalqiess.'</td>';
-        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalhiess.'</td>';
-        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totaldctos.'</td>';
-        $html.='<td bgcolor="'.$coloregresos2.'" style="font-size: 15px;" align="right">'.$totalegresos.'</td>';
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Horas Extra 50%</span>
+           <span class="progress-number"><b>'.$totalh50.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
         
-        $html.='</tr>';
-        $html.='<tr>';
-        $html.='<th colspan="7" style="text-align: left;  font-size: 14px;">A Pagar</th>';
-        $html.='<td style="font-size: 15px;" align="right">'.$totalapagar.'</td>';
-        $html.='</tr>';
-        $html.='</tbody>';
-        $html.='</table>';
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_h50.'%"></div>
+           </div>
+           </div>';
+        
+        $totalh10=number_format((float)$totalh10, 2, ',', '.');
+            
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Horas Extra 100%</span>
+           <span class="progress-number"><b>'.$totalh10.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_h10.'%"></div>
+           </div>
+           </div>';
+        
+        $totalreservas=number_format((float)$totalreservas, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Fondos de reserva</span>
+           <span class="progress-number"><b>'.$totalreservas.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_fr.'%"></div>
+           </div>
+           </div>';
+        
+        $total13=number_format((float)$total13, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">13ro Sueldo</span>
+           <span class="progress-number"><b>'.$total13.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_13.'%"></div>
+           </div>
+           </div>';
+        $total14=number_format((float)$total14, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">14to Sueldo</span>
+           <span class="progress-number"><b>'.$total14.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_14.'%"></div>
+           </div>
+           </div>';
+       
+        $html.='</div>';
+        
+        $porcentaje_ingresos_anticipo=($totalanticipo*100)/$totalingresos;
+        $porcentaje_ingresos_Apiess=($totaliess*100)/$totalingresos;
+        $porcentaje_ingresos_ASOCAP=($totalAsocap*100)/$totalingresos;
+        $porcentaje_ingresos_sociales=($totalsociales*100)/$totalingresos;
+        $porcentaje_ingresos_quiro=($totalqiess*100)/$totalingresos;
+        $porcentaje_ingresos_hipo=($totalhiess*100)/$totalingresos;
+        $porcentaje_ingresos_dctos=($totaldctos*100)/$totalingresos;
+       
+        $totalingresos=number_format((float)$totalingresos, 2, ',', '.');
+        $totalanticipo=number_format((float)$totalanticipo, 2, ',', '.');
+        
+        $html.='<div class="col-lg-6 col-md-6 col-xs-6">';
+        $html.= '<h3 align="center">
+           <strong>Total Cuentas por pagar a terceros: '.$totalingresos.'$</strong>
+           </h3>
+            <div class="progress-group">
+           <span class="progress-text">Anticipo de sueldo</span>
+           <span class="progress-number"><b>'.$totalanticipo.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_anticipo.'%"></div>
+           </div>
+           </div>';
+        $totaliess=number_format((float)$totaliess, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Aporte IESS</span>
+           <span class="progress-number"><b>'.$totaliess.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_Apiess.'%"></div>
+           </div>
+           </div>';
+        
+        $totalAsocap=number_format((float)$totalAsocap, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">ASOCAP</span>
+           <span class="progress-number"><b>'.$totalAsocap.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_ASOCAP.'%"></div>
+           </div>
+           </div>';
+        
+        $totalsociales=number_format((float)$totalsociales, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Comision Asuntos sociales</span>
+           <span class="progress-number"><b>'.$totalsociales.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_sociales.'%"></div>
+           </div>
+           </div>';
+        
+        $totalqiess=number_format((float)$totalqiess, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">PREST.QUROG. IESS</span>
+           <span class="progress-number"><b>'.$totalqiess.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_quiro.'%"></div>
+           </div>
+           </div>';
+        $totalhiess=number_format((float)$totalhiess, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">PREST. HIPOT. IESS</span>
+           <span class="progress-number"><b>'.$totalhiess.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_hipo.'%"></div>
+           </div>
+           </div>';
+        
+        $totaldctos=number_format((float)$totaldctos, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Dcto salario</span>
+           <span class="progress-number"><b>'.$totaldctos.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_dctos.'%"></div>
+           </div>
+           </div>';
+        
+        $html.='</div>';
+        
+        $totalapagar=number_format((float)$totalapagar, 2, ',', '.');
+        $html.='<h3 align="center">
+        <strong>A Pagar: '.$totalapagar.'$</strong>
+        </h3>';
+        $html.='</div>';
         $html.='</div>';
         
         return $html;
@@ -270,12 +428,13 @@ class ReporteNominaController extends ControladorBase{
         $resultSet=$reporte_nomina->getCondicionesPag("*", $tablas, $where, $id, $limit);
         $total_pages = ceil($cantidadResult/$per_page);
         
-        $totales=$this->TotalesReporte($resultSetT, $resultDSE, $coloringresos1, $coloringresos2, $colorInfo1, $colorInfo2, $coloregresos1, $coloregresos2);
+        
         
         $html="";
         
         if (!(empty($resultSet)))
         {
+            $totales=$this->TotalesReporte($resultSetT, $resultDSE, $coloringresos1, $coloringresos2, $colorInfo1, $colorInfo2, $coloregresos1, $coloregresos2);
             $html.='<div class="pull-left" style="margin-left:15px;">';
             $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
             $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>';            
@@ -392,10 +551,11 @@ class ReporteNominaController extends ControladorBase{
      
      
      $html.='</section></div>';
-     $html.=$totales;
+     
      $html.='<div class="table-pagination pull-right">';
      $html.=''. $this->paginate_reporte("index.php", $page, $total_pages, $adjacents,"ReporteNomina").'';
      $html.='</div>';
+     $html.=$totales;
      $html.='<div class="row">
            	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">

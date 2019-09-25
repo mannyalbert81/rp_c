@@ -165,9 +165,9 @@ class NominaController extends ControladorBase{
         $_html .= "</thead>"; 
         
         /* datos para tabla */
-        $_t_saldo       = number_format((float)$rsConsulta1[0]->total_salario,2,".",","); ;
-        $_t_horas_50    = $rsConsulta1[0]->total_extras_50;
-        $_t_horas_100   = $rsConsulta1[0]->total_extras_100;
+        $_t_saldo       = number_format((float)$rsConsulta1[0]->total_salario,2,".",",");
+        $_t_horas_50    = number_format((float)$rsConsulta1[0]->total_extras_50,2,".",",");
+        $_t_horas_100   = number_format((float)$rsConsulta1[0]->total_extras_100,2,".",",");
         $_f_reserva     = $rsConsulta1[0]->fondos_reserva;
         $_decimo_13     = $rsConsulta1[0]->decimo_13;
         $_decimo_14     = $rsConsulta1[0]->decimo_14;
@@ -188,6 +188,13 @@ class NominaController extends ControladorBase{
         $rsSaldo = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.05'");
         if(!empty($rsSaldo)){
             $_filas .= "<tr><td>".$rsSaldo[0]->codigo_plan_cuentas."</td><td>".$rsSaldo[0]->nombre_plan_cuentas."</td><td>".$_t_saldo."</td><td>0.00</td></tr>"; 
+        }
+        $rsHorasE = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.10.01'");
+        if(!empty($rsSaldo)){
+            if( $_t_horas_50 > 0 ){
+                $_filas .= "<tr><td>".$rsSaldo[0]->codigo_plan_cuentas."</td><td>".$rsSaldo[0]->nombre_plan_cuentas."</td><td>".$_t_horas_50."</td><td>0.00</td></tr>";
+            }
+            
         }
         //cuentas haber
         $_cuentas = array('SALARIO'=>'4.3.01.05','HEXTRAS'=>'4.3.01.10.01','FRESERVA'=>'4.3.01.25'); 

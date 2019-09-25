@@ -242,6 +242,25 @@
   	</div>
   </section>
   </div>
+  
+  <!-- Modal reporte individual -->
+ 
+ <div class="modal fade bs-example-modal-lg" id="myModalReporteIndividual" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+	    	<div class="modal-header bg-primary">
+	    		<button type="button" id="cerrar_renovar_credito" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Reporte Individual</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+				 <div id="reporte_individual_empleado"></div>				 
+            	
+				</div>
+			</div>			
+		</div>
+	</div>
+</div>
  
  	<?php include("view/modulos/footer.php"); ?>	
 
@@ -256,7 +275,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-    <script src="view/Administracion/js/ReporteNomina.js?0.12"></script>
+    <script src="view/Administracion/js/ReporteNomina.js?0.13"></script>
 	
 	
   </body>

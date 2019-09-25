@@ -381,6 +381,457 @@ class ReporteNominaController extends ControladorBase{
             	   ON empleados.id_oficina = oficina.id_oficina
             	   INNER JOIN public.cargos_empleados
             	   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+        
+        
+        $where="reporte_nomina_empleados.periodo_registro='".$periodo."'";
+        
+        $id="reporte_nomina_empleados.id_registro";
+        
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        if(!empty($search)){
+            
+            
+            $where1=" AND (empleados.nombres_empleados ILIKE '".$search."%' OR oficina.nombre_oficina ILIKE '".$search."%'
+            OR reporte_nomina_empleados.periodo_registro ILIKE '%".$search."')";
+            
+            $where.=$where1;
+        }
+        
+        $resultSetT = $reporte_nomina->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $cantidadResult=sizeof($resultSetT);
+        
+        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+        
+        $per_page = 10; //la cantidad de registros que desea mostrar
+        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+        $offset = ($page - 1) * $per_page;
+        
+        $coloringresos1="#F5B041";
+        
+        $coloringresos2="#FAD7A0";
+        
+        $colorInfo1="#A8CEF6";
+        
+        $colorInfo2="#ADD8E6";
+        
+        $coloregresos1="#F1C40F";
+        
+        $coloregresos2="#F9E79F";
+        
+        
+        
+        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+        
+        $resultSet=$reporte_nomina->getCondicionesPag("*", $tablas, $where, $id, $limit);
+        $total_pages = ceil($cantidadResult/$per_page);
+        
+        
+        
+        $html="";
+        
+        if (!(empty($resultSet)))
+        {
+            $totales=$this->TotalesReporte($resultSetT, $resultDSE, $coloringresos1, $coloringresos2, $colorInfo1, $colorInfo2, $coloregresos1, $coloregresos2);
+            $html.='<div class="pull-left" style="margin-left:15px;">';
+            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>';
+            $html.='</div>';
+            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+            $html.='<section style="height:425px; overflow-y:scroll;">';
+            $html.= "<table id='tabla_reporte' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+            $html.= "<thead>";
+            $html.='<tr>';
+            $html.='<th colspan="2"  style="text-align: left;  font-size: 14px;"></th>';
+            $html.='<th  style="text-align: left;  font-size: 14px;">Empleado</th>';
+            $html.='<th  style="text-align: left;  font-size: 14px;">Oficina</th>';
+            $html.='<th  style="text-align: left;  font-size: 14px;">Salario</th>';
+            $html.='<th style="text-align: left;  font-size: 14px;">A Pagar</th>';
+            $html.='<th style="text-align: left;  font-size: 14px;">Periodo</th>';
+            $html.='<th style="text-align: left;  font-size: 14px;"></th>';
+            $html.='</tr>';
+            $html.='</thead>';
+            $html.='<tbody>';
+            $i=0;
+            
+            foreach ($resultSet as $res)
+            {
+                $i++;
+                $html.='<tr>';
+                $html.='<td style="font-size: 15px;">'.$i.'</td>';
+                $html.='<td  style="font-size: 15px;">
+       <button type="button" id="Print" name="Print" class="btn btn-primary" onclick="ImprimirReporteIndividual('.$res->id_registro.')"><i class="glyphicon glyphicon-print"></i></button>';
+                if($periodo==$periodoactual)
+                {
+                    $html.='<button  type="button" class="btn btn-success" onclick="';
+                    $html.='EditarNomina(&quot;'.$res->nombres_empleados.'&quot,&quot;'.$res->nombre_oficina.'&quot,&quot;'.$res->salario_cargo.'&quot;,&quot;'.$res->horas_ext50.'&quot;';
+                    $html.=',&quot;'.$res->horas_ext100.'&quot;,&quot;'.$res->fondos_reserva.'&quot;,&quot;'.$res->dec_cuarto_sueldo.'&quot;';
+                    $html.=',&quot;'.$res->dec_tercero_sueldo.'&quot;,&quot;'.$res->anticipo_sueldo.'&quot;,&quot;'.$res->aporte_iess1.'&quot;';
+                    $html.=',&quot;'.$res->asocap.'&quot;,&quot;'.$res->comision_asuntos_sociales.'&quot;,&quot;'.$res->prest_quirog_iess.'&quot;,&quot;'.$res->prest_hipot_iess.'&quot;';
+                    $html.=',&quot;'.$res->dcto_salario.'&quot;,&quot;'.$res->periodo_registro.'&quot;,'.$res->id_empleados.')';
+                    $html.='"><i class="glyphicon glyphicon-edit"></i></button>';
+                }
+                $html.='</td>';
+                $freserva=$res->fondos_reserva;
+                $totaling=$res->salario_cargo+$res->horas_ext50+$res->horas_ext100+$freserva+$res->dec_cuarto_sueldo+$res->dec_tercero_sueldo;
+                $totaleg=$res->anticipo_sueldo+$res->aporte_iess1+$res->asocap+$resultDSE[0]->asuntos_sociales+$res->prest_quirog_iess+$res->prest_hipot_iess+$res->dcto_salario;
+                $total=$totaling-$totaleg;
+                $html.='<td  style="font-size: 15px;">'.$res->nombres_empleados.'</td>';
+                $html.='<td  style="font-size: 15px;">'.$res->nombre_oficina.'</td>';
+                $res->salario_cargo=number_format((float)$res->salario_cargo, 2, ',', '.');
+                $html.='<td  style="font-size: 15px;" align="right">'.$res->salario_cargo.'</td>';
+                $total=number_format((float)$total, 2, ',', '.');
+                $html.='<td  style="font-size: 15px;" align="right">'.$total.'</td>';
+                $elementos=explode("/", $res->periodo_registro);
+                $periodonomina=$meses[($elementos[3]-1)]." ".$elementos[4];
+                $html.='<td style="font-size: 15px;">'.$periodonomina.'</td>';
+                $html.='<td  style="font-size: 15px;">
+                        <button type="button" id="Print" name="Print" class="btn btn-default" onclick="VerReporteIndividual('.$res->id_registro.')"><i class="glyphicon glyphicon-eye-open"></i></button>
+                         </td>';
+                $html.='</tr>';
+                
+                
+            }
+            
+            $html.='</tbody>';
+            $html.='</table>';
+            
+            
+            $html.='</section></div>';
+            
+            $html.='<div class="table-pagination pull-right">';
+            $html.=''. $this->paginate_reporte("index.php", $page, $total_pages, $adjacents,"ReporteNomina").'';
+            $html.='</div>';
+            $html.=$totales;
+            $html.='<div class="row">
+           	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+            	<div class="form-group">
+                
+            	 <button type="button" id="Print" name="Print" class="btn btn-primary" onclick="ImprimirReporte()"><i class="glyphicon glyphicon-print"></i>  Reporte</button>
+                </div>
+             </div>
+            </div>';
+            
+            
+        }
+        else {
+            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay registros de reloj para el periodo actual...</b>';
+            $html.='</div>';
+            $html.='</div>';
+        }
+        echo $html;
+    }
+    
+    public function VerReporteIndividual()
+    {
+        session_start();
+        $reporte_nomina = new ReporteNominaEmpleadosModel();
+        
+        $totalsalarios=0;
+        $totalh50=0;
+        $totalh10=0;
+        $totalreservas=0;
+        $total14=0;
+        $total13=0;
+        $totalingresos=0;
+        $totalanticipo=0;
+        $totaliess=0;
+        $totalAsocap=0;
+        $totalsociales=0;
+        $totalqiess=0;
+        $totalhiess=0;
+        $totaldctos=0;
+        $totalegresos=0;
+        $totalapagar=0;
+        $id_registro=$_POST['id_registro'];
+     
+        
+        $columnas=    "empleados.nombres_empleados,empleados.numero_cedula_empleados,
+                        oficina.nombre_oficina, cargos_empleados.salario_cargo, cargos_empleados.nombre_cargo,
+                	   reporte_nomina_empleados.horas_ext50, reporte_nomina_empleados.horas_ext100,
+                	   reporte_nomina_empleados.fondos_reserva, reporte_nomina_empleados.dec_cuarto_sueldo,
+                	   reporte_nomina_empleados.dec_tercero_sueldo, reporte_nomina_empleados.anticipo_sueldo,
+                	   reporte_nomina_empleados.aporte_iess1, reporte_nomina_empleados.asocap,
+                	   reporte_nomina_empleados.prest_quirog_iess, reporte_nomina_empleados.prest_hipot_iess,
+                	   reporte_nomina_empleados.dcto_salario, reporte_nomina_empleados.periodo_registro,
+                        reporte_nomina_empleados.comision_asuntos_sociales,
+                       empleados.id_empleados, departamentos.nombre_departamento";
+        
+        $tablas= "public.reporte_nomina_empleados INNER JOIN public.empleados
+            	   ON reporte_nomina_empleados.id_empleado = empleados.id_empleados
+            	   INNER JOIN public.oficina
+            	   ON empleados.id_oficina = oficina.id_oficina
+            	   INNER JOIN public.cargos_empleados
+            	   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo
+                   INNER JOIN public.departamentos
+                   ON cargos_empleados.id_departamento = departamentos.id_departamento";
+        
+        $where="reporte_nomina_empleados.id_registro='".$id_registro."'";
+        
+        $id="reporte_nomina_empleados.id_registro";
+        
+        $resultSet = $reporte_nomina->getCondiciones($columnas, $tablas, $where, $id);
+        
+        foreach ($resultSet as $res)
+        {
+            
+            $freserva=$res->fondos_reserva;
+            $totalreservas+=$freserva;
+            $totaleg=$res->salario_cargo+$res->horas_ext50+$res->horas_ext100+$freserva+$res->dec_cuarto_sueldo+$res->dec_tercero_sueldo;
+            $totalegresos+=$totaleg;
+            $totaling=$res->anticipo_sueldo+$res->aporte_iess1+$res->asocap+$res->comision_asuntos_sociales+$res->prest_quirog_iess+$res->prest_hipot_iess+$res->dcto_salario;
+            $totalingresos+=$totaling;
+            $total=$totaleg-$totaling;
+            $totalapagar+=$total;
+            
+            $totalsalarios+=$res->salario_cargo;
+            $totalh50+=$res->horas_ext50;
+            $totalh10+=$res->horas_ext100;
+            $total14+=$res->dec_cuarto_sueldo;
+            $total13+=$res->dec_tercero_sueldo;
+            $totalanticipo+=$res->anticipo_sueldo;
+            $totaliess+=$res->aporte_iess1;
+            $totalAsocap+=$res->asocap;
+            $totalsociales+=$res->comision_asuntos_sociales;
+            $totalqiess+=$res->prest_quirog_iess;
+            $totalhiess+=$res->prest_hipot_iess;
+            $totaldctos+=$res->dcto_salario;
+        }
+        
+        $porcentaje_egresos_salario=($totalsalarios*100)/$totalegresos;
+        $porcentaje_egresos_h50=($totalh50*100)/$totalegresos;
+        $porcentaje_egresos_h10=($totalh10*100)/$totalegresos;
+        $porcentaje_egresos_fr=($totalreservas*100)/$totalegresos;
+        $porcentaje_egresos_13=($total13*100)/$totalegresos;
+        $porcentaje_egresos_14=($total14*100)/$totalegresos;
+        $totalegresos=number_format((float)$totalegresos, 2, ',', '.');
+        $totalsalarios=number_format((float)$totalsalarios, 2, ',', '.');
+        $html='';
+        $html.='<div class="box-body bg-gray">';
+        $html.= '<h3 align="center">
+           <strong>'.$res->nombres_empleados.'</strong>
+           </h3>';
+        $html.='<div class="col-lg-6 col-md-6 col-xs-6 bg-silver">';
+        $html.= '<h3 align="center">
+           <strong>Total Ingresos empleado: '.$totalegresos.'$</strong>
+           </h3>
+            <div class="progress-group">
+           <span class="progress-text">Salario</span>
+           <span class="progress-number"><b>'.$totalsalarios.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_salario.'%"></div>
+           </div>
+           </div>';
+        $totalh50=number_format((float)$totalh50, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Horas Extra 50%</span>
+           <span class="progress-number"><b>'.$totalh50.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_h50.'%"></div>
+           </div>
+           </div>';
+        
+        $totalh10=number_format((float)$totalh10, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Horas Extra 100%</span>
+           <span class="progress-number"><b>'.$totalh10.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_h10.'%"></div>
+           </div>
+           </div>';
+        
+        $totalreservas=number_format((float)$totalreservas, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Fondos de reserva</span>
+           <span class="progress-number"><b>'.$totalreservas.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_fr.'%"></div>
+           </div>
+           </div>';
+        
+        $total13=number_format((float)$total13, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">13ro Sueldo</span>
+           <span class="progress-number"><b>'.$total13.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_13.'%"></div>
+           </div>
+           </div>';
+        $total14=number_format((float)$total14, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">14to Sueldo</span>
+           <span class="progress-number"><b>'.$total14.'</b>/'.$totalegresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-orange" style="width: '.$porcentaje_egresos_14.'%"></div>
+           </div>
+           </div>';
+        
+        $html.='</div>';
+        
+        $porcentaje_ingresos_anticipo=($totalanticipo*100)/$totalingresos;
+        $porcentaje_ingresos_Apiess=($totaliess*100)/$totalingresos;
+        $porcentaje_ingresos_ASOCAP=($totalAsocap*100)/$totalingresos;
+        $porcentaje_ingresos_sociales=($totalsociales*100)/$totalingresos;
+        $porcentaje_ingresos_quiro=($totalqiess*100)/$totalingresos;
+        $porcentaje_ingresos_hipo=($totalhiess*100)/$totalingresos;
+        $porcentaje_ingresos_dctos=($totaldctos*100)/$totalingresos;
+        
+        $totalingresos=number_format((float)$totalingresos, 2, ',', '.');
+        $totalanticipo=number_format((float)$totalanticipo, 2, ',', '.');
+        
+        $html.='<div class="col-lg-6 col-md-6 col-xs-6">';
+        $html.= '<h3 align="center">
+           <strong>Total Egresos empleado: '.$totalingresos.'$</strong>
+           </h3>
+            <div class="progress-group">
+           <span class="progress-text">Anticipo de sueldo</span>
+           <span class="progress-number"><b>'.$totalanticipo.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_anticipo.'%"></div>
+           </div>
+           </div>';
+        $totaliess=number_format((float)$totaliess, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Aporte IESS</span>
+           <span class="progress-number"><b>'.$totaliess.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_Apiess.'%"></div>
+           </div>
+           </div>';
+        
+        $totalAsocap=number_format((float)$totalAsocap, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">ASOCAP</span>
+           <span class="progress-number"><b>'.$totalAsocap.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_ASOCAP.'%"></div>
+           </div>
+           </div>';
+        
+        $totalsociales=number_format((float)$totalsociales, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Comision Asuntos sociales</span>
+           <span class="progress-number"><b>'.$totalsociales.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_sociales.'%"></div>
+           </div>
+           </div>';
+        
+        $totalqiess=number_format((float)$totalqiess, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">PREST.QUROG. IESS</span>
+           <span class="progress-number"><b>'.$totalqiess.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_quiro.'%"></div>
+           </div>
+           </div>';
+        $totalhiess=number_format((float)$totalhiess, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">PREST. HIPOT. IESS</span>
+           <span class="progress-number"><b>'.$totalhiess.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_hipo.'%"></div>
+           </div>
+           </div>';
+        
+        $totaldctos=number_format((float)$totaldctos, 2, ',', '.');
+        
+        $html.= '<div class="progress-group">
+           <span class="progress-text">Dcto salario</span>
+           <span class="progress-number"><b>'.$totaldctos.'</b>/'.$totalingresos.'</span>
+           <div class="progress sm">';
+        
+        $html.= ' <div class="progress-bar bg-yellow" style="width: '.$porcentaje_ingresos_dctos.'%"></div>
+           </div>
+           </div>';
+        
+        $html.='</div>';
+        
+        $totalapagar=number_format((float)$totalapagar, 2, ',', '.');
+        $html.='<h3 align="center">
+        <strong>A Pagar: '.$totalapagar.'$</strong>
+        </h3>';
+        $html.='</div>';
+            
+        echo $html;
+    }
+    
+    /*public function GetReporte()
+    {
+        session_start();
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $reporte_nomina = new ReporteNominaEmpleadosModel();
+        
+        $periodo=$_POST['periodo'];
+        
+        $hoy = getdate();
+        
+        $mes=$hoy['mon'];
+        
+        $anio=$hoy['year'];
+        
+        $anioinicio=$hoy['year'];
+        
+        $mesinicio=$mes-2;
+        
+        if ($mesinicio<1)
+        {
+            $mesinicio=12;
+            $anioinicio--;
+        }
+        $mes--;
+        
+        $periodoactual='22/'.$mesinicio.'/'.$anioinicio.'-21/'.$mes.'/'.$anio;
+        $tablas = "public.descuentos_salarios_empleados";
+        $where = "1=1";
+        
+        $id = "descuentos_salarios_empleados.id_descuento";
+        
+        $resultDSE= $reporte_nomina->getCondiciones("*", $tablas, $where, $id);
+        
+        $columnas=    "empleados.nombres_empleados, oficina.nombre_oficina, cargos_empleados.salario_cargo,
+                	   reporte_nomina_empleados.horas_ext50, reporte_nomina_empleados.horas_ext100,
+                	   reporte_nomina_empleados.fondos_reserva, reporte_nomina_empleados.dec_cuarto_sueldo,
+                	   reporte_nomina_empleados.dec_tercero_sueldo, reporte_nomina_empleados.anticipo_sueldo,
+                	   reporte_nomina_empleados.aporte_iess1, reporte_nomina_empleados.asocap,
+                	   reporte_nomina_empleados.prest_quirog_iess, reporte_nomina_empleados.prest_hipot_iess,
+                	   reporte_nomina_empleados.dcto_salario, reporte_nomina_empleados.periodo_registro,
+                       reporte_nomina_empleados.comision_asuntos_sociales,
+                       empleados.id_empleados,reporte_nomina_empleados.id_registro";
+        
+        $tablas= "public.reporte_nomina_empleados INNER JOIN public.empleados
+            	   ON reporte_nomina_empleados.id_empleado = empleados.id_empleados
+            	   INNER JOIN public.oficina
+            	   ON empleados.id_oficina = oficina.id_oficina
+            	   INNER JOIN public.cargos_empleados
+            	   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
        
         
         $where="reporte_nomina_empleados.periodo_registro='".$periodo."'";
@@ -576,7 +1027,7 @@ class ReporteNominaController extends ControladorBase{
         $html.='</div>';
     }
     echo $html;
-   }
+   }*/
    
    public function paginate_reporte($reload, $page, $tpages, $adjacents,$funcion='') {
        

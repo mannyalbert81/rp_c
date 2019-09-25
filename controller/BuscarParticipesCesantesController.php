@@ -102,6 +102,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
                     core_participes.cedula_participes, core_entidad_patronal.nombre_entidad_patronal,
                     core_participes.telefono_participes, core_participes.direccion_participes,
                     core_estado_civil_participes.nombre_estado_civil_participes, core_genero_participes.nombre_genero_participes,
+                    core_genero_participes.nombre_genero_participes,
                     core_participes.id_participes";
         $tablas="public.core_participes INNER JOIN public.core_estado_participes
                     ON core_participes.id_estado_participes = core_estado_participes.id_estado_participes
@@ -156,7 +157,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
         <td>'.$resultSet[0]->ocupacion_participes.'</td>
         <th>Entidad Patronal:</th>
         <td>'.$resultSet[0]->nombre_entidad_patronal.'</td>
-        </tr>
+        </tr>  
         <tr>
         <th>Teléfono:</th>
         <td>'.$resultSet[0]->telefono_participes.'</td>
@@ -167,7 +168,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
         <th>Fecha de Nacimiento:</th>
         <td>'.$resultSet[0]->fecha_nacimiento_participes.'</td>
         <th>Sexo:</th>
-        <td>'.$resultSet[0]->nombre_estado_civil_participes.'</td>
+        <td>'.$resultSet[0]->nombre_genero_participes.'</td>
         </tr>
         <tr>
         <th>Cuenta Individual:</th>

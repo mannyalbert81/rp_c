@@ -90,7 +90,7 @@
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Busqueda de Participes</h3>
+          <h3 class="box-title">Consulta y cálculo de DESAFILIACIÓN</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -139,179 +139,8 @@
     </div>
     </section>
    </div>
-  
- 
 
- <!-- Modal Simulacion Credito -->
- 
- <div class="modal fade bs-example-modal-lg" id="myModalSimulacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
- 	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-	    	<div class="modal-header bg-primary">
-	    		<button type="button" id="cerrar_simulacion" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Insertar Crédito</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-				<div id="info_solicitud"></div>
-				 <div id="info_participe"></div>				 
-          	 <div class="row">
-          		<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<div id="tipo_creditos"></div>
-                        <div id="mensaje_tipo_credito" class="errores"></div>
-                 	</div>
-             	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="monto_credito" class="control-label">Monto Crédito:</label>
-              			<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">
-                        <div id="mensaje_monto_credito" class="errores"></div>
-                 	</div>
-             	</div>
-             	<div id="capacidad_de_pago_participe"></div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-            			<div id="select_cuotas"></div>
-                 	</div>
-             	</div>
-          	</div>
-          	
-          	 <div class="row">
-          		<div class="col-xs-6 col-md-3 col-lg-3 ">
-             	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-             	</div>
-             	
-            			<div id="capacidad_pago_garante"></div>
-                 	
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-             	</div>
-          	</div>
-          	
-          	<div class="row">
-             <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
-            	<div class="form-group">
-                  <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas()"><i class="glyphicon glyphicon-expand"></i> SIMULAR</button>
-                </div>
-             </div>	    
-            </div>
-            <div id="tabla_amortizacion"></div>
-				</div>
-				<br>
-			</div>			
-		</div>
-	</div>
-</div>
 
- 
-
-<!-- Modal Inserta Credito -->
- 
- <div class="modal fade bs-example" id="myModalInsertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
- 	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-	    	<div class="modal-header bg-primary">
-	    		<button type="button" id="cerrar_insertar" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Confirmar Crédito</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group" align="center">
-				 <div id="info_credito_confirmar"></div>
-				 <input type="text" class="observacion" maxlength="200" class="form-control" id="observacion_confirmacion" name="observacion_confirmacion" placeholder="Observación Crédito">
-				 <br>
-          	 <div class="row">
-          	 		<div class="form-group" align="center">
-          	 		<input type="text" class="codigo" data-inputmask="'mask': '99999'" class="form-control" id="codigo_confirmacion" name="codigo_confirmacion">
-                 </div>
-              </div>
-              <div class="row">
-          	 		<div class="form-group" align="center">
-          	 		<button type="button" id="registrar_credito" name="registrar_credito" class="btn btn-primary" onclick="RegistrarCredito()"> ACEPTAR</button>
-                 </div>
-              </div>
-				</div>
-				<br>
-			</div>			
-		</div>
-	</div>
-</div>
-
-<!-- Modal Analisis Credito -->
- 
- <div class="modal fade bs-example-modal-lg" id="myModalAnalisis" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
- 	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-	    	<div class="modal-header bg-primary">
-	    		<button id="cerrar_analisis" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Capacidad de pago</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-				<div class="row">
-                		<table align="center" class="tablesorter table table-striped table-bordered" style="width: 50%;">
-                        <tr>
-                        <th>SUELDO LIQUIDO:</th>
-                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="sueldo_liquido" name="sueldo_liquido" onkeyup="SumaIngresos()"></td>
-                        </tr>
-                        <tr>
-                        <th>CUOTA VIGENTE:</th>
-                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="cuota_vigente" name="cuota_vigente" onkeyup="SumaIngresos()"></td>
-                        </tr>
-                        <tr>
-                        <th>FONDOS:</th>
-                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="fondos" name="fondos" onkeyup="SumaIngresos()"></td>
-                        </tr>
-                        <tr>
-                        <th>DECIMOS:</th>
-                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="decimos" name="decimos" onkeyup="SumaIngresos()"></td>
-                        </tr>
-                        <tr >
-                        <th>RANCHO:</th>
-                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="rancho" name="rancho" onkeyup="SumaIngresos()"></td>
-                        </tr>
-                        <tr >
-                        <th>INGRESOS NOTARIZADOS:</th>
-                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="ingresos_notarizados" name="ingresos_notarizados" onkeyup="SumaIngresos()"></td>
-                        </tr>
-                        <tr >
-                        <th>TOTAL INGRESO:</th>
-                        <td id="total_ingreso" align="right" style="padding-right: 35px;"></td>
-                        </tr>
-                        </table>
-                        	<div class="row">
-             <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
-            	<div id="boton_capacidad_pago" class="form-group"></div>
-             </div>	
-                          	
-           	</div>
-				</div>
-				<br>
-			</div>			
-		</div>
-	</div>
-</div>
-</div>
-
-<!-- Modal Creditos para renovacion -->
- 
- <div class="modal fade bs-example-modal-lg" id="myModalCreditosActivos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
- 	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-	    	<div class="modal-header bg-primary">
-	    		<button type="button" id="cerrar_renovar_credito" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Créditos Activos</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-				 <div id="info_participe_creditos_activos"></div>				 
-            	<div id="tabla_creditos_activos"></div>
-				</div>
-				<br>
-			</div>			
-		</div>
-	</div>
-</div>
 
   
  
@@ -328,6 +157,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.36"></script> 
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.37"></script> 
    </body>
 </html>   

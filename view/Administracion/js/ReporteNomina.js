@@ -379,6 +379,42 @@ function ImprimirReporte()
 	window.open(enlace, '_blank');	
 }
 
+
+function VerReporteIndividual(idregistro)
+{
+	console.log(idregistro);
+	$("#myModalReporteIndividual").modal();
+	$('#reporte_individual_empleado').html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+	 $.ajax({
+		    url: 'index.php?controller=ReporteNomina&action=VerReporteIndividual',
+		    type: 'POST',
+		    data: {
+		    	id_registro:idregistro
+		    },
+		})
+		.done(function(x) {
+			console.log(x+'resultado');
+					if (!(x.includes("Warning")) && !(x.includes("Notice")))
+				{
+				$("#reporte_individual_empleado").html(x);
+				}
+			else
+				{
+				swal({
+			  		  title: "Registro",
+			  		  text: "Error al obtener el reporte: "+x,
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+				}
+		})
+		.fail(function() {
+		    console.log("error");
+		});
+	
+}
+
+
 function ImprimirReporteIndividual(idregistro)
 {
 	console.log(idregistro);

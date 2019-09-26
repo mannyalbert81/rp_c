@@ -163,8 +163,8 @@ class ReporteNominaController extends ControladorBase{
            $totalegresos=number_format((float)$totalegresos, 2, ',', '.');
            $totalsalarios=number_format((float)$totalsalarios, 2, ',', '.');
         $html='<div class="col-lg-12 col-md-12 col-xs-12">';
-        $html.='<div class="box-body bg-gray">';
-        $html.='<div class="col-lg-6 col-md-6 col-xs-6 bg-silver">';
+        $html.='<div class="box-body bg-silver">';
+        $html.='<div class="col-lg-6 col-md-6 col-xs-6 ">';
         $html.= '<h3 align="center">
            <strong>Total Gastos: '.$totalegresos.'$</strong>
            </h3>
@@ -612,7 +612,7 @@ class ReporteNominaController extends ControladorBase{
         $totalegresos=number_format((float)$totalegresos, 2, ',', '.');
         $totalsalarios=number_format((float)$totalsalarios, 2, ',', '.');
         $html='';
-        $html.='<div class="box-body bg-gray">';
+        $html.='<div class="box-body bg-silver">';
         $html.= '<h3 align="center">
            <strong>'.$res->nombres_empleados.'</strong>
            </h3>';

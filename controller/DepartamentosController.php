@@ -311,7 +311,7 @@ class DepartamentosController extends ControladorBase{
                    
                     
                     
-                    if($id_rol==1){
+                    if($id_rol==48){
                         
                         $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                         
@@ -338,9 +338,10 @@ class DepartamentosController extends ControladorBase{
                                 $html.='<tr>';
                                 $html.='<td style="font-size: 14px;"></td>';
                                 $html.='<td style="font-size: 14px;">'.$rc->nombre_cargo.'</td>';
+                                $rc->salario_cargo=number_format((float)$rc->salario_cargo,2,".",",");
                                 $html.='<td style="font-size: 14px;">'.$rc->salario_cargo.'</td>';
                                 
-                                if($id_rol==1){
+                                if($id_rol==48){
                                     
                                     $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="EliminarCargo('.$rc->id_cargo.')"><i class="glyphicon glyphicon-trash"></i></button></span><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarCargo(&quot;'.$rc->nombre_cargo.'&quot;,'.$rc->salario_cargo.','.$res->id_departamento.','.$rc->id_estado.')"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
                                 }
@@ -374,7 +375,7 @@ class DepartamentosController extends ControladorBase{
                     $html.='<th style="text-align: left;  font-size: 16px;">Tipo</th>';
                     $html.='</tr>';
                     $html.='</thead>';
-                    if($id_rol==1){
+                    if($id_rol==48){
                         
                         $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                         
@@ -408,7 +409,7 @@ class DepartamentosController extends ControladorBase{
                                 $html.='<td style="font-size: 14px;">Cargo</td>';
                                 
                                 
-                                if($id_rol==1){
+                                if($id_rol==48){
                                      $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="RestaurarCargo('.$rc->id_cargo.','.$rc->id_departamento.')"><i class="glyphicon glyphicon-repeat"></i></button></span></td>';
                                     }
                                 $html.='</tr>';

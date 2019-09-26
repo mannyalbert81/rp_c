@@ -62,7 +62,7 @@
         <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Prestamos</h3>
+              <h3 class="box-title">Solicitudes</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -76,6 +76,7 @@
             <ul class="nav nav-tabs">
               <li class="active"><a href="#activos" data-toggle="tab">Solicitud de Prestamos Registradas</a></li>
               <li><a href="#desafiliado" data-toggle="tab">Solicitud de Garantías Generadas</a></li>
+              <li><a href="#cesante" data-toggle="tab">Solicitud de Desafiliación</a></li>
             
             </ul>
             
@@ -93,10 +94,7 @@
 				  
                 
               </div>
-              
-           
       
-                
                  <div class="tab-pane" id="desafiliado">
                 
                     <div class="pull-right" style="margin-right:11px;">
@@ -105,6 +103,16 @@
                     	
 					<div id="load_garantias_registrados" ></div>	
 					<div id="solicitud_garantias_registrados"></div>	
+              </div>
+              
+                     <div class="tab-pane" id="cesante">
+                
+                    <div class="pull-right" style="margin-right:11px;">
+					<input type="text" value="" class="form-control" id="search_cesantes" name="search_cesantes" onkeyup="load_solicitud_cesantes_registrados(1)" placeholder="search.."/>
+					</div>
+                    	
+					<div id="load_cesantes_registrados" ></div>	
+					<div id="solicitud_cesantes_registrados"></div>	
               </div>
              
              </div>
@@ -132,7 +140,7 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Core/js/SolicitudPrestamo.js?3.30" ></script>
+ <script src="view/Core/js/SolicitudPrestamo.js?3.31" ></script>
  
  </body>
 </html>

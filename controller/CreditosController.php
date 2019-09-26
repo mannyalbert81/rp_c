@@ -1476,6 +1476,59 @@ class CreditosController extends ControladorBase{
 	    
 	}
 	
+	public function MayorizaComprobanteCredito($id_credito){
+	    
+	    $Credito = new CreditosModel();
+	    
+	    try {
+	        
+	        $columas1  = "id_creditos, numero_creditos, id_ccomprobantes";
+	        $tablas1   = "core_creditos";
+	        $where1    = "id_creditos = $id_credito ";
+	        $id1       = "id_creditos";
+	        $rsConsulta1 = $Credito->getCondiciones($columas1, $tablas1, $where1, $id1);
+	        
+	        if(empty($rsConsulta1)){ throw new Exception('credito no encontrado');}
+	        
+	        $_id_comprobante       = $rsConsulta1[0]->id_ccomprobantes;
+	        $funcionMayoriza       = "core_ins_mayoriza_activa_credito";
+	        $parametrosMayoriza    = "$_id_comprobante,null";
+	        $consultaMayoriza      = $Credito->getconsultaPG($funcionMayoriza, $parametrosMayoriza);
+	        $Credito->llamarconsultaPG($consultaMayoriza);
+	        
+	        $error = "";
+	        $error = pg_last_error();
+	        if(!empty($error)){ throw new Exception('mayoriza comprobante credito');}
+	        
+	        /* valida si el credito tiene renovaciones de credito */
+	        $columnas2 = " id_creditos_renovado,id_ccomprobantes";
+	        $tablas2   = " core_creditos_renovaciones";
+	        $where2    = " id_creditos_nuevo  = $_id_comprobante";
+	        $id2       = " id_creditos_renovaciones";
+	        $rsConsulta2   = $Credito->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	        if(!empty($rsConsulta2)){
+	            foreach ($rsConsulta2 as $res ){
+	                $_id_credito_renovado  = $res->id_creditos_renovado;
+	                $funcionMayorizaRenovados       = "core_ins_mayoriza_activa_credito";
+	                $parametrosMayorizaRenovados    = "$_id_credito_renovado,null";
+	                $consultaMayorizaRenovados      = $Credito->getconsultaPG($funcionMayorizaRenovados, $parametrosMayorizaRenovados);
+	                $Credito->llamarconsultaPG($consultaMayorizaRenovados);
+	                
+	                $error = "";
+	                $error = pg_last_error();
+	                if(!empty($error)){ throw new Exception('comprobante Credito ['.$_id_credito_renovado.'] Renovado');}
+	            }
+	        }
+	        
+	        return 'OK';
+	        
+	    } catch (Exception $e) {
+	        return "ERROR".$e->getMessage();
+	    }
+	    
+	}
+	
+	
 	public function RenovarCredito( $_id_creditos){
 	    
 	}

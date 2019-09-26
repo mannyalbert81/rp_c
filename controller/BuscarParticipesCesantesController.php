@@ -102,6 +102,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
                     core_participes.cedula_participes, core_entidad_patronal.nombre_entidad_patronal,
                     core_participes.telefono_participes, core_participes.direccion_participes,
                     core_estado_civil_participes.nombre_estado_civil_participes, core_genero_participes.nombre_genero_participes,
+                    DATE (core_participes.fecha_ingreso_participes)fecha_ingreso_participes, core_participes.celular_participes,
                     core_participes.id_participes";
         $tablas="public.core_participes INNER JOIN public.core_estado_participes
                     ON core_participes.id_estado_participes = core_estado_participes.id_estado_participes
@@ -139,7 +140,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
         
         $html.='
         <div class="box box-widget widget-user-2">';
-        if(!(empty($resultCreditos))) $html.='<button class="btn btn-default pull-right" title="Análisis crédito"  onclick="AnalisisCredito()"><i class="glyphicon glyphicon-stats"></i></button>';
+        if(!(empty($resultCreditos))) $html.='';
         $html.='<div class="widget-user-header bg-olive">'
             .$icon.
             '<h3 class="widget-user-username">'.$resultSet[0]->nombre_participes.' '.$resultSet[0]->apellido_participes.'</h3>
@@ -154,32 +155,26 @@ class BuscarParticipesCesantesController extends ControladorBase{
         <tr>
         <th>Cargo:</th>
         <td>'.$resultSet[0]->ocupacion_participes.'</td>
+        <th>Fecha Ingreso:</th>
+        <td>'.$resultSet[0]->fecha_ingreso_participes.'</td>
+        </tr>  
+        <tr>
+        <th>Estado Civil:</th>
+        <td>'.$resultSet[0]->nombre_estado_civil_participes.'</td>
+        <th>Fecha Nacimiento:</th>
+        <td>'.$resultSet[0]->fecha_nacimiento_participes.'</td>
+        </tr>
+        <tr>
+        <th>Sexo:</th>
+        <td>'.$resultSet[0]->nombre_genero_participes.'</td>
         <th>Entidad Patronal:</th>
         <td>'.$resultSet[0]->nombre_entidad_patronal.'</td>
         </tr>
         <tr>
-        <th>Teléfono:</th>
+        <th>Telèfono:</th>
         <td>'.$resultSet[0]->telefono_participes.'</td>
-        <th>Estado Civil:</th>
-        <td>'.$resultSet[0]->nombre_estado_civil_participes.'</td>
-        </tr>
-        <tr>
-        <th>Fecha de Nacimiento:</th>
-        <td>'.$resultSet[0]->fecha_nacimiento_participes.'</td>
-        <th>Sexo:</th>
-        <td>'.$resultSet[0]->nombre_estado_civil_participes.'</td>
-        </tr>
-        <tr>
-        <th>Cuenta Individual:</th>
-        <td>'.$resultSet[0]->telefono_participes.'</td>
-        <th>Fecha Solicitud:</th>
-        <td>'.$resultSet[0]->nombre_estado_civil_participes.'</td>
-        </tr>
-        <tr>
-        <th>Teléfono:</th>
-        <td>'.$resultSet[0]->telefono_participes.'</td>
-        <th>Estado Civil:</th>
-        <td>'.$resultSet[0]->nombre_estado_civil_participes.'</td>
+        <th>Celular:</th>
+        <td>'.$resultSet[0]->celular_participes.'</td>
         </tr>
         <tr >
         <th>Dirección:</th>

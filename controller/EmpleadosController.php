@@ -426,6 +426,158 @@ class EmpleadosController extends ControladorBase{
         $colval = "id_estado=".$resultEst[0]->id_estado;
         $empleados->UpdateBy($colval, $tabla, $where);
     }
+    
+    
+    /************************ BEGIN GENERACION DE CUENTAS CONTABLES ANTICIPOS *********************************************/
+    public function index1(){
+        
+        session_start();
+        
+        $Empleado = new EmpleadosModel();
+        
+        $id_rol   = $_SESSION['id_rol'];        
+        
+        if(empty( $_SESSION['usuario_usuarios'])){
+            
+            $this->redirect("Usuarios","sesion_caducada");
+            exit();
+        }else{
+            
+            $nombre_controladores = "NominaAnticiposCuentas";
+            $resultPer = $Empleado->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+            if (empty($resultPer)){
+                
+                $this->view("Error",array(
+                    "resultado"=>"No tiene Permisos de Acceso Pagos"
+                    
+                ));
+                exit();
+                
+            }else{
+                
+                $this->view_Contable("AnticipoCuentas",array(                    
+                    
+                ));
+                exit();
+            }
+            
+        }
+        
+    }
+    
+    /***
+     * 
+     */
+    public function ListarEmpleadosCuentas(){
+        
+        $Empleado = new EmpleadosModel();
+        $respuesta= array();
+        $columnas1  = "aa.id_empleados, aa.nombres_empleados";
+        $tablas1    = "empleados aa
+                    INNER JOIN estado bb
+                    ON bb.id_estado = aa.id_estado";
+        $where1     = "bb.tabla_estado = 'empleados'
+                    AND bb.nombre_estado = 'ACTIVO'";
+        $id1        = "aa.nombres_empleados";
+        
+        $rsConsulta1    = $Empleado->getCondiciones($columnas1, $tablas1, $where1, $id1);
+        
+        if(!empty($rsConsulta1)){
+            $respuesta['datos'] = $rsConsulta1;
+        }
+        
+        echo json_encode($respuesta);
+        
+    }
+    
+    public function BuscarEmpleadoCuentas(){
+        
+        $_id_empleados = $_POST['id_empleados'];
+        $_codigo_plan_cuentas = $_POST['codigo_cuenta'];
+        $Empleado  = new EmpleadosModel();
+        $Plancuentas   = new PlanCuentasModel();
+        $respuesta = array();
+        
+        $columnasCuentas    = " 1 existe";
+        $tablasCuentas      = " public.empleados_cuentas_contables";
+        $whereCuentas       = " id_empleados = $_id_empleados";
+        
+        $rsConsultaCuentas  = $Empleado->getCondicionesSinOrden($columnasCuentas, $tablasCuentas, $whereCuentas, "");
+        if( !empty($rsConsultaCuentas) ){
+            
+            $respuesta['existe'] = 'EXISTE';
+            
+        }else{
+            
+            $columnas1  = " aa.id_empleados, aa.numero_cedula_empleados,
+                     aa.nombres_empleados,bb.nombre_cargo";
+            $tablas1    = " empleados aa
+                    INNER JOIN cargos_empleados bb
+                    ON bb.id_cargo = aa.id_cargo_empleado";
+            $where1     = "1 = 1
+                    AND aa.id_empleados = $_id_empleados";
+            $limit1     = "";
+            
+            $rsConsulta1= $Empleado->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit1);
+            
+            if( !empty($rsConsulta1) ){
+                $respuesta['empleado'] = $rsConsulta1;
+            }
+            
+            $columnas2  = " id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+            $tablas2    = " public.plan_cuentas";
+            $where2     = " id_entidades = 1
+                    AND nivel_plan_cuentas = 5
+                    AND codigo_plan_cuentas LIKE '$_codigo_plan_cuentas%'";
+            $id2     = "codigo_plan_cuentas";
+            
+            $rsConsulta2 = $Plancuentas->getCondiciones($columnas2, $tablas2, $where2, $id2);
+            
+            if( !empty($rsConsulta2) ){
+                /* tomar el valor siguiente para la cuenta contable*/
+                $cantidad = sizeof($rsConsulta2);
+                /* recuperamos la ultima fila */
+                $fila = $rsConsulta2[$cantidad-1];
+                /* convertimos el codigo consultado */
+                $codigo_consulta    = $fila->codigo_plan_cuentas;
+                $codigo_array   = explode(".", trim($codigo_consulta,"."));
+                $index_codigo   = $codigo_array[sizeof($codigo_array)-1];
+                $index_codigo   = (int)$index_codigo + 1;
+                $codigo_a_generar = $_codigo_plan_cuentas.".".$index_codigo;
+                $array_cuenta   = array('codigo'=>$codigo_a_generar);
+                $respuesta['cuenta'] = $array_cuenta;
+                
+            }
+        }
+                       
+        echo json_encode($respuesta);
+        
+    }
+    
+    public function IngresarCuenta(){
+        
+        $_id_empleados = $_POST['id_empleados'];
+        $_codigo_cuenta = $_POST['cuenta_registrar'];
+        
+        $Empleado  = new EmpleadosModel();
+        
+        $_funcion = "ins_con_empleados_cuenta_contable";
+        $_parametros = "$_id_empleados,'$_codigo_cuenta'";
+        $_queryFuncion = $Empleado->getconsultaPG($_funcion, $_parametros);
+        
+        $Empleado->llamarconsultaPG($_queryFuncion);
+        
+        $error = pg_last_error();
+        if( !empty($error) ){
+            
+            echo "<message>Error al ingresar Cuenta Contable <message>";
+        }
+        
+        echo json_encode(array("respuesta"=>"OK"));
+        
+    }
+    
+    /************************ END GENERACION DE CUENTAS CONTABLES ANTICIPOS *********************************************/
         
 }
 

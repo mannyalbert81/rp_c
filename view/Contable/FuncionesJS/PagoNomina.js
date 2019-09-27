@@ -8,8 +8,11 @@ function setTableStyle(ObjTabla){
 	
 	$("#"+ObjTabla).DataTable({
 		paging: false,
-        scrollX: false,
+        scrollX:  "100%",
 		searching: false,
+		fixedHeader: true,
+		scrollY: '70vh',
+	    scrollCollapse: true,
         pageLength: 10,
         rowHeight: 'auto',
         responsive: true,
@@ -31,9 +34,18 @@ function setTableStyle(ObjTabla){
                 "next": "Siguiente",
                 "previous": "Anterior"
             }
-        }
+        },
 
-    });
+    }).columns.adjust().draw();
+}
+
+function ChangeCssTable(ObjTabla){
+	var objeto = $("#"+ObjTabla);
+	objeto.find("tbody tr td").css({
+		"height":"6px",
+		"padding":"0px",
+		"margin":"0px",
+	});
 }
 
 $("#verDiario").on("click",function(event){
@@ -115,6 +127,10 @@ function graficaDiarioPago(_anio,_mes){
 			 $divResultados.html(x.html);
 			 
 			 $modal.modal('show');
+			 
+			 setTableStyle("tblDiario");
+			 ChangeCssTable("tblDiario");
+			 
 		 }
 		 
 		 

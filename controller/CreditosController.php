@@ -1540,6 +1540,83 @@ class CreditosController extends ControladorBase{
 	    
 	    echo $credito->numtoletras($_valor);
 	}
-		
+	
+	/******************************************************** EMPIEZA PROCESOS DE ANULAR REPORTES CREDITOS ****************************************/
+	//dc 2019-09-27
+	
+	public function EliminarReporteCredito( $_id_credito ){
+	    
+	    $Credito = new CreditosModel();
+	    
+	    try {
+	        
+	       /** variables a utilizar **/
+	       $arrayComprobantes = array();
+	       $_id_comprobante    = 0;
+	       $_id_comprobante_sub= 0;
+	       $_error = "";
+	        
+	       /** buscar credito si tiene comprobnate **/
+	       $columnas1  = "id_creditos, id_comprobantes";
+	       $tablas1    = " core_creditos";
+	       $where1     = " id_creditos = $_id_credito";
+	       $id1        = " id_creditos ";
+	       $rsConsulta1= $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	       $_error = pg_last_error();
+	       if(!empty($_error)){ throw new Exception(' error buscando credito ['.$_id_credito.'] ');}
+	       if(!empty($rsConsulta1)){
+	           $_id_comprobante    = $rsConsulta1[0]->id_comprobantes;
+	           array_push($arrayComprobantes, $_id_comprobante);
+	       }else{
+	           throw new Exception(' credito ['.$_id_credito.'] no encontrado');
+	       }
+	       /** buscar si tiene renovaciones **/ 
+	       $columnas2  = " id_creditos_renovado,id_creditos_nuevo,id_ccomprobantes";
+	       $tablas2    = " public.core_creditos_renovaciones";
+	       $where2     = " id_creditos_nuevo = $_id_credito";
+	       $id2        = "";
+	       $rsConsulta2= $Credito->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	       $_error = pg_last_error();
+	       if(!empty($_error)){ throw new Exception(' error buscando credito renovados ['.$_id_credito.'] ');}
+	       if(!empty($rsConsulta2)){
+	           foreach ( $rsConsulta2 as $res){
+	               /** agregar comprobantes al array de comprobates **/
+	               $_id_comprobante_sub = $res->id_ccomprobantes;
+	               array_push($arrayComprobantes, $_id_comprobante_sub);
+	           }
+	       }
+	       /** recorrer el array de comprobantes **/
+	       for ($i=0; $i<sizeof($arrayComprobantes); $i++){
+	           
+	           $this->RevertirComprobanteMayor($arrayComprobantes[$i]);	           
+	       }
+	       
+	       
+	        
+	    } catch (Exception $e) {
+	           
+	        return $e->getMessage();
+	    }
+	     
+	}
+	/**
+	 * fn que permite revertir los valores ya cambiaron en el mayor 
+	 */
+	private function RevertirComprobanteMayor($id_comprobante){
+	    
+	    $Credito = new CreditosModel();
+        
+	    /** enviar parametros para la actualizacion **/
+	    $funcion   = "core_regresa_valor_comprobante"; 
+	    $parametros= "$id_comprobante";
+        $queryFuncion   = $Credito->getconsultaPG($funcion, $parametros);
+        $Credito->llamarconsultaPG($queryFuncion);
+        $error = pg_last_error();
+        if(!empty($error)){ throw new Exception('comprobnate no reversado ['.$id_comprobante.'] ');}
+	    
+	    
+	}
+	
+	/******************************************************** TERMINA PROCESOS DE ANULAR REPORTES CREDITOS ****************************************/
 }
 ?>

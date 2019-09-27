@@ -1,3 +1,4 @@
+
 <?php
 
 class CreditosController extends ControladorBase{
@@ -310,7 +311,7 @@ class CreditosController extends ControladorBase{
 	    }
 	}
 	
-	public function ActivarCredito($paramIdCredito){
+	public function ActivarCredito($paramIdCredito=0){
 	    
 	    
 	    if(!isset($_SESSION)){
@@ -324,9 +325,7 @@ class CreditosController extends ControladorBase{
 	    $Credito       = new CreditosModel();	    
 	    $id_creditos = $paramIdCredito;
 	    $_es_renovacion    = false;
-	    
-	    /* consulta para ver solicitud */
-	    
+	    	    	    
 	    $columasCreditoNuevo   = " id_creditos_nuevo";
 	    $tablasCreditoNuevo    = " public.core_creditos_renovaciones";
 	    $whereCreditoNuevo     = " id_creditos_nuevo = $id_creditos";
@@ -342,13 +341,9 @@ class CreditosController extends ControladorBase{
 	        $_es_renovacion = true;
 	    }
 	    
-	    //para pruebas 
-	    //$id_creditos   = $_POST['id_creditos'];
-	    //$_es_nuevo_credito = true;
-	    
 	    try {
 	        
-	       
+	        //$Credito->beginTran();
 	        $_id_lote  = 0;
 	        
 	        /* ingresar participe como proveedor */	        
@@ -405,17 +400,18 @@ class CreditosController extends ControladorBase{
 	            break;
 	            case 'PH':
 	                if($_es_renovacion){
-	                    $this->HipotecarioRenovacion($id_creditos);	                    
+	                    $this->HipotecarioRenovacion($id_creditos,$_id_lote, $_id_proveedor);	                    
 	                }else {
-	                    $this->HipotecarioNuevo($id_creditos);
+	                    $this->HipotecarioNuevo($id_creditos,$_id_lote, $_id_proveedor);
 	                }
 	            break;
 	            default:    
 	                
 	        }
+	        //$Credito->endTran();
 	        return 'OK';
 	    } catch (Exception $e) {
-	        
+	        //$Credito->endTran();
 	        return $e->getMessage();
 	    }
 	}
@@ -617,7 +613,8 @@ class CreditosController extends ControladorBase{
 	    
 	    /* datos de credito */
 	    $columnas1 = " bb.id_tipo_creditos, bb.nombre_tipo_creditos, bb.codigo_tipo_creditos, aa.numero_creditos,
-                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes";
+                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes,
+                      aa.id_forma_pago";
 	    $tablas1   = " core_creditos aa
             	        INNER JOIN core_tipo_creditos bb
             	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
@@ -630,6 +627,7 @@ class CreditosController extends ControladorBase{
 	    $_monto_otorgado_credito    = $rsConsulta1[0]->monto_otorgado_creditos;
 	    $_monto_neto_credito        = $rsConsulta1[0]->monto_neto_entregado_creditos;
 	    $_numero_creditos           = $rsConsulta1[0]->numero_creditos;
+	    $_id_forma_pago             = $rsConsulta1[0]->id_forma_pago;
 	    
 	    
 	    /* buscar parametrizacion de credito */
@@ -703,42 +701,13 @@ class CreditosController extends ControladorBase{
 	    /* viene insertado de la CxP */
 	    $_descripcion_cuentas_pagar = " Tipo EMERGENTE";
 	    $_id_cuentas_pagar  = $this->generaCuentaPagarCredito($_id_lote, $_id_credito, $_id_proveedor, $_descripcion_cuentas_pagar );
-	    
-	    /* para actualizar la forma de pago y el banco en cuentas por pagar */
-	    $columnas5  = "aa.id_creditos, bb.id_forma_pago, bb.nombre_forma_pago,cc.id_bancos";
-	    $tablas5    = "core_creditos aa
-                    INNER JOIN forma_pago bb
-                    ON aa.id_forma_pago = bb.id_forma_pago
-                    INNER JOIN core_participes_cuentas cc
-                    ON cc.id_participes = aa.id_participes
-                    AND cc.cuenta_principal = true";
-	    $where5     = "aa.id_estatus = 1 AND aa.id_creditos = $_id_credito";
-	    $id5        = "aa.id_creditos";
-	    $rsFormaPago = $Credito->getCondiciones($columnas5, $tablas5, $where5, $id5);
-	    $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
-	    $_id_bancos = $rsFormaPago[0]->id_bancos;
-	    
-	    $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
-	    $tablasPago = "tes_cuentas_pagar";
-	    $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
-	    $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
-	    
+	    	    
 	    /* viene insertado del comprobante */
 	    $_concepto_comprobantes = "Consecion Creditos Sol:$_numero_creditos";
 	    $_id_comprobantes   = $this->generaComprobante($_id_lote, $_id_proveedor, $_id_forma_pago, $_monto_otorgado_credito, $_concepto_comprobantes, $_fecha_proceso);
 	    
-	    //se actualiza la cuenta por pagar con la relacion al comprobante
-	    $columnaCxP = "id_ccomprobantes = $_id_comprobantes ";
-	    $tablasCxP = "tes_cuentas_pagar";
-	    $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
-	    $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
-	    
-	    //se actualiza el credito con su comprobante
-	    $columnaCre = "id_ccomprobantes = $_id_comprobantes ";
-	    $tablasCre = "core_creditos";
-	    $whereCre = "id_creditos = $_id_credito";
-	    $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
-	    	    
+	    /* se actualiza el comprobante generado en las tes_cuentas_pagar y credito*/
+	    $this->ActualizacionesTablas($_id_credito, $_id_cuentas_pagar, $_id_comprobantes, $_id_forma_pago);
 	}
 	
 	public function EmergenteRenovacion($_id_credito , $_id_lote, $_id_proveedor){    
@@ -752,17 +721,18 @@ class CreditosController extends ControladorBase{
 	    $Credito   = new CreditosModel();
 	    
 	    $_id_usuarios      = $_SESSION['id_usuarios'];
-	    $_usuario_usuarios = $_SESSION['id_usuarios'];
+	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
 	    
 	    $_fecha_proceso = date('Y-m-d');
 	    
 	    /* datos de credito */
 	    $columnas1 = " bb.id_tipo_creditos, bb.nombre_tipo_creditos, bb.codigo_tipo_creditos, aa.numero_creditos,
-                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes";
+                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes,
+                      aa.bb.id_forma_pago";
 	    $tablas1   = " core_creditos aa
             	        INNER JOIN core_tipo_creditos bb
             	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
-	    $where1    = "id_creditos = $_id_credito ";
+	    $where1    = "aa.id_creditos = $_id_credito ";
 	    $id1       = "aa.id_creditos";
 	    
 	    $rsConsulta1   = $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);
@@ -771,6 +741,7 @@ class CreditosController extends ControladorBase{
 	    $_monto_otorgado_credito   = $rsConsulta1[0]->monto_otorgado_creditos;
 	    $_monto_neto_credito       = $rsConsulta1[0]->monto_neto_entregado_creditos;
 	    $_numero_creditos          = $rsConsulta1[0]->numero_creditos;
+	    $_id_forma_pago            = $rsConsulta1[0]->id_forma_pago;
 	    
 	    /* buscar parametrizacion de credito */
 	    $columnas2  = " id_modulos, id_plan_cuentas_debe, id_plan_cuentas_haber";
@@ -822,8 +793,8 @@ class CreditosController extends ControladorBase{
 	    
 	    /* viene registro de distribucion de CXP */
 	    /* parametrizacion de variables*/
-	    $_monto_credito_renovacion = $_monto_neto_credito;
-	    $_monto_saldo_credito_renovacion  = $_monto_neto_credito - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
+	    $_monto_credito_renovacion = $_monto_otorgado_credito;
+	    $_monto_saldo_credito_renovacion  = $_monto_credito_renovacion - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
 	    $_descripcion_distribucion  = "Concesion Credito Num [".$_numero_creditos."]";
 	    
 	    /* obtener query de insercion */
@@ -863,8 +834,7 @@ class CreditosController extends ControladorBase{
 	                
 	                $rsConsulta4   = $Credito->getCondiciones($columnas4, $tablas4, $where4, $id4);
 	                
-	                echo print_r($rsConsulta4);
-	                
+	               
 	                if( empty($rsConsulta4) ){
 	                    continue;
 	                }
@@ -894,40 +864,14 @@ class CreditosController extends ControladorBase{
 	    $_descripcion_cuentas_pagar = " Tipo EMERGENTE";
 	    $_id_cuentas_pagar  = $this->generaCuentaPagarCredito($_id_lote, $_id_credito, $_id_proveedor, $_descripcion_cuentas_pagar );
 	    
-	    /* para actualizar la forma de pago y el banco en cuentas por pagar */
-	    $columnas5  = "aa.id_creditos, bb.id_forma_pago, bb.nombre_forma_pago,cc.id_bancos";
-	    $tablas5    = "core_creditos aa
-                    INNER JOIN forma_pago bb
-                    ON aa.id_forma_pago = bb.id_forma_pago
-                    INNER JOIN core_participes_cuentas cc
-                    ON cc.id_participes = aa.id_participes
-                    AND cc.cuenta_principal = true";
-	    $where5     = "aa.id_estatus = 1 AND aa.id_creditos = $_id_credito";
-	    $id5        = "aa.id_creditos";
-	    $rsFormaPago = $Credito->getCondiciones($columnas5, $tablas5, $where5, $id5);
-	    $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
-	    $_id_bancos = $rsFormaPago[0]->id_bancos;
-	    
-	    $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
-	    $tablasPago = "tes_cuentas_pagar";
-	    $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
-	    $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
 	    
 	    /* viene insertado del comprobante */
 	    $_concepto_comprobantes = "Consecion Creditos Sol:$_numero_creditos";
 	    $_id_comprobantes   = $this->generaComprobante($_id_lote, $_id_proveedor, $_id_forma_pago, $_monto_otorgado_credito, $_concepto_comprobantes, $_fecha_proceso);
+	    	    
+	    /* se actualiza el comprobante generado en las tes_cuentas_pagar y credito*/
+	    $this->ActualizacionesTablas($_id_credito, $_id_cuentas_pagar, $_id_comprobantes, $_id_forma_pago);
 	    
-	    //se actualiza la cuenta por pagar con la relacion al comprobante
-	    $columnaCxP = "id_ccomprobantes = $_id_comprobantes ";
-	    $tablasCxP = "tes_cuentas_pagar";
-	    $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
-	    $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
-	    
-	    //se actualiza el credito con su comprobante
-	    $columnaCre = "id_ccomprobantes = $_id_comprobantes ";
-	    $tablasCre = "core_creditos";
-	    $whereCre = "id_creditos = $_id_credito";
-	    $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
 	    
 	}
 	
@@ -939,7 +883,8 @@ class CreditosController extends ControladorBase{
 	   
 	   /* datos de credito */
 	   $columnas1 = " bb.id_tipo_creditos, bb.nombre_tipo_creditos, bb.codigo_tipo_creditos, aa.numero_creditos,
-                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes";
+                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes,
+                      aa.id_forma_pago";
 	   $tablas1   = " core_creditos aa
             	        INNER JOIN core_tipo_creditos bb
             	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
@@ -952,7 +897,7 @@ class CreditosController extends ControladorBase{
 	   $_monto_otorgado_credito    = $rsConsulta1[0]->monto_otorgado_creditos;
 	   $_monto_neto_credito        = $rsConsulta1[0]->monto_neto_entregado_creditos;
 	   $_numero_creditos           = $rsConsulta1[0]->numero_creditos;
-	   
+	   $_id_forma_pago             = $rsConsulta1[0]->id_forma_pago;
 	     
 	   /* buscar parametrizacion de credito */
 	   $columnas2  = " id_modulos, id_plan_cuentas_debe, id_plan_cuentas_haber";
@@ -1025,41 +970,14 @@ class CreditosController extends ControladorBase{
 	   /* viene insertado de la CxP */
 	   $_descripcion_cuentas_pagar = " Tipo ORDINARIO";
 	   $_id_cuentas_pagar  = $this->generaCuentaPagarCredito($_id_lote, $_id_credito, $_id_proveedor, $_descripcion_cuentas_pagar );
-	   
-	   /* para actualizar la forma de pago y el banco en cuentas por pagar */
-	   $columnas5  = "aa.id_creditos, bb.id_forma_pago, bb.nombre_forma_pago,cc.id_bancos";
-	   $tablas5    = "core_creditos aa
-                    INNER JOIN forma_pago bb
-                    ON aa.id_forma_pago = bb.id_forma_pago
-                    INNER JOIN core_participes_cuentas cc
-                    ON cc.id_participes = aa.id_participes
-                    AND cc.cuenta_principal = true";
-	   $where5     = "aa.id_estatus = 1 AND aa.id_creditos = $_id_credito";
-	   $id5        = "aa.id_creditos";
-	   $rsFormaPago = $Credito->getCondiciones($columnas5, $tablas5, $where5, $id5);
-	   $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
-	   $_id_bancos = $rsFormaPago[0]->id_bancos;
-	   
-	   $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
-	   $tablasPago = "tes_cuentas_pagar";
-	   $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
-	   $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
-	   
+	   	   
 	   /* viene insertado del comprobante */
 	   $_concepto_comprobantes = "Consecion Creditos Sol:$_numero_creditos";
 	   $_id_comprobantes   = $this->generaComprobante($_id_lote, $_id_proveedor, $_id_forma_pago, $_monto_otorgado_credito, $_concepto_comprobantes, $_fecha_proceso);
 	   
-	   //se actualiza la cuenta por pagar con la relacion al comprobante
-	   $columnaCxP = "id_ccomprobantes = $_id_comprobantes ";
-	   $tablasCxP = "tes_cuentas_pagar";
-	   $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
-	   $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
+	   /* se actualiza el comprobante generado en las tes_cuentas_pagar y credito*/
+	   $this->ActualizacionesTablas($_id_credito, $_id_cuentas_pagar, $_id_comprobantes, $_id_forma_pago);
 	   
-	   //se actualiza el credito con su comprobante
-	   $columnaCre = "id_ccomprobantes = $_id_comprobantes ";
-	   $tablasCre = "core_creditos";
-	   $whereCre = "id_creditos = $_id_credito";
-	   $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
 	   	    
 	}
 	
@@ -1072,17 +990,18 @@ class CreditosController extends ControladorBase{
 	    $Credito   = new CreditosModel();
 	    
 	    $_id_usuarios      = $_SESSION['id_usuarios'];
-	    $_usuario_usuarios = $_SESSION['id_usuarios'];
+	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
 	    
 	    $_fecha_proceso = date('Y-m-d');
 	    
 	    /* datos de credito */
 	    $columnas1 = " bb.id_tipo_creditos, bb.nombre_tipo_creditos, bb.codigo_tipo_creditos, aa.numero_creditos,
-                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes";
+                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes,
+                      aa.id_forma_pago";
 	    $tablas1   = " core_creditos aa
             	        INNER JOIN core_tipo_creditos bb
             	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
-	    $where1    = "id_creditos = $_id_credito ";
+	    $where1    = "aa.id_creditos = $_id_credito ";
 	    $id1       = "aa.id_creditos";
 	    
 	    $rsConsulta1   = $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);
@@ -1090,7 +1009,8 @@ class CreditosController extends ControladorBase{
 	    $_id_tipo_creditos         = $rsConsulta1[0]->id_tipo_creditos;
 	    $_monto_otorgado_credito   = $rsConsulta1[0]->monto_otorgado_creditos;
 	    $_monto_neto_credito       = $rsConsulta1[0]->monto_neto_entregado_creditos;
-	    $_numero_creditos          = $rsConsulta1[0]->numero_creditos;	    
+	    $_numero_creditos          = $rsConsulta1[0]->numero_creditos;
+	    $_id_forma_pago             = $rsConsulta1[0]->id_forma_pago;
 	    
 	    /* buscar parametrizacion de credito */
 	    $columnas2  = " id_modulos, id_plan_cuentas_debe, id_plan_cuentas_haber";
@@ -1142,13 +1062,16 @@ class CreditosController extends ControladorBase{
 	    
 	    /* viene registro de distribucion de CXP */
 	    /* parametrizacion de variables*/
-	    $_monto_credito_renovacion = $_monto_neto_credito;
-	    $_monto_saldo_credito_renovacion  = $_monto_neto_credito - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
+	    $_monto_credito_renovacion = $_monto_otorgado_credito;
+	    $_monto_saldo_credito_renovacion  = $_monto_credito_renovacion - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
 	    $_descripcion_distribucion  = "Concesion Credito Num [".$_numero_creditos."]";
 	    
 	    /* obtener query de insercion */
 	    $queryCuentaDebito  = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_haber, "COMPRA", $_monto_credito_renovacion, '0.00', 1, $_descripcion_distribucion);	    
 	    $queryCuentaCredito = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_debe, "PAGOS", '0.00', $_monto_saldo_credito_renovacion ,2, $_descripcion_distribucion);
+	    
+	    //echo $queryCuentaDebito,'\n',$queryCuentaCredito;
+	    //throw new Exception('prueba');
 	    
 	    $_error_pg  = pg_last_error();
 	    $_error_php = error_get_last();
@@ -1205,51 +1128,22 @@ class CreditosController extends ControladorBase{
 	    }else{
 	        throw new Exception('error en validacion de datos');
 	    }
-	   
-	       
 	    
 	    /* viene insertado de la CxP */
 	    $_descripcion_cuentas_pagar = " Tipo ORDINARIO";
 	    $_id_cuentas_pagar  = $this->generaCuentaPagarCredito($_id_lote, $_id_credito, $_id_proveedor, $_descripcion_cuentas_pagar );
 	    
-	    /* para actualizar la forma de pago y el banco en cuentas por pagar */
-	    $columnas5  = "aa.id_creditos, bb.id_forma_pago, bb.nombre_forma_pago,cc.id_bancos";
-	    $tablas5    = "core_creditos aa
-                    INNER JOIN forma_pago bb
-                    ON aa.id_forma_pago = bb.id_forma_pago
-                    INNER JOIN core_participes_cuentas cc
-                    ON cc.id_participes = aa.id_participes
-                    AND cc.cuenta_principal = true";
-	    $where5     = "aa.id_estatus = 1 AND aa.id_creditos = $_id_credito";
-	    $id5        = "aa.id_creditos";
-	    $rsFormaPago = $Credito->getCondiciones($columnas5, $tablas5, $where5, $id5);
-	    $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
-	    $_id_bancos = $rsFormaPago[0]->id_bancos;
-	    
-	    $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
-	    $tablasPago = "tes_cuentas_pagar";
-	    $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
-	    $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
-	    
 	    /* viene insertado del comprobante */
 	    $_concepto_comprobantes = "Consecion Creditos Sol:$_numero_creditos";
 	    $_id_comprobantes   = $this->generaComprobante($_id_lote, $_id_proveedor, $_id_forma_pago, $_monto_otorgado_credito, $_concepto_comprobantes, $_fecha_proceso);
-	    
-	    //se actualiza la cuenta por pagar con la relacion al comprobante
-	    $columnaCxP = "id_ccomprobantes = $_id_comprobantes ";
-	    $tablasCxP = "tes_cuentas_pagar";
-	    $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
-	    $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
-	    
-	    //se actualiza el credito con su comprobante
-	    $columnaCre = "id_ccomprobantes = $_id_comprobantes ";
-	    $tablasCre = "core_creditos";
-	    $whereCre = "id_creditos = $_id_credito";
-	    $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
+	    	    
+	    /* se actualiza el comprobante generado en las tes_cuentas_pagar y credito*/
+	    $this->ActualizacionesTablas($_id_credito, $_id_cuentas_pagar, $_id_comprobantes, $_id_forma_pago);
+	    	   
 	}
 	
-	
-	public function HipotecarioNuevo($_id_credito = 0){
+	public function HipotecarioNuevo($_id_credito, $_id_lote, $_id_proveedor){
+	    
 	    
 	    $Credito   = new CreditosModel();
 	    
@@ -1257,7 +1151,8 @@ class CreditosController extends ControladorBase{
 	    
 	    /* datos de credito */
 	    $columnas1 = " bb.id_tipo_creditos, bb.nombre_tipo_creditos, bb.codigo_tipo_creditos, aa.numero_creditos,
-                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes";
+                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes,
+                      aa.id_forma_pago";
 	    $tablas1   = " core_creditos aa
             	        INNER JOIN core_tipo_creditos bb
             	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
@@ -1270,6 +1165,7 @@ class CreditosController extends ControladorBase{
 	    $_monto_otorgado_credito    = $rsConsulta1[0]->monto_otorgado_creditos;
 	    $_monto_neto_credito        = $rsConsulta1[0]->monto_neto_entregado_creditos;
 	    $_numero_creditos           = $rsConsulta1[0]->numero_creditos;
+	    $_id_forma_pago             = $rsConsulta1[0]->id_forma_pago;
 	    
 	    
 	    /* buscar parametrizacion de credito */
@@ -1315,7 +1211,7 @@ class CreditosController extends ControladorBase{
 	        /* buscar cuenta retencion*/
 	        $columnas4  = " id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
 	        $tablas4    = " public.plan_cuentas";
-	        $where4     = " nombre_plan_cuentas LIKE 'Interes Crédito Ordinario'";
+	        $where4     = " nombre_plan_cuentas LIKE 'Intereses Crédito Hipotecario";
 	        $id4        = " id_plan_cuentas";
 	        $limit4     = " LIMIT 1";
 	        
@@ -1341,49 +1237,180 @@ class CreditosController extends ControladorBase{
 	    }
 	    
 	    /* viene insertado de la CxP */
-	    $_descripcion_cuentas_pagar = " Tipo ORDINARIO";
+	    $_descripcion_cuentas_pagar = " Tipo HIPOTECARIO";
 	    $_id_cuentas_pagar  = $this->generaCuentaPagarCredito($_id_lote, $_id_credito, $_id_proveedor, $_descripcion_cuentas_pagar );
-	    
-	    /* para actualizar la forma de pago y el banco en cuentas por pagar */
-	    $columnas5  = "aa.id_creditos, bb.id_forma_pago, bb.nombre_forma_pago,cc.id_bancos";
-	    $tablas5    = "core_creditos aa
-                    INNER JOIN forma_pago bb
-                    ON aa.id_forma_pago = bb.id_forma_pago
-                    INNER JOIN core_participes_cuentas cc
-                    ON cc.id_participes = aa.id_participes
-                    AND cc.cuenta_principal = true";
-	    $where5     = "aa.id_estatus = 1 AND aa.id_creditos = $_id_credito";
-	    $id5        = "aa.id_creditos";
-	    $rsFormaPago = $Credito->getCondiciones($columnas5, $tablas5, $where5, $id5);
-	    $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
-	    $_id_bancos = $rsFormaPago[0]->id_bancos;
-	    
-	    $columnaPago = "id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
-	    $tablasPago = "tes_cuentas_pagar";
-	    $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
-	    $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);
 	    
 	    /* viene insertado del comprobante */
 	    $_concepto_comprobantes = "Consecion Creditos Sol:$_numero_creditos";
 	    $_id_comprobantes   = $this->generaComprobante($_id_lote, $_id_proveedor, $_id_forma_pago, $_monto_otorgado_credito, $_concepto_comprobantes, $_fecha_proceso);
 	    
-	    //se actualiza la cuenta por pagar con la relacion al comprobante
-	    $columnaCxP = "id_ccomprobantes = $_id_comprobantes ";
-	    $tablasCxP = "tes_cuentas_pagar";
-	    $whereCxP = "id_cuentas_pagar = $_id_cuentas_pagar";
-	    $Credito -> ActualizarBy($columnaCxP, $tablasCxP, $whereCxP);
-	    
-	    //se actualiza el credito con su comprobante
-	    $columnaCre = "id_ccomprobantes = $_id_comprobantes ";
-	    $tablasCre = "core_creditos";
-	    $whereCre = "id_creditos = $_id_credito";
-	    $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
+	    /* se actualiza el comprobante generado en las tes_cuentas_pagar y credito*/
+	    $this->ActualizacionesTablas($_id_credito, $_id_cuentas_pagar, $_id_comprobantes, $_id_forma_pago);
 	    
 	    
 	}
 	
-	public function HipotecarioRenovacion($_id_credito = 0){
+	public function HipotecarioRenovacion($_id_credito, $_id_lote, $_id_proveedor){	    
 	    
+	    
+	    if( !isset($_SESSION) ){
+	        session_start();
+	    }
+	    
+	    $Credito   = new CreditosModel();
+	    
+	    $_id_usuarios      = $_SESSION['id_usuarios'];
+	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
+	    
+	    $_fecha_proceso = date('Y-m-d');
+	    
+	    /* datos de credito */
+	    $columnas1 = " bb.id_tipo_creditos, bb.nombre_tipo_creditos, bb.codigo_tipo_creditos, aa.numero_creditos,
+                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes,
+                      aa.id_forma_pago";
+	    $tablas1   = " core_creditos aa
+            	        INNER JOIN core_tipo_creditos bb
+            	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
+	    $where1    = "aa.id_creditos = $_id_credito ";
+	    $id1       = "aa.id_creditos";
+	    
+	    $rsConsulta1   = $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    $_id_tipo_creditos         = $rsConsulta1[0]->id_tipo_creditos;
+	    $_monto_otorgado_credito   = $rsConsulta1[0]->monto_otorgado_creditos;
+	    $_monto_neto_credito       = $rsConsulta1[0]->monto_neto_entregado_creditos;
+	    $_numero_creditos          = $rsConsulta1[0]->numero_creditos;
+	    $_id_forma_pago            = $rsConsulta1[0]->id_forma_pago;
+	    
+	    /* buscar parametrizacion de credito */
+	    $columnas2  = " id_modulos, id_plan_cuentas_debe, id_plan_cuentas_haber";
+	    $tablas2    = " public.core_parametrizacion_cuentas";
+	    $where2     = " tabla_parametrizacion_cuentas = 'core_tipo_creditos'
+                        AND modulo_parametrizacion_cuentas = 'CREDITO'
+                        AND operacion_parametrizacion_cuentas = 'NUEVO'
+                        AND id_principal_parametrizacion_cuentas = $_id_tipo_creditos";
+	    $id2        = " id_parametrizacion_cuentas";
+	    
+	    $rsConsulta2   = $Credito->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	    
+	    $_id_cuenta_debe    = $rsConsulta2[0]->id_plan_cuentas_debe;
+	    $_id_cuenta_haber   = $rsConsulta2[0]->id_plan_cuentas_haber;
+	    
+	    /* viene generacion comprobantes de creditos renovados */
+	    $columnas3 = "id_creditos_renovaciones, id_creditos_nuevo, id_creditos_renovado, saldo_credito_renovado_creditos_renovaciones,
+                    seguro_desgravamen_creditos_renovaciones";
+	    $tablas3   = " core_creditos_renovaciones";
+	    $where3    = " id_creditos_nuevo = $_id_credito";
+	    $id3       = " id_creditos_renovaciones";
+	    
+	    $rsConsulta3   = $Credito->getCondiciones($columnas3, $tablas3, $where3, $id3);
+	    
+	    // valores de creditos renovados
+	    $_suma_de_saldos_creditos_renovados = 0.00;
+	    $_suma_de_desgravamen_creditos_renovados = 0.00;
+	    
+	    /* se valida si hubo creditos a ser renovados */
+	    if( !empty($rsConsulta3) ){
+	        
+	        /* se genera el comprobante contable de creditos renovados */
+	        $_id_credito_renovacion= 0;
+	        $funcionRenovados    = "core_renovacion_credito";
+	        $parametrosRenovados = "";
+	        foreach ( $rsConsulta3 as $res ){
+	            $_suma_de_saldos_creditos_renovados += (float)$res->saldo_credito_renovado_creditos_renovaciones;
+	            $_suma_de_desgravamen_creditos_renovados += (float)$res->seguro_desgravamen_creditos_renovaciones;
+	            $_id_credito_renovacion    = $res->id_creditos_renovado;
+	            $parametrosRenovados       = "$_id_credito_renovacion, '$_fecha_proceso', $_id_usuarios, '$_usuario_usuarios', $_id_proveedor ";
+	            $_query_renovados          = $Credito->getconsultaPG($funcionRenovados, $parametrosRenovados);
+	            $Credito->llamarconsultaPG($_query_renovados);
+	            $errorRenovados            = pg_last_error();
+	            if(!empty($errorRenovados)){ throw new Exception('Error en creditos Renovados CRE['.$_id_credito_renovacion.']'); }
+	            
+	        }
+	        
+	    }
+	    
+	    /* viene registro de distribucion de CXP */
+	    /* parametrizacion de variables*/
+	    $_monto_credito_renovacion = $_monto_otorgado_credito;
+	    $_monto_saldo_credito_renovacion  = $_monto_credito_renovacion - ( $_suma_de_saldos_creditos_renovados + $_suma_de_desgravamen_creditos_renovados );
+	    $_descripcion_distribucion  = "Concesion Credito Num [".$_numero_creditos."]";
+	    
+	    /* obtener query de insercion */
+	    $queryCuentaDebito  = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_haber, "COMPRA", $_monto_credito_renovacion, '0.00', 1, $_descripcion_distribucion);
+	    $queryCuentaCredito = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_debe, "PAGOS", '0.00', $_monto_saldo_credito_renovacion ,2, $_descripcion_distribucion);
+	    
+	    //echo $queryCuentaDebito,'\n',$queryCuentaCredito;
+	    //throw new Exception('prueba');
+	    
+	    $_error_pg  = pg_last_error();
+	    $_error_php = error_get_last();
+	    
+	    if( empty($_error_pg) || empty($_error_php) ){
+	        
+	        /* viene insertado en base de datos*/
+	        $Credito -> executeNonQuery($queryCuentaCredito);
+	        $Credito -> executeNonQuery($queryCuentaDebito);
+	        
+	        if( !empty($rsConsulta3) ){
+	            
+	            $_id_credito_renovacion= 0;
+	            $_i = 2;
+	            foreach ( $rsConsulta3 as $res ){
+	                
+	                $id_credito_renovacion                 = $res->id_creditos_renovado;
+	                $valor_saldo_credito_renovacion        = $res->saldo_credito_renovado_creditos_renovaciones;
+	                $valor_desgrvamen_credito_renovacion   = $res->seguro_desgravamen_creditos_renovaciones;
+	                $suma_credito_renovacion               = $valor_saldo_credito_renovacion + $valor_desgrvamen_credito_renovacion;
+	                $_i ++; //variable para ordenas las cuentas en la distribucion
+	                
+	                /* buscar parametrizacion de credito renovado */
+	                $columnas4  = " id_modulos, id_plan_cuentas_debe, id_plan_cuentas_haber";
+	                $tablas4    = " public.core_parametrizacion_cuentas";
+	                $where4     = " tabla_parametrizacion_cuentas = 'core_tipo_creditos'
+                        AND modulo_parametrizacion_cuentas = 'CREDITO'
+                        AND operacion_parametrizacion_cuentas = 'RENOVACION'
+                        AND id_principal_parametrizacion_cuentas =
+                        ( select id_tipo_creditos from core_creditos where id_creditos = $id_credito_renovacion limit 1)";
+	                $id4        = " id_parametrizacion_cuentas";
+	                
+	                $rsConsulta4   = $Credito->getCondiciones($columnas4, $tablas4, $where4, $id4);
+	                
+	                if( empty($rsConsulta4) ){
+	                    continue;
+	                }
+	                
+	                $id_plan_cuenta_renovacion = $rsConsulta4[0]->id_plan_cuentas_debe;
+	                $queryCuentaCreditoRenovaciones  = $this->getQueryInsertDistribucion($_id_lote, $id_plan_cuenta_renovacion, "PAGOS", '0.00', $suma_credito_renovacion, $_i, $_descripcion_distribucion);
+	                $Credito -> executeNonQuery($queryCuentaCreditoRenovaciones);
+	                $_error_pg  = pg_last_error();
+	                $_error_php = error_get_last();
+	                
+	                if( !empty($_error_pg) || !empty($_error_php) ){
+	                    throw new Exception("Error en insertado de detalle distribucion con creditos a ser renovados");
+	                }
+	                
+	            }
+	            
+	        }
+	        
+	        
+	    }else{
+	        throw new Exception('error en validacion de datos');
+	    }
+	    
+	    
+	    
+	    /* viene insertado de la CxP */
+	    $_descripcion_cuentas_pagar = " Tipo HIPOTECARIO";
+	    $_id_cuentas_pagar  = $this->generaCuentaPagarCredito($_id_lote, $_id_credito, $_id_proveedor, $_descripcion_cuentas_pagar );
+	    
+	    /* viene insertado del comprobante */
+	    $_concepto_comprobantes = "Consecion Creditos Sol:$_numero_creditos";
+	    $_id_comprobantes   = $this->generaComprobante($_id_lote, $_id_proveedor, $_id_forma_pago, $_monto_otorgado_credito, $_concepto_comprobantes, $_fecha_proceso);
+	    
+	    /* se actualiza el comprobante generado en las tes_cuentas_pagar y credito*/
+	    $this->ActualizacionesTablas($_id_credito, $_id_cuentas_pagar, $_id_comprobantes, $_id_forma_pago);
 	    
 	}
 	
@@ -1407,6 +1434,100 @@ class CreditosController extends ControladorBase{
                 '$_descripcion')";
 	    
 	}
+	
+	public function ActualizacionesTablas( $_id_credito, $_id_cuentas_pagar, $_id_comprobantes, $_id_forma_pago){
+	    
+	    $Credito = new CreditosModel();
+	    
+	    $columnas1 = "aa.id_creditos,cc.id_bancos";
+	    $tablas1   = "core_creditos aa
+                    iNNER JOIN core_participes_cuentas cc
+                    ON cc.id_participes = aa.id_participes
+                    AND cc.cuenta_principal = true";
+	    $where1     = "aa.id_estatus = 1 AND aa.id_creditos = $_id_credito";
+	    $id1        = "aa.id_creditos";
+	    
+	    $rsConsulta1   = $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    /* si la consulta esta vacia el socio pidio creedito por medio del cheque */
+	    if(empty($rsConsulta1)){
+	        $columnaPago = " id_ccomprobantes = $_id_comprobantes, id_forma_pago = $_id_forma_pago ";
+	    }else{
+	        $_id_bancos    = $rsConsulta1[0]->id_bancos;
+	        $columnaPago   = "id_ccomprobantes = $_id_comprobantes, id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
+	    }
+	    /* actualizacion CXP */	    
+	    $tablasPago = "tes_cuentas_pagar";
+	    $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";
+	    $Credito -> ActualizarBy($columnaPago, $tablasPago, $wherePago);	    
+	    	    
+	    //se actualiza el credito con su comprobante
+	    $columnaCre = "id_ccomprobantes = $_id_comprobantes ";
+	    $tablasCre = "core_creditos";
+	    $whereCre = "id_creditos = $_id_credito";
+	    $Credito -> ActualizarBy($columnaCre, $tablasCre, $whereCre);
+	    
+	    $error_pg = pg_last_error();
+	    $error_ph = error_get_last();
+	    
+	    if(!empty($error_pg) || !empty($error_ph)){
+	        throw  new Exception(' en la actualizacion de tablas');
+	    }
+	    
+	}
+	
+	public function MayorizaComprobanteCredito($id_credito){
+	    
+	    $Credito = new CreditosModel();
+	    
+	    try {
+	        
+	        $columas1  = "id_creditos, numero_creditos, id_ccomprobantes";
+	        $tablas1   = "core_creditos";
+	        $where1    = "id_creditos = $id_credito ";
+	        $id1       = "id_creditos";
+	        $rsConsulta1 = $Credito->getCondiciones($columas1, $tablas1, $where1, $id1);
+	        
+	        if(empty($rsConsulta1)){ throw new Exception('credito no encontrado');}
+	        
+	        $_id_comprobante       = $rsConsulta1[0]->id_ccomprobantes;
+	        $funcionMayoriza       = "core_ins_mayoriza_activa_credito";
+	        $parametrosMayoriza    = "$_id_comprobante,null";
+	        $consultaMayoriza      = $Credito->getconsultaPG($funcionMayoriza, $parametrosMayoriza);
+	        $Credito->llamarconsultaPG($consultaMayoriza);
+	        
+	        $error = "";
+	        $error = pg_last_error();
+	        if(!empty($error)){ throw new Exception('mayoriza comprobante credito');}
+	        
+	        /* valida si el credito tiene renovaciones de credito */
+	        $columnas2 = " id_creditos_renovado,id_ccomprobantes";
+	        $tablas2   = " core_creditos_renovaciones";
+	        $where2    = " id_creditos_nuevo  = $_id_comprobante";
+	        $id2       = " id_creditos_renovaciones";
+	        $rsConsulta2   = $Credito->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	        if(!empty($rsConsulta2)){
+	            foreach ($rsConsulta2 as $res ){
+	                $_id_credito_renovado  = $res->id_creditos_renovado;
+	                $funcionMayorizaRenovados       = "core_ins_mayoriza_activa_credito";
+	                $parametrosMayorizaRenovados    = "$_id_credito_renovado,null";
+	                $consultaMayorizaRenovados      = $Credito->getconsultaPG($funcionMayorizaRenovados, $parametrosMayorizaRenovados);
+	                $Credito->llamarconsultaPG($consultaMayorizaRenovados);
+	                
+	                $error = "";
+	                $error = pg_last_error();
+	                if(!empty($error)){ throw new Exception('comprobante Credito ['.$_id_credito_renovado.'] Renovado');}
+	            }
+	        }
+	        
+	        return 'OK';
+	        
+	    } catch (Exception $e) {
+	        return "ERROR".$e->getMessage();
+	    }
+	    
+	}
+	
 	
 	public function RenovarCredito( $_id_creditos){
 	    

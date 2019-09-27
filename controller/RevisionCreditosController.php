@@ -839,6 +839,7 @@ class RevisionCreditosController extends ControladorBase{
         $where="id_cabeza_creditos_trabajados=".$id_reporte;
         $id="id_creditos";
         $resultSet=$reporte->getCondiciones($columnas, $tablas, $where, $id);
+        
         foreach ($resultSet as $res)
         {
             $where = "id_creditos=".$res->id_creditos;
@@ -849,18 +850,16 @@ class RevisionCreditosController extends ControladorBase{
             require_once 'controller/CreditosController.php';
             
             $ctr_creditos= new CreditosController();
-            
             $mensaje=$ctr_creditos->ActivarCredito($res->id_creditos);
-            
-            
-            
-            //$mensaje=$this->ActivaCredito($res->id_creditos);
             if ($mensaje!='OK')
-            {
-                $mensaje="ERROR";
-                $reporte->endTran("ROLLBACK");
-                break;
+            {   
+            echo $mensaje."---|id_credito->".$res->id_creditos."||\n";
+            $mensaje="ERROR";
+            $reporte->endTran("ROLLBACK");
+            break;
+            
             }
+            
         }
         
         if($mensaje!="ERROR")
@@ -882,6 +881,7 @@ class RevisionCreditosController extends ControladorBase{
             $reporte->UpdateBy($colval, $tabla, $where);
             
             $errores=ob_get_clean();
+            
             $errores=trim($errores);
             if(empty($errores))
             {
@@ -894,7 +894,6 @@ class RevisionCreditosController extends ControladorBase{
                 $mensaje="ERROR".$errores;
             }
         }
-        
         echo $mensaje;
     }
     
@@ -1559,6 +1558,30 @@ class RevisionCreditosController extends ControladorBase{
         
         $resultSet=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
         
+        $columnas="core_creditos.numero_creditos,core_participes.cedula_participes,core_participes.apellido_participes,core_participes.nombre_participes,
+                    core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos, core_creditos.monto_neto_entregado_creditos,
+                    core_tipo_creditos.nombre_tipo_creditos, core_estado_creditos.nombre_estado_creditos, forma_pago.nombre_forma_pago,
+					core_participes.celular_participes,
+                    core_creditos_retenciones.monto_creditos_retenciones";
+        $tablas="core_creditos INNER JOIN core_participes
+                    ON core_creditos.id_participes = core_participes.id_participes
+                    INNER JOIN core_creditos_trabajados_detalle
+                    ON core_creditos.id_creditos=core_creditos_trabajados_detalle.id_creditos
+                    INNER JOIN core_creditos_trabajados_cabeza
+                    ON core_creditos_trabajados_cabeza.id_creditos_trabajados_cabeza=core_creditos_trabajados_detalle.id_cabeza_creditos_trabajados
+                    INNER JOIN core_tipo_creditos
+                    ON core_tipo_creditos.id_tipo_creditos=core_creditos.id_tipo_creditos
+                    INNER JOIN core_estado_creditos
+                    ON core_estado_creditos.id_estado_creditos=core_creditos.id_estado_creditos
+                    INNER JOIN forma_pago
+                    ON forma_pago.id_forma_pago=core_creditos.id_forma_pago
+                    INNER JOIN core_creditos_retenciones
+                    ON core_creditos_retenciones.id_creditos = core_creditos.id_creditos";
+        $where="id_creditos_trabajados_cabeza=".$id_reporte." AND nombre_forma_pago='CHEQUE'";
+        $id="core_creditos.numero_creditos";
+        
+        $resultSetCheques=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+        
         $html='';
         
             $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
@@ -1602,7 +1625,8 @@ class RevisionCreditosController extends ControladorBase{
                 $where="core_participes.cedula_participes='".$res->cedula_participes."' AND core_contribucion.id_estatus=1";
                 $totalCtaIndividual=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
                 $totalCtaIndividual=$totalCtaIndividual[0]->total;
-                $html.='<td style="text-align: center; font-size: 11px;">'.$totalCtaIndividual.'</td>';
+                $totalCtaIndividual=number_format((float)$totalCtaIndividual,2,".",",");
+                $html.='<td align="right" style="text-align: center; font-size: 11px;">'.$totalCtaIndividual.'</td>';
                 $html.='<td style="text-align: center; font-size: 11px;">'.$res->plazo_creditos.'</td>';
                 if(!(empty($res->monto_creditos_retenciones)))
                 {
@@ -1634,6 +1658,48 @@ class RevisionCreditosController extends ControladorBase{
                 $html.='</tr>';
             }
             
+            foreach($resultSetCheques as $res)
+            {
+                $i++;
+                $html.= "<tr>";
+                $html.='<td style="text-align: center; font-size: 11px;">'.$i.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->numero_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->cedula_participes.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->apellido_participes.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_participes.'</td>';
+                $monto=number_format((float)$res->monto_otorgado_creditos,2,".",",");
+                $html.='<td align="right" style="text-align: center; font-size: 11px;">'.$monto.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">-</td>';
+                $columnas="SUM(valor_personal_contribucion)+SUM(valor_patronal_contribucion) AS total";
+                $tablas="core_contribucion INNER JOIN core_participes
+                ON core_contribucion.id_participes  = core_participes.id_participes";
+                $where="core_participes.cedula_participes='".$res->cedula_participes."' AND core_contribucion.id_estatus=1";
+                $totalCtaIndividual=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+                $totalCtaIndividual=$totalCtaIndividual[0]->total;
+                $totalCtaIndividual=number_format((float)$totalCtaIndividual,2,".",",");
+                $html.='<td align="right" style="text-align: center; font-size: 11px;">'.$totalCtaIndividual.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;">'.$res->plazo_creditos.'</td>';
+                if(!(empty($res->monto_creditos_retenciones)))
+                {
+                    $retencion=$res->monto_creditos_retenciones;
+                    $retencion=number_format((float)$retencion,2,".",",");
+                    $html.='<td align="right" style="text-align: center; font-size: 11px;">'.$retencion.'</td>';
+                }
+                else
+                    $html.='<td style="text-align: center; font-size: 11px;">-</td>';
+                    $monto=number_format((float)$res->monto_neto_entregado_creditos,2,".",",");
+                    $html.='<td align="right" style="text-align: center; font-size: 11px;">'.$monto.'</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_tipo_creditos.'</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_estado_creditos.'</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">-</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_forma_pago.'</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;"></td>';
+                    $html.='<td style="text-align: center; font-size: 11px;"></td>';
+                    $html.='<td style="text-align: center; font-size: 11px;"></td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$res->celular_participes.'</td>';
+                    $html.='</tr>';
+            }
+            
         $html.='</table>';
         $banco="";
         $total_transfer=0;
@@ -1645,16 +1711,9 @@ class RevisionCreditosController extends ControladorBase{
         $total_transacciones=0;
         $transferencias=array();
         $ultimo=sizeof($resultSet);
+        $ultimo_cheques=sizeof($resultSetCheques);
         for($i=0; $i<$ultimo; $i++)
         {
-            if($resultSet[$i]->nombre_forma_pago=="CHEQUE")
-            {
-                $pagos_cheque++;
-                $total_cheque+=$resultSet[$i]->monto_neto_entregado_creditos;
-                $total_transacciones++;
-            }
-            else if($resultSet[$i]->nombre_forma_pago=="TRANSFERENCIA")
-            {
                 if($resultSet[$i]->nombre_bancos!=$banco)
                 {
                     if($banco!="")
@@ -1688,9 +1747,16 @@ class RevisionCreditosController extends ControladorBase{
                 }
                 $total_transfer1+=$resultSet[$i]->monto_neto_entregado_creditos;
                 $total_transacciones++;
-            }
             
         }
+        
+        for($i=0; $i<$ultimo_cheques; $i++)
+        {
+            $total_transacciones++;
+            $total_cheque+=$resultSetCheques[$i]->monto_neto_entregado_creditos;
+        }
+        
+        $pagos_cheque=$ultimo_cheques;
         
         
         $total=$total_cheque+$total_transfer1;
@@ -1718,7 +1784,7 @@ class RevisionCreditosController extends ControladorBase{
            $html.='<td></td>';
            $html.='<td align="center">'.$pagos_cheque.'</td>';
            $total_cheque=number_format((float)$total_cheque,2,".",",");
-           $html.='<td>'.$total_cheque.'</td>';
+           $html.='<td align="right">'.$total_cheque.'</td>';
            $html.='</tr>';
        }
        
@@ -1736,7 +1802,7 @@ class RevisionCreditosController extends ControladorBase{
                    $html.='<td>'.$transferencias[$i][0].'</td>';
                    $html.='<td align="center">'.$transferencias[$i][1].'</td>';
                    $monto=number_format((float)$transferencias[$i][2],2,".",",");
-                   $html.='<td>'.$monto.'</td>';
+                   $html.='<td align="right">'.$monto.'</td>';
                    $html.='</tr>';
                }
                else 
@@ -1745,7 +1811,7 @@ class RevisionCreditosController extends ControladorBase{
                    $html.='<td>'.$transferencias[$i][0].'</td>';
                    $html.='<td align="center">'.$transferencias[$i][1].'</td>';
                    $monto=number_format((float)$transferencias[$i][2],2,".",",");
-                   $html.='<td>'.$monto.'</td>';
+                   $html.='<td align="right">'.$monto.'</td>';
                    $html.='</tr>';
                }
                

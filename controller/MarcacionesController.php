@@ -131,7 +131,7 @@ class MarcacionesController extends ControladorBase{
                     
                     $datos= explode("|", $us);
                     $html.='<tr height = "25">';
-                    $html.='<td bgcolor="#F5F5F5" style="font-size: 16px; text-align:center;"><a href="javascript:EditAdvertencias('.$datos[0].')"><b>'.$datos[1].'<b></a></td>';
+                    $html.='<td bgcolor="#F5F5F5" style="font-size: 16px; text-align:center;"><a href="javascript:EditAdvertencias(&quot;'.$datos[0].'&quot;)"><b>'.$datos[1].'<b></a></td>';
                     $html.='<td width="25" bgcolor="EC2E2E" style="font-size: 16px; text-align:center;" valign="top"><font color="#FFFFFF"><b>'.$datos[2].'<b></font></td>';
                     $html.='</tr>';
                    
@@ -1079,7 +1079,7 @@ class MarcacionesController extends ControladorBase{
         }
         if (!(empty($numero_cedula)))
         {
-            $where.= " AND empleados.numero_cedula_empleados =".$numero_cedula;
+            $where.= " AND empleados.numero_cedula_empleados ='".$numero_cedula."'";
         }
         if($estado_registros==2)
         {
@@ -1289,7 +1289,7 @@ class MarcacionesController extends ControladorBase{
             
             $cedula_empleado = $_GET['term'];
             
-            $resultSet=$empleados->getBy("CAST(empleados.numero_cedula_empleados AS TEXT) LIKE '$cedula_empleado%'");
+            $resultSet=$empleados->getBy("empleados.numero_cedula_empleados LIKE '$cedula_empleado%'");
             
             $respuesta = array();
             

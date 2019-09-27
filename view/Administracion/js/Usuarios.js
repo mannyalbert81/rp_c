@@ -368,6 +368,7 @@ $('#frm_ins_usuario').on('submit',function(e){
 		 dataType: 'json',
 		 contentType: false, //importante enviar este parametro en false
          processData: false,  //importante enviar este parametro en false
+         
 		 success: function(respuesta){
 			 $("#frm_ins_usuario")[0].reset();
 			 //console.log(respuesta);

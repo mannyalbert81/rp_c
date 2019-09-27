@@ -159,6 +159,21 @@
                         <div id="mensaje_pago_empleados" class="errores"></div>
                  	</div>
              	</div>
+             		<div class="col-xs-6 col-md-3 col-lg-3" style="margin-top:25px;">
+            		<div class="form-group">
+                		<button type="button" id="13ro" name="dia" class="btn btn-light" onclick="M13()"><i id="13roicon" class="glyphicon glyphicon-unchecked"></i>MENSALIZUAR 13RO</button>
+                 	</div>
+             	</div>
+             		<div class="col-xs-6 col-md-3 col-lg-3" style="margin-top:25px;">
+            		<div class="form-group">
+                		<button type="button" id="14to" name="dia" class="btn btn-light" onclick="M14()"><i id="14toicon" class="glyphicon glyphicon-unchecked"></i>MENSALIZUAR 14TO</button>
+                 	</div>
+             	</div> 
+             		<div class="col-xs-6 col-md-3 col-lg-3" style="margin-top:25px;">
+            		<div class="form-group">
+                		<button type="button" id="fr" name="dia" class="btn btn-light" onclick="MFR()"><i id="fricon" class="glyphicon glyphicon-unchecked"></i>MENSALIZUAR F. DE RESERVA</button>
+                 	</div>
+             	</div>  
           	</div>
           	<div class="row">
            	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
@@ -211,7 +226,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Administracion/js/Empleados.js?0.11"></script>
+    <script src="view/Administracion/js/Empleados.js?0.12"></script>
 	
 	
   </body>

@@ -534,8 +534,13 @@ $("#mensaje_archivo").fadeOut("slow");
 							    		        			}
 						    		        			});
 					    						
+					    						if (yeararchivo.lenght()>1) yeararchivo=yeararchivo[1];
 					    						var mes = new Date().getMonth();
 					    						var year = new Date().getFullYear();
+					    						var dia_hoy= new Date().getDate();
+					    						var mes_inicio
+					    						if(dia_hoy<=21) 
+					    						
 					    						if (mesarchivo.length <=2 && mesarchivo[0]==mes-1 && mesarchivo[1]==mes && yeararchivo==year)
 					    						{
 					    							mes--;

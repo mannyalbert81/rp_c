@@ -1556,7 +1556,7 @@ class CreditosController extends ControladorBase{
 	       $_id_comprobante_sub= 0;
 	       $_error = "";
 	        
-	       /** buscar credito si tiene comprobnate **/
+	       /** buscar credito si tiene comprobante **/
 	       $columnas1  = "id_creditos, id_comprobantes";
 	       $tablas1    = " core_creditos";
 	       $where1     = " id_creditos = $_id_credito";
@@ -1591,7 +1591,7 @@ class CreditosController extends ControladorBase{
 	           $this->RevertirComprobanteMayor($arrayComprobantes[$i]);	           
 	       }
 	       
-	       
+	       return "OK";
 	        
 	    } catch (Exception $e) {
 	           

@@ -85,6 +85,8 @@ class BuscarParticipesCesantesController extends ControladorBase{
                </div>';
         
         echo $html;
+        
+        //
     }
     
     public function BuscarParticipe()

@@ -1,0 +1,14 @@
+
+
+
+
+<br />
+<b>Notice</b>:  Undefined index: id_cabecera in <b>C:\Users\Manuel\git\rp_c\controller\RecaudacionController.php</b> on line <b>407</b><br />
+<br />
+<b>Warning</b>:  pg_query(): Query failed: ERROR:  no existe la columna con_dbalance_comprobacion.saldo_acreedor_dbalnce_comprobacion
+LINE 1: SELECT plan_cuentas.codigo_plan_cuentas, (con_dbalance_compr...
+                                                  ^
+HINT:  Probablemente quiera hacer referencia a la columna «con_dbalance_comprobacion.saldo_acreedor_dbalance_comprobacion». in <b>C:\Users\Manuel\git\rp_c\core\EntidadBase.php</b> on line <b>223</b><br />
+<br />
+<b>Warning</b>:  pg_fetch_object() expects parameter 1 to be resource, boolean given in <b>C:\Users\Manuel\git\rp_c\core\EntidadBase.php</b> on line <b>225</b><br />
+B17	3441	30/04/2019	0	0.00

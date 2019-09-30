@@ -74,31 +74,44 @@ function consultaCargaRecaudaciones(_page = 1){
 
 $("#btnGenerar").on("click",function(){
 	
-	let $entidadPatronal 	= $("#id_entidad_patronal"),
-		$anioCargaRecaudaciones 	= $("#anio_carga_recaudaciones"),
-		$mesCargaRecaudaciones 	= $("#mes_carga_recaudaciones"),
-		$formatoCargaRecaudaciones	= $("#formato_carga_recaudaciones");
-		$nombreCargaRecaudaciones	= $("#nombre_carga_recaudaciones");
+	let $entidadPatronal 	= $("#id_entidad_patronal");
+	let	$anioCargaRecaudaciones 	= $("#anio_carga_recaudaciones");
+	let	$mesCargaRecaudaciones 	= $("#mes_carga_recaudaciones");
+	let	$formatoCargaRecaudaciones	= $("#formato_carga_recaudaciones");
+	let	$nombreCargaRecaudaciones	= $("#nombre_carga_recaudaciones");
 	
 	if($entidadPatronal.val() == 0 ){
 		$entidadPatronal.notify("Seleccione Entidad Patronal",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	
-	var parametros ={id_entidad_patronal:$entidadPatronal.val(),
-			anio_carga_recaudaciones:$anioCargaRecaudaciones.val(),
-			mes_carga_recaudaciones:$mesCargaRecaudaciones.val(),
-			formato_carga_recaudaciones:$formatoCargaRecaudaciones.val(),
-			nombre_carga_recaudaciones:$nombreCargaRecaudaciones.val(),
-					
-	}   
+	
+	if($nombreCargaRecaudaciones.val() == 0 ){
+		$nombreCargaRecaudaciones.notify("Seleccione Archivo",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	 
+	
+	var parametros = new FormData();
+	
+	parametros.append('id_entidad_patronal',$entidadPatronal.val());
+	parametros.append('anio_carga_recaudaciones',$anioCargaRecaudaciones.val());
+	parametros.append('mes_carga_recaudaciones',$mesCargaRecaudaciones.val());
+	parametros.append('formato_carga_recaudaciones',$formatoCargaRecaudaciones.val());
+	parametros.append('nombre_carga_recaudaciones', $('input[type=file]')[0].files[0]); 
+	
 	
 	$.ajax({
 		beforeSend:fnBeforeAction('Estamos procesado la informacion'),
 		url:"index.php?controller=CargaRecaudaciones&action=GenerarCargaRecaudaciones",
 		type:"POST",
 		dataType:"json",
-		data:parametros
+		data:parametros,
+		
+		 contentType: false, 
+         processData: false  
+       
 	}).done(function(x){
 		console.log(x)
 		if(x.respuesta == 1){
@@ -109,8 +122,11 @@ $("#btnGenerar").on("click",function(){
 				 icon: "success",
 				 timer: 2000,
 				 button: false,
-				});			
-				
+				});		
+			document.getElementById("frm_carga_recaudaciones").reset();	
+			
+			consultaCargaRecaudaciones();
+		
 		}
 		if(x.respuesta == 2){
 			swal( {
@@ -120,7 +136,10 @@ $("#btnGenerar").on("click",function(){
 				 timer: 2000,
 				 button: false,
 				});
-				
+			document.getElementById("frm_carga_recaudaciones").reset();	
+			
+			consultaCargaRecaudaciones();
+		
 		}
 		
 		
@@ -144,10 +163,44 @@ $("#btnGenerar").on("click",function(){
 })
 
 function fnBeforeAction(mensaje){
-	/*funcion que se ejecuta antes de realizar peticion ajax*/
+
 	swal({
         title: "RECAUDACIONES",
         text: mensaje,
         icon: "view/images/ajax-loader.gif",        
       })
+}
+
+
+
+
+function verArchivo(linkArchivo){
+
+	let $link = $(linkArchivo);
+	let parametros;
+	
+	if(parseInt($link.data("idarchivo")) > 0){
+		
+		parametros = {"id_carga_recaudaciones":$link.data("idarchivo")}
+		
+	}else{ return false; }	
+	
+	var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "index.php?controller=CargaRecaudaciones&action=descargarArchivo");
+    form.setAttribute("target", "_blank");   
+    
+    for (var i in parametros) {
+        if (parametros.hasOwnProperty(i)) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = i;
+            input.value = parametros[i];
+            form.appendChild(input);
+        }
+    }
+    
+    document.body.appendChild(form); 
+    form.submit();    
+    document.body.removeChild(form);
 }

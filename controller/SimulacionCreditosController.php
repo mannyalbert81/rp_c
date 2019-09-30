@@ -405,7 +405,7 @@ class SimulacionCreditosController extends ControladorBase{
     <td ><font size="3"> Capital de créditos : '.$saldo_credito.'</font></td>
     </tr>
     <tr>
-    <td ><font size="3"> Disponible : '.$disponible.'</font></td>
+    <td ><font size="3" id="monto_disponible1"> Disponible : '.$disponible.'</font></td>
     </tr>';
     if($num_aporte<3)$html.='<td colspan="2" ><font size="3" id="aportes_participes">El participe tiene '.$num_aporte.' de los 3 últimos aportes pagados</font></td>';
     $html.='</td>
@@ -569,6 +569,11 @@ class SimulacionCreditosController extends ControladorBase{
        $id="core_plazos_creditos.id_plazos_creditos";
        $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
        $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
+       
+       if($tipo_credito!="PH")
+       {
+           if($cuota>84) $cuota=84;               
+       }
        
       $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$cuota));
       $valor_cuota=round($valor_cuota,2);
@@ -746,11 +751,22 @@ class SimulacionCreditosController extends ControladorBase{
        session_start();
        $cuotas= new PlanCuentasModel();
        $monto_credito=$_POST['monto_credito'];
+       $id_solicitud=$_POST['id_solicitud'];
        $fecha_corte=date('Y-m-d');
        
        $cuota=$_POST['plazo_credito'];
        $tipo_credito=$_POST['tipo_credito'];
        $renovacion_credito=$_POST['renovacion_credito'];
+       
+       if($tipo_credito=="PH")
+       {
+           $columnas="valor_avaluo_core_documentos_hipotecario";
+           $tablas="core_documentos_hipotecario";
+           $where="id_solicitud_credito=".$id_solicitud;
+           $avaluo_credito=$cuotas->getCondicionesSinOrden($columnas, $tablas, $where, "");
+           $avaluo_credito=$avaluo_credito[0]->valor_avaluo_core_documentos_hipotecario;
+       }
+       
        
        $columnas="interes_tipo_creditos";
        $tablas="core_tipo_creditos";
@@ -765,17 +781,57 @@ class SimulacionCreditosController extends ControladorBase{
        $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$cuota))  ;
        $valor_cuota=round($valor_cuota,2);
        
-       if($renovacion_credito=="true")
+       if ($tipo_credito=="PH")
        {
-           $resultAmortizacion=$this->tablaAmortizacionRenovacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_corte, $tasa_interes);
+           if($renovacion_credito=="true")
+           {
+               $resultAmortizacion=$this->tablaAmortizacionRenovacionHipotecario($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_corte, $tasa_interes, $avaluo_credito);
+           }
+           else
+           {
+               $resultAmortizacion=$this->tablaAmortizacionHipotecario($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_corte, $tasa_interes, $avaluo_credito);
+           }
        }
-       else 
+       else
        {
-           $resultAmortizacion=$this->tablaAmortizacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_corte, $tasa_interes);
+           if($renovacion_credito=="true")
+           {
+               $resultAmortizacion=$this->tablaAmortizacionRenovacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_corte, $tasa_interes);
+           }
+           else
+           {
+               $resultAmortizacion=$this->tablaAmortizacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_corte, $tasa_interes);
+           }
        }
-      
        
-       $html='<div class="box box-solid bg-olive">
+      
+      
+      if($tipo_credito=="PH")
+      {
+          $html='<div class="box box-solid bg-olive">
+            <div class="box-header with-border">
+            <h3 class="box-title">Tabla de Amortización</h3>
+            <button class="btn btn-info pull-right" onclick="GuardarCredito()"><i class="glyphicon glyphicon-floppy-disk"></i> GUARDAR</button>
+            </div>
+             <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-olive">
+                        <th width="5%">Cuota</th>
+                        <th width="15%" >Fecha</th>
+                        <th width="13%">Capital</th>
+                        <th width="13%">Interes</th>
+                        <th width="13%">Seg. Desgravamen</th>
+                        <th width="13%">Seg. Incendio</th>
+                        <th width="13%">Cuota</th>
+                        <th width="13%">Saldo</th>
+                        <th width="2%"></th>
+                     </tr>
+                   </table>
+                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
+                     <table border="1" width="100%">';
+      }
+      else
+      {
+          $html='<div class="box box-solid bg-olive">
             <div class="box-header with-border">
             <h3 class="box-title">Tabla de Amortización</h3>
             <button class="btn btn-info pull-right" onclick="GuardarCredito()"><i class="glyphicon glyphicon-floppy-disk"></i> GUARDAR</button>
@@ -794,10 +850,14 @@ class SimulacionCreditosController extends ControladorBase{
                    </table>
                    <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
                      <table border="1" width="100%">';
+      }
+       
        $total=0;
        $total1=0;
        $total_capital=0;
        $total_desg=0;
+       $total_incendio=0;
+       
        foreach ($resultAmortizacion as $res)
        {
            
@@ -809,6 +869,11 @@ class SimulacionCreditosController extends ControladorBase{
            $total_capital+=$res['amortizacion'];
            $res['pagos']=number_format((float)$res['pagos'],2,".","");
            $total1+=$res['pagos'];
+           if($tipo_credito=="PH")
+           {
+               $res['seguro_incendios']=number_format((float)$res['seguro_incendios'],2,".","");
+               $total_incendio+=$res['seguro_incendios'];
+           }
            
            
                      
@@ -823,7 +888,7 @@ class SimulacionCreditosController extends ControladorBase{
        $res['pagos']=round($res['pagos'],2);
        
        $resultAmortizacion[$len-1]['pagos']=$resultAmortizacion[$len-1]['pagos']+$resultAmortizacion[$len-1]['saldo_inicial'];
-   $diferencia=($resultAmortizacion[$len-1]['pagos']-$resultAmortizacion[$len-1]['interes']);
+        $diferencia=($resultAmortizacion[$len-1]['pagos']-$resultAmortizacion[$len-1]['interes']);
        
     $resultAmortizacion[$len-1]['amortizacion']=$resultAmortizacion[$len-1]['amortizacion']+$resultAmortizacion[$len-1]['saldo_inicial'];
       $resultAmortizacion[$len-1]['saldo_inicial']=0.00;
@@ -833,6 +898,7 @@ class SimulacionCreditosController extends ControladorBase{
        $total1=0;
        $total_capital=0;
        $total_desg=0;
+       $total_incendio=0;
        foreach ($resultAmortizacion as $res)
        {
            
@@ -844,44 +910,110 @@ class SimulacionCreditosController extends ControladorBase{
            $total_capital+=$res['amortizacion'];
            $res['pagos']=number_format((float)$res['pagos'],2,".","");
            $total1+=$res['pagos']+$res['desgravamen'];
+           
+           if($tipo_credito=="PH")
+           {
+               $res['seguro_incendios']=number_format((float)$res['seguro_incendios'],2,".","");
+               $total_incendio+=$res['seguro_incendios'];
+           }
      
        }
       
-       foreach ($resultAmortizacion as $res)
+       
+       
+       
+       if($tipo_credito=="PH")
        {
-           
-           $html.='<tr>';
-           $html.='<td width="5%" bgcolor="white"><font color="black">'.$res['pagos_trimestrales'].'</font></td>';
-           $html.='<td width="18%" bgcolor="white" align="center"><font color="black">'.$res['fecha_pago'].'</font></td>';
-           $res['amortizacion']=number_format((float)$res['amortizacion'],2,".",",");
-           $html.='<td width="15.2%" bgcolor="white" align="right"><font color="black">'.$res['amortizacion'].'</font></td>';
-           $res['interes']=number_format((float)$res['interes'],2,".",",");
-           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['interes'].'</font></td>';
-           $cuota_pagar=$res['desgravamen']+$res['pagos'];
-           $res['desgravamen']=number_format((float)$res['desgravamen'],2,".",",");
-           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black" id="desgravamen'.$res['pagos_trimestrales'].'">'.$res['desgravamen'].'</font></td>';
-           $cuota_pagar=number_format((float)$cuota_pagar,2,".",",");
-           $html.='<td  width="15.4%" bgcolor="white" align="right"><font color="black" id="cuota_a_pagar'.$res['pagos_trimestrales'].'">'.$cuota_pagar.'</font></td>';
-           $res['saldo_inicial']=number_format((float)$res['saldo_inicial'],2,".",",");
-           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['saldo_inicial'].'</font></td>';
-           $html.='</tr>';
+           foreach ($resultAmortizacion as $res)
+           {
+               /*<th width="5%">Cuota</th>
+               <th width="15%" >Fecha</th>
+               <th width="13%">Capital</th>
+               <th width="13%">Interes</th>
+               <th width="13%">Seg. Desgravamen</th>
+               <th width="13%">Seg. Incendio</th>
+               <th width="13%">Cuota</th>
+               <th width="13%">Saldo</th>
+               <th width="2%"></th>*/
+               
+               $html.='<tr>';
+               $html.='<td width="5%" bgcolor="white"><font color="black">'.$res['pagos_trimestrales'].'</font></td>';
+               $html.='<td width="15%" bgcolor="white" align="center"><font color="black">'.$res['fecha_pago'].'</font></td>';
+               $res['amortizacion']=number_format((float)$res['amortizacion'],2,".",",");
+               $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black">'.$res['amortizacion'].'</font></td>';
+               $res['interes']=number_format((float)$res['interes'],2,".",",");
+               $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black">'.$res['interes'].'</font></td>';
+               $cuota_pagar=$res['desgravamen']+$res['pagos'];
+               $res['desgravamen']=number_format((float)$res['desgravamen'],2,".",",");
+               $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black" id="desgravamen'.$res['pagos_trimestrales'].'">'.$res['desgravamen'].'</font></td>';
+               $res['seguro_incendios']=number_format((float)$res['seguro_incendios'],2,".",",");
+               $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black" id="incendio'.$res['pagos_trimestrales'].'">'.$res['seguro_incendios'].'</font></td>';
+               $cuota_pagar=number_format((float)$cuota_pagar,2,".",",");
+               $html.='<td  width="13.2%" bgcolor="white" align="right"><font color="black" id="cuota_a_pagar'.$res['pagos_trimestrales'].'">'.$cuota_pagar.'</font></td>';
+               $res['saldo_inicial']=number_format((float)$res['saldo_inicial'],2,".",",");
+               $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black">'.$res['saldo_inicial'].'</font></td>';
+               $html.='</tr>';
            
            
        }
-     
+       
        $html.='<tr>';
        $html.='<td width="5%" bgcolor="white"><font color="black"></font></td>';
-       $html.='<td width="18%" bgcolor="white" align="center"><font color="black">Totales</font></td>';
+       $html.='<td width="15%" bgcolor="white" align="center"><font color="black">Totales</font></td>';
        $total_capital=number_format((float)$total_capital,2,".",",");
-       $html.='<td width="15.2%" bgcolor="white" align="right"><font color="black">'.$total_capital.'</font></td>';
+       $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black">'.$total_capital.'</font></td>';
        $total=number_format((float)$total,2,".",",");
-       $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$total.'</font></td>';
+       $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black">'.$total.'</font></td>';
        $total_desg=number_format((float)$total_desg,2,".",",");
-       $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$total_desg.'</font></td>';
+       $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black">'.$total_desg.'</font></td>';
+       $total_incendio=number_format((float)$total_incendio,2,".",",");
+       $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black" id="incendio'.$res['pagos_trimestrales'].'">'.$total_incendio.'</font></td>';
        $total1=number_format((float)$total1,2,".",",");
-       $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$total1.'</font></td>';
-       $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black"></font></td>';
+       $html.='<td width="13.2%" bgcolor="white" align="right"><font color="black">'.$total1.'</font></td>';
+       $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black"></font></td>';
        $html.='</tr>';
+       }
+       else
+       {
+           foreach ($resultAmortizacion as $res)
+           {
+               
+               $html.='<tr>';
+               $html.='<td width="5%" bgcolor="white"><font color="black">'.$res['pagos_trimestrales'].'</font></td>';
+               $html.='<td width="18%" bgcolor="white" align="center"><font color="black">'.$res['fecha_pago'].'</font></td>';
+               $res['amortizacion']=number_format((float)$res['amortizacion'],2,".",",");
+               $html.='<td width="15.2%" bgcolor="white" align="right"><font color="black">'.$res['amortizacion'].'</font></td>';
+               $res['interes']=number_format((float)$res['interes'],2,".",",");
+               $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['interes'].'</font></td>';
+               $cuota_pagar=$res['desgravamen']+$res['pagos'];
+               $res['desgravamen']=number_format((float)$res['desgravamen'],2,".",",");
+               $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black" id="desgravamen'.$res['pagos_trimestrales'].'">'.$res['desgravamen'].'</font></td>';
+               $cuota_pagar=number_format((float)$cuota_pagar,2,".",",");
+               $html.='<td  width="15.4%" bgcolor="white" align="right"><font color="black" id="cuota_a_pagar'.$res['pagos_trimestrales'].'">'.$cuota_pagar.'</font></td>';
+               $res['saldo_inicial']=number_format((float)$res['saldo_inicial'],2,".",",");
+               $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$res['saldo_inicial'].'</font></td>';
+               $html.='</tr>';
+               
+               
+           }
+           
+           $html.='<tr>';
+           $html.='<td width="5%" bgcolor="white"><font color="black"></font></td>';
+           $html.='<td width="18%" bgcolor="white" align="center"><font color="black">Totales</font></td>';
+           $total_capital=number_format((float)$total_capital,2,".",",");
+           $html.='<td width="15.2%" bgcolor="white" align="right"><font color="black">'.$total_capital.'</font></td>';
+           $total=number_format((float)$total,2,".",",");
+           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$total.'</font></td>';
+           $total_desg=number_format((float)$total_desg,2,".",",");
+           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$total_desg.'</font></td>';
+           $total1=number_format((float)$total1,2,".",",");
+           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black">'.$total1.'</font></td>';
+           $html.='<td width="15.4%" bgcolor="white" align="right"><font color="black"></font></td>';
+           $html.='</tr>';
+       }
+       
+       
+      
        
        $html.='</table>
               </div>';
@@ -894,7 +1026,7 @@ class SimulacionCreditosController extends ControladorBase{
        //array donde guardar tabla amortizacion
        $resultAmortizacion=array();
        
-       
+       $formato_fecha='Y-m-d';
        $capital = $_capital_prestado_amortizacion_cabeza;
        $inter_ant= $interes_mensual;
        $interes_diario=$inter_ant/30;
@@ -911,12 +1043,15 @@ class SimulacionCreditosController extends ControladorBase{
        $interes= 0;
        $amortizacion = 0;
        $saldo_inicial= $capital;
-       $fecha=strtotime('+0 day',strtotime($fecha_corte));
+       $fecha=new DateTime($fecha_corte);
        $elementos_fecha=explode("-", $fecha_corte);
-       $lastday = date('t',strtotime($fecha));
+       $lastday = $fecha->format('Y-m-t');
+       $lastday = explode("-", $lastday);
+       $lastday=$lastday[2];
        $diferencia_dias=$lastday-$elementos_fecha[2];
        $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
-       $fecha=date('Y-m-d',strtotime($fecha_ultimo_dia));
+       $fecha= new DateTime($fecha_ultimo_dia);
+       $fecha=$fecha->format($formato_fecha);
        $fecha_corte=$fecha;
        $valor = 0;
        $desgravamen=0;
@@ -927,14 +1062,18 @@ class SimulacionCreditosController extends ControladorBase{
               
                if($i==1)
                {
+                  
                    $elementos_fecha_corte=explode("-", $fecha_corte);
                    $fecha_corte=$elementos_fecha_corte[0]."-".$elementos_fecha_corte[1]."-".$elementos_fecha_corte[2];
-                   $fecha=strtotime('+0 day',strtotime($fecha_corte));
-                   $fecha=date('Y-m-d',$fecha);
-                   $elementos_fecha=explode("-", $fecha);
-                   $lastday = date('t',strtotime($fecha));
+                   $fecha=new DateTime($fecha_corte);
+                   $elementos_fecha=explode("-", $fecha_corte);
+                   $lastday = $fecha->format('Y-m-t');
+                   $lastday = explode("-", $lastday);
+                   $lastday=$lastday[2];
+                   $diferencia_dias=$lastday-$elementos_fecha[2];
                    $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
-                   $fecha=date('Y-m-d',strtotime($fecha_ultimo_dia));
+                   $fecha= new DateTime($fecha_ultimo_dia);
+                   $fecha=$fecha->format($formato_fecha);
                    $fecha_corte=$fecha;
                 $interes_concesion=$interes_diario*$diferencia_dias*$capital;
                 $interes_concesion=round($interes_concesion,2);
@@ -960,12 +1099,15 @@ class SimulacionCreditosController extends ControladorBase{
                        $elementos_fecha_corte[0]++;
                    }
                    $fecha_corte=$elementos_fecha_corte[0]."-".$elementos_fecha_corte[1]."-".$elementos_fecha_corte[2];
-                   $fecha=strtotime('+0 day',strtotime($fecha_corte));
-                   $fecha=date('Y-m-d',$fecha);
-                   $elementos_fecha=explode("-", $fecha);
-                   $lastday = date('t',strtotime($fecha));
+                   $fecha=new DateTime($fecha_corte);
+                   $elementos_fecha=explode("-", $fecha_corte);
+                   $lastday = $fecha->format('Y-m-t');
+                   $lastday = explode("-", $lastday);
+                   $lastday=$lastday[2];
+                   $diferencia_dias=$lastday-$elementos_fecha[2];
                    $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
-                   $fecha=date('Y-m-d',strtotime($fecha_ultimo_dia));
+                   $fecha= new DateTime($fecha_ultimo_dia);
+                   $fecha=$fecha->format($formato_fecha);
                    $fecha_corte=$fecha;
                    $valor = $valor_cuota;
                }
@@ -989,11 +1131,11 @@ class SimulacionCreditosController extends ControladorBase{
        return $resultAmortizacion;
    }
    
-   public function tablaAmortizacionRenovacion($_capital_prestado_amortizacion_cabeza, $numero_cuotas, $interes_mensual, $valor_cuota, $fecha_corte, $_tasa_interes_amortizacion_cabeza )
+   public function tablaAmortizacionHipotecario($_capital_prestado_amortizacion_cabeza, $numero_cuotas, $interes_mensual, $valor_cuota, $fecha_corte, $_tasa_interes_amortizacion_cabeza, $avaluo_bien )
    {
        //array donde guardar tabla amortizacion
        $resultAmortizacion=array();
-       
+       $formato_fecha='Y-m-d';
        
        $capital = $_capital_prestado_amortizacion_cabeza;
        $inter_ant= $interes_mensual;
@@ -1011,29 +1153,149 @@ class SimulacionCreditosController extends ControladorBase{
        $interes= 0;
        $amortizacion = 0;
        $saldo_inicial= $capital;
-       $fecha=strtotime('+0 day',strtotime($fecha_corte));
+       $fecha=new DateTime($fecha_corte);
        $elementos_fecha=explode("-", $fecha_corte);
-       $lastday = date('t',strtotime($fecha));
+       $lastday = $fecha->format('Y-m-t');
+       $lastday = explode("-", $lastday);
+       $lastday=$lastday[2];
        $diferencia_dias=$lastday-$elementos_fecha[2];
        $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
-       $fecha=date('Y-m-d',strtotime($fecha_ultimo_dia));
+       $fecha= new DateTime($fecha_ultimo_dia);
+       $fecha=$fecha->format($formato_fecha);
+       $fecha_corte=$fecha;
+       $valor = 0;
+       $desgravamen=0;
+       $saldo_inicial_ant = $capital;
+       
+       for( $i = 1; $i <= $numero_cuotas+1; $i++) {
+           
+           if($i==1)
+           {
+               $elementos_fecha_corte=explode("-", $fecha_corte);
+               $fecha_corte=$elementos_fecha_corte[0]."-".$elementos_fecha_corte[1]."-".$elementos_fecha_corte[2];
+               $fecha=new DateTime($fecha_corte);
+               $fecha=date('Y-m-d',$fecha);
+               $lastday = $fecha->format('Y-m-t');
+               $lastday = explode("-", $lastday);
+               $lastday=$lastday[2];
+               $fecha=$fecha->format($formato_fecha);
+               $elementos_fecha=explode("-", $fecha);
+               $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
+               $fecha= new DateTime($fecha_ultimo_dia);
+               $fecha=$fecha->format($formato_fecha);
+               $fecha_corte=$fecha;
+               $interes_concesion=$interes_diario*$diferencia_dias*$capital;
+               $interes_concesion=round($interes_concesion,2);
+               $interes=$interes_concesion;
+           }
+           if($i!=1)
+           {
+               $interes_concesion=0;
+               $saldo_inicial_ant = $saldo_inicial_ant - $amortizacion;
+               $interes= $saldo_inicial_ant * $inter_ant;
+               $interes=floor($interes * 100) / 100;
+               $amortizacion = $valor_cuota - $interes;
+               
+               $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+               $desgravamen=floor($desgravamen * 100) / 100;
+               $saldo_inicial= $saldo_inicial_ant  - $amortizacion;
+               $elementos_fecha_corte=explode("-", $fecha_corte);
+               $elementos_fecha_corte[1]++;
+               $elementos_fecha_corte[2]=15;
+               if($elementos_fecha_corte[1]>12)
+               {
+                   $elementos_fecha_corte[1]=1;
+                   $elementos_fecha_corte[0]++;
+               }
+               
+                             
+               $fecha_corte=$elementos_fecha_corte[0]."-".$elementos_fecha_corte[1]."-".$elementos_fecha_corte[2];
+               $fecha=new DateTime($fecha_corte);
+               $lastday = $fecha->format('Y-m-t');
+               $lastday = explode("-", $lastday);
+               $lastday=$lastday[2];
+               $fecha=$fecha->format($formato_fecha);
+               $elementos_fecha=explode("-", $fecha);
+               $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
+               $fecha= new DateTime($fecha_ultimo_dia);
+               $fecha=$fecha->format($formato_fecha);
+               $fecha_corte=$fecha;
+               $seguro_incendios=((($avaluo_bien * 0.0015)/365) * $lastday) * 1.04 * 1.12;
+               $valor = $valor_cuota;
+           }
+           
+           
+           
+           $arreglo=array('pagos_trimestrales'=> $i,
+               'saldo_inicial'=>$saldo_inicial,
+               'interes'=>$interes,
+               'amortizacion'=>$amortizacion,
+               'pagos'=>$valor,
+               'desgravamen'=>$desgravamen,
+               'fecha_pago'=>$fecha,
+               'interes_concesion'=>$interes_concesion,
+               'seguro_incendios'=>$seguro_incendios
+           );
+           
+           
+           array_push($resultAmortizacion, $arreglo);
+       }
+       
+       return $resultAmortizacion;
+   }
+   
+   public function tablaAmortizacionRenovacion($_capital_prestado_amortizacion_cabeza, $numero_cuotas, $interes_mensual, $valor_cuota, $fecha_corte, $_tasa_interes_amortizacion_cabeza )
+   {
+       //array donde guardar tabla amortizacion
+       $resultAmortizacion=array();
+       
+       $formato_fecha='Y-m-d';
+       $capital = $_capital_prestado_amortizacion_cabeza;
+       $inter_ant= $interes_mensual;
+       $interes_diario=$inter_ant/30;
+       $interes=  $capital * $inter_ant;
+       $interes=floor($interes * 100) / 100;
+       $amortizacion = $valor_cuota - $interes;
+       $saldo_inicial= $capital - $amortizacion;
+       $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+       $desgravamen=floor($desgravamen * 100) / 100;
+       $resultAmortizacion=array();
+       $interes_concesion=0;
+       $diferencia_dias=0;
+              
+       $interes= 0;
+       $amortizacion = 0;
+       $saldo_inicial= $capital;
+       $fecha=new DateTime($fecha_corte);
+       $lastday = $fecha->format('Y-m-t');
+       $elementos_fecha=explode("-", $fecha_corte);
+       $lastday = explode("-", $lastday);
+       $lastday=$lastday[2];
+       $diferencia_dias=$lastday-$elementos_fecha[2];
+       $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
+       $fecha= new DateTime($fecha_ultimo_dia);
+       $fecha=$fecha->format($formato_fecha);
        $fecha_corte=$fecha;
        $valor = 0;
        $desgravamen=0;
        $saldo_inicial_ant = $capital;
        
        for( $i = 0; $i <= $numero_cuotas; $i++) {
+          
            
            if($i==0)
            {
                $elementos_fecha_corte=explode("-", $fecha_corte);
                $fecha_corte=$elementos_fecha_corte[0]."-".$elementos_fecha_corte[1]."-".$elementos_fecha_corte[2];
-               $fecha=strtotime('+0 day',strtotime($fecha_corte));
-               $fecha=date('Y-m-d',$fecha);
+               $fecha=new DateTime($fecha_corte);
+               $lastday = $fecha->format('Y-m-t');
+               $lastday = explode("-", $lastday);
+               $lastday=$lastday[2];
+               $fecha=$fecha->format($formato_fecha);
                $elementos_fecha=explode("-", $fecha);
-               $lastday = date('t',strtotime($fecha));
                $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
-               $fecha=date('Y-m-d',strtotime($fecha_ultimo_dia));
+               $fecha= new DateTime($fecha_ultimo_dia);
+               $fecha=$fecha->format($formato_fecha);
                $fecha_corte=$fecha;
                $interes_concesion=$interes_diario*$diferencia_dias*$capital;
                $interes_concesion=round($interes_concesion,2);
@@ -1045,8 +1307,6 @@ class SimulacionCreditosController extends ControladorBase{
                $interes=floor($interes * 100) / 100;
                $amortizacion = $valor_cuota - $interes;
                 if($i==1) $interes+=$interes_concesion;
-               
-               
                
                $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
                $desgravamen=floor($desgravamen * 100) / 100;
@@ -1060,12 +1320,15 @@ class SimulacionCreditosController extends ControladorBase{
                    $elementos_fecha_corte[0]++;
                }
                $fecha_corte=$elementos_fecha_corte[0]."-".$elementos_fecha_corte[1]."-".$elementos_fecha_corte[2];
-               $fecha=strtotime('+0 day',strtotime($fecha_corte));
-               $fecha=date('Y-m-d',$fecha);
+               $fecha=new DateTime($fecha_corte);
+               $lastday = $fecha->format('Y-m-t');
+               $lastday = explode("-", $lastday);
+               $lastday=$lastday[2];
+               $fecha=$fecha->format($formato_fecha);
                $elementos_fecha=explode("-", $fecha);
-               $lastday = date('t',strtotime($fecha));
                $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
-               $fecha=date('Y-m-d',strtotime($fecha_ultimo_dia));
+               $fecha= new DateTime($fecha_ultimo_dia);
+               $fecha=$fecha->format($formato_fecha);
                $fecha_corte=$fecha;
                if($i==1) $valor=$valor_cuota+$interes_concesion;
                else $valor = $valor_cuota;
@@ -1094,6 +1357,124 @@ class SimulacionCreditosController extends ControladorBase{
        return $resultAmortizacion;
    }
    
+   public function tablaAmortizacionRenovacionHipotecario($_capital_prestado_amortizacion_cabeza, $numero_cuotas, $interes_mensual, $valor_cuota, $fecha_corte, $_tasa_interes_amortizacion_cabeza, $avaluo_bien)
+   {
+       //array donde guardar tabla amortizacion
+       $resultAmortizacion=array();
+       
+       $formato_fecha='Y-m-d';
+       $capital = $_capital_prestado_amortizacion_cabeza;
+       $inter_ant= $interes_mensual;
+       $interes_diario=$inter_ant/30;
+       $interes=  $capital * $inter_ant;
+       $interes=floor($interes * 100) / 100;
+       $amortizacion = $valor_cuota - $interes;
+       $saldo_inicial= $capital - $amortizacion;
+       $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+       $desgravamen=floor($desgravamen * 100) / 100;
+       $resultAmortizacion=array();
+       $interes_concesion=0;
+       $diferencia_dias=0;
+       
+       $interes= 0;
+       $amortizacion = 0;
+       $saldo_inicial= $capital;
+       $fecha=new DateTime($fecha_corte);
+       $elementos_fecha=explode("-", $fecha_corte);
+       $lastday = $fecha->format('Y-m-t');
+       $lastday = explode("-", $lastday);
+       $lastday=$lastday[2];
+       $diferencia_dias=$lastday-$elementos_fecha[2];
+       $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
+       $fecha= new DateTime($fecha_ultimo_dia);
+       
+       $fecha_corte=$fecha->format($formato_fecha);
+       $valor = 0;
+       $desgravamen=0;
+       $saldo_inicial_ant = $capital;
+       
+       for( $i = 0; $i <= $numero_cuotas; $i++) {
+           
+           if($i==0)
+           {
+               $elementos_fecha_corte=explode("-", $fecha_corte);
+               $fecha_corte=$elementos_fecha_corte[0]."-".$elementos_fecha_corte[1]."-".$elementos_fecha_corte[2];
+               $fecha=new DateTime($fecha_corte);
+               $elementos_fecha=explode("-", $fecha_corte);
+               $lastday = $fecha->format('Y-m-t');
+               $lastday = explode("-", $lastday);
+               $lastday=$lastday[2];
+               $diferencia_dias=$lastday-$elementos_fecha[2];
+               $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
+               $fecha= new DateTime($fecha_ultimo_dia);
+               $fecha=$fecha->format($formato_fecha);
+               $fecha_corte=$fecha;
+               $interes_concesion=$interes_diario*$diferencia_dias*$capital;
+               $seguro_incendios=((($avaluo_bien * 0.0015)/365) * $lastday) * 1.04 * 1.12;
+               $interes_concesion=round($interes_concesion,2);
+           }
+           if($i!=0)
+           {
+               $saldo_inicial_ant = $saldo_inicial_ant - $amortizacion;
+               $interes= $saldo_inicial_ant * $inter_ant;
+               $interes=floor($interes * 100) / 100;
+               $amortizacion = $valor_cuota - $interes;
+               if($i==1) $interes+=$interes_concesion;
+               
+               
+               
+               $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+               $desgravamen=floor($desgravamen * 100) / 100;
+               $saldo_inicial= $saldo_inicial_ant  - $amortizacion;
+               $elementos_fecha_corte=explode("-", $fecha_corte);
+               $elementos_fecha_corte[1]++;
+               $elementos_fecha_corte[2]=15;
+               if($elementos_fecha_corte[1]>12)
+               {
+                   $elementos_fecha_corte[1]=1;
+                   $elementos_fecha_corte[0]++;
+               }
+               $fecha_corte=$elementos_fecha_corte[0]."-".$elementos_fecha_corte[1]."-".$elementos_fecha_corte[2];
+               $fecha=new DateTime($fecha_corte);
+               $elementos_fecha=explode("-", $fecha_corte);
+               $lastday = $fecha->format('Y-m-t');
+               $lastday = explode("-", $lastday);
+               $lastday=$lastday[2];
+               $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
+               $fecha= new DateTime($fecha_ultimo_dia);
+               $fecha=$fecha->format($formato_fecha);
+               $fecha_corte=$fecha;
+               $seguro_incendios=((($avaluo_bien * 0.0015)/365) * $lastday) * 1.04 * 1.12;
+               $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
+               
+               if($i==1) $valor=$valor_cuota+$interes_concesion;
+               else $valor = $valor_cuota;
+           }
+           
+           
+           
+           if ($i!=0)
+           {
+               $arreglo=array('pagos_trimestrales'=> $i,
+                   'saldo_inicial'=>$saldo_inicial,
+                   'interes'=>$interes,
+                   'amortizacion'=>$amortizacion,
+                   'pagos'=>$valor,
+                   'desgravamen'=>$desgravamen,
+                   'fecha_pago'=>$fecha,
+                   'interes_concesion'=>$interes_concesion,
+                   'seguro_incendios'=>$seguro_incendios
+               );
+               
+               
+               array_push($resultAmortizacion, $arreglo);
+           }
+           
+       }
+       
+       return $resultAmortizacion;
+   }
+   
    public function SubirInformacionCredito()
    {
        session_start();
@@ -1108,6 +1489,8 @@ class SimulacionCreditosController extends ControladorBase{
        $columnas="interes_tipo_creditos";
        $tablas="core_tipo_creditos";
        $where="codigo_tipo_creditos='".$tipo_credito."'";
+       $resultSet=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $tasa_interes=$resultSet[0]->interes_tipo_creditos;
        
        $columnas="id_tipo_creditos";
        $tablas="core_tipo_creditos";
@@ -1115,8 +1498,6 @@ class SimulacionCreditosController extends ControladorBase{
        $id_tipo_creditos=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
        $id_tipo_creditos=$id_tipo_creditos[0]->id_tipo_creditos;
        
-       $resultSet=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
-       $tasa_interes=$resultSet[0]->interes_tipo_creditos;
        
        $con_garante=$_POST['con_garante'];
        
@@ -1124,7 +1505,6 @@ class SimulacionCreditosController extends ControladorBase{
               
        $fecha_pago=date("Y-m-d");
        $interes_credito=$tasa_interes;
-       $id_tipo_creditos=0;
        
        $tasa_interes=$tasa_interes/100;
        $cuota=$_POST['cuota_credito'];
@@ -1132,6 +1512,15 @@ class SimulacionCreditosController extends ControladorBase{
        $observacion_credito=$_POST['observacion_credito'];
        $id_solicitud=$_POST['id_solicitud'];
        $interes_consecion=0;
+       
+       if($tipo_credito=="PH")
+       {
+           $columnas="valor_avaluo_core_documentos_hipotecario";
+           $tablas="core_documentos_hipotecario";
+           $where="id_solicitud_credito=".$id_solicitud;
+           $avaluo_credito=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
+           $avaluo_credito=$avaluo_credito[0]->valor_avaluo_core_documentos_hipotecario;
+       }
        
        $columnas="id_participes";
        $tablas="core_participes";
@@ -1164,7 +1553,8 @@ class SimulacionCreditosController extends ControladorBase{
            
            $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$cuota))  ;
            $valor_cuota=round($valor_cuota,2);
-           $resultAmortizacion=$this->tablaAmortizacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_pago, $tasa_interes);
+           if($tipo_credito=="PH") $resultAmortizacion=$this->tablaAmortizacionHipotecario($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_pago, $tasa_interes, $avaluo_credito);
+           else $resultAmortizacion=$this->tablaAmortizacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_pago, $tasa_interes);
            $total=0;
            $total1=0;
            foreach ($resultAmortizacion as $res)
@@ -1227,10 +1617,13 @@ class SimulacionCreditosController extends ControladorBase{
                    $intereses=$res['interes'];
                    $saldo_inicial=$res['saldo_inicial'];
                    $desgravamen=$res['desgravamen'];
+                   if ($tipo_credito=="PH") $incendios=$res['seguro_incendios'];
                    $dividendo=$res['pagos'];
                    $total_valor=$amortizacion+$intereses+$desgravamen;
                    $funcion = "ins_core_tabla_amortizacion";
-                   $parametros="'$numero_credito',
+                   if($tipo_credito!="PH")
+                   {
+                       $parametros="'$numero_credito',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
@@ -1238,11 +1631,41 @@ class SimulacionCreditosController extends ControladorBase{
                      '$dividendo',
                      '$saldo_inicial',
                      '$desgravamen',
+                     null,
                      '$total_valor',
                      2,
                      1,
                      '$tasa_interes',
                      '$hoy'";
+                   }
+                   else
+                   {
+                       $parametros="'$numero_credito',
+                     '$fecha_pago',
+                     '$num_cuota',
+                     '$amortizacion',
+                     '$intereses',
+                     '$dividendo',
+                     '$saldo_inicial',
+                     '$desgravamen',
+                     '$incendios',
+                     '$total_valor',
+                     2,
+                     1,
+                     '$tasa_interes',
+                     '$hoy'";
+                   }
+                   
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   
+                   $funcion = "ins_core_tabla_amortizacion_historico";
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   
+                   $funcion = "ins_core_tabla_amortizacion_pagare";
                    $credito->setFuncion($funcion);
                    $credito->setParametros($parametros);
                    $resultado=$credito->Insert();
@@ -1284,16 +1707,19 @@ class SimulacionCreditosController extends ControladorBase{
                    }   
                }
                
-              $fecha_pago=$res['fecha_pago'];              
+               $fecha_pago=$res['fecha_pago'];
                $num_cuota=$res['pagos_trimestrales'];
                $amortizacion=$res['amortizacion'];
                $intereses=$res['interes'];
                $saldo_inicial=$res['saldo_inicial'];
                $desgravamen=$res['desgravamen'];
+               if ($tipo_credito=="PH") $incendios=$res['seguro_incendios'];
                $dividendo=$res['pagos'];
                $total_valor=$amortizacion+$intereses+$desgravamen;
                $funcion = "ins_core_tabla_amortizacion";
-               $parametros="'$numero_credito',
+               if($tipo_credito!="PH")
+               {
+                   $parametros="'$numero_credito',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
@@ -1301,13 +1727,42 @@ class SimulacionCreditosController extends ControladorBase{
                      '$dividendo',
                      '$saldo_inicial',
                      '$desgravamen',
+                     null,
                      '$total_valor',
-                     3,
+                     2,
                      1,
                      '$tasa_interes',
                      '$hoy'";
+               }
+               else
+               {
+                   $parametros="'$numero_credito',
+                     '$fecha_pago',
+                     '$num_cuota',
+                     '$amortizacion',
+                     '$intereses',
+                     '$dividendo',
+                     '$saldo_inicial',
+                     '$desgravamen',
+                     '$incendios',
+                     '$total_valor',
+                     2,
+                     1,
+                     '$tasa_interes',
+                     '$hoy'";
+               }
+                            
                $credito->setFuncion($funcion);
                $credito->setParametros($parametros);
+              $resultado=$credito->Insert();
+              $funcion = "ins_core_tabla_amortizacion_historico";
+              $credito->setFuncion($funcion);
+              $credito->setParametros($parametros);
+              $resultado=$credito->Insert();
+              
+              $funcion = "ins_core_tabla_amortizacion_pagare";
+              $credito->setFuncion($funcion);
+              $credito->setParametros($parametros);
               $resultado=$credito->Insert();
               $errores=ob_get_clean();
               $errores=trim($errores);
@@ -1420,12 +1875,28 @@ class SimulacionCreditosController extends ControladorBase{
        $id_solicitud=$_POST['id_solicitud'];
        $interes_consecion=0;
        
+       if($tipo_credito=="PH")
+       {
+           $columnas="valor_avaluo_core_documentos_hipotecario";
+           $tablas="core_documentos_hipotecario";
+           $where="id_solicitud_credito=".$id_solicitud;
+           $avaluo_credito=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
+           $avaluo_credito=$avaluo_credito[0]->valor_avaluo_core_documentos_hipotecario;
+       }
+       
        $columnas="id_participes";
        $tablas="core_participes";
        $where="cedula_participes='".$cedula_participe."'";
        
        $id_participe=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
        $id_participe=$id_participe[0]->id_participes;
+       
+       $columnas="id_estado_creditos";
+       $tablas="core_estado_creditos";
+       $where="nombre_estado_creditos='En proceso de Renovacion'";
+       
+       $id_estado_renovacion=$credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $id_estado_renovacion=$id_estado_renovacion[0]->id_estado_creditos;
        
        $columnas="numero_consecutivos";
        $tablas="consecutivos";
@@ -1450,7 +1921,9 @@ class SimulacionCreditosController extends ControladorBase{
        
        $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$cuota))  ;
        $valor_cuota=round($valor_cuota,2);
-       $resultAmortizacion=$this->tablaAmortizacionRenovacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_pago, $tasa_interes);
+       
+       if ($tipo_credito=="PH") $resultAmortizacion=$this->tablaAmortizacionRenovacionHipotecario($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_pago, $tasa_interes, $avaluo_credito);
+       else $resultAmortizacion=$this->tablaAmortizacionRenovacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_pago, $tasa_interes);
        $total=0;
        $total1=0;
        foreach ($resultAmortizacion as $res)
@@ -1536,6 +2009,10 @@ class SimulacionCreditosController extends ControladorBase{
                             VALUES (".$res1->id_creditos.",".$numero_credito.",".$res1->saldo_actual_creditos.",".$desgravamen.")";
                    $insert=$credito->executeNonQuery($query);
                    
+                   $query="UPDATE core_creditos
+                            SET id_estado_creditos=".$id_estado_renovacion."
+                            WHERE id_creditos=".$res1->id_creditos;
+                   $insert=$credito->executeNonQuery($query);
                }
            }
            $total_retencion=number_format((float)$total_retencion,2,".","");
@@ -1544,6 +2021,14 @@ class SimulacionCreditosController extends ControladorBase{
                             (monto_creditos_retenciones, id_creditos)
                             VALUES
                             (".$total_retencion.", ".$numero_credito.")";
+           
+           $insert=$credito->executeNonQuery($query);
+           
+           $monto_neto=$monto_credito-$total_retencion;
+           
+           $query="UPDATE core_creditos
+                   SET monto_neto_entregado_creditos='".$monto_neto."'
+                   WHERE id_creditos=".$numero_credito;
            
            $insert=$credito->executeNonQuery($query);
            
@@ -1572,10 +2057,13 @@ class SimulacionCreditosController extends ControladorBase{
                $intereses=$res['interes'];
                $saldo_inicial=$res['saldo_inicial'];
                $desgravamen=$res['desgravamen'];
+               if ($tipo_credito=="PH") $incendios=$res['seguro_incendios'];
                $dividendo=$res['pagos'];
                $total_valor=$amortizacion+$intereses+$desgravamen;
                $funcion = "ins_core_tabla_amortizacion";
-               $parametros="'$numero_credito',
+               if($tipo_credito!="PH")
+               {
+                   $parametros="'$numero_credito',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
@@ -1583,11 +2071,40 @@ class SimulacionCreditosController extends ControladorBase{
                      '$dividendo',
                      '$saldo_inicial',
                      '$desgravamen',
+                     null,
                      '$total_valor',
-                     3,
+                     2,
                      1,
                      '$tasa_interes',
                      '$hoy'";
+               }
+               else
+               {
+                   $parametros="'$numero_credito',
+                     '$fecha_pago',
+                     '$num_cuota',
+                     '$amortizacion',
+                     '$intereses',
+                     '$dividendo',
+                     '$saldo_inicial',
+                     '$desgravamen',
+                     '$incendios',
+                     '$total_valor',
+                     2,
+                     1,
+                     '$tasa_interes',
+                     '$hoy'";
+               }
+               $credito->setFuncion($funcion);
+               $credito->setParametros($parametros);
+               $resultado=$credito->Insert();
+               
+               $funcion = "ins_core_tabla_amortizacion_historico";
+               $credito->setFuncion($funcion);
+               $credito->setParametros($parametros);
+               $resultado=$credito->Insert();
+               
+               $funcion = "ins_core_tabla_amortizacion_pagare";
                $credito->setFuncion($funcion);
                $credito->setParametros($parametros);
                $resultado=$credito->Insert();
@@ -1899,7 +2416,7 @@ class SimulacionCreditosController extends ControladorBase{
                
                $where = "numero_creditos='".$numero_creditos."'";
                $tabla = "core_creditos";
-               $colval = "id_tipo_pagos=".$id_forma_pagos;
+               $colval = "id_forma_pago=".$id_forma_pagos;
                $rp_capremci->UpdateBy($colval, $tabla, $where);
            }
            
@@ -1919,6 +2436,68 @@ class SimulacionCreditosController extends ControladorBase{
        
        
        return $errores_cuentas;       
+   }
+   
+   public function GetAvaluoHipotecario()
+   {
+       session_start();
+       $rp_capremci= new PlanCuentasModel();
+       $monto_maximo=0;
+       $id_solicitud=$_POST['id_solicitud'];
+       $tipo_credito_hipotecario=$_POST['tipo_credito_hipotecario'];
+       $columnas="valor_avaluo_core_documentos_hipotecario";
+       $tablas="core_documentos_hipotecario";
+       $where="id_solicitud_credito=".$id_solicitud;
+       $avaluo_credito=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       if(sizeof($avaluo_credito)>0)
+       {
+           $avaluo_credito=$avaluo_credito[0]->valor_avaluo_core_documentos_hipotecario;
+           if($tipo_credito_hipotecario==1)
+           {
+               $monto_maximo=$avaluo_credito*0.8;
+               if($monto_maximo>100000) $monto_maximo=100000;
+           }
+           else
+           {
+               $monto_maximo=$avaluo_credito*0.5;
+               if($monto_maximo>45000) $monto_maximo=45000;
+           }
+           $avaluo_credito=number_format((float)$avaluo_credito,2,".","");
+           $monto_maximo=number_format((float)$monto_maximo,2,".","");
+           $html='<table>
+        <tr>
+        <td><font size="3">Avalúo del bien : '.$avaluo_credito.'</font></td>
+        </tr>
+        <tr>
+        <td><font size="3" id="monto_disponible2">Monto máximo a recibir : '.$monto_maximo.'</font></td>
+        </tr>
+        <tr>
+        <td>
+        <span class="input-group-btn">
+        <button  type="button" class="btn bg-olive" title="Cambiar Modalidad" onclick="TipoCredito()"><i class="glyphicon glyphicon-refresh"></i></button>
+        <button  type="button" class="btn bg-olive" title="Escrituras" onclick="TipoCredito()"><i class="glyphicon glyphicon-book"></i></button>
+        <button  type="button" class="btn bg-olive" title="Certificado" onclick="TipoCredito()"><i class="glyphicon glyphicon-check"></i></button>
+        <button  type="button" class="btn bg-olive" title="Impuestos" onclick="TipoCredito()"><i class="fa fa-black-tie"></i></button>
+        <button  type="button" class="btn bg-olive" title="Avaluo" onclick="TipoCredito()"><i class="glyphicon glyphicon-usd"></i></button>
+        </span>
+        </td>
+        </tr>
+        </table>';
+       }
+       else {
+           $html='<table>
+        <tr>
+        <td><font size="3">No hay avaluo registrado</font></td>
+        </tr>
+        <tr>
+        <td><font size="3" id="monto_disponible2">Monto máximo a recibir : 0.00</font></td>
+        </tr>
+        
+        </table>';
+       }
+       
+       
+       echo $html;
    }
    
    public function cuotaParticipe(){

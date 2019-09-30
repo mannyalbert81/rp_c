@@ -121,6 +121,52 @@ function SelecGrupo(idgrupo)
 	
 }
 
+function M13()
+{
+
+ if (document.getElementById('13ro').className == "btn btn-light")
+	 {
+	 document.getElementById('13ro').className = "btn btn-primary";
+	 document.getElementById('13roicon').className = "glyphicon glyphicon-check";
+	 }
+ else
+	 {
+	 document.getElementById('13ro').className = "btn btn-light";
+	 document.getElementById('13roicon').className = "glyphicon glyphicon-unchecked";
+	 }
+ 
+}
+
+function M14()
+{
+
+ if (document.getElementById('14to').className == "btn btn-light")
+	 {
+	 document.getElementById('14to').className = "btn btn-primary";
+	 document.getElementById('14toicon').className = "glyphicon glyphicon-check";
+	 }
+ else
+	 {
+	 document.getElementById('14to').className = "btn btn-light";
+	 document.getElementById('14toicon').className = "glyphicon glyphicon-unchecked";
+	 }
+ 
+}
+function MFR()
+{
+
+ if (document.getElementById('fr').className == "btn btn-light")
+	 {
+	 document.getElementById('fr').className = "btn btn-primary";
+	 document.getElementById('fricon').className = "glyphicon glyphicon-check";
+	 }
+ else
+	 {
+	 document.getElementById('fr').className = "btn btn-light";
+	 document.getElementById('fricon').className = "glyphicon glyphicon-unchecked";
+	 }
+ 
+}
 function SelecCargo(idcargo)
 {
 	var dpto = $("#dpto_empleados").val();
@@ -172,6 +218,16 @@ var estado = $("#estado_empleados_reg").val();
 var idofic = $("#oficina_empleados").val();
 var idmetod = $("#pago_empleados_reg").val();
 var nombres = nombre+" "+apellido;
+var m13="";
+var m14="";
+var mfr="";
+if (document.getElementById('fr').className == "btn btn-light") mfr='f';
+else mfr='t';
+if (document.getElementById('13ro').className == "btn btn-light") m13='f';
+else m13='t';
+if (document.getElementById('14to').className == "btn btn-light") m14='f';
+else m14='t';
+
 
 if(idmetod=="")
 	{
@@ -246,7 +302,10 @@ if (ci!="" && cargo!="" && dpto!="" && nombre!="" && apellido!="" && idgrup!="" 
 	    	   id_grupo:idgrup,
 	    	   estado:estado,
 	    	   id_oficina:idofic,
-	    	   id_metodo:idmetod
+	    	   id_metodo:idmetod,
+	    	   m_13:m13,
+	    	   m_14:m14,
+	    	   m_fr:mfr
 	    },
 	})
 	.done(function(x) {
@@ -260,6 +319,12 @@ if (ci!="" && cargo!="" && dpto!="" && nombre!="" && apellido!="" && idgrup!="" 
 		$('#estado_empleados_reg').val("");
 		$("#oficina_empleados").val("");
 		$("#pago_empleados_reg").val("");
+		document.getElementById('13ro').className = "btn btn-light";
+		 document.getElementById('13roicon').className = "glyphicon glyphicon-unchecked";
+		 document.getElementById('14to').className = "btn btn-light";
+		 document.getElementById('14toicon').className = "glyphicon glyphicon-unchecked";
+		 document.getElementById('fr').className = "btn btn-light";
+		 document.getElementById('fricon').className = "glyphicon glyphicon-unchecked";
 		if (x==1)
 			{
 			swal({
@@ -300,6 +365,13 @@ if (ci!="" && cargo!="" && dpto!="" && nombre!="" && apellido!="" && idgrup!="" 
 
 function LimpiarCampos()
 {
+	document.getElementById('13ro').className = "btn btn-light";
+	 document.getElementById('13roicon').className = "glyphicon glyphicon-unchecked";
+	 document.getElementById('14to').className = "btn btn-light";
+	 document.getElementById('14toicon').className = "glyphicon glyphicon-unchecked";
+	 document.getElementById('fr').className = "btn btn-light";
+	 document.getElementById('fricon').className = "glyphicon glyphicon-unchecked";
+	 
 	$("#cedula_empleado").val("");
 	$("#nombre_empleados").val("");
 	$("#apellido_empleados").val("");
@@ -311,8 +383,9 @@ function LimpiarCampos()
 	SelecCargo("");
 }
 
-function EditarEmpleado(cedula, nombres, cargo, dpto, idgrupo, idestado, idofic, idmetod)
+function EditarEmpleado(cedula, nombres, cargo, dpto, idgrupo, idestado, idofic, idmetod, m14, m13, mfr)
 {
+	console.log(m14+"=="+m13+"==="+mfr+" estados mensualizacion");
 var res = nombres.split(" ")
 var nombre = res[0]+" "+res[1];
 var apellido = res[2]+" "+res[3];
@@ -323,6 +396,21 @@ $("#dpto_empleados").val(dpto);
 $("#estado_empleados_reg").val(idestado);
 $("#oficina_empleados").val(idofic);
 $("#pago_empleados_reg").val(idmetod);
+if (m14=='t')
+{
+document.getElementById('14to').className = "btn btn-primary";
+document.getElementById('14toicon').className = "glyphicon glyphicon-check";
+}
+if (m13 == "t")
+{
+document.getElementById('13ro').className = "btn btn-primary";
+document.getElementById('13roicon').className = "glyphicon glyphicon-check";
+}
+if (mfr == "t")
+{
+document.getElementById('fr').className = "btn btn-primary";
+document.getElementById('fricon').className = "glyphicon glyphicon-check";
+}
 SelecGrupo(idgrupo);
 SelecCargo(cargo);
 $('html, body').animate({ scrollTop: 0 }, 'fast');

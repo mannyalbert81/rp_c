@@ -1634,7 +1634,7 @@ class SolicitudPrestamoController extends ControladorBase{
 			   
 				$this->view_Core("ConsultaSolicitudPrestamoSuperAdmin",array(
 						""=>""
-				));
+				));  
 	
 			}
 			else
@@ -1854,9 +1854,32 @@ class SolicitudPrestamoController extends ControladorBase{
 					$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$res->id_solicitud_prestamo.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
 					$html.='</td>';
 					$html.='<td style="font-size: 15px;">';
-					if($aprobado_oficial_credito==1){
+					if($aprobado_oficial_credito==1 && $res->nombre_tipo_creditos!="HIPOTECARIO"){
 					    $html.='<button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="EnviarInfo(&quot;'.$res->numero_cedula_datos_personales.'&quot;,'.$res->id_solicitud_prestamo.')"><i class="glyphicon glyphicon-import"></i></button>';
 					}
+					else if($aprobado_oficial_credito==1 && $res->nombre_tipo_creditos=="HIPOTECARIO")
+					{
+					    $rp_capremci= new PlanCuentasModel();
+					    $columnas="estado_escrituras_core_documentos_hipotecario, 
+                                    estado_certificado_core_documentos_hipotecario,
+                                    estado_impuesto_core_documentos_hipotecario,
+                                    estado_avaluo_core_documentos_hipotecario";
+					    $tablas="core_documentos_hipotecario";
+					    $where="id_solicitud_credito=".$res->id_solicitud_prestamo;
+					    $documentos_solicitud=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+					    if(!empty($documentos_solicitud))
+					    {
+					        if($documentos_solicitud[0]->estado_escrituras_core_documentos_hipotecario=="t" &&
+					            $documentos_solicitud[0]->estado_certificado_core_documentos_hipotecario=="t" &&
+					            $documentos_solicitud[0]->estado_impuesto_core_documentos_hipotecario=="t" &&
+					            $documentos_solicitud[0]->estado_avaluo_core_documentos_hipotecario=="t")
+					        {
+					            $html.='<button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="EnviarInfo(&quot;'.$res->numero_cedula_datos_personales.'&quot;,'.$res->id_solicitud_prestamo.')"><i class="glyphicon glyphicon-import"></i></button>';
+					        }
+					    }
+					    				    
+					}
+					
 					$html.='</td>';
 					
 					$html.='</tr>';
@@ -2071,6 +2094,252 @@ class SolicitudPrestamoController extends ControladorBase{
 		}
 	
 	}
+	
+	
+	
+	public function searchadminsuper_desafiliacion(){
+	    
+	    session_start();
+	    require_once 'core/DB_Functions.php';
+	    $db = new DB_Functions();
+	    
+	    
+	    $where_to="";
+	    $columnas = " solicitud_prestaciones.id_solicitud_prestaciones, 
+                      solicitud_prestaciones.apellidos_solicitud_prestaciones, 
+                      solicitud_prestaciones.nombres_solicitud_prestaciones, 
+                      solicitud_prestaciones.cedula_participes, 
+                      solicitud_prestaciones.id_sexo, 
+                      sexo.nombre_sexo, 
+                      solicitud_prestaciones.fecha_nacimiento_solicitud_prestaciones, 
+                      solicitud_prestaciones.id_estado_civil, 
+                      estado_civil.nombre_estado_civil, 
+                      solicitud_prestaciones.id_provincias, 
+                      provincias.nombre_provincias, 
+                      solicitud_prestaciones.id_cantones, 
+                      cantones.nombre_cantones, 
+                      solicitud_prestaciones.id_parroquias, 
+                      parroquias.nombre_parroquias, 
+                      solicitud_prestaciones.barrio_solicitud_prestaciones, 
+                      solicitud_prestaciones.ciudadela_solicitud_prestaciones, 
+                      solicitud_prestaciones.calle_solicitud_prestaciones, 
+                      solicitud_prestaciones.numero_calle_solicitud_prestaciones, 
+                      solicitud_prestaciones.interseccion_solicitud_prestaciones, 
+                      solicitud_prestaciones.tipo_vivienda_solicitud_prestaciones, 
+                      solicitud_prestaciones.vivienda_hipotecada_solicitud_prestaciones, 
+                      solicitud_prestaciones.referencia_dir_solicitud_prestaciones, 
+                      solicitud_prestaciones.telefono_solicitud_prestaciones, 
+                      solicitud_prestaciones.celular_solicitud_prestaciones, 
+                      solicitud_prestaciones.correo_solicitud_prestaciones, 
+                      solicitud_prestaciones.nivel_educativo_solicitud_prestaciones, 
+                      solicitud_prestaciones.nombres_referencia_familiar, 
+                      solicitud_prestaciones.apellidos_referencia_familiar, 
+                      solicitud_prestaciones.parentesco_referencia_familiar, 
+                      solicitud_prestaciones.primer_telefono_referencia_familiar, 
+                      solicitud_prestaciones.segundo_telefono_referencia_familiar, 
+                      solicitud_prestaciones.nombres_referencia_personal, 
+                      solicitud_prestaciones.apellidos_referencia_personal, 
+                      solicitud_prestaciones.parentesco_referencia_personal, 
+                      solicitud_prestaciones.primer_telefono_referencia_personal, 
+                      solicitud_prestaciones.segundo_telefono_referencia_personal, 
+                      solicitud_prestaciones.ultimo_cargo_solicitud_prestaciones, 
+                      solicitud_prestaciones.fecha_salida_solicitud_prestaciones, 
+                      solicitud_prestaciones.id_bancos, 
+                      bancos.nombre_bancos, 
+                      solicitud_prestaciones.numero_cuenta_ahorros_bancaria, 
+                      solicitud_prestaciones.numero_cuenta_corriente_bancaria, 
+                      solicitud_prestaciones.identificador_consecutivos, 
+                      solicitud_prestaciones.creado, 
+                      solicitud_prestaciones.modificado";
+	    
+	    $tablas   = " public.solicitud_prestaciones, 
+                      public.sexo, 
+                      public.estado_civil, 
+                      public.provincias, 
+                      public.cantones, 
+                      public.parroquias, 
+                      public.bancos";
+	    
+	    $where    = " sexo.id_sexo = solicitud_prestaciones.id_sexo AND
+                      estado_civil.id_estado_civil = solicitud_prestaciones.id_estado_civil AND
+                      provincias.id_provincias = solicitud_prestaciones.id_provincias AND
+                      cantones.id_cantones = solicitud_prestaciones.id_cantones AND
+                      parroquias.id_parroquias = solicitud_prestaciones.id_parroquias AND
+                      bancos.id_bancos = solicitud_prestaciones.id_bancos";
+	    
+	    $id       = "solicitud_prestaciones.id_solicitud_prestaciones";
+	    
+	    
+	    //$where_to=$where;
+	    
+	    
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    if($action == 'ajax')
+	    {
+	        if(!empty($search)){
+	            
+	            $where1=" AND (solicitud_prestaciones.cedula_participes LIKE '".$search."%' OR solicitud_prestaciones.nombres_solicitud_prestaciones LIKE '".$search."%' )";
+	            
+	            $where_to=$where.$where1;
+	        }else{
+	            
+	            $where_to=$where;
+	        }
+	        
+	        $html="";
+	        $resultSet=$db->getCantidad("*", $tablas, $where_to);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        $resultSet=$db->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
+	        $count_query   = $cantidadResult;
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        if($cantidadResult>0)
+	        {
+	            $html.='<div class="pull-left" style="margin-left:11px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:350px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_solicitud_prestamos_registrados' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 11px;">Cedula</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Apellidos</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Nombres</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Estado Civil</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Parroquia</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Teléfono</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Celular</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Número Cuenta</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Banco</th>';
+	            $html.='<th style="text-align: right;  font-size: 11px;"></th>';
+	            $html.='<th style="text-align: right;  font-size: 11px;"></th>';
+	            $html.='<th style="text-align: right;  font-size: 11px;"></th>';
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	
+	            foreach ($resultSet as $res)
+	            {
+	                
+	                $html.='<tr>';
+	                
+	                $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->apellidos_solicitud_prestaciones.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombres_solicitud_prestaciones.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_civil.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_parroquias.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->telefono_solicitud_prestaciones.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->celular_solicitud_prestaciones.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_cuenta_ahorros_bancaria.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_bancos.'</td>';
+	                $html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestaciones='.$res->id_solicitud_prestaciones.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
+	                $html.='<td style="font-size: 15px;"><button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="EnviarInfoDasafiliacion(&quot;'.$res->cedula_participes.'&quot;,'.$res->id_solicitud_prestaciones.')"><i class="glyphicon glyphicon-import"></i></button>';
+	                
+	                $html.='</tr>';
+	                
+	            }
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->load_solicitud_garantias_registrados("index.php", $page, $total_pages, $adjacents).'';
+	            $html.='</div>';
+	            
+	        }else{
+	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay solicitud de garantías de prestamos registrados...</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        echo $html;
+	        die();
+	        
+	    }
+	    
+	}
+	
+	
+	public function load_solicitud_cesantes_registrados($reload, $page, $tpages, $adjacents) {
+	    
+	    $prevlabel = "&lsaquo; Prev";
+	    $nextlabel = "Next &rsaquo;";
+	    $out = '<ul class="pagination pagination-large">';
+	    
+	    // previous label
+	    
+	    if($page==1) {
+	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+	    } else if($page==2) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_solicitud_cesantes_registrados(1)'>$prevlabel</a></span></li>";
+	    }else {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_solicitud_cesantes_registrados(".($page-1).")'>$prevlabel</a></span></li>";
+	        
+	    }
+	    
+	    // first label
+	    if($page>($adjacents+1)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_solicitud_cesantes_registrados(1)'>1</a></li>";
+	    }
+	    // interval
+	    if($page>($adjacents+2)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // pages
+	    
+	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+	    for($i=$pmin; $i<=$pmax; $i++) {
+	        if($i==$page) {
+	            $out.= "<li class='active'><a>$i</a></li>";
+	        }else if($i==1) {
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_solicitud_cesantes_registrados(1)'>$i</a></li>";
+	        }else {
+	            $out.= "<li><a href='javascript:void(0);' onclick='load_solicitud_cesantes_registrados(".$i.")'>$i</a></li>";
+	        }
+	    }
+	    
+	    // interval
+	    
+	    if($page<($tpages-$adjacents-1)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // last
+	    
+	    if($page<($tpages-$adjacents)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='load_solicitud_cesantes_registrados($tpages)'>$tpages</a></li>";
+	    }
+	    
+	    // next
+	    
+	    if($page<$tpages) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_solicitud_cesantes_registrados(".($page+1).")'>$nextlabel</a></span></li>";
+	    }else {
+	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+	    }
+	    
+	    $out.= "</ul>";
+	    return $out;
+	}
+	
 	
 	
 	

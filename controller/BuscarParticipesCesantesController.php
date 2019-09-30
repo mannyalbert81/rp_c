@@ -498,7 +498,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
                 $html.='<tbody>';
                 $html.='<tr height = "25">';
                 $html.='<td><a class="btn bg-olive" title="Pagaré" href="index.php?controller=TablaAmortizacion&action=ReportePagare&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list"></i></a></font></td>';
-                 $html.='</tr>';
+                $html.='</tr>';
                 $html.='<tr height = "25">';
                 $html.='<td><a class="btn bg-olive" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
                 $html.='</tr>';

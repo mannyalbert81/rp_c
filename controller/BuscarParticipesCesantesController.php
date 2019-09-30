@@ -615,6 +615,9 @@ class BuscarParticipesCesantesController extends ControladorBase{
         $out.= "</ul>";
         return $out;
     }
+    
+    
+    
     public function CreditosActivosParticipe()
     {
         session_start();
@@ -631,8 +634,25 @@ class BuscarParticipesCesantesController extends ControladorBase{
         		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
         		INNER JOIN public.core_estado_creditos
         		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
-        $where="core_creditos.id_participes=".$id_participe." AND core_creditos.id_estatus=1";
+        $where="core_creditos.id_participes=".$id_participe." AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
         $id="core_creditos.fecha_concesion_creditos";
+        
+        $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        if(!(empty($resultAportes)))
+        {
+            foreach($resultAportes as $res)
+            {
+                if($res->saldo_actual_creditos!=0)
+                {
+                    $total+=$res->saldo_actual_creditos;
+                    
+                }
+                else
+                {
+                    $total+=$res->saldo_actual_creditos;
+                }
+            }
+            
        
         $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
         if(!(empty($resultCreditos)))
@@ -735,17 +755,24 @@ class BuscarParticipesCesantesController extends ControladorBase{
               
                
             }
+         
             $total=number_format((float)$total, 2, ',', '.');
             $html.='</table>
-                   </div>';
+                   </div>
+                    <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-aqua">
+                        <th class="text-right">Acumulado Total: '.$total.'</th>
+                        <th width="1.5%"></th>
+                     </tr>
+                   </table>';
             $html.='<div class="table-pagination pull-right">';
             $html.=''. $this->paginate_creditos("index.php", $page, $total_pages, $adjacents,$id_participe,"CreditosActivosParticipe").'';
             $html.='</div>
                     </div>';
             
-            
             echo $html;
             
+        }
         }
         else
         {

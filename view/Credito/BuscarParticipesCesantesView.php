@@ -90,7 +90,7 @@
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Consulta y cálculo de DESAFILIACIÓN</h3>
+          <h3 class="box-title">Consulta y Cálculo de DESAFILIACIÓN</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -128,6 +128,13 @@
            		<div id="aportes_participe" ></div>
            		</div>
            	</div>
+           	
+           		<div class="row">
+           		<div class="col-xs-12 col-md-12 col-lg-12 ">
+           		<div id="aportes_participe_patronal" ></div>
+           		</div>
+           	</div>
+           	
            	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="creditos_participe" ></div>
@@ -157,6 +164,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.37"></script> 
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.40"></script> 
    </body>
 </html>   

@@ -14,7 +14,6 @@ function InfoSolicitud(cedula,id_solicitud)
 {
 	$('#cedula_participe').val(cedula);
 	BuscarParticipe();
-	SimulacionCredito();
 	solicitud=id_solicitud;
 	$.ajax({
 	    url: 'index.php?controller=BuscarParticipesCesantes&action=InfoSolicitud',
@@ -58,6 +57,7 @@ function BuscarParticipe()
 			$('#participe_encontrado').html(y[0]);
 		     id_participe=y[1];
 			AportesParticipe(id_participe, 1)
+			AportesParticipePatronal(id_participe, 1)
 			CreditosActivosParticipe(id_participe, 1)
 			
 		})
@@ -70,7 +70,7 @@ function BuscarParticipe()
 function AportesParticipe(id, page)
 {
 	$.ajax({
-	    url: 'index.php?controller=BuscarParticipes&action=AportesParticipe',
+	    url: 'index.php?controller=BuscarParticipesCesantes&action=AportesParticipe',
 	    type: 'POST',
 	    data: {
 	    	   id_participe: id,
@@ -87,10 +87,32 @@ function AportesParticipe(id, page)
 	});
 }
 
+
+function AportesParticipePatronal(id, page)
+{
+	$.ajax({
+	    url: 'index.php?controller=BuscarParticipesCesantes&action=AportesParticipePatronal',
+	    type: 'POST',
+	    data: {
+	    	   id_participe: id,
+	    	   page: page
+	    },
+	})
+	.done(function(x) {
+		$('#aportes_participe_patronal').html(x);
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+}
+
+
 function CreditosActivosParticipe(id, page)
 {
 	$.ajax({
-	    url: 'index.php?controller=BuscarParticipes&action=CreditosActivosParticipe',
+	    url: 'index.php?controller=BuscarParticipesCesantes&action=CreditosActivosParticipe',
 	    type: 'POST',
 	    data: {
 	    	   id_participe: id,

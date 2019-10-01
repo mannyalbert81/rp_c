@@ -1828,6 +1828,7 @@ class RevisionCreditosController extends ControladorBase{
         $id_reporte=$_POST['id_reporte'];
         $numero_credito=$_POST['numero_credito'];
         $observacion_credito=$_POST['observacion_credito'];
+        $id_rol=$_SESSION['id_rol'];
         $reporte = new PermisosEmpleadosModel();
         $columnaest = "estado.id_estado";
         $tablaest= "public.estado";
@@ -1863,26 +1864,47 @@ class RevisionCreditosController extends ControladorBase{
         $id_estado_creditos=$reporte->getCondiciones($columnas, $tablas, $where, $id);
         $id_estado_creditos=$id_estado_creditos[0]->id_estado_creditos;
         
-        foreach ($resultSet as $res)
+        
+        if ($id_rol==53 || $id_rol==61)
         {
-            $where = "id_creditos=".$res->id_creditos;
-            $tabla = "core_creditos";
-            $colval = "id_estado_creditos=".$id_estado_creditos.", incluido_reporte_creditos=null";
-            $reporte->UpdateBy($colval, $tabla, $where);
+            require_once 'controller/CreditosController.php';
+            
+            $ctr_creditos= new CreditosController();
+            
+            $desmayorizacion=$ctr_creditos->EliminarReporteCredito($numero_credito);
         }
         
-        $errores=ob_get_clean();
-        $errores=trim($errores);
-        if(empty($errores))
+        if ($desmayorizacion=="OK")
         {
-            $reporte->endTran('COMMIT');
-            $mensaje="OK";
+            foreach ($resultSet as $res)
+            {
+                $where = "id_creditos=".$res->id_creditos;
+                $tabla = "core_creditos";
+                $colval = "id_estado_creditos=".$id_estado_creditos.", incluido_reporte_creditos=null";
+                $reporte->UpdateBy($colval, $tabla, $where);
+            }
+            
+            $errores=ob_get_clean();
+            $errores=trim($errores);
+            if(empty($errores))
+            {
+                $reporte->endTran('COMMIT');
+                $mensaje="OK";
+            }
+            else
+            {
+                $reporte->endTran('ROLLBACK');
+                $mensaje="ERROR".$errores;
+            }
         }
         else
         {
             $reporte->endTran('ROLLBACK');
-            $mensaje="ERROR".$errores;
+            $mensaje="ERROR".$desmayorizacion;
         }
+        
+        
+       
         echo $mensaje;
     }
     

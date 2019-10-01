@@ -5,7 +5,6 @@ $(document).ready( function (){
 	getUsuario();
 	var h1ctr;
 	var h2ctr;
-	sethoras();
 
 });
 
@@ -14,7 +13,7 @@ $(document).ready( function (){
 function getUsuario()
 {
 	$.ajax({
-		url:'index.php?controller=PermisosEmpleados&action=getUsuario',
+		url:'index.php?controller=AvancesEmpleados&action=getUsuario',
 		type:'POST',
 		dataType:'json',
 		data:{}
@@ -51,6 +50,7 @@ $.ajax({
           type: 'POST',
           data: con_datos,
           success: function(x){
+        	  console.log(x);
         	  if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
     		  {
     		  swal({
@@ -100,26 +100,7 @@ function validarhora()
 	
 }
 
-function sethoras()
-{
-	$.ajax({
-	    url: 'index.php?controller=PermisosEmpleados&action=GetHoras',
-	    type: 'POST',
-	    data: {
-	    	   
-	    },
-	})
-	.done(function(x) {
-		
-		var res = $.parseJSON(x);
-		h1ctr=res[0]['hora_entrada_empleados'].split(":");
-		h2ctr=res[0]['hora_salida_empleados'].split(":");
-		})
-	.fail(function() {
-	    console.log("error");
-	    	
-	});	
-}
+
 
 function validardesde()
 {
@@ -221,7 +202,7 @@ function validarfecha(fecha)
 		}
 	else if (fechael[1]== mes && fechael[2] <= hoy)
 	{
-		return false;
+		return true;
 	}
 	else
 		{
@@ -542,7 +523,7 @@ function Negar(idsol)
 	});
 }
 
-function Ajustes(id_solicitud, nombre_estado)
+function Ajustes(id_solicitud)
 {
 	var modal = $('#myModalAjustes');
 	$.ajax({
@@ -586,7 +567,7 @@ function Ajustes(id_solicitud, nombre_estado)
 	
 }
 
-function PagarAnticipo()
+function PagarAnticipo(id_solicitud)
 {
 	swal({
 		  title: "Cancelar Pago de anticipo",
@@ -597,9 +578,40 @@ function PagarAnticipo()
 		})
 		.then((willDelete) => {
 		  if (willDelete) {
-		    swal("Anticipo cancelado", {
-		      icon: "success",
-		    });
+			  $.ajax({
+				    url: 'index.php?controller=AvancesEmpleados&action=PagarAnticipo',
+				    type: 'POST',
+				    data: {
+				    	   id_solicitud: id_solicitud
+				    },
+				})
+				.done(function(x) {
+					
+					console.log(x);
+					if (x!="OK")
+						{
+							swal({
+							  		  title: "Solicitud",
+							  		  text: "Error al cargar la informacion",
+							  		  icon: "warning",
+							  		  button: "Aceptar",
+							  		});
+						}
+					else 
+					{
+						swal({
+					  		  title: "Solicitud",
+					  		  text: "Anticipo cancelado",
+					  		  icon: "warning",
+					  		  button: "Aceptar",
+					  		});
+					}
+						
+				})
+				.fail(function() {
+				});
+			  
+		    
 		  } else {
 		    swal("No se realizaron cambios!");
 		  }

@@ -34,7 +34,7 @@ class AvancesEmpleadosController extends ControladorBase{
                        INNER JOIN public.cargos_empleados
                        ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         
-        $where = "empleados.numero_cedula_empleados = $cedula_usuario";
+        $where = "empleados.numero_cedula_empleados = '".$cedula_usuario."'";
         
         $resultSet=$empleados->getCondiciones($columna,$tablas,$where,"empleados.numero_cedula_empleados");
         
@@ -121,7 +121,7 @@ class AvancesEmpleadosController extends ControladorBase{
         $empleado= new EmpleadosModel();
         $tablas="public.empleados";
         $cedula = $_SESSION['cedula_usuarios'];
-        $where = "empleados.numero_cedula_empleados =".$cedula;
+        $where = "empleados.numero_cedula_empleados ='".$cedula."'";
         $id = "empleados.id_empleados";
         $result = $empleado->getCondiciones("*", $tablas, $where, $id);
         $id_empleado = $result[0]->id_empleados;
@@ -186,7 +186,7 @@ class AvancesEmpleadosController extends ControladorBase{
                        ON empleados.id_grupo_empleados=horarios_empleados.id_grupo_empleados";
                        
         
-        $where = "empleados.numero_cedula_empleados = $cedula_usuario";
+        $where = "empleados.numero_cedula_empleados = '$cedula_usuario'";
         
         $resultSet=$horarios->getCondiciones($columna,$tablas,$where,"empleados.numero_cedula_empleados");
                 
@@ -222,17 +222,17 @@ class AvancesEmpleadosController extends ControladorBase{
                       ON departamentos.id_departamento = cargos_empleados.id_departamento
                       INNER JOIN public.empleados
                       ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $wheredep= "empleados.numero_cedula_empleados =".$cedula;
+        $wheredep= "empleados.numero_cedula_empleados ='".$cedula."'";
         $iddep = "departamentos.id_departamento";
         $resultdep = $departamento->getCondiciones($columnadep, $tablasdep, $wheredep, $iddep);
         
         $tablar = "usuarios INNER JOIN empleados
-                        ON usuarios.cedula_usuarios = CAST (empleados.numero_cedula_empleados AS TEXT)
+                        ON usuarios.cedula_usuarios = empleados.numero_cedula_empleados 
                         INNER JOIN departamentos 
                         ON departamentos.id_departamento = empleados.id_departamento
                         INNER JOIN cargos_empleados
                         ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND cargos_empleados.nombre_cargo ILIKE 'Jefe%'";
+        $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND cargos_empleados.nombre_cargo ILIKE 'CONTADOR%'";
         $idr = "usuarios.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         $id_jefi = $resultr[0]->id_rol;
@@ -261,7 +261,7 @@ class AvancesEmpleadosController extends ControladorBase{
         if ($id_estado != "0")
         {   if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
             {
-                $where    = "anticipo_sueldo_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados=".$cedula;
+                $where    = "anticipo_sueldo_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados='".$cedula."'";
             }
             else {
                 $where    = "anticipo_sueldo_empleados.id_estado=".$id_estado;
@@ -272,7 +272,7 @@ class AvancesEmpleadosController extends ControladorBase{
         {
             if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
             {
-                $where    = " empleados.numero_cedula_empleados=".$cedula;
+                $where    = " empleados.numero_cedula_empleados='".$cedula."'";
             }
             else {
                 $where    = "1=1";
@@ -394,7 +394,7 @@ class AvancesEmpleadosController extends ControladorBase{
                         }
                         else if ($id_rol==$id_rh && $res->nombre_estado=="APROBADO GERENCIA")
                         {
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="Ajustes('.$res->id_anticipo.',&quot;'.$res->nombre_estado.'&quot;)"><i class="glyphicon glyphicon-cog"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="Ajustes('.$res->id_anticipo.')"><i class="glyphicon glyphicon-cog"></i></button></span></td>';
                             $html.='<td style="font-size: 18px;"></td>';                            
                         }
                     }
@@ -493,6 +493,39 @@ class AvancesEmpleadosController extends ControladorBase{
         return $out;
     }
     
+    public function PagarAnticipo()
+    {
+        session_start();
+        $rp_capremci=new PlanCuentasModel();
+        $id_solicitud=$_POST['id_solicitud'];
+        $columnasEst="id_estado";
+        $tablasEst="estado";
+        $whereEst="tabla_estado='ANTICIPO_EMPLEADOS' AND nombre_estado='PAGADO'";
+        $id="id_estado";
+        $resultEst=$rp_capremci->getCondiciones($columnasEst, $tablasEst, $whereEst, $id);
+        $id_estado=$resultEst[0]->id_estado;
+        $rp_capremci->beginTran();
+        ob_start();
+        $query="UPDATE anticipo_sueldo_empleados
+                SET
+                id_estado=".$id_estado."
+                WHERE id_anticipo=".$id_solicitud;
+        $rp_capremci->executeNonQuery($query);
+        $errores=ob_get_clean();
+        $errores=trim($errores);
+        $mensaje="";
+        if(empty($errores))
+        {
+            $rp_capremci->endTran("COMMIT");
+            $mensaje="OK";
+        }
+        else {
+            $rp_capremci->endTran("ROLLBACK");
+            $mensaje="ERROR".$errores;
+        }
+      echo $mensaje;  
+    }
+    
     public function TablaCuotas()
     {
     session_start();
@@ -545,7 +578,7 @@ class AvancesEmpleadosController extends ControladorBase{
     $html.='</tbody>';
     $html.='</table>';
     $html.='<div class="pull-right" style="margin-right:15px;">
-    <td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-warning" onclick="PagarAnticipo()"><i class="glyphicon glyphicon-log-in"></i></button></span></td>
+    <td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-warning" onclick="PagarAnticipo('.$id_solicitud.')"><i class="glyphicon glyphicon-log-in"></i></button></span></td>
     </div>';
      echo $html;
         

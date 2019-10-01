@@ -611,8 +611,7 @@ class MarcacionesController extends ControladorBase{
                 $dctosalariodcto= $tdescuento*$salariomin;
                 $dctosalario=$dctosalarioatr+$dctosalariodcto;
                 $dctosalariofalta=$numdiassintrabajo*8*60*$salariomin;
-                $dctosalario=$dctosalario+$dctosalariofalta;
-                $dctosalario=number_format((float)$dctosalario, 2, '.', '');
+                $dctosalario=0.00;
                 $horasextra50=number_format((float)$horasextra50, 2, '.', '');
                 $horasextra100=number_format((float)$horasextra100, 2, '.', '');
                 $fondosreserva=($emp->salario_cargo+$horasextra50+$horasextra100)*0.0833;
@@ -621,8 +620,30 @@ class MarcacionesController extends ControladorBase{
                 $aporteiess1=number_format((float)$aporteiess1, 2, '.', '');
                 $aporteiess2=($emp->salario_cargo+$horasextra50+$horasextra100)*($resultDSE[0]->descuento_iess2*0.01);
                 $aporteiess2=number_format((float)$aporteiess2, 2, '.', '');
-                $sueldo14=0.00;
-                $sueldo13=0.00;
+                
+                if($emp->mensualizado_decimo_tercero_empleados=='t')
+                {
+                    $sueldo13=$dec_tercero;
+                }
+                else {
+                    $sueldo13=0.00;
+                }
+                if($emp->mensualizado_decimo_cuarto_empleados=='t')
+                {
+                    $sueldo14=$dec_cuarto;
+                }
+                else {
+                    $sueldo14=0.00;
+                }
+                if($emp->mensualizado_fondos_de_reserva_empleados=='t')
+                {
+                    $fondos_de_reserva=$fondosreserva;
+                }
+                else {
+                    $fondos_de_reserva=0.00;
+                }
+                
+               
                 $asocap=0.00;
                 $quiroiess=0.00;
                 $hipoiess=0.00;
@@ -632,7 +653,7 @@ class MarcacionesController extends ControladorBase{
                 $parametros = "'$emp->id_empleados',
                                 '$horasextra50',
                                 '$horasextra100',
-                                '$fondosreserva',
+                                '$fondos_de_reserva',
                                 '$sueldo14',
                                 '$sueldo13',
                                 '$dctoavance',
@@ -653,7 +674,11 @@ class MarcacionesController extends ControladorBase{
                                 '$dec_tercero',
                                 '$dec_cuarto',
                                 '$aporteiess2',
-                                '$periodo'";
+                                '$periodo',
+                                '$emp->mensualizado_decimo_tercero_empleados',
+                                '$emp->mensualizado_decimo_cuarto_empleados',
+                                '$emp->mensualizado_fondos_de_reserva_empleados'
+                                ";
                 $reportenomina->setFuncion($funcion);
                 $reportenomina->setParametros($parametros);
                 $resultado=$reportenomina->Insert();

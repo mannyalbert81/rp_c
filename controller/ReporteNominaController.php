@@ -337,27 +337,44 @@ class ReporteNominaController extends ControladorBase{
         session_start();
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $reporte_nomina = new ReporteNominaEmpleadosModel();
-        
+        $mes_inicio=0;
+        $mes_fin=0;
+       
         $periodo=$_POST['periodo'];
         
         $hoy = getdate();
         
-        $mes=$hoy['mon'];
-        
+        $dia_hoy=$hoy['mday'];
+        $mes=$hoy['mon'];        
         $anio=$hoy['year'];
+        $anio_inicio=$anio;
+        $anio_fin=$anio;
         
-        $anioinicio=$hoy['year'];
-        
-        $mesinicio=$mes-2;
-        
-        if ($mesinicio<1)
+        if($dia_hoy<=21)
         {
-            $mesinicio=12;
-            $anioinicio--;
+            $mes_inicio=$mes;
+            $mes_fin=$mes+1;
+            if ($mes_fin==13)
+            {
+                $mes_fin=1;
+                $anio_fin=$anio+1;
+            }
         }
-        $mes--;
+        else
+        {
+            $mes_inicio=$mes-1;
+            $mes_fin=$mes;
+            if ($mes_inicio==0)
+            {
+                $mes_inicio=12;
+                $anio_inicio=$anio-1;
+            }
+        }
+               
         
-        $periodoactual='22/'.$mesinicio.'/'.$anioinicio.'-21/'.$mes.'/'.$anio;
+        
+        $periodoactual='22/'.$mes_inicio.'/'.$anio_inicio.'-21/'.$mes_fin.'/'.$anio_fin;
+        echo $periodoactual;
         $tablas = "public.descuentos_salarios_empleados";
         $where = "1=1";
         

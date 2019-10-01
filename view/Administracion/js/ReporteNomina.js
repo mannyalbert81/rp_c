@@ -224,24 +224,41 @@ if(rep)
 	{
 	if (periodo=="P")
 	{
-	var mes = new Date().getMonth();
-	var year = new Date().getFullYear();
-	mes--;
-	if (mes==0)
-		{
-		mes=12;
-		year--;
-		}
-	var diainicio = 22;
-	var diafinal = 21;
-	var fechai = diainicio+"/"+mes+"/"+year;
-	mes++;
-	if (mes>12){
-		mes=1;
-		year++;
-		var fechaf = diafinal+"/"+mes+"/"+year;
-	}
-	else var fechaf = diafinal+"/"+mes+"/"+year;
+		var mes = new Date().getMonth();
+		mes++;
+		var year = new Date().getFullYear();
+		var dia_hoy= new Date().getDate();
+		var mes_inicio=0;
+		var mes_fin=0;
+		var anio_inicio=year;
+		var anio_fin=year;
+		console.log(dia_hoy+" hoy")
+		if(dia_hoy<=21)
+			{
+			mes_inicio=mes;
+			mes_fin=mes+1;
+			if (mes_fin==13)
+				{
+				mes_fin=1;
+				anio_fin=year+1;
+				}
+			}
+		else
+			{
+			mes_inicio=mes-1;
+			mes_fin=mes;
+			if (mes_inicio==0)
+				{
+				mes_inicio=12;
+				anio_inicio=year-1;
+				}
+			}
+		
+		var diainicio = 22;
+		 var diafinal = 21;
+	
+	var fechai = diainicio+"/"+mes_inicio+"/"+year;
+	var fechaf = diafinal+"/"+mes_fin+"/"+year;
 	
 	periodo=fechai+"-"+fechaf;
 	console.log(periodo)

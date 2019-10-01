@@ -534,37 +534,63 @@ $("#mensaje_archivo").fadeOut("slow");
 							    		        			}
 						    		        			});
 					    						
-					    						if (yeararchivo.lenght()>1) yeararchivo=yeararchivo[1];
+					    						if (yeararchivo.length>1) yeararchivo=yeararchivo[1];
 					    						var mes = new Date().getMonth();
+					    						mes++;
 					    						var year = new Date().getFullYear();
 					    						var dia_hoy= new Date().getDate();
-					    						var mes_inicio
-					    						if(dia_hoy<=21) 
-					    						
-					    						if (mesarchivo.length <=2 && mesarchivo[0]==mes-1 && mesarchivo[1]==mes && yeararchivo==year)
+					    						var mes_inicio=0;
+					    						var mes_fin=0;
+					    						var anio_inicio=year;
+					    						var anio_fin=year;
+					    						console.log(dia_hoy+" hoy")
+					    						if(dia_hoy<=21)
+					    							{
+					    							mes_inicio=mes;
+					    							mes_fin=mes+1;
+					    							if (mes_fin==13)
+					    								{
+					    								mes_fin=1;
+					    								anio_fin=year+1;
+					    								}
+					    							}
+					    						else
+					    							{
+					    							mes_inicio=mes-1;
+					    							mes_fin=mes;
+					    							if (mes_inicio==0)
+					    								{
+					    								mes_inicio=12;
+					    								anio_inicio=year-1;
+					    								}
+					    							}
+					    							
+					    						if (mesarchivo.length <=2 && mesarchivo[0]==mes-1 && mesarchivo[1]==mes && yeararchivo==anio_fin)
 					    						{
-					    							mes--;
-						    						var ld = new Date(year,mes,0).getDate();
+					    							
+						    						var ld = new Date(year,mes_inicio,0).getDate();
 						    						var diainicio = 22;
 						    						var diafinal = 21;
 						    						var dcontrol = [];
 						    						
 						    						for (var i=diainicio; i <= ld; i++)
 						    							{
-						    							var fechac = i+"/"+mes+"/"+year;
+						    							var fechac = i+"/"+mes_inicio+"/"+year;
 						    							dcontrol.push(fechac);
 						    							}
-						    						mes++;
 						    						for (var i=1; i <= diafinal; i++)
 					    							{
-					    							var fechac = i+"/"+mes+"/"+year;
+					    							var fechac = i+"/"+mes_fin+"/"+year;
 					    							dcontrol.push(fechac);
 					    							}
+						    						console.log("fechas de control  "+dcontrol);
 						    						var cid = cedulas[0];
 						    						var farchivo = [];
 						    						var verper = true;
 						    						var totalfechas = true;
 						    						var multifechas = false;
+						    						var fechas_repetidas=[];
+						    						var cedula_fecha_repetida='';
 						    						var cedprob = [];
 						    						for (var i=0; i<arr.length; i++)
 						    						{
@@ -604,10 +630,14 @@ $("#mensaje_archivo").fadeOut("slow");
 						    			        				    	   if (cid==arr[k]["Cedula"] && f==arr[k]["Fecha"])
 						    			        				    		   {
 						    			        				    		   contador++;
+						    			        				    		   cedula_fecha_repetida=arr[k]["Cedula"];
 						    			        				    		   }
 						    			        				    	   }
 						    			        					   if(contador > 2)
-						    			        						   {multifechas=true;}
+						    			        						   {multifechas=true;
+						    			        						   fechas_repetidas.push(cedula_fecha_repetida);
+						    			        						   }
+						    			        					   
 						    			        					   contador=0;
 					    			        					 });
 				    			        					  
@@ -758,9 +788,13 @@ $("#mensaje_archivo").fadeOut("slow");
 						    								{
 						    								if (multifechas)
 						    									{
+						    									var errmsg = "Se ha encotrado horarios con fechas duplicadas :\n|";
+						    									fechas_repetidas.forEach(function (c){
+							    									errmsg=errmsg+" "+c+" |";
+							    								});
 						    									swal( {
 											    					  title: "Error",
-											    					  text: "Se ha encotrado horarios con fechas duplicadas",
+											    					  text: errmsg,
 																      icon: "error",
 																     });
 						    									$("#archivo_registro").val("");
@@ -952,15 +986,40 @@ $("#mensaje_archivo").fadeOut("slow");
 
 function ReporteNomina()
 {
- var mes = new Date().getMonth();
- var year = new Date().getFullYear();
- mes--;
- console.log(mes)
+	var mes = new Date().getMonth();
+	mes++;
+	var year = new Date().getFullYear();
+	var dia_hoy= new Date().getDate();
+	var mes_inicio=0;
+	var mes_fin=0;
+	var anio_inicio=year;
+	var anio_fin=year;
+	console.log(dia_hoy+" hoy")
+	if(dia_hoy<=21)
+		{
+		mes_inicio=mes;
+		mes_fin=mes+1;
+		if (mes_fin==13)
+			{
+			mes_fin=1;
+			anio_fin=year+1;
+			}
+		}
+	else
+		{
+		mes_inicio=mes-1;
+		mes_fin=mes;
+		if (mes_inicio==0)
+			{
+			mes_inicio=12;
+			anio_inicio=year-1;
+			}
+		}
+
  var diainicio = 22;
  var diafinal = 21;
- var fechai = diainicio+"/"+mes+"/"+year;
- mes++;
- var fechaf = diafinal+"/"+mes+"/"+year;
+ var fechai = diainicio+"/"+mes_inicio+"/"+year;
+ var fechaf = diafinal+"/"+mes_fin+"/"+year;
  $.ajax({
 	    url: 'index.php?controller=Marcaciones&action=GetReporte',
 	    type: 'POST',
@@ -993,14 +1052,40 @@ function ReporteNomina()
 
 function MostrarNotificacion()
 {
- var mes = new Date().getMonth();
- var year = new Date().getFullYear();
- mes--;
+	var mes = new Date().getMonth();
+	mes++;
+	var year = new Date().getFullYear();
+	var dia_hoy= new Date().getDate();
+	var mes_inicio=0;
+	var mes_fin=0;
+	var anio_inicio=year;
+	var anio_fin=year;
+	console.log(dia_hoy+" hoy")
+	if(dia_hoy<=21)
+		{
+		mes_inicio=mes;
+		mes_fin=mes+1;
+		if (mes_fin==13)
+			{
+			mes_fin=1;
+			anio_fin=year+1;
+			}
+		}
+	else
+		{
+		mes_inicio=mes-1;
+		mes_fin=mes;
+		if (mes_inicio==0)
+			{
+			mes_inicio=12;
+			anio_inicio=year-1;
+			}
+		}
+ 
  var diainicio = 22;
  var diafinal = 21;
- var fechai = diainicio+"/"+mes+"/"+year;
- mes++;
- var fechaf = diafinal+"/"+mes+"/"+year;
+ var fechai = diainicio+"/"+mes_inicio+"/"+year;
+ var fechaf = diafinal+"/"+mes_fin+"/"+year;
  $.ajax({
 	    url: 'index.php?controller=Marcaciones&action=MostrarNotificacion',
 	    type: 'POST',
@@ -1033,21 +1118,42 @@ function MostrarNotificacion()
 
 function GenerarReporte()
 {
-	 var mes = new Date().getMonth();
-	 var year = new Date().getFullYear();
-	 mes--;
-	 var diainicio = 22;
+	var mes = new Date().getMonth();
+	mes++;
+	var year = new Date().getFullYear();
+	var dia_hoy= new Date().getDate();
+	var mes_inicio=0;
+	var mes_fin=0;
+	var anio_inicio=year;
+	var anio_fin=year;
+	console.log(dia_hoy+" hoy")
+	if(dia_hoy<=21)
+		{
+		mes_inicio=mes;
+		mes_fin=mes+1;
+		if (mes_fin==13)
+			{
+			mes_fin=1;
+			anio_fin=year+1;
+			}
+		}
+	else
+		{
+		mes_inicio=mes-1;
+		mes_fin=mes;
+		if (mes_inicio==0)
+			{
+			mes_inicio=12;
+			anio_inicio=year-1;
+			}
+		}
+	
+	var diainicio = 22;
 	 var diafinal = 21;
-	 var fechai = diainicio+"/"+mes+"/"+year;
-	 console.log(fechai);
-	 mes++;
-	 if (mes>12){
-		mes=1;
-		year++;
-		var fechaf = diafinal+"/"+mes+"/"+year;
-	 }
-	 else var fechaf = diafinal+"/"+mes+"/"+year;
-	 console.log(fechaf);
+	 
+	 var fechai = diainicio+"/"+mes_inicio+"/"+year;
+	 
+	 var fechaf = diafinal+"/"+mes_fin+"/"+year;
 	 $.ajax({
 		    url: 'index.php?controller=Marcaciones&action=SubirReporte',
 		    type: 'POST',

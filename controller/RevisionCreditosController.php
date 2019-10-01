@@ -949,8 +949,13 @@ class RevisionCreditosController extends ControladorBase{
         ob_start();
         $id_reporte=$_POST['id_reporte'];
         $reporte = new PermisosEmpleadosModel();
+        
         $reporte->beginTran();
         
+        require_once 'controller/CreditosController.php';
+        
+        $ctr_creditos= new CreditosController();
+       
         $columnas="id_creditos";
         $tablas="core_creditos_trabajados_detalle";
         $where="id_cabeza_creditos_trabajados=".$id_reporte;
@@ -958,7 +963,7 @@ class RevisionCreditosController extends ControladorBase{
         $resultSet=$reporte->getCondiciones($columnas, $tablas, $where, $id);
         foreach ($resultSet as $res)
         {
-            $mensaje=$this->MayorizaComprobanteCredito($res->id_creditos);
+           $mensaje=$ctr_creditos->MayorizaComprobanteCredito($res->id_creditos);
             if ($mensaje!='OK')
             {
                 $mensaje="ERROR";
@@ -1003,39 +1008,7 @@ class RevisionCreditosController extends ControladorBase{
         echo  $mensaje;
     }
     
-    public function MayorizaComprobanteCredito($id_credito){
         
-        $Credito = new CreditosModel();
-        
-        try {
-            
-            $columas1  = "id_creditos, numero_creditos, id_ccomprobantes";
-            $tablas1   = "core_creditos";
-            $where1    = "id_creditos = $id_credito ";
-            $id1       = "id_creditos";
-            $rsConsulta1 = $Credito->getCondiciones($columas1, $tablas1, $where1, $id1);
-            
-            if(empty($rsConsulta1)){ throw new Exception('credito no encontrado');}
-            
-            $_id_comprobante       = $rsConsulta1[0]->id_ccomprobantes;
-            $funcionMayoriza       = "core_ins_mayoriza_activa_credito";
-            $parametrosMayoriza    = "$_id_comprobante,null";
-            $consultaMayoriza      = $Credito->getconsultaPG($funcionMayoriza, $parametrosMayoriza);
-            $ResultadoMayoriza     = $Credito->llamarconsultaPG($consultaMayoriza);
-            
-            $error = "";
-            $error = pg_last_error();
-            if(!empty($error)){ throw new Exception('mayoriza comprobante credito');}
-            
-            
-            return 'OK';
-            
-        } catch (Exception $e) {
-            return "ERROR".$e->getMessage();
-        }
-        
-    }
-    
     public function AprobarReporteGerente()
     {
         session_start();
@@ -1871,7 +1844,6 @@ class RevisionCreditosController extends ControladorBase{
         $tabla = "core_creditos_trabajados_detalle";
         $colval = "id_estado_detalle_creditos_trabajados=".$resultEst[0]->id_estado;
         $reporte->UpdateBy($colval, $tabla, $where);
-                
         
         $where = "id_creditos=".$numero_credito;
         $tabla = "core_creditos_trabajados_detalle";

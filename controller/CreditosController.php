@@ -1564,7 +1564,7 @@ class CreditosController extends ControladorBase{
 	       $rsConsulta1= $Credito->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	       $_error = pg_last_error();
 	       if(!empty($_error)){ throw new Exception(' error buscando credito ['.$_id_credito.'] ');}
-	       if(!empty($rsConsulta1)){
+	       if(!empty($rsConsulta1)){ 
 	           $_id_comprobante    = $rsConsulta1[0]->id_ccomprobantes;
 	           array_push($arrayComprobantes, $_id_comprobante);
 	       }else{

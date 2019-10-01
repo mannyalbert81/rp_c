@@ -1557,7 +1557,7 @@ class CreditosController extends ControladorBase{
 	       $_error = "";
 	        
 	       /** buscar credito si tiene comprobante **/
-	       $columnas1  = "id_creditos, id_comprobantes";
+	       $columnas1  = "id_creditos, id_ccomprobantes";
 	       $tablas1    = " core_creditos";
 	       $where1     = " id_creditos = $_id_credito";
 	       $id1        = " id_creditos ";
@@ -1565,7 +1565,7 @@ class CreditosController extends ControladorBase{
 	       $_error = pg_last_error();
 	       if(!empty($_error)){ throw new Exception(' error buscando credito ['.$_id_credito.'] ');}
 	       if(!empty($rsConsulta1)){
-	           $_id_comprobante    = $rsConsulta1[0]->id_comprobantes;
+	           $_id_comprobante    = $rsConsulta1[0]->id_ccomprobantes;
 	           array_push($arrayComprobantes, $_id_comprobante);
 	       }else{
 	           throw new Exception(' credito ['.$_id_credito.'] no encontrado');
@@ -1612,7 +1612,7 @@ class CreditosController extends ControladorBase{
         $queryFuncion   = $Credito->getconsultaPG($funcion, $parametros);
         $Credito->llamarconsultaPG($queryFuncion);
         $error = pg_last_error();
-        if(!empty($error)){ throw new Exception('comprobnate no reversado ['.$id_comprobante.'] ');}
+        if(!empty($error)){ throw new Exception('comprobante no reversado ['.$id_comprobante.'] ');}
 	    
 	    
 	}

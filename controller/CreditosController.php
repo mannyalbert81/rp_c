@@ -1574,7 +1574,7 @@ class CreditosController extends ControladorBase{
 	       $columnas2  = " id_creditos_renovado,id_creditos_nuevo,id_ccomprobantes";
 	       $tablas2    = " public.core_creditos_renovaciones";
 	       $where2     = " id_creditos_nuevo = $_id_credito";
-	       $id2        = "";
+	       $id2        = " id_creditos_renovado";
 	       $rsConsulta2= $Credito->getCondiciones($columnas2, $tablas2, $where2, $id2);
 	       $_error = pg_last_error();
 	       if(!empty($_error)){ throw new Exception(' error buscando credito renovados ['.$_id_credito.'] ');}

@@ -578,6 +578,7 @@ function ContinuaNegar()
 			    },
 			})
 			.done(function(x) {
+				console.log(x);
 				x=x.trim();
 				if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
 		  		  {

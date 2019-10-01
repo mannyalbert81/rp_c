@@ -314,7 +314,7 @@ $controladores=$_SESSION['controladores'];
         </ul>
       </li>
       
-      <li class="treeview"  style="<?php echo getcontrolador("MenuInventario",$controladores) ?>"  >
+      <li class="treeview"  style="<?php echo getcontrolador("MenuRecaudaciones",$controladores) ?>"  >
           <a href="#">
             <i class="glyphicon glyphicon-usd"></i> <span>Recaudaciones</span>
             <span class="pull-right-container">
@@ -334,7 +334,7 @@ $controladores=$_SESSION['controladores'];
             </li>
             
             
-            <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+            <li class="treeview"  style="<?php echo getcontrolador("ProcesosRecaudaciones",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
                 <span class="pull-right-container">
@@ -342,7 +342,7 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li style="<?php echo getcontrolador("BuscarParticipes",$controladores) ?>"><a href="index.php?controller=Recaudacion&action=index"><i class="fa fa-circle-o"></i> Arc. Entidad Patronal</a></li>                
+                <li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=Recaudacion&action=index"><i class="fa fa-circle-o"></i> Arc. Entidad Patronal</a></li>                
                 <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Carga Recaudaciones</a></li>                
              
                 </ul>

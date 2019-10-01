@@ -38,6 +38,7 @@ $("#frm_bancos").on("submit",function(event){
   		  text: datos.mensaje,
   		  icon: "success",
   		  button: "Aceptar",
+  		
   		});
 	
 		

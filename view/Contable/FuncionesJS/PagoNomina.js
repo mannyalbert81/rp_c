@@ -8,12 +8,14 @@ function setTableStyle(ObjTabla){
 	
 	$("#"+ObjTabla).DataTable({
 		paging: false,
-        scrollX: false,
+        scrollX:  "100%",
 		searching: false,
+		fixedHeader: true,
+		scrollY: '70vh',
+	    scrollCollapse: true,
         pageLength: 10,
-        rowHeight: 'auto',
         responsive: true,
-        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         dom: '<"html5buttons">lfrtipB',      
         buttons: [ ],
         language: {
@@ -31,9 +33,29 @@ function setTableStyle(ObjTabla){
                 "next": "Siguiente",
                 "previous": "Anterior"
             }
-        }
-
+        },
+        aoColumnDefs : [ {
+            "bSortable" : false,
+            "aTargets" : [ "sorting_disabled" ]
+        } ],
+        bLengthChange: false,
+        bSort: false,
+        order: []
     });
+}
+
+function ChangeCssTable(ObjTabla){
+	var objeto = $("#"+ObjTabla);
+	objeto.find("tbody tr td").css({
+		"height":"6px",
+		"padding":"0px",
+		"margin":"0px",
+	});
+	
+	$("#"+ObjTabla).on('shown.bs.collapse', function () {
+		   $($.fn.dataTable.tables(true)).DataTable()
+		      .columns.adjust();
+		});
 }
 
 $("#verDiario").on("click",function(event){
@@ -115,6 +137,10 @@ function graficaDiarioPago(_anio,_mes){
 			 $divResultados.html(x.html);
 			 
 			 $modal.modal('show');
+			 
+			 setTableStyle("tblDiario");
+			 ChangeCssTable("tblDiario");
+			 
 		 }
 		 
 		 

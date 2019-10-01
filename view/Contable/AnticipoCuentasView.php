@@ -13,7 +13,6 @@
    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
        
    
-   </style>
  
 	</head>
  
@@ -57,48 +56,73 @@
    <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">PAGO NOMINA</h3>          
+          <h3 class="box-title">CUENTA CONTABLE ANTICIPOS</h3>          
         </div>
         
            
          <div class="box-body">
          
-         <form id="form_movimientos_contable" action="<?php echo $helper->url("ProcesosMayorizacion","index"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12">
+         <form id="form_empleados_cuentas" action="<?php echo $helper->url("ProcesosMayorizacion","index"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12">
           
-          <div class="row">     
-	        
-	         
-	         <div class="col-md-3 col-lg-3 col-xs-12">
-	         	<div class="form-group">
-	         		<label for="anio_procesos" class="control-label">AÑO :</label>
-	         		<input type="number" id="anio_procesos" name="anio_procesos" min="2000" max="<?php echo date('Y'); ?>" value="<?php echo date('Y'); ?>" class="form-control">
-                    </div>
-	         </div>
-	         <div class="col-md-3 col-lg-3 col-xs-12">
-	         	<div class="form-group">
-	         		<label for="mes_procesos" class="control-label">MES :</label>
-                    <select name="mes_procesos" id="mes_procesos"   class="form-control" >                    	
-                      	<?php for ( $i=1; $i<=count($meses); $i++){ ?>
-                      	<?php if( $i == date('n')){ ?>
-                      	<option value="<?php echo $i;?>" selected ><?php echo $meses[$i-1]; ?></option>
-                      	<?php }else{?>
-                      	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>
-                      	<?php }}?>
-					 </select> 
-	         	</div>
-	         </div>
+          <div class="row">  
+          
+              <div class="col-xs-6 col-md-3 col-lg-3 ">
+        		<div class="form-group">
+        			<input type="hidden" id="id_empleados" name="id_empleados"  value="" class="form-control">        		
+            		<label for="ddlempleados" class="control-label">Seleccione Empleado:</label>
+            		<select id="ddlempleados" class="form-control" onchange="BuscaEmpleado(this)">
+            			<option value="0">--SELECCIONE--</option>
+            		</select>        		
+             	</div>
+              </div>
+          
 	      </div>
 	      
 	      <div class="row">
-	      	<div class="col-md-offset-4 col-lg-offset-4 col-md-2 col-lg-2 col-xs-12">
+	      	<h4 class="col-md-12 text-center">Datos Empleado</h4>
+	      	<div class="col-md-3 col-lg-3 col-xs-12">
+	         	<div class="form-group">
+	         		<label for="nombre_empleados" class="control-label">Cedula:</label>
+	         		<input type="text" id="cedula_empleado" name="cedula_empleado"  value="" class="form-control" readonly>
+	         		<input type="hidden" id="id_empleados" name="id_empleados"  value="" class="form-control">
+                    </div>
+	         </div> 
+	         <div class="col-md-3 col-lg-3 col-xs-12">
+	         	<div class="form-group">
+	         		<label for="nombre_empleados" class="control-label">Nombre:</label>
+	         		<input type="text" id="nombres_empleado" name="nombres_empleado"  value="" class="form-control" readonly>
+                    </div>
+	         </div> 	         
+	         <div class="col-md-3 col-lg-3 col-xs-12">
+	         	<div class="form-group">
+	         		<label for="nombre_empleados" class="control-label">Cargo:</label>
+	         		<input type="text" id="cargo_empleado" name="cargo_empleado"  value="" class="form-control" readonly>
+                    </div>
+	         </div>   
+	      	
+	      </div>
+	      
+	      <div class="row">
+	      	<h4 class="col-md-12 text-center">Datos Cuenta Contable</h4>
+	      	<div class="col-md-3 col-lg-3 col-xs-12">
+	         	<div class="form-group">
+	         		<label for="nombre_empleados" class="control-label">Cuenta Base:</label>
+	         		<input type="text" id="cuenta_base" name="cuenta_base"  value="1.4.03.10" class="form-control" readonly>
+                    </div>
+	         </div> 
+	         <div class="col-md-3 col-lg-3 col-xs-12">
+	         	<div class="form-group">
+	         		<label for="nombre_empleados" class="control-label">Cuenta Anticipo Empleado:</label>
+	         		<input type="text" id="cuenta_contable" name="cuenta_contable"  value="" class="form-control" readonly>
+                    </div>
+	         </div> 
+	      </div>	      
+	      
+	      <div class="row">	      	
+	      	<div class="pull-right ">
 	      		<div class="form-group">
-	      			<button type="button" id="verDiario" name="verDiario" class="btn btn-block btn-default" ><i class="fa fa-desktop" aria-hidden="true"></i> VER DETALLES</button>   		
-	      		</div>
-	      	</div>
-	      	<div class="col-md-2 col-lg-2 col-xs-12">
-	      		<div class="form-group">
-	      			<button type="button" id="btngenera" name="btngenera" class="btn btn-block btn-success" > <i class="fa fa-check" aria-hidden="true"></i> GENERAR DIARIO</button>    		
-	      		</div>
+  			    	<button type="button" id="btngenera" name="btngenera" class="btn btn-block btn-success" onclick="generarCuentaContable()"> <i class="fa fa-check" aria-hidden="true"></i> GENERAR CONTABLE</button>
+	      	    </div>	 
 	      	</div>
 	      </div>
             
@@ -113,7 +137,7 @@
     <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Detalles</h3>        
+          <h3 class="box-title"></h3>        
         </div>
 	    <div class="box-body">
         	<div id="div_detalle_procesos" ></div>
@@ -127,35 +151,11 @@
 
    <div class="control-sidebar-bg"></div>
  </div>
- 
- <!-- Para modales -->
-  <div class="modal fade" id="mod_diario" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog   modal-lg " role="document" >
-        <div class="modal-content">
-          <div class="modal-header bg-aqua disabled color-palette">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" align="center">PAGO NOMINA</h4>
-          </div>
-          <div class="modal-body" >
-          	<div class="box-body">          		
-          		
-            	<div id="mod_div_contenido"></div>
-          	</div>
-          
-          </div>
-          
-        </div>
-        <!-- /.modal-content -->
-      </div>
-      <!-- /.modal-dialog -->
-</div>
-     
-   
+    
   <?php include("view/modulos/links_js.php"); ?>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-  <script src="view/Contable/FuncionesJS/PagoNomina.js?0.20"></script>
+  <script src="view/Contable/FuncionesJS/AnticipoCuentas.js?0.05"></script>
   
 	
  </body>

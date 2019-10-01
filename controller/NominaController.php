@@ -20,7 +20,7 @@ class NominaController extends ControladorBase{
             
             $nombre_controladores = "PagosCXP";
             $id_rol= $_SESSION['id_rol'];
-            $resultPer = $entidad->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );            
+             $resultPer = $entidad->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );            
             if (empty($resultPer)){
                 
                 $this->view("Error",array(
@@ -156,10 +156,14 @@ class NominaController extends ControladorBase{
         }
         
         /* variable para dibujar la tabla */
-        $_divCabecera = '<div><button class="btn btn-sm btn-default">Generar Comprobante</button></div>';
+        $_divCabecera = '<div class=""> 
+                        <div class="pull-right">
+                        <button id="btnGenerar" class="btn btn-default"><i class="fa fa-save fa-1x" style="color:#00cc6a" aria-hidden="true" ></i> Generar Comprobante</button>
+                        </div>
+                        </div>';
         $_html = '';
         $_html .= $_divCabecera;
-        $_html .= '<table class="table table-striped table-bordered" >';
+        $_html .= '<table width="100%"  id="tblDiario" class="table table-striped table-bordered" >';
         $_html .= "<thead>";
         $_html .= "<tr> <td> CUENTA </td> <td> NOMBRE </td> <td> DEBITO </td> <td> CREDITO </td></tr>";
         $_html .= "</thead>"; 
@@ -168,15 +172,15 @@ class NominaController extends ControladorBase{
         $_t_saldo       = number_format((float)$rsConsulta1[0]->total_salario,2,".",",");
         $_t_horas_50    = number_format((float)$rsConsulta1[0]->total_extras_50,2,".",",");
         $_t_horas_100   = number_format((float)$rsConsulta1[0]->total_extras_100,2,".",",");
-        $_f_reserva     = $rsConsulta1[0]->fondos_reserva;
-        $_decimo_13     = $rsConsulta1[0]->decimo_13;
-        $_decimo_14     = $rsConsulta1[0]->decimo_14;
+        $_f_reserva     = number_format((float)$rsConsulta1[0]->fondos_reserva,2,".",",");
+        $_decimo_13     = number_format((float)$rsConsulta1[0]->decimo_13,2,".",",");
+        $_decimo_14     = number_format((float)$rsConsulta1[0]->decimo_14,2,".",",");
         $_t_anticipo    = $rsConsulta1[0]->total_anticipo;
-        $_t_aporteIESS  = $rsConsulta1[0]->aporte_iess_1;
-        $_t_aporteIESSP = $rsConsulta1[0]->aporte_iess_2;
-        $_t_asocap      = $rsConsulta1[0]->total_asocap;
-        $_t_pres_quiro  = $rsConsulta1[0]->total_prestamos_quirografarios;
-        $_t_pres_hipot  = $rsConsulta1[0]->total_prestamos_hipotecarios;
+        $_t_aporteIESS  = number_format((float)$rsConsulta1[0]->aporte_iess_1,2,".",",");
+        $_t_aporteIESSP = number_format((float)$rsConsulta1[0]->aporte_iess_2,2,".",",");
+        $_t_asocap      = number_format((float)$rsConsulta1[0]->total_asocap,2,".",",");
+        $_t_pres_quiro  = number_format((float)$rsConsulta1[0]->total_prestamos_quirografarios,2,".",",");
+        $_t_pres_hipot  = number_format((float)$rsConsulta1[0]->total_prestamos_hipotecarios,2,".",",");
         $_t_desc_salario= $rsConsulta1[0]->total_descuento_salario;
         $_t_asunt_social= $rsConsulta1[0]->total_asuntos_sociales;
         
@@ -190,13 +194,65 @@ class NominaController extends ControladorBase{
             $_filas .= "<tr><td>".$rsSaldo[0]->codigo_plan_cuentas."</td><td>".$rsSaldo[0]->nombre_plan_cuentas."</td><td>".$_t_saldo."</td><td>0.00</td></tr>"; 
         }
         $rsHorasE = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.10.01'");
-        if(!empty($rsSaldo)){
+        if(!empty($rsHorasE)){
             if( $_t_horas_50 > 0 ){
-                $_filas .= "<tr><td>".$rsSaldo[0]->codigo_plan_cuentas."</td><td>".$rsSaldo[0]->nombre_plan_cuentas."</td><td>".$_t_horas_50."</td><td>0.00</td></tr>";
+                $_filas .= "<tr><td>".$rsHorasE[0]->codigo_plan_cuentas."</td><td>".$rsHorasE[0]->nombre_plan_cuentas."</td><td>".$_t_horas_50."</td><td>0.00</td></tr>";
+            }
+            if( $_t_horas_100 > 0 ){
+                $_filas .= "<tr><td>".$rsHorasE[0]->codigo_plan_cuentas."</td><td>".$rsHorasE[0]->nombre_plan_cuentas."</td><td>".$_t_horas_100."</td><td>0.00</td></tr>";
             }
             
         }
-        //cuentas haber
+        $rsFondoR = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.25'");
+        if(!empty($rsFondoR)){
+            $_filas .= "<tr><td>".$rsFondoR[0]->codigo_plan_cuentas."</td><td>".$rsFondoR[0]->nombre_plan_cuentas."</td><td>".$_f_reserva."</td><td>0.00</td></tr>";
+        }
+        $rsDecimo13 = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.15.01'");
+        if(!empty($rsDecimo13)){
+            $_filas .= "<tr><td>".$rsDecimo13[0]->codigo_plan_cuentas."</td><td>".$rsDecimo13[0]->nombre_plan_cuentas."</td><td>".$_decimo_13."</td><td>0.00</td></tr>";
+        }
+        $rsDecimo14 = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.15.02'");
+        if(!empty($rsDecimo14)){
+            $_filas .= "<tr><td>".$rsDecimo14[0]->codigo_plan_cuentas."</td><td>".$rsDecimo14[0]->nombre_plan_cuentas."</td><td>".$_decimo_14."</td><td>0.00</td></tr>";
+        }
+        $rsAportePatronal = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.20'");
+        if(!empty($rsAportePatronal)){
+            $_filas .= "<tr><td>".$rsAportePatronal[0]->codigo_plan_cuentas."</td><td>".$rsAportePatronal[0]->nombre_plan_cuentas."</td><td>".$_t_aporteIESSP."</td><td>0.00</td></tr>";
+        }
+        
+        //cuentas haber        
+        $rsAporteIess = $Cuentas->getBy("codigo_plan_cuentas = '2.5.03.06'");
+        if(!empty($rsAporteIess)){
+            $_filas .= "<tr><td>".$rsAporteIess[0]->codigo_plan_cuentas."</td><td>".$rsAporteIess[0]->nombre_plan_cuentas."</td><td>0.00</td><td>".$_t_aporteIESS."</td></tr>";
+        }
+        $rsDecimo13Haber = $Cuentas->getBy("codigo_plan_cuentas = '2.5.02.01'");
+        if(!empty($rsDecimo13Haber)){
+            $_filas .= "<tr><td>".$rsDecimo13Haber[0]->codigo_plan_cuentas."</td><td>".$rsDecimo13Haber[0]->nombre_plan_cuentas."</td><td>0.00</td><td>".$_decimo_13."</td></tr>";
+        }
+        $rsDecimo14Haber = $Cuentas->getBy("codigo_plan_cuentas = '2.5.02.02'");
+        if(!empty($rsDecimo14Haber)){
+            $_filas .= "<tr><td>".$rsDecimo14Haber[0]->codigo_plan_cuentas."</td><td>".$rsDecimo14Haber[0]->nombre_plan_cuentas."</td><td>0.00</td><td>".$_decimo_14."</td></tr>";
+        }
+        $rsFReservaHaber = $Cuentas->getBy("codigo_plan_cuentas = '2.5.04.01'");
+        if(!empty($rsFReservaHaber)){
+            $_filas .= "<tr><td>".$rsFReservaHaber[0]->codigo_plan_cuentas."</td><td>".$rsFReservaHaber[0]->nombre_plan_cuentas."</td><td>0.00</td><td>".$_f_reserva."</td></tr>";
+        }
+        $rsQuirografarios = $Cuentas->getBy("codigo_plan_cuentas = '2.5.03.01'");
+        if(!empty($rsQuirografarios)){
+            $_filas .= "<tr><td>".$rsQuirografarios[0]->codigo_plan_cuentas."</td><td>".$rsQuirografarios[0]->nombre_plan_cuentas."</td><td>0.00</td><td>".$_t_pres_quiro."</td></tr>";
+        }
+        $rsHipotecarios = $Cuentas->getBy("codigo_plan_cuentas = '2.5.03.02'");
+        if(!empty($rsHipotecarios)){
+            $_filas .= "<tr><td>".$rsHipotecarios[0]->codigo_plan_cuentas."</td><td>".$rsHipotecarios[0]->nombre_plan_cuentas."</td><td>0.00</td><td>".$_t_pres_hipot."</td></tr>";
+        }
+        $rsAsocap = $Cuentas->getBy("codigo_plan_cuentas = '2.5.90.06'");
+        if(!empty($rsAsocap)){
+            $_filas .= "<tr><td>".$rsAsocap[0]->codigo_plan_cuentas."</td><td>".$rsAsocap[0]->nombre_plan_cuentas."</td><td>0.00</td><td>".$_t_asocap."</td></tr>";
+        }
+        
+        //buscar los anticipos sueldos
+        
+        
         $_cuentas = array('SALARIO'=>'4.3.01.05','HEXTRAS'=>'4.3.01.10.01','FRESERVA'=>'4.3.01.25'); 
         
         if(!empty($_filas)){
@@ -208,6 +264,65 @@ class NominaController extends ControladorBase{
         $respuesta['html']  = $_html;
         
         echo json_encode($respuesta);
+        /*
+        $html='<div class="box box-solid bg-olive">
+            <div class="box-header with-border">
+            <h3 class="box-title">Aportaciones</h3>
+            <h4 class="widget-user-desc"><b>Tiempo de Aportes:</b> '.$tiempo.'</h4>
+            <h4 class="widget-user-desc"><b>Número de Aportaciones Personales mensuales:</b> '.$personales.'</h4>
+            </div>
+             <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-olive">
+                        <th width="10%">№</th>
+                        <th width="29%">FECHA DE APORTACION</th>
+                        <th width="28%">TIPO DE APORTE</th>
+                        <th width="29%">TOTAL</th>
+                        <th width="1.5%"></th>
+                     </tr>
+                   </table>
+                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
+                     <table border="1" width="100%">';
+        for($i=$last-1; $i>=0; $i--)
+        {
+            $index=($i+($last-1)*($page-1))+1;
+            if($resultAportes[$i]->valor_personal_contribucion!=0)
+            {
+                $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
+                $monto=number_format((float)$resultAportes[$i]->valor_personal_contribucion, 2, ',', '.');
+                $html.='<tr>
+                                 <td bgcolor="white" width="10%"><font color="black">'.$index.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$fecha.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
+                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
+                                </tr>';
+            }
+            else
+            {
+                $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
+                $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
+                $html.='<tr>
+                                 <td bgcolor="white"  width="10%"><font color="black">'.$index.'</font></td>
+                                 <td bgcolor="white"  width="30%"><font color="black">'.$fecha.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
+                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
+                                </tr>';
+            }
+            
+            
+        }
+        $total=number_format((float)$total, 2, ',', '.');
+        $html.='</table>
+                   </div>
+                    <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-olive">
+                        <th class="text-right">Acumulado Total de Aportes: '.$total.'</th>
+                        <th width="1.5%"></th>
+                     </tr>
+                   </table>';
+        $html.='<div class="table-pagination pull-right">';
+        $html.=''. $this->paginate_aportes("index.php", $page, $total_pages, $adjacents,$id_participe,"AportesParticipe").'';
+        $html.='</div>
+                    </div>';*/
                 
     }
     

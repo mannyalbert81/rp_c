@@ -15,7 +15,7 @@ class RecaudacionController extends ControladorBase{
      		
 		if( isset(  $_SESSION['nombre_usuarios'] ) ){
 
-			$nombre_controladores = "Recaudaciones";
+			$nombre_controladores = "GenArchRecaudacion";
 			$id_rol= $_SESSION['id_rol'];
 			$resultPer = $EntidadPatronal->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			

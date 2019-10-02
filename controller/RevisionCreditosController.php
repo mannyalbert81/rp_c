@@ -1900,7 +1900,7 @@ class RevisionCreditosController extends ControladorBase{
         else
         {
             $reporte->endTran('ROLLBACK');
-            $mensaje="ERROR". 
+            $mensaje="ERROR".$desmayorizacion;
         }
         
         

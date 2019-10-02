@@ -47,7 +47,7 @@ $controladores=$_SESSION['controladores'];
            </ul>
         </li>
         
-        <li class="treeview"  style="<?php echo getcontrolador("ReporteNomina",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("MenuNomina",$controladores) ?>"  >
           <a href="#">
             <i class="glyphicon glyphicon-user"></i> <span>Nomina</span>
             <span class="pull-right-container">
@@ -55,7 +55,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-             <li class="treeview"  style="<?php echo getcontrolador("ReporteNomina",$controladores) ?>"  >
+             <li class="treeview"  style="<?php echo getcontrolador("AdministracionNomina",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Administración</span>
                 <span class="pull-right-container">
@@ -72,7 +72,7 @@ $controladores=$_SESSION['controladores'];
             </li>
             
             
-            <li class="treeview"  style="<?php echo getcontrolador("ReporteNomina",$controladores) ?>"  >
+            <li class="treeview"  style="<?php echo getcontrolador("ProcesosNomina",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
                 <span class="pull-right-container">
@@ -88,7 +88,7 @@ $controladores=$_SESSION['controladores'];
              </ul>
             </li>
         
-        <li class="treeview"  style="<?php echo getcontrolador("ReporteNomina",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("ReportesNomina",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder-open-o"></i> <span>Reportes</span>
             <span class="pull-right-container">

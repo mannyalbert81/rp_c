@@ -232,7 +232,7 @@ class AvancesEmpleadosController extends ControladorBase{
                         ON departamentos.id_departamento = empleados.id_departamento
                         INNER JOIN cargos_empleados
                         ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND cargos_empleados.nombre_cargo ILIKE 'CONTADOR%'";
+        $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
         $idr = "usuarios.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         $id_jefi = $resultr[0]->id_rol;
@@ -627,9 +627,12 @@ class AvancesEmpleadosController extends ControladorBase{
     public function GerenciaSolicitud()
     {
         session_start();
+        
         $id_solicitud=$_POST['id_solicitud'];
         $horas_extras = new SolicitudHorasExtraEmpleadosModel();
         $estado = new EstadoModel();
+        ob_start();
+        $estado->beginTran();
         $columnaest = "estado.id_estado";
         $tablaest= "public.estado";
         $whereest= "estado.tabla_estado='PERMISO_EMPLEADO' AND estado.nombre_estado = 'APROBADO GERENCIA'";
@@ -643,7 +646,7 @@ class AvancesEmpleadosController extends ControladorBase{
             
         $funcion= "ins_cuotas_avances_empleado";
         $avance = new AnticipoSueldoEmpleadosModel();
-        $tablas="anticipo_sueldo_empleados,";
+        $tablas="anticipo_sueldo_empleados";
         $where="id_anticipo=".$id_solicitud;
         $id="id_anticipo";
         $resultSet=$avance->getCondiciones("*", $tablas, $where, $id);
@@ -689,6 +692,19 @@ class AvancesEmpleadosController extends ControladorBase{
             $avance->setParametros($parametros);
             $resultado=$avance->Insert();
             
+            
+            
+        }
+        $errores=ob_get_clean();
+        $errores=trim($errores);
+        if(empty($errores))
+        {
+            $estado->endTran('COMMIT');
+        }
+        else
+        {
+            $estado->endTran('ROLLBACK');
+            echo $errores;
         }
                   
      echo 1;

@@ -293,6 +293,39 @@
 </div>
 </div>
 
+<!-- Modal Analisis Credito -->
+ 
+ <div class="modal fade bs-example-modal-lg" id="myModalAvaluo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+	    	<div class="modal-header bg-primary">
+	    		<button id="cerrar_avaluo" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Avaluo del Bien</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+				<div class="row">
+                		<table align="center" class="tablesorter table table-striped table-bordered" style="width: 50%;">
+                        <tr>
+                        <th>AVALUO:</th>
+                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="avaluo_bien" name="avaluo_bien" ></td>
+                        </tr>
+                        <tr>
+                        </table>
+                        	<div class="row">
+             <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+            	<button type="button" id="enviar_avaluo_bien" name="enviar_avaluo_bien" class="btn btn-primary" onclick="EnviarAvaluoBien()"><i class="glyphicon glyphicon-ok"></i> ACEPTAR</button>
+             </div>	
+                          	
+           	</div>
+				</div>
+				<br>
+			</div>			
+		</div>
+	</div>
+</div>
+</div>
+
 <!-- Modal Creditos para renovacion -->
  
  <div class="modal fade bs-example-modal-lg" id="myModalCreditosActivos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -328,6 +361,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?0.42"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?0.44"></script> 
    </body>
 </html>   

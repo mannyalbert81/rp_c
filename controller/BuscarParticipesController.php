@@ -138,7 +138,7 @@ class BuscarParticipesController extends ControladorBase{
         
         $html.='
         <div class="box box-widget widget-user-2">';
-        if(!(empty($resultCreditos))) $html.='<button class="btn btn-default pull-right" title="Análisis crédito"  onclick="AnalisisCredito()"><i class="glyphicon glyphicon-stats"></i></button>';
+         $html.='<button class="btn btn-default pull-right" title="Simulación crédito"  onclick="SimulacionCreditoSinSolicitud()"><i class="fa fa-bank"></i></button>';
         $html.='<div class="widget-user-header bg-olive">'
             .$icon.
             '<h3 class="widget-user-username">'.$resultSet[0]->nombre_participes.' '.$resultSet[0]->apellido_participes.'</h3>

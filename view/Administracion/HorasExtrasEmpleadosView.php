@@ -100,7 +100,14 @@
              	</div>
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="fecha_permiso" class="control-label">Hora salida:</label>
+                		<label for="fecha_permiso" class="control-label">Hora de inicio:</label>
+                    	<input type="text" data-inputmask="'mask': 'h:s:s'" class="form-control" id="hora_inicio" name="hora_inicio" placeholder="Hora inicio">
+                        <div id="mensaje_hora_salida" class="errores"></div>
+                 	</div>
+             	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="fecha_permiso" class="control-label">Hora de salida:</label>
                     	<input type="text" data-inputmask="'mask': 'h:s:s'" class="form-control" id="hora_salida" name="hora_salida" placeholder="Hora salida">
                         <div id="mensaje_hora_salida" class="errores"></div>
                  	</div>

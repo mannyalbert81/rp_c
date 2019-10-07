@@ -14,9 +14,8 @@ function setTableStyle(ObjTabla){
 		scrollY: '70vh',
 	    scrollCollapse: true,
         pageLength: 10,
-        rowHeight: 'auto',
         responsive: true,
-        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         dom: '<"html5buttons">lfrtipB',      
         buttons: [ ],
         language: {
@@ -35,8 +34,14 @@ function setTableStyle(ObjTabla){
                 "previous": "Anterior"
             }
         },
-
-    }).columns.adjust().draw();
+        aoColumnDefs : [ {
+            "bSortable" : false,
+            "aTargets" : [ "sorting_disabled" ]
+        } ],
+        bLengthChange: false,
+        bSort: false,
+        order: []
+    });
 }
 
 function ChangeCssTable(ObjTabla){
@@ -46,6 +51,11 @@ function ChangeCssTable(ObjTabla){
 		"padding":"0px",
 		"margin":"0px",
 	});
+	
+	$("#"+ObjTabla).on('shown.bs.collapse', function () {
+		   $($.fn.dataTable.tables(true)).DataTable()
+		      .columns.adjust();
+		});
 }
 
 $("#verDiario").on("click",function(event){

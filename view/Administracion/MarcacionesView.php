@@ -223,7 +223,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>  
-    <script src="view/Administracion/js/Marcaciones.js?0.29"></script>
+    <script src="view/Administracion/js/Marcaciones.js?0.34"></script>
 	
 	
   </body>

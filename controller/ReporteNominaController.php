@@ -38,7 +38,7 @@ class ReporteNominaController extends ControladorBase{
         $id_empleado=$_POST['id_empleado'];
         $horasextra50=$_POST['h50'];
         $horasextra100=$_POST['h100'];
-        $fondosreserva=($salario+$horasextra50+$horasextra100)*0.0833;
+        $fondosreserva=$_POST['reserva'];
         $sueldo14=$_POST['decimo_cuarto'];
         $sueldo13=$_POST['decimo_tercero'];
         $dctoavance=$_POST['anticipo_sueldo'];
@@ -48,6 +48,7 @@ class ReporteNominaController extends ControladorBase{
         $hipoiess=$_POST['hipo_iess'];
         $dctosalario=$_POST['dcto_sueldo'];
         $periodo=$_POST['periodo'];
+        $sociales=$_POST['sociales'];
         $funcion = "ins_reporte_nomina_empleado";
         $parametros = "'$id_empleado',
                                 '$horasextra50',
@@ -61,6 +62,7 @@ class ReporteNominaController extends ControladorBase{
                                 '$quiroiess',
                                 '$hipoiess',
                                 '$dctosalario',
+                                '$sociales',                
                                 '$periodo'";
         $reportenomina->setFuncion($funcion);
         $reportenomina->setParametros($parametros);
@@ -337,27 +339,44 @@ class ReporteNominaController extends ControladorBase{
         session_start();
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $reporte_nomina = new ReporteNominaEmpleadosModel();
-        
+        $mes_inicio=0;
+        $mes_fin=0;
+       
         $periodo=$_POST['periodo'];
         
         $hoy = getdate();
         
-        $mes=$hoy['mon'];
-        
+        $dia_hoy=$hoy['mday'];
+        $mes=$hoy['mon'];        
         $anio=$hoy['year'];
+        $anio_inicio=$anio;
+        $anio_fin=$anio;
         
-        $anioinicio=$hoy['year'];
-        
-        $mesinicio=$mes-2;
-        
-        if ($mesinicio<1)
+        if($dia_hoy<=21)
         {
-            $mesinicio=12;
-            $anioinicio--;
+            $mes_inicio=$mes-2;
+            $mes_fin=$mes-1;
+            if ($mes_inicio<1)
+            {
+                $mes_inicio=12;
+                $anio_inicio=$anio-1;
+            }
         }
-        $mes--;
+        else
+        {
+            $mes_inicio=$mes;
+            $mes_fin=$mes+1;
+            if ($mes_fin==13)
+            {
+                $mes_fin=1;
+                $anio_fin=$anio+1;
+            }
+        }
         
-        $periodoactual='22/'.$mesinicio.'/'.$anioinicio.'-21/'.$mes.'/'.$anio;
+                     
+        
+        
+        $periodoactual='22/'.$mes_inicio.'/'.$anio_inicio.'-21/'.$mes_fin.'/'.$anio_fin;
         $tablas = "public.descuentos_salarios_empleados";
         $where = "1=1";
         
@@ -1137,9 +1156,9 @@ class ReporteNominaController extends ControladorBase{
             	   INNER JOIN public.cargos_empleados
             	   ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
        
-       $where="reporte_nomina_empleados.periodo_registro='".$periodo."'";
+       $where="reporte_nomina_empleados.periodo_registro='".$periodo."' AND NOT (empleados.numero_cedula_empleados='1710504786')";
        
-       $id="reporte_nomina_empleados.id_registro";
+       $id="split_part(empleados.nombres_empleados, ' ', 3)";
        
        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
        
@@ -1182,9 +1201,9 @@ class ReporteNominaController extends ControladorBase{
        $datos_tabla.='<tr>';
        $datos_tabla.='<th width="6%" rowspan="2" style="text-align: center; font-size: '.$headerfont.';">CEDULA</th>';
        $datos_tabla.='<th width="15%" rowspan="2"  style="text-align: center;  font-size: '.$headerfont.';">APELLIDOS Y NOMBRES</th>';
-       $datos_tabla.='<th width="10%" rowspan="2" style="text-align: center;  font-size: '.$headerfont.';">CARGO</th>';
+       $datos_tabla.='<th width="18%" rowspan="2" style="text-align: center;  font-size: '.$headerfont.';">CARGO</th>';
        $datos_tabla.='<th bgcolor="'.$color1.'" colspan="7" scope="colgroup" style="text-align: center;  font-size: '.$headerfont.';">INGRESOS</th>';
-       $datos_tabla.='<th bgcolor="'.$color1.'" colspan="8" scope="colgroup" style="text-align: center;  font-size: '.$headerfont.';">EGRESOS</th>';
+       $datos_tabla.='<th bgcolor="'.$color1.'" colspan="5" scope="colgroup" style="text-align: center;  font-size: '.$headerfont.';">EGRESOS</th>';
        $datos_tabla.='<th  width="5%" rowspan="2" style="text-align: center;  font-size: '.$headerfont.';">A PAGAR</th>';
        $datos_tabla.='</tr>';
        $datos_tabla.='<tr>';
@@ -1197,11 +1216,8 @@ class ReporteNominaController extends ControladorBase{
        $datos_tabla.='<th  width="5%" style="text-align: center;  font-size: '.$headerfont.';">TOTAL</th>';
        $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">ANTICIPO SUELDOS</th>';
        $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">APORTE IESS '.$resultDSE[0]->descuento_iess1.'%</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">ASOCAP</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">COMISION ASUNTOS SOCIALES</th>';
        $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">PREST. QUIROG. IESS</th>';
        $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">PREST.HIPOT. IESS</th>';
-       $datos_tabla.='<th  style="text-align: center;  font-size: '.$headerfont.';">OTROS DCTOS.</th>';
        $datos_tabla.='<th  width="5%" style="text-align: center;  font-size: '.$headerfont.';">TOTAL</th>';
        $datos_tabla.='</tr>';
        foreach ($resultSet as $res)
@@ -1212,73 +1228,103 @@ class ReporteNominaController extends ControladorBase{
            $datos_tabla.='<td  class="cargo">'.$res->nombre_cargo.'</td>';
            
            $h50="";
-           if ($res->horas_ext50!="0") $h50=$res->horas_ext50;
+           if ($res->horas_ext50!="0") 
+           {
+               $h50=$res->horas_ext50;
+               $h50=number_format((float)$h50, 2, ',', '.');
+           }
            $horasextra50+=$res->horas_ext50;
+           
            $datos_tabla.='<td  class="numero">'.$h50.'</td>';
            
            $h100="";
-           if ($res->horas_ext100!="0") $h100=$res->horas_ext100;
+           if ($res->horas_ext100!="0") 
+           {
+               $h100=$res->horas_ext100;
+           $h100=number_format((float)$h100, 2, ',', '.');
+           }
            $horasextra100+=$res->horas_ext100;
            $datos_tabla.='<td  class="numero">'.$h100.'</td>';
            
            $sueldobasico+=$res->salario_cargo;
-           $datos_tabla.='<td  class="numero">'.$res->salario_cargo.'</td>';
+           $salario_cargo=$res->salario_cargo;
+           $salario_cargo=number_format((float)$salario_cargo, 2, ',', '.');
+           $datos_tabla.='<td  class="numero">'.$salario_cargo.'</td>';
            
            $fondosreserva+=$res->fondos_reserva;
-           $datos_tabla.='<td  class="numero">'.$res->fondos_reserva.'</td>';
+           $fdr=$res->fondos_reserva;
+           $fdr=number_format((float)$fdr, 2, ',', '.');
+           $datos_tabla.='<td  class="numero">'.$fdr.'</td>';
            
            $d14="";
-           if ($res->dec_cuarto_sueldo!="0") $d14=$res->dec_cuarto_sueldo;
+           if ($res->dec_cuarto_sueldo!="0") 
+           {
+               $d14=$res->dec_cuarto_sueldo;
+               $d14=number_format((float)$d14, 2, ',', '.');
+           }
            $sueldo14+=$res->dec_cuarto_sueldo;
            $datos_tabla.='<td  class="numero">'.$d14.'</td>';
            
            $d13="";
-           if ($res->dec_tercero_sueldo!="0") $d13=$res->dec_tercero_sueldo;
+           if ($res->dec_tercero_sueldo!="0") 
+           {
+               $d13=$res->dec_tercero_sueldo;
+               $d13=number_format((float)$d13, 2, ',', '.');
+           }
            $sueldo13+=$res->dec_tercero_sueldo;
            $datos_tabla.='<td  class="numero">'.$d13.'</td>';
            
            $totaling=$res->horas_ext50+$res->horas_ext100+$res->salario_cargo+$res->fondos_reserva+$res->dec_cuarto_sueldo+$res->dec_tercero_sueldo;
            $totalingresos+=$totaling;
-           $datos_tabla.='<td  class="numero">'.$totaling.'</td>';
+           $total_ingresos=$totaling;
+           $total_ingresos=number_format((float)$total_ingresos, 2, ',', '.');
+           $datos_tabla.='<td  class="numero">'.$total_ingresos.'</td>';
            
            $ant="";
-           if ($res->anticipo_sueldo!="0") $ant=$res->anticipo_sueldo;
+           if ($res->anticipo_sueldo!="0") 
+           {
+               $ant=$res->anticipo_sueldo;
+               $ant=number_format((float)$ant, 2, ',', '.');
+           }
            $dctoavance+=$res->anticipo_sueldo;
            $datos_tabla.='<td  class="numero">'.$ant.'</td>';
            
-           $aporteiess1+=$res->aporte_iess1;
-           $datos_tabla.='<td  class="numero">'.$res->aporte_iess1.'</td>';
-           
-           $aso="";
-           if ($res->asocap!="0") $aso=$res->asocap;
-           $asocap+=$res->asocap;
-           $datos_tabla.='<td  class="numero">'.$aso.'</td>';
-           
-           $sociales+=$res->comision_asuntos_sociales;
-           $datos_tabla.='<td  class="numero">'.$res->comision_asuntos_sociales.'</td>';
+           $api1=$res->aporte_iess1;
+           $api1=number_format((float)$api1, 2, '.', '');
+           $aporteiess1+=$api1;
+           $apiess1=$res->aporte_iess1;
+           $apiess1=number_format((float)$apiess1, 2, ',', '.');
+           $datos_tabla.='<td  class="numero">'.$apiess1.'</td>';
            
            $qiess="";
-           if ($res->prest_quirog_iess!="0") $qiess=$res->prest_quirog_iess;
+           if ($res->prest_quirog_iess!="0") {
+               $qiess=$res->prest_quirog_iess;
+               $qiess=number_format((float)$qiess, 2, ',', '.');
+           }
            $quiroiess+=$res->prest_quirog_iess;
            $datos_tabla.='<td  class="numero">'.$qiess.'</td>';
            
            $hiess="";
-           if ($res->prest_hipot_iess!="0") $hiess=$res->prest_hipot_iess;
+           if ($res->prest_hipot_iess!="0") {
+               
+               $hiess=$res->prest_hipot_iess;
+               $hiess=number_format((float)$hiess, 2, ',', '.');
+               
+           }
            $hipoiess+=$res->prest_hipot_iess;
            $datos_tabla.='<td  class="numero">'.$hiess.'</td>';
-           
-           $otrosdts="";
-           if ($res->dcto_salario!="0") $otrosdts=$res->dcto_salario;
-           $otrosdctos+=$res->dcto_salario;
-           $datos_tabla.='<td  class="numero">'.$otrosdts.'</td>';
-           
+                      
            $totaleg=$res->anticipo_sueldo+$res->aporte_iess1+$res->asocap+$resultDSE[0]->asuntos_sociales+$res->prest_quirog_iess+$res->prest_hipot_iess+$res->dcto_salario;
            $totalegresos+=$totaleg;
-           $datos_tabla.='<td  class="numero">'.$totaleg.'</td>';
+           $total_egresos=$totaleg;
+           $total_egresos=number_format((float)$total_egresos, 2, ',', '.');
+           $datos_tabla.='<td  class="numero">'.$total_egresos.'</td>';
            
            $apagar=$totaling-$totaleg;
            $totalapagar+=$apagar;
-           $datos_tabla.='<td  class="numero">'.$apagar.'</td>';
+           $a_pagar=$apagar;
+           $a_pagar=number_format((float)$a_pagar, 2, ',', '.');
+           $datos_tabla.='<td  class="numero">'.$a_pagar.'</td>';
            $datos_tabla.='</tr>';
           
        }
@@ -1286,61 +1332,87 @@ class ReporteNominaController extends ControladorBase{
        $datos_tabla.='<tr>';
        $datos_tabla.='<td colspan="3" style="text-align: center;  font-size: '.$tdfont.';">TOTALES</td>';
        $h50="-";
-       if($horasextra50!="0") $h50=$horasextra50;
+       if($horasextra50!="0") {
+           $h50=$horasextra50;
+           $h50=number_format((float)$h50, 2, ',', '.');
+       }
        $datos_tabla.='<td  class="numero">'.$h50.'</td>';
        
        $h100="-";
-       if($horasextra100!="0") $h100=$horasextra100;
+       if($horasextra100!="0")
+       {
+           $h100=$horasextra100;
+           $h100=number_format((float)$h100, 2, ',', '.');
+           
+       }
        $datos_tabla.='<td  class="numero">'.$h100.'</td>';
        
+       $sueldobasico=number_format((float)$sueldobasico, 2, ',', '.');
        $datos_tabla.='<td  class="numero">'.$sueldobasico.'</td>';
        
+       $fondosreserva=number_format((float)$fondosreserva, 2, ',', '.');
        $datos_tabla.='<td  class="numero">'.$fondosreserva.'</td>';
        
        $d14="-";
-       if($sueldo14!="0") $d14=$sueldo14;
+       if($sueldo14!="0") {
+           $d14=$sueldo14;
+           $d14=number_format((float)$d14, 2, ',', '.');
+       }
        $datos_tabla.='<td  class="numero">'.$d14.'</td>';
        
        $d13="-";
-       if($sueldo13!="0") $d13=$sueldo13;
+       if($sueldo13!="0") 
+       {
+           $d13=$sueldo13;
+           $d13=number_format((float)$d13, 2, ',', '.');
+       }
        $datos_tabla.='<td  class="numero">'.$d13.'</td>';       
        
+       $totalingresos=number_format((float)$totalingresos, 2, ',', '.');
        $datos_tabla.='<td  class="numero">'.$totalingresos.'</td>';
        
        $ant="-";
-       if($dctoavance!="0") $ant=$dctoavance;
+       if($dctoavance!="0") 
+       {
+           $ant=$dctoavance;
+           $ant=number_format((float)$ant, 2, ',', '.');
+       }
        $datos_tabla.='<td  class="numero">'.$ant.'</td>';
        
-       
+       $aporteiess1=number_format((float)$aporteiess1, 2, ',', '.');
        $datos_tabla.='<td  class="numero">'.$aporteiess1.'</td>';
-       
-       $aso="-";
-       if($asocap!="0") $aso=$asocap;
-       $datos_tabla.='<td  class="numero">'.$aso.'</td>';
-       
-       $datos_tabla.='<td  class="numero">'.$sociales.'</td>';
-       
+                 
        $qiess="-";
-       if($quiroiess!="0") $qiess=$quiroiess;
+       if($quiroiess!="0") 
+       {
+           $qiess=$quiroiess;
+           $qiess=number_format((float)$qiess, 2, ',', '.');
+       }
        $datos_tabla.='<td  class="numero">'.$qiess.'</td>';
        
        $hiess="-";
-       if($hipoiess!="0") $hiess=$hipoiess;
+       if($hipoiess!="0") 
+       {
+           $hiess=$hipoiess;
+           $hiess=number_format((float)$hiess, 2, ',', '.');
+       }
        $datos_tabla.='<td  class="numero">'.$hiess.'</td>';
        
-       $otrosdts="-";
-       if ($otrosdctos!="0") $otrosdts=$otrosdctos;
-       $datos_tabla.='<td  class="numero">'.$otrosdts.'</td>';
+       $totalegresos=number_format((float)$totalegresos, 2, ',', '.');
        
        $datos_tabla.='<td  class="numero">'.$totalegresos.'</td>';
+       $totalapagar=number_format((float)$totalapagar, 2, ',', '.');
        $datos_tabla.='<td  class="numero">'.$totalapagar.'</td>';
        $datos_tabla.='</tr>';
      
        $datos_tabla.= "</table>";
        $datos_tabla.= "<br>";
+       $datos_tabla.= "<br>";
+       $datos_tabla.= "<br>";
+       $datos_tabla.= "<br>";
        $datos_tabla.= '<table class="firmas">';
        $datos_tabla.='<tr>';
-       $datos_tabla.='<td   class="firmas"  width="6%"  style="text-align: left; font-size: '.$headerfont.';"></td>';
+       //$datos_tabla.='<td   class="firmas"  width="6%"  style="text-align: left; font-size: '.$headerfont.';"></td>';
        $datos_tabla.='<td   class="firmas" width="26%" style="text-align: left; font-size: '.$headerfont.';">Elaborado por:<br>Lcdo. Byron Bolaños<br>Jefe de RR-HH</td>';
        $datos_tabla.='<td   class="firmas" style="text-align: left;  font-size: '.$headerfont.';">Aprobado por:<br>Ing. Stephany Zurita<br>Representante Legal</td>';
        $datos_tabla.='</tr>';

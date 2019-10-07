@@ -753,12 +753,12 @@ class SimulacionCreditosController extends ControladorBase{
        $monto_credito=$_POST['monto_credito'];
        $id_solicitud=$_POST['id_solicitud'];
        $fecha_corte=date('Y-m-d');
-       
+       if($id_solicitud==0) $avaluo_bien=$_POST['avaluo_bien'];
        $cuota=$_POST['plazo_credito'];
        $tipo_credito=$_POST['tipo_credito'];
        $renovacion_credito=$_POST['renovacion_credito'];
        
-       if($tipo_credito=="PH")
+       if($tipo_credito=="PH" && $id_solicitud!=0)
        {
            $columnas="valor_avaluo_core_documentos_hipotecario";
            $tablas="core_documentos_hipotecario";
@@ -766,6 +766,7 @@ class SimulacionCreditosController extends ControladorBase{
            $avaluo_credito=$cuotas->getCondicionesSinOrden($columnas, $tablas, $where, "");
            $avaluo_credito=$avaluo_credito[0]->valor_avaluo_core_documentos_hipotecario;
        }
+       else $avaluo_credito=$avaluo_bien;
        
        
        $columnas="interes_tipo_creditos";
@@ -810,9 +811,9 @@ class SimulacionCreditosController extends ControladorBase{
       {
           $html='<div class="box box-solid bg-olive">
             <div class="box-header with-border">
-            <h3 class="box-title">Tabla de Amortización</h3>
-            <button class="btn btn-info pull-right" onclick="GuardarCredito()"><i class="glyphicon glyphicon-floppy-disk"></i> GUARDAR</button>
-            </div>
+            <h3 class="box-title">Tabla de Amortización</h3>';
+            if($id_solicitud!=0)    $html.='<button class="btn btn-info pull-right" onclick="GuardarCredito()"><i class="glyphicon glyphicon-floppy-disk"></i> GUARDAR</button>';
+            $html.='</div>
              <table border="1" width="100%">
                      <tr style="color:white;" class="bg-olive">
                         <th width="5%">Cuota</th>
@@ -833,9 +834,9 @@ class SimulacionCreditosController extends ControladorBase{
       {
           $html='<div class="box box-solid bg-olive">
             <div class="box-header with-border">
-            <h3 class="box-title">Tabla de Amortización</h3>
-            <button class="btn btn-info pull-right" onclick="GuardarCredito()"><i class="glyphicon glyphicon-floppy-disk"></i> GUARDAR</button>
-            </div>
+            <h3 class="box-title">Tabla de Amortización</h3>';
+          if($id_solicitud!=0) $html.='<button class="btn btn-info pull-right" onclick="GuardarCredito()"><i class="glyphicon glyphicon-floppy-disk"></i> GUARDAR</button>';
+          $html.= '</div>
              <table border="1" width="100%">
                      <tr style="color:white;" class="bg-olive">
                         <th width="5%">Cuota</th>

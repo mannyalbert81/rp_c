@@ -6,6 +6,8 @@ var garante_seleccionado=false;
 var ci_garante="";
 var renovacion_credito=false;
 var capacidad_pago_garante_suficiente=false;
+var sin_solicitud=false;
+var avaluo_bien_sin_solicitud=0;
 
 $(document).ready( function (){
 	
@@ -43,9 +45,18 @@ $("#myModalSimulacion").on("hidden.bs.modal", function () {
 	$("#select_cuotas").html("");
 	$("#tabla_amortizacion").html("");
 	$("#info_solicitud").html("");
+	$("#capacidad_de_pago_participe").html("");
+	$("#capacidad_pago_garante").html("");
 	if (modal==0) document.getElementById("cuerpo").classList.remove('modal-open');
 	
 });
+
+$("#myModalAvaluo").on("hidden.bs.modal", function () {
+	
+    $("#avaluo_bien").val("");
+	document.getElementById("cuerpo").classList.add('modal-open');
+});
+
 $("#myModalAnalisis").on("hidden.bs.modal", function () {
 	
 	var modal = $('#myModalAnalisis');
@@ -223,23 +234,31 @@ function TipoCredito()
 
 function ModalidadCreditoHP()
 {
-	var tipo_ph=$("#tipo_credito_hipotecario").val();
-	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=GetAvaluoHipotecario',
-	    type: 'POST',
-	    data: {
-	    	id_solicitud: solicitud,
-	    	tipo_credito_hipotecario: tipo_ph
-	    },
-	})
-	.done(function(x) {
-		$('#info_garante').html(x);
-		
-		
-	})
-	.fail(function() {
-	    console.log("error");
-	});
+	if(!sin_solicitud)
+		{
+		var tipo_ph=$("#tipo_credito_hipotecario").val();
+		$.ajax({
+		    url: 'index.php?controller=SimulacionCreditos&action=GetAvaluoHipotecario',
+		    type: 'POST',
+		    data: {
+		    	id_solicitud: solicitud,
+		    	tipo_credito_hipotecario: tipo_ph
+		    },
+		})
+		.done(function(x) {
+			$('#info_garante').html(x);
+			
+			
+		})
+		.fail(function() {
+		    console.log("error");
+		});
+		}
+	else
+		{
+		$("#myModalAvaluo").modal();
+		}
+	
 }
 
 function GetCreditosActivos(id)
@@ -292,6 +311,13 @@ function SimulacionCredito()
 {
 	$("#myModalSimulacion").modal();
 	InfoParticipe();
+}
+
+function SimulacionCreditoSinSolicitud()
+{
+	$("#myModalSimulacion").modal();
+	InfoParticipe();
+	sin_solicitud=true;
 }
 
 function RenovacionCredito()
@@ -405,6 +431,7 @@ function SimularCredito()
 {
 	var monto=$("#monto_credito").val();
 	var interes=$("#tipo_credito").val();
+	if(sin_solicitud) solicitud=0;
 	//if (interes=="R") interes=9;	
 	var cuota_credito=$("#cuotas_credito").val();
 	$.ajax({
@@ -416,6 +443,7 @@ function SimularCredito()
 	    	plazo_credito:cuota_credito,
 	    	renovacion_credito:renovacion_credito,
 	    	id_solicitud:solicitud,
+	    	avaluo_bien:avaluo_bien_sin_solicitud
 	    },
 	})
 	.done(function(x) {
@@ -690,6 +718,45 @@ function SumaIngresos()
 	total=Math.round(Math.round(total * 1000) / 10) / 100;
 	modal.find("#total_ingreso").html(total);
 
+}
+
+function EnviarAvaluoBien()
+{
+	var tipo_ph=$("#tipo_credito_hipotecario").val();
+	var avaluo_bien = $("#avaluo_bien").val();
+	avaluo_bien_sin_solicitud=avaluo_bien;
+	var monto_maximo=0;
+	 
+         if(tipo_ph==1)
+         {
+             monto_maximo=parseFloat(avaluo_bien)*0.8;
+             if(monto_maximo>100000) monto_maximo=100000;
+         }
+         else
+         {
+             monto_maximo=parseFloat(avaluo_bien)*0.5;
+             if(monto_maximo>45000) monto_maximo=45000;
+         }
+         
+	var html='<table>'+
+        '<tr>'+
+        '<td><font size="3">Avalúo del bien : '+avaluo_bien+'</font></td>'+
+        '</tr>'+
+        '<tr>'+
+        '<td><font size="3" id="monto_disponible2">Monto máximo a recibir : '+monto_maximo+'</font></td>'+
+        '</tr>'+
+        '<tr>'+
+        '<td>'+
+        '<span class="input-group-btn">'+
+        '<button  type="button" class="btn bg-olive" title="Cambiar Modalidad" onclick="TipoCredito()"><i class="glyphicon glyphicon-refresh"></i></button>'+
+        '</span>'+
+        '</td>'+
+        '</tr>'+
+        '</table>';	
+	
+	
+	$('#info_garante').html(html);
+	$("#cerrar_avaluo").click();
 }
 
 function EnviarCapacidadPagoParticipe()

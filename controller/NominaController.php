@@ -20,7 +20,7 @@ class NominaController extends ControladorBase{
             
             $nombre_controladores = "PagosCXP";
             $id_rol= $_SESSION['id_rol'];
-            $resultPer = $entidad->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );            
+             $resultPer = $entidad->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );            
             if (empty($resultPer)){
                 
                 $this->view("Error",array(

@@ -490,7 +490,7 @@ class CargaRecaudacionesController extends ControladorBase{
 	 * @param string $_archivo
 	 * return array de valores cant lineas, suma de columnas especifica;
 	 */
-	public function DevuelveLineasTxt( $_archivo ){
+	public function DevuelveLineasTxt($_archivo){
 	    
 	    if( !is_file($_archivo)){ return 0; }
 	    
@@ -553,6 +553,60 @@ public function descargarArchivo(){
     readfile($ubicacion);
     exit;
     
+}
+
+public function GetCedulas($_archivo)
+{
+    $participes = new ParticipesModel();
+    $columna = "core_participes.cedula_participes, core_participes.nombre_participes, estado.nombre_estado";
+    
+    $tablas = "public.core_participes INNER JOIN public.estado
+                   ON core_participes.id_estado = estado.id_estado";
+    
+    $where = "estado.nombre_estado='ACTIVO'";
+    
+    $resultSet=$participes->getCondiciones($columna,$tablas,$where,"core_participes.cedula_participes");
+  
+    if( !is_file($_archivo)){ return 0; }
+    
+    $file = fopen($_archivo, "r") or exit("0");
+    
+}
+
+public function ConsultaCedulas($_archivo){
+    
+    if( !is_file($_archivo)){ return 0; }
+    
+    $file = fopen($_archivo, "r") or exit("0");
+    $_i_linea = 0;
+    $_cantidad_lineas = 0;
+    $_suma_linea = 0.00;
+    $cdedula_base = 0;
+    
+    while(!feof($file))
+    {
+        $_fila = fgets($file);
+        $_fila = trim($_fila);
+        if($_i_linea>0){
+            if(!empty($_fila)){
+                $_cantidad_lineas++;
+                $error = true;
+                $_array_fila   = explode(";", $_fila);
+                $error = $error = is_numeric($_array_fila[6]) ? false : true;
+                if($error){
+                    throw new  Exception("La cedula no existe ".$cdedula_base);
+                }
+                $_suma_linea += (float)$_array_fila[6];
+            }
+        }
+        $_i_linea++;
+    }
+    fclose($file);
+    
+    $_respuesta = array();
+    $_respuesta['cantidad_lineas'] = $_cantidad_lineas;
+    $_respuesta['suma_lineas'] = $_suma_linea;
+    return $_respuesta;
 }
 }
 

@@ -292,6 +292,7 @@ class EntidadBase{
     	return $resultSet;
     }
     
+      
     
     public function getCondicionesPagDesc($columnas ,$tablas , $where, $id, $limit){
     

@@ -67,12 +67,14 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         $result = $empleado->getCondiciones("*", $tablas, $where, $id);
         $id_empleado = $result[0]->id_empleados;
         $fecha_solicitud= $_POST['fecha_solicitud'];
-        $hora_solicitud= $_POST['hora_solicitud'];
+        $hora_inicio_solicitud= $_POST['hora_inicio_solicitud'];
+        $hora_fin_solicitud=$_POST['hora_fin_solicitud'];
         
         
         $parametros = "'$id_empleado',
                      '$fecha_solicitud',
-                     '$hora_solicitud'";
+                     '$hora_inicio_solicitud',
+                     '$hora_fin_solicitud'";
        
         
         $horas_extras->setFuncion($funcion);
@@ -152,7 +154,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
                         departamentos.id_departamento,
                         solicitud_horas_extras_empleados.id_solicitud,
                         solicitud_horas_extras_empleados.fecha_solicitud,
-                        solicitud_horas_extras_empleados.hora_solicitud,
+                        solicitud_horas_extras_empleados.hora_inicio_solicitud,
+                        solicitud_horas_extras_empleados.hora_fin_solicitud,
                         estado.nombre_estado";
         
         $tablas = "public.solicitud_horas_extras_empleados INNER JOIN public.empleados
@@ -195,7 +198,7 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         }
            
         
-        $id       = "solicitud_horas_extras_empleados.id_solicitud";
+        $id       = "solicitud_horas_extras_empleados.fecha_solicitud";
         
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -231,7 +234,7 @@ class HorasExtrasEmpleadosController extends ControladorBase{
             
             $limit = " LIMIT   '$per_page' OFFSET '$offset'";
             
-            $resultSet=$horas_extras->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+            $resultSet=$horas_extras->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
             $count_query   = $cantidadResult;
             $total_pages = ceil($cantidadResult/$per_page);
             
@@ -254,7 +257,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 15px;">Cargo</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Departamento</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Fecha</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Hora Salida</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Hora de inicio</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Hora de salida</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Estado</th>';
                 
                 if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
@@ -282,7 +286,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->nombre_cargo.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_departamento.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->fecha_solicitud.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->hora_solicitud.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->hora_inicio_solicitud.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->hora_fin_solicitud.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
                     if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
                     {

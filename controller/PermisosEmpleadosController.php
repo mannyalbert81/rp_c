@@ -33,14 +33,15 @@ class PermisosEmpleadosController extends ControladorBase{
         $columna = "empleados.numero_cedula_empleados,
 					  empleados.nombres_empleados,
                       cargos_empleados.nombre_cargo,
-                      departamentos.nombre_departamento";
+                      departamentos.nombre_departamento,
+                      empleados.dias_vacaciones_empleados";
         
         $tablas = "public.empleados INNER JOIN public.departamentos
                        ON empleados.id_departamento=departamentos.id_departamento
                        INNER JOIN public.cargos_empleados
                        ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         
-        $where = "empleados.numero_cedula_empleados = $cedula_usuario";
+        $where = "empleados.numero_cedula_empleados = '".$cedula_usuario."'";
         
         $resultSet=$empleados->getCondiciones($columna,$tablas,$where,"empleados.numero_cedula_empleados");
         
@@ -54,6 +55,7 @@ class PermisosEmpleadosController extends ControladorBase{
             $respuesta->nombre_empleados = $nombresep[0].' '.$nombresep[2];
             $respuesta->cargo_empleados = $resultSet[0]->nombre_cargo;
             $respuesta->dpto_empleados = $resultSet[0]->nombre_departamento;
+            $respuesta->dias_vacaciones_empleados = $resultSet[0]->dias_vacaciones_empleados;
         }
         
         echo json_encode($respuesta);
@@ -68,7 +70,7 @@ class PermisosEmpleadosController extends ControladorBase{
         $empleado= new EmpleadosModel();
         $tablas="public.empleados";
         $cedula = $_SESSION['cedula_usuarios'];
-        $where = "empleados.numero_cedula_empleados =".$cedula;
+        $where = "empleados.numero_cedula_empleados ='".$cedula."'";
         $id = "empleados.id_empleados";
         $result = $empleado->getCondiciones("*", $tablas, $where, $id);
         $id_empleado = $result[0]->id_empleados;
@@ -113,7 +115,7 @@ class PermisosEmpleadosController extends ControladorBase{
                        ON empleados.id_grupo_empleados=horarios_empleados.id_grupo_empleados";
                        
         
-        $where = "empleados.numero_cedula_empleados = $cedula_usuario";
+        $where = "empleados.numero_cedula_empleados = '$cedula_usuario'";
         
         $resultSet=$horarios->getCondiciones($columna,$tablas,$where,"empleados.numero_cedula_empleados");
                 
@@ -149,17 +151,17 @@ class PermisosEmpleadosController extends ControladorBase{
                       ON departamentos.id_departamento = cargos_empleados.id_departamento
                       INNER JOIN public.empleados
                       ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $wheredep= "empleados.numero_cedula_empleados =".$cedula;
+        $wheredep= "empleados.numero_cedula_empleados ='".$cedula."'";
         $iddep = "departamentos.id_departamento";
         $resultdep = $departamento->getCondiciones($columnadep, $tablasdep, $wheredep, $iddep);
         
         $tablar = "usuarios INNER JOIN empleados
-                        ON usuarios.cedula_usuarios = CAST (empleados.numero_cedula_empleados AS TEXT)
+                        ON usuarios.cedula_usuarios = empleados.numero_cedula_empleados
                         INNER JOIN departamentos 
                         ON departamentos.id_departamento = empleados.id_departamento
                         INNER JOIN cargos_empleados
                         ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND cargos_empleados.nombre_cargo ILIKE 'Jefe%'";
+        $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
         $idr = "usuarios.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         $id_jefi = $resultr[0]->id_rol;
@@ -191,22 +193,31 @@ class PermisosEmpleadosController extends ControladorBase{
         
         if ($id_estado != "0")
         {   if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
-            {
-                $where    = "permisos_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados=".$cedula;
-            }
-            else {
-                $where    = "permisos_empleados.id_estado=".$id_estado;
-            }
-            
+        {
+            $where    = "permisos_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados='".$cedula."'";
         }
-        else 
+        else {
+            $where    = "permisos_empleados.id_estado=".$id_estado;
+            
+            if($id_rol == $id_jefi && $id_rh!=$id_jefi)
+            {
+                $where.=" AND departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."'";
+            }
+        }
+        
+        }
+        else
         {
             if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
             {
-                $where    = " empleados.numero_cedula_empleados=".$cedula;
+                $where    = " empleados.numero_cedula_empleados='".$cedula."'";
             }
             else {
-                $where    = "1=1";
+                if($id_rol == $id_jefi && $id_rh!=$id_jefi)
+                {
+                    $where="departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."'";
+                }
+                else       $where    = "1=1";
             }
         }
            

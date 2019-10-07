@@ -89,6 +89,12 @@
                         <div id="mensaje_cargo_empleados" class="errores"></div>
                  	</div>
              	</div>
+             	 	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+            			<label for="dias_disponibles" class="control-label">Días disponibles: </label>
+                		<input type="text" class="form-control" id="dias_vacaciones" name="dias_vacaciones" placeholder="" readonly>
+                 	</div>
+             	</div>
           	</div>
           	<div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
@@ -103,12 +109,6 @@
                 		<label for="fecha_permiso" class="control-label">Fecha hasta:</label>
                     	<input type="date"  class="form-control" id="fecha_hasta" name="fecha_hasta" placeholder="Fecha hasta">
                         <div id="mensaje_fecha_hasta" class="errores"></div>
-                 	</div>
-             	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-            			<label for="dias_disponibles" class="control-label">Días disponibles: </label>
-                		<input type="text" class="form-control" id="dias_vacaciones" name="dias_vacaciones" placeholder="" readonly>
                  	</div>
              	</div>
           	</div>

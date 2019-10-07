@@ -158,7 +158,7 @@ class MarcacionesController extends ControladorBase{
             }
        }
       
-      
+       echo $this->FormatoFecha($fecha_inicio)."<=>".$this->FormatoFecha($fecha_final);
     }
     
     public function AgregarMarcacion()

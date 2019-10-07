@@ -89,6 +89,13 @@
                         <div id="mensaje_cargo_empleados" class="errores"></div>
                  	</div>
              	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="cargo_empleados" class="control-label">Días disponibles:</label>
+                           	<input type="text" class="form-control" id="dias_disponibles" name="dias_disponibles" placeholder="Días disponibles" readonly>
+                        <div id="mensaje_dias_empleados" class="errores"></div>
+                 	</div>
+             	</div>
           	</div>
           	<div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
@@ -191,7 +198,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Administracion/js/PermisosEmpleados.js?0.15"></script>
+    <script src="view/Administracion/js/PermisosEmpleados.js?0.17"></script>
 	
 	
   </body>

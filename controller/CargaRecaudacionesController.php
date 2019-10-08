@@ -583,7 +583,7 @@ public function ConsultaCedulas($_archivo){
     $_suma_linea = 0.00;
     $cdedula_base = 0;
     
-    while(!feof($file))
+    while(!feof($file))//dfd
     {
         $_fila = fgets($file);
         $_fila = trim($_fila);
@@ -592,6 +592,7 @@ public function ConsultaCedulas($_archivo){
                 $_cantidad_lineas++;
                 $error = true;
                 $_array_fila   = explode(";", $_fila);
+                
                 $error = $error = is_numeric($_array_fila[6]) ? false : true;
                 if($error){
                     throw new  Exception("La cedula no existe ".$cdedula_base);

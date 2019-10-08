@@ -102,7 +102,7 @@
             		<div class="form-group">
                 		<label for="fecha_permiso" class="control-label">Hora de inicio:</label>
                     	<input type="text" data-inputmask="'mask': 'h:s:s'" class="form-control" id="hora_inicio" name="hora_inicio" placeholder="Hora inicio">
-                        <div id="mensaje_hora_salida" class="errores"></div>
+                        <div id="mensaje_hora_inicio" class="errores"></div>
                  	</div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
@@ -165,7 +165,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Administracion/js/HorasExtrasEmpleados.js?0.5"></script>
+    <script src="view/Administracion/js/HorasExtrasEmpleados.js?0.8"></script>
 	
 	
   </body>

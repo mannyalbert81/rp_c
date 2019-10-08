@@ -235,7 +235,8 @@ function InsertarSolicitud()
 	
 
 var fecha = $("#fecha").val();
-var hora = $("#hora_salida").val();
+var hora_fin = $("#hora_salida").val();
+var hora_inicio = $("#hora_inicio").val();
 
 console.log(fecha + " fecha");
 
@@ -245,15 +246,20 @@ $("#mensaje_fecha").text("Elija fecha");
 $("#mensaje_fecha").fadeIn("slow");
 $("#mensaje_fecha").fadeOut("slow");
 }
-if (hora== "")
+if (hora_fin== "" || hora_fin.includes("_"))
 {    	
 	$("#mensaje_hora_salida").text("Ingrese hora");
 	$("#mensaje_hora_salida").fadeIn("slow");
 	$("#mensaje_hora_salida").fadeOut("slow");
 }
+if (hora_inicio== "" || hora_inicio.includes("_"))
+{    	
+	$("#mensaje_hora_inicio").text("Ingrese hora");
+	$("#mensaje_hora_inicio").fadeIn("slow");
+	$("#mensaje_hora_inicio").fadeOut("slow");
+}
 
-
-if ( fecha!="" && hora!="")
+if ( fecha!="" && hora_fin!="" && !hora_inicio.includes("_") && hora_fin!="" && !hora_inicio.includes("_"))
 	{
 	
 	$.ajax({
@@ -261,7 +267,8 @@ if ( fecha!="" && hora!="")
 	    type: 'POST',
 	    data: {
 	    	   fecha_solicitud: fecha,
-	    	   hora_solicitud: hora
+	    	   hora_inicio_solicitud: hora_inicio,
+	    	   hora_fin_solicitud:hora_fin
 	    	   
 	    },
 	})

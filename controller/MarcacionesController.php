@@ -277,7 +277,8 @@ class MarcacionesController extends ControladorBase{
         $columnasext="empleados.numero_cedula_empleados,
                        empleados.id_grupo_empleados,
                        solicitud_horas_extras_empleados.fecha_solicitud,
-	                   solicitud_horas_extras_empleados.hora_solicitud";
+	                   solicitud_horas_extras_empleados.hora_inicio_solicitud,
+                        solicitud_horas_extras_empleados.hora_fin_solicitud";
         
         $tablasext= "solicitud_horas_extras_empleados INNER JOIN empleados
                 	   ON solicitud_horas_extras_empleados.id_empleado = empleados.id_empleados
@@ -455,6 +456,7 @@ class MarcacionesController extends ControladorBase{
                             
                             if (!(empty($resultExt)))
                             {
+                               
                                 foreach ($resultExt as $ext)
                                 {
                                     if ($res->tipo_registro_empleados == "Entrada") $horaentradafinde=$res->hora_marcacion_empleados;
@@ -462,14 +464,15 @@ class MarcacionesController extends ControladorBase{
                                     {
                                         if($ext->fecha_solicitud == $res->fecha_marcacion_empleados && $res->tipo_registro_empleados=="Salida")
                                         {
+                                            
                                             if ($res->id_grupo_empleados== $hor->id_grupo_empleados)
                                             {
                                                 $dayOfWeek = date("D", strtotime($ext->fecha_solicitud));
                                                 
                                                 if($dayOfWeek != "Sat" && $dayOfWeek != "Sun")
                                                 {
-                                                    $desde=$hor->hora_salida_empleados;
-                                                    $hasta=$ext->hora_solicitud;
+                                                    $desde=$ext->hora_inicio_solicitud;
+                                                    $hasta=$ext->hora_fin_solicitud;
                                                     $to_time = strtotime($hasta);
                                                     $from_time = strtotime($desde);
                                                     
@@ -480,7 +483,7 @@ class MarcacionesController extends ControladorBase{
                                                     }
                                                     else
                                                     {
-                                                        $desde=$hor->hora_salida_empleados;
+                                                        $desde=$ext->hora_inicio_solicitud;
                                                         $hasta="23:59:59";
                                                         $to_time = strtotime($hasta);
                                                         $from_time = strtotime($desde);
@@ -488,7 +491,7 @@ class MarcacionesController extends ControladorBase{
                                                         $horasextra50=$horasextra50+($dif*($salariomin/2));
                                                         
                                                         $desde="00:00:00";
-                                                        $hasta=$ext->hora_solicitud;
+                                                        $hasta=$ext->hora_fin_solicitud;
                                                         $to_time = strtotime($hasta);
                                                         $from_time = strtotime($desde);
                                                         $dif= intval((($to_time - $from_time) / 60));
@@ -497,8 +500,8 @@ class MarcacionesController extends ControladorBase{
                                                 }
                                                 else
                                                 {
-                                                    $desde=$horaentradafinde;
-                                                    $hasta=$ext->hora_solicitud;
+                                                    $desde=$ext->hora_inicio_solicitud;
+                                                    $hasta=$ext->hora_fin_solicitud;
                                                     $to_time = strtotime($hasta);
                                                     $from_time = strtotime($desde);
                                                     
@@ -509,7 +512,7 @@ class MarcacionesController extends ControladorBase{
                                                     }
                                                     else
                                                     {   echo "despues de las 12";
-                                                    $desde=$hor->hora_entrada_empleados;
+                                                    $desde=$ext->hora_inicio_solicitud;
                                                     $hasta="23:59:59";
                                                     $to_time = strtotime($hasta);
                                                     $from_time = strtotime($desde);
@@ -517,13 +520,14 @@ class MarcacionesController extends ControladorBase{
                                                     $horasextra100=$horasextra100+($dif*($salariomin));
                                                     
                                                     $desde="00:00:00";
-                                                    $hasta=$ext->hora_solicitud;
+                                                    $hasta=$ext->hora_fin_solicitud;
                                                     $to_time = strtotime($hasta);
                                                     $from_time = strtotime($desde);
                                                     $dif= intval((($to_time - $from_time) / 60));
                                                     $horasextra100=$horasextra100+($dif*$salariomin);
                                                     }
                                                 }
+                                                echo $horasextra100."\n";
                                             }
                                         }
                                     }
@@ -575,7 +579,6 @@ class MarcacionesController extends ControladorBase{
                             $whereav="cuotas_avances_empleados.fecha_cuota='".$diafinperiodo."' AND cuotas_avances_empleados.id_empleados=".$emp->id_empleados."
                                         AND estado.nombre_estado = 'APROBADO GERENCIA'";
                             
-                            echo $whereav;
                             
                             $idav = "anticipo_sueldo_empleados.id_anticipo";
                             

@@ -6,43 +6,21 @@ $(document).ready(function(){
 
 function setTableStyle(ObjTabla){	
 	
+	var objetoTabla = $("#"+ObjTabla);
+	objetoTabla.dataTable().fnDestroy();
 	$("#"+ObjTabla).DataTable({
-		paging: false,
-        scrollX:  "100%",
-		searching: false,
-		fixedHeader: true,
-		scrollY: '70vh',
-	    scrollCollapse: true,
-        pageLength: 10,
-        responsive: true,
-        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-        dom: '<"html5buttons">lfrtipB',      
-        buttons: [ ],
-        language: {
-            "emptyTable": "No hay información",
-            "info": "Mostrando _START_ a _END_ de _TOTAL_ Registros",
-            "infoEmpty": "Mostrando 0 de 0 de 0 Registros",           
-            "lengthMenu": "Mostrar _MENU_ Registros",
-            "loadingRecords": "Cargando...",
-            "processing": "Procesando...",
-            "search": "Buscar:",
-            "zeroRecords": "Sin resultados encontrados",
-            "paginate": {
-                "first": "Primero",
-                "last": "Ultimo",
-                "next": "Siguiente",
-                "previous": "Anterior"
-            }
-        },
-        aoColumnDefs : [ {
-            "bSortable" : false,
-            "aTargets" : [ "sorting_disabled" ]
-        } ],
-        bLengthChange: false,
-        bSort: false,
-        order: []
+		"scrollY": "50vh",
+		"scrollX": true,
+		"scrollCollapse": true,
+		"ordering":false,
+		"paging":false,
+		"searching":false,
+		"info":false
     });
+	
+	ChangeCssTable(ObjTabla);
 }
+
 
 function ChangeCssTable(ObjTabla){
 	var objeto = $("#"+ObjTabla);
@@ -138,8 +116,9 @@ function graficaDiarioPago(_anio,_mes){
 			 
 			 $modal.modal('show');
 			 
-			 setTableStyle("tblDiario");
-			 ChangeCssTable("tblDiario");
+			 setTimeout(function(){ setTableStyle("tblDiario");  }, 250);
+			 
+			
 			 
 		 }
 		 

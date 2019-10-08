@@ -435,8 +435,6 @@ $("#mensaje_archivo").fadeOut("slow");
 		        			}
 		        	}		
 		        	);
-		        
-		        	
 		        	$.ajax({
 		    			url:'index.php?controller=Marcaciones&action=GetCedulas',
 		    			type:'POST',

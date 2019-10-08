@@ -79,7 +79,7 @@ class RecaudacionController extends ControladorBase{
 	            case '1':
 	                //para cuando sea para cuenta individual
 	                $_nombre_formato_recaudacion = "DESCUENTOS APORTES";
-	                $where1    .= " AND formato_carga_recaudaciones = '$_nombre_formato_recaudacion'";
+	                $where1    .= " AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion'";
 	                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	                
 	                $_id_archivo_recaudaciones = 0;
@@ -287,9 +287,9 @@ class RecaudacionController extends ControladorBase{
             $_valor_sistema = $res->total_valor_tabla_amortizacion;
             $_valor_final   = $res->total_valor_tabla_amortizacion;
             
-            $parametrosDetalle  = "'$_id_archivo_recaudaciones','$_id_participes','$_id_creditos','$_valor_sistema','$_valor_final','CUOTA MENSUAL'";
+            $parametrosDetalle  = "'$_id_archivo_recaudaciones','$_id_participes','$_id_creditos','$_valor_sistema','$_valor_final','CUOTA MENSUAL',''";
             $queryFuncion   = $Contribucion->getconsultaPG($funcionDetalle, $parametrosDetalle);
-            $Resultado2     = $Contribucion->llamarconsultaPG($queryFuncion);
+            $Contribucion->llamarconsultaPG($queryFuncion);
             
             $error = pg_last_error();
             if( !empty($error) ){ break; throw new Exception('Error en la funcion de insertado detalle');}
@@ -369,11 +369,11 @@ class RecaudacionController extends ControladorBase{
 	    
 	    if($cantidadResult>0){
 	        
-	        $html.= "<table id='tbl_archivo_recaudaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	        $html.= "<table id='tbl_archivo_recaudaciones' class='table table-hover'>";
 	        $html.= "<thead>";
 	        $html.= "<tr>";
 	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Apellidos Participe</th>';
@@ -527,11 +527,13 @@ class RecaudacionController extends ControladorBase{
         
         if($cantidadResult>0){
             
-            $html.= "<table id='tbl_archivo_recaudaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+            //table table-border table-striped mb-0
+            
+            $html.= "<table id='tbl_archivo_recaudaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example' cellspacing='0'>";
             $html.= "<thead>";
             $html.= "<tr>";
             $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">Apellidos Participe</th>';
@@ -594,7 +596,7 @@ class RecaudacionController extends ControladorBase{
             $html.= "<thead>";
             $html.= "<tr>";
             $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+            $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
             $html.='<th style="text-align: left;  font-size: 12px;">Apellidos Participe</th>';

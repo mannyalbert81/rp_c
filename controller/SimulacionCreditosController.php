@@ -1026,6 +1026,15 @@ class SimulacionCreditosController extends ControladorBase{
    {
        //array donde guardar tabla amortizacion
        $resultAmortizacion=array();
+       $rp_capremci= new PlanCuentasModel();
+       
+       
+       $columnas="expresion_formulas";
+       $tablas="core_formulas INNER JOIN estado
+                ON core_formulas.id_estado = estado.id_estado";
+       $where="descripcion_formulas='seguro_de_desgravamen' AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado='core_formulas'";
+       $formula_seguro_desgravamen=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $formula_seguro_desgravamen=$formula_seguro_desgravamen[0]->expresion_formulas;
        
        $formato_fecha='Y-m-d';
        $capital = $_capital_prestado_amortizacion_cabeza;
@@ -1035,7 +1044,7 @@ class SimulacionCreditosController extends ControladorBase{
        $interes=floor($interes * 100) / 100;
        $amortizacion = $valor_cuota - $interes;
        $saldo_inicial= $capital - $amortizacion;
-       $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+       $desgravamen=eval("return($formula_seguro_desgravamen);");
        $desgravamen=floor($desgravamen * 100) / 100;
        $resultAmortizacion=array();
        $interes_concesion=0;
@@ -1088,7 +1097,7 @@ class SimulacionCreditosController extends ControladorBase{
                    $interes=floor($interes * 100) / 100;
                    $amortizacion = $valor_cuota - $interes;
                    
-                   $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+                   $desgravamen=eval("return($formula_seguro_desgravamen);");
                    $desgravamen=floor($desgravamen * 100) / 100;
                    $saldo_inicial= $saldo_inicial_ant  - $amortizacion;
                    $elementos_fecha_corte=explode("-", $fecha_corte);
@@ -1138,6 +1147,21 @@ class SimulacionCreditosController extends ControladorBase{
        $resultAmortizacion=array();
        $formato_fecha='Y-m-d';
        
+       $rp_capremci= new PlanCuentasModel();
+       $columnas="expresion_formulas";
+       $tablas="core_formulas INNER JOIN estado
+                ON core_formulas.id_estado = estado.id_estado";
+       $where="descripcion_formulas='seguro_de_incendios' AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado='core_formulas'";
+       $formula_seguro_incendios=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $formula_seguro_incendios=$formula_seguro_incendios[0]->expresion_formulas;
+       
+       $columnas="expresion_formulas";
+       $tablas="core_formulas INNER JOIN estado
+                ON core_formulas.id_estado = estado.id_estado";
+       $where="descripcion_formulas='seguro_de_desgravamen' AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado='core_formulas'";
+       $formula_seguro_desgravamen=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $formula_seguro_desgravamen=$formula_seguro_desgravamen[0]->expresion_formulas;
+       
        $capital = $_capital_prestado_amortizacion_cabeza;
        $inter_ant= $interes_mensual;
        $interes_diario=$inter_ant/30;
@@ -1145,7 +1169,7 @@ class SimulacionCreditosController extends ControladorBase{
        $interes=floor($interes * 100) / 100;
        $amortizacion = $valor_cuota - $interes;
        $saldo_inicial= $capital - $amortizacion;
-       $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+       $desgravamen=eval("return($formula_seguro_desgravamen);");
        $desgravamen=floor($desgravamen * 100) / 100;
        $resultAmortizacion=array();
        $interes_concesion=0;
@@ -1197,7 +1221,7 @@ class SimulacionCreditosController extends ControladorBase{
                $interes=floor($interes * 100) / 100;
                $amortizacion = $valor_cuota - $interes;
                
-               $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+               $desgravamen=eval("return($formula_seguro_desgravamen);");
                $desgravamen=floor($desgravamen * 100) / 100;
                $saldo_inicial= $saldo_inicial_ant  - $amortizacion;
                $elementos_fecha_corte=explode("-", $fecha_corte);
@@ -1221,7 +1245,7 @@ class SimulacionCreditosController extends ControladorBase{
                $fecha= new DateTime($fecha_ultimo_dia);
                $fecha=$fecha->format($formato_fecha);
                $fecha_corte=$fecha;
-               $seguro_incendios=((($avaluo_bien * 0.0015)/365) * $lastday) * 1.04 * 1.12;
+               $seguro_incendios=eval("return($formula_seguro_incendios);");
                $valor = $valor_cuota;
            }
            
@@ -1363,6 +1387,21 @@ class SimulacionCreditosController extends ControladorBase{
        //array donde guardar tabla amortizacion
        $resultAmortizacion=array();
        
+       $rp_capremci= new PlanCuentasModel();
+       $columnas="expresion_formulas";
+       $tablas="core_formulas INNER JOIN estado
+                ON core_formulas.id_estado = estado.id_estado";
+       $where="descripcion_formulas='seguro_de_incendios' AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado='core_formulas'";
+       $formula_seguro_incendios=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $formula_seguro_incendios=$formula_seguro_incendios[0]->expresion_formulas;
+       
+       $columnas="expresion_formulas";
+       $tablas="core_formulas INNER JOIN estado
+                ON core_formulas.id_estado = estado.id_estado";
+       $where="descripcion_formulas='seguro_de_desgravamen' AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado='core_formulas'";
+       $formula_seguro_desgravamen=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $formula_seguro_desgravamen=$formula_seguro_desgravamen[0]->expresion_formulas;
+       
        $formato_fecha='Y-m-d';
        $capital = $_capital_prestado_amortizacion_cabeza;
        $inter_ant= $interes_mensual;
@@ -1371,7 +1410,7 @@ class SimulacionCreditosController extends ControladorBase{
        $interes=floor($interes * 100) / 100;
        $amortizacion = $valor_cuota - $interes;
        $saldo_inicial= $capital - $amortizacion;
-       $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+       $desgravamen=eval("return ($formula_seguro_desgravamen);");
        $desgravamen=floor($desgravamen * 100) / 100;
        $resultAmortizacion=array();
        $interes_concesion=0;
@@ -1424,7 +1463,7 @@ class SimulacionCreditosController extends ControladorBase{
                
                
                
-               $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
+               $desgravamen=eval("return ($formula_seguro_desgravamen);");
                $desgravamen=floor($desgravamen * 100) / 100;
                $saldo_inicial= $saldo_inicial_ant  - $amortizacion;
                $elementos_fecha_corte=explode("-", $fecha_corte);
@@ -1445,7 +1484,8 @@ class SimulacionCreditosController extends ControladorBase{
                $fecha= new DateTime($fecha_ultimo_dia);
                $fecha=$fecha->format($formato_fecha);
                $fecha_corte=$fecha;
-               $seguro_incendios=((($avaluo_bien * 0.0015)/365) * $lastday) * 1.04 * 1.12;
+                
+               $seguro_incendios= eval("return ($formula_seguro_incendios);");
                $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
                
                if($i==1) $valor=$valor_cuota+$interes_concesion;

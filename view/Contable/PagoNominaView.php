@@ -95,11 +95,7 @@
 	      			<button type="button" id="verDiario" name="verDiario" class="btn btn-block btn-default" ><i class="fa fa-desktop" aria-hidden="true"></i> VER DETALLES</button>   		
 	      		</div>
 	      	</div>
-	      	<div class="col-md-2 col-lg-2 col-xs-12">
-	      		<div class="form-group">
-	      			<button type="button" id="btngenera" name="btngenera" class="btn btn-block btn-success" > <i class="fa fa-check" aria-hidden="true"></i> GENERAR DIARIO</button>    		
-	      		</div>
-	      	</div>
+	      	
 	      </div>
             
 		 </form>
@@ -155,7 +151,7 @@
   <?php include("view/modulos/links_js.php"); ?>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-  <script src="view/Contable/FuncionesJS/PagoNomina.js?0.20"></script>
+  <script src="view/Contable/FuncionesJS/PagoNomina.js?0.21"></script>
   
 	
  </body>

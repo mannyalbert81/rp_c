@@ -162,7 +162,7 @@ class NominaController extends ControladorBase{
         /* variable para dibujar la tabla */
         $_divCabecera = '<div class=""> 
                         <div class="pull-right">
-                        <button id="btnGenerar" class="btn btn-default"><i class="fa fa-save fa-1x" style="color:#00cc6a" aria-hidden="true" ></i> Generar Comprobante</button>
+                        <button id="btnGenerar" class="btn btn-default" onclick="generaComprobante()"><i class="fa fa-save fa-1x" style="color:#00cc6a" aria-hidden="true" ></i> Generar Comprobante</button>
                         </div>
                         </div>';
         
@@ -180,15 +180,17 @@ class NominaController extends ControladorBase{
         $_t_horas_100   = "";
         $_f_reserva     = "";
         $_decimo_13     = "";
-        $_decimo_14     = number_format((float)$rsConsulta1[0]->decimo_14,2,".",",");
+        $_decimo_14     = "";
         $_t_anticipo    = $rsConsulta1[0]->total_anticipo;
-        $_t_aporteIESS  = number_format((float)$rsConsulta1[0]->aporte_iess_1,2,".",",");
-        $_t_aporteIESSP = number_format((float)$rsConsulta1[0]->aporte_iess_2,2,".",",");
+        $_t_aporteIESSP = "";
+        $_t_aporteIESS  = "";        
         $_t_asocap      = number_format((float)$rsConsulta1[0]->total_asocap,2,".",",");
-        $_t_pres_quiro  = number_format((float)$rsConsulta1[0]->total_prestamos_quirografarios,2,".",",");
-        $_t_pres_hipot  = number_format((float)$rsConsulta1[0]->total_prestamos_hipotecarios,2,".",",");
+        $_t_pres_quiro  = "";
+        $_t_pres_hipot  = "";
         $_t_desc_salario= $rsConsulta1[0]->total_descuento_salario;
         $_t_asunt_social= $rsConsulta1[0]->total_asuntos_sociales;
+
+        $_identificador_fila = 0;
         
         $contador = 1; //variable para dibujar contador de lineas
         
@@ -199,74 +201,106 @@ class NominaController extends ControladorBase{
         $_filas = "";
         $rsSaldo = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.05'");
         if(!empty($rsSaldo)){
+            $_identificador_fila = ((int)$rsSaldo[0]->id_plan_cuentas) > 0 ? (int)$rsSaldo[0]->id_plan_cuentas : 0;
             $_sumaTotalDebito += $rsConsulta1[0]->total_salario;
             $_t_saldo       = number_format((float)$rsConsulta1[0]->total_salario,2,".",",");
-            $_filas .= $this->devuelveFila_tr($contador++, "D", $rsSaldo[0]->codigo_plan_cuentas, $rsSaldo[0]->nombre_plan_cuentas, $_t_saldo);
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "D", $rsSaldo[0]->codigo_plan_cuentas, $rsSaldo[0]->nombre_plan_cuentas, $_t_saldo);
             
         }
         $rsHorasE = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.10.01'");
         if(!empty($rsHorasE)){            
             if( (float)$rsConsulta1[0]->total_extras_50 > 0 ){ 
+                $_identificador_fila = ((int)$rsHorasE[0]->id_plan_cuentas) > 0 ? (int)$rsHorasE[0]->id_plan_cuentas : 0;
                 $_sumaTotalDebito += $rsConsulta1[0]->total_extras_50;
                 $_t_horas_50    = number_format((float)$rsConsulta1[0]->total_extras_50,2,".",",");
-                $_filas .= $this->devuelveFila_tr($contador++, "D", $rsHorasE[0]->codigo_plan_cuentas, $rsHorasE[0]->nombre_plan_cuentas, $_t_horas_50); 
+                $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "D", $rsHorasE[0]->codigo_plan_cuentas, $rsHorasE[0]->nombre_plan_cuentas, $_t_horas_50); 
             }            
             if( (float)$rsConsulta1[0]->total_extras_100 > 0 ){   
+                $_identificador_fila = ((int)$rsHorasE[0]->id_plan_cuentas) > 0 ? (int)$rsHorasE[0]->id_plan_cuentas : 0;
                 $_sumaTotalDebito += $rsConsulta1[0]->total_extras_100;
                 $_t_horas_100   = number_format((float)$rsConsulta1[0]->total_extras_100,2,".",",");
-                $_filas .= $this->devuelveFila_tr($contador++, "D", $rsHorasE[0]->codigo_plan_cuentas, $rsHorasE[0]->nombre_plan_cuentas, $_t_horas_100);                
+                $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "D", $rsHorasE[0]->codigo_plan_cuentas, $rsHorasE[0]->nombre_plan_cuentas, $_t_horas_100);                
             }
             
         }
+        
         $rsFondoR = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.25'");
         if(!empty($rsFondoR)){
-            $_sumaTotalDebito = $rsConsulta1[0]->fondos_reserva;
+            $_identificador_fila = ((int)$rsFondoR[0]->id_plan_cuentas) > 0 ? (int)$rsFondoR[0]->id_plan_cuentas : 0;
+            $_sumaTotalDebito += $rsConsulta1[0]->fondos_reserva;
             $_f_reserva = number_format((float)$rsConsulta1[0]->fondos_reserva,2,".",",");
-            $_filas .= $this->devuelveFila_tr($contador++, "D", $rsFondoR[0]->codigo_plan_cuentas, $rsFondoR[0]->nombre_plan_cuentas, $_f_reserva);
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "D", $rsFondoR[0]->codigo_plan_cuentas, $rsFondoR[0]->nombre_plan_cuentas, $_f_reserva);
         }
         $rsDecimo13 = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.15.01'");
         if(!empty($rsDecimo13)){
+            $_identificador_fila = ((int)$rsDecimo13[0]->id_plan_cuentas) > 0 ? (int)$rsDecimo13[0]->id_plan_cuentas : 0;
             $_sumaTotalDebito += $rsConsulta1[0]->decimo_13;
             $_decimo_13 = number_format((float)$rsConsulta1[0]->decimo_13,2,".",",");
-            $_filas .= $this->devuelveFila_tr($contador++, "D", $rsDecimo13[0]->codigo_plan_cuentas, $rsDecimo13[0]->nombre_plan_cuentas, $_decimo_13);
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "D", $rsDecimo13[0]->codigo_plan_cuentas, $rsDecimo13[0]->nombre_plan_cuentas, $_decimo_13);
         }
         $rsDecimo14 = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.15.02'");
         if(!empty($rsDecimo14)){
-            $_filas .= $this->devuelveFila_tr($contador++, "D", $rsDecimo14[0]->codigo_plan_cuentas, $rsDecimo14[0]->nombre_plan_cuentas, $_decimo_14);
-        }
+            $_identificador_fila = ((int)$rsDecimo14[0]->id_plan_cuentas) > 0 ? (int)$rsDecimo14[0]->id_plan_cuentas : 0;
+            $_sumaTotalDebito += $rsConsulta1[0]->decimo_14;
+            $_decimo_14 = number_format((float)$rsConsulta1[0]->decimo_14,2,".",",");
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "D", $rsDecimo14[0]->codigo_plan_cuentas, $rsDecimo14[0]->nombre_plan_cuentas, $_decimo_14);
+        }        
         $rsAportePatronal = $Cuentas->getBy("codigo_plan_cuentas = '4.3.01.20'");
         if(!empty($rsAportePatronal)){
-            $_filas .= $this->devuelveFila_tr($contador++, "D", $rsAportePatronal[0]->codigo_plan_cuentas, $rsAportePatronal[0]->nombre_plan_cuentas, $_t_aporteIESSP);            
+            $_identificador_fila = ((int)$rsAportePatronal[0]->id_plan_cuentas) > 0 ? (int)$rsAportePatronal[0]->id_plan_cuentas : 0;
+            $_sumaTotalDebito += $rsConsulta1[0]->aporte_iess_2;
+            $_t_aporteIESSP = number_format((float)$rsConsulta1[0]->aporte_iess_2,2,".",",");
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "D", $rsAportePatronal[0]->codigo_plan_cuentas, $rsAportePatronal[0]->nombre_plan_cuentas, $_t_aporteIESSP);            
         }
-        
+
         //cuentas haber        
         $rsAporteIess = $Cuentas->getBy("codigo_plan_cuentas = '2.5.03.06'");
         if(!empty($rsAporteIess)){
-            $_filas .= $this->devuelveFila_tr($contador++, "C", $rsAporteIess[0]->codigo_plan_cuentas, $rsAporteIess[0]->nombre_plan_cuentas, $_t_aporteIESS);
+            $_identificador_fila = ((int)$rsAporteIess[0]->id_plan_cuentas) > 0 ? (int)$rsAporteIess[0]->id_plan_cuentas : 0;
+            $_sumaTotalCredito += $rsConsulta1[0]->aporte_iess_1;
+            $_t_aporteIESS = number_format((float)$rsConsulta1[0]->aporte_iess_1,2,".",",");
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "C", $rsAporteIess[0]->codigo_plan_cuentas, $rsAporteIess[0]->nombre_plan_cuentas, $_t_aporteIESS);
         }
         $rsDecimo13Haber = $Cuentas->getBy("codigo_plan_cuentas = '2.5.02.01'");
         if(!empty($rsDecimo13Haber)){
-            $_filas .= $this->devuelveFila_tr($contador++, "C", $rsDecimo13Haber[0]->codigo_plan_cuentas, $rsDecimo13Haber[0]->nombre_plan_cuentas, $_decimo_13);
+            $_identificador_fila = ((int)$rsDecimo13Haber[0]->id_plan_cuentas) > 0 ? (int)$rsDecimo13Haber[0]->id_plan_cuentas : 0;
+            $_decimo_13_haber = 0;
+            $_sumaTotalCredito += $_decimo_13_haber;
+            /* realizar calculos para decimo tercer sueldo en credito */
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "C", $rsDecimo13Haber[0]->codigo_plan_cuentas, $rsDecimo13Haber[0]->nombre_plan_cuentas, $_decimo_13_haber);
         }
         $rsDecimo14Haber = $Cuentas->getBy("codigo_plan_cuentas = '2.5.02.02'");
         if(!empty($rsDecimo14Haber)){
-            $_filas .= $this->devuelveFila_tr($contador++, "C", $rsDecimo14Haber[0]->codigo_plan_cuentas, $rsDecimo14Haber[0]->nombre_plan_cuentas, $_decimo_14);
+            $_identificador_fila = ((int)$rsDecimo14Haber[0]->id_plan_cuentas) > 0 ? (int)$rsDecimo14Haber[0]->id_plan_cuentas : 0;
+            $_decimo_14_haber = 0;
+            $_sumaTotalCredito += $_decimo_14_haber;
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "C", $rsDecimo14Haber[0]->codigo_plan_cuentas, $rsDecimo14Haber[0]->nombre_plan_cuentas, $_decimo_14_haber);
         }
         $rsFReservaHaber = $Cuentas->getBy("codigo_plan_cuentas = '2.5.04.01'");
         if(!empty($rsFReservaHaber)){
-            $_filas .= $this->devuelveFila_tr($contador++, "C", $rsFReservaHaber[0]->codigo_plan_cuentas, $rsFReservaHaber[0]->nombre_plan_cuentas, $_f_reserva);            
+            $_identificador_fila = ((int)$rsFReservaHaber[0]->id_plan_cuentas) > 0 ? (int)$rsFReservaHaber[0]->id_plan_cuentas : 0;
+            $_f_reserva_haber = 0;
+            $_sumaTotalCredito += $_f_reserva_haber;
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "C", $rsFReservaHaber[0]->codigo_plan_cuentas, $rsFReservaHaber[0]->nombre_plan_cuentas, $_f_reserva_haber);            
         }
         $rsQuirografarios = $Cuentas->getBy("codigo_plan_cuentas = '2.5.03.01'");
         if(!empty($rsQuirografarios)){
-            $_filas .= $this->devuelveFila_tr($contador++, "C", $rsQuirografarios[0]->codigo_plan_cuentas, $rsQuirografarios[0]->nombre_plan_cuentas, $_t_pres_quiro);            
+            $_identificador_fila = ((int)$rsQuirografarios[0]->id_plan_cuentas) > 0 ? (int)$rsQuirografarios[0]->id_plan_cuentas : 0;
+            $_sumaTotalCredito += (float)$rsConsulta1[0]->total_prestamos_quirografarios;
+            $_t_pres_quiro  = number_format( (float)$rsConsulta1[0]->total_prestamos_quirografarios ,2,".",",");
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "C", $rsQuirografarios[0]->codigo_plan_cuentas, $rsQuirografarios[0]->nombre_plan_cuentas, $_t_pres_quiro);            
         }
         $rsHipotecarios = $Cuentas->getBy("codigo_plan_cuentas = '2.5.03.02'");
         if(!empty($rsHipotecarios)){
-            $_filas .= $this->devuelveFila_tr($contador++, "C", $rsHipotecarios[0]->codigo_plan_cuentas, $rsHipotecarios[0]->nombre_plan_cuentas, $_t_pres_hipot);            
+            $_identificador_fila = ((int)$rsHipotecarios[0]->id_plan_cuentas) > 0 ? (int)$rsHipotecarios[0]->id_plan_cuentas : 0;
+            $_sumaTotalCredito += (float)$rsConsulta1[0]->total_prestamos_hipotecarios;
+            $_t_pres_hipot  = number_format((float)$rsConsulta1[0]->total_prestamos_hipotecarios,2,".",",");
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "C", $rsHipotecarios[0]->codigo_plan_cuentas, $rsHipotecarios[0]->nombre_plan_cuentas, $_t_pres_hipot);            
         }
         $rsAsocap = $Cuentas->getBy("codigo_plan_cuentas = '2.5.90.06'");
         if(!empty($rsAsocap)){
-            $_filas .= $this->devuelveFila_tr($contador++, "C", $rsAsocap[0]->codigo_plan_cuentas, $rsAsocap[0]->nombre_plan_cuentas, $_t_asocap);            
+            $_identificador_fila = ((int)$rsAsocap[0]->id_plan_cuentas) > 0 ? (int)$rsAsocap[0]->id_plan_cuentas : 0;
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "C", $rsAsocap[0]->codigo_plan_cuentas, $rsAsocap[0]->nombre_plan_cuentas, $_t_asocap);            
         }
         
         //buscar los anticipos sueldos
@@ -287,8 +321,10 @@ class NominaController extends ControladorBase{
         
         if( !empty( $rsConsulta2 ) ){
             foreach ( $rsConsulta2 as $res ){
+                $_identificador_fila = ((int)$res->id_plan_cuentas) > 0 ? (int)$res->id_plan_cuentas : 0;
+                $_sumaTotalCredito += (float)$res->monto_cuota;
                 $_monto_anticipo    = number_format((float)$res->monto_cuota,2,".",",");
-                $_filas .= $this->devuelveFila_tr($contador++, "C", $res->codigo_plan_cuentas, $res->nombre_plan_cuentas, $_monto_anticipo);
+                $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "C", $res->codigo_plan_cuentas, $res->nombre_plan_cuentas, $_monto_anticipo);
             }
         }
         
@@ -297,7 +333,11 @@ class NominaController extends ControladorBase{
         //buscar cuenta de pago nomina x Pagar
         $rsNominaPagar = $Cuentas->getBy("codigo_plan_cuentas = '2.5.01.01'");
         if(!empty($rsNominaPagar)){
-            $_filas .= $this->devuelveFila_tr($contador++, "C", $rsNominaPagar[0]->codigo_plan_cuentas, $rsNominaPagar[0]->nombre_plan_cuentas, $_monto_anticipo);
+            $_identificador_fila = ((int)$rsNominaPagar[0]->id_plan_cuentas) > 0 ? (int)$rsNominaPagar[0]->id_plan_cuentas : 0;
+            /* incompleto pero se queda supuesto que es el residuo de sumado el debito con la suma de creditos */
+            $_nomina_x_pagar    = $_sumaTotalDebito - $_sumaTotalCredito;
+            $_filas .= $this->devuelveFila_tr($_identificador_fila,$contador++, "C", $rsNominaPagar[0]->codigo_plan_cuentas, $rsNominaPagar[0]->nombre_plan_cuentas, $_nomina_x_pagar);
+            $_sumaTotalCredito += $_nomina_x_pagar;
         }
         
         //no implementado el trabajar con arrray para las cuentas contables
@@ -585,16 +625,28 @@ class NominaController extends ControladorBase{
         
     }
     
-    private function devuelveFila_tr($_orden,$_naturaleza,$_codigo,$_nombre,$_monto){
+    private function devuelveFila_tr($identificador=0,$_orden,$_naturaleza,$_codigo,$_nombre,$_monto){
         
         if($_naturaleza == "D"){
-            return "<tr><td>$_orden</td><td>$_codigo</td><td>$_nombre</td><td>$_monto</td><td>0.00</td></tr>";
+            return "<tr id=\"tr_$identificador\"><td>$_orden</td><td>$_codigo</td><td>$_nombre</td><td>$_monto</td><td>0.00</td></tr>";
         }else if( $_naturaleza == "C"){
-            return "<tr><td>$_orden</td><td>$_codigo</td><td>$_nombre</td><td>0.00</td><td>$_monto</td></tr>";
+            return "<tr id=\"tr_$identificador\"><td>$_orden</td><td>$_codigo</td><td>$_nombre</td><td>0.00</td><td>$_monto</td></tr>";
         }else{
             return "<tr><td></td><td></td><td></td><td>0.00</td><td>0.00</td></tr>";
         }
         
+    }
+
+    public function GeneraComprobanteNomina(){
+
+        $Empleados = new EmpleadosModel();
+        try{
+
+            echo "llego";
+
+        }catch(Exception $ex){
+            echo "<message>$ex->getMessage()<message>";
+        }
     }
     
     /** TERMINA PARA FUNCIONES DE PAGO DE NOMINA **/

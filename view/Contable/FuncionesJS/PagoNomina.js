@@ -205,6 +205,71 @@ $("#btngenera").on("click",function(event){
 	
 })
 
+function generaComprobante(){
+
+	let $tabla  = $("#tblDiario");	
+	let $filas = $tabla.find("tbody > tr ");	
+	let data = [];	
+	let error = true;
+	
+	$filas.each(function(){
+		
+		var _id_plan_cuentas	= $(this).attr("id").split('_')[1],
+			_valor_cuenta_debito    = $(this).find("td:eq(3)").html(),
+			_valor_cuenta_credito   = $(this).find("td:eq(4)").html();
+
+			console.log(_valor_cuenta_debito);
+
+		let monto_debito  =  Number.parseFloat(_valor_cuenta_debito.replace(",","").trim());
+		let monto_credito =  Number.parseFloat(_valor_cuenta_credito.replace(",","").trim());
+		let monto_total   = 0.00;
+
+		let naturaleza_cuenta   = (monto_debito > 0) ? "D" : (( monto_credito > 0 ) ? "C" : "N");        
+		monto_total = monto_debito*1+monto_credito*1;
+		item = {};
+	
+		if(!isNaN(_id_plan_cuentas)){
+		
+			item ["id_plan_cuentas"] 		= _id_plan_cuentas;
+			item ["naturaleza_cuentas"]     = naturaleza_cuenta;
+			item ['valor_cuentas'] 		    = monto_total;
+			
+			data.push(item);
+		}else{			
+			error = false; return false;
+		}
+						
+	})
+	
+	// validar datos antes de enviar al controlador
+	
+	if(!error){	return false;}
+	
+	parametros 	= new FormData();
+	arrayDatos 	= JSON.stringify(data); 
+	parametros.append('lista_nomina', arrayDatos);
+	
+	$.ajax({
+		data: parametros,
+		type: 'POST',
+		url : "index.php?controller=Nomina&action=GeneraComprobanteNomina",
+		processData: false, 
+		contentType: false,
+		dataType: "json"
+	}).done(function(a){
+		
+		console.log("PROCEESO REALIZADO")
+		
+	}).fail(function(xhr, status, error){
+		
+		var err = xhr.responseText		
+		console.log(err)
+		
+	})
+	
+	//console.log(data);
+}
+
 function generaDiario(in_proceso,in_modulo,in_anio,in_mes){
 		
 	$.ajax({

@@ -512,7 +512,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
                       cargos_empleados.nombre_cargo,
                       departamentos.nombre_departamento,
                         solicitud_horas_extras_empleados.fecha_solicitud,
-                        solicitud_horas_extras_empleados.hora_solicitud";
+                        solicitud_horas_extras_empleados.hora_inicio_solicitud,
+                        solicitud_horas_extras_empleados.hora_fin_solicitud";
         
         $tablas = "public.solicitud_horas_extras_empleados INNER JOIN public.empleados
                    ON solicitud_horas_extras_empleados.id_empleado = empleados.id_empleados
@@ -533,7 +534,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         $fechaelem = explode("-", $rsdatos[0]->fecha_solicitud);
         $ind = intval($fechaelem[1])-1;
         $datos_reporte['FECHASOLICITUD']=$fechaelem[2]." de ".$meses[$ind]." de ".$fechaelem[0];
-        $datos_reporte['HORASOLICITUD']=$rsdatos[0]->hora_solicitud;
+        $datos_reporte['HORAINICIOSOLICITUD']=$rsdatos[0]->hora_inicio_solicitud;
+        $datos_reporte['HORAFINSOLICITUD']=$rsdatos[0]->hora_fin_solicitud;
         
                 
         $this->verReporte("SolicitudHoraExtra", array('datos_reporte'=>$datos_reporte,'datos_empresa'=>$datos_empresa));

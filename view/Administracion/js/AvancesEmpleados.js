@@ -299,6 +299,7 @@ if ( fecha!="" && monto!="" && diferido!="" && monto>0 && diferido<12)
 					}
 				else
 					{
+					
 					$.ajax({
 					    url: 'index.php?controller=AvancesEmpleados&action=AgregarSolicitud',
 					    type: 'POST',
@@ -363,6 +364,8 @@ if ( fecha!="" && monto!="" && diferido!="" && monto>0 && diferido<12)
 					  		  button: "Aceptar",
 					  		});
 					});
+					
+					
 					}
 				
 				
@@ -392,6 +395,114 @@ function LimpiarCampos()
 	$("#cuotas").val("");	
 }
 
+function AprobarContador(nomest,url,msg,idsol)
+{
+	$.ajax({
+	    url: 'index.php?controller=AvancesEmpleados&action=ValidarCuentaContable',
+	    type: 'POST',
+	    data: {
+	    	   id_solicitud:idsol
+	    	   
+	    },
+	})
+	.done(function(x) {
+		
+		x=x.trim();
+		if(x==1)
+			{
+			$.ajax({
+			    url: url,
+			    type: 'POST',
+			    data: {
+			    	   id_solicitud: idsol
+			    },
+			})
+			.done(function(x) {
+				
+				console.log(x);
+				if (x==1)
+					{
+					swal({
+				  		  title: "Solicitud",
+				  		  text: msg,
+				  		  icon: "success",
+				  		  button: "Aceptar",
+				  		});
+						load_solicitudes(1);
+					}
+				else
+					{
+					if (x.includes("Warning"))
+					{
+						swal({
+						  		  title: "Solicitud",
+						  		  text: "Error al cambiar estado de solicitud",
+						  		  icon: "warning",
+						  		  button: "Aceptar",
+						  		});
+					}
+					swal({
+				  		  title: "Solicitud",
+				  		  text: "Error al cambiar estado de solicitud",
+				  		  icon: "warning",
+				  		  button: "Aceptar",
+				  		});
+						
+					}
+				
+				
+					
+			})
+			.fail(function() {
+			    console.log("error");
+			    swal({
+			  		  title: "Solicitud",
+			  		  text: "Error al cambiar estado de solicitud",
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+			});
+			}
+		else
+			{
+			swal({
+				title: "Advertencia!",
+				  text: "El empleado no tiene una cuenta contable registrada",
+				  icon: "warning",
+				  buttons: {
+				    cancel: "Cancelar",
+				    aceptar: {
+				      text: "Registrar cuenta",
+				      value: "aceptar",
+				    }
+				  },
+				})
+				.then((value) => {
+				  switch (value) {
+				 
+				    case "aceptar":
+				    	window.open('index.php?controller=Empleados&action=index1', '_self');
+				      break;
+				 
+				    default:
+				      swal("No se realizaron cambios a la solicitud");
+				  }
+				});
+			}
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	    swal({
+	  		  title: "Solicitud",
+	  		  text: "Hubo un error al registrar solicitud",
+	  		  icon: "warning",
+	  		  button: "Aceptar",
+	  		});
+	});
+}
+
 function Aprobar(idsol,nomest)
 {
 	
@@ -406,6 +517,11 @@ function Aprobar(idsol,nomest)
 	{
 		url = 'index.php?controller=AvancesEmpleados&action=AprobarSolicitud';
 		msg = 'Estado de solicitud cambiado a aprobado';
+		AprobarContador(nomest, url, msg, idsol);
+		console.log("contador");
+		return 0;
+		
+		
 	}
 	if (nomest == "APROBADO")
 	{

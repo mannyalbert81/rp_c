@@ -91,7 +91,7 @@ function buscarDatos(){
 	
 	switch(_texto_validar) {
 	  case '1':
-		  buscaAportesParticipes();
+		  buscaAportesParticipes();		  
 	    break;
 	  case '2':
 		  buscaAportesCreditos();
@@ -99,6 +99,7 @@ function buscarDatos(){
 	  default:
 		  console.log('default');
 	}
+	
 	
 }
 
@@ -132,7 +133,7 @@ function buscaAportesParticipes(pagina=1){
 		$divResultados.html(x.tablaHtml);
 		$cantidadRegistros.text(x.cantidadRegistros);
 		$modal.modal('show');
-		setStyleTabla("tbl_archivo_recaudaciones");
+		setTimeout(function(){ setStyleTabla("tbl_archivo_recaudaciones");}, 250);
 		
 	}).fail(function(xhr,status,error){
 		var err = xhr.responseText
@@ -181,7 +182,7 @@ function buscaAportesCreditos(pagina=1){
 		$divResultados.html(x.tablaHtml);
 		$cantidadRegistros.text(x.cantidadRegistros);
 		$modal.modal('show');
-		setStyleTabla("tbl_archivo_recaudaciones");
+		setTimeout(function(){ setStyleTabla("tbl_archivo_recaudaciones");}, 250);
 		
 	}).fail(function(xhr,status,error){
 		var err = xhr.responseText
@@ -473,35 +474,22 @@ $("#btn_reload").on("click",function(){
 	consultaArchivos(1,$valorBuscar);	
 })
 
-function setStyleTabla(ObjTabla){	
-        	
-	$("#"+ObjTabla).DataTable({
-		paging: false,
-        scrollX: true,
-		searching: false,
-        pageLength: 10,
-        responsive: true,
-        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-        dom: '<"html5buttons">lfrtipB',      
-        buttons: [ ],
-        language: {
-            "emptyTable": "No hay información",
-            "info": "Mostrando _START_ a _END_ de _TOTAL_ Registros",
-            "infoEmpty": "Mostrando 0 de 0 de 0 Registros",           
-            "lengthMenu": "Mostrar _MENU_ Registros",
-            "loadingRecords": "Cargando...",
-            "processing": "Procesando...",
-            "search": "Buscar:",
-            "zeroRecords": "Sin resultados encontrados",
-            "paginate": {
-                "first": "Primero",
-                "last": "Ultimo",
-                "next": "Siguiente",
-                "previous": "Anterior"
-            }
-        }
-
-    });
+function setStyleTabla(ObjTabla){
 	
+	var objetoTabla = $("#"+ObjTabla);
+	
+	objetoTabla.dataTable().fnDestroy();
+	
+	objetoTabla.DataTable({
+		"scrollY": "200px",
+		"scrollX": true,
+		"scrollCollapse": true,
+		"ordering":false,
+		"paging":false,
+		"searching":false,
+		"info":false
+		});
+	$('.dataTables_length').addClass('bs-select');
+		
 	
  }

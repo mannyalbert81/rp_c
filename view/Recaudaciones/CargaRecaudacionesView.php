@@ -133,6 +133,7 @@
                                   	<select id="formato_carga_recaudaciones" name="formato_carga_recaudaciones" class="form-control">
                                   	<option value="1" >DESCUENTOS APORTES</option>
                                   	<option value="2" >DESCUENTOS CREDITOS</option>
+                                  	<option value="2" >DESCUENTOS CREDITOS Y APORTES</option>
                                   	</select>
                                  </div>
                 			 </div>        			 

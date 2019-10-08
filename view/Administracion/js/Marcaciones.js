@@ -435,8 +435,6 @@ $("#mensaje_archivo").fadeOut("slow");
 		        			}
 		        	}		
 		        	);
-		        
-		        	
 		        	$.ajax({
 		    			url:'index.php?controller=Marcaciones&action=GetCedulas',
 		    			type:'POST',
@@ -545,25 +543,25 @@ $("#mensaje_archivo").fadeOut("slow");
 					    						var anio_fin=year;
 					    						console.log(dia_hoy+" hoy")
 					    						if(dia_hoy<=21)
-					    							{
-					    							mes_inicio=mes;
-					    							mes_fin=mes+1;
-					    							if (mes_fin==13)
-					    								{
-					    								mes_fin=1;
-					    								anio_fin=year+1;
-					    								}
-					    							}
-					    						else
-					    							{
-					    							mes_inicio=mes-1;
-					    							mes_fin=mes;
-					    							if (mes_inicio==0)
-					    								{
-					    								mes_inicio=12;
-					    								anio_inicio=year-1;
-					    								}
-					    							}
+													{
+													mes_inicio=mes-2;
+													mes_fin=mes-1;
+													if (mes_inicio<1)
+														{
+														mes_inicio=12;
+														anio_inicio=year-1;
+														}
+													}
+												else
+													{
+													mes_inicio=mes;
+													mes_fin=mes+1;
+													if (mes_fin==13)
+														{
+														mes_fin=1;
+														anio_fin=year+1;
+														}
+													}
 					    							
 					    						if (mesarchivo.length <=2 && mesarchivo[0]==mes-1 && mesarchivo[1]==mes && yeararchivo==anio_fin)
 					    						{
@@ -997,22 +995,22 @@ function ReporteNomina()
 	console.log(dia_hoy+" hoy")
 	if(dia_hoy<=21)
 		{
+		mes_inicio=mes-2;
+		mes_fin=mes-1;
+		if (mes_inicio<1)
+			{
+			mes_inicio=12;
+			anio_inicio=year-1;
+			}
+		}
+	else
+		{
 		mes_inicio=mes;
 		mes_fin=mes+1;
 		if (mes_fin==13)
 			{
 			mes_fin=1;
 			anio_fin=year+1;
-			}
-		}
-	else
-		{
-		mes_inicio=mes-1;
-		mes_fin=mes;
-		if (mes_inicio==0)
-			{
-			mes_inicio=12;
-			anio_inicio=year-1;
 			}
 		}
 
@@ -1063,6 +1061,16 @@ function MostrarNotificacion()
 	console.log(dia_hoy+" hoy")
 	if(dia_hoy<=21)
 		{
+		mes_inicio=mes-2;
+		mes_fin=mes-1;
+		if (mes_inicio<1)
+			{
+			mes_inicio=12;
+			anio_inicio=year-1;
+			}
+		}
+	else
+		{
 		mes_inicio=mes;
 		mes_fin=mes+1;
 		if (mes_fin==13)
@@ -1071,21 +1079,13 @@ function MostrarNotificacion()
 			anio_fin=year+1;
 			}
 		}
-	else
-		{
-		mes_inicio=mes-1;
-		mes_fin=mes;
-		if (mes_inicio==0)
-			{
-			mes_inicio=12;
-			anio_inicio=year-1;
-			}
-		}
  
  var diainicio = 22;
  var diafinal = 21;
  var fechai = diainicio+"/"+mes_inicio+"/"+year;
  var fechaf = diafinal+"/"+mes_fin+"/"+year;
+ 
+ console.log(fechai+"<=>"+fechaf);
  $.ajax({
 	    url: 'index.php?controller=Marcaciones&action=MostrarNotificacion',
 	    type: 'POST',
@@ -1129,22 +1129,22 @@ function GenerarReporte()
 	console.log(dia_hoy+" hoy")
 	if(dia_hoy<=21)
 		{
+		mes_inicio=mes-2;
+		mes_fin=mes-1;
+		if (mes_inicio<1)
+			{
+			mes_inicio=12;
+			anio_inicio=year-1;
+			}
+		}
+	else
+		{
 		mes_inicio=mes;
 		mes_fin=mes+1;
 		if (mes_fin==13)
 			{
 			mes_fin=1;
 			anio_fin=year+1;
-			}
-		}
-	else
-		{
-		mes_inicio=mes-1;
-		mes_fin=mes;
-		if (mes_inicio==0)
-			{
-			mes_inicio=12;
-			anio_inicio=year-1;
 			}
 		}
 	
@@ -1154,6 +1154,8 @@ function GenerarReporte()
 	 var fechai = diainicio+"/"+mes_inicio+"/"+year;
 	 
 	 var fechaf = diafinal+"/"+mes_fin+"/"+year;
+	 
+	 console.log(fechai+"<=>"+fechaf);
 	 $.ajax({
 		    url: 'index.php?controller=Marcaciones&action=SubirReporte',
 		    type: 'POST',

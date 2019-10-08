@@ -3,6 +3,7 @@ var empleado=0;
 
 $(document).ready( function (){
 	ReporteNomina(1);
+	
 		
 });
 
@@ -46,6 +47,8 @@ function ActualizarRegistros()
 		var hipo = $("#hipo_iess_empleados").val();
 		var dcto = $("#dcto_sueldo_empleados").val();
 		var salario = $("#salario_empleados").val();
+		var sociales= $("#asuntos_empleados").val();
+		var reserva= $("#fondos").val();
 		if(h50=="")
 			{
 			$("#mensaje_h50_empleados").text("Ingrese valor");
@@ -123,13 +126,15 @@ function ActualizarRegistros()
 			    	decimo_cuarto:dec4,
 			    	decimo_tercero:dec3,
 			    	anticipo_sueldo:anticipo,
+			    	reserva:reserva,
 			    	aporte_iess:apt_iess,
 			    	asocap:asocap,
 			    	quiro_iess:quiro,
 			    	hipo_iess:hipo,
 			    	dcto_sueldo:dcto,
 			    	periodo:periodonom,
-			    	id_empleado:empleado
+			    	id_empleado:empleado,
+			    	sociales:sociales
 			    },
 			})
 			.done(function(x) {
@@ -234,25 +239,25 @@ if(rep)
 		var anio_fin=year;
 		console.log(dia_hoy+" hoy")
 		if(dia_hoy<=21)
+		{
+		mes_inicio=mes-2;
+		mes_fin=mes-1;
+		if (mes_inicio<1)
 			{
-			mes_inicio=mes;
-			mes_fin=mes+1;
-			if (mes_fin==13)
-				{
-				mes_fin=1;
-				anio_fin=year+1;
-				}
+			mes_inicio=12;
+			anio_inicio=year-1;
 			}
-		else
+		}
+	else
+		{
+		mes_inicio=mes;
+		mes_fin=mes+1;
+		if (mes_fin==13)
 			{
-			mes_inicio=mes-1;
-			mes_fin=mes;
-			if (mes_inicio==0)
-				{
-				mes_inicio=12;
-				anio_inicio=year-1;
-				}
+			mes_fin=1;
+			anio_fin=year+1;
 			}
+		}
 		
 		var diainicio = 22;
 		 var diafinal = 21;

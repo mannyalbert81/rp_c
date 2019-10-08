@@ -60,7 +60,7 @@ class AvancesEmpleadosController extends ControladorBase{
         $empleado= new EmpleadosModel();
         $tablas="public.empleados";
         $cedula = $_SESSION['cedula_usuarios'];
-        $where = "empleados.numero_cedula_empleados =".$cedula;
+        $where = "empleados.numero_cedula_empleados ='".$cedula."'";
         $id = "empleados.id_empleados";
         $result = $empleado->getCondiciones("*", $tablas, $where, $id);
         $anio = date("Y");
@@ -69,12 +69,37 @@ class AvancesEmpleadosController extends ControladorBase{
         $columnas="COUNT(id_anticipo) as total";
         $where="fecha_anticipo BETWEEN '".$anio."-1-01' AND '".$anio."-12-31' AND id_empleado=".$id_empleado;
         $tablas="anticipo_sueldo_empleados";
-        $limit="GROUP BY id_anticipo";
+        $limit="";
         $resultSet=$avance->getCondicionesSinOrden($columnas, $tablas, $where, $limit);
         
         if (!(empty($resultSet[0]->total))) $total=$resultSet[0]->total;
         else $total=0;
         echo $total;
+    }
+    
+    public function ValidarCuentaContable()
+    {
+        session_start();
+        $id_solicitud=$_POST['id_solicitud'];
+               
+        $empleado= new EmpleadosModel();
+        
+        $columnas="id_empleado";
+        $tablas="anticipo_sueldo_empleados";
+        $where="id_anticipo=".$id_solicitud;
+        
+        $id_empleado=$empleado->getCondicionesSinOrden($columnas, $tablas, $where, "");
+        $id_empleado=$id_empleado[0]->id_empleado;
+        
+        $tablas="empleados_cuentas_contables INNER JOIN empleados
+                ON empleados_cuentas_contables.id_empleados= empleados.id_empleados";
+       
+        $where = "empleados.id_empleados =".$id_empleado;
+        $id = "id_plan_cuentas";
+        $result = $empleado->getCondiciones("id_plan_cuentas", $tablas, $where, $id);
+        
+        if (!empty($result)) echo "1";
+        else echo "0";
     }
     
     public function  ValidarMonto()
@@ -83,7 +108,7 @@ class AvancesEmpleadosController extends ControladorBase{
         $empleado= new EmpleadosModel();
         $tablas="public.empleados";
         $cedula = $_SESSION['cedula_usuarios'];
-        $where = "empleados.numero_cedula_empleados =".$cedula;
+        $where = "empleados.numero_cedula_empleados ='".$cedula."'";
         $id = "empleados.id_empleados";
         $result = $empleado->getCondiciones("*", $tablas, $where, $id);
         $id_empleado = $result[0]->id_empleados;
@@ -233,6 +258,7 @@ class AvancesEmpleadosController extends ControladorBase{
                         INNER JOIN cargos_empleados
                         ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
+       
         $idr = "usuarios.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         $id_jefi = $resultr[0]->id_rol;
@@ -265,6 +291,11 @@ class AvancesEmpleadosController extends ControladorBase{
             }
             else {
                 $where    = "anticipo_sueldo_empleados.id_estado=".$id_estado;
+                
+                if($id_rol == $id_jefi && $id_rh!=$id_jefi)
+                {
+                    $where.=" AND departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."'";
+                }
             }
             
         }
@@ -275,11 +306,14 @@ class AvancesEmpleadosController extends ControladorBase{
                 $where    = " empleados.numero_cedula_empleados='".$cedula."'";
             }
             else {
-                $where    = "1=1";
+                if($id_rol == $id_jefi && $id_rh!=$id_jefi)
+                {
+                    $where="departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."'";
+                }
+                else       $where    = "1=1";
             }
         }
            
-        
         $id       = "anticipo_sueldo_empleados.id_anticipo
 
 ";

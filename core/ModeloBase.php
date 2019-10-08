@@ -246,6 +246,30 @@ class ModeloBase extends EntidadBase{
         
         return $resultSet;
     }
+
+    public function executeInsertQuery($query){
+        $resultSet=-1;
+        try{
+            
+            $result=pg_query($this->con(), $query);
+            
+            if( $result === false )
+                throw new Exception( "Error PostgreSQL ".pg_last_error() );
+
+            if(pg_num_rows($result)>0)
+            {
+                $row    = pg_fetch_array($result);
+                $resultSet = $row[0];
+               
+            }
+            
+                
+        }catch (Exception $Ex){
+            $resultSet=-1;
+        }
+        
+        return $resultSet;
+    }
     
     
 }

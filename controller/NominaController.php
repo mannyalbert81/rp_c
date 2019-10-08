@@ -639,15 +639,118 @@ class NominaController extends ControladorBase{
 
     public function GeneraComprobanteNomina(){
 
+        session_start();
         $Empleados = new EmpleadosModel();
         try{
 
-            echo "llego";
+            /** tomar valores de session */
+            $_id_usuarios    = $_SESSION['id_usuarios'];
+            $_usuario_usuarios  = $_SESSION['usuario_usuarios'];
+            /** obtener valores de la vista */
+            $datos_comprobante_nomina = json_decode($_POST['lista_nomina']);
+            $sumatoria_comprobante        = $_POST['valor_comprobante'];
+
+            /** buscar datos para comprobante */
+            $_id_entidades              = 1;
+            $_id_tipo_comprobantes      = 0;
+            $_numero_ccomprobantes      = ""; 
+            $_retencion_ccomprobantes   = ""; 
+            $_valor_ccomprobantes       = 0;
+            $_concepto_ccomprobantes    = "";
+            $_valor_letras              = "";
+            $_fecha_ccomprobantes       = "";
+            $_id_forma_pago             = "";
+            $_referencia_doc_ccomprobantes  = "";
+            $_observaciones_ccomprobantes   = "";
+            $_id_proveedores                = 0;
+            $_tipo_cuenta_ccomprobantes     = "";
+            $_transaccion_ccomprobantes     = "";
+
+            $columnas1  = " bb.id_tipo_comprobantes, bb.nombre_tipo_comprobantes, aa.id_consecutivos, lpad( (aa.valor_consecutivos+1)::text, aa.espacio_consecutivos, '0') secuencial";
+            $tablas1    = " consecutivos aa
+                        inner join tipo_comprobantes bb on bb.id_tipo_comprobantes = aa.id_tipo_comprobantes ";
+            $where1     = " bb.nombre_tipo_comprobantes = 'CONTABLE' ";
+            $id1        = " bb.id_tipo_comprobantes";
+
+            $rsConsulta1= $Empleados->getCondiciones($columnas1,$tablas1,$where1,$id1);
+            $_id_tipo_comprobantes  = $rsConsulta1[0]->id_tipo_comprobantes;
+            $_numero_ccomprobantes  = $rsConsulta1[0]->secuencial;
+
+            $_valor_ccomprobantes   = $sumatoria_comprobante;
+            $_valor_letras  = $Empleados->numtoletras($_valor_ccomprobantes);
+            $_concepto_ccomprobantes    = " INGRESO PAGO DE NOMINA";
+
+            echo $_valor_ccomprobantes, '--',$_valor_letras, '--', $_concepto_ccomprobantes, '--',$_id_tipo_comprobantes;
+            die();
+
+            /* agregar comprobante contable y buscar en que momento se hace la mayorizacion */
+
+
+
+
+
+
+            /**
+             * INSERT INTO public.ccomprobantes
+(id_entidades, 
+id_tipo_comprobantes, 
+numero_ccomprobantes, 
+retencion_ccomprobantes, 
+valor_ccomprobantes, 
+concepto_ccomprobantes, 
+id_usuarios, 
+valor_letras,
+fecha_ccomprobantes, 
+id_forma_pago, 
+referencia_doc_ccomprobantes, 
+observaciones_ccomprobantes, 
+id_proveedores, 
+tipo_cuenta_ccomprobantes, 
+usuario_usuarios, 
+transaccion_ccomprobantes)
+VALUES(
+'',
+0,
+'',
+0,
+'',
+'',
+'',
+'',
+0,
+'',
+'',
+'',
+'',
+0,
+'',
+'',
+'');
+             */
+
+            $_query = "INSERT INTO public.temp_comprobantes
+                (id_usuario_registra, id_plan_cuentas, observacion_temp_comprobantes, 
+                debe_temp_comprobantes, haber_temp_comprobantes)
+                VALUES(15, 885, 'prueba', 0.00, 0.00) RETURNING id_temp_comprobantes";
+
+            $_resultado = $Empleados->executeInsertQuery($_query);
+
+            echo "la respuesta es <br>".$_resultado[0];
+
 
         }catch(Exception $ex){
             echo "<message>$ex->getMessage()<message>";
         }
     }
+
+    $_query = "INSERT INTO public.temp_comprobantes
+    (id_usuario_registra, id_plan_cuentas, observacion_temp_comprobantes, 
+    debe_temp_comprobantes, haber_temp_comprobantes)
+    VALUES(15, 885, 'prueba', 0.00, 0.00) RETURNING id_temp_comprobantes";
+
+$_resultado = $Empleados->executeInsertQuery($_query);
+
+echo "la respuesta es <br>".$_resultado; die();
     
     /** TERMINA PARA FUNCIONES DE PAGO DE NOMINA **/
     

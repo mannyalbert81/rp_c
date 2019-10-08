@@ -211,6 +211,7 @@ function generaComprobante(){
 	let $filas = $tabla.find("tbody > tr ");	
 	let data = [];	
 	let error = true;
+	let _sumatoriaMonto	= 0;
 	
 	$filas.each(function(){
 		
@@ -218,14 +219,13 @@ function generaComprobante(){
 			_valor_cuenta_debito    = $(this).find("td:eq(3)").html(),
 			_valor_cuenta_credito   = $(this).find("td:eq(4)").html();
 
-			console.log(_valor_cuenta_debito);
-
 		let monto_debito  =  Number.parseFloat(_valor_cuenta_debito.replace(",","").trim());
 		let monto_credito =  Number.parseFloat(_valor_cuenta_credito.replace(",","").trim());
 		let monto_total   = 0.00;
-
+		console.log(monto_credito);
 		let naturaleza_cuenta   = (monto_debito > 0) ? "D" : (( monto_credito > 0 ) ? "C" : "N");        
 		monto_total = monto_debito*1+monto_credito*1;
+		_sumatoriaMonto	+= monto_credito;
 		item = {};
 	
 		if(!isNaN(_id_plan_cuentas)){
@@ -238,7 +238,7 @@ function generaComprobante(){
 		}else{			
 			error = false; return false;
 		}
-						
+		console.log(_sumatoriaMonto);				
 	})
 	
 	// validar datos antes de enviar al controlador
@@ -248,6 +248,7 @@ function generaComprobante(){
 	parametros 	= new FormData();
 	arrayDatos 	= JSON.stringify(data); 
 	parametros.append('lista_nomina', arrayDatos);
+	parametros.append('valor_comprobante', _sumatoriaMonto)
 	
 	$.ajax({
 		data: parametros,

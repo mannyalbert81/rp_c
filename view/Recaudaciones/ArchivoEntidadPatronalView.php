@@ -7,7 +7,9 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+     
+    <link href="//cdn.datatables.net/fixedheader/2.1.0/css/dataTables.fixedHeader.min.css"/>
     
  	<style type="text/css">
  	  .loader {
@@ -21,10 +23,10 @@
         opacity: .8;
         }
         
-      .modal-body {
+      /*.modal-body {
             max-height: calc(100vh - 210px);
             overflow-y: auto;
-        }
+        }*/
  	  
  	</style>
    <?php include("view/modulos/links_css.php"); ?>
@@ -187,7 +189,7 @@
     	</div>
     </section>
               
-    
+              
       
       <section class="content">
           <div class="box box-primary">
@@ -243,11 +245,13 @@
                     	<span class="form-control" id="cantidad_busqueda"><strong>Total Registros: </strong> <span id="mod_cantidad_registros"></span> </span>
                 	</div>   
             	</div>
-          		<div class="pull-right" style="margin-right:15px;">
-    			<input type="text" value="" class="form-control" onkeyup="buscarDatos()" id="mod_txtBuscarDatos" name="mod_txtBuscarDatos"  placeholder="Buscar.."/>
+          		<div class="pull-right" >
+          			<div class="form-group-sm">
+    					<input type="text" value="" class="form-control" onkeyup="buscarDatos()" id="mod_txtBuscarDatos" name="mod_txtBuscarDatos"  placeholder="Buscar.."/>
+    				</div>
     			</div>           
     			<div class="clearfix" ></div> 	
-            	<div id="mod_div_datos_recaudacion"></div>
+            	<div id="mod_div_datos_recaudacion" class="table-responsive"></div>
           	</div>
           	
           
@@ -352,8 +356,8 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-   <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script> 
-   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.21"></script> 
+   <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
+   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.31"></script> 
        
        
 

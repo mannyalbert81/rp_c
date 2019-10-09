@@ -142,7 +142,10 @@ class RecaudacionController extends ControladorBase{
                     }
                     
                      
-                break;
+				break;
+				case '3':
+					/* aun no implementado */
+				break;
                 default:
 	            break;
 	        }

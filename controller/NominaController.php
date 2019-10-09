@@ -642,13 +642,21 @@ class NominaController extends ControladorBase{
         session_start();
         $Empleados = new EmpleadosModel();
         try{
-
+            $Empleados->beginTran();
             /** tomar valores de session */
             $_id_usuarios    = $_SESSION['id_usuarios'];
             $_usuario_usuarios  = $_SESSION['usuario_usuarios'];
             /** obtener valores de la vista */
             $datos_comprobante_nomina = json_decode($_POST['lista_nomina']);
             $sumatoria_comprobante        = $_POST['valor_comprobante'];
+            $mesNomina  = (int)$_POST['mes_nomina'];
+
+            /** variables de local */
+            $meses = array('enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre');
+            
+            //para pruebas
+            //echo  "valor total de comprobante --> ".$sumatoria_comprobante;
+            //die();
 
             /** buscar datos para comprobante */
             $_id_entidades              = 1;
@@ -662,11 +670,12 @@ class NominaController extends ControladorBase{
             $_id_forma_pago             = "";
             $_referencia_doc_ccomprobantes  = "";
             $_observaciones_ccomprobantes   = "";
-            $_id_proveedores                = 0;
-            $_tipo_cuenta_ccomprobantes     = "";
-            $_transaccion_ccomprobantes     = "";
+            $_id_proveedores                = null;
+            $_tipo_cuenta_ccomprobantes     = null;
+            $_transaccion_ccomprobantes     = "nomina";
 
-            $columnas1  = " bb.id_tipo_comprobantes, bb.nombre_tipo_comprobantes, aa.id_consecutivos, lpad( (aa.valor_consecutivos+1)::text, aa.espacio_consecutivos, '0') secuencial";
+            /* consulta consecutivo */
+            $columnas1  = " bb.id_tipo_comprobantes, bb.nombre_tipo_comprobantes, aa.id_consecutivos, lpad( (aa.valor_consecutivos)::text, aa.espacio_consecutivos, '0') secuencial";
             $tablas1    = " consecutivos aa
                         inner join tipo_comprobantes bb on bb.id_tipo_comprobantes = aa.id_tipo_comprobantes ";
             $where1     = " bb.nombre_tipo_comprobantes = 'CONTABLE' ";
@@ -675,84 +684,121 @@ class NominaController extends ControladorBase{
             $rsConsulta1= $Empleados->getCondiciones($columnas1,$tablas1,$where1,$id1);
             $_id_tipo_comprobantes  = $rsConsulta1[0]->id_tipo_comprobantes;
             $_numero_ccomprobantes  = $rsConsulta1[0]->secuencial;
+            $_id_consecutivos       = $rsConsulta1[0]->id_consecutivos;
+
+            /* consulta forma de pago */
+            $columnas2  = " id_forma_pago, nombre_forma_pago";
+            $tablas2    = " public.forma_pago";
+            $where2     = " nombre_forma_pago = 'EFECTIVO'";
+            $id2        = " id_forma_pago";
+            $rsConsulta2= $Empleados->getCondiciones($columnas2,$tablas2,$where2,$id2);
+            $_id_forma_pago = $rsConsulta2[0]->id_forma_pago;
+
+            /* actualizacion de consecutivo */
+            $_queryActualizacion = "UPDATE consecutivos 
+                                    SET numero_consecutivos = lpad((valor_consecutivos+1)::text,espacio_consecutivos,'0'),
+                                    valor_consecutivos = valor_consecutivos+1
+                                    WHERE id_consecutivos = $_id_consecutivos ";
+            $Empleados->executeNonQuery($_queryActualizacion);
 
             $_valor_ccomprobantes   = $sumatoria_comprobante;
             $_valor_letras  = $Empleados->numtoletras($_valor_ccomprobantes);
-            $_concepto_ccomprobantes    = " INGRESO PAGO DE NOMINA";
+            $_concepto_ccomprobantes    = "INGRESO PAGO DE NOMINA";
+            $_fecha_ccomprobantes   = date("Y-m-d");
+            $_observaciones_ccomprobantes   = "generacion nomina mes-".$meses[$mesNomina-1];
 
-            echo $_valor_ccomprobantes, '--',$_valor_letras, '--', $_concepto_ccomprobantes, '--',$_id_tipo_comprobantes;
-            die();
+            /** insertado datos de comprobante nomina */
+            $_queryInsertadoNomina  = " INSERT INTO public.ccomprobantes(
+                id_entidades, id_tipo_comprobantes, numero_ccomprobantes, retencion_ccomprobantes, valor_ccomprobantes,
+                concepto_ccomprobantes, id_usuarios, valor_letras, fecha_ccomprobantes, id_forma_pago, referencia_doc_ccomprobantes, 
+                observaciones_ccomprobantes, id_proveedores, tipo_cuenta_ccomprobantes, usuario_usuarios, transaccion_ccomprobantes )
+                VALUES($_id_entidades,$_id_tipo_comprobantes,'$_numero_ccomprobantes','$_retencion_ccomprobantes','$_valor_ccomprobantes',
+                '$_concepto_ccomprobantes','$_id_usuarios','$_valor_letras', '$_fecha_ccomprobantes', '$_id_forma_pago',
+                '$_referencia_doc_ccomprobantes','$_observaciones_ccomprobantes',null,null,'$_usuario_usuarios','$_transaccion_ccomprobantes') RETURNING id_ccomprobantes";
 
-            /* agregar comprobante contable y buscar en que momento se hace la mayorizacion */
+            $_id_comprobantes = $Empleados->executeInsertQuery($_queryInsertadoNomina);
 
+            /** recorrido para insertar el detalle de comprobante */
+            foreach ($datos_comprobante_nomina as $data){
+                /* variables a formatear para insertado */
+                $_valor_debe    = 0.00;
+                $_valor_haber   = 0.00;
+                $_descripcion   = "'nomina mes ".$meses[(int)$mesNomina-1]."'";
+                /* estructura de data es definida en la view Nomina.js */
+                //item ["id_plan_cuentas"],item ["naturaleza_cuentas"],item ['valor_cuentas'] 
+                $_id_plan_cuentas   = $data->id_plan_cuentas;
+                if( $data->naturaleza_cuentas == "D" ){
+                    $_valor_debe    = $data->valor_cuentas;
+                }else if( $data->naturaleza_cuentas == "C"){
+                    $_valor_haber   = $data->valor_cuentas;
+                }
+                $_queryInsertadoDetalle = "INSERT INTO public.dcomprobantes(
+                    id_ccomprobantes, numero_dcomprobantes, id_plan_cuentas, descripcion_dcomprobantes, debe_dcomprobantes, haber_dcomprobantes)
+                    VALUES($_id_comprobantes, '$_numero_ccomprobantes', $_id_plan_cuentas, $_descripcion, $_valor_debe, $_valor_haber)";	        
+	        
+                $Empleados->executeNonQuery($_queryInsertadoDetalle);                
+               
+            }
 
+            /* viene insertado de historial del diario tipo */
+            $columnas3  = " id_tipo_procesos,id_modulos";
+            $tablas3    = " public.core_tipo_procesos";
+            $where3     = " upper(nombre_tipo_procesos) = 'PAGO NOMINA'";
+            $id3        = " id_tipo_procesos";
+            $rsConsulta3= $Empleados->getCondiciones($columnas3,$tablas3,$where3,$id3);
+            $_id_tipo_procesos  = $rsConsulta3[0]->id_tipo_procesos;
+            $_id_modulos        = $rsConsulta3[0]->id_modulos;
 
+            /** para insertado de historial */
+            $_anio_proceso = date('Y');
+            $_funcion   = "ins_core_historial_diario";
+            $_parametros= "$_id_tipo_procesos,$_id_modulos,$_id_comprobantes,'$_usuario_usuarios',$_anio_proceso,$mesNomina";
+            $_queryFuncion  = $Empleados->getconsultaPG($_funcion,$_parametros);
+            $Empleados->llamarconsultaPG($_queryFuncion);
 
+            $error_pg   = pg_last_error();
+            $error_php  = error_get_last();
+            if( !empty($error_pg) || !empty($error_php) ){
+                throw new Exception("error encontrado al insertar comprobante");
+            }
+            $Empleados->endTran("COMMIT");
 
+            $respuesta  = array();
+            $respuesta['mensaje'] = 'OK';
 
-            /**
-             * INSERT INTO public.ccomprobantes
-(id_entidades, 
-id_tipo_comprobantes, 
-numero_ccomprobantes, 
-retencion_ccomprobantes, 
-valor_ccomprobantes, 
-concepto_ccomprobantes, 
-id_usuarios, 
-valor_letras,
-fecha_ccomprobantes, 
-id_forma_pago, 
-referencia_doc_ccomprobantes, 
-observaciones_ccomprobantes, 
-id_proveedores, 
-tipo_cuenta_ccomprobantes, 
-usuario_usuarios, 
-transaccion_ccomprobantes)
-VALUES(
-'',
-0,
-'',
-0,
-'',
-'',
-'',
-'',
-0,
-'',
-'',
-'',
-'',
-0,
-'',
-'',
-'');
-             */
+            echo json_encode($respuesta);
 
-            $_query = "INSERT INTO public.temp_comprobantes
-                (id_usuario_registra, id_plan_cuentas, observacion_temp_comprobantes, 
-                debe_temp_comprobantes, haber_temp_comprobantes)
-                VALUES(15, 885, 'prueba', 0.00, 0.00) RETURNING id_temp_comprobantes";
-
-            $_resultado = $Empleados->executeInsertQuery($_query);
-
-            echo "la respuesta es <br>".$_resultado[0];
-
+            /** la mayorizacion del comprobante no implementado*/
+           
 
         }catch(Exception $ex){
-            echo "<message>$ex->getMessage()<message>";
+            $Empleados->endTran();
+            echo "<message>".$ex->getMessage()."<message>";
+            
         }
+
+       
     }
-
-    $_query = "INSERT INTO public.temp_comprobantes
-    (id_usuario_registra, id_plan_cuentas, observacion_temp_comprobantes, 
-    debe_temp_comprobantes, haber_temp_comprobantes)
-    VALUES(15, 885, 'prueba', 0.00, 0.00) RETURNING id_temp_comprobantes";
-
-$_resultado = $Empleados->executeInsertQuery($_query);
-
-echo "la respuesta es <br>".$_resultado; die();
-    
+   
     /** TERMINA PARA FUNCIONES DE PAGO DE NOMINA **/
+
+    public function funciones(){
+        
+        $dato = $_POST['mes'];
+
+        $meses = array('enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre');
+
+        echo "mes es ".$meses[(int)$dato-1];
+
+        $_query = "INSERT INTO public.temp_comprobantes
+        (id_usuario_registra, id_plan_cuentas, observacion_temp_comprobantes, 
+        debe_temp_comprobantes, haber_temp_comprobantes)
+        VALUES(15, 885, 'prueba', 0.00, 0.00) RETURNING id_temp_comprobantes";
+
+    $_resultado = $Empleados->executeInsertQuery($_query);
+
+    echo "la respuesta es <br>".$_resultado; die();
+    }
     
    
 }

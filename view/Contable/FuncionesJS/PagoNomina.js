@@ -70,7 +70,12 @@ $("#verDiario").on("click",function(event){
 			
 			 if( x.mensaje == 'EXISTE PROCESO' ){
 				 
-				 // aqu9i implemtar la graficacion de comprobnates existente
+				swal( {
+					title:"COMPROBANTE GENERADO ",
+					text: "comprobante ya se encuentra generado",
+					icon: "info"
+				});
+
 			 }
 			 
 		 	if( x.mensaje == 'NO EXISTE PROCESO' ){
@@ -222,10 +227,11 @@ function generaComprobante(){
 		let monto_debito  =  Number.parseFloat(_valor_cuenta_debito.replace(",","").trim());
 		let monto_credito =  Number.parseFloat(_valor_cuenta_credito.replace(",","").trim());
 		let monto_total   = 0.00;
-		console.log(monto_credito);
-		let naturaleza_cuenta   = (monto_debito > 0) ? "D" : (( monto_credito > 0 ) ? "C" : "N");        
+		let naturaleza_cuenta   = (monto_debito > 0) ? "D" : (( monto_credito > 0 ) ? "C" : "N");        		
 		monto_total = monto_debito*1+monto_credito*1;
-		_sumatoriaMonto	+= monto_credito;
+		//console.log("sumatoria = "+monto_credito+" + "+_sumatoriaMonto  +" resultado es: " + Number.parseFloat((monto_credito+_sumatoriaMonto).toFixed(2)));
+		_sumatoriaMonto	+= Number.parseFloat((monto_credito ).toFixed(2));
+		
 		item = {};
 	
 		if(!isNaN(_id_plan_cuentas)){
@@ -237,8 +243,7 @@ function generaComprobante(){
 			data.push(item);
 		}else{			
 			error = false; return false;
-		}
-		console.log(_sumatoriaMonto);				
+		}			
 	})
 	
 	// validar datos antes de enviar al controlador
@@ -248,7 +253,8 @@ function generaComprobante(){
 	parametros 	= new FormData();
 	arrayDatos 	= JSON.stringify(data); 
 	parametros.append('lista_nomina', arrayDatos);
-	parametros.append('valor_comprobante', _sumatoriaMonto)
+	parametros.append('valor_comprobante', Number.parseFloat((_sumatoriaMonto ).toFixed(2)));
+	parametros.append('mes_nomina', $("#mes_procesos").val());
 	
 	$.ajax({
 		data: parametros,
@@ -257,14 +263,33 @@ function generaComprobante(){
 		processData: false, 
 		contentType: false,
 		dataType: "json"
-	}).done(function(a){
+	}).done(function(x){
 		
-		console.log("PROCEESO REALIZADO")
+		if ( x.mensaje !== undefined ){
+			$("#mod_diario").modal("hide");
+			$("#div_detalle_procesos").html('');
+
+			swal( {
+				title:"COMPROBANTE GENERADO",
+				text: "comprobante pago nomina generado",
+				icon: "success"
+			});
+		}		
 		
 	}).fail(function(xhr, status, error){
 		
-		var err = xhr.responseText		
+		var err = xhr.responseText
 		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		if( mensaje !== null ){
+			var resmsg = mensaje[1];
+			swal( {
+				title:"Error",
+				dangerMode: true,
+				text: resmsg.replace("|","\n"),
+				icon: "error"
+			})
+		}
 		
 	})
 	

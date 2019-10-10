@@ -7,7 +7,6 @@ class BalanceComprobacionController extends ControladorBase{
     }
     
     
-    
    public function index(){
         session_start();
         $plan_cuentas = new PlanCuentasModel();
@@ -22,6 +21,21 @@ class BalanceComprobacionController extends ControladorBase{
         $this->view_Contable('BalanceComprobacion',array("resultMAX"=>$resultMAX));
     }
    
+    
+    
+    public function index(){
+        session_start();
+        $plan_cuentas = new PlanCuentasModel();
+        
+        $tablas= "public.plan_cuentas";
+        
+        $where= "1=1";
+        
+        $id= "max";
+        
+        $resultMAX=$plan_cuentas->getCondiciones("MAX(nivel_plan_cuentas)", $tablas, $where, $id);
+        $this->view_Contable('BalanceComprobacion',array("resultMAX"=>$resultMAX));
+    }
     
     public function tieneHijo($nivel, $codigo, $resultado)
     {
@@ -744,8 +758,6 @@ class BalanceComprobacionController extends ControladorBase{
                 $tabla_reporte=$this->Balance(1, $datos, $max_nivel_balance, "");
                 $errores=$this->BalanceErrores(1, $datos, $max_nivel_balance, "");
             }
-            
-            
             
             
             $headerfont="16px";

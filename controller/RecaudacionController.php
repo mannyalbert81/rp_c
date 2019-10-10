@@ -233,7 +233,10 @@ class RecaudacionController extends ControladorBase{
 	    
 	    if(!isset($_SESSION)){
 	        session_start();
-	    }
+		}
+		
+		/** variable para tomar listado de participes */
+		$_array_participes = array();
 	    
 	    $_fecha_buscar = $_anio.$_mes;
 	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
@@ -257,7 +260,7 @@ class RecaudacionController extends ControladorBase{
                     AND cc.id_estatus = 1 
             	    AND aa.id_estado_tabla_amortizacion <> 2
                     AND bb.id_estado_creditos = 4
-                    AND cc.id_entidad_patronal = 1 
+                    AND cc.id_entidad_patronal = $_id_entidad_patronal 
             	    AND TO_CHAR(aa.fecha_tabla_amortizacion,'YYYYMM') = '$_fecha_buscar'
             	    AND dd.nombre_estado_creditos = 'Activo'";
 	    $id1       = "cc.id_participes, aa.id_tabla_amortizacion";
@@ -281,8 +284,7 @@ class RecaudacionController extends ControladorBase{
         $_id_archivo_recaudaciones  = $Resultado1[0];
         
         $funcionDetalle = "core_ins_core_archivo_recaudaciones_detalle";
-        $parametrosDetalle = "";
-        
+        $parametrosDetalle = "";        
         foreach ($rsConsulta1 as $res){
         
             $_id_participes = $res->id_participes;
@@ -296,9 +298,108 @@ class RecaudacionController extends ControladorBase{
             
             $error = pg_last_error();
             if( !empty($error) ){ break; throw new Exception('Error en la funcion de insertado detalle');}
-            
-        }
-        
+			
+			/** para almacenar en un array lista de participes */
+			array_push($_array_participes,$res->id_participes);	
+		}
+
+		/** BEGIN PRUEBAS MULTIPLE DE ARRAY LISTA  */
+		
+		$_lista_string_participes = implode( "," ,$_array_participes);
+
+		$columnas2	= "aa.id_tabla_amortizacion,aa.fecha_tabla_amortizacion, aa.total_valor_tabla_amortizacion,aa.mora_tabla_amortizacion,
+		bb.id_creditos, bb.numero_creditos, bb.id_tipo_creditos, bb.fecha_concesion_creditos,
+		cc.id_participes, cc.cedula_participes, cc.nombre_participes, cc.apellido_participes";
+		$tablas2	= "core_tabla_amortizacion aa
+		inner join core_creditos bb on bb.id_creditos = aa.id_creditos
+		inner join core_participes cc on cc.id_participes = bb.id_participes and cc.id_estatus = bb.id_estatus
+		inner join core_estado_creditos dd on dd.id_estado_creditos = bb.id_estado_creditos
+		inner join core_creditos_garantias ee on ee.id_creditos = bb.id_creditos";
+		$where2		= "bb.id_estatus = 1
+		and upper(dd.nombre_estado_creditos) = 'ACTIVO'
+		and coalesce(aa.mora_tabla_amortizacion,0) > 0 
+		and aa.id_estado_tabla_amortizacion <> 2
+		and ee.id_participes in ($_lista_string_participes)
+		and to_char(aa.fecha_tabla_amortizacion,'YYYYMM') <= '201910'"; 
+		$id2		= "aa.id_tabla_amortizacion";
+
+		$rsConsulta2= $Contribucion->getCondiciones($columnas2,$tablas2,$where2,$id2);
+
+		if(!empty($rsConsulta2)){
+			/** los valores aqui a procesar son de creditos en los que el paricipes esta como garante */
+			$_id_participes_garantizados = 0;
+			$funcionDetalle = "core_ins_core_archivo_recaudaciones_detalle";
+			$parametrosDetalle = "";
+			foreach( $rsConsulta2 as $res2){
+
+				$_id_participes_gar = $res2->id_participes;
+				$_id_creditos_gar   = $res2->id_creditos;
+				$_valor_sistema_gar = $res2->total_valor_tabla_amortizacion;
+				$_valor_final_gar   = $res2->total_valor_tabla_amortizacion;
+				$_descripcion_gar	= 'CUOTA MENSUAL GARANTIZADO ['.$res2->cedula_participes.']';
+				$_concepto_gar		= "";
+				$parametrosDetalle  = "'$_id_archivo_recaudaciones','$_id_participe_garante','$_id_creditos_gar','$_valor_sistema','$_valor_final',$_descripcion_gar,$_concepto_gar";
+				$queryFuncion   = $Contribucion->getconsultaPG($funcionDetalle, $parametrosDetalle);
+				$Contribucion->llamarconsultaPG($queryFuncion);
+				
+				$error = pg_last_error();
+				if( !empty($error) ){ break; throw new Exception('Error en la funcion de insertado detalle');}
+
+			}
+
+		}
+		
+		/** END PRUEBAS MULTIPLE DE ARRAY LISTA  */
+		
+		/** recorrido para buscar moras de sus garantizados */
+		/*foreach ($rsConsulta1 as $res){
+
+			$_id_participe_garante = $res->id_participes;
+
+			$columnas2	= "aa.id_tabla_amortizacion,aa.fecha_tabla_amortizacion, aa.total_valor_tabla_amortizacion,aa.mora_tabla_amortizacion,
+			bb.id_creditos, bb.numero_creditos, bb.id_tipo_creditos, bb.fecha_concesion_creditos,
+			cc.id_participes, cc.cedula_participes, cc.nombre_participes, cc.apellido_participes";
+			$tablas2	= "core_tabla_amortizacion aa
+			inner join core_creditos bb on bb.id_creditos = aa.id_creditos
+			inner join core_participes cc on cc.id_participes = bb.id_participes and cc.id_estatus = bb.id_estatus
+			inner join core_estado_creditos dd on dd.id_estado_creditos = bb.id_estado_creditos
+			inner join core_creditos_garantias ee on ee.id_creditos = bb.id_creditos";
+			$where2		= "bb.id_estatus = 1
+			and upper(dd.nombre_estado_creditos) = 'ACTIVO'
+			and coalesce(aa.mora_tabla_amortizacion,0) > 0 
+			and aa.id_estado_tabla_amortizacion <> 2
+			and ee.id_participes = $_id_participe_garante
+			and to_char(aa.fecha_tabla_amortizacion,'YYYYMM') <= '201910'"; 
+			$id2		= "aa.id_tabla_amortizacion";
+			$rsConsulta2= $Contribucion->getCondiciones($columnas2,$tablas2,$where2,$id2);
+
+			if(!empty($rsConsulta2)){
+				/** los valores aqui a procesar son de creditos en los que el paricipes esta como garante */
+				/*$_id_participes_garantizados = 0;
+				$funcionDetalle = "core_ins_core_archivo_recaudaciones_detalle";
+        		$parametrosDetalle = "";
+				foreach( $rsConsulta2 as $res2){
+
+					$_id_participes_gar = $res2->id_participes;
+					$_id_creditos_gar   = $res2->id_creditos;
+					$_valor_sistema_gar = $res2->total_valor_tabla_amortizacion;
+					$_valor_final_gar   = $res2->total_valor_tabla_amortizacion;
+					$_descripcion_gar	= 'CUOTA MENSUAL GARANTIZADO ['.$res2->cedula_participes.']';
+					$_concepto_gar		= "";
+					$parametrosDetalle  = "'$_id_archivo_recaudaciones','$_id_participe_garante','$_id_creditos_gar','$_valor_sistema','$_valor_final',$_descripcion_gar,$_concepto_gar";
+					$queryFuncion   = $Contribucion->getconsultaPG($funcionDetalle, $parametrosDetalle);
+					$Contribucion->llamarconsultaPG($queryFuncion);
+					
+					$error = pg_last_error();
+					if( !empty($error) ){ break; throw new Exception('Error en la funcion de insertado detalle');}
+
+
+				}
+
+			}
+	     
+		}*/
+	
         /* para buscar valores anteriores de credito*/ 
 	    
         return $_id_archivo_recaudaciones;

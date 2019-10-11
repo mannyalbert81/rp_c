@@ -56,6 +56,13 @@ $("#btnGenerar").on("click",function(){
 				
 			buscarDatos();	
 		}
+		if(x.respuesta != undefined && x.respuesta == 3){
+			swal( {
+				title:"ARCHIVO RECAUDACIONES",
+				text: "No hay datos para generar el archivo",
+				icon: "info"
+			   });
+		}
 		
 		
 	}).fail(function(xhr,status,error){
@@ -90,12 +97,15 @@ function buscarDatos(){
 	let _texto_validar = $formatoRecaudacion.val();
 	
 	switch(_texto_validar) {
-	  case '1':
-		  buscaAportesParticipes();		  
-	    break;
-	  case '2':
+		case '1':
+			buscaAportesParticipes();		  
+		break;
+		case '2':
 		  buscaAportesCreditos();
-	    break;
+		break;
+		case '3':
+			buscaAportesGeneral();
+		break;
 	  default:
 		  console.log('default');
 	}
@@ -200,6 +210,54 @@ function buscaAportesCreditos(pagina=1){
 	})
 }
 
+function buscaAportesGeneral(pagina=1){
+	
+	let $entidadPatronal	= $("#id_entidad_patronal"),
+	$anioRecaudacion		= $("#anio_recaudacion"),
+	$mesRecaudacion			= $("#mes_recaudacion"),
+	$busqueda				= $("#mod_txtBuscarDatos"),
+	$modal					= $("#mod_datos_archivo"),
+	$cantidadRegistros		= $("#mod_cantidad_registros");
+	
+	let $divResultados = $("#mod_div_datos_recaudacion");	
+	$divResultados.html('');	
+	
+	var parametros ={
+		page:pagina,		
+		busqueda:$busqueda.val(),
+		id_entidad_patronal:$entidadPatronal.val(),
+		anio_recaudaciones:$anioRecaudacion.val(),
+		mes_recaudaciones:$mesRecaudacion.val()
+		} 
+	
+	$.ajax({
+		url:"index.php?controller=Recaudacion&action=ConsultarAportesGeneral",
+		type:"POST",
+		dataType:"json",
+		data:parametros
+	}).done(function(x){
+		console.log(x)
+		$divResultados.html(x.tablaHtml);
+		$cantidadRegistros.text(x.cantidadRegistros);
+		$modal.modal('show');
+		setTimeout(function(){ setStyleTabla("tbl_archivo_recaudaciones");}, 250);
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		 	if( mensaje !== null ){
+			 var resmsg = mensaje[1];
+			 swal( {
+				 title:"Error",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+				})
+		 	}
+	})
+	
+}
 
 
 function consultaArchivos( pagina=1,search=""){	

@@ -1225,6 +1225,14 @@ function SubirInformacionCredito()  //proceso para los registros del credito
 	var ciparticipe=$('#cedula_participe').val();
 	var observacion=$('#observacion_confirmacion').val();
 	id_solicitud=solicitud;
+	swal({
+		  title: "Crédito",
+		  text: "Registrando crédito",
+		  icon: "view/images/capremci_load.gif",
+		  buttons: false,
+		  closeModal: false,
+		  allowOutsideClick: false
+		});
 	if (!renovacion_credito)
 		{
 		$.ajax({

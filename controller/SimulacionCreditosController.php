@@ -754,6 +754,7 @@ class SimulacionCreditosController extends ControladorBase{
        $id_solicitud=$_POST['id_solicitud'];
        $fecha_corte=date('Y-m-d');
        if($id_solicitud==0) $avaluo_bien=$_POST['avaluo_bien'];
+       else $avaluo_bien=0;
        $cuota=$_POST['plazo_credito'];
        $tipo_credito=$_POST['tipo_credito'];
        $renovacion_credito=$_POST['renovacion_credito'];
@@ -1028,7 +1029,6 @@ class SimulacionCreditosController extends ControladorBase{
        $resultAmortizacion=array();
        $rp_capremci= new PlanCuentasModel();
        
-       
        $columnas="expresion_formulas";
        $tablas="core_formulas INNER JOIN estado
                 ON core_formulas.id_estado = estado.id_estado";
@@ -1059,6 +1059,7 @@ class SimulacionCreditosController extends ControladorBase{
        $lastday = explode("-", $lastday);
        $lastday=$lastday[2];
        $diferencia_dias=$lastday-$elementos_fecha[2];
+       $dia_actual=$elementos_fecha[2];
        $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
        $fecha= new DateTime($fecha_ultimo_dia);
        $fecha=$fecha->format($formato_fecha);
@@ -1080,7 +1081,7 @@ class SimulacionCreditosController extends ControladorBase{
                    $lastday = $fecha->format('Y-m-t');
                    $lastday = explode("-", $lastday);
                    $lastday=$lastday[2];
-                   $diferencia_dias=$lastday-$elementos_fecha[2];
+                   $diferencia_dias=$lastday-$dia_actual;
                    $fecha_ultimo_dia=$elementos_fecha[0]."-".$elementos_fecha[1]."-".$lastday;
                    $fecha= new DateTime($fecha_ultimo_dia);
                    $fecha=$fecha->format($formato_fecha);
@@ -1711,8 +1712,7 @@ class SimulacionCreditosController extends ControladorBase{
                    $credito->setParametros($parametros);
                    $resultado=$credito->Insert();
                    
-                   $errores_credito=ob_get_clean();
-                   $errores_credito=trim($errores_credito);
+                   
                    
                    if($con_garante=="true")
                    {
@@ -1730,6 +1730,9 @@ class SimulacionCreditosController extends ControladorBase{
                        $insert=$credito->executeNonQuery($query);
                    }
                    
+                   $errores_credito=ob_get_clean();
+                   $errores_credito=trim($errores_credito);
+                   
                    if(empty($errores_credito))
                    {
                        $query="INSERT INTO core_creditos_retenciones
@@ -1743,7 +1746,7 @@ class SimulacionCreditosController extends ControladorBase{
                    {
                        $credito->endTran('ROLLBACK');
                        $respuesta=false;
-                       $mensage="ERROR".$errores_credito;
+                       $mensage="ERROR Credito".$errores_credito;
                        break;
                    }   
                }
@@ -1811,7 +1814,7 @@ class SimulacionCreditosController extends ControladorBase{
                {
                    $credito->endTran('ROLLBACK');
                    $respuesta=false;
-                   $mensage="ERROR".$errores;
+                   $mensage="ERROR credito".$errores;
                    break;
                }
                      

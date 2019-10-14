@@ -141,6 +141,7 @@
                                   	<select id="formato_recaudacion" name="formato_recaudacion" class="form-control">
                                   	<option value="1" >DESCUENTOS APORTES</option>
                                   	<option value="2" >DESCUENTOS CREDITOS</option>
+									<option value="3" >DESCUENTOS CREDITOS Y APORTES</option>
                                   	</select>
                                  </div>
                 			 </div>        			 
@@ -357,7 +358,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.31"></script> 
+   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.32"></script> 
        
        
 

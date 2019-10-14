@@ -130,6 +130,8 @@
             			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
             	                  <button type="submit" id="btnMayores" name="btnMayores" class="btn btn-default"><i class="fa fa-file-pdf-o " aria-hidden="true"></i> &nbsp; GENERAR MAYORES</button>
+            	                  <button type="submit" id="btnMayores" name="btnMayores" class="btn btn-default"><i class="fa fa-file-pdf-o " aria-hidden="true"></i> &nbsp; GENERAR MAYORES</button>
+            	                  
             	                  <a class="btn btn-danger" href="<?php  echo $helper->url("LibroMayor","index"); ?>">CANCELAR</a>
         	                    </div>
     	        		    </div>

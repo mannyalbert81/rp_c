@@ -12,6 +12,1435 @@ class SolicitudPrestamoController extends ControladorBase{
 	
 	
 	
+	public function print_hipotecario()
+	{
+	    
+	    session_start();
+	    
+	    require_once 'core/DB_Functions.php';
+	    $db = new DB_Functions();
+	    
+	    
+	    $html="";
+	    
+	    $id_usuarios = $_SESSION["id_usuarios"];
+	    $fechaactual = getdate();
+	    $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+	    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	    $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+	    
+	    $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
+	    $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
+	    $domLogo=$directorio.'/view/images/logo_contrato_adhesion.jpg';
+	    $logo = '<img src="'.$domLogo.'" width="100%">';
+	    
+	    
+	    if(!empty($id_usuarios)){
+	        
+	        if(isset($_GET["id_solicitud_prestamo"])){
+	            
+	            $id_solicitud_prestamo=$_GET["id_solicitud_prestamo"];
+	            
+	            $columnas="";
+	            $tablas=" ";
+	            $where="";
+	            $id="";
+	            
+	            $resultSoli=$db->getCondicionesDesc($columnas, $tablas, $where, $id);
+	            
+	            
+	            
+	            if(empty($resultSoli)){
+	                
+	                // DATOS DEL PRESTAMO
+	               // $_id_solicitud_prestamo       					=$resultSoli[0]->id_solicitud_prestamo;
+	                    
+	                    
+	                    
+	                    $html.='<table style="width: 100%;"  border=1 cellspacing=0.0001 >';
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 15px;"><b>FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FUERZAS ARMADAS CAPREMCI<br><br>SOLICITUD DE CRÉDITO HIPOTECARIO<b></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;"><b>DATOS DEL CRÉDITO<b></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;"><b>Valor en dólares<b></th>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;"><b>Plazo en meses<b></th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;"><b>Destino del dinero<b></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="text-align:center; font-size: 13px;"> </th>';
+	                    $html.='<td colspan="3" style="text-align:center; font-size: 13px;"> </th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"> </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;"><b>DATOS PERSONALES DEL AFILIADO SOLICITANTE<b></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;"><b>Apellidos y Nombres<b></th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">No. de Cédula<b></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"> </th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"> </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Género</th>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;">Fecha de nacimiento</th>';
+	                    $html.='<th colspan="5" style="text-align:center; font-size: 13px;">Estado civil</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    if($_nombre_sexo=='MASCULINO'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">FEMENINO</td>';
+	                    }
+	                    else{
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">MASCULINO</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                    }
+	                    
+	                    
+	                    $html.='<td colspan="3" style="text-align:center; font-size: 13px;">     </th>';
+	                    
+	                    if('Soltero'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Casado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Viudo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Divorciado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Casado'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Soltero</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Viudo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Divorciado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Viudo'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Soltero</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Casado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Divorciado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Divorciado'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Soltero</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Casado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Viudo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Otro'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Soltero</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Casado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Viudo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Divorciado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                    }
+	                    
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Separación de bienes</th>';
+	                    $html.='<th colspan="8" style="text-align:center; font-size: 13px;">Cargas familiares:</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    
+	                    if('SI'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">NO</td>';
+	                    }
+	                    else{
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">SI</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                    }
+	                    
+	                    if('SI'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">NO</td>';
+	                    }
+	                    else{
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">SI</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                    }
+	                    $html.='<th colspan="4" style="font-size: 13px;">Cuántas?   </th>';
+	                    
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">Dirección exacta del domicilio del afiliado</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Provincia</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Cantón</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Parroquia</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Barrio y/o sector</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Ciudadela y/o conjunto / Etapa / Manzana</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Calle</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Número</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Intersección</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="8" style="text-align:center; font-size: 13px;">Vivienda:</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Su vivienda esta hipotecada:</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    if('Propia'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>  </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Arrendada</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Anticresis</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Vive con Familiares</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otra</td>';
+	                    }
+	                    elseif('Arrendada'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Propia</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Anticresis</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Vive con Familiares</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otra</td>';
+	                    }
+	                    elseif('Anticresis'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Propia</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Arrendada</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Vive con Familiares</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otra</td>';
+	                    }
+	                    elseif('Vive con Familiares'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Propia</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Arrendada</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Anticresis</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otra</td>';
+	                    }
+	                    elseif('Otra'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Propia</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Arrendada</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Anticresis</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Vive con Familiares</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"></td<u>  </u>>';
+	                    }
+	                    
+	                    if('SI'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>  </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">NO</td>';
+	                    }
+	                    else{
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">SI</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                    }
+	                    
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Tiempo de residencia</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Si no tiene vivienda propia y número telefónico del propietario:</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">   </th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="12" style="font-size: 13px;"><b>Referencia de la dirección del domicilio:   </b></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;">Números telefónicos:</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"><b>Casa: </b>   </th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"><b>Celular: </b>  </th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"><b>Trabajo: </b>   </th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"><b>Ext. </b>  </th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"><b>Mode: </b>  </th>';
+	                    $html.='</tr>';
+	                    
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Dirección electrónica</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Nivel educativo</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">  </th>';
+	                    
+	                    if('Primario'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Secundario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Técnico</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Universitario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Postgrado</td>';
+	                    }
+	                    elseif('Secundario'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u><b>   <b></u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Técnico</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Universitario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Postgrado</td>';
+	                    }
+	                    elseif('Técnico'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Secundario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Universitario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Postgrado</td>';
+	                    }
+	                    elseif('Universitario'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Secundario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Técnico</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   /u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Postgrado</td>';
+	                    }
+	                    elseif('Postgrado'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Secundario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Técnico</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Universitario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                    }
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Referencia familiar que no viva con Ud. </th>';
+	                    $html.='<th colspan="9" style="text-align:center; font-size: 13px;">Parentesco</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">Dos números telefónicos</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">   </th>';
+	                    
+	                    if('Primo'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Tío'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Hermano'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Sobrino'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Abuelo'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Hijo'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Madre'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Padre'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Otro'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                    }
+	                    
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px;">  </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;">Referencia personal</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Parentesco</th>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;">Dos números telefónicos</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="text-align:center; font-size: 13px;">   </th>';
+	                    
+	                    if('Amigo'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Comadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compañero Laboral(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Jefe(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Compadre'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Amigo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Comadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compañero Laboral(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Jefe(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Comadre'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Amigo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>  </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compañero Laboral(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Jefe(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Compañero Laboral(a)'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Amigo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Comadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Jefe(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Jefe(a)'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Amigo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Comadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compañero Laboral(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Otro'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Amigo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Comadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compañero Laboral(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Jefe(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u></u></td>';
+	                    }
+	                    
+	                    $html.='<td colspan="3" style="text-align:center; font-size: 13px;">  </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">DATOS LABOLARES DEL AFILIADO SOLICIENTANTE</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Fuerza o entiedad patronal</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Reparto / Unidad</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Sección</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="12" style="font-size: 13px;"><b>Nombre y número telefónico del Jefe Inmediato:<b>    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Provincia</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Cantón</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Parroquia</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Calle</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Número</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Intersección</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="12" style="text-align:center; font-size: 13px;"><b>Referencia de la direción de trabajo:<b>    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Cargo Actual</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Años de Servicio</th>';
+	                    $html.='</tr>';
+	                    
+	                    
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">DATOS DEL CONYUGE DEL AFILIADO</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;"><b>Apellidos y Nombres<b></th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">No. de Cédula<b></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"> </th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"> </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Género</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Fecha de nacimiento</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Vive en la residencia del afiliado</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Números telefónicos</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    if('MASCULINO'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">FEMENINO</td>';
+	                    }
+	                    else{
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">MASCULINO</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                    }
+	                    
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">     </th>';
+	                    
+	                    if('SI'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">NO</td>';
+	                    }
+	                    else{
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">SI</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                    }
+	                    
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">     </th>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">Si no vive con su cónyuge su dirección exacta</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Provincia</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Cantón</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Parroquia</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Barrio y/o sector</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Ciudadela y/o conjunto / Etapa / Manzana</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Calle</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Número</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Intersección</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">Actividad económica del conyuge</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    if('Ninguna'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Empleado público</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Empleado privado</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Libre ejercicio profesional</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Independiente</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Jubilado</td>';
+	                    }
+	                    elseif('Empleado público'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Ninguna</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>  </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Empleado privado</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Libre ejercicio profesional</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Independiente</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Jubilado</td>';
+	                    }
+	                    elseif('Empleado privado'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Ninguna</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Empleado público</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Libre ejercicio profesional</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Independiente</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Jubilado</td>';
+	                    }
+	                    elseif('Libre ejercicio profesional'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Ninguna</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Empleado público </td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Empleado privado</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Independiente</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Jubilado</td>';
+	                    }
+	                    elseif('Independiente'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Ninguna</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Empleado público </td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Empleado privado</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Libre ejercicio profesional</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Jubilado</td>';
+	                    }
+	                    elseif('Jubilado'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Ninguna</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Empleado público </td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Empleado privado</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Libre ejericio profesional</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Independiente</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                    }
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Empresa / Institución</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Naturaleza del negocio</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Cargo</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">Tipo de contrato</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    if('Nombramiento'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Término fijo</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Término indefinido</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Prestación de servicios</td>';
+	                    }
+	                    elseif('Término fijo'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Nombramiento</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Término indefinido</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Prestación de servicios</td>';
+	                    }
+	                    elseif('Término indefinido'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Nombramiento</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Término fijo</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>  </u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Prestación de servicios</td>';
+	                    }
+	                    elseif('Prestación de servicios'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Nombramiento</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Término fijo</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Término indefinido</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                    }
+	                    
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">Tiempo laborado:    </th>';
+	                   
+	                    
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="12" style="text-align:center; font-size: 13px;"><b>Nombre y número telefónico del Jefe Inmediato:</b></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Provincia</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Cantón</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Parroquia</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                   
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Calle</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Número</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Intersección</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="12" style="font-size: 13px;"><b>Referencia de la dirección del trabajo:</b></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">Datos de la actividad para independencia o Detalle de Proyecto</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Actividad principal</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">RUC</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;"><b>Dirección completa:</b>   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;"><b>Detalle las actividades e Ingresos y Egresos:</b>   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Local:</th>';
+	                    if('Propio'){
+	                        $html.='<td colspan="3" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                        $html.='<td colspan="3" style="text-align:center; font-size: 13px;">Arrendado</td>';
+	                        $html.='<td colspan="3" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Arrendado'){
+	                        $html.='<td colspan="3" style="text-align:center; font-size: 13px;">Propio</td>';
+	                        $html.='<td colspan="3" style="text-align:center; font-size: 13px;"><u>    </u></td>';
+	                        $html.='<td colspan="3" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif('Otro'){
+	                        $html.='<td colspan="3" style="text-align:center; font-size: 13px;">Propio</td>';
+	                        $html.='<td colspan="3" style="text-align:center; font-size: 13px;">Arrendado</td>';
+	                        $html.='<td colspan="3" style="text-align:center; font-size: 13px;"><u>   </u></td>';
+	                    }
+	                    
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;"><b>Nombre y número telefónico del propietario:</b>   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Tiempo de funcionamiento</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Número patronal</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Número de empleados</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;">Datos económicos y financieros</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;">Referencias bancarias/th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Institución</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Tipo de cuenta o producto(tarjeta)</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Número de cuenta / tarjeta</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;">Referencia comercial y/o proveedores</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Empresa / Proveedor</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Dirección</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Número telefónico</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">    </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;">Estado de Situación Patrimonial</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Activos</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Valores en dólares</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Pasivos</th>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Valores en dólares</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">Activos Corrietes</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">   </th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">Pasivos Corrientes</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Efecivo</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Préstamo CAPREMCI(menor a 1 año)</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Bancos / Cooperativas</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Préstamo emergente CAPREMCI</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Cuentas por cobrar</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Cuentas por pagar</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Inversiones</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Proveedores</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Inversiones / Mercaderías</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Otras obligaciones menores a 1 año</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Muebles y enseres</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Con Banco</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Otros Activos Corrientes (detalle)</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Con Cooperativas</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;">   </th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Total Pasivos Corrientes</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Total Activos Corrientes</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center;font-size: 13px;">Activos Fijos</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="text-align:center;font-size: 13px;">Pasivos a Largo Plazo</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Terreno</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Préstamo CAPREMCI (mayor a 1 año)</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Vivienda</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Otras obligaciones mayores a 1 año</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Vehículo</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Con Banco</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Maquinaria</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Con Cooperativas</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Otros Activos Fijos (detalle) </th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Otros pasivos a largo plazo (detalle)</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Total de activos fijos</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Total de pasivos a largo plazo</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Activos Intangibles</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Total de Pasivos </th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Valor de su Prestación en CAPREMCI</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Patrimonio </th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Total de Activos</th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;">Garantías de CAPREMCI </th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="4" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-aling-center; font-size: 13px;">Detalle de activos</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">Bancos / Cooperativas/ Inversiones</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Tipo / Producto</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Valor / Saldo</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Plazo</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">Muebles / Inmuebles / Enseres</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Dirección</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Valor</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"Está hipotecado?</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">Vehículos / Marca / Placa / Año</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Valor</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"Uso></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Está Asegurado?</th>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">Otros Activos</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Valor</th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">Observación</th>';
+	                    $html.='</tr>';
+	                   
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="12" style="text-align:center; font-size: 13px;">Detalle de pasivos</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Institución</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Valor</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Destino</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Garantía</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Plazo</th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Saldo</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">Ingresos y Gastos Mensuales</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;">Ingresos</th>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;">Valor en dólares</th>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;">Gastos</th>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;">Valor en dólares</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Sueldo del afiliado</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Alimentación</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Sueldo del cónyuge</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Arriendos</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Comisiones</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Educación</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Arriendos</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Vestuarios</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Dividendos</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Servicios públicos</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Ingresos del negocio</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Movilizacion / Transporte</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Pensiones</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Ahorros cooperativas</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Otros ingresos (detalle)</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Cuotas tarjetas de crédito</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Cuotas de préstamos</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Otros gastos (detalle)</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Total</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<th colspan="3" style="font-size: 13px;">Total</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;">Disponible</th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='<td colspan="3" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">Croquis del domicilio del afiliado</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="12" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">Croquis del negocio / otro</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="12" style="font-size: 13px;"></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">Resumen de condiciones generales</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="12" style="margin-left: 25px; margin-right: 25px; text-align:justify; font-size: 10px;"><b>1 Solicitud de crédito:</b> La solicitud de crédito debe
+                        estar correcta y completamente llena. La información proporcionada es verdadera, refleja adecuadamente mi (nuestra) situación 
+                        y es de mi (nuestra) exclusiva responsabilidad y esta sujeta a verificación por parte del Fondo. En caso de omisión, falsedad o 
+                        alteración acepto (amos) que sea motivo de negar o rechazar la misma.</p>
+                        <p><b>2 Verificación de información y documentación</b> Autorizo (amos) expresamente al Fondo Complementario Previsional Cerrado de 
+                        Cesantía de Servidores Y Trabajadores Públicos y de Fuerzas Armanadas -CAPREMCI- a obtener de cualquier fuente la información
+                        incluida la Central de Riesgos, referencias relativas a mi (nosotros), a mi (nuestro) trabajo, a mi (nuestro) comportamiento 
+                        crediticio, manejo de mi (s)(nuestras) cuenta (s), corriente (s), de ahorro, tarjeta (s) de crédito, etc., en general al 
+                        cumplimiento de mi (nuestras) obligaciones.</p>
+                        <p><b>3 Información para terceros:</b>Fondo Complementario Previsional Cerrado de Cesantía de Servidores Y Trabajadores Públicos y de
+                        Fuerzas Armanadas -CAPREMCI- queda expresamente autorizado para que pueda utilizar, trasferir o entregar dicha información a autoridades
+                        competentes, organismos de control, Burós de información Crediticia y otras instituciones o personas jurídicas, legas o reglamentariamente
+                        facultadas, así como para que pueda hacer público mi (nuestro) comportamiento crediticio.</p>
+                        <p><b>4 Declaración de licitud de fondos:</b> Declaro expresamente que el origen y procedencia de los bienes que poseo son lícitos, además
+                        que los fondos recibidos en calidad de préstamo no serán destinados a ninguna actividad ilícita ni relacionada con la producción,
+                        consumo ni comercialización de sustancias y/o psicotrópicas.</p></th>';
+	                    $html.='<br>';
+	                    $html.='<br>';
+	                    $html.='<br>';
+	                    $html.='<p style="margin-left: 25px; margin-right: 25px; text-align:justify; font-size: 11px;">Firma del afiliado deudor</p>';
+	                   
+	                    
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="font-size: 13px;"><b>Recibido por:</b></th>';
+	                    $html.='<td colspan="6" style="font-size: 13px;"><b>Fecha:</b></th>';
+	                    $html.='</tr>';
+	                    
+	                    
+	                    $html.='</table>';
+	                    
+	                    
+	                    
+	            }
+	            
+	            $this->report("SolicitudPrestamo",array("resultSet"=>$html));
+	            die();
+	            
+	        }
+	        
+	    }else{
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	    }
+	    
+	}
+	
+	
 	
 	public function print()
 	{
@@ -1476,6 +2905,645 @@ class SolicitudPrestamoController extends ControladorBase{
 	
 	
 	
+	
+	public function print_desafiliacion()
+	{
+	    
+	    session_start();
+	    
+	    require_once 'core/DB_Functions.php';
+	    $db = new DB_Functions();
+	    
+	    
+	    $html="";
+	    
+	    $id_usuarios = $_SESSION["id_usuarios"];
+	    $fechaactual = getdate();
+	    $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+	    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	    $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+	    
+	    $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
+	    $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
+	    $domLogo=$directorio.'/view/images/logo_contrato_adhesion.jpg';
+	    $logo = '<img src="'.$domLogo.'" width="100%">';
+	    
+	    
+	    if(!empty($id_usuarios)){
+	        
+	        if(isset($_GET["id_solicitud_prestaciones"])){
+	            
+	            $id_solicitud_prestaciones=$_GET["id_solicitud_prestaciones"];
+	            
+	            $columnas="solicitud_prestaciones.id_solicitud_prestaciones, 
+                          solicitud_prestaciones.apellidos_solicitud_prestaciones, 
+                          solicitud_prestaciones.nombres_solicitud_prestaciones, 
+                          solicitud_prestaciones.cedula_participes, 
+                          sexo.id_sexo, 
+                          sexo.nombre_sexo, 
+                          solicitud_prestaciones.fecha_nacimiento_solicitud_prestaciones, 
+                          estado_civil.id_estado_civil, 
+                          estado_civil.nombre_estado_civil, 
+                          provincias.id_provincias, 
+                          provincias.nombre_provincias, 
+                          cantones.id_cantones, 
+                          cantones.nombre_cantones, 
+                          parroquias.id_parroquias, 
+                          parroquias.nombre_parroquias, 
+                          solicitud_prestaciones.barrio_solicitud_prestaciones, 
+                          solicitud_prestaciones.ciudadela_solicitud_prestaciones, 
+                          solicitud_prestaciones.calle_solicitud_prestaciones, 
+                          solicitud_prestaciones.numero_calle_solicitud_prestaciones, 
+                          solicitud_prestaciones.interseccion_solicitud_prestaciones, 
+                          solicitud_prestaciones.tipo_vivienda_solicitud_prestaciones, 
+                          solicitud_prestaciones.vivienda_hipotecada_solicitud_prestaciones, 
+                          solicitud_prestaciones.referencia_dir_solicitud_prestaciones, 
+                          solicitud_prestaciones.telefono_solicitud_prestaciones, 
+                          solicitud_prestaciones.celular_solicitud_prestaciones, 
+                          solicitud_prestaciones.correo_solicitud_prestaciones, 
+                          solicitud_prestaciones.nivel_educativo_solicitud_prestaciones, 
+                          solicitud_prestaciones.nombres_referencia_familiar, 
+                          solicitud_prestaciones.apellidos_referencia_familiar, 
+                          solicitud_prestaciones.parentesco_referencia_familiar, 
+                          solicitud_prestaciones.primer_telefono_referencia_familiar, 
+                          solicitud_prestaciones.segundo_telefono_referencia_familiar, 
+                          solicitud_prestaciones.nombres_referencia_personal, 
+                          solicitud_prestaciones.apellidos_referencia_personal, 
+                          solicitud_prestaciones.parentesco_referencia_personal, 
+                          solicitud_prestaciones.primer_telefono_referencia_personal, 
+                          solicitud_prestaciones.segundo_telefono_referencia_personal, 
+                          solicitud_prestaciones.ultimo_cargo_solicitud_prestaciones, 
+                          solicitud_prestaciones.fecha_salida_solicitud_prestaciones, 
+                          bancos.id_bancos, 
+                          bancos.nombre_bancos, 
+                          solicitud_prestaciones.numero_cuenta_ahorros_bancaria, 
+                          solicitud_prestaciones.numero_cuenta_corriente_bancaria, 
+                          solicitud_prestaciones.identificador_consecutivos, 
+                          solicitud_prestaciones.creado";
+	            $tablas=" public.solicitud_prestaciones, 
+                          public.sexo, 
+                          public.estado_civil, 
+                          public.provincias, 
+                          public.cantones, 
+                          public.parroquias, 
+                          public.bancos";
+	            $where="solicitud_prestaciones.id_sexo = sexo.id_sexo AND
+                          solicitud_prestaciones.id_provincias = provincias.id_provincias AND
+                          estado_civil.id_estado_civil = solicitud_prestaciones.id_estado_civil AND
+                          cantones.id_cantones = solicitud_prestaciones.id_cantones AND
+                          parroquias.id_parroquias = solicitud_prestaciones.id_parroquias AND
+                          bancos.id_bancos = solicitud_prestaciones.id_bancos AND solicitud_prestaciones.id_solicitud_prestaciones='$id_solicitud_prestaciones'";
+	            $id="solicitud_prestaciones.id_solicitud_prestaciones";
+	            
+	            $resultSoli=$db->getCondicionesDesc($columnas, $tablas, $where, $id);
+	            
+	            
+	           
+	            
+	            
+	            if(!empty($resultSoli)){
+	                
+	                
+	                
+	                
+	                // DATOS DEL PRESTAMO
+	                $_id_solicitud_prestaciones       					       =$resultSoli[0]->id_solicitud_prestaciones;
+	                $_apellidos_solicitud_prestaciones       				   =$resultSoli[0]->apellidos_solicitud_prestaciones;
+	                $_nombres_solicitud_prestaciones       					   =$resultSoli[0]->nombres_solicitud_prestaciones;
+	                $_cedula_participes       					               =$resultSoli[0]->cedula_participes ;
+	                $_id_sexo       					                       =$resultSoli[0]->id_sexo;
+	                $_nombre_sexo        					                   =$resultSoli[0]->nombre_sexo;
+	                $_fecha_nacimiento_solicitud_prestaciones       		   =$resultSoli[0]->fecha_nacimiento_solicitud_prestaciones;
+	                $_id_estado_civil       					               =$resultSoli[0]->id_estado_civil ;
+	                $_nombre_estado_civil       			            	   =$resultSoli[0]->nombre_estado_civil ;
+	                $_id_provincias       					                   =$resultSoli[0]->id_provincias ;
+	                $_nombre_provincias       				                   =$resultSoli[0]->nombre_provincias ;
+	                $_id_cantones       					                   =$resultSoli[0]->id_cantones;
+	                $_nombre_cantones       					               =$resultSoli[0]->nombre_cantones;
+	                $_id_parroquias       					                   =$resultSoli[0]->id_parroquias ;
+	                $_nombre_parroquias       			                  	   =$resultSoli[0]->nombre_parroquias;
+	                $_barrio_solicitud_prestaciones        					   =$resultSoli[0]->barrio_solicitud_prestaciones ;
+	                $_ciudadela_solicitud_prestaciones       				   =$resultSoli[0]->ciudadela_solicitud_prestaciones;
+	                $_calle_solicitud_prestaciones       					   =$resultSoli[0]->calle_solicitud_prestaciones ;
+	                $_numero_calle_solicitud_prestaciones        			   =$resultSoli[0]->numero_calle_solicitud_prestaciones ; 
+	                $_interseccion_solicitud_prestaciones        			   =$resultSoli[0]->interseccion_solicitud_prestaciones ;
+	                $_tipo_vivienda_solicitud_prestaciones        			   =$resultSoli[0]->tipo_vivienda_solicitud_prestaciones  ;
+	                $_vivienda_hipotecada_solicitud_prestaciones        	   =$resultSoli[0]->vivienda_hipotecada_solicitud_prestaciones  ; 
+	                $_referencia_dir_solicitud_prestaciones        			   =$resultSoli[0]->referencia_dir_solicitud_prestaciones  ;
+	                $_telefono_solicitud_prestaciones        				   =$resultSoli[0]->telefono_solicitud_prestaciones;
+	                $_celular_solicitud_prestaciones        				   =$resultSoli[0]->celular_solicitud_prestaciones ; 
+	                $_correo_solicitud_prestaciones        					   =$resultSoli[0]->correo_solicitud_prestaciones;
+	                $_nivel_educativo_solicitud_prestaciones        		   =$resultSoli[0]->nivel_educativo_solicitud_prestaciones; 
+	                $_nombres_referencia_familiar        					   =$resultSoli[0]->nombres_referencia_familiar;
+	                $_apellidos_referencia_familiar        					   =$resultSoli[0]->apellidos_referencia_familiar;
+	                $_parentesco_referencia_familiar        				   =$resultSoli[0]->parentesco_referencia_familiar ; 
+	                $_primer_telefono_referencia_familiar        			   =$resultSoli[0]->primer_telefono_referencia_familiar ;
+	                $_segundo_telefono_referencia_familiar        			   =$resultSoli[0]->segundo_telefono_referencia_familiar  ;
+	                $_nombres_referencia_personal        					   =$resultSoli[0]->nombres_referencia_personal;
+	                $_apellidos_referencia_personal        					   =$resultSoli[0]->apellidos_referencia_personal ;
+	                $_parentesco_referencia_personal        				   =$resultSoli[0]->parentesco_referencia_personal ;
+	                $_primer_telefono_referencia_personal        			   =$resultSoli[0]->primer_telefono_referencia_personal;
+	                $_segundo_telefono_referencia_personal        			   =$resultSoli[0]->segundo_telefono_referencia_personal ;
+	                $_ultimo_cargo_solicitud_prestaciones        			   =$resultSoli[0]->ultimo_cargo_solicitud_prestaciones;
+	                $_fecha_salida_solicitud_prestaciones       			   =$resultSoli[0]->fecha_salida_solicitud_prestaciones;
+	                $_id_bancos        					                       =$resultSoli[0]->id_bancos;
+	                $_nombre_bancos         				                   =$resultSoli[0]->nombre_bancos;
+	                $_numero_cuenta_ahorros_bancaria         				   =$resultSoli[0]->numero_cuenta_ahorros_bancaria ;
+	                $_numero_cuenta_corriente_bancaria         				   =$resultSoli[0]->numero_cuenta_corriente_bancaria;
+	                $_identificador_consecutivos         					   =$resultSoli[0]->identificador_consecutivos;
+	                $_creado         					                       =$resultSoli[0]->creado ;
+	                
+	                
+	                    
+	                    $html.='<table style="width: 100%;"  border=0 cellspacing=0.0001 >';
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 16px;"><b>FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FUERZAS ARMADAS <br>-CAPREMCI-<br><b></th>';
+	                    $html.='</tr>';
+	                    $html.='</table>';
+	                    
+	                    $html.='<br>';
+
+	                    $html.='<table style="width: 100%;"  border=1 cellspacing=0.0001 >';
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 15px;"><b><br>SOLICITUD DE DESAFILICACIÓN VOLUNTARIA Y DEVOLUCIÓN DE APORTES POR CESANTÍA<br><br><b></th>';
+	                    $html.='</tr>';
+	                   
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Nombres y Apellidos</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">No. de Cédula</th>';
+	                    $html.='</tr>';
+	                   
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">'.$_apellidos_solicitud_prestaciones.' '.$_nombres_solicitud_prestaciones.'</th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">'.$_cedula_participes.'</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Género</th>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;">Fecha de nacimiento</th>';
+	                    $html.='<th colspan="5" style="text-align:center; font-size: 13px;">Estado civil</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    if($_nombre_sexo=='MASCULINO'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>'.$_nombre_sexo.'</u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">FEMENINO</td>';
+	                    }
+	                    else{
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Hombre</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>'.$_nombre_sexo.'</u></td>';
+	                    }
+	                    
+	                    
+	                    $html.='<td colspan="3" style="text-align:center; font-size: 13px;">'.$_fecha_nacimiento_solicitud_prestaciones.'</th>';
+	                    
+	                    if($_nombre_estado_civil=='Soltero'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_nombre_estado_civil.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Casado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Viudo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Divorciado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_nombre_estado_civil=='Casado'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Soltero</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_nombre_estado_civil.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Viudo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Divorciado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_nombre_estado_civil=='Viudo'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Soltero</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Casado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_nombre_estado_civil.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Divorciado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_nombre_estado_civil=='Divorciado'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Soltero</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Casado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Viudo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_nombre_estado_civil.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_nombre_estado_civil=='Otro'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Soltero</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Casado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Viudo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Divorciado</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_nombre_estado_civil.'</u></td>';
+	                    }
+	                   
+	                   
+	                    
+	                    $html.='</tr>';
+	                   
+	                   
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;">Dirección exacta del domicilio del afiliado</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Provincia</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Cantón</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Parroquia</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">'.$_nombre_provincias.'</th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">'.$_nombre_cantones.'</th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">'.$_nombre_parroquias.'</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Barrio y/o sector</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Ciudadela y/o conjunto / Etapa / Manzana</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">'.$_barrio_solicitud_prestaciones.'</th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">'.$_ciudadela_solicitud_prestaciones.'</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Calle</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Número</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Intersección</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">'.$_calle_solicitud_prestaciones.'</th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">'.$_numero_calle_solicitud_prestaciones.'</th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">'.$_interseccion_solicitud_prestaciones.'</th>';
+	                    $html.='</tr>';
+	                    
+	                   
+	                    $html.='<tr>';
+	                    $html.='<th colspan="8" style="text-align:center; font-size: 13px;">Vivienda:</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Su vivienda esta hipotecada:</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    if($_tipo_vivienda_solicitud_prestaciones=='Propia'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_tipo_vivienda_solicitud_prestaciones.'</u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Arrendada</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Anticresis</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Vive con Familiares</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otra</td>';
+	                    }
+	                    elseif($_tipo_vivienda_solicitud_prestaciones=='Arrendada'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Propia</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>'.$_tipo_vivienda_solicitud_prestaciones.'</u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Anticresis</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Vive con Familiares</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otra</td>';
+	                    }
+	                    elseif($_tipo_vivienda_solicitud_prestaciones=='Anticresis'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Propia</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Arrendada</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>'.$_tipo_vivienda_solicitud_prestaciones.'</u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Vive con Familiares</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otra</td>';
+	                    }
+	                    elseif($_tipo_vivienda_solicitud_prestaciones=='Vive con Familiares'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Propia</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Arrendada</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Anticresis</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>'.$_tipo_vivienda_solicitud_prestaciones.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otra</td>';
+	                    }
+	                    elseif($_tipo_vivienda_solicitud_prestaciones=='Otra'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Propia</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Arrendada</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Anticresis</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Vive con Familiares</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"></td<u>'.$_tipo_vivienda_solicitud_prestaciones.'</u>>';
+	                    }
+	                    
+	                    
+	                    
+	                    if($_vivienda_hipotecada_solicitud_prestaciones=='SI'){
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>'.$_vivienda_hipotecada_solicitud_prestaciones.'</u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">NO</td>';
+	                        
+	                    }
+	                    else{
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">SI</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>'.$_vivienda_hipotecada_solicitud_prestaciones.'</u></td>';
+	                        
+	                    }
+	                    $html.='</tr>';
+	                    
+	                    
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="12" style="font-size: 13px;"><b>Referencia de la dirección del domicilio: </b>'.$_referencia_dir_solicitud_prestaciones.'</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;">Números telefónicos:</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"><b>Casa: </b>'.$_telefono_solicitud_prestaciones.'</th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"><b>Celular: </b>'. $_celular_solicitud_prestaciones.'</th>';
+	                    $html.='</tr>';
+	                    
+	                   
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Dirección electrónica</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Nivel educativo</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">'.$_correo_solicitud_prestaciones.'</th>';
+	                    
+	                    if($_nivel_educativo_solicitud_prestaciones=='Primario'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_nivel_educativo_solicitud_prestaciones.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Secundario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Técnico</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Universitario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Postgrado</td>';
+	                    }
+	                    elseif($_nivel_educativo_solicitud_prestaciones=='Secundario'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u><b>'.$_nivel_educativo_solicitud_prestaciones.'<b></u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Técnico</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Universitario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Postgrado</td>';
+	                    }
+	                    elseif($_nivel_educativo_solicitud_prestaciones=='Técnico'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Secundario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_nivel_educativo_solicitud_prestaciones.'</u></td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Universitario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Postgrado</td>';
+	                    }
+	                    elseif($_nivel_educativo_solicitud_prestaciones=='Universitario'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Secundario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Técnico</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;"><u>'.$_nivel_educativo_solicitud_prestaciones.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Postgrado</td>';
+	                    }
+	                    elseif($_nivel_educativo_solicitud_prestaciones=='Postgrado'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Secundario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Técnico</td>';
+	                        $html.='<td colspan="2" style="text-align:center; font-size: 13px;">Universitario</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_nivel_educativo_solicitud_prestaciones.'</u></td>';
+	                    }
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="2" style="text-align:center; font-size: 13px;">Referencia familiar que no viva con Ud </th>';
+	                    $html.='<th colspan="9" style="text-align:center; font-size: 13px;">Parentesco</th>';
+	                    $html.='<th colspan="1" style="text-align:center; font-size: 13px;">Dos números telefónicos</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="2" style="text-align:center; font-size: 13px;">'.$_nombres_referencia_familiar.' '.$_apellidos_referencia_familiar.'</th>';
+	                    
+	                    if($_parentesco_referencia_familiar=='Primo'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_familiar.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_familiar=='Tío'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_familiar.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_familiar=='Hermano'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_familiar.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_familiar=='Sobrino'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_familiar.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_familiar=='Abuelo'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_familiar.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_familiar=='Hijo'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_familiar.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_familiar=='Madre'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_familiar.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_familiar=='Padre'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_familiar.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_familiar=='Otro'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Primo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Tío</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hermano</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Sobrino</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Abuelo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Hijo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Madre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Padre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_familiar.'</u></td>';
+	                    }
+	                    
+	                    $html.='<td colspan="1" style="text-align:center; font-size: 13px;">'.$_primer_telefono_referencia_familiar.' - '.$_segundo_telefono_referencia_familiar.'</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;">Referencia personal</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Parentesco</th>';
+	                    $html.='<th colspan="3" style="text-align:center; font-size: 13px;">Dos números telefónicos</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="3" style="text-align:center; font-size: 13px;">'.$_nombres_referencia_personal.'</th>';
+	                    
+	                    if($_parentesco_referencia_personal=='Amigo'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_personal.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Comadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compañero Laboral(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Jefe(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_personal=='Compadre'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Amigo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_personal.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Comadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compañero Laboral(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Jefe(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_personal=='Comadre'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Amigo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_personal.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compañero Laboral(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Jefe(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_personal=='Compañero Laboral(a)'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Amigo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Comadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_personal.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Jefe(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_personal=='Jefe(a)'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Amigo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Comadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compañero Laboral(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_personal.'</u></td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Otro</td>';
+	                    }
+	                    elseif($_parentesco_referencia_personal=='Otro'){
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Amigo</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Comadre</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Compañero Laboral(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;">Jefe(a)</td>';
+	                        $html.='<td colspan="1" style="text-align:center; font-size: 13px;"><u>'.$_parentesco_referencia_personal.'</u></td>';
+	                    }
+	                    
+	                    $html.='<td colspan="3" style="text-align:center; font-size: 13px;">'.$_primer_telefono_referencia_personal.' - '.$_segundo_telefono_referencia_personal.'</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Último cargo</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Fecha de salida</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">'.$_ultimo_cargo_solicitud_prestaciones.'</th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">'.$_fecha_salida_solicitud_prestaciones.'</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='</table>';
+	                    
+	                    $html.='<br>';
+	                   
+	                    $html.='<table style="width: 100%;"  border=1 cellspacing=0.0001 >';
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="text-align:center; font-size: 15px;"><b>DATOS DE LA SOLICITUD<b></th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Presentada por</th>';
+	                    $html.='<th colspan="6" style="text-align:center; font-size: 13px;">Fecha</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">'.$_apellidos_solicitud_prestaciones.' '.$_nombres_solicitud_prestaciones.'</th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;">'.$_fecha_salida_solicitud_prestaciones.'</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;">Sres. F.C.P.C. de los Empleados Civiles de las Fuerzas Armadas por la presente solicito que el valor que me corresponde en mi requerimiendo sea depositado en:<b></th>';
+	                    $html.='</tr>';
+	                  
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Mi cuenta del banco</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Cuenta de ahorros número</th>';
+	                    $html.='<th colspan="4" style="text-align:center; font-size: 13px;">Cuenta corriente número</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">'.$_nombre_bancos.'</th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">'.$_numero_cuenta_ahorros_bancaria.'</th>';
+	                    $html.='<td colspan="4" style="text-align:center; font-size: 13px;">'.$_numero_cuenta_corriente_bancaria.'</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<th colspan="12" style="font-size: 13px;">Declaro que la información consignada es verdadera y los documentos anexados a ésta solicitud son auténticos</th>';
+	                    $html.='</tr>';
+	                    
+	                    $html.='<tr>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"><b>Firma del Participe desafiliado y/o Cesante:</b><br><br><br>..........................................</th>';
+	                    $html.='<td colspan="6" style="text-align:center; font-size: 13px;"><b>Número C.C.</b><br><br><br>'.$_cedula_participes.'</th>';
+	                    $html.='</tr>';
+	                   
+	                    $html.='</table>';
+	                    
+	                   
+	            }
+	            
+	            $this->report("SolicitudDesafiliacion",array("resultSet"=>$html));
+	            die();
+	            
+	        }
+	        
+	    }else{
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	    }
+	    
+	}
+	
+	
+	
+	
+	
 
 	public function paginate_load_solicitud_prestamos_registrados($reload, $page, $tpages, $adjacents) {
 	
@@ -1851,7 +3919,16 @@ class SolicitudPrestamoController extends ControladorBase{
 					}
 					
 					*/
-					$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$res->id_solicitud_prestamo.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
+					
+					
+					
+					
+					
+					//$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$res->id_solicitud_prestamo.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
+					$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print_hipotecario&id_solicitud_prestamo='.$res->id_solicitud_prestamo.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
+					
+					
+					
 					$html.='</td>';
 					$html.='<td style="font-size: 15px;">';
 					if($aprobado_oficial_credito==1 && $res->nombre_tipo_creditos!="HIPOTECARIO"){
@@ -2245,7 +4322,7 @@ class SolicitudPrestamoController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->celular_solicitud_prestaciones.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->numero_cuenta_ahorros_bancaria.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_bancos.'</td>';
-	                $html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestaciones='.$res->id_solicitud_prestaciones.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
+	                $html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print_desafiliacion&id_solicitud_prestaciones='.$res->id_solicitud_prestaciones.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
 	                $html.='<td style="font-size: 15px;"><button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="EnviarInfoDasafiliacion(&quot;'.$res->cedula_participes.'&quot;,'.$res->id_solicitud_prestaciones.')"><i class="glyphicon glyphicon-import"></i></button>';
 	                
 	                $html.='</tr>';
@@ -2263,7 +4340,7 @@ class SolicitudPrestamoController extends ControladorBase{
 	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
 	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
 	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay solicitud de garantías de prestamos registrados...</b>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay solicitud de desafiliaciones registrados...</b>';
 	            $html.='</div>';
 	            $html.='</div>';
 	        }

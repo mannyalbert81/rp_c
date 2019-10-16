@@ -1154,7 +1154,84 @@ class BuscarParticipesCesantesController extends ControladorBase{
         return $out;
     }
     
+    public function print()
+    {
+        
+        session_start();
+        $html="";
+         
+        $id_usuarios = $_SESSION["id_usuarios"];
+        $fechaactual = getdate();
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        
+        $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
+        $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
+        $domLogo=$directorio.'/view/images/logo_contrato_adhesion.jpg';
+        $logo = '<img src="'.$domLogo.'" width="100%">';
+        
+        $participes= new ParticipesModel();
+        
     
+        
+        
+        if(!empty($id_usuarios)){
+            
+            if(isset($_GET["id_solicitud_prestamo"])){
+                
+                $id_solicitud_prestamo=$_GET["id_solicitud_prestamo"];
+                
+                $columnas="core_estado_participes.nombre_estado_participes, core_participes.nombre_participes,
+                    core_participes.fecha_nacimiento_participes,
+                    core_participes.apellido_participes, core_participes.ocupacion_participes,
+                    core_participes.cedula_participes, core_entidad_patronal.nombre_entidad_patronal,
+                    core_participes.telefono_participes, core_participes.direccion_participes,
+                    core_estado_civil_participes.nombre_estado_civil_participes, core_genero_participes.nombre_genero_participes,
+                    DATE (core_participes.fecha_ingreso_participes)fecha_ingreso_participes, core_participes.celular_participes,
+                    core_participes.id_participes";
+                $tablas="public.core_participes INNER JOIN public.core_estado_participes
+                    ON core_participes.id_estado_participes = core_estado_participes.id_estado_participes
+                    INNER JOIN core_entidad_patronal
+                    ON core_participes.id_entidad_patronal = core_entidad_patronal.id_entidad_patronal
+                    INNER JOIN core_estado_civil_participes
+                    ON core_participes.id_estado_civil_participes=core_estado_civil_participes.id_estado_civil_participes
+                    INNER JOIN core_genero_participes
+                    ON core_genero_participes.id_genero_participes = core_participes.id_genero_participes";
+                
+                $where="core_participes.cedula_participes='".$id_solicitud_prestamo."'";
+                
+                $id="core_participes.id_participes";
+                
+                $resultSet=$participes->getCondiciones($columnas, $tablas, $where, $id);
+                
+                
+                
+                if(!empty($resultSet)){
+                    
+                      
+                        
+                        
+                        $html.='<table style="width: 100%;"  border=1 cellspacing=0.0001 >';
+                        $html.='<tr>';
+                        $html.='<th colspan="12" style="text-align:center; font-size: 18px;"><b>FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FUERZAS ARMADAS CAPREMCI<br>CRÉDITO <br>SOLICITUD N.-<b></th>';
+                        $html.='</tr>';
+                        $html.='</table>';
+                     
+                        
+                }
+                
+                $this->report("BuscarParticipesCesantes",array("resultSet"=>$html));
+                die();
+                
+            }
+            
+        }else{
+            
+            $this->redirect("Usuarios","sesion_caducada");
+        }
+        
+    }
     
 }
 

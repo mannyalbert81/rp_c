@@ -7,6 +7,25 @@ function init(){
 	
 }
 
+function validaCambioMes(){
+	
+	let ddlMes = $("#mes_recaudacion");
+	let ddlEntidadPatronal = $("#id_entidad_patronal");
+	if( $("#mes_recaudacion").val() == 0 ){ddlEntidadPatronal.attr("disabled","true"); ddlEntidadPatronal.val(0)}else{ddlEntidadPatronal.removeAttr("disabled")}
+	
+}
+
+function validaTipoArchivo(){
+	/* not implement yet */
+	let ddlEntidadPatronal = $("#id_entidad_patronal");	
+	if(ddlEntidadPatronal.val() == 0){
+		ddlEntidadPatronal.notify("Seleccione Una entidad",{ position:"buttom left", autoHideDelay: 2000});
+	}else{
+		/*matriz a devolver opcion 1 o 2 */
+		
+	}
+} 
+
 $("#btnGenerar").on("click",function(){
 	
 	let $entidadPatronal 	= $("#id_entidad_patronal"),

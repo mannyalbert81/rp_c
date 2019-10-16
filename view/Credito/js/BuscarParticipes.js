@@ -158,7 +158,14 @@ function BorrarCedulaGarante()
 
 function TipoCredito()
 {   
-	
+	var select_monto='<div class="col-xs-6 col-md-3 col-lg-3 ">'+
+            		'<div class="form-group">'+
+                		'<label for="monto_credito" class="control-label">Monto Crédito:</label>'+
+              			'<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">'+
+                        '<div id="mensaje_monto_credito" class="errores"></div>'+
+                 	'</div>'+
+             	'</div>';
+	$("#monto_del_credito").html(select_monto);
 	$("#select_cuotas").html("");
 	$("#monto_credito").val("");
 	$("#tabla_amortizacion").html("");
@@ -175,12 +182,14 @@ function TipoCredito()
     		'<button align="center" class="btn bg-olive" title="Análisis crédito"  onclick="AnalisisCreditoParticipe()"><i class="glyphicon glyphicon-new-window"></i></button>'+
   			'<div id="mensaje_sueldo_participe" class="errores"></div></div></div>';
 		$("#capacidad_de_pago_participe").html(boton);
+		
 		}
 	else
 		{
 		$("#capacidad_de_pago_participe").html("");
 		$("#select_cuotas").html("");
 		$("#monto_credito").val("");
+		$("#monto_del_credito").html("");
 		}
 	var bci="<label for=\"cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
 			"<div id=\"mensaje_cedula_garante\" class=\"errores\"></div>" +
@@ -342,41 +351,8 @@ function QuitarCreditoRenovacion()
 
 function QuitarGarante()
 {
-	var bci="<label for=\"cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
-	"<div id=\"mensaje_cedula_garante\" class=\"errores\"></div>" +
-	"<div class=\"input-group\">"
-  +"<input type=\"text\" data-inputmask=\"'mask': '9999999999'\" class=\"form-control\" id=\"cedula_garante\" name=\"cedula_garante\" placeholder=\"C.I.\">"
-  +"<span class=\"input-group-btn\">"      			
-  +"<button type=\"button\" class=\"btn btn-primary\" id=\"buscar_garante\" name=\"buscar_garante\" onclick=\"BuscarGarante()\">"
-  +"<i class=\"glyphicon glyphicon-plus\"></i>"
-  +"</button>"
-  +"<button type=\"button\" class=\"btn btn-danger\" id=\"borrar_cedula\" name=\"borrar_cedula\" onclick=\"BorrarCedulaGarante()\">"
-  +"<i class=\"glyphicon glyphicon-arrow-left\"></i>"
-  +"</button>"
-  +"</span>"
-  +"</div>";
-	$('#info_garante').html(bci);
-	$(":input").inputmask();
-	$('#cedula_garante').keypress(function(event){
-		  if(event.keyCode == 13){
-			  console.log("garante")
-		    $('#buscar_garante').click();
-		  }
-		});
-	var monto="Disponible : "+disponible_participe;
-	var aportes=document.getElementById("aportes_participes");
-	if (parseFloat(disponible_participe) < 150 || aportes!=null)
-	{
-	document.getElementById("disponible_participe").classList.remove('bg-olive');
-	document.getElementById("disponible_participe").classList.add('bg-red');
-	}
-	else
-		{
-		document.getElementById("disponible_participe").classList.remove('bg-red');
-		document.getElementById("disponible_participe").classList.add('bg-olive');
-		}
-	$("#monto_disponible").html(monto);
-	garante_seleccionado=false;
+	
+	TipoCredito();
 }
 
 function InfoParticipe()
@@ -600,6 +576,14 @@ function GetCuotas()
 				}
 			else
 				{
+				swal({
+					  title: "Simulación de Crédito",
+					  text: "Cargando tabla de amortización",
+					  icon: "view/images/capremci_load.gif",
+					  buttons: false,
+					  closeModal: false,
+					  allowOutsideClick: false
+					});
 				if (!garante_seleccionado)
 					{
 					$.ajax({
@@ -614,18 +598,12 @@ function GetCuotas()
 					    },
 					})
 					.done(function(x) {
+						console.log(x);
 						x=JSON.parse(x);
 						
 						$("#select_cuotas").html(x[1]);
 						$("#monto_credito").val(x[0]);
-						swal({
-							  title: "Simulación de Crédito",
-							  text: "Cargando tabla de amortización",
-							  icon: "view/images/capremci_load.gif",
-							  buttons: false,
-							  closeModal: false,
-							  allowOutsideClick: false
-							});
+						
 						SimularCredito();
 						
 						
@@ -664,14 +642,7 @@ function GetCuotas()
 							capacidad_pago_garante_suficiente=true;
 							
 							}
-						swal({
-							  title: "Simulación de Crédito",
-							  text: "Cargando tabla de amortización",
-							  icon: "view/images/capremci_load.gif",
-							  buttons: false,
-							  closeModal: false,
-							  allowOutsideClick: false
-							});
+						
 						SimularCredito();
 						
 						

@@ -51,103 +51,156 @@ class RecaudacionController extends ControladorBase{
 	    $Contribucion      = new CoreContribucionModel();
 	    $respuesta         = array();
 	    $error             = "";
+	    session_start();
 	    
-	    try{
-	        $Contribucion->beginTran();
-	        session_start();	        
+	    /* variables locales */
+	    $_nombre_formato_recaudacion = "";
+	    
+	    /*variables de la vista*/
+	    $_id_entidad_patronal  = 0;
+	    $_anio_recaudacion     = 0;
+	    $_mes_recaudacion      = 0;
+	    $_formato_recaudacion  = 0;
+	    
+	    /** validar las variables que llegan de la vista */
+	    try {
 	        $_id_entidad_patronal  = $_POST['id_entidad_patronal'];
 	        $_anio_recaudacion     = $_POST['anio_recaudacion'];
 	        $_mes_recaudacion      = $_POST['mes_recaudacion'];
 	        $_formato_recaudacion  = $_POST['formato_recaudacion'];
 	        
 	        $error = error_get_last();
-	        if(!empty($error)){    throw new Exception('Variables no recibidas'); }
+	        if(!empty($error)){    throw new Exception('Datos enviados no validos para generacion de Archivo'); }
 	        
+	    } catch (Exception $e) {
+	        echo '<message>'.$e->getMessage().' <message>';
+	        exit();
+	    }
+	    
+	    //echo "<br>",$_formato_recaudacion;
+	    
+	    /** primero validar si el tipo de archivo solicitado esta permitido */
+	    try {
+	        
+	        $_nombre_formato_recaudacion = ($_formato_recaudacion == 1) ? "DESCUENTOS APORTES" : (($_formato_recaudacion == 2) ? "DESCUENTOS CREDITOS" : "DESCUENTOS APORTES Y CREDITOS");
+	        
+	        
+	        if( $_formato_recaudacion == 1 || $_formato_recaudacion == 2 ){	        
+	            
+	            if( $_formato_recaudacion == 1 ){
+	                
+	                $columnas1 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones";
+	                $tablas1   = "core_archivo_recaudaciones";
+	                $where1    = "id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_recaudacion".
+	   	                " AND mes_archivo_recaudaciones = $_mes_recaudacion AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion' ";
+	                $id1       = "id_archivo_recaudaciones";
+	                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	                
+	                if( !empty($rsConsulta1) ){
+	                    throw new Exception("tipo de formato ya se encuentra generado");
+	                }
+	                
+	            }
+	            
+	            if( $_formato_recaudacion == 2 ){
+	                
+	                $columnas1 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones";
+	                $tablas1   = "core_archivo_recaudaciones";
+	                $where1    = "id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_recaudacion".
+	   	                " AND mes_archivo_recaudaciones = $_mes_recaudacion AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion' ";
+	                $id1       = "id_archivo_recaudaciones";
+	                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	                
+	                if( !empty($rsConsulta1) ){
+	                    throw new Exception("tipo de formato ya se encuentra generado");
+	                }
+	                
+	            }
+	            
+	           
+	            	            
+	        }else if( $_formato_recaudacion == 3){
+	            
+	            $columnas1 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones";
+	            $tablas1   = "core_archivo_recaudaciones";
+	            $where1    = "id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_recaudacion".
+	   	            " AND mes_archivo_recaudaciones = $_mes_recaudacion AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion' ";
+	            $id1       = "id_archivo_recaudaciones";
+	            $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	            
+	            if( !empty($rsConsulta1) ){
+	                throw new Exception("tipo de formato ya se encuentra generado");
+	            }else{
+	                $columnas2 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones";
+	                $tablas2   = "core_archivo_recaudaciones";
+	                $where2    = "id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_recaudacion".
+	   	                " AND mes_archivo_recaudaciones = $_mes_recaudacion AND formato_archivo_recaudaciones in ('DESCUENTOS CREDITOS','DESCUENTOS APORTES')";
+	                $id2       = "id_archivo_recaudaciones";
+	                $rsConsulta1 = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	                if( !empty($rsConsulta1) ){
+	                    throw new Exception("tipo de formato no se puede generar existe un archivo individual.");
+	                }
+	            }
+	            
+	        }else{
+	            
+	            throw new Exception("Formato de archivo no valido");
+	        }
+	        	         
+	        
+	    } catch (Exception $ex) {
+	        echo '<message>'.$ex->getMessage().' <message>';
+	        exit();
+	    }    
+	   
+	    //echo "<br>----llego aca ---<br>"; die();
+	    try{
+	        $Contribucion->beginTran();
+	        	        
 	        /*configurar estructura mes de consulta*/
-	        $_mes_recaudacion = str_pad($_mes_recaudacion, 2, "0", STR_PAD_LEFT);
-	        
-	        $_nombre_formato_recaudacion = "";
-	        $columnas1 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones";
-	        $tablas1   = "core_archivo_recaudaciones";
-	        $where1    = "id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_recaudacion";
-	        $where1    .= " AND mes_archivo_recaudaciones = $_mes_recaudacion";
-	        $id1       = "id_archivo_recaudaciones";
+	        $_mes_recaudacion = str_pad($_mes_recaudacion, 2, "0", STR_PAD_LEFT);       
+	       
 	        	        
 	        //diferenciar el tipo de recaudacion que va a realizar 
 	        switch ( $_formato_recaudacion ){
 	           
 	            case '1':
-	                //para cuando sea para cuenta individual
-	                $_nombre_formato_recaudacion = "DESCUENTOS APORTES";
-	                $where1    .= " AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion'";
-	                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-	                
-	                $_id_archivo_recaudaciones = 0;
-	                
-	                $error = pg_last_error();
-	                if(!empty($error)){ throw new Exception('datos no validos'); }
-	                
-	                if(empty($rsConsulta1)){
 	                    
-	                    $respuestaArchivo           = $this->RecaudacionAportes($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
-	                    $_id_archivo_recaudaciones  = $respuestaArchivo;
+                    $respuestaArchivo           = $this->RecaudacionAportes($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
+                    $_id_archivo_recaudaciones  = $respuestaArchivo;
+                    
+                    if((int)$respuestaArchivo > 0){
+                        
+                        $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
+                        $respuesta['id_archivo']= $_id_archivo_recaudaciones;
+                        $respuesta['respuesta'] = 1;
+                        
+                    }else if((int)$respuestaArchivo == 0){
+                        
+                        $respuesta['respuesta'] = 3;
+					}
 	                    
-	                    if((int)$respuestaArchivo > 0){
-	                        
-	                        $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
-	                        $respuesta['id_archivo']= $_id_archivo_recaudaciones;
-	                        $respuesta['respuesta'] = 1;
-	                    }else if((int)$respuestaArchivo == 0){
-                            $respuesta['respuesta'] = 3;
-						}
-	                    
-	                }else{
-	                    
-	                    $respuesta['mensaje']   = "Revise el Archivo";
-	                    $respuesta['id_archivo']= $rsConsulta1[0]->id_archivo_recaudaciones;
-	                    $respuesta['respuesta'] = 2;
-	                    
-	                }
+	              
 	                
 	            break;
-                case '2':
-                    /*para realizar recaudacion por creditos*/
-                    //primero validar que no exista
-                    $_nombre_formato_recaudacion = "DESCUENTOS CREDITOS";
-                    $where1    .= " AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion'";
-                    
-                    $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-                    
-                    $_id_archivo_recaudaciones = 0;
-                    
-                    $error = pg_last_error();
-                    if(!empty($error)){ throw new Exception('datos no validos'); }
-                    
-                    if(empty($rsConsulta1)){
+                case '2':                   
                         
-                        $respuestaArchivo           = $this->RecaudacionCreditos($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
-                        $_id_archivo_recaudaciones  = $respuestaArchivo;
-                        
-                        if((int)$respuestaArchivo > 0){
-                            
-                            $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
-                            $respuesta['id_archivo']= $_id_archivo_recaudaciones;
-                            $respuesta['respuesta'] = 1;
-                        }else if((int)$respuestaArchivo == 0){
-                            $respuesta['respuesta'] = 3;
-						}
-                        
-                    }else{
-                        
-                        $respuesta['mensaje']   = "Revise el Archivo";
-                        $respuesta['id_archivo']= $rsConsulta1[0]->id_archivo_recaudaciones;
-                        $respuesta['respuesta'] = 2;
-                                                
-                    }
+                    $respuestaArchivo           = $this->RecaudacionCreditos($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
+                    $_id_archivo_recaudaciones  = $respuestaArchivo;
                     
+                    if((int)$respuestaArchivo > 0){
+                        
+                        $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
+                        $respuesta['id_archivo']= $_id_archivo_recaudaciones;
+                        $respuesta['respuesta'] = 1;
+                    }else if((int)$respuestaArchivo == 0){
+                        $respuesta['respuesta'] = 3;
+					}                       
+                   
                      
 				break;
 				case '3':
+				    $_nombre_formato_recaudacion = "DESCUENTOS APORTES Y CREDITOS";
 					//para cuando sea ambos aportes
 					// se validara que se haya generado ambos tipos 
 					// cuando se genere el archivo no existira formato de recaudacion del archivo 
@@ -229,12 +282,10 @@ class RecaudacionController extends ControladorBase{
                     AND dd.id_estatus = 1
             	    AND ee.nombre_estado = 'ACTIVO'
             	    AND dd.id_entidad_patronal = '$_id_entidad_patronal'";
-	    $id1       = "dd.id_participes";
-	    
-	   
+	    $id1       = "dd.id_participes";	    
 	    $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	    
-	    if(empty($rsConsulta1)){ return 0;}
+	    if( sizeof($rsConsulta1) == 0 ){ return 0;}
 	    
 	    $funcionArchivo    = "core_ins_core_archivo_recaudaciones";
 	    $parametrosArchivo = "'$_anio','$_mes','$_id_entidad_patronal',null,null,'$formato_archivo_recaudaciones','$_usuario_usuarios'";
@@ -305,11 +356,28 @@ class RecaudacionController extends ControladorBase{
             	    AND TO_CHAR(aa.fecha_tabla_amortizacion,'YYYYMM') = '$_fecha_buscar'
             	    AND dd.nombre_estado_creditos = 'Activo'";
 	    $id1       = "cc.id_participes, aa.id_tabla_amortizacion";
-	    
-	    //echo $columnas1, $tablas1, $where1, $id1, '<br>'; throw new Exception('Nprueba');
-	    
+	    	    
 	    $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	    
+	    /** buscar cuotas en mora de los participes */	    
+	    $columnas2 = "aa.id_tabla_amortizacion,aa.fecha_tabla_amortizacion, aa.total_valor_tabla_amortizacion,aa.mora_tabla_amortizacion,"
+    	    ." bb.id_creditos, bb.numero_creditos, bb.id_tipo_creditos, bb.fecha_concesion_creditos,"
+    	    ." cc.id_participes, cc.cedula_participes, cc.nombre_participes, cc.apellido_participes";
+	    $tablas2   = "core_tabla_amortizacion aa"
+    	    ." INNER JOIN core_creditos bb ON bb.id_creditos = aa.id_creditos"
+    	    ." INNER JOIN core_participes cc ON cc.id_participes = bb.id_participes and cc.id_estatus = bb.id_estatus"
+    	    ." INNER JOIN core_estado_creditos dd ON dd.id_estado_creditos = bb.id_estado_creditos";
+	    $where2    = "bb.id_estatus = 1"
+            ." AND upper(dd.nombre_estado_creditos) = 'ACTIVO'"
+	        ." AND coalesce(aa.mora_tabla_amortizacion,0) > 0"
+	        ." AND aa.id_estado_tabla_amortizacion <> 2"
+	        ." AND cc.id_entidad_patronal in (1)"
+	        ." AND to_char(aa.fecha_tabla_amortizacion,'YYYYMM') < '$_fecha_buscar'";
+	    $id2       = " cc.id_participes,bb.id_creditos,aa.id_tabla_amortizacion ";
+	    
+        $rsConsulta2 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+       	   
 	    if(empty($rsConsulta1)){ return 0;}
 	    
         $funcionArchivo    = "core_ins_core_archivo_recaudaciones";
@@ -343,6 +411,10 @@ class RecaudacionController extends ControladorBase{
 			/** para almacenar en un array lista de participes */
 			array_push($_array_participes,$res->id_participes);	
 		}
+		
+		
+		
+		
 
 		/** BEGIN PRUEBAS MULTIPLE DE ARRAY LISTA  */
 		
@@ -361,7 +433,7 @@ class RecaudacionController extends ControladorBase{
 		and coalesce(aa.mora_tabla_amortizacion,0) > 0 
 		and aa.id_estado_tabla_amortizacion <> 2
 		and ee.id_participes in ($_lista_string_participes)
-		and to_char(aa.fecha_tabla_amortizacion,'YYYYMM') <= '201910'"; 
+		and to_char(aa.fecha_tabla_amortizacion,'YYYYMM') <= '201910'";  //aqui 
 		$id2		= "aa.id_tabla_amortizacion";
 
 		$rsConsulta2= $Contribucion->getCondiciones($columnas2,$tablas2,$where2,$id2);
@@ -448,6 +520,10 @@ class RecaudacionController extends ControladorBase{
 	    
         return $_id_archivo_recaudaciones;
         
+	}
+	
+	public function RecaudacionCombinada(){
+	    //permite la creacion de un archivo donde constan de tanto aportes como de cuota de creditos
 	}
 	
 	public function ConsultaAportes(){
@@ -1466,7 +1542,68 @@ class RecaudacionController extends ControladorBase{
 	    echo $_SERVER['DOCUMENT_ROOT']."\\rp_c\\";
 	}
 	
-	
+	/***
+	 * fn para setear las entidades patronales preopensa a cambios
+	 * @throws Exception
+	 */
+	function setEntidadPatronal(){
+	    
+	    $Empleados = new EmpleadosModel();
+	    
+	    try {
+	        
+	        $Empleados->beginTran();
+	        
+	        $columnas1 = "*";
+	        $tablas1   = "public.core_entidad_patronal";
+	        $where1    = "1=1";
+	        $id1       = "id_entidad_patronal";
+	        $rsConsulta1  = $Empleados->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	        
+	        foreach ( $rsConsulta1 as $res){
+	            
+	            $id_entidad_patronal   = $res->id_entidad_patronal;
+	            
+	            $columnas2 = "*";
+	            $tablas2   = "public.consecutivos";
+	            $where2    = "1=1 AND nombre_consecutivos = 'CODENTIDADPATRONAL'";
+	            $id2       = "id_consecutivos";
+	            $rsConsulta2  = $Empleados->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	            $valorconsetivos = $rsConsulta2[0]->valor_consecutivos;
+	            $id_consecutivos = $rsConsulta2[0]->id_consecutivos;
+	            
+	            /*actualizar la entidad Patronal*/
+	            $queryActualizacion = "UPDATE public.core_entidad_patronal SET codigo_entidad_patronal = $valorconsetivos WHERE id_entidad_patronal = $id_entidad_patronal";
+	            $Empleados->executeNonQuery($queryActualizacion);
+
+	            /* actualiza consecutivos */
+	            /* actualizacion de consecutivo */
+	            $_queryActualizacion = "UPDATE consecutivos
+                                    SET numero_consecutivos = lpad((valor_consecutivos+1)::text,espacio_consecutivos,'0'),
+                                    valor_consecutivos = valor_consecutivos+1
+                                    WHERE id_consecutivos = $id_consecutivos ";
+	            $Empleados->executeNonQuery($_queryActualizacion);
+	            
+	        }
+	        
+	        $error_php = error_get_last();
+	        $error_pg  = pg_last_error();
+	        if(!empty($error_php) || !empty($error_pg)){
+	            throw new Exception("se genereo error");
+	        }
+	        
+	        $Empleados->endTran("COMMIT");
+	        
+	        
+	    } catch (Exception $e) {
+	        
+	        echo "hubo un error";
+	        $Empleados->endTran();
+	        
+	    }
+	    
+	    
+	}
 	
 }
 ?>

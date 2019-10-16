@@ -31,6 +31,43 @@ function InfoSolicitud(cedula,id_solicitud)
 	
 }
 
+function InfoParticipe()
+{
+	var modal = $('#myModalSimulacion');
+	var ciparticipe=$('#cedula_participe').val();
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=CreditoParticipe',
+	    type: 'POST',
+	    data: {
+	    	cedula_participe:ciparticipe
+	    },
+	})
+	.done(function(x) {
+		modal.find("#info_participe").html(x);
+		var limite=document.getElementById("monto_disponible").innerHTML;
+		var elementos=limite.split(" : ");
+		limite=elementos[1];
+		disponible_participe=limite;
+		console.log("disponible participe "+limite);
+		var lista=document.getElementById("disponible_participe").classList;
+		lista=lista.value;
+		if(lista.includes('bg-red'))
+			{
+			swal({
+		  		  title: "Advertencia!",
+		  		  text: "El participe no puede acceder a un crédito en este momento",
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+			}
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+}
+
+
 function BuscarParticipe()
 {
 	var ciparticipe=$('#cedula_participe').val();

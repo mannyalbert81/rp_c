@@ -162,14 +162,8 @@
                         <div id="mensaje_tipo_credito" class="errores"></div>
                  	</div>
              	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="monto_credito" class="control-label">Monto Crédito:</label>
-              			<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">
-                        <div id="mensaje_monto_credito" class="errores"></div>
-                 	</div>
-             	</div>
              	<div id="capacidad_de_pago_participe"></div>
+             	<div id="monto_del_credito"></div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
             			<div id="select_cuotas"></div>
@@ -179,12 +173,10 @@
           	
           	 <div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
+          		<div id="capacidad_pago_garante"></div>
              	</div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
              	</div>
-             	
-            			<div id="capacidad_pago_garante"></div>
-                 	
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
              	</div>
           	</div>
@@ -256,7 +248,7 @@
                         </tr>
                         <tr>
                         <th>CUOTA VIGENTE:</th>
-                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="cuota_vigente" name="cuota_vigente" onkeyup="SumaIngresos()"></td>
+                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="cuota_vigente" name="cuota_vigente" readonly></td>
                         </tr>
                         <tr>
                         <th>FONDOS:</th>
@@ -361,6 +353,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?0.45"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?0.47"></script> 
    </body>
 </html>   

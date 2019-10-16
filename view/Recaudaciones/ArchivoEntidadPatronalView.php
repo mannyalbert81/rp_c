@@ -88,6 +88,27 @@
   		<div class="box-body">
 
 			<form id="frm_recaudacion" action="<?php echo $helper->url("Recaudacion","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+			
+			<div class="row">        	
+        			<div class="col-lg-6 col-md-6 col-xs-12">        		
+            			<div class="form-group "> 
+                			 <div class="form-group-sm">
+                				<label for="anio_recaudacion" class="col-sm-4 control-label" >Periodo de Fechas:</label>
+                				<div class="col-sm-4">
+                                  	<input type="number" max="<?php echo date('Y') ?>" class="form-control" id="anio_recaudacion" name="anio_recaudacion"  autocomplete="off" value="<?php echo date('Y') ?>" autofocus>
+                                 </div>
+                                 <div class="col-sm-4">
+                                  	<select id="mes_recaudacion" name="mes_recaudacion" class="form-control" onchange="validaCambioMes()">
+                                  	<option value="0">--seleccione--</option>
+                                  	<?php for ( $i=1; $i<=count($meses); $i++){ ?>
+                                  	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>                                  	                                  	
+                                  	<?php }?>
+                                  	</select>
+                                 </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div>
              		
              	<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
@@ -95,7 +116,7 @@
                 			 <div class="form-group-sm">
                 				<label for="id_entidad_patronal" class="col-sm-4 control-label" >Entidad Patronal:</label>
                 				<div class="col-sm-8">
-                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control">
+                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control" disabled>
                                   	<option value="0">--Seleccione--</option>
                                   	<?php if(isset($rsEntidadPatronal)){
                                   	    foreach ( $rsEntidadPatronal as $res ){
@@ -109,28 +130,7 @@
     				</div>
         		</div>
         		
-        		<div class="row">        	
-        			<div class="col-lg-6 col-md-6 col-xs-12">        		
-            			<div class="form-group "> 
-                			 <div class="form-group-sm">
-                				<label for="anio_recaudacion" class="col-sm-4 control-label" >Periodo de Fechas:</label>
-                				<div class="col-sm-4">
-                                  	<input type="number" max="<?php echo date('Y') ?>" class="form-control" id="anio_recaudacion" name="anio_recaudacion"  autocomplete="off" value="<?php echo date('Y') ?>" autofocus>
-                                 </div>
-                                 <div class="col-sm-4">
-                                  	<select id="mes_recaudacion" name="mes_recaudacion" class="form-control">
-                                  	<?php for ( $i=1; $i<=count($meses); $i++){ ?>
-                                  	<?php if( $i == date('n')){ ?>
-                                  	<option value="<?php echo $i;?>" selected ><?php echo $meses[$i-1]; ?></option>
-                                  	<?php }else{?>
-                                  	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>
-                                  	<?php }}?>
-                                  	</select>
-                                 </div>
-                			 </div>        			 
-            			</div>
-    				</div>
-        		</div>
+        		
         		
         		<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
@@ -358,7 +358,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.32"></script> 
+   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.35"></script> 
        
        
 

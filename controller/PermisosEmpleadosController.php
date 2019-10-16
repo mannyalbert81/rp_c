@@ -169,6 +169,7 @@ class PermisosEmpleadosController extends ControladorBase{
         }
         $where_to="";
         $columnas = " empleados.nombres_empleados,
+                      empleados.dias_vacaciones_empleados,
                       cargos_empleados.nombre_cargo,
                       departamentos.nombre_departamento,
                         departamentos.id_departamento,
@@ -258,7 +259,7 @@ class PermisosEmpleadosController extends ControladorBase{
             
             $limit = " LIMIT   '$per_page' OFFSET '$offset'";
             
-            $resultSet=$permisos_empleados->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+            $resultSet=$permisos_empleados->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
             $count_query   = $cantidadResult;
             $total_pages = ceil($cantidadResult/$per_page);
             
@@ -280,6 +281,7 @@ class PermisosEmpleadosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Cargo</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Departamento</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Dias Disponibles</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Fecha</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Desde</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Hasta</th>';
@@ -311,6 +313,7 @@ class PermisosEmpleadosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_cargo.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_departamento.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->dias_vacaciones_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->fecha_solicitud.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->hora_desde.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->hora_hasta.'</td>';
@@ -489,12 +492,56 @@ class PermisosEmpleadosController extends ControladorBase{
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
+        $columnas="hora_desde, hora_hasta, id_empleado";
+        $tablas="permisos_empleados";
+        $where="id_permisos_empleados=".$id_solicitud;
+        $resultSet=$permisos->getCondicionesSinOrden($columnas, $tablas, $where, "");
+        $desde=$resultSet[0]->hora_desde;
+        $hasta=$resultSet[0]->hora_hasta;
+        $id_empleado=$resultSet[0]->id_empleado;
+        
+        $columnas="dias_vacaciones_empleados";
+        $tablas="empleados";
+        $where="id_empleados=".$id_empleado;
+        $resultSet=$permisos->getCondicionesSinOrden($columnas, $tablas, $where, "");
+        $dias_vacaciones=$resultSet[0]->dias_vacaciones_empleados;
+        
+        
+        $desde='2016-11-30 '.$desde;
+        $hasta='2016-11-30 '.$hasta;
+        $fecha1 = new DateTime($desde);//fecha inicial
+        $fecha2 = new DateTime($hasta);//fecha de cierre
+        
+        $intervalo = $fecha1->diff($fecha2);
+        
+        $intervalo =$intervalo->format('%h:%i');//00 años 0 meses 0 días 08 horas 0 minutos 0 segundos
+        
+        $intervalo=explode(":",$intervalo);
+        $intervalo[0]=$intervalo[0]*60;
+        $intervalo=$intervalo[0]+$intervalo[1];
+        
+        if($intervalo==525) $intervalo-=45;
+        
+        $dias_permiso = $intervalo/480;
+        
+        $dias_permiso=number_format((float)$dias_permiso, 2,".","");
+        
+        $dias_vacaciones-=$dias_permiso;
+        
+        
         $where = "id_permisos_empleados=".$id_solicitud;
         $tabla = "permisos_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
         $permisos->UpdateBy($colval, $tabla, $where);
-     
-     echo 1;
+        
+        $query="UPDATE empleados
+            SET dias_vacaciones_empleados='$dias_vacaciones'
+            WHERE id_empleados=".$id_empleado;
+        
+        $permisos->executeNonQuery($query);
+        
+        echo "1";
+        
     }
     
     public function CertificadoMedico()

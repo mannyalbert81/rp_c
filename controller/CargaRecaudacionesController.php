@@ -609,6 +609,170 @@ public function ConsultaCedulas($_archivo){
     $_respuesta['suma_lineas'] = $_suma_linea;
     return $_respuesta;
 }
+
+
+
+public function inserta_datos(){
+    
+    session_start();
+    $resultado = null;
+    $participes = new ParticipesModel();
+    
+    
+    if (isset(  $_SESSION['nombre_usuarios']) )
+    {
+        $_id_entidad_patronal = $_POST["id_entidad_patronal"];
+        $_mes_carga_recaudaciones = $_POST["mes_carga_recaudaciones"];
+        $_anio_carga_recaudaciones = $_POST["anio_carga_recaudaciones"];
+        
+        if ($_FILES['nombre_carga_recaudaciones']['tmp_name']!="")
+        {
+            
+            $_lectura_biometrico->deleteById("id_entidad_patronal='$_id_entidad_patronal' AND anio_carga_recaudaciones='$_anio_carga_recaudaciones' AND mes_carga_recaudaciones='$_mes_carga_recaudaciones'");
+            
+            $_id_usuarios= $_SESSION['id_usuarios'];
+            
+            $directorio = $_SERVER['DOCUMENT_ROOT'].'/nomina/view/biometrico/';
+            
+            $nombre = $_FILES['nombre_carga_recaudaciones']['name'];
+            $tipo = $_FILES['nombre_carga_recaudaciones']['type'];
+            $tamano = $_FILES['nombre_carga_recaudaciones']['size'];
+            move_uploaded_file($_FILES['nombre_carga_recaudaciones']['tmp_name'],$directorio.$nombre);
+            
+            
+            $lineas = file($directorio.$nombre);
+            $numero_linea=0;
+            $errores=false;
+            $error_encontrado="";
+            
+            if(!empty($lineas)){
+                
+                
+                foreach ($lineas as $linea_num => $linea)
+                {
+                    $numero_linea++;
+                    $error_encontrado="";
+                    $datos = explode("\t",$linea);
+                    
+                    if(count($datos) == 3 && !empty(trim($datos[0])) && !empty(trim($datos[1]))){
+                        
+                        $cedula_participes              = trim($datos[0]);
+                        $monto                = trim($datos[1]);
+                        
+                    }else{
+                        
+                        $errores=true;
+                        
+                        $error_encontrado="Esta linea no contiene el formato establecido (cedula, fecha, hora), las columnas no estan separadas por tabulaciones.";
+                        
+                    }
+                    
+                }
+                 
+                // cuando pasa la primera validacion de verificar tabulaciones.
+                if($errores==false){
+                    
+                    $numero_linea=0;
+                    
+                    $cedula_participes="";
+                    $monto="";
+               
+                    // AQUI VALIDAMOS QUE LA CEDULA EXISTA REGISTRADA EN LA BASE DE DATOS.
+                    foreach ($lineas as $linea_num => $linea)
+                    {
+                        $numero_linea++;
+                        $error_encontrado="";
+                        $datos = explode("\t",$linea);
+                        
+                        if(count($datos) == 3 && !empty(trim($datos[0])) && !empty(trim($datos[1])) && !empty(trim($datos[2]))){
+                            
+                            $cedula_participes              = trim($datos[0]);
+                            $monto                = trim($datos[1]);
+                            
+                            if(!is_numeric($cedula_participes)){
+                                
+                                $errores=true;
+                                
+                                $error_encontrado="La cedula $cedula_participes debe ser solo numeros.";
+                                
+                       
+                            }else{
+                                
+                                
+                                if(strlen($cedula_participes)==10 || strlen($cedula_participes)==13){
+                                    
+                                }else{
+                                    
+                                    $errores=true;
+                                    
+                                    $error_encontrado="La cedula $cedula_participes debe estar compuesta de 10 dígitos o 13 dígitos.";
+                                
+                                }
+                                
+                            }
+                            
+                            $columnas="core_participes.cedula_participes";
+                            $tablas ="core_participes";
+                            $where ="core_participes.cedula_participes= '$cedula_participes'";
+                            $id="core_participes.cedula_participes";
+                            
+                            $resultEmple=$participes->getCondiciones($columnas,$tablas,$where,$id);
+                            
+                            if(!empty($resultEmple)){
+                                
+                            }else{
+                                
+                                $errores=true;
+                                
+                                $error_encontrado="La cedula número $cedula_participes no existe registrada en la base de datos.";
+                             
+                            }
+                                  
+                        }else{
+                            
+                            $errores=true;
+                            
+                            $error_encontrado="Esta linea no contiene el formato establecido, las columnas no estan separadas por tabulaciones.";
+                        
+                        }
+                        
+                    }
+                    
+                }
+                
+            }else{
+                
+                $errores=true;
+                
+                $error_encontrado="El archivo seleccionado no contiene registros, esta vacio.";
+                
+            }
+            
+        }
+        
+        
+        $this->redirect("CargaRecaudaciones", "index");
+         
+    }else{
+        
+        $error = TRUE;
+        $mensaje = "Te sesión a caducado, vuelve a iniciar sesión.";
+        
+        $this->view("Login",array(
+            "resultSet"=>"$mensaje", "error"=>$error
+        ));
+        
+        
+        die();
+        
+    }
+    
+    
+}
+
+
+                            
+                            
 }
 
 ?>

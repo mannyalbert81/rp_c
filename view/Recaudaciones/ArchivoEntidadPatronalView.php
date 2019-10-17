@@ -87,7 +87,7 @@
                   
   		<div class="box-body">
 
-			<form id="frm_recaudacion" action="<?php echo $helper->url("Recaudacion","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+			<form id="frm_recaudacion" data-locked="false" action="<?php echo $helper->url("Recaudacion","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
 			
 			<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
@@ -176,9 +176,10 @@
                                  <div class="col-sm-4">
                                   	<button type="button" id="btnGenerar" name="btnGenerar" class="btn btn-block btn-sm btn-default">GENERAR</button>
                                  </div>
-                                 <div class="col-sm-4">
+                                 <!-- <div class="col-sm-4">
                                   	<button type="button" id="btnDescargar" name="btnDescargar" class="btn btn-block btn-sm btn-default">DESCARGAR ARCHIVO</button>
                                  </div>
+                                  -->
                 			 </div>        			 
             			</div>
     				</div>
@@ -195,24 +196,58 @@
       <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Historial archivos Generados</h3>              
+              <h3 class="box-title">Listado Recaudacion Entidades</h3>              
             </div>
             
             <div class="box-body">
 
            		<div class="row">
-                	<div class="col-lg-6 col-md-6 col-xs-12">
+           			<div class="col-lg-12 col-md-12 col-xs-12">
+               		    <div class="col-lg-3 col-md-3 col-xs-12">
+                   		    <div class="" >
+            					<!-- aqui poner elemento de cantidad de registros -->
+                    		</div>
+                    	</div>
+               			<div class="col-lg-9 col-md-9 col-xs-12">
+                        	
+                        	<div class="pull-right" >
+                        		<div class="form-group-sm">
+                					<select id="ddl_mes_buscar" class="form-control">
+                						<option value="0">--Seleccione--</option>
+                						<?php for ( $i=1; $i<=count($meses); $i++){ ?>
+                                      	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>                                  	                                  	
+                                      	<?php }?>            						
+                					</select>
+            					</div>
+                    		</div> 
+                    	    <div class="pull-right" >
+                    	    	<div class="form-group-sm">
+                					<input type="number" value="" max="<?php echo date('Y');?> " class="form-control" id="txt_anio_buscar" placeholder="Ingrese año"/>
+                				</div>
+                    		</div> 
+                    		<div class="pull-right" >
+                    			<div class="form-group-sm">
+                        			<select id="ddl_id_entidad_patronal" class="form-group-sm form-control ">
+                            			<option value="0">--Seleccione--</option>
+                                      	<?php if(isset($rsEntidadPatronal)){
+                                      	    foreach ( $rsEntidadPatronal as $res ){
+                                      	        echo '<option value="'.$res->id_entidad_patronal.'">'.$res->nombre_entidad_patronal.'</option>';
+                                      	    }
+                                      	}?>
+                                    </select>
+                                </div>
+                    		</div> 
+                    		<div class="pull-right" >
+                    			<div class="form-group-sm">
+                    				<button id="btn_reload" onclick="consultaArchivosRecaudacion(1)" class=" form-control btn btn-default" ><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                    			</div>
+                    		</div>
+                    		
+                    		               	
+                    	</div>
                 	</div>
-                	<div class="col-lg-6 col-md-6 col-xs-12">
-                		<div class="pull-right" >
-                			<input type="text" value="" class="form-control" id="txtBuscarhistorial" name="txtBuscarhistorial"  placeholder="Buscar.."/>
-                		</div> 
-                		<div class="pull-right" >
-                			<button id="btn_reload" class="btn btn-default" ><i class="fa fa-refresh" aria-hidden="true"></i></button>
-                		</div>
-                		
-                		               	
-                	</div>
+                	
+                	
                 </div>
                            
     			<div class="clearfix" ></div> 	
@@ -358,7 +393,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.35"></script> 
+   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.50"></script> 
        
        
 

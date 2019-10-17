@@ -56,6 +56,30 @@ class SimulacionCreditosController extends ControladorBase{
         echo $html;
     }
     
+    public function getTipoCredito1()
+    {
+        session_start();
+        $rp_capremci= new PlanCuentasModel();
+        $columnas="codigo_tipo_creditos, nombre_tipo_creditos";
+        $tablas="core_tipo_creditos INNER JOIN estado
+                ON core_tipo_creditos.id_estado = estado.id_estado";
+        $where="id_estatus=1 AND nombre_estado='ACTIVO'";
+        $id="id_tipo_creditos";
+        $resultSet=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $html='<label for="tipo_credito" class="control-label">Tipo Crédito:</label>
+        <select name="tipo_credito" id="tipo_credito"  class="form-control">
+        <option value="" selected="selected">--Seleccione--</option>';
+        foreach ($resultSet as $res)
+        {
+            $html.='<option value="'.$res->codigo_tipo_creditos.'" >'.$res->nombre_tipo_creditos.'</option>';
+        }
+        
+        $html.='</select>';
+        
+        echo $html;
+    }
+    
     public function GetInfoCreditoRenovar()
     {
         session_start();
@@ -2596,6 +2620,43 @@ class SimulacionCreditosController extends ControladorBase{
             ON core_creditos.id_participes = core_participes.id_participes';
                
                $where="core_participes.cedula_participes='$cedula_participe' AND core_creditos.id_estado_creditos=4
+            AND core_creditos.id_estatus=1 AND id_tipo_creditos=".$res->id_tipo_creditos_a_renovar;
+           
+           $id_credito=$creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
+           
+           foreach ($id_credito as $res1)
+           {
+               $tasa_interes=$res1->interes_creditos;
+               $tasa_interes=$tasa_interes/100;
+               $interes_mensual = $tasa_interes / 12;
+               $valor_cuota =  ($res1->monto_otorgado_creditos * $interes_mensual) /  (1- pow((1+$interes_mensual), -$res1->plazo_creditos))  ;
+               $valor_cuota=round($valor_cuota,2);
+               $cuota_total+=$valor_cuota;
+           }
+           
+       }
+       echo $cuota_total;
+   }
+   
+   public function cuotaParticipe1(){
+       session_start();
+       $creditos = new EstadoModel();
+       $cedula_participe=$_SESSION['cedula_usuarios'];
+       $tipo_credito=$_POST['tipo_credito'];
+       $cuota_total=0;
+       $columnas="id_tipo_creditos_a_renovar";
+       $tablas="core_tipo_creditos_renovacion INNER JOIN core_tipo_creditos
+        ON core_tipo_creditos.id_tipo_creditos = core_tipo_creditos_renovacion.id_tipo_creditos";
+       $where="codigo_tipo_creditos='".$tipo_credito."'";
+       $id_creditos_renovar=$creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       
+       foreach($id_creditos_renovar as $res)
+       {
+           $columnas='monto_otorgado_creditos, plazo_creditos, interes_creditos';
+           $tablas='core_creditos INNER JOIN core_participes
+            ON core_creditos.id_participes = core_participes.id_participes';
+           
+           $where="core_participes.cedula_participes='$cedula_participe' AND core_creditos.id_estado_creditos=4
             AND core_creditos.id_estatus=1 AND id_tipo_creditos=".$res->id_tipo_creditos_a_renovar;
            
            $id_credito=$creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");

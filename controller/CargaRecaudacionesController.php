@@ -680,6 +680,7 @@ public function inserta_datos(){
                     // AQUI VALIDAMOS QUE LA CEDULA EXISTA REGISTRADA EN LA BASE DE DATOS.
                     foreach ($lineas as $linea_num => $linea)
                     {
+                        
                         $numero_linea++;
                         $error_encontrado="";
                         $datos = explode("\t",$linea);

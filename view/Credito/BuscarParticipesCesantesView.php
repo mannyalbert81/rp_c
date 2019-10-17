@@ -140,6 +140,13 @@
            		<div id="creditos_participe" ></div>
            		</div>
            	</div>
+           	
+           	  	<div class="row">
+           		<div class="col-xs-12 col-md-12 col-lg-12 ">
+           		<div id="tabla_desafiliacion" ></div>
+           		</div>
+           	</div>
+           	
              	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
           	  <a id="link_reporte" onclick="reportePrint(this)" data-participe="0" href="#" class="btn btn-success" style="margin-top: 10px;"><i class=""></i>Reporte</a>
@@ -169,6 +176,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.43"></script> 
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.44"></script> 
    </body>
 </html>   

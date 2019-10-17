@@ -1691,6 +1691,7 @@ class SimulacionCreditosController extends ControladorBase{
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                      0,
                      '$desgravamen',
                      null,
                      '$total_valor',
@@ -1708,6 +1709,7 @@ class SimulacionCreditosController extends ControladorBase{
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                     0,
                      '$desgravamen',
                      '$incendios',
                      '$total_valor',
@@ -1765,135 +1767,140 @@ class SimulacionCreditosController extends ControladorBase{
                    {
                        $credito->endTran('ROLLBACK');
                        $respuesta=false;
-                       $mensage="ERROR Credito".$errores_credito;
+                       $mensage="ERROR Credito".$errores_credito."--".$num_cuota;
                        break;
                    }   
                }
-               
-               $fecha_pago=$res['fecha_pago'];
-               $num_cuota=$res['pagos_trimestrales'];
-               $amortizacion=$res['amortizacion'];
-               $intereses=$res['interes'];
-               $saldo_inicial=$res['saldo_inicial'];
-               $desgravamen=$res['desgravamen'];
-               if ($tipo_credito=="PH") $incendios=$res['seguro_incendios'];
-               $dividendo=$res['pagos'];
-               $total_valor=$amortizacion+$intereses+$desgravamen;
-               $funcion = "ins_core_tabla_amortizacion";
-               if($tipo_credito!="PH")
-               {
-                   $parametros="'$numero_credito',
+               else {
+                   $fecha_pago=$res['fecha_pago'];
+                   $num_cuota=$res['pagos_trimestrales'];
+                   $amortizacion=$res['amortizacion'];
+                   $intereses=$res['interes'];
+                   $saldo_inicial=$res['saldo_inicial'];
+                   $desgravamen=$res['desgravamen'];
+                   if ($tipo_credito=="PH") $incendios=$res['seguro_incendios'];
+                   $dividendo=$res['pagos'];
+                   $total_valor=$amortizacion+$intereses+$desgravamen;
+                   $funcion = "ins_core_tabla_amortizacion";
+                   if($tipo_credito!="PH")
+                   {
+                       $parametros="'$numero_credito',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                     '$total_valor',
                      '$desgravamen',
                      null,
                      '$total_valor',
-                     2,
+                     3,
                      1,
                      '$tasa_interes',
                      '$hoy'";
-               }
-               else
-               {
-                   $parametros="'$numero_credito',
+                   }
+                   else
+                   {
+                       $parametros="'$numero_credito',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                     '$total_valor',
                      '$desgravamen',
                      '$incendios',
                      '$total_valor',
-                     2,
+                     3,
                      1,
                      '$tasa_interes',
                      '$hoy'";
-               }
-                            
-               $credito->setFuncion($funcion);
-               $credito->setParametros($parametros);
-              $resultado=$credito->Insert();
-              $funcion = "ins_core_tabla_amortizacion_historico";
-              $credito->setFuncion($funcion);
-              $credito->setParametros($parametros);
-              $resultado=$credito->Insert();
-              
-              $funcion = "ins_core_tabla_amortizacion_pagare";
-              $credito->setFuncion($funcion);
-              $credito->setParametros($parametros);
-              $resultado=$credito->Insert();
-              $errores=ob_get_clean();
-              $errores=trim($errores);
-               if(!(empty($errores)))
-               {
-                   $credito->endTran('ROLLBACK');
-                   $respuesta=false;
-                   $mensage="ERROR credito".$errores;
-                   break;
-               }
-                     
-           }
-           if($respuesta)
-           {
-               $actualizacion_solicitud=$this->ActualizarSolicitud($id_solicitud, $monto_credito, $cuota, $numero_credito);
-               $plan_cuentas=new PlanCuentasModel();
-               $colval="numero_consecutivos=".$numero_credito;
-               $tabla="consecutivos";
-               $where="nombre_consecutivos='CREDITO'";
-               $actualizacion_solicitud= trim($actualizacion_solicitud);
-               if(empty($actualizacion_solicitud))
-               {
-                   ob_start();
-                   $plan_cuentas->ActualizarBy($colval, $tabla, $where);
-                   $actualizacion_consecutivo=ob_get_clean();
-                   $actualizacion_consecutivo= trim($actualizacion_consecutivo);
-                   if(empty($actualizacion_consecutivo))
+                   }
+                   
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   $funcion = "ins_core_tabla_amortizacion_historico";
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   
+                   $funcion = "ins_core_tabla_amortizacion_pagare";
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   $errores=ob_get_clean();
+                   $errores=trim($errores);
+                   if(!(empty($errores)))
                    {
-                       $actualizar_cuentas=$this->ActualizarCuentasParticipes($id_solicitud, $numero_credito);
-                       if(empty($actualizar_cuentas))
+                       $credito->endTran('ROLLBACK');
+                       $respuesta=false;
+                       $mensage="ERROR credito".$errores."==".$num_cuota;
+                       break;
+                   }
+                   
+               }
+           }
+               if($respuesta)
+               {
+                   $actualizacion_solicitud=$this->ActualizarSolicitud($id_solicitud, $monto_credito, $cuota, $numero_credito);
+                   $plan_cuentas=new PlanCuentasModel();
+                   $colval="numero_consecutivos=".$numero_credito;
+                   $tabla="consecutivos";
+                   $where="nombre_consecutivos='CREDITO'";
+                   $actualizacion_solicitud= trim($actualizacion_solicitud);
+                   if(empty($actualizacion_solicitud))
+                   {
+                       ob_start();
+                       $plan_cuentas->ActualizarBy($colval, $tabla, $where);
+                       $actualizacion_consecutivo=ob_get_clean();
+                       $actualizacion_consecutivo= trim($actualizacion_consecutivo);
+                       if(empty($actualizacion_consecutivo))
                        {
-                           
-                           $actualizar_info_participes=$this->ActualizarInfoParticipe($cedula_participe, $id_solicitud);
-                           if(empty($actualizar_info_participes))
+                           $actualizar_cuentas=$this->ActualizarCuentasParticipes($id_solicitud, $numero_credito);
+                           if(empty($actualizar_cuentas))
                            {
-                               $credito->endTran('COMMIT');
                                
-                               $mensage="OK";
+                               $actualizar_info_participes=$this->ActualizarInfoParticipe($cedula_participe, $id_solicitud);
+                               if(empty($actualizar_info_participes))
+                               {
+                                   $credito->endTran('COMMIT');
+                                   
+                                   $mensage="OK";
+                               }
+                               else
+                               {
+                                   $credito->endTran('ROLLBACK');
+                                   $mensage="ERROR 1 ".$actualizar_info_participes;
+                               }
+                               
                            }
                            else
                            {
                                $credito->endTran('ROLLBACK');
-                               $mensage="ERROR 1 ".$actualizar_info_participes;
+                               $mensage="ERROR 2 ".$actualizar_cuentas." ".$id_solicitud." ".$numero_credito;
                            }
                            
                        }
-                       else
-                      {
-                          $credito->endTran('ROLLBACK');
-                          $mensage="ERROR 2 ".$actualizar_cuentas." ".$id_solicitud." ".$numero_credito;
-                      }
+                       else {
+                           $credito->endTran('ROLLBACK');
+                           $mensage="ERROR 3 ".$actualizacion_consecutivo;
+                       }
                        
                    }
-                   else {
+                   else
+                   {
+                       echo "solicitud no aceptada";
                        $credito->endTran('ROLLBACK');
-                       $mensage="ERROR 3 ".$actualizacion_consecutivo;
+                       $mensage="ERROR 4 ".$actualizacion_solicitud;
                    }
                    
                }
-               else
-               {
-                   echo "solicitud no aceptada";
-                   $credito->endTran('ROLLBACK');
-                   $mensage="ERROR 4 ".$actualizacion_solicitud;
-               }
+              
                
-    
-           }
+           
       
       
        
@@ -2138,10 +2145,11 @@ class SimulacionCreditosController extends ControladorBase{
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                     '$total_valor',
                      '$desgravamen',
                      null,
                      '$total_valor',
-                     2,
+                     3,
                      1,
                      '$tasa_interes',
                      '$hoy'";
@@ -2155,10 +2163,11 @@ class SimulacionCreditosController extends ControladorBase{
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                     '$total_valor',
                      '$desgravamen',
                      '$incendios',
                      '$total_valor',
-                     2,
+                     3,
                      1,
                      '$tasa_interes',
                      '$hoy'";

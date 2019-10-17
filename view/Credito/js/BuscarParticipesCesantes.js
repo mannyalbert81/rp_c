@@ -93,6 +93,7 @@ function BuscarParticipe()
 			console.log(y);
 			$('#participe_encontrado').html(y[0]);
 		     id_participe=y[1];
+		    $("#link_reporte").data("participe",id_participe);
 			AportesParticipe(id_participe, 1)
 			AportesParticipePatronal(id_participe, 1)
 			CreditosActivosParticipe(id_participe, 1)
@@ -166,3 +167,8 @@ function CreditosActivosParticipe(id, page)
 	});
 }
 
+function reportePrint(ObjetoLink){
+	var $enlace = $(ObjetoLink);
+	var id_participe = $enlace.data("participe");
+	window.open("index.php?controller=BuscarParticipesCesantes&action=print&id_participes="+id_participe,"_blank");
+}

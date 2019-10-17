@@ -389,7 +389,7 @@
 				<br>
 				  <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-					<button type="submit" form="frm_guardar_proveedor" class="btn btn-primary" id="guardar_datos">Guardar 		Datos</button>
+					<button type="submit" form="frm_guardar_proveedor" class="btn btn-primary" id="guardar_datos">Guardar Datos</button>
 				  </div>
 				
 				</div>

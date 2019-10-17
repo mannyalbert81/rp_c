@@ -488,6 +488,140 @@ class BuscarParticipesCesantesController extends ControladorBase{
         
     }
     
+    public function TablaDesafiliacion()
+    {
+        session_start();
+        $id_participe=$_POST['id_participe'];
+        $html="";
+        $participes= new ParticipesModel();
+        $total=0;
+        
+        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
+        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
+        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=3
+                AND core_contribucion.id_estatus=1";
+        $id="fecha_registro_contribucion";
+        
+        $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
+        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
+        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=3
+                AND core_contribucion.id_estatus=1";
+        $id="fecha_registro_contribucion";
+        
+        $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        if(!(empty($resultAportes)))
+        {
+            foreach($resultAportes as $res)
+            {
+                if($res->valor_personal_contribucion!=0)
+                {
+                    $total+=$res->valor_personal_contribucion;
+                    
+                }
+                else
+                {
+                    $total+=$res->valor_patronal_contribucion;
+                }
+            }
+            
+            $personales=sizeof($resultAportesPersonales);
+            $last=sizeof($resultAportes);
+            $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
+            $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
+            $fecha_primer=substr($fecha_primer,0,10);
+            $fecha_ultimo=substr($fecha_ultimo,0,10);
+            $tiempo=$this->dateDifference($fecha_primer, $fecha_ultimo);
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            $resultSet=$participes->getCantidad("*", $tablas, $where);
+            $cantidadResult=(int)$resultSet[0]->total;
+            $per_page = 20; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            $resultAportes=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
+            $last=sizeof($resultAportes);
+            
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            $html='<div class="box box-solid bg-aqua">
+            <div class="box-header with-border">
+            <h3 class="box-title">Aportaciones Patronales</h3>
+            <h4 class="widget-user-desc"><b>Tiempo de Aportes:</b> '.$tiempo.'</h4>
+            <h4 class="widget-user-desc"><b>Número de Aportaciones Personales mensuales:</b> '.$personales.'</h4>
+            </div>
+             <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-aqua">
+                        <th width="10%">№</th>
+                        <th width="29%">FECHA DE APORTACION</th>
+                        <th width="28%">TIPO DE APORTE</th>
+                        <th width="29%">TOTAL</th>
+                        <th width="1.5%"></th>
+                     </tr>
+                   </table>
+                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
+                     <table border="1" width="100%">';
+            for($i=$last-1; $i>=0; $i--)
+            {
+                $index=($i+($last-1)*($page-1))+1;
+                if($resultAportes[$i]->valor_personal_contribucion!=0)
+                {
+                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
+                    $monto=number_format((float)$resultAportes[$i]->valor_personal_contribucion, 2, ',', '.');
+                    $html.='<tr>
+                                 <td bgcolor="white" width="10%"><font color="black">'.$index.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$fecha.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
+                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
+                                </tr>';
+                }
+                else
+                {
+                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
+                    $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
+                    $html.='<tr>
+                                 <td bgcolor="white"  width="10%"><font color="black">'.$index.'</font></td>
+                                 <td bgcolor="white"  width="30%"><font color="black">'.$fecha.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
+                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
+                                </tr>';
+                }
+                
+                
+            }
+            $total=number_format((float)$total, 2, ',', '.');
+            $html.='</table>
+                   </div>
+                    <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-aqua">
+                        <th class="text-right">Acumulado Total de Aportes: <span id="lblTotalPatronal"> '.$total.' </span></th>
+                        <th width="1.5%"></th>
+                     </tr>
+                   </table>';
+            $html.='<div class="table-pagination pull-right">';
+            $html.=''. $this->paginate_aportes_patronal("index.php", $page, $total_pages, $adjacents,$id_participe,"AportesParticipePatronal").'';
+            $html.='</div>
+                    </div>';
+            
+            
+            echo $html;
+            
+        }
+        else
+        {
+            $html.='<div class="alert alert-warning alert-dismissable bg-aqua" style="margin-top:40px;">';
+            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene aportaciones</b>';
+            $html.='</div>';
+            echo $html;
+        }
+        
+        
+    }
+    
     public function paginate_aportes($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
         
         $prevlabel = "&lsaquo; Prev";
@@ -719,6 +853,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
                 $html.='</tr>';
                 $html.='<tr height = "25">';
                 $html.='<td><a class="btn bg-green" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
+                
                 $html.='</tr>';
                 $hoy=date("Y-m-d");
                 $columnas="id_estado_tabla_amortizacion";
@@ -761,9 +896,9 @@ class BuscarParticipesCesantesController extends ControladorBase{
                    </div>
                     <table border="1" width="100%">
                      <tr style="color:white;" class="bg-aqua">
-                        <th class="text-right">Acumulado Total: <span id="lblTotalCreditos"> '.$total.' </span></th>
+          <th class="text-right">Acumulado Total: <span id="lblTotalCreditos"> '.$total.' </span></th>
                         <th width="1.5%"></th>
-                     </tr>
+               </tr>
                    </table>';
             $html.='<div class="table-pagination pull-right">';
             $html.=''. $this->paginate_creditos("index.php", $page, $total_pages, $adjacents,$id_participe,"CreditosActivosParticipe").'';
@@ -778,183 +913,14 @@ class BuscarParticipesCesantesController extends ControladorBase{
         {
             $html.='<div class="alert alert-warning alert-dismissable bg-aqua" style="margin-top:40px;">';
             $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene creditos activos</b>';
+            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene créditos activos</b>';
             $html.='</div>';
             echo $html;
         }
         
         
     }
-    
-    public function CalculoDesafiliacion()
-    {
-        session_start();
-        $id_participe=$_POST['id_participe'];
-        $html="";
-        $participes= new ParticipesModel();
-        $total=0;
-        
-        $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
-            		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
-            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
-            		core_estado_creditos.nombre_estado_creditos";
-        $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
-        		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
-        		INNER JOIN public.core_estado_creditos
-        		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
-        $where="core_creditos.id_participes=".$id_participe." AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
-        $id="core_creditos.fecha_concesion_creditos";
-        
-        $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
-        if(!(empty($resultAportes)))
-        {
-            foreach($resultAportes as $res)
-            {
-                if($res->saldo_actual_creditos!=0)
-                {
-                    $total+=$res->saldo_actual_creditos;
-                    
-                }
-                else
-                {
-                    $total+=$res->saldo_actual_creditos;
-                }
-            }
-            
-            
-            $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
-            if(!(empty($resultCreditos)))
-            {
-                
-                $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-                $resultSet=$participes->getCantidad("*", $tablas, $where);
-                $cantidadResult=(int)$resultSet[0]->total;
-                $per_page = 20; //la cantidad de registros que desea mostrar
-                $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-                $offset = ($page - 1) * $per_page;
-                $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-                $resultCreditos=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
-                $last=sizeof($resultCreditos);
-                
-                $total_pages = ceil($cantidadResult/$per_page);
-                
-                $html='<div class="box box-solid bg-aqua">
-            <div class="box-header with-border">
-            <h3 class="box-title">Historial Prestamos</h3>
-            </div>
-             <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th width="2%">№</th>
-                        <th width="4%">№ DE PRESTAMO</th>
-                        <th width="15%">FECHA DE PRESTAMO</th>
-                        <th width="15%">TIPO DE PRESTAMO</th>
-                        <th width="14%">MONTO</th>
-                        <th width="14%">SALDO CAPITAL</th>
-                        <th width="14%">SALDO INTERES</th>
-                        <th width="14%">ESTADO</th>
-                        <th width="4%"></th>
-                        <th width="2%"></th>
-                     </tr>
-                   </table>
-                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
-                     <table border="1" width="100%">';
-                for($i=$last-1; $i>=0; $i--)
-                {
-                    $index=($i+($last-1)*($page-1))+1;
-                    $monto=number_format((float)$resultCreditos[$i]->monto_otorgado_creditos, 2, ',', '.');
-                    $saldo=number_format((float)$resultCreditos[$i]->saldo_actual_creditos, 2, ',', '.');
-                    $saldo_int=number_format((float)$resultCreditos[$i]->interes_creditos, 2, ',', '.');
-                    $html.='<tr>
-                        <td bgcolor="white" width="2%"><font color="black">'.$index.'</font></td>
-                         <td bgcolor="white" width="6.5%"><font color="black">'.$resultCreditos[$i]->numero_creditos.'</font></td>
-                         <td bgcolor="white" width="15%"><font color="black">'.$resultCreditos[$i]->fecha_concesion_creditos.'</font></td>
-                        <td bgcolor="white" width="15%"><font color="black">'.$resultCreditos[$i]->nombre_tipo_creditos.'</font></td>
-                        <td bgcolor="white" width="14%"><font color="black">'.$monto.'</font></td>
-                        <td bgcolor="white" width="14%"><font color="black">'.$saldo.'</font></td>
-                        <td bgcolor="white" width="14%"><font color="black">'.$saldo_int.'</font></td>
-                        <td bgcolor="white" width="14%"><font color="black">'.$resultCreditos[$i]->nombre_estado_creditos.'</font></td>
-                        <td bgcolor="white" width="3.5%"><font color="black">';
-                    $html.='<li class="dropdown messages-menu">';
-                    $html.='<button type="button" class="btn bg-aqua" data-toggle="dropdown">';
-                    $html.='<i class="fa fa-reorder"></i>';
-                    $html.='</button>';
-                    $html.='<ul class="dropdown-menu">';
-                    $html.='<li>';
-                    $html.= '<table style = "width:100%; border-collapse: collapse;" border="1">';
-                    $html.='<tbody>';
-                    $html.='<tr height = "25">';
-                    $html.='<td><a class="btn bg-red" title="Pagaré" href="index.php?controller=TablaAmortizacion&action=ReportePagare&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list"></i></a></font></td>';
-                    $html.='</tr>';
-                    $html.='<tr height = "25">';
-                    $html.='<td><a class="btn bg-green" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
-                    $html.='</tr>';
-                    $hoy=date("Y-m-d");
-                    $columnas="id_estado_tabla_amortizacion";
-                    $tablas="core_tabla_amortizacion INNER JOIN core_creditos
-                        ON core_tabla_amortizacion.id_creditos = core_creditos.id_creditos
-                        INNER JOIN core_estado_creditos
-                        ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
-                    $where="core_tabla_amortizacion.id_creditos=".$resultCreditos[$i]->id_creditos." AND core_tabla_amortizacion.id_estatus=1 AND fecha_tabla_amortizacion BETWEEN '".$resultCreditos[$i]->fecha_concesion_creditos."' AND '".$hoy."'
-                        AND nombre_estado_creditos='Activo'";
-                    $resultCreditosActivos=$participes->getCondicionesSinOrden($columnas, $tablas, $where, "");
-                    if(!(empty($resultCreditosActivos)))
-                    {
-                        $cuotas_pagadas=sizeof($resultCreditosActivos);
-                        $mora=false;
-                        foreach ($resultCreditosActivos as $res)
-                        {
-                            if ($res->id_estado_tabla_amortizacion!=2) $mora=true;
-                        }
-                        if($cuotas_pagadas>=6 && $mora==false)
-                        {
-                            $html.='<tr height = "25">';
-                            $html.='<td><button class="btn bg-aqua" title="Renovación de crédito"  onclick="RenovacionCredito()"><i class="glyphicon glyphicon-refresh"></i></button></td>';
-                            $html.='</tr>';
-                        }
-                        
-                    }
-                    $html.='</tbody>';
-                    $html.='</table>';
-                    $html.='</li>';
-                    
-                    
-                    $html.='</td>
-                        </tr>';
-                    
-                    
-                }
-                
-                $total=number_format((float)$total, 2, ',', '.');
-                $html.='</table>
-                   </div>
-                    <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th class="text-right">Acumulado Total: '.$total.'</th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>';
-                $html.='<div class="table-pagination pull-right">';
-                $html.=''. $this->paginate_creditos("index.php", $page, $total_pages, $adjacents,$id_participe,"CreditosActivosParticipe").'';
-                $html.='</div>
-                    </div>';
-                
-                echo $html;
-                
-            }
-        }
-        else
-        {
-            $html.='<div class="alert alert-warning alert-dismissable bg-aqua" style="margin-top:40px;">';
-            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene creditos activos</b>';
-            $html.='</div>';
-            echo $html;
-        }
-        
-        
-    }
-    
-   
+ 
     
     public function paginate_creditos($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
         
@@ -1020,7 +986,123 @@ class BuscarParticipesCesantesController extends ControladorBase{
         return $out;
     }
     
-    
+    public function print()
+    {
+        
+        session_start();
+        $entidades = new EntidadesModel();
+        $paticipes = new ParticipesModel();      
+        
+        $html="";
+        $id_usuarios = $_SESSION["id_usuarios"];
+        $fechaactual = getdate();
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        
+        $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
+        $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
+        $domLogo=$directorio.'/view/images/logo.png';
+        $logo = '<img src="'.$domLogo.'" alt="Responsive image" width="130" height="70">';
+        
+        $valor_total_vista1 = 0;
+        
+        
+        if(!empty($id_usuarios)){
+            
+            
+            if(isset($_GET["id_participes"])){
+                
+                
+                $_id_participes = $_GET["id_participes"];
+                
+                
+                $columnas="core_participes.id_participes, core_estado_participes.nombre_estado_participes, core_participes.nombre_participes,
+                    core_participes.fecha_nacimiento_participes,
+                    core_participes.apellido_participes, core_participes.ocupacion_participes,
+                    core_participes.cedula_participes, core_entidad_patronal.nombre_entidad_patronal,
+                    core_participes.telefono_participes, core_participes.direccion_participes,
+                    core_estado_civil_participes.nombre_estado_civil_participes, core_genero_participes.nombre_genero_participes,
+                    DATE (core_participes.fecha_ingreso_participes)fecha_ingreso_participes, core_participes.celular_participes,
+                    core_participes.id_participes";
+                $tablas="public.core_participes INNER JOIN public.core_estado_participes
+                    ON core_participes.id_estado_participes = core_estado_participes.id_estado_participes
+                    INNER JOIN core_entidad_patronal
+                    ON core_participes.id_entidad_patronal = core_entidad_patronal.id_entidad_patronal
+                    INNER JOIN core_estado_civil_participes
+                    ON core_participes.id_estado_civil_participes=core_estado_civil_participes.id_estado_civil_participes
+                    INNER JOIN core_genero_participes
+                    ON core_genero_participes.id_genero_participes = core_participes.id_genero_participes";
+                
+                $where="core_participes.id_participes='".$_id_participes."'";
+                
+                $id="core_participes.id_participes";
+                
+                $resultSetCabeza=$paticipes->getCondiciones($columnas, $tablas, $where, $id);
+                
+                
+                
+                if(!empty($resultSetCabeza)){
+                    
+                    
+                    
+                    
+                    $_id_participes  =$resultSetCabeza[0]->id_participes;
+                    $_nombre_estado_participes     =$resultSetCabeza[0]->nombre_estado_participes;
+                    $_nombre_estado_participes     =$resultSetCabeza[0]->nombre_participes;
+                    $_celular_participes     =$resultSetCabeza[0]->celular_participes;
+                    
+                    
+              
+                    $html.= '<table style="width:100%;" class="headertable">';
+                    $html.= '<tr >';
+                    $html.= '<td style="background-repeat: no-repeat;	background-size: 10% 100%;	background-image: url(http://192.168.1.231/rp_c/view/images/Logo-Capremci-h-170.jpg);
+                                        background-position: 0% 100%;	font-size: 11px; padding: 0px; 	text-align:center;" class="central" colspan="2">';
+                    $html.= '<strong>';
+                    $html.= $_nombre_estado_participes.'<br>';
+                    $html.= $_nombre_estado_participes.'<br>';
+                    $html.= $_nombre_estado_participes.'';
+                    $html.= '</strong>';
+                    $html.= '</td>';
+                    $html.= '</tr>';
+                    $html.= '<tr>';
+                    $html.= '<td class="htexto1" style="font-size: 10px;  padding: 5px; text-align:left;width: 65%;" >';
+                    $html.= '<p>';
+                    $html.= '</p>';
+                    $html.= '</td>';
+                    $html.= '<td class="htexto2" style="font-size: 10px;  padding: 5px; text-align:left; width: 33%;" >';
+                    $html.= '<p>';
+                    $html.= '</p>';
+                    $html.= '</td>';
+                    $html.= '</tr>';
+                    $html.= '</table>';
+                    
+            
+                
+         
+                }
+                
+                
+                
+                $this->report("BuscarParticipesCesantes",array( "resultSet"=>$html));
+                die();
+                
+            }
+            
+            
+            
+            
+        }else{
+            
+            $this->redirect("Usuarios","sesion_caducada");
+            
+        }
+        
+        
+        
+        
+        
+    }
     
 }
 

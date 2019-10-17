@@ -37,8 +37,9 @@ class SimulacionCreditosController extends ControladorBase{
         session_start();
         $rp_capremci= new PlanCuentasModel();
         $columnas="codigo_tipo_creditos, nombre_tipo_creditos";
-        $tablas="core_tipo_creditos";
-        $where="id_estatus=1";
+        $tablas="core_tipo_creditos INNER JOIN estado
+                ON core_tipo_creditos.id_estado = estado.id_estado";
+        $where="id_estatus=1 AND nombre_estado='ACTIVO'";
         $id="id_tipo_creditos";
         $resultSet=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
         
@@ -51,6 +52,30 @@ class SimulacionCreditosController extends ControladorBase{
         }
         
         $html.='</select>'; 
+        
+        echo $html;
+    }
+    
+    public function getTipoCredito1()
+    {
+        session_start();
+        $rp_capremci= new PlanCuentasModel();
+        $columnas="codigo_tipo_creditos, nombre_tipo_creditos";
+        $tablas="core_tipo_creditos INNER JOIN estado
+                ON core_tipo_creditos.id_estado = estado.id_estado";
+        $where="id_estatus=1 AND nombre_estado='ACTIVO'";
+        $id="id_tipo_creditos";
+        $resultSet=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $html='<label for="tipo_credito" class="control-label">Tipo Crédito:</label>
+        <select name="tipo_credito" id="tipo_credito"  class="form-control">
+        <option value="" selected="selected">--Seleccione--</option>';
+        foreach ($resultSet as $res)
+        {
+            $html.='<option value="'.$res->codigo_tipo_creditos.'" >'.$res->nombre_tipo_creditos.'</option>';
+        }
+        
+        $html.='</select>';
         
         echo $html;
     }
@@ -551,50 +576,12 @@ class SimulacionCreditosController extends ControladorBase{
        $sueldo_partcipe=$_POST['sueldo_participe'];
        $tipo_credito=$_POST['tipo_credito'];
        
-       $columnas="interes_tipo_creditos";
-       $tablas="core_tipo_creditos";
-       $where="codigo_tipo_creditos='".$tipo_credito."'";
-       
-       $resultSet=$cuotas->getCondicionesSinOrden($columnas, $tablas, $where, "");
-       $tasa_interes=$resultSet[0]->interes_tipo_creditos;
-       $tasa_interes=$tasa_interes/100;
-       $interes_mensual = $tasa_interes / 12;
        
        
-       $sueldo_partcipe=$sueldo_partcipe/2;
-       
-       $columnas="cuotas_rango_plazos_creditos";
-       $tablas="public.core_plazos_creditos";
-       $where=$monto_credito.">=minimo_rango_plazos_creditos AND ".$monto_credito." <= maximo_rango_plazos_creditos";
-       $id="core_plazos_creditos.id_plazos_creditos";
-       $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
-       $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
-       
-       if($tipo_credito!="PH")
-       {
-           if($cuota>84) $cuota=84;               
-       }
-       
-      $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$cuota));
-      $valor_cuota=round($valor_cuota,2);
-       
-    
-       if ($valor_cuota>$sueldo_partcipe)
-       {
-           while ($valor_cuota>$sueldo_partcipe)
-           {
-               $monto_credito-=10;
-               $where=$monto_credito.">=minimo_rango_plazos_creditos AND ".$monto_credito." <= maximo_rango_plazos_creditos";
-               $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
-               $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
-               
-               $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$cuota))  ;
-               $valor_cuota=round($valor_cuota,2);
-           }
-       }
        
        
-      $columnas="      core_participes.nombre_participes,
+       
+      $columnas="   core_participes.nombre_participes,
                     core_participes.apellido_participes,
                     core_participes.cedula_participes,
                     core_participes.fecha_nacimiento_participes";
@@ -613,11 +600,55 @@ class SimulacionCreditosController extends ControladorBase{
        $diferencia_dias=$dias_75-$dias_hasta;
        $diferencia_dias=$diferencia_dias/30;
        $diferencia_dias=floor($diferencia_dias * 1) / 1;
+       
+       $columnas="interes_tipo_creditos";
+       $tablas="core_tipo_creditos";
+       $where="codigo_tipo_creditos='".$tipo_credito."'";
+       
+       $resultSet=$cuotas->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $tasa_interes=$resultSet[0]->interes_tipo_creditos;
+       $tasa_interes=$tasa_interes/100;
+       $interes_mensual = $tasa_interes / 12;
+       
+       
+       $sueldo_partcipe=$sueldo_partcipe/2;
+       
+       $columnas="cuotas_rango_plazos_creditos";
+       $tablas="public.core_plazos_creditos";
+       $where=$monto_credito.">=minimo_rango_plazos_creditos AND ".$monto_credito." <= maximo_rango_plazos_creditos";
+       $id="core_plazos_creditos.id_plazos_creditos";
+       $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
+       $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
+       
+       
+       $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$cuota));
+       $valor_cuota=round($valor_cuota,2);
+       
+       if ($valor_cuota>$sueldo_partcipe || $cuota>$diferencia_dias)
+       {
+           
+           while ($valor_cuota>$sueldo_partcipe || $cuota>$diferencia_dias)
+           {
+               $monto_credito-=10;
+               $where=$monto_credito.">=minimo_rango_plazos_creditos AND ".$monto_credito." <= maximo_rango_plazos_creditos";
+               $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
+               $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
+               
+               $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$cuota))  ;
+               $valor_cuota=round($valor_cuota,2);
+           }
+       }
+       
+       if($tipo_credito!="PH")
+       {
+           if($cuota>84) $cuota=84;
+       }
       
        $html='<label for="tipo_credito" class="control-label">Número de cuotas:</label>
        <select name="cuotas_credito" id="cuotas_credito"  class="form-control" onchange="SimularCredito()">';
        for($cuota; $cuota>=3; $cuota-=3)
        {
+
            $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$cuota));
            $valor_cuota=round($valor_cuota,2);
            if($cuota<=$diferencia_dias && $valor_cuota<=$sueldo_partcipe) $html.='<option value="'.$cuota.'">'.$cuota.'</option>';
@@ -626,6 +657,7 @@ class SimulacionCreditosController extends ControladorBase{
        
        $html.='</select>
        <div id="mensaje_cuotas_credito" class="errores"></div>';
+       
        
        $resultado=array();
        
@@ -644,48 +676,7 @@ class SimulacionCreditosController extends ControladorBase{
        $sueldo_partcipe=$_POST['sueldo_participe'];
        $sueldo_garante=$_POST['sueldo_garante'];
        $tipo_credito=$_POST['tipo_credito'];
-       
-       $columnas="interes_tipo_creditos";
-       $tablas="core_tipo_creditos";
-       $where="codigo_tipo_creditos='".$tipo_credito."'";
-       
-       $resultSet=$cuotas->getCondicionesSinOrden($columnas, $tablas, $where, "");
-       $tasa_interes=$resultSet[0]->interes_tipo_creditos;
-       $tasa_interes=$tasa_interes/100;
-       $interes_mensual = $tasa_interes / 12;
-       
-       $pago_garante=1;
-       
-       $sueldo_partcipe=$sueldo_partcipe/2;
-       $sueldo_garante=$sueldo_garante/2;
-       
-       $columnas="cuotas_rango_plazos_creditos";
-       $tablas="public.core_plazos_creditos";
-       $where=$monto_credito.">=minimo_rango_plazos_creditos AND ".$monto_credito." <= maximo_rango_plazos_creditos";
-       $id="core_plazos_creditos.id_plazos_creditos";
-       $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
-       $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
-       
-       $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$cuota));
-       $valor_cuota=round($valor_cuota,2);
-       
-       
-       if ($valor_cuota>$sueldo_partcipe)
-       {
-           while ($valor_cuota>$sueldo_partcipe)
-           {
-               $monto_credito-=10;
-               $where=$monto_credito.">=minimo_rango_plazos_creditos AND ".$monto_credito." <= maximo_rango_plazos_creditos";
-               $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
-               $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
-               
-               $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$cuota))  ;
-               $valor_cuota=round($valor_cuota,2);
-           }
-       }
-       
-       if ($valor_cuota>$sueldo_garante) $pago_garante=0;
-       
+         
        
        $columnas="      core_participes.nombre_participes,
                     core_participes.apellido_participes,
@@ -715,14 +706,61 @@ class SimulacionCreditosController extends ControladorBase{
        
        $dias_hasta=$this->dateDifference1($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
        $dias_hasta_garante=$this->dateDifference1($infoGarante[0]->fecha_nacimiento_participes, $hoy);
+       
        $dias_75=365*75;
+       
        $diferencia_dias=$dias_75-$dias_hasta;
        $diferencia_dias_garante=$dias_75-$dias_hasta_garante;
-       $diferencia_dias=$diferencia_dias/30;
+       
+       $diferencia_dias=$diferencia_dias/30;       
        $diferencia_dias_garante=$diferencia_dias_garante/30;
+       
        $diferencia_dias=floor($diferencia_dias * 1) / 1;
        $diferencia_dias_garante=floor($diferencia_dias_garante * 1) / 1;
-       if($diferencia_dias_garante<$diferencia_dias) $diferencia_dias=$dias_hasta_garante;
+       if($diferencia_dias_garante<$diferencia_dias) $diferencia_dias=$diferencia_dias_garante;
+       
+       $columnas="interes_tipo_creditos";
+       $tablas="core_tipo_creditos";
+       $where="codigo_tipo_creditos='".$tipo_credito."'";
+       
+       $resultSet=$cuotas->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $tasa_interes=$resultSet[0]->interes_tipo_creditos;
+       $tasa_interes=$tasa_interes/100;
+       $interes_mensual = $tasa_interes / 12;
+       
+       $pago_garante=1;
+       
+       $sueldo_partcipe=$sueldo_partcipe/2;
+       $sueldo_garante=$sueldo_garante/2;
+       
+       $columnas="cuotas_rango_plazos_creditos";
+       $tablas="public.core_plazos_creditos";
+       $where=$monto_credito.">=minimo_rango_plazos_creditos AND ".$monto_credito." <= maximo_rango_plazos_creditos";
+       $id="core_plazos_creditos.id_plazos_creditos";
+       $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
+       $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
+       
+       $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$cuota));
+       $valor_cuota=round($valor_cuota,2);
+       
+       
+       if ($valor_cuota>$sueldo_partcipe || $cuota>$diferencia_dias)
+       {
+           while ($valor_cuota>$sueldo_partcipe || $cuota>$diferencia_dias)
+           {
+               $monto_credito-=10;
+               $where=$monto_credito.">=minimo_rango_plazos_creditos AND ".$monto_credito." <= maximo_rango_plazos_creditos";
+               $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
+               $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
+               
+               $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$cuota))  ;
+               $valor_cuota=round($valor_cuota,2);
+           }
+       }
+       
+       if ($valor_cuota>$sueldo_garante) $pago_garante=0;
+       
+       
        $html='<label for="tipo_credito" class="control-label">Número de cuotas:</label>
        <select name="cuotas_credito" id="cuotas_credito"  class="form-control" onchange="SimularCredito()">';
        for($cuota; $cuota>=3; $cuota-=3)
@@ -1653,6 +1691,11 @@ class SimulacionCreditosController extends ControladorBase{
                    $credito->setParametros($parametros);
                    $resultado=$credito->Insert();
                    
+                   $query="UPDATE core_creditos
+                            SET cuota_creditos='$valor_cuota'
+                            WHERE id_creditos=$numero_credito";
+                    $credito->executeNonQuery($query);
+                   
                    $fecha_pago=$res['fecha_pago'];
                    $num_cuota=$res['pagos_trimestrales'];
                    $amortizacion=$res['amortizacion'];
@@ -1672,6 +1715,7 @@ class SimulacionCreditosController extends ControladorBase{
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                      0,
                      '$desgravamen',
                      null,
                      '$total_valor',
@@ -1689,6 +1733,7 @@ class SimulacionCreditosController extends ControladorBase{
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                     0,
                      '$desgravamen',
                      '$incendios',
                      '$total_valor',
@@ -1746,135 +1791,140 @@ class SimulacionCreditosController extends ControladorBase{
                    {
                        $credito->endTran('ROLLBACK');
                        $respuesta=false;
-                       $mensage="ERROR Credito".$errores_credito;
+                       $mensage="ERROR Credito".$errores_credito."--".$num_cuota;
                        break;
                    }   
                }
-               
-               $fecha_pago=$res['fecha_pago'];
-               $num_cuota=$res['pagos_trimestrales'];
-               $amortizacion=$res['amortizacion'];
-               $intereses=$res['interes'];
-               $saldo_inicial=$res['saldo_inicial'];
-               $desgravamen=$res['desgravamen'];
-               if ($tipo_credito=="PH") $incendios=$res['seguro_incendios'];
-               $dividendo=$res['pagos'];
-               $total_valor=$amortizacion+$intereses+$desgravamen;
-               $funcion = "ins_core_tabla_amortizacion";
-               if($tipo_credito!="PH")
-               {
-                   $parametros="'$numero_credito',
+               else {
+                   $fecha_pago=$res['fecha_pago'];
+                   $num_cuota=$res['pagos_trimestrales'];
+                   $amortizacion=$res['amortizacion'];
+                   $intereses=$res['interes'];
+                   $saldo_inicial=$res['saldo_inicial'];
+                   $desgravamen=$res['desgravamen'];
+                   if ($tipo_credito=="PH") $incendios=$res['seguro_incendios'];
+                   $dividendo=$res['pagos'];
+                   $total_valor=$amortizacion+$intereses+$desgravamen;
+                   $funcion = "ins_core_tabla_amortizacion";
+                   if($tipo_credito!="PH")
+                   {
+                       $parametros="'$numero_credito',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                     '$total_valor',
                      '$desgravamen',
                      null,
                      '$total_valor',
-                     2,
+                     3,
                      1,
                      '$tasa_interes',
                      '$hoy'";
-               }
-               else
-               {
-                   $parametros="'$numero_credito',
+                   }
+                   else
+                   {
+                       $parametros="'$numero_credito',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                     '$total_valor',
                      '$desgravamen',
                      '$incendios',
                      '$total_valor',
-                     2,
+                     3,
                      1,
                      '$tasa_interes',
                      '$hoy'";
-               }
-                            
-               $credito->setFuncion($funcion);
-               $credito->setParametros($parametros);
-              $resultado=$credito->Insert();
-              $funcion = "ins_core_tabla_amortizacion_historico";
-              $credito->setFuncion($funcion);
-              $credito->setParametros($parametros);
-              $resultado=$credito->Insert();
-              
-              $funcion = "ins_core_tabla_amortizacion_pagare";
-              $credito->setFuncion($funcion);
-              $credito->setParametros($parametros);
-              $resultado=$credito->Insert();
-              $errores=ob_get_clean();
-              $errores=trim($errores);
-               if(!(empty($errores)))
-               {
-                   $credito->endTran('ROLLBACK');
-                   $respuesta=false;
-                   $mensage="ERROR credito".$errores;
-                   break;
-               }
-                     
-           }
-           if($respuesta)
-           {
-               $actualizacion_solicitud=$this->ActualizarSolicitud($id_solicitud, $monto_credito, $cuota, $numero_credito);
-               $plan_cuentas=new PlanCuentasModel();
-               $colval="numero_consecutivos=".$numero_credito;
-               $tabla="consecutivos";
-               $where="nombre_consecutivos='CREDITO'";
-               $actualizacion_solicitud= trim($actualizacion_solicitud);
-               if(empty($actualizacion_solicitud))
-               {
-                   ob_start();
-                   $plan_cuentas->ActualizarBy($colval, $tabla, $where);
-                   $actualizacion_consecutivo=ob_get_clean();
-                   $actualizacion_consecutivo= trim($actualizacion_consecutivo);
-                   if(empty($actualizacion_consecutivo))
+                   }
+                   
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   $funcion = "ins_core_tabla_amortizacion_historico";
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   
+                   $funcion = "ins_core_tabla_amortizacion_pagare";
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $resultado=$credito->Insert();
+                   $errores=ob_get_clean();
+                   $errores=trim($errores);
+                   if(!(empty($errores)))
                    {
-                       $actualizar_cuentas=$this->ActualizarCuentasParticipes($id_solicitud, $numero_credito);
-                       if(empty($actualizar_cuentas))
+                       $credito->endTran('ROLLBACK');
+                       $respuesta=false;
+                       $mensage="ERROR credito".$errores."==".$num_cuota;
+                       break;
+                   }
+                   
+               }
+           }
+               if($respuesta)
+               {
+                   $actualizacion_solicitud=$this->ActualizarSolicitud($id_solicitud, $monto_credito, $cuota, $numero_credito);
+                   $plan_cuentas=new PlanCuentasModel();
+                   $colval="numero_consecutivos=".$numero_credito;
+                   $tabla="consecutivos";
+                   $where="nombre_consecutivos='CREDITO'";
+                   $actualizacion_solicitud= trim($actualizacion_solicitud);
+                   if(empty($actualizacion_solicitud))
+                   {
+                       ob_start();
+                       $plan_cuentas->ActualizarBy($colval, $tabla, $where);
+                       $actualizacion_consecutivo=ob_get_clean();
+                       $actualizacion_consecutivo= trim($actualizacion_consecutivo);
+                       if(empty($actualizacion_consecutivo))
                        {
-                           
-                           $actualizar_info_participes=$this->ActualizarInfoParticipe($cedula_participe, $id_solicitud);
-                           if(empty($actualizar_info_participes))
+                           $actualizar_cuentas=$this->ActualizarCuentasParticipes($id_solicitud, $numero_credito);
+                           if(empty($actualizar_cuentas))
                            {
-                               $credito->endTran('COMMIT');
                                
-                               $mensage="OK";
+                               $actualizar_info_participes=$this->ActualizarInfoParticipe($cedula_participe, $id_solicitud);
+                               if(empty($actualizar_info_participes))
+                               {
+                                   $credito->endTran('COMMIT');
+                                   
+                                   $mensage="OK";
+                               }
+                               else
+                               {
+                                   $credito->endTran('ROLLBACK');
+                                   $mensage="ERROR 1 ".$actualizar_info_participes;
+                               }
+                               
                            }
                            else
                            {
                                $credito->endTran('ROLLBACK');
-                               $mensage="ERROR 1 ".$actualizar_info_participes;
+                               $mensage="ERROR 2 ".$actualizar_cuentas." ".$id_solicitud." ".$numero_credito;
                            }
                            
                        }
-                       else
-                      {
-                          $credito->endTran('ROLLBACK');
-                          $mensage="ERROR 2 ".$actualizar_cuentas." ".$id_solicitud." ".$numero_credito;
-                      }
+                       else {
+                           $credito->endTran('ROLLBACK');
+                           $mensage="ERROR 3 ".$actualizacion_consecutivo;
+                       }
                        
                    }
-                   else {
+                   else
+                   {
+                       echo "solicitud no aceptada";
                        $credito->endTran('ROLLBACK');
-                       $mensage="ERROR 3 ".$actualizacion_consecutivo;
+                       $mensage="ERROR 4 ".$actualizacion_solicitud;
                    }
                    
                }
-               else
-               {
-                   echo "solicitud no aceptada";
-                   $credito->endTran('ROLLBACK');
-                   $mensage="ERROR 4 ".$actualizacion_solicitud;
-               }
+              
                
-    
-           }
+           
       
       
        
@@ -2020,6 +2070,11 @@ class SimulacionCreditosController extends ControladorBase{
            $credito->setParametros($parametros);
            $resultado=$credito->Insert();
            
+           $query="UPDATE core_creditos
+                            SET cuota_creditos='$valor_cuota'
+                            WHERE id_creditos=$numero_credito";
+           $credito->executeNonQuery($query);
+           
            $columnas="id_tipo_creditos_a_renovar";
            $tablas="core_tipo_creditos_renovacion INNER JOIN core_tipo_creditos
         ON core_tipo_creditos.id_tipo_creditos = core_tipo_creditos_renovacion.id_tipo_creditos";
@@ -2114,10 +2169,11 @@ class SimulacionCreditosController extends ControladorBase{
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                     '$total_valor',
                      '$desgravamen',
                      null,
                      '$total_valor',
-                     2,
+                     3,
                      1,
                      '$tasa_interes',
                      '$hoy'";
@@ -2131,10 +2187,11 @@ class SimulacionCreditosController extends ControladorBase{
                      '$intereses',
                      '$dividendo',
                      '$saldo_inicial',
+                     '$total_valor',
                      '$desgravamen',
                      '$incendios',
                      '$total_valor',
-                     2,
+                     3,
                      1,
                      '$tasa_interes',
                      '$hoy'";
@@ -2563,6 +2620,43 @@ class SimulacionCreditosController extends ControladorBase{
             ON core_creditos.id_participes = core_participes.id_participes';
                
                $where="core_participes.cedula_participes='$cedula_participe' AND core_creditos.id_estado_creditos=4
+            AND core_creditos.id_estatus=1 AND id_tipo_creditos=".$res->id_tipo_creditos_a_renovar;
+           
+           $id_credito=$creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
+           
+           foreach ($id_credito as $res1)
+           {
+               $tasa_interes=$res1->interes_creditos;
+               $tasa_interes=$tasa_interes/100;
+               $interes_mensual = $tasa_interes / 12;
+               $valor_cuota =  ($res1->monto_otorgado_creditos * $interes_mensual) /  (1- pow((1+$interes_mensual), -$res1->plazo_creditos))  ;
+               $valor_cuota=round($valor_cuota,2);
+               $cuota_total+=$valor_cuota;
+           }
+           
+       }
+       echo $cuota_total;
+   }
+   
+   public function cuotaParticipe1(){
+       session_start();
+       $creditos = new EstadoModel();
+       $cedula_participe=$_SESSION['cedula_usuarios'];
+       $tipo_credito=$_POST['tipo_credito'];
+       $cuota_total=0;
+       $columnas="id_tipo_creditos_a_renovar";
+       $tablas="core_tipo_creditos_renovacion INNER JOIN core_tipo_creditos
+        ON core_tipo_creditos.id_tipo_creditos = core_tipo_creditos_renovacion.id_tipo_creditos";
+       $where="codigo_tipo_creditos='".$tipo_credito."'";
+       $id_creditos_renovar=$creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       
+       foreach($id_creditos_renovar as $res)
+       {
+           $columnas='monto_otorgado_creditos, plazo_creditos, interes_creditos';
+           $tablas='core_creditos INNER JOIN core_participes
+            ON core_creditos.id_participes = core_participes.id_participes';
+           
+           $where="core_participes.cedula_participes='$cedula_participe' AND core_creditos.id_estado_creditos=4
             AND core_creditos.id_estatus=1 AND id_tipo_creditos=".$res->id_tipo_creditos_a_renovar;
            
            $id_credito=$creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");

@@ -10,8 +10,12 @@
      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
      <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     
  	<style type="text/css">
+ 	
  	  .loader {
         position: fixed;
         left: 0px;
@@ -37,8 +41,149 @@
       li{
         list-style-type:none;
         }
- 
-     
+    
+
+
+.wizard {
+    margin: 20px auto;
+    background: #fff;
+}
+
+    .wizard .nav-tabs {
+        position: relative;
+        margin: 40px auto;
+        margin-bottom: 0;
+        border-bottom-color: #e0e0e0;
+    }
+
+    .wizard > div.wizard-inner {
+        position: relative;
+    }
+
+.connecting-line {
+    height: 2px;
+    background: #e0e0e0;
+    position: absolute;
+    width: 80%;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: 50%;
+    z-index: 1;
+}
+
+.wizard .nav-tabs > li.active > a, .wizard .nav-tabs > li.active > a:hover, .wizard .nav-tabs > li.active > a:focus {
+    color: #555555;
+    cursor: default;
+    border: 0;
+    border-bottom-color: transparent;
+}
+
+span.round-tab {
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    display: inline-block;
+    border-radius: 100px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    text-align: center;
+    font-size: 25px;
+}
+span.round-tab i{
+    color:#555555;
+}
+.wizard li.active span.round-tab {
+    background: #fff;
+    border: 2px solid #5bc0de;
+    
+}
+.wizard li.active span.round-tab i{
+    color: #5bc0de;
+}
+
+span.round-tab:hover {
+    color: #333;
+    border: 2px solid #333;
+}
+
+.wizard .nav-tabs > li {
+    width: 25%;
+}
+
+.wizard li:after {
+    content: " ";
+    position: absolute;
+    left: 46%;
+    opacity: 0;
+    margin: 0 auto;
+    bottom: 0px;
+    border: 5px solid transparent;
+    border-bottom-color: #5bc0de;
+    transition: 0.1s ease-in-out;
+}
+
+.wizard li.active:after {
+    content: " ";
+    position: absolute;
+    left: 46%;
+    opacity: 1;
+    margin: 0 auto;
+    bottom: 0px;
+    border: 10px solid transparent;
+    border-bottom-color: #5bc0de;
+}
+
+.wizard .nav-tabs > li a {
+    width: 70px;
+    height: 70px;
+    margin: 20px auto;
+    border-radius: 100%;
+    padding: 0;
+}
+
+    .wizard .nav-tabs > li a:hover {
+        background: transparent;
+    }
+
+.wizard .tab-pane {
+    position: relative;
+    padding-top: 50px;
+}
+
+.wizard h3 {
+    margin-top: 0;
+}
+
+@media( max-width : 585px ) {
+
+    .wizard {
+        width: 90%;
+        height: auto !important;
+    }
+
+    span.round-tab {
+        font-size: 16px;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+    }
+
+    .wizard .nav-tabs > li a {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+    }
+
+    .wizard li.active:after {
+        content: " ";
+        position: absolute;
+        left: 35%;
+    }
+}
        
  	  
  	</style>
@@ -70,7 +215,7 @@
     <section class="sidebar">
      <?php include("view/modulos/menu_profile.php"); ?>
       <br>
-     <?php include("view/modulos/menu.php"); ?>
+   
     </section>
   </aside>
 
@@ -90,49 +235,20 @@
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Busqueda de Participes</h3>
+          <h3 class="box-title">Simulador de Crédito</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
             
           </div>
           <div class="box-body">
-          	<div class="row">
-          		<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="cedula_usuarios" class="control-label">Cedula:</label>
-                		<div id="mensaje_cedula_participe" class="errores"></div>
-                		<div class="input-group">
-                			<input type="text" data-inputmask="'mask': '9999999999'" class="form-control" id="cedula_participe" name="cedula_participe" placeholder="C.I.">
-                			
-            				<span class="input-group-btn">
-            			    	<button type="button" class="btn btn-primary" id="buscar_participe" name="buscar_participe" onclick="BuscarParticipe()">
-        						<i class="glyphicon glyphicon-search"></i>
-        						</button>
-        						<button type="button" class="btn btn-danger" id="borrar_cedula" name="borrar_cedula" onclick="BorrarCedula()">
-        						<i class="glyphicon glyphicon-arrow-left"></i>
-        						</button>
-        					</span>
-        					
-        				</div>
-                 	</div>
-             	</div>
-           	</div>
+          	
            	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="participe_encontrado" ></div>
            		</div>
            	</div>
-           	<div class="row">
-           		<div class="col-xs-12 col-md-12 col-lg-12 ">
-           		<div id="aportes_participe" ></div>
-           		</div>
-           	</div>
-           	<div class="row">
-           		<div class="col-xs-12 col-md-12 col-lg-12 ">
-           		<div id="creditos_participe" ></div>
-           		</div>
-           	</div>
+           	
           </div>
         </div>
         
@@ -140,9 +256,9 @@
     </section>
    </div>
   
- 
 
- <!-- Modal Simulacion Credito -->
+
+ <!-- Modal Simulacion Credito 
  
  <div class="modal fade bs-example-modal-lg" id="myModalSimulacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
@@ -162,8 +278,14 @@
                         <div id="mensaje_tipo_credito" class="errores"></div>
                  	</div>
              	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="monto_credito" class="control-label">Monto Crédito:</label>
+              			<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">
+                        <div id="mensaje_monto_credito" class="errores"></div>
+                 	</div>
+             	</div>
              	<div id="capacidad_de_pago_participe"></div>
-             	<div id="monto_del_credito"></div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
             			<div id="select_cuotas"></div>
@@ -173,11 +295,12 @@
           	
           	 <div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
-          		
              	</div>
-             	<div id="capacidad_pago_garante"></div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
              	</div>
+             	
+            			<div id="capacidad_pago_garante"></div>
+                 	
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
              	</div>
           	</div>
@@ -192,6 +315,26 @@
             <div id="tabla_amortizacion"></div>
 				</div>
 				<br>
+			</div>			
+		</div>
+	</div>
+</div> -->
+
+<!-- Modal Simulacion Credito Pasos -->
+ 
+ <div class="modal fade bs-example-modal-lg" id="myModalSimulacionPasos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+	    	<div class="modal-header bg-primary">
+	    		<button type="button" id="cerrar_simulacion" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Simulacion de Crédito</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group" align="center">			 
+          	 <div class="row">
+          		<div id="info_paso"></div>
+          	</div>
+          	</div>
 			</div>			
 		</div>
 	</div>
@@ -354,6 +497,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?0.47"></script> 
+   <script src="view/Credito/js/CargarParticipes.js?1.2"></script> 
    </body>
 </html>   

@@ -97,12 +97,11 @@ td.espacio{
 
 
 table.1 {
-   width: 100%;
-   text-align: left;
-   font-size:12px;
+   width: 800px;
+   font-size:14px;
    border-collapse: collapse;
-   margin: 0 0 1em 0;
    caption-side: top;
+   
 }
 
 table.2 {
@@ -110,6 +109,9 @@ table.2 {
    font-size:12px;
    text-align : justify;
 }
+
+
+
 table.3 {
   
    font-size:12px;
@@ -135,6 +137,17 @@ td.2{
 td.3{
 	
 	width:260px;
+	
+}
+th.1{
+	
+	font-size:12px;
+	
+}
+
+td.1{
+	
+	font-size:12px;
 	
 }
 

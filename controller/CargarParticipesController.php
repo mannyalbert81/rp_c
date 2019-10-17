@@ -247,7 +247,7 @@ class CargarParticipesController extends ControladorBase{
         <div class="row">
              <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
-                  <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas()"><i class="glyphicon glyphicon-expand"></i> SIMULAR</button>
+                  <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso1()"><i class="glyphicon glyphicon-expand"></i> SIMULAR</button>
                 </div>
              </div>	    
             </div>';

@@ -164,7 +164,12 @@ class PermisosEmpleadosController extends ControladorBase{
         $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
         $idr = "usuarios.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
-        $id_jefi = $resultr[0]->id_rol;
+        if (empty($resultr))
+        {
+            $wherer = "cargos_empleados.nombre_cargo ILIKE 'CONTADOR%'";
+            $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+        }
+        $id_jefi = $resultr[0]->id_rol;        
         $id_dpto_jefe = $resultr[0]->id_departamento;
         }
         $where_to="";
@@ -320,9 +325,26 @@ class PermisosEmpleadosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->nombre_causa.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->descripcion_causa.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
+                    
+                    $tablar = "usuarios INNER JOIN empleados
+                        ON usuarios.cedula_usuarios = empleados.numero_cedula_empleados
+                        INNER JOIN departamentos
+                        ON departamentos.id_departamento = empleados.id_departamento
+                        INNER JOIN cargos_empleados
+                        ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+                    $wherer = "departamentos.nombre_departamento='".$res->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
+                    $idr = "usuarios.id_rol";
+                    $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+                    if(empty($resultr)) $tiene_jefe=false;
+                    else $tiene_jefe=true;
                     if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
                     {
-                        if ($id_rol==$id_jefi && $res->nombre_estado=="EN REVISION" && $id_dpto_jefe == $res->id_departamento)
+                        if ($id_rol==$id_rh  && $res->nombre_estado=="EN REVISION" && !$tiene_jefe )
+                        {
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        }
+                        else if ($id_rol==$id_jefi  && $res->nombre_estado=="EN REVISION" && $id_dpto_jefe == $res->id_departamento )
                         {
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';

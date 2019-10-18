@@ -82,6 +82,19 @@ class RecaudacionController extends ControladorBase{
 	        exit();
 	    }
 	    
+	    //prueba validacion de aportes personales
+	    if( $_formato_recaudacion == 1 || $_formato_recaudacion == 3 ){
+	        
+	        $_participes_sin_aportes   = $this->validaAportesParticipes($_id_entidad_patronal);
+	        if(!empty($_participes_sin_aportes)){
+	            $errorAportes  = array();
+	            $errorAportes['mensajeAportes']    = "Necesita Validar la informacion de estos Paricipes";
+	            $errorAportes['dataAportes']    = $_participes_sin_aportes;
+	            echo json_encode($errorAportes);
+	            die();
+	        }
+	    }
+	                  
 	    //echo "<br>",$_formato_recaudacion;
 	    
 	    /** primero validar si el tipo de archivo solicitado esta permitido */
@@ -847,7 +860,7 @@ class RecaudacionController extends ControladorBase{
                         </a></span></td>';
 	            $html.='<td style="font-size: 18px;">';
 	            $html.='<span class="pull-right ">
-                        <a onclick="generarDetallado(this)" id="" data-idarchivo="'.$res->id_archivo_recaudaciones.'"
+                        <a onclick="eliminarRegistro(this)" id="" data-idarchivo="'.$res->id_archivo_recaudaciones.'"
                         href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Eliminar">
                         <i class="fa fa-trash" aria-hidden="true" style="color:black" ></i>
                         </a></span></td>';
@@ -999,13 +1012,13 @@ class RecaudacionController extends ControladorBase{
 	    
 	    if($cantidadResult>0){
 	        
-	        $html.= "<table id='tbl_archivo_recaudaciones' class='table table-hover'>";
+	        $html.= "<table id='tbl_archivo_recaudaciones' class='table tablesorter  table-striped table-bordered dt-responsive nowrap'>";
 	        $html.= "<thead>";
 	        $html.= "<tr>";
 	        $html.='<th style="text-align: left;  font-size: 12px;" colspan="8">'.$resultSet[0]->formato_archivo_recaudaciones.'</th>';	       
 	        $html.='</tr>';
 	        $html.= "<tr>";
-	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">-</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Concepto</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
@@ -1023,7 +1036,7 @@ class RecaudacionController extends ControladorBase{
 	            
 	            $html.='<tr>';
 	            $html.='<td style="font-size: 18px;">';
-	            $html.='<span class="pull-right ">
+	            $html.='<span class="">
                                 <a onclick="editAporte(this)" id="" data-idarchivo="'.$res->id_archivo_recaudaciones_detalle.'"
                                 href="#" class="btn btn-sm btn-default label label-warning">
                                 <i class="fa fa-edit" aria-hidden="true" ></i>
@@ -1051,12 +1064,12 @@ class RecaudacionController extends ControladorBase{
 	        $html.='</tfoot>';
 	        $html.='</table>';
 	        $html.='<div class="table-pagination pull-right">';
-	        $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"buscaAportesCreditos").'';
+	        $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"mostarGenerados").'';
 	        $html.='</div>';
 	        
 	    }else{
 	        
-	        $html.= "<table id='tbl_archivo_recaudaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	        $html.= "<table id='tbl_archivo_recaudaciones' class='table tablesorter  table-striped table-bordered dt-responsive nowrap'>";
 	        $html.= "<thead>";
 	        $html.= "<tr>";
 	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -1075,6 +1088,41 @@ class RecaudacionController extends ControladorBase{
 	    }
 	    
 	    echo json_encode(array('tablaHtml'=>$html,'cantidadRegistros'=>$cantidadResult));
+	    
+	}
+	
+	public function eliminarRegistro(){
+	    
+	    if(!isset($_SESSION)){
+	        
+	        session_start();
+	    }
+	    
+	    $EntidadPatronal = new EntidadPatronalParticipesModel();
+	    $Contribucion    = new CoreContribucionModel();
+	    $nombre_controladores = "EliminarArchRecaudacion";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $EntidadPatronal->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    if ( empty($resultPer) ){
+	        echo "<message> Usuario no tiene permisos para Eliminar registro <message>";
+	        exit();
+	    }
+	    
+	    /* tomar datos de la vista */
+	    $_id_archivo_recaudaciones = $_POST['id_archivo_recaudaciones'];
+	    
+	    $columnas1 = " id_estatus = 2";
+	    $tablas1   = " public.core_archivo_recaudaciones ";
+	    $where1    = " id_archivo_recaudaciones  = $_id_archivo_recaudaciones ";
+	    $resultado = $Contribucion->ActualizarBy($columnas1, $tablas1, $where1);
+	    
+	    if( (int)$resultado == -1){
+	        
+            echo "<message> Problemas al eliminar registro <message>";
+            exit();	        
+	    }	    
+	   
+	    echo json_encode(array("mensaje"=>"OK"));
 	    
 	}
 	
@@ -1132,7 +1180,7 @@ class RecaudacionController extends ControladorBase{
 	    $rsSumatoria1           = $Contribucion->getSumaColumna("aa.valor_sistema_archivo_recaudaciones_detalle", $tablas2, $where2);
 	    $_total_archivo_sistema = $rsSumatoria1[0]->suma;
 	    $rsSumatoria2           = $Contribucion->getSumaColumna("aa.valor_final_archivo_recaudaciones_detalle", $tablas2, $where2);
-	    $_total_archivo_final   = $rsSumatoria1[0]->suma;
+	    $_total_archivo_final   = $rsSumatoria2[0]->suma;
 	    
 	    $per_page = 10; //la cantidad de registros que desea mostrar
 	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
@@ -1290,7 +1338,7 @@ class RecaudacionController extends ControladorBase{
         $rsSumatoria1           = $Contribucion->getSumaColumna("aa.valor_sistema_archivo_recaudaciones_detalle", $tablas2, $where2);
         $_total_archivo_sistema = $rsSumatoria1[0]->suma;
         $rsSumatoria2           = $Contribucion->getSumaColumna("aa.valor_final_archivo_recaudaciones_detalle", $tablas2, $where2);
-        $_total_archivo_final   = $rsSumatoria1[0]->suma;
+        $_total_archivo_final   = $rsSumatoria2[0]->suma;
         
         $per_page = 10; //la cantidad de registros que desea mostrar
         $adjacents  = 9; //brecha entre páginas después de varios adyacentes
@@ -1429,7 +1477,7 @@ class RecaudacionController extends ControladorBase{
         $rsSumatoria1           = $Contribucion->getSumaColumna("aa.valor_sistema_archivo_recaudaciones_detalle", $tablas1, $where1);
         $_total_archivo_sistema = $rsSumatoria1[0]->suma;
         $rsSumatoria2           = $Contribucion->getSumaColumna("aa.valor_final_archivo_recaudaciones_detalle", $tablas1, $where1);
-        $_total_archivo_final   = $rsSumatoria1[0]->suma;
+        $_total_archivo_final   = $rsSumatoria2[0]->suma;
         
         $per_page = 10; //la cantidad de registros que desea mostrar
         $adjacents  = 9; //brecha entre páginas después de varios adyacentes
@@ -1444,7 +1492,7 @@ class RecaudacionController extends ControladorBase{
             
             //table table-border table-striped mb-0
             
-            $html.= "<table id='tbl_archivo_recaudaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example' cellspacing='0'>";
+            $html.= "<table id='tbl_archivo_recaudaciones' class='table tablesorter table-striped table-bordered dt-responsive nowrap ' cellspacing='0'>";
             $html.= "<thead>";
             $html.= "<tr>";
             $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -1496,7 +1544,7 @@ class RecaudacionController extends ControladorBase{
             /*para totalizar las filas*/
             $html.='<tfoot>';
             $html.='<tr>';
-            $html.='<th colspan="7" ></th>';
+            $html.='<th colspan="8" ></th>';
             $html.='<th style="text-align: right"; >TOTALES</th>';
             $html.='<th style="text-align: right;  font-size: 12px;">'.$_total_archivo_sistema.'</th>';
             $html.='<th style="text-align: right;  font-size: 12px;">'.$_total_archivo_final.'</th>';
@@ -1509,7 +1557,7 @@ class RecaudacionController extends ControladorBase{
             
         }else{
             
-            $html.= "<table id='tbl_archivo_recaudaciones' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+            $html.= "<table id='tbl_archivo_recaudaciones' class='table tablesorter table-striped table-bordered dt-responsive nowrap '>";
             $html.= "<thead>";
             $html.= "<tr>";
             $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -2424,6 +2472,36 @@ class RecaudacionController extends ControladorBase{
 	    
 	    
 	}
+	
+	/** BEGIN FUNCIONES DE VALIDACIONES DEL CONTROLADOR */
+	private function validaAportesParticipes($id_entidad_patronal){
+	    $Participes    = new ParticipesModel();
+	    
+	    $columnas1 = " aa.id_participes, aa.cedula_participes, aa.nombre_participes, aa.apellido_participes";
+	    $tablas1   = " core_participes aa
+    	    INNER JOIN core_estado_participes bb ON bb.id_estado_participes = aa.id_estado_participes
+    	    LEFT JOIN (
+    	        SELECT  cc1.id_participes
+    	        FROM core_contribucion_tipo_participes cc1
+    	        INNER JOIN core_contribucion_tipo cc2 ON cc2.id_contribucion_tipo = cc1.id_contribucion_tipo
+    	        INNER JOIN estado cc3 ON cc3.id_estado = cc1.id_estado
+    	        WHERE UPPER(cc2.nombre_contribucion_tipo) = 'APORTE PERSONAL'
+    	        AND UPPER(cc3.nombre_estado) = 'ACTIVO'
+    	        ) cc ON cc.id_participes = aa.id_participes";
+	    $where1    = " aa.id_estatus = 1
+	        AND UPPER(bb.nombre_estado_participes) = 'ACTIVO'
+	        AND aa.id_entidad_patronal = $id_entidad_patronal
+	        AND cc.id_participes IS NULL";
+	    $id1       = "aa.id_participes";	    
+	   	    
+	    $rsConsulta1= $Participes->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    if( !empty($rsConsulta1)) return $rsConsulta1;
+	    
+	    return null;
+	    
+	}
+	/** BEGIN FUNCIONES DE VALIDACIONES DEL CONTROLADOR */
 	
 	/** BEGIN FUNCIONES UTILITARIAS PARA LA CLASE */
 	private function devuelveMesNombre($_mes){

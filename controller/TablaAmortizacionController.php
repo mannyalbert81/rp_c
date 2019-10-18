@@ -515,7 +515,7 @@ class TablaAmortizacionController extends ControladorBase{
 	    $html.='<th style="text-align: center; font-size: 11px;">Seg. Desgrav.</th>';
 	    $html.='<th style="text-align: center; font-size: 11px;">Mora</th>';
 	    $html.='<th style="text-align: center; font-size: 11px;">Cuota</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Saldo Final</th>';
+	    $html.='<th style="text-align: center; font-size: 11px;">Saldo Cuota</th>';
 	    $html.='<th style="text-align: center; font-size: 11px;">Saldo Capital</th>';
 	    $html.='<th style="text-align: center; font-size: 11px;">Estado</th>';
 	    

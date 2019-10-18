@@ -378,7 +378,7 @@ class RevisionCreditosController extends ControladorBase{
          $estado_reporte=$creditos->getCondiciones($columnas, $tablas, $where, $id);
          $estado_reporte=$estado_reporte[0]->nombre_estado;
             $columnas="core_creditos.id_creditos,core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
-                    core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos,
+                    core_creditos.monto_otorgado_creditos, core_creditos.monto_neto_entregado_creditos, core_creditos.plazo_creditos,
                     core_tipo_creditos.nombre_tipo_creditos, oficina.nombre_oficina, core_creditos_trabajados_detalle.observacion_detalle_creditos_trabajados,
                     core_creditos.id_ccomprobantes";
             $tablas="core_creditos_trabajados_detalle INNER JOIN core_creditos
@@ -423,6 +423,7 @@ class RevisionCreditosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 15px;">Apellidos</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Monto</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Monto a Recibir</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Plazo</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Tipo</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Ciudad</th>';
@@ -452,6 +453,8 @@ class RevisionCreditosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->nombre_participes.'</td>';
                     $monto=number_format((float)$res->monto_otorgado_creditos,2,".",",");
                     $html.='<td style="font-size: 14px;">'.$monto.'</td>';
+                    $monto_a_recibir=number_format((float)$res->monto_neto_entregado_creditos,2,".",",");
+                    $html.='<td style="font-size: 14px;">'.$monto_a_recibir.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->plazo_creditos.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_creditos.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';

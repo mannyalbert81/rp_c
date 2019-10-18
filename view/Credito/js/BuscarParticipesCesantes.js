@@ -167,6 +167,26 @@ function CreditosActivosParticipe(id, page)
 	});
 }
 
+function TablaDesafiliacion(id, page)
+{
+	$.ajax({
+	    url: 'index.php?controller=BuscarParticipesCesantes&action=TablaDesafiliacion',
+	    type: 'POST',
+	    data: {
+	    	   id_participe: id,
+	    	   page: page
+	    },
+	})
+	.done(function(x) {
+		$('#tabla_desafiliacion').html(x);
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+}
+
 function reportePrint(ObjetoLink){
 	var $enlace = $(ObjetoLink);
 	var id_participe = $enlace.data("participe");

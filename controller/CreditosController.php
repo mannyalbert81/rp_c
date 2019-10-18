@@ -380,8 +380,7 @@ class CreditosController extends ControladorBase{
 	        $rsConsulta1   = $Credito->getCondiciones($Columnas1, $Tablas1, $Where1, $Id1);
 	        
 	        $_codigo_tipo_credito  = $rsConsulta1[0]->codigo_tipo_creditos;
-	        
-	       
+	             
 	        
 	        switch ($_codigo_tipo_credito){
 	            case 'EME':

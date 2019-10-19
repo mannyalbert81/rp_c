@@ -139,6 +139,7 @@
                 				<label for="formato_recaudacion" class="col-sm-4 control-label" >Formato:</label>
                 				<div class="col-sm-8">
                                   	<select id="formato_recaudacion" name="formato_recaudacion" class="form-control">
+                                  	<option value="0" >--Seleccione--</option>
                                   	<option value="1" >DESCUENTOS APORTES</option>
                                   	<option value="2" >DESCUENTOS CREDITOS</option>
 									<option value="3" >DESCUENTOS CREDITOS Y APORTES</option>
@@ -155,7 +156,7 @@
                 			 <div class="form-group-sm">
                 				<label for="tipo_periodo_recaudacion" class="col-sm-4 control-label" >Tipo Periodo:</label>
                 				<div class="col-sm-8">
-                                  	<select id="tipo_periodo_recaudacion" name="tipo_periodo_recaudacion" class="form-control">
+                                  	<select id="tipo_periodo_recaudacion" name="tipo_periodo_recaudacion" class="form-control" readonly>
                                   	 <option value="1" >MENSUAL</option>
                                   	</select>
                                  </div>
@@ -298,6 +299,55 @@
       </div>
       <!-- /.modal-dialog -->
 </div>
+
+<!-- BEGIN MODAL PARTICIPES SIN APORTES -->
+  <div class="modal fade" id="mod_participes_sin_aportes" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-lg " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-red color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" align="center">PARTICIPES QUE NO TIENEN DEFINIDO EL APORTE</h4>
+          </div>
+          <div class="modal-body" >
+          	<div class="box-body no-padding">
+          		
+            	<div id="mod_div_participes_sin_aportacion" class="table-responsive" style="min-height: 150px; max-height: 450px">
+            		<table id="tbl_participes_sin_aportacion" class="table  table-fixed table-sm table-responsive-sm" > <!--   -->
+                    	<thead >
+                    		<tr>
+                    			<th ><p>Registros <span id="catidad_sin_aportes" class="badge bg-red"></span></p> </th>
+                    			<th colspan="3"></th>
+                    		</tr>
+                    	    <tr class="table-secondary" >
+                    			<th style="text-align: left;  font-size: 12px;">#</th>
+                    			<th style="text-align: left;  font-size: 12px;">No. Identificacion</th>
+                    			<th style="text-align: left;  font-size: 12px;">Nombres</th>
+                    			<th style="text-align: left;  font-size: 12px;">Apellidos</th>
+                    		</tr>
+                    	</thead>        
+                    	<tbody>
+                    	    
+                    	</tbody>
+                    	<tfoot>
+                    	    <tr>
+                    			<th colspan="3" ></th>
+                    			<th style="text-align: right"></th>
+                    	    </tr>
+                    	</tfoot>
+                    </table>            	
+            	</div>
+          	</div>
+          	
+          
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+<!-- BEGIN MODAL PARTICIPES SIN APORTES -->
  
  <div class="modal fade" id="mod_recaudacion" data-backdrop="static" data-keyboard="false">
       <div class="modal-dialog" style="width:40%">
@@ -393,7 +443,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.50"></script> 
+   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.55"></script> 
        
        
 

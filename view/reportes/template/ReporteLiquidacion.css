@@ -36,29 +36,26 @@ td.central{
 
 
 
-table.1 tr:nth-child(even){
+
+table.1 {
    width: 100%;
    text-align: left;
    font-size:12px;
    border-collapse: collapse;
    margin: 0 0 1em 0;
    caption-side: top;
-   
 }
 
-th.ancho{
-	
-	width: 200px;
-	background: #C0C0C1;
-	
-	
-	
+table.3 {
+
+   width: 75%;
+   text-align: left;
+   font-size:12px;
+   border-collapse: collapse;
+   margin: 0 0 1em 0;
+   caption-side: top;
 }
-td.ancho{
-	
-	width: 215px;
-	
-}
+
 td.bordesup{
 	
 	border-top: 1px solid;
@@ -66,52 +63,20 @@ td.bordesup{
 }
 
 
-table.2 {
-   width: 100%;
-   font-size:17px;
-   text-align: center;
-   
-}
-table.3 {
-  
-  width: 100%;
-   font-size:15px;
-   text-align: left;
-}
 
 table.4 {
-  
-  width: 255px;
-   font-size:12px;
-   text-align: left;
-}
-table.5 {
-  
-  width: 100%;
-   font-size:12px;
+   width: 100%;
    text-align: center;
-   border:1px solid;
-}
-
-td .right{
-	 border-right: 1px solid red;
-	}
-
-table.6 {
-  
-  width: 500px;
    font-size:12px;
-   text-align: left;
+   border-collapse: collapse;
+   margin: 0 0 1em 0;
+   caption-side: top;
+   
 }
 
-table tr.grupocuenta td  { 
-	background-color: #EEEEEE;
-	font-variant: small-caps;
-    font-weight: bold;
-    text-transform: uppercase;   
-    
-	}
+td.1{
 	
-td .1{
-	 width: 300px;
-	}
+	
+	width: 120px;
+	
+}

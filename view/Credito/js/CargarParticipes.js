@@ -1499,6 +1499,10 @@ function SimulacionCreditosPaso1()
 	$('#info_paso').html(informacion);	
 	sin_solicitud=true;
 	GetTipoCreditos1();
+	
+	
+	
+	
 }
 
 function SimulacionCreditosPaso2()
@@ -1520,6 +1524,10 @@ function SimulacionCreditosPaso2()
 	{
 		switch (tipo_credito){
 		case "EME":		
+			
+			
+			
+			
 			
 		var informacion="<h3>PASO 2</h3>" +
 		"<h3>Ingrese su capacidad de pago</h3>" +
@@ -1549,6 +1557,81 @@ function SimulacionCreditosPaso2()
 		$('#info_paso').html(informacion);	
 		break;
 		}
+
+		
+		switch (tipo_credito){
+		case "PH":		
+			
+		var informacion="<h3>PASO 2</h3>" +
+		"<h3>Ingrese su capacidad de pago</h3>" +
+		"<div class=\"row\">"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
+		"</div>"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" text-center>"+
+		'<div id="capacidad_de_pago_participe">'+
+		'<div class="form-group">'+
+		"<label for=\"cedula_garante\" class=\"control-label\">Modalidad:</label>" +
+		"<select name=\"tipo_credito_hipotecario\" id=\"tipo_credito_hipotecario\"  class=\"form-control\" onchange=\"ModalidadCreditoHP()\">"+
+		"<option value=\"\" selected=\"selected\">--Seleccione--</option>"+
+		"<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
+		"<option value=\"2\" >MEJORAS Y/O REPAROS</option>"+
+		"<div id=\"mensaje_tipo_hipotecario\" class=\"errores\"></div>"+
+		
+		
+			'</div>'+
+		"</div>"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
+		"</div>"+
+		"</div>"+
+		"<div class=\"row\">"+
+		 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
+		'<div class="form-group">'+
+		'<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso1()"><i class="glyphicon glyphicon-chevron-left"></i> ANTERIOR</button>'+
+	      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso3PH()"> SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
+	    '</div>'+
+	 '</div>'+
+		"</div>"
+		;
+		$('#info_paso').html(informacion);	
+		break;
+		}
+		
+		
+		switch (tipo_credito){
+		case "ORD":		
+			
+		var informacion="<h3>PASO 2</h3>" +
+		"<h3>Ingrese su capacidad de pago</h3>" +
+		"<div class=\"row\">"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
+		"</div>"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" text-center>"+
+		'<div id="capacidad_de_pago_participe">'+
+		'<div class="form-group">'+
+		'<label for="monto_credito" class="control-label">Capacidad de pago Participe:</label>'+
+		'<button align="center" class="btn bg-olive" title="Análisis crédito"  onclick="AnalisisCreditoParticipe1()"><i class="glyphicon glyphicon-new-window"></i></button>'+
+			'<div id="mensaje_sueldo_participe" class="errores"></div></div></div>'+
+			'</div>'+
+		"</div>"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
+		"</div>"+
+		"</div>"+
+		"<div class=\"row\">"+
+		 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
+		'<div class="form-group">'+
+		'<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso1()"><i class="glyphicon glyphicon-chevron-left"></i> ANTERIOR</button>'+
+	      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso3ORD()"> SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
+	    '</div>'+
+	 '</div>'+
+		"</div>"
+		;
+		$('#info_paso').html(informacion);	
+		break;
+		}
+		
+		
+		
+		
 	}
 	
 }
@@ -1597,5 +1680,100 @@ function SimulacionCreditosPaso3EME()
 	
 	
 }
+
+
+function SimulacionCreditosPaso3PH()
+{
+	var sueldo_participe=$("#sueldo_participe").val();
+	if(sueldo_participe===undefined) sueldo_participe="";
+	if(sueldo_participe=="")
+		{
+		swal({
+	  		  title: "Advertencia!",
+	  		  text: "Ingrese la capacidad de pago",
+	  		  icon: "warning",
+	  		  button: "Aceptar",
+	  		});
+		}
+	else
+		{
+		var informacion="<h3>PASO 3</h3>" +
+		"<h3>Ingrese el monto del crédito</h3>" +
+		"<div class=\"row\">"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
+		"</div>"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" text-center>"+
+			'<div class="form-group">'+
+			'<label for="monto_credito" class="control-label">Monto Crédito:</label>'+
+				'<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">'+
+	        '<div id="mensaje_monto_credito" class="errores"></div>'+
+	 	'</div>'+
+		"</div>"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
+		"</div>"+
+		"</div>"+
+		"<div class=\"row\">"+
+		 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
+		'<div class="form-group">'+
+		'<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso2()"><i class="glyphicon glyphicon-chevron-left"></i> ANTERIOR</button>'+
+	      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas1"> SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
+	    '</div>'+
+	 '</div>'+
+		"</div>"
+		;
+		$('#info_paso').html(informacion);	
+		}
+	
+	
+}
+
+
+function SimulacionCreditosPaso3ORD()
+{
+	var sueldo_participe=$("#sueldo_participe").val();
+	if(sueldo_participe===undefined) sueldo_participe="";
+	if(sueldo_participe=="")
+		{
+		swal({
+	  		  title: "Advertencia!",
+	  		  text: "Ingrese la capacidad de pago",
+	  		  icon: "warning",
+	  		  button: "Aceptar",
+	  		});
+		}
+	else
+		{
+		var informacion="<h3>PASO 3</h3>" +
+		"<h3>Ingrese el monto del crédito</h3>" +
+		"<div class=\"row\">"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
+		"</div>"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" text-center>"+
+			'<div class="form-group">'+
+			'<label for="monto_credito" class="control-label">Monto Crédito:</label>'+
+				'<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">'+
+	        '<div id="mensaje_monto_credito" class="errores"></div>'+
+	 	'</div>'+
+		"</div>"+
+		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
+		"</div>"+
+		"</div>"+
+		"<div class=\"row\">"+
+		 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
+		'<div class="form-group">'+
+		'<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso2()"><i class="glyphicon glyphicon-chevron-left"></i> ANTERIOR</button>'+
+	      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas1"> SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
+	    '</div>'+
+	 '</div>'+
+		"</div>"
+		;
+		$('#info_paso').html(informacion);	
+		}
+	
+	
+}
+
+
+
 
 

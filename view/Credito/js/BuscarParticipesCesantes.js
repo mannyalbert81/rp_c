@@ -97,6 +97,7 @@ function BuscarParticipe()
 			AportesParticipe(id_participe, 1)
 			AportesParticipePatronal(id_participe, 1)
 			CreditosActivosParticipe(id_participe, 1)
+			TablaDesafiliacion(id_participe, 1)
 			
 		})
 		.fail(function() {
@@ -180,12 +181,60 @@ function TablaDesafiliacion(id, page)
 	.done(function(x) {
 		$('#tabla_desafiliacion').html(x);
 		
+		let totalaAporte = $("#lblTotalPersonal").text();
+		totalaAporte = totalaAporte.replace(".","");
+		totalaAporte = totalaAporte.replace(",",".");
+		let var1 = totalaAporte / 2 ;
+		
+		let totalCredito = $("#lblTotalCreditos").text();
+		totalCredito = totalCredito.replace(".","");
+		totalCredito = totalCredito.replace(",",".");
+		let var2 = totalCredito;
+		
+		let totalImpuesto = $("#lblTotalImpuesto").text();
+		totalImpuesto = totalImpuesto.replace(".","");
+		totalImpuesto = totalImpuesto.replace(",",".");
+		let var3 = totalImpuesto / 2;
+	
+		let SuperavitAporte = $("#lblTotalSuperavitAporte").text();
+		SuperavitAporte = SuperavitAporte.replace(".","");
+		SuperavitAporte = SuperavitAporte.replace(",",".");
+		let var4 = SuperavitAporte / 2;
+		
+		let var5 = var1 + var3 + var4;
+		let var6 = var5 - var2;
+	
+		$("#lblAportePersonal").text(var1);
+		$("#lblImpuestoPersonal").text(var3);
+		$("#lblSuperavitAportePersonal").text(var4);
+		$("#lblTotalSuma").text(var5);
+		$("#lblCreditoOrdinario").text(var2);
+		$("#lblTotalDescuentos").text(var2);
+		$("#lblTotalRecibir").text(var6);
+		
+		
+		if(var5 < var2)
+		{
+			
+		swal({
+	  		  title: "Advertencia!",
+	  		  text: "El participe no puede desafiliarse en este momento",
+	  		  icon: "error",
+	  		  button: "Aceptar",
+	  		  dangerMode: true
+	  		});
+		}
+		
+		
+		
+		
 		
 	})
 	.fail(function() {
 	    console.log("error");
 	});
 }
+
 
 function reportePrint(ObjetoLink){
 	var $enlace = $(ObjetoLink);

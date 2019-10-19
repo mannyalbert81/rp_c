@@ -218,8 +218,279 @@ class BuscarParticipesCesantesController extends ControladorBase{
         
     }
     
-    
-    
+    public function  SuperavitAporte () 
+    {
+        
+        
+        
+        session_start();
+        $id_participe=$_POST['id_participe'];
+        $html="";
+        $participes= new ParticipesModel();
+        $total=0;
+        
+        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
+        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
+        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=50
+                AND core_contribucion.id_estatus=1";
+        $id="fecha_registro_contribucion";
+        
+        $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
+        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
+        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=50
+                AND core_contribucion.id_estatus=1";
+        $id="fecha_registro_contribucion";
+        
+        $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        if(!(empty($resultAportes)))
+        {
+            foreach($resultAportes as $res)
+            {
+                if($res->valor_personal_contribucion!=0)
+                {
+                    $total+=$res->valor_personal_contribucion;
+                    
+                }
+                else
+                {
+                    $total+=$res->valor_patronal_contribucion;
+                }
+            }
+            
+            $personales=sizeof($resultAportesPersonales);
+            $last=sizeof($resultAportes);
+            $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
+            $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
+            $fecha_primer=substr($fecha_primer,0,10);
+            $fecha_ultimo=substr($fecha_ultimo,0,10);
+            $tiempo=$this->dateDifference($fecha_primer, $fecha_ultimo);
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            $resultSet=$participes->getCantidad("*", $tablas, $where);
+            $cantidadResult=(int)$resultSet[0]->total;
+            $per_page = 20; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            $resultAportes=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
+            $last=sizeof($resultAportes);
+            
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            $html='<div class="box box-solid bg-aqua">
+            <div class="box-header with-border">
+            <h3 class="box-title">Aportaciones Personales</h3>
+            <h4 class="widget-user-desc"><b>Tiempo de Aportes:</b> '.$tiempo.'</h4>
+            <h4 class="widget-user-desc"><b>Número de Aportaciones Personales mensuales:</b> '.$personales.'</h4>
+            </div>
+             <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-aqua">
+                        <th width="10%">№</th>
+                        <th width="29%">FECHA DE APORTACION</th>
+                        <th width="28%">TIPO DE APORTE</th>
+                        <th width="29%">TOTAL</th>
+                        <th width="1.5%"></th>
+                     </tr>
+                   </table>
+                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
+                     <table border="1" width="100%">';
+            for($i=$last-1; $i>=0; $i--)
+            {
+                $index=($i+($last-1)*($page-1))+1;
+                if($resultAportes[$i]->valor_personal_contribucion!=0)
+                {
+                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
+                    $monto=number_format((float)$resultAportes[$i]->valor_personal_contribucion, 2, ',', '.');
+                    $html.='<tr>
+                                 <td bgcolor="white" width="10%"><font color="black">'.$index.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$fecha.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
+                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
+                                </tr>';
+                }
+                else
+                {
+                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
+                    $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
+                    $html.='<tr>
+                                 <td bgcolor="white"  width="10%"><font color="black">'.$index.'</font></td>
+                                 <td bgcolor="white"  width="30%"><font color="black">'.$fecha.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
+                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
+                                </tr>';
+                }
+                
+                
+            }
+            $total=number_format((float)$total, 2, ',', '.');
+            $html.='</table>
+                   </div>
+                    <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-aqua">
+                        <th class="text-right">Acumulado Total de Aportes: <span id="lblTotalSuperavitAporte"> '.$total.' </span></th>
+                        <th width="1.5%"></th>
+                     </tr>
+                   </table>';
+            $html.='<div class="table-pagination pull-right">';
+            $html.=''. $this->paginate_aportes("index.php", $page, $total_pages, $adjacents,$id_participe,"SuperavitAporte").'';
+            $html.='</div>
+                    </div>';
+            
+            
+            echo $html;
+            
+        }
+        else
+        {
+            $html.='<div class="alert alert-warning alert-dismissable bg-aqua" style="margin-top:40px;">';
+            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene aportaciones</b>';
+            $html.='</div>';
+            echo $html;
+        }
+        
+        
+        
+        
+    }
+    public function  ImpuestoSuperavit ()
+    {
+
+        session_start();
+        $id_participe=$_POST['id_participe'];
+        $html="";
+        $participes= new ParticipesModel();
+        $total=0;
+        
+        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
+        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
+        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=10
+                AND core_contribucion.id_estatus=1";
+        $id="fecha_registro_contribucion";
+        
+        $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
+        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
+        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=10
+                AND core_contribucion.id_estatus=1";
+        $id="fecha_registro_contribucion";
+        
+        $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        if(!(empty($resultAportes)))
+        {
+            foreach($resultAportes as $res)
+            {
+                if($res->valor_personal_contribucion!=0)
+                {
+                    $total+=$res->valor_personal_contribucion;
+                    
+                }
+                else
+                {
+                    $total+=$res->valor_patronal_contribucion;
+                }
+            }
+            
+            $personales=sizeof($resultAportesPersonales);
+            $last=sizeof($resultAportes);
+            $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
+            $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
+            $fecha_primer=substr($fecha_primer,0,10);
+            $fecha_ultimo=substr($fecha_ultimo,0,10);
+            $tiempo=$this->dateDifference($fecha_primer, $fecha_ultimo);
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            $resultSet=$participes->getCantidad("*", $tablas, $where);
+            $cantidadResult=(int)$resultSet[0]->total;
+            $per_page = 20; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            $resultAportes=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
+            $last=sizeof($resultAportes);
+            
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            $html='<div class="box box-solid bg-aqua">
+            <div class="box-header with-border">
+            <h3 class="box-title">Aportaciones Personales</h3>
+            <h4 class="widget-user-desc"><b>Tiempo de Aportes:</b> '.$tiempo.'</h4>
+            <h4 class="widget-user-desc"><b>Número de Aportaciones Personales mensuales:</b> '.$personales.'</h4>
+            </div>
+             <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-aqua">
+                        <th width="10%">№</th>
+                        <th width="29%">FECHA DE APORTACION</th>
+                        <th width="28%">TIPO DE APORTE</th>
+                        <th width="29%">TOTAL</th>
+                        <th width="1.5%"></th>
+                     </tr>
+                   </table>
+                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
+                     <table border="1" width="100%">';
+            for($i=$last-1; $i>=0; $i--)
+            {
+                $index=($i+($last-1)*($page-1))+1;
+                if($resultAportes[$i]->valor_personal_contribucion!=0)
+                {
+                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
+                    $monto=number_format((float)$resultAportes[$i]->valor_personal_contribucion, 2, ',', '.');
+                    $html.='<tr>
+                                 <td bgcolor="white" width="10%"><font color="black">'.$index.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$fecha.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
+                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
+                                </tr>';
+                }
+                else
+                {
+                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
+                    $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
+                    $html.='<tr>
+                                 <td bgcolor="white"  width="10%"><font color="black">'.$index.'</font></td>
+                                 <td bgcolor="white"  width="30%"><font color="black">'.$fecha.'</font></td>
+                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
+                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
+                                </tr>';
+                }
+                
+                
+            }
+            $total=number_format((float)$total, 2, ',', '.');
+            $html.='</table>
+                   </div>
+                    <table border="1" width="100%">
+                     <tr style="color:white;" class="bg-aqua">
+                        <th class="text-right">Acumulado Total de Aportes: <span id="lblTotalImpuesto"> '.$total.' </span></th>
+                        <th width="1.5%"></th>
+                     </tr>
+                   </table>';
+            $html.='<div class="table-pagination pull-right">';
+            $html.=''. $this->paginate_aportes("index.php", $page, $total_pages, $adjacents,$id_participe,"ImpuestoSuperavit").'';
+            $html.='</div>
+                    </div>';
+            
+            
+            echo $html;
+            
+        }
+        else
+        {
+            $html.='<div class="alert alert-warning alert-dismissable bg-aqua" style="margin-top:40px;">';
+            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene aportaciones</b>';
+            $html.='</div>';
+            echo $html;
+        }
+        
+        
+        
+    }
     public function AportesParticipe()
     {
         session_start();
@@ -515,7 +786,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
         $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
         if(!(empty($resultAportes)))
         {
-            foreach($resultAportes as $res)
+            foreach($resultAportes as $res) 
             {
                 if($res->valor_personal_contribucion!=0)
                 {
@@ -547,22 +818,53 @@ class BuscarParticipesCesantesController extends ControladorBase{
             
             $total_pages = ceil($cantidadResult/$per_page);
             
-            $html='<div class="box box-solid bg-aqua">
+            $html='<div class="box box-solid bg-olive">
             <div class="box-header with-border">
-            <h3 class="box-title">Aportaciones Patronales</h3>
-            <h4 class="widget-user-desc"><b>Tiempo de Aportes:</b> '.$tiempo.'</h4>
-            <h4 class="widget-user-desc"><b>Número de Aportaciones Personales mensuales:</b> '.$personales.'</h4>
-            </div>
+            <h3 class="box-title">Calculo</h3>
+          </div>
              <table border="1" width="100%">
                      <tr style="color:white;" class="bg-aqua">
-                        <th width="10%">№</th>
-                        <th width="29%">FECHA DE APORTACION</th>
-                        <th width="28%">TIPO DE APORTE</th>
-                        <th width="29%">TOTAL</th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>
-                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
+                        <th width="10%"></th>
+                        
+         </tr>
+        <tr style="color:white;" class="bg-aqua">
+                        <th width="10%">50% del Aporte Personal (Res. N° SBS-2013-504)</th>
+     <td bgcolor="white"  width="10%"><font color="black"><span id="lblAportePersonal"></span></font></td>
+         </tr>
+        <tr style="color:white;" class="bg-aqua">
+                   <th width="10%">50% del Impuesto IR Superavit Personal (Res. N° SBS-2013-504)</th>
+     <td bgcolor="white"  width="10%"><font color="black"><span id="lblImpuestoPersonal"></span></font></td>
+         </tr>
+    
+    <tr style="color:white;" class="bg-aqua">
+                   <th width="10%">50% del Superavit por aporte Personal (Res. N° SBS-2013-504)</th>
+     <td bgcolor="white"  width="10%"><font color="black"><span id="lblSuperavitAportePersonal"></span></font></td>
+         </tr>
+
+<tr style="color:white;" class="bg-red">
+                   <th width="10%">TOTAL 50% PERSONAL + RENDIMIENTOS PRESTACIÓN</th>
+     <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalSuma"></span></font></td>
+         </tr>
+
+<tr style="color:white;" class="bg-olive">
+                   <th width="10%">DESCUENTOS</th>
+         </tr>
+       <tr style="color:white;" class="bg-aqua">
+                   <th width="10%">PQ-Créditos</th>
+     <td bgcolor="white"  width="10%"><font color="black"><span id="lblCreditoOrdinario"></span></font></td>
+         </tr>       
+ 
+<tr style="color:white;" class="bg-red">
+                   <th width="10%">TOTAL DESCUENTOS</th>
+     <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalDescuentos"></span></font></td>
+         </tr>  
+
+<tr style="color:white;" class="bg-black">
+                   <th width="10%">TOTAL A RECIBIR</th>
+     <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalRecibir"></span></font></td>
+         </tr>       
+                          
+      </table>
                      <table border="1" width="100%">';
             for($i=$last-1; $i>=0; $i--)
             {
@@ -583,28 +885,12 @@ class BuscarParticipesCesantesController extends ControladorBase{
                     $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
                     $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
                     $html.='<tr>
-                                 <td bgcolor="white"  width="10%"><font color="black">'.$index.'</font></td>
-                                 <td bgcolor="white"  width="30%"><font color="black">'.$fecha.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
-                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
                                 </tr>';
                 }
                 
                 
             }
             $total=number_format((float)$total, 2, ',', '.');
-            $html.='</table>
-                   </div>
-                    <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th class="text-right">Acumulado Total de Aportes: <span id="lblTotalPatronal"> '.$total.' </span></th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>';
-            $html.='<div class="table-pagination pull-right">';
-            $html.=''. $this->paginate_tabla("index.php", $page, $total_pages, $adjacents,$id_participe,"TablaDesafiliacion").'';
-            $html.='</div>
-                    </div>';
             
             
             echo $html;
@@ -1048,12 +1334,13 @@ class BuscarParticipesCesantesController extends ControladorBase{
         return $out;
     }
     
+    
     public function print()
     {
         
         session_start();
         $entidades = new EntidadesModel();
-        $paticipes = new ParticipesModel();      
+        $paticipes = new ParticipesModel();
         
         $html="";
         $id_usuarios = $_SESSION["id_usuarios"];
@@ -1112,38 +1399,187 @@ class BuscarParticipesCesantesController extends ControladorBase{
                     $_id_participes  =$resultSetCabeza[0]->id_participes;
                     $_nombre_estado_participes     =$resultSetCabeza[0]->nombre_estado_participes;
                     $_nombre_estado_participes     =$resultSetCabeza[0]->nombre_participes;
-                    $_celular_participes     =$resultSetCabeza[0]->celular_participes;
+                    $_celular_participes           =$resultSetCabeza[0]->celular_participes;
+                    $_cedula_participes            =$resultSetCabeza[0]->cedula_participes;
+                    $_apellido_participes          =$resultSetCabeza[0]->apellido_participes;
                     
                     
-              
-                    $html.= '<table style="width:100%;" class="headertable">';
+                    
+                    $html.= '<table style="width:100%;" border=1 cellspacing=0.0001 >';
                     $html.= '<tr >';
-                    $html.= '<td style="background-repeat: no-repeat;	background-size: 10% 100%;	background-image: url(http://192.168.1.231/rp_c/view/images/Logo-Capremci-h-170.jpg);
-                                        background-position: 0% 100%;	font-size: 11px; padding: 0px; 	text-align:center;" class="central" colspan="2">';
+                    $html.= '<td style="background-repeat: no-repeat;	background-size: 10% 50%;	background-image: url(http://192.168.1.231/rp_c/view/images/Logo-Capremci-h-170.jpg);
+                                        background-position: 0% 100%;	font-size: 10px; padding: 10px; 	text-align:center;" class="central" colspan="2">';
                     $html.= '<strong>';
-                    $html.= $_nombre_estado_participes.'<br>';
-                    $html.= $_nombre_estado_participes.'<br>';
-                    $html.= $_nombre_estado_participes.'';
+                    $html.= 'CAPREMCI'.'<br>';
+                    $html.= 'Av. Baquerizo Moreno E-9781 y Leonidas Plaza'.'<br>';
+                    $html.= '023828870'.'';
                     $html.= '</strong>';
                     $html.= '</td>';
                     $html.= '</tr>';
-                    $html.= '<tr>';
-                    $html.= '<td class="htexto1" style="font-size: 10px;  padding: 5px; text-align:left;width: 65%;" >';
-                    $html.= '<p>';
-                    $html.= '</p>';
-                    $html.= '</td>';
-                    $html.= '<td class="htexto2" style="font-size: 10px;  padding: 5px; text-align:left; width: 33%;" >';
-                    $html.= '<p>';
-                    $html.= '</p>';
-                    $html.= '</td>';
-                    $html.= '</tr>';
+                    
                     $html.= '</table>';
                     
-            
-                
-         
+                    $html.= '<br>';
+                    
+                    $html.='<table style="width: 100%;"  border=0 cellspacing=0.0001 >';
+                    $html.='<tr>';
+                    $html.='<th colspan="12" style="text-align:center; font-size: 13px;"><b>ACTA DE LIQUIDACIÓN DE CUENTA INDIVIDUAL<br>DESAFILIACIÓN VOLUNTARIA<b></th>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="12" style="text-align:justify; font-size: 11px;"><p>En la ciudad de Quito hoy 15 de Julio del 2019, de manera libre y voluntaria
+                                                                                              comparecen por una parte el F.C.P.C DE CESANTÍA DE SERVIDORES Y TRABAJADORES
+                                                                                              PÚBLICOS DE LAS FUERZAS ARMADAS CAPREMCI, legalmente representada por quien suscribe
+                                                                                              la presente acta, en calidad de "FONDO"; y, por otra, el señor/a '.$_apellido_participes.' '.$_nombre_estado_participes.'
+                                                                                              , en calidad de PARTICIPE, con el objeto de suscribir la presente
+                                                                                             Acta de Liquidación de la cuenta individual, al tenor de las siguientes Cláusulas:</p></td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="12" style="text-align:justify; font-size: 11px;"><p><b>PRIMERA</b>.- La relación de Afilicación, lícita y personal entre los comparecientes
+                                                                                                               concluye en la presente fecha, de mutuo acuerdo o por fallecimiento del
+                                                                                                               titular, de conformidad con las normas previstas en el Estatuto del Fondo
+                                                                                                               y sus reglamentos.</p></td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="12" style="text-align:justify; font-size: 11px;"><p><b>SEGUNDA</b>.- En este acto se precede a realizar la liquidación del 50% del aporte personal,
+                                                                                                               más rendimientos del PARTICIPE, con las siguientes cantidades:</p></td>';
+                    
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<th colspan="12" style="text-align:justify; font-size: 11px;"><br><b>PRESTACIONES.- CARPETA  N.</b></th>';
+                    $html.='</tr>';
+                    
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="6" style="font-size: 11px;"><br><b>IMPOSICIONES DESDE</b></td>';
+                    $html.='<td colspan="6" style="font-size: 11px;"><b>HASTA</b></td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="7" style="font-size: 11px;">50% del Aporte Personal (Res. N°SBS-2013-504)</td>';
+                    $html.='<td colspan="5" style="font-size: 11px;">   </td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="7" style="font-size: 11px;">50% del Impuesto IR Superavit Personal (Res. N°SBS-2013-504)</td>';
+                    $html.='<td colspan="5" style="font-size: 11px;">   </td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="7" style="font-size: 11px;">50% del Superavit por Aporte Personal (Res. N°SBS-2013-504)</td>';
+                    $html.='<td colspan="5" style="font-size: 11px;">   </td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="7" style="font-size: 11px;"><b>TOTAL 50% PERSONAL + RENDIMIENTOS PRESTACIÓN:</b></td>';
+                    $html.='<td colspan="5" style="font-size: 11px;">   </td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="7" style="font-size: 11px;"><br><b>DESCUENTOS</b></td>';
+                    $html.='<td colspan="5" style="font-size: 11px;">   </td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="7" style="font-size: 11px;">PQ-Crédito Ordinario al Jun 30 2019</td>';
+                    $html.='<td colspan="5" style="font-size: 11px;">   </td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="7" style="font-size: 11px;">PQ-Crédito Emergente al Jul 11 2019</td>';
+                    $html.='<td colspan="5" style="font-size: 11px;">   </td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="7" style="font-size: 11px;"><b>TOTAL DESCUENTOS:</b></th>';
+                    $html.='<td colspan="5" style="font-size: 11px;">   </th>';
+                    $html.='</tr>';
+                    
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="7" style="font-size: 11px;"><br><b>TOTAL A RECIBIR:</b></td>';
+                    $html.='<td colspan="5" style="font-size: 11px;">   </td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="6" style="font-size: 11px;"><b>(Son:  )</b></td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="12" style="text-align:justify; font-size: 11px;"><p>De acuerdo con lo que establece el Art.53 de la Resolución 280-2016-F, de 07 de septiembre
+                                                                                              de 2016, emitida por la Junta de Política y Regulación Monetaria y Financiera, se tiene que la
+                                                                                              cuenta individual de cada participe se encuentra constituida por el aporte personal y sus rendimientos;
+                                                                                              el aporte adicional, de ser el caso y sus rendimientos; y, el aporte patronal y sus rendimientos,
+                                                                                              de ser el caso los cuales constituyen un pasivo del patrimonio autónomo de fondo.
+                                                                                              El resultado anual que genere la administración del Fondo Complementario Previsional Cerrado,
+                                                                                              de acuerdo a las políticas de administración e inversión, será distribuido proporcionalmente
+                                                                                              a cada cuenta individual de los partícipes, en función de lo acumulado y de la fecha de aportación</p></td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="12" style="text-align:justify; font-size: 11px;"><p><b>TERCERA</b>.- El aporte patronal del afiliado a la presente fecha, asciende a 1.905,43, y el 50%
+                                                                                                               de su aporte personal más rendimientos, a la presente fecha asciende a 1.073,73, los
+                                                                                                               mismos que se le serán restituidos, sumandos los rendimientos generados hasta la
+                                                                                                               fecha de devolución, una vez que el PARTICIPE quede efectivamente CESANTE de la
+                                                                                                               Entidad Patronal para la cual labora actualmente, mientras tantos dichos valores
+                                                                                                               quedarán registrados contablemente en una cuenta de pasivo a nombre del participe.</p></td>';
+                    
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="12" style="text-align:justify; font-size: 11px;"><p><b>CUARTA</b>.- El/la señores '.$_apellido_participes.' '.$_nombre_estado_participes.' deja(n) expresa constancia que recibe el valor
+                                                                                                              mencionado en la claúsula segunda a su satisfación y que con dicha cantidad se encuentran
+                                                                                                              completamente pagados sus beneficios y/o prestaciones y de conformidad con la norma vigente
+                                                                                                              y que, por tanto, nada tiene que reclamar y por ningún concepto en contra del Fondo, sus
+                                                                                                              Directivos y/o Funcionarios, a excepción del 50% del aporte personal más rendimientos y el
+                                                                                                              aporte patronal más sus rendimientos, que serán restituidos de conformidad con la cláusula tercera.</p></d>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="12" style="text-align:justify; font-size: 11px;"><p><b>QUINTA.- EFECTO DEL ACTA DE LIQUIDACIÓN</b>.- Expresamente los comparecientes declaran que con la suscripción de la
+                                                                                                          presente Acta de Liquidación no pretenden irrogar ni irrogan ningún tipo de perjuicio a terceros, por lo que
+                                                                                                          suscriben el presente Instrumento sobre la buena fé de las estipulaciones que han acordado entre las mismas.
+                                                                                                          De conformidad con lo establecido en los artículos 2348, 2362 del Código Civil, los comparecientes acuerdan
+                                                                                                          terminar la relación jurídica y darle la calidad a la presente acta de sentencia ejecutoriada, pasada por la
+                                                                                                          autoridad de cosa juzgada en última instancia.</p></d>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="12" style="text-align:justify; font-size: 11px;"><p><b>SEXTA.- ACEPTACIÓN Y RATIFICACIÓN</b>.- Las partes aceptan en todos sus términos y se ratifican en las estipulaciones
+                                                                                                         y declaraciones contenidas en las cláusulas precedentes, en fé de lo cual, suscriben el presente instrumento
+                                                                                                         en tres ejemplares de igual tenor y valor.</p></d>';
+                    
+                    $html.='<br>';
+                    $html.='<br>';
+                    $html.='<br>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="6" style="font-size: 11px;">________________________________</td>';
+                    $html.='<td colspan="6" style="text-align:center; font-size: 10px;">___________________________________</td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="6" style="font-size: 11px;"> '.$_apellido_participes.''.$_nombre_estado_participes.'</td>';
+                    $html.='<td colspan="6" style="text-align:center; font-size: 11px;">ING. STEPHANY ZURITA CEDEÑO</td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="6" style="font-size: 11px;"> AFILIADO (A)/ BENEFICIARIO (A)</td>';
+                    $html.='<td colspan="6" style="text-align:center; font-size: 11px;">REPRESENTANTE LEGAL CAPREMCI</td>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<td colspan="12" style="font-size: 11px;">C.C: '.$_cedula_participes.'  </td>';
+                    $html.='</tr>';
+                    
+                    $html.='</table>';
+                    
+                    
                 }
-                
                 
                 
                 $this->report("BuscarParticipesCesantes",array( "resultSet"=>$html));
@@ -1165,7 +1601,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
         
         
     }
-    
+ 
 }
 
 

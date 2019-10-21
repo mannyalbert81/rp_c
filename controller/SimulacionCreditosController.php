@@ -1369,8 +1369,8 @@ class SimulacionCreditosController extends ControladorBase{
                $saldo_inicial_ant = $saldo_inicial_ant - $amortizacion;
                $interes= $saldo_inicial_ant * $inter_ant;
                $interes=floor($interes * 100) / 100;
+               if($i==1) $interes+=$interes_concesion;
                $amortizacion = $valor_cuota - $interes;
-                if($i==1) $interes+=$interes_concesion;
                
                $desgravamen=((0.16/1000)*$saldo_inicial)*1.04;
                $desgravamen=floor($desgravamen * 100) / 100;
@@ -1497,11 +1497,9 @@ class SimulacionCreditosController extends ControladorBase{
                $saldo_inicial_ant = $saldo_inicial_ant - $amortizacion;
                $interes= $saldo_inicial_ant * $inter_ant;
                $interes=floor($interes * 100) / 100;
-               $amortizacion = $valor_cuota - $interes;
                if($i==1) $interes+=$interes_concesion;
-               
-               
-               
+               $amortizacion = $valor_cuota - $interes;
+                       
                $desgravamen=eval("return ($formula_seguro_desgravamen);");
                $desgravamen=floor($desgravamen * 100) / 100;
                $saldo_inicial= $saldo_inicial_ant  - $amortizacion;
@@ -1553,6 +1551,94 @@ class SimulacionCreditosController extends ControladorBase{
        }
        
        return $resultAmortizacion;
+   }
+   
+   public function DesgloseTablaAmortizacion($id_tabla_amortizacion, $tipo_credito)
+   {
+       $rp_capremci=new PlanCuentasModel();
+       $columnas="*";
+       $tablas="core_tabla_amortizacion";
+       $where="id_tabla_amortizacion=".$id_tabla_amortizacion;
+       $datos_tabla_amortizacion=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       
+       $columnas="id_tabla_amortizacion_parametrizacion";
+       $tablas="core_tabla_amortizacion_parametrizacion INNER JOIN core_tipo_creditos
+                    ON core_tabla_amortizacion_parametrizacion.id_tipo_creditos=core_tipo_creditos.id_tipo_creditos";
+       $where="codigo_tipo_creditos='$tipo_credito' AND tipo_tabla_amortizacion_parametrizacion=0 AND core_tabla_amortizacion_parametrizacion.id_estado=114";
+       $id_capital=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $id_capital=$id_capital[0]->id_tabla_amortizacion_parametrizacion;
+       
+       $query="INSERT INTO core_tabla_amortizacion_pagos
+                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
+                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
+                    VALUES ($id_capital, $id_tabla_amortizacion, '".$datos_tabla_amortizacion[0]->capital_tabla_amortizacion."',
+                            '".$datos_tabla_amortizacion[0]->capital_tabla_amortizacion."', 1)";
+       $rp_capremci->executeNonQuery($query);
+       
+       $where="codigo_tipo_creditos='$tipo_credito' AND tipo_tabla_amortizacion_parametrizacion=1 AND core_tabla_amortizacion_parametrizacion.id_estado=114";
+       $id_interes=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $id_interes=$id_interes[0]->id_tabla_amortizacion_parametrizacion;
+       
+       $query="INSERT INTO core_tabla_amortizacion_pagos
+                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
+                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
+                    VALUES ($id_interes, $id_tabla_amortizacion, '".$datos_tabla_amortizacion[0]->interes_tabla_amortizacion."',
+                            '".$datos_tabla_amortizacion[0]->interes_tabla_amortizacion."', 1)";
+       $rp_capremci->executeNonQuery($query);
+       
+       $where="codigo_tipo_creditos='$tipo_credito' AND tipo_tabla_amortizacion_parametrizacion=7 AND core_tabla_amortizacion_parametrizacion.id_estado=114";
+       $id_mora=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $id_mora=$id_mora[0]->id_tabla_amortizacion_parametrizacion;
+       
+       $query="INSERT INTO core_tabla_amortizacion_pagos
+                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
+                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
+                    VALUES ($id_mora, $id_tabla_amortizacion, '0.00',
+                            '0.00', 1)";
+       $rp_capremci->executeNonQuery($query);
+      
+       if($tipo_credito!='PH')
+       {
+                      
+           $where="codigo_tipo_creditos='$tipo_credito' AND tipo_tabla_amortizacion_parametrizacion=8 AND core_tabla_amortizacion_parametrizacion.id_estado=114";
+           $id_desgravamen=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+           $id_desgravamen=$id_desgravamen[0]->id_tabla_amortizacion_parametrizacion;
+           
+           $query="INSERT INTO core_tabla_amortizacion_pagos
+                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
+                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
+                    VALUES ($id_desgravamen, $id_tabla_amortizacion, '".$datos_tabla_amortizacion[0]->seguro_desgravamen_tabla_amortizacion."',
+                            '".$datos_tabla_amortizacion[0]->seguro_desgravamen_tabla_amortizacion."', 1)";
+           $rp_capremci->executeNonQuery($query);
+           
+       }
+       else
+       {
+           
+           $where="codigo_tipo_creditos='$tipo_credito' AND tipo_tabla_amortizacion_parametrizacion=9 AND core_tabla_amortizacion_parametrizacion.id_estado=114";
+           $id_desgravamen=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+           $id_desgravamen=$id_desgravamen[0]->id_tabla_amortizacion_parametrizacion;
+           
+           $query="INSERT INTO core_tabla_amortizacion_pagos
+                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
+                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
+                    VALUES ($id_desgravamen, $id_tabla_amortizacion, '".$datos_tabla_amortizacion[0]->seguro_desgravamen_tabla_amortizacion."',
+                            '".$datos_tabla_amortizacion[0]->seguro_desgravamen_tabla_amortizacion."', 1)";
+           $rp_capremci->executeNonQuery($query);
+           
+           $where="codigo_tipo_creditos='$tipo_credito' AND tipo_tabla_amortizacion_parametrizacion=8 AND core_tabla_amortizacion_parametrizacion.id_estado=114";
+           $id_incendios=$rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+           $id_incendios=$id_incendios[0]->id_tabla_amortizacion_parametrizacion;
+           
+           $query="INSERT INTO core_tabla_amortizacion_pagos
+                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
+                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
+                    VALUES ($id_incendios, $id_tabla_amortizacion, '".$datos_tabla_amortizacion[0]->seguro_incendios_tabla_amortizacion."',
+                            '".$datos_tabla_amortizacion[0]->seguro_incendios_tabla_amortizacion."', 1)";
+           $rp_capremci->executeNonQuery($query);
+       }
+      
+       
    }
    
    public function SubirInformacionCredito()
@@ -1689,11 +1775,14 @@ class SimulacionCreditosController extends ControladorBase{
                      \''.$hoy.'\'';
                    $credito->setFuncion($funcion);
                    $credito->setParametros($parametros);
-                   $resultado=$credito->Insert();
+                   $queryInsert=$credito->getconsultaPG($credito->getFuncion(), $credito->getParametros());
+                   $resultado=$credito->llamarconsultaPG($queryInsert);
                    
+                   $id_creditos = $resultado[0];
+                                     
                    $query="UPDATE core_creditos
                             SET cuota_creditos='$valor_cuota'
-                            WHERE id_creditos=$numero_credito";
+                            WHERE id_creditos=$id_creditos";
                     $credito->executeNonQuery($query);
                    
                    $fecha_pago=$res['fecha_pago'];
@@ -1708,7 +1797,7 @@ class SimulacionCreditosController extends ControladorBase{
                    $funcion = "ins_core_tabla_amortizacion";
                    if($tipo_credito!="PH")
                    {
-                       $parametros="'$numero_credito',
+                       $parametros="'$id_creditos',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
@@ -1726,7 +1815,7 @@ class SimulacionCreditosController extends ControladorBase{
                    }
                    else
                    {
-                       $parametros="'$numero_credito',
+                       $parametros="'$id_creditos',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
@@ -1742,6 +1831,15 @@ class SimulacionCreditosController extends ControladorBase{
                      '$tasa_interes',
                      '$hoy'";
                    }
+                   
+                   $credito->setFuncion($funcion);
+                   $credito->setParametros($parametros);
+                   $queryInsert=$credito->getconsultaPG($credito->getFuncion(), $credito->getParametros());
+                   $resultado_id_tabla=$credito->llamarconsultaPG($queryInsert);
+                   
+                   $id_tabla_amortizacion = $resultado_id_tabla[0];
+                   
+                   $this->DesgloseTablaAmortizacion($id_tabla_amortizacion, $tipo_credito);
                    
                    $credito->setFuncion($funcion);
                    $credito->setParametros($parametros);
@@ -1770,7 +1868,7 @@ class SimulacionCreditosController extends ControladorBase{
                        
                        $query="INSERT INTO core_creditos_garantias
                    (id_creditos, id_participes, id_estado, usuario_usuarios)
-                   VALUES(".$numero_credito.", ".$id_garante.", ".$id_estado.", '".$usuario."')";
+                   VALUES(".$id_creditos.", ".$id_garante.", ".$id_estado.", '".$usuario."')";
                        
                        $insert=$credito->executeNonQuery($query);
                    }
@@ -1783,7 +1881,7 @@ class SimulacionCreditosController extends ControladorBase{
                        $query="INSERT INTO core_creditos_retenciones
                             (monto_creditos_retenciones, id_creditos)
                             VALUES
-                            (".$res['interes_concesion'].", ".$numero_credito.")";
+                            (".$res['interes_concesion'].", ".$id_creditos.")";
                    $insert=$credito->executeNonQuery($query);
                        
                    }
@@ -1808,7 +1906,7 @@ class SimulacionCreditosController extends ControladorBase{
                    $funcion = "ins_core_tabla_amortizacion";
                    if($tipo_credito!="PH")
                    {
-                       $parametros="'$numero_credito',
+                       $parametros="'$id_creditos',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
@@ -1826,7 +1924,7 @@ class SimulacionCreditosController extends ControladorBase{
                    }
                    else
                    {
-                       $parametros="'$numero_credito',
+                       $parametros="'$id_creditos',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
@@ -1845,7 +1943,15 @@ class SimulacionCreditosController extends ControladorBase{
                    
                    $credito->setFuncion($funcion);
                    $credito->setParametros($parametros);
-                   $resultado=$credito->Insert();
+                   $queryInsert=$credito->getconsultaPG($credito->getFuncion(), $credito->getParametros());
+                   $resultado_id_tabla=$credito->llamarconsultaPG($queryInsert);
+                   
+                   $id_tabla_amortizacion = $resultado_id_tabla[0];
+                   
+                   $this->DesgloseTablaAmortizacion($id_tabla_amortizacion, $tipo_credito);
+                   
+                   
+                   
                    $funcion = "ins_core_tabla_amortizacion_historico";
                    $credito->setFuncion($funcion);
                    $credito->setParametros($parametros);
@@ -1923,11 +2029,6 @@ class SimulacionCreditosController extends ControladorBase{
                    
                }
               
-               
-           
-      
-      
-       
        echo $mensage;
    }
    
@@ -2068,11 +2169,14 @@ class SimulacionCreditosController extends ControladorBase{
                      \''.$hoy.'\'';
            $credito->setFuncion($funcion);
            $credito->setParametros($parametros);
-           $resultado=$credito->Insert();
+           $queryInsert=$credito->getconsultaPG($credito->getFuncion(), $credito->getParametros());
+           $resultado=$credito->llamarconsultaPG($queryInsert);
+           
+           $id_creditos = $resultado[0];
            
            $query="UPDATE core_creditos
                             SET cuota_creditos='$valor_cuota'
-                            WHERE id_creditos=$numero_credito";
+                            WHERE id_creditos=$id_creditos";
            $credito->executeNonQuery($query);
            
            $columnas="id_tipo_creditos_a_renovar";
@@ -2105,7 +2209,7 @@ class SimulacionCreditosController extends ControladorBase{
                    $total_retencion+=$desgravamen;
                    $query="INSERT INTO core_creditos_renovaciones
                             (id_creditos_renovado, id_creditos_nuevo, saldo_credito_renovado_creditos_renovaciones, seguro_desgravamen_creditos_renovaciones)
-                            VALUES (".$res1->id_creditos.",".$numero_credito.",".$res1->saldo_actual_creditos.",".$desgravamen.")";
+                            VALUES (".$res1->id_creditos.",".$id_creditos.",".$res1->saldo_actual_creditos.",".$desgravamen.")";
                    $insert=$credito->executeNonQuery($query);
                    
                    $query="UPDATE core_creditos
@@ -2119,7 +2223,7 @@ class SimulacionCreditosController extends ControladorBase{
            $query="INSERT INTO core_creditos_retenciones
                             (monto_creditos_retenciones, id_creditos)
                             VALUES
-                            (".$total_retencion.", ".$numero_credito.")";
+                            (".$total_retencion.", ".$id_creditos.")";
            
            $insert=$credito->executeNonQuery($query);
            
@@ -2127,7 +2231,7 @@ class SimulacionCreditosController extends ControladorBase{
            
            $query="UPDATE core_creditos
                    SET monto_neto_entregado_creditos='".$monto_neto."'
-                   WHERE id_creditos=".$numero_credito;
+                   WHERE id_creditos=".$id_creditos;
            
            $insert=$credito->executeNonQuery($query);
            
@@ -2142,7 +2246,7 @@ class SimulacionCreditosController extends ControladorBase{
                
                $query="INSERT INTO core_creditos_garantias
                    (id_creditos, id_participes, id_estado, usuario_usuarios)
-                   VALUES(".$numero_credito.", ".$id_garante.", ".$id_estado.", '".$usuario."')";
+                   VALUES(".$id_creditos.", ".$id_garante.", ".$id_estado.", '".$usuario."')";
                
                $insert=$credito->executeNonQuery($query);
            }
@@ -2162,7 +2266,7 @@ class SimulacionCreditosController extends ControladorBase{
                $funcion = "ins_core_tabla_amortizacion";
                if($tipo_credito!="PH")
                {
-                   $parametros="'$numero_credito',
+                   $parametros="'$id_creditos',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
@@ -2180,7 +2284,7 @@ class SimulacionCreditosController extends ControladorBase{
                }
                else
                {
-                   $parametros="'$numero_credito',
+                   $parametros="'$id_creditos',
                      '$fecha_pago',
                      '$num_cuota',
                      '$amortizacion',
@@ -2198,7 +2302,12 @@ class SimulacionCreditosController extends ControladorBase{
                }
                $credito->setFuncion($funcion);
                $credito->setParametros($parametros);
-               $resultado=$credito->Insert();
+               $queryInsert=$credito->getconsultaPG($credito->getFuncion(), $credito->getParametros());
+               $resultado_id_tabla=$credito->llamarconsultaPG($queryInsert);
+               
+               $id_tabla_amortizacion = $resultado_id_tabla[0];
+               
+               $this->DesgloseTablaAmortizacion($id_tabla_amortizacion, $tipo_credito);
                
                $funcion = "ins_core_tabla_amortizacion_historico";
                $credito->setFuncion($funcion);

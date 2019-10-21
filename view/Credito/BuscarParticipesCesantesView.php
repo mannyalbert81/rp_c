@@ -141,11 +141,13 @@
            		</div>
            	</div>
            	
-           	  	<div class="row">
+           	           	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="tabla_desafiliacion" ></div>
            		</div>
            	</div>
+           	
+      
            	
              	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
@@ -176,6 +178,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.44"></script> 
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.70"></script> 
    </body>
 </html>   

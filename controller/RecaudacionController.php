@@ -88,7 +88,7 @@ class RecaudacionController extends ControladorBase{
 	        $_participes_sin_aportes   = $this->validaAportesParticipes($_id_entidad_patronal);
 	        if(!empty($_participes_sin_aportes)){
 	            $errorAportes  = array();
-	            $errorAportes['mensajeAportes']    = "Necesita Validar la informacion de estos Paricipes";
+	            $errorAportes['mensajeAportes']    = "Necesita Validar la informacion de estos Participes";
 	            $errorAportes['dataAportes']    = $_participes_sin_aportes;
 	            echo json_encode($errorAportes);
 	            die();

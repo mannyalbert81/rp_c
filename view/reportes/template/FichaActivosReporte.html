@@ -8,41 +8,63 @@
   	<div>
   		<table class="2">
 		<tr>
-		<td><strong>Comprobante Contable</strong></td>
+		<td><strong>Ficha de Activos</strong></td>
 		</tr>
 	    </table>
 		<br>	    
 		<table class="3" >
 		<tr>
-		 <td><strong>Datos de la Factura</strong></td>
+		 <td><strong>Detalle de la Ficha</strong></td>
 		</tr>
 	    </table>
 	    <br>
 	    <table class="4" >
+	    
+	   
+	    <tr>
+  		<td><img src="view/Administracion/DevuelveImagenView.php?id_valor={IDACTIVO}&id_nombre=id_activos_fijos&tabla=act_activos_fijos&campo=imagen_activos_fijos" alt="" width="80" height="80"/></td>
+  		</tr>
+  				
+  	    <tr>
+		 <td><strong>Nombre del Activo:</strong></td>
+		 <td>{NOMACT}</td>
+		</tr>
+	    
+	    <tr>
+		 <td><strong>Responsable:</strong></td>
+		 <td>{NOMEMPACT}</td>
+		 
+		</tr>
+		
 		<tr>
-		 <td><strong>Fecha de la Factura:</strong></td>
-		 <td>{FECHACOMPROBANTE}</td>
+		 <td><strong>Cédula:</strong></td>
+		 <td>{NUMCEDEMP}</td>
 		</tr>
 		<tr>
-		 <td><strong>Nombre:</strong></td>
-		 <td>{PROVEEDORES}</td>
+		 <td><strong>Fecha:</strong></td>
+		 <td>{FECHACT}</td>
 		</tr>
 		<tr>
-		 <td><strong>Retención:</strong></td>
-		 <td>{RETENCIONCOMPROBANTE}</td>
+		 <td><strong>Detalle:</strong></td>
+		 <td>{DETALLE}</td>
 		</tr>
 		<tr>
-		 <td><strong>La Cantidad de:</strong></td>
-		 <td>{VALORCOMPROBANTE}</td>
+		 <td><strong>Valor:</strong></td>
+		 <td>{VALORACT}</td>
 		</tr>
+		<tr>
+		 <td><strong>Oficina:</strong></td>
+		 <td>{OFICINAACT}</td>
+		</tr>
+		<tr>
+		 <td><strong>Departamento:</strong></td>
+		 <td>{DEPACT}</td>
+		</tr>
+		
+		
 		</table>
-	    <br>
-	    <table class="6">
-		<tr>
-		<td><strong>Concepto:</strong></td>
-		<td>{CONCEPTOCOMPROBANTE}</td>
-		</tr>
-	    </table>
+	    
+	    
 	</div>	
 	<br> 
 	{DETALLE_COMPROBANTE}
@@ -50,8 +72,7 @@
 	<table class="5" >
 		<tr class="inferior">
 		 <td><strong>Elaborado por:</strong></td>
-		 <td><strong>Es Conforme:</strong></td>
-		 <td><strong>Visto Bueno:</strong></td>
+				 <td><strong>Visto Bueno:</strong></td>
 		 <td><strong>Recibí Conforme:</strong></td>
 		</tr>
 		<tr><td>&nbsp; </td></tr>
@@ -59,8 +80,8 @@
 		<tr><td>&nbsp; </td></tr>
 		<tr>
 		<td>{USUARIO}</td>
-		<td>CONTADOR</td>
-		<td>GERENTE</td>
+		
+		<td>RR.HH.</td>
 		<td>-----------------------------</td>
 		</tr>
 	    </table>

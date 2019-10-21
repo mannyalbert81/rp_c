@@ -1195,7 +1195,9 @@ class ActivosFijosController extends ControladorBase{
             $limit = " LIMIT   '$per_page' OFFSET '$offset'";
             
             $resultSet=$usuarios->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
-            $total_pages = ceil($cantidadResult/$per_page);            
+            $total_pages = ceil($cantidadResult/$per_page);          
+            $_id_ficha_mantenimiento =  (isset($_REQUEST['id_ficha_mantenimiento'])&& $_REQUEST['id_ficha_mantenimiento'] !=NULL)?$_REQUEST['id_ficha_mantenimiento']:'';
+            
             
             if($cantidadResult>0)
             {
@@ -1212,7 +1214,6 @@ class ActivosFijosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                 $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Oficina</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Tipo</th>';
@@ -1245,7 +1246,6 @@ class ActivosFijosController extends ControladorBase{
                     $html.='<td style="font-size: 11px;">'.$i.'</td>';
                     $html.='<td style="font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_activos_fijos.'&id_nombre=id_activos_fijos&tabla=act_activos_fijos&campo=imagen_activos_fijos" width="80" height="60"></td>';
                     $html.='<td style="font-size: 11px; text-align: center;">'.$res->nombre_oficina.'</td>';
-                    $html.='<td style="font-size: 11px;">'.$res->nombre_usuarios.'</td>';
                     $html.='<td style="font-size: 11px;">00'.$res->codigo_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_activos_fijos.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_activos_fijos.'</td>';
@@ -1261,6 +1261,7 @@ class ActivosFijosController extends ControladorBase{
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><a target="_blank" href="index.php?controller=ActivosFijos&action=verDepreciacionInd&id_activos_fijos='.$res->id_activos_fijos.'" class="" style="font-size:65%;"><i class="fa fa-sitemap"></i> Ver Depreciacion</a></span></td>';
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><a id="'.$res->id_activos_fijos.'" href="#" target="blank" class="editaActivo" style="font-size:65%;" ><i class="fa fa-pencil-square-o"></i> Editar </a></span></td>';
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><a target="_blank" href="index.php?controller=ActivosFijos&action=index2&id_activos_fijos='.$res->id_activos_fijos.'" class="" ><i class="glyphicon glyphicon-folder-open"></i></a></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=ficha_activos_reporte&id_activos_fijos='.$res->id_activos_fijos.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
                         
                     }
                     
@@ -2051,7 +2052,8 @@ class ActivosFijosController extends ControladorBase{
                 
                 /*para administracion definir administrador MenuOperaciones Edit - Eliminar*/
                 
-                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+          
+                
                 
                 
                 $html.='</tr>';
@@ -2077,7 +2079,6 @@ class ActivosFijosController extends ControladorBase{
                     
                     /*comentario up */
                     
-                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=ActivosFijos&action=ficha_activos_reporte&id_ficha_mantenimiento='.$res->id_ficha_mantenimiento.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
                     
                     
                     $html.='</tr>';
@@ -2205,47 +2206,63 @@ class ActivosFijosController extends ControladorBase{
         $datos_cabecera['HORA'] = date('h:i:s');
         
         
-        $_id_ficha_mantenimiento =  (isset($_REQUEST['id_ficha_mantenimiento'])&& $_REQUEST['id_ficha_mantenimiento'] !=NULL)?$_REQUEST['id_ficha_mantenimiento']:'';
+        $_id_activos_fijos =  (isset($_REQUEST['id_activos_fijos'])&& $_REQUEST['id_activos_fijos'] !=NULL)?$_REQUEST['id_activos_fijos']:'';
         
         
         $datos_reporte = array();
         
-        $columnas = " act_ficha_mantenimiento.id_ficha_mantenimiento,
-                      act_ficha_mantenimiento.fecha_inicio_ficha_mantenimiento,
-                      act_ficha_mantenimiento.danio_ficha_mantenimiento,
-                      act_ficha_mantenimiento.partes_reemplazado_ficha_mantenimiento,
-                      act_ficha_mantenimiento.responsable_ficha_mantenimiento,
-                      act_ficha_mantenimiento,descripcion_ficha_mantenimiento
-                      act_ficha_mantenimiento.id_activos_fijos,
-                      act_activos_fijos.nombre_activos_fijos,
-                      act_activos_fijos.codigo_activos_fijos";
+        $columnas = "   act_activos_fijos.id_activos_fijos, 
+  oficina.id_oficina, 
+  oficina.nombre_oficina, 
+  empleados.id_empleados, 
+  empleados.numero_cedula_empleados, 
+  empleados.nombres_empleados, 
+  tipo_activos_fijos.id_tipo_activos_fijos, 
+  tipo_activos_fijos.nombre_tipo_activos_fijos, 
+  act_activos_fijos.nombre_activos_fijos, 
+  act_activos_fijos.codigo_activos_fijos, 
+  act_activos_fijos.fecha_activos_fijos, 
+  act_activos_fijos.detalle_activos_fijos, 
+  act_activos_fijos.imagen_activos_fijos, 
+  act_activos_fijos.valor_activos_fijos,
+  departamentos.id_departamento, 
+  departamentos.nombre_departamento";
         
-        $tablas="  public.act_ficha_mantenimiento,
-                   public.act_activos_fijos";
+        $tablas="    
+  public.act_activos_fijos, 
+  public.oficina, 
+  public.tipo_activos_fijos, 
+  public.empleados,
+public.departamentos
+                    ";
         
-        $where="act_activos_fijos.id_activos_fijos = act_ficha_mantenimiento.id_activos_fijos AND act_ficha_mantenimiento.id_ficha_mantenimiento='$_id_ficha_mantenimiento'";
+        $where="  oficina.id_oficina = act_activos_fijos.id_oficina AND
+  tipo_activos_fijos.id_tipo_activos_fijos = act_activos_fijos.id_tipo_activos_fijos AND
+  departamentos.id_departamento = empleados.id_departamento AND
+  empleados.id_empleados = act_activos_fijos.id_empleados AND act_activos_fijos.id_activos_fijos='$_id_activos_fijos'";
         
-        $id="act_ficha_mantenimiento.id_ficha_mantenimiento";
+        $id="act_activos_fijos.id_activos_fijos";
         
         
         $rsdatos = $ficha_activos_fijos->getCondiciones($columnas, $tablas, $where, $id);
         
-        $datos_reporte['IDFICHAMANTENIMIENTO']=$rsdatos[0]->id_ficha_mantenimiento;
-        $datos_reporte['FECHAINICIOMANTENIMIENTO']=$rsdatos[0]->fecha_inicio_ficha_mantenimiento;
-        $datos_reporte['DANIO']=$rsdatos[0]->danio_ficha_mantenimiento;
-        $datos_reporte['USUARIO']=$rsdatos[0]->nombre_usuarios;
-        $datos_reporte['NOMBREENTIDADES']=$rsdatos[0]->nombre_entidades;
-        $datos_reporte['DIRECCIONENTIDAD']=$rsdatos[0]->direccion_entidades;
-        $datos_reporte['TELEFONOENTIDAD']=$rsdatos[0]->telefono_entidades;
-        $datos_reporte['RUCENTIDAD']=$rsdatos[0]->ruc_entidades;
-        $datos_reporte['PARTESREEMPLAZO']=$rsdatos[0]->partes_reemplazado_ficha_mantenimiento;
-        $datos_reporte['RESPONSABLE']=$rsdatos[0]->responsable_ficha_mantenimiento;
-        $datos_reporte['DESCRIPCIONFICHA']=$rsdatos[0]->descripcion_ficha_mantenimiento;
+        $datos_reporte['NOMACT']=$rsdatos[0]->nombre_activos_fijos;
+        $datos_reporte['CODACT']=$rsdatos[0]->codigo_activos_fijos;
+        $datos_reporte['VALORACT']=$rsdatos[0]->valor_activos_fijos;
+        $datos_reporte['FECHACT']=$rsdatos[0]->fecha_activos_fijos;
+        $datos_reporte['DETALLE']=$rsdatos[0]->detalle_activos_fijos;
+        $datos_reporte['IDACTIVO']=$rsdatos[0]->id_activos_fijos;
+        $datos_reporte['OFICINAACT']=$rsdatos[0]->nombre_oficina;
+        $datos_reporte['NOMEMPACT']=$rsdatos[0]->nombres_empleados;
+        $datos_reporte['NUMCEDEMP']=$rsdatos[0]->numero_cedula_empleados;
+        $datos_reporte['DEPACT']=$rsdatos[0]->nombre_departamento;
         
+
         
+        $img=array();
+        $img['IMAGEN']='<td style="font-size: 11px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$rsdatos->id_activos_fijos.'&id_nombre=id_activos_fijos&tabla=act_activos_fijos&campo=imagen_activos_fijos" width="80" height="60"></td>';
         
-        
-        
+      
         
         $html='';
         
@@ -2258,7 +2275,7 @@ class ActivosFijosController extends ControladorBase{
             
         
         
-        $this->verReporte("FichaActivosReporte", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+        $this->verReporte("FichaActivos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'img'=>$img));
         
         
     }

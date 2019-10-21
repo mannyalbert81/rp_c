@@ -568,20 +568,17 @@ class BuscarProductoController extends ControladorBase{
         
         //////retencion detalle
         
-        $columnas = " productos.id_productos,
-                      productos.codigo_productos,
-                      productos.marca_productos,
-                      productos.nombre_productos,
-                      productos.descripcion_productos,
-                      productos.ult_precio_productos,
-                      saldo_productos.entradas_f_saldo_productos,
-                      saldo_productos.salidas_f_saldo_productos,
-                      saldo_productos.saldos_f_saldo_productos,
-                      saldo_productos.precio_costo_saldo_productos";
+        $columnas = " productos.id_productos, 
+                      productos.codigo_productos, 
+                      productos.marca_productos, 
+                      productos.nombre_productos, 
+                      productos.descripcion_productos, 
+                      productos.ult_precio_productos, 
+                      grupos.nombre_grupos";
         
-        $tablas = "  public.productos,
-                     public.saldo_productos";
-        $where= "saldo_productos.id_productos = productos.id_productos";
+        $tablas = "  public.productos, 
+                     public.grupos";
+        $where= "grupos.id_grupos = productos.id_grupos";
         $id="productos.id_productos";
         
         $productos_detalle = $productos->getCondiciones($columnas, $tablas, $where, $id);
@@ -589,16 +586,15 @@ class BuscarProductoController extends ControladorBase{
         $html='';
         
         
-        $html.='<table class="info" style="width:98px;" border=1>';
+        $html.='<table class="12" style="width:98px;" border=1>';
         $html.='<tr>';
         $html.='<th colspan="2" style=" text-align: center; font-size: 11px;">Código</th>';
         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Marca</th>';
         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Nombre</th>';
         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Descripción</th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Entradas</th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Salidas</th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Disponible</th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Precio Costo</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Precio</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Grupo</th>';
+        
         $html.='</tr>';
         
         
@@ -612,10 +608,9 @@ class BuscarProductoController extends ControladorBase{
             $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->marca_productos.'</td>';
             $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_productos.'</td>';
             $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->descripcion_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="center";>'.(int)$res->entradas_f_saldo_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="center";>'.(int)$res->salidas_f_saldo_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;"align="center";>'.(int)$res->saldos_f_saldo_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="right";>'.$res->precio_costo_saldo_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->ult_precio_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_grupos.'</td>';
+           
             
             
             $html.='</td>';

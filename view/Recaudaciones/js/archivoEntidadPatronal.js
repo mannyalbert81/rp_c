@@ -103,6 +103,7 @@ $("#btnGenerar").on("click",function(){
 		}
 		if( x.mensajeAportes != undefined &&  x.mensajeAportes != "" ){
 			
+			swal.close();
 			let modalAportes = $("#mod_participes_sin_aportes");			
 			let arrayAportesIncompletos = x.dataAportes;
 			let cantidadRegistros		= arrayAportesIncompletos.length;
@@ -366,7 +367,7 @@ function genArchivoDetallado(linkArchivo){
 	
 	if(parseInt($link.data("idarchivo")) > 0){
 		
-		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo")}
+		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),}
 		
 	}else{ return false; }	
 	

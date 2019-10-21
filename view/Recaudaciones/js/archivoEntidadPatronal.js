@@ -103,7 +103,6 @@ $("#btnGenerar").on("click",function(){
 		}
 		if( x.mensajeAportes != undefined &&  x.mensajeAportes != "" ){
 			
-			swal.close();
 			let modalAportes = $("#mod_participes_sin_aportes");			
 			let arrayAportesIncompletos = x.dataAportes;
 			let cantidadRegistros		= arrayAportesIncompletos.length;
@@ -367,7 +366,7 @@ function genArchivoDetallado(linkArchivo){
 	
 	if(parseInt($link.data("idarchivo")) > 0){
 		
-		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),}
+		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo")}
 		
 	}else{ return false; }	
 	
@@ -387,18 +386,18 @@ function genArchivoDetallado(linkArchivo){
 				 text: " Archivo generado ",
 				 icon: "info"
 				})
-			
+			var formParametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),"tipo_archivo_recaudaciones":"detalle"};
 			var form = document.createElement("form");
 		    form.setAttribute("method", "post");
 		    form.setAttribute("action", "index.php?controller=Recaudacion&action=descargarArchivo");
 		    form.setAttribute("target", "_blank");   
 		    
-		    for (var i in parametros) {
-		        if (parametros.hasOwnProperty(i)) {
+		    for (var i in formParametros) {
+		        if (formParametros.hasOwnProperty(i)) {
 		            var input = document.createElement('input');
 		            input.type = 'hidden';
 		            input.name = i;
-		            input.value = parametros[i];
+		            input.value = formParametros[i];
 		            form.appendChild(input);
 		        }
 		    }
@@ -600,24 +599,25 @@ function genArchivoEntidad(linkArchivo){
 				 icon: "info"
 				})
 			
-			/*var form = document.createElement("form");
+			var formParametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),"tipo_archivo_recaudaciones":"entidad"};
+			var form = document.createElement("form");
 		    form.setAttribute("method", "post");
 		    form.setAttribute("action", "index.php?controller=Recaudacion&action=descargarArchivo");
 		    form.setAttribute("target", "_blank");   
 		    
-		    for (var i in parametros) {
-		        if (parametros.hasOwnProperty(i)) {
+		    for (var i in formParametros) {
+		        if (formParametros.hasOwnProperty(i)) {
 		            var input = document.createElement('input');
 		            input.type = 'hidden';
 		            input.name = i;
-		            input.value = parametros[i];
+		            input.value = formParametros[i];
 		            form.appendChild(input);
 		        }
 		    }
 		    
 		    document.body.appendChild(form); 
 		    form.submit();    
-		    document.body.removeChild(form);*/
+		    document.body.removeChild(form);
 			
 		}
 				
@@ -925,7 +925,6 @@ function setStyleTabla(ObjTabla){
 			});
 	}	
 	
-	$('.dataTables_length').addClass('bs-select');
-				
+	$('.dataTables_length').addClass('bs-select');				
 	
  }

@@ -88,7 +88,7 @@ class RecaudacionController extends ControladorBase{
 	        $_participes_sin_aportes   = $this->validaAportesParticipes($_id_entidad_patronal);
 	        if(!empty($_participes_sin_aportes)){
 	            $errorAportes  = array();
-	            $errorAportes['mensajeAportes']    = "Necesita Validar la informacion de estos Participes";
+	            $errorAportes['mensajeAportes']    = "Necesita Validar la informacion de estos Paricipes";
 	            $errorAportes['dataAportes']    = $_participes_sin_aportes;
 	            echo json_encode($errorAportes);
 	            die();
@@ -304,7 +304,7 @@ class RecaudacionController extends ControladorBase{
 	    
 	    $_id_archivo_recaudaciones  = $Resultado1[0];
 	    
-	    $funcionDetalle = "core_ins_core_archivo_recaudaciones_detalle";
+	    $funcionDetalle = "core_ins_core_archivo_recaudaciones_detalle"; //core_ins_core_archivo_recaudaciones_detalle
 	    $parametrosDetalle = "";
 	    	   	    
 	    foreach ($rsConsulta1 as $res){
@@ -313,7 +313,7 @@ class RecaudacionController extends ControladorBase{
 	        $_valor_sistema = $res->valor_contribucion_tipo_participes;
 	        $_valor_final   = $res->valor_contribucion_tipo_participes;
 	        
-	        $parametrosDetalle  = "'$_id_archivo_recaudaciones','$_id_participes',null,'$_valor_sistema','$_valor_final','APORTES PERSONALES'";
+	        $parametrosDetalle  = "'$_id_archivo_recaudaciones','$_id_participes',null,'$_valor_sistema','$_valor_final','APORTES PERSONALES',''";
 	        $queryFuncion   = $Contribucion->getconsultaPG($funcionDetalle, $parametrosDetalle);
 	        $Contribucion->llamarconsultaPG($queryFuncion);
 	        
@@ -649,7 +649,7 @@ class RecaudacionController extends ControladorBase{
 	        $_valor_sistema = $res->valor_contribucion_tipo_participes;
 	        $_valor_final   = $res->valor_contribucion_tipo_participes;
 	        
-	        $parametrosDetalle  = "'$_id_archivo_recaudaciones','$_id_participes',null,'$_valor_sistema','$_valor_final','APORTES PERSONALES'";
+	        $parametrosDetalle  = "'$_id_archivo_recaudaciones','$_id_participes',null,'$_valor_sistema','$_valor_final','APORTES PERSONALES',''";
 	        $queryFuncion   = $Contribucion->getconsultaPG($funcionDetalle, $parametrosDetalle);
 	        $Contribucion->llamarconsultaPG($queryFuncion);
 	        
@@ -1764,6 +1764,7 @@ class RecaudacionController extends ControladorBase{
 	        
 	        $databody	= "";
 	        $numero = 0;
+			$tipo_contribucion  = "";
 	        for( $i=0; $i<$_cantidad_registros; $i++){
 	            	            
 	            $id_participes         = $rsConsulta3[$i]->id_participes;
@@ -1781,14 +1782,14 @@ class RecaudacionController extends ControladorBase{
 	                if( $id_participes != $rsConsulta3[$i+1]->id_participes){
 	                    
 	                    $numero++;
-	                    $databody.=  $numero.";".$cedula_participe.";".$apellido_participe." ".$nombre_participe.";".$_grupo_valor_descuento.PHP_EOL;
+	                    $databody.=  $numero.";".trim($cedula_participe).";".trim($apellido_participe)." ".trim($nombre_participe).";".$_grupo_valor_descuento.PHP_EOL;
 	                    $_grupo_valor_descuento=0.0;
 	                }
 	                
 	            }
 	            if( $i == $_ultima_fila ){	                
 	                $numero++;
-                    $databody.=  $numero.";".$cedula_participe.";".$apellido_participe." ".$nombre_participe.";".$_grupo_valor_descuento.PHP_EOL;
+                    $databody.=  $numero.";".trim($cedula_participe).";".trim($apellido_participe)." ".trim($nombre_participe).";".$_grupo_valor_descuento.PHP_EOL;
                     $_grupo_valor_descuento=0.0;
 	                
 	            }
@@ -1799,6 +1800,8 @@ class RecaudacionController extends ControladorBase{
 	        /* estructurar el archivo */
 	        $datahead	= $tipo_contribucion."\t".$_codigo_entidad_patronal."\t".$_fecha_achivo."\t".$_cantidad_registros."\t".$_sumatoria_archivo.PHP_EOL;
 	        $datahead	.= 'NUMERO'.";".'CEDULA'.";".'NOMBRE'.";".'TOTAL DESCUENTO'.";".PHP_EOL;
+			
+			//echo $datahead.$databody;
 	        
 	        /*** buscar otro metodo para archivos grandes evitar acumulacion memoria al generar todo en una variable */
 	        $archivo = fopen($_ruta_archivo_recaudaciones, 'w');
@@ -1833,10 +1836,11 @@ class RecaudacionController extends ControladorBase{
 	    
 	    $_id_archivo_recaudaciones = $_POST['id_archivo_recaudaciones'];
 	    $_tipo_archivo_recaudaciones   = $_POST['tipo_archivo_recaudaciones'];
+		
 	    $Participes = new ParticipesModel();
 	    
 	    /* consulta para traer datos del archivo de recaudacones*/
-	    $columnas1 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones, ruta_archivo_recaudaciones,nombre_detalle_archivo_recaudaciones, ruta_detalle_archivo_recaudaciones";
+	    $columnas1 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones, ruta_archivo_recaudaciones,nombre_entidad_archivo_recaudaciones, ruta_entidad_archivo_recaudaciones";
 	    $tablas1   = "core_archivo_recaudaciones";
 	    $where1 = " id_archivo_recaudaciones = $_id_archivo_recaudaciones";
 	    $id1 = "id_archivo_recaudaciones";
@@ -1845,16 +1849,19 @@ class RecaudacionController extends ControladorBase{
 	    
 	    $nombre_archivo    = "";
 	    $ruta_archivo      = "";
+		
+		//if(!empty($rsConsulta1)) echo " la informacion esta lleno";
 	    
 	    if( $_tipo_archivo_recaudaciones  == "detalle" ){
 	        $nombre_archivo    = $rsConsulta1[0]->nombre_archivo_recaudaciones;
 	        $ruta_archivo      = $rsConsulta1[0]->ruta_archivo_recaudaciones;
 	    }else{
-	        $nombre_archivo    = $rsConsulta1[0]->nombre_archivo_recaudaciones;
-	        $ruta_archivo      = $rsConsulta1[0]->ruta_archivo_recaudaciones;
-	    }
+	        $nombre_archivo    = $rsConsulta1[0]->nombre_entidad_archivo_recaudaciones;
+	        $ruta_archivo      = $rsConsulta1[0]->ruta_entidad_archivo_recaudaciones;
+	    }	   
 	    
-	    
+		//print_r($rsConsulta1);
+		//echo "\n";
 	    $ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\rp_c\\";
 	    $ubicacion = $ubicacionServer.$ruta_archivo;
 	    
@@ -1865,6 +1872,10 @@ class RecaudacionController extends ControladorBase{
 	    ob_clean();
 	    flush();
 	    // Read the file
+		//echo $ubicacion;
+		//print_r($_POST);
+		//echo  "******llego--",$_tipo_archivo_recaudaciones,"***" ;
+		//echo "parametro id ---",$_id_archivo_recaudaciones,"**";
 	    readfile($ubicacion);
 	    exit;
 	    

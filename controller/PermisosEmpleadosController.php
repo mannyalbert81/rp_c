@@ -79,6 +79,18 @@ class PermisosEmpleadosController extends ControladorBase{
         $hora_hasta= $_POST['hora_hasta'];
         $id_causa= $_POST['id_causa'];
         $descripcion_causa= $_POST['descripcion_causa'];
+        
+        /* validar que no haya otra solicitud */ 
+        $columnas1=" aa.id_empleado, bb.nombre_estado ";
+        $tablas1=" permisos_empleados aa INNER JOIN estado bb ON bb.id_estado = aa.id_estado";
+        $where1=" bb.tabla_estado = upper('permiso_empleado') AND bb.nombre_estado <> 'NEGADO' 
+            AND aa.id_empleado = $id_empleado AND aa.fecha_solicitud = $fecha_solicitud ";
+        $id1=" aa.id_empleado";
+        $result1 = $empleado->getCondiciones($columnas1, $tablas1, $where1, $id1);
+        if(!empty($result1)){
+            echo "E001"; exit();
+        }
+        
         if (!(empty($descripcion_causa)))
         {
         $parametros = "'$id_empleado',
@@ -140,38 +152,38 @@ class PermisosEmpleadosController extends ControladorBase{
         $idr = "rol.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         $id_gerente = $resultr[0]->id_rol;
-        if ($id_rol != $id_gerente)
-        {
-        $wherer = "rol.nombre_rol ILIKE '%Jefe de RR.HH'";
-        $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
-        $id_rh = $resultr[0]->id_rol;
+        if ($id_rol != $id_gerente){
+            
+            $wherer = "rol.nombre_rol ILIKE '%Jefe de RR.HH'";
+            $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+            $id_rh = $resultr[0]->id_rol;
         
-        $columnadep = "departamentos.nombre_departamento";
-        $tablasdep = "public.departamentos INNER JOIN public.cargos_empleados
+            $columnadep = "departamentos.nombre_departamento";
+            $tablasdep = "public.departamentos INNER JOIN public.cargos_empleados
                       ON departamentos.id_departamento = cargos_empleados.id_departamento
                       INNER JOIN public.empleados
                       ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $wheredep= "empleados.numero_cedula_empleados ='".$cedula."'";
-        $iddep = "departamentos.id_departamento";
-        $resultdep = $departamento->getCondiciones($columnadep, $tablasdep, $wheredep, $iddep);
+            $wheredep= "empleados.numero_cedula_empleados ='".$cedula."'";
+            $iddep = "departamentos.id_departamento";
+            $resultdep = $departamento->getCondiciones($columnadep, $tablasdep, $wheredep, $iddep);
         
-        $tablar = "usuarios INNER JOIN empleados
+            $tablar = "usuarios INNER JOIN empleados
                         ON usuarios.cedula_usuarios = empleados.numero_cedula_empleados
                         INNER JOIN departamentos 
                         ON departamentos.id_departamento = empleados.id_departamento
                         INNER JOIN cargos_empleados
                         ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
-        $idr = "usuarios.id_rol";
-        $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
-        if (empty($resultr))
-        {
-            $wherer = "cargos_empleados.nombre_cargo ILIKE 'CONTADOR%'";
+            $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
+            $idr = "usuarios.id_rol";
             $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+            if (empty($resultr)){
+                $wherer = "cargos_empleados.nombre_cargo ILIKE 'CONTADOR%'";
+                $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+            }
+            $id_jefi = $resultr[0]->id_rol;        
+            $id_dpto_jefe = $resultr[0]->id_departamento;
         }
-        $id_jefi = $resultr[0]->id_rol;        
-        $id_dpto_jefe = $resultr[0]->id_departamento;
-        }
+        
         $where_to="";
         $columnas = " empleados.nombres_empleados,
                       empleados.dias_vacaciones_empleados,
@@ -197,36 +209,26 @@ class PermisosEmpleadosController extends ControladorBase{
                    INNER JOIN public.cargos_empleados
                    ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         
-        if ($id_estado != "0")
-        {   if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
-        {
-            $where    = "permisos_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados='".$cedula."'";
-        }
-        else {
-            $where    = "permisos_empleados.id_estado=".$id_estado;
+        if ($id_estado != "0"){   
+            if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi ){
+                $where    = "permisos_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados='".$cedula."'";
+            }else{
+                $where    = "permisos_empleados.id_estado=".$id_estado;
             
-            if($id_rol == $id_jefi && $id_rh!=$id_jefi)
-            {
-                $where.=" AND departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."'";
-            }
-        }
-        
-        }
-        else
-        {
-            if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
-            {
-                $where    = " empleados.numero_cedula_empleados='".$cedula."'";
-            }
-            else {
-                if($id_rol == $id_jefi && $id_rh!=$id_jefi)
-                {
-                    $where="departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."'";
+                if($id_rol == $id_jefi && $id_rh!=$id_jefi){
+                    $where.=" AND departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."'";
                 }
-                else       $where    = "1=1";
             }
-        }
-           
+        
+        }else{
+            if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi ){
+                $where    = " empleados.numero_cedula_empleados='".$cedula."'";
+            }else{
+                if($id_rol == $id_jefi && $id_rh!=$id_jefi){
+                    $where="departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."'";
+                }else       $where    = "1=1";
+            }
+        }           
         
         $id       = "permisos_empleados.id_permisos_empleados";
         
@@ -337,6 +339,7 @@ class PermisosEmpleadosController extends ControladorBase{
                     $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
                     if(empty($resultr)) $tiene_jefe=false;
                     else $tiene_jefe=true;
+                    echo "danny =>",$id_rol,"--**--",$id_rh,"\n"; 
                     if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
                     {
                         if ($id_rol==$id_rh  && $res->nombre_estado=="EN REVISION" && !$tiene_jefe )

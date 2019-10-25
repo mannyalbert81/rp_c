@@ -266,7 +266,44 @@
    <div class="control-sidebar-bg"></div>
  </div>
  
- <!-- Para modales -->
+<!-- Para modales -->
+ 
+ <!-- BEGIN PARA DATOS DE ARCHIVOS INSERTADOS -->
+  <div class="modal fade" id="mod_datos_archivo_insertados" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-lg " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-aqua disabled color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" align="center">DATOS ARCHIVO INSERTADOS</h4>
+          </div>
+          <div class="modal-body" >
+          	<div class="box-body">
+          		<div class=" pull-left " >
+  					<div class="form-group-sm">
+                    	<span class="form-control" id="cantidad_busqueda"><strong>Total Registros: </strong> <span id="mod_cantidad_registros_insertados"></span> </span>
+                	</div>   
+            	</div>
+          		<div class="pull-right" >
+          			<div class="form-group-sm">
+    					<input type="text" value="" class="form-control" onkeyup="buscarDatosInsertados()" id="mod_txtBuscarDatos_insertados" name="mod_txtBuscarDatos_insertados"  placeholder="Buscar.."/>
+    				</div>
+    			</div>           
+    			<div class="clearfix" ></div> 	
+            	<div id="mod_div_datos_recaudacion_insertados" class="table-responsive"></div>
+          	</div>
+          	
+          
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+ <!-- END PARA DATOS DE ARCHIVOS INSERTADOS -->
+ 
+ <!-- BEGIN PARA DATOS DE ARCHIVOS LISTADOS -->
   <div class="modal fade" id="mod_datos_archivo" data-backdrop="static" data-keyboard="false">
       <div class="modal-dialog   modal-lg " role="document" >
         <div class="modal-content">
@@ -284,11 +321,11 @@
             	</div>
           		<div class="pull-right" >
           			<div class="form-group-sm">
-    					<input type="text" value="" class="form-control" onkeyup="buscarDatos()" id="mod_txtBuscarDatos" name="mod_txtBuscarDatos"  placeholder="Buscar.."/>
+    					<input type="text" value="" class="form-control" onkeyup="mostarGenerados()" id="mod_txtBuscarDatos" name="mod_txtBuscarDatos"  placeholder="Buscar.."/>
     				</div>
     			</div>           
     			<div class="clearfix" ></div> 	
-            	<div id="mod_div_datos_recaudacion" class="table-responsive"></div>
+            	<div id="mod_div_datos_recaudacion" class="table-responsive" ></div>
           	</div>
           	
           
@@ -299,6 +336,7 @@
       </div>
       <!-- /.modal-dialog -->
 </div>
+<!-- END PARA DATOS DE ARCHIVOS LISTADOS -->
 
 <!-- BEGIN MODAL PARTICIPES SIN APORTES -->
   <div class="modal fade" id="mod_participes_sin_aportes" data-backdrop="static" data-keyboard="false">
@@ -347,7 +385,7 @@
       </div>
       <!-- /.modal-dialog -->
 </div>
-<!-- BEGIN MODAL PARTICIPES SIN APORTES -->
+<!-- END MODAL PARTICIPES SIN APORTES -->
  
  <div class="modal fade" id="mod_recaudacion" data-backdrop="static" data-keyboard="false">
       <div class="modal-dialog" style="width:40%">
@@ -443,7 +481,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.55"></script> 
+   <script src="view/Recaudaciones/js/archivoEntidadPatronal.js?0.61"></script> 
        
        
 

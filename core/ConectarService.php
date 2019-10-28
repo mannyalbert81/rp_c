@@ -37,6 +37,8 @@ class ConectarService{
         require_once "FluentPDO/FluentPDO.php";
         
         if($this->driver=="pgsql" || $this->driver==null){
+
+        	$pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=web_capremci_', 'postgres', 'Programadores2018' );
         	$pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=web_capremci_desarrollo', 'postgres', 'Programadores2018' );
             //$pdo = new PDO($this->driver.":dbname=".$this->database, $this->user, $this->pass);
             

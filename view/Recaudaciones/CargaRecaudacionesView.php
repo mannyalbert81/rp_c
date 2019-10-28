@@ -7,21 +7,9 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    
- 	<style type="text/css">
- 	  .loader {
-        position: fixed;
-        left: 0px;
-        top: 0px;
-        width: 100%;
-        height: 100%;
-        z-index: 9999;
-        background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
-        opacity: .8;
-        }
- 	  
- 	</style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="view/bootstrap/otros/css/tablaFixed.css?1"/> 
+ 	
    <?php include("view/modulos/links_css.php"); ?>
   			        
     </head>
@@ -131,9 +119,10 @@
                 				<label for="formato_carga_recaudaciones" class="col-sm-4 control-label" >Formato:</label>
                 				<div class="col-sm-8">
                                   	<select id="formato_carga_recaudaciones" name="formato_carga_recaudaciones" class="form-control">
+                                  	<option value="0" >--Seleccione--</option>
                                   	<option value="1" >DESCUENTOS APORTES</option>
                                   	<option value="2" >DESCUENTOS CREDITOS</option>
-                                  	<option value="2" >DESCUENTOS CREDITOS Y APORTES</option>
+                                  	<option value="3" >DESCUENTOS CREDITOS Y APORTES</option>
                                   	</select>
                                  </div>
                 			 </div>        			 
@@ -146,7 +135,7 @@
             			<div class="form-group "> 
                 			 <div class="form-group-sm">
                 				<label for="nombre_carga_recaudaciones" class="col-sm-4 control-label" >Documento:</label>
-                				<div class="col-sm-8">
+                				<div class="col-sm-8">                					
                              	   <input accept="text/plain" type="file" name="nombre_carga_recaudaciones" id="nombre_carga_recaudaciones" value=""  class="form-control"/>     </div>
                 			 </div>        			 
             			</div>
@@ -165,7 +154,9 @@
                                   	<!-- <button type="button" id="btnDistribuir" name="btnDistribuir" class="btn btn-block btn-sm btn-default">DISTRIBUIR</button> -->
                                  </div>
                                  <div class="col-sm-8" >
-                                  	<button type="button" id="btnGenerar" name="btnGenerar" class="btn btn-block btn-sm btn-default">GENERAR</button>
+                                  	<button type="button" id="btnSubirArchivo" name="btnSubirArchivo" onclick="uploadFileEntidad()" class="btn btn-block btn-sm btn-default">
+                                  		<i class="fa fa-cloud-upload" aria-hidden="true"></i> CARGAR ARCHIVO
+                              		</button>
                                  </div>
                                 
                 			 </div>        			 
@@ -178,7 +169,7 @@
           </div>
     	</div>
     </section>
-              
+                
      <section class="content">
       	<div class="box box-primary">
       		<div class="box-header with-border">
@@ -186,9 +177,10 @@
             </div> 
             <div class="box-body">
     			<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaCargaRecaudaciones(1)" placeholder="Buscar.."/>
-    			</div>            	
-            	<div id="carga_recaudaciones_registrados" ></div>
+					<input type="text" value="" class="form-control" id="txt_lista_buscador" name="txt_lista_buscador" onkeyup="listaArchivosRecaudacion(1)" placeholder="Buscar.."/>
+    			</div> 
+    			<div class="clear-fix"></div>           	
+            	<div id="div_lista_archivos_leidos" ></div>
             </div> 	
       	</div>
       </section> 
@@ -199,13 +191,54 @@
 
    <div class="control-sidebar-bg"></div>
  </div>
+ 
+ <!-- BEGIN MODAL ERRORES CARGA  -->
+  <div class="modal fade" id="mod_archivo_errores" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-lg " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-red color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" align="center"></h4>
+          </div>
+          <div class="modal-body" >
+          	<div class="box-body no-padding">
+          		<table id="tbl_archivo_error" class="table table-striped table-bordered table-sm " cellspacing="0"  width="100%">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Linea</th>
+                      <th>Error</th>
+                      <th>Cantidad</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>  
+          	</div>
+          	
+          
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+<!-- END MODAL ERRORES CARGA -->
     
     <?php include("view/modulos/links_js.php"); ?>
 	
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-   <script src="view/Recaudaciones/js/CargaRecaudaciones.js?0.13"></script> 
+   <script src="view/Recaudaciones/js/CargaRecaudaciones.js?0.21"></script> 
 
   </body>
 </html>   

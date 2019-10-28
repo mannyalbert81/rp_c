@@ -6,7 +6,12 @@ class CargarParticipesController extends ControladorBase{
     
     $cedula = array();
     
-    $cedula_usuarios = $_SESSION['cedula_usuarios'];
+    //$cedula_usuarios = $_SESSION['cedula_usuarios'];
+    
+    
+    $cedula_usuarios= $_GET["cedula"];
+    
+    
     array_push($cedula, $cedula_usuarios);
     
     $this->view_Credito("CargarParticipes",array(
@@ -23,11 +28,11 @@ class CargarParticipesController extends ControladorBase{
         
         $this->view_Credito("CargarParticipes",array(
             "result" => ""
-            ));
+        ));
         echo '<script type="text/javascript">',
         'InfoSolicitud("'.$cedula_participe.'", '.$id_solicitud.');',
         '</script>'
-        ;
+            ;
     }
     
     
@@ -93,7 +98,7 @@ class CargarParticipesController extends ControladorBase{
     public function BuscarParticipe()
     {
         session_start();
-        $cedula=$_SESSION['cedula_usuarios'];
+        $cedula= $_SESSION['cedula_usuarios'];
         $html="";
         $participes= new ParticipesModel();
         $icon="";
@@ -171,7 +176,7 @@ class CargarParticipesController extends ControladorBase{
                     ON core_participes.id_estado_civil_participes=core_estado_civil_participes.id_estado_civil_participes
                     INNER JOIN core_genero_participes
                     ON core_genero_participes.id_genero_participes = core_participes.id_genero_participes";
-    
+        
         $where="core_participes.cedula_participes='".$cedula."'";
         
         $id="core_participes.id_participes";
@@ -213,15 +218,17 @@ class CargarParticipesController extends ControladorBase{
         $saldo_cta_individual=number_format((float)$saldo_cta_individual, 2, '.', '');
         $html.='
         <div class="box box-widget widget-user-2">';
-        // $html.='<button class="btn btn-default pull-right" title="Simulación crédito"  onclick="SimulacionCreditoSinSolicitud()"><i class="fa fa-bank"></i></button>';
+        //$html.='<button class="btn btn-default pull-right" title="Simulación crédito"  onclick="SimulacionCreditoSinSolicitud()"><i class="fa fa-bank"></i></button>';
         $html.='<div class="widget-user-header bg-olive">'
+            
             .$icon.
             '<h3 class="widget-user-username">'.$resultSet[0]->nombre_participes.' '.$resultSet[0]->apellido_participes.'</h3>
-        
+                
         <h5 class="widget-user-desc">CI: '.$resultSet[0]->cedula_participes.'</h5>
-        
+            
         </div>
         <div class="box-footer no-padding">
+            
         <ul class="nav nav-stacked">
         <table align="right" class="tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example">
         <tr>
@@ -233,7 +240,7 @@ class CargarParticipesController extends ControladorBase{
         <tr>
         <th>Cuenta Individual:</th>
         <td>'.$saldo_cta_individual.'</td>
-        <th>Capital de créditos:</th>
+        <th>Saldo créditos:</th>
         <td>'.$saldo_credito.'</td>
         </tr>
         <tr >
@@ -247,11 +254,11 @@ class CargarParticipesController extends ControladorBase{
         <div class="row">
              <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
-                  <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso1()"><i class="glyphicon glyphicon-expand"></i> SIMULAR</button>
+                  <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditoSinSolicitud()"><i class="glyphicon glyphicon-expand"></i> SIMULAR</button>
                 </div>
-             </div>	    
+             </div>
             </div>';
-        
+            
             array_push($respuesta, $html);
             array_push($respuesta, $resultSet[0]->id_participes);
         }
@@ -295,7 +302,7 @@ class CargarParticipesController extends ControladorBase{
         $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
         $tablas="core_contribucion INNER JOIN core_contribucion_tipo
                 ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=1 
+        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=1
                 AND core_contribucion.id_estatus=1";
         $id="fecha_registro_contribucion";
         
@@ -341,7 +348,7 @@ class CargarParticipesController extends ControladorBase{
             $last=sizeof($resultAportes);
             
             $total_pages = ceil($cantidadResult/$per_page);
-                        
+            
             $html='<div class="box box-solid bg-olive">
             <div class="box-header with-border">
             <h3 class="box-title">Aportaciones</h3>
@@ -359,36 +366,36 @@ class CargarParticipesController extends ControladorBase{
                    </table>
                    <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
                      <table border="1" width="100%">';
-                       for($i=$last-1; $i>=0; $i--)
-                       {    
-                           $index=($i+($last-1)*($page-1))+1;
-                           if($resultAportes[$i]->valor_personal_contribucion!=0)
-                           {
-                               $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
-                               $monto=number_format((float)$resultAportes[$i]->valor_personal_contribucion, 2, ',', '.');
-                               $html.='<tr>
+            for($i=$last-1; $i>=0; $i--)
+            {
+                $index=($i+($last-1)*($page-1))+1;
+                if($resultAportes[$i]->valor_personal_contribucion!=0)
+                {
+                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
+                    $monto=number_format((float)$resultAportes[$i]->valor_personal_contribucion, 2, ',', '.');
+                    $html.='<tr>
                                  <td bgcolor="white" width="10%"><font color="black">'.$index.'</font></td>
                                  <td bgcolor="white" width="30%"><font color="black">'.$fecha.'</font></td>
                                  <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
                                  <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
                                 </tr>';
-                           }
-                           else
-                           {
-                               $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
-                               $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
-                               $html.='<tr>
+                }
+                else
+                {
+                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
+                    $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
+                    $html.='<tr>
                                  <td bgcolor="white"  width="10%"><font color="black">'.$index.'</font></td>
                                  <td bgcolor="white"  width="30%"><font color="black">'.$fecha.'</font></td>
                                  <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
                                  <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
                                 </tr>';
-                           }
-                           
-                          
-                       }
-                       $total=number_format((float)$total, 2, ',', '.');
-                     $html.='</table>  
+                }
+                
+                
+            }
+            $total=number_format((float)$total, 2, ',', '.');
+            $html.='</table>
                    </div>
                     <table border="1" width="100%">
                      <tr style="color:white;" class="bg-olive">
@@ -396,9 +403,9 @@ class CargarParticipesController extends ControladorBase{
                         <th width="1.5%"></th>
                      </tr>
                    </table>';
-                     $html.='<div class="table-pagination pull-right">';
-                     $html.=''. $this->paginate_aportes("index.php", $page, $total_pages, $adjacents,$id_participe,"AportesParticipe").'';
-                     $html.='</div>
+            $html.='<div class="table-pagination pull-right">';
+            $html.=''. $this->paginate_aportes("index.php", $page, $total_pages, $adjacents,$id_participe,"AportesParticipe").'';
+            $html.='</div>
                     </div>';
             
             
@@ -413,7 +420,7 @@ class CargarParticipesController extends ControladorBase{
             $html.='</div>';
             echo $html;
         }
-         
+        
         
     }
     
@@ -491,7 +498,7 @@ class CargarParticipesController extends ControladorBase{
         
         $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
             		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
-            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos, 
+            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
             		core_estado_creditos.nombre_estado_creditos";
         $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
         		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
@@ -499,11 +506,11 @@ class CargarParticipesController extends ControladorBase{
         		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
         $where="core_creditos.id_participes=".$id_participe." AND core_creditos.id_estatus=1";
         $id="core_creditos.fecha_concesion_creditos";
-       
+        
         $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
         if(!(empty($resultCreditos)))
         {
-                     
+            
             $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
             $resultSet=$participes->getCantidad("*", $tablas, $where);
             $cantidadResult=(int)$resultSet[0]->total;
@@ -562,7 +569,7 @@ class CargarParticipesController extends ControladorBase{
                 $html.='<tbody>';
                 $html.='<tr height = "25">';
                 $html.='<td><a class="btn bg-olive" title="Pagaré" href="index.php?controller=TablaAmortizacion&action=ReportePagare&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list"></i></a></font></td>';
-                 $html.='</tr>';
+                $html.='</tr>';
                 $html.='<tr height = "25">';
                 $html.='<td><a class="btn bg-olive" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$resultCreditos[$i]->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
                 $html.='</tr>';
@@ -591,15 +598,15 @@ class CargarParticipesController extends ControladorBase{
                     }
                     
                 }
-                    $html.='</tbody>';
+                $html.='</tbody>';
                 $html.='</table>';
                 $html.='</li>';
-                        
-                        
-                        $html.='</td>
+                
+                
+                $html.='</td>
                         </tr>';
-              
-               
+                
+                
             }
             $total=number_format((float)$total, 2, ',', '.');
             $html.='</table>
@@ -625,7 +632,7 @@ class CargarParticipesController extends ControladorBase{
         
     }
     
-   
+    
     
     public function paginate_creditos($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
         
@@ -832,6 +839,7 @@ class CargarParticipesController extends ControladorBase{
         
     }
     
+   
     
     
 }

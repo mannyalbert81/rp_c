@@ -1,5 +1,5 @@
 <?php
-class SimulacionCreditosController extends ControladorBase{
+class CargarSimulacionCreditosController extends ControladorBase{
     public function index(){
         session_start();
         $estado = new EstadoModel();

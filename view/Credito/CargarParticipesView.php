@@ -184,7 +184,14 @@ span.round-tab:hover {
         left: 35%;
     }
 }
-       
+.no {
+display:none;
+text-align:center;
+}
+.si {
+display:block;
+text-align:center;
+}
  	  
  	</style>
    <?php include("view/modulos/links_css.php"); ?>
@@ -228,7 +235,7 @@ span.round-tab:hover {
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Buscar Participes</li>
+        <li class="active">Simulador</li>
       </ol>
     </section>   
 
@@ -252,13 +259,13 @@ span.round-tab:hover {
           </div>
         </div>
         
-    </div>
+      </div>
     </section>
    </div>
   
 
 
- <!-- Modal Simulacion Credito 
+
  
  <div class="modal fade bs-example-modal-lg" id="myModalSimulacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
@@ -278,14 +285,8 @@ span.round-tab:hover {
                         <div id="mensaje_tipo_credito" class="errores"></div>
                  	</div>
              	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="monto_credito" class="control-label">Monto Crédito:</label>
-              			<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">
-                        <div id="mensaje_monto_credito" class="errores"></div>
-                 	</div>
-             	</div>
              	<div id="capacidad_de_pago_participe"></div>
+             	<div id="monto_del_credito"></div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
             			<div id="select_cuotas"></div>
@@ -295,12 +296,11 @@ span.round-tab:hover {
           	
           	 <div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
+          		
              	</div>
+             	<div id="capacidad_pago_garante"></div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
              	</div>
-             	
-            			<div id="capacidad_pago_garante"></div>
-                 	
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
              	</div>
           	</div>
@@ -308,9 +308,13 @@ span.round-tab:hover {
           	<div class="row">
              <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
-                  <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas()"><i class="glyphicon glyphicon-expand"></i> SIMULAR</button>
+                <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas()"><i class="glyphicon glyphicon-expand"></i> SIMULAR</button>
+               
                 </div>
              </div>	    
+             
+             
+            	
             </div>
             <div id="tabla_amortizacion"></div>
 				</div>
@@ -318,11 +322,11 @@ span.round-tab:hover {
 			</div>			
 		</div>
 	</div>
-</div> -->
+</div>
 
 <!-- Modal Simulacion Credito Pasos -->
  
- <div class="modal fade bs-example-modal-lg" id="myModalSimulacionPasos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ <!-- <div class="modal fade bs-example-modal-lg" id="myModalSimulacionPasos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 	    	<div class="modal-header bg-primary">
@@ -338,13 +342,29 @@ span.round-tab:hover {
 			</div>			
 		</div>
 	</div>
-</div>
+</div>-->
 
  
 
 <!-- Modal Inserta Credito -->
  
- <div class="modal fade bs-example" id="myModalInsertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 
+ 
+  
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<div class="modal fade bs-example" id="myModalInsertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 	    	<div class="modal-header bg-primary">
@@ -431,7 +451,7 @@ span.round-tab:hover {
 
 <!-- Modal Analisis Credito -->
  
- <div class="modal fade bs-example-modal-lg" id="myModalAvaluo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade bs-example-modal-lg" id="myModalAvaluo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 	    	<div class="modal-header bg-primary">
@@ -497,6 +517,6 @@ span.round-tab:hover {
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CargarParticipes.js?1.3"></script> 
+   <script src="view/Credito/js/CargarParticipes.js?1.21"></script> 
    </body>
-</html>   
+</html>    

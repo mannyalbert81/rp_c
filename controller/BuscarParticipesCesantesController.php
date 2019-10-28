@@ -218,279 +218,6 @@ class BuscarParticipesCesantesController extends ControladorBase{
         
     }
     
-    public function  SuperavitAporte () 
-    {
-        
-        
-        
-        session_start();
-        $id_participe=$_POST['id_participe'];
-        $html="";
-        $participes= new ParticipesModel();
-        $total=0;
-        
-        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
-        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
-                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=50
-                AND core_contribucion.id_estatus=1";
-        $id="fecha_registro_contribucion";
-        
-        $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
-        
-        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
-        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
-                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=50
-                AND core_contribucion.id_estatus=1";
-        $id="fecha_registro_contribucion";
-        
-        $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
-        if(!(empty($resultAportes)))
-        {
-            foreach($resultAportes as $res)
-            {
-                if($res->valor_personal_contribucion!=0)
-                {
-                    $total+=$res->valor_personal_contribucion;
-                    
-                }
-                else
-                {
-                    $total+=$res->valor_patronal_contribucion;
-                }
-            }
-            
-            $personales=sizeof($resultAportesPersonales);
-            $last=sizeof($resultAportes);
-            $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
-            $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
-            $fecha_primer=substr($fecha_primer,0,10);
-            $fecha_ultimo=substr($fecha_ultimo,0,10);
-            $tiempo=$this->dateDifference($fecha_primer, $fecha_ultimo);
-            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-            $resultSet=$participes->getCantidad("*", $tablas, $where);
-            $cantidadResult=(int)$resultSet[0]->total;
-            $per_page = 20; //la cantidad de registros que desea mostrar
-            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-            $offset = ($page - 1) * $per_page;
-            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-            $resultAportes=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
-            $last=sizeof($resultAportes);
-            
-            $total_pages = ceil($cantidadResult/$per_page);
-            
-            $html='<div class="box box-solid bg-aqua">
-            <div class="box-header with-border">
-            <h3 class="box-title">Aportaciones Personales</h3>
-            <h4 class="widget-user-desc"><b>Tiempo de Aportes:</b> '.$tiempo.'</h4>
-            <h4 class="widget-user-desc"><b>Número de Aportaciones Personales mensuales:</b> '.$personales.'</h4>
-            </div>
-             <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th width="10%">№</th>
-                        <th width="29%">FECHA DE APORTACION</th>
-                        <th width="28%">TIPO DE APORTE</th>
-                        <th width="29%">TOTAL</th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>
-                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
-                     <table border="1" width="100%">';
-            for($i=$last-1; $i>=0; $i--)
-            {
-                $index=($i+($last-1)*($page-1))+1;
-                if($resultAportes[$i]->valor_personal_contribucion!=0)
-                {
-                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
-                    $monto=number_format((float)$resultAportes[$i]->valor_personal_contribucion, 2, ',', '.');
-                    $html.='<tr>
-                                 <td bgcolor="white" width="10%"><font color="black">'.$index.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$fecha.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
-                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
-                                </tr>';
-                }
-                else
-                {
-                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
-                    $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
-                    $html.='<tr>
-                                 <td bgcolor="white"  width="10%"><font color="black">'.$index.'</font></td>
-                                 <td bgcolor="white"  width="30%"><font color="black">'.$fecha.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
-                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
-                                </tr>';
-                }
-                
-                
-            }
-            $total=number_format((float)$total, 2, ',', '.');
-            $html.='</table>
-                   </div>
-                    <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th class="text-right">Acumulado Total de Aportes: <span id="lblTotalSuperavitAporte"> '.$total.' </span></th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>';
-            $html.='<div class="table-pagination pull-right">';
-            $html.=''. $this->paginate_aportes("index.php", $page, $total_pages, $adjacents,$id_participe,"SuperavitAporte").'';
-            $html.='</div>
-                    </div>';
-            
-            
-            echo $html;
-            
-        }
-        else
-        {
-            $html.='<div class="alert alert-warning alert-dismissable bg-aqua" style="margin-top:40px;">';
-            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene aportaciones</b>';
-            $html.='</div>';
-            echo $html;
-        }
-        
-        
-        
-        
-    }
-    public function  ImpuestoSuperavit ()
-    {
-
-        session_start();
-        $id_participe=$_POST['id_participe'];
-        $html="";
-        $participes= new ParticipesModel();
-        $total=0;
-        
-        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
-        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
-                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=10
-                AND core_contribucion.id_estatus=1";
-        $id="fecha_registro_contribucion";
-        
-        $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
-        
-        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
-        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
-                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=10
-                AND core_contribucion.id_estatus=1";
-        $id="fecha_registro_contribucion";
-        
-        $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
-        if(!(empty($resultAportes)))
-        {
-            foreach($resultAportes as $res)
-            {
-                if($res->valor_personal_contribucion!=0)
-                {
-                    $total+=$res->valor_personal_contribucion;
-                    
-                }
-                else
-                {
-                    $total+=$res->valor_patronal_contribucion;
-                }
-            }
-            
-            $personales=sizeof($resultAportesPersonales);
-            $last=sizeof($resultAportes);
-            $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
-            $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
-            $fecha_primer=substr($fecha_primer,0,10);
-            $fecha_ultimo=substr($fecha_ultimo,0,10);
-            $tiempo=$this->dateDifference($fecha_primer, $fecha_ultimo);
-            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-            $resultSet=$participes->getCantidad("*", $tablas, $where);
-            $cantidadResult=(int)$resultSet[0]->total;
-            $per_page = 20; //la cantidad de registros que desea mostrar
-            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-            $offset = ($page - 1) * $per_page;
-            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-            $resultAportes=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
-            $last=sizeof($resultAportes);
-            
-            $total_pages = ceil($cantidadResult/$per_page);
-            
-            $html='<div class="box box-solid bg-aqua">
-            <div class="box-header with-border">
-            <h3 class="box-title">Aportaciones Personales</h3>
-            <h4 class="widget-user-desc"><b>Tiempo de Aportes:</b> '.$tiempo.'</h4>
-            <h4 class="widget-user-desc"><b>Número de Aportaciones Personales mensuales:</b> '.$personales.'</h4>
-            </div>
-             <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th width="10%">№</th>
-                        <th width="29%">FECHA DE APORTACION</th>
-                        <th width="28%">TIPO DE APORTE</th>
-                        <th width="29%">TOTAL</th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>
-                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
-                     <table border="1" width="100%">';
-            for($i=$last-1; $i>=0; $i--)
-            {
-                $index=($i+($last-1)*($page-1))+1;
-                if($resultAportes[$i]->valor_personal_contribucion!=0)
-                {
-                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
-                    $monto=number_format((float)$resultAportes[$i]->valor_personal_contribucion, 2, ',', '.');
-                    $html.='<tr>
-                                 <td bgcolor="white" width="10%"><font color="black">'.$index.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$fecha.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
-                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
-                                </tr>';
-                }
-                else
-                {
-                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
-                    $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
-                    $html.='<tr>
-                                 <td bgcolor="white"  width="10%"><font color="black">'.$index.'</font></td>
-                                 <td bgcolor="white"  width="30%"><font color="black">'.$fecha.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
-                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
-                                </tr>';
-                }
-                
-                
-            }
-            $total=number_format((float)$total, 2, ',', '.');
-            $html.='</table>
-                   </div>
-                    <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th class="text-right">Acumulado Total de Aportes: <span id="lblTotalImpuesto"> '.$total.' </span></th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>';
-            $html.='<div class="table-pagination pull-right">';
-            $html.=''. $this->paginate_aportes("index.php", $page, $total_pages, $adjacents,$id_participe,"ImpuestoSuperavit").'';
-            $html.='</div>
-                    </div>';
-            
-            
-            echo $html;
-            
-        }
-        else
-        {
-            $html.='<div class="alert alert-warning alert-dismissable bg-aqua" style="margin-top:40px;">';
-            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene aportaciones</b>';
-            $html.='</div>';
-            echo $html;
-        }
-        
-        
-        
-    }
     public function AportesParticipe()
     {
         session_start();
@@ -499,265 +226,203 @@ class BuscarParticipesCesantesController extends ControladorBase{
         $participes= new ParticipesModel();
         $total=0;
         
-        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
-        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
-                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=1 
-                AND core_contribucion.id_estatus=1";
-        $id="fecha_registro_contribucion";
-        
-        $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
-        
-        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
-        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
-                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=1
-                AND core_contribucion.id_estatus=1";
-        $id="fecha_registro_contribucion";
-        
+        $where_to="";
+        $columnas="COALESCE(sum(c.valor_personal_contribucion),0) aporte_personal_100, (coalesce(sum(c.valor_personal_contribucion),0)/2) aporte_personal_50,
+                    (select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=10 and c1.id_estatus=1) as impuesto_ir_superavit_personal_100,
+                    (select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=10 and c2.id_estatus=1) as impuesto_ir_superavit_personal_50,
+                    (select COALESCE(sum(c3.valor_personal_contribucion),0)  from core_contribucion c3 where c3.id_participes=".$id_participe." and c3.id_contribucion_tipo=50 and c3.id_estatus=1) as superavit_aporte_personal_100,
+                    (select (coalesce(sum(c4.valor_personal_contribucion),0)/2)  from core_contribucion c4 where c4.id_participes=".$id_participe." and c4.id_contribucion_tipo=50 and c4.id_estatus=1) as superavit_aporte_personal_50,
+                    (select min(to_char(c5.fecha_registro_contribucion, 'TMMONTH/YYYY')) imposicion_desde from core_contribucion c5 where c5.id_participes=".$id_participe." and c5.id_estatus=1),
+                    (select max(to_char(c5.fecha_registro_contribucion, 'TMMONTH/YYYY')) imposicion_hasta from core_contribucion c5 where c5.id_participes=".$id_participe." and c5.id_estatus=1)
+                    ";
+        $tablas="core_contribucion c inner join  core_participes p on c.id_participes=p.id_participes";
+        $where="p.id_participes=".$id_participe." and c.id_estatus=1 and c.id_contribucion_tipo=1";
+        $id="aporte_personal_100";
+        /*
+        $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
+            		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
+            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
+            		core_estado_creditos.nombre_estado_creditos";
+        $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
+        		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
+        		INNER JOIN public.core_estado_creditos
+        		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
+        $where="core_creditos.id_participes=".$id_participe." AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
+        $id="core_creditos.fecha_concesion_creditos";
         $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
-        if(!(empty($resultAportes)))
+        */
+        
+        $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        if($action == 'ajax')
         {
-            foreach($resultAportes as $res)
-            {
-                if($res->valor_personal_contribucion!=0)
-                {
-                    $total+=$res->valor_personal_contribucion;
-                    
-                }
-                else
-                {
-                    $total+=$res->valor_patronal_contribucion;
-                }
+            
+            
+            if(!empty($search)){
+                
+                
+                $where1=" AND fecha_registro_contribucion LIKE '".$search."%'";
+                
+                $where_to=$where.$where1;
+                
+            }else{
+                
+                $where_to=$where;
+                
             }
             
-            $personales=sizeof($resultAportesPersonales);
-            $last=sizeof($resultAportes);
-            $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
-            $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
-            $fecha_primer=substr($fecha_primer,0,10);
-            $fecha_ultimo=substr($fecha_ultimo,0,10);
-            $tiempo=$this->dateDifference($fecha_primer, $fecha_ultimo);
-            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-            $resultSet=$participes->getCantidad("*", $tablas, $where);
+            $html="";
+            $resultSet=$participes->getCantidad("*", $tablas, $where_to);
             $cantidadResult=(int)$resultSet[0]->total;
-            $per_page = 20; //la cantidad de registros que desea mostrar
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 10; //la cantidad de registros que desea mostrar
             $adjacents  = 9; //brecha entre páginas después de varios adyacentes
             $offset = ($page - 1) * $per_page;
+            
             $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-            $resultAportes=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
-            $last=sizeof($resultAportes);
             
+            $resultSet=$participes->getCondicionesPag($columnas, $tablas, $where_to, $id ,$limit);
             $total_pages = ceil($cantidadResult/$per_page);
-                        
-            $html='<div class="box box-solid bg-aqua">
+            
+            if($cantidadResult > 0)
+            {
+                foreach ($resultSet as $res)
+                {
+                
+                    $Total50PersonalMasRendimientos =  $res->aporte_personal_50+$res->impuesto_ir_superavit_personal_50+$res->superavit_aporte_personal_50;
+                    
+                    $html='
+            <div class="box box-solid bg-olive">
             <div class="box-header with-border">
-            <h3 class="box-title">Aportaciones Personales</h3>
-            <h4 class="widget-user-desc"><b>Tiempo de Aportes:</b> '.$tiempo.'</h4>
-            <h4 class="widget-user-desc"><b>Número de Aportaciones Personales mensuales:</b> '.$personales.'</h4>
+            <h3 class="box-title"><b>CÁLCULO DE DESAFILIACIÓN</b></h3>
             </div>
-             <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th width="10%">№</th>
-                        <th width="29%">FECHA DE APORTACION</th>
-                        <th width="28%">TIPO DE APORTE</th>
-                        <th width="29%">TOTAL</th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>
-                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
-                     <table border="1" width="100%">';
-                       for($i=$last-1; $i>=0; $i--)
-                       {    
-                           $index=($i+($last-1)*($page-1))+1;
-                           if($resultAportes[$i]->valor_personal_contribucion!=0)
-                           {
-                               $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
-                               $monto=number_format((float)$resultAportes[$i]->valor_personal_contribucion, 2, ',', '.');
-                               $html.='<tr>
-                                 <td bgcolor="white" width="10%"><font color="black">'.$index.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$fecha.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
-                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
-                                </tr>';
-                           }
-                           else
-                           {
-                               $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
-                               $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
-                               $html.='<tr>
-                                 <td bgcolor="white"  width="10%"><font color="black">'.$index.'</font></td>
-                                 <td bgcolor="white"  width="30%"><font color="black">'.$fecha.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
-                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
-                                </tr>';
-                           }
-                           
-                          
-                       }
-                       $total=number_format((float)$total, 2, ',', '.');
-                     $html.='</table>  
-                   </div>
-                    <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th class="text-right">Acumulado Total de Aportes: <span id="lblTotalPersonal"> '.$total.' </span></th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>';
-                     $html.='<div class="table-pagination pull-right">';
-                     $html.=''. $this->paginate_aportes("index.php", $page, $total_pages, $adjacents,$id_participe,"AportesParticipe").'';
-                     $html.='</div>
-                    </div>';
+            <div class="box box-solid bg-navy">
+            <div class="box-header with-border">
+            <h5 class=""><b>IMPOSICIONES DESDE:</b> '.$res->imposicion_desde.'<b> HASTA:</b> '.$res->imposicion_hasta.'</h5>
+            </div>
+            <table border="1" width="100%">
+            <tr style="color:white;" class="bg-aqua">
+            <th width="10%"></th>
+            </tr>
+            <tr style="color:white;" class="bg-aqua">
+            <th width="10%">50% del Aporte Personal (Res. N° SBS-2013-504)</th>
+            <td bgcolor="white"  width="10%"><font color="black"><span id="lblAportePersonal">'.number_format((float)$res->aporte_personal_50, 2, ',', '.').'</span></font></td>
+            </tr>
+            <tr style="color:white;" class="bg-aqua">
+            <th width="10%">50% del Impuesto IR Superavit Personal (Res. N° SBS-2013-504)</th>
+            <td bgcolor="white"  width="10%"><font color="black"><span id="lblImpuestoPersonal">'.number_format((float)$res->impuesto_ir_superavit_personal_50, 2, ',', '.').'</span></font></td>
+            </tr>
+            <tr style="color:white;" class="bg-aqua">
+            <th width="10%">50% del Superavit por aporte Personal (Res. N° SBS-2013-504)</th>
+            <td bgcolor="white"  width="10%"><font color="black"><span id="lblSuperavitAportePersonal">'.number_format((float)$res->superavit_aporte_personal_50, 2, ',', '.').'</span></font></td>
+            </tr>
+            <tr style="color:white;" class="bg-red">
+            <th width="10%">TOTAL 50% PERSONAL + RENDIMIENTOS PRESTACIÓN</th>
+            <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalSuma">'.number_format((float)$Total50PersonalMasRendimientos, 2, ',', '.').'</span></font></td>
+            </tr>
+            <tr style="color:white;" class="bg-olive">
+            <th width="10%">DESCUENTOS</th>
+            <td box box-solid bg-olive"  width="10%"><font color="black"><span id="lblCreditoOrdinario"></span></font></td>
+            </tr>
+            <tr style="color:white;" class="bg-aqua">
+            <th width="10%">PQ-Créditos</th>
+            <td bgcolor="white"  width="10%"><font color="black"><span id="lblCreditoOrdinario"></span></font></td>
+            </tr>
+            <tr style="color:white;" class="bg-red">
+            <th width="10%">TOTAL DESCUENTOS</th>
+            <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalDescuentos"></span></font></td>
+            </tr>
+            <tr style="color:white;" class="bg-black">
+            <th width="10%">TOTAL A RECIBIR</th>
+            <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalRecibir"></span></font></td>
+            </tr>
+            </table>
+            <table border="1" width="100%">';
+                    
+                }
+                
+            
+                
+                
+                
+            }else{
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<div class="alert alert-info alert-dismissable" style="margin-top:40px;">';
+                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no puede desafiliarse...</b>';
+                $html.='</div>';
+                $html.='</div>';
+            }
             
             
             echo $html;
             
         }
-        else
-        {
-            $html.='<div class="alert alert-warning alert-dismissable bg-aqua" style="margin-top:40px;">';
-            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene aportaciones</b>';
-            $html.='</div>';
-            echo $html;
-        }
-         
+        
+        
         
     }
+    public function paginate($reload, $page, $tpages, $adjacents, $funcion = "") {
+        
+        $prevlabel = "&lsaquo; Prev";
+        $nextlabel = "Next &rsaquo;";
+        $out = '<ul class="pagination pagination-large">';
+        
+        
+        if($page==1) {
+            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+        } else if($page==2) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
+        }else {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
+            
+        }
+        
+        if($page>($adjacents+1)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
+        }
+        if($page>($adjacents+2)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+        for($i=$pmin; $i<=$pmax; $i++) {
+            if($i==$page) {
+                $out.= "<li class='active'><a>$i</a></li>";
+            }else if($i==1) {
+                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
+            }else {
+                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
+            }
+        }
+        
+        
+        if($page<($tpages-$adjacents-1)) {
+            $out.= "<li><a>...</a></li>";
+        }
+        
+        
+        if($page<($tpages-$adjacents)) {
+            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
+        }
+        
+        
+        if($page<$tpages) {
+            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
+        }else {
+            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+        }
+        
+        $out.= "</ul>";
+        return $out;
+    }  
+
     
-    public function AportesParticipePatronal()
-    {
-        session_start();
-        $id_participe=$_POST['id_participe'];
-        $html="";
-        $participes= new ParticipesModel();
-        $total=0;
-        
-        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
-        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
-                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=3
-                AND core_contribucion.id_estatus=1";
-        $id="fecha_registro_contribucion";
-        
-        $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
-        
-        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
-        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
-                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-        $where="core_contribucion.id_participes=".$id_participe." AND core_contribucion.id_contribucion_tipo=3
-                AND core_contribucion.id_estatus=1";
-        $id="fecha_registro_contribucion";
-        
-        $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
-        if(!(empty($resultAportes)))
-        {
-            foreach($resultAportes as $res)
-            {
-                if($res->valor_personal_contribucion!=0)
-                {
-                    $total+=$res->valor_personal_contribucion;
-                    
-                }
-                else
-                {
-                    $total+=$res->valor_patronal_contribucion;
-                }
-            }
-            
-            $personales=sizeof($resultAportesPersonales);
-            $last=sizeof($resultAportes);
-            $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
-            $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
-            $fecha_primer=substr($fecha_primer,0,10);
-            $fecha_ultimo=substr($fecha_ultimo,0,10);
-            $tiempo=$this->dateDifference($fecha_primer, $fecha_ultimo);
-            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-            $resultSet=$participes->getCantidad("*", $tablas, $where);
-            $cantidadResult=(int)$resultSet[0]->total;
-            $per_page = 20; //la cantidad de registros que desea mostrar
-            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-            $offset = ($page - 1) * $per_page;
-            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-            $resultAportes=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
-            $last=sizeof($resultAportes);
-            
-            $total_pages = ceil($cantidadResult/$per_page);
-            
-            $html='<div class="box box-solid bg-aqua">
-            <div class="box-header with-border">
-            <h3 class="box-title">Aportaciones Patronales</h3>
-            <h4 class="widget-user-desc"><b>Tiempo de Aportes:</b> '.$tiempo.'</h4>
-            <h4 class="widget-user-desc"><b>Número de Aportaciones Personales mensuales:</b> '.$personales.'</h4>
-            </div>
-             <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th width="10%">№</th>
-                        <th width="29%">FECHA DE APORTACION</th>
-                        <th width="28%">TIPO DE APORTE</th>
-                        <th width="29%">TOTAL</th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>
-                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
-                     <table border="1" width="100%">';
-            for($i=$last-1; $i>=0; $i--)
-            {
-                $index=($i+($last-1)*($page-1))+1;
-                if($resultAportes[$i]->valor_personal_contribucion!=0)
-                {
-                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
-                    $monto=number_format((float)$resultAportes[$i]->valor_personal_contribucion, 2, ',', '.');
-                    $html.='<tr>
-                                 <td bgcolor="white" width="10%"><font color="black">'.$index.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$fecha.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
-                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
-                                </tr>';
-                }
-                else
-                {
-                    $fecha=substr($resultAportes[$i]->fecha_registro_contribucion,0,10);
-                    $monto=number_format((float)$resultAportes[$i]->valor_patronal_contribucion, 2, ',', '.');
-                    $html.='<tr>
-                                 <td bgcolor="white"  width="10%"><font color="black">'.$index.'</font></td>
-                                 <td bgcolor="white"  width="30%"><font color="black">'.$fecha.'</font></td>
-                                 <td bgcolor="white" width="30%"><font color="black">'.$resultAportes[$i]->nombre_contribucion_tipo.'</font></td>
-                                 <td bgcolor="white" align="right" width="30%"><font color="black">'.$monto.'</font></td>
-                                </tr>';
-                }
-                
-                
-            }
-            $total=number_format((float)$total, 2, ',', '.');
-            $html.='</table>
-                   </div>
-                    <table border="1" width="100%">
-                     <tr style="color:white;" class="bg-aqua">
-                        <th class="text-right">Acumulado Total de Aportes: <span id="lblTotalPatronal"> '.$total.' </span></th>
-                        <th width="1.5%"></th>
-                     </tr>
-                   </table>';
-            $html.='<div class="table-pagination pull-right">';
-            $html.=''. $this->paginate_aportes_patronal("index.php", $page, $total_pages, $adjacents,$id_participe,"AportesParticipePatronal").'';
-            $html.='</div>
-                    </div>';
-            
-            
-            echo $html;
-            
-        }
-        else
-        {
-            $html.='<div class="alert alert-warning alert-dismissable bg-aqua" style="margin-top:40px;">';
-            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>El participe no tiene aportaciones</b>';
-            $html.='</div>';
-            echo $html;
-        }
-        
-        
-    }
+
     
     public function TablaDesafiliacion()
     {
@@ -908,198 +573,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
         
     }
     
-    public function paginate_aportes($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
-        
-        $prevlabel = "&lsaquo; Prev";
-        $nextlabel = "Next &rsaquo;";
-        $out = '<ul class="pagination pagination-large">';
-        
-        // previous label
-        
-        if($page==1) {
-            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-        } else if($page==2) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$prevlabel</a></span></li>";
-        }else {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page-1).")'>$prevlabel</a></span></li>";
-            
-        }
-        
-        // first label
-        if($page>($adjacents+1)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>1</a></li>";
-        }
-        // interval
-        if($page>($adjacents+2)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        // pages
-        
-        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-        for($i=$pmin; $i<=$pmax; $i++) {
-            if($i==$page) {
-                $out.= "<li class='active'><a>$i</a></li>";
-            }else if($i==1) {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$i</a></li>";
-            }else {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".$i.")'>$i</a></li>";
-            }
-        }
-        
-        // interval
-        
-        if($page<($tpages-$adjacents-1)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        // last
-        
-        if($page<($tpages-$adjacents)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,$tpages)'>$tpages</a></li>";
-        }
-        
-        // next
-        
-        if($page<$tpages) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page+1).")'>$nextlabel</a></span></li>";
-        }else {
-            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-        }
-        
-        $out.= "</ul>";
-        return $out;
-    }
-    
-    public function paginate_aportes_patronal($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
-        
-        $prevlabel = "&lsaquo; Prev";
-        $nextlabel = "Next &rsaquo;";
-        $out = '<ul class="pagination pagination-large">';
-        
-        // previous label
-        
-        if($page==1) {
-            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-        } else if($page==2) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$prevlabel</a></span></li>";
-        }else {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page-1).")'>$prevlabel</a></span></li>";
-            
-        }
-        
-        // first label
-        if($page>($adjacents+1)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>1</a></li>";
-        }
-        // interval
-        if($page>($adjacents+2)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        // pages
-        
-        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-        for($i=$pmin; $i<=$pmax; $i++) {
-            if($i==$page) {
-                $out.= "<li class='active'><a>$i</a></li>";
-            }else if($i==1) {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$i</a></li>";
-            }else {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".$i.")'>$i</a></li>";
-            }
-        }
-        
-        // interval
-        
-        if($page<($tpages-$adjacents-1)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        // last
-        
-        if($page<($tpages-$adjacents)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,$tpages)'>$tpages</a></li>";
-        }
-        
-        // next
-        
-        if($page<$tpages) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page+1).")'>$nextlabel</a></span></li>";
-        }else {
-            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-        }
-        
-        $out.= "</ul>";
-        return $out;
-    }
-    
-    public function paginate_tabla($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
-        
-        $prevlabel = "&lsaquo; Prev";
-        $nextlabel = "Next &rsaquo;";
-        $out = '<ul class="pagination pagination-large">';
-        
-        // previous label
-        
-        if($page==1) {
-            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-        } else if($page==2) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$prevlabel</a></span></li>";
-        }else {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page-1).")'>$prevlabel</a></span></li>";
-            
-        }
-        
-        // first label
-        if($page>($adjacents+1)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>1</a></li>";
-        }
-        // interval
-        if($page>($adjacents+2)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        // pages
-        
-        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-        for($i=$pmin; $i<=$pmax; $i++) {
-            if($i==$page) {
-                $out.= "<li class='active'><a>$i</a></li>";
-            }else if($i==1) {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$i</a></li>";
-            }else {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".$i.")'>$i</a></li>";
-            }
-        }
-        
-        // interval
-        
-        if($page<($tpages-$adjacents-1)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        // last
-        
-        if($page<($tpages-$adjacents)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,$tpages)'>$tpages</a></li>";
-        }
-        
-        // next
-        
-        if($page<$tpages) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page+1).")'>$nextlabel</a></span></li>";
-        }else {
-            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-        }
-        
-        $out.= "</ul>";
-        return $out;
-    }
-    
+
     public function CreditosActivosParticipe()
     {
         session_start();
@@ -1170,7 +644,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
                         <th width="2%"></th>
                      </tr>
                    </table>
-                   <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
+                   <div style="overflow-y: scroll; overflow-x: hidden; height:100px; width:100%;">
                      <table border="1" width="100%">';
             for($i=$last-1; $i>=0; $i--)
             {
@@ -1333,8 +807,8 @@ class BuscarParticipesCesantesController extends ControladorBase{
         $out.= "</ul>";
         return $out;
     }
-    
-    
+
+   
     public function print()
     {
         
@@ -1601,6 +1075,23 @@ class BuscarParticipesCesantesController extends ControladorBase{
         
         
     }
+    
+    public function cargaTipoPrestaciones(){
+        
+        $tipo_prestaciones = null;
+        $tipo_prestaciones = new TipoPrestacionesModel();
+        
+        $query = "SELECT id_tipo_prestaciones, nombre_tipo_prestaciones FROM core_tipo_prestaciones WHERE 1 = 1";
+        
+        $resulset = $tipo_prestaciones->enviaquery($query);
+        
+        if(!empty($resulset) && count($resulset)>0){
+            
+            echo json_encode(array('data'=>$resulset));
+            
+        }
+    }
+    
  
 }
 

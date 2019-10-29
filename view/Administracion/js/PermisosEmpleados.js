@@ -282,7 +282,7 @@ if( (causa == 6 || causa == 3) && desc == "" ){ $("#descripcion_causa").notify("
 		  		  button: "Aceptar",
 		  		});
 				load_solicitudes(1);
-		}else if(x=="E001"){
+		}else if(x.trim()=="E001"){
 			swal({
 		  		  title: "Solicitud",
 		  		  text: "Ya se encuentra registrada una solicitud a la fecha",

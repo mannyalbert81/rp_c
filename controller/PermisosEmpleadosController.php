@@ -84,7 +84,7 @@ class PermisosEmpleadosController extends ControladorBase{
         $columnas1=" aa.id_empleado, bb.nombre_estado ";
         $tablas1=" permisos_empleados aa INNER JOIN estado bb ON bb.id_estado = aa.id_estado";
         $where1=" bb.tabla_estado = upper('permiso_empleado') AND bb.nombre_estado <> 'NEGADO' 
-            AND aa.id_empleado = $id_empleado AND aa.fecha_solicitud = $fecha_solicitud ";
+            AND aa.id_empleado = $id_empleado AND aa.fecha_solicitud = '$fecha_solicitud' ";
         $id1=" aa.id_empleado";
         $result1 = $empleado->getCondiciones($columnas1, $tablas1, $where1, $id1);
         if(!empty($result1)){
@@ -186,6 +186,7 @@ class PermisosEmpleadosController extends ControladorBase{
         
         $where_to="";
         $columnas = " empleados.nombres_empleados,
+                      empleados.numero_cedula_empleados,
                       empleados.dias_vacaciones_empleados,
                       cargos_empleados.nombre_cargo,
                       departamentos.nombre_departamento,
@@ -304,6 +305,9 @@ class PermisosEmpleadosController extends ControladorBase{
                     
                 }
                 
+                
+                $html.='<th style="text-align: left;  font-size: 12px;"></th>';//esta columna esta para modificar el permiso
+               
                 $html.='</tr>';
                 $html.='</thead>';
                 $html.='<tbody>';
@@ -339,7 +343,7 @@ class PermisosEmpleadosController extends ControladorBase{
                     $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
                     if(empty($resultr)) $tiene_jefe=false;
                     else $tiene_jefe=true;
-                    echo "danny =>",$id_rol,"--**--",$id_rh,"\n"; 
+                    
                     if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
                     {
                         if ($id_rol==$id_rh  && $res->nombre_estado=="EN REVISION" && !$tiene_jefe )
@@ -370,6 +374,12 @@ class PermisosEmpleadosController extends ControladorBase{
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="SinCertificado('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                         }
                     }
+                    
+                    if( $cedula == $res->numero_cedula_empleados &&  $res->nombre_estado=="EN REVISION"){
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="CambiarPermiso('.$res->id_permisos_empleados.'&quot;)"><i class="fa fa-edit"></i></button></span></td>';
+                    }
+                    
+                    
                     $html.='</tr>';
                 }
                 

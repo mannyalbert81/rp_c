@@ -2215,7 +2215,7 @@ class ParticipesController extends ControladorBase{
 	        
 	        
 	        
-	        $funcion = "ins_core_contribucion_tipo_participes";
+	        $funcion = "ins_core_prestaciones";
 	        
 	        $parametros = " '$_id_contribucion_tipo',
                                     '$_id_participes',

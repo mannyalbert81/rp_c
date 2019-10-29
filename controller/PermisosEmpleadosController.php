@@ -80,6 +80,8 @@ class PermisosEmpleadosController extends ControladorBase{
         $id_causa= $_POST['id_causa'];
         $descripcion_causa= $_POST['descripcion_causa'];
         
+        $_valor_editar = $_POST['valor_editar_permiso'];
+        
         /* validar que no haya otra solicitud */ 
         $columnas1=" aa.id_empleado, bb.nombre_estado ";
         $tablas1=" permisos_empleados aa INNER JOIN estado bb ON bb.id_estado = aa.id_estado";
@@ -91,28 +93,36 @@ class PermisosEmpleadosController extends ControladorBase{
             echo "E001"; exit();
         }
         
-        if (!(empty($descripcion_causa)))
-        {
-        $parametros = "'$id_empleado',
+        if($_valor_editar == 0){
+            
+            if (!(empty($descripcion_causa)))
+            {
+                $parametros = "'$id_empleado',
                      '$fecha_solicitud',
                      '$hora_desde',
                      '$hora_hasta',
                      '$id_causa',
                      '$descripcion_causa'";
-        }
-        else
-        {
-            $parametros = "'$id_empleado',
+            }
+            else
+            {
+                $parametros = "'$id_empleado',
                      '$fecha_solicitud',
                      '$hora_desde',
                      '$hora_hasta',
                      '$id_causa',
                      NULL";
+            }
+            $permisos_empleados->setFuncion($funcion);
+            $permisos_empleados->setParametros($parametros);
+            $resultado=$permisos_empleados->Insert();
+            echo 1;
+            
+        }else{
+            //aqui viene edicion
         }
-        $permisos_empleados->setFuncion($funcion);
-        $permisos_empleados->setParametros($parametros);
-        $resultado=$permisos_empleados->Insert();
-        echo 1;
+        
+        
     }
     
     public function GetHoras()
@@ -376,7 +386,7 @@ class PermisosEmpleadosController extends ControladorBase{
                     }
                     
                     if( $cedula == $res->numero_cedula_empleados &&  $res->nombre_estado=="EN REVISION"){
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="CambiarPermiso('.$res->id_permisos_empleados.'&quot;)"><i class="fa fa-edit"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="CambiarPermiso('.$res->id_permisos_empleados.')"><i class="fa fa-edit"></i></button></span></td>';
                     }
                     
                     
@@ -707,6 +717,27 @@ class PermisosEmpleadosController extends ControladorBase{
         
         
             
+    }
+    
+    public function BuscaPermisoEditar(){
+        
+        $Empleados = new EmpleadosModel();
+        
+        $id_permiso = $_POST['id_empleado_permiso'];
+        
+        $columnas1 = "id_empleado,fecha_solicitud,hora_desde,hora_hasta,id_causa,descripcion_causa,id_estado";
+        $tablas1 = "permisos_empleados";
+        $where1 = "id_permisos_empleados = $id_permiso";
+        $id1 = "id_permisos_empleados";
+        $rsConsulta1 = $Empleados->getCondiciones($columnas1, $tablas1, $where1, $id1);
+        
+        if(!empty($rsConsulta1)){
+            
+            echo json_encode(array("data"=>$rsConsulta1));
+        }else{
+            echo json_encode(array("data"=>null));
+        }
+               
     }
 }
 

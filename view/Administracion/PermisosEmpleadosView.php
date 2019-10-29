@@ -149,6 +149,7 @@
           	<div class="row">
            	 <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
+            	<input type="hidden" id="valor_editar_permiso" value="0">
                   <button type="button" id="Guardar" name="Guardar" class="btn btn-success" onclick="InsertarSolicitud()">GUARDAR</button>
                   <button type="button" class="btn btn-danger" id="Cancelar" name="Cancelar" onclick="LimpiarCampos()">CANCELAR</button>
                 </div>
@@ -189,6 +190,111 @@
 
    <div class="control-sidebar-bg"></div>
  </div>
+ 
+ <!-- BEGIN MODAL EDICION PERMISOS-->
+ 
+ <div class="modal fade" id="mod_permisos_empleados" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" style="width:40%">
+        <div class="modal-content">
+          <div class="modal-header bg-orange disabled color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Editar Permiso Empleado</h4>
+          </div>
+          <div class="modal-body">
+          <!-- empieza el formulario modal productos -->
+          	<form class="form " method="post" id="frm_edit_permiso_empleado" name="frm_edit_permiso_empleado">
+          	
+          	<div class="row">
+          		<div class="col-lg-12 col-md-12 col-xs-12">
+          			<h5>Datos Participe</h5>
+          			<input type="hidden" class="form-control " id="mod_id_permiso" name="mod_id_permiso" >
+          		</div>
+              	<div class="col-lg-12 col-md-12 col-xs-12">        		
+        			<div class="form-group "> 
+            			 <div class="form-group-sm">            			 	
+            				<p class="text-muted col-sm-4 control-label">Fecha:</p>
+            				<div class="col-sm-8">
+                              	<input type="date"  class="form-control" id="mod_fecha_permiso" name="mod_fecha_permiso" placeholder="Fecha">
+                             </div>
+            			 </div>        			 
+        			</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-xs-12">        		
+        			<div class="form-group "> 
+            			 <div class="form-group-sm">            			 	
+            				<p class="text-muted col-sm-4 control-label">Hora Inicio:</p>
+            				<div class="col-sm-8">
+                              	<input type="text" data-inputmask="'mask': 'h:s:s'" class="form-control" id="mod_hora_desde" name="mod_hora_desde" placeholder="Hora">                            	
+                             </div>
+            			 </div>        			 
+        			</div>
+				</div>
+				<div class="col-lg-12 col-md-12 col-xs-12">        		
+        			<div class="form-group "> 
+            			 <div class="form-group-sm">            			 	
+            				<p class="text-muted col-sm-4 control-label">Hora Fin:</p>
+            				<div class="col-sm-8">
+                              	<input type="text" data-inputmask="'mask': 'h:s:s'" class="form-control" id="mod_hora_hasta" name="mod_hora_hasta" placeholder="Hora">
+                             </div>
+            			 </div>        			 
+        			</div>
+				</div>
+              	<div class="col-lg-12 col-md-12 col-xs-12">        		
+    			<div class="form-group "> 
+        			 <div class="form-group-sm">
+        				<p class="text-muted col-sm-4 control-label"></p>
+        				<div class="col-sm-8">
+                          	<button type="button" id="mod_dia" name="mod_dia" class="btn btn-light" onclick="mod_TodoElDia()"><i id="mod_diaicon" class="glyphicon glyphicon-unchecked"></i>TODO EL DIA</button>
+                         </div>
+        			 </div>        			 
+    			</div>
+    			</div>
+    			<div class="col-lg-12 col-md-12 col-xs-12">        		
+        			<div class="form-group "> 
+            			 <div class="form-group-sm">
+            				<p class="text-muted col-sm-4 control-label">Causa:</p>
+            				<div class="col-sm-8">
+                              	<select name="causa_permiso" id="mod_causa_permiso"  class="form-control" onchange = "mod_HabilitarDescripcion()">
+                                      <option value="" selected="selected">--Seleccione--</option>
+                                      <?php  foreach($resultcau as $res) {?>
+									  <option value="<?php echo $res->id_causa; ?>"><?php echo $res->nombre_causa; ?> </option>
+			        				  <?php } ?>
+                        		</select> 
+                             </div>
+            			 </div>        			 
+        			</div>
+    			</div>
+    			<div class="col-lg-12 col-md-12 col-xs-12">        		
+    			<div class="form-group "> 
+        			 <div class="form-group-sm">
+        				<p class="text-muted col-sm-4 control-label">Descripcion:</p>
+        				<div class="col-sm-8">
+                          	<input type="text"  maxlength="100" class="form-control" id="mod_descripcion_causa" name="mod_descripcion_causa" placeholder="Descripción" readonly>
+                         </div>
+        			 </div>        			 
+    			</div>
+    			</div>
+          	</div>
+          	
+          	<div id="msg_frm_recaudacion" ></div> 
+          	
+          	<div class="clearfix"></div>         	
+			  
+          	</form>
+          	<!-- termina el formulario modal de impuestos -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" id="btnEditPermiso" class="btn btn-default" onclick="EditaSolicitud()" >Aceptar</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+
+<!-- END MODAL EDICION PERMISOS -->
     
     <?php include("view/modulos/links_js.php"); ?>
 	
@@ -199,7 +305,7 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Administracion/js/PermisosEmpleados.js?0.18"></script>
+    <script src="view/Administracion/js/PermisosEmpleados.js?0.20"></script>
 	
 	
   </body>

@@ -252,7 +252,8 @@ if (!validardesde() ){ $("#hora_desde").notify("Hora inicio no definida ",{ posi
 if( causa == "" ){ $("#causa_permiso").notify("seleccione permiso",{ position:"buttom left", autoHideDelay: 2000}); return false; }
 
 if( (causa == 6 || causa == 3) && desc == "" ){ $("#descripcion_causa").notify("Ingrese una descripcion",{ position:"buttom left", autoHideDelay: 2000}); return false; }
-	
+
+
 	$.ajax({
 	    url: 'index.php?controller=PermisosEmpleados&action=AgregarSolicitud',
 	    type: 'POST',
@@ -260,7 +261,8 @@ if( (causa == 6 || causa == 3) && desc == "" ){ $("#descripcion_causa").notify("
 	    	   hora_desde: desde,
 	    	   hora_hasta: hasta,
 	    	   id_causa: causa,
-	    	   descripcion_causa:desc},
+	    	   descripcion_causa:desc,
+	    	   valor_editar_permiso:$("#valor_editar_permiso").val()},
 	})
 	.done(function(x) {
 		$("#fecha_permiso").val("");
@@ -282,7 +284,7 @@ if( (causa == 6 || causa == 3) && desc == "" ){ $("#descripcion_causa").notify("
 		  		  button: "Aceptar",
 		  		});
 				load_solicitudes(1);
-		}else if(x=="E001"){
+		}else if(x.trim()=="E001"){
 			swal({
 		  		  title: "Solicitud",
 		  		  text: "Ya se encuentra registrada una solicitud a la fecha",
@@ -539,3 +541,103 @@ function SinCertificado(idsol)
 	  		});
 	});
 }
+
+function CambiarPermiso(_id_empleado_permiso){
+	
+	console.log("permiso es --> "+_id_empleado_permiso);
+	
+	$.ajax({
+	    url: 'index.php?controller=PermisosEmpleados&action=BuscaPermisoEditar',
+	    type: 'POST',
+	    dataType:"json",
+	    data: {
+	    	id_empleado_permiso: _id_empleado_permiso
+	    },
+	})
+	.done(function(x) {
+		
+		if( x.data != undefined && x.data != null){
+			
+			var rsConsulta = x.data;
+			$("#valor_editar_permiso").val(_id_empleado_permiso);
+			$("#fecha_permiso").val(rsConsulta[0].fecha_solicitud);
+			$("#hora_desde").val(rsConsulta[0].hora_desde);
+			$("#hora_hasta").val(rsConsulta[0].hora_hasta);
+			$("#causa_permiso").val(rsConsulta[0].id_causa);
+			$("#descripcion_causa").val(rsConsulta[0].descripcion_causa);
+			if(rsConsulta[0].descripcion_causa == ""){
+				document.getElementById('descripcion_causa').readOnly = true;
+			}			
+			document.getElementById('dia').className = "btn btn-light";
+			document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
+			document.getElementById('hora_desde').readOnly = false;
+		    document.getElementById('hora_hasta').readOnly = false;
+			
+			
+		}
+			
+	})
+	.fail(function(xhr,status,error) {
+		
+		var err =  xhr.responseText; console.log(err);
+	    
+	});
+	
+	/*var $modalPermisos = $("#mod_permisos_empleados");
+	
+	$modalPermisos.modal();*/
+	
+}
+
+
+/***************************************************************** PARA FUNCIONES CON MODAL ***************************************************/
+function mod_TodoElDia(){
+
+	 if (document.getElementById('mod_dia').className == "btn btn-light"){
+		 
+		 document.getElementById('mod_dia').className = "btn btn-primary";
+		 document.getElementById('mod_diaicon').className = "glyphicon glyphicon-check";
+		 $.ajax({
+			    url: 'index.php?controller=PermisosEmpleados&action=GetHoras',
+			    type: 'POST',
+			    data: {
+			    	   
+			    },
+			}).done(function(x) {
+				
+				var res = $.parseJSON(x);
+				console.log(res);
+				$("#mod_hora_desde").val(res[0]['hora_entrada_empleados']);
+				$("#mod_hora_hasta").val(res[0]['hora_salida_empleados']);
+				document.getElementById('mod_hora_desde').readOnly = true;
+				document.getElementById('mod_hora_hasta').readOnly = true;
+				})
+			.fail(function() {
+			    console.log("error");
+			    	
+			});
+		 
+		 }else{
+			 
+		 document.getElementById('mod_dia').className = "btn btn-light";
+		 document.getElementById('mod_diaicon').className = "glyphicon glyphicon-unchecked";
+		 $("#mod_hora_desde").val("");
+	     $("#mod_hora_hasta").val("");
+	     document.getElementById('mod_hora_desde').readOnly = false;
+			document.getElementById('mod_hora_hasta').readOnly = false;
+		 }
+	 
+	}
+
+function mod_HabilitarDescripcion()
+{
+	var causa = $("#mod_causa_permiso").val();
+	if (causa != 6 && causa != 3) document.getElementById('mod_descripcion_causa').readOnly = true;
+	else document.getElementById('mod_descripcion_causa').readOnly = false;
+}
+
+function EditaSolicitud(){
+	console.log("ingreso a editar permiso")
+}
+
+/***************************************************************** TERMINA PARA FUNCIONES CON MODAL ***************************************************/

@@ -13,7 +13,7 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    
+
  	<style type="text/css">
  	
  	  .loader {
@@ -194,6 +194,8 @@ text-align:center;
 }
  	  
  	</style>
+    
+ 
    <?php include("view/modulos/links_css.php"); ?>
   			        
     </head>
@@ -209,32 +211,19 @@ text-align:center;
     
       
     
-    <div class="wrapper">
 
-  <header class="main-header">
+
   
-      <?php include("view/modulos/logo.php"); ?>
-      <?php include("view/modulos/head.php"); ?>	
-    
-  </header>
 
-   <aside class="main-sidebar">
-    <section class="sidebar">
-     <?php include("view/modulos/menu_profile.php"); ?>
-      <br>
-   
-    </section>
-  </aside>
 
-  <div class="content-wrapper">
-  
+
   <section class="content-header">
       <h1>
         
         <small><?php echo $fecha; ?></small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
+        
         <li class="active">Simulador</li>
       </ol>
     </section>   
@@ -242,7 +231,7 @@ text-align:center;
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Simulador de Crédito</h3>
+          <h3 class="box-title">Simulador de Créditos</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -261,7 +250,7 @@ text-align:center;
         
       </div>
     </section>
-   </div>
+   
   
 
 
@@ -504,10 +493,6 @@ text-align:center;
 
   
  
- 	<?php include("view/modulos/footer.php"); ?>	
-
-   <div class="control-sidebar-bg"></div>
- </div>
     
     <?php include("view/modulos/links_js.php"); ?>
 	

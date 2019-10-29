@@ -144,6 +144,24 @@ if(isset($_GET['action'])){
 			}
 			
 			
+			
+			if($cargar=='cargar_cedula_participe')
+			{
+			    
+			    
+			   
+			    $cedula=$_GET["cedula"];
+			    
+			    
+			    
+			    
+			    $resultadosJson = json_encode($cedula);
+			    echo $_GET['jsoncallback'] . '(' . $resultadosJson . ');';
+			    
+			    
+			    
+			}
+			
 				
 		}		
 			

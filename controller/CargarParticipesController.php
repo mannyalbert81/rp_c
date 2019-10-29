@@ -924,6 +924,7 @@ class CargarParticipesController extends ControladorBase{
     </table>
     <td width="50%">
     <div id="info_garante"></div>
+    <div id="mensaje_tipo_hipotecario" class="errores"> </div>
     </td>
     </tr>
     </table>

@@ -247,8 +247,8 @@ var tipo_credito_hipotecario="<label for=\"cedula_garante\" class=\"control-labe
 "<select name=\"tipo_credito_hipotecario\" id=\"tipo_credito_hipotecario\"  class=\"form-control\" onchange=\"ModalidadCreditoHP()\">"+
 "<option value=\"\" selected=\"selected\">--Seleccione--</option>"+
 "<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
-"<option value=\"2\" >MEJORAS Y/O REPAROS</option>"
-"<div id=\"mensaje_tipo_hipotecario\" class=\"errores\"></div>";
+"<option value=\"2\" >MEJORAS Y/O REPAROS</option>"+
+"<div id=\"mensaje_tipo_hipotecario_1\" class=\"errores\"></div>";
 $('#info_garante').html(tipo_credito_hipotecario);
 }
 else
@@ -286,6 +286,9 @@ function ModalidadCreditoHP()
 		.fail(function() {
 		    console.log("error");
 		});
+		
+		
+		
 		}
 	else
 		{
@@ -517,24 +520,31 @@ function GetCuotas()
 	var garante_pago=true;
 	var ciparticipe=$('#cedula_participe').val();
 	var monto=$("#monto_credito").val();
+	
 	Redondeo(monto);
 	
 	monto=$("#monto_credito").val();
 	var interes=$("#tipo_credito").val();
+	
+	var tipo_credito_hipotecario=$("#tipo_credito_hipotecario").val();
+	
 	var limite="";
 	if(interes=="PH")
 		{
-		limite=document.getElementById("monto_disponible2").innerHTML;
+		 limite = $("#monto_disponible2").text();
+		 console.log(limite);// document.getElementById("monto_disponible2").innerHTML == undefined || document.getElementById("monto_disponible2") ;
 		}
 	else
 		{
 		if(renovacion_credito)
 		{
-			limite=document.getElementById("monto_disponible").innerHTML;
+			$("#monto_disponible").text();
+			 console.log(limite);
 		}
 		else
 			{
-			limite=document.getElementById("monto_disponible1").innerHTML;
+			$("#monto_disponible1").text();
+			 console.log(limite);
 			}
 		}
 	
@@ -600,6 +610,27 @@ function GetCuotas()
 		$("#mensaje_sueldo_participe").fadeOut("slow"); //Muestra mensaje de error
         
 	}
+	
+	
+	if(tipo_credito_hipotecario=="")
+	{
+	$("#mensaje_tipo_hipotecario").text("Seleccione una Modalidad");
+	$("#mensaje_tipo_hipotecario").fadeIn("slow");
+	$("#mensaje_tipo_hipotecario").fadeOut("slow");
+	
+    return false;
+    }
+	else 
+	{
+		$("#mensaje_tipo_hipotecario").fadeOut("slow"); //Muestra mensaje de error
+        
+	}
+	
+	/*if(interes=="PH" && sueldo_participe==""){
+		$("#mensaje_sueldo_participe").text("Ingrese su capacidad de Pago");
+		$("#mensaje_sueldo_participe").fadeIn("slow");
+	   return false;
+	}*/
 	
 	
 	if(monto=="" || parseFloat(monto)<150 || parseFloat(monto)>parseFloat(limite) )
@@ -1538,6 +1569,15 @@ $( "#tipo_creditos" ).on("focus","#tipo_credito",function() {
 $( "#sueldo_participe" ).on("focus","#monto_credito",function() {
 	  $("#mensaje_sueldo_participe").fadeOut("slow");
 });
+
+
+$( "#tipo_credito_hipotecario" ).focus(function() {
+	  $("#mensaje_tipo_hipotecario").fadeOut("slow");
+  });
+
+/*$( "#tipo_credito_hipotecario" ).on("focus","#tipo_credito_hipotecario",function() {
+	  $("#mensaje_tipo_hipotecario").fadeOut("slow");
+});*/
 
 
 $( "#monto_del_credito" ).on("focus","#monto_credito",function() {

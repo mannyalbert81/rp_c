@@ -83,7 +83,7 @@ $("#myModalInsertar").on("hidden.bs.modal", function () {
 function GetTipoCreditos()
 {
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=getTipoCredito',
+	    url: 'index.php?controller=CargarSimulacionCreditos&action=getTipoCredito',
 	    type: 'POST',
 	    data: {
 	    },
@@ -102,7 +102,7 @@ function GetTipoCreditos()
 function GetTipoCreditos1()
 {
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=getTipoCredito1',
+	    url: 'index.php?controller=CargarSimulacionCreditos&action=getTipoCredito1',
 	    type: 'POST',
 	    data: {
 	    },
@@ -178,79 +178,91 @@ function BorrarCedulaGarante()
 }
 
 function TipoCredito()
-{   
+{    
+	var select_monto='<div class="col-xs-6 col-md-3 col-lg-3 ">'+
+	'<div class="form-group">'+
+		'<label for="monto_credito" class="control-label">Ingrese el Monto del Crédito:</label>'+
+			'<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">'+
+        '<div id="mensaje_monto_credito" class="errores"></div>'+
+ 	'</div>'+
+	'</div>';
+$("#monto_del_credito").html(select_monto);
+$("#select_cuotas").html("");
+$("#monto_credito").val("");
+$("#tabla_amortizacion").html("");
+var interes=$("#tipo_credito").val();
+console.log(interes+"===>TIPO CREDITO");
+$("#capacidad_pago_garante").html("");
+renovacion_credito=false;
+
+if(interes!="")
+{
 	
-	$("#select_cuotas").html("");
-	$("#monto_credito").val("");
-	$("#tabla_amortizacion").html("");
-	var interes=$("#tipo_credito").val();
-	console.log(interes+"===>TIPO CREDITO");
-	$("#capacidad_pago_garante").html("");
-	renovacion_credito=false;
-	
-	if(interes!="")
-		{
-		var boton='<div class="col-xs-6 col-md-3 col-lg-3 text-center">'+
-		'<div class="form-group">'+
-    		'<label for="monto_credito" class="control-label">Capacidad de pago Participe:</label>'+
-    		'<button align="center" class="btn bg-olive" title="Análisis crédito"  onclick="AnalisisCreditoParticipe()"><i class="glyphicon glyphicon-new-window"></i></button>'+
-  			'<div id="mensaje_sueldo_participe" class="errores"></div></div></div>';
-		$("#capacidad_de_pago_participe").html(boton);
-		}
-	else
-		{
-		$("#capacidad_de_pago_participe").html("");
-		$("#select_cuotas").html("");
-		$("#monto_credito").val("");
-		}
-	var bci="<label for=\"cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
-			"<div id=\"mensaje_cedula_garante\" class=\"errores\"></div>" +
-			"<div class=\"input-group\">"
-          +"<input type=\"text\" data-inputmask=\"'mask': '9999999999'\" class=\"form-control\" id=\"cedula_garante\" name=\"cedula_garante\" placeholder=\"C.I.\">"
-          +"<span class=\"input-group-btn\">"      			
-          +"<button type=\"button\" class=\"btn btn-primary\" id=\"buscar_garante\" name=\"buscar_garante\" onclick=\"BuscarGarante()\">"
-          +"<i class=\"glyphicon glyphicon-plus\"></i>"
-          +"</button>"
-          +"<button type=\"button\" class=\"btn btn-danger\" id=\"borrar_cedula\" name=\"borrar_cedula\" onclick=\"BorrarCedulaGarante()\">"
-          +"<i class=\"glyphicon glyphicon-arrow-left\"></i>"
-          +"</button>"
-          +"</span>"
-          +"</div>";
-	if(interes=="ORD")
-		{
-		$('#info_credito_renovar').html("");
-		$('#info_garante').html(bci);
-		$(":input").inputmask();
-		$('#cedula_garante').keypress(function(event){
-			  if(event.keyCode == 13){
-				  console.log("garante")
-			    $('#buscar_garante').click();
-			  }
-			});
-		
-		}
-	else if(interes=="PH")
-		{
-		var tipo_credito_hipotecario="<label for=\"cedula_garante\" class=\"control-label\">Modalidad:</label>" +
-		"<select name=\"tipo_credito_hipotecario\" id=\"tipo_credito_hipotecario\"  class=\"form-control\" onchange=\"ModalidadCreditoHP()\">"+
-		"<option value=\"\" selected=\"selected\">--Seleccione--</option>"+
-		"<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
-		"<option value=\"2\" >MEJORAS Y/O REPAROS</option>"
-		"<div id=\"mensaje_tipo_hipotecario\" class=\"errores\"></div>";
-		$('#info_garante').html(tipo_credito_hipotecario);
-		}
-	else
-		{
-		$('#info_credito_renovar').html("");
-		$('#info_garante').html("");
-		var monto="Cta Individual : "+disponible_participe;
-		if (disponible_participe < 150)
-		{
-		document.getElementById("disponible_participe").classList.remove('bg-olive');
-		document.getElementById("disponible_participe").classList.add('bg-red');
-		}
-		$("#monto_disponible").html(monto);
-		}
+var boton='<div class="col-xs-6 col-md-3 col-lg-3 text-center">'+
+'<div class="form-group">'+
+'<label for="monto_credito" class="control-label">Ingrese la Capacidad de Pago:</label>'+
+
+'<button type="button" class="btn btn-success" onclick="AnalisisCreditoParticipe()"><i class="glyphicon glyphicon-pencil"></i> Capacidad de Pago</button>'+
+
+'<div id="mensaje_sueldo_participe" class="errores"></div></div></div>';
+$("#capacidad_de_pago_participe").html(boton);
+
+}
+else
+{
+$("#capacidad_de_pago_participe").html("");
+$("#select_cuotas").html("");
+$("#monto_credito").val("");
+$("#monto_del_credito").html("");
+}
+var bci="<label for=\"cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
+"<div id=\"mensaje_cedula_garante\" class=\"errores\"></div>" +
+"<div class=\"input-group\">"
++"<input type=\"text\" data-inputmask=\"'mask': '9999999999'\" class=\"form-control\" id=\"cedula_garante\" name=\"cedula_garante\" placeholder=\"C.I.\">"
++"<span class=\"input-group-btn\">"      			
++"<button type=\"button\" class=\"btn btn-primary\" id=\"buscar_garante\" name=\"buscar_garante\" onclick=\"BuscarGarante()\">"
++"<i class=\"glyphicon glyphicon-plus\"></i>"
++"</button>"
++"<button type=\"button\" class=\"btn btn-danger\" id=\"borrar_cedula\" name=\"borrar_cedula\" onclick=\"BorrarCedulaGarante()\">"
++"<i class=\"glyphicon glyphicon-arrow-left\"></i>"
++"</button>"
++"</span>"
++"</div>";
+if(interes=="ORD")
+{
+$('#info_credito_renovar').html("");
+$('#info_garante').html(bci);
+$(":input").inputmask();
+$('#cedula_garante').keypress(function(event){
+if(event.keyCode == 13){
+  console.log("garante")
+$('#buscar_garante').click();
+}
+});
+
+}
+else if(interes=="PH")
+{
+var tipo_credito_hipotecario="<label for=\"cedula_garante\" class=\"control-label\">Seleccione una Modalidad:</label>" +
+"<select name=\"tipo_credito_hipotecario\" id=\"tipo_credito_hipotecario\"  class=\"form-control\" onchange=\"ModalidadCreditoHP()\">"+
+"<option value=\"\" selected=\"selected\">--Seleccione--</option>"+
+"<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
+"<option value=\"2\" >MEJORAS Y/O REPAROS</option>"
+"<div id=\"mensaje_tipo_hipotecario\" class=\"errores\"></div>";
+$('#info_garante').html(tipo_credito_hipotecario);
+}
+else
+{
+$('#info_credito_renovar').html("");
+$('#info_garante').html("");
+var monto="Cta Individual : "+disponible_participe;
+if (disponible_participe < 150)
+{
+document.getElementById("disponible_participe").classList.remove('bg-olive');
+document.getElementById("disponible_participe").classList.add('bg-red');
+}
+$("#monto_disponible").html(monto);
+}
 }
 
 function ModalidadCreditoHP()
@@ -259,7 +271,7 @@ function ModalidadCreditoHP()
 		{
 		var tipo_ph=$("#tipo_credito_hipotecario").val();
 		$.ajax({
-		    url: 'index.php?controller=SimulacionCreditos&action=GetAvaluoHipotecario',
+		    url: 'index.php?controller=CargarSimulacionCreditos&action=GetAvaluoHipotecario',
 		    type: 'POST',
 		    data: {
 		    	id_solicitud: solicitud,
@@ -287,7 +299,7 @@ function GetCreditosActivos(id)
 	console.log("CreditosActivos==>"+id);
 	$('#tabla_creditos_activos').html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=CreditosActivosParticipeRenovacion',
+	    url: 'index.php?controller=CargarSimulacionCreditos&action=CreditosActivosParticipeRenovacion',
 	    type: 'POST',
 	    data: {
 	    	   id_participe: id,
@@ -311,7 +323,7 @@ function SeleccionarCreditoRenovacion()
 	$('#cerrar_renovar_credito').click();
 	console.log(id_participe+"===id_participe");
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=GetInfoCreditoRenovar',
+	    url: 'index.php?controller=CargarSimulacionCreditos&action=GetInfoCreditoRenovar',
 	    type: 'POST',
 	    data: {
 	    	   id_participe: id_participe,
@@ -454,7 +466,7 @@ function SimularCredito()
 	//if (interes=="R") interes=9;	
 	var cuota_credito=$("#cuotas_credito").val();
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=SimulacionCredito',
+	    url: 'index.php?controller=CargarSimulacionCreditos&action=SimulacionCredito',
 	    type: 'POST',
 	    data: {
 	    	monto_credito:monto,
@@ -563,30 +575,60 @@ function GetCuotas()
 		
 	}
 	}*/
-	if(monto=="" || parseFloat(monto)<150 || parseFloat(monto)>parseFloat(limite) )
-		{
-		$("#mensaje_monto_credito").text("Monto no valido");
-		$("#mensaje_monto_credito").fadeIn("slow");
-		$("#mensaje_monto_credito").fadeOut("slow");
-		}
-	if(interes=="EME" && parseFloat(monto)>7000)
-		{
-		$("#mensaje_monto_credito").text("Monto no valido");
-		$("#mensaje_monto_credito").fadeIn("slow");
-		$("#mensaje_monto_credito").fadeOut("slow");
-		}
+	
 	if(interes=="")
 	{
-	$("#mensaje_tipo_credito").text("Escoja un tipo");
+	$("#mensaje_tipo_credito").text("Seleccione un tipo de Crédito");
 	$("#mensaje_tipo_credito").fadeIn("slow");
-	$("#mensaje_tipo_credito").fadeOut("slow");
-	}
+	
+    return false;
+    }
+	else 
+	{
+		$("#mensaje_tipo_credito").fadeOut("slow"); //Muestra mensaje de error
+        
+	} 
+	
 	if(sueldo_participe=="")
 	{
-	$("#mensaje_sueldo_participe").text("Ingrese monto");
+	$("#mensaje_sueldo_participe").text("Ingrese su capacidad de Pago");
 	$("#mensaje_sueldo_participe").fadeIn("slow");
-	$("#mensaje_sueldo_participe").fadeOut("slow");
+	   return false;
+    }
+	else 
+	{
+		$("#mensaje_sueldo_participe").fadeOut("slow"); //Muestra mensaje de error
+        
 	}
+	
+	
+	if(monto=="" || parseFloat(monto)<150 || parseFloat(monto)>parseFloat(limite) )
+	{
+	$("#mensaje_monto_credito").text("El Monto del Crédito no es Válido");
+	$("#mensaje_monto_credito").fadeIn("slow");
+	   return false;
+    }
+	else 
+	{
+		$("#mensaje_monto_credito").fadeOut("slow"); //Muestra mensaje de error
+        
+	} 
+if(interes=="EME" && parseFloat(monto)>7000)
+	{
+	$("#mensaje_monto_credito").text("El Monto del Crédito no es Válido");
+	$("#mensaje_monto_credito").fadeIn("slow");
+	   return false;
+    }
+	else 
+	{
+		$("#mensaje_monto_credito").fadeOut("slow"); //Muestra mensaje de error
+        
+	}
+	
+
+	
+	
+	
 	if(garante_seleccionado)
 		{
 		var sueldo_garante=$("#sueldo_garante").val();
@@ -595,9 +637,14 @@ function GetCuotas()
 		if(sueldo_garante=="")
 		{
 		garante_pago=false;	
-		$("#mensaje_sueldo_garante").text("Ingrese monto");
+		$("#mensaje_sueldo_garante").text("Ingrese la Capacidad de Pago del Garante");
 		$("#mensaje_sueldo_garante").fadeIn("slow");
-		$("#mensaje_sueldo_garante").fadeOut("slow");
+		   return false;
+	    }
+		else 
+		{
+			$("#mensaje_monto_credito").fadeOut("slow"); //Muestra mensaje de error
+	        
 		}
 		}
 	if(monto!="" && parseFloat(monto)>150 && parseFloat(monto)<=parseFloat(limite) && interes!="" && garante_pago && sueldo_participe!="")
@@ -619,10 +666,18 @@ function GetCuotas()
 				}
 			else
 				{
+				swal({
+					  title: "Simulación de Crédito",
+					  text: "Cargando tabla de amortización",
+					  icon: "view/images/capremci_load.gif",
+					  buttons: false,
+					  closeModal: false,
+					  allowOutsideClick: false
+					});
 				if (!garante_seleccionado)
 					{
 					$.ajax({
-					    url: 'index.php?controller=SimulacionCreditos&action=GetCuotas',
+					    url: 'index.php?controller=CargarSimulacionCreditos&action=GetCuotas1',
 					    type: 'POST',
 					    data: {
 					    	monto_credito:monto,
@@ -633,18 +688,12 @@ function GetCuotas()
 					    },
 					})
 					.done(function(x) {
+						console.log(x);
 						x=JSON.parse(x);
 						
 						$("#select_cuotas").html(x[1]);
 						$("#monto_credito").val(x[0]);
-						swal({
-							  title: "Simulación de Crédito",
-							  text: "Cargando tabla de amortización",
-							  icon: "view/images/capremci_load.gif",
-							  buttons: false,
-							  closeModal: false,
-							  allowOutsideClick: false
-							});
+						
 						SimularCredito();
 						
 						
@@ -656,7 +705,7 @@ function GetCuotas()
 				else
 					{
 					$.ajax({
-					    url: 'index.php?controller=SimulacionCreditos&action=GetCuotasGarante',
+					    url: 'index.php?controller=CargarSimulacionCreditos&action=GetCuotasGarante1',
 					    type: 'POST',
 					    data: {
 					    	monto_credito:monto,
@@ -683,14 +732,7 @@ function GetCuotas()
 							capacidad_pago_garante_suficiente=true;
 							
 							}
-						swal({
-							  title: "Simulación de Crédito",
-							  text: "Cargando tabla de amortización",
-							  icon: "view/images/capremci_load.gif",
-							  buttons: false,
-							  closeModal: false,
-							  allowOutsideClick: false
-							});
+						
 						SimularCredito();
 						
 						
@@ -707,6 +749,8 @@ function GetCuotas()
 			}
 		
 		}
+	
+	
 	
 }
 
@@ -835,7 +879,7 @@ function EnviarCapacidadPagoGarante()
 	'<div id="mensaje_sueldo_garante" class="errores"></div>'+
 	'<div class="input-group">'+
 	'<input type=number step=1 class="form-control" id="sueldo_garante" name="sueldo_garante" style="background-color: #FFFFF;" readonly>'
-	 +'<span class="input-group-btn">'      			
+	 +'<span class="input-group-btn">'
      +'<button type="button" class="btn bg-olive" id="nueva_capacidad_pago" name="nueva_capacidad_pago" onclick="AnalisisCreditoGarante()">'
      +'<i class="glyphicon glyphicon-refresh"></i>'
      +'</button>'
@@ -867,7 +911,7 @@ function AnalisisCreditoParticipe()
 	
 	var ciparticipe=$('#cedula_participe').val();
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=cuotaParticipe',
+	    url: 'index.php?controller=CargarSimulacionCreditos&action=cuotaParticipe1',
 	    type: 'POST',
 	    data: {
 	    	cedula_participe:ciparticipe,
@@ -924,7 +968,7 @@ function AnalisisCreditoParticipe1()
 	console.log(tipo_credito);
 	
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=cuotaParticipe1',
+	    url: 'index.php?controller=CargarSimulacionCreditos&action=cuotaParticipe1',
 	    type: 'POST',
 	    data: {
 	    	tipo_credito:tipo_credito
@@ -980,7 +1024,7 @@ function AnalisisCreditoGarante()
 		
 	var ciparticipe=$('#cedula_participe').val();
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=cuotaGarante',
+	    url: 'index.php?controller=CargarSimulacionCreditos&action=cuotaGarante',
 	    type: 'POST',
 	    data: {
 	    	cedula_participe:ci_garante
@@ -1012,7 +1056,7 @@ function InfoSolicitud(cedula,id_solicitud)
 	SimulacionCredito();
 	solicitud=id_solicitud;
 	$.ajax({
-	    url: 'index.php?controller=BuscarParticipes&action=InfoSolicitud',
+	    url: 'index.php?controller=CargarParticipes&action=InfoSolicitud',
 	    type: 'POST',
 	    data: {
 	    	id_solicitud:id_solicitud
@@ -1034,6 +1078,8 @@ function BuscarParticipe()
 		    url: 'index.php?controller=CargarParticipes&action=BuscarParticipe',
 		    type: 'POST',
 		    data: {
+		    	
+		    	cedula: $("#cedula").val()
 		    },
 		})
 		.done(function(x) {
@@ -1072,7 +1118,7 @@ function BuscarGarante()
 	    else
 	    	{
 	    	$.ajax({
-			    url: 'index.php?controller=SimulacionCreditos&action=BuscarGarante',
+			    url: 'index.php?controller=CargarSimulacionCreditos&action=BuscarGarante',
 			    type: 'POST',
 			    data: {
 			    	   cedula_garante: ciparticipe
@@ -1123,7 +1169,7 @@ function BuscarGarante()
 							var pago_garante='<div class="col-xs-6 col-md-3 col-lg-3 text-center">'+
 							'<div class="form-group">'+
 					    		'<label for="monto_credito" class="control-label">Capacidad de pago Garante:</label>'+
-					    		'<button align="center" class="btn bg-olive" title="Análisis crédito"  onclick="AnalisisCreditoGarante()"><i class="glyphicon glyphicon-new-window"></i></button>'+
+					    		'<button type="button" class="btn btn-success" onclick="AnalisisCreditoGarante()"><i class="glyphicon glyphicon-pencil"></i> Capacidad Pago del Garante</button>'+
 					  			'<!--<input type=number step=1 class="form-control" id="sueldo_participe" name="sueldo_participe" style="background-color: #FFFFF;">  -->'+
 					  			'<div id="mensaje_sueldo_garante" class="errores"></div></div></div>';
 							
@@ -1165,7 +1211,7 @@ function BuscarGarante()
 function AportesParticipe(id, page)
 {
 	$.ajax({
-	    url: 'index.php?controller=BuscarParticipes&action=AportesParticipe',
+	    url: 'index.php?controller=CargarParticipes&action=AportesParticipe',
 	    type: 'POST',
 	    data: {
 	    	   id_participe: id,
@@ -1185,7 +1231,7 @@ function AportesParticipe(id, page)
 function CreditosActivosParticipe(id, page)
 {
 	$.ajax({
-	    url: 'index.php?controller=BuscarParticipes&action=CreditosActivosParticipe',
+	    url: 'index.php?controller=CargarParticipes&action=CreditosActivosParticipe',
 	    type: 'POST',
 	    data: {
 	    	   id_participe: id,
@@ -1211,7 +1257,7 @@ function ConfirmarCodigo()
 	var ciparticipe=$('#cedula_participe').val();
 	var nombre_participe=$("#nombre_participe_credito").html();
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=genera_codigo',
+	    url: 'index.php?controller=CargarSimulacionCreditos&action=genera_codigo',
 	    type: 'POST',
 	    data: {
 	    	tipo_credito:interes
@@ -1325,7 +1371,7 @@ function SubirInformacionCredito()  //proceso para los registros del credito
 	if (!renovacion_credito)
 		{
 		$.ajax({
-		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionCredito',
+		    url: 'index.php?controller=CargarSimulacionCreditos&action=SubirInformacionCredito',
 		    type: 'POST',
 		    data: {
 		    	monto_credito: monto,
@@ -1371,7 +1417,7 @@ function SubirInformacionCredito()  //proceso para los registros del credito
 	else
 		{
 		$.ajax({
-		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionRenovacionCredito',
+		    url: 'index.php?controller=CargarSimulacionCreditos&action=SubirInformacionRenovacionCredito',
 		    type: 'POST',
 		    data: {
 		    	monto_credito: monto,
@@ -1437,341 +1483,73 @@ function RegistrarCredito()
 	 }
 }
 
+function GenerarPdf ()
+{
+	var monto=$("#monto_credito").val();
+	var interes=$("#tipo_credito").val();
+	if(sin_solicitud) solicitud=0;
+	//if (interes=="R") interes=9;	
+	var cuota_credito=$("#cuotas_credito").val();
+	let parametros ={
+			
+			monto_credito:monto,
+	    	tipo_credito:interes,
+	    	plazo_credito:cuota_credito,
+	    	renovacion_credito:renovacion_credito,
+	    	id_solicitud:solicitud,
+	    	avaluo_bien:avaluo_bien_sin_solicitud
+			
+	};
+	
+	
+			
+			var form = document.createElement("form");
+		    form.setAttribute("method", "post");
+		    form.setAttribute("action", "index.php?controller=CargarSimulacionCreditos&action=ReporteSimulacionCredito");
+		    form.setAttribute("target", "_blank");   
+		    
+		    for (var i in parametros) {
+		        if (parametros.hasOwnProperty(i)) {
+		            var input = document.createElement('input');
+		            input.type = 'hidden';
+		            input.name = i;
+		            input.value = parametros[i];
+		            form.appendChild(input);
+		        }
+		    }
+		    
+		    document.body.appendChild(form); 
+		    form.submit();    
+		    document.body.removeChild(form);
+		
+		    swal("Tabla cargada", {
+			      icon: "success",
+			      buttons: false,
+			      timer: 1000
+			    });
+	
+}
 
-$(document).ready(function () {
-    //Initialize tooltips
-    $('.nav-tabs > li a[title]').tooltip();
-    
-    //Wizard
-    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
 
-        var $target = $(e.target);
-    
-        if ($target.parent().hasClass('disabled')) {
-            return false;
-        }
-    });
-
-    $(".next-step").click(function (e) {
-
-        var $active = $('.wizard .nav-tabs li.active');
-        $active.next().removeClass('disabled');
-        nextTab($active);
-
-    });
-    $(".prev-step").click(function (e) {
-
-        var $active = $('.wizard .nav-tabs li.active');
-        prevTab($active);
-
-    });
+$( "#tipo_creditos" ).on("focus","#tipo_credito",function() {
+	  $("#mensaje_tipo_credito").fadeOut("slow");
 });
 
-function nextTab(elem) {
-    $(elem).next().find('a[data-toggle="tab"]').click();
-}
-function prevTab(elem) {
-    $(elem).prev().find('a[data-toggle="tab"]').click();
-}
-
-function SimulacionCreditosPaso1()
-{
-	$("#myModalSimulacionPasos").modal();
-	var informacion="<h3>PASO 1</h3>" +
-	"<h3>Seleccione el tipo de crédito al que desea acceder</h3>" +
-	"<div class=\"row\">"+
-	"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-	"</div>"+
-	"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-	"<div id=\"tipo_creditos\"></div>"+
-	"</div>"+
-	"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-	"</div>"+
-	"</div>"+
-	"<div class=\"row\">"+
-	 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
-	'<div class="form-group">'+
-      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso2()">SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
-    '</div>'+
- '</div>'+
-	"</div>"
-	;
-	$('#info_paso').html(informacion);	
-	sin_solicitud=true;
-	GetTipoCreditos1();
-	
-	
-	
-	
-}
-
-function SimulacionCreditosPaso2()
-{
-	if (!($('#tipo_credito').val()===undefined))
-		{tipo_credito=$('#tipo_credito').val();}
-	
-	if (tipo_credito=="")
-		{
-		swal({
-	  		  title: "Advertencia!",
-	  		  text: "Escoja el tipo de crédito",
-	  		  icon: "warning",
-	  		  button: "Aceptar",
-	  		});
-		
-		}
-	else
-	{
-		switch (tipo_credito){
-		case "EME":		
-			
-			
-			
-			
-			
-		var informacion="<h3>PASO 2</h3>" +
-		"<h3>Ingrese su capacidad de pago</h3>" +
-		"<div class=\"row\">"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" text-center>"+
-		'<div id="capacidad_de_pago_participe">'+
-		'<div class="form-group">'+
-		'<label for="monto_credito" class="control-label">Capacidad de pago Participe:</label>'+
-		'<button align="center" class="btn bg-olive" title="Análisis crédito"  onclick="AnalisisCreditoParticipe1()"><i class="glyphicon glyphicon-new-window"></i></button>'+
-			'<div id="mensaje_sueldo_participe" class="errores"></div></div></div>'+
-			'</div>'+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"</div>"+
-		"<div class=\"row\">"+
-		 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
-		'<div class="form-group">'+
-		'<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso1()"><i class="glyphicon glyphicon-chevron-left"></i> ANTERIOR</button>'+
-	      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso3EME()"> SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
-	    '</div>'+
-	 '</div>'+
-		"</div>"
-		;
-		$('#info_paso').html(informacion);	
-		break;
-		}
-
-		
-		switch (tipo_credito){
-		case "PH":		
-			
-		var informacion="<h3>PASO 2</h3>" +
-		"<h3>Ingrese su capacidad de pago</h3>" +
-		"<div class=\"row\">"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" text-center>"+
-		'<div id="capacidad_de_pago_participe">'+
-		'<div class="form-group">'+
-		"<label for=\"cedula_garante\" class=\"control-label\">Modalidad:</label>" +
-		"<select name=\"tipo_credito_hipotecario\" id=\"tipo_credito_hipotecario\"  class=\"form-control\" onchange=\"ModalidadCreditoHP()\">"+
-		"<option value=\"\" selected=\"selected\">--Seleccione--</option>"+
-		"<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
-		"<option value=\"2\" >MEJORAS Y/O REPAROS</option>"+
-		"<div id=\"mensaje_tipo_hipotecario\" class=\"errores\"></div>"+
-		
-		
-			'</div>'+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"</div>"+
-		"<div class=\"row\">"+
-		 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
-		'<div class="form-group">'+
-		'<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso1()"><i class="glyphicon glyphicon-chevron-left"></i> ANTERIOR</button>'+
-	      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso3PH()"> SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
-	    '</div>'+
-	 '</div>'+
-		"</div>"
-		;
-		$('#info_paso').html(informacion);	
-		break;
-		}
-		
-		
-		switch (tipo_credito){
-		case "ORD":		
-			
-		var informacion="<h3>PASO 2</h3>" +
-		"<h3>Ingrese su capacidad de pago</h3>" +
-		"<div class=\"row\">"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" text-center>"+
-		'<div id="capacidad_de_pago_participe">'+
-		'<div class="form-group">'+
-		'<label for="monto_credito" class="control-label">Capacidad de pago Participe:</label>'+
-		'<button align="center" class="btn bg-olive" title="Análisis crédito"  onclick="AnalisisCreditoParticipe1()"><i class="glyphicon glyphicon-new-window"></i></button>'+
-			'<div id="mensaje_sueldo_participe" class="errores"></div></div></div>'+
-			'</div>'+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"</div>"+
-		"<div class=\"row\">"+
-		 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
-		'<div class="form-group">'+
-		'<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso1()"><i class="glyphicon glyphicon-chevron-left"></i> ANTERIOR</button>'+
-	      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso3ORD()"> SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
-	    '</div>'+
-	 '</div>'+
-		"</div>"
-		;
-		$('#info_paso').html(informacion);	
-		break;
-		}
-		
-		
-		
-		
-	}
-	
-}
-
-function SimulacionCreditosPaso3EME()
-{
-	var sueldo_participe=$("#sueldo_participe").val();
-	if(sueldo_participe===undefined) sueldo_participe="";
-	if(sueldo_participe=="")
-		{
-		swal({
-	  		  title: "Advertencia!",
-	  		  text: "Ingrese la capacidad de pago",
-	  		  icon: "warning",
-	  		  button: "Aceptar",
-	  		});
-		}
-	else
-		{
-		var informacion="<h3>PASO 3</h3>" +
-		"<h3>Ingrese el monto del crédito</h3>" +
-		"<div class=\"row\">"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" text-center>"+
-			'<div class="form-group">'+
-			'<label for="monto_credito" class="control-label">Monto Crédito:</label>'+
-				'<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">'+
-	        '<div id="mensaje_monto_credito" class="errores"></div>'+
-	 	'</div>'+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"</div>"+
-		"<div class=\"row\">"+
-		 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
-		'<div class="form-group">'+
-		'<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso2()"><i class="glyphicon glyphicon-chevron-left"></i> ANTERIOR</button>'+
-	      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas1"> SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
-	    '</div>'+
-	 '</div>'+
-		"</div>"
-		;
-		$('#info_paso').html(informacion);	
-		}
-	
-	
-}
+$( "#sueldo_participe" ).on("focus","#monto_credito",function() {
+	  $("#mensaje_sueldo_participe").fadeOut("slow");
+});
 
 
-function SimulacionCreditosPaso3PH()
-{
-	var sueldo_participe=$("#sueldo_participe").val();
-	if(sueldo_participe===undefined) sueldo_participe="";
-	if(sueldo_participe=="")
-		{
-		swal({
-	  		  title: "Advertencia!",
-	  		  text: "Ingrese la capacidad de pago",
-	  		  icon: "warning",
-	  		  button: "Aceptar",
-	  		});
-		}
-	else
-		{
-		var informacion="<h3>PASO 3</h3>" +
-		"<h3>Ingrese el monto del crédito</h3>" +
-		"<div class=\"row\">"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" text-center>"+
-			'<div class="form-group">'+
-			'<label for="monto_credito" class="control-label">Monto Crédito:</label>'+
-				'<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">'+
-	        '<div id="mensaje_monto_credito" class="errores"></div>'+
-	 	'</div>'+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"</div>"+
-		"<div class=\"row\">"+
-		 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
-		'<div class="form-group">'+
-		'<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso2()"><i class="glyphicon glyphicon-chevron-left"></i> ANTERIOR</button>'+
-	      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas1"> SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
-	    '</div>'+
-	 '</div>'+
-		"</div>"
-		;
-		$('#info_paso').html(informacion);	
-		}
-	
-	
-}
+$( "#monto_del_credito" ).on("focus","#monto_credito",function() {
+	  $("#mensaje_monto_credito").fadeOut("slow");
+});
 
 
-function SimulacionCreditosPaso3ORD()
-{
-	var sueldo_participe=$("#sueldo_participe").val();
-	if(sueldo_participe===undefined) sueldo_participe="";
-	if(sueldo_participe=="")
-		{
-		swal({
-	  		  title: "Advertencia!",
-	  		  text: "Ingrese la capacidad de pago",
-	  		  icon: "warning",
-	  		  button: "Aceptar",
-	  		});
-		}
-	else
-		{
-		var informacion="<h3>PASO 3</h3>" +
-		"<h3>Ingrese el monto del crédito</h3>" +
-		"<div class=\"row\">"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" text-center>"+
-			'<div class="form-group">'+
-			'<label for="monto_credito" class="control-label">Monto Crédito:</label>'+
-				'<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">'+
-	        '<div id="mensaje_monto_credito" class="errores"></div>'+
-	 	'</div>'+
-		"</div>"+
-		"<div class=\"col-xs-4 col-md-4 col-md-4 \" style=\"margin-top:15px;  text-align: center; \">"+
-		"</div>"+
-		"</div>"+
-		"<div class=\"row\">"+
-		 '<div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">'+
-		'<div class="form-group">'+
-		'<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="SimulacionCreditosPaso2()"><i class="glyphicon glyphicon-chevron-left"></i> ANTERIOR</button>'+
-	      '<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas1"> SIGUIENTE <i class="glyphicon glyphicon-chevron-right"></i></button>'+
-	    '</div>'+
-	 '</div>'+
-		"</div>"
-		;
-		$('#info_paso').html(informacion);	
-		}
-	
-	
-}
+$( "#capacidad_pago_garante" ).on("focus","#cedula_garante",function() {
+	  $("#mensaje_cedula_garante").fadeOut("slow");
+});
+
+
 
 
 

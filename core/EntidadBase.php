@@ -26,6 +26,19 @@ class EntidadBase{
     }
     
     
+    public function getCondiciones_Grupo_Having($columnas ,$tablas , $where, $grupo, $having){
+        
+        $query=pg_query($this->con, "SELECT $columnas FROM $tablas WHERE $where GROUP BY $grupo HAVING $having");
+        $resultSet = array();
+        while ($row = pg_fetch_object($query)) {
+            $resultSet[]=$row;
+        }
+        
+        return $resultSet;
+    }
+    
+    
+    
     public function getConetar(){
         return $this->conectar;
     }

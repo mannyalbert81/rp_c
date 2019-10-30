@@ -65,7 +65,7 @@ class VacacionesEmpleadosController extends ControladorBase{
         $empleado= new EmpleadosModel();
         $tablas="public.empleados";
         $cedula = $_SESSION['cedula_usuarios'];
-        $where = "empleados.numero_cedula_empleados =".$cedula;
+        $where = "empleados.numero_cedula_empleados ='$cedula'";
         $id = "empleados.id_empleados";
         $result = $empleado->getCondiciones("*", $tablas, $where, $id);
         $id_empleado = $result[0]->id_empleados;

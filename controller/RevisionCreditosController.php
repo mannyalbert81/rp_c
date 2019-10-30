@@ -18,7 +18,7 @@ class RevisionCreditosController extends ControladorBase{
         $search=$_POST['search'];
         if ($id_rol==58)
         {
-        $columnas="core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
+        $columnas=" core_creditos.id_creditos, core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
                     core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos,
                     core_tipo_creditos.nombre_tipo_creditos, oficina.nombre_oficina";
         $tablas="core_creditos INNER JOIN core_estado_creditos
@@ -107,8 +107,8 @@ class RevisionCreditosController extends ControladorBase{
                 $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_creditos.'</td>';
                 $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
                 $html.='<td style="font-size: 14px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$id_solicitud.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-file"></i></a></span></td>';
-                $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="AgregarReporte('.$res->numero_creditos.')"><i class="glyphicon glyphicon-plus"></i></button></span></td>';
-                $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="AgregarReporte('.$res->id_creditos.')"><i class="glyphicon glyphicon-plus"></i></button></span></td>';
+                $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                 }
                 $html.='</tr>';
          
@@ -377,8 +377,8 @@ class RevisionCreditosController extends ControladorBase{
          $id="id_estado_creditos_trabajados_cabeza";
          $estado_reporte=$creditos->getCondiciones($columnas, $tablas, $where, $id);
          $estado_reporte=$estado_reporte[0]->nombre_estado;
-            $columnas="core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
-                    core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos,
+            $columnas="core_creditos.id_creditos,core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
+                    core_creditos.monto_otorgado_creditos, core_creditos.monto_neto_entregado_creditos, core_creditos.plazo_creditos,
                     core_tipo_creditos.nombre_tipo_creditos, oficina.nombre_oficina, core_creditos_trabajados_detalle.observacion_detalle_creditos_trabajados,
                     core_creditos.id_ccomprobantes";
             $tablas="core_creditos_trabajados_detalle INNER JOIN core_creditos
@@ -423,6 +423,7 @@ class RevisionCreditosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 15px;">Apellidos</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Monto</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Monto a Recibir</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Plazo</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Tipo</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Ciudad</th>';
@@ -452,6 +453,8 @@ class RevisionCreditosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->nombre_participes.'</td>';
                     $monto=number_format((float)$res->monto_otorgado_creditos,2,".",",");
                     $html.='<td style="font-size: 14px;">'.$monto.'</td>';
+                    $monto_a_recibir=number_format((float)$res->monto_neto_entregado_creditos,2,".",",");
+                    $html.='<td style="font-size: 14px;">'.$monto_a_recibir.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->plazo_creditos.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_creditos.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
@@ -460,26 +463,26 @@ class RevisionCreditosController extends ControladorBase{
                     
                     if ($resultRol=="Jefe de crédito y prestaciones" && $estado_reporte=="ABIERTO")
                     {
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Quitar('.$id_reporte.','.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Quitar('.$id_reporte.','.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                     }
                     if ($resultRol=="Jefe de recaudaciones" && $estado_reporte=="APROBADO CREDITOS")
                     {
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                     }
                     if ($resultRol=="Contador / Jefe de RR.HH" && $estado_reporte=="APROBADO RECAUDACIONES")
                     {
                         
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" title="Ver Comprobantes" onclick="MostrarComprobantes('.$res->id_ccomprobantes.')"><i class="glyphicon glyphicon-paste"></i></button></span></td>';
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                       
                     }
                     if ($resultRol=="Gerente" && $estado_reporte=="APROBADO CONTADOR")
                     {
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                     }
                     if ($resultRol=="Jefe de tesorería" && $estado_reporte=="APROBADO GERENTE")
                     {
-                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->numero_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                        $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                     }
                    
                 $html.='</tr>';
@@ -816,11 +819,7 @@ class RevisionCreditosController extends ControladorBase{
         return ob_get_clean();
     }
     
-    public function UpdateCuentasParticipes()
-    {
-        
-    }
-    
+       
     public function AprobarReporteCredito()
     {
         session_start();
@@ -859,6 +858,7 @@ class RevisionCreditosController extends ControladorBase{
             break;
             
             }
+            
             
         }
         

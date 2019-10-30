@@ -1,3 +1,4 @@
+
 var id_participe;
 
 
@@ -93,9 +94,12 @@ function BuscarParticipe()
 			console.log(y);
 			$('#participe_encontrado').html(y[0]);
 		     id_participe=y[1];
-			AportesParticipe(id_participe, 1)
-			AportesParticipePatronal(id_participe, 1)
-			CreditosActivosParticipe(id_participe, 1)
+		    $("#link_reporte").data("participe",id_participe);
+		    console.log("valor de id -->"+id_participe);
+			AportesParticipe(1),
+			CreditosActivosParticipe(id_participe,1)
+			cargaTipoPrestaciones();
+
 			
 		})
 		.fail(function() {
@@ -104,50 +108,85 @@ function BuscarParticipe()
 		}
 }
 
-function AportesParticipe(id, page)
-{
+function AportesParticipe(){
+	
+	
+	
 	$.ajax({
-	    url: 'index.php?controller=BuscarParticipesCesantes&action=AportesParticipe',
-	    type: 'POST',
-	    data: {
-	    	   id_participe: id,
-	    	   page: page
-	    },
-	})
-	.done(function(x) {
-		$('#aportes_participe').html(x);
+		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+		url:"index.php?controller=BuscarParticipesCesantes&action=AportesParticipe",
+		type:"POST",
+		data:{action:'ajax',id_participe:id_participe}
+	}).done(function(datos){		
 		
+		$("#aportes_participe_registrados").html(datos)		
+		
+	}).fail(function(xhr,status,error){
+		
+		var err = xhr.responseText
+		console.log(err);
+		
+	}).always(function(){
+		
+		$("#divLoaderPage").removeClass("loader")
 		
 	})
-	.fail(function() {
-	    console.log("error");
-	});
+	
+}
+
+function reportePrint(ObjetoLink){
+	var $enlace = $(ObjetoLink);
+	var id_participe = $enlace.data("participe");
+	window.open("index.php?controller=BuscarParticipesCesantes&action=print&id_participes="+id_participe,"_blank");
 }
 
 
-function AportesParticipePatronal(id, page)
-{
+function cargaTipoPrestaciones(){
+	
+	let $ddlTipoPrestaciones = $("#id_tipo_prestaciones");
+	
 	$.ajax({
-	    url: 'index.php?controller=BuscarParticipesCesantes&action=AportesParticipePatronal',
-	    type: 'POST',
-	    data: {
-	    	   id_participe: id,
-	    	   page: page
-	    },
-	})
-	.done(function(x) {
-		$('#aportes_participe_patronal').html(x);
+		beforeSend:function(){},
+		url:"index.php?controller=BuscarParticipesCesantes&action=cargaTipoPrestaciones",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
 		
 		
+	
+		
+		$ddlTipoPrestaciones.empty();
+		$ddlTipoPrestaciones.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			
+			
+			$ddlTipoPrestaciones.append("<option value=' "+value.id_tipo_prestaciones +"' >" + value.nombre_tipo_prestaciones  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlTipoPrestaciones.empty();
 	})
-	.fail(function() {
-	    console.log("error");
-	});
+	
 }
 
+$("#id_tipo_prestaciones").on("focus",function(){
+	$("#mensaje_id_tipo_prestaciones").text("").fadeOut("");
+})
+
+$("#id_participe").on("keyup",function(){
+	
+	$(this).val($(this).val().toUpperCase());
+})
 
 function CreditosActivosParticipe(id, page)
 {
+	
+	id=2779;
+	
 	$.ajax({
 	    url: 'index.php?controller=BuscarParticipesCesantes&action=CreditosActivosParticipe',
 	    type: 'POST',

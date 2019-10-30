@@ -13,7 +13,7 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    
+
  	<style type="text/css">
  	
  	  .loader {
@@ -184,9 +184,18 @@ span.round-tab:hover {
         left: 35%;
     }
 }
-       
+.no {
+display:none;
+text-align:center;
+}
+.si {
+display:block;
+text-align:center;
+}
  	  
  	</style>
+    
+ 
    <?php include("view/modulos/links_css.php"); ?>
   			        
     </head>
@@ -202,40 +211,27 @@ span.round-tab:hover {
     
       
     
-    <div class="wrapper">
 
-  <header class="main-header">
+
   
-      <?php include("view/modulos/logo.php"); ?>
-      <?php include("view/modulos/head.php"); ?>	
-    
-  </header>
 
-   <aside class="main-sidebar">
-    <section class="sidebar">
-     <?php include("view/modulos/menu_profile.php"); ?>
-      <br>
-   
-    </section>
-  </aside>
 
-  <div class="content-wrapper">
-  
+
   <section class="content-header">
       <h1>
         
         <small><?php echo $fecha; ?></small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Buscar Participes</li>
+        
+        <li class="active">Simulador</li>
       </ol>
     </section>   
 
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Simulador de Crédito</h3>
+          <h3 class="box-title">Simulador de Créditos</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -249,102 +245,16 @@ span.round-tab:hover {
            		</div>
            	</div>
            	
-           	<div class="row">
-		<section>
-        <div class="wizard">
-            <div class="wizard-inner">
-                <div class="connecting-line"></div>
-                <ul class="nav nav-tabs" role="tablist">
-
-                    <li role="presentation" class="active">
-                        <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="Step 1">
-                            <span class="round-tab">
-                                <i class="glyphicon glyphicon-folder-open"></i>
-                            </span>
-                        </a>
-                    </li>
-
-                    <li role="presentation" class="disabled">
-                        <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Step 2">
-                            <span class="round-tab">
-                                <i class="glyphicon glyphicon-pencil"></i>
-                            </span>
-                        </a>
-                    </li>
-                    <li role="presentation" class="disabled">
-                        <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Step 3">
-                            <span class="round-tab">
-                                <i class="glyphicon glyphicon-picture"></i>
-                            </span>
-                        </a>
-                    </li>
-
-                    <li role="presentation" class="disabled">
-                        <a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" title="Complete">
-                            <span class="round-tab">
-                                <i class="glyphicon glyphicon-ok"></i>
-                            </span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <form role="form">
-                <div class="tab-content">
-                    <div class="tab-pane active" role="tabpanel" id="step1">
-                     
-                    <div class="form-group">
-                		<div id="tipo_creditos"></div>
-                        <div id="mensaje_tipo_credito" class="errores"></div>
-                 	</div>
-                    
-                        
-                        
-                        <ul class="list-inline pull-right">
-                            <li><button type="button" class="btn btn-primary next-step">Save and continue</button></li>
-                        </ul>
-                    </div>
-                    <div class="tab-pane" role="tabpanel" id="step2">
-                        <h3>Step 2</h3>
-                        <p>This is step 2</p>
-                        <ul class="list-inline pull-right">
-                            <li><button type="button" class="btn btn-default prev-step">Previous</button></li>
-                            <li><button type="button" class="btn btn-primary next-step">Save and continue</button></li>
-                        </ul>
-                    </div>
-                    <div class="tab-pane" role="tabpanel" id="step3">
-                        <h3>Step 3</h3>
-                        <p>This is step 3</p>
-                        <ul class="list-inline pull-right">
-                            <li><button type="button" class="btn btn-default prev-step">Previous</button></li>
-                            <li><button type="button" class="btn btn-default next-step">Skip</button></li>
-                            <li><button type="button" class="btn btn-primary btn-info-full next-step">Save and continue</button></li>
-                        </ul>
-                    </div>
-                    <div class="tab-pane" role="tabpanel" id="complete">
-                        <h3>Complete</h3>
-                        <p>You have successfully completed all steps.</p>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </form>
-        </div>
-    </section>
-   </div>
-           	
-           	
-           	
-           
           </div>
         </div>
         
-    </div>
+      </div>
     </section>
-   </div>
+   
   
 
 
- <!-- Modal Simulacion Credito -->
+
  
  <div class="modal fade bs-example-modal-lg" id="myModalSimulacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
@@ -364,14 +274,8 @@ span.round-tab:hover {
                         <div id="mensaje_tipo_credito" class="errores"></div>
                  	</div>
              	</div>
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="monto_credito" class="control-label">Monto Crédito:</label>
-              			<input type=number step=10 class="form-control" id="monto_credito" name="monto_credito"">
-                        <div id="mensaje_monto_credito" class="errores"></div>
-                 	</div>
-             	</div>
              	<div id="capacidad_de_pago_participe"></div>
+             	<div id="monto_del_credito"></div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
             			<div id="select_cuotas"></div>
@@ -381,12 +285,11 @@ span.round-tab:hover {
           	
           	 <div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
+          		
              	</div>
+             	<div id="capacidad_pago_garante"></div>
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
              	</div>
-             	
-            			<div id="capacidad_pago_garante"></div>
-                 	
              	<div class="col-xs-6 col-md-3 col-lg-3 ">
              	</div>
           	</div>
@@ -394,9 +297,13 @@ span.round-tab:hover {
           	<div class="row">
              <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
-                  <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas()"><i class="glyphicon glyphicon-expand"></i> SIMULAR</button>
+                <button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas()"><i class="glyphicon glyphicon-expand"></i> SIMULAR</button>
+               
                 </div>
              </div>	    
+             
+             
+            	
             </div>
             <div id="tabla_amortizacion"></div>
 				</div>
@@ -406,11 +313,47 @@ span.round-tab:hover {
 	</div>
 </div>
 
+<!-- Modal Simulacion Credito Pasos -->
+ 
+ <!-- <div class="modal fade bs-example-modal-lg" id="myModalSimulacionPasos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+	    	<div class="modal-header bg-primary">
+	    		<button type="button" id="cerrar_simulacion" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Simulacion de Crédito</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group" align="center">			 
+          	 <div class="row">
+          		<div id="info_paso"></div>
+          	</div>
+          	</div>
+			</div>			
+		</div>
+	</div>
+</div>-->
+
  
 
 <!-- Modal Inserta Credito -->
  
- <div class="modal fade bs-example" id="myModalInsertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 
+ 
+  
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<div class="modal fade bs-example" id="myModalInsertar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 	    	<div class="modal-header bg-primary">
@@ -458,7 +401,7 @@ span.round-tab:hover {
                         </tr>
                         <tr>
                         <th>CUOTA VIGENTE:</th>
-                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="cuota_vigente" name="cuota_vigente" onkeyup="SumaIngresos()"></td>
+                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="cuota_vigente" name="cuota_vigente" readonly></td>
                         </tr>
                         <tr>
                         <th>FONDOS:</th>
@@ -497,7 +440,7 @@ span.round-tab:hover {
 
 <!-- Modal Analisis Credito -->
  
- <div class="modal fade bs-example-modal-lg" id="myModalAvaluo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade bs-example-modal-lg" id="myModalAvaluo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 	    	<div class="modal-header bg-primary">
@@ -550,10 +493,6 @@ span.round-tab:hover {
 
   
  
- 	<?php include("view/modulos/footer.php"); ?>	
-
-   <div class="control-sidebar-bg"></div>
- </div>
     
     <?php include("view/modulos/links_js.php"); ?>
 	
@@ -563,6 +502,6 @@ span.round-tab:hover {
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CargarParticipes.js?1.1"></script> 
+   <script src="view/Credito/js/CargarParticipes.js?1.26"></script> 
    </body>
-</html>   
+</html>    

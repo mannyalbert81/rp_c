@@ -111,3 +111,7 @@ table tr.grupocuenta td  {
     text-transform: uppercase;   
     
 	}
+	
+td .1{
+	 width: 300px;
+	}

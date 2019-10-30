@@ -11,7 +11,7 @@
      <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
     
- 	<style type="text/css">
+  	<style type="text/css">
  	  .loader {
         position: fixed;
         left: 0px;
@@ -96,6 +96,8 @@
               <i class="fa fa-minus"></i></button>
             
           </div>
+        <form id="frm_desafiliacion" class="col-lg-12 col-md-12 col-xs-12">
+          		
           <div class="box-body">
           	<div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
@@ -123,30 +125,61 @@
            		<div id="participe_encontrado" ></div>
            		</div>
            	</div>
-           	<div class="row">
-           		<div class="col-xs-12 col-md-12 col-lg-12 ">
-           		<div id="aportes_participe" ></div>
-           		</div>
-           	</div>
+           	   	<div class="row">
+           	  <div class="col-xs-12 col-md-4 col-md-4 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="id_tipo_prestaciones" class="control-label">Tipo Prestación:</label>
+                          <select  class="form-control" id="id_tipo_prestaciones" name="id_tipo_prestaciones" required>
+                          	<option value="0">--Seleccione--</option>
+                          </select>                         
+                          <div id="mensaje_id_tipo_pestaciones" class="errores"></div>
+                        </div>
+            		  </div>
            	
-           		<div class="row">
-           		<div class="col-xs-12 col-md-12 col-lg-12 ">
-           		<div id="aportes_participe_patronal" ></div>
-           		</div>
-           	</div>
-           	
-           	<div class="row">
+           	   <div class="col-xs-12 col-md-8 col-md-8 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="observacion_prestaciones" class="control-label">Observación:</label>
+                          <input  type="text" class="form-control" id="observacion_prestaciones" name="nombre_estado_marital" value=""  placeholder="" required/>
+                          <input type="hidden" name="id_estado_marital" id="observacion_prestaciones" value="0" />
+                          <div id="divLoaderPage" ></div>                     	
+                                              
+                        </div>
+            		  </div>
+            		  </div>
+            	   	<div class="row">
+           		 
+             	 <div class="box-body">
+    			<div class="pull-right" style="margin-right:15px;">
+					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="AportesParticipe(1)" placeholder="Buscar.."/>
+    			</div>            	
+            	<div id="aportes_participe_registrados" ></div>
+            </div> 
+           	  </div>
+           	  
+           	     	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="creditos_participe" ></div>
            		</div>
            	</div>
+           		  		
+           	
+      <div class="col-xs-12 col-md-12 col-md-12" style="text-align: center; ">
+                 	              <button type="button" id="Generar" name="Generar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
+          	  <a id="link_reporte" onclick="reportePrint(this)" data-participe="0" href="#" class="btn btn-success" style=""><i class=""></i>Reporte</a>
+			</div>
+           	
+           	   </div>
+           	
+           	</form>
+          
           </div>
         </div>
         
     </div>
     </section>
    </div>
-
 
 
   
@@ -164,6 +197,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.40"></script> 
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.84"></script> 
    </body>
 </html>   

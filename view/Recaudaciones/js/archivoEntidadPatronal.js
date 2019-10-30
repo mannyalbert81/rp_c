@@ -1,9 +1,12 @@
+$GLOBAL_id_archivo_recaudaciones = 0;
 $(document).ready(function(){
 	init();
 })
 
 function init(){
-	consultaArchivos();
+	 $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+	consultaArchivosRecaudacion();
+	//consultaArchivos();
 	
 }
 
@@ -28,13 +31,28 @@ function validaTipoArchivo(){
 
 $("#btnGenerar").on("click",function(){
 	
+	var $formulario = $("#frm_recaudacion");
+	if ( $formulario.data('locked') && $formulario.data('locked') != undefined ){
+		console.log("formulario bloaqueado"); return false;
+	}
+	
 	let $entidadPatronal 	= $("#id_entidad_patronal"),
 		$anioRecaudacion 	= $("#anio_recaudacion"),
 		$mesRecaudacion 	= $("#mes_recaudacion"),
 		$formatoRecaudacion	= $("#formato_recaudacion");
 	
+	if($mesRecaudacion.val() == 0 ){
+		$mesRecaudacion.notify("Seleccione Periodo A generar",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
 	if($entidadPatronal.val() == 0 ){
 		$entidadPatronal.notify("Seleccione Entidad Patronal",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	if($formatoRecaudacion.val() == 0 ){
+		$formatoRecaudacion.notify("Seleccione formato aportacion",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	
@@ -45,11 +63,12 @@ $("#btnGenerar").on("click",function(){
 			}   
 	
 	$.ajax({
-		beforeSend:fnBeforeAction('Estamos procesado la informacion'),
+		beforeSend:function(){ $formulario.data('locked', true); fnBeforeAction('Estamos procesado la informacion') },
 		url:"index.php?controller=Recaudacion&action=GenerarRecaudacion",
 		type:"POST",
 		dataType:"json",
-		data:parametros
+		data:parametros,
+		complete:function(xhr,status){ $formulario.data('locked', false); }
 	}).done(function(x){
 		console.log(x)
 		if(x.respuesta == 1){
@@ -60,8 +79,13 @@ $("#btnGenerar").on("click",function(){
 				 icon: "success",
 				 timer: 2000,
 				 button: false,
-				});			
-			buscarDatos();
+				});	
+			
+			let id_archivo = (x.id_archivo != undefined && x.id_archivo > 0 ) ? x.id_archivo : 0;
+			$GLOBAL_id_archivo_recaudaciones=id_archivo;
+			buscarDatosInsertados(1);
+			//buscarDatos();
+			consultaArchivosRecaudacion(1);
 				
 		}
 		if(x.respuesta == 2){
@@ -81,6 +105,25 @@ $("#btnGenerar").on("click",function(){
 				text: "No hay datos para generar el archivo",
 				icon: "info"
 			   });
+		}
+		if( x.mensajeAportes != undefined &&  x.mensajeAportes != "" ){
+			
+			swal.close();
+			let modalAportes = $("#mod_participes_sin_aportes");			
+			let arrayAportesIncompletos = x.dataAportes;
+			let cantidadRegistros		= arrayAportesIncompletos.length;
+			let tblParticipesAportes = $("#tbl_participes_sin_aportacion");
+			tblParticipesAportes.find("#catidad_sin_aportes").text(cantidadRegistros);
+			tblParticipesAportes.find("tbody").html("");
+			$.each( arrayAportesIncompletos , function(index, value) {
+				
+				let $filaAportes = "<tr><td>" + (index + 1) +"</td><td>" +value.cedula_participes +"</td><td>" 
+					+value.nombre_participes +"</td><td>" +value.apellido_participes +"</td></tr>";
+				tblParticipesAportes.find("tbody").append($filaAportes);	
+	  		});			
+			modalAportes.modal("show");
+			
+			//console.log(arrayAportesIncompletos);
 		}
 		
 		
@@ -103,66 +146,37 @@ $("#btnGenerar").on("click",function(){
 	event.preventDefault();
 })
 
-function buscarDatos(){	
+function buscarDatosInsertados(pagina=1){
 	
-	/* aqui se va a buscar los datos */
+	/* se hace una consulta a la variable global la cual debe estar seteada antes de llamar el metodo */
+	let $id_archivo = $GLOBAL_id_archivo_recaudaciones;
 	
-	let $entidadPatronal	= $("#id_entidad_patronal"),
-	$anioRecaudacion		= $("#anio_recaudacion"),
-	$mesRecaudacion			= $("#mes_recaudacion"),
-	$formatoRecaudacion		= $("#formato_recaudacion"),
-	$busqueda				= $("#txtBuscarDatos");
+	if($id_archivo <= 0){swal({title:"ERROR ARCHIVO",text:"identificador de tabla (datos recaudacion) no encontrado",dangerMode:true}); return false;}
+		
+	let $busqueda				= $("#mod_txtBuscarDatos_insertados"),
+		$modal					= $("#mod_datos_archivo_insertados"),
+		$cantidadRegistros		= $("#mod_cantidad_registros_insertados");
 	
-	let _texto_validar = $formatoRecaudacion.val();
-	
-	switch(_texto_validar) {
-		case '1':
-			buscaAportesParticipes();		  
-		break;
-		case '2':
-		  buscaAportesCreditos();
-		break;
-		case '3':
-			buscaAportesGeneral();
-		break;
-	  default:
-		  console.log('default');
-	}
-	
-	
-}
-
-function buscaAportesParticipes(pagina=1){
-	
-	let $entidadPatronal	= $("#id_entidad_patronal"),
-	$anioRecaudacion		= $("#anio_recaudacion"),
-	$mesRecaudacion			= $("#mes_recaudacion"),
-	$busqueda				= $("#mod_txtBuscarDatos"),
-	$modal					= $("#mod_datos_archivo"),
-	$cantidadRegistros		= $("#mod_cantidad_registros");
-	
-	let $divResultados = $("#mod_div_datos_recaudacion");	
-	$divResultados.html('');	
+	let $divResultados = $("#mod_div_datos_recaudacion_insertados");	
+	$divResultados.html('');
 	
 	var parametros ={
 		page:pagina,		
 		busqueda:$busqueda.val(),
-		id_entidad_patronal:$entidadPatronal.val(),
-		anio_recaudaciones:$anioRecaudacion.val(),
-		mes_recaudaciones:$mesRecaudacion.val()
+		id_archivo_recaudaciones:$id_archivo
 		} 
 	
 	$.ajax({
-		url:"index.php?controller=Recaudacion&action=ConsultaAportes",
+		url:"index.php?controller=Recaudacion&action=ConsultaDatosArchivo",
 		type:"POST",
 		dataType:"json",
-		data:parametros
+		data:parametros,
+		complete:function(xhr,status){ toDataTableInsertados(); }
 	}).done(function(x){
 		console.log(x)
 		$divResultados.html(x.tablaHtml);
 		$cantidadRegistros.text(x.cantidadRegistros);
 		$modal.modal('show');
-		setTimeout(function(){ setStyleTabla("tbl_archivo_recaudaciones");}, 250);
 		
 	}).fail(function(xhr,status,error){
 		var err = xhr.responseText
@@ -181,38 +195,98 @@ function buscaAportesParticipes(pagina=1){
 	
 }
 
-function buscaAportesCreditos(pagina=1){
+function consultaArchivosRecaudacion( pagina=1){	
 	
-	let $entidadPatronal	= $("#id_entidad_patronal"),
-	$anioRecaudacion		= $("#anio_recaudacion"),
-	$mesRecaudacion			= $("#mes_recaudacion"),
-	$busqueda				= $("#mod_txtBuscarDatos"),
-	$modal					= $("#mod_datos_archivo"),
-	$cantidadRegistros		= $("#mod_cantidad_registros");
+	let $divResultados = $("#div_tabla_archivo_txt");
+	$divResultados.html('');
 	
-	let $divResultados = $("#mod_div_datos_recaudacion");	
-	$divResultados.html('');	
+	let $ddlEntidadBuscar = $("#ddl_id_entidad_patronal"), $txtAnioBuscar = $("#txt_anio_buscar"), $ddlmesBuscar = $("#ddl_mes_buscar");
+	let valEntidad,valAnio,valMes;
+	valEntidad = ($ddlEntidadBuscar.val() == 0 || $ddlEntidadBuscar.val() == undefined ) ? 0 : $ddlEntidadBuscar.val();
+	valAnio    = ($txtAnioBuscar.val() == "" || $txtAnioBuscar.val() == undefined ) ? 0 : $txtAnioBuscar.val();
+	valMes     = ($ddlmesBuscar.val() == 0 || $ddlmesBuscar.val() == undefined ) ? 0 : $ddlmesBuscar.val();
 	
-	var parametros ={
-		page:pagina,		
-		busqueda:$busqueda.val(),
-		id_entidad_patronal:$entidadPatronal.val(),
-		anio_recaudaciones:$anioRecaudacion.val(),
-		mes_recaudaciones:$mesRecaudacion.val()
-		} 
+	var parametros ={page:pagina,peticion:'ajax',busqueda:"",id_entidad_patronal:valEntidad,anio_recaudacion:valAnio,mes_recaudacion:valMes}
+	
 	
 	$.ajax({
-		url:"index.php?controller=Recaudacion&action=ConsultaAportesCreditos",
+		url:"index.php?controller=Recaudacion&action=ConsultaArchivoRecaudaciones",
 		type:"POST",
 		dataType:"json",
-		data:parametros
+		data:parametros,
+		complete:function(xhr,status){
+			setStyleTabla("tbl_documentos_recaudaciones");
+		}
 	}).done(function(x){
 		console.log(x)
-		$divResultados.html(x.tablaHtml);
-		$cantidadRegistros.text(x.cantidadRegistros);
-		$modal.modal('show');
-		setTimeout(function(){ setStyleTabla("tbl_archivo_recaudaciones");}, 250);
+		$divResultados.html(x.tablaHtml);	
 		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+	 	if( mensaje !== null ){
+		 var resmsg = mensaje[1];
+		 swal( {
+			 title:"Error",
+			 dangerMode: true,
+			 text: resmsg.replace("|","\n"),
+			 icon: "error"
+			})
+	 	}
+	})
+	
+}
+
+function genArchivoDetallado(linkArchivo){
+	
+	let $link = $(linkArchivo);
+	let parametros;
+	
+	if(parseInt($link.data("idarchivo")) > 0){
+		
+		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo")}
+		
+	}else{ return false; }	
+	
+	$.ajax({
+		url:"index.php?controller=Recaudacion&action=genArchivoDetallado",
+		type:"POST",
+		dataType:"json",
+		data:parametros,
+		complete:function(xhr,status){}
+	}).done(function(x){
+		console.log(x)
+		if(x.mensaje != undefined && x.mensaje == "archivo generado" ){
+			
+			swal( {
+				 title:"ARCHIVO RECAUDACIONES",
+				 dangerMode: false,
+				 text: " Archivo generado ",
+				 icon: "info"
+				})
+			var formParametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),"tipo_archivo_recaudaciones":"detalle"};
+			var form = document.createElement("form");
+		    form.setAttribute("method", "post");
+		    form.setAttribute("action", "index.php?controller=Recaudacion&action=descargarArchivo");
+		    form.setAttribute("target", "_blank");   
+		    
+		    for (var i in formParametros) {
+		        if (formParametros.hasOwnProperty(i)) {
+		            var input = document.createElement('input');
+		            input.type = 'hidden';
+		            input.name = i;
+		            input.value = formParametros[i];
+		            form.appendChild(input);
+		        }
+		    }
+		    
+		    document.body.appendChild(form); 
+		    form.submit();    
+		    document.body.removeChild(form);
+			
+		}
+				
 	}).fail(function(xhr,status,error){
 		var err = xhr.responseText
 		console.log(err)
@@ -227,40 +301,60 @@ function buscaAportesCreditos(pagina=1){
 				})
 		 	}
 	})
+	
+	
 }
 
-function buscaAportesGeneral(pagina=1){
+function genArchivoEntidad(linkArchivo){
 	
-	let $entidadPatronal	= $("#id_entidad_patronal"),
-	$anioRecaudacion		= $("#anio_recaudacion"),
-	$mesRecaudacion			= $("#mes_recaudacion"),
-	$busqueda				= $("#mod_txtBuscarDatos"),
-	$modal					= $("#mod_datos_archivo"),
-	$cantidadRegistros		= $("#mod_cantidad_registros");
+	let $link = $(linkArchivo);
+	let parametros;
 	
-	let $divResultados = $("#mod_div_datos_recaudacion");	
-	$divResultados.html('');	
-	
-	var parametros ={
-		page:pagina,		
-		busqueda:$busqueda.val(),
-		id_entidad_patronal:$entidadPatronal.val(),
-		anio_recaudaciones:$anioRecaudacion.val(),
-		mes_recaudaciones:$mesRecaudacion.val()
-		} 
+	if(parseInt($link.data("idarchivo")) > 0){
+		
+		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo")}
+		
+	}else{ return false; }	
 	
 	$.ajax({
-		url:"index.php?controller=Recaudacion&action=ConsultarAportesGeneral",
+		url:"index.php?controller=Recaudacion&action=genArchivoEntidad",
 		type:"POST",
 		dataType:"json",
-		data:parametros
+		data:parametros,
+		complete:function(xhr,status){}
 	}).done(function(x){
 		console.log(x)
-		$divResultados.html(x.tablaHtml);
-		$cantidadRegistros.text(x.cantidadRegistros);
-		$modal.modal('show');
-		setTimeout(function(){ setStyleTabla("tbl_archivo_recaudaciones");}, 250);
-		
+		if(x.mensaje != undefined && x.mensaje == "archivo generado" ){
+			
+			swal( {
+				 title:"ARCHIVO RECAUDACIONES",
+				 dangerMode: false,
+				 text: " Archivo generado ",
+				 icon: "info"
+				})
+			
+			var formParametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),"tipo_archivo_recaudaciones":"entidad"};
+			var form = document.createElement("form");
+		    form.setAttribute("method", "post");
+		    form.setAttribute("action", "index.php?controller=Recaudacion&action=descargarArchivo");
+		    form.setAttribute("target", "_blank");   
+		    
+		    for (var i in formParametros) {
+		        if (formParametros.hasOwnProperty(i)) {
+		            var input = document.createElement('input');
+		            input.type = 'hidden';
+		            input.name = i;
+		            input.value = formParametros[i];
+		            form.appendChild(input);
+		        }
+		    }
+		    
+		    document.body.appendChild(form); 
+		    form.submit();    
+		    document.body.removeChild(form);
+			
+		}
+				
 	}).fail(function(xhr,status,error){
 		var err = xhr.responseText
 		console.log(err)
@@ -276,8 +370,158 @@ function buscaAportesGeneral(pagina=1){
 		 	}
 	})
 	
+	
 }
 
+function ValidarEdicionGenerados(linkArchivo){
+	
+	let $link = $(linkArchivo);
+	let parametros;
+	
+	if(parseInt($link.data("idarchivo")) > 0){
+		
+		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo")}
+		
+	}else{ return false; }	
+	
+	$.ajax({
+		url:"index.php?controller=Recaudacion&action=validaDatosGenerados",
+		type:"POST",
+		dataType:"json",
+		data:parametros,
+		complete:function(xhr,status){}
+	}).done(function(x){
+		console.log(x)
+		if(x.mensaje != undefined && x.mensaje == "OK" ){
+			
+			$GLOBAL_id_archivo_recaudaciones=$link.data("idarchivo");
+			$("#mod_txtBuscarDatos").val("");
+			mostarGenerados();
+		}
+				
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		 	if( mensaje !== null ){
+			 var resmsg = mensaje[1];
+			 swal( {
+				 title:"Error",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+				})
+		 	}
+	})
+	
+	
+}
+
+function mostarGenerados(pagina=1){	
+	
+	var id_archivo_recaudaciones = $GLOBAL_id_archivo_recaudaciones; //se toma el dato de la variable global la cual de estar seteada antes de empezar funcion 	
+	let $divResultados = $("#mod_div_datos_recaudacion"),
+		$modal				= $("#mod_datos_archivo"),
+		$busqueda			= $("#mod_txtBuscarDatos"),
+		$cantidadRegistros	= $("#mod_cantidad_registros");	
+	$divResultados.html('');
+	
+	console.log("DATOS GLOBAL -->"+id_archivo_recaudaciones);
+	
+	$.ajax({
+		url:"index.php?controller=Recaudacion&action=ConsultaDatosEditar",
+		type:"POST",
+		dataType:"json",
+		data:{"id_archivo_recaudaciones":id_archivo_recaudaciones,"page":pagina,"busqueda":$busqueda.val()},
+		complete:function(xhr,status){ setStyleTabla("tbl_archivo_recaudaciones"); }
+	}).done(function(x){
+		console.log("llego aca fn mostrarGenerados");
+		console.log(x);
+		if(x.tablaHtml != undefined && x.tablaHtml != "" ){
+			$divResultados.html(x.tablaHtml);	
+			$cantidadRegistros.text(x.cantidadRegistros);
+			$modal.modal('show');
+		}		
+				
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+	 	if( mensaje !== null ){
+	 		var resmsg = mensaje[1];
+			swal( {
+				 title:"Error",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+			})
+	 	}
+	})
+	
+	
+}
+
+function eliminarRegistro(linkArchivo){
+	
+	let $link = $(linkArchivo);
+	let parametros;
+	
+	if(parseInt($link.data("idarchivo")) > 0){
+		
+		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo")}
+		
+	}else{ return false; }
+	
+	swal({
+		 title: "Eliminar Registro Seleccionado?", 
+		 text: "los datos relacionados a este registro se perderan", 
+		 type: "warning",		 
+		 closeModal: false,
+		 buttons: [
+		        'No',
+		        'Si,Continuar!'
+		      ],
+	     /*dangerMode: true,*/
+	   }).then((isConfirm) => {
+	          if (isConfirm) {
+	        	  $.ajax({
+			      		url:"index.php?controller=Recaudacion&action=eliminarRegistro",
+			      		type:"POST",
+			      		dataType:"json",
+			      		data:parametros,
+			      		complete:function(xhr,status){}
+			      	}).done(function(x){
+			      		console.log(x)
+			      		if(x.mensaje != undefined && x.mensaje == "OK" ){			      			
+			      			swal({
+			      				 title:"RESPUESTA",
+			      				 text: "Archivo de datos de la Entidad Patronal han sido eliminados",
+			      				 icon: "info"
+			      				})
+			      				consultaArchivosRecaudacion(1);
+			      		}
+			      				
+			      	}).fail(function(xhr,status,error){
+			      		var err = xhr.responseText
+			      		console.log(err)
+			      		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+			      		 	if( mensaje !== null ){
+			      			 var resmsg = mensaje[1];
+			      			 swal( {
+			      				 title:"Error",
+			      				 dangerMode: true,
+			      				 text: resmsg.replace("|","\n"),
+			      				 icon: "error"
+			      				})
+			      		 	}
+			      	});
+	            } else {
+	              swal("Datos no eliminados");
+	            }
+      });
+
+	
+}
 
 function consultaArchivos( pagina=1,search=""){	
 	
@@ -354,18 +598,7 @@ function mostrarModalCambioValor(objJson){
 		$array	= objJson.rsRecaudaciones[0],
 		$tituloModal	= $modal.find('h4.modal-title');
 	
-	/* parametrizar valores a mostrar en Modal*/
-	_formato_archivo	= $array.formato_archivo_recaudaciones
-	
-	switch(_formato_archivo){
-		case 'DESCUENTOS CREDITOS':
-			$tituloModal.text('VALORES CREDITOS A CAMBIAR');
-		break;
-		case 'DESCUENTOS APORTES':
-			$tituloModal.text('VALORES APORTES A CAMBIAR');
-		default:
-			$tituloModal.text('');
-	}
+	$tituloModal.text('VALORES APORTES A CAMBIAR');
 	
 	$modal.find('#mod_cedula_participes').val($array.cedula_participes);
 	$modal.find('#mod_nombres_participes').val($array.nombre_participes);
@@ -407,14 +640,14 @@ $("#btnEditRecaudacion").on("click",function(){
 		dataType:"json",
 		data:parametros
 	}).done(function(x){
-		console.log(x)
+		//console.log(x)
 		$modal.modal('hide');
-		 buscarDatos();
-		 console.log('llego');
+		//console.log('llego');
+		mostarGenerados();	
 		swal( {
-				 title:"ACTUALIZACION VALOR ARCHIVO",
-				 text: x.mensaje,
-				 icon: "info"
+			 title:"ACTUALIZACION VALOR ARCHIVO",
+			 text: x.mensaje,
+			 icon: "info"
 				})
 				
 	}).fail(function(xhr,status,error){
@@ -472,6 +705,7 @@ function DescargaArchivo(){
 	
 
 	$.ajax({
+		beforeSend:fnBeforeAction("Estamos procesando Archivo"),
 		url:"index.php?controller=Recaudacion&action=GeneraArchivo",
 		type:"POST",
 		dataType:"json",
@@ -546,27 +780,70 @@ function fnBeforeAction(mensaje){
       })
 }
 
-$("#btn_reload").on("click",function(){
-	$valorBuscar = $("#txtBuscarhistorial").val();
-	consultaArchivos(1,$valorBuscar);	
-})
 
 function setStyleTabla(ObjTabla){
 	
-	var objetoTabla = $("#"+ObjTabla);
-	
-	objetoTabla.dataTable().fnDestroy();
-	
-	objetoTabla.DataTable({
-		"scrollY": "200px",
-		"scrollX": true,
-		"scrollCollapse": true,
-		"ordering":false,
-		"paging":false,
-		"searching":false,
-		"info":false
-		});
-	$('.dataTables_length').addClass('bs-select');
-		
-	
+	//objetoTabla.dataTable().fnDestroy();
+	if ( ! $.fn.DataTable.isDataTable( "#"+ObjTabla) ) {
+		var objetoTabla = $("#"+ObjTabla);
+		objetoTabla.DataTable({
+			scrollY: '50vh',
+			/*"scrollX": true,*/
+			"scrollCollapse": true,
+			"ordering":false,
+			"paging":false,
+			"searching":false,
+			"info":false
+			});
+	}	
+			
  }
+
+function toDataTableInsertados(){
+	/*verificar el nombre de la tabla a dar formato*/
+	if ( ! $.fn.DataTable.isDataTable( "#tbl_archivo_recaudaciones_insertados" ) ) {
+		var objetoTabla = $("#tbl_archivo_recaudaciones_insertados");
+		objetoTabla.DataTable({
+			scrollY: '50vh',
+			/*"scrollX": true,*/
+			"scrollCollapse": true,
+			"ordering":false,
+			"paging":false,
+			"searching":false,
+			"info":false
+			});
+	}	
+}
+
+function toDataTableInsertados(nombreTabla){
+	/*verificar el nombre de la tabla a dar formato*/
+	var tabla = $("#");
+	if ( ! $.fn.DataTable.isDataTable( "#"+ObjTabla) ) {
+		var objetoTabla = $("#"+ObjTabla);
+		objetoTabla.DataTable({
+			scrollY: '50vh',
+			/*"scrollX": true,*/
+			"scrollCollapse": true,
+			"ordering":false,
+			"paging":false,
+			"searching":false,
+			"info":false
+			});
+	}	
+}
+
+function toDataTableInsertados(){
+	/*verificar el nombre de la tabla a dar formato*/
+	if ( ! $.fn.DataTable.isDataTable( "#tbl_documentos_recaudaciones" ) ) {
+		var objetoTabla = $("#tbl_documentos_recaudaciones");
+		objetoTabla.DataTable({
+			scrollY: '50vh',
+			/*"scrollX": true,*/
+			"scrollCollapse": true,
+			"ordering":false,
+			"paging":false,
+			"searching":false,
+			"info":false
+			});
+	}	
+}

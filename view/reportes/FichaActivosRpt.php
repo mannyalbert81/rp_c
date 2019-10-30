@@ -32,6 +32,15 @@ if(!empty($datos_reporte))
     }
 }
 
+if(!empty($img))
+{
+    
+    foreach ($img as $clave=>$valor) {
+        echo $clave; echo "\n";
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
+
 $footer = file_get_contents('view/reportes/template/pieret.html');
 
 

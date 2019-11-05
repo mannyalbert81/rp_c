@@ -538,13 +538,11 @@ function GetCuotas()
 		{
 		if(renovacion_credito)
 		{
-			$("#monto_disponible").text();
-			 console.log(limite);
+			limite=document.getElementById("monto_disponible").innerHTML;
 		}
 		else
 			{
-			$("#monto_disponible1").text();
-			 console.log(limite);
+			limite=document.getElementById("monto_disponible1").innerHTML;
 			}
 		}
 	
@@ -1095,9 +1093,11 @@ function InfoSolicitud(cedula,id_solicitud)
 	})
 	.done(function(x) {
 		$("#info_solicitud").html(x);
+		console.log("Buscando elemento"); console.log(x);
 	})
 	.fail(function() {
 	    console.log("error");
+	    console.log("Buscando error"); 
 	});
 	
 }
@@ -1571,9 +1571,7 @@ $( "#sueldo_participe" ).on("focus","#monto_credito",function() {
 });
 
 
-$( "#tipo_credito_hipotecario" ).focus(function() {
-	  $("#mensaje_tipo_hipotecario").fadeOut("slow");
-  });
+
 
 /*$( "#tipo_credito_hipotecario" ).on("focus","#tipo_credito_hipotecario",function() {
 	  $("#mensaje_tipo_hipotecario").fadeOut("slow");

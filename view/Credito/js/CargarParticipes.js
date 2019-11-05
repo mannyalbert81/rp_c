@@ -120,7 +120,7 @@ function GetTipoCreditos1()
 
 function SetTipoCreditos()
 {
-console.log("SET TIPO CREDITOS");
+/*console.log("SET TIPO CREDITOS");
 var tipo_credito_solicitud=$("#tipo_credito_solicitud").html();
 tipo_credito_solicitud=tipo_credito_solicitud.split(" : ");
 tipo_credito_solicitud=tipo_credito_solicitud[1];
@@ -135,7 +135,7 @@ case "EMERGENTE":
 case "HIPOTECARIO":
 	$("#tipo_credito").val("PH");
 	break;
-}
+}*/
 
 TipoCredito();
 
@@ -526,8 +526,19 @@ function GetCuotas()
 	monto=$("#monto_credito").val();
 	var interes=$("#tipo_credito").val();
 	
+	
 	var tipo_credito_hipotecario=$("#tipo_credito_hipotecario").val();
 	
+	
+	var total_renovar=$("#total_renovar").text();
+	
+	
+	
+	if(total_renovar=="" || total_renovar===undefined){
+		
+		total_renovar=0;
+		
+	}
 	var limite="";
 	if(interes=="PH")
 		{
@@ -624,6 +635,21 @@ function GetCuotas()
         
 	}
 	
+	
+	
+	if(monto < total_renovar)
+	{
+	$("#mensaje_monto_credito").text("El Monto de Credito no puede ser menor al total del credito a renovar");
+	$("#mensaje_monto_credito").fadeIn("slow");
+	   return false;
+    }
+	else 
+	{
+		$("#mensaje_monto_credito").fadeOut("slow"); //Muestra mensaje de error
+        
+	}
+	
+	
 	/*if(interes=="PH" && sueldo_participe==""){
 		$("#mensaje_sueldo_participe").text("Ingrese su capacidad de Pago");
 		$("#mensaje_sueldo_participe").fadeIn("slow");
@@ -656,7 +682,7 @@ if(interes=="EME" && parseFloat(monto)>7000)
 	
 
 	
-	
+
 	
 	if(garante_seleccionado)
 		{
@@ -676,7 +702,7 @@ if(interes=="EME" && parseFloat(monto)>7000)
 	        
 		}
 		}
-	if(monto!="" && parseFloat(monto)>150 && parseFloat(monto)<=parseFloat(limite) && interes!="" && garante_pago && sueldo_participe!="")
+	if(monto!="" && parseFloat(monto)>=150 && parseFloat(monto)<=parseFloat(limite) && interes!="" && garante_pago && sueldo_participe!="")
 		{
 		if(lista.includes('bg-red'))
 			{
@@ -689,6 +715,8 @@ if(interes=="EME" && parseFloat(monto)>7000)
 			}
 		else
 			{
+			
+			
 			if(interes=="EME" && parseFloat(monto)>7000)
 				{
 				

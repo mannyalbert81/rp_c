@@ -139,7 +139,7 @@ class CargarSimulacionCreditosController extends ControladorBase{
         <th ></th>
         <th ></th>
         <th >Total:</th>
-        <td align="right">'.$total.'</td>
+        <td align="right" id="total_renovar">'.$total.'</td>
         </tr>';
        
        

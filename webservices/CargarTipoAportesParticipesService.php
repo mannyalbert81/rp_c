@@ -25,16 +25,19 @@ if(isset($_GET['action'])){
                           core_contribucion_tipo_participes.sueldo_liquido_contribucion_tipo_participes, 
                           core_tipo_aportacion.id_tipo_aportacion, 
                           core_tipo_aportacion.nombre_tipo_aportacion, 
-                          core_contribucion_tipo_participes.porcentaje_contribucion_tipo_participes";
+                          core_contribucion_tipo_participes.porcentaje_contribucion_tipo_participes,
+                          estado.nombre_estado";
 				
 				$tablas   = " public.core_participes, 
                               public.core_contribucion_tipo_participes, 
                               public.core_contribucion_tipo, 
-                              public.core_tipo_aportacion";
+                              public.core_tipo_aportacion,
+                              public.estado";
 				
 				$where    = " core_contribucion_tipo_participes.id_participes = core_participes.id_participes AND
                               core_contribucion_tipo_participes.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo AND
-                              core_contribucion_tipo_participes.id_tipo_aportacion = core_tipo_aportacion.id_tipo_aportacion AND 
+                              core_contribucion_tipo_participes.id_tipo_aportacion = core_tipo_aportacion.id_tipo_aportacion AND
+                              estado.id_estado = core_contribucion_tipo_participes.id_estado AND 
                               core_contribucion_tipo_participes.id_estado=89 AND core_contribucion_tipo.id_contribucion_tipo=1
                               AND core_participes.cedula_participes='$cedula'";
 				
@@ -50,12 +53,16 @@ if(isset($_GET['action'])){
 					    
 					
 						$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-						$html.='<section style="height:380px; overflow-y:scroll;">';
-						$html.= "<table id='tabla_particpes' class=''>";
+						$html.='<section style="height:auto; overflow-y:scroll;">';
+						$html.= "<table id='tabla_particpes' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
 						$html.= "<thead>";
 						$html.= "<tr>";
-						$html.='<th style="text-align: left;  font-size: 12px;">Cedula</th>';
-						$html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+						$html.='<th style="text-align: left;  font-size: 12px;">#</th>';
+						$html.='<th style="text-align: left;  font-size: 12px;">CONTRIBUCION</th>';
+						$html.='<th style="text-align: left;  font-size: 12px;">TIPO</th>';
+						$html.='<th style="text-align: left;  font-size: 12px;">VALOR</th>';
+						$html.='<th style="text-align: left;  font-size: 12px;">PORCENTAJE</th>';
+						$html.='<th style="text-align: left;  font-size: 12px;">ESTADO</th>';
 						$html.='</tr>';
 						$html.='</thead>';
 						$html.='<tbody>';
@@ -65,10 +72,14 @@ if(isset($_GET['action'])){
 						foreach ($resultSet as $res)
 						{
 								
-							
+							$i++;
 							$html.='<tr>';
-							$html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
-							$html.='<td style="font-size: 11px;">'.$res->apellido_participes.' '.$res->nombre_participes.'</td>';
+							$html.='<td style="font-size: 11px;">'.$i.'</td>';
+							$html.='<td style="font-size: 11px;">'.$res->nombre_contribucion_tipo.'</td>';
+							$html.='<td style="font-size: 11px;">'.$res->nombre_tipo_aportacion.'</td>';
+							$html.='<td style="font-size: 11px;">'.$res->valor_contribucion_tipo_participes.'</td>';
+							$html.='<td style="font-size: 11px;">'.$res->porcentaje_contribucion_tipo_participes.'</td>';
+							$html.='<td style="font-size: 11px;">'.$res->nombre_estado.'</td>';
 							$html.='</tr>';
 						}
 				
@@ -81,12 +92,26 @@ if(isset($_GET['action'])){
 				
 						 
 					}else{
-						$html.='<div class="col-lg-6 col-md-6 col-xs-12">';
-						$html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-						$html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-						$html.='<h4>Aviso!!!</h4> <b>Actualmente no tiene registrado tipo de aporte...</b>';
-						$html.='</div>';
-						$html.='</div>';
+					    $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+					    $html.='<section style="height:auto; overflow-y:scroll;">';
+					    $html.= "<table id='tabla_particpes' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+					    $html.= "<thead>";
+					    $html.= "<tr>";
+					    $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
+					    $html.='<th style="text-align: left;  font-size: 12px;">CONTRIBUCION</th>';
+					    $html.='<th style="text-align: left;  font-size: 12px;">TIPO</th>';
+					    $html.='<th style="text-align: left;  font-size: 12px;">VALOR</th>';
+					    $html.='<th style="text-align: left;  font-size: 12px;">PORCENTAJE</th>';
+					    $html.='<th style="text-align: left;  font-size: 12px;">ESTADO</th>';
+					    $html.='</tr>';
+					    $html.='</thead>';
+					    $html.='<tbody>';
+					    $html.='<tr>';
+					    $html.='<td colspan="6" style="text-align: center;  font-size: 12px;">Aporte No definido</th>';
+					    $html.='</tr>';
+					    $html.='</tbody>';
+					    $html.='</table>';
+					    $html.='</section></div>';
 					}
 					
 				
@@ -169,8 +194,16 @@ if(isset($_GET['action'])){
 	}
 	
 	
+	if( isset($_GET['metodo']) && $_GET['metodo'] == "GUARDAR"){
+	    
+	    echo json_encode(array("respuesta"=>2));
+	    
+	    exit();
+	}
+	
+	//echo $_SERVER['REQUEST_METHOD'];
 
-
+	//header("HTTP/1.1 400 Bad Request");
 
 
 

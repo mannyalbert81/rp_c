@@ -120,7 +120,7 @@
             		<div class="col-xs-12 col-md-3 col-lg-3">
         		     	<div class="form-group">
                           <label for="numero_credito" class="control-label">Número de Documento:</label>
-                          <input type="text" class="form-control" id="numero_credito" name="numero_credito" readonly value=""  placeholder="Número...">
+                          <input type="text" class="form-control" id="numero_credito" name="numero_credito"  value=""  placeholder="Número...">
                           <div id="mensaje_numero_credito" class="errores"></div> 
                    			<span class="help-block"></span>
 				  		</div>

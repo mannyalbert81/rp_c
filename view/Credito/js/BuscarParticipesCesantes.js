@@ -96,7 +96,8 @@ function BuscarParticipe()
 		     id_participe=y[1];
 		    $("#link_reporte").data("participe",id_participe);
 		    console.log("valor de id -->"+id_participe);
-			AportesParticipe(1)
+			AportesParticipe(1),
+			CreditosActivosParticipe(id_participe,1)
 			cargaTipoPrestaciones();
 
 			
@@ -107,14 +108,15 @@ function BuscarParticipe()
 		}
 }
 
-function AportesParticipe(_page = 1){
+function AportesParticipe(){
 	
-	var buscador = $("#buscador").val();
+	
+	
 	$.ajax({
 		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
 		url:"index.php?controller=BuscarParticipesCesantes&action=AportesParticipe",
 		type:"POST",
-		data:{page:_page,search:buscador,peticion:'ajax',id_participe:id_participe}
+		data:{action:'ajax',id_participe:id_participe}
 	}).done(function(datos){		
 		
 		$("#aportes_participe_registrados").html(datos)		
@@ -180,5 +182,26 @@ $("#id_participe").on("keyup",function(){
 	$(this).val($(this).val().toUpperCase());
 })
 
-
+function CreditosActivosParticipe(id, page)
+{
+	
+	id=2779;
+	
+	$.ajax({
+	    url: 'index.php?controller=BuscarParticipesCesantes&action=CreditosActivosParticipe',
+	    type: 'POST',
+	    data: {
+	    	   id_participe: id,
+	    	   page: page
+	    },
+	})
+	.done(function(x) {
+		$('#creditos_participe').html(x);
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+}
 

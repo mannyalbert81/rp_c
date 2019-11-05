@@ -309,6 +309,7 @@ $("#id_subcategorias").click(function() {
 	  
 	  if ( id_subcategorias >= 49 && id_subcategorias <= 56 ) //oficios y memos
 	  	{
+			_numero_credito.removeAttr('disabled');
 		  _nombre_tipo_documentos.removeAttr('disabled');
 	  	  _fecha_documento_legal.removeAttr('disabled');
 	  	  _id_carton_documentos.removeAttr('disabled');
@@ -316,6 +317,20 @@ $("#id_subcategorias").click(function() {
 	  	  _Guardar.removeAttr('disabled');
 		  
 	  	}
+
+	if ( id_subcategorias == 83  ) 
+
+	  	{
+			console.log('hola')
+			_numero_credito.removeAttr('disabled');
+		  _nombre_tipo_documentos.removeAttr('disabled');
+	  	  _fecha_documento_legal.removeAttr('disabled');
+	  	  _id_carton_documentos.removeAttr('disabled');
+	  	  _asunto_documento.removeAttr('disabled');
+	  	  _Guardar.removeAttr('disabled');
+		  
+	  	}
+
 	  	
 	});
 
@@ -392,6 +407,7 @@ $("#id_subcategorias").change(function() {
 	  
 	  if ( id_subcategorias >= 49 && id_subcategorias <= 56 ) //oficios y memos
 	  	{
+		  _numero_credito.removeAttr('disabled');
 		  _nombre_tipo_documentos.removeAttr('disabled');
 	  	  _fecha_documento_legal.removeAttr('disabled');
 	  	  _id_carton_documentos.removeAttr('disabled');
@@ -399,6 +415,19 @@ $("#id_subcategorias").change(function() {
 	  	  _Guardar.attr('disabled','disabled');
 		  
 	  	}
+		
+		if ( id_subcategorias == 83  ) 
+	  	{
+			console.log('hola')
+			_numero_credito.removeAttr('disabled');
+		  _nombre_tipo_documentos.removeAttr('disabled');
+	  	  _fecha_documento_legal.removeAttr('disabled');
+	  	  _id_carton_documentos.removeAttr('disabled');
+	  	  _asunto_documento.removeAttr('disabled');
+	  	  _Guardar.removeAttr('disabled');
+		  
+	  	}
+
 	  	
 	});
 
@@ -462,6 +491,7 @@ $("#cedula_capremci").on("focus",function(e) {
     	})
     }
 });
+
 
 
 

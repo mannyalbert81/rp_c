@@ -799,7 +799,7 @@ class CargarParticipesController extends ControladorBase{
         $saldo_credito=$saldo_actual_credito[0]->total;
         // $saldo_credito_renovar=$_result_creditos_renovar[0]->total;
         
-        
+        $disponible=0.00;
         
         
         if($saldo_cta_individual > 0 && $saldo_credito > 0){

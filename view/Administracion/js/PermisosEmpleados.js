@@ -262,7 +262,7 @@ if( (causa == 6 || causa == 3) && desc == "" ){ $("#descripcion_causa").notify("
 	    	   hora_hasta: hasta,
 	    	   id_causa: causa,
 	    	   descripcion_causa:desc,
-	    	   valor_editar_permiso:$("#valor_editar_permiso").val()},
+	    	   id_permiso_editar:$("#valor_editar_permiso").val()},
 	})
 	.done(function(x) {
 		$("#fecha_permiso").val("");
@@ -275,6 +275,7 @@ if( (causa == 6 || causa == 3) && desc == "" ){ $("#descripcion_causa").notify("
 		document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
 		document.getElementById('hora_desde').readOnly = false;
 	    document.getElementById('hora_hasta').readOnly = false;
+	    $("#valor_editar_permiso").val("0");
 		console.log(x);
 		if (x==1){
 			swal({
@@ -290,6 +291,15 @@ if( (causa == 6 || causa == 3) && desc == "" ){ $("#descripcion_causa").notify("
 		  		  text: "Ya se encuentra registrada una solicitud a la fecha",
 		  		  icon: "info",
 		  		  dangerMode:true,
+		  		  button: "Aceptar",
+		  		});
+				load_solicitudes(1);
+		}else if(x.trim()==2){
+			swal({
+		  		  title: "Solicitud",
+		  		  text: "Solicitud ha sido actualizada",
+		  		  icon: "info",
+		  		  dangerMode:false,
 		  		  button: "Aceptar",
 		  		});
 				load_solicitudes(1);
@@ -347,6 +357,7 @@ function LimpiarCampos()
 	 document.getElementById('diaicon').className = "glyphicon glyphicon-unchecked";
      document.getElementById('hora_desde').readOnly = false;
 		document.getElementById('hora_hasta').readOnly = false;
+	$("#valor_editar_permiso").val("0");
 	
 }
 
@@ -544,7 +555,9 @@ function SinCertificado(idsol)
 
 function CambiarPermiso(_id_empleado_permiso){
 	
-	console.log("permiso es --> "+_id_empleado_permiso);
+	//console.log("permiso es --> "+_id_empleado_permiso);
+	
+	$("html, body").animate({ scrollTop: $(nombre_empleados).offset().top-120 }, 1000);
 	
 	$.ajax({
 	    url: 'index.php?controller=PermisosEmpleados&action=BuscaPermisoEditar',
@@ -588,56 +601,3 @@ function CambiarPermiso(_id_empleado_permiso){
 	$modalPermisos.modal();*/
 	
 }
-
-
-/***************************************************************** PARA FUNCIONES CON MODAL ***************************************************/
-function mod_TodoElDia(){
-
-	 if (document.getElementById('mod_dia').className == "btn btn-light"){
-		 
-		 document.getElementById('mod_dia').className = "btn btn-primary";
-		 document.getElementById('mod_diaicon').className = "glyphicon glyphicon-check";
-		 $.ajax({
-			    url: 'index.php?controller=PermisosEmpleados&action=GetHoras',
-			    type: 'POST',
-			    data: {
-			    	   
-			    },
-			}).done(function(x) {
-				
-				var res = $.parseJSON(x);
-				console.log(res);
-				$("#mod_hora_desde").val(res[0]['hora_entrada_empleados']);
-				$("#mod_hora_hasta").val(res[0]['hora_salida_empleados']);
-				document.getElementById('mod_hora_desde').readOnly = true;
-				document.getElementById('mod_hora_hasta').readOnly = true;
-				})
-			.fail(function() {
-			    console.log("error");
-			    	
-			});
-		 
-		 }else{
-			 
-		 document.getElementById('mod_dia').className = "btn btn-light";
-		 document.getElementById('mod_diaicon').className = "glyphicon glyphicon-unchecked";
-		 $("#mod_hora_desde").val("");
-	     $("#mod_hora_hasta").val("");
-	     document.getElementById('mod_hora_desde').readOnly = false;
-			document.getElementById('mod_hora_hasta').readOnly = false;
-		 }
-	 
-	}
-
-function mod_HabilitarDescripcion()
-{
-	var causa = $("#mod_causa_permiso").val();
-	if (causa != 6 && causa != 3) document.getElementById('mod_descripcion_causa').readOnly = true;
-	else document.getElementById('mod_descripcion_causa').readOnly = false;
-}
-
-function EditaSolicitud(){
-	console.log("ingreso a editar permiso")
-}
-
-/***************************************************************** TERMINA PARA FUNCIONES CON MODAL ***************************************************/

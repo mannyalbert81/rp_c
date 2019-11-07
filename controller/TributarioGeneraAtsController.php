@@ -233,16 +233,16 @@ class TributarioGeneraAtsController extends ControladorBase{
 		$_baseImpGrav = "";
 		$_montoIva = "";
 		
-		$_valRetBien10;
-		$_valRetServ20;
-		$_valorRetBienes;
-		$_valRetServ50;
-		$_valorRetServicios;
-		$_valRetServ100;
+		$_valRetBien10 ="0.00";
+		$_valRetServ20="0.00";
+		$_valorRetBienes="0.00";
+		$_valRetServ50="0.00";
+		$_valorRetServicios="0.00";
+		$_valRetServ100="0.00";
 		
-		$_codRetAir ;
+		$_codRetAir ="0.00";
 		$_baseImpAir = "0.00";
-		$_porcentajeAir = "0.00";
+		$_porcentajeAir ="0.00";
 		$_valRetAir = "0.00";
 		
 		
@@ -296,14 +296,14 @@ class TributarioGeneraAtsController extends ControladorBase{
 				$texto .= '<fechaEmision>'.$res->infocompretencion_fechaemision.'</fechaEmision>';
 				$texto .= '<autorizacion>'.$res->infotributaria_claveacceso.'</autorizacion>';
 				
-				$where_detalle = "id_tri_retenciones) = '$res->id_tri_retenciones' ";
+				$where_detalle = "id_tri_retenciones = '$res->id_tri_retenciones' ";
 				$rsDetalle = $Participes->getCondiciones($columnas_detalle, $tablas_detalle, $where_detalle, $id_detalle);
 				foreach ($rsDetalle as $resDetalle){
 					if ($resDetalle->impuesto_codigo == "1") //es renta
 					{
 						 $_baseImpGrav =  $resDetalle->impuestos_baseimponible;
 						
-						 $_codRetAir = $res->impuesto_codigoretencion;
+						 $_codRetAir = $resDetalle->impuesto_codigoretencion;
 						 $_baseImpAir = $resDetalle->impuestos_baseimponible;
 						 $_porcentajeAir = $resDetalle->impuestos_porcentajeretener;
 						 $_valRetAir = $resDetalle->impuestos_valorretenido;
@@ -315,22 +315,22 @@ class TributarioGeneraAtsController extends ControladorBase{
 						
 						switch ($resDetalle->impuestos_porcentajeretener) {
 							case 10:
-								$_valRetBien10;
+								$_valRetBien10 = $resDetalle->impuestos_valorretenido;
 								break;
 							case 20:
-								$_valRetServ20;
+								$_valRetServ20 = $resDetalle->impuestos_valorretenido;
 								break;
 							case 30:
-								$_valorRetBienes;
+								$_valorRetBienes= $resDetalle->impuestos_valorretenido;
 								break;
 							case 50:
-								$_valRetServ50;
+								$_valRetServ50= $resDetalle->impuestos_valorretenido;
 								break;
 							case 70:
-								$_valorRetServicios;
+								$_valorRetServicios= $resDetalle->impuestos_valorretenido;
 								break;
 							case 2:
-								$_valRetServ100;
+								$_valRetServ100= $resDetalle->impuestos_valorretenido;
 								break;
 						}
 					}
@@ -384,17 +384,35 @@ class TributarioGeneraAtsController extends ControladorBase{
 			$texto .= '</iva>';
 			 
 			 
-		
-			 
+			$nombre_archivo = "ATS-".$mesperiodofiscal.$anioDiario.".xml";
+			
+			$ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\rp_c\\DOCUMENTOS_GENERADOS\\ATS\\";
+			$ubicacion = $ubicacionServer.$nombre_archivo;
+				
 			 
 			$textoXML = mb_convert_encoding($texto, "UTF-8");
 			 
 			// Grabamos el XML en el servidor como un fichero plano, para
 			// poder ser leido por otra aplicación.
-			$gestor = fopen("C:\ATS\ATS".$mesperiodofiscal.$anioDiario.".xml", 'w');
+			$gestor = fopen($ubicacionServer.$nombre_archivo, 'w');
 			fwrite($gestor, $textoXML);
 			fclose($gestor);
-			 
+			
+			
+			
+			header("Content-disposition: attachment; filename=$nombre_archivo");
+			header("Content-type: MIME");
+			ob_clean();
+			flush();
+			// Read the file
+			//echo $ubicacion;
+			//print_r($_POST);
+			//echo  "******llego--",$_tipo_archivo_recaudaciones,"***" ;
+			//echo "parametro id ---",$_id_archivo_recaudaciones,"**";
+			readfile($ubicacion);
+			exit;
+				
+			
 			 
 		}
 		 
@@ -422,7 +440,7 @@ class TributarioGeneraAtsController extends ControladorBase{
 		$tablas_detalle = " public.tri_retenciones_detalle";
 		
 		$id_detalle = "creado";
-		$where_detalle = "id_tri_retenciones) = '$_id_tri_retenciones' ";
+		$where_detalle = "id_tri_retenciones = '$_id_tri_retenciones' ";
 		$rsDetalle = $Participes->getCondiciones($columnas_detalle, $tablas_detalle, $where_detalle, $id_detalle);
 		foreach ($rsDetalle as $resDetalle){
 			if ($resDetalle->impuesto_codigo == "1") //es renta

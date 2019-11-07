@@ -107,6 +107,228 @@ class EmpleadosController extends ControladorBase{
       echo 1;
     }
     
+    
+    public function empleados()
+    {
+        
+        session_start();
+        
+        require_once 'core/DB_Functions.php';
+        $db = new DB_Functions();
+        
+        
+        $html="";
+        
+        $id_usuarios = $_SESSION["id_usuarios"];
+        $fechaactual = getdate();
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        
+        $directorio = $_SERVER ['DOCUMENT_ROOT'] . '/rp_c';
+        $dom=$directorio.'/view/dompdf/dompdf_config.inc.php';
+        $domLogo=$directorio.'/view/images/logo_contrato_adhesion.jpg';
+        $logo = '<img src="'.$domLogo.'" width="100%">';
+        
+        
+        if(!empty($id_usuarios)){
+            
+            if(isset($_GET["id_solicitud_prestamo"])){
+                
+                $id_solicitud_prestamo=$_GET["id_solicitud_prestamo"];
+                
+                $columnas=" ";
+                $tablas=" ";
+                $where="";
+                
+                $resultSoli=$db->getCondicionesDesc($columnas, $tablas, $where, $id);
+                
+                
+                
+                if(!empty($resultSoli)){
+                    
+                        
+                        $html.='<table style="width: 100%;"  border=1 cellspacing=0.0001 >';
+                        $html.='<tr>';
+                        $html.='<th colspan="12" style="text-align:center; font-size: 18px;">DECLARACIÓN DE GASTOS PERSONALES A SER UTILIZADOS POR EL EMPLEADOR EN EL CASO DE INGRESOS EN RELACIÓN DE DEPENDENCIA</th>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="2" style="text-align:center; font-size: 18px;">Ejercicio Fiscal</th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;"></th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">2</th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">0</th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">1/th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">9</th>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="3" style="text-align:center; font-size: 18px;">CIUDAD Y FECHA DE ENTREGA/RECEPCIÓN</th>';
+                        $html.='<td colspan="1" style="text-align:center; font-size: 18px;"></th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">CIUDAD</th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">AÑO</th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">MES</th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">DÍA</th>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="12" style="text-align:center; font-size: 18px;">Información / Identificación del empleado contribuyente a ser llenado por el empleado</th>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="2" style="text-align:center; font-size: 18px;">101</th>';
+                        $html.='<th colspan="5" style="text-align:left;   font-size: 18px;">CEDULA O PASAPORTE</th>';
+                        $html.='<th colspan="2" style="text-align:center; font-size: 18px;">102</th>';
+                        $html.='<th colspan="5" style="text-align:left;   font-size: 18px;">APELLIDOS Y NOMBRES COMPLETOS</th>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<td colspan="2" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='<td colspan="4" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='<td colspan="2" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='<td colspan="4" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="12" style="text-align:left; font-size: 18px;">INGRESOS GRAVADOS PROYECTADOS (sin decimotercera y decimocuarta remuneració)(ver Nota 1)</th>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="6" style="text-align:left;   font-size: 18px;">(+) TOTAL INGRESOS GRAVADOS CON ESTE EMPLEADOR (con el empleador que más ingresos perciba)</th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">103</th>';
+                        $html.='<td colspan="2" style="text-align:center; font-size: 18px;">USD$</td>';
+                        $html.='<td colspan="3" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<td colspan="6" style="text-align:left;   font-size: 18px;">(+) TOTAL INGRESOS CON OTROS EMPLEADOS (en caso de haberlos)</td>';
+                        $html.='<td colspan="1" style="text-align:center; font-size: 18px;">104</td>';
+                        $html.='<td colspan="2" style="text-align:center; font-size: 18px;">USD$</td>';
+                        $html.='<td colspan="3" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="6" style="text-align:left;   font-size: 18px;">(=) TOTAL INGRESOS PROYECTADOS</th>';
+                        $html.='<td colspan="1" style="text-align:center; font-size: 18px;">105</td>';
+                        $html.='<th colspan="2" style="text-align:center; font-size: 18px;">USD$</th>';
+                        $html.='<td colspan="3" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="12" style="text-align:left; font-size: 18px;">GASTOS PROYECTADOS</th>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="6" style="text-align:left;   font-size: 18px;">(+) GASTOS DE VIVIENDA</th>';
+                        $html.='<td colspan="1" style="text-align:center; font-size: 18px;">106</td>';
+                        $html.='<th colspan="2" style="text-align:center; font-size: 18px;">USD$</th>';
+                        $html.='<td colspan="3" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="6" style="text-align:left;   font-size: 18px;">(+) GASTOS DE EDUCACIÓN, ARTE Y CULTURA</th>';
+                        $html.='<td colspan="1" style="text-align:center; font-size: 18px;">107</td>';
+                        $html.='<th colspan="2" style="text-align:center; font-size: 18px;">USD$</th>';
+                        $html.='<td colspan="3" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="6" style="text-align:left;   font-size: 18px;">(+) GASTOS DE SALUD</th>';
+                        $html.='<td colspan="1" style="text-align:center; font-size: 18px;">108</td>';
+                        $html.='<th colspan="2" style="text-align:center; font-size: 18px;">USD$</th>';
+                        $html.='<td colspan="3" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="6" style="text-align:left;   font-size: 18px;">(+) GASTOS DE VESTIMENTA</th>';
+                        $html.='<td colspan="1" style="text-align:center; font-size: 18px;">109</td>';
+                        $html.='<th colspan="2" style="text-align:center; font-size: 18px;">USD$</th>';
+                        $html.='<td colspan="3" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="6" style="text-align:left;   font-size: 18px;">(=) TOTAL GASTOS PROYECTADOS</th>';
+                        $html.='<td colspan="1" style="text-align:center; font-size: 18px;">111</td>';
+                        $html.='<th colspan="2" style="text-align:center; font-size: 18px;">USD$</th>';
+                        $html.='<td colspan="3" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<td colspan="12" style="text-align:justify; font-size: 18px;"><p>1.- Cuando un contribuyente trabaje con DOS O MÁS empleadores, presentará este informe
+                                                                                                al empleador con el que perciba mayores ingresos, el que efectuará la retención considerando 
+                                                                                                los ingresos gravados y deducciones (aportes personales al IESS) con todos los empleadores. 
+                                                                                                Una copia certificada, con la respectiva firma y sello del empleador, será presentada a los demás
+                                                                                                empleadores para que se abstengan de efectuar retenciones sobre los pagos efectuados por concepto 
+                                                                                                de remuneración del trabajo en relación de dependencia.</p></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<td colspan="12" style="text-align:justify; font-size: 18px;"><p>2.- La deducción total por gastos personales no podrá superar el 50% total de sus ingresos gravados
+                                                                                                (Casillero 105), y en ningún caso será mayor al equivalente a 1.3 veces la fracción básica externa 
+                                                                                                del Impuesto a la Renta de personas naturales. A partir del año 2011 debe considerarse como cuantía máxima
+                                                                                                para cada tipo de gasto, el monto equivalente a la fracción Básica externa de Impuesto a la Renta en:
+                                                                                                vivienda 0.325 veces.</p></td>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<td colspan="12" style="text-align:justify; font-size: 18px;"><p>3.- En el caso de gastos de salud por enfermedades catastróficas, raras o huérfanas debidamente certificadas
+                                                                                                o avaladas por la autoridad sanitaria nacional competente, se los reconocerá para su deducibilidad hasta 
+                                                                                                un valor equivalente a (2) fracciones básicas gravadas con tarifa cero de Impuestos a la Renta de personas naturales.</p></td>';
+                        $html.='</tr>';
+                       
+                        $html.='</table>';
+                        
+                        $html.='<br>';
+                        
+                        $html.='<table style="width: 100%;"  border=1 cellspacing=0.0001 >';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="12" style="text-align:left; font-size: 18px;">Identificación del Agente de Retención (a ser llenado por el empleador)</th>';
+                        $html.='</tr>';
+                        
+                        $html.='<table style="width: 100%;"  border=1 cellspacing=0.0001 >';
+                        $html.='<tr>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">112</th>';
+                        $html.='<th colspan="5" style="text-align:left; font-size: 18px;">RUC</th>';
+                        $html.='<th colspan="1" style="text-align:center; font-size: 18px;">113</th>';
+                        $html.='<th colspan="5" style="text-align:left; font-size: 18px;">RAZÓN SOCIAL, DENOMINACIÓN O APELLIDOS Y NOMBRES COMPLETOS</th>';
+                        $html.='</tr>';
+                        
+                        $html.='</table>';
+                        
+                        $html.='<br>';
+                        
+                        $html.='<table style="width: 100%;"  border=1 cellspacing=0.0001 >';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="12" style="text-align:left; font-size: 18px;">Firmas</th>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<th colspan="6" style="text-align:center; font-size: 18px;">EMPLEADOR/ AGENTE DE RETENCIÓN</th>';
+                        $html.='<th colspan="6" style="text-align:center; font-size: 18px;">EMPLEADO CONTRIBUYENTE</th>';
+                        $html.='</tr>';
+                        
+                        $html.='<tr>';
+                        $html.='<td colspan="6" style="text-align:center; font-size: 18px;"></td>';
+                        $html.='<td colspan="6" style="text-align:center; font-size: 18px;">Firma del sevidor</td>';
+                        $html.='</tr>';
+                        
+                        $html.='</table>';
+                        
+                }
+                
+                $this->report("Empleados",array("resultSet"=>$html));
+                die();
+                
+            }
+            
+        }else{
+            
+            $this->redirect("Usuarios","sesion_caducada");
+        }
+        
+    }
     public function consulta_empleados(){
         
         session_start();

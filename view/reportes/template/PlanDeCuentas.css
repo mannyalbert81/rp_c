@@ -1,0 +1,93 @@
+/* para clases de cabecera */ 
+.divheader{
+	border:0px solid; width:100%; 
+}
+	
+.headertable{
+	width:100%;
+	border:1px solid;width:100%;
+
+	
+}
+td.central{
+	background-repeat: no-repeat;
+  	background-size: 10% 100%;
+	background-image: url(view/images/Logo-Capremci-h-170.jpg); 
+	background-position: 0% 100%;
+	font-size: 11px;  
+	padding: 0px; 
+	text-align:center;
+	
+}
+.htexto1{		
+	font-size: 10px;  padding: 5px; 
+	text-align:left;
+	width: 65%;
+}
+.htexto2{		
+	font-size: 10px;  padding: 5px; 
+	text-align:left;
+	width: 33%;
+}
+.htexto3{		
+	font-size: 13px;  padding: 5px; 
+	text-align:right;
+}
+.htexto2 span{	 
+	text-align:left;
+}
+
+/***************************/
+
+.titulobody {
+	width:100%;font-family:Times New Roman, sans-serif;
+  	font-size:12px; line-height:normal; border:1px solid black;
+
+  }
+
+.titulobody td{
+	font-weight:bold;
+  	padding:0 0.5em; 
+	text-align:center;
+	border:hidden;
+  }
+ 
+ .bodycabecera{
+ 	border:hidden;
+ }
+ 
+ .tab1principal{
+ 	width:100%;font-family:Times New Roman, sans-serif;
+  	font-size:0.75em;line-height:2em;
+ }
+.tab1principal td{
+  	padding:0 0.5em;
+	border:hidden;
+  }
+.tab2cabecera{
+	width:100%;font-family:Times New Roman, sans-serif;
+ 	font-size:0.75em;line-height:2em;
+ 	border-collapse: separate;
+ 	border-spacing: 10px 0px; 
+}
+.tab2cabecera td{
+  	padding:0 0.5em;
+  }
+ .bordeinferior td {
+  border-bottom: 1px; 
+  border-bottom-style: dotted;
+  
+ }
+ .tab3datos{
+	width:100%;font-family:Times New Roman, sans-serif;
+ 	font-size:0.75em;line-height:2em;
+ 	border-collapse: separate;
+ 	border-spacing: 10px 0px; 
+}
+.tab3datos td{
+  	padding:0 0.5em;
+  }
+ .decimales{
+ 	text-align: right !important;
+ }
+

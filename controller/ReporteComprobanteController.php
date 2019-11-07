@@ -821,6 +821,7 @@ class ReporteComprobanteController extends ControladorBase{
 	    $datos_reporte['FORMADEPAGO']=$rsdatos[0]->nombre_forma_pago;
 	    $datos_reporte['PROVEEDORES']=$rsdatos[0]->nombre_proveedores;
 	    $datos_reporte['DESCDCOMPROBANTE']=$rsdatos[0]->descripcion_dcomprobantes;
+	    $datos_reporte['NOMBRETIPOCOMPROBANTE']=$rsdatos[0]->nombre_tipo_comprobantes;
 	   
 	    
 	    
@@ -873,8 +874,8 @@ class ReporteComprobanteController extends ControladorBase{
 	            
 	            $html.='<td class="ancho" colspan="3" style="text-align: left; font-size: 10px;">'.$res->codigo_plan_cuentas.'</td>';
 	            $html.='<td class="ancho" colspan="3" style="text-align: left; font-size: 10px;">'.$res->nombre_plan_cuentas.'</td>';
-	            $html.='<td class="ancho" colspan="3" style=" font-size: 10px;" align="right">'.number_format($res->debe_dcomprobantes, 2, '.', ',').'</td>';
-	            $html.='<td class="ancho" colspan="3" style=" font-size: 10px;" align="right">'.number_format($res->haber_dcomprobantes, 2, '.', ',').'</td>';
+	            $html.='<td class="ancho" colspan="3" style=" font-size: 10px;" align="right">$ '.number_format($res->debe_dcomprobantes, 2, '.', ',').'</td>';
+	            $html.='<td class="ancho" colspan="3" style=" font-size: 10px;" align="right">$ '.number_format($res->haber_dcomprobantes, 2, '.', ',').'</td>';
 	            $html.='</tr>';
 	            $valor_total_db=0;
 	            $valor_total_db1=0;
@@ -886,8 +887,8 @@ class ReporteComprobanteController extends ControladorBase{
 	        $html.= "<tr>";
 	        $html.='<td class="ancho" colspan="3" style="text-align: left; font-size: 10px;"></td>';
 	        $html.='<td class="ancho" colspan="3" style="text-align: left; font-size: 10px;"></td>';
-	        $html.='<td class="bordesup" colspan="3" style="text-align: right; font-size: 10px;"align="right">'.$valor_total_vista.'</td>';
-	        $html.='<td class="bordesup" colspan="3" style="text-align: right; font-size: 10px;"align="right">'.$valor_total_vista1.'</td>';
+	        $html.='<td class="bordesup" colspan="3" style="text-align: right; font-size: 10px;"align="right">$ '.$valor_total_vista.'</td>';
+	        $html.='<td class="bordesup" colspan="3" style="text-align: right; font-size: 10px;"align="right">$ '.$valor_total_vista1.'</td>';
 	        $html.='</tr>';
 	        
 	       

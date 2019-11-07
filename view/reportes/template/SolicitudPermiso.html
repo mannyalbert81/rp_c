@@ -3,12 +3,7 @@
  <head>
   	<meta charset="utf-8"/>
   	<title>SOLICITUD DE VACACIONES</title>
-  <style>  
-	 @page {
-        margin-top: 1cm;
-        margin-bottom: 1cm;
-    }
-    
+  <style> 
 	table {
 		border: 1px solid black;
 		font-size:12px;
@@ -72,12 +67,12 @@
 	.informacion
 	{
 	 text-align: left;
-	 font-size: 15px;
+	 font-size: 13px;
 	}
 	
 	.tabla
 	{
-	width:90%
+	width:90%; padding:5px;
 	}
 	
 	.firmas
@@ -198,25 +193,25 @@
 			
 		</tr>		
 	</table>	
-  			<h3 align="center" >SOLICITUD DE VACACIONES</h3>  			
+  			<h4 align="center" >SOLICITUD DE VACACIONES</h4>  			
   		</div> 
   		<div>  	
   		
   		<table class="tabla" align="center">
   				<tr>
-  					<td class="informacion">Nombre del empleado: <b>{NOMBREEMPLEADO}</b></td>  					
+  					<td class="informacion"><b>Nombre del empleado:</b> {NOMBREEMPLEADO}</td>  					
   				</tr>
   				<tr>
-  					<td class="informacion">Cargo: <b>{CARGOEMPLEADO}</b></td>
-  					<td class="informacion">Departamento: <b>{DPTOEMPLEADO}</b></td>
+  					<td class="informacion"><b>Cargo:</b> {CARGOEMPLEADO}</td>
+  					<td class="informacion" align="center"><b>Departamento:</b> {DPTOEMPLEADO}</td>
   				</tr>
   				
   		</table>
   		<br>
   		<table class="tabla" align="center">
   				<tr>
-  					<td class="informacion">Desde: <b>{FECHADESDE}</b></td>
-  					<td class="informacion">Hasta: <b>{FECHAHASTA}</b></td>
+  					<td class="informacion"><b>Desde:</b> {FECHADESDE}</td>
+  					<td class="informacion"><b>Hasta:</b> {FECHAHASTA}</td>
   				</tr>
   				<tr>
   				<td colspan="2" class="firmas"><br><br><br><br><br><br><b>______________________________</b></td>

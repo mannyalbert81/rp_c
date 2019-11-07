@@ -760,6 +760,11 @@ class PlanCuentasController extends ControladorBase{
 	public function  generar_reporte_Pcuentas(){
 	    
 	    session_start();
+	    
+	    $entidades = new EntidadesModel();
+	    //PARA OBTENER DATOS DE LA EMPRESA
+	    $datos_empresa = array();
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
 	    $plan_cuentas = new PlanCuentasModel();
 	   
 	    
@@ -861,19 +866,29 @@ class PlanCuentasController extends ControladorBase{
 	            
 	            $resultSetCabeza=$plan_cuentas->getCondiciones($columnas, $tablas, $where_to, $id);
 	            
-	            $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=3>";
-	            $html.= "<tr>";
-	            $html.='<th bgcolor="#cccccc" colspan="6" style="text-align: center; font-size: 24px;">CAPREMCI</b></br>';
-	            $html.='<p style="text-align: center; font-size: 13px; ">Baquerizo Moreno E-978 y Leonidas Plaza ';
-	            $html.='<br style="text-align: center; ">Teléfono: 02-3828870 ';
-	            $html.='<h1 style="text-align: right; font-size: 12px;">Fecha: '.$fechaactual.'</h1>';
 	            
-	            $html.='</tr>';
-	            $html.= "<tr>";
-	            $html.='<th colspan="6" style="text-align: center; font-size: 18px;">Reporte de Plan de Cuentas</th>';
-	            $html.='</tr>';
+	            if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	                //llenar nombres con variables que va en html de reporte
+	                $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	                $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	                $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	                $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	                $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	                $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	            }
+	            
+	            //NOTICE DATA
+	            $datos_cabecera = array();
+	            $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+	            $datos_cabecera['FECHA'] = date('Y/m/d');
+	            $datos_cabecera['HORA'] = date('h:i:s');
+	            
+	            
+	            $datos_reporte = array();
 
 	            if(!empty($resultSetCabeza)){
+	                
+	                $html.='<table cellspacing="0" style="width:100px;" border="1" >';
 	                
 	                $html.='<tr>';
 	                $html.='<th colspan="2" style="text-align: center; font-size: 13px;"><font>Código</font></th>';
@@ -888,18 +903,21 @@ class PlanCuentasController extends ControladorBase{
 	                    
 	                    
 	                    $html.= "<tr>";
-	                    $html.='<td colspan="2" style="text-align: left; font-size: 12px;">'.$_codigo_plan_cuentas.'</td>';
-	                    $html.='<td colspan="2" style="text-align: left; font-size: 12px;">'.$_nombre_plan_cuentas.'</td>';
-	                    $html.='<td colspan="2" style="text-align: left; font-size: 12px;">'.$_saldo_fin_plan_cuentas.'</td>';
+	                    $html.='<td colspan="2" style="text-align: left;  font-size: 12px;">'.$_codigo_plan_cuentas.'</td>';
+	                    $html.='<td colspan="2" style="text-align: left;  font-size: 12px;">'.$_nombre_plan_cuentas.'</td>';
+	                    $html.='<td colspan="2" class="htexto3">$ '.$_saldo_fin_plan_cuentas.'</td>';
 	                    $html.='</tr>';  
 	                }
 	                $html.='</table>'; 
 	            }
-	            $this->report("PlanCuentas",array( "resultSet"=>$html));
+	            
+	            $datos_reporte['DETALLE_PLAN_CUENTAS']= $html;
+	            
+	            $this->verReporte("PlanDeCuentas", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+	            
 	        
 	            die();   
 	    }else{
-	        
 	        $this->redirect("Usuarios","sesion_caducada");
 	        
 	    }

@@ -48,7 +48,7 @@ class ReporteDesafiliacionController extends ControladorBase{
         
     
         $FECHA = "06/09/2019";
-        
+
         
         $datos_reporte = array();
         
@@ -60,10 +60,10 @@ class ReporteDesafiliacionController extends ControladorBase{
             
             $html.= "<tr>";
             $html.='<th style="text-align: center; font-size: 11px;">FECHA DE PAGO</th>';
-            $html.='<th style="text-align: center; font-size: 11px;">No.DOCUMENTO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">No. DOCUMENTO</th>';
             $html.='<th style="text-align: center; font-size: 11px;">IDENTIFICACIÓN</th>';
             $html.='<th style="text-align: center; font-size: 11px;">APELLIDOS DEL SOCIO</th>';
-            $html.='<th style="text-align: center; font-size: 11px;">NOMBRES DEL SOCIO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">SOCIO</th>';
             $html.='<th style="text-align: center; font-size: 11px;">TOTAL INGRESOS</th>';
             $html.='<th style="text-align: center; font-size: 11px;">VALOR A DEVOLVER</th>';
             $html.='<th style="text-align: center; font-size: 11px;">TIPO</th>';
@@ -82,8 +82,8 @@ class ReporteDesafiliacionController extends ControladorBase{
             $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
             $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
             $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-            $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-            $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+            $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+            $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
             $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
             $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
             $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
@@ -100,9 +100,9 @@ class ReporteDesafiliacionController extends ControladorBase{
             $html.='<td style="text-align: center; font-size: 11px;"></td>';
             $html.='<td style="text-align: center; font-size: 11px;"></td>';
             $html.='<td style="text-align: center; font-size: 11px;"></td>';
+            $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">Total:</td>';
+            $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
             $html.='<td style="text-align: center; font-size: 11px;"></td>';
-            $html.='<td style="text-align: center; font-size: 11px;">Total:</td>';
-            $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
             $html.='<td style="text-align: center; font-size: 11px;"></td>';
             $html.='<td style="text-align: center; font-size: 11px;"></td>';
             $html.='<td style="text-align: center; font-size: 11px;"></td>';
@@ -117,7 +117,7 @@ class ReporteDesafiliacionController extends ControladorBase{
         $html.='<table class="3" cellspacing="0" style="width:100px;" border="1" >';
         
         $html.= "<tr>";
-        $html.='<th style="text-align: center; font-size: 11px;">RESUMEN TOTAL DE LA OPERACIÓN</th>';
+        $html.='<th colspan="4" style="text-align: center; font-size: 11px;">RESUMEN TOTAL DE LA OPERACIÓN</th>';
         $html.= "</tr>";
         
         $html.= "<tr>";
@@ -128,24 +128,22 @@ class ReporteDesafiliacionController extends ControladorBase{
         $html.='</tr>';
         
         $html.= "<tr>";
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='</tr>';
         
         $html.= "<tr>";
-        $html.='<td style="text-align: center; font-size: 11px;">Total:</td>';
-        $html.='<td style="text-align: center; font-size: 11px;"></td>';
-        $html.='<td style="text-align: center; font-size: 11px;"></td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;">Total:</td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;"></td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;"></td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='</tr>';
         
         $html.='</table>';
        
      
-       
-      
     
         $datos_reporte['DETALLE_DESAFILIACION']= $html;
         
@@ -210,11 +208,12 @@ class ReporteDesafiliacionController extends ControladorBase{
         
         $html.= "<tr>";
         $html.='<th style="text-align: center; font-size: 11px;">FECHA DE PAGO</th>';
-        $html.='<th style="text-align: center; font-size: 11px;">No.DOCUMENTO</th>';
+        $html.='<th style="text-align: center; font-size: 11px;">No. DOCUMENTO</th>';
         $html.='<th style="text-align: center; font-size: 11px;">IDENTIFICACIÓN</th>';
         $html.='<th style="text-align: center; font-size: 11px;">APELLIDOS DEL SOCIO</th>';
         $html.='<th style="text-align: center; font-size: 11px;">NOMBRES DEL SOCIO</th>';
         $html.='<th style="text-align: center; font-size: 11px;">TOTAL INGRESOS</th>';
+        $html.='<th style="text-align: center; font-size: 11px;">TOTAL EGRESOS</th>';
         $html.='<th style="text-align: center; font-size: 11px;">VALOR A DEVOLVER</th>';
         $html.='<th style="text-align: center; font-size: 11px;">TIPO</th>';
         $html.='<th style="text-align: center; font-size: 11px;">ESTADO DE SOLICITUD</th>';
@@ -231,8 +230,9 @@ class ReporteDesafiliacionController extends ControladorBase{
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
@@ -248,8 +248,9 @@ class ReporteDesafiliacionController extends ControladorBase{
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
@@ -267,7 +268,8 @@ class ReporteDesafiliacionController extends ControladorBase{
         $html.='<td style="text-align: center; font-size: 11px;"></td>';
         $html.='<td style="text-align: center; font-size: 11px;"></td>';
         $html.='<td style="text-align: center; font-size: 11px;">Total:</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td style="text-align: center; font-size: 11px;"></td>';
         $html.='<td style="text-align: center; font-size: 11px;"></td>';
         $html.='<td style="text-align: center; font-size: 11px;"></td>';
         $html.='<td style="text-align: center; font-size: 11px;"></td>';
@@ -281,7 +283,7 @@ class ReporteDesafiliacionController extends ControladorBase{
         $html.='<table class="3" cellspacing="0" style="width:100px;" border="1" >';
         
         $html.= "<tr>";
-        $html.='<th style="text-align: center; font-size: 11px;">RESUMEN TOTAL DE LA OPERACIÓN</th>';
+        $html.='<th colspan="4" style="text-align: center; font-size: 11px;">RESUMEN TOTAL DE LA OPERACIÓN</th>';
         $html.= "</tr>";
         
         $html.= "<tr>";
@@ -292,17 +294,17 @@ class ReporteDesafiliacionController extends ControladorBase{
         $html.='</tr>';
         
         $html.= "<tr>";
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='</tr>';
         
         $html.= "<tr>";
-        $html.='<td style="text-align: center; font-size: 11px;">Total:</td>';
-        $html.='<td style="text-align: center; font-size: 11px;"></td>';
-        $html.='<td style="text-align: center; font-size: 11px;"></td>';
-        $html.='<td style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;">Total:</td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;"></td>';
+        $html.='<td class="htexto1" style="text-align: center; font-size: 11px;"></td>';
+        $html.='<td class="htexto2" style="text-align: center; font-size: 11px;">'.$FECHA.'</td>';
         $html.='</tr>';
         
         $html.='</table>';

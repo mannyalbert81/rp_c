@@ -503,7 +503,7 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-                <li style="<?php echo getcontrolador("DeclaracionGastos",$controladores) ?>"><a href="index.php?DeclaracionGastos=Retencion&action=index"><i class="fa fa-circle-o"></i> Formulario Gastos </a></li>
+                <li style="<?php echo getcontrolador("DeclaracionGastos",$controladores) ?>"><a href="index.php?controller=DeclaracionGastos&action=index"><i class="fa fa-circle-o"></i> Formulario Gastos </a></li>
     		  </ul>
             </li>
             

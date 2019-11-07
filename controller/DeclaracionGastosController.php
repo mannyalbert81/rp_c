@@ -33,12 +33,9 @@ class DeclaracionGastosController extends ControladorBase{
 		    exit();
 		}		    
 			
-		$rsBancos = $bancos->getBy(" 1 = 1 ");
-		
 				
 		$this->view_tributario("DeclaracionGastos",array(
-		    "resultSet"=>$rsBancos
-	
+		    
 		));
 			
 	

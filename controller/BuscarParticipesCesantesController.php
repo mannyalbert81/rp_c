@@ -10,6 +10,8 @@ class BuscarParticipesCesantesController extends ControladorBase{
         ));
     }
     
+    
+    
     public function index1()
     {
         session_start();
@@ -207,22 +209,18 @@ class BuscarParticipesCesantesController extends ControladorBase{
         echo json_encode($respuesta);
     }
     
-    public function dateDifference($date_1 , $date_2 , $differenceFormat = '%y Años, %m Meses' )
-    {
-        $datetime1 = date_create($date_1);
-        $datetime2 = date_create($date_2);
-        
-        $interval = date_diff($datetime1, $datetime2);
-        
-        return $interval->format($differenceFormat);
-        
-    }
+ 
     
     public function AportesParticipe()
     {
         session_start();
         
         $html="";
+        $_id_creditos=0;
+        $total_saldo=0;
+        $total_descuentos=0;
+        $total_recibir=0;
+        $total_pagar=0;
         $id_participe=$_POST['id_participe'];
         $participes= new ParticipesModel();
     
@@ -295,38 +293,94 @@ class BuscarParticipesCesantesController extends ControladorBase{
                     </tr>
                     <tr style="color:white;" class="bg-red">
                     <th width="10%">TOTAL 50% PERSONAL + RENDIMIENTOS PRESTACIÓN</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalSuma">'.number_format((float)$Total50PersonalMasRendimientos, 2, ',', '.').'</span></font></td>
-                    </tr>
-
-
-
-
-
-
-
-
-
-                    <tr style="color:white;" class="bg-olive">
+                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalSuma"><b>'.number_format((float)$Total50PersonalMasRendimientos, 2, ',', '.').'</b></span></font></td>
+                    </tr>';
+                
+               
+                
+                
+                // CONSULTO LOS CREDITOS DE LOS PARTICIPES
+                $columnas="bb.id_creditos,bb.id_tipo_creditos, tc.nombre_tipo_creditos, tc.codigo_tipo_creditos";
+                $tablas="core_participes aa
+                inner join core_creditos bb on bb.id_participes = aa.id_participes
+                inner join core_estado_participes cc on cc.id_estado_participes = aa.id_estado_participes
+                inner join core_estado_creditos dd on dd.id_estado_creditos = bb.id_estado_creditos
+                inner join core_tipo_creditos tc on bb.id_tipo_creditos=tc.id_tipo_creditos";
+                $where=" aa.id_estatus = 1
+                and upper(cc.nombre_estado_participes) = 'ACTIVO'
+                and upper(dd.nombre_estado_creditos) = 'ACTIVO'
+                and aa.id_participes =".$id_participe."";
+                $id="bb.id_creditos";
+                
+                $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
+                
+                if(!(empty($resultCreditos)))
+                {
+                 
+                    $html.='<tr style="color:white;" class="bg-olive">
                     <th width="10%">DESCUENTOS</th>
                     <td box box-solid bg-olive"  width="10%"><font color="black"><span id="lblCreditoOrdinario"></span></font></td>
-                    </tr>
-                    <tr style="color:white;" class="bg-aqua">
-                    <th width="10%">PQ-Créditos</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblCreditoOrdinario"></span></font></td>
-                    </tr>
-                    <tr style="color:white;" class="bg-red">
+                    </tr>';
+                    
+                    foreach($resultCreditos as $res)
+                    {
+                        
+                        // capturo el id de los creditos que tiene el participe
+                        $_id_creditos=$res->id_creditos;
+                        $_nombre_tipo_creditos=$res->nombre_tipo_creditos.' #'.$res->id_creditos;
+                        
+                       $total_saldo= $this->Buscar_Cuotas_Actuales($_id_creditos);
+                       $total_interes= $this->Buscar_Interes($_id_creditos);
+                       
+                       
+                       $html.=' <tr style="color:white;" class="bg-aqua">
+                       <th width="10%">'.$_nombre_tipo_creditos.'</th>
+                       <td bgcolor="white"  width="10%"><font color="black"><span id="lblCreditoOrdinario">'.number_format((float)$total_saldo, 2, ',', '.').'</span></font></td>
+                       </tr>';
+                       
+                       
+                       $total_descuentos=$total_descuentos+$total_saldo;
+                        
+                    }
+                }
+
+                    
+
+                
+                $total_recibir=$Total50PersonalMasRendimientos-$total_descuentos;
+                  
+                $html.=' <tr style="color:white;" class="bg-red">
                     <th width="10%">TOTAL DESCUENTOS</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalDescuentos"></span></font></td>
+                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalDescuentos"><b>'.number_format((float)$total_descuentos, 2, ',', '.').'</b></span></font></td>
                     </tr>
                     <tr style="color:white;" class="bg-black">
                     <th width="10%">TOTAL A RECIBIR</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalRecibir"></span></font></td>
+                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalRecibir"><b>'.number_format((float)$total_recibir, 2, ',', '.').'</b></span></font></td>
                     </tr>
                     </table>
-                    <table border="1" width="100%">';
+                    </div></div>';
                 
             
                 
+                
+                if ($total_recibir<0) {
+                    
+                    $total_pagar=$total_recibir*(-1);
+                    
+                    $html.='<div class="box box-solid bg-aqua" style = "margin-top:20px">
+                    <div class="box-header with-border">
+                    <h3 class="box-title"><b>ALERTAS</b></h3>
+                    </div>
+                    <table border="1" width="100%">
+                    <tr style="color:white;" class="bg-white">
+                    <th width="10%">Estimado participe para poder acceder a la desafiliacion debe cubrir el monto adeudado en sus créditos a la fecha con el valor de:</th>
+                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalDescuentos"><b>'.number_format((float)$total_pagar, 2, ',', '.').'</b></span></font></td>
+                    </tr>
+                    </table>
+                    </div>';
+                    
+                    
+               } 
                 
                 
             }else{
@@ -338,239 +392,287 @@ class BuscarParticipesCesantesController extends ControladorBase{
                 $html.='</div>';
             }
             
-            
             echo $html;
             
         }
         
         
-        
     }
-    public function paginate($reload, $page, $tpages, $adjacents, $funcion = "") {
-        
-        $prevlabel = "&lsaquo; Prev";
-        $nextlabel = "Next &rsaquo;";
-        $out = '<ul class="pagination pagination-large">';
-        
-        
-        if($page==1) {
-            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-        } else if($page==2) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
-        }else {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
-            
-        }
-        
-        if($page>($adjacents+1)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
-        }
-        if($page>($adjacents+2)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-        for($i=$pmin; $i<=$pmax; $i++) {
-            if($i==$page) {
-                $out.= "<li class='active'><a>$i</a></li>";
-            }else if($i==1) {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
-            }else {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
-            }
-        }
-        
-        
-        if($page<($tpages-$adjacents-1)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        
-        if($page<($tpages-$adjacents)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
-        }
-        
-        
-        if($page<$tpages) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
-        }else {
-            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-        }
-        
-        $out.= "</ul>";
-        return $out;
-    }  
-
-    public function CreditosActivosParticipe()
+    
+    public function Buscar_Interes($_id_creditos)
     {
-        session_start();
         $participe= new ParticipesModel();
         $anio_actual=date("Y");
         $mes_actual=date("m");
         
+        $_id_estado_tabla_amortizacion=0;
+        $_balance_tabla_amortizacion=0;
+        $total_anterior=0;
         
-        if ($mes_actual == 1 || $mes_actual == 01){
+        
+        $_fecha_tabla_amortizacion="";
+        $_fecha_tabla_amortizacion_anterior="";
+        $_fecha_tabla_amortizacion_adelantada="";
+        
+            $year_buscar = $anio_actual;
+            $mes_buscar = $mes_actual;
+
+        
+        $mes_buscar=str_pad($mes_buscar,2,'0',STR_PAD_LEFT);
+        $dia= date("d",(mktime(0,0,0,$mes_buscar+1,1,$year_buscar)-1));
+        $_fecha_tabla_amortizacion=$year_buscar."-".str_pad($mes_buscar,2,'0',STR_PAD_LEFT)."-".$dia;
+        
+        
+        
+        
+        
+        $columnas="t.fecha_tabla_amortizacion, t.numero_pago_tabla_amortizacion, t.id_estado_tabla_amortizacion, t.balance_tabla_amortizacion, t.interes_tabla_amortizacion";
+        $tablas="core_tabla_amortizacion t";
+        $where="t.id_creditos='$_id_creditos' and t.id_estatus=1 and to_char(t.fecha_tabla_amortizacion, 'YYYY')='$year_buscar' and to_char(t.fecha_tabla_amortizacion, 'MM')=LPAD('$mes_buscar',2,'0')";
+        $id="t.numero_pago_tabla_amortizacion";
+        $resultSet=$participe->getCondiciones($columnas, $tablas, $where, $id);
+        
+        if(!empty($resultSet)){
             
-            $mes_actual=12;
-            $anio_actual=$anio_actual-1;
-            
-        }
-        else {
-            
-            $mes_actual= $mes_actual-1;
-            
-        }
-        
-        $mes_actual=str_pad($mes_actual,2,'0',STR_PAD_LEFT);
-        
-        
-             
-        $id_participe=$_POST['id_participe'];
-        
-        $columnas="bb.id_creditos,bb.id_tipo_creditos";
-        $tablas="core_participes aa 
-                inner join core_creditos bb on bb.id_participes = aa.id_participes
-                inner join core_estado_participes cc on cc.id_estado_participes = aa.id_estado_participes
-                inner join core_estado_creditos dd on dd.id_estado_creditos = bb.id_estado_creditos";
-        $where="aa.id_estatus = bb.id_estatus
-                and aa.id_estatus = 1
-                and upper(cc.nombre_estado_participes) = 'ACTIVO'
-                and upper(dd.nombre_estado_creditos) = 'ACTIVO'
-                and aa.id_participes =".$id_participe."";
-        $id="bb.id_creditos";
-        
-        $resultCreditos=$participe->getCondiciones($columnas, $tablas, $where, $id);
-        
-        if(!(empty($resultCreditos)))
-        {
-            foreach($resultCreditos as $res)
-            {
-              
-                // capturo el id de los creditos que tiene el participe
-                $_id_creditos=$res->id_creditos;
+            foreach ($resultSet as $res){
                 
                 
-                // consulto la ultima fecha que debe estar pagada
-                $columnas1="to_char(bb.fecha_tabla_amortizacion,'YYYYMM')";
-                $tablas1="core_creditos aa
-                inner join core_tabla_amortizacion bb on bb.id_creditos = aa.id_creditos";
-                $where1="bb.id_estatus = 1
-                and bb.id_estado_tabla_amortizacion <> 2
-                and aa.id_creditos = ".$_id_creditos."
-                and to_char(bb.fecha_tabla_amortizacion,'YYYYMM') = '$anio_actual$mes_actual'";
-                $id1="bb.id_creditos";
-                $resultCreditos1=$participe->getCondiciones($columnas1, $tablas1, $where1, $id1);
-               
+                $_id_estado_tabla_amortizacion= $res->id_estado_tabla_amortizacion;
+                $_interes_tabla_amortizacion= $res->interes_tabla_amortizacion;
                 
-                if(!(empty($resultCreditos1)))
-                {
-                    foreach($resultCreditos1 as $res)
-                    {
                 
-                        $columnas2="bb.id_creditos, bb.balance_tabla_amortizacion";
-                        $tablas2="core_creditos aa
-                        inner join core_tabla_amortizacion bb on bb.id_creditos = aa.id_creditos";
-                        $where2="bb.id_estatus = 1
-                        and bb.id_estado_tabla_amortizacion = 2 
-                        and aa.id_creditos = ".$_id_creditos."
-                        and to_char(bb.fecha_tabla_amortizacion,'YYYYMM') = '$anio_actual$mes_actual'";
-                        $id2="bb.id_creditos";
+                
+                // verifico que la ultimo cuota esta cancelada
+                if($_id_estado_tabla_amortizacion==2){
+                    
+                    $columnas_adelantados="t.fecha_tabla_amortizacion as fecha_tabla_amortizacion_adelantada, balance_tabla_amortizacion";
+                    $tablas_adelantados="core_tabla_amortizacion t";
+                    $where_adelantados="t.id_creditos='$_id_creditos' and t.id_estatus=1 and t.id_estado_tabla_amortizacion=2";
+                    $id_adelantados="t.fecha_tabla_amortizacion";
+                    $limit_1="1";
+                    $resultSetAdelantados=$participe->getCondicionesDescLimit($columnas_adelantados, $tablas_adelantados, $where_adelantados, $id_adelantados, $limit_1);
+                    
+                    
+                    
+                    if(!empty($resultSetAdelantados)){
                         
-                        $resultCreditos2=$participe->getCondiciones($columnas2, $tablas2, $where2, $id2);
-                        
-                        
-                        if(!(empty($resultCreditos2)))
-                        {
-                            foreach($resultCreditos2 as $res)
-                            {
-                             
+                        foreach ($resultSetAdelantados as $resA) {
+                            
+                            $_fecha_tabla_amortizacion_adelantada=$resA->fecha_tabla_amortizacion_adelantada;
+                            
+                            
+                            if($_fecha_tabla_amortizacion_adelantada==$_fecha_tabla_amortizacion){
                                 
+                                $_balance_tabla_amortizacion= $res->balance_tabla_amortizacion;
+                                
+                                
+                            }else{
+                                
+                                $_balance_tabla_amortizacion= $resA->balance_tabla_amortizacion;
                                 
                             }
+                            
+                            
+                            
                         }
-                        
-                        
                         
                     }
                     
                     
+                }else{
+                    
+                    
+                    
+                    
                 }
-  
+                
+                
+                $_total_saldo_actual=$_balance_tabla_amortizacion+$total_anterior;
+                
+                return  $_total_saldo_actual;
+                
             }
             
             
-          
+        }else{
+            
+            // para los vencidos
+            
+            
             
         }
+        
+        
+        
+    }
+
+    public function Buscar_Cuotas_Actuales($_id_creditos)
+    {
+        $participe= new ParticipesModel();
+        $anio_actual=date("Y");
+        $mes_actual=date("m");
+        
+        $_id_estado_tabla_amortizacion=0;
+        $_balance_tabla_amortizacion=0;
+        $total_anterior=0;
+        
+        
+        $_fecha_tabla_amortizacion="";
+        $_fecha_tabla_amortizacion_anterior="";
+        $_fecha_tabla_amortizacion_adelantada="";
+        
+        
+        
+        
+        if ($mes_actual == 01 || $mes_actual == 1)
+        {
+            $year_buscar = $anio_actual - 1;
+            $mes_buscar = 12;
             
+        }
+        else
+        {
+            $year_buscar = $anio_actual;
+            $mes_buscar = $mes_actual - 1;
+            
+        }
+        
+        $mes_buscar=str_pad($mes_buscar,2,'0',STR_PAD_LEFT);
+        $dia= date("d",(mktime(0,0,0,$mes_buscar+1,1,$year_buscar)-1));
+        $_fecha_tabla_amortizacion=$year_buscar."-".str_pad($mes_buscar,2,'0',STR_PAD_LEFT)."-".$dia;
+        
+        
+        
+        
+        
+        $columnas="t.fecha_tabla_amortizacion, t.numero_pago_tabla_amortizacion, t.id_estado_tabla_amortizacion, t.balance_tabla_amortizacion";
+        $tablas="core_tabla_amortizacion t";
+        $where="t.id_creditos='$_id_creditos' and t.id_estatus=1 and to_char(t.fecha_tabla_amortizacion, 'YYYY')='$year_buscar' and to_char(t.fecha_tabla_amortizacion, 'MM')=LPAD('$mes_buscar',2,'0')";
+        $id="t.numero_pago_tabla_amortizacion";
+        $resultSet=$participe->getCondiciones($columnas, $tablas, $where, $id);
+        
+        if(!empty($resultSet)){
+            
+            foreach ($resultSet as $res){
+                
+                
+                $_id_estado_tabla_amortizacion= $res->id_estado_tabla_amortizacion;
+                
+                // verifico que la ultimo cuota esta cancelada
+                if($_id_estado_tabla_amortizacion==2){
+                    
+                    $columnas_adelantados="t.fecha_tabla_amortizacion as fecha_tabla_amortizacion_adelantada, balance_tabla_amortizacion";
+                    $tablas_adelantados="core_tabla_amortizacion t";
+                    $where_adelantados="t.id_creditos='$_id_creditos' and t.id_estatus=1 and t.id_estado_tabla_amortizacion=2";
+                    $id_adelantados="t.fecha_tabla_amortizacion";
+                    $limit_1="1";
+                    $resultSetAdelantados=$participe->getCondicionesDescLimit($columnas_adelantados, $tablas_adelantados, $where_adelantados, $id_adelantados, $limit_1);
+                    
+                    
+                    
+                    if(!empty($resultSetAdelantados)){
+                        
+                        foreach ($resultSetAdelantados as $resA) {
+                         
+                            $_fecha_tabla_amortizacion_adelantada=$resA->fecha_tabla_amortizacion_adelantada;
+                            
+                            
+                            if($_fecha_tabla_amortizacion_adelantada==$_fecha_tabla_amortizacion){
+                                
+                                $_balance_tabla_amortizacion= $res->balance_tabla_amortizacion;
+                                
+                                
+                              }else{
+                                
+                                $_balance_tabla_amortizacion= $resA->balance_tabla_amortizacion;
+                                
+                             }
+                            
+                            
+                            
+                        }
+                        
+                    }
+                    
+                    
+                }else{
+                    
+                    
+                    $columnas_1="t.fecha_tabla_amortizacion as fecha_tabla_amortizacion_anterior, balance_tabla_amortizacion";
+                    $tablas_1="core_tabla_amortizacion t";
+                    $where_1="t.id_creditos='$_id_creditos' and t.id_estatus=1 and t.id_estado_tabla_amortizacion=2";
+                    $id_1="t.fecha_tabla_amortizacion";
+                    $limit_1="1";
+                    $resultSet1=$participe->getCondicionesDescLimit($columnas_1, $tablas_1, $where_1, $id_1, $limit_1);
+                    
+                    
+                    if(!empty($resultSet1)){
+                        
+                        foreach ($resultSet1 as $res1)
+                        {
+                        
+                            $_fecha_tabla_amortizacion_anterior=$res1->fecha_tabla_amortizacion_anterior;
+                            $_balance_tabla_amortizacion=$res1->balance_tabla_amortizacion;
+                            
+                            
+                            $columnas_2="coalesce(sum(t.total_balance_tabla_amortizacion),0) as total";
+                            $tablas_2="core_tabla_amortizacion t";
+                            $where_2="t.id_creditos='$_id_creditos' and t.id_estatus=1 and t.id_estado_tabla_amortizacion<>2 and date(t.fecha_tabla_amortizacion) between '$_fecha_tabla_amortizacion_anterior' and '$_fecha_tabla_amortizacion'";
+                           
+                            $resultSet2=$participe->getCondicionesSinOrden($columnas_2, $tablas_2, $where_2, "");
+                            
+                            
+                            
+                            if(!empty($resultSet2)){
+                                
+                                
+                                foreach ($resultSet2 as $res2) {
+                                 
+                                    $total_anterior=$res2->total;
+                                     
+                                }
+                                
+                            }
+                           
+                            
+                        }
+                        
+                    }
+                    
+                    
+                    
+                }
+                
+              
+                $_total_saldo_actual=$_balance_tabla_amortizacion+$total_anterior;
+                
+                return  $_total_saldo_actual;
+                
+            }
+            
+            
+        }else{
+            
+            // para los vencidos
+            
+            
+            
+        }
+     
+        
        
-}
+    }
  
     
-    public function paginate_creditos($reload, $page, $tpages, $adjacents,$id_participe,$funcion='') {
-        
-        $prevlabel = "&lsaquo; Prev";
-        $nextlabel = "Next &rsaquo;";
-        $out = '<ul class="pagination pagination-large">';
-        
-        // previous label
-        
-        if($page==1) {
-            $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-        } else if($page==2) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$prevlabel</a></span></li>";
-        }else {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page-1).")'>$prevlabel</a></span></li>";
-            
-        }
-        
-        // first label
-        if($page>($adjacents+1)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>1</a></li>";
-        }
-        // interval
-        if($page>($adjacents+2)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        // pages
-        
-        $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-        $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-        for($i=$pmin; $i<=$pmax; $i++) {
-            if($i==$page) {
-                $out.= "<li class='active'><a>$i</a></li>";
-            }else if($i==1) {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,1)'>$i</a></li>";
-            }else {
-                $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".$i.")'>$i</a></li>";
-            }
-        }
-        
-        // interval
-        
-        if($page<($tpages-$adjacents-1)) {
-            $out.= "<li><a>...</a></li>";
-        }
-        
-        // last
-        
-        if($page<($tpages-$adjacents)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='$funcion($id_participe,$tpages)'>$tpages</a></li>";
-        }
-        
-        // next
-        
-        if($page<$tpages) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".$id_participe.",".($page+1).")'>$nextlabel</a></span></li>";
-        }else {
-            $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-        }
-        
-        $out.= "</ul>";
-        return $out;
-    }
+
+    
+    
+    
+    
+    
+    
+ 
+    
 
    
     public function print()

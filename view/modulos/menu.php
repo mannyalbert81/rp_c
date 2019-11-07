@@ -515,7 +515,7 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-              	
+              	 <li style="<?php echo getcontrolador("TributarioGeneraAts",$controladores) ?>"><a href="index.php?controller=TributarioGeneraAts&action=index"><i class="fa fa-circle-o"></i> Generar ATS Compras</a></li>
              </ul>
             </li>
         

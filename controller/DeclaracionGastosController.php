@@ -20,7 +20,7 @@ class DeclaracionGastosController extends ControladorBase{
 		    return;
 		}
 		
-		$nombre_controladores = "Bancos";
+		$nombre_controladores = "DeclaracionGastos";
 		$id_rol= $_SESSION['id_rol'];
 		$resultPer = $bancos->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			

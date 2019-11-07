@@ -13,7 +13,7 @@ if(!empty($datos_empresa))
     }
 }
 
-$footer = file_get_contents('view/reportes/template/pieficha.html');
+$footer = file_get_contents('view/reportes/template/pieret.html');
 
 if(!empty($datos_detalle)){
     
@@ -38,4 +38,6 @@ $mpdf->debug = true;
 $mpdf->Output();
 exit();
 ?>
+
+
 

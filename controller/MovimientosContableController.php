@@ -105,11 +105,11 @@ class MovimientosContableController extends ControladorBase{
 	        
 	        $datos_tabla= "<table id='tabla_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	        $datos_tabla.='<tr  bgcolor="">';
-	        $datos_tabla.='<th bgcolor="" width="10%"  style="text-align: center; ">CUENTA CONTABLE</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">DETALLE</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">SALDO INICIAL</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">MOV MES</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">SALDO FINAL</th>';
+	        $datos_tabla.='<th bgcolor="" width="10%"  style="text-align: center;">CUENTA CONTABLE</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">DETALLE</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">SALDO INICIAL</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">MOV MES</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">SALDO FINAL</th>';
 	        $datos_tabla.='</tr>';
 	       
 	        
@@ -136,11 +136,11 @@ class MovimientosContableController extends ControladorBase{
 	                $color_error = "red";
 	                
 	                $datos_tabla.='<tr  bgcolor="">';
-	                $datos_tabla.='<td bgcolor="" width="10%"  style="text-align: left; ">'.$_codigo_plan_cuentas.'</td>';
-	                $datos_tabla.='<td bgcolor="" width="20%" style="text-align: left; ">'.$_nombre_plan_cuentas.'</td>';
-	                $datos_tabla.='<td bgcolor="" width="20%" style="text-align: right; ">'.$_saldo_inicial.'</td>';
-	                $datos_tabla.='<td bgcolor="" width="20%" style="text-align: right; ">'.$_movimientos.'</td>';
-	                $datos_tabla.='<td bgcolor="" width="20%" style="text-align: right; color:red; ">'.$_saldo_final.'</td>';
+	                $datos_tabla.='<td bgcolor="" width="10%" style="text-align: left;">'.$_codigo_plan_cuentas.'</td>';
+	                $datos_tabla.='<td bgcolor="" width="20%" style="text-align: left;">'.$_nombre_plan_cuentas.'</td>';
+	                $datos_tabla.='<td bgcolor="" width="20%" style="text-align: right;">'.$_saldo_inicial.'</td>';
+	                $datos_tabla.='<td bgcolor="" width="20%" style="text-align: right;">'.$_movimientos.'</td>';
+	                $datos_tabla.='<td bgcolor="" width="20%" style="text-align: right; color:red;">'.$_saldo_final.'</td>';
 	                $datos_tabla.='</tr>';
 	            }
 	            
@@ -266,11 +266,11 @@ class MovimientosContableController extends ControladorBase{
 	        
 	        $datos_tabla= "<table id='tabla_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	        $datos_tabla.='<tr  bgcolor="">';
-	        $datos_tabla.='<th bgcolor="" width="10%"  style="text-align: center; ">CUENTA CONTABLE</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">DETALLE</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">SALDO INICIAL</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">MOV MES</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">SALDO FINAL</th>';
+	        $datos_tabla.='<th bgcolor="" width="10%" style="text-align: center;">CUENTA CONTABLE</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">DETALLE</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">SALDO INICIAL</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">MOV MES</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">SALDO FINAL</th>';
 	        $datos_tabla.='</tr>';
 	        
 	        
@@ -284,12 +284,12 @@ class MovimientosContableController extends ControladorBase{
 	            $_movimientos = number_format((float)$res->movimiento, 2, ',', '.');
 	            $_saldo_final = number_format((float)$res->saldo_mayor, 2, ',', '.');
 	            
-                $datos_tabla.='<tr  bgcolor="">';
-                $datos_tabla.='<td bgcolor="" width="10%" style="text-align: left; ">'.$_codigo_plan_cuentas.'</td>';
-                $datos_tabla.='<td bgcolor="" width="20%" style="text-align: left; ">'.$_nombre_plan_cuentas.'</td>';
-                $datos_tabla.='<td bgcolor="" width="20%" class="numero " >'.$_saldo_inicial.'</td>';
-                $datos_tabla.='<td bgcolor="" width="20%" class="numero " >'.$_movimientos.'</td>';
-                $datos_tabla.='<td bgcolor="" width="20%" class="numero " >'.$_saldo_final.'</td>';
+                $datos_tabla.='<tr bgcolor="">';
+                $datos_tabla.='<td bgcolor="" width="10%" style="text-align: left;">'.$_codigo_plan_cuentas.'</td>';
+                $datos_tabla.='<td bgcolor="" width="20%" style="text-align: left;">'.$_nombre_plan_cuentas.'</td>';
+                $datos_tabla.='<td bgcolor="" width="20%" class="numero">$ '.$_saldo_inicial.'</td>';
+                $datos_tabla.='<td bgcolor="" width="20%" class="numero">$ '.$_movimientos.'</td>';
+                $datos_tabla.='<td bgcolor="" width="20%" class="numero">$ '.$_saldo_final.'</td>';
                 $datos_tabla.='</tr>';
 	           
 	            
@@ -395,11 +395,11 @@ class MovimientosContableController extends ControladorBase{
 	        $datos_tabla= "<table id='$_nombre_tabla' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	        $datos_tabla.='<thead>';
 	        $datos_tabla.='<tr  bgcolor="">';
-	        $datos_tabla.='<th bgcolor="" width="10%"  style="text-align: center; ">CUENTA CONTABLE</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">DETALLE</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">SALDO INICIAL</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">MOV MES</th>';
-	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center; ">SALDO FINAL</th>';
+	        $datos_tabla.='<th bgcolor="" width="10%"  style="text-align: center;">CUENTA CONTABLE</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">DETALLE</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">SALDO INICIAL</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">MOV MES</th>';
+	        $datos_tabla.='<th bgcolor="" width="20%" style="text-align: center;">SALDO FINAL</th>';
 	        $datos_tabla.='</tr>';
 	        $datos_tabla.='</thead>';
 	        $datos_tabla.='<tbody>';
@@ -425,9 +425,9 @@ class MovimientosContableController extends ControladorBase{
 	            $datos_tabla.='<tr  bgcolor="">';
 	            $datos_tabla.='<td bgcolor="" width="10%" style="text-align: left; ">'.$_codigo_plan_cuentas.'</td>';
 	            $datos_tabla.='<td bgcolor="" width="20%" style="text-align: left; ">'.$_nombre_plan_cuentas.'</td>';
-	            $datos_tabla.='<td bgcolor="" width="20%" class="numero " >'.$_saldo_inicial.'</td>';
-	            $datos_tabla.='<td bgcolor="" width="20%" class="numero " >'.$_movimientos.'</td>';
-	            $datos_tabla.='<td bgcolor="" width="20%" class="numero " >'.$_saldo_final.'</td>';
+	            $datos_tabla.='<td bgcolor="" width="20%" class="numero">'.$_saldo_inicial.'</td>';
+	            $datos_tabla.='<td bgcolor="" width="20%" class="numero">'.$_movimientos.'</td>';
+	            $datos_tabla.='<td bgcolor="" width="20%" class="numero">'.$_saldo_final.'</td>';
 	            $datos_tabla.='</tr>';
 	            
 	            
@@ -436,10 +436,10 @@ class MovimientosContableController extends ControladorBase{
 	        $datos_tabla.='<tfoot>';
 	        $datos_tabla.='<tr>';
 	        $datos_tabla.='<th></th>';
-	        $datos_tabla.='<th width="20%" style="text-align: right; " >TOTALES</th>';
-	        $datos_tabla.='<th width="20%" style="text-align: right; " >'.number_format($_total_saldo_i, 2, ',', '.').'</th>';
-	        $datos_tabla.='<th width="20%" style="text-align: right; " >'.number_format($_total_saldo_mov, 2, ',', '.').'</th>';
-	        $datos_tabla.='<th width="20%" style="text-align: right; " >'.number_format($_total_saldo_f, 2, ',', '.').'</th>';
+	        $datos_tabla.='<th width="20%" style="text-align: right;">TOTALES</th>';
+	        $datos_tabla.='<th width="20%" style="text-align: right;">'.number_format($_total_saldo_i, 2, ',', '.').'</th>';
+	        $datos_tabla.='<th width="20%" style="text-align: right;">'.number_format($_total_saldo_mov, 2, ',', '.').'</th>';
+	        $datos_tabla.='<th width="20%" style="text-align: right;">'.number_format($_total_saldo_f, 2, ',', '.').'</th>';
 	        $datos_tabla.='</tr>';
 	        $datos_tabla.='</tfoot>';
 	        $datos_tabla.='</tbody>';
@@ -447,6 +447,8 @@ class MovimientosContableController extends ControladorBase{
 	    }
 	    
 	    $entidades = new EntidadesModel();
+	    
+	    
 	    
 	    $datos_empresa = array();
 	    $datos_detalle = array();
@@ -544,11 +546,11 @@ class MovimientosContableController extends ControladorBase{
 	    $datos_tabla .= "<table border=1>";
 	    $datos_tabla .= "<thead>";
 	    $datos_tabla .= "<tr >";
-	    $datos_tabla .= "<th bgcolor=\"yellow\" >CUENTA CONTABLE</th>";
-	    $datos_tabla .= "<th bgcolor=\"yellow\" >DETALLE</th>";
-	    $datos_tabla .= "<th bgcolor=\"yellow\" >SALDO INICIAL</th>";
-	    $datos_tabla .= "<th bgcolor=\"yellow\" >MOV MES</th>";
-	    $datos_tabla .= "<th bgcolor=\"yellow\" >SALDO FINAL</th>";
+	    $datos_tabla .= "<th bgcolor=\"yellow\">CUENTA CONTABLE</th>";
+	    $datos_tabla .= "<th bgcolor=\"yellow\">DETALLE</th>";
+	    $datos_tabla .= "<th bgcolor=\"yellow\">SALDO INICIAL</th>";
+	    $datos_tabla .= "<th bgcolor=\"yellow\">MOV MES</th>";
+	    $datos_tabla .= "<th bgcolor=\"yellow\">SALDO FINAL</th>";
 	    $datos_tabla .= "</tr>";
 	    $datos_tabla .= "</thead>";
 	    

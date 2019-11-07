@@ -70,8 +70,8 @@ if(!empty($datos_detalle)){
             $tablahtml.='<td>'.$res->codigo_plan_cuentas.'</td>';
             $tablahtml.='<td>'.$res->nombre_plan_cuentas.'</td>';
             $tablahtml.='<td>'.$res->descripcion_dcomprobantes.'</td>';
-            $tablahtml.='<td class="numero">'.$res->debe_dcomprobantes.'</td>';
-            $tablahtml.='<td class="numero"> '.$res->haber_dcomprobantes.'</td>';
+            $tablahtml.='<td class="numero">$ '.$res->debe_dcomprobantes.'</td>';
+            $tablahtml.='<td class="numero">$ '.$res->haber_dcomprobantes.'</td>';
             $tablahtml.='</tr>';
             
         }else{
@@ -83,8 +83,8 @@ if(!empty($datos_detalle)){
             $tablahtml.='<td>'.$res->codigo_plan_cuentas.'</td>';
             $tablahtml.='<td>'.$res->nombre_plan_cuentas.'</td>';
             $tablahtml.='<td>'.$res->descripcion_dcomprobantes.'</td>';
-            $tablahtml.='<td class="numero">'.$res->debe_dcomprobantes.'</td>';
-            $tablahtml.='<td class="numero"> '.$res->haber_dcomprobantes.'</td>';
+            $tablahtml.='<td class="numero">$ '.$res->debe_dcomprobantes.'</td>';
+            $tablahtml.='<td class="numero">$ '.$res->haber_dcomprobantes.'</td>';
             $tablahtml.='</tr>';
            
         }

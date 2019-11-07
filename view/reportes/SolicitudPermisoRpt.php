@@ -6,7 +6,7 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
 
 $template = file_get_contents('view/reportes/template/SolicitudPermiso.html');
 
-$footer = file_get_contents('view/reportes/template/pieficha.html');
+$footer = file_get_contents('view/reportes/template/pieret.html');
 
 if(!empty($datos_empresa))
 {

@@ -24,7 +24,7 @@ if(!empty($datos_empresa))
 //$template = file_get_contents('template/DiarioContable.html');
 
 //para la numeracion de pagina
-$footer = file_get_contents('view/reportes/template/pieficha.html');
+$footer = file_get_contents('view/reportes/template/pieret.html');
 //$footer = file_get_contents('template/pieficha.html');
 //$template = str_replace('{detalle}', $detalle, $template);
 //cuando ya viene el diccionario de datos

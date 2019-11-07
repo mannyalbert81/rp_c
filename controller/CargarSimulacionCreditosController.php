@@ -1,9 +1,9 @@
 <?php
-class SimulacionCreditosController extends ControladorBase{
+class CargarSimulacionCreditosController extends ControladorBase{
     public function index(){
         session_start();
         $estado = new EstadoModel();
-        $id_rol = $_SESSION['id_rol'];
+        $id_rol = $_SESSION['id_rol']; 
         
         $this->view_Credito("SimulacionCreditos",array(
             "result" => ""
@@ -139,7 +139,7 @@ class SimulacionCreditosController extends ControladorBase{
         <th ></th>
         <th ></th>
         <th >Total:</th>
-        <td align="right">'.$total.'</td>
+        <td align="right" id="total_renovar">'.$total.'</td>
         </tr>';
        
        
@@ -3374,7 +3374,7 @@ class SimulacionCreditosController extends ControladorBase{
                 <th width="2%"></th>*/
                
                $html.='<tr>';
-               $html.='<td width="5%" bgcolor="white"><font color="black">'.$res['pagos_trimestrales'].'</font></td>';
+               $html.='<td width="7.3%" bgcolor="white"><font color="black">'.$res['pagos_trimestrales'].'</font></td>';
                $html.='<td width="15%" bgcolor="white" align="center"><font color="black">'.$res['fecha_pago'].'</font></td>';
                $res['amortizacion']=number_format((float)$res['amortizacion'],2,".",",");
                $html.='<td width="13.4%" bgcolor="white" align="right"><font color="black">'.$res['amortizacion'].'</font></td>';

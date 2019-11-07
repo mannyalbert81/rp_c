@@ -1,3 +1,4 @@
+
 var id_participe;
 
 
@@ -94,10 +95,11 @@ function BuscarParticipe()
 			$('#participe_encontrado').html(y[0]);
 		     id_participe=y[1];
 		    $("#link_reporte").data("participe",id_participe);
-			AportesParticipe(id_participe, 1)
-			AportesParticipePatronal(id_participe, 1)
-			CreditosActivosParticipe(id_participe, 1)
-			TablaDesafiliacion(id_participe, 1)
+		    console.log("valor de id -->"+id_participe);
+			AportesParticipe(1),
+			CreditosActivosParticipe(id_participe,1)
+			cargaTipoPrestaciones();
+
 			
 		})
 		.fail(function() {
@@ -106,138 +108,79 @@ function BuscarParticipe()
 		}
 }
 
-function AportesParticipe(id, page)
-{
-	$.ajax({
-	    url: 'index.php?controller=BuscarParticipesCesantes&action=AportesParticipe',
-	    type: 'POST',
-	    data: {
-	    	   id_participe: id,
-	    	   page: page
-	    },
-	})
-	.done(function(x) {
-		$('#aportes_participe').html(x);
-		
-		
-	})
-	.fail(function() {
-	    console.log("error");
-	});
-}
-
-
-function AportesParticipePatronal(id, page)
-{
-	$.ajax({
-	    url: 'index.php?controller=BuscarParticipesCesantes&action=AportesParticipePatronal',
-	    type: 'POST',
-	    data: {
-	    	   id_participe: id,
-	    	   page: page
-	    },
-	})
-	.done(function(x) {
-		$('#aportes_participe_patronal').html(x);
-		
-		
-	})
-	.fail(function() {
-	    console.log("error");
-	});
-}
-
-
-function CreditosActivosParticipe(id, page)
-{
-	$.ajax({
-	    url: 'index.php?controller=BuscarParticipesCesantes&action=CreditosActivosParticipe',
-	    type: 'POST',
-	    data: {
-	    	   id_participe: id,
-	    	   page: page
-	    },
-	})
-	.done(function(x) {
-		$('#creditos_participe').html(x);
-		
-		
-	})
-	.fail(function() {
-	    console.log("error");
-	});
-}
-
-function TablaDesafiliacion(id, page)
-{
-	$.ajax({
-	    url: 'index.php?controller=BuscarParticipesCesantes&action=TablaDesafiliacion',
-	    type: 'POST',
-	    data: {
-	    	   id_participe: id,
-	    	   page: page
-	    },
-	})
-	.done(function(x) {
-		$('#tabla_desafiliacion').html(x);
-		
-		let totalaAporte = $("#lblTotalPersonal").text();
-		totalaAporte = totalaAporte.replace(".","");
-		totalaAporte = totalaAporte.replace(",",".");
-		let var1 = totalaAporte / 2 ;
-		
-		let totalCredito = $("#lblTotalCreditos").text();
-		totalCredito = totalCredito.replace(".","");
-		totalCredito = totalCredito.replace(",",".");
-		let var2 = totalCredito;
-		
-		let totalImpuesto = $("#lblTotalImpuesto").text();
-		totalImpuesto = totalImpuesto.replace(".","");
-		totalImpuesto = totalImpuesto.replace(",",".");
-		let var3 = totalImpuesto / 2;
+function AportesParticipe(){
 	
-		let SuperavitAporte = $("#lblTotalSuperavitAporte").text();
-		SuperavitAporte = SuperavitAporte.replace(".","");
-		SuperavitAporte = SuperavitAporte.replace(",",".");
-		let var4 = SuperavitAporte / 2;
-		
-		let var5 = var1 + var3 + var4;
-		let var6 = var5 - var2;
 	
-		$("#lblAportePersonal").text(var1);
-		$("#lblImpuestoPersonal").text(var3);
-		$("#lblSuperavitAportePersonal").text(var4);
-		$("#lblTotalSuma").text(var5);
-		$("#lblCreditoOrdinario").text(var2);
-		$("#lblTotalDescuentos").text(var2);
-		$("#lblTotalRecibir").text(var6);
+	
+	$.ajax({
+		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+		url:"index.php?controller=BuscarParticipesCesantes&action=AportesParticipe",
+		type:"POST",
+		data:{action:'ajax',id_participe:id_participe}
+	}).done(function(datos){		
 		
+		$("#aportes_participe_registrados").html(datos)		
 		
-		if(var5 < var2)
-		{
-			
-		swal({
-	  		  title: "Advertencia!",
-	  		  text: "El participe no puede desafiliarse en este momento",
-	  		  icon: "error",
-	  		  button: "Aceptar",
-	  		  dangerMode: true
-	  		});
-		}
+	}).fail(function(xhr,status,error){
 		
+		var err = xhr.responseText
+		console.log(err);
 		
+	}).always(function(){
 		
-		
+		$("#divLoaderPage").removeClass("loader")
 		
 	})
-	.fail(function() {
-	    console.log("error");
-	});
+	
 }
-
 
 function reportePrint(ObjetoLink){
 	var $enlace = $(ObjetoLink);
 	var id_participe = $enlace.data("participe");
 	window.open("index.php?controller=BuscarParticipesCesantes&action=print&id_participes="+id_participe,"_blank");
 }
+
+
+function cargaTipoPrestaciones(){
+	
+	let $ddlTipoPrestaciones = $("#id_tipo_prestaciones");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=BuscarParticipesCesantes&action=cargaTipoPrestaciones",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		
+	
+		
+		$ddlTipoPrestaciones.empty();
+		$ddlTipoPrestaciones.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			
+			
+			$ddlTipoPrestaciones.append("<option value=' "+value.id_tipo_prestaciones +"' >" + value.nombre_tipo_prestaciones  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlTipoPrestaciones.empty();
+	})
+	
+}
+
+$("#id_tipo_prestaciones").on("focus",function(){
+	$("#mensaje_id_tipo_prestaciones").text("").fadeOut("");
+})
+
+$("#id_participe").on("keyup",function(){
+	
+	$(this).val($(this).val().toUpperCase());
+})
+
+
+

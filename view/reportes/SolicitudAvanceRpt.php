@@ -6,8 +6,6 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
 
 $template = file_get_contents('view/reportes/template/SolicitudAvance.html');
 
-$footer = file_get_contents('view/reportes/template/pieficha.html');
-
 if(!empty($datos_empresa))
 {
     
@@ -15,16 +13,18 @@ if(!empty($datos_empresa))
         $template = str_replace('{'.$clave.'}', $valor, $template);
     }
 }
-
 if(!empty($datos_reporte))
 {
 	
     foreach ($datos_reporte as $clave=>$valor) {
-        echo $clave; echo "\n";
+        //echo $clave; echo "\n";
 		$template = str_replace('{'.$clave.'}', $valor, $template);
 	}
 }
 
+$footer = file_get_contents('view/reportes/template/pieret.html');
+//echo $footer;
+//echo $template; die();
 ob_end_clean();
 //creacion del pdf
 //$mpdf=new mPDF('c','A4','','' , 0 , 0 , 0 , 0 , 0 , 0);

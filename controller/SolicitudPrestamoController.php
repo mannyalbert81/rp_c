@@ -16,6 +16,7 @@ class SolicitudPrestamoController extends ControladorBase{
 	{
 	    
 	    session_start();
+	   
 	    
 	    require_once 'core/DB_Functions.php';
 	    $db = new DB_Functions();
@@ -47,8 +48,6 @@ class SolicitudPrestamoController extends ControladorBase{
 	            $id="";
 	            
 	            $resultSoli=$db->getCondicionesDesc($columnas, $tablas, $where, $id);
-	            
-	            
 	            
 	            if(empty($resultSoli)){
 	                

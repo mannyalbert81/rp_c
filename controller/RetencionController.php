@@ -215,9 +215,6 @@ class RetencionController extends ControladorBase{
         $retencion_detalle = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
          
         
-        
-        
-        
          $html='';
         
          
@@ -234,22 +231,19 @@ class RetencionController extends ControladorBase{
          $html.='</tr>';
          
         
-        
          
         foreach ($retencion_detalle as $res)
         {
         	
         	$html.='<tr >';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'. $_tipo_comprobante.'</td>';
+        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$_tipo_comprobante.'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_numdocsustento.'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['FECHAEMISION'].'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['PERIODOFISCAL'].'</td>';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_baseimponible.'</td>';
+        	$html.='<td colspan="2" class="htexto3">$ '.$res->impuestos_baseimponible.'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_coddocsustento.'</td>';
         	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_porcentajeretener.'</td>';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_valorretenido.'</td>';
-        		
-        	
+        	$html.='<td colspan="2" class="htexto3">$ '.$res->impuestos_valorretenido.'</td>';        	
         	$html.='</td>';
         	$html.='</tr>';
         }

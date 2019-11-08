@@ -77,7 +77,6 @@ class BuscarProductoController extends ControladorBase{
                     "resultEdit" =>$resultEdit
                     
                     
-                    
                 ));
                 
                 
@@ -106,9 +105,14 @@ class BuscarProductoController extends ControladorBase{
     
     public function generar_reporte_productos () {
         
+       
         
         session_start();
         
+        $entidades = new EntidadesModel();
+        //PARA OBTENER DATOS DE LA EMPRESA
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
         $grupos=new GruposModel;
         $usuario = new UsuariosModel();
         $unidadmedida= new UnidadModel();
@@ -248,23 +252,30 @@ class BuscarProductoController extends ControladorBase{
                     $resultSetDetalle=$movdetalle->getCondiciones($columnas1, $tablas1, $where1, $id1);
                     
                     
-                    $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
-                    $html.= "<tr>";
-                    $html.='<th style="text-align: center; font-size: 25px; ">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CAPREMCI  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;'.$logo.'</br>';
-                    $html.='<p style="text-align: center; font-size: 13px; "> Av. Baquerico Moreno E-9781 y Leonidas Plaza';
-                    $html.='<p style="text-align: left; font-size: 13px; "> &nbsp; &nbsp;Código: &nbsp; '.$_numero_movimientos_inv_cabeza.' &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;   &nbsp; &nbsp; Fecha de Compra:  &nbsp; '.$_fecha_movimientos_inv_cabeza.'';
-                    $html.='</tr>';
-                    $html.='</table>';
+                    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+                        //llenar nombres con variables que va en html de reporte
+                        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+                        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+                        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+                        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+                        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+                        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+                    }
                     
-                    $html.='<p style="text-align: left; font-size: 13px; "><b>&nbsp; USUARIO: </b>'.$_nombre_usuarios.' &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b> PRODUCTO:</b> &nbsp;'.$_nombre_productos.'';
+                    //NOTICE DATA
+                    $datos_cabecera = array();
+                    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+                    $datos_cabecera['FECHA'] = date('Y/m/d');
+                    $datos_cabecera['HORA'] = date('h:i:s');
+                   
                     
+                    $datos_reporte = array();
                     
                     if(!empty($resultSetDetalle)){
                         
-                        $html.= "<table style='width: 100%; margin-top:10px;' border=1 cellspacing=0>";
-                        
+                        $html.='<table class="1"  cellspacing="0" style="width:100px;" border="1" >';
                         $html.= "<tr>";
-                        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                        $html.='<th colspan="2" style="text-align: center;  font-size: 12px;">Id</th>';
                         $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Tipo de Movimiento</th>';
                         $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Fecha</th>';
                         $html.='<th colspan="2" style="text-align: center; font-size: 13px;">Cantidad</th>';
@@ -279,33 +290,28 @@ class BuscarProductoController extends ControladorBase{
                         {
                             $i++;
                             $html.= "<tr>";
-                            $html.='<td style="text-align: center; font-size: 13px;">'.$i.'</td>';
+                            $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$i.'</td>';
                             $html.='<td colspan="2" style="text-align: left; font-size: 13px;">'.$res->razon_movimientos_inv_cabeza.'</td>';
                             $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
                             $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->cantidad_movimientos_inv_cabeza.'</td>';
-                            $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->ult_precio_productos.'</td>';
+                            $html.='<td colspan="2" class="htexto3">$ '.$res->ult_precio_productos.'</td>';
                             $html.='<td colspan="2" style="text-align: center; font-size: 13px;">'.$res->numero_factura_movimientos_inv_cabeza.'</td>';
                             $html.='</tr>';
                             
                         }
                         $html.='</table>';
                         
-                        
-                        
                     }
-                    
-                    
-                    
                 }
                 
                 
+                $datos_reporte['DETALLE_PRODUCTOS']= $html;
                 
-                $this->report("ProductosReporte",array( "resultSet"=>$html));
+                $this->verReporte("ReporteProductos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+               
                 die();
                 
             }
-            
-            
             
             
         }else{
@@ -313,13 +319,9 @@ class BuscarProductoController extends ControladorBase{
             $this->redirect("Usuarios","sesion_caducada");
             
         }
-        
-        
-        
-        
-        
     }
    
+    
     
     public function consulta_productos(){        session_start();
     $id_rol=$_SESSION["id_rol"];
@@ -410,14 +412,14 @@ class BuscarProductoController extends ControladorBase{
             $html.= "<table id='tabla_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
             $html.= "<thead>";
             $html.= "<tr>";
-            $html.='<th colspan="2" style=" text-align: center; font-size: 11px;">CÃ³digo</th>';
+            $html.='<th colspan="2" style=" text-align: center; font-size: 11px;">Código</th>';
             $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Marca</th>';
             $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Nombre</th>';
-            $html.='<th colspan="2" style="text-align: center; font-size: 11px;">DescripciÃ³n</th>';
+            $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Descripción</th>';
             $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Entradas</th>';
             $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Salidas</th>';
             $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Disponible</th>';
-            $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Precio Costo</th>';
+            
             
             $html.='</tr>';
             $html.='</thead>';
@@ -438,7 +440,7 @@ class BuscarProductoController extends ControladorBase{
                 $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->entradas_f_saldo_productos.'</td>';
                 $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->salidas_f_saldo_productos.'</td>';
                 $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->saldos_f_saldo_productos.'</td>';
-                $html.='<td colspan="2" style=" font-size: 11px;" align="right";>'.$res->precio_costo_saldo_productos.'</td>';
+                
                 $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=BuscarProducto&action=generar_reporte_productos&id_productos='.$res->id_productos.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
                 
                 
@@ -572,13 +574,15 @@ class BuscarProductoController extends ControladorBase{
                       productos.codigo_productos, 
                       productos.marca_productos, 
                       productos.nombre_productos, 
-                      productos.descripcion_productos, 
                       productos.ult_precio_productos, 
-                      grupos.nombre_grupos";
+                      productos.minimo_productos,
+                      saldo_productos.entradas_f_saldo_productos,  
+                      saldo_productos.salidas_f_saldo_productos, 
+                      saldo_productos.saldos_f_saldo_productos";
         
         $tablas = "  public.productos, 
-                     public.grupos";
-        $where= "grupos.id_grupos = productos.id_grupos";
+                    public.saldo_productos";
+        $where= "saldo_productos.id_productos = productos.id_productos";
         $id="productos.id_productos";
         
         $productos_detalle = $productos->getCondiciones($columnas, $tablas, $where, $id);
@@ -591,25 +595,39 @@ class BuscarProductoController extends ControladorBase{
         $html.='<th colspan="2" style=" text-align: center; font-size: 11px;">Código</th>';
         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Marca</th>';
         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Nombre</th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Descripción</th>';
         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Precio</th>';
-        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Grupo</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Entrada</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Salida</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Stock</th>';
         
         $html.='</tr>';
         
         
-        
+        $entradas="0";
         
         foreach ($productos_detalle as $res)
         {
             
+            
+            $entradas=  $res->minimo_productos;
+            
+            if($entradas==1){
+                
+                $entradas=0;
+                
+            }
+            
+            
+            
+            
             $html.='<tr >';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->codigo_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->marca_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.$res->codigo_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.$res->marca_productos.'</td>';
             $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->descripcion_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->ult_precio_productos.'</td>';
-            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_grupos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="right">'.$res->ult_precio_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.intval($res->entradas_f_saldo_productos).'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.intval($res->salidas_f_saldo_productos).'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.intval($res->saldos_f_saldo_productos).'</td>';
            
             
             
@@ -622,6 +640,74 @@ class BuscarProductoController extends ControladorBase{
         $datos_reporte['DETALLE_PRODUCTOS']= $html;
         
         $this->verReporte("StockProductos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+        
+        
+    }
+    
+    public function reporte_movimientos_productos(){
+        session_start();
+        
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        
+        
+        $entidades = new EntidadesModel();
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        //NOTICE DATA
+        $datos_cabecera = array();
+        $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+        $datos_cabecera['FECHA'] = date('Y/m/d');
+        $datos_cabecera['HORA'] = date('h:i:s');
+        
+        
+        
+        
+        
+        
+        $productos = new ProductosModel();
+        $id_productos =  (isset($_REQUEST['id_productos'])&& $_REQUEST['id_productos'] !=NULL)?$_REQUEST['id_productos']:'';
+        
+        $datos_reporte = array();
+        
+        $columnas = "   productos.id_productos, 
+                      productos.codigo_productos, 
+                      productos.marca_productos, 
+                      productos.nombre_productos";
+        
+        $tablas = "   public.productos";
+        $where= "  productos.id_productos='$id_productos'";
+        $id="productos.id_productos";
+        
+        $rsdatos = $productos->getCondiciones($columnas, $tablas, $where, $id);
+        
+     
+        $datos_reporte['NOMBRE_PRODUCTOS']=$rsdatos[0]->nombre_productos;
+        $datos_reporte['MARCA_PRODUCTOS']=$rsdatos[0]->marca_productos;
+        $datos_reporte['CODIGO_PRODUCTO']=$rsdatos[0]->codigo_productos;
+     
+       
+        
+        
+        
+        
+       
+        
+        
+        
+        
+        $this->verReporte("ReporteMovimientosProductos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte ));
+        
         
         
     }

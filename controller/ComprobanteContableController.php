@@ -146,12 +146,24 @@ class ComprobanteContableController extends ControladorBase{
 	            $html.='</div>';
 	            
 	        }else{
+	            
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay cuentas registradas...</b>';
-	            $html.='</div>';
-	            $html.='</div>';
+	            $html.='<section style="height:100px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_temp_comprobantes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 13px;">Cuenta</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Nombre de la Cuenta</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Descripción</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Debe</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;">Haber</th>';
+	            $html.='<th style="text-align: left;  font-size: 13px;"></th>';	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody >';
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
 	        }
 	        
 	        
@@ -481,13 +493,8 @@ class ComprobanteContableController extends ControladorBase{
 		session_start();
 		if (isset(  $_SESSION['usuario_usuarios']) )
 		{
-		    
-		    $_id_usuarios= $_SESSION['id_usuarios'];
-		    
-			$arrayGet=array();
-			     
+		      
 			$temp_comprobantes=new ComprobantesTemporalModel();
-			$d_comprobantes = new DComprobantesModel();
 			
 			$tipo_comprobante=new TipoComprobantesModel();
 			$resultTipCom = $tipo_comprobante->getAll("nombre_tipo_comprobantes");
@@ -495,17 +502,23 @@ class ComprobanteContableController extends ControladorBase{
 			$forma_pago=new FormaPagoModel();
 			$resultFormaPago = $forma_pago->getAll("nombre_forma_pago");
 			
-		    $permisos_rol = new PermisosRolesModel();
+			/** buscar tipo comprobantes **/
+			$TipoComprobantes = new TipoComprobantesModel();
+			$columnas1 = " id_tipo_comprobantes,nombre_tipo_comprobantes";
+			$tablas1 = " tipo_comprobantes";
+			$where1 = " 1 = 1 ";
+			$id1 = "id_tipo_comprobantes";
+			$rsConsulta1 = $TipoComprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
+									
 			$nombre_controladores = "ComprobanteContable";
 			$id_rol= $_SESSION['id_rol'];
 			$resultPer = $temp_comprobantes->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 				
 			if (!empty($resultPer))
 			{
-				
-					
+			    	
 				$this->view_Contable("ComprobanteContable",array(
-				    "resultTipCom"=>$resultTipCom , "resultFormaPago"=>$resultFormaPago
+				    "resultTipCom"=>$resultTipCom , "resultFormaPago"=>$resultFormaPago, "resultTipoComprobantes"=>$rsConsulta1
 					));
 			
 			
@@ -855,7 +868,7 @@ class ComprobanteContableController extends ControladorBase{
 	
 	
 		$resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
-	
+		$_nombre_plan_cuentas = array();
 	
 		if(!empty($resultSet)){
 	
@@ -1021,6 +1034,45 @@ class ComprobanteContableController extends ControladorBase{
 	}
 	
 
+	/******* CAMBIOS DC 05-11-2019 ******/
+	/************************************************************* BEGIN UTILITARIOS AJAX ********************************************************************/
+	
+	public function getTipoComprobantes(){
+	    
+	    $TipoComprobantes = new TipoComprobantesModel();	    
+	    $respuesta = array();
+	    $columnas1 = " id_tipo_comprobantes,nombre_tipo_comprobantes";
+	    $tablas1 = " tipo_comprobantes";
+	    $where1 = " 1 = 1 ";
+	    $id1 = "id_tipo_comprobantes";
+	    $rsConsulta1 = $TipoComprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    if( !empty($rsConsulta1) ){
+	        $respuesta['respuesta'] = 1;
+	        $respuesta['data'] = $rsConsulta1;	        
+	    }
+	    echo json_encode($respuesta);
+	}
+	
+	public function  getNumeroComprobante(){
+	    
+	    $TipoComprobantes = new TipoComprobantesModel();
+	    
+	    $id_tipo_comprobantes = isset($_POST['id_tipo_comprobantes']) ? $_POST['id_tipo_comprobantes'] : 0;
+	    
+	    $columnas1 = " lpad(bb.valor_consecutivos::text,bb.espacio_consecutivos,'0') numero_consecutivos, aa.nombre_tipo_comprobantes";
+	    $tablas1   = " tipo_comprobantes aa
+                       INNER JOIN consecutivos bb ON bb.id_tipo_comprobantes = aa.id_tipo_comprobantes";
+	    $where1    = " aa.id_tipo_comprobantes='$id_tipo_comprobantes'";
+	    $id1       = " aa.id_tipo_comprobantes";
+	    $rsConsulta1   = $TipoComprobantes->getCondiciones($columnas1 ,$tablas1 ,$where1, $id1);
+	    
+	    if( !empty( $rsConsulta1 ) ){
+	        echo json_encode(array('respuesta'=>'1','data'=>$rsConsulta1));
+	    }
+	    	    
+	}
+	
+	/************************************************************* END UTILITARIOS AJAX ********************************************************************/
 	
 	
 }

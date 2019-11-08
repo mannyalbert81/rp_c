@@ -4,10 +4,6 @@
   	<meta charset="utf-8"/>
   	<title>SOLICITUD DE ANTICIPO DE SUELDO</title>
   <style>  
-	 @page {
-        margin-top: 1cm;
-        margin-bottom: 1cm;
-    }
     
 	table {
 		border: 1px solid black;
@@ -68,6 +64,9 @@
 	.numero{
 		text-align:right;
 	}
+	.decimales{
+ 	text-align: right !important;
+    }
 	
 	.informacion
 	{
@@ -83,7 +82,8 @@
 	.firmas
 	{
 	text-align: center;  
-	font-size: 15px;
+	font-size: 14px;
+	padding:5px
 	}
 	td.central{
 	background-repeat: no-repeat;
@@ -96,13 +96,17 @@
 	
 }
 .htexto1{		
-	font-size: 10px;  padding: 5px; 
+	font-size: 13px;  padding: 5px; 
 	text-align:left;
-	width: 65%;
 }
 .htexto2{		
 	font-size: 10px;  padding: 5px; 
 	text-align:left;
+	width: 33%;
+}
+.htexto3{		
+	font-size: 10px;  padding: 5px; 
+	text-align:right;
 	width: 33%;
 }
 .htexto2 span{	 
@@ -182,7 +186,7 @@
 			</td>		
 		</tr>
 		<tr>
-			<td class="htexto1" >
+			<td class="htexto2" >
 				 <p>
 				  <strong>Ruc: </strong> {RUCEMPRESA}<br>	
 				   			  
@@ -190,7 +194,7 @@
 				 
 				 </p>				 
 			</td>
-			<td class="htexto2" >
+			<td class="htexto3" >
 				 <p>				  
 				  <strong>Fecha de Impresión: </strong> {FECHAEMPRESA}<br>
 				 </p>				 
@@ -198,28 +202,29 @@
 			
 		</tr>		
 	</table>	
-  			<h3 align="center" >SOLICITUD DE ANTICIPO DE SUELDOS</h3>  			
+  			<h4 align="center" >SOLICITUD DE ANTICIPO DE SUELDOS</h4>  			
   		</div> 
   	<div>  	
   		
   		<table class="tabla" align="center">
   				<tr>
-  					<td class="informacion">Nombre del empleado: <b>{NOMBREEMPLEADO}</b></td>  					
+  					<td class="informacion; htexto1"><b>Nombre del empleado:</b> {NOMBREEMPLEADO}</td>  					
   				</tr>
   				<tr>
-  					<td class="informacion">Cargo: <b>{CARGOEMPLEADO}</b></td>
-  					<td class="informacion">Departamento: <b>{DPTOEMPLEADO}</b></td>
+  					<td class="informacion; htexto1"><b>Cargo:</b> {CARGOEMPLEADO}</td>
+  					<td class="informacion; htexto1"><b>Departamento:</b> {DPTOEMPLEADO}</td>
   				</tr>
   				
   		</table>
   		<br>
   		<table class="tabla" align="center">
   				<tr>
-  					<td class="informacion">Fecha: <b>{FECHA}</b></td>
-  					<td class="informacion">Monto: <b>{MONTO}</b></td>
+  					<td class="informacion; htexto1"><b>Fecha:</b> {FECHA}</td>
+  					<td class="informacion; htexto1"><b>Monto:</b> ${MONTO}</td>
   				</tr>
   				<tr>
-  					<td class="informacion">Diferido: <b>{DIFERIDO}</b></td>
+  					<td class="informacion; htexto1"><b>Diferido:</b> {DIFERIDO}</td>
+  					<td class="informacion; htexto1"><b>Son:</b> {SON}</td>
   				</tr>
   				<tr>
   				<td colspan="2" class="firmas"><br><br><br><br><br><br><b>______________________________</b></td>

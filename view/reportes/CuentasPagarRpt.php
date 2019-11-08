@@ -23,11 +23,7 @@ if(!empty($datos_empresa))
     }
 }
 
-
 $footer = file_get_contents('view/reportes/template/pieret.html');
-
-
-
 
 if(!empty($datos_cuentas_pagar))
 {
@@ -37,7 +33,6 @@ if(!empty($datos_cuentas_pagar))
         $template = str_replace('{'.$clave.'}', $valor, $template);
     }
 }
-
 
 ob_end_clean();
 //creacion del pdf

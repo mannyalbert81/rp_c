@@ -290,11 +290,18 @@ class CoreFirmasParticipeController extends ControladorBase{
     {
         session_start();
         
+        $entidades = new EntidadesModel();
+        //PARA OBTENER DATOS DE LA EMPRESA
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
         if (isset($_SESSION['id_usuarios']) )
         {
            
             $documento = urldecode($_GET['documento']);
             $dat = base64_encode(file_get_contents($documento));
+            
+            
             $reporteimg= array(); 
             
             

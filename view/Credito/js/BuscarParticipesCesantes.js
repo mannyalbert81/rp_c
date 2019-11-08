@@ -182,26 +182,5 @@ $("#id_participe").on("keyup",function(){
 	$(this).val($(this).val().toUpperCase());
 })
 
-function CreditosActivosParticipe(id, page)
-{
-	
-	id=2779;
-	
-	$.ajax({
-	    url: 'index.php?controller=BuscarParticipesCesantes&action=CreditosActivosParticipe',
-	    type: 'POST',
-	    data: {
-	    	   id_participe: id,
-	    	   page: page
-	    },
-	})
-	.done(function(x) {
-		$('#creditos_participe').html(x);
-		
-		
-	})
-	.fail(function() {
-	    console.log("error");
-	});
-}
+
 

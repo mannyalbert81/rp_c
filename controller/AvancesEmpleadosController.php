@@ -831,15 +831,19 @@ class AvancesEmpleadosController extends ControladorBase{
         $id="anticipo_sueldo_empleados.id_anticipo";
         
         $rsdatos = $permisos->getCondiciones($columnas, $tablas, $where, $id);
-        echo $rsdatos;
+        //echo $rsdatos;
         $datos_reporte['NOMBREEMPLEADO']=$rsdatos[0]->nombres_empleados;
         $datos_reporte['CARGOEMPLEADO']=$rsdatos[0]->nombre_cargo;
         $datos_reporte['DPTOEMPLEADO']=$rsdatos[0]->nombre_departamento;
         $fechaelem = explode("-", $rsdatos[0]->fecha_anticipo);
         $ind = intval($fechaelem[1])-1;
         $datos_reporte['FECHA']=$fechaelem[2]." de ".$meses[$ind]." de ".$fechaelem[0];
-        $datos_reporte['MONTO']=$rsdatos[0]->monto_anticipo;
+        $datos_reporte['MONTO']=number_format((float)$rsdatos[0]->monto_anticipo,2,".",",");
+        $datos_reporte['SON']=$permisos->numtoletras((float)$rsdatos[0]->monto_anticipo);
         $diferido=$rsdatos[0]->tiempo_diferido;
+        
+        
+        
         if ($diferido>1)
         {
          $diferido.=" meses";   

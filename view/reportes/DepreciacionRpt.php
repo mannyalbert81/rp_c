@@ -4,8 +4,8 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
  
 //echo getcwd().''; //para ver ubicacion de directorio
 
-$template = file_get_contents('view/reportes/template/Depreciacion.html');
 $header = file_get_contents('view/reportes/template/CabeceraFinal.html');
+$template = file_get_contents('view/reportes/template/Depreciacion.html');
 
 
 
@@ -19,8 +19,8 @@ if(!empty($datos_empresa))
 }
 
 
-
 $footer = file_get_contents('view/reportes/template/pieret.html');
+
 $tablaDepreciacion="";
 		
 
@@ -65,9 +65,9 @@ if(isset($datosActivo)){
                         <td>$res->fecha_activos_fijos</td>
                         <td>1</td>
                         <td>$res->nombre_activos_fijos</td>
-                        <td class=\"numero\" >".number_format($res->valor_activos_fijos,2,',','.')."</td>
-                        <td>$res->meses_tipo_activos_fijos</td>
-                        <td>$res->diferencia_mes</td>
+                        <td class=\"numero\" >$ ".number_format($res->valor_activos_fijos,2,',','.')."</td>
+                        <td>$ $res->meses_tipo_activos_fijos</td>
+                        <td>$ $res->diferencia_mes</td>
                         <td class=\"numero\" >".number_format($res->valor_depreciacion,2,',','.')."</td>
                         <td class=\"numero\" >".number_format($res->acumulada,2,',','.')."</td>
                         <td class=\"numero\" >".number_format($res->enero,2,',','.')."</td>
@@ -82,8 +82,8 @@ if(isset($datosActivo)){
                         <td class=\"numero\" >".number_format($res->octubre,2,',','.')."</td>
                         <td class=\"numero\" >".number_format($res->noviembre,2,',','.')."</td>
                         <td class=\"numero\" >".number_format($res->diciembre,2,',','.')."</td>
-                        <td class=\"numero\" >".number_format($res->actual,2,',','.')."</td>
-                        <td class=\"numero\" >".number_format($_valor_por_depreciar,2,',','.')."</td>                 
+                        <td class=\"numero\" >$ ".number_format($res->actual,2,',','.')."</td>
+                        <td class=\"numero\" >$ ".number_format($_valor_por_depreciar,2,',','.')."</td>                 
                         </tr>";
         
         $_suma_valor_depreciacion += $res->valor_depreciacion;

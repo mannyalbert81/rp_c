@@ -75,13 +75,13 @@ table.2 {
 table.3 {
   
   width: 100%;
-   font-size:15px;
-   text-align: left;
+   font-size:14px;
+   text-align: center;
 }
 
 table.4 {
   
-  width: 255px;
+  width: 255px; padding: 3px;
    font-size:12px;
    text-align: left;
 }
@@ -99,9 +99,10 @@ td .right{
 
 table.6 {
   
-  width: 500px;
+  width: 100%; padding: 1px;
    font-size:12px;
    text-align: left;
+    border:1px solid;
 }
 
 table tr.grupocuenta td  { 

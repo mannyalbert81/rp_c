@@ -2674,6 +2674,7 @@ class RecaudacionController extends ControladorBase{
 	    
 	}
 	
+	
 	/** BEGIN FUNCIONES DE VALIDACIONES DEL CONTROLADOR */
 	private function validaAportesParticipes($id_entidad_patronal){
 	    $Participes    = new ParticipesModel();
@@ -2702,7 +2703,7 @@ class RecaudacionController extends ControladorBase{
 	    return null;
 	    
 	}
-	/** BEGIN FUNCIONES DE VALIDACIONES DEL CONTROLADOR */
+	/** END FUNCIONES DE VALIDACIONES DEL CONTROLADOR */
 	
 	/** BEGIN FUNCIONES UTILITARIAS PARA LA CLASE */
 	private function devuelveMesNombre($_mes){
@@ -2757,6 +2758,8 @@ class RecaudacionController extends ControladorBase{
 	    echo "Debe ser 4: " . --$a . "<br />\n";
 	    echo "Debe ser 4: " . $a . "<br />\n";
 	}
+	
+	
 		
 }
 ?>

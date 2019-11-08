@@ -1706,7 +1706,7 @@ class CuentasPagarController extends ControladorBase{
 	    $datos_cuentas_pagar['IDEPROVEEDOR'] = $rsDatosCxp[0]->identificacion_proveedores;
 	    $datos_cuentas_pagar['NOMBREPROVEEDOR'] = $rsDatosCxp[0]->nombre_proveedores;
 	    $datos_cuentas_pagar['CONDONACIONES'] = $rsDatosCxp[0]->condonaciones_cuentas_pagar;
-	    $datos_cuentas_pagar['SALDOCUENTA'] = number_format((float)$rsDatosCxp[0]->saldo_cuenta_cuentas_pagar, 2, ',', '.');
+	    $datos_cuentas_pagar['SALDOCUENTA'] =number_format((float)$rsDatosCxp[0]->saldo_cuenta_cuentas_pagar, 2, ',', '.');
 	    $datos_cuentas_pagar['COMPRAS'] = number_format((float)$rsDatosCxp[0]->compras_cuentas_pagar, 2, ',', '.');
 	    $datos_cuentas_pagar['DESCCOMERCIAL'] = number_format((float)$rsDatosCxp[0]->descuento_comercial_cuentas_pagar, 2, ',', '.');
 	    $datos_cuentas_pagar['FLETE'] = number_format((float)$rsDatosCxp[0]->flete_cuentas_pagar, 2, ',', '.');
@@ -1748,7 +1748,7 @@ class CuentasPagarController extends ControladorBase{
 	        $sumaCredito = 0.00;
 	        $tabladistribucion .= "<tr>";
 	        $tabladistribucion .= "<th>Cuenta</th>";
-	        $tabladistribucion .= "<th>Descripcion Cuenta</th>";
+	        $tabladistribucion .= "<th>Descripción Cuenta</th>";
 	        $tabladistribucion .= "<th>Tipo de Cuenta</th>";
 	        $tabladistribucion .= "<th>Monto débito</th>";
 	        $tabladistribucion .= "<th>Monto crédito</th>";
@@ -1759,8 +1759,8 @@ class CuentasPagarController extends ControladorBase{
 	            $tabladistribucion .= "<td>".$res->codigo_plan_cuentas."</td>";
 	            $tabladistribucion .= "<td>".$res->nombre_plan_cuentas."</td>";
 	            $tabladistribucion .= "<td>".$res->tipo_distribucion_cuentas_pagar."</td>";
-	            $tabladistribucion .= "<td class=\"decimales\" >".number_format((float)$res->debito_distribucion_cuentas_pagar, 2, ',', '.')."</td>";
-	            $tabladistribucion .= "<td class=\"decimales\" >".number_format((float)$res->credito_distribucion_cuentas_pagar, 2, ',', '.')."</td>";
+	            $tabladistribucion .= "<td class=\"decimales\" >$ ".number_format((float)$res->debito_distribucion_cuentas_pagar, 2, ',', '.')."</td>";
+	            $tabladistribucion .= "<td class=\"decimales\" >$ ".number_format((float)$res->credito_distribucion_cuentas_pagar, 2, ',', '.')."</td>";
 	            $tabladistribucion .= "</tr>";
 	            
 	            $sumaCredito += $res->credito_distribucion_cuentas_pagar;
@@ -1775,8 +1775,8 @@ class CuentasPagarController extends ControladorBase{
 	        
 	        $tabladistribucion .= "<tr>";
 	        $tabladistribucion .= "<td colspan=\"3\"></td>";
-	        $tabladistribucion .= "<td class=\"decimales\" >".number_format((float)$sumaDebito, 2, ',', '.')."</td>";
-	        $tabladistribucion .= "<td class=\"decimales\" >".number_format((float)$sumaCredito, 2, ',', '.')."</td>";
+	        $tabladistribucion .= "<td class=\"decimales\" >$ ".number_format((float)$sumaDebito, 2, ',', '.')."</td>";
+	        $tabladistribucion .= "<td class=\"decimales\" >$ ".number_format((float)$sumaCredito, 2, ',', '.')."</td>";
 	        $tabladistribucion .= "</tr>";
 	        
 	        $tabladistribucion .= "</table>";
@@ -1804,7 +1804,7 @@ class CuentasPagarController extends ControladorBase{
 	        $sumaImpuesto = 0.00;
 	        $tablaImpuesto .= "<tr>";
 	        $tablaImpuesto .= "<th>Id. detalle impuesto</th>";
-	        $tablaImpuesto .= "<th>Descripcion detalle impuesto</th>";
+	        $tablaImpuesto .= "<th>Descripción detalle impuesto</th>";
 	        $tablaImpuesto .= "<th>Monto impuesto</th>";
 	        $tablaImpuesto .= "</tr>";
 	        
@@ -1812,7 +1812,7 @@ class CuentasPagarController extends ControladorBase{
 	            $tablaImpuesto .= "<tr>";
 	            $tablaImpuesto .= "<td>".$res->id_impuestos."</td>";
 	            $tablaImpuesto .= "<td>".$res->nombre_impuestos."</td>";
-	            $tablaImpuesto .= "<td class=\"decimales\" >".number_format((float)$res->valor_cuentas_pagar_impuestos, 2, ',', '.')."</td>";
+	            $tablaImpuesto .= "<td class=\"decimales\" >$ ".number_format((float)$res->valor_cuentas_pagar_impuestos, 2, ',', '.')."</td>";
 	            $tablaImpuesto .= "</tr>";
 	            
 	            $sumaImpuesto += $res->valor_cuentas_pagar_impuestos;
@@ -1825,7 +1825,7 @@ class CuentasPagarController extends ControladorBase{
 	        
 	        $tablaImpuesto .= "<tr>";
 	        $tablaImpuesto .= "<td colspan=\"2\"></td>";
-	        $tablaImpuesto .= "<td class=\"decimales\" >".number_format((float)$sumaImpuesto, 2, ',', '.')."</td>";
+	        $tablaImpuesto .= "<td class=\"decimales\" >$ ".number_format((float)$sumaImpuesto, 2, ',', '.')."</td>";
 	        $tablaImpuesto .= "</tr>";
 	        
 	        $tablaImpuesto .= "</table>";
@@ -1836,7 +1836,6 @@ class CuentasPagarController extends ControladorBase{
 	    
 	    $this->verReporte("CuentasPagar", array('datos_cuentas_pagar'=>$datos_cuentas_pagar,'datos_empresa'=>$datos_empresa,'datos_cabecera'=>$datos_cabecera));
 	   
-	    
 	}
 	
 	public function ListaCuentasPagar(){
@@ -1875,7 +1874,6 @@ class CuentasPagarController extends ControladorBase{
 	        }else{
 	            
 	            $where_to=$where;
-	            
 	        }
 	        
 	        $html="";
@@ -1941,8 +1939,6 @@ class CuentasPagarController extends ControladorBase{
 	                
 	            }
 	            
-	            
-	            
 	            $html.='</tbody>';
 	            $html.='</table>';
 	            $html.='</section></div>';
@@ -1956,7 +1952,6 @@ class CuentasPagarController extends ControladorBase{
 	            
 	            
 	        }
-	        
 	        
 	        echo $html;
 	        

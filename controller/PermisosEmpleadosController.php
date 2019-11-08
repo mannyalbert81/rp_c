@@ -80,20 +80,20 @@ class PermisosEmpleadosController extends ControladorBase{
         $id_causa= $_POST['id_causa'];
         $descripcion_causa= $_POST['descripcion_causa'];
         
-        $_valor_editar = $_POST['valor_editar_permiso'];
+        $_id_permiso_editar = $_POST['id_permiso_editar'];
         
-        /* validar que no haya otra solicitud */ 
-        $columnas1=" aa.id_empleado, bb.nombre_estado ";
-        $tablas1=" permisos_empleados aa INNER JOIN estado bb ON bb.id_estado = aa.id_estado";
-        $where1=" bb.tabla_estado = upper('permiso_empleado') AND bb.nombre_estado <> 'NEGADO' 
+        if($_id_permiso_editar == 0){
+            
+            /* validar que no haya otra solicitud */
+            $columnas1=" aa.id_empleado, bb.nombre_estado ";
+            $tablas1=" permisos_empleados aa INNER JOIN estado bb ON bb.id_estado = aa.id_estado";
+            $where1=" bb.tabla_estado = upper('permiso_empleado') AND bb.nombre_estado <> 'NEGADO'
             AND aa.id_empleado = $id_empleado AND aa.fecha_solicitud = '$fecha_solicitud' ";
-        $id1=" aa.id_empleado";
-        $result1 = $empleado->getCondiciones($columnas1, $tablas1, $where1, $id1);
-        if(!empty($result1)){
-            echo "E001"; exit();
-        }
-        
-        if($_valor_editar == 0){
+            $id1=" aa.id_empleado";
+            $result1 = $empleado->getCondiciones($columnas1, $tablas1, $where1, $id1);
+            if(!empty($result1)){
+                echo "E001"; exit();
+            }
             
             if (!(empty($descripcion_causa)))
             {
@@ -119,7 +119,16 @@ class PermisosEmpleadosController extends ControladorBase{
             echo 1;
             
         }else{
+            
             //aqui viene edicion
+            $columnasEdit = " fecha_solicitud = '$fecha_solicitud', hora_desde = '$hora_desde', hora_hasta = '$hora_hasta' , id_causa = $id_causa , descripcion_causa = '$descripcion_causa' ";
+            $tablaEdit = "public.permisos_empleados";
+            $whereEdit = " id_permisos_empleados = $_id_permiso_editar ";
+            $resultado = $permisos_empleados -> ActualizarBy($columnasEdit, $tablaEdit, $whereEdit);
+            
+            if( (int)$resultado != -1 ){
+                echo 2;
+            }
         }
         
         

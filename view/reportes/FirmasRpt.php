@@ -17,10 +17,7 @@ if(!empty($reporteimg))
     }
 }
 
-
-
-
-
+$footer = file_get_contents('view/reportes/template/pieret.html');
 
 ob_end_clean();
 //creacion del pdf
@@ -31,6 +28,7 @@ $mpdf->allow_charset_conversion = true;
 $mpdf->setAutoTopMargin = 'stretch';
 $mpdf->setAutoBottomMargin = 'stretch';
 $mpdf->WriteHTML($template,2);
+$mpdf->SetHTMLFooter($footer);
 $mpdf->debug = true;
 $mpdf->Output();
 /*$content = $mpdf->Output('', 'S'); // Saving pdf to attach to email

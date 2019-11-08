@@ -11,7 +11,7 @@
      $('input[name="telefono_proveedores"]').mask("0000000000", {reverse: true});
      $('input[name="identificacion_proveedores"]').mask("0000000000", {reverse: true});
      
-     elementosOcultos();
+     //elementosOcultos();
   }); 
 
    
@@ -26,7 +26,6 @@
 	$('#haber_dcomprobantes').val("0.00");
   
   }
-      
       
    
    // AUTOCOMPLETE CODIGO PLAN CUENTAS
@@ -298,8 +297,8 @@ function catchTipoComprobante(elemento){
 			 
 			 $("#numero_ccomprobantes").val(numero_comprobante);
 			 
-			 validaTipoComprobante(nombre_comprobante);
-             /*if( nombre_comprobante == 'CONTABLE'){
+			 //validaTipoComprobante(nombre_comprobante);
+             if( nombre_comprobante == 'CONTABLE'){
 	           	  $('#id_proveedor').val('0')
 	           	  $('#nombre_proveedor').val('').attr("readonly","readonly")
 	           	  $('#proveedor').val('').attr("readonly","readonly")
@@ -314,7 +313,7 @@ function catchTipoComprobante(elemento){
 	           	  $('#retencion_proveedor').val('').removeAttr("readonly")
 	           	  $('#nombre_comprobante').val('')
 	           	  $('.clsproveedor').show();
-             }*/
+             }
 			 
 			 			 
 		 }
@@ -499,21 +498,7 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
 			$("html, body").animate({ scrollTop: $(mensaje_id_forma_pago).offset().top-150 }, tiempo);
 			return false
 		}
-		
-		if (concepto_ccomprobantes == 0)
-		{
-	    	
-			$("#mensaje_concepto_ccomprobantes").text("Inserte un concepto de pago");
-			$("#mensaje_concepto_ccomprobantes").fadeIn("slow");
-			$("html, body").animate({ scrollTop: $(mensaje_concepto_ccomprobantes).offset().top-120 }, tiempo);
-			return false
-	    }
-		else 
-		{
-			$("#mensaje_concepto_ccomprobantes").fadeOut("slow"); //Oculta mensaje de error
-			
-		}
-		
+				
 		if(document.getElementById('observaciones_ccomprobantes').value == ''){
 			$("#mensaje_observaciones_ccomprobantes").text("Ingrese Observacion");
 			$("#mensaje_observaciones_ccomprobantes").fadeIn("slow"); 

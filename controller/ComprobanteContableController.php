@@ -868,7 +868,7 @@ class ComprobanteContableController extends ControladorBase{
 	
 	
 		$resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
-	
+		$_nombre_plan_cuentas = array();
 	
 		if(!empty($resultSet)){
 	

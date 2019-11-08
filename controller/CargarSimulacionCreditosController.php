@@ -124,7 +124,7 @@ class CargarSimulacionCreditosController extends ControladorBase{
             foreach ($id_credito as $res1)
             {
                 $total+=$res1->saldo_actual_creditos;
-                $saldo=number_format((float)$res1->saldo_actual_creditos, 2, ',', '.');
+                $saldo=number_format((float)$res1->saldo_actual_creditos, 2, '.', '');
                 $html.='<tr>
                  <td >'.$res1->numero_creditos.'</font></td>
                  <td >'.$res1->fecha_concesion_creditos.'</font></td>
@@ -134,7 +134,7 @@ class CargarSimulacionCreditosController extends ControladorBase{
             }
             
         }
-        $total=number_format((float)$total, 2, ',', '.');
+       $total=number_format((float)$total, 2, '.', '');
         $html.='<tr>
         <th ></th>
         <th ></th>

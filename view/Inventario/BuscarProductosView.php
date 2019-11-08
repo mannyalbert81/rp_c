@@ -59,7 +59,7 @@
  <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Stock de Productos</h3>
+              <h3 class="box-title">Movimientos de los Productos</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -79,7 +79,6 @@
 					<div id="productos_registrados"></div>	
                 
               </div>
-            <a href="index.php?controller=BuscarProducto&action=reporte_stock_productos" target="_blank"><input type="image" src="view/images/print.png" alt="Submit" width="50" height="34" formtarget="_blank" id="btngenerar" name="btngenerar" class="btn btn-default" title="Exportar Pdf"></label></a>
             </div>
             </div>
             </section>

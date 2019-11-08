@@ -539,6 +539,9 @@ function GetCuotas()
 		total_renovar=0;
 		
 	}
+	
+	console.log('total a renovar '+total_renovar);
+	
 	var limite="";
 	if(interes=="PH")
 		{
@@ -637,7 +640,7 @@ function GetCuotas()
 	
 	
 	
-	if(monto < total_renovar)
+	if(parseFloat(monto) < total_renovar)
 	{
 	$("#mensaje_monto_credito").text("El Monto de Credito no puede ser menor al total del credito a renovar");
 	$("#mensaje_monto_credito").fadeIn("slow");

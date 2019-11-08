@@ -417,7 +417,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
             $year_buscar = $anio_actual;
             $mes_buscar = $mes_actual;
 
-        
+            
         $mes_buscar=str_pad($mes_buscar,2,'0',STR_PAD_LEFT);
         $dia= date("d",(mktime(0,0,0,$mes_buscar+1,1,$year_buscar)-1));
         $_fecha_tabla_amortizacion=$year_buscar."-".str_pad($mes_buscar,2,'0',STR_PAD_LEFT)."-".$dia;
@@ -439,8 +439,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
                 
                 $_id_estado_tabla_amortizacion= $res->id_estado_tabla_amortizacion;
                 $_interes_tabla_amortizacion= $res->interes_tabla_amortizacion;
-                
-                
+              
                 
                 // verifico que la ultimo cuota esta cancelada
                 if($_id_estado_tabla_amortizacion==2){

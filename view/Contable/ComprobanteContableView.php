@@ -203,7 +203,7 @@
           			 <div class="form-group" style="margin-top:13px">
                          <div class="col-xs-2 col-md-2 col-lg-2">
                               <label for="id_plan_cuentas" class="control-label" >#Cuenta: </label>
-                              <input type="text" class="form-control" id="id_plan_cuentas" name="id_plan_cuentas" value=""  placeholder="Search">
+                              <input type="text" class="form-control" id="id_plan_cuentas" name="id_plan_cuentas" onkeyup="autompleteCodigo(this)" value=""  placeholder="Search">
                               <div id="mensaje_id_plan_cuentas" class="errores"></div>
                               <input type="hidden" class="form-control" id="plan_cuentas" name="plan_cuentas" value="0"  placeholder="Search">
                               <span class="help-block"></span>
@@ -213,7 +213,7 @@
         		     <div class="form-group">  
             		     <div class="col-xs-3 col-md-3 col-lg-3">                     
                               <label for="nombre_plan_cuentas" class="control-label">Nombre: </label>
-                              <input type="text" class="form-control" id="nombre_plan_cuentas" name="nombre_plan_cuentas" value=""  placeholder="Search">
+                              <input type="text" class="form-control" id="nombre_plan_cuentas" name="nombre_plan_cuentas" onkeyup="autompleteNombre(this)"  value=""  placeholder="Search">
                               <span class="help-block"></span>
                          </div>
         		     </div>
@@ -409,7 +409,7 @@
     <script src="view/bootstrap/plugins/iCheck/icheck.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?4.9"></script>    
+    <script src="view/Contable/FuncionesJS/ComprobanteContable.js?5.0"></script>    
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     
    

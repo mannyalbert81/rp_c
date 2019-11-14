@@ -79,6 +79,9 @@
 					<div id="productos_registrados"></div>	
                 
               </div>
+                 		  <a href="index.php?controller=BuscarProducto&action=reporte_stock_productos" target="_blank"><input type="image" src="view/images/print.png" alt="Submit" width="50" height="34" formtarget="_blank" id="btngenerar" name="btngenerar" class="btn btn-default" title="Reporte Productos"></label></a>
+         
+              
             </div>
             </div>
             </section>

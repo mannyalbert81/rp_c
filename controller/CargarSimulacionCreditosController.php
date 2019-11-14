@@ -1072,7 +1072,7 @@ class CargarSimulacionCreditosController extends ControladorBase{
           $html='<div class="si">
             	
             	 <button  type="button" id="pdf" name="pdf" class="btn btn-primary" onclick="GenerarPdf()"><i class="glyphicon glyphicon-save-file"></i> EXPORTAR A PDF</button>
-              
+                 
             	</div>
 
             <br>
@@ -1084,7 +1084,7 @@ class CargarSimulacionCreditosController extends ControladorBase{
              <table border="1" width="100%">
                      <tr style="color:white;" class="bg-olive">
                         <th width="5%">Cuota</th>
-                        <th width="15%" >Fecha</th>
+                        <th width="15%">Fecha</th>
                         <th width="13%">Capital</th>
                         <th width="13%">Interes</th>
                         <th width="13%">Seg. Desgravamen</th>

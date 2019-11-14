@@ -1605,6 +1605,7 @@ class ParticipesController extends ControladorBase{
 	                
 	                if($id_rol==1){
 	                    
+	 
 	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=index&id_participes='.$res->id_participes.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
 	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=borrarId&id_participes='.$res->id_participes.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
 	                    
@@ -2218,13 +2219,13 @@ class ParticipesController extends ControladorBase{
 	        $funcion = "ins_core_contribucion_tipo_participes";
 	        
 	        $parametros = " '$_id_contribucion_tipo',
-                                    '$_id_participes',
-                                    '$_id_tipo_aportacion',
-                                    '$_valor_contribucion_tipo_participes',
-                                    '$_sueldo_liquido_contribucion_tipo_participes',
-                                    '$_id_estado',
-                                    '$_porcentaje_contribucion_tipo_participes'";
-	        
+                            '$_id_participes',
+                            '$_id_tipo_aportacion',
+                            '$_valor_contribucion_tipo_participes',
+                            '$_sueldo_liquido_contribucion_tipo_participes',
+                            '$_id_estado',
+                            '$_porcentaje_contribucion_tipo_participes'";
+    
 	        $contribucion_tipo_participes->setFuncion($funcion);
 	        $contribucion_tipo_participes->setParametros($parametros);
 	        $resultado=$contribucion_tipo_participes->llamafuncionPG();

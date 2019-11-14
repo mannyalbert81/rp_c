@@ -53,7 +53,7 @@
 		    	{
 		    		$("#mensaje_id_modulos").fadeOut("slow"); //Muestra mensaje de error
 		            
-		    	
+		    	}
 			}); 
 
 

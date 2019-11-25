@@ -24,7 +24,7 @@
     <?php include("view/modulos/links_css.php"); ?>		
        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
        <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-       
+       <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
    
  
 	</head>
@@ -163,6 +163,9 @@
 	    <div class="box-body">
 	    	<div id="load_cuentas" ></div>
         	<div id="plan_cuentas" ></div>
+        	
+            <div id="pruebasdiv" style="height: 100px";>
+            </div>
 	    </div>
 	   </div>
     </section>
@@ -177,9 +180,9 @@
    
     <?php include("view/modulos/links_js.php"); ?>
    	 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.12"></script>   
-  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.13"></script>   
+  
   
 	
  </body>

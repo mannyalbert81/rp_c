@@ -21,22 +21,7 @@ class BalanceComprobacionController extends ControladorBase{
         $this->view_Contable('BalanceComprobacion',array("resultMAX"=>$resultMAX));
     }
    
-    
-    
-    public function index(){
-        session_start();
-        $plan_cuentas = new PlanCuentasModel();
-        
-        $tablas= "public.plan_cuentas";
-        
-        $where= "1=1";
-        
-        $id= "max";
-        
-        $resultMAX=$plan_cuentas->getCondiciones("MAX(nivel_plan_cuentas)", $tablas, $where, $id);
-        $this->view_Contable('BalanceComprobacion',array("resultMAX"=>$resultMAX));
-    }
-    
+ 
     public function tieneHijo($nivel, $codigo, $resultado)
     {
         $elementos_codigo=explode(".", $codigo);
@@ -610,105 +595,97 @@ class BalanceComprobacionController extends ControladorBase{
         $plan_cuentas= new PlanCuentasModel();
         $saldoini="vacio";
         
+        $mes_reporte = $mes;
         $mes_reporte1=$mes+1;
         if($mes<10) $mes_reporte="0".$mes;
         if($mes_reporte1<10) $mes_reporte1="0".$mes_reporte1;
         
-        $fecha_inicio=$anio."-".$mes_reporte."-01";
+        $fecha_inicio   = $anio."-".$mes_reporte."-01";       
+        $lastday        = date('t',strtotime($fecha_inicio));        
+        $fecha_fin      = $anio."-".$mes."-".$lastday;
         
-        
-        $lastday = date('t',strtotime($fecha_inicio));
-        
-        $fecha_fin=$anio."-".$mes."-".$lastday;
+        //echo "AQUI LA FECHJA DE INICIIO ",$fecha_inicio," \n AQUI LA FECHA FIN ",$fecha_fin; die();
         
         $columnas = "plan_cuentas.codigo_plan_cuentas, con_mayor.fecha_mayor, con_mayor.debe_mayor,
-	  	con_mayor.haber_mayor, con_mayor.saldo_ini_mayor, con_mayor.saldo_mayor, plan_cuentas.n_plan_cuentas";
-        
+	  	      con_mayor.haber_mayor, con_mayor.saldo_ini_mayor, con_mayor.saldo_mayor, plan_cuentas.n_plan_cuentas";        
         $tablas= "public.con_mayor INNER JOIN public.plan_cuentas
-		ON con_mayor.id_plan_cuentas = plan_cuentas.id_plan_cuentas";
-        
-        $where= "con_mayor.fecha_mayor BETWEEN '$fecha_inicio' AND '$fecha_fin'";
-        
+		      ON con_mayor.id_plan_cuentas = plan_cuentas.id_plan_cuentas";        
+        $where= "con_mayor.fecha_mayor BETWEEN '$fecha_inicio' AND '$fecha_fin'";        
         $id= "plan_cuentas.codigo_plan_cuentas, con_mayor.creado";
         
         $resultMayor=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
         
         $Saldos=array();
         
-        foreach ($resultSet as $res)
-        {
+        foreach ($resultSet as $res){
+            
             $saldoini="vacio";
             
-            $totaldebe=0;
-            
-            $totalhaber=0;
-            
+            $totaldebe=0;            
+            $totalhaber=0;            
             $saldomayor=0;
             
             $fila="";
         
-        foreach ($resultMayor as $resM)
-        {
-            if ($resM->codigo_plan_cuentas == $res->codigo_plan_cuentas)
-            {
-                if($saldoini=="vacio") $saldoini=$resM->saldo_ini_mayor;
-                $totaldebe+=$resM->debe_mayor;
-                $totalhaber+=$resM->haber_mayor;
-                $saldomayor=$resM->saldo_mayor;
+            foreach ($resultMayor as $resM){
+                
+                if ($resM->codigo_plan_cuentas == $res->codigo_plan_cuentas){
+                    
+                    if($saldoini=="vacio") $saldoini=$resM->saldo_ini_mayor;
+                    
+                    $totaldebe+=$resM->debe_mayor;
+                    $totalhaber+=$resM->haber_mayor;
+                    $saldomayor=$resM->saldo_mayor;
+                }
             }
+            
+            if($saldoini!="vacio"){
+                
+                $saldoini=$saldoini+$totaldebe;
+                $saldoini=$saldoini-$totalhaber;
+                
+                $comp="";
+                $saldoini=number_format((float)$saldoini, 2, ',', '.');
+                $saldomayor=number_format((float)$saldomayor, 2, ',', '.');
+                if ($saldoini!=$saldomayor)
+                {
+                    $comp="ERROR";
+                }
+                else $comp="OK";
+                
+                $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$saldomayor."|".$comp."|".$totaldebe."|".$totalhaber."|".$res->nivel_plan_cuentas;
+                
+                //1|ACTIVOS|71901447.0400|OK|0|0|1 
+                
+            }else{
+                
+                if($mes_reporte1==13){
+                    $mes_reporte1="01";
+                    $anio++;
+                }
+                $fecha_inicio=$anio."-".$mes_reporte1."-01";
+                $lastday = date('t',strtotime($fecha_inicio));
+                $fecha_fin=$anio."-".$mes_reporte1."-".$lastday; 
+                
+                $columnas = "plan_cuentas.codigo_plan_cuentas,  con_mayor.saldo_ini_mayor, con_mayor.saldo_mayor, plan_cuentas.n_plan_cuentas";                
+                $tablas= "public.con_mayor INNER JOIN public.plan_cuentas
+    		      ON con_mayor.id_plan_cuentas = plan_cuentas.id_plan_cuentas";                              
+                $where= "con_mayor.fecha_mayor BETWEEN '$fecha_inicio' AND '$fecha_fin' AND plan_cuentas.codigo_plan_cuentas='".$res->codigo_plan_cuentas."'";                
+                $id= "con_mayor.fecha_mayor";
+                
+                $resultSI=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
+                              
+                if(!(empty($resultSI))){
+                    
+                    $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$saldomayor."|OK|".$totaldebe."|".$totalhaber."|".$res->nivel_plan_cuentas;
+                }else{
+                    
+                    $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$res->saldo_fin_plan_cuentas."|OK|".$totaldebe."|".$totalhaber."|".$res->nivel_plan_cuentas;
+                }
+            }
+            array_push($Saldos, $fila);
         }
-        if($saldoini!="vacio")
-        {
-            
-            $saldoini=$saldoini+$totaldebe;
-            $saldoini=$saldoini-$totalhaber;
-            
-            $comp="";
-            $saldoini=number_format((float)$saldoini, 2, ',', '.');
-            $saldomayor=number_format((float)$saldomayor, 2, ',', '.');
-            if ($saldoini!=$saldomayor)
-            {
-                $comp="ERROR";
-            }
-            else $comp="OK";
-            
-            $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$saldomayor."|".$comp."|".$totaldebe."|".$totalhaber."|".$res->nivel_plan_cuentas;
-        }
-        else
-        {
-            $columnas = "plan_cuentas.codigo_plan_cuentas,  con_mayor.saldo_ini_mayor, con_mayor.saldo_mayor, plan_cuentas.n_plan_cuentas";
-            
-            $tablas= "public.con_mayor INNER JOIN public.plan_cuentas
-		      ON con_mayor.id_plan_cuentas = plan_cuentas.id_plan_cuentas";
-            
-            if($mes_reporte1==13)
-            {$mes_reporte1="01";
-            $anio++;
-            }
-            $fecha_inicio=$anio."-".$mes_reporte1."-01";
-            
-            $lastday = date('t',strtotime($fecha_inicio));
-            
-            $fecha_fin=$anio."-".$mes_reporte1."-".$lastday;
-            
-            $where= "con_mayor.fecha_mayor BETWEEN '$fecha_inicio' AND '$fecha_fin' AND plan_cuentas.codigo_plan_cuentas='".$res->codigo_plan_cuentas."'";
-            
-            $id= "con_mayor.fecha_mayor";
-            
-            $resultSI=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
-            
-            if(!(empty($resultSI)))
-            {
-                $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$saldomayor."|OK|".$totaldebe."|".$totalhaber."|".$res->nivel_plan_cuentas;
-            }
-            else
-            {
-                $fila=$res->codigo_plan_cuentas."|".$res->nombre_plan_cuentas."|".$res->saldo_plan_cuentas."|OK|".$totaldebe."|".$totalhaber."|".$res->nivel_plan_cuentas;
-            }
-        }
-        array_push($Saldos, $fila);
-    }
-     return $Saldos;
+        return $Saldos;
     }
     
     public function GenerarReporte()
@@ -724,12 +701,10 @@ class BalanceComprobacionController extends ControladorBase{
             $tabla_reporte="";
             $resultCabeza=$this->buscarCabecera($mes_reporte, $anio_reporte);
             
-            $columnas = "codigo_plan_cuentas, nombre_plan_cuentas, saldo_plan_cuentas, nivel_plan_cuentas, id_plan_cuentas, n_plan_cuentas";
             
-            $tablas= "public.plan_cuentas";
-            
-            $where= "1=1";
-            
+            $columnas = "codigo_plan_cuentas, nombre_plan_cuentas, saldo_fin_plan_cuentas, nivel_plan_cuentas, id_plan_cuentas, n_plan_cuentas";            
+            $tablas= "public.plan_cuentas";            
+            $where= "1=1";            
             $id= "plan_cuentas.codigo_plan_cuentas";
             
             $resultSet=$plan_cuentas->getCondiciones($columnas, $tablas, $where, $id);
@@ -755,6 +730,7 @@ class BalanceComprobacionController extends ControladorBase{
             else 
             {
                 $datos=$this->generarDetalleReporte($mes_reporte, $anio_reporte, $resultSet);
+                
                 $tabla_reporte=$this->Balance(1, $datos, $max_nivel_balance, "");
                 $errores=$this->BalanceErrores(1, $datos, $max_nivel_balance, "");
             }

@@ -190,7 +190,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-      		<li style="<?php echo getcontrolador("ComprobanteContable",$controladores) ?>"><a href="index.php?controller=ComprobanteContable&action=index"><i class="fa fa-circle-o"></i>Comprobantes Contable</a></li>
+      		<li style="<?php echo getcontrolador("ComprobanteContable",$controladores) ?>"><a href="index.php?controller=ComprobanteContable&action=index"><i class="fa fa-circle-o"></i>Diario Contables</a></li>
      		<li style="<?php echo getcontrolador("ProcesosMayorizacion",$controladores) ?>"><a href="index.php?controller=ProcesosMayorizacion&action=index"><i class="fa fa-circle-o"></i> Procesos Mensuales</a></li>
      		<li style="<?php echo getcontrolador("PagoNomina",$controladores) ?>"><a href="index.php?controller=Nomina&action=index1"><i class="fa fa-circle-o"></i> Pago Nomina</a></li>
     	  </ul>

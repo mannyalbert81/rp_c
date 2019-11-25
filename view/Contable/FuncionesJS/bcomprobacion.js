@@ -33,8 +33,8 @@ function periodoactual(){
 	});
 }
 
-function BuscarReporte()
-{
+function BuscarReporte(){
+	 
 	var mesbalance = $("#mes_balance").val();
 	var aniobalance = $("#anio_balance").val();
 	var maxnivel = $("#nivel_balance").val();
@@ -71,6 +71,7 @@ function BuscarReporte()
 		    },
 		})
 		.done(function(x) {
+			console.log(x);
 					if (!(x.includes("Warning")) && !(x.includes("Notice")))
 				{
 				$("#plan_cuentas").html(x);

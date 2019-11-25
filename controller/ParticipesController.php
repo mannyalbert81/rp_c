@@ -2000,14 +2000,14 @@ class ParticipesController extends ControladorBase{
                       public.core_participes, 
                       public.core_tipo_aportacion, 
                       public.estado";
-	    
+	     
 	    
 	    $where    = " core_contribucion_tipo.id_contribucion_tipo = core_contribucion_tipo_participes.id_contribucion_tipo AND
                       core_participes.id_participes = core_contribucion_tipo_participes.id_participes AND
                       core_tipo_aportacion.id_tipo_aportacion = core_contribucion_tipo_participes.id_tipo_aportacion AND
                       estado.id_estado = core_contribucion_tipo_participes.id_estado
                       AND core_contribucion_tipo_participes.id_participes = $id_participes";
-	    
+	    $id       = "";
 	    $id       = "core_contribucion_tipo_participes.id_contribucion_tipo_participes";
 	    
 	    

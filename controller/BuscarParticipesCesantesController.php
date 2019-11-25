@@ -438,9 +438,9 @@ class BuscarParticipesCesantesController extends ControladorBase{
                 
                 
                 $_id_estado_tabla_amortizacion= $res->id_estado_tabla_amortizacion;
-                $_interes_tabla_amortizacion= $res->interes_tabla_amortizacion;
-              
-                
+                 $_interes_anterior= $res->interes_tabla_amortizacion;
+                 
+                   
                 // verifico que la ultimo cuota esta cancelada
                 if($_id_estado_tabla_amortizacion==2){
                     

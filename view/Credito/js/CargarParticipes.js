@@ -652,6 +652,8 @@ function GetCuotas()
         
 	}
 	
+
+	
 	
 	/*if(interes=="PH" && sueldo_participe==""){
 		$("#mensaje_sueldo_participe").text("Ingrese su capacidad de Pago");

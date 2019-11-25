@@ -1072,6 +1072,95 @@ class ComprobanteContableController extends ControladorBase{
 	    	    
 	}
 	
+	/**
+	 *  completar el input con codigo
+	 */
+	public function autompleteCodigo(){
+	    
+	    $planCuentas = new PlanCuentasModel();
+	    
+	    if(isset($_GET['term'])){
+	        
+	        $codigo_plan_cuentas = $_GET['term'];
+	        
+	        $columnas = "id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	        $tablas = "public.plan_cuentas";
+	        $where = "codigo_plan_cuentas LIKE '$codigo_plan_cuentas%' AND nivel_plan_cuentas > 3";
+	        $id = "codigo_plan_cuentas ";
+	        $limit = "LIMIT 10";
+	        
+	        $rsPlanCuentas = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($rsPlanCuentas) ){
+	            
+	            foreach ($rsPlanCuentas as $res){
+	                
+	                $_cls_plan_cuentas = new stdClass;
+	                $_cls_plan_cuentas->id = $res->id_plan_cuentas;
+	                $_cls_plan_cuentas->value = $res->codigo_plan_cuentas;
+	                $_cls_plan_cuentas->label = $res->codigo_plan_cuentas.' | '.$res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->nombre = $res->nombre_plan_cuentas;
+	                
+	                $respuesta[] = $_cls_plan_cuentas;
+	            }
+	            
+	            echo json_encode($respuesta);
+	            
+	        }else{
+	            
+	            echo '[{"id":"","value":"Cuenta No Encontrada"}]';
+	        }
+	        
+	    }
+	}
+	
+	/**
+	 *  completar el input con nombre plan cuentas
+	 */
+	public function autompleteNombrePlanCuentas(){
+	    
+	    $planCuentas = new PlanCuentasModel();
+	    
+	    if(isset($_GET['term'])){
+	        
+	        $nombre_plan_cuentas = $_GET['term'];
+	        
+	        $columnas = "id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	        $tablas = "public.plan_cuentas";
+	        $where = "nombre_plan_cuentas ILIKE '$nombre_plan_cuentas%' AND nivel_plan_cuentas > 3";
+	        $id = "codigo_plan_cuentas ";
+	        $limit = "LIMIT 10";
+	        
+	        $rsPlanCuentas = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($rsPlanCuentas) ){
+	            
+	            foreach ($rsPlanCuentas as $res){
+	                
+	                $_cls_plan_cuentas = new stdClass;
+	                $_cls_plan_cuentas->id = $res->id_plan_cuentas;
+	                $_cls_plan_cuentas->value = $res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->label = $res->codigo_plan_cuentas.' | '.$res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->nombre = $res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->codigo = $res->codigo_plan_cuentas;
+	                
+	                $respuesta[] = $_cls_plan_cuentas;
+	            }
+	            
+	            echo json_encode($respuesta);
+	            
+	        }else{
+	            
+	            echo '[{"id":"","value":"Cuenta No Encontrada"}]';
+	        }
+	        
+	    }
+	}
+	
 	/************************************************************* END UTILITARIOS AJAX ********************************************************************/
 	
 	

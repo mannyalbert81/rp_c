@@ -441,7 +441,7 @@ class BuscarProductoController extends ControladorBase{
                 $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->salidas_f_saldo_productos.'</td>';
                 $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->saldos_f_saldo_productos.'</td>';
                 
-                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=BuscarProducto&action=generar_reporte_productos&id_productos='.$res->id_productos.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=BuscarProducto&action=reporte_movimientos_productos&id_productos='.$res->id_productos.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
                 
                 
                 $html.='</tr>';
@@ -696,7 +696,59 @@ class BuscarProductoController extends ControladorBase{
         $datos_reporte['MARCA_PRODUCTOS']=$rsdatos[0]->marca_productos;
         $datos_reporte['CODIGO_PRODUCTO']=$rsdatos[0]->codigo_productos;
      
-       
+        
+        
+        $columnas = " productos.id_productos,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.ult_precio_productos,
+                      productos.minimo_productos,
+                      saldo_productos.entradas_f_saldo_productos,
+                      saldo_productos.salidas_f_saldo_productos,
+                      saldo_productos.saldos_f_saldo_productos";
+        
+        $tablas = "  public.productos,
+                    public.saldo_productos";
+        $where= "saldo_productos.id_productos = productos.id_productos AND productos.id_productos='$id_productos'";
+        $id="productos.id_productos";
+        
+        $productos_detalle = $productos->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $html='';
+        
+        
+        $html.='<table class="12" style="width:98px;" border=1>';
+        $html.='<tr>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Entrada</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Precio</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Salida</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Stock</th>';
+        
+        $html.='</tr>';
+        
+        
+    
+        
+        foreach ($productos_detalle as $res)
+        {
+            
+            
+            $html.='<tr >';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.intval($res->entradas_f_saldo_productos).'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="right">'.$res->ult_precio_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.intval($res->salidas_f_saldo_productos).'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.intval($res->saldos_f_saldo_productos).'</td>';
+            
+            
+            
+            $html.='</td>';
+            $html.='</tr>';
+        }
+        
+        $html.='</table>';
+        
+        $datos_reporte['TABLA_MOVIMIENTOS']= $html;
         
         
         

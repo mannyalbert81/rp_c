@@ -60,45 +60,40 @@
   <section class="content">
   	<div class="box box-primary">
   		<div class="box-header with-border">
-  			<h3 class="box-title">DECLARACIÓN DE GASTOS PERSONALES A SER UTILIZADOS POR EL EMPLEADOR EN EL CASO DE INGRESOS EN RELACIÓN DE DEPENDENCIA</h3>
+  			<h3 class="box-title">FORMULARIO SRI-GP</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                 <i class="fa fa-minus"></i></button>
               </div>
          </div>
-         <div class="table">
+         
+         <div class="box-body" >
+         <h4>DECLARACIÓN DE GASTOS PERSONALES A SER UTILIZADOS POR EL EMPLEADOR EN EL CASO DE INGRESOS EN RELACIÓN DE DEPENDENCIA </h4>
+         <hr>
          <div class="row">
-          		<div class="col-xs-12 col-md-3 col-lg-3">
+          		<div class="col-xs-12">
             		<div class="form-group">
                 		<label for="cedula_usuarios" class="control-label">Información / Identificación del empleado contribuyente a ser llenado por el empleado</label>
                     </div>
              	</div>
-             	<div class="col-xs-1 col-md-3 col-lg-3">
-            		<div class="form-group">
-                		<label for="" class="control-label">101</label>
-                   </div>
              	</div>
-             	<div class="col-xs-4 col-md-3 col-lg-3 ">
+             	 <div class="row">
+             	<div class="col-xs-4 col-md-4 col-lg-4 ">
             		<div class="form-group">
-                		<label for="cedula_usuarios" class="control-label">Cedula:</label>
+                		<label for="cedula_usuarios" class="control-label">101 | Cedula:</label>
                     	<input type="text" data-inputmask="'mask': '9999999999'" class="form-control" id="cedula_empleado" name="cedula_empleado" placeholder="C.I.">
                         <div id="mensaje_cedula_usuarios" class="errores"></div>
                  	</div>
                  	</div>
-                 	
-             	<div class="col-xs-1 col-md-3 col-lg-3">
+                 	 
+             	<div class="col-xs-4 col-md-4 col-lg-4 ">
             		<div class="form-group">
-                		<label for="" class="control-label">102</label>
-                   </div>
-             	</div> 
-             	<div class="col-xs-4 col-md-3 col-lg-3 ">
-            		<div class="form-group">
-                		<label for="nombre_empleados" class="control-label">Nombres:</label>
+                		<label for="nombre_empleados" class="control-label">102| Nombres:</label>
                     	<input type="text" class="form-control" id="nombre_empleados" name="nombre_empleados" placeholder="Nombres">
                         <div id="mensaje_nombre_empleados" class="errores"></div>
                  	</div>
              	</div>
-             	<div class="col-xs-4 col-md-3 col-lg-3 ">
+             	<div class="col-xs-4 col-md-4 col-lg-4 ">
             		<div class="form-group">
                 		<label for="apellido_empleados" class="control-label">Apellidos:</label>
                     	<input type="text" class="form-control" id="apellido_empleados" name="apellido_empleados" placeholder="Apellidos">
@@ -107,8 +102,9 @@
              	</div>
              	</div>
              	
+             	
           	<div class="row">
-          		<div class="col-xs-12 col-md-3 col-lg-3">
+          		<div class="col-xs-12">
             		<div class="form-group">
                 		<label for="cedula_usuarios" class="control-label">INGRESOS GRAVADOS PROYECTADOS (sin decimotercera y decimocuarta remuneració)(ver Nota 1)</label>
                    </div>
@@ -116,64 +112,52 @@
              	</div>
              	
              	<div class="row">
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+             	<div class="col-xs-6 col-md-6 col-lg-6 ">
             		<div class="form-group">
                 		<label for="" class="control-label">(+) TOTAL INGRESOS GRAVADOS CON ESTE EMPLEADOR (con el empleador que más ingresos perciba)</label>
-             </div>
+                    </div>
              	</div>
-             	<div class="col-xs-1 col-md-3 col-lg-3">
+             	
+             	<div class="col-xs-6 col-md-3 col-lg-3">
             		<div class="form-group">
-                		<label for="" class="control-label">103</label>
-                   </div>
-             	</div> 
-             	<div class="col-xs-1 col-md-3 col-lg-3">
-            		<div class="form-group">
-                		<label for="" class="control-label">USD$</label>
+                		<label for="" class="control-label">103 | USD$</label>
                     	<input type="text" class="form-control" id="" name="" placeholder="">
                    </div>
              	</div> 
              	</div> 
              	
              	<div class="row">
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+             	<div class="col-xs-6 col-md-6 col-lg-6 ">
             		<div class="form-group">
                 		<label for="" class="control-label">(+) TOTAL INGRESOS CON OTROS EMPLEADOS (en caso de haberlos)</label>
-             </div>
+                    </div>
              	</div>
-             	<div class="col-xs-1 col-md-3 col-lg-3">
+             	
+             	<div class="col-xs-6 col-md-3 col-lg-3">
             		<div class="form-group">
-                		<label for="" class="control-label">104</label>
-                   </div>
-             	</div> 
-             	<div class="col-xs-1 col-md-3 col-lg-3">
-            		<div class="form-group">
-                		<label for="" class="control-label">USD$</label>
+                		<label for="" class="control-label">104 | USD$</label>
                     	<input type="text" class="form-control" id="" name="" placeholder="">
                    </div>
              	</div> 
              	</div> 
              	
              	<div class="row">
-             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+             	<div class="col-xs-6 col-md-6 col-lg-6 ">
             		<div class="form-group">
                 		<label for="" class="control-label">(=) TOTAL INGRESOS PROYECTADOS</label>
-             </div>
+                    </div>
              	</div>
-             	<div class="col-xs-1 col-md-3 col-lg-3">
+             	
+             	<div class="col-xs-6 col-md-3 col-lg-3">
             		<div class="form-group">
-                		<label for="" class="control-label">105</label>
-                   </div>
-             	</div> 
-             	<div class="col-xs-1 col-md-3 col-lg-3">
-            		<div class="form-group">
-                		<label for="" class="control-label">USD$</label>
+                		<label for="" class="control-label">105 | USD$</label>
                     	<input type="text" class="form-control" id="" name="" placeholder="">
                    </div>
              	</div> 
              	</div>
              	
              	<div class="row">
-          		<div class="col-xs-12 col-md-3 col-lg-3">
+          		<div class="col-xs-12">
             		<div class="form-group">
                 		<label for="cedula_usuarios" class="control-label">GASTOS PROYECTADOS</label>
                    </div>
@@ -181,10 +165,163 @@
              	</div> 
              	
              	
+             	<div class="row">
+             	<div class="col-xs-6 col-md-6 col-lg-6 ">
+            		<div class="form-group">
+                		<label for="" class="control-label">(+) GASTOS DE VIVIENDA</label>
+                    </div>
+             	</div>
+             	
+             	<div class="col-xs-1 col-md-3 col-lg-3">
+            		<div class="form-group">
+                		<label for="" class="control-label">106 | USD$</label>
+                    	<input type="text" class="form-control" id="" name="" placeholder="">
+                   </div>
+             	</div> 
+             	</div>
+             	
+             	<div class="row">
+             	<div class="col-xs-6 col-md-6 col-lg-6 ">
+            		<div class="form-group">
+                		<label for="" class="control-label">(+) GASTOS DE EDUCACIÓN, ARTE Y CULTURA</label>
+                    </div>
+             	</div>
+             	
+             	<div class="col-xs-6 col-md-3 col-lg-3">
+            		<div class="form-group">
+                		<label for="" class="control-label">107 | USD$</label>
+                    	<input type="text" class="form-control" id="" name="" placeholder="">
+                   </div>
+             	</div> 
+             	</div>
+             	
+             	<div class="row">
+             	<div class="col-xs-6 col-md-6 col-lg-6 ">
+            		<div class="form-group">
+                		<label for="" class="control-label">(+) GASTOS DE SALUD</label>
+                    </div>
+             	</div>
+             	
+             	<div class="col-xs-6 col-md-3 col-lg-3">
+            		<div class="form-group">
+                		<label for="" class="control-label">108 | USD$</label>
+                    	<input type="text" class="form-control" id="" name="" placeholder="">
+                   </div>
+             	</div> 
+             	</div>
+             	
+             	<div class="row">
+             	<div class="col-xs-6 col-md-6 col-lg-6 ">
+            		<div class="form-group">
+                		<label for="" class="control-label">(+) GASTOS DE VESTIMENTA</label>
+                   </div>
+             	</div>
+             	
+             	<div class="col-xs-6 col-md-3 col-lg-3">
+            		<div class="form-group">
+                		<label for="" class="control-label">109 | USD$</label>
+                    	<input type="text" class="form-control" id="" name="" placeholder="">
+                   </div>
+             	</div> 
+             	</div>
+             	
+             	<div class="row">
+             	<div class="col-xs-6 col-md-6 col-lg-6 ">
+            		<div class="form-group">
+                		<label for="" class="control-label">(=) TOTAL GASTOS PROYECTADOS</label>
+                    </div>
+             	</div>
+             	
+             	<div class="col-xs-6 col-md-3 col-lg-3">
+            		<div class="form-group">
+                		<label for="" class="control-label">110 | USD$</label>
+                    	<input type="text" class="form-control" id="" name="" placeholder="">
+                   </div>
+             	</div> 
+             	</div>
+             	
+             	<div class="row">
+          		<div class="col-xs-12">
+            		<div class="form-group">
+                		<p style="font-size: 10px">1.- Cuando un contribuyente trabaje con DOS O MÁS empleadores, presentará este informe
+                                                                                                al empleador con el que perciba mayores ingresos, el que efectuará la retención considerando 
+                                                                                                los ingresos gravados y deducciones (aportes personales al IESS) con todos los empleadores. 
+                                                                                                Una copia certificada, con la respectiva firma y sello del empleador, será presentada a los demás
+                                                                                                empleadores para que se abstengan de efectuar retenciones sobre los pagos efectuados por concepto 
+                                                                                                de remuneración del trabajo en relación de dependencia.</p>
+                   </div>
+             	</div>
+             	</div>
+             	
+             	<div class="row">
+          		<div class="col-xs-12">
+            		<div class="form-group">
+                		<p style="font-size: 10px">2.- La deducción total por gastos personales no podrá superar el 50% total de sus ingresos gravados
+                                                                                                (Casillero 105), y en ningún caso será mayor al equivalente a 1.3 veces la fracción básica externa 
+                                                                                                del Impuesto a la Renta de personas naturales. A partir del año 2011 debe considerarse como cuantía máxima
+                                                                                                para cada tipo de gasto, el monto equivalente a la fracción Básica externa de Impuesto a la Renta en:
+                                                                                                vivienda 0.325 veces.</p>
+                   </div>
+             	</div>
+             	</div>
+             	
+             	<div class="row">
+          		<div class="col-xs-12">
+            		<div class="form-group">
+                		<p style="font-size: 10px">3.- En el caso de gastos de salud por enfermedades catastróficas, raras o huérfanas debidamente certificadas
+                                                                                                o avaladas por la autoridad sanitaria nacional competente, se los reconocerá para su deducibilidad hasta 
+                                                                                                un valor equivalente a (2) fracciones básicas gravadas con tarifa cero de Impuestos a la Renta de personas naturales.</p>
+                   </div>
+             	</div>
+             	</div>
+             	
+             	<div class="row">
+          		<div class="col-xs-12">
+            		<div class="form-group">
+                		<label for="cedula_usuarios" class="control-label">Identificación del Agente de Retención (a ser llenado por el empleador)</label>
+                   </div>
+             	</div>
              	
              	
+             	<div class="col-xs-6 col-md-6 col-lg-6">
+            		<div class="form-group">
+                		<label for="" class="control-label">112 | RUC</label>
+                    	<input type="text" class="form-control" id="" name="" placeholder="">
+                   </div>
+             	</div> 
+             	<div class="col-xs-6 col-md-6 col-lg-6">
+            		<div class="form-group">
+                		<label for="" class="control-label">113 | RAZÓN SOCIAL, DENOMINACIÓN O APELLIDOS Y NOMBRES COMPLETOS</label>
+                    	<input type="text" class="form-control" id="" name="" placeholder="">
+                   </div>
+             	</div>
+             	</div> 
              	
              	
+             	<div class="row">
+          		<div class="col-xs-12">
+            		<div class="form-group">
+                		<label for="cedula_usuarios" class="control-label">Firmas</label>
+                    </div>
+             	</div>
+             	</div>
+             	
+             	<div class="row">
+             	<div class="col-xs-6 col-md-6 col-lg-6">
+            		<div class="form-group">
+                		<label for="" class="control-label">EMPLEADOR/ AGENTE DE RETENCIÓN</label>
+                    	<input type="text" class="form-control" id="" name="" placeholder="">
+                    </div>
+             	</div>
+             	
+             	 
+             	<div class="col-xs-6 col-md-6 col-lg-6">
+            		<div class="form-group">
+                		<label for="" class="control-label">EMPLEADO CONTRIBUYENTE</label>
+                        <input type="text" class="form-control" id="" name="" placeholder="">
+                   </div>
+             	</div> 
+             	</div>
              	
              	
   

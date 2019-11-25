@@ -112,3 +112,13 @@ table tr.grupocuenta td  {
     text-transform: uppercase;   
     
 	}
+
+p {
+	font-size:12px;
+}
+
+.auxiliar{
+	font-size:10px;
+	font-style: italic;
+	text-align: left;
+}

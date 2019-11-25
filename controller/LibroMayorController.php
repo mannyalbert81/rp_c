@@ -14,10 +14,6 @@ class LibroMayorController extends ControladorBase{
 	    $proveedores=new ProveedoresModel();
 					//Conseguimos todos los usuarios
 	    $resultSet=$proveedores->getAll("id_proveedores");
-				
-		$resultEdit = "";
-		
-	
 		
 		session_start();
         
@@ -29,50 +25,16 @@ class LibroMayorController extends ControladorBase{
 			$id_rol= $_SESSION['id_rol'];
 			$resultPer = $proveedores->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
-			if (!empty($resultPer))
-			{
-				if (isset ($_GET["id_proveedores"])   )
-				{
-
-					$nombre_controladores = "Proveedores";
-					$id_rol= $_SESSION['id_rol'];
-					$resultPer = $proveedores->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-						
-					if (!empty($resultPer))
-					{
-					
-					    $_id_proveedores = $_GET["id_proveedores"];
-						$columnas = " id_proveedores, nombre_proveedores, identificacion_proveedores, contactos_proveedores, direccion_proveedores, telefono_proveedores, email_proveedores, fecha_nacimiento_proveedores ";
-						$tablas   = "proveedores";
-						$where    = "id_proveedores = '$_id_proveedores' "; 
-						$id       = "nombre_proveedores";
-							
-						$resultEdit = $proveedores->getCondiciones($columnas ,$tablas ,$where, $id);
-
-					}
-					else
-					{
-					    $this->view_Contable("Error",array(
-								"resultado"=>"No tiene Permisos de Editar Proveedores"
-					
-						));
-					
-					
-					}
-					
-				}
-		
+			if (!empty($resultPer)){
 				
 				$this->view_Contable("LibroMayor",array(
-				    "resultSet"=>$resultSet, "resultEdit" =>$resultEdit
+				    "resultSet"=>$resultSet
 			
 				));
 		
 				
-				
-			}
-			else
-			{
+			}else{
+			    
 			    $this->view_Contable("Error",array(
 						"resultado"=>"No tiene Permisos de Acceso a Proveedores"
 				
@@ -90,112 +52,6 @@ class LibroMayorController extends ControladorBase{
 	
 	}
 	
-	public function InsertaProveedores(){
-			
-		session_start();
-		$proveedores=new ProveedoresModel();
-
-		$nombre_controladores = "Proveedores";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $proveedores->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-			
-		if (!empty($resultPer))
-		{
-		
-		
-		
-			$resultado = null;
-			$proveedores=new ProveedoresModel();
-		
-			if (isset ($_POST["nombre_proveedores"])   )
-			{
-			    $_id_proveedores =  $_POST["id_proveedores"];
-			    $_nombre_proveedores = $_POST["nombre_proveedores"];
-			    $_identificacion_proveedores = $_POST["identificacion_proveedores"];
-			    $_contactos_proveedores = $_POST["contactos_proveedores"];
-			    $_direccion_proveedores = $_POST["direccion_proveedores"];
-			    $_telefono_proveedores = $_POST["telefono_proveedores"];
-			    $_email_proveedores = $_POST["email_proveedores"];
-			    $_fecha_nacimiento_proveedores = $_POST["fecha_nacimiento_proveedores"];
-			   
-			  
-				
-			    if($_id_proveedores > 0){
-					
-					$columnas = " nombre_proveedores = '$_nombre_proveedores',
-                                  identificacion_proveedores = '$_identificacion_proveedores',
-                                  contactos_proveedores = '$_contactos_proveedores',
-                                    direccion_proveedores = '$_direccion_proveedores',
-                                    telefono_proveedores = '$_telefono_proveedores',
-                                    email_proveedores = '$_email_proveedores',
-                                    fecha_nacimiento_proveedores = '$_fecha_nacimiento_proveedores'";
-					$tabla = "proveedores";
-					$where = "id_proveedores = '$_id_proveedores'";
-					$resultado=$proveedores->UpdateBy($columnas, $tabla, $where);
-					
-				}else{
-					
-					$funcion = "ins_proveedores";
-					$parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores','$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores','$_fecha_nacimiento_proveedores'";
-					$proveedores->setFuncion($funcion);
-					$proveedores->setParametros($parametros);
-					$resultado=$proveedores->Insert();
-				}
-				
-				
-				
-		
-			}
-			$this->redirect("Proveedores", "index");
-
-		}
-		else
-		{
-		    $this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Proveedores"
-		
-			));
-		
-		
-		}
-		
-	}
-	
-	public function borrarId()
-	{
-	    
-	    session_start();
-	    $proveedores=new ProveedoresModel();
-	    $nombre_controladores = "Proveedores";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $proveedores->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if (!empty($resultPer))
-	    {
-	        if(isset($_GET["id_proveedores"]))
-	        {
-	            $id_proveedores=(int)$_GET["id_proveedores"];
-	            
-	            
-	            
-	            $proveedores->deleteBy("id_proveedores",$id_proveedores);
-	            
-	            
-	        }
-	        
-	        $this->redirect("Proveedores", "index");
-	        
-	        
-	    }
-	    else
-	    {
-	        $this->view_Inventario("Error",array(
-	            "resultado"=>"No tiene Permisos de Borrar Proveedores"
-	            
-	        ));
-	    }
-	    
-	}
 	
 
 	
@@ -263,66 +119,7 @@ class LibroMayorController extends ControladorBase{
 	    return $out;
 	}
 
-	
-	public function ins_proveedor(){
-	    
-	    session_start();
-	    $proveedores=new ProveedoresModel();
-	    
-	    $nombre_controladores = "Proveedores";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $proveedores->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if (!empty($resultPer))
-	    {  
-	        
-	        $resultado = null;
-	        $proveedores=new ProveedoresModel();
-	        
-	        if (isset ($_POST["nombre_proveedores"])   )
-	        {
-	            $_nombre_proveedores = $_POST["nombre_proveedores"];
-	            $_identificacion_proveedores = $_POST["identificacion_proveedores"];
-	            $_contactos_proveedores = $_POST["contactos_proveedores"];
-	            $_direccion_proveedores = $_POST["direccion_proveedores"];
-	            $_telefono_proveedores = $_POST["telefono_proveedores"];
-	            $_email_proveedores = $_POST["email_proveedores"];
-	              
-                $funcion = "ins_proveedores";
-                $parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores','$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores'";
-                $proveedores->setFuncion($funcion);
-                $proveedores->setParametros($parametros);
-                $resultado=$proveedores->llamafuncion();
-	           
-                $respuesta=0;
-                
-                //print_r($resultado);
-                
-                if(!empty($resultado) && count($resultado)>0)
-                {
-                    foreach ($resultado[0] as $k => $v)
-                        $respuesta=$v;
-                }
-                
-                if($respuesta==0){
-                    echo json_encode(array('success'=>$respuesta,'mensaje'=>'Error al insertar proveedores'));
-                    
-                }else{
-                    echo json_encode(array('success'=>$respuesta,'mensaje'=>'Proveedor ingresado con exito'));
-                }
-                
-             }
-	       
-	        
-	    }
-	    else
-	    {
-	        echo json_encode(array('success'=>0,'mensaje'=>'Error de permisos'));
-	    }
-	    
-	}
-	
-	
+
 	
 	public function AutocompleteCodigo(){
 	    
@@ -529,9 +326,11 @@ class LibroMayorController extends ControladorBase{
 	    $query_group = " GROUP BY id_plan_cuentas,nombre_plan_cuentas,codigo_plan_cuentas";
 	    $query_orden = " ORDER BY id_plan_cuentas";
 	    
-	    	    
+	    /** tomar datos de la vista **/
+	    $_fecha_desde = $_POST['fecha_desde'];
+	    $_fecha_hasta = $_POST['fecha_hasta'];
 	    //tomar datos vista
-	    $_anio = (isset($_POST['anio_l_mayor']) && ((int)$_POST['anio_l_mayor']) > 0 )?$_POST['anio_l_mayor']: date('Y');
+	    //$_anio = (isset($_POST['anio_l_mayor']) && ((int)$_POST['anio_l_mayor']) > 0 )?$_POST['anio_l_mayor']: date('Y');
 	    $_mes = (isset($_POST['mes_l_mayor']) &&  ((int)$_POST['mes_l_mayor'] > 0) )?$_POST['mes_l_mayor']: 0;
 	    $_id_cuenta = (isset($_POST['id_cuenta']))?$_POST['id_cuenta']:0;
 	   
@@ -545,8 +344,12 @@ class LibroMayorController extends ControladorBase{
 	        
 	    }
 	    
+	    if( !empty($_fecha_desde) &&  !empty($_fecha_hasta) ){
+	        $query_where .= " AND date(fecha_mayor) BETWEEN '$_fecha_desde'  AND  '$_fecha_hasta' ";
+	    }
+	    
 	    /* para where parametros */
-	    $query_where .= " AND  anio = $_anio ";
+	    //$query_where .= " AND  anio = $_anio ";
 	    
 	    /*genera consulta*/
 	    $query = "";
@@ -649,7 +452,7 @@ class LibroMayorController extends ControladorBase{
 	                        $tablaMayor .= "<td colspan=\"1\" class=\" ul\">Total:</td>";
 	                        $tablaMayor .= "<td class=\"numero ul\" >$&nbsp;". number_format($sumaDebe, 2, ',', ' ')."</td>";
 	                        $tablaMayor .= "<td class=\"numero ul\" >$&nbsp;". number_format($sumaHaber, 2, ',', ' ')."</td>";
-	                        $tablaMayor .= "<td class=\"numero ul\" >$&nbsp;;". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
+	                        $tablaMayor .= "<td class=\"numero ul\" >$&nbsp;". number_format($resDet->saldo_mayor, 2, ',', ' ')."</td>";
 	                        $tablaMayor .= "</tr>";
 	                        
 	                        $sumaTotalDebe += $sumaDebe;

@@ -2,9 +2,7 @@
 <html lang="en">
   <head>
    <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
-      <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>
-    
-    
+   <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>
   
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,6 +14,9 @@
    <?php include("view/modulos/links_css.php"); ?>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <link rel="stylesheet" href="view/bootstrap/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <style type="text/css">
+    .input-group .form-control, .input-group-btn .btn { z-index: inherit !important; }
+  </style>
     
    
   </head>
@@ -57,7 +58,7 @@
                 <li class="active">Usuarios</li>
             </ol>
         </section>
-        
+               
         <!-- comienza diseño controles usuario -->
         
         <section class="content">
@@ -76,60 +77,55 @@
                 <form id="frm_libro_mayor" action="<?php echo $helper->url("LibroMayor","index"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
                 
                 	<div class="row">
-                     	<div class="col-xs-6 col-md-3 col-lg-3 ">
-                        	<div class="form-group">
-                            	<label for="anio_l_mayor" class="control-label">Año:</label>                            	
-                                <input type="number" max="<?php echo date('Y')?>" min="2000" class="form-control" id="anio_l_mayor" name="anio_l_mayor" value=""  >                                
-                                <div id="mensaje_anio_lmayor" class="errores"></div>
-                             </div>
-                         </div>
-                         
-                         <div class="col-xs-6 col-md-3 col-lg-3 ">
-                        	<div class="form-group">
-                            	<label for="mes_l_mayor" class="control-label">Mes:</label>
-                            	<select id="mes_l_mayor" name="mes_l_mayor" class="form-control">
-                            		<option value="0">--SELECCIONE--</option>
-                            		<option value="1">ENERO</option>
-                            		<option value="2">FEBRERO</option>
-                            		<option value="3">MARZO</option>
-                            		<option value="4">ABRIL</option>
-                            		<option value="5">MAYO</option>
-                            		<option value="6">JUNIO</option>
-                            		<option value="7">JULIO</option>
-                            		<option value="8">AGOSTO</option>
-                            		<option value="9">SEPTIEMBRE</option>
-                            		<option value="10">OCTUBRE</option>
-                            		<option value="11">NOVIEMBRE</option>
-                            		<option value="12">DICIEMBRE</option>
-                            	</select>                                                               
-                                <div id="mensaje_mes_lmayor" class="errores"></div>
-                             </div>
-                         </div>
-                         
-                         <div class="col-xs-6 col-md-3 col-lg-3 ">
-                        	<div class="form-group">
-                            	<label for="codigo_cuenta" class="control-label">Codigo Cuenta:</label>
-                                <input type="text" class="form-control" id="codigo_cuenta" name="codigo_cuenta" value=""  >                                
-                                <div id="mensaje_codigo_cuenta" class="errores"></div>
-                             </div>
-                         </div>
-                         
-                         <div class="col-xs-6 col-md-3 col-lg-3 ">
-                        	<div class="form-group">
-                            	<label for="nombre_cuenta" class="control-label">Nombre Cuenta:</label>
-                                <input type="text" class="form-control" id="nombre_cuenta" name="nombre_cuenta" value=""  >
-                                <input type="hidden" class="form-control" id="id_cuenta" name="id_cuenta" value=""  >                                
-                                <div id="mensaje_nombre_cuenta" class="errores"></div>
-                             </div>
-                         </div>                         
-                         
-                     </div>
-                	
-                        
+                		<div class="col-xs-6 col-md-3 col-lg-3 ">
+                			<label for="anio_l_mayor" class="control-label">Desde:</label>
+                			<div class="input-group">
+                              <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                              </div>
+                              <input type="text" id="fecha_desde" name="fecha_desde" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                            </div>
+                		</div>
+                		<div class="col-xs-6 col-md-3 col-lg-3 ">
+                			<label for="anio_l_mayor" class="control-label">Hasta:</label>
+                			<div class="input-group">
+                              <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                              </div>
+                              <input type="text" id="fecha_hasta" name="fecha_hasta" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                            </div>
+                		</div>
+                		
+                		<div class="col-xs-6 col-md-3 col-lg-3 ">
+                			<label for="anio_l_mayor" class="control-label">Codigo Cuenta:</label>
+                			<div class="input-group">
+                              <div class="input-group-addon">
+                                <i class="fa fa-keyboard-o"></i>
+                              </div>
+                              <input type="text" class="form-control" id="codigo_cuenta" name="codigo_cuenta" value=""  >
+                              <div id="mensaje_codigo_cuenta" class="errores"></div>   
+                            </div>
+                		</div>
+                		
+                		<div class="col-xs-6 col-md-3 col-lg-3 ">
+                			<label for="anio_l_mayor" class="control-label">Nombre Cuenta:</label>
+                			<div class="input-group">
+                              <div class="input-group-addon">
+                                <i class="fa fa-keyboard-o"></i>
+                              </div>
+                              <input type="text" class="form-control" id="nombre_cuenta" name="nombre_cuenta" value=""  >
+                              <input type="hidden" class="form-control" id="id_cuenta" name="id_cuenta" value=""  >                                
+                              <div id="mensaje_nombre_cuenta" class="errores"></div>
+                            </div>
+                		</div>
+                		
+                		                		
+                	</div>
+                	 
+                  
                      	<div class="row">
             			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
                 	   		    <div class="form-group">
-            	                  <button type="submit" id="btnMayores" name="btnMayores" class="btn btn-default"><i class="fa fa-file-pdf-o " aria-hidden="true"></i> &nbsp; GENERAR MAYORES</button>
             	                  <button type="submit" id="btnMayores" name="btnMayores" class="btn btn-default"><i class="fa fa-file-pdf-o " aria-hidden="true"></i> &nbsp; GENERAR MAYORES</button>
             	                  
             	                  <a class="btn btn-danger" href="<?php  echo $helper->url("LibroMayor","index"); ?>">CANCELAR</a>
@@ -150,12 +146,13 @@
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?> 
+   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-   <script src="view/Contable/FUNCIONESJS/mayorcontable.js?0.0"></script>         	
+    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script>
+   <script src="view/Contable/FUNCIONESJS/mayorcontable.js?0.1"></script>         	
   </body>
 </html>
 

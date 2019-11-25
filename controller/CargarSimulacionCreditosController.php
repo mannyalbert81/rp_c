@@ -1075,7 +1075,7 @@ class CargarSimulacionCreditosController extends ControladorBase{
           $html='<div class="si">
             	
             	 <button  type="button" id="pdf" name="pdf" class="btn btn-primary" onclick="GenerarPdf()"><i class="glyphicon glyphicon-save-file"></i> EXPORTAR A PDF</button>
-              
+                 
             	</div>
 
             <br>
@@ -1087,7 +1087,7 @@ class CargarSimulacionCreditosController extends ControladorBase{
              <table border="1" width="100%">
                      <tr style="color:white;" class="bg-olive">
                         <th width="5%">Cuota</th>
-                        <th width="15%" >Fecha</th>
+                        <th width="15%">Fecha</th>
                         <th width="13%">Capital</th>
                         <th width="13%">Interes</th>
                         <th width="13%">Seg. Desgravamen</th>
@@ -1316,8 +1316,8 @@ class CargarSimulacionCreditosController extends ControladorBase{
        $capital = $_capital_prestado_amortizacion_cabeza;
        $inter_ant= $interes_mensual;
        $interes_diario=$inter_ant/30;
-       $interes=  $capital * $inter_ant;
-       $interes=floor($interes * 100) / 100;
+                                                                                                                                                                                                                                                                   $interes=  $capital * $inter_ant;
+                                                                                                                                                                                                                                                                   $interes=floor($interes * 100) / 100;
        $amortizacion = $valor_cuota - $interes;
        $saldo_inicial= $capital - $amortizacion;
        $desgravamen=eval("return($formula_seguro_desgravamen);");

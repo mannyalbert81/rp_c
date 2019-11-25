@@ -1316,8 +1316,8 @@ class CargarSimulacionCreditosController extends ControladorBase{
        $capital = $_capital_prestado_amortizacion_cabeza;
        $inter_ant= $interes_mensual;
        $interes_diario=$inter_ant/30;
-       $interes=  $capital * $inter_ant;
-       $interes=floor($interes * 100) / 100;
+                                                                                                                                                                                                                                                                   $interes=  $capital * $inter_ant;
+                                                                                                                                                                                                                                                                   $interes=floor($interes * 100) / 100;
        $amortizacion = $valor_cuota - $interes;
        $saldo_inicial= $capital - $amortizacion;
        $desgravamen=eval("return($formula_seguro_desgravamen);");

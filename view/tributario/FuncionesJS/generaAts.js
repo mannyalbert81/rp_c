@@ -134,7 +134,12 @@ $("#btngenera").on("click",function(event){
 	}
 	
 	
-	
+	 swal("Generando XML", {
+	      icon: "success",
+	      buttons: false,
+	      timer: 16000
+	    });
+	 
 	$.ajax({
 		 url:"index.php?controller=TributarioGeneraAts&action=generaAts",
 		 type:"POST",	
@@ -143,9 +148,10 @@ $("#btngenera").on("click",function(event){
 		
 	 }).done(function(x){
 	
+		 
 		 console.log("Mesaje: " . x);
 		
-		 
+		
 		 
 	 }).fail(function(xhr,status,error){
 		 let err = xhr.responseText;

@@ -147,7 +147,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-            <li style="<?php echo getcontrolador("BuscarProducto",$controladores) ?>"><a href="index.php?controller=BuscarProducto&action=index"><i class="fa fa-circle-o"></i> Consultar Productos</a></li>
+            <li style="<?php echo getcontrolador("BuscarProducto",$controladores) ?>"><a href="index.php?controller=BuscarProducto&action=index"><i class="fa fa-circle-o"></i> Inventario de Productos</a></li>
 		 	</ul>
         </li>
        </ul>
@@ -190,7 +190,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-      		<li style="<?php echo getcontrolador("ComprobanteContable",$controladores) ?>"><a href="index.php?controller=ComprobanteContable&action=index"><i class="fa fa-circle-o"></i>Comprobantes Contable</a></li>
+      		<li style="<?php echo getcontrolador("ComprobanteContable",$controladores) ?>"><a href="index.php?controller=ComprobanteContable&action=index"><i class="fa fa-circle-o"></i>Diario Contables</a></li>
      		<li style="<?php echo getcontrolador("ProcesosMayorizacion",$controladores) ?>"><a href="index.php?controller=ProcesosMayorizacion&action=index"><i class="fa fa-circle-o"></i> Procesos Mensuales</a></li>
      		<li style="<?php echo getcontrolador("PagoNomina",$controladores) ?>"><a href="index.php?controller=Nomina&action=index1"><i class="fa fa-circle-o"></i> Pago Nomina</a></li>
     	  </ul>
@@ -398,6 +398,7 @@ $controladores=$_SESSION['controladores'];
               <ul class="treeview-menu">
               	<li style="<?php echo getcontrolador("IngresoCuentasPagar",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=CuentasPagarIndex"><i class="fa fa-circle-o"></i> Ingreso Cuentas Pagar</a></li>
               	<li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=Pagos&action=Index"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
+              	<li style="<?php echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=Compras&action=Index"><i class="fa fa-circle-o"></i> Compras</a></li>
     			
              </ul>
             </li>
@@ -542,7 +543,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-             <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+             <li class="treeview"  style="<?php echo getcontrolador("SBSInformacion",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Superintendencia<br>de Bancos</span>
                 <span class="pull-right-container">
@@ -550,7 +551,7 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-               <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+               <li class="treeview"  style="<?php echo getcontrolador("AdministracionInformacion",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Administración</span>
                 <span class="pull-right-container">

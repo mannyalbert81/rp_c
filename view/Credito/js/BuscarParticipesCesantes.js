@@ -73,6 +73,9 @@ function BuscarParticipe()
 {
 	var ciparticipe=$('#cedula_participe').val();
 	
+	$("#link_reporte").fadeOut("slow");
+	$("#Generar").fadeOut("slow");
+	
 	if(ciparticipe=="" || ciparticipe.includes('_'))
 		{
 		$("#mensaje_cedula_participe").text("Ingrese cédula");
@@ -81,7 +84,7 @@ function BuscarParticipe()
 		}
 	else
 		{
-		console.log(ciparticipe);
+		//console.log(ciparticipe);
 		$.ajax({
 		    url: 'index.php?controller=BuscarParticipesCesantes&action=BuscarParticipe',
 		    type: 'POST',
@@ -91,13 +94,13 @@ function BuscarParticipe()
 		})
 		.done(function(x) {
 			var y=$.parseJSON(x);
-			console.log(y);
+			//console.log(y);
 			$('#participe_encontrado').html(y[0]);
 		     id_participe=y[1];
 		    $("#link_reporte").data("participe",id_participe);
-		    console.log("valor de id -->"+id_participe);
-			AportesParticipe(1),
-			CreditosActivosParticipe(id_participe,1)
+		    //console.log("valor de id -->"+id_participe);
+			//AportesParticipe(1),
+//			CreditosActivosParticipe(id_participe,1)
 			cargaTipoPrestaciones();
 
 			
@@ -111,6 +114,24 @@ function BuscarParticipe()
 function AportesParticipe(){
 	
 	
+	var id_TipoPrestaciones = $("#id_tipo_prestaciones");
+	var fecha_prestaciones = $("#fecha_prestaciones");   
+	console.log(id_TipoPrestaciones.val() );
+	console.log(fecha_prestaciones.val() );
+	
+	if (id_TipoPrestaciones.val() == 0)
+	{
+		return false;
+	}
+	
+	if (validarfecha(fecha_prestaciones.val()))
+		{
+		
+		}
+	else
+		{
+			return false;
+		}
 	
 	$.ajax({
 		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
@@ -143,6 +164,7 @@ function reportePrint(ObjetoLink){
 
 function cargaTipoPrestaciones(){
 	
+	//console.log("Entre Prestaciones");
 	let $ddlTipoPrestaciones = $("#id_tipo_prestaciones");
 	
 	$.ajax({
@@ -152,9 +174,6 @@ function cargaTipoPrestaciones(){
 		dataType:"json",
 		data:null
 	}).done(function(datos){		
-		
-		
-	
 		
 		$ddlTipoPrestaciones.empty();
 		$ddlTipoPrestaciones.append("<option value='0' >--Seleccione--</option>");
@@ -166,12 +185,32 @@ function cargaTipoPrestaciones(){
   		});
 		
 	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
+		var err = xhr.responseText;
+		console.log("Error en Tipo de Prestaciones");
+		console.log(err);
 		$ddlTipoPrestaciones.empty();
 	})
 	
 }
+
+
+function validarfecha(fecha)
+{
+	var hoy = new Date().getDate();
+	var year = new Date().getFullYear();
+	var mes = new Date().getMonth()+1;
+	var fechael = fecha.split("-");
+	if(fechael[0] > year){
+		return false;
+	}else if (fechael[1] > mes){
+		return false;
+	}else if (fechael[1]== mes && fechael[2] > hoy){
+		return false;
+	}else{
+		return true;
+	}
+}
+
 
 $("#id_tipo_prestaciones").on("focus",function(){
 	$("#mensaje_id_tipo_prestaciones").text("").fadeOut("");

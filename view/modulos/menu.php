@@ -49,7 +49,7 @@ $controladores=$_SESSION['controladores'];
         
         <li class="treeview"  style="<?php echo getcontrolador("MenuNomina",$controladores) ?>"  >
           <a href="#">
-            <i class="glyphicon glyphicon-user"></i> <span>Nomina</span>
+            <i class="glyphicon glyphicon-user"></i> <span>Recursos Humanos</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -536,7 +536,7 @@ $controladores=$_SESSION['controladores'];
       </li>
          <li class="treeview"  style="<?php echo getcontrolador("MenuInformacion",$controladores) ?>"  >
           <a href="#">
-            <i class="glyphicon glyphicon-info-sign"></i> <span>Informacion</span>
+            <i class="glyphicon glyphicon-info-sign"></i> <span>Informacion BIESS / SB</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>

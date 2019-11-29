@@ -128,7 +128,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
         if(!(empty($resultSet)))
         {if($resultSet[0]->nombre_genero_participes == "HOMBRE") $icon='<i class="fa fa-male fa-3x" style="float: left;"></i>';
         else $icon='<i class="fa fa-female fa-3x" style="float: left;"></i>';
-        
+        /*
         $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
             		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
             		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
@@ -141,14 +141,18 @@ class BuscarParticipesCesantesController extends ControladorBase{
         $id="core_creditos.fecha_concesion_creditos";
         
         $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        */
+        
         
         $html.='
         <div class="box box-widget widget-user-2">';
-        if(!(empty($resultCreditos))) $html.='';
+     	 //  if(!(empty($resultCreditos))) 
+      
+        $html.='';
         $html.='<div class="widget-user-header bg-aqua">'
             .$icon.
             '<h3 class="widget-user-username">'.$resultSet[0]->nombre_participes.' '.$resultSet[0]->apellido_participes.'</h3>
-        
+            
          <h5 class="widget-user-desc">Estado: '.$resultSet[0]->nombre_estado_participes.'</h5>
         <h5 class="widget-user-desc">CI: '.$resultSet[0]->cedula_participes.'</h5>
         
@@ -193,6 +197,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
             array_push($respuesta, $html);
             array_push($respuesta, $resultSet[0]->id_participes);
         }
+        /*
         else
         {
             $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
@@ -203,7 +208,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
             array_push($respuesta, $html);
             array_push($respuesta, 0);
         }
-        
+        */
         
         
         echo json_encode($respuesta);
@@ -215,13 +220,15 @@ class BuscarParticipesCesantesController extends ControladorBase{
     {
         session_start();
         
+        $_fecha_concesion_creditos = "";
+        
         $html="";
         $_id_creditos=0;
         $total_saldo=0;
         $total_descuentos=0;
         $total_recibir=0;
         $total_pagar=0;
-        $id_participe=$_POST['id_participe'];
+        $id_participe= $_POST['id_participe'];
         $participes= new ParticipesModel();
     
         $columnas="COALESCE(sum(c.valor_personal_contribucion),0) aporte_personal_100, (coalesce(sum(c.valor_personal_contribucion),0)/2) aporte_personal_50,
@@ -267,40 +274,45 @@ class BuscarParticipesCesantesController extends ControladorBase{
                 
                 
                 
-                $html='<div class="box box-solid bg-olive">
-                    <div class="box-header with-border">
-                    <h3 class="box-title"><b>CÁLCULO DE DESAFILIACIÓN</b></h3>
+                $html='<div >
+                    <div >
+                    <h3 class="box-title"><b>SIMULACIÓN: CÁLCULO DE DESAFILIACIÓN</b></h3>
                     </div>
-                    <div class="box box-solid bg-navy">
-                    <div class="box-header with-border">
-                    <h5 class=""><b>IMPOSICIONES DESDE:</b> '.$_imposiciones_desde.'<b> HASTA:</b> '.$_imposiciones_hasta.'</h5>
+                    <div >
+                    <div >
+                    <h5><b>IMPOSICIONES DESDE:</b> '.$_imposiciones_desde.'<b> HASTA:</b> '.$_imposiciones_hasta.'</h5>
                     </div>
-                    <table border="1" width="100%">
-                    <tr style="color:white;" class="bg-aqua">
-                    <th width="10%"></th>
+                    <div style="align-content: center;">
+                    <table  border="1" width="70%">
+                    <tr >
+                    <th></th>
                     </tr>
-                    <tr style="color:white;" class="bg-aqua">
-                    <th width="10%">50% del Aporte Personal (Res. N° SBS-2013-504)</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblAportePersonal">'.$_aporte_personal_50.'</span></font></td>
+                    <tr>
+                    	<td width="70%" >50% del Aporte Personal (Res. N° SBS-2013-504)</td>
+                    	<td style="text-align: right;"  width="30%"><span id="lblAportePersonal"> $ '.$_aporte_personal_50.'</span></td>
                     </tr>
-                    <tr style="color:white;" class="bg-aqua">
-                    <th width="10%">50% del Impuesto IR Superavit Personal (Res. N° SBS-2013-504)</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblImpuestoPersonal">'.$_impuesto_ir_superavit_personal_50.'</span></font></td>
+                    <tr>
+                    	<td >50% del Impuesto IR Superavit Personal (Res. N° SBS-2013-504)</td>
+                    	<td style="text-align: right;"><span id="lblImpuestoPersonal"> $ '.$_impuesto_ir_superavit_personal_50.'</span></td>
                     </tr>
-                    <tr style="color:white;" class="bg-aqua">
-                    <th width="10%">50% del Superavit por aporte Personal (Res. N° SBS-2013-504)</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblSuperavitAportePersonal">'.$_superavit_aporte_personal_50.'</span></font></td>
+                    <tr >
+                    	<td >50% del Superavit por aporte Personal (Res. N° SBS-2013-504)</td>
+                    	<td style="text-align: right;"><span id="lblSuperavitAportePersonal"> $ '.$_superavit_aporte_personal_50.'</span></td>
                     </tr>
-                    <tr style="color:white;" class="bg-red">
-                    <th width="10%">TOTAL 50% PERSONAL + RENDIMIENTOS PRESTACIÓN</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalSuma"><b>'.number_format((float)$Total50PersonalMasRendimientos, 2, ',', '.').'</b></span></font></td>
-                    </tr>';
-                
-               
+                    
+                    
+                    <tr >
+                    	<th >TOTAL 50% PERSONAL + RENDIMIENTOS PRESTACIÓN</th>
+                    	<td style="text-align: right;"><span id="lblTotalSuma"><b> $ '.number_format((float)$Total50PersonalMasRendimientos, 2, ',', '.').'</b></span></td>
+                    </tr>
+                </table>
+                </div>
+                    </div>
+               ';
                 
                 
                 // CONSULTO LOS CREDITOS DE LOS PARTICIPES
-                $columnas="bb.id_creditos,bb.id_tipo_creditos, tc.nombre_tipo_creditos, tc.codigo_tipo_creditos";
+                $columnas="bb.fecha_concesion_creditos, bb.id_creditos,bb.id_tipo_creditos, tc.nombre_tipo_creditos, tc.codigo_tipo_creditos";
                 $tablas="core_participes aa
                 inner join core_creditos bb on bb.id_participes = aa.id_participes
                 inner join core_estado_participes cc on cc.id_estado_participes = aa.id_estado_participes
@@ -317,10 +329,12 @@ class BuscarParticipesCesantesController extends ControladorBase{
                 if(!(empty($resultCreditos)))
                 {
                  
-                    $html.='<tr style="color:white;" class="bg-olive">
-                    <th width="10%">DESCUENTOS</th>
-                    <td box box-solid bg-olive"  width="10%"><font color="black"><span id="lblCreditoOrdinario"></span></font></td>
-                    </tr>';
+                    $html.=' <div >
+			                    <h5 ><b>DESCUENTOS</b></h5>
+			                 </div>
+                    		
+                    		<table border="1" width="70%"> 
+                    			';
                     
                     foreach($resultCreditos as $res)
                     {
@@ -328,15 +342,28 @@ class BuscarParticipesCesantesController extends ControladorBase{
                         // capturo el id de los creditos que tiene el participe
                         $_id_creditos=$res->id_creditos;
                         $_nombre_tipo_creditos=$res->nombre_tipo_creditos.' #'.$res->id_creditos;
+                        $_fecha_concesion_creditos = $res->fecha_concesion_creditos;
                         
-                       $total_saldo= $this->Buscar_Cuotas_Actuales($_id_creditos);
+                       $total_saldo=   $participes->devuelve_saldo_capital($_id_creditos) ; //$this->Buscar_Cuotas_Actuales($_id_creditos);
                        $total_interes= $this->Buscar_Interes($_id_creditos);
                        
                        
-                       $html.=' <tr style="color:white;" class="bg-aqua">
-                       <th width="10%">'.$_nombre_tipo_creditos.'</th>
-                       <td bgcolor="white"  width="10%"><font color="black"><span id="lblCreditoOrdinario">'.number_format((float)$total_saldo, 2, ',', '.').'</span></font></td>
-                       </tr>';
+                       $estado_del_credito = $this->Buscar_Estado_Credito($_id_creditos);
+                       
+                       ////DETERMINAR ESTADO DEL CREDITO
+                       
+                       $html.='<tr>
+                       			<td width="70%">'.$estado_del_credito.'</td>
+                       			<td style="text-align: right;" width="30%"><span id="lblCreditoOrdinario"> $ '.number_format((float)$total_saldo, 2, ',', '.').'</span></td>
+                       		  </tr>';
+                        
+                       	
+                       
+                       
+                       $html.='<tr>
+                       			<td width="70%">'.$_nombre_tipo_creditos.'</td>
+                       			<td style="text-align: right;" width="30%"><span id="lblCreditoOrdinario"> $ '.number_format((float)$total_saldo, 2, ',', '.').'</span></td>
+                       		  </tr>';
                        
                        
                        $total_descuentos=$total_descuentos+$total_saldo;
@@ -349,16 +376,25 @@ class BuscarParticipesCesantesController extends ControladorBase{
                 
                 $total_recibir=$Total50PersonalMasRendimientos-$total_descuentos;
                   
-                $html.=' <tr style="color:white;" class="bg-red">
-                    <th width="10%">TOTAL DESCUENTOS</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalDescuentos"><b>'.number_format((float)$total_descuentos, 2, ',', '.').'</b></span></font></td>
-                    </tr>
-                    <tr style="color:white;" class="bg-black">
-                    <th width="10%">TOTAL A RECIBIR</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalRecibir"><b>'.number_format((float)$total_recibir, 2, ',', '.').'</b></span></font></td>
-                    </tr>
-                    </table>
-                    </div></div>';
+                $html.='  
+                			<tr>
+                       			<th >TOTAL DESCUENTOS</th>
+                    			<td style="text-align: right;"><span id="lblTotalDescuentos"><b> $ '.number_format((float)$total_descuentos, 2, ',', '.').'</b></span></td>
+                    		</tr>
+                    	</table>
+                    
+                    	<div >
+			              <h5 ><b>RECIBIR</b></h5>
+			            </div>
+                    		
+                    	<table border="1" width="70%">
+                    	
+                    		<tr>
+                    			<th width="70%">TOTAL A RECIBIR</th>
+                    			<td style="text-align: right;" width="30%"> <font color="black"><span id="lblTotalRecibir"><b> $ '.number_format((float)$total_recibir, 2, ',', '.').'</b></span></font></td>
+                    		</tr>
+                    	</table>
+                    	</div>';
                 
             
                 
@@ -367,16 +403,15 @@ class BuscarParticipesCesantesController extends ControladorBase{
                     
                     $total_pagar=$total_recibir*(-1);
                     
-                    $html.='<div class="box box-solid bg-aqua" style = "margin-top:20px">
+                    $html.='<div class="box box-solid bg-red" style = "margin-top:20px">
                     <div class="box-header with-border">
-                    <h3 class="box-title"><b>ALERTAS</b></h3>
+                    	<h3 class="box-title"><b>ALERTAS</b></h3>
                     </div>
-                    <table border="1" width="100%">
-                    <tr style="color:white;" class="bg-white">
-                    <th width="10%">Estimado participe para poder acceder a la desafiliacion debe cubrir el monto adeudado en sus créditos a la fecha con el valor de:</th>
-                    <td bgcolor="white"  width="10%"><font color="black"><span id="lblTotalDescuentos"><b>'.number_format((float)$total_pagar, 2, ',', '.').'</b></span></font></td>
-                    </tr>
-                    </table>
+                    
+                    <div>
+                    	<h4>
+                    		Estimado participe para poder acceder a la desafiliacion debe cubrir el monto adeudado en sus créditos a la fecha con el valor de: $ ' .number_format((float)$total_pagar, 2, ',', '.').
+                    	'</h4>
                     </div>';
                     
                     
@@ -505,6 +540,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
         
     }
 
+    
     public function Buscar_Cuotas_Actuales($_id_creditos)
     {
         $participe= new ParticipesModel();
@@ -658,14 +694,282 @@ class BuscarParticipesCesantesController extends ControladorBase{
             
         }
      
-        
+    
        
     }
  
     
 
+    public function Buscar_Primera_Cuota($_id_creditos)
+    {
+    	$participe= new ParticipesModel();
+    	$anio_actual=date("Y");
+    	$mes_actual=date("m");
+    
+    	$_id_estado_tabla_amortizacion=0;
+    	$_balance_tabla_amortizacion=0;
+    	$total_anterior=0;
     
     
+    	$_fecha_tabla_amortizacion="";
+    	$_fecha_tabla_amortizacion_anterior="";
+    	$_fecha_tabla_amortizacion_adelantada="";
+    
+    
+    
+    
+    	
+    	$columnas="t.fecha_tabla_amortizacion, t.numero_pago_tabla_amortizacion, t.id_estado_tabla_amortizacion, t.balance_tabla_amortizacion";
+    	$tablas="core_tabla_amortizacion t";
+    	$where="t.id_creditos='$_id_creditos' ";
+    	$id="t.numero_pago_tabla_amortizacion";
+    	$resultSet=$participe->getCondiciones($columnas, $tablas, $where, $id);
+    
+    	if(!empty($resultSet)){
+    
+    		foreach ($resultSet as $res){
+    
+    
+    			$_id_estado_tabla_amortizacion= $res->id_estado_tabla_amortizacion;
+    
+    			// verifico que la ultimo cuota esta cancelada
+    			if($_id_estado_tabla_amortizacion==2){
+    
+    				$columnas_adelantados="t.fecha_tabla_amortizacion as fecha_tabla_amortizacion_adelantada, balance_tabla_amortizacion";
+    				$tablas_adelantados="core_tabla_amortizacion t";
+    				$where_adelantados="t.id_creditos='$_id_creditos' and t.id_estatus=1 and t.id_estado_tabla_amortizacion=2";
+    				$id_adelantados="t.fecha_tabla_amortizacion";
+    				$limit_1="1";
+    				$resultSetAdelantados=$participe->getCondicionesDescLimit($columnas_adelantados, $tablas_adelantados, $where_adelantados, $id_adelantados, $limit_1);
+    
+    
+    
+    				if(!empty($resultSetAdelantados)){
+    
+    					foreach ($resultSetAdelantados as $resA) {
+    						 
+    						$_fecha_tabla_amortizacion_adelantada=$resA->fecha_tabla_amortizacion_adelantada;
+    
+    
+    						if($_fecha_tabla_amortizacion_adelantada==$_fecha_tabla_amortizacion){
+    
+    							$_balance_tabla_amortizacion= $res->balance_tabla_amortizacion;
+    
+    
+    						}else{
+    
+    							$_balance_tabla_amortizacion= $resA->balance_tabla_amortizacion;
+    
+    						}
+    
+    
+    
+    					}
+    
+    				}
+    
+    
+    			}else{
+    
+    
+    				$columnas_1="t.fecha_tabla_amortizacion as fecha_tabla_amortizacion_anterior, balance_tabla_amortizacion";
+    				$tablas_1="core_tabla_amortizacion t";
+    				$where_1="t.id_creditos='$_id_creditos' and t.id_estatus=1 and t.id_estado_tabla_amortizacion=2";
+    				$id_1="t.fecha_tabla_amortizacion";
+    				$limit_1="1";
+    				$resultSet1=$participe->getCondicionesDescLimit($columnas_1, $tablas_1, $where_1, $id_1, $limit_1);
+    
+    
+    				if(!empty($resultSet1)){
+    
+    					foreach ($resultSet1 as $res1)
+    					{
+    
+    						$_fecha_tabla_amortizacion_anterior=$res1->fecha_tabla_amortizacion_anterior;
+    						$_balance_tabla_amortizacion=$res1->balance_tabla_amortizacion;
+    
+    
+    						$columnas_2="coalesce(sum(t.total_balance_tabla_amortizacion),0) as total";
+    						$tablas_2="core_tabla_amortizacion t";
+    						$where_2="t.id_creditos='$_id_creditos' and t.id_estatus=1 and t.id_estado_tabla_amortizacion<>2 and date(t.fecha_tabla_amortizacion) between '$_fecha_tabla_amortizacion_anterior' and '$_fecha_tabla_amortizacion'";
+    						 
+    						$resultSet2=$participe->getCondicionesSinOrden($columnas_2, $tablas_2, $where_2, "");
+    
+    
+    
+    						if(!empty($resultSet2)){
+    
+    
+    							foreach ($resultSet2 as $res2) {
+    								 
+    								$total_anterior=$res2->total;
+    								 
+    							}
+    
+    						}
+    						 
+    
+    					}
+    
+    				}
+    
+    
+    
+    			}
+    
+    
+    			$_total_saldo_actual=$_balance_tabla_amortizacion+$total_anterior;
+    
+    			return  $_total_saldo_actual;
+    
+    		}
+    
+    
+    	}else{
+    
+    		// para los vencidos
+    
+    
+    
+    	}
+    	 
+    
+    	 
+    }
+     
+    
+    
+
+
+    public function Buscar_Estado_Credito($_id_creditos)
+    {
+    	
+    	$estado_del_proceso ="";
+    	
+    	$participe= new ParticipesModel();
+    	$anio_actual=date("Y");
+    	$mes_actual=date("m");
+    
+    	$_id_estado_tabla_amortizacion=0;
+    	$_balance_tabla_amortizacion=0;
+    	$total_anterior=0;
+    
+    
+    	$_fecha_tabla_amortizacion="";
+    	$_fecha_tabla_amortizacion_anterior="";
+    	$_fecha_tabla_amortizacion_adelantada="";
+    
+    
+    
+    	$_fecha_ultimo_pago_parcial = "";
+    	$_fecha_ultimo_pago_cancelado = "";
+    	$_fecha_ultimo_pago_activo = "";
+    	 
+    	$fecha_cuota_actual = $participe->ultimo_dia_mes_actual();
+    	
+    	
+    	$columnas="t.fecha_tabla_amortizacion, t.numero_pago_tabla_amortizacion, t.id_estado_tabla_amortizacion, t.balance_tabla_amortizacion";
+    	$tablas="core_tabla_amortizacion t";
+    	$where="t.id_creditos='$_id_creditos' ";
+    	$id="t.numero_pago_tabla_amortizacion";
+    	$resultSet=$participe->getCondiciones($columnas, $tablas, $where, $id);
+    
+    	if(!empty($resultSet)){
+    
+    		foreach ($resultSet as $res){
+    
+    
+    			$_id_estado_tabla_amortizacion= $res->id_estado_tabla_amortizacion;
+    
+    			// verifico que la ultimo cuota esta cancelada
+    			if($_id_estado_tabla_amortizacion==1) //PAGO PARCIAL
+    			{
+    				$_fecha_ultimo_pago_parcial = $res->fecha_tabla_amortizacion;
+    			}
+    			if($_id_estado_tabla_amortizacion==2) //PAGO CANCELADO
+    			{
+    				$_fecha_ultimo_pago_cancelado = $res->fecha_tabla_amortizacion;
+    			}
+    			if($_id_estado_tabla_amortizacion==3) //PAGO ACTIVO
+    			{
+    				$_fecha_ultimo_pago_activo = $res->fecha_tabla_amortizacion;
+    			} 
+    			
+    		}
+    		
+    		//   1 - Mora; 
+    		//   2 - Adelantado
+    		//   3 - Parcial
+    		//   4 - Al dia
+    		
+    		
+    		if ($_fecha_ultimo_pago_parcial != "" )
+    		{
+    			switch ($_fecha_ultimo_pago_parcial) {
+    				case $_fecha_ultimo_pago_parcial < $fecha_cuota_actual:
+    					echo "Esta en Mora";
+    					$estado_del_proceso = 1;
+    					break;
+    				case $_fecha_ultimo_pago_parcial > $fecha_cuota_actual:
+    					echo "Pago Adelantado";
+    					$estado_del_proceso = 2;
+    					break;
+    				case $_fecha_ultimo_pago_parcial = $fecha_cuota_actual:
+    					echo "Pago Parcial";
+    					$estado_del_proceso = 3;
+    					break;
+    			}
+    			
+    		}
+    		if ($_fecha_ultimo_pago_cancelado != "" )
+    		{
+    			switch ($_fecha_ultimo_pago_parcial) {
+    				case $_fecha_ultimo_pago_cancelado < $fecha_cuota_actual:
+    					echo "Esta en Mora";
+    					$estado_del_proceso = 1;
+    					break;
+    				case $_fecha_ultimo_pago_cancelado > $fecha_cuota_actual:
+    					echo "Pago Adelantado";
+    					$estado_del_proceso = 2;
+    					break;
+    				case $_fecha_ultimo_pago_cancelado = $fecha_cuota_actual:
+    					echo "Pago al dia";
+    					$estado_del_proceso = 4;
+    					break;
+    			}
+    		}
+    		if ($_fecha_ultimo_pago_activo != "" )
+    		{
+    			switch ($_fecha_ultimo_pago_activo) {
+    				case $_fecha_ultimo_pago_activo < $fecha_cuota_actual:
+    					echo "Esta en Mora";
+    					$estado_del_proceso = 1;
+    					break;
+    				case $_fecha_ultimo_pago_activo > $fecha_cuota_actual:
+    					echo "Pago Adelantado";
+    					$estado_del_proceso = 2;
+    					break;
+    				case $_fecha_ultimo_pago_activo = $fecha_cuota_actual:
+    					echo "Pago al dia";
+    					$estado_del_proceso = 4;
+    					break;
+    			}
+    		}
+    		
+    		return  $estado_del_proceso;
+    		
+    			
+    	}else{
+    
+    		// para los vencidos
+    
+    
+    
+    	}
+    
+    
+    
+    }
     
     
     

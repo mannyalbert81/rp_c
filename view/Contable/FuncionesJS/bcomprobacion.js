@@ -1,5 +1,8 @@
 $(document).ready(function(){
 	
+	$('#genReporte').tooltip();
+	//$('#genReporte').popover();
+	
 })
 
 /***
@@ -134,5 +137,127 @@ function ExpandirTabla(clase,idbt)
 	else document.getElementById(idbt).className = "fa fa-angle-double-down";
 	
 }
+
+/*** cambios 28-11-2019 dc **/
+
+function verReporte(){
+	
+	let $mesBalance	= $("#mes_balance"),
+		$anioBalance= $("#anio_balance"),
+		$maxNivel	= $("#nivel_balance");
+	
+	if ($anioBalance.val()==0){		
+		$anioBalance.notify("Seleccione año",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	if ($mesBalance.val()==0){		
+		$mesBalance.notify("Seleccione mes",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	
+	$.ajax({
+	    url: 'index.php?controller=BalanceComprobacion&action=obtenerBalance',
+	    type: 'POST',
+	    beforeSend:MensajePreliminar(),
+	    dataType:"json",
+	    data: {
+	    	   mes: $mesBalance.val(),
+	    	   anio: $anioBalance.val(),
+	    	   max_nivel_balance: $maxNivel.val() 
+	    },
+	})
+	.done(function(x) {	
+		
+		swal("Reporte cargado", {
+		      icon: "success",
+		      buttons: false,
+		      timer: 1000
+		    });
+		
+		$("#pnl_balance").html("");
+		$("#pnl_errores").css({"display":"none"});
+		$("#lista_cuentas_errores").append("<li></li>");
+		$("#cant_errores_balance").text("0"); 
+		$("#pnl_descarga").css({"display":"none"});
+		
+		if( x.balance != undefined ){
+			$("#pnl_balance").html(x.balance);
+			
+			if( x.cantidaderrores != undefined && x.cantidaderrores == 0 ){
+				$("#pnl_descarga").css({"display":""});
+			}
+		}
+		
+		if( x.errores != undefined && x.errores != "" ){
+			
+			$("#pnl_errores").css({"display":""});
+			$("#lista_cuentas_errores").append(x.errores);
+			$("#cant_errores_balance").text(x.cantidaderrores);  
+		}
+		
+	})
+	.fail(function(xhr,status, error) {
+		swal.close();
+	    console.log(xhr.responseText);
+	});
+
+	
+}
+
+function MensajePreliminar(){
+	
+	swal({
+		  title: "Reporte preliminar",
+		  text: "Preparando el reporte preliminar",
+		  icon: "view/images/capremci_load.gif",
+		  buttons: false,
+		  closeModal: false,
+		  allowOutsideClick: false
+		});	
+}
+
+function generaReporte(){
+	
+	let $mesBalance	= $("#mes_balance"),
+	$anioBalance= $("#anio_balance"),
+	$maxNivel	= $("#nivel_balance");
+
+	if ($anioBalance.val()==0){		
+		$anioBalance.notify("Seleccione año",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	if ($mesBalance.val()==0){		
+		$mesBalance.notify("Seleccione mes",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}	
+	
+	var parametros = {
+			mes: $mesBalance.val(),
+    	   anio: $anioBalance.val(),
+    	   max_nivel_balance: $maxNivel.val() 
+	}
+	
+	var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "index.php?controller=BalanceComprobacion&action=DescargarReporte");
+    form.setAttribute("target", "_blank");   
+    
+    for (var i in parametros) {
+        if (parametros.hasOwnProperty(i)) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = i;
+            input.value = parametros[i];
+            form.appendChild(input);
+        }
+    }
+    
+    document.body.appendChild(form); 
+    form.submit();    
+    document.body.removeChild(form);
+	
+}
+
 
 

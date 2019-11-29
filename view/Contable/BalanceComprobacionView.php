@@ -136,7 +136,7 @@
 	      <div class="row">
 	      	<div class="col-md-offset-5 col-lg-offset-5 col-md-2 col-lg-2 col-xs-12">
 	      		<div class="form-group">
-	      			<button type="button" id="Buscar" name="Buscar" class="btn btn-success" onclick="BuscarReporte()">GENERAR</button>    		
+	      			<button type="button" id="Buscar" name="Buscar" class="btn btn-success" onclick="verReporte()">GENERAR</button>    		
 	      		</div>
 	      	</div>
 	      </div>
@@ -149,10 +149,12 @@
        </div>
     </section>
     
+    
+    
     <section class="content">
       <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title">Balance </h3>
+          <h3 class="box-title">Reporte Balance </h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -161,11 +163,45 @@
         </div>        
          
 	    <div class="box-body">
-	    	<div id="load_cuentas" ></div>
-        	<div id="plan_cuentas" ></div>
-        	
-            <div id="pruebasdiv" style="height: 100px";>
-            </div>
+	    	
+	    	<div class="row " id="pnl_errores" style="height: 100px; display:none;">
+	    		<div class="col-md-12 col-lg-12 col-xs-12">
+	    			<div class="alert alert-danger" >
+	    				<p class=""><strong>Aviso!</strong> Revise mayores antes de realizar el balance.</p>        			
+            		</div>
+	    		</div>
+	    		<div class="col-md-12 col-lg-12 col-xs-12">	    			
+    	    		<div class="dropdown">
+                      <button class=" btn  btn-warning dropdown-toggle" style="color:black;" type="button" data-toggle="dropdown">
+                      <i class="text-white fa  fa-long-arrow-right" style="color:white;" aria-hidden="true"></i> Cuentas a Revisar
+                      <span class="badge" id="cant_errores_balance"> </span> <span class="caret"></span></button>
+                      <ul class="dropdown-menu scrollable-menu"  id="lista_cuentas_errores">
+                      </ul>
+                    </div>
+         			
+	    		</div>
+	    		
+	    		<hr>
+	    		
+	    	</div>
+	    	
+	    	<div class="row" id="pnl_descarga" style="display:none;">
+	    		<div class="col-md-12 col-lg-12 col-xs-12">	
+	    			<div class="pull-right"> 
+	    				<a href="#" id="genReporte" onclick="generaReporte()" data-toggle="tooltip" title="Generar Reporte"> 
+        	    			<span class="fa-stack fa-lg">
+                              <i class="fa fa-square-o fa-stack-2x"></i>
+                              <i class="fa fa-download fa-stack-1x"></i>
+                            </span>
+                        </a>
+                    </div><br>
+	    		</div>
+	    		
+	    	</div>
+	    	
+	    	<br>
+	    	
+	    	<div id="pnl_balance" ></div>
 	    </div>
 	   </div>
     </section>
@@ -178,12 +214,10 @@
  </div>
      
    
-    <?php include("view/modulos/links_js.php"); ?>
-   	 
+    <?php include("view/modulos/links_js.php"); ?>    
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.13"></script>   
-  
-  
+    <script src="view/Contable/FuncionesJS/bcomprobacion.js?1.16"></script>   
+    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
 	
  </body>
 </html>

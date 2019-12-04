@@ -545,26 +545,57 @@ $controladores=$_SESSION['controladores'];
           <ul class="treeview-menu">
              <li class="treeview"  style="<?php echo getcontrolador("SBSInformacion",$controladores) ?>"  >
               <a href="#">
-                <i class="fa fa-folder-open-o"></i> <span>Superintendencia<br>de Bancos</span>
+                <i class="fa fa-folder-open-o"></i> <span>SB</span>
                 <span class="pull-right-container">
                   <i class="fa fa-angle-left pull-right"></i>
                 </span>
               </a>
-              <ul class="treeview-menu">
+             <ul class="treeview-menu">
                <li class="treeview"  style="<?php echo getcontrolador("AdministracionInformacion",$controladores) ?>"  >
               <a href="#">
-                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+                <i class="fa fa-folder-open-o"></i> <span>Reporte</span>
                 <span class="pull-right-container">
                   <i class="fa fa-angle-left pull-right"></i>
                 </span>
               </a>
               <ul class="treeview-menu">
                 <li style="<?php echo getcontrolador("B17",$controladores) ?>"><a href="index.php?controller=B17&action=index"><i class="fa fa-circle-o"></i>B17</a></li>
-                </ul>
-               </ul>
+              </ul>
+            </ul>
+              
+              
+            </li>
+            
+            
+            
+             <li class="treeview"  style="<?php echo getcontrolador("BIESSInformacion",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>BIESS</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+             <ul class="treeview-menu">
+               <li class="treeview"  style="<?php echo getcontrolador("AdministracionInformacion",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Reporte</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li style="<?php echo getcontrolador("EstructurasBiess",$controladores) ?>"><a href="index.php?controller=EstructurasBiess&action=index"><i class="fa fa-circle-o"></i>G41</a></li>
+                <li style="<?php echo getcontrolador("EstructurasBiess",$controladores) ?>"><a href="index.php?controller=B17&action=index"><i class="fa fa-circle-o"></i>G42</a></li>
+              </ul>
+            </ul>
+              
+              
             </li>
             
        </ul>
+       
+ 
+       
       </li>
       
    

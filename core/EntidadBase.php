@@ -852,7 +852,13 @@ class EntidadBase{
     
     	return date('d-m-Y', mktime(0,0,0, $month, $day, $year));
     }
+    public function ultimo_dia_mes_fecha($fecha) {
+    	$month = $fecha('m');
+    	$year = $fecha('Y');
+    	$day = $fecha("d", mktime(0,0,0, $month+1, 0, $year));
     
+    	return date('d-m-Y', mktime(0,0,0, $month, $day, $year));
+    }
     /** Actual month first day **/
     public function primer_dia_mes_actual() {
     	$month = date('m');

@@ -609,6 +609,7 @@ class TributarioGeneraAtsController extends ControladorBase{
 		}
 		 
 		return $html;
+	
 		 
 	}
 	

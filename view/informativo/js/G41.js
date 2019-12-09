@@ -66,13 +66,13 @@ $("#btngenera").on("click",function(event){
 		return false;
 	}
 	
-	/*
+	
 	 swal("Generando XML", {
 	      icon: "success",
 	      buttons: false,
-	      timer: 16000
+	      timer: 8000
 	    });
-	 */
+	 
 	$.ajax({
 		 url: 'index.php?controller=EstructurasBiess&action=generaG41',
 		    type: 'POST',

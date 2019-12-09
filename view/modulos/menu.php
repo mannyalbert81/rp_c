@@ -585,7 +585,7 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
                 <li style="<?php echo getcontrolador("EstructurasBiess",$controladores) ?>"><a href="index.php?controller=EstructurasBiess&action=index"><i class="fa fa-circle-o"></i>G41</a></li>
-                <li style="<?php echo getcontrolador("EstructurasBiess",$controladores) ?>"><a href="index.php?controller=B17&action=index"><i class="fa fa-circle-o"></i>G42</a></li>
+                <li style="<?php echo getcontrolador("EstructurasBiess",$controladores) ?>"><a href="index.php?controller=EstructurasBiess&action=index2"><i class="fa fa-circle-o"></i>G42</a></li>
               </ul>
             </ul>
               

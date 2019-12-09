@@ -37,7 +37,16 @@ class EntidadBase{
         return $resultSet;
     }
     
-    
+    public function getCondiciones_Grupo_Having_Limit($columnas ,$tablas , $where, $grupo, $having, $limit){
+        
+        $query=pg_query($this->con, "SELECT $columnas FROM $tablas WHERE $where GROUP BY $grupo HAVING $having $limit");
+        $resultSet = array();
+        while ($row = pg_fetch_object($query)) {
+            $resultSet[]=$row;
+        }
+        
+        return $resultSet;
+    }
     
     public function getConetar(){
         return $this->conectar;
@@ -307,6 +316,9 @@ class EntidadBase{
     	return $resultSet;
     }
   
+    
+    
+    
     public function getCondicionesPag($columnas ,$tablas , $where, $id, $limit){
     	 
     	$query=pg_query($this->con, "SELECT $columnas FROM $tablas WHERE $where ORDER BY $id  ASC  $limit");

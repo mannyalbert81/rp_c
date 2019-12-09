@@ -198,10 +198,6 @@ $("#id_categorias").click(function() {
   $dllSubCategorias.empty();
   cargaSubCategoria(id_categorias);
 
-  
-  
-  
-  
 });
 
 

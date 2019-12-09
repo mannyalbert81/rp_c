@@ -596,5 +596,130 @@ class PeriodoController extends ControladorBase{
 	}
 	
 	
+	/** CAMBIOS dc 2019-12-03 para vista de cierre **/
+	
+	public function indexApertura(){
+	    
+	    $periodo = new PeriodoModel();
+	    
+	    session_start();
+	    
+	    if(empty( $_SESSION)){
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        return;
+	    }
+	    
+	    $nombre_controladores = "AperturaMes";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $periodo->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (empty($resultPer)){
+	        
+	        $this->view("Error",array(
+	            "resultado"=>"No tiene Permisos de Acceso 'APERTURA DE MES'"
+	            
+	        ));
+	        exit();
+	    }
+	        
+	    
+	    $this->view_Contable("AperturaMes",array());
+	    
+	}
+	
+	public function ObtenerDetallesPeriodo(){
+	    
+	    $periodo = new PeriodoModel();
+	    
+	    if( !isset( $_SESSION ) ){
+	        session_start();
+	    }
+	    
+	    $_anio_periodo = (isset( $_POST['anio_periodo'])) ? $_POST['anio_periodo'] : 0 ;
+	    
+	    $columnas1 = " aa.id_periodo, aa.anio_periodo, aa.mes_periodo, aa.id_tipo_cierre, cc.nombre_tipo_cierre, aa.id_estado, bb.nombre_estado";
+	    $tablas1   = " con_periodo aa
+    	    INNER JOIN estado bb ON bb.id_estado = aa.id_estado
+    	    INNER JOIN con_tipo_cierre cc ON cc.id_tipo_cierre = aa.id_tipo_cierre";
+	    $where1    = " aa.anio_periodo = '$_anio_periodo' ";
+	    $id1       = " aa.mes_periodo";
+	    $rsConsulta1 = $periodo->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    if( empty($rsConsulta1) ){
+	        
+	        $periodo->beginTran();
+	        
+	        // aqui comienza validacion para insertar 	       
+	        $arrayMeses = array(1,2,3,4,5,6,7,8,9,10,11,12);
+	        
+	        //buscar datos
+	        $columnas2 = " id_entidades, nombre_entidades";
+	        $tablas2   = " entidades";
+	        $where2    = " nombre_entidades = 'CAPREMCI'";
+	        $id2       = " id_entidades";
+	        $rsConsulta2   = $periodo->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	        $_id_entidades = ( !empty( $rsConsulta2 ) ) ? $rsConsulta2[0]->id_entidades : 'null';
+	        
+	        $columnas3 = " id_tipo_cierre, nombre_tipo_cierre";
+	        $tablas3   = " con_tipo_cierre";
+	        $where3    = " nombre_tipo_cierre = 'MENSUAL'";
+	        $id3       = " id_tipo_cierre";
+	        $rsConsulta3   = $periodo->getCondiciones($columnas3, $tablas3, $where3, $id3);
+	        $_id_tipo_cierre   = ( !empty( $rsConsulta3 ) ) ? $rsConsulta3[0]->id_tipo_cierre : 'null';
+	        
+	        $_id_usuarios = $_SESSION['id_usuarios'];
+	        $_usuario_usuarios = $_SESSION['usuario_usuarios'];
+	        
+	        $columnas4 = " id_estado, nombre_estado";
+	        $tablas4   = " estado";
+	        $where4    = " nombre_estado = 'CERRADO' AND tabla_estado = 'con_periodo' ";
+	        $id4       = " id_estado";
+	        $rsConsulta4   = $periodo->getCondiciones($columnas4, $tablas4, $where4, $id4);
+	        $_id_estado   = ( !empty( $rsConsulta4 ) ) ? $rsConsulta4[0]->id_estado : 'null';
+	        
+	        $_funcion  = "ins_con_periodo";
+	        $_parametros   = "";
+            
+	        for ($i = 1; $i <= 12; $i++) {
+	            
+	            $_parametros   = "$_id_entidades,$_id_usuarios,$_id_tipo_cierre,$_id_estado,'$_usuario_usuarios',$_anio_periodo,$i";
+	            $_consulta1 = $periodo->getconsultaPG($_funcion, $_parametros);
+	            $periodo->llamarconsultaPG($_consulta1);
+	           	            
+	        }
+	        
+	        $error_pg  = pg_last_error();
+	        $error     = error_get_last();
+	        
+	        if( !empty($error_pg) || !empty($error) ){
+	            
+	            $periodo->endTran();
+	        }
+	        
+	        $periodo->beginTran('COMMIT');
+	        
+	        $columnas1 = " aa.id_periodo, aa.anio_periodo, aa.mes_periodo, aa.id_tipo_cierre, cc.nombre_tipo_cierre, aa.id_estado, bb.nombre_estado";
+	        $tablas1   = " con_periodo aa
+    	    INNER JOIN estado bb ON bb.id_estado = aa.id_estado
+    	    INNER JOIN con_tipo_cierre cc ON cc.id_tipo_cierre = aa.id_tipo_cierre";
+	        $where1    = " aa.anio_periodo = '$_anio_periodo' ";
+	        $id1       = " aa.mes_periodo";
+	        $rsConsulta1 = $periodo->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	        
+	        echo json_encode( array( "data" => $rsConsulta1 ) );
+	        
+	        
+	    }else{
+	        
+	        echo json_encode( array( "data" => $rsConsulta1 ) );
+	        
+	    }
+	    
+	    
+	    
+	}
+	
+	
 }
 ?>

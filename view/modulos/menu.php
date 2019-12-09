@@ -193,6 +193,7 @@ $controladores=$_SESSION['controladores'];
       		<li style="<?php echo getcontrolador("ComprobanteContable",$controladores) ?>"><a href="index.php?controller=ComprobanteContable&action=index"><i class="fa fa-circle-o"></i>Diario Contables</a></li>
      		<li style="<?php echo getcontrolador("ProcesosMayorizacion",$controladores) ?>"><a href="index.php?controller=ProcesosMayorizacion&action=index"><i class="fa fa-circle-o"></i> Procesos Mensuales</a></li>
      		<li style="<?php echo getcontrolador("PagoNomina",$controladores) ?>"><a href="index.php?controller=Nomina&action=index1"><i class="fa fa-circle-o"></i> Pago Nomina</a></li>
+     		<li style="<?php echo getcontrolador("AperturaMes",$controladores) ?>"><a href="index.php?controller=Periodo&action=indexApertura"><i class="fa fa-circle-o"></i> Apertura Mes</a></li>
     	  </ul>
         </li>
         

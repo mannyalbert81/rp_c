@@ -116,7 +116,8 @@
       					 <div class="input-group">  					 	
                           <input type="text" class="form-control">
                           <span class="input-group-btn">
-                            <button class="btn btn-default" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#mod_proveedores">
+                            <i class="fa  fa-binoculars" aria-hidden="true"></i></button>
                           </span>
                         </div>
   					</div>    									 
@@ -244,7 +245,7 @@
           <div class="modal-header bg-red color-palette">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" align="center">PARTICIPES QUE NO TIENEN DEFINIDO EL APORTE</h4>
+            <h4 class="modal-title" align="center">Lista de Proveedores</h4>
           </div>
           <div class="modal-body" >
           	<div class="box-body no-padding">
@@ -258,7 +259,7 @@
                     		</tr>
                     	    <tr class="table-secondary" >
                     			<th style="text-align: left;  font-size: 12px;">#</th>
-                    			<th style="text-align: left;  font-size: 12px;">No. Identificacion</th>
+                    			<th style="text-align: left;  font-size: 12px;">RUC/CI</th>
                     			<th style="text-align: left;  font-size: 12px;">Nombres</th>
                     			<th style="text-align: left;  font-size: 12px;">Apellidos</th>
                     		</tr>
@@ -291,7 +292,7 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/tesoreria/js/Bancos.js?0.8"></script> 
+   <script src="view/tesoreria/js/compras.js?0.8"></script> 
        
        
 

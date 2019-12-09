@@ -27,13 +27,13 @@ function buscaDetallePeriodo(){
 		data:{anio_periodo:$anio_periodo.val()},
 	}).done(function(x){
 		var tblPeriodo = $("#tbl_detalles_periodo");
-		var vMeses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
-		var buttonEdit = "<button class=\" btn btn-warning \" onclick=\"fnAperturaMes\" ><i class=\"fa fa-exchange\" aria-hidden=\"true\"></i></button>";		
+		var vMeses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];			
 		if(x.data != undefined ){
 			var mesPeriodos = x.data;
 			tblPeriodo.find("tbody").empty();
 			$.each(mesPeriodos,function(index,value){
 				var nombreMes = vMeses[ (value.mes_periodo) - 1 ];
+				var buttonEdit = "<button class=\" btn btn-warning \" data-periodoid=\""+value.id_periodo+"\" onclick=\"fnAperturaMes(this)\" ><i class=\"fa fa-exchange\" aria-hidden=\"true\"></i></button>";	
 				var logEstado = ( value.nombre_estado == "CERRADO" ) ? "<span><i class=\"fa fa-lock \" aria-hidden=\"true\"></i></span>" : 
 					"<span><i class=\"fa fa-unlock \" aria-hidden=\"true\"></i></span>";
 				let $filaLineas = "<tr><td>" + (index + 1) +"</td><td>" +value.anio_periodo +"</td><td>" 
@@ -48,6 +48,19 @@ function buscaDetallePeriodo(){
 	
 	
 } 
+
+function fnAperturaMes(Obj){
+	
+	var $button = $(Obj);
+	var $identificador = $button.data("periodoid");
+	
+	console.log($button);
+	
+	console.log($identificador);
+	
+	console.log("llego al click");
+	
+}
 
 
 /***

@@ -14,6 +14,7 @@
       
       
    <?php include("view/modulos/links_css.php"); ?>
+   
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <link rel="stylesheet" href="view/bootstrap/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
     
@@ -75,6 +76,40 @@
             
                 <form id="frm_libro_mayor" action="<?php echo $helper->url("LibroMayorAuxuliar","index"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12 col-md-12 col-xs-12">
                 
+                
+                
+                 <div class="row">
+        			  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		      <label for="codigo_plan_cuentas" class="control-label">Cuentas:</label>
+                          <select  class="form-control" id="codigo_plan_cuentas" name="codigo_plan_cuentas">
+                          	<option value="0">--Seleccione--</option>
+                          </select>                         
+                          <div id="mensaje_codigo_plan_cuentas" class="errores"></div>
+                        </div>
+            		  </div>
+            		  
+            		   <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		      <label for="codigo_sub_plan_cuentas" class="control-label">SubCuentas:</label>
+                          <select  class="form-control" id="codigo_sub_plan_cuentas" name="codigo_sub_plan_cuentas">
+                          	<option value="0">--Seleccione--</option>
+                          </select>                         
+                          <div id="mensaje_codigo_sub_plan_cuentas" class="errores"></div>
+                        </div>
+            		  </div>
+            		  
+            		   <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		      <label for="codigo_plan_cuentas_hijos" class="control-label">Filtro:</label>
+                          <select  class="form-control" id="codigo_plan_cuentas_hijos" name="codigo_plan_cuentas_hijos">
+                          	<option value="0">--Seleccione--</option>
+                          </select>                         
+                          <div id="mensaje_codigo_plan_cuentas_hijos" class="errores"></div>
+                        </div>
+            		  </div>
+            	  </div>
+                
                 	<div class="row">
                      <div class="col-xs-6 col-md-3 col-lg-3 ">
                         	<div class="form-group">
@@ -91,25 +126,6 @@
                                 <div id="mensaje_desde_diario" class="errores"></div>
                              </div>
                          </div>
-                         
-                         
-                         <div class="col-xs-6 col-md-3 col-lg-3 ">
-                        	<div class="form-group">
-                            	<label for="codigo_cuenta" class="control-label">Codigo Cuenta:</label>
-                                <input type="text" class="form-control" id="codigo_cuenta" name="codigo_cuenta" value=""  >                                
-                                <div id="mensaje_codigo_cuenta" class="errores"></div>
-                             </div>
-                         </div>
-                         
-                         <div class="col-xs-6 col-md-3 col-lg-3 ">
-                        	<div class="form-group">
-                            	<label for="nombre_cuenta" class="control-label">Nombre Cuenta:</label>
-                                <input type="text" class="form-control" id="nombre_cuenta" name="nombre_cuenta" value=""  >
-                                <input type="hidden" class="form-control" id="id_cuenta" name="id_cuenta" value=""  >                                
-                                <div id="mensaje_nombre_cuenta" class="errores"></div>
-                             </div>
-                         </div>                         
-                         
                      </div>
                 	
                         
@@ -118,7 +134,7 @@
                 	   		    <div class="form-group">
             	                  <button type="button" id="btnMayores" name="btnMayores" class="btn btn-default"><i class="fa fa-check-square " aria-hidden="true"></i> &nbsp; GENERAR MAYORES</button>
             	                  
-            	                  <a class="btn btn-danger" href="<?php  echo $helper->url("LibroMayor","index"); ?>">CANCELAR</a>
+            	                  <a class="btn btn-danger" href="<?php  echo $helper->url("LibroMayorAuxiliar","index"); ?>">CANCELAR</a>
         	                    </div>
     	        		    </div>
     	        		    
@@ -137,7 +153,7 @@
 		            </div> 
 		            <div class="box-body">
 		    			<div class="pull-right" style="margin-right:15px;">
-							<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaBancos(1)" placeholder="Buscar.."/>
+							<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_tabla(1)" placeholder="Buscar.."/>
 		    			</div>            	
 		            	<div id="load_detalle" ></div>	
 						<div id="registrados_detalle"></div>	
@@ -149,13 +165,16 @@
  	<?php include("view/modulos/footer.php"); ?>	
    <div class="control-sidebar-bg"></div>
  </div>
+ 
    <?php include("view/modulos/links_js.php"); ?> 
+ 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-   <script src="view/Contable/FuncionesJS/mayorcontableauxiliar.js?0.10"></script>         	
+      <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+   <script src="view/Contable/FuncionesJS/mayorcontableauxiliar.js?0.15"></script>         	
   </body>
 </html>
 

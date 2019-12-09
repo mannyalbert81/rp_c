@@ -92,131 +92,6 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	
 	
 	
-	public function paginate_grupos($reload, $page, $tpages, $adjacents,$funcion='') {
-	    
-	    $prevlabel = "&lsaquo; Prev";
-	    $nextlabel = "Next &rsaquo;";
-	    $out = '<ul class="pagination pagination-large">';
-	    
-	    // previous label
-	    
-	    if($page==1) {
-	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
-	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
-	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
-	        
-	    }
-	    
-	    // first label
-	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
-	    }
-	    // interval
-	    if($page>($adjacents+2)) {
-	        $out.= "<li><a>...</a></li>";
-	    }
-	    
-	    // pages
-	    
-	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
-	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
-	    for($i=$pmin; $i<=$pmax; $i++) {
-	        if($i==$page) {
-	            $out.= "<li class='active'><a>$i</a></li>";
-	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
-	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
-	        }
-	    }
-	    
-	    // interval
-	    
-	    if($page<($tpages-$adjacents-1)) {
-	        $out.= "<li><a>...</a></li>";
-	    }
-	    
-	    // last
-	    
-	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
-	    }
-	    
-	    // next
-	    
-	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
-	    }else {
-	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
-	    }
-	    
-	    $out.= "</ul>";
-	    return $out;
-	}
-
-	
-	public function ins_proveedor(){
-	    
-	    session_start();
-	    $proveedores=new ProveedoresModel();
-	    
-	    $nombre_controladores = "Proveedores";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $proveedores->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if (!empty($resultPer))
-	    {  
-	        
-	        $resultado = null;
-	        $proveedores=new ProveedoresModel();
-	        
-	        if (isset ($_POST["nombre_proveedores"])   )
-	        {
-	            $_nombre_proveedores = $_POST["nombre_proveedores"];
-	            $_identificacion_proveedores = $_POST["identificacion_proveedores"];
-	            $_contactos_proveedores = $_POST["contactos_proveedores"];
-	            $_direccion_proveedores = $_POST["direccion_proveedores"];
-	            $_telefono_proveedores = $_POST["telefono_proveedores"];
-	            $_email_proveedores = $_POST["email_proveedores"];
-	              
-                $funcion = "ins_proveedores";
-                $parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores','$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores'";
-                $proveedores->setFuncion($funcion);
-                $proveedores->setParametros($parametros);
-                $resultado=$proveedores->llamafuncion();
-	           
-                $respuesta=0;
-                
-                //print_r($resultado);
-                
-                if(!empty($resultado) && count($resultado)>0)
-                {
-                    foreach ($resultado[0] as $k => $v)
-                        $respuesta=$v;
-                }
-                
-                if($respuesta==0){
-                    echo json_encode(array('success'=>$respuesta,'mensaje'=>'Error al insertar proveedores'));
-                    
-                }else{
-                    echo json_encode(array('success'=>$respuesta,'mensaje'=>'Proveedor ingresado con exito'));
-                }
-                
-             }
-	       
-	        
-	    }
-	    else
-	    {
-	        echo json_encode(array('success'=>0,'mensaje'=>'Error de permisos'));
-	    }
-	    
-	}
-	
-	
-	
 	public function AutocompleteCodigo(){
 	    
 	    session_start();
@@ -395,200 +270,206 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	
 	
 	public function mayorContableAuxiliar(){
-	
-
-		session_start();
-		 
+		
+	    session_start();
 		$mayor = new MayorModel();
-		
-
-		
-		
-		//variables
-		$_id_creditos = "";
-		$_numero_creditos = "";
-		$_id_participes = "";
-		$_monto_otorgado_creditos = "";
-		$_apellido_participes ="";
-		$_nombre_participes = "";
-		$_cedula_participes = "";
-		$_nombre_estado_creditos = "";
-	
-		$_saldo_actual_creditos = "";
-	
-		$_fecha_concesion_creditos = "";
-		$_plazo_creditos	= "";
-		
-		
-		
-		$_codigo_cuenta = (isset($_REQUEST['codigo_cuenta'])&& $_REQUEST['codigo_cuenta'] !=NULL)?$_REQUEST['codigo_cuenta']:'';
-		
-		$columnas = " core_creditos.id_creditos,	
-					core_creditos.numero_creditos, 
-					  core_creditos.id_participes, 
-					  core_creditos.id_creditos_productos, 
-					  core_creditos.monto_otorgado_creditos, 
-					  con_cuentas_auxiliar_mayor_relacion.nombre_tabla, 
-					  plan_cuentas.codigo_plan_cuentas, 
-					  plan_cuentas.nombre_plan_cuentas, 
-					  core_participes.apellido_participes, 
-					  core_participes.nombre_participes, 
-					  core_participes.cedula_participes, 
-					  core_estado_creditos.nombre_estado_creditos, 
-					   
-					  core_estado_creditos.id_estado_creditos, 
-					  core_creditos.saldo_actual_creditos, 
-					  core_creditos.fecha_concesion_creditos, 
-					  core_creditos.id_estado_creditos, 
-					  core_creditos.plazo_creditos, 
-					  core_creditos.monto_neto_entregado_creditos, 
-					  core_creditos.numero_solicitud_creditos, 
-					  core_creditos.id_tipo_creditos, 
-					  core_creditos.interes_creditos, 
-					  core_creditos.impuesto_exento_seguro_creditos, 
-					  core_creditos.base_calculo_participes_creditos, 
-					  core_creditos.cuota_creditos, 
-					  core_creditos.id_forma_pago, 
-					  core_creditos.id_ccomprobantes, 
-					  core_creditos.incluido_reporte_creditos";
-		$tablas = " public.core_creditos, 
-					  public.con_cuentas_auxiliar_mayor_relacion, 
-					  public.plan_cuentas, 
-					  public.core_participes, 
-					  public.core_estado_creditos";
-		$where = " con_cuentas_auxiliar_mayor_relacion.id_operacion = core_creditos.id_tipo_creditos AND
-  plan_cuentas.id_plan_cuentas = con_cuentas_auxiliar_mayor_relacion.id_plan_cuentas AND
-  core_participes.id_participes = core_creditos.id_participes AND
-  core_estado_creditos.id_estado_creditos = core_creditos.id_estado_creditos
-  AND core_creditos.id_estado_creditos = 4 
-  AND plan_cuentas.codigo_plan_cuentas = '$_codigo_cuenta'  ";
-		$id = " core_creditos.id_creditos";
+		$html="";
+		$_codigo_plan_cuentas = (isset($_REQUEST['codigo_plan_cuentas'])&& $_REQUEST['codigo_plan_cuentas'] !=NULL)?$_REQUEST['codigo_plan_cuentas']:'';
+		$_codigo_sub_plan_cuentas = (isset($_REQUEST['codigo_sub_plan_cuentas'])&& $_REQUEST['codigo_sub_plan_cuentas'] !=NULL)?$_REQUEST['codigo_sub_plan_cuentas']:'';
+		$_codigo_plan_cuentas_hijos = (isset($_REQUEST['codigo_plan_cuentas_hijos'])&& $_REQUEST['codigo_plan_cuentas_hijos'] !=NULL)?$_REQUEST['codigo_plan_cuentas_hijos']:'';
+		$_desde_diario = (isset($_REQUEST['desde_diario'])&& $_REQUEST['desde_diario'] !=NULL)?$_REQUEST['desde_diario']:'';
+		$_hasta_diario = (isset($_REQUEST['hasta_diario'])&& $_REQUEST['hasta_diario'] !=NULL)?$_REQUEST['hasta_diario']:'';
 		
 		
 		$action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
 		$search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+		$page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 		
-		
-
-		
-		if($action == 'ajax')
-		{
-			//estado_usuario
-			//$wherecatalogo = "tabla_catalogo='usuarios' AND columna_catalogo='estado_usuarios'";
-			//$resultCatalogo = $catalogo->getCondiciones('valor_catalogo,nombre_catalogo' ,'public.catalogo' , $wherecatalogo , 'tabla_catalogo');
-			
-			$resultSet=$mayor->getCondiciones($columnas, $tablas, $where, $id);
-				
-		
-			if(!empty($search)){
-		
-		
-				$where1=" AND (core_participes.cedula_participes LIKE '".$search."%' OR core_creditos.numero_creditos LIKE '".$search."%' OR core_participes.apellido_participes LIKE '".$search."%' OR core_participes.nombre_participes LIKE '".$search."%' )";
-		
-				$where_to=$where.$where1;
-			}else{
-		
-				$where_to=$where;
-		
-			}
-		
-			$html="";
-			$resultSet=$mayor->getCantidad("core_creditos.id_creditos", $tablas, $where_to);
-			$cantidadResult=(int)$resultSet[0]->total;
-		
-			$page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-		
-			$per_page = 10; //la cantidad de registros que desea mostrar
-			$adjacents  = 9; //brecha entre páginas después de varios adyacentes
-			$offset = ($page - 1) * $per_page;
-		
-			$limit = " LIMIT   '$per_page' OFFSET '$offset'";
-		
-			$resultSet=$mayor->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
-			$count_query   = $cantidadResult;
-			$total_pages = ceil($cantidadResult/$per_page);
-		
-		
-			if($cantidadResult>0)
-			{
-		
-				$html.='<div class="pull-left" style="margin-left:15px;">';
-				$html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-				$html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-				$html.='</div>';
-				$html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-				$html.='<section style="height:425px; overflow-y:scroll;">';
-				$html.= "<table id='tabla_usuarios' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
-				$html.= "<thead>";
-				$html.= "<tr>";
-				$html.='<th style="text-align: left;  font-size: 12px;"></th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">Cedula</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">Crédito</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">Fecha Concedido</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">Plazo</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">Saldo Capital</th>';
-				$html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-		
-				$html.='</tr>';
-				$html.='</thead>';
-				$html.='<tbody>';
-				 
-				 
-				$i=0;
-		
-				foreach ($resultSet as $res)
-				{
-					$_id_creditos = $res->id_creditos;
-					
-					
-					$_saldo_actual_creditos = $this->devuelve_saldo_capital($_id_creditos); ////DEVOLVER DESDE FUNCION  $_balance_tabla_amortizacion;
-					$i++;
-					$html.='<tr>';
-				
-					$html.='<td style="font-size: 11px;">'.$i.'</td>';
-					$html.='<td style="font-size: 11px;">'.$_codigo_cuenta.$res->cedula_participes.'</td>';
-					$html.='<td style="font-size: 11px;">'.$res->apellido_participes. " " . $res->nombre_participes . '</td>';
-					$html.='<td style="font-size: 11px;">'.$res->numero_creditos.'</td>';
-					$html.='<td style="font-size: 11px;">'.$res->fecha_concesion_creditos.'</td>';
-					$html.='<td style="font-size: 11px;">'.$res->plazo_creditos.'</td>';
-					$html.='<td style="font-size: 11px;">'.$_saldo_actual_creditos.'</td>';
-					$html.='<td style="font-size: 11px;">'.$res->nombre_estado_creditos.'</td>';
-					
-					
-					
-					
-								
-					
-					 
-					$html.='</tr>';
-				}
-		
-		
-		
-				$html.='</tbody>';
-				$html.='</table>';
-				$html.='</section></div>';
-				$html.='<div class="table-pagination pull-right">';
-				$html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents , "").'';
-				$html.='</div>';
-		
-		
-				 
-			}else{
-				$html.='<div class="col-lg-6 col-md-6 col-xs-12">';
-				$html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-				$html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-				$html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
-				$html.='</div>';
-				$html.='</div>';
-			}
-			 
-			 
-			echo $html;
-			die();
-		
+		if(!empty($_codigo_sub_plan_cuentas)){
+		    
+		    /*if($_codigo_plan_cuentas_hijos==0){
+		        
+		        $_codigo_plan_cuentas_hijos=$_codigo_sub_plan_cuentas;
+		        
+		    }*/
+		    
+		    
+		    
+		    // EMPIEZA CUENTA INDIVIDUAL
+		    
+		   
+		    if($_codigo_plan_cuentas == '2.1'){
+		        
+		        // devuelve aportes
+		       
+		        $html.= $this->devuelve_aportes($_codigo_plan_cuentas_hijos, $_desde_diario, $_hasta_diario, $action, $search, $page);
+    		        
+		        echo $html;
+		        die();
+		        
+		    }
+		   
+		    
+		    
+		    
+		    
+		    
+		    $columnas = " core_creditos.id_creditos,
+					core_creditos.numero_creditos,
+					  core_creditos.id_participes,
+					  core_creditos.id_creditos_productos,
+					  core_creditos.monto_otorgado_creditos,
+					  con_cuentas_auxiliar_mayor_relacion.nombre_tabla,
+					  plan_cuentas.codigo_plan_cuentas,
+					  plan_cuentas.nombre_plan_cuentas,
+					  core_participes.apellido_participes,
+					  core_participes.nombre_participes,
+					  core_participes.cedula_participes,
+					  core_estado_creditos.nombre_estado_creditos,
+					  core_estado_creditos.id_estado_creditos,
+					  core_creditos.saldo_actual_creditos,
+					  core_creditos.fecha_concesion_creditos,
+					  core_creditos.id_estado_creditos,
+					  core_creditos.plazo_creditos,
+					  core_creditos.monto_neto_entregado_creditos,
+					  core_creditos.numero_solicitud_creditos,
+					  core_creditos.id_tipo_creditos,
+					  core_creditos.interes_creditos,
+					  core_creditos.impuesto_exento_seguro_creditos,
+					  core_creditos.base_calculo_participes_creditos,
+					  core_creditos.cuota_creditos,
+					  core_creditos.id_forma_pago,
+					  core_creditos.id_ccomprobantes,
+					  core_creditos.incluido_reporte_creditos";
+		    $tablas = " public.core_creditos,
+					  public.con_cuentas_auxiliar_mayor_relacion,
+					  public.plan_cuentas,
+					  public.core_participes,
+					  public.core_estado_creditos";
+		    $where = " con_cuentas_auxiliar_mayor_relacion.id_operacion = core_creditos.id_tipo_creditos AND
+                  plan_cuentas.id_plan_cuentas = con_cuentas_auxiliar_mayor_relacion.id_plan_cuentas AND
+                  core_participes.id_participes = core_creditos.id_participes AND
+                  core_estado_creditos.id_estado_creditos = core_creditos.id_estado_creditos
+                  AND core_creditos.id_estado_creditos = 4
+                  AND plan_cuentas.codigo_plan_cuentas = '$_codigo_cuenta'  ";
+		    $id = " core_creditos.id_creditos";
+		    
+		    
+		    
+		    
+		    
+		    if($action == 'ajax')
+		    {
+		        
+		        if(!empty($search)){
+		            
+		            
+		            $where1=" AND (core_participes.cedula_participes LIKE '".$search."%' OR core_creditos.numero_creditos LIKE '".$search."%' OR core_participes.apellido_participes LIKE '".$search."%' OR core_participes.nombre_participes LIKE '".$search."%' )";
+		            
+		            $where_to=$where.$where1;
+		        }else{
+		            
+		            $where_to=$where;
+		            
+		        }
+		        
+		        $html="";
+		        $resultSet=$mayor->getCantidad("core_creditos.id_creditos", $tablas, $where_to);
+		        $cantidadResult=(int)$resultSet[0]->total;
+		        
+		       
+		        
+		        $per_page = 10; //la cantidad de registros que desea mostrar
+		        $adjacents  = 5; //brecha entre páginas después de varios adyacentes
+		        $offset = ($page - 1) * $per_page;
+		        
+		        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+		        
+		        $resultSet=$mayor->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+		        $total_pages = ceil($cantidadResult/$per_page);
+		        
+		        
+		        if($cantidadResult>0)
+		        {
+		            
+		            $html.='<div class="pull-left" style="margin-left:15px;">';
+		            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+		            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+		            $html.='</div>';
+		            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+		            $html.='<section style="height:425px; overflow-y:scroll;">';
+		            $html.= "<table id='tabla_usuarios' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+		            $html.= "<thead>";
+		            $html.= "<tr>";
+		            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+		            $html.='<th style="text-align: left;  font-size: 12px;">Cedula</th>';
+		            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+		            $html.='<th style="text-align: left;  font-size: 12px;">Crédito</th>';
+		            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Concedido</th>';
+		            $html.='<th style="text-align: left;  font-size: 12px;">Plazo</th>';
+		            $html.='<th style="text-align: left;  font-size: 12px;">Saldo Capital</th>';
+		            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+		            
+		            $html.='</tr>';
+		            $html.='</thead>';
+		            $html.='<tbody>';
+		            
+		            
+		            $i=0;
+		            
+		            foreach ($resultSet as $res)
+		            {
+		                $_id_creditos = $res->id_creditos;
+		                
+		                
+		                $_saldo_actual_creditos = $this->devuelve_saldo_capital($_id_creditos); ////DEVOLVER DESDE FUNCION  $_balance_tabla_amortizacion;
+		                $i++;
+		                $html.='<tr>';
+		                
+		                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+		                $html.='<td style="font-size: 11px;">'.$_codigo_cuenta.$res->cedula_participes.'</td>';
+		                $html.='<td style="font-size: 11px;">'.$res->apellido_participes. " " . $res->nombre_participes . '</td>';
+		                $html.='<td style="font-size: 11px;">'.$res->numero_creditos.'</td>';
+		                $html.='<td style="font-size: 11px;">'.$res->fecha_concesion_creditos.'</td>';
+		                $html.='<td style="font-size: 11px;">'.$res->plazo_creditos.'</td>';
+		                $html.='<td style="font-size: 11px;">'.$_saldo_actual_creditos.'</td>';
+		                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_creditos.'</td>';
+		                
+		                
+		                $html.='</tr>';
+		            }
+		            
+		            
+		            
+		            $html.='</tbody>';
+		            $html.='</table>';
+		            $html.='</section></div>';
+		            $html.='<div class="table-pagination pull-right">';
+		            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents , "load_tabla").'';
+		            $html.='</div>';
+		            
+		            
+		            
+		        }else{
+		            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+		            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+		            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+		            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay usuarios registrados...</b>';
+		            $html.='</div>';
+		            $html.='</div>';
+		        }
+		        
+		        
+		        echo $html;
+		        die();
+		        
+		    }
+		    
+		    
+		    
 		}
+		
+		
 		
 
 			
@@ -665,57 +546,369 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	
 	
 	public function devuelve_saldo_capital($id_creditos){
-		 
-		//session_start();
-		$creditos=new CoreCreditoModel();
-		$monto=0;
-		$total_pagos_capital=0;
-		$saldo_credito=0;
-		 
-		 
-		// consigo monto del credito
-		$columnas="c.monto_neto_entregado_creditos as monto";
-		$tablas="core_creditos c";
-		$where="c.id_creditos='$id_creditos' and c.id_estatus=1";
-		$id="c.id_creditos";
-		$resultCred=$creditos->getCondiciones($columnas, $tablas, $where, $id);
-		 
-		if(!empty($resultCred)){
-			 
-			$monto=$resultCred[0]->monto;
-			 
-			 
-			// verifico pagos de capital
-			 
-			$columnas_pag="coalesce(sum(ctd.valor_transaccion_detalle),0) as total_pagos_capital";
-			$tablas_pag="core_transacciones ct inner join core_transacciones_detalle ctd on ct.id_transacciones=ctd.id_transacciones
-                        inner join core_tabla_amortizacion_pagos ctap on ctd.id_tabla_amortizacion_pago=ctap.id_tabla_amortizacion_pagos
-                        inner join core_tabla_amortizacion_parametrizacion ctapara on ctap.id_tabla_amortizacion_parametrizacion=ctapara.id_tabla_amortizacion_parametrizacion";
-			$where_pag="ct.id_creditos='$id_creditos'  and ct.id_status=1 and ctapara.tipo_tabla_amortizacion_parametrizacion=0";
-			 
-			$resultPagos=$creditos->getCondicionesSinOrden($columnas_pag, $tablas_pag, $where_pag, "");
-			 
-			 
-			if(!empty($resultPagos)){
-				 
-				 
-				$total_pagos_capital=$resultPagos[0]->total_pagos_capital;
-				 
-				 
-			}
-			 
-			 
-		}
-		 
-		 
-		$saldo_credito= $monto-$total_pagos_capital;
-	
-		return $saldo_credito;
-		 
-		 
-		 
-	}
 	 
+	    $creditos=new CoreCreditoModel();
+	    $saldo_credito=0;
+	    
+	    $columnas_pag="coalesce(sum(tap.saldo_cuota_tabla_amortizacion_pagos),0) as saldo";
+	    $tablas_pag="core_creditos c
+                        inner join core_tabla_amortizacion at on c.id_creditos=at.id_creditos
+                        inner join core_tabla_amortizacion_pagos tap on at.id_tabla_amortizacion=tap.id_tabla_amortizacion
+                        inner join core_tabla_amortizacion_parametrizacion tapa on tap.id_tabla_amortizacion_parametrizacion=tapa.id_tabla_amortizacion_parametrizacion";
+	    $where_pag="c.id_creditos='$id_creditos' and c.id_estatus=1 and at.id_estatus=1 and tapa.tipo_tabla_amortizacion_parametrizacion=0";
+	    
+	    $resultPagos=$creditos->getCondicionesSinOrden($columnas_pag, $tablas_pag, $where_pag, "");
+	    
+	    
+	    if(!empty($resultPagos)){
+	        
+	        
+	        $saldo_credito=$resultPagos[0]->saldo;
+	        
+	        
+	    }
+	    
+	    
+	    
+	    return $saldo_credito;
+	    
+	    
+	    
+	}
+	
+	
+	 
+	
+	
+	
+	
+	// desde aqui maycol
+	
+	
+	
+	
+	public function cargaCuentas(){
+	    
+        $plan_cuentas= new PlanCuentasModel();
+	    
+	    $columnas="codigo_plan_cuentas, concat(codigo_plan_cuentas,'     ',nombre_plan_cuentas) as nombre_plan_cuentas";
+	    $tabla = "plan_cuentas p";
+	    $where = "p.codigo_plan_cuentas in ('2.1', '1.3')";
+	    $id="codigo_plan_cuentas";
+	    $resulset = $plan_cuentas->getCondiciones($columnas,$tabla,$where,$id);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
+	
+	
+	
+	public function cargaSubCuentas(){
+	    
+	    $plan_cuentas= new PlanCuentasModel();
+	    
+	    $codigo_plan_cuentas = (isset($_POST['codigo_plan_cuentas'])) ? $_POST['codigo_plan_cuentas'] : 0;
+	    
+	    if(!empty($codigo_plan_cuentas && $codigo_plan_cuentas != 0)){
+	        
+	        //consulto el nivel de la cuenta para buscar hijos
+	        $result = $plan_cuentas->getBy("codigo_plan_cuentas='$codigo_plan_cuentas'");
+	        
+	        if(!empty($result)){
+	            
+	            $nivel = $result[0]->nivel_plan_cuentas;
+	            $nivel=$nivel+1;
+	        
+	            $columnas="codigo_plan_cuentas, concat(codigo_plan_cuentas,'     ',nombre_plan_cuentas) as nombre_plan_cuentas";
+	            $tabla = "plan_cuentas";
+	            $where = "nivel_plan_cuentas = '$nivel' and codigo_plan_cuentas like '$codigo_plan_cuentas%'";
+	            $id="codigo_plan_cuentas";
+	            $resulset = $plan_cuentas->getCondiciones($columnas,$tabla,$where,$id);
+	            
+	            if(!empty($resulset) && count($resulset)>0){
+	                
+	                echo json_encode(array('data'=>$resulset));
+	                
+	            }
+	        
+	        }
+	        
+	    }
+	    
+	}
+	
+	
+	
+	
+	
+	public function cargaCuentasHijos(){
+	    
+	    $plan_cuentas= new PlanCuentasModel();
+	    
+	    $codigo_plan_cuentas = (isset($_POST['codigo_sub_plan_cuentas'])) ? $_POST['codigo_sub_plan_cuentas'] : 0;
+	    
+	    if(!empty($codigo_plan_cuentas && $codigo_plan_cuentas != 0)){
+	        
+	        //consulto el nivel de la cuenta para buscar hijos
+	        $result = $plan_cuentas->getBy("codigo_plan_cuentas='$codigo_plan_cuentas'");
+	        
+	        if(!empty($result)){
+	            
+	            $nivel = $result[0]->nivel_plan_cuentas;
+	            $nivel=$nivel+1;
+	            
+	            $columnas="codigo_plan_cuentas, concat(codigo_plan_cuentas,'     ',nombre_plan_cuentas) as nombre_plan_cuentas";
+	            $tabla = "plan_cuentas";
+	            $where = "nivel_plan_cuentas = '$nivel' and codigo_plan_cuentas like '$codigo_plan_cuentas%'";
+	            $id="codigo_plan_cuentas";
+	            $resulset = $plan_cuentas->getCondiciones($columnas,$tabla,$where,$id);
+	            
+	            if(!empty($resulset) && count($resulset)>0){
+	                
+	                echo json_encode(array('data'=>$resulset));
+	                
+	            }
+	            
+	        }
+	        
+	    }
+	    
+	}
+	
+	
+	
+	
+	public function devuelve_aportes($_codigo_plan_cuentas_hijos, $_desde_diario, $_hasta_diario, $action, $search, $page){
+	    
+	    $aportes=new CoreContribucionModel();
+	    $plan_cuentas = new PlanCuentasModel();
+	    $arrayA = array();
+	    $stringArray="";
+	    $html="";
+	    $where_to="";
+	    
+	    $colores= array();
+	    $colores[0]="#D6EAF8";
+	    $colores[1]="#D1F2EB";
+	    $colores[2]="#FCF3CF";
+	    $colores[3]="#F8C471";
+	    $colores[4]="#EDBB99";
+	    $colores[5]="#FDFEFE";
+	    
+	    $result = $plan_cuentas->getBy("codigo_plan_cuentas='$_codigo_plan_cuentas_hijos'");
+	    
+	    if(!empty($result)){
+	        
+	        $nivel = $result[0]->nivel_plan_cuentas;
+	        $nivel=$nivel+1;
+	        
+	        $columnas_1="id_plan_cuentas";
+	        $tabla_1 = "plan_cuentas";
+	        $where_1 = "nivel_plan_cuentas = '$nivel' and codigo_plan_cuentas like '$_codigo_plan_cuentas_hijos%'";
+	        $id_1="codigo_plan_cuentas";
+	        $resulset = $plan_cuentas->getCondiciones($columnas_1, $tabla_1, $where_1, $id_1);
+	        
+	       
+	        
+	        if(!empty($resulset)){
+	            
+	            foreach ($resulset as $res) {
+	             
+	                $arrayA[] = $res->id_plan_cuentas;
+	                
+	            }
+	            
+	            $stringArray = join( ",", $arrayA);
+	            
+	            $columnas="pl.codigo_plan_cuentas, pl.nombre_plan_cuentas, coalesce(sum(c.valor_personal_contribucion+c.valor_patronal_contribucion),0) as total";
+	            $tablas="core_contribucion c
+                        inner join core_participes p on c.id_participes=p.id_participes
+                        inner join core_contribucion_tipo ct on c.id_contribucion_tipo=ct.id_contribucion_tipo
+                        inner join plan_cuentas pl on ct.id_plan_cuentas_cta_individual=pl.id_plan_cuentas";
+	            $where="ct.id_plan_cuentas_cta_individual in (".$stringArray.") and c.id_estatus=1 and p.id_estatus=1 AND date(c.fecha_contable_distribucion) between '$_desde_diario' and '$_hasta_diario'";
+	            $grupo="pl.codigo_plan_cuentas, pl.nombre_plan_cuentas";
+	            $having="sum(c.valor_personal_contribucion+c.valor_patronal_contribucion) <> 0";
+	            
+	            
+	            
+	            
+	            if($action == 'ajax')
+	            {
+	                
+	                if(!empty($search)){
+	                    
+	                    
+	                    $where1=" AND (pl.codigo_plan_cuentas ILIKE '".$search."%' OR pl.nombre_plan_cuentas ILIKE '".$search."%')";
+	                    
+	                    $where_to=$where.$where1;
+	                }else{
+	                    
+	                    $where_to=$where;
+	                    
+	                }
+	                
+	                $resultAportes=$aportes->getCondiciones_Grupo_Having($columnas, $tablas, $where_to, $grupo, $having);
+	                $cantidadResult=count($resultAportes);
+	                
+	                
+	                
+	                $per_page = 10; //la cantidad de registros que desea mostrar
+	                $adjacents  = 5; //brecha entre páginas después de varios adyacentes
+	                $offset = ($page - 1) * $per_page;
+	                
+	                $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	                
+	                $resultAportes=$aportes->getCondiciones_Grupo_Having_Limit($columnas, $tablas, $where_to, $grupo, $having, $limit);
+	                $total_pages = ceil($cantidadResult/$per_page);
+	                
+	                
+	                if($cantidadResult>0)
+	                {
+	                    
+	                    
+	                    $html.='<div class="pull-left" style="margin-left:15px;">';
+	                    $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	                    $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	                    $html.='</div>';
+	                    $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	                    $html.='<section style="height:425px; overflow-y:scroll;">';
+	                    $html.= "<table id='tabla_consulta' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	                    $html.= "<thead>";
+	                    $html.= "<tr>";
+	                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	                    $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
+	                    $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	                    $html.='<th style="text-align: right;  font-size: 12px;">Saldo</th>';
+	                    $html.='</tr>';
+	                    $html.='</thead>';
+	                    $html.='<tbody>';
+	                    
+	                    
+	                    $i=0;
+	                    $total=0;
+	                    foreach ($resultAportes as $res)
+	                    {
+	                        $i++;
+	                        
+	                        $total=$total+$res->total;
+	                        
+	                        $html.='<tr>';
+	                        
+	                        $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                        $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
+	                        $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
+	                        $html.='<td style="font-size: 11px; text-align: right;">'.number_format((float)$res->total, 2, '.', ',').'</td>';
+	                        $html.='</tr>';
+	                    }
+	                    
+	                    $html.='</tbody>';
+	                    $html.='</table>';
+	                    $html.='</section></div>';
+	                    
+	                    
+	                    
+	                    $html.='<div class="table-pagination pull-right">';
+	                    $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents , "load_tabla").'';
+	                    $html.='</div>';
+	                    
+	                    
+	                    
+	                }else{
+	                    $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	                    $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	                    $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	                    $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay movimientos en las cuentas seleccionadas...</b>';
+	                    $html.='</div>';
+	                    $html.='</div>';
+	                }
+	                
+	                
+	            }
+	            
+	            
+	            
+	        }else{
+	            
+	            $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay movimientos en las cuentas seleccionadas...</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	            
+	        }
+	        
+	    }
+	    
+	    
+	    return  $html;
+	    
+	}
+	
+	
+	public function TablaPlanCuentas()
+	{
+	    session_start();
+	    
+	    if (isset(  $_SESSION['usuario_usuarios']) )
+	    {
+	        
+	        $plan_cuentas= new PlanCuentasModel();
+	        
+	        $tablas= "public.plan_cuentas";
+	        
+	        $where= "1=1";
+	        
+	        $id= "plan_cuentas.codigo_plan_cuentas";
+	        
+	        $resultSet=$plan_cuentas->getCondiciones("*", $tablas, $where, $id);
+	        
+	        $tablas= "public.plan_cuentas";
+	        
+	        $where= "1=1";
+	        
+	        $id= "max";
+	        
+	        $resultMAX=$plan_cuentas->getCondiciones("MAX(nivel_plan_cuentas)", $tablas, $where, $id);
+	        
+	        $headerfont="16px";
+	        $tdfont="14px";
+	        $boldi="";
+	        $boldf="";
+	        
+	        $colores= array();
+	        $colores[0]="#D6EAF8";
+	        $colores[1]="#D1F2EB";
+	        $colores[2]="#FCF3CF";
+	        $colores[3]="#F8C471";
+	        $colores[4]="#EDBB99";
+	        $colores[5]="#FDFEFE";
+	        
+	        $datos_tabla= "<table id='tabla_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	        $datos_tabla.='<tr  bgcolor="'.$colores[0].'">';
+	        $datos_tabla.='<th bgcolor="'.$colores[0].'" width="1%"  style="width:130px; text-align: center;  font-size: '.$headerfont.';">CÓDIGO</th>';
+	        $datos_tabla.='<th bgcolor="'.$colores[0].'" width="83%" style="text-align: center;  font-size: '.$headerfont.';">CUENTA</th>';
+	        $datos_tabla.='</tr>';
+	        
+	        $datos_tabla.=$this->Balance(1, $resultSet, $resultMAX[0]->max, "");
+	        
+	        $datos_tabla.= "</table>";
+	        
+	        echo $datos_tabla;
+	    }
+	    else
+	    {
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	    }
+	    
+	    
+	}
+	
+	//termina
 	
 	
 	

@@ -6,11 +6,7 @@ class SolicitudPrestamoController extends ControladorBase{
 		parent::__construct();
 		
 	}
-	
 
-	
-	
-	
 	
 	public function print_hipotecario()
 	{

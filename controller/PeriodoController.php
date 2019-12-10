@@ -6,8 +6,6 @@ class PeriodoController extends ControladorBase{
 		parent::__construct();
 	}
 
-
-
 	public function index(){
 	
 	    $periodo = new PeriodoModel();

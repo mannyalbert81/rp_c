@@ -178,8 +178,10 @@ $controladores=$_SESSION['controladores'];
     		<li style="<?php echo getcontrolador("PlanCuentas",$controladores) ?>"><a href="index.php?controller=PlanCuentas&action=indexAdmin"><i class="fa fa-circle-o"></i> Plan cuentas</a></li>
     		<li style="<?php echo getcontrolador("CoreDiarioTipo",$controladores) ?>"><a href="index.php?controller=CoreDiarioTipo&action=index"><i class="fa fa-circle-o"></i> Diario Tipo</a></li>
  		    <li style="<?php echo getcontrolador("Periodo",$controladores) ?>"><a href="index.php?controller=Periodo&action=index"><i class="fa fa-circle-o"></i> Periodo </a></li>
-      	
-           	  </ul>
+      	     <li style="<?php echo getcontrolador("Presupuestos",$controladores) ?>"><a href="index.php?controller=Presupuestos&action=index"><i class="fa fa-circle-o"></i> Presupuestos </a></li>
+      	   
+      	  
+      	  </ul>
         </li>
         
         <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >

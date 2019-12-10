@@ -772,7 +772,7 @@ class UsuariosController extends ControladorBase{
     
     
     public function Loguear(){
-    	
+        
     	$error=FALSE;
     	if (isset($_POST["usuario"]) && ($_POST["clave"] ) )
     	{

@@ -152,7 +152,7 @@
   <?php include("view/modulos/links_js.php"); ?>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-  <script src="view/tributario/FuncionesJS/generaAts.js?0.26"></script>
+  <script src="view/tributario/FuncionesJS/generaAts.js?0.02"></script>
   
 	
  </body>

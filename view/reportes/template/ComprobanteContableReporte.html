@@ -9,62 +9,45 @@
 		<tr>
 		<td><strong>Comprobante</strong></td>
 		</tr>
-		</table>
-		<table class="3">
 		<tr>
 		<td><strong>{NOMBRETIPOCOMPROBANTE}</strong></td>
 		</tr>
-	    </table>
+		</table>
+		
 	    <br>
 	    <table class="4" >
+	    <tr>
+		 <td><strong>Generado por:</strong></td>
+		 <td>{GENERADOCOMPROBANTE}</td>
+		</tr>
+	    <tr>
+		 <td><strong>Numero:</strong></td>
+		 <td>{MODULO}{NUMEROCOMPROBANTE}</td>
+		</tr>
 		<tr>
-		 <td><strong>Fecha de la Factura:</strong></td>
+		 <td><strong>Fecha:</strong></td>
 		 <td>{FECHACOMPROBANTE}</td>
 		</tr>
 		<tr>
 		 <td><strong>Nombre:</strong></td>
 		 <td>{PROVEEDORES}</td>
-		</tr>
-		<tr>
-		 <td><strong>Retención:</strong></td>
-		 <td>{RETENCIONCOMPROBANTE}</td>
-		</tr>
+		</tr>		
 		<tr>
 		 <td><strong>La Cantidad de:</strong></td>
 		 <td>$ {VALORCOMPROBANTE}</td>
 		</tr>
 		</table>
 	    <br>
-	    <table class="6">
-		<tr>
-		<td><strong>Concepto:</strong></td>
-		<td>{CONCEPTOCOMPROBANTE}</td>
-		</tr>
-	    </table>
-	    <br>
+	    
+	    <p>
+	    	<strong>Concepto:</strong> {CONCEPTOCOMPROBANTE}
+	    	{OBSERVACIONES}
+	    	{CONCEPTOEXTCOMPROBANTE}
+	    </p>
 	</div>	
 	
 	{DETALLE_COMPROBANTE}
 	<br>
-	<!--
-	<table class="5" >
-		<tr class="inferior">
-		 <td><strong>Elaborado por:</strong></td>
-		 <td><strong>Es Conforme:</strong></td>
-		 <td><strong>Visto Bueno:</strong></td>
-		 <td><strong>Recibí Conforme:</strong></td>
-		</tr>
-		<tr><td>&nbsp; </td></tr>
-		<tr><td>&nbsp; </td></tr>
-		<tr><td>&nbsp; </td></tr>
-		<tr>
-		<td>{USUARIO}</td>
-		<td>CONTADOR</td>
-		<td>GERENTE</td>
-		<td>-----------------------------</td>
-		</tr>
-	    </table>
-	    -->
-
+	
   </body>
   </html>

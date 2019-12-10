@@ -1009,8 +1009,392 @@ class PlanCuentasController extends ControladorBase{
 	}
 	
    }
-	
-	
-		
+
+   public function cargaMovimientos(){
+       
+       $PlanCuentas = new PlanCuentasModel();
+       
+       /** variables funcion */       
+       //$_array_plan_cuentas           = array();
+       
+       /**
+        ****************************************************** validar si el archivo esta en el directorio ****************************************************
+        **/
+       $nombreArchivo   = "MOVIMIENTOSOCT.txt";
+       $rutaProcesar    = 'docs\\'.$nombreArchivo;
+       
+       if(file_exists($rutaProcesar)){           
+           
+           /** comienza lectura de archivos **/
+           $file_abierto   = fopen($rutaProcesar, "r");
+           
+           //var_dump($file_abierto); exit();
+           
+           /** AQUI VALIDACION DE FORMATOS */
+           $_linea = 0;
+           //$_linea_llena = 0;
+           while(!feof($file_abierto))
+           {
+               $_fila = fgets($file_abierto);
+               $_fila = trim($_fila);
+               $_fila = trim($_fila,"\n");
+               //echo "\n'",var_dump($_fila),"'";
+               if( $_linea > 0 && $_fila != "" ){
+                   
+                  echo "\n",$_fila;
+                   $_array_fila   = explode("\t", $_fila);
+                   if( is_array($_array_fila) && sizeof( $_array_fila ) == 5 ){
+                       
+                       $_codigo_plan_cuentas    = $_array_fila[0];
+                       $_nombre_plan_cuentas    = $_array_fila[1];
+                       $_saldo_inicial      = $_array_fila[2];
+                       $_movimiento_mes     = $_array_fila[3];
+                       $_saldo_final        = $_array_fila[4];
+                       
+                       /** dar formato para la base a las columnas **/
+                       $_codigo_plan_cuentas    = trim($_codigo_plan_cuentas," ");
+                       $_codigo_plan_cuentas    = str_replace('-', '.', $_codigo_plan_cuentas);
+                       $_array_codigo = null;
+                       $_array_codigo = $_array_fila   = explode(".", $_codigo_plan_cuentas);
+                       $_codigo_plan_cuentas = "";
+                       for( $i = 0; $i<sizeof($_array_codigo); $i++){
+                           if( (int)$_array_codigo[$i] > 0 ){
+                               $_codigo_plan_cuentas .= $_array_codigo[$i].".";                               
+                                                            
+                           }
+                           
+                       }
+                       $_codigo_plan_cuentas = trim($_codigo_plan_cuentas,".");
+                       
+                       $_nombre_plan_cuentas = preg_replace("/\"/","",$_nombre_plan_cuentas);
+                       $_nombre_plan_cuentas = trim($_nombre_plan_cuentas," ");
+                       $_nombre_plan_cuentas = utf8_encode ($_nombre_plan_cuentas );
+                       
+                       //para el saldo inicial
+                       $_saldo_inicial = preg_replace("/\"/","",$_saldo_inicial);
+                       $_saldo_inicial  = trim($_saldo_inicial," ");
+                       $_saldo_inicial  = str_replace(",", "", $_saldo_inicial);
+                       $_saldo_inicial = $_saldo_inicial == "-" ? 0 : $_saldo_inicial;
+                       
+                       if( !is_numeric( $_saldo_inicial ) ){
+                           echo "\n \t linea no tiene valor saldo inicial  ",$_linea;
+                       }
+                       
+                       //para el movimiento
+                       $_movimiento_mes = preg_replace("/\"/","",$_movimiento_mes);
+                       $_movimiento_mes  = trim($_movimiento_mes," ");
+                       $_movimiento_mes  = str_replace(",", "", $_movimiento_mes);
+                       $_movimiento_mes = $_movimiento_mes == "-" ? 0 : $_movimiento_mes;
+                       
+                       if( !is_numeric( $_movimiento_mes ) ){
+                           echo "\n \t linea movimiento no es numeric ",$_linea;
+                       }
+                       
+                       
+                       //para el saldo inicial
+                       $_saldo_final = preg_replace("/\"/","",$_saldo_final);
+                       $_saldo_final  = trim($_saldo_final," ");
+                       $_saldo_final  = str_replace(",", "", $_saldo_final);
+                       $_saldo_final = $_saldo_final == "-" ? 0 : $_saldo_final;
+                                              
+                       if( !is_numeric( $_saldo_final ) ){
+                           echo "\n \t linea no tiene valor saldo final ",$_linea;
+                       }
+                       
+                       echo "\n linea".$_linea. " a guardar  ",$_codigo_plan_cuentas,"\t",$_nombre_plan_cuentas,"\t",$_saldo_inicial,"\t",$_movimiento_mes,"\t",$_saldo_final,"\t";
+                       
+                       /** paso validacion a insertar **/
+                       
+                       $codigo_buscar = $_codigo_plan_cuentas;
+                       // primero una consulta 
+                       $columnas1   = " 1 existe,id_plan_cuentas";
+                       $tablas1     = " public.plan_cuentas";
+                       $where1      = " codigo_plan_cuentas = '$codigo_buscar' OR codigo_plan_cuentas = '".$codigo_buscar.".'";
+                       $id1         = " id_plan_cuentas";
+                       $rsConsulta  = $PlanCuentas->getCondiciones($columnas1, $tablas1, $where1, $id1);
+                       
+                       if( empty($rsConsulta) ){
+                           
+                          
+                           $_array_nivel_plan_cuentas = explode(".", $_codigo_plan_cuentas);
+                           $_nivel_plan_cuentas = sizeof($_array_nivel_plan_cuentas);
+                           /** varaibles de insertado */
+                           $_columnas  = " INSERT INTO public.plan_cuentas(".
+                               "id_entidades, codigo_plan_cuentas, nombre_plan_cuentas, id_modenas, n_plan_cuentas, id_centro_costos,".
+                               "nivel_plan_cuentas, saldo_plan_cuentas, saldo_fin_plan_cuentas)";
+                           $_valores    = " VALUES ( 1,'$codigo_buscar','$_nombre_plan_cuentas', 1,'A',1,'$_nivel_plan_cuentas',$_saldo_inicial,$_saldo_final)";
+                           $_retorno    = " RETURNING id_plan_cuentas";
+                           $_queryInsert= $_columnas.$_valores.$_retorno;
+                           $_id_comprobantes = $PlanCuentas->executeInsertQuery($_queryInsert);
+                           
+              
+                           
+                       }else{
+                          
+                           $_id_plan_cuentas = $rsConsulta[0]->id_plan_cuentas;
+                           
+                           $_columnas_upd = " saldo_plan_cuentas = $_saldo_inicial, saldo_fin_plan_cuentas = $_saldo_final,nombre_plan_cuentas='$_nombre_plan_cuentas'";
+                           $_tablas_upd = " plan_cuentas";
+                           $_where_upd = " id_plan_cuentas = $_id_plan_cuentas";
+                           
+                           $PlanCuentas->ActualizarBy($_columnas_upd, $_tablas_upd, $_where_upd);
+                                                     
+                       }
+                       
+                      
+                       
+                   }else{
+                       
+                       echo "\n","linea--**--",$_linea,"--**--","no es array";
+                       //array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"cantidad columnas no encontradas","cantidad"=>0));
+                   }
+                   
+               }else if( $_linea > 0 && $_fila == "" ){
+                   
+                   echo "\n","linea--**--",$_linea,"--**--","linea vacia";
+                   //array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"linea se encuentra vacia","cantidad"=>0));
+               }
+               $_linea++;
+           }
+           
+           fclose($file_abierto);
+           
+       }
+      
+       
+       
+   }
+   
+   
+   public function cargaFinanciero(){
+       
+       
+       $PlanCuentas = new PlanCuentasModel();
+       
+       /** variables funcion */
+       //$_array_plan_cuentas           = array();
+       
+       /**
+        ****************************************************** validar si el archivo esta en el directorio ****************************************************
+        **/
+       $nombreArchivo   = "FINANCIEROOCT.txt";
+       $rutaProcesar    = 'docs\\'.$nombreArchivo;
+       
+       if(file_exists($rutaProcesar)){
+           
+           /** comienza lectura de archivos **/
+           $file_abierto   = fopen($rutaProcesar, "r");
+           
+           //var_dump($file_abierto); exit();
+           
+           /** AQUI VALIDACION DE FORMATOS */
+           $_linea = 0;
+           //$_linea_llena = 0;
+           while(!feof($file_abierto))
+           {
+               $_fila = fgets($file_abierto);
+               $_fila = trim($_fila);
+               $_fila = trim($_fila,"\n");
+               $_fila = trim($_fila,"\t");
+               //echo "\n'",var_dump($_fila),"'";
+               if( $_linea > 0 && $_fila != "" ){
+                   
+                   echo "\n",$_fila;
+                   $_array_fila   = explode("\t", $_fila);
+                   if( is_array($_array_fila) && sizeof( $_array_fila ) == 4){
+                       
+                       $_codigo_plan_cuentas    = $_array_fila[0];
+                       $_nombre_plan_cuentas    = $_array_fila[1];
+                       $_notas_archivo     = $_array_fila[2];
+                       $_saldo_final        = $_array_fila[3];
+                       
+                       /** dar formato para la base a las columnas **/
+                       $_codigo_plan_cuentas    = trim($_codigo_plan_cuentas," ");
+                       $_codigo_final_plan_cuentas = "";
+                       $i_string = 0;
+                       //echo "*******lenght*****   ", strlen($_codigo_plan_cuentas);
+                       while( strlen($_codigo_plan_cuentas) > 0 ){
+                           $_string_cut = "";
+                           
+                           if( $i_string == 0 || $i_string == 1 ){
+                               $_string_cut = substr($_codigo_plan_cuentas, 0, 1);
+                               $_codigo_plan_cuentas = substr($_codigo_plan_cuentas, 1);
+                           }else{                              
+                                   
+                               $_string_cut = substr($_codigo_plan_cuentas, 0, 2);
+                               $_codigo_plan_cuentas = substr($_codigo_plan_cuentas, 2);
+                           }
+                           $_codigo_final_plan_cuentas.= $_string_cut.".";
+                           $i_string++;
+                       }
+                       
+                       $_codigo_final_plan_cuentas = trim($_codigo_final_plan_cuentas,".");
+                       
+                       $_nombre_plan_cuentas = preg_replace("/\"/","",$_nombre_plan_cuentas);
+                       $_nombre_plan_cuentas = trim($_nombre_plan_cuentas," ");
+                       $_nombre_plan_cuentas = utf8_encode ($_nombre_plan_cuentas );
+                       
+                       $_notas_archivo = preg_replace("/\"/","",$_notas_archivo);
+                       $_notas_archivo = trim($_notas_archivo," ");
+                       $_notas_archivo = utf8_encode ($_notas_archivo );                       
+                       
+                       //para el saldo final
+                       $_saldo_final = preg_replace("/\"/","",$_saldo_final);
+                       $_saldo_final  = trim($_saldo_final," ");
+                       $_saldo_final  = str_replace(",", "", $_saldo_final);
+                       $_saldo_final = $_saldo_final == "-" ? 0 : $_saldo_final;
+                       $_saldo_final = $_saldo_final == "" ? 0 : $_saldo_final;
+                       
+                       if( !is_numeric( $_saldo_final ) ){
+                           echo "\n \t linea no tiene valor saldo final ",$_linea;
+                       }
+                       
+                       echo "\n linea".$_linea. " a guardar  ",$_codigo_final_plan_cuentas,"\t",$_nombre_plan_cuentas,"\t",$_saldo_final;
+                       
+                       /** paso validacion a insertar **/
+                       
+                       $codigo_buscar = $_codigo_final_plan_cuentas;
+                       // primero una consulta
+                       $columnas1   = " 1 existe,id_plan_cuentas";
+                       $tablas1     = " public.plan_cuentas";
+                       $where1      = " codigo_plan_cuentas = '$codigo_buscar' OR codigo_plan_cuentas = '".$codigo_buscar.".'";
+                       $id1         = " id_plan_cuentas";
+                       $rsConsulta  = $PlanCuentas->getCondiciones($columnas1, $tablas1, $where1, $id1);
+                       
+                       if( empty($rsConsulta) ){
+                           
+                           
+                           $_array_nivel_plan_cuentas = explode(".", $_codigo_final_plan_cuentas);
+                           $_nivel_plan_cuentas = sizeof($_array_nivel_plan_cuentas);
+                           // varaibles de insertado 
+                           /*$_columnas  = " INSERT INTO public.plan_cuentas(".
+                               "id_entidades, codigo_plan_cuentas, nombre_plan_cuentas, id_modenas, n_plan_cuentas, id_centro_costos,".
+                               "nivel_plan_cuentas, saldo_plan_cuentas, saldo_fin_plan_cuentas)";
+                           $_valores    = " VALUES ( 1,'$codigo_buscar','$_nombre_plan_cuentas', 1,'A',1,'$_nivel_plan_cuentas',0,$_saldo_final)";
+                           $_retorno    = " RETURNING id_plan_cuentas";
+                           $_queryInsert= $_columnas.$_valores.$_retorno;
+                           $_id_comprobantes = $PlanCuentas->executeInsertQuery($_queryInsert);*/
+                           
+                           echo "INSERT "," -> ",$codigo_buscar," <- de nivel ", $_nivel_plan_cuentas;
+                           
+                           
+                       }else{
+                           
+                           $_id_plan_cuentas = $rsConsulta[0]->id_plan_cuentas;
+                           
+                           $_columnas_upd = " saldo_fin_plan_cuentas = $_saldo_final,nombre_plan_cuentas='$_nombre_plan_cuentas'";
+                           $_tablas_upd = " plan_cuentas";
+                           $_where_upd = " id_plan_cuentas = $_id_plan_cuentas";
+                           
+                           /*$PlanCuentas->ActualizarBy($_columnas_upd, $_tablas_upd, $_where_upd);*/
+                           
+                           echo "UPDATE "," -> ",$codigo_buscar," <- de nivel ", $_nivel_plan_cuentas;
+                           
+                       }
+                      
+                       
+                       
+                   }else{
+                       
+                       echo "\n","linea--**--",$_linea,"--**--","no es array";
+                       //array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"cantidad columnas no encontradas","cantidad"=>0));
+                   }
+                   
+               }else if( $_linea > 0 && $_fila == "" ){
+                   
+                   echo "\n","linea--**--",$_linea,"--**--","linea vacia";
+                   //array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"linea se encuentra vacia","cantidad"=>0));
+               }
+               $_linea++;
+           }
+           
+           fclose($file_abierto);
+           
+       }
+       
+       
+       
+       
+   }
+   
+   public function CuadrarCuentas(){
+       
+       $PlanCuentas = new PlanCuentasModel();
+       
+       $columnas1   = " id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas, nivel_plan_cuentas, saldo_fin_plan_cuentas";
+       $tablas1     = " public.plan_cuentas";
+       $where1      = " 1=1 AND nivel_plan_cuentas > 3";
+       $id1         = " nivel_plan_cuentas desc, codigo_plan_cuentas";
+              
+       $rsConsulta1 = $PlanCuentas->getCondiciones($columnas1, $tablas1, $where1, $id1);
+       
+       if( !empty($rsConsulta1) ){
+           
+           $funcion = "fn_cuadra_plan_cuentas";
+           $parametros = "";
+           //
+           
+           foreach ( $rsConsulta1 as $res ){
+               
+               $parametros = "$res->id_plan_cuentas";
+               $queryActualizacion = $PlanCuentas->getconsultaPG($funcion, $parametros);
+               $PlanCuentas->llamarconsultaPG($queryActualizacion);
+               
+               $error = pg_last_error();
+               if( !empty($error) ){
+                   
+                   echo "\n error en codigo -> ",$res->codigo_plan_cuentas;
+               }
+               
+           }
+       }
+       
+       
+       
+   }
+   
+   public function ActualizarCuentas(){
+       
+       $PlanCuentas = new PlanCuentasModel();
+       
+       $columnas1   = " codigo_plan_cuentas, nombre_plan_cuentas, saldo_plan_cuentas, nivel_plan_cuentas, id_plan_cuentas, n_plan_cuentas";
+       $tablas1     = " public.plan_cuentas";
+       $where1      = " 1=1";
+       $id1         = " codigo_plan_cuentas";
+       
+       $rsConsulta1 = $PlanCuentas->getCondiciones($columnas1, $tablas1, $where1, $id1);
+       
+       if( !empty($rsConsulta1) ){           
+                     
+           foreach ( $rsConsulta1 as $res ){
+               
+               $_codigo_plan_cuentas = $res->codigo_plan_cuentas;
+               $_codigo_plan_cuentas = trim($_codigo_plan_cuentas,".");
+               $_id_plan_cuentas     = $res->id_plan_cuentas;
+               
+               $columnas = " codigo_plan_cuentas = '$_codigo_plan_cuentas'";
+               $tablas   = " public.plan_cuentas";
+               $where    = " id_plan_cuentas = $_id_plan_cuentas";
+               
+               $PlanCuentas->ActualizarBy($columnas, $tablas, $where);
+            
+               $error = pg_last_error();
+               if( !empty($error) ){
+                   
+                   echo "\n error en codigo -> ",$res->codigo_plan_cuentas;
+               }
+               
+           }
+       }
+       
+   }
+   
+   public function mayorizaComprobantes(){
+       
+       
+       
+   }
+   
+  
  }
 ?>

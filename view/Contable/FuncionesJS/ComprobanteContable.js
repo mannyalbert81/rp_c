@@ -26,71 +26,126 @@
 	$('#haber_dcomprobantes').val("0.00");
   
   }
-      
-   
-   // AUTOCOMPLETE CODIGO PLAN CUENTAS
+ 
+  /** AUTOCOMPLETE DE CODIGO PLAN CUENTAS **/  
+  function autompleteCodigo(elemento){
+	  
+	  var _elemento = $(elemento);
+	  //console.log("ingreso codigo complete");	  
+	  if ( !_elemento.data("autocomplete") ) {
+		  
+		  _elemento.autocomplete({
+	    		minLength: 3,    	    
+	    		source:function (request, response) {
+	    			$.ajax({
+	    				url:"index.php?controller=ComprobanteContable&action=autompleteCodigo",
+	    				dataType:"json",
+	    				type:"GET",
+	    				data:{term:request.term},
+	    			}).done(function(x){
+	    				
+	    				response(x); 
+	    				
+	    			}).fail(function(xhr,status,error){
+	    				var err = xhr.responseText
+	    				console.log(err)
+	    			})
+	    		},
+	    		select: function (event, ui) {
+	    			
+	    			if(ui.item.id == ''){
+	    				 _elemento.notify("Digite Cod. Cuenta Valido",{ position:"buttom left"});
+	    				 $('#nombre_plan_cuentas').val('');
+	 	    			 $('#plan_cuentas').val(0);
+	    				 return;
+	    			}
+	    			
+	    			$('#nombre_plan_cuentas').val(ui.item.nombre);
+	    			$('#plan_cuentas').val(ui.item.id);
+	    				    			     	     
+	     	    },
+	     	   appendTo: null,
+	     	   change: function(event,ui){
+	     		   if(ui.item == null){
+	     			   
+	     			 _elemento.notify("Digite Cod. Cuenta Valido",{ position:"buttom left"});
+	     			 _elemento.val("")
+    				 $('#nombre_plan_cuentas').val('');
+ 	    			 $('#plan_cuentas').val(0);	
+	 	   			 $('#descripcion_dcomprobantes').val("");
+	 	   			 $('#debe_dcomprobantes').val("0.00");
+	 	   			 $('#haber_dcomprobantes').val("0.00");		 	   			
+	     			
+	     		   }
+	     	   }
+	    	
+	    	}).focusout(function() {
+	    		
+	    	})
+	  }
+	  
+  }
   
-   $( "#id_plan_cuentas" ).autocomplete({
-	source: 'index.php?controller=ComprobanteContable&action=AutocompleteComprobantesCodigo',
-			minLength: 1
-	});
-
-	$("#id_plan_cuentas").focusout(function(){
-		
-		$.ajax({
-			url:'index.php?controller=ComprobanteContable&action=AutocompleteComprobantesDevuelveNombre',
-			type:'POST',
-			dataType:'json',
-			data:{codigo_plan_cuentas:$('#id_plan_cuentas').val()}
-		}).done(function(respuesta){
-	
-			$('#nombre_plan_cuentas').val(respuesta.nombre_plan_cuentas);
-			$('#plan_cuentas').val(respuesta.id_plan_cuentas);
-		
-		}).fail(function(respuesta) {
-			  
-			$('#plan_cuentas').val("0");
-			$('#id_plan_cuentas').val("");
-			$('#nombre_plan_cuentas').val("");
-			$('#descripcion_dcomprobantes').val("");
-			$('#debe_dcomprobantes').val("0.00");
-			$('#haber_dcomprobantes').val("0.00");
-			
-		});
-		
-	});   
-	
-    // AUTOCOMPLETE NOMBRE PLAN CUENTAS
-	$("#nombre_plan_cuentas").autocomplete({
-			source: 'index.php?controller=ComprobanteContable&action=AutocompleteComprobantesNombre',
-			minLength: 1
-	});
-
-	$("#nombre_plan_cuentas").focusout(function(){
-		$.ajax({
-			url:'index.php?controller=ComprobanteContable&action=AutocompleteComprobantesDevuelveCodigo',
-			type:'POST',
-			dataType:'json',
-			data:{nombre_plan_cuentas:$('#nombre_plan_cuentas').val()}
-		}).done(function(respuesta){
-
-			$('#id_plan_cuentas').val(respuesta.codigo_plan_cuentas);
-			$('#plan_cuentas').val(respuesta.id_plan_cuentas);
-		
-		}).fail(function(respuesta) {
-			$('#plan_cuentas').val("0");
-			$('#id_plan_cuentas').val("");
-			$('#nombre_plan_cuentas').val("");
-			$('#descripcion_dcomprobantes').val("");
-			$('#debe_dcomprobantes').val("0.00");
-			$('#haber_dcomprobantes').val("0.00");
-			
-		});
-		 
-		
-	});   
-		
-	
+  /** AUTOCOMPLETE DE NOMBRE PLAN CUENTAS **/  
+  function autompleteNombre(elemento){
+	  
+	  var _elemento = $(elemento);
+	  //console.log("ingreso codigo complete");	  
+	  if ( !_elemento.data("autocomplete") ) {
+		  
+		  _elemento.autocomplete({
+	    		minLength: 3,    	    
+	    		source:function (request, response) {
+	    			$.ajax({
+	    				url:"index.php?controller=ComprobanteContable&action=autompleteNombrePlanCuentas",
+	    				dataType:"json",
+	    				type:"GET",
+	    				data:{term:request.term},
+	    			}).done(function(x){
+	    				
+	    				response(x); 
+	    				
+	    			}).fail(function(xhr,status,error){
+	    				var err = xhr.responseText
+	    				console.log(err)
+	    			})
+	    		},
+	    		select: function (event, ui) {
+	    			
+	    			if(ui.item.id == ''){
+	    				 _elemento.notify("Digite Nombre Cuenta Valido",{ position:"buttom left"});
+	    				 $('#id_plan_cuentas').val('');
+	 	    			 $('#plan_cuentas').val(0);
+	    				 return;
+	    			}
+	    			
+	    			$('#id_plan_cuentas').val(ui.item.codigo);
+	    			$('#plan_cuentas').val(ui.item.id);
+	    				    			     	     
+	     	    },
+	     	   appendTo: null,
+	     	   change: function(event,ui){
+	     		   if(ui.item == null){
+	     			   
+	     			 _elemento.notify("Digite Nombre Cuenta Valido",{ position:"buttom left"});
+	     			 _elemento.val("")
+    				 $('#id_plan_cuentas').val('');
+ 	    			 $('#plan_cuentas').val(0);	
+	 	   			 $('#descripcion_dcomprobantes').val("");
+	 	   			 $('#debe_dcomprobantes').val("0.00");
+	 	   			 $('#haber_dcomprobantes').val("0.00");		 	   			
+	     			
+	     		   }
+	     	   }
+	    	
+	    	}).focusout(function() {
+	    		
+	    	})
+	  }
+	  
+  }
+ 
+  
 // VALIDAR QUE VAYA SOLO EL DEBE O SOLO HABER
 
   function validardebe(field) {
@@ -174,86 +229,55 @@ function load_temp_comprobantes(pagina){
 }
 
 	// AGREGAR REGISTRO DE TABLA TEMPORAL
-	    
-
-	 	function agregar_temp_comprobantes ()
-		{
-			var plan_cuentas=document.getElementById('plan_cuentas').value;
-			var descripcion_dcomprobantes=document.getElementById('descripcion_dcomprobantes').value;
-			var debe_dcomprobantes=document.getElementById('debe_dcomprobantes').value;
-			var haber_dcomprobantes=document.getElementById('haber_dcomprobantes').value;
-			
-
-			var error="TRUE";
-			
-			if (plan_cuentas == 0)
-	    	{
-		    	
-	    		$("#mensaje_id_plan_cuentas").text("Seleccione Cuenta");
-	    		$("#mensaje_id_plan_cuentas").fadeIn("slow"); //Muestra mensaje de error
-	            
-	    		error ="TRUE";
-	    		return false;
-		    }
-	    	else 
-	    	{
-	    		$("#mensaje_id_plan_cuentas").fadeOut("slow"); //Oculta mensaje de error
-	    		error ="FALSE";
-			}   
-			
-			
-			if (debe_dcomprobantes == 0.00 && haber_dcomprobantes == 0.00)
-	    	{
-		    	
-	    		$("#mensaje_debe_dcomprobantes").text("Ingrese Valor en Debe o en Haber");
-	    		$("#mensaje_debe_dcomprobantes").fadeIn("slow"); //Muestra mensaje de error
-	    	   error ="TRUE";
-	            return false;
-		    }
-	    	else 
-	    	{
-	    		$("#mensaje_debe_dcomprobantes").fadeOut("slow"); //Oculta mensaje de error
-	    		error ="FALSE";
-			}   
-			
-			
-			
-			if(error == "FALSE"){
-				
-				$.ajax({
-		            type: "POST",
-		            url: 'index.php?controller=ComprobanteContable&action=insertar_temp_comprobantes',
-		            data: "plan_cuentas="+plan_cuentas+"&descripcion_dcomprobantes="+descripcion_dcomprobantes+"&debe_dcomprobantes="+debe_dcomprobantes+"&haber_dcomprobantes="+haber_dcomprobantes,
-		        	
-		            success: function(datos){
-		            	//console.log(datos)
-		            	limpiar();
-		            	load_temp_comprobantes(1);
-		            	
-		            },
-		            error: function(xhr,status,error){
-		            	var err = xhr.responseText;
-		            	console.log(err)
-		            }
-				});
-				
-			}
-			
-			
-		}
-	 	
-	 	
-	 	 $( "#id_plan_cuentas" ).focus(function() {
-			  $("#mensaje_id_plan_cuentas").fadeOut("slow");
-		  });
-	 	
-	 	 $( "#debe_dcomprobantes" ).focus(function() {
-			  $("#mensaje_debe_dcomprobantes").fadeOut("slow");
-		  });
-	 	
+function agregar_temp_comprobantes (){
 	
-	// ELIMINAR REGISTRO DE TABLA TEMPORAL
-	    
+	var plan_cuentas=document.getElementById('plan_cuentas').value;
+	var descripcion_dcomprobantes=document.getElementById('descripcion_dcomprobantes').value;
+	var debe_dcomprobantes=document.getElementById('debe_dcomprobantes').value;
+	var haber_dcomprobantes=document.getElementById('haber_dcomprobantes').value;
+	
+
+	var error="FALSE";
+	
+	if (plan_cuentas == 0){
+		
+		$("#id_plan_cuentas").notify("Digite una Cuenta Contable",{autoHideDelay:1000,position:"buttom left"});
+		error ="TRUE";
+		return false;		
+    }
+		
+	if (debe_dcomprobantes == 0.00 && haber_dcomprobantes == 0.00){
+    	
+		$("#debe_dcomprobantes").notify("Digite Valor de Movimiento",{autoHideDelay:1000,position:"buttom left"});
+		error ="TRUE";
+		return false;
+    }
+	
+	if(error == "FALSE"){
+		
+		$.ajax({
+            type: "POST",
+            url: 'index.php?controller=ComprobanteContable&action=insertar_temp_comprobantes',
+            data: "plan_cuentas="+plan_cuentas+"&descripcion_dcomprobantes="+descripcion_dcomprobantes+"&debe_dcomprobantes="+debe_dcomprobantes+"&haber_dcomprobantes="+haber_dcomprobantes,
+        	
+            success: function(datos){
+            	//console.log(datos)
+            	limpiar();
+            	load_temp_comprobantes(1);
+            	
+            },
+            error: function(xhr,status,error){
+            	var err = xhr.responseText;
+            	console.log(err)
+            }
+		});
+		
+	}
+	
+	
+}
+	
+// ELIMINAR REGISTRO DE TABLA TEMPORAL	    
 function eliminar_temp_comprobantes(id){
 	$.ajax({
         type: "POST",
@@ -268,7 +292,6 @@ function eliminar_temp_comprobantes(id){
 	    
 	    
 	  // PARA CONSULTAR NUMERO DE COMPROBANTES
-
 function catchTipoComprobante(elemento){
 	
 	var ddlTipoComprobante = $(elemento);
@@ -551,7 +574,13 @@ $( "#observaciones_ccomprobantes" ).focus(function() {
          data: parametros,
          dataType:'json',
          success: function(x){
-        	 setearForm()
+        	 setearForm();
+        	 swal({
+       		  title: "COMPROBANTE CONTABLE",
+       		  text: "comprobante generado con exito",
+       		  icon: "success",
+       		  button: "Aceptar",
+       		});
         	 swal(x.mensaje);
         	 //console.log(x)
         	 load_temp_comprobantes(1)

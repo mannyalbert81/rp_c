@@ -244,7 +244,7 @@ class ComprobanteContableController extends ControladorBase{
 	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-	            $html.='<section style="height:425px; overflow-y:scroll;">';
+	            $html.='<section style="height:350px; overflow-y:scroll;">';
 	            $html.= "<table id='tabla_plan_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
@@ -497,7 +497,7 @@ class ComprobanteContableController extends ControladorBase{
 			$temp_comprobantes=new ComprobantesTemporalModel();
 			
 			$tipo_comprobante=new TipoComprobantesModel();
-			$resultTipCom = $tipo_comprobante->getAll("nombre_tipo_comprobantes");
+			//$resultTipCom = $tipo_comprobante->getAll("nombre_tipo_comprobantes");
 		
 			$forma_pago=new FormaPagoModel();
 			$resultFormaPago = $forma_pago->getAll("nombre_forma_pago");
@@ -506,7 +506,7 @@ class ComprobanteContableController extends ControladorBase{
 			$TipoComprobantes = new TipoComprobantesModel();
 			$columnas1 = " id_tipo_comprobantes,nombre_tipo_comprobantes";
 			$tablas1 = " tipo_comprobantes";
-			$where1 = " 1 = 1 ";
+			$where1 = " 1 = 1  AND  nombre_tipo_comprobantes = 'CONTABLE' ";
 			$id1 = "id_tipo_comprobantes";
 			$rsConsulta1 = $TipoComprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
 									
@@ -518,7 +518,7 @@ class ComprobanteContableController extends ControladorBase{
 			{
 			    	
 				$this->view_Contable("ComprobanteContable",array(
-				    "resultTipCom"=>$resultTipCom , "resultFormaPago"=>$resultFormaPago, "resultTipoComprobantes"=>$rsConsulta1
+				    "resultTipCom"=>$rsConsulta1 , "resultFormaPago"=>$resultFormaPago, "resultTipoComprobantes"=>$rsConsulta1
 					));
 			
 			
@@ -941,20 +941,32 @@ class ComprobanteContableController extends ControladorBase{
 	            
 	            //datos de la vista
 	            $_id_tipo_comprobantes         = $_POST['id_tipo_comprobantes'];	            
-	            $_id_proveedores               = $_POST['id_proveedores'];
-	            $_retencion_ccomprobantes      = $_POST['retencion_proveedor']; 
+	            $_id_proveedores               = "null";
+	            $_retencion_ccomprobantes      = ""; 
 	            $_valor_letras                 = $_POST['valor_letras'];	            
 	            $_concepto_ccomprobantes       = $_POST['concepto_ccomprobantes'];	            
 	            $_fecha_ccomprobantes          = $_POST['fecha_ccomprobantes'];	            
 	            $_referencia_doc_ccomprobantes = $_POST['referencia_ccomprobantes'];
-	            $_id_forma_pago                = $_POST['id_forma_pago'];
-	            $_num_cuenta_ban_ccomprobantes = $_POST['num_cuenta_ccomprobantes'];
-	            $_num_cheque_ccomprobantes     = $_POST['num_cheque_ccomprobantes'];
-	            $_observacion_ccomprobantes    = $_POST['observacion_ccomprobantes'];
+	            $_id_forma_pago                = "null";
+	            $_num_cuenta_ban_ccomprobantes = "";
+	            $_num_cheque_ccomprobantes     = "";
+	            $_observacion_ccomprobantes    = "";
 	            $_id_usuarios                  = $_SESSION['id_usuarios'];
-	            //comienza insertado de comprobante
 	            
-	            $funcion = "fn_con_agrega_comprobante";
+	            // buscar modulo
+	            $_id_modulos   = 'null';
+	            $columnas1 = " id_modulos, nombre_modulos";
+	            $tablas1   = " modulos";
+	            $where1    = " UPPER(nombre_modulos) = 'CONTABILIDAD'";
+	            $id1       = " id_modulos";
+	            $rsConsulta1  = $ccomprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	            
+	            if( !empty($rsConsulta1) ){
+	                $_id_modulos = $rsConsulta1[0]->id_modulos;
+	            }
+	            
+	            //comienza insertado de comprobante     
+	            $funcion = "fn_con_agrega_comprobante";	            
 	            
 	            $parametros = "'$_id_usuarios',
                 '$_id_tipo_comprobantes', 
@@ -962,29 +974,44 @@ class ComprobanteContableController extends ControladorBase{
                 '$_concepto_ccomprobantes',
                 '$_valor_letras',
                 '$_fecha_ccomprobantes',
-                '$_id_forma_pago',
+                $_id_forma_pago,
                 '$_referencia_doc_ccomprobantes',
                 '$_num_cuenta_ban_ccomprobantes',
                 '$_num_cheque_ccomprobantes',
                 '$_observacion_ccomprobantes',
-                '$_id_proveedores' ";
+                $_id_proveedores,
+                $_id_modulos ";
+	            
+	            
+	            $ins_ccomprobantes  = $ccomprobantes->getconsultaPG($funcion, $parametros);
+	            $resultado = $ccomprobantes->llamarconsultaPG($ins_ccomprobantes);
+	            
+	            $respuesta='';
+	            $errorpg = pg_last_error();
+	            if(!empty($errorpg)){
+	                
+	                echo json_encode(array('success'=>0,'mensaje'=>"Error al Registrar Comprobante"));
+	                exit();
+	            }
+	            
+	            $respuesta = $resultado[0];
+	            echo json_encode(array('success'=>0,'mensaje'=>$respuesta));	            
 	            
 	            //print $parametros;
 	            //die();
-	            $ccomprobantes->setFuncion($funcion);
-	            $ccomprobantes->setParametros($parametros);
-	            $resultado=$ccomprobantes->llamafuncion();	            
+	            //$ccomprobantes->setFuncion($funcion);
+	            //$ccomprobantes->setParametros($parametros);
+	            //$resultado=$ccomprobantes->llamafuncion();	            
 	            
 	            //print_r($parametros);
-	            $respuesta='';
+	            //$respuesta='';
 	            
-	            if(!empty($resultado) && count($resultado) > 0)  {
+	            /*if(!empty($resultado) && count($resultado) > 0)  {
 	                
 	                foreach ($resultado[0] as $k => $v)
 	                    $respuesta = $v;
-	            }
+	            }*/
 	            
-	            echo json_encode(array('success'=>0,'mensaje'=>$respuesta));
 	           
 	        }
 	        
@@ -1070,6 +1097,115 @@ class ComprobanteContableController extends ControladorBase{
 	        echo json_encode(array('respuesta'=>'1','data'=>$rsConsulta1));
 	    }
 	    	    
+	}
+	
+	/**
+	 *  completar el input con codigo
+	 */
+	public function autompleteCodigo(){
+	    
+	    $planCuentas = new PlanCuentasModel();
+	    
+	    if(isset($_GET['term'])){
+	        
+	        $codigo_plan_cuentas = $_GET['term'];
+	        
+	        $columnas = "id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	        $tablas = "public.plan_cuentas";
+	        $where = "codigo_plan_cuentas LIKE '$codigo_plan_cuentas%' AND nivel_plan_cuentas > 3";
+	        $id = "codigo_plan_cuentas ";
+	        $limit = "LIMIT 10";
+	        
+	        $rsPlanCuentas = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($rsPlanCuentas) ){
+	            
+	            foreach ($rsPlanCuentas as $res){
+	                
+	                $_cls_plan_cuentas = new stdClass;
+	                $_cls_plan_cuentas->id = $res->id_plan_cuentas;
+	                $_cls_plan_cuentas->value = $res->codigo_plan_cuentas;
+	                $_cls_plan_cuentas->label = $res->codigo_plan_cuentas.' | '.$res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->nombre = $res->nombre_plan_cuentas;
+	                
+	                $respuesta[] = $_cls_plan_cuentas;
+	            }
+	            
+	            echo json_encode($respuesta);
+	            
+	        }else{
+	            
+	            echo '[{"id":"","value":"Cuenta No Encontrada"}]';
+	        }
+	        
+	    }
+	}
+	
+	/**
+	 *  completar el input con nombre plan cuentas
+	 */
+	public function autompleteNombrePlanCuentas(){
+	    
+	    $planCuentas = new PlanCuentasModel();
+	    
+	    if(isset($_GET['term'])){
+	        
+	        $nombre_plan_cuentas = $_GET['term'];
+	        
+	        $columnas = "id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	        $tablas = "public.plan_cuentas";
+	        $where = "nombre_plan_cuentas ILIKE '$nombre_plan_cuentas%' AND nivel_plan_cuentas > 3";
+	        $id = "codigo_plan_cuentas ";
+	        $limit = "LIMIT 10";
+	        
+	        $rsPlanCuentas = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($rsPlanCuentas) ){
+	            
+	            foreach ($rsPlanCuentas as $res){
+	                
+	                $_cls_plan_cuentas = new stdClass;
+	                $_cls_plan_cuentas->id = $res->id_plan_cuentas;
+	                $_cls_plan_cuentas->value = $res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->label = $res->codigo_plan_cuentas.' | '.$res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->nombre = $res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->codigo = $res->codigo_plan_cuentas;
+	                
+	                $respuesta[] = $_cls_plan_cuentas;
+	            }
+	            
+	            echo json_encode($respuesta);
+	            
+	        }else{
+	            
+	            echo '[{"id":"","value":"Cuenta No Encontrada"}]';
+	        }
+	        
+	    }
+	}
+	
+	public function traeNumComprobante(){
+	    
+	    $Consecutivos = new ConsecutivosModel();
+	    $respuesta = array();
+	    $columnas1 = " id_consecutivos, LPAD(valor_consecutivos::TEXT,espacio_consecutivos,'0') num_consecutivos ";
+	    $tablas1   = " public.consecutivos";
+	    $where1    = " nombre_consecutivos = 'CCOMPROBANTE'";
+	    $id1       = " id_consecutivos ";
+	    $rsConsulta1   = $Consecutivos->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    if( !empty($rsConsulta1) ){
+	        $_numero_comprobante = $rsConsulta1[0]->num_consecutivos;
+	        $respuesta['numero_consecutivo'] = $_numero_comprobante;
+	        echo json_encode($respuesta);
+	    }else{
+	        $respuesta['numero_consecutivo'] = "";
+	        echo json_encode($respuesta);
+	    }
+	    
 	}
 	
 	/************************************************************* END UTILITARIOS AJAX ********************************************************************/

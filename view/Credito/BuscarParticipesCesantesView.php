@@ -90,7 +90,7 @@
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Consulta y Cálculo de DESAFILIACIÓN</h3>
+          <h3 class="box-title">Consulta y Cálculo de PRESTACIONES</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -126,7 +126,15 @@
            		</div>
            	</div>
            	   	<div class="row">
-           	  <div class="col-xs-12 col-md-4 col-md-4 ">
+           	  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="id_fecha_prestaciones" class="control-label">Fecha Prestación:</label>
+                          <input  type="date" class="form-control" id="fecha_prestaciones" name="fecha_prestaciones" value=""  placeholder="" required/>                         
+                          <div id="mensaje_fecha_prestaciones" class="errores"></div>
+                        </div>
+            	</div>
+           	  <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
             		    					  
                           <label for="id_tipo_prestaciones" class="control-label">Tipo Prestación:</label>
@@ -135,9 +143,9 @@
                           </select>                         
                           <div id="mensaje_id_tipo_pestaciones" class="errores"></div>
                         </div>
-            		  </div>
+            	</div>
            	
-           	   <div class="col-xs-12 col-md-8 col-md-8 ">
+           	   <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
             		    					  
                           <label for="observacion_prestaciones" class="control-label">Observación:</label>
@@ -146,9 +154,21 @@
                           <div id="divLoaderPage" ></div>                     	
                                               
                         </div>
-            		  </div>
-            		  </div>
-            	   	<div class="row">
+            	</div>
+            </div>
+            <div class="row">	
+            	<div class="col-xs-12 col-md-12 col-md-12" style="text-align: center; ">
+                 	<button type="button" onclick="AportesParticipe(this)" id="btn_simular" name="btn_simular" class="btn btn-info"><i class='glyphicon glyphicon-info-sign'></i> Simular</button>
+          	  		
+				</div>
+			</div>
+        
+           
+            	 
+            	 
+            	 
+            <div class="row">
+           		 
            		 
              	 <div class="box-body">
     			<div class="pull-right" style="margin-right:15px;">
@@ -166,7 +186,7 @@
            		  		
            	
       <div class="col-xs-12 col-md-12 col-md-12" style="text-align: center; ">
-                 	              <button type="button" id="Generar" name="Generar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
+              <button type="button" id="Generar" name="Generar" class="btn btn-success"><i class='glyphicon glyphicon-plus'></i> Guardar</button>
           	  <a id="link_reporte" onclick="reportePrint(this)" data-participe="0" href="#" class="btn btn-success" style=""><i class=""></i>Reporte</a>
 			</div>
            	
@@ -197,6 +217,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.86"></script> 
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?1.09"></script> 
    </body>
 </html>   

@@ -138,7 +138,6 @@ class TributarioGeneraAtsController extends ControladorBase{
 	public function generaAts(){
 		
 	
-	
 		session_start();
 		$id_usuarios = $_SESSION['id_usuarios'];
 		$usuario_usuarios = $_SESSION['usuario_usuarios'];
@@ -258,8 +257,8 @@ class TributarioGeneraAtsController extends ControladorBase{
 			$texto .='<?xml version="1.0" encoding="UTF-8"?>';
 			$texto .= '<iva>';
 			$texto .= '<TipoIDInformante>R</TipoIDInformante>';
-			$texto .= '<IdInformante>1791700376001</IdInformante>';
-			$texto .= '<razonSocial>1791700376001</razonSocial>';
+			$texto .= '<IdInformante>'.'1791700376001'.'</IdInformante>';
+			$texto .= '<razonSocial>'.'FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTIA DE SERVIDORES Y TRABAJADORES PUBLICOS DE FUERZAS ARMADAS-CAPREMCI'.'</razonSocial>';
 			$texto .= '<Anio>'.$anioDiario.'</Anio>';
 			$texto .= '<Mes>'.$mesperiodofiscal.'</Mes>';
 			$texto .= '<totalVentas>'.'0.00'.'</totalVentas>';
@@ -289,11 +288,15 @@ class TributarioGeneraAtsController extends ControladorBase{
 					$texto .= '<parteRel>'.'SI'.'</parteRel>';
 				}
 				//$_establecimiento = ;
-				$texto .= '<fechaRegistro>'.$res->infocompretencion_fechaemision.'</fechaRegistro>';
+				$originalDate_fechaemision = $res->infocompretencion_fechaemision;
+				$newDate_fechaemision = date("d/m/Y", strtotime($originalDate_fechaemision));
+				$texto .= '<fechaRegistro>'.$newDate_fechaemision.'</fechaRegistro>';
 				$texto .= '<establecimiento>'.substr( $this->devuelveDocumentoFactura($res->id_tri_retenciones),1,3).'</establecimiento>';
 				$texto .= '<puntoEmision>'.substr( $this->devuelveDocumentoFactura($res->id_tri_retenciones),4,3).'</puntoEmision>';
 				$texto .= '<secuencial>'.substr( $this->devuelveDocumentoFactura($res->id_tri_retenciones),6,9).'</secuencial>';
-				$texto .= '<fechaEmision>'.$res->infocompretencion_fechaemision.'</fechaEmision>';
+				$originalDate_fechaemision = $res->infocompretencion_fechaemision;
+				$newDate_fechaemision = date("d/m/Y", strtotime($originalDate_fechaemision));
+				$texto .= '<fechaEmision>'.$newDate_fechaemision.'</fechaEmision>';
 				$texto .= '<autorizacion>'.$res->infotributaria_claveacceso.'</autorizacion>';
 				
 				$where_detalle = "id_tri_retenciones = '$res->id_tri_retenciones' ";
@@ -312,24 +315,24 @@ class TributarioGeneraAtsController extends ControladorBase{
 					else // IVA
 					{
 						$_montoIva  = $resDetalle->impuestos_baseimponible;
-						
+						//$_valRetBien10 = 20;//$resDetalle->impuestos_valorretenido;
 						switch ($resDetalle->impuestos_porcentajeretener) {
-							case 10:
+							case "10.00":
 								$_valRetBien10 = $resDetalle->impuestos_valorretenido;
 								break;
-							case 20:
+							case "20.00":
 								$_valRetServ20 = $resDetalle->impuestos_valorretenido;
 								break;
-							case 30:
+							case "30.00":
 								$_valorRetBienes= $resDetalle->impuestos_valorretenido;
 								break;
-							case 50:
+							case "50.00":
 								$_valRetServ50= $resDetalle->impuestos_valorretenido;
 								break;
-							case 70:
+							case "70.00":
 								$_valorRetServicios= $resDetalle->impuestos_valorretenido;
 								break;
-							case 2:
+							case "100.00":
 								$_valRetServ100= $resDetalle->impuestos_valorretenido;
 								break;
 						}
@@ -352,25 +355,38 @@ class TributarioGeneraAtsController extends ControladorBase{
 				$texto .= '<totbasesImpReemb>'.'0'.'</totbasesImpReemb>';
 				
 				$texto .= '<pagoExterior>';
-				$texto .= '<pagoLocExt>'.'NA'.'</pagoLocExt>';
+				$texto .= '<pagoLocExt>'.'01'.'</pagoLocExt>';
 				$texto .= '<paisEfecPago>'.'NA'.'</paisEfecPago>';
 				$texto .= '<aplicConvDobTrib>'.'NA'.'</aplicConvDobTrib>';
 				$texto .= '<pagExtSujRetNorLeg>'.'NA'.'</pagExtSujRetNorLeg>';
-				$texto .= '<pagExtSujRetNorLeg>'.'NA'.'</pagExtSujRetNorLeg>';
+				
 				$texto .= '</pagoExterior>';
 				
 				$texto .= '<formasDepago>';
-				$texto .= '<formaPago>'.'00'.'</formaPago>';
+				$texto .= '<formaPago>'.'20'.'</formaPago>';
 				$texto .= '</formasDepago>';
 				
 				$texto .= '<air>';
 				$texto .= '<detalleAir>';
-				$texto .= '<codRetAir>'.$_valRetServ100.'</valRetServ100>';
-			
-				
+				$texto .= '<codRetAir>'.$_codRetAir.'</codRetAir>';
+				$texto .= '<baseImpAir>'.$_baseImpAir.'</baseImpAir>';
+				$texto .= '<porcentajeAir>'.$_porcentajeAir.'</porcentajeAir>';
+				$texto .= '<valRetAir>'.$_valRetAir.'</valRetAir>';
+					
 				$texto .= '</detalleAir>';
 				$texto .= '</air>';
-		
+		/*
+				<estabRetencion1>003</estabRetencion1>
+				
+				<ptoEmiRetencion1>002</ptoEmiRetencion1>
+				
+				<secRetencion1>0002948</secRetencion1>
+				
+				<autRetencion1>3008201907171170737000120030020000029480000000110</autRetencion1>
+				
+				<fechaEmiRet1>30/08/2019</fechaEmiRet1>
+			*/	
+				
 				$texto .= '</detalleCompras>';
 				
 				 
@@ -593,6 +609,7 @@ class TributarioGeneraAtsController extends ControladorBase{
 		}
 		 
 		return $html;
+	
 		 
 	}
 	

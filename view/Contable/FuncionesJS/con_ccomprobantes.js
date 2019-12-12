@@ -368,14 +368,33 @@ function fnInsComprobante(){
         data: parametros,
         dataType:'json',
         success: function(x){
-       	 swal({
-      		  title: "COMPROBANTE CONTABLE",
-      		  text: "comprobante generado con exito",
-      		  icon: "success",
-      		  button: "Aceptar",
-      		});
-       	 afterInsertComprobante();
-       	 load_temp_comprobantes(1);
+        	if( x.respuesta != undefined ){
+        		
+        		if(x.respuesta == "ERROR"){
+        			
+        			swal({
+                		  title: "COMPROBANTE CONTABLE",
+                		  text: x.mensaje,
+                		  icon: "warning",
+                		  button: "Aceptar",
+                		});
+        			
+        		}else{
+        			
+        			swal({
+              		  title: "COMPROBANTE CONTABLE",
+              		  text: "comprobante generado con exito",
+              		  icon: "success",
+              		  button: "Aceptar",
+              		});
+        			
+        			afterInsertComprobante();
+        	       	load_temp_comprobantes(1);
+        		}
+        		
+        	}
+       	 
+       	 
         },
         error:function(xhr,estado,error){
        	 var err=xhr.responseText
@@ -399,6 +418,33 @@ function afterInsertComprobante(){
 	$("#con_numero_comprobantes").val("");
 	$("#con_referencia_doc_comprobantes").val("");
 	$("#con_concepto_comprobantes").val("");
+	
+}
+
+function verificaPeriodo(){
+	
+	var $fecha = $("#con_fecha_comprobantes");
+	var tiempo = tiempo || 1000;
+	$.ajax({
+		url:"index.php?controller=ComprobanteContable&action=jsverificarPeriodo",
+		type:"POST",
+		dataType:"json",
+		data:{con_fecha:$fecha.val()}
+	}).done(function(x){
+		if( x.respuesta != undefined ){
+			
+			if(x.respuesta == "ERROR"){
+				var mensaje = x.mensaje;
+				$fecha.notify(mensaje,{ position:"buttom left", autoHideDelay: 2000});
+				$("html, body").animate({ scrollTop: $fecha.offset().top-120 }, tiempo);
+				
+			}
+		}
+		
+	}).fail(function(xhr,estado,error){
+		
+		console.log("Error en conexion favor revisar datos enviados");
+	})	
 	
 }
 

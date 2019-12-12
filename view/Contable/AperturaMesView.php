@@ -8,6 +8,8 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+	
     
  	<style type="text/css">
  	  .loader {
@@ -63,7 +65,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Bancos</li>
+        <li class="active">Periodo Contable</li>
       </ol>
     </section>   
 
@@ -100,7 +102,7 @@
           	   	<div class="row">
           	   		<div class="col-xs-12 col-md-12 col-md-12 ">
           	   			<div class="pull-right">
-          	   				<button id="" class="btn btn-default"><i class="fa fa-plus"></i> Registrar</button>
+          	   				<button id="" type="button" class="btn btn-default" onclick="RegistrarDetallePeriodo(event)"><i class="fa  fa-mail-forward"></i> Registrar</button>
           	   			</div>
           	   		</div>
           	   	</div>	
@@ -117,7 +119,7 @@
       			<h3 class="box-title">Detalles del Periodo</h3>      			
             </div> 
             <div class="box-body">
-            
+                       
             
             	<div class="box-body no-padding">
               		<table id="tbl_detalles_periodo" class="table table-striped table-bordered table-sm " cellspacing="0"  width="100%">
@@ -132,6 +134,7 @@
                       </thead>
                       <tbody>
                         <tr>
+                          <td></td>
                           <td></td>
                           <td></td>
                           <td></td>
@@ -158,7 +161,8 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/Contable/FuncionesJS/AperturaMes.js?0.01"></script> 
+   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+   <script src="view/Contable/FuncionesJS/AperturaMes.js?0.04"></script> 
        
        
 

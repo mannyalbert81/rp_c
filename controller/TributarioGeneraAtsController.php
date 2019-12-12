@@ -385,8 +385,8 @@ class TributarioGeneraAtsController extends ControladorBase{
 				<autRetencion1>3008201907171170737000120030020000029480000000110</autRetencion1>
 				
 				<fechaEmiRet1>30/08/2019</fechaEmiRet1>
+			*/	
 				
-				*/
 				$texto .= '</detalleCompras>';
 				
 				 
@@ -609,6 +609,7 @@ class TributarioGeneraAtsController extends ControladorBase{
 		}
 		 
 		return $html;
+	
 		 
 	}
 	

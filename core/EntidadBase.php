@@ -37,7 +37,16 @@ class EntidadBase{
         return $resultSet;
     }
     
-    
+    public function getCondiciones_Grupo_Having_Limit($columnas ,$tablas , $where, $grupo, $having, $limit){
+        
+        $query=pg_query($this->con, "SELECT $columnas FROM $tablas WHERE $where GROUP BY $grupo HAVING $having $limit");
+        $resultSet = array();
+        while ($row = pg_fetch_object($query)) {
+            $resultSet[]=$row;
+        }
+        
+        return $resultSet;
+    }
     
     public function getConetar(){
         return $this->conectar;
@@ -307,6 +316,9 @@ class EntidadBase{
     	return $resultSet;
     }
   
+    
+    
+    
     public function getCondicionesPag($columnas ,$tablas , $where, $id, $limit){
     	 
     	$query=pg_query($this->con, "SELECT $columnas FROM $tablas WHERE $where ORDER BY $id  ASC  $limit");
@@ -779,6 +791,92 @@ class EntidadBase{
     
     
     
+    public function devuelve_saldo_capital($id_creditos){
+    	 
+    	//session_start();
+    	$creditos=new CoreCreditoModel();
+    	$saldo_credito=0;
+    	 
+    	 
+    	$columnas_pag="coalesce(sum(tap.saldo_cuota_tabla_amortizacion_pagos),0) as saldo";
+    	$tablas_pag="core_creditos c
+                        inner join core_tabla_amortizacion at on c.id_creditos=at.id_creditos
+                        inner join core_tabla_amortizacion_pagos tap on at.id_tabla_amortizacion=tap.id_tabla_amortizacion
+                        inner join core_tabla_amortizacion_parametrizacion tapa on tap.id_tabla_amortizacion_parametrizacion=tapa.id_tabla_amortizacion_parametrizacion";
+    	$where_pag="c.id_creditos='$id_creditos' and c.id_estatus=1 and at.id_estatus=1 and tapa.tipo_tabla_amortizacion_parametrizacion=0";
+    	 
+    	$resultPagos=$creditos->getCondicionesSinOrden($columnas_pag, $tablas_pag, $where_pag, "");
+    	 
+    	 
+    	if(!empty($resultPagos)){
+    		 
+    		$saldo_credito=$resultPagos[0]->saldo;
+    		 
+    		 
+    	}
+    	 
+    	 
+    	 
+    	return $saldo_credito;
+    	 
+    	 
+    	 
+    }
+     
+    public function devuelve_interes_ordinario($tasa, $diferencia_dias){
+    
+    	//session_start();
+    	$creditos=new CoreCreditoModel();
+    	$interes=0;
+    	
+    	$interes_mensual = $tasa / 12;
+    	$interes_diario=$interes_mensual /30;
+    	$interes_concesion=$interes_diario*$diferencia_dias*$capital;
+    	$interes_concesion=round($interes_concesion,2);
+    	$interes=$interes_concesion;
+    
+    	return $interes;
+    
+    }
+    
+    
+    public function devuelve_seguro_desgravamen($saldo_capital){
+    	
+    	$seguro=0;
+    	$seguro = ((0.16/1000)*$saldo_capital)*1.04;
+    	return $seguro;
+    
+    }
+    
+    public function devuelve_seguro_icendio($avaluo_bien, $lastday){
+    	 
+    	$seguro=0;
+    	$seguro = ((($avaluo_bien * 0.0015)/365) * $lastday) * 1.04;
+    	return $seguro;
+    
+    }
+    
+    
+    public function ultimo_dia_mes_actual() {
+    	$month = date('m');
+    	$year = date('Y');
+    	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+    
+    	return date('d-m-Y', mktime(0,0,0, $month, $day, $year));
+    }
+    public function ultimo_dia_mes_fecha($fecha) {
+    	$month = $fecha('m');
+    	$year = $fecha('Y');
+    	$day = $fecha("d", mktime(0,0,0, $month+1, 0, $year));
+    
+    	return date('d-m-Y', mktime(0,0,0, $month, $day, $year));
+    }
+    /** Actual month first day **/
+    public function primer_dia_mes_actual() {
+    	$month = date('m');
+    	$year = date('Y');
+    	return date('d-m-Y', mktime(0,0,0, $month, 1, $year));
+    }
     
     
 }

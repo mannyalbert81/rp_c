@@ -1,7 +1,270 @@
 $(document).ready(function(){
 	
-	
+	cargaCuentas();
 })
+
+
+/// desde aqui maycol
+
+
+
+function cargaCuentas(){
+	
+	let $ddlCuentas = $("#codigo_plan_cuentas");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=LibroMayorAuxiliar&action=cargaCuentas",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$ddlCuentas.empty();
+		$ddlCuentas.append("<option value='0' >--Seleccione--</option>");
+		$.each(datos.data, function(index, value) {
+			$ddlCuentas.append("<option value= " +value.codigo_plan_cuentas +" >" + value.nombre_plan_cuentas  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlCuentas.empty();
+		$ddlCuentas.append("<option value='0' >--Seleccione--</option>");
+		
+	})
+	
+	
+	
+}
+
+
+function cargaSubCuentas(codigo_plan_cuentas){
+	
+	let $dllSubCuentas = $("#codigo_sub_plan_cuentas");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=LibroMayorAuxiliar&action=cargaSubCuentas",
+		type:"POST",
+		dataType:"json",
+		data:{codigo_plan_cuentas:codigo_plan_cuentas}
+	}).done(function(datos){		
+		
+		$dllSubCuentas.empty();
+		$dllSubCuentas.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$dllSubCuentas.append("<option value= " +value.codigo_plan_cuentas +" >" + value.nombre_plan_cuentas  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$dllSubCuentas.empty();
+		$dllSubCuentas.append("<option value='0' >--Seleccione--</option>");
+		
+	})
+	
+}
+
+
+
+
+function cargaCuentasHijos(codigo_sub_plan_cuentas){
+	
+	let $dllFiltro = $("#codigo_plan_cuentas_hijos");
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=LibroMayorAuxiliar&action=cargaCuentasHijos",
+		type:"POST",
+		dataType:"json",
+		data:{codigo_sub_plan_cuentas:codigo_sub_plan_cuentas}
+	}).done(function(datos){		
+		
+		$dllFiltro.empty();
+		$dllFiltro.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$dllFiltro.append("<option value= " +value.codigo_plan_cuentas +" >" + value.nombre_plan_cuentas  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$dllFiltro.empty();
+		$dllFiltro.append("<option value='0' >--Seleccione--</option>");
+		
+	})
+	
+}
+
+
+// cuando hago clic  
+$("#codigo_plan_cuentas").click(function() {
+	
+  var codigo_plan_cuentas = $(this).val();
+  
+  let $dllSubCuentas = $("#codigo_sub_plan_cuentas");
+  $dllSubCuentas.empty();
+  
+  let $dllFiltro = $("#codigo_plan_cuentas_hijos");
+  $dllFiltro.empty();
+  $dllFiltro.append("<option value='0' >--Seleccione--</option>");
+	
+  cargaSubCuentas(codigo_plan_cuentas);
+
+});
+
+
+// cuando hago el cambio
+$("#codigo_plan_cuentas").change(function() {
+	
+	 var codigo_plan_cuentas = $(this).val();
+	  
+	  let $dllSubCuentas = $("#codigo_sub_plan_cuentas");
+	  $dllSubCuentas.empty();
+	  
+	  let $dllFiltro = $("#codigo_plan_cuentas_hijos");
+	  $dllFiltro.empty();
+	  $dllFiltro.append("<option value='0' >--Seleccione--</option>");
+		
+	  cargaSubCuentas(codigo_plan_cuentas);
+
+});
+
+
+//cuando hago clic  
+$("#codigo_sub_plan_cuentas").click(function() {
+	
+  var codigo_sub_plan_cuentas = $(this).val();
+  let $dllFiltro = $("#codigo_plan_cuentas_hijos");
+  $dllFiltro.empty();
+  cargaCuentasHijos(codigo_sub_plan_cuentas);
+});
+
+
+// cuando hago el cambio
+$("#codigo_sub_plan_cuentas").change(function() {
+	
+  var codigo_sub_plan_cuentas = $(this).val();
+  let $dllFiltro = $("#codigo_plan_cuentas_hijos");
+  $dllFiltro.empty();
+  cargaCuentasHijos(codigo_sub_plan_cuentas);
+
+});
+
+
+
+
+// metodo para buscar
+
+$("#btnMayores").on("click",function(event){
+	
+	let $codigo_plan_cuentas = $("#codigo_plan_cuentas");
+	let $codigo_sub_plan_cuentas = $("#codigo_sub_plan_cuentas");
+	let $codigo_plan_cuentas_hijos = $("#codigo_plan_cuentas_hijos");
+	
+	if($codigo_plan_cuentas.val() == 0){
+		
+		$codigo_plan_cuentas.notify("Seleccione la cuenta",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	
+	}
+	
+    if($codigo_sub_plan_cuentas.val() == 0){
+		
+    	$codigo_sub_plan_cuentas.notify("Seleccione la cuenta",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	
+	}
+	
+    
+   if($codigo_plan_cuentas_hijos.val() == 0){
+		
+	   $codigo_plan_cuentas_hijos.notify("Seleccione la cuenta",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	
+	}
+    
+    
+		load_tabla(1);
+	 
+})
+
+
+
+
+
+/// respuesta de busqueda
+
+ function load_tabla(pagina){
+
+	 var search=$("#search").val();
+	 var codigo_plan_cuentas=$("#codigo_plan_cuentas").val();
+	 var codigo_sub_plan_cuentas=$("#codigo_sub_plan_cuentas").val();
+	 var codigo_plan_cuentas_hijos=$("#codigo_plan_cuentas_hijos").val();
+	 var desde_diario=$("#desde_diario").val();
+	 var hasta_diario=$("#hasta_diario").val();
+	 
+	 
+	 
+     var con_datos={
+				  action:'ajax',
+				  page:pagina,
+				  search:search,
+				  codigo_plan_cuentas:codigo_plan_cuentas,
+				  codigo_sub_plan_cuentas:codigo_sub_plan_cuentas,
+				  codigo_plan_cuentas_hijos:codigo_plan_cuentas_hijos,
+				  desde_diario:desde_diario,
+				  hasta_diario:hasta_diario
+				  };
+		  
+   $("#load_detalle").fadeIn('slow');
+   
+   $.ajax({
+             beforeSend: function(objeto){
+               $("#load_detalle").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+             },
+             url: 'index.php?controller=LibroMayorAuxiliar&action=mayorContableAuxiliar',
+             type: 'POST',
+             data: con_datos,
+             success: function(x){
+               $("#registrados_detalle").html(x);
+               $("#load_detalle").html("");
+               
+             },
+            error: function(jqXHR,estado,error){
+              $("#registrados_detalle").html("Ocurrio un error al cargar la información de Mayores Auxiliares..."+estado+"    "+error);
+            }
+          });
+
+
+	   }
+
+
+	
+
+
+
+
+
+
+/// termina maycol
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 $( "#codigo_cuenta" ).autocomplete({
 
@@ -93,55 +356,11 @@ $( "#nombre_cuenta" ).autocomplete({
 	$('#id_cuenta').val('')
 })
 
-$("#btnMayores").on("click",function(event){
-	
 
-	let $codigo_cuenta = $("#codigo_cuenta");
-	//$divResultados.html();
 
-	
-	
-	if($codigo_cuenta.val() == ''){
-		$codigo_cuenta.notify("Seleccione la cuenta",{ position:"buttom left", autoHideDelay: 2000});
-		return false;
-	}	
-	 
 
-	var pagina = 1;
-	 var search=$("#buscador").val();
-  
-	 var con_datos={
-				  action:'ajax',
-				  page:pagina,
-				  search:search,
-				  codigo_cuenta:$codigo_cuenta.val()
-				  };
-     
-     console.log("Mesaje cuenta: " + $codigo_cuenta.val() );
-     
-    // return false;
-     
-	 $.ajax({
-         beforeSend: function(objeto){
-           $("#load_detalle").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-         },
-         url:"index.php?controller=LibroMayorAuxiliar&action=mayorContableAuxiliar",
-         type: 'POST',
-         data: con_datos,
-         success: function(x){
-           $("#registrados_detalle").html(x);
-           $("#load_detalle").html("");
-           //$("#tabla_retencion").tablesorter(); 
-           
-         },
-        error: function(jqXHR,estado,error){
-          $("#registrados_detalle").html("Ocurrio un error al cargar la informacion de Detalle Retenciones..."+estado+"    "+error);
-        }
-      });
-	
 
- 
-})
+
 
 $('#frm_libro_mayor').on('submit',function(event){
 	

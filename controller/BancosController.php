@@ -138,8 +138,6 @@ class BancosController extends ControladorBase{
 					"resultado"=>"No tiene Permisos de Insertar Grupos"
 		
 			));
-		
-		
 		}
 		
 	}

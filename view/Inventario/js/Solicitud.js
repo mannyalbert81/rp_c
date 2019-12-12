@@ -5,6 +5,7 @@ $(document).ready(function(){
 	//buscaProductosSolicitud(1);
 	notificacionProductos();
 	notificacionSolicitudes();
+	load_estado_productos(1);
 		
 })
 
@@ -285,3 +286,36 @@ function notificacionSolicitudes(){
 	})
 	
 }
+
+
+function load_estado_productos(pagina){
+
+	   var search=$("#search_estado_productos").val();
+    var con_datos={
+				  action:'ajax',
+				  page:pagina
+				  };
+		  
+  $("#load_estado_productos").fadeIn('slow');
+  
+  $.ajax({
+            beforeSend: function(objeto){
+              $("#load_estado_productos").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+            },
+            url: 'index.php?controller=MovimientosInv&action=consulta_estado_productos&search='+search,
+            type: 'POST',
+            data: con_datos,
+            success: function(x){
+              $("#estado_productos_registrados").html(x);
+              $("#load_estado_productos").html("");
+              $("#tabla_estado_productos").tablesorter(); 
+              
+            },
+           error: function(jqXHR,estado,error){
+             $("#estado_productos_registrados").html("Ocurrio un error al cargar la informacion de Productos..."+estado+"    "+error);
+           }
+         });
+
+
+	   }
+

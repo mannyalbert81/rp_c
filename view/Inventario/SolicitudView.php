@@ -78,11 +78,16 @@
                          <div class="col-lg-6 col-md-6 col-xs-12">
                              <div class="pull-right">          					     
               					<div class="form-group-sm">
+              					     
+              					     
               					           					
               						 <button type="submit" id="Guardar" name="Guardar" class="btn btn-default">
               						 <i aria-hidden="true" class="fa fa-floppy-o"></i> Guardar Solicitud</button>                  				
                     				 <button type="button" id="btnAgregarProductos" name="btnAgregarProductos" class="btn btn-default" data-toggle="modal" data-target="#mod_listado_productos">
                     				 <i aria-hidden="true" class="fa fa-plus"></i> Agregar Producto a Solicitud</button>
+                    				 <button type="button" id="btnestado" name="btnestado" class="btn btn-default" data-toggle="modal" data-target="#mod_estado">
+                    				 <i aria-hidden="true" class="fa fa-plus"></i>Estado Solicitud</button>
+                    				 
                         		</div>            			
                       		</div>
                         </div>          				      				
@@ -153,11 +158,51 @@
       <!-- /.modal-dialog -->
 </div>
     
+      <!-- Estado de la Solicitud -->
+    
+ <div class="modal fade" id="mod_estado" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" style="width:70%">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Estado de Las Solicitudes</h4>
+          </div>
+          <div class="modal-body">
+          <!-- empieza el formulario modal productos -->
+          	<form class="" method="post" id="frm_estado" name="frm_estado">
+          	
+          		<div class="box-body">
+
+           <br>
+              <div class="tab-pane active" id="solicitudes">
+                
+					<div class="pull-right" style="margin-right:15px;">
+						<input type="text" value="" class="form-control" id="search_estado_productos" name="search_estado_productos" onkeyup="load_estado_productos(1)" placeholder="search.."/>
+					</div>
+					<div id="load_estado_productos" ></div>	
+					<div id="estado_productos_registrados"></div>	
+                
+              </div>
+              </div>		  
+          	</form>
+          	<!-- termina el formulario modal de impuestos -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+    
+    
     
     
    <?php include("view/modulos/links_js.php"); ?>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-   <script type="text/javascript" src="view/Inventario/js/Solicitud.js?0.08"></script>
+   <script type="text/javascript" src="view/Inventario/js/Solicitud.js?0.11"></script>
     	
   </body>
 </html>

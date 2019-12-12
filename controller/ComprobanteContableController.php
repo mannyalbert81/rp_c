@@ -937,7 +937,9 @@ class ComprobanteContableController extends ControladorBase{
 	    if (!empty($resultPer))
 	    {
 	        
+	        
 	        if(isset($_POST['action']) && $_POST['action']=='ajax'){
+	            
 	            
 	            //datos de la vista
 	            $_id_tipo_comprobantes         = $_POST['id_tipo_comprobantes'];	            
@@ -952,6 +954,13 @@ class ComprobanteContableController extends ControladorBase{
 	            $_num_cheque_ccomprobantes     = "";
 	            $_observacion_ccomprobantes    = "";
 	            $_id_usuarios                  = $_SESSION['id_usuarios'];
+	            
+	            //validacion si esta en el periodo de fecha
+	            if( !$this->verificarPeriodo($_fecha_ccomprobantes) ){
+	                
+	                echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"Periodo No se encuentra Habilitado"));
+	                exit();
+	            }	                        
 	            
 	            // buscar modulo
 	            $_id_modulos   = 'null';
@@ -990,12 +999,12 @@ class ComprobanteContableController extends ControladorBase{
 	            $errorpg = pg_last_error();
 	            if(!empty($errorpg)){
 	                
-	                echo json_encode(array('success'=>0,'mensaje'=>"Error al Registrar Comprobante"));
+	                echo json_encode(array('respuesta'=>"ERROR",'mensaje'=>"Error al Registrar Comprobante"));
 	                exit();
 	            }
 	            
 	            $respuesta = $resultado[0];
-	            echo json_encode(array('success'=>0,'mensaje'=>$respuesta));	            
+	            echo json_encode(array('success'=>1,'mensaje'=>$respuesta));	            
 	            
 	            //print $parametros;
 	            //die();
@@ -1205,6 +1214,73 @@ class ComprobanteContableController extends ControladorBase{
 	        $respuesta['numero_consecutivo'] = "";
 	        echo json_encode($respuesta);
 	    }
+	    
+	}
+	
+	public function verificarPeriodo($fecha = null){
+	    /** retorna boolean si esta aperturado o no el periodo **/
+	    $periodo = new PeriodoModel();
+	    
+	    if( !is_null($fecha) ){
+	        
+	        $_fecha_validar    = new DateTime($fecha);
+	        
+	        $_anio_validar = $_fecha_validar->format('Y');
+	        $_mes_validar  = $_fecha_validar->format('m');
+	        
+	        $columnas1 = " 1 ";
+	        $tablas1   = " con_periodo aa
+                INNER JOIN estado bb ON bb.id_estado = aa.id_estado ";
+	        $where1    = " nombre_estado = 'ABIERTO' AND anio_periodo = '$_anio_validar' AND mes_periodo = '$_mes_validar'";
+	        $id1       = " aa.id_periodo";
+	        $rsConsulta1   = $periodo->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	        
+	        if( !empty($rsConsulta1) ){
+	            //echo "true";
+	            return true;
+	        }else{
+	            //echo "false";
+	            return false;
+	        }
+	        
+	    }else{
+	        
+	        return false;	        
+	    }	    
+	    
+	}
+	
+	public function jsverificarPeriodo(){
+	    
+	    $periodo = new PeriodoModel();
+	    
+	    if( isset( $_POST['con_fecha'] )){
+	     
+    	     $_fecha   = $_POST['con_fecha'];
+    	     $_fecha_validar    = new DateTime($_fecha);
+    	     
+    	     $_anio_validar = $_fecha_validar->format('Y');
+    	     $_mes_validar  = $_fecha_validar->format('m');
+    	     
+    	     $columnas1 = " 1 ";
+    	     $tablas1   = " con_periodo aa
+                INNER JOIN estado bb ON bb.id_estado = aa.id_estado ";
+    	     $where1    = " nombre_estado = 'ABIERTO' AND anio_periodo = '$_anio_validar' AND mes_periodo = '$_mes_validar'";
+    	     $id1       = " aa.id_periodo";
+    	     $rsConsulta1   = $periodo->getCondiciones($columnas1, $tablas1, $where1, $id1);
+    	     
+    	     if( !empty($rsConsulta1) ){
+    	         //echo "true";
+    	         echo json_encode(array("respuesta"=>"OK","mensaje"=>""));
+    	     }else{
+    	         //echo "false";
+    	         echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"Periodo No Aperturado","fecha"=>date('d-m-Y')));
+    	     }
+	     
+	     }else{
+	       
+	         echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"Datos No validos","fecha"=>date('d-m-Y')));
+	     }
 	    
 	}
 	

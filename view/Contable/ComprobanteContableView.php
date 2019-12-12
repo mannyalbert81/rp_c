@@ -85,7 +85,10 @@
              	
              	<div class="col-xs-12 col-lg-3 col-md-3 ">
     			   <label for="con_fecha_comprobantes" class="control-label">Fecha:</label>
-    			   <input type="date" class="form-control" id="con_fecha_comprobantes" name="con_fecha_comprobantes" min="<?php echo date('Y-m-d', mktime(0,0,0, date('m'), date("d", mktime(0,0,0, date('m'), 1, date('Y'))), date('Y'))); ?>" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
+    			   <input type="date" class="form-control" id="con_fecha_comprobantes" name="con_fecha_comprobantes" 
+    			   min="<?php echo date('Y-m-d', mktime(0,0,0, date('m'), date("d", mktime(0,0,0, date('m'), 1, date('Y'))), date('Y'))); ?>" 
+    			   max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>"
+    			   onfocusout="verificaPeriodo()" >
     			</div>
                  
                  <div id="div_datos" style="display: ;">
@@ -352,7 +355,7 @@
     <script src="view/bootstrap/plugins/iCheck/icheck.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-    <script src="view/Contable/FuncionesJS/con_ccomprobantes.js?0.01"></script> 
+    <script src="view/Contable/FuncionesJS/con_ccomprobantes.js?0.05"></script> 
     <!-- <script src="view/Contable/FuncionesJS/ComprobanteContable.js?5.0"></script>     -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     

@@ -626,7 +626,7 @@ class PeriodoController extends ControladorBase{
 	    
 	}
 	
-	public function ObtenerDetallesPeriodo(){
+	public function RegistrarDetallesPeriodo(){
 	    
 	    $periodo = new PeriodoModel();
 	    
@@ -635,6 +635,8 @@ class PeriodoController extends ControladorBase{
 	    }
 	    
 	    $_anio_periodo = (isset( $_POST['anio_periodo'])) ? $_POST['anio_periodo'] : 0 ;
+	    
+	    $vMeses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
 	    
 	    $columnas1 = " aa.id_periodo, aa.anio_periodo, aa.mes_periodo, aa.id_tipo_cierre, cc.nombre_tipo_cierre, aa.id_estado, bb.nombre_estado";
 	    $tablas1   = " con_periodo aa
@@ -648,8 +650,7 @@ class PeriodoController extends ControladorBase{
 	        
 	        $periodo->beginTran();
 	        
-	        // aqui comienza validacion para insertar 	       
-	        $arrayMeses = array(1,2,3,4,5,6,7,8,9,10,11,12);
+	        // aqui comienza validacion para insertar 
 	        
 	        //buscar datos
 	        $columnas2 = " id_entidades, nombre_entidades";
@@ -695,7 +696,7 @@ class PeriodoController extends ControladorBase{
 	            $periodo->endTran();
 	        }
 	        
-	        $periodo->beginTran('COMMIT');
+	        $periodo->endTran('COMMIT');
 	        
 	        $columnas1 = " aa.id_periodo, aa.anio_periodo, aa.mes_periodo, aa.id_tipo_cierre, cc.nombre_tipo_cierre, aa.id_estado, bb.nombre_estado";
 	        $tablas1   = " con_periodo aa
@@ -705,16 +706,186 @@ class PeriodoController extends ControladorBase{
 	        $id1       = " aa.mes_periodo";
 	        $rsConsulta1 = $periodo->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	        
-	        echo json_encode( array( "data" => $rsConsulta1 ) );
-	        
-	        
-	    }else{
-	        
-	        echo json_encode( array( "data" => $rsConsulta1 ) );
-	        
+	        	        
 	    }
 	    
+	    //trabajar para enviar a la vista el resultado en filas
+	    $htmlFilas = "";
+	    $botonAction   = "";
+	    $classColorIcon= ""; 
 	    
+	    $i = 0;
+	    foreach ($rsConsulta1 as $res) {
+	        //para la vista se necesita 5 columnas
+	        $i++;
+	        $nombreMes = $vMeses[ ($res->mes_periodo) - 1 ];
+	        $classIconEstado   = ( $res->nombre_estado == "CERRADO" ) ? " fa-lock" : "fa-unlock-alt";
+	        $spanEstado    = "<span><i class=\"fa $classIconEstado \"></i></span>";
+	        //$botonAction = "<button class=\" btn btn-warning \" data-periodoid=\""+value.id_periodo+"\" onclick=\"fnAperturaMes(this)\" ><i class=\"fa fa-exchange\" aria-hidden=\"true\"></i></button>";
+	        
+	        if( $res->nombre_estado == "CERRADO" ){
+	            $botonAction = "<button class=\"btn btn-sm btn-warning\" data-periodo_id=\"$res->id_periodo\"  onclick=\"fnAbrirPeriodo(this)\">"
+	   	            ."<i class=\"fa fa-exchange\"></i>"
+                    ."</button>";
+                $classColorIcon = "text-danger";
+	        }else{
+	            $botonAction = "<button class=\"btn btn-sm btn-warning\" data-periodo_id=\"$res->id_periodo\"  onclick=\"fnCerrarPeriodo(this)\">"
+	            ."<i class=\"fa fa-exchange\"></i>"
+	                ."</button>";
+                $classColorIcon = "text-success";
+	        }
+	        $htmlFilas .= "<tr style=\"line-height: 5px;\" class=\"\">";
+	        $htmlFilas .= "<td>".$i."</td>";
+	        $htmlFilas .= "<td>".$res->anio_periodo."</td>";
+	        $htmlFilas .= "<td>".$nombreMes."</td>";
+	        $htmlFilas .= "<td class=\"text-center $classColorIcon \">".$spanEstado."</td>";
+	        $htmlFilas .= "<td class=\"text-center \">".$botonAction."</td>";
+	        $htmlFilas .= "</tr>";
+	    }
+	    
+	    echo json_encode(array("dataFilas"=>$htmlFilas));	   	    
+	    
+	}
+	
+	public function OpenPeriodo(){
+	    
+	    $_id_periodo = $_POST['identificador'];
+	    
+	    // obtener datos de servidor para periodo
+	    $_anio_servidor = date('Y');
+	    $_mes_servidor = date('m');
+	    
+	    $periodo = new PeriodoModel();
+	    
+	    //datos de periodo solicitado
+	    $_anio_periodo = "";
+	    $_mes_periodo  = "";
+	    
+	    $columnas1 = " aa.id_periodo, aa.anio_periodo, aa.mes_periodo, aa.id_tipo_cierre, cc.nombre_tipo_cierre, aa.id_estado, bb.nombre_estado";
+	    $tablas1   = " con_periodo aa
+    	    INNER JOIN estado bb ON bb.id_estado = aa.id_estado
+    	    INNER JOIN con_tipo_cierre cc ON cc.id_tipo_cierre = aa.id_tipo_cierre";
+	    $where1    = " aa.id_periodo = '$_id_periodo' ";
+	    $id1       = " aa.mes_periodo";
+	    $rsConsulta1 = $periodo->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    $_anio_periodo = $rsConsulta1[0]->anio_periodo;
+	    $_mes_periodo  = $rsConsulta1[0]->mes_periodo;
+	    
+	    if( $_anio_servidor == $_anio_periodo ){
+	        
+	        if( (int)$_mes_periodo < (int)$_mes_servidor ){
+	            echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"Periodo no Disponible para Abrir"));
+	            exit();
+	        }
+	    }
+	    
+	    if( $_anio_servidor < $_anio_periodo ){
+	        
+	        echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"Periodo no Disponible"));
+	        exit();
+	    }
+	    
+	    $columnas2 = " aa.id_periodo, aa.anio_periodo, aa.mes_periodo, aa.id_tipo_cierre, cc.nombre_tipo_cierre, aa.id_estado, bb.nombre_estado";
+	    $tablas2   = " con_periodo aa
+    	    INNER JOIN estado bb ON bb.id_estado = aa.id_estado
+    	    INNER JOIN con_tipo_cierre cc ON cc.id_tipo_cierre = aa.id_tipo_cierre";
+	    $where2    = " aa.anio_periodo = '$_anio_periodo' AND bb.nombre_estado ='ABIERTO'";
+	    $id2       = " aa.mes_periodo";
+	    $rsConsulta2 = $periodo->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	    	    
+	    if( !empty($rsConsulta2) ){
+	        
+	        echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"No puede tener dos periodos abiertos"));
+	        exit();
+	    }
+	    
+	    //buscar estado de periodo 
+	    $columnas3 = " id_estado, nombre_estado";
+	    $tablas3   = " public.estado";
+	    $where3    = " tabla_estado = 'con_periodo' AND nombre_estado = 'ABIERTO'";
+	    $id3       = " id_estado";
+	    $rsConsulta3 = $periodo->getCondiciones($columnas3, $tablas3, $where3, $id3);
+	    
+	    if( empty($rsConsulta3) ){
+	        echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"Revisar Tabla Estado del Periodo"));
+	        exit();
+	    }
+	    
+	    $_id_estado = $rsConsulta3[0]->id_estado;
+	    
+	    //actualizar periodo
+	    $col   = " id_estado = $_id_estado " ;
+	    $tab   = " con_periodo ";
+	    $whe   = " id_periodo = $_id_periodo ";
+	    
+	    $periodo->ActualizarBy($col, $tab, $whe);
+	    
+	    $error = pg_last_error();
+	    if( !empty($error) ){
+	        
+	        echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"Problemas con los datos solicitados"));
+	        exit();
+	        
+	    }else{
+	        echo json_encode(array("respuesta"=>"OK","mensaje"=>"PERIODO CONTABLE ABIERTO"));
+	        exit();
+	    }
+	    
+	}
+	
+	public function ClosePeriodo(){
+	    
+	    $periodo = new PeriodoModel();
+	    $_id_periodo = $_POST['identificador'];	    
+	    
+	    $columnas1 = " aa.id_periodo, aa.anio_periodo, aa.mes_periodo, aa.id_tipo_cierre, cc.nombre_tipo_cierre, aa.id_estado, bb.nombre_estado";
+	    $tablas1   = " con_periodo aa
+    	    INNER JOIN estado bb ON bb.id_estado = aa.id_estado
+    	    INNER JOIN con_tipo_cierre cc ON cc.id_tipo_cierre = aa.id_tipo_cierre";
+	    $where1    = " aa.id_periodo = '$_id_periodo' ";
+	    $id1       = " aa.mes_periodo";
+	    $rsConsulta1 = $periodo->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    $estado_periodo    = $rsConsulta1[0]->nombre_estado;
+	    
+	    if( $estado_periodo != "ABIERTO" ){
+	        
+	        echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"Periodo no se encuentra Abierto"));
+	        exit();
+	    }
+	    
+	    //buscar estado de periodo
+	    $columnas2 = " id_estado, nombre_estado";
+	    $tablas2   = " public.estado";
+	    $where2    = " tabla_estado = 'con_periodo' AND nombre_estado = 'CERRADO'";
+	    $id2       = " id_estado";
+	    $rsConsulta2 = $periodo->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	    
+	    if( empty($rsConsulta2) ){
+	        echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"Revisar Tabla Estado del Periodo"));
+	        exit();
+	    }
+	    
+	    $_id_estado = $rsConsulta2[0]->id_estado;
+	    
+	    //actualizar periodo
+	    $col   = " id_estado = $_id_estado " ;
+	    $tab   = " con_periodo ";
+	    $whe   = " id_periodo = $_id_periodo ";
+	    
+	    $periodo->ActualizarBy($col, $tab, $whe);
+	    
+	    $error = pg_last_error();
+	    if( !empty($error) ){
+	        
+	        echo json_encode(array("respuesta"=>"ERROR","mensaje"=>"Problemas con los datos solicitados"));
+	        exit();
+	        
+	    }else{
+	        echo json_encode(array("respuesta"=>"OK","mensaje"=>"PERIODO CONTABLE CERRADO"));
+	        exit();
+	    }
 	    
 	}
 	

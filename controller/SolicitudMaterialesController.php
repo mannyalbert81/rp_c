@@ -1,6 +1,6 @@
 <?php
 
-class MovimientosInvController extends ControladorBase{
+class SolicitudMaterialesController extends ControladorBase{
     
 	public function __construct() {
 		parent::__construct();
@@ -1751,7 +1751,7 @@ class MovimientosInvController extends ControladorBase{
 	    if (isset(  $_SESSION['nombre_usuarios']) )
 	    {
 	        
-	        $nombre_controladores = "SolicitudCabeza";
+	        $nombre_controladores = "SolicitudMateriales";
 	        $id_rol= $_SESSION['id_rol'];
 	        $resultPer = $solicitud_cabeza->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	        
@@ -3249,7 +3249,7 @@ class MovimientosInvController extends ControladorBase{
 	    if(!empty($search)){
 	        
 	        
-	        $where1=" AND (estado_movimientos_inv_cabeza LIKE '".$search."%' )";
+	        $where1=" AND (estado_movimientos_inv_cabezaos LIKE '".$search."%' )";
 	        
 	        $where_to=$where.$where1;
 	    }else{

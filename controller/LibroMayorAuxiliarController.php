@@ -571,22 +571,10 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	    
 	    
 	    return $saldo_credito;
-	    
-	    
-	    
+	 |,    
 	}
-	
-	
-	 
-	
-	
-	
-	
 	// desde aqui maycol
-	
-	
-	
-	
+
 	public function cargaCuentas(){
 	    
         $plan_cuentas= new PlanCuentasModel();
@@ -690,14 +678,6 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	    $html="";
 	    $where_to="";
 	    
-	    $colores= array();
-	    $colores[0]="#D6EAF8";
-	    $colores[1]="#D1F2EB";
-	    $colores[2]="#FCF3CF";
-	    $colores[3]="#F8C471";
-	    $colores[4]="#EDBB99";
-	    $colores[5]="#FDFEFE";
-	    
 	    $result = $plan_cuentas->getBy("codigo_plan_cuentas='$_codigo_plan_cuentas_hijos'");
 	    
 	    if(!empty($result)){
@@ -788,7 +768,7 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	                    
 	                    
 	                    $i=0;
-	                    $total=0;
+	                      $total=0;
 	                    foreach ($resultAportes as $res)
 	                    {
 	                        $i++;

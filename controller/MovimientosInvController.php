@@ -3249,7 +3249,7 @@ class MovimientosInvController extends ControladorBase{
 	    if(!empty($search)){
 	        
 	        
-	        $where1=" AND (estado_movimientos_inv_cabezaos LIKE '".$search."%' )";
+	        $where1=" AND (estado_movimientos_inv_cabeza LIKE '".$search."%' )";
 	        
 	        $where_to=$where.$where1;
 	    }else{

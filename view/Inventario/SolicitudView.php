@@ -86,7 +86,7 @@
                     				 <button type="button" id="btnAgregarProductos" name="btnAgregarProductos" class="btn btn-default" data-toggle="modal" data-target="#mod_listado_productos">
                     				 <i aria-hidden="true" class="fa fa-plus"></i> Agregar Producto a Solicitud</button>
                     				 <button type="button" id="btnestado" name="btnestado" class="btn btn-default" data-toggle="modal" data-target="#mod_estado">
-                    				 <i aria-hidden="true" class="fa fa-plus"></i>Estado Solicitud</button>
+                    				 <i aria-hidden="true" class="fa fa-bars"></i>Estado Solicitud</button>
                     				 
                         		</div>            			
                       		</div>

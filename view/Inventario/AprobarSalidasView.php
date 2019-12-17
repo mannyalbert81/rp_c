@@ -151,7 +151,7 @@
     
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/Inventario/js/AprobarSalidas.js?3.4" ></script>
-    <script src="view/Inventario/js/movimientos_salidas_detalle.js?4.4" ></script>   
+    <script src="view/Inventario/js/movimientos_salidas_detalle.js?4.6" ></script>   
  
   </body>
 </html>

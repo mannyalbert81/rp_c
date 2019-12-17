@@ -189,6 +189,7 @@ $("button[name='btnIngresarSolicitud']").on("click",function(){
 		console.log(isNaN(solicitudProducto))
 		console.log('disponible  -> '+disponibleProducto+' solicitado-> '+solicitudProducto)
 		console.log('estado --> '+estadoProducto )
+		console.log('tiposolicitud--->'+$TipoSolicitud)
 		
 		if (solicitudProducto.length == 0 || solicitudProducto == ""){
 			error = false; 
@@ -196,14 +197,14 @@ $("button[name='btnIngresarSolicitud']").on("click",function(){
 			return false;
 		}
 
-		if( isNaN(disponibleProducto) || isNaN(solicitudProducto) ){
+		if( (isNaN(disponibleProducto) || isNaN(solicitudProducto) ) && $TipoSolicitud != "ANULAR"  ){
 			error = false; 
 			mensaje = "-> Revise Que solicita una cantidad valida"
 			return false;
 	        
 		}
 		
-		if( parseInt(solicitudProducto) >   parseInt(disponibleProducto) ){	
+		if( ( parseInt(solicitudProducto) >   parseInt(disponibleProducto) ) && $TipoSolicitud != "ANULAR" ){	
 			if(estadoProducto != 'RECHAZADA'){
 				error = false; 
 				mensaje = "-> Revise Disponibilidad Producto"

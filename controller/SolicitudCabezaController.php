@@ -296,7 +296,7 @@ class SolicitudCabezaController extends ControladorBase{
 	        $tab_temp = "public.temp_solicitud INNER JOIN public.productos ON productos.id_productos = temp_solicitud.id_producto_temp_solicitud
                     INNER JOIN  public.grupos ON grupos.id_grupos = productos.id_grupos";
 	        
-	        $where_temp = "1 = 1";
+	        $where_temp = "1 = 1 AND temp_solicitud.id_usuario_temp_solicitud = $id_usuario";
 	        
 	        
 	        $resultSet=$temp_solicitud->getCantidad("*", $tab_temp, $where_temp);

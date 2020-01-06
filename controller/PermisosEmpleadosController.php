@@ -30,6 +30,9 @@ class PermisosEmpleadosController extends ControladorBase{
         session_start();
         $empleados = new EmpleadosModel();
         $cedula_usuario = $_SESSION["cedula_usuarios"];
+        
+        
+        
         $columna = "empleados.numero_cedula_empleados,
 					  empleados.nombres_empleados,
                       cargos_empleados.nombre_cargo,
@@ -48,6 +51,9 @@ class PermisosEmpleadosController extends ControladorBase{
         $respuesta = new stdClass();
         
         if(!empty($resultSet)){
+           
+           // print_r($resultSet);
+            
             
             $respuesta->numero_cedula_empleados = $resultSet[0]->numero_cedula_empleados;
             $nombres = (string)$resultSet[0]->nombres_empleados;

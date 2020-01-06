@@ -1,6 +1,6 @@
 <?php
 
-class MovimientosInvController extends ControladorBase{
+class SolicitudMaterialesController extends ControladorBase{
     
 	public function __construct() {
 		parent::__construct();
@@ -1751,7 +1751,7 @@ class MovimientosInvController extends ControladorBase{
 	    if (isset(  $_SESSION['nombre_usuarios']) )
 	    {
 	        
-	        $nombre_controladores = "SolicitudCabeza";
+	        $nombre_controladores = "SolicitudMateriales";
 	        $id_rol= $_SESSION['id_rol'];
 	        $resultPer = $solicitud_cabeza->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	        
@@ -3249,7 +3249,7 @@ class MovimientosInvController extends ControladorBase{
 	    if(!empty($search)){
 	        
 	        
-	        $where1=" AND (estado_movimientos_inv_cabeza LIKE '".$search."%' OR movimientos_inv_cabeza.razon_movimientos_inv_cabeza LIKE '".$search."%')";
+	        $where1=" AND (estado_movimientos_inv_cabezaos LIKE '".$search."%' )";
 	        
 	        $where_to=$where.$where1;
 	    }else{
@@ -3270,7 +3270,7 @@ class MovimientosInvController extends ControladorBase{
 	    
 	    $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	    
-	    $resultSet=$solicitud->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
+	    $resultSet=$solicitud->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
 	    $count_query   = $cantidadResult;
 	    $total_pages = ceil($cantidadResult/$per_page);
 	    
@@ -3281,7 +3281,6 @@ class MovimientosInvController extends ControladorBase{
 	    if($cantidadResult>0)
 	    {
 	        
-	        
 	        $html.='<div class="pull-left" style="margin-left:15px;">';
 	        $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
 	        $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
@@ -3291,11 +3290,13 @@ class MovimientosInvController extends ControladorBase{
 	        $html.= "<table id='tabla_estado_productos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	        $html.= "<thead>";
 	        $html.= "<tr>";
+	        $html.='<th colspan="2" style=" text-align: center; font-size: 11px;">Usuario</th>';
+	        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">N° Solicitud</th>';
 	        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Cantidad</th>';
 	        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Producto</th>';
 	        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Fecha Solicitud</th>';
 	        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Estado</th>';
-	        
+	       
 	        
 	        
 	        $html.='</tr>';
@@ -3310,11 +3311,13 @@ class MovimientosInvController extends ControladorBase{
 	            $i++;
 	            $html.='<tr>';
 	            $html.='<tr >';
+	            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_usuarios.'</td>';
+	            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->numero_movimientos_inv_cabeza.'</td>';
 	            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->cantidad_movimientos_inv_detalle.'</td>';
-	            $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->nombre_productos.'</td>';
+	            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_productos.'</td>';
 	            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
 	            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->estado_movimientos_inv_cabeza.'</td>';
-	            
+	         
 	            $html.='</tr>';
 	        }
 	        
@@ -3326,8 +3329,6 @@ class MovimientosInvController extends ControladorBase{
 	        $html.='<div class="table-pagination pull-right">';
 	        $html.=''. $this->paginate_estado_solicitud("index.php", $page, $total_pages, $adjacents).'';
 	        $html.='</div>';
-	        
-	        
 	        
 	        
 	        

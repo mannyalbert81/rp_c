@@ -435,7 +435,7 @@ class BuscarProductoController extends ControladorBase{
                 $html.='<tr >';
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->codigo_productos.'</td>';
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->marca_productos.'</td>';
-                $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_productos.'</td>';
+                $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->nombre_productos.'</td>';
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->descripcion_productos.'</td>';
                 $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->entradas_f_saldo_productos.'</td>';
                 $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->salidas_f_saldo_productos.'</td>';

@@ -1,17 +1,10 @@
 $(document).ready(function(){
-	
-	
-	
-	buscaDetallePeriodo();
-	
-	/*consultaPeriodo();
-	cargaEstadoPeriodo();
-	cargaTipoCierre();*/
+	RegistrarDetallePeriodo();
 })
 
 
-function buscaDetallePeriodo(){
-	
+function RegistrarDetallePeriodo(){
+		
 	var $anio_periodo = $("#anio_periodo");
 	
 	if( $anio_periodo.val() == 0 || $anio_periodo == "" ){
@@ -21,405 +14,80 @@ function buscaDetallePeriodo(){
 	}
 	
 	$.ajax({
-	    url:"index.php?controller=Periodo&action=ObtenerDetallesPeriodo",
+	    url:"index.php?controller=Periodo&action=RegistrarDetallesPeriodo",
 		dataType:"json",
 		type:"POST",
 		data:{anio_periodo:$anio_periodo.val()},
 	}).done(function(x){
-		var tblPeriodo = $("#tbl_detalles_periodo");
-		var vMeses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];			
-		if(x.data != undefined ){
-			var mesPeriodos = x.data;
+		var tblPeriodo = $("#tbl_detalles_periodo");					
+		if(x.dataFilas != undefined ){
 			tblPeriodo.find("tbody").empty();
-			$.each(mesPeriodos,function(index,value){
-				var nombreMes = vMeses[ (value.mes_periodo) - 1 ];
-				var buttonEdit = "<button class=\" btn btn-warning \" data-periodoid=\""+value.id_periodo+"\" onclick=\"fnAperturaMes(this)\" ><i class=\"fa fa-exchange\" aria-hidden=\"true\"></i></button>";	
-				var logEstado = ( value.nombre_estado == "CERRADO" ) ? "<span><i class=\"fa fa-lock \" aria-hidden=\"true\"></i></span>" : 
-					"<span><i class=\"fa fa-unlock \" aria-hidden=\"true\"></i></span>";
-				let $filaLineas = "<tr><td>" + (index + 1) +"</td><td>" +value.anio_periodo +"</td><td>" 
-				+ nombreMes +"</td><td>"+ logEstado +"</td>"
-				+ "<td>"+ buttonEdit + "</td>" + "</tr>";
-				tblPeriodo.find("tbody").append($filaLineas);
-			})
+			tblPeriodo.find("tbody").append(x.dataFilas);
+			
 		}
 	}).fail(function(xhr,status,error){
 		console.log(xhr.responseText);
 	});
 	
-	
+	return false;
 } 
 
-function fnAperturaMes(Obj){
+function fnAbrirPeriodo(ObjButton){
 	
-	var $button = $(Obj);
-	var $identificador = $button.data("periodoid");
-	
-	console.log($button);
-	
-	console.log($identificador);
-	
-	console.log("llego al click");
-	
-}
-
-
-/***
- * function to add record into table test_bancos
- * dc 2019-04-22
- * @param event
- * @returns
- */
-$("#frm_periodo").on("submit",function(event){
-	
-	let _year_periodo = document.getElementById('year_periodo').value;
-	let _mes_periodo = document.getElementById('mes_periodo').value;
-	var _id_tipo_cierre = document.getElementById('id_tipo_cierre').value;
-	var _id_estado = document.getElementById('id_estado').value;
-	var _id_periodo = document.getElementById('id_periodo').value;
-	var parametros = {year_periodo:_year_periodo,mes_periodo:_mes_periodo,id_tipo_cierre:_id_tipo_cierre,id_estado:_id_estado,id_periodo:_id_periodo}
-	
-	if(_id_tipo_cierre == 0){
-		$("#mensaje_id_tipo_cierre").text("Seleccione un Tipo").fadeIn("Slow");
-		return false;
-	}
-
-	
+	var $button = $(ObjButton);
+	var $identificador = $button.data("periodo_id");
 	
 	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=Periodo&action=InsertaPeriodo",
-		type:"POST",
+	    url:"index.php?controller=Periodo&action=OpenPeriodo",
 		dataType:"json",
-		data:parametros
-	}).done(function(datos){
-		
-		
-	swal({
-  		  title: "Periodo",
-  		  text: datos.mensaje,
-  		  icon: "success",
-  		  button: "Aceptar",
-  		});
-	
-		
-	}).fail(function(xhr,status,error){
-		
-		var err = xhr.responseText
-		console.log(err);
-		
-	}).always(function(){
-		$("#id_periodo").val(0);
-		document.getElementById("frm_periodo").reset();	
-		consultaPeriodo();
-	})
-
-	event.preventDefault()
-})
-
-$("#btnCerrar").on("click",function(event){
-	
-	let _year_periodo = document.getElementById('year_periodo').value;
-	let _mes_periodo = document.getElementById('mes_periodo').value;
-	var _id_tipo_cierre = document.getElementById('id_tipo_cierre').value;
-	var _id_estado = document.getElementById('id_estado').value;
-	var _id_periodo = document.getElementById('id_periodo').value;
-	var parametros = {year_periodo:_year_periodo,mes_periodo:_mes_periodo,id_tipo_cierre:_id_tipo_cierre,id_estado:_id_estado,id_periodo:_id_periodo}
-	
-
-
-	if(_id_periodo == 0){
-		$("#mensaje_id_tipo_cierre")
-		swal({
-		  		  title: "Periodo",
-		  		  text: "Seleccione un Periodo",
-		  		  icon: "warning",
-		  		  button: "Aceptar",
-		  		});
-		;
-		return false;
-	}
-
-
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=Periodo&action=CerrarPeriodo",
 		type:"POST",
-		dataType:"json",
-		data:parametros
-	}).done(function(datos){
-		
-		
-	swal({
-  		  title: "Periodo",
-  		  text: datos.mensaje,
-  		  icon: "success",
-  		  button: "Aceptar",
-  		});
-	
-		
-	}).fail(function(xhr,status,error){
-		
-		var err = xhr.responseText
-		console.log(err);
-		
-	}).always(function(){
-		$("#id_periodo").val(0);
-		document.getElementById("frm_periodo").reset();	
-		consultaPeriodo();
-	})
-
-	event.preventDefault()
-})
-$("#btnAbrir").on("click",function(event){
-	
-	let _year_periodo = document.getElementById('year_periodo').value;
-	let _mes_periodo = document.getElementById('mes_periodo').value;
-	var _id_tipo_cierre = document.getElementById('id_tipo_cierre').value;
-	var _id_estado = document.getElementById('id_estado').value;
-	var _id_periodo = document.getElementById('id_periodo').value;
-	var parametros = {year_periodo:_year_periodo,mes_periodo:_mes_periodo,id_tipo_cierre:_id_tipo_cierre,id_estado:_id_estado,id_periodo:_id_periodo}
-	
-	if(_id_tipo_cierre == 0){
-		$("#mensaje_id_tipo_cierre").text("Seleccione un Tipo").fadeIn("Slow");
-		return false;
-	}
-
-
-	
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=Periodo&action=AbrirPeriodo",
-		type:"POST",
-		dataType:"json",
-		data:parametros
-	}).done(function(datos){
-		
-		
-	swal({
-  		  title: "Periodo",
-  		  text: datos.mensaje,
-  		  icon: "success",
-  		  button: "Aceptar",
-  		});
-	
-		
-	}).fail(function(xhr,status,error){
-		
-		var err = xhr.responseText
-		console.log(err);
-		
-	}).always(function(){
-		$("#id_periodo").val(0);
-		document.getElementById("frm_periodo").reset();	
-		consultaPeriodo();
-	})
-
-	event.preventDefault()
-})
-
-/***
- * function to update Table Bancos
- * dc 20119-04-22
- * @param id
- * @returns
- */
-function editPeriodo(id = 0){
-	
-	var tiempo = tiempo || 1000;
-		
-	$.ajax({
-		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
-		url:"index.php?controller=Periodo&action=editPeriodo",
-		type:"POST",
-		dataType:"json",
-		data:{id_periodo:id}
-	}).done(function(datos){
-		
-		if(!jQuery.isEmptyObject(datos.data)){
+		data:{identificador:$identificador},
+	}).done(function(x){
+		if( x.respuesta != undefined ){
 			
-		
+			if( x.respuesta == "ERROR"){
+				swal({text:x.mensaje,title:"PERIODO",icon:"error"});
+			}
 			
-			var array = datos.data[0];		
-			$("#year_periodo").val(array.year_periodo);			
-			$("#mes_periodo").val(array.mes_periodo);
-			$("#id_tipo_cierre").val(array.id_tipo_cierre);
-			$("#id_estado").val(array.id_estado);
-			$("#id_periodo").val(array.id_periodo);
-			
-			$("html, body").animate({ scrollTop: $(year_periodo).offset().top-120 }, tiempo);			
+			if( x.respuesta == "OK"){
+				swal({text:x.mensaje,title:"PERIODO",icon:"success"});
+			}
 		}
-		
-		
-		
+		RegistrarDetallePeriodo();
+		console.log(x)
 	}).fail(function(xhr,status,error){
-		
-		var err = xhr.responseText
-		console.log(err);
-	}).always(function(){
-		
-		
-		$("#divLoaderPage").removeClass("loader")
-		consultaPeriodo();
-	})
-	
-	return false;
+		console.log(xhr.responseText);
+	});
 	
 }
 
-/***
- * function to delete record of Banco's table
- * dc 2019-04-22
- * @param id
- * @returns
- */
-function delPeriodo(id){
+function fnCerrarPeriodo(ObjButton){
 	
-		
+	var $button = $(ObjButton);
+	var $identificador = $button.data("periodo_id");
+	
 	$.ajax({
-		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
-		url:"index.php?controller=Periodo&action=delPeriodo",
-		type:"POST",
+	    url:"index.php?controller=Periodo&action=ClosePeriodo",
 		dataType:"json",
-		data:{id_periodo:id}
-	}).done(function(datos){		
-		
-		if(datos.data > 0){
+		type:"POST",
+		data:{identificador:$identificador},
+	}).done(function(x){
+		if( x.respuesta != undefined ){
 			
-			swal({
-		  		  title: "Periodo",
-		  		  text: "Registro Eliminado",
-		  		  icon: "success",
-		  		  button: "Aceptar",
-		  		});
-					
+			if( x.respuesta == "ERROR"){
+				swal({text:x.mensaje,title:"PERIODO",icon:"error"});
+			}
+			
+			if( x.respuesta == "OK"){
+				swal({text:x.mensaje,title:"PERIODO",icon:"success"});
+			}
 		}
-		
-		
-		
+		RegistrarDetallePeriodo();
 	}).fail(function(xhr,status,error){
-		
-		var err = xhr.responseText
-		console.log(err);
-	}).always(function(){
-		
-		$("#divLoaderPage").removeClass("loader")
-		consultaPeriodo();
-	})
-	
-	return false;
-}
-
-
-/***
- * busca bancos registrados
- * dc 2019-04-22
- * @param _page
- * @returns
- */
-function consultaPeriodo(_page = 1){
-	
-	var buscador = $("#buscador").val();
-	$.ajax({
-		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
-		url:"index.php?controller=Periodo&action=consultaPeriodo",
-		type:"POST",
-		data:{page:_page,search:buscador,peticion:'ajax'}
-	}).done(function(datos){		
-		
-		$("#periodo_registrados").html(datos)		
-		
-	}).fail(function(xhr,status,error){
-		
-		var err = xhr.responseText
-		console.log(err);
-		
-	}).always(function(){
-		
-		$("#divLoaderPage").removeClass("loader")
-		
-	})
+		console.log(xhr.responseText);
+	});
 	
 }
 
-/***
- * funcion para cargar estado de tes_bancos
- * dc 2019-04-22
- * @returns
- */
-function cargaEstadoPeriodo(){
-	
-	let $ddlEstado = $("#id_estado");
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=Periodo&action=cargaEstadoPeriodo",
-		type:"POST",
-		dataType:"json",
-		data:null
-	}).done(function(datos){		
-		
-		$ddlEstado.empty();
-		$ddlEstado.append("<option value='0' >--Seleccione--</option>");
-		
-		$.each(datos.data, function(index, value) {
-			$ddlEstado.append("<option value= " +value.id_estado +" >" + value.nombre_estado  + "</option>");	
-  		});
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
-		$ddlEstado.empty();
-	})
-	
-}
-
-$("#id_estado").on("focus",function(){
-	$("#mensaje_id_estado").text("").fadeOut("");
-})
-
-$("#year_periodo").on("keyup",function(){
-	
-	$(this).val($(this).val().toUpperCase());
-})
-
-
-
-function cargaTipoCierre(){
-	
-	let $ddlTipoCierre = $("#id_tipo_cierre");
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=Periodo&action=cargaTipoCierre",
-		type:"POST",
-		dataType:"json",
-		data:null
-	}).done(function(datos){		
-		
-		$ddlTipoCierre.empty();
-		$ddlTipoCierre.append("<option value='0' >--Seleccione--</option>");
-		
-		$.each(datos.data, function(index, value) {
-			$ddlTipoCierre.append("<option value= " +value.id_tipo_cierre +" >" + value.nombre_tipo_cierre  + "</option>");	
-  		});
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
-		$ddlTipoCierre.empty();
-	})
-	
-}
-
-$("#id_tipo_cierre").on("focus",function(){
-	$("#mensaje_id_tipo_cierre").text("").fadeOut("");
-})
-
-$("#year_periodo").on("keyup",function(){
-	
-	$(this).val($(this).val().toUpperCase());
-})
 
 

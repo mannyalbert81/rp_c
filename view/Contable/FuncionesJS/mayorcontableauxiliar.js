@@ -165,6 +165,8 @@ $("#btnMayores").on("click",function(event){
 	let $codigo_plan_cuentas = $("#codigo_plan_cuentas");
 	let $codigo_sub_plan_cuentas = $("#codigo_sub_plan_cuentas");
 	let $codigo_plan_cuentas_hijos = $("#codigo_plan_cuentas_hijos");
+	let $desde_diario = $("#desde_diario");
+	let $hasta_diario = $("#hasta_diario");
 	
 	if($codigo_plan_cuentas.val() == 0){
 		
@@ -184,6 +186,20 @@ $("#btnMayores").on("click",function(event){
    if($codigo_plan_cuentas_hijos.val() == 0){
 		
 	   $codigo_plan_cuentas_hijos.notify("Seleccione la cuenta",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	
+	}
+   
+   if($desde_diario.val() == 0){
+		
+	   $desde_diario.notify("Seleccione Fecha",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	
+	}
+   
+   if($hasta_diario.val() == 0){
+		
+	   $hasta_diario.notify("Seleccione Fecha",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	
 	}
@@ -244,26 +260,7 @@ $("#btnMayores").on("click",function(event){
 	   }
 
 
-	
-
-
-
-
-
-
 /// termina maycol
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 $( "#codigo_cuenta" ).autocomplete({

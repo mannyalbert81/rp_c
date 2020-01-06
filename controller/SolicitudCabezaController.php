@@ -296,7 +296,7 @@ class SolicitudCabezaController extends ControladorBase{
 	        $tab_temp = "public.temp_solicitud INNER JOIN public.productos ON productos.id_productos = temp_solicitud.id_producto_temp_solicitud
                     INNER JOIN  public.grupos ON grupos.id_grupos = productos.id_grupos";
 	        
-	        $where_temp = "1 = 1";
+	        $where_temp = "1 = 1 AND temp_solicitud.id_usuario_temp_solicitud = $id_usuario";
 	        
 	        
 	        $resultSet=$temp_solicitud->getCantidad("*", $tab_temp, $where_temp);
@@ -379,26 +379,25 @@ class SolicitudCabezaController extends ControladorBase{
 	    
 	}
 	
-	public function paginate($reload, $page, $tpages, $adjacents) {
+	public function paginate($reload, $page, $tpages, $adjacents, $function="") {
 	    
-	    $prevlabel = "&lsaquo; Prev";
-	    $nextlabel = "Next &rsaquo;";
+	    $prevlabel = "&lsaquo; Ant";
+	    $nextlabel = "Sig &rsaquo;";
 	    $out = '<ul class="pagination pagination-large">';
-	    
-	    // previous label
-	    
+	   
+   	    // previous label	    
 	    if($page==1) {
 	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
 	    } else if($page==2) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_productos_solicitud(1)'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$function(1)'>$prevlabel</a></span></li>";
 	    }else {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_productos_solicitud(".($page-1).")'>$prevlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$function(".($page-1).")'>$prevlabel</a></span></li>";
 	        
 	    }
 	    
 	    // first label
 	    if($page>($adjacents+1)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_productos_solicitud(1)'>1</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='$function(1)'>1</a></li>";
 	    }
 	    // interval
 	    if($page>($adjacents+2)) {
@@ -413,9 +412,9 @@ class SolicitudCabezaController extends ControladorBase{
 	        if($i==$page) {
 	            $out.= "<li class='active'><a>$i</a></li>";
 	        }else if($i==1) {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_productos_solicitud(1)'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='$function(1)'>$i</a></li>";
 	        }else {
-	            $out.= "<li><a href='javascript:void(0);' onclick='load_productos_solicitud(".$i.")'>$i</a></li>";
+	            $out.= "<li><a href='javascript:void(0);' onclick='$function(".$i.")'>$i</a></li>";
 	        }
 	    }
 	    
@@ -428,13 +427,13 @@ class SolicitudCabezaController extends ControladorBase{
 	    // last
 	    
 	    if($page<($tpages-$adjacents)) {
-	        $out.= "<li><a href='javascript:void(0);' onclick='load_productos_solicitud($tpages)'>$tpages</a></li>";
+	        $out.= "<li><a href='javascript:void(0);' onclick='$function($tpages)'>$tpages</a></li>";
 	    }
 	    
 	    // next
 	    
 	    if($page<$tpages) {
-	        $out.= "<li><span><a href='javascript:void(0);' onclick='load_productos_solicitud(".($page+1).")'>$nextlabel</a></span></li>";
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$function(".($page+1).")'>$nextlabel</a></span></li>";
 	    }else {
 	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
 	    }
@@ -499,8 +498,6 @@ class SolicitudCabezaController extends ControladorBase{
 	    }
 	}
 	
-	
-	
 	public function paginatetemp($reload, $page, $tpages, $adjacents) {
 	    
 	    $prevlabel = "&lsaquo; Prev";
@@ -564,7 +561,6 @@ class SolicitudCabezaController extends ControladorBase{
 	    $out.= "</ul>";
 	    return $out;
 	}
-	
 	
 	public function inserta_solicitud(){
 	    
@@ -829,7 +825,8 @@ class SolicitudCabezaController extends ControladorBase{
 	        return;
 	    }
 	    
-	    $page = (isset($_REQUEST['page']))?isset($_REQUEST['page']):1;
+	    
+	    $page = ( isset($_REQUEST['page']) ) ? $_REQUEST['page'] : 1 ;
 	    
 	    $cuentasPagar = new CuentasPagarModel();
 	    
@@ -863,6 +860,8 @@ class SolicitudCabezaController extends ControladorBase{
 	    
 	    $id = "productos.nombre_productos";
 	    
+	    //echo "PAGINA ES --> ",$page,"***";
+	    
 	    //para obtener cantidad
 	    $rsResultado = $cuentasPagar->getCantidad("1", $tablas, $where, $id);
 	    
@@ -894,7 +893,6 @@ class SolicitudCabezaController extends ControladorBase{
 	        $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
-	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';	        
 	        $html.='</tr>';
 	        $html.='</thead>';
@@ -922,9 +920,10 @@ class SolicitudCabezaController extends ControladorBase{
 	        $html.='</table>';
 	        $html.='</section></div>';
 	        $html.='<div class="table-pagination pull-right">';
-	        $html.=''. $this->paginate("index.php", $page, $tpages, $adjacents,"buscaProductosSolicitud").'';
+	        $html.=''. $this->paginate("index.php", $page , $tpages, $adjacents,"buscaProductosSolicitud").'';
 	        $html.='</div>';
 	        
+	        //echo "index.php", "***",$page,"***", $tpages,"****", $adjacents,"****","buscaProductosSolicitud","<br>";
 	        
 	        
 	    }else{

@@ -368,6 +368,7 @@ function fnInsComprobante(){
         data: parametros,
         dataType:'json',
         success: function(x){
+        	//console.log(x);
         	if( x.respuesta != undefined ){
         		
         		if(x.respuesta == "ERROR"){

@@ -355,7 +355,7 @@
     <script src="view/bootstrap/plugins/iCheck/icheck.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-    <script src="view/Contable/FuncionesJS/con_ccomprobantes.js?0.05"></script> 
+    <script src="view/Contable/FuncionesJS/con_ccomprobantes.js?0.06"></script> 
     <!-- <script src="view/Contable/FuncionesJS/ComprobanteContable.js?5.0"></script>     -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     

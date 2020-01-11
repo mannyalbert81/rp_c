@@ -63,7 +63,7 @@ function init(){
 		 rightAlign: true,		 
 		 yearrange: {
 				minyear: 1950,
-				maxyear: 2019
+				maxyear: 2020
 			},
 		oncomplete:function(e){
 			if( (new Date($(this).val()).getTime() > new Date(fechaServidor).getTime()))

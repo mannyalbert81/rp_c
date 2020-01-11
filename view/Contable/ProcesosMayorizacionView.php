@@ -76,6 +76,7 @@
                         <option value="<?php echo $res->id_modulos;?>" ><?php echo $res->nombre_modulos;?></option>    
                          <?php }}?>   						       
 					 </select> 
+					 <input type="hidden" id="txt_parametros" value="">
 	         	</div>
 	         </div>
 	         
@@ -109,6 +110,18 @@
 	         </div>
 	      </div>
 	      
+	      <div class="row" >
+	      	<div class="col-lg-12 col-md-12 col-xs-12">
+	      		<div class="pull-right">
+	      			<button id="btnVerDiario" class="btn btn-default" type="button" onclick="fnRevisarDiario()">
+	      			<i class="fa fa-clone" aria-hidden="true" ></i>&nbsp;Revisar Diario</button>
+	      			<button id="btnListaProcesos" onclick="fnLoadProcesos()" class="btn btn-default" type="button" data-toggle="modal" data-target="#mod_lista_procesos" >
+	      			<i class="fa fa-list" aria-hidden="true" ></i>&nbsp;Diarios Generados</button>
+	      		</div>	      		
+	      	</div>
+	      </div>
+	      
+	      <!--  
 	      <div class="row">
 	      	<div class="col-md-offset-4 col-lg-offset-4 col-md-2 col-lg-2 col-xs-12">
 	      		<div class="form-group">
@@ -124,7 +137,7 @@
             
 		 </form>
 	 </div>
-	      
+	    -->  
 	   
         
        </div>
@@ -136,6 +149,20 @@
           <h3 class="box-title">Detalles</h3>        
         </div>
 	    <div class="box-body">
+	    
+	    	<div class="row hide" id="pnl_guardar" style="">
+	    		<div class="col-md-12 col-lg-12 col-xs-12">	
+	    			<div class="pull-right"> 
+	    				<a href="#" id="btnSavediario" onclick="GuardarDiario()"  title="GUARDAR DIARIO"> 
+        	    			<span class="fa-stack fa-lg">
+                              <i class="fa fa-square-o fa-stack-2x"></i>
+                              <i class="fa fa-floppy-o fa-stack-1x"></i>
+                            </span> GUARDAR DIARIO
+                        </a>
+                    </div><br>
+	    		</div>	    		
+	    	</div>
+	    	
         	<div id="div_detalle_procesos" ></div>
 	    </div>
 	   </div>
@@ -147,12 +174,95 @@
 
    <div class="control-sidebar-bg"></div>
  </div>
+ 
+ <!-- COMIENZA LOS MODALES -->
+ <!-- BEGIN MODAL ERRORES CARGA  -->
+  <div class="modal fade" id="mod_lista_procesos" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-lg " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-aqua color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" align="center"></h4>
+          </div>
+          <div class="modal-body" >
+          
+          	<div class="row">
+          		<div class="pull-right">  
+      				<div class="col-xs-12 col-md-12 col-lg-12">        			
+          				<div class="form-group">
+        	         		<label for="mod_meses_procesos" class="control-label"></label>
+        	         		<button type="button" id="btn" onclick="fnLoadProcesos(1)" class="btn btn-default form-control" >Buscar</button>                          
+        	         	</div>
+      				</div>          		
+          		</div>
+          		<div class="pull-right">  
+      				<div class="col-xs-12 col-md-12 col-lg-12">        			
+          				<div class="form-group">
+        	         		<label for="mod_meses_procesos" class="control-label">mes:</label>
+        	         		<input type="text" class="form-control" value="" id="mod_meses_procesos" >                            
+        	         	</div>
+      				</div>          		
+          		</div>
+          		<div class="pull-right">  
+      				<div class="col-xs-12 col-md-12 col-lg-12">        			
+          				<div class="form-group">
+        	         		<label for="mod_anio_procesos" class="control-label">Año:</label>
+        	         		<input type="text" class="form-control" value="" id="mod_anio_procesos" >                            
+        	         	</div>
+      				</div>          		
+          		</div>
+          		<div class="pull-right">  
+      				<div class="col-xs-12 col-md-12 col-lg-12">        			
+          				<div class="form-group">
+        	         		<label for="mod_id_modulos" class="control-label">Modulo:</label>
+        	         		<select name="mod_id_modulos" id="mod_id_modulos"   class="form-control" onchange="fnLoadProcesos(1)" >
+                                <option value="0" selected="selected">--Seleccione--</option>                       					       
+        					 </select> 
+        	         	</div>
+      				</div>          		
+          		</div>
+          	</div>
+          	
+          	<div class="box-body no-padding">
+          		<table id="mod_tbl_procesos" class="table table-striped table-bordered table-sm " cellspacing="0"  width="100%">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Modulo</th>
+                      <th>Proceso</th>
+                      <th>Año</th>
+                      <th>Mes</th>
+                      <th># Comprobante</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>  
+          	</div>
+          	
+          
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+<!-- END MODAL ERRORES CARGA -->
      
    
   <?php include("view/modulos/links_js.php"); ?>
   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-  <script src="view/Contable/FuncionesJS/procesosMayorizacion.js?0.15"></script>
+  <script src="view/Contable/FuncionesJS/procesosMayorizacion.js?0.21"></script>
+  <script src="view/Contable/FuncionesJS/procesosMayorizacionModal.js?0.00"></script>
   
 	
  </body>

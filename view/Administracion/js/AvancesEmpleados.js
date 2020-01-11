@@ -213,6 +213,7 @@ function validarfecha(fecha)
 function GetMax()
 {
 	$.ajax({
+		beforeSend:function(){swal({title:"Validando...",text:"",icon:"view/images/ajax-loader.gif",button:false})},
 	    url: 'index.php?controller=AvancesEmpleados&action=ValidarMonto',
 	    type: 'POST',
 	    data: {
@@ -241,32 +242,24 @@ var fecha = $("#fecha").val();
 var monto = $("#monto_avance").val();
 var diferido = $("#cuotas").val();
 
-if (fecha=="" )
-{
-$("#mensaje_fecha").text("Elija fecha");
-$("#mensaje_fecha").fadeIn("slow");
-$("#mensaje_fecha").fadeOut("slow");
+if (fecha=="" ){
+	$("#fecha").notify("Elija una fecha",{ position:"buttom left", autoHideDelay: 2000});
+	return;
 }
-if (monto== "" || monto.includes("-"))
-{    	
-	$("#mensaje_monto_avance").text("Ingrese monto");
-	$("#mensaje_monto_avance").fadeIn("slow");
-	$("#mensaje_monto_avance").fadeOut("slow");
+if (monto== "" || monto.includes("-")){
+	$("#monto_avance").notify("Ingrese monto",{ position:"buttom left", autoHideDelay: 2000});
+	return;
+	
 }
-if(diferido>12)
-	{
-	$("#mensaje_cuotas").text("Numero invalido");
-	$("#mensaje_cuotas").fadeIn("slow");
-	$("#mensaje_cuotas").fadeOut("slow");
-	}
-if (diferido=="" || diferido=="0")
-{
+if( diferido > 12 )	{
+	$("#cuotas").notify("Valor Diferido no puede Exceder 12 cuotas",{ position:"buttom left", autoHideDelay: 2000});
+	
+}
+if (diferido=="" || diferido=="0"){
 	diferido=1;
 }
-console.log(diferido);
 
-if ( fecha!="" && monto!="" && diferido!="" && monto>0 && diferido<12)
-	{
+if ( fecha!="" && monto!="" && diferido!="" && monto>0 && diferido<12){
 	
 	$.ajax({
 	    url: 'index.php?controller=AvancesEmpleados&action=ValidarMonto',
@@ -278,6 +271,7 @@ if ( fecha!="" && monto!="" && diferido!="" && monto>0 && diferido<12)
 		x.trim();
 		x=parseFloat(x);
 		monto=parseFloat(monto);
+		
 		if (monto>x) GetMax();
 		else 
 		{

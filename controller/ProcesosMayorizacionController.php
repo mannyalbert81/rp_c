@@ -142,10 +142,15 @@ class ProcesosMayorizacionController extends ControladorBase{
 	                $cantidad = sizeof($arrayTabla);
 	                $conceptoDiario.=" Activos Fijos";
 	                break;
-	            case "10":
+	           /* case "10":
 	                $arrayTabla = $this->generaDiarioActivos($idTipoProcesos,$anioDiario,$mesDiario);
 	                $cantidad = sizeof($arrayTabla);
 	                $conceptoDiario.=" Activos Fijos";
+	                break;*/
+	            case "13":
+	                $arrayTabla = $this->generaDiarioMaterialesSuministros($idTipoProcesos,$anioDiario,$mesDiario);
+	                $cantidad = sizeof($arrayTabla);
+	                $conceptoDiario.=" Inventario y Materiales";
 	                break;
 	            default:
 	                break;
@@ -649,9 +654,93 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    
 	}
 	
-	
-	
-		
+	public function generaDiarioMaterialesSuministros($idTipoProceso,$año,$mes){
+	    
+	    $productos = new ProductosModel();
+	    
+	    $arrayDiarioTipo = array();
+	    $arrayRespuesta = array();
+	    
+	    // OBTENER DATOS DEL DIARIO TIPO
+	    $columnas1 = " cdtd.id_diario_tipo_detalle,
+                    pc.id_plan_cuentas,pc.codigo_plan_cuentas,
+                    pc.nombre_plan_cuentas,
+                    destino_diario_tipo_detalle,
+                    0.00 \"debito\", 0.00 \"credito\" ";
+	    $tablas1   = " core_diario_tipo_detalle cdtd
+        	    INNER JOIN core_diario_tipo_cabeza cdtc
+        	    ON cdtc.id_diario_tipo_cabeza = cdtd.id_diario_tipo_cabeza
+        	    INNER JOIN plan_cuentas pc
+        	    ON pc.id_plan_cuentas = cdtd.id_plan_cuentas";
+	    $where1    = " cdtc.id_tipo_procesos = '$idTipoProceso' ";
+	    $id1       = " cdtd.id_diario_tipo_detalle";
+	    $rsConsulta1   = $productos->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    if(empty($rsConsulta1)){
+	        echo "AQUI ERROR";
+	        exit();
+	    }
+	    
+	    // OBTENER SUMA DE MATERIALES EN SALIDA
+	    $columnas2 = " bb.valor_movimientos_inv_detalle";
+	    $tablas2   = " movimientos_inv_cabeza aa
+	               INNER JOIN movimientos_inv_detalle bb ON bb.id_movimientos_inv_cabeza = aa.id_movimientos_inv_cabeza
+                   INNER JOIN consecutivos cc ON cc.id_consecutivos = aa.id_consecutivos";
+	    $where2    = " TO_CHAR(aa.creado,'YYYY') = '$año'
+	               AND TO_CHAR(aa.creado,'MM')	= '$mes'
+                   AND cc.nombre_consecutivos = 'SALIDA'
+	               AND aa.estado_movimientos_inv_cabeza = 'APROBADA'
+	               AND upper(aa.razon_movimientos_inv_cabeza) = 'SALIDA PRODUCTOS'";
+	    $id2       = " aa.creado";
+	    $rsConsulta2   = $productos->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	    
+	    $_sumatoria_valores = 0.00;	    
+	    
+	    if(empty($rsConsulta2)){
+	        return $arrayRespuesta;
+	        exit();
+	    }else{
+	        foreach ($rsConsulta2 as $res) {
+	            $_sumatoria_valores += (float)$res->valor_movimientos_inv_detalle;
+	        }
+	    }
+	    	    
+	    foreach ($rsConsulta1 as $resDiario) {
+	        
+	        $_valores_debe     = 0.00;
+	        $_valores_haber    = 0.00;
+	        if( $resDiario->destino_diario_tipo_detalle == "DEBE" ){
+	            $_valores_debe     = $_sumatoria_valores;
+	            $_valores_haber    = 0.00;
+	        }else{
+	            $_valores_debe     = 0.00;
+	            $_valores_haber    = $_sumatoria_valores;
+	        }
+	        $arrayFila = array('id_diario_detalle'=>$resDiario->id_diario_tipo_detalle,'valor_debe'=>$_valores_debe,'valor_haber'=>$_valores_haber);
+	        array_push( $arrayDiarioTipo, $arrayFila);
+	    }
+	    
+	    // PARA GENERAR ARRAY DE RESPUESTA
+	    $fila = array();
+	    foreach ($rsConsulta1 as $resDiario){
+	        foreach ($arrayDiarioTipo as $res){
+	            if( $resDiario->id_diario_tipo_detalle == $res['id_diario_detalle']){
+	                $fila=array('id_diario_tipo_detalle'=>$resDiario->id_diario_tipo_detalle,'id_plan_cuentas'=>$resDiario->id_plan_cuentas,
+	                    'codigo'=>$resDiario->codigo_plan_cuentas,'nombre'=>$resDiario->nombre_plan_cuentas,'valor_debe'=>$res['valor_debe'],
+	                    'valor_haber'=>$res['valor_haber']
+	                );
+	                array_push( $arrayRespuesta, $fila);
+	                break;
+	            }
+	        }
+	        
+	        
+	    }
+	    
+	    return $arrayRespuesta;
+
+	}
+			
 	public function paginate($reload, $page, $tpages, $adjacents, $funcion) {
 	    
 	    
@@ -717,11 +806,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	    return $out;
 	    
 	}
-	
-	
-	
-	
-	
+			
 	/**
 	 * @param number $paramIdCredito
 	 * devuelve string OK;
@@ -1038,7 +1123,7 @@ class ProcesosMayorizacionController extends ControladorBase{
 	        $funcionMayoriza       = "core_ins_mayoriza_activa_credito";
 	        $parametrosMayoriza    = "$_id_comprobante,null";
 	        $consultaMayoriza      = $Credito->getconsultaPG($funcionMayoriza, $parametrosMayoriza);
-	        $ResultadoMayoriza     = $Credito->llamarconsultaPG($consultaMayoriza);
+	        $Credito->llamarconsultaPG($consultaMayoriza);
 	        
 	        $error = "";
 	        $error = pg_last_error();
@@ -1055,13 +1140,637 @@ class ProcesosMayorizacionController extends ControladorBase{
 	}
 	
 	
-	public function verfuncion(){
-	    $Consecutivo = new ConsecutivosModel();
-	    $tc = new TipoComprobantesModel();
+	/** CAMBIOS CON TABLA TEMPORAL DC 20191218 **/
+	
+	public function insertaDiarioMensual(){
 	    
-	    $rsBusca = $tc->getTipoComprobanteByNombre("CONTABLE");
+	    session_start();
 	    
-	    var_dump($rsBusca);
+	    $comprobantes = new CComprobantesModel();
+	    
+	    $id_usuarios = $_SESSION['id_usuarios'];
+	    //$usuario_usuarios = $_SESSION['usuario_usuarios'];
+	    
+	    $idTipoProcesos = (isset($_POST['id_tipo_procesos'])) ? $_POST['id_tipo_procesos'] : "";
+	    $anioDiario = (isset($_POST['anio_procesos'])) ? $_POST['anio_procesos'] : "";
+	    $mesDiario = (isset($_POST['mes_procesos'])) ? $_POST['mes_procesos'] : "";
+	    
+	    $fecha_proceso = date('Y-m-d');
+	    $respuesta = array();
+	    
+	    try {
+	        
+	        $comprobantes->beginTran();
+	        
+	        if( $idTipoProcesos == "" || $anioDiario == "" || $mesDiario == "" ){
+	            throw new Exception("Error al recibir variables");
+	        }
+	        
+	        $_funcion = "con_ins_procesos_mensuales";
+	        $_parametros = "$id_usuarios,$idTipoProcesos,$anioDiario,$mesDiario,'$fecha_proceso'";
+	        
+	        
+	        $_consulta1 = $comprobantes->getconsultaPG($_funcion, $_parametros);
+	        $comprobantes->llamarconsultaPG($_consulta1);
+	        
+	        $error = pg_last_error();
+	        
+	        if( !empty($error) ){
+	            throw new Exception("Proceso no generado Revisar");
+	        }
+	        
+	        $respuesta['status']   = "OK";
+	        $respuesta['mensaje']  = "PROCESO GENERADO";	        
+	        $respuesta['icon']     = "success";
+	        
+	        $comprobantes->endTran('COMMIT');
+	        echo json_encode($respuesta);
+	        
+	    } catch (Exception $e) {
+	        
+	        $respuesta['mensaje']    = $e->getMessage();
+	        $respuesta['status']   = "ERRROR";
+	        $respuesta['icon']     = "error";
+	        
+	        $comprobantes->endTran();
+	        echo json_encode($respuesta);
+	        
+	    }
+	    
+	    
+	}
+	
+	public function generaDiarioMensual(){
+	    
+	    session_start();
+	    
+	    $comprobantes = new CComprobantesModel();
+	    
+	    $id_usuarios = $_SESSION['id_usuarios'];
+	    //$usuario_usuarios = $_SESSION['usuario_usuarios'];
+	    
+	    $idTipoProcesos = (isset($_POST['id_tipo_procesos'])) ? $_POST['id_tipo_procesos'] : "";
+	    $anioDiario = (isset($_POST['anio_procesos'])) ? $_POST['anio_procesos'] : "";
+	    $mesDiario = (isset($_POST['mes_procesos'])) ? $_POST['mes_procesos'] : "";
+	    //$tipoPeticion = (isset($_POST['peticion'])) ? $_POST['peticion'] : "";
+	    //$idModulos = (isset($_POST['id_modulos'])) ? $_POST['id_modulos'] : null;
+	    
+	    // variables que son para enviar a la vista
+	    $_respuesta = array();
+	    
+	    try {
+	        
+	        /** consulta para validar si ya esta ingresado **/
+	        $columnas1 = " 1 existe, id_ccomprobantes";
+	        $tablas1   = " public.core_historial_diarios_tipo";
+	        $where1    = " id_tipo_procesos = $idTipoProcesos
+                AND id_estatus = 1
+                AND anio_historial_diarios_tipo = $anioDiario
+                AND mes_historial_diarios_tipo = $mesDiario";
+	        $id1       = " id_historial_diarios_tipo";
+	        $rsConsulta1   = $comprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	        
+	        if( !empty($rsConsulta1) ){
+	           throw new Exception("Procesos se encuentra Generado"); 
+	        }
+	        
+	        /** consulta para buscar **/
+	        $columnas2 = " aa.id_temp_procesos_mensuales, aa.id_usuarios, aa.id_tipo_procesos, aa.id_plan_cuentas,
+    	        cc.codigo_plan_cuentas, cc.nombre_plan_cuentas, aa.valor_debe_temp_procesos_mensuales,
+    	        aa.valor_haber_temp_procesos_mensuales";
+	        $tablas2   = " con_temp_procesos_mensuales aa
+    	        INNER JOIN estado bb ON bb.id_estado = aa.id_estado
+    	        INNER JOIN plan_cuentas cc ON cc.id_plan_cuentas = aa.id_plan_cuentas";
+	        $where2    = " aa.id_tipo_procesos = $idTipoProcesos
+    	        AND aa.anio_temp_procesos_mensuales = $anioDiario
+    	        AND aa.mes_temp_procesos_mensuales  = $mesDiario
+    	        AND aa.id_usuarios	= $id_usuarios
+    	        AND bb.nombre_estado='PENDIENTE'
+                AND bb.tabla_estado='con_temp_procesos_mensuales'";
+	        $id2       = " aa.id_temp_procesos_mensuales";
+	        $rsConsulta2   = $comprobantes->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	        
+	        if( empty($rsConsulta2) ){
+	            
+	            //generar el diario temporal
+	            /** AQUI TENER EN CUENTA QUE SE TOMA DE ACUERDO AL TIPO DE PROCESO A GENERAR EL DIARIO**/
+                switch ((int)$idTipoProcesos){
+                    case 13 :
+                        $this->genProcesoInventarioMateriales($idTipoProcesos,$anioDiario, $mesDiario);
+                        break;
+                    case 9 :
+                        $this->genProcesoActivos($idTipoProcesos, $anioDiario, $mesDiario);
+                        break;
+                    case 8 :
+                        //echo "llego por aca";
+                        $this->genProcesoProvisiones($idTipoProcesos, $anioDiario, $mesDiario);
+                        break;
+                    default:
+                        print_r($_POST);
+                        exit();
+                        break;
+                }	               
+	            
+	            //se vuelve a relizar la consulta
+	            $rsConsulta2   = $comprobantes->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	            
+	        }
+	        
+	        $html = "";
+	        $html.= "<table id='tbl_detalle_diario' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
+	        $html.= "<thead>";
+	        $html.= "<tr>";
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">CODIGO</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">NOMBRE</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">DEBITO</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">CREDITO</th>';
+	        $html.='</tr>';
+	        $html.='</thead>';
+	        $html.='<tbody>';
+	        
+	        /** aqui se genera la tabla que mostrara en la vista **/
+	        $i = 0;
+	        foreach ($rsConsulta2 as $res) {
+	            $i++;
+	            $html.='<tr>';
+	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->valor_debe_temp_procesos_mensuales.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->valor_haber_temp_procesos_mensuales.'</td>';
+	            $html.='</tr>';
+	        }
+	        
+	        $html.='</tbody>';
+	        $html.='</table>';
+	        
+	        $_respuesta['status']     = "OK";
+	        $_respuesta['mensaje']     = "Revisar Datos de Diario Contable";
+	        $_respuesta['htmlTabla']   = $html;
+	        $_respuesta['icon']        = "success";
+	        echo json_encode( $_respuesta );
+	        
+	    } catch (Exception $ex) {
+		    
+	        $_respuesta['status']     = "ERROR";
+	        $_respuesta['mensaje']   =$ex->getMessage();
+	        $_respuesta['icon']    ="error";
+	        echo json_encode( $_respuesta );
+	    }
+	    
+	}
+	
+	private function genProcesoInventarioMateriales($_id_tipo_procesos,$_anio_proceso, $_mes_proceso){
+	    
+	    if( !isset($_SESSION) ){
+	        session_start();
+	    }
+	    
+	    $productos = new ProductosModel();
+	    $_id_usuarios = $_SESSION['id_usuarios'];
+	    
+	    $arrayDiarioTipo = array();
+	    
+	    // OBTENER DATOS DEL DIARIO TIPO
+	    $columnas1 = " cdtd.id_diario_tipo_detalle,
+                    pc.id_plan_cuentas,pc.codigo_plan_cuentas,
+                    pc.nombre_plan_cuentas,
+                    destino_diario_tipo_detalle,
+                    0.00 \"debito\", 0.00 \"credito\" ";
+	    $tablas1   = " core_diario_tipo_detalle cdtd
+        	    INNER JOIN core_diario_tipo_cabeza cdtc
+        	    ON cdtc.id_diario_tipo_cabeza = cdtd.id_diario_tipo_cabeza
+        	    INNER JOIN plan_cuentas pc
+        	    ON pc.id_plan_cuentas = cdtd.id_plan_cuentas";
+	    $where1    = " cdtc.id_tipo_procesos = '$_id_tipo_procesos' ";
+	    $id1       = " cdtd.id_diario_tipo_detalle";
+	    $rsConsulta1   = $productos->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    if(empty($rsConsulta1)){
+	        echo "AQUI ERROR";
+	        exit();
+	    }
+	    
+	    // OBTENER SUMA DE MATERIALES EN SALIDA
+	    $columnas2 = " bb.valor_movimientos_inv_detalle";
+	    $tablas2   = " movimientos_inv_cabeza aa
+	               INNER JOIN movimientos_inv_detalle bb ON bb.id_movimientos_inv_cabeza = aa.id_movimientos_inv_cabeza
+                   INNER JOIN consecutivos cc ON cc.id_consecutivos = aa.id_consecutivos";
+	    $where2    = " TO_CHAR(aa.creado,'YYYY') = '$_anio_proceso'
+	               AND TO_CHAR(aa.creado,'MM')	= '$_mes_proceso'
+                   AND cc.nombre_consecutivos = 'SALIDA'
+	               AND aa.estado_movimientos_inv_cabeza = 'APROBADA'
+	               AND upper(aa.razon_movimientos_inv_cabeza) = 'SALIDA PRODUCTOS'";
+	    $id2       = " aa.creado";
+	    $rsConsulta2   = $productos->getCondiciones($columnas2, $tablas2, $where2, $id2);
+	    
+	    //VARIABLES PARA LA FUNCION
+	    $_sumatoria_valores = 0.00;
+	    $arrayFila = array();
+	    $arrayDiarioTipo   = array();
+	    
+	    if(!empty($rsConsulta2)){
+	        foreach ($rsConsulta2 as $res) {
+	            $_sumatoria_valores += (float)$res->valor_movimientos_inv_detalle;
+	        }
+	    }
+	    
+	    foreach ($rsConsulta1 as $resDiario) {
+	        
+	        $_valores_debe     = 0.00;
+	        $_valores_haber    = 0.00;
+	        if( $resDiario->destino_diario_tipo_detalle == "DEBE" ){
+	            $_valores_debe     = $_sumatoria_valores;
+	            $_valores_haber    = 0.00;
+	        }else{
+	            $_valores_debe     = 0.00;
+	            $_valores_haber    = $_sumatoria_valores;
+	        }
+	        $arrayFila = array('id_plan_cuentas'=>$resDiario->id_plan_cuentas,'id_diario_detalle'=>$resDiario->id_diario_tipo_detalle,'valor_debe'=>$_valores_debe,'valor_haber'=>$_valores_haber);
+	        array_push( $arrayDiarioTipo, $arrayFila);
+	    }
+	    
+	    /** buscar id del estado en pediente  de una funcion*/	    
+	    $id_estado = $this->getIdEstado();
+	    
+	    $_funcion  = "con_ins_temp_procesos_mensuales";
+	    $_parametros = "";	    
+	   
+	    // PARA INGRESAR EN TEMP PROCESOS
+	    foreach ($arrayDiarioTipo as $res){
+	        // variables para la funcion de inse4rt en temp 
+	        $_id_plan_cuentas = $res['id_plan_cuentas'];
+	        $_valor_debe   = $res['valor_debe'];
+	        $_valor_haber  = $res['valor_haber'];
+	        $_parametros = "$_id_usuarios,$_id_tipo_procesos,$_id_plan_cuentas,$_anio_proceso,$_mes_proceso,'$_valor_debe','$_valor_haber',$id_estado";
+	        
+	        $consultapg    = $productos->getconsultaPG($_funcion, $_parametros);
+	        $productos->llamarconsultaPG($consultapg);
+	    } 
+	    
+	    $error = pg_last_error();
+	    if( !empty($error) ){
+	        throw new Exception("Revisar los procesos en Inventario Y materiales");
+	    }
+	        
+	   
+	    
+	}
+	
+	private function genProcesoActivos($_id_tipo_procesos,$_anio_proceso, $_mes_proceso){
+	    
+	    if( !isset($_SESSION) ){
+	        session_start();
+	    }
+	    
+	    $_id_usuarios = $_SESSION['id_usuarios'];
+	    
+	    $Activos = new ActivosFijosModel();
+	    $arrayDiarioTipo = array();
+	    
+	    $arrayColDepreciacion = array("enero_depreciacion","febrero_depreciacion","marzo_depreciacion","abril_depreciacion","mayo_depreciacion",
+	        "junio_depreciacion","julio_depreciacion","agosto_depreciacion","septiembre_depreciacion","octubre_depreciacion","noviembre_depreciacion",
+	        "diciembre_depreciacion");
+	    //obtener columna de busqueda
+	    $columnaMes = $arrayColDepreciacion[ ($_mes_proceso - 1)];
+	    	    
+	    //traer activos para depreciacion
+	    $columnas ="aaf.id_tipo_activos_fijos,taf.nombre_tipo_activos_fijos,sum(ad.$columnaMes) \"valor_depreciacion\"";
+	    $tablas ="act_activos_fijos aaf
+                inner join tipo_activos_fijos taf
+                on taf.id_tipo_activos_fijos = aaf.id_tipo_activos_fijos
+                inner join act_depreciacion ad
+                on aaf.id_activos_fijos = ad.id_activos_fijos";
+	    $where = " 1=1
+	           AND ad.anio_depreciacion = $_anio_proceso";
+	    $grupo = "aaf.id_tipo_activos_fijos,taf.nombre_tipo_activos_fijos";
+	    $id="aaf.id_tipo_activos_fijos";
+	    
+	    $rsActivos = $Activos->getCondiciones_grupo($columnas, $tablas, $where, $grupo, $id);
+	    
+	    
+	    //paradatos de diario tipo
+	    $colDiarioTipo = "cdtd.id_diario_tipo_detalle,
+                    pc.id_plan_cuentas,pc.codigo_plan_cuentas,
+                    pc.nombre_plan_cuentas,
+                    destino_diario_tipo_detalle,
+                    0.00 \"debito\", 0.00 \"credito\"";
+	    $tabDiarioTipo = "core_diario_tipo_detalle cdtd
+        	    INNER JOIN core_diario_tipo_cabeza cdtc
+        	    ON cdtc.id_diario_tipo_cabeza = cdtd.id_diario_tipo_cabeza
+        	    INNER JOIN plan_cuentas pc
+        	    ON pc.id_plan_cuentas = cdtd.id_plan_cuentas";
+	    $wheDiarioTipo = "cdtc.id_tipo_procesos = '$_id_tipo_procesos'";
+	    $idDiarioTipo = "cdtd.id_diario_tipo_detalle";
+	    $rsDiarioTipo = $Activos->getCondiciones($colDiarioTipo, $tabDiarioTipo, $wheDiarioTipo, $idDiarioTipo);
+	    
+	    //consulta tipo de activos
+	    $queryTipoActivo = "SELECT * FROM tipo_activos_fijos ";
+	    $rsTipoActivos = $Activos->enviaquery($queryTipoActivo);
+	    
+	    foreach ($rsDiarioTipo as $resDiario){
+	        $_id_plan_cuenta_diario = $resDiario->id_plan_cuentas;
+	        $_id_tipo_activo = 0;
+	        $_sumatoriaDepreciacion = 0;
+	        $_valor_debe = 0;
+	        $_valor_haber = 0;
+	        
+	        if( $resDiario->destino_diario_tipo_detalle == 'DEBE'){
+	            foreach ($rsTipoActivos as $resTipoActivo){
+	                if($resTipoActivo->debe_id_plan_cuentas == $_id_plan_cuenta_diario ){
+	                    $_id_tipo_activo = $resTipoActivo->id_tipo_activos_fijos;
+	                    break;
+	                }
+	            }
+	            foreach ($rsActivos as $resActivos){
+	                if($resActivos->id_tipo_activos_fijos == $_id_tipo_activo ){
+	                    $_sumatoriaDepreciacion = $resActivos->valor_depreciacion;
+	                    break;
+	                }
+	            }
+	            $_valor_debe = $_sumatoriaDepreciacion;
+	        }
+	        if( $resDiario->destino_diario_tipo_detalle == 'HABER'){
+	            foreach ($rsTipoActivos as $resTipoActivo){
+	                if($resTipoActivo->haber_id_plan_cuentas == $_id_plan_cuenta_diario ){
+	                    $_id_tipo_activo = $resTipoActivo->id_tipo_activos_fijos;
+	                    break;
+	                }
+	                
+	            }
+	            foreach ($rsActivos as $resActivos){
+	                if($resActivos->id_tipo_activos_fijos == $_id_tipo_activo ){
+	                    $_sumatoriaDepreciacion = $resActivos->valor_depreciacion;
+	                    break;
+	                }
+	            }
+	            $_valor_haber = $_sumatoriaDepreciacion;
+	        }
+	        
+	        $arrayFila = array('id_diario_detalle'=>$resDiario->id_diario_tipo_detalle,'id_plan_cuentas'=>$resDiario->id_plan_cuentas,'valor_debe'=>$_valor_debe,'valor_haber'=>$_valor_haber);
+	        array_push( $arrayDiarioTipo, $arrayFila);
+	        
+	    }
+	    /** buscar id del estado en pediente  de una funcion*/
+	    $id_estado = $this->getIdEstado();
+	    
+	    $_funcion  = "con_ins_temp_procesos_mensuales";
+	    $_parametros = "";	
+	    // PARA INGRESAR EN TEMP PROCESOS
+	    foreach ($arrayDiarioTipo as $res){
+	        // variables para la funcion de inse4rt en temp
+	        $_id_plan_cuentas = $res['id_plan_cuentas'];
+	        $_valor_debe   = $res['valor_debe'];
+	        $_valor_haber  = $res['valor_haber'];
+	        $_parametros = "$_id_usuarios,$_id_tipo_procesos,$_id_plan_cuentas,$_anio_proceso,$_mes_proceso,'$_valor_debe','$_valor_haber',$id_estado";
+	        
+	        $consultapg    = $Activos->getconsultaPG($_funcion, $_parametros);
+	        $Activos->llamarconsultaPG($consultapg);
+	    }
+	    
+	    $error = pg_last_error();
+	    if( !empty($error) ){
+	        throw new Exception("Revisar los procesos en Activos Fijos");
+	    }
+	    	    	    
+	}
+	
+	private function genProcesoProvisiones($_id_tipo_procesos,$_anio_proceso, $_mes_proceso ){
+	    
+	    if( !isset($_SESSION) ){
+	        session_start();
+	    }
+	    
+	    $_id_usuarios = $_SESSION['id_usuarios'];
+	        
+	    $mes = $_mes_proceso;
+        $year = $_anio_proceso;
+        $mes--;
+        if ($mes==0){
+            $mes=12;  $year--;
+        }
+        $diainicio = 22;
+        $diafinal = 21;
+        $fechai = $diainicio."/".$mes."/".$year;
+        $mes++;
+        if ($mes>12){
+            $mes=1;
+            $year++;
+            $fechaf = $diafinal."/".$mes."/".$year;
+        }else{
+            $fechaf = $diafinal."/".$mes."/".$year;
+        }
+	        
+        $periodo=$fechai."-".$fechaf;
+        //codigo aneterior genera fecha para buscar el periodo
+        
+        $Participes = new ParticipesModel();
+        
+        //paradatos de diario tipo
+        $colDiarioTipo = "cdtd.id_diario_tipo_detalle,
+                pc.id_plan_cuentas,pc.codigo_plan_cuentas,
+                pc.nombre_plan_cuentas,
+                destino_diario_tipo_detalle,
+                0.00 \"debito\", 0.00 \"credito\"";
+        $tabDiarioTipo = "core_diario_tipo_detalle cdtd
+    	    INNER JOIN core_diario_tipo_cabeza cdtc
+    	    ON cdtc.id_diario_tipo_cabeza = cdtd.id_diario_tipo_cabeza
+    	    INNER JOIN plan_cuentas pc
+    	    ON pc.id_plan_cuentas = cdtd.id_plan_cuentas";
+        $wheDiarioTipo = "cdtc.id_tipo_procesos = '$_id_tipo_procesos'";
+        $idDiarioTipo = "cdtd.id_diario_tipo_detalle";
+        $rsDiarioTipo = $Participes->getCondiciones($colDiarioTipo, $tabDiarioTipo, $wheDiarioTipo, $idDiarioTipo);
+        
+        //buscar provisiones mensuales
+        $queryProvisiones = "SELECT id_provisiones_nomina, fondos_reserva, dec_tercero_sueldo, dec_cuarto_sueldo,aporte_iess_2,periodo
+                        FROM provisiones_nomina_empleados WHERE periodo = '$periodo'";
+        $rsProvisiones = $Participes->enviaquery($queryProvisiones);
+        
+        if( empty($rsProvisiones) ){
+            throw new Exception("Proceso No Generado. Revisar el modulo de nomina ");
+        }
+        
+        $_sumAporteIESS = 0;
+        $_sumaDecimo13 = 0;
+        $_sumaDecimo14 = 0;
+        $_sumaFondo = 0;
+        
+        foreach ($rsProvisiones as $res){
+            $_sumAporteIESS = $_sumAporteIESS + $res->aporte_iess_2;
+            $_sumaDecimo13 = $_sumaDecimo13 + $res->dec_tercero_sueldo;
+            $_sumaDecimo14 = $_sumaDecimo14 + $res->dec_cuarto_sueldo;
+            $_sumaFondo = $_sumaFondo + $res->fondos_reserva;
+        }
+	        
+        $arrayDiarioTipo = array();
+        $_valor_debe = 0;
+        $_valor_haber = 0;
+        
+        foreach ($rsDiarioTipo as $resDiario){
+            $_codigo_plan_cuentas = $resDiario->codigo_plan_cuentas;
+            $_codigo_plan_cuentas = trim($_codigo_plan_cuentas,'.');
+            $_valor_debe = 0;
+            $_valor_haber = 0;
+            //echo $_codigo_plan_cuentas.'<br>';
+            switch ($_codigo_plan_cuentas){
+                case "4.3.01.20" :
+                    $_valor_debe = $_sumAporteIESS;
+                    break;
+                case "4.3.01.15.02":
+                    $_valor_debe = $_sumaDecimo14;
+                    break;
+                case "4.3.01.15.01" :
+                    $_valor_debe = $_sumaDecimo13;
+                    break;
+                case "4.3.01.25":
+                    $_valor_debe = $_sumaFondo;
+                    break;
+                case "2.5.03.06" :
+                    $_valor_haber = $_sumAporteIESS;
+                    break;
+                case "2.5.02.02":
+                    $_valor_haber = $_sumaDecimo14;
+                    break;
+                case "2.5.02.01" :
+                    $_valor_haber = $_sumaDecimo13;
+                    break;
+                case "2.5.04.01":
+                    $_valor_haber = $_sumaFondo;
+                    break;
+                default:
+                    $_valor_debe = 0;
+                    $_valor_haber = 0;
+                    break;
+            }
+	            
+            $arrayFila = array('id_diario_detalle'=>$resDiario->id_diario_tipo_detalle,'id_plan_cuentas'=>$resDiario->id_plan_cuentas,'valor_debe'=>$_valor_debe,'valor_haber'=>$_valor_haber);
+	            array_push( $arrayDiarioTipo, $arrayFila);
+	            
+        }
+        
+        /** buscar id del estado en pediente  de una funcion*/
+        $id_estado = $this->getIdEstado();
+        
+        $_funcion  = "con_ins_temp_procesos_mensuales";
+        $_parametros = "";
+        // PARA INGRESAR EN TEMP PROCESOS
+        foreach ($arrayDiarioTipo as $res){
+            // variables para la funcion de inse4rt en temp
+            $_id_plan_cuentas = $res['id_plan_cuentas'];
+            $_valor_debe   = $res['valor_debe'];
+            $_valor_haber  = $res['valor_haber'];
+            $_parametros = "$_id_usuarios,$_id_tipo_procesos,$_id_plan_cuentas,$_anio_proceso,$_mes_proceso,'$_valor_debe','$_valor_haber',$id_estado";
+            
+            $consultapg    = $Participes->getconsultaPG($_funcion, $_parametros);
+            $Participes->llamarconsultaPG($consultapg);
+        }
+        
+        $error = pg_last_error();
+        if( !empty($error) ){
+            throw new Exception("Revisar los procesos en Activos Fijos");
+        }
+	}
+	
+	
+	/** FUNCIONES PARA MODAL EN VISTA ProcesosMayorizacionView **/
+	public function listaProcesosMensuales(){
+	    
+	    $comprobantes = new CComprobantesModel();
+	    
+	    $page = ( isset($_REQUEST['page'] ) && !empty( $_REQUEST['page'] ) ) ? $_REQUEST['page'] : 1;
+	    $_id_modulos   = isset( $_POST['id_modulos'] ) ?  $_POST['id_modulos'] : 0;
+	    $_anio_procesos= isset( $_POST['anio_procesos'] ) ?  $_POST['anio_procesos'] : 0;
+	    $_mes_procesos = isset( $_POST['mes_procesos'] ) ?  $_POST['mes_procesos'] : 0;
+	    
+	    $columnas1     = " aa.id_historial_diarios_tipo, aa.anio_historial_diarios_tipo, aa.mes_historial_diarios_tipo,
+        	    bb.id_tipo_procesos, bb.nombre_tipo_procesos, cc.id_modulos, cc.nombre_modulos, dd.id_ccomprobantes,
+        	    dd.numero_ccomprobantes";
+	    $tablas1       = " core_historial_diarios_tipo aa
+        	    INNER JOIN core_tipo_procesos bb ON bb.id_tipo_procesos = aa.id_tipo_procesos
+        	    INNER JOIN modulos cc ON cc.id_modulos = bb.id_modulos
+        	    INNER JOIN ccomprobantes dd ON dd.id_ccomprobantes = aa.id_ccomprobantes";
+	    $where1        = " 1 = 1 ";
+	    $id1           = " aa.anio_historial_diarios_tipo DESC, aa.mes_historial_diarios_tipo ";	
+	    
+	    /** VALIDACIONES PARA WHERE **/
+	    
+	    $where1 .=  $_id_modulos != 0 ? " AND cc.id_modulos = $_id_modulos " : "";
+	    $where1 .=  $_anio_procesos != 0 ? " AND aa.anio_historial_diarios_tipo = $_anio_procesos " : "";
+	    $where1 .=  $_mes_procesos != 0 ? " AND aa.mes_historial_diarios_tipo = $_mes_procesos " : "";
+	    
+	    
+	    $resultSet=$comprobantes->getCantidad("*", $tablas1, $where1);
+	    $cantidadResult=(int)$resultSet[0]->total;
+	    
+	    $per_page = 10; //la cantidad de registros que desea mostrar
+	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	    $offset = ($page - 1) * $per_page;
+	    
+	    $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	    
+	    $resultSet = $comprobantes->getCondicionesPag($columnas1, $tablas1, $where1, $id1, $limit);
+	    $total_pages = ceil($cantidadResult/$per_page);
+	    
+	    $trHtml = "";
+	    $paginacion = "";
+	    $respuesta = array();
+	    
+	    if( sizeof($resultSet) > 0 ){
+	        $i = 0;
+	        foreach ( $resultSet as $res) {
+	            $i++;
+	            $trHtml .= "<tr>";
+	            $trHtml .= "<td>$i</td>";
+	            $trHtml .= "<td>$res->nombre_modulos</td>";
+	            $trHtml .= "<td>$res->nombre_tipo_procesos</td>";
+	            $trHtml .= "<td>$res->anio_historial_diarios_tipo</td>";
+	            $trHtml .= "<td>$res->mes_historial_diarios_tipo</td>";
+	            $trHtml .= "<td>$res->numero_ccomprobantes</td>";
+	            $trHtml .= "</tr>";
+	        }        
+	        //columnas en vista
+	        // # MOdulo - nombre proceso - anio - mes - numero de comprobante
+	        $paginacion = $this->paginate("index.php", $page, $total_pages, $adjacents, "fn1");
+	    }
+	   
+	    $respuesta['dataFilas'] = $trHtml;
+	    $respuesta['dataPaginacion'] = $paginacion;
+        
+	    echo json_encode($respuesta);
+	}
+	
+	public function getModulosModal(){
+	    
+	    $modulos = new ModulosModel();
+	    
+	    $colModulos = " modulos.id_modulos, modulos.nombre_modulos";
+	    $tabModulos = " public.modulos
+        			    INNER JOIN public.core_tipo_procesos
+        			    ON core_tipo_procesos.id_modulos = modulos.id_modulos ";
+	    $wheModulos = " 1 = 1 AND diarios_tipo_procesos = 't' ";
+	    $gruModulos = " modulos.id_modulos, modulos.nombre_modulos ";
+	    $idModulos = " modulos.nombre_modulos ";
+	    
+	    $rsModulos = $modulos->getCondiciones_grupo($colModulos,$tabModulos,$wheModulos,$gruModulos,$idModulos);
+	    
+	    if( !empty($rsModulos) ){
+	        echo json_encode( array("dataModulos"=>$rsModulos) );
+	    }
+	    
+	}
+	
+	private function getIdEstado(){
+	    /** buscar id del estado en pediente */
+	    $Estado = new EstadoModel();
+	    $rsEstado = $Estado->getBy("tabla_estado='con_temp_procesos_mensuales' AND nombre_estado ='PENDIENTE'");
+	    $id_estado = ( !empty($rsEstado) ) ? $rsEstado[0]->id_estado : "null";
+	    return $id_estado;
+	}
+	
+	public function fnDatos(){
+	    
+	    echo date('Y-m-d');
 	}
 	
 }

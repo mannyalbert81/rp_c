@@ -41,24 +41,6 @@ class EstadoModel extends ModeloBase{
 		parent::__construct($this->table);
 	}
 	
-	
-	
-    public function getLogin(){
-    	
-    	$query="SELECT * FROM claves WHERE ".$this->where." ;";
-    	$usuario=$this->ConsultaSql($query);
-    	
-    	$resultado = count($usuario);
-    	if ($resultado > 0)
-    	{
-    		return true;
-    	}
-    	else 
-    	{
-    		return false;
-    	}
-    	
-    }
     
     public function Insert(){
     
@@ -78,6 +60,10 @@ class EstadoModel extends ModeloBase{
         $resultado=$this->llamarconsulta($query);
         
         return  $resultado;
+    }
+    
+    public static function getIdEstado($_tabla, $_nombre){
+        $query = "SELECT id_estado FROM estado";
     }
     
 }

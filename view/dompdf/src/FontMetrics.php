@@ -87,7 +87,7 @@ class FontMetrics
      * FontMetrics::CACHE_FILE}.  This file should be writable by the
      * webserver process.
      *
-     * @see Font_Metrics::load_font_families()
+     * @see ::load_font_families()
      */
     public function saveFontFamilies()
     {

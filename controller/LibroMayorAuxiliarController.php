@@ -571,7 +571,7 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	    
 	    
 	    return $saldo_credito;
-	    
+
 	}
 	// desde aqui maycol
 

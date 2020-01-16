@@ -210,24 +210,17 @@ function validarfecha(fecha)
 	var year = new Date().getFullYear();
 	var mes = new Date().getMonth()+1;
 	var fechael = fecha.split("-");
-	if(fechael[0] < year)
-		{
+	if(fechael[0] < year){
 		return false;
-		}
-	else if (fechael[1] < mes)
-		{
+	}else if (fechael[1] < mes){
 		return false;
-		}
-	else if (fechael[1]== mes && fechael[2] <= hoy)
-	{
+	}else if (fechael[1]== mes && fechael[2] < hoy){
+		console.log("fecha no puede ser menor al dia de la solicitud");
 		return false;
-	}
-	else
-		{
+	}else{
 		return true;
-		}
+	}
 }
-
 
 
 function InsertarSolicitud()
@@ -242,21 +235,24 @@ console.log(fecha + " fecha");
 
 if (fecha=="")
 {
-$("#mensaje_fecha").text("Elija fecha");
-$("#mensaje_fecha").fadeIn("slow");
-$("#mensaje_fecha").fadeOut("slow");
+	$("#fecha").notify("Elija una fecha",{ position:"buttom left", autoHideDelay: 2000});
+	return;
 }
 if (hora_fin== "" || hora_fin.includes("_"))
 {    	
-	$("#mensaje_hora_salida").text("Ingrese hora");
-	$("#mensaje_hora_salida").fadeIn("slow");
-	$("#mensaje_hora_salida").fadeOut("slow");
+	$("#hora_salida").notify("Ingrese hora",{ position:"buttom left", autoHideDelay: 2000});
+	return;
+	
 }
 if (hora_inicio== "" || hora_inicio.includes("_"))
-{    	
-	$("#mensaje_hora_inicio").text("Ingrese hora");
-	$("#mensaje_hora_inicio").fadeIn("slow");
-	$("#mensaje_hora_inicio").fadeOut("slow");
+{   
+	$("#hora_inicio").notify("Ingrese hora",{ position:"buttom left", autoHideDelay: 2000});
+	return;
+}
+
+if( !validarfecha(fecha) ){
+	$("#fecha").notify("Fecha no valida",{ position:"buttom left", autoHideDelay: 2000});
+	return;
 }
 
 if ( fecha!="" && hora_fin!="" && !hora_inicio.includes("_") && hora_fin!="" && !hora_inicio.includes("_"))
@@ -334,8 +330,6 @@ if ( fecha!="" && hora_fin!="" && !hora_inicio.includes("_") && hora_fin!="" && 
 
 function LimpiarCampos()
 {
-	
-	
 	
 	$("#fecha").val("");
 	$("#hora_salida").val("");

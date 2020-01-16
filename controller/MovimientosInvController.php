@@ -2560,7 +2560,7 @@ class MovimientosInvController extends ControladorBase{
 	        return;
 	    }
 	    
-	    $page = (isset($_REQUEST['page']))?isset($_REQUEST['page']):1;
+	    $page = (  isset( $_REQUEST['page'] ) ) ? isset(  $_REQUEST['page']):1;
 	    
 	    $movimientos = new MovimientosInvModel();
 	    
@@ -2581,7 +2581,7 @@ class MovimientosInvController extends ControladorBase{
 	    
 	    $buscador = (isset($_POST['search']))?$_POST['search']:"";
 	    
-	    if($buscador != ""){
+	    if( $buscador != "" ){
 	        
 	        
 	        $query = "SELECT

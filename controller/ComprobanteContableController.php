@@ -1004,7 +1004,7 @@ class ComprobanteContableController extends ControladorBase{
 	            }
 	            
 	            $respuesta = $resultado[0];
-	            echo json_encode(array('success'=>1,'mensaje'=>$respuesta));	            
+	            echo json_encode(array('respuesta'=>"OK",'success'=>1,'mensaje'=>$respuesta));	            
 	            
 	            //print $parametros;
 	            //die();

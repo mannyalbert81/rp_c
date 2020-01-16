@@ -32,14 +32,14 @@ function getUsuario()
 
 function load_solicitudes(pagina){
 
-	   var search=$("#search").val();
-	   var idestado=$("#estado_solicitudes").val();
-  var con_datos={
+   var search=$("#search").val();
+   var idestado=$("#estado_solicitudes").val();
+   var con_datos={
 				  action:'ajax',
 				  page:pagina,
 				  };
 		  
-$("#load_solicitudes").fadeIn('slow');
+   $("#load_solicitudes").fadeIn('slow');
 
 $.ajax({
           beforeSend: function(objeto){
@@ -50,6 +50,8 @@ $.ajax({
           data: con_datos,
           success: function(x){
         	  
+        	  //console.log(x);
+        	  
         	  if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
     		  {
     		  swal({
@@ -59,13 +61,11 @@ $.ajax({
 		  		  button: "Aceptar",
 		  		});
     		  $("#load_solicitudes").html('');
-    		  }else
-    			  {
+    		  }else{
     			  $("#solicitudes_registrados").html(x);
     	            $("#load_solicitudes").html("");
     	            $("#tabla_solicitudes").tablesorter(); 
-    			  }
-           
+    		  }           
             
           },
          error: function(jqXHR,estado,error){
@@ -78,55 +78,47 @@ $.ajax({
 
 function validarfechas(fecha1,fecha2)
 {
+	console.log(fecha1);
+	console.log(fecha2);
 	var hoy = new Date().getDate();
 	var year = new Date().getFullYear();
 	var mes = new Date().getMonth()+1;
 	var fechael1 = fecha1.split("-");
-	var date1  = new Date(fechael1[0], fechael1[1]-1, fechael1[2]);
+	var date1  = new Date(fechael1[0], fechael1[1]-1, fechael1[2]);	
 	var fechael2 = fecha2.split("-");
 	var date2  = new Date(fechael2[0], fechael2[1]-1, fechael2[2]);
-	if(fechael1[0] < year)
-		{
-		return false; 
-		}
-	else if (fechael1[1] < mes)
-		{
+	
+	if(fechael1[0] < year){		
+		return false; 		
+	}else if (fechael1[1] < mes){
 		return false;
-		}
-	else if (fechael1[1]== mes && fechael1[2] <= hoy)
-	{
+	}else if ( fechael1[1] == mes && fechael1[2] <= hoy ){
+		//aqui valida que el dia solicitado sea desde el dia suiguiente de la solicitud		
+		console.log("Fecha inicio no puede ser el mismo dia de la solicitud");
 		return false;
-	}
-	else
-		{
-		if(fechael2[0] < year)
-		{
-		return false; 
-		}
-	else if (fechael2[1] < mes)
-		{
-		return false;
-		}
-	else if (fechael2[1]== mes && fechael2[2] <= hoy)
-	{
-		return false;
-	}
-	else
-		{
-		var fecha1ms=date1.getTime();
-		var fecha2ms=date2.getTime();
-		var diff = fecha2ms-fecha1ms;
-		
-		if (diff<0)
-			{
+	}else{
+		if(fechael2[0] < year){
 			return false; 
-			}
-		else
-			{
-
-			return true;
+		}else if (fechael2[1] < mes){
+			return false;
+		}else if (fechael2[1]== mes && fechael2[2] <= hoy){
+			return false;
+		}else{
+			
+			var fecha1ms=date1.getTime();
+			var fecha2ms=date2.getTime();
+			var diff = fecha2ms-fecha1ms;
+		
+			if (diff<0){
+				//si la diferencia es menor a cero .. fecha2 dos no es mayor a fecha 1
+				console.log("Fecha de inicio no puede ser mayor a la fecha fin de vacaciones");
+				return false; 
+			}else{
+				//si la diferencia es mayor a cero.. fecha1 es mayor a fecha 1
+				return true;
 			}
 		}
+		//return false;
 	}
 }
 
@@ -140,25 +132,25 @@ var hasta = $("#fecha_hasta").val();
 
 if (hasta=="")
 {
-$("#mensaje_fecha_hasta").text("Elija fecha");
-$("#mensaje_fecha_hasta").fadeIn("slow");
-$("#mensaje_fecha_hasta").fadeOut("slow");
+	$("#fecha_hasta").notify("Elija una fecha",{ position:"buttom left", autoHideDelay: 2000});
+	return;
 }
 if (desde== "")
 {    	
-	$("#mensaje_fecha_desde").text("Elija fecha");
-	$("#mensaje_fecha_desde").fadeIn("slow");
-	$("#mensaje_fecha_desde").fadeOut("slow");
+	$("#fecha_desde").notify("Elija una fecha",{ position:"buttom left", autoHideDelay: 2000});
+	return;
 }
 if (!validarfechas(desde, hasta))
 	{
-	$("#mensaje_fecha_hasta").text("Fecha incorrecta");
-	$("#mensaje_fecha_hasta").fadeIn("slow");
-	$("#mensaje_fecha_hasta").fadeOut("slow");
-	$("#mensaje_fecha_desde").text("Fecha incorrecta");
-	$("#mensaje_fecha_desde").fadeIn("slow");
-	$("#mensaje_fecha_desde").fadeOut("slow");
+	$("#fecha_hasta").notify("Fecha incorrecta",{ position:"buttom left", autoHideDelay: 2000});
+	$("#fecha_desde").notify("Fecha incorrecta",{ position:"buttom left", autoHideDelay: 2000});
+	return;	
 	}
+
+if( parseInt($("#total_dias").val(), 10) > parseInt($("#dias_vacaciones").val(), 10) ){
+	$("#total_dias").notify("Dias no pueden ser mayor a los disponibles",{ position:"buttom left", autoHideDelay: 2000});
+	return;	
+}
 
 
 if ( desde!="" && hasta!="" && validarfechas(desde, hasta))
@@ -212,7 +204,15 @@ if ( desde!="" && hasta!="" && validarfechas(desde, hasta))
 					}
 			
 			}
-			
+			if(x.includes("<emessage>")){
+				swal({
+			  		  title: "Solicitud",
+			  		  text: " Validar total dias vacaciones para el año seleccionado",
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+				
+			}
 				
 			}
 		
@@ -234,12 +234,10 @@ if ( desde!="" && hasta!="" && validarfechas(desde, hasta))
 }
 
 function LimpiarCampos()
-{
-	
-	
-	
+{	
 	$("#fecha_desde").val("");
 	$("#fecha_hasta").val("");
+	$("#total_dias").val("");
 	
 	
 }
@@ -374,3 +372,44 @@ function Negar(idsol)
 	  		});
 	});
 }
+
+/************************** FUNCIONES DIRECTAS A LOS INPUTS ********************************************************/
+
+$("#fecha_hasta").on("focusout",function(){
+	
+	var date_inicio = $("#fecha_desde");
+	var date_fin = $("#fecha_hasta");
+	
+	if( $("#fecha_desde").val() != "" && $("#fecha_hasta").val() != "" ){
+		
+		try {
+			
+			var startDate = new Date( date_inicio.val() );
+			var endDate = new Date( date_fin.val() );
+			var starttime = startDate.getTime();
+			var endtime = endDate.getTime();
+			var numero_dias = ( ( endtime - starttime )/( 1000*60*60*24 ) );	
+			
+			if( numero_dias > 0 ){
+				var ndias = 0;				
+				for (var i = 1; i <= numero_dias; i++) {			   
+					   if( startDate.getDay() == 6 || startDate.getDay() == 5 ){
+						   ndias ++; //si hay dias entre sabado y domingo estos dias no cuentan
+					   }
+					   startDate.setDate( startDate.getDate() + 1);
+				}
+				var diasLaborables = numero_dias - ndias; //el total de dias laborables solicitado
+				$("#total_dias").val(diasLaborables);
+			}else{
+				$("#fecha_hasta").notify("Segmento de Fecha No valida",{ position:"buttom left", autoHideDelay: 2000});
+			}			
+			
+		} catch (e) {
+			$("#total_dias").val("");
+			$("#fecha_hasta").notify("Fechas no Validas",{ position:"buttom left", autoHideDelay: 2000});
+		}
+						
+	}
+})
+
+

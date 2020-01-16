@@ -114,17 +114,17 @@ class AvancesEmpleadosController extends ControladorBase{
         $id_empleado = $result[0]->id_empleados;
         $avance = new AnticipoSueldoEmpleadosModel();
         $columnas="(reporte_nomina_empleados.horas_ext50+reporte_nomina_empleados.horas_ext100+
-		reporte_nomina_empleados.fondos_reserva+reporte_nomina_empleados.dec_cuarto_sueldo+
-		reporte_nomina_empleados.dec_tercero_sueldo+cargos_empleados.salario_cargo)-
-		(reporte_nomina_empleados.anticipo_sueldo+reporte_nomina_empleados.aporte_iess1+
-		reporte_nomina_empleados.asocap+reporte_nomina_empleados.prest_quirog_iess+
-		reporte_nomina_empleados.prest_hipot_iess+reporte_nomina_empleados.dcto_salario+
-		reporte_nomina_empleados.comision_asuntos_sociales) as liquido";
+    		reporte_nomina_empleados.fondos_reserva+reporte_nomina_empleados.dec_cuarto_sueldo+
+    		reporte_nomina_empleados.dec_tercero_sueldo+cargos_empleados.salario_cargo)-
+    		(reporte_nomina_empleados.anticipo_sueldo+reporte_nomina_empleados.aporte_iess1+
+    		reporte_nomina_empleados.asocap+reporte_nomina_empleados.prest_quirog_iess+
+    		reporte_nomina_empleados.prest_hipot_iess+reporte_nomina_empleados.dcto_salario+
+    		reporte_nomina_empleados.comision_asuntos_sociales) as liquido";
         $where="reporte_nomina_empleados.id_empleado =".$id_empleado;
         $tablas="public.reporte_nomina_empleados INNER JOIN public.empleados
-	ON reporte_nomina_empleados.id_empleado = empleados.id_empleados
-	INNER JOIN public.cargos_empleados
-	ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+        	ON reporte_nomina_empleados.id_empleado = empleados.id_empleados
+        	INNER JOIN public.cargos_empleados
+        	ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         $limit="ORDER BY reporte_nomina_empleados.id_registro DESC LIMIT 2";
         $resultSet=$avance->getCondicionesSinOrden($columnas, $tablas, $where, $limit);
         
@@ -429,8 +429,10 @@ class AvancesEmpleadosController extends ControladorBase{
                     {
                         if ($id_rol==$id_rh  && $res->nombre_estado=="EN REVISION" && !$tiene_jefe )
                         {
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                            //$html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            //$html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_anticipo.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_anticipo.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                         }
                         else if ($id_rol==$id_jefi && $res->nombre_estado=="EN REVISION" && $id_dpto_jefe == $res->id_departamento)
                         {

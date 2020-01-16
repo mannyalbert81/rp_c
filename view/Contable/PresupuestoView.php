@@ -72,37 +72,75 @@
         
             <div class="row">
             
-            
+            <div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="id_plan_cuentas" class="control-label">Código Plan de Cuentas:</label>
+                    	<input type="text" class="form-control" id="id_plan_cuentas" name="id_plan_cuentas" placeholder="Número.." >
+                        <div id="mensaje_id_plan_cuentas" class="errores"></div>
+                 	</div>
+             	</div>
+		    <div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="nombre_presupuestos_cabeza" class="control-label">Nombre Plan Cuentas:</label>
+                    	<input type="text" class="form-control" id="nombre_presupuestos_cabeza" name="nombre_presupuestos_cabeza" placeholder="Nombre.." >
+                         <input type="hidden" name="id_plan_cuentas_1" id="id_plan_cuentas_1" />
+                        <div id="mensaje_nombre_presupuestos_cabeza" class="errores"></div>
+                 	</div>
+             	</div>
+		    <div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="mes_presupuestos_detalle" class="control-label">Mes:</label>
+                    	<select name="mes_presupuestos_detalle" id="mes_presupuestos_detalle"  class="form-control">
+                                      <option value="" selected="selected">--Seleccione--</option>
+                                      <option value="01">Enero</option>
+        							  <option value="02">Febrero</option>
+        							  <option value="03">Marzo</option>
+        							  <option value="04">Abril</option>
+        							  <option value="05">Mayo</option>
+        							  <option value="06">Junio</option>
+        							  <option value="07">Julio</option>
+        							  <option value="08">Agosto</option>
+        							  <option value="09">septiembre</option>
+        							  <option value="10">Octubre</option>
+        							  <option value="11">Noviembre</option>
+        							  <option value="12">Diciembre</option>
+        							  
+                        </select> 
+                        <div id="mensaje_mes_presupuestos_detalle" class="errores"></div>
+                 	</div>
+             	</div>
 			
-			<div class="col-xs-3 col-md-3 col-md-3 ">
-    		    <div class="form-group">
-                  <label for="nombre" class="control-label">Nombre</label>
-                  <input type="text" class="form-control" id="nombre_presupuestos" name="nombre"  placeholder="Nombre ">
-                </div>
-		    </div>
-		    <div class="col-xs-3 col-md-3 col-md-3 ">
-    		    <div class="form-group">
-                  <label for="valor_procesado" class="control-label">Valor procesado</label>
-                  <input type="text" class="form-control" id="valor_procesado" name="valor_procesado"  placeholder="Valor Procesado">
-                </div>
-		    </div>
+			<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="anio_presupuestos_detalle" class="control-label">Año:</label>
+                    	<input type="text" class="form-control" id="anio_presupuestos_detalle" name="anio_presupuestos_detalle" placeholder="Año.." value="<?php echo $anio[0]; ?>" readonly="readonly">
+                        <div id="mensaje_anio_presupuestos_detalle" class="errores"></div>
+                 	</div>
+             	</div>
+			</div>
+			
+			
+			<div class="row">
+			
+			
+		    <div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="valor_presupuestado_presupuestos_detalle" class="control-label">Valor Presupuestado:</label>
+                    	<input type="text" class="form-control" id="valor_presupuestado_presupuestos_detalle" name="valor_presupuestado_presupuestos_detalle" placeholder="valor.." onkeypress="return NumCheck(event, this)">
+                        <div id="mensaje_plazo_meses_datos_credito" class="errores"></div>
+                 	</div>
+             	</div>
 		
 		    		    
-		    <div class="col-xs-3 col-md-3 col-md-3 ">
-    		    <div class="form-group">
-                  <label for="valor_ejecutado" class="control-label">Valor ejecutado</label>
-                  <input type="text" class="form-control" id="valor_ejecutado" name="valor_ejecutado"  placeholder="Valor Ejecutado">
-                </div>
-		    </div>
+		    <div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="valor_ejecutado_presupuestos_detalle" class="control-label">Valor Ejecutado:</label>
+                    	<input type="text" class="form-control" id="valor_ejecutado_presupuestos_detalle" name="valor_ejecutado_presupuestos_detalle"  placeholder="valor.." onkeypress="return NumCheck(event, this)">
+                        <div id="mensaje_valor_ejecutado_presupuestos_detalle" class="errores"></div>
+                 	</div>
+             	</div>
 		    
-		    <div class="col-xs-3 col-md-3 col-md-3 ">
-    		    <div class="form-group">
-                  <label for="codigo_plan_cuentas" class="control-label">Cod / Nom</label>
-                  <input type="text" class="form-control" id="codigo_plan_cuentas" name="codigo_plan_cuentas" onkeyup="autompleteCodigo(this)" value="" placeholder="Id Plan Cuentas">
-                  <div id="mensaje_id_plan_cuentas" class="errores"></div>
-                  <input type="hidden" name="id_plan_cuentas" id="id_plan_cuentas" value="0" class="form-control"/>
-                </div>
-		    </div>	
+		  	
 		    
     		
 		</div>
@@ -112,7 +150,6 @@
            	 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
                   <button type="button" id="Guardar" name="Guardar" class="btn btn-success" onclick="InsertarPresupuestos()">GUARDAR</button>
-                  <button type="button" class="btn btn-danger" id="Cancelar" name="Cancelar" onclick="">CANCELAR</button>
                 </div>
              </div>	    
             </div>
@@ -121,27 +158,34 @@
         </div>
       </div>
     </section>
-      <section class="content">
-  	<div class="box box-primary">
-  		<div class="box-header with-border">
-  			<h3 class="box-title">Listado de Presupuestos</h3>
-  			<div class="box-tools pull-right">
+ <section class="content">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Presupuestos Registrados</h3>
+              <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                <i class="fa fa-minus"></i></button>
+                  <i class="fa fa-minus"></i></button>
+                
+              </div>
             </div>
-        </div> 
-        <div class="box-body">
-			<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search" name="search" onkeyup="load_empleados(1)" placeholder="Buscar.."/>
-			</div>
-			<div class="pull-right" style="margin-right:15px;">
-        			
-    		</div>
-        	<div id="load_presupuestos" ></div>
-        	<div id="presupuestos_registrados" ></div>
-        </div> 	
-  	</div>
-  </section>
+            
+            <div class="box-body">
+
+           <br>
+              <div class="tab-pane active" id="presupuestos">
+                
+					<div class="pull-right" style="margin-right:15px;">
+						<input type="text" value="" class="form-control" id="search_buscar_presupuestos" name="search_buscar_presupuestos" onkeyup="load_buscar_presupuestos(1)" placeholder="search.."/>
+					</div>
+					<div id="load_buscar_presupuestos" ></div>	
+					<div id="presupuestos_registrados"></div>	
+                
+              </div>
+                <a href="index.php?controller=Presupuestos&action=reporte_presupuestos" target="_blank"><input type="image" src="view/images/print.png" alt="Submit" width="50" height="34" formtarget="_blank" id="btngenerar" name="btngenerar" class="btn btn-default" title="Reporte Productos"></label></a>
+         
+            </div>
+            </div>
+            </section>
     
   </div>
  
@@ -159,6 +203,6 @@
 	<script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script src="view/Contable/FuncionesJS/Presupuestos.js?0.08"></script>
+	<script src="view/Contable/FuncionesJS/Presupuestos.js?3.0"></script>
   </body>
 </html>   

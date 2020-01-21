@@ -1182,7 +1182,7 @@ function ReporteNomina()
 
  var diainicio = 22;
  var diafinal = 21;
- var fechai = diainicio+"/"+mes_inicio+"/"+year;
+ var fechai = diainicio+"/"+mes_inicio+"/"+anio_inicio;
  var fechaf = diafinal+"/"+mes_fin+"/"+year;
  $.ajax({
 	    url: 'index.php?controller=Marcaciones&action=GetReporte',
@@ -1317,7 +1317,7 @@ function GenerarReporte()
 	if(dia_hoy<=21)
 		{
 		mes_inicio=mes-2;
-		mes_fin=mes-1;
+		mes_fin=mes;
 		if (mes_inicio<1)
 			{
 			mes_inicio=12;
@@ -1338,7 +1338,7 @@ function GenerarReporte()
 	var diainicio = 22;
 	 var diafinal = 21;
 	 
-	 var fechai = diainicio+"/"+mes_inicio+"/"+year;
+	 var fechai = diainicio+"/"+mes_inicio+"/"+mes_inicio;
 	 
 	 var fechaf = diafinal+"/"+mes_fin+"/"+year;
 	 

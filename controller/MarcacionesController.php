@@ -177,12 +177,13 @@ class MarcacionesController extends ControladorBase{
         $tablas = "public.empleados";
         
         
-        $where    = "empleados.numero_cedula_empleados=".$cedula_empleado;
+        $where    = "empleados.numero_cedula_empleados='$cedula_empleado'";
         
         $id       = "empleados.id_empleados";
         
         $resultSet=$marcacion->getCondiciones($columnas, $tablas, $where, $id);
-               
+              
+        
         $id_empleado = (string)$resultSet[0]->id_empleados;
             
             $parametros = "'$id_empleado',

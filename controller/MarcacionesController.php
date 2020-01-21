@@ -1177,14 +1177,15 @@ class MarcacionesController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 16px;">Fecha</th>';
                 $html.='<th style="text-align: left;  font-size: 16px;">Tipo</th>';
                 $html.='<th style="text-align: left;  font-size: 16px;">Día</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                 
                
                 
-                if($id_rol==1){
+               /* if($id_rol==1){
                     
                     $html.='<th style="text-align: left;  font-size: 12px;"></th>';
                     
-                }
+                }*/
                 
                 $html.='</tr>';
                 $html.='</thead>';
@@ -1207,13 +1208,14 @@ class MarcacionesController extends ControladorBase{
                     $html.='<td style="font-size: 15px;">'.$res->tipo_registro_empleados.'</td>';                    
                     $dayOfWeek = date("w", strtotime($res->fecha_marcacion_empleados));
                     $html.='<td style="font-size: 15px;">'.$dias[$dayOfWeek].'</td>';
+                    $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarMarcaciones('.$res->id_registro.','.$res->numero_cedula_empleados.',&quot;'.$res->nombres_empleados.'&quot;,&quot;'.$res->hora_marcacion_empleados.'&quot;,&quot;'.$res->fecha_marcacion_empleados.'&quot,&quot;'.$res->tipo_registro_empleados.'&quot)"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
                     
                     
-                    if($id_rol==1){
+                    /*if($id_rol==1){
                         
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="EditarMarcaciones('.$res->id_registro.','.$res->numero_cedula_empleados.',&quot;'.$res->nombres_empleados.'&quot;,&quot;'.$res->hora_marcacion_empleados.'&quot;,&quot;'.$res->fecha_marcacion_empleados.'&quot,&quot;'.$res->tipo_registro_empleados.'&quot)"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
                         
-                    }
+                    }*/
                     $html.='</tr>';
                 }
                 

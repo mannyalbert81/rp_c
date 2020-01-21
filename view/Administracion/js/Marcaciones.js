@@ -129,11 +129,28 @@ function EditAdvertencias(cedula){
 
 function load_marcaciones(pagina){
 
-	var mes = new Date().getMonth();
+	//var mes = new Date().getMonth();
+	var d = new Date();
+	
+	
+	
+	
+	 var mes = d.getMonth();
+	 mes=1;
 	var year = new Date().getFullYear();
 	var dia = new Date().getDate();
+	var year_ini = year;
+	var year_fin = year;
+	var mes_ini = mes;
+	var mes_fin = mes;
+	
+	
 	var fi="";
 	var ff="";
+	
+	
+	
+	/*
 	if (dia<22) mes--;
 	if (mes<=9)	fi = year+"-0"+mes+"-22";
 	else fi = year+"-"+mes+"-22";
@@ -141,6 +158,35 @@ function load_marcaciones(pagina){
 	else mes++;
 	if (mes<=9) ff = year+"-0"+mes+"-21";
 	else ff = year+"-"+mes+"-21";
+    */
+	
+	
+	
+	
+		
+		mes_ini=mes_ini-1;
+		year_ini=year_ini;
+		if(mes_ini<1){
+			
+			mes_ini=12;
+			year_ini=year_ini-1;
+		}
+		
+		
+	
+	if(mes_ini<=9){
+		
+			fi = year_ini+"-0"+mes_ini+"-22";
+			ff = year_fin+"-0"+mes_fin+"-21";
+	}else{
+		
+		fi = year_ini+"-"+mes_ini+"-22";
+		ff = year_fin+"-"+mes_fin+"-21";
+	}
+    
+	
+	
+    
     var search=$("#search").val();
     var periodo=$("#periodo_marcaciones").val();
     var ncedula = $("#cedula_empleado1").val();
@@ -676,12 +722,15 @@ $("#mensaje_archivo").fadeOut("slow");
 						    						
 						    						for (var i=diainicio; i <= ld; i++)
 						    							{
-						    							var fechac = i+"/"+mes_inicio+"/"+year;
+						    							var fechac = i+"/"+mes_inicio+"/"+anio_inicio; 
+						    							
+						    							console.log("inicio =>" +fechac);
 						    							dcontrol.push(fechac);
 						    							}
 						    						for (var i=1; i <= diafinal; i++)
 					    							{
 					    							var fechac = i+"/"+mes_fin+"/"+year;
+					    							console.log("fin =>" +fechac);
 					    							dcontrol.push(fechac);
 					    							}
 						    						console.log("fechas de control  "+dcontrol);
@@ -1113,7 +1162,7 @@ function ReporteNomina()
 	if(dia_hoy<=21)
 		{
 		mes_inicio=mes-2;
-		mes_fin=mes-1;
+		mes_fin=mes;
 		if (mes_inicio<1)
 			{
 			mes_inicio=12;
@@ -1167,8 +1216,19 @@ function ReporteNomina()
 
 function MostrarNotificacion()
 {
-	var mes = new Date().getMonth();
-	mes++;
+	
+	
+	
+	var d = new Date();
+	 var mes = d.getMonth();
+     mes =1;
+	
+	
+	//var mes = new Date().getMonth();
+	//mes++;
+	
+	
+	
 	var year = new Date().getFullYear();
 	var dia_hoy= new Date().getDate();
 	var mes_inicio=0;
@@ -1176,10 +1236,12 @@ function MostrarNotificacion()
 	var anio_inicio=year;
 	var anio_fin=year;
 	console.log(dia_hoy+" hoy")
+	
+	
 	if(dia_hoy<=21)
 		{
 		mes_inicio=mes-2;
-		mes_fin=mes-1;
+		mes_fin=mes;
 		if (mes_inicio<1)
 			{
 			mes_inicio=12;
@@ -1197,12 +1259,17 @@ function MostrarNotificacion()
 			}
 		}
  
+	
+	
+	
+	
  var diainicio = 22;
  var diafinal = 21;
- var fechai = diainicio+"/"+mes_inicio+"/"+year;
+ var fechai = diainicio+"/"+mes_inicio+"/"+anio_inicio;
  var fechaf = diafinal+"/"+mes_fin+"/"+year;
  
- console.log(fechai+"<=>"+fechaf);
+ console.log(fechai+"<<=>>"+fechaf);
+ 
  $.ajax({
 	    url: 'index.php?controller=Marcaciones&action=MostrarNotificacion',
 	    type: 'POST',
@@ -1212,7 +1279,10 @@ function MostrarNotificacion()
 	    },
 	})
 	.done(function(x) {
-				if (!(x.includes("Warning")) && !(x.includes("Notice")))
+		
+	
+		
+		if (!(x.includes("Warning")) && !(x.includes("Notice")))
 			{
 			$("#load_boton_notificaciones").html(x);
 			}

@@ -1,12 +1,7 @@
 <!DOCTYPE HTML>
 	<html lang="es">
     <head>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <style>
-
-    
-
-</style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">   
         
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -111,7 +106,14 @@
                         <div id="mensaje_fecha_hasta" class="errores"></div>
                  	</div>
              	</div>
+             	<div class="col-xs-6 col-md-3 col-lg-3 ">
+            		<div class="form-group">
+                		<label for="total_dias" class="control-label">Total Dia(s) Solicitud:</label>
+                    	<input type="text"  class="form-control" id="total_dias" name="total_dias" placeholder="Fecha hasta" readonly>
+                 	</div>
+             	</div>
           	</div>
+          	
           	<div class="row">
            	 <div class="col-xs-12 col-md-12 col-md-12" style="margin-top:15px;  text-align: center; ">
             	<div class="form-group">
@@ -163,8 +165,9 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Administracion/js/VacacionesEmpleados.js?0.6"></script>
+    <script src="view/Administracion/js/VacacionesEmpleados.js?0.16"></script>
 	
 	
   </body>

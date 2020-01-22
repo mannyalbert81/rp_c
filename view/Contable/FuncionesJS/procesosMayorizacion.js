@@ -1,5 +1,12 @@
 $(document).ready(function(){ 	 
-	  
+	
+	/** revisar el evento hover para el boton */
+	/*$("#btnSavediario").notify("GUADAR DIARIO",{ position:"left", autoHideDelay: 2000});
+	
+	$("#btnSavediario").on("hover",function(){
+		$(this).notify("GUADAR DIARIO",{ position:"left", autoHideDelay: 2000});
+	})*/
+	
 });
 
 $("#id_modulos").on("change",function(){
@@ -61,6 +68,160 @@ function setTableStyle(ObjTabla){
     });
 }
 
+function fnRevisarDiario(){
+	
+	let $modulo = $("#id_modulos"),
+	$procesos = $("#id_tipo_procesos"),
+	$anioProcesos = $("#anio_procesos"),
+	$mesProcesos = $("#mes_procesos"),
+	$divResultados = $("#div_detalle_procesos");
+	$divResultados.html();
+	
+	if($modulo.val() == '0'){
+		$modulo.notify("Seleccione el modulo",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}	
+	if($procesos.val() == '0'){
+		$procesos.notify("Seleccione el proceso",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	if($anioProcesos.val() == ''){
+		$anioProcesos.notify("Digite anio",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	if($mesProcesos.val() == '0'){
+		$mesProcesos.notify("Seleccione mes de proceso",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	if(!validafecha()){
+		$mesProcesos.notify("Fecha Invalida/Fecha Fuera de periodo",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	parametros = {
+			id_tipo_procesos:$procesos.val(),
+			anio_procesos:$anioProcesos.val(),
+			mes_procesos:$mesProcesos.val()
+			}	
+	
+	$.ajax({
+		url:"index.php?controller=ProcesosMayorizacion&action=generaDiarioMensual",
+		dataType:"json",
+		type:"POST",
+		data:parametros
+	}).done(function(x){
+		
+		$divResultados.html("");
+		/** aqui se guarda en un text en caso que el usuario cambie las opciones para generar **/
+		var $txtParametros = $("#txt_parametros");	
+		$txtParametros.val("");
+		
+		if( x.status != undefined ){
+			
+			var $mensaje	= ( x.mensaje != undefined ) ? x.mensaje : "";
+			var $htmlResultado	= ( x.htmlTabla != undefined ) ? x.htmlTabla : "";
+			swal({
+				title:"Procesos Mensuales",
+				text:$mensaje,
+				icon:x.icon
+			});
+			
+			if( x.status == "OK" ){
+				$divResultados.html($htmlResultado);
+				$txtParametros.val($modulo.val()+"|"+$procesos.val()+"|"+$anioProcesos.val()+"|"+$mesProcesos.val());
+				$("#pnl_guardar").removeClass("hide");
+			}
+			
+		}else{ swal({title:"PROCESOS MENSUALES",text:"Datos Erroneos",icon:"info"});	}
+		
+		
+	}).fail(function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+}
+
+function GuardarDiario(){
+	
+	var $txtParametros = $("#txt_parametros");
+	let $modulo = $("#id_modulos"),
+	$procesos = $("#id_tipo_procesos"),
+	$anioProcesos = $("#anio_procesos"),
+	$mesProcesos = $("#mes_procesos");
+	
+	var $arrayParametros = $txtParametros.val().split("|");
+	
+	/** la validacion siver para validar si el usuario cambio sus parametros **/
+	if( $modulo.val() != $arrayParametros[0] || $procesos.val() != $arrayParametros[1] 
+		|| $anioProcesos.val() != $arrayParametros[2] || $mesProcesos.val() != $arrayParametros[3]	){
+		
+		swal({text:"Usuario Ha cambiado los parametros para Guardar Diario",title:"ERROR",icon:"warning"});
+		return false;
+	}
+	
+	swal({
+		title: "¿Generar Diario?",
+		text: "La siguiente accion no se revertira!",
+		icon:"view/images/capremci_load.gif",
+		dangerMode:true,
+		buttons: {
+		    Cancelar:"Cancelar",		    
+		    continuar: "Continuar",		    
+		  },
+	}).then((value) => {
+		  switch (value) {		 
+		    case "Cancelar":
+		    	$("#btngenera").attr('disabled',false);
+		      break;		 
+		    case "continuar":
+		    	//insertaDiarioMensual
+		    	$.ajax({
+		   		 url:"index.php?controller=ProcesosMayorizacion&action=insertaDiarioMensual",
+		   		 type:"POST",
+		   		 dataType:"json",
+		   		 data:{id_tipo_procesos:$procesos.val(),anio_procesos: $anioProcesos.val(),mes_procesos: $mesProcesos.val()}
+			   	 }).done(function(x){
+			   		 
+			   		let $divResultados = $("#div_detalle_procesos");				
+			   		 
+			   		 if( x.status != undefined ){
+			   			 
+			   			 swal({title:"PROCESOS MENSUALES",text:x.mensaje,icon:x.icon})
+			   			 
+			   			 if( x.status == "ERROR" ){
+			   				 
+			   			 }
+			   			 
+			   			if( x.status == "OK" ){
+			   				$divResultados.html("");
+			   				$("#pnl_guardar").addClass("hide");
+			   			 }
+			   		 }
+			   		 
+			   		 
+			   	 }).fail(function(xhr,status,error){
+			   		 let err = xhr.responseText;
+			   		 console.log(err);
+			   		 var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+			   		 if( mensaje !== null ){
+			   			 var resmsg = mensaje[1];
+			   			 swal( {
+			   				 title:"Error",
+			   				 dangerMode: true,
+			   				 text: resmsg.replace("|","\n"),
+			   				 icon: "error"
+			   				})
+			   		 }
+			   	 });
+		      break;
+		    default:
+		      return;
+		  }
+		});
+		
+	/** aqui viene para insertar como diario que afecte a la contabilidad **/
+}
+
 $("#btnDetalles").on("click",function(event){
 	
 	let $modulo = $("#id_modulos"),
@@ -99,9 +260,10 @@ $("#btnDetalles").on("click",function(event){
 		 dataType:"json",
 		 data:{peticion:'simulacion',id_tipo_procesos:$procesos.val(),anio_procesos: $anioProcesos.val(),mes_procesos: $mesProcesos.val()}
 	 }).done(function(x){
+		 console.log(x);
 		 if ( x.hasOwnProperty( 'tabladatos' ) || ( x.tabladatos != '' ) ) {
 			 $divResultados.html(x.tabladatos);
-			 setTableStyle("tbl_detalle_diario");
+			 //setTableStyle("tbl_detalle_diario");
 		 };
 		 if ( x.hasOwnProperty( 'id_ccomprobantes' ) || ( x.id_ccomprobantes != '' ) ) {
 			 buscaDiario(x.id_ccomprobantes);

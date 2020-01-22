@@ -1,6 +1,8 @@
 <?php
 class VacacionesEmpleadosController extends ControladorBase{
+    
     public function index(){
+        
         session_start();
         $estado = new EstadoModel();
         $id_rol = $_SESSION['id_rol'];
@@ -8,13 +10,8 @@ class VacacionesEmpleadosController extends ControladorBase{
         $tablaes ="public.estado";
         $wherees = "estado.tabla_estado = 'PERMISO_EMPLEADO'";
         $ides = "estado.id_estado";
-        $resultes = $estado->getCondiciones("*", $tablaes, $wherees, $ides);
-       
+        $resultes = $estado->getCondiciones("*", $tablaes, $wherees, $ides);       
         
-        
-        
-        
-      
         $this->view_Administracion("VacacionesEmpleados",array(
             "resultes" => $resultes
         ));
@@ -76,6 +73,22 @@ class VacacionesEmpleadosController extends ControladorBase{
         $parametros = "'$id_empleado',
                      '$fecha_desde',
                      '$fecha_hasta'";
+        
+        $startDate = new DateTime($fecha_desde);        
+        $anioStartDate = $startDate->format('Y');
+        
+        /** buscar si esta parametrizado el hisorial de vacaciones del empleado **/
+        $colHistorial = " total_dias_historial_vacaciones";
+        $tabHistorial = " th_historial_vacaciones";
+        $wheHistorial = " id_empleados = $id_empleado AND anio_historial_vacaciones = $anioStartDate";
+        $rsHistorial  = $vacaciones_empleados->getCondicionesSinOrden($colHistorial, $tabHistorial, $wheHistorial, "");
+        
+        if( empty($rsHistorial) ){
+            
+            echo "<emessage>Validar Historial vacaciones <emessage>";
+            exit();
+        }
+        
        
         
         $vacaciones_empleados->setFuncion($funcion);
@@ -108,7 +121,7 @@ class VacacionesEmpleadosController extends ControladorBase{
         session_start();
         $id_rol=$_SESSION["id_rol"];
         $cedula =$_SESSION["cedula_usuarios"];
-        $id_estado = (isset($_REQUEST['id_estado'])&& $_REQUEST['id_estado'] !=NULL)?$_REQUEST['id_estado']:'';
+        $id_estado = ( isset( $_REQUEST['id_estado'] ) && $_REQUEST['id_estado'] != NULL ) ? $_REQUEST['id_estado'] : '';
         $id_jefi=0;
         $id_rh=0;
         
@@ -121,38 +134,43 @@ class VacacionesEmpleadosController extends ControladorBase{
         $idr = "rol.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         $id_gerente = $resultr[0]->id_rol;
-        if ($id_rol != $id_gerente)
-        {
-        $wherer = "rol.nombre_rol ILIKE '%Jefe de RR.HH'";
-        $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
-        $id_rh = $resultr[0]->id_rol;
         
-        $columnadep = "departamentos.nombre_departamento";
-        $tablasdep = "public.departamentos INNER JOIN public.cargos_empleados
-                      ON departamentos.id_departamento = cargos_empleados.id_departamento
-                      INNER JOIN public.empleados
-                      ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $wheredep= "empleados.numero_cedula_empleados ='".$cedula."'";
-        $iddep = "departamentos.id_departamento";
-        $resultdep = $departamento->getCondiciones($columnadep, $tablasdep, $wheredep, $iddep);
-        
-        $tablar = "usuarios INNER JOIN empleados
-                        ON usuarios.cedula_usuarios = empleados.numero_cedula_empleados
-                        INNER JOIN departamentos 
-                        ON departamentos.id_departamento = empleados.id_departamento
-                        INNER JOIN cargos_empleados
-                        ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
-        $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
-        $idr = "usuarios.id_rol";
-        $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
-        if (empty($resultr))
-        {
-            $wherer = "cargos_empleados.nombre_cargo ILIKE 'CONTADOR%'";
+        if ($id_rol != $id_gerente)  {
+            
+            $wherer = "rol.nombre_rol ILIKE '%Jefe de RR.HH'";
             $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+            $id_rh = $resultr[0]->id_rol;
+            
+            $columnadep = "departamentos.nombre_departamento";
+            $tablasdep = "public.departamentos INNER JOIN public.cargos_empleados
+                          ON departamentos.id_departamento = cargos_empleados.id_departamento
+                          INNER JOIN public.empleados
+                          ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+            $wheredep= "empleados.numero_cedula_empleados ='".$cedula."'";
+            $iddep = "departamentos.id_departamento";
+            $resultdep = $departamento->getCondiciones($columnadep, $tablasdep, $wheredep, $iddep);
+            
+            $tablar = "usuarios INNER JOIN empleados
+                            ON usuarios.cedula_usuarios = empleados.numero_cedula_empleados
+                            INNER JOIN departamentos 
+                            ON departamentos.id_departamento = empleados.id_departamento
+                            INNER JOIN cargos_empleados
+                            ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
+            $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
+            $idr = "usuarios.id_rol";
+            $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+            
+            if (empty($resultr)){
+                
+                $wherer = "cargos_empleados.nombre_cargo ILIKE 'CONTADOR%'";
+                $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+            }
+            
+            $id_jefi = $resultr[0]->id_rol;
+            $id_dpto_jefe = $resultr[0]->id_departamento;
+            
         }
-        $id_jefi = $resultr[0]->id_rol;
-        $id_dpto_jefe = $resultr[0]->id_departamento;
-        }
+        
         $where_to="";
         $columnas = " empleados.nombres_empleados,
                     empleados.dias_vacaciones_empleados,
@@ -173,19 +191,17 @@ class VacacionesEmpleadosController extends ControladorBase{
                    INNER JOIN public.cargos_empleados
                    ON empleados.id_cargo_empleado = cargos_empleados.id_cargo";
         
-        if ($id_estado != "0")
-        {   if ($id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi )
-        {
-            $where    = "solicitud_vacaciones_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados='".$cedula."'";
-        }
-        else {
-            $where    = "solicitud_vacaciones_empleados.id_estado=".$id_estado;
+        if ($id_estado != "0"){ 
             
-            if($id_rol == $id_jefi && $id_rh!=$id_jefi)
-            {
-                $where.=" AND departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."'";
+            if ( $id_rol != $id_gerente && $id_rol != $id_rh && $id_rol != $id_jefi ){
+                $where    = "solicitud_vacaciones_empleados.id_estado=".$id_estado." AND empleados.numero_cedula_empleados='".$cedula."'";
+            }else{
+                $where    = "solicitud_vacaciones_empleados.id_estado=".$id_estado;
+            
+                if($id_rol == $id_jefi && $id_rh!=$id_jefi){
+                    $where.=" AND departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."'";
+                }
             }
-        }
         
         }
         else
@@ -204,12 +220,10 @@ class VacacionesEmpleadosController extends ControladorBase{
         }
            
         
-        $id       = "solicitud_vacaciones_empleados.id_solicitud";
-        
+        $id       = "solicitud_vacaciones_empleados.id_solicitud";        
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
-        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
-        
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';        
         
         if($action == 'ajax')
         {
@@ -232,6 +246,8 @@ class VacacionesEmpleadosController extends ControladorBase{
             $resultSet=$permisos_empleados->getCantidad("*", $tablas, $where_to);
             $cantidadResult=(int)$resultSet[0]->total;
             
+            
+            
             $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
             
             $per_page = 10; //la cantidad de registros que desea mostrar
@@ -243,8 +259,7 @@ class VacacionesEmpleadosController extends ControladorBase{
             $resultSet=$permisos_empleados->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
             $count_query   = $cantidadResult;
             $total_pages = ceil($cantidadResult/$per_page);
-            
-            
+           
             if($cantidadResult>0)
             {
                 
@@ -265,6 +280,7 @@ class VacacionesEmpleadosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 15px;">Dias Disponibles</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Desde</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Hasta</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Dias Permiso</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Estado</th>';
                 
                 if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
@@ -284,6 +300,10 @@ class VacacionesEmpleadosController extends ControladorBase{
                 
                 foreach ($resultSet as $res)
                 {
+                    /** buscar los dias de permiso por cada solicitud **/
+                    $_fecha_desde = $res->fecha_desde;
+                    $_fecha_hasta = $res->fecha_hasta;
+                    $_dias_permiso = $this->diasLaborables($_fecha_desde, $_fecha_hasta);
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
@@ -294,6 +314,7 @@ class VacacionesEmpleadosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->dias_vacaciones_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->fecha_desde.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->fecha_hasta.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$_dias_permiso.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
                    
                     $tablar = "usuarios INNER JOIN empleados
@@ -305,14 +326,18 @@ class VacacionesEmpleadosController extends ControladorBase{
                     $wherer = "departamentos.nombre_departamento='".$res->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
                     $idr = "usuarios.id_rol";
                     $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
-                    if(empty($resultr)) $tiene_jefe=false;
-                    else $tiene_jefe=true;
-                    if($id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
+                    
+                    $tiene_jefe = empty($resultr) ? false : true;
+                   
+                    if( $id_rol==$id_rh || $id_rol==$id_jefi || $id_rol==$id_gerente)
                     {
                         if ($id_rol==$id_rh  && $res->nombre_estado=="EN REVISION" && !$tiene_jefe )
                         {
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
-                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                            /*$html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_permisos_empleados.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_permisos_empleados.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';*/
+                            
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_solicitud.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
+                            $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_solicitud.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                         }
                         else  if ($id_rol==$id_jefi && $res->nombre_estado=="EN REVISION" && $id_dpto_jefe == $res->id_departamento)
                         {
@@ -461,11 +486,11 @@ class VacacionesEmpleadosController extends ControladorBase{
         
         $columnas="fecha_desde, fecha_hasta, id_empleado";
         $tablas="solicitud_vacaciones_empleados";
-        $where="id_permisos_empleados=".$id_solicitud;
+        $where="id_solicitud=".$id_solicitud;
         $resultSet=$vacaciones->getCondicionesSinOrden($columnas, $tablas, $where, "");
-        $desde=$resultSet[0]->hora_desde;
-        $hasta=$resultSet[0]->hora_hasta;
-        $id_empleado=$resultSet[0]->id_empleado;
+        $desde=$resultSet[0]->fecha_desde;
+        $hasta=$resultSet[0]->fecha_hasta;
+        $id_empleado=$resultSet[0]->id_empleado;        
         
         $columnas="dias_vacaciones_empleados";
         $tablas="empleados";
@@ -473,8 +498,10 @@ class VacacionesEmpleadosController extends ControladorBase{
         $resultSet=$vacaciones->getCondicionesSinOrden($columnas, $tablas, $where, "");
         $dias_vacaciones=$resultSet[0]->dias_vacaciones_empleados;
         
-        $desde='2016-11-30 '.$desde;
-        $hasta='2016-11-30 '.$hasta;
+        $hora_cero = ' 00:00:00';
+        
+        $desde= $desde.$hora_cero;
+        $hasta= $hasta.$hora_cero;
         $fecha1 = new DateTime($desde);//fecha inicial
         $fecha2 = new DateTime($hasta);//fecha de cierre
         
@@ -486,10 +513,11 @@ class VacacionesEmpleadosController extends ControladorBase{
         $tabla = "solicitud_vacaciones_empleados";
         $colval = "id_estado=".$resultEst[0]->id_estado;
         $vacaciones->UpdateBy($colval, $tabla, $where);
-        
+           
         
         echo 1;
     }
+           
     public function GerenciaSolicitud()
     {
         session_start();
@@ -502,12 +530,136 @@ class VacacionesEmpleadosController extends ControladorBase{
         $idest = "estado.id_estado";
         $resultEst = $estado->getCondiciones($columnaest, $tablaest, $whereest, $idest);
         
-        $where = "id_solicitud=".$id_solicitud;
-        $tabla = "solicitud_vacaciones_empleados";
-        $colval = "id_estado=".$resultEst[0]->id_estado;
-        $vacaciones->UpdateBy($colval, $tabla, $where);
+        //buscar datos de la solicitud 
+        $colSolicitud   = " fecha_desde, fecha_hasta, id_empleado";
+        $tabSolicitud   = " solicitud_vacaciones_empleados";
+        $wheSolicitud   = "id_solicitud=".$id_solicitud;
+        $rsSolicitud    = $vacaciones->getCondicionesSinOrden($colSolicitud, $tabSolicitud, $wheSolicitud, "");
+        
+        $diasSolicitud = 0;
+        $_id_empleados = 0;
+        $desde  = "";
+        $hasta  = "";
+        if( !empty($rsSolicitud) ){
+            
+            $vacaciones->beginTran();
+            
+            try {
+                
+                $desde  = $rsSolicitud[0]->fecha_desde;
+                $hasta  = $rsSolicitud[0]->fecha_hasta;
+                $_id_empleados = $rsSolicitud[0]->id_empleado;
+                
+                
+                //trabajar con fecha de permiso
+                $dnum   = $this->diasLaborables($desde, $hasta);
+                $diasSolicitud = $dnum < 0 ? 0 : $dnum ;
+                
+                $startDate = new DateTime($desde);
+                $anioHoliday    = $startDate->format('Y');
+                
+                //buscar dias de vacaciones de empleado
+                $colDiasHoliday   = " sum(total_dias_historial_vacaciones) cantidad_dias";
+                $tabDiasHoliday   = " th_historial_vacaciones ";
+                $wheDiasHoliday   = " id_empleados = ".$_id_empleados;
+                $rsDiasHoliday    = $vacaciones->getCondicionesSinOrden($colDiasHoliday, $tabDiasHoliday, $wheDiasHoliday, "");
+                
+                $DiasBdEmpleado = 0;
+                if( !empty($rsDiasHoliday ) ){
+                    $DiasBdEmpleado = $rsDiasHoliday[0]->cantidad_dias;
+                }
+                
+                $whereHistorialVacaciones  = " id_empleados = ".$_id_empleados . " AND anio_historial_vacaciones = ".$anioHoliday;
+                $tablaHistorialVacaciones  = " th_historial_vacaciones";
+                $colvalHistorialVacaciones = " total_dias_historial_vacaciones = total_dias_historial_vacaciones - ".$diasSolicitud." ";
+                $vacaciones->UpdateBy($colvalHistorialVacaciones, $tablaHistorialVacaciones, $whereHistorialVacaciones);
+                
+                $DiasBdEmpleado = $DiasBdEmpleado - $diasSolicitud;
+                
+                $whereEmpleados  = " id_empleados = ".$_id_empleados ;
+                $tablaEmpleados  = " empleados";
+                $colvaEmpleados  = " dias_vacaciones_empleados = ". $DiasBdEmpleado;
+                $vacaciones->UpdateBy($colvaEmpleados, $tablaEmpleados, $whereEmpleados);
+                
+                $where = "id_solicitud=".$id_solicitud;
+                $tabla = "solicitud_vacaciones_empleados";
+                $colval = "id_estado=".$resultEst[0]->id_estado."";
+                $vacaciones->UpdateBy($colval, $tabla, $where);
+                
+                $errorpg = pg_last_error();
+                $error   = error_get_last();
+                if( !empty($errorpg) || !empty($error)){
+                    $errormensaje = $errorpg . " en servidor ". $error["message"];
+                    throw  new Exception($errormensaje);
+                }
+                
+                
+                $vacaciones->endTran("COMMIT");
+                
+                echo 1;
+                
+                
+            } catch (Exception $e) {                
+                
+                $vacaciones->endTran();
+                
+                echo $e->getMessage();
+            }
+            
+            
+            
+        }
+        
+       
      
-     echo 1;
+    
+    }
+    
+    public function verFechas(){
+        session_start();
+        $id_solicitud=$_POST['id_solicitud'];
+        $vacaciones = new SolicitudVacacionesEmpleadosModel();
+              
+        //buscar datos de la solicitud
+        $colSolicitud   = " fecha_desde, fecha_hasta, id_empleado";
+        $tabSolicitud   = " solicitud_vacaciones_empleados";
+        $wheSolicitud   = "id_solicitud=".$id_solicitud;
+        $rsSolicitud    = $vacaciones->getCondicionesSinOrden($colSolicitud, $tabSolicitud, $wheSolicitud, "");
+        
+        $diasSolicitud = 0;
+        $desde  = "";
+        $hasta  = "";
+        $id_empleados = 0;
+        if( !empty($rsSolicitud) ){
+            
+            $desde  = $rsSolicitud[0]->fecha_desde;
+            $hasta  = $rsSolicitud[0]->fecha_hasta;
+            $id_empleados = $rsSolicitud[0]->id_empleado;
+            
+            $diasSolicitud = $this->diasLaborables($desde, $hasta);
+            
+            $startDate = new DateTime($desde);
+            $anioHoliday    = $startDate->format('Y');
+            
+            //buscar hisoricos de holidays
+            $colHsVacaciones   = " id_empleados, dias_historial_vacaciones, total_dias_historial_vacaciones";
+            $tabHsVacaciones   = " th_historial_vacaciones ";
+            $wheHsVacaciones   = " id_empleados = ".$id_empleados." AND anio_historial_vacaciones = $anioHoliday";
+            $rsHsVacaciones    = $vacaciones->getCondicionesSinOrden($colHsVacaciones, $tabHsVacaciones, $wheHsVacaciones, "");
+            
+            //buscar hisoricos de holidays
+            
+            
+            //$totalDiasAnio = $rsHsVacaciones[0]->total_dias_historial_vacaciones;
+            
+            print_r($rsHsVacaciones);
+            
+            print_r($rsDiasHoliday);
+        }
+        
+        echo $desde," *****",$hasta,"*******",$diasSolicitud;
+        
+        
     }
     
     public function NegarSolicitud()
@@ -586,10 +738,78 @@ class VacacionesEmpleadosController extends ControladorBase{
         
                 
         $this->verReporte("SolicitudPermiso", array('datos_reporte'=>$datos_reporte, 'datos_empresa'=>$datos_empresa));
-        
-        
             
     }
+    
+    public function verDias(){
+        $hora_cero = ' 00:00:00';
+        
+        $desde= '2019-11-05'.$hora_cero;
+        $hasta= '2019-11-11'.$hora_cero;
+        $fecha1 = new DateTime($desde);//fecha inicial
+        $fecha2 = new DateTime($hasta);//fecha de cierre
+        $intervalo = $fecha2->diff($fecha1); //se hace la diferencia sobre la fecha menor
+        $numdias = $intervalo->days;
+        
+        $j = 0 ;
+        for ($i = 1; $i <= $numdias; $i++) {
+            
+            if( $fecha1->format('N') == '6' || $fecha1->format('N') == '7'){
+                $j++;
+                echo $fecha1->format('Y-m-d (D)')."\n";
+            }
+            $fecha1->modify("+1 days");
+        }
+        
+        echo "hay ",$j," dia(s) no laborables \n ";
+        echo "\n el numero de dias es --> " ,$numdias,"*** \n";
+        
+        echo $fecha2->format("N"); echo "\n";
+        
+       
+        $intervalo =$intervalo->format('%h:%i');//00 años 0 meses 0 días 08 horas 0 minutos 0 segundos
+        
+        var_dump($intervalo);
+        
+    }
+    
+    /***
+     * @desc fn que permite obtener los dias laborables de un intervalo de fecha
+     * @exception -1 en caso de generar un error
+     * @return integer  
+     * @param  $fechaIni
+     * @param  $fechaFin
+     */
+    public function diasLaborables($fechaIni, $fechaFin){
+        
+        $hora_cero = ' 00:00:00';
+        $desde= $fechaIni.$hora_cero;
+        $hasta= $fechaFin.$hora_cero;
+        $fecha1 = new DateTime($desde);//fecha inicial
+        $fecha2 = new DateTime($hasta);//fecha de cierre
+        $intervalo = $fecha2->diff($fecha1); //se hace la diferencia sobre la fecha menor
+        $numdias = $intervalo->days;
+        
+        $diasNoLaborables = 0 ;
+        for ($i = 1; $i <= $numdias; $i++) {
+            
+            if( $fecha1->format('N') == '6' || $fecha1->format('N') == '7'){
+                $diasNoLaborables++;
+                //echo $fecha1->format('Y-m-d (D)')."\n";
+            }
+            $fecha1->modify("+1 days");
+        }
+        
+        $totalDias = $numdias - $diasNoLaborables;
+        
+        $error = error_get_last();
+        if( !empty($error)) return  -1;
+        
+        return $totalDias;
+        
+    }
+    
+   
 }
 
 ?>

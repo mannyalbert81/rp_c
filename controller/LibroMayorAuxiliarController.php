@@ -579,7 +579,7 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	    
         $plan_cuentas= new PlanCuentasModel();
 	    
-	    $columnas="codigo_plan_cuentas, concat(codigo_plan_cuentas,'     ',nombre_plan_cuentas) as nombre_plan_cuentas";
+	    $columnas="codigo_plan_cuentas, concat(codigo_plan_cuentas,' ',nombre_plan_cuentas) as nombre_plan_cuentas";
 	    $tabla = "plan_cuentas p";
 	    $where = "p.codigo_plan_cuentas in ('2.1', '1.3')";
 	    $id="codigo_plan_cuentas";
@@ -610,7 +610,7 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	            $nivel = $result[0]->nivel_plan_cuentas;
 	            $nivel=$nivel+1;
 	        
-	            $columnas="codigo_plan_cuentas, concat(codigo_plan_cuentas,'     ',nombre_plan_cuentas) as nombre_plan_cuentas";
+	            $columnas="codigo_plan_cuentas, concat(codigo_plan_cuentas,' ',nombre_plan_cuentas) as nombre_plan_cuentas";
 	            $tabla = "plan_cuentas";
 	            $where = "nivel_plan_cuentas = '$nivel' and codigo_plan_cuentas like '$codigo_plan_cuentas%'";
 	            $id="codigo_plan_cuentas";
@@ -671,7 +671,7 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	
 	public function devuelve_aportes($_codigo_plan_cuentas_hijos, $_desde_diario, $_hasta_diario, $action, $search, $page){
 	    
-	    $aportes=new CoreContribucionModel();
+	    $aportes=new CoreContribucionModel();   
 	    $plan_cuentas = new PlanCuentasModel();
 	    $arrayA = array();
 	    $stringArray="";
@@ -699,7 +699,7 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	             
 	                $arrayA[] = $res->id_plan_cuentas;
 	                
-	            }
+	            }  
 	            
 	            $stringArray = join( ",", $arrayA);
 	            
@@ -745,6 +745,8 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	                $total_pages = ceil($cantidadResult/$per_page);
 	                
 	                
+	                
+	                
 	                if($cantidadResult>0)
 	                {
 	                    
@@ -759,9 +761,10 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	                    $html.= "<thead>";
 	                    $html.= "<tr>";
 	                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                    $html.='<th style="text-align: left;  font-size: 12px;">Codigo</th>';
+	                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	                    $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
 	                    $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
-	                    $html.='<th style="text-align: right;  font-size: 12px;">Saldo</th>';
+	                    $html.='<th style="text-align: right; font-size: 12px;">Saldo</th>';
 	                    $html.='</tr>';
 	                    $html.='</thead>';
 	                    $html.='<tbody>';
@@ -778,6 +781,7 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	                        $html.='<tr>';
 	                        
 	                        $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                        $html.='<td style="font-size: 15px;"><span class="pull-left"><i class="glyphicon glyphicon-play-circle"></i></a></span></td>';
 	                        $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
 	                        $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
 	                        $html.='<td style="font-size: 11px; text-align: right;">'.number_format((float)$res->total, 2, '.', ',').'</td>';
@@ -807,7 +811,6 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	                
 	                
 	            }
-	            
 	            
 	            
 	        }else{
@@ -889,8 +892,6 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	}
 	
 	//termina
-	
-	
 	
 	
 }

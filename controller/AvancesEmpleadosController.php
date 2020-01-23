@@ -319,9 +319,7 @@ class AvancesEmpleadosController extends ControladorBase{
             }
         }
            
-        $id       = "anticipo_sueldo_empleados.id_anticipo
-
-";
+        $id       = "anticipo_sueldo_empleados.id_anticipo";
         
         
         $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
@@ -854,11 +852,12 @@ class AvancesEmpleadosController extends ControladorBase{
         $datos_reporte['DIFERIDO']=$diferido;
         
                 
-        $this->verReporte("SolicitudAvance", array('datos_reporte'=>$datos_reporte, 'datos_empresa'=>$datos_empresa));
-        
-        
+        $this->verReporte("SolicitudAvance", array('datos_reporte'=>$datos_reporte, 'datos_empresa'=>$datos_empresa));             
             
-    }
+    }    
+    
+    
+    
 }
 
 ?>

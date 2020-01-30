@@ -89,7 +89,7 @@
         	
         	<div class="row">
     		  
-    		   <div class="col-xs-12 col-md-3 col-lg-3">
+    		   <div class="col-xs-6 col-md-3 col-lg-3">
     		    <div class="form-group">
                                    
                       <label for="id_oficina" class="control-label">Oficina:</label>
@@ -106,7 +106,7 @@
                 
                 <div id="divLoaderPage" ></div>
               
-				<div class="col-xs-12 col-md-3 col-lg-3">
+				<div class="col-xs-6 col-md-3 col-lg-3">
     		    <div class="form-group">
                                    
                   <label for="id_tipo_activos_fijos" class="control-label">Tipo Activos Fijos:</label>
@@ -120,7 +120,7 @@
                 </div>
                 </div>  
                 
-                <div class="col-xs-12 col-lg-3 col-md-3">
+                <div class="col-xs-6 col-lg-3 col-md-3">
     		    <div class="form-group">
                                    
                   <label for="id_departamento" class="control-label">Departamento:</label>
@@ -134,7 +134,7 @@
                 </div>
                 </div>  
                 
-                <div class="col-xs-12 col-md-3 col-md-3">
+                <div class="col-xs-6 col-md-3 col-md-3">
     		    <div class="form-group">
                                    
                   <label for="id_estado" class="control-label">Estado:</label>
@@ -151,7 +151,7 @@
     		    
     		   <div class="row">
     		   
-    		   <div class="col-xs-12 col-md-3 col-lg-3 ">
+    		   <div class="col-xs-6 col-md-3 col-lg-3 ">
     		    <div class="form-group">
                       <label for="fecha_activos_fijos" class="control-label">Fecha Compra:</label>
                       <input type="date" class="form-control" id="fecha_activos_fijos" name="fecha_activos_fijos" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
@@ -159,7 +159,7 @@
                 </div>
     		    </div>
                 
-                <div class="col-xs-12 col-md-3 col-lg-3 ">
+                <div class="col-xs-6 col-md-3 col-lg-3 ">
     		    <div class="form-group">
                                    
                   <label for="id_empleados" class="control-label">Empleados:</label>
@@ -173,7 +173,7 @@
                 </div>
     		    </div>
     		    
-    		    <div class="col-xs-12 col-md-3 col-lg-3 ">
+    		    <div class="col-xs-6 col-md-3 col-lg-3 ">
     		    <div class="form-group">
                       <label for="nombre_activos_fijos" class="control-label">Nombre Activo:</label>
                       <input type="text" class="form-control" id="nombre_activos_fijos" name="nombre_activos_fijos" value=""  placeholder="Nombre...">
@@ -182,7 +182,7 @@
     		    </div>
     		    
     		    
-    		    <div class="col-xs-12 col-md-3 col-lg-3 ">
+    		    <div class="col-xs-6 col-md-3 col-lg-3 ">
     		    <div class="form-group">
                       <label for="valor_activos_fijos" class="control-label">Valor Activo:</label>
                       <input type="text" class="form-control cantidades1" id="valor_activos_fijos" name="valor_activos_fijos" value='0.00'
@@ -191,7 +191,7 @@
                 </div>
     		    </div>
     		    
-    		    <div class="col-lg-3 col-xs-12 col-md-3">
+    		    <div class="col-lg-3 col-xs-6 col-md-3">
     		    <div class="form-group">
                   <label for="imagen_activos_fijos" class="control-label">Imagen Activos:</label>
                   <input type="file" class="form-control" id="imagen_activos_fijos" name="imagen_activos_fijos" value="">
@@ -199,7 +199,7 @@
                 </div>
     		    </div> 
     		    
-    		    <div class="col-xs-12 col-md-3 col-md-3">
+    		    <div class="col-xs-6 col-md-3 col-md-3">
     		    <div class="form-group">
                                    
                   <label for="id_rfid_tag" class="control-label">TAG:</label>
@@ -219,7 +219,7 @@
              <hr>
              
              <div class="row" >
-             	<div class="col-xs-12 col-md-12 col-lg-12 ">
+             	<div class="col-xs-6 col-md-12 col-lg-12 ">
     		    <div class="form-group">
                       <label for="fecha_activos_fijos" class="control-label">Detalles Activo:</label>
                       <textarea class="form-control" id="detalle_activos_fijos" name="detalle_activos_fijos"  rows="2" cols=""></textarea>

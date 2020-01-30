@@ -1,3 +1,11 @@
+$(document).ready( function (){
+	
+	
+	
+	
+	
+		
+});
 
 var id_participe;
 
@@ -7,10 +15,14 @@ $('#cedula_participe').keypress(function(event){
 	    $('#buscar_participe').click();
 	  }
 	});
+
 function BorrarCedula()
 {
 	$('#cedula_participe').val("");
 }
+
+
+
 function InfoSolicitud(cedula,id_solicitud)
 {
 	$('#cedula_participe').val(cedula);
@@ -111,6 +123,7 @@ function BuscarParticipe()
 		}
 }
 
+
 function AportesParticipe(){
 	
 	
@@ -119,32 +132,28 @@ function AportesParticipe(){
 	console.log(id_TipoPrestaciones.val() );
 	console.log(fecha_prestaciones.val() );
 	
+	
+	
 	if (id_TipoPrestaciones.val() == 0)
 	{
 		return false;
 	}
 	
-	if (validarfecha(fecha_prestaciones.val()))
-		{
-		
-		}
-	else
-		{
-			return false;
-		}
-	
 	$.ajax({
 		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
 		url:"index.php?controller=BuscarParticipesCesantes&action=AportesParticipe",
 		type:"POST",
-		data:{action:'ajax',id_participe:id_participe}
+		data:{id_tipo_prestaciones:id_TipoPrestaciones.val(), 
+			action:'ajax',
+			id_participe:id_participe , 
+			fecha_prestaciones:fecha_prestaciones.val()}
 	}).done(function(datos){		
 		
 		$("#aportes_participe_registrados").html(datos)		
 		
 	}).fail(function(xhr,status,error){
 		
-		var err = xhr.responseText
+		var err = xhr.responseText;
 		console.log(err);
 		
 	}).always(function(){
@@ -152,6 +161,7 @@ function AportesParticipe(){
 		$("#divLoaderPage").removeClass("loader")
 		
 	})
+	
 	
 }
 

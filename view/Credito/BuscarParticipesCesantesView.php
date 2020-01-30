@@ -130,7 +130,7 @@
             		    <div class="form-group">
             		    					  
                           <label for="id_fecha_prestaciones" class="control-label">Fecha Prestación:</label>
-                          <input  type="date" class="form-control" id="fecha_prestaciones" name="fecha_prestaciones" value=""  placeholder="" required/>                         
+                          <input  type="date" class="form-control" id="fecha_prestaciones" name="fecha_prestaciones" value="<?php echo date(dd/MM/yyyy);?>"  placeholder="" required/>                         
                           <div id="mensaje_fecha_prestaciones" class="errores"></div>
                         </div>
             	</div>
@@ -217,6 +217,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipesCesantes.js?1.09"></script> 
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?1.47"></script> 
    </body>
 </html>   

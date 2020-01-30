@@ -239,25 +239,50 @@ class PresupuestosController extends ControladorBase{
 	$presupuesto= new PresupuestosCabezaModel();
 	
 	$where_to="";
-	$columnas = " presupuestos_cabeza.id_presupuestos_cabeza, 
-                  plan_cuentas.id_plan_cuentas, 
-                  plan_cuentas.codigo_plan_cuentas, 
-                  presupuestos_cabeza.nombre_presupuestos_cabeza, 
-                  presupuestos_cabeza.usuario_usuarios, 
-                  presupuestos_cabeza.total_presupuestos_cabeza, 
-                  presupuestos_cabeza.creado, 
-                  presupuestos_cabeza.modificado
+	$columnas =
+	
+	" cc.anio_presupuestos_detalle,
+          aa.codigo_plan_cuentas,
+          aa.nombre_plan_cuentas,
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_ene from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='01'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_feb from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='02'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_mar from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='03'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_abr from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='04'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_may from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='05'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_jun from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='06'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_jul from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='07'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_ago from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='08'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_sep from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='09'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_oct from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='10'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_nov from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='11'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_dic from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='12'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as total from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle
+          )
 	    
+        "
+	    ;
+	    $tablas   = "   public.plan_cuentas aa
+                        inner join public.presupuestos_cabeza bb on bb.id_plan_cuentas = aa.id_plan_cuentas
+                        inner join (select id_presupuestos_cabeza,anio_presupuestos_detalle
+                                            from presupuestos_detalle
+                                            where 1 = 1
+                                            group by id_presupuestos_cabeza,anio_presupuestos_detalle) cc on cc.id_presupuestos_cabeza = bb.id_presupuestos_cabeza
+";
+	    $where    = " 1=1
                       ";
-	
-	$tablas = "   public.presupuestos_cabeza, 
-                  public.plan_cuentas";
-	
-	
-	$where    = "plan_cuentas.id_plan_cuentas = presupuestos_cabeza.id_plan_cuentas";
-	
-	$id       = " presupuestos_cabeza.id_presupuestos_cabeza";
-	
+	    $id="aa.codigo_plan_cuentas";
 	
 	$action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
 	$search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
@@ -311,9 +336,12 @@ class PresupuestosController extends ControladorBase{
 	        $html.= "<table id='Solicitud Ingresada Correctamente' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	        $html.= "<thead>";
 	        $html.= "<tr>";
+	        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Año</th>';
 	        $html.='<th colspan="2" style=" text-align: center; font-size: 11px;">Código</th>';
 	        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Nombre</th>';
-	        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Usuario</th>';
+	        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Total</th>';
+	        
+	        
 	       
 	        
 	        
@@ -329,9 +357,11 @@ class PresupuestosController extends ControladorBase{
 	            $i++;
 	            $html.='<tr>';
 	            $html.='<tr >';
+	            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->anio_presupuestos_detalle.'</td>';
 	            $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
-	            $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->nombre_presupuestos_cabeza.'</td>';
-	            $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->usuario_usuarios.'</td>';
+	            $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
+	            $html.='<td colspan="2" style="text-align: right; font-size: 11px;">'.number_format($res->total, 2, ',', '.').'</td>';
+	            
 	          
 	            
 	            
@@ -456,84 +486,58 @@ class PresupuestosController extends ControladorBase{
 	    $datos_cabecera['HORA'] = date('h:i:s');
 	    
 	    
-	    $presupuestos=new PresupuestosDetalleModel();
+	    $presupuestos=new PresupuestosCabezaModel();
 	    $datos_reporte = array();
 	    
 	    //////retencion detalle
 	    
-	    
-	    ///
-	    
-	    $_anio_presupuestos_detalle =(isset($_REQUEST['anio_presupuestos_detalle'])&& $_REQUEST['anio_presupuestos_detalle'] !=NULL)?$_REQUEST['anio_presupuestos_detalle']:'';
-	    
-	    
-	    
+	   
 	    
 	    
 	    $columnas =
 	    
-	    "  p.codigo_plan_cuentas,
-                  p.nombre_plan_cuentas,
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_ene\" from presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='01'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_feb\" from presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='02'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_mar\" from presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='03'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_abr\" from presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='04'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_may\" from presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='05'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_jun\" from presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='06'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_jul from\" presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='07'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_ago from\" presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='08'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_sep from\" presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='09'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_oct from\" presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='10'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_nov from\" presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='11'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"valor_dic\" from presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle' and pd.mes_presupuestos_detalle='12'
-                  ),
-                  (
-	        
-                	select sum(valor_presupuestado_presupuestos_detalle) as \"total\" from presupuestos_detalle pd where pd.id_presupuestos_cabeza=pc.id_presupuestos_cabeza and pd.anio_presupuestos_detalle='$_anio_presupuestos_detalle'
-                  )
-	        
+	    " cc.anio_presupuestos_detalle,
+          aa.codigo_plan_cuentas, 
+          aa.nombre_plan_cuentas, 
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_ene from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='01'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_feb from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='02'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_mar from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='03'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_abr from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='04'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_may from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='05'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_jun from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='06'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_jul from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='07'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_ago from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='08'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_sep from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='09'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_oct from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='10'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_nov from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='11'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as valor_dic from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle and pd.mes_presupuestos_detalle='12'
+          ),
+          (select sum(valor_presupuestado_presupuestos_detalle) as total from presupuestos_detalle pd where pd.id_presupuestos_cabeza=bb.id_presupuestos_cabeza and pd.anio_presupuestos_detalle=cc.anio_presupuestos_detalle 
+          )
+
         "
         ;
-        $tablas   = " presupuestos_cabeza pc,
-                      public.plan_cuentas p";
-        $where    = " p.id_plan_cuentas = pc.id_plan_cuentas
-                      order by pc.id_plan_cuentas";
-	    $id="p.id_plan_cuentas";
+        $tablas   = "   public.plan_cuentas aa 
+                        inner join public.presupuestos_cabeza bb on bb.id_plan_cuentas = aa.id_plan_cuentas
+                        inner join (select id_presupuestos_cabeza,anio_presupuestos_detalle
+                                            from presupuestos_detalle 
+                                            where 1 = 1
+                                            group by id_presupuestos_cabeza,anio_presupuestos_detalle) cc on cc.id_presupuestos_cabeza = bb.id_presupuestos_cabeza
+";
+        $where    = " 1=1
+                      ";
+	    $id="aa.codigo_plan_cuentas";
 	    
 	    $presupuestos_detalle = $presupuestos->getCondiciones($columnas, $tablas, $where, $id);
 	    
@@ -542,8 +546,9 @@ class PresupuestosController extends ControladorBase{
 	    
 	    $html.='<table class="12"  border=1>';
 	    $html.='<tr>';
+	    $html.='<th width="60px">Año</th>';
 	    $html.='<th width="60px">Cuenta</th>';
-	    $html.='<th width="70px">Estado de Pérdidas y Ganancias Acumulado</th>';
+	    $html.='<th width="300px">Estado de Pérdidas y Ganancias Acumulado</th>';
 	    $html.='<th width="60px">Enero</th>';
 	    $html.='<th width="60px">Febrero</th>';
 	    $html.='<th width="60px">Marzo</th>';
@@ -570,21 +575,22 @@ class PresupuestosController extends ControladorBase{
 	        
 	        
 	        $html.='<tr >';
-	        $html.='<td width="60px">'.$res->p.codigo_plan_cuentas.'</td>';
-	        $html.='<td align="center" width="70px">'.$res->p.nombre_plan_cuentas.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_ene.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_feb.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_mar.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_abr.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_may.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_jun.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_jul.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_ago.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_sep.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_oct.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_nov.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->valor_dic.'</td>';
-	        $html.='<td align="center" width="60px">'.$res->total.'</td>';
+	        $html.='<td align="center" width="60px">'.$res->anio_presupuestos_detalle.'</td>';
+	        $html.='<td width="60px">'.$res->codigo_plan_cuentas.'</td>';
+	        $html.='<td align="left" width="300px">'.$res->nombre_plan_cuentas.'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_ene, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_feb, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_mar, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_abr, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_may, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_jun, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_jul, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_ago, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_sep, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_oct, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_nov, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->valor_dic, 2, ',', '.').'</td>';
+	        $html.='<td align="right" width="60px">'.number_format($res->total, 2, ',', '.').'</td>';
 	       
 	        
 	        

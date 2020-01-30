@@ -262,6 +262,17 @@ class EntidadBase{
     	return $resultSet;
     }
     
+    public function getCondicionesmenosid($columnas ,$tablas , $where){
+        
+        $query=pg_query($this->con, "SELECT $columnas FROM $tablas WHERE $where");
+        $resultSet = array();
+        while ($row = pg_fetch_object($query)) {
+            $resultSet[]=$row;
+        }
+        
+        return $resultSet;
+    }
+    
     
     
     public function getCondicionesDesc($columnas ,$tablas , $where, $id){

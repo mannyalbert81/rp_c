@@ -71,7 +71,10 @@ class InvDocComprasController extends ControladorBase{
     $compras= new ComprasModel();
     
     $where_to="";
-    $columnas = " ccomprobantes.numero_ccomprobantes, 
+    
+    $columnas = " 
+                  ccomprobantes.id_ccomprobantes,
+                  ccomprobantes.numero_ccomprobantes, 
                   ccomprobantes.fecha_ccomprobantes, 
                   ccomprobantes.valor_ccomprobantes, 
                   inv_documento_compras.valor_documento_compras, 
@@ -171,6 +174,8 @@ class InvDocComprasController extends ControladorBase{
                 $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->valor_ccomprobantes.'</td>';
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->valor_documento_compras.'</td>';
                 $html.='<td colspan="2" style=" font-size: 11px;"align="center";>'.(int)$res->nombre_estado.'</td>';
+                $html.='<td style="color:#000000;"><span class="pull-right"><a data-toggle="tooltip" title="Registrar Factura" href="index.php?controller=MovimientosInv&action=registrarFactura&codigo='.$res->id_ccomprobantes.'" ><i class="fa fa-chain-broken" aria-hidden="true"></i></a></span></td>';
+                
                 $html.='</tr>';
             }
             

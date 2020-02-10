@@ -172,7 +172,7 @@ class IndexacionController extends ControladorBase{
                                     
             $resultSet = $db->getCondiciones_SQL($columnas,$tablas,$where);
             
-            print_r($resultSet);
+           // print_r($resultSet);
             
             $respuesta = array();
             
@@ -201,26 +201,7 @@ class IndexacionController extends ControladorBase{
             
         }else{
             
-            $numero_credito = (isset($_POST['term']))?$_POST['term']:'';
-            
-            $columnas = "capremci_creditos.id_capremci, 
-                      capremci_creditos.numero_credito, 
-                      capremci_creditos.cedula_capremci, 
-                      capremci_creditos.nombres_capremci, 
-                      capremci_creditos.creado, 
-                      capremci_creditos.modificado";
-            
-            $tablas = "public.capremci_creditos";
-            
-            $where = " capremci_creditos.numero_credito= '$numero_credito'";
-            
-            $resultSet = $db->getBy($columnas,$tablas,$where);
-            
-            $respuesta = new stdClass();
-            
-           
-            
-            echo json_encode($respuesta);
+          
             
         }
         

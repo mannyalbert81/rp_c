@@ -64,94 +64,106 @@ class DeclaracionGastosController extends ControladorBase{
 	}
 	
 	public function InsertarDeclaracionGastos(){
+	    
+	   
 	    session_start();
 	    
-	    $empleados = new EmpleadosModel();
+	    $declaraciones = new DeclaracionGastosModel();
 	    
 	    $nombre_controladores = "DeclaracionGastos";
 	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $empleados->getPermisosEditar("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    $resultPer = $declaraciones->getPermisosEditar("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	    
+	    
+	    if (!empty($resultPer)){
 	        
-	        if(!empty($resultPer)){
+	        
+	        $_id_formulario_107 =(isset($_POST['id_formulario_107'])) ? $_POST['id_formulario_107'] : 0;
+	        $_id_empleados =(isset($_POST['id_empleados'])) ? $_POST['id_empleados'] : 0;
+	        $_id_estado= 121;
+	        $_anio_formulario_107 =(isset($_POST['anio_formulario_107'])) ? $_POST['anio_formulario_107'] : "";
+	        $_ingresos_gravados_empleador =(isset($_POST['ingresos_gravados_empleador'])) ? $_POST['ingresos_gravados_empleador'] : "";
+	        $_ingresos_otros_empleados =(isset($_POST['ingresos_otros_empleados'])) ? $_POST['ingresos_otros_empleados'] : "";
+	        $_ingresos_proyectados =(isset($_POST['ingresos_proyectados'])) ? $_POST['ingresos_proyectados'] : "";
+	        $_gastos_vivienda =(isset($_POST['gastos_vivienda'])) ? $_POST['gastos_vivienda'] : "";
+	        $_gastos_educacion =(isset($_POST['gastos_educacion'])) ? $_POST['gastos_educacion'] : "";
+	        $_gastos_salud =(isset($_POST['gastos_salud'])) ? $_POST['gastos_salud'] : "";
+	        $_gastos_vestimenta =(isset($_POST['gastos_vestimenta'])) ? $_POST['gastos_vestimenta'] : "";
+	        $_gastos_alimentacion =(isset($_POST['gastos_alimentacion'])) ? $_POST['gastos_alimentacion'] : "";
+	        $_total_gastos =$_gastos_vivienda+$_gastos_educacion+$_gastos_salud+$_gastos_vestimenta+$_gastos_alimentacion;
+	        $_ruc_agente_retencion =(isset($_POST['ruc_agente_retencion'])) ? $_POST['ruc_agente_retencion'] : "";
+	        $_razon_social =(isset($_POST['razon_social'])) ? $_POST['razon_social'] : "";
+	        
+	       
+	        
+	        
+	        $funcion = "ins_formulario_107";
+	        $respuesta = 0 ;
+	        $mensaje = "";
+	        
+	        if($_id_formulario_107 == 0){
 	            
-	            $_fecha_mes=date('m');
-	            if($_fecha_mes != 12){
+	            
+	            
+	            $parametros = " '$_id_empleados',
+                                '$_id_estado',
+                                '$_anio_formulario_107',
+                                '$_ingresos_gravados_empleador',
+                                '$_ingresos_otros_empleados',
+                                '$_ingresos_proyectados',
+                                '$_gastos_vivienda',
+                                '$_gastos_educacion',
+                                '$_gastos_salud',
+                                '$_gastos_vestimenta',
+                                '$_gastos_alimentacion',
+                                '$_total_gastos',
+                                '$_ruc_agente_retencion',
+                                '$_razon_social'
+                                 ";
+	            
+	            //echo $parametros; die();
+	            
+	            
+	            $declaraciones->setFuncion($funcion);
+	            $declaraciones->setParametros($parametros);
+	            $resultado = $declaraciones->llamafuncionPG();
+	            
+	            
+	            if(is_int((int)$resultado[0])){
 	                
-	                echo "Periodo no abierto para formulario de declaración de gastos";
-	                exit();
+	                
+	                $respuesta = $resultado[0];
+	                $mensaje = "Presupuesto Ingresado Correctamente";
 	            }
 	            
-	        $_id_empleados = (isset($_POST["id_empleados"])) ? $_POST["id_empleados"] :0 ;
-	        $_cedula_empleado = (isset($_POST["cedula_empleado"])) ? $_POST["cedula_empleado"] : "";
-	        $_nombre_empleados = (isset($_POST["nombre_empleados"])) ? $_POST["nombre_empleados"] : 0 ;
-	        $_tag_103 = (isset($_POST["tag_103"])) ? $_POST["tag_103"] : 0 ;
-	        $_tag_104 = (isset($_POST["tag_104"])) ? $_POST["tag_104"] : 0 ;
-	        $_tag_105 = (isset($_POST["tag_105"])) ? $_POST["tag_105"] : 0 ;
-	        $_tag_106 = (isset($_POST["tag_106"])) ? $_POST["tag_106"] : 0 ;
-	        $_tag_107 = (isset($_POST["tag_107"])) ? $_POST["tag_107"] : 0 ;
-	        $_tag_108 = (isset($_POST["tag_108"])) ? $_POST["tag_108"] : 0 ;
-	        $_tag_109 = (isset($_POST["tag_109"])) ? $_POST["tag_109"] : 0 ;
-	        $_tag_110 = (isset($_POST["tag_110"])) ? $_POST["tag_110"] : 0 ;
-	        $_tag_111 = (isset($_POST["tag_111"])) ? $_POST["tag_111"] : 0 ;
-	        $_ruc = (isset($_POST["ruc"])) ? $_POST["ruc"] : 0 ;
-	        $_razon_social = (isset($_POST["razon_social"])) ? $_POST["razon_social"] : 0 ;
-	        $_anio_formulario_107 = (isset($_POST["anio_formulario_107"])) ? $_POST["anio_formulario_107"] : 0 ;
+	            
+	            
+	        }
 	        
-	      
-	      
-	      $_id_estado =null;
-	      $_columnas = "id_estado, nombre_estado";
-	      $_tablas ="estado";
-	      $_where ="tabla_estado='tri_formulario_107' AND nombre_estado='ACTIVO'";
-	      $_id ="id_estado";
-	         
-	      
-	      $_rs_consulta = $empleados->getCondiciones($_columnas, $_tablas, $_where, $_id);
-	      if(!empty($_rs_consulta)){
-	          $_id_estado = $_rs_consulta[0]->id_estado;
-	      }
-	      else{
-	          echo "no se encontro estado";
-	          exit();
-	      }
-	      
-	      $_fecha_anio=date('Y');
-	      $_fecha_mes=date('m');
-	      
-	      $_columnas = "id_empleados, tag_103_formulario_107,tag_104_formulario_107, tag_105_formulario_107, anio_formulario_107";
-	      $_tablas ="tri_formulario_107";
-	      $_where ="id_empleados='$_id_empleados' AND anio_formulario_107='$_fecha_anio'";
-	      $_id ="id_empleados";
-	      
-	      $_rs_consulta = $empleados->getCondiciones($_columnas, $_tablas, $_where, $_id);
-	      
-	      if(!empty($_rs_consulta)){
-	          echo "Usted ya ingreso";
-	          exit();
-	      }
-	      else{
-	      
-	      $funcion = "ins_formulario_107";
-	      $parametros = " '$_id_empleados','$_tag_103','$_tag_104', '$_tag_105','$_tag_106',
-                            '$_tag_107','$_tag_108', '$_tag_109','$_tag_110','$_tag_111','$_id_estado', '$_anio_formulario_107'";
-	      $consulta = $empleados->getconsultaPG($funcion, $parametros);
-	      
-	      $ResultDeclaracionGastos = $empleados->llamarconsultaPG($consulta);
-	      $error = pg_last_error();
-	      
-	      if(!empty($error) ){    echo "Declaracion de gastos no ingresada"; exit();}
-	      
-	      
-	      
-	      $respuesta=array();
-	      $respuesta['mensaje']=1;
-	      $respuesta['respuesta']='';
-	      
-	      echo json_encode($respuesta);
-	      
-	      }
+	        
+	        
+	        if((int)$respuesta > 0 ){
+	            
+	            echo json_encode(array('respuesta'=>$respuesta,'mensaje'=>$mensaje));
+	            exit();
+	        }
+	        
+	        echo "Error al Ingresar la Solicitud";
+	        exit();
+	        
 	    }
+	    else
+	    {
+	        $this->view_DeclaracionGastos("Error",array(
+	            "resultado"=>"No tiene Permisos de Insertar Solicitudes"
+	            
+	        ));
+	        
+	        
+	    }
+	    
+	    
+	    
 	}
 	
 	

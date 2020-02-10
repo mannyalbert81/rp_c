@@ -44,7 +44,7 @@ function setearFecha(){
 
 function ValidarControles(){
 	$("#referencia_documento").inputmask({
-		mask: "999-999-9{1,8}", 
+		mask: "999-999-9{1,9}", 
 		placeholder: "_",
 		clearIncomplete: true,
 		rightAlign: true

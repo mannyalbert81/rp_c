@@ -1887,7 +1887,7 @@ class MovimientosInvController extends ControladorBase{
 	    
 	    $rsdatos = $salidas->getCondiciones($columnas, $tablas, $where, $id);
 	    
-	    $datos_reporte['USUARIOS']=$rsdatos[0]->nombre_usuarios;
+	    $datos_reporte['EMPLEADOS']=$rsdatos[0]->nombre_usuarios;
 	    $datos_reporte['FECHAMOV']=$rsdatos[0]->fecha_movimientos_inv_cabeza;
 	    $datos_reporte['ESTADO']=$rsdatos[0]->estado_movimientos_inv_cabeza;
 

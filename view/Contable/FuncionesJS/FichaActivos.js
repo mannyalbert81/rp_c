@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	
 	consultaFicha();
+	cargaEmpleados();
 	
 })
 
@@ -10,11 +11,11 @@ $("#frm_ficha").on("submit",function(event){
 	let _fecha_inicio_ficha_mantenimiento = document.getElementById('fecha_inicio_ficha_mantenimiento').value;
 	let _danio_ficha_mantenimiento = document.getElementById('danio_ficha_mantenimiento').value;
 	let _partes_reemplazado_ficha_mantenimiento = document.getElementById('partes_reemplazado_ficha_mantenimiento').value;
-	let _responsable_ficha_mantenimiento = document.getElementById('responsable_ficha_mantenimiento').value;
+	let _id_empleados = document.getElementById('id_empleados').value;
 	let _descripcion_ficha_mantenimiento = document.getElementById('descripcion_ficha_mantenimiento').value;
 	var _id_ficha_mantenimiento = document.getElementById('id_ficha_mantenimiento').value;
 	var _id_activos_fijos = document.getElementById('id_activos_fijos').value;
-	var parametros = {fecha_inicio_ficha_mantenimiento:_fecha_inicio_ficha_mantenimiento,danio_ficha_mantenimiento:_danio_ficha_mantenimiento,partes_reemplazado_ficha_mantenimiento:_partes_reemplazado_ficha_mantenimiento,responsable_ficha_mantenimiento:_responsable_ficha_mantenimiento,descripcion_ficha_mantenimiento:_descripcion_ficha_mantenimiento,id_ficha_mantenimiento:_id_ficha_mantenimiento,id_activos_fijos:_id_activos_fijos}
+	var parametros = {fecha_inicio_ficha_mantenimiento:_fecha_inicio_ficha_mantenimiento,danio_ficha_mantenimiento:_danio_ficha_mantenimiento,partes_reemplazado_ficha_mantenimiento:_partes_reemplazado_ficha_mantenimiento,id_empleados:_id_empleados,descripcion_ficha_mantenimiento:_descripcion_ficha_mantenimiento,id_ficha_mantenimiento:_id_ficha_mantenimiento,id_activos_fijos:_id_activos_fijos}
 
 	
 	if(_fecha_inicio_ficha_mantenimiento == ""){
@@ -29,8 +30,8 @@ $("#frm_ficha").on("submit",function(event){
 		$("#mensaje_partes_reemplazado_ficha_mantenimiento").text("Ingrese").fadeIn("Slow");
 		return false;
 	}
-	if(_responsable_ficha_mantenimiento == ""){
-		$("#mensaje_responsable_ficha_mantenimiento").text("Ingrese un responsable").fadeIn("Slow");
+	if(_id_empleados == ""){
+		$("#mensaje_id_empleados").text("Ingrese un responsable").fadeIn("Slow");
 		return false;
 	}
 	if(_descripcion_ficha_mantenimiento == ""){
@@ -93,6 +94,36 @@ function consultaFicha(_page = 1){
 	}).always(function(){
 		
 		$("#divLoaderPage").removeClass("loader")
+		
+	})
+	
+}
+
+function cargaEmpleados(){
+	
+	let $ddlEmpleado = $("#id_empleados");
+
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=ActivosFijos&action=cargaEmpleados",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$ddlEmpleado.empty();
+		$ddlEmpleado.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$ddlEmpleado.append("<option value= " +value.id_empleados +" >" + value.nombres_empleados  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlEmpleado.empty();
+		$ddlEmpleado.append("<option value='0' >--Seleccione--</option>");
 		
 	})
 	

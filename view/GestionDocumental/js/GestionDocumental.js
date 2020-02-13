@@ -451,10 +451,10 @@ $("#cedula_capremci").on("focus",function(e) {
     				response(x); 
     				
     			}).fail(function(xhr,status,error){
-    				var err = xhr.responseText
-    				console.log(err)
+    				var err = xhr.responseText;
+    				console.log(err);
     				
-    				console.log('hola')
+    				console.log('hola');
     			})
     		},
     		select: function (event, ui) {	     	       		    			

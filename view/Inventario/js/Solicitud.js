@@ -289,6 +289,7 @@ function notificacionSolicitudes(){
 
 
 function load_estado_productos(pagina){
+	
 
 	var search=$("#search_estado_productos").val();
     var con_datos={

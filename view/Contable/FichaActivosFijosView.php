@@ -102,14 +102,21 @@
                     </div>
 	         	</div>
 	         	
-	         	<div class="col-md-4 col-lg-4 col-xs-12">
-	         	<div class="form-group">
-	         		<label for="responsable_ficha_mantenimiento" class="control-label">Responsable :</label>
-	         		<input type="text" id="responsable_ficha_mantenimiento" name="responsable_ficha_mantenimiento"  value="" class="form-control">
-     			 <div id="mensaje_responsable_ficha_mantenimiento" class="errores"></div>
-                                     
-                    </div>
-	         	</div>
+	         	
+	         	    
+	         	
+	         	
+	         	<div class="col-xs-12 col-md-4 col-md-4 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="id_empleados" class="control-label">Responsable:</label>
+                          <select  class="form-control" id="id_empleados" name="id_empleados">
+                          	<option value="0">--Seleccione--</option>
+                          </select>                         
+                          <div id="mensaje_id_empleados" class="errores"></div>
+                        </div>
+                </div>
+	         	
 	         	
 	         	<div class="col-md-8 col-lg-8 col-xs-12">
 	         	<div class="form-group">
@@ -140,14 +147,17 @@
         <section class="content">
       	<div class="box box-primary">
       		<div class="box-header with-border">
-      			<h3 class="box-title">Listado de Fichas</h3>      			
+      			<h3 class="box-title">Listado de Fichas</h3>    
+      		  			
             </div> 
             <div class="box-body">
     			<div class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaFichas(1)" placeholder="Buscar.."/>
     			</div>            	
             	<div id="ficha_registrados" ></div>
-            </div> 	
+            	  <a href="index.php?controller=ActivosFijos&action=ReporteFichaActivos&id_activos_fijos=<?php echo $id_activos_fijos;?>" target="_blank"><input type="image" src="view/images/print.png" alt="Submit" width="50" height="34" formtarget="_blank" id="btngenerar" name="btngenerar" class="btn btn-default" title="Reporte Ficha"></a>
+            </div> 
+            
       	</div>
       </section> 
     
@@ -162,7 +172,7 @@
     <?php include("view/modulos/links_js.php"); ?>
 
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-  <script src="view/Contable/FuncionesJS/FichaActivos.js?0.6"></script> 
+  <script src="view/Contable/FuncionesJS/FichaActivos.js?1.3"></script> 
 
   </body>
 </html>   

@@ -19,7 +19,7 @@ class ConectarSQL{
         if($this->driver=="sql" || $this->driver==null){
         	
         	$serverName = "192.168.1.208, 1433"; //serverName\instanceName, portNumber (por defecto es 1433)
-        	$connectionInfo = array("Database"=>'one.capremci_PROD', "UID"=>'sa', "PWD"=>'$software$01');
+        	$connectionInfo = array("Database"=>'one.capremci_PROD', "UID"=>'sa', "PWD"=>'$software$01', "CharacterSet" => 'UTF-8');
         	$con = sqlsrv_connect($serverName, $connectionInfo);
         	
         

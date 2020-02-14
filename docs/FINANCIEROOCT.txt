@@ -1,0 +1,271 @@
+FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA						
+DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FUERZAS ARMADASCAPREMCI						
+ESTADO DE SITUACIÓN FINANCIERA						
+AL 31 DE OCTUBRE DE 2019						
+		CÓDIGO:	17			
+						
+CÓDIGO	CUENTA	NOTAS	SALDO	--			
+1	ACTIVOS		" 73,908,075.62 "			
+11	FONDOS DISPONIBLES	1	" 7,942,089.77 "			
+1101	CAJA		" 2,392.95 "			
+110105	Efectivo		" 1,604.95 "			
+110110	Caja chica		 788.00 			
+1102	BANCOS Y OTRAS INSTITUCIONES FINANCIERAS		" 7,939,696.82 "			
+110205	Bancos e instituciones financieras locales		" 7,939,696.82 "			
+110210	Bancos e instituciones financieras del exterior		 -   			
+110215	Remesas en tránsito		 -   			
+1103	 EFECTOS DE COBRO INMEDIATO 		 -   			
+12	INVERSIONES NO PRIVATIVAS	2	" 26,199,818.82 "			
+1201	INVERSIONES RENTA FIJA SECTOR FINANCIERO PRIVADO		" 26,199,818.82 "			
+120105	Certificados de depósito		" 26,199,818.82 "			
+120110	Pólizas de acumulación		 -   			
+120115	Valores de titularización		 -   			
+120120	Obligaciones emitidas por instituciones financieras		 -   			
+120125	Papel comercial emitido por instituciones financieras		 -   			
+120130	Reportos financieros		 -   			
+120135	Reporto bursátil		 -   			
+120190	Otras		 -   			
+1202	INVERSIONES RENTA FIJA SECTOR NO FINANCIERO PRIVADO 	3	 -   			
+120205	Valores de titularización		 -   			
+120210	Obligaciones emitidas por instituciones no financieras		 -   			
+120215	Papel comercial emitido por instituciones no financieras		 -   			
+120220	Reportos bursátiles		 -   			
+120290	Otras		 -   			
+1203	INVERSIONES RENTA FIJA SECTOR FINANCIERO PÚBLICO	4	 -   			
+120305	Certificados de depósito		 -   			
+120310	Pólizas de acumulación		 -   			
+120315	Valores de titularización		 -   			
+120320	Obligaciones emitidas por instituciones financieras públicas		 -   			
+120325	Papel comercial emitido por instituciones financieras públicas		 -   			
+1204	INVERSIONES RENTA FIJA SECTOR NO FINANCIERO PÚBLICO 	5	 -   			
+120405	Valores de titularización		 -   			
+120410	Obligaciones emitidas por instituciones no financieras públicas		 -   			
+120415	Papel comercial emitido por instituciones no financieras públicas		 -   			
+1205	INVERSIONES RENTA VARIABLE SECTOR FINANCIERO PRIVADO		 -   			
+120505	Valores de titularización		 -   			
+120510	Acciones		 -   			
+1206	INVERSIONES RENTA VARIABLE SECTOR NO FINANCIERO PRIVADO		 -   			
+120605	Valores de titularización		 -   			
+120610	Acciones		 -   			
+1299	(PROVISIONES PARA INVERSIONES NO PRIVATIVAS) 	6	 -   			
+129905	(Inversiones renta fija sector financiero privado)		 -   			
+129910	(Inversiones renta fija sector no financiero privado)		 -   			
+129915	(Inversiones renta fija sector financiero público)		 -   			
+129920	(Inversiones renta fija sector no financiero público)		 -   			
+129925	(Inversiones renta variable sector financiero privado)		 -   			
+129930	(Inversiones renta variable sector no financiero privado)		 -   			
+129990	(Provisión general)					
+13	INVERSIONES PRIVATIVAS	7	" 32,470,274.43 "			
+1301	PRÉSTAMOS QUIROGRAFARIOS POR VENCER		" 28,938,894.36 "			
+1302	PRÉSTAMOS QUIROGRAFARIOS RENOVADOS		 -   			
+1303	PRÉSTAMOS QUIROGRAFARIOS REESTRUCTURADOS		" 300,562.01 "			
+1304	PRÉSTAMOS QUIROGRAFARIOS VENCIDOS		" 1,728,897.49 "			
+1305	PRÉSTAMOS PRENDARIOS POR VENCER		 -   			
+1306	PRÉSTAMOS PRENDARIOS RENOVADOS		 -   			
+1307	PRÉSTAMOS PRENDARIOS REESTRUCTURADOS		 -   			
+1308	PRÉSTAMOS PRENDARIOS VENCIDOS		 -   			
+1309	PRÉSTAMOS HIPOTECARIOS POR VENCER		" 2,022,991.23 "			
+1310	PRÉSTAMOS HIPOTECARIOS RENOVADOS		 -   			
+1311	PRÉSTAMOS HIPOTECARIOS REESTRUCTURADOS		 -   			
+1312	PRÉSTAMOS HIPOTECARIOS VENCIDOS		" 53,931.94 "			
+1399	(PROVISIONES PARA INVERSIONES PRIVATIVAS)	8	" -575,002.60 "			
+139905	(Quirografarios) 		" -549,731.27 "			
+139910	(Prendarios) 					
+139915	(Hipotecarios) 		" -25,271.33 "			
+139990	(Provisión general)					
+14	CUENTAS POR COBRAR	9	" 6,496,542.50 "			
+1401	RENDIMIENTOS POR COBRAR INVERSIONES NO PRIVATIVAS		" 407,885.85 "			
+140105	Inversiones renta fija sector financiero privado		" 407,885.85 "			
+140110	Inversiones renta fija sector no financiero privado		 -   			
+140115	Inversiones renta fija sector financiero público		 -   			
+140120	Inversiones renta fija sector no financiero público		 -   			
+140125	Inversiones renta variable sector financiero privado		 -   			
+140130	Inversiones renta variable sector no financiero privado		 -   			
+1402	INTERESES POR COBRAR INVERSIONES PRIVATIVAS		 -   			
+140205	Intereses por préstamos quirografarios		 -   			
+140210	Intereses por préstamos prendarios		 -   			
+140215	Intereses por préstamos hipotecarios		 -   			
+1403	CUENTAS POR COBRAR AL PERSONAL	10	" 12,904.62 "			
+140305	Préstamos		 -   			
+140310	Anticipos de sueldos		" 12,874.97 "			
+140390	Otros conceptos		 29.65 			
+1404	INVERSIONES NO PRIVATIVAS VENCIDAS	11	 -   			
+140405	Inversiones renta fija sector financiero privado		 -   			
+140410	Inversiones renta fija sector no financiero privado		 -   			
+140415	Inversiones renta fija sector financiero público		 -   			
+140420	Inversiones renta fija sector no financiero público		 -   			
+140425	Inversiones renta variable sector financiero privado		 -   			
+140430	Inversiones renta variable sector no financiero privado		 -   			
+1405	PLANILLAS EMITIDAS		" 6,050,412.08 "			
+140505	Aportes 		" 1,614,022.64 "			
+140510	Préstamos		" 4,436,389.44 "			
+1490	CUENTAS POR COBRAR VARIAS	12	" 25,339.95 "			
+149005	Cheques protestados y rechazados		 -   			
+149010	Arrendatarios		 -   			
+149015	Pago por cuenta de particípes a cobrar		 -   			
+149090	Otros		" 25,339.95 "			
+1499	(PROVISIONES PARA CUENTAS POR COBRAR)		 -   			
+149905	(Provisiones intereses inversiones privativas)		 -   			
+149910	(Provisiones rendimientos inversiones no privativas)		 -   			
+149915	(Provisiones inversiones privativas vencidas)		 -   			
+149920	(Provisiones otras cuentas por cobrar)		 -   			
+149990	(Provisión general)		 -   			
+15	INVERSIÓN EN PROYECTOS INMOBILIARIOS 	13	" 429,976.77 "			
+1501	PROYECTOS INMOBILIARIOS 		" 149,687.18 "			
+150105	Terrenos para urbanizar		 -   			
+150110	Terrenos para edificar		 -   			
+150115	Obras de urbanización		 -   			
+150120	Obras de edificación		" 149,687.18 "			
+1502	PROYECTOS TERMINADOS		" 280,289.59 "			
+150205	Inmuebles disponibles para la venta		" 280,289.59 "			
+150210	Inmuebles para arrendar 		 -   			
+150299	(Depreciación inmuebles para arrendar)		 -   			
+1599	(PROVISIÓN PROYECTOS INMOBILIARIOS)		 -   			
+16	PROPIEDAD Y EQUIPO		" 232,030.58 "			
+1601	BIENES INMUEBLES		" 398,107.00 "			
+160105	Terrenos		 -   			
+160110	Edificios		" 398,107.00 "			
+160115	Construcciones y remodelaciones en curso		 -   			
+1602	BIENES MUEBLES		" 441,229.84 "			
+160205	Muebles y enseres		" 36,715.07 "			
+160210	Equipo de oficina		" 36,297.99 "			
+160215	Equipo de computación		" 228,582.03 "			
+160220	Vehículos		 -   			
+160290	Otros		" 139,634.75 "			
+1699	(DEPRECIACIÓN ACUMULADA)		" -607,306.26 "			
+169905	(Edificios)		" -210,099.26 "			
+169910	(Muebles y enseres)		" -28,880.85 "			
+169915	(Equipo de oficina)		" -28,720.63 "			
+169920	(Equipo de computacion)		" -174,332.45 "			
+169925	(Vehiculos)		 -   			
+169990	(Otros)		" -165,273.07 "			
+17	BIENES ADJUDICADOS POR PAGO Y RECIBIDOS EN DACIÓN	14	 -   			
+1701	TERRENOS		 -   			
+1702	EDIFICIOS		 -   			
+1703	"MOBILIARIO, MAQUINARIA Y EQUIPO"		 -   			
+1704	UNIDADES DE TRANSPORTE		 -   			
+1705	TÍTULOS VALORES		 -   			
+1790	OTROS		 -   			
+1799	(PROVISIÓN PARA BIENES ADJUDICADOS POR PAGO Y RECIBIDOS EN DACIÓN)		 -   			
+179905	(Edificios)		 -   			
+179910	"(Mobiliario, maquinaria y equipo)"		 -   			
+179915	(Unidades de transporte)		 -   			
+179920	(Títulos valores)		 -   			
+179990	(Otros)		 -   			
+19	OTROS ACTIVOS	15	" 137,342.75 "			
+1901	PAGOS ANTICIPADOS		 -   			
+190105	Anticipos a Contratistas		 -   			
+190110	Anticipos a Proveedores		 -   			
+190115	Arriendos		 -   			
+190120	Seguros		 -   			
+190190	Otros		 -   			
+190199	(Amortización acumulada pagos anticipados)		 -   			
+1902	GASTOS DIFERIDOS		" 137,342.75 "			
+190205	Licencias y programas de computación		" 133,821.64 "			
+190210	Gastos de adecuación		 -   			
+190290	Otros		" 3,521.11 "			
+190299	(Amortización acumulada gastos anticipados)		 -   			
+1903	DERECHOS FIDUCIARIOS		 -   			
+190305	Inversiones no privativas		 -   			
+190310	Inversiones privativas		 -   			
+190315	Proyectos inmobiliarios  		 -   			
+190320	Proyectos terminados		 -   			
+190325	Propiedad y equipo		 -   			
+190330	Fideicomisos de administración		 -   			
+190335	Fideicomisos en garantía		 -   			
+1990	OTROS 		 -   			
+199005	Faltantes de caja		 -   			
+199090	Otros activos		 -   			
+1999	(PROVISIÓN PARA OTROS ACTIVOS)		 -   			
+199905	(Derechos fiduciarios)		 -   			
+199990	(Otros)		 -   			
+2	PASIVOS	16	" 70,139,822.62 "			
+21	CUENTA INDIVIDUAL		" 56,651,792.07 "			
+2101	CESANTÍA		" 56,651,792.07 "			
+210105	Aportes personales		" 49,271,224.11 "			
+210110	Aportes patronales		" 7,380,567.96 "			
+210115	Aporte personal adicional		 -   			
+210120	Aportes retiro voluntario cesantía		 -   			
+2102	JUBILACIÓN		 -   			
+210205	Aportes personales		 -   			
+210210	Aportes patronales		 -   			
+210215	Aporte adicional personal 		 -   			
+210220	Aportes retiro voluntario con relación laboral		 -   			
+210225	Aportes retiro voluntario sin relación laboral		 -   			
+22	BENEFICIO DEFINIDO	17	 -   			
+2201	CESANTÍA		 -   			
+220105	Aportes personales		 -   			
+220110	Aportes patronales		 -   			
+220115	Aporte personal adicional		 -   			
+2202	JUBILACIÓN		 -   			
+220205	Aportes personales		 -   			
+220210	Aportes patronales		 -   			
+220215	Aporte personal adicional		 -   			
+23	CUENTAS POR PAGAR 	18	" 6,216,822.74 "			
+2301	PRESTACIONES LIQUIDADAS POR PAGAR		" 5,383,764.59 "			
+230105	Cesantía		" 4,594,078.09 "			
+230110	Jubilación		 -   			
+230115	Otras prestaciones		" 789,686.50 "			
+2302	PLANILLAS EMITIDAS POR PAGAR		" 5,240.92 "			
+230205	Aportes					
+230210	Préstamos		" 5,240.92 "			
+2303	CONTRIBUCIONES		 -   			
+230305	Superintendencia de Bancos y Seguros		 -   			
+230390	Otros		 -   			
+2304	IMPUESTOS Y TASAS		" 4,509.04 "			
+230405	Impuestos municipales		 -   			
+230410	Retenciones IVA		" 4,509.04 "			
+230490	Otros		 -   			
+2305	TASA DE ADMINISTRACIÓN BIESS	19	" 19,809.33 "			
+230501	Tasa de Administración BIESS		" 19,809.33 "			
+2390	OTRAS CUENTAS POR PAGAR		" 803,498.86 "			
+239005	Intereses por pagar		 -   			
+239010	Proveedores 		" 42,911.96 "			
+239015	Honorarios por pagar		 -   			
+239020	Servicios básicos por pagar		 -   			
+239025	Dietas		" 3,166.00 "			
+239030	Cheques girados no cobrados		 -   			
+239090	Otras cuentas por pagar		" 757,420.90 "			
+24	OBLIGACIONES FINANCIERAS	20	 -   			
+2401	SOBREGIROS BANCARIOS		 -   			
+2402	OBLIGACIONES CON BANCOS Y OTRAS INSTITUCIONES FINANCIERAS LOCALES		 -   			
+2403	OBLIGACIONES CON BANCOS Y OTRAS INSTITUCIONES FINANCIERAS DEL EXTERIOR		 -   			
+2490	OTRAS OBLIGACIONES		 -   			
+25	OBLIGACIONES PATRONALES		" 21,680.03 "			
+2501	REMUNERACIONES POR PAGAR		 -   			
+2502	BENEFICIOS SOCIALES		" 14,610.90 "			
+2503	APORTES Y RETENCIONES IESS		" 6,883.72 "			
+2504	FONDO DE RESERVA		 135.78 			
+2505	RETENCIONES EN LA FUENTE		 -   			
+2506	RETENCIONES JUDICIALES		 -   			
+2507	GASTOS DE REPRESENTACIÓN		 -   			
+2590	OTRAS RETENCIONES Y DESCUENTOS		 49.63 			
+29	OTROS PASIVOS	21	" 7,249,527.78 "			
+2901	INGRESOS RECIBIDOS POR ANTICIPADO 		 -   			
+290105	Intereses recibidos por anticipado		 -   			
+290110	Arriendos recibidos por anticipado		 -   			
+290115	Ingresos por valuación de bienes entregados en fideicomiso inmobiliario		 -   			
+290120	Jubilación patronal de empleados		 -   			
+290190	Otros		 -   			
+2903	ANTICIPOS RECIBIDOS POR VENTA DE PROYECTOS INMOBILIARIOS		" 145,509.37 "			
+290305	Terrenos urbanizados		 -   			
+290310	Inmuebles		" 145,509.37 "			
+2904	JUBILACIÓN PATRONAL DE EMPLEADOS		" 23,725.46 "			
+2990	OTROS 		" 7,080,292.95 "			
+299005	Sobrantes de caja		 -   			
+299090	Varios		" 7,080,292.95 "			
+						
+3	PATRIMONIO	22	" 3,768,253.00 "			
+31	RESERVAS		 -   			
+3101	RESERVAS ESPECIALES		 -   			
+32	SUPERÁVIT POR VALUACIONES 		 -   			
+3201	SUPERÁVIT POR VALUACIÓN DE PROPIEDADES		 -   			
+3202	SUPERÁVIT POR VALUACIÓN DE INVERSIONES EN ACCIONES		 -   			
+33	OTROS APORTES RESTRINGIDOS	23	 -   			
+3301	CESANTÍA 		 -   			
+3302	JUBILACIÓN		 -   			
+34	RESULTADOS	24	" 3,768,253.00 "			
+3401	EXCEDENTES ACUMULADOS		 -   			
+3402	(PÉRDIDAS ACUMULADAS)		 -   			
+3403	EXCEDENTES DEL EJERCICIO		" 3,768,253.00 "			
+3404	(PÉRDIDAS DEL EJERCICIO)			

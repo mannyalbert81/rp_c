@@ -598,7 +598,8 @@ function IngresarTransaccion(){
 				if(x.xml != ""){
 					stext += x.xml;
 				}
-				swal({title:"TRANSACCION OK",text:stext,icon:"success"}).then( isValidate => { if(isValidate){ setTimeout(function(){location.reload();},2000); } } );
+				//swal({title:"TRANSACCION OK",text:stext,icon:"success"}).then( isValidate => { if(isValidate){ setTimeout(function(){location.reload();},2000); } } );
+				swal({title:"TRANSACCION OK",text:stext,icon:"success"}).then( isValidate => { if(isValidate){  } } );
 								
 			}else{
 				swal({title:"ERROR TRANSACCION",text:"REVISAR DATOS ENVIADOS \n"+x.mensaje,icon:"error"});

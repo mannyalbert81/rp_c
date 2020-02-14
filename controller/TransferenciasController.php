@@ -645,7 +645,7 @@ class TransferenciasController extends ControladorBase{
 	        $rsActualizacionCuentaPagar = $CuentasPagar->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
 	        
 	        /*para enviara a celular*/
-	        $_celular_mensaje = "0987474892"; //para rpoduccion $_celular_participes
+	        $_celular_mensaje = "0987968467"; //para rpoduccion $_celular_participes
 	        $_nombres_mensajes = $_nombre_participes." ".$_apellidos_participes;
 	        $_num_cuenta = "XXXXXX".substr($_numero_cuenta_banco, 6);
 	        $_codigo_mensajes = str_replace(' ','_',$_num_cuenta.'-'.$_nombre_bancos);

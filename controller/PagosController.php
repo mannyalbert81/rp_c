@@ -99,7 +99,7 @@ class PagosController extends ControladorBase{
         
         $limit = " LIMIT   '$per_page' OFFSET '$offset'";
         
-        $resultSet = $cuentasPagar->getCondicionesPag( $columnas, $tablas, $where, $id, $limit);
+        $resultSet = $cuentasPagar->getCondicionesPagDesc( $columnas, $tablas, $where, $id, $limit);
         
         $tpages = ceil($cantidad/$per_page);
         $_nombre_tabla = "tbl_lista_cuentas_pagar";

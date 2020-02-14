@@ -1128,10 +1128,13 @@ class TesCuentasPagarController extends ControladorBase{
                 
                
             }else{
+                $respuesta['xml'] = " ARCHIVO ENTRO XML";
                 
                 if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML GENERADO" ){
                     /** COMIENZA PROCESO XML CON SRI**/
-                    $errorXml = false;                   
+                    $errorXml = false; 
+                    
+                    $respuesta['xml'] = " ARCHIVO ENTRO XML IF";
                     
                     $clave = ( array_key_exists('claveAcceso', $resp) ) ? $resp['claveAcceso'] : '' ;         
                     
@@ -1146,22 +1149,30 @@ class TesCuentasPagarController extends ControladorBase{
                     
                     $aux = $comprobante->validarFirmarXml($xml, $clave);
                     
+                    $respuesta['Archivo'] = "LLEGO AQUI";
+                    $respuesta['xml'] = $aux;
+                    
                     if($aux['error'] === false){
                         
                         $aux = $comprobante->enviarXml($clave);
                         //$aux['recibido'] = true; //para pruebas
                         
                         if($aux['recibido'] === true){
+                            $respuesta['xml'] = " Archivo Xml RECIBIDO";
                             
-                            //$finalresp = $comprobante->autorizacionXml($clave);
-                            $finalresp = null; //para pruebas
-                            $finalresp['error'] = false; //para pruebas
+                            $finalresp = $comprobante->autorizacionXml($clave);
+                            //$finalresp = null; //para pruebas
+                            //$finalresp['error'] = false; //para pruebas
                             if($finalresp['error'] === true ){                                
                                 /** aqui poner senetecia en cao de haber errror **/
+                                $respuesta['xml'] = " Archivo Xml RECIBIDO NO AUTORIZADO";
                                 $errorXml = true;
+                            }else{
+                                
+                                $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
                             }
                             
-                            $respuesta['xml'] = " Archivo Xml Generado";
+                            
                             
                         }else{
                             /** aqui poner senetecia en cao de haber errror **/
@@ -1184,6 +1195,8 @@ class TesCuentasPagarController extends ControladorBase{
                         /** agregar datos a tabla errores de retenciones **/ 
                     }
                         
+                }else{
+                    $respuesta['xml'] = " ARCHIVO NO ENTRO XML";
                 }
             }
             

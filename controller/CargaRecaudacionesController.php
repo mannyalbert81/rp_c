@@ -1077,7 +1077,7 @@ class CargaRecaudacionesController extends ControladorBase{
                     }else{
                         
                         //echo "\n","linea--**--",$_linea,"--**--","no es array";
-                        array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"cantidad columnas no encontradas","cantidad"=>0));
+                        array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"cantidad columnas no encontradas Cantidad de <Columnas Solicitadas 3> ","cantidad"=>0));
                     }                                       
                     
                 }else if( $_linea > 0 && $_fila == "" ){

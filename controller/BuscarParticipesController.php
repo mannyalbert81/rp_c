@@ -13,18 +13,30 @@ class BuscarParticipesController extends ControladorBase{
     public function index1()
     {
         session_start();
-        $estado = new EstadoModel();
-        $id_rol = $_SESSION['id_rol'];
-        $cedula_participe=$_GET['cedula_participe'];
-        $id_solicitud=$_GET['id_solicitud'];
         
-        $this->view_Credito("BuscarParticipes",array(
-            "result" => ""
-            ));
-        echo '<script type="text/javascript">',
-        'InfoSolicitud("'.$cedula_participe.'", '.$id_solicitud.');',
-        '</script>'
-        ;
+      
+        if(isset($_SESSION['id_usuarios']) ){
+           
+            if(isset($_GET["cedula_participe"]) && isset($_GET["id_solicitud"])){
+                
+                
+                $cedula_participe=$_GET['cedula_participe'];
+                $id_solicitud=$_GET['id_solicitud'];
+                
+                
+                $this->view_Credito("BuscarParticipes",array("result" => ""));
+                
+                // EXECUTO METODO InfoSolicitud DE JAVA SCRIPT BuscarParticipes
+                echo '<script type="text/javascript">','InfoSolicitud("'.$cedula_participe.'", '.$id_solicitud.');','</script>';
+                
+            }
+             
+        }else{
+            
+            $this->redirect("Usuarios","sesion_caducada");
+            
+        }
+      
     }
     
     
@@ -32,9 +44,16 @@ class BuscarParticipesController extends ControladorBase{
     public function InfoSolicitud()
     {
         session_start();
-        $id_solicitud=$_POST['id_solicitud'];
         require_once 'core/DB_Functions.php';
         $db = new DB_Functions();
+        
+        
+        // ESTE ES EL METODO PARA CARGAR EL MODAL DE INFORMACION DE LA SOLICITUD
+        
+        $id_solicitud= (isset($_POST['id_solicitud'])) ? $_POST['id_solicitud'] : 0;
+        
+       
+        if($id_solicitud>0){
         
         $columnas = " solicitud_prestamo.destino_dinero_datos_prestamo,
 					  solicitud_prestamo.nombre_banco_cuenta_bancaria,
@@ -85,16 +104,33 @@ class BuscarParticipesController extends ControladorBase{
                </div>';
         
         echo $html;
+        
+        }else{
+            
+            
+            echo "NO VINO EL ID SOLICITUD POR POST";
+            
+        }
+        
     }
+    
+    
+    
     
     public function BuscarParticipe()
     {
         session_start();
-        $cedula=$_POST['cedula'];
+       
         $html="";
         $participes= new ParticipesModel();
         $icon="";
         $respuesta= array();
+        
+        // METODO PARA CARGAR INFORMACION BASICA DEL PARTICIPE 
+        
+        $cedula=(isset($_POST['cedula'])) ? $_POST['cedula'] : '';
+        
+        if(!empty($cedula)){
         
         $columnas="core_estado_participes.nombre_estado_participes, core_participes.nombre_participes,
                     core_participes.apellido_participes, core_participes.ocupacion_participes,
@@ -111,7 +147,7 @@ class BuscarParticipesController extends ControladorBase{
                     INNER JOIN core_genero_participes
                     ON core_genero_participes.id_genero_participes = core_participes.id_genero_participes";
     
-        $where="core_participes.cedula_participes='".$cedula."'";
+        $where="core_participes.cedula_participes='$cedula'";
         
         $id="core_participes.id_participes";
         
@@ -122,19 +158,7 @@ class BuscarParticipesController extends ControladorBase{
         if(!(empty($resultSet)))
         {if($resultSet[0]->nombre_genero_participes == "HOMBRE") $icon='<i class="fa fa-male fa-3x" style="float: left;"></i>';
         else $icon='<i class="fa fa-female fa-3x" style="float: left;"></i>';
-        
-        $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
-            		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
-            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
-            		core_estado_creditos.nombre_estado_creditos";
-        $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
-        		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
-        		INNER JOIN public.core_estado_creditos
-        		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
-        $where="core_creditos.id_participes=".$resultSet[0]->id_participes." AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
-        $id="core_creditos.fecha_concesion_creditos";
-        
-        $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
+       
         
         $html.='
         <div class="box box-widget widget-user-2">';
@@ -188,6 +212,8 @@ class BuscarParticipesController extends ControladorBase{
         
         
         echo json_encode($respuesta);
+        
+        }
     }
     
     public function dateDifference($date_1 , $date_2 , $differenceFormat = '%y Años, %m Meses' )
@@ -416,7 +442,7 @@ class BuscarParticipesController extends ControladorBase{
         		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
         		INNER JOIN public.core_estado_creditos
         		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
-        $where="core_creditos.id_participes=".$id_participe." AND core_creditos.id_estatus=1";
+        $where="core_creditos.id_participes=".$id_participe." AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
         $id="core_creditos.fecha_concesion_creditos";
        
         $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);

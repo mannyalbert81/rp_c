@@ -44,6 +44,8 @@ if(isset($datosActivo)){
         
         $_valor_por_depreciar = (double)($res->valor_activos_fijos) - (double)($res->actual);
         
+        $valor_libros=($res->valor_activos_fijos - $res->actual);
+        
         if($_id_tipo_activo != $res->id_tipo_activos_fijos){
             
             $titulo = $res->nombre_tipo_activos_fijos."( ".$res->meses_tipo_activos_fijos." MESES )";
@@ -66,8 +68,9 @@ if(isset($datosActivo)){
                         <td>1</td>
                         <td>$res->nombre_activos_fijos</td>
                         <td class=\"numero\" >$ ".number_format($res->valor_activos_fijos,2,',','.')."</td>
-                        <td>$ $res->meses_tipo_activos_fijos</td>
-                        <td>$ $res->diferencia_mes</td>
+                        <td class=\"numero\" >$ ".number_format($valor_libros,2,',','.')."</td>
+                        <td>$res->meses_tipo_activos_fijos</td>
+                        <td>&nbsp; &nbsp; &nbsp; $res->diferencia_mes</td>
                         <td class=\"numero\" >".number_format($res->valor_depreciacion,2,',','.')."</td>
                         <td class=\"numero\" >".number_format($res->acumulada,2,',','.')."</td>
                         <td class=\"numero\" >".number_format($res->enero,2,',','.')."</td>

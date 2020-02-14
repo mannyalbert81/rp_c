@@ -1,4 +1,3 @@
-
 var id_participe;
 
 
@@ -73,9 +72,6 @@ function BuscarParticipe()
 {
 	var ciparticipe=$('#cedula_participe').val();
 	
-	$("#link_reporte").fadeOut("slow");
-	$("#Generar").fadeOut("slow");
-	
 	if(ciparticipe=="" || ciparticipe.includes('_'))
 		{
 		$("#mensaje_cedula_participe").text("Ingrese cédula");
@@ -84,7 +80,7 @@ function BuscarParticipe()
 		}
 	else
 		{
-		//console.log(ciparticipe);
+		console.log(ciparticipe);
 		$.ajax({
 		    url: 'index.php?controller=BuscarParticipesCesantes&action=BuscarParticipe',
 		    type: 'POST',
@@ -94,15 +90,14 @@ function BuscarParticipe()
 		})
 		.done(function(x) {
 			var y=$.parseJSON(x);
-			//console.log(y);
+			console.log(y);
 			$('#participe_encontrado').html(y[0]);
 		     id_participe=y[1];
 		    $("#link_reporte").data("participe",id_participe);
-		    //console.log("valor de id -->"+id_participe);
-			//AportesParticipe(1),
-//			CreditosActivosParticipe(id_participe,1)
-			cargaTipoPrestaciones();
-
+			AportesParticipe(id_participe, 1)
+			AportesParticipePatronal(id_participe, 1)
+			CreditosActivosParticipe(id_participe, 1)
+			TablaDesafiliacion(id_participe, 1)
 			
 		})
 		.fail(function() {
@@ -111,115 +106,138 @@ function BuscarParticipe()
 		}
 }
 
-function AportesParticipe(){
-	
-	
-	var id_TipoPrestaciones = $("#id_tipo_prestaciones");
-	var fecha_prestaciones = $("#fecha_prestaciones");   
-	console.log(id_TipoPrestaciones.val() );
-	console.log(fecha_prestaciones.val() );
-	
-	if (id_TipoPrestaciones.val() == 0)
-	{
-		return false;
-	}
-	
-	if (validarfecha(fecha_prestaciones.val()))
-		{
-		
-		}
-	else
-		{
-			return false;
-		}
-	
+function AportesParticipe(id, page)
+{
 	$.ajax({
-		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
-		url:"index.php?controller=BuscarParticipesCesantes&action=AportesParticipe",
-		type:"POST",
-		data:{action:'ajax',id_participe:id_participe}
-	}).done(function(datos){		
+	    url: 'index.php?controller=BuscarParticipesCesantes&action=AportesParticipe',
+	    type: 'POST',
+	    data: {
+	    	   id_participe: id,
+	    	   page: page
+	    },
+	})
+	.done(function(x) {
+		$('#aportes_participe').html(x);
 		
-		$("#aportes_participe_registrados").html(datos)		
-		
-	}).fail(function(xhr,status,error){
-		
-		var err = xhr.responseText
-		console.log(err);
-		
-	}).always(function(){
-		
-		$("#divLoaderPage").removeClass("loader")
 		
 	})
-	
+	.fail(function() {
+	    console.log("error");
+	});
 }
+
+
+function AportesParticipePatronal(id, page)
+{
+	$.ajax({
+	    url: 'index.php?controller=BuscarParticipesCesantes&action=AportesParticipePatronal',
+	    type: 'POST',
+	    data: {
+	    	   id_participe: id,
+	    	   page: page
+	    },
+	})
+	.done(function(x) {
+		$('#aportes_participe_patronal').html(x);
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+}
+
+
+function CreditosActivosParticipe(id, page)
+{
+	$.ajax({
+	    url: 'index.php?controller=BuscarParticipesCesantes&action=CreditosActivosParticipe',
+	    type: 'POST',
+	    data: {
+	    	   id_participe: id,
+	    	   page: page
+	    },
+	})
+	.done(function(x) {
+		$('#creditos_participe').html(x);
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+}
+
+function TablaDesafiliacion(id, page)
+{
+	$.ajax({
+	    url: 'index.php?controller=BuscarParticipesCesantes&action=TablaDesafiliacion',
+	    type: 'POST',
+	    data: {
+	    	   id_participe: id,
+	    	   page: page
+	    },
+	})
+	.done(function(x) {
+		$('#tabla_desafiliacion').html(x);
+		
+		let totalaAporte = $("#lblTotalPersonal").text();
+		totalaAporte = totalaAporte.replace(".","");
+		totalaAporte = totalaAporte.replace(",",".");
+		let var1 = totalaAporte / 2 ;
+		
+		let totalCredito = $("#lblTotalCreditos").text();
+		totalCredito = totalCredito.replace(".","");
+		totalCredito = totalCredito.replace(",",".");
+		let var2 = totalCredito;
+		
+		let totalImpuesto = $("#lblTotalImpuesto").text();
+		totalImpuesto = totalImpuesto.replace(".","");
+		totalImpuesto = totalImpuesto.replace(",",".");
+		let var3 = totalImpuesto / 2;
+	
+		let SuperavitAporte = $("#lblTotalSuperavitAporte").text();
+		SuperavitAporte = SuperavitAporte.replace(".","");
+		SuperavitAporte = SuperavitAporte.replace(",",".");
+		let var4 = SuperavitAporte / 2;
+		
+		let var5 = var1 + var3 + var4;
+		let var6 = var5 - var2;
+	
+		$("#lblAportePersonal").text(var1);
+		$("#lblImpuestoPersonal").text(var3);
+		$("#lblSuperavitAportePersonal").text(var4);
+		$("#lblTotalSuma").text(var5);
+		$("#lblCreditoOrdinario").text(var2);
+		$("#lblTotalDescuentos").text(var2);
+		$("#lblTotalRecibir").text(var6);
+		
+		
+		if(var5 < var2)
+		{
+			
+		swal({
+	  		  title: "Advertencia!",
+	  		  text: "El participe no puede desafiliarse en este momento",
+	  		  icon: "error",
+	  		  button: "Aceptar",
+	  		  dangerMode: true
+	  		});
+		}
+		
+		
+		
+		
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+}
+
 
 function reportePrint(ObjetoLink){
 	var $enlace = $(ObjetoLink);
 	var id_participe = $enlace.data("participe");
 	window.open("index.php?controller=BuscarParticipesCesantes&action=print&id_participes="+id_participe,"_blank");
 }
-
-
-function cargaTipoPrestaciones(){
-	
-	//console.log("Entre Prestaciones");
-	let $ddlTipoPrestaciones = $("#id_tipo_prestaciones");
-	
-	$.ajax({
-		beforeSend:function(){},
-		url:"index.php?controller=BuscarParticipesCesantes&action=cargaTipoPrestaciones",
-		type:"POST",
-		dataType:"json",
-		data:null
-	}).done(function(datos){		
-		
-		$ddlTipoPrestaciones.empty();
-		$ddlTipoPrestaciones.append("<option value='0' >--Seleccione--</option>");
-		
-		$.each(datos.data, function(index, value) {
-			
-			
-			$ddlTipoPrestaciones.append("<option value=' "+value.id_tipo_prestaciones +"' >" + value.nombre_tipo_prestaciones  + "</option>");	
-  		});
-		
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText;
-		console.log("Error en Tipo de Prestaciones");
-		console.log(err);
-		$ddlTipoPrestaciones.empty();
-	})
-	
-}
-
-
-function validarfecha(fecha)
-{
-	var hoy = new Date().getDate();
-	var year = new Date().getFullYear();
-	var mes = new Date().getMonth()+1;
-	var fechael = fecha.split("-");
-	if(fechael[0] > year){
-		return false;
-	}else if (fechael[1] > mes){
-		return false;
-	}else if (fechael[1]== mes && fechael[2] > hoy){
-		return false;
-	}else{
-		return true;
-	}
-}
-
-
-$("#id_tipo_prestaciones").on("focus",function(){
-	$("#mensaje_id_tipo_prestaciones").text("").fadeOut("");
-})
-
-$("#id_participe").on("keyup",function(){
-	
-	$(this).val($(this).val().toUpperCase());
-})
-
-
-

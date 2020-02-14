@@ -100,18 +100,19 @@
           	<div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
-                		<label for="cedula_usuarios" class="control-label">Cedula:</label>
+                		<label for="cedula_participe" class="control-label">Cedula:</label>
                 		<div id="mensaje_cedula_participe" class="errores"></div>
                 		<div class="input-group">
-                			<input type="text" data-inputmask="'mask': '9999999999'" class="form-control" id="cedula_participe" name="cedula_participe" placeholder="C.I.">
+                			<input type="text" data-inputmask="'mask': '9999999999'" class="form-control" id="cedula_participe" name="cedula_participe" placeholder="C.I." readonly>
                 			
-            				<span class="input-group-btn">
-            			    	<button type="button" class="btn btn-primary" id="buscar_participe" name="buscar_participe" onclick="BuscarParticipe()">
+            				<span class="input-group-btn" id="buscar_participe_boton">
+            				
+            			    	<!--<button type="button" class="btn btn-primary" id="buscar_participe" name="buscar_participe" onclick="BuscarParticipe()">
         						<i class="glyphicon glyphicon-search"></i>
         						</button>
         						<button type="button" class="btn btn-danger" id="borrar_cedula" name="borrar_cedula" onclick="BorrarCedula()">
         						<i class="glyphicon glyphicon-arrow-left"></i>
-        						</button>
+        						</button>-->
         					</span>
         					
         				</div>
@@ -154,7 +155,8 @@
 			<div class="modal-body">
 				<div class="form-group">
 				<div id="info_solicitud"></div>
-				 <div id="info_participe"></div>				 
+				 <div id="info_participe"></div>	
+					 
           	 <div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
@@ -353,7 +355,8 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+       <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?0.47"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?117"></script> 
    </body>
 </html>   

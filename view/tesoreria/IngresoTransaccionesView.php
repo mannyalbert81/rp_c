@@ -106,11 +106,11 @@
   						<ul class="nav nav-pills">
   						
   						  <li>
-  						  <p id="txtInicio" class="text-justify text-danger mark "> GENERE UN LOTE PARA EMPEZAR</p>
+  						  <p id="txtInicio" class="text-justify text-danger mark "> GENERE UN IDENTIFICADOR PARA EMPEZAR</p>
   						  </li>	
   						  <li>
   						  	<button type="button" id="btnLote"  class="btn btn-default" data-toggle="popover"  data-placement="right" data-html='true' data-popover-content="">
-  						  	Generar Lote
+  						  	Generar Identificador
   						  	<i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> 
   						  	</button>
                           </li>                          
@@ -426,7 +426,7 @@
           		
             	<div id="mod_div_impuestos" >
             		<div class="pull-right">
-            			<input type="text" id="mod_buscador_impuestos_relacionados" onkeyup="loadImpuestos()" class="form-control">
+            			<input type="text" id="mod_buscador_impuestos_relacionados" onkeyup="" class="form-control">
             		</div>
             		<div class="clearfix"></div>
             		<div class="pull-left">
@@ -438,10 +438,13 @@
                         	<thead >                        		
                         	    <tr class="table-secondary" >
                         			<th style="text-align: left;  font-size: 12px;">#</th>
-                        			<th style="text-align: left;  font-size: 12px;">CODIGO</th>
-                        			<th style="text-align: left;  font-size: 12px;">NOMBRE</th>
-                        			<th style="text-align: left;  font-size: 12px;">CUENTA</th>
-                        			<th style="text-align: left;  font-size: 12px;">..</th>
+                        			<th style="text-align: left;  font-size: 12px;">Tipo Imp.</th>
+                        			<th style="text-align: left;  font-size: 12px;">Nombre</th>
+                        			<th style="text-align: left;  font-size: 12px;">Cuenta</th>
+                        			<th style="text-align: left;  font-size: 12px;">Valor Compra</th>
+                        			<th style="text-align: left;  font-size: 12px;">Base Imp.</th>
+                        			<th style="text-align: left;  font-size: 12px;">Valor Imp.</th>
+                        			<th style="text-align: left;  font-size: 1px;">..</th>
                         		</tr>
                         	</thead>        
                         	<tbody>
@@ -449,7 +452,7 @@
                         	</tbody>
                         	<tfoot>
                         	    <tr >
-                        	    <th colspan="5"></th>
+                        	    <th colspan="8"></th>
                         	    </tr>
                         	</tfoot>
                         </table>  

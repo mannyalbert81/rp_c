@@ -523,19 +523,24 @@ class TesCuentasPagarController extends ControladorBase{
 	    }
 	    
 	    $cantidadResult = sizeof($rsConsulta1);
-	    
+	    $mapTipoImpuesto   = array( 'retiva' =>'RETENCION IVA', 'ret' => 'RETENCION FUENTE', 'iva' => 'IVA');
+	    $_tipoImpuesto     = "";
 	    $htmlTr = "";
 	    $i = 0;
 	    foreach ($rsConsulta1 as $res){
 	        $i++;
 	        $btonSelect = "<button onclick=\"RemoveImpuesto(this)\" value=\"$res->id_cuentas_pagar_impuestos\" class=\"btn btn-default\">
                         <i aria-hidden=\"true\" class=\"fa fa-trash text-danger\"></i> </button>";
+	        $_tipoImpuesto = (array_key_exists($res->tipo_impuestos, $mapTipoImpuesto) ) ?  $mapTipoImpuesto["$res->tipo_impuestos"] : "";
 	        $htmlTr    .= "<tr>";
-	        $htmlTr    .= "<td>" . $i . "</td>";
-	        $htmlTr    .= "<td>" . $res->id_cuentas_pagar_impuestos . "</td>";
-	        $htmlTr    .= "<td>" . $res->id_impuestos . "</td>";
-	        $htmlTr    .= "<td>" . $res->codigo_plan_cuentas . "</td>";
-	        $htmlTr    .= "<td>" . $btonSelect . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $i . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $_tipoImpuesto . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $res->nombre_impuestos . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $res->codigo_plan_cuentas . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $res->base_cuentas_pagar_impuestos . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $res->valor_base_cuentas_pagar_impuestos . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $res->valor_cuentas_pagar_impuestos . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $btonSelect . "</td>";
 	        $htmlTr    .= "</tr>";
 	        
 	    }
@@ -1143,8 +1148,8 @@ class TesCuentasPagarController extends ControladorBase{
                     
                     if($aux['error'] === false){
                         
-                        //$aux = $comprobante->enviarXml($clave);
-                        $aux['recibido'] = true; //para pruebas
+                        $aux = $comprobante->enviarXml($clave);
+                        //$aux['recibido'] = true; //para pruebas
                         
                         if($aux['recibido'] === true){
                             

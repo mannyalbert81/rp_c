@@ -634,7 +634,10 @@ $("#mensaje_archivo").fadeOut("slow");
 					    						if(dia_hoy<=21)
 													{
 													mes_inicio=mes-2;
-													mes_fin=mes-1;
+													//mes_fin=mes-1;
+													mes_fin=mes;
+													
+													
 													if (mes_inicio<1)
 														{
 														mes_inicio=12;

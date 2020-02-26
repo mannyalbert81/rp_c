@@ -104,15 +104,18 @@
   					<div class="pull-right">
   						
   						<ul class="nav nav-pills">
-  							
+  						
+  						  <li>
+  						  <p id="txtInicio" class="text-justify text-danger mark "> GENERE UN IDENTIFICADOR PARA EMPEZAR</p>
+  						  </li>	
   						  <li>
   						  	<button type="button" id="btnLote"  class="btn btn-default" data-toggle="popover"  data-placement="right" data-html='true' data-popover-content="">
-  						  	Generar Lote
+  						  	Generar Identificador
   						  	<i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> 
   						  	</button>
                           </li>                          
                           <li>
-                          <button type="button" onclick="verTablaImpuestosRelacionados()" class="btn">Ver Impuestos <span id="cantidad_impuestos_ins" class="badge label-danger"></span></button>
+                          <button id="mdlImpuestosRelacionados" type="button" onclick="verTablaImpuestosRelacionados()" class="btn">Ver Impuestos <span id="cantidad_impuestos_ins" class="badge label-danger"></span></button>
                           </li>
                           <!-- <li>
                             <button class="btn" id="btnPopTet"><i></i> Add Proveedor</button>
@@ -195,10 +198,17 @@
   				<div class="col-xs-12 col-md-3 col-md-3"><h4>Valores Documento:</h4></div>
   			</div>
   			<div class="row ">
+  				
   				<div class="col-xs-12 col-md-3 col-md-3">
   					<div class="form-group">  
-                      <label for="monto_base_documento" class="control-label"> Monto (Base Compras):</label>
-                      <input type="text" id="monto_base_documento" class="form-control" value="">
+                      <label for="valor_compra_cero" class="control-label"> Monto 0% (Base Compras):</label>
+                      <input type="text" id="valor_compra_cero" onkeyup="pasarTotal()" class="form-control" value="">
+                    </div>	
+  				</div>
+  				<div class="col-xs-12 col-md-3 col-md-3">
+  					<div class="form-group">  
+                      <label for="valor_compra_iva" class="control-label"> Monto 12% (Base Compras):</label>
+                      <input type="text" id="valor_compra_iva" onkeyup="pasarTotal()" class="form-control" value="">
                     </div>	
   				</div>
   				
@@ -237,8 +247,8 @@
   			<div class="row">
   				 <div class="col-xs-12 col-md-12 col-lg-12 " >
   				 	<div class="pull-right">
-  				 		<button  id="Guardar" onclick="verDistribucion()" name="btn_distribucion" class="btn btn-success">DISTRIBUCION</button>
-  				 		<button  id="Guardar" onclick="IngresarTransaccion()" name="Guardar" class="btn btn-success">APLICAR</button>
+  				 		<button  id="DistribucionTransaccion" onclick="verDistribucion()" class="btn btn-success">DISTRIBUCION</button>
+  				 		<button  id="AplicarTransaccion" onclick="IngresarTransaccion()" class="btn btn-success">APLICAR</button>
 	                    <a href="<?php echo $helper->url("Compras","Index"); ?>" class="btn btn-danger">CANCELAR</a>
   				 	</div>
   				 </div>
@@ -270,7 +280,7 @@
      <section class="content">
       	<div class="box box-primary">
       		<div class="box-header with-border">
-      			<h3 class="box-title">Listado de Bancos</h3>      			
+      			<h3 class="box-title"></h3>      			
             </div> 
             <div class="box-body">
     			<div class="pull-right" style="margin-right:15px;">
@@ -326,8 +336,7 @@
                     	</tbody>
                     	<tfoot>
                     	    <tr>
-                    			<th colspan="3" ></th>
-                    			<th style="text-align: right"></th>
+                    			<th colspan="4" ></th>
                     	    </tr>
                     	</tfoot>
                     </table>  
@@ -372,9 +381,10 @@
                         	<thead >                        		
                         	    <tr class="table-secondary" >
                         			<th style="text-align: left;  font-size: 12px;">#</th>
-                        			<th style="text-align: left;  font-size: 12px;">CODIGO</th>
-                        			<th style="text-align: left;  font-size: 12px;">NOMBRE</th>
+                        			<th style="text-align: left;  font-size: 12px;">TIPO</th>
+                        			<th style="text-align: left;  font-size: 12px;">IMPUESTO</th>
                         			<th style="text-align: left;  font-size: 12px;">CUENTA</th>
+                        			<th style="text-align: left;  font-size: 12px;">NOMBRE</th>
                         			<th style="text-align: left;  font-size: 12px;">..</th>
                         		</tr>
                         	</thead>        
@@ -383,8 +393,7 @@
                         	</tbody>
                         	<tfoot>
                         	    <tr>
-                        			<th colspan="3" ></th>
-                        			<th style="text-align: right"></th>
+                        			<th colspan="6" ></th>
                         	    </tr>
                         	</tfoot>
                         </table>  
@@ -417,7 +426,7 @@
           		
             	<div id="mod_div_impuestos" >
             		<div class="pull-right">
-            			<input type="text" id="mod_buscador_impuestos_relacionados" onkeyup="loadImpuestos()" class="form-control">
+            			<input type="text" id="mod_buscador_impuestos_relacionados" onkeyup="" class="form-control">
             		</div>
             		<div class="clearfix"></div>
             		<div class="pull-left">
@@ -429,17 +438,22 @@
                         	<thead >                        		
                         	    <tr class="table-secondary" >
                         			<th style="text-align: left;  font-size: 12px;">#</th>
-                        			<th style="text-align: left;  font-size: 12px;">CODIGO</th>
-                        			<th style="text-align: left;  font-size: 12px;">NOMBRE</th>
-                        			<th style="text-align: left;  font-size: 12px;">CUENTA</th>
-                        			<th style="text-align: left;  font-size: 12px;">..</th>
+                        			<th style="text-align: left;  font-size: 12px;">Tipo Imp.</th>
+                        			<th style="text-align: left;  font-size: 12px;">Nombre</th>
+                        			<th style="text-align: left;  font-size: 12px;">Cuenta</th>
+                        			<th style="text-align: left;  font-size: 12px;">Valor Compra</th>
+                        			<th style="text-align: left;  font-size: 12px;">Base Imp.</th>
+                        			<th style="text-align: left;  font-size: 12px;">Valor Imp.</th>
+                        			<th style="text-align: left;  font-size: 1px;">..</th>
                         		</tr>
                         	</thead>        
                         	<tbody>
                         	    
                         	</tbody>
                         	<tfoot>
-                        	    
+                        	    <tr >
+                        	    <th colspan="8"></th>
+                        	    </tr>
                         	</tfoot>
                         </table>  
                     </div>
@@ -535,7 +549,7 @@
    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/tesoreria/js/IngresoTransaciones.js?0.24"></script> 
+   <script src="view/tesoreria/js/IngresoTransaciones.js?0.37"></script> 
        
        
 

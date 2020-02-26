@@ -17,7 +17,7 @@ function init(){
 	
 	var fechaServidor = $("#fechasistema").text();
 		
-	$("#fecha_transferencia").inputmask("datetime",{
+	/*$("#fecha_transferencia").inputmask("datetime",{
 	     mask: "y-2-1", 
 	     placeholder: "yyyy-mm-dd", 
 	     leapday: "-02-29", 
@@ -36,7 +36,7 @@ function init(){
 				$(this).val('')
 		    }
 		}
-	});
+	});*/
 	
 	
 }

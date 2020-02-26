@@ -1,5 +1,7 @@
 <?php
 
+use FontLib\Table\Type\post;
+
 class TesCuentasPagarController extends ControladorBase{
 
 	public function __construct() {
@@ -287,12 +289,12 @@ class TesCuentasPagarController extends ControladorBase{
 	    $busqueda = ( isset($_POST['buscador']) ) ? $_POST['buscador'] : "";
 	    $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 	    
-	    $colImpuestos  = " aa.id_impuestos,aa.codigo_impuestos,aa.nombre_impuestos,bb.id_plan_cuentas, bb.nombre_plan_cuentas, bb.codigo_plan_cuentas,
-               aa.porcentaje_impuestos, aa.operacion_impuestos";
+	    $colImpuestos  = " aa.id_impuestos,aa.tipo_impuestos,aa.codigo_impuestos,aa.nombre_impuestos,bb.id_plan_cuentas, bb.nombre_plan_cuentas, 
+                bb.codigo_plan_cuentas, aa.porcentaje_impuestos, aa.operacion_impuestos";
 	    $tabImpuestos  = " tes_impuestos aa
 	           LEFT JOIN plan_cuentas bb ON bb.id_plan_cuentas = aa.id_plan_cuentas";
 	    $wheImpuestos  = " 1 = 1 ";
-	    $idIMpuestos   = " aa.id_impuestos";
+	    $idIMpuestos   = " bb.codigo_plan_cuentas";
 	    //$rsImpuestos   = $impuestos->getCondiciones($colImpuestos, $tabImpuestos, $wheImpuestos, $idIMpuestos);
 	         
 	    if( strlen($busqueda) > 0 ){
@@ -316,17 +318,22 @@ class TesCuentasPagarController extends ControladorBase{
 	        echo $error['message'];
 	        exit();
 	    }
+	    $mapTipoImpuesto   = array( 'retiva' =>'RETENCION IVA', 'ret' => 'RETENCION FUENTE', 'iva' => 'IVA'); 
+	    $_tipoImpuesto     = "";
 	    $htmlTr = "";
 	    $i = 0;
 	    foreach ($resultSet as $res){
 	        $i++;
 	        $btonSelect = "<button onclick=\"AgregarImpuesto(this)\" value=\"$res->id_impuestos\" class=\"btn btn-default\">
                         <i aria-hidden=\"true\" class=\"fa fa-external-link\"></i> </button>";
+	        
+	        $_tipoImpuesto = (array_key_exists($res->tipo_impuestos, $mapTipoImpuesto) ) ?  $mapTipoImpuesto["$res->tipo_impuestos"] : ""; 
 	        $htmlTr    .= "<tr>";
 	        $htmlTr    .= "<td>" . $i . "</td>";
-	        $htmlTr    .= "<td>" . $res->codigo_impuestos . "</td>";
+	        $htmlTr    .= "<td>" . $_tipoImpuesto;
 	        $htmlTr    .= "<td>" . $res->nombre_impuestos . "</td>";
 	        $htmlTr    .= "<td>" . $res->codigo_plan_cuentas . "</td>";
+	        $htmlTr    .= "<td>" . $res->nombre_plan_cuentas . "</td>";
 	        $htmlTr    .= "<td>" . $btonSelect . "</td>";
 	        $htmlTr    .= "</tr>";
 	        
@@ -352,8 +359,11 @@ class TesCuentasPagarController extends ControladorBase{
 	    try {
 	        
 	        $id_lote = $_POST['id_lote'];
-	        $base_compras   = $_POST['base_compra'];
 	        $_id_impuestos  = $_POST['id_impuestos'];
+	        $_compra_cero   = $_POST['compra_cero'];
+	        $_compra_iva    = $_POST['compra_iva'];
+	        
+	        $base_compras = $_compra_cero + $_compra_iva;
 	        
 	        /** realizar validacion de impuesto **/
 	        $colValidacion = " 1 ";
@@ -398,7 +408,7 @@ class TesCuentasPagarController extends ControladorBase{
 	        
 	        if( strtoupper( $_tipo_impuesto )  == "IVA" ){
 	            
-	            $totalValor    = $base_compras;
+	            $totalValor    = $_compra_iva;
 	            $totalImpuesto = ( $totalValor * $_pctge_impuesto );
 	            $naturalezaImpuesto = "debe";
 	            
@@ -503,7 +513,7 @@ class TesCuentasPagarController extends ControladorBase{
     	    INNER JOIN tes_impuestos bb ON bb.id_impuestos = aa.id_impuestos
     	    LEFT JOIN plan_cuentas cc ON cc.id_plan_cuentas = bb.id_plan_cuentas";
 	    $Whe1 = " aa.id_lote = $_id_lote ";
-	    $id1  = " aa.creado ";
+	    $id1  = " cc.codigo_plan_cuentas ";
 	    $rsConsulta1  = $impuestos->getCondiciones($col1, $tab1, $Whe1, $id1);
 	    
 	    $error = error_get_last();
@@ -513,19 +523,24 @@ class TesCuentasPagarController extends ControladorBase{
 	    }
 	    
 	    $cantidadResult = sizeof($rsConsulta1);
-	    
+	    $mapTipoImpuesto   = array( 'retiva' =>'RETENCION IVA', 'ret' => 'RETENCION FUENTE', 'iva' => 'IVA');
+	    $_tipoImpuesto     = "";
 	    $htmlTr = "";
 	    $i = 0;
 	    foreach ($rsConsulta1 as $res){
 	        $i++;
 	        $btonSelect = "<button onclick=\"RemoveImpuesto(this)\" value=\"$res->id_cuentas_pagar_impuestos\" class=\"btn btn-default\">
                         <i aria-hidden=\"true\" class=\"fa fa-trash text-danger\"></i> </button>";
+	        $_tipoImpuesto = (array_key_exists($res->tipo_impuestos, $mapTipoImpuesto) ) ?  $mapTipoImpuesto["$res->tipo_impuestos"] : "";
 	        $htmlTr    .= "<tr>";
-	        $htmlTr    .= "<td>" . $i . "</td>";
-	        $htmlTr    .= "<td>" . $res->id_cuentas_pagar_impuestos . "</td>";
-	        $htmlTr    .= "<td>" . $res->id_impuestos . "</td>";
-	        $htmlTr    .= "<td>" . $res->codigo_plan_cuentas . "</td>";
-	        $htmlTr    .= "<td>" . $btonSelect . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $i . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $_tipoImpuesto . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $res->nombre_impuestos . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $res->codigo_plan_cuentas . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $res->base_cuentas_pagar_impuestos . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $res->valor_base_cuentas_pagar_impuestos . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $res->valor_cuentas_pagar_impuestos . "</td>";
+	        $htmlTr    .= "<td style=\"text-align: left;  font-size: 11px;\" >" . $btonSelect . "</td>";
 	        $htmlTr    .= "</tr>";
 	        
 	    }
@@ -540,6 +555,133 @@ class TesCuentasPagarController extends ControladorBase{
 	    $respuesta['cantidadDatos'] = $cantidadResult;
 	    
 	    echo json_encode( $respuesta );	   
+	    
+	}
+	
+	/***
+	 * @return array
+	 * @param post
+	 * @desc fn permite realizar la eliminacion de la relacion de un impuesto a la cuenta por pagar 
+	 */
+	public function QuitarImpuesto(){
+	    
+	    $impuestos = new ImpuestosModel();
+	    $respuesta   = null;
+	    
+	    try {
+	        
+	        $id_lote = $_POST['id_lote'];
+	        $_id_impuestos  = $_POST['id_impuestos'];
+	        $_compra_cero   = $_POST['compra_cero'];
+	        $_compra_iva    = $_POST['compra_iva'];
+	        
+	        $base_compras = $_compra_cero + $_compra_iva;
+	        
+	        /** realizar validacion de impuesto **/
+	        $colImpuestos = " aa.id_impuestos, aa.nombre_impuestos, aa.porcentaje_impuestos, aa.tipo_impuestos, aa.operacion_impuestos,
+                bb.valor_base_cuentas_pagar_impuestos,bb.valor_cuentas_pagar_impuestos, bb.id_cuentas_pagar_impuestos";
+	        $tabIMpuestos = " tes_impuestos aa
+	           INNER JOIN tes_cuentas_pagar_impuestos bb ON bb.id_impuestos = aa.id_impuestos";
+	        $wheImpuestos = " bb.id_cuentas_pagar_impuestos = $_id_impuestos AND bb.id_lote = $id_lote";
+	        $idImpuestos  = " aa.id_impuestos";
+	        $rsImpuesto  = $impuestos->getCondiciones($colImpuestos, $tabIMpuestos, $wheImpuestos, $idImpuestos);
+	        
+	        if( empty($rsImpuesto) ){
+	            $respuesta['respuesta'] = 'ERROR';
+	            $respuesta['icon'] = 'warning';
+	            throw new Exception('Detalles de impuesto no identificado');
+	        }
+	        
+	        $_tipo_impuesto = $rsImpuesto[0]->tipo_impuestos;
+	        $_pctge_impuesto = $rsImpuesto[0]->porcentaje_impuestos;
+	        $_id_cuentas_pagar_impuestos   =  $rsImpuesto[0]->id_cuentas_pagar_impuestos;
+	        
+	        /** todo impuesto es dividido para 100 **/
+	        $_pctge_impuesto = $_pctge_impuesto/100;
+	        
+	        /** una vez validado se comienza con los procesos de impuestos de compra **/
+	        $resEliminacion = null;
+	        if( strtoupper( $_tipo_impuesto )  == "IVA" ){
+	            
+	            $colretencion = " 1 ";
+	            $tabretencion = " tes_impuestos aa
+	               INNER JOIN tes_cuentas_pagar_impuestos bb ON bb.id_impuestos = aa.id_impuestos";
+	            $Wheretencion = " bb.id_lote = $id_lote AND UPPER(aa.tipo_impuestos) = 'RETIVA' ";
+	            $idretencion  = " bb.id_lote ";
+	            $rsRetencion  = $impuestos->getCondiciones($colretencion, $tabretencion, $Wheretencion, $idretencion);
+	            
+	            if( !empty($rsRetencion) ){
+	                $respuesta['icon'] = 'info';
+	                throw new Exception('Impuesto tiene una fuente de retencion');
+	            }
+	            
+	            $delTabla  = "tes_cuentas_pagar_impuestos";
+	            $delWhere  = "id_cuentas_pagar_impuestos = $_id_cuentas_pagar_impuestos";
+	            $resEliminacion = $impuestos->eliminarFila($delTabla, $delWhere);
+	            
+	        }else if( strtoupper( $_tipo_impuesto )  == "RETIVA" ){
+	            
+	            $delTabla  = "tes_cuentas_pagar_impuestos";
+	            $delWhere  = "id_cuentas_pagar_impuestos = $_id_cuentas_pagar_impuestos";
+	            $resEliminacion = $impuestos->eliminarFila($delTabla, $delWhere);
+	            
+	        }else if( strtoupper( $_tipo_impuesto )  == "RET" ){
+	            
+	            //eliminacion de impuesto solo restando valores
+	            $delTabla  = "tes_cuentas_pagar_impuestos";
+	            $delWhere  = "id_cuentas_pagar_impuestos = $_id_cuentas_pagar_impuestos"; 
+	            $resEliminacion = $impuestos->eliminarFila($delTabla, $delWhere);
+	            
+	            
+	        }else{	            
+	            $respuesta['icon'] = 'warning';
+	            throw new Exception('Datos Impuesto no definido');
+	        }
+	        
+	        if( empty($resEliminacion) ){	            
+	            $respuesta['icon'] = 'error';
+	            throw new Exception('Impuesto selecionado no fue posible eliminar');
+	        }
+	        
+	        $respuesta['respuesta'] = 'OK';
+	        $respuesta['icon'] = 'warning';
+	        $respuesta['texto']= 'Relacion impuesto eliminado';
+	        
+	        /** enviar valores de impuesto que genera **/
+	        $col1 = " id_cuentas_pagar_impuestos,base_cuentas_pagar_impuestos, valor_base_cuentas_pagar_impuestos, valor_cuentas_pagar_impuestos, id_lote, id_impuestos";
+	        $tab1 = " public.tes_cuentas_pagar_impuestos ";
+	        $Whe1 = " id_lote = $id_lote ";
+	        $id1  = " creado ";
+	        $rsConsulta1  = $impuestos->getCondiciones($col1, $tab1, $Whe1, $id1);
+	        
+	        if( !empty($rsConsulta1) ){
+	            $_total = $base_compras;
+	            $_total_impuesto = 0;
+	            $_saldo_documento = 0;
+	            foreach ($rsConsulta1 as $res) {
+	                $_total_impuesto += $res-> valor_cuentas_pagar_impuestos;
+	            }
+	            $_saldo_documento = $_total + $_total_impuesto;
+	            
+	            $respuesta['total_impuesto'] = $_total_impuesto;
+	            $respuesta['saldo_impuesto'] = $_saldo_documento;
+	        }else{
+	            $_total = $base_compras;
+	            $_saldo_documento = 0;
+	            $_saldo_documento = $_total + 0;
+	            $respuesta['total_impuesto'] = 0;
+	            $respuesta['saldo_impuesto'] = $_saldo_documento;
+	        }
+	        	       
+	        
+	    } catch (Exception $e) {
+	        
+	        $respuesta['respuesta'] = 'ERROR';
+	        $respuesta['texto']= $e->getMessage();
+	    }
+	    	    
+	    
+	    echo json_encode($respuesta);
 	    
 	}
 	
@@ -699,7 +841,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    $respuesta['filas']    = $htmlTr;
 	    
 	    $htmlPaginacion  = '<div class="table-pagination pull-right">';
-	    $htmlPaginacion .= ''. $this->paginate("index.php", 1, 1, 20,"cargaImpuestos").'';
+	    $htmlPaginacion .= ''. $this->paginate("index.php", 1, 1, 20,"").'';
 	    $htmlPaginacion .= '</div>';
 	    
 	    $respuesta['paginacion'] = $htmlPaginacion;
@@ -761,9 +903,12 @@ class TesCuentasPagarController extends ControladorBase{
 	    $id_rol= $_SESSION['id_rol'];
 	    $resultPer = $cuentasPagar->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	    
-	    if(empty($resultPer)){
+	    if(empty($resultPer)){	        
 	        
-	        echo 'Usuario no tine Permisos Insertar Cuentas Pagar';
+	        $respuesta['icon'] = 'warning';
+	        $respuesta['mensaje'] = 'Usuario no tine Permisos Insertar Cuentas Pagar';
+	        $respuesta['estatus'] = 'ERROR';
+	        echo json_encode($respuesta);
 	        exit();
 	    }
 	
@@ -797,6 +942,8 @@ class TesCuentasPagarController extends ControladorBase{
 	        $_tarjeta_credito_cuentas_pagar    = (isset($_POST['tarjeta_credito_cuentas_pagar'])) ? $_POST['tarjeta_credito_cuentas_pagar'] : null;
 	        $_condonaciones_cuentas_pagar      = (isset($_POST['condonaciones_cuentas_pagar'])) ? $_POST['condonaciones_cuentas_pagar'] : null;
 	        $_saldo_cuentas_pagar              = $_total_cuentas_pagar;
+	        $_compra_cero  = (isset($_POST['monto_compra_cero'])) ? $_POST['monto_compra_cero'] : 0.00;
+	        $_compra_iva   = (isset($_POST['monto_compra_iva'])) ? $_POST['monto_compra_iva'] : 0.00;
 	        
 	        //para tranformar a datos solicitdos por funcion postgresql a numeric
 	        $_compra_cuentas_pagar = ( is_numeric($_compra_cuentas_pagar)) ? $_compra_cuentas_pagar : 0.00;
@@ -872,7 +1019,8 @@ class TesCuentasPagarController extends ControladorBase{
                         $_condonaciones_cuentas_pagar,
                         '$_saldo_cuentas_pagar',
                         '$_origen_cuentas_pagar',
-                        '$_id_cuentas_pagar'
+                        $_compra_cero,
+                        $_compra_iva
                         ";
 	        
 	        $cuentasPagar->setFuncion($funcion);
@@ -952,17 +1100,22 @@ class TesCuentasPagarController extends ControladorBase{
             }
             
             $error_pg = pg_last_error(); if( !empty($error_pg) ){ throw new Exception("no se inserto la cuenta por pagar".$error_pg ); }
-            
+            $error_php = error_get_last(); if( !empty($error_php) ){ throw new Exception("no se inserto la cuenta por pagar".$error_php['message'] ); }
             /** PARA LA GENERACION DEL XML **/
             
             $resp = $this->genXmlRetencion($_id_lote);
+            $respuesta['xml'] = '';
+            $respuesta['file']= $resp;
             
             if( $resp['error'] === true ){   
                 /** parametrizar pa guardar en tabla error retencion **/
                 if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML NO GENERADO" ){
                     /** poner estado no generado **/
+                    $respuesta['xml'] = 'XML NO GENERADO';
                 }
                 if (array_key_exists('claveAcceso', $resp) && strlen( $resp['claveAcceso'] ) == 49 ) {
+                    
+                    $respuesta['xml'] = 'DATOS xml EN BD No fueron ingresados';
                     
                     $claveAcceso = $resp['claveAcceso'];
                     $_columnaActualizar = " autorizado_retenciones = false ";
@@ -972,13 +1125,18 @@ class TesCuentasPagarController extends ControladorBase{
                     $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
                 }
                 
+                
                
             }else{
+                $respuesta['xml'] = " ARCHIVO ENTRO XML";
+                
                 if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML GENERADO" ){
                     /** COMIENZA PROCESO XML CON SRI**/
-                    $errorXml = false;                   
+                    $errorXml = false; 
                     
-                    $clave = ( array_key_exists('claveAcceso', $resp) );                    
+                    $respuesta['xml'] = " ARCHIVO ENTRO XML IF";
+                    
+                    $clave = ( array_key_exists('claveAcceso', $resp) ) ? $resp['claveAcceso'] : '' ;         
                     
                     require_once __DIR__ . '/../vendor/autoload.php';
                     
@@ -991,18 +1149,30 @@ class TesCuentasPagarController extends ControladorBase{
                     
                     $aux = $comprobante->validarFirmarXml($xml, $clave);
                     
+                    $respuesta['Archivo'] = "LLEGO AQUI";
+                    $respuesta['xml'] = $aux;
+                    
                     if($aux['error'] === false){
                         
                         $aux = $comprobante->enviarXml($clave);
+                        //$aux['recibido'] = true; //para pruebas
                         
                         if($aux['recibido'] === true){
+                            $respuesta['xml'] = " Archivo Xml RECIBIDO";
                             
                             $finalresp = $comprobante->autorizacionXml($clave);
-                            
+                            //$finalresp = null; //para pruebas
+                            //$finalresp['error'] = false; //para pruebas
                             if($finalresp['error'] === true ){                                
                                 /** aqui poner senetecia en cao de haber errror **/
+                                $respuesta['xml'] = " Archivo Xml RECIBIDO NO AUTORIZADO";
                                 $errorXml = true;
+                            }else{
+                                
+                                $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
                             }
+                            
+                            
                             
                         }else{
                             /** aqui poner senetecia en cao de haber errror **/
@@ -1025,6 +1195,8 @@ class TesCuentasPagarController extends ControladorBase{
                         /** agregar datos a tabla errores de retenciones **/ 
                     }
                         
+                }else{
+                    $respuesta['xml'] = " ARCHIVO NO ENTRO XML";
                 }
             }
             
@@ -1033,6 +1205,7 @@ class TesCuentasPagarController extends ControladorBase{
             $respuesta['icon'] = 'success';
             $respuesta['mensaje'] = "Cuenta por Pagar Ingresada Correctamente";
             $respuesta['estatus'] = 'OK';
+            
             echo json_encode($respuesta);
                        
 	        
@@ -1059,7 +1232,7 @@ class TesCuentasPagarController extends ControladorBase{
 	       return array('error' => true, 'mensaje' => 'LOTE NO IDENTIFICADO'); // descomentar para produccion
 	    
 	    $_id_lote =  $intLote ;	    
-	    //$_id_lote = ( $intLote == null ) ? 142 : $intLote ;//para pruebas descomentar
+	    //$_id_lote = ( $intLote == null ) ? 149 : $intLote ;//para pruebas descomentar
 	    	    
 	    $cuentasPagar  = new CuentasPagarModel();
 	    /** buscar los datos de la retencion **/
@@ -1090,7 +1263,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    $col3  = " id_entidades, ruc_entidades, nombre_entidades, telefono_entidades, direccion_entidades, ciudad_entidades, razon_social_entidades";
 	    $tab3  = " entidades";
 	    $whe3  = " 1 = 1
-               AND nombre_entidades = 'LIVENTSIVAL CIA LTDA'";
+               AND nombre_entidades = 'CAPREMCI'";
 	    $id3   = " creado";
 	    $rsConsulta3   = $cuentasPagar->getCondiciones($col3, $tab3, $whe3, $id3); //array de empresa
 	    
@@ -1203,13 +1376,14 @@ class TesCuentasPagarController extends ControladorBase{
 	        $texto .= '<impuesto>';
 	        $texto .= '<codigo>'.$_impCodigo.'</codigo>'; //conforme a la tabla 20
 	        $texto .= '<codigoRetencion>'.$_impCodRetencion.'</codigoRetencion>'; //conforme a la tabla 21
-	        $texto .= '<baseImponible>'.$_impBaseImponible.'</baseImponible>';
+	        $texto .= '<baseImponible>'.round($_impBaseImponible,2).'</baseImponible>';
 	        $texto .= '<porcentajeRetener>'.abs($_impPorcetajeRet).'</porcentajeRetener>';//conforme a la tabla 21
-	        $texto .= '<valorRetenido>'.abs($_impValorRet).'</valorRetenido>';
+	        $texto .= '<valorRetenido>'.round(abs($_impValorRet),2).'</valorRetenido>';
 	        $texto .= '<codDocSustento>'.$_impCodDocumentoSustentoRet.'</codDocSustento>';
 	        $texto .= '<numDocSustento>'.$_impNumDocumentoSustentoRet.'</numDocSustento>'; //num documento soporte sin '-'
 	        $texto .= '<fechaEmisionDocSustento>'.$_impfechaEmisionRet.'</fechaEmisionDocSustento>'; //obligatorio cuando corresponda **formato dd/mm/aaaa
 	        $texto .= '</impuesto>';
+	        
 	        
 	    }
 	    
@@ -1235,7 +1409,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    try {
 	        
 	        $nombre_archivo = $_claveAcceso.".xml";
-	        $ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\rp_l\\DOCUMENTOS_GENERADOS\\RETENCIONES\\";
+	        $ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\rp_c\\DOCUMENTOSELECTRONICOS\\docGenerados\\";
 	        $ubicacion = $ubicacionServer.$nombre_archivo;
 	        
 	        $textoXML = mb_convert_encoding($texto, "UTF-8");
@@ -1319,7 +1493,7 @@ class TesCuentasPagarController extends ControladorBase{
 	        $resp['mensaje'] = $e->getMessage();
 	        $resp['claveAcceso'] = $_claveAcceso;
 	    }
-	    
+	   
 	    return $resp;
 	    /*
 	    header("Content-disposition: attachment; filename=$nombre_archivo");
@@ -1430,44 +1604,12 @@ class TesCuentasPagarController extends ControladorBase{
 	
 	}
 	
-	public function PruebaXmlXsd(){
-	    
-	    /**$doc = new DOMDocument('1.0');
-	    // queremos una impresión buena
-	    $doc->formatOutput = true;
-	    
-	    $root = $doc->createElement('book');
-	    $root = $doc->appendChild($root);
-	    
-	    $title = $doc->createElement('title');
-	    $title = $root->appendChild($title);
-	    
-	    $text = $doc->createTextNode('Este es el título');
-	    $text = $title->appendChild($text);
-	    
-	    echo "Guardando todo el documento:\n";
-	    echo $doc->saveXML() . "\n";
-	    
-	    echo "Guardando sólo la parte del título:\n";
-	    echo $doc->saveXML($title);**/
-	    
-	    header ("content-type: text/xml");
-	    echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
-        <caja>
-        <ja>". "POR ACA"."</ja>
-        </caja>";
-	   
-	}
 	
-	public function verXmlGenerated(){
+	public function verBuffer(){
 	    
-	    if( isset($variable) ){
-	        echo "existe variable";
-	    }else{
-	        echo "varaible no existe ";
-	    }
+	    echo "hola mundo";
 	    
-	    //print_r( $this->genXmlRetencion(142) );
+	    $var1 = "";
 	}
 	
 	public function enviarXMLSRI(){
@@ -1522,11 +1664,19 @@ class TesCuentasPagarController extends ControladorBase{
 	        'pdf' => 'DOCUMENTOSELECTRONICOS/docPdf',
 	        'logo' => 'DOCUMENTOSELECTRONICOS/logo.png1',
 	        'xsd' => 'DOCUMENTOSELECTRONICOS/docXsd',
-	        'pathFirma' => 'firma/romulo_eduardo_silva_palma.p12',
-	        'passFirma' => 'EduArDo2020'
+	        'pathFirma' => 'firma/byron_stalin_bolanos_palma.p12',
+	        'passFirma' => 'BPbs1715'
 	    );
 	    return $configuracionesPath;
 	}
+	
+	/****************************************************** funciones de pruebas *****************************/
+	function verGenFileXml(){
+	    
+	    var_dump($this->genXmlRetencion(150));
+	}
+	
+	
 	
 }
 ?>

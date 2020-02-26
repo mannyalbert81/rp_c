@@ -2,6 +2,9 @@
 <html lang="en">
   <head>
   
+   <script lang=javascript src="view/Contable/FuncionesJS/xlsx.full.min.js"></script>
+   <script lang=javascript src="view/Contable/FuncionesJS/FileSaver.min.js"></script>
+  
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
@@ -69,11 +72,15 @@
     			<div class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="ConsultaDocumentosGenerados(1)" placeholder="Buscar.."/>
     			</div>  
-    			<div id="ConsultaReporteCierreMes" ></div>  
+    			
+    			<div id="ConsultaReporteCierreMes"></div>  
     	    	<div id="consulta_cierre_mes_registrados_tbl" ></div>
     	    	<div id="divLoaderPage" ></div>
-    	    	
+			    <button type="submit" id="btExportar" name="exportar" class="btn btn-info">Exportar</button>
+    
             </div> 	
+            
+           
       	</div>
       </section> 
    
@@ -84,7 +91,7 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Credito/js/ReporteCierreMes.js?0.2" ></script>
+ <script src="view/Credito/js/ReporteCierreMes.js?0.3" ></script>
  
  </body>
 </html>

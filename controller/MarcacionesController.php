@@ -352,9 +352,15 @@ class MarcacionesController extends ControladorBase{
         
         $html="";
         
+        
+        
+        
+ 
+        
+        
         if (!(empty($resultSet)))
         {
-            foreach($resultEmp as $emp)
+              foreach($resultEmp as $emp)
             {
                 $salario=$emp->salario_cargo;
                 $salariodia=$salario/30;

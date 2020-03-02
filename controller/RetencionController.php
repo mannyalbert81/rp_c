@@ -146,26 +146,12 @@ class RetencionController extends ControladorBase{
         $datos_reporte['FECHEMISIONDOS']=$rsdatos[0]->impuesto_fechaemisiondocsustento_dos;
         $datos_reporte['CAMPADICIONAL']=$rsdatos[0]->infoadicional_campoadicional;
         $datos_reporte['CAMPADICIONALDOS']=$rsdatos[0]->infoadicional_campoadicional_dos;
-        $datos_reporte['CAMPADICIONALTRES']=$rsdatos[0]->infoadicional_campoadicional_tres;
-       
-        
-        
-        
+        $datos_reporte['CAMPADICIONALTRES']=$rsdatos[0]->infoadicional_campoadicional_tres;               
         $datos_reporte['FECAUTORIZACION']=$rsdatos[0]->fecha_autorizacion;
         
-
+        $datos_reporte['AMBIENTE'] = $datos_reporte['AMBIENTE'] == "1" ? "PRUEBAS" : "PRODUCCIÓN";
         
-        
-        
-        
-        
-        
-        if (  $datos_reporte['AMBIENTE'] =="2"){
-            
-            $datos_reporte['AMBIENTE']="PRODUCCIÓN";
-            
-        }
-        
+       
         if (  $datos_reporte['EMISION'] =="1"){
             
             $datos_reporte['EMISION']="NORMAL";
@@ -218,33 +204,34 @@ class RetencionController extends ControladorBase{
          $html='';
         
          
-         $html.='<table class="info" style="width:98%;" border=1 >';
+         $html.='<table class="dtlTax" >';
          $html.='<tr>';
-         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Comprobante</th>';
-         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Número</th>';
-         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Fecha Emisión</th>';
-         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Ejercicio Fiscal</th>';
-         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Base Imponible para la Retención</th>';
-         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Código Impuesto</th>';
-         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Porcentaje Retención</th>';
-         $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Valor Retenido</th>';
+         $html.='<th >Comprobante</th>';
+         $html.='<th >Número</th>';
+         $html.='<th >Fecha Emisión</th>';
+         $html.='<th >Ejercicio Fiscal</th>';
+         $html.='<th >Base Imponible para la Retención</th>';
+         $html.='<th >Impuesto</th>';
+         $html.='<th >Porcentaje Retención</th>';
+         $html.='<th >Valor Retenido</th>';
          $html.='</tr>';
          
-        
-         
-        foreach ($retencion_detalle as $res)
-        {
+         $arrayTab20  = array( '1'=>'RENTA','2'=>'IVA','6'=>'ISD'); // aqui cambios para tabal 20 del sri 
+         $impuesto = "";
+                 
+        foreach ($retencion_detalle as $res){
+            
+            $impuesto = (array_key_exists($res->impuesto_codigo, $arrayTab20) ) ?  $arrayTab20["$res->impuesto_codigo"] : "";
         	
         	$html.='<tr >';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$_tipo_comprobante.'</td>';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_numdocsustento.'</td>';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['FECHAEMISION'].'</td>';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$datos_reporte['PERIODOFISCAL'].'</td>';
-        	$html.='<td colspan="2" class="htexto3">$ '.$res->impuestos_baseimponible.'</td>';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_coddocsustento.'</td>';
-        	$html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->impuestos_porcentajeretener.'</td>';
-        	$html.='<td colspan="2" class="htexto3">$ '.$res->impuestos_valorretenido.'</td>';        	
-        	$html.='</td>';
+        	$html.='<td >'.$_tipo_comprobante.'</td>';
+        	$html.='<td >'.$res->impuestos_numdocsustento.'</td>';
+        	$html.='<td class="centrado" >'.$datos_reporte['FECHAEMISION'].'</td>';
+        	$html.='<td class="centrado" >'.$datos_reporte['PERIODOFISCAL'].'</td>';
+        	$html.='<td class="valores">$ '.$res->impuestos_baseimponible.'</td>';
+        	$html.='<td class="centrado" >'.$impuesto.'</td>';
+        	$html.='<td class="centrado" >'.$res->impuestos_porcentajeretener.'</td>';
+        	$html.='<td class="valores">$ '.$res->impuestos_valorretenido.'</td>';
         	$html.='</tr>';
         }
         
@@ -314,8 +301,8 @@ class RetencionController extends ControladorBase{
                       tri_retenciones.creado, 
                       tri_retenciones.modificado,
                       tri_retenciones.enviado_correo_electronico,
-                      tri_retenciones.fecha_autorizacion
-            
+                      tri_retenciones.fecha_autorizacion,
+                      tri_retenciones.autorizado_retenciones
                       ";
         $tablas   = "
                      public.tri_retenciones
@@ -381,16 +368,16 @@ class RetencionController extends ControladorBase{
                 $html.= "<thead>";
                 $html.= "<tr>";
                 $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Ambiente</th>';
                 $html.='<th style="text-align: center;  font-size: 12px;">Número de Comprobante</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Contribuyente Nro.</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Nombres y Apellidos</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Identificación</th>';
                 $html.='<th style="text-align: center;  font-size: 12px;">Fecha de Emisión</th>';
+                $html.='<th style="text-align: center;  font-size: 12px;">Estado</th>';
                 $html.='<th style="text-align: center; font-size: 12px;">Enviado Mail</th>';
                 $html.='<th style="text-align: center; font-size: 12px;"></th>';
                
-                
-                
                 
                 
                 $html.='</tr>';
@@ -404,9 +391,12 @@ class RetencionController extends ControladorBase{
                 foreach ($resultSet as $res)
                 {
                     
+                    $lblAmbiente = "";
+                    $lblEstado = "";
                     
                     $correo = $res->enviado_correo_electronico;
-                    
+                    $ambiente = $res->infotributaria_ambiente;
+                    $estado = $res->autorizado_retenciones;
                     
                     if ($correo=='t'){
                         
@@ -418,14 +408,19 @@ class RetencionController extends ControladorBase{
                         
                     }
                     
+                    $lblAmbiente = ($ambiente==2) ? "PRODUCCION" : ( $ambiente == 1 ? "PRUEBAS" : "N/I" );
+                    $lblEstado = ($estado=='t') ? "AUT." :  "NO AUT." ;
+                    
                     $i++;
-                    $html.='<tr>';
+                    $html.='<tr>'; 
                     $html.='<td style="text-align: center; font-size: 11px;">'.$i.'</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$lblAmbiente.'</td>';
                     $html.='<td style="text-align: center; font-size: 11px;">001-001-'.$res->infotributaria_secuencial.'</td>';
                     $html.='<td style="text-align: center; font-size: 11px;">'.$res->infocompretencion_contribuyenteespecial.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->infocompretencion_razonsocialsujetoretenido.'</td>';
                     $html.='<td style="font-size: 11px;">'.$res->infocompretencion_identificacionsujetoretenido.'</td>';
                     $html.='<td style="text-align: center; font-size: 11px;">'.$res->infocompretencion_fechaemision.'</td>';
+                    $html.='<td style="text-align: center; font-size: 11px;">'.$lblEstado.'</td>';
                     
                     $html.='<td style="text-align: center; font-size: 11px;">'.$coreo_envidado.'</td>';
                     

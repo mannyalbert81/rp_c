@@ -185,7 +185,7 @@ $controladores=$_SESSION['controladores'];
       	  </ul>
         </li>
         
-        <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("ProcesosContabilidad",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
             <span class="pull-right-container">
@@ -200,7 +200,7 @@ $controladores=$_SESSION['controladores'];
     	  </ul>
         </li>
         
-        <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("ReportesContabilidad",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder-open-o"></i> <span>Reporte</span>
             <span class="pull-right-container">
@@ -383,10 +383,11 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
+              	<li style="<?php echo getcontrolador("Proveedores",$controladores) ?>"><a href="index.php?controller=TesProveedores&action=index"><i class="fa fa-circle-o"></i> Proveedores </a></li>
                 <li style="<?php echo getcontrolador("Bancos",$controladores) ?>"><a href="index.php?controller=Bancos&action=index"><i class="fa fa-circle-o"></i> Bancos </a></li>
                 <li style="<?php echo getcontrolador("FormasPago",$controladores) ?>"><a href="index.php?controller=FormasPago&action=index"><i class="fa fa-circle-o"></i> Formas Pago </a></li>
                 <li style="<?php echo getcontrolador("TipoDocumento",$controladores) ?>"><a href="index.php?controller=TipoDocumento&action=index"><i class="fa fa-circle-o"></i> Tipo Documento </a></li>
-                <li style="<?php echo getcontrolador("ImpuestosCxP",$controladores) ?>"><a href="index.php?controller=Impuestos&action=index"><i class="fa fa-circle-o"></i> Impuestos CxP </a></li>
+                <li style="<?php echo getcontrolador("ImpuestosCxP",$controladores) ?>"><a href="index.php?controller=Impuestos&action=index"><i class="fa fa-circle-o"></i> Impuestos </a></li>
         	    
     		  </ul>
             </li>
@@ -400,10 +401,11 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-              	<li style="<?php echo getcontrolador("IngresoCuentasPagar",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=CuentasPagarIndex"><i class="fa fa-circle-o"></i> Ingreso Cuentas Pagar</a></li>
-              	<li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=Pagos&action=Index"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
-              	<li style="<?php echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=Compras&action=Index"><i class="fa fa-circle-o"></i> Compras</a></li>
-              	<li style="<?php echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=TesCuentasPagar&action=index"><i class="fa fa-circle-o"></i> Ingreso Transacciones</a></li>    			
+                <li style="<?php echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=TesCuentasPagar&action=index"><i class="fa fa-circle-o"></i> Ingreso Transacciones</a></li>
+                <li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=Pagos&action=Index"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
+              	<!-- <li style="<?php //echo getcontrolador("IngresoCuentasPagar",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=CuentasPagarIndex"><i class="fa fa-circle-o"></i> Ingreso Cuentas Pagar</a></li>              	
+              	<li style="<?php //echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=Compras&action=Index"><i class="fa fa-circle-o"></i> Compras</a></li> -->
+              	    			
              </ul>
             </li>
         

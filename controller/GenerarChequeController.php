@@ -63,7 +63,7 @@ class GenerarChequeController extends ControladorBase{
 	        if (empty($resultPer)){
 	            
 	            $this->view("Error",array(
-	                "resultado"=>"No tiene Permisos de Acceso Empleo"
+	                "resultado"=>"No tiene Permisos de Acceso Pagos Cheque"
 	                
 	            ));
 	            exit();

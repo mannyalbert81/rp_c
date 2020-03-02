@@ -116,7 +116,8 @@ class TesCuentasPagarController extends ControladorBase{
 	    $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 	        
 	    
-	    $columnas1 = " aa.id_tipo_proveedores,aa.id_proveedores, aa.nombre_proveedores, aa.identificacion_proveedores, aa.direccion_proveedores, aa.celular_proveedores";
+	    $columnas1 = " aa.id_tipo_proveedores,aa.id_proveedores, aa.nombre_proveedores, aa.identificacion_proveedores, aa.direccion_proveedores, aa.celular_proveedores,";
+	    $columnas1 .= "razon_social_proveedores, tipo_identificacion_proveedores ";
 	    $tablas1   = " proveedores aa
     	    INNER JOIN tes_tipo_proveedores bb ON aa.id_tipo_proveedores = bb.id_tipo_proveedores";
 	    $where1    = " bb.nombre_tipo_proveedores = 'PAGO PROVEEDORES'";
@@ -145,11 +146,16 @@ class TesCuentasPagarController extends ControladorBase{
 	    }
 	    $htmlTr = "";
 	    $i = 0;
+	    $estiloConfigProveedores = ""; // variable donde se guarda estilo css para indicar al usuario que debe configurar datos de proveedor 
 	    foreach ($resultSet as $res){
+	        
+	        if( $res->id_tipo_proveedores == 3 && $res->razon_social_proveedores == "" && $res->tipo_identificacion_proveedores == "04")
+	            $estiloConfigProveedores = "bgcolor=\"#E37B71\"";
+	        
 	        $i++;
 	        $btonSelect = "<button onclick=\"SelecionarProveedor(this)\" value=\"$res->id_proveedores\" class=\"btn btn-default\"> 
                         <i aria-hidden=\"true\" class=\"fa fa-external-link\"></i> </button>";
-	        $htmlTr    .= "<tr>";
+	        $htmlTr    .= "<tr $estiloConfigProveedores >";
 	        $htmlTr    .= "<td>" . $i . "</td>";
 	        $htmlTr    .= "<td>" . $res->identificacion_proveedores . "</td>";
 	        $htmlTr    .= "<td>" . $res->nombre_proveedores . "</td>";	        
@@ -364,6 +370,7 @@ class TesCuentasPagarController extends ControladorBase{
 	        $_compra_iva    = $_POST['compra_iva'];
 	        
 	        $base_compras = $_compra_cero + $_compra_iva;
+	        $base_compras = round($base_compras,2);
 	        
 	        /** realizar validacion de impuesto **/
 	        $colValidacion = " 1 ";
@@ -446,6 +453,8 @@ class TesCuentasPagarController extends ControladorBase{
 	            $respuesta['texto']= 'Datos Impuesto no definido';
 	            throw new Exception();
 	        }
+	        
+	        $totalImpuesto = round($totalImpuesto,2);
 	        
 	        /** se relaciona el impuesto a la cuenta x pagar **/
 	        $QueryInsImpuesto = "INSERT INTO tes_cuentas_pagar_impuestos
@@ -763,12 +772,10 @@ class TesCuentasPagarController extends ControladorBase{
 	            /** para obtener valor para  proveedores **/
 	            $valor_proveedores +=  $res->valor_cuentas_pagar_impuestos;
 	        }       
-	        
-	        
-	        
+	        	        
 	        $QueryIns1 = " INSERT INTO tes_distribucion_cuentas_pagar( id_lote, id_plan_cuentas, tipo_distribucion_cuentas_pagar, debito_distribucion_cuentas_pagar,
 			             credito_distribucion_cuentas_pagar, ord_distribucion_cuentas_pagar )
-		              VALUES($_id_lote, null, 'COMPRA' , 0.00, $valor_proveedores, $orden_insert)";
+		              VALUES($_id_lote, null, 'PAGO' , 0.00, $valor_proveedores, $orden_insert)";
 	        
 	        $cuentasPagar->executeInsertQuery($QueryIns1);
 	        
@@ -1064,7 +1071,7 @@ class TesCuentasPagarController extends ControladorBase{
 	        $QueryFuncion = $cuentasPagar->getconsultaPG($funcionComprobantes, $parametrosComprobantes);
 	        $resultadoccomprobantes = $cuentasPagar->llamarconsultaPG($QueryFuncion);
 	        
-	        $error_pg = pg_last_error(); if( !empty($error_pg) ){ throw new Exception(" Error insetando el comprobante Contable"); }
+	        $error_pg = pg_last_error(); if( !empty($error_pg) ){ throw new Exception(" Error insertando el comprobante Contable"); }
 	        
 	            
             /*actualizar cuentas pagar*/
@@ -1149,7 +1156,7 @@ class TesCuentasPagarController extends ControladorBase{
                     
                     $aux = $comprobante->validarFirmarXml($xml, $clave);
                     
-                    $respuesta['Archivo'] = "LLEGO AQUI";
+                    $respuesta['Archivo'] = "";
                     $respuesta['xml'] = $aux;
                     
                     if($aux['error'] === false){
@@ -1158,34 +1165,41 @@ class TesCuentasPagarController extends ControladorBase{
                         //$aux['recibido'] = true; //para pruebas
                         
                         if($aux['recibido'] === true){
+                            
                             $respuesta['xml'] = " Archivo Xml RECIBIDO";
                             
                             $finalresp = $comprobante->autorizacionXml($clave);
-                            //$finalresp = null; //para pruebas
+                            //$finalresp = null;. //para pruebas
                             //$finalresp['error'] = false; //para pruebas
                             if($finalresp['error'] === true ){                                
-                                /** aqui poner senetecia en cao de haber errror **/
+                                /** aqui poner senetecia en caso de haber errror **/
                                 $respuesta['xml'] = " Archivo Xml RECIBIDO NO AUTORIZADO";
+                                $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;  
                                 $errorXml = true;
                             }else{
                                 
                                 $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
+                                $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;  
                             }
                             
                             
-                            
                         }else{
-                            /** aqui poner senetecia en cao de haber errror **/
+                            /** aqui poner senetecia en caso de haber errror **/
+                            $respuesta['xml'] = " Archivo Xml NO RECIBIDO";
+                            $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
                             $errorXml = true;
                         }
                             
                     }else{                        
-                        /** aqui poner senetecia en cao de haber errror **/
+                        /** aqui poner senetecia en caso de haber errror **/
+                        $respuesta['xml'] = " Archivo Xml NO FIRMADO";
+                        $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
                         $errorXml = true;
                     }
                     
                     /** actualizacion si existe algun error **/
                     if( $errorXml ){
+                        
                         $claveAcceso = $resp['claveAcceso'];
                         $_columnaActualizar = " autorizado_retenciones = false ";
                         $_tablaActualizar   = " tri_retenciones";
@@ -1676,6 +1690,25 @@ class TesCuentasPagarController extends ControladorBase{
 	    var_dump($this->genXmlRetencion(150));
 	}
 	
+	
+	public function validateValores(){
+	    
+	    echo "valor --> 0.228 ",round('0.228',2),"\n";
+	    echo "valor --> 0.227 ",round('0.227',2),"\n";
+	    echo "valor --> 0.226 ",round('0.226',2),"\n";
+	    echo "valor --> 0.225 ",round('0.225',2),"\n";
+	    echo "valor --> 0.224 ",round('0.224',2),"\n";
+	    
+	    $incremento = 0.1;
+	    $base = 110;
+	    for($i=0; $i<1000; $i++){
+	        $imp = 0.12;
+	        $base += $incremento;
+	        $valor = $base*$imp;
+	        echo "base --->",$base," valor --> ",$valor, " redondeado ---> ",round($valor,2),"\n";
+	    }
+	    
+	}
 	
 	
 }

@@ -212,6 +212,9 @@ class MarcacionesController extends ControladorBase{
     
     public function SubirReporte()
     {
+        
+  
+        
         session_start();
         $reportenomina= new ReporteNominaEmpleadosModel();
         $marcacion = new RegistroRelojEmpleadosModel();
@@ -244,6 +247,8 @@ class MarcacionesController extends ControladorBase{
         $id = "empleados.numero_cedula_empleados,registro_reloj_empleados.fecha_marcacion_empleados, registro_reloj_empleados.hora_marcacion_empleados";
         
         $resultSet=$marcacion->getCondiciones($columnas, $tablas, $where, $id);
+        
+        //echo "SELECT ",$columnas,"FROM ", $tablas,"WHERE ", $where,"ORDER BY", $id, "\n";
         
         $columnasper="empleados.numero_cedula_empleados, permisos_empleados.fecha_solicitud,
 	                  permisos_empleados.hora_desde, permisos_empleados.hora_hasta";
@@ -352,8 +357,12 @@ class MarcacionesController extends ControladorBase{
         
         $html="";
         
+        //print_r($resultSet);
+        //die();
+        
         if (!(empty($resultSet)))
         {
+           
             foreach($resultEmp as $emp)
             {
                 $salario=$emp->salario_cargo;

@@ -1225,7 +1225,7 @@ class ReporteNominaController extends ControladorBase{
            $datos_tabla.='<tr>';
            $datos_tabla.='<td  class="cargo">'.$res->numero_cedula_empleados.'</td>';
            $datos_tabla.='<td  style="text-align: left;  font-size: '.$tdfont.';">'.$res->nombres_empleados.'</td>';
-           $datos_tabla.='<td  class="cargo">'.$res->nombre_cargo.'</td>';
+           $datos_tabla.='<td  class="cargo" align="left">'.$res->nombre_cargo.'</td>';
            
            $h50="";
            if ($res->horas_ext50!="0") 

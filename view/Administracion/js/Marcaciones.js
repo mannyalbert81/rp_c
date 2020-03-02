@@ -1338,7 +1338,7 @@ function GenerarReporte()
 	var diainicio = 22;
 	 var diafinal = 21;
 	 
-	 var fechai = diainicio+"/"+mes_inicio+"/"+mes_inicio;
+	 var fechai = diainicio+"/"+mes_inicio+"/"+anio_inicio;
 	 
 	 var fechaf = diafinal+"/"+mes_fin+"/"+year;
 	 

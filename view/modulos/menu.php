@@ -272,7 +272,7 @@ $controladores=$_SESSION['controladores'];
      </li>
      
       
-        <li class="treeview"  style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("MenuActivos",$controladores) ?>"  >
           <a href="#">
             <i class="glyphicon glyphicon-blackboard"></i> <span>Activos Fijos</span>
             <span class="pull-right-container">
@@ -280,7 +280,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-            <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+            <li class="treeview"  style="<?php echo getcontrolador("AdministracionActivos",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Administración</span>
                 <span class="pull-right-container">
@@ -294,7 +294,7 @@ $controladores=$_SESSION['controladores'];
             </li>
             
             
-            <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+            <li class="treeview"  style="<?php echo getcontrolador("ProcesosActivos",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
                 <span class="pull-right-container">
@@ -306,7 +306,7 @@ $controladores=$_SESSION['controladores'];
     		  </ul>
             </li>
             
-            <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+            <li class="treeview"  style="<?php echo getcontrolador("ReporteActivos",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Reportes</span>
                 <span class="pull-right-container">

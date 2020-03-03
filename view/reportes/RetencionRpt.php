@@ -21,36 +21,20 @@ if(!empty($datos_reporte))
 ob_end_clean();
 //creacion del pdf
 //$mpdf=new mPDF('c','A4','','' , 0 , 0 , 0 , 0 , 0 , 0);
-if ($_nombre_archivo == "")
-{
-	$mpdf=new mPDF();
-	$mpdf->SetDisplayMode('fullpage');
-	$mpdf->allow_charset_conversion = true;
-	$mpdf->charset_in = 'UTF-8';
-	$mpdf->setAutoTopMargin = 'stretch';
-	$mpdf->setAutoBottomMargin = 'stretch';
-	$mpdf->SetHTMLFooter($footer);
-	$mpdf->WriteHTML($template);
-	$mpdf->debug = true;
-	$mpdf->Output();
-	
-}
-else 
-{
-	$mpdf=new mPDF();
-	$mpdf->SetDisplayMode('fullpage');
-	$mpdf->allow_charset_conversion = true;
-	$mpdf->charset_in = 'UTF-8';
-	$mpdf->setAutoTopMargin = 'stretch';
-	$mpdf->setAutoBottomMargin = 'stretch';
-	$mpdf->SetHTMLFooter($footer);
-	$mpdf->WriteHTML($template);
-	$mpdf->debug = true;
-	$mpdf->Output($_nombre_archivo );
-	return ;
-	
-}
 
+$filename = ( isset($_nombre_archivo) && $_nombre_archivo != "" ) ? $_nombre_archivo : "ComprobanteRetencion";
+$filename = $filename.".pdf";
+
+$mpdf=new mPDF();
+$mpdf->SetDisplayMode('fullpage');
+$mpdf->allow_charset_conversion = true;
+$mpdf->charset_in = 'UTF-8';
+$mpdf->setAutoTopMargin = 'stretch';
+$mpdf->setAutoBottomMargin = 'stretch';
+$mpdf->SetHTMLFooter($footer);
+$mpdf->WriteHTML($template);
+$mpdf->debug = true;
+$mpdf->Output($filename,"I");
 
 /*$content = $mpdf->Output('', 'S'); // Saving pdf to attach to email
 $content = chunk_split(base64_encode($content));

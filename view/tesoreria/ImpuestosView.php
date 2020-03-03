@@ -78,6 +78,9 @@
           </div>
         </div>
         
+        <!-- IDENTIFICADRES -->
+        <input type="hidden" value="0" id="id_impuestos" >
+        <input type="hidden" name="id_plan_cuentas" id="id_plan_cuentas" value="0" />
                   
   		<div class="box-body">
 
@@ -88,12 +91,25 @@
              	<!-- termina loader --> 
              					    
 		    	 <div class="row">
+		    	 
+		    	 	<div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="fuente_impuestos" class="control-label">Fuente Impuestos:</label>
+                          <select class="form-control" id="fuente_impuestos" name="fuente_impuestos">
+                            <option value="0" >--Seleccione--</option>
+                          	<option value="compra" selected >COMPRA</option>
+                          	<option value="venta">VENTA</option>
+                          </select>
+                                              
+                        </div>
+            		  </div>
+		    	 
         		    <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
             		    					  
                           <label for="plan_cuentas" class="control-label">Cuenta - (Plan Cuentas):</label>
-                          <input  type="text" class="form-control" id="plan_cuentas" name="plan_cuentas" value=""  placeholder="Ingrese Nombre/codigo Cuenta" required/>
-                          <input type="hidden" name="id_plan_cuentas" id="id_plan_cuentas" value="0" />
+                          <input  type="text" class="form-control" id="plan_cuentas" name="plan_cuentas" value=""  placeholder="Ingrese Nombre/codigo Cuenta" />                          
                           <div id="mensaje_plan_cuentas" class="errores"></div>
                                               
                         </div>
@@ -103,45 +119,76 @@
             		    <div class="form-group">
             		    					  
                           <label for="nombre_impuestos" class="control-label">Nombre Impuestos:</label>
-                          <input  type="text" class="form-control" id="nombre_impuestos" name="nombre_impuestos" value=""  placeholder="Digite Nombre" required/>
-                          <input type="hidden" name="id_impuestos" id="id_impuestos" value="0" />
-                          <div id="mensaje_nombre_impuestos" class="errores"></div>
-                                               
-                        </div>
-            		  </div>
-            		  
-            		  
-            		   <div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-            		    					  
-                          <label for="porcentaje_impuestos" class="control-label">Porcentaje Impuestos (%):</label>
-                          <input  type="text" class="form-control" id="porcentaje_impuestos" name="porcentaje_impuestos" value=""  placeholder="Ingrese Porcentaje" required/>
-                          <div id="mensaje_porcentaje_impuestos" class="errores"></div>
-                                               
+                          <input  type="text" class="form-control" id="nombre_impuestos" name="nombre_impuestos" value=""  placeholder="Digite Nombre" />                                           
                         </div>
             		  </div>
             		  
             		  <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
             		    					  
-                          <label for="porcentaje_impuestos" class="control-label">Tipo Impuestos (%):</label>
-                          <select class="form-control" id="tipo_impuestos" name="tipo_impuestos">
+                          <label for="descripcion_impuestos" class="control-label">Descripcion Impuestos:</label>
+                          <input  type="text" class="form-control" id="descripcion_impuestos" name="descripcion_impuestos" value=""  placeholder="Ingrese Descripcion" />
+                          <div id="mensaje_porcentaje_impuestos" class="errores"></div>
+                                               
+                        </div>
+            		  </div>    	  
+            		  
+          	   	</div>
+          	   	
+          	   	<div class="row">
+          	   	
+          	   		<div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="porcentaje_impuestos" class="control-label">Porcentaje Impuestos (%):</label>
+                          <input  type="text" class="form-control" id="porcentaje_impuestos" name="porcentaje_impuestos" value=""  placeholder="Ingrese Porcentaje" />
+                          <div id="mensaje_porcentaje_impuestos" class="errores"></div>
+                                               
+                        </div>
+            		  </div>    
+          	   	
+          	   		<div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="tipo_impuestos" class="control-label">Tipo Impuestos:</label>
+                          <select class="form-control" id="tipo_impuestos" name="tipo_impuestos" onchange="validaTipoImpuesto()">
                           	<option value="iva">IVA</option>
                           	<option value="retencion">RETENCION</option>
-                          	<option value="retencionIva">RETENCION IVA</option>
                           </select>
                           <div id="mensaje_tipo_impuestos" class="errores"></div>
                                                
                         </div>
             		  </div>
-                        		 
-				    
+          	   	
+          	   		<div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">            		    					  
+                          	<label for="codigo_impuestos" class="control-label">Impuesto Retener (Tabla 19):</label>
+                            <select class="form-control" id="codigo_impuestos" onchange="getCodigoRetencion(this)">
+                            	<option value="0">--Seleccione--</option>
+                             	<option value="1">RENTA</option>
+                              	<option value="2">IVA</option>
+                              	<option value="6">ISD</option>
+                            </select>                                               
+                        </div>
+            		  </div>
+            		  
+            		 <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">            		    					  
+                          	<label for="codretencion_impuestos" class="control-label">Codigo Retencion(Tabla 20):</label>
+                            <select class="form-control" id="codretencion_impuestos" name="codretencion_impuestos">
+                             	<option value="0">--Seleccione--</option>
+                            </select>                                               
+                        </div>
+            		  </div>
+          	   		
           	   	</div>	
+          	   	
+
 							          		        
            		<div class="row">
     			    <div class="col-xs-12 col-md-4 col-lg-4 " style="text-align: center; ">
         	   		    <div class="form-group">
-    	                  <button type="submit" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
+    	                  <button type="button" id="Guardar" name="Guardar" onclick="AddImpuesto()" class="btn btn-success">GUARDAR</button>
     	                  <a href="<?php echo $helper->url("Impuestos","Index"); ?>" class="btn btn-danger">CANCELAR</a>
 	                    </div>
 	                    
@@ -153,7 +200,7 @@
           </div>
     	</div>
     </section>
-              
+            
      <section class="content">
       	<div class="box box-primary">
       		<div class="box-header with-border">
@@ -181,8 +228,9 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-   <script src="view/tesoreria/js/ImpuestosCxP.js?0.7"></script> 
+   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+   <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
+   <script src="view/tesoreria/js/Impuestos.js?0.06"></script> 
 	
   </body>
 </html>   

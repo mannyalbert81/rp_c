@@ -10,6 +10,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <?php include("view/modulos/links_css.php"); ?>		
       
     	
@@ -17,7 +18,7 @@
 		    
 	</head>
  
-    <body class="hold-transition skin-blue fixed sidebar-mini" ng-app="myApp" ng-controller="myCtrl">
+    <body class="hold-transition skin-blue fixed sidebar-mini" >
     
      <?php
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
@@ -98,9 +99,6 @@
 					        <?php } ?>  
 			
 			
-			
-		
-
             
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
@@ -147,7 +145,6 @@
     
     <?php include("view/modulos/links_js.php"); ?>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    
 	
     <script type="text/javascript" >   
     
@@ -204,21 +201,7 @@
  </script>
 	
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-    
-
-
-
-	  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      
-
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-      <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      
-    <script src="view/Contable/FuncionesJS/ActivosFijosD.js?1.0"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
-    
-    
     
 	
   </body>

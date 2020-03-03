@@ -94,6 +94,7 @@
   		<input type="hidden" id="id_proveedores" value="">
   		<input type="hidden" id="id_consecutivos" value="">
   		<input type="hidden" id="hd_valor_base_compra" value=""><!-- aqui guarda el valor pa validar cambio de valor -->
+  		<!-- TERMINA SECTION PARA ID -->
   		
   			<div id="divLoaderPage" ></div>                     	
   		
@@ -116,6 +117,14 @@
                           </li>                          
                           <li>
                           <button id="mdlImpuestosRelacionados" type="button" onclick="verTablaImpuestosRelacionados()" class="btn">Ver Impuestos <span id="cantidad_impuestos_ins" class="badge label-danger"></span></button>
+                          </li>
+                          <li>
+                          	<a class="btn btn-default" href="index.php?controller=TesProveedores&action=index" target="_blank" title="Nuevo Proveedor" >
+                          	<i class="fa fa-id-card-o" aria-hidden="true"></i></a> 
+                          </li>
+                          <li>
+                          	<a class="btn btn-default" href="index.php?controller=Impuestos&action=index" target="_blank" title="Nuevo Impuesto" >
+                          	<i class="fa fa-usd" aria-hidden="true"></i></a>                          	
                           </li>
                           <!-- <li>
                             <button class="btn" id="btnPopTet"><i></i> Add Proveedor</button>
@@ -147,7 +156,7 @@
                  
                  <div class="col-xs-12 col-lg-3 col-md-3 ">
     			   <label for="tipo_documento" class="control-label">Tipo Comprobante:</label>
-    			   <select id="tipo_documento" class="form-control" ><option>--Seleccione--</option></select>
+    			   <select id="tipo_documento" class="form-control" ><option value="0">--Seleccione--</option></select>
                  </div>
                  
                  <div class="col-xs-12 col-lg-3 col-md-3 ">
@@ -201,13 +210,13 @@
   				
   				<div class="col-xs-12 col-md-3 col-md-3">
   					<div class="form-group">  
-                      <label for="valor_compra_cero" class="control-label"> Monto 0% (Base Compras):</label>
+                      <label for="valor_compra_cero" class="control-label"> Sub-Total 0% (Compras):</label>
                       <input type="text" id="valor_compra_cero" onkeyup="pasarTotal()" class="form-control" value="">
                     </div>	
   				</div>
   				<div class="col-xs-12 col-md-3 col-md-3">
   					<div class="form-group">  
-                      <label for="valor_compra_iva" class="control-label"> Monto 12% (Base Compras):</label>
+                      <label for="valor_compra_iva" class="control-label"> Sub-Total 12% (Compras):</label>
                       <input type="text" id="valor_compra_iva" onkeyup="pasarTotal()" class="form-control" value="">
                     </div>	
   				</div>
@@ -315,7 +324,7 @@
           		
             	<div id="mod_div_proveedores" class="table-responsive" style="min-height: 150px; max-height: 450px">
             		<div class="pull-right">
-            			<input type="text" id="mod_buscador_proveedores" class="form-control">
+            			<input type="text" id="mod_buscador_proveedores" onkeyup="loadProveedores()" class="form-control">
             		</div>
             		<div class="clearfix"></div>
             		<table id="mod_tbl_proveedores" class="table  table-fixed table-sm table-responsive-sm" > <!--   -->

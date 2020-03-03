@@ -64,7 +64,7 @@
         
         <div class="box-body">
         
-        	 <form id="frm_declaracion"  method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
+        	 <form id="frm_historico"  method="post" enctype="multipart/form-data"  class="col-lg-12 col-md-12 col-xs-12">
        
         	<div class="row">
     		  
@@ -114,7 +114,7 @@
               <div class="row">
     			    <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
         	   		<div class="form-group">
-    	            <button type="button" id="buscar" name="buscar" value="Buscar"   class="btn btn-info" ><i class="glyphicon glyphicon-search"></i></button>
+    	            <button type="button" id="buscar" name="buscar" value="buscar"   class="btn btn-info" ><i class="glyphicon glyphicon-search"></i></button>
             		</div>
         		    </div>
 		    	</div>
@@ -151,7 +151,6 @@
 					<div id="productos_registrados"></div>	
                 
               </div>
-                 		  <a href="index.php?controller=HistoricoProducto&action=reporte_stock_productos" target="_blank"><input type="image" src="view/images/print.png" alt="Submit" width="50" height="34" formtarget="_blank" id="btngenerar" name="btngenerar" class="btn btn-default" title="Reporte Productos"></label></a>
          
               
             </div>
@@ -184,7 +183,7 @@
       
       
       
-    <script src="view/Contable/FuncionesJS/HistoricoProducto.js?1.3"></script>
+    <script src="view/Inventario/FuncionesJS/HistoricoProducto.js?1.9"></script>
 
     
     

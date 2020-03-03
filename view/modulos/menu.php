@@ -149,7 +149,7 @@ $controladores=$_SESSION['controladores'];
           </a>
           <ul class="treeview-menu">
             <li style="<?php echo getcontrolador("BuscarProducto",$controladores) ?>"><a href="index.php?controller=BuscarProducto&action=index"><i class="fa fa-circle-o"></i> Inventario de Productos</a></li>
-            <li style="<?php echo getcontrolador("HistoricoProducto",$controladores) ?>"><a href="index.php?controller=HistoricoProducto&action=index"><i class="fa fa-circle-o"></i>Historico de Productos</a></li>
+            <li style="<?php echo getcontrolador("HistoricoProducto",$controladores) ?>"><a href="index.php?controller=HistoricoProducto&action=index2"><i class="fa fa-circle-o"></i>Historico de Productos</a></li>
 		 	</ul>
         </li>
        </ul>

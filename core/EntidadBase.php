@@ -224,6 +224,28 @@ class EntidadBase{
         return $cantidadAfectada;
     }
     
+    public function eliminarFila($tabla,$where){
+        
+        $cantidadAfectada = null;
+        
+        try{
+            
+            $query=pg_query($this->con,"DELETE FROM $tabla WHERE $where ");
+            
+            if( $query === false )
+                throw new Exception( "Error PostgreSQL ".pg_last_error() );
+                
+                $cantidadAfectada = pg_affected_rows($query);
+                
+        }catch (Exception $Ex){
+            
+            $cantidadAfectada=null;
+        }
+        
+        
+        return $cantidadAfectada;
+    }
+    
     public function eliminarByColumn($table,$column,$value){
         
         $cantidadAfectada = null;

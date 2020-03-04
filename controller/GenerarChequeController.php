@@ -63,14 +63,14 @@ class GenerarChequeController extends ControladorBase{
 	        if (empty($resultPer)){
 	            
 	            $this->view("Error",array(
-	                "resultado"=>"No tiene Permisos de Acceso Empleo"
+	                "resultado"=>"No tiene Permisos de Acceso Pagos Cheque"
 	                
 	            ));
 	            exit();
 	        }
-	       
+	       	        
 	        if( !isset($_GET['id_cuentas_pagar']) ){
-	            
+	            // validacion si no hay parametro cuentas por pagar 
 	            $this->redirect("Pagos","index");
 	            exit();
 	        }
@@ -182,6 +182,94 @@ class GenerarChequeController extends ControladorBase{
 	    
 	    $out.= "</ul>";
 	    return $out;
+	}
+	
+	/***
+	 * @desc function para dibujar la chequera de la entidad por medio de request ajax
+	 * @param none
+	 */
+	public function CargaChequera(){
+	    
+	    $pagos = new PagosModel();
+	    $resp  = null;
+	    
+	    $col1  = " id_bancos, nombre_bancos, lpad(index_bancos_chequera::text,espacio_bancos_chequera,'0') consecutivo_cheque , abrev_bancos_chequera";
+	    $tab1  = " tes_bancos ";
+	    $whe1  = " local_bancos = 't' ";
+	    $id1   = " nombre_bancos ";
+	    $rsConsulta1   = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    try {
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	        
+	        if( !empty($rsConsulta1) ){	            
+	            $resp['data'] = $rsConsulta1;	            
+	        }else{
+	            $resp['data'] = null;	
+	        }
+	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
+	}
+	
+	/***
+	 * @desc function para dibujar la chequera de la entidad por medio de request ajax
+	 * @param none
+	 */
+	public function CargaNumChequera(){
+	    
+	    $pagos = new PagosModel();
+	    $resp  = null;
+	    
+	    $id_bancos = $_POST['id_bancos'];
+	    
+	    $col1  = " id_bancos, nombre_bancos, lpad(index_bancos_chequera::text,espacio_bancos_chequera,'0') consecutivo_cheque , abrev_bancos_chequera";
+	    $tab1  = " tes_bancos ";
+	    $whe1  = " id_bancos = $id_bancos ";
+	    $id1   = " nombre_bancos ";
+	    $rsConsulta1   = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    try {
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	        
+	        if( !empty($rsConsulta1) ){
+	            $resp['numchequera'] = $rsConsulta1[0]->consecutivo_cheque;
+	        }else{
+	            $resp['numchequera'] = null;
+	        }
+	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
 	}
 	
 	/***

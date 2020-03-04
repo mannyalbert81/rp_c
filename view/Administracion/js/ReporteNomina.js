@@ -238,10 +238,13 @@ if(rep)
 		var anio_inicio=year;
 		var anio_fin=year;
 		console.log(dia_hoy+" hoy")
+		
+		
+		
 		if(dia_hoy<=21)
 		{
 		mes_inicio=mes-2;
-		mes_fin=mes-1;
+		mes_fin=mes;
 		if (mes_inicio<1)
 			{
 			mes_inicio=12;
@@ -262,7 +265,7 @@ if(rep)
 		var diainicio = 22;
 		 var diafinal = 21;
 	
-	var fechai = diainicio+"/"+mes_inicio+"/"+year;
+	var fechai = diainicio+"/"+mes_inicio+"/"+anio_inicio;
 	var fechaf = diafinal+"/"+mes_fin+"/"+year;
 	
 	periodo=fechai+"-"+fechaf;
@@ -280,7 +283,7 @@ if(rep)
 			}
 		var diainicio = 22;
 		var diafinal = 21;
-		var fechai = diainicio+"/"+mes+"/"+year;
+		var fechai = diainicio+"/"+mes+"/"+anio_inicio;
 		mes++;
 		if (mes>12){
 			mes=1;
@@ -352,7 +355,48 @@ function ImprimirReporte()
 	{
 	var mes = new Date().getMonth();
 	var year = new Date().getFullYear();
-	mes--;
+	//mes--;
+	mes++;
+	
+	
+	var year = new Date().getFullYear();
+	var dia_hoy= new Date().getDate();
+	var mes_inicio=0;
+	var mes_fin=0;
+	var anio_inicio=year;
+	var anio_fin=year;
+	console.log(dia_hoy+" hoy")
+	
+	
+	
+	if(dia_hoy<=21)
+	{
+	mes_inicio=mes-2;
+	mes_fin=mes;
+	if (mes_inicio<1)
+		{
+		mes_inicio=12;
+		anio_inicio=year-1;
+		}
+	}
+else
+	{
+	mes_inicio=mes;
+	mes_fin=mes+1;
+	if (mes_fin==13)
+		{
+		mes_fin=1;
+		anio_fin=year+1;
+		}
+	}
+	
+	var diainicio = 22;
+	 var diafinal = 21;
+
+var fechai = diainicio+"/"+mes_inicio+"/"+anio_inicio;
+var fechaf = diafinal+"/"+mes_fin+"/"+year;
+	
+	/*
 	if (mes==0)
 		{
 		mes=12;
@@ -392,6 +436,13 @@ function ImprimirReporte()
 			var fechaf = diafinal+"/"+mes+"/"+year;
 		}
 		else var fechaf = diafinal+"/"+mes+"/"+year;
+		
+		
+		
+		*/
+		
+		
+		
 		
 		periodo=fechai+"-"+fechaf;
 		console.log(periodo)	

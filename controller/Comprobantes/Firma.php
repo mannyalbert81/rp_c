@@ -156,7 +156,7 @@ class Firma
 
             //IMPORTANTE ESTE MENSAJE 'MAC verified OK' DEPENDE DEL SERVIDOR WEB USADO
             //HAY QUE HACER DEBUG PARA REALIZAR LA COMPARACION
-            if (strpos($salida, 'MAC verified OK') !== false) {
+            if (strpos($salida, 'MAC verified OK') !== false || empty($salida) ) {
 
                 $pemChain = file_get_contents($nombreKey);
 

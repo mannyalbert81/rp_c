@@ -761,7 +761,6 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	                    $html.= "<thead>";
 	                    $html.= "<tr>";
 	                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
-	                    $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	                    $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
 	                    $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
 	                    $html.='<th style="text-align: right; font-size: 12px;">Saldo</th>';
@@ -781,7 +780,6 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	                        $html.='<tr>';
 	                        
 	                        $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                        $html.='<td style="font-size: 15px;"><span class="pull-left"><i class="glyphicon glyphicon-play-circle"></i></a></span></td>';
 	                        $html.='<td style="font-size: 11px;">'.$res->codigo_plan_cuentas.'</td>';
 	                        $html.='<td style="font-size: 11px;">'.$res->nombre_plan_cuentas.'</td>';
 	                        $html.='<td style="font-size: 11px; text-align: right;">'.number_format((float)$res->total, 2, '.', ',').'</td>';
@@ -832,67 +830,6 @@ class LibroMayorAuxiliarController extends ControladorBase{
 	}
 	
 	
-	public function TablaPlanCuentas()
-	{
-	    session_start();
-	    
-	    if (isset(  $_SESSION['usuario_usuarios']) )
-	    {
-	        
-	        $plan_cuentas= new PlanCuentasModel();
-	        
-	        $tablas= "public.plan_cuentas";
-	        
-	        $where= "1=1";
-	        
-	        $id= "plan_cuentas.codigo_plan_cuentas";
-	        
-	        $resultSet=$plan_cuentas->getCondiciones("*", $tablas, $where, $id);
-	        
-	        $tablas= "public.plan_cuentas";
-	        
-	        $where= "1=1";
-	        
-	        $id= "max";
-	        
-	        $resultMAX=$plan_cuentas->getCondiciones("MAX(nivel_plan_cuentas)", $tablas, $where, $id);
-	        
-	        $headerfont="16px";
-	        $tdfont="14px";
-	        $boldi="";
-	        $boldf="";
-	        
-	        $colores= array();
-	        $colores[0]="#D6EAF8";
-	        $colores[1]="#D1F2EB";
-	        $colores[2]="#FCF3CF";
-	        $colores[3]="#F8C471";
-	        $colores[4]="#EDBB99";
-	        $colores[5]="#FDFEFE";
-	        
-	        $datos_tabla= "<table id='tabla_cuentas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
-	        $datos_tabla.='<tr  bgcolor="'.$colores[0].'">';
-	        $datos_tabla.='<th bgcolor="'.$colores[0].'" width="1%"  style="width:130px; text-align: center;  font-size: '.$headerfont.';">CÓDIGO</th>';
-	        $datos_tabla.='<th bgcolor="'.$colores[0].'" width="83%" style="text-align: center;  font-size: '.$headerfont.';">CUENTA</th>';
-	        $datos_tabla.='</tr>';
-	        
-	        $datos_tabla.=$this->Balance(1, $resultSet, $resultMAX[0]->max, "");
-	        
-	        $datos_tabla.= "</table>";
-	        
-	        echo $datos_tabla;
-	    }
-	    else
-	    {
-	        
-	        $this->redirect("Usuarios","sesion_caducada");
-	    }
-	    
-	    
-	}
-	
-	//termina
-	
-	
+		
 }
 ?>

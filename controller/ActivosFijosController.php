@@ -1217,9 +1217,9 @@ class ActivosFijosController extends ControladorBase{
                 $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Tipo</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Valor de Adquisición</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
-                $html.='<th style="text-align: left;  font-size: 12px;">Fecha Ingreso</th>';
+                $html.='<th style="text-align: left;  font-size: 12px;">Fecha De Adquisición</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">Responsable</th>';
                 $html.='<th style="text-align: left;  font-size: 12px;">TAG</th>';
                 
@@ -1442,6 +1442,7 @@ class ActivosFijosController extends ControladorBase{
             $datosActivo['UBIACTIVO'] = $rsDatosActivo[0]->nombre_departamento; /*despues de creacion tabla departamento*/
             $datosActivo['RESPACTIVO'] = $rsDatosActivo[0]->nombre_empleados;
             $datosActivo['IDACTIVO'] = $rsDatosActivo[0]->id_activos_fijos;
+            $datosActivo['RESPONSABLE'] = $rsDatosActivo[0]->nombres_empleados;
             $datosActivo['ISDEPRECIADO'] = $estadoActivo;
         }
         
@@ -1858,7 +1859,8 @@ class ActivosFijosController extends ControladorBase{
                     "resultEdit" =>$resultEdit,
                     "resultOfi"=>$resultOfi,
                     "resultTipoac"=>$resultTipoac,
-                    "result_Activos_estados"=>$result_Activos_estados
+                    "result_Activos_estados"=>$result_Activos_estados,
+                    "id_activos_fijos"=>$_id_activos_fijos
                     
                     
                 ));
@@ -1901,7 +1903,7 @@ class ActivosFijosController extends ControladorBase{
             $_fecha_inicio_ficha_mantenimiento = (isset($_POST["fecha_inicio_ficha_mantenimiento"])) ? $_POST["fecha_inicio_ficha_mantenimiento"] : 0 ;
             $_danio_ficha_mantenimiento = (isset($_POST["danio_ficha_mantenimiento"])) ? $_POST["danio_ficha_mantenimiento"] : 0 ;
             $_partes_reemplazado_ficha_mantenimiento = (isset($_POST["partes_reemplazado_ficha_mantenimiento"])) ? $_POST["partes_reemplazado_ficha_mantenimiento"] : 0 ;
-            $_responsable_ficha_mantenimiento = (isset($_POST["responsable_ficha_mantenimiento"])) ? $_POST["responsable_ficha_mantenimiento"] : 0 ;
+            $_id_empleados = (isset($_POST["id_empleados"])) ? $_POST["id_empleados"] : 0 ;
             $_id_activos_fijos = (isset($_POST["id_activos_fijos"])) ? $_POST["id_activos_fijos"] : 0 ;
             $_descripcion_ficha_mantenimiento = (isset($_POST["descripcion_ficha_mantenimiento"])) ? $_POST["descripcion_ficha_mantenimiento"] : 0 ;
             
@@ -1914,7 +1916,7 @@ class ActivosFijosController extends ControladorBase{
             
             if($_id_ficha_mantenimiento == 0){
                 
-                $parametros = " '$_fecha_inicio_ficha_mantenimiento','$_danio_ficha_mantenimiento','$_partes_reemplazado_ficha_mantenimiento','$_responsable_ficha_mantenimiento','$_id_activos_fijos','$_descripcion_ficha_mantenimiento'";
+                $parametros = " '$_fecha_inicio_ficha_mantenimiento','$_danio_ficha_mantenimiento','$_partes_reemplazado_ficha_mantenimiento','$_id_empleados','$_id_activos_fijos','$_descripcion_ficha_mantenimiento'";
                 $ficha_activos->setFuncion($funcion);
                 $ficha_activos->setParametros($parametros);
                 $resultado = $ficha_activos->llamafuncionPG();
@@ -1928,7 +1930,7 @@ class ActivosFijosController extends ControladorBase{
                 
             }elseif ($_id_ficha_mantenimiento > 0){
                 
-                $parametros = " '$_fecha_inicio_ficha_mantenimiento','$_danio_ficha_mantenimiento','$_partes_reemplazado_ficha_mantenimiento','$_responsable_ficha_mantenimiento','$_id_activos_fijos','$_descripcion_ficha_mantenimiento'";
+                $parametros = " '$_fecha_inicio_ficha_mantenimiento','$_danio_ficha_mantenimiento','$_partes_reemplazado_ficha_mantenimiento','$_id_empleados','$_id_activos_fijos','$_descripcion_ficha_mantenimiento'";
                 $ficha_activos->setFuncion($funcion);
                 $ficha_activos->setParametros($parametros);
                 $resultado = $ficha_activos->llamafuncionPG();
@@ -1983,16 +1985,19 @@ class ActivosFijosController extends ControladorBase{
                           act_ficha_mantenimiento.fecha_inicio_ficha_mantenimiento, 
                           act_ficha_mantenimiento.danio_ficha_mantenimiento, 
                           act_ficha_mantenimiento.partes_reemplazado_ficha_mantenimiento, 
-                          act_ficha_mantenimiento.responsable_ficha_mantenimiento, 
                           act_ficha_mantenimiento.descripcion_ficha_mantenimiento , 
                           act_ficha_mantenimiento.id_activos_fijos, 
                           act_activos_fijos.nombre_activos_fijos, 
-                          act_activos_fijos.codigo_activos_fijos";
+                          act_activos_fijos.codigo_activos_fijos,
+                          empleados.id_empleados, 
+                          empleados.nombres_empleados";
                             
         $tablas    = " public.act_ficha_mantenimiento, 
-                         public.act_activos_fijos";
+                       public.act_activos_fijos,
+                       public.empleados                        
+";
         
-        $where     = "act_ficha_mantenimiento.id_activos_fijos = act_activos_fijos.id_activos_fijos AND act_ficha_mantenimiento.id_activos_fijos = $_id_activos_fijos";
+        $where     = "act_ficha_mantenimiento.id_activos_fijos = act_activos_fijos.id_activos_fijos AND act_ficha_mantenimiento.id_activos_fijos = $_id_activos_fijos AND empleados.id_empleados = act_ficha_mantenimiento.id_empleados";
         $id        = "act_ficha_mantenimiento.id_ficha_mantenimiento";
         
         
@@ -2045,9 +2050,9 @@ class ActivosFijosController extends ControladorBase{
                 $html.= "<tr>";
                 $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Fecha</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Responsable</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Daño</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Partes</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Responsable</th>';
                 $html.='<th style="text-align: left;  font-size: 15px;">Descripcion</th>';
                 
                 /*para administracion definir administrador MenuOperaciones Edit - Eliminar*/
@@ -2067,13 +2072,15 @@ class ActivosFijosController extends ControladorBase{
                 
                 
                 {
+                    
+                    
                     $i++;
                     $html.='<tr>';
                     $html.='<td style="font-size: 14px;">'.$i.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->fecha_inicio_ficha_mantenimiento.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->danio_ficha_mantenimiento.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->partes_reemplazado_ficha_mantenimiento.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->responsable_ficha_mantenimiento.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->descripcion_ficha_mantenimiento.'</td>';
                     
                     
@@ -2280,7 +2287,155 @@ public.departamentos
         
     }
     
+    
+    public function cargaEmpleados(){
         
+        $empleados= new EmpleadosModel();
+        
+        $columnas="id_empleados, nombres_empleados";
+        $tabla = "empleados";
+        $where = "1=1";
+        $id="nombres_empleados";
+        $resulset = $empleados->getCondiciones($columnas,$tabla,$where,$id);
+        
+        if(!empty($resulset) && count($resulset)>0){
+            
+            echo json_encode(array('data'=>$resulset));
+            
+        }
+    }
+    
+       
+    
+    public function ReporteFichaActivos(){
+        session_start();
+        
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        
+        
+        $entidades = new EntidadesModel();
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        //NOTICE DATA
+        $datos_cabecera = array();
+        $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+        $datos_cabecera['FECHA'] = date('Y/m/d');
+        $datos_cabecera['HORA'] = date('h:i:s');
+        
+        
+        
+        
+        
+        
+        $activoFicha = new FichaActivosModel();
+        $id_activos_fijos =  (isset($_REQUEST['id_activos_fijos'])&& $_REQUEST['id_activos_fijos'] !=NULL)?$_REQUEST['id_activos_fijos']:'';
+        //$id_activos_fijos= $_POST["id_activos_fijos"];
+        
+        
+        
+        
+        $datos_reporte = array();
+        
+        $columnas = " act_activos_fijos.id_activos_fijos, 
+                      act_activos_fijos.nombre_activos_fijos, 
+                      act_activos_fijos.codigo_activos_fijos, 
+                      act_activos_fijos.detalle_activos_fijos";
+        
+        $tablas = "    public.act_activos_fijos";
+        $where= "  act_activos_fijos.id_activos_fijos='$id_activos_fijos'";
+        $id="act_activos_fijos.nombre_activos_fijos";
+        
+        $rsdatos = $activoFicha->getCondiciones($columnas, $tablas, $where, $id);
+        
+  
+        
+        $datos_reporte['NOMBRE_ACTIVO']=$rsdatos[0]->nombre_activos_fijos;
+        $datos_reporte['CODIGO_ACTIVO']=$rsdatos[0]->codigo_activos_fijos;
+        $datos_reporte['DETALLE_ACTIVO']=$rsdatos[0]->detalle_activos_fijos;
+        
+
+        
+        $columnas = " act_activos_fijos.id_activos_fijos, 
+                      act_activos_fijos.nombre_activos_fijos, 
+                      act_activos_fijos.codigo_activos_fijos, 
+                      act_ficha_mantenimiento.id_ficha_mantenimiento, 
+                      act_ficha_mantenimiento.fecha_inicio_ficha_mantenimiento, 
+                      act_ficha_mantenimiento.danio_ficha_mantenimiento, 
+                      act_ficha_mantenimiento.partes_reemplazado_ficha_mantenimiento, 
+                      act_ficha_mantenimiento.descripcion_ficha_mantenimiento, 
+                      empleados.id_empleados, 
+                      empleados.nombres_empleados";
+        
+        $tablas = "   public.act_activos_fijos, 
+                      public.act_ficha_mantenimiento, 
+                      public.empleados";
+        $where= "  act_ficha_mantenimiento.id_activos_fijos = act_activos_fijos.id_activos_fijos AND
+  empleados.id_empleados = act_ficha_mantenimiento.id_empleados AND act_activos_fijos.id_activos_fijos='$id_activos_fijos'";
+        $id="act_activos_fijos.id_activos_fijos";
+        
+        $ficha_detalle = $activoFicha->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $html='';
+        
+        
+        $html.='<table class="12" style="width:98px;" border=1>';
+        $html.='<tr>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Fecha de Adquisición</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Responsable</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Daño</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Partes</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Descripción</th>';
+     
+        
+        $html.='</tr>';
+        
+        
+        
+        
+        foreach ($ficha_detalle as $res)
+        {
+            
+            
+            $html.='<tr >';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="right">'.$res->fecha_inicio_ficha_mantenimiento.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="right">'.$res->nombres_empleados.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="right">'.$res->danio_ficha_mantenimiento.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="right">'.$res->partes_reemplazado_ficha_mantenimiento.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="right">'.$res->descripcion_ficha_mantenimiento.'</td>';
+            
+            
+            $html.='</td>';
+            $html.='</tr>';
+        }
+        
+        $html.='</table>';
+        
+        $datos_reporte['TABLA_MOVIMIENTOS']= $html;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        $this->verReporte("ReporteFichaActivos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte ));
+        
+        
+        
+    }
         
     
     

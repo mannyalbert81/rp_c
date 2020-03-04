@@ -7,6 +7,15 @@ $(document).ready( function (){
 		
 });
 
+
+
+
+
+
+
+
+
+
 $("#archivo_registro").change(function(e){
 	var archivo = $("#archivo_registro").val();
 
@@ -92,6 +101,13 @@ $( "#cedula_empleado1" ).autocomplete({
 	
 });
 
+
+
+
+
+
+
+
 function LimpiarCedula()
 {
 	$('#cedula_empleado1').val("");
@@ -106,13 +122,35 @@ function EditAdvertencias(cedula){
 	
 }
 
+
+
+
+
+
 function load_marcaciones(pagina){
 
-	var mes = new Date().getMonth();
+	//var mes = new Date().getMonth();
+	var d = new Date();
+	
+	
+	
+	
+	 var mes = d.getMonth();
+	 mes=1;
 	var year = new Date().getFullYear();
 	var dia = new Date().getDate();
+	var year_ini = year;
+	var year_fin = year;
+	var mes_ini = mes;
+	var mes_fin = mes;
+	
+	
 	var fi="";
 	var ff="";
+	
+	
+	
+	/*
 	if (dia<22) mes--;
 	if (mes<=9)	fi = year+"-0"+mes+"-22";
 	else fi = year+"-"+mes+"-22";
@@ -120,6 +158,35 @@ function load_marcaciones(pagina){
 	else mes++;
 	if (mes<=9) ff = year+"-0"+mes+"-21";
 	else ff = year+"-"+mes+"-21";
+    */
+	
+	
+	
+	
+		
+		mes_ini=mes_ini-1;
+		year_ini=year_ini;
+		if(mes_ini<1){
+			
+			mes_ini=12;
+			year_ini=year_ini-1;
+		}
+		
+		
+	
+	if(mes_ini<=9){
+		
+			fi = year_ini+"-0"+mes_ini+"-22";
+			ff = year_fin+"-0"+mes_fin+"-21";
+	}else{
+		
+		fi = year_ini+"-"+mes_ini+"-22";
+		ff = year_fin+"-"+mes_fin+"-21";
+	}
+    
+	
+	
+    
     var search=$("#search").val();
     var periodo=$("#periodo_marcaciones").val();
     var ncedula = $("#cedula_empleado1").val();
@@ -174,6 +241,12 @@ $.ajax({
 MostrarNotificacion();
 }
 
+
+
+
+
+
+
 function validarFecha(fecha)
 {
 	var elem =fecha.split("-");
@@ -181,6 +254,10 @@ function validarFecha(fecha)
 	if (elem[2]>ld)	return false;
 	else return true;
 }
+
+
+
+
 
 function InsertarRegistro()
 {
@@ -376,6 +453,14 @@ function ActualizarRegistros(arr, dcontrol, idofi)
 } 
 
 
+
+
+
+
+
+
+
+
 function SubirArchivo()
 {
 	
@@ -389,12 +474,24 @@ $("#mensaje_archivo").fadeOut("slow");
 	}
 	else
 		{
+		
+		
+		
+		
 	var archivo=document.getElementById('archivo_registro').files[0];
 	var fileName = archivo.name;
 	var extension = fileName.split(".");
 	var l=extension.length;
 	if (extension[l-1]=="xlsx")
 		{
+		
+		
+
+		
+		
+		
+		
+		
 		swal({
 			  title: "Actualización de registros",
 			  text: "Revisando datos del archivo: "+fileName,
@@ -423,11 +520,17 @@ $("#mensaje_archivo").fadeOut("slow");
 				&& arr[0].hasOwnProperty('Horario')&& arr[0].hasOwnProperty('Inicio')&& arr[0].hasOwnProperty('Salida')
 				&& arr[0].hasOwnProperty('Registro Entrada')&& arr[0].hasOwnProperty('Registro Salida'))
 		        {
+		        	
+		        	
+		        	// aqui verifica que todas las cedula no esten vacias
+		        	
+		        	
 		        	var campos = Object.keys(arr[0]);
 		        	var cedulas = [];
 		        	var cid=null;
 		        	arr.forEach(function (element)
 		        			{
+		        		
 		        		if (cid!=element["Cedula"] && element["Cedula"]!=" ")
 		        			{
 		        			cid=element["Cedula"];
@@ -435,6 +538,8 @@ $("#mensaje_archivo").fadeOut("slow");
 		        			}
 		        	}		
 		        	);
+		        	
+		        	// aqui verifica que las cedulas existan en la base de datos
 		        	$.ajax({
 		    			url:'index.php?controller=Marcaciones&action=GetCedulas',
 		    			type:'POST',
@@ -494,6 +599,8 @@ $("#mensaje_archivo").fadeOut("slow");
 		    					{
 		    					 if (vercid == respuesta.length)
 		    					 {
+		    						 
+		    						 // aqui verifico que sean fechas
 		    						 var patt = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
 				    					var fechaver = true;
 				    					var celdas="|";
@@ -503,12 +610,15 @@ $("#mensaje_archivo").fadeOut("slow");
 				    							
 				    						     if (!patt.test(element["Fecha"]))
 				    						    	 {
+				    						    	 // para por fechas que no son correctas
 				    						    	 fechaver=false;
 				    						    	 console.log(element["Fecha"]);
 				    						    	 celdas = celdas+" "+celind+" |";
 				    						    	 }
 				    						     celind++;
 				    		        			});
+				    					
+				    					// sino hay errores sigue
 				    					if (fechaver)
 				    						{
 					    						var controlmes = true;
@@ -519,12 +629,25 @@ $("#mensaje_archivo").fadeOut("slow");
 					    						var verifper = true;
 					    						arr.forEach(function (element)
 						    		        			{
+					    							
+					    							
+					    							
+					    							
 						    						     var meses = element["Fecha"].split("/");
+						    						     
+						    						     
+						    						    
+						    						     // creo array con los meses del excel
 						    						     if (meses[1]!=ctrmes && !mesarchivo.includes(meses[1]))
-						    		        			{
+						    		        			 {
 						    						    	 ctrmes=meses[1];
 						    						    	 mesarchivo.push(ctrmes);
-						    		        			}
+						    		        			 }
+						    						     
+
+						    						     // creo array con los años del excel
+						    						     
+							    						    
 						    						     if (meses[2]!=ctryear && !yeararchivo.includes(meses[2]))
 							    		        			{
 							    						    	 ctryear=meses[2];
@@ -532,7 +655,16 @@ $("#mensaje_archivo").fadeOut("slow");
 							    		        			}
 						    		        			});
 					    						
+					    						
+					    						
+					    						
+					    						
+					    						// verifico la cantidad de registros que tiene el array
+					    						
 					    						if (yeararchivo.length>1) yeararchivo=yeararchivo[1];
+					    						
+					    						
+					    						
 					    						var mes = new Date().getMonth();
 					    						mes++;
 					    						var year = new Date().getFullYear();
@@ -542,10 +674,16 @@ $("#mensaje_archivo").fadeOut("slow");
 					    						var anio_inicio=year;
 					    						var anio_fin=year;
 					    						console.log(dia_hoy+" hoy")
+					    						
+					    						
+					    						//hay que areglar esta validacion
 					    						if(dia_hoy<=21)
 													{
 													mes_inicio=mes-2;
-													mes_fin=mes-1;
+													//mes_fin=mes-1;
+													mes_fin=mes;
+													
+													
 													if (mes_inicio<1)
 														{
 														mes_inicio=12;
@@ -563,22 +701,36 @@ $("#mensaje_archivo").fadeOut("slow");
 														}
 													}
 					    							
-					    						if (mesarchivo.length <=2 && mesarchivo[0]==mes-1 && mesarchivo[1]==mes && yeararchivo==anio_fin)
+					    						
+					    						
+					    						
+					    						
+					    						/// aqui debe de entrar si todo esta bien
+					    						// aqui hay que areglar validaciones
+					    						
+					    						if (mesarchivo.length <=2  && yeararchivo==anio_fin )//&& mesarchivo[0] ==  mes-1 && mesarchivo[1] ==  mes)
 					    						{
 					    							
 						    						var ld = new Date(year,mes_inicio,0).getDate();
+						    						
+						    						
+						    						
+						    					
 						    						var diainicio = 22;
 						    						var diafinal = 21;
 						    						var dcontrol = [];
 						    						
 						    						for (var i=diainicio; i <= ld; i++)
 						    							{
-						    							var fechac = i+"/"+mes_inicio+"/"+year;
+						    							var fechac = i+"/"+mes_inicio+"/"+anio_inicio; 
+						    							
+						    							console.log("inicio =>" +fechac);
 						    							dcontrol.push(fechac);
 						    							}
 						    						for (var i=1; i <= diafinal; i++)
 					    							{
 					    							var fechac = i+"/"+mes_fin+"/"+year;
+					    							console.log("fin =>" +fechac);
 					    							dcontrol.push(fechac);
 					    							}
 						    						console.log("fechas de control  "+dcontrol);
@@ -815,8 +967,16 @@ $("#mensaje_archivo").fadeOut("slow");
 					    						}
 					    						else
 					    							{
+					    							
+					    							
+					    							// aqui seguimos con la validacion
+					    							
+					    							
 					    							if (mesarchivo.length > 2)
 					    								{
+					    								
+					    								// veridico que los meses en el excel sean solo 2
+					    								
 					    								swal( {
 									    					  title: "Error",
 									    					  text: "El perodio de revision contiene mas de dos meses",
@@ -827,6 +987,8 @@ $("#mensaje_archivo").fadeOut("slow");
 					    								}
 					    							else
 					    								{
+					    								
+					    								
 					    							let meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 					    							swal( {
 								    					  title: "Error",
@@ -836,6 +998,10 @@ $("#mensaje_archivo").fadeOut("slow");
 													     });
 					    							$("#archivo_registro").val("");
 					    							$("#nombre_archivo").val("");
+					    							
+					    							
+					    							
+					    							
 					    								}
 					    							}
 				    						
@@ -996,7 +1162,7 @@ function ReporteNomina()
 	if(dia_hoy<=21)
 		{
 		mes_inicio=mes-2;
-		mes_fin=mes-1;
+		mes_fin=mes;
 		if (mes_inicio<1)
 			{
 			mes_inicio=12;
@@ -1016,7 +1182,7 @@ function ReporteNomina()
 
  var diainicio = 22;
  var diafinal = 21;
- var fechai = diainicio+"/"+mes_inicio+"/"+year;
+ var fechai = diainicio+"/"+mes_inicio+"/"+anio_inicio;
  var fechaf = diafinal+"/"+mes_fin+"/"+year;
  $.ajax({
 	    url: 'index.php?controller=Marcaciones&action=GetReporte',
@@ -1050,8 +1216,19 @@ function ReporteNomina()
 
 function MostrarNotificacion()
 {
-	var mes = new Date().getMonth();
-	mes++;
+	
+	
+	
+	var d = new Date();
+	 var mes = d.getMonth();
+     mes =1;
+	
+	
+	//var mes = new Date().getMonth();
+	//mes++;
+	
+	
+	
 	var year = new Date().getFullYear();
 	var dia_hoy= new Date().getDate();
 	var mes_inicio=0;
@@ -1059,10 +1236,12 @@ function MostrarNotificacion()
 	var anio_inicio=year;
 	var anio_fin=year;
 	console.log(dia_hoy+" hoy")
+	
+	
 	if(dia_hoy<=21)
 		{
 		mes_inicio=mes-2;
-		mes_fin=mes-1;
+		mes_fin=mes;
 		if (mes_inicio<1)
 			{
 			mes_inicio=12;
@@ -1080,12 +1259,17 @@ function MostrarNotificacion()
 			}
 		}
  
+	
+	
+	
+	
  var diainicio = 22;
  var diafinal = 21;
- var fechai = diainicio+"/"+mes_inicio+"/"+year;
+ var fechai = diainicio+"/"+mes_inicio+"/"+anio_inicio;
  var fechaf = diafinal+"/"+mes_fin+"/"+year;
  
- console.log(fechai+"<=>"+fechaf);
+ console.log(fechai+"<<=>>"+fechaf);
+ 
  $.ajax({
 	    url: 'index.php?controller=Marcaciones&action=MostrarNotificacion',
 	    type: 'POST',
@@ -1095,7 +1279,10 @@ function MostrarNotificacion()
 	    },
 	})
 	.done(function(x) {
-				if (!(x.includes("Warning")) && !(x.includes("Notice")))
+		
+	
+		
+		if (!(x.includes("Warning")) && !(x.includes("Notice")))
 			{
 			$("#load_boton_notificaciones").html(x);
 			}
@@ -1130,7 +1317,7 @@ function GenerarReporte()
 	if(dia_hoy<=21)
 		{
 		mes_inicio=mes-2;
-		mes_fin=mes-1;
+		mes_fin=mes;
 		if (mes_inicio<1)
 			{
 			mes_inicio=12;
@@ -1151,7 +1338,7 @@ function GenerarReporte()
 	var diainicio = 22;
 	 var diafinal = 21;
 	 
-	 var fechai = diainicio+"/"+mes_inicio+"/"+year;
+	 var fechai = diainicio+"/"+mes_inicio+"/"+anio_inicio;
 	 
 	 var fechaf = diafinal+"/"+mes_fin+"/"+year;
 	 

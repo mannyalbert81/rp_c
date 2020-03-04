@@ -153,7 +153,7 @@
     		   
     		   <div class="col-xs-6 col-md-3 col-lg-3 ">
     		    <div class="form-group">
-                      <label for="fecha_activos_fijos" class="control-label">Fecha Compra:</label>
+                      <label for="fecha_activos_fijos" class="control-label">Fecha de Adquisición:</label>
                       <input type="date" class="form-control" id="fecha_activos_fijos" name="fecha_activos_fijos" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
 			          <div id="mensaje_fecha_activos_fijos" class="errores"></div>
                 </div>
@@ -184,7 +184,7 @@
     		    
     		    <div class="col-xs-6 col-md-3 col-lg-3 ">
     		    <div class="form-group">
-                      <label for="valor_activos_fijos" class="control-label">Valor Activo:</label>
+                      <label for="valor_activos_fijos" class="control-label">Valor de Adquisición:</label>
                       <input type="text" class="form-control cantidades1" id="valor_activos_fijos" name="valor_activos_fijos" value='0.00'
                       data-inputmask="'alias': 'numeric', 'autoGroup': true, 'digits': 2, 'digitsOptional': false">
                       <div id="mensaje_valor_activos_fijos" class="errores"></div>

@@ -110,68 +110,138 @@ class ImpuestosController extends ControladorBase{
 		$id_rol= $_SESSION['id_rol'];
 		$resultPer = $impuestos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 		
+		$resp = null;
+		
 		if(empty($resultPer)){
 		    
 		    echo 'Usuario no tiene permisos Agregar Impuestos';
 		    return;
 		}
 		
-		$_id_plan_cuentas = (isset($_POST["id_plan_cuentas"])) ? $_POST["id_plan_cuentas"] : 0;
-		$_nombre_impuestos = (isset($_POST["nombre_impuestos"])) ? $_POST["nombre_impuestos"] : "";
-		$_porcentaje_impuestos = (isset($_POST["porcentaje_impuestos"])) ? $_POST["porcentaje_impuestos"] : 0 ;
-		$_id_impuestos = (isset($_POST["id_impuestos"])) ? $_POST["id_impuestos"] : 0 ;
-		$_tipo_impuestos = (isset($_POST["tipo_impuestos"])) ? $_POST["tipo_impuestos"] : 0 ;
+		$buffer = null; 
 		
-		$funcion = "tes_ins_impuestos";
-		$respuesta = 0 ;
-		$mensaje = ""; 	
-		
-		if($_id_impuestos == 0){
+		try {
 		    
-		    $parametros = " '$_id_plan_cuentas','$_nombre_impuestos', '$_porcentaje_impuestos','$_id_impuestos','$_tipo_impuestos'";
-		    $impuestos->setFuncion($funcion);
-		    $impuestos->setParametros($parametros);
-		    $resultado = $impuestos->llamafuncion();
+		    $_id_impuestos            = $_POST["id_impuestos"] ;
+		    $_fuente_impuestos        = $_POST["fuente_impuestos"] ;
+		    $_id_plan_cuentas         = $_POST["id_plan_cuentas"];
+		    $_nombre_impuestos        = $_POST["nombre_impuestos"];
+		    $_descripcion_impuestos   = $_POST["descripcion_impuestos"];
+		    $_porcentaje_impuestos    = $_POST["porcentaje_impuestos"];
+		    $_tipo_impuestos          = $_POST["tipo_impuestos"];
+		    $_codigo_impuestos        = $_POST["codigo_impuestos"];
+		    $_codretencion_impuestos  = $_POST["codretencion_impuestos"];
+		    $_codigo_impuestos_texto  = $_POST["codigo_texto_impuestos"];
+		    		    
 		    
-		   
-		    if(!empty($resultado) && count($resultado) > 0 ){
+		    $error_php = error_get_last();
+		    if( !empty($error_php) ){
+		        $resp['icon'] = "warning";
+		        throw new Exception("Variables No recibidas");
+		    }
+		    
+		    $_operacion_impuestos = "-";
+		    $_type_impuestos = "";
+		    
+		    //$mapTipoImpuesto   = array( 'iva' =>'iva', 'renta' => 'rent', 'isd' => 'isd');
+		    //$_tipoImpuesto     = "";
+		    //$_tipoImpuesto = (array_key_exists($res->tipo_impuestos, $mapTipoImpuesto) ) ?  $mapTipoImpuesto["$res->tipo_impuestos"] : "";
+		    
+		    /** validacion de plan de cuentas **/
+		    $_columna1    = " 1";
+		    $_tablas1     = " tes_impuestos";
+		    $_where1      = " id_plan_cuentas = $_id_plan_cuentas ";
+		    $rsConsulta1  = $impuestos->getCondicionesmenosid($_columna1, $_tablas1, $_where1);
+		    
+		    if( !empty($rsConsulta1) ){
+		        $resp['icon'] = "info";
+		        throw new Exception("Cuenta ya se encuentra Relacionada");
+		    }
+		    
+		    
+		    
+		    if( $_fuente_impuestos == "compra" ){
 		        
-		        foreach ( $resultado[0] as $k => $v){
+		        if( $_tipo_impuestos == "retencion" ){
 		            
-		            $respuesta = $v;
+		            $_operacion_impuestos = "-";
+		            $_porcentaje_impuestos = (-1)*$_porcentaje_impuestos;
+		            
+		            if( strtolower($_codigo_impuestos_texto)  == "iva" ){
+		                $_type_impuestos = "retiva";
+		            }elseif (strtolower($_codigo_impuestos_texto)  == "renta" ){
+		                $_type_impuestos = "ret";
+		            }elseif ( strtolower($_codigo_impuestos_texto)  == "isd" ){
+		                $_type_impuestos = "isd";
+		            }
+		            
+		        }elseif( $_tipo_impuestos == "iva" ){
+		            
+		            $_operacion_impuestos = "+";
+		            $_porcentaje_impuestos = (+1)*$_porcentaje_impuestos;
+		            $_type_impuestos = "iva";
+		            $_codigo_impuestos  = "";
+		            $_codretencion_impuestos = "";		            
 		        }
-		        
-		        $mensaje = "Impuesto Ingresado Correctamente";
 		        
 		    }
 		    
-		}elseif ($_id_impuestos > 0){
+		    $codSysOld = ""; //es una variable para llenar todos los parametros de la funcion si los datos son del sistema nuevo van vacios .
 		    
-		    $parametros = " '$_id_plan_cuentas','$_nombre_impuestos', '$_porcentaje_impuestos','$_id_impuestos','$_tipo_impuestos'";
-		    $impuestos->setFuncion($funcion);
-		    $impuestos->setParametros($parametros);
-		    $resultado = $impuestos->llamafuncion();
+		  		    
+		    $funcion = "tes_ins_impuestos";
+		    $mensaje = "";
 		    
-		    if(!empty($resultado) && count($resultado) > 0 ){
+		    $parametros = " $_id_impuestos, '$_id_plan_cuentas','$_nombre_impuestos', '$_porcentaje_impuestos', '$_type_impuestos',";
+		    $parametros .= " '$_codigo_impuestos', '$_operacion_impuestos', '$_fuente_impuestos', '$_codretencion_impuestos', '$_descripcion_impuestos', '$codSysOld' ";
+		    
+		    
+		    if($_id_impuestos == 0){		        
 		        
-		        foreach ( $resultado[0] as $k => $v){
+		        $queryInsertImpuestos = $impuestos->getconsultaPG($funcion, $parametros);
+		        $resultado = $impuestos->llamarconsultaPG($queryInsertImpuestos);
+		        
+		        if( $resultado[0] != null ){
+		            $resp['icon'] = "success";
+		            $resp['mensaje'] = " Impuesto Registrado Correctamente";
+		        }else
+		            $mensaje = "Error al Ingresar Impuesto";
 		            
-		            $respuesta = $v;
-		        }
 		        
-		        $mensaje = "Impuesto Actualizado Correctamente";
+		    }elseif ($_id_impuestos > 0){
 		        
-		      }
-		}
+		        $queryInsertImpuestos = $impuestos->getconsultaPG($funcion, $parametros);
+		        $resultado = $impuestos->llamarconsultaPG($queryInsertImpuestos);
+		        
+		        if( $resultado[0] == 1 ){
+		            $resp['icon'] = "success";
+		            $resp['mensaje'] = " Impuesto Actualizado Correctamente";
+		        }else 
+		            $mensaje = "Error al actualizar Impuesto";
+		        
+		        
+		    }
 		    
-	    if($respuesta > 0 ){
-	        
-	        echo json_encode(array('respuesta'=>$respuesta,'mensaje'=>$mensaje));
-	        exit();
-	    }
-	    
-	    echo "Error al Ingresar Tipo Activo";
-	    exit();
+		    $error_pg = pg_last_error();
+		    
+		    if(!empty($error_pg)){
+		        $resp['icon'] = "warning";
+		        throw new Exception($mensaje);
+		    }		    
+		    
+		} catch (Exception $e) {
+		    
+		    $buffer =  error_get_last();
+		    $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+		    $resp['mensaje'] = $e->getMessage();
+		    $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+		    $resp['estatus'] = "ERROR";
+		}
+		
+		error_clear_last();
+		if (ob_get_contents()) ob_end_clean();
+				
+		echo json_encode($resp);
 		
 	}
 	
@@ -266,12 +336,11 @@ class ImpuestosController extends ControladorBase{
 	        
 	        $id_impuestos = (int)$_POST["id_impuestos"];
 	        
-	        $query = " SELECT imp.id_impuestos, pc.codigo_plan_cuentas, pc.id_plan_cuentas
-                        ,imp.nombre_impuestos, imp.porcentaje_impuestos, imp.tipo_impuestos
-        	        FROM tes_impuestos imp
-        	        INNER JOIN plan_cuentas pc
-        	        ON imp.id_plan_cuentas = pc.id_plan_cuentas
-        	        WHERE 1=1 AND imp.id_impuestos = '$id_impuestos' ";
+	        $query = " SELECT imp.id_impuestos, pc.codigo_plan_cuentas, pc.id_plan_cuentas, imp.codigo_impuestos, imp.fuente_impuestos,";
+            $query .= " imp.nombre_impuestos, imp.porcentaje_impuestos, imp.tipo_impuestos, imp.codretencion_impuestos, imp.descripcion_impuestos";
+            $query .= " FROM tes_impuestos imp ";
+            $query .= " INNER JOIN plan_cuentas pc ON imp.id_plan_cuentas = pc.id_plan_cuentas ";
+            $query .= " WHERE 1=1 AND imp.id_impuestos = '$id_impuestos' ";
 	      
 	        $resultado  = $impuestos->enviaquery($query);
 	        
@@ -380,7 +449,7 @@ class ImpuestosController extends ControladorBase{
 	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	        
 	        $resultSet = $impuestos->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
-	        $total_pages = ceil($cantidadResult/$per_page);	        
+	        $total_pages = ceil($cantidadResult/$per_page);	  
 	        
 	        if($cantidadResult > 0)
 	        {
@@ -413,14 +482,20 @@ class ImpuestosController extends ControladorBase{
 	            
 	            $i=0;
 	            
+	            // para definir el tipo de impuesto	            
+	            $mapTipoImpuesto   = array( 'retiva' =>'RETENCION IVA', 'ret' => 'RETENCION FUENTE', 'iva' => 'IVA');
+	            $_tipoImpuesto     = "";	 
+	            
 	            foreach ($resultSet as $res)
 	            {
+	                $_tipoImpuesto = (array_key_exists($res->tipo_impuestos, $mapTipoImpuesto) ) ?  $mapTipoImpuesto["$res->tipo_impuestos"] : "N/D";
+	                
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 14px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->nombre_plan_cuentas.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->nombre_impuestos.'</td>';
-	                $html.='<td style="font-size: 14px;">'.$res->tipo_impuestos.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$_tipoImpuesto.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->creado.'</td>';
 	               
 	                /*comentario up */
@@ -484,6 +559,19 @@ class ImpuestosController extends ControladorBase{
 	    }
 	}
 	
+	
+	public function verArray(){
+	    
+	    
+	    $arr1 = array("valor1"=>23,"valor2"=>24);
+	    $arr2 = array("valor1"=>12,"valor2"=>21);
+	    $array1 = array("iva"=>$arr1,"rete"=>$arr2);
+	    $array2 = array("valor1"=>1,"valor2"=>2);
+	    $array3 = array("valor1"=>1,"valor2"=>2);
+	    $arrayTot = array("arr1"=>$array1,"arr2"=>$array2,"arr3"=>$array3);
+	    
+	    echo json_encode($arrayTot);
+	}
 	
 }
 ?>

@@ -81,7 +81,7 @@ table.3 {
 
 table.4 {
   
-  width: 255px;
+  width: 300px;
    font-size:12px;
    text-align: left;
 }
@@ -115,3 +115,12 @@ table tr.grupocuenta td  {
 td .1{
 	 width: 300px;
 	}
+	td .10{
+	 width: 800px;
+	}
+table.10 {
+  
+  width: 100%;
+   font-size:12px;
+   text-align: left;
+}

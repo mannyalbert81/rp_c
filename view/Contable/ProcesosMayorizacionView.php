@@ -58,10 +58,9 @@
         <div class="box-header with-border">
           <h3 class="box-title">Mayorizacion Mensual</h3>          
         </div>
-        
            
          <div class="box-body">
-         
+                  
          <form id="form_movimientos_contable" action="<?php echo $helper->url("ProcesosMayorizacion","index"); ?>" method="post" enctype="multipart/form-data" class="col-lg-12">
           
           <div class="row">
@@ -95,6 +94,7 @@
 	         		<input type="number" id="anio_procesos" name="anio_procesos" min="2000" max="<?php echo date('Y'); ?>" value="<?php echo date('Y'); ?>" class="form-control">
                     </div>
 	         </div>
+	         
 	         <div class="col-md-3 col-lg-3 col-xs-12">
 	         	<div class="form-group">
 	         		<label for="mes_procesos" class="control-label">MES :</label>
@@ -134,10 +134,10 @@
 	      		</div>
 	      	</div>
 	      </div>
-            
+            --> 
 		 </form>
 	 </div>
-	    -->  
+	     
 	   
         
        </div>

@@ -227,7 +227,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/GestionDocumental/js/GestionDocumental.js?0.70"></script> 
+   <script src="view/GestionDocumental/js/GestionDocumental.js?0.71"></script> 
        
 
 

@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	
 	init();
+	loadChequera();
 	
 })
 
@@ -39,6 +40,66 @@ function init(){
 	
 	
 }
+
+/***
+ * @desc funcion para traer la chequera de la entidad
+ * @param none
+ * @retuns void
+ * @ajax si 
+ */
+function loadChequera(){	
+	
+	var $ddlChequera = $("#id_bancos");
+	params = {};
+	$ddlChequera.empty();
+	$.ajax({
+		url:"index.php?controller=GenerarCheque&action=CargaChequera",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.data != undefined && x.data != null ){
+			var rsChequera = x.data;
+			$ddlChequera.append('<option value="0">--Seleccione--</option>' );
+			$.each(rsChequera,function(index, value){
+				//console.log('index -->'+index+'   Value ---> '+value.id_bancos);
+				$ddlChequera.append( '<option value="'+value.id_bancos+'">'+value.nombre_bancos+'</option>' );
+			})
+		}
+		console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+}
+
+/***
+ * @desc funcion para traer la chequera de la entidad
+ * @param none
+ * @retuns void
+ * @ajax si 
+ */
+function validaChequera(){	
+	
+	var $ddlChequera = $("#id_bancos");
+	params = {id_bancos : $ddlChequera.val() };
+	$.ajax({
+		url:"index.php?controller=GenerarCheque&action=CargaNumChequera",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.numchequera != undefined && x.numchequera != null ){			
+			$("#numero_cheque").val( x.numchequera );
+		}else{
+			$("#numero_cheque").val( x.numchequera );
+		}			
+		console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+		$("#numero_cheque").val( "" );
+	})
+}
+
 
 /*******************************************************************************
  * funcion para poner mayusculas

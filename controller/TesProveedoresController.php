@@ -204,6 +204,7 @@ class TesProveedoresController extends ControladorBase{
 	        $_email_proveedores            = $_POST["email_proveedores"];
 	        $_fecha_nacimiento_proveedores = $_POST["fecha_nacimiento_proveedores"];
 	        $_id_tipo_proveedores          = $_POST["id_tipo_proveedores"];
+	        $_forma_pago                   = $_POST["forma_pago"];
 	        $_id_bancos                    = $_POST["id_bancos"];
 	        $_id_tipo_cuentas              = $_POST["id_tipo_cuentas"];
 	        $_numero_cuenta_proveedores    = $_POST["numero_cuenta_proveedores"];
@@ -212,8 +213,15 @@ class TesProveedoresController extends ControladorBase{
 	       	
 	        $error = error_get_last();
 	        
-	        if(!empty($error))
+	        if(!empty($error)){
 	            throw new Exception(" Variables no definidas ". $error['message'] );
+	        }
+	        
+            if( $_forma_pago == "cheque" ){
+                $_id_bancos = 'null';
+                $_id_tipo_cuentas = 'null';
+                $_numero_cuenta_proveedores = '';
+            }
 	        
             if($_id_proveedores > 0){
                 
@@ -224,8 +232,8 @@ class TesProveedoresController extends ControladorBase{
                               telefono_proveedores = '$_telefono_proveedores',
                               email_proveedores = '$_email_proveedores',
                               id_tipo_proveedores = '$_id_tipo_proveedores',
-                              id_bancos = '$_id_bancos',
-                              id_tipo_cuentas = '$_id_tipo_cuentas',
+                              id_bancos = $_id_bancos,
+                              id_tipo_cuentas = $_id_tipo_cuentas,
                               razon_social_proveedores = '$_razon_social',
                               tipo_identificacion_proveedores = '$_tipo_identificacion',
                               numero_cuenta_proveedores = '$_numero_cuenta_proveedores'";
@@ -246,7 +254,7 @@ class TesProveedoresController extends ControladorBase{
                 $funcion = "ins_proveedores2";
                 $parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores',
                                 '$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores',
-                                '$_id_tipo_proveedores', '$_id_bancos', '$_id_tipo_cuentas', '$_numero_cuenta_proveedores',
+                                '$_id_tipo_proveedores', $_id_bancos, $_id_tipo_cuentas, '$_numero_cuenta_proveedores',
                                 '$_tipo_identificacion','$_razon_social'";
                 $proveedores->setFuncion($funcion);
                 $proveedores->setParametros($parametros);

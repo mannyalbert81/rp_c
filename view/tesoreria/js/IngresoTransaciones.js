@@ -601,7 +601,7 @@ function IngresarTransaccion(){
 				//swal({title:"TRANSACCION OK",text:stext,icon:"success"}).then( isValidate => { if(isValidate){ setTimeout(function(){location.reload();},2000); } } );
 				swal({title:"TRANSACCION OK",text:stext,icon:"success",closeOnClickOutside: false}).then( isValidate => { if(isValidate){ setTimeout(function(){location.reload();},8000);  } } );				
 				let loteUrl = $("#id_lote").val();
-    			let urlReporte = "index.php?controller=CuentasPagar&action=Reporte_Cuentas_Por_Pagar&id_lote="+loteUrl;
+    			let urlReporte = "index.php?controller=TesCuentasPagar&action=RptCuentasPagar&id_lote="+loteUrl;
     			window.open(urlReporte,"_blank"); 
 								
 			}else{

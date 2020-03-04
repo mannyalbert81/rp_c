@@ -128,7 +128,7 @@
 		    <div class="col-xs-12 col-md-3 col-md-3 ">
     		    <div class="form-group">
                   <label for="contactos_proveedores" class="control-label">Contactos Proveedores</label>
-                  <input type="text" class="form-control" id="contactos_proveedores" name="contactos_proveedores" value=""  placeholder="Contactos Proveedores">
+                  <input type="text" class="form-control" id="contactos_proveedores" name="contactos_proveedores" value=""  placeholder="">
                 </div>
 		    </div>
 		    
@@ -142,25 +142,46 @@
 		    <div class="col-xs-12 col-md-3 col-md-3 ">
     		    <div class="form-group">
                   <label for="telefono_proveedores" class="control-label">Teléfono Proveedores</label>
-                  <input type="number" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value=""  placeholder="Teléfono Proveedores" onKeyPress="return numeros(event)">
+                  <input type="number" class="form-control" id="telefono_proveedores" minlength="7" maxlength="7" name="telefono_proveedores" value=""  placeholder="" onKeyPress="return numeros(event)">
                 </div>
 		    </div>
     		    
 		</div>
 			
 		<div class="row">
+			
+			<div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="form-group">
+                  <label for="celular_proveedores" class="control-label">Celular Proveedores</label>
+                  <input type="number" class="form-control" id="celular_proveedores" minlength="10" maxlength="10" value=""  placeholder="" ">
+                </div>
+		    </div>
     			
 		    <div class="col-xs-12 col-md-3 col-md-3 ">
     		    <div class="form-group">
                   <label for="email_proveedores" class="control-label">Email Proveedores</label>
-                  <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="Email Proveedores" >                                       
+                  <input type="text" class="form-control" id="email_proveedores" name="email_proveedores" value=""  placeholder="" >                                       
                 </div>
 		    </div>
+		    
+		    <div class="col-xs-12 col-md-3 col-md-3 ">
+    		    <div class="form-group">
+                  <label for="forma_pago" class="control-label">Forma Pago:</label>
+                  <select class="form-control" id="forma_pago" name="forma_pago" onchange="validaFormaPago()" >
+                    <option value="0">--SELECCIONE--</option>
+                  	<option value="cheque">CHEQUE</option>
+                  	<option value="transferencia">TRANSFERENCIA</option>
+                  </select>                                       
+                </div>
+		    </div>
+		    
+		</div>
+    	<div class="row">
     		    
 		    <div class="col-xs-12 col-md-3 col-md-3 ">
     		    <div class="form-group">
                   <label for="id_bancos" class="control-label">Banco:</label>
-                  <select class="form-control" id="id_bancos" name="id_bancos" >
+                  <select class="form-control" id="id_bancos" name="id_bancos" disabled >
                   	<option value="0">--SELECCIONE--</option>
                   </select>
                    <div id="mensaje_bancos" class="errores"></div>
@@ -171,7 +192,7 @@
 		    <div class="col-xs-12 col-md-3 col-md-3 ">
     		    <div class="form-group">
                   <label for="id_tipo_cuenta" class="control-label">Tipo Cuenta:</label>
-                  <select class="form-control" id="id_tipo_cuentas" name="id_tipo_cuentas" >
+                  <select class="form-control" id="id_tipo_cuentas" name="id_tipo_cuentas" disabled>
                   	<option value="0">--SELECCIONE--</option>
                   </select>
                   <div id="mensaje_tipo_cuenta" class="errores"></div>
@@ -182,7 +203,7 @@
 		    <div class="col-xs-12 col-md-3 col-md-3 ">
     		    <div class="form-group">
                   <label for="numero_cuenta_proveedores" class="control-label">Numero Cuenta:</label>
-                  <input type="text" class="form-control" id="numero_cuenta_proveedores" name="numero_cuenta_proveedores" value=""  placeholder="Numero Cuenta" >
+                  <input type="text" class="form-control" id="numero_cuenta_proveedores" name="numero_cuenta_proveedores" value=""  placeholder="Numero Cuenta" disabled >
                   <div id="mensaje_numero_cuenta" class="errores"></div>
                                        
                 </div>
@@ -257,7 +278,7 @@
 	<script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script src="view/tesoreria/js/TesProveedores.js?0.01" ></script>
+	<script src="view/tesoreria/js/TesProveedores.js?0.03" ></script>
   </body>
 </html>   
 

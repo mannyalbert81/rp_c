@@ -183,6 +183,23 @@ function ListaProveedores(pagina=1){
 	})
 }
 
+/***
+ * @desc funcion para validar la forma de pago
+ * @returns void
+ */
+function validaFormaPago(){
+	$forma_pago = $("#forma_pago");
+	if( $forma_pago.val()=="transferencia" ){
+		$("#id_bancos").attr('disabled',false);
+		$("#id_tipo_cuentas").attr('disabled',false);
+		$("#numero_cuenta_proveedores").attr('disabled',false);
+	}else{
+		$("#id_bancos").attr('disabled',true);
+		$("#id_tipo_cuentas").attr('disabled',true);
+		$("#numero_cuenta_proveedores").attr('disabled',true);
+	}
+}
+
 /** para funcion de busqueda en txt de busqueda */
 $("#txtbuscar").on("keyup",function(){
 	ListaProveedores();	
@@ -230,10 +247,10 @@ $("#GuardarProveedores").on("click",function(event){
 	
 	//para contacto proveedor
 	let $contactos_proveedores = $("#contactos_proveedores");    	
-	if( $contactos_proveedores.val().length == 0 || $contactos_proveedores.val() == '' ){
+	/*if( $contactos_proveedores.val().length == 0 || $contactos_proveedores.val() == '' ){
 		$contactos_proveedores.notify("Ingrese un Contacto",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
-	}
+	}*/
 	
 	//para direccion proveedor
 	let $direccion_proveedores = $("#direccion_proveedores");    	
@@ -242,44 +259,61 @@ $("#GuardarProveedores").on("click",function(event){
 		return false;
 	}
 	
-	//para telefono proveedor
-	let $telefono_proveedores = $("#telefono_proveedores");    	
-	if( $telefono_proveedores.val().length == 0 || $telefono_proveedores.val() == '' ){
+	//para telefono y celular proveedor
+	let $telefono_proveedores = $("#telefono_proveedores");   
+	let $celular_proveedores = $("#celular_proveedores");   
+	if( ( $telefono_proveedores.val().length == 0 || $telefono_proveedores.val() == '' ) && ( $celular_proveedores.val().length == 0 || $celular_proveedores.val() == '' )  ){
 		$telefono_proveedores.notify("Ingrese telefono",{ position:"buttom left", autoHideDelay: 2000});
+		$celular_proveedores.notify("Ingrese Celular",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	
 	//para email proveedor
 	let $email_proveedores = $("#email_proveedores");    	
-	if( $email_proveedores.val().length == 0 || $email_proveedores.val() == '' ){
+	/*if( $email_proveedores.val().length == 0 || $email_proveedores.val() == '' ){
 		$email_proveedores.notify("Ingrese email",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
-	} 
-	if(!regex.test($email_proveedores.val().trim())){
-		$email_proveedores.notify("Ingrese email valido",{ position:"buttom left", autoHideDelay: 2000});
-		return false;
-	}	
+	} */
+	
+	if( $email_proveedores.val().length != 0 || $email_proveedores.val() != '' ){
 		
-	//para bancos
-	let $idBancos= $("#id_bancos");    	
-	if( $idBancos.val() == 0 || $idBancos.val() == null || $idBancos.val() == "" ){
-		$idBancos.notify("Seleccione Banco",{ position:"buttom left", autoHideDelay: 2000});
-		return false;
-	}	
-	
-	//para tipo cuenta
-	let $tipoCuenta= $("#id_tipo_cuentas");    	
-	if( $tipoCuenta.val() == 0 ){
-		$tipoCuenta.notify("Seleccione Tipo Cuentas",{ position:"buttom left", autoHideDelay: 2000});
-		return false;
+		if(!regex.test($email_proveedores.val().trim())){
+			$email_proveedores.notify("Ingrese email valido",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+		}
 	}
 	
-	//para numero cuenta
-	let $numeroCuenta = $("#numero_cuenta_proveedores");    	
-	if( $numeroCuenta.val().length == 0 || $numeroCuenta.val() == '' ){
-		$numeroCuenta.notify("Ingrese numero cuenta Proveedores",{ position:"buttom left", autoHideDelay: 2000});
+	//para datos bancarios del proveedor
+	$forma_pago = $("#forma_pago");
+	let $idBancos= $("#id_bancos");
+	let $tipoCuenta= $("#id_tipo_cuentas"); 
+	let $numeroCuenta = $("#numero_cuenta_proveedores"); 
+	if( $forma_pago.val() == "transferencia"){
+		
+		//para bancos   	
+		if( $idBancos.val() == 0 || $idBancos.val() == null || $idBancos.val() == "" ){
+			$idBancos.notify("Seleccione Banco",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+		}	
+		
+		//para tipo cuenta		   	
+		if( $tipoCuenta.val() == 0 ){
+			$tipoCuenta.notify("Seleccione Tipo Cuentas",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+		}
+		
+		//para numero cuenta		   	
+		if( $numeroCuenta.val().length == 0 || $numeroCuenta.val() == '' ){
+			$numeroCuenta.notify("Ingrese numero cuenta Proveedores",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+		}
+		
+	}else if( $forma_pago.val() == "0"){
+		$forma_pago.notify("Seleccione Forma Pago",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
+		
+	
 	
 	//para proveedores id
 	let $idProveedores = $("#id_proveedores"); 
@@ -298,7 +332,8 @@ $("#GuardarProveedores").on("click",function(event){
 			id_tipo_cuentas: $tipoCuenta.val(),
 			numero_cuenta_proveedores: $numeroCuenta.val(),
 			tipo_identificacion : $tipoIdentificacion.val(),
-			razon_social_proveedores : $razon_social.val()
+			razon_social_proveedores : $razon_social.val(),
+			forma_pago: $forma_pago.val()
 	}
 	
 	$.ajax({
@@ -355,6 +390,8 @@ function limpiarCampos(){
 	$("#id_tipo_cuentas").val(0); 
 	$("#razon_social_proveedores").val("");
 	$('#tipo_identificacion_proveedores option').eq(0).prop('selected', true);
+	$("#forma_pago").val("0");
+	$("#celular_proveedores").val("");
 	
 }
 
@@ -408,6 +445,15 @@ function limpiarCampos(){
 				$("#id_tipo_cuentas").val( rsProveedor.id_tipo_cuentas ); 
 				$("#razon_social_proveedores").val( rsProveedor.razon_social_proveedores );
 				$('#tipo_identificacion_proveedores').val( rsProveedor.tipo_identificacion_proveedores );
+				
+				var nbancos = $('#id_bancos').val(), ntipocuenta = $("#id_tipo_cuentas").val(), ncuenta = $("#numero_cuenta_proveedores").val();
+				
+				if( nbancos != null || ntipocuenta != null ||  ncuenta != "" ){	
+					$("#forma_pago").val("transferencia");					
+				}else{
+					$("#forma_pago").val("0");					
+				}
+				validaFormaPago();
 				
 				swal({
 					title:"PROVEEDORES",

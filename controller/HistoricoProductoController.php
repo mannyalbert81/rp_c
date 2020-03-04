@@ -95,41 +95,31 @@ class HistoricoProductoController extends ControladorBase{
                     /** se aumenta la busqueda por cedula **/
                   
                     
-                    $columnas = " productos.id_productos,
-                      grupos.id_grupos,
-                      grupos.nombre_grupos,
-                      unidad_medida.id_unidad_medida,
-                      unidad_medida.nombre_unidad_medida,
-                      productos.codigo_productos,
-                      productos.marca_productos,
-                      productos.nombre_productos,
-                      productos.descripcion_productos,
-                      productos.ult_precio_productos,
-                      productos.creado,
-                      productos.modificado,
-                      saldo_productos.saldos_f_saldo_productos,
-                      saldo_productos.precio_costo_saldo_productos,
-                      saldo_productos.entradas_f_saldo_productos ,
-                      saldo_productos.salidas_f_saldo_productos";
+                    $columnas = "  productos.id_productos, 
+                                  productos.codigo_productos, 
+                                  productos.marca_productos, 
+                                  productos.nombre_productos, 
+                                  movimientos_inv_detalle.cantidad_movimientos_inv_detalle, 
+                                  movimientos_inv_cabeza.razon_movimientos_inv_cabeza, 
+                                  movimientos_inv_cabeza.fecha_movimientos_inv_cabeza";
                     
                     
                     
-                    $tablas=" public.productos,
-                      public.grupos,
-                      public.unidad_medida,
-                     public.saldo_productos";
+                    $tablas=" public.productos, 
+                              public.movimientos_inv_cabeza, 
+                              public.movimientos_inv_detalle";
                     
-                    $where="productos.id_unidad_medida = unidad_medida.id_unidad_medida AND
-                      grupos.id_grupos = productos.id_grupos AND saldo_productos.id_productos = productos.id_productos";
+                    $where="  productos.id_productos = movimientos_inv_detalle.id_productos AND
+                              movimientos_inv_detalle.id_movimientos_inv_cabeza = movimientos_inv_cabeza.id_movimientos_inv_cabeza";
                     
-                    $id="productos.id_productos";
+                    $id="productos.nombre_productos";
                     
                     
               
                     $where_1 = "";
                     $where_2 = "";
                     $where_4 = "";
-                    $where_5 = "";
+       
                     
                
                     
@@ -137,17 +127,33 @@ class HistoricoProductoController extends ControladorBase{
                     
                     if($id_usuarios!=0){$where_2=" AND usuarios.id_usuarios='$id_usuarios'";}
                     
-                    if($fechadesde!="" && $fechahasta!=""){$where_4=" AND  date(ccomprobantes.fecha_ccomprobantes) BETWEEN '$fechadesde' AND '$fechahasta'";}
+                    if($fechadesde!="" && $fechahasta!=""){$where_4=" AND  date(movimientos_inv_cabeza.fecha_movimientos_inv_cabeza) BETWEEN '$fechadesde' AND '$fechahasta'";}
                     
                     
                     
-                    $where_to  = $where . $where_1 . $where_2. $where_4.$where_5;
+                    $where_to  = $where . $where_1 . $where_2. $where_4;
                     
                     
                     $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+                    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
                     
                     if($action == 'ajax')
                     {
+                        if(!empty($search)){
+                            
+                            
+                            $where1=" AND (nombre_productos LIKE '".$search."%' )";
+                            
+                            $where_to=$where.$where1;
+                        }else{
+                            
+                            $where_to=$where;
+                            
+                        }
+                        
+                        
+                        
+                        
                         $html="";
                         $resultSet=$movimientos->getCantidad("*", $tablas, $where_to);
                         $cantidadResult=(int)$resultSet[0]->total;
@@ -182,14 +188,12 @@ class HistoricoProductoController extends ControladorBase{
                             $html.= "<table id='tabla_comprobantes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                             $html.= "<thead>";
                             $html.= "<tr>";
-                            $html.='<th style="text-align: left;  font-size: 12px;">Tipo</th>';
-                            $html.='<th style="text-align: left;  font-size: 12px;">Concepto</th>';
-                            $html.='<th style="text-align: left;  font-size: 12px;">Entidad</th>';
-                            $html.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
+                            $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
+                            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+                            $html.='<th style="text-align: left;  font-size: 12px;">Marca</th>';
+                            $html.='<th style="text-align: left;  font-size: 12px;">Cantidad</th>';
                             $html.='<th style="text-align: left;  font-size: 12px;">Fecha</th>';
-                            $html.='<th style="text-align: left;  font-size: 12px;">Numero de Comprobante</th>';
-                            $html.='<th style="text-align: left;  font-size: 12px;">Forma de Pago</th>';
-                            $html.='<th style="text-align: left;  font-size: 12px;">Reporte</th>';
+                          
                             
                             
                             
@@ -206,15 +210,12 @@ class HistoricoProductoController extends ControladorBase{
                                 
                                 
                                 $html.='<tr>';
-                                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_comprobantes.'</td>';
-                                $html.='<td style="font-size: 11px;">'.$res->concepto_ccomprobantes.'</td>';
-                                $html.='<td style="font-size: 11px;">'.$res->nombre_entidades.'</td>';
-                                $html.='<td style="font-size: 11px;">'.$res->valor_letras.'</td>';
-                                $html.='<td style="font-size: 11px;">'.$res->fecha_ccomprobantes.'</td>';
-                                $html.='<td style="font-size: 11px;">'.$res->numero_ccomprobantes.'</td>';
-                                $html.='<td style="font-size: 11px;">'.$res->nombre_forma_pago.'</td>';
-                                $html.='<td style="font-size: 11px;"><span class="pull-right"><a href="index.php?controller=ReporteComprobante&action=comprobante_contable_reporte&id_ccomprobantes='.$res->id_ccomprobantes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
-                                
+                                $html.='<td style="font-size: 11px;">'.$res->codigo_productos.'</td>';
+                                $html.='<td style="font-size: 11px;">'.$res->nombre_productos.'</td>';
+                                $html.='<td style="font-size: 11px;">'.$res->marca_productos.'</td>';
+                                $html.='<td style="font-size: 11px;">'.$res->cantidad_movimientos_inv_detalle.'</td>';
+                                $html.='<td style="font-size: 11px;">'.$res->fecha_movimientos_inv_cabeza.'</td>';
+                               
                                 $html.='</tr>';
                                 
                                 
@@ -228,7 +229,7 @@ class HistoricoProductoController extends ControladorBase{
                             $html.='</table>';
                             $html.='</section></div>';
                             $html.='<div class="table-pagination pull-right">';
-                            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents).'';
+                            $html.=''. $this->paginate("index2.php", $page, $total_pages, $adjacents).'';
                             $html.='</div>';
                             
                         }else{
@@ -249,9 +250,8 @@ class HistoricoProductoController extends ControladorBase{
                 }
                 
                 
-                $this->view_Contable("ReporteComprobante",array(
-                    "resultSet"=>$resultSet, "resultTipCom"=> $resultTipCom,
-                    "resultEnt"=>$resultEnt
+                $this->view_Inventario("HistoricoProducto",array(
+                    "resultSet"=>$resultSet
                     
                 ));
                 
@@ -287,15 +287,15 @@ class HistoricoProductoController extends ControladorBase{
         if($page==1) {
             $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
         } else if($page==2) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='load_comprobantes(1)'>$prevlabel</a></span></li>";
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_buscar_productos(1)'>$prevlabel</a></span></li>";
         }else {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='load_comprobantes(".($page-1).")'>$prevlabel</a></span></li>";
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_buscar_productos(".($page-1).")'>$prevlabel</a></span></li>";
             
         }
         
         // first label
         if($page>($adjacents+1)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes(1)'>1</a></li>";
+            $out.= "<li><a href='javascript:void(0);' onclick='load_buscar_productos(1)'>1</a></li>";
         }
         // interval
         if($page>($adjacents+2)) {
@@ -310,9 +310,9 @@ class HistoricoProductoController extends ControladorBase{
             if($i==$page) {
                 $out.= "<li class='active'><a>$i</a></li>";
             }else if($i==1) {
-                $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes(1)'>$i</a></li>";
+                $out.= "<li><a href='javascript:void(0);' onclick='load_buscar_productos(1)'>$i</a></li>";
             }else {
-                $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes(".$i.")'>$i</a></li>";
+                $out.= "<li><a href='javascript:void(0);' onclick='load_buscar_productos(".$i.")'>$i</a></li>";
             }
         }
         
@@ -325,13 +325,13 @@ class HistoricoProductoController extends ControladorBase{
         // last
         
         if($page<($tpages-$adjacents)) {
-            $out.= "<li><a href='javascript:void(0);' onclick='load_comprobantes($tpages)'>$tpages</a></li>";
+            $out.= "<li><a href='javascript:void(0);' onclick='load_buscar_productos($tpages)'>$tpages</a></li>";
         }
         
         // next
         
         if($page<$tpages) {
-            $out.= "<li><span><a href='javascript:void(0);' onclick='load_comprobantes(".($page+1).")'>$nextlabel</a></span></li>";
+            $out.= "<li><span><a href='javascript:void(0);' onclick='load_buscar_productos(".($page+1).")'>$nextlabel</a></span></li>";
         }else {
             $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
         }

@@ -149,7 +149,7 @@ $controladores=$_SESSION['controladores'];
           </a>
           <ul class="treeview-menu">
             <li style="<?php echo getcontrolador("BuscarProducto",$controladores) ?>"><a href="index.php?controller=BuscarProducto&action=index"><i class="fa fa-circle-o"></i> Inventario de Productos</a></li>
-            <li style="<?php echo getcontrolador("HistoricoProducto",$controladores) ?>"><a href="index.php?controller=HistoricoProducto&action=index"><i class="fa fa-circle-o"></i>Historico de Productos</a></li>
+            <li style="<?php echo getcontrolador("HistoricoProducto",$controladores) ?>"><a href="index.php?controller=HistoricoProducto&action=index2"><i class="fa fa-circle-o"></i>Historico de Productos</a></li>
 		 	</ul>
         </li>
        </ul>
@@ -186,7 +186,7 @@ $controladores=$_SESSION['controladores'];
       	  </ul>
         </li>
         
-        <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("ProcesosContabilidad",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
             <span class="pull-right-container">
@@ -201,7 +201,7 @@ $controladores=$_SESSION['controladores'];
     	  </ul>
         </li>
         
-        <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("ReportesContabilidad",$controladores) ?>"  >
           <a href="#">
             <i class="fa fa-folder-open-o"></i> <span>Reporte</span>
             <span class="pull-right-container">
@@ -272,7 +272,7 @@ $controladores=$_SESSION['controladores'];
      </li>
      
       
-        <li class="treeview"  style="<?php echo getcontrolador("ActivosFijos",$controladores) ?>"  >
+        <li class="treeview"  style="<?php echo getcontrolador("MenuActivos",$controladores) ?>"  >
           <a href="#">
             <i class="glyphicon glyphicon-blackboard"></i> <span>Activos Fijos</span>
             <span class="pull-right-container">
@@ -280,7 +280,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-            <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+            <li class="treeview"  style="<?php echo getcontrolador("AdministracionActivos",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Administración</span>
                 <span class="pull-right-container">
@@ -294,7 +294,7 @@ $controladores=$_SESSION['controladores'];
             </li>
             
             
-            <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+            <li class="treeview"  style="<?php echo getcontrolador("ProcesosActivos",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
                 <span class="pull-right-container">
@@ -306,7 +306,7 @@ $controladores=$_SESSION['controladores'];
     		  </ul>
             </li>
             
-            <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
+            <li class="treeview"  style="<?php echo getcontrolador("ReporteActivos",$controladores) ?>"  >
               <a href="#">
                 <i class="fa fa-folder-open-o"></i> <span>Reportes</span>
                 <span class="pull-right-container">
@@ -384,10 +384,11 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
+              	<li style="<?php echo getcontrolador("Proveedores",$controladores) ?>"><a href="index.php?controller=TesProveedores&action=index"><i class="fa fa-circle-o"></i> Proveedores </a></li>
                 <li style="<?php echo getcontrolador("Bancos",$controladores) ?>"><a href="index.php?controller=Bancos&action=index"><i class="fa fa-circle-o"></i> Bancos </a></li>
                 <li style="<?php echo getcontrolador("FormasPago",$controladores) ?>"><a href="index.php?controller=FormasPago&action=index"><i class="fa fa-circle-o"></i> Formas Pago </a></li>
                 <li style="<?php echo getcontrolador("TipoDocumento",$controladores) ?>"><a href="index.php?controller=TipoDocumento&action=index"><i class="fa fa-circle-o"></i> Tipo Documento </a></li>
-                <li style="<?php echo getcontrolador("ImpuestosCxP",$controladores) ?>"><a href="index.php?controller=Impuestos&action=index"><i class="fa fa-circle-o"></i> Impuestos CxP </a></li>
+                <li style="<?php echo getcontrolador("ImpuestosCxP",$controladores) ?>"><a href="index.php?controller=Impuestos&action=index"><i class="fa fa-circle-o"></i> Impuestos </a></li>
         	    
     		  </ul>
             </li>
@@ -401,10 +402,11 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
-              	<li style="<?php echo getcontrolador("IngresoCuentasPagar",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=CuentasPagarIndex"><i class="fa fa-circle-o"></i> Ingreso Cuentas Pagar</a></li>
-              	<li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=Pagos&action=Index"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
-              	<li style="<?php echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=Compras&action=Index"><i class="fa fa-circle-o"></i> Compras</a></li>
-              	<li style="<?php echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=TesCuentasPagar&action=index"><i class="fa fa-circle-o"></i> Ingreso Transacciones</a></li>    			
+                <li style="<?php echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=TesCuentasPagar&action=index"><i class="fa fa-circle-o"></i> Ingreso Transacciones</a></li>
+                <li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=Pagos&action=Index"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
+              	<!-- <li style="<?php //echo getcontrolador("IngresoCuentasPagar",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=CuentasPagarIndex"><i class="fa fa-circle-o"></i> Ingreso Cuentas Pagar</a></li>              	
+              	<li style="<?php //echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=Compras&action=Index"><i class="fa fa-circle-o"></i> Compras</a></li> -->
+              	    			
              </ul>
             </li>
         

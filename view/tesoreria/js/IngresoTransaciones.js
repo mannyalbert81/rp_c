@@ -599,7 +599,10 @@ function IngresarTransaccion(){
 					stext += x.xml;
 				}
 				//swal({title:"TRANSACCION OK",text:stext,icon:"success"}).then( isValidate => { if(isValidate){ setTimeout(function(){location.reload();},2000); } } );
-				swal({title:"TRANSACCION OK",text:stext,icon:"success"}).then( isValidate => { if(isValidate){  } } );
+				swal({title:"TRANSACCION OK",text:stext,icon:"success",closeOnClickOutside: false}).then( isValidate => { if(isValidate){ setTimeout(function(){location.reload();},8000);  } } );				
+				let loteUrl = $("#id_lote").val();
+    			let urlReporte = "index.php?controller=CuentasPagar&action=Reporte_Cuentas_Por_Pagar&id_lote="+loteUrl;
+    			window.open(urlReporte,"_blank"); 
 								
 			}else{
 				swal({title:"ERROR TRANSACCION",text:"REVISAR DATOS ENVIADOS \n"+x.mensaje,icon:"error"});
@@ -640,7 +643,7 @@ $("#mod_tbl_distribucion").on("focus","input.distribucion.distribucion_autocompl
     if ( !_elemento.data("autocomplete") ) {
     	    	
     	_elemento.autocomplete({
-    		minLength: 3,    	    
+    		minLength: 2,    	    
     		source:function (request, response) {
     			$.ajax({
     				url:"index.php?controller=CuentasPagar&action=autompletePlanCuentas",
@@ -723,4 +726,25 @@ function pasarTotal(){
 	$("#valor_total_documento").val(monto_compra);
 }
 
+/***
+ * fn para limpiar campos 
+ */
+function limpiarCampos(){
+	$("#id_lote").val("");
+	$("#id_proveedores").val("");
+	$("#id_consecutivos").val("");
+	$("#hd_valor_base_compra").val("");  
+	$("#tipo_documento").val("0");
+	$("#descripcion_transaccion").val("");
+	$("#identificacion_proveedores").val("");
+	$("#nombre_proveedores").val("");
+	$("#referencia_documento").val("");
+	$("#numero_autorizacion").val("");
+	$("#valor_compra_cero").val("");
+	$("#valor_compra_iva").val("");
+	$("#impuestos_documento").val(""); 
+	$("#valor_total_documento").val("");	
+	$("#compra_materiales").val("0");
+	$('#compra_materiales').prop('checked',false);
+}
 

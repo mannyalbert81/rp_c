@@ -135,6 +135,7 @@ class AvancesEmpleadosController extends ControladorBase{
         }
         
         echo $total;
+        
     }
   
     public function AgregarSolicitud()
@@ -813,6 +814,7 @@ class AvancesEmpleadosController extends ControladorBase{
         $datos_reporte = array();
         
         $columnas = " empleados.nombres_empleados,
+                      empleados.numero_cedula_empleados,
                       cargos_empleados.nombre_cargo,
                       departamentos.nombre_departamento,
                         anticipo_sueldo_empleados.fecha_anticipo,
@@ -833,6 +835,7 @@ class AvancesEmpleadosController extends ControladorBase{
         $rsdatos = $permisos->getCondiciones($columnas, $tablas, $where, $id);
         //echo $rsdatos;
         $datos_reporte['NOMBREEMPLEADO']=$rsdatos[0]->nombres_empleados;
+        $datos_reporte['CEDULAEMPLEADO']=$rsdatos[0]->numero_cedula_empleados;
         $datos_reporte['CARGOEMPLEADO']=$rsdatos[0]->nombre_cargo;
         $datos_reporte['DPTOEMPLEADO']=$rsdatos[0]->nombre_departamento;
         $fechaelem = explode("-", $rsdatos[0]->fecha_anticipo);

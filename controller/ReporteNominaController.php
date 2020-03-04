@@ -349,6 +349,9 @@ class ReporteNominaController extends ControladorBase{
         $dia_hoy=$hoy['mday'];
         $mes=$hoy['mon'];        
         $anio=$hoy['year'];
+        
+        
+        
         $anio_inicio=$anio;
         $anio_fin=$anio;
         

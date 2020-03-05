@@ -5,7 +5,7 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
 //echo getcwd().''; //para ver ubicacion de directorio
 
 $header = file_get_contents('view/reportes/template/CabeceraFinal.html');
-$template = file_get_contents('view/reportes/template/CuentasPagar.html');
+$template = file_get_contents('view/reportes/template/CuentasPagarProveedores.html');
 
 if(!empty($datos_cabecera))
 {
@@ -44,7 +44,7 @@ $mpdf->setAutoTopMargin = 'stretch';
 $mpdf->setAutoBottomMargin = 'stretch';
 $mpdf->SetHTMLHeader(utf8_encode($header));
 $mpdf->SetHTMLFooter($footer);
-$stylesheet = file_get_contents('view/reportes/template/cuentasPagar.css'); // la ruta a tu css
+$stylesheet = file_get_contents('view/reportes/template/cuentasPagarProveedores.css'); // la ruta a tu css
 $mpdf->WriteHTML($stylesheet,1);
 $mpdf->WriteHTML($template,2);
 $mpdf->debug = true;

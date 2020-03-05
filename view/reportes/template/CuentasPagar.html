@@ -12,7 +12,7 @@
  	<table class="titulobody">
 		<tr>
 		 <td>		 
-		 FCPC. DIARIO CONTABLE CUENTAS POR PAGAR		
+		 FCPC. CUENTAS POR PAGAR		
 		</td>
 		</tr>
 	 </table>
@@ -21,14 +21,10 @@
 	<div >
 	    
 	    <table class="tab1principal">
+			
 			<tr>
 				 <td class="" >
-				 	* Transacción intercopañía
-				 </td>
-			</tr>
-			<tr>
-				 <td class="" >
-				 	<strong>Id. de Lote: </strong> {NOMBRELOTE}
+				 	<strong>Identificación Lote: </strong> {NOMBRELOTE}
 				 </td>				 
 				 
 				 <td class="" >
@@ -37,41 +33,29 @@
 			</tr>
 			<tr>
 				 <td class="" >
-				 	<strong>Comentario de lote: </strong> {DESCLOTE}
+				 	<strong>Información lote: </strong> {DESCLOTE}
 				 </td>		 
-				 <td class="" >
-				 	<strong>Código de Auditoría: </strong> {NUMEROLOTE}
-				 </td>
-		 
-			</tr>
-			<tr>
-				 <td class="" >
-				 	<strong>Total real trans: </strong> 1
-				 </td>
-				 
-				 <td class="">
-				 	<strong>Total control Trans: </strong>0
-				 </td>
-				 
-			</tr>
-			<tr>
-				 <td class="" >
-				 	<strong>Total real lote: </strong>$ {SALDOCUENTA}
-				 </td>				 
-				 <td class="" >
-				 <strong>Control total lote: </strong>   $ 0.00
-				 </td>				 
+				 		 
 			</tr>			
 			<tr>
-			 <td class="" >
-			 	<strong>Aprobado: </strong> NO
-			 </td>				 
-			 <td class="">
-			 	<strong>Aprobado por:</strong>..
-			 </td>			 
-			 <td class="">
-			 	<strong>Fecha Aprobación: </strong> 0/00/0000
-			 </td>			 
+				 <td class="" >
+				 	<strong>Valor Total Documento: </strong>$ {SALDOCUENTA}
+				 </td>	 
+			</tr>			
+			<tr>
+				<td>
+					<strong>Usuario Documento: </strong> {USUARIODOCUMENTO}
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<strong>Descripción Documento: </strong> {DESCRIPCIONDOCUMENTO}
+				</td>
+				<td>
+					<strong>Periodo: </strong> {PERIODOFISCAL}
+				</td>
 			</tr>
 	    </table>
 	    
@@ -79,10 +63,7 @@
 	   <hr>
 	   
 	    <table class="tab2cabecera" >
-	    <tr class="bordeinferior">
-			 <td class="" >
-			 	<b>Tipo</b>
-			 </td>
+	    <tr class="bordeinferior">			 
 			 <td class="" >
 			 	<b>Núm. comprobante</b>
 			 </td>
@@ -108,10 +89,7 @@
 			 	<b>Impuesto</b>
 			 </td>
 		</tr>
-		<tr>
-		 <td class="">
-		 {TIPODOCUMENTO}
-		 </td>
+		<tr>		 
 		 <td class="" >
 		 {NUMEROCOMPROBANTE}
 		 </td>

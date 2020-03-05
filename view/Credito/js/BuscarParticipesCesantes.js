@@ -1,3 +1,15 @@
+<<<<<<< HEAD
+$(document).ready( function (){
+	
+	
+	
+	
+	
+		
+});
+
+=======
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
 var id_participe;
 
 
@@ -6,10 +18,14 @@ $('#cedula_participe').keypress(function(event){
 	    $('#buscar_participe').click();
 	  }
 	});
+
 function BorrarCedula()
 {
 	$('#cedula_participe').val("");
 }
+
+
+
 function InfoSolicitud(cedula,id_solicitud)
 {
 	$('#cedula_participe').val(cedula);
@@ -106,9 +122,38 @@ function BuscarParticipe()
 		}
 }
 
+<<<<<<< HEAD
+
+function AportesParticipe(){
+	
+	
+	var id_TipoPrestaciones = $("#id_tipo_prestaciones");
+	var fecha_prestaciones = $("#fecha_prestaciones");   
+	console.log(id_TipoPrestaciones.val() );
+	console.log(fecha_prestaciones.val() );
+	
+	
+	
+	if (id_TipoPrestaciones.val() == 0)
+	{
+		return false;
+	}
+	
+=======
 function AportesParticipe(id, page)
 {
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
 	$.ajax({
+<<<<<<< HEAD
+		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
+		url:"index.php?controller=BuscarParticipesCesantes&action=AportesParticipe",
+		type:"POST",
+		data:{id_tipo_prestaciones:id_TipoPrestaciones.val(), 
+			action:'ajax',
+			id_participe:id_participe , 
+			fecha_prestaciones:fecha_prestaciones.val()}
+	}).done(function(datos){		
+=======
 	    url: 'index.php?controller=BuscarParticipesCesantes&action=AportesParticipe',
 	    type: 'POST',
 	    data: {
@@ -118,12 +163,31 @@ function AportesParticipe(id, page)
 	})
 	.done(function(x) {
 		$('#aportes_participe').html(x);
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
 		
+<<<<<<< HEAD
+		$("#aportes_participe_registrados").html(datos)		
+		
+	}).fail(function(xhr,status,error){
+		
+		var err = xhr.responseText;
+		console.log(err);
+		
+	}).always(function(){
+		
+		$("#divLoaderPage").removeClass("loader")
+=======
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
 		
 	})
+<<<<<<< HEAD
+	
+	
+=======
 	.fail(function() {
 	    console.log("error");
 	});
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
 }
 
 

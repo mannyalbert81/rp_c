@@ -1,6 +1,9 @@
 <?php
 class BuscarParticipesCesantesController extends ControladorBase{
-    public function index(){
+    
+	
+	
+	public function index(){
         session_start();
         $estado = new EstadoModel();
         $id_rol = $_SESSION['id_rol'];
@@ -224,213 +227,303 @@ class BuscarParticipesCesantesController extends ControladorBase{
         
         $html="";
         $_id_creditos=0;
+        $_id_tipo_creditos=0;
         $total_saldo=0;
         $total_descuentos=0;
         $total_recibir=0;
         $total_pagar=0;
         $id_participe= $_POST['id_participe'];
+        $fecha_prestaciones = $_POST['fecha_prestaciones'];
+        $_id_tipo_prestaciones = $_POST['id_tipo_prestaciones'];
         $participes= new ParticipesModel();
     
-        $columnas="COALESCE(sum(c.valor_personal_contribucion),0) aporte_personal_100, (coalesce(sum(c.valor_personal_contribucion),0)/2) aporte_personal_50,
-                    (select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=10 and c1.id_estatus=1) as impuesto_ir_superavit_personal_100,
-                    (select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=10 and c2.id_estatus=1) as impuesto_ir_superavit_personal_50,
-                    (select COALESCE(sum(c3.valor_personal_contribucion),0)  from core_contribucion c3 where c3.id_participes=".$id_participe." and c3.id_contribucion_tipo=50 and c3.id_estatus=1) as superavit_aporte_personal_100,
-                    (select (coalesce(sum(c4.valor_personal_contribucion),0)/2)  from core_contribucion c4 where c4.id_participes=".$id_participe." and c4.id_contribucion_tipo=50 and c4.id_estatus=1) as superavit_aporte_personal_50,
-                    (select min(to_char(c5.fecha_registro_contribucion, 'TMMONTH/YYYY')) imposicion_desde from core_contribucion c5 where c5.id_participes=".$id_participe." and c5.id_estatus=1),
-                    (select max(to_char(c5.fecha_registro_contribucion, 'TMMONTH/YYYY')) imposicion_hasta from core_contribucion c5 where c5.id_participes=".$id_participe." and c5.id_estatus=1)
-                    ";
-        $tablas="core_contribucion c inner join  core_participes p on c.id_participes=p.id_participes";
-        $where="p.id_participes=".$id_participe." and c.id_estatus=1 and c.id_contribucion_tipo=1";
-        $id="aporte_personal_100";
         
-
-        
-        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
-       
-        if($action == 'ajax')
+        if ($_id_tipo_prestaciones == 2)
         {
-            
-       
-            $resultSet=$participes->getCondiciones($columnas, $tablas, $where, $id);
-            
-            
-            if(!empty($resultSet)){
-        
-                foreach ($resultSet as $res)
-                {
-                
-                    $Total50PersonalMasRendimientos =  $res->aporte_personal_50+$res->impuesto_ir_superavit_personal_50+$res->superavit_aporte_personal_50;
-                    
-                    $_imposiciones_desde=$res->imposicion_desde;
-                    $_imposiciones_hasta=$res->imposicion_hasta;
-                    $_aporte_personal_50=number_format((float)$res->aporte_personal_50, 2, ',', '.');
-                    $_impuesto_ir_superavit_personal_50=number_format((float)$res->impuesto_ir_superavit_personal_50, 2, ',', '.');
-                    $_superavit_aporte_personal_50=number_format((float)$res->superavit_aporte_personal_50, 2, ',', '.');
-                    
-                    
-                }
-                
-                
-                
-                
-                
-                $html='<div >
-                    <div >
-                    <h3 class="box-title"><b>SIMULACIÓN: CÁLCULO DE DESAFILIACIÓN</b></h3>
-                    </div>
-                    <div >
-                    <div >
-                    <h5><b>IMPOSICIONES DESDE:</b> '.$_imposiciones_desde.'<b> HASTA:</b> '.$_imposiciones_hasta.'</h5>
-                    </div>
-                    <div style="align-content: center;">
-                    <table  border="1" width="70%">
-                    <tr >
-                    <th></th>
-                    </tr>
-                    <tr>
-                    	<td width="70%" >50% del Aporte Personal (Res. N° SBS-2013-504)</td>
-                    	<td style="text-align: right;"  width="30%"><span id="lblAportePersonal"> $ '.$_aporte_personal_50.'</span></td>
-                    </tr>
-                    <tr>
-                    	<td >50% del Impuesto IR Superavit Personal (Res. N° SBS-2013-504)</td>
-                    	<td style="text-align: right;"><span id="lblImpuestoPersonal"> $ '.$_impuesto_ir_superavit_personal_50.'</span></td>
-                    </tr>
-                    <tr >
-                    	<td >50% del Superavit por aporte Personal (Res. N° SBS-2013-504)</td>
-                    	<td style="text-align: right;"><span id="lblSuperavitAportePersonal"> $ '.$_superavit_aporte_personal_50.'</span></td>
-                    </tr>
-                    
-                    
-                    <tr >
-                    	<th >TOTAL 50% PERSONAL + RENDIMIENTOS PRESTACIÓN</th>
-                    	<td style="text-align: right;"><span id="lblTotalSuma"><b> $ '.number_format((float)$Total50PersonalMasRendimientos, 2, ',', '.').'</b></span></td>
-                    </tr>
-                </table>
-                </div>
-                    </div>
-               ';
-                
-                
-                // CONSULTO LOS CREDITOS DE LOS PARTICIPES
-                $columnas="bb.fecha_concesion_creditos, bb.id_creditos,bb.id_tipo_creditos, tc.nombre_tipo_creditos, tc.codigo_tipo_creditos";
-                $tablas="core_participes aa
-                inner join core_creditos bb on bb.id_participes = aa.id_participes
-                inner join core_estado_participes cc on cc.id_estado_participes = aa.id_estado_participes
-                inner join core_estado_creditos dd on dd.id_estado_creditos = bb.id_estado_creditos
-                inner join core_tipo_creditos tc on bb.id_tipo_creditos=tc.id_tipo_creditos";
-                $where=" aa.id_estatus = 1
-                and upper(cc.nombre_estado_participes) = 'ACTIVO'
-                and upper(dd.nombre_estado_creditos) = 'ACTIVO'
-                and aa.id_participes =".$id_participe."";
-                $id="bb.id_creditos";
-                
-                $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
-                
-                if(!(empty($resultCreditos)))
-                {
-                 
-                    $html.=' <div >
-			                    <h5 ><b>DESCUENTOS</b></h5>
-			                 </div>
-                    		
-                    		<table border="1" width="70%"> 
-                    			';
-                    
-                    foreach($resultCreditos as $res)
-                    {
-                        
-                        // capturo el id de los creditos que tiene el participe
-                        $_id_creditos=$res->id_creditos;
-                        $_nombre_tipo_creditos=$res->nombre_tipo_creditos.' #'.$res->id_creditos;
-                        $_fecha_concesion_creditos = $res->fecha_concesion_creditos;
-                        
-                       $total_saldo=   $participes->devuelve_saldo_capital($_id_creditos) ; //$this->Buscar_Cuotas_Actuales($_id_creditos);
-                       $total_interes= $this->Buscar_Interes($_id_creditos);
-                       
-                       
-                       $estado_del_credito = $this->Buscar_Estado_Credito($_id_creditos);
-                       
-                       ////DETERMINAR ESTADO DEL CREDITO
-                       
-                       $html.='<tr>
-                       			<td width="70%">'.$estado_del_credito.'</td>
-                       			<td style="text-align: right;" width="30%"><span id="lblCreditoOrdinario"> $ '.number_format((float)$total_saldo, 2, ',', '.').'</span></td>
-                       		  </tr>';
-                        
-                       	
-                       
-                       
-                       $html.='<tr>
-                       			<td width="70%">'.$_nombre_tipo_creditos.'</td>
-                       			<td style="text-align: right;" width="30%"><span id="lblCreditoOrdinario"> $ '.number_format((float)$total_saldo, 2, ',', '.').'</span></td>
-                       		  </tr>';
-                       
-                       
-                       $total_descuentos=$total_descuentos+$total_saldo;
-                        
-                    }
-                }
-
-                    
-
-                
-                $total_recibir=$Total50PersonalMasRendimientos-$total_descuentos;
-                  
-                $html.='  
-                			<tr>
-                       			<th >TOTAL DESCUENTOS</th>
-                    			<td style="text-align: right;"><span id="lblTotalDescuentos"><b> $ '.number_format((float)$total_descuentos, 2, ',', '.').'</b></span></td>
-                    		</tr>
-                    	</table>
-                    
-                    	<div >
-			              <h5 ><b>RECIBIR</b></h5>
-			            </div>
-                    		
-                    	<table border="1" width="70%">
-                    	
-                    		<tr>
-                    			<th width="70%">TOTAL A RECIBIR</th>
-                    			<td style="text-align: right;" width="30%"> <font color="black"><span id="lblTotalRecibir"><b> $ '.number_format((float)$total_recibir, 2, ',', '.').'</b></span></font></td>
-                    		</tr>
-                    	</table>
-                    	</div>';
-                
-            
-                
-                
-                if ($total_recibir<0) {
-                    
-                    $total_pagar=$total_recibir*(-1);
-                    
-                    $html.='<div class="box box-solid bg-red" style = "margin-top:20px">
-                    <div class="box-header with-border">
-                    	<h3 class="box-title"><b>ALERTAS</b></h3>
-                    </div>
-                    
-                    <div>
-                    	<h4>
-                    		Estimado participe para poder acceder a la desafiliacion debe cubrir el monto adeudado en sus créditos a la fecha con el valor de: $ ' .number_format((float)$total_pagar, 2, ',', '.').
-                    	'</h4>
-                    </div>';
-                    
-                    
-               } 
-                
-                
-            }else{
-                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-                $html.='<div class="alert alert-info alert-dismissable" style="margin-top:40px;">';
-                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-                $html.='<h4>Aviso!!!</h4> <b>Actualmente no puede desafiliarse...</b>';
-                $html.='</div>';
-                $html.='</div>';
-            }
-            
-            echo $html;
-            
+		        $columnas="COALESCE(sum(c.valor_personal_contribucion),0) aporte_personal_100, 
+							(coalesce(sum(c.valor_personal_contribucion),0)/2) aporte_personal_50,
+							(select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=5 and c1.id_estatus=1) as retroactivo_personal_100,
+							(select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=5 and c2.id_estatus=1) as retroactivo_personal_50,
+							(select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=7 and c1.id_estatus=1) as excedente_por_aporte_personal_100,
+							(select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=7 and c2.id_estatus=1) as excedente_por_aporte_personal_50,
+		        			(select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=9 and c1.id_estatus=1) as interes_por_aporte_personal_100,
+							(select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=9 and c2.id_estatus=1) as interes_por_aporte_personal_50,
+							(select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=10 and c1.id_estatus=1) as impuesto_ir_superavit_personal_100,
+							(select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=10 and c2.id_estatus=1) as impuesto_ir_superavit_personal_50,
+							(select COALESCE(sum(c3.valor_personal_contribucion),0)  from core_contribucion c3 where c3.id_participes=".$id_participe." and c3.id_contribucion_tipo=50 and c3.id_estatus=1) as superavit_aporte_personal_100,
+							(select (coalesce(sum(c4.valor_personal_contribucion),0)/2)  from core_contribucion c4 where c4.id_participes=".$id_participe." and c4.id_contribucion_tipo=50 and c4.id_estatus=1) as superavit_aporte_personal_50,
+							(select to_char(c5.fecha_registro_contribucion,'TMMONTH/YYYY') imposicion_desde from core_contribucion c5 where c5.id_participes=".$id_participe." and c5.id_estatus=1 order by id_contribucion asc limit 1),
+							(select to_char(c5.fecha_registro_contribucion,'TMMONTH/YYYY') imposicion_hasta from core_contribucion c5 where c5.id_participes=".$id_participe." and c5.id_estatus=1  order by id_contribucion DESC limit 1)";
+		        $tablas="core_contribucion c inner join  core_participes p on c.id_participes=p.id_participes";
+		        $where="p.id_participes=".$id_participe." and c.id_estatus=1 and c.id_contribucion_tipo=1";
+		        $id="aporte_personal_100";
+		        
+		
+		        
+		        $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+		       
+		        if($action == 'ajax')
+		        {
+		            
+		       
+		            $resultSet=$participes->getCondiciones($columnas, $tablas, $where, $id);
+		            
+		            
+		            if(!empty($resultSet)){
+		        
+		                foreach ($resultSet as $res)
+		                {
+		                
+		                    $Total50PersonalMasRendimientos =  $res->aporte_personal_50+$res->retroactivo_personal_50+$res->excedente_por_aporte_personal_50+$res->interes_por_aporte_personal_50+$res->impuesto_ir_superavit_personal_50+$res->superavit_aporte_personal_50;
+		                    
+		                    
+		                    
+		                    
+		                    $_imposiciones_desde=$res->imposicion_desde;
+		                    $_imposiciones_hasta=$res->imposicion_hasta;
+		                    $_aporte_personal_50=number_format((float)$res->aporte_personal_50, 2, ',', '.');
+		                    $_retroactivo_personal_50=number_format((float)$res->retroactivo_personal_50, 2, ',', '.');
+		                    $_excedente_por_aporte_personal_50=number_format((float)$res->excedente_por_aporte_personal_50, 2, ',', '.');
+		                    $_interes_por_aporte_personal_50=number_format((float)$res->interes_por_aporte_personal_50, 2, ',', '.');
+		                    $_impuesto_ir_superavit_personal_50=number_format((float)$res->impuesto_ir_superavit_personal_50, 2, ',', '.');
+		                    $_superavit_aporte_personal_50=number_format((float)$res->superavit_aporte_personal_50, 2, ',', '.');
+		                    
+		                    
+		                }
+		                
+		                $html='<div >
+		                    <div >
+		                    <h3 class="box-title"><b>SIMULACIÓN: CÁLCULO DE DESAFILIACIÓN</b></h3>
+		                    </div>
+		                    <div >
+		                    <div >
+		                    <h5><b>IMPOSICIONES DESDE:</b> '.$_imposiciones_desde.'<b> HASTA:</b> '.$_imposiciones_hasta.'</h5>
+		                    </div>
+		                    <div style="align-content: center;">
+		                    <table  border="1" width="70%">
+		                    <tr >
+		                    <th></th>
+		                    </tr>
+		                    <tr>
+		                    	<td width="70%" >50% del Aporte Personal (Res. N° SBS-2013-504)</td>
+		                    	<td style="text-align: right;"  width="30%"><span id="lblAportePersonal"> $ '.$_aporte_personal_50.'</span></td>
+		                    </tr>
+		                    <tr>
+		                    	<td width="70%" >50% del Retroactivo Personal (Res. N° SBS-2013-504)</td>
+		                    	<td style="text-align: right;"  width="30%"><span id="lblRetroactivoPersonal"> $ '.$_retroactivo_personal_50.'</span></td>
+		                    </tr>
+		                    <tr>
+		                    	<td width="70%" >50% del Excedente por Aporte Personal (Res. N° SBS-2013-504)</td>
+		                    	<td style="text-align: right;"  width="30%"><span id="lblExcedenteAportePersonal"> $ '.$_excedente_por_aporte_personal_50.'</span></td>
+		                    </tr>
+		                    <tr>
+		                    	<td width="70%" >50% del Interés por Aporte Personal (Res. N° SBS-2013-504)</td>
+		                    	<td style="text-align: right;"  width="30%"><span id="lblInteresAportePersonal"> $ '.$_interes_por_aporte_personal_50.'</span></td>
+		                    </tr>			
+		                    
+		                    <tr>
+		                    	<td >50% del Impuesto IR Superavit Personal (Res. N° SBS-2013-504)</td>
+		                    	<td style="text-align: right;"><span id="lblImpuestoPersonal"> $ '.$_impuesto_ir_superavit_personal_50.'</span></td>
+		                    </tr>
+		                    <tr >
+		                    	<td >50% del Superavit por aporte Personal (Res. N° SBS-2013-504)</td>
+		                    	<td style="text-align: right;"><span id="lblSuperavitAportePersonal"> $ '.$_superavit_aporte_personal_50.'</span></td>
+		                    </tr>
+		                    
+		                    
+		                    <tr >
+		                    	<th >TOTAL 50% PERSONAL + RENDIMIENTOS PRESTACIÓN</th>
+		                    	<td style="text-align: right;"><span id="lblTotalSuma"><b> $ '.number_format((float)$Total50PersonalMasRendimientos, 2, ',', '.').'</b></span></td>
+		                    </tr>
+		                </table>
+		                </div>
+		                    </div>
+		               ';
+		                
+		                
+		                // CONSULTO LOS CREDITOS DE LOS PARTICIPES
+		                $columnas="bb.fecha_concesion_creditos, bb.id_creditos,bb.id_tipo_creditos, tc.nombre_tipo_creditos, tc.codigo_tipo_creditos";
+		                $tablas="core_participes aa
+		                inner join core_creditos bb on bb.id_participes = aa.id_participes
+		                inner join core_estado_participes cc on cc.id_estado_participes = aa.id_estado_participes
+		                inner join core_estado_creditos dd on dd.id_estado_creditos = bb.id_estado_creditos
+		                inner join core_tipo_creditos tc on bb.id_tipo_creditos=tc.id_tipo_creditos";
+		                $where=" aa.id_estatus = 1
+		                and upper(cc.nombre_estado_participes) = 'ACTIVO'
+		                and upper(dd.nombre_estado_creditos) = 'ACTIVO'
+		                and aa.id_participes =".$id_participe."";
+		                $id="bb.id_creditos";
+		                
+		                $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
+		                
+		                if(!(empty($resultCreditos)))
+		                {
+		                 
+		                    $html.=' <div >
+					                    <h5 ><b>DESCUENTOS</b></h5>
+					                 </div>
+		                    		
+		                    		<table border="1" width="70%"> 
+		                    			';
+		                    
+		                    foreach($resultCreditos as $res)
+		                    {
+		                        
+		                        // capturo el id de los creditos que tiene el participe
+		                        $_id_creditos=$res->id_creditos;
+		                        $_id_tipo_creditos=$res->id_tipo_creditos;
+		                        $_nombre_tipo_creditos=$res->nombre_tipo_creditos.' #'.$res->id_creditos;
+		                        $_fecha_concesion_creditos = $res->fecha_concesion_creditos;
+		                        
+		                       $total_saldo=   $participes->devuelve_saldo_capital($_id_creditos) ; //$this->Buscar_Cuotas_Actuales($_id_creditos);
+		                       //$total_interes= $this->Buscar_Interes($_id_creditos);
+		                       
+		                       
+		                       $estado_del_credito = $this->Buscar_Estado_Credito($_id_creditos);
+		                       //   1 - Mora;
+		                       //   2 - Adelantado
+		                       //   3 - Parcial
+		                       //   4 - Al dia
+		                       $_interes_ordinario = 0;
+		                       $_seguro_desgravamen = 0;
+		                       
+		                       $html.='';
+		                       
+		                       
+		                        
+		                        
+		                       $html.='<tr>
+		                       			<td width="70%">'.$_nombre_tipo_creditos.'</td>
+		                       			<td style="text-align: right;" width="30%"><span id="lblCreditoOrdinario"> $ '.number_format((float)$total_saldo, 2, ',', '.').'</span></td>
+		                       		  </tr>';
+		                        
+		                        
+		                       $total_descuentos=$total_descuentos+$total_saldo;
+		                       
+		                       
+		                       echo "Estado del Credito: " . $estado_del_credito;
+		                       
+		                       if ($estado_del_credito == 4) //al dia
+		                       {
+		                       	
+		                       		if ($_id_tipo_creditos == 3)  //hipotecarios
+		                       		{
+		                       			$_saldo_capital = $participes->devuelve_saldo_capital($_id_creditos) ;
+		                       			$_tasa_interes = $this->devuelve_tasa_credito($_id_creditos);
+		                       			$_dias = date("d", strtotime($fecha_prestaciones));
+		                       			//	$fecha_cuota_actual =
+		                       			$_interes_ordinario = $participes->devuelve_interes_ord_x_capital($_dias, $_saldo_capital, $_tasa_interes);
+		                       			
+		                       		}
+		                       		else 
+		                       		{
+		                       			//$_fecha_ultimo_pago = $this->Buscar_fecha_Ultimo_Pago($_id_creditos);
+		                       			$_saldo_capital = $participes->devuelve_saldo_capital($_id_creditos) ;
+		                       			$_tasa_interes = $this->devuelve_tasa_credito($_id_creditos);
+		                       			$_dias = date("d", strtotime($fecha_prestaciones));
+		                       			//	$fecha_cuota_actual =
+		                       			$_interes_ordinario = $participes->devuelve_interes_ord_x_capital($_dias, $_saldo_capital, $_tasa_interes);
+		                       			$_seguro_desgravamen = $participes->devuelve_seguro_desgravamen($_saldo_capital);
+		                       			
+		                       		}
+		                       	
+		                       }
+		                       if ($estado_del_credito == 1) //EN MORA
+		                       {
+		                       
+		                       	if ($_id_tipo_creditos == 3)  //hipotecarios
+		                       	{
+		                       		$_saldo_capital = $participes->devuelve_saldo_capital($_id_creditos) ;
+		                       		$_tasa_interes = $this->devuelve_tasa_credito($_id_creditos);
+		                       		$_dias = date("d", strtotime($fecha_prestaciones));
+		                       		//	$fecha_cuota_actual =
+		                       		$_interes_ordinario = $participes->devuelve_interes_ord_x_capital($_dias, $_saldo_capital, $_tasa_interes);
+		                       
+		                       	}
+		                       	else
+		                       	{
+		                       		//$_fecha_ultimo_pago = $this->Buscar_fecha_Ultimo_Pago($_id_creditos);
+		                       		$_saldo_capital = $participes->devuelve_saldo_capital($_id_creditos) ;
+		                       		$_tasa_interes = $this->devuelve_tasa_credito($_id_creditos);
+		                       		$_dias = date("d", strtotime($fecha_prestaciones));
+		                       		//	$fecha_cuota_actual =
+		                       		$_interes_ordinario = $participes->devuelve_interes_ord_x_capital($_dias, $_saldo_capital, $_tasa_interes);
+		                       		$_seguro_desgravamen = $participes->devuelve_seguro_desgravamen($_saldo_capital);
+		                       
+		                       	}
+		                       
+		                       }
+		                       
+		                       
+		                       echo "Interes Concesion: " . $_interes_ordinario;
+		                       echo "Seguro Desgravamen: " . $_seguro_desgravamen;
+		                       ////DETERMINAR ESTADO DEL CREDITO
+		                       
+		                               
+		                    }
+		                }
+							
+		                    
+		
+		                
+		                $total_recibir=$Total50PersonalMasRendimientos-$total_descuentos;
+		                  
+		                $html.='  
+		                			<tr>
+		                       			<th >TOTAL DESCUENTOS</th>
+		                    			<td style="text-align: right;"><span id="lblTotalDescuentos"><b> $ '.number_format((float)$total_descuentos, 2, ',', '.').'</b></span></td>
+		                    		</tr>
+		                    	</table>
+		                    
+		                    	<div >
+					              <h5 ><b>RECIBIR</b></h5>
+					            </div>
+		                    		
+		                    	<table border="1" width="70%">
+		                    	
+		                    		<tr>
+		                    			<th width="70%">TOTAL A RECIBIR</th>
+		                    			<td style="text-align: right;" width="30%"> <font color="black"><span id="lblTotalRecibir"><b> $ '.number_format((float)$total_recibir, 2, ',', '.').'</b></span></font></td>
+		                    		</tr>
+		                    	</table>
+		                    	</div>';
+		                
+		            
+		                
+		                
+		                if ($total_recibir<0) {
+		                    
+		                    $total_pagar=$total_recibir*(-1);
+		                    
+		                    $html.='<div class="box box-solid bg-red" style = "margin-top:20px">
+		                    <div class="box-header with-border">
+		                    	<h3 class="box-title"><b>ALERTAS</b></h3>
+		                    </div>
+		                    
+		                    <div>
+		                    	<h4>
+		                    		Estimado participe para poder acceder a la desafiliacion debe cubrir el monto adeudado en sus créditos a la fecha con el valor de: $ ' .number_format((float)$total_pagar, 2, ',', '.').
+		                    	'</h4>
+		                    </div>';
+		                    
+		                    
+		               } 
+		                
+		                
+		            }else{
+		                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+		                $html.='<div class="alert alert-info alert-dismissable" style="margin-top:40px;">';
+		                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+		                $html.='<h4>Aviso!!!</h4> <b>Actualmente no puede desafiliarse...</b>';
+		                $html.='</div>';
+		                $html.='</div>';
+		            }
+	            
+	            echo $html;
+	            
+	        }
         }
-        
+      
         
     }
     
@@ -837,10 +930,6 @@ class BuscarParticipesCesantesController extends ControladorBase{
     	 
     }
      
-    
-    
-
-
     public function Buscar_Estado_Credito($_id_creditos)
     {
     	
@@ -865,13 +954,31 @@ class BuscarParticipesCesantesController extends ControladorBase{
     	$_fecha_ultimo_pago_cancelado = "";
     	$_fecha_ultimo_pago_activo = "";
     	 
-    	$fecha_cuota_actual = $participe->ultimo_dia_mes_actual();
-    	
-    	
-    	$columnas="t.fecha_tabla_amortizacion, t.numero_pago_tabla_amortizacion, t.id_estado_tabla_amortizacion, t.balance_tabla_amortizacion";
-    	$tablas="core_tabla_amortizacion t";
-    	$where="t.id_creditos='$_id_creditos' ";
-    	$id="t.numero_pago_tabla_amortizacion";
+    	//$fecha_cuota_actual = $participe->ultimo_dia_mes_actual();
+    	$fecha_cuota_actual = date("d/m/Y", strtotime($participe->ultimo_dia_mes_actual()));
+    	$fecha_cuota_actual2 = $participe->ultimo_dia_mes_actual();
+    	$columnas=" core_tabla_amortizacion.id_tabla_amortizacion, 
+				  core_tabla_amortizacion.id_creditos, 
+				  core_tabla_amortizacion.fecha_tabla_amortizacion, 
+				  core_tabla_amortizacion.numero_pago_tabla_amortizacion, 
+				  core_tabla_amortizacion.capital_tabla_amortizacion, 
+				  core_tabla_amortizacion.dividendo_tabla_amortizacion, 
+				  core_tabla_amortizacion.interes_tabla_amortizacion, 
+				  core_tabla_amortizacion.total_valor_tabla_amortizacion, 
+				  core_tabla_amortizacion.balance_tabla_amortizacion, 
+				  core_tabla_amortizacion.total_balance_tabla_amortizacion, 
+				  core_tabla_amortizacion.provision_tabla_amortizacion, 
+				  core_tabla_amortizacion.mora_tabla_amortizacion, 
+				  core_tabla_amortizacion.id_estado_tabla_amortizacion, 
+				  core_tabla_amortizacion.id_estatus, 
+				  core_tabla_amortizacion.porcentaje_interes_tabla_amortizacion, 
+				  core_tabla_amortizacion.numero_dias_tabla_amortizacion, 
+				  core_tabla_amortizacion.fecha_servidor_tabla_amortizacion, 
+				  core_tabla_amortizacion.seguro_incendios_tabla_amortizacion, 
+				  core_tabla_amortizacion.seguro_desgravamen_tabla_amortizacion";
+    	$tablas="core_tabla_amortizacion";
+    	$where="id_creditos='$_id_creditos' AND  id_estatus = 1 ";
+    	$id="numero_pago_tabla_amortizacion";
     	$resultSet=$participe->getCondiciones($columnas, $tablas, $where, $id);
     
     	if(!empty($resultSet)){
@@ -884,80 +991,79 @@ class BuscarParticipesCesantesController extends ControladorBase{
     			// verifico que la ultimo cuota esta cancelada
     			if($_id_estado_tabla_amortizacion==1) //PAGO PARCIAL
     			{
-    				$_fecha_ultimo_pago_parcial = $res->fecha_tabla_amortizacion;
+    				$_fecha_ultimo_pago_parcial = date("d/m/Y", strtotime($res->fecha_tabla_amortizacion));
+    				$_fecha_ultimo_pago_parcial2 = $res->fecha_tabla_amortizacion;
     			}
     			if($_id_estado_tabla_amortizacion==2) //PAGO CANCELADO
     			{
-    				$_fecha_ultimo_pago_cancelado = $res->fecha_tabla_amortizacion;
+    				$_fecha_ultimo_pago_cancelado = date("d/m/Y", strtotime($res->fecha_tabla_amortizacion));
+    				$_fecha_ultimo_pago_cancelado2 = $res->fecha_tabla_amortizacion;
     			}
     			if($_id_estado_tabla_amortizacion==3) //PAGO ACTIVO
     			{
-    				$_fecha_ultimo_pago_activo = $res->fecha_tabla_amortizacion;
+    				$_fecha_ultimo_pago_activo = date("d/m/Y", strtotime($res->fecha_tabla_amortizacion));
+    				
     			} 
     			
+    			/*echo "Estado: " . $res->id_estado_tabla_amortizacion;
+    			echo "Fecha: " . $res->fecha_tabla_amortizacion;
+    			*/
     		}
+    		
+    		
+    		
     		
     		//   1 - Mora; 
     		//   2 - Adelantado
     		//   3 - Parcial
     		//   4 - Al dia
     		
-    		
-    		if ($_fecha_ultimo_pago_parcial != "" )
-    		{
-    			switch ($_fecha_ultimo_pago_parcial) {
-    				case $_fecha_ultimo_pago_parcial < $fecha_cuota_actual:
-    					echo "Esta en Mora";
-    					$estado_del_proceso = 1;
-    					break;
-    				case $_fecha_ultimo_pago_parcial > $fecha_cuota_actual:
-    					echo "Pago Adelantado";
-    					$estado_del_proceso = 2;
-    					break;
-    				case $_fecha_ultimo_pago_parcial = $fecha_cuota_actual:
-    					echo "Pago Parcial";
-    					$estado_del_proceso = 3;
-    					break;
-    			}
-    			
-    		}
     		if ($_fecha_ultimo_pago_cancelado != "" )
     		{
-    			switch ($_fecha_ultimo_pago_parcial) {
-    				case $_fecha_ultimo_pago_cancelado < $fecha_cuota_actual:
-    					echo "Esta en Mora";
-    					$estado_del_proceso = 1;
-    					break;
-    				case $_fecha_ultimo_pago_cancelado > $fecha_cuota_actual:
-    					echo "Pago Adelantado";
-    					$estado_del_proceso = 2;
-    					break;
-    				case $_fecha_ultimo_pago_cancelado = $fecha_cuota_actual:
-    					echo "Pago al dia";
-    					$estado_del_proceso = 4;
-    					break;
+    			
+    			$_fecha1 = new DateTime($_fecha_ultimo_pago_cancelado2);
+    			$_fecha2 = new DateTime($fecha_cuota_actual2);
+    			$interval=$_fecha2->diff($_fecha1);
+    			$intervalMeses=$interval->format('%a');
+    			$meses_dif = round($intervalMeses/30 , 2);
+    			
+    		
+    			if ($meses_dif < 2) //al dia
+    			{
+    				$estado_del_proceso = 4; 
+    				
+    				if ($_fecha_ultimo_pago_parcial != "" )
+    				{
+    					$_fecha3 = new DateTime($_fecha_ultimo_pago_parcial2);
+    					$_fecha4 = new DateTime($fecha_cuota_actual2);
+    					if ($_fecha3 > $_fecha4)
+    					{
+    						$estado_del_proceso = 3;
+    					}
+    				}
+    				
     			}
-    		}
-    		if ($_fecha_ultimo_pago_activo != "" )
-    		{
-    			switch ($_fecha_ultimo_pago_activo) {
-    				case $_fecha_ultimo_pago_activo < $fecha_cuota_actual:
-    					echo "Esta en Mora";
-    					$estado_del_proceso = 1;
-    					break;
-    				case $_fecha_ultimo_pago_activo > $fecha_cuota_actual:
-    					echo "Pago Adelantado";
-    					$estado_del_proceso = 2;
-    					break;
-    				case $_fecha_ultimo_pago_activo = $fecha_cuota_actual:
-    					echo "Pago al dia";
-    					$estado_del_proceso = 4;
-    					break;
+    			if ($meses_dif < 0) //en adelantado
+    			{
+    				$estado_del_proceso = 2;
     			}
+    			if ($meses_dif > 2) //en mora
+    			{
+    				$estado_del_proceso = 1;
+    			}
+    			 
+    			
+    			
     		}
+    		
+    		
+ 
+    		
     		
     		return  $estado_del_proceso;
     		
+    		
+    	
     			
     	}else{
     
@@ -970,6 +1076,209 @@ class BuscarParticipesCesantesController extends ControladorBase{
     
     
     }
+    
+    public function at_interes_tabla_amortizacion($_id_creditos, $_fecha_ultima_cuota_cancelada)
+    {
+    	 
+    	$estado_del_proceso ="";
+    	 
+    	$participe= new ParticipesModel();
+    	$anio_actual=date("Y");
+    	$mes_actual=date("m");
+    	$_at_interes_tabla_amortizacion = 0;
+    	$_at_mora_tabla_amortizacion;
+    	
+    	$_id_tabla_amortizacion;
+    	$_id_creditos;
+    	$_fecha_tabla_amortizacion;
+    	$_numero_pago_tabla_amortizacion;
+    	
+    	$_seguro_incendios_tabla_amortizacion;
+    	$_seguro_desgravamen_tabla_amortizacion;
+    
+  
+    
+    			
+    	//$fecha_cuota_actual = $participe->ultimo_dia_mes_actual();
+    	$fecha_cuota_actual = date("d/m/Y", strtotime($participe->ultimo_dia_mes_actual()));
+    	$fecha_cuota_actual2 = $participe->ultimo_dia_mes_actual();
+    	$columnas=" id_tabla_amortizacion,
+			    	id_creditos,
+			    	fecha_tabla_amortizacion,
+			    	numero_pago_tabla_amortizacion,
+			    	interes_tabla_amortizacion,
+			    	mora_tabla_amortizacion
+				  	seguro_incendios_tabla_amortizacion,
+				  	seguro_desgravamen_tabla_amortizacion";
+    	$tablas="core_tabla_amortizacion";
+    	$where="id_creditos='$_id_creditos' AND  id_estatus = 1 AND fecha_tabla_amortizacion <='$_fecha_ultima_cuota_cancelada' AND core_tabla_amortizacion.id_estado_tabla_amortizacion = '3'  ";
+    	$id="numero_pago_tabla_amortizacion";
+    	$resultSet=$participe->getCondiciones($columnas, $tablas, $where, $id);
+    
+    	if(!empty($resultSet)){
+    
+    		foreach ($resultSet as $res){
+    
+    
+    			$_id_estado_tabla_amortizacion= $res->id_estado_tabla_amortizacion;
+    
+    			
+    			$_id_tabla_amortizacion = $res->id_tabla_amortizacion;
+    			$_at_interes_tabla_amortizacion = $_at_interes_tabla_amortizacion + $res->interes_tabla_amortizacion;
+    			$_at_mora_tabla_amortizacion	= $_at_mora_tabla_amortizacion	+ $res->mora_tabla_amortizacion;
+    			
+    		}
+    
+    		return  $_at_interes_tabla_amortizacion;
+    
+    
+    		 
+    		 
+    	}else{
+    
+    		// para los vencidos
+    
+    
+    
+    	}
+    
+    
+    
+    }
+    
+    
+    public function Buscar_fecha_Ultimo_Pago($_id_creditos)
+    {
+    	 
+    	$estado_del_proceso ="";
+    	 
+    	$participe= new ParticipesModel();
+    	$anio_actual=date("Y");
+    	$mes_actual=date("m");
+    
+    	$_id_estado_tabla_amortizacion=0;
+    	$_balance_tabla_amortizacion=0;
+    	$total_anterior=0;
+    
+    
+    
+    	
+    	
+    	$_fecha_ultimo_pago_cancelado = "";
+    	
+    
+    	//$fecha_cuota_actual = $participe->ultimo_dia_mes_actual();
+    	$fecha_cuota_actual = date("d/m/Y", strtotime($participe->ultimo_dia_mes_actual()));
+    	 
+    	$columnas=" core_tabla_amortizacion.id_tabla_amortizacion,
+				  core_tabla_amortizacion.id_creditos,
+				  core_tabla_amortizacion.fecha_tabla_amortizacion,
+				  ";
+    	$tablas="core_tabla_amortizacion";
+    	$where="id_creditos='$_id_creditos' AND  id_estatus = 1 ";
+    	$id="numero_pago_tabla_amortizacion";
+    	$resultSet=$participe->getCondicionesDesc($columnas, $tablas, $where, $id);
+    
+    	if(!empty($resultSet)){
+    
+    		foreach ($resultSet as $res){
+    
+    
+    			$_id_estado_tabla_amortizacion= $res->id_estado_tabla_amortizacion;
+    
+    			// verifico que la ultimo cuota esta cancelada
+    			
+    			if($_id_estado_tabla_amortizacion==2) //PAGO CANCELADO
+    			{
+    				$_fecha_ultimo_pago_cancelado = date("d/m/Y", strtotime($res->fecha_tabla_amortizacion));
+    			}
+    			 
+    		}
+    
+    		//   1 - Mora;
+    		//   2 - Adelantado
+    		//   3 - Parcial
+    		//   4 - Al dia
+    		
+    		
+    
+    
+    		 
+    		 
+    	}else{
+    
+    		// para los vencidos
+    
+    
+    
+    	}
+    
+    	return  $_fecha_ultimo_pago_cancelado;
+    
+    }
+    
+    
+    
+    public function devuelve_tasa_credito($id_creditos){
+    
+    	$creditos=new CoreCreditoModel();
+    	$tasa_interes_credito=0;
+    
+    	$columnas_pag="interes_creditos";
+    	$tablas_pag="public.core_creditos";
+    	$where_pag="id_creditos='$id_creditos' ";
+    
+    	$resultPagos=$creditos->getCondicionesSinOrden($columnas_pag, $tablas_pag, $where_pag, "");
+    
+    
+    	if(!empty($resultPagos)){
+    		 
+    		 
+    		$tasa_interes_credito=$resultPagos[0]->interes_creditos;
+    		 
+    		 
+    	}
+    
+    
+    
+    	return $tasa_interes_credito;
+    
+    
+    
+    }
+    
+    
+    public function devuelve_saldo_capital($id_creditos){
+    
+    	$creditos=new CoreCreditoModel();
+    	$saldo_credito=0;
+    	 
+    	$columnas_pag="coalesce(sum(tap.saldo_cuota_tabla_amortizacion_pagos),0) as saldo";
+    	$tablas_pag="core_creditos c
+                        inner join core_tabla_amortizacion at on c.id_creditos=at.id_creditos
+                        inner join core_tabla_amortizacion_pagos tap on at.id_tabla_amortizacion=tap.id_tabla_amortizacion
+                        inner join core_tabla_amortizacion_parametrizacion tapa on tap.id_tabla_amortizacion_parametrizacion=tapa.id_tabla_amortizacion_parametrizacion";
+    	$where_pag="c.id_creditos='$id_creditos' and c.id_estatus=1 and at.id_estatus=1 and tapa.tipo_tabla_amortizacion_parametrizacion=0";
+    	 
+    	$resultPagos=$creditos->getCondicionesSinOrden($columnas_pag, $tablas_pag, $where_pag, "");
+    	 
+    	 
+    	if(!empty($resultPagos)){
+    		 
+    		 
+    		$saldo_credito=$resultPagos[0]->saldo;
+    		 
+    		 
+    	}
+    	 
+    	 
+    	 
+    	return $saldo_credito;
+    	 
+    	 
+    	 
+    }
+    
     
     
     

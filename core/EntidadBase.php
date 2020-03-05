@@ -877,7 +877,8 @@ class EntidadBase{
     	
     	$seguro=0;
     	$seguro = ((0.16/1000)*$saldo_capital)*1.04;
-    	return $seguro;
+    	
+    	return round($seguro,2);
     
     }
     
@@ -897,6 +898,7 @@ class EntidadBase{
     
     	return date('d-m-Y', mktime(0,0,0, $month, $day, $year));
     }
+    
     public function ultimo_dia_mes_fecha($fecha) {
     	$month = $fecha('m');
     	$year = $fecha('Y');
@@ -911,6 +913,21 @@ class EntidadBase{
     	return date('d-m-Y', mktime(0,0,0, $month, 1, $year));
     }
     
-    
+    public function devuelve_interes_ord_x_capital($_dias, $_capital, $_tasa) {
+	 	$interes = 0;
+	 	
+	 	$_tasa_interes = $_tasa / 100;   //0.09
+    	$interes_mensual = $_tasa_interes / 12;  //0.0075
+	    $interes_diario=$interes_mensual /30;    //0.00025
+	    $interes_concesion=$interes_diario* $_dias *$_capital;
+	    $interes_concesion=round($interes_concesion,2);
+	  
+	 //   echo "Interes mensual: " . $interes_mensual;
+	 //   echo "Interes diario: " . $interes_diario;
+	    
+	    return $interes=$interes_concesion;
+    }
+  
+
 }
 ?>

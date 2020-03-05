@@ -120,7 +120,7 @@
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>   
-    <script src="view/tesoreria/js/IndexCuentasPagar.js?0.02"></script>
+    <script src="view/tesoreria/js/IndexCuentasPagar.js?0.05"></script>
         
 	
   </body>

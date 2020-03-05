@@ -91,7 +91,7 @@
 		    	 
 		    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
 		    	 		<div class="form-group ">                 			 
-            				<label for="nombre_lote" class="control-label" > Id. lote:</label>
+            				<label for="nombre_lote" class="control-label" > Identificador lote:</label>
             				<div class="form-group-sm">                				
                               <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $cuentaspagar->nombre_lote; ?>" autofocus>  
                               <input type="hidden" id="id_lote" name="id_lote" value="<?php echo $cuentaspagar->id_lote; ?>">
@@ -99,23 +99,24 @@
             				</div>
                 						 
             			</div>		    	 	
-		    	 	</div>	
-            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="nombre_banco" class=" control-label" >Id. de Chequera:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="nombre_banco" name="nombre_banco" value="<?php echo $cuentaspagar->nombre_bancos; ?>" >
-                				 <input type="hidden" class="form-control" id="id_bancos" name="id_bancos" value="<?php echo $cuentaspagar->id_bancos; ?>" >
-                    		</div>        			 
-            			</div>
-            		</div> 
-            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
+		    	 	</div>
+		    	 	
+		    	 	<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
             				<label for="comentario_cheque" class=" control-label" >Numero Pago:</label> 
                     		<div class="form-group-sm">                    				
                 				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $rsConsecutivos[0]->numero_consecutivos; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div>	
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="nombre_banco" class=" control-label" >Identificador Chequera:</label> 
+                    		<div class="form-group-sm">
+                    			<select class="form-control"  id="id_bancos" onchange="validaChequera()" >
+                    				<option value="0">--Seleccione--</option>
+                    			</select>
                     		</div>        			 
             			</div>
             		</div> 
@@ -124,10 +125,28 @@
             			<div class="form-group ">
             				<label for="numero_cheque" class=" control-label" >Número de Cheque:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="numero_cheque" name="numero_cheque" value="<?php echo $rsBanco[0]->numero_cheque;?>" >
+                				 <input type="text" class="form-control" id="numero_cheque" name="numero_cheque" value="" disabled >
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="fecha_cheque" class=" control-label" >Fecha de Cheque:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control" id="fecha_cheque" name="fecha_cheque" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
                     		</div>        			 
             			</div>
             		</div>  
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="comentario_cheque" class=" control-label" >Comentario del Cheque:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="comentario_cheque" name="comentario_cheque" value="" autocomplete="off" >
+                    		</div>        			 
+            			</div>
+            		</div> 
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
@@ -167,23 +186,7 @@
             		
             		
             		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="fecha_cheque" class=" control-label" >Fecha de Cheque:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="fecha_cheque" name="fecha_cheque" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
-                    		</div>        			 
-            			</div>
-            		</div>  
             		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="comentario_cheque" class=" control-label" >Comentario del Cheque:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="comentario_cheque" name="comentario_cheque" value="" autocomplete="off" >
-                    		</div>        			 
-            			</div>
-            		</div>
             		
             		
             		
@@ -393,7 +396,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.21"></script>
+	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.22"></script>
 
   </body>
 </html>  

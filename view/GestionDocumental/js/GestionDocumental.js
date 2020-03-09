@@ -327,6 +327,20 @@ $("#id_subcategorias").click(function() {
 		  
 	  	}
 
+
+	 if ( id_subcategorias == 84 ) //prestaciones
+	  	{
+		  _cedula_capremci.removeAttr('disabled');
+	      _nombres_capremci.removeAttr('disabled');
+	  	  
+	  	  _nombre_tipo_documentos.removeAttr('disabled');
+	  	  _fecha_documento_legal.removeAttr('disabled');
+	  	  _id_carton_documentos.removeAttr('disabled');
+	  	  
+	  	  _Guardar.attr('disabled','disabled');
+		  
+	  	}
+	 
 	  	
 	});
 
@@ -425,6 +439,20 @@ $("#id_subcategorias").change(function() {
 	  	}
 
 	  	
+		
+		 if ( id_subcategorias == 84 ) //prestaciones
+		  	{
+			  _cedula_capremci.removeAttr('disabled');
+		      _nombres_capremci.removeAttr('disabled');
+		  	  
+		  	  _nombre_tipo_documentos.removeAttr('disabled');
+		  	  _fecha_documento_legal.removeAttr('disabled');
+		  	  _id_carton_documentos.removeAttr('disabled');
+		  	  
+		  	  _Guardar.attr('disabled','disabled');
+			  
+		  	}
+		 
 	});
 
 

@@ -221,6 +221,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
     
     public function AportesParticipe()
     {
+    	
         session_start();
         
         $_fecha_concesion_creditos = "";
@@ -377,9 +378,9 @@ class BuscarParticipesCesantesController extends ControladorBase{
 		                        
 		                       $total_saldo=   $participes->devuelve_saldo_capital($_id_creditos) ; //$this->Buscar_Cuotas_Actuales($_id_creditos);
 		                       //$total_interes= $this->Buscar_Interes($_id_creditos);
+		                      
 		                       
-		                       
-		                       $estado_del_credito = $this->Buscar_Estado_Credito($_id_creditos);
+		                      $estado_del_credito = $this->Buscar_Estado_Credito($_id_creditos);
 		                       //   1 - Mora;
 		                       //   2 - Adelantado
 		                       //   3 - Parcial

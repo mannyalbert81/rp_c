@@ -298,8 +298,6 @@
 	    $datos_cabecera['FECHA'] = date('Y/m/d');
 	    $datos_cabecera['HORA'] = date('h:i:s');
 	    
-	    
-	    
 	    $this->verReporte("CuentasPagarProveedores", array('datos_empresa'=>$datos_empresa,'datos_cabecera'=>$datos_cabecera));
 	    
 	}

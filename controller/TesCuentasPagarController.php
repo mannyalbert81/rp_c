@@ -1189,6 +1189,8 @@ class TesCuentasPagarController extends ControladorBase{
                                 
                                 $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
                                 $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;  
+                                
+                                //$fechaAutorizado = $finalresp['fecauto'];
                             }
                             
                             

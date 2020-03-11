@@ -1,3 +1,6 @@
+/**VARIABLES DE INICIO**/
+var globalObjFecha = new Date(); 
+var globalAnio = globalObjFecha.getFullYear();
 $(document).ready(function(){
 	
 	init();
@@ -27,7 +30,7 @@ function init(){
 		 rightAlign: true,		 
 		 yearrange: {
 				minyear: 1950,
-				maxyear: 2019
+				maxyear: globalAnio
 			},
 		oncomplete:function(e){
 			if( (new Date($(this).val()).getTime() != new Date(fechaServidor).getTime()))
@@ -120,6 +123,10 @@ $("#distribucion_cheque").on("click",function(){
 		return false;
 	}
 	let $bancos = $("#id_bancos");
+	if( $bancos.val() == "0" ){
+		swal({title:"ERROR DISTRIBUCION",icon:"warning",text:"Seleccione Chequera"})
+		return false;
+	}
 	let $referencia_cheque = $("#comentario_cheque");
 	let $divResultados = $("#lista_distribucion_cheque");
 	$divResultados.html('');
@@ -239,7 +246,7 @@ $("#genera_cheque").on("click",function(){
 function FormularioPost(url,target,params){
 	 
 	 var form = document.createElement("form");
-	 form.setAttribute("id", target);
+	 form.setAttribute("id", "frmchequeReport");
      form.setAttribute("method", "post");
      form.setAttribute("action", url);
      form.setAttribute("target", target);

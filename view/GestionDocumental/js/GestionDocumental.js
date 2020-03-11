@@ -438,6 +438,7 @@ $("#id_subcategorias").change(function() {
               
             }
 
+
             
             
              if ( id_subcategorias == 84 ||  id_subcategorias == 85) //prestaciones
@@ -454,8 +455,6 @@ $("#id_subcategorias").change(function() {
                   }
             
       });
-
-
 
 
 $("#cedula_capremci").on("focus",function(e) {

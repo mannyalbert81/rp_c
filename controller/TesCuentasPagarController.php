@@ -1250,6 +1250,7 @@ class TesCuentasPagarController extends ControladorBase{
 	 * @desc met que permite la generacion xml
 	 * @param integer $_id_lote
 	 */
+	
 	public function genXmlRetencion($intLote=null){
 	    
 	    

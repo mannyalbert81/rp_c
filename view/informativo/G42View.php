@@ -19,7 +19,7 @@
     }
     
     </style>
-    <title>ERP Capremci - G41 BIESS</title>
+    <title>ERP Capremci - G42 BIESS</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
    <?php include("view/modulos/links_css.php"); ?>
@@ -62,7 +62,7 @@
         <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Buscar/Generar Formato</h3>
+              <h3 class="box-title">Buscar/Generar Formato G42</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -137,7 +137,7 @@
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?>
-   <script src="view/informativo/js/G41.js?0.42" ></script>
+   <script src="view/informativo/js/G42.js?0.01" ></script>
   </body>
 
 </html>

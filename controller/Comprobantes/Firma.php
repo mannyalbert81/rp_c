@@ -101,7 +101,7 @@ class Firma
                 return array('error' => true, 'mensaje' => "No existe ningún certificado para firmar.");
 
             }
-
+            
             $resp = $this->getPrivateKey();
 
             if ($resp["error"] === true)
@@ -110,7 +110,8 @@ class Firma
 
             $fecha_actual = strtotime(date("Y-m-d H:i:s", time()));
             $fecha_entrada = strtotime(date("Y-m-d H:i:s", $this->certData['validTo_time_t']));
-
+            
+            
             if ($fecha_actual > $fecha_entrada)
                 return array('error' => true, 'mensaje' => "El certificado con el que intenta firmar el comprobante esta expirado\nfavor actualize su certificado digital con la Autoridad Certificadora");
 
@@ -153,7 +154,10 @@ class Firma
                 unlink($nombreKey);
 
             $salida = shell_exec('openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1');
-
+    
+           // echo 'openssl pkcs12 -in ' . $pfx . ' -nocerts -out ' . $nombreKey . ' -passin pass:' . $password . ' -passout pass:' . $password . ' 2>&1'," \n";
+            //echo getcwd()," \n";
+            //var_dump($salida);
             //IMPORTANTE ESTE MENSAJE 'MAC verified OK' DEPENDE DEL SERVIDOR WEB USADO
             //HAY QUE HACER DEBUG PARA REALIZAR LA COMPARACION
             if (strpos($salida, 'MAC verified OK') !== false || empty($salida) ) {
@@ -169,7 +173,9 @@ class Firma
                     $this->privateKey = openssl_get_privatekey($pkey);
 
                     //$estado = openssl_x509_check_private_key($this->certificate, $this->privateKey);
-
+                    
+                  
+                    
                     if (openssl_x509_check_private_key($this->certificate, $this->privateKey)) {
                         break;
                     }

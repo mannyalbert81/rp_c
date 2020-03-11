@@ -122,12 +122,56 @@
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="participe_encontrado" ></div>
            		</div>
+
            	</div>
+
+           	</div>
+
+           	   	<div class="row">
+           	  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="id_fecha_prestaciones" class="control-label">Fecha Prestación:</label>
+                          <input  type="date" class="form-control" id="fecha_prestaciones" name="fecha_prestaciones" value="<?php echo date(dd/MM/yyyy);?>"  placeholder="" required/>                         
+                          <div id="mensaje_fecha_prestaciones" class="errores"></div>
+                        </div>
+            	</div>
+           	  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="id_tipo_prestaciones" class="control-label">Tipo Prestación:</label>
+                          <select  class="form-control" id="id_tipo_prestaciones" name="id_tipo_prestaciones" required>
+                          	<option value="0">--Seleccione--</option>
+                          </select>                         
+                          <div id="mensaje_id_tipo_pestaciones" class="errores"></div>
+                        </div>
+            	</div>
+
+            	 <div class="col-xs-12 col-md-6 col-md-6 ">
+            		    <div class="form-group">
+            		    					  
+                          <label for="observacion_prestaciones" class="control-label">Observación:</label>
+                          <input  type="text" class="form-control" id="observacion_prestaciones" name="nombre_estado_marital" value=""  placeholder="" required/>
+                          <input type="hidden" name="id_estado_marital" id="observacion_prestaciones" value="0" />
+                          <div id="divLoaderPage" ></div>                     	
+                                              
+                        </div>
+            	</div>
+            </div>
+            <div class="row">	
+            	<div class="col-xs-12 col-md-12 col-md-12" style="text-align: center; ">
+                 	<button type="button" onclick="AportesParticipe(this)" id="btn_simular" name="btn_simular" class="btn btn-info"><i class='glyphicon glyphicon-info-sign'></i> Simular</button>
+          	  		
+				</div>
+			</div>
+
+
            	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
-           		<div id="aportes_participe" ></div>
+           		<div id="aportes_participe_registrados" ></div>
            		</div>
            	</div>
+
            	
            		<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
@@ -178,6 +222,14 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
+
+
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?1.47"></script> 
+
    <script src="view/Credito/js/BuscarParticipesCesantes.js?0.70"></script> 
+
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?1.71"></script> 
+
+
    </body>
 </html>   

@@ -1419,9 +1419,9 @@ class TesCuentasPagarController extends ControladorBase{
 	    /** obligatorio cuando corresponda **/
 	    // se toma datos de proveedor -- Direccion. Telefono. Correo
 	    /**CAMPOS ADICIONALES **/
-	    $_adicional1 = $rsConsulta2[0]->direccion_proveedores;
-	    $_adicional2 = $rsConsulta2[0]->telefono_proveedores;
-	    $_adicional3 = $rsConsulta2[0]->email_proveedores;
+	    $_adicional1 = ( !empty($rsConsulta2[0]->direccion_proveedores) ) ? $rsConsulta2[0]->direccion_proveedores : "ninguna" ;
+	    $_adicional2 = ( !empty($rsConsulta2[0]->telefono_proveedores) ) ? $rsConsulta2[0]->telefono_proveedores : "0000000000" ;
+	    $_adicional3 = ( !empty($rsConsulta2[0]->email_proveedores) ) ? $rsConsulta2[0]->email_proveedores : "ninguno@capremci.com.ec";
 	    $texto .= '<infoAdicional>';
 	    $texto .= '<campoAdicional nombre="Dirección">'.$_adicional1.'</campoAdicional>';
 	    $texto .= '<campoAdicional nombre="Teléfono">'.$_adicional2.'</campoAdicional>';

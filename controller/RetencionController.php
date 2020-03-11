@@ -224,7 +224,16 @@ class RetencionController extends ControladorBase{
             $impuesto = (array_key_exists($res->impuesto_codigo, $arrayTab20) ) ?  $arrayTab20["$res->impuesto_codigo"] : "";
         	
         	$html.='<tr >';
-        	$html.='<td >'.$_tipo_comprobante.'</td>';
+        	
+        	if($res->impuesto_codigoretencion=='323'){
+        	    
+        	    $html.='<td>RENDIMIENTOS IFIS</td>';
+        	}else{
+        	    
+        	    $html.='<td >FACTURA</td>';
+        	}
+        	
+        	
         	$html.='<td >'.$res->impuestos_numdocsustento.'</td>';
         	$html.='<td class="centrado" >'.$datos_reporte['FECHAEMISION'].'</td>';
         	$html.='<td class="centrado" >'.$datos_reporte['PERIODOFISCAL'].'</td>';
@@ -308,9 +317,9 @@ class RetencionController extends ControladorBase{
                      public.tri_retenciones
 
                     ";
-        $where    = "tri_retenciones.id_tri_retenciones=id_tri_retenciones";
+        $where    = "1=1 and enviado_correo_electronico='FALSE'";
         
-        $id       = "tri_retenciones.fecha_autorizacion";
+        $id       = "tri_retenciones.id_tri_retenciones";
         
         
        
@@ -717,7 +726,8 @@ class RetencionController extends ControladorBase{
             if(!empty($reultRet)){
             	 
             	$infotributaria_claveacceso = $reultRet[0]->infotributaria_claveacceso;
-            	$camino_nombre_xml = "DOCUMENTOS_ELECTRONICOS/COMPROBANTES AUTORIZADOS/".$infotributaria_claveacceso. ".XML";
+            	$camino_nombre_xml = "DOCUMENTOSELECTRONICOS/docAutorizados/".$infotributaria_claveacceso. ".XML";
+            	//$camino_nombre_xml = "DOCUMENTOS_ELECTRONICOS/COMPROBANTES AUTORIZADOS/".$infotributaria_claveacceso. ".XML";
             	$_nombre_archivo = "DOCUMENTOS_GENERADOS/RETENCIONES/".$infotributaria_claveacceso	 . ".PDF";
             }
         
@@ -743,7 +753,20 @@ class RetencionController extends ControladorBase{
             	$impuesto = (array_key_exists($res->impuesto_codigo, $arrayTab20) ) ?  $arrayTab20["$res->impuesto_codigo"] : "";
             	
             	$html.='<tr >';
-            	$html.='<td >'.$_tipo_comprobante.'</td>';
+            	
+            	if($res->impuesto_codigoretencion=='323'){
+            	    
+            	    $html.='<td>RENDIMIENTOS IFIS</td>';
+            	}else{
+            	    
+            	    $html.='<td >FACTURA</td>';
+            	}
+            	
+            	
+            	
+            	
+            
+            
             	$html.='<td >'.$res->impuestos_numdocsustento.'</td>';
             	$html.='<td class="centrado" >'.$datos_reporte['FECHAEMISION'].'</td>';
             	$html.='<td class="centrado" >'.$datos_reporte['PERIODOFISCAL'].'</td>';
@@ -792,7 +815,7 @@ class RetencionController extends ControladorBase{
     		    <tr style='background: #FFFFFF;'>
     			</tabla>
     			<p><table rules='all'></p>
-    			<tr style='background:#1C1C1C'><td WIDTH='1000' HEIGHT='50' align='center'><font color='white'>Capremci - <a href='http://www.capremci.com.ec'><FONT COLOR='#7acb5a'>www.capremci.com.ec</FONT></a> - Copyright © 2018-</font></td></tr>
+    			<tr style='background:#1C1C1C'><td WIDTH='1000' HEIGHT='50' align='center'><font color='white'>Capremci - <a href='http://www.capremci.com.ec'><FONT COLOR='#7acb5a'>www.capremci.com.ec</FONT></a> - Copyright © 2020-</font></td></tr>
     			</table>
     			";
     	
@@ -817,7 +840,7 @@ class RetencionController extends ControladorBase{
     			$mail->AddAttachment($camino_nombre_xml);     				//Adds an attachment from a path on the filesystem
     			$mail->AddAttachment($_nombre_archivo);     				//Adds an attachment from a path on the filesystem
     			
-    			$mail->Subject = 'Documentos Electrónico Generado';			//Sets the Subject of the message
+    			$mail->Subject = 'Documento Electrónico Generado';			//Sets the Subject of the message
     			$mail->Body = $cuerpo;				//An HTML or plain text message body
     			if($mail->Send())								//Send an Email. Return true on success or false on error
     			{
@@ -993,6 +1016,387 @@ class RetencionController extends ControladorBase{
         
        */ 
     }
+    
+    
+    
+    
+    
+    
+    
+    public function EnviarCorreoMasivo(){
+        
+        
+       session_start();
+      
+        
+        $retenciones = new RetencionesModel();
+        
+      
+        
+        $col1="id_tri_retenciones";
+        $tab1="public.tri_retenciones";
+        $where1="enviado_correo_electronico ='FALSE' and  date(creado) = '2020-03-10'";
+        $id1="id_tri_retenciones";
+        $limit1 = "limit 2";
+        
+        $resultSet1=$retenciones->getCondicionesPag($col1, $tab1, $where1, $id1, $limit1);
+        
+        
+        
+        
+        
+        
+        if(!empty($resultSet1)){
+         
+            include('view/pdf.php');
+            //para imagen codigo barras
+            include dirname(__FILE__).'\barcode.php';
+            require 'clases/email/class.phpmailer.php';
+            
+            
+            foreach ($resultSet1 as $value) {
+               
+                $id_tri_retenciones=$value->id_tri_retenciones;
+                
+                
+                $this->termina_masivo($id_tri_retenciones);
+                
+                
+                
+            }
+            
+         
+            
+            
+        }
+        
+        
+        $this->redirect("Retencion","index");
+       
+        
+    }
+    
+    
+    
+    
+    
+    public function termina_masivo($id_tri_retenciones){
+        
+        
+        
+       
+        $file_name = md5(rand()) . '.pdf';
+        $html_code = '<link rel="stylesheet" href="bootstrap.min.css">';
+        //$html_code .= fetch_customer_data($connect);
+        session_start();
+        $_nombre_archivo = "";
+        
+        $pdf = new Pdf();
+        $pdf->load_html($html_code);
+        $pdf->render();
+        $file = $pdf->output();
+        file_put_contents($file_name, $file);
+        
+        $retenciones = new RetencionesModel();
+        
+        
+        
+       
+        $datos_reporte = array();
+        
+        
+        
+        
+        
+        $columnas = " tri_retenciones.id_tri_retenciones,
+                      tri_retenciones.infotributaria_ambiente,
+                      tri_retenciones.infotributaria_tipoemision,
+                      tri_retenciones.infotributaria_razonsocial,
+                      tri_retenciones.infotributaria_nombrecomercial,
+                      tri_retenciones.infotributaria_ruc,
+                      tri_retenciones.infotributaria_claveacceso,
+                      tri_retenciones.infotributaria_coddoc,
+                      tri_retenciones.infotributaria_estab,
+                      tri_retenciones.infotributaria_secuencial,
+                      tri_retenciones.infotributaria_dirmatriz,
+                      tri_retenciones.infocompretencion_fechaemision,
+                      tri_retenciones.infocompretencion_direstablecimiento,
+                      tri_retenciones.infocompretencion_contribuyenteespecial,
+                      tri_retenciones.infocompretencion_obligadocontabilidad,
+                      tri_retenciones.infocompretencion_tipoidentificacionsujetoretenido,
+                      tri_retenciones.infocompretencion_razonsocialsujetoretenido,
+                      tri_retenciones.infocompretencion_identificacionsujetoretenido,
+                      tri_retenciones.infocompretencion_periodofiscal,
+                      tri_retenciones.impuesto_codigo,
+                      tri_retenciones.impuesto_codigoretencion,
+                      tri_retenciones.impuestos_baseimponible,
+                      tri_retenciones.impuestos_porcentajeretener,
+                      tri_retenciones.impuestos_valorretenido,
+                      tri_retenciones.impuestos_coddocsustento,
+                      tri_retenciones.impuestos_numdocsustento,
+                      tri_retenciones.impuesto_fechaemisiondocsustento,
+                      tri_retenciones.impuesto_codigo_dos,
+                      tri_retenciones.impuesto_codigoretencion_dos,
+                      tri_retenciones.impuestos_baseimponible_dos,
+                      tri_retenciones.impuestos_porcentajeretener_dos,
+                      tri_retenciones.impuestos_valorretenido_dos,
+                      tri_retenciones.impuestos_coddocsustento_dos,
+                      tri_retenciones.impuestos_numdocsustento_dos,
+                      tri_retenciones.impuesto_fechaemisiondocsustento_dos,
+                      tri_retenciones.infoadicional_campoadicional,
+                      tri_retenciones.infoadicional_campoadicional_dos,
+                      tri_retenciones.infoadicional_campoadicional_tres,
+                      tri_retenciones.fecha_autorizacion";
+        
+        $tablas = "  public.tri_retenciones";
+        $where= "tri_retenciones.id_tri_retenciones='$id_tri_retenciones'";
+        $id="tri_retenciones.id_tri_retenciones";
+        
+        $rsdatos = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $datos_reporte['AMBIENTE']=$rsdatos[0]->infotributaria_ambiente;
+        $datos_reporte['EMISION']=$rsdatos[0]->infotributaria_tipoemision;
+        $datos_reporte['RAZONSOCIAL']=$rsdatos[0]->infotributaria_razonsocial;
+        $datos_reporte['NOMBRECOMERCIAL']=$rsdatos[0]->infotributaria_nombrecomercial;
+        $datos_reporte['RUC']=$rsdatos[0]->infotributaria_ruc;
+        
+        $datos_reporte['CLAVEACCESO']= $rsdatos[0]->infotributaria_claveacceso;
+        
+        
+        $nombreimagen = "codigoBarras";
+        $code = $rsdatos[0]->infotributaria_claveacceso;
+        $ubicacion =   dirname(__FILE__).'\..\view\images\barcode'.'\\'.$nombreimagen.'.png';
+        barcode($ubicacion, $code, 50, 'horizontal', 'code128', true);
+        
+        $datos_reporte['IMGBARCODE']=$ubicacion;
+        $datos_reporte['CODIGODOCUMENTO']=$rsdatos[0]->infotributaria_coddoc;
+        $datos_reporte['ESTABLECIMIENTO']=$rsdatos[0]->infotributaria_estab;
+        $datos_reporte['SECUENCIAL']=$rsdatos[0]->infotributaria_secuencial;
+        $datos_reporte['DIRMATRIZ']=$rsdatos[0]->infotributaria_dirmatriz;
+        $datos_reporte['FECHAEMISION']=$rsdatos[0]->infocompretencion_fechaemision;
+        $datos_reporte['DIRESTABLECIMIENTO']=$rsdatos[0]->infocompretencion_direstablecimiento;
+        $datos_reporte['CONTESPECIAL']=$rsdatos[0]->infocompretencion_contribuyenteespecial;
+        $datos_reporte['OBCONTABILIDAD']=$rsdatos[0]->infocompretencion_obligadocontabilidad;
+        $datos_reporte['TIPOIDENTIFICACION']=$rsdatos[0]->infocompretencion_tipoidentificacionsujetoretenido;
+        $datos_reporte['RAZONSOCIALRETENIDO']=$rsdatos[0]->infocompretencion_razonsocialsujetoretenido;
+        $datos_reporte['IDENTIFICACION']=$rsdatos[0]->infocompretencion_identificacionsujetoretenido;
+        $datos_reporte['PERIODOFISCAL']=$rsdatos[0]->infocompretencion_periodofiscal;
+        $datos_reporte['PERIODOFISCALDOS']=$rsdatos[0]->infocompretencion_periodofiscal;
+        $datos_reporte['IMPCODIGO']=$rsdatos[0]->impuesto_codigo;
+        $datos_reporte['IMPCODRETENCION']=$rsdatos[0]->impuesto_codigoretencion;
+        $datos_reporte['IMPBASIMPONIBLE']=$rsdatos[0]->impuestos_baseimponible;
+        $datos_reporte['IMPPORCATENER']=$rsdatos[0]->impuestos_porcentajeretener;
+        $datos_reporte['VALRETENIDO']=$rsdatos[0]->impuestos_valorretenido;
+        $datos_reporte['CODSUSTENTO']=$rsdatos[0]->impuestos_coddocsustento;
+        $datos_reporte['NUMDOCSUST']=$rsdatos[0]->impuestos_numdocsustento;
+        $datos_reporte['FECHEMDOCSUST']=$rsdatos[0]->impuesto_fechaemisiondocsustento;
+        $datos_reporte['CODIGODOS']=$rsdatos[0]->impuesto_codigo_dos;
+        $datos_reporte['CODRETDOS']=$rsdatos[0]->impuesto_codigoretencion_dos;
+        $datos_reporte['BASEIMPDOS']=$rsdatos[0]->impuestos_baseimponible_dos;
+        $datos_reporte['IMPPORCDOS']=$rsdatos[0]->impuestos_porcentajeretener_dos;
+        $datos_reporte['VALRETDOS']=$rsdatos[0]->impuestos_valorretenido_dos;
+        $datos_reporte['CODSUSTDOS']=$rsdatos[0]->impuestos_coddocsustento_dos;
+        $datos_reporte['NUMSUSTDOS']=$rsdatos[0]->impuestos_numdocsustento_dos;
+        $datos_reporte['FECHEMISIONDOS']=$rsdatos[0]->impuesto_fechaemisiondocsustento_dos;
+        $datos_reporte['CAMPADICIONAL']=$rsdatos[0]->infoadicional_campoadicional;
+        $datos_reporte['CAMPADICIONALDOS']=$rsdatos[0]->infoadicional_campoadicional_dos;
+        $datos_reporte['CAMPADICIONALTRES']=$rsdatos[0]->infoadicional_campoadicional_tres;
+        
+        $datos_reporte['FECAUTORIZACION']=$rsdatos[0]->fecha_autorizacion;
+        
+        $datos_reporte['AMBIENTE'] = $datos_reporte['AMBIENTE'] == "1" ? "PRUEBAS" : "PRODUCCIÓN";
+        
+        
+        if (  $datos_reporte['EMISION'] =="1"){
+            
+            $datos_reporte['EMISION']="NORMAL";
+            
+        }
+        
+        if (  $datos_reporte['IMPCODIGO'] =="1"){
+            
+            $datos_reporte['IMPCODIGO']="RENTA";
+            
+        }
+        
+        if (  $datos_reporte['CODIGODOS'] =="2"){
+            
+            $datos_reporte['CODIGODOS']="IVA";
+            
+        }
+        $_tipo_comprobante ="FACTURA";
+        if (  $datos_reporte['CODSUSTENTO'] =="07"){
+            
+            $_tipo_comprobante="FACTURA";
+            
+        }
+        
+        //////retencion detalle
+        
+        $columnas = " tri_retenciones_detalle.impuesto_codigo,
+    					  tri_retenciones_detalle.impuesto_codigoretencion,
+    					  tri_retenciones_detalle.impuestos_baseimponible,
+    					  tri_retenciones_detalle.impuestos_porcentajeretener,
+    					  tri_retenciones_detalle.impuestos_valorretenido,
+    					  tri_retenciones_detalle.impuestos_coddocsustento,
+    					  tri_retenciones_detalle.impuestos_numdocsustento,
+    					  tri_retenciones_detalle.impuesto_fechaemisiondocsustento,
+    					  tri_retenciones_detalle.impuesto_codigo_dos,
+    					  tri_retenciones_detalle.id_tri_retenciones";
+        
+        $tablas = "  public.tri_retenciones,
+      					public.tri_retenciones_detalle";
+        $where= "tri_retenciones_detalle.id_tri_retenciones = tri_retenciones.id_tri_retenciones AND  tri_retenciones_detalle.id_tri_retenciones='$id_tri_retenciones'";
+        $id="tri_retenciones_detalle.id_tri_retenciones_detalle";
+        
+        $retencion_detalle = $retenciones->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $reultRet=$retenciones->getBy("id_tri_retenciones='$id_tri_retenciones'");
+        $camino_nombre_xml = "";
+        
+        if(!empty($reultRet)){
+            
+            $infotributaria_claveacceso = $reultRet[0]->infotributaria_claveacceso;
+            $camino_nombre_xml = "DOCUMENTOSELECTRONICOS/docAutorizados/".$infotributaria_claveacceso. ".XML";
+            //$camino_nombre_xml = "DOCUMENTOS_ELECTRONICOS/COMPROBANTES AUTORIZADOS/".$infotributaria_claveacceso. ".XML";
+            $_nombre_archivo = "DOCUMENTOS_GENERADOS/RETENCIONES/".$infotributaria_claveacceso	 . ".PDF";
+        }
+        
+        $html='';
+        
+        $html.='<table class="dtlTax" >';
+        $html.='<tr>';
+        $html.='<th >Comprobante</th>';
+        $html.='<th >Número</th>';
+        $html.='<th >Fecha Emisión</th>';
+        $html.='<th >Ejercicio Fiscal</th>';
+        $html.='<th >Base Imponible para la Retención</th>';
+        $html.='<th >Impuesto</th>';
+        $html.='<th >Porcentaje Retención</th>';
+        $html.='<th >Valor Retenido</th>';
+        $html.='</tr>';
+        
+        $arrayTab20  = array( '1'=>'RENTA','2'=>'IVA','6'=>'ISD'); // aqui cambios para tabal 20 del sri
+        $impuesto = "";
+        
+        foreach ($retencion_detalle as $res){
+            
+            $impuesto = (array_key_exists($res->impuesto_codigo, $arrayTab20) ) ?  $arrayTab20["$res->impuesto_codigo"] : "";
+            
+            $html.='<tr >';
+            
+            if($res->impuesto_codigoretencion=='323'){
+                
+                $html.='<td>RENDIMIENTOS IFIS</td>';
+            }else{
+                
+                $html.='<td >FACTURA</td>';
+            }
+            
+            
+            
+            
+            
+            
+            $html.='<td >'.$res->impuestos_numdocsustento.'</td>';
+            $html.='<td class="centrado" >'.$datos_reporte['FECHAEMISION'].'</td>';
+            $html.='<td class="centrado" >'.$datos_reporte['PERIODOFISCAL'].'</td>';
+            $html.='<td class="valores">'.$res->impuestos_baseimponible.'</td>';
+            $html.='<td class="centrado" >'.$impuesto.'</td>';
+            $html.='<td class="centrado" >'.$res->impuestos_porcentajeretener.'</td>';
+            $html.='<td class="valores">'.$res->impuestos_valorretenido.'</td>';
+            $html.='</tr>';
+        }
+        
+        $html.='</table>';
+        
+        $datos_reporte['DETALLE_RETENCION']= $html;
+        
+        //$_nombre_archivo = "DOCUMENTOS_GENERADOS/RETENCIONES/" . $rsdatos[0]->infotributaria_claveacceso . ".PDF";
+        
+        $this->verReporte("Retencion", array('datos_reporte'=>$datos_reporte ,'_nombre_archivo'=>$_nombre_archivo));
+        
+        /*
+         echo file_get_contents($camino_nombre_xml);
+         die();
+         */
+        $reultSet=$retenciones->getBy("id_tri_retenciones='$id_tri_retenciones'");
+        
+        
+        if(!empty($reultSet)){
+            
+            $infoadicional_campoadicional_tres_correo = $reultSet[0]->infoadicional_campoadicional_tres;
+            
+            //$cabeceras .= "Content-type: text/html; charset=utf-8 \r\n";
+            
+            
+            $cuerpo="
+                
+    			<table rules='all'>
+    			<tr><td WIDTH='800' HEIGHT='50'><center><img src='http://186.4.157.125:80/webcapremci/view/images/bcaprem.png' WIDTH='300' HEIGHT='120'/></center></td></tr>
+    			</tabla>
+    			<p><table rules='all'></p>
+    			<tr style='background: #FFFFFF;'><td  WIDTH='1000' align='center'><b> BIENVENIDO A CAPREMCI </b></td></tr></p>
+    			<tr style='background: #FFFFFF;'><td  WIDTH='1000' align='justify'>Somos un Fondo Previsional orientado a asegurar el futuro de sus partícipes, prestando servicios complementarios para satisfacer sus necesidades; con infraestructura tecnológica – operativa de vanguardia y talento humano competitivo.</td></tr>
+                
+    			<tr style='background: #FFFFFF;'><td  WIDTH='1000' align='justify'>Le  informamos que adjunto a este correo se encuentra su documento electrónico en formato XML, así como su interpretación en formato PDF.</td></tr>
+                
+    			</tabla>
+    			<p><table rules='all'></p>
+    		    <tr style='background: #FFFFFF;'>
+    			</tabla>
+    			<p><table rules='all'></p>
+    			<tr style='background:#1C1C1C'><td WIDTH='1000' HEIGHT='50' align='center'><font color='white'>Capremci - <a href='http://www.capremci.com.ec'><FONT COLOR='#7acb5a'>www.capremci.com.ec</FONT></a> - Copyright © 2020-</font></td></tr>
+    			</table>
+    			";
+            
+            
+            $mail = new PHPMailer;
+            $mail->IsSMTP();								//Sets Mailer to send message using SMTP
+            $mail->Host = 'mail.capremci.com.ec';		//Sets the SMTP hosts of your Email hosting, this for Godaddy
+            $mail->Port = '587';								//Sets the default SMTP server port
+            $mail->SMTPAuth = true;							//Sets SMTP authentication. Utilizes the Username and Password variables
+            $mail->Username = 'info@capremci.com.ec';					//Sets SMTP username
+            $mail->Password = 'info/*-+2018';					//Sets SMTP password
+            $mail->SMTPSecure = '';
+            $mail->CharSet = 'UTF-8';
+            $mail->FromName = mb_convert_encoding($header, "UTF-8", "auto");//Sets connection prefix. Options are "", "ssl" or "tls"
+            $mail->From = 'info@capremci.com.ec';			//Sets the From email address for the message
+            $mail->FromName = 'Documentos Electronicos Capremci';			//Sets the From name of the message
+            $mail->AddAddress( $infoadicional_campoadicional_tres_correo,'');		//Adds a "To" address
+            $mail->AddAddress( 'documentoselectronicos@capremci.com.ec','');		//Adds a "To" address
+            
+            $mail->WordWrap = 50;							//Sets word wrapping on the body of the message to a given number of characters
+            $mail->IsHTML(true);							//Sets message type to HTML
+            $mail->AddAttachment($camino_nombre_xml);     				//Adds an attachment from a path on the filesystem
+            $mail->AddAttachment($_nombre_archivo);     				//Adds an attachment from a path on the filesystem
+            
+            $mail->Subject = 'Documento Electrónico Generado';			//Sets the Subject of the message
+            $mail->Body = $cuerpo;				//An HTML or plain text message body
+            if($mail->Send())								//Send an Email. Return true on success or false on error
+            {
+                $colval="enviado_correo_electronico='TRUE'";
+                $tabla="tri_retenciones";
+                $where="id_tri_retenciones='$id_tri_retenciones'";
+                
+                
+                $resultado = $retenciones->UpdateBy($colval, $tabla, $where);
+                
+            }
+            $message = '<label class="text-success">Customer Details has been send successfully...</label>';
+        }
+        
+        
+        return 0;
+        
+        
+    }
+    
+    
+    
+    
     
 }
 

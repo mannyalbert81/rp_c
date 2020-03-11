@@ -1144,6 +1144,7 @@ class TesCuentasPagarController extends ControladorBase{
                 
                
             }else{
+                
                 $respuesta['xml'] = " ARCHIVO ENTRO XML";
                 
                 if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML GENERADO" ){
@@ -1170,10 +1171,10 @@ class TesCuentasPagarController extends ControladorBase{
                     
                     if($aux['error'] === false){
                         
-                        $aux = $comprobante->enviarXml($clave);
+                        $Envioresp = $comprobante->enviarXml($clave);
                         //$aux['recibido'] = true; //para pruebas
                         
-                        if($aux['recibido'] === true){
+                        if($Envioresp['recibido'] === true){
                             
                             $respuesta['xml'] = " Archivo Xml RECIBIDO";
                             
@@ -1197,14 +1198,14 @@ class TesCuentasPagarController extends ControladorBase{
                         }else{
                             /** aqui poner senetecia en caso de haber errror **/
                             $respuesta['xml'] = " Archivo Xml NO RECIBIDO";
-                            $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+                            $respuesta['Archivo'] = ( array_key_exists('mensaje', $Envioresp) ) ? $Envioresp['mensaje'] : '' ;
                             $errorXml = true;
                         }
                             
                     }else{                        
                         /** aqui poner senetecia en caso de haber errror **/
                         $respuesta['xml'] = " Archivo Xml NO FIRMADO";
-                        $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+                        $respuesta['Archivo'] = ( array_key_exists('mensaje', $aux) ) ? $aux['mensaje'] : '' ;
                         $errorXml = true;
                     }
                     
@@ -1554,8 +1555,9 @@ class TesCuentasPagarController extends ControladorBase{
 	   	    
 	    $_digitoVerificador = $this->getDigVerificador($_strClaveAcceso);
 	    
-	    if( $_digitoVerificador == "")
+	    if( $_digitoVerificador === "" ){
 	        return "";
+	    }	    	    
 	    
         $_strClaveAcceso = $_strClaveAcceso.$_digitoVerificador;
 	    
@@ -1614,6 +1616,23 @@ class TesCuentasPagarController extends ControladorBase{
 	    } else {
 	        echo "No se encontró ninguna coincidencia.";
 	    }
+	    
+	    echo "variables es cero <br>";
+	    
+	    $numero = "";
+	    
+	    var_dump(is_int((int)$numero));
+	    
+	    $numero = "0";
+	    
+	    echo "el numero transformado es --> '",$numero,"' <br>";
+	    
+	    if( $numero === "" ){
+	        echo "ingreso vacio<br>";
+	    }else{
+	        echo "no nngreso vacio <br>";
+	    }
+	    
 	}
 	
 	public function pRetenciones(){
@@ -1682,7 +1701,7 @@ class TesCuentasPagarController extends ControladorBase{
 	public function getConfigXml(){
 	    $configuracionesPath = array(
 	        'url_pruebas' => 'https://celcer.sri.gob.ec',
-	        'url_produccion' => 'https://celcer.sri.gob.ec',
+	        'url_produccion' => 'https://cel.sri.gob.ec',
 	        'firmados' => 'DOCUMENTOSELECTRONICOS/docFirmados',
 	        'autorizados' => 'DOCUMENTOSELECTRONICOS/docAutorizados',
 	        'noautorizados' => 'docNoAutorizados',

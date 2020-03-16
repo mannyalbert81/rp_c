@@ -249,11 +249,11 @@ if (hora_inicio== "" || hora_inicio.includes("_"))
 	$("#hora_inicio").notify("Ingrese hora",{ position:"buttom left", autoHideDelay: 2000});
 	return;
 }
-
-if( !validarfecha(fecha) ){
-	$("#fecha").notify("Fecha no valida",{ position:"buttom left", autoHideDelay: 2000});
-	return;
-}
+// Validar que la fecha sea menor a la actual
+//if( !validarfecha(fecha) ){
+//	$("#fecha").notify("Fecha no valida",{ position:"buttom left", autoHideDelay: 2000});
+//	return;
+//}
 
 if ( fecha!="" && hora_fin!="" && !hora_inicio.includes("_") && hora_fin!="" && !hora_inicio.includes("_"))
 	{

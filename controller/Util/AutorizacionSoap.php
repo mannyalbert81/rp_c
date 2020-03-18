@@ -75,8 +75,11 @@ class AutorizacionSoap
             }
 
             //$info = curl_getinfo($ch);
+            
 
             curl_close($ch);
+            
+            //echo $code;
 
             if ($code != 200)
                 return array('error' => true, 'mensaje' => 'ERROR al enviar al servicio de autorizaciones del SRI codigo de error soap: ' . $code);

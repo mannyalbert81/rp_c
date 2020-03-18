@@ -224,6 +224,8 @@ class EntidadBase{
         return $cantidadAfectada;
     }
     
+    
+    
     public function eliminarFila($tabla,$where){
         
         $cantidadAfectada = null;

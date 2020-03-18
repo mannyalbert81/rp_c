@@ -85,9 +85,20 @@
 
 			<form id="frm_genera_cheque" action="<?php echo $helper->url("GenerarCheque","IndexCheque"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
              	
-             	<?php  ?>
+             	<div class="panel panel-warning">
+                  <div class="panel-heading"> DATOS ENTIDAD</div>                      
+                 </div>
              		    
 		    	 <div class="row">
+		    	 
+		    	    <div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="numero_pago" class=" control-label" >Numero Pago:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="numero_pago" name="numero_pago" value="" >
+                    		</div>        			 
+            			</div>
+            		</div>
 		    	 
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
@@ -100,7 +111,7 @@
 		    	
 		    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
 		    	 		<div class="form-group ">                 			 
-            				<label for="nombre_lote" class="control-label" > Lote:</label>
+            				<label for="nombre_lote" class="control-label" > Identificador Lote:</label>
             				<div class="form-group-sm">                				
                               <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $resultset[0]->nombre_lote; ?>" autofocus>  
                               <input type="hidden" id="id_lote" name="id_lote" value="<?php echo $resultset[0]->id_lote; ?>">
@@ -109,17 +120,7 @@
                 					
             			</div>		    	 	
 		    	 	</div>
-            		
-            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="numero_pago" class=" control-label" >Numero Pago:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="numero_pago" name="numero_pago" value="" >
-                    		</div>        			 
-            			</div>
-            		</div> 
-            		
+            		            		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
             				<label for="identificacion_proveedor" class=" control-label" >Descripción:</label> 
@@ -129,26 +130,6 @@
             			</div>
             		</div> 
             		
-            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="identificacion_proveedor" class=" control-label" >Identificacion Beneficiario:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="<?php echo $resultset[0]->identificacion_proveedores; ?>" >
-                    		</div>        			 
-            			</div>
-            		</div> 
-            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="nombre_proveedor" class=" control-label" >Nombre Beneficiario:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $resultset[0]->apellido_beneficiario.' - '. $resultset[0]->nombre_beneficiario;  ?>" >
-                    		</div>        			 
-            			</div>
-            		</div> 
-            		
-            		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
             				<label for="total_lote" class=" control-label" >Total Pago:</label> 
@@ -157,15 +138,89 @@
                     		</div>        			 
             			</div>
             		</div> 
-            		            		
+            		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="nombre_cuenta_banco" class=" control-label" >Transferir a:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="nombre_cuenta_banco" name="nombre_cuenta_banco" value="<?php echo $resultset[0]->nombre_banco; ?>" >
+            				<label for="total_lote" class=" control-label" >Bancos Local:</label> 
+                    		<div class="form-group-sm">           
+                    			<select class="form-control" id="id_bancos_local">
+                    				<option value="0">--Seleccione--</option>
+                    			</select> 
                     		</div>        			 
             			</div>
+            		</div> 
+            		
+            	</div>
+            	<?php if( isset($resultset[0]->iscredito) ) { ?>
+            	<div class= "row">
+            		<input type="hidden" id="id_creditos" value="<?php echo $resultset[0]->id_creditos;?>">
+            		<div class="col-xs-12 col-md-12 col-lg-12">
+            			<h4> Datos credito </h4>
             		</div>
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="numero_creditos" class=" control-label" >Num. Credito:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="numero_creditos" value="<?php echo $resultset[0]->numero_creditos; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="tipo_creditos" class=" control-label" >Tipo. Credito:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="tipo_creditos"  value="<?php echo $resultset[0]->nombre_tipo_creditos; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div> 
+            	</div>
+                <?php }?>
+                
+                <div class="panel panel-warning">
+                  <div class="panel-heading"> BENEFICIARIO/A:</div>                                   
+                </div>
+                           	
+            	<div class="row">	
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="identificacion_proveedor" class=" control-label" >Identificacion:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="<?php echo $resultset[0]->identificacion_proveedores; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="nombre_proveedor" class=" control-label" >Nombre:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $resultset[0]->apellido_beneficiario.' - '. $resultset[0]->nombre_beneficiario;  ?>" >
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="id_bancos_transferir" class=" control-label" >Transferir A:</label> 
+                    		<div class="form-group-sm">           
+                    			<select class="form-control" id="id_bancos_transferir" >
+                    				<option value="<?php echo $resultset[0]->id_bancos; ?>"> <?php echo $resultset[0]->nombre_bancos; ?></option>
+                    			</select> 
+                    		</div>        			 
+            			</div>
+            		</div>             		
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="tipo_cuenta_banco" class=" control-label" >Tipo Cuenta:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="tipo_cuenta_banco" name="tipo_cuenta_banco" value=" <?php echo $resultset[0]->nombre_tipo_cuenta_banco; ?> " >
+                				 <input type="hidden" id="id_tipo_cuentas" value="<?php echo $resultset[0]->id_tipo_cuentas; ?>">
+                    		</div>        			 
+            			</div>
+            		</div>   
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
@@ -176,14 +231,7 @@
             			</div>
             		</div> 
             		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="tipo_cuenta_banco" class=" control-label" >Tipo Cuenta:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="tipo_cuenta_banco" name="tipo_cuenta_banco" value=" <?php echo $resultset[0]->nombre_tipo_cuenta_banco; ?> " >
-                    		</div>        			 
-            			</div>
-            		</div>           		
+            		        		
             		            						    
           	   	</div>
           	   	
@@ -193,7 +241,7 @@
                     	  <button type="button" id="genera_transferencia" name="genera_transferencia" class="btn btn-success">
                           	<i class="glyphicon glyphicon-plus"></i> Aceptar
                           </button>
-                          <button type="button" id="distribucion_transferencia" name="distribucion_transferencia" class="btn btn-success" data-toggle="modal" data-target="#mod_distribucion_pago" >
+                          <button type="button" id="distribucion_transferencia" name="distribucion_transferencia" class="btn btn-success" >
                           	<i class="glyphicon glyphicon-plus"></i> Distribucion
                           </button>                         
                           <a href="<?php echo $helper->url("Pagos","Index"); ?>" class="btn btn-primary">
@@ -259,16 +307,48 @@
 	    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
 	    	 		<div class="form-group ">                 			 
         				<label for="nombre_lote" class="control-label" >Transferir a:</label>
-        				<div class="form-group-sm">                				
-                          <input type="text" style="height:30px"  class=" form-control" id="mod_banco_transferir" name="mod_banco_transferir" value="">
+        				<div class="form-group-sm">  
+        					<select class="form-control" id="mod_banco_transferir">
+        					
+        					</select> 
         				</div>
             						 
         			</div>		    	 	
-	    	 	</div>     
+	    	 	</div> 
+	    	 	
+	    	 	<div class="col-xs-12 col-lg-6 col-md-6 ">
+	    	 		<div class="form-group ">                 			 
+        				<label for="mod_descripcion_transferencia" class="control-label" >Descripcion:</label>
+        				<div class="form-group-sm">                				
+                          <input type="text" style="height:30px"  class=" form-control" id="mod_descripcion_transferencia" value="">
+        				</div>
+            						 
+        			</div>		    	 	
+	    	 	</div>
+	    	 	
+	    	 	<div id="divmodcreditos">
+	    	 		<div class="col-xs-12 col-lg-3 col-md-3 ">
+	    	 		<div class="form-group ">                 			 
+        				<label for="nombre_lote" class="control-label" >Num. Credito:</label>
+        				<div class="form-group-sm">                				
+                          <input type="text" style="height:30px"  class=" form-control" id="mod_numero_creditos" name="" value="">
+        				</div>
+            						 
+        			</div>		    	 	
+    	    	 	</div> 
+    	    	 	<div class="col-xs-12 col-lg-3 col-md-3 ">
+    	    	 		<div class="form-group ">                 			 
+            				<label for="nombre_lote" class="control-label" >Tipo Credito:</label>
+            				<div class="form-group-sm">                				
+                              <input type="text" style="height:30px"  class=" form-control" id="mod_tipo_creditos" name="" value="">
+            				</div>
+                						 
+            			</div>		    	 	
+    	    	 	</div> 
+	    	 	</div>  
+	    	 	    
           	</div>
-             
-          	<hr>
-          	
+          	          	
 		  	<div class="box-body">        
 				<div id="lista_distribucion_transferencia" ></div>
         	</div>
@@ -296,7 +376,7 @@
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.11"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.21"></script>
 
   </body>
 </html>   

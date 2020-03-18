@@ -1,8 +1,9 @@
-var listaCuentas = [];
+var listaCuentas = []; // variable que permite el almacenamiento de datos de distribucion valores
 $(document).ready(function(){
 		
 	init();
 	devuelveconsecutivos();
+	loadBancosLocal();
 	
 })
 
@@ -59,6 +60,70 @@ function devuelveconsecutivos(){
 	})
 }
 
+/***
+ * @desc funcion para traer la chequera de la entidad
+ * @param none
+ * @retuns void
+ * @ajax si 
+ */
+function loadBancosLocal(){	
+	
+	var $ddlChequera = $("#id_bancos_local");
+	params = {};
+	$ddlChequera.empty();
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=CargaBancosLocal",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.data != undefined && x.data != null ){
+			var rsChequera = x.data;
+			$ddlChequera.append('<option value="0">--Seleccione--</option>' );
+			$.each(rsChequera,function(index, value){
+				//console.log('index -->'+index+'   Value ---> '+value.id_bancos);
+				$ddlChequera.append( '<option value="'+value.id_bancos+'">'+value.nombre_bancos+'</option>' );
+			})
+		}
+		console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+}
+
+/***
+ * @desc funcion para traer bancos a transferir
+ * @param none
+ * @retuns void
+ * @ajax si 
+ */
+function loadBancosbeneficiario(){	
+	
+	var $ddlChequera = $("#id_bancos_local");
+	params = {};
+	$ddlChequera.empty();
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=CargaBancosLocal",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.data != undefined && x.data != null ){
+			var rsChequera = x.data;
+			$ddlChequera.append('<option value="0">--Seleccione--</option>' );
+			$.each(rsChequera,function(index, value){
+				//console.log('index -->'+index+'   Value ---> '+value.id_bancos);
+				$ddlChequera.append( '<option value="'+value.id_bancos+'">'+value.nombre_bancos+'</option>' );
+			})
+		}
+		console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+}
+
+
+
 /*******************************************************************************
  * funcion para poner mayusculas
  * 
@@ -81,9 +146,25 @@ $("#distribucion_transferencia").on("click",function(event){
 	
 	$descripcion = $("#descripcion_pago");
 	if($descripcion.val() == ""){
-		$descripcion.notify("Ingrese una descripcion",{ position:"top center"});
+		$descripcion.notify("Ingrese una descripción",{ position:"top center"});
 		return false;
 	}
+	
+	$id_bancos_local = $("#id_bancos_local");
+	if( $id_bancos_local.val() == undefined ||  $id_bancos_local.val() == null || $id_bancos_local.val() == "0"){
+		$id_bancos_local.notify("Seleccione Banco Local",{ position:"top center"});
+		swal({"text":"Banco Local no seleecionado. !favor Revisar",icon:"warning"});
+		return false;
+	}
+	
+	$id_bancos_tranferir = $("#id_bancos_transferir");
+	if( $id_bancos_tranferir.val() == undefined ||  $id_bancos_tranferir.val() == null || $id_bancos_tranferir.val() == ""){
+		$id_bancos_tranferir.notify("Ingrese Banco a transferir",{ position:"top center"});
+		swal({"text":"banco a transferir no definido. !favor Revisar",icon:"warning"});
+		return false;
+	}
+	
+	//$("#mod_banco_transferir")[0].selectedIndex = 0; // quede selecionado el select
 	
 	$divResultados = $modal.find("#lista_distribucion_transferencia");		
 	$divResultados.html('');
@@ -95,7 +176,22 @@ $("#distribucion_transferencia").on("click",function(event){
 	$modal.find("#mod_nombre_proveedor").val($("#nombre_proveedor").val());
 	$modal.find("#mod_banco_transferir").val($("#nombre_cuenta_banco").val());
 	$modal.find("input:text[name='mod_dis_referencia']").val($("#descripcion_pago").val());
-	$modal.find("span[name='mod_dis_valor']").text($("#total_cuentas_pagar").val());
+	$modal.find("#mod_descripcion_transferencia").val( $("#descripcion_pago").val());
+	
+	if( $("#id_creditos").val() == undefined ||  $("#id_creditos").val() == null ){
+		$("#divmodcreditos").addClass("hidden");
+	}else{
+		
+		$modal.find("#mod_numero_creditos").val( $("#numero_creditos").val());
+		$modal.find("#mod_tipo_creditos").val( $("#tipo_creditos").val());
+	}
+	
+	getCuentaBancoPago(); //funcion para graficar la cuenta del banco local selecicionado
+	
+	$modal.modal("show");
+	
+	$("#mod_banco_transferir").empty().append( $("#id_bancos_transferir option:selected").clone() ); //pasar datos de select es solo informativo
+		
 	
 })
 
@@ -138,8 +234,43 @@ function graficaTablaDistribucion(){
 	
 	$tablaDistribucion.find("select[name='mod_tipo_pago']").append('<option value="debito" >DEBITO</option><option value="credito" >CREDITO</option>');
 	$tablaDistribucion.find("input:text[name='mod_dis_referencia']").append('');
+	
+	$tablaDistribucion.find("span[name='mod_dis_valor']").text( $("#total_cuentas_pagar").val());
 
 	return $tablaDistribucion;
+	
+}
+
+function getCuentaBancoPago(){
+	
+	var bancoLocal	= $("#id_bancos_local");
+	
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=getContablePago",
+		dataType:"json",
+		type:"POST",
+		data:{id_bancos: bancoLocal.val()}
+	}).done( function(x){
+		if( x.estatus != undefined ){
+			if( x.estatus == "OK" ){
+				
+				var tabla = $("#tbl_distribucion2"); // se seleciona la tabla que se grafica en el metodo de ver tabal de distribucion
+				var lastRowTable = tabla.find("tr:last-child");
+				
+				var rsData  = x.data[0];
+				
+				lastRowTable.find("input:text[name='mod_dis_codigo']").val( rsData.codigo_plan_cuentas);
+				lastRowTable.find("input:text[name='mod_dis_nombre']").val( rsData.nombre_plan_cuentas );
+				lastRowTable.find("input:hidden[name='mod_dis_id_plan_cuentas']").val( rsData.id_plan_cuentas);
+				lastRowTable.find("select[id='mod_tipo_pago']").val("credito");
+				
+				
+			}
+		}
+	}).fail( function(xhr,status,error){
+		
+		console.log(xhr.responseText);
+	})
 	
 }
 
@@ -152,11 +283,15 @@ $("#genera_transferencia").on("click",function(){
 	var _tipo_cuenta_banco = $("#tipo_cuenta_banco").val();
 	var _total_cuentas_pagar = $("#total_cuentas_pagar").val();
 	var _nombre_cuenta_banco = $("#nombre_cuenta_banco").val();
-	
+	var _id_tipo_cuentas     = $("#id_tipo_cuentas").val();
 	//esta variable se declara ala cargar la pagina
 	//listaCuentas
 	console.log(listaCuentas);
 	var arrayCuentas = listaCuentas;
+	
+	var isCredito = $("#id_creditos").val() == undefined ? false : true;  // aqui determinar si la transferencia se le hace a un credito
+	var banco_local = $("#id_bancos_local");
+	var banco_transferir = $("#id_bancos_transferir");
 	
 	parametros 	= new FormData();	
 	parametros.append('lista_distribucion', arrayCuentas);
@@ -164,9 +299,11 @@ $("#genera_transferencia").on("click",function(){
 	parametros.append('fecha_transferencia', _fecha_transferencia);
 	parametros.append('total_cuentas_pagar', _total_cuentas_pagar);
 	parametros.append('tipo_cuenta_banco', _tipo_cuenta_banco);
-	parametros.append('nombre_cuenta_banco', _nombre_cuenta_banco);
 	parametros.append('numero_cuenta_banco', _numero_cuenta_banco);
-	
+	parametros.append('id_bancos_local', banco_local.val() );
+	parametros.append('id_bancos_transferir', banco_transferir.val() );
+	parametros.append('is_credito', isCredito);	
+	parametros.append('id_tipo_cuentas', _id_tipo_cuentas);	
 	
 	$.ajax({
 		url:"index.php?controller=Transferencias&action=GeneraTransferencia",

@@ -528,6 +528,7 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
               	 <li style="<?php echo getcontrolador("TributarioGeneraAts",$controladores) ?>"><a href="index.php?controller=TributarioGeneraAts&action=index"><i class="fa fa-circle-o"></i> Generar ATS Compras</a></li>
+              	 <li style="<?php echo getcontrolador("TributarioImpuestoSuperavit",$controladores) ?>"><a href="index.php?controller=TributarioImpuestoSuperavit&action=index"><i class="fa fa-circle-o"></i> Impuesto Superavit</a></li>
              </ul>
             </li>
         
@@ -539,7 +540,7 @@ $controladores=$_SESSION['controladores'];
             </span>
           </a>
           <ul class="treeview-menu">
-           <li style="<?php echo getcontrolador("Retencion",$controladores) ?>"><a href="index.php?controller=Retencion&action=index"><i class="fa fa-circle-o"></i> Generar Retención</a></li>
+           <li style="<?php echo getcontrolador("Retencion",$controladores) ?>"><a href="index.php?controller=Retencion&action=index"><i class="fa fa-circle-o"></i> Retenciónes</a></li>
 		  </ul>
         </li>
        </ul>

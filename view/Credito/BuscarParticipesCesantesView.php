@@ -122,6 +122,9 @@
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="participe_encontrado" ></div>
            		</div>
+
+           	</div>
+
            	</div>
 
            	   	<div class="row">
@@ -143,6 +146,7 @@
                           <div id="mensaje_id_tipo_pestaciones" class="errores"></div>
                         </div>
             	</div>
+
             	 <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
             		    					  
@@ -160,6 +164,7 @@
           	  		
 				</div>
 			</div>
+
 
            	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
@@ -218,7 +223,13 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
 
+
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?1.47"></script> 
+
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.70"></script> 
+
    <script src="view/Credito/js/BuscarParticipesCesantes.js?1.71"></script> 
+
 
    </body>
 </html>   

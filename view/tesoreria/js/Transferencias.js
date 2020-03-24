@@ -4,6 +4,7 @@ $(document).ready(function(){
 	init();
 	devuelveconsecutivos();
 	loadBancosLocal();
+	loadTipoArchivo();
 	
 })
 
@@ -57,6 +58,37 @@ function devuelveconsecutivos(){
 		$("#numero_pago").val(x.pagos.numero);
 	}).fail(function(xhr,status,error){
 		$("#numero_pago").val('');
+	})
+}
+
+/***
+ * @desc funcion para traer el tipo archivo 
+ * @param none
+ * @retuns void
+ * @ajax si 
+ */
+function loadTipoArchivo(){	
+	
+	var $ddlTipoArchivo = $("#id_tipo_archivo_pago");
+	params = {};
+	$ddlTipoArchivo.empty();
+	$.ajax({
+		url:"index.php?controller=ArchivoPago&action=CargaTipoArchivo",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.data != undefined && x.data != null ){
+			var rsTipoArchivo = x.data;
+			$ddlTipoArchivo.append('<option value="0">--Seleccione--</option>' );
+			$.each(rsTipoArchivo,function(index, value){
+				//console.log('index -->'+index+'   Value ---> '+value.id_bancos);
+				$ddlTipoArchivo.append( '<option value="'+value.id_tipo_pago_archivo+'">'+value.nombre_tipo_pago_archivo+'</option>' );
+			})
+		}
+		console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
 	})
 }
 
@@ -289,6 +321,9 @@ $("#genera_transferencia").on("click",function(){
 	console.log(listaCuentas);
 	var arrayCuentas = listaCuentas;
 	
+	//para insertado de la tabla archivo pago
+	var _id_tipo_archivo_pago	= $("#id_tipo_archivo_pago").val();
+	
 	var isCredito = $("#id_creditos").val() == undefined ? false : true;  // aqui determinar si la transferencia se le hace a un credito
 	var banco_local = $("#id_bancos_local");
 	var banco_transferir = $("#id_bancos_transferir");
@@ -304,6 +339,7 @@ $("#genera_transferencia").on("click",function(){
 	parametros.append('id_bancos_transferir', banco_transferir.val() );
 	parametros.append('is_credito', isCredito);	
 	parametros.append('id_tipo_cuentas', _id_tipo_cuentas);	
+	parametros.append('id_tipo_archivo_pago', _id_tipo_archivo_pago);
 	
 	$.ajax({
 		url:"index.php?controller=Transferencias&action=GeneraTransferencia",
@@ -315,32 +351,50 @@ $("#genera_transferencia").on("click",function(){
 	}).done(function(x){
 		console.log(x);
 		
-		if(x.respuesta == 1){
+		if( x.estatus != undefined ){
+			if( x.estatus == "OK" ){
+				swal({				
+					title:"TRANSACION REALIZADA",
+					icon:"success",
+					text:x.mensaje
+				}).then(function(){
+					
+					window.open("index.php?controller=Pagos&action=Index","_self");
+				})
+			}
 			
-			swal({				
-				title:"TRANSACION REALIZADA",
-				icon:"success",
-				text:x.mensaje
-			}).then(function(){
+			if( x.estatus == "ERROR"){
+				swal({				
+					title:" ERROR TRANSACION",
+					icon:x.icon,
+					text:x.mensaje
+				})
+			}
 				
-				window.open("index.php?controller=Pagos&action=Index","_self");
+		}
+		
+		if( x.estatus == undefined ){
+			swal({				
+				title:"ERROR PROCESO",
+				icon:"error",
+				dangerMode: true,
+				text:"llamar al administrador del sistema"
 			})
 		}
 		
 	}).fail(function(xhr, status, error){
 		
-		var err = xhr.responseText
+		var err = xhr.responseText;
+		
+		swal( {
+			 title:"CONEXION",
+			 dangerMode: true,
+			 text:"No se pudo conectar con el servidor! llamar al administrador",
+			 icon: "error"
+			})
+		
 		console.log(err)
-		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
-		if( mensaje !== null ){
-			var resmsg = mensaje[1]
-			swal( {
-				 title:"Tansferencia",
-				 dangerMode: true,
-				 text: resmsg.replace("|","\n"),
-				 icon: "error"
-				})
-		}
+		
 	})
 })
 

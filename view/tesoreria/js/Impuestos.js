@@ -75,8 +75,7 @@ function getCodigoRetencion(objeto){
 			  var items = [];
 			  items.push( "<option value='0'>--Seleccione--</option>" );
 			  $.each( dataSelect, function( index, value ) {		
-				  var nombreImp = value.nombre;
-				  console.log( nombreImp );				  
+				  var nombreImp = value.nombre;				  			  
 				  items.push( "<option value='" + value.valor + "'>"+ value.valor + " <--> " + nombreImp + "</option>" );			    
 			  });
 			 

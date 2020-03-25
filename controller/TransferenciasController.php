@@ -229,6 +229,9 @@ class TransferenciasController extends ControladorBase{
 	    $_numero_cuenta_banco  = $_POST['numero_cuenta_banco'];
 	    $_isCredito            = $_POST['is_credito'];
 	    $_id_tipo_cuentas      = $_POST['id_tipo_cuentas'];
+	    
+	    //variable usada para determinar el tipo de archivo de pago
+	    $_id_tipo_archivo_pago = $_POST['id_tipo_archivo_pago'];
 	    	    
 	    $_isCredito = filter_var($_isCredito, FILTER_VALIDATE_BOOLEAN); //se realiza la conversion de string a un boleano 
 	   
@@ -410,7 +413,19 @@ class TransferenciasController extends ControladorBase{
 	        
 	        /** viene generacion de archivo plano con valores para envio de datos**/
 	        /* analizar proceso de generacion archivo plano **/
-	       
+	        //se viene deacuerdo al tipo de archivo que se necesite 
+	        // se guardara los detalles del archivo pago 
+	        // viene en funcion subfuncion
+	        $datos = array(
+	            'id_tipo_archivo_pago'=>$_id_tipo_archivo_pago,
+	            'id_pagos'=>$id_pagos
+	        );
+	        $auxArchivo = $this->auxRegistraArchivoPago($datos,$_fecha_transferencia);
+	        
+	        if( $auxArchivo['error'] === true ){
+	            throw new Exception( "Inserción Archivo! ".$auxArchivo['mensaje'] );
+	        }
+	       	       
 	        $resp['icon'] = "success";
 	        $resp['mensaje'] = "Pago generado con exito";
 	        $resp['estatus'] = "OK";
@@ -571,6 +586,11 @@ class TransferenciasController extends ControladorBase{
 	    return $Comprobanteresp;
 	}
 	
+	/***
+	 * @param bool $pruebas //variable para definir si la expresion se va a pruebas o a produccion
+	 * @param array $datos  //array con datos predefinidos para llenar datos en el mensaje de texto
+	 * @return boolean[]|mixed[]|boolean[]|string[]
+	 */
 	function auxEnviarMsgMovil( bool $pruebas, array $datos ){
 	    
 	    if( $pruebas ){
@@ -592,6 +612,106 @@ class TransferenciasController extends ControladorBase{
 	    }
 	    
 	    return array('error'=>false,'mensaje'=>"");
+	}
+	
+	function auxRegistraArchivoPago(array $datos, string $fecha_proceso){
+	    
+	    $pagos = new PagosModel();
+	    $aux=null;
+	    //variables para el insertado del archivo de pago	    
+	    $id_tipo_archivo_pago = $datos['id_tipo_archivo_pago'];
+	    $id_pagos = $datos['id_pagos'];	    
+	    $pago_archivo_pago = "PA";
+	    $contrapartida_pago = ""; //esta columna puede ser configurable .. puede ser un secuencial o la cedula como en los ejemplos
+	    $moneda_pago = "USD";
+	    $valor_pago = "0"; // tipo dato string y formato sin punto decimal toma dos ultimos digitos como decimal del valor
+	    $cuenta_pago = "CTA";
+	    $tipo_cuenta_pago = "";
+	    $numero_cuenta_pago = "";
+	    $referencia_pago = "";
+	    $tipo_identificacion_pago = "";
+	    $numero_identificacion_pago = "";
+	    $beneficiario_pago = "";
+	    $codigo_banco_pago = "";
+	    $fecha_proceso_pago = $fecha_proceso;
+	    $tipo_pago_archivo_pago = ""; // si la variable es Directa D -- Interbancaria I ;
+	    
+	    if( (int)$datos['id_bancos_local'] === (int)$datos['id_bancos_archivo'] ){
+	        $tipo_pago_archivo_pago = "D";
+	    }else if( (int)$datos['id_bancos_local'] !== (int)$datos['id_bancos_archivo'] ){
+	        $tipo_pago_archivo_pago = "I";
+	    }
+	    
+	    //para diferenciar el tipo de pago que se realiza por concepto
+	    $col1 = " id_tipo_pago_archivo,nombre_tipo_pago_archivo ";
+	    $tab1 = " public.tes_tipo_pago_archivo";
+	    $whe1 = " id_tipo_pago_archivo = $id_tipo_archivo_pago";
+	    $rsConsulta1 = $pagos->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+	    if(empty($rsConsulta1) ){
+	       return array('error'=>true,'mensaje'=>'tipo de archivo pago no definido'); 
+	    }
+	    
+	    $nombre_tipo_archivo_pago = $rsConsulta1[0]->nombre_tipo_pago_archivo;
+	    $nombre_tipo_archivo_pago = strtoupper($nombre_tipo_archivo_pago);
+	    
+	    //definir si la refencia se tomara de la descripcion de la transferencia
+	    $referencia_pago = (array_key_exists('referencia_pago', $datos) ) ? $datos['referencia_pago'] : "";
+	    switch ($nombre_tipo_archivo_pago) {
+	        case 'PROVEEDORES':
+	            $referencia_pago = "PAGO";
+	        break;
+	        
+	        default:
+	            ;
+	        break;
+	    }
+	    
+	    $col2 = " aa.id_pagos, cc.codigo_tipo_cuentas, aa.numero_cuenta_bancos_pagos, bb.identificacion_proveedores, bb.nombre_proveedores, dd.codigo_bancos, 
+                aa.valor_pagos";
+	    $tab2 = " tes_pagos aa
+    	    INNER JOIN proveedores bb ON bb.id_proveedores = aa.id_proveedores
+    	    INNER JOIN core_tipo_cuentas cc ON cc.id_tipo_cuentas = aa.id_tipo_cuenta
+    	    INNER JOIN tes_bancos dd ON dd.id_bancos = aa.id_bancos";
+	    $whe2 = " 1 = 1
+	        AND aa.id_pagos = $id_pagos";
+	    $rsConsulta2   = $pagos->getCondicionesSinOrden($col2, $tab2, $whe2, "");
+	    
+	    $numero_identificacion_pago = $rsConsulta2[0]->identificacion_proveedores;
+	    $numero_identificacion_pago = trim($numero_identificacion_pago); // numero identificacion
+	    $beneficiario_pago     = trim( $rsConsulta2[0]->nombre_proveedores );  //beneficiario 
+	    $codigo_banco_pago     = trim( $rsConsulta2[0]->codigo_bancos );
+	    $tipo_cuenta_pago      = trim( $rsConsulta2[0]->codigo_tipo_cuentas );
+	    $numero_cuenta_pago    = trim( $rsConsulta2[0]->numero_cuenta_bancos_pagos );
+	    $valor_pago            = $rsConsulta2[0]->valor_pagos;
+	    $lengthIdentificacion  = strlen($numero_identificacion_pago);
+	    $tipo_identificacion_pago  = ( $lengthIdentificacion == 10 ) ? "C" : ( ( $lengthIdentificacion == 13 ) ? "R" : "P" ); // tipo de identificacion
+	    
+	    //variable de contrapartida donde debe configurar para que sea sea la cedula o un secuencial
+	    $contrapartida_pago    = $numero_identificacion_pago;
+	    
+	    //configurar el pago al formato del archivo 
+	    $valor_pago    = str_replace(",", "", $valor_pago);
+	    $valor_pago    = str_replace(".", "", $valor_pago);
+	    	    
+	    $funcion       = 'ins_tes_archivo_pago';
+	    $parametros    = "$id_tipo_archivo_pago,$id_pagos,'$pago_archivo_pago','$contrapartida_pago','$moneda_pago','$valor_pago','$cuenta_pago','$tipo_cuenta_pago',
+                        '$numero_cuenta_pago','$referencia_pago','$tipo_identificacion_pago','$numero_identificacion_pago','$beneficiario_pago','$codigo_banco_pago',
+                        '$fecha_proceso_pago','$tipo_pago_archivo_pago'";
+	    
+	    $queryInsert   = $pagos->getconsultaPG($funcion, $parametros);
+	    $result        = $pagos->llamarconsultaPG($queryInsert);
+	    
+	    $error = pg_last_error();
+	    if(!empty($error)){
+	        return array('error'=>true,'mensaje'=>$error);
+	    }
+	    
+	    $id_archivo_pago   = $result[0];
+	    
+	    $aux['error']=false;
+	    $aux['id_archivo']=$id_archivo_pago;	    
+	    
+	    return $aux;
 	}
 	
 	public function paginate($reload, $page, $tpages, $adjacents, $funcion = "") {
@@ -1311,6 +1431,32 @@ class TransferenciasController extends ControladorBase{
 	}
 	
 	
+	/******************************************************************** METODOS PARA LA GENERACION DE ARCHIVOS PAGO ***********************************/
 	
+	function auxArchivoProveedores(array $datos){
+	    $pagos = new PagosModel();
+	    $aux = null;
+	    return $aux;
+	}
+	
+	/************************************************************ TERMINA METODOS PARA LA GENERACION DE ARCHIVOS PAGO ***********************************/
+	
+	/*********************************************************** FUNCIONES PARA PROBAR METODOS ************************************************************/
+	function prueba(){
+	  $var1 = "28,930.00";
+	  
+	  echo str_replace(".", "", str_replace(",", "", $var1) ); echo "<br>";
+	  
+	  echo str_replace(".", "", $var1); echo "<br>";
+	  
+	  echo str_replace(",", "", $var1); echo "<br>";
+	  
+	  echo trim($var1,".");  echo "<br>";
+	  
+	  echo trim( trim($var1,'.'),','); echo "<br>";
+	  
+	  echo number_format((double)$var1,2,'','');
+	}
+	/*********************************************************** FUNCIONES PARA PROBAR METODOS ************************************************************/
 }
 ?>

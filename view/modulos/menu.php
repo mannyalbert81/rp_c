@@ -406,6 +406,7 @@ $controladores=$_SESSION['controladores'];
                 <li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=Pagos&action=Index"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
               	<!-- <li style="<?php //echo getcontrolador("IngresoCuentasPagar",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=CuentasPagarIndex"><i class="fa fa-circle-o"></i> Ingreso Cuentas Pagar</a></li>              	
               	<li style="<?php //echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=Compras&action=Index"><i class="fa fa-circle-o"></i> Compras</a></li> -->
+              	<li style="<?php echo getcontrolador("genArchivoPago",$controladores) ?>"><a href="index.php?controller=ArchivoPago&action=Index2"><i class="fa fa-circle-o"></i> Generacio Archivo Pago</a></li>
               	    			
              </ul>
             </li>

@@ -419,7 +419,7 @@ class ArchivoPagoController extends ControladorBase{
 	        exit();
 	    }
 	    
-	    $nombre_controladores = "ArchivoPago";
+	    $nombre_controladores = "genArchivoPago";
 	    $id_rol= $_SESSION['id_rol'];
 	    $resultPer = $archivoPago->getPermisosVer(" controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	    if (empty($resultPer)){

@@ -13,7 +13,7 @@ function ConsultaReporteCierreCreditos(_page){
 		type:"POST",
 		data:{page:_page,search:buscador,peticion:'ajax'}
 	}).done(function(datos){		
-		console.log(datos);
+		//console.log(datos);
 		$("#consulta_cierre_creditos_registrados_tbl").html(datos);		
 		
 	}).fail(function(xhr,status,error){
@@ -64,7 +64,8 @@ function ConsultaReporteCierreCreditos(_page){
 		let $archivo_cretificado_core_documentos_hipotecario = $('#archivo_cretificado_core_documentos_hipotecario').val();
 		let $archivo_impuesto_core_documentos_hipotecario= $('#archivo_impuesto_core_documentos_hipotecario').val();
 		let $archivo_avaluo_core_documentos_hipotecario = $('#archivo_avaluo_core_documentos_hipotecario').val();
-		
+		 var  extensiones_permitidas = new Array(".pdf"); 
+			
 		
 		if($mod_id_core_documentos_hipotecario > 0) {  
 			
@@ -83,8 +84,75 @@ function ConsultaReporteCierreCreditos(_page){
         } 
 		
 		
-		
+        
+        if($archivo_escritura_core_documentos_hipotecario != ""){ 
+		      extension = ($archivo_escritura_core_documentos_hipotecario.substring($archivo_escritura_core_documentos_hipotecario.lastIndexOf("."))).toLowerCase(); 
+		      permitida = false; 
+		      for (var i = 0; i < extensiones_permitidas.length; i++) { 
+		         if (extensiones_permitidas[i] == extension) { 
+		         permitida = true; 
+		         break; 
+		         } 
+		      } 
+		      if (!permitida) { 
 
+		    	  swal("Alerta!", "Seleccione archivos .pdf", "error")
+		            return false;
+				}
+		   }
+        
+        
+        
+        if($archivo_cretificado_core_documentos_hipotecario != ""){ 
+		      extension = ($archivo_cretificado_core_documentos_hipotecario.substring($archivo_cretificado_core_documentos_hipotecario.lastIndexOf("."))).toLowerCase(); 
+		      permitida = false; 
+		      for (var i = 0; i < extensiones_permitidas.length; i++) { 
+		         if (extensiones_permitidas[i] == extension) { 
+		         permitida = true; 
+		         break; 
+		         } 
+		      } 
+		      if (!permitida) { 
+
+		    	  swal("Alerta!", "Seleccione archivos .pdf", "error")
+		            return false;
+				}
+		   }
+        
+        
+        if($archivo_impuesto_core_documentos_hipotecario != ""){ 
+		      extension = ($archivo_impuesto_core_documentos_hipotecario.substring($archivo_impuesto_core_documentos_hipotecario.lastIndexOf("."))).toLowerCase(); 
+		      permitida = false; 
+		      for (var i = 0; i < extensiones_permitidas.length; i++) { 
+		         if (extensiones_permitidas[i] == extension) { 
+		         permitida = true; 
+		         break; 
+		         } 
+		      } 
+		      if (!permitida) { 
+
+		    	  swal("Alerta!", "Seleccione archivos .pdf", "error")
+		            return false;
+				}
+		   }
+		
+        if($archivo_avaluo_core_documentos_hipotecario != ""){ 
+		      extension = ($archivo_avaluo_core_documentos_hipotecario.substring($archivo_avaluo_core_documentos_hipotecario.lastIndexOf("."))).toLowerCase(); 
+		      permitida = false; 
+		      for (var i = 0; i < extensiones_permitidas.length; i++) { 
+		         if (extensiones_permitidas[i] == extension) { 
+		         permitida = true; 
+		         break; 
+		         } 
+		      } 
+		      if (!permitida) { 
+
+		    	  swal("Alerta!", "Seleccione archivos .pdf", "error")
+		            return false;
+				}
+		   }
+        
+        
 		var parametros = new FormData();
 		
 		parametros.append('id_core_documentos_hipotecario',$mod_id_core_documentos_hipotecario);

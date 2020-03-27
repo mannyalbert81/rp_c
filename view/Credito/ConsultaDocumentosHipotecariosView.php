@@ -70,7 +70,7 @@
             </div> 
             <div class="box-body">
     			<div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="ConsultaReporteCierreCreditos(1)" placeholder="Buscar.."/>
+					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="ConsultaDocumentosHipotecarios(1)" placeholder="Buscar.."/>
     			</div>  
     			
     			<div id="ConsultaReporteCierreCreditos"></div>  
@@ -86,74 +86,6 @@
    
    
    
-    <!-- PARA VENTANAS MODALES -->
-    
-      <div class="modal fade" id="mod_reasignar" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Actualizar Documentos Solicitud</h4>
-          </div>
-          <div class="modal-body">
-          <!-- empieza el formulario modal productos -->
-          	<form class="form-horizontal" method="post" id="frm_reasignar" name="frm_reasignar">
-          	
-          	  <div class="form-group">
-				<label for="mod_cedu" class="col-sm-3 control-label">Escritura:</label>
-				<div class="col-sm-8">
-				  <input type="hidden" class="form-control" id="mod_id_core_documentos_hipotecario" name="mod_id_core_documentos_hipotecario"  readonly>
-				  	   <input accept="pdf" type="file" name="archivo_escritura_core_documentos_hipotecario" id="archivo_escritura_core_documentos_hipotecario" value=""  class="form-control"/>  
-				  
-				</div>
-			  </div>
-			  
-			  
-			 <div class="form-group">
-				<label for="mod_cedu" class="col-sm-3 control-label">Certificado:</label>
-				<div class="col-sm-8">
-				  	   <input accept="pdf" type="file" name="archivo_cretificado_core_documentos_hipotecario" id="archivo_cretificado_core_documentos_hipotecario" value=""  class="form-control"/>  
-				  
-				</div>
-			  </div>
-			  
-			 
-			   <div class="form-group">
-				<label for="mod_cedu" class="col-sm-3 control-label">Impuesto:</label>
-				<div class="col-sm-8">
-				  	   <input accept="pdf" type="file" name="archivo_impuesto_core_documentos_hipotecario" id="archivo_impuesto_core_documentos_hipotecario" value=""  class="form-control"/>  
-				  
-				</div>
-			  </div>
-			  
-			  
-			  
-			   <div class="form-group">
-				<label for="mod_cedu" class="col-sm-3 control-label">Avaluo:</label>
-				<div class="col-sm-8">
-				  	   <input accept="pdf" type="file" name="archivo_avaluo_core_documentos_hipotecario" id="archivo_avaluo_core_documentos_hipotecario" value=""  class="form-control"/>  
-				  
-				</div>
-			  </div>
-			  
-			
-			  
-			  <div id="msg_frm_reasignar" class=""></div>
-			  
-          	</form>
-          	<!-- termina el formulario modal lote -->
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-			<button type="submit" form="frm_reasignar" class="btn btn-primary" id="guardar_datos">Actualizar Documentos</button>
-          </div>
-        </div>
-        <!-- /.modal-content -->
-      </div>
-      <!-- /.modal-dialog -->
-</div>
-    
    
    
    
@@ -165,7 +97,7 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Credito/js/ReporteCierreCreditos.js?1" ></script>
+ <script src="view/Credito/js/ConsultaDocumentosHipotecarios.js?1" ></script>
  
  </body>
 </html>

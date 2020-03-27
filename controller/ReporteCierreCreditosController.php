@@ -154,7 +154,8 @@
 	            $html.='<th style="text-align: left;  font-size: 12px;">Saldo</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Monto Neto</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Número Solicitud</th>';	                
-	          
+	            $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	            
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -184,8 +185,10 @@
 	                $html.='<td style="font-size: 11px;">'.$res->monto_otorgado_creditos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->saldo_actual_creditos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->monto_neto_entregado_creditos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->numero_solicitud_creditos.'</td>';          
-	                   
+	                $html.='<td style="font-size: 11px;">'.$res->numero_solicitud_creditos.'</td>';  
+	                
+	                $html.='<td style="font-size: 15px;"><span class="pull-right"><button id="btn_abrir" class="btn btn-success" type="button" data-toggle="modal" data-target="#mod_reasignar" data-id="'.$res->id_core_documentos_hipotecario.'" title="Actualizar" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></button></span></td>';
+	                
 	                $html.='</tr>';
 	            }
 	            
@@ -280,6 +283,183 @@
 	    return $out;
 	}
 
+	
+	
+	
+	public function ActualizarSolicitud(){
+	    
+	    session_start();
+	    $reporte_cierre_creditos = new ReporteCierreCreditosModel();
+	    
+	  
+	    if(!isset($_SESSION['id_usuarios'])){
+	        echo 'Session Caducada';
+	        exit();
+	    }
+	    
+	    
+	    $_id_core_documentos_hipotecario =(isset($_POST['id_core_documentos_hipotecario'])) ? $_POST['id_core_documentos_hipotecario'] : 0;
+	   
+	    
+	    
+	    
+	    
+	    if($_id_core_documentos_hipotecario > 0){
+	        
+	        
+	        
+	        if (isset($_FILES['archivo_escritura_core_documentos_hipotecario']['tmp_name'])!="")
+	        {
+	           
+	           
+	            $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/DOCUMENTOS_HIPOTECARIO/';
+	            
+	            $nombre = $_FILES['archivo_escritura_core_documentos_hipotecario']['name'];
+	            $tipo = $_FILES['archivo_escritura_core_documentos_hipotecario']['type'];
+	            $tamano = $_FILES['archivo_escritura_core_documentos_hipotecario']['size'];
+	            
+	            move_uploaded_file($_FILES['archivo_escritura_core_documentos_hipotecario']['tmp_name'],$directorio.$nombre);
+	            $data = file_get_contents($directorio.$nombre);
+	            $pdf_escritura = pg_escape_bytea($data);
+	            
+	            
+	            $colval_afi = "archivo_escritura_core_documentos_hipotecario='$pdf_escritura', estado_escrituras_core_documentos_hipotecario='TRUE'";
+	            $tabla_afi = "core_documentos_hipotecario";
+	            $where_afi = "id_core_documentos_hipotecario='$_id_core_documentos_hipotecario'";
+	            $resultado=$reporte_cierre_creditos->editBy($colval_afi, $tabla_afi, $where_afi);
+	            
+	            
+	        }
+	        
+	        
+	        
+	        if (isset($_FILES['archivo_cretificado_core_documentos_hipotecario']['tmp_name'])!="")
+	        {
+	           
+	            
+	            $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/DOCUMENTOS_HIPOTECARIO/';
+	            
+	            $nombre = $_FILES['archivo_cretificado_core_documentos_hipotecario']['name'];
+	            $tipo = $_FILES['archivo_cretificado_core_documentos_hipotecario']['type'];
+	            $tamano = $_FILES['archivo_cretificado_core_documentos_hipotecario']['size'];
+	            
+	            move_uploaded_file($_FILES['archivo_cretificado_core_documentos_hipotecario']['tmp_name'],$directorio.$nombre);
+	            $data = file_get_contents($directorio.$nombre);
+	            $pdf_certificado = pg_escape_bytea($data);
+	            
+	            
+	            $colval_afi = "archivo_cretificado_core_documentos_hipotecario='$pdf_certificado', estado_certificado_core_documentos_hipotecario='TRUE'";
+	            $tabla_afi = "core_documentos_hipotecario";
+	            $where_afi = "id_core_documentos_hipotecario='$_id_core_documentos_hipotecario'";
+	            $resultado=$reporte_cierre_creditos->editBy($colval_afi, $tabla_afi, $where_afi);
+	            
+	            
+	        }
+	        
+	        
+	        if (isset($_FILES['archivo_impuesto_core_documentos_hipotecario']['tmp_name'])!="")
+	        {
+	            
+	            $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/DOCUMENTOS_HIPOTECARIO/';
+	            
+	            $nombre = $_FILES['archivo_impuesto_core_documentos_hipotecario']['name'];
+	            $tipo = $_FILES['archivo_impuesto_core_documentos_hipotecario']['type'];
+	            $tamano = $_FILES['archivo_impuesto_core_documentos_hipotecario']['size'];
+	            
+	            move_uploaded_file($_FILES['archivo_impuesto_core_documentos_hipotecario']['tmp_name'],$directorio.$nombre);
+	            $data = file_get_contents($directorio.$nombre);
+	            $pdf_impuesto = pg_escape_bytea($data);
+	            
+	            
+	            $colval_afi = "archivo_impuesto_core_documentos_hipotecario='$pdf_impuesto', estado_impuesto_core_documentos_hipotecario='TRUE'";
+	            $tabla_afi = "core_documentos_hipotecario";
+	            $where_afi = "id_core_documentos_hipotecario='$_id_core_documentos_hipotecario'";
+	            $resultado=$reporte_cierre_creditos->editBy($colval_afi, $tabla_afi, $where_afi);
+	            
+	            
+	        }
+	        
+	        
+	        if (isset($_FILES['archivo_avaluo_core_documentos_hipotecario']['tmp_name'])!="")
+	        {
+	            
+	            
+	            $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/DOCUMENTOS_HIPOTECARIO/';
+	            
+	            $nombre = $_FILES['archivo_avaluo_core_documentos_hipotecario']['name'];
+	            $tipo = $_FILES['archivo_avaluo_core_documentos_hipotecario']['type'];
+	            $tamano = $_FILES['archivo_avaluo_core_documentos_hipotecario']['size'];
+	            
+	            move_uploaded_file($_FILES['archivo_avaluo_core_documentos_hipotecario']['tmp_name'],$directorio.$nombre);
+	            $data = file_get_contents($directorio.$nombre);
+	            $pdf_avaluo = pg_escape_bytea($data);
+	            
+	            
+	            $colval_afi = "archivo_avaluo_core_documentos_hipotecario='$pdf_avaluo', estado_avaluo_core_documentos_hipotecario='TRUE'";
+	            $tabla_afi = "core_documentos_hipotecario";
+	            $where_afi = "id_core_documentos_hipotecario='$_id_core_documentos_hipotecario'";
+	            $resultado=$reporte_cierre_creditos->editBy($colval_afi, $tabla_afi, $where_afi);
+	            
+	            
+	        }
+	        
+	        
+	        $documentos= new DocumentosHipotecarioModel();
+	        
+	        $resulset=$documentos->getBy("id_core_documentos_hipotecario='$_id_core_documentos_hipotecario'");
+	        
+	        if(!empty($resulset)){
+	            
+	            
+	            $estado_escrituras_core_documentos_hipotecario = $resulset[0]->estado_escrituras_core_documentos_hipotecario;
+	            $estado_certificado_core_documentos_hipotecario = $resulset[0]->estado_certificado_core_documentos_hipotecario;
+	            $estado_impuesto_core_documentos_hipotecario = $resulset[0]->estado_impuesto_core_documentos_hipotecario;
+	            $estado_avaluo_core_documentos_hipotecario = $resulset[0]->estado_avaluo_core_documentos_hipotecario;
+	            
+	            
+	            
+	            
+	            if($estado_escrituras_core_documentos_hipotecario=='t' && $estado_certificado_core_documentos_hipotecario=='t' && $estado_impuesto_core_documentos_hipotecario=='t' && $estado_avaluo_core_documentos_hipotecario=='t'){
+	                
+	                $colval_afi = "subidos_core_documentos_hipotecario='TRUE'";
+	                $tabla_afi = "core_documentos_hipotecario";
+	                $where_afi = "id_core_documentos_hipotecario='$_id_core_documentos_hipotecario'";
+	                $resultado1=$reporte_cierre_creditos->editBy($colval_afi, $tabla_afi, $where_afi);
+	                
+	                
+	            }else{
+	                
+	                $colval_afi = "subidos_core_documentos_hipotecario='FALSE'";
+	                $tabla_afi = "core_documentos_hipotecario";
+	                $where_afi = "id_core_documentos_hipotecario='$_id_core_documentos_hipotecario'";
+	                $resultado1=$reporte_cierre_creditos->editBy($colval_afi, $tabla_afi, $where_afi);
+	                
+	            }
+	        }
+	        
+	        
+	        
+	       
+	        
+	        if((int)$resultado > 0){
+	            
+	            
+	            echo json_encode(array('valor' => $resultado));
+	            return;
+	            
+	        }
+	        
+	    }
+	    
+	    $pgError = pg_last_error();
+	    
+	    echo "no se actualizo. ".$pgError;
+	    
+	    
+	    
+	    
+	}
+	
 	
     }
     

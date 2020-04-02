@@ -47,6 +47,21 @@ $controladores=$_SESSION['controladores'];
            </ul>
         </li>
         
+         <!-- INICIA MENU DE BUSQUEDA -->
+         <li class="treeview"  style="<?php echo getcontrolador("menuBusqueda",$controladores) ?>"  >
+              <a href="#">
+                <i class="glyphicon glyphicon-search"></i> <span>Principal</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+              	<li style="<?php echo getcontrolador("admBusqueda",$controladores) ?>"><a href="index.php?controller=PrincipalBusquedas&action=index"><i class="fa fa-angle-right"></i>Busqueda</a></li>
+              </ul>
+              
+         </li>
+         <!-- END MENU DE BUSQUEDA  -->
+        
         <li class="treeview"  style="<?php echo getcontrolador("MenuNomina",$controladores) ?>"  >
           <a href="#">
             <i class="glyphicon glyphicon-user"></i> <span>Recursos Humanos</span>
@@ -271,6 +286,7 @@ $controladores=$_SESSION['controladores'];
        </ul>
      </li>
      
+    
       
         <li class="treeview"  style="<?php echo getcontrolador("MenuActivos",$controladores) ?>"  >
           <a href="#">

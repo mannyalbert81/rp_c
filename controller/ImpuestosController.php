@@ -147,15 +147,19 @@ class ImpuestosController extends ControladorBase{
 		    //$_tipoImpuesto     = "";
 		    //$_tipoImpuesto = (array_key_exists($res->tipo_impuestos, $mapTipoImpuesto) ) ?  $mapTipoImpuesto["$res->tipo_impuestos"] : "";
 		    
-		    /** validacion de plan de cuentas **/
-		    $_columna1    = " 1";
-		    $_tablas1     = " tes_impuestos";
-		    $_where1      = " id_plan_cuentas = $_id_plan_cuentas ";
-		    $rsConsulta1  = $impuestos->getCondicionesmenosid($_columna1, $_tablas1, $_where1);
-		    
-		    if( !empty($rsConsulta1) ){
-		        $resp['icon'] = "info";
-		        throw new Exception("Cuenta ya se encuentra Relacionada");
+		    if( $_id_impuestos == 0){
+		        
+    		    /** validacion de plan de cuentas **/
+    		    $_columna1    = " 1";
+    		    $_tablas1     = " tes_impuestos";
+    		    $_where1      = " id_plan_cuentas = $_id_plan_cuentas ";
+    		    $rsConsulta1  = $impuestos->getCondicionesmenosid($_columna1, $_tablas1, $_where1);
+    		    
+    		    if( !empty($rsConsulta1) ){
+    		        $resp['icon'] = "info";
+    		        throw new Exception("Cuenta ya se encuentra Relacionada");
+    		    }
+    		    
 		    }
 		    
 		    
@@ -404,7 +408,7 @@ class ImpuestosController extends ControladorBase{
 	    $impuestos = new ModeloModel();
 	    
 	    $where_to="";
-	    $columnas  = " imp.id_impuestos, pc.nombre_plan_cuentas, imp.nombre_impuestos, imp.porcentaje_impuestos,
+	    $columnas  = " imp.id_impuestos, pc.codigo_plan_cuentas, pc.nombre_plan_cuentas, imp.nombre_impuestos, imp.porcentaje_impuestos,
                        to_char(imp.creado, 'YYYY-MM-DD') AS creado, imp.tipo_impuestos ";
 	    
 	    $tablas    = " tes_impuestos imp 
@@ -426,7 +430,7 @@ class ImpuestosController extends ControladorBase{
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" imp.nombre_impuestos LIKE '".$search."%'";
+	            $where1=" AND ( imp.nombre_impuestos LIKE '".$search."%' OR pc.codigo_plan_cuentas LIKE '".$search."%' OR imp.tipo_impuestos LIKE '".$search."%' )";
 	            
 	            $where_to=$where.$where1;
 	            
@@ -464,6 +468,7 @@ class ImpuestosController extends ControladorBase{
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
+	            $html.='<th style="text-align: left;  font-size: 15px;">Cod. Cuenta</th>';
 	            $html.='<th style="text-align: left;  font-size: 15px;">Afectación Plan Cuentas</th>';
 	            $html.='<th style="text-align: left;  font-size: 15px;">Nombre</th>';
 	            $html.='<th style="text-align: left;  font-size: 15px;">Tipo</th>';
@@ -493,6 +498,7 @@ class ImpuestosController extends ControladorBase{
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 14px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->codigo_plan_cuentas.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->nombre_plan_cuentas.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->nombre_impuestos.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$_tipoImpuesto.'</td>';

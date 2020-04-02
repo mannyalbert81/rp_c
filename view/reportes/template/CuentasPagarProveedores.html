@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  	<meta charset="utf-8"/>
+  </head>
+  
+  <style>
+  </style>
+ 
+
+  <body>
+ 	<table class="titulobody">
+		<tr>
+		 <td>		 
+		 FCPC. ESTADO CUENTAS POR PAGAR PROVEEDORES		
+		</td>
+		</tr>
+	 </table>
+
+  		
+	<div >
+	    
+	    <table class="tab1principal">
+			<tr>
+				 <td class="" >
+				 	* Transacción intercopañía
+				 </td>
+			</tr>
+			<tr>
+				 <td class="" >
+				 	<strong>Id. de Lote: </strong> {NOMBRELOTE}
+				 </td>				 
+				 
+				 <td class="" >
+				  <strong>Frecuencia de lote:</strong>{FRECUENCIA}
+				 </td>
+			</tr>
+			<tr>
+				 <td class="" >
+				 	<strong>Comentario de lote: </strong> {DESCLOTE}
+				 </td>		 
+				 <td class="" >
+				 	<strong>Código de Auditoría: </strong> {NUMEROLOTE}
+				 </td>
+		 
+			</tr>
+			<tr>
+				 <td class="" >
+				 	<strong>Total real trans: </strong> 1
+				 </td>
+				 
+				 <td class="">
+				 	<strong>Total control Trans: </strong>0
+				 </td>
+				 
+			</tr>
+			<tr>
+				 <td class="" >
+				 	<strong>Total real lote: </strong>$ {SALDOCUENTA}
+				 </td>				 
+				 <td class="" >
+				 <strong>Control total lote: </strong>   $ 0.00
+				 </td>				 
+			</tr>			
+			<tr>
+			 <td class="" >
+			 	<strong>Aprobado: </strong> NO
+			 </td>				 
+			 <td class="">
+			 	<strong>Aprobado por:</strong>..
+			 </td>			 
+			 <td class="">
+			 	<strong>Fecha Aprobación: </strong> 0/00/0000
+			 </td>			 
+			</tr>
+	    </table>
+	    
+	   
+	   <hr>
+	   
+	    <table class="tab2cabecera" >
+	    <tr class="bordeinferior">
+			 <td class="" >
+			 	<b>Tipo</b>
+			 </td>
+			 <td class="" >
+			 	<b>Núm. comprobante</b>
+			 </td>
+			 <td class=""  >
+			 	<b>Núm. de documento</b>
+			 </td>
+			 <td class=""  >
+			 	<b>Fecha del documento</b>
+			 </td>
+			 <td class=""  >
+			 	<b>Id. de proveedor</b>
+			 </td>
+			 <td class=""  >
+			 	<b>Proveedor</b>
+			 </td>		 
+			 <td class="" >
+			 	<b>Total del documento</b>
+			 </td>
+			 <td class="" >
+			 	<b>Compras</b>
+			 </td>		 
+			 <td class="" >
+			 	<b>Impuesto</b>
+			 </td>
+		</tr>
+		<tr>
+		 <td class="">
+		 {TIPODOCUMENTO}
+		 </td>
+		 <td class="" >
+		 {NUMEROCOMPROBANTE}
+		 </td>
+		 <td class=""  >
+		 {NUMERODOCUMENTO}
+		 </td>
+		 <td class="">
+		 {FECHADOCUMENTO}
+		 </td>
+		 <td class="">
+		 {IDEPROVEEDOR}
+		 </td>
+		 <td class="" >
+		 {NOMBREPROVEEDOR}
+		 </td>
+		 <td class="decimales">
+		 $ {SALDOCUENTA}
+		 </td>
+		 <td class="decimales">
+		 $ {COMPRAS}
+		 </td>		
+		 <td class="decimales">
+		 $ {IMPUESTO}
+		 </td>
+		</tr>
+	    </table>
+	    <hr>
+	    
+	    
+	    {TABLADISTRIBUCION}
+	    
+		<hr>
+	    
+	    {TABLAIMPUESTOS}
+	   
+	   
+	    
+	    <table class="tab2cabecera" >
+	    	<caption>Valores a liquidar Proveedores</caption>
+		    <tr class="bordeinferior">
+			 <td class="">		 <b>Monto de compras</b>		 </td>		 
+			 <td class="">		 <b>Monto impuesto</b>		     </td>
+			 <td class="">		 <b>Total del documento a Liquidar</b>		 </td>
+			</tr>	
+			
+			<tr>			
+			 <td class="decimales">$ {COMPRAS}</td>		 
+			 <td class="decimales">$ {IMPUESTO}</td>		 
+			 <td class="decimales">$ {SALDOCUENTA}</td>			 
+			</tr>
+	    </table> 
+	    
+	</div>
+	
+  </body>
+  </html>

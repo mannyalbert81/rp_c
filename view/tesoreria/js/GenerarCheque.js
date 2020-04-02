@@ -1,6 +1,10 @@
+/**VARIABLES DE INICIO**/
+var globalObjFecha = new Date(); 
+var globalAnio = globalObjFecha.getFullYear();
 $(document).ready(function(){
 	
 	init();
+	loadChequera();
 	
 })
 
@@ -26,7 +30,7 @@ function init(){
 		 rightAlign: true,		 
 		 yearrange: {
 				minyear: 1950,
-				maxyear: 2019
+				maxyear: globalAnio
 			},
 		oncomplete:function(e){
 			if( (new Date($(this).val()).getTime() != new Date(fechaServidor).getTime()))
@@ -39,6 +43,66 @@ function init(){
 	
 	
 }
+
+/***
+ * @desc funcion para traer la chequera de la entidad
+ * @param none
+ * @retuns void
+ * @ajax si 
+ */
+function loadChequera(){	
+	
+	var $ddlChequera = $("#id_bancos");
+	params = {};
+	$ddlChequera.empty();
+	$.ajax({
+		url:"index.php?controller=GenerarCheque&action=CargaChequera",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.data != undefined && x.data != null ){
+			var rsChequera = x.data;
+			$ddlChequera.append('<option value="0">--Seleccione--</option>' );
+			$.each(rsChequera,function(index, value){
+				//console.log('index -->'+index+'   Value ---> '+value.id_bancos);
+				$ddlChequera.append( '<option value="'+value.id_bancos+'">'+value.nombre_bancos+'</option>' );
+			})
+		}
+		console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+}
+
+/***
+ * @desc funcion para traer la chequera de la entidad
+ * @param none
+ * @retuns void
+ * @ajax si 
+ */
+function validaChequera(){	
+	
+	var $ddlChequera = $("#id_bancos");
+	params = {id_bancos : $ddlChequera.val() };
+	$.ajax({
+		url:"index.php?controller=GenerarCheque&action=CargaNumChequera",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.numchequera != undefined && x.numchequera != null ){			
+			$("#numero_cheque").val( x.numchequera );
+		}else{
+			$("#numero_cheque").val( x.numchequera );
+		}			
+		console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+		$("#numero_cheque").val( "" );
+	})
+}
+
 
 /*******************************************************************************
  * funcion para poner mayusculas
@@ -59,6 +123,10 @@ $("#distribucion_cheque").on("click",function(){
 		return false;
 	}
 	let $bancos = $("#id_bancos");
+	if( $bancos.val() == "0" ){
+		swal({title:"ERROR DISTRIBUCION",icon:"warning",text:"Seleccione Chequera"})
+		return false;
+	}
 	let $referencia_cheque = $("#comentario_cheque");
 	let $divResultados = $("#lista_distribucion_cheque");
 	$divResultados.html('');
@@ -178,7 +246,7 @@ $("#genera_cheque").on("click",function(){
 function FormularioPost(url,target,params){
 	 
 	 var form = document.createElement("form");
-	 form.setAttribute("id", target);
+	 form.setAttribute("id", "frmchequeReport");
      form.setAttribute("method", "post");
      form.setAttribute("action", url);
      form.setAttribute("target", target);

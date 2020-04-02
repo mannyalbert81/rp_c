@@ -16,9 +16,8 @@ $(document).ready(function(){
  * @returns json
  */
 $( "#plan_cuentas" ).autocomplete({
-
 	source: "index.php?controller=Impuestos&action=AutocompletePlanCuentas",
-	minLength: 8,
+	minLength: 3,
     select: function (event, ui) {
        // Set selection          
        $('#id_plan_cuentas').val(ui.item.id);
@@ -69,14 +68,16 @@ function getCodigoRetencion(objeto){
 	
 	if( $tipoImpuesto.val() == "retencion" ){
 		
-		$.getJSON( "view/tesoreria/archivos/impuestos.json", function( data ) {
+		$.getJSON( "view/tesoreria/archivos/impuestos3.json", function( data ) {
 			
 			  $codRetencionImpuesto.empty();
 			  var dataSelect = data[nombreRetencion];
 			  var items = [];
 			  items.push( "<option value='0'>--Seleccione--</option>" );
-			  $.each( dataSelect, function( index, value ) {				  
-				  items.push( "<option value='" + value.valor + "'>"+ value.valor + " <--> " + value.nombre + "</option>" );			    
+			  $.each( dataSelect, function( index, value ) {		
+				  var nombreImp = value.nombre;
+				  console.log( nombreImp );				  
+				  items.push( "<option value='" + value.valor + "'>"+ value.valor + " <--> " + nombreImp + "</option>" );			    
 			  });
 			 
 			  $codRetencionImpuesto.append(items.join(""));

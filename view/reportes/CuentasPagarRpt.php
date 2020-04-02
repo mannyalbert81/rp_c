@@ -47,8 +47,9 @@ $mpdf->SetHTMLFooter($footer);
 $stylesheet = file_get_contents('view/reportes/template/cuentasPagar.css'); // la ruta a tu css
 $mpdf->WriteHTML($stylesheet,1);
 $mpdf->WriteHTML($template,2);
+//echo "<head><style>$stylesheet</style></head>", $template ; exit();
 $mpdf->debug = true;
-$mpdf->Output();
+$mpdf->Output("CuentaPagar.pdf","I");
 /*$content = $mpdf->Output('', 'S'); // Saving pdf to attach to email
 $content = chunk_split(base64_encode($content));
 $content = 'data:application/pdf;base64,'.$content;

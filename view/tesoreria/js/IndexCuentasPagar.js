@@ -34,7 +34,7 @@ function cargaCuentasPagar( pagina=1){
 	
 	$.ajax({
 		beforeSend:function(x){ $("#divLoaderPage").addClass("loader") },
-		url:"index.php?controller=CuentasPagar&action=ListaCuentasPagar",
+		url:"index.php?controller=TesCuentasPagar&action=ListaCuentasPagar",
 		type:"POST",
 		dataType:"html",
 		data:{peticion:'ajax',search:_buscador,page:pagina}
@@ -54,7 +54,7 @@ function cargaCuentasPagar( pagina=1){
 
 $("#cuentas_pagar_registrados").on('click','a.showpdf',function(event){
 	let enlace = $(this);
-	let _url = "index.php?controller=CuentasPagar&action=Reporte_Cuentas_Por_Pagar&id_cuentas_pagar="+enlace.data().id;
+	let _url = "index.php?controller=TesCuentasPagar&action=RptCuentasPagar&id_cuentas_pagar="+enlace.data().id;
 	
 	if ( enlace.data().id ) {
 		

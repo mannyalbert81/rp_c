@@ -194,7 +194,7 @@ class TesCuentasPagarController extends ControladorBase{
 	        
 	        $_id_lote      = ( isset($_POST['id_lote']) ) ? $_POST['id_lote'] : 0;
 	        $_nombre_lote  = ( isset($_POST['nombre_lote']) ) ? $_POST['nombre_lote'] : "";
-	        $_descripcion_lote = "Mod Cuentas Pagar";
+	        $_descripcion_lote = "Módulo Cuentas Pagar";
 	        $_id_frecuencia = 1; //cambiara si en la tabla frecuencia lote cambia 
 	        
 	        $funcion = "tes_genera_lote";
@@ -295,7 +295,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    $busqueda = ( isset($_POST['buscador']) ) ? $_POST['buscador'] : "";
 	    $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
 	    
-	    $colImpuestos  = " aa.id_impuestos,aa.tipo_impuestos,aa.codigo_impuestos,aa.nombre_impuestos,bb.id_plan_cuentas, bb.nombre_plan_cuentas, 
+	    $colImpuestos  = " aa.id_impuestos,aa.tipo_impuestos,aa.codigo_impuestos,aa.nombre_impuestos,aa.id_plan_cuentas, bb.nombre_plan_cuentas, 
                 bb.codigo_plan_cuentas, aa.porcentaje_impuestos, aa.operacion_impuestos";
 	    $tabImpuestos  = " tes_impuestos aa
 	           LEFT JOIN plan_cuentas bb ON bb.id_plan_cuentas = aa.id_plan_cuentas";
@@ -328,13 +328,22 @@ class TesCuentasPagarController extends ControladorBase{
 	    $_tipoImpuesto     = "";
 	    $htmlTr = "";
 	    $i = 0;
+	    $estiloConfigImpuestos = "";
+	   
 	    foreach ($resultSet as $res){
-	        $i++;
+	        $i++;	        
+	       
+	        /** siguiente validacion es solo hasta que se arreglen los impuestos **/
+	        if( $res->id_plan_cuentas == null || ( empty($res->codigo_impuestos) && $res->tipo_impuestos == "ret" ) || (empty($res->codigo_impuestos) && $res->tipo_impuestos == "retiva" )  ){
+	            //echo ""," PLAN CUENTAS --> ",$res->id_plan_cuentas,"   CODIGO IMPUESTOS --> ",$res->codigo_impuestos, "    TIPO IMPUESTO ---> ", $res->tipo_impuestos," <br> \n";
+	            $estiloConfigImpuestos = "bgcolor=\"#E37B71\"";
+	        }
+	        
 	        $btonSelect = "<button onclick=\"AgregarImpuesto(this)\" value=\"$res->id_impuestos\" class=\"btn btn-default\">
                         <i aria-hidden=\"true\" class=\"fa fa-external-link\"></i> </button>";
 	        
 	        $_tipoImpuesto = (array_key_exists($res->tipo_impuestos, $mapTipoImpuesto) ) ?  $mapTipoImpuesto["$res->tipo_impuestos"] : ""; 
-	        $htmlTr    .= "<tr>";
+	        $htmlTr    .= "<tr $estiloConfigImpuestos >";
 	        $htmlTr    .= "<td>" . $i . "</td>";
 	        $htmlTr    .= "<td>" . $_tipoImpuesto;
 	        $htmlTr    .= "<td>" . $res->nombre_impuestos . "</td>";
@@ -1135,6 +1144,7 @@ class TesCuentasPagarController extends ControladorBase{
                 
                
             }else{
+                
                 $respuesta['xml'] = " ARCHIVO ENTRO XML";
                 
                 if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML GENERADO" ){
@@ -1161,10 +1171,10 @@ class TesCuentasPagarController extends ControladorBase{
                     
                     if($aux['error'] === false){
                         
-                        $aux = $comprobante->enviarXml($clave);
+                        $Envioresp = $comprobante->enviarXml($clave);
                         //$aux['recibido'] = true; //para pruebas
                         
-                        if($aux['recibido'] === true){
+                        if($Envioresp['recibido'] === true){
                             
                             $respuesta['xml'] = " Archivo Xml RECIBIDO";
                             
@@ -1180,20 +1190,22 @@ class TesCuentasPagarController extends ControladorBase{
                                 
                                 $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
                                 $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;  
+                                
+                                //$fechaAutorizado = $finalresp['fecauto'];
                             }
                             
                             
                         }else{
                             /** aqui poner senetecia en caso de haber errror **/
                             $respuesta['xml'] = " Archivo Xml NO RECIBIDO";
-                            $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+                            $respuesta['Archivo'] = ( array_key_exists('mensaje', $Envioresp) ) ? $Envioresp['mensaje'] : '' ;
                             $errorXml = true;
                         }
                             
                     }else{                        
                         /** aqui poner senetecia en caso de haber errror **/
                         $respuesta['xml'] = " Archivo Xml NO FIRMADO";
-                        $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+                        $respuesta['Archivo'] = ( array_key_exists('mensaje', $aux) ) ? $aux['mensaje'] : '' ;
                         $errorXml = true;
                     }
                     
@@ -1239,6 +1251,7 @@ class TesCuentasPagarController extends ControladorBase{
 	 * @desc met que permite la generacion xml
 	 * @param integer $_id_lote
 	 */
+	
 	public function genXmlRetencion($intLote=null){
 	    
 	    
@@ -1406,9 +1419,9 @@ class TesCuentasPagarController extends ControladorBase{
 	    /** obligatorio cuando corresponda **/
 	    // se toma datos de proveedor -- Direccion. Telefono. Correo
 	    /**CAMPOS ADICIONALES **/
-	    $_adicional1 = $rsConsulta2[0]->direccion_proveedores;
-	    $_adicional2 = $rsConsulta2[0]->telefono_proveedores;
-	    $_adicional3 = $rsConsulta2[0]->email_proveedores;
+	    $_adicional1 = ( !empty($rsConsulta2[0]->direccion_proveedores) ) ? $rsConsulta2[0]->direccion_proveedores : "ninguna" ;
+	    $_adicional2 = ( !empty($rsConsulta2[0]->telefono_proveedores) ) ? $rsConsulta2[0]->telefono_proveedores : "0000000000" ;
+	    $_adicional3 = ( !empty($rsConsulta2[0]->email_proveedores) ) ? $rsConsulta2[0]->email_proveedores : "ninguno@capremci.com.ec";
 	    $texto .= '<infoAdicional>';
 	    $texto .= '<campoAdicional nombre="Dirección">'.$_adicional1.'</campoAdicional>';
 	    $texto .= '<campoAdicional nombre="Teléfono">'.$_adicional2.'</campoAdicional>';
@@ -1542,8 +1555,9 @@ class TesCuentasPagarController extends ControladorBase{
 	   	    
 	    $_digitoVerificador = $this->getDigVerificador($_strClaveAcceso);
 	    
-	    if( $_digitoVerificador == "")
+	    if( $_digitoVerificador === "" ){
 	        return "";
+	    }	    	    
 	    
         $_strClaveAcceso = $_strClaveAcceso.$_digitoVerificador;
 	    
@@ -1602,6 +1616,23 @@ class TesCuentasPagarController extends ControladorBase{
 	    } else {
 	        echo "No se encontró ninguna coincidencia.";
 	    }
+	    
+	    echo "variables es cero <br>";
+	    
+	    $numero = "";
+	    
+	    var_dump(is_int((int)$numero));
+	    
+	    $numero = "0";
+	    
+	    echo "el numero transformado es --> '",$numero,"' <br>";
+	    
+	    if( $numero === "" ){
+	        echo "ingreso vacio<br>";
+	    }else{
+	        echo "no nngreso vacio <br>";
+	    }
+	    
 	}
 	
 	public function pRetenciones(){
@@ -1670,7 +1701,7 @@ class TesCuentasPagarController extends ControladorBase{
 	public function getConfigXml(){
 	    $configuracionesPath = array(
 	        'url_pruebas' => 'https://celcer.sri.gob.ec',
-	        'url_produccion' => 'https://celcer.sri.gob.ec',
+	        'url_produccion' => 'https://cel.sri.gob.ec',
 	        'firmados' => 'DOCUMENTOSELECTRONICOS/docFirmados',
 	        'autorizados' => 'DOCUMENTOSELECTRONICOS/docAutorizados',
 	        'noautorizados' => 'docNoAutorizados',
@@ -1684,6 +1715,424 @@ class TesCuentasPagarController extends ControladorBase{
 	    return $configuracionesPath;
 	}
 	
+	Public function RptCuentasPagar(){
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    $entidades = new EntidadesModel();
+	    
+	    session_start();
+	    
+	    $_id_lote = (isset($_GET['id_lote'])) ? $_GET['id_lote'] : null;
+	    
+	    $_id_cuentas_pagar = (isset($_GET['id_cuentas_pagar'])) ? $_GET['id_cuentas_pagar'] : null;
+	    
+	    if(!is_null($_id_lote)){
+	        
+	        $query = "SELECT id_cuentas_pagar FROM public.tes_cuentas_pagar where id_lote = $_id_lote LIMIT 1";
+	        
+	        $rs_Cuentas_pagar = $cuentasPagar->enviaquery($query);
+	        
+	        if(!empty($rs_Cuentas_pagar))
+	            $_id_cuentas_pagar = $rs_Cuentas_pagar[0]->id_cuentas_pagar;
+	    }
+	    
+	    if(is_null($_id_cuentas_pagar) ){
+	        
+	        $this->nodatapdf("PARAMETROS NO ENCONTRADOS PARA GENERACION DE REPORTE");        
+	        
+	    }
+	    
+	    //PARA OBTENER DATOS DE LA EMPRESA
+	    $datos_empresa = array();
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	    }
+	    
+	    //NOTICE DATA
+	    $datos_cabecera = array();
+	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+	    $datos_cabecera['FECHA'] = date('Y/m/d');
+	    $datos_cabecera['HORA'] = date('h:i:s');
+	    
+	    $datos_cuentas_pagar = array();
+	    
+	    $columnascxp = "id_cuentas_pagar, numero_cuentas_pagar, descripcion_cuentas_pagar, fecha_cuentas_pagar,
+                  numero_documento_cuentas_pagar, compras_cuentas_pagar, condonaciones_cuentas_pagar,
+                  saldo_cuenta_cuentas_pagar, descuento_comercial_cuentas_pagar, flete_cuentas_pagar,
+                  miscelaneos_cuentas_pagar,impuesto_cuentas_pagar, cp.id_tipo_documento, td.abreviacion_tipo_documento,
+                  lo.id_lote, lo.nombre_lote, lo.descripcion_lote, lo.numero_lote, fre.nombre_frecuencia_lote,
+                  cp.id_proveedor, pro.nombre_proveedores, pro.identificacion_proveedores";
+	    
+	    $tablascxp = "public.tes_cuentas_pagar cp
+                INNER JOIN tes_tipo_documento td
+                ON cp.id_tipo_documento = td.id_tipo_documento
+                INNER JOIN tes_lote lo
+                ON lo.id_lote = cp.id_lote
+                INNER JOIN proveedores pro
+                ON pro.id_proveedores = cp.id_proveedor
+                INNER JOIN tes_frecuencia_lote fre
+                ON fre.id_frecuencia_lote = lo.id_frecuencia";
+	    
+	    $wherecxp = "cp.id_cuentas_pagar = $_id_cuentas_pagar ";
+	    
+	    $idcxp = "cp.id_cuentas_pagar";
+	    
+	    $rsDatosCxp = $cuentasPagar->getCondiciones($columnascxp, $tablascxp, $wherecxp, $idcxp);
+	    
+	    
+	    
+	    if(empty($rsDatosCxp)){
+	        
+	        $this->nodatapdf("Cuenta por pagar no encontrada");
+	        
+	    }
+	    
+	    /** PARA DATOS DE LOTE **/
+	    $_id_lote = $rsDatosCxp[0]->id_lote;
+	    $col1  = "aa.id_usuarios,bb.usuario_usuarios,aa.id_lote";
+	    $tab1  = " tes_lote aa LEFT JOIN usuarios bb ON bb.id_usuarios = aa.id_usuarios ";
+	    $whe1  = " aa.id_lote = $_id_lote";
+	    $rsConsulta1 = $cuentasPagar->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+	    
+	    if(!empty($rsConsulta1)){
+	        $_usuario_documento = ( $rsConsulta1[0]->usuario_usuarios != null || $rsConsulta1[0]->usuario_usuarios != "" ) ?  $rsConsulta1[0]->usuario_usuarios : "N/D";
+	    }
+	    /** TERMINA DATOS LOTE **/
+	    
+	    $datos_cuentas_pagar['USUARIODOCUMENTO'] = $_usuario_documento;
+	    $datos_cuentas_pagar['NOMBRELOTE'] = $rsDatosCxp[0]->nombre_lote;
+	    $datos_cuentas_pagar['DESCLOTE'] = $rsDatosCxp[0]->descripcion_lote;
+	    $datos_cuentas_pagar['FRECUENCIA'] = $rsDatosCxp[0]->nombre_frecuencia_lote;
+	    $datos_cuentas_pagar['NUMEROLOTE'] = $rsDatosCxp[0]->numero_lote;
+	    //$datos_cuentas_pagar['TIPODOCUMENTO'] = $rsDatosCxp[0]->abreviacion_tipo_documento;
+	    $datos_cuentas_pagar['NUMEROCOMPROBANTE'] = $rsDatosCxp[0]->numero_cuentas_pagar;
+	    $datos_cuentas_pagar['NUMERODOCUMENTO'] = $rsDatosCxp[0]->numero_documento_cuentas_pagar;
+	    $datos_cuentas_pagar['FECHADOCUMENTO'] = $rsDatosCxp[0]->fecha_cuentas_pagar;
+	    $datos_cuentas_pagar['IDEPROVEEDOR'] = $rsDatosCxp[0]->identificacion_proveedores;
+	    $datos_cuentas_pagar['NOMBREPROVEEDOR'] = $rsDatosCxp[0]->nombre_proveedores;
+	    $datos_cuentas_pagar['CONDONACIONES'] = $rsDatosCxp[0]->condonaciones_cuentas_pagar;
+	    $datos_cuentas_pagar['SALDOCUENTA'] =number_format((float)$rsDatosCxp[0]->saldo_cuenta_cuentas_pagar, 2, ',', '.');
+	    $datos_cuentas_pagar['COMPRAS'] = number_format((float)$rsDatosCxp[0]->compras_cuentas_pagar, 2, ',', '.');
+	    $datos_cuentas_pagar['DESCCOMERCIAL'] = number_format((float)$rsDatosCxp[0]->descuento_comercial_cuentas_pagar, 2, ',', '.');
+	    $datos_cuentas_pagar['FLETE'] = number_format((float)$rsDatosCxp[0]->flete_cuentas_pagar, 2, ',', '.');
+	    $datos_cuentas_pagar['MISCELANEOS'] = number_format((float)$rsDatosCxp[0]->miscelaneos_cuentas_pagar, 2, ',', '.');
+	    $datos_cuentas_pagar['IMPUESTO'] = number_format((float)$rsDatosCxp[0]->impuesto_cuentas_pagar, 2, ',', '.');
+	    $datos_cuentas_pagar['DF'] = $rsDatosCxp[0]->descripcion_lote;
+	    $datos_cuentas_pagar['GH'] = $rsDatosCxp[0]->nombre_frecuencia_lote;
+	    $datos_cuentas_pagar['KL'] = $rsDatosCxp[0]->numero_lote;
+	    $datos_cuentas_pagar['DESCRIPCIONDOCUMENTO'] = $rsDatosCxp[0]->descripcion_cuentas_pagar;
+	    
+	    $fechaDocumento = $rsDatosCxp[0]->fecha_cuentas_pagar;
+	    $fechaPeriodo      =  new DateTime($fechaDocumento);
+	    $mesPeriodo        = $fechaPeriodo->format('m');
+	    $peridoDocumento   = $this->getNameMonth($mesPeriodo)."/".$fechaPeriodo->format('Y');	    
+	    $datos_cuentas_pagar['PERIODOFISCAL'] = $peridoDocumento;
+	    
+	    //DISTRIBUCION DE CONTABILIDAD
+	    
+	    $id_lote = $rsDatosCxp[0]->id_lote;
+	    
+	    $columnasDistribucion= "id_distribucion_cuentas_pagar, id_lote, pc.id_plan_cuentas, pc.codigo_plan_cuentas,
+    		pc.nombre_plan_cuentas, tipo_distribucion_cuentas_pagar,
+    		debito_distribucion_cuentas_pagar,  credito_distribucion_cuentas_pagar";
+	    
+	    $tablasDistribucion = "tes_distribucion_cuentas_pagar dis
+            inner join plan_cuentas pc
+            on dis.id_plan_cuentas = pc.id_plan_cuentas";
+	    
+	    $whereDistribucion = " dis.id_lote = $id_lote ";
+	    
+	    $idDistribucion = " dis.ord_distribucion_cuentas_pagar ";
+	    
+	    $rsdatosDistribucion = $cuentasPagar->getCondiciones($columnasDistribucion, $tablasDistribucion, $whereDistribucion, $idDistribucion);
+	    
+	    if( empty($rsdatosDistribucion) ){
+	        
+	        $this->nodatapdf("Distribucion en Cuenta por Pagar No Realizada");
+	        
+	    }
+	    
+	    if(!empty($rsdatosDistribucion)){
+	        
+	        $tabladistribucion = "<table class=\"tab3datos\"> <caption> Distribuciones de Contabilidad </caption> ";
+	        $sumaDebito = 0.00;
+	        $sumaCredito = 0.00;
+	        $tabladistribucion .= "<tr>";
+	        $tabladistribucion .= "<th>Cuenta</th>";
+	        $tabladistribucion .= "<th>Descripción Cuenta</th>";
+	        $tabladistribucion .= "<th>Tipo de Cuenta</th>";
+	        $tabladistribucion .= "<th>Monto débito</th>";
+	        $tabladistribucion .= "<th>Monto crédito</th>";
+	        $tabladistribucion .= "</tr>";
+	        
+	        foreach ($rsdatosDistribucion as $res){
+	            $tabladistribucion .= "<tr>";
+	            $tabladistribucion .= "<td>".$res->codigo_plan_cuentas."</td>";
+	            $tabladistribucion .= "<td>".$res->nombre_plan_cuentas."</td>";
+	            $tabladistribucion .= "<td>".$res->tipo_distribucion_cuentas_pagar."</td>";
+	            $tabladistribucion .= "<td class=\"decimales\" >$ ".number_format((float)$res->debito_distribucion_cuentas_pagar, 2, ',', '.')."</td>";
+	            $tabladistribucion .= "<td class=\"decimales\" >$ ".number_format((float)$res->credito_distribucion_cuentas_pagar, 2, ',', '.')."</td>";
+	            $tabladistribucion .= "</tr>";
+	            
+	            $sumaCredito += $res->credito_distribucion_cuentas_pagar;
+	            $sumaDebito += $res->debito_distribucion_cuentas_pagar;
+	        }
+	        
+	        $tabladistribucion .= "<tr>";
+	        $tabladistribucion .= "<td colspan=\"3\"></td>";
+	        $tabladistribucion .= "<td class=\"decimales\" >----------------</td>";
+	        $tabladistribucion .= "<td class=\"decimales\" >----------------</td>";
+	        $tabladistribucion .= "</tr>";
+	        
+	        $tabladistribucion .= "<tr>";
+	        $tabladistribucion .= "<td colspan=\"3\"></td>";
+	        $tabladistribucion .= "<td class=\"decimales\" >$ ".number_format((float)$sumaDebito, 2, ',', '.')."</td>";
+	        $tabladistribucion .= "<td class=\"decimales\" >$ ".number_format((float)$sumaCredito, 2, ',', '.')."</td>";
+	        $tabladistribucion .= "</tr>";
+	        
+	        $tabladistribucion .= "</table>";
+	    }
+	    
+	    $datos_cuentas_pagar['TABLADISTRIBUCION'] = $tabladistribucion;
+	    
+	    //DISTRIBUCION DETALLE IMPUESTOS
+	    
+	    $columnasImpuestos= "imp.id_impuestos, imp.nombre_impuestos, id_lote, base_cuentas_pagar_impuestos, valor_cuentas_pagar_impuestos,imp.descripcion_impuestos";
+	    
+	    $tablasImpuestos = "public.tes_cuentas_pagar_impuestos icp
+                    INNER JOIN public.tes_impuestos imp
+                    ON icp.id_impuestos = imp.id_impuestos";
+	    
+	    $whereImpuestos = " icp.id_lote = $id_lote ";
+	    
+	    $idImpuestos = " imp.id_impuestos ";
+	    
+	    $rsdatosImpuestos = $cuentasPagar->getCondiciones($columnasImpuestos, $tablasImpuestos, $whereImpuestos, $idImpuestos);
+	    
+	    if(!empty($rsdatosImpuestos)){
+	        
+	        $tablaImpuesto = "<table class=\"tab3datos\"> <caption> Distribuciones de detalle de impuestos </caption> ";
+	        $sumaImpuesto = 0.00;
+	        $tablaImpuesto .= "<tr>";
+	        $tablaImpuesto .= "<th>Nombre. detalle impuesto</th>";
+	        $tablaImpuesto .= "<th>Descripción detalle impuesto</th>";
+	        $tablaImpuesto .= "<th>Monto impuesto</th>";
+	        $tablaImpuesto .= "</tr>";
+	        
+	        foreach ($rsdatosImpuestos as $res){
+	            $tablaImpuesto .= "<tr>";
+	            $tablaImpuesto .= "<td>".$res->nombre_impuestos."</td>";
+	            $tablaImpuesto .= "<td>".$res->descripcion_impuestos."</td>";
+	            $tablaImpuesto .= "<td class=\"decimales\" >$ ".number_format((float)$res->valor_cuentas_pagar_impuestos, 2, ',', '.')."</td>";
+	            $tablaImpuesto .= "</tr>";
+	            
+	            $sumaImpuesto += $res->valor_cuentas_pagar_impuestos;
+	        }
+	        
+	        $tablaImpuesto .= "<tr>";
+	        $tablaImpuesto .= "<td colspan=\"2\"></td>";
+	        $tablaImpuesto .= "<td class=\"decimales\" >----------------</td>";
+	        $tablaImpuesto .= "</tr>";
+	        
+	        $tablaImpuesto .= "<tr>";
+	        $tablaImpuesto .= "<td colspan=\"2\"></td>";
+	        $tablaImpuesto .= "<td class=\"decimales\" >$ ".number_format((float)$sumaImpuesto, 2, ',', '.')."</td>";
+	        $tablaImpuesto .= "</tr>";
+	        
+	        $tablaImpuesto .= "</table>";
+	    }
+	    
+	    $datos_cuentas_pagar['TABLAIMPUESTOS'] = $tablaImpuesto;
+	    
+	    
+	    $this->verReporte("CuentasPagar", array('datos_cuentas_pagar'=>$datos_cuentas_pagar,'datos_empresa'=>$datos_empresa,'datos_cabecera'=>$datos_cabecera));
+	    
+	}
+	
+	public function nodatapdf($mensaje=""){
+	    
+	    $texto = ($mensaje=="") ? "Documento No Encontrado" : $mensaje;
+	    
+	    include dirname(__FILE__).'\..\view\fpdf\fpdf.php';
+	    $pdf = new FPDF();
+	    $pdf->AddPage();
+	    $pdf->SetFont("Times", "B", 14);
+	    $ancho = $pdf->GetPageWidth()-20;
+	    $alto = $pdf->GetPageHeight()/3;
+	    $pdf->Cell( $ancho, $alto,$texto,0,1,'C');
+	    
+	    $pdf->Output();
+	}
+	
+	function getNameMonth($numMes){
+	    $nombreMes = "N/D";
+	    $arrayMes = array('01'=>'ENERO','02'=>'FEBRERO','03'=>'MARZO','04'=>'ABRIL','05'=>'MAYO','06'=>'JUNIO','07'=>'JULIO','08'=>'AGOSTO','09'=>'SEPTIEMBRE','10'=>'OCTUBRE','11'=>'NOVIEMBRE','12'=>'DICIEMBRE');
+	    for( $i = 0; $i < sizeof($arrayMes); $i++){
+	        if( array_key_exists($numMes, $arrayMes) ){
+	            $nombreMes = $arrayMes["$numMes"];
+	            break;
+	        }
+	    }
+	    return $nombreMes;
+	}
+	
+	public function ReporteIndex(){
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    session_start();
+	    
+	    if(empty( $_SESSION)){
+	        
+	        $this->redirect("Usuarios","sesion_caducada");
+	        return;
+	    }
+	    
+	    $nombre_controladores = "ReportesTesoreria";
+	    $id_rol= $_SESSION['id_rol'];
+	    $resultPer = $cuentasPagar->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+	    
+	    if (empty($resultPer)){
+	        
+	        $this->view("Error",array(
+	            "resultado"=>"No tiene Permisos de Acceso Reporte de Cuentas Pagar"
+	            
+	        ));
+	        exit();
+	    }
+	    
+	    $this->view_tesoreria("CuentasPagar",array( ));
+	    
+	}
+	
+	public function ListaCuentasPagar(){
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    $id_lote = (isset($_POST['id_lote'])) ? $_POST['id_lote'] : 0;
+	    
+	    $columnas = " id_cuentas_pagar, numero_cuentas_pagar, id_tipo_documento,
+                    descripcion_cuentas_pagar, id_lote,  DATE(fecha_cuentas_pagar) fecha_cuentas_pagar,
+                    id_proveedor, condiciones_pago, id_banco, id_moneda, numero_documento_cuentas_pagar,
+                    numero_orden_compra_cuentas_pagar, compras_cuentas_pagar";
+	    
+	    $tablas = "tes_cuentas_pagar ";
+	    
+	    $where = "1 = 1 ";
+	    
+	    $id = " fecha_cuentas_pagar";
+	    
+	    $where_to = "";
+	    
+	    
+	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1=" AND ( numero_documento_cuentas_pagar LIKE '".$search."%' )";
+	            
+	            $where_to=$where.$where1;
+	            
+	        }else{
+	            
+	            $where_to=$where;
+	        }
+	        
+	        $html="";
+	        $resultSet = $cuentasPagar->getCantidad("*", $tablas, $where_to);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet = $cuentasPagar->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        if($cantidadResult > 0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:15px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:200px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_impuestos_cxp' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 11px;">#</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Numero</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Documento </th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Fecha Ingreso</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Proveedor</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Banco</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Documento Num.</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;">Compra</th>';
+	            $html.='<th style="text-align: left;  font-size: 11px;"></th>';
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_cuentas_pagar.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->id_tipo_documento.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_cuentas_pagar.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->id_proveedor.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->id_banco.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_documento_cuentas_pagar.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->compras_cuentas_pagar.'</td>';
+	                $html.='<td style="font-size: 15px;">
+                            <a data-id="'.$res->id_cuentas_pagar.'"   href="#" class="btn btn-default input-sm showpdf" style="font-size:65%;" data-toggle="tooltip" title="Ver pdf"><i class="glyphicon glyphicon-print"></i></a></td>';
+	                
+	                $html.='</tr>';
+	                
+	            }
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"cargaCuentasPagar").'';
+	            $html.='</div>';
+	            
+	            
+	            
+	        }else{
+	            
+	            
+	        }
+	        
+	        echo $html;
+	        
+	    }
+	}
+		
 	/****************************************************** funciones de pruebas *****************************/
 	function verGenFileXml(){
 	    

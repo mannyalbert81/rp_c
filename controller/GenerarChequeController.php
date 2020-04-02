@@ -7,7 +7,6 @@ class GenerarChequeController extends ControladorBase{
 	}
 
 
-
 	public function index(){
 	
 		$entidad = new CoreEntidadPatronalModel();
@@ -68,54 +67,46 @@ class GenerarChequeController extends ControladorBase{
 	            ));
 	            exit();
 	        }
-	       
+	       	        
 	        if( !isset($_GET['id_cuentas_pagar']) ){
-	            
+	            // validacion si no hay parametro cuentas por pagar 
 	            $this->redirect("Pagos","index");
 	            exit();
 	        }
 	        
 	        $_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
+	        	        
+	        // traer datos de consecutivo PAGO
+	        $col1  = " LPAD(valor_consecutivos::TEXT,espacio_consecutivos,'0') \"secuencial\" ";
+	        $tab1  = " public.consecutivos ";
+	        $whe1  = " nombre_consecutivos = 'PAGOS' and id_entidades = 1 "; 
+	        $id1   = " id_consecutivos ";
+	        $rsConsulta1   = $cuentasPagar->getCondiciones($col1, $tab1, $whe1, $id1);
 	        
-	        $datos=null;
-	        $datos['id_cuentas_pagar'] = $_id_cuentas_pagar;
+	        //traer datos de moneda
+	        $col2  = " id_moneda, nombre_moneda, signo_moneda, signo_moneda || nombre_moneda  \"moneda\" ";
+	        $tab2  = " tes_moneda";
+	        $whe2  = " nombre_moneda = 'DOLAR'";
+	        $id2   = " id_moneda";
+	        $rsConsulta2 = $cuentasPagar->getCondiciones($col2, $tab2, $whe2, $id2);
 	        
-	        $query = "SELECT l.id_lote, l.nombre_lote, cp.id_cuentas_pagar, cp.numero_cuentas_pagar, cp.descripcion_cuentas_pagar, cp.fecha_cuentas_pagar,
-                    cp.compras_cuentas_pagar, cp.total_cuentas_pagar, p.id_proveedores, p.nombre_proveedores, p.identificacion_proveedores,
-                    b.id_bancos, b.nombre_bancos, m.id_moneda, m.signo_moneda || '-' || m.nombre_moneda AS moneda
-                FROM tes_cuentas_pagar cp
-                INNER JOIN tes_lote l
-                ON cp.id_lote = l.id_lote
-                INNER JOIN proveedores p
-                ON p.id_proveedores = cp.id_proveedor
-                INNER JOIN tes_bancos b
-                ON b.id_bancos = cp.id_banco
-                INNER JOIN tes_moneda m
-                ON m.id_moneda = cp.id_moneda
-                WHERE 1 = 1
-                AND cp.id_cuentas_pagar = $_id_cuentas_pagar ";
+	        //para traer cuentas por pagar y proveedores
+	        $col3  = "cc.id_lote, cc.nombre_lote, aa.id_cuentas_pagar, aa.numero_cuentas_pagar, aa.descripcion_cuentas_pagar, aa.fecha_cuentas_pagar,";
+	        $col3  .="aa.compras_cuentas_pagar, aa.total_cuentas_pagar, bb.id_proveedores, bb.nombre_proveedores, bb.identificacion_proveedores";
+	        $tab3  = "tes_cuentas_pagar aa
+    	        INNER JOIN proveedores bb ON bb.id_proveedores = aa.id_proveedor
+    	        INNER JOIN tes_lote cc ON cc.id_lote = aa.id_lote";
+	        $whe3  = " aa.id_cuentas_pagar = $_id_cuentas_pagar ";
+	        $id3   = " cc.id_lote";
+	        $rsConsulta3 = $cuentasPagar->getCondiciones($col3, $tab3, $whe3, $id3);	   
 	        
-	        $rsCuentasPagar = $cuentasPagar->enviaquery($query);
-	        
-	        // PARA BUSCAR CONSECUTIVO DE PAGO
-	        
-	        $queryConsecutivo = "SELECT numero_consecutivos FROM consecutivos WHERE nombre_consecutivos = 'PAGOS' AND id_entidades = 1";
-	        
-	        $rsConsecutivos = $cuentasPagar->enviaquery($queryConsecutivo);
-	        
-	        //para buscar cheque
-	        $queryBanco = "SELECT id_bancos, lpad(index_bancos_chequera::text,espacio_bancos_chequera,'0') numero_cheque
-                FROM tes_bancos ban
-                INNER JOIN tes_cuentas_pagar cp
-                ON ban.id_bancos = cp.id_banco
-                WHERE id_cuentas_pagar = $_id_cuentas_pagar";
-	        
-	        $rsBanco= $cuentasPagar->enviaquery($queryBanco);
-	        
+	       
 	        $this->view_tesoreria("GenerarCheque",array(
-	            "resultSet"=>$rsCuentasPagar,"rsConsecutivos"=>$rsConsecutivos,"datos"=>$datos,"rsBanco"=>$rsBanco
+	            "rsCuentasPagar"=>$rsConsulta3,"rsConsecutivos"=>$rsConsulta1,"rsMoneda"=>$rsConsulta2
 	        ));
 	    }
+	   
+	  
 	    
 	}
 	
@@ -182,6 +173,94 @@ class GenerarChequeController extends ControladorBase{
 	    
 	    $out.= "</ul>";
 	    return $out;
+	}
+	
+	/***
+	 * @desc function para dibujar la chequera de la entidad por medio de request ajax
+	 * @param none
+	 */
+	public function CargaChequera(){
+	    
+	    $pagos = new PagosModel();
+	    $resp  = null;
+	    
+	    $col1  = " id_bancos, nombre_bancos, lpad(index_bancos_chequera::text,espacio_bancos_chequera,'0') consecutivo_cheque , abrev_bancos_chequera";
+	    $tab1  = " tes_bancos ";
+	    $whe1  = " local_bancos = 't' and pago_bancos_chequera = 't' ";
+	    $id1   = " nombre_bancos ";
+	    $rsConsulta1   = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    try {
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	        
+	        if( !empty($rsConsulta1) ){	            
+	            $resp['data'] = $rsConsulta1;	            
+	        }else{
+	            $resp['data'] = null;	
+	        }
+	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
+	}
+	
+	/***
+	 * @desc function para dibujar la chequera de la entidad por medio de request ajax
+	 * @param none
+	 */
+	public function CargaNumChequera(){
+	    
+	    $pagos = new PagosModel();
+	    $resp  = null;
+	    
+	    $id_bancos = $_POST['id_bancos'];
+	    
+	    $col1  = " id_bancos, nombre_bancos, lpad(index_bancos_chequera::text,espacio_bancos_chequera,'0') consecutivo_cheque , abrev_bancos_chequera";
+	    $tab1  = " tes_bancos ";
+	    $whe1  = " id_bancos = $id_bancos ";
+	    $id1   = " nombre_bancos ";
+	    $rsConsulta1   = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    try {
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	        
+	        if( !empty($rsConsulta1) ){
+	            $resp['numchequera'] = $rsConsulta1[0]->consecutivo_cheque;
+	        }else{
+	            $resp['numchequera'] = null;
+	        }
+	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
 	}
 	
 	/***
@@ -562,15 +641,19 @@ class GenerarChequeController extends ControladorBase{
 	    session_start();
 	    
 	    try{
-	        //toma de datos
-	        //@$_id_comprobante =  $_POST['id_comprobante'];
-	       // @$_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
-	        @$_id_cuentas_pagar = $_GET['id_cuentas_pagar'];
-	        @$_id_comprobante =  $_GET['id_comprobante'];
 	        
 	        //para pruebas
-	        //$_id_comprobante =  68;
-	        //$_id_cuentas_pagar = 3;
+	        //$_id_comprobante =  300;
+	        //$_id_cuentas_pagar = 123;
+	        
+	        //tomar datos que viene de peticion ajax
+	        $_id_comprobante = isset( $_POST['id_comprobante'] ) ? $_POST['id_comprobante'] : null;
+	        $_id_cuentas_pagar = isset( $_POST['id_cuentas_pagar'] ) ? $_POST['id_cuentas_pagar'] : null;
+	        	        
+	        $error = error_get_last();
+	        if( !empty($error) ){
+	            throw new Exception("Datos de inicio no recibidos");
+	        }        
 	        
 	        if( $_id_comprobante == null || $_id_cuentas_pagar == null )
 	            throw new Exception("Parametros No Recibidos");
@@ -597,9 +680,7 @@ class GenerarChequeController extends ControladorBase{
 	        $colCuentas = "cp.id_cuentas_pagar, cp.descripcion_cuentas_pagar, p.nombre_proveedores, cp.total_cuentas_pagar";
 	        $tabCuentas = "tes_cuentas_pagar cp
             	       INNER JOIN proveedores p
-            	        ON cp.id_proveedor = p.id_proveedores
-            	        INNER JOIN tes_bancos b
-            	        ON b.id_bancos = cp.id_banco";
+            	        ON cp.id_proveedor = p.id_proveedores";
 	        $wheCuentas = "1=1 AND cp.id_cuentas_pagar = $_id_cuentas_pagar ";
 	        $idCuentas = "id_cuentas_pagar";
 	        $rscuentasPagar = $CuentasPagar->getCondiciones($colCuentas, $tabCuentas, $wheCuentas, $idCuentas);
@@ -618,7 +699,7 @@ class GenerarChequeController extends ControladorBase{
 	        $wheComprobante = "1=1 AND id_ccomprobantes = $_id_comprobante ";
 	        $idComprobante = "id_ccomprobantes";
 	        $rsComprobante = $CuentasPagar->getCondiciones($colComprobante, $tabComprobante, $wheComprobante, $idComprobante);
-	        
+	       
 	        //traer detalles cheque
 	        $conceptoCheque = $rsComprobante[0]->concepto_ccomprobantes;
 	        $numeroCheque = $rsComprobante[0]->numero_cheque_ccomprobantes;
@@ -843,7 +924,7 @@ class GenerarChequeController extends ControladorBase{
 	        
 	        
 	    }
-	    
+	    	    	    
 	    $this->report("Cheque",array( "resultSet"=>$html));
 	    die();
 	    

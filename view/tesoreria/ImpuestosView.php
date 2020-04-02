@@ -2,7 +2,8 @@
 <html lang="es">
       <head>
          
-    <meta charset="utf-8">
+    <!-- <meta charset="utf-8">  -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -230,7 +231,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/tesoreria/js/Impuestos.js?0.06"></script> 
+   <script src="view/tesoreria/js/Impuestos.js?0.07"></script> 
 	
   </body>
 </html>   

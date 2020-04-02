@@ -47,6 +47,21 @@ $controladores=$_SESSION['controladores'];
            </ul>
         </li>
         
+         <!-- INICIA MENU DE BUSQUEDA -->
+         <li class="treeview"  style="<?php echo getcontrolador("menuBusqueda",$controladores) ?>"  >
+              <a href="#">
+                <i class="glyphicon glyphicon-search"></i> <span>Principal</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+              	<li style="<?php echo getcontrolador("admBusqueda",$controladores) ?>"><a href="index.php?controller=PrincipalBusquedas&action=index"><i class="fa fa-angle-right"></i>Busqueda</a></li>
+              </ul>
+              
+         </li>
+         <!-- END MENU DE BUSQUEDA  -->
+        
         <li class="treeview"  style="<?php echo getcontrolador("MenuNomina",$controladores) ?>"  >
           <a href="#">
             <i class="glyphicon glyphicon-user"></i> <span>Recursos Humanos</span>
@@ -271,6 +286,7 @@ $controladores=$_SESSION['controladores'];
        </ul>
      </li>
      
+    
       
         <li class="treeview"  style="<?php echo getcontrolador("MenuActivos",$controladores) ?>"  >
           <a href="#">
@@ -406,6 +422,7 @@ $controladores=$_SESSION['controladores'];
                 <li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=Pagos&action=Index"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
               	<!-- <li style="<?php //echo getcontrolador("IngresoCuentasPagar",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=CuentasPagarIndex"><i class="fa fa-circle-o"></i> Ingreso Cuentas Pagar</a></li>              	
               	<li style="<?php //echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=Compras&action=Index"><i class="fa fa-circle-o"></i> Compras</a></li> -->
+              	<li style="<?php echo getcontrolador("genArchivoPago",$controladores) ?>"><a href="index.php?controller=ArchivoPago&action=Index2"><i class="fa fa-circle-o"></i> Generacio Archivo Pago</a></li>
               	    			
              </ul>
             </li>
@@ -480,6 +497,8 @@ $controladores=$_SESSION['controladores'];
               <li style="<?php echo getcontrolador("SimulacionCreditos",$controladores) ?>"><a href="index.php?controller=SimulacionCreditos&action=index"><i class="fa fa-circle-o"></i>Simulación Crédito</a></li>
               <li style="<?php echo getcontrolador("RevisionCreditos",$controladores) ?>"><a href="index.php?controller=RevisionCreditos&action=index"><i class="fa fa-circle-o"></i>Revisión de Crédito</a></li>
               <li style="<?php echo getcontrolador("AcuerdoPago",$controladores) ?>"><a href="index.php?controller=AcuerdoPagos&action=index"><i class="fa fa-circle-o"></i>Acuerdos de Pago</a></li>      
+	          <li style="<?php echo getcontrolador("ReporteCierreCreditos",$controladores) ?>"><a href="index.php?controller=ReporteCierreCreditos&action=index5"><i class="fa fa-circle-o"></i>Documentos Hipotecarios</a></li>
+     
 		  </ul>
         </li>
         
@@ -493,6 +512,10 @@ $controladores=$_SESSION['controladores'];
           <ul class="treeview-menu">
           <li style="<?php echo getcontrolador("CoreFirmasParticipe",$controladores) ?>"><a href="index.php?controller=CoreFirmasParticipe&action=index"><i class="fa fa-circle-o"></i>Firmas</a></li>
           <li style="<?php echo getcontrolador("ReporteCierreMes",$controladores) ?>"><a href="index.php?controller=ReporteCierreMes&action=index5"><i class="fa fa-circle-o"></i>Cierre Mes</a></li>
+        <li style="<?php echo getcontrolador("ReporteCierreCreditos",$controladores) ?>"><a href="index.php?controller=ReporteCierreCreditos&action=index"><i class="fa fa-circle-o"></i>Documentos Hipotecarios</a></li>
+        
+        
+        
         
             </ul>
         </li>

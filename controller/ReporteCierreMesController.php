@@ -420,15 +420,11 @@
 	        $resultSet=$reporte_cierre_mes->getCondiciones($columnas, $tablas, $where_to, $id);
 	        $_respuesta=array();
 	        
-	        array_push($_respuesta, 'Cédula', 'Nombre', 'Credito','Saldo Inicial','Mov. Enero','Mov. Febrero','Mov. Marzo','Mov. Abril','Mov. Mayo','Mov. Junio','Mov. Julio','Mov. Agosto','Mov. Septiembre','Mov. Octubre','Mov. Noviembre','Mov. Diciembre','Sal. Enero','Sal. Febrero','Sal. Marzo','Sal. Abril','Sal. Mayo','Sal. Junio','Sal. Julio');
+	        array_push($_respuesta, 'Cédula', 'Nombre', 'Credito','Saldo Inicial','Mov. Enero','Mov. Febrero','Mov. Marzo','Mov. Abril','Mov. Mayo','Mov. Junio','Mov. Julio','Mov. Agosto','Mov. Septiembre','Mov. Octubre','Mov. Noviembre','Mov. Diciembre','Sal. Enero','Sal. Febrero','Sal. Marzo','Sal. Abril','Sal. Mayo','Sal. Junio','Sal. Julio','Sal. Agosto','Sal. Septiembre','Sal. Octubre','Sal. Noviembre','Sal. Diciembre');
 	        
 	        if(!empty($resultSet)){
 	            
 	            foreach ($resultSet as $res){
-	                
-	         
-	                
-	                
 	                
 	                array_push($_respuesta, $res->cedula_participes, $res->apellido_participes, $res->numero_creditos,
 	                    $res->saldo_inicial,
@@ -450,7 +446,12 @@
 	                    $res->saldo_abril,
 	                    $res->saldo_mayo,
 	                    $res->saldo_junio,
-	                    $res->saldo_julio);
+	                    $res->saldo_julio,
+	                    $res->saldo_agosto,
+	                    $res->saldo_septiembre,
+	                    $res->saldo_octubre,
+	                    $res->saldo_noviembre,
+	                    $res->saldo_diciembre);
 	            }
 	            echo json_encode($_respuesta);
 	        }

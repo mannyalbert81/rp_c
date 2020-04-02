@@ -1,7 +1,5 @@
 <?php
 
-use FontLib\Table\Type\post;
-
 class TesCuentasPagarController extends ControladorBase{
 
 	public function __construct() {
@@ -117,7 +115,7 @@ class TesCuentasPagarController extends ControladorBase{
 	        
 	    
 	    $columnas1 = " aa.id_tipo_proveedores,aa.id_proveedores, aa.nombre_proveedores, aa.identificacion_proveedores, aa.direccion_proveedores, aa.celular_proveedores,";
-	    $columnas1 .= "razon_social_proveedores, tipo_identificacion_proveedores ";
+	    $columnas1 .= "aa.razon_social_proveedores, aa.tipo_identificacion_proveedores ";
 	    $tablas1   = " proveedores aa
     	    INNER JOIN tes_tipo_proveedores bb ON aa.id_tipo_proveedores = bb.id_tipo_proveedores";
 	    $where1    = " bb.nombre_tipo_proveedores = 'PAGO PROVEEDORES'";
@@ -149,18 +147,29 @@ class TesCuentasPagarController extends ControladorBase{
 	    $estiloConfigProveedores = ""; // variable donde se guarda estilo css para indicar al usuario que debe configurar datos de proveedor 
 	    foreach ($resultSet as $res){
 	        
+	        //$estiloConfigProveedores = "style=\"color:#E37B71;\"";
+	        
 	        if( $res->id_tipo_proveedores == 3 && $res->razon_social_proveedores == "" && $res->tipo_identificacion_proveedores == "04")
-	            $estiloConfigProveedores = "bgcolor=\"#E37B71\"";
+	            $estiloConfigProveedores = "style=\"color:red;\"";
 	        
 	        $i++;
+	        
+	        $razonSocial = empty($res->razon_social_proveedores) ? "N/D" : $res->razon_social_proveedores;
+	        $direccion = empty($res->direccion_proveedores) ? "N/D" : $res->direccion_proveedores;
+	        $celular = empty($res->celular_proveedores) ? "N/D" : $res->celular_proveedores;
+	        
 	        $btonSelect = "<button onclick=\"SelecionarProveedor(this)\" value=\"$res->id_proveedores\" class=\"btn btn-default\"> 
                         <i aria-hidden=\"true\" class=\"fa fa-external-link\"></i> </button>";
 	        $htmlTr    .= "<tr $estiloConfigProveedores >";
 	        $htmlTr    .= "<td>" . $i . "</td>";
 	        $htmlTr    .= "<td>" . $res->identificacion_proveedores . "</td>";
-	        $htmlTr    .= "<td>" . $res->nombre_proveedores . "</td>";	        
+	        $htmlTr    .= "<td>" . $razonSocial . "</td>";
+	        $htmlTr    .= "<td>" . $res->nombre_proveedores . "</td>";	
+	        $htmlTr    .= "<td>" . $direccion . "</td>";	
+	        $htmlTr    .= "<td>" . $celular . "</td>";	
 	        $htmlTr    .= "<td>" . $btonSelect . "</td>";
 	        $htmlTr    .= "</tr>";	        
+	        
 	        	        
 	    }
 	    
@@ -298,7 +307,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    $colImpuestos  = " aa.id_impuestos,aa.tipo_impuestos,aa.codigo_impuestos,aa.nombre_impuestos,aa.id_plan_cuentas, bb.nombre_plan_cuentas, 
                 bb.codigo_plan_cuentas, aa.porcentaje_impuestos, aa.operacion_impuestos";
 	    $tabImpuestos  = " tes_impuestos aa
-	           LEFT JOIN plan_cuentas bb ON bb.id_plan_cuentas = aa.id_plan_cuentas";
+	           INNER JOIN plan_cuentas bb ON bb.id_plan_cuentas = aa.id_plan_cuentas";
 	    $wheImpuestos  = " 1 = 1 ";
 	    $idIMpuestos   = " bb.codigo_plan_cuentas";
 	    //$rsImpuestos   = $impuestos->getCondiciones($colImpuestos, $tabImpuestos, $wheImpuestos, $idIMpuestos);
@@ -333,10 +342,12 @@ class TesCuentasPagarController extends ControladorBase{
 	    foreach ($resultSet as $res){
 	        $i++;	        
 	       
+	        //$estiloConfigImpuestos = "bgcolor=\"#E37B71\"";
+	        
 	        /** siguiente validacion es solo hasta que se arreglen los impuestos **/
 	        if( $res->id_plan_cuentas == null || ( empty($res->codigo_impuestos) && $res->tipo_impuestos == "ret" ) || (empty($res->codigo_impuestos) && $res->tipo_impuestos == "retiva" )  ){
 	            //echo ""," PLAN CUENTAS --> ",$res->id_plan_cuentas,"   CODIGO IMPUESTOS --> ",$res->codigo_impuestos, "    TIPO IMPUESTO ---> ", $res->tipo_impuestos," <br> \n";
-	            $estiloConfigImpuestos = "bgcolor=\"#E37B71\"";
+	            $estiloConfigImpuestos = "style=\"color:red\"";
 	        }
 	        
 	        $btonSelect = "<button onclick=\"AgregarImpuesto(this)\" value=\"$res->id_impuestos\" class=\"btn btn-default\">
@@ -1191,7 +1202,7 @@ class TesCuentasPagarController extends ControladorBase{
                                 $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
                                 $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;  
                                 
-                                //$fechaAutorizado = $finalresp['fecauto'];
+                                $fechaAutorizado = $finalresp['fecauto'];
                             }
                             
                             
@@ -1220,10 +1231,22 @@ class TesCuentasPagarController extends ControladorBase{
                         
                         /** agregar datos a tabla errores de retenciones **/ 
                     }
+                    
+                    /** actualizacion de la fecha de autorizacion del xml **/
+                    if( isset($fechaAutorizado) ){
+                        
+                        $claveAcceso = $resp['claveAcceso'];
+                        $_columnaActualizar = " fecha_autorizacion = '$fechaAutorizado' ";
+                        $_tablaActualizar   = " tri_retenciones";
+                        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
+                        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
+                        
+                    }
                         
                 }else{
                     $respuesta['xml'] = " ARCHIVO NO ENTRO XML";
-                }
+                }                
+                
             }
             
             $cuentasPagar->endTran('COMMIT');

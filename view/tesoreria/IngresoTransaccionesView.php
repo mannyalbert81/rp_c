@@ -327,17 +327,20 @@
             			<input type="text" id="mod_buscador_proveedores" onkeyup="loadProveedores()" class="form-control">
             		</div>
             		<div class="clearfix"></div>
+            		<div class="pull-left">            			
+            			<p>Total Registros <span id="mod_total_proveedores" class="badge badge-info"></span></p>
+            		</div>
+            		<div class="clearfix"></div>
             		<table id="mod_tbl_proveedores" class="table  table-fixed table-sm table-responsive-sm" > <!--   -->
-                    	<thead >
-                    		<tr>
-                    			<th ><p>Total Registros <span id="mod_total_proveedores" class="badge bg-info"></span></p> </th>
-                    			<th colspan="3"></th>
-                    		</tr>
+                    	<thead >                    		
                     	    <tr class="table-secondary" >
-                    			<th style="text-align: left;  font-size: 12px;">#</th>
-                    			<th style="text-align: left;  font-size: 12px;">RUC/CI</th>
-                    			<th style="text-align: left;  font-size: 12px;">Nombres</th>
-                    			<th style="text-align: left;  font-size: 12px;">..</th>
+                    			<th style="text-align: left;  font-size: 10px;">#</th>
+                    			<th style="text-align: left;  font-size: 10px;">RUC/CI</th>
+                    			<th style="text-align: left;  font-size: 10px;">Razon Social</th>
+                    			<th style="text-align: left;  font-size: 10px;">Nombres</th>
+                    			<th style="text-align: left;  font-size: 10px;">Dirección</th>
+                    			<th style="text-align: left;  font-size: 10px;">Celular</th>
+                    			<th style="text-align: left;  font-size: 10px;">..</th>
                     		</tr>
                     	</thead>        
                     	<tbody>

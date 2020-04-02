@@ -30,7 +30,7 @@ class EstructurasBiessController extends ControladorBase{
 	    
 	    $G41= new G41Model();
 	    $id_usuarios=$_SESSION['id_usuarios'];
-	    $mes_reporte=$_POST['mes_reporte'];
+	    $mes_reporte=$_POST['mes_reporte']+1;
 	   
 	    $anio_reporte=$_POST['anio_reporte'];
 	    $mes_reporte1=$mes_reporte+1;
@@ -330,7 +330,8 @@ class EstructurasBiessController extends ControladorBase{
 	
 		$anio_reporte=$_POST['anio_reporte'];
 		$mes_reporte1=$mes_reporte+1;
-		 
+		
+		
 	   $_id_g42_biess ;
 	   $_tipo_identificacion_g42_biess ;
 	   $_identificacion_g42_biess; 
@@ -375,7 +376,7 @@ class EstructurasBiessController extends ControladorBase{
 		$columnas = "id_g42_biess, tipo_identificacion_g42_biess, identificacion_g42_biess, 
        tipo_prestacion_g42_biess, estado_participe_cesante_g42_biess, 
        estado_participe_jubilado_g42_biess, aporte_personal_cesantia_g42_biess, 
-       aporte_personal_jubilado_g42_biess, aporte_adicional_jubilacion_g42_biess, 
+       aporte_personal_jubilado_g42_biess, aporte_adicional_jubilacion_g42_biess, rendimiento_anual_g42_biess,
        aporte_adicional_cesantia_g42_biess, saldo_cuenta_individual_patronal_g42_biess, 
        saldo_cuenta_individual_cesantia_g42_biess, saldo_cuenta_individual_jubilacion_g42_biess, 
        saldo_aporte_personal_jubilacion_g42_biess, saldo_aporte_personal_cesantia_g42_biess, 
@@ -388,13 +389,15 @@ class EstructurasBiessController extends ControladorBase{
        motivo_liquidacion_g42_biess, fecha_termino_relacion_laboral_g42_biess, 
        saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42, 
        saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42, 
-       detalle_otros_valores_pagados_y_pendientes_pago_g42_biess, valores_pagados_fondo_g42_biess, 
-       valores_pendientes_pago_cuentas_por_pagar_particpe_g42_biess, 
+       detalle_otros_valores_pagados_y_pendientes_pago_g42_biess, valores_pagados_al_fondo_g42_biess, 
+       valores_pendientes_pago_al_fondo_g42_biess, 
        valor_pagado_participe_por_cesantia_g42_biess, valor_pagado_participe_por_jubiliacion_g42_biess, 
        descripcion_otros_conceptos_g42_biess, valores_pagados_al_participe_otros_conceptos_g42_biess, 
        anio_g42_biess, mes_g42_biess, creado, modificado";
 		$tablas = "public.core_g42_biess";
 		$where = " anio_g42_biess = '$anio_reporte' AND mes_g42_biess = '$mes_reporte1' ";
+		
+		
 		$id = " id_g42_biess" ;
 		 
 		$html= "";
@@ -491,8 +494,8 @@ class EstructurasBiessController extends ControladorBase{
 				$html.='<td style="font-size: 11px;">'.$res->saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42.'</td>';
 				$html.='<td style="font-size: 11px;">'.$res->saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42.'</td>';
 				$html.='<td style="font-size: 11px;">'.$res->detalle_otros_valores_pagados_y_pendientes_pago_g42_biess.'</td>';
-				$html.='<td style="font-size: 11px;">'.$res->valores_pagados_fondo_g42_biess.'</td>';
-				$html.='<td style="font-size: 11px;">'.$res->valores_pendientes_pago_cuentas_por_pagar_particpe_g42_biess.'</td>';
+				$html.='<td style="font-size: 11px;">'.$res->valores_pagados_al_fondo_g42_biess.'</td>';
+				$html.='<td style="font-size: 11px;">'.$res->valores_pendientes_pago_al_fondo_g42_biess.'</td>';
 				$html.='<td style="font-size: 11px;">'.$res->valor_pagado_participe_por_cesantia_g42_biess.'</td>';
 				$html.='<td style="font-size: 11px;">'.$res->valor_pagado_participe_por_jubiliacion_g42_biess.'</td>';
 				$html.='<td style="font-size: 11px;">'.$res->descripcion_otros_conceptos_g42_biess.'</td>';
@@ -531,78 +534,78 @@ class EstructurasBiessController extends ControladorBase{
 		
 		
 			$G42= new G42Model();
-			$id_usuarios=$_SESSION['id_usuarios'];
+			//$id_usuarios=$_SESSION['id_usuarios'];
 			$mes_reporte=$_POST['mes_reporte'];
 			
 			$anio_reporte=$_POST['anio_reporte'];
 			$mes_reporte1=$mes_reporte+1;
 				
-			$_id_g42_biess ;
-			$_tipo_identificacion_g42_biess ;
-			$_identificacion_g42_biess;
-			$_tipo_prestacion_g42_biess;
-			$_estado_participe_cesante_g42_biess;
-			$_estado_participe_jubilado_g42_biess;
-			$_aporte_personal_cesantia_g42_biess = "0.00";
-			$_aporte_personal_jubilado_g42_biess = "0.00";
-			$_aporte_adicional_jubilacion_g42_biess = "0.00";
-			$_aporte_adicional_cesantia_g42_biess = "0.00";
-			$_saldo_cuenta_individual_patronal_g42_biess = "0.00";
-			$_saldo_cuenta_individual_cesantia_g42_biess = "0.00";
-			$_saldo_cuenta_individual_jubilacion_g42_biess = "0.00";
-			$_saldo_aporte_personal_jubilacion_g42_biess = "0.00";
-			$_saldo_aporte_personal_cesantia_g42_biess = "0.00";
-			$_saldo_aporte_adicional_jubilacion_g42_biess = "0.00";
-			$_saldo_aporte_adicional_cesantia_g42_biess = "0.00";
-			$_saldo_rendimiento_patronal_otros_g42_biess= "0.00";
-			$_saldo_rendimiento_aporte_personal_jubilacion_g42_biess = "0.00";
-			$_saldo_rendimiento_aporte_personal_cesantia_g42_biess = "0.00";
-			$_saldo_rendimiento_aporte_adicional_cesantia_g42_biess = "0.00";
-			$_saldo_rendimiento_aporte_adicional_jubilacion_g42_biess = "0.00";
-			$_retencion_fiscal_g42_biess = "0.00";
-			$_fecha_desafiliacion_voluntaria_g42_biess;
-			$_monto_desafiliacion_voluntaria_liquidacion_desafiliacion_g42 = "0.00";
-			$_valor_pendiente_pago_desafiliacion_g42_biess = "0.00";
-			$_valor_pagado_participe_desafiliado_g42_biess = "0.00";
-			$_motivo_liquidacion_g42_biess = "0.00";
-			$_fecha_termino_relacion_laboral_g42_biess;
-			$_saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42 = "0.00";
-			$_saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42 = "0.00";
-			$_detalle_otros_valores_pagados_y_pendientes_pago_g42_biess = "0.00";
-			$_valores_pagados_fondo_g42_biess = "0.00";
-			$_valores_pendientes_pago_cuentas_por_pagar_particpe_g42_biess = "0.00";
-			$_valor_pagado_participe_por_cesantia_g42_biess = "0.00";
-			$_valor_pagado_participe_por_jubiliacion_g42_biess = "0.00";
-			$_descripcion_otros_conceptos_g42_biess ;
-			$_valores_pagados_al_participe_otros_conceptos_g42_biess = "0.00";
-			 
-			$i = 0;
-				
-			$columnas = "id_g42_biess, tipo_identificacion_g42_biess, identificacion_g42_biess,
-       tipo_prestacion_g42_biess, estado_participe_cesante_g42_biess,
-       estado_participe_jubilado_g42_biess, aporte_personal_cesantia_g42_biess,
-       aporte_personal_jubilado_g42_biess, aporte_adicional_jubilacion_g42_biess,
-       aporte_adicional_cesantia_g42_biess, saldo_cuenta_individual_patronal_g42_biess,
-       saldo_cuenta_individual_cesantia_g42_biess, saldo_cuenta_individual_jubilacion_g42_biess,
-       saldo_aporte_personal_jubilacion_g42_biess, saldo_aporte_personal_cesantia_g42_biess,
-       saldo_aporte_adicional_jubilacion_g42_biess, saldo_aporte_adicional_cesantia_g42_biess,
-       saldo_rendimiento_patronal_otros_g42_biess, saldo_rendimiento_aporte_personal_jubilacion_g42_biess,
-       saldo_rendimiento_aporte_personal_cesantia_g42_biess, saldo_rendimiento_aporte_adicional_cesantia_g42_biess,
-       saldo_rendimiento_aporte_adicional_jubilacion_g42_biess, retencion_fiscal_g42_biess,
-       fecha_desafiliacion_voluntaria_g42_biess, monto_desafiliacion_voluntaria_liquidacion_desafiliacion_g42,
-       valor_pendiente_pago_desafiliacion_g42_biess, valor_pagado_participe_desafiliado_g42_biess,
-       motivo_liquidacion_g42_biess, fecha_termino_relacion_laboral_g42_biess,
-       saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42,
-       saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42,
-       detalle_otros_valores_pagados_y_pendientes_pago_g42_biess, valores_pagados_fondo_g42_biess,
-       valores_pendientes_pago_cuentas_por_pagar_particpe_g42_biess,
-       valor_pagado_participe_por_cesantia_g42_biess, valor_pagado_participe_por_jubiliacion_g42_biess,
-       descripcion_otros_conceptos_g42_biess, valores_pagados_al_participe_otros_conceptos_g42_biess,
+		   $_id_g42_biess ;
+	   $_tipo_identificacion_g42_biess ;
+	   $_identificacion_g42_biess; 
+       $_tipo_prestacion_g42_biess;
+       $_estado_participe_cesante_g42_biess; 
+       $_estado_participe_jubilado_g42_biess; 
+       $_aporte_personal_cesantia_g42_biess = "0.00";
+       $_aporte_personal_jubilado_g42_biess = "0.00"; 
+       $_aporte_adicional_jubilacion_g42_biess = "0.00";  
+       $_aporte_adicional_cesantia_g42_biess = "0.00";
+       $_rendimiento_anual_g42_biess = "0.00";
+       $_saldo_cuenta_individual_patronal_g42_biess = "0.00";
+       $_saldo_cuenta_individual_cesantia_g42_biess = "0.00";
+       $_saldo_cuenta_individual_jubilacion_g42_biess = "0.00";
+       $_saldo_aporte_personal_jubilacion_g42_biess = "0.00";
+       $_saldo_aporte_personal_cesantia_g42_biess = "0.00";
+       $_saldo_aporte_adicional_jubilacion_g42_biess = "0.00";
+       $_saldo_aporte_adicional_cesantia_g42_biess = "0.00";
+       $_saldo_rendimiento_patronal_otros_g42_biess= "0.00";
+       $_saldo_rendimiento_aporte_personal_jubilacion_g42_biess = "0.00"; 
+       $_saldo_rendimiento_aporte_personal_cesantia_g42_biess = "0.00";
+       $_saldo_rendimiento_aporte_adicional_cesantia_g42_biess = "0.00";
+       $_saldo_rendimiento_aporte_adicional_jubilacion_g42_biess = "0.00";
+       $_retencion_fiscal_g42_biess = "0.00";
+       $_fecha_desafiliacion_voluntaria_g42_biess; 
+       $_monto_desafiliacion_voluntaria_liquidacion_desafiliacion_g42 = "0.00"; 
+       $_valor_pendiente_pago_desafiliacion_g42_biess = "0.00";
+       $_valor_pagado_participe_desafiliado_g42_biess = "0.00";
+       $_motivo_liquidacion_g42_biess = "0.00";
+       $_fecha_termino_relacion_laboral_g42_biess; 
+       $_saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42 = "0.00"; 
+       $_saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42 = "0.00";
+       $_detalle_otros_valores_pagados_y_pendientes_pago_g42_biess = "0.00";
+       $_valores_pagados_fondo_g42_biess = "0.00";
+       $_valores_pendientes_pago_cuentas_por_pagar_particpe_g42_biess = "0.00"; 
+       $_valor_pagado_participe_por_cesantia_g42_biess = "0.00";
+       $_valor_pagado_participe_por_jubiliacion_g42_biess = "0.00";
+       $_descripcion_otros_conceptos_g42_biess ;
+       $_valores_pagados_al_participe_otros_conceptos_g42_biess = "0.00"; 
+       
+		$i = 0;
+		 
+		$columnas = "id_g42_biess, tipo_identificacion_g42_biess, identificacion_g42_biess, 
+       tipo_prestacion_g42_biess, estado_participe_cesante_g42_biess, 
+       estado_participe_jubilado_g42_biess, aporte_personal_cesantia_g42_biess, 
+       aporte_personal_jubilado_g42_biess, aporte_adicional_jubilacion_g42_biess, 
+       aporte_adicional_cesantia_g42_biess, rendimiento_anual_g42_biess ,saldo_cuenta_individual_patronal_g42_biess, 
+       saldo_cuenta_individual_cesantia_g42_biess, saldo_cuenta_individual_jubilacion_g42_biess, 
+       saldo_aporte_personal_jubilacion_g42_biess, saldo_aporte_personal_cesantia_g42_biess, 
+       saldo_aporte_adicional_jubilacion_g42_biess, saldo_aporte_adicional_cesantia_g42_biess, 
+       saldo_rendimiento_patronal_otros_g42_biess, saldo_rendimiento_aporte_personal_jubilacion_g42_biess, 
+       saldo_rendimiento_aporte_personal_cesantia_g42_biess, saldo_rendimiento_aporte_adicional_cesantia_g42_biess, 
+       saldo_rendimiento_aporte_adicional_jubilacion_g42_biess, retencion_fiscal_g42_biess, 
+       fecha_desafiliacion_voluntaria_g42_biess, monto_desafiliacion_voluntaria_liquidacion_desafiliacion_g42, 
+       valor_pendiente_pago_desafiliacion_g42_biess, valor_pagado_participe_desafiliado_g42_biess, 
+       motivo_liquidacion_g42_biess, fecha_termino_relacion_laboral_g42_biess, 
+       saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42, 
+       saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42, 
+       detalle_otros_valores_pagados_y_pendientes_pago_g42_biess, valores_pagados_al_fondo_g42_biess, 
+       valores_pendientes_pago_al_fondo_g42_biess, 
+       valor_pagado_participe_por_cesantia_g42_biess, valor_pagado_participe_por_jubiliacion_g42_biess, 
+       descripcion_otros_conceptos_g42_biess, valores_pagados_al_participe_otros_conceptos_g42_biess, 
        anio_g42_biess, mes_g42_biess, creado, modificado";
-			$tablas = "public.core_g42_biess";
-			$where = " anio_g42_biess = '$anio_reporte' AND mes_g42_biess = '$mes_reporte1' ";
-			$id = " id_g42_biess" ;
-		
+		$tablas = "public.core_g42_biess";
+		$where = " anio_g42_biess = '$anio_reporte' AND mes_g42_biess = '$mes_reporte1' ";
+		$id = " id_g42_biess" ;
 			//validar los campos recibidos para generar diario
 		
 			$texto = "";
@@ -654,6 +657,7 @@ class EstructurasBiessController extends ControladorBase{
 					$_aporte_personal_jubilado_g42_biess 	= $res->aporte_personal_jubilado_g42_biess;
 					$_aporte_adicional_jubilacion_g42_biess = $res->aporte_adicional_jubilacion_g42_biess;
 					$_aporte_adicional_cesantia_g42_biess 	= $res->aporte_adicional_cesantia_g42_biess;
+					$_rendimiento_anual_g42_biess =  $res->rendimiento_anual_g42_biess;
 					$_saldo_cuenta_individual_patronal_g42_biess = $res->saldo_cuenta_individual_patronal_g42_biess;
 					$_saldo_cuenta_individual_cesantia_g42_biess = $res->saldo_cuenta_individual_cesantia_g42_biess;
 					$_saldo_cuenta_individual_jubilacion_g42_biess = $res->saldo_cuenta_individual_jubilacion_g42_biess;
@@ -676,8 +680,8 @@ class EstructurasBiessController extends ControladorBase{
 					$_saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42 = $res->saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42;
 					$_saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42 = $res->saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42;
 					$_detalle_otros_valores_pagados_y_pendientes_pago_g42_biess = $res->detalle_otros_valores_pagados_y_pendientes_pago_g42_biess;
-					$_valores_pagados_fondo_g42_biess = $res->valores_pagados_fondo_g42_biess;
-					$_valores_pendientes_pago_cuentas_por_pagar_particpe_g42_biess = $res->valores_pendientes_pago_cuentas_por_pagar_particpe_g42_biess;
+					$_valores_pagados_al_fondo_g42_biess = $res->valores_pagados_al_fondo_g42_biess;
+					$_valores_pendientes_pago_al_fondo_g42_biess = $res->valores_pendientes_pago_al_fondo_g42_biess;
 					$_valor_pagado_participe_por_cesantia_g42_biess = $res->valor_pagado_participe_por_cesantia_g42_biess;
 					$_valor_pagado_participe_por_jubiliacion_g42_biess = $res->valor_pagado_participe_por_jubiliacion_g42_biess;
 					$_descripcion_otros_conceptos_g42_biess = $res->descripcion_otros_conceptos_g42_biess;
@@ -688,42 +692,43 @@ class EstructurasBiessController extends ControladorBase{
 		
 					$texto .= '<Registro NumeroRegistro="'. $i.'">';
 					$texto .= '<TipoIdentificacionParticipe>'.$_tipo_identificacion_g42_biess.'</TipoIdentificacionParticipe>';
-					$texto .= '<IdentificacionParticipe>'.$_tipo_identificacion_g41_biess.'</IdentificacionParticipe>';
-					$texto .= '<TipoPrestacion>'.$_tipo_identificacion_g41_biess.'</TipoPrestacion>';
-					$texto .= '<EstadoParticipeCES>'.$_tipo_identificacion_g41_biess.'</EstadoParticipeCES>';
-					$texto .= '<EstadoParticipeJUB>'.$_tipo_identificacion_g41_biess.'</EstadoParticipeJUB>';
-					$texto .= '<AportePersonalCES>'.$_tipo_identificacion_g41_biess.'</AportePersonalCES>';
-					$texto .= '<AportePersonalJUB>'.$_tipo_identificacion_g41_biess.'</AportePersonalJUB>';
-					$texto .= '<AporteAdicionalJUB>'.$_tipo_identificacion_g41_biess.'</AporteAdicionalJUB>';
-					$texto .= '<AporteAdicionalCES>'.$_tipo_identificacion_g41_biess.'</AporteAdicionalCES>';
-					$texto .= '<RendimientoAnual>'.$_tipo_identificacion_g41_biess.'</RendimientoAnual>';
-					$texto .= '<SaldoCIPatronal>'.$_tipo_identificacion_g41_biess.'</SaldoCIPatronal>';
-					$texto .= '<SaldoCIcesantia>'.$_tipo_identificacion_g41_biess.'</SaldoCIcesantia>';
-					$texto .= '<SaldoCIjubilacion>'.$_tipo_identificacion_g41_biess.'</SaldoCIjubilacion>';
-					$texto .= '<SaldoAportePersonalJub>'.$_tipo_identificacion_g41_biess.'</SaldoAportePersonalJub>';
-					$texto .= '<SaldoAportePersonalCes>'.$_tipo_identificacion_g41_biess.'</SaldoAportePersonalCes>';
-					$texto .= '<SaldoAporteAdicJub>'.$_tipo_identificacion_g41_biess.'</SaldoAporteAdicJub>';
-					$texto .= '<SaldoAporteAdicCes>'.$_tipo_identificacion_g41_biess.'</SaldoAporteAdicCes>';
-					$texto .= '<SaldoRendiPatronal>'.$_tipo_identificacion_g41_biess.'</SaldoRendiPatronal>';
-					$texto .= '<SaldoRendiAAcesantia>'.$_tipo_identificacion_g41_biess.'</SaldoRendiAAcesantia>';
-					$texto .= '<SaldoRendiAPcesantia>'.$_tipo_identificacion_g41_biess.'</SaldoRendiAPcesantia>';
-					$texto .= '<SaldoRendiAAjubilacion>'.$_tipo_identificacion_g41_biess.'</SaldoRendiAAjubilacion>';
-					$texto .= '<RetencionFiscal>'.$_tipo_identificacion_g41_biess.'</RetencionFiscal>';
-					$texto .= '<FechaDesafiliacion>'.$_tipo_identificacion_g41_biess.'</FechaDesafiliacion>';
-					$texto .= '<MontoDesafiliacionVol>'.$_tipo_identificacion_g41_biess.'</MontoDesafiliacionVol>';
-					$texto .= '<ValorPendienteDesaf>'.$_tipo_identificacion_g41_biess.'</ValorPendienteDesaf>';
-					$texto .= '<ValorPagPartDesaf>'.$_tipo_identificacion_g41_biess.'</ValorPagPartDesaf>';
-					$texto .= '<MotivoLiquidacion>'.$_tipo_identificacion_g41_biess.'</MotivoLiquidacion>';
-					$texto .= '<FechaTerminoRL>'.$_tipo_identificacion_g41_biess.'</FechaTerminoRL>';
-					$texto .= '<SaldoCIliqPrestacionCES>'.$_tipo_identificacion_g41_biess.'</SaldoCIliqPrestacionCES>';
-					$texto .= '<SaldoCIliqPrestacionJUB>'.$_tipo_identificacion_g41_biess.'</SaldoCIliqPrestacionJUB>';
-					$texto .= '<DetalleOtrosValores>'.$_tipo_identificacion_g41_biess.'</DetalleOtrosValores>';
-					$texto .= '<ValoresPagadosFondo>'.$_tipo_identificacion_g41_biess.'</ValoresPagadosFondo>';
-					$texto .= '<ValoresPendientesFondo>'.$_tipo_identificacion_g41_biess.'</ValoresPendientesFondo>';
-					$texto .= '<ValorPagadoParticipeCES>'.$_tipo_identificacion_g41_biess.'</ValorPagadoParticipeCES>';
-					$texto .= '<ValorPagadoParticipeJUB>'.$_tipo_identificacion_g41_biess.'</ValorPagadoParticipeJUB>';
-					$texto .= '<DescripOtrosConceptos>'.$_tipo_identificacion_g41_biess.'</DescripOtrosConceptos>';
-					$texto .= '<ValorPagadoParticipeOtros>'.$_tipo_identificacion_g41_biess.'</ValorPagadoParticipeOtros>';
+					$texto .= '<IdentificacionParticipe>'.$_identificacion_g42_biess.'</IdentificacionParticipe>';
+					$texto .= '<TipoPrestacion>'.$_tipo_prestacion_g42_biess.'</TipoPrestacion>';
+					$texto .= '<EstadoParticipeCES>'.$_estado_participe_cesante_g42_biess.'</EstadoParticipeCES>';
+					$texto .= '<EstadoParticipeJUB>'.$_estado_participe_jubilado_g42_biess.'</EstadoParticipeJUB>';
+					$texto .= '<AportePersonalCES>'.$_aporte_personal_cesantia_g42_biess.'</AportePersonalCES>';
+					$texto .= '<AportePersonalJUB>'.$_aporte_personal_jubilado_g42_biess.'</AportePersonalJUB>';
+					$texto .= '<AporteAdicionalJUB>'.$_aporte_adicional_jubilacion_g42_biess.'</AporteAdicionalJUB>';
+					$texto .= '<AporteAdicionalCES>'.$_aporte_adicional_cesantia_g42_biess.'</AporteAdicionalCES>';
+					$texto .= '<RendimientoAnual>'.$_rendimiento_anual_g42_biess.'</RendimientoAnual>';
+					$texto .= '<SaldoCIPatronal>'.$_saldo_cuenta_individual_patronal_g42_biess.'</SaldoCIPatronal>';
+					$texto .= '<SaldoCIcesantia>'.$_saldo_cuenta_individual_cesantia_g42_biess.'</SaldoCIcesantia>';
+					$texto .= '<SaldoCIjubilacion>'.$_saldo_cuenta_individual_jubilacion_g42_biess.'</SaldoCIjubilacion>';
+					$texto .= '<SaldoAportePersonalJub>'.$_saldo_aporte_personal_jubilacion_g42_biess.'</SaldoAportePersonalJub>';
+					$texto .= '<SaldoAportePersonalCes>'.$_saldo_aporte_personal_cesantia_g42_biess.'</SaldoAportePersonalCes>';
+					$texto .= '<SaldoAporteAdicJub>'.$_saldo_aporte_adicional_jubilacion_g42_biess.'</SaldoAporteAdicJub>';
+					$texto .= '<SaldoAporteAdicCes>'.$_saldo_aporte_adicional_cesantia_g42_biess.'</SaldoAporteAdicCes>';
+					$texto .= '<SaldoRendiPatronal>'.$_saldo_rendimiento_patronal_otros_g42_biess.'</SaldoRendiPatronal>';
+					$texto .= '<SaldoRendiAPjubilacion>'.$_saldo_rendimiento_aporte_personal_jubilacion_g42_biess.'</SaldoRendiAPjubilacion>';
+					$texto .= '<SaldoRendiAPcesantia>'.$_saldo_rendimiento_aporte_personal_cesantia_g42_biess.'</SaldoRendiAPcesantia>';
+					$texto .= '<SaldoRendiAAcesantia>'.$_saldo_rendimiento_aporte_adicional_cesantia_g42_biess.'</SaldoRendiAAcesantia>';
+					$texto .= '<SaldoRendiAAjubilacion>'.$_saldo_rendimiento_aporte_adicional_jubilacion_g42_biess.'</SaldoRendiAAjubilacion>';
+					$texto .= '<RetencionFiscal>'.$_retencion_fiscal_g42_biess.'</RetencionFiscal>';
+					$texto .= '<FechaDesafiliacion>'.$_fecha_desafiliacion_voluntaria_g42_biess.'</FechaDesafiliacion>';
+					$texto .= '<MontoDesafiliacionVol>'.$_monto_desafiliacion_voluntaria_liquidacion_desafiliacion_g42.'</MontoDesafiliacionVol>';
+					$texto .= '<ValorPendienteDesaf>'.$_valor_pendiente_pago_desafiliacion_g42_biess.'</ValorPendienteDesaf>';
+					$texto .= '<ValorPagPartDesaf>'.$_valor_pagado_participe_desafiliado_g42_biess.'</ValorPagPartDesaf>';
+					$texto .= '<MotivoLiquidacion>'.$_motivo_liquidacion_g42_biess.'</MotivoLiquidacion>';
+					$texto .= '<FechaTerminoRL>'.$_fecha_termino_relacion_laboral_g42_biess.'</FechaTerminoRL>';
+					$texto .= '<SaldoCIliqPrestacionCES>'.$_saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42.'</SaldoCIliqPrestacionCES>';
+					$texto .= '<SaldoCIliqPrestacionJUB>'.$_saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42.'</SaldoCIliqPrestacionJUB>';
+					$texto .= '<DetalleOtrosValores>'.$_detalle_otros_valores_pagados_y_pendientes_pago_g42_biess.'</DetalleOtrosValores>';
+					$texto .= '<ValoresPagadosFondo>'.$_valores_pagados_al_fondo_g42_biess.'</ValoresPagadosFondo>';
+					$texto .= '<ValoresPendientesFondo>'.$_valores_pendientes_pago_al_fondo_g42_biess.'</ValoresPendientesFondo>';
+					$texto .= '<ValorPagadoParticipeCES>'.$_valor_pagado_participe_por_cesantia_g42_biess.'</ValorPagadoParticipeCES>';
+					$texto .= '<ValorPagadoParticipeJUB>'.$_valor_pagado_participe_por_jubiliacion_g42_biess.'</ValorPagadoParticipeJUB>';
+					$texto .= '<DescripOtrosConceptos>'.$_descripcion_otros_conceptos_g42_biess.'</DescripOtrosConceptos>';
+					$texto .= '<ValorPagadoParticipeOtros>'.$_valores_pagados_al_participe_otros_conceptos_g42_biess.'</ValorPagadoParticipeOtros>';
 					
 			
 					$texto .= '</Registro>';
@@ -735,6 +740,7 @@ class EstructurasBiessController extends ControladorBase{
 		
 			}
 			/*
+			
 				$respuesta = array();
 				$respuesta['tabladatos'] ="Hola";
 				echo json_encode($respuesta);

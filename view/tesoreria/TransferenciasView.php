@@ -150,6 +150,17 @@
             			</div>
             		</div> 
             		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="id_tipo_archivo_pago" class=" control-label" >Tipo Archivo:</label> 
+                    		<div class="form-group-sm">           
+                    			<select class="form-control" id="id_tipo_archivo_pago">
+                    				<option value="0">--Seleccione--</option>
+                    			</select> 
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
             	</div>
             	<?php if( isset($resultset[0]->iscredito) ) { ?>
             	<div class= "row">
@@ -376,7 +387,7 @@
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.21"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.22"></script>
 
   </body>
 </html>   

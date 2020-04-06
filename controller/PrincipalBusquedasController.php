@@ -263,16 +263,41 @@ class PrincipalBusquedasController extends ControladorBase{
 	        $fSalida       =  $this->pgFormatFecha($res->fecha_salida_participes);
 	        $fLiquidacion  =  $this->pgFormatFecha("");
 	        
+	        //proceso de busqueda de creditos 
 	        $auxCredito    = $this->getDataCredit($res->id_participes);
 	        
-	        //proceso de busqueda de creditos 
-	        //activos
+	        //proceso de busqueda de garantias
+	        $auxGarantias  = $this->getDataGarantias($res->id_participes);
 	        
-	        $opcionesTd  ="";
+	        //proceso de generacion de opciones
+	        $opcionesTd  = "";
+	        
+	        /*
+	        $opcionesTd .= " <ul class=\"list-inline\">";
+            $opcionesTd .= " <li><a href=\"#\" class=\"link-black text-sm\"><i class=\"fa fa-share margin-r-5\"></i> Share</a></li>";
+            $opcionesTd .= " <li><a href=\"#\" class=\"link-black text-sm\"><i class=\"fa fa-thumbs-o-up margin-r-5\"></i> Like</a>";
+            $opcionesTd .= " </li>";
+            $opcionesTd .= " <li class=\"pull-right\">";
+            $opcionesTd .= " <a href=\"#\" class=\"link-black text-sm\"><i class=\"fa fa-comments-o margin-r-5\"></i> Comments";
+            $opcionesTd .= " (5)</a></li>";
+            $opcionesTd .= " </ul>";
+            */
+            
+            $opcionesTd .= "<div class=\"btn-group\">";            
+            $opcionesTd .= "<button type=\"button\" value=\"".$res->id_participes."\" onclick=\"fnRegistroAportesManuel()\" class=\"btn btn-default\"><i class=\"fa fa-edit\"></i></button>";
+            $opcionesTd .= "</div>";
+	        
+            
+            /*
+             *  <a class="btn btn-app">
+                <i class="fa fa-edit"></i> Edit
+              </a>
+             */
+           
 	        
 	        $htmlBody    .= "<tr>";
 	        $htmlBody    .= "<td>".$i."</td>";
-	        $htmlBody    .= "<td>".$opcionesTd."</td>";
+	        $htmlBody    .= "<td class=\"col-md-2 col-lg-2\" >".$opcionesTd."</td>";
 	        $htmlBody    .= "<td>";
 	        $htmlBody    .= "<div class=\"box box-widget widget-user-2\">";
 	        //<!-- Add the bg color to the header using any of the bg-* classes -->
@@ -301,7 +326,6 @@ class PrincipalBusquedasController extends ControladorBase{
 	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Moras Creditos:</span>".$moraCreditos."</p></div>";
 	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Contratos de Adhesion:</span>"." "."</p></div>";
 	        
-	        $auxGarantias  = $this->getDataGarantias($res->id_participes);
 	        $observacion   = ( is_array($auxGarantias) && array_key_exists('isgarantias', $auxGarantias) && $auxGarantias['isgarantias']  ) ? "hay Garantias" : $res->observacion_participes;
 	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Observaciones:</span>".$observacion."</p></div>";
 	        $htmlBody    .= "</div>";

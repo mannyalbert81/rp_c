@@ -34,6 +34,7 @@ function controlesStart(){
 
 function controlesStartOk(){
 	
+	$("#fecha_transaccion").attr("disabled",false);
 	$("#tipo_documento").attr("disabled",false);
 	$("#descripcion_transaccion").attr("disabled",false);
 	$("#referencia_documento").attr("disabled",false);
@@ -442,6 +443,19 @@ function cargaDistribucion(){
 		$registros.text(x.cantidadDatos);
 		/*var $divPaginacion = $("#mod_paginacion_distribucion");
 		$divPaginacion.html(x.paginacion);	*/
+		
+		/* cambio para tomar la refencia de la cuenta por pagar **/
+		try{
+			
+			$("input:text[name='mod_dis_referencia']").each(function(){
+				$(this).val( $("#descripcion_transaccion").val() )
+			})
+			
+		}catch (e) {
+			// TODO: handle exception
+			console.log("ERROR EN TOMAR LA REFERENCIA PARA EL CONPROBANTE")
+		}
+		
 				
 	}).fail(function(xhr,status,eror){
 		console.log(xhr.responseText);
@@ -581,6 +595,7 @@ function IngresarTransaccion(){
 			compra_materiales: chkMateriales,
 			monto_compra_cero: $compra_cero.val(),
 			monto_compra_iva: $compra_iva.val(),
+			numero_autorizacion: $("#numero_autorizacion").val(),
 	}
 	
 	$.ajax({

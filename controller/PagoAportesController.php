@@ -51,6 +51,16 @@ class PagoAportesController extends ControladorBase{
 	
 	}
 	
+	public function cargaDatosParticipe(){
+	    
+	    $resp = null;
+	    $participes = new ParticipesModel();
+	    
+	    $id_participes = $_POST['id_participes'];
+	    
+	    $col1  = "";
+	}
+	
 	
 	
 	/************************************************************** FUNCIONES AUXILIARES DEL CONTROLADOR *************************************/

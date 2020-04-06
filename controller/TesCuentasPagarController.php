@@ -972,6 +972,10 @@ class TesCuentasPagarController extends ControladorBase{
 	        $_compra_cero  = (isset($_POST['monto_compra_cero'])) ? $_POST['monto_compra_cero'] : 0.00;
 	        $_compra_iva   = (isset($_POST['monto_compra_iva'])) ? $_POST['monto_compra_iva'] : 0.00;
 	        
+	        $numero_autorizacion_cuentas_pagar = $_POST['numero_autorizacion'];
+	        
+	        if( !empty(error_get_last()) ){ throw new Exception(" Variable no definidas"); }
+	        
 	        //para tranformar a datos solicitdos por funcion postgresql a numeric
 	        $_compra_cuentas_pagar = ( is_numeric($_compra_cuentas_pagar)) ? $_compra_cuentas_pagar : 0.00;
 	        $_desc_comercial = ( is_numeric($_desc_comercial)) ? $_desc_comercial : 0.00;
@@ -1060,6 +1064,15 @@ class TesCuentasPagarController extends ControladorBase{
 	        $_id_usuario = (isset($_SESSION['id_usuarios'])) ?  $_SESSION['id_usuarios'] : null;
 	        $_retencion_ccomprobantes = ''; // este valor se actualizara despues de realizar la respectiva retencion
 	        $_concepto_ccomprobantes = 'Cuentas por Pagar | '.$_descripcion_cuentas_pagar;
+	        
+	        /*actualizar cuentas pagar Numero Autorizacion */ //Parche numero uno
+	        $colvalAutorizacion = " numero_autorizacion_cuentas_pagar = $numero_autorizacion_cuentas_pagar";
+	        $tabvalAutorizacion = " tes_cuentas_pagar";
+	        $whevalAutorizacion = " id_cuentas_pagar = $_id_cuentas_pagar";
+	        
+	        $cuentasPagar ->ActualizarBy($colvalAutorizacion, $tabvalAutorizacion, $whevalAutorizacion);
+	        
+	        if( !empty(pg_last_error()) ){ throw new Exception(" Numero de autorizacion no Ingresado"); }
 	        
 	        $_valor_ccomprobantes = $_compra_cuentas_pagar;
 	        $_valor_letras_ccomprobantes  = $cuentasPagar->numtoletras($_compra_cuentas_pagar);
@@ -1345,7 +1358,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    $_fechaDocumento = new DateTime($_auxFecha); 
 	            
 	    /** VARIABLES DE XML **/
-	    $_ambiente = 1; //1 pruebas  2 produccion
+	    $_ambiente = 2; //1 pruebas  2 produccion
 	    $_tipoEmision = 1; //1 emision normal deacuerdo a la tabla 2 SRI
 	    $_rucEmisor  = $rsConsulta3[0]->ruc_entidades;
 	    $_razonSocial = $rsConsulta3[0]->razon_social_entidades;

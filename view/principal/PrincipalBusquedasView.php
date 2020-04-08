@@ -194,7 +194,7 @@
                     	<!-- PANEL 2 --Socios-- -->
                     	<div class="tab-pane" id="panel_2">
                     		
-                    		<form id="frm_busqueda_principal" action="<?php echo $helper->url("PrincipalBusquedas","index"); ?>" method="post" >
+                    		<form id="frm_busqueda_principal_socios" action="#" method="post" >
                     		             	             	
                  			<div id="pnlBusqueda" class="row">
             					<div class="col-xs-12 col-md-6 col-lg-6">
@@ -326,7 +326,7 @@
                             		<div class="panel panel-default">
                                       <div class="panel-heading">
                                       	<p>
-                                      		<a href="<?php echo $helper->url("PrincipalBusquedas","index"); ?>">
+                                      		<a href="#" onclick="fnVolverFormularioSocios()" >
                                       			<i aria-hidden="true" class="fa fa-mail-reply"></i> Volver
                                   			</a>
                               			</p>

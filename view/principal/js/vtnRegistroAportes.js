@@ -38,6 +38,21 @@ function initControles(){
 		// TODO: handle exception
 		console.log("HAY UN ERROR EN INICIALIZAR CAMPOS DE FECHA");
 	}
+	
+	try {
+		
+		 $("#imagen_registro").fileinput({			
+		 	showPreview: false,
+	        showUpload: false,
+	        elErrorContainer: '#errorImagen',
+	        allowedFileExtensions: ["jpg", "png", "gif"],
+	        language: 'esp' 
+		 });
+		
+	} catch (e) {
+		// TODO: handle exception
+		console.log("ERROR AL IMPLEMENTAR PLUGIN DE FILEUPLOAD");
+	}
 }
 
 /***

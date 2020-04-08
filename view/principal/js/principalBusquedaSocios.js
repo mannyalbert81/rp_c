@@ -185,3 +185,17 @@ function fnRegistroAportesManuel(btn){
 	var vtnAporte = window.open(vtnurl,vtnId,vtnoptions);
 	
 }
+
+/***
+ * @desc funcion volver al panel de busqueda dentro de la pestana de Socios
+ * @returns
+ */
+function fnVolverFormularioSocios(){
+	
+	var pnlResultados = $("#pnlResultados");
+	pnlResultados.addClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
+	pnlResultados.find("table").empty();
+	$("#hdnid_participes_padre").val("0");
+	$("#pnlBusqueda").removeClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
+	
+}

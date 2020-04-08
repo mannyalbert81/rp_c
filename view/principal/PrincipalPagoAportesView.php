@@ -48,6 +48,17 @@
             padding: 3px 12px;
             height: 25px;
             
+       } 
+       
+       /*estilo para una tabla predefinida tbldatosRegistro*/
+       #tbldatosRegistro td{
+            padding: 1px 2px;
+            
+       }
+       #tbldatosRegistro .form-control{
+            padding: 3px 12px;
+            height: 25px;
+            
        }
        
        /* estilo para textos en mostrar detalles */
@@ -121,6 +132,65 @@
                           	<tbody>
                           		<tr>
                               		<td><label>Identificacion:</label></td>
+                              		<td><input type="text" class="form-control" id="lblIdentificacion"></td>                     		
+                          		</tr>
+                          		<tr>
+                              		<td><label>Nombres:</label></td>
+                              		<td><input type="text" class="form-control" id="lblNombres"></td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Apellidos:</label></td>
+                              		<td><input type="text" class="form-control" id="lblApellidos"></td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Entidad Patronal:</label></td>
+                              		<td>
+                              			<select class="form-control" id="id_entidad_patronal">
+                              			<option value="">--Seleccione--</option>
+                              			</select>
+                          			</td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Categoria Aporte:</label></td>
+                              		<td>
+                              			<select class="form-control" id="id_contribucion_categoria">
+                              			<option value="">--Seleccione--</option>
+                              			</select>
+                          			</td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label>A&ntilde;O:</label></td>
+                              		<td>
+                              			<select id="ddlYear" class="form-control">                              				                            				
+                              			</select>                              			
+                              		</td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Mes:</label></td>
+                              		<td>
+                              			<select id="ddlMes" class="form-control">                              				                            				
+                              			</select>
+                              		</td>
+                          		</tr>
+                          	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                          
+                          <div id="mod_paginacion_datos_participe"></div>
+                    	  <div class="clearfix"></div>  
+                        </div>
+          				</div>          			
+          			</div>
+          			
+          			<div class="col-sm-6 col-md-6 col-lg-6">
+          				<!-- ESTA TABLA SE LLENA CON PROCESO DE JS PARA DATOS DE REGISTO -->  
+                          <table id="tbldatosRegistro" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          		<tr>
+                              		<td><label>Identificacion:</label></td>
                               		<td><input type="text" class="form-control" id="lblidentificacion"></td>                     		
                           		</tr>
                           		<tr>
@@ -163,15 +233,6 @@
                           	<tfoot>
                           	</tfoot>
                           </table>
-                          
-                          <div id="mod_paginacion_datos_participe"></div>
-                    	  <div class="clearfix"></div>  
-                        </div>
-          				</div>          			
-          			</div>
-          			
-          			<div class="col-sm-6 col-md-6 col-lg-6">
-          				<div class="form-control"> HOLA a todos</div>
           			</div>
           			
           		</div>
@@ -424,7 +485,7 @@
     <script src="view/bootstrap/bower_components/moment/min/moment.min.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
     <!-- js personales -->
-    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.00"></script>
+    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.01"></script>
 
   </body>
 </html>   

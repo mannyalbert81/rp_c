@@ -49,6 +49,50 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	
 	}
 	
+	public function CargaDatosParticipe(){
+	    
+	    $busquedas = new PrincipalBusquedasModel();
+	    $resp  = null;
+	    
+	    try {
+	        
+	        $id_participes = $_POST['id_participes'];
+	        
+	        if( !empty( error_get_last() ) ){ throw new Exception("Variable no recibida"); }
+	        
+	        $col1  = " aa.id_participes ,aa.cedula_participes ,aa.nombre_participes ,aa.apellido_participes ,bb.id_entidad_patronal ,bb.nombre_entidad_patronal";
+	        $tab1  = " core_participes aa
+	        INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal ";
+	        $whe1  = " aa.id_participes = $id_participes ";
+	        $rsConsulta1   = $busquedas->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+	        
+	        $resp['dataParticipe'] = ( empty($rsConsulta1) ) ? null : $rsConsulta1;
+	        
+	        $col2  = " id_contribucion_categoria ,nombre_contribucion_categoria ";
+	        $tab2  = " public.core_contribucion_categoria ";
+	        $whe2  = " nombre_contribucion_categoria = 'APORTES PERSONALES' ";
+	        $rsConsulta2   = $busquedas->getCondicionesSinOrden($col2, $tab2, $whe2, "");
+	        
+	        $resp['dataContribucion'] = ( empty($rsConsulta2) ) ? null : $rsConsulta2;
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }        
+	        	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	}
 	
 }
 ?>

@@ -332,6 +332,9 @@
                               			</p>
                               			<span id="spanCantidad"></span></div>
                                       
+                                      <!-- VARIABLE PARA QUE SERA TOMADA POR LA VENTANA HIJA -->
+                                      <input type="hidden" id="hdnid_participes_padre" value="0">
+                                      
                                       <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
                                       <table id="tblResultadosPrincipal" class="table table-responsive">
                                       </table>
@@ -513,7 +516,7 @@
     <script src="view/bootstrap/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
     <!-- js personales -->
 	<script type="text/javascript" src="view/principal/js/principalBusqueda.js?0.06"></script>
-	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.03"></script>
+	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.04"></script>
 
   </body>
 </html>   

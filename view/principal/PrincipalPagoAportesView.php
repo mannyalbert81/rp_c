@@ -297,7 +297,7 @@
     <script src="view/bootstrap/bower_components/moment/min/moment.min.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
     <!-- FILE UPLOAD -->
-    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.js"></script>
+    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
     <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.03"></script>
     

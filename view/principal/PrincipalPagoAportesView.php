@@ -123,12 +123,7 @@
           			<!-- Este div es para mostrar datos del participe -->
           			<div class="col-sm-6 col-md-6 col-lg-6">
           				<div class="panel panel-default">
-                          <div class="panel-heading">
-                          	<p>
-                          		<a href="#">
-                          			<i aria-hidden="true" class="fa fa-mail-reply"></i> Volver
-                      			</a>
-                  			</p>
+                          <div class="panel-heading">                         	
                   			
                           <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
                           <table id="tbldatosParticipe" class="table">
@@ -213,21 +208,32 @@
                               			<option value="">--Seleccione--</option>
                               			</select>
                           			</td>                              		
-                          		</tr> 
+                          		</tr>                          		
                           		<tr>
                               		<td><label>Descuento por:</label></td>
                               		<td>
-                              			<input type="text" class="form-control" id="tipo_descuento_registro">
-                              			<input type="text" class="form-control" id="valor_descuento_registro">
+                              			<input type="hidden" id="hdn_id_tipo_aportacion" value="0">
+                              			<div class="row">
+                                          <div class="col-xs-8 col-md-8 col-lg-8">
+                                          	<input type="text" class="form-control" id="tipo_descuento_registro" value="" readonly>
+                                      	  </div>
+                                          <div class="col-xs-4 col-md-4 col-lg-4">
+                                          	<input type="text" class="form-control" id="valor_descuento_registro" value="" readonly>
+                                          </div>
+                                        </div>                             			
                               		</td>
                           		</tr> 
                           		<tr>
                               		<td><label>Ultimo Sueldo:</label></td>
-                              		<td><input type="text" class="form-control" id="ultimo_sueldo_registro"></td>
+                              		<td><input type="text" class="form-control" id="ultimo_sueldo_registro" onkeyup="fnCalcularAporte()" ></td>
                           		</tr> 
                           		<tr>
                               		<td><label>Valor Calculado:</label></td>
-                              		<td><input type="text" class="form-control" id="valor_calculado_registro"></td>
+                              		<td><input type="text" class="form-control" id="valor_calculado_registro" readonly></td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Valor a Aportar:</label></td>
+                              		<td><input type="text" class="form-control" id="valor_aportar_registro"></td>
                           		</tr> 
                           		<tr>
                               		<td><label>Observaci&oacute;n:</label></td>
@@ -235,25 +241,26 @@
                           		</tr>
                           		<tr>
                               		<td><label>Fecha Contable:</label></td>
-                              		<td><input type="text" class="form-control" id="fecha_contable_registro"></td>
+                              		<td><input type="text" class="form-control" id="fecha_contable_registro" value="<?php echo date('Y-m-d');?>" ></td>
                           		</tr>
                           		<tr>
                               		<td><label>Fecha Transaccion:</label></td>
-                              		<td><input type="text" class="form-control" id="fecha_contable_transaccion"></td>
+                              		<td><input type="text" class="form-control" id="fecha_transaccion_registro" value="<?php echo date('Y-m-d');?>" ></td>
                           		</tr>
                           		<tr>
                               		<td><label>Tipo de Transaccion:</label></td>
                               		<td>
                               			<select class="form-control" id="ddl_tipo_transaccion">
-                              			<option value="">--Seleccione--</option>
+                              			<option value="0">--Seleccione--</option>
+                              			<option value="1" selected >GESTION DE APORTES</option>
                               			</select>
                           			</td>                              		
                           		</tr> 
                           		<tr>
                               		<td><label>Tipo de Ingreso:</label></td>
                               		<td>
-                              			<select class="form-control" id="ddl_tipo_ingreso">
-                              			<option value="">--Seleccione--</option>
+                              			<select class="form-control" id="ddl_tipo_ingreso" onchange="fnValidaTipoIngreso()">
+                              			<option value="0">--Seleccione--</option>
                               			</select>
                           			</td>                              		
                           		</tr> 
@@ -261,15 +268,15 @@
                               		<td><label>Banco:</label></td>
                               		<td>
                               			<select class="form-control" id="ddl_banco_registro">
-                              			<option value="">--Seleccione--</option>
+                              			<option value="0">--Seleccione--</option>
                               			</select>
                           			</td>                              		
                           		</tr>
                           		<tr>
                               		<td><label></label></td>
                               		<td>
-                              			<button type="button" class="btn btn-success" id="btnGuardar" value="guardar">Guardar</button>
-                              			<button type="button" class="btn btn-danger" id="btnCancelar" value="cancelar">Cancelar</button>
+                              			<button type="button" class="btn btn-success" id="btnGuardar" value="guardar" onclick="fnIngresarRegistro()">Guardar</button>
+                              			<button type="button" class="btn btn-danger" id="btnCancelar" value="cancelar" onclick="fnCancelarRegistro()" >Cancelar</button>
                           			</td>                              		
                           		</tr> 
                           	</tbody>
@@ -299,7 +306,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.03"></script>
+    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.06"></script>
     
     
 

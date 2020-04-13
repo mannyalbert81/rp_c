@@ -284,7 +284,7 @@ class PrincipalBusquedasController extends ControladorBase{
             */
             
             $opcionesTd .= "<div class=\"btn-group\">";            
-            $opcionesTd .= "<button type=\"button\" value=\"".$res->id_participes."\" onclick=\"fnRegistroAportesManuel()\" class=\"btn btn-default\"><i class=\"fa fa-edit\"></i></button>";
+            $opcionesTd .= "<button type=\"button\" value=\"".$res->id_participes."\" onclick=\"fnRegistroAportesManuel(this)\" class=\"btn btn-default\"><i class=\"fa fa-edit\"></i></button>";
             $opcionesTd .= "</div>";
 	        
             

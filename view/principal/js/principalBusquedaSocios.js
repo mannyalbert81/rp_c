@@ -181,8 +181,21 @@ function fnRegistroAportesManuel(btn){
 	var vtnoptions 	= "location=0,top=50,left=50,toolbar=0,menubar=0,titlebar=0,resizable=1,width="+vtnX+",height="+vtnY;
 	var vtnId	= "vtnAporte";
 	
-	console.log("'"+vtnurl+"','"+vtnId+"','"+vtnoptions+"'");
-	
+	$("#hdnid_participes_padre").val(valor);
 	var vtnAporte = window.open(vtnurl,vtnId,vtnoptions);
+	
+}
+
+/***
+ * @desc funcion volver al panel de busqueda dentro de la pestana de Socios
+ * @returns
+ */
+function fnVolverFormularioSocios(){
+	
+	var pnlResultados = $("#pnlResultados");
+	pnlResultados.addClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
+	pnlResultados.find("table").empty();
+	$("#hdnid_participes_padre").val("0");
+	$("#pnlBusqueda").removeClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
 	
 }

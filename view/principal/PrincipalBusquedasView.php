@@ -174,7 +174,7 @@
                       <li><a href="#panel_2" data-toggle="tab">Socios</a></li>
                       <li><a href="#panel_3" data-toggle="tab">Expedientes/Solicitudes</a></li>
                       <li><a href="#panel_4" data-toggle="tab">Inversiones</a></li>
-                      <li><a href="#panel_5" data-toggle="tab">Prestamos</a></li>
+                      <li><a href="#panel_5" data-toggle="tab">Préstamos</a></li>
                       <li><a href="#panel_6" data-toggle="tab">Supv. Afiliados/Cesantes</a></li>
                     </ul>
                     <div class="tab-content">
@@ -293,14 +293,7 @@
                                   			</select>                              			
                                   		</td>
                               		</tr>
-                              		<tr>
-                                  		<td><label>Entidad Patronal:</label></td>
-                                  		<td>
-                                  			<select id="id_entidad_patronal" class="form-control">
-                                  				<option value="0">Todas</option>                              				
-                                  			</select>                              			
-                                  		</td>
-                              		</tr>  
+                           
                               	</tbody>
                               	<tfoot>
                               	</tfoot>                         
@@ -361,6 +354,107 @@
                     	
                     	<!-- PANEL 5 --Prestamos-- -->
                     	<div class="tab-pane" id="panel_5">
+                    		
+                    		<form id="frm_prestamos_principal" action="<?php echo $helper->url("PrincipalPrestamos","index"); ?>" method="post" >
+                    		             	             	
+                 			<div id="pnlBusquedaPrestamos" class="row">
+            					<div class="col-xs-12 col-md-6 col-lg-6">
+                				<div class="panel panel-default">
+                          		<div class="panel-heading">Datos</div>
+                            
+                          		<table id="tblBusquedaPrincipal" class="table">   
+                          			<thead>                          		                       		
+                          			</thead>
+                          			<tbody>
+                              		<tr>
+                                  		<td><label>Identificacion:</label></td>
+                                  		<td><input type="text" class="form-control" id="txtCedula"></td>                     		
+                              		</tr>
+                              		<tr>
+                                  		<td><label>Nombres:</label></td>
+                                  		<td><input type="text" class="form-control" id="txtNombre"></td>
+                              		</tr>
+                              		<tr>
+                                  		<td><label>Apellidos:</label></td>
+                                  		<td><input type="text" class="form-control" id="txtApellido"></td>
+                              		</tr> 
+                              			<tr>
+                                  		<td><label>Tipo Préstamo:</label></td>
+                                  		<td>
+                                  			<select id="id_tipo_creditos" class="form-control">
+                                  				<option value="0">Todas</option>                              				
+                                  			</select>                              			
+                                  		</td>
+                              		</tr>  
+                              		<tr>
+                                  		<td><label>Fecha de Solicitud:</label></td>
+                                  		<td> 
+                                      		<div class="input-group">
+                                              <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                              </div>
+                                              <input type="text" class="form-control pull-right" id="txtFSolicitud">
+                                            </div>
+                                  		 </td>
+                              		</tr> 
+                              				<tr>
+                                  		<td><label>Estado Préstamo:</label></td>
+                                  		<td>
+                                  			<select id="id_estado_creditos" class="form-control">
+                                  				<option value="0">Todas</option>                              				
+                                  			</select>                              			
+                                  		</td>
+                              		</tr> 
+                              		<tr>
+                                  		<td><label>Entidad Patronal:</label></td>
+                                  		<td>
+                                  			<select id="id_entidad_patronal" class="form-control">
+                                  				<option value="0">Todas</option>                              				
+                                  			</select>                              			
+                                  		</td>
+                              		</tr>  
+                              	</tbody>
+                              	<tfoot>
+                              	</tfoot>                         
+                      		</table>
+                        	</div>
+            			</div>
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="btn_principal_prestamos" class=" control-label" ></label> 
+                    		<div class="form-group-sm">           
+                    		  <button type="button" id="btn_principal_prestamos" class="btn btn-info">
+                              	<i class="glyphicon glyphicon-search"></i> Buscar
+                              </button>
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            	</div>
+            	
+                        	 <div id="pnlResultadosPrestamos" class="row hidden">
+                        		<div class="col-xs-12 col-md-9 col-lg-9">
+                            		<div class="panel panel-default">
+                                      <div class="panel-heading">
+                                      	<p>
+                                      		<a href="<?php echo $helper->url("PrincipalPrestamos","index"); ?>">
+                                      			<i aria-hidden="true" class="fa fa-mail-reply"></i> Volver
+                                  			</a>
+                              			</p>
+                              			<span id="spanCantidadPrestamos"></span></div>
+                                      
+                                      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                                      <table id="tblResultadosPrincipalPrestamos" class="table table-responsive">
+                                      </table>
+                                      
+                                      <div id="mod_paginacion_resultados_prestamos"></div>
+                                	  <div class="clearfix"></div>  
+                                    </div>
+                        		</div>
+                        	</div>            	
+                 
+           					</form>
                     		
                     	</div>
                     	<!-- END PANEL 5 --Prestamos-- -->
@@ -514,6 +608,7 @@
     <!-- js personales -->
 	<script type="text/javascript" src="view/principal/js/principalBusqueda.js?0.06"></script>
 	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.03"></script>
+	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.03"></script>
 
   </body>
 </html>   

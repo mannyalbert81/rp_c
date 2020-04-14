@@ -1,5 +1,5 @@
 <?php
-class ReporteCierreMesModel extends ModeloBase{
+class PrincipalPrestamosModel extends ModeloBase{
 	private $table;
 	private $where;
 	private $funcion;
@@ -36,39 +36,11 @@ class ReporteCierreMesModel extends ModeloBase{
 
 
 	public function __construct(){
-		$this->table="core_creditos_cierre_mes";
+		$this->table="core_participes";
 	
 		parent::__construct($this->table);
 	}
 	
-	
-	
-    public function getLogin(){
-    	
-    	$query="SELECT * FROM usuarios WHERE ".$this->where." ;";
-    	$usuario=$this->ConsultaSql($query);
-    	
-    	$resultado = count($usuario);
-    	if ($resultado > 0)
-    	{
-    		return true;
-    	}
-    	else 
-    	{
-    		return false;
-    	}
-    	
-    }
-    
-    public function Insert(){
-    
-    	$query = "SELECT ".$this->funcion."(".$this->parametros.")";
-    
-    	$resultado=$this->enviarFuncion($query);
-    		
-    		
-    	return  $resultado;
-    }
     
     public function llamafuncion(){
         
@@ -80,5 +52,14 @@ class ReporteCierreMesModel extends ModeloBase{
         return  $resultado;
     }
     
+    public function llamafuncionPG(){
+        
+        $query = "SELECT ".$this->funcion."(".$this->parametros.")";
+        $resultado = null;
+        
+        $resultado=$this->llamarconsultaPG($query);
+        
+        return  $resultado;
+    }
 }
 ?>

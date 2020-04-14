@@ -199,13 +199,13 @@
                           		</tr>
                           		<tr>
                               		<td><label>N° Documento:</label></td>
-                              		<td><input type="text" class="form-control" id="numero_documento_regitro"></td>
+                              		<td><input type="text" class="form-control" id="numero_documento_registro" value=""></td>
                           		</tr>
                           		<tr>
                               		<td><label>Tipo Aporte:</label></td>
                               		<td>
                               			<select class="form-control" id="ddl_tipo_aporte_registro">
-                              			<option value="">--Seleccione--</option>
+                              			<option value="0">--Seleccione--</option>
                               			</select>
                           			</td>                              		
                           		</tr>                          		
@@ -237,7 +237,7 @@
                           		</tr> 
                           		<tr>
                               		<td><label>Observaci&oacute;n:</label></td>
-                              		<td><textarea rows="1" cols="" id="" class="form-control"></textarea></td>
+                              		<td><textarea rows="1" cols="" id="observacion_registro" class="form-control"></textarea></td>
                           		</tr>
                           		<tr>
                               		<td><label>Fecha Contable:</label></td>

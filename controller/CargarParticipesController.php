@@ -837,8 +837,8 @@ class CargarParticipesController extends ControladorBase{
         
         $participes = new ParticipesModel();
         $cedula = $_GET['cedula'];
-        
-        
+    
+
         
         $col1 = " id_participes,cedula_participes, nombre_participes, apellido_participes ";
         $tab1 = " public.core_participes";
@@ -886,6 +886,11 @@ class CargarParticipesController extends ControladorBase{
          
         $datosReporte = array();
         
+        $fechaactual = getdate();
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        
         $columnas = " registro_tres_cuotas.id_registro_tres_cuotas, 
                       core_participes.id_participes, 
                       core_participes.apellido_participes, 
@@ -898,22 +903,28 @@ class CargarParticipesController extends ControladorBase{
                       registro_tres_cuotas.numero_creditos, 
                       registro_tres_cuotas.pdf_registro_tres_cuotas, 
                       registro_tres_cuotas.creado, 
-                      registro_tres_cuotas.modificado";
+                      registro_tres_cuotas.modificado,
+                      core_tipo_creditos.id_tipo_creditos, 
+                      core_tipo_creditos.nombre_tipo_creditos";
         
         $tablas = "public.registro_tres_cuotas, 
                   public.core_participes, 
-                  public.core_creditos";
+                  public.core_creditos,
+                  public.core_tipo_creditos";
         $where= "registro_tres_cuotas.id_participes = core_participes.id_participes AND
+                 core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
                  registro_tres_cuotas.id_creditos = core_creditos.id_creditos AND registro_tres_cuotas.cedula_participes = '$cedula'";
         $id="core_participes.id_participes";
         
         $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
         
-        
+      
+        $datosReporte['FECHA']=$fechaactual;
         $datosReporte['NUMEROCREDITO']=$rsdatos[0]->numero_creditos;
         $datosReporte['NOMBRE']=$rsdatos[0]->nombre_participes;
         $datosReporte['APELLIDO']=$rsdatos[0]->apellido_participes;
         $datosReporte['CEDULA']=$rsdatos[0]->cedula_participes;
+        $datosReporte['NOMBRETIPOCREDITOS']=$rsdatos[0]->nombre_tipo_creditos;
         
         // revisate la parte de retencion controller ahi esta lo que toca hacer 
         // buscas el pdf creado y le conviertes en bytea

@@ -833,6 +833,84 @@ class CargarParticipesController extends ControladorBase{
     }
     
     
+    public function IngresarSiCuotas(){
+        
+        $participes = new ParticipesModel();
+        $cedula = $_GET['cedula'];
+        
+        
+        
+        $col1 = " id_participes,cedula_participes, nombre_participes, apellido_participes ";
+        $tab1 = " public.core_participes";
+        $whe1 = " id_estatus = 1
+        AND cedula_participes = '$cedula'";
+        
+        $rsConsulta1 = $participes->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+        
+        $id_participes = $rsConsulta1[0]->id_partcipes;
+        $nombre_participes =  $rsConsulta1[0]->nombre_participes;
+        $apellidos_participes = $rsConsulta1[0]->apellido_participes;
+        $cedula_participes  = $rsConsulta1[0]->cedula_participes;
+        
+        //buscra creditos
+        $col2 = " aa.id_creditos,aa.monto_otorgado_creditos,aa.numero_creditos ";
+        $tab2 = "core_creditos aa
+        INNER JOIN core_estado_creditos bb ON bb.id_estado_creditos = aa.id_estado_creditos";
+        $whe2 = " aa.id_estatus = 1
+        AND aa.id_participes = 160
+        AND upper(bb.nombre_estado_creditos) = 'ACTIVO'";
+        $id2  = " aa.monto_otorgado_creditos ";
+        
+        $rsConsulta2 = $participes->getCondicionesDesc($col2, $tab2, $whe2, $id2);
+        
+        $id_creditos = $rsConsulta1[0]->id_creditos; //con eto se toma el credito con mayor valor
+        $numero_creditos = $rsConsulta1[0]->id_creditos;
+        
+        $pdf_registro_tres  = 'null';
+        
+        //viene insertado en la tabla
+        $funcion = "ins_registro_tres_cuotas";
+        $parametros = "$id_participes,'$nombre_participes','$cedula_participes',$id_creditos,'$numero_creditos',$pdf_registro_tres";
+        $sqCuotas   = $participes->getconsultaPG($funcion, $parametros);       
+                       
+        $resultado = $participes->llamarconsultaPG($sqCuotas);
+        
+        //aqui seteas valores del pdf que vas a guardar
+        $nombre_pdf = "pdf".$cedula_participes.date('Ymd');
+        $ubicacion  = "DOCUMENTOS_GENERADOS/pdf_cuotas_creditos/";
+        $pdfReporte = $ubicacion.$nombre_pdf. ".PDF";
+        
+        // aqui haces la consulta para mostrar en el reporte
+        
+        $datosReporte = array();
+        
+        $datosReporte['param1'] = $variable1; //aqui vas asignando valor 
+        // revisate la parte de retencion controller ahi esta lo que toca hacer 
+        // buscas el pdf creado y le conviertes en bytea
+        
+        $this->verReporte("PDFCUOTAS", array('datosReporte'=>$datosReporte,'nombreReporte'=>$pdfReporte ));
+        
+        //aqui tomas el pdf creado
+        $data = file_get_contents($pdfReporte);
+        $byteaPdf = pg_escape_bytea($data);
+        
+        
+        //actualizas la base
+        $colPdf = " pdf_registro_tres_cuotas = '$byteaPdf'";
+        $tabPdf = " registro_tres_cuotas";
+        $whePdf = " id_participes = $id_participes AND id_creditos = $id_creditos";
+        
+        $actualizado = $participes->ActualizarBy($colPdf, $tabPdf, $whePdf);
+        
+        header("Content-type: application/pdf");
+        header("Content-Disposition: inline; filename=documento.pdf");
+        readfile($pdfReporte);
+        
+        
+        
+    }
+    
+    
     
 }
 

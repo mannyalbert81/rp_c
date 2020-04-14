@@ -4,7 +4,7 @@ include dirname(__FILE__).'\..\..\view\mpdf\mpdf.php';
  
 //echo getcwd().''; //para ver ubicacion de directorio
 
-$template = file_get_contents('view/reportes/template/Retencion.html');  //pasante aqui crearas el html del pedf con otro nombre
+$template = file_get_contents('view/reportes/template/Cuotas.html');  //pasante aqui crearas el html del pedf con otro nombre
 
 $footer = file_get_contents('view/reportes/template/pieret.html');
 
@@ -37,7 +37,7 @@ if( isset($nombreReporte) && nombreReporte != "" ){
     $mpdf->Output($nombreReporte);
     return;
 }else{
-    $mpdf->Output("ComprobanteRetencion.pdf","I");
+    $mpdf->Output("Cuotas.pdf","I");
 }
 
 

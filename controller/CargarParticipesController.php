@@ -849,7 +849,7 @@ class CargarParticipesController extends ControladorBase{
         
         $id_participes = $rsConsulta1[0]->id_participes;
         $nombre_participes =  $rsConsulta1[0]->nombre_participes;
-        $apellidos_participes = $rsConsulta1[0]->apellido_participes;
+        //$apellidos_participes = $rsConsulta1[0]->apellido_participes;
         $cedula_participes  = $rsConsulta1[0]->cedula_participes;
         
         //buscra creditos
@@ -882,10 +882,37 @@ class CargarParticipesController extends ControladorBase{
         
        
         // aqui haces la consulta para mostrar en el reporte
-        
+         
         $datosReporte = array();
         
-        $datosReporte['param1'] = $variable1; //aqui vas asignando valor 
+        $columnas = " registro_tres_cuotas.id_registro_tres_cuotas, 
+                      core_participes.id_participes, 
+                      core_participes.apellido_participes, 
+                      core_participes.nombre_participes, 
+                      core_participes.cedula_participes, 
+                      registro_tres_cuotas.nombre_participes, 
+                      registro_tres_cuotas.cedula_participes, 
+                      core_creditos.id_creditos, 
+                      core_creditos.numero_creditos, 
+                      registro_tres_cuotas.numero_creditos, 
+                      registro_tres_cuotas.pdf_registro_tres_cuotas, 
+                      registro_tres_cuotas.creado, 
+                      registro_tres_cuotas.modificado";
+        
+        $tablas = "public.registro_tres_cuotas, 
+                  public.core_participes, 
+                  public.core_creditos";
+        $where= "registro_tres_cuotas.id_participes = core_participes.id_participes AND
+                 registro_tres_cuotas.id_creditos = core_creditos.id_creditos AND registro_tres_cuotas.cedula_participes = '$cedula'";
+        $id="core_participes.id_participes";
+        
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $datosReporte['NUMEROCREDITO']=$rsdatos[0]->numero_creditos;
+        $datosReporte['NOMBRE']=$rsdatos[0]->nombre_participes;
+        $datosReporte['APELLIDO']=$rsdatos[0]->apellido_participes;
+        
         // revisate la parte de retencion controller ahi esta lo que toca hacer 
         // buscas el pdf creado y le conviertes en bytea
         

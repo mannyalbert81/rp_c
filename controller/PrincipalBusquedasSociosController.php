@@ -102,6 +102,14 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	        
 	        $resp['dataTipoIngresos'] = ( empty($rsConsulta5) ) ? null : $rsConsulta5;
 	        
+	        $col6  = " aa.anio_periodo , aa.mes_periodo ";
+	        $tab6  = " con_periodo aa
+	        INNER JOIN estado bb ON bb.id_estado = aa.id_estado ";
+	        $whe6  = " bb.nombre_estado = 'ABIERTO' ";
+	        $rsConsulta6   = $busquedas->getCondicionesSinOrden($col6, $tab6, $whe6, "");
+	        	        
+	        $resp['dataPeriodo'] = ( empty($rsConsulta6) ) ? null : $rsConsulta6;
+	        
 	        $error_pg = pg_last_error();
 	        if( !empty($error_pg) ){
 	            throw new Exception( $error_pg );
@@ -255,6 +263,9 @@ class PrincipalBusquedasSociosController extends ControladorBase{
             
             if( !empty( pg_last_error() )){ throw  new Exception("ERROR EN EL INSERTADO DE CONTIBUCION-BANCOS"); }
 	        
+            $resp['estatus']    = "OK";
+            $resp['icon']       = "success";
+            $resp['mensaje']    = "Registro Manual Realizada";
             
 	        $error_pg = pg_last_error();
 	        if( !empty($error_pg) ){

@@ -240,13 +240,16 @@
                               		<td><textarea rows="1" cols="" id="observacion_registro" class="form-control"></textarea></td>
                           		</tr>
                           		<tr>
-                              		<td><label>Fecha Contable:</label></td>
-                              		<td><input type="text" class="form-control" id="fecha_contable_registro" value="<?php echo date('Y-m-d');?>" ></td>
-                          		</tr>
-                          		<tr>
                               		<td><label>Fecha Transaccion:</label></td>
                               		<td><input type="text" class="form-control" id="fecha_transaccion_registro" value="<?php echo date('Y-m-d');?>" ></td>
                           		</tr>
+                          		<tr>
+                              		<td><label>Fecha Contable:</label></td>
+                              		<td>
+                              			<input type="text" class="form-control" id="fecha_contable_registro" value="<?php echo date('Y-m-d');?>" data-fechaperiodo="">
+                              			
+                          			</td>
+                          		</tr>                          		
                           		<tr>
                               		<td><label>Tipo de Transaccion:</label></td>
                               		<td>
@@ -306,7 +309,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.06"></script>
+    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.07"></script>
     
     
 

@@ -847,7 +847,7 @@ class CargarParticipesController extends ControladorBase{
         
         $rsConsulta1 = $participes->getCondicionesSinOrden($col1, $tab1, $whe1, "");
         
-        $id_participes = $rsConsulta1[0]->id_partcipes;
+        $id_participes = $rsConsulta1[0]->id_participes;
         $nombre_participes =  $rsConsulta1[0]->nombre_participes;
         $apellidos_participes = $rsConsulta1[0]->apellido_participes;
         $cedula_participes  = $rsConsulta1[0]->cedula_participes;
@@ -857,14 +857,14 @@ class CargarParticipesController extends ControladorBase{
         $tab2 = "core_creditos aa
         INNER JOIN core_estado_creditos bb ON bb.id_estado_creditos = aa.id_estado_creditos";
         $whe2 = " aa.id_estatus = 1
-        AND aa.id_participes = 160
+        AND aa.id_participes = $id_participes
         AND upper(bb.nombre_estado_creditos) = 'ACTIVO'";
         $id2  = " aa.monto_otorgado_creditos ";
         
         $rsConsulta2 = $participes->getCondicionesDesc($col2, $tab2, $whe2, $id2);
         
-        $id_creditos = $rsConsulta1[0]->id_creditos; //con eto se toma el credito con mayor valor
-        $numero_creditos = $rsConsulta1[0]->id_creditos;
+        $id_creditos = $rsConsulta2[0]->id_creditos; //con eto se toma el credito con mayor valor
+        $numero_creditos = $rsConsulta2[0]->numero_creditos;
         
         $pdf_registro_tres  = 'null';
         
@@ -880,6 +880,7 @@ class CargarParticipesController extends ControladorBase{
         $ubicacion  = "DOCUMENTOS_GENERADOS/pdf_cuotas_creditos/";
         $pdfReporte = $ubicacion.$nombre_pdf. ".PDF";
         
+       
         // aqui haces la consulta para mostrar en el reporte
         
         $datosReporte = array();

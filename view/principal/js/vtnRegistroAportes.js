@@ -1,6 +1,6 @@
 /*** VARIABLES GLOBALES DEL ARCHIVO **/
 var OFechaRegistro	= new Date();
-var FechaRegistro = OFechaRegistro.getFullYear() +"-"+( OFechaRegistro.getMonth() +1 )+"-"+OFechaRegistro.getDate()
+var FechaRegistro = OFechaRegistro.getFullYear() +"-"+( ( "0" + ( OFechaRegistro.getMonth() + 1 ) ).slice(-2) ) + "-"+(("0"+(OFechaRegistro.getDate() )).slice(-2));
 /*** TERMINA VARIABLES GLOBALES DEL ARCHIVO **/
 
 $(document).ready(function(){
@@ -51,7 +51,7 @@ function initControles(){
 		 	showPreview: false,
 	        showUpload: false,
 	        elErrorContainer: '#errorImagen',
-	        allowedFileExtensions: ["jpg", "png", "gif"],
+	        allowedFileExtensions: ["jpeg","jpg", "png", "gif"],
 	        language: 'esp' 
 		 });
 		
@@ -60,6 +60,38 @@ function initControles(){
 		console.log("ERROR AL IMPLEMENTAR PLUGIN DE FILEUPLOAD");
 	}
 	
+	try {
+		$('#fecha_transaccion_registro').inputmask(
+		   'yyyy-mm-dd', { 
+			   'placeholder': 'yyyy-mm-dd',				   
+			   'clearIncomplete': true,
+			   'oncomplete': function () {	
+				   //console.log("AQUI FECHA --> "+FechaRegistro);
+			        if($(this).val() > FechaRegistro ){
+			        	$(this).val('');
+			        	$(this).closest("tr").notify("Fecha transaccion no valida",{ position:"buttom left", autoHideDelay: 2000});
+			        }
+			    }
+	    });
+		$('#fecha_contable_registro').inputmask(
+		   'yyyy-mm-dd', { 
+			   'placeholder': 'yyyy-mm-dd',				   
+			   'clearIncomplete': true,
+			   'oncomplete': function () {
+				   
+				   var periodoSeleccionado = $(this).val().split('-')[0] + $(this).val().split('-')[1];
+				   console.log(periodoSeleccionado)
+			        if( periodoSeleccionado != $('[data-fechaperiodo]').data('fechaperiodo')){
+			        	$(this).val('');
+			        	$(this).closest("tr").notify("Fecha contable Diferente a perido Contable Abierto",{ position:"buttom left", autoHideDelay: 2000});
+			        }
+			    }
+		   }); 
+		
+	} catch (e) {
+		// TODO: handle exception
+		console.log("ERROR IMPLEMENTAR FECHAS");
+	}
 	
 }
 
@@ -139,6 +171,16 @@ function loadDataParticipes(){
 			});
 							
 		}
+		
+		if( x.dataPeriodo != undefined && x.dataPeriodo != null ){
+			
+			var rsPeriodo	=  x.dataPeriodo[0];
+			var anioPeriodo		= rsPeriodo.anio_periodo;
+			var mesPeriodo		= rsPeriodo.mes_periodo;
+			var valPeriodo		= anioPeriodo + pad( mesPeriodo,2,'0');
+			$('[data-fechaperiodo]').data('fechaperiodo',valPeriodo);
+									
+		}
 			
 			
 				
@@ -171,6 +213,16 @@ function fnCalcularAporte(){
 }
 
 function fnValidaTipoIngreso(){
+	
+	var ddlTipoIngreso = $("#ddl_tipo_ingreso");
+	
+	if( ddlTipoIngreso.val() == "2" ){ //validar que sea CXC Entidad Patronal
+		
+		$("#ddl_banco_registro").val(0);
+		$("#ddl_banco_registro").attr('disabled',true);
+	}else{
+		$("#ddl_banco_registro").attr('disabled',false);
+	}
 	
 }
 
@@ -328,17 +380,41 @@ function fnIngresarRegistro(){
 		contentType: false, //importante enviar este parametro en false
         processData: false,  //importante enviar este parametro en false
 	}).done( function(x){
-		
-		console.log(x);
-		if( x.dataParticipe != undefined && x.dataParticipe != null ){
-			var rsParticipe	= x.dataParticipe[0];
-					
-		}
+		if( x.estatus != undefined ){
+			if( x.estatus == "OK" ){
 				
+				swal({
+					title:"REGISTRO MANUAL",
+					text:x.mensaje,
+					icon:x.icon
+				})
+				.then((value) => {
+					fnCancelarRegistro();
+				});
+								
+			}
+			if( x.estatus == "ERROR" ){
+								
+				swal({
+					title:"REGISTRO MANUAL",
+					text:x.mensaje,
+					icon:x.icon,
+					dangerMode:true
+				});				
+				
+			}
+		}
+			
 	}).fail( function(xhr,status,error){
 		console.log(xhr.responseText);
 	})
 	
 	
+}
+
+/***************************************************************************************UTILS DE ARCHIVO ***********************************************/
+function pad(input,length,padding){
+	var str = input + "";
+	return ( length <= str.length ) ? str : pad( padding + str, length,padding);
 }
 

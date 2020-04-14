@@ -881,6 +881,7 @@ class CargarParticipesController extends ControladorBase{
         $pdfReporte = $ubicacion.$nombre_pdf. ".PDF";
         
        
+       
         // aqui haces la consulta para mostrar en el reporte
          
         $datosReporte = array();

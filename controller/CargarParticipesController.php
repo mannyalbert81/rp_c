@@ -864,7 +864,7 @@ class CargarParticipesController extends ControladorBase{
         $rsConsulta2 = $participes->getCondicionesDesc($col2, $tab2, $whe2, $id2);
         
         $id_creditos = $rsConsulta2[0]->id_creditos; //con eto se toma el credito con mayor valor
-        $numero_creditos = $rsConsulta2[0]->numero_creditos;
+        $numero_creditos = $rsConsulta2[0]->numero_creditos; //aqui va el cambio
         
         $pdf_registro_tres  = 'null';
         

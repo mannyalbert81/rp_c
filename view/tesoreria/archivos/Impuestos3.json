@@ -80,6 +80,7 @@
     	{"valor" : "343A", "nombre" : " Por energi\u0301a ele\u0301ctrica ", "descripcion" : " "},
     	{"valor" : "343B", "nombre" : " Por actividades de construccio\u0301n de obra material inmueble, urbanizacio\u0301n, lotizacio\u0301n o actividades similares ", "descripcion" : " "},
     	{"valor" : "344", "nombre" : " Otras retenciones aplicables el 2% ", "descripcion" : " "},
+    	{"valor" : "3440", "nombre" : " Otras retenciones aplicables el 2,75% ", "descripcion" : " "},
     	{"valor" : "344A", "nombre" : " Pago local tarjeta de cre\u0301dito reportada por la Emisora de tarjeta de cre\u0301dito, solo recap ", "descripcion" : " "},
     	{"valor" : "346A", "nombre" : " Ganancias de capital ", "descripcion" : " "},
     	{"valor" : "500", "nombre" : " Pago al exterior - Rentas Inmobiliarias ", "descripcion" : " "},

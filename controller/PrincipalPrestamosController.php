@@ -11,7 +11,7 @@ class PrincipalPrestamosController extends ControladorBase{
 	public function index(){
 	
 	    session_start();
-	    
+
 	    $busquedas = new PrincipalPrestamosModel();
 	    		
 		if( empty( $_SESSION['usuario_usuarios'] ) ){
@@ -162,36 +162,36 @@ class PrincipalPrestamosController extends ControladorBase{
 	    $idEstadoCreditos= ( isset( $_POST['id_estado_creditos'] ) ) ? $_POST['id_estado_creditos'] : "0";
 	    $idEntidadPatronal = ( isset( $_POST['id_entidad_patronal'] ) ) ? $_POST['id_entidad_patronal'] : "0";
 	    
-	    $columnas1 = "core_creditos.id_creditos, 
-  core_creditos.numero_creditos, 
-  core_participes.id_participes, 
-  core_participes.nombre_participes, 
-  core_participes.apellido_participes, 
-  core_participes.cedula_participes, 
-  core_participes.fecha_nacimiento_participes, 
-  core_participes.direccion_participes, 
-  core_participes.telefono_participes, 
-  core_participes.celular_participes, 
-  core_entidad_patronal.id_entidad_patronal, 
-  core_entidad_patronal.nombre_entidad_patronal, 
-  core_creditos.monto_otorgado_creditos, 
-  core_creditos.saldo_actual_creditos, 
-  core_creditos.fecha_concesion_creditos, 
-  core_tipo_creditos.id_tipo_creditos, 
-  core_tipo_creditos.nombre_tipo_creditos, 
-  core_estado_creditos.id_estado_creditos, 
-  core_estado_creditos.nombre_estado_creditos, 
-  core_creditos.plazo_creditos, 
-  core_creditos.monto_neto_entregado_creditos";
-	    $tablas1   = " public.core_creditos, 
-  public.core_participes, 
-  public.core_tipo_creditos, 
-  public.core_estado_creditos, 
-  public.core_entidad_patronal";
-	    $where1    = "core_participes.id_participes = core_creditos.id_participes AND
-  core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
-  core_estado_creditos.id_estado_creditos = core_creditos.id_estado_creditos AND
-  core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal";
+        	    $columnas1 = "core_creditos.id_creditos, 
+          core_creditos.numero_creditos, 
+          core_participes.id_participes, 
+          core_participes.nombre_participes, 
+          core_participes.apellido_participes, 
+          core_participes.cedula_participes, 
+          core_participes.fecha_nacimiento_participes, 
+          core_participes.direccion_participes, 
+          core_participes.telefono_participes, 
+          core_participes.celular_participes, 
+          core_entidad_patronal.id_entidad_patronal, 
+          core_entidad_patronal.nombre_entidad_patronal, 
+          core_creditos.monto_otorgado_creditos, 
+          core_creditos.saldo_actual_creditos, 
+          core_creditos.fecha_concesion_creditos, 
+          core_tipo_creditos.id_tipo_creditos, 
+          core_tipo_creditos.nombre_tipo_creditos, 
+          core_estado_creditos.id_estado_creditos, 
+          core_estado_creditos.nombre_estado_creditos, 
+          core_creditos.plazo_creditos, 
+          core_creditos.monto_neto_entregado_creditos";
+        	    $tablas1   = " public.core_creditos, 
+          public.core_participes, 
+          public.core_tipo_creditos, 
+          public.core_estado_creditos, 
+          public.core_entidad_patronal";
+        	    $where1    = "core_participes.id_participes = core_creditos.id_participes AND
+          core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
+          core_estado_creditos.id_estado_creditos = core_creditos.id_estado_creditos AND
+          core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal";
 	    $id1       = "core_creditos.fecha_concesion_creditos";
 	    
 	  

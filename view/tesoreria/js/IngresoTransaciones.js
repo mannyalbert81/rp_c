@@ -160,7 +160,7 @@ function popGeneraLote(){
 		$("#btnLote").popover('hide');
 	}).fail(function(xhr,status,error){
 		console.log(xhr.responseText);
-		swal({title:"ERROR",text:"Hemos encontrado un error con el servidor",icon:"error"})<
+		swal({title:"ERROR",text:"Hemos encontrado un error con el servidor",icon:"error"});
 		$("#btnLote").popover('hide');
 	})
 }

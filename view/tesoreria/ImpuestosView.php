@@ -144,7 +144,7 @@
                           <label for="porcentaje_impuestos" class="control-label">Porcentaje Impuestos (%):</label>
                           <input  type="text" class="form-control" id="porcentaje_impuestos" name="porcentaje_impuestos" value=""  placeholder="Ingrese Porcentaje" />
                           <div id="mensaje_porcentaje_impuestos" class="errores"></div>
-                                               
+                           <!-- data-inputmask="'mask': ['99.99', '9.99','99.9', '9.9']" data-inputmask-clearincomplete="true" data-mask data-rightAlign="true" -->                    
                         </div>
             		  </div>    
           	   	
@@ -231,7 +231,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/tesoreria/js/Impuestos.js?0.07"></script> 
+   <script src="view/tesoreria/js/Impuestos.js?0.08"></script> 
 	
   </body>
 </html>   

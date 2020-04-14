@@ -913,6 +913,7 @@ class CargarParticipesController extends ControladorBase{
         $datosReporte['NUMEROCREDITO']=$rsdatos[0]->numero_creditos;
         $datosReporte['NOMBRE']=$rsdatos[0]->nombre_participes;
         $datosReporte['APELLIDO']=$rsdatos[0]->apellido_participes;
+        $datosReporte['CEDULA']=$rsdatos[0]->cedula_participes;
         
         // revisate la parte de retencion controller ahi esta lo que toca hacer 
         // buscas el pdf creado y le conviertes en bytea

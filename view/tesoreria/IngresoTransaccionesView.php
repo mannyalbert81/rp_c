@@ -348,7 +348,7 @@
                     	</tbody>
                     	<tfoot>
                     	    <tr>
-                    			<th colspan="4" ></th>
+                    			<th colspan="7" ></th>
                     	    </tr>
                     	</tfoot>
                     </table>  

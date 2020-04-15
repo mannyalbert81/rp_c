@@ -1360,7 +1360,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    $_fechaDocumento = new DateTime($_auxFecha); 
 	            
 	    /** VARIABLES DE XML **/
-	    $_ambiente = 1; //1 pruebas  2 produccion
+	    $_ambiente = 2; //1 pruebas  2 produccion
 	    $_tipoEmision = 1; //1 emision normal deacuerdo a la tabla 2 SRI
 	    $_rucEmisor  = $rsConsulta3[0]->ruc_entidades;
 	    $_razonSocial = $rsConsulta3[0]->razon_social_entidades;

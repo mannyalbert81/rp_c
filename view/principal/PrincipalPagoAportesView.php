@@ -172,14 +172,14 @@
                           		<tr>
                               		<td><label>A&ntilde;o:</label></td>
                               		<td>
-                              			<select id="ddlYear" class="form-control">                              				                            				
+                              			<select id="ddlYear" class="form-control" onchange="loadDatosAportes(1)">                              				                            				
                               			</select>                              			
                               		</td>
                           		</tr>
                           		<tr>
                               		<td><label>Mes:</label></td>
                               		<td>
-                              			<select id="ddlMes" class="form-control">                              				                            				
+                              			<select id="ddlMes" class="form-control" onchange="loadDatosAportes(1)">                              				                            				
                               			</select>
                               		</td>
                           		</tr>
@@ -345,7 +345,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.07"></script>
+    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.08"></script>
     
     
 

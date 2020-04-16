@@ -9,6 +9,7 @@ $(document).ready(function(){
 	initControles();
 	loadBancosLocales();
 	loadDataParticipes();
+	loadDatosAportes(1);
 })
 
 function initControles(){
@@ -190,32 +191,35 @@ function loadDataParticipes(){
 	
 }
 
-function loadDatosAportes(){
+function loadDatosAportes(pagina){
 	
 	var hdnid_participes = $("#hdnid_participes");
 	
 	document.getElementById("hdnid_participes").value = window.opener.document.getElementById("hdnid_participes_padre").value; 
 	
-    var params	= {id_participes:hdnid_participes.val()}
+	var _anio = $("#ddlYear").val();
+	var _mes  = $("#ddlMes").val();
+	var _pagina	= pagina;
+	
+    var params	= {id_participes:hdnid_participes.val(),anio_registro:_anio,mes_registro:_mes,page:_pagina}
     
     $.ajax({
-		url:"index.php?controller=PrincipalBusquedasSocios&action=CargaDatosParticipe",
+		url:"index.php?controller=PrincipalBusquedasSocios&action=CargaDatosAportes",
 		dataType:"json",
 		type:"POST",
 		data: params
 	}).done( function(x){
 		
-		if( x.dataTipoIngresos != undefined && x.dataTipoIngresos != null ){
+		if( x.tabla != undefined && x.tabla != null ){
 			
-			var rsTipoIngresos	=  x.dataTipoIngresos;
-			var $ddlTipoIngresos	= $("#ddl_tipo_ingreso");
-			$ddlTipoIngresos.empty();
-			$ddlTipoIngresos.append('<option value="0">--Seleccione--</option>' );
-			$.each(rsTipoIngresos,function(index, value){
-				//console.log('index -->'+index+'   Value ---> '+value.id_bancos);
-				$ddlTipoIngresos.append( '<option value="'+value.id_tipo_ingresos_contribucion+'">'+value.nombre_tipo_ingresos_contribucion+'</option>' );
-			});
-							
+			$("#tbldatosAportes").empty();
+			if( x.tabla != undefined && x.tabla != ""){
+				
+				$("#tbldatosAportes").append(x.tabla);
+				//$("#spanCantidad").text("Se encontraon ( "+x.cantidadDatos+" ) socio/s" );
+				$("#paginacion_datos_aportes").html(x.paginacion);
+			}
+									
 		}		
 		
 				

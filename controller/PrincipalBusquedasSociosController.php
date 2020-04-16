@@ -130,6 +130,60 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	}
 	
 	/***
+	 * 
+	 */
+	public function CargaDatosAportes(){
+	    
+	    $busquedas = new PrincipalBusquedasModel();
+	    $resp  = null;
+	    
+	    try {
+	        
+	        $id_participes = $_POST['id_participes'];
+	        
+	        if( !empty( error_get_last() ) ){ throw new Exception("Variable no recibida"); }
+	        
+	        $col1  = " aa.id_participes ,aa.cedula_participes ,aa.nombre_participes ,aa.apellido_participes ,bb.id_entidad_patronal ,bb.nombre_entidad_patronal";
+	        $tab1  = " core_participes aa
+	        INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal ";
+	        $whe1  = " aa.id_participes = $id_participes ";
+	        $rsConsulta1   = $busquedas->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+	        
+	        $resp['dataParticipe'] = ( empty($rsConsulta1) ) ? null : $rsConsulta1;
+	        
+	        select aa.id_contribucion,aa.fecha_registro_contribucion,aa.fecha_contable_distribucion,aa.observacion_contribucion,aa.descripcion_contribucion, aa.*
+	        from core_contribucion aa
+	        inner join core_participes bb on bb.id_participes = aa.id_participes
+	        inner join core_contribucion_tipo cc on cc.id_contribucion_tipo = aa.id_contribucion_tipo
+	        where bb.id_estatus	= 1
+	        and upper(cc.nombre_contribucion_tipo) = 'APORTE PERSONAL'
+	        and extract(year from aa.fecha_registro_contribucion) = 2020
+	        and extract(month from aa.fecha_registro_contribucion) < 04
+	        and bb.cedula_participes	= '0912484771'
+	        order by fecha_contable_distribucion desc;
+	        
+	       	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
+	}
+	
+	/***
 	 * @desc function para dibujar bancos locales de la entidad por medio de request ajax
 	 * @param none
 	 * @author dc 2020/04/13

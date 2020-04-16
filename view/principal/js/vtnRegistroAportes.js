@@ -190,6 +190,42 @@ function loadDataParticipes(){
 	
 }
 
+function loadDatosAportes(){
+	
+	var hdnid_participes = $("#hdnid_participes");
+	
+	document.getElementById("hdnid_participes").value = window.opener.document.getElementById("hdnid_participes_padre").value; 
+	
+    var params	= {id_participes:hdnid_participes.val()}
+    
+    $.ajax({
+		url:"index.php?controller=PrincipalBusquedasSocios&action=CargaDatosParticipe",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		
+		if( x.dataTipoIngresos != undefined && x.dataTipoIngresos != null ){
+			
+			var rsTipoIngresos	=  x.dataTipoIngresos;
+			var $ddlTipoIngresos	= $("#ddl_tipo_ingreso");
+			$ddlTipoIngresos.empty();
+			$ddlTipoIngresos.append('<option value="0">--Seleccione--</option>' );
+			$.each(rsTipoIngresos,function(index, value){
+				//console.log('index -->'+index+'   Value ---> '+value.id_bancos);
+				$ddlTipoIngresos.append( '<option value="'+value.id_tipo_ingresos_contribucion+'">'+value.nombre_tipo_ingresos_contribucion+'</option>' );
+			});
+							
+		}		
+		
+				
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+    
+	
+}
+
 function fnCancelarRegistro(){	
 	window.close();
 }

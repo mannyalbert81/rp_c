@@ -908,7 +908,7 @@ class CargarParticipesController extends ControladorBase{
                       core_tipo_creditos.nombre_tipo_creditos";
         
         $tablas = "public.registro_tres_cuotas, 
-                  public.core_participes, 
+                  public.core_participes,
                   public.core_creditos,
                   public.core_tipo_creditos";
         $where= "registro_tres_cuotas.id_participes = core_participes.id_participes AND
@@ -951,7 +951,37 @@ class CargarParticipesController extends ControladorBase{
         
     }
     
-    
+    public function  propaganda_diferir_cuotas(){
+        
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $callBack = $_GET['jsoncallback'];
+            $columnas_1="id_registro_tres_cuotas,cedula_participes, numero_creditos, pdf_registro_tres_cuotas";
+            $tablas_1="public.registro_tres_cuotas";
+            $where_1="cedula_participes = '$cedula'";
+            $id_1= "registro_tres_cuotas.id_registro_tres_cuotas";
+            $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            
+            if(!empty($resultUsu) && count($resultUsu)>0){
+                
+                $respuesta	= json_encode( array('respuesta'=>"SI") );
+                
+                
+            }else{
+                
+                $respuesta	= json_encode( array('respuesta'=>"NO") );
+                
+            }
+            
+            echo $callBack."(".$respuesta.");";
+            
+        }
+        
+    }
     
 }
 

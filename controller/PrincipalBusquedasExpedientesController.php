@@ -197,9 +197,9 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         if(!empty($txtNumeroSolicitudexpedientes)){
             
             
-            $where  .=" AND numero_documento_liquidacion_cabeza LIKE '%".$txtNumeroSolicitudexpedientes."%' ";
+            $where  .=" AND numero_documento_liquidacion_cabeza = ".$txtNumeroSolicitudexpedientes." ";
             
-            
+        
         }
         
         if(!empty($txtFRegistroexpedientes)){
@@ -223,7 +223,9 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         if($id_estado_participes>0){
             
             
-            $where  .=" AND id_estado_prestaciones = '$id_estado_participes' ";
+            $where  .=" AND core_estado_prestaciones.id_estado_prestaciones = '$id_estado_participes' ";
+            
+
             
             
         }
@@ -231,7 +233,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         if($id_tipo_liquidación>0){
             
             
-            $where  .=" AND id_tipo_prestaciones = '$id_tipo_liquidación' ";
+            $where  .=" AND core_tipo_prestaciones.id_tipo_prestaciones = '$id_tipo_liquidación' ";
             
             
         }
@@ -239,7 +241,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         if($id_entidad_patronal>0){
             
             
-            $where  .=" AND id_entidad_patronal = '$id_entidad_patronal' ";
+            $where  .=" AND core_entidad_patronal.id_entidad_patronal = '$id_entidad_patronal' ";
             
             
         }
@@ -264,7 +266,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         $total_pages = ceil($cantidadResult/$per_page);
         
         
-        
+   
         
         
         if($cantidadResult>0)
@@ -301,15 +303,29 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
                 $i++;
                 $html.='<tr>';
                 $html.='<tr >';
+                
+//                 $html.='<td style="font-size: 15px;"><span class="pull-right">';
+//                 $html.='<button id="btndetalesoli"  name="detallesoli" class="btn btn-success" type="button"';
+//                 $html.='    data-toggle="modal" data-target="#mod_detallesoli"  title="detallesoli" style="font-size:65%;">';
+//                 $html.='    <i class="glyphicon glyphicon-edit"></i></button></span></td>';
+
+                
+                $html.='<td style="font-size: 15px;"><span class="pull-right">';
+                $html.='<button id="btndetalesoli" value="'.$res->id_participes.'" name="detallesoli" class="btn btn-success" type="button" onclick="mostrarDatosjs(this)">';
+                $html.='    <i class="glyphicon glyphicon-edit"></i></button></span></td>';
+                
+                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=PrincipalBusquedasExpedientes&action=index_consulta_solicitud&id_participes='.$res->id_participes.'" title="Consultar Participe" id="btndetalesoli"  name="detallesoli" class="btn btn-success" type="button" data-toggle="modal" data-target="#mod_detallesoli"><i class="glyphicon glyphicon-chevron-right"></i></a></span></td>';
+                
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->cedula_participes.'</td>';
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->fecha_ingreso_participes.'</td>';
                 $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->nombre_participes.'</td>';
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->apellido_participes.'</td>';
-                $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->apellido_participes.'</td>';
-                $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->apellido_participes.'</td>';
-                $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_estado_participes.'</td>';
+                $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->numero_documento_liquidacion_cabeza.'</td>';
+                $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->valor_neto_pagar_liquidacion_cabeza.'</td>';
+                $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->nombre_estado_prestaciones.'</td>';
                 
-               
+                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=PrincipalBusquedasExpedientes&action=reporte_liquidaciones&id_participes='.$res->id_participes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+                
                 
                 $html.='</tr>';
             }
@@ -329,7 +345,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
             $html.='<div class="col-lg-6 col-md-6 col-xs-12">';
             $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
             $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>Actualmente No Existen Movimientos de Productos...</b>';
+            $html.='<h4>Aviso!!!</h4> <b>Actualmente No Existen Liquidaciones Registradas...</b>';
             $html.='</div>';
             $html.='</div>';
         }
@@ -408,129 +424,397 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
     }
     
     
-    public function BuscarParticipe2()
-    {
+    
+    
+    
+    public function reporte_liquidaciones(){
+        
         session_start();
-        $cedula=$_POST['cedula'];
-        $html="";
+        $entidades = new EntidadesModel();
+        //PARA OBTENER DATOS DE LA EMPRESA
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        //NOTICE DATA
+        $datos_cabecera = array();
+        $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+        $datos_cabecera['FECHA'] = date('Y/m/d');
+        $datos_cabecera['HORA'] = date('h:i:s');
+        
+        
+        
+        
         $participes= new ParticipesModel();
-        $icon="";
-        $respuesta= array();
+        $creditos= new CreditosModel();
+        $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
         
-        $columnas="core_estado_participes.nombre_estado_participes, core_participes.nombre_participes,
-                    core_participes.fecha_nacimiento_participes,
-                    core_participes.apellido_participes, core_participes.ocupacion_participes,
-                    core_participes.cedula_participes, core_entidad_patronal.nombre_entidad_patronal,
-                    core_participes.telefono_participes, core_participes.direccion_participes,
-                    core_estado_civil_participes.nombre_estado_civil_participes, core_genero_participes.nombre_genero_participes,
-                    DATE (core_participes.fecha_ingreso_participes)fecha_ingreso_participes, core_participes.celular_participes,
-                    core_participes.id_participes";
-        $tablas="public.core_participes INNER JOIN public.core_estado_participes
-                    ON core_participes.id_estado_participes = core_estado_participes.id_estado_participes
-                    INNER JOIN core_entidad_patronal
-                    ON core_participes.id_entidad_patronal = core_entidad_patronal.id_entidad_patronal
-                    INNER JOIN core_estado_civil_participes
-                    ON core_participes.id_estado_civil_participes=core_estado_civil_participes.id_estado_civil_participes
-                    INNER JOIN core_genero_participes
-                    ON core_genero_participes.id_genero_participes = core_participes.id_genero_participes";
         
-        $where="core_participes.cedula_participes='".$cedula."'";
+        $datos_afiliado = array();
         
+        $columnas = " core_participes.id_participes, 
+                      core_participes.apellido_participes, 
+                      core_participes.nombre_participes, 
+                      core_participes.cedula_participes, 
+                      core_participes.fecha_nacimiento_participes, 
+                      core_participes.direccion_participes, 
+                      core_participes.telefono_participes, 
+                      core_participes.celular_participes, 
+                      core_tipo_prestaciones.id_tipo_prestaciones, 
+                      core_tipo_prestaciones.nombre_tipo_prestaciones, 
+                      core_estado_prestaciones.id_estado_prestaciones, 
+                      core_estado_prestaciones.nombre_estado_prestaciones, 
+                      core_entidad_patronal.id_entidad_patronal, 
+                      core_entidad_patronal.nombre_entidad_patronal, 
+                      core_liquidacion_cabeza.fecha_pago_carpeta_liquidacion_cabeza, 
+                      core_liquidacion_cabeza.numero_carpeta_liquidacion_cabeza, 
+                      core_participes.correo_participes, 
+                      core_liquidacion_cabeza.id_liquidacion_cabeza, 
+                      core_liquidacion_cabeza.valor_neto_pagar_liquidacion_cabeza, 
+                      core_liquidacion_cabeza.observacion_liquidacion_cabeza, 
+                      core_liquidacion_cabeza.sustento_liquidacion_cabeza, 
+                      core_liquidacion_cabeza.carpeta_numero_liquidacion_cabeza, 
+                      core_liquidacion_cabeza.file_number_liquidacion_cabeza,
+                      core_liquidacion_forma_pago.tipo_movimiento, 
+                      core_liquidacion_forma_pago.nombre_banco_liquidacion_forma_pago, 
+                      core_liquidacion_forma_pago.numero_cuenta_liquidacion_forma_pago, 
+                      core_liquidacion_forma_pago.valor_liquidacion_forma_pago";
+        
+        $tablas = "   public.core_liquidacion_cabeza, 
+                      public.core_participes,
+                      core_liquidacion_forma_pago, 
+                      public.core_tipo_prestaciones, 
+                      public.core_estado_prestaciones, 
+                      public.core_entidad_patronal";
+        $where= "     core_liquidacion_cabeza.id_participes = core_participes.id_participes AND
+                      core_liquidacion_forma_pago.id_liquidacion_cabeza = core_liquidacion_cabeza.id_liquidacion_cabeza AND 
+                      core_tipo_prestaciones.id_tipo_prestaciones = core_liquidacion_cabeza.id_tipo_prestaciones AND
+                      core_estado_prestaciones.id_estado_prestaciones = core_liquidacion_cabeza.id_estado_prestaciones AND
+                      core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND core_participes.id_participes ='$id_participes'";
         $id="core_participes.id_participes";
         
-        $resultSet=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $datos_afiliado['APELLIDO_PARTICIPE']=$rsdatos[0]->apellido_participes;
+        $datos_afiliado['NOMBRE_PARTICIPE']=$rsdatos[0]->nombre_participes;
+        $datos_afiliado['CEDULA_PARTICIPE']=$rsdatos[0]->cedula_participes;
+        $datos_afiliado['NOMBRE_ENTIDAD']=$rsdatos[0]->nombre_entidad_patronal;
+        $datos_afiliado['OBS_LIQUIDACION']=$rsdatos[0]->observacion_liquidacion_cabeza;
+        $datos_afiliado['FECHA_NACIMIENTO']=$rsdatos[0]->fecha_nacimiento_participes;
+        $datos_afiliado['DIRECCION_PARTICIPE']=$rsdatos[0]->direccion_participes;
+        $datos_afiliado['TELEFONO_PARTICIPE']=$rsdatos[0]->telefono_participes;
+        $datos_afiliado['CELULAR_PARTICIPE']=$rsdatos[0]->celular_participes;
+        $datos_afiliado['NOMBRE_TIPO']=$rsdatos[0]->nombre_tipo_prestaciones;
+        $datos_afiliado['NOMBRE_ESTADO']=$rsdatos[0]->nombre_estado_prestaciones;
+        $datos_afiliado['FECHA_PAGO']=$rsdatos[0]->fecha_pago_carpeta_liquidacion_cabeza;
+        $datos_afiliado['NUMERO_CARPETA']=$rsdatos[0]->numero_carpeta_liquidacion_cabeza;
+        $datos_afiliado['CORREO_PARTICIPES']=$rsdatos[0]->correo_participes;
+        $datos_afiliado['BANCO_PARTICIPES']=$rsdatos[0]->nombre_banco_liquidacion_forma_pago;
+        $datos_afiliado['NUMERO_CUENTA_PARTICIPES']=$rsdatos[0]->numero_cuenta_liquidacion_forma_pago;
+
+        
+    
+ 
+        //////retencion detalle
+       
+        $columnas = " core_participes.apellido_participes, 
+                      core_participes.nombre_participes, 
+                      core_participes.cedula_participes, 
+                      core_creditos.numero_creditos, 
+                      core_creditos.plazo_creditos, 
+                      core_creditos.monto_neto_entregado_creditos, 
+                      core_creditos.numero_solicitud_creditos, 
+                      core_tipo_creditos.id_tipo_creditos, 
+                      core_tipo_creditos.nombre_tipo_creditos, 
+                      core_creditos.monto_otorgado_creditos, 
+                      core_estado_creditos.id_estado_creditos, 
+                      core_estado_creditos.nombre_estado_creditos,
+                        
+                      core_creditos.fecha_concesion_creditos
+";
+        
+        $tablas = "public.core_creditos, 
+                  public.core_participes, 
+                  public.core_tipo_creditos, 
+                  public.core_estado_creditos";
+        $where= " core_participes.id_participes = core_creditos.id_participes AND
+                  core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
+                  core_estado_creditos.id_estado_creditos = core_creditos.id_estado_creditos AND core_participes.id_participes ='$id_participes'";
+        $id="core_participes.nombre_participes";
+        
+        $creditos_detalle = $creditos->getCondiciones($columnas, $tablas, $where, $id);
         
         
         
-        if(!(empty($resultSet)))
-        {if($resultSet[0]->nombre_genero_participes == "HOMBRE") $icon='<i class="fa fa-male fa-3x" style="float: left;"></i>';
-        else $icon='<i class="fa fa-female fa-3x" style="float: left;"></i>';
-        /*
-         $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
-         core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
-         core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
-         core_estado_creditos.nombre_estado_creditos";
-         $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
-         ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
-         INNER JOIN public.core_estado_creditos
-         ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
-         $where="core_creditos.id_participes=".$resultSet[0]->id_participes." AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
-         $id="core_creditos.fecha_concesion_creditos";
-         
-         $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
-         */
         
         
-        $html.='
-        <div class="box box-widget widget-user-2">';
-        //  if(!(empty($resultCreditos)))
+        $html='';
         
-        $html.='';
-        $html.='<div class="widget-user-header bg-aqua">'
-            .$icon.
-            '<h3 class="widget-user-username">'.$resultSet[0]->nombre_participes.' '.$resultSet[0]->apellido_participes.'</h3>
+        
+        $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
+        $html.='<tr>';
+        $html.='<th>#</th>';
+        $html.='<th style="text-align: center; font-size: 11px;">Credito Número</th>';
+        $html.='<th style="text-align: center; font-size: 11px;">Valor</th>';
+        $html.='<th style="text-align: center; font-size: 11px;">Fecha</th>';
+        $html.='<th style="text-align: center; font-size: 11px;">Tipo Credito</th>';
+        $html.='<th style="text-align: center; font-size: 11px;">Estado</th>';
+        $html.='<th style="text-align: center; font-size: 11px;">Garantizado por:</th>';
+        $html.='</tr>';
+        
+        
+       
+        
+        foreach ($creditos_detalle as $res)
+        {
+            
+            
+       
+             
+                $html.='<tr>';
+                $html.='<td style="font-size: 11px;"align="center"></td>';
+                $html.='<td style="font-size: 11px;"align="center">'.$res->numero_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->monto_neto_entregado_creditos, 2, ",", ".").'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->nombre_tipo_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->fecha_concesion_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.$res->nombre_estado_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 11px;"align="right"></td>';
                 
-         <h5 class="widget-user-desc">Estado: '.$resultSet[0]->nombre_estado_participes.'</h5>
-        <h5 class="widget-user-desc">CI: '.$resultSet[0]->cedula_participes.'</h5>
+                
+                $html.='</td>';
+                $html.='</tr>';
             
-        </div>
-        <div class="box-footer no-padding">
-        <ul class="nav nav-stacked">
-        <table align="right" class="tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example">
-        <tr>
-        <th>Cargo:</th>
-        <td>'.$resultSet[0]->ocupacion_participes.'</td>
-        <th>Fecha Ingreso:</th>
-        <td>'.$resultSet[0]->fecha_ingreso_participes.'</td>
-        </tr>
-        <tr>
-        <th>Estado Civil:</th>
-        <td>'.$resultSet[0]->nombre_estado_civil_participes.'</td>
-        <th>Fecha Nacimiento:</th>
-        <td>'.$resultSet[0]->fecha_nacimiento_participes.'</td>
-        </tr>
-        <tr>
-        <th>Sexo:</th>
-        <td>'.$resultSet[0]->nombre_genero_participes.'</td>
-        <th>Entidad Patronal:</th>
-        <td>'.$resultSet[0]->nombre_entidad_patronal.'</td>
-        </tr>
-        <tr>
-        <th>Telèfono:</th>
-        <td>'.$resultSet[0]->telefono_participes.'</td>
-        <th>Celular:</th>
-        <td>'.$resultSet[0]->celular_participes.'</td>
-        </tr>
-        <tr >
-        <th>Dirección:</th>
-        <td colspan="3">'.$resultSet[0]->direccion_participes.'</td>
             
-        </tr>
-        </table>
-        </ul>
-        </div>
-        </div>';
             
-            array_push($respuesta, $html);
-            array_push($respuesta, $resultSet[0]->id_participes);
+            
         }
-        /*
-         else
-         {
-         $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-         $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-         $html.='<h4>Aviso!!!</h4> <b>No se ha encontrado participes con número de cédula '.$cedula.'</b>';
-         $html.='</div>';
-         
-         array_push($respuesta, $html);
-         array_push($respuesta, 0);
-         }
-         */
         
+    
+        $html.='</table>';
         
-        echo json_encode($respuesta);
+        $datos_afiliado['DETALLE_CREDITOS_CESANTES']= $html;
+        
+        $tipo=$rsdatos[0]->id_tipo_prestaciones;
+        
+        if($tipo==1){
+            
+            $this->verReporte("ReporteCesantia", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_afiliado'=>$datos_afiliado));
+            
+        }
+        if($tipo==2){
+            
+            $this->verReporte("ReporteDesafiliacionPrestacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_afiliado'=>$datos_afiliado));
+            
+        }
+        
+        if($tipo==4){
+            
+            $this->verReporte("ReporteDesembolso", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_afiliado'=>$datos_afiliado));
+            
+        }
+          
+            
+            
     }
     
+    public function index_consulta_solicitud(){
+        
+        session_start();
+        
+        $participes = new CoreInformacionParticipesModel();
+        $core_credito = new CoreCreditoModel();
+        
+        if (isset(  $_SESSION['nombre_usuarios']) )
+        {
+            
+            $contribucion_tipo = new ContribucionTipoModel();
+            $resContriTipo = $contribucion_tipo->getAll("id_contribucion_tipo");
+            
+            $nombre_controladores = "CoreInformacionParticipes";
+            $id_rol= $_SESSION['id_rol'];
+            $resultPer = $participes->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+            $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:0;
+            
+            if (!empty($resultPer))
+            {
+                if (isset ($_GET["id_participes"])   )
+                {
+                    $_id_participes = $_GET["id_participes"];
+                    
+                    $columnas = "
+                              core_participes_informacion_adicional.id_participes,
+                              core_participes.apellido_participes,
+                              core_participes.nombre_participes,
+                              core_participes.cedula_participes,
+                              core_participes.direccion_participes,
+                              core_participes.telefono_participes,
+                              core_participes.celular_participes,
+                              core_participes.fecha_ingreso_participes,
+                              core_participes.ocupacion_participes,
+                              core_participes.fecha_nacimiento_participes,
+                              core_estado_civil_participes.nombre_estado_civil_participes,
+                              core_participes.fecha_defuncion_participes,
+                              core_participes.correo_participes,
+                              core_entidad_patronal.nombre_entidad_patronal,
+                              core_participes.nombre_conyugue_participes,
+                              core_participes.apellido_esposa_participes,
+                              core_participes.cedula_conyugue_participes,
+                              core_participes.numero_dependencias_participes,
+                              core_participes.observacion_participes,
+                              core_distritos.id_distritos,
+                              core_distritos.nombre_distritos,
+                              core_provincias.id_provincias,
+                              core_provincias.nombre_provincias,
+                              core_participes_informacion_adicional.parroquia_participes_informacion_adicional,
+                              core_participes_informacion_adicional.anios_residencia_participes_informacion_adicional,
+                              core_participes_informacion_adicional.nombre_propietario_participes_informacion_adicional,
+                              core_participes_informacion_adicional.telefono_propietario_participes_informacion_adicional,
+                              core_participes_informacion_adicional.direccion_referencia_participes_informacion_adicional,
+                              core_participes_informacion_adicional.vivienda_hipotecada_participes_informacion_adicional,
+                              core_participes_informacion_adicional.nombre_una_referencia_participes_informacion_adicional,
+                              core_parentesco.id_parentesco,
+                              core_parentesco.nombre_parentesco,
+                              core_participes_informacion_adicional.telefono_una_referencia_participes_informacion_adicional,
+                              core_participes_informacion_adicional.contrato_adhesion_participes_informacion_adicional,
+                              core_estado_participes.nombre_estado_participes,
+                              core_participes_informacion_adicional.observaciones_participes_informacion_adicional,
+                             (select sum(c1.valor_personal_contribucion)
+                            	from core_contribucion c1 where id_participes = '$id_participes' and id_estatus=1 limit 1
+                            ) as \"total\",
+                               (select sum(c1.valor_personal_contribucion)+sum(c1.valor_patronal_contribucion)
+                            	from core_contribucion c1 where id_participes = '$id_participes' and id_estatus=1 limit 1
+                            ) as \"totalaporte\"
+                            
+                                    ";
+                    
+                    $tablas   = "
+                              public.core_participes,
+                              public.core_participes_informacion_adicional,
+                              public.core_distritos,
+                              public.core_provincias,
+                              public.core_entidad_patronal,
+                              public.core_parentesco,
+                              public.core_estado_civil_participes,
+                              public.core_estado_participes
+                        
+                              ";
+                    $where    = " core_participes_informacion_adicional.id_participes = core_participes.id_participes AND
+                                  core_distritos.id_distritos = core_participes_informacion_adicional.id_distritos AND
+                                  core_provincias.id_provincias = core_participes_informacion_adicional.id_provincias AND
+                                  core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND
+                                  core_parentesco.id_parentesco = core_participes_informacion_adicional.id_parentesco
+                                  AND core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes
+                                  AND core_estado_participes.id_estado_participes = core_participes.id_estado_participes
+                                  AND core_participes.id_participes = '$_id_participes'
+                                   ";
+                    $id       = "core_participes.id_participes";
+                    
+                    
+                    
+                    
+                    $resultRep = $participes->getCondiciones($columnas ,$tablas ,$where, $id);
+                    
+                    $tiempo= array();
+                    $hoy=date("Y-m-d");
+                    
+                    $tiempo_edad=$this->dateDifference($resultRep[0]->fecha_nacimiento_participes, $hoy);
+                    
+                    array_push($tiempo, $tiempo_edad);
+                    
+                    
+                    
+                    $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
+                    $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
+                    $where="core_contribucion.id_participes=".$id_participes." AND core_contribucion.id_estatus=1";
+                    $id="fecha_registro_contribucion";
+                    
+                    $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
+                    
+                    $tiempo2= array();
+                    $last=sizeof($resultAportes);
+                    $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
+                    $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
+                    $fecha_primer=substr($fecha_primer,0,10);
+                    $fecha_ultimo=substr($fecha_ultimo,0,10);
+                    $tiempoaporte=$this->dateDifference($fecha_primer, $fecha_ultimo);
+                    $last=sizeof($resultAportes);
+                    
+                    array_push($tiempo2, $tiempoaporte);
+                    
+                    
+                    $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
+                    $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
+                    $where="core_contribucion.id_participes=".$id_participes." AND core_contribucion.id_contribucion_tipo=1
+                AND core_contribucion.id_estatus=1";
+                    $id="fecha_registro_contribucion";
+                    
+                    $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
+                    
+                    $aportes= array();
+                    
+                    $personales=sizeof($resultAportesPersonales);
+                    
+                    array_push($aportes, $personales);
+                    
+                    
+                    
+                    $this->view_Core("PrincipalBusquedasExpedientes",array(
+                        "resultRep"=>$resultRep, "resContriTipo"=>$resContriTipo, "tiempo"=>$tiempo, "resultAportes"=>$resultAportes, "tiempo2"=>$tiempo2, "aportes"=>$aportes
+                        
+                        
+                    ));
+                }
+                
+               
+                
+            }
+        }
+        else
+        {
+            $this->view_Contable("Error",array(
+                "resultado"=>"No tiene Permisos de Acceso a Consulta General"
+                
+            ));
+            
+            exit();
+        }
+        
+        
+    }
+    
+    
+    public function dateDifference($date_1 , $date_2 , $differenceFormat = '%y Años, %m Meses, %d Dias' )
+    {
+        $datetime1 = date_create($date_1);
+        $datetime2 = date_create($date_2);
+        
+        $interval = date_diff($datetime1, $datetime2);
+        
+        return $interval->format($differenceFormat);
+        
+    }
+    
+    
+    public function mostrarDetalleSolicitud(){
+        
+        $html ="hola";
+        echo $html;
+        
+        
+    }
+    
+
     
 }
 

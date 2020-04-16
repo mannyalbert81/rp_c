@@ -175,8 +175,37 @@ function load_buscar_participe(pagina){
          });
 
 
-	   }
+   }
 
+function mostrarDatosjs(element){
+	
+	var boton = $(element);
+	var inid_participes	= boton.val();
+	
+	console.log( "el id del participe es ---> "+ inid_participes);
+	
+	params = {id_participes:inid_participes};
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=PrincipalBusquedasExpedientes&action=mostrarDetalleSolicitud",
+		type:"POST",
+		/*dataType:"json",*/
+		data:params
+	}).done(function(datos){		
+		
+		$("#mod_detallesoli").modal("show");
+		
+		$("#mod_datos_detalle_solicitud").html("");
+		$("#mod_datos_detalle_solicitud").html(datos);
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		
+	})
+	
+}
 
 
 

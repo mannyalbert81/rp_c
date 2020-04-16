@@ -185,7 +185,14 @@
                  <div id="pnlBusqueda" class="row">
             		<div class="col-xs-12 col-md-6 col-lg-6">
                 		<div class="panel panel-default">
-                          <div class="panel-heading">Ingrese Datos</div>
+                          <div class="panel-heading">Ingrese Datos
+                          
+                          <div class="box-tools pull-right">
+                          <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                          <i class="fa fa-minus"></i></button>
+                          </div>
+                                      
+                          </div>
                             
                           <table id="tblBusquedaPrincipal" class="table">   
                           	<thead>                          		                       		
@@ -307,6 +314,36 @@
 
    <div class="control-sidebar-bg"></div>
  </div>
+ 
+       <!-- Detalle Solicitud -->
+ 
+  <div class="modal fade" id="mod_detallesoli" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" style="width:70%">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Detalle de la solicitud Las Solicitudes</h4>
+          </div>
+          <div class="modal-body">
+          <!-- empieza el formulario modal productos -->
+          	<form class="" method="post" id="frm_detalle" name="frm_detalle">
+          	
+          		<div class="box-body" id="mod_datos_detalle_solicitud">
+    
+              </div>		  
+          	</form>
+          	<!-- termina el formulario modal de impuestos -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+ 
     
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/bower_components/inputmask/dist/jquery.inputmask.bundle.js"></script>
@@ -316,7 +353,7 @@
     <script src="view/bootstrap/bower_components/moment/min/moment.min.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
     <!-- js personales -->
-	<script type="text/javascript" src="view/principal/js/principalBusquedaExpedientes.js?1.18"></script>
+	<script type="text/javascript" src="view/principal/js/principalBusquedaExpedientes.js?1.19"></script>
 
   </body>
 </html>   

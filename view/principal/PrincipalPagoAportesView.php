@@ -7,10 +7,10 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="view/bootstrap/bower_components/bootstrap-daterangepicker/daterangepicker.css">
-    <link rel="stylesheet" href="view/estilos/principal/imagenHover.css">
     <?php include("view/modulos/links_css.php"); ?>
+    <link rel="stylesheet" href="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/css/fileinput.min.css">
+    <link rel="stylesheet" href="view/estilos/principal/imagenHover.css">
+    
     
  	<style type="text/css">
  	  .loader {
@@ -48,6 +48,28 @@
             padding: 3px 12px;
             height: 25px;
             
+       } 
+       
+       /*estilo para una tabla predefinida tbldatosRegistro*/
+       #tbldatosRegistro td{
+            padding: 1px 2px;
+            
+       }
+       #tbldatosRegistro .form-control{
+            padding: 3px 12px;
+            height: 25px;
+            
+       }
+       
+       /*estilo para una tabla predefinida tbldatosAportes*/
+       #tbldatosAportes td{
+            padding: 1px 2px;
+            
+       }
+       #tbldatosAportes .form-control{
+            padding: 3px 12px;
+            height: 25px;
+            
        }
        
        /* estilo para textos en mostrar detalles */
@@ -72,6 +94,11 @@
         /** para cambiar color en borde superior de nav actives **/
         .nav-tabs-custom > .nav-tabs > li.active {
             border-top-color: #f39c12;
+        }
+        
+        /** para cambiar dimension de btn de file upload **/
+        #tbldatosRegistro .btn {
+            padding: 2px 12px;
         }
                	  
  	</style>
@@ -107,12 +134,7 @@
           			<!-- Este div es para mostrar datos del participe -->
           			<div class="col-sm-6 col-md-6 col-lg-6">
           				<div class="panel panel-default">
-                          <div class="panel-heading">
-                          	<p>
-                          		<a href="#">
-                          			<i aria-hidden="true" class="fa fa-mail-reply"></i> Volver
-                      			</a>
-                  			</p>
+                          <div class="panel-heading">                         	
                   			
                           <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
                           <table id="tbldatosParticipe" class="table">
@@ -121,15 +143,15 @@
                           	<tbody>
                           		<tr>
                               		<td><label>Identificacion:</label></td>
-                              		<td><input type="text" class="form-control" id="lblidentificacion"></td>                     		
+                              		<td><input type="text" class="form-control" id="lblIdentificacion"></td>                     		
                           		</tr>
                           		<tr>
                               		<td><label>Nombres:</label></td>
-                              		<td><input type="text" class="form-control" id="lblnombres"></td>
+                              		<td><input type="text" class="form-control" id="lblNombres"></td>
                           		</tr>
                           		<tr>
                               		<td><label>Apellidos:</label></td>
-                              		<td><input type="text" class="form-control" id="txtApellidos"></td>
+                              		<td><input type="text" class="form-control" id="lblApellidos"></td>
                           		</tr> 
                           		<tr>
                               		<td><label>Entidad Patronal:</label></td>
@@ -142,21 +164,23 @@
                           		<tr>
                               		<td><label>Categoria Aporte:</label></td>
                               		<td>
-                              			<select class="form-control" id="id_tipo_aporte">
+                              			<select class="form-control" id="id_contribucion_categoria">
                               			<option value="">--Seleccione--</option>
                               			</select>
                           			</td>
                           		</tr> 
                           		<tr>
-                              		<td><label>Estado Civil:</label></td>
+                              		<td><label>A&ntilde;o:</label></td>
                               		<td>
-                              			<select id="ddlEstadoCivil" class="form-control">
-                              				<option value="0">Todas</option>
-                              				<?php foreach ($datosCivil as $res) { ?>                              				    
-                              				<option value="<?php echo $res->id_estado_civil_participes; ?>"><?php echo $res->nombre_estado_civil_participes; ?></option>    
-                              				<?php }?>                              				
+                              			<select id="ddlYear" class="form-control" onchange="loadDatosAportes(1)">                              				                            				
+                              			</select>                              			
+                              		</td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Mes:</label></td>
+                              		<td>
+                              			<select id="ddlMes" class="form-control" onchange="loadDatosAportes(1)">                              				                            				
                               			</select>
-                              			
                               		</td>
                           		</tr>
                           	</tbody>
@@ -165,13 +189,139 @@
                           </table>
                           
                           <div id="mod_paginacion_datos_participe"></div>
-                    	  <div class="clearfix"></div>  
-                        </div>
+                    	  <div class="clearfix"></div> 
+                    	  
+                    	  <!-- AQUI VA LA TABLA DE LOS REGISTOS DE APORTES ANTERIORES -->
+                    	  
+                    	  <table id="tbldatosAportes" class="table">
+                          	<thead>
+                          		<tr>
+                              		<th><label>MES</label></th>
+                              		<th><label>Aporte Personal</label></th>
+                              		<th><label>Aporte Patronal</label></th>
+                          		</tr>
+                          	</thead>
+                          	<tbody>
+                          		<tr>
+                              		<td><label>Identificacion:</label></td>
+                              		<td><label>Identificacion:</label></td>
+                              		<td><label>Identificacion:</label></td>                     		
+                          		</tr>                          		
+                          	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table> 
+                          
+                          <div id="paginacion_datos_aportes"></div>
+                    	  <div class="clearfix"></div> 
+                    	  
+                        </div><!-- //end panel head -->
           				</div>          			
           			</div>
           			
           			<div class="col-sm-6 col-md-6 col-lg-6">
-          				<div class="form-control"> HOLA a todos</div>
+          				<!-- ESTA TABLA SE LLENA CON PROCESO DE JS PARA DATOS DE REGISTO -->  
+                          <table id="tbldatosRegistro" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          		
+                          		<tr>
+                              		<td><label>Archivo:</label></td>
+                              		<td>
+										<input id="imagen_registro" type="file" class="form-control" > 
+										<div id="errorImagen"></div>                            		
+                                    </td>                     		
+                          		</tr>
+                          		<tr>
+                              		<td><label>N° Documento:</label></td>
+                              		<td><input type="text" class="form-control" id="numero_documento_registro" value=""></td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Tipo Aporte:</label></td>
+                              		<td>
+                              			<select class="form-control" id="ddl_tipo_aporte_registro">
+                              			<option value="0">--Seleccione--</option>
+                              			</select>
+                          			</td>                              		
+                          		</tr>                          		
+                          		<tr>
+                              		<td><label>Descuento por:</label></td>
+                              		<td>
+                              			<input type="hidden" id="hdn_id_tipo_aportacion" value="0">
+                              			<div class="row">
+                                          <div class="col-xs-8 col-md-8 col-lg-8">
+                                          	<input type="text" class="form-control" id="tipo_descuento_registro" value="" readonly>
+                                      	  </div>
+                                          <div class="col-xs-4 col-md-4 col-lg-4">
+                                          	<input type="text" class="form-control" id="valor_descuento_registro" value="" readonly>
+                                          </div>
+                                        </div>                             			
+                              		</td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Ultimo Sueldo:</label></td>
+                              		<td><input type="text" class="form-control" id="ultimo_sueldo_registro" onkeyup="fnCalcularAporte()" ></td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Valor Calculado:</label></td>
+                              		<td><input type="text" class="form-control" id="valor_calculado_registro" readonly></td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Valor a Aportar:</label></td>
+                              		<td><input type="text" class="form-control" id="valor_aportar_registro"></td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Observaci&oacute;n:</label></td>
+                              		<td><textarea rows="1" cols="" id="observacion_registro" class="form-control"></textarea></td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Fecha Transaccion:</label></td>
+                              		<td><input type="text" class="form-control" id="fecha_transaccion_registro" value="<?php echo date('Y-m-d');?>" ></td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Fecha Contable:</label></td>
+                              		<td>
+                              			<input type="text" class="form-control" id="fecha_contable_registro" value="<?php echo date('Y-m-d');?>" data-fechaperiodo="">
+                              			
+                          			</td>
+                          		</tr>                          		
+                          		<tr>
+                              		<td><label>Tipo de Transaccion:</label></td>
+                              		<td>
+                              			<select class="form-control" id="ddl_tipo_transaccion">
+                              			<option value="0">--Seleccione--</option>
+                              			<option value="1" selected >GESTION DE APORTES</option>
+                              			</select>
+                          			</td>                              		
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Tipo de Ingreso:</label></td>
+                              		<td>
+                              			<select class="form-control" id="ddl_tipo_ingreso" onchange="fnValidaTipoIngreso()">
+                              			<option value="0">--Seleccione--</option>
+                              			</select>
+                          			</td>                              		
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Banco:</label></td>
+                              		<td>
+                              			<select class="form-control" id="ddl_banco_registro">
+                              			<option value="0">--Seleccione--</option>
+                              			</select>
+                          			</td>                              		
+                          		</tr>
+                          		<tr>
+                              		<td><label></label></td>
+                              		<td>
+                              			<button type="button" class="btn btn-success" id="btnGuardar" value="guardar" onclick="fnIngresarRegistro()">Guardar</button>
+                              			<button type="button" class="btn btn-danger" id="btnCancelar" value="cancelar" onclick="fnCancelarRegistro()" >Cancelar</button>
+                          			</td>                              		
+                          		</tr> 
+                          	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
           			</div>
           			
           		</div>
@@ -179,238 +329,7 @@
 		</div>
   	</section>
   
-    <section class="content">
-     <div class="box box-primary">
-     <div class="box-header">
-          <h3 class="box-title">Busqueda General</h3>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i></button>
-            
-          </div>
-        </div>
-                  
-  		<div class="box-body">
-  		
-  		
-  		<div class="row">
-  			<div class="col-md-12">
-          		<div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
-                    	<!-- AQUI PONER LOS TITULOS DE TABS -->
-                      <li><a href="#panel_1" data-toggle="tab">Consulta General</a></li>
-                      <li><a href="#panel_2" data-toggle="tab">Socios</a></li>
-                      <li><a href="#panel_3" data-toggle="tab">Expedientes/Solicitudes</a></li>
-                      <li><a href="#panel_4" data-toggle="tab">Inversiones</a></li>
-                      <li><a href="#panel_5" data-toggle="tab">Prestamos</a></li>
-                      <li><a href="#panel_6" data-toggle="tab">Supv. Afiliados/Cesantes</a></li>
-                    </ul>
-                    <div class="tab-content">
-                    	<!-- AQUI COMIENZA PARA PONER CONTENIDOS DE PANELES -->
-                    	<!-- PANEL INDEX -->
-                    	<div class="active tab-pane" id="panel_index">
-                    		<?php include 'view/principal/html/panelindex.php'; ?>
-                    	</div>
-                    	<!-- END PANEL INDEX -->
-                    	
-                    	<!-- PANEL 1 --Consulta general-- -->
-                    	<div class="tab-pane" id="panel_1">
-                    		
-                    	</div>
-                    	<!-- END PANEL 1 --Consulta general-- -->
-                    	
-                    	<!-- PANEL 2 --Socios-- -->
-                    	<div class="tab-pane" id="panel_2">
-                    		
-                    		<form id="frm_busqueda_principal" action="<?php echo $helper->url("PrincipalBusquedas","index"); ?>" method="post" >
-                    		             	             	
-                 			<div id="pnlBusqueda" class="row">
-            					<div class="col-xs-12 col-md-6 col-lg-6">
-                				<div class="panel panel-default">
-                          		<div class="panel-heading">Ingrese Datos</div>
-                            
-                          		<table id="tblBusquedaPrincipal" class="table">   
-                          			<thead>                          		                       		
-                          			</thead>
-                          			<tbody>
-                              		<tr>
-                                  		<td><label>Identificacion:</label></td>
-                                  		<td><input type="text" class="form-control" id="txtIdentificacion"></td>                     		
-                              		</tr>
-                              		<tr>
-                                  		<td><label>Nombres:</label></td>
-                                  		<td><input type="text" class="form-control" id="txtNombres"></td>
-                              		</tr>
-                              		<tr>
-                                  		<td><label>Apellidos:</label></td>
-                                  		<td><input type="text" class="form-control" id="txtApellidos"></td>
-                              		</tr> 
-                              		<tr>
-                                  		<td><label>Cargo:</label></td>
-                                  		<td><input type="text" class="form-control" id="txtCargo"></td>
-                              		</tr> 
-                              		<tr>
-                                  		<td><label>Fecha Nacimiento:</label></td>
-                                  		<td> 
-                                      		<div class="input-group">
-                                              <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                              </div>
-                                              <input type="text" class="form-control pull-right" id="txtFNacimiento">
-                                            </div>
-                                  		 </td>
-                              		</tr> 
-                              		<tr>
-                                  		<td><label>Estado Civil:</label></td>
-                                  		<td>
-                                  			<select id="ddlEstadoCivil" class="form-control">
-                                  				<option value="0">Todas</option>
-                                  				<?php foreach ($datosCivil as $res) { ?>                              				    
-                                  				<option value="<?php echo $res->id_estado_civil_participes; ?>"><?php echo $res->nombre_estado_civil_participes; ?></option>    
-                                  				<?php }?>                              				
-                                  			</select>
-                                  			
-                                  		</td>
-                              		</tr>
-                              		<tr>
-                                  		<td><label>Genero:</label></td>
-                                  		<td>
-                                  			<select id="ddlGenero" class="form-control">
-                                  				<option value="0">Todas</option>
-                                  				<?php foreach ($datosGen as $res) { ?>                              				    
-                                  				<option value="<?php echo $res->id_genero_participes; ?>"><?php echo $res->nombre_genero_participes; ?></option>    
-                                  				<?php }?> 
-                                  			</select>                              			
-                                  		</td>
-                              		</tr> 
-                              		<tr>
-                                  		<td><label>Direccion:</label></td>
-                                  		<td><input type="text" class="form-control" id="txtDireccion"></td>
-                              		</tr>
-                              		<tr>
-                                  		<td><label>Telefono:</label></td>
-                                  		<td><input type="text" class="form-control" id="txtTelefono"></td>
-                              		</tr>
-                              		<tr>
-                                  		<td><label>Fecha Ingreso:</label></td>
-                                  		<td>
-                                  			<div class="input-group">
-                                              <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                              </div>    
-                                              <input type="text" class="form-control pull-right" id="txtFIngreso">                                   
-                                            </div>
-                                  		</td>
-                              		</tr>
-                              		<tr>
-                                  		<td><label>Fecha Baja:</label></td>
-                                  		<td>
-                                  			<div class="input-group">
-                                              <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                              </div>
-                                              <input type="text" class="form-control pull-right" id="txtFBaja">
-                                            </div>
-                                  		</td>
-                              		</tr>
-                              		<tr>
-                                  		<td><label>Estado:</label></td>
-                                  		<td>
-                                  			<select id="id_estado_participes" class="form-control">
-                                  				<option value="0">Todas</option>
-                                  			</select>                              			
-                                  		</td>
-                              		</tr>
-                              		<tr>
-                                  		<td><label>Entidad Patronal:</label></td>
-                                  		<td>
-                                  			<select id="id_entidad_patronal" class="form-control">
-                                  				<option value="0">Todas</option>                              				
-                                  			</select>                              			
-                                  		</td>
-                              		</tr>  
-                              	</tbody>
-                              	<tfoot>
-                              	</tfoot>                         
-                      		</table>
-                        	</div>
-            			</div>
-            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="btn_principal_busqueda" class=" control-label" ></label> 
-                    		<div class="form-group-sm">           
-                    		  <button type="button" id="btn_principal_busqueda" class="btn btn-info">
-                              	<i class="glyphicon glyphicon-search"></i> Buscar
-                              </button>
-                    		</div>        			 
-            			</div>
-            		</div> 
-            		
-            	</div>
-            	
-                        	 <div id="pnlResultados" class="row hidden">
-                        		<div class="col-xs-12 col-md-9 col-lg-9">
-                            		<div class="panel panel-default">
-                                      <div class="panel-heading">
-                                      	<p>
-                                      		<a href="<?php echo $helper->url("PrincipalBusquedas","index"); ?>">
-                                      			<i aria-hidden="true" class="fa fa-mail-reply"></i> Volver
-                                  			</a>
-                              			</p>
-                              			<span id="spanCantidad"></span></div>
-                                      
-                                      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
-                                      <table id="tblResultadosPrincipal" class="table table-responsive">
-                                      </table>
-                                      
-                                      <div id="mod_paginacion_resultados"></div>
-                                	  <div class="clearfix"></div>  
-                                    </div>
-                        		</div>
-                        	</div>            	
-                 
-           					</form>
-                    		
-                    	</div>
-                    	<!-- END PANEL 2 --Socios-- -->
-                    	
-                    	<!-- PANEL 3 --Solicitudes-- -->
-                    	<div class="tab-pane" id="panel_3">
-                    		
-                    	</div>
-                    	<!-- END PANEL 3 --Solicitudes-- -->
-                    	
-                    	<!-- PANEL 4 --Inversiones-- -->
-                    	<div class="tab-pane" id="panel_4">
-                    		
-                    	</div>
-                    	<!-- END PANEL 4 --Inversiones-- -->
-                    	
-                    	<!-- PANEL 5 --Prestamos-- -->
-                    	<div class="tab-pane" id="panel_5">
-                    		
-                    	</div>
-                    	<!-- END PANEL 5 --Prestamos-- -->
-                    	
-                    	<!-- PANEL 6 --Superavit-- -->
-                    	<div class="tab-pane" id="panel_6">
-                    		
-                    	</div>
-                    	<!-- END PANEL 6 --Superavit-- -->
-                                                     
-                    </div>
-                    <!-- /.tab-content -->
-                  </div>
-                  <!-- /.nav-tabs-custom -->
-                </div>
-          	</div>
-                      
-          </div>
-          
-    	</div>
-    	
-    </section>
+    
     
   </div>
   
@@ -423,8 +342,12 @@
 	<!-- date-range-picker -->
     <script src="view/bootstrap/bower_components/moment/min/moment.min.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- FILE UPLOAD -->
+    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.00"></script>
+    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.08"></script>
+    
+    
 
   </body>
 </html>   

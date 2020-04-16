@@ -246,9 +246,9 @@ class PrincipalBusquedasController extends ControladorBase{
 	    $htmlHead = "";
 	    $htmlHead .= "<thead>";
 	    $htmlHead .= "<tr>";
-	    $htmlHead .= "<th>#</td>";
-	    $htmlHead .= "<th><label>Opciones:</label></td>";
-	    $htmlHead .= "<th><label>Datos:</label></td>";
+	    $htmlHead .= "<th>#</th>";
+	    $htmlHead .= "<th><label>Opciones:</label></th>";
+	    $htmlHead .= "<th><label>Datos:</label></th>";
 	    $htmlHead .= "</tr>";
 	    $htmlHead .= "</thead>";
 	    
@@ -284,7 +284,7 @@ class PrincipalBusquedasController extends ControladorBase{
             */
             
             $opcionesTd .= "<div class=\"btn-group\">";            
-            $opcionesTd .= "<button type=\"button\" value=\"".$res->id_participes."\" onclick=\"fnRegistroAportesManuel()\" class=\"btn btn-default\"><i class=\"fa fa-edit\"></i></button>";
+            $opcionesTd .= "<button type=\"button\" value=\"".$res->id_participes."\" onclick=\"fnRegistroAportesManuel(this)\" class=\"btn btn-default\"><i class=\"fa fa-edit\"></i></button>";
             $opcionesTd .= "</div>";
 	        
             

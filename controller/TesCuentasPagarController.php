@@ -313,7 +313,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    //$rsImpuestos   = $impuestos->getCondiciones($colImpuestos, $tabImpuestos, $wheImpuestos, $idIMpuestos);
 	         
 	    if( strlen($busqueda) > 0 ){
-	        $wheImpuestos .= " AND ( aa.nombre_impuestos ILIKE '$busqueda%' OR aa.codigo_impuestos ILIKE '$busqueda%' OR bb.codigo_plan_cuentas ILIKE '$busqueda%' ) ";
+	        $wheImpuestos .= " AND ( aa.nombre_impuestos ILIKE '%$busqueda%' OR aa.codigo_impuestos ILIKE '$busqueda%' OR bb.codigo_plan_cuentas ILIKE '$busqueda%' ) ";
 	    }
 	    
 	    $resultSet = $impuestos->getCantidad("*", $tabImpuestos, $wheImpuestos);
@@ -1147,6 +1147,8 @@ class TesCuentasPagarController extends ControladorBase{
             $respuesta['xml'] = '';
             $respuesta['file']= $resp;
             
+            //AQUI SE COMENTO PARA PRUEBA Y NO ENVIAR SRI
+            
             if( $resp['error'] === true ){   
                 /** parametrizar pa guardar en tabla error retencion **/
                 if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML NO GENERADO" ){
@@ -1537,6 +1539,16 @@ class TesCuentasPagarController extends ControladorBase{
 	                        throw new Exception('Error al guardar Detalles Impuestos datos Xml en BD');
 	                    }
 	                    
+	                }
+	                
+	                /** SE GUARDA EL id_lote EN LA RETENCION **/
+	                $triCol  = " id_lote = $_id_lote ";
+	                $triTab  = " tri_retenciones ";
+	                $triWhe  = " infotributaria_claveacceso = '$_claveAcceso'";
+	                $cuentasPagar->ActualizarBy($triCol, $triTab, $triWhe);
+	                
+	                if( !empty( pg_last_error() ) ){
+	                    throw new Exception('LOTE NO IDENTIFICADO PARA RETENCION');
 	                }
 	                
 	            }

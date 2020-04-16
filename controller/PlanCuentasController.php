@@ -252,7 +252,7 @@ class PlanCuentasController extends ControladorBase{
 	                {
 	                    $verif1.=$elementos1_codigo[$i];
 	                }
-	          
+	            
 	            if ($res->nivel_plan_cuentas == $nivel && $verif==$verif1)
 	            {
 	                
@@ -1393,6 +1393,314 @@ class PlanCuentasController extends ControladorBase{
        
        
        
+   }
+   
+   
+   /***************************************************************** FUNCIONES DC 20200415 *******************************************************/
+   /*********************** CREACION DE ARBOL DE CREACION PLANCUENTAS *****************************************************************************/
+   
+   public function index2(){
+       
+       session_start();
+       $this->view_Contable("arbolPlanCuentas", array());
+   }
+   
+   public function DrawTableCuentas(){
+       
+       $planCuentas = new PlanCuentasModel();
+       
+       $resp = null;
+       
+       $col1 = " id_plan_cuentas,nivel_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas ";
+       $tab1 = " public.plan_cuentas ";
+       $whe1 = " id_entidades = 1 ";
+       $id1  = " codigo_plan_cuentas ";
+       
+       $rsConsulta1 = $planCuentas->getCondiciones($col1, $tab1, $whe1, $id1);
+       
+       if( empty( $rsConsulta1 ) ){
+           $resp['data']    = null;
+           json_encode($resp);
+           return;
+       }
+       
+       /**
+        * 
+        * <div id="jstree">
+                <!-- in this example the tree is populated from inline HTML -->
+                <ul>
+                  <li>1. ACTIVOS
+                    <ul>
+                      <li id="child_node_1">1.1. FONDOS DISPONIBLES
+                      	<ul>
+                      		<li id="nieto1">1.1.01. Caja</li>
+                      		<li id="nieto2">1.1.02. Bancos e Intituciones</li>
+                      	</ul>
+                      </li>
+                      <li>1.2. INVERSIONES NO PRIVATIVAS</li>
+                    </ul>
+                  </li>
+                  <li data-jstree='{"icon":"glyphicon glyphicon-leaf"}'>2. PASIVOS</li>
+                </ul>
+              </div>
+              <button id="btnArbol" >demo button</button>
+        </div> 
+        */
+       
+       $next    = 0;
+       $prev    = 0;
+       $point   = 0;
+       $rssize  = sizeof($rsConsulta1);
+       $auxArray= $rsConsulta1;
+       $arbol   = '<div id="jstree">';
+       for ($i = 0; $i < $rssize; $i++) {
+           
+           $next    = ($rssize == $i ) ? $i : $i+1;
+           $prev    = ($i == 0) ? 0 : $i-1;
+           $point   = $i;
+           ;
+           $arbol   .= "<ul>";
+                      
+       }
+       
+       $arbol   .= "</div>";
+       
+   }
+   
+   public function drawArbolCuentas($nivel, $resultset, $limit, $codigo){
+       
+       $tdfont="14px";
+       $boldi="";
+       $boldf="";
+       
+       $colores= array();
+       $colores[0]="#D6EAF8";
+       $colores[1]="#D1F2EB";
+       $colores[2]="#F6DDCC";
+       $colores[3]="#FAD7A0";
+       $colores[4]="#FCF3CF";
+       $colores[5]="#FDFEFE";
+       
+       if ($codigo==""){
+           
+           $arbol   = ""; //variable donde se guarda el html
+           $sumatoria="";
+           foreach($resultset as $res){
+               
+               $verif1="";
+               $elementos1_codigo=explode(".", $res->codigo_plan_cuentas);
+               if (sizeof($elementos1_codigo)>=$nivel){
+                   
+                   $verif1 = join($elementos1_codigo);                 
+               }
+                   
+               if( $res->nivel_plan_cuentas == $nivel ){
+                   
+                   if( $nivel <= $limit ){ 
+                       
+                       $nivel++;
+                       $nivelclase=$nivel-1;
+                       $color=$nivel-2;
+                       
+                       if( $color > 5 ){ $color=5; }
+                       
+                       $codigoPlanCuentas   = $res->codigo_plan_cuentas;
+                       $nombrePlanCuentas   = $res->nombre_plan_cuentas;
+                       
+                       $tag = ""; //variable donde se guarda el texto del lista
+                       $tag = $codigoPlanCuentas."  ".$nombrePlanCuentas;
+                       $arbol   .= '<li id="cod'.$verif1.'">'.$tag; //etiqueta para inicializar la lista
+                       
+                       $haveSon = $this->isthereSub( $nivel, $codigoPlanCuentas, $resultset );
+                                              
+                       if( $haveSon ){
+                           $arbol   .= "<ul>";
+                           $arbol   .= $this->drawArbolCuentas( $nivel, $resultset, $limit, $codigoPlanCuentas);
+                           $arbol   .= "</ul>";
+                       }
+                       $arbol   .= "</li>";
+                       $nivel--; 
+                      
+                   } //end if
+               }//end if
+           } // end foreach
+           
+           //termina if si el codigo es nulo o vacio
+       }else{
+           
+           $arbol   = ""; //variable donde guarda el html de la lista
+           $sumatoria="";
+           $elementos_codigo=explode(".", $codigo);
+           $nivel1  = $nivel;
+           $nivel1--;
+           $verif   = "";
+           $verif   = join( $elementos_codigo );
+                      
+           foreach($resultset as $res){
+               
+               $verif1  ="";
+               $verif2  ="";
+               $codigoPlanCuentas   = $res->codigo_plan_cuentas;
+               $nombrePlanCuentas   = $res->nombre_plan_cuentas;
+               $elementos1_codigo=explode(".", $codigoPlanCuentas );
+               $verif2  = join( $elementos1_codigo );
+               
+               if (sizeof($elementos1_codigo)>=$nivel1){
+                   for ($i=0; $i<$nivel1; $i++)
+                   {
+                       $verif1.=$elementos1_codigo[$i];
+                   }
+               }
+                                             
+               if( $res->nivel_plan_cuentas == $nivel && $verif == $verif1 ){
+                                      
+                   if(  $nivel <= $limit ){
+                       $nivel++;
+                       $nivelclase  = $nivel-1;
+                       $color   = $nivel-2;
+                       if ($color>5) { $color=5; }
+                       
+                       $tag = ""; //variable donde se guarda el texto del lista
+                       $tag = $codigoPlanCuentas."  ".$nombrePlanCuentas;
+                       $arbol   .= '<li id="cod'.$verif2.'">'.$tag; //etiqueta para inicializar la lista
+                       
+                       $haveSon = $this->isthereSub( $nivel, $codigoPlanCuentas, $resultset);
+                       
+                       if( $res->nivel_plan_cuentas > 1 ){
+                           //aqui va ver si toca poner el btn para opciones
+                           /**
+                           $sumatoria.='<button  type="button" class="btn btn-box-tool pull-right" style="color:#5499C7" data-toggle="modal" data-target="#myModalAgregar" onclick="AgregarCuenta(&quot;'.$res->codigo_plan_cuentas.'&quot;,'.$res->id_entidades.','.$res->id_modenas.',&quot;'.$res->n_plan_cuentas.'&quot;,'.$res->id_centro_costos.','.$res->nivel_plan_cuentas.')"><i class="glyphicon glyphicon-plus"></i></button>';
+                           if($res->nivel_plan_cuentas>2)
+                           {
+                               $sumatoria.='<button  type="button" class="btn btn btn-box-tool pull-right" style="color:#229954" data-toggle="modal" data-target="#myModalEdit" onclick="EditarCuenta('.$res->id_plan_cuentas.',&quot;'.$res->codigo_plan_cuentas.'&quot;,&quot;'.$res->nombre_plan_cuentas.'&quot;)"><i class="glyphicon glyphicon-pencil"></i></button>';
+                           }
+                            */
+                       }
+                       
+                       if( $haveSon ){
+                           
+                           $arbol   .= "<ul>";
+                           $arbol   .= $this->drawArbolCuentas( $nivel, $resultset, $limit, $codigoPlanCuentas );
+                           $arbol   .= "</ul>";
+                       }
+                       
+                       $arbol   .= "</li>";
+                       
+                       $nivel--;                   
+                   
+                   }
+               }
+           }
+       }
+       return $arbol;
+   }
+   
+   public function isthereSub($nivel, $codigo, $resultado){
+       
+       $elementos_codigo=explode(".", $codigo);
+       $nivel1  =   $nivel;
+       $nivel1--;
+       $verif="";
+       
+       $verif   .= join($elementos_codigo);       
+       
+       foreach ($resultado as $res){
+       
+           $verif1="";
+           $elementos1_codigo=explode(".", $res->codigo_plan_cuentas);
+           
+           if (sizeof($elementos1_codigo)>=$nivel1){
+               
+               for ($i=0; $i<$nivel1; $i++)
+               {
+                   $verif1.=$elementos1_codigo[$i];
+               }
+           }          
+           
+           if( $res->nivel_plan_cuentas ==  $nivel && $verif    ==  $verif1 ){
+               return true;
+           }
+       }
+       return false;
+   }
+   
+   public function index3(){
+       
+       $planCuentas = new PlanCuentasModel();
+       
+       $col1    = " id_plan_cuentas,nivel_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas ";
+       $tab1    = " public.plan_cuentas ";
+       $whe1    = " id_entidades = 1 ";
+       $id1     = " codigo_plan_cuentas";
+       $rsConsulta1 = $planCuentas->getCondiciones($col1, $tab1, $whe1, $id1);
+            
+       
+       $col2    = " MAX(nivel_plan_cuentas) maximo";
+       $tab2    = " public.plan_cuentas";
+       $whe2    = " 1 = 1 ";
+       $rsConsulta2 = $planCuentas->getCondicionesSinOrden($col2, $tab2, $whe2, "");
+       
+       $max = $rsConsulta2[0]->maximo;
+       $data    = $rsConsulta1;
+       
+       echo $max;
+       
+       $html    = '<div id="arbolplancuentas" >';
+       $html    .= $this->drawArbolCuentas(1, $data, $max, "");
+       $html    .= '</div>';
+       
+       echo $html;
+       
+       
+   }
+   
+   public function index4(){
+       
+       $planCuentas = new PlanCuentasModel();
+       $resp  = null;
+              
+       try {
+           
+           $col1    = " id_plan_cuentas,nivel_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas ";
+           $tab1    = " public.plan_cuentas ";
+           $whe1    = " id_entidades = 1 ";
+           $id1     = " codigo_plan_cuentas";
+           $rsConsulta1 = $planCuentas->getCondiciones($col1, $tab1, $whe1, $id1);           
+           
+           $col2    = " MAX(nivel_plan_cuentas) maximo";
+           $tab2    = " public.plan_cuentas";
+           $whe2    = " 1 = 1 ";
+           $rsConsulta2 = $planCuentas->getCondicionesSinOrden($col2, $tab2, $whe2, "");
+           
+           $max = $rsConsulta2[0]->maximo;
+           $data    = $rsConsulta1;
+           
+           if( !empty( error_get_last() ) || !empty( pg_last_error() ) ){
+               throw new Exception("REVISAR CONSULTAS A LA BASE");
+           }
+           $html    = "<ul>";
+           $html    .= $this->drawArbolCuentas(1, $data, $max, "");
+           $html    .= "</ul>";
+          
+           if( !empty( error_get_last() ) ){
+               throw new Exception("ERROR EN LA GRAFICACION DEL PLAN CUENTAS");
+           }
+           
+           $resp['data']=$html;
+           $resp['estatus']="OK";         
+           
+       } catch (Exception $e) {
+           $buffer =  error_get_last();
+           $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+           $resp['mensaje'] = $e->getMessage();
+           $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+           $resp['estatus'] = "ERROR";
+       }
+       
+       error_clear_last();
+       if (ob_get_contents()) ob_end_clean();
+       
+       echo json_encode($resp);
    }
    
   

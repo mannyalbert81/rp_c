@@ -6,8 +6,29 @@ $(document).ready(function(){
 	
 	consultaImpuestos();
 	validaTipoImpuesto();
+	init();
 	
 })
+
+/***
+ * @desc funcion para iniciar ciertos controles
+ * @returns void
+ */
+function init(){
+	
+	try{
+		$("#porcentaje_impuestos").inputmask({
+			mask: ['9','99','999','9.9','99.9','9.99','99.99'], 
+			placeholder: "_",
+			clearIncomplete: true,
+			rightAlign: true
+		});
+	}catch (e) {
+		// TODO: handle exception
+		console.log("ERROR INICIANDO MASCARA DE PORCENTAJE")
+	}
+	
+}
 
 /**
  * para autocomplete de plan cuentas
@@ -118,8 +139,12 @@ function ValidateFormImpuestos(){
 	//validar campo porcentaje Impuestos
 	var expresion = /^([0-9]{1,3})$/;
 	$porcentajeImpuestos = $("#porcentaje_impuestos");
-	if( !expresion.exec( $porcentajeImpuestos.val() ) ){
+	/*if( !expresion.exec( $porcentajeImpuestos.val() ) ){
 		$porcentajeImpuestos.notify("Porcentaje de impuesto no válido",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}*/
+	if( $porcentajeImpuestos.val() == "" || $porcentajeImpuestos.val().includes('_') ){
+		$porcentajeImpuestos.notify("Formato No valido o Vacio ",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	if( $porcentajeImpuestos.val() > 100 ){
@@ -442,4 +467,17 @@ function limpiarForm(){
 	validaTipoImpuesto();
           	   	
 }
+
+/*$("#porcentaje_impuestos_2").inputmask( {
+	mask:,
+	rightAlign: true 
+	});
+
+$("#porcentaje_impuestos_2").inputmask({
+	mask: "999-999-999999999", 
+	placeholder: "_",
+	clearIncomplete: true,
+	rightAlign: true
+});
+*/
 

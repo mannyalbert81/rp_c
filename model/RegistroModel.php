@@ -1,5 +1,5 @@
 <?php
-class ReporteCierreMesModel extends ModeloBase{
+class RegistroModel extends ModeloBase{
 	private $table;
 	private $where;
 	private $funcion;
@@ -36,7 +36,7 @@ class ReporteCierreMesModel extends ModeloBase{
 
 
 	public function __construct(){
-		$this->table="core_creditos_cierre_mes";
+		$this->table="registro_tres_cuotas";
 	
 		parent::__construct($this->table);
 	}
@@ -70,12 +70,12 @@ class ReporteCierreMesModel extends ModeloBase{
     	return  $resultado;
     }
     
-    public function llamafuncion(){
+    public function llamafuncionPG(){
         
         $query = "SELECT ".$this->funcion."(".$this->parametros.")";
         $resultado = null;
         
-        $resultado=$this->llamarconsulta($query);
+        $resultado=$this->llamarconsultaPG($query);
         
         return  $resultado;
     }

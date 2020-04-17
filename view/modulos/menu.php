@@ -498,7 +498,8 @@ $controladores=$_SESSION['controladores'];
               <li style="<?php echo getcontrolador("RevisionCreditos",$controladores) ?>"><a href="index.php?controller=RevisionCreditos&action=index"><i class="fa fa-circle-o"></i>Revisión de Crédito</a></li>
               <li style="<?php echo getcontrolador("AcuerdoPago",$controladores) ?>"><a href="index.php?controller=AcuerdoPagos&action=index"><i class="fa fa-circle-o"></i>Acuerdos de Pago</a></li>      
 	          <li style="<?php echo getcontrolador("ReporteCierreCreditos",$controladores) ?>"><a href="index.php?controller=ReporteCierreCreditos&action=index5"><i class="fa fa-circle-o"></i>Documentos Hipotecarios</a></li>
-     
+       		  <li style="<?php echo getcontrolador("ConsultaRegistroTresCuotas",$controladores) ?>"><a href="index.php?controller=ConsultaRegistroTresCuotas&action=index"><i class="fa fa-circle-o"></i>Diferimiento de Cuotas</a></li>
+        
 		  </ul>
         </li>
         
@@ -513,7 +514,6 @@ $controladores=$_SESSION['controladores'];
           <li style="<?php echo getcontrolador("CoreFirmasParticipe",$controladores) ?>"><a href="index.php?controller=CoreFirmasParticipe&action=index"><i class="fa fa-circle-o"></i>Firmas</a></li>
           <li style="<?php echo getcontrolador("ReporteCierreMes",$controladores) ?>"><a href="index.php?controller=ReporteCierreMes&action=index5"><i class="fa fa-circle-o"></i>Cierre Mes</a></li>
           <li style="<?php echo getcontrolador("ReporteCierreCreditos",$controladores) ?>"><a href="index.php?controller=ReporteCierreCreditos&action=index"><i class="fa fa-circle-o"></i>Documentos Hipotecarios</a></li>
-          <li style="<?php echo getcontrolador("ConsultaRegistroTresCuotas",$controladores) ?>"><a href="index.php?controller=ConsultaRegistroTresCuotas&action=index"><i class="fa fa-circle-o"></i>Registro de Cuotas</a></li>
         
         
         

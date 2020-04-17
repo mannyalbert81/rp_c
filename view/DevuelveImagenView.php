@@ -12,7 +12,7 @@ if (isset ($_GET["id_documentos_legal"]))
 
 $image = "";
 
-$conn  = pg_connect("user=postgres port=5432 password=Capremci2018 dbname=ad_capremci host=192.168.1.128");
+$conn  = pg_connect("user=postgres port=5432 password=Capremci2018 dbname=rp_capremci host=186.4.157.125");
 if(!$conn)
 {
 	echo  "No se pudo conectar";

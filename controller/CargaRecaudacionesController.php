@@ -1019,7 +1019,7 @@ class CargaRecaudacionesController extends ControladorBase{
             $_nombre_archivo_guardar = $nombre;           
             
             $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
-            $archivo_move = move_uploaded_file($_FILES['nombre_carga_recaudaciones']['tmp_name'],$_archivo_procesar);
+            $archivo_move = move_uploaded_file($_arhivo_carga_datos ['tmp_name'],$_archivo_procesar);
             if( !$archivo_move ){
                 throw new Exception("Archivo no fue subido por favor vuelva intentarlo Error servidor");
             }
@@ -1052,6 +1052,8 @@ class CargaRecaudacionesController extends ControladorBase{
                 $_fila = trim($_fila);
                 $_fila = trim($_fila,"\n");
                 //echo "\n'",var_dump($_fila),"'";
+                //no hay validacion de la primera linea -- es cabecera
+                //comienza validacion desde la linea 2
                 if( $_linea > 0 && $_fila != "" ){  
                     
                     $_array_fila   = explode(";", $_fila);
@@ -1077,7 +1079,7 @@ class CargaRecaudacionesController extends ControladorBase{
                     }else{
                         
                         //echo "\n","linea--**--",$_linea,"--**--","no es array";
-                        array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"cantidad columnas no encontradas Cantidad de <Columnas Solicitadas 3> ","cantidad"=>0));
+                        array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"Numero de columnas no Validas --> <span class='text-danger'> Columnas Solicitadas es 3 <span> ","cantidad"=>0));
                     }                                       
                     
                 }else if( $_linea > 0 && $_fila == "" ){
@@ -1090,7 +1092,7 @@ class CargaRecaudacionesController extends ControladorBase{
             fclose($file_abierto);
             
             //echo $_linea_llena;
-            $_numero_lineas_archivo = $_linea_llena;
+            $_numero_lineas_archivo = $_linea_llena; //cantidas de lineas leidas en el archivo
             /** validaciones del archivo */
             if( $_linea_llena < 1 ){
                 array_push($_archivo_errores, array("linea"=>"","error"=>"Archivo se encuentra vacio","cantidad"=>0));
@@ -1109,7 +1111,7 @@ class CargaRecaudacionesController extends ControladorBase{
                     if( sizeof($_archivo_cedulas) > 0 ){
                         
                         $_cantidad_repeticiones_cedulas = 0;
-                        $_array_buscar_cedulas  = $_archivo_cedulas;
+                        $_array_buscar_cedulas  = $_archivo_cedulas; //ser realiza una copia del array de cedulas
                         $_i = 0;
                         // se recorre el array de cedulas generadas en el primera validacion
                         foreach ( $_archivo_cedulas as $res_i ){
@@ -1250,6 +1252,22 @@ class CargaRecaudacionesController extends ControladorBase{
         
     }
     /** END DC CONFIG*/
+    
+    /** dc begin 2020/04/17 **/
+    public function InsertDescuentos(string $archivo, string $formato, array $datos){
+        
+        switch ( $formato ){
+            case "APORTE PERSONALES":
+                break;
+            case "APORTE PATRONALES":
+                break;
+            default:
+                break;
+        }
+        
+        
+    }
+    /** dc end 2020/04/17 **/
     
     /** BEGIN FUNCIONES UTILITARIAS PARA LA CLASE */
     private function devuelveMesNombre($_mes){

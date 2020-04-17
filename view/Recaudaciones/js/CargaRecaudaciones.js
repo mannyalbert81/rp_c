@@ -3,8 +3,28 @@ $(document).ready(function(){
 	listaArchivosRecaudacion();
 	//consultaCargaRecaudaciones();
 	cargaEntidadPatronal();
+	
+	init_controles();
+	
 		
 })
+
+function init_controles(){
+	try {
+		
+		 $("#nombre_carga_recaudaciones").fileinput({			
+		 	showPreview: false,
+	        showUpload: false,
+	        elErrorContainer: '#errorImagen',
+	        allowedFileExtensions: ["txt"],
+	        language: 'esp' 
+		 });
+		
+	} catch (e) {
+		// TODO: handle exception
+		console.log("ERROR AL IMPLEMENTAR PLUGIN DE FILEUPLOAD");
+	}
+}
 
 function cargaEntidadPatronal(){
 	
@@ -86,9 +106,15 @@ $("#btnGenerar").on("click",function(){
 		return false;
 	}
 	
+	if($formatoCargaRecaudaciones.val() == 0 ){
+		$formatoCargaRecaudaciones.notify("Seleccione Formato",{ position:"top left", autoHideDelay: 2000});
+		return false;
+	}
 	
-	if($nombreCargaRecaudaciones.val() == 0 ){
-		$nombreCargaRecaudaciones.notify("Seleccione Archivo",{ position:"buttom left", autoHideDelay: 2000});
+	//validacion campo archivo
+	var inarchivo = $("#nombre_carga_recaudaciones");
+	if( inarchivo[0].files.length == 0){
+		inarchivo.notify("Seleccione un archivo",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	
@@ -251,15 +277,17 @@ function uploadFileEntidad(){
 	}
 	
 	if($formatoCargaRecaudaciones.val() == 0 ){
-		$formatoCargaRecaudaciones.notify("Seleccione Formato de Recaudaciones",{ position:"buttom left", autoHideDelay: 2000});
+		$formatoCargaRecaudaciones.notify("Seleccione Formato de Recaudaciones",{ position:"top left", autoHideDelay: 2000});
+		return false;
+	}	
+		
+	//validacion campo archivo
+	var inarchivo = $("#nombre_carga_recaudaciones");
+	if( inarchivo[0].files.length == 0){
+		inarchivo.closest('div.file-input').notify("Seleccione un archivo",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
-	
-	if($nombreCargaRecaudaciones.val() == "" ){
-		$nombreCargaRecaudaciones.notify("Seleccione Archivo",{ position:"buttom left", autoHideDelay: 2000});
-		return false;
-	}
-	
+		
 	var parametros = new FormData();
 	
 	parametros.append('id_entidad_patronal',$entidadPatronal.val());
@@ -274,16 +302,14 @@ function uploadFileEntidad(){
 		url:"index.php?controller=CargaRecaudaciones&action=cargaArchivoRecaudacion",
 		type:"POST",
 		dataType:"json",
-		data:parametros,
-		
-		 contentType: false, 
-         processData: false  
+		data:parametros,		
+		contentType: false, 
+        processData: false  
        
 	}).done(function(x){
 		swal.close();
 		if( x.dataerror != undefined && x.dataerror != "" ){
 			
-			swal.close();
 			let modalErrores = $("#mod_archivo_errores");			
 			let arrayErrores = x.dataerror;
 			let cantidadRegistros		= arrayErrores.length;

@@ -130,6 +130,123 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	}
 	
 	/***
+	 * 
+	 */
+	public function CargaDatosAportes(){
+	    
+	    $busquedas = new PrincipalBusquedasModel();
+	    $resp  = null;
+	    
+	    try {
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page'])) ? $_REQUEST['page'] : 1;
+	        
+	        $id_participes = $_POST['id_participes'];
+	        $anio_registro = $_POST['anio_registro'];
+	        $mes_registro  = $_POST['mes_registro'];
+	        
+	        if( !empty( error_get_last() ) ){ throw new Exception("Variable no recibida"); }
+	        
+	        $col1  = " aa.id_contribucion,aa.fecha_registro_contribucion,aa.fecha_contable_distribucion,aa.observacion_contribucion,aa.descripcion_contribucion,
+	           aa.valor_personal_contribucion, aa.valor_patronal_contribucion, extract(month from aa.fecha_registro_contribucion) mes";
+	        $tab1  = " core_contribucion aa
+	        INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
+	        INNER JOIN core_contribucion_tipo cc ON cc.id_contribucion_tipo = aa.id_contribucion_tipo ";
+	        $whe1  = " bb.id_estatus	= 1
+	        AND UPPER(cc.nombre_contribucion_tipo) = 'APORTE PERSONAL'
+	        AND extract(year from aa.fecha_registro_contribucion) = $anio_registro
+	        AND extract(month from aa.fecha_registro_contribucion) <= $mes_registro
+	        AND bb.id_participes	= $id_participes ";
+	        $id1   = "aa.fecha_contable_distribucion";
+	        $rsConsulta1   = $busquedas->getCondicionesDesc($col1, $tab1, $whe1, $id1);
+	        
+	        $colCantidad = " COUNT(1) AS cantidad " ;
+	        $resultSet = $busquedas->getCondicionesSinOrden( $colCantidad , $tab1, $whe1,"");
+	        $cantidadResult=(int)$resultSet[0]->cantidad;
+	        
+	        $per_page = 2; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet = $busquedas->getCondicionesPagDesc($col1, $tab1, $whe1, $id1, $limit);
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        $i = 0;
+	        
+	        $htmlHead = "";
+	        $htmlHead .= "<thead>";
+	        $htmlHead .= "<tr>";
+	        $htmlHead .= "<th><label>MES</label></th>";
+	        $htmlHead .= "<th><label>Aporte Personal</label></td>";
+	        $htmlHead .= "<th><label>Aporte Patronal</label></td>";
+	        $htmlHead .= "</tr>";
+	        $htmlHead .= "</thead>";	        
+	       
+	        //para los datos de la tabla
+	        $htmlBody = "<tbody>";
+	        foreach ($resultSet as $res){
+	            /** variables a utilizar **/
+	            $i++;
+	            $valorpersonal = number_format ( $res->valor_personal_contribucion , 2 , "." , "" );
+	            $valorpatronal = number_format ( $res->valor_patronal_contribucion , 2 , "." , "" );
+	            
+	            //proceso de generacion de opciones
+// 	            $opcionesTd  = "";	            
+	             
+// 	            $opcionesTd .= "<div class=\"btn-group\">";
+// 	            $opcionesTd .= "<button type=\"button\" value=\"".$res->id_participes."\" onclick=\"fnRegistroAportesManuel(this)\" class=\"btn btn-default\"><i class=\"fa fa-edit\"></i></button>";
+// 	            $opcionesTd .= "</div>";	           
+	            
+	            $htmlBody    .= "<tr>";
+	            $htmlBody    .= "<td>".$this->getNombreMes($res->mes)."</td>";
+	            $htmlBody    .= "<td class=\"text-right\">".$valorpersonal."</td>";
+	            $htmlBody    .= "<td class=\"text-right\">".$valorpatronal."</td>";
+	            //$htmlBody    .= "<td class=\"col-md-2 col-lg-2\" >".$opcionesTd."</td>";
+	            $htmlBody    .= "</tr>";
+	            
+	        }
+	        
+	        $htmlBody .= "</tbody>";
+	        
+	        $htmlFoot = "<tfoot>";
+	        //$htmlFoot .= "<tr>";
+	        //$htmlFoot .= "<th colspan=\"3\"></th>";
+	        //$htmlFoot .= "</tr>";
+	        $htmlFoot .= "</tfoot>";
+	        
+	        $resp['tabla'] = $htmlHead.$htmlBody.$htmlFoot;
+	        	       	        
+	        $htmlPaginacion  = '<div class="table-pagination pull-right">';
+	        $htmlPaginacion .= ''. $busquedas->allpaginate("index.php", $page, $total_pages, $adjacents,"loadDatosAportes").'';
+	        $htmlPaginacion .= '</div>';
+	        
+	        $resp['paginacion'] = $htmlPaginacion;
+	        $resp['cantidadDatos'] = $cantidadResult;
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	               
+	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
+	}
+	
+	/***
 	 * @desc function para dibujar bancos locales de la entidad por medio de request ajax
 	 * @param none
 	 * @author dc 2020/04/13
@@ -287,6 +404,31 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	    if (ob_get_contents()) ob_end_clean();
 	    
 	    echo json_encode($resp);
+	}
+	
+	/********************************************************************************* UTILS ******************************************************/
+	function getNombreMes($mes){
+	    
+	    $meses = array(
+	        '1'=>"ENERO",
+	        '2'=>"ENERO",
+	        '3'=>"ENERO",
+	        '4'=>"ENERO",
+	        '5'=>"ENERO",
+	        '6'=>"ENERO",
+	        '7'=>"ENERO",
+	        '8'=>"ENERO",
+	        '9'=>"ENERO",
+	        '10'=>"ENERO",
+	        '11'=>"ENERO",
+	        '12'=>"ENERO"
+	    );
+	    
+	    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	    
+	    $numMes = (int)$mes;
+	    
+	    return $meses[ $numMes-1];
 	}
 	
 }

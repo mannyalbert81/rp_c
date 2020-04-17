@@ -61,6 +61,17 @@
             
        }
        
+       /*estilo para una tabla predefinida tbldatosAportes*/
+       #tbldatosAportes td{
+            padding: 1px 2px;
+            
+       }
+       #tbldatosAportes .form-control{
+            padding: 3px 12px;
+            height: 25px;
+            
+       }
+       
        /* estilo para textos en mostrar detalles */
        .bio-row{
             width: 95%;
@@ -161,14 +172,14 @@
                           		<tr>
                               		<td><label>A&ntilde;o:</label></td>
                               		<td>
-                              			<select id="ddlYear" class="form-control">                              				                            				
+                              			<select id="ddlYear" class="form-control" onchange="loadDatosAportes(1)">                              				                            				
                               			</select>                              			
                               		</td>
                           		</tr>
                           		<tr>
                               		<td><label>Mes:</label></td>
                               		<td>
-                              			<select id="ddlMes" class="form-control">                              				                            				
+                              			<select id="ddlMes" class="form-control" onchange="loadDatosAportes(1)">                              				                            				
                               			</select>
                               		</td>
                           		</tr>
@@ -178,8 +189,33 @@
                           </table>
                           
                           <div id="mod_paginacion_datos_participe"></div>
-                    	  <div class="clearfix"></div>  
-                        </div>
+                    	  <div class="clearfix"></div> 
+                    	  
+                    	  <!-- AQUI VA LA TABLA DE LOS REGISTOS DE APORTES ANTERIORES -->
+                    	  
+                    	  <table id="tbldatosAportes" class="table">
+                          	<thead>
+                          		<tr>
+                              		<th><label>MES</label></th>
+                              		<th><label>Aporte Personal</label></th>
+                              		<th><label>Aporte Patronal</label></th>
+                          		</tr>
+                          	</thead>
+                          	<tbody>
+                          		<tr>
+                              		<td><label>Identificacion:</label></td>
+                              		<td><label>Identificacion:</label></td>
+                              		<td><label>Identificacion:</label></td>                     		
+                          		</tr>                          		
+                          	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table> 
+                          
+                          <div id="paginacion_datos_aportes"></div>
+                    	  <div class="clearfix"></div> 
+                    	  
+                        </div><!-- //end panel head -->
           				</div>          			
           			</div>
           			
@@ -309,7 +345,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.07"></script>
+    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.08"></script>
     
     
 

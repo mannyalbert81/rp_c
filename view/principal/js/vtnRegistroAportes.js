@@ -9,6 +9,7 @@ $(document).ready(function(){
 	initControles();
 	loadBancosLocales();
 	loadDataParticipes();
+	loadDatosAportes(1);
 })
 
 function initControles(){
@@ -187,6 +188,45 @@ function loadDataParticipes(){
 	}).fail( function(xhr,status,error){
 		console.log(xhr.responseText);
 	})
+	
+}
+
+function loadDatosAportes(pagina){
+	
+	var hdnid_participes = $("#hdnid_participes");
+	
+	document.getElementById("hdnid_participes").value = window.opener.document.getElementById("hdnid_participes_padre").value; 
+	
+	var _anio = $("#ddlYear").val();
+	var _mes  = $("#ddlMes").val();
+	var _pagina	= pagina;
+	
+    var params	= {id_participes:hdnid_participes.val(),anio_registro:_anio,mes_registro:_mes,page:_pagina}
+    
+    $.ajax({
+		url:"index.php?controller=PrincipalBusquedasSocios&action=CargaDatosAportes",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		
+		if( x.tabla != undefined && x.tabla != null ){
+			
+			$("#tbldatosAportes").empty();
+			if( x.tabla != undefined && x.tabla != ""){
+				
+				$("#tbldatosAportes").append(x.tabla);
+				//$("#spanCantidad").text("Se encontraon ( "+x.cantidadDatos+" ) socio/s" );
+				$("#paginacion_datos_aportes").html(x.paginacion);
+			}
+									
+		}		
+		
+				
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+    
 	
 }
 

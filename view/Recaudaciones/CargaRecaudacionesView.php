@@ -77,7 +77,7 @@
                 			 <div class="form-group-sm">
                 				<label for="id_entidad_patronal" class="col-sm-4 control-label" >Entidad:</label>
                 				<div class="col-sm-8">
-                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control">
+                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control" onchange="BuscarDescuentosFormatos(this)">
                               	<option value="0">--Seleccione--</option>
                               	</select>
                                  </div>
@@ -86,7 +86,22 @@
     				</div>
         		</div>
         		
-        				<div class="row">        	
+        		<div class="row">        	
+        			<div class="col-lg-6 col-md-6 col-xs-12">        		
+            			<div class="form-group "> 
+                			 <div class="form-group-sm">
+                				<label for="id_descuentos_formatos" class="col-sm-4 control-label" >Desc. Formato:</label>
+                				<div class="col-sm-8">
+                                  	<select id="id_descuentos_formatos" name="id_descuentos_formatos" class="form-control">
+                              	<option value="0">--Seleccione--</option>
+                              	</select>
+                                 </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div>
+        		
+        		<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
             			<div class="form-group "> 
                 			 <div class="form-group-sm">

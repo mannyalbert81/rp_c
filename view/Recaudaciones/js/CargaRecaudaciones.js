@@ -53,6 +53,32 @@ function cargaEntidadPatronal(){
 	
 }
 
+function BuscarDescuentosFormatos(this){
+	
+	let elemento = $(this);
+	var $ddlDescuentosFormatos	= $("#id_descuentos_formatos");	
+	$ddlDescuentosFormatos.empty();
+	$ddlDescuentosFormatos.append("<option value='0' >--Seleccione--</option>");
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=CargaRecaudaciones&action=cargaDescuentosFormatos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		if( datos.data != undefined || datos.data != "" ){
+			$.each(datos.data, function(index, value) {
+				$ddlDescuentosFormatos.append("<option value= " +value.id_descuentos_formatos +" >" + value.nombre_descuentos_formatos  + "</option>");	
+	  		});
+		}
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+	})
+}
+
 $("#id_entidad_patronal").on("focus",function(){
 	$("#mensaje_id_entidad_patronal").text("").fadeOut("");
 })

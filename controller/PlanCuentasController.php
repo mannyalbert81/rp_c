@@ -1707,17 +1707,17 @@ class PlanCuentasController extends ControladorBase{
    
    public function AddPlanCuentas(){
        
-       $plan_cuentas= new PlanCuentasModel();
+       $planCuentas= new PlanCuentasModel();
        $resp=null;
        try {
            
            $id_plan_cuentas     = $_POST['id_plan_cuentas'];
            $nombre_plan_cuentas = $_POST['nombre_plan_cuentas'];
            $aux_codigo_plan_cuentas  = $_POST['aux_codigo'];
-           
+                      
            if( !empty( error_get_last() ) ){ throw new Exception("Variables no recibidas");}
            
-           $col1    = " id_plan_cuentas,nivel_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas,id_entidades, id_monedas, n_plan_cuentas, id_centro_costos ";
+           $col1    = " id_plan_cuentas,nivel_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas,id_entidades, id_modenas, n_plan_cuentas, id_centro_costos ";
            $tab1    = " public.plan_cuentas ";
            $whe1    = " id_plan_cuentas = $id_plan_cuentas ";
            $id1     = " codigo_plan_cuentas";
@@ -1729,7 +1729,7 @@ class PlanCuentasController extends ControladorBase{
                $codigo_padre = $rsConsulta1[0]->codigo_plan_cuentas;
                $id_entidades = $rsConsulta1[0]->id_entidades;
                $nivel_padre  = $rsConsulta1[0]->nivel_plan_cuentas;
-               $id_monedas   = $rsConsulta1[0]->id_monedas;
+               $id_monedas   = $rsConsulta1[0]->id_modenas;
                $n_plan_cuentas = $rsConsulta1[0]->n_plan_cuentas;
                $id_centro_costos = $rsConsulta1[0]->id_centro_costos;
                
@@ -1745,9 +1745,9 @@ class PlanCuentasController extends ControladorBase{
                      '$n_plan_cuentas',
                      '$id_centro_costos',
                      '$nivel_plan_cuentas'";
-               $sqfuncion   = $plan_cuentas->getconsultaPG($funcion, $parametros);
+               $sqfuncion   = $planCuentas->getconsultaPG($funcion, $parametros);
                
-               $plan_cuentas->llamarconsultaPG($sqfuncion);
+               $planCuentas->llamarconsultaPG($sqfuncion);
                
                if(!empty(pg_last_error())){ throw new Exception("ERROR EN FUNCION");}
                
@@ -1758,7 +1758,7 @@ class PlanCuentasController extends ControladorBase{
                
            }else{
                
-               $resp['data']=$html;
+               $resp['data']="";
                $resp['estatus']="ERROR";
                $resp['icon']="warning";
                $resp['mensaje']="Registro Seleccionado No valido";

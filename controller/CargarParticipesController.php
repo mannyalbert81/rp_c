@@ -837,8 +837,8 @@ class CargarParticipesController extends ControladorBase{
         
         $participes = new ParticipesModel();
         $cedula = $_GET['cedula'];
-    
-
+        
+        
         
         $col1 = " id_participes,cedula_participes, nombre_participes, apellido_participes ";
         $tab1 = " public.core_participes";
@@ -849,7 +849,6 @@ class CargarParticipesController extends ControladorBase{
         
         $id_participes = $rsConsulta1[0]->id_participes;
         $nombre_participes =  $rsConsulta1[0]->nombre_participes;
-        //$apellidos_participes = $rsConsulta1[0]->apellido_participes;
         $cedula_participes  = $rsConsulta1[0]->cedula_participes;
         
         //buscra creditos
@@ -862,28 +861,32 @@ class CargarParticipesController extends ControladorBase{
         $id2  = " aa.monto_otorgado_creditos ";
         
         $rsConsulta2 = $participes->getCondicionesDesc($col2, $tab2, $whe2, $id2);
-        
         $id_creditos = $rsConsulta2[0]->id_creditos; //con eto se toma el credito con mayor valor
         $numero_creditos = $rsConsulta2[0]->numero_creditos; //aqui va el cambio
-        
         $pdf_registro_tres  = 'null';
+        $id_estado_registro_tres_cuotas = 'null'; //aqui va el cambio
         
         //viene insertado en la tabla
         $funcion = "ins_registro_tres_cuotas";
-        $parametros = "$id_participes,'$nombre_participes','$cedula_participes',$id_creditos,'$numero_creditos',$pdf_registro_tres";
-        $sqCuotas   = $participes->getconsultaPG($funcion, $parametros);       
-                       
+        $parametros = "$id_participes,'$nombre_participes','$cedula_participes',$id_creditos,'$numero_creditos',$pdf_registro_tres, $id_estado_registro_tres_cuotas";
+        $sqCuotas   = $participes->getconsultaPG($funcion, $parametros);
+        
         $resultado = $participes->llamarconsultaPG($sqCuotas);
+        
+        /*echo $sqCuotas,'**********************';
+        
+        var_dump(error_get_last()); die();
+        var_dump(pg_last_error()); die();*/
         
         //aqui seteas valores del pdf que vas a guardar
         $nombre_pdf = "pdf".$cedula_participes.date('Ymd');
         $ubicacion  = "DOCUMENTOS_GENERADOS/pdf_cuotas_creditos/";
         $pdfReporte = $ubicacion.$nombre_pdf. ".PDF";
         
-       
-       
+        
+        
         // aqui haces la consulta para mostrar en el reporte
-         
+        
         $datosReporte = array();
         
         $fechaactual = getdate();
@@ -891,23 +894,23 @@ class CargarParticipesController extends ControladorBase{
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
         
-        $columnas = " registro_tres_cuotas.id_registro_tres_cuotas, 
-                      core_participes.id_participes, 
-                      core_participes.apellido_participes, 
-                      core_participes.nombre_participes, 
-                      core_participes.cedula_participes, 
-                      registro_tres_cuotas.nombre_participes, 
-                      registro_tres_cuotas.cedula_participes, 
-                      core_creditos.id_creditos, 
-                      core_creditos.numero_creditos, 
-                      registro_tres_cuotas.numero_creditos, 
-                      registro_tres_cuotas.pdf_registro_tres_cuotas, 
-                      registro_tres_cuotas.creado, 
+        $columnas = " registro_tres_cuotas.id_registro_tres_cuotas,
+                      core_participes.id_participes,
+                      core_participes.apellido_participes,
+                      core_participes.nombre_participes,
+                      core_participes.cedula_participes,
+                      registro_tres_cuotas.nombre_participes,
+                      registro_tres_cuotas.cedula_participes,
+                      core_creditos.id_creditos,
+                      core_creditos.numero_creditos,
+                      registro_tres_cuotas.numero_creditos,
+                      registro_tres_cuotas.pdf_registro_tres_cuotas,
+                      registro_tres_cuotas.creado,
                       registro_tres_cuotas.modificado,
-                      core_tipo_creditos.id_tipo_creditos, 
+                      core_tipo_creditos.id_tipo_creditos,
                       core_tipo_creditos.nombre_tipo_creditos";
         
-        $tablas = "public.registro_tres_cuotas, 
+        $tablas = "public.registro_tres_cuotas,
                   public.core_participes,
                   public.core_creditos,
                   public.core_tipo_creditos";
@@ -918,7 +921,7 @@ class CargarParticipesController extends ControladorBase{
         
         $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
         
-      
+        
         $datosReporte['FECHA']=$fechaactual;
         $datosReporte['NUMEROCREDITO']=$rsdatos[0]->numero_creditos;
         $datosReporte['NOMBRE']=$rsdatos[0]->nombre_participes;
@@ -926,7 +929,7 @@ class CargarParticipesController extends ControladorBase{
         $datosReporte['CEDULA']=$rsdatos[0]->cedula_participes;
         $datosReporte['NOMBRETIPOCREDITOS']=$rsdatos[0]->nombre_tipo_creditos;
         
-        // revisate la parte de retencion controller ahi esta lo que toca hacer 
+        // revisate la parte de retencion controller ahi esta lo que toca hacer
         // buscas el pdf creado y le conviertes en bytea
         
         $this->verReporte("PDFCUOTAS", array('datosReporte'=>$datosReporte,'nombreReporte'=>$pdfReporte ));
@@ -946,7 +949,6 @@ class CargarParticipesController extends ControladorBase{
         header("Content-type: application/pdf");
         header("Content-Disposition: inline; filename=documento.pdf");
         readfile($pdfReporte);
-        
         
         
     }

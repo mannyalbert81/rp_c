@@ -79,15 +79,16 @@
 
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#activos" data-toggle="tab">Registros Por Aprobar</a></li>
-              <li><a href="#inactivos" data-toggle="tab">Registros Aprobados</a></li> 
+              <li class="active"><a href="#pendientes" data-toggle="tab">Pendientes</a></li>
+              <li><a href="#aprobados" data-toggle="tab">Aprobados</a></li> 
+              <li><a href="#negados" data-toggle="tab">Negados</a></li> 
             
             </ul>
             
             <div class="col-md-12 col-lg-12 col-xs-12">
             <div class="tab-content">
             <br>
- 			 <div class="tab-pane active" id="activos">
+ 			 <div class="tab-pane active" id="pendientes">
                 
 				<div class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="ConsultaRegistroTresCuotas(1)" placeholder="Buscar.."/>
@@ -100,7 +101,7 @@
                 
               </div>
               
-              <div class="tab-pane" id="inactivos">
+              <div class="tab-pane" id="aprobados">
                 
                  <div class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="buscador_aprobado" name="buscador_aprobado" onkeyup="ConsultaRegistroTresCuotasAprobado(1)" placeholder="Buscar.."/>
@@ -111,6 +112,19 @@
     	    	<div id="divLoaderPageAprobado" ></div>	
 					
               </div>
+              
+               <div class="tab-pane" id="negados">
+                
+                 <div class="pull-right" style="margin-right:15px;">
+					<input type="text" value="" class="form-control" id="buscador_negado" name="buscador_negado" onkeyup="ConsultaRegistroTresCuotasNegado(1)" placeholder="Buscar.."/>
+    			</div>  
+    			
+    			<div id="ConsultaRegistroTresCuotasNegado"></div>  
+    	    	<div id="consulta_registro_tres_cuotas_negado_tbl" ></div>
+    	    	<div id="divLoaderPageNegado" ></div>	
+					
+              </div>
+              
              </div>
             </div>
            </div>
@@ -127,7 +141,7 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Credito/js/ConsultaRegistroTresCuotas.js?0.6" ></script>
+ <script src="view/Credito/js/ConsultaRegistroTresCuotas.js?0.7" ></script>
  
  </body>
 </html>

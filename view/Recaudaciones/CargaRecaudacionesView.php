@@ -77,7 +77,7 @@
                 			 <div class="form-group-sm">
                 				<label for="id_entidad_patronal" class="col-sm-4 control-label" >Entidad:</label>
                 				<div class="col-sm-8">
-                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control">
+                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control" onchange="BuscarDescuentosFormatos(this)">
                               	<option value="0">--Seleccione--</option>
                               	</select>
                                  </div>
@@ -86,7 +86,22 @@
     				</div>
         		</div>
         		
-        				<div class="row">        	
+        		<div class="row">        	
+        			<div class="col-lg-6 col-md-6 col-xs-12">        		
+            			<div class="form-group "> 
+                			 <div class="form-group-sm">
+                				<label for="id_descuentos_formatos" class="col-sm-4 control-label" >Desc. Formato:</label>
+                				<div class="col-sm-8">
+                                  	<select id="id_descuentos_formatos" name="id_descuentos_formatos" class="form-control">
+                                  		<option value="0">--Seleccione--</option>
+                                  	</select>
+                                 </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div>
+        		
+        		<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
             			<div class="form-group "> 
                 			 <div class="form-group-sm">
@@ -108,21 +123,18 @@
             			</div>
     				</div>
         		</div>
-            		  
-            
-	         
-            		  
-            		  	<div class="row">        	
+            		              		  
+            	<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
             			<div class="form-group "> 
                 			 <div class="form-group-sm">
-                				<label for="formato_carga_recaudaciones" class="col-sm-4 control-label" >Formato:</label>
+                				<label for="formato_carga_recaudaciones" class="col-sm-4 control-label" >Tipo:</label>
                 				<div class="col-sm-8">
                                   	<select id="formato_carga_recaudaciones" name="formato_carga_recaudaciones" class="form-control">
                                   	<option value="0" >--Seleccione--</option>
                                   	<option value="1" >DESCUENTOS APORTES</option>
                                   	<option value="2" >DESCUENTOS CREDITOS</option>
-                                  	<option value="3" >DESCUENTOS CREDITOS Y APORTES</option>
+                                  	<!-- <option value="3" >DESCUENTOS CREDITOS Y APORTES</option> -->
                                   	</select>
                                  </div>
                 			 </div>        			 
@@ -130,11 +142,11 @@
     				</div>
         		</div>
         		
-        			  	<div class="row">        	
+        		<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
             			<div class="form-group "> 
                 			 <div class="form-group-sm">
-                				<label for="nombre_carga_recaudaciones" class="col-sm-4 control-label" >Documento:</label>
+                				<label for="nombre_carga_recaudaciones" class="col-sm-4 control-label" >Archivo:</label>
                 				<div class="col-sm-8">                					
                              	   <input accept="text/plain" type="file" name="nombre_carga_recaudaciones" id="nombre_carga_recaudaciones" value=""  class="form-control"/>
                              	   <div id="errorImagen"></div>      
@@ -242,7 +254,7 @@
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <!-- FILE UPLOAD -->
    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js"></script>
-   <script src="view/Recaudaciones/js/CargaRecaudaciones.js?0.23"></script> 
+   <script src="view/Recaudaciones/js/CargaRecaudaciones.js?0.25"></script> 
 
   </body>
 </html>   

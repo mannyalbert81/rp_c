@@ -929,6 +929,7 @@ class CargaRecaudacionesController extends ControladorBase{
         try {
             
             $_id_entidad_patronal  = $_POST['id_entidad_patronal'];
+            $_id_descuentos_formatos       = $_POST['id_descuentos_formatos'];
             $_anio_carga_recaudaciones     = $_POST['anio_carga_recaudaciones'];
             $_mes_carga_recaudaciones      = $_POST['mes_carga_recaudaciones'];
             $_formato_carga_recaudaciones  = $_POST['formato_carga_recaudaciones'];
@@ -945,62 +946,18 @@ class CargaRecaudacionesController extends ControladorBase{
             /** consulta a bd de los parametros que recibe.
              * antes de validar archivo. valida si el archivo ya fue cargado
              */
-            $_mes_carga_recaudaciones = str_pad($_mes_carga_recaudaciones, 2, "0", STR_PAD_LEFT);
-            
-            $this->devuelveNombreFormato($_formato_carga_recaudaciones); //aqui se setea las variables para comparar
-            
-            $_nombre_formato = $this->_nombre_formato;
-           
-            if( $_formato_carga_recaudaciones == 1 || $_formato_carga_recaudaciones == 2 ){
-                
-                $columnas1 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
-                $tablas1   = " core_carga_recaudaciones";
-                $where1    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
-                    " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '".$_nombre_formato."' ";
-                $id1       = "id_carga_recaudaciones";
-                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-                
-                if( !empty($rsConsulta1) ){
-                    throw new Exception(" tipo de formato ya se encuentra cargado ");
-                }else{
-                    
-                    $columnas2 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
-                    $tablas2   = " core_carga_recaudaciones";
-                    $where2    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
-                        " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '".$this->_nombre_combinado_formato."' ";
-                    $id2       = " id_carga_recaudaciones";
-                    $rsConsulta2 = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
-                    
-                    if( !empty($rsConsulta2) ){
-                        throw new Exception("Archivo no cargado . Razon: Existe un archivo Combinado cargado ");
-                    }
-                    
-                }
-                
-            }else if( $_formato_carga_recaudaciones == 3){
-                
-                $columnas1 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
-                $tablas1   = " core_carga_recaudaciones";
-                $where1    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
-                    " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '$_nombre_formato' ";
-                $id1       = " id_carga_recaudaciones";
-                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-                
-                if( !empty($rsConsulta1) ){
-                    throw new Exception("tipo de formato ya se encuentra cargado ");
-                }else{
-                    $columnas2 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
-                    $tablas2   = " core_carga_recaudaciones";
-                    $where2    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
-                        " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones in ('DESCUENTOS CREDITOS','DESCUENTOS APORTES')";
-                    $id2       = " id_carga_recaudaciones";
-                    $rsConsulta1 = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
-                    if( !empty($rsConsulta1) ){
-                        throw new Exception("tipo de formato no se puede cargar existe un archivo individual.");
-                    }
-                }
-            }
+            $datos =  array(
+                'mes_recaudacion'   =>$_mes_carga_recaudaciones,
+                'anio_recaudacion'  =>$_anio_carga_recaudaciones,
+                'formato_recaudacion'   =>$_formato_carga_recaudaciones,
+                'id_entidad_patronal'   => $_id_entidad_patronal
+            );
+            $auxValidaBd    = $this->validarArchivoenBD($datos);
                        
+            if( $auxValidaBd['error'] ){
+                throw new Exception($auxValidaBd['mensaje']);
+            }
+                                   
         }catch (Exception $e) {
             echo "<message>".$e->getMessage()."<message>";
             exit();
@@ -1021,7 +978,7 @@ class CargaRecaudacionesController extends ControladorBase{
             $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
             $archivo_move = move_uploaded_file($_arhivo_carga_datos ['tmp_name'],$_archivo_procesar);
             if( !$archivo_move ){
-                throw new Exception("Archivo no fue subido por favor vuelva intentarlo Error servidor");
+                throw new Exception("Error al leer Archivo. Por Favor subir nuevamente");
             }
             
         } catch (Exception $e) {
@@ -1239,6 +1196,12 @@ class CargaRecaudacionesController extends ControladorBase{
             
             if( $_error_detalle ){ throw new Exception("Error insertado detalle de archivo"); }
             
+            /** aqui realizar insertado de aportes en la tablas de contribucion **/
+            $datos = array(
+                
+            );
+            /*****************************************************************************************/
+            
             $respuesta['mensaje']   = "Carga Generada";
             $respuesta['respuesta'] = 1;
             $respuesta['id_archivo']= $_id_carga_recaudaciones;
@@ -1254,20 +1217,170 @@ class CargaRecaudacionesController extends ControladorBase{
     /** END DC CONFIG*/
     
     /** dc begin 2020/04/17 **/
-    public function InsertDescuentos(string $archivo, string $formato, array $datos){
+    public function InsertDescuentos( string $formato, array $datos){
         
-        switch ( $formato ){
-            case "APORTE PERSONALES":
-                break;
-            case "APORTE PATRONALES":
-                break;
-            default:
-                break;
-        }
+        $resp   = null;
+        
+        // el formato viene del formato actual establecido por variables de clase
+        
+        $params = array();
+        $params['id_entidad_patronal']  = $datos['id_entidad_patronal'];
+        $params['anio_recaudaciones']  = $datos['anio_recaudaciones'];
+        $params['mes_recaudaciones']  = $datos['mes_recaudaciones'];
+        $params['usuario_usuarios']  = $datos['usuario_usuarios'];
+        $params['id_usuarios']  = $datos['id_usuarios'];
+        $params['fecha_descuentos_registrados']  = "";
+        $params['nombre_archivo_registrados']  = "";
+        $params['id_descuentos_formatos']  = "";
+        $params['procesado_descuentos_registrados']  = "";
+        $params['error_descuentos_registrados']  = "";
+        $params['tipo_credito']  = "";
+        $params['observacion_descuentos_registrados']  = "";
+        $params['fecha_proceso_descuentos_registrados']  = "";
         
         
+        
+        if( $this->_nombre_aportes_formato == $formato ){
+            
+            $funcion = "core_ins_descuentos_registrados_cabeza";
+            $parametros = "";
+            
+            /*_id_entidad_patronal integer, 
+            _year_descuentos_registrados_cabeza integer, 
+            _mes_descuentos_registrados_cabeza integer, 
+            _usuario_descuentos_registrados_cabeza character varying, 
+            _id_usuarios integer, 
+            _fecha_descuentos_registrados_cabeza timestamp without time zone, 
+            _nombre_archivo_descuentos_registrados_cabeza character varying, 
+            _id_descuentos_formatos integer, 
+            _procesado_descuentos_registrados_cabeza boolean, 
+            _erro_descuentos_registrados_cabeza boolean, 
+            _tipo_credito integer, 
+            _observacion_descuentos_registrados_cabeza character varying, 
+            _fecha_proceso_descuentos_registrados_cabeza timestamp without time zone*/
+            
+        }elseif ($this->_nombre_creditos_formato == $formato ){
+            
+        }else{
+            
+        }       
+      
+        return $resp;
     }
     /** dc end 2020/04/17 **/
+    
+    /** begin dc 2020/04/20 **/
+    public function validarArchivoenBD(array $datos){
+        
+        $resp = array();
+        $recaudaciones = new RecaudacionesModel();
+        
+        $_mes_carga_recaudaciones       = array_key_exists('mes_recaudacion', $datos) ? $datos['mes_recaudacion'] : null;
+        $_anio_carga_recaudaciones      = array_key_exists('anio_recaudacion', $datos) ? $datos['anio_recaudacion'] : null;
+        $_formato_carga_recaudaciones   = array_key_exists('formato_recaudacion', $datos) ? $datos['formato_recaudacion'] : null;
+        $_id_entidad_patronal           = array_key_exists('id_entidad_patronal', $datos) ? $datos['id_entidad_patronal'] : null;
+        
+        $_mes_carga_recaudaciones = str_pad($_mes_carga_recaudaciones, 2, "0", STR_PAD_LEFT);
+        
+        $this->devuelveNombreFormato($_formato_carga_recaudaciones); //aqui se setea las variables para comparar        
+        $_nombre_formato = $this->_nombre_formato;
+        
+        if( $_formato_carga_recaudaciones == 1 || $_formato_carga_recaudaciones == 2 ){
+            
+            $columnas1 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
+            $tablas1   = " core_carga_recaudaciones";
+            $where1    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
+                " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '".$_nombre_formato."' ";
+            $id1       = "id_carga_recaudaciones";
+            $rsConsulta1 = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
+            
+            if( !empty($rsConsulta1) ){
+                $resp['mensaje']    = " tipo de formato ya se encuentra cargado ";                
+            }else{
+                
+                $columnas2 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
+                $tablas2   = " core_carga_recaudaciones";
+                $where2    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
+                    " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '".$this->_nombre_combinado_formato."' ";
+                $id2       = " id_carga_recaudaciones";
+                $rsConsulta2 = $recaudaciones->getCondiciones($columnas2, $tablas2, $where2, $id2);
+                
+                if( !empty($rsConsulta2) ){
+                    $resp['mensaje']    = "Archivo no cargado . Razon: Existe un archivo Combinado cargado ";
+                }
+                
+            }
+            
+        }else if( $_formato_carga_recaudaciones == 3){
+            
+            $columnas1 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
+            $tablas1   = " core_carga_recaudaciones";
+            $where1    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
+                " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '$_nombre_formato' ";
+            $id1       = " id_carga_recaudaciones";
+            $rsConsulta1 = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
+            
+            if( !empty($rsConsulta1) ){
+                $resp['mensaje']    = "tipo de formato ya se encuentra cargado ";
+            }else{
+                $columnas2 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
+                $tablas2   = " core_carga_recaudaciones";
+                $where2    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
+                    " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones in ('DESCUENTOS CREDITOS','DESCUENTOS APORTES')";
+                $id2       = " id_carga_recaudaciones";
+                $rsConsulta1 = $recaudaciones->getCondiciones($columnas2, $tablas2, $where2, $id2);
+                if( !empty($rsConsulta1) ){
+                    $resp['mensaje']    = "tipo de formato no se puede cargar existe un archivo individual.";
+                }
+            }
+        }
+        
+        if( array_key_exists('mensaje', $resp) ){
+            $resp['error']  = true;
+            return $resp;
+        }
+        
+        return array('error'=>false,'mensaje'=>"");
+        
+    }
+    
+    public function cargaDescuentosFormatos(){
+        
+        $recaudaciones = new RecaudacionesModel();
+        $resp  = null;
+        
+        $id_entidad_patronal = $_POST['id_entidad_patronal'];
+        
+        $col1  = " id_descuentos_formatos,nombre_descuentos_formatos ";
+        $tab1  = " public.core_descuentos_formatos ";
+        $whe1  = " id_entidad_patronal = $id_entidad_patronal";
+        $id1   = " id_descuentos_formatos ";
+        $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);        
+        
+        try {
+            
+            $error_pg = pg_last_error();
+            if( !empty($error_pg)  || !empty( error_get_last() ) ){
+                throw new Exception( $error_pg );
+            }
+            
+            $resp['data'] = ( !empty( $rsConsulta1 ) ) ? $rsConsulta1 : null;
+                      
+        } catch (Exception $e) {
+            $buffer =  error_get_last();
+            $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+            $resp['mensaje'] = $e->getMessage();
+            $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+            $resp['estatus'] = "ERROR";
+        }
+        
+        error_clear_last();
+        if (ob_get_contents()) ob_end_clean();
+        
+        echo json_encode($resp);
+       
+    }
+    /** end dc 2020/04/20 **/
     
     /** BEGIN FUNCIONES UTILITARIAS PARA LA CLASE */
     private function devuelveMesNombre($_mes){

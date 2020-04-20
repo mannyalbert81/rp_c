@@ -931,7 +931,7 @@ class CargarParticipesController extends ControladorBase{
         
         // revisate la parte de retencion controller ahi esta lo que toca hacer
         // buscas el pdf creado y le conviertes en bytea
-        
+        //crea y descarga
         $this->verReporte("PDFCUOTAS", array('datosReporte'=>$datosReporte,'nombreReporte'=>$pdfReporte ));
         
         //aqui tomas el pdf creado
@@ -946,6 +946,8 @@ class CargarParticipesController extends ControladorBase{
         
         $actualizado = $participes->ActualizarBy($colPdf, $tabPdf, $whePdf);
         
+        
+        //abrir en linea
         header("Content-type: application/pdf");
         header("Content-Disposition: inline; filename=documento.pdf");
         readfile($pdfReporte);
@@ -986,6 +988,43 @@ class CargarParticipesController extends ControladorBase{
     }
     
 
+    
+    
+    
+    public function  propaganda_diferir_cuotas_ini(){
+        
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $callBack = $_GET['jsoncallback'];
+            $columnas_1=" c.id_creditos, p.id_participes";
+            $tablas_1="core_creditos c
+            inner join core_participes p on p.id_participes =c.id_participes";
+            $where_1="p.cedula_participes = '$cedula' and p.id_estatus =1 and c.id_estatus =1 and c.id_estado_creditos =4";
+            $id_1= "c.id_creditos";
+            $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            
+            
+            
+            if(!empty($resultUsu) && count($resultUsu)>0){
+                
+                $respuesta	= json_encode( array('respuesta'=>"SI") );
+                
+                
+            }else{
+                
+                $respuesta	= json_encode( array('respuesta'=>"NO") );
+                
+            }
+            
+            echo $callBack."(".$respuesta.");";
+            
+        }
+        
+    }
     
 }
 

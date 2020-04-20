@@ -83,7 +83,32 @@
                       estado_registro_tres_cuotas.id_estado_registro_tres_cuotas, 
                       estado_registro_tres_cuotas.nombre_estado_registro_tres_cuotas, 
                       TO_CHAR(registro_tres_cuotas.creado,'YYYY-MM-DD HH:MI:SS') as \"creado\",
-	                  registro_tres_cuotas.modificado";
+	                  registro_tres_cuotas.modificado,
+	                  (
+	                    select numero_pago_tabla_amortizacion
+						from core_tabla_amortizacion 
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as numero_pago_tabla_amortizacion,
+	                  (
+	                    select  fecha_tabla_amortizacion
+						from core_tabla_amortizacion 
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as fecha_tabla_amortizacion,
+	                  (
+	                    select  capital_tabla_amortizacion
+						from core_tabla_amortizacion 
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as capital_tabla_amortizacion,
+	                  (
+	                    select  total_valor_tabla_amortizacion
+						from core_tabla_amortizacion 
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as total_valor_tabla_amortizacion,
+	                  (
+	                    select  balance_tabla_amortizacion
+						from core_tabla_amortizacion 
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as balance_tabla_amortizacion";
 	    
 	    $tablas =  "public.registro_tres_cuotas, 
                     public.core_participes, 
@@ -155,9 +180,12 @@
 	            $html.='<th style="text-align: left;  font-size: 12px;">Participe</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Número Crédito</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo de Crédito</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Monto</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha de Conseción</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha de Registro</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Monto</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"># Pago</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ultima Cuota Pagada</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cuota</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Saldo Capital</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Amortización</th>';
@@ -199,9 +227,12 @@
 	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes." ".$res->nombre_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->numero_creditos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_creditos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->monto_otorgado_creditos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_concesion_creditos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->creado.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->monto_otorgado_creditos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_pago_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->total_valor_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->balance_tabla_amortizacion.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$estado.'</td>';
 	                $html.='<td><a title="Solicitud" target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
 	                $html.='<td><a class="btn bg-blue" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$res->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
@@ -325,7 +356,32 @@
                       estado_registro_tres_cuotas.id_estado_registro_tres_cuotas,
                       estado_registro_tres_cuotas.nombre_estado_registro_tres_cuotas,
                       TO_CHAR(registro_tres_cuotas.creado,'YYYY-MM-DD HH:MI:SS') as \"creado\",
-	                  registro_tres_cuotas.modificado";
+	                  registro_tres_cuotas.modificado,
+	                  (
+	                    select numero_pago_tabla_amortizacion
+						from core_tabla_amortizacion
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as numero_pago_tabla_amortizacion,
+	                  (
+	                    select  fecha_tabla_amortizacion
+						from core_tabla_amortizacion
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as fecha_tabla_amortizacion,
+	                  (
+	                    select  capital_tabla_amortizacion
+						from core_tabla_amortizacion
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as capital_tabla_amortizacion,
+	                  (
+	                    select  total_valor_tabla_amortizacion
+						from core_tabla_amortizacion
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as total_valor_tabla_amortizacion,
+	                  (
+	                    select  balance_tabla_amortizacion
+						from core_tabla_amortizacion
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as balance_tabla_amortizacion";
 	    
 	    $tablas =  "public.registro_tres_cuotas,
                     public.core_participes,
@@ -396,12 +452,16 @@
 	            $html.='<th style="text-align: left;  font-size: 12px;">Participe</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Número Crédito</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo de Crédito</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Monto</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha de Conseción</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha de Registro</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Monto</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"># Pago</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ultima Cuota Pagada</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cuota</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Saldo Capital</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Amortización</th>';
+	            
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -437,11 +497,14 @@
 	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes." ".$res->nombre_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->numero_creditos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_creditos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->monto_otorgado_creditos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_concesion_creditos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->creado.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->monto_otorgado_creditos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_pago_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->total_valor_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->balance_tabla_amortizacion.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$estado.'</td>';
-	                $html.='<td><a target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
+	                $html.='<td><a title="Solicitud" target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
 	                $html.='<td><a class="btn bg-blue" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$res->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
 	                
 	                
@@ -455,7 +518,7 @@
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_ConsultaRegistroTresCuotasAprobado("index.php", $page, $total_pages, $adjacents,"ConsultaRegistroTresCuotasAprobado").'';
+	            $html.=''. $this->paginate_ConsultaRegistroTresCuotas("index.php", $page, $total_pages, $adjacents,"ConsultaRegistroTresCuotas").'';
 	            $html.='</div>';
 	            
 	            
@@ -563,7 +626,32 @@
                       estado_registro_tres_cuotas.id_estado_registro_tres_cuotas,
                       estado_registro_tres_cuotas.nombre_estado_registro_tres_cuotas,
                       TO_CHAR(registro_tres_cuotas.creado,'YYYY-MM-DD HH:MI:SS') as \"creado\",
-	                  registro_tres_cuotas.modificado";
+	                  registro_tres_cuotas.modificado,
+	                  (
+	                    select numero_pago_tabla_amortizacion
+						from core_tabla_amortizacion
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as numero_pago_tabla_amortizacion,
+	                  (
+	                    select  fecha_tabla_amortizacion
+						from core_tabla_amortizacion
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as fecha_tabla_amortizacion,
+	                  (
+	                    select  capital_tabla_amortizacion
+						from core_tabla_amortizacion
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as capital_tabla_amortizacion,
+	                  (
+	                    select  total_valor_tabla_amortizacion
+						from core_tabla_amortizacion
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as total_valor_tabla_amortizacion,
+	                  (
+	                    select  balance_tabla_amortizacion
+						from core_tabla_amortizacion
+						where id_creditos = registro_tres_cuotas.id_creditos and id_estado_tabla_amortizacion = 2 order by fecha_tabla_amortizacion desc limit 1
+	                  ) as balance_tabla_amortizacion";
 	    
 	    $tablas =  "public.registro_tres_cuotas,
                     public.core_participes,
@@ -633,12 +721,16 @@
 	            $html.='<th style="text-align: left;  font-size: 12px;">Participe</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Número Crédito</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo de Crédito</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Monto</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha de Conseción</th>';
-	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha de Registro</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Monto</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;"># Pago</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Ultima Cuota Pagada</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cuota</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Saldo Capital</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Amortización</th>';
+	            
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -674,11 +766,14 @@
 	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes." ".$res->nombre_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->numero_creditos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_creditos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->monto_otorgado_creditos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_concesion_creditos.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->creado.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->monto_otorgado_creditos.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_pago_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->total_valor_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->balance_tabla_amortizacion.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$estado.'</td>';
-	                $html.='<td><a target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
+	                $html.='<td><a title="Solicitud" target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
 	                $html.='<td><a class="btn bg-blue" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$res->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
 	                
 	                
@@ -692,7 +787,7 @@
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_ConsultaRegistroTresCuotasNegado("index.php", $page, $total_pages, $adjacents,"ConsultaRegistroTresCuotasNegado").'';
+	            $html.=''. $this->paginate_ConsultaRegistroTresCuotas("index.php", $page, $total_pages, $adjacents,"ConsultaRegistroTresCuotas").'';
 	            $html.='</div>';
 	            
 	            
@@ -782,12 +877,7 @@
 	    
 	    session_start();
 	    $registro = new RegistroModel();
-	    $nombre_controladores = "ConsultaRegistroTresCuotas";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $registro->getPermisosBorrar("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if (!empty($resultPer)){
-	        
+	     
 	        if(isset($_POST["id_registro_tres_cuotas"])){
 	            
 	            $id_registro_tres_cuotas = (int)$_POST["id_registro_tres_cuotas"];
@@ -811,11 +901,7 @@
 	        }
 	        
 	        
-	    }else{
-	        
-	        echo "Usuario no tiene permisos de Aprobar";
-	    }
-	    
+	   
 	    
 	    
 	}
@@ -824,12 +910,7 @@
 	    
 	    session_start();
 	    $registro = new RegistroModel();
-	    $nombre_controladores = "ConsultaRegistroTresCuotas";
-	    $id_rol= $_SESSION['id_rol'];
-	    $resultPer = $registro->getPermisosBorrar("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-	    
-	    if (!empty($resultPer)){
-	        
+	     
 	        if(isset($_POST["id_registro_tres_cuotas"])){
 	            
 	            $id_registro_tres_cuotas = (int)$_POST["id_registro_tres_cuotas"];
@@ -848,16 +929,10 @@
 	                echo $resultado;
 	            }
 	            
-	            
-	            
 	        }
 	        
 	        
-	    }else{
-	        
-	        echo "Usuario no tiene permisos de Aprobar";
-	    }
-	    
+	   
 	    
 	    
 	}

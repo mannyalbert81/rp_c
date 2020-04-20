@@ -97,7 +97,7 @@ class TablaAmortizacionController extends ControladorBase{
                       core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos AND
                       core_participes.id_participes = core_creditos.id_participes AND
                       core_participes.id_entidad_patronal = core_entidad_patronal.id_entidad_patronal
-                      AND core_creditos.id_creditos ='$id_creditos'";
+                      AND core_creditos.id_creditos ='$id_creditos' AND core_tabla_amortizacion.id_estatus=1";
 	    $id="core_creditos.id_creditos";
 	    
 	    $rsdatos = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);
@@ -228,7 +228,7 @@ class TablaAmortizacionController extends ControladorBase{
                       public.core_estado_tabla_amortizacion";
 	    $where= "   core_tabla_amortizacion.id_creditos = core_creditos.id_creditos AND
                     core_estado_tabla_amortizacion.id_estado_tabla_amortizacion = core_tabla_amortizacion.id_estado_tabla_amortizacion
-                    AND core_creditos.id_creditos ='$id_creditos'";
+                    AND core_creditos.id_creditos ='$id_creditos'AND core_tabla_amortizacion.id_estatus=1";
 	    $id="core_tabla_amortizacion.numero_pago_tabla_amortizacion";
 	    
 	    $amortizacion_detalle = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);
@@ -494,7 +494,7 @@ class TablaAmortizacionController extends ControladorBase{
                       public.core_estado_tabla_amortizacion";
 	    $where= "   core_tabla_amortizacion.id_creditos = core_creditos.id_creditos AND
                     core_estado_tabla_amortizacion.id_estado_tabla_amortizacion = core_tabla_amortizacion.id_estado_tabla_amortizacion
-                    AND core_creditos.id_creditos ='$id_creditos'";
+                    AND core_creditos.id_creditos ='$id_creditos' AND core_tabla_amortizacion.id_estatus=1";
 	    $id="core_tabla_amortizacion.numero_pago_tabla_amortizacion";
 	    
 	    $amortizacion_detalle = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);

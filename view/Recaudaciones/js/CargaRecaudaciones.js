@@ -53,9 +53,9 @@ function cargaEntidadPatronal(){
 	
 }
 
-function BuscarDescuentosFormatos(this){
+function BuscarDescuentosFormatos(obj){
 	
-	let elemento = $(this);
+	let elemento = $(obj);
 	var $ddlDescuentosFormatos	= $("#id_descuentos_formatos");	
 	$ddlDescuentosFormatos.empty();
 	$ddlDescuentosFormatos.append("<option value='0' >--Seleccione--</option>");
@@ -64,7 +64,7 @@ function BuscarDescuentosFormatos(this){
 		url:"index.php?controller=CargaRecaudaciones&action=cargaDescuentosFormatos",
 		type:"POST",
 		dataType:"json",
-		data:null
+		data:{id_entidad_patronal:elemento.val()}
 	}).done(function(datos){		
 		
 		if( datos.data != undefined || datos.data != "" ){
@@ -296,9 +296,15 @@ function uploadFileEntidad(){
 	let	$mesCargaRecaudaciones 		= $("#mes_carga_recaudaciones");
 	let	$formatoCargaRecaudaciones	= $("#formato_carga_recaudaciones");
 	let	$nombreCargaRecaudaciones	= $("#nombre_carga_recaudaciones");
+	let $id_descuentos_formatos		= $("#id_descuentos_formatos");
 	
 	if($entidadPatronal.val() == 0 ){
 		$entidadPatronal.notify("Seleccione Entidad Patronal",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	if( $id_descuentos_formatos.val() == 0 ){
+		$id_descuentos_formatos.notify("Seleccione Formato Descuento",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	
@@ -316,7 +322,8 @@ function uploadFileEntidad(){
 		
 	var parametros = new FormData();
 	
-	parametros.append('id_entidad_patronal',$entidadPatronal.val());
+	parametros.append('id_entidad_patronal',$entidadPatronal.val()); 
+	parametros.append('id_descuentos_formatos',$id_descuentos_formatos.val());
 	parametros.append('anio_carga_recaudaciones',$anioCargaRecaudaciones.val());
 	parametros.append('mes_carga_recaudaciones',$mesCargaRecaudaciones.val());
 	parametros.append('formato_carga_recaudaciones',$formatoCargaRecaudaciones.val());

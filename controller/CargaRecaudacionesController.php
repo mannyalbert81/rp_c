@@ -929,6 +929,7 @@ class CargaRecaudacionesController extends ControladorBase{
         try {
             
             $_id_entidad_patronal  = $_POST['id_entidad_patronal'];
+            $_id_descuentos_formatos       = $_POST['id_descuentos_formatos'];
             $_anio_carga_recaudaciones     = $_POST['anio_carga_recaudaciones'];
             $_mes_carga_recaudaciones      = $_POST['mes_carga_recaudaciones'];
             $_formato_carga_recaudaciones  = $_POST['formato_carga_recaudaciones'];
@@ -1199,6 +1200,7 @@ class CargaRecaudacionesController extends ControladorBase{
             $datos = array(
                 
             );
+            /*****************************************************************************************/
             
             $respuesta['mensaje']   = "Carga Generada";
             $respuesta['respuesta'] = 1;
@@ -1215,18 +1217,49 @@ class CargaRecaudacionesController extends ControladorBase{
     /** END DC CONFIG*/
     
     /** dc begin 2020/04/17 **/
-    public function InsertDescuentos( string $formato, array $dataFile, array $datos){
+    public function InsertDescuentos( string $formato, array $datos){
         
         $resp   = null;
         
         // el formato viene del formato actual establecido por variables de clase
         
-        if( $formato == "DESCUENTOS APORTES" ){
+        $params = array();
+        $params['id_entidad_patronal']  = $datos['id_entidad_patronal'];
+        $params['anio_recaudaciones']  = $datos['anio_recaudaciones'];
+        $params['mes_recaudaciones']  = $datos['mes_recaudaciones'];
+        $params['usuario_usuarios']  = $datos['usuario_usuarios'];
+        $params['id_usuarios']  = $datos['id_usuarios'];
+        $params['fecha_descuentos_registrados']  = "";
+        $params['nombre_archivo_registrados']  = "";
+        $params['id_descuentos_formatos']  = "";
+        $params['procesado_descuentos_registrados']  = "";
+        $params['error_descuentos_registrados']  = "";
+        $params['tipo_credito']  = "";
+        $params['observacion_descuentos_registrados']  = "";
+        $params['fecha_proceso_descuentos_registrados']  = "";
+        
+        
+        
+        if( $this->_nombre_aportes_formato == $formato ){
             
-            $funcion = "";
+            $funcion = "core_ins_descuentos_registrados_cabeza";
             $parametros = "";
             
-        }elseif ( $formato == "DESCUENTOS CREDITOS" ){
+            /*_id_entidad_patronal integer, 
+            _year_descuentos_registrados_cabeza integer, 
+            _mes_descuentos_registrados_cabeza integer, 
+            _usuario_descuentos_registrados_cabeza character varying, 
+            _id_usuarios integer, 
+            _fecha_descuentos_registrados_cabeza timestamp without time zone, 
+            _nombre_archivo_descuentos_registrados_cabeza character varying, 
+            _id_descuentos_formatos integer, 
+            _procesado_descuentos_registrados_cabeza boolean, 
+            _erro_descuentos_registrados_cabeza boolean, 
+            _tipo_credito integer, 
+            _observacion_descuentos_registrados_cabeza character varying, 
+            _fecha_proceso_descuentos_registrados_cabeza timestamp without time zone*/
+            
+        }elseif ($this->_nombre_creditos_formato == $formato ){
             
         }else{
             
@@ -1321,7 +1354,7 @@ class CargaRecaudacionesController extends ControladorBase{
         $col1  = " id_descuentos_formatos,nombre_descuentos_formatos ";
         $tab1  = " public.core_descuentos_formatos ";
         $whe1  = " id_entidad_patronal = $id_entidad_patronal";
-        $id1   = " nombre_bancos ";
+        $id1   = " id_descuentos_formatos ";
         $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);        
         
         try {
@@ -1331,7 +1364,7 @@ class CargaRecaudacionesController extends ControladorBase{
                 throw new Exception( $error_pg );
             }
             
-            $resp['data'] = ( !empty($rsConsulta1) ) ? $rsConsulta1 : null;
+            $resp['data'] = ( !empty( $rsConsulta1 ) ) ? $rsConsulta1 : null;
                       
         } catch (Exception $e) {
             $buffer =  error_get_last();

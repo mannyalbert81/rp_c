@@ -364,6 +364,7 @@ $controladores=$_SESSION['controladores'];
                 </span>
               </a>
               <ul class="treeview-menu">
+              	<li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=RecaudacionGeneracionArchivo&action=index"><i class="fa fa-circle-o"></i> Generacion Archivo</a></li>
                 <li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=Recaudacion&action=index"><i class="fa fa-circle-o"></i> Arc. Entidad Patronal</a></li>                
                 <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Carga Recaudaciones</a></li>   
                 <li style="<?php echo getcontrolador("SolicitudAportes",$controladores) ?>"><a href="index.php?controller=SolicitudAportes&action=index"><i class="fa fa-circle-o"></i> Solicitud Aportes</a></li>             

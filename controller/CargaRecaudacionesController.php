@@ -916,7 +916,6 @@ class CargaRecaudacionesController extends ControladorBase{
         $_arhivo_carga_datos           = array();
         $_archivo_procesar             = "";
         $_error_cabecera               = "ARCHIVO NO FUE PROCESADO";
-        $_archivo_errores              = array();
         $_numero_lineas_archivo        = 0;
         $_suma_total_archivo           = 0.00;
         $_nombre_archivo_guardar       = "";
@@ -990,11 +989,13 @@ class CargaRecaudacionesController extends ControladorBase{
         /**
          ****************************************************** validar formato del archivo ***********************************************************
          **/
+        $dataTableData      = array(); //variable donde se guarda los datos leidos
+        /** formato standar es multiarray 'linea'=>1,'cedula'=>'00000000000','valor'=>0.00,'id_participes'=>1 **/
+        
         try {
             
             /** validacion lineas archivo **/
-            $dataTableError     = array(); //variable donde se guarda si existe error en la lectura del archivo
-            $dataTableData      = array(); //variable donde se guarda los datos leidos
+            $dataTableError     = array(); //variable donde se guarda si existe error en la lectura del archivo            
             //$_archivo_procesar
             $rowError   = true;
             
@@ -1013,25 +1014,38 @@ class CargaRecaudacionesController extends ControladorBase{
             }
             
             /** variables para funcion de validacion de cedulas **/
-            $dataFilasArchivo       = array();            
-            $dataTableErrCedulas    = array(); //objeto donde guarda cedulas repetidas
+            $dataFilasArchivo       = array(); //objeto donde guarda datos leidos y aprobados 
+            $rowError   = false; //se establece en false en caso de generar error se produce dentro de la funcion
+            
+            /** funcion que valida cedulas repetidas **/
+            $this->validacionCedulasRepetidas($rowError, $dataTableData, $dataTableError);
+            
+            if( $rowError ){
+                $_error_cabecera    = "ERROR LECTURA CEDULAS";
+                echo json_encode(array("cabecera"=>"$_error_cabecera","dataerror"=>$dataTableError) );                
+                throw new Exception();
+            }
+            
+            /** funcion que valida cedulas contra BD y genera nuevo datatable **/
             $rowError   = true;
-            
-            /** funcion que valida cedulas contra bd **/
-            $this->validacionArchivoLineas($_archivo_procesar, $rowError, $dataTableError, $dataTableData);
-            
-            
-            var_dump($dataTableError);
-            var_dump($dataTableData);
-            var_dump($rowError);
-            
-            die();
-           
-            
-            
-            
-            
+            $dataTableError = array();
+            $this->validacionArchivoCedulas( $_id_entidad_patronal, $rowError, $dataTableData, $dataTableError, $dataFilasArchivo);
                         
+            if( $rowError ){
+                $_error_cabecera    = "ERROR LECTURA VS BD";
+                echo json_encode(array("cabecera"=>"$_error_cabecera","dataerror"=>$dataTableError) );
+                throw new Exception();
+            }
+            
+            /** lectura de archivos para obtener numero de lineas y suma total **/
+            $_numero_lineas_archivo = 0;
+            $_suma_total_archivo    = 0.00;
+            foreach ( $dataFilasArchivo as $res ){
+                $_numero_lineas_archivo ++;
+                $_suma_total_archivo    += $res['valor'];
+            }
+            
+                
         } catch (Exception $e) {
             //echo "<message>".$e->getMessage()."<message>"; 
             exit();
@@ -1060,7 +1074,7 @@ class CargaRecaudacionesController extends ControladorBase{
             $funcion = "ins_core_carga_recaudaciones_detalle";
             $parametros = "";
             $_error_detalle = false;
-            foreach ( $_filas_archivo as $res ){
+            foreach ( $dataFilasArchivo as $res ){
                 
                 // set up vars.
                 $_det_linea  = $res['linea'];
@@ -1086,65 +1100,120 @@ class CargaRecaudacionesController extends ControladorBase{
             $dataCabecera['fecha_descuentos_registrados']   = date('Y-m-d H:i:s');
             $dataCabecera['nombre_archivo_registrados']     = $_nombre_archivo_guardar;
             $dataCabecera['id_descuentos_formatos']         = $_id_descuentos_formatos;
-            $dataCabecera['procesado_descuentos_registrados']   = 'f';
+            $dataCabecera['procesado_descuentos_registrados']   = 't';
             $dataCabecera['error_descuentos_registrados']       = 'f';
-            $dataCabecera['tipo_credito']           = "0"; //aquin poner el valor de tipo_credito 
+            $dataCabecera['tipo_credito']           = "null"; //aqui poner el valor de tipo_credito ..cambiaria si es tipo credito
             $dataCabecera['observacion_descuentos_registrados']     = "";
             $dataCabecera['fecha_proceso_descuentos_registrados']   = date('Y-m-d H:i:s');
+                        
+            $auxDescuentos  = $this->InsertDescuentos( $this->_nombre_formato, $dataCabecera, $dataFilasArchivo );
+            
+            var_dump($auxDescuentos);
+            
+            if( $auxDescuentos['error'] ){ throw new Exception( $auxDescuentos['mensaje'] ); }
+            
             /*****************************************************************************************/
             
             $respuesta['mensaje']   = "Carga Generada";
             $respuesta['respuesta'] = 1;
             $respuesta['id_archivo']= $_id_carga_recaudaciones;
-            echo json_encode( $respuesta);
+            echo json_encode( $respuesta );
             $Contribucion->endTran('COMMIT');
             
         } catch (Exception $ex) {
             $Contribucion->endTran();
-            echo '<message> Error Carga Archivo Recaudacion '.$ex->getMessage().' <message>';
+            echo '<message> Error Carga Archivo Recaudacion \n'.$ex->getMessage().' <message>';
         }
         
     }
     /** END DC CONFIG*/
     
     /** dc begin 2020/04/17 **/
-    public function InsertDescuentos( string $formato, array $paramsCab, array $datos){
+    private function InsertDescuentos( string $formato, array $paramsCab, array $datos){
         
-        $resp   = null;
+        $resp   = null;  
+        $recaudaciones = new RecaudacionesModel();
         
-        // el formato viene del formato actual establecido por variables de clase
+        $funcion = "core_ins_descuentos_registrados_cabeza";
         
-        $cabecera = $paramsCab;
-       
+        //creacion de la variable parametros
+        $parametros = "";
+        $parametros .= $paramsCab['id_entidad_patronal'].",";
+        $parametros .= $paramsCab['anio_recaudaciones'].",";
+        $parametros .= $paramsCab['mes_recaudaciones'].",";
+        $parametros .= "'".$paramsCab['usuario_usuarios']."',";
+        $parametros .= $paramsCab['id_usuarios'].",";
+        $parametros .= "'".$paramsCab['fecha_descuentos_registrados']."',";
+        $parametros .= "'".$paramsCab['nombre_archivo_registrados']."',";
+        $parametros .= $paramsCab['id_descuentos_formatos'].",";
+        $parametros .= "'".$paramsCab['procesado_descuentos_registrados']."',";
+        $parametros .= "'".$paramsCab['error_descuentos_registrados']."',";
+        $parametros .= $paramsCab['tipo_credito'].",";
+        $parametros .= "'".$paramsCab['observacion_descuentos_registrados']."',";
+        $parametros .= "'".$paramsCab['fecha_proceso_descuentos_registrados']."'";
         
+        $sqRecaudaciones    = $recaudaciones->getconsultaPG($funcion, $parametros);
         
+        $resultadoCabecera  = $recaudaciones->llamarconsultaPG($sqRecaudaciones);
+        $id_cabecera    = $resultadoCabecera[0];
         
         if( $this->_nombre_aportes_formato == $formato ){ 
             
-            $funcion = "core_ins_descuentos_registrados_cabeza";
-            $parametros = "";
+            $id_entidad_patronal    = $paramsCab['id_entidad_patronal']; 
+            $id_formatos_descuentos = $paramsCab['id_descuentos_formatos'];
+            $anio_recaudacion       = $paramsCab['anio_recaudaciones'];
+            $mes_recaudacion        = $paramsCab['mes_recaudaciones'];
+            /** formato standar revisar definicion code ant 'linea'=>1,'cedula'=>'00000000000','valor'=>0.00,'id_participes'=>1 **/
+            $detalle    = array();
+            $funcionDetalle = "core_ins_descuentos_registrados_detalle_aportes";
             
-            /*_id_entidad_patronal integer, 
-            _year_descuentos_registrados_cabeza integer, 
-            _mes_descuentos_registrados_cabeza integer, 
-            _usuario_descuentos_registrados_cabeza character varying, 
-            _id_usuarios integer, 
-            _fecha_descuentos_registrados_cabeza timestamp without time zone, 
-            _nombre_archivo_descuentos_registrados_cabeza character varying, 
-            _id_descuentos_formatos integer, 
-            _procesado_descuentos_registrados_cabeza boolean, 
-            _erro_descuentos_registrados_cabeza boolean, 
-            _tipo_credito integer, 
-            _observacion_descuentos_registrados_cabeza character varying, 
-            _fecha_proceso_descuentos_registrados_cabeza timestamp without time zone*/
+            foreach ( $datos as $res ){
+                                
+                $detalle['id_descuentos_registrados_cabeza']    = $id_cabecera;
+                $detalle['id_entidad_patronal']                 = $id_entidad_patronal;
+                $detalle['anio_descuentos']                     = $anio_recaudacion;
+                $detalle['mes_descuentos']                      = $mes_recaudacion;
+                $detalle['id_participes']                       = $res['id_participes'];
+                $detalle['aporte_personal']                     = $res['valor'];
+                $detalle['aporte_patronal']                     = "0.00";
+                $detalle['rmu_descuentos']                      = "0.00";
+                $detalle['liquido_descuentos']                  = "0.00";
+                $detalle['multas_descuentos']                   = "0.00";
+                $detalle['antiguedad_descuentos']               = "0.00";
+                $detalle['alta_descuentos']                     = "t";
+                $detalle['id_descuentos_formatos']              = $id_formatos_descuentos;
+                $detalle['procesado_descuentos']                = "t";
+                $detalle['saldo_descuentos']                    = "0.00";
+                
+                $parametrosDetalle  = "'".join("','", $detalle)."'";
+                $sqDetalle  = $recaudaciones->getconsultaPG($funcionDetalle, $parametrosDetalle);
+                
+                $recaudaciones->llamarconsultaPG($sqDetalle);
+                
+                if( !empty( pg_last_error() ) ){
+                    break;
+                }
+                
+            }
+            
+           
             
         }elseif ($this->_nombre_creditos_formato == $formato ){
             
         }else{
             
-        }       
-      
+        }      
+        
+        if( !empty( error_get_last() ) || !empty( pg_last_error() ) ){
+            $resp['error'] = true;
+            $resp['mensaje'] = "Error en insertado de Descuentos";
+            return $resp;
+        }
+        
+        $resp['error']=false;
+        $resp['mensaje']="";
         return $resp;
+        
     }
     /** dc end 2020/04/17 **/
     
@@ -1350,8 +1419,9 @@ class CargaRecaudacionesController extends ControladorBase{
                 
                 $_linea_error="[";                
                 foreach ( $_array_buscar_cedulas as $res_j ){
-                    $_linea_error .= $res_j['linea'].", "; //coleccionando en las filas donde ese encuentra repetida la cedula
+                    
                     if( $cedula_main == $res_j['cedula'] ){
+                        $_linea_error .= $res_j['linea'].", "; //coleccionando en las filas donde ese encuentra repetida la cedula
                         $_cantidad_repeticiones_cedulas ++; //se suma las cantidades de veces de repeticiones
                         unset($_array_buscar_cedulas[$j]); //eliminar el alemento del array ya encontrado
                     }else{
@@ -1392,14 +1462,14 @@ class CargaRecaudacionesController extends ControladorBase{
         $_bd = true;
         foreach(  $data as $res){
             
+            $_linea_archivo  = $res['linea'];
             $_cedula_archivo = $res['cedula'];
             $_valor_archivo  = $res['valor'];
-            $where1 .= "AND aa.cedula_participes = '$_cedula_archivo'";
-            $rsConsulta1 = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
-            
+            $whereCedula     = " AND aa.cedula_participes = '$_cedula_archivo'";
+            $wherefinal      = $where1.$whereCedula;
+            $rsConsulta1 = $recaudaciones->getCondiciones($columnas1, $tablas1, $wherefinal, $id1); 
             if( empty($rsConsulta1) ){
-                $_bd = false;
-                $_linea_archivo = $res['linea'];
+                $_bd = false;                
                 $_error_bd      = "cedula [$_cedula_archivo] no pertenece a la Entidad Patronal";
                 array_push( $errorFilas, array( 'linea'=>$_linea_archivo,'error'=>$_error_bd,'cantidad'=>0));
             }else{
@@ -1409,9 +1479,9 @@ class CargaRecaudacionesController extends ControladorBase{
             
         }
         
-        if( !$_bd ){
+        if( $_bd ){
             
-            $rowError   = true;
+            $rowError   = false;
         }
         
     }
@@ -1428,7 +1498,7 @@ class CargaRecaudacionesController extends ControladorBase{
     
     public function imprimirarray(){
         
-        $meses = array('enero','febrero','marzo','abril','mayo','junio','julio','f','septiembre','octubre','noviembre','diciembre');
+        $meses = array('enero'=>'1','febrero'=>1256,'marzo'=>'1','abril'=>'1','mayo'=>'1','junio'=>'1','julio'=>'34','f'=>'1','septiembre'=>'1','octubre'=>'1','noviembre'=>'1','diciembre'=>'1');
         echo "'".join("','", $meses)."'";
     }
     
@@ -1523,6 +1593,10 @@ class CargaRecaudacionesController extends ControladorBase{
         fclose($file_abierto);
     }
     /** termina funcion de codigos reutilizads*/
+    
+    public function verapi(){
+         echo json_encode(array('error'=>true,'mensaje'=>'ha llegado conexion exitosa fectch'));
+    }
     
 }
 

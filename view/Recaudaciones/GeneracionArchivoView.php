@@ -6,11 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <?php include("view/modulos/links_css.php"); ?>
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-     
-    <link href="//cdn.datatables.net/fixedheader/2.1.0/css/dataTables.fixedHeader.min.css"/>
-    
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">     
+    <link href="//cdn.datatables.net/fixedheader/2.1.0/css/dataTables.fixedHeader.min.css"/>    
  	<style type="text/css">
  	  .loader {
         position: fixed;
@@ -28,8 +27,7 @@
             overflow-y: auto;
         }*/
  	  
- 	</style>
-   <?php include("view/modulos/links_css.php"); ?>
+ 	</style>   
   			        
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
@@ -40,9 +38,6 @@
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
         ?>
-    
-    
-      
     
     <div class="wrapper">
 
@@ -77,7 +72,7 @@
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Generacion Archivo por Entidad Patronal</h3>
+          <h3 class="box-title">Generacion Archivo Recaudacion</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>            
@@ -87,7 +82,7 @@
                   
   		<div class="box-body">
 
-			<form id="frm_recaudacion" data-locked="false" action="<?php echo $helper->url("Recaudacion","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+			<form id="frm_recaudacion" data-locked="false" action="<?php echo $helper->url("RecaudacionGeneracionArchivo","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
 			
 			<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
@@ -116,13 +111,23 @@
                 			 <div class="form-group-sm">
                 				<label for="id_entidad_patronal" class="col-sm-4 control-label" >Entidad Patronal:</label>
                 				<div class="col-sm-8">
-                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control" disabled>
-                                  	<option value="0">--Seleccione--</option>
-                                  	<?php if(isset($rsEntidadPatronal)){
-                                  	    foreach ( $rsEntidadPatronal as $res ){
-                                  	        echo '<option value="'.$res->id_entidad_patronal.'">'.$res->nombre_entidad_patronal.'</option>';
-                                  	    }
-                                  	}?>
+                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control" onchange="cargaDescuentosFormatos(this)" disabled>
+                                  	<option value="0">--Seleccione--</option>                                  	
+                                  	</select>
+                                 </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div>
+        		
+        		<div class="row">        	
+        			<div class="col-lg-6 col-md-6 col-xs-12">        		
+            			<div class="form-group "> 
+                			 <div class="form-group-sm">
+                				<label for="id_descuentos_formatos" class="col-sm-4 control-label" >Formato Descuentos:</label>
+                				<div class="col-sm-8">
+                                  	<select id="id_descuentos_formatos" name="id_descuentos_formatos" class="form-control"  disabled>
+                                  	<option value="0">--Seleccione--</option>                                  	
                                   	</select>
                                  </div>
                 			 </div>        			 
@@ -481,7 +486,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.00"></script> 
+   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.06"></script> 
        
        
 

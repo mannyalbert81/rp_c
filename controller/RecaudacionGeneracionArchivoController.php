@@ -1,5 +1,4 @@
 <?php
-
 class RecaudacionGeneracionArchivoController extends ControladorBase{
 
 	public function __construct() {
@@ -2759,7 +2758,57 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    echo "Debe ser 4: " . $a . "<br />\n";
 	}
 	
+	/***********************************************************************************************************************************************************/
+	/***** begin dc 2020/04/22 ******/ 
+	public function cargaEntidadPatronal(){
+	    
+	    $recaudaciones = new RecaudacionesModel();
+	    $resp  = null;
+	    
+	    $col1  = " id_entidad_patronal, nombre_entidad_patronal ";
+	    $tab1  = " public.core_entidad_patronal ";
+	    $whe1  = " 1 = 1 ";
+	    $id1   = " nombre_entidad_patronal ";
+	    
+	    $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    $resp['estatus']   = "OK";
+	    $resp['data']      = $rsConsulta1;
+	    
+	    echo json_encode($resp);	    
+	     
+	}
 	
+	public function cargaFormatoDescuentos(){
+	    
+	    $recaudaciones = new RecaudacionesModel();
+	    $resp  = null;
+	    
+	    $id_entidad_patronal = $_POST['id_entidad_patronal'];	    
+	    
+	    $col1  = " id_descuentos_formatos,nombre_descuentos_formatos ";
+	    $tab1  = " public.core_descuentos_formatos ";
+	    $whe1  = " id_entidad_patronal = $id_entidad_patronal";
+	    $id1   = " id_descuentos_formatos ";
+	    $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    if( !empty( pg_last_error() )  || !empty( error_get_last() ) ){
+	        
+	        $error = error_get_last();
+	        error_clear_last();	
+	        if (ob_get_contents()) ob_end_clean();
+	        
+	        echo "ERROR ENCONTRADO \n";
+	        var_dump($error);
+	        
+	        return;
+	    }
+	    
+	    $resp['data'] = ( !empty( $rsConsulta1 ) ) ? $rsConsulta1 : null;
+	    	    
+	    echo json_encode($resp);
+	}
+	/***** end dc 2020/04/22 ******/ 
 		
 }
 ?>

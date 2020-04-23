@@ -6,6 +6,7 @@ $(document).ready(function(){
 function init(){
 	 $("body").tooltip({ selector: '[data-toggle=tooltip]' });
 	consultaArchivosRecaudacion();
+	cargaEntidadPatronal();
 	//consultaArchivos();
 	
 }
@@ -14,7 +15,8 @@ function validaCambioMes(){
 	
 	let ddlMes = $("#mes_recaudacion");
 	let ddlEntidadPatronal = $("#id_entidad_patronal");
-	if( $("#mes_recaudacion").val() == 0 ){ddlEntidadPatronal.attr("disabled","true"); ddlEntidadPatronal.val(0)}else{ddlEntidadPatronal.removeAttr("disabled")}
+	if( $("#mes_recaudacion").val() == 0 ){
+		ddlEntidadPatronal.attr("disabled","true"); ddlEntidadPatronal.val(0)}else{ddlEntidadPatronal.removeAttr("disabled")}
 	
 }
 
@@ -28,6 +30,56 @@ function validaTipoArchivo(){
 		
 	}
 } 
+
+function cargaEntidadPatronal(){
+	
+	var ddlEntidad = $("#id_entidad_patronal");
+	
+	ddlEntidad.empty().append('<option value="0">--Seleccione--</option>');
+	
+	fetch('index.php?controller=RecaudacionGeneracionArchivo&action=cargaEntidadPatronal')
+	  .then(function(response) {
+	    //console.log(response);
+	    return response.json();
+	  })
+	  .then(function(x) {
+	    
+	    var rsData    = x.data;	    
+	    $.each(rsData,function(index,value){
+	    	ddlEntidad.append('<option value="'+value.id_entidad_patronal+'">'+value.nombre_entidad_patronal+'</option>')
+	    }); 
+	        
+	    
+	  }).catch(()=>console.log('Error en la carga de Entidad Patronal'));
+	
+	
+}
+
+function cargaDescuentosFormatos(obj){
+	
+	var inid_entidad_patronal	= $(obj).val();
+	var ddldescuentos = $("#id_descuentos_formatos");
+	console.log(inid_entidad_patronal);
+	ddldescuentos.attr("disabled",false);
+	ddldescuentos.empty().append('<option value="0">--Seleccione--</option>');
+	
+	var params = {id_entidad_patronal:inid_entidad_patronal};
+	
+	$.ajax({
+		url:'index.php?controller=RecaudacionGeneracionArchivo&action=cargaFormatoDescuentos',
+		type:"POST",
+		dataType:"json",
+		data: params			
+	}).done(function(x){
+		var rsData    = x.data;	    
+	    $.each(rsData,function(index,value){
+	    	ddldescuentos.append('<option value="'+value.id_descuentos_formatos+'">'+value.nombre_descuentos_formatos+'</option>')
+	    });
+	}).fail(function(xhr,status,error){
+		console.log(xhr.responseText);
+	});
+		
+}
 
 $("#btnGenerar").on("click",function(){
 	

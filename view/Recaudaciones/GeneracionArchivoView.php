@@ -147,7 +147,7 @@
                                   	<option value="0" >--Seleccione--</option>
                                   	<option value="1" >DESCUENTOS APORTES</option>
                                   	<option value="2" >DESCUENTOS CREDITOS</option>
-									<option value="3" >DESCUENTOS CREDITOS Y APORTES</option>
+									<!--  <option value="3" >DESCUENTOS CREDITOS Y APORTES</option> -->
                                   	</select>
                                  </div>
                 			 </div>        			 

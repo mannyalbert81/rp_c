@@ -91,6 +91,7 @@ $("#btnGenerar").on("click",function(){
 	let $entidadPatronal 	= $("#id_entidad_patronal"),
 		$anioRecaudacion 	= $("#anio_recaudacion"),
 		$mesRecaudacion 	= $("#mes_recaudacion"),
+		$DescuentosFormatos	= $("#id_descuentos_formatos"),
 		$formatoRecaudacion	= $("#formato_recaudacion");
 	
 	if($mesRecaudacion.val() == 0 ){
@@ -103,12 +104,18 @@ $("#btnGenerar").on("click",function(){
 		return false;
 	}
 	
+	if($DescuentosFormatos.val() == 0 ){
+		$DescuentosFormatos.notify("Seleccione Formato Descuento",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
 	if($formatoRecaudacion.val() == 0 ){
 		$formatoRecaudacion.notify("Seleccione formato aportacion",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	
 	var parametros ={id_entidad_patronal:$entidadPatronal.val(),
+			id_descuentos_formatos:$DescuentosFormatos.val(),
 			anio_recaudacion:$anioRecaudacion.val(),
 			mes_recaudacion:$mesRecaudacion.val(),
 			formato_recaudacion:$formatoRecaudacion.val(),
@@ -116,7 +123,7 @@ $("#btnGenerar").on("click",function(){
 	
 	$.ajax({
 		beforeSend:function(){ $formulario.data('locked', true); fnBeforeAction('Estamos procesado la informacion') },
-		url:"index.php?controller=Recaudacion&action=GenerarRecaudacion",
+		url:"index.php?controller=RecaudacionGeneracionArchivo&action=GenerarRecaudacion",
 		type:"POST",
 		dataType:"json",
 		data:parametros,

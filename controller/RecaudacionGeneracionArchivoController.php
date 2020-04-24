@@ -52,6 +52,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	public function GenerarRecaudacion(){
 	     
 	    $Contribucion      = new CoreContribucionModel();
+	    $recaudaciones     = new RecaudacionesModel();
 	    $respuesta         = array();
 	    $error             = "";
 	    session_start();
@@ -67,6 +68,10 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    
 	    /** validar las variables que llegan de la vista */
 	    try {
+	        //variables de session 
+	        $usuario_usuarios  = $_SESSION['usuario_usuarios'];
+	        $id_usuarios       = $_SESSION['id_usuarios'];
+	        
 	        $_id_entidad_patronal  = $_POST['id_entidad_patronal'];
 	        $_anio_recaudacion     = $_POST['anio_recaudacion'];
 	        $_mes_recaudacion      = $_POST['mes_recaudacion'];
@@ -113,71 +118,130 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    }    
 	   
 	    try{
-	        $Contribucion->beginTran();
+	        
+	        $resp  = array();
+	        
+	        $recaudaciones->beginTran();
 	        	        
 	        /*configurar estructura mes de consulta*/
-	        $_mes_recaudacion = str_pad($_mes_recaudacion, 2, "0", STR_PAD_LEFT);       
-	       
+	        $_mes_recaudacion = str_pad($_mes_recaudacion, 2, "0", STR_PAD_LEFT);   
+	        
+	        /** SE REALIZA EL INSERTADO DE LA CABECERA PRIMERO **/
+	        $funcion = "core_ins_descuentos_registrados_cabeza";
+	        
+	        $formatoFecha      = $_anio_recaudacion."-".$_mes_recaudacion."-01";
+	        $Ofecha = new DateTime($formatoFecha);
+	        $Ofecha->modify('last day of this month');	               
+	        $fecha_descuentos  = $Ofecha->format('Y-m-d');
+	        $fecha_proceso     = date('Y-m-d H:i:s');
+	        $id_tipo_credito   = "null";
+	        $observacion_descue= "";	        
+	        $nombreArchivo     = "ArchivoEnviado.txt";
+	        $procesado_descuen = "t";
+	        $error_desccuentos = "f";
+	        
+	        //creacion de la variable parametros
+	        $parametros = "";
+	        $parametros .= $_id_entidad_patronal.",";
+	        $parametros .= $_anio_recaudacion.",";
+	        $parametros .= $_mes_recaudacion.",";
+	        $parametros .= "'".$usuario_usuarios."',";
+	        $parametros .= $id_usuarios.",";
+	        $parametros .= "'".$fecha_descuentos."',";
+	        $parametros .= "'".$nombreArchivo."',";
+	        $parametros .= $_id_descuentos_formatos.",";
+	        $parametros .= "'".$procesado_descuen."',";
+	        $parametros .= "'".$error_desccuentos."',";
+	        $parametros .= $id_tipo_credito.",";
+	        $parametros .= "'".$observacion_descue."',";
+	        $parametros .= "'".$fecha_proceso."'";
+	        
+	        $sqRecaudaciones    = $recaudaciones->getconsultaPG($funcion, $parametros);
+	        $resultado  = $recaudaciones->llamarconsultaPG($sqRecaudaciones);
+	        
+	        $id_descuentos_registrados_cabeza = $resultado[0];
+	        
+	        //$errorProceso = false; //variable pasar por referencia 
+	        $paramsCab = array();
+	        $paramsCab['id_descuentos_registrados_cabeza'] = $id_descuentos_registrados_cabeza;
+	        $paramsCab['id_entidad_patronal']          = $_id_entidad_patronal;
+	        $paramsCab['id_descuentos_formatos']       = $_id_descuentos_formatos;
+	        $paramsCab['anio_recaudaciones']           = $_anio_recaudacion;
+	        $paramsCab['mes_recaudaciones']            = $_mes_recaudacion;
+	        
+	        if( (int)$_formato_recaudacion === 1 ){
+	            
+	            $auxDetalle    = $this->RecaudacionAportes($paramsCab);
+	            
+	            if( $auxDetalle['error'] ){
+	                throw new Exception( $auxDetalle['mensaje'] );
+	            }
+	            
+	        }elseif ( (int)$_formato_recaudacion === 2 ){
+	            
+	        }else{
+	            
+	        }
 	        	        
 	        //diferenciar el tipo de recaudacion que va a realizar 
-	        switch ( $_formato_recaudacion ){
+// 	        switch ( $_formato_recaudacion ){
 	           
-	            case '1':
-	                    
-                    $respuestaArchivo           = $this->RecaudacionAportes($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
-                    $_id_archivo_recaudaciones  = $respuestaArchivo;
+// 	            case '1':
+	                   
+//                     $respuestaArchivo           = $this->RecaudacionAportes($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
+//                     $_id_archivo_recaudaciones  = $respuestaArchivo;
                     
-                    if((int)$respuestaArchivo > 0){
+//                     if((int)$respuestaArchivo > 0){
                         
-                        $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
-                        $respuesta['id_archivo']= $_id_archivo_recaudaciones;
-                        $respuesta['respuesta'] = 1;
+//                         $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
+//                         $respuesta['id_archivo']= $_id_archivo_recaudaciones;
+//                         $respuesta['respuesta'] = 1;
                         
-                    }else if((int)$respuestaArchivo == 0){
+//                     }else if((int)$respuestaArchivo == 0){
                         
-                        $respuesta['respuesta'] = 3;
-					}
+//                         $respuesta['respuesta'] = 3;
+// 					}
 	                 
-	            break;
-                case '2':                   
+// 	            break;
+//                 case '2':                   
                         
-                    $respuestaArchivo           = $this->RecaudacionCreditos($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
-                    $_id_archivo_recaudaciones  = $respuestaArchivo;
+//                     $respuestaArchivo           = $this->RecaudacionCreditos($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
+//                     $_id_archivo_recaudaciones  = $respuestaArchivo;
                     
-                    if((int)$respuestaArchivo > 0){
+//                     if((int)$respuestaArchivo > 0){
                         
-                        $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
-                        $respuesta['id_archivo']= $_id_archivo_recaudaciones;
-                        $respuesta['respuesta'] = 1;
-                    }else if((int)$respuestaArchivo == 0){
-                        $respuesta['respuesta'] = 3;
-					}                       
+//                         $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
+//                         $respuesta['id_archivo']= $_id_archivo_recaudaciones;
+//                         $respuesta['respuesta'] = 1;
+//                     }else if((int)$respuestaArchivo == 0){
+//                         $respuesta['respuesta'] = 3;
+// 					}                       
                    
                      
-				break;
-				case '3':
-				    $respuestaArchivo           = $this->RecaudacionCombinada($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
-				    $_id_archivo_recaudaciones  = $respuestaArchivo;
+// 				break;
+// 				case '3':
+// 				    $respuestaArchivo           = $this->RecaudacionCombinada($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
+// 				    $_id_archivo_recaudaciones  = $respuestaArchivo;
 				    
-				    if((int)$respuestaArchivo > 0){
+// 				    if((int)$respuestaArchivo > 0){
 				        
-				        $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
-				        $respuesta['id_archivo']= $_id_archivo_recaudaciones;
-				        $respuesta['respuesta'] = 1;
-				    }else if((int)$respuestaArchivo == 0){
-				        $respuesta['respuesta'] = 3;
-				    }  
+// 				        $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
+// 				        $respuesta['id_archivo']= $_id_archivo_recaudaciones;
+// 				        $respuesta['respuesta'] = 1;
+// 				    }else if((int)$respuestaArchivo == 0){
+// 				        $respuesta['respuesta'] = 3;
+// 				    }  
 				    
-				break;
-                default:
-	            break;
-	        }
+// 				break;
+//                 default:
+// 	            break;
+// 	        }
                 
-            $Contribucion->endTran('COMMIT');
+            $recaudaciones->endTran('COMMIT');
             echo json_encode($respuesta);
 	                
 	    } catch (Exception $ex) {
-	        $Contribucion->endTran();
+	        $recaudaciones->endTran();
 	        echo '<message> Error Archivo Recaudacion '.$ex->getMessage().' <message>';
 	    }	    
 	    
@@ -231,60 +295,50 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    
 	}
 	
-	public function RecaudacionAportes( $_id_entidad_patronal,$_anio,$_mes){
+	public function RecaudacionAportes( array $paramsCab){
 	    
 	    if(!isset($_SESSION)){
 	        session_start();
 	    }
 	    
-	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
+	    $recaudaciones = new RecaudacionesModel();
 	    
-	    $Contribucion  = new CoreContribucionModel();
+	    $response  = array();
 	    
-	    $formato_archivo_recaudaciones = "DESCUENTOS APORTES";
+	    $id_descuentos_registrados_cabeza      = $paramsCab['id_descuentos_registrados_cabeza'];
+	    $id_entidad_patronal    = $paramsCab['id_entidad_patronal'];
+	    $id_formatos_descuentos = $paramsCab['id_descuentos_formatos'];
+	    $anio_recaudacion       = $paramsCab['anio_recaudaciones'];
+	    $mes_recaudacion        = $paramsCab['mes_recaudaciones'];
 	    
-	    $columnas1 = "aa.id_contribucion_tipo_participes, aa.valor_contribucion_tipo_participes,aa.sueldo_liquido_contribucion_tipo_participes,
-                    aa.porcentaje_contribucion_tipo_participes, bb.id_contribucion_tipo, bb.nombre_contribucion_tipo,
-	               cc.id_tipo_aportacion, cc.nombre_tipo_aportacion, dd.cedula_participes, dd.id_participes, dd.apellido_participes, dd.nombre_participes";
+	    $columnas1 = "aa.id_contribucion_tipo_participes, aa.valor_contribucion_tipo_participes,aa.sueldo_liquido_contribucion_tipo_participes, 
+   	        aa.porcentaje_contribucion_tipo_participes, bb.id_contribucion_tipo, bb.nombre_contribucion_tipo,cc.id_tipo_aportacion, cc.nombre_tipo_aportacion, 
+            dd.cedula_participes, dd.id_participes, dd.apellido_participes, dd.nombre_participes";
 	    $tablas1   = "core_contribucion_tipo_participes aa
-            	    INNER JOIN core_contribucion_tipo bb
-            	    ON bb.id_contribucion_tipo = aa.id_contribucion_tipo
-            	    INNER JOIN core_tipo_aportacion cc
-            	    ON cc.id_tipo_aportacion = aa.id_tipo_aportacion
-            	    INNER JOIN core_participes dd
-            	    ON dd.id_participes = aa.id_participes
-            	    INNER JOIN estado ee
-            	    ON ee.id_estado = aa.id_estado";
+    	    INNER JOIN core_contribucion_tipo bb    ON bb.id_contribucion_tipo = aa.id_contribucion_tipo
+    	    INNER JOIN core_tipo_aportacion cc    ON cc.id_tipo_aportacion = aa.id_tipo_aportacion
+    	    INNER JOIN core_participes dd    ON dd.id_participes = aa.id_participes
+    	    INNER JOIN core_estado_participes ee ON ee.id_estado_participes = dd.id_estado_participes";
 	    $where1    = "bb.nombre_contribucion_tipo = 'Aporte Personal'
-                    AND dd.id_estatus = 1
-            	    AND ee.nombre_estado = 'ACTIVO'
-            	    AND dd.id_entidad_patronal = '$_id_entidad_patronal'";
-	    $id1       = "dd.id_participes";	    
-	    $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	        AND dd.id_estatus = 1
+	        AND dd.id_entidad_patronal = $id_entidad_patronal
+	        AND UPPER(ee.nombre_estado_participes) = 'ACTIVO'";
+	    $id1       = "dd.id_participes";	
 	    
-	    if( sizeof($rsConsulta1) == 0 ){ return 0;}
+	    $rsConsulta1 = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
 	    
-	    $funcionArchivo    = "core_ins_core_archivo_recaudaciones";
-	    $parametrosArchivo = "'$_anio','$_mes','$_id_entidad_patronal',null,null,'$formato_archivo_recaudaciones','$_usuario_usuarios'";
+	    if( empty( $rsConsulta1 )  ){ return array( 'error'=>true, 'mensaje'=>"Data se encuentra vacia"); }
 	    
-	    $queryFuncion  = $Contribucion->getconsultaPG($funcionArchivo, $parametrosArchivo);
-	    $Resultado1    = $Contribucion->llamarconsultaPG($queryFuncion);
 	    
-	    $error = "";
-	    $error = pg_last_error();
-	    if( !empty($error) ){ throw new Exception('Error en la funcion de insertado');}
+	    /** formato standar revisar definicion code ant 'linea'=>1,'cedula'=>'00000000000','valor'=>0.00,'id_participes'=>1 **/
+	    $detalle    = array();
+	    $funcionDetalle = "core_ins_descuentos_registrados_detalle_aportes";
 	    
-	    $_id_archivo_recaudaciones  = $Resultado1[0];
-	    
-	    $funcionDetalle = "core_ins_core_archivo_recaudaciones_detalle"; //core_ins_core_archivo_recaudaciones_detalle
-	    $parametrosDetalle = "";
-	    	   	    
-	    foreach ($rsConsulta1 as $res){
+	    foreach ( $rsConsulta1 as $res ){
 	        
-	        $_id_participes = $res->id_participes;
 	        $_valor_sistema = 0.00;
 	        $_valor_final   = 0.00;
-	        	        
+	        
 	        /* validar tipo contribucion participe */
 	        if( strtoupper($res->nombre_tipo_aportacion) == "VALOR"){
 	            $_valor_sistema    = $res->valor_contribucion_tipo_participes;
@@ -298,22 +352,154 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            $_valor_sistema = $_valor_base;
 	            $_valor_final   = $_valor_base;
 	        }
-	            
 	        
-	        $parametrosDetalle  = "'$_id_archivo_recaudaciones','$_id_participes',null,'$_valor_sistema','$_valor_final','APORTES PERSONALES',''";
-	        $queryFuncion   = $Contribucion->getconsultaPG($funcionDetalle, $parametrosDetalle);
-	        $Contribucion->llamarconsultaPG($queryFuncion);
+	        $detalle['id_descuentos_registrados_cabeza']    = $id_descuentos_registrados_cabeza;
+	        $detalle['id_entidad_patronal']                 = $id_entidad_patronal;
+	        $detalle['anio_descuentos']                     = $anio_recaudacion;
+	        $detalle['mes_descuentos']                      = $mes_recaudacion;
+	        $detalle['id_participes']                       = $res->id_participes;
+	        $detalle['aporte_personal']                     = $_valor_sistema;
+	        $detalle['aporte_patronal']                     = "0.00";
+	        $detalle['rmu_descuentos']                      = "0.00";
+	        $detalle['liquido_descuentos']                  = "0.00";
+	        $detalle['multas_descuentos']                   = "0.00";
+	        $detalle['antiguedad_descuentos']               = "0.00";
+	        $detalle['alta_descuentos']                     = "t";
+	        $detalle['id_descuentos_formatos']              = $id_formatos_descuentos;
+	        $detalle['procesado_descuentos']                = "t";
+	        $detalle['saldo_descuentos']                    = "0.00";
+	        $detalle['valor_usuario']                       = $_valor_final;
 	        
-	        $error = pg_last_error();
-	        if( !empty($error) ){ break; throw new Exception('Error en la funcion de insertado detalle');}
+	        $parametrosDetalle  = "'".join("','", $detalle)."'";
+	        $sqDetalle  = $recaudaciones->getconsultaPG($funcionDetalle, $parametrosDetalle);
+	        
+	        $recaudaciones->llamarconsultaPG($sqDetalle);
+	        
+	        if( !empty( pg_last_error() ) ){
+	            break;
+	        }
 	        
 	    }
 	    
-	    return $_id_archivo_recaudaciones;
+	    $error = error_get_last();
+	    if( !empty( $error ) ){
+	        $response['error']     = true;
+	        $response['mensaje']   = $error['message'];
+	        return $response;
+	    }
+	    
+	    $response['error']     = false;
+	    $response['mensaje']   = "";
+	    
+	    return $response;
+	   
+	}
+	
+	public function RecaudacionCreditos( array $paramsCab){
+	    
+	    if(!isset($_SESSION)){
+	        session_start();
+	    }
+	    
+	    $recaudaciones = new RecaudacionesModel();
+	    
+	    $response  = array();
+	    
+	    $id_descuentos_registrados_cabeza      = $paramsCab['id_descuentos_registrados_cabeza'];
+	    $id_entidad_patronal    = $paramsCab['id_entidad_patronal'];
+	    $id_formatos_descuentos = $paramsCab['id_descuentos_formatos'];
+	    $anio_recaudacion       = $paramsCab['anio_recaudaciones'];
+	    $mes_recaudacion        = $paramsCab['mes_recaudaciones'];
+	    
+	    $fecha_buscar = $anio_recaudacion.$mes_recaudacion;
+	    
+	    $columnas1 = "aa.id_tabla_amortizacion,aa.fecha_tabla_amortizacion, aa.total_valor_tabla_amortizacion,
+            	    bb.id_creditos, bb.numero_creditos, bb.id_tipo_creditos, bb.fecha_concesion_creditos,
+            	    cc.id_participes, cc.cedula_participes, cc.nombre_participes, cc.apellido_participes";
+	    $tablas1   = "core_tabla_amortizacion aa
+            	    INNER JOIN core_creditos bb   ON bb.id_creditos = aa.id_creditos
+            	    INNER JOIN core_participes cc  ON cc.id_participes = bb.id_participes
+            	    INNER JOIN core_estado_creditos dd  ON dd.id_estado_creditos = bb.id_estado_creditos";
+	    $where1    = "aa.id_estatus = 1
+            	    AND bb.id_estatus = 1
+                    AND cc.id_estatus = 1
+            	    AND aa.id_estado_tabla_amortizacion <> 2
+                    AND bb.id_estado_creditos = 4
+                    AND cc.id_entidad_patronal = $id_entidad_patronal
+            	    AND TO_CHAR(aa.fecha_tabla_amortizacion,'YYYYMM') = '$fecha_buscar'
+            	    AND dd.nombre_estado_creditos = 'Activo'";
+	    $id1       = "cc.id_participes, aa.id_tabla_amortizacion";
+	    
+	    $rsConsulta1 = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    
+	    if( empty( $rsConsulta1 )  ){ return array( 'error'=>true, 'mensaje'=>"Data se encuentra vacia"); }
+	    
+	    
+	    $detalle    = array();
+	    $funcionDetalle = "core_ins_descuentos_registrados_detalle_creditos";
+	    
+	    foreach ( $rsConsulta1 as $res ){
+	        
+	        $_valor_sistema = 0.00;
+	        $_valor_final   = 0.00;
+	        
+	        /* validar tipo contribucion participe */
+	        if( strtoupper($res->nombre_tipo_aportacion) == "VALOR"){
+	            $_valor_sistema    = $res->valor_contribucion_tipo_participes;
+	            $_valor_final      = $res->valor_contribucion_tipo_participes;
+	        }
+	        
+	        if( strtoupper($res->nombre_tipo_aportacion) == "PORCENTAJE"){
+	            $_sueldo   = (float)$res->sueldo_liquido_contribucion_tipo_participes;
+	            $_porcentaje   = (float)$res->porcentaje_contribucion_tipo_participes;
+	            $_valor_base   = ($_sueldo * $_porcentaje)/100;
+	            $_valor_sistema = $_valor_base;
+	            $_valor_final   = $_valor_base;
+	        }
+	        
+	        $detalle['id_descuentos_registrados_cabeza']    = $id_descuentos_registrados_cabeza;
+	        $detalle['id_entidad_patronal']                 = $id_entidad_patronal;
+	        $detalle['anio_descuentos']                     = $anio_recaudacion;
+	        $detalle['mes_descuentos']                      = $mes_recaudacion;
+	        $detalle['id_participes']                       = $res->id_participes;
+	        $detalle['aporte_personal']                     = $_valor_sistema;
+	        $detalle['aporte_patronal']                     = "0.00";
+	        $detalle['rmu_descuentos']                      = "0.00";
+	        $detalle['liquido_descuentos']                  = "0.00";
+	        $detalle['multas_descuentos']                   = "0.00";
+	        $detalle['antiguedad_descuentos']               = "0.00";
+	        $detalle['alta_descuentos']                     = "t";
+	        $detalle['id_descuentos_formatos']              = $id_formatos_descuentos;
+	        $detalle['procesado_descuentos']                = "t";
+	        $detalle['saldo_descuentos']                    = "0.00";
+	        $detalle['valor_usuario']                       = $_valor_final;
+	        
+	        $parametrosDetalle  = "'".join("','", $detalle)."'";
+	        $sqDetalle  = $recaudaciones->getconsultaPG($funcionDetalle, $parametrosDetalle);
+	        
+	        $recaudaciones->llamarconsultaPG($sqDetalle);
+	        
+	        if( !empty( pg_last_error() ) ){
+	            break;
+	        }
+	        
+	    }
+	    
+	    $error = error_get_last();
+	    if( !empty( $error ) ){
+	        $response['error']     = true;
+	        $response['mensaje']   = $error['message'];
+	        return $response;
+	    }
+	    
+	    $response['error']     = false;
+	    $response['mensaje']   = "";
+	    
+	    return $response;
 	    
 	}
 	
-	public function RecaudacionCreditos( $_id_entidad_patronal, $_anio, $_mes){
+	public function RecaudacionCreditos2( $_id_entidad_patronal, $_anio, $_mes){
 	    
 	    if(!isset($_SESSION)){
 	        session_start();
@@ -333,12 +519,9 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
             	    bb.id_creditos, bb.numero_creditos, bb.id_tipo_creditos, bb.fecha_concesion_creditos,
             	    cc.id_participes, cc.cedula_participes, cc.nombre_participes, cc.apellido_participes";
 	    $tablas1   = "core_tabla_amortizacion aa
-            	    INNER JOIN core_creditos bb
-            	    ON bb.id_creditos = aa.id_creditos
-            	    INNER JOIN core_participes cc
-            	    ON cc.id_participes = bb.id_participes
-            	    INNER JOIN core_estado_creditos dd
-            	    ON dd.id_estado_creditos = bb.id_estado_creditos";
+            	    INNER JOIN core_creditos bb   ON bb.id_creditos = aa.id_creditos
+            	    INNER JOIN core_participes cc  ON cc.id_participes = bb.id_participes
+            	    INNER JOIN core_estado_creditos dd  ON dd.id_estado_creditos = bb.id_estado_creditos";
 	    $where1    = "aa.id_estatus = 1
             	    AND bb.id_estatus = 1
                     AND cc.id_estatus = 1 
@@ -2655,7 +2838,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    $columnas1 = " aa.id_participes, aa.cedula_participes, aa.nombre_participes, aa.apellido_participes";
 	    $tablas1   = " core_participes aa
     	    INNER JOIN core_estado_participes bb ON bb.id_estado_participes = aa.id_estado_participes
-    	    LEFT JOIN (
+    	    INNER JOIN (
                 SELECT cc1.id_participes
                 FROM core_contribucion_tipo_participes cc1
                 INNER JOIN core_contribucion_tipo cc2 on cc2.id_contribucion_tipo = cc1.id_contribucion_tipo
@@ -2663,13 +2846,12 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
                 AND (cc1.sueldo_liquido_contribucion_tipo_participes IS NULL OR cc1.valor_contribucion_tipo_participes IS NULL)                	      
     	        ) cc ON cc.id_participes = aa.id_participes";
 	    $where1    = " aa.id_estatus = 1
-	        AND UPPER(bb.nombre_estado_participes) = 'ACTIVO'
-	        AND aa.id_entidad_patronal = $id_entidad_patronal
-	        AND cc.id_participes IS NULL";
+	        AND UPPER( bb.nombre_estado_participes ) = 'ACTIVO'
+	        AND aa.id_entidad_patronal = $id_entidad_patronal ";
 	    $id1       = "aa.id_participes";	    
 	   	    
 	    $rsConsulta1= $Participes->getCondiciones($columnas1, $tablas1, $where1, $id1);
-	    
+	    	   	    
 	    if( !empty($rsConsulta1)) return $rsConsulta1;
 	    
 	    return null;
@@ -2709,6 +2891,13 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	/** END FUNCIONES UTILITARIAS PARA LA CLASE */
 	
 	public function fn_prueba(){
+	    
+	    echo date('Y-m-d H:i:s');
+	    
+	    $fecha = new DateTime('2020-04-02');
+	    $fecha->modify('last day of this month');
+	    echo $fecha->format('d/m/Y');
+	    
 	    echo "<h3>Postincremento</h3>";
 	    $a = 5;
 	    echo "--".($a+1)."--";

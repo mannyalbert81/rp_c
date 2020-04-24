@@ -71,19 +71,20 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $_anio_recaudacion     = $_POST['anio_recaudacion'];
 	        $_mes_recaudacion      = $_POST['mes_recaudacion'];
 	        $_formato_recaudacion  = $_POST['formato_recaudacion'];
+	        $_id_descuentos_formatos   = $_POST['id_descuentos_formatos'];
 	        
-	        $error = error_get_last();
-	        if(!empty($error)){    throw new Exception('Datos enviados no validos para generacion de Archivo'); }
+	        if( !empty( error_get_last() ) ){    throw new Exception('Datos enviados no validos para generacion de Archivo'); }
 	        
 	    } catch (Exception $e) {
 	        echo '<message>'.$e->getMessage().' <message>';
 	        exit();
 	    }
 	    
-	    //prueba validacion de aportes personales
+	    //validacion de aportes personales
 	    if( $_formato_recaudacion == 1 || $_formato_recaudacion == 3 ){
 	        
 	        $_participes_sin_aportes   = $this->validaAportesParticipes($_id_entidad_patronal);
+	        	        
 	        if(!empty($_participes_sin_aportes)){
 	            $errorAportes  = array();
 	            $errorAportes['mensajeAportes']    = "Necesita Validar la informacion de estos Paricipes";
@@ -93,97 +94,24 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        }
 	    }
 	                  
-	    //echo "<br>",$_formato_recaudacion;
+	    $_nombre_formato_recaudacion = ($_formato_recaudacion == 1) ? "DESCUENTOS APORTES" : ( ( $_formato_recaudacion == 2 ) ? "DESCUENTOS CREDITOS" : "DESCUENTOS APORTES Y CREDITOS");
 	    
 	    /** primero validar si el tipo de archivo solicitado esta permitido */
 	    try {
 	        
-	        $_nombre_formato_recaudacion = ($_formato_recaudacion == 1) ? "DESCUENTOS APORTES" : (($_formato_recaudacion == 2) ? "DESCUENTOS CREDITOS" : "DESCUENTOS APORTES Y CREDITOS");
+	        $auxValidaDatos    = $this->ValidarDatosByFormato( $_formato_recaudacion, $_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion, $_id_descuentos_formatos);
 	        
-	        
-	        if( $_formato_recaudacion == 1 || $_formato_recaudacion == 2 ){	 
-	            
-	            $columnas1 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones";
-	            $tablas1   = "core_archivo_recaudaciones";
-	            $where1    = "id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_recaudacion".
-	   	            " AND mes_archivo_recaudaciones = $_mes_recaudacion AND formato_archivo_recaudaciones = 'DESCUENTOS APORTES Y CREDITOS' ";
-	            $id1       = "id_archivo_recaudaciones";
-	            $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);	
-	            
-	            //echo "llego---->", sizeof($rsConsulta1),"<br>",$rsConsulta1[0]->id_archivo_recaudaciones;
-	            //die();
-	            if( !empty($rsConsulta1) ){
-	                throw new Exception(" Archivo no generado. Razon: Existe un archivo Combinado generado ");
-	            }else{
-	                
-	                if( $_formato_recaudacion == 1 ){
-	                    
-	                    $columnas2 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones";
-	                    $tablas2   = "core_archivo_recaudaciones";
-	                    $where2    = "id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_recaudacion".
-	   	                    " AND mes_archivo_recaudaciones = $_mes_recaudacion AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion' ";
-	                    $id2       = "id_archivo_recaudaciones";
-	                    $rsConsulta2 = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
-	                    
-	                    if( !empty($rsConsulta2) ){
-	                        throw new Exception("tipo de formato ya se encuentra generado");
-	                    }
-	                    
-	                }
-	                
-	                if( $_formato_recaudacion == 2 ){
-	                    
-	                    $columnas3 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones";
-	                    $tablas3   = "core_archivo_recaudaciones";
-	                    $where3    = "id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_recaudacion".
-	   	                    " AND mes_archivo_recaudaciones = $_mes_recaudacion AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion' ";
-	                    $id3       = "id_archivo_recaudaciones";
-	                    $rsConsulta3 = $Contribucion->getCondiciones($columnas3, $tablas3, $where3, $id3);
-	                    
-	                    if( !empty($rsConsulta3) ){
-	                        throw new Exception("tipo de formato ya se encuentra generado");
-	                    }
-	                    
-	                }	    
-	                
-	            }
-	           
-	            	            
-	        }else if( $_formato_recaudacion == 3){
-	            
-	            $columnas1 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones";
-	            $tablas1   = "core_archivo_recaudaciones";
-	            $where1    = "id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_recaudacion".
-	   	            " AND mes_archivo_recaudaciones = $_mes_recaudacion AND formato_archivo_recaudaciones = '$_nombre_formato_recaudacion' ";
-	            $id1       = "id_archivo_recaudaciones";
-	            $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-	            
-	            if( !empty($rsConsulta1) ){
-	                throw new Exception("tipo de formato ya se encuentra generado");
-	            }else{
-	                $columnas2 = "id_archivo_recaudaciones, nombre_archivo_recaudaciones";
-	                $tablas2   = "core_archivo_recaudaciones";
-	                $where2    = "id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_archivo_recaudaciones = $_anio_recaudacion".
-	   	                " AND mes_archivo_recaudaciones = $_mes_recaudacion AND formato_archivo_recaudaciones in ('DESCUENTOS CREDITOS','DESCUENTOS APORTES')";
-	                $id2       = "id_archivo_recaudaciones";
-	                $rsConsulta1 = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
-	                if( !empty($rsConsulta1) ){
-	                    throw new Exception("tipo de formato no se puede generar existe un archivo individual.");
-	                }
-	            }
-	            
-	        }else{
-	            
-	            throw new Exception("Formato de archivo no valido");
+	        if( $auxValidaDatos['error'] ){
+	            throw new Exception($auxValidaDatos['mensaje']);
 	        }
-	        	         
+	               
 	        
 	    } catch (Exception $ex) {
+	        
 	        echo '<message>'.$ex->getMessage().' <message>';
 	        exit();
 	    }    
 	   
-	    //echo "<br>----llego aca ---<br>"; die();
 	    try{
 	        $Contribucion->beginTran();
 	        	        
@@ -209,9 +137,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
                         
                         $respuesta['respuesta'] = 3;
 					}
-	                    
-	              
-	                
+	                 
 	            break;
                 case '2':                   
                         
@@ -254,6 +180,54 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $Contribucion->endTran();
 	        echo '<message> Error Archivo Recaudacion '.$ex->getMessage().' <message>';
 	    }	    
+	    
+	}
+	
+	public function ValidarDatosByFormato(int $formato, int $id_entidad_patronal, int $anio_descuentos, int $mes_descuentos, int $id_descuentos_formatos){
+	    
+	    $recaudaciones = new RecaudacionesModel();
+	    
+	    $response = array();
+	    $rsConsulta1   = array();
+	    
+	    if( $formato == 1 ){
+	        //son para aportes personales
+	        $columnas1 = " COUNT(1) cantidad ";
+	        $tablas1   = " public.core_descuentos_registrados_detalle_aportes ";
+	        $where1    = " year_descuentos_registrados_detalle_aportes = $anio_descuentos
+    	    AND mes_descuentos_registrados_detalle_aportes = $mes_descuentos
+    	    AND id_entidad_patronal = $id_entidad_patronal 
+            AND id_descuentos_formatos = $id_descuentos_formatos ";
+	        $rsConsulta1 = $recaudaciones->getCondicionesSinOrden($columnas1, $tablas1, $where1, "");
+	        
+	    }elseif ($formato == 2){
+	        
+	        $columnas2 = " COUNT(1) cantidad ";
+	        $tablas2   = " public.core_descuentos_registrados_detalle_creditos ";
+	        $where2    = " year_descuentos_registrados_detalle_creditos = $anio_descuentos
+    	    AND mes_descuentos_registrados_detalle_creditos = $mes_descuentos
+    	    AND id_entidad_patronal = $id_entidad_patronal 
+            AND id_descuentos_formatos = $id_descuentos_formatos ";
+	        $rsConsulta1 = $recaudaciones->getCondicionesSinOrden($columnas2, $tablas2, $where2, "");
+	        
+	    }else{
+	        $response['error']  = true;
+	    }
+	    
+	    $error = error_get_last();
+	    if( !empty( $error ) ){
+	        $response['error']  = true;
+	        $response['mensaje']= $error['message'];
+	    }
+	    
+	    if( (int)$rsConsulta1[0]->cantidad > 0 ){
+	        $response['error']  = true;
+	        $response['mensaje']= 'ya existen datos con los valores recibidos';
+	    }else{
+	        $response['error']  = false;
+	    }
+	    
+	    return $response;
 	    
 	}
 	
@@ -2682,12 +2656,11 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    $tablas1   = " core_participes aa
     	    INNER JOIN core_estado_participes bb ON bb.id_estado_participes = aa.id_estado_participes
     	    LEFT JOIN (
-    	        SELECT  cc1.id_participes
-    	        FROM core_contribucion_tipo_participes cc1
-    	        INNER JOIN core_contribucion_tipo cc2 ON cc2.id_contribucion_tipo = cc1.id_contribucion_tipo
-    	        INNER JOIN estado cc3 ON cc3.id_estado = cc1.id_estado
-    	        WHERE UPPER(cc2.nombre_contribucion_tipo) = 'APORTE PERSONAL'
-    	        AND UPPER(cc3.nombre_estado) = 'ACTIVO'
+                SELECT cc1.id_participes
+                FROM core_contribucion_tipo_participes cc1
+                INNER JOIN core_contribucion_tipo cc2 on cc2.id_contribucion_tipo = cc1.id_contribucion_tipo
+                WHERE UPPER(cc2.nombre_contribucion_tipo) = 'APORTE PERSONAL'
+                AND (cc1.sueldo_liquido_contribucion_tipo_participes IS NULL OR cc1.valor_contribucion_tipo_participes IS NULL)                	      
     	        ) cc ON cc.id_participes = aa.id_participes";
 	    $where1    = " aa.id_estatus = 1
 	        AND UPPER(bb.nombre_estado_participes) = 'ACTIVO'

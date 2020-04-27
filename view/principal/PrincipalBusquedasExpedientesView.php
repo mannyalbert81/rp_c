@@ -182,15 +182,11 @@
                 	</div>                	
 				</div>             	             	
              	             	
-                 <div id="pnlBusqueda" class="row">
+                 <div id="pnlBusquedaExpedientes" class="row">
             		<div class="col-xs-12 col-md-6 col-lg-6">
                 		<div class="panel panel-default">
                           <div class="panel-heading">Ingrese Datos
                           
-                          <div class="box-tools pull-right">
-                          <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                          <i class="fa fa-minus"></i></button>
-                          </div>
                                       
                           </div>
                             
@@ -199,28 +195,28 @@
                           	</thead>
                           	<tbody>
                           		<tr>
-                              		<td><label>Identificacion:</label></td>
-                              		<td><input type="text" class="form-control" id="txtcedulaexpedientes"></td>                     		
+                              		<td><label id="txtcedulaexpedientes">Identificacion:</label></td>
+                              		<td><input type="text" class="form-control" id="txtcedulaexpedientes1"></td>                     		
                           		</tr>
                           		<tr>
-                              		<td><label>Nombres:</label></td>
+                              		<td><label id="txtNombresexpedientes1">Nombres:</label></td>
                               		<td><input type="text" class="form-control" id="txtNombresexpedientes"></td>
                           		</tr>
                           		<tr>
-                              		<td><label>Apellidos:</label></td>
+                              		<td><label id="txtApellidosexpedientes1">Apellidos:</label></td>
                               		<td><input type="text" class="form-control" id="txtApellidosexpedientes"></td>
                           		</tr> 
                           		<tr>
-                              		<td><label>Cargo:</label></td>
+                              		<td><label id="txtCargoexpedientes1">Cargo:</label></td>
                               		<td><input type="text" class="form-control" id="txtCargoexpedientes"></td>
                           		</tr> 
                           		<tr>
-                              		<td><label>N° Solicitud:</label></td>
+                              		<td><label id="txtNumeroSolicitudexpedientes1">N° Solicitud:</label></td>
                               		<td><input type="text" class="form-control" id="txtNumeroSolicitudexpedientes"></td>
                           		</tr>
                           		 
                           		<tr>
-                              		<td><label>Fecha Registro:</label></td>
+                              		<td><label id="txtFRegistroexpedientes1">Fecha Registro:</label></td>
                               		<td>
                               			<div class="input-group">
                                           <div class="input-group-addon">
@@ -231,7 +227,7 @@
                               		</td>
                           		</tr>
                           		<tr>
-                              		<td><label>Fecha Baja:</label></td>
+                              		<td><label id="txtFBajaexpedientes1">Fecha Baja:</label></td>
                               		<td>
                               			<div class="input-group">
                                           <div class="input-group-addon">
@@ -242,7 +238,7 @@
                               		</td>
                           		</tr>
                           		<tr>
-                              		<td><label>Estado:</label></td>
+                              		<td><label id="id_estado_participes1">Estado:</label></td>
                               		<td>
                               		  <select  class="form-control" id="id_estado_participes" name="id_estado_participes">
                                       	<option value="0">--Seleccione--</option>
@@ -250,7 +246,7 @@
                               		</td>
                           		</tr>
                           		<tr>
-                              		<td><label>Tipo Liquidación:</label></td>
+                              		<td><label id="id_tipo_liquidación1">Tipo Liquidación:</label></td>
                               		<td>
                               			<select  class="form-control" id="id_tipo_liquidación" name="id_tipo_liquidación">
                                       	<option value="0">--Seleccione--</option>
@@ -258,7 +254,7 @@
                               		</td>
                           		</tr>
                           		<tr>
-                              		<td><label>Entidad Patronal:</label></td>
+                              		<td><label id="id_entidad_patronal1">Entidad Patronal:</label></td>
                               		<td>
                               			<select  class="form-control" id="id_entidad_patronal" name="id_entidad_patronal">
                                       	<option value="0">--Seleccione--</option>
@@ -277,7 +273,12 @@
             				<label for="btn_principal_busqueda" class=" control-label" ></label> 
                     		<div class="form-group-sm">           
                     		  <button type="button" class="btn btn-primary" id="load_buscar_participe" name="load_buscar_participe">
+                    		  Buscar
         						<i class="glyphicon glyphicon-search"></i>
+        						</button>
+        						<button type="button" class="btn btn-primary" id="volver_buscar" onclick="mostrar()" name="volver_buscar">
+        					  Volver a Buscar
+        						<i class="glyphicon glyphicon-random"></i>
         						</button>
                     		</div>        			 
             			</div>
@@ -323,7 +324,7 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Detalle de la solicitud Las Solicitudes</h4>
+            <h4 class="modal-title">Detalle de Las Solicitudes</h4>
           </div>
           <div class="modal-body">
           <!-- empieza el formulario modal productos -->
@@ -343,6 +344,33 @@
       </div>
       <!-- /.modal-dialog -->
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="mod_crear_cuenta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="" method="post" id="frm_crear" name="frm_crear">
+          	
+          		<div class="box-body" id="mod_crear_cuenta_banco">
+    
+              </div>		  
+          	</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
  
     
     <?php include("view/modulos/links_js.php"); ?>
@@ -353,7 +381,7 @@
     <script src="view/bootstrap/bower_components/moment/min/moment.min.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
     <!-- js personales -->
-	<script type="text/javascript" src="view/principal/js/principalBusquedaExpedientes.js?1.19"></script>
+	<script type="text/javascript" src="view/principal/js/principalBusquedaExpedientes.js?1.27"></script>
 
   </body>
 </html>   

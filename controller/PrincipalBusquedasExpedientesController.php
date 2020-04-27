@@ -281,6 +281,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
             $html.= "<table id='tabla_participes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
             $html.= "<thead>";
             $html.= "<tr>";
+            $html.='<th colspan="2" style=" text-align: center; font-size: 11px;"></th>';
             $html.='<th colspan="2" style=" text-align: center; font-size: 11px;">Tipo</th>';
             $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Fecha Ingreso</th>';
             $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Nombre</th>';
@@ -313,9 +314,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
                 $html.='<td style="font-size: 15px;"><span class="pull-right">';
                 $html.='<button id="btndetalesoli" value="'.$res->id_participes.'" name="detallesoli" class="btn btn-success" type="button" onclick="mostrarDatosjs(this)">';
                 $html.='    <i class="glyphicon glyphicon-edit"></i></button></span></td>';
-                
-                $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right"><a href="index.php?controller=PrincipalBusquedasExpedientes&action=index_consulta_solicitud&id_participes='.$res->id_participes.'" title="Consultar Participe" id="btndetalesoli"  name="detallesoli" class="btn btn-success" type="button" data-toggle="modal" data-target="#mod_detallesoli"><i class="glyphicon glyphicon-chevron-right"></i></a></span></td>';
-                
+               
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->cedula_participes.'</td>';
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->fecha_ingreso_participes.'</td>';
                 $html.='<td colspan="2" style="text-align: left; font-size: 11px;">'.$res->nombre_participes.'</td>';
@@ -626,31 +625,34 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
             
     }
     
-    public function index_consulta_solicitud(){
+ 
+    
+    
+    public function dateDifference($date_1 , $date_2 , $differenceFormat = '%y Años, %m Meses, %d Dias' )
+    {
+        $datetime1 = date_create($date_1);
+        $datetime2 = date_create($date_2);
         
+        $interval = date_diff($datetime1, $datetime2);
+        
+        return $interval->format($differenceFormat);
+        
+    }
+    
+    
+    public function mostrarDetalleSolicitud(){
+        
+       
         session_start();
         
         $participes = new CoreInformacionParticipesModel();
-        $core_credito = new CoreCreditoModel();
+       
         
-        if (isset(  $_SESSION['nombre_usuarios']) )
-        {
-            
-            $contribucion_tipo = new ContribucionTipoModel();
-            $resContriTipo = $contribucion_tipo->getAll("id_contribucion_tipo");
-            
-            $nombre_controladores = "CoreInformacionParticipes";
-            $id_rol= $_SESSION['id_rol'];
-            $resultPer = $participes->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-            $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:0;
-            
-            if (!empty($resultPer))
-            {
-                if (isset ($_GET["id_participes"])   )
-                {
-                    $_id_participes = $_GET["id_participes"];
-                    
-                    $columnas = "
+        $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:0;
+        
+       
+        
+        $columnas = "
                               core_participes_informacion_adicional.id_participes,
                               core_participes.apellido_participes,
                               core_participes.nombre_participes,
@@ -695,8 +697,8 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
                             ) as \"totalaporte\"
                             
                                     ";
-                    
-                    $tablas   = "
+        
+        $tablas   = "
                               public.core_participes,
                               public.core_participes_informacion_adicional,
                               public.core_distritos,
@@ -705,113 +707,324 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
                               public.core_parentesco,
                               public.core_estado_civil_participes,
                               public.core_estado_participes
-                        
+            
                               ";
-                    $where    = " core_participes_informacion_adicional.id_participes = core_participes.id_participes AND
+        $where    = " core_participes_informacion_adicional.id_participes = core_participes.id_participes AND
                                   core_distritos.id_distritos = core_participes_informacion_adicional.id_distritos AND
                                   core_provincias.id_provincias = core_participes_informacion_adicional.id_provincias AND
                                   core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND
                                   core_parentesco.id_parentesco = core_participes_informacion_adicional.id_parentesco
                                   AND core_estado_civil_participes.id_estado_civil_participes = core_participes.id_estado_civil_participes
                                   AND core_estado_participes.id_estado_participes = core_participes.id_estado_participes
-                                  AND core_participes.id_participes = '$_id_participes'
+                                  AND core_participes.id_participes = '$id_participes'
                                    ";
-                    $id       = "core_participes.id_participes";
-                    
-                    
-                    
-                    
-                    $resultRep = $participes->getCondiciones($columnas ,$tablas ,$where, $id);
-                    
-                    $tiempo= array();
-                    $hoy=date("Y-m-d");
-                    
-                    $tiempo_edad=$this->dateDifference($resultRep[0]->fecha_nacimiento_participes, $hoy);
-                    
-                    array_push($tiempo, $tiempo_edad);
-                    
-                    
-                    
-                    $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
-                    $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+        $id       = "core_participes.id_participes";
+        
+        
+        $resultRep = $participes->getCondiciones($columnas ,$tablas ,$where, $id);
+        
+        
+        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion, valor_patronal_contribucion";
+        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
                 ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-                    $where="core_contribucion.id_participes=".$id_participes." AND core_contribucion.id_estatus=1";
-                    $id="fecha_registro_contribucion";
-                    
-                    $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
-                    
-                    $tiempo2= array();
-                    $last=sizeof($resultAportes);
-                    $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
-                    $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
-                    $fecha_primer=substr($fecha_primer,0,10);
-                    $fecha_ultimo=substr($fecha_ultimo,0,10);
-                    $tiempoaporte=$this->dateDifference($fecha_primer, $fecha_ultimo);
-                    $last=sizeof($resultAportes);
-                    
-                    array_push($tiempo2, $tiempoaporte);
-                    
-                    
-                    $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
-                    $tablas="core_contribucion INNER JOIN core_contribucion_tipo
+        $where="core_contribucion.id_participes=".$id_participes." AND core_contribucion.id_estatus=1";
+        $id="fecha_registro_contribucion";
+        
+        $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+      
+        $last=sizeof($resultAportes);
+        $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
+        $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
+        $fecha_primer=substr($fecha_primer,0,10);
+        $fecha_ultimo=substr($fecha_ultimo,0,10);
+        $tiempoaporte=$this->dateDifference($fecha_primer, $fecha_ultimo);
+        $last=sizeof($resultAportes);
+        
+        
+        $columnas="fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
+        $tablas="core_contribucion INNER JOIN core_contribucion_tipo
                 ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-                    $where="core_contribucion.id_participes=".$id_participes." AND core_contribucion.id_contribucion_tipo=1
+        $where="core_contribucion.id_participes=".$id_participes." AND core_contribucion.id_contribucion_tipo=1
                 AND core_contribucion.id_estatus=1";
-                    $id="fecha_registro_contribucion";
-                    
-                    $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
-                    
-                    $aportes= array();
-                    
-                    $personales=sizeof($resultAportesPersonales);
-                    
-                    array_push($aportes, $personales);
-                    
-                    
-                    
-                    $this->view_Core("PrincipalBusquedasExpedientes",array(
-                        "resultRep"=>$resultRep, "resContriTipo"=>$resContriTipo, "tiempo"=>$tiempo, "resultAportes"=>$resultAportes, "tiempo2"=>$tiempo2, "aportes"=>$aportes
-                        
-                        
-                    ));
-                }
-                
-               
-                
-            }
-        }
-        else
-        {
-            $this->view_Contable("Error",array(
-                "resultado"=>"No tiene Permisos de Acceso a Consulta General"
-                
-            ));
-            
-            exit();
-        }
+        $id="fecha_registro_contribucion";
+        
+        $resultAportesPersonales=$participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $personales=sizeof($resultAportesPersonales);
         
         
-    }
-    
-    
-    public function dateDifference($date_1 , $date_2 , $differenceFormat = '%y Años, %m Meses, %d Dias' )
-    {
-        $datetime1 = date_create($date_1);
-        $datetime2 = date_create($date_2);
+       
+        $hoy=date("Y-m-d");
         
-        $interval = date_diff($datetime1, $datetime2);
+        $tiempo_edad=$this->dateDifference($resultRep[0]->fecha_nacimiento_participes, $hoy);
         
-        return $interval->format($differenceFormat);
+   
         
-    }
-    
-    
-    public function mostrarDetalleSolicitud(){
+     
+      
+        $nombre=$resultRep[0]->nombre_participes;
+        $apellido=$resultRep[0]->apellido_participes;
+        $identificacion=$resultRep[0]->cedula_participes;
+        $fechaingreso=$resultRep[0]->fecha_ingreso_participes;
+        $cargo=$resultRep[0]->ocupacion_participes;
+        $tiempoaportacion=$tiempoaporte;
+        $fechadenacimiento=$resultRep[0]->fecha_nacimiento_participes;
+        $numeroaportes=$personales;
+        $edad=$tiempo_edad;
+        $acumuladpersonales=number_format($resultRep[0]->total, 2, ",", ".");
+        $sexo=$resultRep[0]->ocupacion_participes;
+        $entidadpatronal=$resultRep[0]->nombre_entidad_patronal;
+        $estadocivil=$resultRep[0]->nombre_estado_civil_participes;
+        $añosservicio=$tiempoaporte;
+        $cuentaindividual=number_format($resultRep[0]->totalaporte, 2, ",", ".");
+        $creditoactivo=$resultRep[0]->ocupacion_participes;
+        $observaciones=$resultRep[0]->observacion_participes;
         
-        $html ="hola";
+        
+        $columnas = " core_participes.id_participes,
+                      core_participes.apellido_participes,
+                      core_participes.nombre_participes,
+                      core_participes.cedula_participes,
+                      core_participes.fecha_nacimiento_participes,
+                      core_participes.direccion_participes,
+                      core_participes.telefono_participes,
+                      core_participes.celular_participes,
+                      core_tipo_prestaciones.id_tipo_prestaciones,
+                      core_tipo_prestaciones.nombre_tipo_prestaciones,
+                      core_estado_prestaciones.id_estado_prestaciones,
+                      core_estado_prestaciones.nombre_estado_prestaciones,
+                      core_entidad_patronal.id_entidad_patronal,
+                      core_entidad_patronal.nombre_entidad_patronal,
+                      core_liquidacion_cabeza.fecha_pago_carpeta_liquidacion_cabeza,
+                      core_liquidacion_cabeza.numero_carpeta_liquidacion_cabeza,
+                      core_liquidacion_cabeza.numero_documento_liquidacion_cabeza,
+                      core_participes.correo_participes,
+                      core_liquidacion_cabeza.id_liquidacion_cabeza,
+                      core_liquidacion_cabeza.valor_neto_pagar_liquidacion_cabeza,
+                      core_liquidacion_cabeza.observacion_liquidacion_cabeza,
+                      core_liquidacion_cabeza.sustento_liquidacion_cabeza,
+                      core_liquidacion_cabeza.carpeta_numero_liquidacion_cabeza,
+                      core_liquidacion_cabeza.file_number_liquidacion_cabeza,
+                      core_liquidacion_forma_pago.tipo_movimiento,
+                      core_liquidacion_forma_pago.nombre_banco_liquidacion_forma_pago,
+                      core_liquidacion_forma_pago.numero_cuenta_liquidacion_forma_pago,
+                      core_liquidacion_forma_pago.valor_liquidacion_forma_pago";
+        
+        $tablas = "   public.core_liquidacion_cabeza,
+                      public.core_participes,
+                      core_liquidacion_forma_pago,
+                      public.core_tipo_prestaciones,
+                      public.core_estado_prestaciones,
+                      public.core_entidad_patronal";
+        $where= "     core_liquidacion_cabeza.id_participes = core_participes.id_participes AND
+                      core_liquidacion_forma_pago.id_liquidacion_cabeza = core_liquidacion_cabeza.id_liquidacion_cabeza AND
+                      core_tipo_prestaciones.id_tipo_prestaciones = core_liquidacion_cabeza.id_tipo_prestaciones AND
+                      core_estado_prestaciones.id_estado_prestaciones = core_liquidacion_cabeza.id_estado_prestaciones AND
+                      core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND core_participes.id_participes ='$id_participes'";
+        $id="core_participes.id_participes";
+        
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        
+        $tipoliquidacion=$rsdatos[0]->nombre_tipo_prestaciones;
+        $numerosoicitud=$rsdatos[0]->numero_documento_liquidacion_cabeza;
+        $numerocarpeta=$rsdatos[0]->carpeta_numero_liquidacion_cabeza;
+        $banco=$rsdatos[0]->nombre_banco_liquidacion_forma_pago;
+        $numerocuenta=$rsdatos[0]->numero_cuenta_liquidacion_forma_pago;
+        
+        
+       
+        
+        
+        $html='';
+      // $entidad="Desembolso por cesantía";
+        
+        
+        
+        $html.='<table style="width:70%; border-collapse: separate; border-spacing: 10px 5px;" >';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;" ;><strong>Nombre del solicitante:</strong></th>';
+        $html.='<th style="text-align: left; font-size: 25px;">'.$nombre.'&nbsp;'.$apellido.'</th>';
+        $html.='</tr>';
+        $html.='</table>';
+        
+        $html.='<table style="width:100%; border-collapse: separate; border-spacing: 10px 5px;" >';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;" width="161px";><strong>Típo de Liquidación:</strong></th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$tipoliquidacion.'"></imput></th>';
+        $html.='</tr>';
+        $html.='</table>';
+        //$html.='<br>';
+        $html.='<table  style="width:100%; border-collapse: separate; border-spacing: 10px 5px;" >';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Identificación:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$identificacion.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Fecha de Ingreso:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$fechaingreso.'"></imput></th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Cargo:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$cargo.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;"><strong>Tiempo de Aportación:</strong></th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$tiempoaportacion.'"></imput></th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Fecha de Nacimiento:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$fechadenacimiento.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">N°de Aportes:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$numeroaportes.'"></imput></th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Edad:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$edad.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Acumulado de Aportes Personales:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$acumuladpersonales.'"></imput></th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Sexo:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$sexo.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Entidad Patronal:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$entidadpatronal.'"></imput></th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Estado Civil:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$estadocivil.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Años de Servicio:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$añosservicio.'"></imput></th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Cuenta Individual:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$cuentaindividual.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Credito Activo:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="-"></imput></th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Fecha de Cesantìa:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input  style="height:20px" type="text" class="form-control" readonly="readonly"  value="-"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Número de Solicitud:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$numerosoicitud.'"></imput></th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Número de Carpeta:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input  style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$numerocarpeta.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Usuario:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="-"></imput></th>';
+        $html.='</tr>';
+        $html.='</table>';
+        
+        $html.='<table  style="width:100%; border-collapse: separate; border-spacing: 10px 5px;" >';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;" width="161px";>Observaciones:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:40px" type="text" class="form-control" readonly="readonly"  value="'.$observaciones.'"></imput></th>';
+        $html.='</tr>';
+        
+        $html.='<table  style="width:100%;" border="1">';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px; background-color: #A2B2D6;" width="161px";>Reteción de Garantía:</th>';
+       // $html.='<th style="text-align: left; font-size: 11px;"><input style="height:40px" type="text" class="form-control" readonly="readonly"  value="'.$observaciones.'"></imput></th>';
+        $html.='</tr>';
+        $html.='</table>';
+        
+        $html.='<table  style="width:100%; border-collapse: separate; border-spacing: 10px 5px;" >';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Retener Garaía:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$observaciones.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Valor a Retener:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$observaciones.'"></imput></th>';
+        $html.='</tr>';
+        $html.='</table>';
+        $html.='<table  style="width:100%; border-collapse: separate; border-spacing: 10px 5px;" >';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;" width="161px";>Observaciones:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:40px" type="text" class="form-control" readonly="readonly"  value="'.$observaciones.'"></imput></th>';
+        $html.='</tr>';
+        $html.='</table>';
+        
+        $html.='<table  style="width:100%;" border="1">';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px; background-color: #A2B2D6;" width="161px";>Formna de Pago:</th>';
+        // $html.='<th style="text-align: left; font-size: 11px;"><input style="height:40px" type="text" class="form-control" readonly="readonly"  value="'.$observaciones.'"></imput></th>';
+        $html.='</tr>';
+        $html.='</table>';
+        
+        $html.='<table  style="width:100%; border-collapse: separate; border-spacing: 10px 5px;" >';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Forma de Pago:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$observaciones.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">&nbsp;</th>';
+        $html.='<th style="text-align: left; font-size: 11px;">&nbsp;</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Banco:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$banco.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Naturaleza de la cuenta:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$numerocuenta.'"></imput></th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Número Cuenta:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$numerocuenta.'"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Crear Cuenta:</th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input  type="button" class="btn btn-info" onclick="CrearCuentaBancos(this)" value="Crear Cuenta"></imput></th>';
+        $html.='</tr>';
+        $html.='</table>';
+        
+        $html.='<table  style="width:100%;" border="1">';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px; background-color: #A2B2D6;" width="161px";>Requisitos:</th>';
+        // $html.='<th style="text-align: left; font-size: 11px;"><input style="height:40px" type="text" class="form-control" readonly="readonly"  value="'.$observaciones.'"></imput></th>';
+        $html.='</tr>';
+        $html.='</table>';
+        
+        $html.='<table  style="width:100%;" border="1";  >';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">Requisito:</th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Tipode Requisito:</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">COPIA COLOR DE LA CÈDULA:</th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Opcional</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">COPIA COLOR DE LA PAPELETA DE VOTACIÓN:</th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Opcional</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">ROL DE PÁGO:</th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Opcional</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">CARTA A CAPREMCI POR DESAFILIACIÓN:</th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Opcional</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">TIEMPO DE SERVICIO DE LA EP:</th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Opcional</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">CERTIFICACIÓN BANCARIA:</th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Opcional</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">FORMULARIO DE SOLICITUD PRESTACIONES LLENO:</th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Opcional</th>';
+        $html.='</tr>';
+        $html.='<tr>';
+        $html.='<th style="text-align: left; font-size: 16px;">PLANILLA DE LUZ OPCIONAL:</th>';
+        $html.='<th style="text-align: left; font-size: 16px;">Opcional</th>';
+        $html.='</tr>';
+        $html.='</table>';
+        
         echo $html;
         
         
+    }
+    
+    public function CrearCuentaBancos() {
+        $html="hola";
+        
+        echo $html;
     }
     
 

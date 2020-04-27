@@ -4,6 +4,7 @@ $(document).ready(function(){
 	cargaEstadoLiquidacion();
 	cargaTipoLiquidacion();
 	cargaEntidadPatronal();
+	document.getElementById('volver_buscar').style.display = 'none';
 	
 })
 
@@ -166,8 +167,11 @@ function load_buscar_participe(pagina){
             success: function(x){
               $("#participes_registrados").html(x);
               $("#load1_buscar_participe").html("");
-              $("#tabla_participes").tablesorter(); 
-              
+              $("#tabla_participes").tablesorter();
+              document.getElementById('tblBusquedaPrincipal').style.display = 'none';
+              document.getElementById('volver_buscar').style.display = 'block';
+              document.getElementById('load_buscar_participe').style.display = 'none';
+            
             },
            error: function(jqXHR,estado,error){
              $("#participes_registrados").html("Ocurrio un error al cargar la información de Participes..."+estado+"    "+error);
@@ -207,6 +211,43 @@ function mostrarDatosjs(element){
 	
 }
 
+
+function CrearCuentaBancos(element){
+	
+	var boton = $(element);
+	var inid_participes	= boton.val();
+	
+	console.log( "el id del participe es ---> "+ inid_participes);
+	
+	params = {id_participes:inid_participes};
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=PrincipalBusquedasExpedientes&action=CrearCuentaBancos",
+		type:"POST",
+		/*dataType:"json",*/
+		data:params
+	}).done(function(datos){		
+		
+		$("#mod_crear_cuenta").modal("show");
+		
+		$("#mod_crear_cuenta_banco").html("");
+		$("#mod_crear_cuenta_banco").html(datos);
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		
+	})
+	
+}
+
+function mostrar(){
+	document.getElementById('tblBusquedaPrincipal').style.display = 'block';
+	document.getElementById('volver_buscar').style.display = 'none';
+	document.getElementById('load_buscar_participe').style.display = 'block';
+	
+	}
 
 
 

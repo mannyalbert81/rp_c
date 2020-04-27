@@ -701,17 +701,53 @@ class EstructurasBiessController extends ControladorBase{
 					$texto .= '<AporteAdicionalJUB>'.$_aporte_adicional_jubilacion_g42_biess.'</AporteAdicionalJUB>';
 					$texto .= '<AporteAdicionalCES>'.$_aporte_adicional_cesantia_g42_biess.'</AporteAdicionalCES>';
 					$texto .= '<RendimientoAnual>'.$_rendimiento_anual_g42_biess.'</RendimientoAnual>';
-					$texto .= '<SaldoCIPatronal>'.$_saldo_cuenta_individual_patronal_g42_biess.'</SaldoCIPatronal>';
+					if ($_saldo_cuenta_individual_patronal_g42_biess > 0)
+					{
+						$texto .= '<SaldoCIPatronal>'.$_saldo_cuenta_individual_patronal_g42_biess.'</SaldoCIPatronal>';
+						
+					}
+					else
+					{
+						$texto .= '<SaldoCIPatronal>0.0001</SaldoCIPatronal>';
+					}
+					
 					$texto .= '<SaldoCIcesantia>'.$_saldo_cuenta_individual_cesantia_g42_biess.'</SaldoCIcesantia>';
 					$texto .= '<SaldoCIjubilacion>'.$_saldo_cuenta_individual_jubilacion_g42_biess.'</SaldoCIjubilacion>';
 					$texto .= '<SaldoAportePersonalJub>'.$_saldo_aporte_personal_jubilacion_g42_biess.'</SaldoAportePersonalJub>';
 					$texto .= '<SaldoAportePersonalCes>'.$_saldo_aporte_personal_cesantia_g42_biess.'</SaldoAportePersonalCes>';
 					$texto .= '<SaldoAporteAdicJub>'.$_saldo_aporte_adicional_jubilacion_g42_biess.'</SaldoAporteAdicJub>';
-					$texto .= '<SaldoAporteAdicCes>'.$_saldo_aporte_adicional_cesantia_g42_biess.'</SaldoAporteAdicCes>';
-					$texto .= '<SaldoRendiPatronal>'.$_saldo_rendimiento_patronal_otros_g42_biess.'</SaldoRendiPatronal>';
+					
+					if ($_saldo_aporte_adicional_cesantia_g42_biess > 0 )
+					{
+						$texto .= '<SaldoAporteAdicCes>'.$_saldo_aporte_adicional_cesantia_g42_biess.'</SaldoAporteAdicCes>';
+						
+					}
+					else
+					{
+						$texto .= '<SaldoAporteAdicCes>0.0001</SaldoAporteAdicCes>';
+					}
+					
+					if ($_saldo_rendimiento_patronal_otros_g42_biess > 0)
+					{
+						$texto .= '<SaldoRendiPatronal>'.$_saldo_rendimiento_patronal_otros_g42_biess.'</SaldoRendiPatronal>';
+					}
+					else 
+					{
+						$texto .= '<SaldoRendiPatronal>0.0001</SaldoRendiPatronal>';
+						
+					}
+					
 					$texto .= '<SaldoRendiAPjubilacion>'.$_saldo_rendimiento_aporte_personal_jubilacion_g42_biess.'</SaldoRendiAPjubilacion>';
 					$texto .= '<SaldoRendiAPcesantia>'.$_saldo_rendimiento_aporte_personal_cesantia_g42_biess.'</SaldoRendiAPcesantia>';
-					$texto .= '<SaldoRendiAAcesantia>'.$_saldo_rendimiento_aporte_adicional_cesantia_g42_biess.'</SaldoRendiAAcesantia>';
+					if ($_saldo_rendimiento_aporte_adicional_cesantia_g42_biess > 0)
+					{
+						$texto .= '<SaldoRendiAAcesantia>'.$_saldo_rendimiento_aporte_adicional_cesantia_g42_biess.'</SaldoRendiAAcesantia>';
+					}
+					else
+					{
+						$texto .= '<SaldoRendiAAcesantia>0.0001</SaldoRendiAAcesantia>';
+					}
+					
 					$texto .= '<SaldoRendiAAjubilacion>'.$_saldo_rendimiento_aporte_adicional_jubilacion_g42_biess.'</SaldoRendiAAjubilacion>';
 					$texto .= '<RetencionFiscal>'.$_retencion_fiscal_g42_biess.'</RetencionFiscal>';
 					$texto .= '<FechaDesafiliacion>'.$_fecha_desafiliacion_voluntaria_g42_biess.'</FechaDesafiliacion>';
@@ -720,7 +756,24 @@ class EstructurasBiessController extends ControladorBase{
 					$texto .= '<ValorPagPartDesaf>'.$_valor_pagado_participe_desafiliado_g42_biess.'</ValorPagPartDesaf>';
 					$texto .= '<MotivoLiquidacion>'.$_motivo_liquidacion_g42_biess.'</MotivoLiquidacion>';
 					$texto .= '<FechaTerminoRL>'.$_fecha_termino_relacion_laboral_g42_biess.'</FechaTerminoRL>';
-					$texto .= '<SaldoCIliqPrestacionCES>'.$_saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42.'</SaldoCIliqPrestacionCES>';
+					
+					if ($_saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42 > 0)
+					{
+						$texto .= '<SaldoCIliqPrestacionCES>'.$_saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42.'</SaldoCIliqPrestacionCES>';
+					}
+					else
+					{
+						if ( $_estado_participe_cesante_g42_biess == 'PARTICIPEACTIVO' )
+						{
+							$texto .= '<SaldoCIliqPrestacionCES>0.00</SaldoCIliqPrestacionCES>';
+						}
+						else
+						{
+							$texto .= '<SaldoCIliqPrestacionCES>0.0001</SaldoCIliqPrestacionCES>';
+						}
+						
+					}
+					
 					$texto .= '<SaldoCIliqPrestacionJUB>'.$_saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42.'</SaldoCIliqPrestacionJUB>';
 					$texto .= '<DetalleOtrosValores>'.$_detalle_otros_valores_pagados_y_pendientes_pago_g42_biess.'</DetalleOtrosValores>';
 					$texto .= '<ValoresPagadosFondo>'.$_valores_pagados_al_fondo_g42_biess.'</ValoresPagadosFondo>';

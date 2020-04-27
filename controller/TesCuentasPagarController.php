@@ -791,7 +791,9 @@ class TesCuentasPagarController extends ControladorBase{
 	            
 	            /** para obtener valor para  proveedores **/
 	            $valor_proveedores +=  $res->valor_cuentas_pagar_impuestos;
-	        }       
+	        }
+	        
+	        $orden_insert ++;
 	        	        
 	        $QueryIns1 = " INSERT INTO tes_distribucion_cuentas_pagar( id_lote, id_plan_cuentas, tipo_distribucion_cuentas_pagar, debito_distribucion_cuentas_pagar,
 			             credito_distribucion_cuentas_pagar, ord_distribucion_cuentas_pagar )

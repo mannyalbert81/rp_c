@@ -1504,12 +1504,13 @@ class PlanCuentasController extends ControladorBase{
                        
                        if( $color > 5 ){ $color=5; }
                        
+                       $idPlanCuentas   = $res->id_plan_cuentas;
                        $codigoPlanCuentas   = $res->codigo_plan_cuentas;
                        $nombrePlanCuentas   = $res->nombre_plan_cuentas;
                        
                        $tag = ""; //variable donde se guarda el texto del lista
                        $tag = $codigoPlanCuentas."  ".$nombrePlanCuentas;
-                       $arbol   .= '<li id="cod'.$verif1.'">'.$tag; //etiqueta para inicializar la lista
+                       $arbol   .= '<li data-codigo="'.$codigoPlanCuentas.'" id="'.$idPlanCuentas.'">'.$tag; //etiqueta para inicializar la lista
                        
                        $haveSon = $this->isthereSub( $nivel, $codigoPlanCuentas, $resultset );
                                               
@@ -1540,6 +1541,7 @@ class PlanCuentasController extends ControladorBase{
                
                $verif1  ="";
                $verif2  ="";
+               $idPlanCuentas   = $res->id_plan_cuentas;
                $codigoPlanCuentas   = $res->codigo_plan_cuentas;
                $nombrePlanCuentas   = $res->nombre_plan_cuentas;
                $elementos1_codigo=explode(".", $codigoPlanCuentas );
@@ -1562,7 +1564,7 @@ class PlanCuentasController extends ControladorBase{
                        
                        $tag = ""; //variable donde se guarda el texto del lista
                        $tag = $codigoPlanCuentas."  ".$nombrePlanCuentas;
-                       $arbol   .= '<li id="cod'.$verif2.'">'.$tag; //etiqueta para inicializar la lista
+                       $arbol   .= '<li data-codigo="'.$codigoPlanCuentas.'" id="'.$idPlanCuentas.'">'.$tag; //etiqueta para inicializar la lista
                        
                        $haveSon = $this->isthereSub( $nivel, $codigoPlanCuentas, $resultset);
                        
@@ -1701,6 +1703,81 @@ class PlanCuentasController extends ControladorBase{
        if (ob_get_contents()) ob_end_clean();
        
        echo json_encode($resp);
+   }
+   
+   public function AddPlanCuentas(){
+       
+       $planCuentas= new PlanCuentasModel();
+       $resp=null;
+       try {
+           
+           $id_plan_cuentas     = $_POST['id_plan_cuentas'];
+           $nombre_plan_cuentas = $_POST['nombre_plan_cuentas'];
+           $aux_codigo_plan_cuentas  = $_POST['aux_codigo'];
+                      
+           if( !empty( error_get_last() ) ){ throw new Exception("Variables no recibidas");}
+           
+           $col1    = " id_plan_cuentas,nivel_plan_cuentas,codigo_plan_cuentas,nombre_plan_cuentas,id_entidades, id_modenas, n_plan_cuentas, id_centro_costos ";
+           $tab1    = " public.plan_cuentas ";
+           $whe1    = " id_plan_cuentas = $id_plan_cuentas ";
+           $id1     = " codigo_plan_cuentas";
+           $rsConsulta1 = $planCuentas->getCondiciones($col1, $tab1, $whe1, $id1);
+           
+           if( !empty($rsConsulta1) ){
+               
+               /** obtenemos datos del padre **/
+               $codigo_padre = $rsConsulta1[0]->codigo_plan_cuentas;
+               $id_entidades = $rsConsulta1[0]->id_entidades;
+               $nivel_padre  = $rsConsulta1[0]->nivel_plan_cuentas;
+               $id_monedas   = $rsConsulta1[0]->id_modenas;
+               $n_plan_cuentas = $rsConsulta1[0]->n_plan_cuentas;
+               $id_centro_costos = $rsConsulta1[0]->id_centro_costos;
+               
+               /** seteamos datos del nuevo **/
+               $nivel_plan_cuentas  = (int)$nivel_padre + 1;
+               $codigo_plan_cuentas = trim($codigo_padre,".").".".$aux_codigo_plan_cuentas;
+               
+               $funcion = "ins_nueva_cuenta";
+               $parametros="'$nombre_plan_cuentas',
+                     '$codigo_plan_cuentas',
+                     '$id_entidades',
+                     '$id_monedas',
+                     '$n_plan_cuentas',
+                     '$id_centro_costos',
+                     '$nivel_plan_cuentas'";
+               $sqfuncion   = $planCuentas->getconsultaPG($funcion, $parametros);
+               
+               $planCuentas->llamarconsultaPG($sqfuncion);
+               
+               if(!empty(pg_last_error())){ throw new Exception("ERROR EN FUNCION");}
+               
+               $resp['estatus']="OK";
+               $resp['icon']="success";
+               $resp['mensaje']="Registro Agregado Correctamente";
+               
+               
+           }else{
+               
+               $resp['data']="";
+               $resp['estatus']="ERROR";
+               $resp['icon']="warning";
+               $resp['mensaje']="Registro Seleccionado No valido";
+               
+           }
+                     
+       } catch (Exception $e) {
+           $buffer =  error_get_last();
+           $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+           $resp['mensaje'] = $e->getMessage();
+           $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+           $resp['estatus'] = "ERROR";
+       }
+       
+       error_clear_last();
+       if (ob_get_contents()) ob_end_clean();
+       
+       echo json_encode($resp);       
+       
    }
    
   

@@ -1052,35 +1052,34 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    $_anio_recaudaciones   = $_POST['anio_recaudacion'];
 	    $_mes_recaudaciones    = $_POST['mes_recaudacion'];
 	    $_id_entidad_patronal  = $_POST['id_entidad_patronal'];
+	    $_id_descuentos_format = $_POST['id_descuentos_formatos'];
 	    
 	    
-	    $columnas1 = " date(aa.creado) \"creado\", bb.nombre_entidad_patronal, aa.formato_archivo_recaudaciones,
-    	    (select count(id_archivo_recaudaciones) from core_archivo_recaudaciones_detalle where id_archivo_recaudaciones = aa.id_archivo_recaudaciones) 
-            \"cantidad_recaudaciones\",
-    	    aa.anio_archivo_recaudaciones, aa.mes_archivo_recaudaciones, aa.usuario_usuarios, date(aa.modificado) \"modificado\", aa.id_archivo_recaudaciones";
-	    $tablas1   = " core_archivo_recaudaciones aa
-	        inner join core_entidad_patronal bb on bb.id_entidad_patronal = aa.id_entidad_patronal";
-	    $where1    = " 1 = 1 AND id_estatus = 1 AND usuario_usuarios = '$_usuario_logueado' ";
-	    $id1       = " aa.creado ";
+	    $columnas1 = " aa.id_descuentos_registrados_cabeza,aa.fecha_proceso_descuentos_registrados_cabeza,bb.id_entidad_patronal,bb.nombre_entidad_patronal,
+    	    aa.year_descuentos_registrados_cabeza, aa.mes_descuentos_registrados_cabeza,aa.usuario_descuentos_registrados_cabeza,aa.modificado,
+    	    (SELECT COUNT(1) FROM core_descuentos_registrados_detalle_aportes where id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza) as \"cantidad_aportes\",
+    	    (SELECT COUNT(1) FROM core_descuentos_registrados_detalle_creditos where id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza) as \"cantidad_creditos\"";
+	    $tablas1   = "core_descuentos_registrados_cabeza aa
+	       INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal";
+	    $where1    = " 1 = 1 ";
+	    $id1       = " aa.fecha_proceso_descuentos_registrados_cabeza ";
 	    
-	    /* para generar filtros */
+	    //aqui poner para filtrar si es por session
+	   	    
+	    /* PARA FILTROS DE CONSULTA */
 	    if( $_id_entidad_patronal > 0 ){
 	        $where1 .= " AND bb.id_entidad_patronal = $_id_entidad_patronal ";
 	    }
 	    if( $_anio_recaudaciones > 0 ){
-	        $where1 .= " AND aa.anio_archivo_recaudaciones = $_anio_recaudaciones ";
+	        $where1 .= " AND aa.year_descuentos_registrados_cabeza = $_anio_recaudaciones ";
 	    }
 	    if( $_mes_recaudaciones > 0 ){
-	        $where1 .= " AND aa.mes_archivo_recaudaciones = $_mes_recaudaciones ";
+	        $where1 .= " AND aa.mes_descuentos_registrados_cabeza = $_mes_recaudaciones ";
 	    }
-	    if( strlen($_busqueda) > 0 ){
-	        // metodos de busqueda
-	        $where1 .= " AND 1=1 ";
-	        
-	        // NOTICE here .. "filtros de busqueda" not implement yet//
+	    if( $_id_descuentos_format > 0 ){
+	        $where1 .= " AND aa.id_descuentos_formatos = $_id_descuentos_format ";
 	    }
-	    
-	    //echo "select ",$columnas1," from ",$tablas1," where ",$where1," order by ",$id1;
+	   
 	    
 	    $html = "";
 	    $resultSet=$Contribucion->getCantidad("*", $tablas1, $where1);
@@ -1120,39 +1119,57 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $i=0;
 	        foreach ($resultSet as $res){
 	            $i++;
-	            //echo 'llego';
+	            
+	            // variable para uso en ciclo
+	            $tipo_descuento = "";
+	            $cod_tipo_descuento    = 0;
+	            
+	            if( $res->cantidad_aportes > 0 ){
+	                $tipo_descuento = "APORTES";
+	                $cod_tipo_descuento    = 1;
+	            }elseif ( $res->cantidad_creditos > 0 ){
+	                $tipo_descuento = "CREDITOS";
+	                $cod_tipo_descuento    = 2;
+	            }else{
+	                $tipo_descuento = "N/D";
+	                $cod_tipo_descuento    = 0;
+	            }
+	            
+	            $cantidad_descuentos = ((int)$res->cantidad_aportes) + ((int)$res->cantidad_creditos);
+	           	            
+	            
 	            $html.='<tr>';
 	           
 	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->creado.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->fecha_proceso_descuentos_registrados_cabeza.'</td>';
 	            $html.='<td style="font-size: 11px;">'.$res->nombre_entidad_patronal.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->formato_archivo_recaudaciones.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->cantidad_recaudaciones.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->anio_archivo_recaudaciones.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$this->devuelveMesNombre($res->mes_archivo_recaudaciones).'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->usuario_usuarios.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$tipo_descuento.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$cantidad_descuentos.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->year_descuentos_registrados_cabeza.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$this->devuelveMesNombre($res->mes_descuentos_registrados_cabeza).'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->usuario_descuentos_registrados_cabeza.'</td>';
 	            $html.='<td style="font-size: 11px;">'.$res->modificado.'</td>';
 	            $html.='<td style="font-size: 18px;">';
 	            $html.='<span class="pull-right ">
-                        <a onclick="genArchivoDetallado(this)" id="" data-idarchivo="'.$res->id_archivo_recaudaciones.'"
+                        <a onclick="genArchivoDetallado(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-idarchivo="'.$res->id_descuentos_registrados_cabeza.'"
                         href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Archivo Detallado">
                         <i class="fa fa-files-o text-info" aria-hidden="true" ></i>
                         </a></span></td>';
 	            $html.='<td style="font-size: 18px;">';
 	            $html.='<span class="pull-right ">
-                        <a onclick="genArchivoEntidad(this)" id="" data-idarchivo="'.$res->id_archivo_recaudaciones.'"
+                        <a onclick="genArchivoEntidad(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-idarchivo="'.$res->id_descuentos_registrados_cabeza.'"
                         href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Archivo Entidad">
                         <i class="fa fa-file-text-o text-info" aria-hidden="true" ></i>
                         </a></span></td>';
 	            $html.='<td style="font-size: 18px;">';
 	            $html.='<span class="pull-right ">
-                        <a onclick="ValidarEdicionGenerados(this)" id="" data-idarchivo="'.$res->id_archivo_recaudaciones.'"
+                        <a onclick="ValidarEdicionGenerados(this)" id="" data-idarchivo="'.$res->id_descuentos_registrados_cabeza.'"
                         href="#" class="btn btn-sm btn-default label " data-toggle="tooltip" data-placement="top" title="Editar">
                         <i class="fa fa-edit text-warning" aria-hidden="true" ></i>
                         </a></span></td>';
 	            $html.='<td style="font-size: 18px;">';
 	            $html.='<span class="pull-right ">
-                        <a onclick="eliminarRegistro(this)" id="" data-idarchivo="'.$res->id_archivo_recaudaciones.'"
+                        <a onclick="eliminarRegistro(this)" id="" data-idarchivo="'.$res->id_descuentos_registrados_cabeza.'"
                         href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Eliminar">
                         <i class="fa fa-trash text-danger" aria-hidden="true" ></i>
                         </a></span></td>';
@@ -1205,6 +1222,16 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $html.='<tbody>';
 	        $html.='</tbody>';
 	        $html.='</table>';
+	    }
+	    
+	    $error = error_get_last();
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    if( !empty( $error )  ){
+	        echo "ERROR EN GRAFICAION TABLA";
+	        echo "\n",$error['message'];
+	        return;
 	    }
 	    
 	    echo json_encode(array('tablaHtml'=>$html,'cantidadRegistros'=>$cantidadResult));

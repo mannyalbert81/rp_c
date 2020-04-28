@@ -81,6 +81,30 @@ function cargaDescuentosFormatos(obj){
 		
 }
 
+function listadocargaDescuentosFormatos(obj){
+	
+	var inid_entidad_patronal	= $(obj).val();
+	var ddldescuentoslistado = $("#ddl_id_descuentos_formatos");
+	ddldescuentoslistado.empty().append('<option value="0">--Seleccione--</option>');
+	
+	var params = {id_entidad_patronal:inid_entidad_patronal};
+	
+	$.ajax({
+		url:'index.php?controller=RecaudacionGeneracionArchivo&action=cargaFormatoDescuentos',
+		type:"POST",
+		dataType:"json",
+		data: params			
+	}).done(function(x){
+		var rsData    = x.data;	    
+	    $.each(rsData,function(index,value){
+	    	ddldescuentoslistado.append('<option value="'+value.id_descuentos_formatos+'">'+value.nombre_descuentos_formatos+'</option>')
+	    });
+	}).fail(function(xhr,status,error){
+		console.log(xhr.responseText);
+	});
+		
+}
+
 $("#btnGenerar").on("click",function(){
 	
 	var $formulario = $("#frm_recaudacion");
@@ -259,17 +283,26 @@ function consultaArchivosRecaudacion( pagina=1){
 	let $divResultados = $("#div_tabla_archivo_txt");
 	$divResultados.html('');
 	
-	let $ddlEntidadBuscar = $("#ddl_id_entidad_patronal"), $txtAnioBuscar = $("#txt_anio_buscar"), $ddlmesBuscar = $("#ddl_mes_buscar");
+	let $ddlEntidadBuscar = $("#ddl_id_entidad_patronal"), 
+	$txtAnioBuscar = $("#txt_anio_buscar"), 
+	$ddlmesBuscar = $("#ddl_mes_buscar"), 
+	$ddlid_descuento_formatos = $("#ddl_id_descuentos_formatos");
+	
 	let valEntidad,valAnio,valMes;
 	valEntidad = ($ddlEntidadBuscar.val() == 0 || $ddlEntidadBuscar.val() == undefined ) ? 0 : $ddlEntidadBuscar.val();
 	valAnio    = ($txtAnioBuscar.val() == "" || $txtAnioBuscar.val() == undefined ) ? 0 : $txtAnioBuscar.val();
 	valMes     = ($ddlmesBuscar.val() == 0 || $ddlmesBuscar.val() == undefined ) ? 0 : $ddlmesBuscar.val();
+	valFormatos= ($ddlid_descuento_formatos.val() == 0 || $ddlid_descuento_formatos.val() == undefined ) ? 0 : $ddlid_descuento_formatos.val();
 	
-	var parametros ={page:pagina,peticion:'ajax',busqueda:"",id_entidad_patronal:valEntidad,anio_recaudacion:valAnio,mes_recaudacion:valMes}
+	var parametros ={page:pagina,peticion:'ajax',busqueda:"",
+			id_entidad_patronal:valEntidad,
+			anio_recaudacion:valAnio,
+			mes_recaudacion:valMes,
+			id_descuentos_formatos:valFormatos}
 	
 	
 	$.ajax({
-		url:"index.php?controller=Recaudacion&action=ConsultaArchivoRecaudaciones",
+		url:"index.php?controller=RecaudacionGeneracionArchivo&action=ConsultaArchivoRecaudaciones",
 		type:"POST",
 		dataType:"json",
 		data:parametros,
@@ -277,7 +310,7 @@ function consultaArchivosRecaudacion( pagina=1){
 			setStyleTabla("tbl_documentos_recaudaciones");
 		}
 	}).done(function(x){
-		console.log(x)
+		//console.log(x)
 		$divResultados.html(x.tablaHtml);	
 		
 	}).fail(function(xhr,status,error){

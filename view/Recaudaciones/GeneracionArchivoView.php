@@ -202,20 +202,29 @@
       <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Listado Recaudacion Entidades</h3>              
+              <h3 class="box-title">Listado Recaudacion Entidades</h3>  
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i>
+                </button>            
+              </div>          
             </div>
             
             <div class="box-body">
 
            		<div class="row">
            			<div class="col-lg-12 col-md-12 col-xs-12">
-               		    <div class="col-lg-3 col-md-3 col-xs-12">
+               		    <div class="col-lg-1 col-md-1 col-xs-12">
                    		    <div class="" >
             					<!-- aqui poner elemento de cantidad de registros -->
                     		</div>
                     	</div>
-               			<div class="col-lg-9 col-md-9 col-xs-12">
-                        	
+               			<div class="col-lg-11 col-md-11 col-xs-11">
+                        	<div class="pull-right" >
+                    			<div class="form-group-sm">
+                    				<button id="btn_reload" onclick="consultaArchivosRecaudacion(1)" class=" form-control btn btn-default" ><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                    			</div>
+                    		</div>
                         	<div class="pull-right" >
                         		<div class="form-group-sm">
                 					<select id="ddl_mes_buscar" class="form-control">
@@ -233,7 +242,14 @@
                     		</div> 
                     		<div class="pull-right" >
                     			<div class="form-group-sm">
-                        			<select id="ddl_id_entidad_patronal" class="form-group-sm form-control ">
+                        			<select id="ddl_id_descuentos_formatos" class="form-group-sm form-control ">
+                            			<option value="0">--Seleccione--</option>                                      	
+                                    </select>
+                                </div>
+                    		</div> 
+                    		<div class="pull-right" >
+                    			<div class="form-group-sm">
+                        			<select id="ddl_id_entidad_patronal" class="form-group-sm form-control" onchange="listadocargaDescuentosFormatos(this)">
                             			<option value="0">--Seleccione--</option>
                                       	<?php if(isset($rsEntidadPatronal)){
                                       	    foreach ( $rsEntidadPatronal as $res ){
@@ -243,12 +259,6 @@
                                     </select>
                                 </div>
                     		</div> 
-                    		<div class="pull-right" >
-                    			<div class="form-group-sm">
-                    				<button id="btn_reload" onclick="consultaArchivosRecaudacion(1)" class=" form-control btn btn-default" ><i class="fa fa-refresh" aria-hidden="true"></i></button>
-                    			</div>
-                    		</div>
-                    		
                     		               	
                     	</div>
                 	</div>
@@ -486,12 +496,8 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.06"></script> 
+   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.07"></script> 
        
-       
-
- 	
-	
 	
   </body>
 </html>   

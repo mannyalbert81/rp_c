@@ -51,10 +51,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	
 	public function GenerarRecaudacion(){
 	     
-	    $Contribucion      = new CoreContribucionModel();
 	    $recaudaciones     = new RecaudacionesModel();
-	    $respuesta         = array();
-	    $error             = "";
 	    session_start();
 	    
 	    /* variables locales */
@@ -179,66 +176,20 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            
 	        }elseif ( (int)$_formato_recaudacion === 2 ){
 	            
-	        }else{
+	            $auxDetalle    = $this->RecaudacionCreditos($paramsCab);
 	            
-	        }
-	        	        
-	        //diferenciar el tipo de recaudacion que va a realizar 
-// 	        switch ( $_formato_recaudacion ){
-	           
-// 	            case '1':
-	                   
-//                     $respuestaArchivo           = $this->RecaudacionAportes($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
-//                     $_id_archivo_recaudaciones  = $respuestaArchivo;
-                    
-//                     if((int)$respuestaArchivo > 0){
-                        
-//                         $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
-//                         $respuesta['id_archivo']= $_id_archivo_recaudaciones;
-//                         $respuesta['respuesta'] = 1;
-                        
-//                     }else if((int)$respuestaArchivo == 0){
-                        
-//                         $respuesta['respuesta'] = 3;
-// 					}
-	                 
-// 	            break;
-//                 case '2':                   
-                        
-//                     $respuestaArchivo           = $this->RecaudacionCreditos($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
-//                     $_id_archivo_recaudaciones  = $respuestaArchivo;
-                    
-//                     if((int)$respuestaArchivo > 0){
-                        
-//                         $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
-//                         $respuesta['id_archivo']= $_id_archivo_recaudaciones;
-//                         $respuesta['respuesta'] = 1;
-//                     }else if((int)$respuestaArchivo == 0){
-//                         $respuesta['respuesta'] = 3;
-// 					}                       
-                   
-                     
-// 				break;
-// 				case '3':
-// 				    $respuestaArchivo           = $this->RecaudacionCombinada($_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion);
-// 				    $_id_archivo_recaudaciones  = $respuestaArchivo;
-				    
-// 				    if((int)$respuestaArchivo > 0){
-				        
-// 				        $respuesta['mensaje']   = "Distribucion Generada Revise el archivo";
-// 				        $respuesta['id_archivo']= $_id_archivo_recaudaciones;
-// 				        $respuesta['respuesta'] = 1;
-// 				    }else if((int)$respuestaArchivo == 0){
-// 				        $respuesta['respuesta'] = 3;
-// 				    }  
-				    
-// 				break;
-//                 default:
-// 	            break;
-// 	        }
-                
+	            if( $auxDetalle['error'] ){
+	                throw new Exception( $auxDetalle['mensaje'] );
+	            }
+	        }else{
+	            throw new Exception( "Datos no generados \n Tipo Descuento no encontrado" );
+	        }	        	        
+	        
+	        $resp['estatus']   = "OK";
+	        $resp['icon']      = "success";
+	        $resp['mensaje']   = "Datos generados";
             $recaudaciones->endTran('COMMIT');
-            echo json_encode($respuesta);
+            echo json_encode($resp);
 	                
 	    } catch (Exception $ex) {
 	        $recaudaciones->endTran();
@@ -397,9 +348,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	
 	public function RecaudacionCreditos( array $paramsCab){
 	    
-	    if(!isset($_SESSION)){
-	        session_start();
-	    }
+	    if( !isset( $_SESSION ) ){ session_start();	}
 	    
 	    $recaudaciones = new RecaudacionesModel();
 	    
@@ -411,70 +360,76 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    $anio_recaudacion       = $paramsCab['anio_recaudaciones'];
 	    $mes_recaudacion        = $paramsCab['mes_recaudaciones'];
 	    
-	    $fecha_buscar = $anio_recaudacion.$mes_recaudacion;
+	    /*** EJECUCION DE FUNCION QUE REALIZA BUSQUEDA EN INSERTA EN TABLA DE VALORES **/
 	    
-	    $columnas1 = "aa.id_tabla_amortizacion,aa.fecha_tabla_amortizacion, aa.total_valor_tabla_amortizacion,
-            	    bb.id_creditos, bb.numero_creditos, bb.id_tipo_creditos, bb.fecha_concesion_creditos,
-            	    cc.id_participes, cc.cedula_participes, cc.nombre_participes, cc.apellido_participes";
-	    $tablas1   = "core_tabla_amortizacion aa
-            	    INNER JOIN core_creditos bb   ON bb.id_creditos = aa.id_creditos
-            	    INNER JOIN core_participes cc  ON cc.id_participes = bb.id_participes
-            	    INNER JOIN core_estado_creditos dd  ON dd.id_estado_creditos = bb.id_estado_creditos";
-	    $where1    = "aa.id_estatus = 1
-            	    AND bb.id_estatus = 1
-                    AND cc.id_estatus = 1
-            	    AND aa.id_estado_tabla_amortizacion <> 2
-                    AND bb.id_estado_creditos = 4
-                    AND cc.id_entidad_patronal = $id_entidad_patronal
-            	    AND TO_CHAR(aa.fecha_tabla_amortizacion,'YYYYMM') = '$fecha_buscar'
-            	    AND dd.nombre_estado_creditos = 'Activo'";
-	    $id1       = "cc.id_participes, aa.id_tabla_amortizacion";
+	    $funcion = "fn_genera_detalle_valores_descuentos_creditos";	    
+	    $parametros = "$id_entidad_patronal,$id_formatos_descuentos,$anio_recaudacion,$mes_recaudacion";
+	    $sqDatos   = $recaudaciones->getconsultaPG($funcion, $parametros);
 	    
-	    $rsConsulta1 = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    $resultado = $recaudaciones->llamarconsultaPG($sqDatos);
 	    
-	    if( empty( $rsConsulta1 )  ){ return array( 'error'=>true, 'mensaje'=>"Data se encuentra vacia"); }
+	    if( (int)$resultado[0] != 1 ){
+	        return array('error'=>true,'mensaje'=>"ejecucion funcion datos creditos fallida");
+	    }
 	    
+	    $col1  = "aa.id_participes, aa.id_creditos, aa.valor_cuota_descuentos_registrados_detalle_valores_creditos,cc.plazo_creditos, 
+            cc.saldo_actual_creditos,bb.mora_tabla_amortizacion";
+	    $tab1  = "core_descuentos_registrados_detalle_valores_creditos aa
+    	    INNER JOIN core_tabla_amortizacion bb ON bb.id_tabla_amortizacion = aa.id_tabla_amortizacion
+    	    INNER JOIN core_creditos cc ON cc.id_creditos = aa.id_creditos";
+	    $whe1  = "aa.id_entidad_patronal = $id_entidad_patronal
+            AND aa.id_descuentos_formatos = $id_formatos_descuentos
+            AND aa.anio_descuentos_registrados_detalle_valores_creditos = $anio_recaudacion
+            AND aa.mes_descuentos_registrados_detalle_valores_creditos	= $mes_recaudacion";
+	    $id1   = " aa.id_participes";
+	    	    
+	    $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
 	    
-	    $detalle    = array();
-	    $funcionDetalle = "core_ins_descuentos_registrados_detalle_creditos";
+	    if( empty( $rsConsulta1 ) ){
+	        return array('error'=>true,'mensaje'=>"extraccion datos descuentos fallida");
+	    }
+	    
+	    $detalle   = array();
+	    
+	    $mes_desc_descuentos   = "null";
+	    $credito_pay_descuentos= "0";
+	    $tipo_descuento        = "0";
+	    $procesados_descuentos = "t";
+	    $alta_descuentos       = "t";
+	    $monto_descuentos      = "0";
+	    
+	    $funcionDetalle    = "core_ins_descuentos_registrados_detalle_creditos";
+	    $parametrosDetalle = "";
 	    
 	    foreach ( $rsConsulta1 as $res ){
 	        
-	        $_valor_sistema = 0.00;
-	        $_valor_final   = 0.00;
-	        
-	        /* validar tipo contribucion participe */
-	        if( strtoupper($res->nombre_tipo_aportacion) == "VALOR"){
-	            $_valor_sistema    = $res->valor_contribucion_tipo_participes;
-	            $_valor_final      = $res->valor_contribucion_tipo_participes;
-	        }
-	        
-	        if( strtoupper($res->nombre_tipo_aportacion) == "PORCENTAJE"){
-	            $_sueldo   = (float)$res->sueldo_liquido_contribucion_tipo_participes;
-	            $_porcentaje   = (float)$res->porcentaje_contribucion_tipo_participes;
-	            $_valor_base   = ($_sueldo * $_porcentaje)/100;
-	            $_valor_sistema = $_valor_base;
-	            $_valor_final   = $_valor_base;
-	        }
+	        $id_participes = ( !empty( $res->id_participes ) ) ? $res->id_participes : 'null';
+	        $id_creditos   = ( !empty( $res->id_creditos ) ) ? $res->id_creditos : 'null';
+	        $cuota_descuentos  = ( !empty( $res->valor_cuota_descuentos_registrados_detalle_valores_creditos ) ) ? $res->valor_cuota_descuentos_registrados_detalle_valores_creditos : 0;
+	        $plazo_desccuentos = ( !empty( $res->plazo_creditos ) ) ? $res->plazo_creditos : 0;
+	        $mora_descuentos   = ( !empty( $res->mora_tabla_amortizacion ) ) ? $res->mora_tabla_amortizacion : 0;
+	        $saldo_descuentos  = ( !empty( $res->saldo_actual_creditos ) ) ? $res->saldo_actual_creditos : 0;
 	        
 	        $detalle['id_descuentos_registrados_cabeza']    = $id_descuentos_registrados_cabeza;
 	        $detalle['id_entidad_patronal']                 = $id_entidad_patronal;
 	        $detalle['anio_descuentos']                     = $anio_recaudacion;
 	        $detalle['mes_descuentos']                      = $mes_recaudacion;
-	        $detalle['id_participes']                       = $res->id_participes;
-	        $detalle['aporte_personal']                     = $_valor_sistema;
-	        $detalle['aporte_patronal']                     = "0.00";
-	        $detalle['rmu_descuentos']                      = "0.00";
-	        $detalle['liquido_descuentos']                  = "0.00";
-	        $detalle['multas_descuentos']                   = "0.00";
-	        $detalle['antiguedad_descuentos']               = "0.00";
-	        $detalle['alta_descuentos']                     = "t";
+	        $detalle['id_tipo_descuento']                   = $tipo_descuento;
+	        $detalle['id_participes']                       = $id_participes; 
+	        $detalle['id_creditos']                         = $id_creditos;
+	        $detalle['cuota_descuentos']                    = $cuota_descuentos;
+	        $detalle['monto_descuentos']                    = $monto_descuentos;
+	        $detalle['plazo_descuentos']                    = $plazo_desccuentos;
+	        $detalle['alta_descuentos']                     = $alta_descuentos;
 	        $detalle['id_descuentos_formatos']              = $id_formatos_descuentos;
-	        $detalle['procesado_descuentos']                = "t";
-	        $detalle['saldo_descuentos']                    = "0.00";
-	        $detalle['valor_usuario']                       = $_valor_final;
+	        $detalle['procesado_descuentos']                = $procesados_descuentos;
+	        $detalle['saldo_descuentos']                    = $saldo_descuentos;
+	        $detalle['mora_descuentos']                     = $mora_descuentos;//-
+	        $detalle['credito_pay_descuentos']              = $credito_pay_descuentos;
+	        $detalle['mes_desc_descuentos']                 = $mes_desc_descuentos;
 	        
 	        $parametrosDetalle  = "'".join("','", $detalle)."'";
+	        $parametrosDetalle  = str_replace("'null'","null",$parametrosDetalle);
 	        $sqDetalle  = $recaudaciones->getconsultaPG($funcionDetalle, $parametrosDetalle);
 	        
 	        $recaudaciones->llamarconsultaPG($sqDetalle);
@@ -2891,6 +2846,11 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	/** END FUNCIONES UTILITARIAS PARA LA CLASE */
 	
 	public function fn_prueba(){
+	    
+	    $parametrosDetalle  = "'10','1','hoal','null','null',null,'hola'";
+	    echo $parametrosDetalle,'<br>';
+	    $parametrosDetalle  = str_replace("'null'","null",$parametrosDetalle);
+	    echo $parametrosDetalle,'<br>';
 	    
 	    echo date('Y-m-d H:i:s');
 	    

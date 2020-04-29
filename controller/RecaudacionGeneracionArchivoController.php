@@ -1108,12 +1108,10 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $html.='<th style="text-align: left;  font-size: 12px;">Mes</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Usuario</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">Modificado</th>';
-	        $html.='<th style="text-align: left;  font-size: 12px;" colspan="4" >Opciones</th>';
-	        /*$html.='<th style="text-align: left;  font-size: 12px;">-</th>';
-	        $html.='<th style="text-align: left;  font-size: 12px;">-</th>';
-	        $html.='<th style="text-align: left;  font-size: 12px;">-</th>';*/
+	        $html.='<th style="text-align: left;  font-size: 12px;" colspan="4" >Opciones</th>';	       
 	        $html.='</tr>';
-	        $html.='</thead>';	        
+	        $html.='</thead>';
+	        
 	        $html.='<tbody>';
 	        
 	        $i=0;
@@ -1151,6 +1149,12 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            $html.='<td style="font-size: 11px;">'.$res->modificado.'</td>';
 	            $html.='<td style="font-size: 18px;">';
 	            $html.='<span class="pull-right ">
+                        <a onclick="verDatosDescuentos(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'"
+                        href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Ver Detalles">
+                        <i class="fa  fa-building-o" aria-hidden="true" ></i>
+                        </a></span></td>';
+	            $html.='<td style="font-size: 18px;">';
+	            $html.='<span class="pull-right ">
                         <a onclick="genArchivoDetallado(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-idarchivo="'.$res->id_descuentos_registrados_cabeza.'"
                         href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Archivo Detallado">
                         <i class="fa fa-files-o text-info" aria-hidden="true" ></i>
@@ -1172,7 +1176,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
                         <a onclick="eliminarRegistro(this)" id="" data-idarchivo="'.$res->id_descuentos_registrados_cabeza.'"
                         href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Eliminar">
                         <i class="fa fa-trash text-danger" aria-hidden="true" ></i>
-                        </a></span></td>';
+                        </a></span>';
+	            $html.='</td>';
 	            
 	            /*$html.='<td style="font-size: 18px;">';
 	            $html.='<span class="pull-right ">
@@ -1913,113 +1918,133 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	
 	public function genArchivoDetallado(){
 	    
-	    $Contribucion = new CoreContribucionModel();
+	    $recaudaciones = new RecaudacionesModel();
 	    
 	    try {
 	        
 	        /*tomar datos de la vista*/
-	        $_id_entidad_patronal = 0;
+	        
 	        $_mes_recaudaciones   = 0;
-	        $_anio_recaudaciones  = 0;
-	        $_id_archivo_recaudaciones = $_POST['id_archivo_recaudaciones'];
-	        $_subnombre_archivo = "";
-	        $_formato_archivo_recaudaciones = "";
+	        $_anio_recaudaciones  = 0;	        
+	        $id_descuentos_cabeza  = $_POST['id_descuentos_cabeza'];
+	        $tipo_descuento        = $_POST['tipo_descuento'];	
 	        
-	        $columnas1 = " formato_archivo_recaudaciones, id_entidad_patronal, anio_archivo_recaudaciones, mes_archivo_recaudaciones";
-	        $tablas1   = " public.core_archivo_recaudaciones";
-	        $where1    = " id_archivo_recaudaciones = $_id_archivo_recaudaciones ";
-	        $id1       = " id_archivo_recaudaciones";
-	        $rsConsulta1   = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-	        /* tomar datos de consulta1 */
-	        $_id_entidad_patronal = $rsConsulta1[0]->id_entidad_patronal;
-	        $_anio_recaudaciones    = $rsConsulta1[0]->anio_archivo_recaudaciones;
-	        $_mes_recaudaciones     = $rsConsulta1[0]->mes_archivo_recaudaciones;
-	        $_formato_archivo_recaudaciones = $rsConsulta1[0]->formato_archivo_recaudaciones;
-	        
-	        $_subnombre_archivo = "_DET".$this->returnSubfijoFormato( $_formato_archivo_recaudaciones );
-	        
-	        /**DATOS DE ENTIDAD PATRONAL*/
-	        /* buscar nombre entidad patronal */
-	        $columnas2 = "id_entidad_patronal, nombre_entidad_patronal, codigo_entidad_patronal";
-	        $tablas2   = "core_entidad_patronal";
-	        $where2    = "id_entidad_patronal = $_id_entidad_patronal";
-	        $id2       = "id_entidad_patronal";
-	        $rsConsulta2   = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
-	        $_nombre_entidad_patronal  = $this->limpiarCaracteresEspeciales($rsConsulta2[0]->nombre_entidad_patronal);
-	        $_codigo_entidad_patronal  = $rsConsulta2[0]->codigo_entidad_patronal;
-	        
-	        if( empty( $rsConsulta1) ){ echo "archivo vacio"; }
-	        
-	        // generar archivo txt
-	        $_TXT_RECAUDACIONES = $this->obtienePath($_nombre_entidad_patronal.$_subnombre_archivo, $_anio_recaudaciones, $_mes_recaudaciones, "ARCHIVOSENVIAR");
-	        $_nombre_archivo_recaudaciones = $_TXT_RECAUDACIONES['nombre'];
-	        $_ruta_archivo_recaudaciones   = $_TXT_RECAUDACIONES['ruta'];
-	        
-	        $columnas3 = "bb.formato_archivo_recaudaciones, aa.descripcion_archivo_recaudaciones_detalle, cc.id_participes, cc.cedula_participes, cc.apellido_participes,
-    	    cc.nombre_participes, aa.valor_sistema_archivo_recaudaciones_detalle, aa.valor_final_archivo_recaudaciones_detalle,
-    	    bb.anio_archivo_recaudaciones, bb.mes_archivo_recaudaciones, dd.id_creditos, dd.numero_creditos";
-	        $tablas3   = "core_archivo_recaudaciones_detalle aa
-    	    INNER JOIN core_archivo_recaudaciones bb ON bb.id_archivo_recaudaciones = aa.id_archivo_recaudaciones
-    	    INNER JOIN core_participes cc ON cc.id_participes = aa.id_participes
-    	    LEFT JOIN core_creditos dd ON dd.id_creditos = aa.id_creditos";
-	        $where3    = "cc.id_estatus = 1
-    	    AND dd.id_estatus = 1
-    	    AND bb.id_archivo_recaudaciones IN ($_id_archivo_recaudaciones) ";
-	        $id3       = "cc.id_participes";
-	        $rsConsulta3 = $Contribucion->getCondiciones($columnas3, $tablas3, $where3, $id3);
-	        
-	        /* aqui hacer calculos para sumatorias y numero de lineas */
-	        $_cantidad_registros	= sizeof($rsConsulta3);
-	        $_fecha_achivo	= $this->returnDateLastDay($_anio_recaudaciones, $_mes_recaudaciones);
-	        $_sumatoria_archivo	= 0.00;
-	        
-	        $databody	= "";
-	        $numero = 0;
-	        foreach($rsConsulta3 as $res){
-	            $numero += 1;
-	            $tipo_contribucion     = $res->formato_archivo_recaudaciones;
-	            $cedula_participe      =  $res->cedula_participes;
-	            $apellido_participe    =  $res->apellido_participes;
-	            $nombre_participe      =  $res->nombre_participes;
-	            $valor_descuento       =  $res->valor_sistema_archivo_recaudaciones_detalle;
-	            $total_descuento       =  $res->valor_final_archivo_recaudaciones_detalle;
-	            $concepto_recaudacion  =  $res->descripcion_archivo_recaudaciones_detalle;
-	            
-	            $_sumatoria_archivo += $total_descuento; //variable para obtener la suma
-	            
-	            $databody.=$numero.";".$concepto_recaudacion.";".$cedula_participe.";".$apellido_participe." ".$nombre_participe.";";
-	            $databody.=$valor_descuento.";".$total_descuento.";".PHP_EOL;
-	            
+	        if( error_get_last() ){
+	            throw new Exception( "Datos no recibidos" );
 	        }
 	        
-	        /* estructurar el archivo */
-	        $datahead	= $tipo_contribucion."\t".$_codigo_entidad_patronal."\t".$_fecha_achivo."\t".$_cantidad_registros."\t".$_sumatoria_archivo.PHP_EOL;
-	        $datahead	.= 'NUMERO'.";".'CONCEPTO'.";".'CEDULA'.";".'NOMBRE'.";".'DESCUENTO'.";".'TOTAL DESCUENTO'.";".PHP_EOL;
+	        $col1  = " aa.year_descuentos_registrados_cabeza, aa.mes_descuentos_registrados_cabeza, bb.id_entidad_patronal, bb.nombre_entidad_patronal, 
+                bb.codigo_entidad_patronal ";
+	        $tab1  = " core_descuentos_registrados_cabeza aa
+	           INNER JOIN core_entidad_patronal bb	ON bb.id_entidad_patronal = aa.id_entidad_patronal";
+	        $whe1  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	        $id1   = " aa.id_descuentos_registrados_cabeza ";
 	        
-	        /*** buscar otro metodo para archivos grandes evitar acumulacion memoria al generar todo en una variable */
-	        $archivo = fopen($_ruta_archivo_recaudaciones, 'w');
-	        fwrite($archivo, $datahead.$databody);
-	        fclose($archivo);
+	        $rsConsulta1    = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
 	        
-	        $error = error_get_last();
-	        if(!empty($error)){
-	            throw new Exception('Archivo no generado');
+	        //$id_entidad_patronal       = $rsConsulta1[0]->id_entidad_patronal;
+	        $nombre_entidad_patronal   = $this->limpiarCaracteresEspeciales( $rsConsulta1[0]->nombre_entidad_patronal );
+	        $codigo_entidad_patronal   = $rsConsulta1[0]->codigo_entidad_patronal;
+	        $anio_descuentos_cabeza    = $rsConsulta1[0]->year_descuentos_registrados_cabeza;
+	        $mes_descuentos_cabeza     = $rsConsulta1[0]->mes_descuentos_registrados_cabeza;
+	        
+	        
+	      
+	        $rsData    = array();
+	        $nameTipoDescuento = "";
+	        if( $tipo_descuento == "1" ){
+	            
+	            $nameTipoDescuento = "APORTES";
+	            
+	            $col1  = " aa.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.aporte_personal_descuentos_registrados_detalle_aportes,
+	               COALESCE(aa.valor_usuario_descuentos_registrados_detalle_aportes,0) as valor_usuario_descuentos_registrados_detalle_aportes ";
+	            $tab1  = " core_descuentos_registrados_detalle_aportes aa
+	               INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
+	            $whe1  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	            $id1   = " aa.id_descuentos_registrados_detalle_aportes ";
+	            	            
+	            $rsData    = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
+	            
+	        }elseif( $tipo_descuento == "2" ){
+	            
+	            $nameTipoDescuento = "CREDITOS";
+	            
+	            $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.cuota_descuentos_registrados_detalle_creditos,
+	               cc.id_creditos, cc.numero_creditos";
+	            $tab2  = " core_descuentos_registrados_detalle_creditos aa
+    	            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
+    	            INNER JOIN core_creditos cc ON cc.id_creditos = aa.id_creditos";
+	            $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	            $id2   = " aa.id_descuentos_registrados_detalle_creditos";
+	            
+	            $rsData    = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);
+	           	            
+	        }else{
+	            throw new Exception( "Tipo de descuento no valido" );
 	        }
 	        
-	        //para actualizacion del archivo
-	        $actColumnas = "generado_archivo_recaudaciones = 't',
-					ruta_archivo_recaudaciones = '$_ruta_archivo_recaudaciones',
-					nombre_archivo_recaudaciones = '$_nombre_archivo_recaudaciones'";
-	        $actTablas = "core_archivo_recaudaciones";
-	        $actWhere = "id_archivo_recaudaciones = $_id_archivo_recaudaciones ";
-	        
-	        $Contribucion->ActualizarBy($actColumnas, $actTablas, $actWhere);
-	        
-	        echo json_encode(array('mensaje'=>'archivo generado'));
-	        exit();
-	        
+	        /**generar datos de archivo plano*/
+	        $mes_descuentos_cabeza_archivo = str_pad($mes_descuentos_cabeza, 2, "0",STR_PAD_LEFT);
+	        $subnameFile   = "_DET".$nameTipoDescuento;
+	        $_TXT_RECAUDACIONES = $this->obtienePath( $nombre_entidad_patronal.$subnameFile, $anio_descuentos_cabeza, $mes_descuentos_cabeza_archivo, "ARCHIVOSENVIAR");            
+            $nameFileRecaudaciones  = $_TXT_RECAUDACIONES['nombre'];
+            $rutaFileRecaudaciones  = $_TXT_RECAUDACIONES['ruta'];
+            
+            /* PARA REALIZAR LOS DETALLES DE ARCHIVO PLANO*/
+            $_cantidad_registros	= sizeof($rsData);
+            $_fecha_achivo	= $this->returnDateLastDay($anio_descuentos_cabeza, $mes_descuentos_cabeza);
+            $_sumatoria_archivo	= 0.00;
+            
+            $databody	= "";
+            $numero = 0;
+            foreach( $rsData as $res){
+                
+                $numero += 1;                
+                 
+                $cedula_participe      = $res->cedula_participes;
+                $apellido_participe    = $res->apellido_participes;
+                $nombre_participe      = $res->nombre_participes;      
+                
+                if( $tipo_descuento == "1"){
+                    $tipo_contribucion     = "APORTES";
+                    $valor_descuento       = $res->aporte_personal_descuentos_registrados_detalle_aportes;
+                    $total_descuento       = $res->valor_usuario_descuentos_registrados_detalle_aportes;
+                    $concepto_recaudacion  = "DESCUENTOS APORTES";
+                    
+                }elseif( $tipo_descuento == "2" ){
+                    $tipo_contribucion     = "CREDITOS";
+                    $valor_descuento       = $res->cuota_descuentos_registrados_detalle_creditos;
+                    $total_descuento       = $valor_descuento;
+                    $concepto_recaudacion  = "DESCUENTOS CREDITOS";
+                }
+                
+                $_sumatoria_archivo += $total_descuento; //variable para obtener la suma
+                
+                $databody.=$numero.";".$concepto_recaudacion.";".$cedula_participe.";".$apellido_participe." ".$nombre_participe.";";
+                $databody.=$valor_descuento.";".$total_descuento.";".PHP_EOL;
+                
+            }
+            
+            /* estructurar el archivo */
+            $datahead	= $tipo_contribucion."\t".$codigo_entidad_patronal."\t".$_fecha_achivo."\t".$_cantidad_registros."\t".$_sumatoria_archivo.PHP_EOL;
+            $datahead	.= 'NUMERO'.";".'CONCEPTO'.";".'CEDULA'.";".'NOMBRE'.";".'DESCUENTO'.";".'TOTAL DESCUENTO'.";".PHP_EOL;
+            
+            /*** buscar otro metodo para archivos grandes evitar acumulacion memoria al generar todo en una variable */ 
+            $archivo = fopen($rutaFileRecaudaciones, 'w');
+            fwrite($archivo, $datahead.$databody);
+            fclose($archivo);
+            
+            if(!empty(error_get_last())){
+                throw new Exception('Archivo no generado');
+            }
+            
+            echo json_encode(array('estatus'=>"OK",'mensaje'=>'Archivo TXT generado'));
+            exit();
+            
+	        	        
 	    } catch (Exception $e) {
-	        echo '<message>'.$e->getMessage().' <message>';
+	        $buffer    = error_get_last();
+	        echo '<message>'.$e->getMessage().' <--> '.$buffer['message'].' <message>';
 	        exit();
 	    }
 	    	    
@@ -2958,6 +2983,165 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    echo json_encode($resp);
 	}
 	/***** end dc 2020/04/22 ******/ 
+	
+	/******* begin dc 2020/04/29 ****/
+	public function CargarDatosDescuentos(){
+	    
+	    $recaudaciones = new RecaudacionesModel();
+	    
+	    /*toma de variables*/
+	    $page              = (isset($_REQUEST['page']) && !empty($_REQUEST['page'])) ? $_REQUEST['page'] : 1;
+	    $busqueda_datos    = $_POST['busqueda'];
+	    $id_descuentos_cabeza  = $_POST['id_descuentos_cabeza'];
+	    $tipo_descuento        = $_POST['tipo_descuento'];
+	    
+	    if( !empty( error_get_last() ) ){
+	        echo "<message> Variables no definidas <message>";
+	        exit();
+	    }
+	    	    
+	    if( $tipo_descuento == "1" ){
+	        
+	        $col1  = "";
+	        $tab1  = "";
+	        $whe1  = "";
+	        $id1   = "";
+	        
+	    }elseif ($tipo_descuento == "2" ){
+	        
+	    }else{
+	        
+	    }
+	    
+	   	    
+	    /*$columnas1 = "aa.id_archivo_recaudaciones, aa.valor_sistema_archivo_recaudaciones_detalle, aa.valor_final_archivo_recaudaciones_detalle,
+        	   bb.formato_archivo_recaudaciones, bb.usuario_usuarios, cc.id_participes, cc.cedula_participes, cc.apellido_participes, cc.nombre_participes,
+               aa.id_archivo_recaudaciones_detalle, aa.id_creditos, aa.descripcion_archivo_recaudaciones_detalle";
+	    $tablas1    = "core_archivo_recaudaciones_detalle aa
+        	   INNER JOIN core_archivo_recaudaciones bb
+        	   ON bb.id_archivo_recaudaciones = aa.id_archivo_recaudaciones
+        	   INNER JOIN core_participes cc
+        	   ON cc.id_participes = aa.id_participes";
+	    $where1     = "cc.id_estatus = 1
+        	   AND aa.id_archivo_recaudaciones = $_id_archivo_recaudaciones";
+	    $id1        = "cc.id_participes";*/
+	    
+	    
+	    if( strlen($_busqueda_datos_generados) > 0 ){
+	        // metodos de busqueda
+	        $where1 .= " AND ( cc.cedula_participes ILIKE '$_busqueda_datos_generados%' )";
+	    }
+	    
+	    //echo $columnas2, $tablas2, $where2, $id2, '1','<br>'; die();
+	    
+	    $html = "";
+	    $resultSet=$Contribucion->getCantidad("*", $tablas1, $where1);
+	    $cantidadResult=(int)$resultSet[0]->total;
+	    
+	    /* para obtener Sumas*/
+	    $rsSumatoria1           = $Contribucion->getSumaColumna("aa.valor_sistema_archivo_recaudaciones_detalle", $tablas1, $where1);
+	    $_total_archivo_sistema = $rsSumatoria1[0]->suma;
+	    $rsSumatoria2           = $Contribucion->getSumaColumna("aa.valor_final_archivo_recaudaciones_detalle", $tablas1, $where1);
+	    $_total_archivo_final   = $rsSumatoria2[0]->suma;
+	    
+	    $per_page = 10; //la cantidad de registros que desea mostrar
+	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	    $offset = ($page - 1) * $per_page;
+	    
+	    $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	    
+	    $resultSet=$Contribucion->getCondicionesPag($columnas1, $tablas1, $where1, $id1, $limit);
+	    $total_pages = ceil($cantidadResult/$per_page);
+	    
+	    if($cantidadResult>0){
+	        
+	        $html.= "<table id='tbl_archivo_recaudaciones_insertados' class='table tablesorter table-striped table-bordered dt-responsive nowrap'>";
+	        $html.= "<thead>";
+	        $html.= "<tr>";
+	        $html.='<th style="text-align: left;  font-size: 12px;" colspan="8">'.$resultSet[0]->formato_archivo_recaudaciones.'</th>';
+	        $html.='</tr>';
+	        $html.= "<tr>";
+	        $html.='<th style="text-align: left;  font-size: 12px;">-</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Concepto</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Apellidos Participe</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Nombres Participe </th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Valor Sistema</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Valor Archivo</th>';
+	        $html.='</tr>';
+	        $html.='</thead>';
+	        $html.='<tbody>';
+	        
+	        $i=0;
+	        foreach ($resultSet as $res){
+	            $i++;
+	            
+	            /* se realiza una validacion : si el id de credito es null se activa para editar la fila*/
+	            $_html_boton_editar = "-";
+	            if( empty($res->id_creditos) ){
+	                $_html_boton_editar = '<span class="">
+                            <a onclick="editAporte(this)" id="" data-idarchivo="'.$res->id_archivo_recaudaciones_detalle.'"
+                            href="#" class="btn btn-sm btn-default label label-warning">
+                            <i class="fa fa-edit" aria-hidden="true" ></i>
+                            </a></span>';
+	            }
+	            
+	            $html.='<tr>';
+	            $html.='<td style="font-size: 18px;">';
+	            $html.= $_html_boton_editar;
+	            $html.= '</td>';
+	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->descripcion_archivo_recaudaciones_detalle.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->apellido_participes.'</td>';
+	            $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
+	            $html.='<td style="font-size: 11px; text-align: right; ">'.$res->valor_sistema_archivo_recaudaciones_detalle.'</td>';
+	            $html.='<td style="font-size: 11px; text-align: right; ">'.$res->valor_final_archivo_recaudaciones_detalle.'</td>';
+	            
+	            $html.='</tr>';
+	        }
+	        
+	        $html.='</tbody>';
+	        /*para totalizar las filas*/
+	        $html.='<tfoot>';
+	        $html.='<tr>';
+	        $html.='<th colspan="5" ></th>';
+	        $html.='<th style="text-align: right"; >TOTALES</th>';
+	        $html.='<th style="text-align: right;  font-size: 12px;">'.$_total_archivo_sistema.'</th>';
+	        $html.='<th style="text-align: right;  font-size: 12px;">'.$_total_archivo_final.'</th>';
+	        $html.='</tr>';
+	        $html.='</tfoot>';
+	        $html.='</table>';
+	        $html.='<div class="table-pagination pull-right">';
+	        $html.=''. $this->paginate("index.php", $page, $total_pages, $adjacents,"buscarDatosInsertados").'';
+	        $html.='</div>';
+	        
+	    }else{
+	        
+	        $html.= "<table id='tbl_archivo_recaudaciones_insertados' class='table tablesorter  table-striped table-bordered dt-responsive nowrap'>";
+	        $html.= "<thead>";
+	        $html.= "<tr>";
+	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Concepto</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Apellidos Participe</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Nombres Participe </th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Valor Sistema</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">Valor Archivo</th>';
+	        $html.='</tr>';
+	        $html.='</thead>';
+	        $html.='<tbody>';
+	        $html.='</tbody>';
+	        $html.='</table>';
+	    }
+	    
+	    echo json_encode(array('tablaHtml'=>$html,'cantidadRegistros'=>$cantidadResult));
+	    
+	    
+	}
+	/******* begin dc 2020/04/29 ****/
 		
 }
 ?>

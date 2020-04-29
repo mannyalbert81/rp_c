@@ -1,4 +1,6 @@
 $GLOBAL_id_archivo_recaudaciones = 0;
+$GLOBAL_id_descuentos_cabeza = 0;
+$GLOBAL_tipo_descuento	= 0;
 $(document).ready(function(){
 	init();
 })
@@ -154,41 +156,25 @@ $("#btnGenerar").on("click",function(){
 		complete:function(xhr,status){ $formulario.data('locked', false); }
 	}).done(function(x){
 		console.log(x)
-		if(x.respuesta == 1){
+		if( x.estatus != undefined && x.estatus !="" ){
 			
 			swal( {
 				 title:"ARCHIVO",
-				 text: x.mensaje,
+				 text: "Datos Generados, Revisar datos en el listado de archivos Generados ",
 				 icon: "success",
 				 timer: 2000,
-				 button: false,
+				 button: true,
 				});	
 			
-			let id_archivo = (x.id_archivo != undefined && x.id_archivo > 0 ) ? x.id_archivo : 0;
+			//implementar si es necesario el que devuelva el ultimo insertado 			
+			let id_archivo = ( x.id_archivo != undefined && x.id_archivo > 0 ) ? x.id_archivo : 0;
 			$GLOBAL_id_archivo_recaudaciones=id_archivo;
-			buscarDatosInsertados(1);
+			//buscarDatosInsertados(1); poner un mensaje de revisar archivos creados
 			//buscarDatos();
 			consultaArchivosRecaudacion(1);
-				
 		}
-		if(x.respuesta == 2){
-			swal( {
-				 title:"ARCHIVO",
-				 text: x.mensaje,
-				 icon: "info",
-				 timer: 2000,
-				 button: false,
-				});
-				
-			buscarDatos();	
-		}
-		if(x.respuesta != undefined && x.respuesta == 3){
-			swal( {
-				title:"ARCHIVO RECAUDACIONES",
-				text: "No hay datos para generar el archivo",
-				icon: "info"
-			   });
-		}
+		
+		/** code below is to show error from parcticipes without valor aportes **/
 		if( x.mensajeAportes != undefined &&  x.mensajeAportes != "" ){
 			
 			swal.close();
@@ -278,7 +264,7 @@ function buscarDatosInsertados(pagina=1){
 	
 }
 
-function consultaArchivosRecaudacion( pagina=1){	
+function consultaArchivosRecaudacion( pagina=1 ){	
 	
 	let $divResultados = $("#div_tabla_archivo_txt");
 	$divResultados.html('');
@@ -330,22 +316,42 @@ function consultaArchivosRecaudacion( pagina=1){
 	
 }
 
-function genArchivoDetallado(linkArchivo){
+function verDatosDescuentos(linkArchivo){
 	
 	let $link = $(linkArchivo);
 	let parametros;
 	
-	if(parseInt($link.data("idarchivo")) > 0){
-		
-		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo")}
-		
-	}else{ return false; }	
+	var id_cabeza_descuentos	= $link.data("iddescuentos");
+	var tipo_descuento			= $link.data("codtipodescuento"); //aqui viene para definir si es descuentos por aportes o por creditos 
 	
+	if( id_cabeza_descuentos <= 0 || id_cabeza_descuentos == "" || id_cabeza_descuentos == undefined ){
+		return false;
+	}	
+	if( tipo_descuento <= 0 || tipo_descuento == "" || tipo_descuento == undefined ){
+		return false;
+	}
+	$GLOBAL_id_descuentos_cabeza	= id_cabeza_descuentos;
+	$GLOBAL_tipo_descuento		= tipo_descuento;
+	
+	CargarDatosDescuentos(1);
+		
+}
+
+function CargarDatosDescuentos(page){
+	
+	var id_descuentos_cabeza = $GLOBAL_id_descuentos_cabeza;
+	
+	var params = {
+			"id_descuentos_cabeza":id_cabeza_descuentos,
+			"tipo_descuento":tipo_descuento,
+			"page":page
+	}
+		
 	$.ajax({
-		url:"index.php?controller=Recaudacion&action=genArchivoDetallado",
+		url:"index.php?controller=RecaudacionGeneracionArchivo&action=CargarDatosDescuentos",
 		type:"POST",
 		dataType:"json",
-		data:parametros,
+		data:params,
 		complete:function(xhr,status){}
 	}).done(function(x){
 		console.log(x)
@@ -382,16 +388,94 @@ function genArchivoDetallado(linkArchivo){
 	}).fail(function(xhr,status,error){
 		var err = xhr.responseText
 		console.log(err)
-		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
-		 	if( mensaje !== null ){
-			 var resmsg = mensaje[1];
-			 swal( {
-				 title:"Error",
-				 dangerMode: true,
-				 text: resmsg.replace("|","\n"),
-				 icon: "error"
+		var mensaje = /<message>(.*?)<message>/.exec(err);
+	 	if( mensaje !== null ){
+	 		var resmsg = mensaje[1];
+	 		swal( {
+			 title:"Error",
+			 dangerMode: true,			 
+			 html: resmsg,
+			 icon: "error"
+			})
+	 	}
+	 	//text: resmsg /*resmsg.replace("|","\n")*/,
+	})
+}
+
+
+
+function genArchivoDetallado(linkArchivo){
+	
+	let $link = $(linkArchivo);
+	let parametros;
+	
+	var id_cabeza_descuentos	= $link.data("idarchivo");
+	var tipo_descuento			= $link.data("codtipodescuento"); //aqui viene para definir si es descuentos por aportes o por creditos 
+	
+	if( id_cabeza_descuentos <= 0 || id_cabeza_descuentos == "" || id_cabeza_descuentos == undefined ){
+		return false;
+	}	
+	if( tipo_descuento <= 0 || tipo_descuento == "" || tipo_descuento == undefined ){
+		return false;
+	}
+	
+	var params = {
+			"id_descuentos_cabeza":id_cabeza_descuentos,
+			"tipo_descuento":tipo_descuento
+	}
+		
+	$.ajax({
+		url:"index.php?controller=RecaudacionGeneracionArchivo&action=genArchivoDetallado",
+		type:"POST",
+		dataType:"json",
+		data:params,
+		complete:function(xhr,status){}
+	}).done(function(x){
+		console.log(x)
+		if(x.mensaje != undefined && x.mensaje == "archivo generado" ){
+			
+			swal( {
+				 title:"ARCHIVO RECAUDACIONES",
+				 dangerMode: false,
+				 text: " Archivo generado ",
+				 icon: "info"
 				})
-		 	}
+			var formParametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),"tipo_archivo_recaudaciones":"detalle"};
+			var form = document.createElement("form");
+		    form.setAttribute("method", "post");
+		    form.setAttribute("action", "index.php?controller=Recaudacion&action=descargarArchivo");
+		    form.setAttribute("target", "_blank");   
+		    
+		    for (var i in formParametros) {
+		        if (formParametros.hasOwnProperty(i)) {
+		            var input = document.createElement('input');
+		            input.type = 'hidden';
+		            input.name = i;
+		            input.value = formParametros[i];
+		            form.appendChild(input);
+		        }
+		    }
+		    
+		    document.body.appendChild(form); 
+		    form.submit();    
+		    document.body.removeChild(form);
+			
+		}
+				
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err);
+	 	if( mensaje !== null ){
+	 		var resmsg = mensaje[1];
+	 		swal( {
+			 title:"Error",
+			 dangerMode: true,			 
+			 html: resmsg,
+			 icon: "error"
+			})
+	 	}
+	 	//text: resmsg /*resmsg.replace("|","\n")*/,
 	})
 	
 	

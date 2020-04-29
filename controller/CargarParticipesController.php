@@ -1025,6 +1025,51 @@ class CargarParticipesController extends ControladorBase{
         }
         
     }
+ 
+    
+    
+    public function ReporteCertificado(){
+        session_start();
+        $participes = new ParticipesModel();
+        $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
+        
+        $datos_reporte = array();
+        $columnas = " registro_tres_cuotas.id_registro_tres_cuotas,
+                      core_participes.id_participes,
+                      core_participes.apellido_participes,
+                      core_participes.nombre_participes,
+                      core_participes.cedula_participes,
+                      registro_tres_cuotas.nombre_participes,
+                      registro_tres_cuotas.cedula_participes,
+                      core_creditos.id_creditos,
+                      core_creditos.numero_creditos,
+                      registro_tres_cuotas.numero_creditos,
+                      registro_tres_cuotas.pdf_registro_tres_cuotas,
+                      registro_tres_cuotas.creado,
+                      registro_tres_cuotas.modificado,
+                      core_tipo_creditos.id_tipo_creditos,
+                      core_tipo_creditos.nombre_tipo_creditos";
+        
+        $tablas = "public.registro_tres_cuotas,
+                  public.core_participes,
+                  public.core_creditos,
+                  public.core_tipo_creditos";
+        $where= "registro_tres_cuotas.id_participes = core_participes.id_participes AND
+                 core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
+                 registro_tres_cuotas.id_creditos = core_creditos.id_creditos AND registro_tres_cuotas.id_participes = '$id_participes'";
+        $id="core_participes.id_participes";
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
+        $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
+        $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
+        
+        
+        $this->verReporte("ReporteCertificado", array('datos_reporte'=>$datos_reporte ));
+        
+        
+        
+    }
     
 }
 

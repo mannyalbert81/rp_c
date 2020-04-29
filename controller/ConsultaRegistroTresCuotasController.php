@@ -175,7 +175,7 @@
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:400px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_bancos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
@@ -192,10 +192,10 @@
 	            $html.='<th style="text-align: left;  font-size: 12px;">Saldo Capital</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Calificación</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Sueldo</th>';
-	             
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Amortización</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Certificado</th>';
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -244,6 +244,11 @@
 	                $html.='<td style="font-size: 11px;">'.$estado.'</td>';
 	                $html.='<td><a title="Solicitud" target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
 	                $html.='<td><a class="btn bg-blue" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$res->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
+	                
+	                if($res->calificacion_registro_tres_cuotas == "A1"){
+	                    
+	                    $html.='<td><a title="Certificado" href="index.php?controller=CargarParticipes&action=ReporteCertificado&id_participes='.$res->id_participes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+	                }
 	                
 	                
 	                $html.='</tr>';
@@ -943,10 +948,10 @@
 	    
 	    
 	}
+
+	
+	
 	
     }
-    
-    
-    
     
     ?>

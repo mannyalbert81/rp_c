@@ -338,11 +338,17 @@
             	</div>
           		<div class="pull-right" >
           			<div class="form-group-sm">
-    					<input type="text" value="" class="form-control" onkeyup="mostarGenerados()" id="mod_txtBuscarDatos" name="mod_txtBuscarDatos"  placeholder="Buscar.."/>
+    					<input type="text" value="" class="form-control" onkeyup="CargarDatosDescuentos(1)" id="mod_txtBuscarDatos"  placeholder="Buscar.."/>
     				</div>
     			</div>           
     			<div class="clearfix" ></div> 	
-            	<div id="mod_div_datos_recaudacion" class="table-responsive" ></div>
+            	<div id="mod_div_datos_recaudacion" class="table-responsive" >
+            		<table id='tbl_archivo_recaudaciones_insertados' class='table table-striped table-bordered'>
+            			<thead><tr><th>colum1</th></tr></thead>
+            			<tbody><tr><td>detalle1</td></tr></tbody>
+            		</table>
+            		<div id="mod_paginacion_datos_descuentos"></div>
+            	</div>
           	</div>
           	
           
@@ -419,7 +425,7 @@
           	<div class="row">
           		<div class="col-lg-12 col-md-12 col-xs-12">
           			<h5>Datos Participe</h5>
-          			<input type="hidden" class="form-control " id="mod_id_archivo_detalle" name="mod_id_archivo_detalle" >
+          			<input type="hidden" class="form-control " id="mod_id_descuentos_detalle" >
           		</div>
               	<div class="col-lg-12 col-md-12 col-xs-12">        		
         			<div class="form-group "> 
@@ -498,7 +504,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.11"></script> 
+   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.12"></script> 
        
 	
   </body>

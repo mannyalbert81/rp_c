@@ -9,8 +9,7 @@ function init(){
 	 $("body").tooltip({ selector: '[data-toggle=tooltip]' });
 	consultaArchivosRecaudacion();
 	cargaEntidadPatronal();
-	//consultaArchivos();
-	
+	//consultaArchivos();			
 }
 
 function validaCambioMes(){
@@ -340,65 +339,40 @@ function verDatosDescuentos(linkArchivo){
 function CargarDatosDescuentos(page){
 	
 	var id_descuentos_cabeza = $GLOBAL_id_descuentos_cabeza;
-	
+	var tipo_descuento		= $GLOBAL_tipo_descuento;
+	var busqueda			= $("#mod_txtBuscarDatos").val();
+		
 	var params = {
-			"id_descuentos_cabeza":id_cabeza_descuentos,
+			"id_descuentos_cabeza":id_descuentos_cabeza,
 			"tipo_descuento":tipo_descuento,
-			"page":page
+			"page":page,
+			"busqueda":busqueda
 	}
+	
+	var vtnmodal = $("#mod_datos_archivo");
+	var divmodal = $("#mod_div_datos_recaudacion");
+	var tblmodal = $("#tbl_archivo_recaudaciones_insertados");
+	var pagmodal = $("#mod_paginacion_datos_descuentos");
 		
 	$.ajax({
 		url:"index.php?controller=RecaudacionGeneracionArchivo&action=CargarDatosDescuentos",
 		type:"POST",
 		dataType:"json",
 		data:params,
-		complete:function(xhr,status){}
+		complete:function(xhr,status){ }
 	}).done(function(x){
-		console.log(x)
-		if(x.mensaje != undefined && x.mensaje == "archivo generado" ){
-			
-			swal( {
-				 title:"ARCHIVO RECAUDACIONES",
-				 dangerMode: false,
-				 text: " Archivo generado ",
-				 icon: "info"
-				})
-			var formParametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),"tipo_archivo_recaudaciones":"detalle"};
-			var form = document.createElement("form");
-		    form.setAttribute("method", "post");
-		    form.setAttribute("action", "index.php?controller=Recaudacion&action=descargarArchivo");
-		    form.setAttribute("target", "_blank");   
-		    
-		    for (var i in formParametros) {
-		        if (formParametros.hasOwnProperty(i)) {
-		            var input = document.createElement('input');
-		            input.type = 'hidden';
-		            input.name = i;
-		            input.value = formParametros[i];
-		            form.appendChild(input);
-		        }
-		    }
-		    
-		    document.body.appendChild(form); 
-		    form.submit();    
-		    document.body.removeChild(form);
-			
+		
+		if( x.tablaHtml != undefined && x.tablaHtml != "" ){
+			tblmodal.empty();
+			tblmodal.append( x.tablaHtml );
+			pagmodal.html("");
+			pagmodal.html( x.paginacion );
+			vtnmodal.modal("show");
 		}
-				
+						
 	}).fail(function(xhr,status,error){
 		var err = xhr.responseText
-		console.log(err)
-		var mensaje = /<message>(.*?)<message>/.exec(err);
-	 	if( mensaje !== null ){
-	 		var resmsg = mensaje[1];
-	 		swal( {
-			 title:"Error",
-			 dangerMode: true,			 
-			 html: resmsg,
-			 icon: "error"
-			})
-	 	}
-	 	//text: resmsg /*resmsg.replace("|","\n")*/,
+		console.log(err);
 	})
 }
 
@@ -409,7 +383,7 @@ function genArchivoDetallado(linkArchivo){
 	let $link = $(linkArchivo);
 	let parametros;
 	
-	var id_cabeza_descuentos	= $link.data("idarchivo");
+	var id_cabeza_descuentos	= $link.data("iddescuentos");
 	var tipo_descuento			= $link.data("codtipodescuento"); //aqui viene para definir si es descuentos por aportes o por creditos 
 	
 	if( id_cabeza_descuentos <= 0 || id_cabeza_descuentos == "" || id_cabeza_descuentos == undefined ){
@@ -423,128 +397,138 @@ function genArchivoDetallado(linkArchivo){
 			"id_descuentos_cabeza":id_cabeza_descuentos,
 			"tipo_descuento":tipo_descuento
 	}
+	
+	var params = {
+			"id_descuentos_cabeza":id_cabeza_descuentos,
+			"tipo_descuento":tipo_descuento
+	}
 		
-	$.ajax({
-		url:"index.php?controller=RecaudacionGeneracionArchivo&action=genArchivoDetallado",
-		type:"POST",
-		dataType:"json",
-		data:params,
-		complete:function(xhr,status){}
-	}).done(function(x){
-		console.log(x)
-		if(x.mensaje != undefined && x.mensaje == "archivo generado" ){
+	var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "index.php?controller=RecaudacionGeneracionArchivo&action=genArchivoDetallado");
+    form.setAttribute("target", "_blank");   
+    
+    for (var i in params) {
+        if (params.hasOwnProperty(i)) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = i;
+            input.value = params[i];
+            form.appendChild(input);
+        }
+    }
+        
+    document.body.appendChild(form); 
+    form.submit();    
+    document.body.removeChild(form);
 			
-			swal( {
-				 title:"ARCHIVO RECAUDACIONES",
-				 dangerMode: false,
-				 text: " Archivo generado ",
-				 icon: "info"
-				})
-			var formParametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),"tipo_archivo_recaudaciones":"detalle"};
-			var form = document.createElement("form");
-		    form.setAttribute("method", "post");
-		    form.setAttribute("action", "index.php?controller=Recaudacion&action=descargarArchivo");
-		    form.setAttribute("target", "_blank");   
-		    
-		    for (var i in formParametros) {
-		        if (formParametros.hasOwnProperty(i)) {
-		            var input = document.createElement('input');
-		            input.type = 'hidden';
-		            input.name = i;
-		            input.value = formParametros[i];
-		            form.appendChild(input);
-		        }
-		    }
-		    
-		    document.body.appendChild(form); 
-		    form.submit();    
-		    document.body.removeChild(form);
-			
-		}
-				
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
-		var mensaje = /<message>(.*?)<message>/.exec(err);
-	 	if( mensaje !== null ){
-	 		var resmsg = mensaje[1];
-	 		swal( {
-			 title:"Error",
-			 dangerMode: true,			 
-			 html: resmsg,
-			 icon: "error"
-			})
-	 	}
-	 	//text: resmsg /*resmsg.replace("|","\n")*/,
-	})
-	
-	
 }
 
 function genArchivoEntidad(linkArchivo){
 	
-	let $link = $(linkArchivo);
-	let parametros;
-	
-	if(parseInt($link.data("idarchivo")) > 0){
+	let $link = $(linkArchivo);	
 		
-		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo")}
+	var id_cabeza_descuentos	= $link.data("iddescuentos");
+	var tipo_descuento			= $link.data("codtipodescuento"); //aqui viene para definir si es descuentos por aportes o por creditos 
 		
-	}else{ return false; }	
+	if( id_cabeza_descuentos <= 0 || id_cabeza_descuentos == "" || id_cabeza_descuentos == undefined ){
+		return false;
+	}	
+	if( tipo_descuento <= 0 || tipo_descuento == "" || tipo_descuento == undefined ){
+		return false;
+	}
 	
-	$.ajax({
-		url:"index.php?controller=Recaudacion&action=genArchivoEntidad",
-		type:"POST",
-		dataType:"json",
-		data:parametros,
-		complete:function(xhr,status){}
-	}).done(function(x){
-		console.log(x)
-		if(x.mensaje != undefined && x.mensaje == "archivo generado" ){
-			
-			swal( {
-				 title:"ARCHIVO RECAUDACIONES",
-				 dangerMode: false,
-				 text: " Archivo generado ",
-				 icon: "info"
-				})
-			
-			var formParametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),"tipo_archivo_recaudaciones":"entidad"};
-			var form = document.createElement("form");
-		    form.setAttribute("method", "post");
-		    form.setAttribute("action", "index.php?controller=Recaudacion&action=descargarArchivo");
-		    form.setAttribute("target", "_blank");   
-		    
-		    for (var i in formParametros) {
-		        if (formParametros.hasOwnProperty(i)) {
-		            var input = document.createElement('input');
-		            input.type = 'hidden';
-		            input.name = i;
-		            input.value = formParametros[i];
-		            form.appendChild(input);
-		        }
-		    }
-		    
-		    document.body.appendChild(form); 
-		    form.submit();    
-		    document.body.removeChild(form);
-			
-		}
-				
-	}).fail(function(xhr,status,error){
-		var err = xhr.responseText
-		console.log(err)
-		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
-		 	if( mensaje !== null ){
-			 var resmsg = mensaje[1];
-			 swal( {
-				 title:"Error",
-				 dangerMode: true,
-				 text: resmsg.replace("|","\n"),
-				 icon: "error"
-				})
-		 	}
-	})
+	var params = {
+			"id_descuentos_cabeza":id_cabeza_descuentos,
+			"tipo_descuento":tipo_descuento
+	}
+		
+	var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "index.php?controller=RecaudacionGeneracionArchivo&action=genArchivoEntidad");
+    form.setAttribute("target", "_blank");   
+    
+    for (var i in params) {
+        if (params.hasOwnProperty(i)) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = i;
+            input.value = params[i];
+            form.appendChild(input);
+        }
+    }
+        
+    document.body.appendChild(form); 
+    form.submit();    
+    document.body.removeChild(form);
+    
+    //form.setAttribute("action", "index.php?controller=Recaudacion&action=descargarArchivo");
+	
+	
+	
+	
+//	let $link = $(linkArchivo);
+//	let parametros;
+//	
+//	if(parseInt($link.data("idarchivo")) > 0){
+//		
+//		parametros = {"id_archivo_recaudaciones":$link.data("idarchivo")}
+//		
+//	}else{ return false; }	
+//	
+//	$.ajax({
+//		url:"index.php?controller=Recaudacion&action=genArchivoEntidad",
+//		type:"POST",
+//		dataType:"json",
+//		data:parametros,
+//		complete:function(xhr,status){}
+//	}).done(function(x){
+//		console.log(x)
+//		if(x.mensaje != undefined && x.mensaje == "archivo generado" ){
+//			
+//			swal( {
+//				 title:"ARCHIVO RECAUDACIONES",
+//				 dangerMode: false,
+//				 text: " Archivo generado ",
+//				 icon: "info"
+//				})
+//			
+//			var formParametros = {"id_archivo_recaudaciones":$link.data("idarchivo"),"tipo_archivo_recaudaciones":"entidad"};
+//			var form = document.createElement("form");
+//		    form.setAttribute("method", "post");
+//		    form.setAttribute("action", "index.php?controller=Recaudacion&action=descargarArchivo");
+//		    form.setAttribute("target", "_blank");   
+//		    
+//		    for (var i in formParametros) {
+//		        if (formParametros.hasOwnProperty(i)) {
+//		            var input = document.createElement('input');
+//		            input.type = 'hidden';
+//		            input.name = i;
+//		            input.value = formParametros[i];
+//		            form.appendChild(input);
+//		        }
+//		    }
+//		    
+//		    document.body.appendChild(form); 
+//		    form.submit();    
+//		    document.body.removeChild(form);
+//			
+//		}
+//				
+//	}).fail(function(xhr,status,error){
+//		var err = xhr.responseText
+//		console.log(err)
+//		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+//		 	if( mensaje !== null ){
+//			 var resmsg = mensaje[1];
+//			 swal( {
+//				 title:"Error",
+//				 dangerMode: true,
+//				 text: resmsg.replace("|","\n"),
+//				 icon: "error"
+//				})
+//		 	}
+//	})
 	
 	
 }
@@ -749,14 +733,31 @@ function editAporte(ObjLink){
 	let $link = $(ObjLink);
 	
 	$.ajax({
-		url:"index.php?controller=Recaudacion&action=BuscarDatosArchivo",
+		url:"index.php?controller=RecaudacionGeneracionArchivo&action=BuscarDatosArchivo",
 		type:"POST",
 		dataType:"json",
-		data:{id_archivo_rcaudaciones_detalle:$link.data("idarchivo")}		
+		data:{"id_descuentos_detalle":$link.data("iddescuentos")}		
 	}).done(function(x){
 		
-		console.log(x)
-		mostrarModalCambioValor(x);
+		if( x.data != undefined && x.data != null ){
+			
+			var rsdata = x.data[0];
+			
+			let $modal	= $("#mod_recaudacion"),
+			$tituloModal	= $modal.find('h4.modal-title');
+		
+			$tituloModal.text('VALORES APORTES A CAMBIAR');
+			
+			$modal.find('#mod_cedula_participes').val( rsdata.cedula_participes);
+			$modal.find('#mod_nombres_participes').val( rsdata.nombre_participes);
+			$modal.find('#mod_apellidos_participes').val( rsdata.apellido_participes);
+			$modal.find('#mod_id_descuentos_detalle').val( rsdata.id_detalle);
+			$modal.find('#mod_valor_sistema').val( rsdata.valor_descuento);
+			$modal.find('#mod_valor_edit').val( rsdata.valor_descuento1 );
+			
+			$modal.modal("show");			
+			
+		}
 		
 	}).fail(function(xhr,status,error){
 		let err = xhr.responseText;
@@ -766,26 +767,6 @@ function editAporte(ObjLink){
 	
 }
 
-function mostrarModalCambioValor(objJson){
-	
-	/* el parametro debe ser objeto json
-	 * array de nombre es 'rsRecaudaciones' */
-	let $modal	= $("#mod_recaudacion"),
-		$array	= objJson.rsRecaudaciones[0],
-		$tituloModal	= $modal.find('h4.modal-title');
-	
-	$tituloModal.text('VALORES APORTES A CAMBIAR');
-	
-	$modal.find('#mod_cedula_participes').val($array.cedula_participes);
-	$modal.find('#mod_nombres_participes').val($array.nombre_participes);
-	$modal.find('#mod_apellidos_participes').val($array.apellido_participes);
-	$modal.find('#mod_id_archivo_detalle').val($array.id_archivo_recaudaciones_detalle);
-	$modal.find('#mod_valor_sistema').val($array.valor_sistema_archivo_recaudaciones_detalle);
-	$modal.find('#mod_valor_edit').val($array.valor_final_archivo_recaudaciones_detalle);
-	
-	$modal.modal("show");
-	
-}
 
 $("#btnEditRecaudacion").on("click",function(){
 	
@@ -793,38 +774,43 @@ $("#btnEditRecaudacion").on("click",function(){
 		$miboton.attr("disabled",true);
 	let $modal = $("#mod_recaudacion");
 	
-	let $idArchivo = $modal.find('#mod_id_archivo_detalle'),
+	let $iddescuento = $modal.find('#mod_id_descuentos_detalle'),
 		$valorNuevo = $modal.find('#mod_valor_edit');	
 	
-	if(isNaN($valorNuevo.val())){
+	if( isNaN( $valorNuevo.val() ) ){
 		$valorNuevo.notify("Ingrese Cantidad Valida",{ position:"buttom left", autoHideDelay: 2000});
 		$miboton.attr("disabled",false);
 		return false;
 	}else{
-		if($valorNuevo.val() <= 0){
+		if( $valorNuevo.val() <= 0 ){
 			$valorNuevo.notify("Cantidad no puede ser igual o menor ",{ position:"buttom left", autoHideDelay: 2000});
 			$miboton.attr("disabled",false);
 			return false;
 		}
 	}
 		
-	var parametros = {id_archivo_recaudaciones_detalle:$idArchivo.val(),valor_final_archivo_recaudaciones_detalle:$valorNuevo.val()}
+	var parametros = { "id_descuentos_detalle": $iddescuento.val(), "valor_descuentos": $valorNuevo.val()}
 	
 	$.ajax({
-		url:"index.php?controller=Recaudacion&action=editAporte",
+		url:"index.php?controller=RecaudacionGeneracionArchivo&action=editAporte",
 		type:"POST",
 		dataType:"json",
-		data:parametros
+		data:parametros,
+		complete:function(xhr){ $miboton.attr("disabled",false); }
 	}).done(function(x){
-		//console.log(x)
-		$modal.modal('hide');
-		//console.log('llego');
-		mostarGenerados();	
-		swal( {
-			 title:"ACTUALIZACION VALOR ARCHIVO",
-			 text: x.mensaje,
-			 icon: "info"
-				})
+		
+		if( x.estatus != undefined && x.estatus != "" ){
+			
+			swal( {
+				 title:"ACTUALIZACION VALOR",
+				 text: x.mensaje,
+				 icon: "info"
+				});
+			$modal.modal('hide');
+			CargarDatosDescuentos(1);
+			
+		}
+		
 				
 	}).fail(function(xhr,status,error){
 		var err = xhr.responseText
@@ -839,8 +825,6 @@ $("#btnEditRecaudacion").on("click",function(){
 				 icon: "error"
 				})
 		 	}
-	}).always(function(){
-		$miboton.attr("disabled",false);
 	})
 	
 })

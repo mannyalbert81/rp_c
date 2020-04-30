@@ -64,6 +64,7 @@
 	    
 	    session_start();
 	    $registro = new RegistroModel();
+	    $id_rol= $_SESSION['id_rol'];
 	    
 	    $where_to="";
 	    $columnas  = "registro_tres_cuotas.id_registro_tres_cuotas, 
@@ -179,7 +180,10 @@
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
-	            $html.='<th style="text-align: center;  font-size: 12px;">Acciones</th>';
+	            if($id_rol == "58"){
+	                
+	                $html.='<th style="text-align: center;  font-size: 12px;">Acciones</th>';
+	            }
 	            $html.='<th style="text-align: left;  font-size: 12px;">Cédula</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Participe</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Número Crédito</th>';
@@ -225,10 +229,17 @@
 	                
 	                $i++;
 	                $html.='<tr>';
-	               
+	             
+	                
+	                
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 14px;"><a onclick="AprobarRegistro('.$res->id_registro_tres_cuotas.')"   href="#" class="btn btn-success" style="font-size:65%;"data-toggle="tooltip" title="Aprobar"><i class="glyphicon glyphicon-plus"></i></a>
+	                
+	                if($id_rol == "58"){
+	                    
+	                    $html.='<td style="font-size: 14px;"><a onclick="AprobarRegistro('.$res->id_registro_tres_cuotas.')"   href="#" class="btn btn-success" style="font-size:65%;"data-toggle="tooltip" title="Aprobar"><i class="glyphicon glyphicon-plus"></i></a>
                     <a onclick="NegarRegistro('.$res->id_registro_tres_cuotas.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Negar"><i class="glyphicon glyphicon-remove"></i></a></td>';
+	                }
+	                
 	                $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes." ".$res->nombre_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->numero_creditos.'</td>';
@@ -349,7 +360,7 @@
 	    
 	    session_start();
 	    $registro = new RegistroModel();
-	    
+	     
 	    $where_to="";
 	    $columnas  = "registro_tres_cuotas.id_registro_tres_cuotas,
                       core_participes.id_participes,
@@ -518,7 +529,10 @@
 	                $html.='<td style="font-size: 11px;">'.$estado.'</td>';
 	                $html.='<td><a title="Solicitud" target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
 	                $html.='<td><a class="btn bg-blue" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$res->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
-	                
+	                if($res->calificacion_registro_tres_cuotas == "A1"){
+	                    
+	                    $html.='<td><a title="Certificado" href="index.php?controller=CargarParticipes&action=ReporteCertificado&id_participes='.$res->id_participes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+	                }
 	                
 	                
 	                $html.='</tr>';
@@ -787,7 +801,10 @@
 	                $html.='<td style="font-size: 11px;">'.$estado.'</td>';
 	                $html.='<td><a title="Solicitud" target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
 	                $html.='<td><a class="btn bg-blue" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$res->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
-	                
+	                if($res->calificacion_registro_tres_cuotas == "A1"){
+	                    
+	                    $html.='<td><a title="Certificado" href="index.php?controller=CargarParticipes&action=ReporteCertificado&id_participes='.$res->id_participes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+	                }
 	                
 	                
 	                $html.='</tr>';

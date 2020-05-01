@@ -175,3 +175,12 @@ $("#btn_principal_prestamos").on("click",function(){
 	
 })
 
+function fnVolverFormularioPrestamos(){
+	
+	var pnlResultadosPrestamos = $("#pnlResultadosPrestamos");
+	pnlResultadosPrestamos.addClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
+	pnlResultadosPrestamos.find("table").empty();
+	$("#hdnid_participes_padre").val("0");
+	$("#pnlBusqueda").removeClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
+	
+}

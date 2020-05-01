@@ -440,7 +440,7 @@
                             		<div class="panel panel-default">
                                       <div class="panel-heading">
                                       	<p>
-                                      		<a href="<?php echo $helper->url("PrincipalPrestamos","index"); ?>">
+                                      	<a href="#" onclick="fnVolverFormularioPrestamos()" >
                                       			<i aria-hidden="true" class="fa fa-mail-reply"></i> Volver
                                   			</a>
                               			</p>

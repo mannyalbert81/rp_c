@@ -9,11 +9,6 @@ $(document).ready(function(){
 
 function init(){
 	try{
-		
-		//$('#txtFNacimiento').daterangepicker();
-		//$('#txtFIngreso').daterangepicker();
-		//$('#txtFBaja').daterangepicker();
-		
 		$('#txtFSolicitud').daterangepicker({
 			  autoUpdateInput: false
 			}, function(start_date, end_date) {
@@ -21,19 +16,13 @@ function init(){
 			});
 		
 		
-		$("#pnlResultados").addClass("hidden");
+		$("#pnlResultadosPrestamos").addClass("hidden");
 		
 	}catch (e) {
-		// TODO: handle exception
 		console.log(e);
 	}	
 }
-/***
- * @desc funcion para traer el tipo de prestamos
- * @param none
- * @retuns void
- * @ajax si 
- */
+
 function loadTipoPrestamos(){	
 	
 	var $ddlTipo = $("#id_tipo_creditos");
@@ -59,12 +48,7 @@ function loadTipoPrestamos(){
 		console.log(xhr.responseText);
 	})
 }
-/***
- * @desc funcion para traer el estado de los participes
- * @param none
- * @retuns void
- * @ajax si 
- */
+
 function loadEstadoPrestamos(){	
 	
 	var $ddlEstado = $("#id_estado_creditos");
@@ -89,12 +73,7 @@ function loadEstadoPrestamos(){
 		console.log(xhr.responseText);
 	})
 }
-/***
- * @desc funcion para traer entidades patronales
- * @param none
- * @retuns void
- * @ajax si 
- */
+
 function loadEntidadPatronal(){	
 	
 	var $ddlEntidad = $("#id_entidad_patronal");
@@ -121,6 +100,15 @@ function loadEntidadPatronal(){
 	})
 }
 
+function fnVolverFormularioPrestamos(){
+	
+	var pnlResultadosPrestamos = $("#pnlResultadosPrestamos");
+	pnlResultadosPrestamos.addClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
+	pnlResultadosPrestamos.find("table").empty();
+	$("#hdnid_participes_padre_prestamos").val("0");
+	$("#pnlBusquedaPrestamos").removeClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
+	
+}
 function loadBusquedaPrestamos( pagina ){
 	
 	var incedula 	= $("#txtCedula");
@@ -157,7 +145,7 @@ function loadBusquedaPrestamos( pagina ){
 				$("#pnlBusquedaPrestamos").addClass("hidden");
 				$("#pnlResultadosPrestamos").removeClass("hidden");
 				$("#tblResultadosPrincipalPrestamos").append(x.tabla);
-				$("#spanCantidadPrestamos").text("Se encontraon ( "+x.cantidadDatos+" ) socio/s" );
+				$("#spanCantidadPrestamos").text("Se encontraon ( "+x.cantidadDatos+" ) registro/s" );
 				$("#mod_paginacion_resultados_prestamos").html(x.paginacion);
 			}
 		}
@@ -175,12 +163,22 @@ $("#btn_principal_prestamos").on("click",function(){
 	
 })
 
-function fnVolverFormularioPrestamos(){
+
+function fnRegistro(btn){
 	
-	var pnlResultadosPrestamos = $("#pnlResultadosPrestamos");
-	pnlResultadosPrestamos.addClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
-	pnlResultadosPrestamos.find("table").empty();
-	$("#hdnid_participes_padre_prestamos").val("0");
-	$("#pnlBusquedaPrestamos").removeClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
+	var btnObjeto = $(btn);
+	var valor = btnObjeto.val();
+	
+	var vtnX	=  screen.width;
+	var vtnY	= screen.height;
+	vtnX = (vtnX*7)/10;
+	vtnY = (vtnY/4)*3;
+	var vtnurl 	= "index.php?controller=PrincipalPrestamosSocios&action=index";
+	var vtnoptions 	= "location=0,top=50,left=50,toolbar=0,menubar=0,titlebar=0,resizable=1,width="+vtnX+",height="+vtnY;
+	var vtnId	= "vtnAporte";
+	
+	$("#hdnid_participes_padre_prestamos").val(valor);
+	var vtnAporte = window.open(vtnurl,vtnId,vtnoptions);
 	
 }
+

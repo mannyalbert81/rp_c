@@ -444,7 +444,7 @@
                                       			<i aria-hidden="true" class="fa fa-mail-reply"></i> Volver
                                   			</a>
                               			</p>
-                              			<span id="spanCantidad"></span></div>
+                              			<span id="spanCantidadPrestamos"></span></div>
                                       
                                       <!-- VARIABLE PARA QUE SERA TOMADA POR LA VENTANA HIJA -->
                                       <input type="hidden" id="hdnid_participes_padre_prestamos" value="0">
@@ -614,8 +614,7 @@
     <!-- js personales -->
 	<script type="text/javascript" src="view/principal/js/principalBusqueda.js?0.06"></script>
 	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.03"></script>
-	<script type="text/javascript" src="view/principal/js/principalPrestamos.js?0.09"></script>
-	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.04"></script>
+	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.10"></script>
 	
   </body>
 </html>   

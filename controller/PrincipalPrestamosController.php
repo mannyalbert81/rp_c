@@ -162,7 +162,7 @@ class PrincipalPrestamosController extends ControladorBase{
 	    $idEstadoCreditos= ( isset( $_POST['id_estado_creditos'] ) ) ? $_POST['id_estado_creditos'] : "0";
 	    $idEntidadPatronal = ( isset( $_POST['id_entidad_patronal'] ) ) ? $_POST['id_entidad_patronal'] : "0";
 	    
-        	    $columnas1 = "core_creditos.id_creditos, 
+          $columnas1 = "core_creditos.id_creditos, 
           core_creditos.numero_creditos, 
           core_participes.id_participes, 
           core_participes.nombre_participes, 
@@ -220,20 +220,22 @@ class PrincipalPrestamosController extends ControladorBase{
 	        
 	        $where1    .= " AND core_participes.apellido_participes ILIKE '%$apellido%' ";
 	    }
+	    if( !empty($idEntidadPatronal) ){
+	        
+	        $where1    .= " AND core_entidad_patronal.id_entidad_patronal = $idEntidadPatronal ";
+	    }
 	    
-	    /** para fechas **/
-	    $ArrayFsolicitud = $this->devuelveFecha( $fsolicitud);
+	     $ArrayFsolicitud = $this->devuelveFecha( $fsolicitud);
 	    if( !empty( $ArrayFsolicitud ) ){
 	        $where1    .= " AND core_creditos.fecha_concesion_creditos BETWEEN '".$ArrayFsolicitud['fechaini']."' AND '".$ArrayFsolicitud['fechafin']."' ";
 	    }
 	   
-	    /** termina para fechas **/
-	    
+	     
 	    $colCantidad = " COUNT(1) AS cantidad " ;
 	    $resultSet = $busquedas->getCondicionesSinOrden( $colCantidad , $tablas1, $where1,"");
 	    $cantidadResult=(int)$resultSet[0]->cantidad;
 	    
-	    $per_page = 5; //la cantidad de registros que desea mostrar
+	    $per_page = 10; //la cantidad de registros que desea mostrar
 	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
 	    $offset = ($page - 1) * $per_page;
 	    
@@ -250,86 +252,45 @@ class PrincipalPrestamosController extends ControladorBase{
 	    
 	    $htmlTr = "";
 	    $i = 0;
-	    //$estiloConfigProveedores = ""; // variable donde se guarda estilo css para indicar al usuario que debe configurar datos de proveedor
-	    
+	
 	    $htmlHead = "";
-	    $htmlHead .= "<thead>";
-	    $htmlHead .= "<tr>";
-	    $htmlHead .= "<th>#</td>";
-	    $htmlHead .= "<th><label>Opciones:</label></td>";
-	    $htmlHead .= "<th><label>Datos:</label></td>";
-	    $htmlHead .= "</tr>";
-	    $htmlHead .= "</thead>";
+	    $htmlHead.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	    $htmlHead.= "<thead>";
+	    $htmlHead.= "<tr>";
+	    $htmlHead.='<th style="text-align: left;  font-size: 12px;">#</th>';
+	    $htmlHead.='<th style="text-align: left;  font-size: 12px;">Acciones</th>';
+	    $htmlHead.='<th style="text-align: left;  font-size: 12px;">Fecha de Solicitud</th>';
+	    $htmlHead.='<th style="text-align: left;  font-size: 12px;">Afiliado</th>';
+	    $htmlHead.='<th style="text-align: left;  font-size: 12px;">Tipo de Prestamo</th>';
+	    $htmlHead.='<th style="text-align: left;  font-size: 12px;">Número de Prestamo</th>';
+	    $htmlHead.='<th style="text-align: left;  font-size: 12px;">Monto</th>';
+	    $htmlHead.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
+	    $htmlHead.='<th style="text-align: left;  font-size: 12px;">Pagaré</th>';
+	    
+	    $htmlHead.='</tr>';
+	    $htmlHead.='</thead>';
+	    
 	    
 	    //para los datos de la tabla
 	    $htmlBody = "<tbody>";
 	    foreach ($resultSet as $res){
 	        
-	        //variables a utilizar
 	        $i++;
-
-	        //proceso de generacion de opciones
-	        $opcionesTd  = "";
-	        
-	        /*
-	         $opcionesTd .= " <ul class=\"list-inline\">";
-	         $opcionesTd .= " <li><a href=\"#\" class=\"link-black text-sm\"><i class=\"fa fa-share margin-r-5\"></i> Share</a></li>";
-	         $opcionesTd .= " <li><a href=\"#\" class=\"link-black text-sm\"><i class=\"fa fa-thumbs-o-up margin-r-5\"></i> Like</a>";
-	         $opcionesTd .= " </li>";
-	         $opcionesTd .= " <li class=\"pull-right\">";
-	         $opcionesTd .= " <a href=\"#\" class=\"link-black text-sm\"><i class=\"fa fa-comments-o margin-r-5\"></i> Comments";
-	         $opcionesTd .= " (5)</a></li>";
-	         $opcionesTd .= " </ul>";
-	         */
-	        
-	        $opcionesTd .= "<div class=\"btn-group\">";
-	        $opcionesTd .= "<button type=\"button\" value=\"".$res->id_participes."\" onclick=\"fnRegistroAportesManuel()\" class=\"btn btn-default\"><i class=\"fa fa-edit\"></i></button>";
-	        $opcionesTd .= "</div>";
+	        $htmlBody.='<tr>';
+	        $htmlBody.='<td style="font-size: 11px;">'.$i.'</td>';
+	        $htmlBody.='<td>';
+	        $htmlBody .="<button type=\"button\" value=\"".$res->id_creditos."\" onclick=\"fnRegistro(this)\" class=\"btn btn-default\"><i class=\"fa fa-search-plus\"></i></button>";
+	        $htmlBody.='</td>';
+	        $htmlBody.='<td style="font-size: 11px;">'.$res->fecha_concesion_creditos.'</td>';
+	        $htmlBody.='<td style="font-size: 11px;">'.$res->apellido_participes." ".$res->nombre_participes.'</td>';
+	        $htmlBody.='<td style="font-size: 11px;">'.$res->nombre_tipo_creditos.'</td>';
+	        $htmlBody.='<td style="font-size: 11px;">'.$res->numero_creditos.'</td>';
+	        $htmlBody.='<td style="font-size: 11px;">'.$res->monto_otorgado_creditos.'</td>';
+	        $htmlBody.='<td style="font-size: 11px;">'.$res->nombre_estado_creditos.'</td>';
+	        $htmlBody.='<td style="font-size: 11px;">SI</td>';
 	        
 	        
-	        /*
-	         *  <a class="btn btn-app">
-	         <i class="fa fa-edit"></i> Edit
-	         </a>
-	         */
-	        
-	        
-	        $htmlBody    .= "<tr>";
-	        $htmlBody    .= "<td>".$i."</td>";
-	        $htmlBody    .= "<td class=\"col-md-2 col-lg-2\" >".$opcionesTd."</td>";
-	        $htmlBody    .= "<td>";
-	        $htmlBody    .= "<div class=\"box box-widget widget-user-2\">";
-	        //<!-- Add the bg color to the header using any of the bg-* classes -->
-	        $htmlBody    .= "<div class=\"widget-user-header bg-yellow\">";
-	        $htmlBody    .= "<div class=\"widget-user-image\">";
-	        $htmlBody    .= "<img class=\"img-circle\" src=\"view/images/user.png\" alt=\"User Avatar\">";
-	        $htmlBody    .= "</div>";
-	        //<!-- /.widget-user-image -->
-	        $htmlBody    .= "<h3 class=\"widget-user-username\">".$res->apellido_participes." ".$res->nombre_participes."</h3>";
-	        $htmlBody    .= "<h5 class=\"widget-user-desc\">".$res->cedula_participes."</h5>";
-	        $htmlBody    .= "<h5 class=\"widget-user-desc\">".$res->cedula_participes."</h5>";
-	        $htmlBody    .= "</div>";
-	        $htmlBody    .= "<div class=\"box-footer no-padding\">";
-	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Fecha Nacimiento:</span>".$res->fecha_nacimiento_participes."</p></div>";
-	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Fecha Ingreso:</span>".$fIngreso."</p></div>";
-	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Fecha Salida:</span>".$fSalida."</p></div>";
-	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Fecha Liquidacion:</span>".$fLiquidacion."</p></div>";
-	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Estado:</span>".strtoupper( $res->nombre_estado_participes )."</p></div>";
-	        
-	        if( !empty($auxCredito) && $auxCredito['iscredito'] ){
-	            $htmlBody    .= "<div class=\"bio-row\"><p><span>Creditos:</span>"."SI"."</p></div>";
-	            $htmlBody    .= "<div class=\"bio-row\"><p><span>Monto Creditos:</span>".$auxCredito['tcredito']."</p></div>";
-	            $htmlBody    .= "<div class=\"bio-row\"><p><span>Saldo Creditos:</span>".$auxCredito['tsaldo']."</p></div>";
-	        }
-	        $moraCreditos = ( array_key_exists('nummora', $auxCredito) ? $auxCredito['nummora'] : 0 );
-	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Moras Creditos:</span>".$moraCreditos."</p></div>";
-	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Contratos de Adhesion:</span>"." "."</p></div>";
-	        
-	        $observacion   = ( is_array($auxGarantias) && array_key_exists('isgarantias', $auxGarantias) && $auxGarantias['isgarantias']  ) ? "hay Garantias" : $res->observacion_participes;
-	        $htmlBody    .= "<div class=\"bio-row\"><p><span>Observaciones:</span>".$observacion."</p></div>";
-	        $htmlBody    .= "</div>";
-	        $htmlBody    .= "</td>";
-	        $htmlBody    .= "</tr>";
+	        $htmlBody.='</tr>';
 	        
 	        
 	    }
@@ -345,7 +306,7 @@ class PrincipalPrestamosController extends ControladorBase{
 	    $resp['tabla'] = $htmlHead.$htmlBody.$htmlFoot;
 	    
 	    $resp['filas'] = $htmlTr;
-	    
+	    $htmlHead.='</table>';
 	    $htmlPaginacion  = '<div class="table-pagination pull-right">';
 	    $htmlPaginacion .= ''. $busquedas->allpaginate("index.php", $page, $total_pages, $adjacents,"loadBusquedaPrestamos").'';
 	    $htmlPaginacion .= '</div>';

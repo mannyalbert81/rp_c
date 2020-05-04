@@ -312,8 +312,8 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
 
                 
                 $html.='<td style="font-size: 15px;"><span class="pull-right">';
-                $html.='<button id="btndetalesoli" value="'.$res->id_participes.'" name="detallesoli" class="btn btn-success" type="button" onclick="mostrarDatosjs(this)">';
-                $html.='    <i class="glyphicon glyphicon-edit"></i></button></span></td>';
+                $html.='<button id="btndetalesoli" value="'.$res->id_participes.'" name="detallesoli" class="btn btn-primary" type="button" onclick="mostrarDatosjs(this)">';
+                $html.='<i class="glyphicon glyphicon-th-list"></i></button></span></td>';
                
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->cedula_participes.'</td>';
                 $html.='<td colspan="2" style="text-align: center; font-size: 11px;">'.$res->fecha_ingreso_participes.'</td>';
@@ -650,6 +650,8 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         
         $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:0;
         
+        
+        $usuario= (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
        
         
         $columnas = "
@@ -910,7 +912,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         $html.='<th style="text-align: left; font-size: 16px;">Número de Carpeta:</th>';
         $html.='<th style="text-align: left; font-size: 11px;"><input  style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$numerocarpeta.'"></imput></th>';
         $html.='<th style="text-align: left; font-size: 16px;">Usuario:</th>';
-        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="-"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$usuario.'"></imput></th>';
         $html.='</tr>';
         $html.='</table>';
         
@@ -965,10 +967,12 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         $html.='<tr>';
         $html.='<th style="text-align: left; font-size: 16px;">Número Cuenta:</th>';
         $html.='<th style="text-align: left; font-size: 11px;"><input style="height:20px" type="text" class="form-control" readonly="readonly"  value="'.$numerocuenta.'"></imput></th>';
-        $html.='<th style="text-align: left; font-size: 16px;">Crear Cuenta:</th>';
-        $html.='<th style="text-align: left; font-size: 11px;"><input  type="button" class="btn btn-info" onclick="CrearCuentaBancos(this)" value="Crear Cuenta"></imput></th>';
+        $html.='<th style="text-align: left; font-size: 16px;">&nbsp;</th>';
+        $html.='<th style="text-align: left; font-size: 11px;">&nbsp;</th>';
         $html.='</tr>';
         $html.='</table>';
+        
+       // <input  type="button" class="btn btn-info" onclick="CrearCuentaBancos(this)" value="Crear Cuenta"></imput>
         
         $html.='<table  style="width:100%;" border="1">';
         $html.='<tr>';

@@ -435,16 +435,19 @@
             		
             	</div>
             	
-                        	 <div id="pnlResultadosPrestamos" class="row hidden">
+                             	 <div id="pnlResultadosPrestamos" class="row hidden">
                         		<div class="col-xs-12 col-md-9 col-lg-9">
                             		<div class="panel panel-default">
                                       <div class="panel-heading">
                                       	<p>
-                                      	<a href="#" onclick="fnVolverFormularioPrestamos()" >
+                                      		<a href="#" onclick="fnVolverFormularioPrestamos()" >
                                       			<i aria-hidden="true" class="fa fa-mail-reply"></i> Volver
                                   			</a>
                               			</p>
-                              			<span id="spanCantidadPrestamos"></span></div>
+                              			<span id="spanCantidad"></span></div>
+                                      
+                                      <!-- VARIABLE PARA QUE SERA TOMADA POR LA VENTANA HIJA -->
+                                      <input type="hidden" id="hdnid_participes_padre_prestamos" value="0">
                                       
                                       <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
                                       <table id="tblResultadosPrincipalPrestamos" class="table table-responsive">
@@ -454,8 +457,7 @@
                                 	  <div class="clearfix"></div>  
                                     </div>
                         		</div>
-                        	</div>            	
-                 
+                        	</div>            
            					</form>
 
                     	
@@ -612,9 +614,9 @@
     <!-- js personales -->
 	<script type="text/javascript" src="view/principal/js/principalBusqueda.js?0.06"></script>
 	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.03"></script>
-	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.03"></script>
-	<script type="text/javascript" src="view/principal/js/principalPrestamos.js?0.08"></script>
-
+	<script type="text/javascript" src="view/principal/js/principalPrestamos.js?0.09"></script>
+	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.04"></script>
+	
   </body>
 </html>   
 

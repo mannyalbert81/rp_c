@@ -614,7 +614,7 @@
     <!-- js personales -->
 	<script type="text/javascript" src="view/principal/js/principalBusqueda.js?0.06"></script>
 	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.03"></script>
-	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.10"></script>
+	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.12"></script>
 	
   </body>
 </html>   

@@ -116,21 +116,263 @@
   <!-- FIN DATOS CONTROLADOR -->
   
   <!-- HIDDENs vista -->
-    <input type="hidden" value="0" id="hdnid_participes">
+    <input type="hidden" value="0" id="hdnid_participes_prestamos">
+    <input type="hidden" value="0" id="hdnid_creditos">
   <!-- end HIDDENs vista -->
-  
-  <!-- para el loader de procesos -->
-	<div id="divLoaderPage" ></div>
-  <!-- termina loader --> 
-  
-  	<section class="content">
-  		<div class="box box-primary">
-    		<div class="box-header">
-    		  <h3 class="box-title">Datos Prestamo</h3>
-    		</div>
-    	
-		</div>
-  	</section>
+      <section class="content">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Registros</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+                
+              </div>
+            </div>
+            
+            <div class="box-body">
+
+           <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#prestamos" data-toggle="tab">Préstamos</a></li>
+              <li><a href="#impresiones" data-toggle="tab">Impresiones</a></li> 
+              <li><a href="#cobros" data-toggle="tab">Cobros</a></li> 
+            </ul>
+            
+            <div class="col-md-12 col-lg-12 col-xs-12">
+            <div class="tab-content">
+            <br>
+ 			 <div class="tab-pane active" id="prestamos">
+ 			 	<div class="col-sm-12 col-md-12 col-lg-12">
+ 			 	
+          				<div class="panel panel-info">
+                           <div class="panel-heading" >Datos Principales</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          		<tr>
+                              		<td><label>Identificacion:</label></td>
+                              		<td><input type="text" class="form-control" id="lblIdentificacion" value="" readonly></td>                     		
+                          		</tr>
+                          		<tr>
+                              		<td><label>Nombres:</label></td>
+                              		<td><input type="text" class="form-control" id="lblNombres" value="" readonly></td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Apellidos:</label></td>
+                              		<td><input type="text" class="form-control" id="lblApellidos" value="" readonly></td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Entidad Patronal:</label></td>
+                              		<td>
+                              			<select class="form-control" id="id_entidad_patronal" value="" readonly></select>
+                          			</td>
+                          		</tr> 
+                                 	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                    	</div>
+          				</div>        
+          				
+          					<div class="panel panel-info">
+                           <div class="panel-heading" >Flujo de Prestamo</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          		
+                    		</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                    	</div>
+          				</div>    			
+          				
+          				<div class="panel panel-info">
+                           <div class="panel-heading" >Información para tabla amortización</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          		
+                    		</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                    	</div>
+          				</div>    		
+          				
+          				<div class="panel panel-info">
+                           <div class="panel-heading" >Ingreso de Requisitos</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<tbody>
+                    <tr>
+					<th colspan=1>Número de Crédito:</TH>
+					<th colspan=3>
+					<input type="text" class="form-control" id="lblNumeroCredito" value="" readonly>
+					</th>
+					</tr>
+					<tr>
+					<th>Estado</th>
+					<th><input type="text" class="form-control" id="lblEstadoCredito" value="" readonly></th>
+					<th>Receptor de la Solicitud:</th>
+					<th><input type="text" class="form-control" id="lblReceptorSolicitud" value="" readonly></th> 
+					</tr>
+					<tr>
+					<th>Fecha de Solicitud:</th>
+					<th><input type="text" class="form-control" id="lblFechaConsecion" value="" readonly></th>
+					<th>Año y Mes Activo:</th>
+					<th><input type="text" class="form-control" id="lblNombres" value="" readonly></th> 
+					</tr>
+					 <tr>
+					<th colspan=1>Tipo de Préstamo:</TH>
+					<th colspan=3>
+					<select class="form-control" id="id_tipo_creditos" value="" readonly></select>
+					</th>
+					</tr>
+					<tr>
+					<th>Plazo Maximo (meses):</th>
+					<th><input type="text" class="form-control" id="lblPlazoMaximo" value="" readonly></th>
+					<th>Número de Aportaciones (#):</th>
+					<th><input type="text" class="form-control" id="lblNumeroAportaciones" value="" readonly></th> 
+					</tr>
+					<tr>
+					<th>Encaje Minimo (%):</th>
+					<th><input type="text" class="form-control" id="lblEncajeMinimo" value="" readonly></th>
+					<th>Interés Mensual (#):</th>
+					<th><input type="text" class="form-control" id="lblInteresMensual" value="" readonly></th> 
+					</tr>
+					<tr>
+					<th>Cuenta Individual:</th>
+					<th><input type="text" class="form-control" id="lblCuentaIndividual" value="" readonly></th>
+					<th>Monto Minimo de Préstamo($):</th>
+					<th><input type="text" class="form-control" id="lblMontoMinimoPrestamo" value="" readonly></th> 
+					</tr>
+					<tr>
+					<th>Monto Maximo de Préstamo ($):</th>
+					<th><input type="text" class="form-control" id="lblMontoMaximoPrestamo" value="" readonly></th>
+					<th>Necesita Garante:</th>
+					<th><input type="text" class="form-control" id="lblNecesitaGarante" value="" readonly></th> 
+					</tr>
+					 
+					    	</tbody>
+                            </table>
+                         	<div class="panel panel-success">
+                           <div class="panel-heading" >Información del Garante</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          		 <tr>
+            					<th colspan=1>Identificacion:</TH>
+            					<th colspan=3>
+            					<input type="text" class="form-control" id="lblNombres" value="" readonly>
+            					</th>
+            					</tr>
+                          		<tr>
+            					<th>Apellidos:</th>
+            					<th><input type="text" class="form-control" id="lblNombres" value="" readonly></th>
+            					<th>Nombres:</th>
+            					<th><input type="text" class="form-control" id="lblNombres" value="" readonly></th> 
+            					</tr>
+                          	
+                                 	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                    	</div>
+          				</div>  
+          				<div class="panel panel-success">
+                           <div class="panel-heading" >Información para la Tabla de Amortización</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          		<tr>
+            					<th>Monto ($):</th>
+            					<th><input type="text" class="form-control" id="lblMonto" value="" readonly></th>
+            					<th>Plazo Producto (#):</th>
+            					<th><input type="text" class="form-control" id="lblPlazoProducto" value="" readonly></th> 
+            					</tr>
+            						<tr>
+            					<th>Monto Entregado ($):</th>
+            					<th><input type="text" class="form-control" id="lblMontoEntregado" value="" readonly></th>
+            					<th>Valor Primera Cuota ($):</th>
+            					<th><input type="text" class="form-control" id="lblValorPrimeraCuota" value="" readonly></th> 
+            					</tr>
+            						<tr>
+            					<th>Saldo de Capital ($):</th>
+            					<th><input type="text" class="form-control" id="lblSaldoCapital" value="" readonly></th>
+            					<th>Tipo de Cuota :</th>
+            					<th><input type="text" class="form-control" id="lblTipoCuota" value="" readonly></th> 
+            					</tr>
+            						<tr>
+            					<th>Plazo Ingresado (#):</th>
+            					<th><input type="text" class="form-control" id="lblPlazoIngresado" value="" readonly></th>
+            					<th>Monto Ingresado ($):</th>
+            					<th><input type="text" class="form-control" id="lblMontoIngresado" value="" readonly></th> 
+            					</tr>
+                          	
+                                 	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                    	</div>
+          				</div>             
+                      <div class="panel panel-danger">
+                           <div class="panel-heading" >Reportes</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          
+                          		<tr>
+                          	
+            						<th><a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a></th>
+	               
+            					</tr>
+                                 	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                    	</div>
+          				</div>        
+                    	</div>
+                    
+          				</div>    			
+          			</div>
+ 		       </div>
+              <div class="tab-pane" id="impresiones">
+              
+              </div>
+              <div class="tab-pane" id="cobros">
+              
+              </div>
+           
+              
+             </div>
+            </div>
+           </div>
+         
+            </div>
+            </div>
+            </section>
   
     
     
@@ -148,9 +390,8 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.08"></script>
-    
-    
+     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.04"></script>
+  
 
   </body>
 </html>   

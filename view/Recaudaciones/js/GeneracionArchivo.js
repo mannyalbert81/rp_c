@@ -421,11 +421,6 @@ function genArchivoDetallado(linkArchivo){
 			"id_descuentos_cabeza":id_cabeza_descuentos,
 			"tipo_descuento":tipo_descuento
 	}
-	
-	var params = {
-			"id_descuentos_cabeza":id_cabeza_descuentos,
-			"tipo_descuento":tipo_descuento
-	}
 		
 	var form = document.createElement("form");
     form.setAttribute("method", "post");
@@ -552,6 +547,48 @@ $("#btnEditRecaudacion").on("click",function(){
 	})
 	
 })
+
+var generarReporte = function(a){
+	
+	let $link = $(a);
+	let parametros;
+	
+	var id_cabeza_descuentos	= $link.data("iddescuentos");
+	var tipo_descuento			= $link.data("codtipodescuento"); //aqui viene para definir si es descuentos por aportes o por creditos 
+	
+	if( id_cabeza_descuentos <= 0 || id_cabeza_descuentos == "" || id_cabeza_descuentos == undefined ){
+		return false;
+	}	
+	if( tipo_descuento <= 0 || tipo_descuento == "" || tipo_descuento == undefined ){
+		return false;
+	}
+	
+	var params = {
+			"id_descuentos_cabeza":id_cabeza_descuentos,
+			"tipo_descuento":tipo_descuento
+	}
+		
+	var form = document.createElement("form");
+	form.setAttribute("id", "frm_reporte_descuentos");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "index.php?controller=RecaudacionGeneracionArchivo&action=generarReporteDescuentos");
+    form.setAttribute("target", "_blank");   
+    
+    for (var i in params) {
+        if (params.hasOwnProperty(i)) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = i;
+            input.value = params[i];
+            form.appendChild(input);
+        }
+    }
+        
+    document.body.appendChild(form); 
+    form.submit();    
+    document.body.removeChild(form);
+			
+}
 
 
 

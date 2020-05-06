@@ -2100,13 +2100,18 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
                                 <a onclick="verDatosDescuentos(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Ver Detalles"> <i class="fa  fa-building-o" aria-hidden="true" ></i>
 	                           </a>
                             </span>
-                            <span class="pull-right ">
+                            <span >
 	                           <a onclick="genArchivoDetallado(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Archivo Detallado"><i class="fa fa-files-o text-info" aria-hidden="true" ></i>
 	                           </a>
                             </span>
-                            <span class="pull-right ">
+                            <span >
 	                           <a onclick="genArchivoEntidad(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Archivo Entidad"><i class="fa fa-file-text-o text-info" aria-hidden="true" ></i>
 	        </a></span>
+                            <span >
+	                           <a onclick="generarReporte(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Ver Reporte">
+                                <i class="fa fa-file-pdf-o text-info" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
                             </div>';
 	            
 	            /*$html.='<span class="pull-right ">
@@ -2183,9 +2188,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    session_start();
 	    
 	    $recaudaciones = new RecaudacionesModel();
-	    
-	    $this->verReporte("ReporteTablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante, 'datos'=>$datos));
-	    
+	    	    
 	    $entidades = new EntidadesModel();
 	    //PARA OBTENER DATOS DE LA EMPRESA
 	    $datos_empresa = array();
@@ -2200,273 +2203,149 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
 	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
 	    }
+	    	    
 	    
-	    //NOTICE DATA
-	    $datos_cabecera = array();
-	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
-	    $datos_cabecera['FECHA'] = date('Y/m/d');
-	    $datos_cabecera['HORA'] = date('h:i:s');
+	    $dictionay = array();
+	    $dictionay['TITULO']   = "REPORTE DE DESCUENTOS ENVIADOS A:";
 	    
+	    /** BUSCANDO DATOS DE DESCUENTO **/
+	    $id_descuentos_cabeza  = $_POST['id_descuentos_cabeza'];
+	    $tipo_descuento        = $_POST['tipo_descuento'];
 	    
+	    $col1  = " aa.id_descuentos_registrados_cabeza, aa.year_descuentos_registrados_cabeza, aa.mes_descuentos_registrados_cabeza, bb.id_entidad_patronal,
+                bb.nombre_entidad_patronal, bb.codigo_entidad_patronal ";
+	    $tab1  = " core_descuentos_registrados_cabeza aa
+	           INNER JOIN core_entidad_patronal bb	ON bb.id_entidad_patronal = aa.id_entidad_patronal";
+	    $whe1  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	    $id1   = " aa.id_descuentos_registrados_cabeza ";
 	    
+	    $rsConsulta1 = $recaudaciones->getCondicionesSinOrden($col1, $tab1, $whe1, "");
 	    
-	    $tab_amortizacion= new TablaAmortizacionModel();
-	    $garante= new ParticipesModel();
-	    $id_creditos =  (isset($_REQUEST['id_creditos'])&& $_REQUEST['id_creditos'] !=NULL)?$_REQUEST['id_creditos']:'';
+	    $anio_descuentos   =  $rsConsulta1[0]-> year_descuentos_registrados_cabeza;
+	    $mes_descuentos    =  $rsConsulta1[0]-> mes_descuentos_registrados_cabeza;
+	    $nombre_entidad    =  $rsConsulta1[0]-> nombre_entidad_patronal;
 	    
+	    $dictionay['ANIO_DESCUENTOS']  = $anio_descuentos;
+	    $dictionay['MES_DESCUENTOS']   = $this->devuelveMesNombre($mes_descuentos);
+	    $dictionay['NOMBRE_ENTIDAD']   = $nombre_entidad;
 	    
-	    $datos_reporte = array();
+	    /** PARA GRAFICAR EL DETALLE DE LOS DESCUENTOS **/
 	    
-	    $columnas = " core_creditos.id_creditos,
-                      core_tipo_creditos.codigo_tipo_creditos,
-                      core_creditos.numero_creditos,
-                      core_creditos.fecha_concesion_creditos,
-                      core_participes.id_participes,
-                      core_participes.apellido_participes,
-                      core_participes.nombre_participes,
-                      core_participes.cedula_participes,
-                      core_entidad_patronal.id_entidad_patronal,
-                      core_entidad_patronal.nombre_entidad_patronal,
-                      core_tipo_creditos.nombre_tipo_creditos,
-                      core_creditos.plazo_creditos,
-                      core_estado_creditos.nombre_estado_creditos,
-                      core_creditos.monto_otorgado_creditos,
-                      core_creditos.saldo_actual_creditos,
-                      core_creditos.monto_neto_entregado_creditos,
-                      core_creditos.fecha_servidor_creditos,
-                      core_creditos.interes_creditos";
+	    $html  = "";
+	    $rsConsulta2 = array();
 	    
-	    $tablas = "   public.core_tipo_creditos,
-                      public.core_creditos,
-                      public.core_participes,
-                      public.core_estado_creditos,
-                      public.core_entidad_patronal";
-	    $where= "     core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos AND
-                      core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos AND
-                      core_participes.id_participes = core_creditos.id_participes AND
-                      core_participes.id_entidad_patronal = core_entidad_patronal.id_entidad_patronal
-                      AND core_creditos.id_creditos ='$id_creditos'";
-	    $id="core_creditos.id_creditos";
-	    
-	    $rsdatos = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);
-	    
-	    $datos_reporte['CODCREDITO']=$rsdatos[0]->codigo_tipo_creditos;
-	    $datos_reporte['NUMCREDITO']=$rsdatos[0]->numero_creditos;
-	    $datos_reporte['FECHACONCRED']=$rsdatos[0]->fecha_concesion_creditos;
-	    $datos_reporte['APELLPARTICIPE']=$rsdatos[0]->apellido_participes;
-	    $datos_reporte['NOMPARICIPE']=$rsdatos[0]->nombre_participes;
-	    $datos_reporte['CEDPARTICIPE']=$rsdatos[0]->cedula_participes;
-	    $datos_reporte['ENTIDADPATRON']=$rsdatos[0]->nombre_entidad_patronal;
-	    $datos_reporte['TIPOPRESTAMO']=$rsdatos[0]->nombre_tipo_creditos;
-	    $datos_reporte['PLAZO']=$rsdatos[0]->plazo_creditos;
-	    $datos_reporte['TAZA']=$rsdatos[0]->interes_creditos;
-	    $datos_reporte['ESTADO']=$rsdatos[0]->nombre_estado_creditos;
-	    $datos_reporte['MONTO']=$rsdatos[0]->monto_otorgado_creditos;
-	    $datos_reporte['SALDO']=$rsdatos[0]->saldo_actual_creditos;
-	    $datos_reporte['MONTORECIBIR']=$rsdatos[0]->monto_neto_entregado_creditos;
-	    
-	    //DATOS DEL GARANTE
-	    $datos_garante = array();
-	    
-	    $columnas = " core_creditos_garantias.id_creditos_garantias,
-                      core_participes.id_participes,
-                      core_participes.apellido_participes,
-                      core_participes.nombre_participes,
-                      core_participes.cedula_participes,
-                      core_participes.telefono_participes,
-                      core_entidad_patronal.id_entidad_patronal,
-                      core_entidad_patronal.nombre_entidad_patronal,
-                      core_creditos.id_creditos
-                        ";
-	    
-	    $tablas = "   public.core_creditos_garantias,
-                      public.core_participes,
-                      public.core_entidad_patronal,
-                      public.core_creditos";
-	    $where= "     core_creditos_garantias.id_participes = core_participes.id_participes AND
-                      core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND
-                      core_creditos.id_creditos = core_creditos_garantias.id_creditos
-                      AND core_creditos.id_creditos ='$id_creditos'";
-	    $id="core_creditos.id_creditos";
-	    
-	    $rsdatos1 = $garante->getCondiciones($columnas, $tablas, $where, $id);
-	    
-	    $datos_reporte['NOMGARANTE']=$rsdatos1[0]->nombre_participes;
-	    $datos_reporte['CEDULAGARANTE']=$rsdatos1[0]->cedula_participes;
-	    $datos_reporte['ENTIDGARANTE']=$rsdatos1[0]->nombre_entidad_patronal;
-	    $datos_reporte['TELEFONOGARANTE']=$rsdatos1[0]->telefono_participes;
-	    $datos_reporte['APELLGARANTE']=$rsdatos1[0]->apellido_participes;
-	    
-	    
-	    
-	    
-	    
-	    
-	    //////retencion detalle
-	    
-	    $columnas = " core_creditos.id_creditos,
-                      core_tabla_amortizacion.fecha_tabla_amortizacion,
-                      core_tabla_amortizacion.capital_tabla_amortizacion,
-                      core_tabla_amortizacion.seguro_desgravamen_tabla_amortizacion,
-                      core_tabla_amortizacion.interes_tabla_amortizacion,
-                      core_tabla_amortizacion.total_valor_tabla_amortizacion,
-                      core_tabla_amortizacion.mora_tabla_amortizacion,
-                      core_tabla_amortizacion.balance_tabla_amortizacion,
-                      core_tabla_amortizacion.id_estado_tabla_amortizacion,
-                      core_tabla_amortizacion.numero_pago_tabla_amortizacion,
-                      core_tabla_amortizacion.total_balance_tabla_amortizacion,
-                      core_estado_tabla_amortizacion.nombre_estado_tabla_amortizacion,
-                      core_tabla_amortizacion.total_valor_tabla_amortizacion,
-                      (select sum(c1.capital_tabla_amortizacion)
-                      from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalcapital\",
-                      (select sum(c1.interes_tabla_amortizacion)
-                      from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalintereses\",
-                      (select sum(c1.seguro_desgravamen_tabla_amortizacion)
-                      from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalseguro\",
-                      (select sum(c1.total_valor_tabla_amortizacion)
-                      from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalcuota\",
-                      (select sum(c1.mora_tabla_amortizacion)
-                      from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalmora\"
-";
-	    
-	    $tablas = "   public.core_creditos,
-                      public.core_tabla_amortizacion,
-                      public.core_estado_tabla_amortizacion";
-	    $where= "   core_tabla_amortizacion.id_creditos = core_creditos.id_creditos AND
-                    core_estado_tabla_amortizacion.id_estado_tabla_amortizacion = core_tabla_amortizacion.id_estado_tabla_amortizacion
-                    AND core_creditos.id_creditos ='$id_creditos' AND core_tabla_amortizacion.id_estatus=1";
-	    $id="core_tabla_amortizacion.numero_pago_tabla_amortizacion";
-	    
-	    $amortizacion_detalle = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);
-	    
-	    
-	    
-	    
-	    
-	    $html='';
-	    
-	    
-	    $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
-	    $html.='<tr>';
-	    $html.='<th>#</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Fecha</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Capital</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Intereses</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Seg. Desgrav.</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Mora</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Cuota</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Saldo Cuota</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Saldo Capital</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Estado</th>';
-	    
-	    $html.='</tr>';
-	    
-	    
-	    $saldof= 0;
-	    
-	    foreach ($amortizacion_detalle as $res)
-	    {
+	    $sumatoria_total   = 0.00;
+	    if( $tipo_descuento == 1 ){
 	        
+	        $nombre_descuentos = "Aportes Personales";
+	        $col2  = " aa.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.aporte_personal_descuentos_registrados_detalle_aportes,
+	               COALESCE(aa.valor_usuario_descuentos_registrados_detalle_aportes,0) as valor_usuario_descuentos_registrados_detalle_aportes ";
+	        $tab2  = " core_descuentos_registrados_detalle_aportes aa
+	               INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
+	        $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	        $id2   = " aa.id_descuentos_registrados_detalle_aportes ";
 	        
-	        if($res->id_estado_tabla_amortizacion==1){
+	        $rsConsulta2 = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);
+	        
+	        $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
+	        $html.='<tr>';
+	        $html.='<th >N°</th>';
+	        $html.='<th >Tipo Descuento</th>';
+	        $html.='<th >Cedula</th>';
+	        $html.='<th >Nombre</th>';
+	        $html.='<th >Cuota</th>';
+	        $html.='<th >Mes</th>';
+	        $html.='</tr>';
+	        
+	        $index = 0;
+	        foreach ( $rsConsulta2 as $res ){
 	            
+	            $index++;
+	            $sumatoria_total   += $res->valor_usuario_descuentos_registrados_detalle_aportes;
+	            $html.='<tr>';
+	            $html.='<td >'.$index.'</td>';
+	            $html.='<td >'.$nombre_descuentos.'</td>';
+	            $html.='<td >'.$res->cedula_participes.'</td>';
+	            $html.='<td >'.$res->apellido_participes.' '.$res->nombre_participes.'</td>';
+	            $html.='<td >'.$res->valor_usuario_descuentos_registrados_detalle_aportes.'</td>';
+	            $html.='<td >'.$mes_descuentos.'</td>';
+	            $html.='</tr>';
 	            
-	            $saldof=$res->total_balance_tabla_amortizacion;
 	            
 	        }
 	        
-	        else{
-	            
-	            $saldof=0;
-	            
-	        }
+	        $html.='<tr>';
+	        $html.='<td colspan="5">TOTAL</td>';
+	        $html.='<td >'.$sumatoria_total.'</td>';	        
+	        $html.='</tr>';
 	        
-	        if ($res->numero_pago_tabla_amortizacion!=0)
-	        {
+	        $html  .= "</table>";
+	        
+	    }elseif( $tipo_descuento == 2 ){
+	        
+	        $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.cuota_descuentos_registrados_detalle_creditos,
+	        cc.id_creditos, cc.numero_creditos, dd.id_tipo_creditos, dd.nombre_tipo_creditos, aa.mora_descuentos_registrados_detalle_creditos";
+	        $tab2  = " core_descuentos_registrados_detalle_creditos aa 
+                INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
+    	        INNER JOIN core_creditos cc ON cc.id_creditos = aa.id_creditos
+    	        INNER JOIN core_tipo_creditos dd on dd.id_tipo_creditos = cc.id_tipo_creditos";
+	        $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	        $id2   = " aa.id_descuentos_registrados_detalle_creditos";	        
+	        	        
+	        $rsConsulta2 = $recaudaciones->getCondicionesSinOrden($col2, $tab2, $whe2, "");
+	        
+	        $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
+	        $html.='<tr>';
+	        $html.='<th >N°</th>';
+	        $html.='<th >Tipo Descuento</th>';
+	        $html.='<th >Cedula</th>';
+	        $html.='<th >Nombre</th>';
+	        $html.='<th >Cuota</th>';
+	        $html.='<th >Mora</th>';
+	        $html.='<th >Monto</th>';
+	        $html.='<th >Mes</th>';
+	        $html.='</tr>';
+	        
+	        $index = 0;
+	        foreach ( $rsConsulta2 as $res ){
+	            
+	            $index++;
+	            
+	            $cuota     = $res->cuota_descuentos_registrados_detalle_creditos;
+	            $mora      = $res->mora_descuentos_registrados_detalle_creditos;
+	            $monto     = $cuota + $mora;
+	            $sumatoria_total   += $monto;
 	            
 	            $html.='<tr>';
-	            $html.='<td style="font-size: 11px;"align="center">'.$res->numero_pago_tabla_amortizacion.'</td>';
-	            $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
-	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->capital_tabla_amortizacion, 2, ",", ".").'</td>';
-	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->interes_tabla_amortizacion, 2, ",", ".").'</td>';
-	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->seguro_desgravamen_tabla_amortizacion, 2, ",", ".").'</td>';
-	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->mora_tabla_amortizacion, 2, ",", ".").'</td>';
-	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_valor_tabla_amortizacion, 2, ",", ".").'</td>';
-	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($saldof, 2, ",", ".").'</td>';
-	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->balance_tabla_amortizacion, 2, ",", ".").'</td>';
-	            $html.='<td style="text-align: center; font-size: 11px;"align="center">'.$res->nombre_estado_tabla_amortizacion.'</td>';
-	            
-	            
-	            
-	            $html.='</td>';
+	            $html.='<td >'.$index.'</td>';
+	            $html.='<td >'.$res->nombre_tipo_creditos.'</td>';
+	            $html.='<td >'.$res->cedula_participes.'</td>';
+	            $html.='<td >'.$res->apellido_participes.' '.$res->nombre_participes.'</td>';
+	            $html.='<td >'.$cuota.'</td>';
+	            $html.='<td >'.$mora.'</td>';
+	            $html.='<td >'.$monto.'</td>';
+	            $html.='<td >'.$mes_descuentos.'</td>';
 	            $html.='</tr>';
+	            
+	            
 	        }
 	        
+	        $html.='<tr>';
+	        $html.='<td colspan="6">TOTAL</td>';
+	        $html.='<td >'.$sumatoria_total.'</td>';
+	        $html.='<td ></td>';
+	        $html.='</tr>';
 	        
+	        $html  .= "</table>";
 	        
+	    }else{
+	        $html = "";
 	    }
 	    
-	    $html.='<tr>';
-	    $html.='<th style="text-align: left;  font-size: 12px;">Totales</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;"></th>';
-	    $html.='<th style="font-size: 11px;" align="right">'.number_format($res->totalcapital, 2, ",", ".").'</th>';
-	    $html.='<th style="font-size: 11px;" align="right">'.number_format($res->totalintereses, 2, ",", ".").'</th>';
-	    $html.='<th style="font-size: 11px;" align="right">'.number_format($res->totalseguro, 2, ",", ".").'</th>';
-	    $html.='<th style="font-size: 11px;" align="right">'.number_format($res->totalmora, 2, ",", ".").'</th>';
-	    $html.='<th style="font-size: 11px;" align="right">'.number_format($res->totalcuota, 2, ",", ".").'</th>';
-	    $html.='<th style="font-size: 11px;" align="right"></th>';
-	    $html.='<th style="font-size: 11px;" align="right"></th>';
-	    $html.='<th style="text-align: center; font-size: 11px;"></th>';
+	    $dictionay['DETALLE_DESCUENTOS']   = $html;
 	    
-	    $html.='</tr>';
-	    $html.='</table>';
-	    
-	    $datos_reporte['DETALLE_AMORTIZACION']= $html;
-	    
-	    $datos = array();
-	    
-	    $cedula_capremci = $rsdatos[0]->cedula_participes;
-	    $numero_credito = $rsdatos[0]->numero_creditos;
-	    $tipo_documento="Tabla de Amortización";
-	    
-	    
-	    require dirname(__FILE__)."\phpqrcode\qrlib.php";
-	    
-	    $ubicacion = dirname(__FILE__).'\..\barcode_participes\\';
-	    
-	    //Si no existe la carpeta la creamos
-	    if (!file_exists($ubicacion))
-	        mkdir($ubicacion);
-	        
-	        $i++;
-	        $filename = $ubicacion.$numero_credito.'.png';
-	        
-	        //Parametros de Condiguracion
-	        
-	        $tamaño = 2.5; //Tama�o de Pixel
-	        $level = 'L'; //Precisi�n Baja
-	        $framSize = 3; //Tama�o en blanco
-	        $contenido = $tipo_documento.';'.$numero_credito.';'.$cedula_capremci; //Texto
-	        
-	        //Enviamos los parametros a la Funci�n para generar c�digo QR
-	        QRcode::png($contenido, $filename, $level, $tamaño, $framSize);
-	        
-	        $qr_participes = '<img src="'.$filename.'">';
-	        
-	        
-	        $datos['CODIGO_QR']= $qr_participes;
-	        $datos_empresa['CODIGO_QR']= $qr_participes;
-	        
-	        
-	        $this->verReporte("ReporteTablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante, 'datos'=>$datos));
-	        
-	        
-	        
+	    $this->verReporte( "ReporteDescuentos", array( 'datos_empresa'=>$datos_empresa, 'dictionary'=>$dictionay ) );
+	       
 	    
 	}
 	/** end dc 2020/05/05 cambios **/

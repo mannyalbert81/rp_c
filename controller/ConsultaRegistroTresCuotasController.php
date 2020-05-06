@@ -64,6 +64,7 @@
 	    
 	    session_start();
 	    $registro = new RegistroModel();
+	    $id_rol= $_SESSION['id_rol'];
 	    
 	    $where_to="";
 	    $columnas  = "registro_tres_cuotas.id_registro_tres_cuotas, 
@@ -86,6 +87,8 @@
 		      		  core_contribucion_tipo_participes.sueldo_liquido_contribucion_tipo_participes ,	
 	    			  TO_CHAR(registro_tres_cuotas.creado,'YYYY-MM-DD HH:MI:SS') as \"creado\",
 	                  registro_tres_cuotas.modificado,
+                      core_estado_participes.id_estado_participes,
+                      core_estado_participes.nombre_estado_participes,
 	                  (
 	                    select numero_pago_tabla_amortizacion
 						from core_tabla_amortizacion 
@@ -117,14 +120,16 @@
                     public.core_creditos, 
                     public.core_tipo_creditos, 
                     public.estado_registro_tres_cuotas,
-	    		public.core_contribucion_tipo_participes";
+	    		    public.core_contribucion_tipo_participes,
+                    public.core_estado_participes";
 	    
 	    $where = "registro_tres_cuotas.id_participes = core_participes.id_participes AND
                   core_creditos.id_creditos = registro_tres_cuotas.id_creditos AND
                   core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
                   estado_registro_tres_cuotas.id_estado_registro_tres_cuotas = registro_tres_cuotas.id_estado_registro_tres_cuotas AND
-                  estado_registro_tres_cuotas.id_estado_registro_tres_cuotas = 1
-	    			AND core_contribucion_tipo_participes.id_participes = registro_tres_cuotas.id_participes ";
+                  estado_registro_tres_cuotas.id_estado_registro_tres_cuotas = 1 AND
+	    		  core_contribucion_tipo_participes.id_participes = registro_tres_cuotas.id_participes AND
+                  core_estado_participes.id_estado_participes = core_participes.id_estado_participes";
 	    
 	    $id = "registro_tres_cuotas.id_registro_tres_cuotas";
 	    
@@ -175,11 +180,14 @@
 	            $html.='</div>';
 	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 	            $html.='<section style="height:400px; overflow-y:scroll;">';
-	            $html.= "<table id='tabla_bancos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
 	            $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
-	            $html.='<th style="text-align: center;  font-size: 12px;">Acciones</th>';
+	            if($id_rol == "58"){
+	                
+	                $html.='<th style="text-align: center;  font-size: 12px;">Acciones</th>';
+	            }
 	            $html.='<th style="text-align: left;  font-size: 12px;">Cédula</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Participe</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Número Crédito</th>';
@@ -192,10 +200,11 @@
 	            $html.='<th style="text-align: left;  font-size: 12px;">Saldo Capital</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Calificación</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Sueldo</th>';
-	             
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado Participe</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Amortización</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Certificado</th>';
 	            
 	            $html.='</tr>';
 	            $html.='</thead>';
@@ -225,10 +234,17 @@
 	                
 	                $i++;
 	                $html.='<tr>';
-	               
+	             
+	                
+	                
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 14px;"><a onclick="AprobarRegistro('.$res->id_registro_tres_cuotas.')"   href="#" class="btn btn-success" style="font-size:65%;"data-toggle="tooltip" title="Aprobar"><i class="glyphicon glyphicon-plus"></i></a>
+	                
+	                if($id_rol == "58"){
+	                    
+	                    $html.='<td style="font-size: 14px;"><a onclick="AprobarRegistro('.$res->id_registro_tres_cuotas.')"   href="#" class="btn btn-success" style="font-size:65%;"data-toggle="tooltip" title="Aprobar"><i class="glyphicon glyphicon-plus"></i></a>
                     <a onclick="NegarRegistro('.$res->id_registro_tres_cuotas.')"   href="#" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Negar"><i class="glyphicon glyphicon-remove"></i></a></td>';
+	                }
+	                
 	                $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes." ".$res->nombre_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->numero_creditos.'</td>';
@@ -241,9 +257,15 @@
 	                $html.='<td style="font-size: 11px;">'.$res->balance_tabla_amortizacion.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->calificacion_registro_tres_cuotas.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->sueldo_liquido_contribucion_tipo_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$estado.'</td>';
 	                $html.='<td><a title="Solicitud" target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
 	                $html.='<td><a class="btn bg-blue" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$res->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
+	                
+	                if($res->calificacion_registro_tres_cuotas == "A1"){
+	                    
+	                    $html.='<td><a title="Certificado" href="index.php?controller=CargarParticipes&action=ReporteCertificado&id_participes='.$res->id_participes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+	                }
 	                
 	                
 	                $html.='</tr>';
@@ -344,7 +366,7 @@
 	    
 	    session_start();
 	    $registro = new RegistroModel();
-	    
+	     
 	    $where_to="";
 	    $columnas  = "registro_tres_cuotas.id_registro_tres_cuotas,
                       core_participes.id_participes,
@@ -362,8 +384,12 @@
                       registro_tres_cuotas.pdf_registro_tres_cuotas,
                       estado_registro_tres_cuotas.id_estado_registro_tres_cuotas,
                       estado_registro_tres_cuotas.nombre_estado_registro_tres_cuotas,
-                      TO_CHAR(registro_tres_cuotas.creado,'YYYY-MM-DD HH:MI:SS') as \"creado\",
+                      registro_tres_cuotas.calificacion_registro_tres_cuotas,
+		      		  core_contribucion_tipo_participes.sueldo_liquido_contribucion_tipo_participes ,
+	    			  TO_CHAR(registro_tres_cuotas.creado,'YYYY-MM-DD HH:MI:SS') as \"creado\",
 	                  registro_tres_cuotas.modificado,
+                      core_estado_participes.id_estado_participes,
+                      core_estado_participes.nombre_estado_participes,
 	                  (
 	                    select numero_pago_tabla_amortizacion
 						from core_tabla_amortizacion
@@ -394,13 +420,17 @@
                     public.core_participes,
                     public.core_creditos,
                     public.core_tipo_creditos,
-                    public.estado_registro_tres_cuotas";
+                    public.estado_registro_tres_cuotas,
+	    		    public.core_contribucion_tipo_participes,
+                    public.core_estado_participes";
 	    
 	    $where = "registro_tres_cuotas.id_participes = core_participes.id_participes AND
                   core_creditos.id_creditos = registro_tres_cuotas.id_creditos AND
                   core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
                   estado_registro_tres_cuotas.id_estado_registro_tres_cuotas = registro_tres_cuotas.id_estado_registro_tres_cuotas AND
-                  estado_registro_tres_cuotas.id_estado_registro_tres_cuotas = 2";
+                  estado_registro_tres_cuotas.id_estado_registro_tres_cuotas = 2 AND
+	    		  core_contribucion_tipo_participes.id_participes = registro_tres_cuotas.id_participes AND
+                  core_estado_participes.id_estado_participes = core_participes.id_estado_participes";
 	    
 	    $id = "registro_tres_cuotas.id_registro_tres_cuotas";
 	    
@@ -465,6 +495,9 @@
 	            $html.='<th style="text-align: left;  font-size: 12px;">Ultima Cuota Pagada</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Cuota</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Saldo Capital</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Calificación</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Sueldo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado Participe</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Amortización</th>';
@@ -510,10 +543,16 @@
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->total_valor_tabla_amortizacion.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->balance_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->calificacion_registro_tres_cuotas.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->sueldo_liquido_contribucion_tipo_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$estado.'</td>';
 	                $html.='<td><a title="Solicitud" target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
 	                $html.='<td><a class="btn bg-blue" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$res->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
-	                
+	                if($res->calificacion_registro_tres_cuotas == "A1"){
+	                    
+	                    $html.='<td><a title="Certificado" href="index.php?controller=CargarParticipes&action=ReporteCertificado&id_participes='.$res->id_participes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+	                }
 	                
 	                
 	                $html.='</tr>';
@@ -525,7 +564,7 @@
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_ConsultaRegistroTresCuotas("index.php", $page, $total_pages, $adjacents,"ConsultaRegistroTresCuotas").'';
+	            $html.=''. $this->paginateConsultaRegistroTresCuotasAprobado("index.php", $page, $total_pages, $adjacents,"ConsultaRegistroTresCuotasAprobado").'';
 	            $html.='</div>';
 	            
 	            
@@ -546,7 +585,7 @@
 	    
 	}
 	
-	public function paginate_ConsultaRegistroTresCuotasAprobado($reload, $page, $tpages, $adjacents, $funcion = "") {
+	public function paginateConsultaRegistroTresCuotasAprobado($reload, $page, $tpages, $adjacents, $funcion = "") {
 	    //Steven
 	    $prevlabel = "&lsaquo; Prev";
 	    $nextlabel = "Next &rsaquo;";
@@ -632,8 +671,12 @@
                       registro_tres_cuotas.pdf_registro_tres_cuotas,
                       estado_registro_tres_cuotas.id_estado_registro_tres_cuotas,
                       estado_registro_tres_cuotas.nombre_estado_registro_tres_cuotas,
-                      TO_CHAR(registro_tres_cuotas.creado,'YYYY-MM-DD HH:MI:SS') as \"creado\",
+                      registro_tres_cuotas.calificacion_registro_tres_cuotas,
+		      		  core_contribucion_tipo_participes.sueldo_liquido_contribucion_tipo_participes ,
+	    			  TO_CHAR(registro_tres_cuotas.creado,'YYYY-MM-DD HH:MI:SS') as \"creado\",
 	                  registro_tres_cuotas.modificado,
+                      core_estado_participes.id_estado_participes,
+                      core_estado_participes.nombre_estado_participes,
 	                  (
 	                    select numero_pago_tabla_amortizacion
 						from core_tabla_amortizacion
@@ -664,13 +707,17 @@
                     public.core_participes,
                     public.core_creditos,
                     public.core_tipo_creditos,
-                    public.estado_registro_tres_cuotas";
+                    public.estado_registro_tres_cuotas,
+	    		    public.core_contribucion_tipo_participes,
+                    public.core_estado_participes";
 	    
 	    $where = "registro_tres_cuotas.id_participes = core_participes.id_participes AND
                   core_creditos.id_creditos = registro_tres_cuotas.id_creditos AND
                   core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
                   estado_registro_tres_cuotas.id_estado_registro_tres_cuotas = registro_tres_cuotas.id_estado_registro_tres_cuotas AND
-                  estado_registro_tres_cuotas.id_estado_registro_tres_cuotas = 3";
+                  estado_registro_tres_cuotas.id_estado_registro_tres_cuotas = 3 AND
+	    		  core_contribucion_tipo_participes.id_participes = registro_tres_cuotas.id_participes AND
+                  core_estado_participes.id_estado_participes = core_participes.id_estado_participes";
 	    
 	    $id = "registro_tres_cuotas.id_registro_tres_cuotas";
 	    
@@ -734,6 +781,9 @@
 	            $html.='<th style="text-align: left;  font-size: 12px;">Ultima Cuota Pagada</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Cuota</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Saldo Capital</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Calificación</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Sueldo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Estado Participe</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Estado</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Solicitud</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Amortización</th>';
@@ -779,10 +829,16 @@
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->total_valor_tabla_amortizacion.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->balance_tabla_amortizacion.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->calificacion_registro_tres_cuotas.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->sueldo_liquido_contribucion_tipo_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_estado_participes.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$estado.'</td>';
 	                $html.='<td><a title="Solicitud" target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_registro_tres_cuotas.'&id_nombre=id_registro_tres_cuotas&tabla=registro_tres_cuotas&campo=pdf_registro_tres_cuotas"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
 	                $html.='<td><a class="btn bg-blue" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos='.$res->id_creditos.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
-	                
+	                if($res->calificacion_registro_tres_cuotas == "A1"){
+	                    
+	                    $html.='<td><a title="Certificado" href="index.php?controller=CargarParticipes&action=ReporteCertificado&id_participes='.$res->id_participes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+	                }
 	                
 	                
 	                $html.='</tr>';
@@ -794,7 +850,7 @@
 	            $html.='</table>';
 	            $html.='</section></div>';
 	            $html.='<div class="table-pagination pull-right">';
-	            $html.=''. $this->paginate_ConsultaRegistroTresCuotas("index.php", $page, $total_pages, $adjacents,"ConsultaRegistroTresCuotas").'';
+	            $html.=''. $this->paginate_ConsultaRegistroTresCuotasNegado("index.php", $page, $total_pages, $adjacents,"ConsultaRegistroTresCuotasNegado").'';
 	            $html.='</div>';
 	            
 	            
@@ -943,10 +999,10 @@
 	    
 	    
 	}
+
+	
+	
 	
     }
-    
-    
-    
     
     ?>

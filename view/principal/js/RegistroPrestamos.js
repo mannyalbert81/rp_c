@@ -70,17 +70,6 @@ function fnRegistro(btn){
 	
 }
 
-var generar_tabla_amortizacion = function(obj){
-	
-	var elemento = $(obj);
-	var id_creditos	= $("#hdnid_creditos").val();
-	var url 	 = "index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos="+id_creditos;
-	
-	elemento.attr('href',url);
-	return true;
-}
-
-
 
 function TablaAmortizacion(_page = 1){
 	
@@ -109,3 +98,33 @@ function TablaAmortizacion(_page = 1){
 	})
 	
 }
+
+
+var generar_tabla_amortizacion = function(obj){
+	
+	var elemento = $(obj);
+	var id_creditos	= $("#hdnid_creditos").val();
+	var url 	 = "index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos="+id_creditos;
+	
+	elemento.attr('href',url);
+	return true;
+}
+var generar_pagare = function(obj){
+	
+	var elemento = $(obj);
+	var id_creditos	= $("#hdnid_creditos").val();
+	var url 	 = "index.php?controller=PrincipalPrestamosSocios&action=ReportePagare&id_creditos="+id_creditos;
+	
+	elemento.attr('href',url);
+	return true;
+}
+var generar_recibo = function(obj){
+	
+	var elemento = $(obj);
+	var id_creditos	= $("#hdnid_creditos").val();
+	var url 	 = "index.php?controller=PrincipalPrestamosSocios&action=ReporteRecibo&id_creditos="+id_creditos;
+	
+	elemento.attr('href',url);
+	return true;
+}
+

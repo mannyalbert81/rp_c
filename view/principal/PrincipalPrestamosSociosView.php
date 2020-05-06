@@ -365,7 +365,7 @@
                     	</div>
           				</div>   	
           				            
-                      <div class="panel panel-">
+                      <div class="panel panel-success">
                            <div class="panel-heading" >Reportes</div>
                           <div class="panel-body">    
                   	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
@@ -377,6 +377,8 @@
                           		<tr>
                           	
             						<th><a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a></th>
+	               					<th><a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a></th>
+	               					<th><a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Recibo de Presentación de Solicitud</a></th>
 	               
             					</tr>
                                  	</tbody>

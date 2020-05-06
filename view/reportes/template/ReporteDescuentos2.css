@@ -170,4 +170,11 @@ table.1 th.decimales{
 	text-align: right;
 }
 
+.dataempty{
+	font-style: normal;
+	font-family: sans-serif;
+	color: red;
+	text-align: center;	
+}
+
 

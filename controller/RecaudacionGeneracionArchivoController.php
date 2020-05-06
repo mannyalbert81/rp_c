@@ -2020,7 +2020,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
     	    (SELECT COUNT(1) FROM core_descuentos_registrados_detalle_aportes where id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza) as \"cantidad_aportes\",
     	    (SELECT COUNT(1) FROM core_descuentos_registrados_detalle_creditos where id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza) as \"cantidad_creditos\"";
 	        $tablas1   = "core_descuentos_registrados_cabeza aa
-	       INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal";
+	        INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal";
 	        $where1    = " 1 = 1 ";
 	        
 	        //aqui poner para filtrar si es por session
@@ -2045,16 +2045,16 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
 	        $columns = array(
 	            0 => 'aa.id_descuentos_registrados_cabeza',
-	            1 => 'aa.id_descuentos_registrados_cabeza',
-	            2 => 'aa.fecha_proceso_descuentos_registrados_cabeza',
-	            3 => 'bb.nombre_entidad_patronal',
+	            1 => 'aa.fecha_proceso_descuentos_registrados_cabeza',
+	            2 => 'bb.nombre_entidad_patronal',
+	            3 => 'aa.id_descuentos_registrados_cabeza',
 	            4 => 'aa.id_descuentos_registrados_cabeza',
-	            5 => 'aa.id_descuentos_registrados_cabeza',
-	            6 => 'aa.year_descuentos_registrados_cabeza',
-	            7 => 'aa.mes_descuentos_registrados_cabeza',
-	            8 => 'aa.usuario_descuentos_registrados_cabeza',
-	            9 => 'aa.modificado'
-	        );
+	            5 => 'aa.year_descuentos_registrados_cabeza',
+	            6 => 'aa.mes_descuentos_registrados_cabeza',
+	            7 => 'aa.usuario_descuentos_registrados_cabeza',
+	            8 => 'aa.modificado',	            
+	            9 => 'aa.id_descuentos_registrados_cabeza',
+	        );	       
 	        	        
 	        $orderby   = $columns[$requestData['order'][0]['column']];
 	        $orderdir  = $requestData['order'][0]['dir'];
@@ -2109,7 +2109,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	                           <a onclick="genArchivoEntidad(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Archivo Entidad"><i class="fa fa-file-text-o text-info" aria-hidden="true" ></i>
 	        </a></span>
                             <span>
-	                           <a onclick="imprimir_reporte_descuentos(this)" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Archivo Entidad">
+	                           <a onclick="imprimir_reporte_descuentos(this)" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Ver Reporte">
                                 <i class="fa fa-file-pdf-o text-warning" aria-hidden="true" ></i>
 	                           </a>
                             </span>
@@ -2528,6 +2528,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    $html = "";
 	    $suma_total = 0.00;
 	    
+	    $hayDatos  = false;
+	    
 	    if( $tipo_descuento == 1 ){
 	        
 	        $col2  = " aa.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.aporte_personal_descuentos_registrados_detalle_aportes,
@@ -2539,6 +2541,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        
 	        $rsConsulta2   = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);
 	        
+	        $hayDatos = ( !empty( $rsConsulta2 ) ) ? true : false;
+	        
 	        $html.='<table class="1" cellspacing="0" border="1">';
 	        $html.='<tr>';
 	        $html.='<th >N°</th>';
@@ -2547,7 +2551,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $html.='<th >Nombre</th>';
 	        $html.='<th >Monto</th>';
 	        $html.='</tr>';
-	        
+	        	        
 	        $index = 0;
 	        $nombre_descuentos = "Aporte Personal";
 	        foreach ( $rsConsulta2 as $res ){
@@ -2584,6 +2588,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $id2   = " aa.id_descuentos_registrados_detalle_creditos ";
 	        	      	        
 	        $rsConsulta2   = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);
+	        
+	        $hayDatos = ( !empty( $rsConsulta2 ) ) ? true : false;
 	        
 	        $html.='<table class="1" cellspacing="0"  border="1">';
 	        $html.='<tr>';
@@ -2627,8 +2633,15 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $html = "";
 	    }
 	    
-	    $dictionary['DETALLE_DESCUENTOS']   = $html;
+	    $textoDataEmpty    = '<h4 class="dataempty"> NO EXISTEN DATOS PARA MOSTRAR </h4>';
 	    
+	    if( $hayDatos ){
+	        
+	        $dictionary['DETALLE_DESCUENTOS']   = $html;
+	    }else{
+	        $dictionary['DETALLE_DESCUENTOS']   = $textoDataEmpty;
+	    }
+	    	    
 	    $this->verReporte( "ReporteDescuentos2", array( 
 	        'datos_empresa'=> $datos_empresa,
 	        'dictionary'   => $dictionary

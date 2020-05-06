@@ -145,9 +145,8 @@ var listar_descuentos = function(){
                 return json.data;
               }
 	    },	
-	    'order': [[ 2, "desc" ]],
-	    'columns': [
-	    	    { data: 'opciones', orderable: false },
+	    'order': [[ 1, "desc" ]],
+	    'columns': [	    	    
 	    		{ data: 'numfila', orderable: false },
 	    		{ data: 'fecha_descuentos'},
 	    		{ data: 'nombre_entidad_patronal' },
@@ -156,13 +155,14 @@ var listar_descuentos = function(){
 	    		{ data: 'anio_descuentos' },
 	    		{ data: 'mes_descuentos'},
 	    		{ data: 'usuario_usuarios' },
-	    		{ data: 'modificado' }
+	    		{ data: 'modificado' },
+	    		{ data: 'opciones', orderable: false }
 	    		
 	    		
 	    ],
 	    'columnDefs': [
-	        {className: "dt-center", targets:[1] },
-	        {Sortable: false, targets: [ 0,1,4,5,8,9 ] }
+	        {className: "dt-center", targets:[0] },
+	        {sortable: false, targets: [ 0,3,4,9 ] }
 	      ],
 		'scrollY': "80vh",
         'scrollCollapse':true,

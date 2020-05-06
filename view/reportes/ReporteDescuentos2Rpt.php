@@ -22,6 +22,10 @@ foreach ( $diccionario as $clave=>$valor ) {
 }
 
 
+
+
+
+
 $footer = file_get_contents('view/reportes/template/pieret.html');
 
 

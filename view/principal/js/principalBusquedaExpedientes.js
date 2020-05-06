@@ -33,7 +33,7 @@ $("#load_buscar_participe").click(function() {
 
 function cargaEstadoLiquidacion(){
 	
-	let $ddlEstado = $("#id_estado_participes");
+	let $ddlEstado = $("#id_estado_participes3");
 
 	
 	$.ajax({
@@ -168,7 +168,7 @@ function load_buscar_participe(pagina){
               $("#participes_registrados").html(x);
               $("#load1_buscar_participe").html("");
               $("#tabla_participes").tablesorter();
-              document.getElementById('tblBusquedaPrincipal').style.display = 'none';
+              document.getElementById('tblBusquedaPrincipalExpedientes').style.display = 'none';
               document.getElementById('volver_buscar').style.display = 'block';
               document.getElementById('load_buscar_participe').style.display = 'none';
             
@@ -243,7 +243,7 @@ function CrearCuentaBancos(element){
 }
 
 function mostrar(){
-	document.getElementById('tblBusquedaPrincipal').style.display = 'block';
+	document.getElementById('tblBusquedaPrincipalExpedientes').style.display = 'block';
 	document.getElementById('volver_buscar').style.display = 'none';
 	document.getElementById('load_buscar_participe').style.display = 'block';
 	

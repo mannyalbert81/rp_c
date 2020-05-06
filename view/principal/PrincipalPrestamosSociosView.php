@@ -232,7 +232,7 @@
 					<th>Fecha de Solicitud:</th>
 					<th><input type="text" class="form-control" id="lblFechaConsecion" value="" readonly></th>
 					<th>Año y Mes Activo:</th>
-					<th><input type="text" class="form-control" id="lblNombres" value="" readonly></th> 
+					<th><input type="text" class="form-control" id="lblvfdgdfNombres" value="" readonly></th> 
 					</tr>
 					 <tr>
 					<th colspan=1>Tipo de Préstamo:</TH>
@@ -278,14 +278,14 @@
                           		 <tr>
             					<th colspan=1>Identificacion:</TH>
             					<th colspan=3>
-            					<input type="text" class="form-control" id="lblNombres" value="" readonly>
+            					<input type="text" class="form-control" id="lbfsdflNombres" value="" readonly>
             					</th>
             					</tr>
                           		<tr>
             					<th>Apellidos:</th>
-            					<th><input type="text" class="form-control" id="lblNombres" value="" readonly></th>
+            					<th><input type="text" class="form-control" id="lblgdfgfNombres" value="" readonly></th>
             					<th>Nombres:</th>
-            					<th><input type="text" class="form-control" id="lblNombres" value="" readonly></th> 
+            					<th><input type="text" class="form-control" id="lblfdfgdfNombres" value="" readonly></th> 
             					</tr>
                           	
                                  	</tbody>
@@ -332,8 +332,40 @@
                           	</tfoot>
                           </table>
                     	</div>
-          				</div>             
-                      <div class="panel panel-danger">
+          				</div> 
+          			
+          			  <div class="panel panel-success">
+                           <div class="panel-heading" >Tabla Amortizacion</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          
+                          		<tr>
+                          	<th>
+            					 <div class="tab-pane active" id="pendientes">
+                            
+            				<div class="pull-right" style="margin-right:15px;">
+            					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="TablaAmortizacion(1)" placeholder="Buscar.."/>
+                			</div>  
+                			
+                    			<div id="TablaAmortizacion"></div>  
+                    	    	<div id="tabla_amortizacion" ></div>
+                    	    	<div id="divLoaderPage" ></div>
+				  
+                
+              </div>         	</th>
+            					</tr>
+                                 	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                    	</div>
+          				</div>   	
+          				            
+                      <div class="panel panel-success">
                            <div class="panel-heading" >Reportes</div>
                           <div class="panel-body">    
                   	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
@@ -345,6 +377,8 @@
                           		<tr>
                           	
             						<th><a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a></th>
+	               					<th><a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a></th>
+	               					<th><a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Recibo de Presentación de Solicitud</a></th>
 	               
             					</tr>
                                  	</tbody>
@@ -390,7 +424,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.04"></script>
+     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.10"></script>
   
 
   </body>

@@ -36,7 +36,7 @@ class ReporteCierreMesModel extends ModeloBase{
 
 
 	public function __construct(){
-		$this->table="core_creditos_cierre_mes";
+		$this->table="con_cierre_mes";
 	
 		parent::__construct($this->table);
 	}

@@ -78,14 +78,25 @@
           </div>
         </div>
         
+        <?php $objcuentaspagar = $rsCuentasPagar[0]; ?>
+     	<?php $objmoneda = $rsMoneda[0]; ?>
+     	<?php $objconsecutivo = $rsConsecutivos[0]; ?>
+     	
+        <!-- PARA VALORES HIDDEN -->
+            <input type="hidden" id="id_lote" name="id_lote" value="<?php echo $objcuentaspagar->id_lote; ?>">
+          	<input type="hidden" id="id_cuentas_pagar" name="id_cuentas_pagar" value="<?php echo $objcuentaspagar->id_cuentas_pagar; ?>" >
+        <!-- TERMINA VALORES HIDDEN -->
                   
   		<div class="box-body">
   		
   		<div id="divLoaderPage" ></div> 
 
 			<form id="frm_genera_cheque" action="<?php echo $helper->url("GenerarCheque","IndexCheque"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+             	 
              	
-             	<?php $cuentaspagar = $resultSet[0]; ?>    
+             	 <div class="panel panel-warning">
+                  <div class="panel-heading"> DATOS ENTIDAD</div>                      
+                 </div>
 							    
 		    	 <div class="row">
 		    	 
@@ -93,9 +104,8 @@
 		    	 		<div class="form-group ">                 			 
             				<label for="nombre_lote" class="control-label" > Identificador lote:</label>
             				<div class="form-group-sm">                				
-                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $cuentaspagar->nombre_lote; ?>" autofocus>  
-                              <input type="hidden" id="id_lote" name="id_lote" value="<?php echo $cuentaspagar->id_lote; ?>">
-                              <input type="hidden" id="id_cuentas_pagar" name="id_cuentas_pagar" value="<?php echo $datos['id_cuentas_pagar']; ?>" >
+                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $objcuentaspagar->nombre_lote; ?>" autofocus>  
+                              
             				</div>
                 						 
             			</div>		    	 	
@@ -103,32 +113,12 @@
 		    	 	
 		    	 	<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="comentario_cheque" class=" control-label" >Numero Pago:</label> 
+            				<label for="numero_pago" class=" control-label" >Numero Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $rsConsecutivos[0]->numero_consecutivos; ?>" >
+                				 <input type="text" class="form-control mayus" id="numero_pago" name="numero_pago" value="<?php echo $objconsecutivo->secuencial; ?>" >
                     		</div>        			 
             			</div>
             		</div>	
-            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="nombre_banco" class=" control-label" >Identificador Chequera:</label> 
-                    		<div class="form-group-sm">
-                    			<select class="form-control"  id="id_bancos" onchange="validaChequera()" >
-                    				<option value="0">--Seleccione--</option>
-                    			</select>
-                    		</div>        			 
-            			</div>
-            		</div> 
-            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="numero_cheque" class=" control-label" >Número de Cheque:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="numero_cheque" name="numero_cheque" value="" disabled >
-                    		</div>        			 
-            			</div>
-            		</div> 
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
@@ -150,18 +140,20 @@
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="identificacion_proveedor" class=" control-label" >Identificacion Proveedor:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="<?php echo $cuentaspagar->identificacion_proveedores; ?>" >
+            				<label for="nombre_banco" class=" control-label" >Id. Chequera:</label> 
+                    		<div class="form-group-sm">
+                    			<select class="form-control"  id="id_bancos" onchange="validaChequera()" >
+                    				<option value="0">--Seleccione--</option>
+                    			</select>
                     		</div>        			 
             			</div>
             		</div> 
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="nombre_proveedor" class=" control-label" >Nombre Proveedor:</label> 
+            				<label for="numero_cheque" class=" control-label" >Número de Cheque:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $cuentaspagar->nombre_proveedores; ?>" >
+                				 <input type="text" class="form-control" id="numero_cheque" name="numero_cheque" value="" disabled >
                     		</div>        			 
             			</div>
             		</div> 
@@ -170,26 +162,54 @@
             			<div class="form-group ">
             				<label for="id_moneda" class=" control-label" >Id. de Moneda:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="id_moneda" name="id_moneda" value="<?php echo $cuentaspagar->moneda; ?>" >
+                				 <input type="text" class="form-control" id="id_moneda" name="id_moneda" value="<?php echo $objmoneda->moneda; ?>" >
                     		</div>        			 
             			</div>
-            		</div>   
+            		</div> 
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
             				<label for="total_lote" class=" control-label" >Total Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="total_lote" name="total_lote"  value="<?php echo $cuentaspagar->total_cuentas_pagar; ?>" > 
+                				 <input type="text" class="form-control" id="total_lote" name="total_lote"  value="<?php echo $objcuentaspagar->total_cuentas_pagar; ?>" > 
+                    		</div>        			 
+            			</div>
+            		</div>   
+            		
+            	</div>
+            	
+            	<div class="panel panel-warning">
+                  <div class="panel-heading"> DATOS BENEFICIARIO</div>                      
+                 </div>
+            		
+            	<div class="row">	
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="identificacion_proveedor" class=" control-label" >Identificacion Proveedor:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="identificacion_proveedor" name="identificacion_proveedor" value="<?php echo $objcuentaspagar->identificacion_proveedores; ?>" >
                     		</div>        			 
             			</div>
             		</div> 
             		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="nombre_proveedor" class=" control-label" >Nombre Proveedor:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="nombre_proveedor" name="nombre_proveedor" value="<?php echo $objcuentaspagar->nombre_proveedores; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div> 
             		
-            		
-            		
-            		
-            		
-            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="concepto_pago" class=" control-label" >Concepto Pago:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="concepto_pago"  value="<?php echo $objcuentaspagar->descripcion_cuentas_pagar; ?>" >
+                    		</div>        			 
+            			</div>
+            		</div> 
             		
             						    
           	   	</div>
@@ -396,7 +416,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.22"></script>
+	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.23"></script>
 
   </body>
 </html>  

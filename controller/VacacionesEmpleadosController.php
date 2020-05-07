@@ -800,8 +800,8 @@ class VacacionesEmpleadosController extends ControladorBase{
             $fecha1->modify("+1 days");
         }
         
-        $totalDias = $numdias - $diasNoLaborables;
-        
+       // $totalDias = $numdias - $diasNoLaborables;
+        $totalDias = $numdias+1;
         $error = error_get_last();
         if( !empty($error)) return  -1;
         

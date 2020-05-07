@@ -137,7 +137,7 @@
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?>
-   <script src="view/informativo/js/G42.js?0.01" ></script>
+   <script src="view/informativo/js/G42.js?0.02" ></script>
   </body>
 
 </html>

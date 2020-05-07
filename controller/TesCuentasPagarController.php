@@ -1,7 +1,5 @@
 <?php
 
-use FontLib\Table\Type\post;
-
 class TesCuentasPagarController extends ControladorBase{
 
 	public function __construct() {
@@ -117,7 +115,7 @@ class TesCuentasPagarController extends ControladorBase{
 	        
 	    
 	    $columnas1 = " aa.id_tipo_proveedores,aa.id_proveedores, aa.nombre_proveedores, aa.identificacion_proveedores, aa.direccion_proveedores, aa.celular_proveedores,";
-	    $columnas1 .= "razon_social_proveedores, tipo_identificacion_proveedores ";
+	    $columnas1 .= "aa.razon_social_proveedores, aa.tipo_identificacion_proveedores ";
 	    $tablas1   = " proveedores aa
     	    INNER JOIN tes_tipo_proveedores bb ON aa.id_tipo_proveedores = bb.id_tipo_proveedores";
 	    $where1    = " bb.nombre_tipo_proveedores = 'PAGO PROVEEDORES'";
@@ -149,18 +147,29 @@ class TesCuentasPagarController extends ControladorBase{
 	    $estiloConfigProveedores = ""; // variable donde se guarda estilo css para indicar al usuario que debe configurar datos de proveedor 
 	    foreach ($resultSet as $res){
 	        
+	        //$estiloConfigProveedores = "style=\"color:#E37B71;\"";
+	        
 	        if( $res->id_tipo_proveedores == 3 && $res->razon_social_proveedores == "" && $res->tipo_identificacion_proveedores == "04")
-	            $estiloConfigProveedores = "bgcolor=\"#E37B71\"";
+	            $estiloConfigProveedores = "style=\"color:red;\"";
 	        
 	        $i++;
+	        
+	        $razonSocial = empty($res->razon_social_proveedores) ? "N/D" : $res->razon_social_proveedores;
+	        $direccion = empty($res->direccion_proveedores) ? "N/D" : $res->direccion_proveedores;
+	        $celular = empty($res->celular_proveedores) ? "N/D" : $res->celular_proveedores;
+	        
 	        $btonSelect = "<button onclick=\"SelecionarProveedor(this)\" value=\"$res->id_proveedores\" class=\"btn btn-default\"> 
                         <i aria-hidden=\"true\" class=\"fa fa-external-link\"></i> </button>";
 	        $htmlTr    .= "<tr $estiloConfigProveedores >";
 	        $htmlTr    .= "<td>" . $i . "</td>";
 	        $htmlTr    .= "<td>" . $res->identificacion_proveedores . "</td>";
-	        $htmlTr    .= "<td>" . $res->nombre_proveedores . "</td>";	        
+	        $htmlTr    .= "<td>" . $razonSocial . "</td>";
+	        $htmlTr    .= "<td>" . $res->nombre_proveedores . "</td>";	
+	        $htmlTr    .= "<td>" . $direccion . "</td>";	
+	        $htmlTr    .= "<td>" . $celular . "</td>";	
 	        $htmlTr    .= "<td>" . $btonSelect . "</td>";
 	        $htmlTr    .= "</tr>";	        
+	        
 	        	        
 	    }
 	    
@@ -298,13 +307,13 @@ class TesCuentasPagarController extends ControladorBase{
 	    $colImpuestos  = " aa.id_impuestos,aa.tipo_impuestos,aa.codigo_impuestos,aa.nombre_impuestos,aa.id_plan_cuentas, bb.nombre_plan_cuentas, 
                 bb.codigo_plan_cuentas, aa.porcentaje_impuestos, aa.operacion_impuestos";
 	    $tabImpuestos  = " tes_impuestos aa
-	           LEFT JOIN plan_cuentas bb ON bb.id_plan_cuentas = aa.id_plan_cuentas";
+	           INNER JOIN plan_cuentas bb ON bb.id_plan_cuentas = aa.id_plan_cuentas";
 	    $wheImpuestos  = " 1 = 1 ";
 	    $idIMpuestos   = " bb.codigo_plan_cuentas";
 	    //$rsImpuestos   = $impuestos->getCondiciones($colImpuestos, $tabImpuestos, $wheImpuestos, $idIMpuestos);
 	         
 	    if( strlen($busqueda) > 0 ){
-	        $wheImpuestos .= " AND ( aa.nombre_impuestos ILIKE '$busqueda%' OR aa.codigo_impuestos ILIKE '$busqueda%' OR bb.codigo_plan_cuentas ILIKE '$busqueda%' ) ";
+	        $wheImpuestos .= " AND ( aa.nombre_impuestos ILIKE '%$busqueda%' OR aa.codigo_impuestos ILIKE '$busqueda%' OR bb.codigo_plan_cuentas ILIKE '$busqueda%' ) ";
 	    }
 	    
 	    $resultSet = $impuestos->getCantidad("*", $tabImpuestos, $wheImpuestos);
@@ -333,10 +342,12 @@ class TesCuentasPagarController extends ControladorBase{
 	    foreach ($resultSet as $res){
 	        $i++;	        
 	       
+	        //$estiloConfigImpuestos = "bgcolor=\"#E37B71\"";
+	        
 	        /** siguiente validacion es solo hasta que se arreglen los impuestos **/
 	        if( $res->id_plan_cuentas == null || ( empty($res->codigo_impuestos) && $res->tipo_impuestos == "ret" ) || (empty($res->codigo_impuestos) && $res->tipo_impuestos == "retiva" )  ){
 	            //echo ""," PLAN CUENTAS --> ",$res->id_plan_cuentas,"   CODIGO IMPUESTOS --> ",$res->codigo_impuestos, "    TIPO IMPUESTO ---> ", $res->tipo_impuestos," <br> \n";
-	            $estiloConfigImpuestos = "bgcolor=\"#E37B71\"";
+	            $estiloConfigImpuestos = "style=\"color:red\"";
 	        }
 	        
 	        $btonSelect = "<button onclick=\"AgregarImpuesto(this)\" value=\"$res->id_impuestos\" class=\"btn btn-default\">
@@ -780,7 +791,9 @@ class TesCuentasPagarController extends ControladorBase{
 	            
 	            /** para obtener valor para  proveedores **/
 	            $valor_proveedores +=  $res->valor_cuentas_pagar_impuestos;
-	        }       
+	        }
+	        
+	        $orden_insert ++;
 	        	        
 	        $QueryIns1 = " INSERT INTO tes_distribucion_cuentas_pagar( id_lote, id_plan_cuentas, tipo_distribucion_cuentas_pagar, debito_distribucion_cuentas_pagar,
 			             credito_distribucion_cuentas_pagar, ord_distribucion_cuentas_pagar )
@@ -961,6 +974,10 @@ class TesCuentasPagarController extends ControladorBase{
 	        $_compra_cero  = (isset($_POST['monto_compra_cero'])) ? $_POST['monto_compra_cero'] : 0.00;
 	        $_compra_iva   = (isset($_POST['monto_compra_iva'])) ? $_POST['monto_compra_iva'] : 0.00;
 	        
+	        $numero_autorizacion_cuentas_pagar = $_POST['numero_autorizacion'];
+	        
+	        if( !empty(error_get_last()) ){ throw new Exception(" Variable no definidas"); }
+	        
 	        //para tranformar a datos solicitdos por funcion postgresql a numeric
 	        $_compra_cuentas_pagar = ( is_numeric($_compra_cuentas_pagar)) ? $_compra_cuentas_pagar : 0.00;
 	        $_desc_comercial = ( is_numeric($_desc_comercial)) ? $_desc_comercial : 0.00;
@@ -1050,6 +1067,15 @@ class TesCuentasPagarController extends ControladorBase{
 	        $_retencion_ccomprobantes = ''; // este valor se actualizara despues de realizar la respectiva retencion
 	        $_concepto_ccomprobantes = 'Cuentas por Pagar | '.$_descripcion_cuentas_pagar;
 	        
+	        /*actualizar cuentas pagar Numero Autorizacion */ //Parche numero uno
+	        $colvalAutorizacion = " numero_autorizacion_cuentas_pagar = $numero_autorizacion_cuentas_pagar";
+	        $tabvalAutorizacion = " tes_cuentas_pagar";
+	        $whevalAutorizacion = " id_cuentas_pagar = $_id_cuentas_pagar";
+	        
+	        $cuentasPagar ->ActualizarBy($colvalAutorizacion, $tabvalAutorizacion, $whevalAutorizacion);
+	        
+	        if( !empty(pg_last_error()) ){ throw new Exception(" Numero de autorizacion no Ingresado"); }
+	        
 	        $_valor_ccomprobantes = $_compra_cuentas_pagar;
 	        $_valor_letras_ccomprobantes  = $cuentasPagar->numtoletras($_compra_cuentas_pagar);
 	        $_fecha_ccomprobantes = $_fecha_cuentas_pagar;
@@ -1123,6 +1149,8 @@ class TesCuentasPagarController extends ControladorBase{
             $respuesta['xml'] = '';
             $respuesta['file']= $resp;
             
+            //AQUI SE COMENTO PARA PRUEBA Y NO ENVIAR SRI
+            
             if( $resp['error'] === true ){   
                 /** parametrizar pa guardar en tabla error retencion **/
                 if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML NO GENERADO" ){
@@ -1144,6 +1172,7 @@ class TesCuentasPagarController extends ControladorBase{
                 
                
             }else{
+                
                 $respuesta['xml'] = " ARCHIVO ENTRO XML";
                 
                 if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML GENERADO" ){
@@ -1170,10 +1199,10 @@ class TesCuentasPagarController extends ControladorBase{
                     
                     if($aux['error'] === false){
                         
-                        $aux = $comprobante->enviarXml($clave);
+                        $Envioresp = $comprobante->enviarXml($clave);
                         //$aux['recibido'] = true; //para pruebas
                         
-                        if($aux['recibido'] === true){
+                        if($Envioresp['recibido'] === true){
                             
                             $respuesta['xml'] = " Archivo Xml RECIBIDO";
                             
@@ -1189,20 +1218,22 @@ class TesCuentasPagarController extends ControladorBase{
                                 
                                 $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
                                 $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;  
+                                
+                                $fechaAutorizado = $finalresp['fecauto'];
                             }
                             
                             
                         }else{
                             /** aqui poner senetecia en caso de haber errror **/
                             $respuesta['xml'] = " Archivo Xml NO RECIBIDO";
-                            $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+                            $respuesta['Archivo'] = ( array_key_exists('mensaje', $Envioresp) ) ? $Envioresp['mensaje'] : '' ;
                             $errorXml = true;
                         }
                             
                     }else{                        
                         /** aqui poner senetecia en caso de haber errror **/
                         $respuesta['xml'] = " Archivo Xml NO FIRMADO";
-                        $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+                        $respuesta['Archivo'] = ( array_key_exists('mensaje', $aux) ) ? $aux['mensaje'] : '' ;
                         $errorXml = true;
                     }
                     
@@ -1217,10 +1248,22 @@ class TesCuentasPagarController extends ControladorBase{
                         
                         /** agregar datos a tabla errores de retenciones **/ 
                     }
+                    
+                    /** actualizacion de la fecha de autorizacion del xml **/
+                    if( isset($fechaAutorizado) ){
+                        
+                        $claveAcceso = $resp['claveAcceso'];
+                        $_columnaActualizar = " fecha_autorizacion = '$fechaAutorizado' ";
+                        $_tablaActualizar   = " tri_retenciones";
+                        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
+                        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
+                        
+                    }
                         
                 }else{
                     $respuesta['xml'] = " ARCHIVO NO ENTRO XML";
-                }
+                }                
+                
             }
             
             $cuentasPagar->endTran('COMMIT');
@@ -1319,7 +1362,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    $_fechaDocumento = new DateTime($_auxFecha); 
 	            
 	    /** VARIABLES DE XML **/
-	    $_ambiente = 1; //1 pruebas  2 produccion
+	    $_ambiente = 2; //1 pruebas  2 produccion
 	    $_tipoEmision = 1; //1 emision normal deacuerdo a la tabla 2 SRI
 	    $_rucEmisor  = $rsConsulta3[0]->ruc_entidades;
 	    $_razonSocial = $rsConsulta3[0]->razon_social_entidades;
@@ -1416,9 +1459,9 @@ class TesCuentasPagarController extends ControladorBase{
 	    /** obligatorio cuando corresponda **/
 	    // se toma datos de proveedor -- Direccion. Telefono. Correo
 	    /**CAMPOS ADICIONALES **/
-	    $_adicional1 = $rsConsulta2[0]->direccion_proveedores;
-	    $_adicional2 = $rsConsulta2[0]->telefono_proveedores;
-	    $_adicional3 = $rsConsulta2[0]->email_proveedores;
+	    $_adicional1 = ( !empty($rsConsulta2[0]->direccion_proveedores) ) ? $rsConsulta2[0]->direccion_proveedores : "ninguna" ;
+	    $_adicional2 = ( !empty($rsConsulta2[0]->telefono_proveedores) ) ? $rsConsulta2[0]->telefono_proveedores : "0000000000" ;
+	    $_adicional3 = ( !empty($rsConsulta2[0]->email_proveedores) ) ? $rsConsulta2[0]->email_proveedores : "ninguno@capremci.com.ec";
 	    $texto .= '<infoAdicional>';
 	    $texto .= '<campoAdicional nombre="Dirección">'.$_adicional1.'</campoAdicional>';
 	    $texto .= '<campoAdicional nombre="Teléfono">'.$_adicional2.'</campoAdicional>';
@@ -1500,6 +1543,16 @@ class TesCuentasPagarController extends ControladorBase{
 	                    
 	                }
 	                
+	                /** SE GUARDA EL id_lote EN LA RETENCION **/
+	                $triCol  = " id_lote = $_id_lote ";
+	                $triTab  = " tri_retenciones ";
+	                $triWhe  = " infotributaria_claveacceso = '$_claveAcceso'";
+	                $cuentasPagar->ActualizarBy($triCol, $triTab, $triWhe);
+	                
+	                if( !empty( pg_last_error() ) ){
+	                    throw new Exception('LOTE NO IDENTIFICADO PARA RETENCION');
+	                }
+	                
 	            }
 	            
 	            $resp['error'] = false;
@@ -1552,8 +1605,9 @@ class TesCuentasPagarController extends ControladorBase{
 	   	    
 	    $_digitoVerificador = $this->getDigVerificador($_strClaveAcceso);
 	    
-	    if( $_digitoVerificador == "")
+	    if( $_digitoVerificador === "" ){
 	        return "";
+	    }	    	    
 	    
         $_strClaveAcceso = $_strClaveAcceso.$_digitoVerificador;
 	    
@@ -1612,6 +1666,23 @@ class TesCuentasPagarController extends ControladorBase{
 	    } else {
 	        echo "No se encontró ninguna coincidencia.";
 	    }
+	    
+	    echo "variables es cero <br>";
+	    
+	    $numero = "";
+	    
+	    var_dump(is_int((int)$numero));
+	    
+	    $numero = "0";
+	    
+	    echo "el numero transformado es --> '",$numero,"' <br>";
+	    
+	    if( $numero === "" ){
+	        echo "ingreso vacio<br>";
+	    }else{
+	        echo "no nngreso vacio <br>";
+	    }
+	    
 	}
 	
 	public function pRetenciones(){
@@ -1680,7 +1751,7 @@ class TesCuentasPagarController extends ControladorBase{
 	public function getConfigXml(){
 	    $configuracionesPath = array(
 	        'url_pruebas' => 'https://celcer.sri.gob.ec',
-	        'url_produccion' => 'https://celcer.sri.gob.ec',
+	        'url_produccion' => 'https://cel.sri.gob.ec',
 	        'firmados' => 'DOCUMENTOSELECTRONICOS/docFirmados',
 	        'autorizados' => 'DOCUMENTOSELECTRONICOS/docAutorizados',
 	        'noautorizados' => 'docNoAutorizados',

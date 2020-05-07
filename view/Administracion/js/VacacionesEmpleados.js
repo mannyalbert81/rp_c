@@ -398,7 +398,11 @@ $("#fecha_hasta").on("focusout",function(){
 					   }
 					   startDate.setDate( startDate.getDate() + 1);
 				}
-				var diasLaborables = numero_dias - ndias; //el total de dias laborables solicitado
+				//var diasLaborables = numero_dias + ndias; //el total de dias laborables solicitado
+				
+				var diasLaborables = numero_dias+1; //el total de dias laborables solicitado
+				
+				
 				$("#total_dias").val(diasLaborables);
 			}else{
 				$("#fecha_hasta").notify("Segmento de Fecha No valida",{ position:"buttom left", autoHideDelay: 2000});

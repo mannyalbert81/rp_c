@@ -16,7 +16,7 @@ $(document).ready(function(){
 	
 	
 })
-
+ 
 function controlesStart(){
 	
 	$("#fecha_transaccion").attr("disabled",true);
@@ -34,6 +34,7 @@ function controlesStart(){
 
 function controlesStartOk(){
 	
+	$("#fecha_transaccion").attr("disabled",false);
 	$("#tipo_documento").attr("disabled",false);
 	$("#descripcion_transaccion").attr("disabled",false);
 	$("#referencia_documento").attr("disabled",false);
@@ -77,7 +78,7 @@ function ValidarControles(){
 	$("#referencia_documento").inputmask({
 		mask: "999-999-999999999", 
 		placeholder: "_",
-		clearIncomplete: true,
+		clearIncomplete: false,
 		rightAlign: true
 	});
 }
@@ -159,7 +160,7 @@ function popGeneraLote(){
 		$("#btnLote").popover('hide');
 	}).fail(function(xhr,status,error){
 		console.log(xhr.responseText);
-		swal({title:"ERROR",text:"Hemos encontrado un error con el servidor",icon:"error"})<
+		swal({title:"ERROR",text:"Hemos encontrado un error con el servidor",icon:"error"});
 		$("#btnLote").popover('hide');
 	})
 }
@@ -442,6 +443,19 @@ function cargaDistribucion(){
 		$registros.text(x.cantidadDatos);
 		/*var $divPaginacion = $("#mod_paginacion_distribucion");
 		$divPaginacion.html(x.paginacion);	*/
+		
+		/* cambio para tomar la refencia de la cuenta por pagar **/
+		try{
+			
+			$("input:text[name='mod_dis_referencia']").each(function(){
+				$(this).val( $("#descripcion_transaccion").val() )
+			})
+			
+		}catch (e) {
+			// TODO: handle exception
+			console.log("ERROR EN TOMAR LA REFERENCIA PARA EL CONPROBANTE")
+		}
+		
 				
 	}).fail(function(xhr,status,eror){
 		console.log(xhr.responseText);
@@ -538,6 +552,7 @@ function IngresarTransaccion(){
 	if( $("#tipo_documento").val() == 0 ){ $("html, body").animate({ scrollTop: $(tipo_documento).offset().top-120 }, 1000); $("#tipo_documento").notify("Seleccione Tipo Documento",{position:"button",autoHideDelay: 2000}); return false;}
 	if( $("#descripcion_transaccion").val() == "" ){ $("html, body").animate({ scrollTop: $(descripcion_transaccion).offset().top-120 }, 1000); $("#descripcion_transaccion").notify("Ingrese una Descripcion",{position:"button",autoHideDelay: 2000}); return false;}
 	if( $("#id_proveedores").val() == "" ){ $("html, body").animate({ scrollTop: $(identificacion_proveedores).offset().top-120 }, 1000); $("#identificacion_proveedores").notify("Seleccione un Proveedor",{position:"button",autoHideDelay: 2000}); return false;}
+	if( $("#referencia_documento").val() == "" || $("#referencia_documento").val().includes("_")){ $("html, body").animate({ scrollTop: $(referencia_documento).offset().top-120 }, 1000); $("#referencia_documento").notify(" Referencia Documento. Formato No valido",{position:"button",autoHideDelay: 2000}); return false;}
 	if( $("#referencia_documento").val() == "" ){ $("html, body").animate({ scrollTop: $(referencia_documento).offset().top-120 }, 1000); $("#referencia_documento").notify("Digite Referencia Documento",{position:"button",autoHideDelay: 2000}); return false;}
 	if( $("#numero_autorizacion").val() == "" ){ $("html, body").animate({ scrollTop: $(numero_autorizacion).offset().top-120 }, 1000); $("#numero_autorizacion").notify("Digite numero autorizacion",{position:"button",autoHideDelay: 2000}); return false;}	
 	//if( $("#numero_autorizacion").val() == "" ){ $("html, body").animate({ scrollTop: $(numero_autorizacion).offset().top-120 }, 1000); $("#numero_autorizacion").notify("Digite numero autorizacion",{position:"button",autoHideDelay: 2000}); return false;}
@@ -581,6 +596,7 @@ function IngresarTransaccion(){
 			compra_materiales: chkMateriales,
 			monto_compra_cero: $compra_cero.val(),
 			monto_compra_iva: $compra_iva.val(),
+			numero_autorizacion: $("#numero_autorizacion").val(),
 	}
 	
 	$.ajax({

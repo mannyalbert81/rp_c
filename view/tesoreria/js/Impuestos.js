@@ -6,8 +6,29 @@ $(document).ready(function(){
 	
 	consultaImpuestos();
 	validaTipoImpuesto();
+	init();
 	
 })
+
+/***
+ * @desc funcion para iniciar ciertos controles
+ * @returns void
+ */
+function init(){
+	
+	try{
+		$("#porcentaje_impuestos").inputmask({
+			mask: ['9','99','999','9.9','99.9','9.99','99.99'], 
+			placeholder: "_",
+			clearIncomplete: true,
+			rightAlign: true
+		});
+	}catch (e) {
+		// TODO: handle exception
+		console.log("ERROR INICIANDO MASCARA DE PORCENTAJE")
+	}
+	
+}
 
 /**
  * para autocomplete de plan cuentas
@@ -16,9 +37,8 @@ $(document).ready(function(){
  * @returns json
  */
 $( "#plan_cuentas" ).autocomplete({
-
 	source: "index.php?controller=Impuestos&action=AutocompletePlanCuentas",
-	minLength: 8,
+	minLength: 3,
     select: function (event, ui) {
        // Set selection          
        $('#id_plan_cuentas').val(ui.item.id);
@@ -69,14 +89,15 @@ function getCodigoRetencion(objeto){
 	
 	if( $tipoImpuesto.val() == "retencion" ){
 		
-		$.getJSON( "view/tesoreria/archivos/impuestos.json", function( data ) {
+		$.getJSON( "view/tesoreria/archivos/impuestos3.json", function( data ) {
 			
 			  $codRetencionImpuesto.empty();
 			  var dataSelect = data[nombreRetencion];
 			  var items = [];
 			  items.push( "<option value='0'>--Seleccione--</option>" );
-			  $.each( dataSelect, function( index, value ) {				  
-				  items.push( "<option value='" + value.valor + "'>"+ value.valor + " <--> " + value.nombre + "</option>" );			    
+			  $.each( dataSelect, function( index, value ) {		
+				  var nombreImp = value.nombre;				  			  
+				  items.push( "<option value='" + value.valor + "'>"+ value.valor + " <--> " + nombreImp + "</option>" );			    
 			  });
 			 
 			  $codRetencionImpuesto.append(items.join(""));
@@ -118,8 +139,12 @@ function ValidateFormImpuestos(){
 	//validar campo porcentaje Impuestos
 	var expresion = /^([0-9]{1,3})$/;
 	$porcentajeImpuestos = $("#porcentaje_impuestos");
-	if( !expresion.exec( $porcentajeImpuestos.val() ) ){
+	/*if( !expresion.exec( $porcentajeImpuestos.val() ) ){
 		$porcentajeImpuestos.notify("Porcentaje de impuesto no válido",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}*/
+	if( $porcentajeImpuestos.val() == "" || $porcentajeImpuestos.val().includes('_') ){
+		$porcentajeImpuestos.notify("Formato No valido o Vacio ",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	if( $porcentajeImpuestos.val() > 100 ){
@@ -442,4 +467,17 @@ function limpiarForm(){
 	validaTipoImpuesto();
           	   	
 }
+
+/*$("#porcentaje_impuestos_2").inputmask( {
+	mask:,
+	rightAlign: true 
+	});
+
+$("#porcentaje_impuestos_2").inputmask({
+	mask: "999-999-999999999", 
+	placeholder: "_",
+	clearIncomplete: true,
+	rightAlign: true
+});
+*/
 

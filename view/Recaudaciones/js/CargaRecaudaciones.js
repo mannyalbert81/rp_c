@@ -3,8 +3,28 @@ $(document).ready(function(){
 	listaArchivosRecaudacion();
 	//consultaCargaRecaudaciones();
 	cargaEntidadPatronal();
+	
+	init_controles();
+	
 		
 })
+
+function init_controles(){
+	try {
+		
+		 $("#nombre_carga_recaudaciones").fileinput({			
+		 	showPreview: false,
+	        showUpload: false,
+	        elErrorContainer: '#errorImagen',
+	        allowedFileExtensions: ["txt"],
+	        language: 'esp' 
+		 });
+		
+	} catch (e) {
+		// TODO: handle exception
+		console.log("ERROR AL IMPLEMENTAR PLUGIN DE FILEUPLOAD");
+	}
+}
 
 function cargaEntidadPatronal(){
 	
@@ -31,6 +51,32 @@ function cargaEntidadPatronal(){
 		$ddlEntidadPatronal.empty();
 	})
 	
+}
+
+function BuscarDescuentosFormatos(obj){
+	
+	let elemento = $(obj);
+	var $ddlDescuentosFormatos	= $("#id_descuentos_formatos");	
+	$ddlDescuentosFormatos.empty();
+	$ddlDescuentosFormatos.append("<option value='0' >--Seleccione--</option>");
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=CargaRecaudaciones&action=cargaDescuentosFormatos",
+		type:"POST",
+		dataType:"json",
+		data:{id_entidad_patronal:elemento.val()}
+	}).done(function(datos){		
+		
+		if( datos.data != undefined || datos.data != "" ){
+			$.each(datos.data, function(index, value) {
+				$ddlDescuentosFormatos.append("<option value= " +value.id_descuentos_formatos +" >" + value.nombre_descuentos_formatos  + "</option>");	
+	  		});
+		}
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+	})
 }
 
 $("#id_entidad_patronal").on("focus",function(){
@@ -86,9 +132,15 @@ $("#btnGenerar").on("click",function(){
 		return false;
 	}
 	
+	if($formatoCargaRecaudaciones.val() == 0 ){
+		$formatoCargaRecaudaciones.notify("Seleccione Formato",{ position:"top left", autoHideDelay: 2000});
+		return false;
+	}
 	
-	if($nombreCargaRecaudaciones.val() == 0 ){
-		$nombreCargaRecaudaciones.notify("Seleccione Archivo",{ position:"buttom left", autoHideDelay: 2000});
+	//validacion campo archivo
+	var inarchivo = $("#nombre_carga_recaudaciones");
+	if( inarchivo[0].files.length == 0){
+		inarchivo.notify("Seleccione un archivo",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	
@@ -244,25 +296,34 @@ function uploadFileEntidad(){
 	let	$mesCargaRecaudaciones 		= $("#mes_carga_recaudaciones");
 	let	$formatoCargaRecaudaciones	= $("#formato_carga_recaudaciones");
 	let	$nombreCargaRecaudaciones	= $("#nombre_carga_recaudaciones");
+	let $id_descuentos_formatos		= $("#id_descuentos_formatos");
 	
 	if($entidadPatronal.val() == 0 ){
 		$entidadPatronal.notify("Seleccione Entidad Patronal",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	
+	if( $id_descuentos_formatos.val() == 0 ){
+		$id_descuentos_formatos.notify("Seleccione Formato Descuento",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
 	if($formatoCargaRecaudaciones.val() == 0 ){
-		$formatoCargaRecaudaciones.notify("Seleccione Formato de Recaudaciones",{ position:"buttom left", autoHideDelay: 2000});
+		$formatoCargaRecaudaciones.notify("Seleccione Formato de Recaudaciones",{ position:"top left", autoHideDelay: 2000});
+		return false;
+	}	
+		
+	//validacion campo archivo
+	var inarchivo = $("#nombre_carga_recaudaciones");
+	if( inarchivo[0].files.length == 0){
+		inarchivo.closest('div.file-input').notify("Seleccione un archivo",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
-	
-	if($nombreCargaRecaudaciones.val() == "" ){
-		$nombreCargaRecaudaciones.notify("Seleccione Archivo",{ position:"buttom left", autoHideDelay: 2000});
-		return false;
-	}
-	
+		
 	var parametros = new FormData();
 	
-	parametros.append('id_entidad_patronal',$entidadPatronal.val());
+	parametros.append('id_entidad_patronal',$entidadPatronal.val()); 
+	parametros.append('id_descuentos_formatos',$id_descuentos_formatos.val());
 	parametros.append('anio_carga_recaudaciones',$anioCargaRecaudaciones.val());
 	parametros.append('mes_carga_recaudaciones',$mesCargaRecaudaciones.val());
 	parametros.append('formato_carga_recaudaciones',$formatoCargaRecaudaciones.val());
@@ -274,16 +335,14 @@ function uploadFileEntidad(){
 		url:"index.php?controller=CargaRecaudaciones&action=cargaArchivoRecaudacion",
 		type:"POST",
 		dataType:"json",
-		data:parametros,
-		
-		 contentType: false, 
-         processData: false  
+		data:parametros,		
+		contentType: false, 
+        processData: false  
        
 	}).done(function(x){
 		swal.close();
 		if( x.dataerror != undefined && x.dataerror != "" ){
 			
-			swal.close();
 			let modalErrores = $("#mod_archivo_errores");			
 			let arrayErrores = x.dataerror;
 			let cantidadRegistros		= arrayErrores.length;

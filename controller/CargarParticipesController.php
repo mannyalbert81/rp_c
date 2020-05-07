@@ -833,6 +833,243 @@ class CargarParticipesController extends ControladorBase{
     }
     
     
+    public function IngresarSiCuotas(){
+        
+        $participes = new ParticipesModel();
+        $cedula = $_GET['cedula'];
+        
+        
+        
+        $col1 = " id_participes,cedula_participes, nombre_participes, apellido_participes ";
+        $tab1 = " public.core_participes";
+        $whe1 = " id_estatus = 1
+        AND cedula_participes = '$cedula'";
+        
+        $rsConsulta1 = $participes->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+        
+        $id_participes = $rsConsulta1[0]->id_participes;
+        $nombre_participes =  $rsConsulta1[0]->nombre_participes;
+        $cedula_participes  = $rsConsulta1[0]->cedula_participes;
+        
+        //buscra creditos
+        $col2 = " aa.id_creditos,aa.monto_otorgado_creditos,aa.numero_creditos ";
+        $tab2 = "core_creditos aa
+        INNER JOIN core_estado_creditos bb ON bb.id_estado_creditos = aa.id_estado_creditos";
+        $whe2 = " aa.id_estatus = 1
+        AND aa.id_participes = $id_participes
+        AND upper(bb.nombre_estado_creditos) = 'ACTIVO'";
+        $id2  = " aa.monto_otorgado_creditos ";
+        
+        $rsConsulta2 = $participes->getCondicionesDesc($col2, $tab2, $whe2, $id2);
+        $id_creditos = $rsConsulta2[0]->id_creditos; //con eto se toma el credito con mayor valor
+        $numero_creditos = $rsConsulta2[0]->numero_creditos; //aqui va el cambio
+        $pdf_registro_tres  = 'null';
+        $id_estado_registro_tres_cuotas = 'null'; //aqui va el cambio
+        
+        //viene insertado en la tabla
+        $funcion = "ins_registro_tres_cuotas";
+        $parametros = "$id_participes,'$nombre_participes','$cedula_participes',$id_creditos,'$numero_creditos',$pdf_registro_tres, $id_estado_registro_tres_cuotas";
+        $sqCuotas   = $participes->getconsultaPG($funcion, $parametros);
+        
+        $resultado = $participes->llamarconsultaPG($sqCuotas);
+        
+        /*echo $sqCuotas,'**********************';
+        
+        var_dump(error_get_last()); die();
+        var_dump(pg_last_error()); die();*/
+        
+        //aqui seteas valores del pdf que vas a guardar
+        $nombre_pdf = "pdf".$cedula_participes.date('Ymd');
+        $ubicacion  = "DOCUMENTOS_GENERADOS/pdf_cuotas_creditos/";
+        $pdfReporte = $ubicacion.$nombre_pdf. ".PDF";
+        
+        
+        
+        // aqui haces la consulta para mostrar en el reporte
+        
+        $datosReporte = array();
+        
+        $fechaactual = getdate();
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fechaactual=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+        
+        $columnas = " registro_tres_cuotas.id_registro_tres_cuotas,
+                      core_participes.id_participes,
+                      core_participes.apellido_participes,
+                      core_participes.nombre_participes,
+                      core_participes.cedula_participes,
+                      registro_tres_cuotas.nombre_participes,
+                      registro_tres_cuotas.cedula_participes,
+                      core_creditos.id_creditos,
+                      core_creditos.numero_creditos,
+                      registro_tres_cuotas.numero_creditos,
+                      registro_tres_cuotas.pdf_registro_tres_cuotas,
+                      registro_tres_cuotas.creado,
+                      registro_tres_cuotas.modificado,
+                      core_tipo_creditos.id_tipo_creditos,
+                      core_tipo_creditos.nombre_tipo_creditos";
+        
+        $tablas = "public.registro_tres_cuotas,
+                  public.core_participes,
+                  public.core_creditos,
+                  public.core_tipo_creditos";
+        $where= "registro_tres_cuotas.id_participes = core_participes.id_participes AND
+                 core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
+                 registro_tres_cuotas.id_creditos = core_creditos.id_creditos AND registro_tres_cuotas.cedula_participes = '$cedula'";
+        $id="core_participes.id_participes";
+        
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $datosReporte['FECHA']=$fechaactual;
+        $datosReporte['NUMEROCREDITO']=$rsdatos[0]->numero_creditos;
+        $datosReporte['NOMBRE']=$rsdatos[0]->nombre_participes;
+        $datosReporte['APELLIDO']=$rsdatos[0]->apellido_participes;
+        $datosReporte['CEDULA']=$rsdatos[0]->cedula_participes;
+        $datosReporte['NOMBRETIPOCREDITOS']=$rsdatos[0]->nombre_tipo_creditos;
+        
+        // revisate la parte de retencion controller ahi esta lo que toca hacer
+        // buscas el pdf creado y le conviertes en bytea
+        //crea y descarga
+        $this->verReporte("PDFCUOTAS", array('datosReporte'=>$datosReporte,'nombreReporte'=>$pdfReporte ));
+        
+        //aqui tomas el pdf creado
+        $data = file_get_contents($pdfReporte);
+        $byteaPdf = pg_escape_bytea($data);
+        
+        
+        //actualizas la base
+        $colPdf = " pdf_registro_tres_cuotas = '$byteaPdf'";
+        $tabPdf = " registro_tres_cuotas";
+        $whePdf = " id_participes = $id_participes AND id_creditos = $id_creditos";
+        
+        $actualizado = $participes->ActualizarBy($colPdf, $tabPdf, $whePdf);
+        
+        
+        //abrir en linea
+        header("Content-type: application/pdf");
+        header("Content-Disposition: inline; filename=documento.pdf");
+        readfile($pdfReporte);
+        
+        
+    }
+    
+    public function  propaganda_diferir_cuotas(){
+        
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $callBack = $_GET['jsoncallback'];
+            $columnas_1="id_registro_tres_cuotas,cedula_participes, numero_creditos, pdf_registro_tres_cuotas";
+            $tablas_1="public.registro_tres_cuotas";
+            $where_1="cedula_participes = '$cedula'";
+            $id_1= "registro_tres_cuotas.id_registro_tres_cuotas";
+            $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            
+            if(!empty($resultUsu) && count($resultUsu)>0){
+                
+                $respuesta	= json_encode( array('respuesta'=>"SI") );
+                
+                
+            }else{
+                
+                $respuesta	= json_encode( array('respuesta'=>"NO") );
+                
+            }
+            
+            echo $callBack."(".$respuesta.");";
+            
+        }
+        
+    }
+    
+
+    
+    
+    
+    public function  propaganda_diferir_cuotas_ini(){
+        
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $callBack = $_GET['jsoncallback'];
+            $columnas_1=" c.id_creditos, p.id_participes";
+            $tablas_1="core_creditos c
+            inner join core_participes p on p.id_participes =c.id_participes";
+            $where_1="p.cedula_participes = '$cedula' and p.id_estatus =1 and c.id_estatus =1 and c.id_estado_creditos =4";
+            $id_1= "c.id_creditos";
+            $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            
+            
+            
+            if(!empty($resultUsu) && count($resultUsu)>0){
+                
+                $respuesta	= json_encode( array('respuesta'=>"SI") );
+                
+                
+            }else{
+                
+                $respuesta	= json_encode( array('respuesta'=>"NO") );
+                
+            }
+            
+            echo $callBack."(".$respuesta.");";
+            
+        }
+        
+    }
+ 
+    
+    
+    public function ReporteCertificado(){
+        session_start();
+        $participes = new ParticipesModel();
+        $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
+        
+        $datos_reporte = array();
+        $columnas = " registro_tres_cuotas.id_registro_tres_cuotas,
+                      core_participes.id_participes,
+                      core_participes.apellido_participes,
+                      core_participes.nombre_participes,
+                      core_participes.cedula_participes,
+                      registro_tres_cuotas.nombre_participes,
+                      registro_tres_cuotas.cedula_participes,
+                      core_creditos.id_creditos,
+                      core_creditos.numero_creditos,
+                      registro_tres_cuotas.numero_creditos,
+                      registro_tres_cuotas.pdf_registro_tres_cuotas,
+                      registro_tres_cuotas.creado,
+                      registro_tres_cuotas.modificado,
+                      core_tipo_creditos.id_tipo_creditos,
+                      core_tipo_creditos.nombre_tipo_creditos";
+        
+        $tablas = "public.registro_tres_cuotas,
+                  public.core_participes,
+                  public.core_creditos,
+                  public.core_tipo_creditos";
+        $where= "registro_tres_cuotas.id_participes = core_participes.id_participes AND
+                 core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
+                 registro_tres_cuotas.id_creditos = core_creditos.id_creditos AND registro_tres_cuotas.id_participes = '$id_participes'";
+        $id="core_participes.id_participes";
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
+        $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
+        $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
+        
+        
+        $this->verReporte("ReporteCertificado", array('datos_reporte'=>$datos_reporte ));
+        
+        
+        
+    }
     
 }
 

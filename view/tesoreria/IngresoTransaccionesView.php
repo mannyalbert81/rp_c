@@ -327,17 +327,20 @@
             			<input type="text" id="mod_buscador_proveedores" onkeyup="loadProveedores()" class="form-control">
             		</div>
             		<div class="clearfix"></div>
+            		<div class="pull-left">            			
+            			<p>Total Registros <span id="mod_total_proveedores" class="badge badge-info"></span></p>
+            		</div>
+            		<div class="clearfix"></div>
             		<table id="mod_tbl_proveedores" class="table  table-fixed table-sm table-responsive-sm" > <!--   -->
-                    	<thead >
-                    		<tr>
-                    			<th ><p>Total Registros <span id="mod_total_proveedores" class="badge bg-info"></span></p> </th>
-                    			<th colspan="3"></th>
-                    		</tr>
+                    	<thead >                    		
                     	    <tr class="table-secondary" >
-                    			<th style="text-align: left;  font-size: 12px;">#</th>
-                    			<th style="text-align: left;  font-size: 12px;">RUC/CI</th>
-                    			<th style="text-align: left;  font-size: 12px;">Nombres</th>
-                    			<th style="text-align: left;  font-size: 12px;">..</th>
+                    			<th style="text-align: left;  font-size: 10px;">#</th>
+                    			<th style="text-align: left;  font-size: 10px;">RUC/CI</th>
+                    			<th style="text-align: left;  font-size: 10px;">Razon Social</th>
+                    			<th style="text-align: left;  font-size: 10px;">Nombres</th>
+                    			<th style="text-align: left;  font-size: 10px;">Dirección</th>
+                    			<th style="text-align: left;  font-size: 10px;">Celular</th>
+                    			<th style="text-align: left;  font-size: 10px;">..</th>
                     		</tr>
                     	</thead>        
                     	<tbody>
@@ -345,7 +348,7 @@
                     	</tbody>
                     	<tfoot>
                     	    <tr>
-                    			<th colspan="4" ></th>
+                    			<th colspan="7" ></th>
                     	    </tr>
                     	</tfoot>
                     </table>  
@@ -558,7 +561,7 @@
    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/tesoreria/js/IngresoTransaciones.js?0.37"></script> 
+   <script src="view/tesoreria/js/IngresoTransaciones.js?0.40"></script> 
        
        
 

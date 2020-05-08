@@ -467,6 +467,72 @@
                     	
                     	<!-- PANEL 6 --Superavit-- -->
                     	<div class="tab-pane" id="panel_6">
+                    	
+                    	
+                    	
+                    	<form id="frm_superavit_principal" action="<?php echo $helper->url("PrincipalSuperavit","index"); ?>" method="post" >
+                    		             	             	
+                 			<div id="pnlBusquedaSuperavit" class="row">
+            					<div class="col-xs-12 col-md-6 col-lg-6">
+                				<div class="panel panel-default">
+                          		<div class="panel-heading">Datos Supv.Afiliados/Cesantes</div>
+                            
+                          		<table id="tblBusquedaPrincipalSuperavit" class="table">   
+                          			<thead>                          		                       		
+                          			</thead>
+                          			<tbody>
+                              		<tr>
+                                  		<td><label>Identificacion:</label></td>
+                                  		<td><input type="text" class="form-control" id="txtCedulaSuperavit"></td>                     		
+                              		</tr>
+                              		<tr>
+                                  		<td><label>Código:</label></td>
+                                  		<td><input type="text" class="form-control" id="txtCodigoSuperavit"></td>
+                              		</tr>
+                              		
+                              	</tbody>
+                            </table>
+                        	</div>
+            			</div>
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="btn_principal_superavit" class=" control-label" ></label> 
+                    		<div class="form-group-sm">           
+                    		  <button type="button" id="btn_principal_superavit" class="btn btn-info">
+                              	<i class="glyphicon glyphicon-search"></i> Buscar
+                              </button>
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            	</div>
+            	
+                             	 <div id="pnlResultadosSuperavit" class="row hidden">
+                        		<div class="col-xs-12 col-md-9 col-lg-9">
+                            		<div class="panel panel-default">
+                                      <div class="panel-heading">
+                                      	<p>
+                                      		<a href="#" onclick="fnVolverFormularioSuperavit()" >
+                                      			<i aria-hidden="true" class="fa fa-mail-reply"></i> Volver
+                                  			</a>
+                              			</p>
+                              			<span id="spanCantidadSuperavit"></span></div>
+                                      
+                                      <!-- VARIABLE PARA QUE SERA TOMADA POR LA VENTANA HIJA -->
+                                      <input type="hidden" id="hdnid_participes_padre_superavit" value="0">
+                                      
+                                      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                                      <table id="tblResultadosPrincipalSuperavit" class="table table-responsive">
+                                      </table>
+                                      
+                                      <div id="mod_paginacion_resultados_superavit"></div>
+                                	  <div class="clearfix"></div>  
+                                    </div>
+                        		</div>
+                        	</div>            
+           					</form>
+                    	
                     		
                     	</div>
                     	<!-- END PANEL 6 --Superavit-- -->
@@ -615,6 +681,7 @@
 	<script type="text/javascript" src="view/principal/js/principalBusqueda.js?0.06"></script>
 	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.03"></script>
 	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.12"></script>
+	<script type="text/javascript" src="view/principal/js/principalSuperavit.js?0.3"></script>
 	
   </body>
 </html>   

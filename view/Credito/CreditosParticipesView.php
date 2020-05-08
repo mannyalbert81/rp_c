@@ -38,6 +38,28 @@
       li{
         list-style-type:none;
         }
+        
+      h3.titulo{
+		width: 100%; 
+		text-align: center;	
+    	}
+    	
+	.bio-row{
+            width: 100%;
+            float: left;
+            margin-bottom:0px;
+            padding: 0 15px;
+    }
+       
+    .bio-row p {
+             margin: 0 0 1px;
+    }   
+        
+    .bio-row p span.tab{
+    	font-weight: bold;
+    	display: inline-block;
+    	width: 120px;
+    }
  	  
  	</style>
    
@@ -73,7 +95,7 @@
   </aside>
 
   <div class="content-wrapper">
-  
+    
   <section class="content-header">
       <h1>
         
@@ -101,7 +123,7 @@
                 		<label for="cedula_participe" class="control-label">Cedula:</label>
                 		<div id="mensaje_cedula_participe" class="errores"></div>
                 		<div class="input-group">
-                			<input type="text" data-inputmask="'mask': '9999999999'" class="form-control" id="cedula_participe" name="cedula_participe" placeholder="C.I." readonly>
+                			<input type="text" value="<?php echo isset( $cedula_participes ) ? $cedula_participes : 0 ; ?>" data-inputmask="'mask': '9999999999'" class="form-control" id="cedula_participe" name="cedula_participe" placeholder="C.I." readonly>
                 			
             				<span class="input-group-btn" id="buscar_participe_boton">
             				
@@ -117,6 +139,57 @@
                  	</div>
              	</div>
            	</div>
+           	
+           	<!-- DATOS HIDDEN -->
+           	<input type="hidden" id="hdn_id_solicitud" value=" <?php echo isset( $id_solicitud ) ? $id_solicitud : 0 ; ?>">
+           	<input type="hidden" id="hdn_cedula_participes" value="<?php echo isset( $cedula_participes ) ? $cedula_participes : 0 ; ?>">
+           	<input type="hidden" id="hdn_id_participes" value="0">
+           	<!-- TERMINA DATOS HIDDEN -->
+           	           	
+           	<div class="row">
+  			<div class="col-md-12">
+          		<div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                    	<!-- AQUI PONER LOS TITULOS DE TABS -->
+                      <li><a href="#panel_info" data-toggle="tab">Informacion</a></li>
+                      <li><a href="#panel_detalle" data-toggle="tab">Detalle Valores</a></li>
+                    </ul>
+                    <div class="tab-content">
+                    	<!-- AQUI COMIENZA PARA PONER CONTENIDOS DE PANELES -->
+                    	<!-- PANEL INDEX -->
+                    	<div class="active tab-pane" id="panel_index">
+                    		<?php include 'view/principal/html/panelindex.php'; ?>
+                    	</div>
+                    	<div class="tab-pane" id="panel_info">
+                    	
+                    		<div id="div_pnl_info_solicitud">
+                    			<h3 class="titulo">INFORMACION SOLICITUD</h3>
+                    			<div class="box-footer no-padding">
+                            	<div class="bio-row"><p><span class="tab">A&Ntilde;O: </span>{ANIO_DESCUENTOS}</p></div>
+                            	<div class="bio-row"><p><span class="tab">MES: </span>{MES_DESCUENTOS}</p></div>	
+                            	</div>
+                    		</div>
+							<div id="div_pnl_info_participe">
+							</div>	
+                    		
+                    	</div>
+                    	<div class="tab-pane" id="panel_detalle">
+                    		
+                    		<div id="div_pnl_participe_encontrado"></div>
+                    		
+                    		<div id="div_pnl_participe_aportes"></div>
+                    		
+                    		<div class="clearfix"></div>
+                    		
+                    		<div id="div_pnl_participe_creditos"></div>
+                    		
+                    	</div>
+                    </div>
+                 </div>
+             </div>
+             </div>
+             
+           	
            	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="participe_encontrado" ></div>
@@ -356,8 +429,8 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-       <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?119"></script> 
+   <script src="view/Credito/js/CreditosParticipes.js?"></script> 
    </body>
 </html>   

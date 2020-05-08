@@ -105,3 +105,31 @@
         		  console.log(cedula+"-"+id_solicitud); 
         		  window.open('index.php?controller=BuscarParticipesCesantes&action=index1&cedula_participe='+cedula+'&id_solicitud='+id_solicitud, '_self');
         	   }
+
+var iniciar_proceso_creditos	= function(a, b){
+			
+	var params = {
+		"cedula_participes":a,
+		"id_solicitud":b
+	}
+		
+	var form = document.createElement("form");	
+    form.setAttribute("id", "frm_creditos");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "index.php?controller=CreditosParticipes&action=index");
+    form.setAttribute("target", "_blank");   
+    
+    for (var i in params) {
+        if (params.hasOwnProperty(i)) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = i;
+            input.value = params[i];
+            form.appendChild(input);
+        }
+    }
+        
+    document.body.appendChild(form); 
+    form.submit();    
+    document.body.removeChild(form);
+}

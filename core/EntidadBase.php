@@ -352,7 +352,16 @@ class EntidadBase{
     }
   
     
-    
+    public function getCondicionesGrupCondiOrderPag($columnas ,$tablas , $where, $grupo, $condicion, $id, $limit){
+        
+        $query=pg_query($this->con, "SELECT $columnas FROM $tablas WHERE $where GROUP BY $grupo HAVING $condicion ORDER BY $id  ASC  $limit");
+        $resultSet = array();
+        while ($row = pg_fetch_object($query)) {
+            $resultSet[]=$row;
+        }
+        
+        return $resultSet;
+    }
     
     public function getCondicionesPag($columnas ,$tablas , $where, $id, $limit){
     	 

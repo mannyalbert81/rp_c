@@ -1,3 +1,12 @@
+/********* js de vista creditos ******/
+var view	= view || {};
+view.hdn_id_solicitud	 	= $("#hdn_id_solicitud");
+view.hdn_cedula_participes 	= $("#hdn_cedula_participes");
+view.hdn_id_participes	 	= $("#hdn_id_participes");
+view.cedula_participes 		= $("#cedula_participe");
+view.html_boton_buscar_participe		= $("#buscar_participe_boton");
+view.boton_buscar_participe		= $("#buscar_participe") || null;
+
 var id_participe;
 var disponible_participe;
 var solicitud;
@@ -17,13 +26,216 @@ $(document).ready( function (){
 	$(":input").inputmask();
 	
 	// CARGO LOS TIPOS DE CREDITO AL COMBO BOX
-	GetTipoCreditos();
+	//GetTipoCreditos();
+	iniciar_cedula();
+	
 	
 		
 });
 
+var iniciar_cedula	= function(){
+	
+	if( view.hdn_cedula_participes.val() != "" ){
+		view.html_boton_buscar_participe.html("");
+		view.html_boton_buscar_participe.html('<button type="button" class="btn btn-primary" id="buscar_participe" ><i class="glyphicon glyphicon-search"></i></button>');
+		
+		view.cedula_participes.val( view.hdn_cedula_participes.val() ) ;
+		
+		view.boton_buscar_participe	= $("#buscar_participe");
+		$('body').on('click',"#buscar_participe",function(){
+			Iniciar( view.hdn_cedula_participes.val(), view.hdn_id_solicitud.val() );
+			
+			buscar_datos_creditos();
+		})
+	}
+}
+
+$('#cedula_participe').keypress(function(event){
+	  if(event.keyCode == 13){
+		  view.boton_buscar_participe.click();
+	  }
+});
 
 
+var buscar_datos_creditos = function(){
+	
+	obtener_info_participes();
+}
+
+var obtener_info_participes = function(){
+		
+	if( view.cedula_participes.val() == "" || view.cedula_participes.val().includes('_') ){
+		view.cedula_participes.notify("Cedula No Identificado",{ position:"buttom left", autoHideDelay: 2000});
+	}else{
+		
+		console.log("Cedula Participe -->"+ view.cedula_participes.val());
+		$.ajax({
+		    url: 'index.php?controller=CreditosParticipes&action=BuscarParticipe',
+		    type: 'POST',
+		    dataType:'json',
+		    data: {
+		    	   'cedula': view.cedula_participes.val()
+		    },
+		})
+		.done(function(x) {
+			
+			console.log(x);
+			// cargos tabla de informacion basica de los participes
+			if( x.estatus != undefined && x.estatus == 'OK' ){
+				
+				$('#div_pnl_participe_encontrado').html( x.html );
+				
+				view.hdn_id_participes.val( x.id_participes );
+				
+				// cargo tabla de aportes de los participes
+				buscar_aportes_participe();
+				
+				//cargo tabla de creditos de los paticipes
+				buscar_creditos_participe();
+				
+				//cargar informacion de la solicitud a procesar
+				obtener_informacion_solicitud();
+				
+				
+				AportesParticipe(view.hdn_id_participes.val(), 1)
+				
+				//cargo tabla de creditos de los paticipes
+				CreditosActivosParticipe( view.hdn_id_participes.val() , 1)
+			}
+			
+			if( x.estatus != undefined && x.estatus == 'OK' ){
+				$('#participe_encontrado').html( x.html );
+			}
+						
+		})
+		.fail(function() {
+		    console.log("error");
+		});
+	}
+}
+
+var buscar_aportes_participe	= function( a){
+	
+	if( view.hdn_id_participes.val() == undefined ||  view.hdn_id_participes.val() == "0" || view.hdn_id_participes.val() == "" ){
+		console.log("REVISAR DATOS DE ENVIO PARA OBTENER DATOS APORTES PARTICIPE");
+		return false;
+	}
+	a = a || 1;
+	$.ajax({
+	    url: 'index.php?controller=CreditosParticipes&action=AportesParticipe',
+	    type: 'POST',
+	    dataType:'json',
+	    data: {
+	    	   id_participe: view.hdn_id_participes.val(),
+	    	   page: a
+	    },
+	}).done(function(x) {
+		
+		$('#div_pnl_participe_aportes').html( x.html );		
+		
+	}).fail(function() {
+	    console.log("error");
+	});
+}
+
+var buscar_creditos_participe	= function(a){
+	
+	if( view.hdn_id_participes.val() == undefined ||  view.hdn_id_participes.val() == "0" || view.hdn_id_participes.val() == "" ){
+		console.log("REVISAR DATOS DE ENVIO PARA OBTENER DATOS CREDITOS PARTICIPE");
+		return false;
+	}
+	a = a || 1;
+	$.ajax({
+	    url: 'index.php?controller=CreditosParticipes&action=CreditosActivosParticipe',
+	    type: 'POST',
+	    dataType:'json',
+	    data: {
+	    	   id_participe: view.hdn_id_participes.val(),
+	    	   page: a
+	    },
+	}).done(function(x) {
+		
+		$('#div_pnl_participe_creditos').html( x.html );		
+		
+	}).fail(function() {
+	    console.log("error");
+	});
+	
+}
+
+var obtener_informacion_solicitud 	= function(){
+	
+	if( view.hdn_id_solicitud.val() == undefined ||  view.hdn_id_solicitud.val() == "0" || view.hdn_id_solicitud.val() == "" ){
+		console.log("REVISAR DATOS DE ENVIO PARA OBTENER DATOS DE SOLICITUD DE CREDITO");
+		return false;
+	}
+	
+	$.ajax({
+	    url: 'index.php?controller=CreditosParticipes&action=InfoSolicitud',
+	    type: 'POST',
+	    dataType:'json',
+	    data: {
+	    	id_solicitud:view.hdn_id_solicitud.val()
+	    },
+	})
+	.done(function(x) {
+		
+		// cargo la informacion de la solicitud en el modal
+		$("#div_pnl_info_solicitud").html( x.html );
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+	
+}
+
+var obtener_informacion_participe	= function(){
+	
+	//BUSCAR INFORMACION PARA CREDITOS
+	
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=InformacionCrediticiaParticipe',
+	    type: 'POST',
+	    dataType: 'json',
+	    dataType:'json',
+	    data: {
+	    	cedula_participe:view.cedula_participes.val(),
+	 	    },
+	})
+	.done(function(x) {
+		
+		// CARGO INFORMACION DEL PARTICIPE EN MODAL
+		modal.find("#info_participe").html(x);
+		
+		// CAPTURO EL MONTO CUENTA INDIVIDUAL
+		var limite=document.getElementById("cuenta_individual").innerHTML;
+		
+		// EXTRAIGO EL MONTO
+		var elementos=limite.split(" : ");
+		limite=elementos[1];
+		disponible_participe=limite;
+		console.log("Cta Individual: "+limite);
+		
+		// CAPTURO EL ESTYLO DE LA CLASE PARA VERIFICAR SI ACCEDE O NO AL CREDITO
+		var lista=document.getElementById("disponible_participe").classList;
+		lista=lista.value;
+		if(lista.includes('bg-red'))
+			{
+			swal({
+		  		  title: "Advertencia!",
+		  		  text: "El participe no puede acceder a un crédito en este momento",
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+			}
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+	
+}
 
 // FUNCION PARA LLENAR EL COMBO BOX TIPO DE CREDITOS
 
@@ -99,11 +311,6 @@ function SetTipoCreditos()
 	
 // EXECUTO BOTON BUSCAR PARTICIPE AL APLASTAR LA TECLA INTRO 
 
-$('#cedula_participe').keypress(function(event){
-	  if(event.keyCode == 13){
-	    $('#buscar_participe').click();
-	  }
-	});
 
 
 

@@ -3331,6 +3331,227 @@ class SimulacionCreditosController extends ControladorBase{
    }
    
    
+   /***** BEGIN DC cambios nuevos ********/
+   /** 2020/05/08 */
+   public function InformacionCrediticiaParticipe(){
+       
+       session_start();
+       $creditos= new ParticipesModel();
+       $response    = array();
+       ob_start();
+       try {
+           
+           $cedula_participes = $_POST['cedula_participe'];// controlar los aportes hasta agosto
+           
+           if( !empty( error_get_last() ) ){ throw new Exception('Variables no definidas'); }
+           
+           $mes=date('m');
+           $anio=date('Y');
+           //CAMBIO TEMPORAL PARA PRUEBAS
+           //$mes=10;
+           
+           $mes_fin=$mes-1;
+           
+           if ($mes_fin == 0){
+               $anio_fin = $anio - 1;
+               $mes_fin = 12;
+               
+           }else{
+               $anio_fin = $anio;
+               $mes_fin =  $mes_fin;
+               
+           }           
+           
+           $mes_ini=$mes-3;
+           if ($mes_ini < 1){
+               $anio_ini = $anio - 1;
+               $mes_ini += 12;
+               
+           }else{
+               $anio_ini = $anio;
+               $mes_ini =  $mes_ini;
+               
+           }
+           
+           $dia= date("d",(mktime(0,0,0,$mes_fin+1,1,$anio_fin)-1));
+           $fecha_inicio=$anio_ini."-".str_pad($mes_ini,2,'0',STR_PAD_LEFT)."-01";
+           $fecha_fin=$anio_fin."-".str_pad($mes_fin,2,'0',STR_PAD_LEFT)."-".$dia;
+           
+           $saldo_credito=0;
+           $saldo_cta_individual=0;
+           
+           // AQUI OBTENGO TOTAL DE CUENTA INDIVIDUAL
+           $columnas="COALESCE(SUM(valor_personal_contribucion),0)+COALESCE(SUM(valor_patronal_contribucion),0) AS total";
+           $tablas="core_contribucion INNER JOIN core_participes
+            ON core_contribucion.id_participes  = core_participes.id_participes";
+           $where="core_participes.cedula_participes='".$cedula_participes."' AND core_contribucion.id_estatus=1";
+           $totalCtaIndividual=$creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
+           
+           // AQUI PONER ATENCION AL FINAL saldo_actual_creditos
+           $columnas="COALESCE(SUM(saldo_actual_creditos),0) AS total";
+           $tablas="core_creditos INNER JOIN core_participes
+            ON core_creditos.id_participes  = core_participes.id_participes";
+           $where="core_participes.cedula_participes='".$cedula_participes."' AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
+           $saldo_actual_credito=$creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
+           
+           // AQUI AGRUPAR POR MES valor_personal_contribucion PARA VER 3 ULTIMAS APORTACIONES
+           $columnas="to_char(c.fecha_registro_contribucion, 'MM') as mes, sum(c.valor_personal_contribucion) as aporte";
+           $tablas="core_contribucion c inner join core_participes p on c.id_participes = p.id_participes";
+           $where="p.cedula_participes='".$cedula_participes."' and p.id_estatus=1 and c.id_contribucion_tipo=1  AND c.fecha_registro_contribucion BETWEEN '".$fecha_inicio."' AND '".$fecha_fin."' AND c.id_estatus=1";
+           $grupo="to_char(c.fecha_registro_contribucion, 'MM')";
+           $having="sum(c.valor_personal_contribucion)>0";
+           $aportes=$creditos->getCondiciones_Grupo_Having($columnas, $tablas, $where, $grupo, $having);
+           $num_aporte=sizeof($aportes);
+           
+           // capturo los saldos de las consultas
+           $saldo_cta_individual=$totalCtaIndividual[0]->total;
+           $saldo_credito=$saldo_actual_credito[0]->total;
+           // $saldo_credito_renovar=$_result_creditos_renovar[0]->total;
+           
+           if($saldo_cta_individual > 0 && $saldo_credito > 0){
+               
+               
+               if($saldo_cta_individual > $saldo_credito){
+                   
+                   $disponible=$saldo_cta_individual-$saldo_credito;
+                   
+               }else{
+                   
+                   $disponible=0.00;
+               }
+               
+               
+               
+           }else if($saldo_cta_individual == 0.00 && $saldo_credito > 0){
+               
+               $disponible=0.00;
+               
+           }else if($saldo_cta_individual > 0 && $saldo_credito == 0.00){
+               
+               $disponible=$saldo_cta_individual;
+               
+           }else{
+               
+               $disponible=0.00;
+           }
+           
+           $saldo_cta_individual=number_format((float)$saldo_cta_individual, 2, '.', '');
+           $disponible=number_format((float)$disponible, 2, '.', '');
+           
+           $columnas="      core_participes.nombre_participes,
+                    core_participes.apellido_participes,
+                    core_participes.cedula_participes,
+                    core_participes.fecha_nacimiento_participes";
+           $tablas="public.core_participes";
+           
+           $where="core_participes.cedula_participes='".$cedula_participes."'";
+           
+           $id="core_participes.id_participes";
+           
+           $infoParticipe=$creditos->getCondiciones($columnas, $tablas, $where, $id);
+           
+           //VERIFICO LA EDAD DEL PARTICIPE
+           $hoy=date("Y-m-d");
+           $tiempo=$this->dateDifference($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
+           $dias_hasta=$this->dateDifference1($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
+           $dias_75=365*75;
+           $diferencia_dias=$dias_75-$dias_hasta;
+           $diferencia_dias=$diferencia_dias/30;
+           $diferencia_dias=floor($diferencia_dias * 1) / 1;
+           $edad=explode(",",$tiempo);
+           $edad=$edad[0];
+           $edad=explode(" ", $edad);
+           $edad=$edad[0];
+           
+           // temporal para verificar si calcula bien la fecha de nacimiento
+           /*$tiempo_prueba=$this->dateDifference('1994-02-07', $hoy);
+            $dias_hasta_prueba=$this->dateDifference1('1994-02-07', $hoy);
+            $dias_75_prueba=365*75;
+            $diferencia_dias_prueba=$dias_75_prueba-$dias_hasta_prueba;
+            $diferencia_dias_prueba=$diferencia_dias_prueba/30;
+            $diferencia_dias_prueba=floor($diferencia_dias_prueba * 1) / 1;
+            $edad_prueba=explode(",",$tiempo_prueba);
+            $edad_prueba=$edad_prueba[0];
+            $edad_prueba=explode(" ", $edad_prueba);
+            $edad_prueba=$edad_prueba[0];*/
+           
+           
+           
+           
+           
+           
+           
+           // validacion para ver si puede acceder al credito
+           
+           if($disponible>=150  && $edad>=18 && $edad<75 && $num_aporte==3)
+           {
+               $solicitud="bg-olive";
+               
+           }
+           else{
+               
+               $solicitud="bg-red";
+           }
+           
+           
+           $html='<div id="disponible_participe" class="small-box '.$solicitud.'">
+               <div class="inner">
+               <table width="100%">
+               <td>
+                <table>
+                <tr>
+   <td width="50%"><font size="3" id="nombre_participe_credito">'.$infoParticipe[0]->nombre_participes.' '.$infoParticipe[0]->apellido_participes.'&nbsp</font></td>
+   <td ><font size="3" id="cedula_credito">Cédula : '.$infoParticipe[0]->cedula_participes.'</font></td>
+    </tr>
+    <tr>
+    <td colspan="2"><font size="3">Fecha de nacimiento : '.$infoParticipe[0]->fecha_nacimiento_participes.'</font></td>
+    </tr>
+    <tr>
+    <td colspan="2"><font size="3">Edad : '.$tiempo.'</font></td>
+    </tr>
+    <tr>
+    <td ><font size="3" id="cuenta_individual">Cta Individual : '.$saldo_cta_individual.'</font></td>
+    </tr>
+    <tr>
+    <td ><font size="3" id="capitaL_creditos">Capital de créditos : '.$saldo_credito.'</font></td>
+    </tr>
+    <tr>
+    <td ><font size="3" id="liquido_recibir">Disponible : '.$disponible.'</font></td>
+    </tr>';
+           if($num_aporte<3)$html.='<td colspan="2" ><font size="3" id="aportes_participes">El participe no tiene los 3 últimos aportes pagados.</font></td>';
+           $html.='</td>
+    </table>
+    <td width="50%">
+    <div id="info_garante"></div>
+    </td>
+    </tr>
+    </table>
+    <div id="info_credito_renovar"></div>
+               
+   </div>
+   </div>';
+           echo $html;
+           
+           
+           
+           
+       } catch (Exception $e) {
+           
+           $response['estatus'] = "ERROR";
+           $response['mensaje'] = "Error al cargar informacion de creditos";
+           $response['buffer']  = error_get_last();
+                      
+       }
+       
+       ob_get_clean();
+       
+       echo json_encode($response);
+       
+              
+   }
+   /******************************** END CAMBIOS DC *******************************/
+   
+   
    
    
    

@@ -199,7 +199,7 @@ function BuscarParticipe()
 		}
 	else
 		{
-			console.log(ciparticipe);
+			console.log("Cedula Participe -->"+ciparticipe);
 			$.ajax({
 			    url: 'index.php?controller=BuscarParticipes&action=BuscarParticipe',
 			    type: 'POST',

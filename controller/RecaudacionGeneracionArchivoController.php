@@ -736,6 +736,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
 	            $id2   = " aa.id_descuentos_registrados_detalle_creditos";
 	            
+	            
 	            $rsData    = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);
 	           	            
 	        }else{
@@ -2015,11 +2016,11 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        //$_usuario_logueado = $_SESSION['usuario_usuarios'];
 	        
 	        $columnas1 = " aa.id_descuentos_registrados_cabeza,aa.fecha_proceso_descuentos_registrados_cabeza,bb.id_entidad_patronal,bb.nombre_entidad_patronal,
-    	    aa.year_descuentos_registrados_cabeza, aa.mes_descuentos_registrados_cabeza,aa.usuario_descuentos_registrados_cabeza,aa.modificado,
+    	    aa.year_descuentos_registrados_cabeza, aa.mes_descuentos_registrados_cabeza,aa.usuario_descuentos_registrados_cabeza, DATE(aa.modificado) AS modificado,
     	    (SELECT COUNT(1) FROM core_descuentos_registrados_detalle_aportes where id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza) as \"cantidad_aportes\",
     	    (SELECT COUNT(1) FROM core_descuentos_registrados_detalle_creditos where id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza) as \"cantidad_creditos\"";
 	        $tablas1   = "core_descuentos_registrados_cabeza aa
-	       INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal";
+	        INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal";
 	        $where1    = " 1 = 1 ";
 	        
 	        //aqui poner para filtrar si es por session
@@ -2045,16 +2046,16 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $columns = array(
 	            0 => 'aa.id_descuentos_registrados_cabeza',
 	            1 => 'aa.fecha_proceso_descuentos_registrados_cabeza',
-	            2 => 'aa.id_descuentos_registrados_cabeza',
+	            2 => 'bb.nombre_entidad_patronal',
 	            3 => 'aa.id_descuentos_registrados_cabeza',
 	            4 => 'aa.id_descuentos_registrados_cabeza',
-	            5 => 'aa.id_descuentos_registrados_cabeza',
-	            6 => 'aa.id_descuentos_registrados_cabeza',
-	            7 => 'aa.id_descuentos_registrados_cabeza',
-	            8 => 'aa.id_descuentos_registrados_cabeza',
-	            9 => 'aa.id_descuentos_registrados_cabeza'
-	        );
-	        
+	            5 => 'aa.year_descuentos_registrados_cabeza',
+	            6 => 'aa.mes_descuentos_registrados_cabeza',
+	            7 => 'aa.usuario_descuentos_registrados_cabeza',
+	            8 => 'aa.modificado',	            
+	            9 => 'aa.id_descuentos_registrados_cabeza',
+	        );	       
+	        	        
 	        $orderby   = $columns[$requestData['order'][0]['column']];
 	        $orderdir  = $requestData['order'][0]['dir'];
 	        $orderdir  = strtoupper($orderdir);
@@ -2100,19 +2101,23 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
                                 <a onclick="verDatosDescuentos(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Ver Detalles"> <i class="fa  fa-building-o" aria-hidden="true" ></i>
 	                           </a>
                             </span>
+
                             <span >
 	                           <a onclick="genArchivoDetallado(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Archivo Detallado"><i class="fa fa-files-o text-info" aria-hidden="true" ></i>
 	                           </a>
                             </span>
-                            <span >
+                            <span>
 	                           <a onclick="genArchivoEntidad(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Archivo Entidad"><i class="fa fa-file-text-o text-info" aria-hidden="true" ></i>
-	        </a></span>
+	        </a>
+                            </span>
                             <span >
-	                           <a onclick="generarReporte(this)" id="" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Ver Reporte">
-                                <i class="fa fa-file-pdf-o text-info" aria-hidden="true" ></i>
+	                           <a onclick="imprimir_reporte_descuentos(this)" data-codtipodescuento="'.$cod_tipo_descuento.'" data-iddescuentos="'.$res->id_descuentos_registrados_cabeza.'" href="#" class="btn btn-sm btn-default label" data-toggle="tooltip" data-placement="top" title="Ver Reporte">
+                                <i class="fa fa-file-pdf-o text-warning" aria-hidden="true" ></i>
 	                           </a>
                             </span>
                             </div>';
+	            
+	            
 	            
 	            /*$html.='<span class="pull-right ">
 	             <a onclick="ValidarEdicionGenerados(this)" id="" data-idarchivo="'.$res->id_descuentos_registrados_cabeza.'"
@@ -2349,6 +2354,178 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    
 	}
 	/** end dc 2020/05/05 cambios **/
+	
+	
+	/** 2020/05/06 cambios **/
+	public function imprimirReporteDescuentos(){
+	    
+	    session_start();
+	    
+	    $recaudaciones = new RecaudacionesModel();
+	    
+	    $entidades = new EntidadesModel();
+	    //PARA OBTENER DATOS DE LA EMPRESA
+	    $datos_empresa = array();
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=( isset( $_SESSION['usuario_usuarios'] ) ) ? $_SESSION['usuario_usuarios'] : '';
+	    }
+	    
+	    $dictionary = array();
+	    
+	    $id_descuentos_cabeza = $_POST['id_descuentos_cabeza'];
+	    $tipo_descuento       = $_POST['tipo_descuento'];
+	    
+	    $col1  = " aa.id_descuentos_registrados_cabeza, aa.year_descuentos_registrados_cabeza, aa.mes_descuentos_registrados_cabeza, bb.id_entidad_patronal,
+                bb.nombre_entidad_patronal, bb.codigo_entidad_patronal ";
+	    $tab1  = " core_descuentos_registrados_cabeza aa
+	           INNER JOIN core_entidad_patronal bb	ON bb.id_entidad_patronal = aa.id_entidad_patronal";
+	    $whe1  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	    $id1   = " aa.id_descuentos_registrados_cabeza ";
+	    
+	    $rsConsulta1    = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    $nombre_entidad_patronal   = $rsConsulta1[0]->nombre_entidad_patronal;
+	    $mes_descuentos            = $rsConsulta1[0]->mes_descuentos_registrados_cabeza;
+	    $anio_descuentos           = $rsConsulta1[0]->year_descuentos_registrados_cabeza;
+	    
+	    $dictionary['TITULO']  = "REPORTE DE DESCUENTOS ENVIADOS A: ";
+	    $dictionary['ENTIDAD_PATRONAL']  = $nombre_entidad_patronal;
+	    $dictionary['MES_DESCUENTOS']    = $this->devuelveMesNombre( $mes_descuentos );
+	    $dictionary['ANIO_DESCUENTOS']   = $anio_descuentos;
+	    
+	    $html = "";
+	    $suma_total = 0.00;
+	    
+	    $hayDatos  = false;
+	    
+	    if( $tipo_descuento == 1 ){
+	        
+	        $col2  = " aa.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.aporte_personal_descuentos_registrados_detalle_aportes,
+	               COALESCE(aa.valor_usuario_descuentos_registrados_detalle_aportes,0) AS valor_usuario_descuentos_registrados_detalle_aportes ";
+	        $tab2  = " core_descuentos_registrados_detalle_aportes aa
+	               INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
+	        $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	        $id2   = " aa.id_descuentos_registrados_detalle_aportes ";
+	        
+	        $rsConsulta2   = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);
+	        
+	        $hayDatos = ( !empty( $rsConsulta2 ) ) ? true : false;
+	        
+	        $html.='<table class="1" cellspacing="0" border="1">';
+	        $html.='<tr>';
+	        $html.='<th >N°</th>';
+	        $html.='<th >Tipo Descuento</th>';
+	        $html.='<th >Cedula</th>';
+	        $html.='<th >Nombre</th>';
+	        $html.='<th >Monto</th>';
+	        $html.='</tr>';
+	        	        
+	        $index = 0;
+	        $nombre_descuentos = "Aporte Personal";
+	        foreach ( $rsConsulta2 as $res ){
+	            
+	            $valor = $res->valor_usuario_descuentos_registrados_detalle_aportes;
+	            $suma_total    += $valor;
+	            $index++;
+	            $html.='<tr>';
+	            $html.='<td >'.$index.'</td>';
+	            $html.='<td >'.$nombre_descuentos.'</td>';
+	            $html.='<td >'.$res->cedula_participes.'</td>';
+	            $html.='<td >'.$res->apellido_participes.'-'.$res->nombre_participes.'</td>';
+	            $html.='<td class="decimales" >'.number_format($valor,2,'.',',').'</td>';
+	            $html.='</tr>';
+	        }
+	        
+	        $html.='<tr>';
+	        $html.='<th colspan="4" class="centrado">TOTAL</th>';
+	        $html.='<th class="decimales" >'.number_format($suma_total,2,'.',',').'</th>';
+	        $html.='</tr>';
+	        
+	        $html.='</table>';
+	        
+	        
+	    }elseif( $tipo_descuento == 2 ){
+	        
+	        $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.cuota_descuentos_registrados_detalle_creditos,
+	               cc.id_creditos, cc.numero_creditos,COALESCE(aa.mora_descuentos_registrados_detalle_creditos,0) mora_descuentos, dd.id_estado, dd.nombre_tipo_creditos";
+	        $tab2  = " core_descuentos_registrados_detalle_creditos aa
+    	        INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
+    	        INNER JOIN core_creditos cc ON cc.id_creditos = aa.id_creditos
+    	        INNER JOIN core_tipo_creditos dd ON dd.id_tipo_creditos = cc.id_tipo_creditos";
+	        $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	        $id2   = " aa.id_descuentos_registrados_detalle_creditos ";
+	        	      	        
+	        $rsConsulta2   = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);
+	        
+	        $hayDatos = ( !empty( $rsConsulta2 ) ) ? true : false;
+	        
+	        $html.='<table class="1" cellspacing="0"  border="1">';
+	        $html.='<tr>';
+	        $html.='<th >N°</th>';
+	        $html.='<th >Tipo Descuento</th>';
+	        $html.='<th >Cedula</th>';
+	        $html.='<th >Nombre</th>';
+	        $html.='<th >Cuota</th>';
+	        $html.='<th >Mora</th>';
+	        $html.='<th >Monto</th>';
+	        $html.='</tr>';
+	        
+	        $index = 0;
+	        foreach ( $rsConsulta2 as $res ){
+	            
+	            $cuota = $res->cuota_descuentos_registrados_detalle_creditos;
+	            $mora  = $res->mora_descuentos;
+	            $monto = $cuota + $mora;
+	            $suma_total    += $monto;
+	            $index++;
+	            
+	            $html.='<tr>';
+	            $html.='<td >'.$index.'</td>';
+	            $html.='<td >'.$res->nombre_tipo_creditos.'</td>';
+	            $html.='<td >'.$res->cedula_participes.'</td>';
+	            $html.='<td >'.$res->apellido_participes.'-'.$res->nombre_participes.'</td>';
+	            $html.='<td class="decimales">'.number_format($cuota,2,'.',',').'</td>';
+	            $html.='<td class="decimales">'.number_format($mora,2,'.',',').'</td>';
+	            $html.='<td class="decimales">'.number_format($monto,2,'.',',').'</td>';
+	            $html.='</tr>';
+	        }
+	        
+	        $html.='<tr>';
+	        $html.='<th colspan="6" class="centrado">TOTAL</th>';
+	        $html.='<th class="decimales">'.number_format($suma_total,2,'.',',').'</th>';
+	        $html.='</tr>';
+	        
+	        $html.='</table>';
+	        
+	    }else{
+	        $html = "";
+	    }
+	    
+	    $textoDataEmpty    = '<h4 class="dataempty"> NO EXISTEN DATOS PARA MOSTRAR </h4>';
+	    
+	    if( $hayDatos ){
+	        
+	        $dictionary['DETALLE_DESCUENTOS']   = $html;
+	    }else{
+	        $dictionary['DETALLE_DESCUENTOS']   = $textoDataEmpty;
+	    }
+	    	    
+	    $this->verReporte( "ReporteDescuentos2", array( 
+	        'datos_empresa'=> $datos_empresa,
+	        'dictionary'   => $dictionary
+           ) 
+	    ) ;
+	    
+	}
+	/** end dc 2020/05/06 **/
 	
 }
 ?>

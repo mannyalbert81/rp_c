@@ -8,63 +8,9 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         $estado = new EstadoModel();
         $id_rol = $_SESSION['id_rol'];
         
-        $this->view_principal("PrincipalBusquedasExpedientes",array(
+        $this->view_principal("PrincipalBusquedas",array(
             "result" => ""
         ));
-    }
-    
-    
-    public function cargaEstadoLiquidacion(){
-        
-        $estadosliquidacion= new EstadosCoreLiquidacionModel();
-        
-        $columnas="id_estado_prestaciones, nombre_estado_prestaciones";
-        $tabla = "core_estado_prestaciones";
-        $where = "1=1";
-        $id="nombre_estado_prestaciones";
-        $resulset = $estadosliquidacion->getCondiciones($columnas,$tabla,$where,$id);
-        
-        if(!empty($resulset) && count($resulset)>0){
-            
-            echo json_encode(array('data'=>$resulset));
-            
-        }
-    }
-    
-    
-    public function cargaTipoLiquidacion(){
-        
-        $tipoliquidacion= new TipoCoreLiquidacionModel();
-        
-        $columnas="id_tipo_prestaciones, nombre_tipo_prestaciones";
-        $tabla = "core_tipo_prestaciones";
-        $where = "1=1";
-        $id="nombre_tipo_prestaciones";
-        $resulset = $tipoliquidacion->getCondiciones($columnas,$tabla,$where,$id);
-        
-        if(!empty($resulset) && count($resulset)>0){
-            
-            echo json_encode(array('data'=>$resulset));
-            
-        }
-    }
-    
-    
-    public function cargaEntidadPatronal(){
-        
-        $entidad= new CoreEntidadPatronalModel();
-        
-        $columnas="id_entidad_patronal, nombre_entidad_patronal";
-        $tabla = "core_entidad_patronal";
-        $where = "1=1";
-        $id="nombre_entidad_patronal";
-        $resulset = $entidad->getCondiciones($columnas,$tabla,$where,$id);
-        
-        if(!empty($resulset) && count($resulset)>0){
-            
-            echo json_encode(array('data'=>$resulset));
-            
-        }
     }
     
     

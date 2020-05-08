@@ -72,8 +72,9 @@
             <div class="box-body">
 			<div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#personal" data-toggle="tab">Impuesto IR Superavit Personal</a></li>
-              <li><a href="#patronal" data-toggle="tab">Impuesto IR Superavit Patronal</a></li>
+              <li class="active"><a href="#personal" data-toggle="tab">Cuenta Individual (Superavit Personal)</a></li>
+              <li><a href="#patronal" data-toggle="tab">Cuenta Desembolsar (Superavit Personal)</a></li>
+              <li><a href="#cesantes" data-toggle="tab">Cesantes (Superavit Patronal)</a></li>
             </ul>
             
             <div class="col-md-12 col-lg-12 col-xs-12">
@@ -104,6 +105,20 @@
                 
                 
               </div>
+              
+              
+               <div class="tab-pane" id="cesantes">
+                
+                    <div class="pull-right" style="margin-right:15px;">
+					<input type="text" value="" class="form-control" id="search_cesantes" name="search_cesantes" onkeyup="load_cesantes(1)" placeholder="search.."/>
+					</div>
+					
+					
+					<div id="load_cesantes_registrados" ></div>	
+					<div id="cesantes_registrados"></div>
+                
+                
+              </div>
              
             </div>
             </div>
@@ -125,7 +140,7 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Generar Retenciones Personales</h4>
+            <h4 class="modal-title">Cuenta Individual (Generar Retenciones Imp. Personal)</h4>
           </div>
           <div class="modal-body">
           <!-- empieza el formulario modal productos -->
@@ -167,7 +182,7 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Generar Retenciones Patronales</h4>
+            <h4 class="modal-title">Cuenta Desembolsar (Generar Retenciones Imp. Personal)</h4>
           </div>
           <div class="modal-body">
           <!-- empieza el formulario modal productos -->
@@ -200,7 +215,54 @@
         </div>
       </div>
 </div>
+     
+     
+     
+     
+     
+     
+        
+    <div class="modal fade" id="mod_cesantes" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Cesantes (Generar Retenciones Imp. Patronal)</h4>
+          </div>
+          <div class="modal-body">
+          <!-- empieza el formulario modal productos -->
+          	<form class="form-horizontal" method="post" id="frm_cesantes" name="frm_cesantes">
+          			  
+          	  <div class="form-group">
+				<label for="mod_cantidad_cesantes" class="col-sm-3 control-label"># Procesar:</label>
+				<div class="col-sm-4">
+				 <select class="form-control" id="mod_cantidad_cesantes" name="mod_cantidad_cesantes" onchange="cargar_cesantes_a_procesar()">
+					<option value="1">1</option>
+					<option value="10">10</option>
+					<option value="20">20</option>
+					<option value="50">50</option>
+					<option value="100">100</option>	
+					<option value="1000" selected="selected">1000</option>				
+				  </select>
+				</div>
+			  </div>
+			  
+			
+			  <div id="msg_frm_cesantes" class=""></div>
+			  
+          	</form>
+          	<!-- termina el formulario modal lote -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			<button type="button" form="frm_patronal" class="btn btn-primary" id="guardar_datos2" onclick="Procesar_Cesantes()">Procesar</button>
+          </div>
+        </div>
+      </div>
+</div>
              
+               
             
             
             
@@ -217,7 +279,7 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-    <script src="view/tributario/FuncionesJS/ImpuestoSuperavit.js?4.5"></script>         	
+    <script src="view/tributario/FuncionesJS/ImpuestoSuperavit.js?4.7"></script>         	
   </body>
 </html>
 

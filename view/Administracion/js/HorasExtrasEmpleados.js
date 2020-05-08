@@ -50,6 +50,9 @@ $.ajax({
           type: 'POST',
           data: con_datos,
           success: function(x){
+        	 
+        	  
+        	 
         	  if (x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
     		  {
     		  swal({
@@ -65,6 +68,9 @@ $.ajax({
     	            $("#load_solicitudes").html("");
     	            $("#tabla_solicitudes").tablesorter(); 
     			  }
+        	 
+        	  
+        	  
             
           },
          error: function(jqXHR,estado,error){

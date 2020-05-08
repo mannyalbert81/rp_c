@@ -2499,7 +2499,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
 	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
 	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
-	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	        $datos_empresa['USUARIOEMPRESA']=( isset( $_SESSION['usuario_usuarios'] ) ) ? $_SESSION['usuario_usuarios'] : '';
 	    }
 	    
 	    $dictionary = array();

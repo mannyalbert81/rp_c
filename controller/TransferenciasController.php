@@ -160,7 +160,7 @@ class TransferenciasController extends ControladorBase{
 		//generar array de respuesta a vista
 		$resultset =  array((object)$datosVista);
 		
-		//print_r($resultset);
+		//var_dump( error_get_last() ); die();
 		
 		$this->view_tesoreria("Transferencias",array(
 		    "resultset"=>$resultset

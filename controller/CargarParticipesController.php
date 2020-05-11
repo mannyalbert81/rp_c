@@ -963,23 +963,26 @@ class CargarParticipesController extends ControladorBase{
         if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
         {
             $callBack = $_GET['jsoncallback'];
-            $columnas_1="id_registro_tres_cuotas,cedula_participes, numero_creditos, pdf_registro_tres_cuotas";
+            $columnas_1="id_registro_tres_cuotas,cedula_participes, numero_creditos, pdf_registro_tres_cuotas, mensaje_modal";
             $tablas_1="public.registro_tres_cuotas";
             $where_1="cedula_participes = '$cedula'";
             $id_1= "registro_tres_cuotas.id_registro_tres_cuotas";
             $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
             
-            
-            if(!empty($resultUsu) && count($resultUsu)>0){
-                
-                $respuesta	= json_encode( array('respuesta'=>"SI") );
-                
-                
+            if( empty($resultUsu) ){
+                //aqui imprimir modal 
+                $respuesta	= json_encode( array('respuesta'=>"NO") );
             }else{
                 
-                $respuesta	= json_encode( array('respuesta'=>"NO") );
+                $mensaje_modal = $resultUsu[0]->mensaje_modal;
                 
-            }
+                if( !empty( $mensaje_modal ) ){
+                    $respuesta	= json_encode( array( 'respuesta'=>"SI",'mensaje_modal' => $mensaje_modal ) );
+                }else{
+                    $respuesta	= json_encode( array('respuesta'=>"NO") );
+                }
+                
+            }                      
             
             echo $callBack."(".$respuesta.");";
             

@@ -6,6 +6,27 @@ view.hdn_id_participes	 	= $("#hdn_id_participes");
 view.cedula_participes 		= $("#cedula_participe");
 view.html_boton_buscar_participe		= $("#buscar_participe_boton");
 view.boton_buscar_participe		= $("#buscar_participe") || null;
+view.tipo_creditos			= $("#ddl_tipo_creditos"); 
+view.monto_creditos			= $("#txt_monto_creditos");
+view.cuota_creditos			= $("#txt_cuotas_creditos"); 
+view.btn_capacidad_pago		= $("#btn_capacidad_pago");
+view.capacidad_pago			= $("#txt_capacidad_pago");
+
+/** para valores de tab de capacidad de pago **/
+view.sueldo_liquido		= $("#txt_sueldo_liquido");
+view.cuota_vigente		= $("#txt_cuota_vigente");
+view.valor_fondos		= $("#txt_fondos");
+view.valor_decimos		= $("#txt_decimos");
+view.valor_rancho		= $("#txt_rancho");
+view.ingresos_notarizados		= $("#txt_ingresos_notarizados");
+view.total_ingresos		= $("#txt_total_ingresos");
+view.btn_enviar_capacidad_pago	= $("#btn_enviar_capacidad_pago");
+
+/** para valores globales **/
+view.global_hay_renovacion	= false;
+
+/** para valores de Solicitud **/
+var dataSolicitud	= dataSolicitud || {};
 
 var id_participe;
 var disponible_participe;
@@ -26,12 +47,98 @@ $(document).ready( function (){
 	$(":input").inputmask();
 	
 	// CARGO LOS TIPOS DE CREDITO AL COMBO BOX
-	//GetTipoCreditos();
+	GetTipoCreditos();
+	
+	obtener_tipo_creditos();	
+	
 	iniciar_cedula();
 	
-	
+	iniciar_eventos_controles();
 		
 });
+
+var obtener_tipo_creditos	= function(){
+	//obtiene datos del tipo de creditos que tiene la entidad
+	view.tipo_creditos.empty();
+	$.ajax({
+		url:'index.php?controller=SimulacionCreditos&action=obtenerTipoCredito',
+		dataType:'json',
+		Type:'POST',
+		data:null
+	}).done(function(x){
+		if( x.estatus != undefined && x.estatus == "OK" ){
+			datos	= x.data || [];
+			view.tipo_creditos.append('<option>--Selecione--</option>');
+			$.each(datos,function( index, value ){
+				view.tipo_creditos.append('<option value="'+value.codigo_tipo_creditos+'">'+value.nombre_tipo_creditos+'</option>');
+			})
+		}
+		
+	}).fail( function( xhr,status,error ){
+		view.tipo_creditos.append('<option>--Selecione--</option>');
+	})
+}
+
+var setValTipoCreditos = function(a){
+	//se setea el tipo de credito que solicito en la solicitud de credito
+	try{
+		a	= a || "";
+		switch (a) {
+		case "ORDINARIO":
+			view.tipo_creditos.val("ORD");
+		break;
+		case "EMERGENTE":
+			view.tipo_creditos.val("EME");
+		break;
+		case "HIPOTECARIO":
+			view.tipo_creditos.val("PH");
+		break;				
+		case "REFINANCIAMIENTO":
+			view.tipo_creditos.val("RF");
+		break;					
+		case "2x1":
+			view.tipo_creditos.val("2x1");
+		break;
+		case "ACUERDO PAGO":
+			view.tipo_creditos.val("AP");
+		break;
+		default:
+			view.tipo_creditos.val('0');
+		break;
+		}
+		
+	
+	}catch(err){
+		console.log('ERROR AL IDENTIFICAR TIPO DE CREDITO DE LA SOLICITUD REALIZADA');
+		console.log(err);
+		view.tipo_creditos.val('0');
+	}
+}
+
+var iniciar_eventos_controles	= function(){
+	
+	$('body').on('click','#btn_capacidad_pago',function(){
+		//$('.nav-tabs a[href="#panel_capacidad"]').tab('show'); //vavegar en tab bootstrap
+		analisis_capacidad_pago();
+	});
+	
+	$('#cedula_participe').keypress(function(event){
+		  if(event.keyCode == 13){
+			  view.boton_buscar_participe.click();
+		  }
+	});
+	
+	//se enlaza evento key up a input que este dentro de un table ... capacidad de pago
+	$('table :input.suma-capacidad').on('keyup',function(){
+		//if( isNaN( parseFloat( $(this).val() ) ) ){ $(this).val("");} //validacion de cada una analizar 
+		sumar_ingresos_capacidad_pago();
+	})
+	
+	$('#btn_enviar_capacidad_pago').on('click', function(){
+		enviar_capacidad_pago();
+	})
+
+}
 
 var iniciar_cedula	= function(){
 	
@@ -43,6 +150,7 @@ var iniciar_cedula	= function(){
 		
 		view.boton_buscar_participe	= $("#buscar_participe");
 		$('body').on('click',"#buscar_participe",function(){
+			
 			Iniciar( view.hdn_cedula_participes.val(), view.hdn_id_solicitud.val() );
 			
 			buscar_datos_creditos();
@@ -50,11 +158,7 @@ var iniciar_cedula	= function(){
 	}
 }
 
-$('#cedula_participe').keypress(function(event){
-	  if(event.keyCode == 13){
-		  view.boton_buscar_participe.click();
-	  }
-});
+
 
 
 var buscar_datos_creditos = function(){
@@ -96,6 +200,9 @@ var obtener_info_participes = function(){
 				//cargar informacion de la solicitud a procesar
 				obtener_informacion_solicitud();
 				
+				//cargar informacion crediticia con relacion a la solicitud
+				obtener_informacion_participe();
+				
 				
 				AportesParticipe(view.hdn_id_participes.val(), 1)
 				
@@ -103,9 +210,7 @@ var obtener_info_participes = function(){
 				CreditosActivosParticipe( view.hdn_id_participes.val() , 1)
 			}
 			
-			if( x.estatus != undefined && x.estatus == 'OK' ){
-				$('#participe_encontrado').html( x.html );
-			}
+			
 						
 		})
 		.fail(function() {
@@ -183,6 +288,12 @@ var obtener_informacion_solicitud 	= function(){
 		// cargo la informacion de la solicitud en el modal
 		$("#div_pnl_info_solicitud").html( x.html );
 		
+		//para determinar el tipo de credito solicitado
+		try{
+			var varTipoCreditos	= x.data.nombre_tipo_credito_solicitud;		
+			setValTipoCreditos(varTipoCreditos);			
+		}catch(e){console.log('ERROR AL OBTENER TIPO CRDITO DESDE SERVIDOR');}
+		
 	})
 	.fail(function() {
 	    console.log("error");
@@ -197,7 +308,6 @@ var obtener_informacion_participe	= function(){
 	$.ajax({
 	    url: 'index.php?controller=SimulacionCreditos&action=InformacionCrediticiaParticipe',
 	    type: 'POST',
-	    dataType: 'json',
 	    dataType:'json',
 	    data: {
 	    	cedula_participe:view.cedula_participes.val(),
@@ -205,30 +315,28 @@ var obtener_informacion_participe	= function(){
 	})
 	.done(function(x) {
 		
-		// CARGO INFORMACION DEL PARTICIPE EN MODAL
-		modal.find("#info_participe").html(x);
+		//CARGAR INFORMACION DE PARTCIPE CON RELACION A LA SOLICITUD DE CREDITO
+		$("#div_pnl_info_participe").html( x.html );
 		
-		// CAPTURO EL MONTO CUENTA INDIVIDUAL
-		var limite=document.getElementById("cuenta_individual").innerHTML;
-		
-		// EXTRAIGO EL MONTO
-		var elementos=limite.split(" : ");
-		limite=elementos[1];
-		disponible_participe=limite;
-		console.log("Cta Individual: "+limite);
-		
-		// CAPTURO EL ESTYLO DE LA CLASE PARA VERIFICAR SI ACCEDE O NO AL CREDITO
-		var lista=document.getElementById("disponible_participe").classList;
-		lista=lista.value;
-		if(lista.includes('bg-red'))
-			{
-			swal({
-		  		  title: "Advertencia!",
-		  		  text: "El participe no puede acceder a un crédito en este momento",
-		  		  icon: "warning",
-		  		  button: "Aceptar",
-		  		});
+		if( x.data != undefined && x.data != null ){
+			
+			dataSolicitud = x.data;
+			
+			if( !dataSolicitud.estado_solicitud ){
+				
+				dataSolicitud.mensaje_solicitud = dataSolicitud.mensaje_solicitud || 'El participe no puede acceder a un crédito en este momento';
+				var alertHtml = '<div class="alert alert-warning alert-dismissible fade in">'+
+								    '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+								    '<strong>Advertencia!</strong>'+dataSolicitud.mensaje_solicitud+
+								  '</div>';
+				$("#div_pnl_respuesta_informacion").html( alertHtml );
+				
 			}
+			
+			iniciar_datos_simulacion();
+			
+		}	
+		
 		
 	})
 	.fail(function() {
@@ -236,6 +344,228 @@ var obtener_informacion_participe	= function(){
 	});
 	
 }
+
+var iniciar_datos_simulacion = function(){
+	
+	//validar cuenta individual
+	var cuenta_individual	= dataSolicitud.cuenta_individual || 0;
+	
+	var renovacion_credito	=false;
+	var garante_seleccionado=false;
+	var ci_garante			="";
+	var valor_tipo_credito	= view.tipo_creditos.val();
+	console.log("INICIANDO .. start..simulacion");
+	console.log("valor tipo credito --> " + valor_tipo_credito);
+	
+	view.cuota_creditos.val("");
+	console.log("...vaciamos cuota creditos");
+	view.monto_creditos.val("");
+	console.log("...vaciamos monto creditos");
+	
+	$("#div_tabla_amortizacion").html("");
+	console.log("..vaciamos div con tabla de amortizacion");
+	
+	$("#div_capacidad_pago_garante").html("");
+	console.log("..vaciamos div con capacidad pago garantes");
+	
+	if( valor_tipo_credito != "0" ){
+		
+		//se activa el btn para capacidad de pago
+		view.btn_capacidad_pago.attr("disabled",false);
+		
+		
+		var html_agregar_garante	= "<label for=\"txt_cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
+				"<div class=\"input-group\">"+
+				"<input type=\"text\" data-inputmask=\"'mask': '9999999999'\" class=\"form-control\" id=\"txt_cedula_garante\"  placeholder=\"C.I.\">"+
+				"<div id=\"mensaje_cedula_garante\" class=\"errores\"></div>"+
+				"<span class=\"input-group-btn\">"+
+				"<button type=\"button\" class=\"btn btn-primary\" id=\"btn_buscar_garante\" name=\"buscar_garante\" onclick=\"BuscarGarante()\">"+
+				"<i class=\"glyphicon glyphicon-plus\"></i>"+
+				"</button>"+
+				"<button type=\"button\" class=\"btn btn-danger\" id=\"btn_borrar_cedula\" name=\"borrar_cedula\" onclick=\"BorrarCedulaGarante()\">"+
+				"<i class=\"glyphicon glyphicon-arrow-left\"></i>"+
+				"</button>"+
+				"</span>"+
+				"</div>";
+		
+		if( valor_tipo_credito == "ORD" ){
+			// VACIO LOS CREDITOS A RENOVAR
+			$('#div_pnl_creditos_renovacion').html("");
+			// MUESTRO LA INFORMACION PARA ASIGNAR UN GARANTE 
+			$('#div_info_garante').html(html_agregar_garante);
+			
+			// AGREGO EVENTOS AL INPUT GARANTES
+			$("#txt_cedula_garante").inputmask();
+			$('#txt_cedula_garante').keypress( function( event ){
+				if(event.keyCode == 13){
+					console.log("garante")
+					$('#buscar_garante').click();
+				}
+			});
+			
+		}else if( valor_tipo_credito == "PH" ){
+			
+			var html_credito_hipotecario = "<label for=\"ddl_tipo_credito_hipotecario\" class=\"control-label\">Modalidad:</label>" +
+						"<select id=\"ddl_tipo_credito_hipotecario\"  class=\"form-control\" onchange=\"ModalidadCreditoHP()\">"+
+						"<option value=\"\" selected=\"selected\">--Seleccione--</option>"+
+						"<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
+						"<option value=\"2\" >MEJORAS Y/O REPAROS</option></div>";
+			// MUESTRO HTML EN LA VISTA EN LA PARTE DEL GARANTE
+			$('#div_info_garante').html(tipo_credito_hipotecario);
+			
+		}else if( valor_tipo_credito == "EME" ){
+			
+			$('#div_pnl_creditos_renovacion').html("");
+			$('#div_info_garante').html("");
+			
+			if ( cuenta_individual < 150){
+				
+				$("#div_pnl_info_participe").find('.bio-row.class-information').addClass('bg-red');
+							
+			}
+			
+		}else{
+			console.log("TIPO DE CREDITO NO PARAMETRIZADO")
+		}
+			
+		
+	}else{
+		//vaciamos la iniciacion de la simulacion
+		console.log("..inicializacion de simulacion fallida");
+		view.monto_creditos.val("");
+		view.cuota_creditos.val("");		
+		//desabilitamos el boton de capacidad de pago
+		view.btn_capacidad_pago.attr("disabled",true);
+	}
+	
+	$('.nav-tabs a[href="#panel_info"]').tab('show'); //navegar a la pantalla de informacion en tab navs principal
+	
+}
+
+var analisis_capacidad_pago	= function(){
+	
+	//iniciamos inputs
+	view.cuota_creditos.val("");
+	view.monto_creditos.val("");
+	$("#div_tabla_amortizacion").html("");
+	
+	//navego al tab de analisis de credito
+	$('.nav-tabs a[href="#panel_capacidad"]').tab('show'); 
+	
+	//onclick="EnviarCapacidadPagoParticipe()"
+		
+	//iniciamos variables
+	var valor_tipo_credito	= view.tipo_creditos.val();
+	var cedula_participe	= view.cedula_participes.val();
+	
+	if( valor_tipo_credito == "0" ||  valor_tipo_credito == "" || valor_tipo_credito == null || cedula_participe == null || cedula_participe == "" ){
+		console.log("Error al buscar capacidad de pago.. revisar variables");
+		return false;
+	}
+	
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=obtenerCuotaParticipe',
+	    type: 'POST',
+	    dataType: 'json',
+	    data: {
+	    	'cedula_participe':cedula_participe,
+	    	'tipo_credito':valor_tipo_credito
+	    },
+	}).done(function(x) {
+		
+		if( x.estatus != undefined && x.estatus == "OK" ) {
+			
+			var valorCuota	= x.cuota_creditos; 
+			view.cuota_vigente.val(valorCuota);
+			
+			//llamar a funcion que suma valores de capacidad de pago
+			sumar_ingresos_capacidad_pago();
+			
+			if( valorCuota != 0 ){
+				
+				view.global_hay_renovacion = true;
+				var cuentaIndividual 	= dataSolicitud.cuenta_individual || 0.00; //obtener valor de cuenta individual
+				view.monto_creditos.val( cuentaIndividual );
+				
+				//llamo funcion que busca creditos a renovar
+				obtener_creditos_renovacion();
+								
+			}
+			
+		}
+		//ver variable bolean to know list of Credits' renovation
+		console.log("VARIABLE bolean DE RENOVACION CREDITOS --> "+ view.global_hay_renovacion );
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+		
+}
+
+var sumar_ingresos_capacidad_pago	= function(){
+	
+	try{
+		
+		var total = isNaN( parseFloat( view.sueldo_liquido.val() ) ) ? 0 : parseFloat( view.sueldo_liquido.val() );
+		total += isNaN( parseFloat( view.cuota_vigente.val() ) ) ? 0 : parseFloat( view.cuota_vigente.val() );  
+		total += isNaN( parseFloat( view.valor_fondos.val() ) ) ? 0 : parseFloat( view.valor_fondos.val() ); 
+		total += isNaN( parseFloat( view.valor_decimos.val() ) ) ? 0 : parseFloat( view.valor_decimos.val() );
+		total += isNaN( parseFloat( view.valor_rancho.val() ) ) ? 0 : parseFloat( view.valor_rancho.val() ); 
+		total += isNaN( parseFloat( view.ingresos_notarizados.val() ) ) ? 0 : parseFloat( view.ingresos_notarizados.val() ); 
+		
+		total	= Math.round( Math.round( total * 1000 ) / 10 ) / 100;
+		view.total_ingresos.val( total );
+		
+	}catch( err ){
+		console.log("ERROR AL SUMAR .. la capacidad de pago de participe.. ")
+	}	
+	
+}
+
+// funcion que trae datos de creditos a renovar
+var obtener_creditos_renovacion	= function(){
+	
+	var valor_tipo_creditos	= view.tipo_creditos.val();
+	var valor_id_participes = view.hdn_id_participes.val() || 0;	
+	console.log("empezamos a traer creditos para renovacion..");
+	
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=obtenerCreditosRenovar',
+	    type: 'POST',
+	    dataType: 'json',
+	    data: {
+	    	   id_participe: valor_id_participes,
+	    	   tipo_creditos: valor_tipo_creditos
+	    },
+	}).done(function(x) {		
+		// IMPRIMO EN LA VISTA LOS CREDITOS A RENOVAR
+		$('#div_pnl_creditos_renovacion').html( x.html );
+	}).fail(function() {
+	    console.log("error");
+	});
+	
+}
+
+var enviar_capacidad_pago = function(){
+	
+	var valor_total_ingresos	= view.total_ingresos.val();
+	
+	if( isNaN(  parseFloat( valor_total_ingresos ) ) ){
+		console.log("ERROR AL ENVIAR LA CAPACIDAD DE PAGO REVISAR FUNCION");
+		return false;
+	}
+	
+	//aqui generaba un elemnto de id -->  sueldo_participe
+	view.capacidad_pago.val( valor_total_ingresos );
+	
+	//enves de cerrar modal como el codigo original se navega a la tab num 1
+	//$("#cerrar_analisis").click();
+	$('.nav-tabs a[href="#panel_info"]').tab('show'); //navegar a la pantalla de informacion en tab navs principal
+	
+}
+
+
 
 // FUNCION PARA LLENAR EL COMBO BOX TIPO DE CREDITOS
 
@@ -578,6 +908,7 @@ function InfoParticipe()
 
 
 
+
 // FUNCION PARA PARAMETRIZACION DE SIMULACION EL CREDITO
 function TipoCredito()
 {   
@@ -608,7 +939,7 @@ function TipoCredito()
 	
 	
 	// VACIO CAPACIDAD DE PAGO DEL GARANTE
-	$("#capacidad_pago_garante").html("");
+	$("#capacidad_pago_garante").html(""); 
 	
 	renovacion_credito=false;
 	garante_seleccionado=false;

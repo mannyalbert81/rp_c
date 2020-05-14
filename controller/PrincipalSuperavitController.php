@@ -48,7 +48,9 @@ class PrincipalSuperavitController extends ControladorBase{
         $codigo    = ( isset( $_POST['codigo'] ) ) ? $_POST['codigo'] : "";
         
         
-        $columnas1 = "core_participes.cedula_participes, 
+        $columnas1 = "
+                  core_participes.id_participes,
+                  core_participes.cedula_participes, 
                   core_participes.nombre_participes, 
                   core_participes.apellido_participes, 
                   core_estado_participes.id_estado_participes, 
@@ -119,6 +121,9 @@ class PrincipalSuperavitController extends ControladorBase{
         $htmlHead.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
         $htmlHead.='<th style="text-align: left;  font-size: 12px;">Estado Proceso</th>';
         
+        $htmlHead.='<th style="text-align: left;  font-size: 12px;">Acta de Liquidacion</th>';
+        $htmlHead.='<th style="text-align: left;  font-size: 12px;">Hoja de Liquidacion</th>';
+        
         $htmlHead.='</tr>';
         $htmlHead.='</thead>';
         
@@ -127,17 +132,37 @@ class PrincipalSuperavitController extends ControladorBase{
         $htmlBody = "<tbody>";
         foreach ($resultSet as $res){
             
+            $tienecredito=$res->tiene_credito_superavit_pagos_trabajados;
+            $cruceCredito=$res->cruce_credito_superavit_pagos_trabajados;
+            
+            
+            if($tienecredito=="f"){
+                
+                $tienecredito="NO";
+                
+            }
+            
+            
+            if($cruceCredito=="f"){
+                
+                $cruceCredito="NO";
+                
+            }
+            
             $i++;
             $htmlBody.='<tr>';
             $htmlBody.='<td style="font-size: 11px;">'.$i.'</td>';
             $htmlBody.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
             $htmlBody.='<td style="font-size: 11px;">'.$res->apellido_participes." ".$res->nombre_participes.'</td>';
             $htmlBody.='<td style="font-size: 11px;">'.$res->nombre_estado_participes.'</td>';
-            $htmlBody.='<td style="font-size: 11px;">'.$res->tiene_credito_superavit_pagos_trabajados.'</td>';
-            $htmlBody.='<td style="font-size: 11px;">'.$res->cruce_credito_superavit_pagos_trabajados.'</td>';
-            $htmlBody.='<td style="font-size: 11px;">'.$res->valor_pagar_superavit_pagos.'</td>';
+            $htmlBody.='<td style="font-size: 11px;" align="center">'.$tienecredito.'</td>';
+            $htmlBody.='<td style="font-size: 11px;" align="center">'.$cruceCredito.'</td>';
+            $htmlBody.='<td style="font-size: 11px;" align="right">'.$res->valor_pagar_superavit_pagos.'</td>';
             $htmlBody.='<td style="font-size: 11px;">'.$res->nombre_superavit_estados.'</td>';
            
+            $htmlBody.='<td style="color:#000000;font-size:80%;" align="center"><span class="pull-right"><a href="index.php?controller=PrincipalSuperavit&action=reporte_acta_liquidacion&id_participes='.$res->id_participes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+            $htmlBody.='<td style="color:#000000;font-size:80%;" align="center"><span class="pull-right"><a href="index.php?controller=PrincipalSuperavit&action=reporte_hoja_liquidacion&id_participes='.$res->id_participes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+            
             
             
             $htmlBody.='</tr>';
@@ -166,6 +191,131 @@ class PrincipalSuperavitController extends ControladorBase{
         
         echo json_encode( $resp );
     }
+    
+    
+    
+    public function reporte_acta_liquidacion(){
+        session_start();
+        
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        
+        
+        $entidades = new EntidadesModel();
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        //NOTICE DATA
+        $datos_cabecera = array();
+        $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+        $datos_cabecera['FECHA'] = date('Y/m/d');
+        $datos_cabecera['HORA'] = date('h:i:s');
+        
+        
+        
+        
+        
+        
+        $productos = new ProductosModel();
+        $id_productos =  (isset($_REQUEST['id_productos'])&& $_REQUEST['id_productos'] !=NULL)?$_REQUEST['id_productos']:'';
+        
+        $datos_reporte = array();
+        
+        $columnas = "   productos.id_productos,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos";
+        
+        $tablas = "   public.productos";
+        $where= "  productos.id_productos='$id_productos'";
+        $id="productos.id_productos";
+        
+        $rsdatos = $productos->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $datos_reporte['NOMBRE_PRODUCTOS']=$rsdatos[0]->nombre_productos;
+        $datos_reporte['MARCA_PRODUCTOS']=$rsdatos[0]->marca_productos;
+        $datos_reporte['CODIGO_PRODUCTO']=$rsdatos[0]->codigo_productos;
+        
+        
+        
+        $columnas = " productos.id_productos,
+                      productos.codigo_productos,
+                      productos.marca_productos,
+                      productos.nombre_productos,
+                      productos.ult_precio_productos,
+                      productos.minimo_productos,
+                      saldo_productos.entradas_f_saldo_productos,
+                      saldo_productos.salidas_f_saldo_productos,
+                      saldo_productos.saldos_f_saldo_productos";
+        
+        $tablas = "  public.productos,
+                    public.saldo_productos";
+        $where= "saldo_productos.id_productos = productos.id_productos AND productos.id_productos='$id_productos'";
+        $id="productos.id_productos";
+        
+        $productos_detalle = $productos->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $html='';
+        
+        
+        $html.='<table class="12" style="width:98px;" border=1>';
+        $html.='<tr>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Entrada</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Precio</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Salida</th>';
+        $html.='<th colspan="2" style="text-align: center; font-size: 11px;">Stock</th>';
+        
+        $html.='</tr>';
+        
+        
+        
+        
+        foreach ($productos_detalle as $res)
+        {
+            
+            
+            $html.='<tr >';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.intval($res->entradas_f_saldo_productos).'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="right">'.$res->ult_precio_productos.'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.intval($res->salidas_f_saldo_productos).'</td>';
+            $html.='<td colspan="2" style="text-align: center; font-size: 11px;" align="center">'.intval($res->saldos_f_saldo_productos).'</td>';
+            
+            
+            
+            $html.='</td>';
+            $html.='</tr>';
+        }
+        
+        $html.='</table>';
+        
+        $datos_reporte['TABLA_MOVIMIENTOS']= $html;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        $this->verReporte("ReporteActaLiquidcion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte ));
+        
+        
+        
+    }
+    
+    
+    
     
     
     /************************************************************** FUNCIONES AUXILIARES DEL CONTROLADOR *************************************/

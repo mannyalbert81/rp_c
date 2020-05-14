@@ -84,13 +84,13 @@ class CreditosParticipesController extends ControladorBase{
             $resultSet=$db->getCondiciones($columnas, $tablas, $where);
             
             $data   = array();
-            $data['tipo_credito_solicitud'] = $resultSet[0]->nombre_tipo_creditos;
+            $data['nombre_tipo_credito_solicitud'] = $resultSet[0]->nombre_tipo_creditos;
             
             $html='<div id="info_participe_solicitud" class="row bg-teal">
                     <h3 class="titulo">Información de Solicitud</h3>
                     <div class="col-md-6 col-md-12">
                     <div class="box-footer no-padding bg-teal">
-                        <div class="bio-row"><p><span class="tab">Tipo Crédito: </span>'.$data['tipo_credito_solicitud'].'</p></div>
+                        <div class="bio-row"><p><span class="tab">Tipo Crédito: </span>'.$data['nombre_tipo_credito_solicitud'].'</p></div>
                         <div class="bio-row"><p><span class="tab">Nombre Banco: </span>'.$resultSet[0]->nombre_banco_cuenta_bancaria.'</p></div>
                         <div class="bio-row"><p><span class="tab">Número Cuenta: </span>'.$resultSet[0]->numero_cuenta_cuenta_bancaria.'</p></div>
                     </div>
@@ -108,6 +108,7 @@ class CreditosParticipesController extends ControladorBase{
             if( !empty( $salida ) ){ throw new Exception(""); }
             
             $response['html'] = $html;
+            $response['data'] = $data;
             
             
         } catch (Exception $e) {
@@ -957,6 +958,43 @@ class CreditosParticipesController extends ControladorBase{
         return $out;
     }
     
+    public function verFechas(){
+        
+        $mes=date('m');
+        $anio=date('Y');
+        //CAMBIO TEMPORAL PARA PRUEBAS
+        //$mes=10;
+        
+        $mes_fin=$mes-1;
+        
+        if ($mes_fin == 0){
+            $anio_fin = $anio - 1;
+            $mes_fin = 12;
+            
+        }else{
+            $anio_fin = $anio;
+            $mes_fin =  $mes_fin;
+            
+        }
+        
+        $mes_ini=$mes-3;
+        if ($mes_ini < 1){
+            $anio_ini = $anio - 1;
+            $mes_ini += 12;
+            
+        }else{
+            $anio_ini = $anio;
+            $mes_ini =  $mes_ini;
+            
+        }
+        
+        $dia= date("d",(mktime(0,0,0,$mes_fin+1,1,$anio_fin)-1));
+        $fecha_inicio=$anio_ini."-".str_pad($mes_ini,2,'0',STR_PAD_LEFT)."-01";
+        $fecha_fin=$anio_fin."-".str_pad($mes_fin,2,'0',STR_PAD_LEFT)."-".$dia;
+        
+        echo $fecha_inicio; echo "<br>"; echo $fecha_fin;
+        
+    }
     
     
 }

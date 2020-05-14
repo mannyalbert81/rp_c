@@ -60,6 +60,12 @@
     	display: inline-block;
     	width: 120px;
     }
+    
+    .bio-row p span.tab2{
+    	font-weight: bold;
+    	display: inline-block;
+    	width: 130px;
+    }
  	  
  	</style>
    
@@ -153,6 +159,7 @@
                     	<!-- AQUI PONER LOS TITULOS DE TABS -->
                       <li><a href="#panel_info" data-toggle="tab">Informacion</a></li>
                       <li><a href="#panel_detalle" data-toggle="tab">Detalle Valores</a></li>
+                      <li><a href="#panel_capacidad" data-toggle="tab">Capacidad Pago</a></li>
                     </ul>
                     <div class="tab-content">
                     	<!-- AQUI COMIENZA PARA PONER CONTENIDOS DE PANELES -->
@@ -169,7 +176,77 @@
                             	<div class="bio-row"><p><span class="tab">MES: </span>{MES_DESCUENTOS}</p></div>	
                             	</div>
                     		</div>
+                    		<hr>
 							<div id="div_pnl_info_participe">
+							</div>	
+							<hr>
+							<div class="row">
+								<div id="div_pnl_creditos_renovacion">
+								</div>	
+							</div>							
+							<hr>
+							<div id="div_pnl_respuesta_informacion">
+							</div>					
+							<hr>
+							<div id="div_pnl_simulacion_credito">
+								<div class="row">		    	 
+                		    	 	<div class="col-xs-12 col-md-3 col-lg-3 ">
+                            		    <div class="form-group">                            		    					  
+                                          <label for="ddl_tipo_creditos" class="control-label">Tipo Creditos:</label>
+                                          <select class="form-control" id="ddl_tipo_creditos" name="ddl_tipo_creditos">
+                                            <option value="0" >--Seleccione--</option>
+                                          </select>                                                              
+                                        </div>
+                            		  </div>
+                            		  
+                            		  <div class="col-xs-12 col-md-3 col-lg-3 ">
+                            		    <div class="form-group">                            		    					  
+                                          <label for="txt_monto_creditos" class="control-label">Monto Credito:</label>
+                                          <input type="number" step="10" id="txt_monto_creditos" class="form-control" value="">                                                                                                      
+                                        </div>
+                            		  </div>
+                            		                              		  
+                            		  <div class="col-xs-12 col-md-3 col-md-3 " >
+                            		  	<label for="txt_capacidad_pago" class="control-label">Capacidad Pago:</label>
+                            		  	<div class="input-group">
+                							<input type="text" value="" class="form-control" id="txt_capacidad_pago" readonly>                			
+                            				<span class="input-group-btn">
+                            					<button type="button" title="Análisis crédito" class="btn bg-olive"  id="btn_capacidad_pago">
+                        						 <i class="glyphicon glyphicon-new-window"></i>
+                        						</button>
+                        					</span>
+        					
+        								</div>
+                            		  </div>  
+                            		  
+                            		  <div class="col-xs-12 col-md-3 col-md-3 " >
+                            		  	<div class="form-group">                            		    					  
+                                          <label for="txt_cuotas_creditos" class="control-label">Cuotas Creditos:</label>
+                                          <input type="text" id="txt_cuotas_creditos" class="form-control" value="">                                                                                                      
+                                        </div>
+                            		  </div>                              		  
+                            		  
+                            		  <div class="col-xs-12 col-md-3 col-md-3 " >
+                            		  	<div id="div_capacidad_pago_garante"></div>
+                            		  </div>
+                            		  
+                            		                              		  
+                        		  </div>
+                        		  
+                        		  <div class="row">
+                        		  	<div class="col-md-offset-9 col-lg-offset-9 col-xs-12 col-md-3 col-md-3 ">
+                            		    <label for="txt_monto_creditos" class="control-label">&nbsp;</label>
+                                        <div class="input-group">               			
+                            				<span class="input-group-btn">
+                            					<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas()">
+                                          			<i class="glyphicon glyphicon-expand"></i> SIMULAR</button>  
+                        					</span>        					
+        								</div>
+                            		  </div>
+                        		  </div>
+                        		  
+                        		  <div id="div_tabla_amortizacion"></div>
+                        		  
 							</div>	
                     		
                     	</div>
@@ -183,6 +260,52 @@
                     		
                     		<div id="div_pnl_participe_creditos"></div>
                     		
+                    	</div>
+                    	<div class="tab-pane" id="panel_capacidad">
+                    		<div class="form-group">
+								<div class="row">
+                					<table align="center" class="tablesorter table table-striped table-bordered" style="width: 50%;">
+                        				<tr>
+                        					<th>SUELDO LIQUIDO:</th>
+                        					<td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_sueldo_liquido"></td>
+                    					</tr>
+                                        <tr>
+                                            <th>CUOTA VIGENTE:</th>
+                                            <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_cuota_vigente" readonly></td>
+                                        </tr>
+                                        <tr>
+                                            <th>FONDOS:</th>
+                                            <td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_fondos" ></td>
+                                        </tr>
+                                        <tr>
+                                            <th>DECIMOS:</th>
+                                            <td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_decimos" ></td>
+                                        </tr>
+                                        <tr >
+                                            <th>RANCHO:</th>
+                                            <td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_rancho" ></td>
+                                        </tr>
+                                        <tr >
+                                            <th>INGRESOS NOTARIZADOS:</th>
+                                            <td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_ingresos_notarizados" ></td>
+                                        </tr>
+                                        <tr >
+                                            <th>TOTAL INGRESO:</th>
+                                            <td><input style="text-align: right" type="number" class="form-control" id="txt_total_ingresos" readonly></td>
+                                        </tr>
+                                    </table>
+                        	<div class="row">
+                                 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+                                	<div id="btn_boton_capacidad_pago" class="form-group">
+                                		<button type="button" id="btn_enviar_capacidad_pago" class="btn btn-primary">
+                                		<i class="glyphicon glyphicon-ok"></i> ACEPTAR</button>
+                                	</div>
+                                 </div>	
+                          	
+           					</div>
+						</div>
+							<br>
+							</div>	
                     	</div>
                     </div>
                  </div>
@@ -431,6 +554,6 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?"></script> 
+   <script src="view/Credito/js/CreditosParticipes.js?0.03"></script> 
    </body>
 </html>   

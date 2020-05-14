@@ -42,7 +42,7 @@ function loadDataParticipesPrestamos(){
 			$("#lblInteresMensual").val( rsParticipePrestamos.interes_tipo_creditos );
 			$("#hdnid_creditos").val( rsParticipePrestamos.id_creditos );
 			TablaAmortizacion();
-					
+			Transacciones();		
 		}
 	
 				
@@ -98,6 +98,33 @@ function TablaAmortizacion(_page = 1){
 	})
 	
 }
+function Transacciones(_page = 1){
+	
+	var id = $("#hdnid_creditos").val();
+	var buscador1 = $("#buscador1").val();
+	$.ajax({
+		beforeSend:function(){$("#divLoaderPage1").addClass("loader")},
+		url:"index.php?controller=PrincipalPrestamosSocios&action=Transacciones",
+		type:"POST",
+		data:{
+			id_creditos: id,
+		    page:_page,search:buscador1,peticion:'ajax'}
+	}).done(function(datos){		
+		console.log(datos);
+		$("#transacciones").html(datos);		
+		
+	}).fail(function(xhr,status,error){
+		
+		var err = xhr.responseText
+		console.log(err);
+		
+	}).always(function(){
+		
+		$("#divLoaderPage1").removeClass("loader")
+		
+	})
+	
+}
 
 
 var generar_tabla_amortizacion = function(obj){
@@ -127,4 +154,15 @@ var generar_recibo = function(obj){
 	elemento.attr('href',url);
 	return true;
 }
+var generar_pagare_cobros = function(obj){
+	
+	var elemento = $(obj);
+	var id_creditos	= $("#hdnid_creditos").val();
+	var url 	 = "index.php?controller=TablaAmortizacion&action=ReportePagare&id_creditos="+id_creditos;
+	
+	elemento.attr('href',url);
+	return true;
+}
+
+
 

@@ -431,5 +431,231 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	    return $meses[ $numMes-1];
 	}
 	
+	
+	
+	public function ReporteKardexSocios(){
+	    
+	    
+	    session_start();
+	    
+	    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	    
+	    
+	    $entidades = new EntidadesModel();
+	    $datos_empresa = array();
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	    }
+	    
+	    //NOTICE DATA
+	    $datos_cabecera = array();
+	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+	    $datos_cabecera['FECHA'] = date('Y/m/d');
+	    $datos_cabecera['HORA'] = date('h:i:s');
+	    
+	   //empieza consulta para aportes patronales  
+	   
+	    $contribucion = new CoreContribucionModel();
+	    $participes=new ParticipesModel();
+	    $id_participes =908;
+	    
+	    
+	    
+	    //$productos=new SaldoProductosModel();
+	    $datos_reporte = array();
+	    
+	    
+	    $columnas = " core_entidad_patronal.id_entidad_patronal, 
+                      core_entidad_patronal.nombre_entidad_patronal, 
+                      core_participes.cedula_participes, 
+                      core_participes.nombre_participes, 
+                      core_participes.apellido_participes, 
+                      core_participes.ocupacion_participes, 
+                      core_participes.fecha_ingreso_participes, 
+                      core_participes.fecha_salida_participes, 
+                      core_participes.id_participes";
+	    
+	    $tablas = "   public.core_participes, 
+                      public.core_entidad_patronal";
+	    $where= "     core_participes.id_entidad_patronal = core_entidad_patronal.id_entidad_patronal AND core_participes.id_participes= '$id_participes'";
+	    $id="core_entidad_patronal.nombre_entidad_patronal";
+	    
+	    $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    $datos_reporte['ENTIDAD_PATRONAL']=$rsdatos[0]->nombre_entidad_patronal;
+	    $datos_reporte['CEDULA_PARTICIPE']=$rsdatos[0]->cedula_participes;
+	    $datos_reporte['NOMBRE_PARTICIPE']=$rsdatos[0]->nombre_participes;
+	    $datos_reporte['APELLIDO_PARTICIPE']=$rsdatos[0]->apellido_participes;
+	    $datos_reporte['OCUPACION_PARTICIPE']=$rsdatos[0]->ocupacion_participes;
+	    $datos_reporte['FECHA_INGRESO']=$rsdatos[0]->fecha_salida_participes;
+	    $datos_reporte['FECHA_SALIDA']=$rsdatos[0]->fecha_salida_participes;
+	    
+	    
+	    
+	    
+	    
+
+	    
+	    $columnas = " aa.anio,
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 1 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"enero\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 2 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"febrero\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 3 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"marzo\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 4 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"abril\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 5 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"mayo\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 6 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"junio\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 7 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"julio\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 8 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"agosto\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 9 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"septiembre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 10 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"octubre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 11 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"noviembre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 12 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"diciembre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	 and id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"acumulado\",
+                
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where id_participes = '$id_participes'  and id_estatus=1 limit 1
+                ) as \"total\" 
+";
+	    
+	    $tablas = " (select to_char(fecha_registro_contribucion,'YYYY') as anio
+                	from core_contribucion
+                	where id_participes = '$id_participes'
+                	group by to_char(fecha_registro_contribucion,'YYYY')
+                	order by to_char(fecha_registro_contribucion,'YYYY')
+                	) aa";
+	    $where= "1=1";
+	    
+	    
+	    $id="aa.anio";
+	    
+	    $personales_detalle = $contribucion->getCondiciones($columnas, $tablas, $where, $id);
+	    $html='';
+	    
+	    
+	    $html.='<table class="1" border=1>';
+	    $html.= "<tr>";
+	    
+	 
+	    $html.='<th style="text-align: center;  font-size: 12px;">Año</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Enero</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Febrero</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Marzo</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Abril</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Mayo</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Junio</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Julio</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Agosto</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Septiembre</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Octubre</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Noviembre</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Diciembre</th>';
+	    $html.='<th style="text-align: center;  font-size: 12px;">Acumulado</th>';
+	    
+	    
+	    
+	    $html.='</tr>';
+	    
+	    
+	    
+	    
+	    foreach ($personales_detalle as $res)
+	    {
+	        
+	        
+	        
+	        if(($res->enero==0)&&($res->febrero==0)&&($res->marzo==0)&&($res->abril==0)&&($res->mayo==0)&&($res->junio==0)&&($res->julio==0)&&($res->agosto==0)&&($res->septiembre==0)&&($res->octubre==0)&&($res->noviembre==0)&&($res->diciembre==0)){
+	            
+	            $res->anio="";
+	            
+	            
+	        }
+	        
+	        
+	        $i++;
+	        $html.='<tr>';
+	        
+	        $html.='<td style="font-size: 10px;">'.$res->anio.'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->enero, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->febrero, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->marzo, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->abril, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->mayo, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->junio, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->julio, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->agosto, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->septiembre, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->octubre, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->noviembre, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->diciembre, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->acumulado, 2, ",", ".").'</td>';
+	        
+	        
+	        
+	        
+	        $html.='</tr>';
+	    }
+	    
+	    $html.='</table>';
+	    
+	    $datos_reporte['DETALLE_PERSONAL']= $html;
+	    
+	    
+	    
+	    
+	    
+	    $this->verReporte("ReporteKardexSocios", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+	    
+	    
+	    
+	    
+	    
+	}
+	
 }
 ?>

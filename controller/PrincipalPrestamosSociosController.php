@@ -500,10 +500,301 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	        $datos_empresa['CODIGO_QR']= $qr_participes;
 	    
 	        $this->verReporte("ReporteRecibo", array('datos_reporte'=>$datos_reporte, 'datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos'=>$datos));
-	       //$this->verReporte("ReporteTablaAmortizacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_garante'=>$datos_garante, 'datos'=>$datos));
+	     
+	    
+	    
+	}
+	
+	public function Transacciones()
+	{
+	    
+	    session_start();
+	    $registro= new TransaccionesModel();
+	    $id_creditos =  (isset($_POST['id_creditos'])&& $_POST['id_creditos'] !=NULL)?$_POST['id_creditos']:'';
+	    
+	    $where_to="";
+
+	    $columnas = " a.id_transacciones, a.id_creditos, a.id_participes, a.id_creditos_tipo_pago,
+	    c.id_creditos_tipo_pago, c.nombre_creditos_tipo_pago, a.fecha_transacciones, a.valor_transacciones, a.observacion_transacciones,
+	    a.usuario_usuarios,
+	    a.fecha_contable_core_transacciones, a.id_ccomprobantes_ant, b.id_modo_pago, b.nombre_modo_pago, e.nombre_estado_transacciones";
+	    
+	    
+	    $tablas = "   core_transacciones a
+	    inner join core_modo_pago b on a.id_modo_pago=b.id_modo_pago
+	    inner join core_creditos_tipo_pago c on a.id_creditos_tipo_pago=c.id_creditos_tipo_pago
+	    inner join core_estado_transacciones e on a.id_estado_transacciones=e.id_estado_transacciones";
+	    $where= "   a.id_creditos='$id_creditos' and a.id_status=1";
+	    $id="a.id_transacciones";
+	    
+	    
+	    $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1=" AND c.nombre_creditos_tipo_pago ILIKE '".$search."%'";
+	            
+	            $where_to=$where.$where1;
+	            
+	        }else{
+	            
+	            $where_to=$where;
+	            
+	        }
+	        
+	        $html="";
+	        $resultSet=$registro->getCantidad("*", $tablas, $where_to);
+	        $cantidadResult=(int)$resultSet[0]->total;
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 10; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet=$registro->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        if($cantidadResult > 0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:15px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:235px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo Pago</th>';
+	            $html.='<th style="text-align: center; font-size: 11px;">Fecha</th>';
+	            $html.='<th style="text-align: center; font-size: 11px;">Valor</th>';
+	            $html.='<th style="text-align: center; font-size: 11px;">Observaciones</th>';
+	            $html.='<th style="text-align: center; font-size: 11px;">Usuario</th>';
+	            $html.='<th style="text-align: center; font-size: 11px;">Fecha Contable</th>';
+	            $html.='<th style="text-align: center; font-size: 11px;">Modo Pago</th>';
+	            $html.='<th style="text-align: center; font-size: 11px;">Estado</th>';
+	            $html.='<th style="text-align: center; font-size: 11px;">Recibo</th>';
+	            
+	            
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                
+	                $i++;
+	                $html.='<tr>';
+	                
+	                
+	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_creditos_tipo_pago.'</td>';
+	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_transacciones.'</td>';
+	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->valor_transacciones.'</td>';
+	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->observacion_transacciones.'</td>';
+	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->usuario_usuarios.'</td>';
+	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_contable_core_transacciones.'</td>';
+	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_modo_pago.'</td>';
+	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_estado_transacciones.'</td>';
+	                $html.='<td><a class="btn bg-blue" title="Recibo" href="index.php?controller=PrincipalPrestamosSocios&action=ReporteReciboTransacciones&id_transacciones='.$res->id_transacciones.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
+	                
+	                
+	                $html.='</tr>';
+	            }
+	            
+	            
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginate_Transacciones("index.php", $page, $total_pages, $adjacents,"Transacciones").'';
+	            $html.='</div>';
+	            
+	            
+	            
+	        }else{
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay  Registros...</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        
+	        echo $html;
+	        
+	    }
+	    
+	}
+	
+	
+	
+	public function paginate_Transacciones($reload, $page, $tpages, $adjacents, $funcion = "") {
+	    //Steven
+	    $prevlabel = "&lsaquo; Prev";
+	    $nextlabel = "Next &rsaquo;";
+	    $out = '<ul class="pagination pagination-large">';
+	    
+	    // previous label
+	    
+	    if($page==1) {
+	        $out.= "<li class='disabled'><span><a>$prevlabel</a></span></li>";
+	    } else if($page==2) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(1)'>$prevlabel</a></span></li>";
+	    }else {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page-1).")'>$prevlabel</a></span></li>";
+	        
+	    }
+	    
+	    // first label
+	    if($page>($adjacents+1)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>1</a></li>";
+	    }
+	    // interval
+	    if($page>($adjacents+2)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // pages
+	    
+	    $pmin = ($page>$adjacents) ? ($page-$adjacents) : 1;
+	    $pmax = ($page<($tpages-$adjacents)) ? ($page+$adjacents) : $tpages;
+	    for($i=$pmin; $i<=$pmax; $i++) {
+	        if($i==$page) {
+	            $out.= "<li class='active'><a>$i</a></li>";
+	        }else if($i==1) {
+	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(1)'>$i</a></li>";
+	        }else {
+	            $out.= "<li><a href='javascript:void(0);' onclick='$funcion(".$i.")'>$i</a></li>";
+	        }
+	    }
+	    
+	    // interval
+	    
+	    if($page<($tpages-$adjacents-1)) {
+	        $out.= "<li><a>...</a></li>";
+	    }
+	    
+	    // last
+	    
+	    if($page<($tpages-$adjacents)) {
+	        $out.= "<li><a href='javascript:void(0);' onclick='$funcion($tpages)'>$tpages</a></li>";
+	    }
+	    
+	    // next
+	    
+	    if($page<$tpages) {
+	        $out.= "<li><span><a href='javascript:void(0);' onclick='$funcion(".($page+1).")'>$nextlabel</a></span></li>";
+	    }else {
+	        $out.= "<li class='disabled'><span><a>$nextlabel</a></span></li>";
+	    }
+	    
+	    $out.= "</ul>";
+	    return $out;
+	    
+	}
+	
+	public function ReporteReciboTransacciones(){
+	    session_start();
+	    
+	    $entidades = new EntidadesModel();
+	    //PARA OBTENER DATOS DE LA EMPRESA
+	    $datos_empresa = array();
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	    }
+	    
+	    //NOTICE DATA
+	    $datos_cabecera = array();
+	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+	    $datos_cabecera['FECHA'] = date('Y/m/d');
+	    $datos_cabecera['HORA'] = date('h:i:s');
 	    
 	    
 	    
+	    $participes = new TransaccionesModel();
+	    $id_transacciones =  (isset($_REQUEST['id_transacciones'])&& $_REQUEST['id_transacciones'] !=NULL)?$_REQUEST['id_transacciones']:'';
+	      $datos_reporte = array();
+	      $columnas = "a.id_transacciones, a.id_creditos, a.id_participes, a.id_creditos_tipo_pago,
+                	    c.id_creditos_tipo_pago, c.nombre_creditos_tipo_pago, a.fecha_transacciones, a.valor_transacciones, a.observacion_transacciones,
+                	    a.usuario_usuarios,
+                	    a.fecha_contable_core_transacciones, a.id_ccomprobantes_ant, b.id_modo_pago, b.nombre_modo_pago, e.nombre_estado_transacciones";
+	      $tablas = "core_transacciones a
+                	    inner join core_modo_pago b on a.id_modo_pago=b.id_modo_pago
+                	    inner join core_creditos_tipo_pago c on a.id_creditos_tipo_pago=c.id_creditos_tipo_pago
+                	    inner join core_estado_transacciones e on a.id_estado_transacciones=e.id_estado_transacciones";
+	      $where= "a.id_transacciones='$id_transacciones' and a.id_status=1";
+	      $id="a.id_transacciones";
+	    
+	    $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_creditos_tipo_pago;
+	    $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->nombre_creditos_tipo_pago;
+	    $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->nombre_creditos_tipo_pago;
+	    $datos_reporte['TIPO_CREDITOS']=$rsdatos[0]->nombre_creditos_tipo_pago;
+	    $datos_reporte['NUMERO_CREDITOS']=$rsdatos[0]->nombre_creditos_tipo_pago;
+	    $datos_reporte['FECHA_CONSECION']=$rsdatos[0]->nombre_creditos_tipo_pago;
+	    $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->nombre_creditos_tipo_pago;
+	    
+	    
+	    $datos = array();
+	    
+	    $cedula_capremci = $rsdatos[0]->cedula_participes;
+	    $numero_credito = $rsdatos[0]->numero_creditos;
+	    $tipo_documento="RECIBO DE PRESENTACION DE SOLICITUD";
+	    
+	    require dirname(__FILE__)."\phpqrcode\qrlib.php";
+	    
+	    $ubicacion = dirname(__FILE__).'\..\barcode_participes\\';
+	    
+	    //Si no existe la carpeta la creamos
+	    if (!file_exists($ubicacion))
+	        mkdir($ubicacion);
+	        
+	        $i++;
+	        $filename = $ubicacion.$numero_credito.'.png';
+	        
+	        //Parametros de Condiguracion
+	        
+	        $tamaño = 2.5; //Tama�o de Pixel
+	        $level = 'L'; //Precisi�n Baja
+	        $framSize = 3; //Tama�o en blanco
+	        $contenido = $tipo_documento.';'.$numero_credito.';'.$cedula_capremci; //Texto
+	        
+	        //Enviamos los parametros a la Funci�n para generar c�digo QR
+	        QRcode::png($contenido, $filename, $level, $tamaño, $framSize);
+	        
+	        $qr_participes = '<img src="'.$filename.'">';
+	        
+	        
+	        $datos['CODIGO_QR']= $qr_participes;
+	        $datos_empresa['CODIGO_QR']= $qr_participes;
+	        
+	        $this->verReporte("ReporteReciboTransacciones", array('datos_reporte'=>$datos_reporte, 'datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos'=>$datos));
+	        
+	        
 	}
 	
 	

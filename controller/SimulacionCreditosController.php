@@ -1154,7 +1154,7 @@ class SimulacionCreditosController extends ControladorBase{
    }
    
    
-   /**dc 2020/05/120**/
+   /**dc 2020/05/12 **/
    public function obtenerCuotas()
    {
        session_start();
@@ -1233,6 +1233,8 @@ class SimulacionCreditosController extends ControladorBase{
        
        //if($valor_cuota>$sueldo_partcipe || $plazo_maximo>$diferencia_dias){
        
+       $data = array(); //variable donde guardo lo que envio a la vista 
+       
        while ( $valor_cuota > $sueldo_partcipe || $plazo_maximo > $diferencia_dias )
        {
            
@@ -1242,50 +1244,36 @@ class SimulacionCreditosController extends ControladorBase{
            $plazo_maximo=$resultSet[0]->cuotas_rango_plazos_creditos;
            
            $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$plazo_maximo))  ;
-           $valor_cuota=round($valor_cuota,2);
+           $valor_cuota=round($valor_cuota,2);           
            
-           
-           //echo "/".$valor_cuota."/".$plazo_maximo."/".$monto_credito;
        }
-       
-       
-       
-       $html='<label for="tipo_credito" class="control-label">Número de cuotas:</label>
-                  <select name="cuotas_credito" id="cuotas_credito"  class="form-control" onchange="SimularCredito()">';
-       
-       
+                     
        for( $plazo_maximo; $plazo_maximo>=3; $plazo_maximo-=3)
        {
            
            $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$plazo_maximo));
            $valor_cuota=round($valor_cuota,2);
            
-           if($plazo_maximo<=$diferencia_dias && $valor_cuota<=$sueldo_partcipe){
+           if( $plazo_maximo <= $diferencia_dias && $valor_cuota <= $sueldo_partcipe){
                
-               $html.='<option value="'.$plazo_maximo.'">'.$plazo_maximo.'</option>';
+               $data[] = $plazo_maximo; //$html.='<option value="'.$plazo_maximo.'">'.$plazo_maximo.'</option>';
            }
-           
-           //  echo "/".$plazo_maximo;
            
        }
        
-       $html.='</select>
-                   <div id="mensaje_cuotas_credito" class="errores"></div>';
+       $response = array();
+       $response['estatus'] = "OK";
+       $response['cuotas']    = $data;
+       $response['monto']     = $monto_credito;
        
+       $salida  = ob_get_clean();
+       if( !empty( $salida )  ){
+           $response['estatus'] = "ERROR";
+           $response['buffer']    = error_get_last();
+           $response['mensaje']   = "ERROR al obtener cuotas disponibles";
+       }
        
-       $resultado=array();
-       
-       array_push($resultado, $monto_credito,$html);
-       
-       echo json_encode($resultado);
-       
-       
-       
-       
-       
-       
-       //}
-       
+       echo json_encode($response);
        
    }
    
@@ -1433,6 +1421,124 @@ class SimulacionCreditosController extends ControladorBase{
        
    }
    
+   /**dc 2020/05/14 **/
+   public function obtenerCuotasGarante()
+   {
+       ob_start();
+       session_start();
+       $cuotas = new EstadoModel();
+       $monto_credito=$_POST['monto_credito'];
+       $cedula_participes=$_POST['cedula_participe'];
+       $cedula_garante=$_POST['cedula_garante'];
+       $sueldo_partcipe=$_POST['sueldo_participe'];
+       $sueldo_garante=$_POST['sueldo_garante'];
+       $tipo_credito=$_POST['tipo_credito'];
+       
+       
+       $columnas="      core_participes.nombre_participes,
+                    core_participes.apellido_participes,
+                    core_participes.cedula_participes,
+                    core_participes.fecha_nacimiento_participes";
+       $tablas="public.core_participes";
+       
+       $where="core_participes.cedula_participes='".$cedula_participes."'";
+       
+       $id="core_participes.id_participes";
+       
+       $infoParticipe=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
+       
+       $columnas="      core_participes.nombre_participes,
+                    core_participes.apellido_participes,
+                    core_participes.cedula_participes,
+                    core_participes.fecha_nacimiento_participes";
+       $tablas="public.core_participes";
+       
+       $where="core_participes.cedula_participes='".$cedula_garante."' AND core_participes.id_estado_participes=1";
+       
+       $id="core_participes.id_participes";
+       
+       $infoGarante=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
+       
+       $hoy=date("Y-m-d");
+       
+       $dias_hasta=$this->dateDifference1($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
+       $dias_hasta_garante=$this->dateDifference1($infoGarante[0]->fecha_nacimiento_participes, $hoy);
+       
+       $dias_75=365*75;
+       
+       $diferencia_dias=$dias_75-$dias_hasta;
+       $diferencia_dias_garante=$dias_75-$dias_hasta_garante;
+       
+       $diferencia_dias=$diferencia_dias/30;
+       $diferencia_dias_garante=$diferencia_dias_garante/30;
+       
+       $diferencia_dias=floor($diferencia_dias * 1) / 1;
+       $diferencia_dias_garante=floor($diferencia_dias_garante * 1) / 1;
+       if($diferencia_dias_garante<$diferencia_dias) $diferencia_dias=$diferencia_dias_garante;
+       
+       $columnas="interes_tipo_creditos";
+       $tablas="core_tipo_creditos";
+       $where="codigo_tipo_creditos='".$tipo_credito."'";
+       
+       $resultSet=$cuotas->getCondicionesSinOrden($columnas, $tablas, $where, "");
+       $tasa_interes=$resultSet[0]->interes_tipo_creditos;
+       $tasa_interes=$tasa_interes/100;
+       $interes_mensual = $tasa_interes / 12;
+       
+       $pago_garante=1;
+       
+       $sueldo_partcipe=$sueldo_partcipe/2;
+       $sueldo_garante=$sueldo_garante/2;
+       
+       $columnas="cuotas_rango_plazos_creditos";
+       $tablas="public.core_plazos_creditos";
+       $where=$monto_credito.">=minimo_rango_plazos_creditos AND ".$monto_credito." <= maximo_rango_plazos_creditos";
+       $id="core_plazos_creditos.id_plazos_creditos";
+       $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
+       $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
+       
+       $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$cuota));
+       $valor_cuota=round($valor_cuota,2);
+       
+       
+       if ( $valor_cuota > $sueldo_partcipe || $cuota > $diferencia_dias )
+       {
+           while ( $valor_cuota > $sueldo_partcipe || $cuota > $diferencia_dias)
+           {
+               $monto_credito-=10;
+               $where=$monto_credito.">=minimo_rango_plazos_creditos AND ".$monto_credito." <= maximo_rango_plazos_creditos";
+               $resultSet=$cuotas->getCondiciones($columnas, $tablas, $where, $id);
+               $cuota=$resultSet[0]->cuotas_rango_plazos_creditos;
+               
+               $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$cuota))  ;
+               $valor_cuota=round($valor_cuota,2);
+           }
+       }
+       
+       if ( $valor_cuota > $sueldo_garante ) $pago_garante=0;
+       
+       
+       $html='<label for="tipo_credito" class="control-label">Número de cuotas:</label>
+       <select name="cuotas_credito" id="cuotas_credito"  class="form-control" onchange="SimularCredito()">';
+       for($cuota; $cuota>=3; $cuota-=3)
+       {
+           $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$cuota));
+           $valor_cuota=round($valor_cuota,2);
+           
+           if($cuota<=$diferencia_dias && $valor_cuota<=$sueldo_partcipe) $html.='<option value="'.$cuota.'">'.$cuota.'</option>';
+       }
+       
+       
+       
+       $html.='</select>
+       <div id="mensaje_cuotas_credito" class="errores"></div>';
+       
+       $resultado=array();
+       
+       array_push($resultado, $monto_credito,$html,$pago_garante);
+       
+       echo json_encode($resultado);
+   }
    
    
    

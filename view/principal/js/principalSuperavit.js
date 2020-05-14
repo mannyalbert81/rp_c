@@ -59,7 +59,7 @@ $("#btn_principal_superavit").on("click",function(){
 })
 
 
-function fnRegistro(btn){
+function fnRegistro1(btn){
 	
 	var btnObjeto = $(btn);
 	var valor = btnObjeto.val();

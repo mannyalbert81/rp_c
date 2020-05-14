@@ -823,11 +823,11 @@
     <script src="view/bootstrap/bower_components/moment/min/moment.min.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
     <!-- js personales -->
-	<script type="text/javascript" src="view/principal/js/principalBusqueda.js?0.06"></script>
-	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.03"></script>
-	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.12"></script>
-	<script type="text/javascript" src="view/principal/js/principalSuperavit.js?0.3"></script>
-	<script type="text/javascript" src="view/principal/js/principalBusquedaExpedientes.js?2.5"></script>
+	<script type="text/javascript" src="view/principal/js/principalBusqueda.js?0.07"></script>
+	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.04"></script>
+	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.13"></script>
+	<script type="text/javascript" src="view/principal/js/principalSuperavit.js?0.4"></script>
+	<script type="text/javascript" src="view/principal/js/principalBusquedaExpedientes.js?2.6"></script>
 	
   </body>
 </html>   

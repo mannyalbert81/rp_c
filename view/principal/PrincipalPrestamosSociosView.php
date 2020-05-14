@@ -135,8 +135,7 @@
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <li class="active"><a href="#prestamos" data-toggle="tab">Préstamos</a></li>
-              <li><a href="#impresiones" data-toggle="tab">Impresiones</a></li> 
-              <li><a href="#cobros" data-toggle="tab">Cobros</a></li> 
+               <li><a href="#cobros" data-toggle="tab">Cobros</a></li> 
             </ul>
             
             <div class="col-md-12 col-lg-12 col-xs-12">
@@ -333,7 +332,37 @@
                           </table>
                     	</div>
           				</div> 
-          			
+          		  
+                      <div class="panel panel-success">
+                           <div class="panel-heading" >Reportes</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          
+                          		<tr>
+                          	
+            						<th><a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a></th>
+	               					<th><a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a></th>
+	               					<th><a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Recibo de Presentación de Solicitud</a></th>
+	               
+            					</tr>
+                                 	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                    	</div>
+          				</div>        
+                    	</div>
+                    
+          				</div>    			
+          			</div>
+ 		       </div>
+                <div class="tab-pane" id="cobros">
+              
+              	
           			  <div class="panel panel-success">
                            <div class="panel-heading" >Tabla Amortizacion</div>
                           <div class="panel-body">    
@@ -364,8 +393,9 @@
                           </table>
                     	</div>
           				</div>   	
-          				            
-                      <div class="panel panel-success">
+          				
+          				
+          				 <div class="panel panel-success">
                            <div class="panel-heading" >Reportes</div>
                           <div class="panel-body">    
                   	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
@@ -378,24 +408,15 @@
                           	
             						<th><a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a></th>
 	               					<th><a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a></th>
-	               					<th><a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Recibo de Presentación de Solicitud</a></th>
-	               
+	               				
             					</tr>
                                  	</tbody>
                           	<tfoot>
                           	</tfoot>
                           </table>
                     	</div>
-          				</div>        
-                    	</div>
-                    
-          				</div>    			
-          			</div>
- 		       </div>
-              <div class="tab-pane" id="impresiones">
-              
-              </div>
-              <div class="tab-pane" id="cobros">
+          				</div>    
+          				          
               
               </div>
            

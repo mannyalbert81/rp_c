@@ -3,6 +3,7 @@ var view	= view || {};
 view.hdn_id_solicitud	 	= $("#hdn_id_solicitud");
 view.hdn_cedula_participes 	= $("#hdn_cedula_participes");
 view.hdn_id_participes	 	= $("#hdn_id_participes");
+view.hdn_cedula_garante	 	= $("#hdn_cedula_garante");
 view.cedula_participes 		= $("#cedula_participe");
 view.html_boton_buscar_participe		= $("#buscar_participe_boton");
 view.boton_buscar_participe		= $("#buscar_participe") || null;
@@ -10,7 +11,9 @@ view.tipo_creditos			= $("#ddl_tipo_creditos");
 view.monto_creditos			= $("#txt_monto_creditos");
 view.cuota_creditos			= $("#txt_cuotas_creditos"); 
 view.btn_capacidad_pago		= $("#btn_capacidad_pago");
-view.capacidad_pago			= $("#txt_capacidad_pago");
+view.capacidad_pago			= $("#txt_capacidad_pago"); 
+view.btn_numero_cuotas		= $("#btn_numero_cuotas");
+view.capacidad_pago_garante			= $("#txt_capacidad_pago_garante");
 
 /** para valores de tab de capacidad de pago **/
 view.sueldo_liquido		= $("#txt_sueldo_liquido");
@@ -22,11 +25,24 @@ view.ingresos_notarizados		= $("#txt_ingresos_notarizados");
 view.total_ingresos		= $("#txt_total_ingresos");
 view.btn_enviar_capacidad_pago	= $("#btn_enviar_capacidad_pago");
 
+/** para valores de tab de capacidad de pago garante **/
+view.sueldo_liquido_garante		= $("#txt_sueldo_liquido_garante");
+view.cuota_vigente_garante		= $("#txt_cuota_vigente_garante");
+view.valor_fondos_garante		= $("#txt_fondos_garante");
+view.valor_decimos_garante		= $("#txt_decimos_garante");
+view.valor_rancho_garante		= $("#txt_rancho");
+view.ingresos_notarizados_garante		= $("#txt_ingresos_notarizados_garante");
+view.total_ingresos_garante		= $("#txt_total_ingresos_garante");
+
 /** para valores globales **/
 view.global_hay_renovacion	= false;
+view.global_hay_garantes	= false;
 
 /** para valores de Solicitud **/
 var dataSolicitud	= dataSolicitud || {};
+
+/** para valores de Garantes **/
+var dataGarantes	= dataGarantes	|| {};
 
 var id_participe;
 var disponible_participe;
@@ -68,14 +84,14 @@ var obtener_tipo_creditos	= function(){
 	}).done(function(x){
 		if( x.estatus != undefined && x.estatus == "OK" ){
 			datos	= x.data || [];
-			view.tipo_creditos.append('<option>--Selecione--</option>');
+			view.tipo_creditos.append('<option value="0">--Selecione--</option>');
 			$.each(datos,function( index, value ){
 				view.tipo_creditos.append('<option value="'+value.codigo_tipo_creditos+'">'+value.nombre_tipo_creditos+'</option>');
 			})
 		}
 		
 	}).fail( function( xhr,status,error ){
-		view.tipo_creditos.append('<option>--Selecione--</option>');
+		view.tipo_creditos.append('<option value="0">--Selecione--</option>');
 	})
 }
 
@@ -134,8 +150,25 @@ var iniciar_eventos_controles	= function(){
 		sumar_ingresos_capacidad_pago();
 	})
 	
+	//se enlaza evento key up a input que este dentro de un table ... capacidad de pago garante
+	$('table :input.suma-capacidad-garante').on('keyup',function(){ 
+		sumar_ingresos_capacidad_pago_garante();
+	})
+	
 	$('#btn_enviar_capacidad_pago').on('click', function(){
 		enviar_capacidad_pago();
+	})
+	
+	$('body').on('click','#btn_enviar_capacidad_pago_garante', function(){
+		evt_enviar_capacidad_pago_garante();
+	})
+	
+	$('#btn_numero_cuotas').on('click', function(){
+		buscar_numero_cuotas();
+	})
+	
+	$( '#'+view.tipo_creditos.attr("id") ).on('change',function(){
+		iniciar_datos_simulacion();
 	})
 
 }
@@ -149,6 +182,7 @@ var iniciar_cedula	= function(){
 		view.cedula_participes.val( view.hdn_cedula_participes.val() ) ;
 		
 		view.boton_buscar_participe	= $("#buscar_participe");
+		
 		$('body').on('click',"#buscar_participe",function(){
 			
 			Iniciar( view.hdn_cedula_participes.val(), view.hdn_id_solicitud.val() );
@@ -163,6 +197,7 @@ var iniciar_cedula	= function(){
 
 var buscar_datos_creditos = function(){
 	
+	console.log("INICIA EVENTO CLICK DE BOTON BUSCAR PARTICIPE..");
 	obtener_info_participes();
 }
 
@@ -203,11 +238,6 @@ var obtener_info_participes = function(){
 				//cargar informacion crediticia con relacion a la solicitud
 				obtener_informacion_participe();
 				
-				
-				AportesParticipe(view.hdn_id_participes.val(), 1)
-				
-				//cargo tabla de creditos de los paticipes
-				CreditosActivosParticipe( view.hdn_id_participes.val() , 1)
 			}
 			
 			
@@ -347,12 +377,13 @@ var obtener_informacion_participe	= function(){
 
 var iniciar_datos_simulacion = function(){
 	
+	//setear valores globales
+	view.global_hay_garantes	= false;
+	view.global_hay_renovacion	= false;
+	
 	//validar cuenta individual
 	var cuenta_individual	= dataSolicitud.cuenta_individual || 0;
 	
-	var renovacion_credito	=false;
-	var garante_seleccionado=false;
-	var ci_garante			="";
 	var valor_tipo_credito	= view.tipo_creditos.val();
 	console.log("INICIANDO .. start..simulacion");
 	console.log("valor tipo credito --> " + valor_tipo_credito);
@@ -365,13 +396,15 @@ var iniciar_datos_simulacion = function(){
 	$("#div_tabla_amortizacion").html("");
 	console.log("..vaciamos div con tabla de amortizacion");
 	
-	$("#div_capacidad_pago_garante").html("");
+	$("#div_capacidad_pago_garante").addClass("hidden");
 	console.log("..vaciamos div con capacidad pago garantes");
 	
 	if( valor_tipo_credito != "0" ){
 		
 		//se activa el btn para capacidad de pago
 		view.btn_capacidad_pago.attr("disabled",false);
+		view.monto_creditos.attr("readonly",false);  
+		view.btn_numero_cuotas.attr("disabled",false);
 		
 		
 		var html_agregar_garante	= "<label for=\"txt_cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
@@ -379,10 +412,10 @@ var iniciar_datos_simulacion = function(){
 				"<input type=\"text\" data-inputmask=\"'mask': '9999999999'\" class=\"form-control\" id=\"txt_cedula_garante\"  placeholder=\"C.I.\">"+
 				"<div id=\"mensaje_cedula_garante\" class=\"errores\"></div>"+
 				"<span class=\"input-group-btn\">"+
-				"<button type=\"button\" class=\"btn btn-primary\" id=\"btn_buscar_garante\" name=\"buscar_garante\" onclick=\"BuscarGarante()\">"+
+				"<button type=\"button\" class=\"btn btn-primary\" id=\"btn_buscar_garante\" >"+
 				"<i class=\"glyphicon glyphicon-plus\"></i>"+
 				"</button>"+
-				"<button type=\"button\" class=\"btn btn-danger\" id=\"btn_borrar_cedula\" name=\"borrar_cedula\" onclick=\"BorrarCedulaGarante()\">"+
+				"<button type=\"button\" class=\"btn btn-danger\" id=\"btn_borrar_cedula\" >"+
 				"<i class=\"glyphicon glyphicon-arrow-left\"></i>"+
 				"</button>"+
 				"</span>"+
@@ -394,12 +427,21 @@ var iniciar_datos_simulacion = function(){
 			// MUESTRO LA INFORMACION PARA ASIGNAR UN GARANTE 
 			$('#div_info_garante').html(html_agregar_garante);
 			
+			//AGREGAR EVENTO A BOTONES EN PANEL GARANTE
+			$('body').on('click','#btn_buscar_garante',function(){
+				buscar_garante();
+			});
+			
+			$('body').on('click','#btn_borrar_cedula',function(){
+				$('#txt_cedula_garante').val("");
+			});
+			
 			// AGREGO EVENTOS AL INPUT GARANTES
 			$("#txt_cedula_garante").inputmask();
 			$('#txt_cedula_garante').keypress( function( event ){
 				if(event.keyCode == 13){
 					console.log("garante")
-					$('#buscar_garante').click();
+					$('#btn_buscar_garante').click();
 				}
 			});
 			
@@ -411,7 +453,7 @@ var iniciar_datos_simulacion = function(){
 						"<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
 						"<option value=\"2\" >MEJORAS Y/O REPAROS</option></div>";
 			// MUESTRO HTML EN LA VISTA EN LA PARTE DEL GARANTE
-			$('#div_info_garante').html(tipo_credito_hipotecario);
+			$('#div_info_garante').html( html_credito_hipotecario );
 			
 		}else if( valor_tipo_credito == "EME" ){
 			
@@ -420,7 +462,7 @@ var iniciar_datos_simulacion = function(){
 			
 			if ( cuenta_individual < 150){
 				
-				$("#div_pnl_info_participe").find('.bio-row.class-information').addClass('bg-red');
+				$("#div_pnl_info_participe").find('.bio-row.class-information').addClass('bg-red'); //SINTAXERROR agregar clase que viene desde controlador
 							
 			}
 			
@@ -436,9 +478,11 @@ var iniciar_datos_simulacion = function(){
 		view.cuota_creditos.val("");		
 		//desabilitamos el boton de capacidad de pago
 		view.btn_capacidad_pago.attr("disabled",true);
+		view.monto_creditos.attr("readonly",true);  
+		view.btn_numero_cuotas.attr("disabled",true);
 	}
 	
-	$('.nav-tabs a[href="#panel_info"]').tab('show'); //navegar a la pantalla de informacion en tab navs principal
+	//$('.nav-tabs a[href="#panel_info"]').tab('show'); //navegar a la pantalla de informacion en tab navs principal
 	
 }
 
@@ -559,14 +603,480 @@ var enviar_capacidad_pago = function(){
 	//aqui generaba un elemnto de id -->  sueldo_participe
 	view.capacidad_pago.val( valor_total_ingresos );
 	
+	view.monto_creditos.val( dataSolicitud.cuenta_individual );
+	
 	//enves de cerrar modal como el codigo original se navega a la tab num 1
 	//$("#cerrar_analisis").click();
 	$('.nav-tabs a[href="#panel_info"]').tab('show'); //navegar a la pantalla de informacion en tab navs principal
 	
 }
 
+/****************	PARA TRATAR VALORES DE GARANTES *******************/
+
+var buscar_garante	= function(){
+	
+	//variables globales
+	view.global_hay_garantes	= false;
+	
+	//validar cedula_garante
+	var element_cedula_garante = $("#txt_cedula_garante");
+	view.hdn_cedula_garante.val("");
+	
+	//valida que exita el elemento
+	if( !element_cedula_garante.length ){
+		swal({title:"DISEÑO",text:"Elemento No definido",icon:"warning"});
+		return false;
+	}
+	//valida valores de elemeto de cedula
+	if( element_cedula_garante.val() == "" || element_cedula_garante.val().includes('_') ){		
+		$("#mensaje_cedula_garante").notify("Ingrese Cedula del Garante",{ position:"buttom left", autoHideDelay: 2000});
+		return false;		
+	}
+	
+	//validacion para cedula de participe
+	if( !view.cedula_participes.val().length ){
+		swal({title:"CEDULA",text:"Cedula Participe no definido",icon:"warning"});
+		return false;
+	}
+	//validacion de cedula no sea igual al garante
+	if( view.cedula_participes.val() == element_cedula_garante.val() ){		
+		element_cedula_garante.notify("Cedula no Válida",{ position:"buttom left", autoHideDelay: 2000});
+		element_cedula_garante.val("");
+    	return false;
+	}
+	
+	//si pasa la validacion 
+	view.hdn_cedula_garante.val( element_cedula_garante.val() ); //se guarda la cedula del garante en un hidden
+	
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=ObtenerInformacionGarante',
+	    type: 'POST',
+	    dataType: 'json',
+	    data: {
+	    	   cedula_garante: element_cedula_garante.val()
+	    },
+	}).done(function(x) {
+		
+		var garanteHtml	= ( typeof x.html == "undefined" ) ? "" : x.html;
+		
+		$("#div_info_garante").html( garanteHtml ); //colocar informacion del garante solicitado
+		
+		if( x.estatus != undefined && x.estatus == "OK" ){
+			
+			//se genera un evento para el boton que se dibuja en el controlador
+			//btn id -- btn_cambiar_garante
+			$('body').on('click','#btn_cambiar_garante', function(){
+				iniciar_datos_simulacion();
+			})
+			
+			view.global_hay_garantes	= true;
+			
+			//se inicializa valores de garante
+			var data	= x.data;	
+			
+			//datos de participe
+			var limite_participe	= dataSolicitud.cuenta_individual;
+			var aportes_participe	= dataSolicitud.aportes_participe;
+			
+			//datos de garante			
+			var limite_garante	= data.disponible_garante;
+			var edad_garante	= data.edad;			
+			var limite_total	= parseFloat( limite_garante ) + parseFloat( limite_participe );
+			var aportes_garante = data.aporte_garante;			
+			
+			var elementos	= limite_total.toString().split(".");
+			elementos[1]	= elementos[1].substring(0, 2);
+			
+			//obtengo limite total con dos decimales
+			limite_total	= elementos[0]+"."+elementos[1];
+			
+			// si tienen los aportes doy paso al credito on garantia
+			if ( limite_total >= 150 && edad_garante < 75 && aportes_garante >= 3 && aportes_participe >= 3 ){
+				
+				//aqui buscar cambiar el estado de solicitud
+				//document.getElementById("disponible_participe").classList.remove('bg-red');
+				//document.getElementById("disponible_participe").classList.add('bg-olive');
+				view.global_hay_garantes	= true;
+				/*var html_capacidad_pago_garante	='<div class="form-group">'+
+							'<label for="monto_credito" class="control-label">Capacidad de pago Garante:</label>'+
+							'<button align="center" class="btn bg-olive" title="Análisis crédito"  onclick="AnalisisCreditoGarante()"><i class="glyphicon glyphicon-new-window"></i></button>'+
+							'<!--<input type=number step=1 class="form-control" id="txt_capacidad_pago_garante" style="background-color: #FFFFF;">  -->'+
+							'<div id="mensaje_sueldo_garante" class="errores"></div></div>';*/
+				
+				$("#div_capacidad_pago_garante").removeClass('hidden');
+				
+				//RELACIONAR EVENTO CON EL BOTON CAPACIDAD PAGO GARANTE
+				$('body').on('click','#btn_capacidad_pago_garante',function(){
+					//console.log("AGREGAR EVENTO BOTON CAPACIDAD PAGO GARANTE");
+					analisis_capacidad_pago_garante();
+				})
+				
+			}
+			
+			if( edad_garante < 75 && aportes_garante < 3 ){
+				
+				//aqui buscar cambiar el estado de solicitud
+				//document.getElementById("disponible_participe").classList.remove('bg-olive');
+				//document.getElementById("disponible_participe").classList.add('bg-red');
+				
+				//SINTAXERROR --buscar para poner en mensaje de alert bootstrap
+				swal({
+			  		  title: "Advertencia!",
+			  		  text: "El participe no cumple las condiciones para ser garante",
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+			}
+				
+		}else{
+			
+			if( garanteHtml.includes( "Garante no disponible" ) ){
+				swal({
+			  		  title: "Advertencia!",
+			  		  text: "El participe ya es garante activo",
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+			}
+			
+			if( garanteHtml.includes( "Participe no encontrado" ) ){
+				swal({
+			  		  title: "Advertencia!",
+			  		  text: "Participe no está registrado o no se encuentra activo",
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
+			}
+		}		
+		
+	}).fail(function() {
+	    console.log("error");
+	});
+		
+}
+
+var analisis_capacidad_pago_garante	= function(){
+	
+	//iniciamos inputs
+	view.cuota_creditos.val("");
+	view.monto_creditos.val("");
+	$("#div_tabla_amortizacion").html("");
+		
+	//EnviarCapacidadPagoGarante()
+	
+	//navego al tab de analisis de credito garante
+	$('.nav-tabs a[href="#panel_capacidad_garante"]').tab('show');
+	
+	//iniciamos variables
+	var valor_cedula_garante	= view.hdn_cedula_garante.val();
+	
+	if(  valor_cedula_garante == null || valor_cedula_garante == "" ){
+		console.error("Error al buscar capacidad de pago garante.. revisar variables");
+		return false;
+	}
+		
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=obtenerCuotaGarante',
+	    type: 'POST',
+	    dataType: 'json',
+	    data: {
+	    	cedula_participe:valor_cedula_garante
+	    },
+	}).done( function(x) {
+		var valor_cuota = 0.00;
+		if( x.estatus != undefined && x.estatus == "OK" ){
+			valor_cuota = x.cuota_total;			
+		}
+		
+		if( x.estatus != undefined && x.estatus == "ERROR" ){
+			console.error("ERROR al buscar cuota del garante revisar metodo de busqueda");
+			valor_cuota	= 0.00;
+		}
+		
+		$("#txt_cuota_vigente_garante").val(valor_cuota);
+		sumar_ingresos_capacidad_pago_garante();
+				
+	}).fail(function() {
+	    console.log("error");
+	});
+	
+}
+
+var sumar_ingresos_capacidad_pago_garante	= function(){
+	
+	try{
+		
+		var total = isNaN( parseFloat( view.sueldo_liquido_garante.val() ) ) ? 0 : parseFloat( view.sueldo_liquido_garante.val() );
+		total += isNaN( parseFloat( view.cuota_vigente_garante.val() ) ) ? 0 : parseFloat( view.cuota_vigente_garante.val() );  
+		total += isNaN( parseFloat( view.valor_fondos_garante.val() ) ) ? 0 : parseFloat( view.valor_fondos_garante.val() ); 
+		total += isNaN( parseFloat( view.valor_decimos_garante.val() ) ) ? 0 : parseFloat( view.valor_decimos_garante.val() );
+		total += isNaN( parseFloat( view.valor_rancho_garante.val() ) ) ? 0 : parseFloat( view.valor_rancho_garante.val() ); 
+		total += isNaN( parseFloat( view.ingresos_notarizados_garante.val() ) ) ? 0 : parseFloat( view.ingresos_notarizados_garante.val() ); 
+		
+		total	= Math.round( Math.round( total * 1000 ) / 10 ) / 100;
+		view.total_ingresos_garante.val( total );
+		
+	}catch( err ){
+		console.log("ERROR AL SUMAR .. la capacidad de pago de garante.. ")
+	}	
+	
+}
+
+//cunado cambie el codigo regresar a nombre_funcion
+var evt_enviar_capacidad_pago_garante	= function(){
+	
+	//obtener total ingresos garante
+	var total_garante	= view.total_ingresos_garante.val();	
+	view.capacidad_pago_garante.val( total_garante );
+	
+	//paso valores de cuenta individual
+	view.monto_creditos.val( dataSolicitud.cuenta_individual );
+	
+	$( "#btn_capacidad_pago_garante" ).find('i').removeClass().addClass('glyphicon glyphicon-refresh');	
+	
+	$('.nav-tabs a[href="#panel_info"]').tab('show');
+}
+
+/**************** TERMINA	PARA TRATAR VALORES DE GARANTES *******************/
+
+var redondeo_valores	= function( a ){
+	//esta funcion pasa como parametro un elemto si el elemento existe cambia sus valores
+	var element	= $(a);
+	var valor_element	= 0;
+	var residuo	= 0;
+	//valido que exista el elemento
+	if( element.length ){
+		
+		valor_element	= element.val();
+		residuo	= valor_element%10;		
+		valor_element	= valor_element - residuo;
+		
+		if( valor_element != 0 ){
+			element.val( valor_element );
+		}		
+	}
+	
+}
+
+var buscar_numero_cuotas	= function(){
+	
+	var garante_pago	=	true;
+	var ced_participe	= view.cedula_participes.val(); 
+	var valor_monto 	= 0;
+	var sueldo_participe= view.capacidad_pago.val();
+	var valor_tipo_creditos	= view.tipo_creditos.val();
+	var limite_credito	= 0;
+	var total_saldo_renovar	= 0;
+	
+	/** variables necesarias para ajax **/
+	/*monto_credito:monto,
+	cedula_participe:ciparticipe,
+	sueldo_participe:sueldo_participe,
+	tipo_credito:interes*/
+	
+	//busco datos en variable general de solicitud dataSolicitud que se llena al llamar datos informacion participe
+	//var mivar = ( typeof dataSolicitud.hola == "undefined" ) ? true : dataSolicitud.hola;
+	if( !dataSolicitud.estado_solicitud ){
+		swal({title:"ERROR CREDITO", text:"Participe no puede acceder a credito en este momento",icon:"error",dangerMode:true});
+		return false;
+	}
+		
+	if( valor_tipo_creditos == "0" || valor_tipo_creditos == "" ){
+		view.tipo_creditos.notify( "Seleccione Tipo Crédito" ,{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	if( isNaN( parseFloat( sueldo_participe ) ) || sueldo_participe == ""){
+		view.capacidad_pago.notify("Ingrese Capacidad de Pago",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	//tomar valor de saldo a renovar
+	total_saldo_renovar	= ( $("#total_saldo_renovar").text() == "" ) ? 0 : $("#total_saldo_renovar").text();
+	
+	//validacion de monto 
+	//redondeo valores de elemento
+	redondeo_valores( view.monto_creditos );	
+	valor_monto	= view.monto_creditos.val();
+	
+	if( !view.monto_creditos.val().length || view.monto_creditos.val() == "" )
+	{
+		view.monto_creditos.notify("Monto De credito no Definido",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	if( parseFloat( view.monto_creditos.val() ) < 150 )
+	{
+		view.monto_creditos.notify("Monto debe ser mayor o igual a $150",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	if( total_saldo_renovar > 0 &&  parseFloat( view.monto_creditos.val() ) < total_saldo_renovar )
+	{
+		view.monto_creditos.notify("Monto no valido ",{ position:"buttom left", autoHideDelay: 2000});
+		swal({title:"VALORES",text:"Saldo de creditos no debe superar al monto de credito. Revise los valores",icon:"warning"});
+		return false;
+	}
+	
+	if( valor_tipo_creditos == "PH"){
+		limite_credito	= $("#cuenta_individual2").text(); //esta variable esta por definir  ...SINTAXERROR
+	}else{		
+		//validacion de variable renovacion credito se elimina porq hace lo mismo of code below
+		limite_credito	= dataSolicitud.cuenta_individual;
+	}
+	
+	if( valor_tipo_creditos == "EME" )
+	{
+		var saldo_total_creditos	= dataSolicitud.capital_creditos;
+		
+		saldo_total_creditos	= parseFloat( saldo_total_creditos ) - parseFloat( total_saldo_renovar );
+		
+		limite_credito	= parseFloat( limite_credito ) - parseFloat( saldo_total_creditos );
+		
+		limite_credito	= Math.round( Math.round( limite_credito * 1000 ) / 10 ) / 100;
+	}
+	
+	if( !view.global_hay_garantes ){
+		
+		//comienza validacion para trabajar con creditos sin garante
+		
+		if( valor_tipo_creditos == "EME" && parseFloat( view.monto_creditos.val() ) > 7000 )
+		{
+			view.monto_creditos.notify("Monto máximo crédito Emergente es $7000",{ position:"buttom left", autoHideDelay: 2000});
+			
+			return false;
+		}
+		
+		if( parseFloat( view.monto_creditos.val() ) > parseFloat( limite_credito ) )
+		{
+			view.monto_creditos.notify("Monto máximo $"+limite,{ position:"buttom left", autoHideDelay: 2000});
+			view.monto_creditos.val( limite_credito );
+			return false;
+		}
+		
+		console.log('DATOS ANTES DE ENVIAR AL CONTROLADOR SIN GARANTE');
+		console.log('monto_credito ==> ' + view.monto_creditos.val() );
+		console.log('cedula_participe ==> ' + ced_participe );
+		console.log('sueldo_participe ==> ' + sueldo_participe );
+		console.log('tipo_credito ==> ' + valor_tipo_creditos );
+		
+		return false;
+		
+		$.ajax({
+		    url: 'index.php?controller=SimulacionCreditos&action=GetCuotas',
+		    type: 'POST',
+		    dataType: 'json',
+		    data: {
+		    	monto_credito:monto,
+		    	cedula_participe:ciparticipe,
+		    	sueldo_participe:sueldo_participe,
+		    	tipo_credito:interes
+		    	
+		    },
+		}).done(function(x) {
+			
+			
+			console.log(x);
+			
+			// converto en array json
+			x=JSON.parse(x);
+			
+			
+			// imprimo el maximo y minimo de cuotas para el credito
+			$("#select_cuotas").html(x[1]);
+			
+			// imprimo el valor maximo a adquirir el credito
+			$("#monto_credito").val(x[0]);
+			
+			
+			// genero tabla de amortizacion
+			//SimularCredito();
+			
+			
+		}).fail(function() {
+		    console.log("error");
+		});
+				
+		
+	}else
+	{
+		var cedula_garante 	= view.hdn_cedula_garante.val();
+		
+		if( view.capacidad_pago_garante.val() == "" || !view.capacidad_pago_garante.val().length ){
+			
+			garante_pago = false;
+			view.capacidad_pago_garante.notify("Ingrese Capacidad de Pago Garante",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+		}
+
+		var limite_garante	= ( $("#monto_garante_disponible").text() == "" ) ? 0 : $("#monto_garante_disponible").text();
+		limite_credito	= parseFloat( limite_credito ) + parseFloat( limite_garante );
+		
+		if( parseFloat( view.monto_creditos.val() ) > parseFloat( limite_credito ) )
+		{
+			view.monto_creditos.notify("Monto máximo $"+limite,{ position:"buttom left", autoHideDelay: 2000});
+			view.monto_creditos.val( limite_credito );
+			return false;
+		}
+		
+		console.log('DATOS ANTES DE ENVIAR AL CONTROLADOR CON GARANTE');
+		console.log('monto_credito ==> ' + view.monto_creditos.val() );
+		console.log('cedula_participe ==> ' + ced_participe );
+		console.log('sueldo_participe ==> ' + sueldo_participe );
+		console.log('tipo_credito ==> ' + valor_tipo_creditos );
+		console.log('cedula_garante ==> ' + cedula_garante );
+		console.log('sueldo_garante ==> ' + view.capacidad_pago_garante.val() );
+		
+		return false;
+		
+		$.ajax({
+		    url: 'index.php?controller=SimulacionCreditos&action=GetCuotasGarante',
+		    type: 'POST',
+		    data: {
+		    	monto_credito:view.monto_creditos.val(),
+		    	cedula_participe:ced_participe,
+		    	sueldo_participe:sueldo_participe,
+		    	tipo_credito:valor_tipo_creditos,
+		    	cedula_garante:cedula_garante,
+		    	sueldo_garante:view.capacidad_pago_garante.val()
+		    	
+		    },
+		}).done(function(x) {
+			
+			// converto en array json
+			x=JSON.parse(x);
+			
+			// imprimo el maximo y minimo de cuotas para el credito
+			$("#select_cuotas").html(x[1]);
+			
+			// imprimo el valor maximo a adquirir el credito
+			$("#monto_credito").val(x[0]);
+			
+			
+			// si el pago del garante es 0
+			if(x[2]==0)
+			{
+				document.getElementById("sueldo_garante").style= "background-color: #F5B7B1";
+			}
+			else
+				{
+				document.getElementById("sueldo_garante").style= "background-color: #82E0AA";
+				capacidad_pago_garante_suficiente=true;
+			}
+			
+			SimularCredito();
+			
+			
+		}).fail(function() {
+		    console.log("error");
+		});
+		
+	}	
+	
+}
 
 
+/****************************************************************** AQUI INICIANDO CODIGO ANTERIOR *************************************************************/
 // FUNCION PARA LLENAR EL COMBO BOX TIPO DE CREDITOS
 
 function GetTipoCreditos()
@@ -671,13 +1181,13 @@ function InfoSolicitud(cedula,id_solicitud)
 	$('#cedula_participe').val(cedula);
 	
 	
-	var boton_buscar_participe='<button type="button" class="btn btn-primary" id="buscar_participe" name="buscar_participe" onclick="Iniciar('+cedula+', '+id_solicitud+')">'+
-								'<i class="glyphicon glyphicon-search"></i>'+
-								'</button>';
+	//var boton_buscar_participe='<button type="button" class="btn btn-primary" id="buscar_participe" name="buscar_participe" onclick="Iniciar('+cedula+', '+id_solicitud+')">'+
+								//'<i class="glyphicon glyphicon-search"></i>'+
+								//'</button>';
 								
 	
 	// MUESTRO EN LA VISTA EL BOTON CAPACIDAD DE PAGO	
-	$("#buscar_participe_boton").html(boton_buscar_participe);
+	//$("#buscar_participe_boton").html(boton_buscar_participe);
 	
 
 	
@@ -1521,6 +2031,11 @@ function TipoCredito()
 						{
 						
 						console.log("sin garantias");
+						console.log('DATOS ANTES DE ENVIAR AL CONTROLADOR SIN GARANTE');
+						console.log('monto_credito ==> ' + monto );
+						console.log('cedula_participe ==> ' + ciparticipe );
+						console.log('sueldo_participe ==> ' + sueldo_participe );
+						console.log('tipo_credito ==> ' + interes );
 						
 						$.ajax({
 						    url: 'index.php?controller=SimulacionCreditos&action=GetCuotas',
@@ -1567,6 +2082,13 @@ function TipoCredito()
 						
 						// SI TIENE GARANTE
 						console.log("con garantias");
+						console.log('DATOS ANTES DE ENVIAR AL CONTROLADOR CON GARANTE');
+						console.log('monto_credito ==> ' + monto );
+						console.log('cedula_participe ==> ' + ciparticipe );
+						console.log('sueldo_participe ==> ' + sueldo_participe );
+						console.log('tipo_credito ==> ' + interes );
+						console.log('cedula_garante ==> ' + ci_garante );
+						console.log('sueldo_garante ==> ' + sueldo_garante );
 						
 						$.ajax({
 						    url: 'index.php?controller=SimulacionCreditos&action=GetCuotasGarante',

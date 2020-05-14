@@ -48,7 +48,9 @@ class PrincipalSuperavitController extends ControladorBase{
         $codigo    = ( isset( $_POST['codigo'] ) ) ? $_POST['codigo'] : "";
         
         
-        $columnas1 = "core_participes.cedula_participes, 
+        $columnas1 = "
+                  core_participes.id_participes,
+                  core_participes.cedula_participes, 
                   core_participes.nombre_participes, 
                   core_participes.apellido_participes, 
                   core_estado_participes.id_estado_participes, 
@@ -119,6 +121,9 @@ class PrincipalSuperavitController extends ControladorBase{
         $htmlHead.='<th style="text-align: left;  font-size: 12px;">Valor</th>';
         $htmlHead.='<th style="text-align: left;  font-size: 12px;">Estado Proceso</th>';
         
+        $htmlHead.='<th style="text-align: left;  font-size: 12px;">Acta de Liquidacion</th>';
+        $htmlHead.='<th style="text-align: left;  font-size: 12px;">Hoja de Liquidacion</th>';
+        
         $htmlHead.='</tr>';
         $htmlHead.='</thead>';
         
@@ -127,17 +132,37 @@ class PrincipalSuperavitController extends ControladorBase{
         $htmlBody = "<tbody>";
         foreach ($resultSet as $res){
             
+            $tienecredito=$res->tiene_credito_superavit_pagos_trabajados;
+            $cruceCredito=$res->cruce_credito_superavit_pagos_trabajados;
+            
+            
+            if($tienecredito=="f"){
+                
+                $tienecredito="NO";
+                
+            }
+            
+            
+            if($cruceCredito=="f"){
+                
+                $cruceCredito="NO";
+                
+            }
+            
             $i++;
             $htmlBody.='<tr>';
             $htmlBody.='<td style="font-size: 11px;">'.$i.'</td>';
             $htmlBody.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
             $htmlBody.='<td style="font-size: 11px;">'.$res->apellido_participes." ".$res->nombre_participes.'</td>';
             $htmlBody.='<td style="font-size: 11px;">'.$res->nombre_estado_participes.'</td>';
-            $htmlBody.='<td style="font-size: 11px;">'.$res->tiene_credito_superavit_pagos_trabajados.'</td>';
-            $htmlBody.='<td style="font-size: 11px;">'.$res->cruce_credito_superavit_pagos_trabajados.'</td>';
-            $htmlBody.='<td style="font-size: 11px;">'.$res->valor_pagar_superavit_pagos.'</td>';
+            $htmlBody.='<td style="font-size: 11px;" align="center">'.$tienecredito.'</td>';
+            $htmlBody.='<td style="font-size: 11px;" align="center">'.$cruceCredito.'</td>';
+            $htmlBody.='<td style="font-size: 11px;" align="right">'.$res->valor_pagar_superavit_pagos.'</td>';
             $htmlBody.='<td style="font-size: 11px;">'.$res->nombre_superavit_estados.'</td>';
            
+            $htmlBody.='<td style="color:#000000;font-size:80%;" align="center"><span class="pull-right"><a href="index.php?controller=PrincipalSuperavit&action=reporte_acta_liquidacion&id_participes='.$res->id_participes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+            $htmlBody.='<td style="color:#000000;font-size:80%;" align="center"><span class="pull-right"><a href="index.php?controller=PrincipalSuperavit&action=reporte_hoja_liquidacion&id_participes='.$res->id_participes.'" target="_blank"><i class="glyphicon glyphicon-print"></i></a></span></td>';
+            
             
             
             $htmlBody.='</tr>';
@@ -166,6 +191,182 @@ class PrincipalSuperavitController extends ControladorBase{
         
         echo json_encode( $resp );
     }
+    
+    
+    
+    public function reporte_acta_liquidacion(){
+        session_start();
+        
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        
+        
+        $entidades = new EntidadesModel();
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        //NOTICE DATA
+        $datos_cabecera = array();
+        $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+        $datos_cabecera['FECHA'] = date('Y/m/d');
+        $datos_cabecera['HORA'] = date('h:i:s');
+        
+        
+        
+        
+        
+        
+        $productos = new ProductosModel();
+        $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
+        
+        $datos_reporte = array();
+        
+        $columnas = " core_participes.id_participes, 
+                      core_participes.apellido_participes, 
+                      core_participes.nombre_participes, 
+                      core_participes.cedula_participes, 
+                      core_superavit_pagos.tipo_superavit_pagos, 
+                      core_superavit_pagos.form_superavit_pagos, 
+                      core_superavit_pagos.year_superavit_pagos, 
+                      core_superavit_pagos.ctaind_personal_superavit_pagos, 
+                      core_superavit_pagos.ctaind_patronal_superavit_pagos, 
+                      core_superavit_pagos.valor_pagar_superavit_pagos, 
+                      core_superavit_pagos.fecha_entrada_superavit_pagos,
+                      core_superavit_pagos.ir_patronal_cobrado_ctaind_superavit_pagos";
+        
+        $tablas = "  public.core_superavit_pagos, 
+  public.core_participes";
+        $where= "  core_superavit_pagos.id_participes = core_participes.id_participes AND  core_participes.id_participes='$id_participes'";
+        $id="core_participes.id_participes";
+        
+        $rsdatos = $productos->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $datos_reporte['FECHA_ACTUAL']=date('d-m-Y');
+        $datos_reporte['CEDULA_PARTICIPE']=$rsdatos[0]->cedula_participes;
+        $datos_reporte['NOMBRE_PARTICIPE']=$rsdatos[0]->nombre_participes;
+        $datos_reporte['APELLIDO_PARTICIPE']=$rsdatos[0]->apellido_participes;
+        $datos_reporte['AÑO_LIQUIDACION']=$rsdatos[0]->year_superavit_pagos;
+        $datos_reporte['SUPERAV_PERSONAL']=$rsdatos[0]->ctaind_personal_superavit_pagos;
+        $datos_reporte['SUPERAV_PATRONAL']=$rsdatos[0]->ctaind_patronal_superavit_pagos;
+        $datos_reporte['IR_PATRONAL']=$rsdatos[0]->ir_patronal_cobrado_ctaind_superavit_pagos;
+        
+        $total1=$rsdatos[0]->ctaind_personal_superavit_pagos;
+        $total2=($rsdatos[0]->ctaind_patronal_superavit_pagos)+($rsdatos[0]->ir_patronal_cobrado_ctaind_superavit_pagos);
+        
+        $datos_reporte['TOTAL_1']=$total1;
+        $datos_reporte['TOTAL_2']=$total2;
+        
+        $datos_reporte['VALOR_PAGAR']=$rsdatos[0]->valor_pagar_superavit_pagos;
+        
+        
+        
+        
+        $this->verReporte("ReporteActaLiquidcion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte ));
+        
+        
+        
+    }
+    
+    public function reporte_hoja_liquidacion(){
+        session_start();
+        
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        
+        
+        $entidades = new EntidadesModel();
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+        }
+        
+        //NOTICE DATA
+        $datos_cabecera = array();
+        $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
+        $datos_cabecera['FECHA'] = date('Y/m/d');
+        $datos_cabecera['HORA'] = date('h:i:s');
+        
+        
+        
+        
+        
+        
+        $productos = new ProductosModel();
+        $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
+        
+        $datos_reporte = array();
+        
+        $columnas = " core_participes.id_participes,
+                      core_participes.apellido_participes,
+                      core_participes.nombre_participes,
+                      core_participes.cedula_participes,
+                      core_participes.direccion_participes, 
+                      core_participes.telefono_participes, 
+                      core_participes.celular_participes,
+                      core_superavit_pagos.tipo_superavit_pagos,
+                      core_superavit_pagos.form_superavit_pagos,
+                      core_superavit_pagos.year_superavit_pagos,
+                      core_superavit_pagos.ctaind_personal_superavit_pagos,
+                      core_superavit_pagos.ctaind_patronal_superavit_pagos,
+                      core_superavit_pagos.valor_pagar_superavit_pagos,
+                      core_superavit_pagos.fecha_entrada_superavit_pagos,
+                      core_superavit_pagos.ir_patronal_cobrado_ctaind_superavit_pagos";
+        
+        $tablas = "  public.core_superavit_pagos,
+  public.core_participes";
+        $where= "  core_superavit_pagos.id_participes = core_participes.id_participes AND  core_participes.id_participes='$id_participes'";
+        $id="core_participes.id_participes";
+        
+        $rsdatos = $productos->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $datos_reporte['FECHA_ACTUAL']=date('d-m-Y');
+        $datos_reporte['CEDULA_PARTICIPE']=$rsdatos[0]->cedula_participes;
+        $datos_reporte['NOMBRE_PARTICIPE']=$rsdatos[0]->nombre_participes;
+        $datos_reporte['APELLIDO_PARTICIPE']=$rsdatos[0]->apellido_participes;
+        $datos_reporte['DIRECCION_PARTICIPE']=$rsdatos[0]->direccion_participes;
+        $datos_reporte['TELEFONO_PARTICIPE']=$rsdatos[0]->telefono_participes;
+        $datos_reporte['AÑO_LIQUIDACION']=$rsdatos[0]->year_superavit_pagos;
+        $datos_reporte['SUPERAV_PERSONAL']=$rsdatos[0]->ctaind_personal_superavit_pagos;
+        $datos_reporte['SUPERAV_PATRONAL']=$rsdatos[0]->ctaind_patronal_superavit_pagos;
+        $datos_reporte['IR_PATRONAL']=$rsdatos[0]->ir_patronal_cobrado_ctaind_superavit_pagos;
+        
+        $total1=$rsdatos[0]->ctaind_personal_superavit_pagos;
+        $total2=($rsdatos[0]->ctaind_patronal_superavit_pagos)+($rsdatos[0]->ir_patronal_cobrado_ctaind_superavit_pagos);
+        
+        $datos_reporte['TOTAL_1']=$total1;
+        $datos_reporte['TOTAL_2']=$total2;
+        
+        $datos_reporte['VALOR_PAGAR']=$rsdatos[0]->valor_pagar_superavit_pagos;
+        
+        
+        
+        
+        $this->verReporte("ReporteHojaLiquidacion", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte ));
+        
+        
+        
+    }
+    
+    
+    
     
     
     /************************************************************** FUNCIONES AUXILIARES DEL CONTROLADOR *************************************/

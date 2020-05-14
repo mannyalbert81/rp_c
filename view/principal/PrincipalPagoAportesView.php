@@ -100,6 +100,14 @@
         #tbldatosRegistro .btn {
             padding: 2px 12px;
         }
+        
+        table.1 {
+            width: 100%;
+            text-align: center;
+            }
+        td.1{
+        text-align: center;
+        }
                	  
  	</style>
    
@@ -214,6 +222,17 @@
                           
                           <div id="paginacion_datos_aportes"></div>
                     	  <div class="clearfix"></div> 
+                    	  <div>
+                    	  <table class="1">
+                    	  <tr>
+                              		   
+                          			<td>
+                          			<a href="index.php?controller=PrincipalBusquedasSocios&action=ReporteKardexSocios" target="_blank"><input type="image" src="view/images/print.png" alt="Submit" width="50" height="34" formtarget="_blank" id="btngenerar" name="btngenerar" class="btn btn-default" title="Reporte Productos"></a>
+                          			Imprimir Kardex
+                          			</td>                          		
+                          		</tr> 
+                    	  </table>
+                    	  </div>
                     	  
                         </div><!-- //end panel head -->
           				</div>          			

@@ -1157,6 +1157,7 @@ class SimulacionCreditosController extends ControladorBase{
    /**dc 2020/05/12 **/
    public function obtenerCuotas()
    {
+       ob_start();
        session_start();
        $cuotas = new EstadoModel();
        $monto_credito=$_POST['monto_credito'];
@@ -1232,9 +1233,7 @@ class SimulacionCreditosController extends ControladorBase{
        
        
        //if($valor_cuota>$sueldo_partcipe || $plazo_maximo>$diferencia_dias){
-       
-       $data = array(); //variable donde guardo lo que envio a la vista 
-       
+             
        while ( $valor_cuota > $sueldo_partcipe || $plazo_maximo > $diferencia_dias )
        {
            
@@ -1247,16 +1246,17 @@ class SimulacionCreditosController extends ControladorBase{
            $valor_cuota=round($valor_cuota,2);           
            
        }
+       $data = array(); //variable donde guardo lo que envio a la vista 
                      
-       for( $plazo_maximo; $plazo_maximo>=3; $plazo_maximo-=3)
+       for( $plazo_maximo; $plazo_maximo >=3; $plazo_maximo -= 3 )
        {
            
            $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$plazo_maximo));
            $valor_cuota=round($valor_cuota,2);
-           
-           if( $plazo_maximo <= $diferencia_dias && $valor_cuota <= $sueldo_partcipe){
+            if( $plazo_maximo <= $diferencia_dias && $valor_cuota <= $sueldo_partcipe){
                
                $data[] = $plazo_maximo; //$html.='<option value="'.$plazo_maximo.'">'.$plazo_maximo.'</option>';
+              
            }
            
        }
@@ -1268,9 +1268,11 @@ class SimulacionCreditosController extends ControladorBase{
        
        $salida  = ob_get_clean();
        if( !empty( $salida )  ){
+           $response = array();
            $response['estatus'] = "ERROR";
            $response['buffer']    = error_get_last();
            $response['mensaje']   = "ERROR al obtener cuotas disponibles";
+           $response['salida']   = $salida;
        }
        
        echo json_encode($response);
@@ -1518,26 +1520,37 @@ class SimulacionCreditosController extends ControladorBase{
        if ( $valor_cuota > $sueldo_garante ) $pago_garante=0;
        
        
-       $html='<label for="tipo_credito" class="control-label">Número de cuotas:</label>
-       <select name="cuotas_credito" id="cuotas_credito"  class="form-control" onchange="SimularCredito()">';
-       for($cuota; $cuota>=3; $cuota-=3)
+       $data    = array(); //variable donde guarda las cuotas
+       
+       /*$html='<label for="tipo_credito" class="control-label">Número de cuotas:</label>
+       <select name="cuotas_credito" id="cuotas_credito"  class="form-control" onchange="SimularCredito()">';*/
+       
+       for( $cuota; $cuota>=3; $cuota-=3)
        {
            $valor_cuota =  ($monto_credito * $interes_mensual)/(1- pow((1+$interes_mensual), -$cuota));
            $valor_cuota=round($valor_cuota,2);
            
-           if($cuota<=$diferencia_dias && $valor_cuota<=$sueldo_partcipe) $html.='<option value="'.$cuota.'">'.$cuota.'</option>';
+           //if($cuota<=$diferencia_dias && $valor_cuota<=$sueldo_partcipe) $html.='<option value="'.$cuota.'">'.$cuota.'</option>';
+           
+           if( $cuota <= $diferencia_dias && $valor_cuota <= $sueldo_partcipe ) $data[] = $cuota;
+           
        }
+              
+       /*$html.='</select>
+       <div id="mensaje_cuotas_credito" class="errores"></div>';*/
+       $response = array();
+       $response['estatus'] = "OK";
+       $response['cuotas']  = $data;
+       $response['monto']   = $monto_credito;
+       $response['pago_garante']   = $pago_garante;
        
-       
-       
-       $html.='</select>
-       <div id="mensaje_cuotas_credito" class="errores"></div>';
-       
-       $resultado=array();
-       
-       array_push($resultado, $monto_credito,$html,$pago_garante);
-       
-       echo json_encode($resultado);
+       $salida  = ob_get_clean();
+       if( !empty( $salida ) ){
+           $response['estatus'] = "ERROR";
+           $response['buffer']  = error_get_last();
+       }
+              
+       echo json_encode($response);
    }
    
    

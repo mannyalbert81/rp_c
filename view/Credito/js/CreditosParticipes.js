@@ -13,7 +13,8 @@ view.cuota_creditos			= $("#txt_cuotas_creditos");
 view.btn_capacidad_pago		= $("#btn_capacidad_pago");
 view.capacidad_pago			= $("#txt_capacidad_pago"); 
 view.btn_numero_cuotas		= $("#btn_numero_cuotas");
-view.capacidad_pago_garante			= $("#txt_capacidad_pago_garante");
+view.capacidad_pago_garante			= $("#txt_capacidad_pago_garante"); 
+view.numero_cuotas			= $("#ddl_numero_cuotas"); 
 
 /** para valores de tab de capacidad de pago **/
 view.sueldo_liquido		= $("#txt_sueldo_liquido");
@@ -37,6 +38,7 @@ view.total_ingresos_garante		= $("#txt_total_ingresos_garante");
 /** para valores globales **/
 view.global_hay_renovacion	= false;
 view.global_hay_garantes	= false;
+view.global_hay_solicitud	= false; //SINTAXERROR
 
 /** para valores de Solicitud **/
 var dataSolicitud	= dataSolicitud || {};
@@ -958,41 +960,46 @@ var buscar_numero_cuotas	= function(){
 		console.log('monto_credito ==> ' + view.monto_creditos.val() );
 		console.log('cedula_participe ==> ' + ced_participe );
 		console.log('sueldo_participe ==> ' + sueldo_participe );
-		console.log('tipo_credito ==> ' + valor_tipo_creditos );
-		
-		return false;
-		
+		console.log('tipo_credito ==> ' + valor_tipo_creditos );		
+				
 		$.ajax({
-		    url: 'index.php?controller=SimulacionCreditos&action=GetCuotas',
+		    url: 'index.php?controller=SimulacionCreditos&action=obtenerCuotas',
 		    type: 'POST',
 		    dataType: 'json',
 		    data: {
-		    	monto_credito:monto,
-		    	cedula_participe:ciparticipe,
+		    	monto_credito: view.monto_creditos.val(),
+		    	cedula_participe:ced_participe,
 		    	sueldo_participe:sueldo_participe,
-		    	tipo_credito:interes
+		    	tipo_credito:valor_tipo_creditos
 		    	
 		    },
 		}).done(function(x) {
 			
+			if( x.estatus != undefined && x.estatus == "OK" ){
+				
+				if( x.cuotas != undefined ){
+					
+					var cuotas = x.cuotas;
+					view.numero_cuotas.empty();
+					view.numero_cuotas.attr("disabled",false);
+					$.each( cuotas, function(i,value){
+						view.numero_cuotas.append('<option value="'+value+'">'+value+'</option>');
+					})
+				}
+				
+				var monto_validado = ( x.monto != undefined ) ? x.monto : 0;
+				view.monto_creditos.val( monto_validado );
+				
+				//mandar la funcion de simulacion credito SINTAXERROR
+				//SimularCredito();
+			}
 			
-			console.log(x);
-			
-			// converto en array json
-			x=JSON.parse(x);
-			
-			
-			// imprimo el maximo y minimo de cuotas para el credito
-			$("#select_cuotas").html(x[1]);
-			
-			// imprimo el valor maximo a adquirir el credito
-			$("#monto_credito").val(x[0]);
-			
-			
-			// genero tabla de amortizacion
-			//SimularCredito();
-			
-			
+			if( x.estatus != undefined && x.estatus == "ERROR" ){
+				
+				view.numero_cuotas.append('<option value="0">--Seleccione--</option>');
+				console.error('Error al obtener cuotas para el credito');
+			}
+						
 		}).fail(function() {
 		    console.log("error");
 		});
@@ -1027,10 +1034,8 @@ var buscar_numero_cuotas	= function(){
 		console.log('cedula_garante ==> ' + cedula_garante );
 		console.log('sueldo_garante ==> ' + view.capacidad_pago_garante.val() );
 		
-		return false;
-		
 		$.ajax({
-		    url: 'index.php?controller=SimulacionCreditos&action=GetCuotasGarante',
+		    url: 'index.php?controller=SimulacionCreditos&action=obtenerCuotasGarante',
 		    type: 'POST',
 		    data: {
 		    	monto_credito:view.monto_creditos.val(),
@@ -1043,29 +1048,41 @@ var buscar_numero_cuotas	= function(){
 		    },
 		}).done(function(x) {
 			
-			// converto en array json
-			x=JSON.parse(x);
-			
-			// imprimo el maximo y minimo de cuotas para el credito
-			$("#select_cuotas").html(x[1]);
-			
-			// imprimo el valor maximo a adquirir el credito
-			$("#monto_credito").val(x[0]);
-			
-			
-			// si el pago del garante es 0
-			if(x[2]==0)
-			{
-				document.getElementById("sueldo_garante").style= "background-color: #F5B7B1";
+			if( x.estatus != undefined && x.estatus == "OK" ){
+				
+				if( x.cuotas != undefined ){
+					
+					var cuotas = x.cuotas;
+					view.numero_cuotas.empty();
+					view.numero_cuotas.attr("disabled",false);
+					$.each( cuotas, function(i,value){
+						view.numero_cuotas.append('<option value="'+value+'">'+value+'</option>');
+					})
+				}
+				
+				var monto_validado = ( x.monto != undefined ) ? x.monto : 0;
+				view.monto_creditos.val( monto_validado );
+				
+				if( x.pago_garante != undefined && x.pago_garante >= 0 ){
+					view.capacidad_pago_garante.css({'background-color':"#fff"});
+					capacidad_pago_garante_suficiente	=	true;
+				}else{
+					view.capacidad_pago_garante.addClass();
+					swal({title:"INFORMACION",text:"Capacidad Pago Garante insuficiente",icon:"warning"});
+					view.capacidad_pago_garante.css({'background-color':"#F5B7B1"});
+					
+				}
+				
+				//mandar la funcion de simulacion credito SINTAXERROR
+				//SimularCredito();
 			}
-			else
-				{
-				document.getElementById("sueldo_garante").style= "background-color: #82E0AA";
-				capacidad_pago_garante_suficiente=true;
+			
+			if( x.estatus != undefined && x.estatus == "ERROR" ){
+				
+				view.numero_cuotas.append('<option value="0">--Seleccione--</option>');
+				console.error('Error al obtener cuotas para el credito con garante');
 			}
-			
-			SimularCredito();
-			
+					
 			
 		}).fail(function() {
 		    console.log("error");
@@ -1073,6 +1090,124 @@ var buscar_numero_cuotas	= function(){
 		
 	}	
 	
+}
+
+var simular_credito_amortizacion = function(){
+	
+	var valor_monto	= view.monto_creditos.val();
+	var valor_tipo_creditos = view.tipo_creditos.val();
+	var valor_cuotas		= view.numero_cuotas.val();
+	
+	//busco variable global
+	view.global_hay_solicitud	= ( sin_solicitud ) ? 0 : 1;
+	
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=SimulacionCredito',
+	    type: 'POST',
+	    data: {
+	    	monto_credito:monto,
+	    	tipo_credito:interes,
+	    	plazo_credito:cuota_credito,
+	    	//para ver si va o no a renovar
+	    	renovacion_credito:renovacion_credito,
+	    	id_solicitud:solicitud,
+	    	avaluo_bien:avaluo_bien_sin_solicitud
+	    },
+	}).done(function(x) {
+		
+		$("#tabla_amortizacion").html(x);
+		
+		
+		if(garante_seleccionado==true)
+			{
+			var cuota=$('#cuota_a_pagar2').html();
+			var desgravamen=$('#desgravamen2').html();
+			
+			var sueldo_garante=$('#sueldo_garante').val();
+			sueldo_garante=sueldo_garante/2;
+			cuota=cuota.replace(",", "");
+			desgravamen=desgravamen.replace(",", "");
+			cuota=parseFloat(cuota)-parseFloat(desgravamen);
+			
+			if(parseFloat(cuota)>parseFloat(sueldo_garante))
+			{
+					document.getElementById("sueldo_garante").style= "background-color: #F5B7B1";
+			}
+			else
+			{
+					document.getElementById("sueldo_garante").style= "background-color: #82E0AA";
+			}
+				
+			}
+		
+		    swal("Tabla cargada", {
+		      icon: "success",
+		      buttons: false,
+		      timer: 1000
+		    });
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
+	
+	var monto=$("#monto_credito").val();
+	var interes=$("#tipo_credito").val();
+	
+	
+	//para simulador
+	if(sin_solicitud==true) solicitud=0;
+	
+	var cuota_credito=$("#cuotas_credito").val();
+	$.ajax({
+	    url: 'index.php?controller=SimulacionCreditos&action=SimulacionCredito',
+	    type: 'POST',
+	    data: {
+	    	monto_credito:monto,
+	    	tipo_credito:interes,
+	    	plazo_credito:cuota_credito,
+	    	//para ver si va o no a renovar
+	    	renovacion_credito:renovacion_credito,
+	    	id_solicitud:solicitud,
+	    	avaluo_bien:avaluo_bien_sin_solicitud
+	    },
+	})
+	.done(function(x) {
+		$("#tabla_amortizacion").html(x);
+		
+		
+		if(garante_seleccionado==true)
+			{
+			var cuota=$('#cuota_a_pagar2').html();
+			var desgravamen=$('#desgravamen2').html();
+			
+			var sueldo_garante=$('#sueldo_garante').val();
+			sueldo_garante=sueldo_garante/2;
+			cuota=cuota.replace(",", "");
+			desgravamen=desgravamen.replace(",", "");
+			cuota=parseFloat(cuota)-parseFloat(desgravamen);
+			
+			if(parseFloat(cuota)>parseFloat(sueldo_garante))
+			{
+					document.getElementById("sueldo_garante").style= "background-color: #F5B7B1";
+			}
+			else
+			{
+					document.getElementById("sueldo_garante").style= "background-color: #82E0AA";
+			}
+				
+			}
+		
+		    swal("Tabla cargada", {
+		      icon: "success",
+		      buttons: false,
+		      timer: 1000
+		    });
+		
+	})
+	.fail(function() {
+	    console.log("error");
+	});
 }
 
 

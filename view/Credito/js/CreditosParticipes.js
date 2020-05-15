@@ -165,6 +165,11 @@ var setValTipoCreditos = function(a){
 
 var iniciar_eventos_controles	= function(){
 	
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {	    
+		//realizar desplazamiento
+		//$("html, body").animate({ scrollTop: 25}, 1000);
+	});
+	
 	$('body').on('click','#btn_capacidad_pago',function(){
 		//$('.nav-tabs a[href="#panel_capacidad"]').tab('show'); //vavegar en tab bootstrap
 		analisis_capacidad_pago();
@@ -596,7 +601,7 @@ var analisis_capacidad_pago	= function(){
 	})
 	.fail(function() {
 	    console.log("error");
-	});
+	});	
 		
 }
 
@@ -814,6 +819,7 @@ var analisis_capacidad_pago_garante	= function(){
 	view.cuota_creditos.val("");
 	view.monto_creditos.val("");
 	$("#div_tabla_amortizacion").html("");
+	
 		
 	//EnviarCapacidadPagoGarante()
 	
@@ -1066,6 +1072,8 @@ var buscar_numero_cuotas	= function(){
 				swal({title:"INFORMACION",text:"PUEDE CONTINUAR CON LA SIMULACION DEL CREDITO"});
 				view.btn_generar_simulacion.attr("disabled",false);
 				simular_credito_amortizacion();
+				agregar_evento_guardar_credito();
+												
 			}
 			
 			if( x.estatus != undefined && x.estatus == "ERROR" ){
@@ -1095,7 +1103,7 @@ var buscar_numero_cuotas	= function(){
 		    },
 		}).done(function(x) {
 			
-			
+						
 			if( x.estatus != undefined && x.estatus == "OK" ){
 				
 				
@@ -1127,6 +1135,8 @@ var buscar_numero_cuotas	= function(){
 				swal({title:"INFORMACION",text:"PUEDE CONTINUAR CON LA SIMULACION DEL CREDITO"});
 				simular_credito_amortizacion();				
 				view.btn_generar_simulacion.attr("disabled",false);
+				agregar_evento_guardar_credito();
+				
 			}
 			
 			if( x.estatus != undefined && x.estatus == "ERROR" ){
@@ -1231,6 +1241,8 @@ var agregar_evento_guardar_credito	= function(){
 
 var validar_valores_guardar_credito	= function(){
 	
+	console.error("SE CAMBIO LOS METOS");
+	
 	if( view.global_hay_garantes )
 	{
 		if( view.global_capacidad_pago_garante_suficiente )
@@ -1293,7 +1305,9 @@ var validar_valores_guardar_credito	= function(){
 
 var mostrar_verificacion_codigo	= function(){
 	
-	$("#myModalInsertar").modal('show');
+	var elementmodal = $('#myModalInsertar');
+	elementmodal.find("#observacion_confirmacion").val("");
+	elementmodal.find("#codigo_confirmacion").val("");
 	$("#info_credito_confirmar").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	var nombre_participe=$("#nombre_participe_credito").html();
 	$.ajax({
@@ -1316,9 +1330,13 @@ var mostrar_verificacion_codigo	= function(){
 	    console.log("error");
 	});	
 	
+	//se abre modal de Insersion de datos
+	elementmodal.modal('show');
 }
 
 var validar_codigo_generado	= function(){
+	
+	console.error("SE CAMBIO LOS METOSDOS SUBIR LA INFORMACION");
 	
 	var codigo_generado		= $("#codigo_generado").html();
 	var codigo_insertado	= $("#codigo_confirmacion").val();
@@ -1327,7 +1345,7 @@ var validar_codigo_generado	= function(){
 		swal("Inserte código");
 	}else if( codigo_insertado!="" && !(codigo_insertado.includes("_")) && codigo_insertado==codigo_generado )
 	{
-	 	SubirInformacionCredito();
+		registrar_credito_nuevo();
 	}else{
 		swal("Código incorrecto");
 	}
@@ -1353,15 +1371,15 @@ var registrar_credito_nuevo	= function(){
 		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionCredito',
 		    type: 'POST',
 		    data: {
-		    	monto_credito: monto,
-		    	tipo_credito: interes,
+		    	monto_credito: monto_credito,
+		    	tipo_credito: valor_tipo_creditos,
 		    	fecha_pago: fecha_corte,
 		    	cuota_credito: cuota_credito,
 		    	cedula_participe: ciparticipe,
 		    	observacion_credito: observacion,
-		    	id_solicitud:id_solicitud,
-		    	con_garante:garante_seleccionado,
-		    	cedula_garante:ci_garante
+		    	'id_solicitud':id_solicitud,
+		    	con_garante: view.global_hay_garantes,
+		    	cedula_garante:cigarante
 		    	
 		    },
 		}).done(function(x) {
@@ -1396,15 +1414,15 @@ var registrar_credito_nuevo	= function(){
 		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionRenovacionCredito',
 		    type: 'POST',
 		    data: {
-		    	monto_credito: monto,
-		    	tipo_credito: interes,
+		    	monto_credito: monto_credito,
+		    	tipo_credito: valor_tipo_creditos,
 		    	fecha_pago: fecha_corte,
 		    	cuota_credito: cuota_credito,
 		    	cedula_participe: ciparticipe,
 		    	observacion_credito: observacion,
-		    	id_solicitud:id_solicitud,
-		    	con_garante:global_hay_garantes,
-		    	cedula_garante:ci_garante
+		    	'id_solicitud':id_solicitud,
+		    	con_garante: view.global_hay_garantes,
+		    	cedula_garante:cigarante
 		    	
 		    },
 		}).done(function(x) {
@@ -2641,10 +2659,10 @@ $("#myModalAvaluo").on("hidden.bs.modal", function () {
 
 
 $("#myModalInsertar").on("hidden.bs.modal", function () {
-	var modal = $('#myModalInsertar');
+	/*var modal = $('#myModalInsertar');
 	modal.find("#observacion_confirmacion").val("");
 	modal.find("#codigo_confirmacion").val("");
-	document.getElementById("cuerpo").classList.add('modal-open');
+	document.getElementById("cuerpo").classList.add('modal-open');*/
 	
 });
 

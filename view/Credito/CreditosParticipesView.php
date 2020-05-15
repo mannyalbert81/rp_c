@@ -287,7 +287,7 @@
                     	<div class="tab-pane" id="panel_capacidad">
                     		<div class="form-group">
 								<div class="row">
-                					<table align="center" class="tablesorter table table-striped table-bordered" style="width: 50%;">
+                					<table align="center" class="table-bordered" style="width: 50%;">
                         				<tr>
                         					<th>SUELDO LIQUIDO:</th>
                         					<td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_sueldo_liquido"></td>
@@ -334,7 +334,7 @@
                     	<div class="tab-pane" id="panel_capacidad_garante">
                     		<div class="form-group">
 								<div class="row">
-                					<table align="center" class="tablecompact" style="width: 50%;">
+                					<table align="center" class="table-bordered" style="width: 50%;">
                         				<tr>
                         					<th>SUELDO LIQUIDO:</th>
                         					<td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad-garante" id="txt_sueldo_liquido_garante"></td>
@@ -625,6 +625,6 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?0.18"></script> 
+   <script src="view/Credito/js/CreditosParticipes.js?0.21"></script> 
    </body>
 </html>   

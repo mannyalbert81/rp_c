@@ -228,7 +228,7 @@
                 								<option value="0">--Seleccione--</option>
                 							</select>                			
                             				<span class="input-group-btn">
-                            					<button type="button" title="Buscar Cuotas" class="btn bg-olive"  id="btn_numero_cuotas">
+                            					<button type="button" title="Buscar Cuotas" class="btn btn-info"  id="btn_numero_cuotas">
                         						 <i class="glyphicon glyphicon-repeat"></i>
                         						</button>
                         					</span>
@@ -255,16 +255,18 @@
                         		  </div>
                         		  
                         		  <div class="row">
-                        		  	<div class="col-md-offset-9 col-lg-offset-9 col-xs-12 col-md-3 col-md-3 ">
+                        		  	<div class="col-md-offset-6 col-lg-offset-6 col-xs-12 col-md-3 col-md-3 ">
                             		    <label for="txt_monto_creditos" class="control-label">&nbsp;</label>
                                         <div class="input-group">               			
                             				<span class="input-group-btn">
-                            					<button type="button" id="Buscar" name="Buscar" class="btn btn-primary" onclick="GetCuotas()">
+                            					<button type="button" id="btn_generar_simulacion" class="btn btn-primary" >
                                           			<i class="glyphicon glyphicon-expand"></i> SIMULAR</button>  
                         					</span>        					
         								</div>
                             		  </div>
                         		  </div>
+                        		  
+                        		  <br>
                         		  
                         		  <div id="div_tabla_amortizacion"></div>
                         		  
@@ -382,17 +384,17 @@
              </div>
              
            	
-           	<div class="row">
+           	<div class="row hidden">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="participe_encontrado" ></div>
            		</div>
            	</div>
-           	<div class="row">
+           	<div class="row hidden">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="aportes_participe" ></div>
            		</div>
            	</div>
-           	<div class="row">
+           	<div class="row hidden">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="creditos_participe" ></div>
            		</div>
@@ -623,6 +625,6 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?0.13"></script> 
+   <script src="view/Credito/js/CreditosParticipes.js?0.18"></script> 
    </body>
 </html>   

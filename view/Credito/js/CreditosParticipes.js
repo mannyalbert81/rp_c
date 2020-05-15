@@ -1320,8 +1320,8 @@ var mostrar_verificacion_codigo	= function(){
 
 var validar_codigo_generado	= function(){
 	
-	var codigo_generado=$("#codigo_generado").html();
-	var codigo_insertado=$("#codigo_confirmacion").val();
+	var codigo_generado		= $("#codigo_generado").html();
+	var codigo_insertado	= $("#codigo_confirmacion").val();
 	if( codigo_insertado == "" || codigo_insertado.includes("_"))
 	{
 		swal("Inserte código");
@@ -1335,127 +1335,115 @@ var validar_codigo_generado	= function(){
 
 var registrar_credito_nuevo	= function(){
 	
-	var monto_credito	= $("#monto_credito").val();
-	var interes=$("#tipo_credito").val();
-	var fecha_corte=$("#fecha_corte").val();
-	var cuota_credito=$("#cuotas_credito").val();
-	var ciparticipe=$('#cedula_participe').val();
-	var observacion=$('#observacion_confirmacion').val();
-	id_solicitud=solicitud;
+	var monto_credito	= view.monto_creditos.val();
+	var valor_tipo_creditos	= view.tipo_creditos.val();
+	var fecha_corte		= $("#fecha_corte").val() || obtener_fecha_actual(); //SINTAXERROR
+	var cuota_credito	= view.numero_cuotas.val();
+	var ciparticipe		= view.cedula_participes.val();
+	var observacion		= $('#observacion_confirmacion').val();
+	var cigarante		= view.hdn_cedula_garante.val();
+	//id_solicitud	=solicitud;
+	id_solicitud		= view.hdn_id_solicitud.val();
 	
-	function SubirInformacionCredito()  //proceso para los registros del credito
+	swal({title: "Crédito",text: "Registrando crédito",icon: "view/images/capremci_load.gif",buttons: false,closeModal: false,allowOutsideClick: false});	
+	
+	if( !view.global_hay_renovacion )
 	{
-		var monto=$("#monto_credito").val();
-		var interes=$("#tipo_credito").val();
-		var fecha_corte=$("#fecha_corte").val();
-		var cuota_credito=$("#cuotas_credito").val();
-		var ciparticipe=$('#cedula_participe').val();
-		var observacion=$('#observacion_confirmacion').val();
-		id_solicitud=solicitud;
-		swal({
-			  title: "Crédito",
-			  text: "Registrando crédito",
-			  icon: "view/images/capremci_load.gif",
-			  buttons: false,
-			  closeModal: false,
-			  allowOutsideClick: false
-			});
-		if (!renovacion_credito)
+		$.ajax({
+		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionCredito',
+		    type: 'POST',
+		    data: {
+		    	monto_credito: monto,
+		    	tipo_credito: interes,
+		    	fecha_pago: fecha_corte,
+		    	cuota_credito: cuota_credito,
+		    	cedula_participe: ciparticipe,
+		    	observacion_credito: observacion,
+		    	id_solicitud:id_solicitud,
+		    	con_garante:garante_seleccionado,
+		    	cedula_garante:ci_garante
+		    	
+		    },
+		}).done(function(x) {
+			console.log(x);
+			x=x.trim();
+			if(x=="OK")
 			{
-			$.ajax({
-			    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionCredito',
-			    type: 'POST',
-			    data: {
-			    	monto_credito: monto,
-			    	tipo_credito: interes,
-			    	fecha_pago: fecha_corte,
-			    	cuota_credito: cuota_credito,
-			    	cedula_participe: ciparticipe,
-			    	observacion_credito: observacion,
-			    	id_solicitud:id_solicitud,
-			    	con_garante:garante_seleccionado,
-			    	cedula_garante:ci_garante
-			    	
-			    },
-			})
-			.done(function(x) {
-				console.log(x);
-				x=x.trim();
-				if(x=="OK")
-					{
-					swal({
-				  		  title: "Crédito Registrado",
-				  		  text: "La solicitud de crédito ha sido procesada",
-				  		  icon: "success",
-				  		  button: "Aceptar",
-				  		}).then((value) => {
-				  			window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
-							 });
-					}
-				else
-					{
-					swal({
-				  		  title: "Advertencia!",
-				  		  text: "Hubo un error en el proceso de la solicitud",
-				  		  icon: "warning",
-				  		  button: "Aceptar",
-				  		});
-					}
-			})
-			.fail(function() {
-			    console.log("error");
-			});
+				swal({
+			  		  title: "Crédito Registrado",
+			  		  text: "La solicitud de crédito ha sido procesada",
+			  		  icon: "success",
+			  		  button: "Aceptar",
+			  		}).then((value) => {
+			  			window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
+					 });
 			}
-		else
+			else
 			{
-			$.ajax({
-			    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionRenovacionCredito',
-			    type: 'POST',
-			    data: {
-			    	monto_credito: monto,
-			    	tipo_credito: interes,
-			    	fecha_pago: fecha_corte,
-			    	cuota_credito: cuota_credito,
-			    	cedula_participe: ciparticipe,
-			    	observacion_credito: observacion,
-			    	id_solicitud:id_solicitud,
-			    	con_garante:garante_seleccionado,
-			    	cedula_garante:ci_garante
-			    	
-			    },
-			})
-			.done(function(x) {
-				console.log(x);
-				x=x.trim();
-				if(x=="OK")
-					{
-					swal({
-				  		  title: "Crédito Registrado",
-				  		  text: "La solicitud de crédito ha sido procesada",
-				  		  icon: "success",
-				  		  button: "Aceptar",
-				  		}).then((value) => {
-				  			window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
-							 });
-					}
-				else
-					{
-					swal({
-				  		  title: "Advertencia!",
-				  		  text: "Hubo un error en el proceso de la solicitud",
-				  		  icon: "warning",
-				  		  button: "Aceptar",
-				  		});
-					}
-			})
-			.fail(function() {
-			    console.log("error");
-			});
+				swal({
+			  		  title: "Advertencia!",
+			  		  text: "Hubo un error en el proceso de la solicitud",
+			  		  icon: "warning",
+			  		  button: "Aceptar",
+			  		});
 			}
-		
-		
+		}).fail(function() {
+		    console.log("error");
+		});
+	}else
+	{
+		$.ajax({
+		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionRenovacionCredito',
+		    type: 'POST',
+		    data: {
+		    	monto_credito: monto,
+		    	tipo_credito: interes,
+		    	fecha_pago: fecha_corte,
+		    	cuota_credito: cuota_credito,
+		    	cedula_participe: ciparticipe,
+		    	observacion_credito: observacion,
+		    	id_solicitud:id_solicitud,
+		    	con_garante:global_hay_garantes,
+		    	cedula_garante:ci_garante
+		    	
+		    },
+		}).done(function(x) {
+			console.log(x);
+			x=x.trim();
+			if(x=="OK")
+			{
+				swal({
+		  		  title: "Crédito Registrado",
+		  		  text: "La solicitud de crédito ha sido procesada",
+		  		  icon: "success",
+		  		  button: "Aceptar",
+		  		}).then((value) => {
+		  			window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
+				 });
+			}
+			else
+			{
+				swal({
+		  		  title: "Advertencia!",
+		  		  text: "Hubo un error en el proceso de la solicitud",
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+			}
+		}).fail(function() {
+		    console.log("error");
+		});
 		
 	}
+	
+}
+
+var obtener_fecha_actual	= function(){	
+	var d = new Date();
+	var month = d.getMonth()+1;
+	var day = d.getDate();
+	var output = d.getFullYear() + '-' + ( ( ''+ month ).length < 2 ? '0' : '' ) + month + '-' + ( (''+day).length < 2 ? '0' : '' ) + day;
+	return output;
 }
 
 /**** TERMINAMOS CON LA INSERSION DE CREDITOS *****/ 

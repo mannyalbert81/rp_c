@@ -2644,7 +2644,7 @@ class SimulacionCreditosController extends ControladorBase{
        $credito->beginTran();
        
        $interes_mensual = $tasa_interes / 12;
-           $plazo_dias = $cuota * 30;
+       $plazo_dias = $cuota * 30;
            
            $valor_cuota =  ($monto_credito * $interes_mensual) /  (1- pow((1+$interes_mensual), -$cuota))  ;
            $valor_cuota=round($valor_cuota,2);

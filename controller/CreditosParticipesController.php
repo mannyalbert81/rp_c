@@ -90,16 +90,16 @@ class CreditosParticipesController extends ControladorBase{
                     <h3 class="titulo">Información de Solicitud</h3>
                     <div class="col-md-6 col-md-12">
                     <div class="box-footer no-padding bg-teal">
-                        <div class="bio-row"><p><span class="tab">Tipo Crédito: </span>'.$data['nombre_tipo_credito_solicitud'].'</p></div>
-                        <div class="bio-row"><p><span class="tab">Nombre Banco: </span>'.$resultSet[0]->nombre_banco_cuenta_bancaria.'</p></div>
-                        <div class="bio-row"><p><span class="tab">Número Cuenta: </span>'.$resultSet[0]->numero_cuenta_cuenta_bancaria.'</p></div>
+                        <div class="bio-row"><p><span class="tab">Tipo Crédito </span>: '.$data['nombre_tipo_credito_solicitud'].'</p></div>
+                        <div class="bio-row"><p><span class="tab">Nombre Banco </span>: '.$resultSet[0]->nombre_banco_cuenta_bancaria.'</p></div>
+                        <div class="bio-row"><p><span class="tab">Número Cuenta </span>: '.$resultSet[0]->numero_cuenta_cuenta_bancaria.'</p></div>
                     </div>
                     </div>
                     <div class="col-md-6 col-md-12">
                     <div class="box-footer no-padding bg-teal">
-                        <div class="bio-row"><p><span class="tab">Destino Dinero: </span>'.$resultSet[0]->destino_dinero_datos_prestamo.'</p></div>
-                        <div class="bio-row"><p><span class="tab">Tipo Cuenta: </span>'.$resultSet[0]->tipo_cuenta_cuenta_bancaria.'</p></div>
-                        <div class="bio-row"><p><span class="tab">Tipo de Pago: </span>'.$resultSet[0]->tipo_pago_cuenta_bancaria.'</p></div>
+                        <div class="bio-row"><p><span class="tab">Destino Dinero</span>: '.$resultSet[0]->destino_dinero_datos_prestamo.'</p></div>
+                        <div class="bio-row"><p><span class="tab">Tipo Cuenta </span>: '.$resultSet[0]->tipo_cuenta_cuenta_bancaria.'</p></div>
+                        <div class="bio-row"><p><span class="tab">Tipo de Pago </span>: '.$resultSet[0]->tipo_pago_cuenta_bancaria.'</p></div>
                     </div>
                     </div>
                  </div>';  

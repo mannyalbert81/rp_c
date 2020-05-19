@@ -2672,7 +2672,7 @@ class SimulacionCreditosController extends ControladorBase{
            $res['amortizacion']=round($res['amortizacion'],2);
            $res['interes']=round($res['interes'],2);
            $res['pagos']=round($res['pagos'],2);
-            $resultAmortizacion[$len-1]['pagos']=$resultAmortizacion[$len-1]['pagos']+$num;
+           $resultAmortizacion[$len-1]['pagos']=$resultAmortizacion[$len-1]['pagos']+$num;
            $resultAmortizacion[$len-1]['amortizacion']=$resultAmortizacion[$len-1]['amortizacion']+$resultAmortizacion[$len-1]['saldo_inicial'];
            $resultAmortizacion[$len-1]['saldo_inicial']=0.00;
            $total=0;
@@ -4206,13 +4206,13 @@ class SimulacionCreditosController extends ControladorBase{
                     <div class="col-md-6 col-md-6">
                     <div class="box-footer no-padding bg-olive">
                         <div class="bio-row"><p>'.$data['nombre_participe_credito'].'</p></div>
-                        <div class="bio-row"><p><span class="tab2">Identificaci&oacute;n: </span>'.$data['cedula_credito'].'</p></div>
-                        <div class="bio-row"><p><span class="tab2">Fecha Nacimiento: </span>'.$infoParticipe[0]->fecha_nacimiento_participes.'</p></div>
-                        <div class="bio-row"><p><span class="tab2">Edad: </span>'.$tiempo.'</p></div>
-                        <div class="bio-row"><p><span class="tab2">Cuenta Individual: </span>'.$saldo_cta_individual.'</p></div> 
-                        <div class="bio-row"><p><span class="tab2">Capital de créditos: </span>'.$saldo_credito.'</p></div>
-                        <div class="bio-row"><p><span class="tab2">Disponible: </span>'.$disponible.'</p></div>
-                        <div class="bio-row '.$solicitud.'"><p><span class="tab">Observaci&oacute;n: </span>'.$observacion.'</p></div>
+                        <div class="bio-row"><p><span class="tab2">Identificaci&oacute;n</span>: '.$data['cedula_credito'].'</p></div>
+                        <div class="bio-row"><p><span class="tab2">Fecha Nacimiento</span>: '.$infoParticipe[0]->fecha_nacimiento_participes.'</p></div>
+                        <div class="bio-row"><p><span class="tab2">Edad</span>: '.$tiempo.'</p></div>
+                        <div class="bio-row"><p><span class="tab2">Cuenta Individual  </span>: '.$saldo_cta_individual.'</p></div> 
+                        <div class="bio-row"><p><span class="tab2">Capital de créditos </span>: '.$saldo_credito.'</p></div>
+                        <div class="bio-row"><p><span class="tab2">Disponible </span>: '.$disponible.'</p></div>
+                        <div class="bio-row '.$solicitud.'"><p><span class="tab2">Observaci&oacute;n</span>: '.$observacion.'</p></div>
                     </div>
                     </div>
                     <div class="col-md-6 col-md-6">

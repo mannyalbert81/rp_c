@@ -167,7 +167,11 @@ var iniciar_eventos_controles	= function(){
 	
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {	    
 		//realizar desplazamiento
-		//$("html, body").animate({ scrollTop: 25}, 1000);
+		/*var href = $(this).attr('href');
+	    $('html, body').animate({
+	      scrollTop: $(href).offset().top
+	    }, 'slow');
+	    e.preventDefault();*/
 	});
 	
 	$('body').on('click','#btn_capacidad_pago',function(){
@@ -375,6 +379,9 @@ var obtener_informacion_solicitud 	= function(){
 		
 		// cargo la informacion de la solicitud en el modal
 		$("#div_pnl_info_solicitud").html( x.html );
+		
+		$(".nav-tabs a[data-toggle=tab]").removeClass("disabledTab"); //habilitar los tab de creditos
+		$('.nav-tabs a[href="#panel_info"]').tab('show'); //navegar en tab bootstrap a la pagina principal
 		
 		//para determinar el tipo de credito solicitado
 		try{

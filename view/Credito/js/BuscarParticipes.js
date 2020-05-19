@@ -508,6 +508,7 @@ function TipoCredito()
 		//$("#cuenta_individual").html(monto);
 		}
 	
+	SeleccionarCreditoRenovacion();
 }
 
 
@@ -723,6 +724,14 @@ function TipoCredito()
 			
 			// IMPRIMO EN LA VISTA LOS CREDITOS A RENOVAR
 			$('#info_credito_renovar').html(x);
+			
+			if( ( $("#total_saldo_renovar").length || $("#total_saldo_renovar").text() != "" ) && !isNaN( parseFloat( $("#total_saldo_renovar").text() ) ) && parseFloat( $("#total_saldo_renovar").text() ) > 0 )
+			{ 
+				console.info("HAY DATOS PARA RENOVACION"); 
+			}else
+			{ 
+				$('#info_credito_renovar').html("");
+			}
 			
 			
 		})
@@ -1839,4 +1848,65 @@ function RegistrarCredito()
 	 {
 	 swal("Código incorrecto");
 	 }
+}
+
+var buscar_creditos_renovacion	= function(){
+	
+//	$.ajax({
+//	    url: 'index.php?controller=SimulacionCreditos&action=cuotaParticipe',
+//	    type: 'POST',
+//	    data: {
+//	    	cedula_participe:ciparticipe,
+//	    	'tipo_credito':tipo_credito
+//	    },
+//	})
+//	.done(function(x) {
+//		x=x.trim();
+//		console.log("cuota :"+x);
+//		
+//		// PASO VALOR CUOTA A METODO PARA MOSTRAR EN LA VISTA
+//		CuotaVigente(x);
+//		
+//		swal({
+//			  text:" ",
+//		      icon: "success",
+//		      buttons: false,
+//		      timer: 1000
+//		    });
+//		
+//		
+//		
+//		
+//		if(x!=0)
+//		{
+//		
+//			// SI ENTRA AQUI ES XQ TIENE CREDITOS PARA RENOVAR
+//			
+//			renovacion_credito=true;
+//			
+//			
+//			var limite=document.getElementById("cuenta_individual").innerHTML;
+//			var elementos=limite.split(" : ");
+//			limite=elementos[1];
+//			//var lista=document.getElementById("disponible_participe").classList;
+//			
+//			$("#monto_credito").val(limite);
+//			
+//			
+//			
+//			// METODO PARA CAPTURAR LOS CREDITOS A RENOVAR
+//			SeleccionarCreditoRenovacion();
+//			
+//			
+//		}
+//			
+//		
+//		
+//		// IMPRIMI TRUE O FALSO SI TIENE CREDITOS PARA RENOVAR
+//		console.log(renovacion_credito);
+//		
+//	})
+//	.fail(function() {
+//	    console.log("error");
+//	});
 }

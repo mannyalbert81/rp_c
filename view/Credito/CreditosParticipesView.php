@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+    <link rel="stylesheet" href="view/estilos/principal/imagenHover.css">
     
  	<style type="text/css">
  	  .loader {
@@ -66,7 +67,18 @@
     	display: inline-block;
     	width: 130px;
     }
-     	  
+    
+    .disabledTab {
+        cursor: not-allowed;
+    }
+    
+    li > a[data-toggle="tab"].disabledTab {
+        pointer-events: none;
+        filter: alpha(opacity=65);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        opacity: .65;
+    } 
  	</style>
    
   			        
@@ -158,16 +170,16 @@
           		<div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                     	<!-- AQUI PONER LOS TITULOS DE TABS -->
-                      <li><a href="#panel_info" data-toggle="tab">Informacion</a></li>
-                      <li><a href="#panel_detalle" data-toggle="tab">Detalle Valores</a></li>
-                      <li><a href="#panel_capacidad" data-toggle="tab">Capacidad Pago</a></li>
-                      <li><a href="#panel_capacidad_garante" data-toggle="tab">Capacidad Pago Garante</a></li>
+                      <li><a href="#panel_info" data-toggle="tab" class="disabledTab" >Informacion</a></li>
+                      <li><a href="#panel_detalle" data-toggle="tab" class="disabledTab" >Detalle Valores</a></li>
+                      <li><a href="#panel_capacidad" data-toggle="tab" class="disabledTab" >Capacidad Pago</a></li>
+                      <li><a href="#panel_capacidad_garante" data-toggle="tab" class="disabledTab" >Capacidad Pago Garante</a></li>
                     </ul>
                     <div class="tab-content">
                     	<!-- AQUI COMIENZA PARA PONER CONTENIDOS DE PANELES -->
                     	<!-- PANEL INDEX -->
                     	<div class="active tab-pane" id="panel_index">
-                    		<?php include 'view/principal/html/panelindex.php'; ?>
+                    		<?php include 'view/credito/html/panelindex.php'; ?>
                     	</div>
                     	<div class="tab-pane" id="panel_info">
                     	
@@ -178,15 +190,15 @@
                             	<div class="bio-row"><p><span class="tab">MES: </span>{MES_DESCUENTOS}</p></div>	
                             	</div>
                     		</div>
-                    		<hr>
+                    		<br>
 							<div id="div_pnl_info_participe">
 							</div>	
-							<hr>
+							<br>
 							<div class="row">
 								<div id="div_pnl_creditos_renovacion">
 								</div>	
-							</div>							
-							<hr>
+							</div>	
+							
 							<div id="div_pnl_respuesta_informacion">
 							</div>					
 							<hr>
@@ -625,6 +637,6 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?0.21"></script> 
+   <script src="view/Credito/js/CreditosParticipes.js?0.23"></script> 
    </body>
 </html>   

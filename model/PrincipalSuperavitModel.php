@@ -61,5 +61,8 @@ class PrincipalSuperavitModel extends ModeloBase{
         
         return  $resultado;
     }
+    
+    
+    
 }
 ?>

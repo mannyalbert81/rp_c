@@ -1,0 +1,38 @@
+#divtblHistorialMoras table {
+        width: 100%;
+    }
+
+#divtblHistorialMoras thead, #divtblHistorialMoras tbody,  #divtblHistorialMoras tr, #divtblHistorialMoras td,  #divtblHistorialMoras th { display: block; }
+
+#divtblHistorialMoras tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+#divtblHistorialMoras thead th {
+    height: 30px;
+
+    /*text-align: left;*/
+}
+
+#divtblHistorialMoras tbody {
+    height: 180px;
+    overflow-y: auto;
+}
+
+#divtblHistorialMoras thead {
+    /* fallback */
+}
+
+
+#divtblHistorialMoras th {
+    width: 19.5%;
+    float: left;
+}
+
+#divtblHistorialMoras tbody td {
+    width: 20%;
+    float: left;
+}

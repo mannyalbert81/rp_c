@@ -214,7 +214,7 @@
 							
 								<div class="pull-right botones-expandibles">
 									
-									<button id="btn_mostrar_historial_moras"  data-toggle="collapse" data-target="#div_pnl_historial_moras" title="Historial Moras" class="btn btn-default" >Historial Moras     		
+									<button id="btn_mostrar_historial_moras"  data-toggle="collapse" data-target="#div_pnl_historial_moras" title="Historial Moras" class="btn btn-default"  >Historial Moras     		
 									<i class="fa   fa-line-chart" aria-hidden="true"></i>						
     								</button>
     																	
@@ -686,6 +686,6 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?0.31"></script> 
+   <script src="view/Credito/js/CreditosParticipes.js?0.32"></script> 
    </body>
 </html>   

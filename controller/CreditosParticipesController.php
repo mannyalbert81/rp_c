@@ -1140,6 +1140,53 @@ class CreditosParticipesController extends ControladorBase
 
         return $resp;
     }
+    
+    public function validarDatosSolicitud()
+    {
+        ob_start();
+        session_start();
+        $participes = new ParticipesModel();
+        $response   = array();
+        $input  = json_decode( file_get_contents( "php://input" ) );
+        
+        $cedula_participes  = $input->cedula_participes;
+        $fechasValidacion   = $this->getFechasUltimas3Cuotas();
+        
+        $col1   = " aa.id_creditos, aa.fecha_tabla_amortizacion, aa.total_valor_tabla_amortizacion, aa.mora_tabla_amortizacion, bb.numero_creditos ";
+        $tab1   = " core_tabla_amortizacion aa
+            INNER JOIN core_creditos bb ON bb.id_creditos = aa.id_creditos
+            INNER JOIN core_participes cc ON cc.id_participes = bb.id_participes";
+        $whe1   = " aa.id_estatus = 1
+            AND coalesce( aa.mora_tabla_amortizacion, 0) > 0
+            AND bb.id_estado_creditos = 4
+            AND ( aa.fecha_tabla_amortizacion between '".$fechasValidacion['desde']."' and '".$fechasValidacion['hasta']."' )
+            AND cc.cedula_participes = '".$cedula_participes."'";
+        $order  = " ORDER BY aa.id_creditos DESC, aa.fecha_tabla_amortizacion DESC";
+        
+        $rsConsulta1    = $participes->getCondicionesSinOrden($col1, $tab1, $whe1, $order);
+        
+        if( empty($rsConsulta1) )
+        {
+            $response['error']      = false;
+            $response['mensaje']    = ""; 
+        }else
+        {
+            $response['error']      = true;
+            $response['mensaje']    = "Existen cuotas en Mora";
+        }
+        $salida = ob_get_contents();
+        if( !empty( $salida ) )
+        {
+            $response = array();
+            $response['estatus'] = "ERROR";
+            $response['buffer']  = $salida;
+        }else
+        {
+            $response['estatus'] = "OK";
+        }
+        
+        echo json_encode( $response );
+    }
 
     public function usoFetch()
     {

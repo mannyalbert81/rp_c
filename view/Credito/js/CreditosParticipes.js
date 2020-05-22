@@ -71,9 +71,7 @@ $(document).ready( function (){
 	
 	obtener_tipo_creditos();
 	
-	iniciar_datos_solicitud();
-	
-	//iniciar_cedula();
+	iniciar_datos_solicitud();	
 	
 	//iniciar eventos de elementos de la vista
 	iniciar_eventos_controles();
@@ -92,45 +90,40 @@ let iniciar_datos_solicitud	= async() => {
 						
 		//validamos requisitos de Solictud para proceder al credito
 		//--si tiene moras
-		
-		
-		//agregamos elementos a la vista
-		view.html_boton_buscar_participe.html("");
-		view.html_boton_buscar_participe.html( '<button type="button" class="btn btn-primary" id="buscar_participe" ><i class="glyphicon glyphicon-search"></i></button>' );
-		//establecemos cedula del participe en la vista
-		view.cedula_participes.val( view.hdn_cedula_participes.val() ) ;
-		//agregamos elemnto al modelo de la pagina
-		view.boton_buscar_participe	= $("#buscar_participe");		
-		//ENLAZAR EVENTO BUSCAR PARTICIPE CON CLICK
-		$('body').on('click',"#buscar_participe",function(){				
-			buscar_datos_creditos();
-		});		
-		//ACTIVAR BOTON
-		$("#buscar_participe").click();
-		return false;
-		
-		//AQUI VA FUNCION VALIDAR
 		let misCabeceras = {'Content-Type':"application/json"};
-		let data = { 'id_solicitud' : view.hdn_id_solicitud.val() };
+		let data = { 'cedula_participes' : view.hdn_id_solicitud.val() };
 		data = JSON.stringify(data);
 		let miInit = { method: 'POST',
 			   headers: misCabeceras,
 			   mode: 'cors',
 			   cache: 'default',
 			   body: data};
-		let response	= await fetch('index.php?controller=CreditosParticipes&action=usoFetch',miInit)
+		let response	= await fetch('index.php?controller=CreditosParticipes&action=validarDatosSolicitud',miInit)
 		let result		= await response.json();
 		respuesta		= result;
-		console.log("IMPRESION DE LOS DATOS");
-		console.log( result );
-		if( respuesta.data != "" )
+		
+		if( respuesta.estatus != undefined && respuesta.estatus == "OK" )
 		{
-			console.log("TRABAJAMOS CON DATOS RECIBIDOS");
+			//agregamos elementos a la vista
+			view.html_boton_buscar_participe.html("");
+			view.html_boton_buscar_participe.html( '<button type="button" class="btn btn-primary" id="buscar_participe" ><i class="glyphicon glyphicon-search"></i></button>' );
+			//establecemos cedula del participe en la vista
+			view.cedula_participes.val( view.hdn_cedula_participes.val() ) ;
+			//agregamos elemnto al modelo de la pagina
+			view.boton_buscar_participe	= $("#buscar_participe");		
+			//ENLAZAR EVENTO BUSCAR PARTICIPE CON CLICK
+			$('body').on('click',"#buscar_participe",function(){				
+				buscar_datos_creditos();
+			});		
+			//ACTIVAR BOTON
+			$("#buscar_participe").click();
+			
 		}else
 		{
-			console.log("ERROR AL PROCESAR LOS DATOS");
+			var mensaje = x.mensaje || "ERROR AL PROCESAR LOS DATOS";
+			swal({title:"ERROR",text:mensaje,icon:"error",dangerMode:true});
 		}
-		
+					
 	}catch(err)
 	{
 		if( err.includes("SWAL") )
@@ -314,41 +307,18 @@ var iniciar_eventos_controles	= function(){
 	//ESTE EVENTE PErmITE JUGAR CON LOS BOTONES DE COLLAPSED
 	$(".botones-expandibles button[data-toggle='collapse']").on('click',function(){
 		var tag = $(this);
-	    if( tag.attr("aria-expanded") == "false" )
+        var expanded = ( tag.attr("aria-expanded") == undefined ) ? "false" : tag.attr("aria-expanded");
+	    if( expanded == "true" )
 	    { 
-	        tag.removeClass('btn-default').addClass('btn-info');
+	    	tag.removeClass('btn-info').addClass('btn-default');
+	    	
 	    }else
 	    {
-	        tag.removeClass('btn-info').addClass('btn-default');
+	    	tag.removeClass('btn-default').addClass('btn-info');
 	    }
 	})
 
 }
-
-var iniciar_cedula	= function(){
-	
-	if( view.hdn_cedula_participes.val() != "" ){
-		
-		
-		
-		view.cedula_participes.val( view.hdn_cedula_participes.val() ) ;
-		
-		view.boton_buscar_participe	= $("#buscar_participe");
-		
-		//ENLAZAR EVENTO BUSCAR PARTICIPE CON CLICK
-		$('body').on('click',"#buscar_participe",function(){
-			
-			//Iniciar( view.hdn_cedula_participes.val(), view.hdn_id_solicitud.val() );			
-			buscar_datos_creditos();
-		});
-		
-		//ACTIVAR BOTON
-		$("#buscar_participe").click();
-	}
-}
-
-
-
 
 var buscar_datos_creditos = function(){
 	
@@ -540,7 +510,7 @@ var iniciar_datos_simulacion = function(){
 	
 	var valor_tipo_credito	= view.tipo_creditos.val();
 	console.log("INICIANDO .. start..simulacion");
-	console.log("valor tipo credito --> " + valor_tipo_credito);
+	console.log("valor tipo credito --> " + valor_tipo_credito.val());
 	
 	view.cuota_creditos.val("");
 	console.log("...vaciamos cuota creditos");
@@ -637,6 +607,7 @@ var iniciar_datos_simulacion = function(){
 		view.btn_capacidad_pago.attr("disabled",true);
 		view.monto_creditos.attr("readonly",true);  
 		view.btn_numero_cuotas.attr("disabled",true);
+		swal({title:"ERROR DE CARGA", text:"Tuvimos problemas al cargar la informacion por favor Reload la pagina",icon:"error",dangerMode:true});
 	}
 	
 	//$('.nav-tabs a[href="#panel_info"]').tab('show'); //navegar a la pantalla de informacion en tab navs principal
@@ -1662,7 +1633,6 @@ var obtener_historial_moras	= function(){
 				
 	}
 }
-
 
 var obtener_fecha_actual	= function(){	
 	var d = new Date();

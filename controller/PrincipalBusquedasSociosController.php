@@ -579,10 +579,9 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	    
 	    
 	    $html.='<table class="1" border=1>';
-	    $html.= "<tr>";
 	    
-	 
-	    $html.='<th style="text-align: center;  font-size: 12px;">Año</th>';
+	    $html.= "<tr>";
+	     $html.='<th style="text-align: center;  font-size: 12px;">Año</th>';
 	    $html.='<th style="text-align: center;  font-size: 12px;">Enero</th>';
 	    $html.='<th style="text-align: center;  font-size: 12px;">Febrero</th>';
 	    $html.='<th style="text-align: center;  font-size: 12px;">Marzo</th>';
@@ -640,6 +639,9 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	        
 	        $html.='</tr>';
 	    }
+	    
+	  
+	    
 	    
 	    $html.='</table>';
 	    

@@ -225,7 +225,7 @@ class PrincipalSuperavitController extends ControladorBase{
         
         
         
-        $productos = new ProductosModel();
+        $supravit = new PrincipalSuperavitModel();
         $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
         
         $datos_reporte = array();
@@ -248,10 +248,18 @@ class PrincipalSuperavitController extends ControladorBase{
         $where= "  core_superavit_pagos.id_participes = core_participes.id_participes AND  core_participes.id_participes='$id_participes'";
         $id="core_participes.id_participes";
         
-        $rsdatos = $productos->getCondiciones($columnas, $tablas, $where, $id);
+        $rsdatos = $supravit->getCondiciones($columnas, $tablas, $where, $id);
         
         
-        $datos_reporte['FECHA_ACTUAL']=date('d-m-Y');
+        
+        $fechaliquidacion=date('d-m-Y');
+        
+        $fecha = strtotime( $fechaliquidacion);
+        
+        
+        
+        
+        $datos_reporte['FECHA_ACTUAL']=date('d',$fecha).' DE '.strtoupper($meses[date('n',$fecha)-1]).' DEL '.date('Y',$fecha);
         $datos_reporte['CEDULA_PARTICIPE']=$rsdatos[0]->cedula_participes;
         $datos_reporte['NOMBRE_PARTICIPE']=$rsdatos[0]->nombre_participes;
         $datos_reporte['APELLIDO_PARTICIPE']=$rsdatos[0]->apellido_participes;
@@ -267,7 +275,7 @@ class PrincipalSuperavitController extends ControladorBase{
         $datos_reporte['TOTAL_2']=$total2;
         
         $datos_reporte['VALOR_PAGAR']=$rsdatos[0]->valor_pagar_superavit_pagos;
-        
+        $datos_reporte['VALOR_LETRAS']=$supravit->numtoletras($rsdatos[0]->valor_pagar_superavit_pagos);
         
         
         
@@ -308,7 +316,7 @@ class PrincipalSuperavitController extends ControladorBase{
         
         
         
-        $productos = new ProductosModel();
+        $supravit = new PrincipalSuperavitModel();
         $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
         
         $datos_reporte = array();
@@ -334,7 +342,7 @@ class PrincipalSuperavitController extends ControladorBase{
         $where= "  core_superavit_pagos.id_participes = core_participes.id_participes AND  core_participes.id_participes='$id_participes'";
         $id="core_participes.id_participes";
         
-        $rsdatos = $productos->getCondiciones($columnas, $tablas, $where, $id);
+        $rsdatos = $supravit->getCondiciones($columnas, $tablas, $where, $id);
         
         
         $datos_reporte['FECHA_ACTUAL']=date('d-m-Y');
@@ -355,7 +363,7 @@ class PrincipalSuperavitController extends ControladorBase{
         $datos_reporte['TOTAL_2']=$total2;
         
         $datos_reporte['VALOR_PAGAR']=$rsdatos[0]->valor_pagar_superavit_pagos;
-        
+        $datos_reporte['VALOR_LETRAS']=$supravit->numtoletras($rsdatos[0]->valor_pagar_superavit_pagos);
         
         
         

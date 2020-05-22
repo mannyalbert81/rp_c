@@ -117,7 +117,7 @@ var iniciar_proceso_creditos	= function(a, b){
     form.setAttribute("id", "frm_creditos");
     form.setAttribute("method", "post");
     form.setAttribute("action", "index.php?controller=CreditosParticipes&action=index");
-    form.setAttribute("target", "_blank");   
+    form.setAttribute("target", "_self");   
     
     for (var i in params) {
         if (params.hasOwnProperty(i)) {

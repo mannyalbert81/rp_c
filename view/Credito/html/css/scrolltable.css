@@ -1,4 +1,15 @@
+
+#divtblHistorialMoras {
+     overflow:scroll;
+     min-height:100px;'
+     height:auto;
+     width:100%;
+}
 #divtblHistorialMoras table {
+    width:100%;
+}
+
+/*#divtblHistorialMoras table {
         width: 100%;
     }
 
@@ -9,30 +20,30 @@
     display: block;
     visibility: hidden;
     clear: both;
-}
+}*/
 
-#divtblHistorialMoras thead th {
-    height: 30px;
+/* #divtblHistorialMoras thead th { */
+/*     height: 30px; */
 
-    /*text-align: left;*/
-}
+/*     text-align: left; */
+/* } */
 
-#divtblHistorialMoras tbody {
-    height: 180px;
-    overflow-y: auto;
-}
+/* #divtblHistorialMoras tbody { */
+/*     height: 180px; */
+/*     overflow-y: auto; */
+/* } */
 
-#divtblHistorialMoras thead {
-    /* fallback */
-}
+/* #divtblHistorialMoras thead { */
+/*     fallback */
+/* } */
+/* */ */
 
+/* #divtblHistorialMoras th { */
+/*     width: 19.5%; */
+/*     float: left; */
+/* } */
 
-#divtblHistorialMoras th {
-    width: 19.5%;
-    float: left;
-}
-
-#divtblHistorialMoras tbody td {
-    width: 20%;
-    float: left;
-}
+/* #divtblHistorialMoras tbody td { */
+/*     width: 20%; */
+/*     float: left; */
+/* } */

@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
     <link rel="stylesheet" href="view/estilos/principal/imagenHover.css">
-    <link rel="stylesheet" href="view/credito/html/css/scrolltable.css">
+    <link rel="stylesheet" href="view/credito/html/css/scrolltable.css?0.2">
     
  	<style type="text/css">
  	  .loader {
@@ -87,6 +87,11 @@
     
     #div_pnl_aportes_validacion li p{
     margin: 0px;
+    }
+    
+    span.tabulacion{
+        display: inline-block;
+        width: 150px;
     }
     
  	</style>
@@ -686,6 +691,6 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?0.32"></script> 
+   <script src="view/Credito/js/CreditosParticipes.js?0.33"></script> 
    </body>
 </html>   

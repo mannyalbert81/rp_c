@@ -977,13 +977,13 @@ class SimulacionCreditosController extends ControladorBase
         }
         $data = array(); // variable donde guardo lo que envio a la vista
 
-        for ($plazo_maximo; $plazo_maximo >= 3; $plazo_maximo -= 3) {
+        for ( $plazo_maximo; $plazo_maximo >= 3; $plazo_maximo -= 3) {
 
             $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $plazo_maximo));
             $valor_cuota = round($valor_cuota, 2);
             if ($plazo_maximo <= $diferencia_dias && $valor_cuota <= $sueldo_partcipe) {
 
-                $data[] = $plazo_maximo; // $html.='<option value="'.$plazo_maximo.'">'.$plazo_maximo.'</option>';
+                $data[] = array('plazo'=>$plazo_maximo, 'valor'=>$valor_cuota); // $html.='<option value="'.$plazo_maximo.'">'.$plazo_maximo.'</option>';
             }
         }
 
@@ -1683,8 +1683,10 @@ class SimulacionCreditosController extends ControladorBase
                 $interes_concesion = $interes_diario * $diferencia_dias * $capital;
                 $interes_concesion = round($interes_concesion, 2);
                 $interes = $interes_concesion;
+                
             }
             if ($i != 1) {
+                
                 $interes_concesion = 0;
                 $saldo_inicial_ant = $saldo_inicial_ant - $amortizacion;
                 $interes = $saldo_inicial_ant * $inter_ant;
@@ -4223,13 +4225,14 @@ class SimulacionCreditosController extends ControladorBase
             $html = '<div class="box box-solid bg-olive">
             <div class="box-header with-border">
             <h3 class="box-title">Tabla de Amortización</h3>';
-            if ($id_solicitud != 0)
+            if ($id_solicitud != 0)               
                 $html .= '<button id="btn_guardar_simulacion_credito" class="btn btn-info pull-right" ><i class="glyphicon glyphicon-floppy-disk"></i> GUARDAR</button>';
+                $html .= '<button id="btn_imprimir_simulacion_credito" class="btn btn-info pull-right" ><i class="glyphicon glyphicon-file"></i> IMPRIMIR</button>';
                 $html .= '</div>
              <table border="1" width="100%">
                      <tr style="color:white;" class="bg-olive">
                         <th width="5%">Cuota</th>
-                        <th width="15%" >Fecha</th>
+                        <th width="15%">Fecha</th>
                         <th width="13%">Capital</th>
                         <th width="13%">Interes</th>
                         <th width="13%">Seg. Desgravamen</th>
@@ -4240,13 +4243,14 @@ class SimulacionCreditosController extends ControladorBase
                      </tr>
                    </table>
                    <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
-                     <table border="1" width="100%">';
+                   <table border="1" width="100%">';
         } else {
             $html = '<div class="box box-solid bg-olive">
             <div class="box-header with-border">
             <h3 class="box-title">Tabla de Amortización</h3>';
-            if ($id_solicitud != 0)
+            if ($id_solicitud != 0)                
                 $html .= '<button id="btn_guardar_simulacion_credito" class="btn btn-info pull-right" ><i class="glyphicon glyphicon-floppy-disk"></i> GUARDAR</button>';
+                $html .= '<button id="btn_imprimir_simulacion_credito" class="btn btn-info pull-right" ><i class="glyphicon glyphicon-file"></i> IMPRIMIR</button>';
                 $html .= '</div>
              <table border="1" width="100%">
                      <tr style="color:white;" class="bg-olive">

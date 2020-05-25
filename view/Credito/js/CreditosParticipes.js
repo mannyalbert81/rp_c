@@ -510,7 +510,7 @@ var iniciar_datos_simulacion = function(){
 	
 	var valor_tipo_credito	= view.tipo_creditos.val();
 	console.log("INICIANDO .. start..simulacion");
-	console.log("valor tipo credito --> " + valor_tipo_credito.val());
+	console.log("valor tipo credito --> " + valor_tipo_credito);
 	
 	view.cuota_creditos.val("");
 	console.log("...vaciamos cuota creditos");
@@ -1132,7 +1132,7 @@ var buscar_numero_cuotas	= function(){
 					view.numero_cuotas.empty();
 					view.numero_cuotas.attr("disabled",false);
 					$.each( cuotas, function(i,value){
-						view.numero_cuotas.append('<option value="'+value+'">'+value+'</option>');
+						view.numero_cuotas.append('<option value="'+value.plazo+'"> plazo:'+value.plazo+' | cuota: '+value.valor+'</option>');
 					})
 				}
 				
@@ -1292,6 +1292,10 @@ var simular_credito_amortizacion = function(){
 				validar_valores_guardar_credito();
 			});
 			
+			$("#btn_imprimir_simulacion_credito").on('click',function(){
+				imprimir_tabla_amortizacion();
+			});
+						
 		}else
 		{
 			swal( {title:"ALERTA",text:"Error al cargar Tabla Amortizacion ",icon:"warning",buttons:false,timer:1000} );
@@ -1640,6 +1644,52 @@ var obtener_fecha_actual	= function(){
 	var day = d.getDate();
 	var output = d.getFullYear() + '-' + ( ( ''+ month ).length < 2 ? '0' : '' ) + month + '-' + ( (''+day).length < 2 ? '0' : '' ) + day;
 	return output;
+}
+
+var imprimir_tabla_amortizacion	= function(){
+	
+	var DataDetalle = $("#div_tabla_amortizacion").find('table:nth-child(1)');
+	var arrayData = [];
+	var arrayFila = [];
+	if( DataDetalle.length )
+	{
+	    $.each(DataDetalle.find('tbody tr'),function(i,v){
+	        var fila = $(this);
+	        $.each(fila.find('td'),function(ia,va){
+	            var columna    = $(this);
+	            //console.log("ESTAMOS EN LA COLUMNA"+ia);
+	            //console.log(columna.text());
+	            arrayFila.push( columna.text())
+	        })
+	        arrayData.push(arrayFila);
+	        arrayFila=[];
+	        //console.log("AQUI VALOR I--> "+i+" AQUI VALOR V --> "+v.cells[1].innerHTML);
+	    })
+	    
+	    var params = { "datos_tabla":JSON.stringify(arrayData), 
+	    	"tipo_creditos":view.tipo_creditos.find("option:selected").text(), 
+	    	"monto_creditos":view.monto_creditos.val() }
+		
+		var form = document.createElement("form");
+		form.setAttribute("id", "frm_reporte_simulacion");
+	    form.setAttribute("method", "post");
+	    form.setAttribute("action", "index.php?controller=CreditosParticipes&action=imprimirSimulacionCredito");
+	    form.setAttribute("target", "_blank");   
+	    
+	    for (var i in params) {
+	        if (params.hasOwnProperty(i)) {
+	            var input = document.createElement('input');
+	            input.type = 'hidden';
+	            input.name = i;
+	            input.value = params[i];
+	            form.appendChild(input);
+	        }
+	    }
+	        
+	    document.body.appendChild(form); 
+	    form.submit();    
+	    document.body.removeChild(form);	    
+	} 	
 }
 
 

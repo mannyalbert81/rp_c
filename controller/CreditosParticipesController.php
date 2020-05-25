@@ -1004,25 +1004,32 @@ class CreditosParticipesController extends ControladorBase
         ob_start();
         session_start();
         $id_participe = $_POST['id_participe'];
+        //$id_participe = $_GET['id_participe'];
         $html = "";
         $participes = new ParticipesModel();
         $response = array();
 
         $fechasValidacion = $this->getFechasUltimas3Cuotas();
-
-        $columnas = "TO_CHAR(fecha_registro_contribucion,'YYYY-MM-DD') fecha_registro_contribucion, nombre_contribucion_tipo, valor_personal_contribucion";
-        $tablas = "core_contribucion INNER JOIN core_contribucion_tipo
-                ON core_contribucion.id_contribucion_tipo = core_contribucion_tipo.id_contribucion_tipo";
-        $where = "core_contribucion.id_participes=" . $id_participe . " AND core_contribucion.id_contribucion_tipo=1
-                AND core_contribucion.id_estatus=1 AND ( core_contribucion.fecha_registro_contribucion BETWEEN '" . $fechasValidacion['desde'] . "' AND '" . $fechasValidacion['hasta'] . "' )";
-        $id = "fecha_registro_contribucion";
-
-        $resultAportesPersonales = $participes->getCondicionesDesc($columnas, $tablas, $where, $id);
+        
+        $queryConsulta  = "SELECT TO_CHAR(c.fecha_registro_contribucion, 'YYYY') AS anio, TO_CHAR(c.fecha_registro_contribucion, 'MM') AS mes, 
+        SUM(c.valor_personal_contribucion) AS aporte
+        FROM core_contribucion c 
+        INNER JOIN core_participes p ON c.id_participes = p.id_participes
+        WHERE p.id_participes='$id_participe' 
+        AND p.id_estatus=1 
+        AND c.id_contribucion_tipo=1  
+        AND c.fecha_registro_contribucion BETWEEN '" . $fechasValidacion['desde'] . "' AND '" . $fechasValidacion['hasta'] . "' 
+        AND c.id_estatus=1
+        GROUP BY TO_CHAR(c.fecha_registro_contribucion, 'YYYY'), TO_CHAR(c.fecha_registro_contribucion, 'MM')
+        HAVING SUM(c.valor_personal_contribucion) > 0
+        ORDER BY TO_CHAR(c.fecha_registro_contribucion, 'YYYY') DESC, TO_CHAR(c.fecha_registro_contribucion, 'MM') DESC";
+        
+        $rsConsulta1    = $participes->enviaquery( $queryConsulta );
 
         $html = '<ul class="list-group">';
-        foreach ($resultAportesPersonales as $res) {
-            $valor = number_format($res->valor_personal_contribucion, 2, ".", "");
-            $html .= '<li class="list-group-item"><div class=""><p><span class=""> Fecha: ' . $res->fecha_registro_contribucion . '</span> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp; Valor: ' . $valor . '</p></div></li>';
+        foreach ($rsConsulta1 as $res) {
+            $valor = number_format($res->aporte, 2, ".", "");
+            $html .= '<li class="list-group-item"><div class=""><p><span class="tabulacion"><b> Fecha: </b>' . substr( strtoupper( $this->devuelveMesNombre($res->mes) ),0,3 )." ".$res->anio . '</span> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp; <b>Valor Aporte: </b>' . $valor . '</p></div></li>';
         }
         $html .= '</ul>';
 
@@ -1044,6 +1051,7 @@ class CreditosParticipesController extends ControladorBase
         $participes = new ParticipesModel();
         $response = array();
 
+        /*
         $columnas = " aa.id_creditos, aa.fecha_tabla_amortizacion, aa.total_valor_tabla_amortizacion, aa.mora_tabla_amortizacion, bb.numero_creditos";
         $tablas = " core_tabla_amortizacion aa
             INNER JOIN core_creditos bb ON bb.id_creditos = aa.id_creditos
@@ -1054,6 +1062,29 @@ class CreditosParticipesController extends ControladorBase
         $order = " ORDER BY aa.id_creditos DESC, aa.fecha_tabla_amortizacion DESC";
 
         $rsConsultaHistorico = $participes->getCondicionesSinOrden($columnas, $tablas, $where, $order);
+        */
+        
+        $qryBuscador    = "SELECT aa.id_creditos, aa.numero_creditos, aa.fecha_concesion_creditos, bb.nombre_tipo_creditos, aa.monto_otorgado_creditos, 
+        aa.plazo_creditos, dd.cuotas_mora, dd.suma_mora, cc.nombre_estado_creditos
+        FROM core_creditos aa
+        INNER JOIN core_tipo_creditos bb ON bb.id_tipo_creditos = aa.id_tipo_creditos
+        INNER JOIN core_estado_creditos cc ON cc.id_estado_creditos = aa.id_estado_creditos
+        INNER JOIN (
+            SELECT aaa.id_creditos,count(aaa.mora_tabla_amortizacion) \"cuotas_mora\",sum(aaa.mora_tabla_amortizacion) \"suma_mora\"
+            FROM core_tabla_amortizacion aaa
+            INNER JOIN core_creditos bbb ON bbb.id_creditos = aaa.id_creditos
+            INNER JOIN core_participes ccc ON ccc.id_participes = bbb.id_participes
+            INNER JOIN core_estado_creditos ddd ON ddd.id_estado_creditos = bbb.id_estado_creditos
+            WHERE aaa.id_estatus = 1
+            AND coalesce( aaa.mora_tabla_amortizacion, 0) > 0
+            AND ddd.nombre_estado_creditos not in ( 'Anulado','Registrado')
+            AND ccc.id_participes = '$id_participe'
+            GROUP BY aaa.id_creditos
+            ORDER BY aaa.id_creditos DESC
+            )dd on dd.id_creditos = aa.id_creditos
+            WHERE 1 = 1
+            ORDER BY aa.id_creditos DESC";
+        $rsConsultaHistorico = $participes->enviaquery($qryBuscador);
 
         $html = '<div class="col-lg-12 col-md-12 col-sm-12"><div id="divtblHistorialMoras" class="">';
         $html .= '<table class="table table-hover table-bordered">';
@@ -1062,29 +1093,36 @@ class CreditosParticipesController extends ControladorBase
         $html .= '<tr style="">';
         $html .= '<th class="info">#</th>';
         $html .= '<th class="info">Numero Credito</th>';
-        $html .= '<th class="info">Fecha Amortizacion</th>';
-        $html .= '<th class="info">Valor Cuota</th>';
-        $html .= '<th class="info">Valor Mora</th>';
+        $html .= '<th class="info">Fecha Credito</th>';
+        $html .= '<th class="info">Tipo Credito</th>';
+        $html .= '<th class="info">Monto</th>';
+        $html .= '<th class="info">Cuotas</th>';
+        $html .= '<th class="info">Cuotas Mora</th>';
+        $html .= '<th class="info">Total Mora</th>';
+        $html .= '<th class="info">Estado</th>';
         $html .= '</tr>';
         $html .= '<tbody style="">';
 
         if (sizeof($rsConsultaHistorico) > 0) {
             $contador = 1;
             foreach ($rsConsultaHistorico as $res) {
-                $valor_cuota = number_format($res->total_valor_tabla_amortizacion, 2, ".", "");
-                $valor_mora = number_format($res->mora_tabla_amortizacion, 2, ".", "");
+              
                 $html .= '<tr>';
                 $html .= '<td>' . $contador . '</td>';
                 $html .= '<td>' . $res->numero_creditos . '</td>';
-                $html .= '<td>' . $res->fecha_tabla_amortizacion . '</td>';
-                $html .= '<td>' . $valor_cuota . '</td>';
-                $html .= '<td>' . $valor_mora . '</td>';
+                $html .= '<td>' . $res->fecha_concesion_creditos . '</td>';
+                $html .= '<td>' . $res->nombre_tipo_creditos . '</td>';
+                $html .= '<td>' . $res->monto_otorgado_creditos . '</td>';
+                $html .= '<td>' . $res->plazo_creditos . '</td>';
+                $html .= '<td>' . $res->cuotas_mora . '</td>';
+                $html .= '<td>' . $res->suma_mora . '</td>';
+                $html .= '<td>' . $res->nombre_estado_creditos . '</td>';
                 $html .= '</tr>';
                 $contador ++;
             }
         } else {
             $html .= '<tr>';
-            $html .= '<td colspan="5">No Existe Historial Moras</td>';
+            $html .= '<td colspan="9">No Existe Historial Moras</td>';
             $html .= '</tr>';
         }
 
@@ -1162,8 +1200,8 @@ class CreditosParticipesController extends ControladorBase
             AND ( aa.fecha_tabla_amortizacion between '".$fechasValidacion['desde']."' and '".$fechasValidacion['hasta']."' )
             AND cc.cedula_participes = '".$cedula_participes."'";
         $order  = " ORDER BY aa.id_creditos DESC, aa.fecha_tabla_amortizacion DESC";
-        
         $rsConsulta1    = $participes->getCondicionesSinOrden($col1, $tab1, $whe1, $order);
+        
         
         if( empty($rsConsulta1) )
         {
@@ -1187,6 +1225,110 @@ class CreditosParticipesController extends ControladorBase
         
         echo json_encode( $response );
     }
+    
+    public function imprimirSimulacionCredito()
+    {
+        session_start();
+        $data = json_decode($_POST['datos_tabla']);
+        $tipo_creditos  = $_POST['tipo_creditos'];
+        $monto_creditos = $_POST['monto_creditos'];
+        $entidades = new EntidadesModel();
+        //PARA OBTENER DATOS DE LA EMPRESA
+        $datos_empresa = array();
+        $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+        
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+            //llenar nombres con variables que va en html de reporte
+            $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+            $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+            $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+            $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+            $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+            $datos_empresa['USUARIOEMPRESA']=( isset( $_SESSION['usuario_usuarios'] ) ) ? $_SESSION['usuario_usuarios'] : '';
+        }
+        
+        $dictionary = array();
+                
+        $dictionary['TITULO']  = "SIMULACION CREDITO";
+        $dictionary['TIPO_CREDITO']  = $tipo_creditos;
+        $dictionary['MONTO_SOLICITADO']  = number_format( $monto_creditos ,2,'.',',');
+                
+        $html = "";        
+        $hayDatos  = false;
+        
+        if( !empty( $data ) ){
+            
+            $hayDatos = true;
+            
+            $html.='<table class="1" cellspacing="0" border="1">';
+            $html.='<tr>';
+            $html.='<th >N° Cuota</th>';
+            $html.='<th >Fecha</th>';
+            $html.='<th >Capital</th>';
+            $html.='<th >Interes</th>';
+            $html.='<th >Seg. Desgravamen</th>';
+            $html.='<th >Valor Cuota</th>';
+            $html.='<th >Saldo</th>';
+            $html.='</tr>';
+            
+            $i  = 0;
+            foreach ( $data as $res ){
+                
+                $i++;
+                if( $i == sizeof( $data ) )
+                {
+                    $html.='<tr>';
+                    $html.='<td >'.$res[0].'</td>';
+                    $html.='<td >'.$res[1].'</td>';
+                    $html.='<td class="decimales" >'.number_format($res[2],2,'.',',').'</td>';
+                    $html.='<td class="decimales" >'.number_format($res[3],2,'.',',').'</td>';
+                    $html.='<td class="decimales" >'.number_format($res[4],2,'.',',').'</td>';
+                    $html.='<td class="decimales" >'.number_format($res[5],2,'.',',').'</td>';
+                    $html.='<td class="decimales" >'.$res[6].'</td>';
+                    $html.='</tr>';
+                }else
+                {
+                    $html.='<tr>';
+                    $html.='<td >'.$res[0].'</td>';
+                    $html.='<td >'.$res[1].'</td>';
+                    $html.='<td class="decimales" >'.number_format($res[2],2,'.',',').'</td>';
+                    $html.='<td class="decimales" >'.number_format($res[3],2,'.',',').'</td>';
+                    $html.='<td class="decimales" >'.number_format($res[4],2,'.',',').'</td>';
+                    $html.='<td class="decimales" >'.number_format($res[5],2,'.',',').'</td>';
+                    $html.='<td class="decimales" >'.number_format($res[6],2,'.',',').'</td>';
+                    $html.='</tr>';
+                }
+                
+            }
+                        
+            $html.='</table>';
+                        
+        }
+        
+        $textoDataEmpty    = '<h4 class="dataempty"> NO EXISTEN DATOS PARA MOSTRAR </h4>';
+        
+        if( $hayDatos ){
+            
+            $dictionary['DETALLE_SIMULADOR']   = $html;
+        }else{
+            $dictionary['DETALLE_SIMULADOR']   = $textoDataEmpty;
+        }
+        
+        $this->verReporte( "ReporteSimulacionCreditos", array(
+            'datos_empresa'=> $datos_empresa,
+            'dictionary'   => $dictionary
+        )
+            ) ;
+        
+    }
+    
+    private function devuelveMesNombre($_mes){
+        
+        $meses = array('enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre');
+        $_intMes = (int)$_mes;
+        return $meses[$_intMes-1];
+        
+    }
 
     public function usoFetch()
     {
@@ -1198,6 +1340,23 @@ class CreditosParticipesController extends ControladorBase
             'post' => $var
         );
         echo json_encode($res);
+    }
+    
+    public function verCode()
+    {
+        $valor_cuota = ( 440 * 0.0075) / (1 - pow((1 + 0.0075), - 12));
+        $valor_cuota = round($valor_cuota, 2);
+        echo "VALOR CUOTA --> ",$valor_cuota,"<br>";
+        $desgravamen = ( ( 0.16/1000) * 31.88 ) * 1.04;
+        echo floor( $desgravamen *100 ) / 100 ;
+        echo "<br>";
+        
+        $valoruno = floor(3.3 * 100)/100;
+        echo "VALOR DE UNO  --> ",$valoruno,"<br>";
+        
+        $desgravamen2 = ( ( 0.16/1000) * 440 ) * 1.04;
+        $desgravamen2 = floor( $desgravamen2 *100 ) / 100 ;
+        echo "DESGRAVAMEN 2  --> ",$desgravamen2,"<br>";
     }
 }
 

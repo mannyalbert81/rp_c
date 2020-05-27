@@ -1280,10 +1280,10 @@ class CreditosParticipesController extends ControladorBase
                     $html.='<tr>';
                     $html.='<td >'.$res[0].'</td>';
                     $html.='<td >'.$res[1].'</td>';
-                    $html.='<td class="decimales" >'.number_format($res[2],2,'.',',').'</td>';
-                    $html.='<td class="decimales" >'.number_format($res[3],2,'.',',').'</td>';
-                    $html.='<td class="decimales" >'.number_format($res[4],2,'.',',').'</td>';
-                    $html.='<td class="decimales" >'.number_format($res[5],2,'.',',').'</td>';
+                    $html.='<td class="decimales" >'.$res[2].'</td>';
+                    $html.='<td class="decimales" >'.$res[3].'</td>';
+                    $html.='<td class="decimales" >'.$res[4].'</td>';
+                    $html.='<td class="decimales" >'.$res[5].'</td>';
                     $html.='<td class="decimales" >'.$res[6].'</td>';
                     $html.='</tr>';
                 }else
@@ -1291,11 +1291,11 @@ class CreditosParticipesController extends ControladorBase
                     $html.='<tr>';
                     $html.='<td >'.$res[0].'</td>';
                     $html.='<td >'.$res[1].'</td>';
-                    $html.='<td class="decimales" >'.number_format($res[2],2,'.',',').'</td>';
-                    $html.='<td class="decimales" >'.number_format($res[3],2,'.',',').'</td>';
-                    $html.='<td class="decimales" >'.number_format($res[4],2,'.',',').'</td>';
-                    $html.='<td class="decimales" >'.number_format($res[5],2,'.',',').'</td>';
-                    $html.='<td class="decimales" >'.number_format($res[6],2,'.',',').'</td>';
+                    $html.='<td class="decimales" >'.$res[2].'</td>';
+                    $html.='<td class="decimales" >'.$res[3].'</td>';
+                    $html.='<td class="decimales" >'.$res[4].'</td>';
+                    $html.='<td class="decimales" >'.$res[5].'</td>';
+                    $html.='<td class="decimales" >'.$res[6].'</td>';
                     $html.='</tr>';
                 }
                 
@@ -1357,6 +1357,16 @@ class CreditosParticipesController extends ControladorBase
         $desgravamen2 = ( ( 0.16/1000) * 440 ) * 1.04;
         $desgravamen2 = floor( $desgravamen2 *100 ) / 100 ;
         echo "DESGRAVAMEN 2  --> ",$desgravamen2,"<br>";
+        
+        echo "************************** VALIDAR CUOTA DE CREDITO ********************* <br>";
+        try {
+            $valor_cuota = ( 440 * 0.0075 ) / (1 - pow((1 + 0.0075 ), - 0 ));
+        }catch( DivisionByZeroError $e){
+            $valor_cuota = 0;
+        }catch(ErrorException $e) {
+            $valor_cuota = 0;
+        }
+        echo " VALOR CUOTA --> ",$valor_cuota;
     }
 }
 

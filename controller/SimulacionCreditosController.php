@@ -967,21 +967,24 @@ class SimulacionCreditosController extends ControladorBase
 
         while ($valor_cuota > $sueldo_partcipe || $plazo_maximo > $diferencia_dias) {
 
-            $monto_credito -= 10;
+            $monto_credito -= 10;            
             $where = $monto_credito . ">=minimo_rango_plazos_creditos AND " . $monto_credito . " <= maximo_rango_plazos_creditos";
             $resultSet = $cuotas->getCondiciones($columnas, $tablas, $where, $id);
-            $plazo_maximo = $resultSet[0]->cuotas_rango_plazos_creditos;
-
+            //!nota se establece que el minimo en el plazo es 3 -- si cambian cambiar aca  dc 2020/05/3/26
+            $plazo_maximo = ( empty( $resultSet[0]->cuotas_rango_plazos_creditos ) ) ? 3 : $resultSet[0]->cuotas_rango_plazos_creditos ;
+            
             $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $plazo_maximo));
-            $valor_cuota = round($valor_cuota, 2);
+            $valor_cuota = round($valor_cuota, 2);            
+           
         }
+        
         $data = array(); // variable donde guardo lo que envio a la vista
 
         for ( $plazo_maximo; $plazo_maximo >= 3; $plazo_maximo -= 3) {
 
             $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $plazo_maximo));
             $valor_cuota = round($valor_cuota, 2);
-            if ($plazo_maximo <= $diferencia_dias && $valor_cuota <= $sueldo_partcipe) {
+            if ( $plazo_maximo <= $diferencia_dias && $valor_cuota <= $sueldo_partcipe) {
 
                 $data[] = array('plazo'=>$plazo_maximo, 'valor'=>$valor_cuota); // $html.='<option value="'.$plazo_maximo.'">'.$plazo_maximo.'</option>';
             }
@@ -1198,19 +1201,24 @@ class SimulacionCreditosController extends ControladorBase
         $resultSet = $cuotas->getCondiciones($columnas, $tablas, $where, $id);
         $cuota = $resultSet[0]->cuotas_rango_plazos_creditos;
 
-        $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $cuota));
+        $valor_cuota = ( $monto_credito * $interes_mensual ) / (1 - pow((1 + $interes_mensual), - $cuota));
         $valor_cuota = round($valor_cuota, 2);
-
-        if ($valor_cuota > $sueldo_partcipe || $cuota > $diferencia_dias) {
-            while ($valor_cuota > $sueldo_partcipe || $cuota > $diferencia_dias) {
-                $monto_credito -= 10;
-                $where = $monto_credito . ">=minimo_rango_plazos_creditos AND " . $monto_credito . " <= maximo_rango_plazos_creditos";
+        
+        if ( $valor_cuota > $sueldo_partcipe || $cuota > $diferencia_dias) {
+            
+            //! nota dc 2020/05/26 el valor minimo de monto debe ser 100 
+            while( $valor_cuota > $sueldo_partcipe || $cuota > $diferencia_dias )  {
+                
+                $monto_credito -= 10;                
+                $where = $monto_credito . " >= minimo_rango_plazos_creditos AND " . $monto_credito . " <= maximo_rango_plazos_creditos";
                 $resultSet = $cuotas->getCondiciones($columnas, $tablas, $where, $id);
-                $cuota = $resultSet[0]->cuotas_rango_plazos_creditos;
-
+                // dc 2020/05/26 para validar que no llegue a cero numero minimo de plazo
+                $cuota = ( empty( $resultSet[0]->cuotas_rango_plazos_creditos ) ) ? 3 : $resultSet[0]->cuotas_rango_plazos_creditos ;
+                
                 $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $cuota));
                 $valor_cuota = round($valor_cuota, 2);
             }
+            
         }
 
         if ($valor_cuota > $sueldo_garante)
@@ -1218,25 +1226,15 @@ class SimulacionCreditosController extends ControladorBase
 
         $data = array(); // variable donde guarda las cuotas
 
-        /*
-         * $html='<label for="tipo_credito" class="control-label">Número de cuotas:</label>
-         * <select name="cuotas_credito" id="cuotas_credito" class="form-control" onchange="SimularCredito()">';
-         */
-
-        for ($cuota; $cuota >= 3; $cuota -= 3) {
+        for( $cuota; $cuota >= 3; $cuota -= 3) {
+            
             $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $cuota));
             $valor_cuota = round($valor_cuota, 2);
 
-            // if($cuota<=$diferencia_dias && $valor_cuota<=$sueldo_partcipe) $html.='<option value="'.$cuota.'">'.$cuota.'</option>';
-
             if ($cuota <= $diferencia_dias && $valor_cuota <= $sueldo_partcipe)
-                $data[] = $cuota;
+                $data[] = array( 'plazo'=>$cuota, 'valor'=>$valor_cuota);
         }
 
-        /*
-         * $html.='</select>
-         * <div id="mensaje_cuotas_credito" class="errores"></div>';
-         */
         $response = array();
         $response['estatus'] = "OK";
         $response['cuotas'] = $data;
@@ -1247,6 +1245,7 @@ class SimulacionCreditosController extends ControladorBase
         if (! empty($salida)) {
             $response['estatus'] = "ERROR";
             $response['buffer'] = error_get_last();
+            $response['echo'] =$salida;
         }
 
         echo json_encode($response);

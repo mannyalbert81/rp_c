@@ -158,24 +158,24 @@ class RevisionCreditosController extends ControladorBase{
         $resultRol=$resultRol[0]->nombre_rol;
         
         
-            $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
-                         dia_creditos_trabajados_cabeza, oficina.nombre_oficina, estado.nombre_estado";
-            $tablas="core_creditos_trabajados_cabeza INNER JOIN oficina
-            		ON oficina.id_oficina=core_creditos_trabajados_cabeza.id_oficina
-            		INNER JOIN estado
-            		ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
+        $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
+                     dia_creditos_trabajados_cabeza, oficina.nombre_oficina, estado.nombre_estado";
+        $tablas="core_creditos_trabajados_cabeza INNER JOIN oficina
+        		ON oficina.id_oficina=core_creditos_trabajados_cabeza.id_oficina
+        		INNER JOIN estado
+        		ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
            
-            if($resultRol=="Jefe de crédito y prestaciones") $where="1=1";
-            if($resultRol=="Jefe de recaudaciones")$where="estado.nombre_estado='APROBADO CREDITOS'";
-            if($resultRol=="Contador / Jefe de RR.HH")$where="estado.nombre_estado='APROBADO RECAUDACIONES'";
-            if($resultRol=="Gerente")$where="estado.nombre_estado='APROBADO CONTADOR'";
-            if($resultRol=="Jefe de tesorería")$where="estado.nombre_estado='APROBADO GERENTE'";
-            if(!(empty($fecha_reporte)))
-            {
-                $elementos_fecha=explode("-",$fecha_reporte);
-                $where.=" AND anio_creditos_trabajados_cabeza=".$elementos_fecha[0]." AND  mes_creditos_trabajados_cabeza=".$elementos_fecha[1]." AND
-                         dia_creditos_trabajados_cabeza=".$elementos_fecha[2];
-            }
+        if($resultRol=="Jefe de crédito y prestaciones") $where="1=1";
+        if($resultRol=="Jefe de recaudaciones")$where="estado.nombre_estado='APROBADO CREDITOS'";
+        if($resultRol=="Contador / Jefe de RR.HH")$where="estado.nombre_estado='APROBADO RECAUDACIONES'";
+        if($resultRol=="Gerente")$where="estado.nombre_estado='APROBADO CONTADOR'";
+        if($resultRol=="Jefe de tesorería")$where="estado.nombre_estado='APROBADO GERENTE'";
+        if(!(empty($fecha_reporte)))
+        {
+            $elementos_fecha=explode("-",$fecha_reporte);
+            $where.=" AND anio_creditos_trabajados_cabeza=".$elementos_fecha[0]." AND  mes_creditos_trabajados_cabeza=".$elementos_fecha[1]." AND
+                     dia_creditos_trabajados_cabeza=".$elementos_fecha[2];
+        }
             $id="id_creditos_trabajados_cabeza";
             
             $html="";
@@ -227,9 +227,7 @@ class RevisionCreditosController extends ControladorBase{
                 
                 $html.='</tr>';
             
-            
-            
-            
+                                    
             $html.='</tbody>';
             $html.='</table>';
             $html.='</section></div>';
@@ -275,8 +273,8 @@ class RevisionCreditosController extends ControladorBase{
             		ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
         
         if($resultRol=="Jefe de crédito y prestaciones") $where="1=1";
-        if($resultRol=="Jefe de recaudaciones")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";;
-        if($resultRol=="Contador / Jefe de RR.HH")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=93 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($resultRol=="Jefe de recaudaciones")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza >= 92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";;
+        if($resultRol=="Contador / Jefe de RR.HH")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza >= 93 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if($resultRol=="Gerente")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=95 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if($resultRol=="Jefe de tesorería")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=96 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if(!(empty($fecha_reporte)))

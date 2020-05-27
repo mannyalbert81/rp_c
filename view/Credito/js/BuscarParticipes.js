@@ -1764,7 +1764,8 @@ function SubirInformacionCredito()  //proceso para los registros del credito
 			  		  icon: "success",
 			  		  button: "Aceptar",
 			  		}).then((value) => {
-			  			window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
+			  			//window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self'); //
+			  			window.open('index.php?controller=PrincipalBusquedas&action=index', '_self');
 						 });
 				}
 			else

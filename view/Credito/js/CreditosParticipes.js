@@ -67,18 +67,77 @@ $(document).ready( function (){
 	$(":input").inputmask();
 	
 	// CARGO LOS TIPOS DE CREDITO AL COMBO BOX
-	GetTipoCreditos();
+	//GetTipoCreditos();
 	
-	obtener_tipo_creditos();	
+	obtener_tipo_creditos();
 	
-	iniciar_cedula();
+	iniciar_datos_solicitud();	
 	
+	//iniciar eventos de elementos de la vista
 	iniciar_eventos_controles();
 	
-	//iniciar elementos 
+	//iniciar atributos de ciertos elementos en la vista
 	iniciar_elementos();
 		
 });
+
+let iniciar_datos_solicitud	= async() => {
+	
+	try
+	{
+		//validamos los datos de la vista 
+		if( !view.hdn_id_solicitud.val().length || view.hdn_id_solicitud.val() == 0 || view.hdn_cedula_participes.val() == "" || !view.hdn_cedula_participes.val().length ) throw "SWAL DATOS DE SOLICITUD NO CARGADOS";
+						
+		//validamos requisitos de Solictud para proceder al credito
+		//--si tiene moras
+		let misCabeceras = {'Content-Type':"application/json"};
+		let data = { 'cedula_participes' : view.hdn_id_solicitud.val() };
+		data = JSON.stringify(data);
+		let miInit = { method: 'POST',
+			   headers: misCabeceras,
+			   mode: 'cors',
+			   cache: 'default',
+			   body: data};
+		let response	= await fetch('index.php?controller=CreditosParticipes&action=validarDatosSolicitud',miInit)
+		let result		= await response.json();
+		respuesta		= result;
+		
+		if( respuesta.estatus != undefined && respuesta.estatus == "OK" )
+		{
+			//agregamos elementos a la vista
+			view.html_boton_buscar_participe.html("");
+			view.html_boton_buscar_participe.html( '<button type="button" class="btn btn-primary" id="buscar_participe" ><i class="glyphicon glyphicon-search"></i></button>' );
+			//establecemos cedula del participe en la vista
+			view.cedula_participes.val( view.hdn_cedula_participes.val() ) ;
+			//agregamos elemnto al modelo de la pagina
+			view.boton_buscar_participe	= $("#buscar_participe");		
+			//ENLAZAR EVENTO BUSCAR PARTICIPE CON CLICK
+			$('body').on('click',"#buscar_participe",function(){				
+				buscar_datos_creditos();
+			});		
+			//ACTIVAR BOTON
+			$("#buscar_participe").click();
+			
+		}else
+		{
+			var mensaje = x.mensaje || "ERROR AL PROCESAR LOS DATOS";
+			swal({title:"ERROR",text:mensaje,icon:"error",dangerMode:true});
+		}
+					
+	}catch(err)
+	{
+		if( err.includes("SWAL") )
+		{
+			var regex 	= /swal/gi;
+			var mensaje = err.replace(regex,'') + " \n PROCESO TERMINADO ";
+			swal({title:"ERROR",text:mensaje,icon:"error",dangerMode:true});
+		}else
+		{
+			console.error(err);
+		}		
+	}
+	
+} 
 
 var iniciar_elementos	= function(){
 	
@@ -157,14 +216,26 @@ var setValTipoCreditos = function(a){
 		
 	
 	}catch(err){
-		console.log('ERROR AL IDENTIFICAR TIPO DE CREDITO DE LA SOLICITUD REALIZADA');
-		console.log(err);
+		console.error('ERROR AL IDENTIFICAR TIPO DE CREDITO DE LA SOLICITUD REALIZADA');
+		console.error(err);
 		view.tipo_creditos.val('0');
 	}
 }
 
 var iniciar_eventos_controles	= function(){
 	
+	//$('[data-toggle="popover"]').popover();
+	
+	$("#btn_mostrar_numero_aportes").on('click',function(e){
+		//$(this).off(e);
+		//obtener_aportes_lista_validacion();
+		//obtener_aportes_validacion(this);
+	});
+	
+	$("#div_pnl_aportes_validacion").on('show.bs.collapse',function(){
+		obtener_aportes_lista_validacion();
+	});
+		
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {	    
 		//realizar desplazamiento
 		/*var href = $(this).attr('href');
@@ -232,30 +303,22 @@ var iniciar_eventos_controles	= function(){
 		}
 		
 	})
-
-}
-
-var iniciar_cedula	= function(){
 	
-	if( view.hdn_cedula_participes.val() != "" ){
-		view.html_boton_buscar_participe.html("");
-		view.html_boton_buscar_participe.html('<button type="button" class="btn btn-primary" id="buscar_participe" ><i class="glyphicon glyphicon-search"></i></button>');
-		
-		view.cedula_participes.val( view.hdn_cedula_participes.val() ) ;
-		
-		view.boton_buscar_participe	= $("#buscar_participe");
-		
-		$('body').on('click',"#buscar_participe",function(){
-			
-			Iniciar( view.hdn_cedula_participes.val(), view.hdn_id_solicitud.val() );
-			
-			buscar_datos_creditos();
-		})
-	}
+	//ESTE EVENTE PErmITE JUGAR CON LOS BOTONES DE COLLAPSED
+	$(".botones-expandibles button[data-toggle='collapse']").on('click',function(){
+		var tag = $(this);
+        var expanded = ( tag.attr("aria-expanded") == undefined ) ? "false" : tag.attr("aria-expanded");
+	    if( expanded == "true" )
+	    { 
+	    	tag.removeClass('btn-info').addClass('btn-default');
+	    	
+	    }else
+	    {
+	    	tag.removeClass('btn-default').addClass('btn-info');
+	    }
+	})
+
 }
-
-
-
 
 var buscar_datos_creditos = function(){
 	
@@ -407,8 +470,7 @@ var obtener_informacion_participe	= function(){
 	    data: {
 	    	cedula_participe:view.cedula_participes.val(),
 	 	    },
-	})
-	.done(function(x) {
+	}).done(function(x) {
 		
 		//CARGAR INFORMACION DE PARTCIPE CON RELACION A LA SOLICITUD DE CREDITO
 		$("#div_pnl_info_participe").html( x.html );
@@ -419,22 +481,19 @@ var obtener_informacion_participe	= function(){
 			
 			if( !dataSolicitud.estado_solicitud ){
 				
+				//mostrar mensaje de Erroress
 				dataSolicitud.mensaje_solicitud = dataSolicitud.mensaje_solicitud || 'El participe no puede acceder a un crédito en este momento';
-				var alertHtml = '<div class="alert alert-warning alert-dismissible fade in">'+
-								    '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
-								    '<strong>Advertencia!</strong>'+dataSolicitud.mensaje_solicitud+
-								  '</div>';
-				$("#div_pnl_respuesta_informacion").html( alertHtml );
-				
+				activar_mensaje_texto( dataSolicitud.mensaje_solicitud );				
 			}
 			
 			iniciar_datos_simulacion();
 			
+			obtener_historial_moras();
+			
 		}	
 		
 		
-	})
-	.fail(function() {
+	}).fail(function() {
 	    console.log("error");
 	});
 	
@@ -471,6 +530,8 @@ var iniciar_datos_simulacion = function(){
 		view.monto_creditos.attr("readonly",false);  
 		view.btn_numero_cuotas.attr("disabled",false);
 		
+		//BUSCAR SI TIENE CREDITOS A RENOVAR
+		obtener_creditos_renovacion();
 		
 		var html_agregar_garante	= "<label for=\"txt_cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
 				"<div class=\"input-group\">"+
@@ -532,6 +593,7 @@ var iniciar_datos_simulacion = function(){
 			}
 			
 		}else{
+			
 			console.log("TIPO DE CREDITO NO PARAMETRIZADO")
 		}
 			
@@ -545,6 +607,7 @@ var iniciar_datos_simulacion = function(){
 		view.btn_capacidad_pago.attr("disabled",true);
 		view.monto_creditos.attr("readonly",true);  
 		view.btn_numero_cuotas.attr("disabled",true);
+		swal({title:"ERROR DE CARGA", text:"Tuvimos problemas al cargar la informacion por favor Reload la pagina",icon:"error",dangerMode:true});
 	}
 	
 	//$('.nav-tabs a[href="#panel_info"]').tab('show'); //navegar a la pantalla de informacion en tab navs principal
@@ -597,7 +660,7 @@ var analisis_capacidad_pago	= function(){
 				view.monto_creditos.val( cuentaIndividual );
 				
 				//llamo funcion que busca creditos a renovar
-				obtener_creditos_renovacion();
+				//obtener_creditos_renovacion();
 								
 			}
 			
@@ -640,7 +703,7 @@ var obtener_creditos_renovacion	= function(){
 	console.log("empezamos a traer creditos para renovacion..");
 	
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=obtenerCreditosRenovar',
+	    url: 'index.php?controller=CreditosParticipes&action=obtenerCreditosRenovar',
 	    type: 'POST',
 	    dataType: 'json',
 	    data: {
@@ -650,6 +713,11 @@ var obtener_creditos_renovacion	= function(){
 	}).done(function(x) {		
 		// IMPRIMO EN LA VISTA LOS CREDITOS A RENOVAR
 		$('#div_pnl_creditos_renovacion').html( x.html );
+		
+		var cantidad_creditos = ( x.cantidad != undefined ) ? x.cantidad : 0;		
+		
+		$("#lbl_numero_creditos_renovacion").text( cantidad_creditos );
+		
 	}).fail(function() {
 	    console.log("error");
 	});
@@ -1010,13 +1078,11 @@ var validar_valores_simulacion	= function(){
 		
 		if( parseFloat( view.monto_creditos.val() ) > parseFloat( limite_credito ) )
 		{
-			view.monto_creditos.notify("Monto máximo $"+limite,{ position:"buttom left", autoHideDelay: 2000});
+			view.monto_creditos.notify("Monto máximo $"+limite_credito,{ position:"buttom left", autoHideDelay: 2000});
 			view.monto_creditos.val( limite_credito );
 			return false;
 		}
-		
-		
-				
+						
 		
 	}else
 	{
@@ -1058,15 +1124,15 @@ var buscar_numero_cuotas	= function(){
 		    },
 		}).done(function(x) {
 			
-			if( x.estatus != undefined && x.estatus == "OK" ){
-				
-				if( x.cuotas != undefined ){
-					
+			if( x.estatus != undefined && x.estatus == "OK" )
+			{				
+				if( x.cuotas != undefined )
+				{					
 					var cuotas = x.cuotas;
 					view.numero_cuotas.empty();
 					view.numero_cuotas.attr("disabled",false);
 					$.each( cuotas, function(i,value){
-						view.numero_cuotas.append('<option value="'+value+'">'+value+'</option>');
+						view.numero_cuotas.append('<option value="'+value.plazo+'"> plazo:'+value.plazo+' | cuota: '+value.valor+'</option>');
 					})
 				}
 				
@@ -1078,13 +1144,13 @@ var buscar_numero_cuotas	= function(){
 				//la simulacion debe hacer el boton especifico
 				swal({title:"INFORMACION",text:"PUEDE CONTINUAR CON LA SIMULACION DEL CREDITO"});
 				view.btn_generar_simulacion.attr("disabled",false);
-				simular_credito_amortizacion();
-				agregar_evento_guardar_credito();
+				//simular_credito_amortizacion();
+				//agregar_evento_guardar_credito();
 												
 			}
 			
-			if( x.estatus != undefined && x.estatus == "ERROR" ){
-				
+			if( x.estatus != undefined && x.estatus == "ERROR" )
+			{				
 				view.numero_cuotas.append('<option value="0">--Seleccione--</option>');
 				console.error('Error al obtener cuotas para el credito');
 			}
@@ -1111,11 +1177,10 @@ var buscar_numero_cuotas	= function(){
 		}).done(function(x) {
 			
 						
-			if( x.estatus != undefined && x.estatus == "OK" ){
-				
-				
-				if( x.cuotas != undefined ){
-					
+			if( x.estatus != undefined && x.estatus == "OK" )
+			{	
+				if( x.cuotas != undefined )
+				{					
 					var cuotas = x.cuotas;
 					view.numero_cuotas.empty();
 					view.numero_cuotas.attr("disabled",false);
@@ -1127,27 +1192,27 @@ var buscar_numero_cuotas	= function(){
 				var monto_validado = ( x.monto != undefined ) ? x.monto : 0;
 				view.monto_creditos.val( monto_validado );
 				
-				if( x.pago_garante != undefined && x.pago_garante >= 0 ){
-					
+				if( x.pago_garante != undefined && x.pago_garante >= 0 )
+				{					
 					view.capacidad_pago_garante.css({'background-color':"#fff"});
 					view.global_capacidad_pago_garante_suficiente	=	true;
 					
-				}else{
-					
+				}else
+				{					
 					view.capacidad_pago_garante.css({'background-color':"#F5B7B1"});					
 					activar_mensaje_texto("Capacidad de pago no es Suficiente"); //SINTAXERROR
 				}
 				
 				//mandar la funcion de simulacion credito SINTAXERROR
 				swal({title:"INFORMACION",text:"PUEDE CONTINUAR CON LA SIMULACION DEL CREDITO"});
-				simular_credito_amortizacion();				
+				//simular_credito_amortizacion();				
 				view.btn_generar_simulacion.attr("disabled",false);
-				agregar_evento_guardar_credito();
+				//agregar_evento_guardar_credito();
 				
 			}
 			
-			if( x.estatus != undefined && x.estatus == "ERROR" ){
-				
+			if( x.estatus != undefined && x.estatus == "ERROR" )
+			{				
 				view.numero_cuotas.append('<option value="0">--Seleccione--</option>');
 				console.error('Error al obtener cuotas para el credito con garante');
 			}
@@ -1171,49 +1236,70 @@ var simular_credito_amortizacion = function(){
 	view.global_hay_solicitud	= ( sin_solicitud ) ? 0 : 1;
 	
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=SimulacionCredito',
+	    url: 'index.php?controller=SimulacionCreditos&action=obtenerSimulacionCredito',
 	    type: 'POST',
+	    dataType: 'json',
 	    data: {
 	    	'monto_credito':valor_monto,
 	    	'tipo_credito':valor_tipo_creditos,
 	    	'plazo_credito':valor_cuotas,
 	    	//para ver si va o no a renovar
-	    	'renovacion_credito':renovacion_credito,
-	    	'id_solicitud':solicitud,
+	    	'renovacion_credito':renovacion_credito, //SINTAXERROR
+	    	'id_solicitud':id_solicitud,
 	    	'avaluo_bien':avaluo_bien_sin_solicitud
 	    },
 	}).done(function(x) {
 		
-		$("#div_tabla_amortizacion").html(x);
+		$("#div_tabla_amortizacion").html( "" );
 		
-		if( view.global_hay_garantes )
+		if( x.estatus != undefined && x.estatus == "OK" )
 		{
-			var cuota_numero_dos	= 0;
-			var seguro_desgravamen_dos	= 0;
+			$("#div_tabla_amortizacion").html( x.html );
 			
-			//validacion para buscar segunda fila sexta columna de tabla amortizacion generada --valor cuota
-			if( $("#div_tabla_amortizacion").find('table:nth-child(1) tr:nth-child(2) td:nth-child(6)').length ){ 
-				var texto_cuota = $("#div_tabla_amortizacion").find('table:nth-child(1) tr:nth-child(2) td:nth-child(6)').text();
-				cuota_numero_dos = texto_cuota.replace(",", "");
-			}
-			
-			//validacion para buscar segunda fila quinta columna de tabla amortizacion generada --valor desgravamen
-			if( $("#div_tabla_amortizacion").find('table:nth-child(1) tr:nth-child(2) td:nth-child(5)').length ){ 
-				var texto_seguro_desgravamen = $("#div_tabla_amortizacion").find('table:nth-child(1) tr:nth-child(2) td:nth-child(6)').text();
-				seguro_desgravamen_dos 		= texto_seguro_desgravamen.replace(",", "");
-			}
-			
-			if( parseFloat( cuota_numero_dos ) > parseFloat( view.capacidad_pago_garante.val() ) ){
-				 
-				 view.capacidad_pago_garante.css({'background-color': "#F5B7B1"})
-				 activar_mensaje_texto("Capacidad Pago No cubre cuota de Amortizacion"); //SINTAXERROR
-			}else
+			if( view.global_hay_garantes )
 			{
-				view.capacidad_pago_garante.css({'background-color':"#fff"});
-			}
-		}//end if( view.global_hay_garantes )
-		
-		swal( {title:"INFORMACION",text:"Tabla Amortizacion cargada",icon:"info",buttons:false,timer:1000} );
+				var cuota_numero_dos	= 0;
+				var seguro_desgravamen_dos	= 0;
+				
+				//validacion para buscar segunda fila sexta columna de tabla amortizacion generada --valor cuota
+				if( $("#div_tabla_amortizacion").find('table:nth-child(1) tr:nth-child(2) td:nth-child(6)').length )
+				{ 
+					var texto_cuota = $("#div_tabla_amortizacion").find('table:nth-child(1) tr:nth-child(2) td:nth-child(6)').text();
+					cuota_numero_dos = texto_cuota.replace(",", "");
+				}
+				
+				//validacion para buscar segunda fila quinta columna de tabla amortizacion generada --valor desgravamen
+				if( $("#div_tabla_amortizacion").find('table:nth-child(1) tr:nth-child(2) td:nth-child(5)').length )
+				{ 
+					var texto_seguro_desgravamen = $("#div_tabla_amortizacion").find('table:nth-child(1) tr:nth-child(2) td:nth-child(6)').text();
+					seguro_desgravamen_dos 		= texto_seguro_desgravamen.replace(",", "");
+				}
+				
+				if( parseFloat( cuota_numero_dos ) > parseFloat( view.capacidad_pago_garante.val() ) )
+				{					 
+					 view.capacidad_pago_garante.css({'background-color': "#F5B7B1"})
+					 activar_mensaje_texto("Capacidad Pago No cubre cuota de Amortizacion"); //SINTAXERROR
+				}else
+				{
+					view.capacidad_pago_garante.css({'background-color':"#fff"});
+				}
+			}//end if( view.global_hay_garantes )
+			
+			swal( {title:"INFORMACION",text:"Tabla Amortizacion cargada",icon:"info",buttons:false,timer:1000} );
+			
+			//ENLAZAR EVENTO DE BOTON DE GUARDAR SIMULACION TABLA AMORTIZACION
+			$("#btn_guardar_simulacion_credito").on('click',function(){
+				validar_valores_guardar_credito();
+			});
+			
+			$("#btn_imprimir_simulacion_credito").on('click',function(){
+				imprimir_tabla_amortizacion();
+			});
+						
+		}else
+		{
+			swal( {title:"ALERTA",text:"Error al cargar Tabla Amortizacion ",icon:"warning",buttons:false,timer:1000} );
+		}			
 				
 	}).fail(function() {
 	    console.log("error");
@@ -1248,7 +1334,7 @@ var agregar_evento_guardar_credito	= function(){
 
 var validar_valores_guardar_credito	= function(){
 	
-	console.error("SE CAMBIO LOS METOS");
+	console.info("COMENZO FUNCION ABRIR MODAL");
 	
 	if( view.global_hay_garantes )
 	{
@@ -1311,6 +1397,17 @@ var validar_valores_guardar_credito	= function(){
 }
 
 var mostrar_verificacion_codigo	= function(){
+	
+	//BUSCAR BOTON ACEPTAR LA SIMULACION TABLA AMORTIZACION 
+	var boton_confirmar_codigo	= $("#registrar_credito");
+	if( boton_confirmar_codigo.length ){
+
+		boton_confirmar_codigo.attr('onclick','').unbind('click');
+		boton_confirmar_codigo.on('click',function(){
+			console.info("INICIA LA VALIDACION DE MODAL PARA INSERTAR EL CREDITO");
+			validar_codigo_generado();
+		});
+	}
 	
 	var elementmodal = $('#myModalInsertar');
 	elementmodal.find("#observacion_confirmacion").val("");
@@ -1375,7 +1472,7 @@ var registrar_credito_nuevo	= function(){
 	if( !view.global_hay_renovacion )
 	{
 		$.ajax({
-		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionCredito',
+		    url: 'index.php?controller=SimulacionCreditos&action=InsertarSimulacionCredito',
 		    type: 'POST',
 		    data: {
 		    	monto_credito: monto_credito,
@@ -1400,7 +1497,8 @@ var registrar_credito_nuevo	= function(){
 			  		  icon: "success",
 			  		  button: "Aceptar",
 			  		}).then((value) => {
-			  			window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
+			  			//window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
+			  			window.open('index.php?controller=PrincipalBusquedas&action=index', '_self');
 					 });
 			}
 			else
@@ -1443,7 +1541,8 @@ var registrar_credito_nuevo	= function(){
 		  		  icon: "success",
 		  		  button: "Aceptar",
 		  		}).then((value) => {
-		  			window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
+		  			//window.open('index.php?controller=SolicitudPrestamo&action=index5', '_self');
+		  			window.open('index.php?controller=PrincipalBusquedas&action=index', '_self');
 				 });
 			}
 			else
@@ -1463,6 +1562,82 @@ var registrar_credito_nuevo	= function(){
 	
 }
 
+var obtener_aportes_validacion	= function(a){
+	
+	var element = $(a);
+	
+	if( element.length ){			
+		
+		element.popover({
+		    html: true,
+		    placement:'auto',
+		    trigger: 'hover',
+		    content: 'Cargando..'
+		  });
+		
+		$.ajax({
+			url: 'index.php?controller=CreditosParticipes&action=obtenerAportesValidacion',
+			method: 'POST',
+			dataType: 'json',
+			async: false,
+			data:{ id_participe : view.hdn_id_participes.val() }
+		}).done(function(x){
+			element.data('bs.popover').options.content = x.html;			
+		}).fail(function(xhr, status, error){
+			element.data('bs.popover').options.content = "<span> Datos No encontrados.</span>";
+		});
+		
+		element.popover('show');
+		
+	}
+}
+
+var obtener_aportes_lista_validacion	= function(){
+	
+	var element = $("#div_pnl_aportes_validacion");
+	if( element.length ){	
+		
+		element.html('<div class="text-center"><img src="view/images/ajax-loader.gif"> Cargando...</div>');
+		
+		$.ajax({
+			url: 'index.php?controller=CreditosParticipes&action=obtenerAportesValidacion',
+			method: 'POST',
+			dataType: 'json',
+			data:{ id_participe : view.hdn_id_participes.val() }
+		}).done(function(x){
+			element.html(x.html);		
+		}).fail(function(xhr, status, error){
+			element.html('<span> Datos No encontrados.</span>');
+		});
+		
+		//element.collapse("show")
+				
+	}
+}
+
+var obtener_historial_moras	= function(){
+	
+	var element = $("#div_pnl_historial_moras");
+	if( element.length ){	
+		
+		element.html('<div class="text-center"><img src="view/images/ajax-loader.gif"> Cargando...</div>');
+		
+		$.ajax({
+			url: 'index.php?controller=CreditosParticipes&action=obtenerHistorialMoras',
+			method: 'POST',
+			dataType: 'json',
+			data:{ id_participe : view.hdn_id_participes.val() }
+		}).done(function(x){
+			element.html(x.html);		
+		}).fail(function(xhr, status, error){
+			element.html('<span> ERROR al buscar datos encontrados.</span>');
+		});
+		
+		//element.collapse("show")
+				
+	}
+}
+
 var obtener_fecha_actual	= function(){	
 	var d = new Date();
 	var month = d.getMonth()+1;
@@ -1470,6 +1645,54 @@ var obtener_fecha_actual	= function(){
 	var output = d.getFullYear() + '-' + ( ( ''+ month ).length < 2 ? '0' : '' ) + month + '-' + ( (''+day).length < 2 ? '0' : '' ) + day;
 	return output;
 }
+
+var imprimir_tabla_amortizacion	= function(){
+	
+	var DataDetalle = $("#div_tabla_amortizacion").find('table:nth-child(1)');
+	var arrayData = [];
+	var arrayFila = [];
+	if( DataDetalle.length )
+	{
+	    $.each(DataDetalle.find('tbody tr'),function(i,v){
+	        var fila = $(this);
+	        $.each(fila.find('td'),function(ia,va){
+	            var columna    = $(this);
+	            //console.log("ESTAMOS EN LA COLUMNA"+ia);
+	            //console.log(columna.text());
+	            arrayFila.push( columna.text())
+	        })
+	        arrayData.push(arrayFila);
+	        arrayFila=[];
+	        //console.log("AQUI VALOR I--> "+i+" AQUI VALOR V --> "+v.cells[1].innerHTML);
+	    })
+	    
+	    var params = { "datos_tabla":JSON.stringify(arrayData), 
+	    	"tipo_creditos":view.tipo_creditos.find("option:selected").text(), 
+	    	"monto_creditos":view.monto_creditos.val() }
+		
+		var form = document.createElement("form");
+		form.setAttribute("id", "frm_reporte_simulacion");
+	    form.setAttribute("method", "post");
+	    form.setAttribute("action", "index.php?controller=CreditosParticipes&action=imprimirSimulacionCredito");
+	    form.setAttribute("target", "_blank");   
+	    
+	    for (var i in params) {
+	        if (params.hasOwnProperty(i)) {
+	            var input = document.createElement('input');
+	            input.type = 'hidden';
+	            input.name = i;
+	            input.value = params[i];
+	            form.appendChild(input);
+	        }
+	    }
+	        
+	    document.body.appendChild(form); 
+	    form.submit();    
+	    document.body.removeChild(form);	    
+	} 	
+}
+
+
 
 /**** TERMINAMOS CON LA INSERSION DE CREDITOS *****/ 
 

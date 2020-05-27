@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
     <link rel="stylesheet" href="view/estilos/principal/imagenHover.css">
+    <link rel="stylesheet" href="view/credito/html/css/scrolltable.css?0.2">
     
  	<style type="text/css">
  	  .loader {
@@ -79,6 +80,20 @@
         box-shadow: none;
         opacity: .65;
     } 
+    
+    #div_pnl_aportes_validacion li{
+    padding: 3px 15px;
+    }
+    
+    #div_pnl_aportes_validacion li p{
+    margin: 0px;
+    }
+    
+    span.tabulacion{
+        display: inline-block;
+        width: 150px;
+    }
+    
  	</style>
    
   			        
@@ -160,7 +175,7 @@
            	
            	<!-- DATOS HIDDEN -->
            	<input type="hidden" id="hdn_id_solicitud" value=" <?php echo isset( $id_solicitud ) ? $id_solicitud : 0 ; ?>">
-           	<input type="hidden" id="hdn_cedula_participes" value="<?php echo isset( $cedula_participes ) ? $cedula_participes : 0 ; ?>">
+           	<input type="hidden" id="hdn_cedula_participes" value="<?php echo isset( $cedula_participes ) ? $cedula_participes : "" ; ?>">
            	<input type="hidden" id="hdn_id_participes" value="0">
            	<input type="hidden" id="hdn_cedula_garante" value="">
            	<!-- TERMINA DATOS HIDDEN -->
@@ -182,7 +197,7 @@
                     		<?php include 'view/credito/html/panelindex.php'; ?>
                     	</div>
                     	<div class="tab-pane" id="panel_info">
-                    	
+                    		<!-- AQUI VA LA INFORMACION DE LA SOLICITUD -->
                     		<div id="div_pnl_info_solicitud">
                     			<h3 class="titulo">INFORMACION SOLICITUD</h3>
                     			<div class="box-footer no-padding">
@@ -191,17 +206,56 @@
                             	</div>
                     		</div>
                     		<br>
+                    		<!-- AQUI VA LA INFORMACION DEL PARTCIPE QUE QUIERE EL CREDITO SOLICITUD -->
 							<div id="div_pnl_info_participe">
 							</div>	
-							<br>
+							
+							<!-- AQUI VA INFORMACION DE ERRORES -->
+							<div id="div_pnl_respuesta_informacion">
+							</div>
+							
+							<!-- AQUI VA SECCION DE BOTONES QUE MUESTRAN CONTENIDO POR TOGGLE -->
 							<div class="row">
-								<div id="div_pnl_creditos_renovacion">
-								</div>	
+							
+								<div class="pull-right botones-expandibles">
+									
+									<button id="btn_mostrar_historial_moras"  data-toggle="collapse" data-target="#div_pnl_historial_moras" title="Historial Moras" class="btn btn-default"  >Historial Moras     		
+									<i class="fa   fa-line-chart" aria-hidden="true"></i>						
+    								</button>
+    																	
+									<button id="btn_mostrar_numero_aportes" data-toggle="collapse" title="3 Ultimos Aportes" class="btn  btn-default" data-target="#div_pnl_aportes_validacion" >Aportes     		
+									<i class="fa  fa-bar-chart" aria-hidden="true"></i>						
+    								</button>
+    								
+    								<button id="btn_mostrar_creditos_renovacion" class="btn  btn-default" data-toggle="collapse"  data-target="#div_pnl_creditos_renovacion">Renovaci&oacute;n 
+    								<span id="lbl_numero_creditos_renovacion" class="badge badge-pill"> 0 </span>
+    								</button>
+    								
+								</div>
+								
+								<div class="clearfix"></div>
+								
+								<div id="div_pnl_historial_moras" class="collapse">
+                                <!-- Aqui va la informacion de creditos de renovacion -->
+                                </div>
+                                
+                                <div class="clearfix"></div>
+                                	
+								<div id="div_pnl_aportes_validacion" class="collapse">
+                                <!-- Aqui va la informacion de creditos de renovacion -->
+                                </div>		
+                                
+                                <div class="clearfix"></div>					
+
+                                <div id="div_pnl_creditos_renovacion" class="collapse">
+                                <!-- Aqui va la informacion de creditos de renovacion -->
+                                </div>
+                                
+                                
 							</div>	
 							
-							<div id="div_pnl_respuesta_informacion">
-							</div>					
-							<hr>
+							<br>
+							
 							<div id="div_pnl_simulacion_credito">
 								<div class="row">		    	 
                 		    	 	<div class="col-xs-12 col-md-3 col-lg-3 ">
@@ -637,6 +691,6 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?0.23"></script> 
+   <script src="view/Credito/js/CreditosParticipes.js?0.33"></script> 
    </body>
 </html>   

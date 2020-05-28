@@ -714,7 +714,7 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	    
 	    $tablas = " (select to_char(fecha_registro_contribucion,'YYYY') as anio
                 	from core_contribucion
-                	where id_participes = '$id_participes'
+                	where id_participes = '$id_participes' and  id_contribucion_tipo=7
                 	group by to_char(fecha_registro_contribucion,'YYYY')
                 	order by to_char(fecha_registro_contribucion,'YYYY')
                 	) aa";
@@ -769,19 +769,19 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	        $html.='<tr>';
 	        
 	        $html.='<td style="font-size: 10px;">'.$res->anio.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->enero.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->febrero.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->marzo.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->abril.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->mayo.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->junio.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->julio.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->agosto.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->septiembre.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->octubre.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->noviembre.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->diciembre.'</td>';
-	        $html.='<td style="font-size: 10px;"align="right">'.$res->acumulado.'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->enero, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->febrero, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->marzo, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->abril, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->mayo, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->junio, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->julio, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->agosto, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->septiembre, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->octubre, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->noviembre, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->diciembre, 2, ",", ".").'</td>';
+	        $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$res->acumulado, 2, ",", ".").'</td>';
 	        
 	        
 	        
@@ -864,7 +864,7 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	    
 	    $tablas = " (select to_char(fecha_registro_contribucion,'YYYY') as anio
                 	from core_contribucion
-                	where id_participes = '$id_participes'
+                	where id_participes = '$id_participes' and id_contribucion_tipo = 10
                 	group by to_char(fecha_registro_contribucion,'YYYY')
                 	order by to_char(fecha_registro_contribucion,'YYYY')
                 	) aa";

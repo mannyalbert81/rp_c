@@ -503,10 +503,10 @@
 	    $where= "     core_creditos_cierre_mes.id_participes = core_participes.id_participes AND
                       core_creditos.id_creditos = core_creditos_cierre_mes.id_creditos AND
                       core_estado_creditos.id_estado_creditos = core_creditos.id_estado_creditos";
-	    //$id="core_creditos_cierre_mes.id_creditos_cierre_mes";
-	    $id=" ORDER BY core_creditos_cierre_mes.id_creditos_cierre_mes LIMIT 100";
-	    //$rsdatos = $reporte_cierre_mes->getCondiciones($columnas, $tablas, $where, $id);
-	    $rsdatos = $reporte_cierre_mes->getCondicionesSinOrden($columnas, $tablas, $where, $id);
+	    $id="core_creditos_cierre_mes.id_creditos_cierre_mes";
+	    //$id=" ORDER BY core_creditos_cierre_mes.id_creditos_cierre_mes LIMIT 100";
+	    $rsdatos = $reporte_cierre_mes->getCondiciones($columnas, $tablas, $where, $id);
+	    //$rsdatos = $reporte_cierre_mes->getCondicionesSinOrden($columnas, $tablas, $where, $id);
 	    
 	   //var_dump($rsdatos); die();
 	 

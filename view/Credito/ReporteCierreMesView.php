@@ -76,7 +76,7 @@
     			<div id="ConsultaReporteCierreMes"></div>  
     	    	<div id="consulta_cierre_mes_registrados_tbl" ></div>
     	    	<div id="divLoaderPage" ></div>
-			    <button type="submit" id="btExportar" name="exportar" class="btn btn-success">Exportar Ecxel</button>
+			    <button type="submit" id="btExportar" name="exportar" class="btn btn-success">Exportar Excel</button>
     
             </div> 	
             

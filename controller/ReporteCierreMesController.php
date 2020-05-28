@@ -206,13 +206,9 @@
 	            {
 	                
 	                
-	               // $_id_creditos_cierre_mes = $res->id_creditos_cierre_mes;
-	                
 	                
 	                $i++;
 	                $html.='<tr>';
-	               
-	                       
 	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->numero_creditos.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
@@ -499,7 +495,7 @@
                       core_participes.cedula_participes, 
                       core_creditos_cierre_mes.fecha_ultimo_pago_capital, 
                       core_creditos_cierre_mes.estado_credito_sbs, 
-                      ABS(core_creditos_cierre_mes.dias_vencidos_sbs)";
+                      ABS(core_creditos_cierre_mes.dias_vencidos_sbs) as dias_mora";
 	    $tablas =  "  public.core_creditos_cierre_mes, 
                       public.core_creditos, 
                       public.core_participes, 
@@ -507,25 +503,47 @@
 	    $where= "     core_creditos_cierre_mes.id_participes = core_participes.id_participes AND
                       core_creditos.id_creditos = core_creditos_cierre_mes.id_creditos AND
                       core_estado_creditos.id_estado_creditos = core_creditos.id_estado_creditos";
-	    $id="core_creditos_cierre_mes.id_creditos_cierre_mes";
+	    //$id="core_creditos_cierre_mes.id_creditos_cierre_mes";
+	    $id=" ORDER BY core_creditos_cierre_mes.id_creditos_cierre_mes LIMIT 100";
+	    //$rsdatos = $reporte_cierre_mes->getCondiciones($columnas, $tablas, $where, $id);
+	    $rsdatos = $reporte_cierre_mes->getCondicionesSinOrden($columnas, $tablas, $where, $id);
 	    
-	    $rsdatos = $reporte_cierre_mes->getCondiciones($columnas, $tablas, $where, $id);
-	    
-	   
+	   //var_dump($rsdatos); die();
 	 
 	    $data_detalle = array();
 	    
 	    $html  = "";
-	    
-	    $html  .= "<table>";
+	    $html.='<table class="12" style="width:98px;" border=1>';
 	    $html  .= "<tr>";
-	    $html  .= "<th>COLUMNA1</th>";
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">#</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">CEDULA</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">APELLIDO</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">NOMBRE</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">N° CRÉDITO</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">MONTO</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">ESTADO</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">ULTIMO PAGO</th>';
+	    $html.='<th colspan="2" style="text-align: center; font-size: 11px;">DIAS MORA</th>';
+	    
 	    $html  .= "</tr>";
 	    
+	    
 	    foreach ( $rsdatos as $res ){
-	        $html  .= "<tr>";
-	        $html  .= "<td>".$res->numero_creditos."</td>";
+	       
+	        $i++;
+	        $html.='<tr>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 9px;" align="center">'.$i.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 9px;" align="center">'.$res->cedula_participes.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 9px;" align="center">'.$res->apellido_participes.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 9px;" align="center">'.$res->nombre_participes.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 9px;" align="center">'.$res->numero_creditos.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 9px;" align="center">'.$res->monto_otorgado_creditos.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 9px;" align="center">'.$res->nombre_estado_creditos.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 9px;" align="center">'.$res->fecha_ultimo_pago_capital.'</td>';
+	        $html.='<td colspan="2" style="text-align: center; font-size: 9px;" align="center">'.$res->dias_mora.'</td>';
+	         
 	        $html  .= "</tr>";
+	        
 	    }
 	    
 	    $html  .= "</table>";

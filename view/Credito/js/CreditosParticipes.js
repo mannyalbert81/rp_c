@@ -1138,15 +1138,18 @@ var buscar_numero_cuotas	= function(){
 				
 				var monto_validado = ( x.monto != undefined ) ? x.monto : 0;
 				view.monto_creditos.val( monto_validado );
+				if( monto_validado >= 150)				{
+					
+					swal({title:"INFORMACION",text:"PUEDE CONTINUAR CON LA SIMULACION DEL CREDITO"});
+					view.btn_generar_simulacion.attr("disabled",false);
+					
+				}else{
+					swal({title:"ADVERTENCIA!",text:"REVISE LOS DATOS. Cuota y plazo obtenidos de acuerdo a los datos enviados",icon:"warning",dangerMode:true});
+				}
 				
-				//mandar la funcion de simulacion credito SINTAXERROR
-				//simular_credito_amortizacion();
-				//la simulacion debe hacer el boton especifico
-				swal({title:"INFORMACION",text:"PUEDE CONTINUAR CON LA SIMULACION DEL CREDITO"});
-				view.btn_generar_simulacion.attr("disabled",false);
-				//simular_credito_amortizacion();
-				//agregar_evento_guardar_credito();
-												
+				//mandar la funcion de simulacion credito SINTAXERROR				
+				$("#div_tabla_amortizacion").html( "" );
+				
 			}
 			
 			if( x.estatus != undefined && x.estatus == "ERROR" )
@@ -1185,7 +1188,7 @@ var buscar_numero_cuotas	= function(){
 					view.numero_cuotas.empty();
 					view.numero_cuotas.attr("disabled",false);
 					$.each( cuotas, function(i,value){
-						view.numero_cuotas.append('<option value="'+value+'">'+value+'</option>');
+						view.numero_cuotas.append('<option value="'+value.plazo+'"> plazo:'+value.plazo+' | cuota: '+value.valor+'</option>');
 					})
 				}
 				
@@ -1203,12 +1206,16 @@ var buscar_numero_cuotas	= function(){
 					activar_mensaje_texto("Capacidad de pago no es Suficiente"); //SINTAXERROR
 				}
 				
-				//mandar la funcion de simulacion credito SINTAXERROR
-				swal({title:"INFORMACION",text:"PUEDE CONTINUAR CON LA SIMULACION DEL CREDITO"});
-				//simular_credito_amortizacion();				
-				view.btn_generar_simulacion.attr("disabled",false);
-				//agregar_evento_guardar_credito();
+				if( monto_validado >= 150)
+				{					
+					swal({title:"INFORMACION",text:"PUEDE CONTINUAR CON LA SIMULACION DEL CREDITO"});
+					view.btn_generar_simulacion.attr("disabled",false);					
+				}else{
+					swal({title:"ADVERTENCIA!",text:"REVISE LOS DATOS. Cuota y plazo obtenidos de acuerdo a los datos enviados",icon:"warning",dangerMode:true});
+				}
 				
+				$("#div_tabla_amortizacion").html( "" );
+								
 			}
 			
 			if( x.estatus != undefined && x.estatus == "ERROR" )
@@ -1278,7 +1285,7 @@ var simular_credito_amortizacion = function(){
 				if( parseFloat( cuota_numero_dos ) > parseFloat( view.capacidad_pago_garante.val() ) )
 				{					 
 					 view.capacidad_pago_garante.css({'background-color': "#F5B7B1"})
-					 activar_mensaje_texto("Capacidad Pago No cubre cuota de Amortizacion"); //SINTAXERROR
+					 activar_mensaje_texto(" Capacidad Pago Garantes No cubre cuota de Amortizacion"); //SINTAXERROR
 				}else
 				{
 					view.capacidad_pago_garante.css({'background-color':"#fff"});
@@ -1657,13 +1664,11 @@ var imprimir_tabla_amortizacion	= function(){
 	        var fila = $(this);
 	        $.each(fila.find('td'),function(ia,va){
 	            var columna    = $(this);
-	            //console.log("ESTAMOS EN LA COLUMNA"+ia);
-	            //console.log(columna.text());
 	            arrayFila.push( columna.text())
 	        })
 	        arrayData.push(arrayFila);
 	        arrayFila=[];
-	        //console.log("AQUI VALOR I--> "+i+" AQUI VALOR V --> "+v.cells[1].innerHTML);
+	        
 	    })
 	    
 	    var params = { "datos_tabla":JSON.stringify(arrayData), 

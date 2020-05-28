@@ -5,8 +5,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
     
     public function index(){
         session_start();
-        $estado = new EstadoModel();
-        $id_rol = $_SESSION['id_rol'];
+
         
         $this->view_principal("PrincipalBusquedasExpedientes",array(
             "result" => ""

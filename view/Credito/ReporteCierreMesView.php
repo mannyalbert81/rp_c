@@ -66,7 +66,7 @@
          <section class="content">
       	<div class="box box-primary">
       		<div class="box-header with-border">
-      			<h3 class="box-title">Cierre Mes</h3>      			
+      			<h3 class="box-title">Créditos en Mora</h3>      			
             </div> 
             <div class="box-body">
     			<div class="pull-right" style="margin-right:15px;">
@@ -76,7 +76,7 @@
     			<div id="ConsultaReporteCierreMes"></div>  
     	    	<div id="consulta_cierre_mes_registrados_tbl" ></div>
     	    	<div id="divLoaderPage" ></div>
-			    <button type="submit" id="btExportar" name="exportar" class="btn btn-info">Exportar</button>
+			    <button type="submit" id="btExportar" name="exportar" class="btn btn-success">Exportar Ecxel</button>
     
             </div> 	
             
@@ -91,7 +91,7 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Credito/js/ReporteCierreMes.js?0.3" ></script>
+ <script src="view/Credito/js/ReporteCierreMes.js?0.4" ></script>
  
  </body>
 </html>

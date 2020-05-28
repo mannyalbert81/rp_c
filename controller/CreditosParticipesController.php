@@ -1299,16 +1299,14 @@ class CreditosParticipesController extends ControladorBase
                     $html.='</tr>';
                 }
                 
-            }
-                        
+            }                        
             $html.='</table>';
                         
         }
         
         $textoDataEmpty    = '<h4 class="dataempty"> NO EXISTEN DATOS PARA MOSTRAR </h4>';
         
-        if( $hayDatos ){
-            
+        if( $hayDatos ){            
             $dictionary['DETALLE_SIMULADOR']   = $html;
         }else{
             $dictionary['DETALLE_SIMULADOR']   = $textoDataEmpty;

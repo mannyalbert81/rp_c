@@ -206,7 +206,7 @@
 	            {
 	                
 	                
-	                $_id_creditos_cierre_mes = $res->id_creditos_cierre_mes;
+	               // $_id_creditos_cierre_mes = $res->id_creditos_cierre_mes;
 	                
 	                
 	                $i++;
@@ -246,6 +246,7 @@
 	            $html.='</tbody>';
 	            $html.='</table>';
 	            $html.='</section></div>';
+	            $html.='<td><a class="btn bg-blue" title="Reporte" href="index.php?controller=ReporteCierreMes&action=ReporteCierreMesPDF" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
 	            $html.='<div class="table-pagination pull-right">';
 	            $html.=''. $this->paginate_consulta_cierre_mes("index.php", $page, $total_pages, $adjacents,"ConsultaReporteCierreMes").'';
 	            $html.='</div>';
@@ -460,7 +461,88 @@
 	}
 	
 	
-    }
+	
+	
+	public function ReporteCierreMesPDF(){
+	    session_start();
+	    
+	    $entidades = new EntidadesModel();
+	    //PARA OBTENER DATOS DE LA EMPRESA
+	    $datos_empresa = array();
+	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
+	    
+	    if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+	        //llenar nombres con variables que va en html de reporte
+	        $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
+	        $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
+	        $datos_empresa['TELEFONOEMPRESA']=$rsdatosEmpresa[0]->telefono_entidades;
+	        $datos_empresa['RUCEMPRESA']=$rsdatosEmpresa[0]->ruc_entidades;
+	        $datos_empresa['FECHAEMPRESA']=date('Y-m-d H:i');
+	        $datos_empresa['USUARIOEMPRESA']=(isset($_SESSION['usuario_usuarios']))?$_SESSION['usuario_usuarios']:'';
+	    }
+	   
+	    
+	    
+	    $reporte_cierre_mes = new ReporteCierreMesModel();
+	    $columnas = " core_creditos_cierre_mes.id_creditos_cierre_mes, 
+                      core_creditos.id_creditos, 
+                      core_creditos.numero_creditos, 
+                      core_creditos.monto_otorgado_creditos, 
+                      core_creditos.saldo_actual_creditos, 
+                      core_creditos.fecha_concesion_creditos, 
+                      core_estado_creditos.id_estado_creditos, 
+                      core_estado_creditos.nombre_estado_creditos, 
+                      core_creditos.plazo_creditos, 
+                      core_creditos.monto_neto_entregado_creditos, 
+                      core_participes.apellido_participes, 
+                      core_participes.nombre_participes, 
+                      core_participes.cedula_participes, 
+                      core_creditos_cierre_mes.fecha_ultimo_pago_capital, 
+                      core_creditos_cierre_mes.estado_credito_sbs, 
+                      ABS(core_creditos_cierre_mes.dias_vencidos_sbs)";
+	    $tablas =  "  public.core_creditos_cierre_mes, 
+                      public.core_creditos, 
+                      public.core_participes, 
+                      public.core_estado_creditos";
+	    $where= "     core_creditos_cierre_mes.id_participes = core_participes.id_participes AND
+                      core_creditos.id_creditos = core_creditos_cierre_mes.id_creditos AND
+                      core_estado_creditos.id_estado_creditos = core_creditos.id_estado_creditos";
+	    $id="core_creditos_cierre_mes.id_creditos_cierre_mes";
+	    
+	    $rsdatos = $reporte_cierre_mes->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	   
+	 
+	    $data_detalle = array();
+	    
+	    $html  = "";
+	    
+	    $html  .= "<table>";
+	    $html  .= "<tr>";
+	    $html  .= "<th>COLUMNA1</th>";
+	    $html  .= "</tr>";
+	    
+	    foreach ( $rsdatos as $res ){
+	        $html  .= "<tr>";
+	        $html  .= "<td>".$res->numero_creditos."</td>";
+	        $html  .= "</tr>";
+	    }
+	    
+	    $html  .= "</table>";
+	    
+	    
+	    $data_detalle['TABLA_REPORTES'] = $html;
+	    
+	    
+	        
+	    $this->verReporte("ReporteCierreMesPDF", array('datos_empresa'=>$datos_empresa, 'data_detalle'=>$data_detalle));
+	        
+	        
+	}
+	
+	
+	
+   }
     
     
     

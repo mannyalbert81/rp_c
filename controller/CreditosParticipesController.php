@@ -1366,6 +1366,67 @@ class CreditosParticipesController extends ControladorBase
         }
         echo " VALOR CUOTA --> ",$valor_cuota;
     }
+    
+    public function obtenerAvaluoHipotecario()
+    {        
+        session_start();
+        $rp_capremci = new PlanCuentasModel();
+        $monto_maximo = 0;
+        
+        $id_solicitud = $_POST['id_solicitud'];
+        $tipo_credito_hipotecario = $_POST['tipo_credito_hipotecario'];
+        $columnas = "valor_avaluo_core_documentos_hipotecario";
+        $tablas = "core_documentos_hipotecario";
+        $where = "id_solicitud_credito=" . $id_solicitud;
+        $avaluo_credito = $rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+        if (sizeof($avaluo_credito) > 0) {
+            $avaluo_credito = $avaluo_credito[0]->valor_avaluo_core_documentos_hipotecario;
+            if ($tipo_credito_hipotecario == 1) {
+                $monto_maximo = $avaluo_credito * 0.8;
+                if ($monto_maximo > 100000)
+                    $monto_maximo = 100000;
+            } else {
+                $monto_maximo = $avaluo_credito * 0.5;
+                if ($monto_maximo > 45000)
+                    $monto_maximo = 45000;
+            }
+            $avaluo_credito = number_format((float) $avaluo_credito, 2, ".", "");
+            $monto_maximo = number_format((float) $monto_maximo, 2, ".", "");
+            $html = '<table>
+        <tr>
+        <td><font size="3">Avalúo del bien : ' . $avaluo_credito . '</font></td>
+        </tr>
+        <tr>
+        <td><font size="3" id="monto_disponible2">Monto máximo a recibir : ' . $monto_maximo . '</font></td>
+        </tr>
+        <tr>
+        <td>
+        <span class="input-group-btn">
+        <button  type="button" class="btn bg-olive" title="Cambiar Modalidad" onclick="TipoCredito()"><i class="glyphicon glyphicon-refresh"></i></button>
+        <button  type="button" class="btn bg-olive" title="Escrituras" onclick="TipoCredito()"><i class="glyphicon glyphicon-book"></i></button>
+        <button  type="button" class="btn bg-olive" title="Certificado" onclick="TipoCredito()"><i class="glyphicon glyphicon-check"></i></button>
+        <button  type="button" class="btn bg-olive" title="Impuestos" onclick="TipoCredito()"><i class="fa fa-black-tie"></i></button>
+        <button  type="button" class="btn bg-olive" title="Avaluo" onclick="TipoCredito()"><i class="glyphicon glyphicon-usd"></i></button>
+        </span>
+        </td>
+        </tr>
+        </table>';
+        } else 
+        {
+            $html = '<table>
+        <tr>
+        <td><font size="3">No hay avaluo registrado</font></td>
+        </tr>
+        <tr>
+        <td><font size="3" id="monto_disponible2">Monto máximo a recibir : 0.00</font></td>
+        </tr>
+                
+        </table>';
+        }
+        
+        echo $html;
+        
+    }
 }
 
 ?>

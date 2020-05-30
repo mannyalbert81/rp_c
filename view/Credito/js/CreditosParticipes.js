@@ -41,6 +41,8 @@ view.global_hay_renovacion	= false;
 view.global_hay_garantes	= false;
 view.global_hay_solicitud	= false; //SINTAXERROR
 view.global_capacidad_pago_garante_suficiente	= false; //SINTAXERROR
+view.page_load	= false; //SINTAXERROR
+view.global_avaluo_sin_solicitud	= 0; //SINTAXERROR
 
 /** para valores de Solicitud **/
 var dataSolicitud	= dataSolicitud || {};
@@ -59,9 +61,9 @@ var capacidad_pago_garante_suficiente=false;
 var sin_solicitud=false;
 var avaluo_bien_sin_solicitud=0;
 
-
-
 $(document).ready( function (){
+	
+	view.page_load	= true; //VALIDAR ESTA CARGADA
 	
 	// ESTABLESCO LA MASCARA AL CAMPO CEDULA PARTICIPE
 	$(":input").inputmask();
@@ -510,16 +512,13 @@ var iniciar_datos_simulacion = function(){
 	
 	var valor_tipo_credito	= view.tipo_creditos.val();
 	console.log("INICIANDO .. start..simulacion");
-	console.log("valor tipo credito --> " + valor_tipo_credito);
-	
+	console.log("valor tipo credito --> " + valor_tipo_credito);	
 	view.cuota_creditos.val("");
 	console.log("...vaciamos cuota creditos");
 	view.monto_creditos.val("");
-	console.log("...vaciamos monto creditos");
-	
+	console.log("...vaciamos monto creditos");	
 	$("#div_tabla_amortizacion").html("");
-	console.log("..vaciamos div con tabla de amortizacion");
-	
+	console.log("..vaciamos div con tabla de amortizacion");	
 	$("#div_capacidad_pago_garante").addClass("hidden");
 	console.log("..vaciamos div con capacidad pago garantes");
 	
@@ -574,12 +573,23 @@ var iniciar_datos_simulacion = function(){
 		}else if( valor_tipo_credito == "PH" ){
 			
 			var html_credito_hipotecario = "<label for=\"ddl_tipo_credito_hipotecario\" class=\"control-label\">Modalidad:</label>" +
-						"<select id=\"ddl_tipo_credito_hipotecario\"  class=\"form-control\" onchange=\"ModalidadCreditoHP()\">"+
+						"<select id=\"ddl_tipo_credito_hipotecario\"  class=\"form-control\" >"+
 						"<option value=\"\" selected=\"selected\">--Seleccione--</option>"+
 						"<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
 						"<option value=\"2\" >MEJORAS Y/O REPAROS</option></div>";
 			// MUESTRO HTML EN LA VISTA EN LA PARTE DEL GARANTE
 			$('#div_info_garante').html( html_credito_hipotecario );
+			
+			//onchange=\"ModalidadCreditoHP()\"
+			//ENLAZAR EVENTO A INPUT CREADO
+			$("#ddl_tipo_credito_hipotecario").on('change',function(){
+				obtener_valores_hipotecario( this );
+			});
+			
+			$("#ddl_tipo_credito_hipotecario").on('change',function(){
+				obtener_valores_hipotecario( this );
+			});
+			
 			
 		}else if( valor_tipo_credito == "EME" ){
 			
@@ -592,22 +602,32 @@ var iniciar_datos_simulacion = function(){
 							
 			}
 			
-		}else{
-			
-			console.log("TIPO DE CREDITO NO PARAMETRIZADO")
+		}else
+		{			
+			console.info("TIPO DE CREDITO NO PARAMETRIZADO");
+			view.tipo_creditos.notify( "Tipo Credito no Definido" ,{ position:"buttom left", autoHideDelay: 2000});			
 		}
 			
 		
 	}else{
-		//vaciamos la iniciacion de la simulacion
-		console.log("..inicializacion de simulacion fallida");
+		
 		view.monto_creditos.val("");
-		view.cuota_creditos.val("");		
+		view.cuota_creditos.val("");
 		//desabilitamos el boton de capacidad de pago
 		view.btn_capacidad_pago.attr("disabled",true);
 		view.monto_creditos.attr("readonly",true);  
 		view.btn_numero_cuotas.attr("disabled",true);
-		swal({title:"ERROR DE CARGA", text:"Tuvimos problemas al cargar la informacion por favor Reload la pagina",icon:"error",dangerMode:true});
+		
+		if( !view.page_load )
+		{
+			console.log("..inicializacion de simulacion fallida");
+			swal({title:"ERROR DE CARGA", text:"Tuvimos problemas al cargar la informacion por favor Reload la pagina",icon:"error",dangerMode:true});
+		}else
+		{
+			view.tipo_creditos.notify( "Debe seleccionar un tipo de crédito" ,{ position:"buttom left", autoHideDelay: 2000});	
+		}
+		
+		
 	}
 	
 	//$('.nav-tabs a[href="#panel_info"]').tab('show'); //navegar a la pantalla de informacion en tab navs principal
@@ -972,6 +992,106 @@ var evt_enviar_capacidad_pago_garante	= function(){
 }
 
 /**************** TERMINA	PARA TRATAR VALORES DE GARANTES *******************/
+
+/**************** EMPIEZA PARA TRATAR VALORES DE HIPOTECARIO *****************/
+
+var obtener_valores_hipotecario	= function (a){
+	
+	let elemento	= $(a) || null;
+	
+	if( !elemento.length )
+	{
+		$.ajax({
+		    url: 'index.php?controller=CreditosParticipes&action=obtenerAvaluoHipotecario',
+		    type: 'POST',
+		    data: {
+		    	id_solicitud: 1,
+		    	tipo_credito_hipotecario: elemento.val()
+		    },
+		}).done(function(x) {
+			$('#div_info_garante').html( x );			
+		}).fail(function() {
+		    console.log("error");
+		});
+
+	}else
+	{
+		$("#myModalAvaluo").modal();
+	}
+	
+}
+
+var enviar_avaluo_bien	= function(){
+	
+	var tipo_avaluo = $("#ddl_tipo_credito_hipotecario");
+	var valor_bien	= $("#avaluo_bien");	
+	view.global_avaluo_sin_solicitud = valor_bien.val(); //establecer valor en variable global
+	var monto_maximo	= 0;
+	
+	if( tipo_avaluo.val() == 1 )
+	{
+		monto_maximo	= parseFloat( valor_bien.val() ) * 0.80;
+		monto_maximo	= ( monto_maximo > 100000 ) ? 100000 : monto_maximo;
+	}else
+	{
+		monto_maximo	= parseFloat( valor_bien.val() ) * 0.50;
+		monto_maximo	= ( monto_maximo > 45000 ) ? 45000 : monto_maximo;
+	}
+	
+	var tablehtml	= '<table>'+
+					'<tr> <td>Avalúo del bien: '+ valor_bien.val() +'</td></tr>'+
+					'<tr> <td id="cuenta_individual2" >Monto máximo a recibir: '+ monto_maximo +'</td></tr>'+
+					'<tr> <td ><span class="input-group-btn">'+
+					'<button  type="button" class="btn bg-olive" title="Cambiar Modalidad" onclick="TipoCredito()"><i class="glyphicon glyphicon-refresh"></i></button>'+
+					'</span> </td> </tr>'+
+				'</table>';	
+	
+	$('#div_info_garante').html( tablehtml );
+	
+	$("#myModalAvaluo").modal("hide");
+	
+}
+
+function EnviarAvaluoBien()
+{
+	var tipo_ph=$("#tipo_credito_hipotecario").val();
+	var avaluo_bien = $("#avaluo_bien").val();
+	avaluo_bien_sin_solicitud=avaluo_bien;
+	var monto_maximo=0;
+	 
+         if(tipo_ph==1)
+         {
+             monto_maximo=parseFloat(avaluo_bien)*0.8;
+             if(monto_maximo>100000) monto_maximo=100000;
+         }
+         else
+         {
+             monto_maximo=parseFloat(avaluo_bien)*0.5;
+             if(monto_maximo>45000) monto_maximo=45000;
+         }
+         
+	var html='<table>'+
+        '<tr>'+
+        '<td><font size="3">Avalúo del bien : '+avaluo_bien+'</font></td>'+
+        '</tr>'+
+        '<tr>'+
+        '<td><font size="3" id="cuenta_individual2">Monto máximo a recibir : '+monto_maximo+'</font></td>'+
+        '</tr>'+
+        '<tr>'+
+        '<td>'+
+        '<span class="input-group-btn">'+
+        '<button  type="button" class="btn bg-olive" title="Cambiar Modalidad" onclick="TipoCredito()"><i class="glyphicon glyphicon-refresh"></i></button>'+
+        '</span>'+
+        '</td>'+
+        '</tr>'+
+        '</table>';	
+	
+	
+	$('#info_garante').html(html);
+	$("#cerrar_avaluo").click();
+}
+
+/**************** TERMINA PARA TRATAR VALORES DE HIPOTECARIO *****************/
 
 var redondeo_valores	= function( a ){
 	//esta funcion pasa como parametro un elemto si el elemento existe cambia sus valores

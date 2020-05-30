@@ -5,8 +5,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
     
     public function index(){
         session_start();
-        $estado = new EstadoModel();
-        $id_rol = $_SESSION['id_rol'];
+
         
         $this->view_principal("PrincipalBusquedasExpedientes",array(
             "result" => ""
@@ -734,13 +733,19 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         
         $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
         
-      
-        $last=sizeof($resultAportes);
-        $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
-        $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
-        $fecha_primer=substr($fecha_primer,0,10);
-        $fecha_ultimo=substr($fecha_ultimo,0,10);
-        $tiempoaporte=$this->dateDifference($fecha_primer, $fecha_ultimo);
+        if( empty( $resultAportes ) )
+        {
+            $tiempoaporte = "0 Años, 0 Meses, 0 Dias";
+        }else
+        {
+            $last=sizeof($resultAportes);
+            $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
+            $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
+            $fecha_primer=substr($fecha_primer,0,10);
+            $fecha_ultimo=substr($fecha_ultimo,0,10);
+            $tiempoaporte=$this->dateDifference($fecha_primer, $fecha_ultimo);
+        }
+        
         $last=sizeof($resultAportes);
         
         

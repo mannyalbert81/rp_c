@@ -192,7 +192,7 @@ function mostrarDatosjs(element){
 	
 	$.ajax({
 		beforeSend:function(){},
-		url:"index.php?controller=PrincipalBusquedasExpedientes&action=mostrarDetalleSolicitud",
+		url:"index.php?controller=PrincipalBusquedasSocios&action=mostrarDetalleSolicitud",
 		type:"POST",
 		/*dataType:"json",*/
 		data:params

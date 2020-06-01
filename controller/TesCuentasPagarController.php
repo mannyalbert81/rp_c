@@ -2209,6 +2209,306 @@ class TesCuentasPagarController extends ControladorBase{
 	    
 	}
 	
+	/***
+	 * @author dc 2020/05/30
+	 * @desc funcion para cambiar la base de la retencion
+	 */
+	public function modificarBaseRetencion()
+	{
+	    ob_start();
+	    
+	    $response  = array();
+	    $cpagar    = new CuentasPagarModel();
+	    $id_lote   = $_POST['id_lote'];
+	    
+	    $col1  = " aa.id_lote, aa.id_cuentas_pagar_impuestos, bb.id_impuestos, bb.nombre_impuestos, bb.porcentaje_impuestos, aa.base_cuentas_pagar_impuestos, 
+            aa.valor_base_cuentas_pagar_impuestos, aa.valor_cuentas_pagar_impuestos ";
+	    $tab1  = " tes_cuentas_pagar_impuestos aa
+	       INNER JOIN tes_impuestos bb ON bb.id_impuestos = aa.id_impuestos";
+	    $whe1  = " aa.id_lote = $id_lote
+	       AND bb.tipo_impuestos = 'ret'";
+	    $id1   = " aa.id_cuentas_pagar_impuestos";
+	    
+	    $rsConsulta1   = $cpagar->getCondiciones($col1, $tab1, $whe1, $id1);
+	    $html  = "";
+	    if( !empty( $rsConsulta1 ) )
+	    {
+	        $html  .= '<h3 class="text-center bg-info"> Valores Retencion </h3>';
+	        $html  .= '<table id="tbl_modificar_base_retencion" >';
+	        $html  .= '<thead>';
+	        $html  .= '<tr>';
+	        $html  .= '<th>#</th>';
+	        $html  .= '<th>Nombre</th>';
+	        $html  .= '<th>Valor Compra</th>';
+	        $html  .= '<th>Base Imp</th>';
+	        $html  .= '<th>% Imp</th>';
+	        $html  .= '<th>Valor Impuesto</th>';
+	        $html  .= '</tr>';
+	        $html  .= '</thead>';
+	        $html  .= '<tbody>';
+	        
+	        $index = 0;
+	        foreach ( $rsConsulta1 as $res )
+	        {
+	            $input1 = '<input type="text" class="form-control" name="base" value="'.number_format( $res->valor_base_cuentas_pagar_impuestos , 2 , '.' , '' ).'" >';
+	            $input2 = '<input type="text" class="form-control" name="pocentage" value="'.number_format( $res->porcentaje_impuestos , 2 , '.' , '' ).'" readonly >';
+	            $input3 = '<input type="text" class="form-control" name="valor" value="'.number_format( $res->valor_cuentas_pagar_impuestos , 2 , '.' , '' ).'" readonly >';
+	            $index ++;
+	            $html  .= '<tr data-id="'.$res->id_cuentas_pagar_impuestos.'">';
+	            $html  .= '<td>'.$index.'</td>';
+	            $html  .= '<td>'.$res->nombre_impuestos.'</td>';
+	            $html  .= '<td>'.number_format( $res->base_cuentas_pagar_impuestos , 2 , '.' , '' ).'</td>';
+	            $html  .= '<td>'.$input1.'</td>';
+	            $html  .= '<td>'.$input2.'</td>';
+	            $html  .= '<td>'.$input3.'</td>';
+	            $html  .= '</tr>';	            
+	        }
+	        	        
+	        $html  .= '</tbody>';
+	        
+	        $input3 = ' ';
+	        $input3 = '<div class="input-group"> 
+                       <input type="text" class="form-control" name="total" value="0" > 
+                       <span class="input-group-btn">
+        	           <button type="button" title="Validar Retencion" class="btn btn-info"  id="btn_enviar_retencion" onclick="enviar_cambio_retencion()">
+        	           <i class="glyphicon glyphicon-ok"></i>
+        	           </button>
+        	           </span>        
+            	       </div>';
+	        
+	        $html  .= '<tfoot>';
+	        $html  .= '<tr>';
+	        $html  .= '<th></th>';
+	        $html  .= '<th></th>';
+	        $html  .= '<th></th>';
+	        $html  .= '<th></th>';
+	        $html  .= '<th>Total</th>';
+	        $html  .= '<th>'.$input3.'</th>';
+	        $html  .= '</tr>';
+	        $html  .= '</tfoot>';
+	        $html  .= '</table>';
+	    }
+	    
+	    $salida    = ob_get_contents();
+	    
+	    $response['html'] = $html;
+	    $response['estatus'] = "OK";
+	    echo json_encode( $response );
+	      
+	    
+	}
 	
+	/***
+	 * @author dc 2020/05/31
+	 * @desc function para cambiar valor base retencion
+	 */
+	public function  setValorRetencionNuevo()
+	{
+	    //inicio variables
+	    session_start();
+	    $cpagar    = new CuentasPagarModel();
+	    $resp  = array();
+	    ob_start();
+	    
+	    //variables de vista
+	    $data_retencion = json_decode( $_POST['data_retencion']);
+	    $id_lote   = $_POST['id_lote'];
+	    $validador  = false;
+	    if( sizeof( $data_retencion ) )
+	    {
+	        $cpagar->beginTran();
+	        $valor_base    = 0.00;
+	        $valor_total   = 0.00;
+	        $id_cuentas_pagar_impuestos    = 0;
+	        $strUpdate = "UPDATE tes_cuentas_pagar_impuestos SET valor_base_cuentas_pagar_impuestos = $valor_base, valor_cuentas_pagar_impuestos = $valor_total
+WHERE id_cuentas_pagar_impuestos = $id_cuentas_pagar_impuestos";
+	        foreach ( $data_retencion as $res)
+	        {
+	            $valor_base    = $res->base;
+	            $valor_total   = $res->valor;
+	            $id_cuentas_pagar_impuestos    = $res->id;
+	            
+	            $strUpdate = "UPDATE tes_cuentas_pagar_impuestos SET valor_base_cuentas_pagar_impuestos = $valor_base, valor_cuentas_pagar_impuestos = $valor_total
+WHERE id_cuentas_pagar_impuestos = $id_cuentas_pagar_impuestos";
+	            
+	            $cpagar->executeNonQuery($strUpdate);
+	            
+	            $error = error_get_last();
+	            if( !empty( $error ) )
+	            {
+	                $validador = true;
+	            }
+	        }//end de foreach
+	        
+	        $col1 = " aa.id_lote, aa.id_cuentas_pagar_impuestos, bb.nombre_impuestos, bb.tipo_impuestos, cc.credito_distribucion_cuentas_pagar,
+	            cc.debito_distribucion_cuentas_pagar, cc.id_distribucion_cuentas_pagar, cc.tipo_distribucion_cuentas_pagar, aa.valor_cuentas_pagar_impuestos";
+	        $tab1 = " tes_cuentas_pagar_impuestos aa
+    	        INNER JOIN tes_impuestos bb ON bb.id_impuestos = aa.id_impuestos
+    	        INNER JOIN tes_distribucion_cuentas_pagar cc ON  cc.id_plan_cuentas = bb.id_plan_cuentas";
+	        $whe1 = " cc.id_lote = aa.id_lote
+	            AND aa.id_lote = $id_lote";
+	        $id1  = " cc.ord_distribucion_cuentas_pagar";
+	        
+	        $rsConsulta1   = $cpagar->getCondiciones( $col1, $tab1, $whe1, $id1);
+	        
+	        if ( !empty( $rsConsulta1 ) )
+	        {
+	            $sumaparciales = 0; //variable para sumar valores de distribucion
+	            foreach ( $rsConsulta1 as $res )
+	            {
+	                if ( strtoupper( $res->tipo_impuestos ) == "RET" )
+	                {
+	                    $id_distribucion   = $res->id_distribucion_cuentas_pagar;
+	                    $valor_distribucion= abs( $res->valor_cuentas_pagar_impuestos );
+	                    $strAct    = "UPDATE tes_distribucion_cuentas_pagar SET credito_distribucion_cuentas_pagar = $valor_distribucion WHERE id_distribucion_cuentas_pagar = $id_distribucion";
+	                    $cpagar->executeNonQuery( $strAct );
+
+	                    if( !empty( error_get_last() ) )
+	                    {
+	                        $validador = true;
+	                    }
+	                    
+	                    $sumaparciales += $valor_distribucion;
+	                }
+	                
+	            }// end bucle de consulta
+	            
+	            if( !$validador )
+	            {
+	                $col2  = " debito_distribucion_cuentas_pagar ";
+	                $tab2  = " tes_distribucion_cuentas_pagar";
+	                $whe2  = " tipo_distribucion_cuentas_pagar = 'COMPRA' AND id_lote = $id_lote";
+	                $rsConsulta2   = $cpagar->getCondicionesSinOrden($col2, $tab2, $whe2, "LIMIT 1");
+	               
+	                $valorCompra   = $rsConsulta2[0]->debito_distribucion_cuentas_pagar;
+	                $valorPago     = abs( $valorCompra -  $sumaparciales );
+	                
+	                $strAct    = "UPDATE tes_distribucion_cuentas_pagar SET credito_distribucion_cuentas_pagar = $valorPago WHERE tipo_distribucion_cuentas_pagar = 'PAGO' id_lote = $id_lote";
+	                if( !empty( error_get_last() ) )
+	                {
+	                    $validador = true;
+	                }
+	            }
+	        }// end if de busqueda 
+	        
+	        $resp['estatus'] = "OK";
+	        $resp['mensaje'] = "Modificacion Base Retencion Realizada";
+	        
+	        $salida = trim( ob_get_clean() ); 
+	        if( $validador || !empty( $salida ) )
+	        {
+	            $cpagar->endTran();
+	            echo "Error Revisar Valores Enviados";
+	        }
+	        
+	        $cpagar->endTran('COMMIT');
+	        echo json_encode($resp);
+	    }
+	    
+	}
+	
+	/***
+	 * @desc funcion que permite elimnar la distribucion de la cuenta por pagar
+	 * @author dc 2020/06/01
+	 */
+	public function EliminarDistribucion()
+	{
+	    //variables de inicio
+	    $cpagar    = new CuentasPagarModel();
+	    ob_start();
+	    $mensaje   = "";
+	    $resp  = array();
+	    $validador = false;
+	    $cpagar->beginTran();
+	    
+	    //variables vista
+	    $id_lote   = $_POST['id_lote'];
+	    
+	    $col1  = " id_cuentas_pagar";
+	    $tab1  = " tes_cuentas_pagar";
+	    $whe1  = " id_lote = $id_lote";
+	    
+	    $rsConsulta1   = $cpagar->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+	    
+	    if( !empty( $rsConsulta1 ) )
+	    {
+	        $mensaje   = "existe cuenta por pagar registrada con dato enviado";
+	        $validador = true;
+	    }else
+	    {
+	        $strEliminar = " DELETE FROM tes_distribucion_cuentas_pagar WHERE id_lote = $id_lote ";
+	        $cpagar->executeNonQuery( $strEliminar );
+	        if( !empty( error_get_last() ) )
+	        {
+	            $validador = true;
+	        }
+	    }
+	    
+	    $resp['estatus'] = "OK";
+	    $resp['mensaje'] = "peticion realizada";
+	    
+	    $salida    = trim(ob_get_clean());
+	    if( $validador || !empty( $salida ) )
+	    {
+	        $cpagar->endTran();
+	        echo $mensaje;
+	        //echo $salida;
+	    }else
+	    {	
+	        $cpagar->endTran("COMMIT");
+	        echo json_encode($resp); 
+	    }
+	    
+	}
+	
+	public function reloadValoresTransacciones()
+	{
+	    //variables de inicio
+	    $cpagar    = new CuentasPagarModel();
+	    ob_start();
+	    $resp  = array();
+	    
+	    //variables vista
+	    $id_lote        = $_POST['id_lote'];
+	    $_compra_cero   = $_POST['compra_cero'];
+	    $_compra_iva    = $_POST['compra_iva'];
+	    
+	    $base_compras = $_compra_cero + $_compra_iva;
+	    $base_compras = round($base_compras,2);
+	    
+	    /** enviar valores de impuesto que genera **/
+	    $col1 = " base_cuentas_pagar_impuestos, valor_base_cuentas_pagar_impuestos, valor_cuentas_pagar_impuestos";
+	    $tab1 = " public.tes_cuentas_pagar_impuestos ";
+	    $Whe1 = " id_lote = $id_lote ";
+	    $id1  = " creado ";
+	    $rsConsulta1  = $cpagar->getCondiciones($col1, $tab1, $Whe1, $id1);
+	    
+	    if( !empty($rsConsulta1) )
+	    {
+	        $_total = $base_compras;
+	        $_total_impuesto = 0;
+	        $_saldo_documento = 0;
+	        foreach ($rsConsulta1 as $res) {
+	            $_total_impuesto += $res-> valor_cuentas_pagar_impuestos;
+	        }
+	        $_saldo_documento = $_total + $_total_impuesto;
+	        
+	        $resp['total_impuestos'] = number_format( $_total_impuesto, 2, ".", "");
+	        $resp['saldo_total'] = number_format( $_saldo_documento, 2, ".", "");
+	    }
+	    
+	    $salida    = trim(ob_get_clean());
+	    if( !empty( $salida ) )
+	    {	        
+	        echo $salida;
+	        //echo $salida;
+	    }else
+	    {
+	        $resp['estatus'] = "OK";
+	        echo json_encode($resp);
+	    }
+	    
+	}
+		
 }
 ?>

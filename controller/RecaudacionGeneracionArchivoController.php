@@ -283,10 +283,10 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        
 	        if( strtoupper($res->nombre_tipo_aportacion) == "PORCENTAJE"){
 	            $_sueldo   = (float)$res->sueldo_liquido_contribucion_tipo_participes;
-	            $_porcentaje   = (float)$res->porcentaje_contribucion_tipo_participes;
+	            $_porcentaje   = (float)$res->valor_contribucion_tipo_participes;
 	            $_valor_base   = ($_sueldo * $_porcentaje)/100;
 	            $_valor_sistema = $_valor_base;
-	            $_valor_final   = $_valor_base;
+	            $_valor_final   = $_valor_base;	           
 	        }
 	        
 	        $detalle['id_descuentos_registrados_cabeza']    = $id_descuentos_registrados_cabeza;
@@ -2034,7 +2034,11 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        }
 	        	        
 	        if( strlen( $searchDataTable ) > 0 ){
-	            $where1 .= " AND ( bb.nombre_entidad_patronal ILIKE '%$searchDataTable%' OR aa.fecha_proceso_descuentos_registrados_cabeza = '$searchDataTable' ) ";
+	            $where1 .= " AND ( ";
+	            $where1 .= " bb.nombre_entidad_patronal ILIKE '%$searchDataTable%' ";
+	            $where1 .= " OR TO_CHAR( aa.fecha_proceso_descuentos_registrados_cabeza, 'YYYY-MM-DD' ) ILIKE '%$searchDataTable%'";
+	            $where1 .= " ) ";
+
 	        }
 	        
 	        $rsCantidad    = $recaudaciones->getCantidad("*", $tablas1, $where1);
@@ -2065,8 +2069,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        
 	        $limit = " ORDER BY $orderby $orderdir LIMIT   '$per_page' OFFSET '$offset'";
 	        
-	        //$sql = " SELECT $col1 FROM $tab1 WHERE $whe1  $limit ";
-	        $sql = "";
+	        $sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+	        //$sql = "";
 	        
 	        $resultSet=$recaudaciones->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
 	        

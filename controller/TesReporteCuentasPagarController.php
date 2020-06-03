@@ -73,7 +73,7 @@ class TesReporteCuentasPagarController extends ControladorBase{
 	            
 	            $where1    .= " AND ( bb.identificacion_proveedores = '$searchDataTable' ";
 	            $where1    .= " OR bb.razon_social_proveedores ILIKE '%$searchDataTable%' ";
-	            $where1    .= " OR TO_CHAR( aa.fecha_cuentas_pagar, 'YYYY-MM-DD') = $searchDataTable ";
+	            $where1    .= " OR TO_CHAR( aa.fecha_cuentas_pagar, 'YYYY-MM-DD') = '$searchDataTable' ";
 	            $where1    .= " OR aa.numero_documento_cuentas_pagar = '$searchDataTable' ";
 	            $where1    .= " ) ";
 	            

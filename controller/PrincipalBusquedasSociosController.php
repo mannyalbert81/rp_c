@@ -1214,6 +1214,9 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	        }
 	        
 	        
+	    
+	        
+	        
 	        $i++;
 	        $html.='<tr>';
 	        
@@ -1238,14 +1241,14 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	        $html.='</tr>';
 	    }
 	    
-	  
+
 	    
 	    
 	    $html.='</table>';
 	    
 	    $datos_reporte['DETALLE_PERSONAL']= $html;
 	    
-	    ///detalle
+	    ///exedente personal
 	    
 	    
 	    $condicion_id_contribucion_tipo=" and c1.id_contribucion_tipo = 7";
@@ -1354,6 +1357,20 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	    {
 	        
 	        
+	        $total_enero_exedente_personal=$total_enero_exedente_personal+$res->enero;
+	        $total_febrero_exedente_personal=$total_febrero_exedente_personal+$res->febrero;
+	        $total_marzo_exedente_personal=$total_marzo_exedente_personal+$res->marzo;
+	        $total_abril_exedente_personal=$total_abril_exedente_personal+$res->abril;
+	        $total_mayo_exedente_personal=$total_mayo_exedente_personal+$res->mayo;
+	        $total_junio_exedente_personal=$total_junio_exedente_personal+$res->junio;
+	        $total_julio_exedente_personal=$total_julio_exedente_personal+$res->julio;
+	        $total_agosto_exedente_personal=$total_agosto_exedente_personal+$res->agosto;
+	        $total_septiembre_exedente_personal=$total_septiembre_exedente_personal+$res->septiembre;
+	        $total_octubre_exedente_personal=$total_octubre_exedente_personal+$res->octubre;
+	        $total_noviembre_exedente_personal=$total_noviembre_exedente_personal+$res->noviembre;
+	        $total_diciembre_exedente_personal=$total_diciembre_exedente_personal+$res->diciembre;
+	        $total_exedente_personal=$total_exedente_personal+$res->acumulado;
+	        
 	        
 	        if(($res->enero==0)&&($res->febrero==0)&&($res->marzo==0)&&($res->abril==0)&&($res->mayo==0)&&($res->junio==0)&&($res->julio==0)&&($res->agosto==0)&&($res->septiembre==0)&&($res->octubre==0)&&($res->noviembre==0)&&($res->diciembre==0)){
 	            
@@ -1387,6 +1404,30 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	        $html.='</tr>';
 	    }
 	    
+	    
+	    
+	    
+	    $html.='<tr>';
+	    
+	    $html.='<td style="font-size: 10px;">TOTAL</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_enero_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_febrero_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_marzo_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_abril_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_mayo_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_junio_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_julio_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_agosto_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_septiembre_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_octubre_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_noviembre_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_diciembre_exedente_personal, 2, ",", ".").'</td>';
+	    $html.='<td style="font-size: 10px;"align="right">'.number_format((float)$total_exedente_personal, 2, ",", ".").'</td>';
+	    
+	    
+	    
+	    
+	    $html.='</tr>';
 	    
 	    
 	    
@@ -1537,6 +1578,8 @@ class PrincipalBusquedasSociosController extends ControladorBase{
 	        $html.='</tr>';
 	    }
 	    
+	    
+
 	    
 	    
 	    

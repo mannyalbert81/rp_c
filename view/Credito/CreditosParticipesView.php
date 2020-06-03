@@ -634,19 +634,19 @@
 			<div class="modal-body">
 				<div class="form-group">
 				<div class="row">
-                		<table align="center" class="tablesorter table table-striped table-bordered" style="width: 50%;">
-                        <tr>
-                        <th>AVALUO:</th>
-                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="avaluo_bien" name="avaluo_bien" ></td>
-                        </tr>
-                        <tr>
-                        </table>
-                        	<div class="row">
-             <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
-            	<button type="button" id="enviar_avaluo_bien" name="enviar_avaluo_bien" class="btn btn-primary" onclick="EnviarAvaluoBien()"><i class="glyphicon glyphicon-ok"></i> ACEPTAR</button>
-             </div>	
-                          	
-           	</div>
+            		<table align="center" class="tablesorter table table-striped table-bordered" style="width: 50%;">
+                    <tr>
+                    <th>AVALUO:</th>
+                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="avaluo_bien" name="avaluo_bien" ></td>
+                    </tr>
+                    <tr>
+                    </table>
+                	<div class="row">
+                     <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
+                     	<!--  -->
+                    	<button type="button" id="enviar_avaluo_bien" name="enviar_avaluo_bien" class="btn btn-primary" onclick="EnviarAvaluoBien()"><i class="glyphicon glyphicon-ok"></i> ACEPTAR</button>
+                     </div>	                                  	
+                   	</div>
 				</div>
 				<br>
 			</div>			
@@ -682,8 +682,7 @@
    <div class="control-sidebar-bg"></div>
  </div>
     
-    <?php include("view/modulos/links_js.php"); ?>
-	
+    <?php include("view/modulos/links_js.php"); ?>	
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
@@ -691,6 +690,6 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?0.33"></script> 
+   <script src="view/Credito/js/CreditosParticipes.js?0.34"></script> 
    </body>
 </html>   

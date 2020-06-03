@@ -18,127 +18,128 @@ class RevisionCreditosController extends ControladorBase{
         $search=$_POST['search'];
         if ($id_rol==58)
         {
-        $columnas=" core_creditos.id_creditos, core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
-                    core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos,
-                    core_tipo_creditos.nombre_tipo_creditos, oficina.nombre_oficina";
-        $tablas="core_creditos INNER JOIN core_estado_creditos
-                ON core_creditos.id_estado_creditos=core_estado_creditos.id_estado_creditos
-                INNER JOIN core_participes
-                ON core_participes.id_participes = core_creditos.id_participes
-                INNER JOIN core_tipo_creditos
-                ON core_tipo_creditos.id_tipo_creditos=core_creditos.id_tipo_creditos
-                INNER JOIN usuarios
-                ON core_creditos.receptor_solicitud_creditos = usuarios.usuario_usuarios
-                INNER JOIN oficina
-                ON oficina.id_oficina=usuarios.id_oficina";
-        $where="core_estado_creditos.id_estado_creditos=2 AND core_creditos.incluido_reporte_creditos IS NULL";
-        if(!(empty($fecha_concesion)))
-        {
-            $where.=" AND fecha_concesion_creditos='".$fecha_concesion."'";
-        }
-        if(!(empty($search)))
-        {
-            $where.=" AND (core_participes.cedula_participes LIKE '".$search."%' OR core_participes.nombre_participes ILIKE '".$search."%'
-                       OR core_participes.apellido_participes ILIKE '".$search."%')";
-        }
-        
-        $id="core_creditos.numero_creditos";
-        $html="";
-        $resultSet=$creditos->getCantidad("*", $tablas, $where);
-        $cantidadResult=(int)$resultSet[0]->total;
-        
-        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-        
-        $per_page = 10; //la cantidad de registros que desea mostrar
-        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-        $offset = ($page - 1) * $per_page;
-        
-        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-        
-        $resultSet=$creditos->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
-        $count_query   = $cantidadResult;
-        $total_pages = ceil($cantidadResult/$per_page);
-        if($cantidadResult>0)
-        {
             
-            $html.='<div class="pull-left" style="margin-left:15px;">';
-            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-            $html.='</div>';
-            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-            $html.='<section style="height:570px; overflow-y:scroll;">';
-            $html.= "<table id='tabla_creditos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
-            $html.= "<thead>";
-            $html.= "<tr>";
-            $html.='<th style="text-align: left;  font-size: 15px;">Crédito</th>';
-            $html.='<th style="text-align: left;  font-size: 15px;">Cédula</th>';
-            $html.='<th style="text-align: left;  font-size: 15px;">Apellidos</th>';
-            $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
-            $html.='<th style="text-align: left;  font-size: 15px;">Monto</th>';
-            $html.='<th style="text-align: left;  font-size: 15px;">Plazo</th>';
-            $html.='<th style="text-align: left;  font-size: 15px;">Tipo</th>';
-            $html.='<th style="text-align: left;  font-size: 15px;">Ciudad</th>';
-            $html.='<th style="text-align: left;  font-size: 15px;"></th>';
-            $html.='<th style="text-align: left;  font-size: 15px;"></th>';
-            $html.='<th style="text-align: left;  font-size: 15px;"></th>';
-           
-            $html.='</tr>';
-            $html.='</thead>';
-            $html.='<tbody>';
+            $columnas=" core_creditos.id_creditos, core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
+                        core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos,
+                        core_tipo_creditos.nombre_tipo_creditos, oficina.nombre_oficina";
+            $tablas="core_creditos INNER JOIN core_estado_creditos
+                    ON core_creditos.id_estado_creditos=core_estado_creditos.id_estado_creditos
+                    INNER JOIN core_participes
+                    ON core_participes.id_participes = core_creditos.id_participes
+                    INNER JOIN core_tipo_creditos
+                    ON core_tipo_creditos.id_tipo_creditos=core_creditos.id_tipo_creditos
+                    INNER JOIN usuarios
+                    ON core_creditos.receptor_solicitud_creditos = usuarios.usuario_usuarios
+                    INNER JOIN oficina
+                    ON oficina.id_oficina=usuarios.id_oficina";
+            $where="core_estado_creditos.id_estado_creditos=2 AND core_creditos.incluido_reporte_creditos IS NULL";
             
-            foreach ($resultSet as $res)
+            if(!(empty($fecha_concesion)))
             {
-                
+                $where.=" AND fecha_concesion_creditos='".$fecha_concesion."'";
+            }
+            
+            if(!(empty($search)))
+            {
+                $where.=" AND (core_participes.cedula_participes LIKE '".$search."%' OR core_participes.nombre_participes ILIKE '".$search."%'
+                           OR core_participes.apellido_participes ILIKE '".$search."%')";
+            }
+            
+        
+            $id="core_creditos.numero_creditos";
+            $html="";
+            $resultSet=$creditos->getCantidad("*", $tablas, $where);
+            $cantidadResult=(int)$resultSet[0]->total;
+        
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 10; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+        
+            $resultSet=$creditos->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+            if($cantidadResult>0)
+            {
+            
+                $html.='<div class="pull-left" style="margin-left:15px;">';
+                $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                $html.='</div>';
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<section style="height:570px; overflow-y:scroll;">';
+                $html.= "<table id='tabla_creditos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                $html.= "<thead>";
+                $html.= "<tr>";
+                $html.='<th style="text-align: left;  font-size: 15px;">Crédito</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Cédula</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Apellidos</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Monto</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Plazo</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Tipo</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;">Ciudad</th>';
+                $html.='<th style="text-align: left;  font-size: 15px;"></th>';
+                $html.='<th style="text-align: left;  font-size: 15px;"></th>';
+                $html.='<th style="text-align: left;  font-size: 15px;"></th>';
+               
+                $html.='</tr>';
+                $html.='</thead>';
+                $html.='<tbody>';
+            
+                foreach ($resultSet as $res)
+                {
+                    
                     $columnas="id_solicitud_prestamo";
                     $tabla="solicitud_prestamo";
                     $where="numero_creditos='".$res->numero_creditos."'";
-                $id_solicitud=$db->getCondiciones($columnas, $tabla, $where);
-                if(!(empty($id_solicitud))) $id_solicitud=$id_solicitud[0]->id_solicitud_prestamo;
-           
-                else $id_solicitud=0;
+                    $id_solicitud=$db->getCondiciones($columnas, $tabla, $where);
+                    
+                    if(!(empty($id_solicitud))) $id_solicitud=$id_solicitud[0]->id_solicitud_prestamo;
                
-                $html.='<tr>';
-                $html.='<td style="font-size: 14px;">'.$res->numero_creditos.'</td>';
-                $html.='<td style="font-size: 14px;">'.$res->cedula_participes.'</td>';
-                $html.='<td style="font-size: 14px;">'.$res->apellido_participes.'</td>';
-                $html.='<td style="font-size: 14px;">'.$res->nombre_participes.'</td>';
-                $html.='<td style="font-size: 14px;">'.$res->monto_otorgado_creditos.'</td>';
-                $html.='<td style="font-size: 14px;">'.$res->plazo_creditos.'</td>';
-                $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_creditos.'</td>';
-                $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
-                $html.='<td style="font-size: 14px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$id_solicitud.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-file"></i></a></span></td>';
-                $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="AgregarReporte('.$res->id_creditos.')"><i class="glyphicon glyphicon-plus"></i></button></span></td>';
-                $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                    else $id_solicitud=0;
+                   
+                    $html.='<tr>';
+                    $html.='<td style="font-size: 14px;">'.$res->numero_creditos.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->cedula_participes.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->apellido_participes.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->nombre_participes.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->monto_otorgado_creditos.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->plazo_creditos.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_creditos.'</td>';
+                    $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
+                    $html.='<td style="font-size: 14px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$id_solicitud.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-file"></i></a></span></td>';
+                    $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="AgregarReporte('.$res->id_creditos.')"><i class="glyphicon glyphicon-plus"></i></button></span></td>';
+                    $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                 }
                 $html.='</tr>';
-         
+                     
+                $html.='</tbody>';
+                $html.='</table>';
+                $html.='</section></div>';
+                $html.='<div class="table-pagination pull-right">';
+                $html.=''. $this->paginate_creditos("index.php", $page, $total_pages, $adjacents,"load_creditos").'';
+                $html.='</div>';            
             
             
-            
-            $html.='</tbody>';
-            $html.='</table>';
-            $html.='</section></div>';
-            $html.='<div class="table-pagination pull-right">';
-            $html.=''. $this->paginate_creditos("index.php", $page, $total_pages, $adjacents,"load_creditos").'';
-            $html.='</div>';
-            
-            
-            
-        }else{
-            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay solicitudes registradas...</b>';
-            $html.='</div>';
-            $html.='</div>';
-        }
+            }else{
+                
+                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay solicitudes registradas...</b>';
+                $html.='</div>';
+                $html.='</div>';
+            }        
         
-        
-        echo $html;
+            echo $html;
         }
         else
         {
-         echo "NO MOSTRAR CREDITOS";   
+            echo "NO MOSTRAR CREDITOS";   
         }
         
     }
@@ -500,6 +501,9 @@ class RevisionCreditosController extends ControladorBase{
             $html.='</table>';
             
             $html.='</section>';
+            
+            // AQUI SE AGREGA UN BOTON DEPENDIENDO DEL ROL PARA APROBAR EL REPORTE 
+            
             if ($resultRol=="Jefe de crédito y prestaciones" && $estado_reporte=="ABIERTO")
             {
                 $html.='<span class="pull-right"><button  type="button" class="btn btn-success" onclick="AprobarJefeCreditos('.$id_reporte.')">APROBAR <i class="glyphicon glyphicon-ok"></i></button></span>';

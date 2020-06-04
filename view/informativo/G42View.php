@@ -19,7 +19,7 @@
     }
     
     </style>
-    <title>ERP Capremci - G42 BIESS</title>
+    <title>ERP Capremci  G42 BIESS</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
    <?php include("view/modulos/links_css.php"); ?>
@@ -137,7 +137,7 @@
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?>
-   <script src="view/informativo/js/G42.js?0.02" ></script>
+   <script src="view/informativo/js/G42.js?0.10" ></script>
   </body>
 
 </html>

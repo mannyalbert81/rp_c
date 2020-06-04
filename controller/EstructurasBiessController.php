@@ -29,11 +29,11 @@ class EstructurasBiessController extends ControladorBase{
 	    session_start();
 	    
 	    $G41= new G41Model();
-	    $id_usuarios=$_SESSION['id_usuarios'];
-	    $mes_reporte=$_POST['mes_reporte']+1;
+	    //$id_usuarios=$_SESSION['id_usuarios'];
+	    $mes_reporte=$_POST['mes_reporte'];
 	   
 	    $anio_reporte=$_POST['anio_reporte'];
-	    $mes_reporte1=$mes_reporte+1;
+	   
 	    
 	    $_tipo_identificacion_g41_biess = ""; 
 	    $_identificacion_participe_g41_biess= "";
@@ -59,7 +59,7 @@ class EstructurasBiessController extends ControladorBase{
 				       base_calculo_aportacion_g41_biess, relacion_laboral_g41_biess, 
 				       estado_registro_g41_biess, tipo_aportacion_g41_biess";
 	    $tablas = "public.core_g41_biess";
-	    $where = " anio = '$anio_reporte' AND mes = '$mes_reporte1' ";
+	    $where = " anio = '$anio_reporte' AND mes = '$mes_reporte' ";
 	    $id = " id_g41_biess" ;
 	    
 	    $html= "";
@@ -67,6 +67,8 @@ class EstructurasBiessController extends ControladorBase{
 	    $resultSet=$G41->getCondiciones($columnas, $tablas, $where, $id);
 	    if ($resultSet !="")
 	    {
+
+	    	
 
 	    	$html.= "<table id='tbl_detalle_diario' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
 	    	$html.= "<thead>";
@@ -89,12 +91,17 @@ class EstructurasBiessController extends ControladorBase{
 	    	$html.='</tr>';
 	    	$html.='</thead>';
 	    	$html.='<tbody>';
-		
+			$i = 0;
+			
+			
 	    	foreach($resultSet as $res)
 	    	{
+	    	
+
+	    		
 	    		$i ++;
 	    		
-
+	    		
 	    		$_tipo_identificacion_g41_biess = $res->tipo_identificacion_g41_biess;
 	    		$_identificacion_participe_g41_biess = $res->identificacion_participe_g41_biess;
 	    		$_correo_participe_g41_biess = $res->correo_participe_g41_biess;
@@ -127,9 +134,10 @@ class EstructurasBiessController extends ControladorBase{
 	 
 	    		
 	    		$html.='</tr>';
-	    		 
+	    		
 	    		
 	    	}
+	    
 	    	
 	    	$html.='</tbody>';
 	    	$html.='</table>';
@@ -137,7 +145,6 @@ class EstructurasBiessController extends ControladorBase{
 	    		
 	    	$html.='<div class="table-pagination pull-right">';
 	    	$html.='</div>';
-	    	
 	    	
 	    	
 	    	
@@ -162,7 +169,7 @@ class EstructurasBiessController extends ControladorBase{
 		$mes_reporte=$_POST['mes_reporte'];
 		
 		$anio_reporte=$_POST['anio_reporte'];
-		$mes_reporte1=$mes_reporte+1;
+		
 		 
 		$_tipo_identificacion_g41_biess = "";
 		$_identificacion_participe_g41_biess= "";
@@ -188,7 +195,8 @@ class EstructurasBiessController extends ControladorBase{
 				       base_calculo_aportacion_g41_biess, relacion_laboral_g41_biess,
 				       estado_registro_g41_biess, tipo_aportacion_g41_biess";
 		$tablas = "public.core_g41_biess";
-		$where = " anio = '$anio_reporte' AND mes = '$mes_reporte1' AND estado_registro_g41_biess= 'ING'";
+		$where = " anio = '$anio_reporte' AND mes = '$mes_reporte' AND estado_registro_g41_biess = 'ING' ";
+		//$mes_actual
 		$id = " id_g41_biess" ;
 		 
 		
@@ -200,13 +208,12 @@ class EstructurasBiessController extends ControladorBase{
 		
 		if(!empty($resultSet)){
 		
-		
 			
-			$fecha =  "01/".$mes_reporte1."/".$anio_reporte;
+			$fecha =  "01/".$mes_reporte."/".$anio_reporte;
 			
 		//	$fecha_corte = $G41->ultimo_dia_mes_fecha($fecha);
 			$cantidad_lineas = count($resultSet) + 1;
-			$anio_mes = $anio_reporte.'-'.$mes_reporte1;
+			$anio_mes = $anio_reporte.'-'.$mes_reporte;
 			$aux = date('Y-m-d', strtotime("{$anio_mes} + 1 month"));
 			$last_day = date('Y-m-d', strtotime("{$aux} - 1 day"));
 			$newDate_fechacorte = date("d/m/Y", strtotime($last_day));
@@ -230,7 +237,6 @@ class EstructurasBiessController extends ControladorBase{
 			foreach($resultSet as $res)
 			{
 				
-
 			
 				
 				$i ++;
@@ -279,7 +285,7 @@ class EstructurasBiessController extends ControladorBase{
 		
 		$fecha_hoy = getdate();
 		$newDate_fechaHoy = date("dmY");
-		$_mes_nombre_archivo = $mes_reporte1; 
+		$_mes_nombre_archivo = $mes_reporte; 
 		if (strlen($mes_reporte1) == 1)
 		{
 			$_mes_nombre_archivo = '0' .$mes_reporte1;   
@@ -329,7 +335,11 @@ class EstructurasBiessController extends ControladorBase{
 		$mes_reporte=$_POST['mes_reporte'];
 	
 		$anio_reporte=$_POST['anio_reporte'];
-		$mes_reporte1=$mes_reporte+1;
+		
+		
+		
+		
+		
 		
 		
 	   $_id_g42_biess ;
@@ -395,7 +405,7 @@ class EstructurasBiessController extends ControladorBase{
        descripcion_otros_conceptos_g42_biess, valores_pagados_al_participe_otros_conceptos_g42_biess, 
        anio_g42_biess, mes_g42_biess, creado, modificado";
 		$tablas = "public.core_g42_biess";
-		$where = " anio_g42_biess = '$anio_reporte' AND mes_g42_biess = '$mes_reporte1' ";
+		$where = " anio_g42_biess = '$anio_reporte' AND mes_g42_biess = '$mes_reporte' ";
 		
 		
 		$id = " id_g42_biess" ;
@@ -403,9 +413,13 @@ class EstructurasBiessController extends ControladorBase{
 		$html= "";
 		 
 		$resultSet=$G42->getCondiciones($columnas, $tablas, $where, $id);
-		if ($resultSet !="")
+		
+		if(!empty($resultSet))
 		{
+		
 	
+			
+			
 			$html.= "<table id='tbl_detalle_diario' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
 			$html.= "<thead>";
 			$html.= "<tr>";
@@ -454,6 +468,10 @@ class EstructurasBiessController extends ControladorBase{
 			$html.='</thead>';
 			$html.='<tbody>';
 	
+			
+			
+			
+			$i = 0;
 			foreach($resultSet as $res)
 			{
 				$i ++;
@@ -507,6 +525,7 @@ class EstructurasBiessController extends ControladorBase{
 		   
 			}
 	
+			
 			$html.='</tbody>';
 			$html.='</table>';
 		  
@@ -518,7 +537,11 @@ class EstructurasBiessController extends ControladorBase{
 	
 	
 		}
-		 
+		 /*
+		echo  "Resultado Mes Reportado " . $html;
+		die();
+		*/	
+		
 		$respuesta = array();
 		$respuesta['tabladatos'] =$html;
 		echo json_encode($respuesta);
@@ -604,7 +627,7 @@ class EstructurasBiessController extends ControladorBase{
        descripcion_otros_conceptos_g42_biess, valores_pagados_al_participe_otros_conceptos_g42_biess, 
        anio_g42_biess, mes_g42_biess, creado, modificado";
 		$tablas = "public.core_g42_biess";
-		$where = " anio_g42_biess = '$anio_reporte' AND mes_g42_biess = '$mes_reporte1' ";
+		$where = " anio_g42_biess = '$anio_reporte' AND mes_g42_biess = '$mes_reporte' ";
 		$id = " id_g42_biess" ;
 			//validar los campos recibidos para generar diario
 		
@@ -671,12 +694,17 @@ class EstructurasBiessController extends ControladorBase{
 					$_saldo_rendimiento_aporte_adicional_cesantia_g42_biess = $res->saldo_rendimiento_aporte_adicional_cesantia_g42_biess;
 					$_saldo_rendimiento_aporte_adicional_jubilacion_g42_biess = $res->saldo_rendimiento_aporte_adicional_jubilacion_g42_biess;
 					$_retencion_fiscal_g42_biess = $res->retencion_fiscal_g42_biess;
-					$_fecha_desafiliacion_voluntaria_g42_biess	= $res->fecha_desafiliacion_voluntaria_g42_biess;
+					
+					$newDate_fechaemision1 = date("d/m/Y", strtotime($res->fecha_desafiliacion_voluntaria_g42_biess));
+					$_fecha_desafiliacion_voluntaria_g42_biess	= $newDate_fechaemision1;
+					
 					$_monto_desafiliacion_voluntaria_liquidacion_desafiliacion_g42 = $res->monto_desafiliacion_voluntaria_liquidacion_desafiliacion_g42;
 					$_valor_pendiente_pago_desafiliacion_g42_biess = $res->valor_pendiente_pago_desafiliacion_g42_biess;
 					$_valor_pagado_participe_desafiliado_g42_biess = $res->valor_pagado_participe_desafiliado_g42_biess;
 					$_motivo_liquidacion_g42_biess = $res->motivo_liquidacion_g42_biess;
-					$_fecha_termino_relacion_laboral_g42_biess 	= $res->fecha_termino_relacion_laboral_g42_biess;
+					$newDate_fechaemision2 = date("d/m/Y", strtotime($res->fecha_desafiliacion_voluntaria_g42_biess));
+					$_fecha_termino_relacion_laboral_g42_biess 	= $newDate_fechaemision2;
+					
 					$_saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42 = $res->saldo_cuenta_individual_liquidacion_prestacion_cesantia_g42;
 					$_saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42 = $res->saldo_cuenta_individual_liquidacion_prestacion_jubilado_g42;
 					$_detalle_otros_valores_pagados_y_pendientes_pago_g42_biess = $res->detalle_otros_valores_pagados_y_pendientes_pago_g42_biess;

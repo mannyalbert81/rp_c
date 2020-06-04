@@ -728,7 +728,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            //$nameTipoDescuento = "CREDITOS";
 	            
 	            $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.cuota_descuentos_registrados_detalle_creditos,
-	               cc.id_creditos, cc.numero_creditos";
+	               cc.id_creditos, cc.numero_creditos, COALESCE(aa.mora_descuentos_registrados_detalle_creditos,0) valor_mora";
 	            $tab2  = " core_descuentos_registrados_detalle_creditos aa
     	            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
     	            INNER JOIN core_creditos cc ON cc.id_creditos = aa.id_creditos";
@@ -774,7 +774,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
                 }elseif( $tipo_descuento == "2" ){
                     $tipo_contribucion     = "CREDITOS";
                     $valor_descuento       = $res->cuota_descuentos_registrados_detalle_creditos;
-                    $total_descuento       = $valor_descuento;
+                    $valor_mora            = $res->valor_mora;
+                    $total_descuento       = $valor_descuento + $valor_mora;
                     $concepto_recaudacion  = "DESCUENTOS CREDITOS";
                 }
                 
@@ -891,7 +892,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            
 	            $col1  = " aa.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, 
                     aa.aporte_personal_descuentos_registrados_detalle_aportes \"valor_descuento\",
-	               COALESCE(aa.valor_usuario_descuentos_registrados_detalle_aportes,0) as \"valor_descuento1\" ";
+	               COALESCE(aa.valor_usuario_descuentos_registrados_detalle_aportes,0) as \"valor_descuento1\",
+                   0.00 \"valor_mora\" ";	               
 	            $tab1  = " core_descuentos_registrados_detalle_aportes aa
 	               INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
 	            $whe1  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
@@ -906,7 +908,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, 
                     aa.cuota_descuentos_registrados_detalle_creditos \"valor_descuento\",
                     aa.cuota_descuentos_registrados_detalle_creditos \"valor_descuento1\",
-	               cc.id_creditos, cc.numero_creditos";
+                    COALESCE(aa.mora_descuentos_registrados_detalle_creditos,0) \"valor_mora\",
+                    cc.id_creditos, cc.numero_creditos";
 	            $tab2  = " core_descuentos_registrados_detalle_creditos aa
     	            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
     	            INNER JOIN core_creditos cc ON cc.id_creditos = aa.id_creditos";
@@ -918,6 +921,9 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        }else{
 	            throw new Exception( "Tipo de descuento no valido" );
 	        }
+	        
+	        //en la consulta anterior se genero la columna valor_mora en las dos consultas para que no genere error en la unoa con valor cero 
+	        //y en la otra con valores de mora
 	        
 	        /**generar datos de archivo plano*/
 	        $mes_descuentos_cabeza_archivo = str_pad($mes_descuentos_cabeza, 2, "0",STR_PAD_LEFT);
@@ -947,7 +953,9 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            $cedula_participe      = $rsData[$i]->cedula_participes;
 	            $apellido_participe    = $rsData[$i]->apellido_participes;
 	            $nombre_participe      = $rsData[$i]->nombre_participes;
+	            $valor_mora            = $rsData[$i]->valor_mora; // si es aporte vendra en cero caso contrario vendra con valor en caso de haber por credito
 	            $total_descuento       = $rsData[$i]->valor_descuento1;
+	            $total_descuento       = $total_descuento + $valor_mora;
 	            
 	            $_grupo_valor_descuento += (float)$total_descuento;
 	            $_sumatoria_archivo += (float)$total_descuento;	            

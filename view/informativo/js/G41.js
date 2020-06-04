@@ -5,7 +5,9 @@ $("#btnDetalles").on("click",function(event){
 
 	let $mes=$('#mes_reporte');
 	let $anio=$('#a_reporte');
-
+	
+	let $mes_actual = parseInt($mes.val()) + parseInt(1);
+	
 	$divResultados = $("#div_estructura");
 	$divResultados.html();
 	
@@ -13,20 +15,23 @@ $("#btnDetalles").on("click",function(event){
 		$anioProcesos.notify("Digite Año",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
-	if($mes.val() == '0'){
+	if($mes_actual == '0'){
 		$mesProcesos.notify("Seleccione Mes de Proceso",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
-	console.log("Mes: " + $mes.val()); 
+	
 
 	 
+	console.log("Mes: " + $mes_actual); 
+	 
+	
 	 $.ajax({
 			
 		 url: 'index.php?controller=EstructurasBiess&action=CargaInformacion',
 		    type: 'POST',
 		    dataType:"json",
 		    data: {
-		    	 mes_reporte:$mes.val(),
+		    	 mes_reporte:$mes_actual,
 		    	 anio_reporte:$anio.val()	    	      	   
 		    }
 	
@@ -56,12 +61,14 @@ $("#btngenera").on("click",function(event){
 	let $mes=$('#mes_reporte');
 	let $anio=$('#a_reporte');
 
+	let $mes_actual = parseInt($mes.val()) + parseInt(1);
+
 	
 	if($anio.val() == ''){
 		$anioProcesos.notify("Digite Año",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
-	if($mes.val() == '0'){
+	if($mes_actual == '0'){
 		$mesProcesos.notify("Seleccione Mes de Proceso",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
@@ -78,7 +85,7 @@ $("#btngenera").on("click",function(event){
 		    type: 'POST',
 		    dataType:"json",
 		    data: {
-		    	 mes_reporte:$mes.val(),
+		    	 mes_reporte:$mes_actual,
 		    	 anio_reporte:$anio.val()	    	      	   
 		    }
 	 }).done(function(x){

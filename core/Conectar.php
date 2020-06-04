@@ -17,17 +17,23 @@ class Conectar{
     public function conexion(){
        //holas 
         if($this->driver=="pgsql" || $this->driver==null){
+
             
             
             $con = pg_connect("host=186.4.157.125 port=5432 dbname=rp_capremci user=postgres password=Programadores2018");
             //$con = pg_connect("host=186.4.157.125 port=5432 dbname=rp_capremci1 user=postgres password=Programadores2018");
+
+          //  $con = pg_connect("host=186.4.157.125 port=5432 dbname=rp_capremci user=postgres password=Programadores2018");
+
+            //$con = pg_connect("host=186.4.157.125 port=5432 dbname=rp_capremci user=postgres password=Programadores2018");
+       //     $con = pg_connect("host=186.4.157.125 port=5432 dbname=rp_capremci1 user=postgres password=Programadores2018");
+
             //$con = pg_connect("host=192.168.1.128 port=5432 dbname=rp_capremci user=postgres password=Capremci2018");
         	//$con = pg_connect("host=192.168.1.231 port=5432 dbname=rp_capremci user=postgres password=Programadores2018");
             //$con = pg_connect("host=192.168.1.231 port=5432 dbname=rp_capremci1 user=postgres password=Programadores2018");
             //$con = pg_connect("host=186.4.157.125 port=5432 dbname=rp_capremci2 user=postgres password=Programadores2018");
-            
             //$con = pg_connect("host=192.168.1.231 port=5432 dbname=rp_capremci3 user=postgres password=Programadores2018");
-            
+
         	if(!$con){
         		echo "No se puedo Conectar a la Base";
         		exit();
@@ -50,9 +56,12 @@ class Conectar{
         	{
         	    //$pdo = new PDO('pgsql:host=localhost;port=5432;dbname=rp_capremci', 'postgres', 'capremci' );
         	    //$pdo = new PDO('pgsql:host=192.168.1.128;port=5432;dbname=rp_capremci', 'postgres', 'Capremci2018' );
-        		//$pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=rp_capremci', 'postgres', 'Programadores2018' );
+
+        		$pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=rp_capremci', 'postgres', 'Programadores2018' );
+            // 	$pdo = new PDO('pgsql:host=192.168.1.231;port=5432;dbname=rp_capremci1', 'postgres', 'Programadores2018' );
+		//$pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=rp_capremci', 'postgres', 'Programadores2018' );
         		//$pdo = new PDO('pgsql:host=192.168.1.231;port=5432;dbname=rp_capremci1', 'postgres', 'Programadores2018' );
-        		$pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=rp_capremci2', 'postgres', 'Programadores2018' );         
+        	//	$pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=rp_capremci2', 'postgres', 'Programadores2018' );         
             	$fpdo = new FluentPDO($pdo);
             	
             }

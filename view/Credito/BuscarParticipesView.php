@@ -6,9 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <?php include("view/modulos/links_css.php"); ?>
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
     
  	<style type="text/css">
@@ -37,12 +38,9 @@
       li{
         list-style-type:none;
         }
- 
-     
-       
  	  
  	</style>
-   <?php include("view/modulos/links_css.php"); ?>
+   
   			        
     </head>
     <body id="cuerpo" class="hold-transition skin-blue fixed sidebar-mini"  >
@@ -153,9 +151,12 @@
 				<h4 class="modal-title" id="myModalLabel">Insertar Crédito</h4>
 			</div>
 			<div class="modal-body">
-				<div class="form-group">
+				
 				<div id="info_solicitud"></div>
-				 <div id="info_participe"></div>	
+				<div id="info_participe"></div>	
+				
+				<div class="form-group">
+				
 					 
           	 <div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
@@ -357,6 +358,6 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
        <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/BuscarParticipes.js?119"></script> 
+   <script src="view/Credito/js/BuscarParticipes.js?120"></script> 
    </body>
 </html>   

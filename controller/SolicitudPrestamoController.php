@@ -1422,7 +1422,7 @@ class SolicitudPrestamoController extends ControladorBase{
 	                    
 	                    
 	            }
-	            
+	            //var_dump(error_get_last()); die();
 	            $this->report("SolicitudPrestamo",array("resultSet"=>$html));
 	            die();
 	            
@@ -3735,9 +3735,9 @@ class SolicitudPrestamoController extends ControladorBase{
 		require_once 'core/DB_Functions.php';
 		$db = new DB_Functions();
 		
+		$nombre_completo_usuario = ( isset( $_SESSION['nombre_usuarios'] ) ) ? $_SESSION['nombre_usuarios'] : ""; 
+		$nombre_completo_usuario .= ( isset( $_SESSION['apellidos_usuarios'] ) ) ? " ".$_SESSION['apellidos_usuarios'] : ""; 
 		
-		
-	
 		$where_to="";
 		$columnas = "solicitud_prestamo.id_solicitud_prestamo,
 					  solicitud_prestamo.tipo_participe_datos_prestamo,
@@ -3777,7 +3777,8 @@ class SolicitudPrestamoController extends ControladorBase{
 		solicitud_prestamo.id_estado_civil_datos_personales = estado_civil.id_estado_civil AND
 		entidades.id_entidades = solicitud_prestamo.id_entidades AND
 		sexo.id_sexo = solicitud_prestamo.id_sexo_datos_personales AND solicitud_prestamo.tipo_participe_datos_prestamo='Deudor'
-        AND solicitud_prestamo.monto_datos_prestamo =0 AND solicitud_prestamo.plazo_datos_prestamo=0 AND usuarios.nombre_usuarios='DIANA NAVARRETE'";
+        AND solicitud_prestamo.monto_datos_prestamo =0 AND solicitud_prestamo.plazo_datos_prestamo=0 
+        AND UPPER( usuarios.nombre_usuarios ) ILIKE '%".$nombre_completo_usuario."%'";
 	
 		$id       = "solicitud_prestamo.id_solicitud_prestamo";
 	
@@ -3837,6 +3838,7 @@ class SolicitudPrestamoController extends ControladorBase{
 				$html.='<th style="text-align: left;  font-size: 11px;">Apellidos</th>';
 				$html.='<th style="text-align: left;  font-size: 11px;">Nombres</th>';
 				$html.='<th style="text-align: left;  font-size: 11px;">Crédito</th>';
+				$html.='<th style="text-align: left;  font-size: 11px;">Nuevo</th>';
 				$html.='<th style="text-align: left;  font-size: 11px;">Tipo</th>';
 				$html.='<th style="text-align: left;  font-size: 11px;">Monto</th>';
 				$html.='<th style="text-align: left;  font-size: 11px;">Plazo</th>';
@@ -3870,6 +3872,8 @@ class SolicitudPrestamoController extends ControladorBase{
 						$estado_tramite='Revisado';
 						
 					}
+					
+					$isnuevoCredito = ( $this->isNewCredit( $res->numero_cedula_datos_personales ) ) ? "SI" : "NO";
 	
 					$html.='<tr>';
 	
@@ -3877,6 +3881,7 @@ class SolicitudPrestamoController extends ControladorBase{
 					$html.='<td style="font-size: 11px;">'.$res->apellidos_solicitante_datos_personales.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->nombres_solicitante_datos_personales.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->nombre_tipo_creditos.'</td>';
+					$html.='<td style="font-size: 11px;">'.$isnuevoCredito.'</td>';					
 					$html.='<td style="font-size: 11px;">'.$res->tipo_participe_datos_prestamo.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->monto_datos_prestamo.'</td>';
 					$html.='<td style="font-size: 11px;">'.$res->plazo_datos_prestamo.' meses</td>';
@@ -3920,14 +3925,15 @@ class SolicitudPrestamoController extends ControladorBase{
 					
 					
 					//$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$res->id_solicitud_prestamo.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
-					$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print_hipotecario&id_solicitud_prestamo='.$res->id_solicitud_prestamo.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
+					$html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$res->id_solicitud_prestamo.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
 					
 					
 					
 					$html.='</td>';
 					$html.='<td style="font-size: 15px;">';
 					if($aprobado_oficial_credito==1 && $res->nombre_tipo_creditos!="HIPOTECARIO"){
-					    $html.='<button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="EnviarInfo(&quot;'.$res->numero_cedula_datos_personales.'&quot;,'.$res->id_solicitud_prestamo.')"><i class="glyphicon glyphicon-import"></i></button>';
+					    //$html.='<button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="EnviarInfo(&quot;'.$res->numero_cedula_datos_personales.'&quot;,'.$res->id_solicitud_prestamo.')"><i class="glyphicon glyphicon-import"></i></button>'; 
+					    $html.='<button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="iniciar_proceso_creditos(&quot;'.$res->numero_cedula_datos_personales.'&quot;,'.$res->id_solicitud_prestamo.')"><i class="glyphicon glyphicon-import"></i></button>';
 					}
 					else if($aprobado_oficial_credito==1 && $res->nombre_tipo_creditos=="HIPOTECARIO")
 					{
@@ -3982,8 +3988,31 @@ class SolicitudPrestamoController extends ControladorBase{
 	
 	}
 	
-	
-	
+	/**
+	 * dc 2020/05/21
+	 * @desc function to return whether it is a new credit 
+	 */
+	public function isNewCredit( $cedula ){
+	    
+	    $participes    = new ParticipesModel();
+	    
+	    $col   = " 1 existe";
+	    $tab   = " core_creditos aa
+	       INNER JOIN core_participes bb on bb.id_participes = aa.id_participes";
+	    $whe   = " aa.id_estado_creditos = 4
+	       AND aa.id_estatus = 1
+	       AND bb.cedula_participes = '$cedula'";
+	    $rsConsulta    = $participes->getCondicionesSinOrden($col, $tab, $whe, "");
+	    
+	    if( empty( $rsConsulta ) )
+	    {
+	        return true;
+	    }else
+	    {
+	        return false;
+	    }
+	    
+	}
 	
 	
 	

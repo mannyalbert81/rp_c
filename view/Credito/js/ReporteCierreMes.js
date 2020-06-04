@@ -65,7 +65,7 @@ function get_data_for_xls()
 						   {
 				  var array = JSON.parse(data);
 				  var newArr = [];
-				   while(array.length) newArr.push(array.splice(0,23));
+				   while(array.length) newArr.push(array.splice(0,9));
 				   console.log(newArr);
 				   
 				   var dt = new Date();
@@ -75,9 +75,9 @@ function get_data_for_xls()
 				   var d=dt.getDate();
 				   var fecha=d.toString()+"/"+m.toString()+"/"+y.toString();
 				   var wb =XLSX.utils.book_new();
-				   wb.SheetNames.push("Reporte Cierre Mes");
+				   wb.SheetNames.push("Reporte Creditos en Mora");
 				   var ws = XLSX.utils.aoa_to_sheet(newArr);
-				   wb.Sheets["Reporte Cierre Mes"] = ws;
+				   wb.Sheets["Reporte Creditos en Mora"] = ws;
 				   var wbout = XLSX.write(wb,{bookType:'xlsx', type:'binary'});
 				   function s2ab(s) { 
 			            var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
@@ -85,7 +85,7 @@ function get_data_for_xls()
 			            for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
 			            return buf;    
 				   }
-			       saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'Reporte Cierre Mes'+fecha+'.xlsx');
+			       saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'Reporte Creditos en Mora.xlsx');
 					   }
 				   else{
 					   alert("No hay información para descargar");

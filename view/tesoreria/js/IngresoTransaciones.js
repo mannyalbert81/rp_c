@@ -16,6 +16,7 @@ $(document).ready(function(){
 	
 	
 })
+
  
 function controlesStart(){
 	
@@ -389,13 +390,13 @@ function verDistribucion(){
 	var $compra_iva		= $("#valor_compra_iva");
 	
 	if( $compra_iva.val() == "" || $compra_iva.val() == null || $compra_iva.val() == undefined || isNaN( parseFloat($compra_iva.val() )) ){
-		$modal.modal("hide");
+		//$modal.modal("hide");
 		swal({title:"ERROR",text:"Valor no valido en base compras con iva",icon:"warning"})
 		return false; 
 	}
 	
 	if( $compra_cero.val() == "" || $compra_cero.val() == null || $compra_cero.val() == undefined || isNaN( parseFloat($compra_cero.val()) ) ){
-		$modal.modal("hide");
+		//$modal.modal("hide");
 		swal({title:"ERROR",text:"Valor no valido en base compras sin iva",icon:"warning"})
 		return false;
 	}
@@ -764,3 +765,187 @@ function limpiarCampos(){
 	$('#compra_materiales').prop('checked',false);
 }
 
+
+/************************** COMIENZA FUNCIONES PARA CAMBIAR BASE DE RETENCION **********************/
+var modificar_base_retencion = function(event){
+	
+	event.preventDefault();
+	
+	var id_lote = $("#id_lote");
+	
+	if( id_lote.val() != 0 && id_lote.val().length )
+	{
+		//mandacion la peticion al servidor
+		var params = { 'id_lote':id_lote.val() }
+		$.ajax({
+			url:"index.php?controller=tesCuentasPagar&action=modificarBaseRetencion",
+			dataType:'json',
+			type:"POST",
+			data:params
+		}).done( function(x){			
+			if( x.estatus != undefined && x.estatus == "OK" )
+			{
+				$("#pnl_datos_retencion").html(x.html);
+				iniciar_cambio_retencion(); //funcion que habilita a los td creados por jquery
+			}
+		}).fail( function( xhr, status, error){
+			console.error("ERROR. buscar datos para modificacion de base retencion");
+		})		
+		
+	}
+	
+	
+}
+
+var iniciar_cambio_retencion	= function(){
+	
+	$("body").on('keyup',"#tbl_modificar_base_retencion tbody tr td input:text",function(){
+		
+		var tabla	= $(this).closest('table');
+		var cuerpo 	= $(this).closest('tbody');
+		var sumValor= 0.00;
+		
+		$.each( cuerpo.find('tr'),function(i,v){
+			
+			var fila = $(this);
+			var base	= fila.find("input:text[name='base']");
+			var porct	= fila.find("input:text[name='pocentage']");
+			var valor	= fila.find("input:text[name='valor']");
+			
+			var calculo = parseFloat( base.val() ) * parseFloat( porct.val() ) / 100 ;
+			calculo	= roundNumber( calculo, 2 );
+			sumValor += calculo;
+			valor.val( calculo );
+		})
+		
+		tabla.find("input:text[name='total']").val( roundNumber( sumValor, 2 ) );
+		
+	})
+	
+	
+}
+
+function roundNumber(value, decimals) {
+	  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
+
+var enviar_cambio_retencion	= function(){
+	
+	var filas = $("#tbl_modificar_base_retencion tbody tr");
+	
+	if( filas.length )
+	{
+		var data	= [];
+		var boleanValidacion = 1;
+		filas.each(function(){
+			
+			var _id_fila	= $(this).data("id"),
+				_base	= $(this).find("input:text[name='base']").val(),
+				_valor 	= $(this).find("input:text[name='valor']").val();
+
+			item = {};
+		
+			if( !isNaN( _id_fila ) && !isNaN( _base ) && !isNaN( _valor ) )
+			{
+			
+		        item ["id"]		= _id_fila;
+		        item ["base"]	= _base;
+		        item ['valor']	= _valor;
+		        
+		        data.push(item);
+			}else
+			{			
+				boleanValidacion = 0; return false;
+			}
+		})
+		
+		if( !boleanValidacion )
+		{
+			filas.closest('table').notify("Datos Ingresados no Validos. Revisar valores",{ position:"top center"});
+			return false;					
+		}
+		sdata 	= JSON.stringify(data); 
+		
+		params	= { 'data_retencion': sdata, 'id_lote': $("#id_lote").val() }
+		$.ajax({
+			url:"index.php?controller=tesCuentasPagar&action=setValorRetencionNuevo",
+			type:"POST",
+			dataType:"json",
+			data:params
+		}).done( function(x){
+			
+			swal({title:"Actualización",icon:"success",text:"Modificación Base Retencion Realizada"});
+			$("#pnl_datos_retencion").html( "" );
+			actualizar_valores_transacciones();
+			
+		}).fail( function(xhr,status,error){
+			swal({title:"Retencion Modificada",icon:"error",text:"ERROR. al modificar valores"})
+		})
+	}
+}
+
+var eliminar_distribucion	= function(){
+	
+	var id_lote = $("#id_lote");
+	
+	if( !id_lote.val().length || id_lote.val() == 0 )
+	{
+		return false;
+	}
+	
+	params	= { 'id_lote': id_lote.val() }
+	
+	$.ajax({
+		url:"index.php?controller=tesCuentasPagar&action=EliminarDistribucion",
+		type:"POST",
+		dataType:"json",
+		data:params
+	}).done( function(x){
+		swal({title:"INFORMACION",text:"Peticion realizada",icon:"success"});
+		$("#mod_distribucion").modal("hide");
+	}).fail( function(xhr,status,error){
+		swal({title:"Adventencia",text:"Revisar datos enviados",icon:"error"});
+		console.error( "Error al eliminar distribucion" );
+	})
+	
+}
+
+var actualizar_valores_transacciones	= function(){
+	
+	var id_lote = $("#id_lote").val();	
+	var compra_cero	= $("#valor_compra_cero").val();
+	var compra_iva	= $("#valor_compra_iva").val();
+	
+	id_lote	= ( id_lote == undefined || id_lote == "" ) ? null : id_lote;
+	compra_cero	= ( compra_cero == undefined || compra_cero == "" ) ? null : compra_cero;
+	compra_iva	= ( compra_iva == undefined || compra_iva == "" ) ? null : compra_iva;
+	
+	if( id_lote == null || compra_cero == null || compra_iva == null )
+	{
+		console.error("REVISAR VALORES DE TRANSACCIONES");
+		return false;
+	}
+		
+	params	= { 'id_lote': id_lote, 'compra_cero':compra_cero, 'compra_iva':compra_iva }
+	
+	$.ajax({
+		url:"index.php?controller=tesCuentasPagar&action=reloadValoresTransacciones",
+		type:"POST",
+		dataType:"json",
+		data:params
+	}).done( function(x){
+		
+		if( x.estatus != undefined && x.estatus == "OK")
+		{
+			$("#impuestos_documento").val( ""+x.total_impuestos );
+			$("#valor_total_documento").val( ""+x.saldo_total );
+		}
+		
+	}).fail( function(xhr,status,error){
+		swal({title:"Adventencia",text:"Revisar datos enviados",icon:"error"});
+		console.error( "Error al eliminar distribucion" );
+	})
+	
+}
+
+/************************** TERMINA FUNCIONES PARA CAMBIAR BASE DE RETENCION **********************/

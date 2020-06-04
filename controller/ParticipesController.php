@@ -736,9 +736,6 @@ class ParticipesController extends ControladorBase{
                       core_tipo_cuentas.nombre_tipo_cuentas, 
                       core_participes_cuentas.id_estatus, 
                       core_participes_cuentas.cuenta_principal, 
-
-                      
-
                       core_participes_cuentas.usuario_usuarios, 
                       core_participes_cuentas.direccion_ip";
 	    

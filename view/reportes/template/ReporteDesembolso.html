@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+ <head>
+  	<meta charset="utf-8"/>
+  
+  </head>
+  <body>
+  
+  		<table class="1" >
+		<tr>
+		 <td><strong>LIQUIDACION DE LA PRESTACION &nbsp;{NUMERO_CARPETA}</strong></td>
+		</tr>
+		<tr>
+		 <td><strong>{NOMBRE_TIPO}</strong></td>
+		</tr>
+	    </table>
+		<br>
+		<table class="1" >
+		<tr>
+		 <td class="1"><u><strong>DATOS DEL AFILIADO A LIQUIDARSE</strong></u></td>
+		</tr>
+		</table>
+		<br>
+		<table class="1" >
+		<tr>
+		 <td class="1"><strong>Nombre:</strong>&nbsp;{APELLIDO_PARTICIPE}&nbsp;{NOMBRE_PARTICIPE}</td>
+		 <td class="1"><strong>Identificación:</strong>&nbsp;{CEDULA_PARTICIPE}</td>
+		</tr>
+		<tr>
+		 <td class="1"><strong>Patronal:</strong>&nbsp;{NOMBRE_ENTIDAD}</td>
+		 <td class="1"><strong>Teléfono:</strong>&nbsp;{TELEFONO_PARTICIPE}</td>
+		</tr>
+		</table>
+		<table class="1" >
+		<tr>
+		 <td class="1"><strong>Dirección:</strong>&nbsp;{DIRECCION_PARTICIPE}</td>
+		</tr>
+		</table>
+		<table class="1" >
+		<tr>
+		 <td class="1"><strong>Obs. Ficha:</strong>&nbsp;{OBS_LIQUIDACION}</td>
+		</tr>
+		</table>	
+		
+		<table class="1" >
+		<tr>
+		 <td class="1"><strong>Prestación:</strong>&nbsp;{NOMBRE_TIPO}</td>
+		 <td class="1"><strong>Estado Solicitud:</strong>&nbsp;{NOMBRE_ESTADO}</td>
+		</tr>
+		</table>
+		
+		<table class="1" >
+		<tr>
+		 <td class="1"><strong>Banco:</strong>&nbsp;{BANCO_PARTICIPES}</td>
+		 <td class="1"><strong>Cuenta:</strong>&nbsp;{NUMERO_CUENTA_PARTICIPES}</td>
+		 <td class="1"><strong>Tipo Cuenta:</strong>&nbsp;{}</td>
+		</tr>
+		</table>
+		
+		<table class="1" >
+		<tr>
+		 <td class="1"><strong>Forma de Pago:</strong>&nbsp;{}</td>
+		</tr>
+		</table>
+		
+		<table class="1" >
+		<tr>
+		 <td class="1"><strong>Tiempo de Servicio:</strong>&nbsp;{}</td>
+		 <td class="1"><strong>Número de Imposiciones:</strong>&nbsp;{}</td>
+		</tr>
+		</table>
+		<br>
+		<table class="1" >
+		<tr>
+		 <td class="1"><strong><u>CALCULO DE CUENTA INDIVIDUAL</u></strong></td>
+		</tr>
+		</table>
+		
+		<table class="2" >
+		<tr>
+		 <td class="2">Aporte Patronal</td>
+		 <td class="2">{}</td>
+		</tr>
+		<tr>
+		 <td class="1">Retroactivo Patronal</td>
+		 <td class="1">{}</td>
+		</tr>
+		<tr>
+		 <td class="2">Excedente por Aporte Patronal</td>
+		 <td class="2">{}</td>
+		</tr>
+		<tr>
+		 <td class="1">Superavit por Aporte Patronal</td>
+		 <td class="1">{}</td>
+		</tr>
+		<tr>
+		 <td class="2"><strong>TOTAL 50 % APORTES PATRONALES + PATRONALES POR DESEMBOLSAR </strong></td>
+		 <td class="2">{}</td>
+		</tr>
+		</table>
+		<br>
+		<table class="1" >
+		<tr>
+		 <td><strong><u>DATOS DE RETENCIONES</u></strong></td>
+		</tr>
+		</table>
+		
+		<table class="1" >
+		<tr>
+		 <td class="1"><strong>CREDITOS:</strong></td>
+		</tr>
+		</table>
+		{DETALLE_CREDITOS_CESANTES}
+	    <br>
+	    <table class="2" >
+		<tr>
+		 <td class="2">Garantías:</td>
+		 <td class="2">{}</td>
+		</tr>
+		<tr>
+		 <td class="1">Retenciones Judiciales:</td>
+		 <td class="1">{}</td>
+		</tr>
+		<tr>
+		 <td class="2">Gastos Administrativos:</td>
+		 <td class="2">{}</td>
+		</tr>
+		<tr>
+		 <td class="1">Servicios:</td>
+		 <td class="1">{}</td>
+		</tr>
+		<tr>
+		 <td class="2">Impuestos Retenidos:</td>
+		 <td class="2">{}</td>
+		</tr>
+		<tr>
+		 <td class="1"><strong>TOTAL:</strong></td>
+		 <td class="1">{}</td>
+		</tr>
+		</table>
+		
+		<table class="3">
+		<tr>
+		 <td class="1"><strong>Valor a Recibir:</strong></td>
+		 <td class="1">{}</td>
+		</tr>
+		</table>
+		<table class="2">
+		<tr>
+		 <td class="1"><strong>Obs.Liquidación:</strong></td>
+		 <td class="1">{}</td>
+		</tr>
+		<tr>
+		 <td class="1"><strong>Presentada Por:</strong></td>
+		 <td class="1">{}</td>
+		</tr>
+		</table>
+		<table class="2">
+		<tr>
+		 <td class="1"><strong>Liquidado Por:</strong></td>
+		 <td class="1">{}</td>
+		 <td class="1"><strong>Fecha y Hora:</strong></td>
+		 <td class="1">{}</td>
+		</tr>
+		</table>
+		<table class="1" border="1">
+		<tr>
+		 <td>Confirmación de Datos:</td>
+		 <td>Número de teléfono Fijo Participe</td>
+		 <td>Número de teléfono Móvil Participe</td>
+		 <td>Correo Electronico Participe</td>
+		 <td>Verif. Datos Referencias Personales</td>
+		</tr>
+		<tr>
+		 <td class="1">Fecha:</td>
+		 <td>&nbsp;</td>
+		 <td>&nbsp;</td>
+		 <td>&nbsp;</td>
+		 <td>&nbsp;</td>
+		</tr>
+		</table>
+	   
+
+	
+  </body>
+  </html>

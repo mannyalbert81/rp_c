@@ -1,15 +1,18 @@
  
 var array_procesar_personal;
 var array_procesar_patronal;
+var array_procesar_cesantes;
 
 
 $(document).ready( function (){
 	
 	load_personal(1);
 	load_patronal(1);
+	load_cesantes(1);
 		
 	array_procesar_personal="";
 	array_procesar_patronal="";
+	array_procesar_cesantes="";
 	
 });
   
@@ -71,7 +74,37 @@ function load_patronal(pagina){
               
             },
            error: function(jqXHR,estado,error){
-             $("#patronal_registrados").html("Ocurrio un error al cargar la información de Superavit Patronal..."+estado+"    "+error);
+             $("#patronal_registrados").html("Ocurrio un error al cargar la información de Superavit Personal..."+estado+"    "+error);
+           }
+         });
+}
+
+
+function load_cesantes(pagina){
+
+	var search=$("#search_cesantes").val();
+    var con_datos={
+				  action:'ajax',
+				  page:pagina
+				  };
+		  
+  $("#load_cesantes_registrados").fadeIn('slow');
+  
+  $.ajax({
+            beforeSend: function(objeto){
+              $("#load_cesantes_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+            },
+            url: 'index.php?controller=TributarioImpuestoSuperavit&action=consulta_superavit_cesantes&search='+search,
+            type: 'POST',
+            data: con_datos,
+            success: function(x){
+              $("#cesantes_registrados").html(x);
+              $("#load_cesantes_registrados").html("");
+              $("#tabla_cesantes").tablesorter(); 
+              
+            },
+           error: function(jqXHR,estado,error){
+             $("#cesantes_registrados").html("Ocurrio un error al cargar la información de Superavit Patronal..."+estado+"    "+error);
            }
          });
 }
@@ -252,7 +285,7 @@ function Procesar_Personal(){
 
 
 
-//para patronal
+//para personal cta desembolsar
 
 
 $("#patronal_registrados").on("click","#btn_patronal",function(event){
@@ -415,9 +448,174 @@ function Procesar_Patronal(){
 
 
 
-//termina patronal
+//termina personal cta. desembolsar
 
 
 
 
+
+
+// empieza patroanal cesantes
+
+
+
+$("#cesantes_registrados").on("click","#btn_cesantes",function(event){
+
+	var $div_respuesta = $("#msg_frm_patronal"); 
+	
+	$div_respuesta.text("").removeClass();
+	  
+	$("#mod_cesantes").on('show.bs.modal',function(e){
+
+		 var modal = $(this)
+		 
+		
+		
+		cargar_cesantes_a_procesar();
+		 
+	}) 
+	
+})
+
+
+
+function cargar_cesantes_a_procesar(){
+     	 
+	var cantidad_cesantes = $("#mod_cantidad_cesantes").val();
+	
+		$.ajax({
+			beforeSend:function(){},
+			url:"index.php?controller=TributarioImpuestoSuperavit&action=cargar_cesantes_a_procesar",
+			type:"POST",
+			//dataType:"json",
+			data:{cantidad_cesantes:cantidad_cesantes}
+		}).done(function(x){		
+			
+		
+			x=JSON.parse(x);
+			
+			// imprimo html
+			$("#msg_frm_cesantes").html(x[1]);
+			
+			// lleno el array
+			array_procesar_cesantes="";
+			array_procesar_cesantes=x[0];
+			
+			
+			
+		}).fail(function(xhr,status,error){
+			var err = xhr.responseText
+			console.log(err)
+			
+		})
+	}
+
+
+
+
+
+
+function Procesar_Cesantes(){
+	
+	if(array_procesar_cesantes!=""){
+		
+	
+		var cantidad_cesantes = $("#mod_cantidad_cesantes").val();
+		
+		
+		var parametros = {cantidad_cesantes:cantidad_cesantes, array_procesar_cesantes:array_procesar_cesantes}
+
+		
+		$.ajax({
+			beforeSend:function(){
+				
+				
+				swal({
+					  title: "Retenciones",
+					  text: "Procesando",
+					  icon: "view/images/capremci_load.gif",
+					  buttons: false,
+					  closeModal: false,
+					  allowOutsideClick: false
+					});
+				
+			},
+			url:"index.php?controller=TributarioImpuestoSuperavit&action=Procesar_Cesantes",
+			type:"POST",
+			dataType:"json",
+			data:parametros
+		}).done(function(x){
+			
+			if( x.estatus != undefined ){
+				
+				if( x.estatus == "OK"){
+					var stext = x.mensaje;
+					if(x.xml != ""){
+						stext += x.xml;
+					}
+					$("#msg_frm_cesantes").html("");
+					$("#msg_frm_cesantes").html(x.html);
+					
+					swal({title:"TRANSACCIÓN OK",text:x.mensaje, icon:"success"})
+		    		.then((value) => {
+		    			
+		    			window.location.reload();
+		    		});	
+									
+				}else{
+					$("#msg_frm_cesantes").html("");
+                  $("#msg_frm_cesantes").html(x.html);
+					
+                  swal({title:"ERROR TRANSACCIÓN",text:"REVISAR DATOS ENVIADOS \n"+x.mensaje,icon:"error"})
+                  .then((value) => {
+		    			
+		    			window.location.reload();
+		    		});
+                  
+					
+					
+				}
+			
+			}
+			
+			
+		}).fail(function(xhr,status,error){
+			
+			
+			let err = xhr.responseText		
+			console.log(err);
+			if (err.includes("Warning") || err.includes("Notice") || err.includes("Error")){			
+				
+				swal({title:"ERROR TRANSACCIÓN",text:"REVISAR DATOS ENVIADOS \n",icon:"error"})
+              .then((value) => {
+	    			
+	    			window.location.reload();
+	    		});
+						
+			}
+			
+			
+		})
+		
+		
+		
+	}	else{
+		
+		
+		
+		swal({title:"ERROR TRANSACCIÓN",text:"NO EXISTE DATOS PARA PROCESAR \n",icon:"error"})
+      .then((value) => {
+			
+			window.location.reload();
+		});
+		
+		
+		
+	}
+	
+	
+}
+
+
+// termina patronal cesantes
 

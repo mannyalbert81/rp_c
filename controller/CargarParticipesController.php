@@ -864,7 +864,7 @@ class CargarParticipesController extends ControladorBase{
         $id_creditos = $rsConsulta2[0]->id_creditos; //con eto se toma el credito con mayor valor
         $numero_creditos = $rsConsulta2[0]->numero_creditos; //aqui va el cambio
         $pdf_registro_tres  = 'null';
-        $id_estado_registro_tres_cuotas = 'null'; //aqui va el cambio
+        $id_estado_registro_tres_cuotas = '1'; //aqui va el cambio
         
         //viene insertado en la tabla
         $funcion = "ins_registro_tres_cuotas";
@@ -940,7 +940,7 @@ class CargarParticipesController extends ControladorBase{
         
         
         //actualizas la base
-        $colPdf = " pdf_registro_tres_cuotas = '$byteaPdf'";
+        $colPdf = " pdf_registro_tres_cuotas = '$byteaPdf', acepto_participe_segunda_etapa = 'TRUE'";
         $tabPdf = " registro_tres_cuotas";
         $whePdf = " id_participes = $id_participes AND id_creditos = $id_creditos";
         
@@ -963,23 +963,62 @@ class CargarParticipesController extends ControladorBase{
         if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
         {
             $callBack = $_GET['jsoncallback'];
-            $columnas_1="id_registro_tres_cuotas,cedula_participes, numero_creditos, pdf_registro_tres_cuotas";
+            $columnas_1="id_registro_tres_cuotas,cedula_participes, numero_creditos, pdf_registro_tres_cuotas, mensaje_modal, procesada_tabla_registro_tres_cuotas, puede_diferir_segunda_etapa, acepto_participe_segunda_etapa";
             $tablas_1="public.registro_tres_cuotas";
             $where_1="cedula_participes = '$cedula'";
             $id_1= "registro_tres_cuotas.id_registro_tres_cuotas";
             $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
             
-            
-            if(!empty($resultUsu) && count($resultUsu)>0){
-                
-                $respuesta	= json_encode( array('respuesta'=>"SI") );
-                
-                
+            if( empty($resultUsu) ){
+                //aqui imprimir modal 
+                $respuesta	= json_encode( array('respuesta'=>"NO") );
             }else{
                 
-                $respuesta	= json_encode( array('respuesta'=>"NO") );
+                $puede_diferir_segunda_etapa = $resultUsu[0]->puede_diferir_segunda_etapa;
+                $mensaje_modal = $resultUsu[0]->mensaje_modal;
+                $acepto_participe_segunda_etapa = $resultUsu[0]->acepto_participe_segunda_etapa;
                 
-            }
+                
+                if($acepto_participe_segunda_etapa =="f"){
+                
+                if($puede_diferir_segunda_etapa=="t"){
+           
+                   
+                    if( !empty( $mensaje_modal ) ){
+                        $respuesta	= json_encode( array('respuesta'=>"SI",'mensaje_modal' => $mensaje_modal, 'puede_diferir'=>'SI') );
+                       
+                    }else{
+                        $respuesta	= json_encode( array('respuesta'=>"NO") );
+                    }
+                    
+                }else{
+                    
+                    if( !empty( $mensaje_modal ) ){
+                        $respuesta	= json_encode( array('respuesta'=>"SI",'mensaje_modal' => $mensaje_modal, 'puede_diferir'=>'NO') );
+                        
+                    }else{
+                        $respuesta	= json_encode( array('respuesta'=>"NO") );
+                    }
+                    
+                    
+                }
+                
+                
+                }else{
+                    
+                    $respuesta	= json_encode( array('respuesta'=>"NONO") );
+                    
+                    
+                }
+               
+                
+                
+                
+                
+                
+                
+                
+            }                      
             
             echo $callBack."(".$respuesta.");";
             
@@ -1023,6 +1062,51 @@ class CargarParticipesController extends ControladorBase{
             echo $callBack."(".$respuesta.");";
             
         }
+        
+    }
+ 
+    
+    
+    public function ReporteCertificado(){
+        session_start();
+        $participes = new ParticipesModel();
+        $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
+        
+        $datos_reporte = array();
+        $columnas = " registro_tres_cuotas.id_registro_tres_cuotas,
+                      core_participes.id_participes,
+                      core_participes.apellido_participes,
+                      core_participes.nombre_participes,
+                      core_participes.cedula_participes,
+                      registro_tres_cuotas.nombre_participes,
+                      registro_tres_cuotas.cedula_participes,
+                      core_creditos.id_creditos,
+                      core_creditos.numero_creditos,
+                      registro_tres_cuotas.numero_creditos,
+                      registro_tres_cuotas.pdf_registro_tres_cuotas,
+                      registro_tres_cuotas.creado,
+                      registro_tres_cuotas.modificado,
+                      core_tipo_creditos.id_tipo_creditos,
+                      core_tipo_creditos.nombre_tipo_creditos";
+        
+        $tablas = "public.registro_tres_cuotas,
+                  public.core_participes,
+                  public.core_creditos,
+                  public.core_tipo_creditos";
+        $where= "registro_tres_cuotas.id_participes = core_participes.id_participes AND
+                 core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
+                 registro_tres_cuotas.id_creditos = core_creditos.id_creditos AND registro_tres_cuotas.id_participes = '$id_participes'";
+        $id="core_participes.id_participes";
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
+        $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
+        $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
+        
+        
+        $this->verReporte("ReporteCertificado", array('datos_reporte'=>$datos_reporte ));
+        
+        
         
     }
     

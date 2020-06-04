@@ -282,6 +282,34 @@ class PagosController extends ControladorBase{
         
     }
     
+    public function loginMovil(){
+        
+        header("Access-Control-Allow-Origin: *");
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header("Access-Control-Allow-Headers: Content-Type, Authorization");
+        
+        $inemail = "danny@prueba.com";
+        $inpass  = "123456";
+        $resp = array();   
+        
+        $input = json_decode(file_get_contents("php://input"), true);
+               
+        $outemail = isset( $input['email'] ) ? $input['email'] : "" ;
+        $outpass = isset( $input['pass'] ) ? $input['pass'] : "";
+        
+        $resp['dataPOST'] = $input;
+        
+        if( $inemail == trim( $outemail ) && $inpass == trim( $outpass ) ){
+            
+            $resp['estatus']="OK";
+            $resp['mensaje']="bienvenido al sistema";
+        }else{
+            $resp['estatus']="ERROR";
+            $resp['mensaje']="no ingreso al sistema";
+        }
+        echo json_encode($resp);
+    }
+    
    
 }
     

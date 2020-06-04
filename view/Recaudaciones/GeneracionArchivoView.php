@@ -9,7 +9,9 @@
     <?php include("view/modulos/links_css.php"); ?>
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">     
-    <link href="//cdn.datatables.net/fixedheader/2.1.0/css/dataTables.fixedHeader.min.css"/>    
+    <link href="//cdn.datatables.net/fixedheader/2.1.0/css/dataTables.fixedHeader.min.css"/>
+    <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/1.10.20/integration/font-awesome/dataTables.fontAwesome.css"/>
+    
  	<style type="text/css">
  	  .loader {
         position: fixed;
@@ -26,7 +28,8 @@
             max-height: calc(100vh - 210px);
             overflow-y: auto;
         }*/
- 	  
+      
+ 	 
  	</style>   
   			        
     </head>
@@ -93,7 +96,7 @@
                                   	<input type="number" max="<?php echo date('Y') ?>" class="form-control" id="anio_recaudacion" name="anio_recaudacion"  autocomplete="off" value="<?php echo date('Y') ?>" autofocus>
                                  </div>
                                  <div class="col-sm-4">
-                                  	<select id="mes_recaudacion" name="mes_recaudacion" class="form-control" onchange="validaCambioMes()">
+                                  	<select id="mes_recaudacion" name="mes_recaudacion" class="form-control">
                                   	<option value="0">--seleccione--</option>
                                   	<?php for ( $i=1; $i<=count($meses); $i++){ ?>
                                   	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>                                  	                                  	
@@ -111,7 +114,7 @@
                 			 <div class="form-group-sm">
                 				<label for="id_entidad_patronal" class="col-sm-4 control-label" >Entidad Patronal:</label>
                 				<div class="col-sm-8">
-                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control" onchange="cargaDescuentosFormatos(this)" disabled>
+                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control"  disabled>
                                   	<option value="0">--Seleccione--</option>                                  	
                                   	</select>
                                  </div>
@@ -202,59 +205,49 @@
       <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Listado Recaudacion Entidades</h3>              
+              <h3 class="box-title">Listado Recaudacion Entidades</h3>  
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i>
+                </button>            
+              </div>          
             </div>
             
             <div class="box-body">
 
            		<div class="row">
            			<div class="col-lg-12 col-md-12 col-xs-12">
-               		    <div class="col-lg-3 col-md-3 col-xs-12">
+               		    <div class="col-lg-1 col-md-1 col-xs-12">
                    		    <div class="" >
             					<!-- aqui poner elemento de cantidad de registros -->
                     		</div>
-                    	</div>
-               			<div class="col-lg-9 col-md-9 col-xs-12">
-                        	
-                        	<div class="pull-right" >
-                        		<div class="form-group-sm">
-                					<select id="ddl_mes_buscar" class="form-control">
-                						<option value="0">--Seleccione--</option>
-                						<?php for ( $i=1; $i<=count($meses); $i++){ ?>
-                                      	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>                                  	                                  	
-                                      	<?php }?>            						
-                					</select>
-            					</div>
-                    		</div> 
-                    	    <div class="pull-right" >
-                    	    	<div class="form-group-sm">
-                					<input type="number" value="" max="<?php echo date('Y');?> " class="form-control" id="txt_anio_buscar" placeholder="Ingrese año"/>
-                				</div>
-                    		</div> 
-                    		<div class="pull-right" >
-                    			<div class="form-group-sm">
-                        			<select id="ddl_id_entidad_patronal" class="form-group-sm form-control ">
-                            			<option value="0">--Seleccione--</option>
-                                      	<?php if(isset($rsEntidadPatronal)){
-                                      	    foreach ( $rsEntidadPatronal as $res ){
-                                      	        echo '<option value="'.$res->id_entidad_patronal.'">'.$res->nombre_entidad_patronal.'</option>';
-                                      	    }
-                                      	}?>
-                                    </select>
-                                </div>
-                    		</div> 
-                    		<div class="pull-right" >
-                    			<div class="form-group-sm">
-                    				<button id="btn_reload" onclick="consultaArchivosRecaudacion(1)" class=" form-control btn btn-default" ><i class="fa fa-refresh" aria-hidden="true"></i></button>
-                    			</div>
-                    		</div>
-                    		
-                    		               	
-                    	</div>
+                    	</div>               			
                 	</div>
-                	
-                	
                 </div>
+                
+                <div class="clearfix" ></div> 	
+            	<div id="div_listado_recaudaciones" >
+            		<table id="tbl_listado_recaudaciones" class="table tablesorter table-striped table-bordered dt-responsive nowrap">
+            			<thead>
+            				<tr class="danger">
+                				<th >#</th>
+                				<th>Fecha</th>
+                				<th>Entidad Patronal</th>
+                				<th>Recaudacion</th>
+                				<th>Cantidad</th>
+                				<th>A&ntilde;o</th>
+                				<th>Mes</th>
+                				<th>Usuario</th>
+                				<th>Modificado</th>
+                				<th>Opciones</th>
+            				</tr>
+            			</thead>
+            			<tfoot>
+            				<tr>
+            				</tr>
+            			</tfoot>
+            		</table>
+            	</div>
                            
     			<div class="clearfix" ></div> 	
             	<div id="div_tabla_archivo_txt" ></div>
@@ -326,11 +319,17 @@
             	</div>
           		<div class="pull-right" >
           			<div class="form-group-sm">
-    					<input type="text" value="" class="form-control" onkeyup="mostarGenerados()" id="mod_txtBuscarDatos" name="mod_txtBuscarDatos"  placeholder="Buscar.."/>
+    					<input type="text" value="" class="form-control" onkeyup="CargarDatosDescuentos(1)" id="mod_txtBuscarDatos"  placeholder="Buscar.."/>
     				</div>
     			</div>           
     			<div class="clearfix" ></div> 	
-            	<div id="mod_div_datos_recaudacion" class="table-responsive" ></div>
+            	<div id="mod_div_datos_recaudacion" class="table-responsive" >
+            		<table id='tbl_archivo_recaudaciones_insertados' class='table table-striped table-bordered'>
+            			<thead><tr><th>colum1</th></tr></thead>
+            			<tbody><tr><td>detalle1</td></tr></tbody>
+            		</table>
+            		<div id="mod_paginacion_datos_descuentos"></div>
+            	</div>
           	</div>
           	
           
@@ -407,7 +406,7 @@
           	<div class="row">
           		<div class="col-lg-12 col-md-12 col-xs-12">
           			<h5>Datos Participe</h5>
-          			<input type="hidden" class="form-control " id="mod_id_archivo_detalle" name="mod_id_archivo_detalle" >
+          			<input type="hidden" class="form-control " id="mod_id_descuentos_detalle" >
           		</div>
               	<div class="col-lg-12 col-md-12 col-xs-12">        		
         			<div class="form-group "> 
@@ -477,6 +476,45 @@
       </div>
       <!-- /.modal-dialog -->
 </div>
+
+<!-- BEGIN MODAL PRUEBA DATATABLE -->
+  <div class="modal fade" id="mod_prueba_datos" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-lg " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-red color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" align="center">DATOS PRUEBAS CON DATATABLE</h4>
+          </div>
+          <div class="modal-body" >
+          	<div class="box-body no-padding">
+          		
+            	<div id="mod_div_prueba_datos" >
+            		<table id="tbl_prueba_datos" class="table table-striped table-bordered" > <!--   -->
+                    	<thead >
+                    	    <tr >
+                    	    	<th >Acciones</th>
+                    	    	<th >Cedula Participes</th>
+                    			<th >Apellido Participes</th>
+                    			<th >Nombre Participes</th>
+                    			<th >Valor Descuento</th>
+                    			<th >Valor Final</th>
+                    		</tr>
+                    	</thead>        
+                    	<tfoot><tr><td colspan="5">TOTAL</td> <td>........</td></tr></tfoot>
+                    </table>            	
+            	</div>
+          	</div>
+          	
+          
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+<!-- END MODAL MODAL PRUEBA DATATABLE -->
     
     
     <?php include("view/modulos/links_js.php"); ?>
@@ -486,12 +524,8 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.06"></script> 
+   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.19"></script> 
        
-       
-
- 	
-	
 	
   </body>
 </html>   

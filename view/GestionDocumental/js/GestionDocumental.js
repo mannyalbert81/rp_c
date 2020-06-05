@@ -314,9 +314,32 @@ $("#id_subcategorias").click(function() {
               
             }
 
+        if ( id_subcategorias == 64 ) //TRANSFERENCIAS BANCARIAS
+        {
+              
+          _nombre_tipo_documentos.removeAttr('disabled');
+          _fecha_documento_legal.removeAttr('disabled');
+          _id_carton_documentos.removeAttr('disabled');
+          
+          _Guardar.removeAttr('disabled');
+          
+        }
+        
+        
+        if ( id_subcategorias == 61  ) //COMPROBANTES ECONOMICO (CHEQUES)
+        {
+              _numero_credito.removeAttr('disabled');
+          _nombre_tipo_documentos.removeAttr('disabled');
+          _fecha_documento_legal.removeAttr('disabled');
+          _id_carton_documentos.removeAttr('disabled');
+          _asunto_documento.removeAttr('disabled');
+          _Guardar.removeAttr('disabled');
+          
+        }
+        
       if ( id_subcategorias == 83  ) 
 
-            {
+       {
                   console.log('hola')
                   _numero_credito.removeAttr('disabled');
               _nombre_tipo_documentos.removeAttr('disabled');
@@ -325,7 +348,7 @@ $("#id_subcategorias").click(function() {
               _asunto_documento.removeAttr('disabled');
               _Guardar.removeAttr('disabled');
               
-            }
+      }
 
 
       if ( id_subcategorias == 84 ||  id_subcategorias == 85) //prestaciones
@@ -453,6 +476,19 @@ $("#id_subcategorias").change(function() {
                     //_Guardar.attr('disabled','disabled');
                     
                   }
+             
+             
+             if ( id_subcategorias == 61  ) //COMPROBANTES ECONOMICO (CHEQUES)
+             {
+                   _numero_credito.removeAttr('disabled');
+               _nombre_tipo_documentos.removeAttr('disabled');
+               _fecha_documento_legal.removeAttr('disabled');
+               _id_carton_documentos.removeAttr('disabled');
+               _asunto_documento.removeAttr('disabled');
+               _Guardar.removeAttr('disabled');
+               
+             }
+
             
       });
 

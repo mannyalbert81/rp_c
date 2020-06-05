@@ -3,7 +3,7 @@
 $("#btnDetalles").on("click",function(event){
 	
 
-	let $mes=$('#mes_reporte');
+	let $mes= $('#mes_reporte');
 	let $anio=$('#a_reporte');
 
 	$divResultados = $("#div_estructura");
@@ -17,8 +17,9 @@ $("#btnDetalles").on("click",function(event){
 		$mesProcesos.notify("Seleccione Mes de Proceso",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
-	console.log("Mes: " + $mes.val()); 
 
+	 let $mes_actual = parseInt($mes.val()) + parseInt(1);
+	console.log("Mes: " + $mes_actual); 
 	 
 	 $.ajax({
 			
@@ -26,7 +27,7 @@ $("#btnDetalles").on("click",function(event){
 		    type: 'POST',
 		    dataType:"json",
 		    data: {
-		    	 mes_reporte:$mes.val(),
+		    	 mes_reporte:$mes_actual,
 		    	 anio_reporte:$anio.val()	    	      	   
 		    }
 	

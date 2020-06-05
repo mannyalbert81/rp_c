@@ -347,16 +347,31 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    /*** EJECUCION DE FUNCION QUE REALIZA BUSQUEDA EN INSERTA EN TABLA DE VALORES **/
 	    
 	    $funcion = "fn_genera_detalle_valores_descuentos_creditos";	    
-	    $parametros = "$id_entidad_patronal,$id_formatos_descuentos,$anio_recaudacion,$mes_recaudacion";
+	    $parametros = "$id_descuentos_registrados_cabeza,$id_entidad_patronal,$id_formatos_descuentos,$anio_recaudacion,$mes_recaudacion"; //aqui poner la cabecera para evitar hacer consultas grandes
 	    $sqDatos   = $recaudaciones->getconsultaPG($funcion, $parametros);
 	    
 	    $resultado = $recaudaciones->llamarconsultaPG($sqDatos);
 	    
 	    if( (int)$resultado[0] != 1 ){
-	        return array('error'=>true,'mensaje'=>"ejecucion funcion datos creditos fallida");
+	        return array('error'=>true,'mensaje'=>"ERROR ejecucion FUNCION 'fn_genera_detalle_valores_descuentos_creditos'");
 	    }
 	    
-	    $col1  = "aa.id_participes, aa.id_creditos, aa.valor_cuota_descuentos_registrados_detalle_valores_creditos,cc.plazo_creditos, 
+	    $qConsulta1 = "SELECT 'P' concepto_descuento ,id_descuentos_registrados_cabeza,id_descuentos_formatos,id_participes,
+            SUM(valor_cuota_descuentos_registrados_detalle_valores_creditos) valor_cuota
+            FROM core_descuentos_registrados_detalle_valores_creditos
+            WHERE concepto_descuentos_registrados_detalle_valores_creditos in ('VENCIMIENTO','MORA')
+            AND id_descuentos_registrados_cabeza = $id_descuentos_registrados_cabeza
+            GROUP BY id_descuentos_registrados_cabeza,id_descuentos_formatos,id_participes
+            UNION
+            SELECT 'G' concepto_descuento,id_descuentos_registrados_cabeza,id_descuentos_formatos,id_participes,sum(valor_cuota_descuentos_registrados_detalle_valores_creditos)
+            FROM core_descuentos_registrados_detalle_valores_creditos
+            WHERE concepto_descuentos_registrados_detalle_valores_creditos in ('GARANTIA')
+            AND id_descuentos_registrados_cabeza = $id_descuentos_registrados_cabeza
+            GROUP BY id_descuentos_registrados_cabeza,id_descuentos_formatos,id_participes";
+	    
+	    $rsConsulta1   = $recaudaciones->enviaquery($qConsulta1);
+	    
+	    /*$col1  = "aa.id_participes, aa.id_creditos, aa.valor_cuota_descuentos_registrados_detalle_valores_creditos,cc.plazo_creditos, 
             cc.saldo_actual_creditos,bb.mora_tabla_amortizacion";
 	    $tab1  = "core_descuentos_registrados_detalle_valores_creditos aa
     	    INNER JOIN core_tabla_amortizacion bb ON bb.id_tabla_amortizacion = aa.id_tabla_amortizacion
@@ -365,9 +380,9 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
             AND aa.id_descuentos_formatos = $id_formatos_descuentos
             AND aa.anio_descuentos_registrados_detalle_valores_creditos = $anio_recaudacion
             AND aa.mes_descuentos_registrados_detalle_valores_creditos	= $mes_recaudacion";
-	    $id1   = " aa.id_participes";
+	    $id1   = " aa.id_participes";*/
 	    	    
-	    $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
+	    //$rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
 	    	    
 	    if( empty( $rsConsulta1 ) ){
 	        return array('error'=>true,'mensaje'=>"extraccion datos descuentos fallida, No hay datos para procesar peticion");
@@ -388,11 +403,17 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    foreach ( $rsConsulta1 as $res ){
 	        
 	        $id_participes = ( !empty( $res->id_participes ) ) ? $res->id_participes : 'null';
-	        $id_creditos   = ( !empty( $res->id_creditos ) ) ? $res->id_creditos : 'null';
-	        $cuota_descuentos  = ( !empty( $res->valor_cuota_descuentos_registrados_detalle_valores_creditos ) ) ? $res->valor_cuota_descuentos_registrados_detalle_valores_creditos : 0;
-	        $plazo_desccuentos = ( !empty( $res->plazo_creditos ) ) ? $res->plazo_creditos : 0;
-	        $mora_descuentos   = ( !empty( $res->mora_tabla_amortizacion ) ) ? $res->mora_tabla_amortizacion : 0;
-	        $saldo_descuentos  = ( !empty( $res->saldo_actual_creditos ) ) ? $res->saldo_actual_creditos : 0;
+	        //$id_creditos   = ( !empty( $res->id_creditos ) ) ? $res->id_creditos : 'null';
+	        $id_creditos   = 0;
+	        $cuota_descuentos  = ( !empty( $res->valor_cuota ) ) ? $res->valor_cuota : 0;
+	        //$plazo_desccuentos = ( !empty( $res->plazo_creditos ) ) ? $res->plazo_creditos : 0;
+	        $plazo_desccuentos = 0;
+	        //$mora_descuentos   = ( !empty( $res->mora_tabla_amortizacion ) ) ? $res->mora_tabla_amortizacion : 0;
+	        $mora_descuentos   = 0;
+	        //$saldo_descuentos  = ( !empty( $res->saldo_actual_creditos ) ) ? $res->saldo_actual_creditos : 0;
+	        $saldo_descuentos  = 0;
+	        $valor_usuario     = $cuota_descuentos;
+	        $tipo_valor        = ( !empty( $res->concepto_descuento ) ) ? $res->concepto_descuento : '';
 	        
 	        $detalle['id_descuentos_registrados_cabeza']    = $id_descuentos_registrados_cabeza;
 	        $detalle['id_entidad_patronal']                 = $id_entidad_patronal;
@@ -411,6 +432,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $detalle['mora_descuentos']                     = $mora_descuentos;//-
 	        $detalle['credito_pay_descuentos']              = $credito_pay_descuentos;
 	        $detalle['mes_desc_descuentos']                 = $mes_desc_descuentos;
+	        $detalle['valor_usuario']                       = $valor_usuario;
+	        $detalle['tipo_valor']                          = $tipo_valor;
 	        
 	        $parametrosDetalle  = "'".join("','", $detalle)."'";
 	        $parametrosDetalle  = str_replace("'null'","null",$parametrosDetalle);
@@ -728,10 +751,9 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            //$nameTipoDescuento = "CREDITOS";
 	            
 	            $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.cuota_descuentos_registrados_detalle_creditos,
-	               cc.id_creditos, cc.numero_creditos, COALESCE(aa.mora_descuentos_registrados_detalle_creditos,0) valor_mora";
+                    aa.valor_usuario_descuentos_registrados_detalle_creditos";
 	            $tab2  = " core_descuentos_registrados_detalle_creditos aa
-    	            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
-    	            INNER JOIN core_creditos cc ON cc.id_creditos = aa.id_creditos";
+    	            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
 	            $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
 	            $id2   = " aa.id_descuentos_registrados_detalle_creditos";
 	            
@@ -773,9 +795,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
                     
                 }elseif( $tipo_descuento == "2" ){
                     $tipo_contribucion     = "CREDITOS";
-                    $valor_descuento       = $res->cuota_descuentos_registrados_detalle_creditos;
-                    $valor_mora            = $res->valor_mora;
-                    $total_descuento       = $valor_descuento + $valor_mora;
+                    $valor_descuento       = $res->cuota_descuentos_registrados_detalle_creditos;                   
+                    $total_descuento       = $res->valor_usuario_descuentos_registrados_detalle_creditos;
                     $concepto_recaudacion  = "DESCUENTOS CREDITOS";
                 }
                 
@@ -892,8 +913,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            
 	            $col1  = " aa.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, 
                     aa.aporte_personal_descuentos_registrados_detalle_aportes \"valor_descuento\",
-	               COALESCE(aa.valor_usuario_descuentos_registrados_detalle_aportes,0) as \"valor_descuento1\",
-                   0.00 \"valor_mora\" ";	               
+	               COALESCE(aa.valor_usuario_descuentos_registrados_detalle_aportes,0) as \"valor_descuento1\" ";	               
 	            $tab1  = " core_descuentos_registrados_detalle_aportes aa
 	               INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
 	            $whe1  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
@@ -907,9 +927,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            
 	            $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, 
                     aa.cuota_descuentos_registrados_detalle_creditos \"valor_descuento\",
-                    aa.cuota_descuentos_registrados_detalle_creditos \"valor_descuento1\",
-                    COALESCE(aa.mora_descuentos_registrados_detalle_creditos,0) \"valor_mora\",
-                    cc.id_creditos, cc.numero_creditos";
+                    aa.valor_usuario_descuentos_registrados_detalle_creditos \"valor_descuento1\" ";
 	            $tab2  = " core_descuentos_registrados_detalle_creditos aa
     	            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
     	            INNER JOIN core_creditos cc ON cc.id_creditos = aa.id_creditos";
@@ -922,7 +940,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            throw new Exception( "Tipo de descuento no valido" );
 	        }
 	        
-	        //en la consulta anterior se genero la columna valor_mora en las dos consultas para que no genere error en la unoa con valor cero 
+	        // dc 2020/06/04 en la consulta anterior se genero la columna valor_mora en las dos consultas para que no genere error en la unoa con valor cero 
 	        //y en la otra con valores de mora
 	        
 	        /**generar datos de archivo plano*/
@@ -953,9 +971,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            $cedula_participe      = $rsData[$i]->cedula_participes;
 	            $apellido_participe    = $rsData[$i]->apellido_participes;
 	            $nombre_participe      = $rsData[$i]->nombre_participes;
-	            $valor_mora            = $rsData[$i]->valor_mora; // si es aporte vendra en cero caso contrario vendra con valor en caso de haber por credito
 	            $total_descuento       = $rsData[$i]->valor_descuento1;
-	            $total_descuento       = $total_descuento + $valor_mora;
 	            
 	            $_grupo_valor_descuento += (float)$total_descuento;
 	            $_sumatoria_archivo += (float)$total_descuento;	            
@@ -1075,25 +1091,45 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	
 	/** END GENERACION DE ARCHIVOS TXT */
 	
-	public function BuscarDatosArchivo(){
-	    
+	
+	public function obtenerDetalleDescuentos()
+	{
 	    $recaudaciones  = new RecaudacionesModel();
 	    
 	    /* tomar datos de la web */
 	    
 	    $id_descuentos_detalle = $_POST['id_descuentos_detalle'];
+	    $tipo_descuentos = $_POST['tipo_descuento'];
 	    
-	    $columnas1 = 'aa.id_descuentos_registrados_detalle_aportes "id_detalle",
+	    $rsConsulta1   = array();
+	    if( $tipo_descuentos == "aportes" )
+	    {
+	        $columnas1 = 'aa.id_descuentos_registrados_detalle_aportes "id_detalle",
     	    aa.aporte_personal_descuentos_registrados_detalle_aportes "valor_descuento",
     	    aa.valor_usuario_descuentos_registrados_detalle_aportes "valor_descuento1",
     	    bb.id_participes , bb.cedula_participes, bb.apellido_participes, bb.nombre_participes';
-	    $tablas1   = "core_descuentos_registrados_detalle_aportes aa
+	        $tablas1   = "core_descuentos_registrados_detalle_aportes aa
 	       INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
-	    $where1    = " 1 = 1
+	        $where1    = " 1 = 1
 	       AND aa.id_descuentos_registrados_detalle_aportes =$id_descuentos_detalle";
-	    $id1       = "aa.id_descuentos_registrados_detalle_aportes ";
-	    	    
-	    $rsConsulta1   = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	        $id1       = "aa.id_descuentos_registrados_detalle_aportes ";
+	        
+	        $rsConsulta1   = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	        
+	    }else if( $tipo_descuentos == "creditos" )
+	    {
+	        $columnas1 = 'aa.id_descuentos_registrados_detalle_creditos "id_detalle",
+    	    aa.cuota_descuentos_registrados_detalle_creditos "valor_descuento",
+    	    aa.valor_usuario_descuentos_registrados_detalle_creditos "valor_descuento1",
+    	    bb.id_participes , bb.cedula_participes, bb.apellido_participes, bb.nombre_participes';
+	        $tablas1   = "core_descuentos_registrados_detalle_creditos aa
+	       INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
+	        $where1    = " 1 = 1
+	       AND aa.id_descuentos_registrados_detalle_creditos =$id_descuentos_detalle";
+	        $id1       = "aa.id_descuentos_registrados_detalle_creditos ";
+	        
+	        $rsConsulta1   = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
+	    }
 	    
 	    if(empty($rsConsulta1)){
 	        
@@ -1112,15 +1148,27 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $recaudaciones = new RecaudacionesModel();
 	        $id_descuentos_detalle   = $_POST['id_descuentos_detalle'];
 	        $valor_descuentos        = $_POST['valor_descuentos'];
+	        $tipo_descuentos         = $_POST['tipo_descuentos'];
 	        
 	        $error=error_get_last();
 	        if( !empty($error) ){    throw new Exception("Variables no definidas"); }
 	        
-	        $colval = " valor_usuario_descuentos_registrados_detalle_aportes = '$valor_descuentos' ";
-	        $tabla = " core_descuentos_registrados_detalle_aportes ";
-	        $where = " id_descuentos_registrados_detalle_aportes = '$id_descuentos_detalle'";
-	        
-	        $resultado = $recaudaciones->ActualizarBy($colval, $tabla, $where);
+	        if( $tipo_descuentos == "aportes" )
+	        {
+	            $colval = " valor_usuario_descuentos_registrados_detalle_aportes = '$valor_descuentos' ";
+	            $tabla = " core_descuentos_registrados_detalle_aportes ";
+	            $where = " id_descuentos_registrados_detalle_aportes = '$id_descuentos_detalle'";
+	            
+	            $resultado = $recaudaciones->ActualizarBy($colval, $tabla, $where);
+	            
+	        }else if( $tipo_descuentos == "creditos" )
+	        {
+	            $colval = " valor_usuario_descuentos_registrados_detalle_creditos = '$valor_descuentos' ";
+	            $tabla = " core_descuentos_registrados_detalle_creditos ";
+	            $where = " id_descuentos_registrados_detalle_creditos = '$id_descuentos_detalle'";
+	            
+	            $resultado = $recaudaciones->ActualizarBy($colval, $tabla, $where);
+	        }
 	        
 	        if( !empty( pg_last_error() ) ){
 	            throw new Exception("Actualizacion No realizada");
@@ -1130,8 +1178,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $resp['estatus']   = "OK";
 	        $resp['mensaje']   = " Filas Actualizadas (".$resultado.")";
 	                              
-	        echo json_encode($resp);
-	                
+	        echo json_encode($resp);	                
 	                
 	    } catch (Exception $e) {
 	        $buffer = error_get_last();
@@ -1504,12 +1551,13 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    }elseif ($tipo_descuento == "2" ){
 	        
 	        $columnaValores    = " COALESCE( bb.cuota_descuentos_registrados_detalle_creditos, 0 ) ";
-	        $columnaValores1   = " COALESCE( bb.cuota_descuentos_registrados_detalle_creditos, 0 ) ";
+	        $columnaValores1   = " COALESCE( bb.valor_usuario_descuentos_registrados_detalle_creditos, 0 ) ";
 	        
 	        $col1  = 'aa.id_descuentos_registrados_cabeza "id_cabeza",
     	        bb.id_descuentos_registrados_detalle_creditos "id_detalle",
     	        bb.cuota_descuentos_registrados_detalle_creditos "valor_descuento",
-    	        bb.cuota_descuentos_registrados_detalle_creditos "valor_descuento1",
+    	        bb.valor_usuario_descuentos_registrados_detalle_creditos "valor_descuento1",
+                bb.tipo_valor_descuentos_registrados_detalle_creditos "tipo_valor",
     	        aa.usuario_descuentos_registrados_cabeza "usuario_descuentos",
     	        cc.id_participes, cc.cedula_participes, cc.apellido_participes, cc.nombre_participes';
 	        $tab1  = "core_descuentos_registrados_cabeza aa
@@ -1540,7 +1588,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    $rsSumatoria2           = $recaudaciones->getSumaColumna($columnaValores1, $tab1, $whe1);	   
 	    $_total_archivo_final   = $rsSumatoria2[0]->suma;
 	    
-	    $per_page = 10; //la cantidad de registros que desea mostrar
+	    $per_page = 50; //la cantidad de registros que desea mostrar
 	    $adjacents  = 9; //brecha entre páginas después de varios adyacentes
 	    $offset = ($page - 1) * $per_page;
 	    
@@ -1553,71 +1601,135 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    
 	    if($cantidadResult>0){
 	        
-	        $html.= "<thead>";	       
-	        $html.= "<tr>";
-	        $html.= '<th style="text-align: left;  font-size: 12px;">-</th>';
-	        $html.= '<th style="text-align: left;  font-size: 12px;">#</th>';
-	        $html.= '<th style="text-align: left;  font-size: 12px;">Concepto</th>';
-	        $html.= '<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
-	        $html.= '<th style="text-align: left;  font-size: 12px;">Apellidos Participe</th>';
-	        $html.= '<th style="text-align: left;  font-size: 12px;">Nombres Participe </th>';
-	        $html.= '<th style="text-align: left;  font-size: 12px;">Valor Sistema</th>';
-	        $html.= '<th style="text-align: left;  font-size: 12px;">Valor Archivo</th>';
-	        $html.= '</tr>';
-	        $html.= '</thead>';
-	        $html.= '<tbody>';
-	        
-	        $i=0;
-	        foreach ($resultSet as $res){
-	            $i++;
+	        //validacion para cabeceras
+	        if( $tipo_descuento == 1 )
+	        {
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.= '<th style="text-align: left;  font-size: 12px;">-</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">#</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Concepto</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Apellidos Participe</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Nombres Participe </th>';	           
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Valor Sistema</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Valor Archivo</th>';
+	            $html.= '</tr>';
+	            $html.= '</thead>';
 	            
-	            $_html_boton_editar = "-";
-	            $descripcion_tipo_descuento    = "";
-	            if( $tipo_descuento == "1" ){
+	            $i=0;
+	            foreach ($resultSet as $res){
+	                $i++;
+	                
 	                $descripcion_tipo_descuento    = "APORTES";
 	                $_html_boton_editar = '<span class="">
-                            <a onclick="editAporte(this)" id="" data-iddescuentos="'.$res->id_detalle.'"
+                            <a onclick="editar_descuentos(this)" id="" data-iddescuentos="'.$res->id_detalle.'" data-tipo = "aportes"
                             href="#" class="btn btn-sm btn-default label label-warning">
                             <i class="fa fa-edit" aria-hidden="true" ></i>
                             </a></span>';
-	            }elseif( $tipo_descuento == "2" ){
-	                $descripcion_tipo_descuento    = "CREDITOS";	                
-	            }else{
-	                $descripcion_tipo_descuento    = "N/D";
-	            }
-	            
-	            /* se realiza una validacion : si el id de credito es null se activa para editar la fila*/
-	            
-	            if( empty($res->id_creditos) ){
+	               	  
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 18px;">';
+	                $html.= $_html_boton_editar;
+	                $html.= '</td>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$descripcion_tipo_descuento.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
+	                $html.='<td style="font-size: 11px; text-align: right; ">'.$res->valor_descuento.'</td>';
+	                $html.='<td style="font-size: 11px; text-align: right; ">'.$res->valor_descuento1.'</td>';
 	                
+	                $html.='</tr>';
 	            }
 	            
+	            $html.='</tbody>';
+	            /*para totalizar las filas*/
+	            $html.='<tfoot>';
 	            $html.='<tr>';
-	            $html.='<td style="font-size: 18px;">';
-	            $html.= $_html_boton_editar;
-	            $html.= '</td>';
-	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$descripcion_tipo_descuento.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->apellido_participes.'</td>';
-	            $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
-	            $html.='<td style="font-size: 11px; text-align: right; ">'.$res->valor_descuento.'</td>';
-	            $html.='<td style="font-size: 11px; text-align: right; ">'.$res->valor_descuento1.'</td>';
-	            
+	            $html.='<th colspan="5" ></th>';
+	            $html.='<th style="text-align: right"; >TOTALES</th>';
+	            $html.='<th style="text-align: right;  font-size: 12px;">'.$_total_archivo_sistema.'</th>';
+	            $html.='<th style="text-align: right;  font-size: 12px;">'.$_total_archivo_final.'</th>';
 	            $html.='</tr>';
-	        }
-	        
-	        $html.='</tbody>';
-	        /*para totalizar las filas*/
-	        $html.='<tfoot>';
-	        $html.='<tr>';
-	        $html.='<th colspan="5" ></th>';
-	        $html.='<th style="text-align: right"; >TOTALES</th>';
-	        $html.='<th style="text-align: right;  font-size: 12px;">'.$_total_archivo_sistema.'</th>';
-	        $html.='<th style="text-align: right;  font-size: 12px;">'.$_total_archivo_final.'</th>';
-	        $html.='</tr>';
-	        $html.='</tfoot>';
-	        
+	            $html.='</tfoot>';
+	            
+	        }else if( $tipo_descuento == 2 )
+	        {
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.= '<th style="text-align: left;  font-size: 12px;">-</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">#</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Concepto</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Cedula Participe</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Apellidos Participe</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Nombres Participe </th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Ultima Cuota</th>';
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Valor Sistema</th>';	            
+	            $html.= '<th style="text-align: left;  font-size: 12px;">Valor Archivo</th>';
+	            $html.= '</tr>';
+	            $html.= '</thead>';
+	            
+	            $i=0;
+	            foreach ($resultSet as $res){
+	                $i++;
+	                
+	                $concepto = $res->tipo_valor; 	                
+	                $descripcion_tipo_descuento    = "CREDITOS " . $concepto;
+	                
+	                $_html_boton_editar = '<span class="">
+                            <a onclick="editar_descuentos(this)" id="" data-iddescuentos="'.$res->id_detalle.'" data-tipo = "creditos"
+                            href="#" class="btn btn-sm btn-default label label-warning">
+                            <i class="fa fa-edit" aria-hidden="true" ></i>
+                            </a></span>';
+	                $id_participe  = $res->id_participes;
+	                $qConsulta2    = "SELECT aa.id_participes, min(bb.valor_cuota_descuentos_registrados_detalle_valores_creditos) ultima_cuota
+	                FROM core_participes aa
+	                INNER JOIN core_descuentos_registrados_detalle_valores_creditos bb ON bb.id_participes = aa.id_participes
+	                WHERE 1 = 1
+	                AND bb.concepto_descuentos_registrados_detalle_valores_creditos = 'VENCIMIENTO'
+	                AND aa.id_participes = $id_participe
+                    GROUP BY aa.id_participes";
+                    $rsConsulta2    = $recaudaciones->enviaquery( $qConsulta2 );
+                    
+                    $valor_ultima_cuota = "0.00";
+                    if( !empty( $rsConsulta2 ) )
+                    {
+                        $valor_ultima_cuota = number_format($rsConsulta2[0]->ultima_cuota,2,".","") ;
+                    }
+	                
+	               	                
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 18px;">';
+	                $html.= $_html_boton_editar;
+	                $html.= '</td>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$descripcion_tipo_descuento.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
+	                $html.='<td style="font-size: 11px; text-align: right; ">'.$valor_ultima_cuota.'</td>';
+	                $html.='<td style="font-size: 11px; text-align: right; ">'.$res->valor_descuento.'</td>';	                
+	                $html.='<td style="font-size: 11px; text-align: right; ">'.$res->valor_descuento1.'</td>';	                
+	                $html.='</tr>';
+	            }
+	            
+	            $html.='</tbody>';
+	            /*para totalizar las filas*/
+	            $html.='<tfoot>';
+	            $html.='<tr>';
+	            $html.='<th colspan="6" ></th>';
+	            $html.='<th style="text-align: right"; >TOTALES</th>';
+	            $html.='<th style="text-align: right;  font-size: 12px;">'.$_total_archivo_sistema.'</th>';
+	            $html.='<th style="text-align: right;  font-size: 12px;">'.$_total_archivo_final.'</th>';
+	            $html.='</tr>';
+	            $html.='</tfoot>';
+	            
+	        }else
+	        {
+	            $html.= '<h3> TIPO DE DESCUENTOS NO IDENTIFICADO </h3>';
+	        }	        
+	       
 	        $resp['tablaHtml'] = $html;
 	        $resp['paginacion'] = $recaudaciones->allpaginate("index.php", $page, $total_pages, $adjacents,"CargarDatosDescuentos");
 	        $resp['sizeData'] = $cantidadResult;
@@ -2466,11 +2578,10 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    }elseif( $tipo_descuento == 2 ){
 	        
 	        $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.cuota_descuentos_registrados_detalle_creditos,
-	               cc.id_creditos, cc.numero_creditos,COALESCE(aa.mora_descuentos_registrados_detalle_creditos,0) mora_descuentos, dd.id_estado, dd.nombre_tipo_creditos";
+	               aa.valor_usuario_descuentos_registrados_detalle_creditos,COALESCE(aa.mora_descuentos_registrados_detalle_creditos,0) mora_descuentos";
 	        $tab2  = " core_descuentos_registrados_detalle_creditos aa
     	        INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
-    	        INNER JOIN core_creditos cc ON cc.id_creditos = aa.id_creditos
-    	        INNER JOIN core_tipo_creditos dd ON dd.id_tipo_creditos = cc.id_tipo_creditos";
+    	        ";
 	        $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
 	        $id2   = " aa.id_descuentos_registrados_detalle_creditos ";
 	        	      	        
@@ -2484,7 +2595,6 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $html.='<th >Tipo Descuento</th>';
 	        $html.='<th >Cedula</th>';
 	        $html.='<th >Nombre</th>';
-	        $html.='<th >Cuota</th>';
 	        $html.='<th >Mora</th>';
 	        $html.='<th >Monto</th>';
 	        $html.='</tr>';
@@ -2492,7 +2602,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $index = 0;
 	        foreach ( $rsConsulta2 as $res ){
 	            
-	            $cuota = $res->cuota_descuentos_registrados_detalle_creditos;
+	            $cuota = $res->valor_usuario_descuentos_registrados_detalle_creditos;
 	            $mora  = $res->mora_descuentos;
 	            $monto = $cuota + $mora;
 	            $suma_total    += $monto;
@@ -2500,17 +2610,16 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            
 	            $html.='<tr>';
 	            $html.='<td >'.$index.'</td>';
-	            $html.='<td >'.$res->nombre_tipo_creditos.'</td>';
+	            $html.='<td >'."Descuento Creditos".'</td>';
 	            $html.='<td >'.$res->cedula_participes.'</td>';
 	            $html.='<td >'.$res->apellido_participes.'-'.$res->nombre_participes.'</td>';
-	            $html.='<td class="decimales">'.number_format($cuota,2,'.',',').'</td>';
 	            $html.='<td class="decimales">'.number_format($mora,2,'.',',').'</td>';
 	            $html.='<td class="decimales">'.number_format($monto,2,'.',',').'</td>';
 	            $html.='</tr>';
 	        }
 	        
 	        $html.='<tr>';
-	        $html.='<th colspan="6" class="centrado">TOTAL</th>';
+	        $html.='<th colspan="5" class="centrado">TOTAL</th>';
 	        $html.='<th class="decimales">'.number_format($suma_total,2,'.',',').'</th>';
 	        $html.='</tr>';
 	        

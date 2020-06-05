@@ -4247,8 +4247,7 @@ class SolicitudPrestamoController extends ControladorBase{
                       solicitud_prestaciones.fecha_salida_solicitud_prestaciones, 
                       solicitud_prestaciones.id_bancos, 
                       bancos.nombre_bancos, 
-                      solicitud_prestaciones.numero_cuenta_ahorros_bancaria, 
-                      solicitud_prestaciones.numero_cuenta_corriente_bancaria, 
+                      solicitud_prestaciones.numero_cuenta_bancaria, 
                       solicitud_prestaciones.identificador_consecutivos, 
                       solicitud_prestaciones.creado, 
                       solicitud_prestaciones.modificado";
@@ -4344,7 +4343,7 @@ class SolicitudPrestamoController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_parroquias.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->telefono_solicitud_prestaciones.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->celular_solicitud_prestaciones.'</td>';
-	                $html.='<td style="font-size: 11px;">'.$res->numero_cuenta_ahorros_bancaria.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->numero_cuenta_bancaria.'</td>';
 	                $html.='<td style="font-size: 11px;">'.$res->nombre_bancos.'</td>';
 	                $html.='<td style="font-size: 15px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print_desafiliacion&id_solicitud_prestaciones='.$res->id_solicitud_prestaciones.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-print"></i></a></span>';
 	                $html.='<td style="font-size: 15px;"><button class="btn btn-primary pull-right" title="Registrar crédito"  onclick="EnviarInfoDasafiliacion(&quot;'.$res->cedula_participes.'&quot;,'.$res->id_solicitud_prestaciones.')"><i class="glyphicon glyphicon-import"></i></button>';

@@ -377,16 +377,17 @@ class BuscarParticipesCesantesController extends ControladorBase{
 		                        $_fecha_concesion_creditos = $res->fecha_concesion_creditos;
 		                        
 		                       $total_saldo=   $participes->devuelve_saldo_capital($_id_creditos) ; //$this->Buscar_Cuotas_Actuales($_id_creditos);
-		                       //$total_interes= $this->Buscar_Interes($_id_creditos);
-		                      
-		                       
-		                      $estado_del_credito = $this->Buscar_Estado_Credito($_id_creditos);
-		                       //   1 - Mora;
-		                       //   2 - Adelantado
-		                       //   3 - Parcial
-		                       //   4 - Al dia
-		                       $_interes_ordinario = 0;
-		                       $_seguro_desgravamen = 0;
+		                       $total_mora=   $this->devuelve_saldo_mora($_id_creditos) ; //$this->Buscar_Cuotas_Actuales($_id_creditos);
+		                       $saldo_interes = $this->devuelve_saldo_interes($_id_creditos);
+		                	   $dias_interes =  $this->devuelve_interes_por_dias($_id_creditos);
+		                       $saldo_seguros = $this->devuelve_saldo_seguro_desgravamen_incendio($_id_creditos);	       
+		               		        
+		                       $total_saldo_credito = $total_saldo +
+		                       $total_mora  +
+		                       $saldo_interes +
+		                       $dias_interes +
+		                       $saldo_seguros	;
+		                        
 		                       
 		                       $html.='';
 		                       
@@ -395,70 +396,24 @@ class BuscarParticipesCesantesController extends ControladorBase{
 		                        
 		                       $html.='<tr>
 		                       			<td width="70%">'.$_nombre_tipo_creditos.'</td>
-		                       			<td style="text-align: right;" width="30%"><span id="lblCreditoOrdinario"> $ '.number_format((float)$total_saldo, 2, ',', '.').'</span></td>
+		                       			<td style="text-align: right;" width="30%"><span id="lblCreditoOrdinario"> $ '.number_format((float)$total_saldo_credito, 2, ',', '.').'</span></td>
 		                       		  </tr>';
 		                        
 		                        
-		                       $total_descuentos=$total_descuentos+$total_saldo;
+		                       $total_descuentos=$total_descuentos + $total_saldo + 
+		                       					 $total_mora  + 
+		                       					 $saldo_interes +
+		                       					 $dias_interes + 
+		                       					 $saldo_seguros	;
 		                       
 		                       
-		                       echo "Estado del Credito: " . $estado_del_credito;
+		                       echo "Capital: " . $total_saldo . '   |||    ';
+		                       echo "Mora: " . $total_mora . '   |||    ';
+		                       echo "Saldo Intereses: " . $saldo_interes . '   |||    ';
+		                       echo "dias Intereses: " . $dias_interes . '   |||    ';
+		                       echo "Seguros: " . $saldo_seguros;
 		                       
-		                       if ($estado_del_credito == 4) //al dia
-		                       {
-		                       	
-		                       		if ($_id_tipo_creditos == 3)  //hipotecarios
-		                       		{
-		                       			$_saldo_capital = $participes->devuelve_saldo_capital($_id_creditos) ;
-		                       			$_tasa_interes = $this->devuelve_tasa_credito($_id_creditos);
-		                       			$_dias = date("d", strtotime($fecha_prestaciones));
-		                       			//	$fecha_cuota_actual =
-		                       			$_interes_ordinario = $participes->devuelve_interes_ord_x_capital($_dias, $_saldo_capital, $_tasa_interes);
-		                       			
-		                       		}
-		                       		else 
-		                       		{
-		                       			//$_fecha_ultimo_pago = $this->Buscar_fecha_Ultimo_Pago($_id_creditos);
-		                       			$_saldo_capital = $participes->devuelve_saldo_capital($_id_creditos) ;
-		                       			$_tasa_interes = $this->devuelve_tasa_credito($_id_creditos);
-		                       			$_dias = date("d", strtotime($fecha_prestaciones));
-		                       			//	$fecha_cuota_actual =
-		                       			$_interes_ordinario = $participes->devuelve_interes_ord_x_capital($_dias, $_saldo_capital, $_tasa_interes);
-		                       			$_seguro_desgravamen = $participes->devuelve_seguro_desgravamen($_saldo_capital);
-		                       			
-		                       		}
-		                       	
-		                       }
-		                       if ($estado_del_credito == 1) //EN MORA
-		                       {
-		                       
-		                       	if ($_id_tipo_creditos == 3)  //hipotecarios
-		                       	{
-		                       		$_saldo_capital = $participes->devuelve_saldo_capital($_id_creditos) ;
-		                       		$_tasa_interes = $this->devuelve_tasa_credito($_id_creditos);
-		                       		$_dias = date("d", strtotime($fecha_prestaciones));
-		                       		//	$fecha_cuota_actual =
-		                       		$_interes_ordinario = $participes->devuelve_interes_ord_x_capital($_dias, $_saldo_capital, $_tasa_interes);
-		                       
-		                       	}
-		                       	else
-		                       	{
-		                       		//$_fecha_ultimo_pago = $this->Buscar_fecha_Ultimo_Pago($_id_creditos);
-		                       		$_saldo_capital = $participes->devuelve_saldo_capital($_id_creditos) ;
-		                       		$_tasa_interes = $this->devuelve_tasa_credito($_id_creditos);
-		                       		$_dias = date("d", strtotime($fecha_prestaciones));
-		                       		//	$fecha_cuota_actual =
-		                       		$_interes_ordinario = $participes->devuelve_interes_ord_x_capital($_dias, $_saldo_capital, $_tasa_interes);
-		                       		$_seguro_desgravamen = $participes->devuelve_seguro_desgravamen($_saldo_capital);
-		                       
-		                       	}
-		                       
-		                       }
-		                       
-		                       
-		                       echo "Interes Concesion: " . $_interes_ordinario;
-		                       echo "Seguro Desgravamen: " . $_seguro_desgravamen;
-		                       ////DETERMINAR ESTADO DEL CREDITO
+		                              
 		                       
 		                               
 		                    }
@@ -1281,9 +1236,146 @@ class BuscarParticipesCesantesController extends ControladorBase{
     }
     
     
+    public function devuelve_saldo_mora($id_creditos){
+    
+    	$creditos=new CoreCreditoModel();
+    	$saldo_credito=0;
+    
+    	$columnas_pag="coalesce(sum(tap.saldo_cuota_tabla_amortizacion_pagos),0) as saldo";
+    	$tablas_pag="core_creditos c
+                        inner join core_tabla_amortizacion at on c.id_creditos=at.id_creditos
+                        inner join core_tabla_amortizacion_pagos tap on at.id_tabla_amortizacion=tap.id_tabla_amortizacion
+                        inner join core_tabla_amortizacion_parametrizacion tapa on tap.id_tabla_amortizacion_parametrizacion=tapa.id_tabla_amortizacion_parametrizacion";
+    	$where_pag="c.id_creditos='$id_creditos' and c.id_estatus=1 and at.id_estatus=1 and tapa.tipo_tabla_amortizacion_parametrizacion=7";
+    
+    	$resultPagos=$creditos->getCondicionesSinOrden($columnas_pag, $tablas_pag, $where_pag, "");
+    
+    
+    	if(!empty($resultPagos)){
+    		 
+    		 
+    		$saldo_credito=$resultPagos[0]->saldo;
+    		 
+    		 
+    	}
     
     
     
+    	return $saldo_credito;
+    
+    
+    
+    }
+    
+    
+
+    public function devuelve_saldo_seguro_desgravamen_incendio($id_creditos){
+    
+    	$fecha_prestaciones = $_POST['fecha_prestaciones'];
+    	
+    	$creditos=new CoreCreditoModel();
+    	$saldo_credito=0;
+    
+    	$_mes_buscar = date("m", strtotime($fecha_prestaciones));
+    	
+    	$_year_buscar = date("Y", strtotime($fecha_prestaciones));
+    	
+    	if (date("m", strtotime($fecha_prestaciones)) > 11)
+    	{
+    		$_mes_buscar = 1;
+    		$_year_buscar = date("Y", strtotime($fecha_prestaciones)) + 1;
+    	}
+    	 
+    	$columnas_pag="coalesce(sum(tap.saldo_cuota_tabla_amortizacion_pagos),0) as saldo";
+    	$tablas_pag="core_creditos c
+                        inner join core_tabla_amortizacion at on c.id_creditos=at.id_creditos
+                        inner join core_tabla_amortizacion_pagos tap on at.id_tabla_amortizacion=tap.id_tabla_amortizacion
+                        inner join core_tabla_amortizacion_parametrizacion tapa on tap.id_tabla_amortizacion_parametrizacion=tapa.id_tabla_amortizacion_parametrizacion";
+    	$where_pag="c.id_creditos='$id_creditos' and c.id_estatus=1 and at.id_estatus=1 and tapa.tipo_tabla_amortizacion_parametrizacion=8
+    		AND to_char(at.fecha_tabla_amortizacion, 'YYYY')='$_year_buscar' and to_char(at.fecha_tabla_amortizacion, 'MM')<=LPAD('$_mes_buscar',2,'0') ";
+    
+    	$resultPagos=$creditos->getCondicionesSinOrden($columnas_pag, $tablas_pag, $where_pag, "");
+    
+    
+    	if(!empty($resultPagos)){
+    		 
+    		 
+    		$saldo_credito=$resultPagos[0]->saldo;
+    		 
+    		 
+    	}
+    
+    
+    
+    	return $saldo_credito;
+    
+    
+    
+    }
+    
+    public function devuelve_saldo_interes($id_creditos){
+    
+    	$creditos=new CoreCreditoModel();
+    	$saldo_credito=0;
+    	$fecha_prestaciones = $_POST['fecha_prestaciones'];
+    	$_mes_buscar = date("m", strtotime($fecha_prestaciones));
+    	$_year_buscar = date("Y", strtotime($fecha_prestaciones));
+    	
+    	
+    	
+    	$columnas_pag="coalesce(sum(tap.saldo_cuota_tabla_amortizacion_pagos),0) as saldo";
+    	$tablas_pag="core_creditos c
+                        inner join core_tabla_amortizacion at on c.id_creditos=at.id_creditos
+                        inner join core_tabla_amortizacion_pagos tap on at.id_tabla_amortizacion=tap.id_tabla_amortizacion
+                        inner join core_tabla_amortizacion_parametrizacion tapa on tap.id_tabla_amortizacion_parametrizacion=tapa.id_tabla_amortizacion_parametrizacion";
+    	$where_pag="c.id_creditos='$id_creditos' and c.id_estatus=1 and at.id_estatus=1 and tapa.tipo_tabla_amortizacion_parametrizacion=1
+    				AND to_char(at.fecha_tabla_amortizacion, 'YYYY')='$_year_buscar' and to_char(at.fecha_tabla_amortizacion, 'MM')<LPAD('$_mes_buscar',2,'0')
+    	";
+    
+    	$resultPagos=$creditos->getCondicionesSinOrden($columnas_pag, $tablas_pag, $where_pag, "");
+    
+    
+    	if(!empty($resultPagos)){
+    		 
+    		 
+    		$saldo_credito=$resultPagos[0]->saldo;
+    		 
+    		 
+    	}
+    
+    	
+    	return $saldo_credito;
+    
+    
+    
+    }
+        
+    
+    public function devuelve_interes_por_dias($_id_creditos){
+    
+    	$fecha_prestaciones = $_POST['fecha_prestaciones'];
+    	
+    	$creditos=new CoreCreditoModel();
+    	$_interes_ordinario=0;
+ 		
+    
+    	$_saldo_capital = $creditos->devuelve_saldo_capital($_id_creditos) ;
+    	$_tasa_interes = $this->devuelve_tasa_credito($_id_creditos);
+    	$_dias = date("d", strtotime($fecha_prestaciones));
+    	//	$fecha_cuota_actual =
+    	$_interes_ordinario = $creditos->devuelve_interes_ord_x_capital($_dias, $_saldo_capital, $_tasa_interes);
+    	
+    	 
+    	return $_interes_ordinario;
+    
+    
+    
+    }
+    
+    
+    
+    
+       
  
     
 

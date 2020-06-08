@@ -71,7 +71,7 @@
         <li class="active">Archivo de Recaudacion</li>
       </ol>
     </section>   
-
+    
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">

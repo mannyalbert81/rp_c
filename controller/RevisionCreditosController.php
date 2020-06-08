@@ -1942,6 +1942,11 @@ class RevisionCreditosController extends ControladorBase{
         }
         echo $mensaje."-".$id_reporte."-".$numero_credito.$query;
     }
+    
+    function verCode()
+    {
+        var_dump(pg_dbname(pg_connet()));
+    }
 
 }
 

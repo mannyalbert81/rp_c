@@ -76,6 +76,8 @@
         <li class="active">Transacciones</li>
       </ol>
     </section>   
+    
+  <div id="div-loader" class=""></div>
 
     <section class="content">
      <div class="box box-primary">
@@ -96,8 +98,6 @@
   		<input type="hidden" id="id_consecutivos" value="">
   		<input type="hidden" id="hd_valor_base_compra" value=""><!-- aqui guarda el valor pa validar cambio de valor -->
   		<!-- TERMINA SECTION PARA ID -->
-  		
-  			<div id="divLoaderPage" ></div>                     	
   		
   			<div class="row">
   			
@@ -581,13 +581,9 @@
    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/tesoreria/js/IngresoTransaciones.js?0.42"></script> 
+   <script src="view/tesoreria/js/IngresoTransaciones.js?0.43"></script> 
        
-       
-
- 	
-	
-	
+       	
   </body>
 </html>   
 

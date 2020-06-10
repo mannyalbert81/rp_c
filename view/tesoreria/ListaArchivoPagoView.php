@@ -106,7 +106,7 @@
             			<div class="form-group ">
             				<label for="fecha_proceso" class=" control-label" >Fecha Proceso:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control text-right" id="fecha_proceso" name="fecha_proceso" max="<?php echo date('d-m-Y'); ?>" value="<?php echo date('d-m-Y');?>" >
+                				 <input type="text" class="form-control text-right" id="fecha_proceso" name="fecha_proceso" max="<?php echo date('Y/m/d'); ?>" value="<?php echo date('Y/m/d');?>" >
                     		</div>        			 
             			</div>
             		</div> 
@@ -283,7 +283,7 @@
     <script src="view/bootstrap/bower_components/inputmask/dist/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/ListaArchivoPago.js?0.09"></script>
+	<script type="text/javascript" src="view/tesoreria/js/ListaArchivoPago.js?0.10"></script>
 
   </body>
 </html>   

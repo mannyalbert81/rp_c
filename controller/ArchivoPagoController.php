@@ -459,7 +459,9 @@ class ArchivoPagoController extends ControladorBase{
 	    
 	    if( !empty($id_bancos) ){
 	        $where1 .= " AND bb.id_bancos_local = $id_bancos";
-	    }	    
+	    }
+	    
+	    //var_dump( $_POST);
 	    
 	    $columnasSumatorias = " COUNT(1) AS cantidad, SUM( bb.valor_pagos ) AS total" ;
 	    $resultSet = $pagos->getCondicionesSinOrden( $columnasSumatorias , $tablas1, $where1,"");
@@ -477,6 +479,8 @@ class ArchivoPagoController extends ControladorBase{
 	    
 	    $resultSet = $pagos->getCondicionesPag($columnas1, $tablas1, $where1, $id1, $limit);
 	    $total_pages = ceil($cantidadResult/$per_page);
+	    
+	    //echo "SELECT ",$columnas1," FROM ", $tablas1," WHERE ", $where1, " ORDER BY ", $id1, $limit;
 	    
 	    $error = error_get_last();
 	    if( !empty($error) ){
@@ -567,7 +571,7 @@ class ArchivoPagoController extends ControladorBase{
 	        $id_bancos             = ( isset( $_POST['id_bancos'] ) ) ? $_POST['id_bancos'] : "0";
 	        $tipo_pago_archivo_pago= ( isset( $_POST['tipo_pago_archivo'] ) ) ? strtoupper($_POST['tipo_pago_archivo']) : "";	        
 	        
-	        $oFecha = new DateTime(str_replace("/", "-", $fecha_proceso));
+	        $oFecha = new DateTime( str_replace("/", "-", $fecha_proceso) );
 	        $anioProceso   = $oFecha->format('Y');
 	        $mesProceso    = $oFecha->format('m');
 	        //$diaProceso    = $oFecha->format('d');

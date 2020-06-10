@@ -1942,6 +1942,7 @@ class RevisionCreditosController extends ControladorBase{
         }
         echo $mensaje."-".$id_reporte."-".$numero_credito.$query;
     }
+      
 
 }
 

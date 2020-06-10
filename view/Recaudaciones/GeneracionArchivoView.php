@@ -71,7 +71,7 @@
         <li class="active">Archivo de Recaudacion</li>
       </ol>
     </section>   
-
+    
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
@@ -406,7 +406,8 @@
           	<div class="row">
           		<div class="col-lg-12 col-md-12 col-xs-12">
           			<h5>Datos Participe</h5>
-          			<input type="hidden" class="form-control " id="mod_id_descuentos_detalle" >
+          			<input type="hidden" id="mod_id_descuentos_detalle" >
+          			<input type="hidden" id="mod_tipo_descuentos" >
           		</div>
               	<div class="col-lg-12 col-md-12 col-xs-12">        		
         			<div class="form-group "> 
@@ -524,7 +525,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.19"></script> 
+   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.22"></script> 
        
 	
   </body>

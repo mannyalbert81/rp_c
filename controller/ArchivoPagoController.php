@@ -457,7 +457,8 @@ class ArchivoPagoController extends ControladorBase{
     	    AND aa.id_tipo_pago_archivo = $id_tipo_archivo_pago ";
 	    $id1       = " aa.id_archivo_pago";
 	    
-	    if( !empty($id_bancos) ){
+	    if( !empty( $id_bancos ) )
+	    {
 	        $where1 .= " AND bb.id_bancos_local = $id_bancos";
 	    }
 	    
@@ -501,8 +502,8 @@ class ArchivoPagoController extends ControladorBase{
 	    $htmlHead .= "<th>Tipo Pago</td>";
 	    $htmlHead .= "<th>Identificacion</td>";
 	    $htmlHead .= "<th>Beneficiario</td>";
-	    $htmlHead .= "<th>Valor</td>";
 	    $htmlHead .= "<th>Cod. Banco</td>";
+	    $htmlHead .= "<th>Valor</td>";
 	    $htmlHead .= "</tr>";
 	    $htmlHead .= "</thead>";
 	    
@@ -520,8 +521,8 @@ class ArchivoPagoController extends ControladorBase{
 	        $htmlBody    .= "<td>" . $tipoPago . "</td>";
 	        $htmlBody    .= "<td>" . $res->numero_identificacion_archivo_pago . "</td>";
 	        $htmlBody    .= "<td>" . $res->beneficiario_archivo_pago . "</td>";
-	        $htmlBody    .= "<td>" . $res->valor_pagos . "</td>";
 	        $htmlBody    .= "<td>" . $res->codigo_banco_archivo_pago . "</td>";
+	        $htmlBody    .= "<td>" . $res->valor_pagos . "</td>";	       
 	        $htmlBody    .= "</tr>";
 	        
 	        $sumatoriaParcial += (double)$res->valor_pagos;
@@ -534,10 +535,10 @@ class ArchivoPagoController extends ControladorBase{
 	    $htmlFoot .= "<tr>";
 	    $htmlFoot .= "<th>TOTAL</th>";
 	    $htmlFoot .= "<th>".$sumatoriaTotal."</th>";
-	    $htmlFoot .= "<th colspan=\"4\"></th>";
-	    $htmlFoot .= "<th>VALOR PARCIAL</th>";
-	    $htmlFoot .= "<th>".$sumatoriaParcial."</th>";
 	    $htmlFoot .= "<th></th>";
+	    $htmlFoot .= "<th colspan=\"4\"></th>";
+	    $htmlFoot .= "<th>V. PARCIAL</th>";
+	    $htmlFoot .= "<th>".$sumatoriaParcial."</th>";	   
 	    $htmlFoot .= "</tr>";
 	    $htmlFoot .= "</tfoot>";
 	    
@@ -569,13 +570,13 @@ class ArchivoPagoController extends ControladorBase{
 	        $fecha_proceso         = ( isset( $_POST['fecha_proceso'] ) ) ? $_POST['fecha_proceso'] : "";
 	        $id_tipo_archivo_pago  = ( isset( $_POST['id_tipo_archivo_pago'] ) ) ? $_POST['id_tipo_archivo_pago'] : "0";
 	        $id_bancos             = ( isset( $_POST['id_bancos'] ) ) ? $_POST['id_bancos'] : "0";
-	        $tipo_pago_archivo_pago= ( isset( $_POST['tipo_pago_archivo'] ) ) ? strtoupper($_POST['tipo_pago_archivo']) : "";	        
+	        //$tipo_pago_archivo_pago= ( isset( $_POST['tipo_pago_archivo'] ) ) ? strtoupper($_POST['tipo_pago_archivo']) : "";	        
 	        
 	        $oFecha = new DateTime( str_replace("/", "-", $fecha_proceso) );
 	        $anioProceso   = $oFecha->format('Y');
 	        $mesProceso    = $oFecha->format('m');
 	        //$diaProceso    = $oFecha->format('d');
-	        echo "FECHA DE PROCESO ES -->",$anioProceso,"\n";
+	        //echo "FECHA DE PROCESO ES -->",$anioProceso,"\n";
 	        
 	        $error = error_get_last();
 	        if( !empty($error) ){
@@ -590,8 +591,7 @@ class ArchivoPagoController extends ControladorBase{
 	           INNER JOIN tes_tipo_pago_archivo cc ON cc.id_tipo_pago_archivo = aa.id_tipo_pago_archivo";
 	        $where1    = " 1 = 1
     	       AND aa.fecha_proceso_archivo_pago = '$fecha_proceso'
-    	       AND aa.id_tipo_pago_archivo = $id_tipo_archivo_pago 
-               AND aa.tipo_pago_archivo_pago = '$tipo_pago_archivo_pago' ";
+    	       AND aa.id_tipo_pago_archivo = $id_tipo_archivo_pago ";
 	        
 	        //$resp['mensajeECHO'] = "SELECT ".$columnas1." FROM ".$tablas1." WHERE ".$where1;
 	        
@@ -624,7 +624,7 @@ class ArchivoPagoController extends ControladorBase{
 	        
 	        $_cantidad_registros   = sizeof($rsConsulta1);
 	        /* para generar grupos */
-	        $_ultima_fila = $_cantidad_registros-1;
+	        //$_ultima_fila = $_cantidad_registros-1;
 	        
 	        $databody	= "";
 	        $contFila = 0;

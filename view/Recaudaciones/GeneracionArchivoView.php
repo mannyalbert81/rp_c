@@ -23,24 +23,17 @@
         background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;
         }
-        
-      /*.modal-body {
-            max-height: calc(100vh - 210px);
-            overflow-y: auto;
-        }*/
       
- 	 
  	</style>   
   			        
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
 
-     <?php
-        
+     <?php        
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
-        ?>
+     ?>
     
     <div class="wrapper">
 

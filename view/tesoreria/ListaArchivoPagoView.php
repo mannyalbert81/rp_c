@@ -7,7 +7,9 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    
+    <?php include("view/modulos/links_css.php"); ?>
     
  	<style type="text/css">
  	  .loader {
@@ -20,8 +22,7 @@
         background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;
         } 	  
- 	</style>
-   <?php include("view/modulos/links_css.php"); ?>
+ 	</style>   
   			        
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
@@ -33,39 +34,33 @@
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
         ?>
-    
-    
-      
-    
+        
     <div class="wrapper">
 
-  <header class="main-header">
-  
-      <?php include("view/modulos/logo.php"); ?>
-      <?php include("view/modulos/head.php"); ?>	
-    
-  </header>
-
-   <aside class="main-sidebar">
-    <section class="sidebar">
-     <?php include("view/modulos/menu_profile.php"); ?>
-      <br>
-     <?php include("view/modulos/menu.php"); ?>
-    </section>
-  </aside>
-
-  <div class="content-wrapper">
-  
-  <section class="content-header">
-      <h1>
+      <header class="main-header">
+      
+          <?php include("view/modulos/logo.php"); ?>
+          <?php include("view/modulos/head.php"); ?>	
         
-        <small><?php echo $fecha; ?></small>
-      </h1>
+      </header>
+
+       <aside class="main-sidebar">
+        <section class="sidebar">
+         <?php include("view/modulos/menu_profile.php"); ?>
+          <br>
+         <?php include("view/modulos/menu.php"); ?>
+        </section>
+      </aside>
+
+  	<div class="content-wrapper">
+  
+ 	 <section class="content-header">
+      <h1>	<small><?php echo $fecha; ?></small> </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">Arhivo Pago</li>
       </ol>
-    </section>   
+     </section>   
 
     <section class="content">
      <div class="box box-primary">
@@ -85,10 +80,6 @@
 
 			<form id="frm_genera_archivo_pago" action="<?php echo $helper->url("ArchivoPago","index2"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
              	
-             	<div class="panel panel-warning">
-                  <div class="panel-heading"> DATOS ENTIDAD</div>                      
-                 </div>
-             		    
 		    	 <div class="row">
 		    	 
 		    	 	<div class="col-xs-12 col-md-3 col-lg-3">
@@ -104,10 +95,10 @@
 		    	 
 		    	    <div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="fecha_proceso" class=" control-label" >Fecha Proceso:</label> 
+            				<label for="fecha_proceso" class=" control-label" >Fecha Proceso (YYYY/MM/DD):</label> 
                     		<div class="form-group-sm">                    				
                 				 <input type="text" class="form-control text-right" id="fecha_proceso" name="fecha_proceso" max="<?php echo date('Y/m/d'); ?>" value="<?php echo date('Y/m/d');?>" >
-                    		</div>        			 
+                    		</div>    			 
             			</div>
             		</div> 
             		
@@ -122,18 +113,18 @@
             			</div>
             		</div> 
             		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="tipo_pago_archivo" class=" control-label" >Tipo Pago:</label> 
-                    		<div class="form-group-sm">           
-                    			<select class="form-control" id="tipo_pago_archivo">
-                    				<option value="0">--Seleccione--</option>
-                    				<option value="d">Directa</option>
-                    				<option value="i">Interbancaria</option>
-                    			</select> 
-                    		</div>        			 
-            			</div>
-            		</div> 
+<!--             		<div class="col-xs-12 col-md-3 col-lg-3"> -->
+<!--             			<div class="form-group "> -->
+<!--             				<label for="tipo_pago_archivo" class=" control-label" >Tipo Pago:</label>  -->
+<!--                     		<div class="form-group-sm">            -->
+<!--                     			<select class="form-control" id="tipo_pago_archivo"> -->
+<!--                     				<option value="0">--Seleccione--</option> -->
+<!--                     				<option value="d">Directa</option> -->
+<!--                     				<option value="i">Interbancaria</option> -->
+<!--                     			</select>  -->
+<!--                     		</div>        			  -->
+<!--             			</div> -->
+<!--             		</div>  -->
         		
         		</div>
         		
@@ -283,7 +274,7 @@
     <script src="view/bootstrap/bower_components/inputmask/dist/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/ListaArchivoPago.js?0.10"></script>
+	<script type="text/javascript" src="view/tesoreria/js/ListaArchivoPago.js?0.11"></script>
 
   </body>
 </html>   

@@ -497,8 +497,8 @@ $("#btnEditRecaudacion").on("click",function(){
 		$miboton.attr("disabled",false);
 		return false;
 	}else{
-		if( $valorNuevo.val() <= 0 ){
-			$valorNuevo.notify("Cantidad no puede ser igual o menor ",{ position:"buttom left", autoHideDelay: 2000});
+		if( $valorNuevo.val() < 0 ){
+			$valorNuevo.notify("Revisar una cantidad Valida ",{ position:"buttom left", autoHideDelay: 2000});
 			$miboton.attr("disabled",false);
 			return false;
 		}
@@ -628,9 +628,4 @@ var imprimir_reporte_descuentos = function (a){
     document.body.removeChild(form);
 			
 }
-
-
-
-
-
 

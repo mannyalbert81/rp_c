@@ -16,7 +16,7 @@ $(document).ready(function(){
 function init(){	
 	
 	//$("#genera_transferencia").attr("disabled",true);
-	$('#fecha_proceso').inputmask("99/99/9999", {placeholder: 'DD/MM/YYYY',clearIncomplete:true });
+	$('#fecha_proceso').inputmask("9999/99/99", {placeholder: 'YYYY/MM/DD',clearIncomplete:true });
 	
 	$("#generar_archivo_pago").attr("disabled",true); //metodo para desabilitar boton de generacion de archivo
 	

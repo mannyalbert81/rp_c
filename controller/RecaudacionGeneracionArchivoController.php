@@ -254,7 +254,15 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
     	    INNER JOIN core_contribucion_tipo bb    ON bb.id_contribucion_tipo = aa.id_contribucion_tipo
     	    INNER JOIN core_tipo_aportacion cc    ON cc.id_tipo_aportacion = aa.id_tipo_aportacion
     	    INNER JOIN core_participes dd    ON dd.id_participes = aa.id_participes
-    	    INNER JOIN core_estado_participes ee ON ee.id_estado_participes = dd.id_estado_participes";
+    	    INNER JOIN core_estado_participes ee ON ee.id_estado_participes = dd.id_estado_participes
+            INNER JOIN (
+    	    	SELECT c.id_participes 
+				FROM core_participes p 
+				INNER JOIN core_contribucion c ON p.id_participes=c.id_participes AND c.id_estado_contribucion=1  and c.id_estatus=1 
+				WHERE p.id_estatus=1 AND p.id_estado_participes=1 AND p.id_entidad_patronal = $id_entidad_patronal
+				GROUP BY c.id_participes
+				HAVING SUM(c.valor_personal_contribucion+c.valor_patronal_contribucion) > 0
+    	    )ff ON ff.id_participes = dd.id_participes ";
 	    $where1    = "bb.nombre_contribucion_tipo = 'Aporte Personal'
 	        AND dd.id_estatus = 1
 	        AND dd.id_entidad_patronal = $id_entidad_patronal
@@ -741,7 +749,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	               COALESCE(aa.valor_usuario_descuentos_registrados_detalle_aportes,0) as valor_usuario_descuentos_registrados_detalle_aportes ";
 	            $tab1  = " core_descuentos_registrados_detalle_aportes aa
 	               INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
-	            $whe1  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	            $whe1  = " COALESCE( aa.valor_usuario_descuentos_registrados_detalle_aportes ) > 0 AND aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
 	            $id1   = " aa.id_descuentos_registrados_detalle_aportes ";
 	            	            
 	            $rsData    = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
@@ -916,7 +924,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	               COALESCE(aa.valor_usuario_descuentos_registrados_detalle_aportes,0) as \"valor_descuento1\" ";	               
 	            $tab1  = " core_descuentos_registrados_detalle_aportes aa
 	               INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
-	            $whe1  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	            $whe1  = " COALESCE( aa.valor_usuario_descuentos_registrados_detalle_aportes ) > 0 AND aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
 	            $id1   = " aa.id_descuentos_registrados_detalle_aportes ";
 	            
 	            $rsData    = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
@@ -2535,7 +2543,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	               COALESCE(aa.valor_usuario_descuentos_registrados_detalle_aportes,0) AS valor_usuario_descuentos_registrados_detalle_aportes ";
 	        $tab2  = " core_descuentos_registrados_detalle_aportes aa
 	               INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
-	        $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	        $whe2  = " COALESCE( aa.valor_usuario_descuentos_registrados_detalle_aportes ) > 0 AND aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
 	        $id2   = " aa.id_descuentos_registrados_detalle_aportes ";
 	        
 	        $rsConsulta2   = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);

@@ -341,12 +341,14 @@ function CargarDatosDescuentos(page){
 		complete:function(xhr,status){ }
 	}).done(function(x){
 		
-		if( x.tablaHtml != undefined && x.tablaHtml != "" ){
+		if( x.tablaHtml != undefined && x.tablaHtml != "" )
+		{
 			tblmodal.empty();
 			tblmodal.append( x.tablaHtml );
 			pagmodal.html("");
 			pagmodal.html( x.paginacion );
 			vtnmodal.modal("show");
+			
 		}
 						
 	}).fail(function(xhr,status,error){
@@ -469,10 +471,10 @@ var editar_descuentos	= function(a){
 			$modal.find('#mod_apellidos_participes').val( rsdata.apellido_participes);			
 			$modal.find('#mod_valor_sistema').val( rsdata.valor_descuento);
 			$modal.find('#mod_valor_edit').val( rsdata.valor_descuento1 );
-			
-			
-			$modal.modal("show");			
-			
+						
+			$modal.modal("show");	
+					
+						
 		}
 		
 	}).fail(function(xhr,status,error){
@@ -503,6 +505,11 @@ $("#btnEditRecaudacion").on("click",function(){
 			return false;
 		}
 	}
+	
+	//crear evento de cerrado
+	$modal.on('hidden.bs.modal', function (e) { 
+	       $("body").addClass("modal-open") 
+	})
 		
 	var parametros = { "id_descuentos_detalle": $iddescuento.val(), "valor_descuentos": $valorNuevo.val(), "tipo_descuentos":$tipo_descuento.val()}
 	
@@ -628,4 +635,3 @@ var imprimir_reporte_descuentos = function (a){
     document.body.removeChild(form);
 			
 }
-

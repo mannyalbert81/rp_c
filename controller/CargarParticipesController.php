@@ -1048,7 +1048,7 @@ class CargarParticipesController extends ControladorBase{
                 $columnas_1="id_registro_tres_cuotas,cedula_participes, numero_creditos, pdf_registro_tres_cuotas, mensaje_modal, procesada_tabla_registro_tres_cuotas, puede_diferir_segunda_etapa, acepto_participe_segunda_etapa";
                 $tablas_1="public.registro_tres_cuotas";
                 $where_1="cedula_participes = '$cedula'";
-                $id_1= "registro_tres_cuotas.id_registro_tres_cuotas";
+                $id_1= "registro_tres_cuotas.id_registro_tres_cuotas ";
                 $resultCuotas=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
                 
                 if( empty( $resultCuotas ) )
@@ -1057,8 +1057,21 @@ class CargarParticipesController extends ControladorBase{
                     $resp['modal'] = "SI";
                 }else
                 {
-                    $resp['estatus'] = "OK";
-                    $resp['modal'] = "NO";
+                    $columnas_1=" 1 ";
+                    $tablas_1="public.registro_tres_cuotas";
+                    $where_1="cedula_participes = '$cedula' AND id_estado_registro_tres_cuotas = 3";
+                    $id_1= "registro_tres_cuotas.id_registro_tres_cuotas ";
+                    $resultCuotas2 =$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+                    
+                    if( !empty( $resultCuotas2 ) ){
+                        $resp['estatus'] = "OK";
+                        $resp['modal'] = "SI";
+                    }else
+                    {
+                        $resp['estatus'] = "OK";
+                        $resp['modal'] = "NO";
+                    }                    
+                    
                 }
                 
             }else

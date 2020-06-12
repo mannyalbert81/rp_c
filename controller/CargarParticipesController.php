@@ -864,7 +864,7 @@ class CargarParticipesController extends ControladorBase{
         $id_creditos = $rsConsulta2[0]->id_creditos; //con eto se toma el credito con mayor valor
         $numero_creditos = $rsConsulta2[0]->numero_creditos; //aqui va el cambio
         $pdf_registro_tres  = 'null';
-        $id_estado_registro_tres_cuotas = '1'; //aqui va el cambio
+        $id_estado_registro_tres_cuotas = '3'; //aqui va el cambio
         
         //viene insertado en la tabla
         $funcion = "ins_registro_tres_cuotas";
@@ -1024,6 +1024,57 @@ class CargarParticipesController extends ControladorBase{
             
         }
         
+    }
+    
+    
+    public function validar_diferidos()
+    {
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $resp   = array();
+            $callBack = $_GET['jsoncallback'];
+            $columnas_1=" c.id_creditos, p.id_participes";
+            $tablas_1="core_creditos c
+            inner join core_participes p on p.id_participes =c.id_participes";
+            $where_1="p.cedula_participes = '$cedula' and p.id_estatus =1 and c.id_estatus =1 and c.id_estado_creditos =4";
+            $id_1= "c.id_creditos";
+            $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            if( !empty( $resultUsu ) )
+            {
+                $columnas_1="id_registro_tres_cuotas,cedula_participes, numero_creditos, pdf_registro_tres_cuotas, mensaje_modal, procesada_tabla_registro_tres_cuotas, puede_diferir_segunda_etapa, acepto_participe_segunda_etapa";
+                $tablas_1="public.registro_tres_cuotas";
+                $where_1="cedula_participes = '$cedula'";
+                $id_1= "registro_tres_cuotas.id_registro_tres_cuotas";
+                $resultCuotas=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+                
+                if( empty( $resultCuotas ) )
+                {
+                    $resp['estatus'] = "OK";
+                    $resp['modal'] = "SI";
+                }else
+                {
+                    $resp['estatus'] = "OK";
+                    $resp['modal'] = "NO";
+                }
+                
+            }else
+            {
+                $resp['estatus'] = "NO";
+                $resp['modal'] = "NO";
+            }
+            
+        }else
+        {
+            $resp['estatus'] = "ERROR";
+            $resp['modal'] = "NO";
+        }
+        
+        $respuesta	= json_encode( $resp );
+        echo $callBack."(".$respuesta.");";
     }
     
 

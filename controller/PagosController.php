@@ -282,33 +282,192 @@ class PagosController extends ControladorBase{
         
     }
     
-    public function loginMovil(){
+    public function ReporteIndex(){
         
-        header("Access-Control-Allow-Origin: *");
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-        header("Access-Control-Allow-Headers: Content-Type, Authorization");
+        $pagos = new PagosModel();
         
-        $inemail = "danny@prueba.com";
-        $inpass  = "123456";
-        $resp = array();   
+        session_start();
         
-        $input = json_decode(file_get_contents("php://input"), true);
-               
-        $outemail = isset( $input['email'] ) ? $input['email'] : "" ;
-        $outpass = isset( $input['pass'] ) ? $input['pass'] : "";
-        
-        $resp['dataPOST'] = $input;
-        
-        if( $inemail == trim( $outemail ) && $inpass == trim( $outpass ) ){
+        if(empty( $_SESSION)){
             
-            $resp['estatus']="OK";
-            $resp['mensaje']="bienvenido al sistema";
-        }else{
-            $resp['estatus']="ERROR";
-            $resp['mensaje']="no ingreso al sistema";
+            $this->redirect("Usuarios","sesion_caducada");
+            return;
         }
-        echo json_encode($resp);
+        
+        $nombre_controladores = "cxpAplicadas";
+        $id_rol= $_SESSION['id_rol'];
+        $resultPer = $pagos->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
+        
+        if (empty($resultPer)){
+            
+            $this->view("Error",array(
+                "resultado"=>"No tiene Permisos de Acceso Reporte de Cuentas Pagar"
+                
+            ));
+            exit();
+        }
+        
+        $this->view_tesoreria("CuentasPagarAplicadas",array( ));
+        
     }
+    
+    public function dtListarCuentasPagarAplicadas()
+    {
+        if( !isset( $_SESSION ) ){
+            session_start();
+        }
+        
+        try{
+            
+            ob_start();
+            
+            $cpagar = new CuentasPagarModel();
+            
+            //dato que viene de parte del plugin DataTable
+            $requestData = $_REQUEST;
+            $searchDataTable   = $requestData['search']['value'];
+            
+            $buscador  = $_POST['input_search'];
+            
+            /** buscar por el usuario que se encuentra logueado */
+            //$_usuario_logueado = $_SESSION['usuario_usuarios'];
+            
+            $columnas1 = " aa.id_pagos, aa.fecha_pagos, aa.usuario_usuarios, cc.identificacion_proveedores, cc.razon_social_proveedores, aa.metodo_pagos, aa.valor_pagos,
+                bb.concepto_ccomprobantes, dd.id_bancos, dd.nombre_bancos, cc.nombre_proveedores";
+            $tablas1   = " tes_pagos aa
+                INNER JOIN ccomprobantes bb ON bb.id_ccomprobantes = aa.id_ccomprobantes
+                INNER JOIN proveedores cc ON cc.id_proveedores = aa.id_proveedores
+                LEFT JOIN tes_bancos dd on dd.id_bancos = aa.id_bancos";
+            $where1    = "1 = 1 ";       
+            
+            //aqui poner para filtrar si es por session
+            
+            /* PARA FILTROS DE CONSULTA */
+            if( strlen( $searchDataTable ) > 0 ){
+                              
+                $where1    .= " AND ( cc.identificacion_proveedores = '$searchDataTable' ";
+                $where1    .= " OR cc.razon_social_proveedores ILIKE '%$searchDataTable%' ";
+                $where1    .= " OR cc.nombre_proveedores ILIKE '%$searchDataTable%' ";
+                $where1    .= " OR TO_CHAR( aa.fecha_pagos, 'YYYY-MM-DD') ILIKE '%$searchDataTable%' ";
+                //$where1    .= " OR aa.numero_documento_cuentas_pagar = '$searchDataTable' "; incluid para cuentas pagar
+                $where1    .= " OR aa.metodo_pagos = '$searchDataTable%' ";
+                $where1    .= " ) ";
+                
+            }
+            
+            $rsCantidad    = $cpagar->getCantidad("*", $tablas1, $where1);
+            $cantidadBusqueda = (int)$rsCantidad[0]->total;
+            
+            /**PARA ORDENAMIENTO Y  LIMITACIONES DE DATATABLE **/
+            
+            // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
+            $columns = array(
+                0 => 'aa.id_pagos',
+                1 => 'aa.fecha_pagos',
+                2 => 'aa.usuario_usuarios',
+                3 => 'cc.identificacion_proveedores',
+                4 => 'cc.razon_social_proveedores',
+                5 => 'aa.metodo_pagos',
+                6 => '1',
+                7 => 'aa.valor_pagos',
+                8 => 'bb.concepto_ccomprobantes'
+            );
+            
+            $orderby   = $columns[$requestData['order'][0]['column']];
+            $orderdir  = $requestData['order'][0]['dir'];
+            $orderdir  = strtoupper($orderdir);
+            /**PAGINACION QUE VIEN DESDE DATATABLE**/
+            $per_page  = $requestData['length'];
+            $offset    = $requestData['start'];
+            
+            $limit = " ORDER BY $orderby $orderdir LIMIT   '$per_page' OFFSET '$offset'";
+                        
+            $resultSet = $cpagar->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
+            
+            //$sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+            $sql = "";
+            //$cantidadBusquedaFiltrada = sizeof($resultSet);
+            
+            /** crear el array data que contiene columnas en plugins **/
+            $data = array();
+            $dataFila = array();
+            $columnIndex = 0;
+            foreach ( $resultSet as $res){
+                $columnIndex++;
+                
+                $opciones = ""; //variable donde guardare los datos creados automaticamente
+                $opciones = '<div class="pull-right ">
+                            <span >
+                                <a class="btn btn-default input-sm showpdf" data-id="'.$res->id_pagos.'" data-toogle="tooltip"  href="#" title="Detalle Pago"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                            </div>';
+                
+               
+                $metodo_pago = $res->metodo_pagos;
+                $banco_beneficiario = $res->nombre_bancos;
+                if( $metodo_pago == "CHEQUE" )
+                {
+                    $banco_beneficiario = "";
+                }
+                
+                $nombre_benficiario = $res->razon_social_proveedores;
+                if( !strlen( $nombre_benficiario ) )
+                {
+                    $nombre_benficiario = $res->nombre_proveedores;                    
+                }
+                                                
+                $dataFila['numfila']    = $columnIndex;
+                $dataFila['fecha']      = $res->fecha_pagos;
+                $dataFila['usuario']    = $res->usuario_usuarios;
+                $dataFila['identificacion_bene']   = $res->identificacion_proveedores;
+                $dataFila['nombre_bene']           = $nombre_benficiario;
+                $dataFila['metodo_pago']   = $metodo_pago;
+                $dataFila['banco_bene']    = $banco_beneficiario;
+                $dataFila['valor_pago']    = $res->valor_pagos;
+                $dataFila['descripcion']        = $res->concepto_ccomprobantes;
+                //$dataFila['opciones']           = $opciones; esta comentado hast definir que opciones darle al reporte de cuentas pagar aplicadas
+                $dataFila['opciones']           = "";
+                //$dataFila['id_cabeza']         = '12345';
+                
+                $data[] = $dataFila;               
+                
+                
+            }
+            
+            
+            $salida = ob_get_clean();
+            
+            if( !empty($salida) )
+                throw new Exception($salida);
+                
+                $json_data = array(
+                    "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                    "recordsTotal" => intval($cantidadBusqueda),  // total number of records
+                    "recordsFiltered" => intval($cantidadBusqueda), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                    "data" => $data,   // total data array
+                    "sql" => $sql
+                );
+                
+        } catch (Exception $e) {
+            
+            $json_data = array(
+                "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                "recordsTotal" => intval("0"),  // total number of records
+                "recordsFiltered" => intval("0"), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                "data" => array(),   // total data array
+                "sql" => "",
+                "buffer" => error_get_last(),
+                "ERRORDATATABLE" => $e->getMessage()
+            );
+        }
+        
+        
+        echo json_encode($json_data);
+        
+        
+    }
+   
     
    
 }

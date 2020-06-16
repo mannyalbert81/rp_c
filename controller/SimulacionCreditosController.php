@@ -935,8 +935,8 @@ class SimulacionCreditosController extends ControladorBase
         $interes_mensual = $tasa_interes / 12;
 
         // sueldo del participe
-        $sueldo_partcipe = $sueldo_partcipe / 2; // ? porq divide entre 2
-
+        //$sueldo_partcipe = $sueldo_partcipe / 2; // ? porq divide entre 2 2020-06-15 // valor no divode ya viene de la vista
+        
         // obtengo plazo maximo y minimo dependiendo del monto del credito
         $columnas = "cuotas_rango_plazos_creditos";
         $tablas = "public.core_plazos_creditos";
@@ -1191,7 +1191,7 @@ class SimulacionCreditosController extends ControladorBase
 
         $pago_garante = 1;
 
-        $sueldo_partcipe = $sueldo_partcipe / 2;
+        //$sueldo_partcipe = $sueldo_partcipe / 2;  // dc2020-06-15 la capacidad de pago viene de la vista
         $sueldo_garante = $sueldo_garante / 2;
 
         $columnas = "cuotas_rango_plazos_creditos";
@@ -4166,8 +4166,7 @@ class SimulacionCreditosController extends ControladorBase
         
         $response   = array();
         
-        if ($id_solicitud == 0) {
-            
+        if ($id_solicitud == 0) {            
             // para simulador
             $avaluo_bien = $_POST['avaluo_bien'];
         } else {

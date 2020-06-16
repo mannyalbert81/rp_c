@@ -1,5 +1,5 @@
-var listaArchivos = []; // variable que permite el almacenamiento de datos sobre archivo mostrado
-var CantidadArchivo = 0;
+var listaArchivos	= []; // variable que permite el almacenamiento de datos sobre archivo mostrado
+var CantidadArchivo	= 0;
 $(document).ready(function(){
 		
 	init();	
@@ -15,11 +15,8 @@ $(document).ready(function(){
  */
 function init(){	
 	
-	//$("#genera_transferencia").attr("disabled",true);
-	$('#fecha_proceso').inputmask("9999/99/99", {placeholder: '____/__/__',clearIncomplete:true });
-	
-	$("#generar_archivo_pago").attr("disabled",true); //metodo para desabilitar boton de generacion de archivo
-	
+	$('#fecha_proceso').inputmask("9999/99/99", {placeholder: '____/__/__',clearIncomplete:true });	
+	$("#generar_archivo_pago").attr("disabled",true); //metodo para desabilitar boton de generacion de archivo	
 }
 
 
@@ -48,7 +45,6 @@ function loadBancosLocal(){
 				$ddlChequera.append( '<option value="'+value.id_bancos+'">'+value.nombre_bancos+'</option>' );
 			})
 		}
-		console.log(x);
 	}).fail( function(xhr,status,error){
 		console.log(xhr.responseText);
 	})
@@ -79,7 +75,6 @@ function loadTipoArchivo(){
 				$ddlTipoArchivo.append( '<option value="'+value.id_tipo_pago_archivo+'">'+value.nombre_tipo_pago_archivo+'</option>' );
 			})
 		}
-		console.log(x);
 	}).fail( function(xhr,status,error){
 		console.log(xhr.responseText);
 	})
@@ -162,6 +157,7 @@ function buscarDatosArchivoPago(){
 			}else
 			{
 				$("#div_resultados_archivo_pago").addClass("hidden");
+				swal( { text:"No Existen Datos con los parametros solicitados", title:"INFORMACION", icon:"info" } );
 			}		
 			
 		}

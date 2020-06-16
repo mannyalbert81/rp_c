@@ -440,6 +440,7 @@ $controladores=$_SESSION['controladores'];
           <ul class="treeview-menu">
           	<li style="<?php echo getcontrolador("ReportesTesoreria",$controladores) ?>"><a href="index.php?controller=TesCuentasPagar&action=ReporteIndex"><i class="fa fa-circle-o"></i> Consultar Cuentas Pagar</a></li>
             <li style="<?php echo getcontrolador("ReportesTesoreria",$controladores) ?>"><a href="index.php?controller=GenerarCheque&action=reporteCheques"><i class="fa fa-circle-o"></i> Consultar Cheques</a></li>
+            <li style="<?php echo getcontrolador("cxpAplicadas",$controladores) ?>"><a href="index.php?controller=Pagos&action=Reporteindex"><i class="fa fa-circle-o"></i> Cuentas Pagar Aplicadas</a></li>
             <!-- <li style="<?php echo getcontrolador("Retencion",$controladores) ?>"><a href="index.php?controller=Retencion&action=index"><i class="fa fa-circle-o"></i> Generar Retención</a></li>-->
 			<li style="<?php echo getcontrolador("ReporteCuentasPagar",$controladores) ?>"><a href="index.php?controller=ReporteCuentasPagar&action=index5"><i class="fa fa-circle-o"></i>Reporte Cuentas Pagar</a></li>
 

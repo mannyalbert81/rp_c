@@ -518,7 +518,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.22"></script> 
+   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.24"></script> 
        
 	
   </body>

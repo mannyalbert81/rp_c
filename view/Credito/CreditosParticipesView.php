@@ -189,6 +189,7 @@
                       <li><a href="#panel_detalle" data-toggle="tab" class="disabledTab" >Detalle Valores</a></li>
                       <li><a href="#panel_capacidad" data-toggle="tab" class="disabledTab" >Capacidad Pago</a></li>
                       <li><a href="#panel_capacidad_garante" data-toggle="tab" class="disabledTab" >Capacidad Pago Garante</a></li>
+                      <li><a href="#panel_capacidad_validaciones" data-toggle="tab" class="disabledTab" >Capacidad Pago Garante</a></li>
                     </ul>
                     <div class="tab-content">
                     	<!-- AQUI COMIENZA PARA PONER CONTENIDOS DE PANELES -->
@@ -351,50 +352,88 @@
                     		
                     	</div>
                     	<div class="tab-pane" id="panel_capacidad">
-                    		<div class="form-group">
-								<div class="row">
-                					<table align="center" class="table-bordered" style="width: 50%;">
-                        				<tr>
-                        					<th>SUELDO LIQUIDO:</th>
-                        					<td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_sueldo_liquido"></td>
-                    					</tr>
-                                        <tr>
-                                            <th>CUOTA VIGENTE:</th>
-                                            <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_cuota_vigente" readonly></td>
-                                        </tr>
-                                        <tr>
-                                            <th>FONDOS:</th>
-                                            <td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_fondos" ></td>
-                                        </tr>
-                                        <tr>
-                                            <th>DECIMOS:</th>
-                                            <td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_decimos" ></td>
-                                        </tr>
-                                        <tr >
-                                            <th>RANCHO:</th>
-                                            <td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_rancho" ></td>
-                                        </tr>
-                                        <tr >
-                                            <th>INGRESOS NOTARIZADOS:</th>
-                                            <td><input style="text-align: right" type="number" step="0.01"  class="form-control suma-capacidad" id="txt_ingresos_notarizados" ></td>
-                                        </tr>
-                                        <tr >
-                                            <th>TOTAL INGRESO:</th>
-                                            <td><input style="text-align: right" type="number" class="form-control" id="txt_total_ingresos" readonly></td>
-                                        </tr>
+                    		<div class="col-xs-12 col-md-6 col-lg-6 ">
+            					<div class="form-group">
+                            		<table class="table-bordered" style="width: 100%;">
+                                    <tr>
+                                    <th>SUELDO LIQUIDO:</th>
+                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_sueldo_liquido" onkeyup="ObtenerAnalisis()"></td>
+                                    </tr>
+                                    <tr>
+                                    <th>CUOTA VIGENTE:</th>
+                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_cuota_vigente"  onkeyup="ObtenerAnalisis()"></td>
+                                    </tr>
+                                    <tr>
+                                    <th>FONDOS:</th>
+                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_fondos" onkeyup="ObtenerAnalisis()"></td>
+                                    </tr>
+                                    <tr>
+                                    <th>DECIMOS:</th>
+                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_decimos" onkeyup="ObtenerAnalisis()"></td>
+                                    </tr>
+                                    <tr >
+                                    <th>RANCHO:</th>
+                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_rancho" onkeyup="ObtenerAnalisis()"></td>
+                                    </tr>
+                                    <tr >
+                                    <th>INGRESOS NOTARIZADOS:</th>
+                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_ingresos_notarizados" onkeyup="ObtenerAnalisis()"></td>
+                                    </tr>
+                                    <tr >
+                                    <th>TOTAL INGRESO:</th>
+                                    <td id="td_total_ingreso" align="right" style="padding-right: 35px;"></td>
+                                    </tr>
+                                     <tr>
+                                    <th bgcolor="#F9E79F">CUOTA MAXIMA:</th>
+                                    <td bgcolor="#F9E79F" id="td_cuota_maxima" align="right" style="padding-right: 35px;"></td>
+                                    </tr>
+                                     <tr >
+                                    <th>CUOTA PACTADA:</th>
+                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_cuota_pactada" onkeyup="ObtenerAnalisis()"></td>
+                                    </tr>
                                     </table>
-                        	<div class="row">
-                                 <div class="col-xs-12 col-md-12 col-md-12 " style="margin-top:15px;  text-align: center; ">
-                                	<div class="form-group">
-                                		<button type="button" id="btn_enviar_capacidad_pago" class="btn btn-primary">
-                                		<i class="glyphicon glyphicon-ok"></i> ACEPTAR</button>
+                 			</div>
+                 			<div class="row">
+                				<div class="col-lg-12 col-md-12 col-xs-12">
+                					<div class="pull-right">
+                						<button type="button" id="btn_enviar_capacidad_pago" class="btn btn-primary" disabled>
+                                    		<i class="glyphicon glyphicon-ok"></i> ACEPTAR</button>
+                					</div>
+                				</div>
+            				</div>
+             			</div>
+             			<div class="col-xs-12 col-md-6 col-lg-6 ">
+            				<div class="form-group">
+                				<div id="credito_aprobado" class="small-box bg-red">
+                            		<div class="inner">
+                                      <h3 id="h3_credito_aprobado">CREDITO NEGADO</h3>
+                                    </div>
+                          		</div>
+                                <div id="variacion_rol" class="small-box bg-green">
+                                	<div class="inner">
+                                        <h3 id="h3-variacion_rol"></h3>
+                        				<h4>VARIACION EN ROL CON NUEVA CUOTA</h4>
+                        				<h4 id="h3-variacion_rol_estado"></h4>                                  
                                 	</div>
-                                 </div>	
-                          	
-           					</div>
-						</div>
-							<br>
-							</div>	
+                                
+                                </div>
+                                <div id="validacion_rol" class="small-box bg-green">
+                                    <div class="inner">
+                                      <h3 id="h3-validacion_rol"></h3>
+                                      <h4>VALIDACION ROL $100</h4>
+                        				<h4 id="h3-validacion_rol_estado"></h4>
+                                    </div>
+                                </div>
+                                <div id="considerado_ingresos" class="small-box bg-green">
+                                    <div class="inner">
+                                      <h3 id="h3-consideracion_rol"></h3>
+                        				<h4>CONSIDERANDO INGRESOS ADICIONALES >100</h4>
+                        				<h4 id="h3-consideracion_rol_estado"></h4>
+                                    </div>
+                                    
+                                </div>
+            				</div>
+            			</div>
                     	</div>
                     	<!-- EMPIEZA PANEL CAPACIDAD PAGO GARANTE -->
                     	<div class="tab-pane" id="panel_capacidad_garante">
@@ -444,6 +483,11 @@
 							</div>	
                     	</div>
                     	
+                    	<!-- EMPIEZA PANEL CAPACIDAD PAGO VALIDACIONES -->
+                    	<div class="tab-pane" id="panel_capacidad_validaciones">
+                    		
+            			            			
+                       </div> <!-- termina panel de capacidad de pago con validaciones -->               	
                     </div>
                  </div>
              </div>
@@ -675,11 +719,9 @@
 	</div>
 </div>
 
-  
- 
- 	<?php include("view/modulos/footer.php"); ?>	
+ <?php include("view/modulos/footer.php"); ?>	
 
-   <div class="control-sidebar-bg"></div>
+ <div class="control-sidebar-bg"></div>
  </div>
     
     <?php include("view/modulos/links_js.php"); ?>	
@@ -690,6 +732,7 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?0.34"></script> 
+   <script src="view/Credito/js/CreditosParticipes.js?0.35"></script>
+   <script src="view/Credito/js/CreditosParicipesAnalisis.js?0.09"></script> 
    </body>
 </html>   

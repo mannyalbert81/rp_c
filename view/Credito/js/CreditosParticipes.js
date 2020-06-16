@@ -24,7 +24,7 @@ view.valor_fondos		= $("#txt_fondos");
 view.valor_decimos		= $("#txt_decimos");
 view.valor_rancho		= $("#txt_rancho");
 view.ingresos_notarizados		= $("#txt_ingresos_notarizados");
-view.total_ingresos		= $("#txt_total_ingresos");
+view.total_ingresos		= $("#txt_cuota_pactada");
 view.btn_enviar_capacidad_pago	= $("#btn_enviar_capacidad_pago");
 
 /** para valores de tab de capacidad de pago garante **/
@@ -258,10 +258,11 @@ var iniciar_eventos_controles	= function(){
 		  }
 	});
 	
-	//se enlaza evento key up a input que este dentro de un table ... capacidad de pago
+	//se enlaza evento key up a input que este dentro de un table ... capacidad de pago 
+	// 2020-06-15 se realiza cona archivo externo
 	$('table :input.suma-capacidad').on('keyup',function(){
 		//if( isNaN( parseFloat( $(this).val() ) ) ){ $(this).val("");} //validacion de cada una analizar 
-		sumar_ingresos_capacidad_pago();
+		//sumar_ingresos_capacidad_pago();
 	})
 	
 	//se enlaza evento key up a input que este dentro de un table ... capacidad de pago garante
@@ -532,25 +533,28 @@ var iniciar_datos_simulacion = function(){
 		//BUSCAR SI TIENE CREDITOS A RENOVAR
 		obtener_creditos_renovacion();
 		
-		var html_agregar_garante	= "<label for=\"txt_cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
-				"<div class=\"input-group\">"+
-				"<input type=\"text\" data-inputmask=\"'mask': '9999999999'\" class=\"form-control\" id=\"txt_cedula_garante\"  placeholder=\"C.I.\">"+
-				"<div id=\"mensaje_cedula_garante\" class=\"errores\"></div>"+
-				"<span class=\"input-group-btn\">"+
-				"<button type=\"button\" class=\"btn btn-primary\" id=\"btn_buscar_garante\" >"+
-				"<i class=\"glyphicon glyphicon-plus\"></i>"+
-				"</button>"+
-				"<button type=\"button\" class=\"btn btn-danger\" id=\"btn_borrar_cedula\" >"+
-				"<i class=\"glyphicon glyphicon-arrow-left\"></i>"+
-				"</button>"+
-				"</span>"+
-				"</div>";
 		
-		if( valor_tipo_credito == "ORD" ){
+		if( valor_tipo_credito == "ORD" )
+		{
+			
+			var html_agregar_garante	= "<label for=\"txt_cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
+			"<div class=\"input-group\">"+
+			"<input type=\"text\" data-inputmask=\"'mask': '9999999999'\" class=\"form-control\" id=\"txt_cedula_garante\"  placeholder=\"C.I.\">"+
+			"<div id=\"mensaje_cedula_garante\" class=\"errores\"></div>"+
+			"<span class=\"input-group-btn\">"+
+			"<button type=\"button\" class=\"btn btn-primary\" id=\"btn_buscar_garante\" >"+
+			"<i class=\"glyphicon glyphicon-plus\"></i>"+
+			"</button>"+
+			"<button type=\"button\" class=\"btn btn-danger\" id=\"btn_borrar_cedula\" >"+
+			"<i class=\"glyphicon glyphicon-arrow-left\"></i>"+
+			"</button>"+
+			"</span>"+
+			"</div>";
+			
 			// VACIO LOS CREDITOS A RENOVAR
 			$('#div_pnl_creditos_renovacion').html("");
 			// MUESTRO LA INFORMACION PARA ASIGNAR UN GARANTE 
-			$('#div_info_garante').html(html_agregar_garante);
+			$('#div_info_garante').html( html_agregar_garante );
 			
 			//AGREGAR EVENTO A BOTONES EN PANEL GARANTE
 			$('body').on('click','#btn_buscar_garante',function(){
@@ -618,10 +622,10 @@ var iniciar_datos_simulacion = function(){
 		view.monto_creditos.attr("readonly",true);  
 		view.btn_numero_cuotas.attr("disabled",true);
 		
-		if( !view.page_load )
+		if( view.page_load )
 		{
 			console.log("..inicializacion de simulacion fallida");
-			swal({title:"ERROR DE CARGA", text:"Tuvimos problemas al cargar la informacion por favor Reload la pagina",icon:"error",dangerMode:true});
+			swal({title:"ERROR DE CARGA", text:"Tuvimos problemas al cargar la informacion por favor Recargue la pagina",icon:"error",dangerMode:true});
 		}else
 		{
 			view.tipo_creditos.notify( "Debe seleccionar un tipo de crédito" ,{ position:"buttom left", autoHideDelay: 2000});	
@@ -670,8 +674,9 @@ var analisis_capacidad_pago	= function(){
 			var valorCuota	= x.cuota_creditos; 
 			view.cuota_vigente.val(valorCuota);
 			
-			//llamar a funcion que suma valores de capacidad de pago
-			sumar_ingresos_capacidad_pago();
+			//llamar a funcion que suma valores de capacidad de pago dc 2020-06-15
+			//sumar_ingresos_capacidad_pago();
+			ObtenerAnalisis(); //llama funcion de archivo externo
 			
 			if( valorCuota != 0 ){
 				
@@ -745,11 +750,13 @@ var obtener_creditos_renovacion	= function(){
 }
 
 var enviar_capacidad_pago = function(){
-	
+		
+	/** dc 2020-06-15 **/
 	var valor_total_ingresos	= view.total_ingresos.val();
 	
 	if( isNaN(  parseFloat( valor_total_ingresos ) ) ){
 		console.log("ERROR AL ENVIAR LA CAPACIDAD DE PAGO REVISAR FUNCION");
+		view.total_ingresos.closest('tr').notify("Ingrese Cuota Pactada",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	

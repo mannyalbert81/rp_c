@@ -530,9 +530,9 @@ function AprobarTesoreria(id_reporte)
 		  		  icon: "warning",
 		  		  button: "Aceptar",
 		  		});
-  		  }
+	  }
   	  else
-  		  {
+	  {
   		load_reportes_aprobados(1);
 		load_reportes(1);
 		$('#cerrar_ver').click();
@@ -542,7 +542,7 @@ function AprobarTesoreria(id_reporte)
 	  		  icon: "success",
 	  		  button: "Aceptar",
 	  		});
-  		  }
+	  }
      
 		
 		

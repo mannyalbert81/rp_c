@@ -189,7 +189,6 @@
                       <li><a href="#panel_detalle" data-toggle="tab" class="disabledTab" >Detalle Valores</a></li>
                       <li><a href="#panel_capacidad" data-toggle="tab" class="disabledTab" >Capacidad Pago</a></li>
                       <li><a href="#panel_capacidad_garante" data-toggle="tab" class="disabledTab" >Capacidad Pago Garante</a></li>
-                      <li><a href="#panel_capacidad_validaciones" data-toggle="tab" class="disabledTab" >Capacidad Pago Garante</a></li>
                     </ul>
                     <div class="tab-content">
                     	<!-- AQUI COMIENZA PARA PONER CONTENIDOS DE PANELES -->
@@ -483,11 +482,7 @@
 							</div>	
                     	</div>
                     	
-                    	<!-- EMPIEZA PANEL CAPACIDAD PAGO VALIDACIONES -->
-                    	<div class="tab-pane" id="panel_capacidad_validaciones">
-                    		
-            			            			
-                       </div> <!-- termina panel de capacidad de pago con validaciones -->               	
+                    	           	
                     </div>
                  </div>
              </div>
@@ -732,7 +727,7 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?0.35"></script>
+   <script src="view/Credito/js/CreditosParticipes.js?0.37"></script>
    <script src="view/Credito/js/CreditosParicipesAnalisis.js?0.09"></script> 
    </body>
 </html>   

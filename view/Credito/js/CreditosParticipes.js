@@ -507,6 +507,7 @@ var iniciar_datos_simulacion = function(){
 	//setear valores globales
 	view.global_hay_garantes	= false;
 	view.global_hay_renovacion	= false;
+	dataGarantes	= {};
 	
 	//validar cuenta individual
 	var cuenta_individual	= dataSolicitud.cuenta_individual || 0;
@@ -838,7 +839,8 @@ var buscar_garante	= function(){
 			var limite_participe	= dataSolicitud.cuenta_individual;
 			var aportes_participe	= dataSolicitud.aportes_participe;
 			
-			//datos de garante			
+			//datos de garante	
+			dataGarantes	= data; //establecemos valores de garante
 			var limite_garante	= data.disponible_garante;
 			var edad_garante	= data.edad;			
 			var limite_total	= parseFloat( limite_garante ) + parseFloat( limite_participe );
@@ -1220,12 +1222,12 @@ var validar_valores_simulacion	= function(){
 			return false;
 		}
 
-		var limite_garante	= ( $("#monto_garante_disponible").text() == "" ) ? 0 : $("#monto_garante_disponible").text();
+		var limite_garante = ( dataGarantes.disponible_garante == undefined ) ? 0 : dataGarantes.disponible_garante;
 		limite_credito	= parseFloat( limite_credito ) + parseFloat( limite_garante );
 		
 		if( parseFloat( view.monto_creditos.val() ) > parseFloat( limite_credito ) )
 		{
-			view.monto_creditos.notify("Monto máximo $"+limite,{ position:"buttom left", autoHideDelay: 2000});
+			view.monto_creditos.notify("Monto máximo $"+limite_credito,{ position:"buttom left", autoHideDelay: 2000});
 			view.monto_creditos.val( limite_credito );
 			return false;
 		}	

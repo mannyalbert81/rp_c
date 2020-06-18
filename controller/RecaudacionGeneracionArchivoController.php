@@ -367,7 +367,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    $qConsulta1 = "SELECT 'P' concepto_descuento ,id_descuentos_registrados_cabeza,id_descuentos_formatos,id_participes,
             SUM(valor_cuota_descuentos_registrados_detalle_valores_creditos) valor_cuota
             FROM core_descuentos_registrados_detalle_valores_creditos
-            WHERE concepto_descuentos_registrados_detalle_valores_creditos in ('VENCIMIENTO','MORA')
+            WHERE concepto_descuentos_registrados_detalle_valores_creditos in ('VENCIMIENTO','CUOTA EN MORA')
             AND id_descuentos_registrados_cabeza = $id_descuentos_registrados_cabeza
             GROUP BY id_descuentos_registrados_cabeza,id_descuentos_formatos,id_participes
             UNION

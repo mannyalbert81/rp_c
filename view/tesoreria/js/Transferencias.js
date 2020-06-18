@@ -219,6 +219,7 @@ $("#distribucion_transferencia").on("click",function(event){
 	}
 	
 	getCuentaBancoPago(); //funcion para graficar la cuenta del banco local selecicionado
+	getCuentaBancoPagoProveedor();
 	
 	$modal.modal("show");
 	
@@ -288,6 +289,38 @@ function getCuentaBancoPago(){
 				
 				var tabla = $("#tbl_distribucion2"); // se seleciona la tabla que se grafica en el metodo de ver tabal de distribucion
 				var lastRowTable = tabla.find("tr:last-child");
+				
+				var rsData  = x.data[0];
+				
+				lastRowTable.find("input:text[name='mod_dis_codigo']").val( rsData.codigo_plan_cuentas);
+				lastRowTable.find("input:text[name='mod_dis_nombre']").val( rsData.nombre_plan_cuentas );
+				lastRowTable.find("input:hidden[name='mod_dis_id_plan_cuentas']").val( rsData.id_plan_cuentas);
+				lastRowTable.find("select[id='mod_tipo_pago']").val("credito");
+				
+				
+			}
+		}
+	}).fail( function(xhr,status,error){
+		
+		console.log(xhr.responseText);
+	})
+	
+}
+function getCuentaBancoPagoProveedor(){
+	
+	var bancoLocal	= $("#id_bancos_local");
+	
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=getContablePagoProveedor",
+		dataType:"json",
+		type:"POST",
+		data:{id_bancos: bancoLocal.val()}
+	}).done( function(x){
+		if( x.estatus != undefined ){
+			if( x.estatus == "OK" ){
+				
+				var tabla = $("#tbl_distribucion2"); // se seleciona la tabla que se grafica en el metodo de ver tabal de distribucion
+				var lastRowTable = tabla.find("tr:first-child");
 				
 				var rsData  = x.data[0];
 				

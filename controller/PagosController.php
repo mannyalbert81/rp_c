@@ -74,7 +74,7 @@ class PagosController extends ControladorBase{
                 LEFT JOIN forma_pago ff
                 ON aa.id_forma_pago = ff.id_forma_pago";
         
-        $where = " 1=1 AND dd.nombre_estado = 'GENERADO' ";
+        $where = " 1=1 AND dd.nombre_estado = 'GENERADO' AND aa.origen_cuentas_pagar = 'MANUAL'";
         
         //para los parametros de where 
         if(!empty($busqueda)){

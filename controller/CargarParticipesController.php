@@ -864,7 +864,7 @@ class CargarParticipesController extends ControladorBase{
         $id_creditos = $rsConsulta2[0]->id_creditos; //con eto se toma el credito con mayor valor
         $numero_creditos = $rsConsulta2[0]->numero_creditos; //aqui va el cambio
         $pdf_registro_tres  = 'null';
-        $id_estado_registro_tres_cuotas = '3'; //aqui va el cambio
+        $id_estado_registro_tres_cuotas = '1'; //aqui va el cambio
         
         //viene insertado en la tabla
         $funcion = "ins_registro_tres_cuotas";
@@ -1057,7 +1057,7 @@ class CargarParticipesController extends ControladorBase{
                     $resp['modal'] = "SI";
                 }else
                 {
-                    $columnas_1=" 1 ";
+                    $columnas_1="MAX (id_registro_tres_cuotas)";
                     $tablas_1="public.registro_tres_cuotas";
                     $where_1="cedula_participes = '$cedula' AND id_estado_registro_tres_cuotas = 3";
                     $id_1= "registro_tres_cuotas.id_registro_tres_cuotas ";

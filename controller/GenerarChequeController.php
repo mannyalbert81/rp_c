@@ -650,6 +650,10 @@ class GenerarChequeController extends ControladorBase{
 	        $_id_comprobante = isset( $_POST['id_comprobante'] ) ? $_POST['id_comprobante'] : null;
 	        $_id_cuentas_pagar = isset( $_POST['id_cuentas_pagar'] ) ? $_POST['id_cuentas_pagar'] : null;
 	        	        
+	        //echo $_id_comprobante;
+	        //die ();
+	        
+	        
 	        $error = error_get_last();
 	        if( !empty($error) ){
 	            throw new Exception("Datos de inicio no recibidos");
@@ -800,8 +804,8 @@ class GenerarChequeController extends ControladorBase{
 	        $html.="<table style='width: 100%; margin-top:10px;' border=hidden cellspacing=0>";
 	        $html.="<tr>";
 	        $html.='<td style="width:100px;">&nbsp;</td>';
-	        $html.='<td style="width:50px;font-size: 13px;">'.$ciudad.',</td>';
-	        $html.='<td style="width:200px;font-size: 13px;">'.$fechaCheque.'</td>';
+	        $html.='<td style="width:50px;font-size: 13px;">'.$ciudad.', '.$fechaCheque.'</td>';
+	        //$html.='<td style="width:200px;font-size: 13px;">'.$fechaCheque.'</td>';
 	        $html.="</tr>";
 	        $html.='</table>';
 	        $html.="<table style='width: 100%; margin-top:10px;' border=hidden cellspacing=0>";

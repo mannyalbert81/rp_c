@@ -1433,6 +1433,49 @@ class TransferenciasController extends ControladorBase{
 	    
 	}
 	
+	public function getContablePagoProveedor(){
+	    
+	    $pagos = new PagosModel();
+	    $_id_bancos = $_POST['id_bancos'];
+	    $resp = null;
+	    
+	    $col1 = " aa.id_bancos, bb.id_parametrizacion_cuentas, bb.id_plan_cuentas_haber, cc.id_plan_cuentas, cc.nombre_plan_cuentas, cc.codigo_plan_cuentas ";
+	    $tab1 = " tes_bancos aa
+	    INNER JOIN core_parametrizacion_cuentas bb ON bb.id_principal_parametrizacion_cuentas = aa.id_bancos
+	    INNER JOIN plan_cuentas cc ON cc.id_plan_cuentas = bb.id_plan_cuentas_haber";
+	    $whe1 = "1 = 1
+	    AND bb.modulo_parametrizacion_cuentas = 'PAGO'
+	    AND bb.operacion_parametrizacion_cuentas = 'TRANSFERENCIA'
+	    AND aa.id_bancos = $_id_bancos";
+	    $id1  = " aa.id_bancos";
+	    
+	    try {
+	        
+	        $rsConsulta1 = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	        
+	        if( !empty($rsConsulta1) ){
+	            
+	            $resp['icon'] = "success";
+	            $resp['mensaje'] = "";//buscar guardar buffer y guaradr en variable
+	            $resp['estatus'] = "OK";
+	            $resp['data'] = $rsConsulta1;
+	        }
+	        
+	    } catch (Exception $e) {
+	        
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
+	}
+	
 	
 	/******************************************************************** METODOS PARA LA GENERACION DE ARCHIVOS PAGO ***********************************/
 	

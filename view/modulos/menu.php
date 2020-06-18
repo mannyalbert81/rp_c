@@ -371,6 +371,19 @@ $controladores=$_SESSION['controladores'];
              
                 </ul>
             </li>
+             <li class="treeview"  style="<?php echo getcontrolador("ReportesRecaudaciones",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Reportes</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+              	<li style="<?php echo getcontrolador("ReporteRecaudaciones",$controladores) ?>"><a href="index.php?controller=ReporteRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Reporte Recaudaciones</a></li>
+             
+                </ul>
+            </li>
+            
         
         <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
           <a href="#">

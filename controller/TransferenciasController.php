@@ -1436,25 +1436,20 @@ class TransferenciasController extends ControladorBase{
 	public function getContablePagoProveedor(){
 	    
 	    $pagos = new PagosModel();
-	    $_id_bancos = $_POST['id_bancos'];
+	    $_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
 	    $resp = null;
 	    
-	    $col1 = " aa.id_bancos, bb.id_parametrizacion_cuentas, bb.id_plan_cuentas_haber, cc.id_plan_cuentas, cc.nombre_plan_cuentas, cc.codigo_plan_cuentas ";
-	    $tab1 = " tes_bancos aa
-	    INNER JOIN core_parametrizacion_cuentas bb ON bb.id_principal_parametrizacion_cuentas = aa.id_bancos
-	    INNER JOIN plan_cuentas cc ON cc.id_plan_cuentas = bb.id_plan_cuentas_haber";
-	    $whe1 = "1 = 1
-	    AND bb.modulo_parametrizacion_cuentas = 'PAGO'
-	    AND bb.operacion_parametrizacion_cuentas = 'TRANSFERENCIA'
-	    AND aa.id_bancos = $_id_bancos";
-	    $id1  = " aa.id_bancos";
+	    $query = " SELECT cc.id_plan_cuentas, cc.nombre_plan_cuentas, cc.codigo_plan_cuentas FROM tes_cuentas_pagar p
+    	    INNER JOIN tes_distribucion_cuentas_pagar c on p.id_lote = c.id_lote
+    	    INNER JOIN plan_cuentas cc ON cc.id_plan_cuentas = c.id_plan_cuentas
+    	    WHERE p.id_cuentas_pagar = $_id_cuentas_pagar AND c.tipo_distribucion_cuentas_pagar = 'PAGO' ";
 	    
 	    try {
 	        
-	        $rsConsulta1 = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	        $rsConsulta1 = $pagos->enviaquery( $query );
 	        
-	        if( !empty($rsConsulta1) ){
-	            
+	        if( !empty($rsConsulta1) )
+	        {	            
 	            $resp['icon'] = "success";
 	            $resp['mensaje'] = "";//buscar guardar buffer y guaradr en variable
 	            $resp['estatus'] = "OK";

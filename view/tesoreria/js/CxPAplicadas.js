@@ -84,7 +84,7 @@ var load_cuentas_pagar_aplicadas	= function(){
                 return json.data;
               }
 	    },	
-	    'order': [[ 1, "desc" ]],
+	    'order': [[ 0, "desc" ]],
 	    'columns': [	    	    
 	    	{ data: 'numfila', orderable: false },
     		{ data: 'fecha'},

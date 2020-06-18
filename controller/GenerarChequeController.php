@@ -329,9 +329,15 @@ class GenerarChequeController extends ControladorBase{
 	   
 	    /*buscar distribucion de comprobante*/
 	    //para buscar el diario
-	    $colParametrizacion = "id_parametrizacion_cuentas, tabla_parametrizacion_cuentas, id_plan_cuentas_debe, id_plan_cuentas_haber";
+	    $colParametrizacion = "id_parametrizacion_cuentas, tabla_parametrizacion_cuentas, id_plan_cuentas_haber, (
+                                select c.id_plan_cuentas from tes_cuentas_pagar p
+                                inner join tes_distribucion_cuentas_pagar c on p.id_lote =c.id_lote
+                                where p.id_cuentas_pagar=$_id_cuentas_pagar and c.tipo_distribucion_cuentas_pagar = 'PAGO'
+                                ) as id_plan_cuentas_debe";
 	    $tabParametrizacion = "core_parametrizacion_cuentas";
-	    $WheParametrizacion = "id_modulos = $moduloId AND tabla_parametrizacion_cuentas = 'tes_bancos' AND id_principal_parametrizacion_cuentas = $_id_bancos";
+	    $WheParametrizacion = "id_modulos = $moduloId AND tabla_parametrizacion_cuentas = 'tes_bancos' 
+        AND operacion_parametrizacion_cuentas = 'CHEQUE'
+        AND id_principal_parametrizacion_cuentas = $_id_bancos";
 	    $idParametrizacion = "tabla_parametrizacion_cuentas";
 	    
 	    $rsParametrizacion = $CuentasPagar -> getCondiciones($colParametrizacion,$tabParametrizacion,$WheParametrizacion,$idParametrizacion);
@@ -422,8 +428,11 @@ class GenerarChequeController extends ControladorBase{
 	        $_fecha_cheque = $_POST['fecha_cheque'];
 	        $_observaciones = "PAGO CON CHEQUE";
 	        $_concepto_cheque = $_POST['comentario_cheque'];
-	        $_id_bancos = $_POST['id_bancos'];	 
+	        $_id_bancos = $_POST['id_bancos'];	
+	        $_usuario_usuarios = $_SESSION['usuario_usuarios'];
 	        	        
+	        
+	        
 	        $respuesta = array();
 	        
 	        $_array_detalle_comrobantes = array();
@@ -443,7 +452,7 @@ class GenerarChequeController extends ControladorBase{
 	        
 	        $queryFormaPago = "SELECT * FROM forma_pago WHERE nombre_forma_pago = 'CHEQUE' LIMIT 1";
 	        $rsFormaPago = $CuentasPagar->enviaquery($queryFormaPago);	        
-	        $_id_formadePago = $rsFormaPago[0]->id_forma_pago;
+	        $_id_forma_pago = $rsFormaPago[0]->id_forma_pago;
 	        $_referencia_ccomprobantes = "CHEQUE";
 	        
             //aqui genera el comprobante
@@ -454,7 +463,7 @@ class GenerarChequeController extends ControladorBase{
                            '$_total_en_letras', 
                            '$_fecha_cheque', 
                            '$_observaciones',
-                           '$_id_formadePago',
+                           '$_id_forma_pago',
                            '$_referencia_ccomprobantes',
                            '$_numero_cheque',
                            '$_id_proveedores',
@@ -471,11 +480,18 @@ class GenerarChequeController extends ControladorBase{
             }
             
             //obtengo el comprobante generado
-            $id_comprobante = (int)$ResultComprobante[0];
+            $_id_ccomprobantes = (int)$ResultComprobante[0];
+            $moduloId = "6";
             //para buscar el diario
-            $colParametrizacion = "id_parametrizacion_cuentas, tabla_parametrizacion_cuentas, id_plan_cuentas_debe, id_plan_cuentas_haber";
+            $colParametrizacion = "id_parametrizacion_cuentas, tabla_parametrizacion_cuentas, id_plan_cuentas_haber, (
+                                select c.id_plan_cuentas from tes_cuentas_pagar p
+                                inner join tes_distribucion_cuentas_pagar c on p.id_lote =c.id_lote
+                                where p.id_cuentas_pagar=$_id_cuentas_pagar and c.tipo_distribucion_cuentas_pagar = 'PAGO'
+                                ) as id_plan_cuentas_debe";
             $tabParametrizacion = "core_parametrizacion_cuentas";
-            $WheParametrizacion = "id_principal_parametrizacion_cuentas = $_id_bancos";
+            $WheParametrizacion = "id_modulos = $moduloId AND tabla_parametrizacion_cuentas = 'tes_bancos'
+        AND operacion_parametrizacion_cuentas = 'CHEQUE'
+        AND id_principal_parametrizacion_cuentas = $_id_bancos";
             $idParametrizacion = "tabla_parametrizacion_cuentas";
             
             $rsParametrizacion = $CuentasPagar -> getCondiciones($colParametrizacion,$tabParametrizacion,$WheParametrizacion,$idParametrizacion);
@@ -502,7 +518,7 @@ class GenerarChequeController extends ControladorBase{
 	                $_id_plan_cuentas = $res['id_plan_cuentas'];
 	                $_debe_comprobante = $res['valor_debe'];
 	                $_haber_comprobante = $res['valor_haber'];
-	                $paramDet = "'$id_comprobante','$_id_plan_cuentas','$_concepto_cheque','$_debe_comprobante','$_haber_comprobante'";
+	                $paramDet = "'$_id_ccomprobantes','$_id_plan_cuentas','$_concepto_cheque','$_debe_comprobante','$_haber_comprobante'";
 	                //query diario
 	                $queryDetalle = $CuentasPagar->getconsultaPG($funcionDet, $paramDet);
 	                //insert diario
@@ -517,7 +533,7 @@ class GenerarChequeController extends ControladorBase{
 	            
             //aqui para la mayorizacion
             $funcionMayoriza = "con_ins_mayoriza";
-            $parametrosMayoriza = "'$id_comprobante','$_fecha_cheque'";
+            $parametrosMayoriza = "'$_id_ccomprobantes','$_fecha_cheque'";
             $consultaPG = $CuentasPagar->getconsultaPG($funcionMayoriza, $parametrosMayoriza);
             $ResultMayoriza = $CuentasPagar->llamarconsultaPG($consultaPG);
             $error = "";
@@ -545,19 +561,19 @@ class GenerarChequeController extends ControladorBase{
             //aqui ingresar el pago
             //id_creditos ya esta referenciada con la cuenta por pagar
             $_id_creditos = 0;
-            $funcionPago = "ins_tes_pagos";
+            $funcionPago = "ins_tes_pagos_cheque";
             $parametrosPago = "'$_id_cuentas_pagar',
             	        '$_id_creditos',
             	        '$_id_proveedores',
-            	        '$id_comprobante',
-            	        '$_id_formadePago',
+            	        '$_id_ccomprobantes',
+            	        '$_id_forma_pago',
             	        '$_fecha_cheque',
             	        'CHEQUE',
-            	        null,
-            	        '',
-            	        '',
-                        '',
-            	        null";           
+            	        '$_total_cuentas_pagar',
+            	        '$_id_bancos',
+            	        '$_usuario_usuarios',
+                        '$_numero_cheque'"; 
+           
             
             $consultaPago = $CuentasPagar->getconsultaPG($funcionPago, $parametrosPago);
             $ResultadoPago = $CuentasPagar->llamarconsultaPG($consultaPago);
@@ -575,7 +591,7 @@ class GenerarChequeController extends ControladorBase{
             
             $respuesta['comprobante']['mensaje']="CHEQUE REGISTRADO CORRECTAMENTE";
             $respuesta['comprobante']['valor'] = 1;
-            $respuesta['comprobante']['id_comprobante'] = $id_comprobante;
+            $respuesta['comprobante']['id_comprobante'] = $_id_ccomprobantes;
             $respuesta['cuentaspagar']['id_cuentas_pagar'] = $_id_cuentas_pagar;
             
             /*Actualizar Consecutivo Pago*/
@@ -761,8 +777,8 @@ class GenerarChequeController extends ControladorBase{
     	            $htmlTabla.="<tr>";
     	            $htmlTabla.='<td style="width:100px;font-size: 11px; ">'.$res->codigo_plan_cuentas.'</td>';
     	            $htmlTabla.='<td style="width:100px;font-size: 11px; ">'.$res->nombre_plan_cuentas.'</td>';
-    	            $htmlTabla.='<td style="width:100px;font-size: 11px; text-align: center;">'.$res->debe_dcomprobantes.'</td>';
-    	            $htmlTabla.='<td style="width:100px;font-size: 11px; text-align: center;">'.$res->haber_dcomprobantes.'</td>';
+    	            $htmlTabla.='<td style="width:100px;font-size: 11px; text-align: center;">'.number_format( $res->debe_dcomprobantes, 2, ".","").'</td>';
+    	            $htmlTabla.='<td style="width:100px;font-size: 11px; text-align: center;">'.number_format( $res->haber_dcomprobantes, 2, ".","").'</td>';
     	            $htmlTabla.="</tr>";
     	            $htmlTabla.="<tr>";
     	            $htmlTabla.='<td style="width:100px;font-size: 11px; text-align: center;">&nbsp;</td>';

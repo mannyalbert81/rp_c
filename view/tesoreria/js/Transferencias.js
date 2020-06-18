@@ -308,13 +308,13 @@ function getCuentaBancoPago(){
 }
 function getCuentaBancoPagoProveedor(){
 	
-	var bancoLocal	= $("#id_bancos_local");
+	var idcuentaspagar	= $("#id_cuentas_pagar");
 	
 	$.ajax({
 		url:"index.php?controller=Transferencias&action=getContablePagoProveedor",
 		dataType:"json",
 		type:"POST",
-		data:{id_bancos: bancoLocal.val()}
+		data:{ id_cuentas_pagar: idcuentaspagar.val() }
 	}).done( function(x){
 		if( x.estatus != undefined ){
 			if( x.estatus == "OK" ){
@@ -327,8 +327,7 @@ function getCuentaBancoPagoProveedor(){
 				lastRowTable.find("input:text[name='mod_dis_codigo']").val( rsData.codigo_plan_cuentas);
 				lastRowTable.find("input:text[name='mod_dis_nombre']").val( rsData.nombre_plan_cuentas );
 				lastRowTable.find("input:hidden[name='mod_dis_id_plan_cuentas']").val( rsData.id_plan_cuentas);
-				lastRowTable.find("select[id='mod_tipo_pago']").val("credito");
-				
+				lastRowTable.find("select[id='mod_tipo_pago']").val("debito");
 				
 			}
 		}

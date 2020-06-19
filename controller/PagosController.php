@@ -333,7 +333,7 @@ class PagosController extends ControladorBase{
             //$_usuario_logueado = $_SESSION['usuario_usuarios'];
             
             $columnas1 = " aa.id_pagos, aa.fecha_pagos, aa.usuario_usuarios, cc.identificacion_proveedores, cc.razon_social_proveedores, aa.metodo_pagos, aa.valor_pagos,
-                bb.concepto_ccomprobantes, dd.id_bancos, dd.nombre_bancos, cc.nombre_proveedores";
+                bb.concepto_ccomprobantes, dd.id_bancos, dd.nombre_bancos, cc.nombre_proveedores, aa.id_ccomprobantes";
             $tablas1   = " tes_pagos aa
                 INNER JOIN ccomprobantes bb ON bb.id_ccomprobantes = aa.id_ccomprobantes
                 INNER JOIN proveedores cc ON cc.id_proveedores = aa.id_proveedores
@@ -398,7 +398,7 @@ class PagosController extends ControladorBase{
                 $opciones = ""; //variable donde guardare los datos creados automaticamente
                 $opciones = '<div class="pull-right ">
                             <span >
-                                <a class="btn btn-default input-sm showpdf" data-id="'.$res->id_pagos.'" data-toogle="tooltip"  href="#" title="Detalle Pago"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i>
+                                <a class="btn btn-default input-sm showpdf" data-id="'.$res->id_ccomprobantes.'" data-toogle="tooltip"  href="#" title="Comprobante"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i>
 	                           </a>
                             </span>
                             </div>';
@@ -426,8 +426,8 @@ class PagosController extends ControladorBase{
                 $dataFila['banco_bene']    = $banco_beneficiario;
                 $dataFila['valor_pago']    = $res->valor_pagos;
                 $dataFila['descripcion']        = $res->concepto_ccomprobantes;
-                //$dataFila['opciones']           = $opciones; esta comentado hast definir que opciones darle al reporte de cuentas pagar aplicadas
-                $dataFila['opciones']           = "";
+                $dataFila['opciones']           = $opciones; //esta comentado hast definir que opciones darle al reporte de cuentas pagar aplicadas
+                //$dataFila['opciones']           = "";
                 //$dataFila['id_cabeza']         = '12345';
                 
                 $data[] = $dataFila;               

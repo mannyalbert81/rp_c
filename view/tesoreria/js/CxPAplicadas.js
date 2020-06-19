@@ -127,7 +127,7 @@ var iniciar_eventos_datatable = function(){
 
 viewTable.contenedor.on('click','a.showpdf',function(event){
 	let enlace = $(this);
-	let _url = "index.php?controller=TesCuentasPagar&action=RptCuentasPagar&id_cuentas_pagar="+enlace.data().id;
+	let _url = "index.php?controller=ReporteComprobante&action=comprobante_contable_reporte&id_ccomprobantes="+enlace.data().id;
 	
 	if ( enlace.data().id ) {
 		
@@ -137,6 +137,7 @@ viewTable.contenedor.on('click','a.showpdf',function(event){
 	
 	event.preventDefault();
 })
+
 
 
 

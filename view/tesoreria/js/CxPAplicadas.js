@@ -137,7 +137,40 @@ viewTable.contenedor.on('click','a.showpdf',function(event){
 	
 	event.preventDefault();
 })
-
+viewTable.contenedor.on('click','a.showpdfcheque',function(event){
+	let enlace = $(this);
+	let _url = "index.php?controller=GenerarCheque&action=generaReporteCheque";
+	
+	if ( enlace.data().id_ccomprobantes && enlace.data().id_cuentas_pagar ) {
+		
+		var params = {
+				"id_comprobante":enlace.data().id_ccomprobantes,
+				"id_cuentas_pagar":enlace.data().id_cuentas_pagar
+		}
+					
+		var form = document.createElement("form");
+	    form.setAttribute("method", "post");
+	    form.setAttribute("action", _url);
+	    form.setAttribute("target", "_blank");   
+	    
+	    for (var i in params) {
+	        if (params.hasOwnProperty(i)) {
+	            var input = document.createElement('input');
+	            input.type = 'hidden';
+	            input.name = i;
+	            input.value = params[i];
+	            form.appendChild(input);
+	        }
+	    }
+	        
+	    document.body.appendChild(form); 
+	    form.submit();    
+	    document.body.removeChild(form);
+		
+	}
+	
+	event.preventDefault();
+})
 
 
 

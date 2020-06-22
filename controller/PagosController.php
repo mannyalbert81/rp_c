@@ -333,7 +333,7 @@ class PagosController extends ControladorBase{
             //$_usuario_logueado = $_SESSION['usuario_usuarios'];
             
             $columnas1 = " aa.id_pagos, aa.fecha_pagos, aa.usuario_usuarios, cc.identificacion_proveedores, cc.razon_social_proveedores, aa.metodo_pagos, aa.valor_pagos,
-                bb.concepto_ccomprobantes, dd.id_bancos, dd.nombre_bancos, cc.nombre_proveedores, aa.id_ccomprobantes";
+                bb.concepto_ccomprobantes, dd.id_bancos, dd.nombre_bancos, cc.nombre_proveedores, aa.id_ccomprobantes, aa.id_cuentas_pagar ";
             $tablas1   = " tes_pagos aa
                 INNER JOIN ccomprobantes bb ON bb.id_ccomprobantes = aa.id_ccomprobantes
                 INNER JOIN proveedores cc ON cc.id_proveedores = aa.id_proveedores
@@ -395,27 +395,44 @@ class PagosController extends ControladorBase{
             foreach ( $resultSet as $res){
                 $columnIndex++;
                 
-                $opciones = ""; //variable donde guardare los datos creados automaticamente
-                $opciones = '<div class="pull-right ">
-                            <span >
-                                <a class="btn btn-default input-sm showpdf" data-id="'.$res->id_ccomprobantes.'" data-toogle="tooltip"  href="#" title="Comprobante"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i>
-	                           </a>
-                            </span>
-                            </div>';
-                
-               
                 $metodo_pago = $res->metodo_pagos;
                 $banco_beneficiario = $res->nombre_bancos;
+                $id_cuentas_pagar = 0;
+                $id_comprobante_cheque  = 0;
+                $opcionesCheque = "";
                 if( $metodo_pago == "CHEQUE" )
                 {
+                    
                     $banco_beneficiario = "";
+                    $id_cuentas_pagar   = $res->id_cuentas_pagar;
+                    
+                    $col    = " id_ccomprobantes";
+                    $tab    = " public.tes_cuentas_pagar";
+                    $whe    = " id_cuentas_pagar = $id_cuentas_pagar";
+                    $rsConsulta = $cpagar->getCondicionesSinOrden( $col, $tab, $whe, "" );
+                    
+                    $id_comprobante_cheque  = $rsConsulta[0]->id_ccomprobantes;
+                    
+                    $opcionesCheque = '<span >
+                                <a class="btn btn-default input-sm showpdfcheque" data-id_ccomprobantes ="'.$id_comprobante_cheque.'" data-id_cuentas_pagar ="'.$id_cuentas_pagar.'" data-toogle="tooltip"  href="#" title="IMPRIMIR"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i></a>
+                            </span>';
                 }
                 
                 $nombre_benficiario = $res->razon_social_proveedores;
                 if( !strlen( $nombre_benficiario ) )
                 {
-                    $nombre_benficiario = $res->nombre_proveedores;                    
+                    $nombre_benficiario = $res->nombre_proveedores;
                 }
+                
+                
+                $opciones = ""; //variable donde guardare los datos creados automaticamente
+                $opciones = '<div class="pull-right ">
+                            <span >
+                                <a class="btn btn-default input-sm showpdf" data-id="'.$res->id_ccomprobantes.'" data-toogle="tooltip"  href="#" title="Comprobante"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i></a>
+                            </span>'. 
+                            $opcionesCheque.'                                                              
+                        </div>';
+                
                                                 
                 $dataFila['numfila']    = $columnIndex;
                 $dataFila['fecha']      = $res->fecha_pagos;

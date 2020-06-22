@@ -132,6 +132,7 @@
                         				<th>Valor</th>
                         				<th>Descripci&oacute;n</th>
                         				<th>Opciones</th>
+                        				<th>Cheque</th>
                     				</tr>                    				
                     			</thead>                    			
                     			<tfoot>
@@ -158,7 +159,7 @@
     <?php include("view/modulos/links_js.php"); ?>    
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>   
-    <script src="view/tesoreria/js/CxPAplicadas.js?0.03"></script>       
+    <script src="view/tesoreria/js/CxPAplicadas.js?0.04"></script>       
 	
   </body>
 </html> 

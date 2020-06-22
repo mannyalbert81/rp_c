@@ -414,7 +414,7 @@ class PagosController extends ControladorBase{
                     $id_comprobante_cheque  = $rsConsulta[0]->id_ccomprobantes;
                     
                     $opcionesCheque = '<span >
-                                <a class="btn btn-default input-sm showpdfcheque" data-id_ccomprobantes ="'.$id_comprobante_cheque.'" data-id_cuentas_pagar ="'.$id_cuentas_pagar.'" data-toogle="tooltip"  href="#" title="IMPRIMIR"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i></a>
+                                <a class="btn btn-default input-sm showpdfcheque" data-id_ccomprobantes ="'.$id_comprobante_cheque.'" data-id_cuentas_pagar ="'.$id_cuentas_pagar.'" data-toogle="tooltip"  href="#" title="Cheque"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i></a>
                             </span>';
                 }
                 
@@ -425,13 +425,19 @@ class PagosController extends ControladorBase{
                 }
                 
                 
-                $opciones = ""; //variable donde guardare los datos creados automaticamente
+               /* $opciones = ""; //variable donde guardare los datos creados automaticamente
                 $opciones = '<div class="pull-right ">
                             <span >
                                 <a class="btn btn-default input-sm showpdf" data-id="'.$res->id_ccomprobantes.'" data-toogle="tooltip"  href="#" title="Comprobante"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i></a>
-                            </span>'. 
-                            $opcionesCheque.'                                                              
-                        </div>';
+                            </span>'.
+                            $opcionesCheque.'
+                        </div>';*/
+                
+                
+                $opciones = ""; //variable donde guardare los datos creados automaticamente
+                $opciones = '<span >
+                                <a class="btn btn-default input-sm showpdf" data-id="'.$res->id_ccomprobantes.'" data-toogle="tooltip"  href="#" title="Comprobante"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i></a>
+                            </span>';
                 
                                                 
                 $dataFila['numfila']    = $columnIndex;
@@ -444,7 +450,7 @@ class PagosController extends ControladorBase{
                 $dataFila['valor_pago']    = $res->valor_pagos;
                 $dataFila['descripcion']        = $res->concepto_ccomprobantes;
                 $dataFila['opciones']           = $opciones; //esta comentado hast definir que opciones darle al reporte de cuentas pagar aplicadas
-                //$dataFila['opciones']           = "";
+                $dataFila['cheque']           = $opcionesCheque;
                 //$dataFila['id_cabeza']         = '12345';
                 
                 $data[] = $dataFila;               

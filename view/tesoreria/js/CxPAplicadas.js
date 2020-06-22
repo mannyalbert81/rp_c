@@ -95,7 +95,8 @@ var load_cuentas_pagar_aplicadas	= function(){
     		{ data: 'banco_bene', orderable: false},
     		{ data: 'valor_pago', orderable: false },
     		{ data: 'descripcion', orderable: false },
-    		{ data: 'opciones', orderable: false }
+    		{ data: 'opciones', orderable: false },
+    		{ data: 'cheque', orderable: false }
     		    		
 	    ],
 	    'columnDefs': [
@@ -140,6 +141,7 @@ viewTable.contenedor.on('click','a.showpdf',function(event){
 viewTable.contenedor.on('click','a.showpdfcheque',function(event){
 	let enlace = $(this);
 	let _url = "index.php?controller=GenerarCheque&action=generaReporteCheque";
+	
 	
 	if ( enlace.data().id_ccomprobantes && enlace.data().id_cuentas_pagar ) {
 		

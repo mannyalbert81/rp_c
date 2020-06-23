@@ -84,7 +84,7 @@ var load_cuentas_pagar_aplicadas	= function(){
                 return json.data;
               }
 	    },	
-	    'order': [[ 1, "desc" ]],
+	    'order': [[ 0, "desc" ]],
 	    'columns': [	    	    
 	    	{ data: 'numfila', orderable: false },
     		{ data: 'fecha'},
@@ -95,7 +95,8 @@ var load_cuentas_pagar_aplicadas	= function(){
     		{ data: 'banco_bene', orderable: false},
     		{ data: 'valor_pago', orderable: false },
     		{ data: 'descripcion', orderable: false },
-    		{ data: 'opciones', orderable: false }
+    		{ data: 'opciones', orderable: false },
+    		{ data: 'cheque', orderable: false }
     		    		
 	    ],
 	    'columnDefs': [
@@ -127,11 +128,46 @@ var iniciar_eventos_datatable = function(){
 
 viewTable.contenedor.on('click','a.showpdf',function(event){
 	let enlace = $(this);
-	let _url = "index.php?controller=TesCuentasPagar&action=RptCuentasPagar&id_cuentas_pagar="+enlace.data().id;
+	let _url = "index.php?controller=ReporteComprobante&action=comprobante_contable_reporte&id_ccomprobantes="+enlace.data().id;
 	
 	if ( enlace.data().id ) {
 		
 		window.open(_url,"_blank");
+		
+	}
+	
+	event.preventDefault();
+})
+viewTable.contenedor.on('click','a.showpdfcheque',function(event){
+	let enlace = $(this);
+	let _url = "index.php?controller=GenerarCheque&action=generaReporteCheque";
+	
+	
+	if ( enlace.data().id_ccomprobantes && enlace.data().id_cuentas_pagar ) {
+		
+		var params = {
+				"id_comprobante":enlace.data().id_ccomprobantes,
+				"id_cuentas_pagar":enlace.data().id_cuentas_pagar
+		}
+					
+		var form = document.createElement("form");
+	    form.setAttribute("method", "post");
+	    form.setAttribute("action", _url);
+	    form.setAttribute("target", "_blank");   
+	    
+	    for (var i in params) {
+	        if (params.hasOwnProperty(i)) {
+	            var input = document.createElement('input');
+	            input.type = 'hidden';
+	            input.name = i;
+	            input.value = params[i];
+	            form.appendChild(input);
+	        }
+	    }
+	        
+	    document.body.appendChild(form); 
+	    form.submit();    
+	    document.body.removeChild(form);
 		
 	}
 	

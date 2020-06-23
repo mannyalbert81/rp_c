@@ -74,7 +74,7 @@ class PagosController extends ControladorBase{
                 LEFT JOIN forma_pago ff
                 ON aa.id_forma_pago = ff.id_forma_pago";
         
-        $where = " 1=1 AND dd.nombre_estado = 'GENERADO' ";
+        $where = " 1=1 AND dd.nombre_estado = 'GENERADO' AND aa.origen_cuentas_pagar = 'MANUAL'";
         
         //para los parametros de where 
         if(!empty($busqueda)){
@@ -333,7 +333,7 @@ class PagosController extends ControladorBase{
             //$_usuario_logueado = $_SESSION['usuario_usuarios'];
             
             $columnas1 = " aa.id_pagos, aa.fecha_pagos, aa.usuario_usuarios, cc.identificacion_proveedores, cc.razon_social_proveedores, aa.metodo_pagos, aa.valor_pagos,
-                bb.concepto_ccomprobantes, dd.id_bancos, dd.nombre_bancos, cc.nombre_proveedores";
+                bb.concepto_ccomprobantes, dd.id_bancos, dd.nombre_bancos, cc.nombre_proveedores, aa.id_ccomprobantes, aa.id_cuentas_pagar ";
             $tablas1   = " tes_pagos aa
                 INNER JOIN ccomprobantes bb ON bb.id_ccomprobantes = aa.id_ccomprobantes
                 INNER JOIN proveedores cc ON cc.id_proveedores = aa.id_proveedores
@@ -395,27 +395,50 @@ class PagosController extends ControladorBase{
             foreach ( $resultSet as $res){
                 $columnIndex++;
                 
-                $opciones = ""; //variable donde guardare los datos creados automaticamente
-                $opciones = '<div class="pull-right ">
-                            <span >
-                                <a class="btn btn-default input-sm showpdf" data-id="'.$res->id_pagos.'" data-toogle="tooltip"  href="#" title="Detalle Pago"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i>
-	                           </a>
-                            </span>
-                            </div>';
-                
-               
                 $metodo_pago = $res->metodo_pagos;
                 $banco_beneficiario = $res->nombre_bancos;
+                $id_cuentas_pagar = 0;
+                $id_comprobante_cheque  = 0;
+                $opcionesCheque = "";
                 if( $metodo_pago == "CHEQUE" )
                 {
+                    
                     $banco_beneficiario = "";
+                    $id_cuentas_pagar   = $res->id_cuentas_pagar;
+                    
+                    $col    = " id_ccomprobantes";
+                    $tab    = " public.tes_cuentas_pagar";
+                    $whe    = " id_cuentas_pagar = $id_cuentas_pagar";
+                    $rsConsulta = $cpagar->getCondicionesSinOrden( $col, $tab, $whe, "" );
+                    
+                    $id_comprobante_cheque  = $rsConsulta[0]->id_ccomprobantes;
+                    
+                    $opcionesCheque = '<span >
+                                <a class="btn btn-default input-sm showpdfcheque" data-id_ccomprobantes ="'.$id_comprobante_cheque.'" data-id_cuentas_pagar ="'.$id_cuentas_pagar.'" data-toogle="tooltip"  href="#" title="Cheque"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i></a>
+                            </span>';
                 }
                 
                 $nombre_benficiario = $res->razon_social_proveedores;
                 if( !strlen( $nombre_benficiario ) )
                 {
-                    $nombre_benficiario = $res->nombre_proveedores;                    
+                    $nombre_benficiario = $res->nombre_proveedores;
                 }
+                
+                
+               /* $opciones = ""; //variable donde guardare los datos creados automaticamente
+                $opciones = '<div class="pull-right ">
+                            <span >
+                                <a class="btn btn-default input-sm showpdf" data-id="'.$res->id_ccomprobantes.'" data-toogle="tooltip"  href="#" title="Comprobante"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i></a>
+                            </span>'.
+                            $opcionesCheque.'
+                        </div>';*/
+                
+                
+                $opciones = ""; //variable donde guardare los datos creados automaticamente
+                $opciones = '<span >
+                                <a class="btn btn-default input-sm showpdf" data-id="'.$res->id_ccomprobantes.'" data-toogle="tooltip"  href="#" title="Comprobante"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i></a>
+                            </span>';
+                
                                                 
                 $dataFila['numfila']    = $columnIndex;
                 $dataFila['fecha']      = $res->fecha_pagos;
@@ -426,8 +449,8 @@ class PagosController extends ControladorBase{
                 $dataFila['banco_bene']    = $banco_beneficiario;
                 $dataFila['valor_pago']    = $res->valor_pagos;
                 $dataFila['descripcion']        = $res->concepto_ccomprobantes;
-                //$dataFila['opciones']           = $opciones; esta comentado hast definir que opciones darle al reporte de cuentas pagar aplicadas
-                $dataFila['opciones']           = "";
+                $dataFila['opciones']           = $opciones; //esta comentado hast definir que opciones darle al reporte de cuentas pagar aplicadas
+                $dataFila['cheque']           = $opcionesCheque;
                 //$dataFila['id_cabeza']         = '12345';
                 
                 $data[] = $dataFila;               

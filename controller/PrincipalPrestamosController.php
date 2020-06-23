@@ -241,7 +241,7 @@ class PrincipalPrestamosController extends ControladorBase{
 	    
 	    $limit = " LIMIT   '$per_page' OFFSET '$offset'";
 	    
-	    $resultSet = $busquedas->getCondicionesPag($columnas1, $tablas1, $where1, $id1, $limit);
+	    $resultSet = $busquedas->getCondicionesPagDesc($columnas1, $tablas1, $where1, $id1, $limit);
 	    $total_pages = ceil($cantidadResult/$per_page);
 	    
 	    $error = error_get_last();

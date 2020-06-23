@@ -2226,7 +2226,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    $tab1  = " tes_cuentas_pagar_impuestos aa
 	       INNER JOIN tes_impuestos bb ON bb.id_impuestos = aa.id_impuestos";
 	    $whe1  = " aa.id_lote = $id_lote
-	       AND bb.tipo_impuestos = 'ret'";
+	       AND bb.tipo_impuestos in ( 'ret', 'retiva' )";
 	    $id1   = " aa.id_cuentas_pagar_impuestos";
 	    
 	    $rsConsulta1   = $cpagar->getCondiciones($col1, $tab1, $whe1, $id1);

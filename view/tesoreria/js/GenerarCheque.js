@@ -33,11 +33,15 @@ function init(){
 				maxyear: globalAnio
 			},
 		oncomplete:function(e){
-			if( (new Date($(this).val()).getTime() != new Date(fechaServidor).getTime()))
-		    {
-				$(this).notify("Fecha no puede ser Mayor",{ position:"buttom left", autoHideDelay: 2000});
-				$(this).val('')
-		    }
+			var lfechaServidor = fechaServidor.split("-");
+			var lfechaPago 	= $(this).val().split("-");
+			
+			if( lfechaServidor[0]+""+lfechaServidor[1] != lfechaPago[0]+""+lfechaPago[1] )
+			{
+				$(this).notify("Fecha no Valida .. Mes ingresado no valido",{ position:"buttom left", autoHideDelay: 2000});
+               $(this).val('');
+			}
+			
 		}
 	});
 	
@@ -118,8 +122,15 @@ $("#distribucion_cheque").on("click",function(){
 	
 	var _id_cuentas_pagar = $("#id_cuentas_pagar").val();
 	var obj_comentario_cheque = $("#comentario_cheque");
+	var ofecha_cheque	= $("#fecha_cheque");
+	if( ofecha_cheque.val().length == 0 || ofecha_cheque.val() == '' )
+	{
+		ofecha_cheque.notify("Ingrese fecha de cheque",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
 	if(obj_comentario_cheque.val().length == 0 || obj_comentario_cheque.val() == ''){
-		obj_comentario_cheque.notify("Ingrese comentario de pago",{ position:"buttom left", autoHideDelay: 2000});
+		obj_comentario_cheque.notify("Ingrese comentario de cheque",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	let $bancos = $("#id_bancos");

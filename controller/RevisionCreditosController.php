@@ -479,22 +479,21 @@ class RevisionCreditosController extends ControladorBase{
                     {
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                     }
-                    if ($resultRol=="Jefe de tesorería" && $estado_reporte=="APROBADO GERENTE")
+                    if ( $resultRol == "Jefe de tesorería" && $estado_reporte == "APROBADO GERENTE" ) 
                     {
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                     }
                    
-                $html.='</tr>';
-                if ($estado_reporte=="DEVUELTO A REVISION")
-                {
-                    $html.='<tr>';
-                    $html.='<th style="font-size: 15px;">Observación</th>';
-                    $html.='<td colspan="9" style="font-size: 14px;">'.$res->observacion_detalle_creditos_trabajados.'</td>';
                     $html.='</tr>';
-                }
+                    if ( $estado_reporte=="DEVUELTO A REVISION" )
+                    {
+                        $html.='<tr>';
+                        $html.='<th style="font-size: 15px;">Observación</th>';
+                        $html.='<td colspan="9" style="font-size: 14px;">'.$res->observacion_detalle_creditos_trabajados.'</td>';
+                        $html.='</tr>';
+                    }
                 
             }
-            
             
             
             $html.='</tbody>';
@@ -523,8 +522,10 @@ class RevisionCreditosController extends ControladorBase{
             if ($resultRol=="Jefe de tesorería" && $estado_reporte=="APROBADO GERENTE")
             {
                 $html.='<span class="pull-right"><button  type="button" class="btn btn-success" onclick="AprobarTesoreria('.$id_reporte.')">APROBAR <i class="glyphicon glyphicon-ok"></i></button></span>';
+                $html.='<span class="pull-right"><a class="btn btn-primary" href="index.php?controller=RevisionCreditos&action=ReporteCreditosaTransferir&id_reporte='.$id_reporte.'" role="button" target="_blank">IMPRIMIR <i class="glyphicon glyphicon-print"></i></a></span>';
             }
-            if ($resultRol=="Jefe de crédito y prestaciones" && $estado_reporte=="APROBADO TESORERIA")
+            
+            if ( $resultRol == "Jefe de crédito y prestaciones" && $estado_reporte == "APROBADO TESORERIA" )
             {
                 $html.='<span class="pull-right"><a class="btn btn-primary" href="index.php?controller=RevisionCreditos&action=ReporteCreditosaTransferir&id_reporte='.$id_reporte.'" role="button" target="_blank">IMPRIMIR <i class="glyphicon glyphicon-print"></i></a></span>';
             }
@@ -1422,18 +1423,14 @@ class RevisionCreditosController extends ControladorBase{
         
         session_start();
         $entidades = new EntidadesModel();
-        $ccomprobantes = new CComprobantesModel();
-        $dcomprobantes = new DComprobantesModel();
-        $tipo_comprobantes = new TipoComprobantesModel();
-        $entidades = new EntidadesModel();
-        $tipo_comprobante=new TipoComprobantesModel();
         //PARA OBTENER DATOS DE LA EMPRESA
         $datos_empresa = array();
         $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
         $rp_capremci= new PlanCuentasModel();
         $id_reporte=$_GET['id_reporte'];
         
-        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0)
+        {
             //llenar nombres con variables que va en html de reporte
             $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
             $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
@@ -1450,119 +1447,92 @@ class RevisionCreditosController extends ControladorBase{
         $datos_cabecera['HORA'] = date('h:i:s');
         
         $Usuarios1= new UsuariosModel();
-        //contador
+        
+        // obtener datos de contador
         $datos_rol_contador = array();
-        
-        
-        $columnas="  usuarios.id_usuarios, 
-                     usuarios.nombre_usuarios, 
-                     usuarios.apellidos_usuarios, 
-                     rol.id_rol, 
-                     rol.nombre_rol";
-        $tablas="    public.usuarios, 
-                     public.rol";
-        $where="rol.id_rol = usuarios.id_rol AND rol.nombre_rol='Contador / Jefe de RR.HH'";
-        $id="rol.nombre_rol";
-        
-        $resultCont=$Usuarios1->getCondiciones($columnas, $tablas, $where, $id);
-        
+        $columnas   = " aa.id_usuarios, aa.nombre_usuarios, aa.apellidos_usuarios, bb.id_rol, bb.nombre_rol";
+        $tablas     = " public.usuarios aa
+                    INNER JOIN public.rol bb ON bb.id_rol = aa.id_rol";
+        $where      = " bb.nombre_rol = 'Contador / Jefe de RR.HH'";
+        $id         = " bb.nombre_rol";       
+       
+        $resultCont=$Usuarios1->getCondiciones($columnas, $tablas, $where, $id);        
         
         $datos_rol_contador['NOMCONTA']=ucfirst($resultCont[0]->nombre_usuarios);
         $datos_rol_contador['APECONTA']=ucfirst($resultCont[0]->apellidos_usuarios);
         
-        //Gerente
-        $datos_rol_gerente= array();
         
-        
-        $columnas="  usuarios.id_usuarios,
-                     usuarios.nombre_usuarios,
-                     usuarios.apellidos_usuarios,
-                     rol.id_rol,
-                     rol.nombre_rol";
-        $tablas="    public.usuarios,
-                     public.rol";
-        $where="rol.id_rol = usuarios.id_rol AND rol.nombre_rol='Gerente'";
-        $id="rol.nombre_rol";
+        // obtener datos de GERENTE
+        $datos_rol_gerente = array();
+        $columnas   = " aa.id_usuarios, aa.nombre_usuarios, aa.apellidos_usuarios, bb.id_rol, bb.nombre_rol";
+        $tablas     = " public.usuarios aa
+                    INNER JOIN public.rol bb ON bb.id_rol = aa.id_rol";
+        $where      = " bb.nombre_rol = 'Gerente'";
+        $id         = " bb.nombre_rol";
         
         $resultGer=$Usuarios1->getCondiciones($columnas, $tablas, $where, $id);
-        
         
         $datos_rol_gerente['NOMGER']=ucfirst($resultGer[0]->nombre_usuarios);
         $datos_rol_gerente['APEGER']=ucfirst($resultGer[0]->apellidos_usuarios);
         
-        //Jefe Credito
         
-        $datos_rol_jcredito= array();
-
-            $datos_rol_jcredito['NOMJCRE']=(isset($_SESSION['nombre_usuarios']))?$_SESSION['nombre_usuarios']:'';
-            $datos_rol_jcredito['APEJCRE']=(isset($_SESSION['apellidos_usuarios']))?$_SESSION['apellidos_usuarios']:'';
-            
+        //datos de Jefe de creditos
+        $datos_rol_jcredito = array();
+        $columnas   = " aa.id_usuarios, aa.nombre_usuarios, aa.apellidos_usuarios, bb.id_rol, bb.nombre_rol";
+        $tablas     = " public.usuarios aa
+                    INNER JOIN public.rol bb ON bb.id_rol = aa.id_rol";
+        $where      = " bb.nombre_rol = 'Jefe de crédito y prestaciones'";
+        $id         = " bb.nombre_rol";
         
-        //TABLA
+        $resultCredito  =$Usuarios1->getCondiciones($columnas, $tablas, $where, $id);
         
+        $datos_rol_jcredito['NOMJCRE']=ucfirst( $resultCredito[0]->nombre_usuarios);
+        $datos_rol_jcredito['APEJCRE']=ucfirst( $resultCredito[0]->apellidos_usuarios);
         
+        //TABLA        
         $datos_reporte = array();
         
-        $columnas="core_creditos.numero_creditos,core_participes.cedula_participes,core_participes.apellido_participes,core_participes.nombre_participes,
-                    core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos, core_creditos.monto_neto_entregado_creditos,
-                    core_tipo_creditos.nombre_tipo_creditos, core_estado_creditos.nombre_estado_creditos, forma_pago.nombre_forma_pago,
-                    tes_bancos.nombre_bancos, core_tipo_cuentas.nombre_tipo_cuentas,core_participes_cuentas.numero_participes_cuentas, core_participes.celular_participes,
-                    core_creditos_retenciones.monto_creditos_retenciones";
-        $tablas="core_creditos INNER JOIN core_participes
-                    ON core_creditos.id_participes = core_participes.id_participes
-                    INNER JOIN core_creditos_trabajados_detalle
-                    ON core_creditos.id_creditos=core_creditos_trabajados_detalle.id_creditos
-                    INNER JOIN core_creditos_trabajados_cabeza
-                    ON core_creditos_trabajados_cabeza.id_creditos_trabajados_cabeza=core_creditos_trabajados_detalle.id_cabeza_creditos_trabajados
-                    INNER JOIN core_tipo_creditos
-                    ON core_tipo_creditos.id_tipo_creditos=core_creditos.id_tipo_creditos
-                    INNER JOIN core_estado_creditos
-                    ON core_estado_creditos.id_estado_creditos=core_creditos.id_estado_creditos
-                    INNER JOIN forma_pago
-                    ON forma_pago.id_forma_pago=core_creditos.id_forma_pago
-                    INNER JOIN core_participes_cuentas
-                    ON core_participes_cuentas.id_participes = core_participes.id_participes
-                    INNER JOIN tes_bancos
-                    ON tes_bancos.id_bancos = core_participes_cuentas.id_bancos
-                    INNER JOIN core_tipo_cuentas
-                    ON core_tipo_cuentas.id_tipo_cuentas=core_participes_cuentas.id_tipo_cuentas
-                    INNER JOIN core_creditos_retenciones
-                    ON core_creditos_retenciones.id_creditos = core_creditos.id_creditos";
-        $where="id_creditos_trabajados_cabeza=".$id_reporte."AND cuenta_principal=true";
-        $id="tes_bancos.nombre_bancos";
-        
+        $columnas   ="aa.id_creditos,aa.numero_creditos, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.monto_otorgado_creditos, aa.plazo_creditos,
+                aa.monto_neto_entregado_creditos, ee.nombre_tipo_creditos, ff.nombre_estado_creditos, gg.nombre_forma_pago, ii.nombre_bancos, jj.nombre_tipo_cuentas,
+                hh.numero_participes_cuentas, bb.celular_participes, kk.monto_creditos_retenciones";
+        $tablas ="core_creditos aa
+                INNER JOIN core_participes bb ON aa.id_participes = bb.id_participes
+                INNER JOIN core_creditos_trabajados_detalle cc ON cc.id_creditos = aa.id_creditos
+                INNER JOIN core_creditos_trabajados_cabeza dd ON dd.id_creditos_trabajados_cabeza = cc.id_cabeza_creditos_trabajados
+                INNER JOIN core_tipo_creditos ee ON ee.id_tipo_creditos = aa.id_tipo_creditos
+                INNER JOIN core_estado_creditos ff ON ff.id_estado_creditos = aa.id_estado_creditos
+                INNER JOIN forma_pago gg ON gg.id_forma_pago = aa.id_forma_pago
+                INNER JOIN core_participes_cuentas hh ON hh.id_participes = aa.id_participes
+                INNER JOIN tes_bancos ii ON ii.id_bancos = hh.id_bancos
+                INNER JOIN core_tipo_cuentas jj ON jj.id_tipo_cuentas = hh.id_tipo_cuentas
+                INNER JOIN core_creditos_retenciones kk ON kk.id_creditos = aa.id_creditos";
+        $where  =" dd.id_creditos_trabajados_cabeza =".$id_reporte." AND hh.cuenta_principal = true";
+        $id     =" ii.nombre_bancos";        
+                
         $resultSet=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
         
-        $columnas="core_creditos.numero_creditos,core_participes.cedula_participes,core_participes.apellido_participes,core_participes.nombre_participes,
-                    core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos, core_creditos.monto_neto_entregado_creditos,
-                    core_tipo_creditos.nombre_tipo_creditos, core_estado_creditos.nombre_estado_creditos, forma_pago.nombre_forma_pago,
-					core_participes.celular_participes,
-                    core_creditos_retenciones.monto_creditos_retenciones";
-        $tablas="core_creditos INNER JOIN core_participes
-                    ON core_creditos.id_participes = core_participes.id_participes
-                    INNER JOIN core_creditos_trabajados_detalle
-                    ON core_creditos.id_creditos=core_creditos_trabajados_detalle.id_creditos
-                    INNER JOIN core_creditos_trabajados_cabeza
-                    ON core_creditos_trabajados_cabeza.id_creditos_trabajados_cabeza=core_creditos_trabajados_detalle.id_cabeza_creditos_trabajados
-                    INNER JOIN core_tipo_creditos
-                    ON core_tipo_creditos.id_tipo_creditos=core_creditos.id_tipo_creditos
-                    INNER JOIN core_estado_creditos
-                    ON core_estado_creditos.id_estado_creditos=core_creditos.id_estado_creditos
-                    INNER JOIN forma_pago
-                    ON forma_pago.id_forma_pago=core_creditos.id_forma_pago
-                    INNER JOIN core_creditos_retenciones
-                    ON core_creditos_retenciones.id_creditos = core_creditos.id_creditos";
-        $where="id_creditos_trabajados_cabeza=".$id_reporte." AND nombre_forma_pago='CHEQUE'";
-        $id="core_creditos.numero_creditos";
-        
+        $columnas   =" aa.numero_creditos,bb.cedula_participes,bb.apellido_participes,bb.nombre_participes, aa.monto_otorgado_creditos, aa.plazo_creditos,
+            aa.monto_neto_entregado_creditos, ee.nombre_tipo_creditos, ff.nombre_estado_creditos, gg.nombre_forma_pago, bb.celular_participes,
+            hh.monto_creditos_retenciones";
+        $tablas     =" core_creditos aa
+            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
+            INNER JOIN core_creditos_trabajados_detalle cc ON cc.id_creditos = aa.id_creditos
+            INNER JOIN core_creditos_trabajados_cabeza dd ON dd.id_creditos_trabajados_cabeza = cc.id_cabeza_creditos_trabajados
+            INNER JOIN core_tipo_creditos ee ON ee.id_tipo_creditos = aa.id_tipo_creditos
+            INNER JOIN core_estado_creditos ff ON ff.id_estado_creditos = aa.id_estado_creditos
+            INNER JOIN forma_pago gg ON gg.id_forma_pago = aa.id_forma_pago
+            INNER JOIN core_creditos_retenciones hh ON hh.id_creditos = aa.id_creditos";
+        $where      =" dd.id_creditos_trabajados_cabeza = ".$id_reporte." AND gg.nombre_forma_pago='CHEQUE' ";
+        $id         =" aa.numero_creditos";
+               
         $resultSetCheques=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
         
         $html='';
         
             $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
             $html.= "<tr>";
-            $html.='<th style="text-align: center; font-size: 11px;">No.</th>';
-            $html.='<th style="text-align: center; font-size: 11px;">No.PRESTAMO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;"> # </th>';
+            $html.='<th style="text-align: center; font-size: 11px;">No. PRESTAMO</th>';
             $html.='<th style="text-align: center; font-size: 11px;">IDENTIFICACIÓN</th>';
             $html.='<th style="text-align: center; font-size: 11px;">APELLIDOS DEL AFILIADO</th>';
             $html.='<th style="text-align: center; font-size: 11px;">NOMBRES DEL AFILIADO</th>';
@@ -1725,7 +1695,7 @@ class RevisionCreditosController extends ControladorBase{
             
         }
         
-        for($i=0; $i<$ultimo_cheques; $i++)
+        for( $i=0; $i < $ultimo_cheques; $i++)
         {
             $total_transacciones++;
             $total_cheque+=$resultSetCheques[$i]->monto_neto_entregado_creditos;
@@ -1750,9 +1720,7 @@ class RevisionCreditosController extends ControladorBase{
         
         
         ///foreach
-        
-        
-       if($pagos_cheque>0)
+       if( $pagos_cheque > 0)
        {
            $html.='<tr>';
            $html.='<td>CHEQUE</td>';
@@ -1795,9 +1763,6 @@ class RevisionCreditosController extends ControladorBase{
           
        }
         
-        
-        
-        
         //despues del forech
         $html.='<tr>';
         $html.='<td><strong></strong></td>';
@@ -1810,16 +1775,9 @@ class RevisionCreditosController extends ControladorBase{
         
     
         $datos_reporte['DETALLE_CREDITOS']= $html;
-        
-        
-        
-        
-        
+                
         $this->verReporte("ReporteCreditos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_rol_contador'=>$datos_rol_contador, 'datos_rol_gerente'=>$datos_rol_gerente, 'datos_rol_jcredito'=>$datos_rol_jcredito));
         
-        
-        
-
     }
     
 
@@ -1942,6 +1900,7 @@ class RevisionCreditosController extends ControladorBase{
         }
         echo $mensaje."-".$id_reporte."-".$numero_credito.$query;
     }
+      
 
 }
 

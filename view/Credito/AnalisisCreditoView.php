@@ -31,16 +31,12 @@
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
 
-     <?php
+    <?php        
+    $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+    $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+    $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
+    ?>
         
-        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
-        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-        $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
-        ?>
-    
-    
-      
-    
     <div class="wrapper">
 
   <header class="main-header">
@@ -143,7 +139,7 @@
                           <div id="validacion_rol" class="small-box bg-green">
                             <div class="inner">
                               <h3 id="h3-validacion_rol"></h3>
-                              <h4>VALIDACION ROL $150</h4>
+                              <h4>VALIDACION ROL $100</h4>
                 				<h4 id="h3-validacion_rol_estado"></h4>
                             </div>
                             
@@ -151,7 +147,7 @@
                           <div id="considerado_ingresos" class="small-box bg-green">
                             <div class="inner">
                               <h3 id="h3-consideracion_rol"></h3>
-                				<h4>CONSIDERANDO INGRESOS ADICIONALES >150</h4>
+                				<h4>CONSIDERANDO INGRESOS ADICIONALES >100</h4>
                 				<h4 id="h3-consideracion_rol_estado"></h4>
                             </div>
                             
@@ -203,6 +199,6 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/AnalisisCredito.js?0.1"></script> 
+   <script src="view/Credito/js/AnalisisCredito.js?0.2"></script> 
    </body>
 </html>   

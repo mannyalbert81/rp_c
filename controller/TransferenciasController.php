@@ -404,11 +404,14 @@ class TransferenciasController extends ControladorBase{
 	        /** proceso de envio de mensaje se realizara si es credito **/ 
 	        if( $_isCredito ){
 	            
+	            //comentado para no gastar servicio de mensajeria
+	            /*
 	            $auxMsg = $this->auxEnviarMsgMovil(true, $datosMsgParticipe);
 	            
 	            if( $auxMsg['error'] == true ){
 	                $resp['msgtexto'] = array('estatus'=>'ERROR','mensaje'=>"mensaje de texto no enviado!"); //este proceso no genera una excepcion
 	            }
+	            */
 	        }
 	        
 	        /** viene generacion de archivo plano con valores para envio de datos**/
@@ -594,7 +597,7 @@ class TransferenciasController extends ControladorBase{
 	function auxEnviarMsgMovil( bool $pruebas, array $datos ){
 	    
 	    if( $pruebas ){
-	        $_celular_mensaje = "0987968467";
+	        $_celular_mensaje = "0987474892";
 	    }else{
 	        $_celular_mensaje = $datos['celular_participes'];
 	    }
@@ -1425,6 +1428,44 @@ class TransferenciasController extends ControladorBase{
 	    }
 	    
 	    if (ob_get_contents()) ob_end_clean();	    
+	    
+	    echo json_encode($resp);
+	    
+	}
+	
+	public function getContablePagoProveedor(){
+	    
+	    $pagos = new PagosModel();
+	    $_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
+	    $resp = null;
+	    
+	    $query = " SELECT cc.id_plan_cuentas, cc.nombre_plan_cuentas, cc.codigo_plan_cuentas FROM tes_cuentas_pagar p
+    	    INNER JOIN tes_distribucion_cuentas_pagar c on p.id_lote = c.id_lote
+    	    INNER JOIN plan_cuentas cc ON cc.id_plan_cuentas = c.id_plan_cuentas
+    	    WHERE p.id_cuentas_pagar = $_id_cuentas_pagar AND c.tipo_distribucion_cuentas_pagar = 'PAGO' ";
+	    
+	    try {
+	        
+	        $rsConsulta1 = $pagos->enviaquery( $query );
+	        
+	        if( !empty($rsConsulta1) )
+	        {	            
+	            $resp['icon'] = "success";
+	            $resp['mensaje'] = "";//buscar guardar buffer y guaradr en variable
+	            $resp['estatus'] = "OK";
+	            $resp['data'] = $rsConsulta1;
+	        }
+	        
+	    } catch (Exception $e) {
+	        
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    if (ob_get_contents()) ob_end_clean();
 	    
 	    echo json_encode($resp);
 	    

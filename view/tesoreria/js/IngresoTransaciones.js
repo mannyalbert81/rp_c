@@ -601,11 +601,12 @@ function IngresarTransaccion(){
 	}
 	
 	$.ajax({
-		beforeSend:null,
+		beforeSend:function(){ $("#div-loader").addClass('loader'); },
 		url:"index.php?controller=TesCuentasPagar&action=InsertaTransaccion",
 		type:"POST",
 		dataType:"json",
-		data:datos
+		data:datos,
+		complete:function(){ $("#div-loader").removeClass('loader'); }
 	}).done(function(x){
 		
 		if( x.estatus != undefined ){

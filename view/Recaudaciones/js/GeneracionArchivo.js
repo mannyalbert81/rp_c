@@ -109,7 +109,7 @@ var listar_descuentos_formatos = function(){
 		ddldescuentos.attr("disabled",false);
 		ddldescuentos.empty().append('<option value="0">--Seleccione--</option>');
 		
-		var params = {id_entidad_patronal:view.id_entidad_patronal.val()};
+		var params = {};
 		
 		$.ajax({
 			url:'index.php?controller=RecaudacionGeneracionArchivo&action=cargaFormatoDescuentos',
@@ -196,8 +196,7 @@ $("#btnGenerar").on("click",function(){
 	let $entidadPatronal 	= $("#id_entidad_patronal"),
 		$anioRecaudacion 	= $("#anio_recaudacion"),
 		$mesRecaudacion 	= $("#mes_recaudacion"),
-		$DescuentosFormatos	= $("#id_descuentos_formatos"),
-		$formatoRecaudacion	= $("#formato_recaudacion");
+		$DescuentosFormatos	= $("#id_descuentos_formatos");
 	
 	if($mesRecaudacion.val() == 0 ){
 		$mesRecaudacion.notify("Seleccione Periodo A generar",{ position:"buttom left", autoHideDelay: 2000});
@@ -214,16 +213,12 @@ $("#btnGenerar").on("click",function(){
 		return false;
 	}
 	
-	if($formatoRecaudacion.val() == 0 ){
-		$formatoRecaudacion.notify("Seleccione formato aportacion",{ position:"buttom left", autoHideDelay: 2000});
-		return false;
-	}
+	
 	
 	var parametros ={id_entidad_patronal:$entidadPatronal.val(),
 			id_descuentos_formatos:$DescuentosFormatos.val(),
 			anio_recaudacion:$anioRecaudacion.val(),
 			mes_recaudacion:$mesRecaudacion.val(),
-			formato_recaudacion:$formatoRecaudacion.val(),
 			}   
 	
 	$.ajax({

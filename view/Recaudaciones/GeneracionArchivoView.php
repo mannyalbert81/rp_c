@@ -23,6 +23,10 @@
         background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;
         }
+        
+       .letrasize11{
+        font-size: 11px;
+       }
       
  	</style>   
   			        
@@ -455,7 +459,7 @@
   <div class="modal fade" id="modal_preview_creditos" data-backdrop="static" data-keyboard="false">
       <div class="modal-dialog   modal-lg " role="document" >
         <div class="modal-content">
-          <div class="modal-header bg-red color-palette">
+          <div class="modal-header bg-primary color-palette">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" align="center">DATOS DESCUENTOS CREDITOS</h4>
@@ -463,26 +467,41 @@
           <div class="modal-body" >
           	<div class="box-body no-padding">
           		<div class="row">
-          			<div class="pull-right">
-          				<button class="btn btn-success"><i aria-hidden="true" class="fa fa-pencil"></i> GUARDAR DESCUENTO</button>
+          			<div class="col-sm-12">
+          				<div class="pull-right">
+          					<button class="btn btn-success"><i aria-hidden="true" class="fa fa-pencil"></i> GUARDAR DESCUENTO</button>
+          				</div>
           			</div>
           		</div>
-          		
-              	<div id="mod_div_preview_descuentos_creditos" >
+          		<br>
+              	<div id="mod_div_preview_descuentos_creditos" class="letrasize11">
                 		<table id="tbl_preview_descuentos_creditos" class="table table-striped table-bordered" > <!--   -->
                         	<thead >
-                        	    <tr class="danger">
-                        	    	<th >Acciones</th>
+                        	    <tr class="warning" >
+                        	    	<th >-</th>
                         	    	<th >#</th>
-                        			<th >col1</th>
-                        			<th >col2</th>
-                        			<th >col3</th>
-                        			<th >col4</th>
-                        			<th >col5</th>
-                        			<th >col6</th>
+                        			<th >Entidad</th>
+                        			<th >Tipo</th>
+                        			<th >Cedula</th>
+                        			<th >Nombre</th>
+                        			<th >Nombre Credito</th>
+                        			<th >Mes Descuento</th>
+                        			<th >Sueldo</th>
+                        			<th >Cuota</th>
+                        			<th >Mora</th>
+                        			<th >Total</th>
+                        			<th >Total Envio</th>                        			
                         		</tr>
                         	</thead>        
-                        	<tfoot><tr><td colspan="7">TOTAL</td> <td>........</td></tr></tfoot>
+                        	<tfoot>
+                        		<tr>
+                        			<td colspan="9">TOTALES</td> 
+                        			<td >PARCIAL</td>
+                        			<td id="tbl_preview_valor_parcial">..</td> 
+                        			<td >TOTAL</td> 
+                        			<td id="tbl_preview_valor_total">..</td>
+                    			</tr>
+                			</tfoot>
                         </table>            	
                 	</div>
           		
@@ -523,6 +542,63 @@
       <!-- /.modal-dialog -->
 </div>
 <!-- END MODAL MODAL PRUEBA DATATABLE -->
+
+<!-- BEGIN MODAL CAMBIAR DESCUENTOS CREDITOS -->
+  <div class="modal fade" id="mod_cambia_desc_creditos" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-sm " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-primary color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" align="center">EDITAR DESCUENTOS CREDITOS</h4>
+          </div>
+          <div class="modal-body" >
+          	<!-- cuerpo modal -->
+          	<div class="box box-success">
+            <div class="box-header with-border">              
+            </div>
+            <div class="box-body">
+                <!-- comienza el formulario -->
+                <form>
+                	<input type="hidden" id="mod_id_descuentos_creditos" value="0">
+                	<div class="form-group">
+                	
+                        <label for="mod_cedula_descuentos_creditos" class="col-form-label">Cedula:</label>
+                        <input type="text" class="form-control" id="mod_cedula_descuentos_creditos">
+                        <label for="mod_nombres_descuentos_creditos" class="col-form-label">Nombre:</label>
+                        <input type="text" class="form-control" id="mod_nombres_descuentos_creditos">
+                        <label for="mod_valor_descuentos_creditos" class="col-form-label">Valor Sietema:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">$</span>
+                            <input type="text" class="form-control text-right" id="mod_valor_descuentos_creditos">
+                          </div>
+                        <label for="mod_nuevo_valor_descuentos_creditos" class="col-form-label">Nuevo Valor:</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">$</span>
+                            <input type="text" class="form-control text-right" id="mod_nuevo_valor_descuentos_creditos">
+                          </div>
+                      </div>
+                                    
+                </form>
+              
+            </div>
+           
+          </div>  <!-- /.box-body -->
+          
+          </div>  <!-- /. termina cuerpo modal -->
+          
+          <!-- /. footer of modal -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" onclick="editar_valores_descuentos_creditos()" class="btn btn-primary">Aceptar</button>
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+<!-- END MODAL MODAL CAMBIAR DESCUENTOS CREDITOS -->
     
     
     <?php include("view/modulos/links_js.php"); ?>

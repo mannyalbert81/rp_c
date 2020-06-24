@@ -665,24 +665,36 @@ var listar_preview_descuentos_creditos = function(){
 	        'data': function ( d ) {
 	            return $.extend( {}, d, dataSend );
 	            },
-            'dataSrc': function ( json ) {                
+            'dataSrc': function ( json ) {  
+            	
+            	var respuesta = json.totales;            	
+            	
+            	$("#tbl_preview_valor_parcial").text(respuesta.parcial);
+            	$("#tbl_preview_valor_total").text(respuesta.total);
+            	
                 return json.data;
               }
-	    },	
+	    },
+	    'lengthMenu': [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
 	    'order': [[ 1, "desc" ]],
 	    'columns': [	    	    
 	    		{ data: 'opciones', orderable: false },
-	    		{ data: 'numfila'},
-	    		{ data: 'id_entidad' },
-	    		{ data: 'cedula', orderable: false },
-	    		{ data: 'nombre', orderable: false },
-	    		{ data: 'sueldo' },
-	    		{ data: 'cuota'},
-	    		{ data: 'total' }
-	    		
+	    		{ data: 'numfila', orderable: false},
+	    		{ data: 'nombre_entidad' },
+	    		{ data: 'tipo_afiliado', orderable: false },
+	    		{ data: 'cedula' },
+	    		{ data: 'nombre'},
+	    		{ data: 'nombre_credito' , orderable: false },
+	    		{ data: 'fecha' , orderable: false },
+	    		{ data: 'sueldo' , orderable: false },
+	    		{ data: 'cuota', orderable: false},
+	    		{ data: 'mora', orderable: false},
+	    		{ data: 'total' },
+	    		{ data: 'total_usuario'},
+	    			    		
 	    ],
 	    'columnDefs': [
-	        {className: "dt-center", targets:[0] },
+	        {className: "dt-center", targets:[1] },
 	        {sortable: false, targets: [ 0,3,4 ] }
 	      ],
 		'scrollY': "80vh",
@@ -696,3 +708,145 @@ var listar_preview_descuentos_creditos = function(){
 	
 	
 } 
+
+/** funcion que permite editar las filas de preview de datatable **/
+var mostrar_valores_descuentos_creditos = function(a){
+	
+	var element = $(a);
+	
+	if( element.length )
+	{
+		var modaledit = $("#mod_cambia_desc_creditos");
+		var fila = element.closest('tr');
+		
+		var valor_sistema = fila.find('td:nth-child(12)').text();
+		var valor_usuario = fila.find('td:nth-child(13)').text();		
+		
+		modaledit.find('#mod_id_descuentos_creditos').val( element.data().id_descuento_valor_credito );
+		modaledit.find('#mod_cedula_descuentos_creditos').val( fila.find('td:nth-child(5)').text() );
+		modaledit.find('#mod_nombres_descuentos_creditos').val( fila.find('td:nth-child(6)').text() );
+		modaledit.find('#mod_valor_descuentos_creditos').val( valor_sistema );
+		modaledit.find('#mod_nuevo_valor_descuentos_creditos').val( valor_usuario );
+		
+		modaledit.modal();
+	}	
+	
+} 
+
+/** funcion que envia por ajax nuevos valores de descuentos de creditos */
+var editar_valores_descuentos_creditos = function(){
+	
+	let modaledit = $("#mod_cambia_desc_creditos");
+	
+	let ideditcreditos	= modaledit.find('#mod_id_descuentos_creditos'),
+		valor_desc_creditos	= modaledit.find('#mod_valor_descuentos_creditos'),
+		nuevo_desc_creditos = modaledit.find('#mod_nuevo_valor_descuentos_creditos');	
+	
+	if( isNaN( nuevo_desc_creditos.val() ) )
+	{
+		nuevo_desc_creditos.notify("Ingrese Cantidad Valida",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}else
+	{
+		if( nuevo_desc_creditos.val() < 0 || nuevo_desc_creditos.val() > valor_desc_creditos.val() )
+		{
+			nuevo_desc_creditos.notify("Revisar la cantidad ingresada ",{ position:"buttom left", autoHideDelay: 2000});
+			return false;
+		}
+	}
+	
+	//crear evento de cerrado
+	modaledit.on('hidden.bs.modal', function (e) { 
+	       $("body").addClass("modal-open") 
+	})
+		
+	var parametros = { "id_descuentos_creditos": ideditcreditos.val(), "valor_descuento": nuevo_desc_creditos.val() }
+	
+	$.ajax({
+		url:"index.php?controller=RecaudacionGeneracionArchivo&action=cambiarDescuentosCreditos",
+		type:"POST",
+		dataType:"json",
+		data:parametros,
+		complete:function(xhr){  }
+	}).done(function(x){
+		
+		if( x.estatus != undefined && x.estatus != "" ){
+			
+			swal( {
+				 title:"ACTUALIZACION VALOR",
+				 text: x.mensaje,
+				 icon: "info"
+				});
+			
+			modaledit.modal('hide');
+			$('#'+dt_view1.nombre_tabla_preview).DataTable().ajax.reload();
+			
+		}
+		
+				
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		 	if( mensaje !== null ){
+			 var resmsg = mensaje[1];
+			 swal( {
+				 title:"Error",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+				})
+		 	}
+	})
+}
+
+/** funcion para guardar los datos editados de descuentos de creditos **/
+var aceptar_descuentos_creditos	= function(){	
+	
+	var id_entidad_patronal	= $('#id_entidad_patronal');	
+	
+	if( !id_entidad_patronal.length || id_entidad_patronal.val() == 0 )
+	{
+		$("#mod_div_preview_descuentos_creditos").notify( "Entidad Patronal No definido",{ position:"top", autoHideDelay: 2000 } );
+		return false;
+	}	
+		
+	var parametros = { "id_entidad_patronal": id_entidad_patronal.val() }
+	
+	$.ajax({
+		url:"index.php?controller=RecaudacionGeneracionArchivo&action=aceptarDescuentosCreditos",
+		type:"POST",
+		dataType:"json",
+		data:parametros,
+		complete:function(xhr){  }
+	}).done(function(x){
+		
+		if( x.estatus != undefined && x.estatus != "" ){
+			
+			swal( {
+				 title:"ACTUALIZACION VALOR",
+				 text: x.mensaje,
+				 icon: "info"
+				});
+			
+			modaledit.modal('hide');
+			$('#'+dt_view1.nombre_tabla_preview).DataTable().ajax.reload();
+			
+		}
+		
+				
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		 	if( mensaje !== null ){
+			 var resmsg = mensaje[1];
+			 swal( {
+				 title:"Error",
+				 dangerMode: true,
+				 text: resmsg.replace("|","\n"),
+				 icon: "error"
+				})
+		 	}
+	})
+}

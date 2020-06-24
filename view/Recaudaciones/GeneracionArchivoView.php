@@ -130,27 +130,7 @@
             			</div>
     				</div>
         		</div>
-        		
-        		
-        		
-        		<div class="row">        	
-        			<div class="col-lg-6 col-md-6 col-xs-12">        		
-            			<div class="form-group "> 
-                			 <div class="form-group-sm">
-                				<label for="formato_recaudacion" class="col-sm-4 control-label" >Formato:</label>
-                				<div class="col-sm-8">
-                                  	<select id="formato_recaudacion" name="formato_recaudacion" class="form-control">
-                                  	<option value="0" >--Seleccione--</option>
-                                  	<option value="1" >DESCUENTOS APORTES</option>
-                                  	<option value="2" >DESCUENTOS CREDITOS</option>
-									<!--  <option value="3" >DESCUENTOS CREDITOS Y APORTES</option> -->
-                                  	</select>
-                                 </div>
-                			 </div>        			 
-            			</div>
-    				</div>
-        		</div>
-        		
+        		        		
         		<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
             			<div class="form-group "> 

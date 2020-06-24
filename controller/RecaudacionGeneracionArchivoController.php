@@ -1,7 +1,8 @@
 <?php
 class RecaudacionGeneracionArchivoController extends ControladorBase{
 
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}
 	
@@ -53,10 +54,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	     
 	    $recaudaciones     = new RecaudacionesModel();
 	    session_start();
-	    
-	    /* variables locales */
-	    $_nombre_formato_recaudacion = "";
-	    
+	    	    
 	    /*variables de la vista*/
 	    $_id_entidad_patronal  = 0;
 	    $_anio_recaudacion     = 0;
@@ -72,10 +70,31 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $_id_entidad_patronal  = $_POST['id_entidad_patronal'];
 	        $_anio_recaudacion     = $_POST['anio_recaudacion'];
 	        $_mes_recaudacion      = $_POST['mes_recaudacion'];
-	        $_formato_recaudacion  = $_POST['formato_recaudacion'];
 	        $_id_descuentos_formatos   = $_POST['id_descuentos_formatos'];
 	        
 	        if( !empty( error_get_last() ) ){    throw new Exception('Datos enviados no validos para generacion de Archivo'); }
+	        
+	        //consultar tipo de descuento si es de -- credito o aportes
+	        $col001    = " id_descuentos_formatos, nombre_descuentos_formatos, parametro_uno_descuentos_formatos";
+	        $tab001    = " public.core_descuentos_formatos ";
+	        $whe001    = "  id_entidad_patronal is null
+    	        AND entrada_descuentos_formatos = 'f'
+    	        AND sp_descuentos_formatos = 'RP' 
+                AND id_descuentos_formatos = $_id_descuentos_formatos";
+	        
+	        $rsConsulta001 = $recaudaciones->getCondicionesSinOrden($col001, $tab001, $whe001, "");
+	        
+	        
+	        if( !empty( $rsConsulta001 ) )
+	        {
+	            $_formato_recaudacion  = $rsConsulta001[0]->parametro_uno_descuentos_formatos;
+	            //formatos vendran de la soguiente manera 
+	            //A-> aportes
+	            //C-> creditos
+	        }else
+	        {
+	            throw new Exception("Formato descuento no definido");
+	        }
 	        
 	    } catch (Exception $e) {
 	        echo '<message>'.$e->getMessage().' <message>';
@@ -83,7 +102,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    }
 	    
 	    //validacion de aportes personales
-	    if( $_formato_recaudacion == 1 || $_formato_recaudacion == 3 ){
+	    if( $_formato_recaudacion == "A"  ){
 	        
 	        $_participes_sin_aportes   = $this->validaAportesParticipes($_id_entidad_patronal);
 	        	        
@@ -96,12 +115,12 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        }
 	    }
 	                  
-	    $_nombre_formato_recaudacion = ($_formato_recaudacion == 1) ? "DESCUENTOS APORTES" : ( ( $_formato_recaudacion == 2 ) ? "DESCUENTOS CREDITOS" : "DESCUENTOS APORTES Y CREDITOS");
+	    //$_nombre_formato_recaudacion = ($_formato_recaudacion == 1) ? "DESCUENTOS APORTES" : ( ( $_formato_recaudacion == 2 ) ? "DESCUENTOS CREDITOS" : "DESCUENTOS APORTES Y CREDITOS");
 	    
 	    /** primero validar si el tipo de archivo solicitado esta permitido */
 	    try {
 	        
-	        $auxValidaDatos    = $this->ValidarDatosByFormato( $_formato_recaudacion, $_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion, $_id_descuentos_formatos);
+	        $auxValidaDatos    = $this->ValidarDatosByFormato( $_id_entidad_patronal, $_anio_recaudacion, $_mes_recaudacion, $_id_descuentos_formatos);
 	        
 	        if( $auxValidaDatos['error'] ){
 	            throw new Exception($auxValidaDatos['mensaje']);
@@ -166,7 +185,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $paramsCab['anio_recaudaciones']           = $_anio_recaudacion;
 	        $paramsCab['mes_recaudaciones']            = $_mes_recaudacion;
 	        
-	        if( (int)$_formato_recaudacion === 1 ){
+	        if( $_formato_recaudacion === "A" )
+	        {
 	            
 	            $auxDetalle    = $this->RecaudacionAportes($paramsCab);
 	            
@@ -174,13 +194,16 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	                throw new Exception( $auxDetalle['mensaje'] );
 	            }
 	            
-	        }elseif ( (int)$_formato_recaudacion === 2 ){
+	        }elseif ( $_formato_recaudacion === "C" )
+	        {
 	            
 	            $auxDetalle    = $this->RecaudacionCreditos($paramsCab);
 	            
-	            if( $auxDetalle['error'] ){
+	            if( $auxDetalle['error'] )
+	            {
 	                throw new Exception( $auxDetalle['mensaje'] );
 	            }
+	            
 	        }else{
 	            throw new Exception( "Datos no generados \n Tipo Descuento no encontrado" );
 	        }	        	        
@@ -198,7 +221,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    
 	}
 	
-	public function ValidarDatosByFormato(int $formato, int $id_entidad_patronal, int $anio_descuentos, int $mes_descuentos, int $id_descuentos_formatos){
+	public function ValidarDatosByFormato( int $id_entidad_patronal, int $anio_descuentos, int $mes_descuentos, int $id_descuentos_formatos)
+	{
 	    
 	    $recaudaciones = new RecaudacionesModel();
 	    
@@ -229,6 +253,31 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    
 	    return $response;
 	    
+	}
+	
+	private function generarCabeceraDescuento()
+	{
+	    $recaudaciones   = new RecaudacionesModel();
+	    
+	    $parametros = "";
+	    $parametros .= $_id_entidad_patronal.",";
+	    $parametros .= $_anio_recaudacion.",";
+	    $parametros .= $_mes_recaudacion.",";
+	    $parametros .= "'".$usuario_usuarios."',";
+	    $parametros .= $id_usuarios.",";
+	    $parametros .= "'".$fecha_descuentos."',";
+	    $parametros .= "'".$nombreArchivo."',";
+	    $parametros .= $_id_descuentos_formatos.",";
+	    $parametros .= "'".$procesado_descuen."',";
+	    $parametros .= "'".$error_desccuentos."',";
+	    $parametros .= $id_tipo_credito.",";
+	    $parametros .= "'".$observacion_descue."',";
+	    $parametros .= "'".$fecha_proceso."'";
+	    
+	    $sqRecaudaciones    = $recaudaciones->getconsultaPG($funcion, $parametros);
+	    $resultado  = $recaudaciones->llamarconsultaPG($sqRecaudaciones);
+	    
+	    $id_descuentos_registrados_cabeza = $resultado[0];
 	}
 	
 	public function RecaudacionAportes( array $paramsCab){
@@ -1490,12 +1539,13 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    $recaudaciones = new RecaudacionesModel();
 	    $resp  = null;
 	    
-	    $id_entidad_patronal = $_POST['id_entidad_patronal'];	    
-	    
-	    $col1  = " id_descuentos_formatos,nombre_descuentos_formatos ";
+	    $col1  = " id_descuentos_formatos, nombre_descuentos_formatos ";
 	    $tab1  = " public.core_descuentos_formatos ";
-	    $whe1  = " id_entidad_patronal = $id_entidad_patronal";
-	    $id1   = " id_descuentos_formatos ";
+	    $whe1  = " id_entidad_patronal is null
+        	    AND entrada_descuentos_formatos = 'f'
+        	    AND sp_descuentos_formatos = 'RP'";
+	    $id1   = " nombre_descuentos_formatos ";
+	    
 	    $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
 	    
 	    if( !empty( pg_last_error() )  || !empty( error_get_last() ) ){

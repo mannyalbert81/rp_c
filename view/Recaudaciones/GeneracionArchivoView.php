@@ -451,6 +451,54 @@
       <!-- /.modal-dialog -->
 </div>
 
+<!-- BEGIN MODAL DESCUENTOS CREDITOS -->
+  <div class="modal fade" id="modal_preview_creditos" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-lg " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-red color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" align="center">DATOS DESCUENTOS CREDITOS</h4>
+          </div>
+          <div class="modal-body" >
+          	<div class="box-body no-padding">
+          		<div class="row">
+          			<div class="pull-right">
+          				<button class="btn btn-success"><i aria-hidden="true" class="fa fa-pencil"></i> GUARDAR DESCUENTO</button>
+          			</div>
+          		</div>
+          		
+              	<div id="mod_div_preview_descuentos_creditos" >
+                		<table id="tbl_preview_descuentos_creditos" class="table table-striped table-bordered" > <!--   -->
+                        	<thead >
+                        	    <tr class="danger">
+                        	    	<th >Acciones</th>
+                        	    	<th >#</th>
+                        			<th >col1</th>
+                        			<th >col2</th>
+                        			<th >col3</th>
+                        			<th >col4</th>
+                        			<th >col5</th>
+                        			<th >col6</th>
+                        		</tr>
+                        	</thead>        
+                        	<tfoot><tr><td colspan="7">TOTAL</td> <td>........</td></tr></tfoot>
+                        </table>            	
+                	</div>
+          		
+            	
+          	</div>
+          	
+          
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+<!-- END MODAL DESCUENTOS CREDITOS SIN APORTES -->
+
 <!-- BEGIN MODAL PRUEBA DATATABLE -->
   <div class="modal fade" id="mod_prueba_datos" data-backdrop="static" data-keyboard="false">
       <div class="modal-dialog   modal-lg " role="document" >
@@ -463,21 +511,7 @@
           <div class="modal-body" >
           	<div class="box-body no-padding">
           		
-            	<div id="mod_div_prueba_datos" >
-            		<table id="tbl_prueba_datos" class="table table-striped table-bordered" > <!--   -->
-                    	<thead >
-                    	    <tr >
-                    	    	<th >Acciones</th>
-                    	    	<th >Cedula Participes</th>
-                    			<th >Apellido Participes</th>
-                    			<th >Nombre Participes</th>
-                    			<th >Valor Descuento</th>
-                    			<th >Valor Final</th>
-                    		</tr>
-                    	</thead>        
-                    	<tfoot><tr><td colspan="5">TOTAL</td> <td>........</td></tr></tfoot>
-                    </table>            	
-            	</div>
+            	
           	</div>
           	
           
@@ -498,7 +532,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.24"></script> 
+   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.27"></script> 
        
 	
   </body>

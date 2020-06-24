@@ -230,22 +230,39 @@ $("#btnGenerar").on("click",function(){
 		complete:function(xhr,status){ $formulario.data('locked', false); }
 	}).done(function(x){
 		console.log(x)
-		if( x.estatus != undefined && x.estatus !="" ){
+		if( x.estatus != undefined && x.estatus !="" )
+		{
+			if( x.tipo != undefined && x.tipo == "C" )
+			{
+				
+				//aqui se trabaja con datos que se crearon en la funcion de generar creditos
+				//se utiliza el plugin de data table
+				swal.close(); //cerramos el swal
+				
+				var modal_preview	= $("#modal_preview_creditos");
+				
+				modal_preview.modal("show");
+				
+				//ejecutamos la funcion que trae datos del preview de descuentos creditos
+				listar_preview_descuentos_creditos();
+				
+			}else
+			{
+				swal( {
+					 title:"ARCHIVO",
+					 text: "Datos Generados, Revisar datos en el listado de archivos Generados ",
+					 icon: "success",
+					 timer: 2000,
+					 button: true,
+					});	
+				
+				//implementar si es necesario el que devuelva el ultimo insertado 			
+				let id_archivo = ( x.id_archivo != undefined && x.id_archivo > 0 ) ? x.id_archivo : 0;
+				$GLOBAL_id_archivo_recaudaciones=id_archivo;
+				listar_descuentos();
+			}
 			
-			swal( {
-				 title:"ARCHIVO",
-				 text: "Datos Generados, Revisar datos en el listado de archivos Generados ",
-				 icon: "success",
-				 timer: 2000,
-				 button: true,
-				});	
 			
-			//implementar si es necesario el que devuelva el ultimo insertado 			
-			let id_archivo = ( x.id_archivo != undefined && x.id_archivo > 0 ) ? x.id_archivo : 0;
-			$GLOBAL_id_archivo_recaudaciones=id_archivo;
-			//buscarDatosInsertados(1); poner un mensaje de revisar archivos creados
-			//buscarDatos();
-			listar_descuentos();
 		}
 		
 		/** code below is to show error from parcticipes without valor aportes **/
@@ -630,3 +647,52 @@ var imprimir_reporte_descuentos = function (a){
     document.body.removeChild(form);
 			
 }
+
+/** implementacion para datatable de preview datos creditos **/
+dt_view1.nombre_tabla_preview	= "tbl_preview_descuentos_creditos";
+dt_view1.dt_tabla_preview		= null;
+var listar_preview_descuentos_creditos = function(){
+	
+	var dataSend = { id_entidad_patronal: $("#id_entidad_patronal").val() };
+		
+	dt_view1.dt_tabla_preview	=  $('#'+dt_view1.nombre_tabla_preview).DataTable({
+	    'processing': true,
+	    'serverSide': true,
+	    'serverMethod': 'post',
+	    'destroy' : true,
+	    'ajax': {
+	        'url':'index.php?controller=RecaudacionGeneracionArchivo&action=DataTablePreviewDescuentosCreditos',
+	        'data': function ( d ) {
+	            return $.extend( {}, d, dataSend );
+	            },
+            'dataSrc': function ( json ) {                
+                return json.data;
+              }
+	    },	
+	    'order': [[ 1, "desc" ]],
+	    'columns': [	    	    
+	    		{ data: 'opciones', orderable: false },
+	    		{ data: 'numfila'},
+	    		{ data: 'id_entidad' },
+	    		{ data: 'cedula', orderable: false },
+	    		{ data: 'nombre', orderable: false },
+	    		{ data: 'sueldo' },
+	    		{ data: 'cuota'},
+	    		{ data: 'total' }
+	    		
+	    ],
+	    'columnDefs': [
+	        {className: "dt-center", targets:[0] },
+	        {sortable: false, targets: [ 0,3,4 ] }
+	      ],
+		'scrollY': "80vh",
+        'scrollCollapse':true,
+        'fixedHeader': {
+            header: true,
+            footer: true
+        },
+        'language':idioma_espanol
+	 });
+	
+	
+} 

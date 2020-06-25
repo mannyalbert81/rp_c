@@ -3735,8 +3735,7 @@ class SolicitudPrestamoController extends ControladorBase{
 		require_once 'core/DB_Functions.php';
 		$db = new DB_Functions();
 		
-		$nombre_completo_usuario = ( isset( $_SESSION['nombre_usuarios'] ) ) ? $_SESSION['nombre_usuarios'] : ""; 
-		$nombre_completo_usuario .= ( isset( $_SESSION['apellidos_usuarios'] ) ) ? " ".$_SESSION['apellidos_usuarios'] : ""; 
+		$cedula_usuario   = ( isset( $_SESSION['cedula_usuarios'] ) ) ? $_SESSION['cedula_usuarios'] : "";		
 		
 		$where_to="";
 		$columnas = "solicitud_prestamo.id_solicitud_prestamo,
@@ -3778,10 +3777,9 @@ class SolicitudPrestamoController extends ControladorBase{
 		entidades.id_entidades = solicitud_prestamo.id_entidades AND
 		sexo.id_sexo = solicitud_prestamo.id_sexo_datos_personales AND solicitud_prestamo.tipo_participe_datos_prestamo='Deudor'
         AND solicitud_prestamo.monto_datos_prestamo =0 AND solicitud_prestamo.plazo_datos_prestamo=0 
-        AND UPPER( usuarios.nombre_usuarios ) ILIKE '%".$nombre_completo_usuario."%'";
+        AND UPPER( usuarios.cedula_usuarios ) ILIKE '".$cedula_usuario."'";
 	
 		$id       = "solicitud_prestamo.id_solicitud_prestamo";
-	
 			
 		//$where_to=$where;
 			

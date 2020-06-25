@@ -71,6 +71,12 @@ var init_controles	= function(){
 	
 	$('body').on('change','#'+view.id_descuentos_formatos.attr("id"),function(){
 		listar_descuentos();
+	});
+	
+	
+	//crear evento de cerrado para modal editar datos descuentos credito
+	 $("#mod_cambia_desc_creditos").on('hidden.bs.modal', function (e) { 
+	       $("body").addClass("modal-open") 
 	})
 	
 }
@@ -185,7 +191,10 @@ function fnBeforeAction(mensaje){
       })
 }
 
-
+/***
+ * @desc generar recaudacion
+ * @returns
+ */
 $("#btnGenerar").on("click",function(){
 	
 	var $formulario = $("#frm_recaudacion");
@@ -653,7 +662,7 @@ dt_view1.nombre_tabla_preview	= "tbl_preview_descuentos_creditos";
 dt_view1.dt_tabla_preview		= null;
 var listar_preview_descuentos_creditos = function(){
 	
-	var dataSend = { id_entidad_patronal: $("#id_entidad_patronal").val() };
+	var dataSend = { id_entidad_patronal: $("#id_entidad_patronal").val(), mes_recaudacion: $("#mes_recaudacion").val(), anio_recaudacion: $("#anio_recaudacion").val() };
 		
 	dt_view1.dt_tabla_preview	=  $('#'+dt_view1.nombre_tabla_preview).DataTable({
 	    'processing': true,
@@ -667,11 +676,15 @@ var listar_preview_descuentos_creditos = function(){
 	            },
             'dataSrc': function ( json ) {  
             	
-            	var respuesta = json.totales;            	
+            	var respuesta = json.totales;  
             	
-            	$("#tbl_preview_valor_parcial").text(respuesta.parcial);
-            	$("#tbl_preview_valor_total").text(respuesta.total);
+            	//para modificar valores de footer
+            	var columnaparcial	= $( dt_view1.dt_tabla_preview.column(10).footer() );
+            	var columnatotal	= $( dt_view1.dt_tabla_preview.column(12).footer() );            	
+            	columnaparcial.text( respuesta.parcial );
+            	columnatotal.text( respuesta.total );
             	
+            	//retormamos valores que se llena en el body
                 return json.data;
               }
 	    },
@@ -755,10 +768,6 @@ var editar_valores_descuentos_creditos = function(){
 		}
 	}
 	
-	//crear evento de cerrado
-	modaledit.on('hidden.bs.modal', function (e) { 
-	       $("body").addClass("modal-open") 
-	})
 		
 	var parametros = { "id_descuentos_creditos": ideditcreditos.val(), "valor_descuento": nuevo_desc_creditos.val() }
 	
@@ -803,15 +812,42 @@ var editar_valores_descuentos_creditos = function(){
 /** funcion para guardar los datos editados de descuentos de creditos **/
 var aceptar_descuentos_creditos	= function(){	
 	
-	var id_entidad_patronal	= $('#id_entidad_patronal');	
+	var id_entidad_patronal	= $('#id_entidad_patronal'),
+		anio_recaudacion	= $("#anio_recaudacion"),
+		mes_recaudacion		= $("#mes_recaudacion"),
+		id_formato_desc		= $("#id_descuentos_formatos");
+	
+	var contenedor_datos_descuentos = $("#mod_div_preview_descuentos_creditos");
+	
+	if( anio_recaudacion.val() == 0 )
+	{
+		contenedor_datos_descuentos.notify("Anio Recaudacion No Valido",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
+	if( mes_recaudacion.val() == 0 )
+	{
+		contenedor_datos_descuentos.notify("Seleccione Periodo A generar",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}	
 	
 	if( !id_entidad_patronal.length || id_entidad_patronal.val() == 0 )
 	{
-		$("#mod_div_preview_descuentos_creditos").notify( "Entidad Patronal No definido",{ position:"top", autoHideDelay: 2000 } );
+		contenedor_datos_descuentos.notify( "Entidad Patronal No definido",{ position:"top", autoHideDelay: 2000 } );
 		return false;
 	}	
-		
-	var parametros = { "id_entidad_patronal": id_entidad_patronal.val() }
+	
+	if( id_formato_desc.val() == 0 )
+	{
+		contenedor_datos_descuentos.notify("Formato descuento No valido",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+
+	var parametros = { 'id_entidad_patronal': id_entidad_patronal.val(),
+			'id_descuentos_formatos': id_formato_desc.val(),
+			'anio_recaudacion': anio_recaudacion.val(),
+			'mes_recaudacion': mes_recaudacion.val() ,
+		}   
 	
 	$.ajax({
 		url:"index.php?controller=RecaudacionGeneracionArchivo&action=aceptarDescuentosCreditos",
@@ -824,13 +860,12 @@ var aceptar_descuentos_creditos	= function(){
 		if( x.estatus != undefined && x.estatus != "" ){
 			
 			swal( {
-				 title:"ACTUALIZACION VALOR",
+				 title:"DESCUENTOS",
 				 text: x.mensaje,
 				 icon: "info"
 				});
 			
-			modaledit.modal('hide');
-			$('#'+dt_view1.nombre_tabla_preview).DataTable().ajax.reload();
+			$("#modal_preview_creditos").modal("hide");
 			
 		}
 		
@@ -838,15 +873,15 @@ var aceptar_descuentos_creditos	= function(){
 	}).fail(function(xhr,status,error){
 		var err = xhr.responseText
 		console.log(err)
-		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
-		 	if( mensaje !== null ){
-			 var resmsg = mensaje[1];
-			 swal( {
-				 title:"Error",
-				 dangerMode: true,
-				 text: resmsg.replace("|","\n"),
-				 icon: "error"
-				})
-		 	}
+		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"));
+	 	if( mensaje !== null ){
+		 var resmsg = mensaje[1];
+		 swal( {
+			 title:"Error",
+			 dangerMode: true,
+			 text: resmsg.replace("|","\n"),
+			 icon: "error"
+			})
+	 	}
 	})
 }

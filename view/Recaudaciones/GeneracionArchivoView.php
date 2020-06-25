@@ -469,7 +469,7 @@
           		<div class="row">
           			<div class="col-sm-12">
           				<div class="pull-right">
-          					<button class="btn btn-success"><i aria-hidden="true" class="fa fa-pencil"></i> GUARDAR DESCUENTO</button>
+          					<button class="btn btn-success" onclick="aceptar_descuentos_creditos()">	<i aria-hidden="true" class="fa fa-pencil"></i> GUARDAR DESCUENTO</button>
           				</div>
           			</div>
           		</div>
@@ -495,11 +495,11 @@
                         	</thead>        
                         	<tfoot>
                         		<tr>
-                        			<td colspan="9">TOTALES</td> 
+                        			<td colspan="9">TOTALES ..</td> 
                         			<td >PARCIAL</td>
-                        			<td id="tbl_preview_valor_parcial">..</td> 
+                        			<td >..</td> 
                         			<td >TOTAL</td> 
-                        			<td id="tbl_preview_valor_total">..</td>
+                        			<td >..</td>
                     			</tr>
                 			</tfoot>
                         </table>            	
@@ -608,7 +608,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.27"></script> 
+   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.28"></script> 
        
 	
   </body>

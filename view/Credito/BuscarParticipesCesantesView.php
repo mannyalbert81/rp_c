@@ -120,11 +120,23 @@
            	</div>
            	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
-           		<div id="participe_encontrado" ></div>
+           			<div id="participe_encontrado" ></div>
            		</div>
 
            	</div>
+			<div class="row">
+           		<div class="col-xs-12 col-md-12 col-lg-12 ">
+           			<div id="info_solicitud" ></div>
+           		</div>
 
+           	</div>
+			<div class="row">
+           		<div class="col-xs-12 col-md-12 col-lg-12 ">
+           			<div id="link_solicitud" ></div>
+           		</div>
+
+           	</div>
+						
            	</div>
 
            	   	<div class="row">
@@ -150,13 +162,14 @@
             	 <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
             		    					  
-                          <label for="observacion_prestaciones" class="control-label">Observación:</label>
-                          <input  type="text" class="form-control" id="observacion_prestaciones" name="nombre_estado_marital" value=""  placeholder="" required/>
-                          <input type="hidden" name="id_estado_marital" id="observacion_prestaciones" value="0" />
+                          <label for="id_observacion_prestaciones" class="control-label">Observación:</label>
+                          <input  type="text" class="form-control" id="observacion_prestaciones" name="observacion_prestaciones" value=""  placeholder="" required/>	         
                           <div id="divLoaderPage" ></div>                     	
                                               
                         </div>
             	</div>
+            	
+            	
             </div>
             <div class="row">	
             	<div class="col-xs-12 col-md-12 col-md-12" style="text-align: center; ">
@@ -164,14 +177,14 @@
           	  		
 				</div>
 			</div>
-
+			
 
            	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="aportes_participe_registrados" ></div>
            		</div>
            	</div>
-
+			
            	
            		<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
@@ -185,20 +198,28 @@
            		</div>
            	</div>
            	
-           	           	<div class="row">
+           	<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
            		<div id="tabla_desafiliacion" ></div>
            		</div>
            	</div>
            	
       
-           	
-             	<div class="row">
+      		<div class="row">
            		<div class="col-xs-12 col-md-12 col-lg-12 ">
-          	  <a id="link_reporte" onclick="reportePrint(this)" data-participe="0" href="#" class="btn btn-success" style="margin-top: 10px;"><i class=""></i>Reporte</a>
-			</div>
+           		<div id="resultado_guardar" ></div>
+           		</div>
            	</div>
-          
+           	
+           	
+           	<div class="row">	
+            	<div class="col-xs-12 col-md-12 col-md-12" style="text-align: center; ">
+                 	<button type="button" onclick="GuardaDesafiliación(this)" id="btn_guardar" name="btn_guardar" class="btn btn-success"><i class='glyphicon glyphicon-floppy-saved'></i> Guardar</button>
+                 	<button type="button" onclick="Cancelar(this)" id="btn_cancelar" name="btn_cancelar" class="btn btn-danger"><i class='glyphicon glyphicon-floppy-remove'></i> Cancelar</button>
+          	  		
+				</div>
+			</div>
+			
           </div>
         </div>
         
@@ -224,12 +245,7 @@
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
 
 
-   <script src="view/Credito/js/BuscarParticipesCesantes.js?1.47"></script> 
-
-   <script src="view/Credito/js/BuscarParticipesCesantes.js?0.70"></script> 
-
-   <script src="view/Credito/js/BuscarParticipesCesantes.js?1.71"></script> 
-
+   <script src="view/Credito/js/BuscarParticipesCesantes.js?1.55"></script> 
 
    </body>
 </html>   

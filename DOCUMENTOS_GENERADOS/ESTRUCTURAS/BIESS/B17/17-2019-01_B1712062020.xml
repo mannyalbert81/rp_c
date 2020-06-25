@@ -3,38 +3,38 @@
 	<DatosEstructura>
 		<CodigoEstructura>B17</CodigoEstructura>
 		<CodigoEntidad>17</CodigoEntidad>
-		<FechaCorte>30/11/2020</FechaCorte>
+		<FechaCorte>31/01/2019</FechaCorte>
 		<TotalRegistros>536</TotalRegistros>
-		<ValorCuadreTotal>536817768.12</ValorCuadreTotal>
+		<ValorCuadreTotal>527890097.89</ValorCuadreTotal>
 	</DatosEstructura>
 	<Detalle>
 		<Registro NumeroRegistro="1">
 			<CodigoCuentaContable>1</CodigoCuentaContable>
-			<ValorEnero>70784391.99</ValorEnero>
+			<ValorEnero>70830263.45</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="2">
 			<CodigoCuentaContable>11</CodigoCuentaContable>
-			<ValorEnero>2080290.72</ValorEnero>
+			<ValorEnero>2651119.71</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="3">
 			<CodigoCuentaContable>1101</CodigoCuentaContable>
-			<ValorEnero>7149.09</ValorEnero>
+			<ValorEnero>2688</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="4">
 			<CodigoCuentaContable>110105</CodigoCuentaContable>
-			<ValorEnero>6377.09</ValorEnero>
+			<ValorEnero>1900</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="5">
 			<CodigoCuentaContable>110110</CodigoCuentaContable>
-			<ValorEnero>772</ValorEnero>
+			<ValorEnero>788</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="6">
 			<CodigoCuentaContable>1102</CodigoCuentaContable>
-			<ValorEnero>2073141.63</ValorEnero>
+			<ValorEnero>2648431.71</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="7">
 			<CodigoCuentaContable>110205</CodigoCuentaContable>
-			<ValorEnero>2073141.63</ValorEnero>
+			<ValorEnero>2648431.71</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="8">
 			<CodigoCuentaContable>110210</CodigoCuentaContable>
@@ -50,15 +50,15 @@
 		</Registro>
 		<Registro NumeroRegistro="11">
 			<CodigoCuentaContable>12</CodigoCuentaContable>
-			<ValorEnero>30500098.82</ValorEnero>
+			<ValorEnero>30500755.61</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="12">
 			<CodigoCuentaContable>1201</CodigoCuentaContable>
-			<ValorEnero>30481348.82</ValorEnero>
+			<ValorEnero>30500755.61</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="13">
 			<CodigoCuentaContable>120105</CodigoCuentaContable>
-			<ValorEnero>30481348.82</ValorEnero>
+			<ValorEnero>30500755.61</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="14">
 			<CodigoCuentaContable>120110</CodigoCuentaContable>
@@ -90,11 +90,11 @@
 		</Registro>
 		<Registro NumeroRegistro="21">
 			<CodigoCuentaContable>1202</CodigoCuentaContable>
-			<ValorEnero>18750</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="22">
 			<CodigoCuentaContable>120205</CodigoCuentaContable>
-			<ValorEnero>18750</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="23">
 			<CodigoCuentaContable>120210</CodigoCuentaContable>
@@ -210,11 +210,11 @@
 		</Registro>
 		<Registro NumeroRegistro="51">
 			<CodigoCuentaContable>13</CodigoCuentaContable>
-			<ValorEnero>34994505.1</ValorEnero>
+			<ValorEnero>34683629.03</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="52">
 			<CodigoCuentaContable>1301</CodigoCuentaContable>
-			<ValorEnero>31316041.54</ValorEnero>
+			<ValorEnero>31000477.07</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="53">
 			<CodigoCuentaContable>1302</CodigoCuentaContable>
@@ -222,11 +222,11 @@
 		</Registro>
 		<Registro NumeroRegistro="54">
 			<CodigoCuentaContable>1303</CodigoCuentaContable>
-			<ValorEnero>340392.22</ValorEnero>
+			<ValorEnero>311273.03</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="55">
 			<CodigoCuentaContable>1304</CodigoCuentaContable>
-			<ValorEnero>1768567.39</ValorEnero>
+			<ValorEnero>1836099.9</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="56">
 			<CodigoCuentaContable>1305</CodigoCuentaContable>
@@ -246,7 +246,7 @@
 		</Registro>
 		<Registro NumeroRegistro="60">
 			<CodigoCuentaContable>1309</CodigoCuentaContable>
-			<ValorEnero>2100024.95</ValorEnero>
+			<ValorEnero>2030266.8</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="61">
 			<CodigoCuentaContable>1310</CodigoCuentaContable>
@@ -258,15 +258,15 @@
 		</Registro>
 		<Registro NumeroRegistro="63">
 			<CodigoCuentaContable>1312</CodigoCuentaContable>
-			<ValorEnero>52181.49</ValorEnero>
+			<ValorEnero>90729.73</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="64">
 			<CodigoCuentaContable>1399</CodigoCuentaContable>
-			<ValorEnero>-582702.49</ValorEnero>
+			<ValorEnero>-585217.5</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="65">
 			<CodigoCuentaContable>139905</CodigoCuentaContable>
-			<ValorEnero>-558420.26</ValorEnero>
+			<ValorEnero>-558149.94</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="66">
 			<CodigoCuentaContable>139910</CodigoCuentaContable>
@@ -274,7 +274,7 @@
 		</Registro>
 		<Registro NumeroRegistro="67">
 			<CodigoCuentaContable>139915</CodigoCuentaContable>
-			<ValorEnero>-24282.23</ValorEnero>
+			<ValorEnero>-27067.56</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="68">
 			<CodigoCuentaContable>139990</CodigoCuentaContable>
@@ -282,19 +282,19 @@
 		</Registro>
 		<Registro NumeroRegistro="69">
 			<CodigoCuentaContable>14</CodigoCuentaContable>
-			<ValorEnero>2463387.5</ValorEnero>
+			<ValorEnero>2247923.82</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="70">
 			<CodigoCuentaContable>1401</CodigoCuentaContable>
-			<ValorEnero>386394.09</ValorEnero>
+			<ValorEnero>691618.33</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="71">
 			<CodigoCuentaContable>140105</CodigoCuentaContable>
-			<ValorEnero>386065.96</ValorEnero>
+			<ValorEnero>691618.33</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="72">
 			<CodigoCuentaContable>140110</CodigoCuentaContable>
-			<ValorEnero>328.13</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="73">
 			<CodigoCuentaContable>140115</CodigoCuentaContable>
@@ -330,7 +330,7 @@
 		</Registro>
 		<Registro NumeroRegistro="81">
 			<CodigoCuentaContable>1403</CodigoCuentaContable>
-			<ValorEnero>23870.84</ValorEnero>
+			<ValorEnero>20507.22</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="82">
 			<CodigoCuentaContable>140305</CodigoCuentaContable>
@@ -338,7 +338,7 @@
 		</Registro>
 		<Registro NumeroRegistro="83">
 			<CodigoCuentaContable>140310</CodigoCuentaContable>
-			<ValorEnero>23841.19</ValorEnero>
+			<ValorEnero>20477.57</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="84">
 			<CodigoCuentaContable>140390</CodigoCuentaContable>
@@ -374,19 +374,19 @@
 		</Registro>
 		<Registro NumeroRegistro="92">
 			<CodigoCuentaContable>1405</CodigoCuentaContable>
-			<ValorEnero>2010298.85</ValorEnero>
+			<ValorEnero>1510326.91</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="93">
 			<CodigoCuentaContable>140505</CodigoCuentaContable>
-			<ValorEnero>533778.47</ValorEnero>
+			<ValorEnero>427003.59</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="94">
 			<CodigoCuentaContable>140510</CodigoCuentaContable>
-			<ValorEnero>1476520.38</ValorEnero>
+			<ValorEnero>1083323.32</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="95">
 			<CodigoCuentaContable>1490</CodigoCuentaContable>
-			<ValorEnero>42823.72</ValorEnero>
+			<ValorEnero>25471.36</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="96">
 			<CodigoCuentaContable>149005</CodigoCuentaContable>
@@ -402,7 +402,7 @@
 		</Registro>
 		<Registro NumeroRegistro="99">
 			<CodigoCuentaContable>149090</CodigoCuentaContable>
-			<ValorEnero>42823.72</ValorEnero>
+			<ValorEnero>25471.36</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="100">
 			<CodigoCuentaContable>1499</CodigoCuentaContable>
@@ -474,11 +474,11 @@
 		</Registro>
 		<Registro NumeroRegistro="117">
 			<CodigoCuentaContable>16</CodigoCuentaContable>
-			<ValorEnero>217224.88</ValorEnero>
+			<ValorEnero>217478.41</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="118">
 			<CodigoCuentaContable>1601</CodigoCuentaContable>
-			<ValorEnero>390507</ValorEnero>
+			<ValorEnero>398107</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="119">
 			<CodigoCuentaContable>160105</CodigoCuentaContable>
@@ -486,7 +486,7 @@
 		</Registro>
 		<Registro NumeroRegistro="120">
 			<CodigoCuentaContable>160110</CodigoCuentaContable>
-			<ValorEnero>390507</ValorEnero>
+			<ValorEnero>398107</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="121">
 			<CodigoCuentaContable>160115</CodigoCuentaContable>
@@ -518,23 +518,23 @@
 		</Registro>
 		<Registro NumeroRegistro="128">
 			<CodigoCuentaContable>1699</CodigoCuentaContable>
-			<ValorEnero>-557417.83</ValorEnero>
+			<ValorEnero>-564764.3</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="129">
 			<CodigoCuentaContable>169905</CodigoCuentaContable>
-			<ValorEnero>-191852.68</ValorEnero>
+			<ValorEnero>-195170.24</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="130">
 			<CodigoCuentaContable>169910</CodigoCuentaContable>
-			<ValorEnero>-27125.37</ValorEnero>
+			<ValorEnero>-27477.81</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="131">
 			<CodigoCuentaContable>169915</CodigoCuentaContable>
-			<ValorEnero>-25343.88</ValorEnero>
+			<ValorEnero>-25598.64</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="132">
 			<CodigoCuentaContable>169920</CodigoCuentaContable>
-			<ValorEnero>-154122.44</ValorEnero>
+			<ValorEnero>-157174.1</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="133">
 			<CodigoCuentaContable>169925</CodigoCuentaContable>
@@ -542,7 +542,7 @@
 		</Registro>
 		<Registro NumeroRegistro="134">
 			<CodigoCuentaContable>169990</CodigoCuentaContable>
-			<ValorEnero>-158973.46</ValorEnero>
+			<ValorEnero>-159343.51</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="135">
 			<CodigoCuentaContable>17</CodigoCuentaContable>
@@ -598,7 +598,7 @@
 		</Registro>
 		<Registro NumeroRegistro="148">
 			<CodigoCuentaContable>19</CodigoCuentaContable>
-			<ValorEnero>50864.12</ValorEnero>
+			<ValorEnero>51336.02</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="149">
 			<CodigoCuentaContable>1901</CodigoCuentaContable>
@@ -630,7 +630,7 @@
 		</Registro>
 		<Registro NumeroRegistro="156">
 			<CodigoCuentaContable>1902</CodigoCuentaContable>
-			<ValorEnero>50864.12</ValorEnero>
+			<ValorEnero>51336.02</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="157">
 			<CodigoCuentaContable>190205</CodigoCuentaContable>
@@ -642,7 +642,7 @@
 		</Registro>
 		<Registro NumeroRegistro="159">
 			<CodigoCuentaContable>190290</CodigoCuentaContable>
-			<ValorEnero>2689.03</ValorEnero>
+			<ValorEnero>3160.93</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="160">
 			<CodigoCuentaContable>190299</CodigoCuentaContable>
@@ -706,23 +706,23 @@
 		</Registro>
 		<Registro NumeroRegistro="175">
 			<CodigoCuentaContable>2</CodigoCuentaContable>
-			<ValorEnero>67323291.91</ValorEnero>
+			<ValorEnero>66638225.66</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="176">
 			<CodigoCuentaContable>21</CodigoCuentaContable>
-			<ValorEnero>58157913.15</ValorEnero>
+			<ValorEnero>58191469.43</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="177">
 			<CodigoCuentaContable>2101</CodigoCuentaContable>
-			<ValorEnero>58157913.15</ValorEnero>
+			<ValorEnero>58191469.43</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="178">
 			<CodigoCuentaContable>210105</CodigoCuentaContable>
-			<ValorEnero>50232401.42</ValorEnero>
+			<ValorEnero>50352099.58</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="179">
 			<CodigoCuentaContable>210110</CodigoCuentaContable>
-			<ValorEnero>7925511.73</ValorEnero>
+			<ValorEnero>7839369.85</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="180">
 			<CodigoCuentaContable>210115</CodigoCuentaContable>
@@ -794,15 +794,15 @@
 		</Registro>
 		<Registro NumeroRegistro="197">
 			<CodigoCuentaContable>23</CodigoCuentaContable>
-			<ValorEnero>6387141.69</ValorEnero>
+			<ValorEnero>6352257.42</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="198">
 			<CodigoCuentaContable>2301</CodigoCuentaContable>
-			<ValorEnero>5550674.72</ValorEnero>
+			<ValorEnero>5546783.44</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="199">
 			<CodigoCuentaContable>230105</CodigoCuentaContable>
-			<ValorEnero>4819648.5</ValorEnero>
+			<ValorEnero>4818209.23</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="200">
 			<CodigoCuentaContable>230110</CodigoCuentaContable>
@@ -810,7 +810,7 @@
 		</Registro>
 		<Registro NumeroRegistro="201">
 			<CodigoCuentaContable>230115</CodigoCuentaContable>
-			<ValorEnero>731026.22</ValorEnero>
+			<ValorEnero>728574.21</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="202">
 			<CodigoCuentaContable>2302</CodigoCuentaContable>
@@ -838,7 +838,7 @@
 		</Registro>
 		<Registro NumeroRegistro="208">
 			<CodigoCuentaContable>2304</CodigoCuentaContable>
-			<ValorEnero>9750.54</ValorEnero>
+			<ValorEnero>2621.11</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="209">
 			<CodigoCuentaContable>230405</CodigoCuentaContable>
@@ -846,7 +846,7 @@
 		</Registro>
 		<Registro NumeroRegistro="210">
 			<CodigoCuentaContable>230410</CodigoCuentaContable>
-			<ValorEnero>9750.54</ValorEnero>
+			<ValorEnero>2621.11</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="211">
 			<CodigoCuentaContable>230490</CodigoCuentaContable>
@@ -854,15 +854,15 @@
 		</Registro>
 		<Registro NumeroRegistro="212">
 			<CodigoCuentaContable>2305</CodigoCuentaContable>
-			<ValorEnero>22026.1</ValorEnero>
+			<ValorEnero>24732.84</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="213">
 			<CodigoCuentaContable>230501</CodigoCuentaContable>
-			<ValorEnero>22026.1</ValorEnero>
+			<ValorEnero>24732.84</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="214">
 			<CodigoCuentaContable>2390</CodigoCuentaContable>
-			<ValorEnero>799449.41</ValorEnero>
+			<ValorEnero>772879.11</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="215">
 			<CodigoCuentaContable>239005</CodigoCuentaContable>
@@ -870,7 +870,7 @@
 		</Registro>
 		<Registro NumeroRegistro="216">
 			<CodigoCuentaContable>239010</CodigoCuentaContable>
-			<ValorEnero>39605.92</ValorEnero>
+			<ValorEnero>13035.62</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="217">
 			<CodigoCuentaContable>239015</CodigoCuentaContable>
@@ -914,7 +914,7 @@
 		</Registro>
 		<Registro NumeroRegistro="227">
 			<CodigoCuentaContable>25</CodigoCuentaContable>
-			<ValorEnero>23453.13</ValorEnero>
+			<ValorEnero>12684.99</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="228">
 			<CodigoCuentaContable>2501</CodigoCuentaContable>
@@ -922,11 +922,11 @@
 		</Registro>
 		<Registro NumeroRegistro="229">
 			<CodigoCuentaContable>2502</CodigoCuentaContable>
-			<ValorEnero>16173.16</ValorEnero>
+			<ValorEnero>5523.62</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="230">
 			<CodigoCuentaContable>2503</CodigoCuentaContable>
-			<ValorEnero>5768.61</ValorEnero>
+			<ValorEnero>5912.31</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="231">
 			<CodigoCuentaContable>2504</CodigoCuentaContable>
@@ -946,11 +946,11 @@
 		</Registro>
 		<Registro NumeroRegistro="235">
 			<CodigoCuentaContable>2590</CodigoCuentaContable>
-			<ValorEnero>1375.58</ValorEnero>
+			<ValorEnero>1113.28</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="236">
 			<CodigoCuentaContable>29</CodigoCuentaContable>
-			<ValorEnero>2754783.94</ValorEnero>
+			<ValorEnero>2081813.82</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="237">
 			<CodigoCuentaContable>2901</CodigoCuentaContable>
@@ -990,11 +990,11 @@
 		</Registro>
 		<Registro NumeroRegistro="246">
 			<CodigoCuentaContable>2904</CodigoCuentaContable>
-			<ValorEnero>58462.21</ValorEnero>
+			<ValorEnero>55540.46</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="247">
 			<CodigoCuentaContable>2990</CodigoCuentaContable>
-			<ValorEnero>2495214.12</ValorEnero>
+			<ValorEnero>1825165.75</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="248">
 			<CodigoCuentaContable>299005</CodigoCuentaContable>
@@ -1002,11 +1002,11 @@
 		</Registro>
 		<Registro NumeroRegistro="249">
 			<CodigoCuentaContable>299090</CodigoCuentaContable>
-			<ValorEnero>2495214.12</ValorEnero>
+			<ValorEnero>1825165.75</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="250">
 			<CodigoCuentaContable>3</CodigoCuentaContable>
-			<ValorEnero>0</ValorEnero>
+			<ValorEnero>3812265.52</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="251">
 			<CodigoCuentaContable>31</CodigoCuentaContable>
@@ -1042,11 +1042,11 @@
 		</Registro>
 		<Registro NumeroRegistro="259">
 			<CodigoCuentaContable>34</CodigoCuentaContable>
-			<ValorEnero>0</ValorEnero>
+			<ValorEnero>3812265.52</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="260">
 			<CodigoCuentaContable>3401</CodigoCuentaContable>
-			<ValorEnero>0</ValorEnero>
+			<ValorEnero>3812265.52</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="261">
 			<CodigoCuentaContable>3402</CodigoCuentaContable>
@@ -1062,7 +1062,7 @@
 		</Registro>
 		<Registro NumeroRegistro="264">
 			<CodigoCuentaContable>4</CodigoCuentaContable>
-			<ValorEnero>776909.06</ValorEnero>
+			<ValorEnero>49850.71</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="265">
 			<CodigoCuentaContable>41</CodigoCuentaContable>
@@ -1190,31 +1190,31 @@
 		</Registro>
 		<Registro NumeroRegistro="296">
 			<CodigoCuentaContable>43</CodigoCuentaContable>
-			<ValorEnero>294102.11</ValorEnero>
+			<ValorEnero>23182.59</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="297">
 			<CodigoCuentaContable>4301</CodigoCuentaContable>
-			<ValorEnero>294102.11</ValorEnero>
+			<ValorEnero>23182.59</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="298">
 			<CodigoCuentaContable>430105</CodigoCuentaContable>
-			<ValorEnero>211825.61</ValorEnero>
+			<ValorEnero>18010</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="299">
 			<CodigoCuentaContable>430110</CodigoCuentaContable>
-			<ValorEnero>10714.1</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="300">
 			<CodigoCuentaContable>430115</CodigoCuentaContable>
-			<ValorEnero>24964.27</ValorEnero>
+			<ValorEnero>1983.48</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="301">
 			<CodigoCuentaContable>430120</CodigoCuentaContable>
-			<ValorEnero>27777.9</ValorEnero>
+			<ValorEnero>2177.01</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="302">
 			<CodigoCuentaContable>430125</CodigoCuentaContable>
-			<ValorEnero>12075.23</ValorEnero>
+			<ValorEnero>1012.1</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="303">
 			<CodigoCuentaContable>430130</CodigoCuentaContable>
@@ -1234,19 +1234,19 @@
 		</Registro>
 		<Registro NumeroRegistro="307">
 			<CodigoCuentaContable>430190</CodigoCuentaContable>
-			<ValorEnero>6745</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="308">
 			<CodigoCuentaContable>44</CodigoCuentaContable>
-			<ValorEnero>258458.14</ValorEnero>
+			<ValorEnero>12779.6</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="309">
 			<CodigoCuentaContable>4401</CodigoCuentaContable>
-			<ValorEnero>45734.52</ValorEnero>
+			<ValorEnero>3967.29</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="310">
 			<CodigoCuentaContable>440105</CodigoCuentaContable>
-			<ValorEnero>11340.19</ValorEnero>
+			<ValorEnero>888.84</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="311">
 			<CodigoCuentaContable>440110</CodigoCuentaContable>
@@ -1258,27 +1258,27 @@
 		</Registro>
 		<Registro NumeroRegistro="313">
 			<CodigoCuentaContable>440120</CodigoCuentaContable>
-			<ValorEnero>339.42</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="314">
 			<CodigoCuentaContable>440125</CodigoCuentaContable>
-			<ValorEnero>22000</ValorEnero>
+			<ValorEnero>2000</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="315">
 			<CodigoCuentaContable>440130</CodigoCuentaContable>
-			<ValorEnero>0</ValorEnero>
+			<ValorEnero>93.33</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="316">
 			<CodigoCuentaContable>440190</CodigoCuentaContable>
-			<ValorEnero>12054.91</ValorEnero>
+			<ValorEnero>985.12</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="317">
 			<CodigoCuentaContable>4402</CodigoCuentaContable>
-			<ValorEnero>2983.49</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="318">
 			<CodigoCuentaContable>440205</CodigoCuentaContable>
-			<ValorEnero>2447.42</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="319">
 			<CodigoCuentaContable>440210</CodigoCuentaContable>
@@ -1286,7 +1286,7 @@
 		</Registro>
 		<Registro NumeroRegistro="320">
 			<CodigoCuentaContable>440215</CodigoCuentaContable>
-			<ValorEnero>536.07</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="321">
 			<CodigoCuentaContable>440220</CodigoCuentaContable>
@@ -1294,7 +1294,7 @@
 		</Registro>
 		<Registro NumeroRegistro="322">
 			<CodigoCuentaContable>4403</CodigoCuentaContable>
-			<ValorEnero>18222.23</ValorEnero>
+			<ValorEnero>547.05</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="323">
 			<CodigoCuentaContable>440305</CodigoCuentaContable>
@@ -1302,11 +1302,11 @@
 		</Registro>
 		<Registro NumeroRegistro="324">
 			<CodigoCuentaContable>440310</CodigoCuentaContable>
-			<ValorEnero>16374.72</ValorEnero>
+			<ValorEnero>547.05</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="325">
 			<CodigoCuentaContable>440315</CodigoCuentaContable>
-			<ValorEnero>1847.51</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="326">
 			<CodigoCuentaContable>440320</CodigoCuentaContable>
@@ -1318,11 +1318,11 @@
 		</Registro>
 		<Registro NumeroRegistro="328">
 			<CodigoCuentaContable>4404</CodigoCuentaContable>
-			<ValorEnero>4466</ValorEnero>
+			<ValorEnero>423.5</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="329">
 			<CodigoCuentaContable>440405</CodigoCuentaContable>
-			<ValorEnero>4466</ValorEnero>
+			<ValorEnero>423.5</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="330">
 			<CodigoCuentaContable>440410</CodigoCuentaContable>
@@ -1342,7 +1342,7 @@
 		</Registro>
 		<Registro NumeroRegistro="334">
 			<CodigoCuentaContable>4405</CodigoCuentaContable>
-			<ValorEnero>164955.23</ValorEnero>
+			<ValorEnero>7307.95</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="335">
 			<CodigoCuentaContable>440505</CodigoCuentaContable>
@@ -1350,11 +1350,11 @@
 		</Registro>
 		<Registro NumeroRegistro="336">
 			<CodigoCuentaContable>440510</CodigoCuentaContable>
-			<ValorEnero>25200</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="337">
 			<CodigoCuentaContable>440515</CodigoCuentaContable>
-			<ValorEnero>139755.23</ValorEnero>
+			<ValorEnero>7307.95</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="338">
 			<CodigoCuentaContable>440520</CodigoCuentaContable>
@@ -1362,19 +1362,19 @@
 		</Registro>
 		<Registro NumeroRegistro="339">
 			<CodigoCuentaContable>4406</CodigoCuentaContable>
-			<ValorEnero>5797.8</ValorEnero>
+			<ValorEnero>48</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="340">
 			<CodigoCuentaContable>440605</CodigoCuentaContable>
-			<ValorEnero>3634.38</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="341">
 			<CodigoCuentaContable>440610</CodigoCuentaContable>
-			<ValorEnero>2163.42</ValorEnero>
+			<ValorEnero>48</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="342">
 			<CodigoCuentaContable>4407</CodigoCuentaContable>
-			<ValorEnero>16298.87</ValorEnero>
+			<ValorEnero>485.81</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="343">
 			<CodigoCuentaContable>440705</CodigoCuentaContable>
@@ -1382,15 +1382,15 @@
 		</Registro>
 		<Registro NumeroRegistro="344">
 			<CodigoCuentaContable>440710</CodigoCuentaContable>
-			<ValorEnero>9050.8</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="345">
 			<CodigoCuentaContable>440790</CodigoCuentaContable>
-			<ValorEnero>7248.07</ValorEnero>
+			<ValorEnero>485.81</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="346">
 			<CodigoCuentaContable>45</CodigoCuentaContable>
-			<ValorEnero>53601.01</ValorEnero>
+			<ValorEnero>5693.93</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="347">
 			<CodigoCuentaContable>4501</CodigoCuentaContable>
@@ -1406,7 +1406,7 @@
 		</Registro>
 		<Registro NumeroRegistro="350">
 			<CodigoCuentaContable>4502</CodigoCuentaContable>
-			<ValorEnero>40083.66</ValorEnero>
+			<ValorEnero>4216.04</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="351">
 			<CodigoCuentaContable>450205</CodigoCuentaContable>
@@ -1414,7 +1414,7 @@
 		</Registro>
 		<Registro NumeroRegistro="352">
 			<CodigoCuentaContable>450210</CodigoCuentaContable>
-			<ValorEnero>40083.66</ValorEnero>
+			<ValorEnero>4216.04</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="353">
 			<CodigoCuentaContable>4503</CodigoCuentaContable>
@@ -1422,23 +1422,23 @@
 		</Registro>
 		<Registro NumeroRegistro="354">
 			<CodigoCuentaContable>4504</CodigoCuentaContable>
-			<ValorEnero>13517.35</ValorEnero>
+			<ValorEnero>1477.89</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="355">
 			<CodigoCuentaContable>46</CodigoCuentaContable>
-			<ValorEnero>89981.16</ValorEnero>
+			<ValorEnero>2597.63</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="356">
 			<CodigoCuentaContable>4601</CodigoCuentaContable>
-			<ValorEnero>89981.16</ValorEnero>
+			<ValorEnero>2597.63</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="357">
 			<CodigoCuentaContable>460105</CodigoCuentaContable>
-			<ValorEnero>39508.84</ValorEnero>
+			<ValorEnero>2597.63</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="358">
 			<CodigoCuentaContable>460110</CodigoCuentaContable>
-			<ValorEnero>50472.32</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="359">
 			<CodigoCuentaContable>460190</CodigoCuentaContable>
@@ -1446,11 +1446,11 @@
 		</Registro>
 		<Registro NumeroRegistro="360">
 			<CodigoCuentaContable>47</CodigoCuentaContable>
-			<ValorEnero>50704.49</ValorEnero>
+			<ValorEnero>3664.36</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="361">
 			<CodigoCuentaContable>4701</CodigoCuentaContable>
-			<ValorEnero>32736.88</ValorEnero>
+			<ValorEnero>3453.36</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="362">
 			<CodigoCuentaContable>470105</CodigoCuentaContable>
@@ -1458,19 +1458,19 @@
 		</Registro>
 		<Registro NumeroRegistro="363">
 			<CodigoCuentaContable>470110</CodigoCuentaContable>
-			<ValorEnero>17898.21</ValorEnero>
+			<ValorEnero>1658.78</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="364">
 			<CodigoCuentaContable>470115</CodigoCuentaContable>
-			<ValorEnero>1982.02</ValorEnero>
+			<ValorEnero>176.22</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="365">
 			<CodigoCuentaContable>470120</CodigoCuentaContable>
-			<ValorEnero>1554.71</ValorEnero>
+			<ValorEnero>115.4</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="366">
 			<CodigoCuentaContable>470125</CodigoCuentaContable>
-			<ValorEnero>11301.94</ValorEnero>
+			<ValorEnero>1502.96</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="367">
 			<CodigoCuentaContable>470130</CodigoCuentaContable>
@@ -1478,7 +1478,7 @@
 		</Registro>
 		<Registro NumeroRegistro="368">
 			<CodigoCuentaContable>4702</CodigoCuentaContable>
-			<ValorEnero>17967.61</ValorEnero>
+			<ValorEnero>211</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="369">
 			<CodigoCuentaContable>470205</CodigoCuentaContable>
@@ -1486,7 +1486,7 @@
 		</Registro>
 		<Registro NumeroRegistro="370">
 			<CodigoCuentaContable>470210</CodigoCuentaContable>
-			<ValorEnero>17967.61</ValorEnero>
+			<ValorEnero>211</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="371">
 			<CodigoCuentaContable>4703</CodigoCuentaContable>
@@ -1594,7 +1594,7 @@
 		</Registro>
 		<Registro NumeroRegistro="397">
 			<CodigoCuentaContable>48</CodigoCuentaContable>
-			<ValorEnero>30062.15</ValorEnero>
+			<ValorEnero>1932.6</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="398">
 			<CodigoCuentaContable>4801</CodigoCuentaContable>
@@ -1602,7 +1602,7 @@
 		</Registro>
 		<Registro NumeroRegistro="399">
 			<CodigoCuentaContable>4890</CodigoCuentaContable>
-			<ValorEnero>30062.15</ValorEnero>
+			<ValorEnero>1932.6</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="400">
 			<CodigoCuentaContable>489005</CodigoCuentaContable>
@@ -1610,27 +1610,27 @@
 		</Registro>
 		<Registro NumeroRegistro="401">
 			<CodigoCuentaContable>489090</CodigoCuentaContable>
-			<ValorEnero>30062.15</ValorEnero>
+			<ValorEnero>1932.6</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="402">
 			<CodigoCuentaContable>5</CodigoCuentaContable>
-			<ValorEnero>4238009.14</ValorEnero>
+			<ValorEnero>429622.98</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="403">
 			<CodigoCuentaContable>51</CodigoCuentaContable>
-			<ValorEnero>4192039.43</ValorEnero>
+			<ValorEnero>429620.94</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="404">
 			<CodigoCuentaContable>5101</CodigoCuentaContable>
-			<ValorEnero>1362374.63</ValorEnero>
+			<ValorEnero>168322.31</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="405">
 			<CodigoCuentaContable>510105</CodigoCuentaContable>
-			<ValorEnero>1346435.19</ValorEnero>
+			<ValorEnero>168322.31</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="406">
 			<CodigoCuentaContable>510110</CodigoCuentaContable>
-			<ValorEnero>15939.44</ValorEnero>
+			<ValorEnero>0</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="407">
 			<CodigoCuentaContable>510115</CodigoCuentaContable>
@@ -1650,11 +1650,11 @@
 		</Registro>
 		<Registro NumeroRegistro="411">
 			<CodigoCuentaContable>5102</CodigoCuentaContable>
-			<ValorEnero>2829664.8</ValorEnero>
+			<ValorEnero>261298.63</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="412">
 			<CodigoCuentaContable>510205</CodigoCuentaContable>
-			<ValorEnero>2667639.13</ValorEnero>
+			<ValorEnero>246336.77</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="413">
 			<CodigoCuentaContable>510210</CodigoCuentaContable>
@@ -1662,7 +1662,7 @@
 		</Registro>
 		<Registro NumeroRegistro="414">
 			<CodigoCuentaContable>510215</CodigoCuentaContable>
-			<ValorEnero>162025.67</ValorEnero>
+			<ValorEnero>14961.86</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="415">
 			<CodigoCuentaContable>5190</CodigoCuentaContable>
@@ -1798,7 +1798,7 @@
 		</Registro>
 		<Registro NumeroRegistro="448">
 			<CodigoCuentaContable>53</CodigoCuentaContable>
-			<ValorEnero>45969.71</ValorEnero>
+			<ValorEnero>2.04</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="449">
 			<CodigoCuentaContable>5301</CodigoCuentaContable>
@@ -1814,7 +1814,7 @@
 		</Registro>
 		<Registro NumeroRegistro="452">
 			<CodigoCuentaContable>5390</CodigoCuentaContable>
-			<ValorEnero>45969.71</ValorEnero>
+			<ValorEnero>2.04</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="453">
 			<CodigoCuentaContable>539005</CodigoCuentaContable>
@@ -1822,7 +1822,7 @@
 		</Registro>
 		<Registro NumeroRegistro="454">
 			<CodigoCuentaContable>539090</CodigoCuentaContable>
-			<ValorEnero>45969.71</ValorEnero>
+			<ValorEnero>2.04</ValorEnero>
 		</Registro>
 		<Registro NumeroRegistro="455">
 			<CodigoCuentaContable>59</CodigoCuentaContable>

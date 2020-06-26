@@ -723,16 +723,27 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        }elseif( $tipo_descuento == "2" ){
 	            
 	            //$nameTipoDescuento = "CREDITOS";
-	            
+	            /*
 	            $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.cuota_descuentos_registrados_detalle_creditos,
                     aa.valor_usuario_descuentos_registrados_detalle_creditos";
 	            $tab2  = " core_descuentos_registrados_detalle_creditos aa
     	            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes";
 	            $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
-	            $id2   = " aa.id_descuentos_registrados_detalle_creditos";
-	            
+	            $id2   = " aa.id_descuentos_registrados_detalle_creditos";	            
 	            
 	            $rsData    = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);
+	            */
+	            $col2  = " bb.id_entidad_patronal,bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes,
+    	        SUM( COALESCE( aa.mora_descuentos_registrados_detalle_creditos, 0) ) suma_mora ,
+    	        SUM( COALESCE(aa.valor_usuario_descuentos_registrados_detalle_creditos,0) ) suma_valor,
+                SUM( COALESCE(aa.monto_descuentos_registrados_detalle_creditos,0) ) suma_monto";
+	            $tab2  = " core_descuentos_registrados_detalle_creditos aa
+	            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes ";
+	            $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	            $gru2  = " bb.id_entidad_patronal,bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes";
+	            $id2   = " bb.cedula_participes ";
+	            
+	            $rsData   = $recaudaciones->getCondiciones_grupo($col2, $tab2, $whe2, $gru2, $id2);
 	           	            
 	        }else{
 	            throw new Exception( "Tipo de descuento no valido" );
@@ -769,8 +780,8 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
                     
                 }elseif( $tipo_descuento == "2" ){
                     $tipo_contribucion     = "CREDITOS";
-                    $valor_descuento       = $res->cuota_descuentos_registrados_detalle_creditos;                   
-                    $total_descuento       = $res->valor_usuario_descuentos_registrados_detalle_creditos;
+                    $valor_descuento       = $res->suma_monto;                   
+                    $total_descuento       = $res->suma_valor;
                     $concepto_recaudacion  = "DESCUENTOS CREDITOS";
                 }
                 
@@ -899,6 +910,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            
 	            $nameTipoDescuento = "CREDITOS";
 	            
+	            /*
 	            $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, 
                     aa.cuota_descuentos_registrados_detalle_creditos \"valor_descuento\",
                     aa.valor_usuario_descuentos_registrados_detalle_creditos \"valor_descuento1\" ";
@@ -909,6 +921,18 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            $id2   = " aa.id_descuentos_registrados_detalle_creditos";
 	            
 	            $rsData    = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);
+	            */
+	            
+	            $col2  = " bb.id_entidad_patronal,bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes,
+    	        SUM( COALESCE(aa.valor_usuario_descuentos_registrados_detalle_creditos,0) ) valor_descuento1,
+                SUM( COALESCE(aa.monto_descuentos_registrados_detalle_creditos,0) ) valor_descuento";
+	            $tab2  = " core_descuentos_registrados_detalle_creditos aa
+	            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes ";
+	            $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+	            $gru2  = " bb.id_entidad_patronal,bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes";
+	            $id2   = " bb.cedula_participes ";
+	            
+	            $rsData   = $recaudaciones->getCondiciones_grupo($col2, $tab2, $whe2, $gru2, $id2);
 	            
 	        }else{
 	            throw new Exception( "Tipo de descuento no valido" );
@@ -2505,16 +2529,17 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        
 	    }elseif( $tipo_descuento == 2 ){
 	        
-	        $col2  = " bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.cuota_descuentos_registrados_detalle_creditos,
-	               aa.valor_usuario_descuentos_registrados_detalle_creditos,COALESCE(aa.mora_descuentos_registrados_detalle_creditos,0) mora_descuentos";
+	        $col2  = " bb.id_entidad_patronal,bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes,
+    	        SUM( COALESCE( aa.mora_descuentos_registrados_detalle_creditos, 0) ) suma_mora ,
+    	        SUM( COALESCE(aa.valor_usuario_descuentos_registrados_detalle_creditos,0) ) suma_valor";
 	        $tab2  = " core_descuentos_registrados_detalle_creditos aa
-    	        INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
-    	        ";
+	           INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes ";
 	        $whe2  = " aa.id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
-	        $id2   = " aa.id_descuentos_registrados_detalle_creditos ";
-	        	      	        
-	        $rsConsulta2   = $recaudaciones->getCondiciones($col2, $tab2, $whe2, $id2);
+	        $gru2  = " bb.id_entidad_patronal,bb.id_participes, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes";
+	        $id2   = " bb.cedula_participes ";
 	        
+	        $rsConsulta2   = $recaudaciones->getCondiciones_grupo($col2, $tab2, $whe2, $gru2, $id2);
+	      	        
 	        $hayDatos = ( !empty( $rsConsulta2 ) ) ? true : false;
 	        
 	        $html.='<table class="1" cellspacing="0"  border="1">';
@@ -2530,9 +2555,9 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $index = 0;
 	        foreach ( $rsConsulta2 as $res ){
 	            
-	            $cuota = $res->valor_usuario_descuentos_registrados_detalle_creditos;
-	            $mora  = $res->mora_descuentos;
-	            $monto = $cuota + $mora;
+	            $cuota = $res->suma_valor;
+	            $mora  = $res->suma_mora;
+	            $monto = $cuota;
 	            $suma_total    += $monto;
 	            $index++;
 	            

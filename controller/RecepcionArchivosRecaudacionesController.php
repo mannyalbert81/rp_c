@@ -30,7 +30,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
 		if (empty($resultPer)){
 		    
 		    $this->view("Error",array(
-		        "resultado"=>"No tiene Permisos de Acceso Carga Recaudaciones"
+		        "resultado"=>"No tiene Permisos de Acceso"
 		        
 		    ));
 		    exit();
@@ -39,7 +39,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
 		$rsCargaRecaudaciones = $carga_recaudaciones->getBy(" 1 = 1 ");
 		
 				
-		$this->view_Recaudaciones("CargaRecaudaciones",array(
+		$this->view_Recaudaciones("RecepcionArchivosRecaudaciones",array(
 		    "resultSet"=>$rsCargaRecaudaciones
 	
 		));
@@ -1328,9 +1328,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         echo json_encode($resp);
        
     }
-    /** end dc 2020/04/20 **/
-    
-    /** begin dc 2020/04/21 **/
+
     private function validacionArchivoLineas( string $file, string &$rowError, array  &$dataTableError, array &$dataTableData){
         
         /** variables para la lectura del archivo **/

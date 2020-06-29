@@ -67,9 +67,7 @@
 
 			<form id="frm_carga_recaudaciones" action="<?php echo $helper->url("RecepcionArchivosRecaudaciones","InsertaRecepcionArchivosRecaudaciones"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
 							    
-		  	 <input type="hidden" id="id_carga_recaudaciones" value="0">
-            		  
-       		  		
+		  	<input type="hidden" id="id_carga_recaudaciones" value="0">
             		  
             <div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
@@ -77,7 +75,7 @@
                 			 <div class="form-group-sm">
                 				<label for="id_entidad_patronal" class="col-sm-4 control-label" >Entidad:</label>
                 				<div class="col-sm-8">
-                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control" onchange="BuscarDescuentosFormatos(this)">
+                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control" >
                               	<option value="0">--Seleccione--</option>
                               	</select>
                                  </div>
@@ -239,7 +237,7 @@
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <!-- FILE UPLOAD -->
    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js"></script>
-   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.1"></script> 
+   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.3"></script> 
 
   </body>
 </html>   

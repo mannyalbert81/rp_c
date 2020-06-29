@@ -1,10 +1,10 @@
 $(document).ready(function(){
 	
-	listaArchivosRecaudacion();
+	//listaArchivosRecaudacion();
 	//consultaCargaRecaudaciones();
 	cargaEntidadPatronal();
-	init_controles();
-	
+	BuscarDescuentosFormatos();
+	init_controles();	
 		
 })
 
@@ -52,9 +52,8 @@ function cargaEntidadPatronal(){
 	
 }
 
-function BuscarDescuentosFormatos(obj){
+function BuscarDescuentosFormatos(){	
 	
-	let elemento = $(obj);
 	var $ddlDescuentosFormatos	= $("#id_descuentos_formatos");	
 	$ddlDescuentosFormatos.empty();
 	$ddlDescuentosFormatos.append("<option value='0' >--Seleccione--</option>");
@@ -63,10 +62,11 @@ function BuscarDescuentosFormatos(obj){
 		url:"index.php?controller=RecepcionArchivosRecaudaciones&action=cargaDescuentosFormatos",
 		type:"POST",
 		dataType:"json",
-		data:{id_entidad_patronal:elemento.val()}
+		data:null
 	}).done(function(datos){		
 		
-		if( datos.data != undefined || datos.data != "" ){
+		if( datos.data != undefined || datos.data != "" )
+		{
 			$.each(datos.data, function(index, value) {
 				$ddlDescuentosFormatos.append("<option value= " +value.id_descuentos_formatos +" >" + value.nombre_descuentos_formatos  + "</option>");	
 	  		});
@@ -293,7 +293,6 @@ function uploadFileEntidad(){
 	let $entidadPatronal 	= $("#id_entidad_patronal");
 	let	$anioCargaRecaudaciones 	= $("#anio_carga_recaudaciones");
 	let	$mesCargaRecaudaciones 		= $("#mes_carga_recaudaciones");
-	let	$formatoCargaRecaudaciones	= $("#formato_carga_recaudaciones");
 	let	$nombreCargaRecaudaciones	= $("#nombre_carga_recaudaciones");
 	let $id_descuentos_formatos		= $("#id_descuentos_formatos");
 	
@@ -306,11 +305,6 @@ function uploadFileEntidad(){
 		$id_descuentos_formatos.notify("Seleccione Formato Descuento",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
-	
-	if($formatoCargaRecaudaciones.val() == 0 ){
-		$formatoCargaRecaudaciones.notify("Seleccione Formato de Recaudaciones",{ position:"top left", autoHideDelay: 2000});
-		return false;
-	}	
 		
 	//validacion campo archivo
 	var inarchivo = $("#nombre_carga_recaudaciones");

@@ -896,14 +896,16 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         
     }
     
-    public function cargaArchivoRecaudacion(){       
+    public function cargaArchivoRecaudacion()
+    {       
         
         $Contribucion      = new CoreContribucionModel();
         $carga_recaudaciones = new CargaRecaudacionesModel();
         $respuesta         = array();
         $error             = "";
         
-        if( !isset($_SESSION) ){
+        if( !isset($_SESSION) )
+        {
             session_start();
         }
         
@@ -1055,6 +1057,11 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
          ****************************************************** insercion del archivo en tabla ***********************************************************
          **/
         try{
+            
+            //buscar formatos decuentos
+            $col1   = "";
+            $tab
+            
             $Contribucion->beginTran();
             
             /**variables para trabajar en el insertado */
@@ -1157,7 +1164,8 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         $resultadoCabecera  = $recaudaciones->llamarconsultaPG($sqRecaudaciones);
         $id_cabecera    = $resultadoCabecera[0];
         
-        if( $this->_nombre_aportes_formato == $formato ){ 
+        if( $this->_nombre_aportes_formato == $formato )
+        { 
             
             $id_entidad_patronal    = $paramsCab['id_entidad_patronal']; 
             $id_formatos_descuentos = $paramsCab['id_descuentos_formatos'];
@@ -1292,42 +1300,39 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         
     }
     
-    public function cargaDescuentosFormatos(){
+    /** 2020-06-29 **/
+    public function cargaDescuentosFormatos()
+    {
         
         $recaudaciones = new RecaudacionesModel();
         $resp  = null;
         
-        $id_entidad_patronal = $_POST['id_entidad_patronal'];
-        
-        $col1  = " id_descuentos_formatos,nombre_descuentos_formatos ";
+        $col1  = " id_descuentos_formatos, nombre_descuentos_formatos ";
         $tab1  = " public.core_descuentos_formatos ";
-        $whe1  = " id_entidad_patronal = $id_entidad_patronal";
-        $id1   = " id_descuentos_formatos ";
-        $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);        
+        $whe1  = "entrada_descuentos_formatos = 't'
+        	    AND sp_descuentos_formatos = 'RP'";
+        $id1   = " nombre_descuentos_formatos ";
         
-        try {
+        $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
+        
+        if( !empty( pg_last_error() )  || !empty( error_get_last() ) ){
             
-            $error_pg = pg_last_error();
-            if( !empty($error_pg)  || !empty( error_get_last() ) ){
-                throw new Exception( $error_pg );
-            }
+            $error = error_get_last();
+            error_clear_last();
+            if (ob_get_contents()) ob_end_clean();
             
-            $resp['data'] = ( !empty( $rsConsulta1 ) ) ? $rsConsulta1 : null;
-                      
-        } catch (Exception $e) {
-            $buffer =  error_get_last();
-            $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
-            $resp['mensaje'] = $e->getMessage();
-            $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
-            $resp['estatus'] = "ERROR";
+            echo "ERROR ENCONTRADO \n";
+            var_dump($error);
+            
+            return;
         }
         
-        error_clear_last();
-        if (ob_get_contents()) ob_end_clean();
+        $resp['data'] = ( !empty( $rsConsulta1 ) ) ? $rsConsulta1 : null;
         
-        echo json_encode($resp);
+        echo json_encode($resp);       
        
     }
+    /** end 2020-06-29 **/
 
     private function validacionArchivoLineas( string $file, string &$rowError, array  &$dataTableError, array &$dataTableData){
         

@@ -608,7 +608,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.28"></script> 
+   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.29"></script> 
        
 	
   </body>

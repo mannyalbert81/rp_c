@@ -716,6 +716,11 @@ var listar_preview_descuentos_creditos = function(){
             header: true,
             footer: true
         },
+        dom: 'Blfrtip',
+        buttons: [
+            //'copy', 'csv', 'excel', 'pdf', 'print'
+        	'excel', 'pdf'
+        ],
         'language':idioma_espanol
 	 });
 	

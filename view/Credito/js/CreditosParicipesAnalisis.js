@@ -31,14 +31,14 @@ var ObtenerAnalisis	= function()
 	val_cuota_maxima	= Math.round( Math.round( val_cuota_maxima * 1000 ) / 10 ) / 100 ;
 	ocuotamaxima.text( val_cuota_maxima ); // es un elemento td
 	
-	var val_cuota_pactada	= ( ocuota_pactada.val() == "" ) ? val_cuota_maxima : ocuota_pactada.val();
+	var val_cuota_pactada	= ( ocuota_pactada.val() == "" ) ? 0 : ocuota_pactada.val();
 	val_cuota_pactada	= parseFloat( val_cuota_pactada );
 		
 	var val_variacion_rol	= val_sueldo_liquido - ( val_cuota_pactada - val_cuota_vigente );
 	val_variacion_rol	= Math.round(Math.round( val_variacion_rol * 1000 ) / 10 ) / 100;
 	val_variacion_rol	= Math.abs( val_variacion_rol );
 	
-	var otext_variacion_rol	= $("h3-variacion_rol");
+	var otext_variacion_rol	= $("#h3-variacion_rol");
 	otext_variacion_rol.text( val_variacion_rol );
 	
 	var val_ingresos_adicionales	= val_variacion_rol + val_fondos + val_decimos + val_rancho + val_ingresos_notarizados;
@@ -47,6 +47,7 @@ var ObtenerAnalisis	= function()
 	if( val_cuota_maxima >= val_cuota_pactada)
 	{
 		label_aprobar_credito();
+		
 		
 		if( val_variacion_rol < min_val_variacion_rol )
 		{
@@ -59,7 +60,9 @@ var ObtenerAnalisis	= function()
 			document.getElementById("variacion_rol").classList.remove('bg-red');
 			document.getElementById("variacion_rol").classList.add('bg-green');
 			document.getElementById("h3-variacion_rol_estado").innerHTML = " ROL ACEPTABLE APLICADA NUEVA CUOTA";
+			
 			label_aprobar_credito();
+			
 		}
 		
 		if(	val_variacion_rol < min_val_rol )
@@ -67,7 +70,7 @@ var ObtenerAnalisis	= function()
 			document.getElementById("validacion_rol").classList.remove('bg-green');
 			document.getElementById("validacion_rol").classList.add('bg-yellow');
 			document.getElementById("h3-validacion_rol_estado").innerHTML = "CONSIDERAR INGRESOS ADICIONALES NO TIENE 100";
-			label_negar_credito();
+			
 		}else
 		{
 			document.getElementById("validacion_rol").classList.remove('bg-yellow');
@@ -81,7 +84,7 @@ var ObtenerAnalisis	= function()
 			document.getElementById("considerado_ingresos").classList.remove('bg-green');
 			document.getElementById("considerado_ingresos").classList.add('bg-yellow');
 			document.getElementById("h3-consideracion_rol_estado").innerHTML = "CONSIDERAR INGRESOS ADICIONALES NO TIENE 100";
-			label_negar_credito();
+			
 		}else
 		{
 			document.getElementById("considerado_ingresos").classList.remove('bg-yellow');

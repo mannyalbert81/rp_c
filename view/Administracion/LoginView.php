@@ -26,12 +26,13 @@
   
   <div class="limiter">
 		<div class="container-login100">
+				
 			<div class="wrap-login100">
+													
 				<div class="login100-pic js-tilt" data-tilt>
 					<img src="view/images/logoerp.png" alt="IMG">
 				</div>
 
-				
 				<form class="login100-form validate-form" action="<?php echo $helper->url("Usuarios","Loguear"); ?>" method="post" >
 					<span class="login100-form-title">
 						Iniciar Sesión

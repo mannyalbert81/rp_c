@@ -1559,7 +1559,7 @@ var mostrar_verificacion_codigo	= function(){
 	}).done(function(x) {
 		console.log(x);
 		x=JSON.parse(x);
-		var informacion="<h3>Se procedera a generar un crédito para "+nombre_participe+"</h3>" +
+		var informacion="<h3>Se procedera a generar un crédito para "+dataSolicitud.nombre_participe_credito+"</h3>" +
 				"<h3>Con cédula de identidad número "+view.cedula_participes.val()+"</h3>" +
 				"<h3>Por el monto de "+view.monto_creditos.val()+" USD</h3>" +
 				"<h3>A un plazo de "+view.numero_cuotas.val()+" meses con interes del "+x[1]+"%</h3>" +
@@ -1586,7 +1586,8 @@ var validar_codigo_generado	= function(){
 	}else if( codigo_insertado!="" && !(codigo_insertado.includes("_")) && codigo_insertado==codigo_generado )
 	{
 		registrar_credito_nuevo();
-	}else{
+	}else
+	{
 		swal("Código incorrecto");
 	}
 }

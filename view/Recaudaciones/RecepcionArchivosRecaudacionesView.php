@@ -173,7 +173,7 @@
       <div class="col-lg-4 col-md-4 col-xs-12">        		
       <div class="panel panel-primary">
 	<div class="box-header with-border">
-      			<h3 class="box-title">Listado de Cargas</h3>      			
+      			<h3 class="box-title">1</h3>      			
             </div> 	
                     </div>
       </div>

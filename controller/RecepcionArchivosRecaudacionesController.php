@@ -262,184 +262,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
 	    $out.= "</ul>";
 	    return $out;
 	}
-		
-	public function GenerarCargaRecaudaciones(){
-	    
-	    $Contribucion      = new CoreContribucionModel();
-	    $carga_recaudaciones = new CargaRecaudacionesModel();
-	    $respuesta         = array();
-	    $error             = "";
-	    
-	    try{
-	        $Contribucion->beginTran();
-	        session_start();
-	        $_id_entidad_patronal  = $_POST['id_entidad_patronal'];
-	        $_anio_carga_recaudaciones     = $_POST['anio_carga_recaudaciones'];
-	        $_mes_carga_recaudaciones      = $_POST['mes_carga_recaudaciones'];
-	        $_formato_carga_recaudaciones  = $_POST['formato_carga_recaudaciones'];
-	        $_usuario_usuarios = $_SESSION['usuario_usuarios'];
-	        
-	        $error = error_get_last();
-	        if(!empty($error)){    throw new Exception('Variables no recibidas'); }
-	        
-	        /* validar archivo */
-	        $nombre = "";
-	        $tipo = "";
-	        $tamano = "";
-	        $_archivo_procesar = ""; 
-	        
-	        $_mes_carga_recaudaciones = str_pad($_mes_carga_recaudaciones, 2, "0", STR_PAD_LEFT);
-	        
-	        if ($_FILES['nombre_carga_recaudaciones']['tmp_name']!="")
-	        {
-	            
-	            $directorio = $this->crearPath($_anio_carga_recaudaciones, $_mes_carga_recaudaciones, "CARGAARCHIVOS");
-	            $_ruta_archivo_recaudaciones   = $directorio['ruta'];
-	            
-	            $nombre = $_FILES['nombre_carga_recaudaciones']['name'];
-	            $tipo = $_FILES['nombre_carga_recaudaciones']['type'];
-	            $tamano = $_FILES['nombre_carga_recaudaciones']['size'];
-	            move_uploaded_file($_FILES['nombre_carga_recaudaciones']['tmp_name'],$_ruta_archivo_recaudaciones.'/'.$nombre);
-	            
-	            $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
-	            
-	        }else{
-	            throw new Exception('Archivo txt no recibido/Valido');
-	        }
-	        	        
-	        $_array_archivo = $this->DevuelveLineasTxt($_archivo_procesar);
-	        $_cantidad_lineas = 0;
-	        $_suma_linea = 0;
-	        
-	        if(is_array($_array_archivo)){
-	            $_cantidad_lineas= $_array_archivo['cantidad_lineas'];
-	            $_suma_linea= $_array_archivo['suma_lineas'];
-	        }else{
-	            throw new Exception("El contenido del Archivo no es correcto");
-	        }	        
-	                
-	        
-	        $_nombre_carga_formato_recaudacion = "";
-	        $columnas1 = "id_carga_recaudaciones, nombre_carga_recaudaciones";
-	        $tablas1   = "core_carga_recaudaciones";
-	        $where1    = "id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones";
-	        $where1    .= " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones";
-	        $id1       = "id_carga_recaudaciones";
-	        
-	        switch ( $_formato_carga_recaudaciones ){
-	            
-	            case '1':
-	                $_nombre_carga_formato_recaudacion = "CARGA APORTES";
-	                $where1    .= " AND formato_carga_recaudaciones = '$_nombre_carga_formato_recaudacion'";
-	                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-	                
-	                $_id_carga_recaudaciones = 0;
-	                
-	                $error = pg_last_error();
-	                if(!empty($error)){ throw new Exception('datos no validos'); }
-	                
-	                if(empty($rsConsulta1)){
-	                    
-	                    $columnas2 = "id_entidad_patronal, nombre_entidad_patronal";
-	                    $tablas2   = "core_entidad_patronal";
-	                    $where2    = "id_entidad_patronal = $_id_entidad_patronal";
-	                    $id2       = "id_entidad_patronal";
-	                    $rsConsulta2   = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
-	                    $_nombre_entidad_patronal  = $this->limpiarCaracteresEspeciales($rsConsulta2[0]->nombre_entidad_patronal);
-	                    	                    
-	                    $funcion = "ins_core_carga_recaudaciones";
-	                    $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_recaudaciones','$nombre','$_usuario_usuarios','FALSE', '$_nombre_carga_formato_recaudacion','$_cantidad_lineas','$_suma_linea'";
-	                    $carga_recaudaciones->setFuncion($funcion);
-	                    $carga_recaudaciones->setParametros($parametros);
-	                    $resultado = $carga_recaudaciones->llamafuncionPG();
-	                    
-	                    $erro= pg_last_error();
-	                    if(!empty($erro)){ throw new Exception($erro); }
-	                    
-	                    
-	                    if((int)$resultado > 0){
-	                        
-	                        $respuesta['mensaje']   = "Carga Generada Revise el archivo";
-	                        $respuesta['respuesta'] = 1;
-	                    }else{
-	                        
-	                        $respuesta['mensaje']   = "Error al insertar";
-	                        $respuesta['respuesta'] = 2;
-	                        
-	                    }
-	                    
-	                }else{
-	                    
-	                    $respuesta['mensaje']   = "Ya existe el Archivo";
-	                    $respuesta['respuesta'] = 2;
-	                    
-	                }
-	                
-	                break;
-	            case '2':
-	                
-	                $_nombre_carga_formato_recaudacion = "CARGA CREDITOS";
-	                $where1    .= " AND formato_carga_recaudaciones = '$_nombre_carga_formato_recaudacion'";
-	                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-	                
-	                $_id_carga_recaudaciones = 0;
-	                
-	                $error = pg_last_error();
-	                if(!empty($error)){ throw new Exception('datos no validos'); }
-	                
-	                if(empty($rsConsulta1)){
-	                    
-	                    $columnas2 = "id_entidad_patronal, nombre_entidad_patronal";
-	                    $tablas2   = "core_entidad_patronal";
-	                    $where2    = "id_entidad_patronal = $_id_entidad_patronal";
-	                    $id2       = "id_entidad_patronal";
-	                    $rsConsulta2   = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
-	                    $_nombre_entidad_patronal  = $this->limpiarCaracteresEspeciales($rsConsulta2[0]->nombre_entidad_patronal);
-	                    
-	                  
-	                    $funcion = "ins_core_carga_recaudaciones";
-	                    $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_recaudaciones','$nombre','$_usuario_usuarios','FALSE', '$_nombre_carga_formato_recaudacion','$_cantidad_lineas','$_suma_linea'";
-	                    $carga_recaudaciones->setFuncion($funcion);
-	                    $carga_recaudaciones->setParametros($parametros);
-	                    $resultado = $carga_recaudaciones->llamafuncionPG();
-	                    
-	                    $erro= pg_last_error();
-	                    if(!empty($erro)){ throw new Exception($erro); }
-	                    
-	                    
-	                    if((int)$resultado > 0){
-	                        
-	                        $respuesta['mensaje']   = "Carga Generada Revise el archivo";
-	                        $respuesta['respuesta'] = 1;
-	                    }else{
-	                        
-	                        $respuesta['mensaje']   = "Error al insertar";
-	                        $respuesta['respuesta'] = 2;
-	                        
-	                    }
-	                    
-	                }else{
-	                    
-	                    $respuesta['mensaje']   = "Ya existe el Archivo";
-	                    $respuesta['respuesta'] = 2;
-	                    
-	                }
-	                
-	                break;
-	            default:
-	                break;
-	        }
-	        
-	        $Contribucion->endTran('COMMIT');
-	        echo json_encode($respuesta);
-	        
-	    } catch (Exception $ex) {
-	        $Contribucion->endTran();
-	        echo '<message> Error Carga Archivo Recaudacion '.$ex->getMessage().' <message>';
-	    }
-	    
-	}
-	
+
 	private function crearPath($anioArchivo, $mes, $folder){
 	    
 	    $respuesta     = array();
@@ -1215,15 +1038,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $_linea++;
         }
         fclose($file_abierto); 
-        
-        
-        //         $resp   = array();
-        //         $resp['error']  = $rowError;
-        //         $resp['dtError']    = ( !empty( $_archivo_errores ) ) ? $_archivo_errores : null;
-        //         $resp['dtArchivo']  = ( !empty( $_filas_archivo ) ) ? $_filas_archivo : null;
                 
-        //         return $resp;
-        
     }
     
     private function validacionCedulasRepetidas(string &$rowError, array $data,  array &$errorFilas){
@@ -1360,6 +1175,511 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         return $resp;
     }
     /** end dc 2020/06/30 **/
+    
+    /** dc 2020/06/30 **/
+    public function dtMostrarDescuentosPendientes()
+    {
+        if( !isset( $_SESSION ) ){
+            session_start();
+        }
+        
+        try {
+            ob_start();
+            
+            $recaudaciones = new RecaudacionesModel();
+                        
+            //dato que viene de parte del plugin DataTable
+            $requestData = $_REQUEST;
+            $searchDataTable   = $requestData['search']['value'];
+            
+            /** buscar por el usuario que se encuentra logueado */
+            $_usuario_logueado = $_SESSION['usuario_usuarios'];
+            
+            $id_entidad_patronal = $_POST['id_entidad_patronal'];
+            
+            $columnas1 = " aa.id_descuentos_registrados_cabeza, bb.nombre_entidad_patronal, aa.year_descuentos_registrados_cabeza, aa.mes_descuentos_registrados_cabeza,
+                cc.parametro_uno_descuentos_formatos, dd.nombre_descuentos_registrados_archivo, aa.nombre_archivo_descuentos_registrados_cabeza,
+                TO_CHAR(aa.fecha_descuentos_registrados_cabeza,'YYYY-MM-DD') fecha_descuentos, aa.fecha_contable_descuentos_registrados_cabeza";
+            $tablas1   = " core_descuentos_registrados_cabeza aa
+                INNER JOIN core_entidad_patronal bb on bb.id_entidad_patronal = aa.id_entidad_patronal
+                INNER JOIN core_descuentos_formatos cc on cc.id_descuentos_formatos = aa.id_descuentos_formatos
+                LEFT JOIN core_descuentos_registrados_archivo dd on dd.id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza";
+            $where1    = " cc.entrada_descuentos_formatos = true
+                AND aa.procesado_descuentos_registrados_cabeza = false
+                AND aa.erro_descuentos_registrados_cabeza = false
+                AND aa.id_entidad_patronal = $id_entidad_patronal ";
+                        
+            /* PARA FILTROS DE CONSULTA */
+            
+            if( strlen( $searchDataTable ) > 0 )
+            {
+                $where1 .= " AND ( ";
+                $where1 .= " bb.nombre_entidad_patronal ILIKE '%$searchDataTable%' ";
+                $where1 .= " OR TO_CHAR(aa.year_descuentos_registrados_cabeza,'9999') ilike '%$searchDataTable%' ";
+                $where1 .= " ) ";
+                
+            }
+            
+            $rsCantidad    = $recaudaciones->getCantidad("*", $tablas1, $where1);
+            $cantidadBusqueda = (int)$rsCantidad[0]->total;
+            
+            /**PARA ORDENAMIENTO Y  LIMITACIONES DE DATATABLE **/
+            
+            // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
+            $columns = array(
+                0 => '1',
+                1 => '1',
+                2 => '1',
+                3 => '1',
+                4 => '1',
+                5 => '1',
+                6 => '1',
+                7 => '1'
+            );
+            
+            $orderby   = $columns[$requestData['order'][0]['column']];
+            $orderdir  = $requestData['order'][0]['dir'];
+            $orderdir  = strtoupper($orderdir);
+            /**PAGINACION QUE VIEN DESDE DATATABLE**/
+            $per_page  = $requestData['length'];
+            $offset    = $requestData['start'];
+            
+            //para validar que consulte todos
+            $per_page  = ( $per_page == "-1" ) ? "ALL" : $per_page;
+            
+            $limit = " ORDER BY $orderby $orderdir LIMIT   $per_page OFFSET '$offset'";
+            
+            $sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+            //$sql = "";
+            
+            $resultSet=$recaudaciones->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
+                        
+            /** crear el array data que contiene columnas en plugins **/
+            $data = array();
+            $dataFila = array();
+            $columnIndex = 0;
+            foreach ( $resultSet as $res){
+                $columnIndex++;
+                
+                $opciones = ""; //variable donde guardare los datos creados automaticamente                
+                
+                $opciones = '<div class="pull-right ">
+                            <span >
+                                <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                            </div>';
+                
+                $nombretipo_descuentos = "";
+                if( $res->parametro_uno_descuentos_formatos == "C")
+                {
+                    $nombretipo_descuentos  = "CREDITOS";
+                }else
+                {
+                    $nombretipo_descuentos  = "APORTES";
+                }
+                
+                $dataFila['numfila'] = $columnIndex;
+                $dataFila['nombre_entidad']  = $res->nombre_entidad_patronal;
+                $dataFila['nombre_usuarios'] = $_usuario_logueado;
+                $dataFila['anio_descuentos'] = $res->year_descuentos_registrados_cabeza;
+                $dataFila['mes_descuentos']  = $res->mes_descuentos_registrados_cabeza;
+                $dataFila['nombre_formato']  = $nombretipo_descuentos;
+                $dataFila['nombre_archivo']  = $res->nombre_descuentos_registrados_archivo;
+                $dataFila['fecha_descuentos']= $res->fecha_descuentos;
+                $dataFila['fecha_contable']  = $res->fecha_contable_descuentos_registrados_cabeza;                
+                $dataFila['opciones'] = $opciones;
+                               
+                $data[] = $dataFila;
+            }
+          
+            $salida = ob_get_clean();
+            
+            if( !empty($salida) )
+                throw new Exception($salida);
+                
+                $json_data = array(
+                    "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                    "recordsTotal" => intval($cantidadBusqueda),  // total number of records
+                    "recordsFiltered" => intval($cantidadBusqueda), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                    "data" => $data,   // total data array
+                    "sql" => $sql
+                );
+                
+        } catch (Exception $e) {
+            
+            $json_data = array(
+                "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                "recordsTotal" => intval("0"),  // total number of records
+                "recordsFiltered" => intval("0"), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                "data" => array(),   // total data array
+                "sql" => $sql,
+                "buffer" => error_get_last(),
+                "ERRORDATATABLE" => $e->getMessage()
+            );
+        }
+        
+        
+        echo json_encode($json_data);
+    }
+    /** end dc 2020/06/30 **/
+    
+    /** dc 2020/06/30 **/
+    public function dtMostrarDescuentosProcesados()
+    {
+        if( !isset( $_SESSION ) ){
+            session_start();
+        }
+        
+        try {
+            ob_start();
+            
+            $recaudaciones = new RecaudacionesModel();
+            
+            //dato que viene de parte del plugin DataTable
+            $requestData = $_REQUEST;
+            $searchDataTable   = $requestData['search']['value'];
+            
+            /** buscar por el usuario que se encuentra logueado */
+            $_usuario_logueado = $_SESSION['usuario_usuarios'];
+            
+            $id_entidad_patronal = $_POST['id_entidad_patronal'];
+            
+            $columnas1 = " aa.id_descuentos_registrados_cabeza, bb.nombre_entidad_patronal, aa.year_descuentos_registrados_cabeza, aa.mes_descuentos_registrados_cabeza,
+                cc.parametro_uno_descuentos_formatos, dd.nombre_descuentos_registrados_archivo, aa.nombre_archivo_descuentos_registrados_cabeza,
+                TO_CHAR(aa.fecha_descuentos_registrados_cabeza,'YYYY-MM-DD') fecha_descuentos, aa.fecha_contable_descuentos_registrados_cabeza";
+            $tablas1   = " core_descuentos_registrados_cabeza aa
+                INNER JOIN core_entidad_patronal bb on bb.id_entidad_patronal = aa.id_entidad_patronal
+                INNER JOIN core_descuentos_formatos cc on cc.id_descuentos_formatos = aa.id_descuentos_formatos
+                LEFT JOIN core_descuentos_registrados_archivo dd on dd.id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza";
+            $where1    = " cc.entrada_descuentos_formatos = true
+                AND aa.procesado_descuentos_registrados_cabeza = true
+                AND aa.erro_descuentos_registrados_cabeza = false
+                AND aa.id_entidad_patronal = $id_entidad_patronal ";
+            
+            /* PARA FILTROS DE CONSULTA */
+            
+            if( strlen( $searchDataTable ) > 0 )
+            {
+                $where1 .= " AND ( ";
+                $where1 .= " bb.nombre_entidad_patronal ILIKE '%$searchDataTable%' ";
+                $where1 .= " OR TO_CHAR(aa.year_descuentos_registrados_cabeza,'9999') ilike '%$searchDataTable%' ";
+                $where1 .= " ) ";
+                
+            }
+            
+            $rsCantidad    = $recaudaciones->getCantidad("*", $tablas1, $where1);
+            $cantidadBusqueda = (int)$rsCantidad[0]->total;
+            
+            /**PARA ORDENAMIENTO Y  LIMITACIONES DE DATATABLE **/
+            
+            // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
+            $columns = array(
+                0 => '1',
+                1 => '1',
+                2 => '1',
+                3 => '1',
+                4 => '1',
+                5 => '1',
+                6 => '1',
+                7 => '1'
+            );
+            
+            $orderby   = $columns[$requestData['order'][0]['column']];
+            $orderdir  = $requestData['order'][0]['dir'];
+            $orderdir  = strtoupper($orderdir);
+            /**PAGINACION QUE VIEN DESDE DATATABLE**/
+            $per_page  = $requestData['length'];
+            $offset    = $requestData['start'];
+            
+            //para validar que consulte todos
+            $per_page  = ( $per_page == "-1" ) ? "ALL" : $per_page;
+            
+            $limit = " ORDER BY $orderby $orderdir LIMIT   $per_page OFFSET '$offset'";
+            
+            //$sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+            $sql = "";
+            
+            $resultSet=$recaudaciones->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
+            
+            /** crear el array data que contiene columnas en plugins **/
+            $data = array();
+            $dataFila = array();
+            $columnIndex = 0;
+            foreach ( $resultSet as $res){
+                $columnIndex++;
+                
+                $opciones = ""; //variable donde guardare los datos creados automaticamente
+                
+                $opciones = '<div class="pull-right ">
+                            <span >
+                                <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                            </div>';
+                
+                $nombretipo_descuentos = "";
+                if( $res->parametro_uno_descuentos_formatos == "C")
+                {
+                    $nombretipo_descuentos  = "CREDITOS";
+                }else
+                {
+                    $nombretipo_descuentos  = "APORTES";
+                }
+                
+                $dataFila['numfila'] = $columnIndex;
+                $dataFila['nombre_entidad']  = $res->nombre_entidad_patronal;
+                $dataFila['nombre_usuarios'] = $_usuario_logueado;
+                $dataFila['anio_descuentos'] = $res->year_descuentos_registrados_cabeza;
+                $dataFila['mes_descuentos']  = $res->mes_descuentos_registrados_cabeza;
+                $dataFila['nombre_formato']  = $nombretipo_descuentos;
+                $dataFila['nombre_archivo']  = $res->nombre_descuentos_registrados_archivo;
+                $dataFila['fecha_descuentos']= $res->fecha_descuentos;
+                $dataFila['fecha_contable']  = $res->fecha_contable_descuentos_registrados_cabeza;
+                $dataFila['opciones'] = $opciones;
+                
+                $data[] = $dataFila;
+            }
+            
+            $salida = ob_get_clean();
+            
+            if( !empty($salida) )
+                throw new Exception($salida);
+                
+                $json_data = array(
+                    "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                    "recordsTotal" => intval($cantidadBusqueda),  // total number of records
+                    "recordsFiltered" => intval($cantidadBusqueda), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                    "data" => $data,   // total data array
+                    "sql" => "",//$sql
+                );
+                
+        } catch (Exception $e) {
+            
+            $json_data = array(
+                "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                "recordsTotal" => intval("0"),  // total number of records
+                "recordsFiltered" => intval("0"), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                "data" => array(),   // total data array
+                "sql" => $sql,
+                "buffer" => error_get_last(),
+                "ERRORDATATABLE" => $e->getMessage()
+            );
+        }
+        
+        
+        echo json_encode($json_data);
+    }
+    /** end dc 2020/06/30 **/
+    
+    /** dc 2020/06/30 **/
+    public function dtMostrarDescuentosError()
+    {
+        if( !isset( $_SESSION ) ){
+            session_start();
+        }
+        
+        try {
+            ob_start();
+            
+            $recaudaciones = new RecaudacionesModel();
+            
+            //dato que viene de parte del plugin DataTable
+            $requestData = $_REQUEST;
+            $searchDataTable   = $requestData['search']['value'];
+            
+            /** buscar por el usuario que se encuentra logueado */
+            $_usuario_logueado = $_SESSION['usuario_usuarios'];
+            
+            $id_entidad_patronal = $_POST['id_entidad_patronal'];
+            
+            $columnas1 = " aa.id_descuentos_registrados_cabeza, bb.nombre_entidad_patronal, aa.year_descuentos_registrados_cabeza, aa.mes_descuentos_registrados_cabeza,
+                cc.parametro_uno_descuentos_formatos, dd.nombre_descuentos_registrados_archivo, aa.nombre_archivo_descuentos_registrados_cabeza,
+                TO_CHAR(aa.fecha_descuentos_registrados_cabeza,'YYYY-MM-DD') fecha_descuentos, aa.fecha_contable_descuentos_registrados_cabeza";
+            $tablas1   = " core_descuentos_registrados_cabeza aa
+                INNER JOIN core_entidad_patronal bb on bb.id_entidad_patronal = aa.id_entidad_patronal
+                INNER JOIN core_descuentos_formatos cc on cc.id_descuentos_formatos = aa.id_descuentos_formatos
+                LEFT JOIN core_descuentos_registrados_archivo dd on dd.id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza";
+            $where1    = " cc.entrada_descuentos_formatos = true
+                AND aa.procesado_descuentos_registrados_cabeza = true
+                AND aa.erro_descuentos_registrados_cabeza = true
+                AND aa.id_entidad_patronal = $id_entidad_patronal ";
+            
+            /* PARA FILTROS DE CONSULTA */
+            
+            if( strlen( $searchDataTable ) > 0 )
+            {
+                $where1 .= " AND ( ";
+                $where1 .= " bb.nombre_entidad_patronal ILIKE '%$searchDataTable%' ";
+                $where1 .= " OR TO_CHAR(aa.year_descuentos_registrados_cabeza,'9999') ilike '%$searchDataTable%' ";
+                $where1 .= " ) ";
+                
+            }
+            
+            $rsCantidad    = $recaudaciones->getCantidad("*", $tablas1, $where1);
+            $cantidadBusqueda = (int)$rsCantidad[0]->total;
+            
+            /**PARA ORDENAMIENTO Y  LIMITACIONES DE DATATABLE **/
+            
+            // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
+            $columns = array(
+                0 => '1',
+                1 => '1',
+                2 => '1',
+                3 => '1',
+                4 => '1',
+                5 => '1',
+                6 => '1',
+                7 => '1'
+            );
+            
+            $orderby   = $columns[$requestData['order'][0]['column']];
+            $orderdir  = $requestData['order'][0]['dir'];
+            $orderdir  = strtoupper($orderdir);
+            /**PAGINACION QUE VIEN DESDE DATATABLE**/
+            $per_page  = $requestData['length'];
+            $offset    = $requestData['start'];
+            
+            //para validar que consulte todos
+            $per_page  = ( $per_page == "-1" ) ? "ALL" : $per_page;
+            
+            $limit = " ORDER BY $orderby $orderdir LIMIT   $per_page OFFSET '$offset'";
+            
+            //$sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+            $sql = "";
+            
+            $resultSet=$recaudaciones->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
+            
+            /** crear el array data que contiene columnas en plugins **/
+            $data = array();
+            $dataFila = array();
+            $columnIndex = 0;
+            foreach ( $resultSet as $res){
+                $columnIndex++;
+                
+                $opciones = ""; //variable donde guardare los datos creados automaticamente
+                
+                $opciones = '<div class="pull-right ">
+                            <span >
+                                <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                            </div>';
+                              
+                $nombretipo_descuentos = "";
+                if( $res->parametro_uno_descuentos_formatos == "C")
+                {
+                    $nombretipo_descuentos  = "CREDITOS";
+                }else
+                {
+                    $nombretipo_descuentos  = "APORTES";
+                }
+                
+                $dataFila['numfila'] = $columnIndex;
+                $dataFila['nombre_entidad']  = $res->nombre_entidad_patronal;
+                $dataFila['nombre_usuarios'] = $_usuario_logueado;
+                $dataFila['anio_descuentos'] = $res->year_descuentos_registrados_cabeza;
+                $dataFila['mes_descuentos']  = $res->mes_descuentos_registrados_cabeza;
+                $dataFila['nombre_formato']  = $nombretipo_descuentos;
+                $dataFila['nombre_archivo']  = $res->nombre_descuentos_registrados_archivo;
+                $dataFila['fecha_descuentos']= $res->fecha_descuentos;
+                $dataFila['fecha_contable']  = $res->fecha_contable_descuentos_registrados_cabeza;
+                $dataFila['opciones'] = $opciones;
+                
+                $data[] = $dataFila;
+            }
+            
+            $salida = ob_get_clean();
+            
+            if( !empty($salida) )
+                throw new Exception($salida);
+                
+                $json_data = array(
+                    "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                    "recordsTotal" => intval($cantidadBusqueda),  // total number of records
+                    "recordsFiltered" => intval($cantidadBusqueda), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                    "data" => $data,   // total data array
+                    "sql" => "",//$sql
+                );
+                
+        } catch (Exception $e) {
+            
+            $json_data = array(
+                "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                "recordsTotal" => intval("0"),  // total number of records
+                "recordsFiltered" => intval("0"), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                "data" => array(),   // total data array
+                "sql" => $sql,
+                "buffer" => error_get_last(),
+                "ERRORDATATABLE" => $e->getMessage()
+            );
+        }
+        
+        
+        echo json_encode($json_data);
+    }
+    /** end dc 2020/06/30 **/
+    
+    /** dc 2020/06/30 **/
+    public function mostrarArchivoTxt()
+    {
+        $recaudaciones = new RecaudacionesModel();
+        
+        try {
+            
+            if( !isset( $_SESSION ) )
+            {
+                session_start();
+            }
+            
+            $id_descuentos_cabeza  = $_POST['id_descuentos_cabeza'];
+            
+            if( error_get_last() ){
+                throw new Exception( "Datos no recibidos" );
+            }
+            
+            /** VALIDACION PARA SABER SI YA EXISTE EL ARCHIVO GENERADO **/
+            $colvalidacion = " ubicacion_descuentos_registrados_archivo, nombre_descuentos_registrados_archivo";
+            $tabvalidacion = " public.core_descuentos_registrados_archivo";
+            $twhevalidacion = " id_descuentos_registrados_cabeza = $id_descuentos_cabeza";
+            $rsValidacion  = $recaudaciones->getCondicionesSinOrden($colvalidacion, $tabvalidacion, $twhevalidacion, "LIMIT 1");
+            
+            if( !empty( $rsValidacion ) )
+            {
+                
+                $ubicacionFile = $rsValidacion[0]->ubicacion_descuentos_registrados_archivo;
+                $nombreFile    = $rsValidacion[0]->nombre_descuentos_registrados_archivo;
+                
+                header("Content-disposition: attachment; filename=$nombreFile");
+                header("Content-type: MIME");
+                ob_clean();
+                flush();
+                readfile($ubicacionFile);
+                exit;
+            }
+                        
+            /* estructurar el archivo */
+            //$datahead	= "DATOS NO SE ENCUENTRAN CARGADOS EN EL SISTEMA".PHP_EOL;
+            $datahead	= "DATOS NO SE ENCUENTRAN CARGADOS EN EL SISTEMA";
+            
+            /*** buscar otro metodo para archivos grandes evitar acumulacion memoria al generar todo en una variable */            
+           
+            // Define headers
+            header('Content-type: text/plain');
+            header("Content-disposition: attachment; filename=ArchivoSubir.txt");
+            ob_clean();
+            flush();
+            print $datahead;
+            exit;
+            
+        } catch (Exception $e) {
+            echo '<message>'.$e->getMessage().' <message>';
+            exit();
+        }
+    }
+    /** end dc 2020/06/30 **/
+    
+    
     
     /** BEGIN FUNCIONES UTILITARIAS PARA LA CLASE */
     private function devuelveMesNombre($_mes){

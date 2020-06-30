@@ -319,13 +319,12 @@ function uploadFileEntidad(){
 	parametros.append('id_descuentos_formatos',$id_descuentos_formatos.val());
 	parametros.append('anio_carga_recaudaciones',$anioCargaRecaudaciones.val());
 	parametros.append('mes_carga_recaudaciones',$mesCargaRecaudaciones.val());
-	parametros.append('formato_carga_recaudaciones',$formatoCargaRecaudaciones.val());
 	parametros.append('nombre_carga_recaudaciones', $('input[type=file]')[0].files[0]); 
 	
 	
 	$.ajax({
 		beforeSend:fnBeforeAction('Estamos procesado la informacion'),
-		url:"index.php?controller=CargaRecaudaciones&action=cargaArchivoRecaudacion",
+		url:"index.php?controller=RecepcionArchivosRecaudaciones&action=cargaArchivoRecaudacion",
 		type:"POST",
 		dataType:"json",
 		data:parametros,		

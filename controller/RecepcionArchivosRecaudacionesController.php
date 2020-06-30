@@ -6,6 +6,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
     private $_nombre_creditos_formato  = "DESCUENTOS CREDITOS";
     private $_nombre_aportes_formato   = "DESCUENTOS APORTES";
     private $_nombre_combinado_formato = "DESCUENTOS APORTES Y CREDITOS";	
+    private $datosCabecera  = array(); //variable para guardar datos cabecera parametros BD
     
 	public function __construct() {
 		parent::__construct();
@@ -901,6 +902,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         
         $Contribucion      = new CoreContribucionModel();
         $carga_recaudaciones = new CargaRecaudacionesModel();
+        $recaudaciones      = new RecaudacionesModel();
         $respuesta         = array();
         $error             = "";
         
@@ -933,7 +935,6 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $_id_descuentos_formatos       = $_POST['id_descuentos_formatos'];
             $_anio_carga_recaudaciones     = $_POST['anio_carga_recaudaciones'];
             $_mes_carga_recaudaciones      = $_POST['mes_carga_recaudaciones'];
-            $_formato_carga_recaudaciones  = $_POST['formato_carga_recaudaciones'];
             $_usuario_usuarios  = $_SESSION['usuario_usuarios'];
             $_id_usuarios       = $_SESSION['id_usuarios'];
             $_arhivo_carga_datos   = $_FILES["nombre_carga_recaudaciones"];
@@ -1059,43 +1060,41 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         try{
             
             //buscar formatos decuentos
-            $col1   = "";
-            $tab
+            $col1   = " id_descuentos_formatos, nombre_descuentos_formatos, parametro_uno_descuentos_formatos";
+            $tab1   = " public.core_descuentos_formatos";
+            $whe1   = " id_descuentos_formatos = $_id_descuentos_formatos";
             
+            $rsConsulta1    = $recaudaciones->getCondicionesSinOrden( $col1, $tab1, $whe1, "");
+            
+            $tipoFormatoDescuentos  = $rsConsulta1[0]->parametro_uno_descuentos_formatos;  //se obtiene el formato de descuento  
+                        
             $Contribucion->beginTran();
             
-            /**variables para trabajar en el insertado */
-            $_id_carga_recaudaciones = 0;
-            $respuesta = array();
+            //para obtener fecha actual
+            $Ofecha_actual = new DateTime();
+            //$fecha->modify('last day of this month');
+            $fecha_actual  = $Ofecha_actual->format('Y-m-d');
+            $fec_dia_actual= $Ofecha_actual->format('d');
             
-            $funcion = "ins_core_carga_recaudaciones";
-            $parametros = "'$_id_entidad_patronal','$_mes_carga_recaudaciones','$_anio_carga_recaudaciones','$_ruta_archivo_guardar','$_nombre_archivo_guardar','$_usuario_usuarios','FALSE', '$this->_nombre_formato','$_numero_lineas_archivo','$_suma_total_archivo'";
-            $_queryInsercionCarga = $Contribucion->getconsultaPG($funcion, $parametros);
-            $resultado = $carga_recaudaciones->llamarconsultaPG($_queryInsercionCarga);            
-            $error= pg_last_error();
-            if(!empty($error)){ throw new Exception($error); }
+            //para objeto de fecha actual
+            $Ofecha_contable  = new DateTime();
             
-            $_id_carga_recaudaciones = $resultado[0];   
-            
-            /*************** Aqui comienza a recorrer el array de filas del archivo **********************/
-            $funcion = "ins_core_carga_recaudaciones_detalle";
-            $parametros = "";
-            $_error_detalle = false;
-            foreach ( $dataFilasArchivo as $res ){
+            //validacion de fecha mora
+            if( (int)$fec_dia_actual > 0 && (int)$fec_dia_actual < 6 )
+            {
+                //SINTAXERROR
+                $fec_mes_moras = (int)$_mes_carga_recaudaciones - 1;
+                $str_fec_moras = $anio_recaudacion."-".$fec_mes_moras."-01";
+                $Ofecha_contable  = new DateTime($str_fec_moras);
                 
-                // set up vars.
-                $_det_linea  = $res['linea'];
-                $_det_cedula = $res['cedula'];
-                $_det_valor = $res['valor'];                                
-                $parametros = "$_id_carga_recaudaciones,$_det_linea,'$_det_cedula',$_det_valor";
-                //echo $parametros;
-                $_queryInserciondetalle = $Contribucion->getconsultaPG($funcion, $parametros);                
-                $resultado_detalle = $carga_recaudaciones->llamarconsultaPG($_queryInserciondetalle); 
-                $_det_error = pg_last_error();
-                if(!empty($_det_error)){ $_error_detalle = true; break;}
+            }else
+            {
+                $str_fec_moras = $anio_recaudacion."-".$mes_recaudacion."-01";
+                $Ofecha_contable  = new DateTime($str_fec_moras);
             }
             
-            if( $_error_detalle ){ throw new Exception("Error insertado detalle de archivo"); }
+            //fecha de moras
+            $fecha_contable  = $Ofecha_moras->format('Y-m-t');
             
             /** aqui realizar insertado de aportes en la tablas de contribucion **/
             $dataCabecera   = array();
@@ -1104,16 +1103,20 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $dataCabecera['mes_recaudaciones']      = $_mes_carga_recaudaciones;
             $dataCabecera['usuario_usuarios']       = $_usuario_usuarios;
             $dataCabecera['id_usuarios']            = $_id_usuarios;
-            $dataCabecera['fecha_descuentos_registrados']   = date('Y-m-d H:i:s');
+            $dataCabecera['fecha_descuentos_registrados']   = $Ofecha_actual->format('Y-m-01');
             $dataCabecera['nombre_archivo_registrados']     = $_nombre_archivo_guardar;
             $dataCabecera['id_descuentos_formatos']         = $_id_descuentos_formatos;
-            $dataCabecera['procesado_descuentos_registrados']   = 't';
+            $dataCabecera['procesado_descuentos_registrados']   = 'f';
             $dataCabecera['error_descuentos_registrados']       = 'f';
             $dataCabecera['tipo_credito']           = "null"; //aqui poner el valor de tipo_credito ..cambiaria si es tipo credito
             $dataCabecera['observacion_descuentos_registrados']     = "";
-            $dataCabecera['fecha_proceso_descuentos_registrados']   = date('Y-m-d H:i:s');
+            $dataCabecera['fecha_proceso_descuentos_registrados']   = $fecha_actual;
+            $dataCabecera['fecha_contable_descuentos_registrados']   = $fecha_contable;
+            $dataCabecera['fecha_proceso_descuentos_registrados']   = 'f';
+            $dataCabecera['fecha_proceso_descuentos_registrados']   = 'null';
                         
-            $auxDescuentos  = $this->InsertDescuentos( $this->_nombre_formato, $dataCabecera, $dataFilasArchivo );
+                        
+            $auxDescuentos  = $this->InsertDescuentos( $tipoFormatoDescuentos, $dataCabecera, $dataFilasArchivo );
             
             var_dump($auxDescuentos);
             
@@ -1123,7 +1126,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             
             $respuesta['mensaje']   = "Carga Generada";
             $respuesta['respuesta'] = 1;
-            $respuesta['id_archivo']= $_id_carga_recaudaciones;
+            //$respuesta['id_archivo']= $_id_carga_recaudaciones;
             echo json_encode( $respuesta );
             $Contribucion->endTran('COMMIT');
             
@@ -1142,7 +1145,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         $recaudaciones = new RecaudacionesModel();
         
         $funcion = "core_ins_descuentos_registrados_cabeza";
-        
+                
         //creacion de la variable parametros
         $parametros = "";
         $parametros .= $paramsCab['id_entidad_patronal'].",";
@@ -1164,7 +1167,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         $resultadoCabecera  = $recaudaciones->llamarconsultaPG($sqRecaudaciones);
         $id_cabecera    = $resultadoCabecera[0];
         
-        if( $this->_nombre_aportes_formato == $formato )
+        if( $formato == "A" )
         { 
             
             $id_entidad_patronal    = $paramsCab['id_entidad_patronal']; 
@@ -1175,7 +1178,8 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $detalle    = array();
             $funcionDetalle = "core_ins_descuentos_registrados_detalle_aportes";
             
-            foreach ( $datos as $res ){
+            foreach ( $datos as $res )
+            {
                                 
                 $detalle['id_descuentos_registrados_cabeza']    = $id_cabecera;
                 $detalle['id_entidad_patronal']                 = $id_entidad_patronal;
@@ -1190,7 +1194,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 $detalle['antiguedad_descuentos']               = "0.00";
                 $detalle['alta_descuentos']                     = "t";
                 $detalle['id_descuentos_formatos']              = $id_formatos_descuentos;
-                $detalle['procesado_descuentos']                = "t";
+                $detalle['procesado_descuentos']                = "f";
                 $detalle['saldo_descuentos']                    = "0.00";
                 
                 $parametrosDetalle  = "'".join("','", $detalle)."'";
@@ -1206,13 +1210,16 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             
            
             
-        }elseif ($this->_nombre_creditos_formato == $formato ){
+        }elseif ( $formato == "C")
+        {
             
-        }else{
+        }else
+        {
             
         }      
         
-        if( !empty( error_get_last() ) || !empty( pg_last_error() ) ){
+        if( !empty( error_get_last() ) || !empty( pg_last_error() ) )
+        {
             $resp['error'] = true;
             $resp['mensaje'] = "Error en insertado de Descuentos";
             return $resp;

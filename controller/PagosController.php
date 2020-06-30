@@ -411,7 +411,7 @@ class PagosController extends ControladorBase{
                     $whe    = " id_cuentas_pagar = $id_cuentas_pagar";
                     $rsConsulta = $cpagar->getCondicionesSinOrden( $col, $tab, $whe, "" );
                     
-                    $id_comprobante_cheque  = $rsConsulta[0]->id_ccomprobantes;
+                    $id_comprobante_cheque  = $res->id_ccomprobantes;
                     
                     $opcionesCheque = '<span >
                                 <a class="btn btn-default input-sm showpdfcheque" data-id_ccomprobantes ="'.$id_comprobante_cheque.'" data-id_cuentas_pagar ="'.$id_cuentas_pagar.'" data-toogle="tooltip"  href="#" title="Cheque"> <i class="fa fa-file-pdf-o" aria-hidden="true" ></i></a>

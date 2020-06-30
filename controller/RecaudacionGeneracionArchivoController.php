@@ -408,7 +408,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    $fecha_recaudacion = $anio_recaudacion."-".$mes_recaudacion."-01";
 	    $Ofec_recaudacion  = new DateTime($fecha_recaudacion); 
 	    $fecha_recaudacion = $Ofec_recaudacion->format('Y-m-t');
-	    
+	    	    
 	    /*** EJECUCION DE FUNCION QUE REALIZA BUSQUEDA EN INSERTA EN TABLA DE VALORES -- nota validar duracion de respuesta**/
 	    
 	    $funcion = "fc_descuentos_creditos_distribucion_inicio";	    
@@ -3030,6 +3030,176 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	    }
 	}
 	/** end 2020/06/25 **/
+
+	/** dc 2020/06/29 **/
+	public function DTArchivoDescuentos(){
+	    
+	    if( !isset( $_SESSION ) ){
+	        session_start();
+	    }
+	    
+	    try {
+	        ob_start();
+	        
+	        $recaudaciones = new RecaudacionesModel();
+	        
+	        //variables para enviar a  la vista
+	        $valor_parcial = 0.00;
+	        $valor_total   = 0.00;
+	        
+	        //dato que viene de parte del plugin DataTable
+	        $requestData = $_REQUEST;
+	        $searchDataTable   = $requestData['search']['value'];
+	        
+	        /** buscar por el usuario que se encuentra logueado */
+	        //$_usuario_logueado = $_SESSION['usuario_usuarios'];
+	        
+	        $id_entidad_patronal = $_POST['id_entidad_patronal'];
+	        $mes_recaudacion     = $_POST['mes_recaudacion'];
+	        $anio_recaudacion    = $_POST['anio_recaudacion'];
+	        
+	        $columnas1 = " aa.id_descuentos_registrados_detalle_valores_creditos, bb.id_entidad_patronal, bb.nombre_entidad_patronal, aa.cedula_participes, aa.nombres_participes,
+	           aa.mes_descuento, aa.sueldo_liquido, aa.cuota, aa.mora, aa.total, aa.valor_usuario_valores_creditos as total_usuario, aa.nombre_tipo_creditos, aa.tipo_afiliado";
+	        $tablas1   = " core_descuentos_registrados_detalle_valores_creditos aa
+	           INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal ";
+	        $where1    = " aa.id_entidad_patronal = $id_entidad_patronal
+               AND aa.mes = $mes_recaudacion AND aa.anio = $anio_recaudacion";
+	        
+	        //aqui la busqueda total sin filtros
+	        $colSum    = "COALESCE( SUM( case when valor_usuario_valores_creditos  is null then total else valor_usuario_valores_creditos  end ), 0 ) total_descuento";
+	        $rsTotal = $recaudaciones->getCondicionesSinOrden( $colSum, $tablas1, $where1, "");
+	        $valor_total   = $rsTotal[0]->total_descuento;
+	        
+	        /* PARA FILTROS DE CONSULTA */
+	        
+	        if( strlen( $searchDataTable ) > 0 )
+	        {
+	            $where1 .= " AND ( ";
+	            $where1 .= " aa.cedula_participes ILIKE '%$searchDataTable%' ";
+	            $where1 .= " OR aa.nombres_participes ILIKE '%$searchDataTable%'";
+	            $where1 .= " ) ";
+	            
+	        }
+	        
+	        $rsCantidad    = $recaudaciones->getCantidad("*", $tablas1, $where1);
+	        $cantidadBusqueda = (int)$rsCantidad[0]->total;
+	        
+	        /**PARA ORDENAMIENTO Y  LIMITACIONES DE DATATABLE **/
+	        
+	        // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
+	        $columns = array(
+	            0 => '1',
+	            1 => '1',
+	            2 => '1',
+	            3 => '1',
+	            4 => '1',
+	            5 => '1',
+	            6 => '1',
+	            7 => '1'
+	        );
+	        
+	        $orderby   = $columns[$requestData['order'][0]['column']];
+	        $orderdir  = $requestData['order'][0]['dir'];
+	        $orderdir  = strtoupper($orderdir);
+	        /**PAGINACION QUE VIEN DESDE DATATABLE**/
+	        $per_page  = $requestData['length'];
+	        $offset    = $requestData['start'];
+	        
+	        //para validar que consulte todos
+	        $per_page  = ( $per_page == "-1" ) ? "ALL" : $per_page;
+	        
+	        $limit = " ORDER BY $orderby $orderdir LIMIT   $per_page OFFSET '$offset'";
+	        
+	        $sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+	        //$sql = "";
+	        
+	        $resultSet=$recaudaciones->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
+	        
+	        //aqui la busqueda total parcial
+	        $colSum    = "COALESCE( SUM( case when valor_usuario_valores_creditos  is null then total else valor_usuario_valores_creditos  end ), 0 ) total_descuento";
+	        $rsParcial = $recaudaciones->getCondicionesSinOrden( $colSum, $tablas1, $where1, $limit);
+	        $valor_parcial   = $rsParcial[0]->total_descuento;
+	        
+	        //$cantidadBusquedaFiltrada = sizeof($resultSet);
+	        
+	        /** crear el array data que contiene columnas en plugins **/
+	        $data = array();
+	        $dataFila = array();
+	        $columnIndex = 0;
+	        foreach ( $resultSet as $res){
+	            $columnIndex++;
+	            
+	            $opciones = ""; //variable donde guardare los datos creados automaticamente
+	            
+	            $opciones = '<div class="pull-right ">
+                            <span >
+                                <a onclick="mostrar_valores_descuentos_creditos(this)" id="" data-id_descuento_valor_credito="'.$res->id_descuentos_registrados_detalle_valores_creditos.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Editar Valores"> <i class="fa  fa-edit fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                            </div>';
+	            
+	            $total_usuario = $res->total_usuario;
+	            if( empty($total_usuario) )
+	            {
+	                $total_usuario = $res->total;
+	            }
+	            
+	            $dataFila['numfila'] = $columnIndex;
+	            $dataFila['nombre_entidad']  = $res->nombre_entidad_patronal;
+	            $dataFila['tipo_afiliado'] = $res->tipo_afiliado;
+	            $dataFila['cedula']   = $res->cedula_participes;
+	            $dataFila['nombre']   = $res->nombres_participes;
+	            $dataFila['nombre_credito']    = $res->nombre_tipo_creditos;
+	            $dataFila['fecha']    = $res->mes_descuento;
+	            $dataFila['sueldo']   = $res->sueldo_liquido;
+	            $dataFila['cuota']    = $res->cuota;
+	            $dataFila['mora']   = $res->mora;
+	            $dataFila['total']    = $res->total;
+	            $dataFila['total_usuario']    = $total_usuario;
+	            $dataFila['opciones'] = $opciones;
+	            //$dataFila['id_cabeza']         = '12345';
+	            
+	            $data[] = $dataFila;
+	        }
+	        
+	        //para valores de pie datetable
+	        $totales = array();
+	        $totales['parcial']    = $valor_parcial;
+	        $totales['total']      = $valor_total;
+	        
+	        $salida = ob_get_clean();
+	        
+	        if( !empty($salida) )
+	            throw new Exception($salida);
+	            
+	            $json_data = array(
+	                "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+	                "recordsTotal" => intval($cantidadBusqueda),  // total number of records
+	                "recordsFiltered" => intval($cantidadBusqueda), // total number of records after searching, if there is no searching then totalFiltered = totalData
+	                "data" => $data,   // total data array
+	                "sql" => "",//$sql
+	                "totales" => $totales //valores totales
+	            );
+	            
+	    } catch (Exception $e) {
+	        
+	        $json_data = array(
+	            "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+	            "recordsTotal" => intval("0"),  // total number of records
+	            "recordsFiltered" => intval("0"), // total number of records after searching, if there is no searching then totalFiltered = totalData
+	            "data" => array(),   // total data array
+	            "sql" => $sql,
+	            "buffer" => error_get_last(),
+	            "ERRORDATATABLE" => $e->getMessage()
+	        );
+	    }
+	    
+	    
+	    echo json_encode($json_data);
+	    
+	}
+	
+	/** end dc 2020/06/29 **/
 	
 	public function ver_code()
 	{

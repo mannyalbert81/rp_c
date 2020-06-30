@@ -1178,7 +1178,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             
             if( $_linea > 0 && $_fila != "" ){
                 
-                $_array_fila   = explode(";", $_fila);
+                $_array_fila   = explode("\t", $_fila);
                 if( is_array($_array_fila) && sizeof( $_array_fila ) == 3 ){
                     
                     $_cedula    = $_array_fila[0];

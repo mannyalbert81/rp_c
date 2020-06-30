@@ -781,7 +781,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 $_nombre_archivo_guardar_descuentos = $_nombre_archivo_guardar;
             }
             
-            $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$_nombre_archivo_guardar_descuentos;
+            $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
             $archivo_move = move_uploaded_file($_arhivo_carga_datos ['tmp_name'],$_archivo_procesar);
             if( !$archivo_move ){
                 throw new Exception("Error al leer Archivo. Por Favor subir nuevamente");
@@ -1027,16 +1027,15 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $funcionDetalle = "core_ins_descuentos_registrados_detalle_creditos";
                         
             foreach ( $datos as $res )
-            {
-                
+            {               
                 $detalle['id_descuentos_registrados_cabeza']    = $id_cabecera;
                 $detalle['id_entidad_patronal']                 = $id_entidad_patronal;
                 $detalle['anio_descuentos']                     = $anio_recaudacion;
                 $detalle['mes_descuentos']                      = $mes_recaudacion;
                 $detalle['id_tipo_descuento']                   = 0;
-                $detalle['id_participes']                       = $res['id_participes'];;
-                $detalle['id_creditos']                         = $res['valor'];;
-                $detalle['cuota_descuentos']                    = "0.00";
+                $detalle['id_participes']                       = $res['id_participes'];
+                $detalle['id_creditos']                         = "0";
+                $detalle['cuota_descuentos']                    = $res['valor'];
                 $detalle['monto_descuentos']                    = "0.00";
                 $detalle['plazo_descuentos']                    = "0";
                 $detalle['alta_descuentos']                     = "t";

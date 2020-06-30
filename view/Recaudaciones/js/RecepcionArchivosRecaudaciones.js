@@ -387,7 +387,9 @@ function uploadFileEntidad(){
 		var err = xhr.responseText
 		swal.close();
 		console.log(err)
-		var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
+		if( err != undefined )
+		{
+			var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
 		 	if( mensaje !== null ){
 			 var resmsg = mensaje[1];
 			 swal( {
@@ -397,6 +399,16 @@ function uploadFileEntidad(){
 				 icon: "error"
 				})
 		 	}
+		}else
+		{
+			swal( {
+				 title:"Error",
+				 dangerMode: true,
+				 text: "comunicacion con el Servidor no completada",
+				 icon: "error"
+				})
+		}
+		
 	})	
 	
 	event.preventDefault();

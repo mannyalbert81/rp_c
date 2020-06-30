@@ -781,7 +781,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 $_nombre_archivo_guardar_descuentos = $_nombre_archivo_guardar;
             }
             
-            $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
+            $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$_nombre_archivo_guardar_descuentos;
             $archivo_move = move_uploaded_file($_arhivo_carga_datos ['tmp_name'],$_archivo_procesar);
             if( !$archivo_move ){
                 throw new Exception("Error al leer Archivo. Por Favor subir nuevamente");

@@ -167,17 +167,52 @@
     </section>
     
     
-     <section class="content">
-      <div class="col-lg-4 col-md-4 col-xs-12">        		
-      <div class="panel panel-primary">1</div>
-      </div>
-      <div class="col-lg-4 col-md-4 col-xs-12">        		
-      <div class="panel panel-primary">2</div>
-      </div>
-      <div class="col-lg-4 col-md-4 col-xs-12">        		
-      <div class="panel panel-primary">3</div>
-      </div>
-      </section> 
+        <section class="content">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Registros</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+                
+              </div>
+            </div>
+            
+            <div class="box-body">
+
+           <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#pendientes" data-toggle="tab">Pendientes</a></li>
+              <li><a href="#procesados" data-toggle="tab">Procesados</a></li> 
+              <li><a href="#negados" data-toggle="tab">Negados</a></li> 
+            
+            </ul>
+            
+            <div class="col-md-12 col-lg-12 col-xs-12">
+            <div class="tab-content">
+            <br>
+ 			 <div class="tab-pane active" id="pendientes">
+                
+		       
+              </div>
+              
+              <div class="tab-pane" id="procesados">
+                
+        			
+              </div>
+              
+               <div class="tab-pane" id="negados">
+                
+             			
+              </div>
+              
+             </div>
+            </div>
+           </div>
+         
+            </div>
+            </div>
+            </section>
                 
 
       

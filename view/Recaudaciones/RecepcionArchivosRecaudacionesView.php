@@ -193,16 +193,99 @@
             <br>
  			 <div class="tab-pane active" id="pendientes">
                 
+                <div class="box-body no-padding">
+          		
+              		<div id="pnl_div_descuentos_pendientes" class="letrasize11">
+                		<table id="tbl_descuentos_pendientes" class="table table-striped table-bordered" > <!--   -->
+                        	<thead >
+                        	    <tr class="warning" >
+                        	    	<th >#</th>
+                        			<th >Entidad</th>
+                        			<th >Usuario</th>
+                        			<th >A&ntilde;o</th>
+                        			<th >Mes</th>
+                        			<th >Tipo Descuentos</th>
+                        			<th >Nombre Archivo</th>
+                        			<th >Fec. Descuentos</th>
+                        			<th >Fec. Contable</th>
+                        			<th >Opciones</th>                        			
+                        		</tr>                        		
+                        	</thead>        
+                        	<tfoot>
+                        		<tr>
+                        			<td colspan="10"></td> 
+                    			</tr>
+                			</tfoot>
+                        </table>            	
+                	</div>
+          		
+            	
+          		</div>
 		       
               </div>
               
               <div class="tab-pane" id="procesados">
+              
+              	<div class="box-body no-padding">
+          		
+              		<div id="pnl_div_descuentos_procesados" class="letrasize11">
+                		<table id="tbl_descuentos_procesados" class="table table-striped table-bordered" > <!--   -->
+                        	<thead >
+                        	    <tr class="warning" >
+                        	    	<th >#</th>
+                        			<th >Entidad</th>
+                        			<th >Usuario</th>
+                        			<th >A&ntilde;o</th>
+                        			<th >Mes</th>
+                        			<th >Tipo Descuentos</th>
+                        			<th >Nombre Archivo</th>
+                        			<th >Fec. Descuentos</th>
+                        			<th >Fec. Contable</th>
+                        			<th >Opciones</th>                       			
+                        		</tr>
+                        	</thead>        
+                        	<tfoot>
+                        		<tr>
+                        			<td colspan="10"></td>
+                    			</tr>
+                			</tfoot>
+                        </table>            	
+                	</div>          		
+            	
+          		</div>
                 
         			
               </div>
+                            
+              <div class="tab-pane" id="negados">
               
-               <div class="tab-pane" id="negados">
-                
+              	<div class="box-body no-padding">
+          		
+              		<div id="pnl_div_descuentos_errores" class="letrasize11">
+                		<table id="tbl_descuentos_errores" class="table table-striped table-bordered" > <!--   -->
+                        	<thead >
+                        	    <tr class="warning" >
+                        	    	<th >#</th>
+                        			<th >Entidad</th>
+                        			<th >Usuario</th>
+                        			<th >A&ntilde;o</th>
+                        			<th >Mes</th>
+                        			<th >Tipo Descuentos</th>
+                        			<th >Nombre Archivo</th>
+                        			<th >Fec. Descuentos</th>
+                        			<th >Fec. Contable</th>
+                        			<th >Opciones</th>                       			
+                        		</tr>
+                        	</thead>        
+                        	<tfoot>
+                        		<tr>
+                        			<td colspan="10"></td>
+                    			</tr>
+                			</tfoot>
+                        </table>            	
+                	</div>
+          		            	
+          		</div>                
              			
               </div>
               
@@ -272,7 +355,7 @@
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <!-- FILE UPLOAD -->
    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js"></script>
-   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.4"></script> 
+   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.5"></script> 
 
   </body>
 </html>   

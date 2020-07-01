@@ -4,8 +4,14 @@ $(document).ready(function(){
 	//consultaCargaRecaudaciones();
 	cargaEntidadPatronal();
 	BuscarDescuentosFormatos();
+	
+	//para empezar los datatables
+	listar_descuentos_pendientes();
+	listar_descuentos_errores();
+	listar_descuentos_procesados();
+	
 	init_controles();	
-		
+				
 })
 
 function init_controles(){
@@ -23,6 +29,11 @@ function init_controles(){
 		// TODO: handle exception
 		console.log("ERROR AL IMPLEMENTAR PLUGIN DE FILEUPLOAD");
 	}
+	
+	//iniciar eventos de cambio en select de entidad patronal
+	$("#id_entidad_patronal").on("change",function(){
+		cambio_entidad_patronal();
+	});
 }
 
 function cargaEntidadPatronal(){
@@ -440,3 +451,242 @@ function fn_formatoTablaErrores(){
 }
 
 /*****************************************************************END CAMBIOS DC  *****************************************************************************/
+
+
+/*** funciones para plugin de datattables ***/
+var dt_view1 = dt_view1 || {};
+
+dt_view1.dt_tabla_pendientes = null;
+dt_view1.nombre_tabla_pendientes = 'tbl_descuentos_pendientes';
+dt_view1.dt_tabla_procesados = null;
+dt_view1.nombre_tabla_procesados = 'tbl_descuentos_procesados';
+dt_view1.dt_tabla_error = null;
+dt_view1.nombre_tabla_error = 'tbl_descuentos_errores';
+
+//setear valores json elementos de la vista
+var view	= view || {};
+view.id_entidad_patronal	= $("#id_entidad_patronal");
+view.id_descuentos_formatos = $("#id_descuentos_formatos");
+
+dt_view1.params	= function(){ 
+	var extenddatapost = { id_entidad_patronal:view.id_entidad_patronal.val(),id_descuentos_formatos:view.id_descuentos_formatos.val()};
+	return extenddatapost;
+};
+
+var idioma_espanol = {
+	    "sProcessing":     "Procesando...",
+        "sLengthMenu":     "Mostrar _MENU_ registros",
+        "sZeroRecords":    "No se encontraron resultados",
+        "sEmptyTable":     "Ningún dato disponible en esta tabla &#128543; ",
+        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+        "sInfoPostFix":    "",
+        "sSearch":         "Buscar:",
+        "sUrl":            "",
+        "sInfoThousands":  ",",
+        "sLoadingRecords": "Cargando...",
+        "oPaginate": {
+            "sFirst":    "Primero",
+            "sLast":     "Último",
+            "sNext":     "Siguiente",
+            "sPrevious": "Anterior"
+        },
+        "oAria": {
+            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+        },
+        "buttons": {
+            "copy": "Copiar",
+            "colvis": "Visibilidad"
+        }
+}
+
+var listar_descuentos_pendientes = function(){
+	
+	var dataSend = { id_entidad_patronal:view.id_entidad_patronal.val(),id_descuentos_formatos:view.id_descuentos_formatos.val()};
+		
+	dt_view1.dt_tabla_pendientes	=  $('#'+dt_view1.nombre_tabla_pendientes).DataTable({
+	    'processing': true,
+	    'serverSide': true,
+	    'serverMethod': 'post',
+	    'destroy' : true,
+	    'ajax': {
+	        'url':'index.php?controller=RecepcionArchivosRecaudaciones&action=dtMostrarDescuentosPendientes',
+	        'data': function ( d ) {
+	            return $.extend( {}, d, dt_view1.params() );
+	            },
+            'dataSrc': function ( json ) {                
+                return json.data;
+              }
+	    },	
+	    'lengthMenu': [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+	    'order': [[ 1, "desc" ]],
+	    'columns': [	    	    
+	    		{ data: 'numfila', orderable: false },
+	    		{ data: 'nombre_entidad'},
+	    		{ data: 'nombre_usuarios' },
+	    		{ data: 'anio_descuentos', orderable: false },
+	    		{ data: 'mes_descuentos', orderable: false },
+	    		{ data: 'nombre_formato' },
+	    		{ data: 'nombre_archivo'},
+	    		{ data: 'fecha_descuentos' },
+	    		{ data: 'fecha_contable' },
+	    		{ data: 'opciones', orderable: false }
+	    		
+	    ],
+	    'columnDefs': [
+	        {className: "dt-center", targets:[0] },
+	        {sortable: false, targets: [ 0,3,4,9 ] }
+	      ],
+		'scrollY': "80vh",
+        'scrollCollapse':true,
+        'fixedHeader': {
+            header: true,
+            footer: true
+        },
+        'language':idioma_espanol
+	 });	
+	
+} 
+
+var listar_descuentos_procesados = function(){
+	
+	var dataSend = { id_entidad_patronal:view.id_entidad_patronal.val(),id_descuentos_formatos:view.id_descuentos_formatos.val()};
+	
+	dt_view1.dt_tabla_procesados	=  $('#'+dt_view1.nombre_tabla_procesados).DataTable({
+	    'processing': true,
+	    'serverSide': true,
+	    'serverMethod': 'post',
+	    'destroy' : true,
+	    'ajax': {
+	        'url':'index.php?controller=RecepcionArchivosRecaudaciones&action=dtMostrarDescuentosProcesados',
+	        'data': function ( d ) {
+	            return $.extend( {}, d, dt_view1.params() );
+	            },
+            'dataSrc': function ( json ) {                
+                return json.data;
+              }
+	    },	
+	    'order': [[ 1, "desc" ]],
+	    'columns': [	    	    
+	    		{ data: 'numfila', orderable: false },
+	    		{ data: 'nombre_entidad'},
+	    		{ data: 'nombre_usuarios' },
+	    		{ data: 'anio_descuentos', orderable: false },
+	    		{ data: 'mes_descuentos', orderable: false },
+	    		{ data: 'nombre_formato' },
+	    		{ data: 'nombre_archivo'},
+	    		{ data: 'fecha_descuentos' },
+	    		{ data: 'fecha_contable' },
+	    		{ data: 'opciones', orderable: false }
+	    		
+	    ],
+	    'lengthMenu': [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+	    'columnDefs': [
+	        {className: "dt-center", targets:[0] },
+	        {sortable: false, targets: [ 0,3,4,9 ] }
+	      ],
+		'scrollY': "80vh",
+        'scrollCollapse':true,
+        'fixedHeader': {
+            header: true,
+            footer: true
+        },
+        'language':idioma_espanol
+	 });	
+	
+} 
+
+var listar_descuentos_errores = function(){
+	
+	var dataSend = { id_entidad_patronal:view.id_entidad_patronal.val(),id_descuentos_formatos:view.id_descuentos_formatos.val()};
+	
+	dt_view1.dt_tabla_error	=  $('#'+dt_view1.nombre_tabla_error).DataTable({
+	    'processing': true,
+	    'serverSide': true,
+	    'serverMethod': 'post',
+	    'destroy' : true,
+	    'ajax': {
+	        'url':'index.php?controller=RecepcionArchivosRecaudaciones&action=dtMostrarDescuentosError',
+	        'data': function ( d ) {
+	            return $.extend( {}, d, dt_view1.params() );
+	            },
+            'dataSrc': function ( json ) {                
+                return json.data;
+              }
+	    },	
+	    'lengthMenu': [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+	    'order': [[ 1, "desc" ]],
+	    'columns': [	    	    
+	    		{ data: 'numfila', orderable: false },
+	    		{ data: 'nombre_entidad'},
+	    		{ data: 'nombre_usuarios' },
+	    		{ data: 'anio_descuentos', orderable: false },
+	    		{ data: 'mes_descuentos', orderable: false },
+	    		{ data: 'nombre_formato' },
+	    		{ data: 'nombre_archivo'},
+	    		{ data: 'fecha_descuentos' },
+	    		{ data: 'fecha_contable' },
+	    		{ data: 'opciones', orderable: false }
+	    		
+	    ],
+	    'columnDefs': [
+	        {className: "dt-center", targets:[0] },
+	        {sortable: false, targets: [ 0,3,4,9 ] }
+	      ],
+		'scrollY': "80vh",
+        'scrollCollapse':true,
+        'fixedHeader': {
+            header: true,
+            footer: true
+        },
+        'language':idioma_espanol
+	 });	
+	
+} 
+
+var cambio_entidad_patronal	= function(){
+	
+	//para empezar los datatables
+	dt_view1.dt_tabla_pendientes.ajax.reload();
+	dt_view1.dt_tabla_procesados.ajax.reload();
+	dt_view1.dt_tabla_error.ajax.reload();
+}
+
+var mostrar_detalle	= function(a){
+	
+	let $link = $(a);	
+		
+	var id_cabeza_descuentos	= $link.data("id_descuentos_cabeza");
+		
+	if( id_cabeza_descuentos <= 0 || id_cabeza_descuentos == "" || id_cabeza_descuentos == undefined ){
+		return false;
+	}	
+		
+	var params = {
+			"id_descuentos_cabeza":id_cabeza_descuentos
+	}
+		
+	var form = document.createElement("form");
+	form.setAttribute("id", "frmVerArchivoTxt");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "index.php?controller=RecepcionArchivosRecaudaciones&action=mostrarArchivoTxt");
+    form.setAttribute("target", "_blank");   
+    
+    for (var i in params) {
+        if (params.hasOwnProperty(i)) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = i;
+            input.value = params[i];
+            form.appendChild(input);
+        }
+    }
+        
+    document.body.appendChild(form); 
+    form.submit();    
+    document.body.removeChild(form);
+    
+}
+

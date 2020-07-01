@@ -1197,7 +1197,7 @@ class CreditosParticipesController extends ControladorBase
         $whe1   = " aa.id_estatus = 1
             AND coalesce( aa.mora_tabla_amortizacion, 0) > 0
             AND bb.id_estado_creditos = 4
-            AND ( aa.fecha_tabla_amortizacion between '".$fechasValidacion['desde']."' and '".$fechasValidacion['hasta']."' )
+            AND ( aa.fecha_tabla_amortizacion BETWEEN '".$fechasValidacion['desde']."' AND '".$fechasValidacion['hasta']."' )
             AND cc.cedula_participes = '".$cedula_participes."'";
         $order  = " ORDER BY aa.id_creditos DESC, aa.fecha_tabla_amortizacion DESC";
         $rsConsulta1    = $participes->getCondicionesSinOrden($col1, $tab1, $whe1, $order);
@@ -1365,6 +1365,9 @@ class CreditosParticipesController extends ControladorBase
             $valor_cuota = 0;
         }
         echo " VALOR CUOTA --> ",$valor_cuota;
+        
+        echo "<br> /*************************************************//";
+        var_dump($this->getFechasUltimas3Cuotas());
     }
     
     public function obtenerAvaluoHipotecario()

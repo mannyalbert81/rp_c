@@ -1708,8 +1708,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         
     }
     /** END FUNCIONES UTILITARIAS PARA LA CLASE */
-    
-    
+
 }
 
 ?>

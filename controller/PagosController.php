@@ -350,9 +350,13 @@ class PagosController extends ControladorBase{
                 $where1    .= " OR cc.nombre_proveedores ILIKE '%$searchDataTable%' ";
                 $where1    .= " OR TO_CHAR( aa.fecha_pagos, 'YYYY-MM-DD') ILIKE '%$searchDataTable%' ";
                 //$where1    .= " OR aa.numero_documento_cuentas_pagar = '$searchDataTable' "; incluid para cuentas pagar
-                $where1    .= " OR aa.metodo_pagos = '$searchDataTable%' ";
-                $where1    .= " ) ";
+                $where1    .= " OR aa.metodo_pagos ILIKE '$searchDataTable%' ";
+                $where1    .= " OR aa.usuario_usuarios ILIKE '$searchDataTable%' ";
+                $where1    .= " OR dd.nombre_bancos ILIKE '$searchDataTable%' ";
+                $where1    .= " OR bb.concepto_ccomprobantes ILIKE '$searchDataTable%' ";
                 
+                $where1    .= " ) ";
+            
             }
             
             $rsCantidad    = $cpagar->getCantidad("*", $tablas1, $where1);
@@ -380,7 +384,10 @@ class PagosController extends ControladorBase{
             $per_page  = $requestData['length'];
             $offset    = $requestData['start'];
             
-            $limit = " ORDER BY $orderby $orderdir LIMIT   '$per_page' OFFSET '$offset'";
+            //para validar que consulte todos
+            $per_page  = ( $per_page == "-1" ) ? "ALL" : $per_page;
+            
+            $limit = " ORDER BY $orderby $orderdir LIMIT $per_page OFFSET '$offset'";
                         
             $resultSet = $cpagar->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
             

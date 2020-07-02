@@ -475,6 +475,8 @@ dt_view1.params	= function(){
 	return extenddatapost;
 };
 
+
+
 var idioma_espanol = {
 	    "sProcessing":     "Procesando...",
         "sLengthMenu":     "Mostrar _MENU_ registros",

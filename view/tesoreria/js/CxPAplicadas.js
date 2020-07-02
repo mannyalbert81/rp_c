@@ -84,6 +84,7 @@ var load_cuentas_pagar_aplicadas	= function(){
                 return json.data;
               }
 	    },	
+	    'lengthMenu': [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
 	    'order': [[ 0, "desc" ]],
 	    'columns': [	    	    
 	    	{ data: 'numfila', orderable: false },
@@ -109,6 +110,11 @@ var load_cuentas_pagar_aplicadas	= function(){
             header: true,
             footer: true
         },
+        dom: 'Blfrtip',
+        buttons: [
+            //'copy', 'csv', 'excel', 'pdf', 'print'
+        	'excel', 'pdf'
+        ],
         'language':idioma_espanol
 	 });
 		

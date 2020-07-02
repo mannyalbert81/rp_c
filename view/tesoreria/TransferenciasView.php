@@ -189,7 +189,16 @@
                 <?php }?>
                 
                 <div class="panel panel-warning">
-                  <div class="panel-heading"> BENEFICIARIO/A:</div>                                   
+                  <div class="panel-heading"> BENEFICIARIO/A:   
+                      	 <div class="pull-right ">
+                            <span >
+                                <a onclick="mostrar_datos_garantes(this)" id="" data-id_proveedores="<?php echo $resultset[0]->id_proveedores; ?>" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Editar Datos Garante"> <i class="fa  fa-edit fa-2x fa-fw" aria-hidden="true" ></i>
+	                            <!-- <a onclick="mostrar_datos_garantes(this)" id="" data-id_proveedores="<?php echo $resultset[0]->id_proveedores; ?>" data-id_bancos="<?php echo $resultset[0]->id_bancos; ?>" data-id_tipo_cuentas="<?php echo $resultset[0]->id_tipo_cuentas; ?>" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Editar Datos Garante"> <i class="fa  fa-edit fa-2x fa-fw" aria-hidden="true" ></i>
+	                            -->
+	                           </a>
+                            </span>
+                            </div>	
+                            </div>                                
                 </div>
                            	
             	<div class="row">	
@@ -242,7 +251,7 @@
             			</div>
             		</div> 
             		
-            		        		
+            		   	
             		            						    
           	   	</div>
           	   	
@@ -376,7 +385,91 @@
       <!-- /.modal-dialog -->
 </div>
     
-
+<!-- BEGIN MODAL ACTUALIZA CUENTAS -->
+  <div class="modal fade" id="mod_cambia_cuentas" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-md " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-primary color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" align="center">EDITAR DATOS</h4>
+          </div>
+          <div class="modal-body" >
+          	<!-- cuerpo modal -->
+          	<div class="box box-success">
+            <div class="box-header with-border">              
+            </div>
+            <div class="box-body">
+                <!-- comienza el formulario -->
+                <form>
+                	
+                	<div class="form-group">
+             
+                	<div class="row">        	
+        			<div class="col-lg-12 col-md-12 col-xs-12">        		
+            			<div class="form-group"> 
+                			 <div class="form-group-sm">
+                				<label for="cuenta_banco_general" class="col-sm-4 control-label" >Cuenta:</label>
+                				<div class="col-sm-8">
+                                <input type="hidden" id="id_proveedores_general" name="id_proveedores_general" value="0" >
+            					<input type="text" class="form-control mayus" id="cuenta_banco_general" name="cuenta_banco_general" value=" <?php echo $resultset[0]->numero_cuenta_banco; ?> " >
+                  			 </div>
+                  			 </div>        			 
+            			</div>
+    				</div>
+        		</div>
+        	    	
+                	<div class="row">        	
+        			<div class="col-lg-12 col-md-12 col-xs-12">        		
+            			<div class="form-group"> 
+                			 <div class="form-group-sm">
+                				<label for="id_bancos_general" class="col-sm-4 control-label" >Banco:</label>
+                				<div class="col-sm-8">
+                                  	<select id="id_bancos_general" name="id_bancos_general" class="form-control">
+                                  	<option value="0">--Seleccione--</option>                                  	
+                                  	</select>
+                                 </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div>
+        		<div class="row">        	
+        			<div class="col-lg-12 col-md-12 col-xs-12">        		
+            			<div class="form-group "> 
+                			 <div class="form-group-sm">
+                				<label for="id_tipo_cuentas_general" class="col-sm-4 control-label" >Tipo Cuenta:</label>
+                				<div class="col-sm-8">
+                                  	<select id="id_tipo_cuentas_general" name="id_tipo_cuentas_general" class="form-control">
+                                  	<option value="0">--Seleccione--</option>                                  	
+                                  	</select>
+                                 </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div> 
+                       
+                      </div>
+                                    
+                </form>
+              
+            </div>
+           
+          </div>  <!-- /.box-body -->
+          
+          </div>  <!-- /. termina cuerpo modal -->
+          
+          <!-- /. footer of modal -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" onclick="editar_cuentas()" class="btn btn-primary">Actualizar</button>
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+<!-- END MODAL ACTUALIZA CUENTAS -->
  
  	<?php include("view/modulos/footer.php"); ?>	
 
@@ -387,7 +480,7 @@
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.23"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.35"></script>
 
   </body>
 </html>   

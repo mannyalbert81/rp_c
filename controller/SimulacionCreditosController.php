@@ -3201,6 +3201,7 @@ class SimulacionCreditosController extends ControladorBase
                 foreach ($_result_creditos_renovar as $res) {
 
                     // buscar datos deacuerdo a la lista de creditos a renovar obtenidos
+                    /*
                     $columnas = 'monto_otorgado_creditos, plazo_creditos, interes_creditos';
                     $tablas = 'core_creditos 
                         INNER JOIN core_participes ON core_creditos.id_participes = core_participes.id_participes';
@@ -3209,20 +3210,37 @@ class SimulacionCreditosController extends ControladorBase
                         AND core_creditos.id_estatus=1 
                         AND id_tipo_creditos=" . $res->id_tipo_creditos_a_renovar;
                     $_result_monto_credito = $creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
+                    */
+                    //consulta para obtener la ultima cuota cancelada del credito
+                    $col1 = "cc.id_tabla_amortizacion, cc.total_valor_tabla_amortizacion";
+                    $tab1 = 'core_participes aa
+                        INNER JOIN core_creditos bb ON bb.id_participes = aa.id_participes
+                        INNER JOIN core_tabla_amortizacion cc ON cc.id_creditos = bb.id_creditos';
+                    $whe1 = "1 = 1
+                        AND aa.id_estatus = 1
+                        AND bb.id_estatus = 1
+                        AND cc.id_estatus = 1
+                        AND cc.id_estado_tabla_amortizacion = 2
+                        AND aa.cedula_participes = '$cedula_participe'
+                        AND bb.id_estado_creditos = 4
+                        AND bb.id_tipo_creditos = ".$res->id_tipo_creditos_a_renovar;
+                    $lim1 = " ORDER BY cc.fecha_tabla_amortizacion DESC LIMIT 1";
+                    $_result_monto_credito = $creditos->getCondicionesSinOrden($col1, $tab1, $whe1, $lim1);                    
 
                     if (! empty($_result_monto_credito)) {
 
                         foreach ($_result_monto_credito as $res1) {
 
                             // OBTENGO LA CUOTA MENSUAL QUE PAGA POR EL CREDITO
-                            $tasa_interes = $res1->interes_creditos;
+                            /*$tasa_interes = $res1->interes_creditos;
                             $tasa_interes = $tasa_interes / 100;
                             $interes_mensual = $tasa_interes / 12;
                             $valor_cuota = ($res1->monto_otorgado_creditos * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $res1->plazo_creditos));
-                            $valor_cuota = round($valor_cuota, 2);
+                            $valor_cuota = round($valor_cuota, 2);*/
 
                             // SUMO TODAS LAS CUOTAS DE LOS CREDITOS A RENOVAR
-                            $cuota_total += $valor_cuota;
+                            //$cuota_total += $valor_cuota;
+                            $cuota_total    += $res1->total_valor_tabla_amortizacion;
                         } // fin foreach de recorrido
                     } // fin de validacion de si hay datos en $_result_monto_credito
                 }

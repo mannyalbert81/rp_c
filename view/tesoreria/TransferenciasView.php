@@ -120,8 +120,17 @@
                 					
             			</div>		    	 	
 		    	 	</div>
+		    	 	
+            			<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="total_lote" class=" control-label" >Total Pago:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control" id="total_cuentas_pagar" name="total_cuentas_pagar"  value="<?php echo $resultset[0]->total_cuentas_pagar; ?>" > 
+                    		</div>        			 
+            			</div>
+            		</div> 
             		            		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
+            		<div class="col-xs-12 col-md-12 col-lg-12">
             			<div class="form-group ">
             				<label for="identificacion_proveedor" class=" control-label" >Descripción:</label> 
                     		<div class="form-group-sm">                    				
@@ -130,14 +139,7 @@
             			</div>
             		</div> 
             		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="total_lote" class=" control-label" >Total Pago:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="total_cuentas_pagar" name="total_cuentas_pagar"  value="<?php echo $resultset[0]->total_cuentas_pagar; ?>" > 
-                    		</div>        			 
-            			</div>
-            		</div> 
+            	
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">

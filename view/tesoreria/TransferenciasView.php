@@ -192,7 +192,9 @@
                   <div class="panel-heading"> BENEFICIARIO/A:   
                       	 <div class="pull-right ">
                             <span >
-                                <a onclick="mostrar_datos_garantes(this)" id="" data-id_proveedores="<?php echo $resultset[0]->id_proveedores; ?>" data-id_bancos="<?php echo $resultset[0]->id_bancos; ?>" data-id_tipo_cuentas="<?php echo $resultset[0]->id_tipo_cuentas; ?>" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Editar Datos Garante"> <i class="fa  fa-edit fa-2x fa-fw" aria-hidden="true" ></i>
+                                <a onclick="mostrar_datos_garantes(this)" id="" data-id_proveedores="<?php echo $resultset[0]->id_proveedores; ?>" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Editar Datos Garante"> <i class="fa  fa-edit fa-2x fa-fw" aria-hidden="true" ></i>
+	                            <!-- <a onclick="mostrar_datos_garantes(this)" id="" data-id_proveedores="<?php echo $resultset[0]->id_proveedores; ?>" data-id_bancos="<?php echo $resultset[0]->id_bancos; ?>" data-id_tipo_cuentas="<?php echo $resultset[0]->id_tipo_cuentas; ?>" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Editar Datos Garante"> <i class="fa  fa-edit fa-2x fa-fw" aria-hidden="true" ></i>
+	                            -->
 	                           </a>
                             </span>
                             </div>	
@@ -478,7 +480,7 @@
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.31"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.35"></script>
 
   </body>
 </html>   

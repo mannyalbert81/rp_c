@@ -229,6 +229,7 @@ class TransferenciasController extends ControladorBase{
 	    $_numero_cuenta_banco  = $_POST['numero_cuenta_banco'];
 	    $_isCredito            = $_POST['is_credito'];
 	    $_id_tipo_cuentas      = $_POST['id_tipo_cuentas'];
+	    $_descripcion_pago       = $_POST['descripcion_pago'];
 	    
 	    //variable usada para determinar el tipo de archivo de pago
 	    $_id_tipo_archivo_pago = $_POST['id_tipo_archivo_pago'];
@@ -376,7 +377,8 @@ class TransferenciasController extends ControladorBase{
 	            'id_bancos' => $_id_bancos_transferir,
 	            'fecha' => $_fecha_transferencia,
 	            'numero_cuenta' => $_numero_cuenta_banco,
-	            'observacion' => $observacion_comprobantes
+	            'observacion' => $observacion_comprobantes,
+	            'concepto' => $_descripcion_pago
 	        );
 	        
 	        $auxComprobante = $this->auxInsertComprobante($datos);
@@ -571,7 +573,8 @@ class TransferenciasController extends ControladorBase{
             	        '".$datos['observacion']."',
             	        'PAGO',
             	        null,
-                        '$_concepto_comprobante'";
+                          '".$datos['concepto']."'
+                        ";
 	    
 	    $consultaComprobante = $pagos->getconsultaPG($funcionComprobante, $parametrosComprobante);
 	    $ResulatadoComprobante = $pagos->llamarconsultaPG($consultaComprobante);
@@ -1510,7 +1513,7 @@ class TransferenciasController extends ControladorBase{
 	    
 	    $col1  = " id_bancos, nombre_bancos";
 	    $tab1  = " tes_bancos ";
-	    $whe1  = " 1 = 1";
+	    $whe1  = " (local_bancos = 'TRUE' or id_bancos = 1522) ";
 	    $id1   = " nombre_bancos ";
 	    $rsConsulta1   = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
 	    

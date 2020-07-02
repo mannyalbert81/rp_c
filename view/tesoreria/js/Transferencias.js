@@ -348,6 +348,10 @@ $("#genera_transferencia").on("click",function(){
 	var _total_cuentas_pagar = $("#total_cuentas_pagar").val();
 	var _nombre_cuenta_banco = $("#nombre_cuenta_banco").val();
 	var _id_tipo_cuentas     = $("#id_tipo_cuentas").val();
+	var _descripcion_pago     = $("#descripcion_pago").val();
+	
+	
+	
 	//esta variable se declara ala cargar la pagina
 	//listaCuentas
 	console.log(listaCuentas);
@@ -372,6 +376,9 @@ $("#genera_transferencia").on("click",function(){
 	parametros.append('is_credito', isCredito);	
 	parametros.append('id_tipo_cuentas', _id_tipo_cuentas);	
 	parametros.append('id_tipo_archivo_pago', _id_tipo_archivo_pago);
+	parametros.append('descripcion_pago', _descripcion_pago);
+	
+	
 	
 	$.ajax({
 		url:"index.php?controller=Transferencias&action=GeneraTransferencia",
@@ -535,6 +542,36 @@ $("#mod_distribucion_pago").on("keyup","input:text[name='mod_dis_referencia']",f
 	
 })
 
+
+
+
+
+
+//poner el mismo texto a todos 
+$("#descripcion_pago").click(function() {
+		
+    var descripcion_pago = $(this).val();
+
+	var modal	= $("#mod_distribucion_pago");
+	modal.find('#mod_descripcion_transferencia').val(descripcion_pago);
+	modal.find('#mod_dis_referencia').val(descripcion_pago);
+	
+    
+  });
+  
+  $("#descripcion_pago").change(function() {
+		    
+	  var descripcion_pago = $(this).val();
+
+		var modal	= $("#mod_distribucion_pago");
+		modal.find('#mod_descripcion_transferencia').val(descripcion_pago);
+		modal.find('#mod_dis_referencia').val(descripcion_pago);
+        
+	    });
+	
+
+
+
 $("#btn_distribucion_aceptar").on("click",function(event){
 	
 	
@@ -680,13 +717,21 @@ var mostrar_datos_garantes = function(a){
 	if( element.length )
 	{			
 		var modaledit = $("#mod_cambia_cuentas");	
-		
+	
 		modaledit.find('#id_proveedores_general').val( element.data().id_proveedores );
 		//modaledit.find('#id_bancos_general').val( element.data().id_bancos );
 		//modaledit.find('#id_tipo_cuentas_general').val( element.data().id_tipo_cuentas );
 		
-		loadBancosGeneral( element.data().id_bancos );
-		loadTipoCuentaGeneral( element.data().id_tipo_cuentas );
+		var id_bancos_transferir = $("#id_bancos_transferir").val();	
+		var tipo_cuenta_banco = $("#id_tipo_cuentas").val();	
+		
+		//alert(id_bancos_transferir);
+		
+		//loadBancosGeneral( element.data().id_bancos );
+		//loadTipoCuentaGeneral( element.data().id_tipo_cuentas );
+		
+		loadBancosGeneral(id_bancos_transferir);
+		loadTipoCuentaGeneral(tipo_cuenta_banco);
 		
 		modaledit.modal();
 	}	
@@ -714,6 +759,7 @@ var editar_cuentas	= function(){
 		modalEditCuentas.modal('hide');
 		
 		//vista
+		$("#id_tipo_cuentas").val( modalEditCuentas.find('#id_tipo_cuentas_general').val() );
 		$("#cuenta_banco").val( modalEditCuentas.find('#cuenta_banco_general').val() );
 		$("#tipo_cuenta_banco").val( modalEditCuentas.find('#id_tipo_cuentas_general option:selected').text() );
 		$("#id_bancos_transferir").empty();

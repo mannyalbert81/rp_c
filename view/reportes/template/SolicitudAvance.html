@@ -166,46 +166,112 @@
  .decimales{
  	text-align: right !important;
  }
+ 
+ table.1 {
+   width: 100%;
+  
+   border-collapse: collapse;
+   caption-side: top;
+   text-align:left;
+   border: white;
+  
+   
+}
+
+td.1{
+	   text-align:left;
+	   font-size: 14px;
+	 
+	}
+	
+	td.2{
+	 text-align: justify;
+	   font-size: 13.5px;
+	  
+	}
+ 
+
+ 
   </style>
   
   </head>
   <body>
   	
-  	 <div>
-    
-    	<table class="headertable" align="center">
-		<tr >				
-			<td  class="central" colspan="2">
-				 <h3>
-				 <strong>
-				 {NOMBREEMPRESA}<br>
-				 {DIRECCIONEMPRESA}<br>
-				 {TELEFONOEMPRESA}
-				</strong>
-				</h3>
-			</td>		
-		</tr>
-		<tr>
-			<td class="htexto2" >
-				 <p>
-				  <strong>Ruc: </strong> {RUCEMPRESA}<br>	
-				   			  
-				  <strong>Usuario: </strong> {USUARIOEMPRESA}
-				 
-				 </p>				 
-			</td>
-			<td class="htexto3" >
-				 <p>				  
-				  <strong>Fecha de Impresión: </strong> {FECHAEMPRESA}<br>
-				 </p>				 
-			</td>
-			
-		</tr>		
-	</table>	
-  			<h4 align="center" >SOLICITUD DE ANTICIPO DE SUELDOS</h4>  			
-  		</div> 
+  	 <div >{IMG}</div> 
   	<div>  	
-  		
+  
+	
+	
+    <br>
+	<h4 align="center" >ANEXO 1</h4>  
+	<br>	
+    <h4 align="center" >SOLICITUD DE ANTICIPO DE SUELDOS</h4>  	
+  	
+  	
+  	<table class="1">
+  	<tr>
+  	<td class="1">{FECHA}</td>
+  	</tr>
+  	</table>
+  	<br>
+  	<table class="1">
+  	<tr>
+  	<td class="1">Señores</td>
+  	</tr>
+  	<tr>
+  	<td class="1"><b>FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FF.AA. - CAPREMCI</b></b></td>
+  	</tr>
+  	<tr>
+  	<td class="1">Presente.-</td>
+  	</tr>
+  	</table>
+  	<br>
+  	<table class="1">
+  	<tr>
+  	<td class="1">De mi consideración:</td>
+  	</tr>
+  	</table>
+  	
+  	<br>
+  	<table class="1">
+  	<tr>
+  	<td class="2">Yo <b>{NOMBREEMPLEADO}</b> con C.C. No. <b>{CEDULAEMPLEADO}</b> quien me desempeño como <b>{CARGOEMPLEADO}</b> en el FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FUERZAS ARMADAS-CAPREMCI desde 
+  	el <b>{FECHA_INGRESO}</b>, solicito a usted me conceda un anticipo de mi sueldo por el monto de <b>{MONTO}</b> para un período de <b>{DIFERIDO}</b>; 
+  	mismo que se acreditara en la cuenta bancaria de mi propiedad registrada en esta Institución. Autorizo voluntaria, 
+  	expresa e irrevocablemente, para que mensualmente, la cuota correspondiente al anticipo concedido, 
+  	sea descontada de mi remuneración y en caso de separación definitiva del Fondo, 
+  	se descuente los saldos pendientes de pago originados por anticipos de sueldo recibidos.</td>
+  	</tr>
+  	</table>
+  	
+  	<br>
+  	<table class="1">
+  	<tr>
+  	<td class="1">Atentamente,</td>
+  	</tr>
+  	</table>
+  	<br>
+  	<br>
+  	<br>
+  	<br>
+  	<table class="1">
+  	<tr>
+  	<td class="1">f)............................................</td>
+  	</tr>
+  	<tr>
+  	<td class="1">{NOMBREEMPLEADO}</td>
+  	</tr>
+  	<tr>
+  	<td class="1">{CEDULAEMPLEADO}</td>
+  	</tr>
+  	</table>
+  	
+  <!-- 
+  	<h4 align="center" >ANEXO 2</h4> 
+  	<br>
+  	<br>
+  
+  	<br>	
   		<table class="tabla" align="center">
   				<tr>
   					<td class="informacion; htexto1"><b>Nombre del empleado:</b> {NOMBREEMPLEADO}</td>  
@@ -253,7 +319,8 @@
   		<td class="firmas"><b>GERENCIA</b></td>
   		</tr>
   		</table>
-  		  		
+  		  -->
+  	 		
   	</div>
   		
   </body>

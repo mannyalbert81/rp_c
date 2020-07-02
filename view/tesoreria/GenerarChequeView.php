@@ -171,7 +171,7 @@
             			<div class="form-group ">
             				<label for="total_lote" class=" control-label" >Total Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="total_lote" name="total_lote"  value="<?php echo $objcuentaspagar->total_cuentas_pagar; ?>" > 
+                				 <input type="text" class="form-control" id="total_lote" name="total_lote"  value="<?php echo number_format($objcuentaspagar->total_cuentas_pagar,2,".",""); ?>" > 
                     		</div>        			 
             			</div>
             		</div>   
@@ -416,7 +416,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.23"></script>
+	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.24"></script>
 
   </body>
 </html>  

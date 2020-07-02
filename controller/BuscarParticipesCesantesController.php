@@ -1,6 +1,7 @@
 <?php
 class BuscarParticipesCesantesController extends ControladorBase{
     
+	public $_var_id_solicitud;
 	
 	
 	public function index(){
@@ -23,6 +24,8 @@ class BuscarParticipesCesantesController extends ControladorBase{
         $cedula_participe=$_GET['cedula_participe'];
         $id_solicitud=$_GET['id_solicitud'];
         
+        $_var_id_solicitud = $id_solicitud;
+        
         $this->view_Credito("BuscarParticipesCesantes",array(
             "result" => ""
             ));
@@ -40,18 +43,19 @@ class BuscarParticipesCesantesController extends ControladorBase{
         $id_solicitud=$_POST['id_solicitud'];
         require_once 'core/DB_Functions.php';
         $db = new DB_Functions();
+        $respuesta= array();
         
-        $columnas = " solicitud_prestamo.destino_dinero_datos_prestamo,
-					  solicitud_prestamo.nombre_banco_cuenta_bancaria,
-					  solicitud_prestamo.tipo_cuenta_cuenta_bancaria,
-					  solicitud_prestamo.numero_cuenta_cuenta_bancaria,
-					  solicitud_prestamo.tipo_pago_cuenta_bancaria,
-				      tipo_creditos.nombre_tipo_creditos";
+        $columnas = "solicitud_prestaciones.fecha_presentacion,
+        			bancos.nombre_bancos, 
+	  				solicitud_prestaciones.tipo_cuenta_bancaria, 
+	  				solicitud_prestaciones.numero_cuenta_bancaria, 
+	  				solicitud_prestaciones.identificador_consecutivos";
         
-        $tablas   = "public.solicitud_prestamo INNER JOIN public.tipo_creditos
-                     ON solicitud_prestamo.id_tipo_creditos=tipo_creditos.id_tipo_creditos";
+        $tablas   = "public.bancos, 
+  					public.solicitud_prestaciones";
         
-        $where    = "solicitud_prestamo.id_solicitud_prestamo=".$id_solicitud;
+        $where    = "solicitud_prestaciones.id_bancos = bancos.id_bancos
+  						AND id_solicitud_prestaciones =".$id_solicitud;
         
         $resultSet=$db->getCondiciones($columnas, $tablas, $where);
         
@@ -59,38 +63,50 @@ class BuscarParticipesCesantesController extends ControladorBase{
                <div class="inner">
               <table width="100%">
               <tr>
-              <td colspan="2" align="center">
-                <font size="4"><b>Información de Solicitud<b></font>
+              <td colspan="4" align="center">
+                <font size="4"><b>INFORMACIÓN SOLICITUD<b></font>
               </td>
               </tr>
               <tr>
-              <td width="50%">
-                <font size="3">Tipo Crédito : '.$resultSet[0]->nombre_tipo_creditos.'</font>
+              <td width="30%">
+                <font size="4">Tipo de Prestación: '.'DESAFILIACIÓN'.'</font>
               </td>
-              <td width="50%">
-                <font size="3">Destino Dinero : '.$resultSet[0]->destino_dinero_datos_prestamo.'</font>
+              <td width="30%">
+                
+                <font size="4">Fecha Presentación : '.$resultSet[0]->fecha_presentacion.'</font>			
+              </td>
+              <td width="30%">
+                <font size="4">Nombre Banco : '.$resultSet[0]->nombre_bancos.'</font>		
+                
               </td>
               <tr>
-              <td width="50%">
-                <font size="3">Nombre Banco : '.$resultSet[0]->nombre_banco_cuenta_bancaria.'</font>
-              </td>
-              <td width="50%">
-                <font size="3">Tipo Cuenta : '.$resultSet[0]->tipo_cuenta_cuenta_bancaria.'</font>
+              
+              <td width="30%">
+               	 <font size="4">Tipo de  Cuenta : '.$resultSet[0]->tipo_cuenta_bancaria.'</font> 
+                 
+                 
                </td>
-              <tr>
-              <td width="50%">
-                <font size="3">Número Cuenta : '.$resultSet[0]->numero_cuenta_cuenta_bancaria.'</font>
-               </td>
-              <td width="50%">
-                <font size="3">Tipo de Pago: '.$resultSet[0]->tipo_pago_cuenta_bancaria.'</font>
-                </td>
-                </tr>
+              
+              <td width="30%">
+                
+                <font size="4">Número Cuenta : '.$resultSet[0]->numero_cuenta_bancaria.'</font>
+              </td> 		
+              
+              </tr>
                 </table>
                </div>
                </div>';
         
-        echo $html;
         
+        //echo $html;
+        
+        
+        array_push($respuesta, $html);
+        array_push($respuesta, $id_solicitud);
+        
+        
+        
+        echo json_encode($respuesta);
         //
     }
     
@@ -196,22 +212,10 @@ class BuscarParticipesCesantesController extends ControladorBase{
         </ul>
         </div>
         </div>';
-        
+            
             array_push($respuesta, $html);
             array_push($respuesta, $resultSet[0]->id_participes);
         }
-        /*
-        else
-        {
-            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            $html.='<h4>Aviso!!!</h4> <b>No se ha encontrado participes con número de cédula '.$cedula.'</b>';
-            $html.='</div>';
-            
-            array_push($respuesta, $html);
-            array_push($respuesta, 0);
-        }
-        */
         
         
         echo json_encode($respuesta);
@@ -356,7 +360,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
 		                $id="bb.id_creditos";
 		                
 		                $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
-		                
+		                 
 		                if(!(empty($resultCreditos)))
 		                {
 		                 
@@ -407,14 +411,17 @@ class BuscarParticipesCesantesController extends ControladorBase{
 		                       					 $saldo_seguros	;
 		                       
 		                       
-		                       echo "Capital: " . $total_saldo . '   |||    ';
+		                /*
+		                       					 echo "Capital: " . $total_saldo . '   |||    ';
 		                       echo "Mora: " . $total_mora . '   |||    ';
 		                       echo "Saldo Intereses: " . $saldo_interes . '   |||    ';
 		                       echo "dias Intereses: " . $dias_interes . '   |||    ';
 		                       echo "Seguros: " . $saldo_seguros;
 		                       
-		                              
+		                  */            
 		                       
+		                       					 
+		                       					 
 		                               
 		                    }
 		                }
@@ -447,7 +454,9 @@ class BuscarParticipesCesantesController extends ControladorBase{
 		            
 		                
 		                
-		                if ($total_recibir<0) {
+		                if ($total_recibir<0) ///no se puede desafiliar 
+		                
+		                {
 		                    
 		                    $total_pagar=$total_recibir*(-1);
 		                    
@@ -463,17 +472,22 @@ class BuscarParticipesCesantesController extends ControladorBase{
 		                    </div>';
 		                    
 		                    
-		               } 
+		               }
+		               else   /// puede desafiliarse
+		               {
+		               	
+		               	
+		               }
 		                
 		                
-		            }else{
-		                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-		                $html.='<div class="alert alert-info alert-dismissable" style="margin-top:40px;">';
-		                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-		                $html.='<h4>Aviso!!!</h4> <b>Actualmente no puede desafiliarse...</b>';
-		                $html.='</div>';
-		                $html.='</div>';
-		            }
+		         }else{
+		           $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+		           $html.='<div class="alert alert-info alert-dismissable" style="margin-top:40px;">';
+		           $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+		           $html.='<h4>Aviso!!!</h4> <b>Actualmente no puede desafiliarse...</b>';
+		           $html.='</div>';
+		           $html.='</div>';
+		        }
 	            
 	            echo $html;
 	            
@@ -1273,26 +1287,34 @@ class BuscarParticipesCesantesController extends ControladorBase{
     
     	$fecha_prestaciones = $_POST['fecha_prestaciones'];
     	
+    	
+    	 
+    	$time_fecha_prestaciones = strtotime($fecha_prestaciones);
+    	 
+    	$month = date('m', $time_fecha_prestaciones);
+    	$year = date('Y',$time_fecha_prestaciones);
+    	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+    	 
+    		$ultimo_dia_mes_proceso =  date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+    	 
+    	
+    	
     	$creditos=new CoreCreditoModel();
     	$saldo_credito=0;
     
-    	$_mes_buscar = date("m", strtotime($fecha_prestaciones));
     	
-    	$_year_buscar = date("Y", strtotime($fecha_prestaciones));
-    	
-    	if (date("m", strtotime($fecha_prestaciones)) > 11)
-    	{
-    		$_mes_buscar = 1;
-    		$_year_buscar = date("Y", strtotime($fecha_prestaciones)) + 1;
-    	}
-    	 
-    	$columnas_pag="coalesce(sum(tap.saldo_cuota_tabla_amortizacion_pagos),0) as saldo";
-    	$tablas_pag="core_creditos c
-                        inner join core_tabla_amortizacion at on c.id_creditos=at.id_creditos
-                        inner join core_tabla_amortizacion_pagos tap on at.id_tabla_amortizacion=tap.id_tabla_amortizacion
-                        inner join core_tabla_amortizacion_parametrizacion tapa on tap.id_tabla_amortizacion_parametrizacion=tapa.id_tabla_amortizacion_parametrizacion";
-    	$where_pag="c.id_creditos='$id_creditos' and c.id_estatus=1 and at.id_estatus=1 and tapa.tipo_tabla_amortizacion_parametrizacion=8
-    		AND to_char(at.fecha_tabla_amortizacion, 'YYYY')='$_year_buscar' and to_char(at.fecha_tabla_amortizacion, 'MM')<=LPAD('$_mes_buscar',2,'0') ";
+    	$columnas_pag="coalesce(sum(core_tabla_amortizacion_pagos.saldo_cuota_tabla_amortizacion_pagos),0) as saldo";
+    	$tablas_pag="public.core_tabla_amortizacion_pagos, 
+					  public.core_tabla_amortizacion,
+					  core_tabla_amortizacion_parametrizacion,
+					  core_estado_tabla_amortizacion";
+    	$where_pag = "core_estado_tabla_amortizacion.id_estado_tabla_amortizacion=core_tabla_amortizacion.id_estado_tabla_amortizacion
+  AND core_tabla_amortizacion.id_tabla_amortizacion = core_tabla_amortizacion_pagos.id_tabla_amortizacion
+  AND core_tabla_amortizacion_pagos.id_tabla_amortizacion_parametrizacion=core_tabla_amortizacion_parametrizacion.id_tabla_amortizacion_parametrizacion
+  AND core_tabla_amortizacion_parametrizacion.tipo_tabla_amortizacion_parametrizacion=8
+   AND  core_tabla_amortizacion.id_creditos = '$id_creditos'
+   AND to_char(core_tabla_amortizacion.fecha_tabla_amortizacion, 'YYYY-MM-DD')<='$ultimo_dia_mes_proceso' 
+   AND core_tabla_amortizacion.id_estatus=1";
     
     	$resultPagos=$creditos->getCondicionesSinOrden($columnas_pag, $tablas_pag, $where_pag, "");
     
@@ -1318,20 +1340,30 @@ class BuscarParticipesCesantesController extends ControladorBase{
     	$creditos=new CoreCreditoModel();
     	$saldo_credito=0;
     	$fecha_prestaciones = $_POST['fecha_prestaciones'];
-    	$_mes_buscar = date("m", strtotime($fecha_prestaciones));
-    	$_year_buscar = date("Y", strtotime($fecha_prestaciones));
+    	
+    	$time_fecha_prestaciones = strtotime($fecha_prestaciones);
+    	
+    	$month = date('m', $time_fecha_prestaciones);
+    	$year = date('Y',$time_fecha_prestaciones);
+    	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+    	
+    	$ultimo_dia_mes_proceso =  date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+    	
+    		$columnas_pag="coalesce(sum(core_tabla_amortizacion_pagos.saldo_cuota_tabla_amortizacion_pagos),0) as saldo";
+    	$tablas_pag="public.core_tabla_amortizacion_pagos, 
+					  public.core_tabla_amortizacion,
+					  core_tabla_amortizacion_parametrizacion,
+					  core_estado_tabla_amortizacion";
+    	$where_pag = "core_estado_tabla_amortizacion.id_estado_tabla_amortizacion=core_tabla_amortizacion.id_estado_tabla_amortizacion
+  AND core_tabla_amortizacion.id_tabla_amortizacion = core_tabla_amortizacion_pagos.id_tabla_amortizacion
+  AND core_tabla_amortizacion_pagos.id_tabla_amortizacion_parametrizacion=core_tabla_amortizacion_parametrizacion.id_tabla_amortizacion_parametrizacion
+  AND core_tabla_amortizacion_parametrizacion.tipo_tabla_amortizacion_parametrizacion=1
+   AND  core_tabla_amortizacion.id_creditos = '$id_creditos'
+   AND to_char(core_tabla_amortizacion.fecha_tabla_amortizacion, 'YYYY-MM-DD')<'$ultimo_dia_mes_proceso' 
+   AND core_tabla_amortizacion.id_estatus=1";
     	
     	
     	
-    	$columnas_pag="coalesce(sum(tap.saldo_cuota_tabla_amortizacion_pagos),0) as saldo";
-    	$tablas_pag="core_creditos c
-                        inner join core_tabla_amortizacion at on c.id_creditos=at.id_creditos
-                        inner join core_tabla_amortizacion_pagos tap on at.id_tabla_amortizacion=tap.id_tabla_amortizacion
-                        inner join core_tabla_amortizacion_parametrizacion tapa on tap.id_tabla_amortizacion_parametrizacion=tapa.id_tabla_amortizacion_parametrizacion";
-    	$where_pag="c.id_creditos='$id_creditos' and c.id_estatus=1 and at.id_estatus=1 and tapa.tipo_tabla_amortizacion_parametrizacion=1
-    				AND to_char(at.fecha_tabla_amortizacion, 'YYYY')='$_year_buscar' and to_char(at.fecha_tabla_amortizacion, 'MM')<LPAD('$_mes_buscar',2,'0')
-    	";
-    
     	$resultPagos=$creditos->getCondicionesSinOrden($columnas_pag, $tablas_pag, $where_pag, "");
     
     
@@ -1344,6 +1376,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
     	}
     
     	
+    	
     	return $saldo_credito;
     
     
@@ -1351,22 +1384,57 @@ class BuscarParticipesCesantesController extends ControladorBase{
     }
         
     
+    
     public function devuelve_interes_por_dias($_id_creditos){
     
     	$fecha_prestaciones = $_POST['fecha_prestaciones'];
-    	
+    	 
     	$creditos=new CoreCreditoModel();
     	$_interes_ordinario=0;
- 		
+    		
     
     	$_saldo_capital = $creditos->devuelve_saldo_capital($_id_creditos) ;
     	$_tasa_interes = $this->devuelve_tasa_credito($_id_creditos);
     	$_dias = date("d", strtotime($fecha_prestaciones));
     	//	$fecha_cuota_actual =
     	$_interes_ordinario = $creditos->devuelve_interes_ord_x_capital($_dias, $_saldo_capital, $_tasa_interes);
-    	
     	 
+    
     	return $_interes_ordinario;
+    
+    
+    
+    }
+    
+    public function devuelve_sustento_solicitud($_id_solicitud){
+    
+    	require_once 'core/DB_Functions.php';
+    	$db = new DB_Functions();
+    	 
+    	
+    	
+    	$_sustento_solicitud = "";
+    	$columnas = "solicitud_prestaciones.fecha_presentacion,
+        			bancos.nombre_bancos,
+	  				solicitud_prestaciones.tipo_cuenta_bancaria,
+	  				solicitud_prestaciones.numero_cuenta_bancaria,
+	  				solicitud_prestaciones.identificador_consecutivos";
+    	
+    	$tablas   = "public.bancos,
+  					public.solicitud_prestaciones";
+    	
+    	$where    = "solicitud_prestaciones.id_bancos = bancos.id_bancos
+  						AND id_solicitud_prestaciones =".$_id_solicitud;
+    	
+    	$id = "solicitud_prestaciones.fecha_presentacion";
+    	
+    	$resultSet=$db->getCondiciones($columnas, $tablas, $where, $id);
+    	
+    	$_sustento_solicitud = $resultSet[0]->nombre_bancos.' ' .$resultSet[0]->tipo_cuenta_bancaria. ' ' .$resultSet[0]->numero_cuenta_bancaria ; 
+        
+    	
+    		 
+    	return $_sustento_solicitud;
     
     
     
@@ -1374,6 +1442,40 @@ class BuscarParticipesCesantesController extends ControladorBase{
     
     
     
+    public function devuelve_fecha_aprobacion_solicitud($_id_solicitud){
+    
+    	require_once 'core/DB_Functions.php';
+        $db = new DB_Functions();
+     
+        
+    	$_fecha_solicitud = "";
+    	$columnas = "
+	  				solicitud_prestaciones.fecha_aprobacion";
+    	 
+    	$tablas   = "public.bancos,
+  					public.solicitud_prestaciones";
+    	 
+    	$where    = "solicitud_prestaciones.id_bancos = bancos.id_bancos
+  						AND id_solicitud_prestaciones =".$_id_solicitud;
+    	$id = "solicitud_prestaciones.fecha_presentacion";
+    	
+    	
+    	$resultSet=$db->getCondiciones($columnas, $tablas, $where, $id);
+    	$_fecha_solicitud = $resultSet[0]->fecha_aprobacion ;
+    	
+    	
+    	if ($_fecha_solicitud !="")
+    	{
+    		
+    	}
+    	else
+    	{
+    		$_fecha_solicitud = date("yy-m-d H:i:s");
+    	}
+    	
+    	return $_fecha_solicitud;
+    
+    }
     
        
  
@@ -1664,6 +1766,326 @@ class BuscarParticipesCesantesController extends ControladorBase{
     }
     
  
+    
+    
+    
+    ////DESAFILIACION
+    
+
+    public function GuardaDesafiliacion()
+    {
+    	 
+    	session_start();
+    
+    	echo "DESAFILIACION";
+    	
+    	$_fecha_concesion_creditos = "";
+    
+    	$html="";
+    	$_id_creditos=0;
+    	$_id_tipo_creditos=0;
+    	$total_saldo=0;
+    	$total_descuentos=0;
+    	$total_recibir=0;
+    	$total_pagar=0;
+    	$id_participe= $_POST['id_participe'];
+        $_id_solicitud=$_POST['id_solicitud'];
+    	$fecha_prestaciones = $_POST['fecha_prestaciones'];
+    	$_observacion_prestaciones = $_POST['observacion_prestaciones'];
+    	$_id_tipo_prestaciones = $_POST['id_tipo_prestaciones'];
+    	
+    	
+    	$participes= new ParticipesModel();
+    
+    
+    	if ($_id_tipo_prestaciones == 2)
+    	{
+    		$columnas="
+    				COALESCE(count(c.valor_personal_contribucion),0) cantidad_imposiciones,
+    				COALESCE(sum(c.valor_personal_contribucion),0) aporte_personal_100,
+							(coalesce(sum(c.valor_personal_contribucion),0)/2) aporte_personal_50,
+							(select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=5 and c1.id_estatus=1) as retroactivo_personal_100,
+							(select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=5 and c2.id_estatus=1) as retroactivo_personal_50,
+							(select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=7 and c1.id_estatus=1) as excedente_por_aporte_personal_100,
+							(select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=7 and c2.id_estatus=1) as excedente_por_aporte_personal_50,
+		        			(select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=9 and c1.id_estatus=1) as interes_por_aporte_personal_100,
+							(select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=9 and c2.id_estatus=1) as interes_por_aporte_personal_50,
+							(select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=10 and c1.id_estatus=1) as impuesto_ir_superavit_personal_100,
+							(select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=10 and c2.id_estatus=1) as impuesto_ir_superavit_personal_50,
+							(select COALESCE(sum(c3.valor_personal_contribucion),0)  from core_contribucion c3 where c3.id_participes=".$id_participe." and c3.id_contribucion_tipo=50 and c3.id_estatus=1) as superavit_aporte_personal_100,
+							(select (coalesce(sum(c4.valor_personal_contribucion),0)/2)  from core_contribucion c4 where c4.id_participes=".$id_participe." and c4.id_contribucion_tipo=50 and c4.id_estatus=1) as superavit_aporte_personal_50,
+							(select to_char(c5.fecha_registro_contribucion,'TMMONTH/YYYY') imposicion_desde from core_contribucion c5 where c5.id_participes=".$id_participe." and c5.id_estatus=1 order by id_contribucion asc limit 1),
+							(select to_char(c5.fecha_registro_contribucion,'TMMONTH/YYYY') imposicion_hasta from core_contribucion c5 where c5.id_participes=".$id_participe." and c5.id_estatus=1  order by id_contribucion DESC limit 1)";
+    		$tablas="core_contribucion c inner join  core_participes p on c.id_participes=p.id_participes";
+    		$where="p.id_participes=".$id_participe." and c.id_estatus=1 and c.id_contribucion_tipo=1";
+    		$id="aporte_personal_100";
+    
+    
+    
+    		$action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+    		 
+    		if($action == 'ajax')
+    		{
+    
+    			 
+    			$resultSet=$participes->getCondiciones($columnas, $tablas, $where, $id);
+    
+    
+    			if(!empty($resultSet)){
+    
+    				foreach ($resultSet as $res)
+    				{
+    
+    					$Total50PersonalMasRendimientos =  $res->aporte_personal_50+$res->retroactivo_personal_50+$res->excedente_por_aporte_personal_50+$res->interes_por_aporte_personal_50+$res->impuesto_ir_superavit_personal_50+$res->superavit_aporte_personal_50;
+    
+    
+    
+    					$_cantidad_imposiciones =$res->cantidad_imposiciones;
+    					$_imposiciones_desde=$res->imposicion_desde;
+    					$_imposiciones_hasta=$res->imposicion_hasta;
+    					$_aporte_personal_50=number_format((float)$res->aporte_personal_50, 2, ',', '.');
+    					$_retroactivo_personal_50=number_format((float)$res->retroactivo_personal_50, 2, ',', '.');
+    					$_excedente_por_aporte_personal_50=number_format((float)$res->excedente_por_aporte_personal_50, 2, ',', '.');
+    					$_interes_por_aporte_personal_50=number_format((float)$res->interes_por_aporte_personal_50, 2, ',', '.');
+    					$_impuesto_ir_superavit_personal_50=number_format((float)$res->impuesto_ir_superavit_personal_50, 2, ',', '.');
+    					$_superavit_aporte_personal_50=number_format((float)$res->superavit_aporte_personal_50, 2, ',', '.');
+    
+    
+    				}
+    				
+    
+    				// CONSULTO LOS CREDITOS DE LOS PARTICIPES
+    				$columnas="bb.fecha_concesion_creditos, bb.id_creditos,bb.id_tipo_creditos, tc.nombre_tipo_creditos, tc.codigo_tipo_creditos";
+    				$tablas="core_participes aa
+		                inner join core_creditos bb on bb.id_participes = aa.id_participes
+		                inner join core_estado_participes cc on cc.id_estado_participes = aa.id_estado_participes
+		                inner join core_estado_creditos dd on dd.id_estado_creditos = bb.id_estado_creditos
+		                inner join core_tipo_creditos tc on bb.id_tipo_creditos=tc.id_tipo_creditos";
+    				$where=" aa.id_estatus = 1
+		                and upper(cc.nombre_estado_participes) = 'ACTIVO'
+		                and upper(dd.nombre_estado_creditos) = 'ACTIVO'
+		                and aa.id_participes =".$id_participe."";
+    				$id="bb.id_creditos";
+    
+    				$resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
+    				 
+    				if(!(empty($resultCreditos)))
+    				{
+    					 
+    					foreach($resultCreditos as $res)
+    					{
+    
+    						// capturo el id de los creditos que tiene el participe
+    						$_id_creditos=$res->id_creditos;
+    						$_id_tipo_creditos=$res->id_tipo_creditos;
+    						$_nombre_tipo_creditos=$res->nombre_tipo_creditos.' #'.$res->id_creditos;
+    						$_fecha_concesion_creditos = $res->fecha_concesion_creditos;
+    
+    						$total_saldo=   $participes->devuelve_saldo_capital($_id_creditos) ; //$this->Buscar_Cuotas_Actuales($_id_creditos);
+    						$total_mora=   $this->devuelve_saldo_mora($_id_creditos) ; //$this->Buscar_Cuotas_Actuales($_id_creditos);
+    						$saldo_interes = $this->devuelve_saldo_interes($_id_creditos);
+    						$dias_interes =  $this->devuelve_interes_por_dias($_id_creditos);
+    						$saldo_seguros = $this->devuelve_saldo_seguro_desgravamen_incendio($_id_creditos);
+    						 
+    						$total_saldo_credito = $total_saldo +
+    						$total_mora  +
+    						$saldo_interes +
+    						$dias_interes +
+    						$saldo_seguros	;
+    
+    						 
+    				
+    
+    						$total_descuentos=$total_descuentos + $total_saldo +
+    						$total_mora  +
+    						$saldo_interes +
+    						$dias_interes +
+    						$saldo_seguros	;
+    						 
+    						 
+    					}
+    				}
+    					
+    				$total_recibir=$Total50PersonalMasRendimientos-$total_descuentos;
+    				if ($total_recibir<0) ///no se puede desafiliar
+    
+    				{
+    
+    					$total_pagar=$total_recibir*(-1);
+    
+    				
+    				}
+    				else   /// puede desafiliarse
+    				{
+    					
+    					$_id_participes = $id_participe;
+    					$_valor_neto_pagar_liquidacion_cabeza = $total_recibir;
+    					$_cantidad_aportaciones_liquidacion_cabeza = $_cantidad_imposiciones;
+    					$_id_status = 2; //inactivo;
+    					$_observacion_liquidacion_cabeza = $_observacion_prestaciones;
+    					$_id_tipo_prestaciones_g = $_id_tipo_prestaciones;
+    					$_id_estado_prestaciones = 1; //Registrado ;
+    					$_sustento_liquidacion_cabeza = $this->devuelve_sustento_solicitud($_id_solicitud);
+    					$_carpeta_numero_liquidacion_cabeza = "00". $this->DevuelveConsecutivo();
+    					$_file_number_liquidacion_cabeza =  $this->DevuelveConsecutivo();
+    					$_fecha_entrada_carpeta_liquidacion_cabeza    = $this->devuelve_fecha_aprobacion_solicitud($_id_solicitud);		
+    					$_user_name = $_SESSION["usuario_usuarios"];
+    					$_id_usuarios = $_SESSION["id_usuarios"];
+    					$_fecha_pago_carpeta_liquidacion_cabeza = "1901-01-01 00:00:01";
+    					$_numero_documento_liquidacion_cabeza = 0;
+    					$_fecha_entrada_liquidacion_cabeza = date("yy-m-d H:i:s");
+    					$_numero_carpeta_liquidacion_cabeza = 0;
+    					$_fecha_salida_liquidacion_cabeza = "1901-01-01 00:00:01";
+    					$_id_liquidaciones_historico = 0;
+    						
+    					
+    					  $resInsert = $this->InsertaLiquidacionCabeza($_id_participes,
+    					
+    							$_valor_neto_pagar_liquidacion_cabeza,
+    							$_cantidad_aportaciones_liquidacion_cabeza,
+    							$_id_status,
+    							$_observacion_liquidacion_cabeza,
+    							$_id_tipo_prestaciones,
+    							$_id_estado_prestaciones,
+    							$_sustento_liquidacion_cabeza,
+    							$_carpeta_numero_liquidacion_cabeza,
+    							$_file_number_liquidacion_cabeza,
+    							$_fecha_entrada_carpeta_liquidacion_cabeza,
+    							$_user_name,
+    							$_id_usuarios,
+    							$_fecha_pago_carpeta_liquidacion_cabeza,
+    							$_numero_documento_liquidacion_cabeza,
+    							$_fecha_entrada_liquidacion_cabeza,
+    							$_numero_carpeta_liquidacion_cabeza,
+    							$_fecha_salida_liquidacion_cabeza,
+    							$_id_liquidaciones_historico);
+    					
+    				}
+    
+    
+    			}else{
+    			
+    				////si valor
+    				
+    			}
+    			 
+    			 
+    		}
+    	}
+    
+    
+    }
+    
+    
+    public function InsertaLiquidacionCabeza($_id_participes,
+    							$_valor_neto_pagar_liquidacion_cabeza,
+    							$_cantidad_aportaciones_liquidacion_cabeza,
+    							$_id_status,
+    							$_observacion_liquidacion_cabeza,
+    							$_id_tipo_prestaciones,
+    							$_id_estado_prestaciones,
+    							$_sustento_liquidacion_cabeza,
+    							$_carpeta_numero_liquidacion_cabeza,
+    							$_file_number_liquidacion_cabeza,
+    							$_fecha_entrada_carpeta_liquidacion_cabeza,
+    							$_user_name,
+    							$_id_usuarios,
+    							$_fecha_pago_carpeta_liquidacion_cabeza,
+    							$_numero_documento_liquidacion_cabeza,
+    							$_fecha_entrada_liquidacion_cabeza,
+    							$_numero_carpeta_liquidacion_cabeza,
+    							$_fecha_salida_liquidacion_cabeza,
+    							$_id_liquidaciones_historico){
+    		
+    	
+    	$resultado = null;
+    	$liquidacion_cabeza=new LiquidacionCabezaModel();
+    	$_array_roles=array();
+    
+    	if (isset(  $_SESSION['nombre_usuarios']) )
+    	{
+    
+    
+    		
+    				$funcion = "ins_core_liquidacion_cabeza";
+    				$parametros = "'$_id_participes',
+    							'$_valor_neto_pagar_liquidacion_cabeza',
+    							'$_cantidad_aportaciones_liquidacion_cabeza',
+    							'$_id_status',
+    							'$_observacion_liquidacion_cabeza',
+    							'$_id_tipo_prestaciones',
+    							'$_id_estado_prestaciones',
+    							'$_sustento_liquidacion_cabeza',
+    							'$_carpeta_numero_liquidacion_cabeza',
+    							'$_file_number_liquidacion_cabeza',
+    							'$_fecha_entrada_carpeta_liquidacion_cabeza',
+    							'$_user_name',
+    							'$_id_usuarios',
+    							'$_fecha_pago_carpeta_liquidacion_cabeza',
+    							'$_numero_documento_liquidacion_cabeza',
+    							'$_fecha_entrada_liquidacion_cabeza',
+    							'$_numero_carpeta_liquidacion_cabeza',
+    							'$_fecha_salida_liquidacion_cabeza',
+    							'$_id_liquidaciones_historico' ";
+    				$liquidacion_cabeza->setFuncion($funcion);
+    				$liquidacion_cabeza->setParametros($parametros);
+    				
+    
+    				$resultado=$liquidacion_cabeza->llamafuncion();
+    
+    				$respuesta = '';
+    
+    				if(!empty($resultado) && count($resultado)){
+    
+    					foreach ($resultado[0] as $k => $v)
+    					{
+    						$respuesta=$v;
+    					}
+    
+    					if (strpos($respuesta, 'OK') !== false) {
+    
+    						echo json_encode(array('success'=>1,'mensaje'=>$respuesta));
+    					}else{
+    						echo json_encode(array('success'=>0,'mensaje'=>$respuesta));
+    					}
+    
+    				}
+    
+    	}else{
+    
+    		echo json_encode(array('success'=>0,'mensaje'=>'Session Caducada vuelva a Ingresar'));
+    
+    	}
+    
+    }
+    
+    
+    
+    public function DevuelveConsecutivo()
+    {
+    
+    	
+    	$creditos= new CreditosModel();
+    	$_valor_consecutivos = 0;
+    		$columnas="id_consecutivos, id_entidades,  numero_consecutivos,
+    		id_tipo_comprobantes, creado, modificado, sufijo_consecutivos,
+    		espacio_consecutivos, valor_consecutivos ";
+    		$tablas=" public.consecutivos";
+    		$where="nombre_consecutivos = 'PRESTACIONES' ";
+    		$id="id_consecutivos";
+    
+    		$resultSet=$creditos->getCondiciones($columnas, $tablas, $where, $id);
+    			if(!empty($resultSet)){
+    
+    				foreach ($resultSet as $res)
+    				{
+    
+    					$_valor_consecutivos =  $res->valor_consecutivos;
+    				}
+    		}
+    	return $_valor_consecutivos;      
+    
+    }
 }
 
 

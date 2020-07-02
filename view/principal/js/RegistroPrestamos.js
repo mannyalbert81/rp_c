@@ -40,6 +40,10 @@ function loadDataParticipesPrestamos(){
 			$("#lblMontoIngresado").val( rsParticipePrestamos.monto_otorgado_creditos );
 			$("#lblPlazoMaximo").val( rsParticipePrestamos.plazo_maximo_tipo_creditos );
 			$("#lblInteresMensual").val( rsParticipePrestamos.interes_tipo_creditos );
+			$("#lblGaranteIdentificacion").val( rsParticipePrestamos.cedula_participes_garantes );
+			$("#lblGaranteApellidos").val( rsParticipePrestamos.apellido_participes_garantes );
+			$("#lblGaranteNombres").val( rsParticipePrestamos.nombre_participes_garantes );
+			
 			$("#hdnid_creditos").val( rsParticipePrestamos.id_creditos );
 			TablaAmortizacion();
 			Transacciones();		
@@ -128,7 +132,7 @@ function Transacciones(_page = 1){
 
 
 var generar_tabla_amortizacion = function(obj){
-	
+
 	var elemento = $(obj);
 	var id_creditos	= $("#hdnid_creditos").val();
 	var url 	 = "index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos="+id_creditos;

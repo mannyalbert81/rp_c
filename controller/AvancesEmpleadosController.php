@@ -408,7 +408,7 @@ class AvancesEmpleadosController extends ControladorBase{
                     $html.='<td style="font-size: 14px;">'.$res->nombre_cargo.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_departamento.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->fecha_anticipo.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->monto_anticipo.'</td>';
+                    $html.='<td style="font-size: 14px;">$'.number_format((float)$res->monto_anticipo,2,".",",").'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->tiempo_diferido.'</td>';
                     $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';
                     
@@ -815,6 +815,7 @@ class AvancesEmpleadosController extends ControladorBase{
         
         $columnas = " empleados.nombres_empleados,
                       empleados.numero_cedula_empleados,
+                      empleados.fecha_ingreso,
                       cargos_empleados.nombre_cargo,
                       departamentos.nombre_departamento,
                         anticipo_sueldo_empleados.fecha_anticipo,
@@ -844,6 +845,19 @@ class AvancesEmpleadosController extends ControladorBase{
         $datos_reporte['MONTO']=number_format((float)$rsdatos[0]->monto_anticipo,2,".",",");
         $datos_reporte['SON']=$permisos->numtoletras((float)$rsdatos[0]->monto_anticipo);
         $diferido=$rsdatos[0]->tiempo_diferido;
+        
+        $fechaelem2 = explode("-", $rsdatos[0]->fecha_ingreso);
+        $ind2 = intval($fechaelem2[1])-1;
+        $datos_reporte['FECHA_INGRESO']=$fechaelem2[2]." de ".$meses[$ind2]." de ".$fechaelem2[0];
+        
+        
+        $directorio = $_SERVER ['DOCUMENT_ROOT'];
+        
+        $domLogo=$directorio.'/rp_c/view/images/logo_contrato_adhesion.jpg';
+        $logo = '<img src="'.$domLogo.'">';
+        
+        $datos_reporte['IMG']=$logo;
+        
         
         
         

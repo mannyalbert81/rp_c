@@ -61,38 +61,48 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	        
 	        if( !empty( error_get_last() ) ){ throw new Exception("Variable no recibida"); }
 	        
-	        $col1  = "core_creditos.id_creditos, 
-                      core_creditos.numero_creditos,
-                      core_creditos.fecha_concesion_creditos,
-                      core_creditos.monto_otorgado_creditos,
-                      core_creditos.plazo_creditos,
-                      core_creditos.monto_neto_entregado_creditos,
-                      core_creditos.cuota_creditos,
-                      core_participes.id_participes, 
-                      core_participes.apellido_participes, 
-                      core_participes.nombre_participes, 
-                      core_participes.cedula_participes, 
-                      core_entidad_patronal.id_entidad_patronal, 
-                      core_entidad_patronal.nombre_entidad_patronal, 
-                      core_entidad_patronal.ruc_entidad_patronal, 
-                      core_entidad_patronal.tipo_entidad_patronal,
-                      core_estado_creditos.id_estado_creditos, 
-                      core_estado_creditos.nombre_estado_creditos,
-                      core_tipo_creditos.id_tipo_creditos, 
-                      core_tipo_creditos.nombre_tipo_creditos,
-                      core_tipo_creditos.interes_tipo_creditos,
-                      core_creditos.receptor_solicitud_creditos,                      
-                      core_tipo_creditos.plazo_maximo_tipo_creditos";
-	        $tab1  = " public.core_creditos, 
-                        public.core_participes, 
-                        public.core_entidad_patronal,
-                        public.core_estado_creditos,
-                        public.core_tipo_creditos";
-	        $whe1  = " core_participes.id_participes = core_creditos.id_participes AND
-                        core_entidad_patronal.id_entidad_patronal = core_participes.id_entidad_patronal AND 
-                        core_estado_creditos.id_estado_creditos = core_creditos.id_estado_creditos AND 
-                        core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND
-                        core_creditos.id_creditos = $id_creditos ";
+	        $col1  = "a.id_creditos, 
+                      a.numero_creditos,
+                      a.fecha_concesion_creditos,
+                      a.monto_otorgado_creditos,
+                      a.plazo_creditos,
+                      a.monto_neto_entregado_creditos,
+                      a.cuota_creditos,
+                      b.id_participes, 
+                      b.apellido_participes, 
+                      b.nombre_participes, 
+                      b.cedula_participes, 
+                      c.id_entidad_patronal, 
+                      c.nombre_entidad_patronal, 
+                      c.ruc_entidad_patronal, 
+                      c.tipo_entidad_patronal,
+                      d.id_estado_creditos, 
+                      d.nombre_estado_creditos,
+                      e.id_tipo_creditos, 
+                      e.nombre_tipo_creditos,
+                      e.interes_tipo_creditos,
+                      a.receptor_solicitud_creditos,                      
+                      e.plazo_maximo_tipo_creditos,
+                      f.apellido_participes as apellido_participes_garantes,
+        		      f.nombre_participes as nombre_participes_garantes,
+        		      f.cedula_participes as cedula_participes_garantes";
+	        
+	        $tab1  = "core_creditos a 
+                        INNER JOIN core_participes b ON a.id_participes = b.id_participes 
+                        INNER JOIN core_entidad_patronal c ON b.id_entidad_patronal = c.id_entidad_patronal
+                        INNER JOIN core_estado_creditos d ON a.id_estado_creditos = d.id_estado_creditos
+                        INNER JOIN core_tipo_creditos e ON a.id_tipo_creditos = e.id_tipo_creditos
+            			LEFT JOIN (
+            			SELECT b.apellido_participes,
+            			b.nombre_participes,
+            			b.cedula_participes,
+            			a.id_creditos
+            			FROM core_creditos_garantias a 
+            			INNER JOIN core_participes b ON a.id_participes = b.id_participes   
+            			) f ON a.id_creditos = f.id_creditos";
+	        
+	        $whe1  = " a.id_creditos = $id_creditos ";
+	        
 	        $rsConsulta1   = $busquedas->getCondicionesSinOrden($col1, $tab1, $whe1, "");
 	        
 	        $resp['dataParticipePrestamos'] = ( empty($rsConsulta1) ) ? null : $rsConsulta1;
@@ -514,17 +524,29 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    
 	    $where_to="";
 
-	    $columnas = " a.id_transacciones, a.id_creditos, a.id_participes, a.id_creditos_tipo_pago,
-	    c.id_creditos_tipo_pago, c.nombre_creditos_tipo_pago, a.fecha_transacciones, a.valor_transacciones, a.observacion_transacciones,
-	    a.usuario_usuarios,
-	    a.fecha_contable_core_transacciones, a.id_ccomprobantes_ant, b.id_modo_pago, b.nombre_modo_pago, e.nombre_estado_transacciones";
-	    
+	    $columnas = " a.id_transacciones,
+                      a.id_creditos,
+                      a.id_participes,
+                      a.id_creditos_tipo_pago,
+	                  c.id_creditos_tipo_pago,
+                      c.nombre_creditos_tipo_pago,
+                      TO_CHAR(a.fecha_transacciones,'YYYY-MM-DD') as \"fecha_transacciones\",
+                      a.valor_transacciones,
+                      a.observacion_transacciones,
+	                  a.usuario_usuarios,
+                      TO_CHAR(a.fecha_contable_core_transacciones,'YYYY-MM-DD') as \"fecha_contable_core_transacciones\",
+                      a.id_ccomprobantes_ant,
+                      b.id_modo_pago, 
+                      b.nombre_modo_pago,
+                      e.nombre_estado_transacciones";
 	    
 	    $tablas = "   core_transacciones a
 	    inner join core_modo_pago b on a.id_modo_pago=b.id_modo_pago
 	    inner join core_creditos_tipo_pago c on a.id_creditos_tipo_pago=c.id_creditos_tipo_pago
 	    inner join core_estado_transacciones e on a.id_estado_transacciones=e.id_estado_transacciones";
+	    
 	    $where= "   a.id_creditos='$id_creditos' and a.id_status=1";
+	    
 	    $id="a.id_transacciones";
 	    
 	    
@@ -575,6 +597,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	            $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
 	            $html.= "<thead>";
 	            $html.= "<tr>";
+	            $html.='<th style="text-align: center; font-size: 11px;">Recibo</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Tipo Pago</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Fecha</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Valor</th>';
@@ -583,7 +606,6 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	            $html.='<th style="text-align: center; font-size: 11px;">Fecha Contable</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Modo Pago</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Estado</th>';
-	            $html.='<th style="text-align: center; font-size: 11px;">Recibo</th>';
 	            
 	            
 	            $html.='</tr>';
@@ -599,17 +621,16 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	                $i++;
 	                $html.='<tr>';
 	                
-	                
+	                $html.='<td><a class="btn bg-blue" title="Recibo" href="index.php?controller=PrincipalPrestamosSocios&action=ReporteReciboTransacciones&id_transacciones='.$res->id_transacciones.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_creditos_tipo_pago.'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_transacciones.'</td>';
-	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->valor_transacciones.'</td>';
+	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->valor_transacciones, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->observacion_transacciones.'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->usuario_usuarios.'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_contable_core_transacciones.'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_modo_pago.'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->nombre_estado_transacciones.'</td>';
-	                $html.='<td><a class="btn bg-blue" title="Recibo" href="index.php?controller=PrincipalPrestamosSocios&action=ReporteReciboTransacciones&id_transacciones='.$res->id_transacciones.'" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
-	                
+	               
 	                
 	                $html.='</tr>';
 	            }

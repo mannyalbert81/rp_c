@@ -365,12 +365,26 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
               	<li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=RecaudacionGeneracionArchivo&action=index"><i class="fa fa-circle-o"></i> Generacion Archivo</a></li>
-                <li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=Recaudacion&action=index"><i class="fa fa-circle-o"></i> Arc. Entidad Patronal</a></li>                
-                <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Carga Recaudaciones</a></li>   
+              <!--   <li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=Recaudacion&action=index"><i class="fa fa-circle-o"></i> Arc. Entidad Patronal</a></li>                
+                <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Carga Recaudaciones</a></li>    -->
+                <li style="<?php echo getcontrolador("RecepcionArchivosRecaudaciones",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Recepción Archivos</a></li>   
                 <li style="<?php echo getcontrolador("SolicitudAportes",$controladores) ?>"><a href="index.php?controller=SolicitudAportes&action=index"><i class="fa fa-circle-o"></i> Solicitud Aportes</a></li>             
              
                 </ul>
             </li>
+             <li class="treeview"  style="<?php echo getcontrolador("ReportesRecaudaciones",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Reportes</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+              	<li style="<?php echo getcontrolador("ReporteRecaudaciones",$controladores) ?>"><a href="index.php?controller=ReporteRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Reporte Recaudaciones</a></li>
+             
+                </ul>
+            </li>
+            
         
         <li class="treeview"  style="<?php echo getcontrolador("AdministracionContabilidad",$controladores) ?>"  >
           <a href="#">
@@ -440,6 +454,7 @@ $controladores=$_SESSION['controladores'];
           <ul class="treeview-menu">
           	<li style="<?php echo getcontrolador("ReportesTesoreria",$controladores) ?>"><a href="index.php?controller=TesCuentasPagar&action=ReporteIndex"><i class="fa fa-circle-o"></i> Consultar Cuentas Pagar</a></li>
             <li style="<?php echo getcontrolador("ReportesTesoreria",$controladores) ?>"><a href="index.php?controller=GenerarCheque&action=reporteCheques"><i class="fa fa-circle-o"></i> Consultar Cheques</a></li>
+            <li style="<?php echo getcontrolador("cxpAplicadas",$controladores) ?>"><a href="index.php?controller=Pagos&action=Reporteindex"><i class="fa fa-circle-o"></i> Cuentas Pagar Aplicadas</a></li>
             <!-- <li style="<?php echo getcontrolador("Retencion",$controladores) ?>"><a href="index.php?controller=Retencion&action=index"><i class="fa fa-circle-o"></i> Generar Retención</a></li>-->
 			<li style="<?php echo getcontrolador("ReporteCuentasPagar",$controladores) ?>"><a href="index.php?controller=ReporteCuentasPagar&action=index5"><i class="fa fa-circle-o"></i>Reporte Cuentas Pagar</a></li>
 

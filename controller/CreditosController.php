@@ -314,11 +314,13 @@ class CreditosController extends ControladorBase{
 	public function ActivarCredito($paramIdCredito=0){
 	    
 	    
-	    if(!isset($_SESSION)){
+	    if( !isset( $_SESSION ) )
+	    {
 	        session_start();
 	    }
 	    
-	    if( (int)$paramIdCredito <= 0 || is_null($paramIdCredito) ){
+	    if( (int)$paramIdCredito <= 0 || is_null($paramIdCredito) )
+	    {
 	        return "Datos de credito no recibido";
 	    }
 	    
@@ -354,12 +356,17 @@ class CreditosController extends ControladorBase{
 	        $_id_proveedor = 0;
 	        $error = "";
 	        $error = pg_last_error();
-	        if (!empty($error) ){
-	            throw new Exception('ingresar participe - proveedor');
-	        }else{
-	            if( (int)$ResultadoProveedor[0] > 0 ){
+	        
+	        if( !empty( $error ) )
+	        {
+	            throw new Exception('ERROR INGRESAR DATOS PARTICIPE COMO PROVEEDOR .. fn-ins_proveedores_participes');
+	        }else
+	        {
+	            if( (int)$ResultadoProveedor[0] > 0 )
+	            {
 	                $_id_proveedor = $ResultadoProveedor[0];
-	            }else{
+	            }else
+	            {
 	                throw new Exception(" Participe-credito no Encontrado");
 	            }
 	            
@@ -424,7 +431,7 @@ class CreditosController extends ControladorBase{
 	    $Credito           = new CreditosModel();
 	    //creacion de lote
 	    
-	    $nombreLote        = "CxP-Creditos";
+	    $nombreLote        = "INGRESO CREDITOS";
 	    $descripcionLote   = "GENERACION CREDITO";
 	    $id_frecuencia     = 1;
 	    $id_usuarios       = $_SESSION['id_usuarios'];
@@ -1045,7 +1052,8 @@ class CreditosController extends ControladorBase{
 	        $_id_credito_renovacion= 0;
 	        $funcionRenovados    = "core_renovacion_credito";
 	        $parametrosRenovados = "";
-	        foreach ( $rsConsulta3 as $res ){
+	        foreach ( $rsConsulta3 as $res )
+	        {
 	            $_suma_de_saldos_creditos_renovados += (float)$res->saldo_credito_renovado_creditos_renovaciones;
 	            $_suma_de_desgravamen_creditos_renovados += (float)$res->seguro_desgravamen_creditos_renovaciones;
 	            $_id_credito_renovacion    = $res->id_creditos_renovado;

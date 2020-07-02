@@ -1,7 +1,5 @@
 $(document).ready(function(){
 	
-	//listaArchivosRecaudacion();
-	//consultaCargaRecaudaciones();
 	cargaEntidadPatronal();
 	BuscarDescuentosFormatos();
 	
@@ -126,10 +124,6 @@ function consultaCargaRecaudaciones(_page = 1){
 	})
 	
 }
-
-
-
-
 
 $("#btnGenerar").on("click",function(){
 	

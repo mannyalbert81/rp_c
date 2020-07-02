@@ -193,8 +193,7 @@
             <br>
  			 <div class="tab-pane active" id="pendientes">
                 
-                <div class="box-body no-padding">
-          		
+              	
               		<div id="pnl_div_descuentos_pendientes" class="letrasize11">
                 		<table id="tbl_descuentos_pendientes" class="table table-striped table-bordered" > <!--   -->
                         	<thead >
@@ -220,7 +219,7 @@
                 	</div>
           		
             	
-          		</div>
+          		
 		       
               </div>
               

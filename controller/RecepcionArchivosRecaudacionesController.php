@@ -37,11 +37,10 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
 		    exit();
 		}		    
 			
-		$rsCargaRecaudaciones = $carga_recaudaciones->getBy(" 1 = 1 ");
-		
+	
 				
 		$this->view_Recaudaciones("RecepcionArchivosRecaudaciones",array(
-		    "resultSet"=>$rsCargaRecaudaciones
+		    "resultSet"=>""
 	
 		));
 			

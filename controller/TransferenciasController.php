@@ -160,7 +160,7 @@ class TransferenciasController extends ControladorBase{
 		//generar array de respuesta a vista
 		$resultset =  array((object)$datosVista);
 		
-		//print_r($resultset);
+		//var_dump( error_get_last() ); die();
 		
 		$this->view_tesoreria("Transferencias",array(
 		    "resultset"=>$resultset
@@ -404,11 +404,14 @@ class TransferenciasController extends ControladorBase{
 	        /** proceso de envio de mensaje se realizara si es credito **/ 
 	        if( $_isCredito ){
 	            
+	            //comentado para no gastar servicio de mensajeria
+	            /*
 	            $auxMsg = $this->auxEnviarMsgMovil(true, $datosMsgParticipe);
 	            
 	            if( $auxMsg['error'] == true ){
 	                $resp['msgtexto'] = array('estatus'=>'ERROR','mensaje'=>"mensaje de texto no enviado!"); //este proceso no genera una excepcion
 	            }
+	            */
 	        }
 	        
 	        /** viene generacion de archivo plano con valores para envio de datos**/
@@ -594,7 +597,7 @@ class TransferenciasController extends ControladorBase{
 	function auxEnviarMsgMovil( bool $pruebas, array $datos ){
 	    
 	    if( $pruebas ){
-	        $_celular_mensaje = "0987968467";
+	        $_celular_mensaje = "0987474892";
 	    }else{
 	        $_celular_mensaje = $datos['celular_participes'];
 	    }

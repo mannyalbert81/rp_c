@@ -5,8 +5,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
     
     public function index(){
         session_start();
-        $estado = new EstadoModel();
-        $id_rol = $_SESSION['id_rol'];
+
         
         $this->view_principal("PrincipalBusquedasExpedientes",array(
             "result" => ""
@@ -456,7 +455,7 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         $participes= new ParticipesModel();
         $creditos= new CreditosModel();
         $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
-        
+        $id_prueba=908;
         
         $datos_afiliado = array();
         
@@ -519,6 +518,50 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         $datos_afiliado['CORREO_PARTICIPES']=$rsdatos[0]->correo_participes;
         $datos_afiliado['BANCO_PARTICIPES']=$rsdatos[0]->nombre_banco_liquidacion_forma_pago;
         $datos_afiliado['NUMERO_CUENTA_PARTICIPES']=$rsdatos[0]->numero_cuenta_liquidacion_forma_pago;
+        
+        
+        
+        $contribucion = new CoreContribucionModel();
+        
+        
+        $condicion_aporte_personal=" and c1.id_contribucion_tipo = 1";
+        $condicion_exedente_personal=" and c1.id_contribucion_tipo = 7";
+        $condicion_interes_personal=" and c1.id_contribucion_tipo = 9";
+        
+        $columnas = " 
+                (select sum(c1.valor_personal_contribucion) 
+                            	from core_contribucion c1 where id_participes = '$id_prueba' $condicion_aporte_personal and id_estatus=1 limit 1
+                            ) as \"total_aportes_personales\",
+                (select sum(c1.valor_personal_contribucion) 
+                            	from core_contribucion c1 where id_participes = '$id_prueba' $condicion_exedente_personal and id_estatus=1 limit 1
+                            ) as \"total_exedente_personales\",
+                (select sum(c1.valor_personal_contribucion) 
+                            	from core_contribucion c1 where id_participes = '$id_prueba' $condicion_interes_personal and id_estatus=1 limit 1
+                            ) as \"total_interes_personales\"
+  ";
+        
+        $tablas = "(select to_char(fecha_registro_contribucion,'YYYY') as anio
+                	from core_contribucion
+                	where id_participes = '$id_prueba'
+                	group by to_char(fecha_registro_contribucion,'YYYY')
+                	order by to_char(fecha_registro_contribucion,'YYYY')
+                	) aa";
+        $where= "   1=1";
+        $id="aa.anio";
+        
+        $rsdatos_aportes_personales = $contribucion->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $datos_afiliado['APORTES_PERSONALES']=number_format($rsdatos_aportes_personales[0]->total_aportes_personales, 2, ',', ' ');
+        $datos_afiliado['EXEDENTES_PERSONALES']=number_format($rsdatos_aportes_personales[0]->total_exedente_personales, 2, ',', ' ');
+        $datos_afiliado['INTERES_PERSONALES']=number_format($rsdatos_aportes_personales[0]->total_interes_personales, 2, ',', ' ');
+        
+       
+        
+        
+        
+        
+        
+        
 
         
     
@@ -734,13 +777,19 @@ class PrincipalBusquedasExpedientesController extends ControladorBase{
         
         $resultAportes=$participes->getCondiciones($columnas, $tablas, $where, $id);
         
-      
-        $last=sizeof($resultAportes);
-        $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
-        $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
-        $fecha_primer=substr($fecha_primer,0,10);
-        $fecha_ultimo=substr($fecha_ultimo,0,10);
-        $tiempoaporte=$this->dateDifference($fecha_primer, $fecha_ultimo);
+        if( empty( $resultAportes ) )
+        {
+            $tiempoaporte = "0 Años, 0 Meses, 0 Dias";
+        }else
+        {
+            $last=sizeof($resultAportes);
+            $fecha_primer=$resultAportes[0]->fecha_registro_contribucion;
+            $fecha_ultimo=$resultAportes[$last-1]->fecha_registro_contribucion;
+            $fecha_primer=substr($fecha_primer,0,10);
+            $fecha_ultimo=substr($fecha_ultimo,0,10);
+            $tiempoaporte=$this->dateDifference($fecha_primer, $fecha_ultimo);
+        }
+        
         $last=sizeof($resultAportes);
         
         

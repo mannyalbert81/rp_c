@@ -458,3 +458,40 @@ function pad(input,length,padding){
 	return ( length <= str.length ) ? str : pad( padding + str, length,padding);
 }
 
+
+function imprimirReportejs( element ){
+		
+	var id_participes = $("#hdnid_participes").val();
+			
+	if( id_participes <= 0 || id_participes == "" || id_participes == undefined ){
+		return false;
+	}
+	
+	var params = {
+			"id_participes":id_participes
+	}
+		
+	var form = document.createElement("form");
+	form.setAttribute("id", "frm_reporte_kardex");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "index.php?controller=PrincipalBusquedasSocios&action=ReporteKardexSocios");
+    form.setAttribute("target", "_blank");   
+    
+    for (var i in params) {
+        if (params.hasOwnProperty(i)) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = i;
+            input.value = params[i];
+            form.appendChild(input);
+        }
+    }
+        
+    document.body.appendChild(form); 
+    form.submit();    
+    document.body.removeChild(form);
+	
+}
+
+
+

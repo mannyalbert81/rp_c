@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  	<meta charset="utf-8"/>
+  
+  </head>
+  <body>
+  	<div>
+  		<table class="1">
+		<tr>
+		 <td>
+		 <strong>Hoja de Liquidación Rendmientos Año {AÑO_LIQUIDACION}</strong>	
+		 </td>
+		</tr>
+	    </table>
+	    <br>
+	    
+	  <table class="2">
+	  <tr>
+	  <td class="1">Solicitud:{}</td>
+	  </tr>
+	  </table>
+	  <div class="1">
+	  <table class="2">
+	  <tr>
+	  <td><strong>DATOS DEL AFILIADO A LIQUIDARSE</strong></td>
+	  </tr>
+	  </table>
+		
+	  <table class="2">
+	  <tr>
+	  <td><strong>Nombre:&nbsp;</strong>{NOMBRE_PARTICIPE}&nbsp;{APELLIDO_PARTICIPE}</td>
+	  <td><strong>Cédula:&nbsp;</strong>{CEDULA_PARTICIPE}</td>
+	  </tr>
+	  <tr>
+	  <td><strong>Patronal:&nbsp;</strong>{}</td>
+	  <td><strong>Teléfono:&nbsp;</strong>{TELEFONO_PARTICIPE}</td>
+	  </tr>
+	  <tr>
+	  <td colspan="2"><strong>Dirección:&nbsp;</strong>{DIRECCION_PARTICIPE}</td>
+	  </tr>
+	  <tr>
+	  <td><strong>Banco:&nbsp;</strong>{}</td>
+	  <td><strong>Cuenta:&nbsp;</strong>{}</td>
+	  </tr>
+	  <tr>
+	  <td><strong>Forma de Págo:&nbsp;</strong>{}</td>
+	  <td><strong>Fecha de Págo:&nbsp;</strong>{}</td>
+	  </tr>
+	  </table>
+	  </div>  
+	    <br>
+	    <table class="3">
+		<tr>
+		 <td>VALORES A FAVOR RENDIMIENTOS&nbsp;{AÑO_LIQUIDACION}</td>
+		 <td>Referencia: &nbsp;{}</td>
+		 </tr>
+		 
+		 <tr>
+		 <td  colspan="2"><strong>Cuenta Individual desde:</strong>&nbsp; {}<strong> hasta:</strong>&nbsp; {}</td>
+		 </tr>
+		
+	    </table>
+	    
+	    <br>
+	    <table class="4" border=1>
+		<tr>
+		 <td><strong>Detalle:</strong></td>
+		 <td><strong>usd</strong></td>
+		 <td><strong>usd</strong></td>
+		 </tr>
+		 <tr>
+		 <td>SUPERAVIT PERSONAL CTAIND:</td>
+		 <td class="1">{SUPERAV_PERSONAL}</td>
+		 <td class="1">0.00</td>
+		 </tr>
+		 
+		 <tr>
+		 <td>SUPERAVIT PATRONAL CTAIND:</td>
+		 <td class="1">0.00</td>
+		 <td class="1">{SUPERAV_PATRONAL}</td>
+		 </tr>
+		 
+		 <tr>
+		 <td>IR 2% PATRONAL CTAIND:</td>
+		 <td class="1">0.00</td>
+		 <td class="1">{IR_PATRONAL}</td>
+		 </tr>
+		 
+		 <tr>
+		 <td><strong>Totales Rendimientos Cuenta Individual:</strong></td>
+		 <td class="1">{TOTAL_1}</td>
+		 <td class="1">{TOTAL_2}</td>
+		 </tr>
+		</table>
+	    
+	    <table class="3">
+	    <tr>
+		 <td><strong>Cuentas por Desembolsar desde hasta</strong></td>
+		 </tr>
+	    </table>
+	    
+		<table class="4" border=1>
+		<tr>
+		 <td><strong>Detalle:</strong></td>
+		 <td><strong>usd</strong></td>
+		 <td><strong>usd</strong></td>
+		 </tr>
+		 <tr>
+		 <td><strong>Totales Rendimientos Cuenta Individual:</strong></td>
+		 <td>&nbsp;</td>
+		 <td>&nbsp;</td>
+		 </tr>
+	    </table>  
+	    <br>
+	     <table class="3">
+	    <tr>
+		 <td><strong>Descuentos</strong></td>
+		 </tr>
+	    </table>
+	   
+		<table class="4" border=1>
+		<tr>
+		 <td><strong>Detalle:</strong></td>
+		 <td><strong>usd</strong></td>
+		 </tr>
+		 <tr>
+		 <td><strong>Total Descuentos:</strong></td>
+		 <td>&nbsp;</td>
+		 </tr>
+	    </table> 
+	    <br>
+	    <table class="4" border=1>
+		<tr>
+		 <td><strong>TOTAL A RECIBIR:</strong></td>
+		 <td class="1"><strong>{VALOR_PAGAR}</strong></td>
+		 </tr>
+		 <tr>
+		 <td colspan="2"><strong>Son:</strong>&nbsp;{VALOR_LETRAS}</td>
+		 </tr>
+	    </table> 
+	    
+	      
+	  
+	</div>	
+	
+
+  </body>
+  </html>

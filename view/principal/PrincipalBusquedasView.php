@@ -345,6 +345,126 @@
                     	
                     	<!-- PANEL 3 --Solicitudes-- -->
                     	<div class="tab-pane" id="panel_3">
+                    	
+                    	<form id="frm_prestamos_principal" action="<?php echo $helper->url("PrincipalBusquedasExpedientes","index"); ?>" method="post" >
+                    	<div id="pnlBusquedaExpedientes" class="row">
+            		    <div class="col-xs-6 col-md-6 col-lg-6">
+                		<div class="panel panel-default">
+                          <div class="panel-heading">Datos Expedientes</div>
+                            
+                          <table id="tblBusquedaPrincipalExpedientes" class="table">   
+                          	<thead>                          		                       		
+                          	</thead>
+                          	<tbody>
+                          		<tr>
+                              		<td><label id="txtcedulaexpedientes">Identificacion:</label></td>
+                              		<td><input type="text" class="form-control" id="txtcedulaexpedientes1"></td>                     		
+                          		</tr>
+                          		<tr>
+                              		<td><label id="txtNombresexpedientes1">Nombres:</label></td>
+                              		<td><input type="text" class="form-control" id="txtNombresexpedientes"></td>
+                          		</tr>
+                          		<tr>
+                              		<td><label id="txtApellidosexpedientes1">Apellidos:</label></td>
+                              		<td><input type="text" class="form-control" id="txtApellidosexpedientes"></td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label id="txtCargoexpedientes1">Cargo:</label></td>
+                              		<td><input type="text" class="form-control" id="txtCargoexpedientes"></td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label id="txtNumeroSolicitudexpedientes1">N° Solicitud:</label></td>
+                              		<td><input type="text" class="form-control" id="txtNumeroSolicitudexpedientes"></td>
+                          		</tr>
+                          		 
+                          		<tr>
+                              		<td><label id="txtFRegistroexpedientes1">Fecha Registro:</label></td>
+                              		<td>
+                              			<div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                          </div>    
+                                          <input type="date" class="form-control pull-right" id="txtFRegistroexpedientes">                                   
+                                        </div>
+                              		</td>
+                          		</tr>
+                          		<tr>
+                              		<td><label id="txtFBajaexpedientes1">Fecha Baja:</label></td>
+                              		<td>
+                              			<div class="input-group">
+                                          <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                          </div>
+                                          <input type="date" class="form-control pull-right" id="txtFBajaexpedientes">
+                                        </div>
+                              		</td>
+                          		</tr>
+                          		<tr>
+                              		<td><label id="id_estado_participes1">Estado:</label></td>
+                              		<td>
+                              		  <select  class="form-control" id="id_estado_participes3" name="id_estado_participes3">
+                                      	<option value="0">--Seleccione--</option>
+                                      </select>                               			
+                              		</td>
+                          		</tr>
+                          		<tr>
+                              		<td><label id="id_tipo_liquidación1">Tipo Liquidación:</label></td>
+                              		<td>
+                              			<select  class="form-control" id="id_tipo_liquidación" name="id_tipo_liquidación">
+                                      	<option value="0">--Seleccione--</option>
+                                      </select>                              			
+                              		</td>
+                          		</tr>
+                          		<tr>
+                              		<td><label id="id_entidad_patronal1">Entidad Patronal:</label></td>
+                              		<td>
+                              			<select  class="form-control" id="id_entidad_patronal" name="id_entidad_patronal">
+                                      	<option value="0">--Seleccione--</option>
+                                      </select>                             			
+                              		</td>
+                          		</tr>  
+                          	</tbody>
+                          	<tfoot>
+                          	</tfoot>                         
+                          </table>
+                        </div>
+            		</div>
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="btn_principal_busqueda" class=" control-label" ></label> 
+                    		<div class="form-group-sm">           
+                    		  <button type="button" class="btn btn-info" id="load_buscar_participe" name="load_buscar_participe">
+                    		  Buscar
+        						<i class="glyphicon glyphicon-search"></i>
+        						</button>
+        						<button type="button" class="btn btn-info" id="volver_buscar" onclick="mostrar()" name="volver_buscar">
+        					  Volver a Buscar
+        						<i class="glyphicon glyphicon-random"></i>
+        						</button>
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            		
+            	</div>
+            	
+         	<div class="row">
+           		<div class="col-xs-12 col-md-12 col-lg-12 ">
+           		<div id="participe_encontrado" ></div>
+           			<div id="load1_buscar_participe" ></div>	
+					<div id="participes_registrados"></div>	
+           		</div>
+
+           	</div>
+            	
+            	
+                 
+          </form>
+                
+                    	
+                    	
+                    	
                     		
                     	</div>
                     	<!-- END PANEL 3 --Solicitudes-- -->
@@ -467,6 +587,72 @@
                     	
                     	<!-- PANEL 6 --Superavit-- -->
                     	<div class="tab-pane" id="panel_6">
+                    	
+                    	
+                    	
+                    	<form id="frm_superavit_principal" action="<?php echo $helper->url("PrincipalSuperavit","index"); ?>" method="post" >
+                    		             	             	
+                 			<div id="pnlBusquedaSuperavit" class="row">
+            					<div class="col-xs-12 col-md-6 col-lg-6">
+                				<div class="panel panel-default">
+                          		<div class="panel-heading">Datos Supv.Afiliados/Cesantes</div>
+                            
+                          		<table id="tblBusquedaPrincipalSuperavit" class="table">   
+                          			<thead>                          		                       		
+                          			</thead>
+                          			<tbody>
+                              		<tr>
+                                  		<td><label>Identificacion:</label></td>
+                                  		<td><input type="text" class="form-control" id="txtCedulaSuperavit"></td>                     		
+                              		</tr>
+                              		<tr>
+                                  		<td><label>Código:</label></td>
+                                  		<td><input type="text" class="form-control" id="txtCodigoSuperavit"></td>
+                              		</tr>
+                              		
+                              	</tbody>
+                            </table>
+                        	</div>
+            			</div>
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="btn_principal_superavit" class=" control-label" ></label> 
+                    		<div class="form-group-sm">           
+                    		  <button type="button" id="btn_principal_superavit" class="btn btn-info">
+                              	<i class="glyphicon glyphicon-search"></i> Buscar
+                              </button>
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            	</div>
+            	
+                             	 <div id="pnlResultadosSuperavit" class="row hidden">
+                        		<div class="col-xs-12 col-md-9 col-lg-9">
+                            		<div class="panel panel-default">
+                                      <div class="panel-heading">
+                                      	<p>
+                                      		<a href="#" onclick="fnVolverFormularioSuperavit()" >
+                                      			<i aria-hidden="true" class="fa fa-mail-reply"></i> Volver
+                                  			</a>
+                              			</p>
+                              			<span id="spanCantidadSuperavit"></span></div>
+                                      
+                                      <!-- VARIABLE PARA QUE SERA TOMADA POR LA VENTANA HIJA -->
+                                      <input type="hidden" id="hdnid_participes_padre_superavit" value="0">
+                                      
+                                      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                                      <table id="tblResultadosPrincipalSuperavit" class="table table-responsive">
+                                      </table>
+                                      
+                                      <div id="mod_paginacion_resultados_superavit"></div>
+                                	  <div class="clearfix"></div>  
+                                    </div>
+                        		</div>
+                        	</div>            
+           					</form>
+                    	
                     		
                     	</div>
                     	<!-- END PANEL 6 --Superavit-- -->
@@ -596,7 +782,32 @@
       <!-- /.modal-dialog -->
 </div>
 
+  <div class="modal fade" id="mod_detallesoli" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" style="width:70%">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Detalle de Las Solicitudes</h4>
+          </div>
+          <div class="modal-body">
+          <!-- empieza el formulario modal productos -->
+          	<form class="" method="post" id="frm_detalle" name="frm_detalle">
+          	
+          		<div class="box-body" id="mod_datos_detalle_solicitud">
     
+              </div>		  
+          	</form>
+          	<!-- termina el formulario modal de impuestos -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>    
 
  
  <?php include("view/modulos/footer.php"); ?>	
@@ -612,9 +823,11 @@
     <script src="view/bootstrap/bower_components/moment/min/moment.min.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
     <!-- js personales -->
-	<script type="text/javascript" src="view/principal/js/principalBusqueda.js?0.06"></script>
-	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.03"></script>
-	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.12"></script>
+	<script type="text/javascript" src="view/principal/js/principalBusqueda.js?0.07"></script>
+	<script type="text/javascript" src="view/principal/js/principalBusquedaSocios.js?0.04"></script>
+	<script type="text/javascript" src="view/principal/js/principalPrestamosSocios.js?0.13"></script>
+	<script type="text/javascript" src="view/principal/js/principalSuperavit.js?0.4"></script>
+	<script type="text/javascript" src="view/principal/js/principalBusquedaExpedientes.js?2.6"></script>
 	
   </body>
 </html>   

@@ -6,8 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <?php include("view/modulos/links_css.php"); ?>
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-   <style type="text/css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">   	
+    <link href="view/bootstrap/smartwizard/dist/css/smart_wizard.css" rel="stylesheet" type="text/css" /> 
+    <style type="text/css">
  	  .loader {
         position: fixed;
         left: 0px;
@@ -18,10 +21,8 @@
         background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;
         }
- 	</style> 	
-   <?php include("view/modulos/links_css.php"); ?>
-   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">   	
-	<link href="view/bootstrap/smartwizard/dist/css/smart_wizard.css" rel="stylesheet" type="text/css" /> 
+ 	 </style> 	
+   
 	
 </head>
 
@@ -69,7 +70,6 @@
                 
               </div>
             </div>
-              <section class="content">
             <div class="box-body">
 
            <div class="nav-tabs-custom">
@@ -122,14 +122,7 @@
             </div>
             </div>
             </section>
-            <div class="box-body">
             
-        	
-        
-
-        			</div>
-      			</div>
-    		</section>
     		
     <!-- seccion para el listado de roles -->
    
@@ -140,7 +133,7 @@
  </div>
    <?php include("view/modulos/links_js.php"); ?>
  <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
- <script src="view/Core/js/SolicitudPrestamo.js?3.31" ></script>
+ <script src="view/Core/js/SolicitudPrestamo.js?3.32" ></script>
  
  </body>
 </html>

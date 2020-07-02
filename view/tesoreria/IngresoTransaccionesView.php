@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
+    <?php include("view/modulos/links_css.php"); ?>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
@@ -25,15 +26,16 @@
             border-radius: 5px !important;
         }
        
-       .tableFixHead { overflow-y: auto; height: 100px; }
-        .tableFixHead thead th { position: sticky; top: 0; }
+      .tableFixHead { overflow-y: auto; height: 100px; }
+      .tableFixHead thead th { position: sticky; top: 0; }
         
         /* Just common table stuff. Really. */
         table  { border-collapse: collapse; width: 100%; }
-        th, td { padding: 8px 16px; }
+        th, td { padding: 5px 8px; }
         th     { background:#eee; }
+          
  	</style>
-   <?php include("view/modulos/links_css.php"); ?>
+   
   			        
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
@@ -66,8 +68,7 @@
   <div class="content-wrapper">
   
   <section class="content-header">
-      <h1>
-        
+      <h1>        
         <small><?php echo $fecha; ?></small>
       </h1>
       <ol class="breadcrumb">
@@ -75,6 +76,8 @@
         <li class="active">Transacciones</li>
       </ol>
     </section>   
+    
+  <div id="div-loader" class=""></div>
 
     <section class="content">
      <div class="box box-primary">
@@ -96,8 +99,6 @@
   		<input type="hidden" id="hd_valor_base_compra" value=""><!-- aqui guarda el valor pa validar cambio de valor -->
   		<!-- TERMINA SECTION PARA ID -->
   		
-  			<div id="divLoaderPage" ></div>                     	
-  		
   			<div class="row">
   			
   				<div class="col-xs-12 col-md-12 col-lg-12">
@@ -116,7 +117,12 @@
   						  	</button>
                           </li>                          
                           <li>
-                          <button id="mdlImpuestosRelacionados" type="button" onclick="verTablaImpuestosRelacionados()" class="btn">Ver Impuestos <span id="cantidad_impuestos_ins" class="badge label-danger"></span></button>
+                          <button id="mdlImpuestosRelacionados" type="button" onclick="verTablaImpuestosRelacionados()" class="btn btn-default">Ver Impuestos <span id="cantidad_impuestos_ins" class="badge label-danger"></span></button>
+                          </li>
+                          <li>
+                          	<!-- en este botn se genera el  -->
+                          	<a class="btn btn-default" href="#" title="Cambiar Base Retencion" id="lnk_cambiar_base" onclick="modificar_base_retencion(event)" > Modificar Retencion
+                          	<i class="fa fa-edit" aria-hidden="true"></i></a> 
                           </li>
                           <li>
                           	<a class="btn btn-default" href="index.php?controller=TesProveedores&action=index" target="_blank" title="Nuevo Proveedor" >
@@ -255,14 +261,22 @@
   			
   			<div class="row">
   				 <div class="col-xs-12 col-md-12 col-lg-12 " >
+  				 	<div id="pnl_datos_retencion"></div>
+  				 	<br>
+  				 </div>
+  			</div>
+  			
+  			<div class="row">
+  				 <div class="col-xs-12 col-md-12 col-lg-12 " >
   				 	<div class="pull-right">
   				 		<button  id="DistribucionTransaccion" onclick="verDistribucion()" class="btn btn-success">DISTRIBUCION</button>
   				 		<button  id="AplicarTransaccion" onclick="IngresarTransaccion()" class="btn btn-success">APLICAR</button>
-	                    <a href="<?php echo $helper->url("Compras","Index"); ?>" class="btn btn-danger">CANCELAR</a>
+	                    <a href="<?php echo $helper->url("TesCuentasPagar","Index"); ?>" class="btn btn-danger">CANCELAR</a>
   				 	</div>
   				 </div>
   			</div>
   			<div class="clearfix"></div>
+  			  			
   			<br>
   			
 			<!-- <div class="panel panel-success">
@@ -514,6 +528,12 @@
             		</div>
             		
             		<div class="pull-right">
+            			<button onclick="eliminar_distribucion()" class="btn btn-default btn-sm">
+            			<span class=" text-danger fa-stack" >
+                          <i class="fa fa-circle-thin fa-stack-2x"></i>
+                          <i class="fa fa-close fa-stack-1x"></i>
+                        </span>
+                        </button>
             			<button onclick="AceptarDistribucion()" class="btn btn-success">ACEPTAR</button>
             		</div>
             		<div class="clearfix"></div>
@@ -561,13 +581,9 @@
    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/tesoreria/js/IngresoTransaciones.js?0.40"></script> 
+   <script src="view/tesoreria/js/IngresoTransaciones.js?0.43"></script> 
        
-       
-
- 	
-	
-	
+       	
   </body>
 </html>   
 

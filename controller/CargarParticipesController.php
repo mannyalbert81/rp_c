@@ -864,7 +864,7 @@ class CargarParticipesController extends ControladorBase{
         $id_creditos = $rsConsulta2[0]->id_creditos; //con eto se toma el credito con mayor valor
         $numero_creditos = $rsConsulta2[0]->numero_creditos; //aqui va el cambio
         $pdf_registro_tres  = 'null';
-        $id_estado_registro_tres_cuotas = 'null'; //aqui va el cambio
+        $id_estado_registro_tres_cuotas = '1'; //aqui va el cambio
         
         //viene insertado en la tabla
         $funcion = "ins_registro_tres_cuotas";
@@ -940,7 +940,7 @@ class CargarParticipesController extends ControladorBase{
         
         
         //actualizas la base
-        $colPdf = " pdf_registro_tres_cuotas = '$byteaPdf'";
+        $colPdf = " pdf_registro_tres_cuotas = '$byteaPdf', acepto_participe_segunda_etapa = 'TRUE'";
         $tabPdf = " registro_tres_cuotas";
         $whePdf = " id_participes = $id_participes AND id_creditos = $id_creditos";
         
@@ -963,23 +963,62 @@ class CargarParticipesController extends ControladorBase{
         if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
         {
             $callBack = $_GET['jsoncallback'];
-            $columnas_1="id_registro_tres_cuotas,cedula_participes, numero_creditos, pdf_registro_tres_cuotas";
+            $columnas_1="id_registro_tres_cuotas,cedula_participes, numero_creditos, pdf_registro_tres_cuotas, mensaje_modal, procesada_tabla_registro_tres_cuotas, puede_diferir_segunda_etapa, acepto_participe_segunda_etapa";
             $tablas_1="public.registro_tres_cuotas";
             $where_1="cedula_participes = '$cedula'";
             $id_1= "registro_tres_cuotas.id_registro_tres_cuotas";
             $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
             
-            
-            if(!empty($resultUsu) && count($resultUsu)>0){
-                
-                $respuesta	= json_encode( array('respuesta'=>"SI") );
-                
-                
+            if( empty($resultUsu) ){
+                //aqui imprimir modal 
+                $respuesta	= json_encode( array('respuesta'=>"NO") );
             }else{
                 
-                $respuesta	= json_encode( array('respuesta'=>"NO") );
+                $puede_diferir_segunda_etapa = $resultUsu[0]->puede_diferir_segunda_etapa;
+                $mensaje_modal = $resultUsu[0]->mensaje_modal;
+                $acepto_participe_segunda_etapa = $resultUsu[0]->acepto_participe_segunda_etapa;
                 
-            }
+                
+                if($acepto_participe_segunda_etapa =="f"){
+                
+                if($puede_diferir_segunda_etapa=="t"){
+           
+                   
+                    if( !empty( $mensaje_modal ) ){
+                        $respuesta	= json_encode( array('respuesta'=>"SI",'mensaje_modal' => $mensaje_modal, 'puede_diferir'=>'SI') );
+                       
+                    }else{
+                        $respuesta	= json_encode( array('respuesta'=>"NO") );
+                    }
+                    
+                }else{
+                    
+                    if( !empty( $mensaje_modal ) ){
+                        $respuesta	= json_encode( array('respuesta'=>"SI",'mensaje_modal' => $mensaje_modal, 'puede_diferir'=>'NO') );
+                        
+                    }else{
+                        $respuesta	= json_encode( array('respuesta'=>"NO") );
+                    }
+                    
+                    
+                }
+                
+                
+                }else{
+                    
+                    $respuesta	= json_encode( array('respuesta'=>"NONO") );
+                    
+                    
+                }
+               
+                
+                
+                
+                
+                
+                
+                
+            }                      
             
             echo $callBack."(".$respuesta.");";
             

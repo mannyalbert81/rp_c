@@ -6,11 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-    
+        
+    <?php include("view/modulos/links_css.php"); ?>    
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link href="//cdn.datatables.net/fixedheader/2.1.0/css/dataTables.fixedHeader.min.css"/>    
+    <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/1.10.20/integration/font-awesome/dataTables.fontAwesome.css"/>
+       
     <style type="text/css">
  	  .loader {
         position: fixed;
@@ -22,10 +24,20 @@
         background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;
         }
+       .letrasize10{
+        font-size: 10px;
+       }
+       .letrasize11{
+        font-size: 11px;
+       }
+       .letrasize12{
+        font-size: 12px;
+       }
+       .tooltip[aria-hidden=false] {
+        opacity: 1;
+       }
  	</style>
     
-    <?php include("view/modulos/links_css.php"); ?>
-		    
 	</head>
  
     <body class="hold-transition skin-blue fixed sidebar-mini">
@@ -81,11 +93,11 @@
             </div>
             
             <div class="box-body">            
-            	<div class="nav-tabs-custom">
+            	<div class="nav-tabs-custom hidden">
             		<ul class="nav nav-tabs">              
             		</ul>
             
-            	<div class="col-md-5 col-lg-12 col-xs-5">
+            	<div class="col-md-12 col-lg-12 col-xs-5 hidden">
             		<div class="tab-content">
             		<br>
                   		<div class="tab-pane active" id="retencion">
@@ -101,7 +113,33 @@
             		</div>
             	</div>
           		</div>
-         
+         		
+         		<div class="row">
+         			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                		<div id="div_listado_cuentas_pagar" class="letrasize11">
+<!--                 		display compact -->
+<!--  table tablesorter table-striped table-bordered nowrap -->
+                    		<table id="tbl_listado_cuentas_pagar" class="table table-bordered display compact">
+                    			<thead>
+                    				<tr class="danger">
+                        				<th >#</th>
+                        				<th>Fecha</th>
+                        				<th>Cedula Proveedor</th>
+                        				<th>Nombre Proveedor</th>
+                        				<th>Num. Documento</th>
+                        				<th>Valor Documento</th>
+                        				<th>Descripci&oacute;n</th>
+                        				<th>Opciones</th>
+                    				</tr>                    				
+                    			</thead>
+                    			<tfoot>
+                    				<tr>
+                    				</tr>
+                    			</tfoot>
+                    		</table>
+                		</div>
+         			</div>
+         		</div>
             
             </div>
         </div>
@@ -115,12 +153,10 @@
    <div class="control-sidebar-bg"></div>
  </div>
  
-    <?php include("view/modulos/links_js.php"); ?>
-    
+    <?php include("view/modulos/links_js.php"); ?>    
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>   
-    <script src="view/tesoreria/js/IndexCuentasPagar.js?0.05"></script>
+    <script src="view/tesoreria/js/IndexCuentasPagar.js?0.07"></script>
         
 	
   </body>

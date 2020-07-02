@@ -1,4 +1,4 @@
-var listaCuentas = []; // variable que permite el almacenamiento de datos de distribucion valores
+var listaCuentas = [];	//variable que permite el almacenamiento de datos de distribucion valores
 $(document).ready(function(){
 		
 	init();

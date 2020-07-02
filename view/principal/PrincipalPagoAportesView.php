@@ -100,6 +100,14 @@
         #tbldatosRegistro .btn {
             padding: 2px 12px;
         }
+        
+        table.1 {
+            width: 100%;
+            text-align: center;
+            }
+        td.1{
+        text-align: center;
+        }
                	  
  	</style>
    
@@ -214,6 +222,26 @@
                           
                           <div id="paginacion_datos_aportes"></div>
                     	  <div class="clearfix"></div> 
+                    	  <div>
+                    	  <table class="1">
+                    	  <tr>
+                          <td>    		
+                          <button id="btnreporte" value="'.$res->id_participes.'" name="reportekardex"  class="btn btn-primary" type="button" onclick="imprimirReportejs(this)">
+                			<i class="glyphicon glyphicon-print"></i></button></td>
+                              		
+                            		
+                              	<!-- 	
+                              		   
+                          			<td>
+                          			<a href="index.php?controller=PrincipalBusquedasSocios&action=ReporteKardexSocios&id_participes=" target="_blank"><input type="image" src="view/images/print.png" alt="Submit" width="50" height="34" formtarget="_blank" id="btngenerar" name="btngenerar" class="btn btn-default" title="Reporte Productos"></a>
+                          			Imprimir Kardex
+                          			</td> 
+                          			 -->
+                          			
+                          			                         		
+                          		</tr> 
+                    	  </table>
+                    	  </div>
                     	  
                         </div><!-- //end panel head -->
           				</div>          			
@@ -345,7 +373,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.08"></script>
+    <script type="text/javascript" src="view/principal/js/vtnRegistroAportes.js?0.10"></script>
     
     
 

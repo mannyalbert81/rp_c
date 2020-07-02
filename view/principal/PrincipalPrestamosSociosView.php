@@ -135,8 +135,7 @@
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <li class="active"><a href="#prestamos" data-toggle="tab">Préstamos</a></li>
-              <li><a href="#impresiones" data-toggle="tab">Impresiones</a></li> 
-              <li><a href="#cobros" data-toggle="tab">Cobros</a></li> 
+               <li><a href="#cobros" data-toggle="tab">Cobros</a></li> 
             </ul>
             
             <div class="col-md-12 col-lg-12 col-xs-12">
@@ -177,12 +176,11 @@
                           </table>
                     	</div>
           				</div>        
-          				
+          				<!--
           					<div class="panel panel-info">
                            <div class="panel-heading" >Flujo de Prestamo</div>
                           <div class="panel-body">    
-                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
-                          <table id="tbldatosParticipe" class="table">
+                  	      <table id="tbldatosParticipe" class="table">
                           	<thead>
                           	</thead>
                           	<tbody>
@@ -197,7 +195,7 @@
           				<div class="panel panel-info">
                            <div class="panel-heading" >Información para tabla amortización</div>
                           <div class="panel-body">    
-                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                  	       ESTA TABLA SE LLENA CON PROCESO DE JS 
                           <table id="tbldatosParticipe" class="table">
                           	<thead>
                           	</thead>
@@ -209,7 +207,7 @@
                           </table>
                     	</div>
           				</div>    		
-          				
+          				-->  
           				<div class="panel panel-info">
                            <div class="panel-heading" >Ingreso de Requisitos</div>
                           <div class="panel-body">    
@@ -333,8 +331,41 @@
                           </table>
                     	</div>
           				</div> 
-          			
-          			  <div class="panel panel-success">
+          		  
+                      <div class="panel panel-primary">
+                           <div class="panel-heading" >Reportes</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          
+                          		<tr>
+                          	
+            						<th><a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a></th>
+	               					<th><a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a></th>
+	               					<th><a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Recibo de Presentación de Solicitud</a></th>
+	               
+            					</tr>
+                                 	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                    	</div>
+          				</div>        
+                    	</div>
+                    
+          				</div>    			
+          			</div>
+ 		       </div>
+                <div class="tab-pane" id="cobros">
+              
+              		<div class="row">
+          			<!-- Este div es para mostrar datos del participe -->
+          			<div class="col-sm-6 col-md-6 col-lg-6">
+          	
+          			  <div class="panel panel-info">
                            <div class="panel-heading" >Tabla Amortizacion</div>
                           <div class="panel-body">    
                   	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
@@ -364,8 +395,45 @@
                           </table>
                     	</div>
           				</div>   	
-          				            
-                      <div class="panel panel-success">
+          				</div> 	
+          				<div class="col-sm-6 col-md-6 col-lg-6">
+          				  <div class="panel panel-success">
+                           <div class="panel-heading" >Transacciones</div>
+                          <div class="panel-body">    
+                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          <table id="tbldatosParticipe" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          
+                          		<tr>
+                          	<th>
+            					 <div class="tab-pane active" id="pendientes">
+                            
+            				<div class="pull-right" style="margin-right:15px;">
+            					<input type="text" value="" class="form-control" id="buscador1" name="buscador1" onkeyup="Transacciones(1)" placeholder="Buscar.."/>
+                			</div>  
+                			
+                    			<div id="Transacciones"></div>  
+                    	    	<div id="transacciones" ></div>
+                    	    	<div id="divLoaderPage1" ></div>
+				  
+                
+              </div>         	</th>
+            					</tr>
+                                 	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                    	</div>
+          				</div>
+          				
+          				</div> 	
+          			
+          				</div> 	
+          				 		<div class="row">
+          	
+          				 <div class="panel panel-primary">
                            <div class="panel-heading" >Reportes</div>
                           <div class="panel-body">    
                   	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
@@ -377,26 +445,18 @@
                           		<tr>
                           	
             						<th><a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a></th>
-	               					<th><a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a></th>
-	               					<th><a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Recibo de Presentación de Solicitud</a></th>
-	               
+	               					<th><a class="btn btn-info" onclick="generar_pagare_cobros(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a></th>
+	               				
             					</tr>
                                  	</tbody>
                           	<tfoot>
                           	</tfoot>
                           </table>
                     	</div>
-          				</div>        
-                    	</div>
-                    
-          				</div>    			
-          			</div>
- 		       </div>
-              <div class="tab-pane" id="impresiones">
-              
-              </div>
-              <div class="tab-pane" id="cobros">
-              
+          				</div>    
+          				          
+             		</div>    
+          	 
               </div>
            
               
@@ -424,7 +484,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.10"></script>
+     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.13"></script>
   
 
   </body>

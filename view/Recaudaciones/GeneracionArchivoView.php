@@ -9,7 +9,9 @@
     <?php include("view/modulos/links_css.php"); ?>
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">     
-    <link href="//cdn.datatables.net/fixedheader/2.1.0/css/dataTables.fixedHeader.min.css"/>    
+    <link href="//cdn.datatables.net/fixedheader/2.1.0/css/dataTables.fixedHeader.min.css"/>
+    <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/1.10.20/integration/font-awesome/dataTables.fontAwesome.css"/>
+    
  	<style type="text/css">
  	  .loader {
         position: fixed;
@@ -26,7 +28,8 @@
             max-height: calc(100vh - 210px);
             overflow-y: auto;
         }*/
- 	  
+      
+ 	 
  	</style>   
   			        
     </head>
@@ -68,7 +71,7 @@
         <li class="active">Archivo de Recaudacion</li>
       </ol>
     </section>   
-
+    
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
@@ -226,8 +229,8 @@
             	<div id="div_listado_recaudaciones" >
             		<table id="tbl_listado_recaudaciones" class="table tablesorter table-striped table-bordered dt-responsive nowrap">
             			<thead>
-            				<tr>
-                				<th>#</th>
+            				<tr class="danger">
+                				<th >#</th>
                 				<th>Fecha</th>
                 				<th>Entidad Patronal</th>
                 				<th>Recaudacion</th>
@@ -403,7 +406,8 @@
           	<div class="row">
           		<div class="col-lg-12 col-md-12 col-xs-12">
           			<h5>Datos Participe</h5>
-          			<input type="hidden" class="form-control " id="mod_id_descuentos_detalle" >
+          			<input type="hidden" id="mod_id_descuentos_detalle" >
+          			<input type="hidden" id="mod_tipo_descuentos" >
           		</div>
               	<div class="col-lg-12 col-md-12 col-xs-12">        		
         			<div class="form-group "> 
@@ -521,7 +525,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/select2/dist/js/select2.full.min.js"></script>
-   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.18"></script> 
+   <script src="view/Recaudaciones/js/GeneracionArchivo.js?0.22"></script> 
        
 	
   </body>

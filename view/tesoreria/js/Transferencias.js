@@ -603,3 +603,127 @@ $("#btn_distribucion_aceptar").on("click",function(event){
 
 
 
+
+
+function loadBancosGeneral( a=0 ){	
+	
+	var $ddlChequera = $("#id_bancos_general");
+	params = {};
+	$ddlChequera.empty();
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=CargaBancosGeneral",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.data != undefined && x.data != null ){
+			var rsChequera = x.data;
+			$ddlChequera.append('<option value="0">--Seleccione--</option>' );
+			$.each(rsChequera,function(index, value){
+				//console.log('index -->'+index+'   Value ---> '+value.id_bancos);
+				if( value.id_bancos == a)
+				{
+					$ddlChequera.append( '<option value="'+value.id_bancos+'" selected >'+value.nombre_bancos+'</option>' );					
+				}else
+				{
+					$ddlChequera.append( '<option value="'+value.id_bancos+'">'+value.nombre_bancos+'</option>' );
+				}
+				
+			})
+		}
+		//console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+}
+
+function loadTipoCuentaGeneral( a=0 ){	
+	
+	var $ddlChequera = $("#id_tipo_cuentas_general");
+	params = {};
+	$ddlChequera.empty();
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=CargaTipoCuentaGeneral",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.data != undefined && x.data != null ){
+			var rsChequera = x.data;
+			$ddlChequera.append('<option value="0">--Seleccione--</option>' );
+			$.each(rsChequera,function(index, value){
+				
+				if( a == value.id_tipo_cuentas )
+				{
+					$ddlChequera.append( '<option value="'+value.id_tipo_cuentas+'" selected >'+value.nombre_tipo_cuentas+'</option>' );
+				}else
+				{
+					$ddlChequera.append( '<option value="'+value.id_tipo_cuentas+'">'+value.nombre_tipo_cuentas+'</option>' );
+				}
+				
+			})
+		}
+		//console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+}
+
+
+
+var mostrar_datos_garantes = function(a){
+	
+	
+	
+	var element = $(a);
+	
+	if( element.length )
+	{			
+		var modaledit = $("#mod_cambia_cuentas");	
+		
+		modaledit.find('#id_proveedores_general').val( element.data().id_proveedores );
+		//modaledit.find('#id_bancos_general').val( element.data().id_bancos );
+		//modaledit.find('#id_tipo_cuentas_general').val( element.data().id_tipo_cuentas );
+		
+		loadBancosGeneral( element.data().id_bancos );
+		loadTipoCuentaGeneral( element.data().id_tipo_cuentas );
+		
+		modaledit.modal();
+	}	
+	
+}
+
+var editar_cuentas	= function(){
+
+	var modalEditCuentas	= $("#mod_cambia_cuentas");
+	
+	var params	= { id_proveedores: modalEditCuentas.find('#id_proveedores_general').val(),
+			id_bancos: modalEditCuentas.find('#id_bancos_general').val(), 
+			id_tipo_cuentas: modalEditCuentas.find('#id_tipo_cuentas_general').val(), 
+			numero_cuenta_bancaria: modalEditCuentas.find('#cuenta_banco_general').val() }
+	
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=EditarCuentasProveedores",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done(function(x){
+		
+		swal({title:"OK",text:"Registro Actualizado",icon:"success"});
+		
+		modalEditCuentas.modal('hide');
+		
+		//vista
+		$("#cuenta_banco").val( modalEditCuentas.find('#cuenta_banco_general').val() );
+		$("#tipo_cuenta_banco").val( modalEditCuentas.find('#id_tipo_cuentas_general option:selected').text() );
+		$("#id_bancos_transferir").empty();
+		$("#id_bancos_transferir").append( '<option value="'+modalEditCuentas.find('#id_bancos_general').val()+'">'+modalEditCuentas.find('#id_bancos_general option:selected').text()+'</option>' );
+		
+	}).fail(function( xhr, status, error){
+		console.log(xhr.responseText);
+		swal({title:"ERROR",text:"Error al actualizar Registro",dangerMode:true,icon:"error"});
+	});
+}
+
+
+

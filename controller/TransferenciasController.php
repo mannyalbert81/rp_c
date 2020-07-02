@@ -1499,5 +1499,133 @@ class TransferenciasController extends ControladorBase{
 	  echo number_format((double)$var1,2,'','');
 	}
 	/*********************************************************** FUNCIONES PARA PROBAR METODOS ************************************************************/
+
+
+
+
+	public function CargaBancosGeneral(){
+	    
+	    $pagos = new PagosModel();
+	    $resp  = null;
+	    
+	    $col1  = " id_bancos, nombre_bancos";
+	    $tab1  = " tes_bancos ";
+	    $whe1  = " 1 = 1";
+	    $id1   = " nombre_bancos ";
+	    $rsConsulta1   = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    try {
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	        
+	        if( !empty($rsConsulta1) ){
+	            $resp['data'] = $rsConsulta1;
+	        }else{
+	            $resp['data'] = null;
+	        }
+	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
+	}
+
+	
+	
+	public function CargaTipoCuentaGeneral(){
+	    
+	    $pagos = new PagosModel();
+	    $resp  = null;
+	    
+	    $col1  = " id_tipo_cuentas, nombre_tipo_cuentas";
+	    $tab1  = " core_tipo_cuentas ";
+	    $whe1  = " 1 = 1";
+	    $id1   = " nombre_tipo_cuentas ";
+	    $rsConsulta1   = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    try {
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	        
+	        if( !empty($rsConsulta1) ){
+	            $resp['data'] = $rsConsulta1;
+	        }else{
+	            $resp['data'] = null;
+	        }
+	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
+	}
+	
+	public function EditarCuentasProveedores()
+	{
+	   $pagos = new PagosModel();
+	   
+	   $id_bancos = $_POST['id_bancos'];
+	   $id_tipo_cuentas    = $_POST['id_tipo_cuentas'];
+	   $id_proveedores = $_POST['id_proveedores'];
+	   $numero_cuentas = $_POST['numero_cuenta_bancaria'];
+	   
+	   $val    = " id_bancos=$id_bancos, id_tipo_cuentas=$id_tipo_cuentas, numero_cuenta_proveedores = '$numero_cuentas'";
+	   $tab    = " proveedores ";
+	   $whe    = " id_proveedores = $id_proveedores";
+
+	   $resultado = $pagos->ActualizarBy($val, $tab, $whe);
+	   
+	   if( !empty( pg_last_error() ) ){
+	       throw new Exception("Actualizacion No realizada");
+	   }
+	   
+	   $resp = array();
+	   $resp['estatus']   = "OK";
+	   $resp['mensaje']   = " Filas Actualizadas (".$resultado.")";
+	   
+	   echo json_encode($resp);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 ?>

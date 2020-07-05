@@ -1368,6 +1368,15 @@ class CreditosParticipesController extends ControladorBase
         
         echo "<br> /*************************************************//";
         var_dump($this->getFechasUltimas3Cuotas());
+        
+        echo "<br> /*************************************************//<br>";
+        $tasa_interes = 9;
+        $tasa_interes = $tasa_interes / 100;
+        $interes_mensual = $tasa_interes / 12;
+        $valor_cuota = ( 11220 * $interes_mensual ) / ( 1 - pow( ( 1 + $interes_mensual), - 72 ) );
+        $valor_cuota = round($valor_cuota, 2);
+        echo "AQUI LA CUOTA -->",$valor_cuota;
+        
     }
     
     public function obtenerAvaluoHipotecario()

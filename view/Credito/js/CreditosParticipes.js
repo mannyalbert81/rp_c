@@ -68,11 +68,10 @@ $(document).ready( function (){
 	// ESTABLESCO LA MASCARA AL CAMPO CEDULA PARTICIPE
 	$(":input").inputmask();
 	
-	// CARGO LOS TIPOS DE CREDITO AL COMBO BOX
-	//GetTipoCreditos();
-	
+	//buscar los tipos de creditos
 	obtener_tipo_creditos();
 	
+	//valida que no haya cuotas en mora por parte del participe
 	iniciar_datos_solicitud();	
 	
 	//iniciar eventos de elementos de la vista

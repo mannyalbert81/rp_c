@@ -800,6 +800,28 @@ $controladores=$_SESSION['controladores'];
        </ul>
       </li>     
       
+         <li class="treeview"  style="<?php echo getcontrolador("MenuElecciones",$controladores) ?>"  >
+          <a href="#">
+            <i class="glyphicon glyphicon-globe"></i> <span>Elecciones</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+             <li class="treeview"  style="<?php echo getcontrolador("AdministracionElecciones",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+               	  <li style="<?php echo getcontrolador("ConsultaCandidatos",$controladores) ?>"><a href="index.php?controller=ConsultaCandidatos&action=index"><i class="fa fa-circle-o"></i>Consulta Candidatos</a></li>
+      	  </ul>
+            </li>
+        </ul>
+      </li>    
+      
  
       
 

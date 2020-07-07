@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  	<meta charset="utf-8"/>
+  	<title>FORMULARIO DE INSCRIPCIÓN</title>
+ 
+ <style>
+  	.htexto1{		
+	font-size: 12px;
+	font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+  	.htexto2{		
+	font-size: 15px;
+	font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+
+div.izq{
+left:0px;   width:338px; height:20px; float:left;
+}
+
+div.der{
+right:0px;  width:338px; height:20px; float:left;
+}
+
+table.2 {
+   width: 100%;
+   font-size:15px;
+   text-align: center;
+   border: 1px solid;
+}
+
+	</style>
+  </head>
+  <body>  
+
+<p align="center" class="htexto2"><strong>FORMULARIO DE INSCRIPCIÓN A CANDIDATO PARA REPRESENTANTES ASAMBLEA GENERAL CAPREMCI</strong></p>
+<br>
+<p align="justify" class="htexto1"><strong>Entidad Patronal: </strong>{ENTIDAD_PATRONAL}</p>
+	<div class="izq">
+	<p class="htexto1"><strong>Provincia: </strong>{NOMBRE_PROVINCIAS}</p>
+	</div>
+	<div class="der">
+	<p class="htexto1"><strong>Cantón: </strong>{NOMBRE_CUIDADES}</p>
+	</div>
+<p align="justify" class="htexto1">De conformidad con el Reglamento de Elecciones de Representantes de la Asamblea General del Fondo Complementario Previsional Cerrado de Cesantía de Servidores y Trabajadores Públicos de Fuerzas Armadas-CAPREMCI, solicito la Inscripción de mi candidatura y la de mi suplente que consta a continuación:</p><br>
+
+	<table class="2">
+<tr>
+
+    <td align="justify" class="htexto2"><strong>• REPRESENTANTE PRINCIPAL</strong><br><br>
+    <p align="justify" class="htexto1">
+    <strong>Nombres y Apellidos: </strong>{APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}<br>
+    <strong>Cédula de Ciudadanía: </strong>{CEDULA_PARTICIPES}<br>
+    <strong>Correo Electrónico: </strong>{CORREO_PARTICIPES}</td></p>
+
+    <td>{FOTO_REPRESENTANTE}</td>
+ </tr>
+</table>
+<br>
+	<table class="2">
+<tr>
+
+    <td align="justify" class="htexto2"><strong>• REPRESENTANTE SUPLENTE</strong><br><br>
+    <p align="justify" class="htexto1">
+    <strong>Nombres y Apellidos: </strong>{APELLIDO_SUPLENTE} {NOMBRE_SUPLENTE}<br>
+    <strong>Cédula de Ciudadanía: </strong>{CEDULA_SUPLENTE}<br>
+    <strong>Correo Electrónico: </strong>{CORREO_SUPLENTE}</td></p>
+
+    <td>{FOTO_SUPLENTE}</td>
+ </tr>
+</table>
+<br>
+<p align="justify" class="htexto1">Aceptamos expresamente estas candidaturas y bajo juramento declaramos no hallarnos incursos en alguna de las prohibiciones e inhabilidades determinadas en el Reglamento de Elecciones de Representantes de la Asamblea General del Fondo Complementario Previsional Cerrado de Cesantía de Servidores y Trabajadores Públicos de Fuerzas Armadas CAPREMCI; así mismo no mantenemos deudas pendientes con el Fondo.</p>
+<p align="justify" class="htexto1">Las y los firmantes señalamos las direcciones electrónicas consignadas en la presente solicitud y autorizamos a la Junta General Electoral a que, por medio de ellas, nos hagan conocer toda información, citación y notificación que nos corresponda.</p>
+<p align="justify" class="htexto1">Este documento es válido, para lo cual el participe candidato a Representante con su Suplente ha ingresado a través del portal web del Fondo, digitando su clave personal y generando el proceso para calificación; por ende, se acepta todos los términos del presente documento.</p><br><br><br>
+<div class="izq">
+<p class="htexto1"><strong><br>
+NOMBRES: {APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}<br>
+CÉDULA:  {CEDULA_PARTICIPES}<br>
+REPRESENTANTE PRINCIPAL
+</strong></p>
+</div>
+<div class="der">
+<p class="htexto1"><strong><br>
+NOMBRES: {APELLIDO_SUPLENTE} {NOMBRE_SUPLENTE}<br>
+CÉDULA:  {CEDULA_SUPLENTE}<br>
+REPRESENTANTE SUPLENTE
+</strong></p>
+</div>
+	
+  </body>
+  </html>

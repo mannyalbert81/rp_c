@@ -832,6 +832,7 @@ class CargarParticipesController extends ControladorBase{
         
     }
     
+
     
     public function IngresarSiCuotas(){
         
@@ -954,6 +955,7 @@ class CargarParticipesController extends ControladorBase{
         
         
     }
+    
     
     public function  propaganda_diferir_cuotas(){
         
@@ -1090,8 +1092,167 @@ class CargarParticipesController extends ControladorBase{
         echo $callBack."(".$respuesta.");";
     }
     
-
+    public function validar_representantes()
     
+    {
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+       // echo ("llego aqui");
+        
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $resp   = array();
+            $callBack = $_GET['jsoncallback'];
+           
+            $columnas_1="p.id_padron_electoral_representantes, p.id_representante";
+            $tablas_1="padron_electoral_representantes p inner join core_participes a on p.id_representante = a.id_participes";
+            $where_1="a.cedula_participes='$cedula' and p.acepto_representante_padron_electoral_representantes=0";
+            $id_1= "p.id_padron_electoral_representantes";
+            $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            if( !empty( $resultUsu ) )
+            {
+               // $resp['id_representante'] = $resultUsu->id_padron_electoral_representantes;
+                $resp['modal'] = "SI";
+              
+            }else
+            {
+               // $resp['id_representante'] =0;
+                $resp['modal'] = "NO";
+            }
+            
+        }else
+        {
+           // $resp['id_representante'] =0;
+            $resp['modal'] = "NO";
+        }
+        
+        $respuesta	= json_encode( $resp );
+        echo $callBack."(".$respuesta.");";
+    }
+    
+
+    public function actualizar_candidatos()
+    {
+        $registro = new PagosModel();
+        
+        $cedula = $_POST['cedula'];
+        $estado = $_POST['estado'];
+        $callBack = $_POST['jsoncallback'];
+        
+        $columnas_1="p.id_padron_electoral_representantes, p.id_representante";
+        $tablas_1="padron_electoral_representantes p inner join core_participes a on p.id_representante = a.id_participes";
+        $where_1="a.cedula_participes='$cedula' and p.acepto_representante_padron_electoral_representantes=0";
+        $id_1= "p.id_padron_electoral_representantes";
+        $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+        
+        //echo ($cedula);
+        
+        if( !empty( $resultUsu ) )
+        {
+            $_id= $resultUsu[0]->id_padron_electoral_representantes;
+            $val    = " acepto_representante_padron_electoral_representantes= '$estado'";
+            $tab    = " padron_electoral_representantes ";
+            $whe    = " id_padron_electoral_representantes = '$_id'";
+            
+            $resultado = $registro->ActualizarBy($val, $tab, $whe);
+            
+        }
+        
+        if( !empty( pg_last_error() ) ){
+            throw new Exception("Actualizacion No realizada");
+        }
+        
+        $resp = array();
+        $resp['estatus']   = "OK";
+        $resp['mensaje']   = " Filas Actualizadas (".$resultado.")";
+        
+        echo json_encode( $resp );
+        //echo $callBack."(".$respuesta.");";
+    }
+    
+    public function validar_suplentes()
+    
+    {
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+        // echo ("llego aqui");
+        
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $resp   = array();
+            $callBack = $_GET['jsoncallback'];
+            
+            $columnas_1="p.id_padron_electoral_representantes, p.id_suplente";
+            $tablas_1="padron_electoral_representantes p inner join core_participes a on p.id_suplente = a.id_participes";
+            $where_1="a.cedula_participes='$cedula' and p.acepto_suplente_padron_electoral_representantes=0";
+            $id_1= "p.id_padron_electoral_representantes";
+            $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            if( !empty( $resultUsu ) )
+            {
+                // $resp['id_representante'] = $resultUsu->id_padron_electoral_representantes;
+                $resp['modal'] = "SI";
+                
+            }else
+            {
+                // $resp['id_representante'] =0;
+                $resp['modal'] = "NO";
+            }
+            
+        }else
+        {
+            // $resp['id_representante'] =0;
+            $resp['modal'] = "NO";
+        }
+        
+        $respuesta	= json_encode( $resp );
+        echo $callBack."(".$respuesta.");";
+    }
+    
+    public function actualizar_suplentes()
+    {
+        
+        $registro = new PagosModel();
+        
+        $cedula = $_POST['cedula'];
+        $estado = $_POST['estado'];
+        $callBack = $_POST['jsoncallback'];
+        
+        $columnas_1="p.id_padron_electoral_representantes, p.id_suplente";
+        $tablas_1="padron_electoral_representantes p inner join core_participes a on p.id_suplente = a.id_participes";
+        $where_1="a.cedula_participes='$cedula' and p.acepto_suplente_padron_electoral_representantes=0";
+        $id_1= "p.id_padron_electoral_representantes";
+        $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+        
+        //echo ($cedula);
+        
+        if( !empty( $resultUsu ) )
+        {
+            $_id= $resultUsu[0]->id_padron_electoral_representantes;
+            $val    = " acepto_suplente_padron_electoral_representantes= '$estado'";
+            $tab    = " padron_electoral_representantes ";
+            $whe    = " id_padron_electoral_representantes = '$_id'";
+            
+            $resultado = $registro->ActualizarBy($val, $tab, $whe);
+            
+        }
+        
+        if( !empty( pg_last_error() ) ){
+            throw new Exception("Actualizacion No realizada");
+        }
+        
+        $resp = array();
+        $resp['estatus']   = "OK";
+        $resp['mensaje']   = " Filas Actualizadas (".$resultado.")";
+        
+        echo json_encode( $resp );
+        //echo $callBack."(".$respuesta.");";
+    }
     
     
     public function  propaganda_diferir_cuotas_ini(){

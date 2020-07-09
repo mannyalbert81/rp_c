@@ -103,7 +103,7 @@ function AprobarRegistro(id){
 		url:"index.php?controller=ConsultaCandidatos&action=AprobarRegistro",
 		type:"POST",
 		dataType:"json",
-		data:{id_padron_electoral_representantes:id}
+		data:{id_registro_tres_cuotas:id}
 	}).done(function(datos){		
 		
 		if(datos.data > 0){
@@ -143,7 +143,7 @@ function NegarRegistro(id){
 		url:"index.php?controller=ConsultaCandidatos&action=NegarRegistro",
 		type:"POST",
 		dataType:"json",
-		data:{id_padron_electoral_representantes:id}
+		data:{id_registro_tres_cuotas:id}
 	}).done(function(datos){		
 		
 		if(datos.data > 0){
@@ -151,7 +151,7 @@ function NegarRegistro(id){
 			swal({
 		  		  title: "MENSAJE",
 		  		  text: "Registro Negado",
-		  		  icon: "success",
+		  		  icon: "error",
 		  		  button: "Aceptar",
 		  		});
 					

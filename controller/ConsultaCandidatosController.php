@@ -75,10 +75,14 @@
                     c.apellido_participes as apellido_suplente,
                     c.nombre_participes as nombre_suplente,
                     c.cedula_participes as cedula_suplente,
+                    c.telefono_participes as telefono_suplente,
+                    c.celular_participes as celular_suplente,
                     a.foto_representante,
                     a.foto_suplente,
                     a.correo_representante,
                     a.correo_suplente,
+                    b.telefono_participes,
+                    b.celular_participes,
                     case when a.acepto_representante_padron_electoral_representantes=0 THEN 'Pendiente' when a.acepto_representante_padron_electoral_representantes=1 THEN 'Acepto' else 'Rechazo' end acepto_representante,
                     case when a.acepto_suplente_padron_electoral_representantes=0 THEN 'Pendiente' when a.acepto_suplente_padron_electoral_representantes=1 THEN 'Acepto' else 'Rechazo' end acepto_suplente";
 	    
@@ -86,7 +90,7 @@
                     inner join core_participes b on a.id_representante = b.id_participes and b.id_estatus = 1
                     left join 
                 	(
-                	select b1.cedula_participes, b1.apellido_participes, b1.nombre_participes, a1.id_padron_electoral_representantes 
+                	select b1.cedula_participes, b1.apellido_participes, b1.nombre_participes, a1.id_padron_electoral_representantes, b1.telefono_participes, b1.celular_participes
                 	 from padron_electoral_representantes a1 
                  	 inner join core_participes b1 on a1.id_suplente = b1.id_participes and b1.id_estatus = 1
                   	)c on a.id_padron_electoral_representantes = c.id_padron_electoral_representantes";
@@ -181,15 +185,16 @@
 	                    $html.='<td style="font-size: 14px;"><a href="JavaScript:void(0);" class="btn btn-success" style="font-size:65%;"data-toggle="tooltip" title="Aprobar" disabled><i class="glyphicon glyphicon-plus"></i></a>
                     <a href="JavaScript:void(0);" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Negar" disabled><i class="glyphicon glyphicon-remove"></i></a></td>';
 	                }
-	                 $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="80" height="60"></td>';
-	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>ACEPTO: </b>'.$res->acepto_representante.'</td>';
+	                 $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
+	                 $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</br><b>ACEPTO: </b>'.$res->acepto_representante.'</td>';
 	              
-	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_suplente" width="80" height="60"></td>';
-	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_suplente.'</br><b>NOMBRE: </b>'.$res->apellido_suplente.' '.$res->nombre_suplente.'</br><b>CORREO: </b>'.$res->correo_suplente.'</br><b>ACEPTO: </b>'.$res->acepto_suplente.'</td>';
+	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_suplente" width="120" height="100"></td>';
+	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_suplente.'</br><b>NOMBRE: </b>'.$res->apellido_suplente.' '.$res->nombre_suplente.'</br><b>CORREO: </b>'.$res->correo_suplente.'</br><b>TELÉFONO: </b>'.$res->telefono_suplente.'</br><b>CELULAR: </b>'.$res->celular_suplente.'</br><b>ACEPTO: </b>'.$res->acepto_suplente.'</td>';
+	                 
 	                
 	                if($res->acepto_representante==-'Acepto' && $res->acepto_suplente=='Acepto'){
 	                    
-	                    $html.='<td><a title="PDF" href="index.php?controller=CargarParticipes&action=ReporteCandidatos&id_padron_electoral_representantes='.$res->id_padron_electoral_representantes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+	                    $html.='<td><a title="PDF" href="index.php?controller=CargarParticipes&action=ReporteCandidatos&id_padron_electoral_representantes='.$res->id_padron_electoral_representantes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="60" height="60"></a></font></td>';
 	                }
 	                else {
 	                
@@ -304,10 +309,14 @@
                     c.apellido_participes as apellido_suplente,
                     c.nombre_participes as nombre_suplente,
                     c.cedula_participes as cedula_suplente,
+                    c.telefono_participes as telefono_suplente,
+                    c.celular_participes as celular_suplente,
                     a.foto_representante,
                     a.foto_suplente,
                     a.correo_representante,
                     a.correo_suplente,
+                    b.telefono_participes,
+                    b.celular_participes,
                     case when a.acepto_representante_padron_electoral_representantes=0 THEN 'Pendiente' when a.acepto_representante_padron_electoral_representantes=1 THEN 'Acepto' else 'Rechazo' end acepto_representante,
                     case when a.acepto_suplente_padron_electoral_representantes=0 THEN 'Pendiente' when a.acepto_suplente_padron_electoral_representantes=1 THEN 'Acepto' else 'Rechazo' end acepto_suplente";
 	    
@@ -315,7 +324,7 @@
                     inner join core_participes b on a.id_representante = b.id_participes and b.id_estatus = 1
                     left join
                 	(
-                	select b1.cedula_participes, b1.apellido_participes, b1.nombre_participes, a1.id_padron_electoral_representantes
+                	select b1.cedula_participes, b1.apellido_participes, b1.nombre_participes, a1.id_padron_electoral_representantes, b1.telefono_participes, b1.celular_participes
                 	 from padron_electoral_representantes a1
                  	 inner join core_participes b1 on a1.id_suplente = b1.id_participes and b1.id_estatus = 1
                   	)c on a.id_padron_electoral_representantes = c.id_padron_electoral_representantes";
@@ -400,15 +409,15 @@
 	                
 	              
 	               
-	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="80" height="60"></td>';
-	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>ACEPTO: </b>'.$res->acepto_representante.'</td>';
+	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
+	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</br><b>ACEPTO: </b>'.$res->acepto_representante.'</td>';
 	                
-	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_suplente" width="80" height="60"></td>';
-	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_suplente.'</br><b>NOMBRE: </b>'.$res->apellido_suplente.' '.$res->nombre_suplente.'</br><b>CORREO: </b>'.$res->correo_suplente.'</br><b>ACEPTO: </b>'.$res->acepto_suplente.'</td>';
+	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_suplente" width="120" height="100"></td>';
+	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_suplente.'</br><b>NOMBRE: </b>'.$res->apellido_suplente.' '.$res->nombre_suplente.'</br><b>CORREO: </b>'.$res->correo_suplente.'</br><b>TELÉFONO: </b>'.$res->telefono_suplente.'</br><b>CELULAR: </b>'.$res->celular_suplente.'</br><b>ACEPTO: </b>'.$res->acepto_suplente.'</td>';
 	                
 	                if($res->acepto_representante==-'Acepto' && $res->acepto_suplente=='Acepto'){
 	                    
-	                    $html.='<td><a title="PDF" href="index.php?controller=CargarParticipes&action=ReporteCandidatos&id_padron_electoral_representantes='.$res->id_padron_electoral_representantes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+	                    $html.='<td><a title="PDF" href="index.php?controller=CargarParticipes&action=ReporteCandidatos&id_padron_electoral_representantes='.$res->id_padron_electoral_representantes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="60" height="60"></a></font></td>';
 	                }
 	                else {
 	                    
@@ -523,10 +532,14 @@
                     c.apellido_participes as apellido_suplente,
                     c.nombre_participes as nombre_suplente,
                     c.cedula_participes as cedula_suplente,
+                    c.telefono_participes as telefono_suplente,
+                    c.celular_participes as celular_suplente,
                     a.foto_representante,
                     a.foto_suplente,
                     a.correo_representante,
                     a.correo_suplente,
+                    b.telefono_participes,
+                    b.celular_participes,
                     case when a.acepto_representante_padron_electoral_representantes=0 THEN 'Pendiente' when a.acepto_representante_padron_electoral_representantes=1 THEN 'Acepto' else 'Rechazo' end acepto_representante,
                     case when a.acepto_suplente_padron_electoral_representantes=0 THEN 'Pendiente' when a.acepto_suplente_padron_electoral_representantes=1 THEN 'Acepto' else 'Rechazo' end acepto_suplente";
 	    
@@ -534,7 +547,7 @@
                     inner join core_participes b on a.id_representante = b.id_participes and b.id_estatus = 1
                     left join
                 	(
-                	select b1.cedula_participes, b1.apellido_participes, b1.nombre_participes, a1.id_padron_electoral_representantes
+                	select b1.cedula_participes, b1.apellido_participes, b1.nombre_participes, a1.id_padron_electoral_representantes, b1.telefono_participes, b1.celular_participes
                 	 from padron_electoral_representantes a1
                  	 inner join core_participes b1 on a1.id_suplente = b1.id_participes and b1.id_estatus = 1
                   	)c on a.id_padron_electoral_representantes = c.id_padron_electoral_representantes";
@@ -542,7 +555,6 @@
 	    $where = "1=1 and a.estado_candidato_padron_electoral_representantes = 2";
 	    
 	    $id = "a.id_padron_electoral_representantes";
-	    
 	    
 	    
 	    
@@ -619,15 +631,15 @@
 	                
 	                
 	                
-	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="80" height="60"></td>';
-	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>ACEPTO: </b>'.$res->acepto_representante.'</td>';
+	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
+	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</br><b>ACEPTO: </b>'.$res->acepto_representante.'</td>';
 	                
-	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_suplente" width="80" height="60"></td>';
-	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_suplente.'</br><b>NOMBRE: </b>'.$res->apellido_suplente.' '.$res->nombre_suplente.'</br><b>CORREO: </b>'.$res->correo_suplente.'</br><b>ACEPTO: </b>'.$res->acepto_suplente.'</td>';
+	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_suplente" width="120" height="100"></td>';
+	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_suplente.'</br><b>NOMBRE: </b>'.$res->apellido_suplente.' '.$res->nombre_suplente.'</br><b>CORREO: </b>'.$res->correo_suplente.'</br><b>TELÉFONO: </b>'.$res->telefono_suplente.'</br><b>CELULAR: </b>'.$res->celular_suplente.'</br><b>ACEPTO: </b>'.$res->acepto_suplente.'</td>';
 	                
 	                if($res->acepto_representante==-'Acepto' && $res->acepto_suplente=='Acepto'){
 	                    
-	                    $html.='<td><a title="PDF" href="index.php?controller=CargarParticipes&action=ReporteCandidatos&id_padron_electoral_representantes='.$res->id_padron_electoral_representantes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+	                    $html.='<td><a title="PDF" href="index.php?controller=CargarParticipes&action=ReporteCandidatos&id_padron_electoral_representantes='.$res->id_padron_electoral_representantes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="60" height="60"></a></font></td>';
 	                }
 	                else {
 	                    

@@ -7,43 +7,69 @@
   </head>
   <body>
   	<div>
-    <h2 align="center"><strong>RECIBO DE PRESENTACIÓN DE SOLICITUD</strong></h2>	
+    <h2 align="center"><strong>RECIBO DE PRESENTACIÓN DE SOLICITUD DE {TIPO_PRESTAMO}</strong></h2>	
 	</div>
-	<p class="1"><strong>Solicitud N°: </strong>{NUMERO_CREDITOS}<p>
-	 <div class="izq" >
-	<p class="1"><strong>Solicitante: </strong>{APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}</p>
-	<p class="1"><strong>Tipo de Encaje: </strong></p>
-	<p class="1"><strong>Recibido por: </strong>{RECEPTOR_SOLICITUD}</p>
-	<p class="1"><strong>Número de Cuenta: </strong></p> 
-	  </div>
-	    <div class="der">
-	    <p class="1"><strong>Cedula: </strong>{CEDULA_PARTICIPES}</p>
+	<p class="1"><strong>Solicitud N°: </strong>{SOLICITUD}<br><br>
+	<strong>Fecha / Hora: </strong>{FECHA_HORA}</p>
+	<div class="izq1" >
+	<p class="1"><strong>Solicitante: </strong>{NOMBRE_SOLICITANTE}</p>
 	</div>
-	<table class="1">
-	<tr>
-	<td><strong>Créditos Anteriores</strong></td>
-	<td><strong>No. Solicitud</strong></td>
-	<td><strong>Monto Otorgado</strong></td>
-	<td><strong>Saldo a la Fecha</strong></td> 
-	</tr>
+	<div class="der">
+	    <p class="1"><strong>Cedula: </strong>{CEDULA}</p>
+	</div>
+	<div class="completa1">
+	<p class="1"><strong>Tipo de Encaje: </strong> {TIPO_ENCAJE}</p>
+	</div>
+	<div class="izq1" >
+	<p class="1"><strong>Recibido por: </strong>{RECIBIDO_POR}</p>
+	</div>
+	
+	<div class="completa">
+		<table class="3">
+				<tr>
+				<td><p class="1"># de Cuenta:</p></td>
+				<td><p class="1">{NUMERO_CUENTA}</p></td>
+				<td><p class="1">{BANCO}</p></td>
+				<td><p class="1">{TIPO_CUENTA}</p></td>
+				</tr>
 	</table>
-	<div class="izq" >
+	</div>
+	
+	{TABLA_CREDITOS_ANTERIORES}
+	<div class="completa" >
 	<p class="1"><strong>Cálculo del Beneficio:</strong></p>
-	<p class="1"></p>
-	<p class="1"><strong>Monto Máximo: </strong></p>
+	<div class="izq1" >
+	<p class="1">Total Beneficio Cuenta Individual:</p>
+	</div>
+	<div class="der" >
+	<p class="1">{TOTAL_BENEFICIO_CUENTA_INDIVIDUAL}</p>
+	</div>
+	</div>
+	<div class="completa1" >
+	<p class="1"><strong>Monto Máximo: {TIPO_PRESTAMO}:</strong></p>
+	</div>
+	<div class="completa1" >
+	<div class="izq" >
 	<p class="1">Solicitado:<br>
 	Plazo:<br>
 	Cuota:<br>
-	Saldo Anterior:<br>
+	{SALDO_NOMBRES}<br>
 	Retención Primera Cuota:<br>
 	Retención Aportes:<br>
 	Liquido a Recibir:</p> 
-	
-	
-	
-	  </div>
-	 <div  class="completa">  
-	<p class="1"><strong>Observaciones:</strong></p><br><br><br><br>
+	</div>
+	<div class="der" >
+	<p class="1">{MONTO_SOLICITADO}<br>
+	{PLAZO}<br>
+	{CUOTA}<br>
+	{SALDO_VALORES}<br>
+	{RETENCION_PRIMERA_CUOTA}<br>
+	{RETENCION_APORTES}<br>
+	<strong>{LIQUIDO_RECIBIR}</strong></p> 
+	</div>
+	</div>
+	 <div  class="completa1">  
+	<p class="1"><strong>Observaciones: </strong>{OBSERVACIONES}</p>
 	<table class="2">
 				<tr>
 				<td rowspan="2" class="2"><p class="2"><strong>Confirmación de datos</strong></p></td>
@@ -67,10 +93,10 @@
 		<th class="3">ACCIONES</th> <th class="3">NIVEL</th> <th class="3">RESPONSABLE</th> <th class="3">FECHA</th> <th class="3">FIRMA</th>
 	</tr>
 	<tr>
-		<td class="3">Recomendado por:</td> <td class="3">Atención al Cliente</td> <td class="3">{APELLIDO_USUARIO} {NOMBRE_USUARIO}</td> <td class="3"></td> <td class="3"></td>
+		<td class="3">Recomendado por:</td> <td class="3">{NIVER_R1}</td> <td class="3">{USUARIO_1}</td> <td class="3">{FECHA_REGISTRO_FLUJO_1}</td> <td class="3"></td>
 	</tr>
 	<tr>
-		<td class="3">Aprobado por:</td> <td class="3">Liquidar</td> <td class="3"></td> <td class="3"></td> <td class="3"></td>
+		<td class="3">Aprobado por:</td> <td class="3">{NIVER_R2}</td> <td class="3">{USUARIO_2}</td> <td class="3">{FECHA_REGISTRO_FLUJO_2}</td> <td class="3"></td>
 	</tr>
 </table>
 	<br>

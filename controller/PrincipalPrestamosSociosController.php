@@ -924,32 +924,25 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
 	    $datos_cabecera['FECHA'] = date('Y/m/d');
 	    $datos_cabecera['HORA'] = date('h:i:s');
-	    
-	    
-	    
 	    $participes = new TransaccionesModel();
+	
 	    $id_transacciones =  (isset($_REQUEST['id_transacciones'])&& $_REQUEST['id_transacciones'] !=NULL)?$_REQUEST['id_transacciones']:'';
 	      $datos_reporte = array();
-	      $columnas = "a.id_transacciones, a.id_creditos, a.id_participes, a.id_creditos_tipo_pago,
-                	    c.id_creditos_tipo_pago, c.nombre_creditos_tipo_pago, a.fecha_transacciones, a.valor_transacciones, a.observacion_transacciones,
-                	    a.usuario_usuarios,
-                	    a.fecha_contable_core_transacciones, a.id_ccomprobantes_ant, b.id_modo_pago, b.nombre_modo_pago, e.nombre_estado_transacciones";
-	      $tablas = "core_transacciones a
-                	    inner join core_modo_pago b on a.id_modo_pago=b.id_modo_pago
-                	    inner join core_creditos_tipo_pago c on a.id_creditos_tipo_pago=c.id_creditos_tipo_pago
-                	    inner join core_estado_transacciones e on a.id_estado_transacciones=e.id_estado_transacciones";
-	      $where= "a.id_transacciones='$id_transacciones' and a.id_status=1";
-	      $id="a.id_transacciones";
-	    
-	    $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
-	    
-	    $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['TIPO_CREDITOS']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['NUMERO_CREDITOS']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['FECHA_CONSECION']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->nombre_creditos_tipo_pago;
+	     
+	      $columnas =  "fvalue, fobservation, fname, fcredit_name, credit_payment_mode, fcredittransactionid, fidentificacion, fjournalid";
+	      $tablas ="fc_creditos_reporte_transacciones ($id_transacciones)";
+	      
+	      
+	      $rsdatos = $participes->getCondicionesFunciones($columnas, $tablas);
+	      
+	      $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->fvalue;
+	      $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->fobservation;
+	      $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->fname;
+	      $datos_reporte['TIPO_CREDITOS']=$rsdatos[0]->fcredit_name;
+	      $datos_reporte['NUMERO_CREDITOS']=$rsdatos[0]->credit_payment_mode;
+	      $datos_reporte['FECHA_CONSECION']=$rsdatos[0]->fcredittransactionid;
+	      $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->fidentificacion;
+	      $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->fjournalid;
 	    
 	    
 	    $datos = array();

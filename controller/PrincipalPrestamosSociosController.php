@@ -442,38 +442,210 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    
 	    $participes = new CreditosModel();
 	    $id_creditos =  (isset($_REQUEST['id_creditos'])&& $_REQUEST['id_creditos'] !=NULL)?$_REQUEST['id_creditos']:'';
-	    $nombre_usuarios= $_SESSION['nombre_usuarios'];
-	    $apellido_usuarios= $_SESSION['apellido_usuarios'];
 	    $datos_reporte = array();
-	    $columnas =  "core_creditos.id_creditos,
-                      core_creditos.numero_creditos,
-                      core_participes.id_participes,
-                      core_participes.nombre_participes,
-                      core_participes.apellido_participes,
-                      core_participes.cedula_participes,
-                      core_participes.fecha_nacimiento_participes,
-                      core_creditos.fecha_concesion_creditos,
-                      core_tipo_creditos.id_tipo_creditos,
-                      core_tipo_creditos.nombre_tipo_creditos,
-                      core_creditos.receptor_solicitud_creditos";
-	    $tablas ="public.core_creditos,
-                  public.core_participes,
-                  public.core_tipo_creditos";
-	    $where= "core_participes.id_participes = core_creditos.id_participes AND
-                 core_tipo_creditos.id_tipo_creditos = core_creditos.id_tipo_creditos AND core_creditos.id_creditos = '$id_creditos'";
-	    $id="core_creditos.id_creditos";
-	  
-	    $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+	    $columnas =  "solicitud1, nombre_solicitante1, identificacion1, recibido_por1, tipo_cuenta1, banco1, num_cuenta1, monto1, plazo1, cuota1, cuenta_individual, tipo_prestamo1,
+	                  TO_CHAR(fecha_hora1,'YYYY-MM-DD HH:MI:SS') as fecha_hora1,
+	                  estado1, tipo_encaje1, id_tipo_prestamos1, tipo_bien1, tipo_codigo1, monto_neto1, balance_disponible_garantias1, salario_liquido1, cuota_otros_creditos1, observacion1, ultimos_aportes1";
+	    $tablas ="fc_participes_recibo_presentacion ($id_creditos)";
+	    $rsdatos = $participes->getCondicionesFunciones($columnas, $tablas);
 	    
-	    $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
-	    $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
-	    $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
-	    $datos_reporte['TIPO_CREDITOS']=$rsdatos[0]->nombre_tipo_creditos;
-	    $datos_reporte['NUMERO_CREDITOS']=$rsdatos[0]->numero_creditos;
-	    $datos_reporte['FECHA_CONSECION']=$rsdatos[0]->fecha_concesion_creditos;
-	    $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->receptor_solicitud_creditos;
-	    $datos_reporte['APELLIDO_USUARIO']=$apellido_usuarios;
-	    $datos_reporte['NOMBRE_USUARIO']=$nombre_usuarios;
+	    if(!empty ($rsdatos)){
+	        
+	        $datos_reporte['SOLICITUD']=$rsdatos[0]->tipo_codigo1.'-'.$rsdatos[0]->solicitud1;
+	        $datos_reporte['NOMBRE_SOLICITANTE']=$rsdatos[0]->nombre_solicitante1;
+	        $datos_reporte['CEDULA']=$rsdatos[0]->identificacion1;
+	        $datos_reporte['TIPO_ENCAJE']=$rsdatos[0]->tipo_encaje1.' '.$rsdatos[0]->ultimos_aportes1;
+	        $datos_reporte['RECIBIDO_POR']=$rsdatos[0]->recibido_por1;
+	        $datos_reporte['NUMERO_CUENTA']=$rsdatos[0]->num_cuenta1;
+	        $datos_reporte['BANCO']=$rsdatos[0]->banco1;
+	        $datos_reporte['TIPO_CUENTA']=$rsdatos[0]->tipo_cuenta1;
+	        $datos_reporte['TOTAL_BENEFICIO_CUENTA_INDIVIDUAL']=$rsdatos[0]->cuenta_individual;
+	        $datos_reporte['MONTO_SOLICITADO']=$rsdatos[0]->monto1;
+	        $datos_reporte['PLAZO']=$rsdatos[0]->plazo1;
+	        $datos_reporte['CUOTA']=$rsdatos[0]->cuota1;
+	        $datos_reporte['LIQUIDO_RECIBIR']=$rsdatos[0]->monto_neto1;
+	        $datos_reporte['OBSERVACIONES']=$rsdatos[0]->observacion1;
+	        $datos_reporte['FECHA_HORA']=$rsdatos[0]->fecha_hora1;
+	        $datos_reporte['TIPO_PRESTAMO']=$rsdatos[0]->tipo_prestamo1;
+	    }else {
+	        
+	        $datos_reporte['SOLICITUD']='';
+	        $datos_reporte['NOMBRE_SOLICITANTE']='';
+	        $datos_reporte['CEDULA']='';
+	        $datos_reporte['TIPO_ENCAJE']='';
+	        $datos_reporte['RECIBIDO_POR']='';
+	        $datos_reporte['NUMERO_CUENTA']='';
+	        $datos_reporte['TOTAL_BENEFICIO_CUENTA_INDIVIDUAL']='0.00';
+	        $datos_reporte['MONTO_SOLICITADO']='0.00';
+	        $datos_reporte['PLAZO']='';
+	        $datos_reporte['CUOTA']='';
+	        $datos_reporte['LIQUIDO_RECIBIR']='0.00';
+	        $datos_reporte['OBSERVACIONES']='';
+	        $datos_reporte['FECHA_HORA']='';
+	        $datos_reporte['TIPO_PRESTAMO']='';
+	    }
+	    
+	    
+	    //PARA SACAR RETENCION PRIMERA CUOTA
+	    $columnas1 =  "total_retencion";
+	    $tablas1 ="fc_creditos_obtener_total_retencion_primera_cuota ($id_creditos)";
+	    $rsdatos1 = $participes->getCondicionesFunciones($columnas1, $tablas1);
+	    
+	    if(!empty ($rsdatos1) && ($rsdatos1[0]->total_retencion)>0){
+	        
+	        $datos_reporte['RETENCION_PRIMERA_CUOTA']=$rsdatos1[0]->total_retencion;
+	        
+	    }else {
+	        
+	        $datos_reporte['RETENCION_PRIMERA_CUOTA']='0.00';
+	        
+	    }
+	    
+	    //PARA SACAR RETENCION APORTES
+	    $columnas2 =  "total_retencion_aportes";
+	    $tablas2 ="fc_creditos_obtener_total_retencion_aportes ($id_creditos)";
+	    $rsdatos2 = $participes->getCondicionesFunciones($columnas2, $tablas2);
+	
+	    if(!empty ($rsdatos2) && ($rsdatos2[0]->total_retencion_aportes)>0){
+	        
+	        $datos_reporte['RETENCION_APORTES']=$rsdatos2[0]->total_retencion_aportes;
+	        
+	    }else {
+	        
+	        $datos_reporte['RETENCION_APORTES']='0.00';
+	        
+	    }
+	    
+	   
+	  
+	    //PARA SACAR CREDITOS RENOVADOS
+	    $saldo_nombres = "";
+	    $saldo_valores = "";
+	    $texto = "Saldo Anterior: ";
+	    
+	    $columnas4=  "nombre_tipo_creditos, id_creditos_renovaciones, monto_otorgado_creditos, saldo_a_la_fecha_creditos_a_pagar_renovaciones";
+	    $tablas4 ="fc_creditos_informar_solicitud_de_otro_credito ($id_creditos)";
+	    $rsdatos4 = $participes->getCondicionesFunciones($columnas4, $tablas4);
+	    
+	    if(!empty($rsdatos4)){
+	        
+	        $html4="";
+	        $html4.='<table class="1">';
+	        
+	        $html4.='<tr>';
+	        $html4.='<td><b>Créditos Anteriores<b></td>';
+	        $html4.='<td><b>No. Solicitud</b></td>';
+	        $html4.='<td><b>Monto Otorgado</b></td>';
+	        $html4.='<td><b>Saldo a la Fecha</b></td>';
+	        $html4.='</tr>';
+	        $i = count($rsdatos4);
+	        $y = 0;
+	        foreach ($rsdatos4 as $res)
+	        
+	        {
+	            $y++;
+	            if($y == $i){
+	                $saldo_nombres = $saldo_nombres.$texto.$res->nombre_tipo_creditos;
+	                $saldo_valores = $saldo_valores.$res->saldo_a_la_fecha_creditos_a_pagar_renovaciones;
+	            }
+	            else {
+	                $saldo_nombres = $saldo_nombres.$texto.$res->nombre_tipo_creditos.'<br>';
+	                $saldo_valores = $saldo_valores.$res->saldo_a_la_fecha_creditos_a_pagar_renovaciones.'<br>';
+	                }
+	            $html4.='<tr >';
+	            $html4.='<td>'.$res->nombre_tipo_creditos.'</td>';
+	            $html4.='<td>'.$res->id_creditos_renovaciones.'</td>';
+	            $html4.='<td>'.$res->monto_otorgado_creditos.'</td>';
+	            $html4.='<td>'.$res->saldo_a_la_fecha_creditos_a_pagar_renovaciones.'</td>';
+	            $html4.='</tr>';
+	    }
+	    }else {
+	        
+	        
+	        //PARA CREDITOS PREAPROBADOS
+	        $columnasP=  "a_nombre_tipo_creditos_tmp AS nombre_tipo_creditos, a_id_creditos_tmp AS id_creditos_renovaciones, a_monto_otorgado_creditos_tmp AS  monto_otorgado_creditos, a_saldo_estimado AS saldo_a_la_fecha_creditos_a_pagar_renovaciones";
+	        $tablasP ="fc_creditos_recibo_presentacion_nuevos ($id_creditos)";
+	        $rsdatosP = $participes->getCondicionesFunciones($columnasP, $tablasP);
+	        
+	        if(!empty($rsdatosP)){
+	            
+	            $html4="";
+	            $html4.='<table class="1">';
+	            
+	            $html4.='<tr>';
+	            $html4.='<td><b>Créditos Anteriores<b></td>';
+	            $html4.='<td><b>No. Solicitud</b></td>';
+	            $html4.='<td><b>Monto Otorgado</b></td>';
+	            $html4.='<td><b>Saldo a la Fecha</b></td>';
+	            $html4.='</tr>';
+	            $i = count($rsdatosP);
+	            $y = 0;
+	            foreach ($rsdatosP as $res)
+	            
+	            {
+	                $y++;
+	                if($y == $i){
+	                    $saldo_nombres = $saldo_nombres.$texto.$res->nombre_tipo_creditos;
+	                    $saldo_valores = $saldo_valores.$res->saldo_a_la_fecha_creditos_a_pagar_renovaciones;
+	                }
+	                else {
+	                    $saldo_nombres = $saldo_nombres.$texto.$res->nombre_tipo_creditos.'<br>';
+	                    $saldo_valores = $saldo_valores.$res->saldo_a_la_fecha_creditos_a_pagar_renovaciones.'<br>';
+	                }
+	                $html4.='<tr >';
+	                $html4.='<td>'.$res->nombre_tipo_creditos.'</td>';
+	                $html4.='<td>'.$res->id_creditos_renovaciones.'</td>';
+	                $html4.='<td>'.$res->monto_otorgado_creditos.'</td>';
+	                $html4.='<td>'.$res->saldo_a_la_fecha_creditos_a_pagar_renovaciones.'</td>';
+	                $html4.='</tr>';
+	            }
+	        }else {
+	        
+	        
+	        
+	        $saldo_nombres = $texto;
+	        $saldo_valores = '0.00';
+	        
+	        }
+	        
+	    }
+	    $html4.='</table>';
+	    $datos_reporte['TABLA_CREDITOS_ANTERIORES']=$html4;
+	    $datos_reporte['SALDO_VALORES']=$saldo_valores;
+	    $datos_reporte['SALDO_NOMBRES']=$saldo_nombres;
+	    
+	    //PARA SACAR SALDO ANTERIOR
+        
+	  
+	
+	    //PARA SACAR RESPONSABLES
+	    $columnas5 =  "nivel_r1, usuario_usuarios1, 
+                       TO_CHAR(fecha_registro_creditos_flujo_trabajo1,'YYYY-MM-DD HH:MI:SS') as fecha_registro_creditos_flujo_trabajo1,
+	                   nivel_r2, usuario_usuarios2,
+                       TO_CHAR(fecha_registro_creditos_flujo_trabajo2,'YYYY-MM-DD HH:MI:SS') as fecha_registro_creditos_flujo_trabajo2";
+	    $tablas5 ="fc_responsables_solicitud_recibo_presentacion ($id_creditos)";
+	    $rsdatos5 = $participes->getCondicionesFunciones($columnas5, $tablas5);
+	    
+	    if(!empty ($rsdatos5)){
+	        
+	        $datos_reporte['NIVER_R1']=$rsdatos5[0]->nivel_r1;
+	        $datos_reporte['USUARIO_1']=$rsdatos5[0]->usuario_usuarios1;
+	        $datos_reporte['FECHA_REGISTRO_FLUJO_1']=$rsdatos5[0]->fecha_registro_creditos_flujo_trabajo1;
+	        $datos_reporte['NIVER_R2']=$rsdatos5[0]->nivel_r2;
+	        $datos_reporte['USUARIO_2']=$rsdatos5[0]->usuario_usuarios2;
+	        $datos_reporte['FECHA_REGISTRO_FLUJO_2']=$rsdatos5[0]->fecha_registro_creditos_flujo_trabajo2;
+	        
+	    }else {
+	        
+	        $datos_reporte['NIVER_R1']='';
+	        $datos_reporte['USUARIO_1']='';
+	        $datos_reporte['FECHA_REGISTRO_FLUJO_1']='';
+	        $datos_reporte['NIVER_R2']='';
+	        $datos_reporte['USUARIO_2']='';
+	        $datos_reporte['FECHA_REGISTRO_FLUJO_2']='';
+	        
+	    }
+	    
 	    
 	    
 	    $datos = array();
@@ -752,32 +924,25 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    $datos_cabecera['USUARIO'] = (isset($_SESSION['nombre_usuarios'])) ? $_SESSION['nombre_usuarios'] : 'N/D';
 	    $datos_cabecera['FECHA'] = date('Y/m/d');
 	    $datos_cabecera['HORA'] = date('h:i:s');
-	    
-	    
-	    
 	    $participes = new TransaccionesModel();
+	
 	    $id_transacciones =  (isset($_REQUEST['id_transacciones'])&& $_REQUEST['id_transacciones'] !=NULL)?$_REQUEST['id_transacciones']:'';
 	      $datos_reporte = array();
-	      $columnas = "a.id_transacciones, a.id_creditos, a.id_participes, a.id_creditos_tipo_pago,
-                	    c.id_creditos_tipo_pago, c.nombre_creditos_tipo_pago, a.fecha_transacciones, a.valor_transacciones, a.observacion_transacciones,
-                	    a.usuario_usuarios,
-                	    a.fecha_contable_core_transacciones, a.id_ccomprobantes_ant, b.id_modo_pago, b.nombre_modo_pago, e.nombre_estado_transacciones";
-	      $tablas = "core_transacciones a
-                	    inner join core_modo_pago b on a.id_modo_pago=b.id_modo_pago
-                	    inner join core_creditos_tipo_pago c on a.id_creditos_tipo_pago=c.id_creditos_tipo_pago
-                	    inner join core_estado_transacciones e on a.id_estado_transacciones=e.id_estado_transacciones";
-	      $where= "a.id_transacciones='$id_transacciones' and a.id_status=1";
-	      $id="a.id_transacciones";
-	    
-	    $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
-	    
-	    $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['TIPO_CREDITOS']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['NUMERO_CREDITOS']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['FECHA_CONSECION']=$rsdatos[0]->nombre_creditos_tipo_pago;
-	    $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->nombre_creditos_tipo_pago;
+	     
+	      $columnas =  "fvalue, fobservation, fname, fcredit_name, credit_payment_mode, fcredittransactionid, fidentificacion, fjournalid";
+	      $tablas ="fc_creditos_reporte_transacciones ($id_transacciones)";
+	      
+	      
+	      $rsdatos = $participes->getCondicionesFunciones($columnas, $tablas);
+	      
+	      $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->fvalue;
+	      $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->fobservation;
+	      $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->fname;
+	      $datos_reporte['TIPO_CREDITOS']=$rsdatos[0]->fcredit_name;
+	      $datos_reporte['NUMERO_CREDITOS']=$rsdatos[0]->credit_payment_mode;
+	      $datos_reporte['FECHA_CONSECION']=$rsdatos[0]->fcredittransactionid;
+	      $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->fidentificacion;
+	      $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->fjournalid;
 	    
 	    
 	    $datos = array();

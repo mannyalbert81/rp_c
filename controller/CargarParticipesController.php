@@ -832,6 +832,7 @@ class CargarParticipesController extends ControladorBase{
         
     }
     
+
     
     public function IngresarSiCuotas(){
         
@@ -954,6 +955,7 @@ class CargarParticipesController extends ControladorBase{
         
         
     }
+    
     
     public function  propaganda_diferir_cuotas(){
         
@@ -1090,8 +1092,167 @@ class CargarParticipesController extends ControladorBase{
         echo $callBack."(".$respuesta.");";
     }
     
-
+    public function validar_representantes()
     
+    {
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+       // echo ("llego aqui");
+        
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $resp   = array();
+            $callBack = $_GET['jsoncallback'];
+           
+            $columnas_1="p.id_padron_electoral_representantes, p.id_representante";
+            $tablas_1="padron_electoral_representantes p inner join core_participes a on p.id_representante = a.id_participes";
+            $where_1="a.cedula_participes='$cedula' and p.acepto_representante_padron_electoral_representantes=0";
+            $id_1= "p.id_padron_electoral_representantes";
+            $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            if( !empty( $resultUsu ) )
+            {
+               // $resp['id_representante'] = $resultUsu->id_padron_electoral_representantes;
+                $resp['modal'] = "SI";
+              
+            }else
+            {
+               // $resp['id_representante'] =0;
+                $resp['modal'] = "NO";
+            }
+            
+        }else
+        {
+           // $resp['id_representante'] =0;
+            $resp['modal'] = "NO";
+        }
+        
+        $respuesta	= json_encode( $resp );
+        echo $callBack."(".$respuesta.");";
+    }
+    
+
+    public function actualizar_candidatos()
+    {
+        $registro = new PagosModel();
+        
+        $cedula = $_POST['cedula'];
+        $estado = $_POST['estado'];
+        $callBack = $_POST['jsoncallback'];
+        
+        $columnas_1="p.id_padron_electoral_representantes, p.id_representante";
+        $tablas_1="padron_electoral_representantes p inner join core_participes a on p.id_representante = a.id_participes";
+        $where_1="a.cedula_participes='$cedula' and p.acepto_representante_padron_electoral_representantes=0";
+        $id_1= "p.id_padron_electoral_representantes";
+        $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+        
+        //echo ($cedula);
+        
+        if( !empty( $resultUsu ) )
+        {
+            $_id= $resultUsu[0]->id_padron_electoral_representantes;
+            $val    = " acepto_representante_padron_electoral_representantes= '$estado'";
+            $tab    = " padron_electoral_representantes ";
+            $whe    = " id_padron_electoral_representantes = '$_id'";
+            
+            $resultado = $registro->ActualizarBy($val, $tab, $whe);
+            
+        }
+        
+        if( !empty( pg_last_error() ) ){
+            throw new Exception("Actualizacion No realizada");
+        }
+        
+        $resp = array();
+        $resp['estatus']   = "OK";
+        $resp['mensaje']   = " Filas Actualizadas (".$resultado.")";
+        
+        echo json_encode( $resp );
+        //echo $callBack."(".$respuesta.");";
+    }
+    
+    public function validar_suplentes()
+    
+    {
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+        // echo ("llego aqui");
+        
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $resp   = array();
+            $callBack = $_GET['jsoncallback'];
+            
+            $columnas_1="p.id_padron_electoral_representantes, p.id_suplente";
+            $tablas_1="padron_electoral_representantes p inner join core_participes a on p.id_suplente = a.id_participes";
+            $where_1="a.cedula_participes='$cedula' and p.acepto_suplente_padron_electoral_representantes=0";
+            $id_1= "p.id_padron_electoral_representantes";
+            $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            if( !empty( $resultUsu ) )
+            {
+                // $resp['id_representante'] = $resultUsu->id_padron_electoral_representantes;
+                $resp['modal'] = "SI";
+                
+            }else
+            {
+                // $resp['id_representante'] =0;
+                $resp['modal'] = "NO";
+            }
+            
+        }else
+        {
+            // $resp['id_representante'] =0;
+            $resp['modal'] = "NO";
+        }
+        
+        $respuesta	= json_encode( $resp );
+        echo $callBack."(".$respuesta.");";
+    }
+    
+    public function actualizar_suplentes()
+    {
+        
+        $registro = new PagosModel();
+        
+        $cedula = $_POST['cedula'];
+        $estado = $_POST['estado'];
+        $callBack = $_POST['jsoncallback'];
+        
+        $columnas_1="p.id_padron_electoral_representantes, p.id_suplente";
+        $tablas_1="padron_electoral_representantes p inner join core_participes a on p.id_suplente = a.id_participes";
+        $where_1="a.cedula_participes='$cedula' and p.acepto_suplente_padron_electoral_representantes=0";
+        $id_1= "p.id_padron_electoral_representantes";
+        $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+        
+        //echo ($cedula);
+        
+        if( !empty( $resultUsu ) )
+        {
+            $_id= $resultUsu[0]->id_padron_electoral_representantes;
+            $val    = " acepto_suplente_padron_electoral_representantes= '$estado'";
+            $tab    = " padron_electoral_representantes ";
+            $whe    = " id_padron_electoral_representantes = '$_id'";
+            
+            $resultado = $registro->ActualizarBy($val, $tab, $whe);
+            
+        }
+        
+        if( !empty( pg_last_error() ) ){
+            throw new Exception("Actualizacion No realizada");
+        }
+        
+        $resp = array();
+        $resp['estatus']   = "OK";
+        $resp['mensaje']   = " Filas Actualizadas (".$resultado.")";
+        
+        echo json_encode( $resp );
+        //echo $callBack."(".$respuesta.");";
+    }
     
     
     public function  propaganda_diferir_cuotas_ini(){
@@ -1174,6 +1335,74 @@ class CargarParticipesController extends ControladorBase{
         
     }
     
+    public function ReporteCandidatos(){
+        session_start();
+        $participes = new ParticipesModel();
+        $id_padron_electoral_representantes =  (isset($_REQUEST['id_padron_electoral_representantes'])&& $_REQUEST['id_padron_electoral_representantes'] !=NULL)?$_REQUEST['id_padron_electoral_representantes']:'';
+        
+        $datos_reporte = array();
+        $columnas= "a.id_padron_electoral_representantes,
+                    b.apellido_participes,
+                    b.cedula_participes,
+                    b.nombre_participes,
+                    c.apellido_participes as apellido_suplente,
+                    c.nombre_participes as nombre_suplente,
+                    c.cedula_participes as cedula_suplente,
+                    a.foto_representante,
+                    a.foto_suplente,
+                    a.correo_representante,
+                    a.correo_suplente,
+                    case when a.acepto_representante_padron_electoral_representantes=0 THEN 'Pendiente' when a.acepto_representante_padron_electoral_representantes=1 THEN 'Acepto' else 'Rechazo' end acepto_representante,
+                    case when a.acepto_suplente_padron_electoral_representantes=0 THEN 'Pendiente' when a.acepto_suplente_padron_electoral_representantes=1 THEN 'Acepto' else 'Rechazo' end acepto_suplente,
+                    d.nombre_entidad_patronal,
+                    f.nombre_provincias,
+                    g.nombre_ciudades";
+        
+        $tablas =  "padron_electoral_representantes a
+                    inner join core_participes b on a.id_representante = b.id_participes and b.id_estatus = 1
+                    inner join core_entidad_patronal d on d.id_entidad_patronal = b.id_entidad_patronal
+                    inner join core_participes_informacion_adicional e on b.id_participes = e.id_participes
+                    inner join core_provincias f on e.id_provincias = f.id_provincias
+                    inner join core_ciudades g on e.id_ciudades = g.id_ciudades
+                    left join
+                	(
+                	select b1.cedula_participes, b1.apellido_participes, b1.nombre_participes, a1.id_padron_electoral_representantes
+                	 from padron_electoral_representantes a1
+                 	 inner join core_participes b1 on a1.id_suplente = b1.id_participes and b1.id_estatus = 1
+                  	)c on a.id_padron_electoral_representantes = c.id_padron_electoral_representantes";
+        
+        $where = "1=1 and a.id_padron_electoral_representantes = $id_padron_electoral_representantes";
+        
+        $id = "a.id_padron_electoral_representantes";
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $datos_reporte['ENTIDAD_PATRONAL']=$rsdatos[0]->nombre_entidad_patronal;
+        $datos_reporte['NOMBRE_PROVINCIAS']=$rsdatos[0]->nombre_provincias;
+        $datos_reporte['NOMBRE_CUIDADES']=$rsdatos[0]->nombre_ciudades;
+        $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
+        $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
+        $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
+        $datos_reporte['CORREO_PARTICIPES']=$rsdatos[0]->correo_representante;
+        $datos_reporte['APELLIDO_SUPLENTE']=$rsdatos[0]->apellido_suplente;
+        $datos_reporte['NOMBRE_SUPLENTE']=$rsdatos[0]->nombre_suplente;
+        $datos_reporte['CEDULA_SUPLENTE']=$rsdatos[0]->cedula_suplente;
+        $datos_reporte['CORREO_SUPLENTE']=$rsdatos[0]->correo_suplente;
+        
+        $foto_suplente='<img src="view/Administracion/DevuelveImagenView.php?id_valor='.$rsdatos[0]->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_suplente" width="100" height="80">';
+        $datos_reporte['FOTO_SUPLENTE']=$foto_suplente;
+        
+        $foto_representante='<img src="view/Administracion/DevuelveImagenView.php?id_valor='.$rsdatos[0]->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="100" height="80">';
+        $datos_reporte['FOTO_REPRESENTANTE']=$foto_representante;
+        
+        
+       
+        
+        
+        $this->verReporte("ReporteCandidatos", array('datos_reporte'=>$datos_reporte ));
+        
+        
+        
+    }
 }
 
 

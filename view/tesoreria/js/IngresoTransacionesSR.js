@@ -87,7 +87,7 @@ function ValidarControles(){
 function getSecuencialDocumento(){
 	
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=getSecuencialDocumento",
+		url:"index.php?controller=TesCuentasPagarSR&action=getSecuencialDocumento",
 		type:"POST",
 		dataType:"json",
 		data:null
@@ -104,7 +104,7 @@ function getTipoDocumento(){
 	
 	var $ddlTipoDocumento = $("#tipo_documento");
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=getTipoDocumento",
+		url:"index.php?controller=TesCuentasPagarSR&action=getTipoDocumento",
 		type:"POST",
 		dataType:"json",
 		data:null
@@ -142,7 +142,7 @@ function popGeneraLote(){
 		return false;
 	}
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=RegistrarLote",
+		url:"index.php?controller=TesCuentasPagarSR&action=RegistrarLote",
 		type:"POST",
 		dataType:"json",
 		data:{nombre_lote:$nombre_lote.val()}
@@ -171,7 +171,7 @@ function loadProveedores(pagina = 1){
 	var $buscador = $("#mod_buscador_proveedores");
 	
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=buscaProveedores",
+		url:"index.php?controller=TesCuentasPagarSR&action=buscaProveedores",
 		dataType:"json",
 		type:"POST",
 		data:{page:pagina,buscador:$buscador.val()}
@@ -198,7 +198,7 @@ function SelecionarProveedor(element){
 	var $id_proveedor = $boton.val();
 	
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=SelecionarProveedor",
+		url:"index.php?controller=TesCuentasPagarSR&action=SelecionarProveedor",
 		type:"POST",
 		dataType:"json",
 		data:{id_proveedores:$id_proveedor}
@@ -245,7 +245,7 @@ function loadImpuestos(pagina = 1){
 	var $buscador = $("#mod_buscador_impuestos");
 	
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=buscaImpuestos",
+		url:"index.php?controller=TesCuentasPagarSR&action=buscaImpuestos",
 		dataType:"json",
 		type:"POST",
 		data:{page:pagina,buscador:$buscador.val()}
@@ -275,7 +275,7 @@ function AgregarImpuesto(objeto){
 	var datos = {id_lote:pid_lote.val(),compra_cero:pcompra_cero.val(), compra_iva:pcompra_iva.val(),id_impuestos:pid_impuestos}
 	
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=AgregarImpuesto",
+		url:"index.php?controller=TesCuentasPagarSR&action=AgregarImpuesto",
 		dataType:"json",
 		type:"POST",
 		data:datos
@@ -320,7 +320,7 @@ function cargaImpuestos(){
 	var datos = {id_lote:pid_lote.val()}
 	
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=CargaImpuestos",
+		url:"index.php?controller=TesCuentasPagarSR&action=CargaImpuestos",
 		dataType:"json",
 		type:"POST",
 		data:datos
@@ -351,7 +351,7 @@ function RemoveImpuesto(objeto){
 	var datos = {id_lote:pid_lote.val(),compra_cero:pcompra_cero.val(), compra_iva:pcompra_iva.val(),id_impuestos:pid_impuestos}
 	
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=QuitarImpuesto",
+		url:"index.php?controller=TesCuentasPagarSR&action=QuitarImpuesto",
 		dataType:"json",
 		type:"POST",
 		data:datos
@@ -406,7 +406,7 @@ function verDistribucion(){
 	var datos = {id_lote:pid_lote.val(),base_compras:valor_compras}
 	
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=DistribucionTransaccionCompras",
+		url:"index.php?controller=TesCuentasPagarSR&action=DistribucionTransaccionCompras",
 		dataType:"json",
 		type:"POST",
 		data:datos
@@ -431,7 +431,7 @@ function cargaDistribucion(){
 	var datos = {id_lote:pid_lote.val()}
 	
 	$.ajax({
-		url:"index.php?controller=TesCuentasPagar&action=cargaDistribucion",
+		url:"index.php?controller=TesCuentasPagarSR&action=cargaDistribucion",
 		dataType:"json",
 		type:"POST",
 		data:datos
@@ -515,7 +515,7 @@ function AceptarDistribucion(){
 	$.ajax({
 		data: parametros,
 		type: 'POST',
-		url : "index.php?controller=TesCuentasPagar&action=InsertaDistribucion",
+		url : "index.php?controller=TesCuentasPagarSR&action=InsertaDistribucion",
 		processData: false, 
 		contentType: false,
 		dataType: "json"
@@ -602,7 +602,7 @@ function IngresarTransaccion(){
 	
 	$.ajax({
 		beforeSend:function(){ $("#div-loader").addClass('loader'); },
-		url:"index.php?controller=TesCuentasPagar&action=InsertaTransaccion",
+		url:"index.php?controller=TesCuentasPagarSR&action=InsertaTransaccion",
 		type:"POST",
 		dataType:"json",
 		data:datos,
@@ -619,7 +619,7 @@ function IngresarTransaccion(){
 				//swal({title:"TRANSACCION OK",text:stext,icon:"success"}).then( isValidate => { if(isValidate){ setTimeout(function(){location.reload();},2000); } } );
 				swal({title:"TRANSACCION OK",text:stext,icon:"success",closeOnClickOutside: false}).then( isValidate => { if(isValidate){ setTimeout(function(){location.reload();},8000);  } } );				
 				let loteUrl = $("#id_lote").val();
-    			let urlReporte = "index.php?controller=TesCuentasPagar&action=RptCuentasPagar&id_lote="+loteUrl;
+    			let urlReporte = "index.php?controller=TesCuentasPagarSR&action=RptCuentasPagar&id_lote="+loteUrl;
     			window.open(urlReporte,"_blank"); 
 								
 			}else{
@@ -779,7 +779,7 @@ var modificar_base_retencion = function(event){
 		//mandacion la peticion al servidor
 		var params = { 'id_lote':id_lote.val() }
 		$.ajax({
-			url:"index.php?controller=tesCuentasPagar&action=modificarBaseRetencion",
+			url:"index.php?controller=TesCuentasPagarSR&action=modificarBaseRetencion",
 			dataType:'json',
 			type:"POST",
 			data:params
@@ -869,7 +869,7 @@ var enviar_cambio_retencion	= function(){
 		
 		params	= { 'data_retencion': sdata, 'id_lote': $("#id_lote").val() }
 		$.ajax({
-			url:"index.php?controller=tesCuentasPagar&action=setValorRetencionNuevo",
+			url:"index.php?controller=TesCuentasPagarSR&action=setValorRetencionNuevo",
 			type:"POST",
 			dataType:"json",
 			data:params
@@ -897,7 +897,7 @@ var eliminar_distribucion	= function(){
 	params	= { 'id_lote': id_lote.val() }
 	
 	$.ajax({
-		url:"index.php?controller=tesCuentasPagar&action=EliminarDistribucion",
+		url:"index.php?controller=TesCuentasPagarSR&action=EliminarDistribucion",
 		type:"POST",
 		dataType:"json",
 		data:params
@@ -930,7 +930,7 @@ var actualizar_valores_transacciones	= function(){
 	params	= { 'id_lote': id_lote, 'compra_cero':compra_cero, 'compra_iva':compra_iva }
 	
 	$.ajax({
-		url:"index.php?controller=tesCuentasPagar&action=reloadValoresTransacciones",
+		url:"index.php?controller=TesCuentasPagarSR&action=reloadValoresTransacciones",
 		type:"POST",
 		dataType:"json",
 		data:params

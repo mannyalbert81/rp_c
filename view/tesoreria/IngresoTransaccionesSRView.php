@@ -581,7 +581,7 @@
    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/tesoreria/js/IngresoTransacionesSR.js?0.01"></script> 
+   <script src="view/tesoreria/js/IngresoTransacionesSR.js?0.02"></script> 
        
        	
   </body>

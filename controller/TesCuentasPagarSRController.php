@@ -6,14 +6,10 @@ class TesCuentasPagarSRController extends ControladorBase{
 		parent::__construct();
 	}
 
-
-
 	public function index(){
 	    
 	    $Productos = new ProductosModel();
-	
-		$bancos = new BancosModel();
-				
+			
 		session_start();
 		
 		if(empty( $_SESSION)){
@@ -1141,130 +1137,10 @@ class TesCuentasPagarSRController extends ControladorBase{
                 $cuentasPagar->executeInsertQuery($QueryInsertCompra);
             }
             
-            $error_pg = pg_last_error(); if( !empty($error_pg) ){ throw new Exception("no se inserto la cuenta por pagar".$error_pg ); }
+            $error_pg = pg_last_error(); if( !empty($error_pg) ){ throw new Exception("no se inserto la cuenta por pagar ".$error_pg ); }
             $error_php = error_get_last(); if( !empty($error_php) ){ throw new Exception("no se inserto la cuenta por pagar".$error_php['message'] ); }
-            /** PARA LA GENERACION DEL XML **/
             
-            $resp = $this->genXmlRetencion($_id_lote);
-            $respuesta['xml'] = '';
-            $respuesta['file']= $resp;
-            
-            //AQUI SE COMENTO PARA PRUEBA Y NO ENVIAR SRI
-            
-            if( $resp['error'] === true ){   
-                /** parametrizar pa guardar en tabla error retencion **/
-                if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML NO GENERADO" ){
-                    /** poner estado no generado **/
-                    $respuesta['xml'] = 'XML NO GENERADO';
-                }
-                if (array_key_exists('claveAcceso', $resp) && strlen( $resp['claveAcceso'] ) == 49 ) {
-                    
-                    $respuesta['xml'] = 'DATOS xml EN BD No fueron ingresados';
-                    
-                    $claveAcceso = $resp['claveAcceso'];
-                    $_columnaActualizar = " autorizado_retenciones = false ";
-                    $_tablaActualizar   = " tri_retenciones";
-                    $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
-                    
-                    $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
-                }
-                
-                
-               
-            }else{
-                
-                $respuesta['xml'] = " ARCHIVO ENTRO XML";
-                
-                if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML GENERADO" ){
-                    /** COMIENZA PROCESO XML CON SRI**/
-                    $errorXml = false; 
-                    
-                    $respuesta['xml'] = " ARCHIVO ENTRO XML IF";
-                    
-                    $clave = ( array_key_exists('claveAcceso', $resp) ) ? $resp['claveAcceso'] : '' ;         
-                    
-                    require_once __DIR__ . '/../vendor/autoload.php';
-                    
-                    $config = $this->getConfigXml();
-                    
-                    $comprobante = new \Shara\ComprobantesController($config); //*configurar ruta en carpeta vendor**/-- autoload_static.php
-                    /** tener en cuenta la ruta de archivos **/
-                   
-                    $xml = file_get_contents($config['generados'] . DIRECTORY_SEPARATOR . $clave.'.xml', FILE_USE_INCLUDE_PATH);
-                    
-                    $aux = $comprobante->validarFirmarXml($xml, $clave);
-                    
-                    $respuesta['Archivo'] = "";
-                    $respuesta['xml'] = $aux;
-                    
-                    if($aux['error'] === false){
-                        
-                        $Envioresp = $comprobante->enviarXml($clave);
-                        //$aux['recibido'] = true; //para pruebas
-                        
-                        if($Envioresp['recibido'] === true){
-                            
-                            $respuesta['xml'] = " Archivo Xml RECIBIDO";
-                            
-                            $finalresp = $comprobante->autorizacionXml($clave);
-                            //$finalresp = null;. //para pruebas
-                            //$finalresp['error'] = false; //para pruebas
-                            if($finalresp['error'] === true ){                                
-                                /** aqui poner senetecia en caso de haber errror **/
-                                $respuesta['xml'] = " Archivo Xml RECIBIDO NO AUTORIZADO";
-                                $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;  
-                                $errorXml = true;
-                            }else{
-                                
-                                $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
-                                $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;  
-                                
-                                $fechaAutorizado = $finalresp['fecauto'];
-                            }
-                            
-                            
-                        }else{
-                            /** aqui poner senetecia en caso de haber errror **/
-                            $respuesta['xml'] = " Archivo Xml NO RECIBIDO";
-                            $respuesta['Archivo'] = ( array_key_exists('mensaje', $Envioresp) ) ? $Envioresp['mensaje'] : '' ;
-                            $errorXml = true;
-                        }
-                            
-                    }else{                        
-                        /** aqui poner senetecia en caso de haber errror **/
-                        $respuesta['xml'] = " Archivo Xml NO FIRMADO";
-                        $respuesta['Archivo'] = ( array_key_exists('mensaje', $aux) ) ? $aux['mensaje'] : '' ;
-                        $errorXml = true;
-                    }
-                    
-                    /** actualizacion si existe algun error **/
-                    if( $errorXml ){
-                        
-                        $claveAcceso = $resp['claveAcceso'];
-                        $_columnaActualizar = " autorizado_retenciones = false ";
-                        $_tablaActualizar   = " tri_retenciones";
-                        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
-                        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
-                        
-                        /** agregar datos a tabla errores de retenciones **/ 
-                    }
-                    
-                    /** actualizacion de la fecha de autorizacion del xml **/
-                    if( isset($fechaAutorizado) ){
-                        
-                        $claveAcceso = $resp['claveAcceso'];
-                        $_columnaActualizar = " fecha_autorizacion = '$fechaAutorizado' ";
-                        $_tablaActualizar   = " tri_retenciones";
-                        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
-                        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
-                        
-                    }
-                        
-                }else{
-                    $respuesta['xml'] = " ARCHIVO NO ENTRO XML";
-                }                
-                
-            }
+            //PROCESO TERMINA SIN GENERACION DE ARCHIVO XML
             
             $cuentasPagar->endTran('COMMIT');
             
@@ -1292,369 +1168,7 @@ class TesCuentasPagarSRController extends ControladorBase{
 	 * @param integer $_id_lote
 	 */
 	
-	public function genXmlRetencion($intLote=null){
-	    
-	    
-	    if( $intLote == null )  // descomentar para produccion
-	       return array('error' => true, 'mensaje' => 'LOTE NO IDENTIFICADO'); // descomentar para produccion
-	    
-	    $_id_lote =  $intLote ;	    
-	    //$_id_lote = ( $intLote == null ) ? 149 : $intLote ;//para pruebas descomentar
-	    	    
-	    $cuentasPagar  = new CuentasPagarModel();
-	    /** buscar los datos de la retencion **/
-	    
-	    //impuestos de tipo retencion
-	    $col1  = " aa.id_impuestos,aa.base_cuentas_pagar_impuestos,aa.valor_base_cuentas_pagar_impuestos,aa.valor_cuentas_pagar_impuestos,
-               bb.codigo_impuestos, bb.codretencion_impuestos, bb.codigo_impuestos,bb.porcentaje_impuestos,bb.tipo_impuestos";
-	    $tab1  = " tes_cuentas_pagar_impuestos aa
-	           INNER JOIN tes_impuestos bb ON bb.id_impuestos = aa.id_impuestos";
-	    $whe1  = " 1 = 1
-	           AND UPPER(bb.tipo_impuestos) in ('RETIVA','RET')
-               AND aa.id_lote = $_id_lote";
-	    $id1   = " aa.creado";
-	    $rsConsulta1   = $cuentasPagar->getCondiciones($col1, $tab1, $whe1, $id1); //array de impuestos
-	    
-	    //datos de proveedor para el comprobante 
-	    $col2  = " aa.id_cuentas_pagar,  aa.numero_cuentas_pagar, aa.id_tipo_documento, aa.descripcion_cuentas_pagar, aa.fecha_cuentas_pagar,
-                aa.numero_documento_cuentas_pagar,aa.compras_cuentas_pagar, bb.id_proveedores, bb.identificacion_proveedores, bb.nombre_proveedores,
-                bb.razon_social_proveedores,bb.tipo_identificacion_proveedores, bb.direccion_proveedores, bb.telefono_proveedores, bb.email_proveedores";
-	    $tab2  = " tes_cuentas_pagar aa
-	           INNER JOIN proveedores bb ON bb.id_proveedores = aa.id_proveedor";
-	    $whe2  = " 1 = 1
-               AND aa.id_lote = $_id_lote";
-	    $id2   = " aa.creado";
-	    $rsConsulta2   = $cuentasPagar->getCondiciones($col2, $tab2, $whe2, $id2); //array de proveedor
-	    
-	    //datos de la empresa
-	    $col3  = " id_entidades, ruc_entidades, nombre_entidades, telefono_entidades, direccion_entidades, ciudad_entidades, razon_social_entidades";
-	    $tab3  = " entidades";
-	    $whe3  = " 1 = 1
-               AND nombre_entidades = 'CAPREMCI'";
-	    $id3   = " creado";
-	    $rsConsulta3   = $cuentasPagar->getCondiciones($col3, $tab3, $whe3, $id3); //array de empresa
-	    
-	    //datos de consecutivo 
-	    $col4  = " LPAD( valor_consecutivos::TEXT,espacio_consecutivos,'0') secuencial";
-	    $tab4  = " consecutivos";
-	    $whe4  = " 1 = 1
-               AND nombre_consecutivos = 'RETENCION'";
-	    $id4   = " creado";
-	    $rsConsulta4   = $cuentasPagar->getCondiciones($col4, $tab4, $whe4, $id4); //array de empresa
-	    
-	    //actualizar el codigo de retencion
-	    $_actCol = " valor_consecutivos = valor_consecutivos + 1, numero_consecutivos = LPAD( ( valor_consecutivos + 1)::TEXT,espacio_consecutivos,'0')";
-	    $_actTab = " consecutivos ";
-	    $_actWhe = " nombre_consecutivos = 'RETENCION' ";
-	    $resultadoAct =  $cuentasPagar->ActualizarBy($_actCol, $_actTab, $_actWhe);
-	    if( $resultadoAct == -1 ){
-	        return array('error' => true, 'mensaje' => 'Numero Retencion no actualizada');
-	    }
-	 
-	    /** validacion de parametros **/
-	    if( empty($rsConsulta1) || empty($rsConsulta2) || empty($rsConsulta3) || empty($rsConsulta4) ){
-	        //echo "Error validacion llego ";
-	        return array('error' => true, 'mensaje' => 'Consultas no contiene todos los datos');
-	    }
-	    	   
-	    /** AUX de VARIABLES **/
-	    $_auxFecha = $rsConsulta2[0]->fecha_cuentas_pagar;
-	    $_fechaDocumento = new DateTime($_auxFecha); 
-	            
-	    /** VARIABLES DE XML **/
-	    $_ambiente = 1; //1 pruebas  2 produccion
-	    $_tipoEmision = 1; //1 emision normal deacuerdo a la tabla 2 SRI
-	    $_rucEmisor  = $rsConsulta3[0]->ruc_entidades;
-	    $_razonSocial = $rsConsulta3[0]->razon_social_entidades;
-	    $_nomComercial= $rsConsulta3[0]->nombre_entidades;
-	    $_codDocumento= "07"; // referenciado a la tabla 4 del sri
-	    $_establecimiento = "001"; //definir de la estructura  001-001-000000 -- factura !!!!------>NOTA
-	    $_puntoEmision    = "001"; //solo existe un establecimiento
-	    $_secuencial      = $rsConsulta4[0]->secuencial;   // es un secuencial tiene que definirse
-	    $_dirMatriz       = $rsConsulta3[0]->direccion_entidades;
-	    $_fechaEmision    = date_format($_fechaDocumento, 'd/m/Y'); //definir la fecha 
-	    $_dirEstablecimiento   = $rsConsulta3[0]->direccion_entidades;
-	    
-	    // /** informacion rtencion **/ //datos obtener de la tabla proveedores
-	    $_contriEspecial  = "624";  //numero definir para otra empresa !!!!------>NOTA ----- OJO -- tomara de la tabla entidades
-	    $_obligadoContabilidad = "SI"; //TEXTO definir para otra empresa !!!!------>NOTA ----- OJO --tomara de la tabla entidades
-	    $_tipoIdentificacionRetenido   = $rsConsulta2[0]->tipo_identificacion_proveedores; // deacuerdo a la tabla 7 --> ruc 04
-	    $_razonSocialRetenido  = $rsConsulta2[0]->razon_social_proveedores;
-	    $_identificacionSujetoRetenido = $rsConsulta2[0]->identificacion_proveedores;
-	    $_periodoFiscal        = date_format($_fechaDocumento, 'm/Y'); 
-	    
-	    $_claveAcceso = $this->genClaveAcceso($_fechaEmision, $_rucEmisor, $_ambiente, $_establecimiento, $_puntoEmision, $_secuencial, $_tipoEmision);
-	    
-	    if( $_claveAcceso == "" || strlen($_claveAcceso) != 49 ){
-	        return array('error' => true, 'mensaje' => 'Clave de acceso no generada');
-	    }	    
-	    
-	    $texto = "";
-	    $texto .='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';	    
-	    $texto .= '<comprobanteRetencion id="comprobante" version="1.0.0">';	    
-	    $texto .= '<infoTributaria>';
-	    $texto .= '<ambiente>'.$_ambiente.'</ambiente>'; //conforme a la tabla 4
-	    $texto .= '<tipoEmision>'.$_tipoEmision.'</tipoEmision>'; //conforme a la tabla 2
-	    $texto .= '<razonSocial>'.htmlspecialchars($_razonSocial).'</razonSocial>';
-	    $texto .= '<nombreComercial>'.htmlspecialchars($_nomComercial).'</nombreComercial>';
-	    $texto .= '<ruc>'.$_rucEmisor.'</ruc>';
-	    $texto .= '<claveAcceso>'.$_claveAcceso.'</claveAcceso>'; //conforme a la tabla 1
-	    $texto .= '<codDoc>'.$_codDocumento.'</codDoc>'; //conforme a la tabla 3
-	    $texto .= '<estab>'.$_establecimiento.'</estab>';
-	    $texto .= '<ptoEmi>'.$_puntoEmision.'</ptoEmi>';
-	    $texto .= '<secuencial>'.$_secuencial.'</secuencial>';
-	    $texto .= '<dirMatriz>'.$_dirMatriz.'</dirMatriz>';
-	    $texto .= '</infoTributaria>';
-	    
-	    $texto .= '<infoCompRetencion>';
-	    $texto .= '<fechaEmision>'.$_fechaEmision.'</fechaEmision>'; //conforme al formato -- dd/mm/aaaa
-	    $texto .= '<dirEstablecimiento>'.$_dirEstablecimiento.'</dirEstablecimiento>';
-	    $texto .= '<contribuyenteEspecial>'.$_contriEspecial.'</contribuyenteEspecial>';
-	    $texto .= '<obligadoContabilidad>'.$_obligadoContabilidad.'</obligadoContabilidad>';
-	    $texto .= '<tipoIdentificacionSujetoRetenido>'.$_tipoIdentificacionRetenido.'</tipoIdentificacionSujetoRetenido>'; // conforme a la tabla 6
-	    $texto .= '<razonSocialSujetoRetenido>'.$_razonSocialRetenido.'</razonSocialSujetoRetenido>';
-	    $texto .= '<identificacionSujetoRetenido>'.$_identificacionSujetoRetenido.'</identificacionSujetoRetenido>';
-	    $texto .= '<periodoFiscal>'.$_periodoFiscal.'</periodoFiscal>'; //conforme a formato mm/aaaa
-	    $texto .= '</infoCompRetencion>';
-	    
-	    $texto .= '<impuestos>'; //aqui comienza el foreach de impuestos
-	    
-	    /** VARIABLES PARA CADA IMPUESTO **/
-	    $_impCodigo = "";
-	    $_impCodRetencion = "";
-	    $_impBaseImponible = "";
-	    $_impPorcetajeRet  = "";
-	    $_impValorRet      = "";
-	    $_impCodDocumentoSustentoRet = "01"; //!NOTA
-	    $_impNumDocumentoSustentoRet = "";
-	    $_impfechaEmisionRet   = $_fechaEmision;
-	    
-	    $_impNumDocumentoSustentoRet = $rsConsulta2[0]->numero_documento_cuentas_pagar;
-	    $_impNumDocumentoSustentoRet = str_replace("-", "", $_impNumDocumentoSustentoRet);
-	    
-	    foreach ($rsConsulta1 as $res) {
-	        
-	        $_impCodigo = $res->codigo_impuestos;
-	        $_impCodRetencion = $res->codretencion_impuestos;
-	        $_impBaseImponible = $res->valor_base_cuentas_pagar_impuestos;
-	        $_impPorcetajeRet = $res->porcentaje_impuestos;
-	        $_impValorRet = $res->valor_cuentas_pagar_impuestos;
-	        
-	        $texto .= '<impuesto>';
-	        $texto .= '<codigo>'.$_impCodigo.'</codigo>'; //conforme a la tabla 20
-	        $texto .= '<codigoRetencion>'.$_impCodRetencion.'</codigoRetencion>'; //conforme a la tabla 21
-	        $texto .= '<baseImponible>'.round($_impBaseImponible,2).'</baseImponible>';
-	        $texto .= '<porcentajeRetener>'.abs($_impPorcetajeRet).'</porcentajeRetener>';//conforme a la tabla 21
-	        $texto .= '<valorRetenido>'.round(abs($_impValorRet),2).'</valorRetenido>';
-	        $texto .= '<codDocSustento>'.$_impCodDocumentoSustentoRet.'</codDocSustento>';
-	        $texto .= '<numDocSustento>'.$_impNumDocumentoSustentoRet.'</numDocSustento>'; //num documento soporte sin '-'
-	        $texto .= '<fechaEmisionDocSustento>'.$_impfechaEmisionRet.'</fechaEmisionDocSustento>'; //obligatorio cuando corresponda **formato dd/mm/aaaa
-	        $texto .= '</impuesto>';
-	        
-	        
-	    }
-	    
-	    $texto .= '</impuestos>';
-	    
-	    /** obligatorio cuando corresponda **/
-	    // se toma datos de proveedor -- Direccion. Telefono. Correo
-	    /**CAMPOS ADICIONALES **/
-	    $_adicional1 = ( !empty($rsConsulta2[0]->direccion_proveedores) ) ? $rsConsulta2[0]->direccion_proveedores : "ninguna" ;
-	    $_adicional2 = ( !empty($rsConsulta2[0]->telefono_proveedores) ) ? $rsConsulta2[0]->telefono_proveedores : "0000000000" ;
-	    $_adicional3 = ( !empty($rsConsulta2[0]->email_proveedores) ) ? $rsConsulta2[0]->email_proveedores : "ninguno@capremci.com.ec";
-	    $texto .= '<infoAdicional>';
-	    $texto .= '<campoAdicional nombre="Dirección">'.$_adicional1.'</campoAdicional>';
-	    $texto .= '<campoAdicional nombre="Teléfono">'.$_adicional2.'</campoAdicional>';
-	    $texto .= '<campoAdicional nombre="Email">'.$_adicional3.'</campoAdicional>';
-	    $texto .= '</infoAdicional>';
-	    /** termina obligatorio cuando corresponda **/
-	    
-	    $texto .= '</comprobanteRetencion>';
-	    
-	    $resp = null;
-	    
-	    try {
-	        
-	        $nombre_archivo = $_claveAcceso.".xml";
-	        $ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\rp_c\\DOCUMENTOSELECTRONICOS\\docGenerados\\";
-	        $ubicacion = $ubicacionServer.$nombre_archivo;
-	        
-	        $textoXML = mb_convert_encoding($texto, "UTF-8");
-	        
-	        $gestor = fopen($ubicacionServer.$nombre_archivo, 'w');
-	        fwrite($gestor, $textoXML);
-	        fclose($gestor);
-	        	        
-	        if( file_exists( $ubicacion ) ){
-	            //echo "archivo existe";
-	            /** SE GENERA UN INSERT A LA TABLA tri_retenciones con la columnName autorizado_retenciones en true **/
-	            
-	            $_trifuncion = "ins_tri_retenciones";
-	            $_triparametros =  "$_ambiente,$_tipoEmision,'$_razonSocial','$_nomComercial','$_rucEmisor','$_claveAcceso','$_codDocumento','$_establecimiento',";
-	            $_triparametros .= "'$_puntoEmision','$_secuencial','$_dirMatriz','$_fechaEmision','$_dirEstablecimiento',$_contriEspecial,'$_obligadoContabilidad',";
-	            $_triparametros .= "'$_tipoIdentificacionRetenido','$_razonSocialRetenido','$_identificacionSujetoRetenido','$_periodoFiscal',0,0,0.00,0.00,0.00,";
-	            $_triparametros .= "'','','$_fechaEmision',0,0,0.00,0.00,0.00,'','','$_fechaEmision','$_adicional1','$_adicional2','$_adicional3','$_fechaEmision'";
-	            
-	            $_qryTriRetenciones    = $cuentasPagar->getconsultaPG($_trifuncion, $_triparametros);
-	            $resultado     = $cuentasPagar->llamarconsultaPG($_qryTriRetenciones);
-	            
-	            $error = pg_last_error();
-	            if( !empty($error) ){	                
-	                throw new Exception('Error al guardar datos Xml en BD');
-	            }
-	            
-	            if( $resultado[0] == 1 ){
-	                /** SE GENERA INSERTADO DEL DETALLE DEL ARCHIVO XML **/
-	                $_triCol1  = " id_tri_retenciones ";
-	                $_triTab1  = " tri_retenciones ";
-	                $_triWhe1  = " infotributaria_claveacceso = '$_claveAcceso'";
-	                $_rstriConsulta1   = $cuentasPagar->getCondicionesSinOrden($_triCol1, $_triTab1, $_triWhe1, "");
-	                
-	                if( !empty($_rstriConsulta1) ){
-	                    
-	                    $_tri_detallefuncion       = "ins_tri_retenciones_detalle";
-	                    $_id_tri_retenciones       = $_rstriConsulta1[0]->id_tri_retenciones;
-	                    
-	                    foreach ($rsConsulta1 as $res) {
-	                        
-	                        $_tri_detalleparametros    = "";
-	                        $_impCodigo = $res->codigo_impuestos;
-	                        $_impCodRetencion = $res->codretencion_impuestos;
-	                        $_impBaseImponible = abs($res->valor_base_cuentas_pagar_impuestos);
-	                        $_impPorcetajeRet = abs($res->porcentaje_impuestos);
-	                        $_impValorRet = abs($res->valor_cuentas_pagar_impuestos);
-	                        
-	                        $_tri_detalleparametros    .= "$_id_tri_retenciones,$_impCodigo,'$_impCodRetencion',$_impBaseImponible,$_impPorcetajeRet,$_impValorRet,";
-	                        $_tri_detalleparametros    .= "'$_impCodDocumentoSustentoRet','$_impNumDocumentoSustentoRet','$_impfechaEmisionRet'";
-	                        $_qryTriDetalleRetenciones = $cuentasPagar->getconsultaPG($_tri_detallefuncion, $_tri_detalleparametros);
-	                        
-	                        $resultadoDetalle  = $cuentasPagar->llamarconsultaPG($_qryTriDetalleRetenciones); /** insertado del detalle de retenciones **/
-	                        
-	                        $error = pg_last_error();
-	                        if( !empty($error) ){
-	                            $ins_detalle = false;
-	                            
-	                        }
-	                    }
-	                    
-	                    if( !empty($error) && isset($ins_detalle) && !$ins_detalle){
-	                        throw new Exception('Error al guardar Detalles Impuestos datos Xml en BD');
-	                    }
-	                    
-	                }
-	                
-	                /** SE GUARDA EL id_lote EN LA RETENCION **/
-	                $triCol  = " id_lote = $_id_lote ";
-	                $triTab  = " tri_retenciones ";
-	                $triWhe  = " infotributaria_claveacceso = '$_claveAcceso'";
-	                $cuentasPagar->ActualizarBy($triCol, $triTab, $triWhe);
-	                
-	                if( !empty( pg_last_error() ) ){
-	                    throw new Exception('LOTE NO IDENTIFICADO PARA RETENCION');
-	                }
-	                
-	            }
-	            
-	            $resp['error'] = false;
-	            $resp['mensaje'] = 'XML GENERADO';
-	            $resp['claveAcceso'] = $_claveAcceso;
-	            
-	        }else{
-	            throw new Exception('XML NO GENERADO');
-	            
-	        }
-	        
-	    } catch (Exception $e) {
-	        
-	        $resp['error'] = true;
-	        $resp['mensaje'] = $e->getMessage();
-	        $resp['claveAcceso'] = $_claveAcceso;
-	    }
-	   
-	    return $resp;
-	    /*
-	    header("Content-disposition: attachment; filename=$nombre_archivo");
-	    header("Content-type: MIME");
-	    ob_clean();
-	    flush();
-	    
-	    readfile($ubicacion);
-	    exit;
-	    */
-	    
-	}
 	
-	/***
-	 * @desc metodo retorna la cadena de Clave Acceso Xml
-	 * @return string
-	 */
-	public function genClaveAcceso($_fechaEmision,$_identificacionRet,$_tipoAmbiente,$_sec1,$_sec2,$sec_3,$_tipoEmision){
-	    
-	    $_tipoDocumento = "07"; //de acuerdo con la tabla Sri 4 --comprobanteRetencion
-	    $_digitoVerificador = "";
-	    $_codNumerico = "12345678";
-	    
-	    $_fechaEmision = str_replace( array( '/', '-' ), '' , $_fechaEmision );
-	    
-	    $_strClaveAcceso = $_fechaEmision.$_tipoDocumento.$_identificacionRet.$_tipoAmbiente.$_sec1.$_sec2.$sec_3.$_codNumerico.$_tipoEmision;
-	    
-	    if( strlen( $_strClaveAcceso ) != 48 ){
-	        //echo "longitud de caracteres  para ver digito verificador no cumplida";
-	        return "";
-	    }
-	   	    
-	    $_digitoVerificador = $this->getDigVerificador($_strClaveAcceso);
-	    
-	    if( $_digitoVerificador === "" ){
-	        return "";
-	    }	    	    
-	    
-        $_strClaveAcceso = $_strClaveAcceso.$_digitoVerificador;
-	    
-	    return $_strClaveAcceso;
-	}	
-	
-	/***
-	 * @desc metodo 
-	 * @param string $num
-	 * @return string
-	 */
-	function getDigVerificador( $num = "" ){
-	    
-	    if( $num == "" )
-	        return "";
-	    /* --------------------------------------------------------------------------------------- */
-	    $digits = str_replace( array( '.', ',' ), array( ''.'' ), strrev($num ) );
-	    
-	    
-	    if ( ! ctype_digit( $digits ) ){
-	        return "";
-	    }
-	    
-	    $sum = 0;
-	    $factor = 2;
-	    
-	    for( $i=0;$i<strlen( $digits ); $i++ ){
-	        $sum += substr( $digits,$i,1 ) * $factor;
-	        if ( $factor == 7 ){
-	            $factor = 2;
-	        }else{
-	            $factor++;
-	        }
-	    }
-	    
-	    $dv = 11 - ($sum % 11);
-	    if ( $dv < 10 )
-	        return $dv;
-	    
-        if ( $dv == 10 )
-            return 1;
-        
-        if ( $dv == 11 )
-            return 0;
-	    
-	    return  "";
-	}
 	
 	public function verExpresiones(){
 	    
@@ -1697,72 +1211,6 @@ class TesCuentasPagarSRController extends ControladorBase{
 	    
 	    echo $_impNumDocumentoSustentoRet;
 	
-	}
-	
-	
-	public function verBuffer(){
-	    
-	    echo "hola mundo";
-	    
-	    $var1 = "";
-	}
-	
-	public function enviarXMLSRI(){
-	    	    
-	    require_once __DIR__ . '/../vendor/autoload.php';
-	    
-	    $config = $this->getConfigXml();    
-	    
-	    $comprobante = new \Shara\ComprobantesController($config); //*configurar ruta en carpeta vendor**/-- autoload_static.php
-	    /** tener en cuenta la ruta de archivos **/
-	    $clave = '0402202007179260854600110010010000050071234567812';	    
-	    $xml = file_get_contents($config['generados'] . DIRECTORY_SEPARATOR . $clave.'.xml', FILE_USE_INCLUDE_PATH);
-	    $aux = $comprobante->validarFirmarXml($xml, $clave);	    
-	    var_dump($aux);
-	    exit();
-	    
-	    $clave = '0402202007179260854600110010010000050071234567812';
-	    
-	    $aux = $comprobante->autorizacionXml($clave);
-	    var_dump($aux);
-	    exit();
-	    $xml = file_get_contents($config['generados'] . DIRECTORY_SEPARATOR . $clave.'.xml', FILE_USE_INCLUDE_PATH);
-	    
-	    $aux = $comprobante->validarFirmarXml($xml, $clave);
-	    
-	    if($aux['error'] === false){
-	        
-	        //$aux = $comprobante->enviarXml($clave);
-	        
-	        if($aux['recibido'] === true){
-	            var_dump($aux);
-	            echo "<br>";
-	            echo "<br>";
-	            //$aux = $comprobante->autorizacionXml($clave);
-	            var_dump($aux);
-	        }
-	        else
-	            var_dump($aux);
-	    }
-	    else
-	        var_dump($aux);
-	}
-	
-	public function getConfigXml(){
-	    $configuracionesPath = array(
-	        'url_pruebas' => 'https://celcer.sri.gob.ec',
-	        'url_produccion' => 'https://cel.sri.gob.ec',
-	        'firmados' => 'DOCUMENTOSELECTRONICOS/docFirmados',
-	        'autorizados' => 'DOCUMENTOSELECTRONICOS/docAutorizados',
-	        'noautorizados' => 'docNoAutorizados',
-	        'generados' => 'DOCUMENTOSELECTRONICOS/docGenerados',
-	        'pdf' => 'DOCUMENTOSELECTRONICOS/docPdf',
-	        'logo' => 'DOCUMENTOSELECTRONICOS/logo.png1',
-	        'xsd' => 'DOCUMENTOSELECTRONICOS/docXsd',
-	        'pathFirma' => 'firma/byron_stalin_bolanos_palma.p12',
-	        'passFirma' => 'BPbs1715'
-	    );
-	    return $configuracionesPath;
 	}
 	
 	Public function RptCuentasPagar(){
@@ -2184,10 +1632,6 @@ class TesCuentasPagarSRController extends ControladorBase{
 	}
 		
 	/****************************************************** funciones de pruebas *****************************/
-	function verGenFileXml(){
-	    
-	    var_dump($this->genXmlRetencion(150));
-	}
 	
 	
 	public function validateValores(){
@@ -2509,6 +1953,52 @@ WHERE id_cuentas_pagar_impuestos = $id_cuentas_pagar_impuestos";
 	    }
 	    
 	}
+	
+	/***
+	 * dc 2020-07-14
+	 *
+	 */
+	public function autompletePlanCuentas(){
+	    
+	    $planCuentas = new PlanCuentasModel();
+	    
+	    if(isset($_GET['term'])){
+	        
+	        $codigo_plan_cuentas = $_GET['term'];
+	        
+	        $columnas = "id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
+	        $tablas = "public.plan_cuentas";
+	        $where = "codigo_plan_cuentas LIKE '$codigo_plan_cuentas%' AND nivel_plan_cuentas > 3";
+	        $id = "codigo_plan_cuentas ";
+	        $limit = "LIMIT 10";
+	        
+	        $rsPlanCuentas = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($rsPlanCuentas) ){
+	            
+	            foreach ($rsPlanCuentas as $res){
+	                
+	                $_cls_plan_cuentas = new stdClass;
+	                $_cls_plan_cuentas->id = $res->id_plan_cuentas;
+	                $_cls_plan_cuentas->value = $res->codigo_plan_cuentas;
+	                $_cls_plan_cuentas->label = $res->codigo_plan_cuentas.' | '.$res->nombre_plan_cuentas;
+	                $_cls_plan_cuentas->nombre = $res->nombre_plan_cuentas;
+	                
+	                $respuesta[] = $_cls_plan_cuentas;
+	            }
+	            
+	            echo json_encode($respuesta);
+	            
+	        }else{
+	            
+	            echo '[{"id":"","value":"Cuenta No Encontrada"}]';
+	        }
+	        
+	    }
+	}
+	
 		
 }
 ?>

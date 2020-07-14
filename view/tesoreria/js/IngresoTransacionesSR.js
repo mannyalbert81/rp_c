@@ -664,7 +664,7 @@ $("#mod_tbl_distribucion").on("focus","input.distribucion.distribucion_autocompl
     		minLength: 2,    	    
     		source:function (request, response) {
     			$.ajax({
-    				url:"index.php?controller=CuentasPagar&action=autompletePlanCuentas",
+    				url:"index.php?controller=TesCuentasPagarSR&action=autompletePlanCuentas",
     				dataType:"json",
     				type:"GET",
     				data:{term:request.term},

@@ -211,6 +211,25 @@
             			</div>
             		</div> 
             		
+            				<div class="col-xs-12 col-md-3 col-md-3">
+  					<div class="form-group"> 
+      					<div class="checkbox">
+                         <label>
+                         	<input type="checkbox" value="0" id="compra_materiales"> Pago Parcial
+                         </label>
+                        </div>                       
+                    </div>	
+  				</div>
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="cuenta_banco" class=" control-label" >Valor Partcial:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="cuenta_banco" name="cuenta_banco" value=" <?php echo $resultset[0]->numero_cuenta_banco; ?> " >
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		   	
+            		
             						    
           	   	</div>
           	   	

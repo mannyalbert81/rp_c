@@ -1415,6 +1415,10 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                                 <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
 	                           </a>
                             </span>
+                            <span >
+                                <a onclick="mostrar_detalle_modal(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
                             </div>';
                 
                 $nombretipo_descuentos = "";

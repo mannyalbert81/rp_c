@@ -688,3 +688,17 @@ var mostrar_detalle	= function(a){
     
 }
 
+
+var mostrar_detalle_modal = function(a){
+	
+	
+	var element = $(a);
+	
+	if( element.length )
+	{			
+		var modaledit = $("#mod_mostrar_detalle");	
+		modaledit.modal();
+	}	
+	
+}
+

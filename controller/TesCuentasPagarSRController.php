@@ -114,11 +114,11 @@ class TesCuentasPagarSRController extends ControladorBase{
 	    $columnas1 .= "aa.razon_social_proveedores, aa.tipo_identificacion_proveedores ";
 	    $tablas1   = " proveedores aa
     	    INNER JOIN tes_tipo_proveedores bb ON aa.id_tipo_proveedores = bb.id_tipo_proveedores";
-	    $where1    = " bb.nombre_tipo_proveedores = 'PAGO PROVEEDORES'";
+	    $where1    = " bb.nombre_tipo_proveedores in( 'PAGO PROVEEDORES', 'EMPLEADO' )";
 	    $id1       = " aa.nombre_proveedores";
 	    
 	    if( strlen($busqueda) > 0 ){
-	        $where1 .= " AND ( aa.identificacion_proveedores ILIKE '$busqueda%' OR aa.nombre_proveedores ILIKE '$busqueda%' ) ";
+	        $where1 .= " AND ( aa.identificacion_proveedores ILIKE '$busqueda%' OR aa.nombre_proveedores ILIKE '%$busqueda%' ) ";
 	    }
 	    
 	    $resultSet = $Proveedores->getCantidad("*", $tablas1, $where1);

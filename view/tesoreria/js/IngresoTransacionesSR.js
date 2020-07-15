@@ -14,7 +14,8 @@ $(document).ready(function(){
 		}
 	});
 	
-	
+	/**funcion para ingreso sin retencion**/
+	iniciar_controles();
 })
 
  
@@ -950,3 +951,24 @@ var actualizar_valores_transacciones	= function(){
 }
 
 /************************** TERMINA FUNCIONES PARA CAMBIAR BASE DE RETENCION **********************/
+
+/*************************** COMIENZA FUNCIONES PARA TRANSACCIONES SIN RETENCION ******************/
+var iniciar_controles	= function(){
+	$("#tipo_documento").on("change",function(){
+		fnchangeTipoComprobante(this);
+	});
+}
+var fnchangeTipoComprobante	= function(a){
+	var element = $(a);
+	if( element.length ){		
+		if( element.val() != 1 || element.val() != "1" ){
+			$("#referencia_documento").attr("readonly",true).val("0000000000000000");
+			$("#numero_autorizacion").attr("readonly",true).val("0000000000000000");
+		}else
+		{
+			$("#referencia_documento").attr("readonly",false).val("");
+			$("#numero_autorizacion").attr("readonly",false).val("");
+		}
+	}
+}
+/*************************** TERMINA FUNCIONES PARA TRANSACCIONES SIN RETENCION ******************/

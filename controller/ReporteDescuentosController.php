@@ -239,7 +239,7 @@ class ReporteDescuentosController extends ControladorBase{
     }
     
     
-    public function reporte_aportes_recibios(){
+    public function reporte_descuentos_recibios(){
         session_start();
         $entidades = new EntidadesModel();
         //PARA OBTENER DATOS DE LA EMPRESA
@@ -392,14 +392,57 @@ class ReporteDescuentosController extends ControladorBase{
         $html.='<th>N°</th>';
         $html.='<th>Cédula</th>';
         $html.='<th>Nombre</th>';
-        $html.='<th>Aporte Personal</th>';
+        $html.='<th>Garantizado</th>';
         $html.='<th>Aporte Patronal</th>';
-        $html.='<th>RMU</th>';
-        $html.='<th>Líquido</th>';
-        $html.='<th>Multas</th>';
-        $html.='<th>Antiguedad</th>';
+        $html.='<th colspan="5">PQ-CREDITO 2X1</th>';
+        $html.='<th colspan="5">PQ-CREDITO EMER.</th>';
+        $html.='<th colspan="6">PQ-CREDITO HIPO.</th>';
+        $html.='<th colspan="5">PQ-CREDITO ORD.</th>';
+        $html.='<th>CUOTA CARGARDA</th>';
+        $html.='<th>CUOTA ARCHIVO</th>';
+        $html.='<th>ID_CXP</th>';
+        $html.='<th>ESTADO CXP</th>';
         $html.='<th>Procesado</th>';
+        $html.='<th>Observ.</th>';
+        $html.='</tr>';
         
+        $html.='<tr>';
+        $html.='<th></th>';
+        $html.='<th></th>';
+        $html.='<th></th>';
+        $html.='<th></th>';
+        $html.='<th></th>';
+        $html.='<th>Capital</th>';
+        $html.='<th>Interes</th>';
+        $html.='<th>Mora</th>';
+        $html.='<th>Seg. Degrav.</th>';
+        $html.='<th>Total</th>';
+        
+        $html.='<th>Capital</th>';
+        $html.='<th>Interes</th>';
+        $html.='<th>Mora</th>';
+        $html.='<th>Seg. Degrav.</th>';
+        $html.='<th>Total</th>';
+        
+        $html.='<th>Capital</th>';
+        $html.='<th>Interes</th>';
+        $html.='<th>Mora</th>';
+        $html.='<th>Seg. Degrav.</th>';
+        $html.='<th>Seg. incendios.</th>';
+        $html.='<th>Total</th>';
+        
+        $html.='<th>Capital</th>';
+        $html.='<th>Interes</th>';
+        $html.='<th>Mora</th>';
+        $html.='<th>Seg. Degrav.</th>';
+        $html.='<th>Total</th>';
+        
+        $html.='<th></th>';
+        $html.='<th>Cuota</th>';
+        $html.='<th></th>';
+        $html.='<th></th>';
+        $html.='<th></th>';
+        $html.='<th></th>';
         $html.='</tr>';
         
         
@@ -432,8 +475,29 @@ class ReporteDescuentosController extends ControladorBase{
             $html.='<td align="right";>'.$res->liquido_descuentos_registrados_detalle_aportes.'</td>';
             $html.='<td align="right";>'.$res->multas_descuentos_registrados_detalle_aportes.'</td>';
             $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
-            $html.='<td align="center";>'.$res->procesado_descuentos_registrados_detalle_aportes.'</td>';
-            
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
+            $html.='<td align="right";>'.$res->antiguedad_descuentos_registrados_detalle_aportes.'</td>';
             
             $html.='</td>';
             $html.='</tr>';
@@ -464,7 +528,7 @@ class ReporteDescuentosController extends ControladorBase{
         
         
         
-        $this->verReporte("ReporteAportesRecibidos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
+        $this->verReporte("ReporteDescuentosRecibidos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte));
         
         
     }

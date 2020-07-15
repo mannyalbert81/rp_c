@@ -1267,6 +1267,11 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                                 <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
 	                           </a>
                             </span>
+                            <span >
+                                <a onclick="mostrar_detalle_modal(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+              
                             </div>';
                 
                 $nombretipo_descuentos = "";
@@ -1567,6 +1572,11 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                                 <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
 	                           </a>
                             </span>
+                            <span >
+                                <a onclick="mostrar_detalle_modal(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+              
                             </div>';
                               
                 $nombretipo_descuentos = "";
@@ -1712,6 +1722,144 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
     }
     /** END FUNCIONES UTILITARIAS PARA LA CLASE */
 
+    
+    /** STEVEN */
+    
+    public function dtMostrarDetallesModal()
+    {
+        if( !isset( $_SESSION ) ){
+            session_start();
+        }
+        
+        try {
+            ob_start();
+            
+            $recaudaciones = new RecaudacionesModel();
+            
+            //dato que viene de parte del plugin DataTable
+            $requestData = $_REQUEST;
+            $searchDataTable   = $requestData['search']['value'];
+            
+            /** buscar por el usuario que se encuentra logueado */
+            $id_descuentos_registrados_cabeza = $_POST['id_cabeza_descuentos'];
+            
+          $columnas1 = "b.nombre_entidad_patronal,
+                        a.year_descuentos_registrados_detalle_aportes,
+                        a.mes_descuentos_registrados_detalle_aportes,
+                        c.cedula_participes,
+                        c.apellido_participes,
+                        c.nombre_participes,
+                        a.aporte_personal_descuentos_registrados_detalle_aportes,
+                        a.aporte_patronal_descuentos_registrados_detalle_aportes,
+                        a.rmu_descuentos_registrados_detalle_aportes,
+                        a.liquido_descuentos_registrados_detalle_aportes,
+                        a.multas_descuentos_registrados_detalle_aportes,
+                        a.antiguedad_descuentos_registrados_detalle_aportes";
+          $tablas1   = "core_descuentos_registrados_detalle_aportes a 
+                        inner join core_entidad_patronal b on a.id_entidad_patronal = b.id_entidad_patronal
+                        inner join core_participes c on a.id_participes = c.id_participes";
+          $where1    = "a.id_descuentos_registrados_cabeza = $id_descuentos_registrados_cabeza ";
+            
+            /* PARA FILTROS DE CONSULTA */
+            
+            if( strlen( $searchDataTable ) > 0 )
+            {
+                $where1 .= " AND ( ";
+                $where1 .= " c.cedula_participes ILIKE '%$searchDataTable%' ";
+                $where1 .= " ) ";
+                
+            }
+            
+            $rsCantidad    = $recaudaciones->getCantidad("*", $tablas1, $where1);
+            $cantidadBusqueda = (int)$rsCantidad[0]->total;
+            
+            /**PARA ORDENAMIENTO Y  LIMITACIONES DE DATATABLE **/
+            
+            // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
+            $columns = array(
+                0 => '1',
+                1 => '1',
+                2 => '1',
+                3 => '1',
+                4 => '1',
+                5 => '1',
+                6 => '1',
+                7 => '1',
+                8 => '1',
+                9 => '1'
+            );
+            
+            $orderby   = $columns[$requestData['order'][0]['column']];
+            $orderdir  = $requestData['order'][0]['dir'];
+            $orderdir  = strtoupper($orderdir);
+            /**PAGINACION QUE VIEN DESDE DATATABLE**/
+            $per_page  = $requestData['length'];
+            $offset    = $requestData['start'];
+            
+            //para validar que consulte todos
+            $per_page  = ( $per_page == "-1" ) ? "ALL" : $per_page;
+            
+            $limit = " ORDER BY $orderby $orderdir LIMIT   $per_page OFFSET '$offset'";
+            
+            $sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+            //$sql = "";
+            
+            $resultSet=$recaudaciones->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
+            
+            /** crear el array data que contiene columnas en plugins **/
+            $data = array();
+            $dataFila = array();
+            $columnIndex = 0;
+            foreach ( $resultSet as $res){
+                $columnIndex++;
+                
+                
+                
+                
+                $dataFila['numfila'] = $columnIndex;
+                $dataFila['nombre_entidad']  = $res->nombre_entidad_patronal;
+                $dataFila['anio_descuentos'] = $res->year_descuentos_registrados_detalle_aportes;
+                $dataFila['mes_descuentos']  = $res->mes_descuentos_registrados_detalle_aportes;
+                $dataFila['cedula_participe']  = $res->cedula_participes;
+                $dataFila['participe']  = $res->apellido_participes.' '.$res->nombre_participes;
+                $dataFila['aporte_personal']= $res->aporte_personal_descuentos_registrados_detalle_aportes;
+                $dataFila['aporte_patronal']  = $res->aporte_patronal_descuentos_registrados_detalle_aportes;
+                $dataFila['sueldo']  = $res->rmu_descuentos_registrados_detalle_aportes;
+                $dataFila['liquido']  = $res->liquido_descuentos_registrados_detalle_aportes;
+                
+                $data[] = $dataFila;
+            }
+            
+            $salida = ob_get_clean();
+            
+            if( !empty($salida) )
+                throw new Exception($salida);
+                
+                $json_data = array(
+                    "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                    "recordsTotal" => intval($cantidadBusqueda),  // total number of records
+                    "recordsFiltered" => intval($cantidadBusqueda), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                    "data" => $data,   // total data array
+                    "sql" => $sql
+                );
+                
+        } catch (Exception $e) {
+            
+            $json_data = array(
+                "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                "recordsTotal" => intval("0"),  // total number of records
+                "recordsFiltered" => intval("0"), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                "data" => array(),   // total data array
+                "sql" => $sql,
+                "buffer" => error_get_last(),
+                "ERRORDATATABLE" => $e->getMessage()
+            );
+        }
+        
+        
+        echo json_encode($json_data);
+    }
+    
 }
 
 ?>

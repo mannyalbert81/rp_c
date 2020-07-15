@@ -359,41 +359,27 @@
           <div class="modal-body" >
           	<div class="box-body no-padding">
           		<div class="row">
-          			<div class="col-sm-12">
-          				<div class="pull-right">
-          					<button class="btn btn-success" onclick="aceptar_descuentos_creditos()">	<i aria-hidden="true" class="fa fa-pencil"></i> GUARDAR DESCUENTO</button>
-          				</div>
-          			</div>
+          		
           		</div>
           		<br>
-              	<div id="mod_div_preview_descuentos_creditos" class="letrasize11">
-                		<table id="tbl_preview_descuentos_creditos" class="table table-striped table-bordered" > <!--   -->
+              	<div class="letrasize11">
+                		<table id="tbl_detalle_modal" class="table table-striped table-bordered" >
                         	<thead >
-                        	    <tr class="warning" >
-                        	    	<th >-</th>
+                        	    <tr class="danger" >
                         	    	<th >#</th>
                         			<th >Entidad</th>
-                        			<th >Tipo</th>
+                        			<th >Año</th>
+                        			<th >Mes</th>
                         			<th >Cedula</th>
-                        			<th >Nombre</th>
-                        			<th >Nombre Credito</th>
-                        			<th >Mes Descuento</th>
+                        			<th >Participe</th>
+                        			<th >Aporte Personal</th>
+                        			<th >Aporte Patronal</th>
                         			<th >Sueldo</th>
-                        			<th >Cuota</th>
-                        			<th >Mora</th>
-                        			<th >Total</th>
-                        			<th >Total Envio</th>                        			
+                        			<th >Liquido</th>
+                        			
                         		</tr>
                         	</thead>        
-                        	<tfoot>
-                        		<tr>
-                        			<td colspan="9">TOTALES ..</td> 
-                        			<td >PARCIAL</td>
-                        			<td >..</td> 
-                        			<td >TOTAL</td> 
-                        			<td >..</td>
-                    			</tr>
-                			</tfoot>
+                        
                         </table>            	
                 	</div>
           		
@@ -417,7 +403,7 @@
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <!-- FILE UPLOAD -->
    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js"></script>
-   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.7"></script> 
+   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.19"></script> 
 
   </body>
 </html>   

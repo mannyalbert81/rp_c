@@ -197,7 +197,7 @@
               		<div id="pnl_div_descuentos_pendientes" class="letrasize11">
                 		<table id="tbl_descuentos_pendientes" class="table table-striped table-bordered" > <!--   -->
                         	<thead >
-                        	    <tr class="warning" >
+                        	    <tr class="danger" >
                         	    	<th >#</th>
                         			<th >Entidad</th>
                         			<th >Usuario</th>
@@ -230,7 +230,7 @@
               		<div id="pnl_div_descuentos_procesados" class="letrasize11">
                 		<table id="tbl_descuentos_procesados" class="table table-striped table-bordered" > <!--   -->
                         	<thead >
-                        	    <tr class="warning" >
+                        	    <tr class="danger" >
                         	    	<th >#</th>
                         			<th >Entidad</th>
                         			<th >Usuario</th>
@@ -263,7 +263,7 @@
               		<div id="pnl_div_descuentos_errores" class="letrasize11">
                 		<table id="tbl_descuentos_errores" class="table table-striped table-bordered" > <!--   -->
                         	<thead >
-                        	    <tr class="warning" >
+                        	    <tr class="danger" >
                         	    	<th >#</th>
                         			<th >Entidad</th>
                         			<th >Usuario</th>
@@ -346,6 +346,55 @@
       <!-- /.modal-dialog -->
 </div>
 <!-- END MODAL ERRORES CARGA -->
+
+<!-- BEGIN MODAL DESCUENTOS CREDITOS -->
+  <div class="modal fade" id="mod_mostrar_detalle" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-lg " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-primary color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" align="center">DETALLE</h4>
+          </div>
+          <div class="modal-body" >
+          	<div class="box-body no-padding">
+          		<div class="row">
+          		
+          		</div>
+          		<br>
+              	<div class="letrasize11">
+                		<table id="tbl_detalle_modal" class="table table-striped table-bordered" >
+                        	<thead >
+                        	    <tr class="danger" >
+                        	    	<th >#</th>
+                        			<th >Entidad</th>
+                        			<th >Año</th>
+                        			<th >Mes</th>
+                        			<th >Cedula</th>
+                        			<th >Participe</th>
+                        			<th >Aporte Personal</th>
+                        			<th >Aporte Patronal</th>
+                        			<th >Sueldo</th>
+                        			<th >Liquido</th>
+                        			
+                        		</tr>
+                        	</thead>        
+                        
+                        </table>            	
+                	</div>
+          		
+            	
+          	</div>
+          	
+          
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+<!-- END MODAL DESCUENTOS CREDITOS SIN APORTES -->
     
     <?php include("view/modulos/links_js.php"); ?>
 	
@@ -354,7 +403,7 @@
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <!-- FILE UPLOAD -->
    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js"></script>
-   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.5"></script> 
+   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.19"></script> 
 
   </body>
 </html>   

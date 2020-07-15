@@ -5,7 +5,7 @@ view.hdn_cedula_participes 	= $("#hdn_cedula_participes");
 view.hdn_id_participes	 	= $("#hdn_id_participes");
 view.hdn_cedula_garante	 	= $("#hdn_cedula_garante");
 view.cedula_participes 		= $("#cedula_participe");
-view.html_boton_buscar_participe		= $("#buscar_participe_boton");
+view.html_boton_buscar_participe= $("#buscar_participe_boton");
 view.boton_buscar_participe		= $("#buscar_participe") || null;
 view.tipo_creditos			= $("#ddl_tipo_creditos"); 
 view.monto_creditos			= $("#txt_monto_creditos");
@@ -452,7 +452,7 @@ var obtener_informacion_solicitud 	= function(){
 		try{
 			var varTipoCreditos	= x.data.nombre_tipo_credito_solicitud;		
 			setValTipoCreditos(varTipoCreditos);			
-		}catch(e){console.log('ERROR AL OBTENER TIPO CRDITO DESDE SERVIDOR');}
+		}catch(e){console.log('ERROR AL OBTENER TIPO CREDITO DESDE SERVIDOR');}
 		
 	})
 	.fail(function() {

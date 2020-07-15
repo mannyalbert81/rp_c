@@ -434,6 +434,7 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
                 <li style="<?php echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=TesCuentasPagar&action=index"><i class="fa fa-circle-o"></i> Ingreso Transacciones</a></li>
+                <li style="<?php echo getcontrolador("TesCuentasPagarSR",$controladores) ?>"><a href="index.php?controller=TesCuentasPagarSR&action=index"><i class="fa fa-circle-o"></i> Ingreso Transacciones SR</a></li>
                 <li style="<?php echo getcontrolador("PagosManuales",$controladores) ?>"><a href="index.php?controller=Pagos&action=Index"><i class="fa fa-circle-o"></i> Pagos Manuales</a></li>
               	<!-- <li style="<?php //echo getcontrolador("IngresoCuentasPagar",$controladores) ?>"><a href="index.php?controller=CuentasPagar&action=CuentasPagarIndex"><i class="fa fa-circle-o"></i> Ingreso Cuentas Pagar</a></li>              	
               	<li style="<?php //echo getcontrolador("compras",$controladores) ?>"><a href="index.php?controller=Compras&action=Index"><i class="fa fa-circle-o"></i> Compras</a></li> -->
@@ -799,6 +800,28 @@ $controladores=$_SESSION['controladores'];
         </li>
        </ul>
       </li>     
+      
+         <li class="treeview"  style="<?php echo getcontrolador("MenuElecciones",$controladores) ?>"  >
+          <a href="#">
+            <i class="glyphicon glyphicon-globe"></i> <span>Elecciones</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+             <li class="treeview"  style="<?php echo getcontrolador("AdministracionElecciones",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+               	  <li style="<?php echo getcontrolador("ConsultaCandidatos",$controladores) ?>"><a href="index.php?controller=ConsultaCandidatos&action=index"><i class="fa fa-circle-o"></i>Consulta Candidatos</a></li>
+      	  </ul>
+            </li>
+        </ul>
+      </li>    
       
  
       

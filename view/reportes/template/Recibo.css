@@ -85,14 +85,20 @@ td.espacio{
   border-bottom-style: dotted;
   
  }
+ 
+  div.izq1{
+	left:0px;   width:338px; height:0px; float:left;
+	margin-top: -13px;
+	}
 /*Styls para dibujar el reporte*/ 
    div.izq{
-	left:0px;   width:338px; height:110px; float:left;
+	left:0px;   width:338px; height:0px; float:left;
 	}
 	
 	div.der{
-	right:0px;  width:338px; height:110px; float:left;
+	right:0px;  width:338px; height:0px; float:left;
 	}
+	
 	body {font-size:10px}
 
 table.1 {
@@ -106,6 +112,12 @@ table.2 {
    font-size:15px;
    text-align: center;
    border: 1px solid;
+}
+table.3 {
+   width: 100%;
+   font-size:15px;
+   text-align: left;
+   
 }
 
 
@@ -148,4 +160,8 @@ p.2 {
 }
 div.completa{
 	right:0px;  width:100%; float:left;
+	}
+	div.completa1{
+	right:0px;  width:100%; float:left;
+	margin-top: -13px;
 	}

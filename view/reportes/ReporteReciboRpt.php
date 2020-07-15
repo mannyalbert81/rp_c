@@ -23,8 +23,6 @@ if(!empty($datos_empresa))
     }
 }
 
-
-
 if(!empty($datos_reporte))
 {
     

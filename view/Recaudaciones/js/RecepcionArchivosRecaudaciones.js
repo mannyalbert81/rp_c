@@ -458,11 +458,14 @@ dt_view1.dt_tabla_procesados = null;
 dt_view1.nombre_tabla_procesados = 'tbl_descuentos_procesados';
 dt_view1.dt_tabla_error = null;
 dt_view1.nombre_tabla_error = 'tbl_descuentos_errores';
+dt_view1.dt_tabla_detalle_modal = null;
+dt_view1.nombre_tabla_detalle_modal = 'tbl_detalle_modal';
 
 //setear valores json elementos de la vista
 var view	= view || {};
 view.id_entidad_patronal	= $("#id_entidad_patronal");
 view.id_descuentos_formatos = $("#id_descuentos_formatos");
+view.id_cabeza_descuentos = 0;
 
 dt_view1.params	= function(){ 
 	var extenddatapost = { id_entidad_patronal:view.id_entidad_patronal.val(),id_descuentos_formatos:view.id_descuentos_formatos.val()};
@@ -687,4 +690,87 @@ var mostrar_detalle	= function(a){
     document.body.removeChild(form);
     
 }
+
+
+var mostrar_detalle_modal = function(a){
+	
+	
+	var element = $(a);
+	
+	let $link = $(a);	
+	
+	var id_cabeza_descuentos	= $link.data("id_descuentos_cabeza");
+	
+	if( id_cabeza_descuentos <= 0 || id_cabeza_descuentos == "" || id_cabeza_descuentos == undefined ){
+		return false;
+	}	
+		
+	view.id_cabeza_descuentos = id_cabeza_descuentos;
+	
+	if( element.length )
+	{			
+		var modaledit = $("#mod_mostrar_detalle");	
+		modaledit.modal();
+		listar_detalle_modal();
+		
+	}	
+	
+}
+
+/*****************************************************************BEGIN CAMBIOS ST  *****************************************************************************/
+
+
+var listar_detalle_modal = function(){
+	
+	var dataSend = { id_cabeza_descuentos:view.id_cabeza_descuentos };
+		
+	dt_view1.dt_tabla_detalle_modal	=  $('#'+dt_view1.nombre_tabla_detalle_modal).DataTable({
+	    'processing': true,
+	    'serverSide': true,
+	    'serverMethod': 'post',
+	    'destroy' : true,
+	    'ajax': {
+	        'url':'index.php?controller=RecepcionArchivosRecaudaciones&action=dtMostrarDetallesModal',
+	        'data': function ( d ) {
+	            return $.extend( {}, d, dataSend );
+	            },
+            'dataSrc': function ( json ) {                
+                return json.data;
+              }
+	    },	
+	    'lengthMenu': [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+	    'order': [[ 1, "desc" ]],
+	    'columns': [	    	    
+	    		{ data: 'numfila', orderable: false },
+	    		{ data: 'nombre_entidad'},
+	    		{ data: 'anio_descuentos' },
+	    		{ data: 'mes_descuentos', orderable: false },
+	    		{ data: 'cedula_participe', orderable: false },
+	    		{ data: 'participe' },
+	    		{ data: 'aporte_personal'},
+	    		{ data: 'aporte_patronal' },
+	    		{ data: 'sueldo' },
+	    		{ data: 'liquido' }
+	
+	    		
+	    ],
+	    'columnDefs': [
+	        {className: "dt-center", targets:[0] },
+	        {sortable: false, targets: [ 0,3,4,9 ] }
+	      ],
+		'scrollY': "80vh",
+        'scrollCollapse':true,
+        'fixedHeader': {
+            header: true,
+            footer: true
+        },
+        dom: 'Blfrtip',
+        buttons: [
+            //'copy', 'csv', 'excel', 'pdf', 'print'
+        	'excel', 'pdf'
+        ],
+        'language':idioma_espanol
+	 });	
+	
+} 
 

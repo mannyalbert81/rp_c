@@ -1439,6 +1439,254 @@ class CreditosParticipesController extends ControladorBase
         echo $html;
         
     }
+    
+    public function obtenerDatosCuentasBancos(){
+        
+        ob_start();
+        
+        $bancos = new BancosModel();
+        
+        //array enviar a vista
+        $datosBancos    = array();
+        $datosTipoCuentas   = array();
+        $response   = array();
+        
+        $col1 = " id_bancos, nombre_bancos";
+        $tab1 = " public.tes_bancos";
+        $whe1 = " 1 = 1";
+        $id1  = " nombre_bancos";
+        $rsConsulta1    = $bancos->getCondiciones($col1, $tab1, $whe1, $id1);
+        
+        $col2 = " id_tipo_cuentas, nombre_tipo_cuentas";
+        $tab2 = " public.core_tipo_cuentas";
+        $whe2 = " 1 = 1";
+        $id2  = " nombre_tipo_cuentas";
+        $rsConsulta2    = $bancos->getCondiciones($col2, $tab2, $whe2, $id2);
+        
+        $datosBancos    = ( !empty( $rsConsulta1 ) ) ? $rsConsulta1 : array();
+        
+        $datosTipoCuentas   = ( !empty( $rsConsulta2 ) ) ? $rsConsulta2 : array();
+        
+        $salida = ob_get_clean();
+        
+        if( empty( $salida ) )
+        {
+            $response['rsbancos'] = $datosBancos;
+            $response['rstipocuentas']  = $datosTipoCuentas;
+            $response['estatus'] = "OK";
+            echo json_encode( $response );
+            return;
+        }
+        
+        print_r( error_get_last() );        
+    }
+    
+    public function ingresaCuentasBancariasParticipe()
+    {        
+        try {
+            
+            ob_start();
+            
+            $resp   = array();
+            $participes = new ParticipesModel();
+            
+            if( !isset( $_SESSION ) )
+            {
+                session_start();
+            }
+            
+            $id_participes  = $_POST["id_participes"];
+            $id_bancos      =  $_POST["id_bancos"];
+            $id_tipo_cuentas= $_POST["id_tipo_cuentas"];
+            $numero_participes_cuentas  = $_POST["numero_participes_cuentas"];
+            $cuenta_principal   = $_POST["cuenta_principal"];
+            $usuario_usuarios   = $_SESSION["usuario_usuarios"];
+            $ip_usuarios    = $_SESSION["ip_usuarios"];
+            
+            if( !empty( error_get_last() ) )
+            {
+                throw new Exception("Variables no recibidas");
+            }
+            
+            $funcion = "ins_core_participes_cuentas";
+            
+            $parametros = " '$id_participes',
+                            '$id_bancos',
+                            '$numero_participes_cuentas',
+                            '$id_tipo_cuentas',
+                            '$cuenta_principal',
+                            '$usuario_usuarios',
+                            '$ip_usuarios'";
+            
+            $sqlFuncion = $participes->getconsultaPG($funcion, $parametros);
+            
+            $resultado = $participes->llamarconsultaPG( $sqlFuncion );
+            
+            if( !empty( error_get_last() ) )
+            {
+                throw new Exception("funcion 'ins_core_participes_cuentas'");
+            }
+            
+            $resp['estatus'] = "OK";
+            $resp['respuesta']  = $resultado;
+            
+            $salida = ob_get_clean();
+            
+            if( !empty( $salida ) )
+            {
+                throw new Exception("Buffer lleno");
+            }
+            
+            echo json_encode( $resp );
+            
+        } catch (Exception $e) {
+            
+            echo $e->getMessage();
+            print_r( error_get_last() );
+        }        
+    }
+    
+    public function listarCuentasBancariasParticipes()
+    {
+        ob_start();
+        
+        $participes = new ParticipesModel();
+        
+        $resp   = array();
+        
+        $id_participes = $_POST["id_participes"];        
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+        
+        $columnas = " aa.id_participes_cuentas, bb.nombre_bancos, cc.nombre_tipo_cuentas, aa.numero_participes_cuentas,
+            aa.cuenta_principal";
+        $tablas =    " core_participes_cuentas aa
+            INNER JOIN tes_bancos bb ON bb.id_bancos = aa.id_bancos
+            INNER JOIN core_tipo_cuentas cc ON cc.id_tipo_cuentas = aa.id_tipo_cuentas";
+        $where    = " aa.id_participes = $id_participes";
+        $id       = " aa.cuenta_principal DESC, bb.nombre_bancos";
+        
+        if( !empty( $search ) )
+        {   
+            $where .=" AND ( aa.numero_participes_cuentas ILIKE '%".$search."%'";
+            $where .=" OR bb.nombre_bancos ILIKE '%".$search."%')";
+        }
+        
+        $html="";
+        $paginacion = "";
+        $resultSet=$participes->getCantidad("*", $tablas, $where);
+        $cantidadResult=(int)$resultSet[0]->total;
+        
+        $per_page = 10;
+        $adjacents  = 9;
+        $offset = ($page - 1) * $per_page;
+        
+        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+        
+        $rsCuentas=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
+        $total_pages = ceil($cantidadResult/$per_page);
+        
+        if( sizeof( $rsCuentas ) > 0 )
+        {
+            $i=0;
+            
+            foreach ( $rsCuentas as $res )
+            {
+                
+                $cuenta_principal = ( $res->cuenta_principal == "t" ) ? "PRINCIPAL" : "-";
+                $i++;
+                $html.='<tr>';
+                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+                $html.='<td style="font-size: 11px;">'.$res->nombre_bancos.'</td>';
+                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_cuentas.'</td>';
+                $html.='<td style="font-size: 11px;">'.$res->numero_participes_cuentas.'</td>';
+                $html.='<td style="font-size: 11px;">'.$cuenta_principal.'</td>';
+                $html.='<td style="font-size: 18px;">
+                            <a onclick="editar_participes_cuentas('.$res->id_participes_cuentas.')" 
+                            href="#" class="no-padding btn btn-sm btn-default" data-toggle="tooltip" title="Editar"><i class="fa  fa-edit fa-2x fa-fw"></i></a>
+<a onclick="eliminar_participes_cuentas('.$res->id_participes_cuentas.')"   href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" title="Eliminar"><i class="fa  fa-trash fa-2x fa-fw"></i></a></td>';
+                                       
+                $html.='</tr>';
+               
+            }
+            
+            $paginacion = ''. $participes->allpaginate("index.php", $page, $total_pages, $adjacents,'mostrar_cuentas_participes').'';
+            
+            
+        }
+        
+        $resp['estatus'] = "OK";
+        $resp['filas'] = $html;
+        $resp['paginacion'] = $paginacion;
+        $resp['cantidad']   = $cantidadResult;
+        
+        $salida = ob_get_clean();
+        
+        if( !empty( $salida ) )
+        {
+            print_r(error_get_last());
+        }else
+        {
+            echo json_encode($resp);
+        }
+        
+    }
+    
+    public function editarParticipesCuentas()
+    {
+        ob_start();
+        $resp = array();
+        $participes = new ParticipesModel();
+        $id_participes_cuentas  = $_POST['id_participes_cuentas'];
+        
+        $col1   = " aa.id_participes_cuentas, aa.id_bancos, bb.nombre_bancos, cc.id_tipo_cuentas, cc.nombre_tipo_cuentas, aa.numero_participes_cuentas, aa.cuenta_principal";
+        $tab1   = " core_participes_cuentas aa
+            INNER JOIN tes_bancos bb on bb.id_bancos = aa.id_bancos
+            INNER JOIN core_tipo_cuentas cc on cc.id_tipo_cuentas = aa.id_tipo_cuentas";
+        $whe1   = " aa.id_participes_cuentas = $id_participes_cuentas ";
+        $id1    = " aa.cuenta_principal , bb.nombre_bancos ";
+        
+        $rsConsulta1 = $participes->getCondiciones($col1, $tab1, $whe1, $id1);
+        
+        $resp['estatus']    = "OK";
+        $resp['data']   = ( !empty( $rsConsulta1 ) ) ? $rsConsulta1 : array();
+        
+        $salida = ob_get_clean();
+        
+        if( !empty( $salida ) )
+        {
+            var_dump( error_get_last() );
+        }else{
+            echo json_encode( $resp );
+        }        
+    }
+    
+    public function eliminarParticipesCuentas()
+    {
+        ob_start();
+        $pagos = new PagosModel();
+        
+        $id_participes_cuentas  = $_POST['id_participes_cuentas'];        
+        
+        $tab    = " public.core_participes_cuentas ";
+        $whe    = " id_participes_cuentas = $id_participes_cuentas";
+        
+        $resultado = $pagos->eliminarFila( $tab, $whe);
+        
+        $resp = array();
+        $resp['estatus']   = "OK";
+        $resp['mensaje']   = " Datos Eliminados (".$resultado.")";
+                
+        $salida = ob_get_clean();
+        
+        if( !empty( $salida ) )
+        {
+            var_dump( error_get_last() );
+        }else{
+            echo json_encode( $resp );
+        } 
+    }
+    
 }
 
 ?>

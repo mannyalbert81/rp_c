@@ -113,7 +113,7 @@ var load_cuentas_pagar_aplicadas	= function(){
         dom: 'Blfrtip',
         buttons: [
             //'copy', 'csv', 'excel', 'pdf', 'print'
-        	'excel', 'pdf'
+        	'excel'
         ],
         'language':idioma_espanol
 	 });

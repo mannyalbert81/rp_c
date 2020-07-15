@@ -82,7 +82,7 @@
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Transacciones Cuentas Pagar</h3>
+          <h3 class="box-title">Transacciones Cuentas Pagar Sin Retenci&oacute;n</h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -118,12 +118,7 @@
                           </li>                          
                           <li>
                           <button id="mdlImpuestosRelacionados" type="button" onclick="verTablaImpuestosRelacionados()" class="btn btn-default">Ver Impuestos <span id="cantidad_impuestos_ins" class="badge label-danger"></span></button>
-                          </li>
-                          <li>
-                          	<!-- en este botn se genera el  -->
-                          	<a class="btn btn-default" href="#" title="Cambiar Base Retencion" id="lnk_cambiar_base" onclick="modificar_base_retencion(event)" > Modificar Retencion
-                          	<i class="fa fa-edit" aria-hidden="true"></i></a> 
-                          </li>
+                          </li>                          
                           <li>
                           	<a class="btn btn-default" href="index.php?controller=TesProveedores&action=index" target="_blank" title="Nuevo Proveedor" >
                           	<i class="fa fa-id-card-o" aria-hidden="true"></i></a> 
@@ -581,8 +576,7 @@
    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/tesoreria/js/IngresoTransacionesSR.js?0.02"></script> 
-       
+   <script src="view/tesoreria/js/IngresoTransacionesSR.js?0.03"></script>        
        	
   </body>
 </html>   

@@ -209,20 +209,7 @@ class ReporteDescuentosController extends ControladorBase{
         }
         
         
-        $totalperson=$desceuntos_aportes_personales[0]->aporte_personal_descuentos_registrados_detalle_aportes;
-        $totalaportperson=$totalperson+$desceuntos_aportes_personales[0]->aporte_personal_descuentos_registrados_detalle_aportes;
         
-        $html.='<tr>';
-        $html.='<th></th>';
-        $html.='<th></th>';
-        $html.='<th><strong>Total:</strong></th>';
-        $html.='<th align="right">'.$totalaportperson.'</th>';
-        $html.='<th align="right">'.$totalperson.'</th>';
-        $html.='<th align="right">'.$totalperson.'</th>';
-        $html.='<th align="right">'.$totalperson.'</th>';
-        $html.='<th align="right">'.$totalperson.'</th>';
-        $html.='<th align="right">'.$totalperson.'</th>';
-        $html.='</tr>';
         
         
         
@@ -504,22 +491,7 @@ class ReporteDescuentosController extends ControladorBase{
         }
         
         
-        $totalperson=$desceuntos_aportes_personales[0]->aporte_personal_descuentos_registrados_detalle_aportes;
-        $totalaportperson=$totalperson+$desceuntos_aportes_personales[0]->aporte_personal_descuentos_registrados_detalle_aportes;
-        
-        $html.='<tr>';
-        $html.='<th></th>';
-        $html.='<th></th>';
-        $html.='<th><strong>Total:</strong></th>';
-        $html.='<th align="right">'.$totalaportperson.'</th>';
-        $html.='<th align="right">'.$totalperson.'</th>';
-        $html.='<th align="right">'.$totalperson.'</th>';
-        $html.='<th align="right">'.$totalperson.'</th>';
-        $html.='<th align="right">'.$totalperson.'</th>';
-        $html.='<th align="right">'.$totalperson.'</th>';
-        $html.='</tr>';
-        
-        
+    
         
         
         $html.='</table>';

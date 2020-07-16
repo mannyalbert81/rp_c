@@ -78,7 +78,7 @@ class TransferenciasController extends ControladorBase{
 		
 		$nombre_tipo_proveedores = $rsConsulta1[0]->nombre_tipo_proveedores;
 		
-		if( is_null($nombre_tipo_proveedores) || $nombre_tipo_proveedores == "PAGO PROVEEDORES"  ){
+		if( is_null($nombre_tipo_proveedores) || $nombre_tipo_proveedores == "PAGO PROVEEDORES"  || $nombre_tipo_proveedores == "EMPLEADO" ){
 		    
 		    //cuando es pago a proveedores
 		    $datosVista['nombre_beneficiario'] = $rsConsulta1[0]->nombre_proveedores;

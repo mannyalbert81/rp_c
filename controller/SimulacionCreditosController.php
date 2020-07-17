@@ -1859,6 +1859,21 @@ class SimulacionCreditosController extends ControladorBase
     {
         // array donde guardar tabla amortizacion
         $resultAmortizacion = array();
+        
+        //echo "PARAMETROS","<br>";
+        //echo " CAPITAL --> ", $_capital_prestado_amortizacion_cabeza;
+        //echo " NUMERO CUOTAS --> ", $numero_cuotas;
+        //echo " INT MENSUAL --> ", $interes_mensual;
+        //echo " VALOR CUOTA --> ", $valor_cuota;
+        //echo " FECHA CORTE  --> ", $fecha_corte;
+        //echo " TASA AMORTIZACION --> ", $_tasa_interes_amortizacion_cabeza;
+        //CAPITAL --> 21400 
+        //NUMERO CUOTAS --> 84 
+        //INT MENSUAL --> 0.0075
+        //VALOR CUOTA --> 344.31 
+        //FECHA CORTE --> 2020-07-17 
+        //TASA AMORTIZACION --> 0.09
+        //die();        
 
         $formato_fecha = 'Y-m-d';
         $capital = $_capital_prestado_amortizacion_cabeza;
@@ -1906,15 +1921,14 @@ class SimulacionCreditosController extends ControladorBase
                 $fecha = new DateTime($fecha_ultimo_dia);
                 $fecha = $fecha->format($formato_fecha);
                 $fecha_corte = $fecha;
-                $interes_concesion = $interes_diario * $diferencia_dias * $capital;
+                $interes_concesion = $interes_diario * ($diferencia_dias +4)* $capital;
                 $interes_concesion = round($interes_concesion, 2);
             }
             if ($i != 0) {
                 $saldo_inicial_ant = $saldo_inicial_ant - $amortizacion;
                 $interes = $saldo_inicial_ant * $inter_ant;
                 $interes = floor($interes * 100) / 100;
-                if ($i == 1)
-                    $interes += $interes_concesion;
+                               
                 $amortizacion = $valor_cuota - $interes;
 
                 $desgravamen = ((0.16 / 1000) * $saldo_inicial) * 1.04;
@@ -1945,6 +1959,13 @@ class SimulacionCreditosController extends ControladorBase
             }
 
             if ($i != 0) {
+                
+                if ($i == 1)
+                {                    
+                    $interes    += $interes_concesion;
+                }
+                    
+                    
                 $arreglo = array(
                     'pagos_trimestrales' => $i,
                     'saldo_inicial' => $saldo_inicial,
@@ -1955,11 +1976,11 @@ class SimulacionCreditosController extends ControladorBase
                     'fecha_pago' => $fecha,
                     'interes_concesion' => $interes_concesion
                 );
-
+                
                 array_push($resultAmortizacion, $arreglo);
             }
         }
-
+        //var_dump($resultAmortizacion); die();
         return $resultAmortizacion;
     }
 
@@ -3014,7 +3035,8 @@ class SimulacionCreditosController extends ControladorBase
         $id = "solicitud_prestamo.id_solicitud_prestamo";
 
         $resultSoli = $db->getCondicionesDesc($columnas, $tablas, $where, $id);
-        if (! (empty($resultSoli))) {
+        if( !( empty( $resultSoli ) ) )
+        {
             if ($resultSoli[0]->tipo_pago_cuenta_bancaria == "Depósito") {
 
                 $nombre_banco = $resultSoli[0]->nombre_banco_cuenta_bancaria;
@@ -3192,9 +3214,12 @@ class SimulacionCreditosController extends ControladorBase
 
             // busca los tipo creditos que puede renovar de acuerdo al tipo de credito recibido
             $columnas = "tcr.id_tipo_creditos_a_renovar";
-            $tablas = "core_tipo_creditos_renovacion tcr INNER JOIN core_tipo_creditos tc ON tc.id_tipo_creditos = tcr.id_tipo_creditos";
-            $where = "tc.codigo_tipo_creditos='" . $tipo_credito . "' AND tcr.id_estado=107";
-            $_result_creditos_renovar = $creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
+            $tablas = "core_tipo_creditos_renovacion tcr
+                INNER JOIN core_tipo_creditos tc ON tc.id_tipo_creditos = tcr.id_tipo_creditos";
+            $where = "tcr.id_estado = 107
+                AND tc.codigo_tipo_creditos = '" . $tipo_credito . "'";
+            
+            $_result_creditos_renovar = $creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");         
 
             if (! empty($_result_creditos_renovar)) {
 
@@ -3212,7 +3237,7 @@ class SimulacionCreditosController extends ControladorBase
                     $_result_monto_credito = $creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
                     */
                     //consulta para obtener la ultima cuota cancelada del credito
-                    $col1 = "cc.id_tabla_amortizacion, cc.total_valor_tabla_amortizacion";
+                    /*$col1 = "cc.id_tabla_amortizacion, cc.total_valor_tabla_amortizacion";
                     $tab1 = 'core_participes aa
                         INNER JOIN core_creditos bb ON bb.id_participes = aa.id_participes
                         INNER JOIN core_tabla_amortizacion cc ON cc.id_creditos = bb.id_creditos';
@@ -3225,7 +3250,27 @@ class SimulacionCreditosController extends ControladorBase
                         AND bb.id_estado_creditos = 4
                         AND bb.id_tipo_creditos = ".$res->id_tipo_creditos_a_renovar;
                     $lim1 = " ORDER BY cc.fecha_tabla_amortizacion DESC LIMIT 1";
-                    $_result_monto_credito = $creditos->getCondicionesSinOrden($col1, $tab1, $whe1, $lim1);                    
+                    */
+                    $col1 = " SUM(aa.total_valor_tabla_amortizacion) total_valor_tabla_amortizacion ";
+                    $tab1 = " core_tabla_amortizacion aa
+                        INNER JOIN core_creditos bb	ON bb.id_creditos = aa.id_creditos
+                        INNER JOIN core_participes cc ON cc.id_participes = bb.id_participes
+                        INNER JOIN (
+                            SELECT MAX( sa.fecha_tabla_amortizacion ) fecha_cuota, sa.id_creditos
+                            FROM core_tabla_amortizacion sa
+                            WHERE sa.id_estatus = 1
+                            AND sa.id_estado_tabla_amortizacion = 2
+                            GROUP BY sa.id_creditos
+                            )dd ON dd.id_creditos = aa.id_creditos AND dd.fecha_cuota = aa.fecha_tabla_amortizacion";
+                    $whe1 = "1 = 1
+                        AND aa.id_estatus = 1
+                        and bb.id_estado_creditos = 4
+                        and cc.id_estatus = 1
+                        and cc.cedula_participes = '$cedula_participe'
+                        and bb.id_tipo_creditos =".$res->id_tipo_creditos_a_renovar;
+                    $lim1 = " ";
+                    
+                    $_result_monto_credito = $creditos->getCondicionesSinOrden( $col1, $tab1, $whe1, $lim1);
 
                     if (! empty($_result_monto_credito)) {
 
@@ -4268,22 +4313,27 @@ class SimulacionCreditosController extends ControladorBase
         
         $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $cuota));
         $valor_cuota = round($valor_cuota, 2);
-        
-        if ($tipo_credito == "PH") {
-            if ($renovacion_credito == "true") {
+                
+        if ($tipo_credito == "PH") 
+        {
+            if ($renovacion_credito == "true") 
+            {
                 $resultAmortizacion = $this->tablaAmortizacionRenovacionHipotecario($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_corte, $tasa_interes, $avaluo_credito);
             } else {
                 $resultAmortizacion = $this->tablaAmortizacionHipotecario($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_corte, $tasa_interes, $avaluo_credito);
             }
-        } else {
-            if ($renovacion_credito == "true") {
+        } else 
+        {
+            if ($renovacion_credito == "true") 
+            {
                 $resultAmortizacion = $this->tablaAmortizacionRenovacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_corte, $tasa_interes);
             } else {
                 $resultAmortizacion = $this->tablaAmortizacion($monto_credito, $cuota, $interes_mensual, $valor_cuota, $fecha_corte, $tasa_interes);
             }
         }
         
-        if ($tipo_credito == "PH") {
+        if ($tipo_credito == "PH") 
+        {
             $html = '<div class="box box-solid bg-olive">
             <div class="box-header with-border">
             <h3 class="box-title">Tabla de Amortización</h3>';
@@ -4306,7 +4356,8 @@ class SimulacionCreditosController extends ControladorBase
                    </table>
                    <div style="overflow-y: scroll; overflow-x: hidden; height:200px; width:100%;">
                    <table border="1" width="100%">';
-        } else {
+        } else 
+        {
             $html = '<div class="box box-solid bg-olive">
             <div class="box-header with-border">
             <h3 class="box-title">Tabla de Amortización</h3>';
@@ -4484,9 +4535,15 @@ class SimulacionCreditosController extends ControladorBase
             $response['estatus']    = "OK";
             $response['html']     = $html;
         }
-        echo json_encode($response);
+        echo json_encode($response);        
+    }
+    
+    /** dc 2020/07/09 **/
+    public function ingresaRenovacionesCreditos()
+    {
         
     }
+    /** end dc 2020/07/09 **/
 }
 
 ?>

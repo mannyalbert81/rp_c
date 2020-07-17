@@ -345,7 +345,6 @@ var obtener_info_participes = function(){
 		})
 		.done(function(x) {
 			
-			console.log(x);
 			// cargos tabla de informacion basica de los participes
 			if( x.estatus != undefined && x.estatus == 'OK' ){
 				
@@ -363,11 +362,8 @@ var obtener_info_participes = function(){
 				obtener_informacion_solicitud();
 				
 				//cargar informacion crediticia con relacion a la solicitud
-				obtener_informacion_participe();
-				
+				obtener_informacion_participe();				
 			}
-			
-			
 						
 		})
 		.fail(function() {
@@ -1360,7 +1356,7 @@ var buscar_numero_cuotas	= function(){
 		
 }
 
-var simular_credito_amortizacion = function(){
+var simular_credito_amortizacion = function(){	
 	
 	var valor_monto	= view.monto_creditos.val();
 	var valor_tipo_creditos = view.tipo_creditos.val();
@@ -1370,6 +1366,11 @@ var simular_credito_amortizacion = function(){
 	//busco variable global
 	view.global_hay_solicitud	= ( sin_solicitud ) ? 0 : 1;
 	
+	//SINTAXERROR --
+	//'renovacion_credito':view.global_hay_renovacion, 
+	//'id_solicitud':view.hdn_id_solicitud,
+	//'avaluo_bien':view.global_avaluo_sin_solicitud
+	
 	$.ajax({
 	    url: 'index.php?controller=SimulacionCreditos&action=obtenerSimulacionCredito',
 	    type: 'POST',
@@ -1378,10 +1379,9 @@ var simular_credito_amortizacion = function(){
 	    	'monto_credito':valor_monto,
 	    	'tipo_credito':valor_tipo_creditos,
 	    	'plazo_credito':valor_cuotas,
-	    	//para ver si va o no a renovar
-	    	'renovacion_credito':renovacion_credito, //SINTAXERROR
+	    	'renovacion_credito':view.global_hay_renovacion, 
 	    	'id_solicitud':id_solicitud,
-	    	'avaluo_bien':avaluo_bien_sin_solicitud
+	    	'avaluo_bien':view.global_avaluo_sin_solicitud
 	    },
 	}).done(function(x) {
 		
@@ -1651,6 +1651,24 @@ var registrar_credito_nuevo	= function(){
 		});
 	}else
 	{
+		console.log("AQUI INGRESA PARA INSERTAR CON RENOVACION");
+		
+		var datamm = {
+	    	'monto_credito': monto_credito,
+	    	'tipo_credito': valor_tipo_creditos,
+	    	'fecha_pago': fecha_corte,
+	    	'cuota_credito': cuota_credito,
+	    	'cedula_participe': ciparticipe,
+	    	'observacion_credito': observacion,
+	    	'id_solicitud':id_solicitud,
+	    	'con_garante': view.global_hay_garantes,
+	    	'cedula_garante':cigarante	    	
+	    };
+		
+		console.log(data);
+		
+		return false;
+		
 		$.ajax({
 		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionRenovacionCredito',
 		    type: 'POST',

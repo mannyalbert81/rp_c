@@ -11,9 +11,8 @@
 //!function(){ obtener_datos_cuentas_bancarias();  }();
 
 $(document).ready( function (){
-	obtener_datos_cuentas_bancarias();
-	iniciar_eventos();
-	$("#panel_participes_cuentas").hide();
+	iniciar_eventos_cuentas();	
+	inhabilitar_elementos_panel_cuentas();
 });
 
 //variables de vista
@@ -22,51 +21,96 @@ var viewcuentas	= viewcuentas || {};
 viewcuentas.id_bancos	= $("#spanel_id_bancos");
 viewcuentas.id_tipo_cuentas	= $("#spanel_id_tipo_cuentas");
 viewcuentas.numero_cuentas	= $("#spanel_numero_cuentas");
-viewcuentas.cuenta_principal= $("#spanel_cuenta_principal");
-viewcuentas.id_cuentas_participes	= $("#spanel_id_cuentas_bancos_participe");
 
-var iniciar_eventos	= function(){
+var iniciar_eventos_cuentas	= function(){
 	
 	$("#btn_guardar_cuentas").on("click",function(){
 		
 		if( valida_formulario_cuentas() )
 		{
-			ingresa_cuentas_bancarias();
+			ingresa_cuentas_bancarias_solicitud();
 		}		
 		
 	})
-	
-	$("#btn_listar_cuentas").on("click",function(){			
-		$("#panel_participes_cuentas").toggle();
-		mostrar_cuentas_participes();			
-	})
+	//ele evento se enlaza a un elemento creado desde controlador	
+	$("body").on("click","#btn_cambiar_datos_cuentas_solicitud",function(){
+		
+		$('.nav-tabs a[href="#panel_cuentas_bancos"]').tab('show'); //navegar en tab bootstrap a la pagina principal		
+		habilitar_elementos_panel_cuentas();
+		obtener_datos_cuentas_bancarias_solicitud();
+		
+	});
 	
 }
 
-var obtener_datos_cuentas_bancarias	= function(){
+var inhabilitar_elementos_panel_cuentas	= function(){
+	
+	viewcuentas.id_bancos.attr('disabled',true);
+	viewcuentas.id_tipo_cuentas.attr('disabled',true);
+	viewcuentas.numero_cuentas.attr('disabled',true);
+}
+
+var habilitar_elementos_panel_cuentas	= function(){
+	
+	viewcuentas.id_bancos.attr('disabled',false);
+	viewcuentas.id_tipo_cuentas.attr('disabled',false);
+	viewcuentas.numero_cuentas.attr('disabled',false);
+}
+
+var obtener_datos_cuentas_bancarias_solicitud	= function(){
 	
 	$.ajax({
-		url:"index.php?controller=CreditosParticipes&action=obtenerDatosCuentasBancos",
+		url:"index.php?controller=CreditosParticipes&action=obtenerDatosCuentasBancosSolicitud",
 		dataType:"json",
 		type:"POST",
-		data:null
+		data:{ 'id_solicitud': view.hdn_id_solicitud.val() }
 	}).done( function(x){
 		
 		if( x.estatus != undefined && x.estatus == "OK" )
 		{
-			var datosbancos = x.rsbancos || [];
-			var elementBancos	= $("#spanel_id_bancos");
-			elementBancos.empty().append('<option value="0">--Selecione--</option>');
-			$.each(datosbancos,function( index, value ){
-				elementBancos.append('<option value="'+value.id_bancos+'">'+value.nombre_bancos+'</option>');
-			});
-			
-			var datostipocuentas = x.rstipocuentas || [];
-			var elementTiposCuentas	= $("#spanel_id_tipo_cuentas");
-			elementTiposCuentas.empty().append('<option value="0">--Selecione--</option>');
-			$.each(datostipocuentas,function( index, value ){
-				elementTiposCuentas.append('<option value="'+value.id_tipo_cuentas+'">'+value.nombre_tipo_cuentas+'</option>');
-			})			
+			if( x.tipo_pago == "transferencia" )
+			{
+				var validadores	= x.validadores;
+				var id_banco_selecionado = ( validadores.id_bancos == undefined ) ? 0 : validadores.id_bancos ;
+				var datosbancos = x.databancos || [];
+				viewcuentas.id_bancos.empty().append('<option value="0">--Selecione--</option>');
+				$.each(datosbancos,function( index, value ){
+					if( id_banco_selecionado == value.id_bancos )
+					{
+						viewcuentas.id_bancos.append('<option value="'+value.id_bancos+' " selected >'+value.nombre_bancos+'</option>');
+					}else
+					{
+						viewcuentas.id_bancos.append('<option value="'+value.id_bancos+'">'+value.nombre_bancos+'</option>');
+					}					
+				});
+				
+				var datostipocuentas = x.datatipocuentas || [];
+				var id_tipo_cuenta_selecionado = ( validadores.id_tipo_cuentas == undefined ) ? 0 : validadores.id_tipo_cuentas ;
+				viewcuentas.id_tipo_cuentas.empty().append('<option value="0">--Selecione--</option>');
+				$.each(datostipocuentas,function( index, value ){
+					if( id_tipo_cuenta_selecionado == value.id_tipo_cuentas )
+					{
+						viewcuentas.id_tipo_cuentas.append('<option value="'+value.id_tipo_cuentas+'" selected>'+value.nombre_tipo_cuentas+'</option>');
+					}else
+					{
+						viewcuentas.id_tipo_cuentas.append('<option value="'+value.id_tipo_cuentas+'">'+value.nombre_tipo_cuentas+'</option>');
+					}
+					
+				});	
+				
+				var numero_cuenta = ( validadores.numero_cuenta == undefined ) ? "" : validadores.numero_cuenta ;
+				viewcuentas.numero_cuentas.val( numero_cuenta );
+			}else
+			{
+				viewcuentas.id_bancos.attr('disabled',true);
+				viewcuentas.id_tipo_cuentas.attr('disabled',true);
+				viewcuentas.numero_cuentas.attr('disabled',true);
+				$("#btn_guardar_cuentas").attr('disabled',true);
+				
+				swal({title:"INFORMACION", text:"Tipo de pago selecionado por participe Cheque", icon:"info"});
+				
+				$('.nav-tabs a[href="#panel_info"]').tab('show');
+			}				
 		}
 		
 	}).fail( function( xhr, status, error ){
@@ -75,28 +119,38 @@ var obtener_datos_cuentas_bancarias	= function(){
 	})
 } 
 
-var ingresa_cuentas_bancarias	= function(){
+var ingresa_cuentas_bancarias_solicitud	= function(){
 			
 	$.ajax({
-		url:"index.php?controller=CreditosParticipes&action=ingresaCuentasBancariasParticipe",
+		url:"index.php?controller=CreditosParticipes&action=ingresaCuentasBancariasSolicitud",
 		dataType:"json",
 		type:"POST",
-		data:parametros_cuentas()
+		data:parametros_cuentas_solicitud()
 	}).done( function(x){
 		
 		if( x.estatus != undefined && x.estatus == "OK" )
 		{
-			swal({ title:"PROCESO REALIZADO", text:"Cuenta participe Ingresada", icon:"success" });	
+			swal({ title:"PROCESO REALIZADO", text:"Datos actualizados", icon:"success" });	
 			
 			viewcuentas.id_bancos.val("0");
 			viewcuentas.id_tipo_cuentas.val("0");
-			viewcuentas.numero_cuentas.val("");
-			viewcuentas.cuenta_principal.val("0");
+			viewcuentas.numero_cuentas.val("");	
+			
+			inhabilitar_elementos_panel_cuentas(); //inhabilitar los elementos en el panel de cuentas 
+			
+			$('.nav-tabs a[href="#panel_info"]').tab('show');
+			
+			try {
+				obtener_informacion_solicitud();
+			} catch (e) {
+				// TODO: handle exception
+				console.log('funccion no encontrada \n'+e) 
+			}
 			
 		}
 		
 	}).fail( function( xhr, status, error ){
-		swal({ title:"ERROR", text:"Cuenta participe no Ingresada", icon:"error", dangerMode:true });
+		swal({ title:"ERROR", text:" No se actualizo los datos", icon:"error", dangerMode:true });
 		console.log( xhr.responseText );
 	})
 	
@@ -109,6 +163,15 @@ var parametros_cuentas	= function(){
 		"id_tipo_cuentas": viewcuentas.id_tipo_cuentas.val(),
 		"numero_participes_cuentas": viewcuentas.numero_cuentas.val(),
 		"cuenta_principal": viewcuentas.cuenta_principal.val()
+	}
+}
+
+var parametros_cuentas_solicitud	= function(){	
+	return {
+		"id_solicitud": view.hdn_id_solicitud.val(), //esta variable toma de la vista --solicitud
+		"nombre_bancos": viewcuentas.id_bancos.find('option:selected').text(),
+		"nombre_tipo_cuentas": viewcuentas.id_tipo_cuentas.val(),
+		"numero_cuentas": viewcuentas.numero_cuentas.val()
 	}
 }
 
@@ -131,13 +194,7 @@ var valida_formulario_cuentas	= function(){
 		{
 			viewcuentas.numero_cuentas.notify("Digite un numero de cuenta",{ position:"buttom left", autoHideDelay: 2000 });
 			throw "numero cuentas";
-		}
-		
-		if( viewcuentas.cuenta_principal.val() == 0 )
-		{
-			viewcuentas.cuenta_principal.notify("Seleccione Principal",{ position:"buttom left", autoHideDelay: 2000 });
-			throw "cuenta principal";
-		}
+		}		
 		return true;
 		
 	}catch (e) {
@@ -148,94 +205,3 @@ var valida_formulario_cuentas	= function(){
 	
 }
 
-var mostrar_cuentas_participes	= function(a=1){
-			
-	var params	= {
-			"id_participes": view.hdn_id_participes.val(), //esta variable toma de la vista 
-			"search": $("#spanel_buscador_cuentas").val(),
-			"page": a,
-		}
-	
-	$.ajax({
-		url:"index.php?controller=CreditosParticipes&action=listarCuentasBancariasParticipes",
-		dataType:"json",
-		type:"POST",
-		data:params
-	}).done( function(x){
-		
-		if( x.estatus != undefined && x.estatus == "OK" )
-		{
-			var tablebody	= $("#spanel_tbl_cuentas_bancarias").find('tbody');
-			var divpaginacion	= $("#div_cuentas_paginacion"); 
-			
-			tablebody.empty().append( x.filas );
-			divpaginacion.html( x.paginacion );
-						
-		}
-		
-	}).fail( function( xhr, status, error ){
-		swal({ title:"ERROR", text:"Error al buscar informacion", icon:"error", dangerMode:true });
-		console.log( xhr.responseText );
-	})
-}
-
-var editar_participes_cuentas	= function(a){
-	
-	var id_participes_cuentas	= a;
-	$.ajax({
-		url:"index.php?controller=CreditosParticipes&action=editarParticipesCuentas",
-		dataType:"json",
-		type:"POST",
-		data:{'id_participes_cuentas':id_participes_cuentas}
-	}).done( function(x){
-		
-		if( x.estatus != undefined && x.estatus == "OK" )
-		{
-			var y = x.data[0];
-			
-			viewcuentas.id_bancos.val( y.id_bancos);
-			viewcuentas.id_tipo_cuentas.val( y.id_tipo_cuentas );
-			viewcuentas.numero_cuentas.val( y.numero_participes_cuentas );
-			viewcuentas.cuenta_principal.val( ( ( y.cuenta_principal = 't' ) ? 'true' : 'false' ) );
-			
-			$('html, body').animate({
-			      scrollTop: viewcuentas.id_bancos.offset().top - 250
-			    }, 'slow');
-			
-			swal({ title:"PROCESO REALIZADO", text:"", icon:"success" });
-			
-			//buscar datos de participes cuentas
-			mostrar_cuentas_participes();						
-		}
-		
-	}).fail( function( xhr, status, error ){
-		swal({ title:"ERROR", text:"Datos no encontrados", icon:"error", dangerMode:true });
-		console.log( xhr.responseText );
-	})
-}
-
-var eliminar_participes_cuentas	= function(a){
-	
-	var id_participes_cuentas	= a;
-	
-	$.ajax({
-		url:"index.php?controller=CreditosParticipes&action=eliminarParticipesCuentas",
-		dataType:"json",
-		type:"POST",
-		data:{'id_participes_cuentas':id_participes_cuentas}
-	}).done( function(x){
-		
-		if( x.estatus != undefined && x.estatus == "OK" )
-		{
-			swal({ title:"PROCESO REALIZADO", text:"Datos Eliminados", icon:"success" });	
-			
-			//buscar datos de participes cuentas
-			mostrar_cuentas_participes();	
-		}
-		
-	}).fail( function( xhr, status, error ){
-		swal({ title:"ERROR", text:"Error al eliminar datos", icon:"error", dangerMode:true });
-		console.log( xhr.responseText );
-	})
-	
-}

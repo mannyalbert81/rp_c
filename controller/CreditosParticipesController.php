@@ -83,16 +83,19 @@ class CreditosParticipesController extends ControladorBase
             $data = array();
             $data['nombre_tipo_credito_solicitud'] = $resultSet[0]->nombre_tipo_creditos;
 
-            $html = '<div id="info_participe_solicitud" class="row bg-teal">
-                    <h3 class="titulo">Información de Solicitud</h3>
-                    <div class="col-md-6 col-md-12">
+            $html = '<div id="info_participe_solicitud " class="row bg-teal">
+                    <div class="contenedor-titulo-solicitud">
+                        <h3 class="titulo col-lg-11 col-md-11">Información de Solicitud</h3>
+                        <button id="btn_cambiar_datos_cuentas_solicitud" class="col-lg-1 col-md-1 no-padding btn btn-default"><i class="fa fa-edit fa-2x" aria-hidden="true"></i></button>
+                    </div>                    
+                    <div class="col-lg-6 col-md-12">
                     <div class="box-footer no-padding bg-teal">
                         <div class="bio-row"><p><span class="tab">Tipo Crédito </span>: ' . $data['nombre_tipo_credito_solicitud'] . '</p></div>
                         <div class="bio-row"><p><span class="tab">Nombre Banco </span>: ' . $resultSet[0]->nombre_banco_cuenta_bancaria . '</p></div>
                         <div class="bio-row"><p><span class="tab">Número Cuenta </span>: ' . $resultSet[0]->numero_cuenta_cuenta_bancaria . '</p></div>
                     </div>
                     </div>
-                    <div class="col-md-6 col-md-12">
+                    <div class="col-lg-6 col-md-12">
                     <div class="box-footer no-padding bg-teal">
                         <div class="bio-row"><p><span class="tab">Destino Dinero</span>: ' . $resultSet[0]->destino_dinero_datos_prestamo . '</p></div>
                         <div class="bio-row"><p><span class="tab">Tipo Cuenta </span>: ' . $resultSet[0]->tipo_cuenta_cuenta_bancaria . '</p></div>
@@ -946,7 +949,8 @@ class CreditosParticipesController extends ControladorBase
         $id_creditos_renovar = $rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
 
         $count_creditos_renovar = 0;
-        foreach ($id_creditos_renovar as $res) {
+        foreach ($id_creditos_renovar as $res) 
+        {
             $columnas = 'core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
             		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
             		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
@@ -1440,95 +1444,148 @@ class CreditosParticipesController extends ControladorBase
         
     }
     
-    public function obtenerDatosCuentasBancos(){
-        
+    public function obtenerDatosCuentasBancosSolicitud()
+    {        
         ob_start();
         
-        $bancos = new BancosModel();
+        require_once 'core/DB_Functions.php';
+        $db = new DB_Functions(); //modelo para webcapremci  
         
-        //array enviar a vista
-        $datosBancos    = array();
-        $datosTipoCuentas   = array();
         $response   = array();
         
-        $col1 = " id_bancos, nombre_bancos";
-        $tab1 = " public.tes_bancos";
-        $whe1 = " 1 = 1";
-        $id1  = " nombre_bancos";
-        $rsConsulta1    = $bancos->getCondiciones($col1, $tab1, $whe1, $id1);
+        $id_solicitud   = $_POST['id_solicitud'];
         
-        $col2 = " id_tipo_cuentas, nombre_tipo_cuentas";
-        $tab2 = " public.core_tipo_cuentas";
-        $whe2 = " 1 = 1";
-        $id2  = " nombre_tipo_cuentas";
-        $rsConsulta2    = $bancos->getCondiciones($col2, $tab2, $whe2, $id2);
+        $rsDatosBancos  = array();
+        $rsDatosTipoCuenta = array();
+        //se genera un array con los tipos de cuenta para enviar a la vista
+        array_push($rsDatosTipoCuenta, (object)array( 'id_tipo_cuentas'=>"Ahorros",'nombre_tipo_cuentas'=>"AHORROS" ) );
+        array_push($rsDatosTipoCuenta, (object)array( 'id_tipo_cuentas'=>"Corriente", 'nombre_tipo_cuentas'=>"CORRIENTE" ) ); 
+        //$rsDatosTipoCuenta =  array((object)$rsDatosTipoCuenta); //se transforma en un objeto array 
+        $rsValidadores  = array();
         
-        $datosBancos    = ( !empty( $rsConsulta1 ) ) ? $rsConsulta1 : array();
+        $tipo_pago = "";
+        $nombre_banco   = "";
+        $id_banco_seleccionado = 0;
+        $valor_tipo_cuenta_selecionada = "";
+        $tipo_pago_selecionado  = "";
+        $numero_cuenta_selecionada  = "";
         
-        $datosTipoCuentas   = ( !empty( $rsConsulta2 ) ) ? $rsConsulta2 : array();
+        //buscamos bancos de --web capremci
+        $columnas = " id_bancos, nombre_bancos";
+        $tablas = " bancos";
+        $where = " 1 = 1";
+        $id = "nombre_bancos";
+        $rsBancos = $db->getCondicionesDesc($columnas, $tablas, $where, $id);        
         
-        $salida = ob_get_clean();
         
-        if( empty( $salida ) )
+        $columnas = "nombre_banco_cuenta_bancaria, tipo_cuenta_cuenta_bancaria, numero_cuenta_cuenta_bancaria,
+            numero_cedula_datos_personales, tipo_pago_cuenta_bancaria";
+        $tablas = " public.solicitud_prestamo";
+        $where = "id_solicitud_prestamo=$id_solicitud";
+        $id = "id_solicitud_prestamo"; 
+        $resultSoli = $db->getCondicionesDesc($columnas, $tablas, $where, $id);        
+        
+        if( !( empty( $resultSoli ) ) )
         {
-            $response['rsbancos'] = $datosBancos;
-            $response['rstipocuentas']  = $datosTipoCuentas;
-            $response['estatus'] = "OK";
-            echo json_encode( $response );
-            return;
+            $tipo_pago  = $resultSoli[0]->tipo_pago_cuenta_bancaria;
+            
+            if( $tipo_pago == "Depósito")
+            {   
+                $tipo_pago_selecionado = "transferencia";
+                
+                $nombre_banco = $resultSoli[0]->nombre_banco_cuenta_bancaria;
+                
+                foreach( $rsBancos as $res )
+                {
+                    if( $res->nombre_bancos == $nombre_banco ){
+                        $id_banco_seleccionado = $res->id_bancos;
+                    }
+                }
+                $rsDatosBancos  = $rsBancos;
+                
+                foreach( $rsDatosTipoCuenta as $res)
+                {
+                    if( $res->nombre_tipo_cuentas == "AHORROS" )
+                    {
+                        $valor_tipo_cuenta_selecionada  = $res->id_tipo_cuentas;
+                    }
+                }
+                
+                $numero_cuenta_selecionada  = $resultSoli[0]->numero_cuenta_cuenta_bancaria;
+                
+                $rsValidadores['id_bancos'] = $id_banco_seleccionado;
+                $rsValidadores['id_tipo_cuentas']   = $valor_tipo_cuenta_selecionada;
+                $rsValidadores['numero_cuenta'] = $numero_cuenta_selecionada;
+               
+            }else
+            {
+                $tipo_pago_selecionado  = "cheque";
+            }
+            
+            $response['estatus']    = "OK";
+            $response['databancos'] = $rsDatosBancos;
+            $response['datatipocuentas']    = $rsDatosTipoCuenta;
+            $response['validadores']    = $rsValidadores;
+            $response['tipo_pago']  = $tipo_pago_selecionado;            
+                        
+            $errores_cuentas = ob_get_clean();
+            $errores_cuentas = trim($errores_cuentas);
+        } else {
+            $errores_cuentas = "NO SE PUDO CONSEGUIR LA INFO";
         }
         
-        print_r( error_get_last() );        
+        if( !empty( $errores_cuentas ) )
+        {
+            echo $errores_cuentas;
+            echo "INFORMACION NO ENCONTRADA";
+        }else
+        {
+            echo json_encode( $response );
+        }       
+       
     }
     
-    public function ingresaCuentasBancariasParticipe()
+    public function ingresaCuentasBancariasSolicitud()
     {        
         try {
+            
+            require_once 'core/DB_Functions.php';
+            $db = new DB_Functions(); //modelo para webcapremci  
             
             ob_start();
             
             $resp   = array();
-            $participes = new ParticipesModel();
             
             if( !isset( $_SESSION ) )
             {
                 session_start();
             }
             
-            $id_participes  = $_POST["id_participes"];
-            $id_bancos      =  $_POST["id_bancos"];
-            $id_tipo_cuentas= $_POST["id_tipo_cuentas"];
-            $numero_participes_cuentas  = $_POST["numero_participes_cuentas"];
-            $cuenta_principal   = $_POST["cuenta_principal"];
-            $usuario_usuarios   = $_SESSION["usuario_usuarios"];
-            $ip_usuarios    = $_SESSION["ip_usuarios"];
+            $id_solicitud   = $_POST['id_solicitud'];
+            $nombre_banco   = $_POST['nombre_bancos'];
+            $nombre_tipo_cuentas    = $_POST['nombre_tipo_cuentas'];
+            $numero_cuentas = $_POST["numero_cuentas"];
+            //$tipo_pago  = "Depósito";
             
             if( !empty( error_get_last() ) )
             {
                 throw new Exception("Variables no recibidas");
             }
             
-            $funcion = "ins_core_participes_cuentas";
-            
-            $parametros = " '$id_participes',
-                            '$id_bancos',
-                            '$numero_participes_cuentas',
-                            '$id_tipo_cuentas',
-                            '$cuenta_principal',
-                            '$usuario_usuarios',
-                            '$ip_usuarios'";
-            
-            $sqlFuncion = $participes->getconsultaPG($funcion, $parametros);
-            
-            $resultado = $participes->llamarconsultaPG( $sqlFuncion );
-            
+            $colval = " nombre_banco_cuenta_bancaria = '$nombre_banco',
+                tipo_cuenta_cuenta_bancaria = '$nombre_tipo_cuentas',
+                numero_cuenta_cuenta_bancaria = '$numero_cuentas'";
+            $tabla = " public.solicitud_prestamo";
+            $where = " id_solicitud_prestamo =" . $id_solicitud;
+            $db->ActualizarBy($colval, $tabla, $where);
+                        
             if( !empty( error_get_last() ) )
             {
-                throw new Exception("funcion 'ins_core_participes_cuentas'");
+                throw new Exception("Error al actualizar Datos en la solicitud");
             }
             
             $resp['estatus'] = "OK";
-            $resp['respuesta']  = $resultado;
+            $resp['respuesta']  = 1;
             
             $salida = ob_get_clean();
             
@@ -1545,148 +1602,7 @@ class CreditosParticipesController extends ControladorBase
             print_r( error_get_last() );
         }        
     }
-    
-    public function listarCuentasBancariasParticipes()
-    {
-        ob_start();
         
-        $participes = new ParticipesModel();
-        
-        $resp   = array();
-        
-        $id_participes = $_POST["id_participes"];        
-        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
-        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-        
-        $columnas = " aa.id_participes_cuentas, bb.nombre_bancos, cc.nombre_tipo_cuentas, aa.numero_participes_cuentas,
-            aa.cuenta_principal";
-        $tablas =    " core_participes_cuentas aa
-            INNER JOIN tes_bancos bb ON bb.id_bancos = aa.id_bancos
-            INNER JOIN core_tipo_cuentas cc ON cc.id_tipo_cuentas = aa.id_tipo_cuentas";
-        $where    = " aa.id_participes = $id_participes";
-        $id       = " aa.cuenta_principal DESC, bb.nombre_bancos";
-        
-        if( !empty( $search ) )
-        {   
-            $where .=" AND ( aa.numero_participes_cuentas ILIKE '%".$search."%'";
-            $where .=" OR bb.nombre_bancos ILIKE '%".$search."%')";
-        }
-        
-        $html="";
-        $paginacion = "";
-        $resultSet=$participes->getCantidad("*", $tablas, $where);
-        $cantidadResult=(int)$resultSet[0]->total;
-        
-        $per_page = 10;
-        $adjacents  = 9;
-        $offset = ($page - 1) * $per_page;
-        
-        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
-        
-        $rsCuentas=$participes->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
-        $total_pages = ceil($cantidadResult/$per_page);
-        
-        if( sizeof( $rsCuentas ) > 0 )
-        {
-            $i=0;
-            
-            foreach ( $rsCuentas as $res )
-            {
-                
-                $cuenta_principal = ( $res->cuenta_principal == "t" ) ? "PRINCIPAL" : "-";
-                $i++;
-                $html.='<tr>';
-                $html.='<td style="font-size: 11px;">'.$i.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->nombre_bancos.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->nombre_tipo_cuentas.'</td>';
-                $html.='<td style="font-size: 11px;">'.$res->numero_participes_cuentas.'</td>';
-                $html.='<td style="font-size: 11px;">'.$cuenta_principal.'</td>';
-                $html.='<td style="font-size: 18px;">
-                            <a onclick="editar_participes_cuentas('.$res->id_participes_cuentas.')" 
-                            href="#" class="no-padding btn btn-sm btn-default" data-toggle="tooltip" title="Editar"><i class="fa  fa-edit fa-2x fa-fw"></i></a>
-<a onclick="eliminar_participes_cuentas('.$res->id_participes_cuentas.')"   href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" title="Eliminar"><i class="fa  fa-trash fa-2x fa-fw"></i></a></td>';
-                                       
-                $html.='</tr>';
-               
-            }
-            
-            $paginacion = ''. $participes->allpaginate("index.php", $page, $total_pages, $adjacents,'mostrar_cuentas_participes').'';
-            
-            
-        }
-        
-        $resp['estatus'] = "OK";
-        $resp['filas'] = $html;
-        $resp['paginacion'] = $paginacion;
-        $resp['cantidad']   = $cantidadResult;
-        
-        $salida = ob_get_clean();
-        
-        if( !empty( $salida ) )
-        {
-            print_r(error_get_last());
-        }else
-        {
-            echo json_encode($resp);
-        }
-        
-    }
-    
-    public function editarParticipesCuentas()
-    {
-        ob_start();
-        $resp = array();
-        $participes = new ParticipesModel();
-        $id_participes_cuentas  = $_POST['id_participes_cuentas'];
-        
-        $col1   = " aa.id_participes_cuentas, aa.id_bancos, bb.nombre_bancos, cc.id_tipo_cuentas, cc.nombre_tipo_cuentas, aa.numero_participes_cuentas, aa.cuenta_principal";
-        $tab1   = " core_participes_cuentas aa
-            INNER JOIN tes_bancos bb on bb.id_bancos = aa.id_bancos
-            INNER JOIN core_tipo_cuentas cc on cc.id_tipo_cuentas = aa.id_tipo_cuentas";
-        $whe1   = " aa.id_participes_cuentas = $id_participes_cuentas ";
-        $id1    = " aa.cuenta_principal , bb.nombre_bancos ";
-        
-        $rsConsulta1 = $participes->getCondiciones($col1, $tab1, $whe1, $id1);
-        
-        $resp['estatus']    = "OK";
-        $resp['data']   = ( !empty( $rsConsulta1 ) ) ? $rsConsulta1 : array();
-        
-        $salida = ob_get_clean();
-        
-        if( !empty( $salida ) )
-        {
-            var_dump( error_get_last() );
-        }else{
-            echo json_encode( $resp );
-        }        
-    }
-    
-    public function eliminarParticipesCuentas()
-    {
-        ob_start();
-        $pagos = new PagosModel();
-        
-        $id_participes_cuentas  = $_POST['id_participes_cuentas'];        
-        
-        $tab    = " public.core_participes_cuentas ";
-        $whe    = " id_participes_cuentas = $id_participes_cuentas";
-        
-        $resultado = $pagos->eliminarFila( $tab, $whe);
-        
-        $resp = array();
-        $resp['estatus']   = "OK";
-        $resp['mensaje']   = " Datos Eliminados (".$resultado.")";
-                
-        $salida = ob_get_clean();
-        
-        if( !empty( $salida ) )
-        {
-            var_dump( error_get_last() );
-        }else{
-            echo json_encode( $resp );
-        } 
-    }
-    
 }
 
 ?>

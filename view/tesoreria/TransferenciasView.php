@@ -265,9 +265,9 @@
   				   </div>
             	   <div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
-            				<label for="valor_parcial_transferencias" class=" control-label" >Valor Partcial:</label> 
+            				<label for="valor_parcial_transferencias" class=" control-label" >Valor Parcial:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="valor_parcial_transferencias"  value=" <?php echo $resultset[0]->numero_cuenta_banco; ?> " >
+                				 <input type="text" class="form-control mayus" id="valor_parcial_transferencias"  value="0" readonly>
                     		</div>        			 
             			</div>
             	   </div>             		   	
@@ -499,7 +499,7 @@
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.35"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.41"></script>
 
   </body>
 </html>   

@@ -18,6 +18,10 @@ function init(){
 	$("#genera_transferencia").attr("disabled",true);
 	
 	var fechaServidor = $("#fechasistema").text();
+	
+	$("#chk_pago_parcial_transferencias").on( 'change', function() {
+		fnValidaPagoParcial(this);
+	});	
 		
 	/*$("#fecha_transferencia").inputmask("datetime",{
 	     mask: "y-2-1", 
@@ -268,7 +272,9 @@ function graficaTablaDistribucion(){
 	$tablaDistribucion.find("select[name='mod_tipo_pago']").append('<option value="debito" >DEBITO</option><option value="credito" >CREDITO</option>');
 	$tablaDistribucion.find("input:text[name='mod_dis_referencia']").append('');
 	
-	$tablaDistribucion.find("span[name='mod_dis_valor']").text( $("#total_cuentas_pagar").val());
+	var valor_a_pagar = ( $("#chk_pago_parcial_transferencias").val() == 0 ) ? $("#total_cuentas_pagar").val() : $("#valor_parcial_transferencias").val();
+	
+	$tablaDistribucion.find("span[name='mod_dis_valor']").text( valor_a_pagar );
 
 	return $tablaDistribucion;
 	
@@ -350,11 +356,11 @@ $("#genera_transferencia").on("click",function(){
 	var _id_tipo_cuentas     = $("#id_tipo_cuentas").val();
 	var _descripcion_pago     = $("#descripcion_pago").val();
 	
+	/**dc 2020/07/21  pago parcial**/
+	var chk_pago_parcial = $("#chk_pago_parcial_transferencias");
+	var pago_parcial = $("#valor_parcial_transferencias");	
 	
-	
-	//esta variable se declara ala cargar la pagina
-	//listaCuentas
-	console.log(listaCuentas);
+	//esta variable se declara ala cargar la pagina	
 	var arrayCuentas = listaCuentas;
 	
 	//para insertado de la tabla archivo pago
@@ -378,8 +384,10 @@ $("#genera_transferencia").on("click",function(){
 	parametros.append('id_tipo_archivo_pago', _id_tipo_archivo_pago);
 	parametros.append('descripcion_pago', _descripcion_pago);
 	
-	
-	
+	/** dc 2020/07/22 **/
+	parametros.append('check_pago_parcial', chk_pago_parcial.val() );
+	parametros.append('valor_pago_parcial', pago_parcial.val() );
+		
 	$.ajax({
 		url:"index.php?controller=Transferencias&action=GeneraTransferencia",
 		type:"POST",
@@ -541,10 +549,6 @@ $("#mod_distribucion_pago").on("keyup","input:text[name='mod_dis_referencia']",f
 	})
 	
 })
-
-
-
-
 
 
 //poner el mismo texto a todos 
@@ -769,6 +773,20 @@ var editar_cuentas	= function(){
 		console.log(xhr.responseText);
 		swal({title:"ERROR",text:"Error al actualizar Registro",dangerMode:true,icon:"error"});
 	});
+}
+
+/************************************************************ CAMBIOS PARA VALOR PACIAL ****************************************/
+var fnValidaPagoParcial	= function(a){
+	var elemento = $(a);
+	if( elemento.is(':checked') ) {
+        // Hacer algo si el checkbox ha sido seleccionado
+		elemento.val(1);
+        $("#valor_parcial_transferencias").attr("readonly",false).val("");
+    } else {
+        // Hacer algo si el checkbox ha sido deseleccionado
+    	elemento.val(0);
+        $("#valor_parcial_transferencias").attr("readonly",true).val("0");
+    }
 }
 
 

@@ -252,8 +252,6 @@
 			</div>
 		</section>
 
-
-
 	</div>
       
     <?php include("view/modulos/links_js.php"); ?>

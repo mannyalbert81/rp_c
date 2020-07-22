@@ -233,7 +233,11 @@ class TransferenciasController extends ControladorBase{
 	    
 	    //variable usada para determinar el tipo de archivo de pago
 	    $_id_tipo_archivo_pago = $_POST['id_tipo_archivo_pago'];
-	    	    
+	    
+	    //dc 2020/07/22
+	    $chk_pago_parcial  = $_POST['check_pago_parcial'];
+	    $valor_pago_parcial    = $_POST['valor_pago_parcial'];	    
+	        
 	    $_isCredito = filter_var($_isCredito, FILTER_VALIDATE_BOOLEAN); //se realiza la conversion de string a un boleano 
 	   
 	    try {
@@ -301,6 +305,8 @@ class TransferenciasController extends ControladorBase{
 	        
 	        //seteamos variables que necesitamos 
 	        $total_cuentas_pagar   = 0.00;
+	        $valor_aplicado_cuentas_pagar = 0.00; //dc 2020/07/22
+	        
 	        //$descripcion_cuentas_pagar = "";
 	        $id_ccomprobantes      = $rsConsulta2[0]->id_ccomprobantes;
 	        $id_proveedores        = $rsConsulta2[0]->id_proveedores;
@@ -309,7 +315,15 @@ class TransferenciasController extends ControladorBase{
 	        $beneficiario      = $rsConsulta2[0]->nombre_proveedores;
 	        $concepto_credito  = "";
 	        $observacion_comprobantes  = "PAGO  PROVEEDORES";
-	        $datosMsgParticipe         = null;
+	        $datosMsgParticipe         = null;	        
+	        
+	        //dc 2020/07/22
+	        $valor_aplicado_cuentas_pagar  = $total_cuentas_pagar;
+	        
+	        if( $chk_pago_parcial == "1" ){
+	            $valor_aplicado_cuentas_pagar  = $valor_pago_parcial;
+	        }
+	        
 	        
 	        //throw new Exception("error de prueba");
 	                                                                       
@@ -346,9 +360,9 @@ class TransferenciasController extends ControladorBase{
 	            $datosMsgParticipe['numero_cuenta']    = $_numero_cuenta_banco;
 	            $datosMsgParticipe['nombre_banco']     = $nombre_bancos_transferir;	            
 	            
-	        }	        
-	        
-	        $auxPago = $this->auxInsertPago($_id_cuentas_pagar, $id_creditos,$id_proveedores, $id_forma_pago, $_fecha_transferencia, $_id_bancos_transferir, $_numero_cuenta_banco,$_id_tipo_cuentas,$_id_bancos_local,$total_cuentas_pagar);
+	        }
+	        	        	        
+	        $auxPago = $this->auxInsertPago($_id_cuentas_pagar, $id_creditos,$id_proveedores, $id_forma_pago, $_fecha_transferencia, $_id_bancos_transferir, $_numero_cuenta_banco,$_id_tipo_cuentas,$_id_bancos_local,$valor_aplicado_cuentas_pagar);
 	        
 	        if( $auxPago['error'] === true ){
 	            throw new Exception( "Inserción Pagos! ".$auxPago['mensaje'] );
@@ -359,7 +373,7 @@ class TransferenciasController extends ControladorBase{
 	        
 	        /* ********************************************************** */
 	        /** viene la distribucion del pago **/
-	        $auxDistribucion = $this->auxInsertDistribucionPago($_lista_distribucion, $id_pagos, $_fecha_transferencia, $total_cuentas_pagar);
+	        $auxDistribucion = $this->auxInsertDistribucionPago($_lista_distribucion, $id_pagos, $_fecha_transferencia, $valor_aplicado_cuentas_pagar);
 	        if( $auxDistribucion['error'] === true ){
 	            throw new Exception( "Distribucion Pagos!".$auxDistribucion['mensaje'] );
 	        }
@@ -370,7 +384,7 @@ class TransferenciasController extends ControladorBase{
 	        $datos = array(
 	            'id_pagos' => $id_pagos,
 	            'beneficiario' => $beneficiario,
-	            'total_pago' => $total_cuentas_pagar,
+	            'total_pago' => $valor_aplicado_cuentas_pagar,
 	            'concepto_credito' =>$concepto_credito,
 	            'id_proveedores' => $id_proveedores,
 	            'id_forma_pago' => $id_forma_pago,
@@ -395,13 +409,20 @@ class TransferenciasController extends ControladorBase{
 	        $columnaPago = "id_ccomprobantes = $id_comprobantes ";
 	        $tablasPago = "tes_pagos";
 	        $wherePago = "id_pagos = $id_pagos";
-	        $pagos -> ActualizarBy($columnaPago, $tablasPago, $wherePago);	        
+	        $pagos -> ActualizarBy($columnaPago, $tablasPago, $wherePago);	       
 	        
+	        //dc 2020/07/22
 	        //buscar y actualizar estado de cuentas por pagar
-	        $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
+	        $saldo_cuentas_pagar = $total_cuentas_pagar - $valor_aplicado_cuentas_pagar;
+	        if( empty($saldo_cuentas_pagar) ){
+	            $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
+	        }else{
+	            $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'PARCIAL'";
+	        }
+	        	        
 	        $rsEstado = $pagos -> enviaquery($queryEstado);
 	        $_id_estado = $rsEstado[0]->id_estado;
-	        $pagos->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
+	        $pagos->ActualizarBy("id_estado = $_id_estado, saldo_cuenta_cuentas_pagar = $saldo_cuentas_pagar", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
 	        
 	        /** proceso de envio de mensaje se realizara si es credito **/ 
 	        if( $_isCredito ){

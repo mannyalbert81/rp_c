@@ -60,21 +60,14 @@ class PagosController extends ControladorBase{
         
         $columnas = "aa.id_cuentas_pagar, aa.descripcion_cuentas_pagar,aa.fecha_cuentas_pagar, aa.origen_cuentas_pagar, aa.total_cuentas_pagar, aa.saldo_cuenta_cuentas_pagar,
                 	bb.id_lote, bb.nombre_lote, cc.id_proveedores,cc.nombre_proveedores, cc.identificacion_proveedores, ee.id_usuarios, ee.nombre_usuarios,
-                	ff.id_forma_pago, ff.nombre_forma_pago";
-        
+                	ff.id_forma_pago, ff.nombre_forma_pago";        
         $tablas = "tes_cuentas_pagar aa
-                INNER JOIN tes_lote bb
-                ON aa.id_lote = bb.id_lote
-                INNER JOIN proveedores cc
-                ON aa.id_proveedor = cc.id_proveedores
-                INNER JOIN estado dd
-                ON aa.id_estado = dd.id_estado
-                INNER JOIN usuarios ee
-                ON bb.id_usuarios = ee.id_usuarios
-                LEFT JOIN forma_pago ff
-                ON aa.id_forma_pago = ff.id_forma_pago";
-        
-        $where = " 1=1 AND dd.nombre_estado = 'GENERADO' AND aa.origen_cuentas_pagar = 'MANUAL'";
+            INNER JOIN tes_lote bb ON aa.id_lote = bb.id_lote
+            INNER JOIN proveedores cc ON aa.id_proveedor = cc.id_proveedores
+            INNER JOIN estado dd ON aa.id_estado = dd.id_estado
+            INNER JOIN usuarios ee ON bb.id_usuarios = ee.id_usuarios
+            LEFT JOIN forma_pago ff ON aa.id_forma_pago = ff.id_forma_pago";        
+        $where = " 1=1 AND dd.nombre_estado in ('GENERADO','PARCIAL') AND aa.origen_cuentas_pagar = 'MANUAL'";
         
         //para los parametros de where 
         if(!empty($busqueda)){

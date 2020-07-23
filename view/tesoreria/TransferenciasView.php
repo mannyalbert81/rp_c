@@ -129,8 +129,25 @@
                     		</div>        			 
             			</div>
             		</div> 
+            			<div class="col-xs-12 col-md-3 col-md-3">
+  					<div class="form-group"> 
+      					<div class="checkbox">
+                         <label>
+                         	<input type="checkbox" value="0" id="chk_pago_parcial_transferencias"> Pago Parcial
+                         </label>
+                        </div>                       
+                    </div>	
+  				   </div>
+            	   <div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="valor_parcial_transferencias" class=" control-label" >Valor Parcial:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control mayus" id="valor_parcial_transferencias"  value="0" readonly>
+                    		</div>        			 
+            			</div>
+            	   </div>  
             		            		
-            		<div class="col-xs-12 col-md-12 col-lg-12">
+            		<div class="col-xs-12 col-md-6 col-lg-6">
             			<div class="form-group ">
             				<label for="identificacion_proveedor" class=" control-label" >Descripción:</label> 
                     		<div class="form-group-sm">                    				
@@ -254,23 +271,7 @@
             			</div>
             		</div> 
             		
-            		<div class="col-xs-12 col-md-3 col-md-3">
-  					<div class="form-group"> 
-      					<div class="checkbox">
-                         <label>
-                         	<input type="checkbox" value="0" id="chk_pago_parcial_transferencias"> Pago Parcial
-                         </label>
-                        </div>                       
-                    </div>	
-  				   </div>
-            	   <div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="valor_parcial_transferencias" class=" control-label" >Valor Parcial:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="valor_parcial_transferencias"  value="0" readonly>
-                    		</div>        			 
-            			</div>
-            	   </div>             		   	
+            	           		   	
             		            						    
           	   	</div>
           	   	

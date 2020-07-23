@@ -133,7 +133,7 @@
   					<div class="form-group"> 
       					<div class="checkbox">
                          <label>
-                         	<input type="checkbox" value="0" id="chk_pago_parcial_transferencias"> Pago Parcial
+                         	<input type="checkbox" value="0" id="chk_pago_parcial_transferencias"><b> Pago Parcial</b>
                          </label>
                         </div>                       
                     </div>	

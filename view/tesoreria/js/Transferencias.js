@@ -1,4 +1,5 @@
 var listaCuentas = [];	//variable que permite el almacenamiento de datos de distribucion valores
+
 $(document).ready(function(){
 		
 	init();
@@ -200,7 +201,15 @@ $("#distribucion_transferencia").on("click",function(event){
 		return false;
 	}
 	
-	//$("#mod_banco_transferir")[0].selectedIndex = 0; // quede selecionado el select
+	var check_parcial = $("#chk_pago_parcial_transferencias");
+	var valor_parcial = $("#valor_parcial_transferencias");
+	if( check_parcial.val() == "1" ){		
+		if( !valor_parcial.val().length  ||  valor_parcial.val() == 0 ){
+			valor_parcial.notify("Ingrese Valor Parcial",{ position:"top center"});
+			swal({"text":"Valor parcial no ingresado",icon:"warning"});
+			return false;
+		}		
+	}
 	
 	$divResultados = $modal.find("#lista_distribucion_transferencia");		
 	$divResultados.html('');
@@ -222,7 +231,7 @@ $("#distribucion_transferencia").on("click",function(event){
 		$modal.find("#mod_tipo_creditos").val( $("#tipo_creditos").val());
 	}
 	
-	getCuentaBancoPago(); //funcion para graficar la cuenta del banco local selecicionado
+	getCuentaBancoPago(); //funcion para graficar la cuenta del banco local seleccionado
 	getCuentaBancoPagoProveedor();
 	
 	$modal.modal("show");
@@ -239,7 +248,7 @@ $("#distribucion_transferencia").on("click",function(event){
  */
 function graficaTablaDistribucion(){
 	
-	var $tablaDistribucion = $('<table border="1" class="tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example"></table>');	
+	var $tablaDistribucion = $('<table border="1" class="table table-striped table-bordered  nowrap "></table>');	
 	var $filaHead="<tr>" +
 	"<th>#</th>" +
 	"<th>Referencia</th>" +
@@ -272,7 +281,7 @@ function graficaTablaDistribucion(){
 	$tablaDistribucion.find("select[name='mod_tipo_pago']").append('<option value="debito" >DEBITO</option><option value="credito" >CREDITO</option>');
 	$tablaDistribucion.find("input:text[name='mod_dis_referencia']").append('');
 	
-	var valor_a_pagar = ( $("#chk_pago_parcial_transferencias").val() == 0 ) ? $("#total_cuentas_pagar").val() : $("#valor_parcial_transferencias").val();
+	var valor_a_pagar = ( $("#chk_pago_parcial_transferencias").val() == 0 ) ? $("#saldo_cuentas_pagar").val() : $("#valor_parcial_transferencias").val();
 	
 	$tablaDistribucion.find("span[name='mod_dis_valor']").text( valor_a_pagar );
 

@@ -45,6 +45,10 @@ function init(){
 		}
 	});
 	
+	$("#chk_pago_parcial_cheque").on( 'change', function() {
+		fnValidaPagoParcial(this);
+	});	
+	
 	
 }
 
@@ -143,16 +147,47 @@ $("#distribucion_cheque").on("click",function(){
 	$divResultados.html('');
 	let $modal = $("#mod_distribucion_pago");
 	
+	// dc 2020/07/22
+	var total_cheque 	= $("#saldo_cheque");
+	var valor_cheque_parcial	= $("#valor_parcial_cheque");
+	var chk_valor_parcial		= $("#chk_pago_parcial_cheque");
+	var valor_a_pagar_cheque 	= total_cheque.val();
+	
+	if( chk_valor_parcial.val() == "1" ){
+		
+		if( parseFloat( valor_cheque_parcial.val() ) < 0 ||  valor_cheque_parcial.val().length == 0 || isNaN( valor_cheque_parcial.val() ) ){
+			
+			swal({title:"ERROR DISTRIBUCION",icon:"warning",text:"Monto parcial no ingresado"});
+			return false;
+		}
+		
+		if( parseFloat( valor_cheque_parcial.val() ) > parseFloat( total_cheque.val() ) ){
+			swal({title:"ERROR DISTRIBUCION",icon:"warning",text:"Monto parcial supera a valor total"});
+			return false;
+		}
+		
+		valor_a_pagar_cheque = valor_cheque_parcial.val();
+	}
+	
+	var parametros = {
+			'id_cuentas_pagar':_id_cuentas_pagar,
+			'id_bancos':$bancos.val(),
+			'referencia_cheque':$referencia_cheque.val(),
+			'check_pago_parcial': chk_valor_parcial.val(),
+			'valor_pago_parcial': valor_cheque_parcial.val()
+			};
+	
+	
 	$("#mod_distribucion_pago").find("#mod_identificacion_proveedor").val($("#identificacion_proveedor").val());
 	$("#mod_distribucion_pago").find("#mod_id_moneda").val($("#id_moneda").val());
-	$("#mod_distribucion_pago").find("#mod_total_cuentas_pagar").val($("#total_lote").val());
+	$("#mod_distribucion_pago").find("#mod_total_cuentas_pagar").val( valor_a_pagar_cheque );
 	$("#mod_distribucion_pago").find("#mod_nombre_proveedor").val($("#nombre_proveedor").val());
 	
 	$.ajax({
 		url:"index.php?controller=GenerarCheque&action=distribucionCheque",
 		type:"POST",
 		dataType:"json",
-		data:{id_cuentas_pagar:_id_cuentas_pagar,id_bancos:$bancos.val(),referencia_cheque:$referencia_cheque.val()}
+		data:parametros
 	}).done(function(x){
 		console.log(x);
 		$divResultados.html(x.tabla_datos);
@@ -174,8 +209,7 @@ $("#distribucion_cheque").on("click",function(){
 	})
 })
 
-$("#genera_cheque").on("click",function(){
-	
+$("#genera_cheque").on("click",function(){	
 	
 	swal({
 		  title: "GENERACION CHEQUE",
@@ -183,20 +217,25 @@ $("#genera_cheque").on("click",function(){
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
-		})
-		.then((generar) => {
-		  if (generar) {
-			  
-			  var _id_cuentas_pagar = $("#id_cuentas_pagar").val();	
+		}).then((generar) => {
+			
+		  if (generar) 
+		  {			  
+			    var _id_cuentas_pagar = $("#id_cuentas_pagar").val();	
 				var _numero_cheque = $("#numero_cheque").val();	
 				var _fecha_cheque = $("#fecha_cheque").val();	
 				var _comentario_cheque = $("#comentario_cheque").val();
 				var _id_bancos = $("#id_bancos").val();
+				//dc 2020/07/22
+				var check_pago_parcial	= $("#chk_pago_parcial_cheque").val();
+				var valor_pago_parcial	= $("#valor_parcial_cheque").val();
 				
 				var parametros = {
 					id_cuentas_pagar:_id_cuentas_pagar,numero_cheque:_numero_cheque,
 					fecha_cheque:_fecha_cheque,comentario_cheque:_comentario_cheque,
-					id_bancos: _id_bancos
+					id_bancos: _id_bancos,
+					'check_pago_parcial' : check_pago_parcial,
+					'valor_pago_parcial' : valor_pago_parcial
 				}
 				
 				$.ajax({
@@ -205,24 +244,25 @@ $("#genera_cheque").on("click",function(){
 					dataType:"json",
 					data:parametros
 				}).done(function(x){
-					console.log(x);
-					if(x.comprobante.valor == 1){
-						
-						var cuentas_pagar_id = x.cuentaspagar.id_cuentas_pagar;
-						var comprobante_id = x.comprobante.id_comprobante;
-						var datosFomulario = {id_comprobante:comprobante_id,id_cuentas_pagar:cuentas_pagar_id}
+					
+					if(x.comprobante.valor == 1)
+					{						
+						var pagoId	= x.pago.id_pagos;
+						var datosFomulario = { 'id_pagos': pagoId };
 						
 						swal({
 							title:"GENERACION CHEQUE",
 							icon:"success",
 							text:x.comprobante.mensaje
 						}).then(function(){
+							
 							FormularioPost("index.php?controller=GenerarCheque&action=generaReporteCheque","blank",datosFomulario);
 							window.open("index.php?controller=Pagos&action=Index","_self");
 							//console.log(datosFomulario);
 						})
 						
 					}
+					
 					if(x.comprobante.valor == -1){
 						swal({
 							title:"GENERACION CHEQUE",
@@ -247,8 +287,9 @@ $("#genera_cheque").on("click",function(){
 				})
 			  
 			  
-		  }else{
-			 
+		  }else
+		  {
+			 //no action in this case
 		  }
 		});	
 	
@@ -288,9 +329,18 @@ $("#btn_distribucion_aceptar").on("click",function(){
 	
 })
 
-/***********************************************PRUEBAS***************/
-function prueba1(){
-	FormularioPost("index.php?controller=GenerarCheque&action=generaReporteCheque","blank",{id_comprobante:76,id_cuentas_pagar:7});
-	window.open("index.php?controller=Pagos&action=Index","_self");
+
+/************************************************************ CAMBIOS PARA VALOR PACIAL ****************************************/
+var fnValidaPagoParcial	= function(a){
+	var elemento = $(a);
+	if( elemento.is(':checked') ) {
+        // Hacer algo si el checkbox ha sido seleccionado
+		elemento.val(1);
+        $("#valor_parcial_cheque").attr("readonly",false).val("");
+    } else {
+        // Hacer algo si el checkbox ha sido deseleccionado
+    	elemento.val(0);
+        $("#valor_parcial_cheque").attr("readonly",true).val("0");
+    }
 }
 

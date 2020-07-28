@@ -34,9 +34,6 @@
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
         ?>
     
-    
-      
-    
     <div class="wrapper">
 
   <header class="main-header">
@@ -95,7 +92,7 @@
             			<div class="form-group ">
             				<label for="numero_pago" class=" control-label" >Numero Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="numero_pago" name="numero_pago" value="" >
+                				 <input type="text" class="form-control mayus" id="numero_pago" name="numero_pago" value=""  readonly>
                     		</div>        			 
             			</div>
             		</div>
@@ -113,7 +110,7 @@
 		    	 		<div class="form-group ">                 			 
             				<label for="nombre_lote" class="control-label" > Identificador Lote:</label>
             				<div class="form-group-sm">                				
-                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $resultset[0]->nombre_lote; ?>" autofocus>  
+                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $resultset[0]->nombre_lote; ?>" autofocus readonly>  
                               <input type="hidden" id="id_lote" name="id_lote" value="<?php echo $resultset[0]->id_lote; ?>">
                               <input type="hidden" id="id_cuentas_pagar" name="id_cuentas_pagar" value="<?php echo $resultset[0]->id_cuentas_pagar; ?>" >
             				</div>
@@ -121,32 +118,36 @@
             			</div>		    	 	
 		    	 	</div>
 		    	 	
-            			<div class="col-xs-12 col-md-3 col-lg-3">
+        			<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
             				<label for="total_lote" class=" control-label" >Total Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="total_cuentas_pagar" name="total_cuentas_pagar"  value="<?php echo $resultset[0]->total_cuentas_pagar; ?>" > 
+                				 <input type="text" class="form-control text-right" id="total_cuentas_pagar" name="total_cuentas_pagar"  value="<?php echo number_format( $resultset[0]->total_cuentas_pagar, 2, ".","" );  ?>" readonly> 
+                    		</div>        			 
+            			</div>
+            		</div>
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="total_lote" class=" control-label" >Saldo Pago:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control text-right" id="saldo_cuentas_pagar" name="saldo_cuentas_pagar"  value="<?php echo number_format( $resultset[0]->saldo_cuenta_cuentas_pagar, 2, ".","" ); ?>" readonly> 
                     		</div>        			 
             			</div>
             		</div> 
-            			<div class="col-xs-12 col-md-3 col-md-3">
-  					<div class="form-group"> 
-      					<div class="checkbox">
-                         <label>
-                         	<input type="checkbox" value="0" id="chk_pago_parcial_transferencias"><b> Pago Parcial</b>
-                         </label>
-                        </div>                       
-                    </div>	
+            		
+            		<div class="col-xs-12 col-md-3 col-md-3">
+      					<div class="form-group"> 
+      						<label for="chk_pago_parcial_transferencias" class=" control-label" >Pago Parcial:</label> 
+          					<div class="input-group">
+                                <span class="input-group-addon">
+                                  <input type="checkbox" value="0" id="chk_pago_parcial_transferencias">
+                                </span>
+                                <input type="text" class="form-control text-right" id="valor_parcial_transferencias"  value="0" readonly>
+                            </div>                    
+                        </div>	
   				   </div>
-            	   <div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="valor_parcial_transferencias" class=" control-label" >Valor Parcial:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="valor_parcial_transferencias"  value="0" readonly>
-                    		</div>        			 
-            			</div>
-            	   </div>  
-            		            		
+  				               		
             		<div class="col-xs-12 col-md-6 col-lg-6">
             			<div class="form-group ">
             				<label for="identificacion_proveedor" class=" control-label" >Descripción:</label> 
@@ -154,9 +155,11 @@
                 				 <input type="text" class="form-control mayus" id="descripcion_pago" name="descripcion_pago" value="<?php echo $resultset[0]->descripcion; ?>" >
                     		</div>        			 
             			</div>
-            		</div> 
+            		</div>
             		
-            	
+    			</div>
+    			
+            	<div class="row"> 
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
             			<div class="form-group ">
@@ -500,7 +503,7 @@
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.41"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Transferencias.js?0.42"></script>
 
   </body>
 </html>   

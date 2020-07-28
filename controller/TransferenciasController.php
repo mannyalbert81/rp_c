@@ -42,17 +42,17 @@ class TransferenciasController extends ControladorBase{
 		$datosVista = array(); //variable para almacenar varaiables que se pasaran a la vista 
 		
 		/*traer datos de la cuenta por pagar*/
-		$col1 = "aa.id_cuentas_pagar, aa.total_cuentas_pagar, aa.origen_cuentas_pagar, aa.descripcion_cuentas_pagar, aa.id_estado, aa.id_forma_pago,
-		          bb.concepto_ccomprobantes, bb.id_ccomprobantes, cc.nombre_lote, cc.id_lote, cc.descripcion_lote, dd.nombre_proveedores, dd.id_bancos,
-                  dd.id_tipo_cuentas, ee.nombre_tipo_proveedores,dd.id_proveedores, dd.numero_cuenta_proveedores,dd.identificacion_proveedores";
+		$col1 = " aa.id_cuentas_pagar, aa.total_cuentas_pagar, aa.saldo_cuenta_cuentas_pagar, aa.origen_cuentas_pagar,
+    		aa.descripcion_cuentas_pagar, aa.id_estado, aa.id_forma_pago, bb.concepto_ccomprobantes, bb.id_ccomprobantes, cc.nombre_lote,
+    		cc.id_lote, cc.descripcion_lote, dd.nombre_proveedores, dd.id_bancos, dd.id_tipo_cuentas, ee.nombre_tipo_proveedores,
+    		dd.id_proveedores, dd.numero_cuenta_proveedores, dd.identificacion_proveedores";
 		$tab1 = "tes_cuentas_pagar aa
         		INNER JOIN ccomprobantes bb ON aa.id_ccomprobantes = bb.id_ccomprobantes
         		INNER JOIN tes_lote cc ON cc.id_lote = aa.id_lote
                 INNER JOIN proveedores dd ON aa.id_proveedor = dd.id_proveedores
-                INNER JOIN tes_tipo_proveedores ee
-    		    ON dd.id_tipo_proveedores = ee.id_tipo_proveedores";
+                INNER JOIN tes_tipo_proveedores ee ON dd.id_tipo_proveedores = ee.id_tipo_proveedores";
 		$whe1 = " aa.id_cuentas_pagar = $_id_cuentas_pagar ";
-		$id1 = "aa.id_cuentas_pagar";
+		$id1 = "aa.id_cuentas_pagar";		
 		
 		$rsConsulta1 = $CuentasPagar->getCondiciones($col1, $tab1, $whe1, $id1);
 		
@@ -73,7 +73,7 @@ class TransferenciasController extends ControladorBase{
 		$datosVista['identificacion_proveedores']     = $identificacion_proveedores;
 		$datosVista['total_cuentas_pagar']            = $rsConsulta1[0]->total_cuentas_pagar;
 		$datosVista['nombre_lote']                    = $rsConsulta1[0]->nombre_lote;
-		$datosVista['nombre_lote']                    = $rsConsulta1[0]->nombre_lote; 
+		$datosVista['saldo_cuenta_cuentas_pagar']     = $rsConsulta1[0]->saldo_cuenta_cuentas_pagar; 
 		$datosVista['id_tipo_cuentas']    = $id_tipo_cuenta;
 		
 		$nombre_tipo_proveedores = $rsConsulta1[0]->nombre_tipo_proveedores;
@@ -311,6 +311,7 @@ class TransferenciasController extends ControladorBase{
 	        $id_ccomprobantes      = $rsConsulta2[0]->id_ccomprobantes;
 	        $id_proveedores        = $rsConsulta2[0]->id_proveedores;
 	        $total_cuentas_pagar   = $rsConsulta2[0]->total_cuentas_pagar; 
+	        $saldo_cuentas_pagar   = $rsConsulta2[0]->saldo_cuenta_cuentas_pagar;
 	        $id_creditos       = 'null';
 	        $beneficiario      = $rsConsulta2[0]->nombre_proveedores;
 	        $concepto_credito  = "";
@@ -318,7 +319,7 @@ class TransferenciasController extends ControladorBase{
 	        $datosMsgParticipe         = null;	        
 	        
 	        //dc 2020/07/22
-	        $valor_aplicado_cuentas_pagar  = $total_cuentas_pagar;
+	        $valor_aplicado_cuentas_pagar  = $saldo_cuentas_pagar;
 	        
 	        if( $chk_pago_parcial == "1" ){
 	            $valor_aplicado_cuentas_pagar  = $valor_pago_parcial;
@@ -413,8 +414,8 @@ class TransferenciasController extends ControladorBase{
 	        
 	        //dc 2020/07/22
 	        //buscar y actualizar estado de cuentas por pagar
-	        $saldo_cuentas_pagar = $total_cuentas_pagar - $valor_aplicado_cuentas_pagar;
-	        if( empty($saldo_cuentas_pagar) ){
+	        $residuo_cuentas_pagar = $saldo_cuentas_pagar - $valor_aplicado_cuentas_pagar;
+	        if( empty($residuo_cuentas_pagar) ){
 	            $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
 	        }else{
 	            $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'PARCIAL'";
@@ -422,7 +423,7 @@ class TransferenciasController extends ControladorBase{
 	        	        
 	        $rsEstado = $pagos -> enviaquery($queryEstado);
 	        $_id_estado = $rsEstado[0]->id_estado;
-	        $pagos->ActualizarBy("id_estado = $_id_estado, saldo_cuenta_cuentas_pagar = $saldo_cuentas_pagar", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
+	        $pagos->ActualizarBy("id_estado = $_id_estado, saldo_cuenta_cuentas_pagar = $residuo_cuentas_pagar", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
 	        
 	        /** proceso de envio de mensaje se realizara si es credito **/ 
 	        if( $_isCredito ){

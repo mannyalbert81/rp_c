@@ -6,8 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    
+    <?php include("view/modulos/links_css.php"); ?>
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link href="//cdn.datatables.net/fixedheader/2.1.0/css/dataTables.fixedHeader.min.css"/>
     
  	<style type="text/css">
  	  .loader {
@@ -19,10 +22,13 @@
         z-index: 9999;
         background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;
-        } 	  
+        } 
+        
+      .letrasize11{
+        font-size: 11px;
+       }	  
  	</style>
-   <?php include("view/modulos/links_css.php"); ?>
-  			        
+   	        
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
     <span id="fechasistema"><?php echo date('Y-m-d');?></span>
@@ -33,9 +39,6 @@
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
         $fecha=$dias[date('w')]." ".date('d')." de ".$meses[date('n')-1]. " del ".date('Y') ;
         ?>
-    
-    
-      
     
     <div class="wrapper">
 
@@ -63,45 +66,51 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Entidad Patronal</li>
+        <li class="active">Cuentas Pagar</li>
       </ol>
     </section>   
 
     <section class="content">
      <div class="box box-primary">
-     <div class="box-header">
-          <h3 class="box-title">Cuentas Pagar</h3>
-          <div class="box-tools pull-right">
-           
+     
+     	<div class="box-header">
+          <h3 class="box-title">Listado Cuentas por Pagar</h3>
+          <div class="box-tools pull-right">           
           </div>
-        </div>
-        
+        </div>        
                   
   		<div class="box-body">
   		
-  		<div id="divLoaderPage" ></div> 
+  			<div id="divLoaderPage" ></div> 
   		
-  		<div id="lista_cuentas_pagar">
-  			<div class="row">
-  				<div class=" pull-left " >
-  					<div class=" col-lg-12 form-group-sm">
-                    	<span class="form-control" id="cantidad_busqueda"><strong>Registros: </strong>0</span>
-                    	<input type="hidden" value="" id="total_query" name="total_query"/>
-                	</div>   
-            	</div>
-  				<div class="pull-right">
-  					<div class=" col-lg-12 form-group-sm">                    				
-        				 <input type="text" class="form-control" id="txtbuscarProveedor" name="txtbuscarProveedor" value="" >
-            		</div>            			
-          		</div>
-  			</div>  
-  			<br>			
-  			<div id="div_lista_cuentas_pagar">
-  			</div>
-  		</div>
-
-			
-                      
+      		<div class="row">
+     			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            		<div id="div_listado_cuentas_pagar_pendientes" class="letrasize11">
+                		<table id="tbl_listado_cuentas_pagar_pendientes" class="table table-bordered display compact">
+                			<thead>
+                				<tr class="warning">
+                    				<th>#</th>
+                    				<th>Lote</th>
+                    				<th>Origen</th>
+                    				<th>Generado Por</th>
+                    				<th>Descripci&oacute;n</th>
+                    				<th>Fecha</th>
+                    				<th>Beneficiario</th>
+                    				<th>Valor Documento</th>
+                    				<th>Saldo Documento</th>
+                    				<th>Cheque</th>
+                    				<th>Transferencia</th>
+                				</tr>                    				
+                			</thead>                    			
+                			<tfoot>
+                				<tr>
+                				</tr>
+                			</tfoot>
+                		</table>
+            		</div>
+     			</div>
+     		</div>
+  		  		                      
           </div>
     	</div>
     </section>
@@ -117,7 +126,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/Pagos.js?0.6"></script>
+	<script type="text/javascript" src="view/tesoreria/js/Pagos.js?0.7"></script>
 
   </body>
 </html>   

@@ -2509,6 +2509,186 @@ WHERE id_cuentas_pagar_impuestos = $id_cuentas_pagar_impuestos";
 	    }
 	    
 	}
+	
+	//dc 2020/07/23 funcion para renvio de XML RETENCION
+	public function EnviarXmlRetencion_ClaveAcceso(){
+	    
+	    $respuesta = array();
+	    $resp  = array();
+	    $resp['claveAcceso']   = '';
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    /** COMIENZA PROCESO XML CON SRI**/
+	    $errorXml = false;	    
+	    
+	    $clave = ( array_key_exists('claveAcceso', $resp) ) ? $resp['claveAcceso'] : '' ;
+	    
+	    require_once __DIR__ . '/../vendor/autoload.php';
+	    
+	    $config = $this->getConfigXml();
+	    
+	    $comprobante = new \Shara\ComprobantesController($config); //*configurar ruta en carpeta vendor**/-- autoload_static.php
+	    /** tener en cuenta la ruta de archivos **/
+	    
+	    $xml = file_get_contents($config['generados'] . DIRECTORY_SEPARATOR . $clave.'.xml', FILE_USE_INCLUDE_PATH);
+	    
+	    $aux = $comprobante->validarFirmarXml($xml, $clave);
+	    
+	    $respuesta['Archivo'] = "";
+	    $respuesta['xml'] = $aux;
+	    
+	    if($aux['error'] === false){
+	        
+	        $Envioresp = $comprobante->enviarXml($clave);
+	        //$aux['recibido'] = true; //para pruebas
+	        
+	        if($Envioresp['recibido'] === true){
+	            
+	            $respuesta['xml'] = " Archivo Xml RECIBIDO";
+	            
+	            $finalresp = $comprobante->autorizacionXml($clave);
+	            //$finalresp = null;. //para pruebas
+	            //$finalresp['error'] = false; //para pruebas
+	            if($finalresp['error'] === true ){
+	                /** aqui poner senetecia en caso de haber errror **/
+	                $respuesta['xml'] = " Archivo Xml RECIBIDO NO AUTORIZADO";
+	                $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+	                $errorXml = true;
+	            }else{
+	                
+	                $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
+	                $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+	                
+	                $fechaAutorizado = $finalresp['fecauto'];
+	            }
+	            
+	            
+	        }else{
+	            /** aqui poner senetecia en caso de haber errror **/
+	            $respuesta['xml'] = " Archivo Xml NO RECIBIDO";
+	            $respuesta['Archivo'] = ( array_key_exists('mensaje', $Envioresp) ) ? $Envioresp['mensaje'] : '' ;
+	            $errorXml = true;
+	        }
+	        
+	    }else{
+	        /** aqui poner senetecia en caso de haber errror **/
+	        $respuesta['xml'] = " Archivo Xml NO FIRMADO";
+	        $respuesta['Archivo'] = ( array_key_exists('mensaje', $aux) ) ? $aux['mensaje'] : '' ;
+	        $errorXml = true;
+	    }
+	    
+	    /** actualizacion si existe algun error **/
+	    if( $errorXml ){
+	        
+	        $claveAcceso = $resp['claveAcceso'];
+	        $_columnaActualizar = " autorizado_retenciones = false ";
+	        $_tablaActualizar   = " tri_retenciones";
+	        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
+	        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
+	        
+	        /** agregar datos a tabla errores de retenciones **/
+	    }else{
+	        $claveAcceso = $resp['claveAcceso'];
+	        $_columnaActualizar = " autorizado_retenciones = true ";
+	        $_tablaActualizar   = " tri_retenciones";
+	        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
+	        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
+	    }
+	    
+	    /** actualizacion de la fecha de autorizacion del xml **/
+	    if( isset($fechaAutorizado) ){
+	        
+	        $claveAcceso = $resp['claveAcceso'];
+	        $_columnaActualizar = " fecha_autorizacion = '$fechaAutorizado' ";
+	        $_tablaActualizar   = " tri_retenciones";
+	        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
+	        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
+	        
+	    }
+	    
+	    var_dump($respuesta); 
+	}
+	
+	//dc 2020/07/23 funcion para Autorizacion de XML RETENCION
+	public function AutorizarXmlRetencion_ClaveAcceso(){
+	    
+	    $respuesta = array();
+	    $resp  = array();
+	    $resp['claveAcceso']   = '';
+	    
+	    $cuentasPagar = new CuentasPagarModel();
+	    
+	    /** COMIENZA PROCESO XML CON SRI**/
+	    $errorXml = false;
+	    
+	    $clave = ( array_key_exists('claveAcceso', $resp) ) ? $resp['claveAcceso'] : '' ;
+	    
+	    require_once __DIR__ . '/../vendor/autoload.php';
+	    
+	    $config = $this->getConfigXml();
+	    
+	    $comprobante = new \Shara\ComprobantesController($config); //*configurar ruta en carpeta vendor**/-- autoload_static.php
+	    /** tener en cuenta la ruta de archivos **/
+	   
+	    $finalresp = $comprobante->autorizacionXml($clave);
+	    //$finalresp = null;. //para pruebas
+	    //$finalresp['error'] = false; //para pruebas
+	    if($finalresp['error'] === true ){
+	        /** aqui poner senetecia en caso de haber errror **/
+	        $respuesta['xml'] = " Archivo Xml RECIBIDO NO AUTORIZADO";
+	        $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+	        $errorXml = true;
+	    }else{
+	        
+	        $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
+	        $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+	        
+	        $fechaAutorizado = $finalresp['fecauto'];
+	    }
+	    
+	    /** actualizacion si existe algun error **/
+	    if( $errorXml ){
+	        
+	        $claveAcceso = $resp['claveAcceso'];
+	        $_columnaActualizar = " autorizado_retenciones = false ";
+	        $_tablaActualizar   = " tri_retenciones";
+	        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
+	        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
+	        
+	        /** agregar datos a tabla errores de retenciones **/
+	    }
+	    
+	    /** actualizacion de la fecha de autorizacion del xml **/
+	    if( isset($fechaAutorizado) ){
+	        
+	        $claveAcceso = $resp['claveAcceso'];
+	        $_columnaActualizar = " fecha_autorizacion = '$fechaAutorizado' ";
+	        $_tablaActualizar   = " tri_retenciones";
+	        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
+	        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
+	        
+	    }
+	    
+	    var_dump($respuesta);
+	}
+	
+	public function obtenerDigitoVerificador_ClaveAcceso(){
+	    
+	    $_strClaveAcceso = '300620200717917003760012001001000009191123456781';
+	    
+	    $_digitoVerificador = $this->getDigVerificador($_strClaveAcceso);
+	    
+	    if( $_digitoVerificador === "" ){
+	        return "";
+	    }
+	    
+	    $_strClaveAcceso = $_strClaveAcceso.$_digitoVerificador;
+	    
+	    echo "NUEVA CLAVE --> '",$_strClaveAcceso,"'";
+	}
+	
+	
 		
 }
 ?>

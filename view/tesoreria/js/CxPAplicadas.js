@@ -110,10 +110,9 @@ var load_cuentas_pagar_aplicadas	= function(){
             header: true,
             footer: true
         },
-        dom: 'Blfrtip',
+        dom: "<'row'<'col-sm-6'<'box-tools pull-right'B>>><'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'<'#colvis'>p>>",
         buttons: [
-            //'copy', 'csv', 'excel', 'pdf', 'print'
-        	'excel'
+        	{ "extend": 'excelHtml5',  "titleAttr": 'Excel', "text":'<span class="fa fa-file-excel-o fa-2x fa-fw"></span>',"className": 'no-padding btn btn-default btn-sm' }
         ],
         'language':idioma_espanol
 	 });
@@ -144,16 +143,18 @@ viewTable.contenedor.on('click','a.showpdf',function(event){
 	
 	event.preventDefault();
 })
+
+
 viewTable.contenedor.on('click','a.showpdfcheque',function(event){
+	
 	let enlace = $(this);
 	let _url = "index.php?controller=GenerarCheque&action=generaReporteCheque";
 	
 	
-	if ( enlace.data().id_ccomprobantes && enlace.data().id_cuentas_pagar ) {
+	if ( enlace.data().id_pagos ) {
 		
 		var params = {
-				"id_comprobante":enlace.data().id_ccomprobantes,
-				"id_cuentas_pagar":enlace.data().id_cuentas_pagar
+				"id_pagos":enlace.data().id_pagos
 		}
 					
 		var form = document.createElement("form");

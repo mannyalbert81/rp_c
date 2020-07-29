@@ -35,9 +35,16 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
         
         $rsBitacoraCreditos = $bitacora_creditos->getBy(" 1 = 1 ");
         
+        $cedula_usuarios = $_SESSION['cedula_usuarios'];
+        
+        $col1 =" id_empleados, nombres_empleados";
+        $tab1 = " empleados";
+        $whe1 = " numero_cedula_empleados = '$cedula_usuarios'";
+        $rsEmpleados    = $bitacora_creditos->getCondicionesSinOrden( $col1, $tab1, $whe1, "");
+        
         
         $this->view_Core("BitacoraActividadesEmpleadosCreditos",array(
-            "resultSet"=>$rsBitacoraCreditos
+            "resultSet"=>$rsBitacoraCreditos, "rsEmpleados"=>$rsEmpleados
             
         ));
         
@@ -46,8 +53,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
     
     
     public function InsertaBitacoraCreditos(){
-        
-        session_start();
+         session_start();
         
         $bitacora_creditos = new CreditosModel();
         
@@ -57,40 +63,58 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
         
         if (!empty($resultPer)){
             
-            $_fecha_registro = (isset($_POST["fecha_registro"])) ? $_POST["fecha_registro"] : "";
-            $_desde = (isset($_POST["desde"])) ? $_POST["desde"] : "";
-            $_hasta = (isset($_POST["hasta"])) ? $_POST["hasta"] : "";
-            $_id_empleados = (isset($_POST["id_empleados"])) ? $_POST["id_empleados"] : 0;
-            $_id_participes = (isset($_POST["id_participes"])) ? $_POST["id_participes"] : 0;
-            $_creditos = (isset($_POST["creditos"])) ? $_POST["creditos"] : 0;
-            $_cesantia = (isset($_POST["cesantia"])) ? $_POST["cesantia"] : 0;
-            $_desafiliacion = (isset($_POST["desafiliacion"])) ? $_POST["desafiliacion"] : 0;
-            $_superavit = (isset($_POST["superavit"])) ? $_POST["superavit"] : 0;
-            $_diferimiento = (isset($_POST["diferimiento"])) ? $_POST["diferimiento"] : 0;
-            $_refinanciamiento_reestructuracion = (isset($_POST["refinanciamiento_reestructuracion"])) ? $_POST["refinanciamiento_reestructuracion"] : 0;
-            $_elaboracion_memorando = (isset($_POST["elaboracion_memorando"])) ? $_POST["elaboracion_memorando"] : "";
-            $_otras_actividades = (isset($_POST["otras_actividades"])) ? $_POST["otras_actividades"] : "";
-            $_atencion_creditos = (isset($_POST["atencion_creditos"])) ? $_POST["atencion_creditos"] : 0;
-            $_entrega_documentos_creditos = (isset($_POST["entrega_documentos_creditos"])) ? $_POST["entrega_documentos_creditos"] : 0;
-            $_atencion_cesantias = (isset($_POST["atencion_cesantias"])) ? $_POST["atencion_cesantias"] : 0;
-            $_entrega_documentos_cesantias = (isset($_POST["entrega_documentos_cesantias"])) ? $_POST["entrega_documentos_cesantias"] : 0;
-            $_atencion_desafiliaciones = (isset($_POST["atencion_desafiliaciones"])) ? $_POST["atencion_desafiliaciones"] : 0;
-            $_entrega_documentos_desafiliaciones = (isset($_POST["entrega_documentos_desafiliaciones"])) ? $_POST["entrega_documentos_desafiliaciones"] : 0;
-            $_atencion_superavit = (isset($_POST["atencion_superavit"])) ? $_POST["atencion_superavit"] : 0;
-            $_entrega_documentos_superavit = (isset($_POST["entrega_documentos_superavit"])) ? $_POST["entrega_documentos_superavit"] : 0;
-            $_atencion_refinanciamiento_reestructuracion = (isset($_POST["atencion_refinanciamiento_reestructuracion"])) ? $_POST["atencion_refinanciamiento_reestructuracion"] : 0;
-            $_entrega_documentos_refinanciamiento_reestructuracion = (isset($_POST["entrega_documentos_refinanciamiento_reestructuracion"])) ? $_POST["entrega_documentos_refinanciamiento_reestructuracion"] : 0;
-            $_atencion_diferimiento = (isset($_POST["atencion_diferimiento"])) ? $_POST["atencion_diferimiento"] : 0;
-            $_claves = (isset($_POST["claves"])) ? $_POST["claves"] : 0;
-            $_consultas_varias = (isset($_POST["consultas_varias"])) ? $_POST["consultas_varias"] : 0;
-            $_id_bitacora_actividades_empleados_creditos = (isset($_POST["id_bitacora_actividades_empleados_creditos"])) ? $_POST["id_bitacora_actividades_empleados_creditos"] : 0;
+            $_fecha_registro = (isset($_POST["fecha_registro"])) ? $_POST["fecha_registro"] : "" ;
+            $_desde = (isset($_POST["desde"])) ? $_POST["desde"] : "" ;
+            $_hasta = (isset($_POST["hasta"])) ? $_POST["hasta"] : "" ;
+            $_id_empleados = (isset($_POST["id_empleados"])) ? $_POST["id_empleados"] : 0 ;
+            $_id_participes = (isset($_POST["id_participes"])) ? $_POST["id_participes"] : 0 ;
+            $_creditos = (isset($_POST["creditos"])) ? $_POST["creditos"] : 0 ;
+            $_cesantia = (isset($_POST["cesantia"])) ? $_POST["cesantia"] : 0 ;
+            $_desafiliacion = (isset($_POST["desafiliacion"])) ? $_POST["desafiliacion"] : 0 ;
+            $_superavit = (isset($_POST["superavit"])) ? $_POST["superavit"] : 0 ;
+            $_diferimiento = (isset($_POST["diferimiento"])) ? $_POST["diferimiento"] : 0 ;
+            $_refinanciamiento_reestructuracion = (isset($_POST["refinanciamiento_reestructuracion"])) ? $_POST["refinanciamiento_reestructuracion"] : 0 ;
+            $_elaboracion_memorando = (isset($_POST["elaboracion_memorando"])) ? $_POST["elaboracion_memorando"] : "" ;
+            $_otras_actividades = (isset($_POST["otras_actividades"])) ? $_POST["otras_actividades"] : "" ;
+            $_atencion_creditos = (isset($_POST["atencion_creditos"])) ? $_POST["atencion_creditos"] : 0 ;
+            $_entrega_documentos_creditos = (isset($_POST["entrega_documentos_creditos"])) ? $_POST["entrega_documentos_creditos"] : 0 ;
+            $_atencion_cesantias = (isset($_POST["atencion_cesantias"])) ? $_POST["atencion_cesantias"] : 0 ;
+            $_entrega_documentos_cesantias = (isset($_POST["entrega_documentos_cesantias"])) ? $_POST["entrega_documentos_cesantias"] : 0 ;
+            $_atencion_desafiliaciones = (isset($_POST["atencion_desafiliaciones"])) ? $_POST["atencion_desafiliaciones"] : 0 ;
+            $_entrega_documentos_desafiliaciones = (isset($_POST["entrega_documentos_desafiliaciones"])) ? $_POST["entrega_documentos_desafiliaciones"] : 0 ;
+            $_atencion_superavit = (isset($_POST["atencion_superavit"])) ? $_POST["atencion_superavit"] : 0 ;
+            $_entrega_documentos_superavit = (isset($_POST["entrega_documentos_superavit"])) ? $_POST["entrega_documentos_superavit"] : 0 ;
+            $_atencion_refinanciamiento_reestructuracion = (isset($_POST["atencion_refinanciamiento_reestructuracion"])) ? $_POST["atencion_refinanciamiento_reestructuracion"] : 0 ;
+            $_entrega_documentos_refinanciamiento_reestructuracion = (isset($_POST["entrega_documentos_refinanciamiento_reestructuracion"])) ? $_POST["entrega_documentos_refinanciamiento_reestructuracion"] : 0 ;
+            $_atencion_diferimiento = (isset($_POST["atencion_diferimiento"])) ? $_POST["atencion_diferimiento"] : 0 ;
+            $_claves = (isset($_POST["claves"])) ? $_POST["claves"] : 0 ;
+            $_consultas_varias = (isset($_POST["consultas_varias"])) ? $_POST["consultas_varias"] : 0 ;
+            $_id_bitacora_actividades_empleados_creditos = (isset($_POST["id_bitacora_actividades_empleados_creditos"])) ? $_POST["id_bitacora_actividades_empleados_creditos"] : 0 ;
             
           
-            
-            
             $funcion = "ins_core_bitacora_actividades_empleados_creditos";
             $respuesta = 0 ;
             $mensaje = "";
+            
+            $_creditos = ( $_creditos =="1" ) ? "t" : "f";
+            $_cesantia = ( $_cesantia =="1" ) ? "t" : "f";
+            $_desafiliacion = ( $_desafiliacion =="1" ) ? "t" : "f";
+            $_superavit = ( $_superavit =="1" ) ? "t" : "f";
+            $_diferimiento = ( $_diferimiento =="1" ) ? "t" : "f";
+            $_refinanciamiento_reestructuracion = ( $_refinanciamiento_reestructuracion =="1" ) ? "t" : "f";
+            $_atencion_creditos = ( $_atencion_creditos =="1" ) ? "t" : "f";
+            $_entrega_documentos_creditos = ( $_entrega_documentos_creditos =="1" ) ? "t" : "f";
+            $_atencion_cesantias = ( $_atencion_cesantias =="1" ) ? "t" : "f";
+            $_entrega_documentos_cesantias = ( $_entrega_documentos_cesantias =="1" ) ? "t" : "f";
+            $_atencion_desafiliaciones = ( $_atencion_desafiliaciones =="1" ) ? "t" : "f";
+            $_entrega_documentos_desafiliaciones = ( $_entrega_documentos_desafiliaciones =="1" ) ? "t" : "f";
+            $_atencion_superavit = ( $_atencion_superavit =="1" ) ? "t" : "f";
+            $_entrega_documentos_superavit = ( $_entrega_documentos_superavit =="1" ) ? "t" : "f";
+            $_atencion_refinanciamiento_reestructuracion = ( $_atencion_refinanciamiento_reestructuracion =="1" ) ? "t" : "f";
+            $_entrega_documentos_refinanciamiento_reestructuracion = ( $_entrega_documentos_refinanciamiento_reestructuracion =="1" ) ? "t" : "f";
+            $_atencion_diferimiento = ( $_atencion_diferimiento =="1" ) ? "t" : "f";
+            $_claves = ( $_claves =="1" ) ? "t" : "f";
+            $_consultas_varias = ( $_consultas_varias =="1" ) ? "t" : "f";
             
             if($_id_bitacora_actividades_empleados_creditos == 0){
                 
@@ -99,7 +123,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                                '$_hasta',
                                '$_id_empleados',
                                '$_id_participes',
-                                $_creditos',
+                               '$_creditos',
                                '$_cesantia',
                                '$_desafiliacion',
                                '$_superavit',
@@ -130,6 +154,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                     $mensaje = "Ingresado Correctamente";
                 }
                 
+              
                 
             }elseif ($_id_bitacora_actividades_empleados_creditos > 0){
                 
@@ -138,7 +163,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                                '$_hasta',
                                '$_id_empleados',
                                '$_id_participes',
-                                $_creditos',
+                               '$_creditos',
                                '$_cesantia',
                                '$_desafiliacion',
                                '$_superavit',
@@ -269,8 +294,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
     public function consultaBitacoraCreditos(){
         
         session_start();
-        $id_rol=$_SESSION["id_rol"];
-        
+         
         $bitacora_creditos = new CreditosModel();
         
         $where_to="";
@@ -310,7 +334,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                     inner join empleados b on a.id_empleados = b.id_empleados
                     inner join core_participes c on a.id_participes = c.id_participes";
         $where   = "1 = 1";
-        $id      = "a.id_bitacora_actividades_empleados_creditose";
+        $id      = "c.apellido_participes";
         
         
         $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
@@ -323,7 +347,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
             if(!empty($search)){
                 
                 
-                $where1=" AND exam_nombre ILIKE '".$search."%'";
+                $where1=" AND cedula_participes ILIKE '".$search."%'";
                 
                 $where_to=$where.$where1;
                 
@@ -360,9 +384,31 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                 $html.= "<table id='tabla_bitacora_creditos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
-                $html.='<th style="text-align: left;  font-size: 15px;">#</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Fecha</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Empleado</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">#</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Fecha</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Cédula</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Participes</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Créditos</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Cesantía</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Desafiliación</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Superavit</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Diferimiento</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Refinanciamiento</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Momorando</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Otras Actividades</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Atención Créditos</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Documentos Créditos</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Atención Cesantías</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Documentos Cesantías</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Atención Desafiliaciones</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Documentos Desafiliaciones</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Atención Superavit</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Documentos Superavit</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Atención Refinanciamiento</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Documentos Refinanciamiento</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Atención Diferimiento</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Claves</th>';
+                $html.='<th style="text-align: left;  font-size: 10px;">Consultas</th>';
                 
                 /*para administracion definir administrador MenuOperaciones Edit - Eliminar*/
                 
@@ -377,13 +423,58 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                 
                 $i=0;
                 
+             
                 foreach ($resultSet as $res)
                 {
+                    
                     $i++;
+                    $creditos   = ( $res->creditos == "t") ? "Aplico" : "";
+                    $cesantia   = ( $res->cesantia == "t") ? "Aplico" : "";
+                    $desafiliacion   = ( $res->desafiliacion == "t") ? "Aplico" : "";
+                    $superavit   = ( $res->superavit == "t") ? "Aplico" : "";
+                    $diferimiento   = ( $res->diferimiento == "t") ? "Aplico" : "";
+                    $refinanciamiento_reestructuracion   = ( $res->refinanciamiento_reestructuracion == "t") ? "Aplico" : "";
+                    $atencion_creditos   = ( $res->atencion_creditos == "t") ? "Aplico" : "";
+                    $entrega_documentos_creditos   = ( $res->entrega_documentos_creditos == "t") ? "Aplico" : "";
+                    $atencion_cesantias   = ( $res->atencion_cesantias == "t") ? "Aplico" : "";
+                    $entrega_documentos_cesantias   = ( $res->entrega_documentos_cesantias == "t") ? "Aplico" : "";
+                    $atencion_desafiliaciones   = ( $res->atencion_desafiliaciones == "t") ? "Aplico" : "";
+                    $entrega_documentos_desafiliaciones   = ( $res->entrega_documentos_desafiliaciones == "t") ? "Aplico" : "";
+                    $atencion_superavit   = ( $res->atencion_superavit == "t") ? "Aplico" : "";
+                    $entrega_documentos_superavit   = ( $res->entrega_documentos_superavit == "t") ? "Aplico" : "";
+                    $atencion_refinanciamiento_reestructuracion   = ( $res->atencion_refinanciamiento_reestructuracion == "t") ? "Aplico" : "";
+                    $entrega_documentos_refinanciamiento_reestructuracion   = ( $res->entrega_documentos_refinanciamiento_reestructuracion == "t") ? "Aplico" : "";
+                    $atencion_diferimiento   = ( $res->atencion_diferimiento == "t") ? "Aplico" : "";
+                    $claves   = ( $res->claves == "t") ? "Aplico" : "";
+                    $consultas_varias   = ( $res->consultas_varias == "t") ? "Aplico" : "";
+                    
                     $html.='<tr>';
-                    $html.='<td style="font-size: 14px;">'.$i.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->fecha_registro.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombres_empleados.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$i.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$res->fecha_registro.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$res->cedula_participes.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$res->nombre_participes.' '.$res->apellido_participes.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$creditos.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$cesantia.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$desafiliacion.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$superavit.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$diferimiento.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$refinanciamiento_reestructuracion.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$res->elaboracion_memorando.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$res->otras_actividades.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$atencion_creditos.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$entrega_documentos_creditos.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$atencion_cesantias.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$entrega_documentos_cesantias.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$atencion_desafiliaciones.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$entrega_documentos_desafiliaciones.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$atencion_superavit.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$entrega_documentos_superavit.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$atencion_refinanciamiento_reestructuracion.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$entrega_documentos_refinanciamiento_reestructuracion.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$atencion_diferimiento.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$claves.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$consultas_varias.'</td>';
+                     
                     
                     
                     /*comentario up */
@@ -488,18 +579,44 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
         return $out;
     }
     
-    public function cargaBitacoraParticipes(){
+   
+    public function autocompleteCedulaParticipes(){
         
-        $bitacora_creditos = null;
-        $bitacora_creditos = new CreditosModel();
+        $planCuentas = new PlanCuentasModel();
         
-        $query = "SELECT id_participes, apellido_participes, nombre_participes FROM core_participes WHERE 1=1 ORDER BY apellido_participes";
-        
-        $resulset = $bitacora_creditos->enviaquery($query);
-        
-        if(!empty($resulset) && count($resulset)>0){
+        if(isset($_GET['term'])){
             
-            echo json_encode(array('data'=>$resulset));
+            $codigo_plan_cuentas = $_GET['term'];
+            
+            $columnas = " id_participes, cedula_participes, nombre_participes, apellido_participes";
+            $tablas = " public.core_participes";
+            $where = " cedula_participes ILIKE '$codigo_plan_cuentas%' ";
+            $id = " cedula_participes ";
+            $limit = "LIMIT 10";
+                       
+            $rsPlanCuentas = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
+            
+            $respuesta = array();
+            
+            if(!empty($rsPlanCuentas) ){
+                
+                foreach ($rsPlanCuentas as $res){
+                    
+                    $_cls_plan_cuentas = new stdClass;
+                    $_cls_plan_cuentas->id = $res->id_participes;
+                    $_cls_plan_cuentas->value = $res->cedula_participes;
+                    $_cls_plan_cuentas->label = $res->cedula_participes.' | '.$res->apellido_participes.' - '.$res->nombre_participes;
+                    $_cls_plan_cuentas->nombre = $res->apellido_participes.' - '.$res->nombre_participes;
+                    
+                    $respuesta[] = $_cls_plan_cuentas;
+                }
+                
+                echo json_encode($respuesta);
+                
+            }else{
+                
+                echo '[{"id":"","value":"Participe No Encontrado"}]';
+            }
             
         }
     }

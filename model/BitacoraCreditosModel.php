@@ -1,5 +1,5 @@
 <?php
-class BitacoraActividadesEmpleadosCreditosModel extends ModeloBase{
+class BitacoraCreditosModel extends ModeloBase{
 	private $table;
 	private $where;
 	private $funcion;

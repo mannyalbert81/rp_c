@@ -499,6 +499,7 @@ $controladores=$_SESSION['controladores'];
     			<li style="<?php echo getcontrolador("SolicitudPrestamo",$controladores) ?>"><a href="index.php?controller=SolicitudPrestamo&action=index5"><i class="fa fa-circle-o"></i>Solicitudes</a></li>
     		    <li style="<?php echo getcontrolador("GarantiaCredito",$controladores) ?>"><a href="index.php?controller=GarantiaCredito&action=index"><i class="fa fa-circle-o"></i>Garantia Credito</a></li>
     		    <li style="<?php echo getcontrolador("TipoCredito",$controladores) ?>"><a href="index.php?controller=TipoCredito&action=index"><i class="fa fa-circle-o"></i>Tipo Crédito</a></li>
+    	 	    <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosCreditos",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosCreditos&action=index"><i class="fa fa-circle-o"></i>Bitacora Creditos</a></li>
     
            </ul>           	 
         </li>

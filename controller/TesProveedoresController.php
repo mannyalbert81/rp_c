@@ -210,18 +210,41 @@ class TesProveedoresController extends ControladorBase{
 	        $_numero_cuenta_proveedores    = $_POST["numero_cuenta_proveedores"];
 	        $_tipo_identificacion          = $_POST["tipo_identificacion"];
             $_razon_social                 = $_POST["razon_social_proveedores"];
+            $file_proveedores          = $_FILES['imagen_registro'];
 	       	
 	        $error = error_get_last();
 	        
 	        if(!empty($error)){
 	            throw new Exception(" Variables no definidas ". $error['message'] );
 	        }
+	       	        
+	        $archivo_proveedores   = 'null';
+	        if( $file_proveedores['tmp_name'] != "" ){
+	            $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/DOCUMENTOS_GENERADOS/pdf_proveedores';
+	            
+	            $nombre    = $file_proveedores['name'];
+	            //$tipo      = $_FILES['imagen_registro']['type'];
+	            //$tamano    = $_FILES['imagen_registro']['size'];
+	            
+	            move_uploaded_file($file_proveedores['tmp_name'],$directorio.$nombre);
+	            $data = file_get_contents($directorio.$nombre);
+	            $archivo_proveedores = pg_escape_bytea($data);
+	        }else{
+	            
+	            //$directorio = dirname(__FILE__).'\..\view\images\usuario.jpg';
+	            //$imagen_registro   = is_file( $directorio ) ? pg_escape_bytea( file_get_contents( $directorio ) ) : "null";
+	            $archivo_proveedores   = "null";
+	        } 
+	        
+	        
 	        
             if( $_forma_pago == "cheque" ){
                 $_id_bancos = 'null';
                 $_id_tipo_cuentas = 'null';
                 $_numero_cuenta_proveedores = '';
             }
+            
+            $archivo_proveedores = ( $archivo_proveedores === 'null' ) ? $archivo_proveedores : "'$archivo_proveedores'";
 	        
             if($_id_proveedores > 0){
                 
@@ -236,7 +259,8 @@ class TesProveedoresController extends ControladorBase{
                               id_tipo_cuentas = $_id_tipo_cuentas,
                               razon_social_proveedores = '$_razon_social',
                               tipo_identificacion_proveedores = '$_tipo_identificacion',
-                              numero_cuenta_proveedores = '$_numero_cuenta_proveedores'";
+                              numero_cuenta_proveedores = '$_numero_cuenta_proveedores',
+                              archivo_registro=$archivo_proveedores";
                 
                 $tabla = "proveedores";
                 $where = "id_proveedores = '$_id_proveedores'";
@@ -255,7 +279,7 @@ class TesProveedoresController extends ControladorBase{
                 $parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores',
                                 '$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores',
                                 '$_id_tipo_proveedores', $_id_bancos, $_id_tipo_cuentas, '$_numero_cuenta_proveedores',
-                                '$_tipo_identificacion','$_razon_social'";
+                                '$_tipo_identificacion','$_razon_social', $archivo_proveedores";
                 $proveedores->setFuncion($funcion);
                 $proveedores->setParametros($parametros);
                 $resultado = $proveedores->llamafuncionPG();
@@ -569,7 +593,7 @@ class TesProveedoresController extends ControladorBase{
 	    $Proveedores = new ProveedoresModel();
 	    
 	    $columnas = "id_proveedores, nombre_proveedores, identificacion_proveedores, contactos_proveedores, direccion_proveedores,
-                    telefono_proveedores, email_proveedores";
+                    telefono_proveedores, email_proveedores, archivo_registro";
 	    
 	    $tablas = "public.proveedores";
 	    
@@ -620,6 +644,7 @@ class TesProveedoresController extends ControladorBase{
 	        $html.='<th style="text-align: left;  font-size: 12px;">DIRECCION</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">TELEFONO</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;">CORREO</th>';
+	        $html.='<th style="text-align: left;  font-size: 12px;">ARCHIVO</th>';
 	        $html.='<th style="text-align: left;  font-size: 12px;"></th>';	        
 	        $html.='</tr>';
 	        $html.='</thead>';
@@ -638,6 +663,15 @@ class TesProveedoresController extends ControladorBase{
 	            $html.='<td style="font-size: 11px;">'.$res->direccion_proveedores.'</td>';
 	            $html.='<td style="font-size: 11px;">'.$res->telefono_proveedores.'</td>';
 	            $html.='<td style="font-size: 11px;">'.$res->email_proveedores.'</td>';
+	            
+	            if(!empty($res->archivo_registro)){
+	                $html.='<td><a title="Archivo" target="_blank" href="view/DevuelvePDFView.php?id_valor='.$res->id_proveedores.'&id_nombre=id_proveedores&tabla=proveedores&campo=archivo_registro"><img src="view/images/logo_pdf.png" width="30" height="30"></a></td>';
+	            }
+	            else {
+	                
+	                $html.='<td></td>';
+	            }
+	            
 	            $html.='<td style="color:#000000;font-size:80%;"><span class="pull-right">';
 	            $html.='<a title="Editar Proveedores" onclick="editarProveedores('.$res->id_proveedores.')" href="#" class="btn-sm btn-warning" style="font-size:65%;" data-toggle="tooltip" >';
 	            $html.='<i class="fa  fa-edit" aria-hidden="true" ></i></a></td>';

@@ -6,10 +6,29 @@ $(document).ready(function(){
       cargaTipoProveedores();
       cargaTipoCuentas();
       init();
+initControles();
       
       //InsertaProveedores
      
 });
+
+function initControles(){
+	try {
+		
+		 $("#imagen_registro").fileinput({			
+		 	showPreview: false,
+	        showUpload: false,
+	        elErrorContainer: '#errorImagen',
+	        allowedFileExtensions: ["jpeg","jpg", "png", "gif"],
+	        language: 'esp' 
+		 });
+		
+	} catch (e) {
+		// TODO: handle exception
+		console.log("ERROR AL IMPLEMENTAR PLUGIN DE FILEUPLOAD");
+	}
+	
+}
 
 function generaTabla(ObjTabla){	
 	
@@ -313,34 +332,42 @@ $("#GuardarProveedores").on("click",function(event){
 		return false;
 	}
 		
+    var inimagen_registro = $("#imagen_registro");
+	//if( inimagen_registro[0].files.length == 0){
+		//inimagen_registro.closest("tr").notify("Ingrese un Imagen",{ position:"buttom left", autoHideDelay: 2000});
+		//return false;
+	//}
 	
 	
 	//para proveedores id
 	let $idProveedores = $("#id_proveedores"); 
-		
-	let parametros ={
-			id_proveedores: $idProveedores.val(),
-			nombre_proveedores: $nombre_proveedores.val(),
-			identificacion_proveedores: $identificacion_proveedores.val(),
-			contactos_proveedores: $contactos_proveedores.val(),
-			direccion_proveedores: $direccion_proveedores.val(),
-			telefono_proveedores: $telefono_proveedores.val(),
-			email_proveedores: $email_proveedores.val(),
-			fecha_nacimiento_proveedores: '',
-			id_tipo_proveedores: $tipoProveedores.val(),
-			id_bancos: $idBancos.val(),
-			id_tipo_cuentas: $tipoCuenta.val(),
-			numero_cuenta_proveedores: $numeroCuenta.val(),
-			tipo_identificacion : $tipoIdentificacion.val(),
-			razon_social_proveedores : $razon_social.val(),
-			forma_pago: $forma_pago.val()
-	}
+	
+	var parametros = new FormData();
+	
+	parametros.append('id_proveedores',$idProveedores.val());
+    parametros.append('nombre_proveedores',$nombre_proveedores.val());
+	parametros.append('identificacion_proveedores',$identificacion_proveedores.val());
+    parametros.append('contactos_proveedores',$contactos_proveedores.val());
+	parametros.append('direccion_proveedores',$direccion_proveedores.val());
+    parametros.append('telefono_proveedores',$telefono_proveedores.val());
+	parametros.append('email_proveedores',$email_proveedores.val());
+    parametros.append('fecha_nacimiento_proveedores','');
+	parametros.append('id_tipo_proveedores',$tipoProveedores.val());
+	parametros.append('id_bancos',$idBancos.val());
+    parametros.append('id_tipo_cuentas',$tipoCuenta.val());
+	parametros.append('numero_cuenta_proveedores',$numeroCuenta.val());
+	parametros.append('razon_social_proveedores',$razon_social.val());
+	parametros.append('tipo_identificacion',$tipoIdentificacion.val());
+	parametros.append('forma_pago',$forma_pago.val());
+	parametros.append('imagen_registro',inimagen_registro[0].files[0]);	
 	
 	$.ajax({
 		url:"index.php?controller=TesProveedores&action=AgregaProveedores",
 		type:"POST",
 		dataType:"json",
-		data:parametros
+		data:parametros,
+		contentType: false, //importante enviar este parametro en false
+        processData: false,  //importante enviar este parametro en false
 	}).done(function(x){
 		console.log(x)
 		if( x.respuesta == 1 ){    			

@@ -6,6 +6,7 @@ $(document).ready(function(){
       cargaTipoProveedores();
       cargaTipoCuentas();
       init();
+	  initControles();
       
       //InsertaProveedores
      
@@ -34,6 +35,26 @@ function generaTabla(ObjTabla){
 function init(){
 	
 	$("#id_bancos").select2({});
+}
+
+
+
+function initControles(){
+	try {
+		
+		 $("#imagen_registro").fileinput({			
+		 	showPreview: false,
+	        showUpload: false,
+	        elErrorContainer: '#errorImagen',
+	        allowedFileExtensions: ["jpeg","jpg", "png", "gif"],
+	        language: 'esp' 
+		 });
+		
+	} catch (e) {
+		// TODO: handle exception
+		console.log("ERROR AL IMPLEMENTAR PLUGIN DE FILEUPLOAD");
+	}
+	
 }
 
 /**FUNCIONES PARA INICIO DE PAGINA*/
@@ -266,6 +287,13 @@ $("#GuardarProveedores").on("click",function(event){
 		return false;
 	}
 	
+	
+	var inimagen_registro = $("#imagen_registro");
+	if( inimagen_registro[0].files.length == 0){
+		inimagen_registro.closest("tr").notify("Ingrese un Imagen",{ position:"buttom left", autoHideDelay: 2000});
+		return false;
+	}
+	
 	//para proveedores id
 	let $idProveedores = $("#id_proveedores"); 
 		
@@ -281,7 +309,8 @@ $("#GuardarProveedores").on("click",function(event){
 			id_tipo_proveedores: $tipoProveedores.val(),
 			id_bancos: $idBancos.val(),
 			id_tipo_cuentas: $tipoCuenta.val(),
-			numero_cuenta_proveedores: $numeroCuenta.val()
+			numero_cuenta_proveedores: $numeroCuenta.val(),
+			imagen_registro:inimagen_registro[0].files[0];
 	}
 	
 	$.ajax({

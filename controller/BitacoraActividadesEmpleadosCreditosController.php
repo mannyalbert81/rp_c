@@ -10,7 +10,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
     
     public function index(){
         
-        $bitacora_creditos = new BitacoraActividadesEmpleadosCreditosModel();
+        $bitacora_creditos = new CreditosModel();
         
         session_start();
         
@@ -49,7 +49,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
         
         session_start();
         
-        $bitacora_creditos = new BitacoraActividadesEmpleadosCreditosModel();
+        $bitacora_creditos = new CreditosModel();
         
         $nombre_controladores = "BitacoraActividadesEmpleadosCreditos";
         $id_rol= $_SESSION['id_rol'];
@@ -195,7 +195,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
     public function editBitacoraCreditos(){
         
         session_start();
-        $bitacora_creditos = new BitacoraActividadesEmpleadosCreditosModel();
+        $bitacora_creditos = new CreditosModel();
         $nombre_controladores = "BitacoraActividadesEmpleadosCreditos";
         $id_rol= $_SESSION['id_rol'];
         $resultPer = $bitacora_creditos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
@@ -229,7 +229,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
     public function delBitacoraCreditos(){
         
         session_start();
-        $bitacora_creditos = new BitacoraActividadesEmpleadosCreditosModel();
+        $bitacora_creditos = new CreditosModel();
         $nombre_controladores = "BitacoraActividadesEmpleadosCreditos";
         $id_rol= $_SESSION['id_rol'];
         $resultPer = $bitacora_creditos->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
@@ -271,7 +271,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
         session_start();
         $id_rol=$_SESSION["id_rol"];
         
-        $bitacora_creditos = new BitacoraActividadesEmpleadosCreditosModel();
+        $bitacora_creditos = new CreditosModel();
         
         $where_to="";
         $columnas ="a.id_bitacora_actividades_empleados_creditos,
@@ -491,7 +491,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
     public function cargaBitacoraParticipes(){
         
         $bitacora_creditos = null;
-        $bitacora_creditos = new BitacoraActividadesEmpleadosCreditosModel();
+        $bitacora_creditos = new CreditosModel();
         
         $query = "SELECT id_participes, apellido_participes, nombre_participes FROM core_participes WHERE 1=1 ORDER BY apellido_participes";
         

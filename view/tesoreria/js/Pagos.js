@@ -1,93 +1,107 @@
+/*** Variables de Pagina - Globales ***/
+var view	= view || {};
+//variable para dataTable
+var viewTable = viewTable || {};
+
+viewTable.tabla  = null;
+viewTable.nombre = 'tbl_listado_cuentas_pagar_pendientes';
+viewTable.contenedor = $("#div_listado_cuentas_pagar_pendientes");
+
+var idioma_espanol = {
+	    "sProcessing":     "Procesando...",
+        "sLengthMenu":     "Mostrar _MENU_ registros",
+        "sZeroRecords":    "No se encontraron resultados",
+        "sEmptyTable":     "Ningún dato disponible en esta tabla &#128543; ",
+        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+        "sInfoPostFix":    "",
+        "sSearch":         "Buscar:",
+        "sUrl":            "",
+        "sInfoThousands":  ",",
+        "sLoadingRecords": "Cargando...",
+        "oPaginate": {
+            "sFirst":    "Primero",
+            "sLast":     "Último",
+            "sNext":     "Siguiente",
+            "sPrevious": "Anterior"
+        },
+        "oAria": {
+            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+        },
+        "buttons": {
+            "copy": "Copiar",
+            "colvis": "Visibilidad"
+        }
+}
+
 $(document).ready(function(){
 	
-	buscaCuentasPagar();	
+	load_cuentas_pagar_pendientes();
 		
-})
-
-/***
- * funcion para setear el estilo de las tablas
- */
-function setTableStyle(ObjTabla){	
-	
-	$("#"+ObjTabla).DataTable({
-		paging: false,
-        scrollX: true,
-		searching: false,
-        pageLength: 10,
-        rowHeight: 'auto',
-        responsive: true,
-        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-        dom: '<"html5buttons">lfrtipB',
-        buttons: [ ],
-        language: {
-            "emptyTable": "No hay información",
-            "info": "Mostrando _START_ a _END_ de _TOTAL_ Registros",
-            "infoEmpty": "Mostrando 0 de 0 de 0 Registros",           
-            "lengthMenu": "Mostrar _MENU_ Registros",
-            "loadingRecords": "Cargando...",
-            "processing": "Procesando...",
-            "search": "Buscar:",
-            "zeroRecords": "Sin resultados encontrados",
-            "paginate": {
-                "first": "Primero",
-                "last": "Ultimo",
-                "next": "Siguiente",
-                "previous": "Anterior"
-            }
-        },
-        
-    });
-}
-
-
-/*******
- * funcion para poner mayusculas
- * @returns
- */
-$("input.mayus").on("keyup",function(){
-	$(this).val($(this).val().toUpperCase());
 });
 
-
-$("#txtbuscarProveedor").on("keyup",function(){
+var load_cuentas_pagar_pendientes	= function(){
 	
-	buscaCuentasPagar();
+	var dataSend = { };
 	
-})
-
-function buscaCuentasPagar(pagina=1){
-	
-	let _busqueda = $("#txtbuscarProveedor").val();
-	let datos={peticion:'',busqueda:_busqueda,page:pagina};
-	let cantidadrespuesta = $("#cantidad_busqueda");
-	let $divResultados = $("#div_lista_cuentas_pagar");
-	
-	$divResultados.html('');
-	
-	$.ajax({
-		url:"index.php?controller=Pagos&action=indexconsulta",
-		dataType:"json",
-		type:"POST",
-		data:datos,
-	}).done(function(x){		
+	viewTable.tabla	=  $( '#'+viewTable.nombre ).DataTable({
+	    'processing': true,
+	    'serverSide': true,
+	    'serverMethod': 'post',
+	    'destroy' : true,
+	    'ajax': {
+	        'url':'index.php?controller=Pagos&action=dtListarCuentasPagarPendientes',
+	        'data': function ( d ) {
+	            return $.extend( {}, d, dataSend );
+	            },
+            'dataSrc': function ( json ) {                
+                return json.data;
+              }
+	    },	
+	    'lengthMenu': [ [5, 10, 25, 50, -1], [5, 10, 25, 50, "All"] ],
+	    'order': [[ 1, "desc" ]],
+	    'columns': [	    	    
+	    	{ data: 'numfila', orderable: false },
+    		{ data: 'lote', },
+    		{ data: 'origen', orderable: false },
+    		{ data: 'generado_por'},
+    		{ data: 'descripcion', orderable: false},
+    		{ data: 'fecha' },
+    		{ data: 'beneficiario'},
+    		{ data: 'valor_documento', },
+    		{ data: 'saldo_documento', orderable: false },
+    		{ data: 'cheque', orderable: false },
+    		{ data: 'transferencia', orderable: false }    		    		
+	    ],
+	    'columnDefs': [
+	        {className: "dt-center", targets:[0] },
+	        {sortable: false, targets: [ 0,2,4,8,9,10] }
+	      ],
+	    'scrollX': "100%",
+		'scrollY': "80vh",
+        'scrollCollapse':true,
+        'fixedHeader': {
+            header: true,
+            footer: true
+        },
+        dom: "<'row'<'col-sm-6'<'box-tools pull-right'B>>><'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'<'#colvis'>p>>",
+        buttons: [],
+        'language':idioma_espanol
+	 });
 		
-		cantidadrespuesta.html('<strong>Registros:</strong>&nbsp; '+ x.valores.cantidad);
-		$divResultados.html(x.tabla_datos);
-		setTableStyle(x.nombre_tabla);
-		
-		
-	}).fail(function(xhr,status,error){
-		let err = xhr.responseText;
-		console.log(err)
-		cantidadrespuesta.html('<strong>Registros:</strong>&nbsp;  0');
-		let _diverror = ' <div class="col-lg-12 col-md-12 col-xs-12"> <div class="alert alert-danger alert-dismissable" style="margin-top:40px;">';
-			_diverror +='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-            _diverror += '<h4>Aviso!!!</h4> <b>Error en conexion a la Base de Datos</b>';
-            _diverror += '</div></div>';
-            
-        $divResultados.html(_diverror);
-	})
 }
+
+// dom : "B<'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'<'#colvis'>p>>",
+// dom : 'Blfrtip'
+//dom : "B<'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'<'#colvis'>p>>",
+// <div class="">
+//buttons: [
+    //'copy', 'csv', 'excel', 'pdf', 'print'
+	//{ "extend": 'excelHtml5',  "titleAttr": 'Excel', "text":'<span class="fa fa-file-excel-o fa-2x fa-fw"></span>',"className": 'no-padding btn btn-default btn-sm' },
+	//{ "extend": 'pdfHtml5', "titleAttr": 'PDF', "text":'<span class="fa fa-file-pdf-o fa-2x fa-fw"></span>',"className": ' no-padding btn btn-default btn-sm' }
+//],
 
 function verificaMetodoPago(obj){
 	
@@ -118,7 +132,6 @@ function verificaMetodoPago(obj){
 			})
 	 	}
 	})
-	
 	
 	console.log(obj);
 	//

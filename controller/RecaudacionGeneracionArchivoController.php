@@ -2628,7 +2628,7 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $anio_recaudacion    = $_POST['anio_recaudacion'];
 	        
 	        $columnas1 = " aa.id_descuentos_registrados_detalle_valores_creditos, bb.id_entidad_patronal, bb.nombre_entidad_patronal, aa.cedula_participes, aa.nombres_participes,
-	           aa.mes_descuento, aa.sueldo_liquido, aa.cuota, aa.mora, aa.total, aa.valor_usuario_valores_creditos as total_usuario, aa.nombre_tipo_creditos, aa.tipo_afiliado";
+	           aa.mes_descuento, aa.sueldo_liquido, aa.cuota, aa.mora, aa.total, aa.valor_usuario_valores_creditos AS total_usuario, aa.nombre_tipo_creditos, aa.tipo_afiliado";
 	        $tablas1   = " core_descuentos_registrados_detalle_valores_creditos aa
 	           INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal ";
 	        $where1    = " aa.id_entidad_patronal = $id_entidad_patronal 
@@ -2685,10 +2685,11 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	        $resultSet=$recaudaciones->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
 	        
 	        //aqui la busqueda total parcial
-	        $colSum    = "COALESCE( SUM( case when valor_usuario_valores_creditos  is null then total else valor_usuario_valores_creditos  end ), 0 ) total_descuento";
-	        $rsParcial = $recaudaciones->getCondicionesSinOrden( $colSum, $tablas1, $where1, $limit);
-	        $valor_parcial   = $rsParcial[0]->total_descuento;
-	        	        
+	        //$colSum    = "COALESCE( SUM( case when valor_usuario_valores_creditos  is null then total else valor_usuario_valores_creditos  end ), 0 ) total_descuento";
+	        //$rsParcial = $recaudaciones->getCondicionesSinOrden( $colSum, $tablas1, $where1, $limit);
+	        //$valor_parcial   = $rsParcial[0]->total_descuento; --nota se cambia porq para el parcial en la consulta no existe el offset y envia en cero
+	        $valor_parcial = 0.00;
+	        
 	        //$cantidadBusquedaFiltrada = sizeof($resultSet);
 	        
 	        /** crear el array data que contiene columnas en plugins **/
@@ -2729,6 +2730,9 @@ class RecaudacionGeneracionArchivoController extends ControladorBase{
 	            //$dataFila['id_cabeza']         = '12345';
 	           
 	            $data[] = $dataFila;
+	            
+	            //se realiza la suma parcial o el segmento de busqueda
+	            $valor_parcial += $total_usuario;
 	        }
 	        
 	        //para valores de pie datetable

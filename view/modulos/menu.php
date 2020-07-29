@@ -368,6 +368,7 @@ $controladores=$_SESSION['controladores'];
               <!--   <li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=Recaudacion&action=index"><i class="fa fa-circle-o"></i> Arc. Entidad Patronal</a></li>                
                 <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Carga Recaudaciones</a></li>    -->
                 <li style="<?php echo getcontrolador("RecepcionArchivosRecaudaciones",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Recepción Archivos</a></li>   
+                <li style="<?php echo getcontrolador("RecepcionArchivosDebitosBancarios",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosDebitosBancarios&action=index"><i class="fa fa-circle-o"></i> Debitos Bancarios</a></li>   
                 <li style="<?php echo getcontrolador("SolicitudAportes",$controladores) ?>"><a href="index.php?controller=SolicitudAportes&action=index"><i class="fa fa-circle-o"></i> Solicitud Aportes</a></li>             
              
                 </ul>
@@ -498,6 +499,7 @@ $controladores=$_SESSION['controladores'];
     			<li style="<?php echo getcontrolador("SolicitudPrestamo",$controladores) ?>"><a href="index.php?controller=SolicitudPrestamo&action=index5"><i class="fa fa-circle-o"></i>Solicitudes</a></li>
     		    <li style="<?php echo getcontrolador("GarantiaCredito",$controladores) ?>"><a href="index.php?controller=GarantiaCredito&action=index"><i class="fa fa-circle-o"></i>Garantia Credito</a></li>
     		    <li style="<?php echo getcontrolador("TipoCredito",$controladores) ?>"><a href="index.php?controller=TipoCredito&action=index"><i class="fa fa-circle-o"></i>Tipo Crédito</a></li>
+    	 	    <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosCreditos",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosCreditos&action=index"><i class="fa fa-circle-o"></i>Bitacora Creditos</a></li>
     
            </ul>           	 
         </li>

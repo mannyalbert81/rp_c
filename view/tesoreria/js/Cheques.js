@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	
 	buscaChequesGenerados();	
-		
+	
 })
 
 
@@ -50,4 +50,5 @@ function buscaChequesGenerados(pagina=1){
             $tablaDatos.html(_diverror);
 	})
 }
+
 

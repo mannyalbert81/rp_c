@@ -41,9 +41,13 @@
         list-style-type:none;
         }
         
-      h3.titulo{
-		width: 100%; 
-		text-align: center;	
+      div.contenedor-titulo-solicitud{
+        width: 100%;
+      }  
+      
+      h3.titulo{ 
+		text-align: center;
+		margin:0;	
     	}
     	
 	.bio-row{
@@ -495,91 +499,39 @@
                                 <div class="box-body">                                
                                     <!-- emprieza el formulario -->
                                 	<form action="">
-                                		<input type="hidden" value="" id="spanel_id_cuentas_bancos_participe">
+                                	
                                 		<div class="row">
-                                    		<div class="col-md-3 col-lg-3 col-xs-12">
-                                              <label for="spanel_id_bancos" class="control-label">Bancos:</label>
-                                              <select id="spanel_id_bancos"  class="form-control" >
-                                              <option value="0" selected="selected">--Seleccione--</option>            									
-            								   </select> 
+                                			<div class="col-md-3 col-lg-3 col-xs-12">
+                                            	<label for="spanel_id_bancos" class="control-label">Bancos:</label>
+                                                <select id="spanel_id_bancos"  class="form-control" >
+                                                	<option value="0" selected="selected">--Seleccione--</option>            									
+                								</select> 
                                             </div>
                                             
-                                             <div class="col-md-3 col-lg-3 col-xs-12">
-                                                  <label for="spanel_id_tipo_cuentas" class="control-label">Tipo Cuentas:</label>
-                                                  <select id="spanel_id_tipo_cuentas"  class="form-control" >
-                                                  <option value="0" selected="selected">--Seleccione--</option>
-                								   </select>
-                                                </div>
+                                            <div class="col-md-3 col-lg-3 col-xs-12">
+                                              <label for="spanel_id_tipo_cuentas" class="control-label">Tipo Cuentas:</label>
+                                              <select id="spanel_id_tipo_cuentas"  class="form-control" >
+                                              	<option value="0" selected="selected">--Seleccione--</option>
+            								  </select>
+                                            </div>
                                                 
-                                                 <div class="col-md-3 col-lg-3 col-xs-12">
-                                                	<label for="spanel_numero_cuentas" class="control-label">Número de cuenta</label>
-                                                    <input type="text" class="form-control" id="spanel_numero_cuentas" value=""  placeholder="Número de cuenta">
-                                                 </div>
-                                                 
-                                                  <div class="col-md-3 col-lg-3 col-xs-12">
-                                                      <label for="spanel_cuenta_principal" class="control-label">Cuenta Principal:</label>
-                                                      <select id="spanel_cuenta_principal"  class="form-control" >
-                                                      	<option value="0" selected="selected">--Seleccione--</option>
-                        								<option value="TRUE">SI</option>
-                    			  						<option value="FALSE">NO</option>
-                    								   </select>
-                                                  </div>
-                                              </div>
-                                                
-                                              <div class="row">
-                                              	
-                                              	 <div class=" col-xs-offset-5 col-md-offset-5 col-lg-offset-5 col-xs-2 col-md-2 col-lg-2" >
-                                              	 	<label for="btn_agregar_cuenta" class="control-label">&nbsp;</label>
-                                     	   		    <div class="form-group">
-                                	                  <button type="button" id="btn_guardar_cuentas" class="btn btn-success"> <i class='glyphicon glyphicon-floppy-disk'></i> GUARDAR</button>                        	          
-                             						</div>
-                            	                  </div>
-                            	                  <div class="col-xs-2 col-md-2 col-lg-2" >
-                                              	 	<label for="btn_listar_cuentas" class="control-label">&nbsp;</label>
-                                     	   		    <div class="form-group">
-                                	                  <button type="button" id="btn_listar_cuentas" class="btn btn-info"> <i class='glyphicon glyphicon-th-list'></i> Ver Cuentas</button>                        	          
-                             						</div>
-                            	                  </div>
-                                              </div>  
+                                            <div class="col-md-3 col-lg-3 col-xs-12">
+                                            	<label for="spanel_numero_cuentas" class="control-label">Número de cuenta</label>
+                                                <input type="text" class="form-control" id="spanel_numero_cuentas" value=""  placeholder="Número de cuenta">
+                                            </div>
+                                             
+                                            <div class="col-md-3 col-lg-3 col-xs-12">
+                                                 <label for="btn_guardar_cuentas" class="control-label">&nbsp;</label>
+                                                 <button type="button" id="btn_guardar_cuentas" class="form-control btn btn-success"> <i class='glyphicon glyphicon-floppy-disk'></i> GUARDAR</button>
+                                            </div>
+                                      </div>
                                               
-                                	
                                 	</form>
                                                                                                    
                                 </div>                               
                               </div>  <!-- /.box-body -->          
           					</div>  <!-- /. subpanel cuentas -->
         	           		
-        	           		<!-- subpanel cuentas -->
-                          	<div id="panel_participes_cuentas" class="box box-success">
-                                <div class="box-header with-border">              
-                                </div>
-                                <div class="box-body">
-                                
-                                	<div class="row">
-                                		<div class="col-md-offset-10 col-md-2">                                			
-                                            <input type="text" class="form-control" id="spanel_buscador_cuentas" value=""  placeholder="">
-                                		</div>
-                                	</div>
-                                	
-                                	<table class="table" id="spanel_tbl_cuentas_bancarias">
-                                		<thead>
-                                			<tr>
-                                				<th>#</th>
-                                				<th>Banco</th>
-                                				<th>Cuenta</th>
-                                				<th>Numero</th>
-                                				<th>Principal</th>
-                                				<th>Opciones</th>
-                                		</thead>
-                                		<tbody>
-                                		</tbody>
-                                	</table>
-                                	<div id="div_cuentas_paginacion">
-                                	
-                                	</div>
-                                </div>
-                            </div>
-        	           		<!-- /. subpanel cuentas -->
         	           	</div>
         	           	<!-- TERMINA PANEL CUENTAS BANCOS -->
         	           	
@@ -810,8 +762,8 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Credito/js/CreditosParticipes.js?0.37"></script>
+    <script src="view/Credito/js/CreditosParticipes.js?0.42"></script>
     <script src="view/Credito/js/CreditosParicipesAnalisis.js?0.09"></script> 
-    <script src="view/Credito/js/CreditosParticipesCuentasBancarias.js?0.03"></script> 
+    <script src="view/Credito/js/CreditosParticipesCuentasBancarias.js?0.06"></script> 
    </body>
 </html>   

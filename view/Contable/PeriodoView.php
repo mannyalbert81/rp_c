@@ -90,8 +90,8 @@
             		  
         <div class="col-md-4 col-lg-4 col-xs-12">
 	         	<div class="form-group">
-	         		<label for="year_periodo" class="control-label">AÑO :</label>
-	         		<input type="number" id="year_periodo" name="year_periodo" min="2000" max="<?php echo date('Y'); ?>" value="<?php echo date('Y'); ?>" class="form-control">
+	         		<label for="anio_periodo" class="control-label">AÑO :</label>
+	         		<input type="number" id="anio_periodo" name="anio_periodo" min="2000" max="<?php echo date('Y'); ?>" value="<?php echo date('Y'); ?>" class="form-control">
                     </div>
 	         </div>
             		  
@@ -181,7 +181,7 @@
 
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-   <script src="view/Contable/FuncionesJS/Periodo.js?0.27"></script> 
+   <script src="view/Contable/FuncionesJS/Periodo.js?0.29"></script> 
        
        
 

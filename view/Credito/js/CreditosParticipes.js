@@ -5,7 +5,7 @@ view.hdn_cedula_participes 	= $("#hdn_cedula_participes");
 view.hdn_id_participes	 	= $("#hdn_id_participes");
 view.hdn_cedula_garante	 	= $("#hdn_cedula_garante");
 view.cedula_participes 		= $("#cedula_participe");
-view.html_boton_buscar_participe		= $("#buscar_participe_boton");
+view.html_boton_buscar_participe= $("#buscar_participe_boton");
 view.boton_buscar_participe		= $("#buscar_participe") || null;
 view.tipo_creditos			= $("#ddl_tipo_creditos"); 
 view.monto_creditos			= $("#txt_monto_creditos");
@@ -68,11 +68,10 @@ $(document).ready( function (){
 	// ESTABLESCO LA MASCARA AL CAMPO CEDULA PARTICIPE
 	$(":input").inputmask();
 	
-	// CARGO LOS TIPOS DE CREDITO AL COMBO BOX
-	//GetTipoCreditos();
-	
+	//buscar los tipos de creditos
 	obtener_tipo_creditos();
 	
+	//valida que no haya cuotas en mora por parte del participe
 	iniciar_datos_solicitud();	
 	
 	//iniciar eventos de elementos de la vista
@@ -346,7 +345,6 @@ var obtener_info_participes = function(){
 		})
 		.done(function(x) {
 			
-			console.log(x);
 			// cargos tabla de informacion basica de los participes
 			if( x.estatus != undefined && x.estatus == 'OK' ){
 				
@@ -364,11 +362,8 @@ var obtener_info_participes = function(){
 				obtener_informacion_solicitud();
 				
 				//cargar informacion crediticia con relacion a la solicitud
-				obtener_informacion_participe();
-				
+				obtener_informacion_participe();				
 			}
-			
-			
 						
 		})
 		.fail(function() {
@@ -453,7 +448,7 @@ var obtener_informacion_solicitud 	= function(){
 		try{
 			var varTipoCreditos	= x.data.nombre_tipo_credito_solicitud;		
 			setValTipoCreditos(varTipoCreditos);			
-		}catch(e){console.log('ERROR AL OBTENER TIPO CRDITO DESDE SERVIDOR');}
+		}catch(e){console.log('ERROR AL OBTENER TIPO CREDITO DESDE SERVIDOR');}
 		
 	})
 	.fail(function() {
@@ -507,6 +502,7 @@ var iniciar_datos_simulacion = function(){
 	//setear valores globales
 	view.global_hay_garantes	= false;
 	view.global_hay_renovacion	= false;
+	dataGarantes	= {};
 	
 	//validar cuenta individual
 	var cuenta_individual	= dataSolicitud.cuenta_individual || 0;
@@ -838,7 +834,8 @@ var buscar_garante	= function(){
 			var limite_participe	= dataSolicitud.cuenta_individual;
 			var aportes_participe	= dataSolicitud.aportes_participe;
 			
-			//datos de garante			
+			//datos de garante	
+			dataGarantes	= data; //establecemos valores de garante
 			var limite_garante	= data.disponible_garante;
 			var edad_garante	= data.edad;			
 			var limite_total	= parseFloat( limite_garante ) + parseFloat( limite_participe );
@@ -1220,12 +1217,12 @@ var validar_valores_simulacion	= function(){
 			return false;
 		}
 
-		var limite_garante	= ( $("#monto_garante_disponible").text() == "" ) ? 0 : $("#monto_garante_disponible").text();
+		var limite_garante = ( dataGarantes.disponible_garante == undefined ) ? 0 : dataGarantes.disponible_garante;
 		limite_credito	= parseFloat( limite_credito ) + parseFloat( limite_garante );
 		
 		if( parseFloat( view.monto_creditos.val() ) > parseFloat( limite_credito ) )
 		{
-			view.monto_creditos.notify("Monto máximo $"+limite,{ position:"buttom left", autoHideDelay: 2000});
+			view.monto_creditos.notify("Monto máximo $"+limite_credito,{ position:"buttom left", autoHideDelay: 2000});
 			view.monto_creditos.val( limite_credito );
 			return false;
 		}	
@@ -1359,7 +1356,7 @@ var buscar_numero_cuotas	= function(){
 		
 }
 
-var simular_credito_amortizacion = function(){
+var simular_credito_amortizacion = function(){	
 	
 	var valor_monto	= view.monto_creditos.val();
 	var valor_tipo_creditos = view.tipo_creditos.val();
@@ -1369,6 +1366,11 @@ var simular_credito_amortizacion = function(){
 	//busco variable global
 	view.global_hay_solicitud	= ( sin_solicitud ) ? 0 : 1;
 	
+	//SINTAXERROR --
+	//'renovacion_credito':view.global_hay_renovacion, 
+	//'id_solicitud':view.hdn_id_solicitud,
+	//'avaluo_bien':view.global_avaluo_sin_solicitud
+	
 	$.ajax({
 	    url: 'index.php?controller=SimulacionCreditos&action=obtenerSimulacionCredito',
 	    type: 'POST',
@@ -1377,10 +1379,9 @@ var simular_credito_amortizacion = function(){
 	    	'monto_credito':valor_monto,
 	    	'tipo_credito':valor_tipo_creditos,
 	    	'plazo_credito':valor_cuotas,
-	    	//para ver si va o no a renovar
-	    	'renovacion_credito':renovacion_credito, //SINTAXERROR
+	    	'renovacion_credito':view.global_hay_renovacion, 
 	    	'id_solicitud':id_solicitud,
-	    	'avaluo_bien':avaluo_bien_sin_solicitud
+	    	'avaluo_bien':view.global_avaluo_sin_solicitud
 	    },
 	}).done(function(x) {
 		
@@ -1557,7 +1558,7 @@ var mostrar_verificacion_codigo	= function(){
 	}).done(function(x) {
 		console.log(x);
 		x=JSON.parse(x);
-		var informacion="<h3>Se procedera a generar un crédito para "+nombre_participe+"</h3>" +
+		var informacion="<h3>Se procedera a generar un crédito para "+dataSolicitud.nombre_participe_credito+"</h3>" +
 				"<h3>Con cédula de identidad número "+view.cedula_participes.val()+"</h3>" +
 				"<h3>Por el monto de "+view.monto_creditos.val()+" USD</h3>" +
 				"<h3>A un plazo de "+view.numero_cuotas.val()+" meses con interes del "+x[1]+"%</h3>" +
@@ -1584,7 +1585,8 @@ var validar_codigo_generado	= function(){
 	}else if( codigo_insertado!="" && !(codigo_insertado.includes("_")) && codigo_insertado==codigo_generado )
 	{
 		registrar_credito_nuevo();
-	}else{
+	}else
+	{
 		swal("Código incorrecto");
 	}
 }
@@ -1649,6 +1651,24 @@ var registrar_credito_nuevo	= function(){
 		});
 	}else
 	{
+		console.log("AQUI INGRESA PARA INSERTAR CON RENOVACION");
+		
+		var datamm = {
+	    	'monto_credito': monto_credito,
+	    	'tipo_credito': valor_tipo_creditos,
+	    	'fecha_pago': fecha_corte,
+	    	'cuota_credito': cuota_credito,
+	    	'cedula_participe': ciparticipe,
+	    	'observacion_credito': observacion,
+	    	'id_solicitud':id_solicitud,
+	    	'con_garante': view.global_hay_garantes,
+	    	'cedula_garante':cigarante	    	
+	    };
+		
+		console.log(data);
+		
+		return false;
+		
 		$.ajax({
 		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionRenovacionCredito',
 		    type: 'POST',

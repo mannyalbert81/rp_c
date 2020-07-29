@@ -41,9 +41,13 @@
         list-style-type:none;
         }
         
-      h3.titulo{
-		width: 100%; 
-		text-align: center;	
+      div.contenedor-titulo-solicitud{
+        width: 100%;
+      }  
+      
+      h3.titulo{ 
+		text-align: center;
+		margin:0;	
     	}
     	
 	.bio-row{
@@ -142,8 +146,8 @@
 
     <section class="content">
      <div class="box box-primary">
-     <div class="box-header">
-          <h3 class="box-title">Busqueda de Participes</h3>
+       <div class="box-header">
+          <h3 class="box-title">Ingreso Cr&eacute;ditos </h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>
@@ -189,9 +193,10 @@
                       <li><a href="#panel_detalle" data-toggle="tab" class="disabledTab" >Detalle Valores</a></li>
                       <li><a href="#panel_capacidad" data-toggle="tab" class="disabledTab" >Capacidad Pago</a></li>
                       <li><a href="#panel_capacidad_garante" data-toggle="tab" class="disabledTab" >Capacidad Pago Garante</a></li>
-                      <li><a href="#panel_capacidad_validaciones" data-toggle="tab" class="disabledTab" >Capacidad Pago Garante</a></li>
+                      <li><a href="#panel_cuentas_bancos" data-toggle="tab" class="disabledTab" >Cuentas Bancos</a></li>
                     </ul>
                     <div class="tab-content">
+                    
                     	<!-- AQUI COMIENZA PARA PONER CONTENIDOS DE PANELES -->
                     	<!-- PANEL INDEX -->
                     	<div class="active tab-pane" id="panel_index">
@@ -340,6 +345,7 @@
 							</div>	
                     		
                     	</div>
+                    	
                     	<div class="tab-pane" id="panel_detalle">
                     		
                     		<div id="div_pnl_participe_encontrado"></div>
@@ -351,6 +357,7 @@
                     		<div id="div_pnl_participe_creditos"></div>
                     		
                     	</div>
+                    	
                     	<div class="tab-pane" id="panel_capacidad">
                     		<div class="col-xs-12 col-md-6 col-lg-6 ">
             					<div class="form-group">
@@ -402,38 +409,38 @@
                 				</div>
             				</div>
              			</div>
-             			<div class="col-xs-12 col-md-6 col-lg-6 ">
-            				<div class="form-group">
-                				<div id="credito_aprobado" class="small-box bg-red">
-                            		<div class="inner">
-                                      <h3 id="h3_credito_aprobado">CREDITO NEGADO</h3>
-                                    </div>
-                          		</div>
-                                <div id="variacion_rol" class="small-box bg-green">
-                                	<div class="inner">
-                                        <h3 id="h3-variacion_rol"></h3>
-                        				<h4>VARIACION EN ROL CON NUEVA CUOTA</h4>
-                        				<h4 id="h3-variacion_rol_estado"></h4>                                  
-                                	</div>
-                                
-                                </div>
-                                <div id="validacion_rol" class="small-box bg-green">
-                                    <div class="inner">
-                                      <h3 id="h3-validacion_rol"></h3>
-                                      <h4>VALIDACION ROL $100</h4>
-                        				<h4 id="h3-validacion_rol_estado"></h4>
-                                    </div>
-                                </div>
-                                <div id="considerado_ingresos" class="small-box bg-green">
-                                    <div class="inner">
-                                      <h3 id="h3-consideracion_rol"></h3>
-                        				<h4>CONSIDERANDO INGRESOS ADICIONALES >100</h4>
-                        				<h4 id="h3-consideracion_rol_estado"></h4>
-                                    </div>
+             				<div class="col-xs-12 col-md-6 col-lg-6 ">
+                				<div class="form-group">
+                    				<div id="credito_aprobado" class="small-box bg-red">
+                                		<div class="inner">
+                                          <h3 id="h3_credito_aprobado">CREDITO NEGADO</h3>
+                                        </div>
+                              		</div>
+                                    <div id="variacion_rol" class="small-box bg-green">
+                                    	<div class="inner">
+                                            <h3 id="h3-variacion_rol"></h3>
+                            				<h4>VARIACION EN ROL CON NUEVA CUOTA</h4>
+                            				<h4 id="h3-variacion_rol_estado"></h4>                                  
+                                    	</div>
                                     
-                                </div>
-            				</div>
-            			</div>
+                                    </div>
+                                    <div id="validacion_rol" class="small-box bg-green">
+                                        <div class="inner">
+                                          <h3 id="h3-validacion_rol"></h3>
+                                          <h4>VALIDACION ROL $100</h4>
+                            				<h4 id="h3-validacion_rol_estado"></h4>
+                                        </div>
+                                    </div>
+                                    <div id="considerado_ingresos" class="small-box bg-green">
+                                        <div class="inner">
+                                          <h3 id="h3-consideracion_rol"></h3>
+                            				<h4>CONSIDERANDO INGRESOS ADICIONALES >100</h4>
+                            				<h4 id="h3-consideracion_rol_estado"></h4>
+                                        </div>
+                                        
+                                    </div>
+                				</div>
+                			</div>
                     	</div>
                     	<!-- EMPIEZA PANEL CAPACIDAD PAGO GARANTE -->
                     	<div class="tab-pane" id="panel_capacidad_garante">
@@ -482,37 +489,60 @@
 							<br>
 							</div>	
                     	</div>
-                    	
-                    	<!-- EMPIEZA PANEL CAPACIDAD PAGO VALIDACIONES -->
-                    	<div class="tab-pane" id="panel_capacidad_validaciones">
-                    		
-            			            			
-                       </div> <!-- termina panel de capacidad de pago con validaciones -->               	
+                    	<!-- EMPIEZA PANEL CUENTAS BANCOS -->
+        	           	<div class="tab-pane" id="panel_cuentas_bancos">        	           	
+        	           		
+        	           		<!-- subpanel cuentas -->
+                          	<div class="box box-success">
+                                <div class="box-header with-border">              
+                                </div>
+                                <div class="box-body">                                
+                                    <!-- emprieza el formulario -->
+                                	<form action="">
+                                	
+                                		<div class="row">
+                                			<div class="col-md-3 col-lg-3 col-xs-12">
+                                            	<label for="spanel_id_bancos" class="control-label">Bancos:</label>
+                                                <select id="spanel_id_bancos"  class="form-control" >
+                                                	<option value="0" selected="selected">--Seleccione--</option>            									
+                								</select> 
+                                            </div>
+                                            
+                                            <div class="col-md-3 col-lg-3 col-xs-12">
+                                              <label for="spanel_id_tipo_cuentas" class="control-label">Tipo Cuentas:</label>
+                                              <select id="spanel_id_tipo_cuentas"  class="form-control" >
+                                              	<option value="0" selected="selected">--Seleccione--</option>
+            								  </select>
+                                            </div>
+                                                
+                                            <div class="col-md-3 col-lg-3 col-xs-12">
+                                            	<label for="spanel_numero_cuentas" class="control-label">Número de cuenta</label>
+                                                <input type="text" class="form-control" id="spanel_numero_cuentas" value=""  placeholder="Número de cuenta">
+                                            </div>
+                                             
+                                            <div class="col-md-3 col-lg-3 col-xs-12">
+                                                 <label for="btn_guardar_cuentas" class="control-label">&nbsp;</label>
+                                                 <button type="button" id="btn_guardar_cuentas" class="form-control btn btn-success"> <i class='glyphicon glyphicon-floppy-disk'></i> GUARDAR</button>
+                                            </div>
+                                      </div>
+                                              
+                                	</form>
+                                                                                                   
+                                </div>                               
+                              </div>  <!-- /.box-body -->          
+          					</div>  <!-- /. subpanel cuentas -->
+        	           		
+        	           	</div>
+        	           	<!-- TERMINA PANEL CUENTAS BANCOS -->
+        	           	
                     </div>
+                 	
                  </div>
              </div>
-             </div>
-             
+             </div>             
            	
-           	<div class="row hidden">
-           		<div class="col-xs-12 col-md-12 col-lg-12 ">
-           		<div id="participe_encontrado" ></div>
-           		</div>
-           	</div>
-           	<div class="row hidden">
-           		<div class="col-xs-12 col-md-12 col-lg-12 ">
-           		<div id="aportes_participe" ></div>
-           		</div>
-           	</div>
-           	<div class="row hidden">
-           		<div class="col-xs-12 col-md-12 col-lg-12 ">
-           		<div id="creditos_participe" ></div>
-           		</div>
-           	</div>
           </div>
-        </div>
-        
-    </div>
+       </div> 
     </section>
    </div>
   
@@ -726,13 +756,14 @@
     
     <?php include("view/modulos/links_js.php"); ?>	
 
-   <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-   <script src="view/Credito/js/CreditosParticipes.js?0.35"></script>
-   <script src="view/Credito/js/CreditosParicipesAnalisis.js?0.09"></script> 
+    <script src="view/Credito/js/CreditosParticipes.js?0.42"></script>
+    <script src="view/Credito/js/CreditosParicipesAnalisis.js?0.09"></script> 
+    <script src="view/Credito/js/CreditosParticipesCuentasBancarias.js?0.06"></script> 
    </body>
 </html>   

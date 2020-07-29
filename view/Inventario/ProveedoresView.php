@@ -283,7 +283,18 @@
                       <div id="mensaje_numero_cuenta" class="errores"></div>
                                            
                     </div>
-    		    </div>
+                </div>
+                
+                 <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="numero_cuenta_proveedores" class="control-label">Archivo:</label>
+                      <input id="imagen_registro" type="file" class="form-control" > 
+                      <div id="errorImagen"></div>
+                                           
+                    </div>
+                </div>
+                
+                
     		    
     		    
 			</div>

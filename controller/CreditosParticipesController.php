@@ -83,16 +83,19 @@ class CreditosParticipesController extends ControladorBase
             $data = array();
             $data['nombre_tipo_credito_solicitud'] = $resultSet[0]->nombre_tipo_creditos;
 
-            $html = '<div id="info_participe_solicitud" class="row bg-teal">
-                    <h3 class="titulo">Información de Solicitud</h3>
-                    <div class="col-md-6 col-md-12">
+            $html = '<div id="info_participe_solicitud " class="row bg-teal">
+                    <div class="contenedor-titulo-solicitud">
+                        <h3 class="titulo col-lg-11 col-md-11">Información de Solicitud</h3>
+                        <button id="btn_cambiar_datos_cuentas_solicitud" class="col-lg-1 col-md-1 no-padding btn btn-default"><i class="fa fa-edit fa-2x" aria-hidden="true"></i></button>
+                    </div>                    
+                    <div class="col-lg-6 col-md-12">
                     <div class="box-footer no-padding bg-teal">
                         <div class="bio-row"><p><span class="tab">Tipo Crédito </span>: ' . $data['nombre_tipo_credito_solicitud'] . '</p></div>
                         <div class="bio-row"><p><span class="tab">Nombre Banco </span>: ' . $resultSet[0]->nombre_banco_cuenta_bancaria . '</p></div>
                         <div class="bio-row"><p><span class="tab">Número Cuenta </span>: ' . $resultSet[0]->numero_cuenta_cuenta_bancaria . '</p></div>
                     </div>
                     </div>
-                    <div class="col-md-6 col-md-12">
+                    <div class="col-lg-6 col-md-12">
                     <div class="box-footer no-padding bg-teal">
                         <div class="bio-row"><p><span class="tab">Destino Dinero</span>: ' . $resultSet[0]->destino_dinero_datos_prestamo . '</p></div>
                         <div class="bio-row"><p><span class="tab">Tipo Cuenta </span>: ' . $resultSet[0]->tipo_cuenta_cuenta_bancaria . '</p></div>
@@ -946,7 +949,8 @@ class CreditosParticipesController extends ControladorBase
         $id_creditos_renovar = $rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
 
         $count_creditos_renovar = 0;
-        foreach ($id_creditos_renovar as $res) {
+        foreach ($id_creditos_renovar as $res) 
+        {
             $columnas = 'core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
             		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
             		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
@@ -1197,7 +1201,7 @@ class CreditosParticipesController extends ControladorBase
         $whe1   = " aa.id_estatus = 1
             AND coalesce( aa.mora_tabla_amortizacion, 0) > 0
             AND bb.id_estado_creditos = 4
-            AND ( aa.fecha_tabla_amortizacion between '".$fechasValidacion['desde']."' and '".$fechasValidacion['hasta']."' )
+            AND ( aa.fecha_tabla_amortizacion BETWEEN '".$fechasValidacion['desde']."' AND '".$fechasValidacion['hasta']."' )
             AND cc.cedula_participes = '".$cedula_participes."'";
         $order  = " ORDER BY aa.id_creditos DESC, aa.fecha_tabla_amortizacion DESC";
         $rsConsulta1    = $participes->getCondicionesSinOrden($col1, $tab1, $whe1, $order);
@@ -1365,6 +1369,18 @@ class CreditosParticipesController extends ControladorBase
             $valor_cuota = 0;
         }
         echo " VALOR CUOTA --> ",$valor_cuota;
+        
+        echo "<br> /*************************************************//";
+        var_dump($this->getFechasUltimas3Cuotas());
+        
+        echo "<br> /*************************************************//<br>";
+        $tasa_interes = 9;
+        $tasa_interes = $tasa_interes / 100;
+        $interes_mensual = $tasa_interes / 12;
+        $valor_cuota = ( 11220 * $interes_mensual ) / ( 1 - pow( ( 1 + $interes_mensual), - 72 ) );
+        $valor_cuota = round($valor_cuota, 2);
+        echo "AQUI LA CUOTA -->",$valor_cuota;
+        
     }
     
     public function obtenerAvaluoHipotecario()
@@ -1427,6 +1443,166 @@ class CreditosParticipesController extends ControladorBase
         echo $html;
         
     }
+    
+    public function obtenerDatosCuentasBancosSolicitud()
+    {        
+        ob_start();
+        
+        require_once 'core/DB_Functions.php';
+        $db = new DB_Functions(); //modelo para webcapremci  
+        
+        $response   = array();
+        
+        $id_solicitud   = $_POST['id_solicitud'];
+        
+        $rsDatosBancos  = array();
+        $rsDatosTipoCuenta = array();
+        //se genera un array con los tipos de cuenta para enviar a la vista
+        array_push($rsDatosTipoCuenta, (object)array( 'id_tipo_cuentas'=>"Ahorros",'nombre_tipo_cuentas'=>"AHORROS" ) );
+        array_push($rsDatosTipoCuenta, (object)array( 'id_tipo_cuentas'=>"Corriente", 'nombre_tipo_cuentas'=>"CORRIENTE" ) ); 
+        //$rsDatosTipoCuenta =  array((object)$rsDatosTipoCuenta); //se transforma en un objeto array 
+        $rsValidadores  = array();
+        
+        $tipo_pago = "";
+        $nombre_banco   = "";
+        $id_banco_seleccionado = 0;
+        $valor_tipo_cuenta_selecionada = "";
+        $tipo_pago_selecionado  = "";
+        $numero_cuenta_selecionada  = "";
+        
+        //buscamos bancos de --web capremci
+        $columnas = " id_bancos, nombre_bancos";
+        $tablas = " bancos";
+        $where = " 1 = 1";
+        $id = "nombre_bancos";
+        $rsBancos = $db->getCondicionesDesc($columnas, $tablas, $where, $id);        
+        
+        
+        $columnas = "nombre_banco_cuenta_bancaria, tipo_cuenta_cuenta_bancaria, numero_cuenta_cuenta_bancaria,
+            numero_cedula_datos_personales, tipo_pago_cuenta_bancaria";
+        $tablas = " public.solicitud_prestamo";
+        $where = "id_solicitud_prestamo=$id_solicitud";
+        $id = "id_solicitud_prestamo"; 
+        $resultSoli = $db->getCondicionesDesc($columnas, $tablas, $where, $id);        
+        
+        if( !( empty( $resultSoli ) ) )
+        {
+            $tipo_pago  = $resultSoli[0]->tipo_pago_cuenta_bancaria;
+            
+            if( $tipo_pago == "Depósito")
+            {   
+                $tipo_pago_selecionado = "transferencia";
+                
+                $nombre_banco = $resultSoli[0]->nombre_banco_cuenta_bancaria;
+                
+                foreach( $rsBancos as $res )
+                {
+                    if( $res->nombre_bancos == $nombre_banco ){
+                        $id_banco_seleccionado = $res->id_bancos;
+                    }
+                }
+                $rsDatosBancos  = $rsBancos;
+                
+                foreach( $rsDatosTipoCuenta as $res)
+                {
+                    if( $res->nombre_tipo_cuentas == "AHORROS" )
+                    {
+                        $valor_tipo_cuenta_selecionada  = $res->id_tipo_cuentas;
+                    }
+                }
+                
+                $numero_cuenta_selecionada  = $resultSoli[0]->numero_cuenta_cuenta_bancaria;
+                
+                $rsValidadores['id_bancos'] = $id_banco_seleccionado;
+                $rsValidadores['id_tipo_cuentas']   = $valor_tipo_cuenta_selecionada;
+                $rsValidadores['numero_cuenta'] = $numero_cuenta_selecionada;
+               
+            }else
+            {
+                $tipo_pago_selecionado  = "cheque";
+            }
+            
+            $response['estatus']    = "OK";
+            $response['databancos'] = $rsDatosBancos;
+            $response['datatipocuentas']    = $rsDatosTipoCuenta;
+            $response['validadores']    = $rsValidadores;
+            $response['tipo_pago']  = $tipo_pago_selecionado;            
+                        
+            $errores_cuentas = ob_get_clean();
+            $errores_cuentas = trim($errores_cuentas);
+        } else {
+            $errores_cuentas = "NO SE PUDO CONSEGUIR LA INFO";
+        }
+        
+        if( !empty( $errores_cuentas ) )
+        {
+            echo $errores_cuentas;
+            echo "INFORMACION NO ENCONTRADA";
+        }else
+        {
+            echo json_encode( $response );
+        }       
+       
+    }
+    
+    public function ingresaCuentasBancariasSolicitud()
+    {        
+        try {
+            
+            require_once 'core/DB_Functions.php';
+            $db = new DB_Functions(); //modelo para webcapremci  
+            
+            ob_start();
+            
+            $resp   = array();
+            
+            if( !isset( $_SESSION ) )
+            {
+                session_start();
+            }
+            
+            $id_solicitud   = $_POST['id_solicitud'];
+            $nombre_banco   = $_POST['nombre_bancos'];
+            $nombre_tipo_cuentas    = $_POST['nombre_tipo_cuentas'];
+            $numero_cuentas = $_POST["numero_cuentas"];
+            //$tipo_pago  = "Depósito";
+            
+            if( !empty( error_get_last() ) )
+            {
+                throw new Exception("Variables no recibidas");
+            }
+            
+            $colval = " nombre_banco_cuenta_bancaria = '$nombre_banco',
+                tipo_cuenta_cuenta_bancaria = '$nombre_tipo_cuentas',
+                numero_cuenta_cuenta_bancaria = '$numero_cuentas'";
+            $tabla = " public.solicitud_prestamo";
+            $where = " id_solicitud_prestamo =" . $id_solicitud;
+            $db->ActualizarBy($colval, $tabla, $where);
+                        
+            if( !empty( error_get_last() ) )
+            {
+                throw new Exception("Error al actualizar Datos en la solicitud");
+            }
+            
+            $resp['estatus'] = "OK";
+            $resp['respuesta']  = 1;
+            
+            $salida = ob_get_clean();
+            
+            if( !empty( $salida ) )
+            {
+                throw new Exception("Buffer lleno");
+            }
+            
+            echo json_encode( $resp );
+            
+        } catch (Exception $e) {
+            
+            echo $e->getMessage();
+            print_r( error_get_last() );
+        }        
+    }
+        
 }
 
 ?>

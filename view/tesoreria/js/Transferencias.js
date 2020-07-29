@@ -1,4 +1,5 @@
 var listaCuentas = [];	//variable que permite el almacenamiento de datos de distribucion valores
+
 $(document).ready(function(){
 		
 	init();
@@ -18,6 +19,10 @@ function init(){
 	$("#genera_transferencia").attr("disabled",true);
 	
 	var fechaServidor = $("#fechasistema").text();
+	
+	$("#chk_pago_parcial_transferencias").on( 'change', function() {
+		fnValidaPagoParcial(this);
+	});	
 		
 	/*$("#fecha_transferencia").inputmask("datetime",{
 	     mask: "y-2-1", 
@@ -196,7 +201,15 @@ $("#distribucion_transferencia").on("click",function(event){
 		return false;
 	}
 	
-	//$("#mod_banco_transferir")[0].selectedIndex = 0; // quede selecionado el select
+	var check_parcial = $("#chk_pago_parcial_transferencias");
+	var valor_parcial = $("#valor_parcial_transferencias");
+	if( check_parcial.val() == "1" ){		
+		if( !valor_parcial.val().length  ||  valor_parcial.val() == 0 ){
+			valor_parcial.notify("Ingrese Valor Parcial",{ position:"top center"});
+			swal({"text":"Valor parcial no ingresado",icon:"warning"});
+			return false;
+		}		
+	}
 	
 	$divResultados = $modal.find("#lista_distribucion_transferencia");		
 	$divResultados.html('');
@@ -218,7 +231,8 @@ $("#distribucion_transferencia").on("click",function(event){
 		$modal.find("#mod_tipo_creditos").val( $("#tipo_creditos").val());
 	}
 	
-	getCuentaBancoPago(); //funcion para graficar la cuenta del banco local selecicionado
+	getCuentaBancoPago(); //funcion para graficar la cuenta del banco local seleccionado
+	getCuentaBancoPagoProveedor();
 	
 	$modal.modal("show");
 	
@@ -234,7 +248,7 @@ $("#distribucion_transferencia").on("click",function(event){
  */
 function graficaTablaDistribucion(){
 	
-	var $tablaDistribucion = $('<table border="1" class="tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example"></table>');	
+	var $tablaDistribucion = $('<table border="1" class="table table-striped table-bordered  nowrap "></table>');	
 	var $filaHead="<tr>" +
 	"<th>#</th>" +
 	"<th>Referencia</th>" +
@@ -267,7 +281,9 @@ function graficaTablaDistribucion(){
 	$tablaDistribucion.find("select[name='mod_tipo_pago']").append('<option value="debito" >DEBITO</option><option value="credito" >CREDITO</option>');
 	$tablaDistribucion.find("input:text[name='mod_dis_referencia']").append('');
 	
-	$tablaDistribucion.find("span[name='mod_dis_valor']").text( $("#total_cuentas_pagar").val());
+	var valor_a_pagar = ( $("#chk_pago_parcial_transferencias").val() == 0 ) ? $("#saldo_cuentas_pagar").val() : $("#valor_parcial_transferencias").val();
+	
+	$tablaDistribucion.find("span[name='mod_dis_valor']").text( valor_a_pagar );
 
 	return $tablaDistribucion;
 	
@@ -305,6 +321,37 @@ function getCuentaBancoPago(){
 	})
 	
 }
+function getCuentaBancoPagoProveedor(){
+	
+	var idcuentaspagar	= $("#id_cuentas_pagar");
+	
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=getContablePagoProveedor",
+		dataType:"json",
+		type:"POST",
+		data:{ id_cuentas_pagar: idcuentaspagar.val() }
+	}).done( function(x){
+		if( x.estatus != undefined ){
+			if( x.estatus == "OK" ){
+				
+				var tabla = $("#tbl_distribucion2"); // se seleciona la tabla que se grafica en el metodo de ver tabal de distribucion
+				var lastRowTable = tabla.find("tr:first-child");
+				
+				var rsData  = x.data[0];
+				
+				lastRowTable.find("input:text[name='mod_dis_codigo']").val( rsData.codigo_plan_cuentas);
+				lastRowTable.find("input:text[name='mod_dis_nombre']").val( rsData.nombre_plan_cuentas );
+				lastRowTable.find("input:hidden[name='mod_dis_id_plan_cuentas']").val( rsData.id_plan_cuentas);
+				lastRowTable.find("select[id='mod_tipo_pago']").val("debito");
+				
+			}
+		}
+	}).fail( function(xhr,status,error){
+		
+		console.log(xhr.responseText);
+	})
+	
+}
 
 $("#genera_transferencia").on("click",function(){
 	
@@ -316,9 +363,13 @@ $("#genera_transferencia").on("click",function(){
 	var _total_cuentas_pagar = $("#total_cuentas_pagar").val();
 	var _nombre_cuenta_banco = $("#nombre_cuenta_banco").val();
 	var _id_tipo_cuentas     = $("#id_tipo_cuentas").val();
-	//esta variable se declara ala cargar la pagina
-	//listaCuentas
-	console.log(listaCuentas);
+	var _descripcion_pago     = $("#descripcion_pago").val();
+	
+	/**dc 2020/07/21  pago parcial**/
+	var chk_pago_parcial = $("#chk_pago_parcial_transferencias");
+	var pago_parcial = $("#valor_parcial_transferencias");	
+	
+	//esta variable se declara ala cargar la pagina	
 	var arrayCuentas = listaCuentas;
 	
 	//para insertado de la tabla archivo pago
@@ -340,7 +391,12 @@ $("#genera_transferencia").on("click",function(){
 	parametros.append('is_credito', isCredito);	
 	parametros.append('id_tipo_cuentas', _id_tipo_cuentas);	
 	parametros.append('id_tipo_archivo_pago', _id_tipo_archivo_pago);
+	parametros.append('descripcion_pago', _descripcion_pago);
 	
+	/** dc 2020/07/22 **/
+	parametros.append('check_pago_parcial', chk_pago_parcial.val() );
+	parametros.append('valor_pago_parcial', pago_parcial.val() );
+		
 	$.ajax({
 		url:"index.php?controller=Transferencias&action=GeneraTransferencia",
 		type:"POST",
@@ -503,6 +559,32 @@ $("#mod_distribucion_pago").on("keyup","input:text[name='mod_dis_referencia']",f
 	
 })
 
+
+//poner el mismo texto a todos 
+$("#descripcion_pago").click(function() {
+		
+    var descripcion_pago = $(this).val();
+
+	var modal	= $("#mod_distribucion_pago");
+	modal.find('#mod_descripcion_transferencia').val(descripcion_pago);
+	modal.find('#mod_dis_referencia').val(descripcion_pago);
+	
+    
+  });
+  
+  $("#descripcion_pago").change(function() {
+		    
+	  var descripcion_pago = $(this).val();
+
+		var modal	= $("#mod_distribucion_pago");
+		modal.find('#mod_descripcion_transferencia').val(descripcion_pago);
+		modal.find('#mod_dis_referencia').val(descripcion_pago);
+        
+	    });
+	
+
+
+
 $("#btn_distribucion_aceptar").on("click",function(event){
 	
 	
@@ -568,6 +650,153 @@ $("#btn_distribucion_aceptar").on("click",function(event){
 	
 	$("#genera_transferencia").attr("disabled",false);
 })
+
+
+
+
+
+function loadBancosGeneral( a=0 ){	
+	
+	var $ddlChequera = $("#id_bancos_general");
+	params = {};
+	$ddlChequera.empty();
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=CargaBancosGeneral",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.data != undefined && x.data != null ){
+			var rsChequera = x.data;
+			$ddlChequera.append('<option value="0">--Seleccione--</option>' );
+			$.each(rsChequera,function(index, value){
+				//console.log('index -->'+index+'   Value ---> '+value.id_bancos);
+				if( value.id_bancos == a)
+				{
+					$ddlChequera.append( '<option value="'+value.id_bancos+'" selected >'+value.nombre_bancos+'</option>' );					
+				}else
+				{
+					$ddlChequera.append( '<option value="'+value.id_bancos+'">'+value.nombre_bancos+'</option>' );
+				}
+				
+			})
+		}
+		//console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+}
+
+function loadTipoCuentaGeneral( a=0 ){	
+	
+	var $ddlChequera = $("#id_tipo_cuentas_general");
+	params = {};
+	$ddlChequera.empty();
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=CargaTipoCuentaGeneral",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done( function(x){
+		if( x.data != undefined && x.data != null ){
+			var rsChequera = x.data;
+			$ddlChequera.append('<option value="0">--Seleccione--</option>' );
+			$.each(rsChequera,function(index, value){
+				
+				if( a == value.id_tipo_cuentas )
+				{
+					$ddlChequera.append( '<option value="'+value.id_tipo_cuentas+'" selected >'+value.nombre_tipo_cuentas+'</option>' );
+				}else
+				{
+					$ddlChequera.append( '<option value="'+value.id_tipo_cuentas+'">'+value.nombre_tipo_cuentas+'</option>' );
+				}
+				
+			})
+		}
+		//console.log(x);
+	}).fail( function(xhr,status,error){
+		console.log(xhr.responseText);
+	})
+}
+
+
+
+var mostrar_datos_garantes = function(a){
+	
+	
+	
+	var element = $(a);
+	
+	if( element.length )
+	{			
+		var modaledit = $("#mod_cambia_cuentas");	
+	
+		modaledit.find('#id_proveedores_general').val( element.data().id_proveedores );
+		//modaledit.find('#id_bancos_general').val( element.data().id_bancos );
+		//modaledit.find('#id_tipo_cuentas_general').val( element.data().id_tipo_cuentas );
+		
+		var id_bancos_transferir = $("#id_bancos_transferir").val();	
+		var tipo_cuenta_banco = $("#id_tipo_cuentas").val();	
+		
+		//alert(id_bancos_transferir);
+		
+		//loadBancosGeneral( element.data().id_bancos );
+		//loadTipoCuentaGeneral( element.data().id_tipo_cuentas );
+		
+		loadBancosGeneral(id_bancos_transferir);
+		loadTipoCuentaGeneral(tipo_cuenta_banco);
+		
+		modaledit.modal();
+	}	
+	
+}
+
+var editar_cuentas	= function(){
+
+	var modalEditCuentas	= $("#mod_cambia_cuentas");
+	
+	var params	= { id_proveedores: modalEditCuentas.find('#id_proveedores_general').val(),
+			id_bancos: modalEditCuentas.find('#id_bancos_general').val(), 
+			id_tipo_cuentas: modalEditCuentas.find('#id_tipo_cuentas_general').val(), 
+			numero_cuenta_bancaria: modalEditCuentas.find('#cuenta_banco_general').val() }
+	
+	$.ajax({
+		url:"index.php?controller=Transferencias&action=EditarCuentasProveedores",
+		dataType:"json",
+		type:"POST",
+		data: params
+	}).done(function(x){
+		
+		swal({title:"OK",text:"Registro Actualizado",icon:"success"});
+		
+		modalEditCuentas.modal('hide');
+		
+		//vista
+		$("#id_tipo_cuentas").val( modalEditCuentas.find('#id_tipo_cuentas_general').val() );
+		$("#cuenta_banco").val( modalEditCuentas.find('#cuenta_banco_general').val() );
+		$("#tipo_cuenta_banco").val( modalEditCuentas.find('#id_tipo_cuentas_general option:selected').text() );
+		$("#id_bancos_transferir").empty();
+		$("#id_bancos_transferir").append( '<option value="'+modalEditCuentas.find('#id_bancos_general').val()+'">'+modalEditCuentas.find('#id_bancos_general option:selected').text()+'</option>' );
+		
+	}).fail(function( xhr, status, error){
+		console.log(xhr.responseText);
+		swal({title:"ERROR",text:"Error al actualizar Registro",dangerMode:true,icon:"error"});
+	});
+}
+
+/************************************************************ CAMBIOS PARA VALOR PACIAL ****************************************/
+var fnValidaPagoParcial	= function(a){
+	var elemento = $(a);
+	if( elemento.is(':checked') ) {
+        // Hacer algo si el checkbox ha sido seleccionado
+		elemento.val(1);
+        $("#valor_parcial_transferencias").attr("readonly",false).val("");
+    } else {
+        // Hacer algo si el checkbox ha sido deseleccionado
+    	elemento.val(0);
+        $("#valor_parcial_transferencias").attr("readonly",true).val("0");
+    }
+}
 
 
 

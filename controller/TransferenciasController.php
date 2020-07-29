@@ -42,17 +42,17 @@ class TransferenciasController extends ControladorBase{
 		$datosVista = array(); //variable para almacenar varaiables que se pasaran a la vista 
 		
 		/*traer datos de la cuenta por pagar*/
-		$col1 = "aa.id_cuentas_pagar, aa.total_cuentas_pagar, aa.origen_cuentas_pagar, aa.descripcion_cuentas_pagar, aa.id_estado, aa.id_forma_pago,
-		          bb.concepto_ccomprobantes, bb.id_ccomprobantes, cc.nombre_lote, cc.id_lote, cc.descripcion_lote, dd.nombre_proveedores, dd.id_bancos,
-                  dd.id_tipo_cuentas, ee.nombre_tipo_proveedores,dd.id_proveedores, dd.numero_cuenta_proveedores,dd.identificacion_proveedores";
+		$col1 = " aa.id_cuentas_pagar, aa.total_cuentas_pagar, aa.saldo_cuenta_cuentas_pagar, aa.origen_cuentas_pagar,
+    		aa.descripcion_cuentas_pagar, aa.id_estado, aa.id_forma_pago, bb.concepto_ccomprobantes, bb.id_ccomprobantes, cc.nombre_lote,
+    		cc.id_lote, cc.descripcion_lote, dd.nombre_proveedores, dd.id_bancos, dd.id_tipo_cuentas, ee.nombre_tipo_proveedores,
+    		dd.id_proveedores, dd.numero_cuenta_proveedores, dd.identificacion_proveedores";
 		$tab1 = "tes_cuentas_pagar aa
         		INNER JOIN ccomprobantes bb ON aa.id_ccomprobantes = bb.id_ccomprobantes
         		INNER JOIN tes_lote cc ON cc.id_lote = aa.id_lote
                 INNER JOIN proveedores dd ON aa.id_proveedor = dd.id_proveedores
-                INNER JOIN tes_tipo_proveedores ee
-    		    ON dd.id_tipo_proveedores = ee.id_tipo_proveedores";
+                INNER JOIN tes_tipo_proveedores ee ON dd.id_tipo_proveedores = ee.id_tipo_proveedores";
 		$whe1 = " aa.id_cuentas_pagar = $_id_cuentas_pagar ";
-		$id1 = "aa.id_cuentas_pagar";
+		$id1 = "aa.id_cuentas_pagar";		
 		
 		$rsConsulta1 = $CuentasPagar->getCondiciones($col1, $tab1, $whe1, $id1);
 		
@@ -73,12 +73,12 @@ class TransferenciasController extends ControladorBase{
 		$datosVista['identificacion_proveedores']     = $identificacion_proveedores;
 		$datosVista['total_cuentas_pagar']            = $rsConsulta1[0]->total_cuentas_pagar;
 		$datosVista['nombre_lote']                    = $rsConsulta1[0]->nombre_lote;
-		$datosVista['nombre_lote']                    = $rsConsulta1[0]->nombre_lote; 
+		$datosVista['saldo_cuenta_cuentas_pagar']     = $rsConsulta1[0]->saldo_cuenta_cuentas_pagar; 
 		$datosVista['id_tipo_cuentas']    = $id_tipo_cuenta;
 		
 		$nombre_tipo_proveedores = $rsConsulta1[0]->nombre_tipo_proveedores;
 		
-		if( is_null($nombre_tipo_proveedores) || $nombre_tipo_proveedores == "PAGO PROVEEDORES"  ){
+		if( is_null($nombre_tipo_proveedores) || $nombre_tipo_proveedores == "PAGO PROVEEDORES"  || $nombre_tipo_proveedores == "EMPLEADO" ){
 		    
 		    //cuando es pago a proveedores
 		    $datosVista['nombre_beneficiario'] = $rsConsulta1[0]->nombre_proveedores;
@@ -229,10 +229,15 @@ class TransferenciasController extends ControladorBase{
 	    $_numero_cuenta_banco  = $_POST['numero_cuenta_banco'];
 	    $_isCredito            = $_POST['is_credito'];
 	    $_id_tipo_cuentas      = $_POST['id_tipo_cuentas'];
+	    $_descripcion_pago       = $_POST['descripcion_pago'];
 	    
 	    //variable usada para determinar el tipo de archivo de pago
 	    $_id_tipo_archivo_pago = $_POST['id_tipo_archivo_pago'];
-	    	    
+	    
+	    //dc 2020/07/22
+	    $chk_pago_parcial  = $_POST['check_pago_parcial'];
+	    $valor_pago_parcial    = $_POST['valor_pago_parcial'];	    
+	        
 	    $_isCredito = filter_var($_isCredito, FILTER_VALIDATE_BOOLEAN); //se realiza la conversion de string a un boleano 
 	   
 	    try {
@@ -300,15 +305,26 @@ class TransferenciasController extends ControladorBase{
 	        
 	        //seteamos variables que necesitamos 
 	        $total_cuentas_pagar   = 0.00;
+	        $valor_aplicado_cuentas_pagar = 0.00; //dc 2020/07/22
+	        
 	        //$descripcion_cuentas_pagar = "";
 	        $id_ccomprobantes      = $rsConsulta2[0]->id_ccomprobantes;
 	        $id_proveedores        = $rsConsulta2[0]->id_proveedores;
 	        $total_cuentas_pagar   = $rsConsulta2[0]->total_cuentas_pagar; 
+	        $saldo_cuentas_pagar   = $rsConsulta2[0]->saldo_cuenta_cuentas_pagar;
 	        $id_creditos       = 'null';
 	        $beneficiario      = $rsConsulta2[0]->nombre_proveedores;
 	        $concepto_credito  = "";
 	        $observacion_comprobantes  = "PAGO  PROVEEDORES";
-	        $datosMsgParticipe         = null;
+	        $datosMsgParticipe         = null;	        
+	        
+	        //dc 2020/07/22
+	        $valor_aplicado_cuentas_pagar  = $saldo_cuentas_pagar;
+	        
+	        if( $chk_pago_parcial == "1" ){
+	            $valor_aplicado_cuentas_pagar  = $valor_pago_parcial;
+	        }
+	        
 	        
 	        //throw new Exception("error de prueba");
 	                                                                       
@@ -345,9 +361,9 @@ class TransferenciasController extends ControladorBase{
 	            $datosMsgParticipe['numero_cuenta']    = $_numero_cuenta_banco;
 	            $datosMsgParticipe['nombre_banco']     = $nombre_bancos_transferir;	            
 	            
-	        }	        
-	        
-	        $auxPago = $this->auxInsertPago($_id_cuentas_pagar, $id_creditos,$id_proveedores, $id_forma_pago, $_fecha_transferencia, $_id_bancos_transferir, $_numero_cuenta_banco,$_id_tipo_cuentas,$_id_bancos_local,$total_cuentas_pagar);
+	        }
+	        	        	        
+	        $auxPago = $this->auxInsertPago($_id_cuentas_pagar, $id_creditos,$id_proveedores, $id_forma_pago, $_fecha_transferencia, $_id_bancos_transferir, $_numero_cuenta_banco,$_id_tipo_cuentas,$_id_bancos_local,$valor_aplicado_cuentas_pagar);
 	        
 	        if( $auxPago['error'] === true ){
 	            throw new Exception( "Inserción Pagos! ".$auxPago['mensaje'] );
@@ -358,7 +374,7 @@ class TransferenciasController extends ControladorBase{
 	        
 	        /* ********************************************************** */
 	        /** viene la distribucion del pago **/
-	        $auxDistribucion = $this->auxInsertDistribucionPago($_lista_distribucion, $id_pagos, $_fecha_transferencia, $total_cuentas_pagar);
+	        $auxDistribucion = $this->auxInsertDistribucionPago($_lista_distribucion, $id_pagos, $_fecha_transferencia, $valor_aplicado_cuentas_pagar);
 	        if( $auxDistribucion['error'] === true ){
 	            throw new Exception( "Distribucion Pagos!".$auxDistribucion['mensaje'] );
 	        }
@@ -369,14 +385,15 @@ class TransferenciasController extends ControladorBase{
 	        $datos = array(
 	            'id_pagos' => $id_pagos,
 	            'beneficiario' => $beneficiario,
-	            'total_pago' => $total_cuentas_pagar,
+	            'total_pago' => $valor_aplicado_cuentas_pagar,
 	            'concepto_credito' =>$concepto_credito,
 	            'id_proveedores' => $id_proveedores,
 	            'id_forma_pago' => $id_forma_pago,
 	            'id_bancos' => $_id_bancos_transferir,
 	            'fecha' => $_fecha_transferencia,
 	            'numero_cuenta' => $_numero_cuenta_banco,
-	            'observacion' => $observacion_comprobantes
+	            'observacion' => $observacion_comprobantes,
+	            'concepto' => $_descripcion_pago
 	        );
 	        
 	        $auxComprobante = $this->auxInsertComprobante($datos);
@@ -393,13 +410,20 @@ class TransferenciasController extends ControladorBase{
 	        $columnaPago = "id_ccomprobantes = $id_comprobantes ";
 	        $tablasPago = "tes_pagos";
 	        $wherePago = "id_pagos = $id_pagos";
-	        $pagos -> ActualizarBy($columnaPago, $tablasPago, $wherePago);	        
+	        $pagos -> ActualizarBy($columnaPago, $tablasPago, $wherePago);	       
 	        
+	        //dc 2020/07/22
 	        //buscar y actualizar estado de cuentas por pagar
-	        $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
+	        $residuo_cuentas_pagar = $saldo_cuentas_pagar - $valor_aplicado_cuentas_pagar;
+	        if( empty($residuo_cuentas_pagar) ){
+	            $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'APLICADO'";
+	        }else{
+	            $queryEstado = "SELECT id_estado FROM estado WHERE tabla_estado='tes_cuentas_pagar' AND nombre_estado = 'PARCIAL'";
+	        }
+	        	        
 	        $rsEstado = $pagos -> enviaquery($queryEstado);
 	        $_id_estado = $rsEstado[0]->id_estado;
-	        $pagos->ActualizarBy("id_estado = $_id_estado", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
+	        $pagos->ActualizarBy("id_estado = $_id_estado, saldo_cuenta_cuentas_pagar = $residuo_cuentas_pagar", "tes_cuentas_pagar", "id_cuentas_pagar = $_id_cuentas_pagar");
 	        
 	        /** proceso de envio de mensaje se realizara si es credito **/ 
 	        if( $_isCredito ){
@@ -571,7 +595,8 @@ class TransferenciasController extends ControladorBase{
             	        '".$datos['observacion']."',
             	        'PAGO',
             	        null,
-                        '$_concepto_comprobante'";
+                          '".$datos['concepto']."'
+                        ";
 	    
 	    $consultaComprobante = $pagos->getconsultaPG($funcionComprobante, $parametrosComprobante);
 	    $ResulatadoComprobante = $pagos->llamarconsultaPG($consultaComprobante);
@@ -1433,6 +1458,44 @@ class TransferenciasController extends ControladorBase{
 	    
 	}
 	
+	public function getContablePagoProveedor(){
+	    
+	    $pagos = new PagosModel();
+	    $_id_cuentas_pagar = $_POST['id_cuentas_pagar'];
+	    $resp = null;
+	    
+	    $query = " SELECT cc.id_plan_cuentas, cc.nombre_plan_cuentas, cc.codigo_plan_cuentas FROM tes_cuentas_pagar p
+    	    INNER JOIN tes_distribucion_cuentas_pagar c on p.id_lote = c.id_lote
+    	    INNER JOIN plan_cuentas cc ON cc.id_plan_cuentas = c.id_plan_cuentas
+    	    WHERE p.id_cuentas_pagar = $_id_cuentas_pagar AND c.tipo_distribucion_cuentas_pagar = 'PAGO' ";
+	    
+	    try {
+	        
+	        $rsConsulta1 = $pagos->enviaquery( $query );
+	        
+	        if( !empty($rsConsulta1) )
+	        {	            
+	            $resp['icon'] = "success";
+	            $resp['mensaje'] = "";//buscar guardar buffer y guaradr en variable
+	            $resp['estatus'] = "OK";
+	            $resp['data'] = $rsConsulta1;
+	        }
+	        
+	    } catch (Exception $e) {
+	        
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
+	}
+	
 	
 	/******************************************************************** METODOS PARA LA GENERACION DE ARCHIVOS PAGO ***********************************/
 	
@@ -1461,5 +1524,133 @@ class TransferenciasController extends ControladorBase{
 	  echo number_format((double)$var1,2,'','');
 	}
 	/*********************************************************** FUNCIONES PARA PROBAR METODOS ************************************************************/
+
+
+
+
+	public function CargaBancosGeneral(){
+	    
+	    $pagos = new PagosModel();
+	    $resp  = null;
+	    
+	    $col1  = " id_bancos, nombre_bancos";
+	    $tab1  = " tes_bancos ";
+	    $whe1  = " (local_bancos = 'TRUE' or id_bancos = 1522) ";
+	    $id1   = " nombre_bancos ";
+	    $rsConsulta1   = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    try {
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	        
+	        if( !empty($rsConsulta1) ){
+	            $resp['data'] = $rsConsulta1;
+	        }else{
+	            $resp['data'] = null;
+	        }
+	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
+	}
+
+	
+	
+	public function CargaTipoCuentaGeneral(){
+	    
+	    $pagos = new PagosModel();
+	    $resp  = null;
+	    
+	    $col1  = " id_tipo_cuentas, nombre_tipo_cuentas";
+	    $tab1  = " core_tipo_cuentas ";
+	    $whe1  = " 1 = 1";
+	    $id1   = " nombre_tipo_cuentas ";
+	    $rsConsulta1   = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	    
+	    try {
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	        
+	        if( !empty($rsConsulta1) ){
+	            $resp['data'] = $rsConsulta1;
+	        }else{
+	            $resp['data'] = null;
+	        }
+	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    error_clear_last();
+	    if (ob_get_contents()) ob_end_clean();
+	    
+	    echo json_encode($resp);
+	    
+	}
+	
+	public function EditarCuentasProveedores()
+	{
+	   $pagos = new PagosModel();
+	   
+	   $id_bancos = $_POST['id_bancos'];
+	   $id_tipo_cuentas    = $_POST['id_tipo_cuentas'];
+	   $id_proveedores = $_POST['id_proveedores'];
+	   $numero_cuentas = $_POST['numero_cuenta_bancaria'];
+	   
+	   $val    = " id_bancos=$id_bancos, id_tipo_cuentas=$id_tipo_cuentas, numero_cuenta_proveedores = '$numero_cuentas'";
+	   $tab    = " proveedores ";
+	   $whe    = " id_proveedores = $id_proveedores";
+
+	   $resultado = $pagos->ActualizarBy($val, $tab, $whe);
+	   
+	   if( !empty( pg_last_error() ) ){
+	       throw new Exception("Actualizacion No realizada");
+	   }
+	   
+	   $resp = array();
+	   $resp['estatus']   = "OK";
+	   $resp['mensaje']   = " Filas Actualizadas (".$resultado.")";
+	   
+	   echo json_encode($resp);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 ?>

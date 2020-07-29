@@ -164,6 +164,15 @@
                 </div>
 		    </div>
 		    
+		     <div class="col-xs-12 col-md-3 col-md-3 ">
+        		    <div class="form-group">
+                      <label for="numero_cuenta_proveedores" class="control-label">Archivo:</label>
+                      <input id="imagen_registro" type="file" class="form-control" > 
+                      <div id="errorImagen"></div>
+                                           
+                    </div>
+                </div>
+		    
 		    <div class="col-xs-12 col-md-3 col-md-3 ">
     		    <div class="form-group">
                   <label for="forma_pago" class="control-label">Forma Pago:</label>
@@ -188,6 +197,8 @@
                                        
                 </div>
 		    </div>
+		    
+		   
     		    
 		    <div class="col-xs-12 col-md-3 col-md-3 ">
     		    <div class="form-group">
@@ -278,7 +289,7 @@
 	<script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script src="view/tesoreria/js/TesProveedores.js?0.03" ></script>
+	<script src="view/tesoreria/js/TesProveedores.js?0.06" ></script>
   </body>
 </html>   
 

@@ -199,3 +199,20 @@ function fnVolverFormularioSocios(){
 	$("#pnlBusqueda").removeClass("hidden"); //ocultar el panel de resultado mediante clase de bootstrap
 	
 }
+
+var  fnBuscarDatosCreditos	= function(a){
+	
+	var btn = $(a);
+	var valor = btn.val();
+	
+	var vtnX	=  screen.width;
+	var vtnY	= screen.height;
+	vtnX = (vtnX*7)/10;
+	vtnY = (vtnY/4)*3;
+	var vtnurl 	= "index.php?controller=PrincipalBusquedasCreditos&action=index";
+	var vtnoptions 	= "location=0,top=50,left=50,toolbar=0,menubar=0,titlebar=0,resizable=1,width="+vtnX+",height="+vtnY;
+	var vtnId	= "vtnAporte";
+	
+	$("#hdnid_participes_padre").val(valor);
+	var vtnAporte = window.open(vtnurl,vtnId,vtnoptions); 
+}

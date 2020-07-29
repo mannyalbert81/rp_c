@@ -229,8 +229,8 @@
 					<tr>
 					<th>Fecha de Solicitud:</th>
 					<th><input type="text" class="form-control" id="lblFechaConsecion" value="" readonly></th>
-					<th>Año y Mes Activo:</th>
-					<th><input type="text" class="form-control" id="lblvfdgdfNombres" value="" readonly></th> 
+					<th>Plazo Maximo (meses):</th>
+					<th><input type="text" class="form-control" id="lblPlazoMaximo" value="" readonly></th>
 					</tr>
 					 <tr>
 					<th colspan=1>Tipo de Préstamo:</TH>
@@ -239,28 +239,8 @@
 					</th>
 					</tr>
 					<tr>
-					<th>Plazo Maximo (meses):</th>
-					<th><input type="text" class="form-control" id="lblPlazoMaximo" value="" readonly></th>
-					<th>Número de Aportaciones (#):</th>
-					<th><input type="text" class="form-control" id="lblNumeroAportaciones" value="" readonly></th> 
-					</tr>
-					<tr>
-					<th>Encaje Minimo (%):</th>
-					<th><input type="text" class="form-control" id="lblEncajeMinimo" value="" readonly></th>
 					<th>Interés Mensual (#):</th>
 					<th><input type="text" class="form-control" id="lblInteresMensual" value="" readonly></th> 
-					</tr>
-					<tr>
-					<th>Cuenta Individual:</th>
-					<th><input type="text" class="form-control" id="lblCuentaIndividual" value="" readonly></th>
-					<th>Monto Minimo de Préstamo($):</th>
-					<th><input type="text" class="form-control" id="lblMontoMinimoPrestamo" value="" readonly></th> 
-					</tr>
-					<tr>
-					<th>Monto Maximo de Préstamo ($):</th>
-					<th><input type="text" class="form-control" id="lblMontoMaximoPrestamo" value="" readonly></th>
-					<th>Necesita Garante:</th>
-					<th><input type="text" class="form-control" id="lblNecesitaGarante" value="" readonly></th> 
 					</tr>
 					 
 					    	</tbody>
@@ -276,14 +256,14 @@
                           		 <tr>
             					<th colspan=1>Identificacion:</TH>
             					<th colspan=3>
-            					<input type="text" class="form-control" id="lbfsdflNombres" value="" readonly>
+            					<input type="text" class="form-control" id="lblGaranteIdentificacion" value="" readonly>
             					</th>
             					</tr>
                           		<tr>
             					<th>Apellidos:</th>
-            					<th><input type="text" class="form-control" id="lblgdfgfNombres" value="" readonly></th>
+            					<th><input type="text" class="form-control" id="lblGaranteApellidos" value="" readonly></th>
             					<th>Nombres:</th>
-            					<th><input type="text" class="form-control" id="lblfdfgdfNombres" value="" readonly></th> 
+            					<th><input type="text" class="form-control" id="lblGaranteNombres" value="" readonly></th> 
             					</tr>
                           	
                                  	</tbody>
@@ -303,27 +283,16 @@
                           		<tr>
             					<th>Monto ($):</th>
             					<th><input type="text" class="form-control" id="lblMonto" value="" readonly></th>
-            					<th>Plazo Producto (#):</th>
+            					<th>Plazo (#):</th>
             					<th><input type="text" class="form-control" id="lblPlazoProducto" value="" readonly></th> 
             					</tr>
             						<tr>
             					<th>Monto Entregado ($):</th>
             					<th><input type="text" class="form-control" id="lblMontoEntregado" value="" readonly></th>
-            					<th>Valor Primera Cuota ($):</th>
-            					<th><input type="text" class="form-control" id="lblValorPrimeraCuota" value="" readonly></th> 
-            					</tr>
-            						<tr>
-            					<th>Saldo de Capital ($):</th>
-            					<th><input type="text" class="form-control" id="lblSaldoCapital" value="" readonly></th>
-            					<th>Tipo de Cuota :</th>
+            							<th>Cuota :</th>
             					<th><input type="text" class="form-control" id="lblTipoCuota" value="" readonly></th> 
             					</tr>
-            						<tr>
-            					<th>Plazo Ingresado (#):</th>
-            					<th><input type="text" class="form-control" id="lblPlazoIngresado" value="" readonly></th>
-            					<th>Monto Ingresado ($):</th>
-            					<th><input type="text" class="form-control" id="lblMontoIngresado" value="" readonly></th> 
-            					</tr>
+            				
                           	
                                  	</tbody>
                           	<tfoot>
@@ -335,24 +304,13 @@
                       <div class="panel panel-primary">
                            <div class="panel-heading" >Reportes</div>
                           <div class="panel-body">    
-                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
-                          <table id="tbldatosParticipe" class="table">
-                          	<thead>
-                          	</thead>
-                          	<tbody>
-                          
-                          		<tr>
-                          	
-            						<th><a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a></th>
-	               					<th><a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a></th>
-	               					<th><a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Recibo de Presentación de Solicitud</a></th>
-	               
-            					</tr>
-                                 	</tbody>
-                          	<tfoot>
-                          	</tfoot>
-                          </table>
-                    	</div>
+                    	   	<div class="col-lg-12 col-md-12 col-xs-12" style ="text-align:center;">
+                  	
+                  	  				<a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a>
+	               					<a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a>
+	               					<a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Recibo de Presentación de Solicitud</a>
+	                	</div>
+          		    	</div>
           				</div>        
                     	</div>
                     
@@ -364,20 +322,11 @@
               		<div class="row">
           			<!-- Este div es para mostrar datos del participe -->
           			<div class="col-sm-6 col-md-6 col-lg-6">
-          	
           			  <div class="panel panel-info">
                            <div class="panel-heading" >Tabla Amortizacion</div>
                           <div class="panel-body">    
                   	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
-                          <table id="tbldatosParticipe" class="table">
-                          	<thead>
-                          	</thead>
-                          	<tbody>
-                          
-                          		<tr>
-                          	<th>
-            					 <div class="tab-pane active" id="pendientes">
-                            
+                              
             				<div class="pull-right" style="margin-right:15px;">
             					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="TablaAmortizacion(1)" placeholder="Buscar.."/>
                 			</div>  
@@ -386,13 +335,7 @@
                     	    	<div id="tabla_amortizacion" ></div>
                     	    	<div id="divLoaderPage" ></div>
 				  
-                
-              </div>         	</th>
-            					</tr>
-                                 	</tbody>
-                          	<tfoot>
-                          	</tfoot>
-                          </table>
+              
                     	</div>
           				</div>   	
           				</div> 	
@@ -401,15 +344,7 @@
                            <div class="panel-heading" >Transacciones</div>
                           <div class="panel-body">    
                   	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
-                          <table id="tbldatosParticipe" class="table">
-                          	<thead>
-                          	</thead>
-                          	<tbody>
-                          
-                          		<tr>
-                          	<th>
-            					 <div class="tab-pane active" id="pendientes">
-                            
+                              
             				<div class="pull-right" style="margin-right:15px;">
             					<input type="text" value="" class="form-control" id="buscador1" name="buscador1" onkeyup="Transacciones(1)" placeholder="Buscar.."/>
                 			</div>  
@@ -418,13 +353,7 @@
                     	    	<div id="transacciones" ></div>
                     	    	<div id="divLoaderPage1" ></div>
 				  
-                
-              </div>         	</th>
-            					</tr>
-                                 	</tbody>
-                          	<tfoot>
-                          	</tfoot>
-                          </table>
+           
                     	</div>
           				</div>
           				
@@ -432,26 +361,13 @@
           			
           				</div> 	
           				 		<div class="row">
-          	
           				 <div class="panel panel-primary">
                            <div class="panel-heading" >Reportes</div>
                           <div class="panel-body">    
-                  	      <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
-                          <table id="tbldatosParticipe" class="table">
-                          	<thead>
-                          	</thead>
-                          	<tbody>
-                          
-                          		<tr>
-                          	
-            						<th><a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a></th>
-	               					<th><a class="btn btn-info" onclick="generar_pagare_cobros(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a></th>
-	               				
-            					</tr>
-                                 	</tbody>
-                          	<tfoot>
-                          	</tfoot>
-                          </table>
+            			<div class="col-lg-12 col-md-12 col-xs-12" style ="text-align:center;">
+                  	    			<a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a>
+	               					<a class="btn btn-info" onclick="generar_pagare_cobros(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a>
+	                	</div>   		
                     	</div>
           				</div>    
           				          
@@ -484,7 +400,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.13"></script>
+     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.14"></script>
   
 
   </body>

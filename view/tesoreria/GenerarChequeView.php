@@ -104,7 +104,7 @@
 		    	 		<div class="form-group ">                 			 
             				<label for="nombre_lote" class="control-label" > Identificador lote:</label>
             				<div class="form-group-sm">                				
-                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $objcuentaspagar->nombre_lote; ?>" autofocus>  
+                              <input type="text" class="form-control" id="nombre_lote" name="nombre_lote"  autocomplete="off" value="<?php echo $objcuentaspagar->nombre_lote; ?>" autofocus readonly>  
                               
             				</div>
                 						 
@@ -115,7 +115,7 @@
             			<div class="form-group ">
             				<label for="numero_pago" class=" control-label" >Numero Pago:</label> 
                     		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control mayus" id="numero_pago" name="numero_pago" value="<?php echo $objconsecutivo->secuencial; ?>" >
+                				 <input type="text" class="form-control mayus" id="numero_pago" name="numero_pago" value="<?php echo $objconsecutivo->secuencial; ?>" readonly >
                     		</div>        			 
             			</div>
             		</div>	
@@ -127,9 +127,48 @@
                 				 <input type="text" class="form-control" id="fecha_cheque" name="fecha_cheque" max="<?php echo date('Y-m-d'); ?>" value="<?php echo date('Y-m-d');?>" >
                     		</div>        			 
             			</div>
-            		</div>  
+            		</div> 
             		
             		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="id_moneda" class=" control-label" >Id. de Moneda:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control" id="id_moneda" name="id_moneda" value="<?php echo $objmoneda->moneda; ?>"  readonly>
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="total_lote" class=" control-label" >Total Pago:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control text-right" id="total_cheque" name="total_cheque"  value="<?php echo number_format($objcuentaspagar->total_cuentas_pagar,2,".",""); ?>" readonly> 
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="total_lote" class=" control-label" >Saldo Pago:</label> 
+                    		<div class="form-group-sm">                    				
+                				 <input type="text" class="form-control text-right" id="saldo_cheque" name="saldo_cheque"  value="<?php echo number_format($objcuentaspagar->saldo_cuenta_cuentas_pagar,2,".",""); ?>"  readonly> 
+                    		</div>        			 
+            			</div>
+            		</div>  
+            		
+            		<div class="col-xs-12 col-md-3 col-md-3">
+      					<div class="form-group"> 
+      						<label for="chk_pago_parcial_transferencias" class=" control-label" >Pago Parcial:</label> 
+          					<div class="input-group">
+                                <span class="input-group-addon">
+                                  <input type="checkbox" value="0" id="chk_pago_parcial_cheque">
+                                </span>
+                                <input type="text" class="form-control text-right" id="valor_parcial_cheque"  value="0" readonly>
+                            </div>                    
+                        </div>	
+  				   </div>  
+            		
+            		<div class="col-xs-12 col-md-6 col-lg-6">
             			<div class="form-group ">
             				<label for="comentario_cheque" class=" control-label" >Comentario del Cheque:</label> 
                     		<div class="form-group-sm">                    				
@@ -158,23 +197,9 @@
             			</div>
             		</div> 
             		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="id_moneda" class=" control-label" >Id. de Moneda:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="id_moneda" name="id_moneda" value="<?php echo $objmoneda->moneda; ?>" >
-                    		</div>        			 
-            			</div>
-            		</div> 
             		
-            		<div class="col-xs-12 col-md-3 col-lg-3">
-            			<div class="form-group ">
-            				<label for="total_lote" class=" control-label" >Total Pago:</label> 
-                    		<div class="form-group-sm">                    				
-                				 <input type="text" class="form-control" id="total_lote" name="total_lote"  value="<?php echo $objcuentaspagar->total_cuentas_pagar; ?>" > 
-                    		</div>        			 
-            			</div>
-            		</div>   
+            		
+            		   
             		
             	</div>
             	
@@ -211,7 +236,7 @@
             			</div>
             		</div> 
             		
-            						    
+            				            						    
           	   	</div>
           	   	
           	   	<div class="row">
@@ -416,7 +441,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.23"></script>
+	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.29"></script>
 
   </body>
 </html>  

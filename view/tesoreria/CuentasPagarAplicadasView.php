@@ -73,7 +73,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Inventario</a></li>
-        <li class="active">Retenciones</li>
+        <li class="active">Cuentas Pagar/ Aplicadas</li>
       </ol>
     </section>
     
@@ -131,7 +131,8 @@
                         				<th>Banco Bneficiario</th>
                         				<th>Valor</th>
                         				<th>Descripci&oacute;n</th>
-                        				<th>Opciones</th>
+                        				<th>Comprobante</th>
+                        				<th>Cheque</th>
                     				</tr>                    				
                     			</thead>                    			
                     			<tfoot>
@@ -158,7 +159,7 @@
     <?php include("view/modulos/links_js.php"); ?>    
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>   
-    <script src="view/tesoreria/js/CxPAplicadas.js?0.01"></script>       
+    <script src="view/tesoreria/js/CxPAplicadas.js?0.08"></script>       
 	
   </body>
 </html> 

@@ -90,7 +90,7 @@
             </div>        
   		<div class="box-body">
   		
-			<form id="frm_bitacora_creditos" action="<?php echo $helper->url("BitacoraActividadesEmpleadosCreditos","Index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+			<form id="frm_bitacora_creditos" action="<?php echo $helper->url("BitacoraActividadesEmpleadosCreditos","index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
            	 <div class="row">
         		      <input type="hidden" name="id_bitacora_actividades_empleados_creditos" id="id_bitacora_actividades_empleados_creditos" value="0" />
         		      <div class="col-xs-12 col-md-3 col-md-3">
@@ -316,13 +316,25 @@
       			<h3 class="box-title">Bitacoras</h3>      			
             </div> 
             <div class="box-body">
-    			<div class="pull-right" style="margin-right:15px;">
+           	<div class="pull-right" style="margin-right:0px;">
+           	<div class="col-xs-12 col-md-12 col-lg-12 ">
+			<div class="col-xs-12 col-md-4 col-lg-4 ">
 					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
+						</div> 
+    			<div class="col-xs-12 col-md-4 col-lg-4 ">
+			
+					<input type="date" value="" class="form-control" id="fecha_registro_desde" name="fecha_registro_desde" onchange="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
+							</div> 
+    				<div class="col-xs-12 col-md-4 col-lg-4 ">
+			
+					<input type="date" value="" class="form-control" id="fecha_registro_hasta" name="fecha_registro_hasta" onchange="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
+							</div> 
+    			
+					</div> 
     			</div>            	
             	<div id="bitacora_creditos_registrados" ></div>
             	<div id="divLoaderPage" ></div>                     	
-                 
-            </div> 	
+             </div> 	
       	</div>
       </section> 
     	     </div>
@@ -341,7 +353,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/Core/js/BitacoraActividadesEmpleadosCreditos.js?0.13"></script> 
+   <script src="view/Core/js/BitacoraActividadesEmpleadosCreditos.js?0.22"></script> 
        
        
 

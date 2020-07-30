@@ -33,7 +33,6 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
             exit();
         }
         
-        $rsBitacoraCreditos = $bitacora_creditos->getBy(" 1 = 1 ");
         
         $cedula_usuarios = $_SESSION['cedula_usuarios'];
         
@@ -44,7 +43,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
         
         
         $this->view_Core("BitacoraActividadesEmpleadosCreditos",array(
-            "resultSet"=>$rsBitacoraCreditos, "rsEmpleados"=>$rsEmpleados
+            "resultSet"=>"", "rsEmpleados"=>$rsEmpleados
             
         ));
         
@@ -56,18 +55,12 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
          session_start();
         
         $bitacora_creditos = new CreditosModel();
-        
-        $nombre_controladores = "BitacoraActividadesEmpleadosCreditos";
-        $id_rol= $_SESSION['id_rol'];
-        $resultPer = $bitacora_creditos->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-        
-        if (!empty($resultPer)){
-            
+           
             $_fecha_registro = (isset($_POST["fecha_registro"])) ? $_POST["fecha_registro"] : "" ;
             $_desde = (isset($_POST["desde"])) ? $_POST["desde"] : "" ;
             $_hasta = (isset($_POST["hasta"])) ? $_POST["hasta"] : "" ;
             $_id_empleados = (isset($_POST["id_empleados"])) ? $_POST["id_empleados"] : 0 ;
-            $_id_participes = (isset($_POST["id_participes"])) ? $_POST["id_participes"] : 0 ;
+            $_id_participes = (isset($_POST["id_participes"]) && $_POST["id_participes"]>0) ? $_POST["id_participes"] : 'null' ;
             $_creditos = (isset($_POST["creditos"])) ? $_POST["creditos"] : 0 ;
             $_cesantia = (isset($_POST["cesantia"])) ? $_POST["cesantia"] : 0 ;
             $_desafiliacion = (isset($_POST["desafiliacion"])) ? $_POST["desafiliacion"] : 0 ;
@@ -91,7 +84,6 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
             $_consultas_varias = (isset($_POST["consultas_varias"])) ? $_POST["consultas_varias"] : 0 ;
             $_id_bitacora_actividades_empleados_creditos = (isset($_POST["id_bitacora_actividades_empleados_creditos"])) ? $_POST["id_bitacora_actividades_empleados_creditos"] : 0 ;
             
-          
             $funcion = "ins_core_bitacora_actividades_empleados_creditos";
             $respuesta = 0 ;
             $mensaje = "";
@@ -122,13 +114,13 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                                '$_desde',
                                '$_hasta',
                                '$_id_empleados',
-                               '$_id_participes',
+                                $_id_participes,
                                '$_creditos',
+                               '$_refinanciamiento_reestructuracion',
                                '$_cesantia',
                                '$_desafiliacion',
                                '$_superavit',
                                '$_diferimiento',
-                               '$_refinanciamiento_reestructuracion',
                                '$_elaboracion_memorando',
                                '$_otras_actividades',
                                '$_atencion_creditos',
@@ -162,7 +154,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                                '$_desde',
                                '$_hasta',
                                '$_id_empleados',
-                               '$_id_participes',
+                                $_id_participes,
                                '$_creditos',
                                '$_cesantia',
                                '$_desafiliacion',
@@ -208,11 +200,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
             echo "Error al Ingresar";
             exit();
             
-        }
-        else
-        {
-            echo 'Revise Permisos ';
-        }
+       
         
     }
     
@@ -233,7 +221,12 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                 
                 $id_bitacora_actividades_empleados_creditos = (int)$_POST["id_bitacora_actividades_empleados_creditos"];
                 
-                $query = "SELECT * FROM core_bitacora_actividades_empleados_creditos WHERE id_bitacora_actividades_empleados_creditos = $id_bitacora_actividades_empleados_creditos";
+                $query = "SELECT a.*, b.cedula_participes, b.nombres_participes FROM core_bitacora_actividades_empleados_creditos a
+                    left join (
+                select p.id_participes, p.cedula_participes, p.apellido_participes || ' ' || p.nombre_participes as  nombres_participes
+                from core_participes p where 1=1
+                )b  on  b.id_participes=a.id_participes
+                WHERE a.id_bitacora_actividades_empleados_creditos = $id_bitacora_actividades_empleados_creditos";
                 
                 $resultado  = $bitacora_creditos->enviaquery($query);
                 
@@ -297,17 +290,18 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
          
         $bitacora_creditos = new CreditosModel();
         
+        $cedula_usuarios = $_SESSION['cedula_usuarios'];
+        
         $where_to="";
         $columnas ="a.id_bitacora_actividades_empleados_creditos,
                     a.fecha_registro,
                     a.desde,
                     a.hasta,
-                    b.id_empleados,
+                    a.id_empleados,
                     b.nombres_empleados,
                     b.numero_cedula_empleados,
-                    c.id_participes,
-                    c.apellido_participes,
-                    c.nombre_participes,
+                    a.id_participes,
+                    c.nombres_participes,
                     c.cedula_participes,
                     a.creditos,
                     a.cesantia,
@@ -332,31 +326,39 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                     a.consultas_varias";
         $tablas  = "core_bitacora_actividades_empleados_creditos a
                     inner join empleados b on a.id_empleados = b.id_empleados
-                    inner join core_participes c on a.id_participes = c.id_participes";
-        $where   = "1 = 1";
-        $id      = "c.apellido_participes";
+                    left join (
+                select p.id_participes, p.cedula_participes, p.apellido_participes || ' ' || p.nombre_participes as  nombres_participes
+                from core_participes p where 1=1
+                )c  on  c.id_participes=a.id_participes";
+        $where   = "1 = 1 and b.numero_cedula_empleados = '$cedula_usuarios'";
+        $id      = "a.id_bitacora_actividades_empleados_creditos";
+
         
         
         $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
         $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        $fecha_registro_desde =  (isset($_REQUEST['fecha_registro_desde'])&& $_REQUEST['fecha_registro_desde'] !=NULL)?$_REQUEST['fecha_registro_desde']:'';
+        $fecha_registro_hasta =  (isset($_REQUEST['fecha_registro_hasta'])&& $_REQUEST['fecha_registro_hasta'] !=NULL)?$_REQUEST['fecha_registro_hasta']:'';
         
         if($action == 'ajax')
         {
             
             
             if(!empty($search)){
-                
-                
-                $where1=" AND cedula_participes ILIKE '".$search."%'";
-                
-                $where_to=$where.$where1;
-                
-            }else{
-                
-                $where_to=$where;
-                
+                $where.=" AND (c.cedula_participes ILIKE '".$search."%' OR a.elaboracion_memorando ILIKE '".$search."%' OR a.otras_actividades ILIKE '".$search."%')";
             }
             
+            if(!empty($fecha_registro_desde) &&  !empty($fecha_registro_hasta)){
+                $where.=" AND date(a.fecha_registro) between '$fecha_registro_desde' and '$fecha_registro_hasta' ";
+            }
+            if(!empty($search) && !empty($fecha_registro_desde) &&  !empty($fecha_registro_hasta)){
+                $where.=" AND date(a.fecha_registro) between '$fecha_registro_desde' and '$fecha_registro_hasta' AND (c.cedula_participes ILIKE '".$search."%' OR a.elaboracion_memorando ILIKE '".$search."%' OR a.otras_actividades ILIKE '".$search."%')";
+            }
+            
+            
+            
+            
+            $where_to=$where;
             $html="";
             $resultSet=$bitacora_creditos->getCantidad("*", $tablas, $where_to);
             $cantidadResult=(int)$resultSet[0]->total;
@@ -452,7 +454,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                     $html.='<td style="font-size: 10px;">'.$i.'</td>';
                     $html.='<td style="font-size: 10px;">'.$res->fecha_registro.'</td>';
                     $html.='<td style="font-size: 10px;">'.$res->cedula_participes.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$res->nombre_participes.' '.$res->apellido_participes.'</td>';
+                    $html.='<td style="font-size: 10px;">'.$res->nombres_participes.'</td>';
                     $html.='<td style="font-size: 10px;">'.$creditos.'</td>';
                     $html.='<td style="font-size: 10px;">'.$cesantia.'</td>';
                     $html.='<td style="font-size: 10px;">'.$desafiliacion.'</td>';

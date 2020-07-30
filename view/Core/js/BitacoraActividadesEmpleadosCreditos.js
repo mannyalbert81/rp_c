@@ -89,6 +89,7 @@ $("#Guardar").on("click",function(event){
 		
 	}).always(function(){
 		$("#id_bitacora_actividades_empleados_creditos").val(0);
+		$("#hdn_id_participes").val(0);
 		document.getElementById("frm_bitacora_creditos").reset();	
 		consultaBitacoraCreditos();
 	})
@@ -111,33 +112,210 @@ function editBitacoraCreditos(id = 0){
 		
 		if(!jQuery.isEmptyObject(datos.data)){
 			
-			var array = datos.data[0];		
+			var array = datos.data[0];	
+			
+			var valor_creditos = ( array.creditos == 't' ) ? "1" : "0";
+			var valor_cesantia = ( array.cesantia == 't' ) ? "1" : "0";
+			var valor_desafiliacion = ( array.desafiliacion == 't' ) ? "1" : "0";
+			var valor_superavit = ( array.superavit == 't' ) ? "1" : "0";
+			var valor_diferimiento = ( array.diferimiento == 't' ) ? "1" : "0";
+			var valor_refinanciamiento_reestructuracion = ( array.refinanciamiento_reestructuracion == 't' ) ? "1" : "0";
+			var valor_atencion_creditos = ( array.atencion_creditos == 't' ) ? "1" : "0";
+			var valor_entrega_documentos_creditos = ( array.entrega_documentos_creditos == 't' ) ? "1" : "0";
+			var valor_atencion_cesantias = ( array.atencion_cesantias == 't' ) ? "1" : "0";
+			var valor_entrega_documentos_cesantias = ( array.entrega_documentos_cesantias == 't' ) ? "1" : "0";
+			var valor_atencion_desafiliaciones = ( array.atencion_desafiliaciones == 't' ) ? "1" : "0";
+			var valor_entrega_documentos_desafiliaciones = ( array.entrega_documentos_desafiliaciones == 't' ) ? "1" : "0";
+			var valor_atencion_superavit = ( array.atencion_superavit == 't' ) ? "1" : "0";
+			var valor_entrega_documentos_superavit = ( array.entrega_documentos_superavit == 't' ) ? "1" : "0";
+			var valor_atencion_refinanciamiento_reestructuracion = ( array.atencion_refinanciamiento_reestructuracion == 't' ) ? "1" : "0";
+			var valor_entrega_documentos_refinanciamiento_reestructuracion = ( array.entrega_documentos_refinanciamiento_reestructuracion == 't' ) ? "1" : "0";
+			var valor_atencion_diferimiento = ( array.atencion_diferimiento == 't' ) ? "1" : "0";
+			var valor_claves = ( array.claves == 't' ) ? "1" : "0";
+			var valor_consultas_varias = ( array.consultas_varias == 't' ) ? "1" : "0";
+			
+			if(valor_creditos==1){
+				
+				$("#creditos").val(valor_creditos);
+				$("#creditos").prop("checked",true);
+				
+			}else{
+				$("#creditos").val(valor_creditos);
+				
+			}
+			if(valor_cesantia==1){
+				
+				$("#cesantia").val(valor_cesantia);
+				$("#cesantia").prop("checked",true);
+				
+			}else{
+				$("#cesantia").val(valor_cesantia);
+				
+			}
+			if(valor_desafiliacion==1){
+				
+				$("#desafiliacion").val(valor_desafiliacion);
+				$("#desafiliacion").prop("checked",true);
+				
+			}else{
+				$("#desafiliacion").val(valor_desafiliacion);
+				
+			}
+			if(valor_superavit==1){
+				
+				$("#superavit").val(valor_superavit);
+				$("#superavit").prop("checked",true);
+				
+			}else{
+				$("#superavit").val(valor_superavit);
+				
+			}
+			if(valor_diferimiento==1){
+				
+				$("#diferimiento").val(valor_diferimiento);
+				$("#diferimiento").prop("checked",true);
+				
+			}else{
+				$("#diferimiento").val(valor_diferimiento);
+				
+			}
+			if(valor_refinanciamiento_reestructuracion==1){
+				
+				$("#refinanciamiento_reestructuracion").val(valor_refinanciamiento_reestructuracion);
+				$("#refinanciamiento_reestructuracion").prop("checked",true);
+				
+			}else{
+				$("#refinanciamiento_reestructuracion").val(valor_refinanciamiento_reestructuracion);
+				
+			}
+			if(valor_atencion_creditos==1){
+				
+				$("#atencion_creditos").val(valor_atencion_creditos);
+				$("#atencion_creditos").prop("checked",true);
+				
+			}else{
+				$("#atencion_creditos").val(valor_atencion_creditos);
+				
+			}
+			if(valor_entrega_documentos_creditos==1){
+				
+				$("#entrega_documentos_creditos").val(valor_entrega_documentos_creditos);
+				$("#entrega_documentos_creditos").prop("checked",true);
+				
+			}else{
+				$("#entrega_documentos_creditos").val(valor_entrega_documentos_creditos);
+				
+			}
+			if(valor_atencion_cesantias==1){
+				
+				$("#atencion_cesantias").val(valor_atencion_cesantias);
+				$("#atencion_cesantias").prop("checked",true);
+				
+			}else{
+				$("#atencion_cesantias").val(valor_atencion_cesantias);
+				
+			}
+			if(valor_entrega_documentos_cesantias==1){
+				
+				$("#entrega_documentos_cesantias").val(valor_entrega_documentos_cesantias);
+				$("#entrega_documentos_cesantias").prop("checked",true);
+				
+			}else{
+				$("#entrega_documentos_cesantias").val(valor_entrega_documentos_cesantias);
+				
+			}
+			if(valor_atencion_desafiliaciones==1){
+				
+				$("#atencion_desafiliaciones").val(valor_atencion_desafiliaciones);
+				$("#atencion_desafiliaciones").prop("checked",true);
+				
+			}else{
+				$("#atencion_desafiliaciones").val(valor_atencion_desafiliaciones);
+				
+			}
+			if(valor_entrega_documentos_desafiliaciones==1){
+				
+				$("#entrega_documentos_desafiliaciones").val(valor_entrega_documentos_desafiliaciones);
+				$("#entrega_documentos_desafiliaciones").prop("checked",true);
+				
+			}else{
+				$("#entrega_documentos_desafiliaciones").val(valor_entrega_documentos_desafiliaciones);
+				
+			}
+			if(valor_atencion_superavit==1){
+				
+				$("#atencion_superavit").val(valor_atencion_superavit);
+				$("#atencion_superavit").prop("checked",true);
+				
+			}else{
+				$("#atencion_superavit").val(valor_atencion_superavit);
+				
+			}
+			if(valor_entrega_documentos_superavit==1){
+				
+				$("#entrega_documentos_superavit").val(valor_entrega_documentos_superavit);
+				$("#entrega_documentos_superavit").prop("checked",true);
+				
+			}else{
+				$("#entrega_documentos_superavit").val(valor_entrega_documentos_superavit);
+				
+			}
+			if(valor_atencion_refinanciamiento_reestructuracion==1){
+				
+				$("#atencion_refinanciamiento_reestructuracion").val(valor_atencion_refinanciamiento_reestructuracion);
+				$("#atencion_refinanciamiento_reestructuracion").prop("checked",true);
+				
+			}else{
+				$("#atencion_refinanciamiento_reestructuracion").val(valor_atencion_refinanciamiento_reestructuracion);
+				
+			}
+			if(valor_entrega_documentos_refinanciamiento_reestructuracion==1){
+				
+				$("#entrega_documentos_refinanciamiento_reestructuracion").val(valor_entrega_documentos_refinanciamiento_reestructuracion);
+				$("#entrega_documentos_refinanciamiento_reestructuracion").prop("checked",true);
+				
+			}else{
+				$("#entrega_documentos_refinanciamiento_reestructuracion").val(valor_entrega_documentos_refinanciamiento_reestructuracion);
+				
+			}
+			if(valor_atencion_diferimiento==1){
+				
+				$("#atencion_diferimiento").val(valor_atencion_diferimiento);
+				$("#atencion_diferimiento").prop("checked",true);
+				
+			}else{
+				$("#atencion_diferimiento").val(valor_atencion_diferimiento);
+				
+			}
+			if(valor_claves==1){
+				
+				$("#claves").val(valor_claves);
+				$("#claves").prop("checked",true);
+				
+			}else{
+				$("#claves").val(valor_claves);
+				
+			}
+			if(valor_consultas_varias==1){
+				
+				$("#consultas_varias").val(valor_consultas_varias);
+				$("#consultas_varias").prop("checked",true);
+				
+			}else{
+				$("#consultas_varias").val(valor_consultas_varias);
+				
+			}
+			
+			
 			$("#fecha_registro").val(array.fecha_registro);
 			$("#desde").val(array.desde);			
 			$("#hasta").val(array.hasta);			
 			$("#id_empleados").val(array.id_empleados);			
-			$("#id_participes").val(array.id_participes);			
-			$("#creditos").val(array.creditos);			
-			$("#cesantia").val(array.cesantia);			
-			$("#desafiliacion").val(array.desafiliacion);			
-			$("#superavit").val(array.superavit);			
-			$("#diferimiento").val(array.diferimiento);			
-			$("#refinanciamiento_reestructuracion").val(array.refinanciamiento_reestructuracion);			
+			$("#hdn_id_participes").val(array.id_participes);	
+			$("#cedula_participes").val(array.cedula_participes);	
+			$("#nombre_participes").val(array.nombres_participes);	
 			$("#elaboracion_memorando").val(array.elaboracion_memorando);			
 			$("#otras_actividades").val(array.otras_actividades);			
-			$("#atencion_creditos").val(array.atencion_creditos);			
-			$("#entrega_documentos_creditos").val(array.entrega_documentos_creditos);			
-			$("#atencion_cesantias").val(array.atencion_cesantias);			
-			$("#entrega_documentos_cesantias").val(array.entrega_documentos_cesantias);			
-			$("#atencion_desafiliaciones").val(array.atencion_desafiliaciones);			
-			$("#entrega_documentos_desafiliaciones").val(array.entrega_documentos_desafiliaciones);			
-			$("#atencion_superavit").val(array.atencion_superavit);			
-			$("#entrega_documentos_superavit").val(array.entrega_documentos_superavit);			
-			$("#atencion_refinanciamiento_reestructuracion").val(array.atencion_refinanciamiento_reestructuracion);			
-			$("#entrega_documentos_refinanciamiento_reestructuracion").val(array.entrega_documentos_refinanciamiento_reestructuracion);			
-			$("#atencion_diferimiento").val(array.atencion_diferimiento);			
-			$("#claves").val(array.claves);			
-			$("#consultas_varias").val(array.consultas_varias);			
 			$("#id_bitacora_actividades_empleados_creditos").val(array.id_bitacora_actividades_empleados_creditos);
 			$("html, body").animate({ scrollTop: $(fecha_registro).offset().top-120 }, tiempo);			
 		}
@@ -198,11 +376,14 @@ function delBitacoraCreditos(id){
 function consultaBitacoraCreditos(_page = 1){
 	
 	var buscador = $("#buscador").val();
+	var fecha_registro_desde = $("#fecha_registro_desde").val();
+	var fecha_registro_hasta = $("#fecha_registro_hasta").val();
+	
 	$.ajax({
 		beforeSend:function(){$("#divLoaderPage").addClass("loader")},
 		url:"index.php?controller=BitacoraActividadesEmpleadosCreditos&action=consultaBitacoraCreditos",
 		type:"POST",
-		data:{page:_page,search:buscador,peticion:'ajax'}
+		data:{page:_page,search:buscador,fecha_registro_desde:fecha_registro_desde,fecha_registro_hasta:fecha_registro_hasta,peticion:'ajax'}
 	}).done(function(datos){		
 		
 		$("#bitacora_creditos_registrados").html(datos)		
@@ -276,8 +457,9 @@ $("#cedula_participes").on("focus",function(e) {
      		   }
      	   }
     	
-    	}).focusout(function() {
-    		
+    	}).focusout(function(event,ui) {
+    		  
+  		   
     	})
     }
     

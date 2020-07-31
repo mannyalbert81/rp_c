@@ -249,7 +249,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
     public function delBitacoraCreditos(){
         
         session_start();
-        $bitacora_creditos = new CreditosModel();
+        $bitacora_creditos = new BitacoraCreditosModel();
         $nombre_controladores = "BitacoraActividadesEmpleadosCreditos";
         $id_rol= $_SESSION['id_rol'];
         $resultPer = $bitacora_creditos->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );

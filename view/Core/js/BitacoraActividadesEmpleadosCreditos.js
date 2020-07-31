@@ -449,7 +449,7 @@ $("#cedula_participes").on("focus",function(e) {
      		   
      		   if(ui.item == null)
      		   {
-     			 _elemento.notify("Digite Cedula Valida",{ position:"top center"});
+     			 //_elemento.notify("Digite Cedula Valida",{ position:"top center"});
      			 $("#hdn_id_participes").val("0");
      			 _elemento.val('');
      			 $("#nombre_participes").val("");
@@ -475,5 +475,36 @@ var fnValidaEstado	= function(a){
         // Hacer algo si el checkbox ha sido deseleccionado
     	elemento.val(0);        
     }
+}
+
+var fnMostrarReporte	= function(){
+	
+	var buscador = $("#buscador").val();
+	var fecha_registro_desde = $("#fecha_registro_desde").val();
+	var fecha_registro_hasta = $("#fecha_registro_hasta").val();
+	
+	var params = {
+		page:1,search:buscador,fecha_registro_desde:fecha_registro_desde,fecha_registro_hasta:fecha_registro_hasta,peticion:'ajax'
+	}
+		
+	var form = document.createElement("form");
+	form.setAttribute("id", "frmReporte001");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "index.php?controller=BitacoraActividadesEmpleadosCreditos&action=ReporteBitacoraCreditos");
+    form.setAttribute("target", "_blank");   
+    
+    for (var i in params) {
+        if (params.hasOwnProperty(i)) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = i;
+            input.value = params[i];
+            form.appendChild(input);
+        }
+    }
+        
+    document.body.appendChild(form); 
+    form.submit();    
+    document.body.removeChild(form);
 }
 

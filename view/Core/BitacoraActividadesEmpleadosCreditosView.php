@@ -112,14 +112,14 @@
             		   <div class="col-xs-12 col-md-3 col-md-3">
             		    <div class="form-group">
                           <label for="desde" class="control-label">Desde:</label>
-                          <input  type="time" class="form-control" id="desde" name="desde" value=""  placeholder="Desde" required/>
+                          <input  type="text" class="form-control" id="desde" name="desde" value="<?php echo $desde;?>"  placeholder="Desde" required readonly/>
                           <div id="mensaje_desde" class="errores"></div>
                         </div>
             		  </div>
             		   <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
                           <label for="hasta" class="control-label">Hasta:</label>
-                          <input  type="time" class="form-control" id="hasta" name="hasta" value=""  placeholder="Hasta" required />
+                          <input  type="text" class="form-control" id="hasta" name="hasta" value="<?php echo $hasta;?>"  placeholder="Hasta" required readonly/>
                           <div id="mensaje_hasta" class="errores"></div>
                         </div>
             		  </div>
@@ -316,25 +316,26 @@
       			<h3 class="box-title">Bitacoras</h3>      			
             </div> 
             <div class="box-body">
-           	<div class="pull-right" style="margin-right:0px;">
+           	<div class="pull-right" style="margin-right:10px;">
            	<div class="col-xs-12 col-md-12 col-lg-12 ">
-			<div class="col-xs-12 col-md-4 col-lg-4 ">
-					<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
-						</div> 
-    			<div class="col-xs-12 col-md-4 col-lg-4 ">
-			
-					<input type="date" value="" class="form-control" id="fecha_registro_desde" name="fecha_registro_desde" onchange="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
-							</div> 
-    				<div class="col-xs-12 col-md-4 col-lg-4 ">
-			
-					<input type="date" value="" class="form-control" id="fecha_registro_hasta" name="fecha_registro_hasta" onchange="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
-							</div> 
-    			
-					</div> 
-    			</div>            	
-            	<div id="bitacora_creditos_registrados" ></div>
-            	<div id="divLoaderPage" ></div>                     	
-             </div> 	
+			<div class="col-xs-12 col-md-3 col-lg-3 ">
+			<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
+			</div> 
+    		<div class="col-xs-12 col-md-4 col-lg-4 ">
+			<input type="date" value="" class="form-control" id="fecha_registro_desde" name="fecha_registro_desde" onchange="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
+			</div> 
+    		<div class="col-xs-12 col-md-4 col-lg-4 ">
+			<input type="date" value="" class="form-control" id="fecha_registro_hasta" name="fecha_registro_hasta" onchange="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
+			</div>
+			<div class="col-xs-12 col-md-1 col-lg-1 ">
+				<button onclick="fnMostrarReporte()" id="btnReporte" class="btn btn-default no-padding"><input type="image" src="view/images/pdf.png" alt="Submit" width="50" height="34" formtarget="_blank" class="btn btn-default" title="Reporte Selección"></button>
+		   	</div> 
+    	 	</div> 
+    		</div>            	
+            <div id="bitacora_creditos_registrados" ></div>
+            <div id="divLoaderPage" ></div>                     	
+            </div> 	
+          
       	</div>
       </section> 
     	     </div>
@@ -353,7 +354,8 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
-   <script src="view/Core/js/BitacoraActividadesEmpleadosCreditos.js?0.22"></script> 
+   <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
+   <script src="view/Core/js/BitacoraActividadesEmpleadosCreditos.js?0.24"></script> 
        
        
 

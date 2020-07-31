@@ -40,10 +40,12 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
         $tab1 = " empleados";
         $whe1 = " numero_cedula_empleados = '$cedula_usuarios'";
         $rsEmpleados    = $bitacora_creditos->getCondicionesSinOrden( $col1, $tab1, $whe1, "");
+        $desde = '8:00:00';
+        $hasta = '16:45:00';
         
         
         $this->view_Core("BitacoraActividadesEmpleadosCreditos",array(
-            "resultSet"=>"", "rsEmpleados"=>$rsEmpleados
+            "resultSet"=>"", "rsEmpleados"=>$rsEmpleados, "desde"=>$desde, "hasta"=>$hasta
             
         ));
         
@@ -247,7 +249,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
     public function delBitacoraCreditos(){
         
         session_start();
-        $bitacora_creditos = new BitacoraCreditosModel();
+        $bitacora_creditos = new CreditosModel();
         $nombre_controladores = "BitacoraActividadesEmpleadosCreditos";
         $id_rol= $_SESSION['id_rol'];
         $resultPer = $bitacora_creditos->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
@@ -386,31 +388,33 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                 $html.= "<table id='tabla_bitacora_creditos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
-                $html.='<th style="text-align: left;  font-size: 10px;">#</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Fecha</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Cédula</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Participes</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Créditos</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Cesantía</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Desafiliación</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Superavit</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Diferimiento</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Refinanciamiento</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Momorando</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Otras Actividades</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Atención Créditos</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Documentos Créditos</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Atención Cesantías</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Documentos Cesantías</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Atención Desafiliaciones</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Documentos Desafiliaciones</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Atención Superavit</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Documentos Superavit</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Atención Refinanciamiento</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Documentos Refinanciamiento</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Atención Diferimiento</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Claves</th>';
-                $html.='<th style="text-align: left;  font-size: 10px;">Consultas</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">#</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Fecha</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Desde</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Hasta</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Cédula</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Participes</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Créditos</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Cesantía</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Desafiliación</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Superavit</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Diferimiento</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Refinanciamiento</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Momorando</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Otras Actividades</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Atención Créditos</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Documentos Créditos</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Atención Cesantías</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Documentos Cesantías</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Atención Desafiliaciones</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Documentos Desafiliaciones</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Atención Superavit</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Documentos Superavit</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Atención Refinanciamiento</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Documentos Refinanciamiento</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Atención Diferimiento</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Claves</th>';
+                $html.='<th style="text-align: center;  font-size: 10px;">Consultas</th>';
                 
                 /*para administracion definir administrador MenuOperaciones Edit - Eliminar*/
                 
@@ -430,52 +434,54 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                 {
                     
                     $i++;
-                    $creditos   = ( $res->creditos == "t") ? "Aplico" : "";
-                    $cesantia   = ( $res->cesantia == "t") ? "Aplico" : "";
-                    $desafiliacion   = ( $res->desafiliacion == "t") ? "Aplico" : "";
-                    $superavit   = ( $res->superavit == "t") ? "Aplico" : "";
-                    $diferimiento   = ( $res->diferimiento == "t") ? "Aplico" : "";
-                    $refinanciamiento_reestructuracion   = ( $res->refinanciamiento_reestructuracion == "t") ? "Aplico" : "";
-                    $atencion_creditos   = ( $res->atencion_creditos == "t") ? "Aplico" : "";
-                    $entrega_documentos_creditos   = ( $res->entrega_documentos_creditos == "t") ? "Aplico" : "";
-                    $atencion_cesantias   = ( $res->atencion_cesantias == "t") ? "Aplico" : "";
-                    $entrega_documentos_cesantias   = ( $res->entrega_documentos_cesantias == "t") ? "Aplico" : "";
-                    $atencion_desafiliaciones   = ( $res->atencion_desafiliaciones == "t") ? "Aplico" : "";
-                    $entrega_documentos_desafiliaciones   = ( $res->entrega_documentos_desafiliaciones == "t") ? "Aplico" : "";
-                    $atencion_superavit   = ( $res->atencion_superavit == "t") ? "Aplico" : "";
-                    $entrega_documentos_superavit   = ( $res->entrega_documentos_superavit == "t") ? "Aplico" : "";
-                    $atencion_refinanciamiento_reestructuracion   = ( $res->atencion_refinanciamiento_reestructuracion == "t") ? "Aplico" : "";
-                    $entrega_documentos_refinanciamiento_reestructuracion   = ( $res->entrega_documentos_refinanciamiento_reestructuracion == "t") ? "Aplico" : "";
-                    $atencion_diferimiento   = ( $res->atencion_diferimiento == "t") ? "Aplico" : "";
-                    $claves   = ( $res->claves == "t") ? "Aplico" : "";
-                    $consultas_varias   = ( $res->consultas_varias == "t") ? "Aplico" : "";
+                    $creditos   = ( $res->creditos == "t") ? "X" : "";
+                    $cesantia   = ( $res->cesantia == "t") ? "X" : "";
+                    $desafiliacion   = ( $res->desafiliacion == "t") ? "X" : "";
+                    $superavit   = ( $res->superavit == "t") ? "X" : "";
+                    $diferimiento   = ( $res->diferimiento == "t") ? "X" : "";
+                    $refinanciamiento_reestructuracion   = ( $res->refinanciamiento_reestructuracion == "t") ? "X" : "";
+                    $atencion_creditos   = ( $res->atencion_creditos == "t") ? "X" : "";
+                    $entrega_documentos_creditos   = ( $res->entrega_documentos_creditos == "t") ? "X" : "";
+                    $atencion_cesantias   = ( $res->atencion_cesantias == "t") ? "X" : "";
+                    $entrega_documentos_cesantias   = ( $res->entrega_documentos_cesantias == "t") ? "X" : "";
+                    $atencion_desafiliaciones   = ( $res->atencion_desafiliaciones == "t") ? "X" : "";
+                    $entrega_documentos_desafiliaciones   = ( $res->entrega_documentos_desafiliaciones == "t") ? "X" : "";
+                    $atencion_superavit   = ( $res->atencion_superavit == "t") ? "X" : "";
+                    $entrega_documentos_superavit   = ( $res->entrega_documentos_superavit == "t") ? "X" : "";
+                    $atencion_refinanciamiento_reestructuracion   = ( $res->atencion_refinanciamiento_reestructuracion == "t") ? "X" : "";
+                    $entrega_documentos_refinanciamiento_reestructuracion   = ( $res->entrega_documentos_refinanciamiento_reestructuracion == "t") ? "X" : "";
+                    $atencion_diferimiento   = ( $res->atencion_diferimiento == "t") ? "X" : "";
+                    $claves   = ( $res->claves == "t") ? "X" : "";
+                    $consultas_varias   = ( $res->consultas_varias == "t") ? "X" : "";
                     
                     $html.='<tr>';
-                    $html.='<td style="font-size: 10px;">'.$i.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$res->fecha_registro.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$res->cedula_participes.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$res->nombres_participes.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$creditos.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$cesantia.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$desafiliacion.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$superavit.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$diferimiento.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$refinanciamiento_reestructuracion.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$res->elaboracion_memorando.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$res->otras_actividades.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$atencion_creditos.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$entrega_documentos_creditos.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$atencion_cesantias.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$entrega_documentos_cesantias.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$atencion_desafiliaciones.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$entrega_documentos_desafiliaciones.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$atencion_superavit.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$entrega_documentos_superavit.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$atencion_refinanciamiento_reestructuracion.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$entrega_documentos_refinanciamiento_reestructuracion.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$atencion_diferimiento.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$claves.'</td>';
-                    $html.='<td style="font-size: 10px;">'.$consultas_varias.'</td>';
+                    $html.='<td style="text-align: center; font-size: 10px;">'.$i.'</td>';
+                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->fecha_registro.'</td>';
+                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->desde.'</td>';
+                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->hasta.'</td>';
+                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->cedula_participes.'</td>';
+                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->nombres_participes.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$creditos.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$cesantia.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$desafiliacion.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$superavit.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$diferimiento.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$refinanciamiento_reestructuracion.'</td>';
+                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->elaboracion_memorando.'</td>';
+                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->otras_actividades.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$atencion_creditos.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$entrega_documentos_creditos.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$atencion_cesantias.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$entrega_documentos_cesantias.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$atencion_desafiliaciones.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$entrega_documentos_desafiliaciones.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$atencion_superavit.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$entrega_documentos_superavit.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$atencion_refinanciamiento_reestructuracion.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$entrega_documentos_refinanciamiento_reestructuracion.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$atencion_diferimiento.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$claves.'</td>';
+                    $html.='<td style="text-align: center; font-size: 20px;">'.$consultas_varias.'</td>';
                      
                     
                     
@@ -623,6 +629,238 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
         }
     }
     
+    public function ReporteBitacoraCreditos(){
+        
+        session_start();
+        
+        $bitacora_creditos = new CreditosModel();
+        
+        $cedula_usuarios = $_SESSION['cedula_usuarios'];
+        
+        $where_to="";
+        $datos_reporte = array();
+        $columnas ="a.id_bitacora_actividades_empleados_creditos,
+                    a.fecha_registro,
+                    a.desde,
+                    a.hasta,
+                    a.id_empleados,
+                    b.nombres_empleados,
+                    b.numero_cedula_empleados,
+                    a.id_participes,
+                    c.nombres_participes,
+                    c.cedula_participes,
+                    a.creditos,
+                    a.cesantia,
+                    a.desafiliacion,
+                    a.superavit,
+                    a.diferimiento,
+                    a.refinanciamiento_reestructuracion,
+                    a.elaboracion_memorando,
+                    a.otras_actividades,
+                    a.atencion_creditos,
+                    a.entrega_documentos_creditos,
+                    a.atencion_cesantias,
+                    a.entrega_documentos_cesantias,
+                    a.atencion_desafiliaciones,
+                    a.entrega_documentos_desafiliaciones,
+                    a.atencion_superavit,
+                    a.entrega_documentos_superavit,
+                    a.atencion_refinanciamiento_reestructuracion,
+                    a.entrega_documentos_refinanciamiento_reestructuracion,
+                    a.atencion_diferimiento,
+                    a.claves,
+                    a.consultas_varias,
+                    d.nombre_cargo";
+        $tablas  = "core_bitacora_actividades_empleados_creditos a
+                    inner join empleados b on a.id_empleados = b.id_empleados
+                    left join (
+                select p.id_participes, p.cedula_participes, p.apellido_participes || ' ' || p.nombre_participes as  nombres_participes
+                from core_participes p where 1=1
+                )c  on  c.id_participes=a.id_participes
+                inner join cargos_empleados d on b.id_cargo_empleado = d.id_cargo";
+        $where   = "1 = 1 and b.numero_cedula_empleados = '$cedula_usuarios'";
+        $id      = "a.id_bitacora_actividades_empleados_creditos";
+        
+        
+        
+        $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        $fecha_registro_desde =  (isset($_REQUEST['fecha_registro_desde'])&& $_REQUEST['fecha_registro_desde'] !=NULL)?$_REQUEST['fecha_registro_desde']:'';
+        $fecha_registro_hasta =  (isset($_REQUEST['fecha_registro_hasta'])&& $_REQUEST['fecha_registro_hasta'] !=NULL)?$_REQUEST['fecha_registro_hasta']:'';
+        
+        if($action == 'ajax')
+        {
+            
+            
+            if(!empty($search)){
+                $where.=" AND (c.cedula_participes ILIKE '".$search."%' OR a.elaboracion_memorando ILIKE '".$search."%' OR a.otras_actividades ILIKE '".$search."%')";
+            }
+            if(!empty($fecha_registro_desde) &&  !empty($fecha_registro_hasta)){
+                $where.=" AND date(a.fecha_registro) between '$fecha_registro_desde' and '$fecha_registro_hasta' ";
+            }
+            if(!empty($search) && !empty($fecha_registro_desde) &&  !empty($fecha_registro_hasta)){
+                $where.=" AND date(a.fecha_registro) between '$fecha_registro_desde' and '$fecha_registro_hasta' AND (c.cedula_participes ILIKE '".$search."%' OR a.elaboracion_memorando ILIKE '".$search."%' OR a.otras_actividades ILIKE '".$search."%')";
+            }
+            
+            $where_to=$where;
+            $bitacora_detalle=$bitacora_creditos->getCondiciones($columnas, $tablas, $where_to, $id );
+            
+            //var_dump($resultSet); die();
+            
+          
+            
+            $html='';
+          
+            $html.='<TABLE class="1" cellspacing="0" style="width:100px;" border="1">';
+            $html.='<TR>';
+            $html.='<TH COLSPAN=2>Head1</TH>';
+            $html.='<TH COLSPAN=2>Head2</TH>';
+            $html.='</TR>';
+            $html.='<TR>';
+            $html.='<TH>Head 3</TH> <TH>Head 4</TH>';
+            $html.='<TH>Head 5</TH> <TH>Head 6</TH>';
+            $html.='</TR>';
+            $html.='<TR>';
+            $html.='<TD>A</TD> <TD>B</TD> <TD>C</TD> <TD>D</TD>';
+            $html.='</TR>';
+            $html.='<TR>';
+            $html.='<TD>E</TD> <TD>F</TD> <TD>G</TD> <TD>H</TD>';
+            $html.='</TR>';
+            $html.='</TABLE>';
+  
+            
+            $html.='<table class="1" cellspacing="0" style="width:100px;" border="1">';
+            $html.='<tr class="1">';
+            $html.='<th style="text-align: center;  font-size: 10px;">#</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Fecha</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Desde</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Hasta</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Cédula</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Participes</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Créditos</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Cesantía</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Desafiliación</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Superavit</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Diferimiento</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Refinanciamiento</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Momorando</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Otras Actividades</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Atención Créditos</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Documentos Créditos</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Atención Cesantías</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Documentos Cesantías</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Atención Desafiliaciones</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Documentos Desafiliaciones</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Atención Superavit</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Documentos Superavit</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Atención Refinanciamiento</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Documentos Refinanciamiento</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Atención Diferimiento</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Claves</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Consultas</th>';
+            $html.='</tr>';
+            
+            
+            $i=0;
+            foreach ($bitacora_detalle as $res)
+            {
+                
+                $i++;
+                $creditos   = ( $res->creditos == "t") ? "X" : "";
+                $cesantia   = ( $res->cesantia == "t") ? "X" : "";
+                $desafiliacion   = ( $res->desafiliacion == "t") ? "X" : "";
+                $superavit   = ( $res->superavit == "t") ? "X" : "";
+                $diferimiento   = ( $res->diferimiento == "t") ? "X" : "";
+                $refinanciamiento_reestructuracion   = ( $res->refinanciamiento_reestructuracion == "t") ? "X" : "";
+                $atencion_creditos   = ( $res->atencion_creditos == "t") ? "X" : "";
+                $entrega_documentos_creditos   = ( $res->entrega_documentos_creditos == "t") ? "X" : "";
+                $atencion_cesantias   = ( $res->atencion_cesantias == "t") ? "X" : "";
+                $entrega_documentos_cesantias   = ( $res->entrega_documentos_cesantias == "t") ? "X" : "";
+                $atencion_desafiliaciones   = ( $res->atencion_desafiliaciones == "t") ? "X" : "";
+                $entrega_documentos_desafiliaciones   = ( $res->entrega_documentos_desafiliaciones == "t") ? "X" : "";
+                $atencion_superavit   = ( $res->atencion_superavit == "t") ? "X" : "";
+                $entrega_documentos_superavit   = ( $res->entrega_documentos_superavit == "t") ? "X" : "";
+                $atencion_refinanciamiento_reestructuracion   = ( $res->atencion_refinanciamiento_reestructuracion == "t") ? "X" : "";
+                $entrega_documentos_refinanciamiento_reestructuracion   = ( $res->entrega_documentos_refinanciamiento_reestructuracion == "t") ? "X" : "";
+                $atencion_diferimiento   = ( $res->atencion_diferimiento == "t") ? "X" : "";
+                $claves   = ( $res->claves == "t") ? "X" : "";
+                $consultas_varias   = ( $res->consultas_varias == "t") ? "X" : "";
+                
+                $html.='<tr>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$i.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$res->fecha_registro.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$res->desde.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$res->fecha_registro.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$res->cedula_participes.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$res->nombres_participes.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$cesantia.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$desafiliacion.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$superavit.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$diferimiento.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$refinanciamiento_reestructuracion.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$res->elaboracion_memorando.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$res->otras_actividades.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$atencion_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$entrega_documentos_creditos.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$atencion_cesantias.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$entrega_documentos_cesantias.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$atencion_desafiliaciones.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$entrega_documentos_desafiliaciones.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$atencion_superavit.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$entrega_documentos_superavit.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$atencion_refinanciamiento_reestructuracion.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$entrega_documentos_refinanciamiento_reestructuracion.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$atencion_diferimiento.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$claves.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$consultas_varias.'</td>';
+                $html.='</tr>';
+            }
+            
+            $html.='</table>';
+            $datos_reporte['DETALLE']= $html;
+            $datos_reporte['nombres_empleados']=$bitacora_detalle[0]->nombres_empleados;
+            $datos_reporte['nombre_cargo']=$bitacora_detalle[0]->nombre_cargo;
+            
+            
+            
+          /*  $datos_reporte['fecha_registro']=$resultSet[0]->fecha_registro;
+            $datos_reporte['desde']=$resultSet[0]->desde;
+            $datos_reporte['hasta']=$resultSet[0]->hasta;
+            $datos_reporte['nombres_empleados']=$resultSet[0]->nombres_empleados;
+            $datos_reporte['cedula_participes']=$resultSet[0]->nombres_participes;
+            $datos_reporte['creditos']=$resultSet[0]->creditos;
+            $datos_reporte['cesantia']=$resultSet[0]->cesantia;
+            $datos_reporte['desafiliacion']=$resultSet[0]->desafiliacion;
+            $datos_reporte['superavit']=$resultSet[0]->superavit;
+            $datos_reporte['diferimiento']=$resultSet[0]->diferimiento;
+            $datos_reporte['refinanciamiento_reestructuracion']=$resultSet[0]->refinanciamiento_reestructuracion;
+            $datos_reporte['elaboracion_memorando']=$resultSet[0]->elaboracion_memorando;
+            $datos_reporte['otras_actividades']=$resultSet[0]->otras_actividades;
+            $datos_reporte['atencion_creditos']=$resultSet[0]->atencion_creditos;
+            $datos_reporte['entrega_documentos_creditos']=$resultSet[0]->entrega_documentos_creditos;
+            $datos_reporte['atencion_cesantias']=$resultSet[0]->atencion_cesantias;
+            $datos_reporte['entrega_documentos_cesantias']=$resultSet[0]->entrega_documentos_cesantias;
+            $datos_reporte['atencion_desafiliaciones']=$resultSet[0]->atencion_desafiliaciones;
+            $datos_reporte['entrega_documentos_desafiliaciones']=$resultSet[0]->entrega_documentos_desafiliaciones;
+            $datos_reporte['atencion_superavit']=$resultSet[0]->atencion_superavit;
+            $datos_reporte['entrega_documentos_superavit']=$resultSet[0]->entrega_documentos_superavit;
+            $datos_reporte['atencion_refinanciamiento_reestructuracion']=$resultSet[0]->atencion_refinanciamiento_reestructuracion;
+            $datos_reporte['entrega_documentos_refinanciamiento_reestructuracion']=$resultSet[0]->entrega_documentos_refinanciamiento_reestructuracion;
+            $datos_reporte['atencion_diferimiento']=$resultSet[0]->atencion_diferimiento;
+            $datos_reporte['claves']=$resultSet[0]->claves;
+            $datos_reporte['consultas_varias']=$resultSet[0]->consultas_varias;
+            $datos_reporte['nombre_cargo']=$resultSet[0]->nombre_cargo;*/
+            
+            
+            
+            $this->verReporte("ReporteBitacoraCreditos", array('datos_reporte'=>$datos_reporte ));
+        
+            
+        }
+        
+        
+    }
     
 }
 ?>

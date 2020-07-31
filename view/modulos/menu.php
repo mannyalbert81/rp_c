@@ -100,6 +100,7 @@ $controladores=$_SESSION['controladores'];
 				<li style="<?php echo getcontrolador("VacacionesEmpleados",$controladores) ?>"><a href="index.php?controller=VacacionesEmpleados&action=index"><i class="fa fa-circle-o"></i>Solicitud Vacaciones</a></li>             
             	<li style="<?php echo getcontrolador("HorasExtrasEmpleados",$controladores) ?>"><a href="index.php?controller=HorasExtrasEmpleados&action=index"><i class="fa fa-circle-o"></i>Solicitud Horas Extra</a></li>
             	<li style="<?php echo getcontrolador("AvancesEmpleados",$controladores) ?>"><a href="index.php?controller=AvancesEmpleados&action=index"><i class="fa fa-circle-o"></i>Solicitud Avance</a></li>
+           	    <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosCreditos",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosCreditos&action=index"><i class="fa fa-circle-o"></i>Bitácora Créditos</a></li>
              </ul>
             </li>
         
@@ -499,9 +500,7 @@ $controladores=$_SESSION['controladores'];
     			<li style="<?php echo getcontrolador("SolicitudPrestamo",$controladores) ?>"><a href="index.php?controller=SolicitudPrestamo&action=index5"><i class="fa fa-circle-o"></i>Solicitudes</a></li>
     		    <li style="<?php echo getcontrolador("GarantiaCredito",$controladores) ?>"><a href="index.php?controller=GarantiaCredito&action=index"><i class="fa fa-circle-o"></i>Garantia Credito</a></li>
     		    <li style="<?php echo getcontrolador("TipoCredito",$controladores) ?>"><a href="index.php?controller=TipoCredito&action=index"><i class="fa fa-circle-o"></i>Tipo Crédito</a></li>
-    	 	    <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosCreditos",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosCreditos&action=index"><i class="fa fa-circle-o"></i>Bitacora Creditos</a></li>
-    
-           </ul>           	 
+    	   </ul>           	 
         </li>
         <li class="treeview"  style="<?php echo getcontrolador("ProcesosCore",$controladores) ?>"  >
           <a href="#">

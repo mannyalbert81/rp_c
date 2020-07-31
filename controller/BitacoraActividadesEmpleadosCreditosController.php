@@ -710,25 +710,6 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
           
             
             $html='';
-          
-            $html.='<TABLE class="1" cellspacing="0" style="width:100px;" border="1">';
-            $html.='<TR>';
-            $html.='<TH COLSPAN=2>Head1</TH>';
-            $html.='<TH COLSPAN=2>Head2</TH>';
-            $html.='</TR>';
-            $html.='<TR>';
-            $html.='<TH>Head 3</TH> <TH>Head 4</TH>';
-            $html.='<TH>Head 5</TH> <TH>Head 6</TH>';
-            $html.='</TR>';
-            $html.='<TR>';
-            $html.='<TD>A</TD> <TD>B</TD> <TD>C</TD> <TD>D</TD>';
-            $html.='</TR>';
-            $html.='<TR>';
-            $html.='<TD>E</TD> <TD>F</TD> <TD>G</TD> <TD>H</TD>';
-            $html.='</TR>';
-            $html.='</TABLE>';
-  
-            
             $html.='<table class="1" cellspacing="0" style="width:100px;" border="1">';
             $html.='<tr class="1">';
             $html.='<th style="text-align: center;  font-size: 10px;">#</th>';

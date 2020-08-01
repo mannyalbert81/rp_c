@@ -152,31 +152,31 @@
                           <div id="mensaje_creditos" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="cesantia" name="cesantia" value="0"> Cesantias </strong>
                           <div id="mensaje_cesantia" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="desafiliacion" name="desafiliacion" value="0"> Desafiliacion </strong>
                           <div id="mensaje_desafiliacion" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="superavit" name="superavit" value="0"> Superavit </strong>
                           <div id="mensaje_superavit" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="diferimiento" name="diferimiento" value="0"> Diferimiento </strong>
                           <div id="mensaje_diferimiento" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="refinanciamiento_reestructuracion" name="refinanciamiento_reestructuracion" value="0"> Refinanciamiento Reestructuracion </strong>
                           <div id="mensaje_refinanciamiento_reestructuracion" class="errores"></div>
@@ -273,19 +273,19 @@
                           <div id="mensaje_entrega_documentos_refinanciamiento_reestructuracion" class="errores"></div>
                         </div>
             		  </div>
-            		    <div class="col-xs-12 col-md-4 col-md-4 ">
+            		    <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="atencion_diferimiento" name="atencion_diferimiento" value="0"> Diferimiento</strong>
                           <div id="mensaje_atencion_diferimiento" class="errores"></div>
                         </div>
             		  </div>
-            		   <div class="col-xs-12 col-md-4 col-md-4 ">
+            		   <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="claves" name="claves" value="0"> Claves</strong>
                           <div id="mensaje_claves" class="errores"></div>
                         </div>
             		  </div>
-            		  <div class="col-xs-12 col-md-4 col-md-4 ">
+            		  <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="consultas_varias" name="consultas_varias" value="0"> Consultas Varias</strong>
                           <div id="mensaje_consultas_varias" class="errores"></div>

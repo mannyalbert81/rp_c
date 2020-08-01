@@ -146,31 +146,31 @@
             </div>        
   		<div class="box-body">
   		   	 <div class="row">
-        	  		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        	  		    <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="cesantia" name="cesantia" value="0"> Cesantía </strong>
                           <div id="mensaje_cesantia" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="desafiliacion" name="desafiliacion" value="0"> Desafiliación </strong>
                           <div id="mensaje_desafiliacion" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="creditos_en_mora" name="creditos_en_mora" value="0"> Creditos en Mora </strong>
                           <div id="mensaje_creditos_en_mora" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="aportes" name="aportes" value="0"> Aportes </strong>
                           <div id="mensaje_aportes" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="diferimiento" name="diferimiento" value="0"> Diferimiento </strong>
                           <div id="mensaje_diferimiento" class="errores"></div>
@@ -185,55 +185,55 @@
             </div>        
   		<div class="box-body">
   		   	 <div class="row">
-        	  		    <div class="col-xs-12 col-md-3 col-md-3 ">
+        	  		    <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="moras" name="moras" value="0"> Moras </strong>
                           <div id="mensaje_moras" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="credito" name="credito" value="0"> Crédito </strong>
                           <div id="mensaje_credito" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="aporte" name="aporte" value="0"> Aporte </strong>
                           <div id="mensaje_aporte" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="envio_archivo_entidad_patronal" name="envio_archivo_entidad_patronal" value="0"> Envio Archivo Entidad Patronal </strong>
                           <div id="mensaje_envio_archivo_entidad_patronal" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		      <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="recepcion_archivo_entidad_patronal" name="recepcion_archivo_entidad_patronal" value="0"> Recepción Archivo Entidad Patronal </strong>
                           <div id="mensaje_diferimiento" class="errores"></div>
                         </div>
             		  </div>
-            		    <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="carga_archivo_banco" name="carga_archivo_banco" value="0"> Carga Archivo Banco </strong>
                           <div id="mensaje_carga_archivo_banco" class="errores"></div>
                         </div>
             		  </div>  
-            		  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		  <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="carga_archivo_sistema" name="carga_archivo_sistema" value="0"> Carga Archivo Sistema </strong>
                           <div id="mensaje_carga_archivo_sistema" class="errores"></div>
                         </div>
             		  </div>
-            		  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		  <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="registro_depositos_manuales" name="registro_depositos_manuales" value="0"> Registro Depositos Manuales </strong>
                           <div id="mensaje_registro_depositos_manuales" class="errores"></div>
                         </div>
             		  </div>
-            		  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		  <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="identificacion_dsc" name="identificacion_dsc" value="0"> Identificación DSC </strong>
                           <div id="mensaje_identificacion_dsc" class="errores"></div>
@@ -306,13 +306,13 @@
                           <div id="mensaje_atencion_refinanciamiento_reestructuracion" class="errores"></div>
                         </div>
             		  </div>
-            		   <div class="col-xs-12 col-md-4 col-md-4 ">
+            		   <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="claves" name="claves" value="0"> Claves</strong>
                           <div id="mensaje_claves" class="errores"></div>
                         </div>
             		  </div>
-            		  <div class="col-xs-12 col-md-4 col-md-4 ">
+            		  <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="consultas_varias" name="consultas_varias" value="0"> Consultas Varias</strong>
                           <div id="mensaje_consultas_varias" class="errores"></div>

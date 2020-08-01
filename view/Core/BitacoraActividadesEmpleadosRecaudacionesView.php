@@ -78,7 +78,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("ffspUsuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Créditos</li>
+        <li class="active">Recaudaciones</li>
       </ol>
     </section>   
 
@@ -90,9 +90,9 @@
             </div>        
   		<div class="box-body">
   		
-			<form id="frm_bitacora_creditos" action="<?php echo $helper->url("BitacoraActividadesEmpleadosCreditos","index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+			<form id="frm_bitacora_recaudaciones" action="<?php echo $helper->url("BitacoraActividadesEmpleadosRecaudaciones","index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
            	 <div class="row">
-        		      <input type="hidden" name="id_bitacora_actividades_empleados_creditos" id="id_bitacora_actividades_empleados_creditos" value="0" />
+        		      <input type="hidden" name="id_bitacora_actividades_empleados_recaudaciones" id="id_bitacora_actividades_empleados_recaudaciones" value="0" />
         		      <div class="col-xs-12 col-md-3 col-md-3">
             		    <div class="form-group">
                           <label for="id_empleados" class="control-label">Empleado:</label>
@@ -148,26 +148,26 @@
   		   	 <div class="row">
         	  		    <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="creditos" name="creditos" value="0"> Creditos </strong>
-                          <div id="mensaje_creditos" class="errores"></div>
-                        </div>
-            		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
-            		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="cesantia" name="cesantia" value="0"> Cesantias </strong>
+                          <strong><input class="seleccionado" type="checkbox" id="cesantia" name="cesantia" value="0"> Cesantía </strong>
                           <div id="mensaje_cesantia" class="errores"></div>
                         </div>
             		  </div>
             		      <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="desafiliacion" name="desafiliacion" value="0"> Desafiliacion </strong>
+                          <strong><input class="seleccionado" type="checkbox" id="desafiliacion" name="desafiliacion" value="0"> Desafiliación </strong>
                           <div id="mensaje_desafiliacion" class="errores"></div>
                         </div>
             		  </div>
             		      <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="superavit" name="superavit" value="0"> Superavit </strong>
-                          <div id="mensaje_superavit" class="errores"></div>
+                          <strong><input class="seleccionado" type="checkbox" id="creditos_en_mora" name="creditos_en_mora" value="0"> Creditos en Mora </strong>
+                          <div id="mensaje_creditos_en_mora" class="errores"></div>
+                        </div>
+            		  </div>
+            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="aportes" name="aportes" value="0"> Aportes </strong>
+                          <div id="mensaje_aportes" class="errores"></div>
                         </div>
             		  </div>
             		      <div class="col-xs-12 col-md-3 col-md-3 ">
@@ -176,13 +176,70 @@
                           <div id="mensaje_diferimiento" class="errores"></div>
                         </div>
             		  </div>
-            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+         		  </div>	
+			      </div>
+    	</div>
+    		<div class="box box-default">
+           	<div class="box-header with-border">
+      			<h3 class="box-title">Trabajo Ejecutado</h3>      			
+            </div>        
+  		<div class="box-body">
+  		   	 <div class="row">
+        	  		    <div class="col-xs-12 col-md-3 col-md-3 ">
             		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="refinanciamiento_reestructuracion" name="refinanciamiento_reestructuracion" value="0"> Refinanciamiento Reestructuracion </strong>
-                          <div id="mensaje_refinanciamiento_reestructuracion" class="errores"></div>
+                          <strong><input class="seleccionado" type="checkbox" id="moras" name="moras" value="0"> Moras </strong>
+                          <div id="mensaje_moras" class="errores"></div>
                         </div>
             		  </div>
-        		  </div>	
+            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="credito" name="credito" value="0"> Crédito </strong>
+                          <div id="mensaje_credito" class="errores"></div>
+                        </div>
+            		  </div>
+            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="aporte" name="aporte" value="0"> Aporte </strong>
+                          <div id="mensaje_aporte" class="errores"></div>
+                        </div>
+            		  </div>
+            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="envio_archivo_entidad_patronal" name="envio_archivo_entidad_patronal" value="0"> Envio Archivo Entidad Patronal </strong>
+                          <div id="mensaje_envio_archivo_entidad_patronal" class="errores"></div>
+                        </div>
+            		  </div>
+            		      <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="recepcion_archivo_entidad_patronal" name="recepcion_archivo_entidad_patronal" value="0"> Recepción Archivo Entidad Patronal </strong>
+                          <div id="mensaje_diferimiento" class="errores"></div>
+                        </div>
+            		  </div>
+            		    <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="carga_archivo_banco" name="carga_archivo_banco" value="0"> Carga Archivo Banco </strong>
+                          <div id="mensaje_carga_archivo_banco" class="errores"></div>
+                        </div>
+            		  </div>  
+            		  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="carga_archivo_sistema" name="carga_archivo_sistema" value="0"> Carga Archivo Sistema </strong>
+                          <div id="mensaje_carga_archivo_sistema" class="errores"></div>
+                        </div>
+            		  </div>
+            		  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="registro_depositos_manuales" name="registro_depositos_manuales" value="0"> Registro Depositos Manuales </strong>
+                          <div id="mensaje_registro_depositos_manuales" class="errores"></div>
+                        </div>
+            		  </div>
+            		  <div class="col-xs-12 col-md-3 col-md-3 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="identificacion_dsc" name="identificacion_dsc" value="0"> Identificación DSC </strong>
+                          <div id="mensaje_identificacion_dsc" class="errores"></div>
+                        </div>
+            		  </div>
+         		  </div>	
 			      </div>
     	</div>
     		<div class="box box-danger">
@@ -199,8 +256,8 @@
             		  </div>
             		  	  <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
-                          <label for="otras_actividades" class="control-label">Otras Actividades Desarrolladas:</label>.
-                            <input  type="text" class="form-control" id="otras_actividades" name="otras_actividades" value=""  placeholder="Actividades" required />
+                          <label for="otras_actividades_desarrolladas" class="control-label">Otras Actividades Desarrolladas:</label>.
+                            <input  type="text" class="form-control" id="otras_actividades_desarrolladas" name="otras_actividades_desarrolladas" value=""  placeholder="Actividades" required />
                         </div>
             		  </div>
         		  </div>	
@@ -215,26 +272,8 @@
   		   	 <div class="row">
         	  		    <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="atencion_creditos" name="atencion_creditos" value="0"> Créditos</strong>
-                          <div id="mensaje_atencion_creditos" class="errores"></div>
-                        </div>
-            		  </div>
-            		   <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="entrega_documentos_creditos" name="entrega_documentos_creditos" value="0"> Entrega Documentos Créditos</strong>
-                          <div id="mensaje_entrega_documentos_creditos" class="errores"></div>
-                        </div>
-            		  </div>
-            		     <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="atencion_cesantias" name="atencion_cesantias" value="0"> Cesantías</strong>
                           <div id="mensaje_atencion_cesantias" class="errores"></div>
-                        </div>
-            		  </div>
-            		   <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="entrega_documentos_cesantias" name="entrega_documentos_cesantias" value="0"> Entrega Documentos Pago Cesantías</strong>
-                          <div id="mensaje_entrega_documentos_cesantias" class="errores"></div>
                         </div>
             		  </div>
             		   <div class="col-xs-12 col-md-6 col-md-6 ">
@@ -243,40 +282,28 @@
                           <div id="mensaje_atencion_desafiliaciones" class="errores"></div>
                         </div>
             		  </div>
+            		     <div class="col-xs-12 col-md-6 col-md-6 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="atencion_creditos_en_mora" name="atencion_creditos_en_mora" value="0"> Créditos en Mora</strong>
+                          <div id="mensaje_atencion_cesantias" class="errores"></div>
+                        </div>
+            		  </div>
             		   <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="entrega_documentos_desafiliaciones" name="entrega_documentos_desafiliaciones" value="0"> Entrega Documentos Desafiliaciones</strong>
-                          <div id="mensaje_entrega_documentos_desafiliaciones" class="errores"></div>
+                          <strong><input class="seleccionado" type="checkbox" id="atencion_aportes" name="atencion_aportes" value="0"> Aportes</strong>
+                          <div id="mensaje_atencion_aportes" class="errores"></div>
                         </div>
             		  </div>
-            		  <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="atencion_superavit" name="atencion_superavit" value="0"> Superavit</strong>
-                          <div id="mensaje_atencion_superavit" class="errores"></div>
-                        </div>
-            		  </div>
-            		  <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="entrega_documentos_superavit" name="entrega_documentos_superavit" value="0"> Entrega Documentos Pagos Superavit</strong>
-                          <div id="mensaje_entrega_documentos_superavit" class="errores"></div>
-                        </div>
-            		  </div>
-            		  	  <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="atencion_refinanciamiento_reestructuracion" name="atencion_refinanciamiento_reestructuracion" value="0"> Refinanciamiento - Reestructuración</strong>
-                          <div id="mensaje_atencion_refinanciamiento_reestructuracion" class="errores"></div>
-                        </div>
-            		  </div>
-            		  	  <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <strong><input class="seleccionado" type="checkbox" id="entrega_documentos_refinanciamiento_reestructuracion" name="entrega_documentos_refinanciamiento_reestructuracion" value="0"> Entrega Documentos Refinanciamiento - Reestructuración</strong>
-                          <div id="mensaje_entrega_documentos_refinanciamiento_reestructuracion" class="errores"></div>
-                        </div>
-            		  </div>
-            		    <div class="col-xs-12 col-md-4 col-md-4 ">
+            		   <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <strong><input class="seleccionado" type="checkbox" id="atencion_diferimiento" name="atencion_diferimiento" value="0"> Diferimiento</strong>
                           <div id="mensaje_atencion_diferimiento" class="errores"></div>
+                        </div>
+            		  </div>
+            		   <div class="col-xs-12 col-md-6 col-md-6 ">
+            		    <div class="form-group">
+                          <strong><input class="seleccionado" type="checkbox" id="atencion_refinanciamiento_reestructuracion" name="atencion_refinanciamiento_reestructuracion" value="0"> Refinanciamiento y Reestructuracion</strong>
+                          <div id="mensaje_atencion_refinanciamiento_reestructuracion" class="errores"></div>
                         </div>
             		  </div>
             		   <div class="col-xs-12 col-md-4 col-md-4 ">
@@ -301,7 +328,7 @@
     			    <div class="col-xs-12 col-md-12 col-lg-12 " style="text-align: center; ">
         	   		    <div class="form-group">
     	                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
-    	                  <a href="<?php echo $helper->url("BitacoraActividadesEmpleadosCreditos","Index"); ?>" class="btn btn-danger">CANCELAR</a>
+    	                  <a href="<?php echo $helper->url("BitacoraActividadesEmpleadosRecaudaciones","Index"); ?>" class="btn btn-danger">CANCELAR</a>
 	                    </div>
 	              </div>        		    
     		    </div>
@@ -322,17 +349,17 @@
 			<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
 			</div> 
     		<div class="col-xs-12 col-md-4 col-lg-4 ">
-			<input type="date" value="" class="form-control" id="fecha_registro_desde" name="fecha_registro_desde" onchange="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
+			<input type="date" value="" class="form-control" id="fecha_registro_desde" name="fecha_registro_desde" onchange="consultaBitacoraRecaudaciones(1)" placeholder="Buscar.."/>
 			</div> 
     		<div class="col-xs-12 col-md-4 col-lg-4 ">
-			<input type="date" value="" class="form-control" id="fecha_registro_hasta" name="fecha_registro_hasta" onchange="consultaBitacoraCreditos(1)" placeholder="Buscar.."/>
+			<input type="date" value="" class="form-control" id="fecha_registro_hasta" name="fecha_registro_hasta" onchange="consultaBitacoraRecaudaciones(1)" placeholder="Buscar.."/>
 			</div>
 			<div class="col-xs-12 col-md-1 col-lg-1 ">
 				<button onclick="fnMostrarReporte()" id="btnReporte" class="btn btn-default no-padding"><input type="image" src="view/images/pdf.png" alt="Submit" width="50" height="34" formtarget="_blank" class="btn btn-default" title="Reporte Selección"></button>
 		   	</div> 
     	 	</div> 
     		</div>            	
-            <div id="bitacora_creditos_registrados" ></div>
+            <div id="bitacora_recaudaciones_registrados" ></div>
             <div id="divLoaderPage" ></div>                     	
             </div> 	
           
@@ -355,7 +382,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-   <script src="view/Core/js/BitacoraActividadesEmpleadosCreditos.js?0.28"></script> 
+   <script src="view/Core/js/BitacoraActividadesEmpleadosRecaudaciones.js?0.04"></script> 
        
        
 

@@ -118,11 +118,11 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                                '$_id_empleados',
                                 $_id_participes,
                                '$_creditos',
-                               '$_refinanciamiento_reestructuracion',
                                '$_cesantia',
                                '$_desafiliacion',
                                '$_superavit',
                                '$_diferimiento',
+                               '$_refinanciamiento_reestructuracion',
                                '$_elaboracion_memorando',
                                '$_otras_actividades',
                                '$_atencion_creditos',
@@ -141,6 +141,8 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                                '$_id_bitacora_actividades_empleados_creditos'";
                 $bitacora_creditos->setFuncion($funcion);
                 $bitacora_creditos->setParametros($parametros);
+                
+                //echo "SELECT ". $funcion." ( ".$parametros." )"; die();
                 $resultado = $bitacora_creditos->llamafuncionPG();
                 
                 if(is_int((int)$resultado[0])){
@@ -373,7 +375,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
             
             $limit = " LIMIT   '$per_page' OFFSET '$offset'";
             
-            $resultSet=$bitacora_creditos->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+            $resultSet=$bitacora_creditos->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
             $total_pages = ceil($cantidadResult/$per_page);
             
             if($cantidadResult > 0)
@@ -771,7 +773,7 @@ class BitacoraActividadesEmpleadosCreditosController extends ControladorBase{
                 $html.='<td style="text-align: center; font-size: 10px;">'.$i.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->fecha_registro.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->desde.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->fecha_registro.'</td>';
+                $html.='<td style="text-align: center; font-size: 10px;">'.$res->hasta.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->cedula_participes.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->nombres_participes.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$creditos.'</td>';

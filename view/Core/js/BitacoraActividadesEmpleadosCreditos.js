@@ -88,14 +88,44 @@ $("#Guardar").on("click",function(event){
 		console.log(err);
 		
 	}).always(function(){
-		$("#id_bitacora_actividades_empleados_creditos").val(0);
-		$("#hdn_id_participes").val(0);
-		document.getElementById("frm_bitacora_creditos").reset();	
+		
+		setearElementos();	
 		consultaBitacoraCreditos();
 	})
 
 	event.preventDefault()
 })
+
+var setearElementos	= function(){
+	
+	document.getElementById("frm_bitacora_creditos").reset();
+	
+	$("#id_bitacora_actividades_empleados_creditos").val(0);
+	$("#hdn_id_participes").val(0);
+	$("#fecha_registro").val("");
+	$("#creditos").val("0");
+	$("#cesantia").val("0");
+	$("#desafiliacion").val("0");
+	$("#superavit").val("0");
+	$("#diferimiento").val("0");
+	$("#refinanciamiento_reestructuracion").val("0");
+	$("#elaboracion_memorando").val("");
+	$("#otras_actividades").val("");
+	$("#atencion_creditos").val("0");
+	$("#entrega_documentos_creditos").val("0");
+	$("#atencion_cesantias").val("0");
+	$("#entrega_documentos_cesantias").val("0");
+	$("#atencion_desafiliaciones").val("0");
+	$("#entrega_documentos_desafiliaciones").val("0");
+	$("#atencion_superavit").val("0");
+	$("#entrega_documentos_superavit").val("0");
+	$("#atencion_refinanciamiento_reestructuracion").val("0");
+	$("#entrega_documentos_refinanciamiento_reestructuracion").val("0");
+	$("#atencion_diferimiento").val("0");
+	$("#claves").val("0");
+	$("#consultas_varias").val("0");
+	
+}
 
 
 function editBitacoraCreditos(id = 0){

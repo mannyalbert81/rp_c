@@ -355,7 +355,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-   <script src="view/Core/js/BitacoraActividadesEmpleadosCreditos.js?0.24"></script> 
+   <script src="view/Core/js/BitacoraActividadesEmpleadosCreditos.js?0.26"></script> 
        
        
 

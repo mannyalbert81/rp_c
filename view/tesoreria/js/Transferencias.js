@@ -23,6 +23,13 @@ function init(){
 	$("#chk_pago_parcial_transferencias").on( 'change', function() {
 		fnValidaPagoParcial(this);
 	});	
+	
+	$('#valor_parcial_transferencias').inputmask({
+	  alias: 'numeric', 
+	  allowMinus: false,  
+	  digits: 2, 
+	  max: 999999.99
+	});
 		
 	/*$("#fecha_transferencia").inputmask("datetime",{
 	     mask: "y-2-1", 

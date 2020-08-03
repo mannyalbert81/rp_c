@@ -613,10 +613,9 @@ function IngresarTransaccion(){
 		if( x.estatus != undefined ){
 			
 			if( x.estatus == "OK"){
+				
 				var stext = x.mensaje;
-				if(x.xml != ""){
-					stext += x.xml;
-				}
+				
 				//swal({title:"TRANSACCION OK",text:stext,icon:"success"}).then( isValidate => { if(isValidate){ setTimeout(function(){location.reload();},2000); } } );
 				swal({title:"TRANSACCION OK",text:stext,icon:"success",closeOnClickOutside: false}).then( isValidate => { if(isValidate){ setTimeout(function(){location.reload();},8000);  } } );				
 				let loteUrl = $("#id_lote").val();

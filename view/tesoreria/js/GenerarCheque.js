@@ -49,6 +49,12 @@ function init(){
 		fnValidaPagoParcial(this);
 	});	
 	
+	$('#valor_parcial_cheque').inputmask({
+	  alias: 'numeric', 
+	  allowMinus: false,  
+	  digits: 2, 
+	  max: 999999.99
+	});	
 	
 }
 

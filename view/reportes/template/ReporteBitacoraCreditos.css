@@ -24,3 +24,10 @@ tr.1 {
 	background-color: #90b584;
 }
 
+table.2 {
+   width: 800px;
+   font-size:12px;
+   border-collapse: collapse;
+   caption-side: top;
+   
+}

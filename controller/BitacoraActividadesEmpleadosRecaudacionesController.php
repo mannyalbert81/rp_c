@@ -745,9 +745,12 @@ class BitacoraActividadesEmpleadosRecaudacionesController extends ControladorBas
             $html.='<table class="1" cellspacing="0" style="width:100px;" border="1">';
             $html.='<tr class="1">';
             $html.='<th style="text-align: center;  font-size: 10px;">#</th>';
+            /*
             $html.='<th style="text-align: center;  font-size: 10px;">Fecha</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Desde</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Hasta</th>';
+            */
+            
             $html.='<th style="text-align: center;  font-size: 10px;">Cédula</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Participes</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Revisión Cesantía</th>';
@@ -808,9 +811,11 @@ class BitacoraActividadesEmpleadosRecaudacionesController extends ControladorBas
                 
                 $html.='<tr>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$i.'</td>';
+                /*
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->fecha_registro.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->desde.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->hasta.'</td>';
+                */
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->cedula_participes.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->nombres_participes.'</td>';
                 $html.='<td style="text-align: center; font-size: 20px;">'.$cesantia.'</td>';
@@ -846,6 +851,10 @@ class BitacoraActividadesEmpleadosRecaudacionesController extends ControladorBas
             $datos_reporte['DETALLE']= $html;
             $datos_reporte['nombres_empleados']=$bitacora_detalle[0]->nombres_empleados;
             $datos_reporte['nombre_cargo']=$bitacora_detalle[0]->nombre_cargo;
+            
+            $datos_reporte['fecha_reg']=$bitacora_detalle[0]->fecha_registro;
+            $datos_reporte['desde_reg']=$bitacora_detalle[0]->desde;
+            $datos_reporte['hasta_reg']=$bitacora_detalle[0]->hasta;
             
             
      

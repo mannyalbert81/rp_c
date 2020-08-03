@@ -259,7 +259,7 @@ if (diferido=="" || diferido=="0"){
 	diferido=1;
 }
 
-if ( fecha!="" && monto!="" && diferido!="" && monto>0 && diferido<12){
+if ( fecha!="" && monto!="" && diferido!="" && monto>0 && diferido<=12){
 	
 	$.ajax({
 	    url: 'index.php?controller=AvancesEmpleados&action=ValidarMonto',

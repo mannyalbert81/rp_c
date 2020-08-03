@@ -156,7 +156,7 @@ class ModeloBase extends EntidadBase{
     }
     
     public function llamarconsultaPG($query){
-        $resultSet=null;
+        $resultSet=array();
         try{
             
             $result=pg_query($this->con(), $query);                   

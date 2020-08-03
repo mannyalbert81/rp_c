@@ -43,90 +43,7 @@ class PeriodoController extends ControladorBase{
 	}
 	
 
-	
-	
-/*	public function InsertaPeriodo(){
-	    
-	    session_start();
-		
-		$periodo = new PeriodoModel();
-		
-		$nombre_controladores = "Periodo";
-		$id_rol= $_SESSION['id_rol'];
-		$resultPer = $periodo->getPermisosEditar("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
-			
-		if (!empty($resultPer)){	
-		    
-		    $_id_periodo = (isset($_POST["id_periodo"])) ? $_POST["id_periodo"] : "0";
-		    $_year_periodo = (isset($_POST["year_periodo"])) ? $_POST["year_periodo"] : 0 ;
-		    $_mes_periodo = (isset($_POST["mes_periodo"])) ? $_POST["mes_periodo"] : 0 ;
-		    $_id_tipo_cierre = (isset($_POST["id_tipo_cierre"])) ? $_POST["id_tipo_cierre"] : 0 ;
-		    $_id_estado = (isset($_POST["id_estado"])) ? $_POST["id_estado"] : 0 ;
-		    
 
-			$funcion = "ins_con_periodo";
-			$respuesta = 0 ;
-			$mensaje = ""; 
-			
-	
-			
-			if($_id_periodo == 0){
-			    
-			    $parametros = " '$_year_periodo','$_mes_periodo','$_id_tipo_cierre','$_id_estado'";
-			    $periodo->setFuncion($funcion);
-			    $periodo->setParametros($parametros);
-			    $resultado = $periodo->llamafuncionPG();
-			    
-			    if(is_int((int)$resultado[0])){
-			        $respuesta = $resultado[0];
-			        $mensaje = "Periodo Ingresado Correctamente";
-			    }	
-			    
-			
-			    
-			}elseif ($_id_periodo > 0){
-			    
-			    $parametros = " '$_year_periodo','$_mes_periodo','$_id_tipo_cierre','$_id_estado'";
-			    $periodo->setFuncion($funcion);
-			    $periodo->setParametros($parametros);
-			    $resultado = $periodo->llamafuncionPG();
-			    
-			    if(is_int((int)$resultado[0])){
-			        $respuesta = $resultado[0];
-			        $mensaje = "Periodo Actualizado Correctamente";
-			    }	
-			    
-			    
-			}
-			
-			
-	
-			//print_r($respuesta);
-			
-	
-			if(is_int((int)$respuesta)){
-			    
-			    echo json_encode(array('respuesta'=>$respuesta,'mensaje'=>$mensaje));
-			    exit();
-			}
-			
-			echo "Error al Ingresar Periodo";
-			exit();
-			
-		}
-		else
-		{
-		    $this->view_Inventario("Error",array(
-					"resultado"=>"No tiene Permisos de Insertar Periodo"
-		
-			));
-		
-		
-		}
-		
-	}
-	*/
-	
 	public function AbrirPeriodo(){
 	    
 	    session_start();
@@ -146,7 +63,7 @@ class PeriodoController extends ControladorBase{
 	        $tablaest= "con_periodo,estado";
 	        $whereest= "con_periodo.id_estado = estado.id_estado
                         and estado.nombre_estado = 'ABIERTO'
-                        and con_periodo.year_periodo = con_periodo.year_periodo
+                        and con_periodo.anio_periodo = con_periodo.anio_periodo
                         and con_periodo.mes_periodo = con_periodo.mes_periodo
                         and con_periodo.id_tipo_cierre = 1
                         ";
@@ -158,7 +75,7 @@ class PeriodoController extends ControladorBase{
 	        if (empty($resultEst)){
 	        
 	            $_id_periodo = (isset($_POST["id_periodo"])) ? $_POST["id_periodo"] : "0";
-	            $_year_periodo = (isset($_POST["year_periodo"])) ? $_POST["year_periodo"] : 0 ;
+	            $_anio_periodo = (isset($_POST["anio_periodo"])) ? $_POST["anio_periodo"] : 0 ;
 	            $_mes_periodo = (isset($_POST["mes_periodo"])) ? $_POST["mes_periodo"] : 0 ;
 	            $_id_tipo_cierre = (isset($_POST["id_tipo_cierre"])) ? $_POST["id_tipo_cierre"] : 0 ;
 	            $_id_estado = (isset($_POST["id_estado"])) ? $_POST["id_estado"] : 0 ;
@@ -171,7 +88,7 @@ class PeriodoController extends ControladorBase{
 	             
 	            if($_id_periodo == 0){
 	                
-	                $parametros = " '$_year_periodo','$_mes_periodo','$_id_tipo_cierre','101'";
+	                $parametros = " '$_anio_periodo','$_mes_periodo','$_id_tipo_cierre','101'";
 	                $periodo->setFuncion($funcion);
 	                $periodo->setParametros($parametros);
 	                $resultado = $periodo->llamafuncionPG();
@@ -430,7 +347,7 @@ class PeriodoController extends ControladorBase{
 	    $periodo = new PeriodoModel();
 	    
 	    $where_to="";
-	    $columnas  = " id_periodo, year_periodo, mes_periodo, nombre_tipo_cierre, nombre_estado";
+	    $columnas  = " id_periodo, anio_periodo, mes_periodo, nombre_tipo_cierre, nombre_estado";
 	    
 	    $tablas    = "public.con_periodo INNER JOIN public.con_tipo_cierre ON con_tipo_cierre.id_tipo_cierre = con_periodo.id_tipo_cierre INNER JOIN public.estado ON estado.id_estado = con_periodo.id_estado";
 	    
@@ -511,7 +428,7 @@ class PeriodoController extends ControladorBase{
 	                $i++;
 	                $html.='<tr>';
 	                $html.='<td style="font-size: 14px;">'.$i.'</td>';
-	                $html.='<td style="font-size: 14px;">'.$res->year_periodo.'</td>';
+	                $html.='<td style="font-size: 14px;">'.$res->anio_periodo.'</td>';
 	                $html.='<td style="font-size: 14px;">'.strtoupper($meses[$res->mes_periodo-1]).'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_cierre.'</td>';
 	                $html.='<td style="font-size: 14px;">'.$res->nombre_estado.'</td>';

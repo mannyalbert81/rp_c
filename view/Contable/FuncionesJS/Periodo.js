@@ -14,12 +14,12 @@ $(document).ready(function(){
  */
 $("#frm_periodo").on("submit",function(event){
 	
-	let _year_periodo = document.getElementById('year_periodo').value;
+	let _anio_periodo = document.getElementById('anio_periodo').value;
 	let _mes_periodo = document.getElementById('mes_periodo').value;
 	var _id_tipo_cierre = document.getElementById('id_tipo_cierre').value;
 	var _id_estado = document.getElementById('id_estado').value;
 	var _id_periodo = document.getElementById('id_periodo').value;
-	var parametros = {year_periodo:_year_periodo,mes_periodo:_mes_periodo,id_tipo_cierre:_id_tipo_cierre,id_estado:_id_estado,id_periodo:_id_periodo}
+	var parametros = {anio_periodo:_anio_periodo,mes_periodo:_mes_periodo,id_tipo_cierre:_id_tipo_cierre,id_estado:_id_estado,id_periodo:_id_periodo}
 	
 	if(_id_tipo_cierre == 0){
 		$("#mensaje_id_tipo_cierre").text("Seleccione un Tipo").fadeIn("Slow");
@@ -61,12 +61,12 @@ $("#frm_periodo").on("submit",function(event){
 
 $("#btnCerrar").on("click",function(event){
 	
-	let _year_periodo = document.getElementById('year_periodo').value;
+	let _anio_periodo = document.getElementById('anio_periodo').value;
 	let _mes_periodo = document.getElementById('mes_periodo').value;
 	var _id_tipo_cierre = document.getElementById('id_tipo_cierre').value;
 	var _id_estado = document.getElementById('id_estado').value;
 	var _id_periodo = document.getElementById('id_periodo').value;
-	var parametros = {year_periodo:_year_periodo,mes_periodo:_mes_periodo,id_tipo_cierre:_id_tipo_cierre,id_estado:_id_estado,id_periodo:_id_periodo}
+	var parametros = {anio_periodo:_anio_periodo,mes_periodo:_mes_periodo,id_tipo_cierre:_id_tipo_cierre,id_estado:_id_estado,id_periodo:_id_periodo}
 	
 
 
@@ -116,12 +116,12 @@ $("#btnCerrar").on("click",function(event){
 })
 $("#btnAbrir").on("click",function(event){
 	
-	let _year_periodo = document.getElementById('year_periodo').value;
+	let _anio_periodo = document.getElementById('anio_periodo').value;
 	let _mes_periodo = document.getElementById('mes_periodo').value;
 	var _id_tipo_cierre = document.getElementById('id_tipo_cierre').value;
 	var _id_estado = document.getElementById('id_estado').value;
 	var _id_periodo = document.getElementById('id_periodo').value;
-	var parametros = {year_periodo:_year_periodo,mes_periodo:_mes_periodo,id_tipo_cierre:_id_tipo_cierre,id_estado:_id_estado,id_periodo:_id_periodo}
+	var parametros = {anio_periodo:_anio_periodo,mes_periodo:_mes_periodo,id_tipo_cierre:_id_tipo_cierre,id_estado:_id_estado,id_periodo:_id_periodo}
 	
 	if(_id_tipo_cierre == 0){
 		$("#mensaje_id_tipo_cierre").text("Seleccione un Tipo").fadeIn("Slow");
@@ -185,13 +185,13 @@ function editPeriodo(id = 0){
 		
 			
 			var array = datos.data[0];		
-			$("#year_periodo").val(array.year_periodo);			
+			$("#anio_periodo").val(array.anio_periodo);			
 			$("#mes_periodo").val(array.mes_periodo);
 			$("#id_tipo_cierre").val(array.id_tipo_cierre);
 			$("#id_estado").val(array.id_estado);
 			$("#id_periodo").val(array.id_periodo);
 			
-			$("html, body").animate({ scrollTop: $(year_periodo).offset().top-120 }, tiempo);			
+			$("html, body").animate({ scrollTop: $(anio_periodo).offset().top-120 }, tiempo);			
 		}
 		
 		
@@ -322,7 +322,7 @@ $("#id_estado").on("focus",function(){
 	$("#mensaje_id_estado").text("").fadeOut("");
 })
 
-$("#year_periodo").on("keyup",function(){
+$("#anio_periodo").on("keyup",function(){
 	
 	$(this).val($(this).val().toUpperCase());
 })
@@ -360,7 +360,7 @@ $("#id_tipo_cierre").on("focus",function(){
 	$("#mensaje_id_tipo_cierre").text("").fadeOut("");
 })
 
-$("#year_periodo").on("keyup",function(){
+$("#anio_periodo").on("keyup",function(){
 	
 	$(this).val($(this).val().toUpperCase());
 })

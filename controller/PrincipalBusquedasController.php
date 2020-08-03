@@ -11,14 +11,15 @@ class PrincipalBusquedasController extends ControladorBase{
 	public function index(){
 	
 	    session_start();
-	    
+		echo "llego"; 
+		die("llego");	    
 	    $busquedas = new PrincipalBusquedasModel();
 	    		
 		if( empty( $_SESSION['usuario_usuarios'] ) ){
 		    $this->redirect("Usuarios","sesion_caducada");
 		    exit();
 		}
-		
+
 		$nombre_controladores = "admBusqueda";
 		$id_rol= $_SESSION['id_rol'];
 		$resultPer = $busquedas->getPermisosVer(" controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );			

@@ -2712,33 +2712,6 @@ class SimulacionCreditosController extends ControladorBase
                 );
         }
         
-        /*
-        $total = 0;
-        $total1 = 0;
-        foreach ($resultAmortizacion as $res) {
-
-            $res['saldo_inicial'] = number_format((float) $res['saldo_inicial'], 2, ".", "");
-            $res['interes'] = number_format((float) $res['interes'], 2, ".", "");
-            $total += $res['interes'];
-            $res['amortizacion'] = number_format((float) $res['amortizacion'], 2, ".", "");
-            $res['pagos'] = number_format((float) $res['pagos'], 2, ".", "");
-            $total1 += $res['pagos'];
-        }
-        $total = round($total, 2);
-        $total1 = round($total1, 2);
-        $num = $monto_credito - ($total1 - $total);
-        $num = round($num, 2);
-        $len = sizeof($resultAmortizacion);
-        $res['amortizacion'] = round($res['amortizacion'], 2);
-        $res['interes'] = round($res['interes'], 2);
-        $res['pagos'] = round($res['pagos'], 2);
-        $resultAmortizacion[$len - 1]['pagos'] = $resultAmortizacion[$len - 1]['pagos'] + $num;
-        $resultAmortizacion[$len - 1]['amortizacion'] = $resultAmortizacion[$len - 1]['amortizacion'] + $resultAmortizacion[$len - 1]['saldo_inicial'];
-        $resultAmortizacion[$len - 1]['saldo_inicial'] = 0.00;
-        $total = 0;
-        $total1 = 0;
-        */
-
         $monto_neto = $monto_credito - $interes_consecion;
         $funcion = "ins_core_creditos";
         $parametros = $numero_credito . ',
@@ -2824,7 +2797,8 @@ class SimulacionCreditosController extends ControladorBase
 
         $insert = $credito->executeNonQuery($query);
 
-        if ($con_garante == "true") {
+        if ($con_garante == "true") 
+        {
             $columnas = "id_participes";
             $tablas = "core_participes";
             $where = "cedula_participes='" . $id_garante . "'";
@@ -2838,17 +2812,25 @@ class SimulacionCreditosController extends ControladorBase
 
             $insert = $credito->executeNonQuery($query);
         }
+        
+        //buscar parametros para desglose de amortizacion
+        $datosDesglosePagos = $this->obtenerTipoPagosAmortizacion($tipo_credito);
 
-        foreach ($resultAmortizacion as $res) {
-
+        foreach ($resultAmortizacion as $res) 
+        {
             $fecha_pago = $res['fecha_pago'];
             $num_cuota = $res['pagos_trimestrales'];
             $amortizacion = $res['amortizacion'];
             $intereses = $res['interes'];
             $saldo_inicial = $res['saldo_inicial'];
             $desgravamen = $res['desgravamen'];
+            
+            $incendios  = 0.00;
             if ($tipo_credito == "PH")
+            {
                 $incendios = $res['seguro_incendios'];
+            }
+                
             $dividendo = $res['pagos'];
             $total_valor = $amortizacion + $intereses + $desgravamen;
             $funcion = "ins_core_tabla_amortizacion";
@@ -2891,8 +2873,17 @@ class SimulacionCreditosController extends ControladorBase
             $resultado_id_tabla = $credito->llamarconsultaPG($queryInsert);
 
             $id_tabla_amortizacion = $resultado_id_tabla[0];
-
-            $this->DesgloseTablaAmortizacion($id_tabla_amortizacion, $tipo_credito);
+            
+            //setear valores de amortizacion dc 2020/08/03
+            $valores = array( 'capital'=> $amortizacion,
+                'interes'=>$intereses,
+                'desgravamen'=>$desgravamen,
+                'mora'=>0.00,
+                'incendios'=>$incendios);
+            
+            //trabajar con el desgloge de pagos-amortizacion
+            $this->generarDesglosePagos( $datosDesglosePagos, $valores, $id_tabla_amortizacion);
+            //$this->DesgloseTablaAmortizacion($id_tabla_amortizacion, $tipo_credito);
 
             $funcion = "ins_core_tabla_amortizacion_historico";
             $credito->setFuncion($funcion);
@@ -2905,6 +2896,7 @@ class SimulacionCreditosController extends ControladorBase
             $resultado = $credito->Insert();
             $errores = ob_get_clean();
             $errores = trim($errores);
+            
             if (! (empty($errores))) {
                 $credito->endTran('ROLLBACK');
                 $respuesta = false;

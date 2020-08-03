@@ -11,8 +11,7 @@ class PrincipalBusquedasController extends ControladorBase{
 	public function index(){
 	
 	    session_start();
-		echo "llego"; 
-		die("llego");	    
+		    
 	    $busquedas = new PrincipalBusquedasModel();
 	    		
 		if( empty( $_SESSION['usuario_usuarios'] ) ){

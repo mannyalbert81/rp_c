@@ -441,7 +441,7 @@
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.29"></script>
+	<script type="text/javascript" src="view/tesoreria/js/GenerarCheque.js?0.30"></script>
 
   </body>
 </html>  

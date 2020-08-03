@@ -117,7 +117,8 @@ class TesCuentasPagarSRController extends ControladorBase{
 	    $where1    = " bb.nombre_tipo_proveedores in( 'PAGO PROVEEDORES', 'EMPLEADO' )";
 	    $id1       = " aa.nombre_proveedores";
 	    
-	    if( strlen($busqueda) > 0 ){
+	    if( strlen($busqueda) > 0 )
+	    {
 	        $where1 .= " AND ( aa.identificacion_proveedores ILIKE '$busqueda%' OR aa.nombre_proveedores ILIKE '%$busqueda%' ) ";
 	    }
 	    

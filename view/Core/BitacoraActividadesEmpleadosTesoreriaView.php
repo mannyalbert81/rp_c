@@ -78,7 +78,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo $helper->url("ffspUsuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Sistemas</li>
+        <li class="active">Tesorería</li>
       </ol>
     </section>   
 
@@ -90,9 +90,9 @@
             </div>        
   		<div class="box-body">
   		
-			<form id="frm_bitacora_sistemas" action="<?php echo $helper->url("BitacoraActividadesEmpleadosSistemas","index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
+			<form id="frm_bitacora_tesoreria" action="<?php echo $helper->url("BitacoraActividadesEmpleadosTesoreria","index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
          	 <div class="row">
-        		      <input type="hidden" name="id_bitacora_actividades_empleados_sistemas" id="id_bitacora_actividades_empleados_sistemas" value="0" />
+        		      <input type="hidden" name="id_bitacora_actividades_empleados_tesoreria" id="id_bitacora_actividades_empleados_tesoreria" value="0" />
         		      <div class="col-xs-12 col-md-3 col-md-3">
             		    <div class="form-group">
                           <label for="id_empleados" class="control-label">Empleado:</label>
@@ -172,11 +172,17 @@
             		  </div>
             		    <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
-                          <label for="sistemas" class="control-label">Sistemas:</label>.
-                            <input  type="text" class="form-control" id="sistemas" name="sistemas" value=""  placeholder="Sistemas" required />
+                          <label for="biess" class="control-label">Biess:</label>.
+                            <input  type="text" class="form-control" id="biess" name="biess" value=""  placeholder="Biess" required />
                         </div>
             		  </div>
             		    <div class="col-xs-12 col-md-6 col-md-6 ">
+            		    <div class="form-group">
+                          <label for="sb" class="control-label">S. B.:</label>.
+                            <input  type="text" class="form-control" id="sb" name="sb" value=""  placeholder="S. B." required />
+                        </div>
+            		  </div>
+            		    <div class="col-xs-12 col-md-12 col-md-12 ">
             		    <div class="form-group">
                           <label for="otras_actividades" class="control-label">Otras Actividades:</label>.
                             <input  type="text" class="form-control" id="otras_actividades" name="otras_actividades" value=""  placeholder="Otras Actividades" required />
@@ -221,7 +227,7 @@
     			    <div class="col-xs-12 col-md-12 col-lg-12 " style="text-align: center; ">
         	   		    <div class="form-group">
     	                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
-    	                  <a href="<?php echo $helper->url("BitacoraActividadesEmpleadosSistemas","Index"); ?>" class="btn btn-danger">CANCELAR</a>
+    	                  <a href="<?php echo $helper->url("BitacoraActividadesEmpleadosTesoreria","Index"); ?>" class="btn btn-danger">CANCELAR</a>
 	                    </div>
 	              </div>        		    
     		    </div>
@@ -239,20 +245,20 @@
            	<div class="pull-right" style="margin-right:10px;">
            	<div class="col-xs-12 col-md-12 col-lg-12 ">
 			<div class="col-xs-12 col-md-3 col-lg-3 ">
-			<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaBitacoraSistemas(1)" placeholder="Buscar.."/>
+			<input type="text" value="" class="form-control" id="buscador" name="buscador" onkeyup="consultaBitacoraTesoreria(1)" placeholder="Buscar.."/>
 			</div> 
     		<div class="col-xs-12 col-md-4 col-lg-4 ">
-			<input type="date" value="" class="form-control" id="fecha_registro_desde" name="fecha_registro_desde" onchange="consultaBitacoraSistemas(1)" placeholder="Buscar.."/>
+			<input type="date" value="" class="form-control" id="fecha_registro_desde" name="fecha_registro_desde" onchange="consultaBitacoraTesoreria(1)" placeholder="Buscar.."/>
 			</div> 
     		<div class="col-xs-12 col-md-4 col-lg-4 ">
-			<input type="date" value="" class="form-control" id="fecha_registro_hasta" name="fecha_registro_hasta" onchange="consultaBitacoraSistemas(1)" placeholder="Buscar.."/>
+			<input type="date" value="" class="form-control" id="fecha_registro_hasta" name="fecha_registro_hasta" onchange="consultaBitacoraTesoreria(1)" placeholder="Buscar.."/>
 			</div>
 			<div class="col-xs-12 col-md-1 col-lg-1 ">
 				<button onclick="fnMostrarReporte()" id="btnReporte" class="btn btn-default no-padding"><input type="image" src="view/images/pdf.png" alt="Submit" width="50" height="34" formtarget="_blank" class="btn btn-default" title="Reporte Selección"></button>
 		   	</div> 
     	 	</div> 
     		</div>            	
-            <div id="bitacora_sistemas_registrados" ></div>
+            <div id="bitacora_tesoreria_registrados" ></div>
             <div id="divLoaderPage" ></div>                     	
             </div> 	
           
@@ -275,7 +281,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-   <script src="view/Core/js/BitacoraActividadesEmpleadosSistemas.js?0.02"></script> 
+   <script src="view/Core/js/BitacoraActividadesEmpleadosTesoreria.js?0.01"></script> 
        
        
 

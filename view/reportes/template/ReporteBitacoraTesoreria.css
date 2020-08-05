@@ -1,0 +1,33 @@
+  	.htexto1{		
+	font-size: 17px;
+	font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+  	.htexto2{		
+	font-size: 14px;
+	font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+  	.htexto3{		
+	font-size: 12px;
+	font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+table.1 {
+   width: 800px;
+   font-size:14px;
+   border-collapse: collapse;
+   caption-side: top;
+   text-align : center;
+   font-family: Tahoma, Verdana, Segoe, sans-serif;
+   
+}
+tr.1 {
+	color: #fff;
+	background-color: #90b584;
+}
+
+table.2 {
+   width: 800px;
+   font-size:12px;
+   border-collapse: collapse;
+   caption-side: top;
+   
+}

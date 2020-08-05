@@ -103,6 +103,7 @@ $controladores=$_SESSION['controladores'];
            	    <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosCreditos",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosCreditos&action=index"><i class="fa fa-circle-o"></i>Bitácora Créditos</a></li>
            	    <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosRecaudaciones",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosRecaudaciones&action=index"><i class="fa fa-circle-o"></i>Bitácora Recaudaciones</a></li>
            	    <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosSistemas",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosSistemas&action=index"><i class="fa fa-circle-o"></i>Bitácora Sistemas</a></li>
+                <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosTesoreria",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosTesoreria&action=index"><i class="fa fa-circle-o"></i>Bitácora Tesorería</a></li>
              </ul>
             </li>
         

@@ -53,7 +53,7 @@ class BitacoraActividadesEmpleadosSistemasController extends ControladorBase{
     }
     
     
-    public function InsertaBitacoraCreditos(){
+    public function InsertaBitacoraSistemas(){
          session_start();
         
          $bitacora_sistemas = new CreditosModel();
@@ -197,7 +197,7 @@ class BitacoraActividadesEmpleadosSistemasController extends ControladorBase{
         
         session_start();
         $bitacora_sistemas = new BitacoraSistemasModel();
-        $nombre_controladores = "BitacoraActividadesEmpleadosCreditos";
+        $nombre_controladores = "BitacoraActividadesEmpleadosSistemas";
         $id_rol= $_SESSION['id_rol'];
         $resultPer = $bitacora_sistemas->getPermisosBorrar("  controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
         
@@ -548,7 +548,7 @@ class BitacoraActividadesEmpleadosSistemasController extends ControladorBase{
                     a.auditoria,
                     a.sistemas  ,
                     a.otras_actividades,
-                    a.motivo_atencion
+                    a.motivo_atencion,
                     d.nombre_cargo";
         $tablas  = "core_bitacora_actividades_empleados_sistemas a
                     inner join empleados b on a.id_empleados = b.id_empleados
@@ -595,8 +595,6 @@ class BitacoraActividadesEmpleadosSistemasController extends ControladorBase{
             $html.='<th style="text-align: center;  font-size: 10px;">Fecha</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Desde</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Hasta</th>';
-            $html.='<th style="text-align: center;  font-size: 10px;">Cédula</th>';
-            $html.='<th style="text-align: center;  font-size: 10px;">Participes</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Crédito</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Prestaciones</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Recaudaciones</th>';
@@ -621,8 +619,6 @@ class BitacoraActividadesEmpleadosSistemasController extends ControladorBase{
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->fecha_registro.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->desde.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->hasta.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->cedula_participes.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->nombres_participes.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->credito.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->prestaciones.'</td>';
                 $html.='<td style="text-align: center; font-size: 10px;">'.$res->recaudaciones.'</td>';

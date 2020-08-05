@@ -83,15 +83,15 @@ var setearElementos	= function(){
 	$("#id_bitacora_actividades_empleados_sistemas").val(0);
 	$("#hdn_id_participes").val(0);
 	$("#fecha_registro").val("");
-	$("#credito").val("0");
-	$("#prestaciones").val("0");
-	$("#recaudaciones").val("0");
-	$("#tesoreria").val("0");
-	$("#contabilidad").val("0");
-	$("#auditoria").val("0");
+	$("#credito").val("");
+	$("#prestaciones").val("");
+	$("#recaudaciones").val("");
+	$("#tesoreria").val("");
+	$("#contabilidad").val("");
+	$("#auditoria").val("");
 	$("#sistemas").val("");
 	$("#otras_actividades").val("");
-	$("#motivo_atencion").val("0");
+	$("#motivo_atencion").val("");
 	
 }
 

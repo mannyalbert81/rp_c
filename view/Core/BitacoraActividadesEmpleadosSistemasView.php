@@ -91,7 +91,7 @@
   		<div class="box-body">
   		
 			<form id="frm_bitacora_sistemas" action="<?php echo $helper->url("BitacoraActividadesEmpleadosSistemas","index"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
-           	 <div class="row">
+         	 <div class="row">
         		      <input type="hidden" name="id_bitacora_actividades_empleados_sistemas" id="id_bitacora_actividades_empleados_sistemas" value="0" />
         		      <div class="col-xs-12 col-md-3 col-md-3">
             		    <div class="form-group">
@@ -123,6 +123,8 @@
                           <div id="mensaje_hasta" class="errores"></div>
                         </div>
             		  </div>
+            
+            		</div>	
             		  
                  
             	  
@@ -159,7 +161,7 @@
             		   <div class="col-xs-12 col-md-6 col-md-6 ">
             		    <div class="form-group">
                           <label for="contabilidad" class="control-label">Contabilidad:</label>.
-                            <input  type="text" class="form-control" id="prestaciones" name="contabilidad" value=""  placeholder="Contabilidad" required />
+                            <input  type="text" class="form-control" id="contabilidad" name="contabilidad" value=""  placeholder="Contabilidad" required />
                         </div>
             		  </div>
             		   <div class="col-xs-12 col-md-6 col-md-6 ">
@@ -204,19 +206,18 @@
                             <input  type="text" class="form-control" id="nombre_participes" name="nombre_participes" value=""  placeholder="Nombre" required />
                         </div>
             		  </div>
-            		</div>	
-        	  		   <div class="col-xs-12 col-md-12 col-md-12 ">
+            			   <div class="col-xs-12 col-md-12 col-md-12 ">
             		    <div class="form-group">
                           <label for="motivo_atencion" class="control-label">Motivo de Atención:</label>.
                             <input  type="text" class="form-control" id="motivo_atencion" name="motivo_atencion" value=""  placeholder="Motivo de Atención:" required />
                         </div>
             		  </div>
+        		  </div>
         		  </div>	
+        	  		
 			      </div>
-    	</div>
-   
-							          		        
-           		<div class="row">
+			      
+          		<div class="row">
     			    <div class="col-xs-12 col-md-12 col-lg-12 " style="text-align: center; ">
         	   		    <div class="form-group">
     	                  <button type="button" id="Guardar" name="Guardar" class="btn btn-success">GUARDAR</button>
@@ -251,7 +252,7 @@
 		   	</div> 
     	 	</div> 
     		</div>            	
-            <div id="bitacora_creditos_registrados" ></div>
+            <div id="bitacora_sistemas_registrados" ></div>
             <div id="divLoaderPage" ></div>                     	
             </div> 	
           
@@ -274,7 +275,7 @@
    <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
    <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.js"></script> 
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-   <script src="view/Core/js/BitacoraActividadesEmpleadosSistemas.js?0.01"></script> 
+   <script src="view/Core/js/BitacoraActividadesEmpleadosSistemas.js?0.02"></script> 
        
        
 

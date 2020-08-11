@@ -1651,7 +1651,6 @@ var registrar_credito_nuevo	= function(){
 		});
 	}else
 	{
-		console.log("AQUI INGRESA PARA INSERTAR CON RENOVACION");
 		
 		var datamm = {
 	    	'monto_credito': monto_credito,
@@ -1664,10 +1663,6 @@ var registrar_credito_nuevo	= function(){
 	    	'con_garante': view.global_hay_garantes,
 	    	'cedula_garante':cigarante	    	
 	    };
-		
-		console.log(data);
-		
-		return false;
 		
 		$.ajax({
 		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionRenovacionCredito',

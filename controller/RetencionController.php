@@ -317,7 +317,7 @@ class RetencionController extends ControladorBase{
                      public.tri_retenciones
 
                     ";
-        $where    = "1=1 and enviado_correo_electronico='FALSE'";
+        $where    = "1=1";
         
         $id       = "tri_retenciones.id_tri_retenciones";
         
@@ -826,7 +826,7 @@ class RetencionController extends ControladorBase{
     			$mail->Port = '587';								//Sets the default SMTP server port
     			$mail->SMTPAuth = true;							//Sets SMTP authentication. Utilizes the Username and Password variables
     			$mail->Username = 'info@capremci.com.ec';					//Sets SMTP username
-    			$mail->Password = '@Soporte2020';					//Sets SMTP password //ant -->'info/*-+2018'
+    			$mail->Password = '@Soporte2020';					//Sets SMTP password //ant pass -- 'info/*-+2018'
     			$mail->SMTPSecure = '';					
     			$mail->CharSet = 'UTF-8';
     			$mail->FromName = mb_convert_encoding($header, "UTF-8", "auto");//Sets connection prefix. Options are "", "ssl" or "tls"

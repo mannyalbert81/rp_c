@@ -18,128 +18,127 @@ class RevisionCreditosController extends ControladorBase{
         $search=$_POST['search'];
         if ($id_rol==58)
         {
-            
-            $columnas=" core_creditos.id_creditos, core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
-                        core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos,
-                        core_tipo_creditos.nombre_tipo_creditos, oficina.nombre_oficina";
-            $tablas="core_creditos INNER JOIN core_estado_creditos
-                    ON core_creditos.id_estado_creditos=core_estado_creditos.id_estado_creditos
-                    INNER JOIN core_participes
-                    ON core_participes.id_participes = core_creditos.id_participes
-                    INNER JOIN core_tipo_creditos
-                    ON core_tipo_creditos.id_tipo_creditos=core_creditos.id_tipo_creditos
-                    INNER JOIN usuarios
-                    ON core_creditos.receptor_solicitud_creditos = usuarios.usuario_usuarios
-                    INNER JOIN oficina
-                    ON oficina.id_oficina=usuarios.id_oficina";
-            $where="core_estado_creditos.id_estado_creditos=2 AND core_creditos.incluido_reporte_creditos IS NULL";
-            
-            if(!(empty($fecha_concesion)))
-            {
-                $where.=" AND fecha_concesion_creditos='".$fecha_concesion."'";
-            }
-            
-            if(!(empty($search)))
-            {
-                $where.=" AND (core_participes.cedula_participes LIKE '".$search."%' OR core_participes.nombre_participes ILIKE '".$search."%'
-                           OR core_participes.apellido_participes ILIKE '".$search."%')";
-            }
-            
+        $columnas=" core_creditos.id_creditos, core_creditos.numero_creditos,core_participes.cedula_participes, core_participes.apellido_participes, core_participes.nombre_participes,
+                    core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos,
+                    core_tipo_creditos.nombre_tipo_creditos, oficina.nombre_oficina";
+        $tablas="core_creditos INNER JOIN core_estado_creditos
+                ON core_creditos.id_estado_creditos=core_estado_creditos.id_estado_creditos
+                INNER JOIN core_participes
+                ON core_participes.id_participes = core_creditos.id_participes
+                INNER JOIN core_tipo_creditos
+                ON core_tipo_creditos.id_tipo_creditos=core_creditos.id_tipo_creditos
+                INNER JOIN usuarios
+                ON core_creditos.receptor_solicitud_creditos = usuarios.usuario_usuarios
+                INNER JOIN oficina
+                ON oficina.id_oficina=usuarios.id_oficina";
+        $where="core_estado_creditos.id_estado_creditos=2 AND core_creditos.incluido_reporte_creditos IS NULL";
+        if(!(empty($fecha_concesion)))
+        {
+            $where.=" AND fecha_concesion_creditos='".$fecha_concesion."'";
+        }
+        if(!(empty($search)))
+        {
+            $where.=" AND (core_participes.cedula_participes LIKE '".$search."%' OR core_participes.nombre_participes ILIKE '".$search."%'
+                       OR core_participes.apellido_participes ILIKE '".$search."%')";
+        }
         
-            $id="core_creditos.numero_creditos";
-            $html="";
-            $resultSet=$creditos->getCantidad("*", $tablas, $where);
-            $cantidadResult=(int)$resultSet[0]->total;
+        $id="core_creditos.numero_creditos";
+        $html="";
+        $resultSet=$creditos->getCantidad("*", $tablas, $where);
+        $cantidadResult=(int)$resultSet[0]->total;
         
-            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
-            
-            $per_page = 10; //la cantidad de registros que desea mostrar
-            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
-            $offset = ($page - 1) * $per_page;
-            
-            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
         
-            $resultSet=$creditos->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
-            $total_pages = ceil($cantidadResult/$per_page);
+        $per_page = 10; //la cantidad de registros que desea mostrar
+        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+        $offset = ($page - 1) * $per_page;
+        
+        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+        
+        $resultSet=$creditos->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
+        $count_query   = $cantidadResult;
+        $total_pages = ceil($cantidadResult/$per_page);
+        if($cantidadResult>0)
+        {
             
-            if($cantidadResult>0)
+            $html.='<div class="pull-left" style="margin-left:15px;">';
+            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+            $html.='</div>';
+            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+            $html.='<section style="height:570px; overflow-y:scroll;">';
+            $html.= "<table id='tabla_creditos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+            $html.= "<thead>";
+            $html.= "<tr>";
+            $html.='<th style="text-align: left;  font-size: 15px;">Crédito</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Cédula</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Apellidos</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Monto</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Plazo</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Tipo</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;">Ciudad</th>';
+            $html.='<th style="text-align: left;  font-size: 15px;"></th>';
+            $html.='<th style="text-align: left;  font-size: 15px;"></th>';
+            $html.='<th style="text-align: left;  font-size: 15px;"></th>';
+           
+            $html.='</tr>';
+            $html.='</thead>';
+            $html.='<tbody>';
+            
+            foreach ($resultSet as $res)
             {
-            
-                $html.='<div class="pull-left" style="margin-left:15px;">';
-                $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
-                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-                $html.='</div>';
-                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-                $html.='<section style="height:570px; overflow-y:scroll;">';
-                $html.= "<table id='tabla_creditos' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
-                $html.= "<thead>";
-                $html.= "<tr>";
-                $html.='<th style="text-align: left;  font-size: 15px;">Crédito</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Cédula</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Apellidos</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Nombres</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Monto</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Plazo</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Tipo</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;">Ciudad</th>';
-                $html.='<th style="text-align: left;  font-size: 15px;"></th>';
-                $html.='<th style="text-align: left;  font-size: 15px;"></th>';
-                $html.='<th style="text-align: left;  font-size: 15px;"></th>';
-               
-                $html.='</tr>';
-                $html.='</thead>';
-                $html.='<tbody>';
-            
-                foreach ($resultSet as $res)
-                {
-                    
+                
                     $columnas="id_solicitud_prestamo";
                     $tabla="solicitud_prestamo";
                     $where="numero_creditos='".$res->numero_creditos."'";
-                    $id_solicitud=$db->getCondiciones($columnas, $tabla, $where);
-                    
-                    if(!(empty($id_solicitud))) $id_solicitud=$id_solicitud[0]->id_solicitud_prestamo;
+                $id_solicitud=$db->getCondiciones($columnas, $tabla, $where);
+                if(!(empty($id_solicitud))) $id_solicitud=$id_solicitud[0]->id_solicitud_prestamo;
+           
+                else $id_solicitud=0;
                
-                    else $id_solicitud=0;
-                   
-                    $html.='<tr>';
-                    $html.='<td style="font-size: 14px;">'.$res->numero_creditos.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->cedula_participes.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->apellido_participes.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_participes.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->monto_otorgado_creditos.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->plazo_creditos.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_creditos.'</td>';
-                    $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
-                    $html.='<td style="font-size: 14px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$id_solicitud.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-file"></i></a></span></td>';
-                    $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="AgregarReporte('.$res->id_creditos.')"><i class="glyphicon glyphicon-plus"></i></button></span></td>';
-                    $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
+                $html.='<tr>';
+                $html.='<td style="font-size: 14px;">'.$res->numero_creditos.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->cedula_participes.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->apellido_participes.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->nombre_participes.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->monto_otorgado_creditos.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->plazo_creditos.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->nombre_tipo_creditos.'</td>';
+                $html.='<td style="font-size: 14px;">'.$res->nombre_oficina.'</td>';
+                $html.='<td style="font-size: 14px;"><span class="pull-right"><a href="index.php?controller=SolicitudPrestamo&action=print&id_solicitud_prestamo='.$id_solicitud.'" target="_blank" class="btn btn-warning" title="Imprimir"><i class="glyphicon glyphicon-file"></i></a></span></td>';
+                $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-primary" onclick="AgregarReporte('.$res->id_creditos.')"><i class="glyphicon glyphicon-plus"></i></button></span></td>';
+                $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                 }
                 $html.='</tr>';
-                     
-                $html.='</tbody>';
-                $html.='</table>';
-                $html.='</section></div>';
-                $html.='<div class="table-pagination pull-right">';
-                $html.=''. $this->paginate_creditos("index.php", $page, $total_pages, $adjacents,"load_creditos").'';
-                $html.='</div>';            
+         
             
             
-            }else{
-                
-                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-                $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
-                $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay solicitudes registradas...</b>';
-                $html.='</div>';
-                $html.='</div>';
-            }        
+            
+            $html.='</tbody>';
+            $html.='</table>';
+            $html.='</section></div>';
+            $html.='<div class="table-pagination pull-right">';
+            $html.=''. $this->paginate_creditos("index.php", $page, $total_pages, $adjacents,"load_creditos").'';
+            $html.='</div>';
+            
+            
+            
+        }else{
+            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay solicitudes registradas...</b>';
+            $html.='</div>';
+            $html.='</div>';
+        }
         
-            echo $html;
+        
+        echo $html;
         }
         else
         {
-            echo "NO MOSTRAR CREDITOS";   
+         echo "NO MOSTRAR CREDITOS";   
         }
         
     }
@@ -159,24 +158,24 @@ class RevisionCreditosController extends ControladorBase{
         $resultRol=$resultRol[0]->nombre_rol;
         
         
-        $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
-                     dia_creditos_trabajados_cabeza, oficina.nombre_oficina, estado.nombre_estado";
-        $tablas="core_creditos_trabajados_cabeza INNER JOIN oficina
-        		ON oficina.id_oficina=core_creditos_trabajados_cabeza.id_oficina
-        		INNER JOIN estado
-        		ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
+            $columnas="id_creditos_trabajados_cabeza, anio_creditos_trabajados_cabeza, mes_creditos_trabajados_cabeza,
+                         dia_creditos_trabajados_cabeza, oficina.nombre_oficina, estado.nombre_estado";
+            $tablas="core_creditos_trabajados_cabeza INNER JOIN oficina
+            		ON oficina.id_oficina=core_creditos_trabajados_cabeza.id_oficina
+            		INNER JOIN estado
+            		ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
            
-        if($resultRol=="Jefe de crédito y prestaciones") $where="1=1";
-        if($resultRol=="Jefe de recaudaciones")$where="estado.nombre_estado='APROBADO CREDITOS'";
-        if($resultRol=="Contador / Jefe de RR.HH")$where="estado.nombre_estado='APROBADO RECAUDACIONES'";
-        if($resultRol=="Gerente")$where="estado.nombre_estado='APROBADO CONTADOR'";
-        if($resultRol=="Jefe de tesorería")$where="estado.nombre_estado='APROBADO GERENTE'";
-        if(!(empty($fecha_reporte)))
-        {
-            $elementos_fecha=explode("-",$fecha_reporte);
-            $where.=" AND anio_creditos_trabajados_cabeza=".$elementos_fecha[0]." AND  mes_creditos_trabajados_cabeza=".$elementos_fecha[1]." AND
-                     dia_creditos_trabajados_cabeza=".$elementos_fecha[2];
-        }
+            if($resultRol=="Jefe de crédito y prestaciones") $where="1=1";
+            if($resultRol=="Jefe de recaudaciones")$where="estado.nombre_estado='APROBADO CREDITOS'";
+            if($resultRol=="Contador / Jefe de RR.HH")$where="estado.nombre_estado='APROBADO RECAUDACIONES'";
+            if($resultRol=="Gerente")$where="estado.nombre_estado='APROBADO CONTADOR'";
+            if($resultRol=="Jefe de tesorería")$where="estado.nombre_estado='APROBADO GERENTE'";
+            if(!(empty($fecha_reporte)))
+            {
+                $elementos_fecha=explode("-",$fecha_reporte);
+                $where.=" AND anio_creditos_trabajados_cabeza=".$elementos_fecha[0]." AND  mes_creditos_trabajados_cabeza=".$elementos_fecha[1]." AND
+                         dia_creditos_trabajados_cabeza=".$elementos_fecha[2];
+            }
             $id="id_creditos_trabajados_cabeza";
             
             $html="";
@@ -228,7 +227,9 @@ class RevisionCreditosController extends ControladorBase{
                 
                 $html.='</tr>';
             
-                                    
+            
+            
+            
             $html.='</tbody>';
             $html.='</table>';
             $html.='</section></div>';
@@ -274,8 +275,8 @@ class RevisionCreditosController extends ControladorBase{
             		ON estado.id_estado=core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza";
         
         if($resultRol=="Jefe de crédito y prestaciones") $where="1=1";
-        if($resultRol=="Jefe de recaudaciones")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza >= 92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";;
-        if($resultRol=="Contador / Jefe de RR.HH")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza >= 93 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
+        if($resultRol=="Jefe de recaudaciones")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=92 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";;
+        if($resultRol=="Contador / Jefe de RR.HH")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=93 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if($resultRol=="Gerente")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=95 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if($resultRol=="Jefe de tesorería")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=96 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if(!(empty($fecha_reporte)))
@@ -479,30 +480,28 @@ class RevisionCreditosController extends ControladorBase{
                     {
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                     }
-                    if ( $resultRol == "Jefe de tesorería" && $estado_reporte == "APROBADO GERENTE" ) 
+                    if ($resultRol=="Jefe de tesorería" && $estado_reporte=="APROBADO GERENTE")
                     {
                         $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$id_reporte.','.$res->id_creditos.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                     }
                    
+                $html.='</tr>';
+                if ($estado_reporte=="DEVUELTO A REVISION")
+                {
+                    $html.='<tr>';
+                    $html.='<th style="font-size: 15px;">Observación</th>';
+                    $html.='<td colspan="9" style="font-size: 14px;">'.$res->observacion_detalle_creditos_trabajados.'</td>';
                     $html.='</tr>';
-                    if ( $estado_reporte=="DEVUELTO A REVISION" )
-                    {
-                        $html.='<tr>';
-                        $html.='<th style="font-size: 15px;">Observación</th>';
-                        $html.='<td colspan="9" style="font-size: 14px;">'.$res->observacion_detalle_creditos_trabajados.'</td>';
-                        $html.='</tr>';
-                    }
+                }
                 
             }
+            
             
             
             $html.='</tbody>';
             $html.='</table>';
             
             $html.='</section>';
-            
-            // AQUI SE AGREGA UN BOTON DEPENDIENDO DEL ROL PARA APROBAR EL REPORTE 
-            
             if ($resultRol=="Jefe de crédito y prestaciones" && $estado_reporte=="ABIERTO")
             {
                 $html.='<span class="pull-right"><button  type="button" class="btn btn-success" onclick="AprobarJefeCreditos('.$id_reporte.')">APROBAR <i class="glyphicon glyphicon-ok"></i></button></span>';
@@ -522,10 +521,8 @@ class RevisionCreditosController extends ControladorBase{
             if ($resultRol=="Jefe de tesorería" && $estado_reporte=="APROBADO GERENTE")
             {
                 $html.='<span class="pull-right"><button  type="button" class="btn btn-success" onclick="AprobarTesoreria('.$id_reporte.')">APROBAR <i class="glyphicon glyphicon-ok"></i></button></span>';
-                $html.='<span class="pull-right"><a class="btn btn-primary" href="index.php?controller=RevisionCreditos&action=ReporteCreditosaTransferir&id_reporte='.$id_reporte.'" role="button" target="_blank">IMPRIMIR <i class="glyphicon glyphicon-print"></i></a></span>';
             }
-            
-            if ( $resultRol == "Jefe de crédito y prestaciones" && $estado_reporte == "APROBADO TESORERIA" )
+            if ($resultRol=="Jefe de crédito y prestaciones" && $estado_reporte=="APROBADO TESORERIA")
             {
                 $html.='<span class="pull-right"><a class="btn btn-primary" href="index.php?controller=RevisionCreditos&action=ReporteCreditosaTransferir&id_reporte='.$id_reporte.'" role="button" target="_blank">IMPRIMIR <i class="glyphicon glyphicon-print"></i></a></span>';
             }
@@ -1423,14 +1420,18 @@ class RevisionCreditosController extends ControladorBase{
         
         session_start();
         $entidades = new EntidadesModel();
+        $ccomprobantes = new CComprobantesModel();
+        $dcomprobantes = new DComprobantesModel();
+        $tipo_comprobantes = new TipoComprobantesModel();
+        $entidades = new EntidadesModel();
+        $tipo_comprobante=new TipoComprobantesModel();
         //PARA OBTENER DATOS DE LA EMPRESA
         $datos_empresa = array();
         $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
         $rp_capremci= new PlanCuentasModel();
         $id_reporte=$_GET['id_reporte'];
         
-        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0)
-        {
+        if(!empty($rsdatosEmpresa) && count($rsdatosEmpresa)>0){
             //llenar nombres con variables que va en html de reporte
             $datos_empresa['NOMBREEMPRESA']=$rsdatosEmpresa[0]->nombre_entidades;
             $datos_empresa['DIRECCIONEMPRESA']=$rsdatosEmpresa[0]->direccion_entidades;
@@ -1447,92 +1448,119 @@ class RevisionCreditosController extends ControladorBase{
         $datos_cabecera['HORA'] = date('h:i:s');
         
         $Usuarios1= new UsuariosModel();
-        
-        // obtener datos de contador
+        //contador
         $datos_rol_contador = array();
-        $columnas   = " aa.id_usuarios, aa.nombre_usuarios, aa.apellidos_usuarios, bb.id_rol, bb.nombre_rol";
-        $tablas     = " public.usuarios aa
-                    INNER JOIN public.rol bb ON bb.id_rol = aa.id_rol";
-        $where      = " bb.nombre_rol = 'Contador / Jefe de RR.HH'";
-        $id         = " bb.nombre_rol";       
-       
-        $resultCont=$Usuarios1->getCondiciones($columnas, $tablas, $where, $id);        
+        
+        
+        $columnas="  usuarios.id_usuarios, 
+                     usuarios.nombre_usuarios, 
+                     usuarios.apellidos_usuarios, 
+                     rol.id_rol, 
+                     rol.nombre_rol";
+        $tablas="    public.usuarios, 
+                     public.rol";
+        $where="rol.id_rol = usuarios.id_rol AND rol.nombre_rol='Contador / Jefe de RR.HH'";
+        $id="rol.nombre_rol";
+        
+        $resultCont=$Usuarios1->getCondiciones($columnas, $tablas, $where, $id);
+        
         
         $datos_rol_contador['NOMCONTA']=ucfirst($resultCont[0]->nombre_usuarios);
         $datos_rol_contador['APECONTA']=ucfirst($resultCont[0]->apellidos_usuarios);
         
+        //Gerente
+        $datos_rol_gerente= array();
         
-        // obtener datos de GERENTE
-        $datos_rol_gerente = array();
-        $columnas   = " aa.id_usuarios, aa.nombre_usuarios, aa.apellidos_usuarios, bb.id_rol, bb.nombre_rol";
-        $tablas     = " public.usuarios aa
-                    INNER JOIN public.rol bb ON bb.id_rol = aa.id_rol";
-        $where      = " bb.nombre_rol = 'Gerente'";
-        $id         = " bb.nombre_rol";
+        
+        $columnas="  usuarios.id_usuarios,
+                     usuarios.nombre_usuarios,
+                     usuarios.apellidos_usuarios,
+                     rol.id_rol,
+                     rol.nombre_rol";
+        $tablas="    public.usuarios,
+                     public.rol";
+        $where="rol.id_rol = usuarios.id_rol AND rol.nombre_rol='Gerente'";
+        $id="rol.nombre_rol";
         
         $resultGer=$Usuarios1->getCondiciones($columnas, $tablas, $where, $id);
+        
         
         $datos_rol_gerente['NOMGER']=ucfirst($resultGer[0]->nombre_usuarios);
         $datos_rol_gerente['APEGER']=ucfirst($resultGer[0]->apellidos_usuarios);
         
+        //Jefe Credito
         
-        //datos de Jefe de creditos
-        $datos_rol_jcredito = array();
-        $columnas   = " aa.id_usuarios, aa.nombre_usuarios, aa.apellidos_usuarios, bb.id_rol, bb.nombre_rol";
-        $tablas     = " public.usuarios aa
-                    INNER JOIN public.rol bb ON bb.id_rol = aa.id_rol";
-        $where      = " bb.nombre_rol = 'Jefe de crédito y prestaciones'";
-        $id         = " bb.nombre_rol";
+        $datos_rol_jcredito= array();
+
+            $datos_rol_jcredito['NOMJCRE']=(isset($_SESSION['nombre_usuarios']))?$_SESSION['nombre_usuarios']:'';
+            $datos_rol_jcredito['APEJCRE']=(isset($_SESSION['apellidos_usuarios']))?$_SESSION['apellidos_usuarios']:'';
+            
         
-        $resultCredito  =$Usuarios1->getCondiciones($columnas, $tablas, $where, $id);
+        //TABLA
         
-        $datos_rol_jcredito['NOMJCRE']=ucfirst( $resultCredito[0]->nombre_usuarios);
-        $datos_rol_jcredito['APEJCRE']=ucfirst( $resultCredito[0]->apellidos_usuarios);
         
-        //TABLA        
         $datos_reporte = array();
         
-        $columnas   ="aa.id_creditos,aa.numero_creditos, bb.cedula_participes, bb.apellido_participes, bb.nombre_participes, aa.monto_otorgado_creditos, aa.plazo_creditos,
-                aa.monto_neto_entregado_creditos, ee.nombre_tipo_creditos, ff.nombre_estado_creditos, gg.nombre_forma_pago, ii.nombre_bancos, jj.nombre_tipo_cuentas,
-                hh.numero_participes_cuentas, bb.celular_participes, kk.monto_creditos_retenciones";
-        $tablas ="core_creditos aa
-                INNER JOIN core_participes bb ON aa.id_participes = bb.id_participes
-                INNER JOIN core_creditos_trabajados_detalle cc ON cc.id_creditos = aa.id_creditos
-                INNER JOIN core_creditos_trabajados_cabeza dd ON dd.id_creditos_trabajados_cabeza = cc.id_cabeza_creditos_trabajados
-                INNER JOIN core_tipo_creditos ee ON ee.id_tipo_creditos = aa.id_tipo_creditos
-                INNER JOIN core_estado_creditos ff ON ff.id_estado_creditos = aa.id_estado_creditos
-                INNER JOIN forma_pago gg ON gg.id_forma_pago = aa.id_forma_pago
-                INNER JOIN core_participes_cuentas hh ON hh.id_participes = aa.id_participes
-                INNER JOIN tes_bancos ii ON ii.id_bancos = hh.id_bancos
-                INNER JOIN core_tipo_cuentas jj ON jj.id_tipo_cuentas = hh.id_tipo_cuentas
-                INNER JOIN core_creditos_retenciones kk ON kk.id_creditos = aa.id_creditos";
-        $where  =" dd.id_creditos_trabajados_cabeza =".$id_reporte." AND hh.cuenta_principal = true";
-        $id     =" ii.nombre_bancos";        
-                
+        $columnas="core_creditos.numero_creditos,core_participes.cedula_participes,core_participes.apellido_participes,core_participes.nombre_participes,
+                    core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos, core_creditos.monto_neto_entregado_creditos,
+                    core_tipo_creditos.nombre_tipo_creditos, core_estado_creditos.nombre_estado_creditos, forma_pago.nombre_forma_pago,
+                    tes_bancos.nombre_bancos, core_tipo_cuentas.nombre_tipo_cuentas,core_participes_cuentas.numero_participes_cuentas, core_participes.celular_participes,
+                    core_creditos_retenciones.monto_creditos_retenciones";
+        $tablas="core_creditos INNER JOIN core_participes
+                    ON core_creditos.id_participes = core_participes.id_participes
+                    INNER JOIN core_creditos_trabajados_detalle
+                    ON core_creditos.id_creditos=core_creditos_trabajados_detalle.id_creditos
+                    INNER JOIN core_creditos_trabajados_cabeza
+                    ON core_creditos_trabajados_cabeza.id_creditos_trabajados_cabeza=core_creditos_trabajados_detalle.id_cabeza_creditos_trabajados
+                    INNER JOIN core_tipo_creditos
+                    ON core_tipo_creditos.id_tipo_creditos=core_creditos.id_tipo_creditos
+                    INNER JOIN core_estado_creditos
+                    ON core_estado_creditos.id_estado_creditos=core_creditos.id_estado_creditos
+                    INNER JOIN forma_pago
+                    ON forma_pago.id_forma_pago=core_creditos.id_forma_pago
+                    INNER JOIN core_participes_cuentas
+                    ON core_participes_cuentas.id_participes = core_participes.id_participes
+                    INNER JOIN tes_bancos
+                    ON tes_bancos.id_bancos = core_participes_cuentas.id_bancos
+                    INNER JOIN core_tipo_cuentas
+                    ON core_tipo_cuentas.id_tipo_cuentas=core_participes_cuentas.id_tipo_cuentas
+                    INNER JOIN core_creditos_retenciones
+                    ON core_creditos_retenciones.id_creditos = core_creditos.id_creditos";
+        $where="id_creditos_trabajados_cabeza=".$id_reporte."AND cuenta_principal=true";
+        $id="tes_bancos.nombre_bancos";
+        
         $resultSet=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
         
-        $columnas   =" aa.numero_creditos,bb.cedula_participes,bb.apellido_participes,bb.nombre_participes, aa.monto_otorgado_creditos, aa.plazo_creditos,
-            aa.monto_neto_entregado_creditos, ee.nombre_tipo_creditos, ff.nombre_estado_creditos, gg.nombre_forma_pago, bb.celular_participes,
-            hh.monto_creditos_retenciones";
-        $tablas     =" core_creditos aa
-            INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
-            INNER JOIN core_creditos_trabajados_detalle cc ON cc.id_creditos = aa.id_creditos
-            INNER JOIN core_creditos_trabajados_cabeza dd ON dd.id_creditos_trabajados_cabeza = cc.id_cabeza_creditos_trabajados
-            INNER JOIN core_tipo_creditos ee ON ee.id_tipo_creditos = aa.id_tipo_creditos
-            INNER JOIN core_estado_creditos ff ON ff.id_estado_creditos = aa.id_estado_creditos
-            INNER JOIN forma_pago gg ON gg.id_forma_pago = aa.id_forma_pago
-            INNER JOIN core_creditos_retenciones hh ON hh.id_creditos = aa.id_creditos";
-        $where      =" dd.id_creditos_trabajados_cabeza = ".$id_reporte." AND gg.nombre_forma_pago='CHEQUE' ";
-        $id         =" aa.numero_creditos";
-               
+        $columnas="core_creditos.numero_creditos,core_participes.cedula_participes,core_participes.apellido_participes,core_participes.nombre_participes,
+                    core_creditos.monto_otorgado_creditos, core_creditos.plazo_creditos, core_creditos.monto_neto_entregado_creditos,
+                    core_tipo_creditos.nombre_tipo_creditos, core_estado_creditos.nombre_estado_creditos, forma_pago.nombre_forma_pago,
+					core_participes.celular_participes,
+                    core_creditos_retenciones.monto_creditos_retenciones";
+        $tablas="core_creditos INNER JOIN core_participes
+                    ON core_creditos.id_participes = core_participes.id_participes
+                    INNER JOIN core_creditos_trabajados_detalle
+                    ON core_creditos.id_creditos=core_creditos_trabajados_detalle.id_creditos
+                    INNER JOIN core_creditos_trabajados_cabeza
+                    ON core_creditos_trabajados_cabeza.id_creditos_trabajados_cabeza=core_creditos_trabajados_detalle.id_cabeza_creditos_trabajados
+                    INNER JOIN core_tipo_creditos
+                    ON core_tipo_creditos.id_tipo_creditos=core_creditos.id_tipo_creditos
+                    INNER JOIN core_estado_creditos
+                    ON core_estado_creditos.id_estado_creditos=core_creditos.id_estado_creditos
+                    INNER JOIN forma_pago
+                    ON forma_pago.id_forma_pago=core_creditos.id_forma_pago
+                    INNER JOIN core_creditos_retenciones
+                    ON core_creditos_retenciones.id_creditos = core_creditos.id_creditos";
+        $where="id_creditos_trabajados_cabeza=".$id_reporte." AND nombre_forma_pago='CHEQUE'";
+        $id="core_creditos.numero_creditos";
+        
         $resultSetCheques=$rp_capremci->getCondiciones($columnas, $tablas, $where, $id);
         
         $html='';
         
             $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
             $html.= "<tr>";
-            $html.='<th style="text-align: center; font-size: 11px;"> # </th>';
-            $html.='<th style="text-align: center; font-size: 11px;">No. PRESTAMO</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">No.</th>';
+            $html.='<th style="text-align: center; font-size: 11px;">No.PRESTAMO</th>';
             $html.='<th style="text-align: center; font-size: 11px;">IDENTIFICACIÓN</th>';
             $html.='<th style="text-align: center; font-size: 11px;">APELLIDOS DEL AFILIADO</th>';
             $html.='<th style="text-align: center; font-size: 11px;">NOMBRES DEL AFILIADO</th>';
@@ -1695,7 +1723,7 @@ class RevisionCreditosController extends ControladorBase{
             
         }
         
-        for( $i=0; $i < $ultimo_cheques; $i++)
+        for($i=0; $i<$ultimo_cheques; $i++)
         {
             $total_transacciones++;
             $total_cheque+=$resultSetCheques[$i]->monto_neto_entregado_creditos;
@@ -1720,7 +1748,9 @@ class RevisionCreditosController extends ControladorBase{
         
         
         ///foreach
-       if( $pagos_cheque > 0)
+        
+        
+       if($pagos_cheque>0)
        {
            $html.='<tr>';
            $html.='<td>CHEQUE</td>';
@@ -1763,6 +1793,9 @@ class RevisionCreditosController extends ControladorBase{
           
        }
         
+        
+        
+        
         //despues del forech
         $html.='<tr>';
         $html.='<td><strong></strong></td>';
@@ -1775,9 +1808,16 @@ class RevisionCreditosController extends ControladorBase{
         
     
         $datos_reporte['DETALLE_CREDITOS']= $html;
-                
+        
+        
+        
+        
+        
         $this->verReporte("ReporteCreditos", array('datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos_reporte'=>$datos_reporte, 'datos_rol_contador'=>$datos_rol_contador, 'datos_rol_gerente'=>$datos_rol_gerente, 'datos_rol_jcredito'=>$datos_rol_jcredito));
         
+        
+        
+
     }
     
 
@@ -1900,7 +1940,6 @@ class RevisionCreditosController extends ControladorBase{
         }
         echo $mensaje."-".$id_reporte."-".$numero_credito.$query;
     }
-      
 
 }
 

@@ -210,32 +210,40 @@ class TesProveedoresController extends ControladorBase{
 	        $_numero_cuenta_proveedores    = $_POST["numero_cuenta_proveedores"];
 	        $_tipo_identificacion          = $_POST["tipo_identificacion"];
             $_razon_social                 = $_POST["razon_social_proveedores"];
-            $file_proveedores          = $_FILES['imagen_registro'];
+            
+            //$file_proveedores = $_FILES['imagen_registro'];
+            
+            
+            
+            //$file_proveedores = (isset($_FILES['imagen_registro'])&& $_FILES['imagen_registro'] !=NULL)?$_FILES['imagen_registro']:'';
+            
 	       	
-	        $error = error_get_last();
+	          
+	        $archivo_proveedores   = '';
 	        
-	        if(!empty($error)){
-	            throw new Exception(" Variables no definidas ". $error['message'] );
-	        }
-	       	        
-	        $archivo_proveedores   = 'null';
-	        if( $file_proveedores['tmp_name'] != "" ){
+	        if (isset($_FILES['imagen_registro']['tmp_name'])!="")
+	        {
 	            $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/DOCUMENTOS_GENERADOS/pdf_proveedores';
 	            
-	            $nombre    = $file_proveedores['name'];
+	            $nombre    = $_FILES['imagen_registro']['name'];
 	            //$tipo      = $_FILES['imagen_registro']['type'];
 	            //$tamano    = $_FILES['imagen_registro']['size'];
 	            
-	            move_uploaded_file($file_proveedores['tmp_name'],$directorio.$nombre);
+	            move_uploaded_file($_FILES['imagen_registro']['tmp_name'],$directorio.$nombre);
 	            $data = file_get_contents($directorio.$nombre);
 	            $archivo_proveedores = pg_escape_bytea($data);
 	        }else{
 	            
 	            //$directorio = dirname(__FILE__).'\..\view\images\usuario.jpg';
 	            //$imagen_registro   = is_file( $directorio ) ? pg_escape_bytea( file_get_contents( $directorio ) ) : "null";
-	            $archivo_proveedores   = "null";
+	            $archivo_proveedores   = "";
 	        } 
 	        
+	        $error = error_get_last();
+	        
+	        if(!empty($error)){
+	            throw new Exception(" Variables no definidas ". $error['message'] );
+	        }
 	        
 	        
             if( $_forma_pago == "cheque" ){
@@ -244,11 +252,15 @@ class TesProveedoresController extends ControladorBase{
                 $_numero_cuenta_proveedores = '';
             }
             
-            $archivo_proveedores = ( $archivo_proveedores === 'null' ) ? $archivo_proveedores : "'$archivo_proveedores'";
+            //$archivo_proveedores = ( $archivo_proveedores === 'null' ) ? $archivo_proveedores : "'$archivo_proveedores'";
 	        
             if($_id_proveedores > 0){
                 
-                $columnas = " nombre_proveedores = '$_nombre_proveedores',
+                
+                if(isset($_FILES['imagen_registro']['tmp_name'])!=""){
+                    
+                    
+                    $columnas = " nombre_proveedores = '$_nombre_proveedores',
                               identificacion_proveedores = '$_identificacion_proveedores',
                               contactos_proveedores = '$_contactos_proveedores',
                               direccion_proveedores = '$_direccion_proveedores',
@@ -260,7 +272,30 @@ class TesProveedoresController extends ControladorBase{
                               razon_social_proveedores = '$_razon_social',
                               tipo_identificacion_proveedores = '$_tipo_identificacion',
                               numero_cuenta_proveedores = '$_numero_cuenta_proveedores',
-                              archivo_registro=$archivo_proveedores";
+                              archivo_registro='$archivo_proveedores'";
+                    
+                    
+                }else{
+                    
+                    
+                    $columnas = " nombre_proveedores = '$_nombre_proveedores',
+                              identificacion_proveedores = '$_identificacion_proveedores',
+                              contactos_proveedores = '$_contactos_proveedores',
+                              direccion_proveedores = '$_direccion_proveedores',
+                              telefono_proveedores = '$_telefono_proveedores',
+                              email_proveedores = '$_email_proveedores',
+                              id_tipo_proveedores = '$_id_tipo_proveedores',
+                              id_bancos = $_id_bancos,
+                              id_tipo_cuentas = $_id_tipo_cuentas,
+                              razon_social_proveedores = '$_razon_social',
+                              tipo_identificacion_proveedores = '$_tipo_identificacion',
+                              numero_cuenta_proveedores = '$_numero_cuenta_proveedores'";
+                    
+                }
+                
+                
+                
+                
                 
                 $tabla = "proveedores";
                 $where = "id_proveedores = '$_id_proveedores'";
@@ -279,7 +314,7 @@ class TesProveedoresController extends ControladorBase{
                 $parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores',
                                 '$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores',
                                 '$_id_tipo_proveedores', $_id_bancos, $_id_tipo_cuentas, '$_numero_cuenta_proveedores',
-                                '$_tipo_identificacion','$_razon_social', $archivo_proveedores";
+                                '$_tipo_identificacion','$_razon_social', '$archivo_proveedores'";
                 $proveedores->setFuncion($funcion);
                 $proveedores->setParametros($parametros);
                 $resultado = $proveedores->llamafuncionPG();

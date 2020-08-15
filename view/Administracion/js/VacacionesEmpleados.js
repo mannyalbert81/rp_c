@@ -204,7 +204,7 @@ if ( desde!="" && hasta!="" && validarfechas(desde, hasta))
 					}
 			
 			}
-			if(x.includes("<emessage>")){
+		if(x.includes("<emessage>")){
 				swal({
 			  		  title: "Solicitud",
 			  		  text: " Validar total dias vacaciones para el año seleccionado",
@@ -213,6 +213,8 @@ if ( desde!="" && hasta!="" && validarfechas(desde, hasta))
 			  		});
 				
 			}
+				
+				//console.log(x);
 				
 			}
 		

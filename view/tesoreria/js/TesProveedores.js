@@ -419,6 +419,8 @@ function limpiarCampos(){
 	$('#tipo_identificacion_proveedores option').eq(0).prop('selected', true);
 	$("#forma_pago").val("0");
 	$("#celular_proveedores").val("");
+	$("#imagen_registro").val("");
+	
 	
 }
 

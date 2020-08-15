@@ -66,35 +66,38 @@ class TablaAmortizacionController extends ControladorBase{
 	    
 	    $datos_reporte = array();
 	    
-	    $columnas = " core_creditos.id_creditos,
+	    $columnas = " core_creditos.id_creditos, 
                       core_tipo_creditos.codigo_tipo_creditos,
-                      core_creditos.numero_creditos,
-                      core_creditos.fecha_concesion_creditos,
-                      core_participes.id_participes,
-                      core_participes.apellido_participes,
-                      core_participes.nombre_participes,
-                      core_participes.cedula_participes,
-                      core_entidad_patronal.id_entidad_patronal,
-                      core_entidad_patronal.nombre_entidad_patronal,
-                      core_tipo_creditos.nombre_tipo_creditos,
-                      core_creditos.plazo_creditos,
-                      core_estado_creditos.nombre_estado_creditos,
-                      core_creditos.monto_otorgado_creditos,
-                      core_creditos.saldo_actual_creditos,
-                      core_creditos.monto_neto_entregado_creditos,
-                      core_creditos.fecha_servidor_creditos,
+                      core_creditos.numero_creditos, 
+                      core_creditos.fecha_concesion_creditos, 
+                      core_creditos.receptor_solicitud_creditos,
+                      core_participes.id_participes, 
+                      core_participes.apellido_participes, 
+                      core_participes.nombre_participes, 
+                      core_participes.cedula_participes, 
+                      core_participes.direccion_participes,
+                      core_participes.telefono_participes,
+                      core_entidad_patronal.id_entidad_patronal, 
+                      core_entidad_patronal.nombre_entidad_patronal, 
+                      core_tipo_creditos.nombre_tipo_creditos, 
+                      core_creditos.plazo_creditos, 
+                      core_estado_creditos.nombre_estado_creditos, 
+                      core_creditos.monto_otorgado_creditos, 
+                      core_creditos.saldo_actual_creditos, 
+                      core_creditos.monto_neto_entregado_creditos, 
+                      core_creditos.fecha_servidor_creditos, 
                       core_creditos.interes_creditos";
 	    
-	    $tablas = "   public.core_tipo_creditos,
-                      public.core_creditos,
-                      public.core_participes,
-                      public.core_estado_creditos,
+	    $tablas = "   public.core_tipo_creditos, 
+                      public.core_creditos, 
+                      public.core_participes, 
+                      public.core_estado_creditos, 
                       public.core_entidad_patronal";
 	    $where= "     core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos AND
                       core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos AND
                       core_participes.id_participes = core_creditos.id_participes AND
                       core_participes.id_entidad_patronal = core_entidad_patronal.id_entidad_patronal
-                      AND core_creditos.id_creditos ='$id_creditos'";
+                      AND core_creditos.id_creditos ='$id_creditos' AND core_tabla_amortizacion.id_estatus=1";
 	    $id="core_creditos.id_creditos";
 	    
 	    $rsdatos = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);

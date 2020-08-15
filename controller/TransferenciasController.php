@@ -78,8 +78,8 @@ class TransferenciasController extends ControladorBase{
 		
 		$nombre_tipo_proveedores = $rsConsulta1[0]->nombre_tipo_proveedores;
 		
-		if( is_null($nombre_tipo_proveedores) || $nombre_tipo_proveedores == "PAGO PROVEEDORES"  || $nombre_tipo_proveedores == "EMPLEADO" )
-		{		    
+		if( is_null($nombre_tipo_proveedores) || $nombre_tipo_proveedores == "PAGO PROVEEDORES"  || $nombre_tipo_proveedores == "EMPLEADO" ){
+		    
 		    //cuando es pago a proveedores
 		    $datosVista['nombre_beneficiario'] = $rsConsulta1[0]->nombre_proveedores;
 		    $datosVista['apellido_beneficiario'] = "";
@@ -97,7 +97,7 @@ class TransferenciasController extends ControladorBase{
 		        $datosVista['nombre_bancos'] = "";
 		        $datosVista['id_bancos'] = 0;
 		    }
-		    		    
+		    
 		    $col3 = "*";
 		    $tab3 = "core_tipo_cuentas";
 		    $whe3 = "id_tipo_cuentas = $id_tipo_cuenta ";
@@ -258,7 +258,7 @@ class TransferenciasController extends ControladorBase{
 	        if( !empty($rsPago) ){
 	            $resp['icon'] = "info";
 	            throw new Exception("Pago ya se encuentra generado! Favor revisar");
-	        }	        
+	        }	
 	        
 	        $pagos->beginTran();
 	        

@@ -165,38 +165,46 @@ class TributarioGeneraAtsController extends ControladorBase{
 		//validar los campos recibidos para generar diario
 		$arrayTabla = array();
 		$cantidad = 0;
-		$columnas = "  id_tri_retenciones, 
-				infotributaria_ambiente, 
-				infotributaria_tipoemision, 
-				infotributaria_razonsocial,
-				infotributaria_nombrecomercial, 
-				infotributaria_ruc, 
-				infotributaria_claveacceso,
-				infotributaria_coddoc, 
-				infotributaria_ptoemi, 
-				infotributaria_estab, 
-				infotributaria_secuencial,
-				infotributaria_dirmatriz,
-				infocompretencion_fechaemision, 
-				infocompretencion_direstablecimiento,
-				infocompretencion_contribuyenteespecial,
-				infocompretencion_obligadocontabilidad,
-				infocompretencion_tipoidentificacionsujetoretenido, 
-				infocompretencion_razonsocialsujetoretenido,
-				infocompretencion_identificacionsujetoretenido,
-				infocompretencion_periodofiscal, 
-				infoadicional_campoadicional,
-				infoadicional_campoadicional_dos, 
-				infoadicional_campoadicional_tres,
-				creado, 
-				modificado, 
-				enviado_correo_electronico, 
-				fecha_autorizacion";
-		$tablas = " public.tri_retenciones";
+		$columnas = " tri_retenciones.id_tri_retenciones, 
+				tri_retenciones.infotributaria_ambiente, 
+				tri_retenciones.infotributaria_tipoemision, 
+				tri_retenciones.infotributaria_razonsocial,
+				tri_retenciones.infotributaria_nombrecomercial, 
+				tri_retenciones.infotributaria_ruc, 
+				tri_retenciones.infotributaria_claveacceso,
+				tri_retenciones.infotributaria_coddoc, 
+				tri_retenciones.infotributaria_ptoemi, 
+				tri_retenciones.infotributaria_estab, 
+				tri_retenciones.infotributaria_secuencial,
+				tri_retenciones.infotributaria_dirmatriz,
+				tri_retenciones.infocompretencion_fechaemision, 
+				tri_retenciones.infocompretencion_direstablecimiento,
+				tri_retenciones.infocompretencion_contribuyenteespecial,
+				tri_retenciones.infocompretencion_obligadocontabilidad,
+				tri_retenciones.infocompretencion_tipoidentificacionsujetoretenido, 
+				tri_retenciones.infocompretencion_razonsocialsujetoretenido,
+				tri_retenciones.infocompretencion_identificacionsujetoretenido,
+				tri_retenciones.infocompretencion_periodofiscal, 
+				tri_retenciones.infoadicional_campoadicional,
+				tri_retenciones.infoadicional_campoadicional_dos, 
+				tri_retenciones.infoadicional_campoadicional_tres,
+				tri_retenciones.creado, 
+				tri_retenciones.modificado, 
+				tri_retenciones.enviado_correo_electronico, 
+				tri_retenciones.fecha_autorizacion,
+				substring(tes_cuentas_pagar.numero_documento_cuentas_pagar from 1 for 3) AS  estabretencion_uno, 
+  				substring(tes_cuentas_pagar.numero_documento_cuentas_pagar from 5 for 3) AS  ptoemiretencion_uno, 
+  				substring(tes_cuentas_pagar.numero_documento_cuentas_pagar from 9 for 10) AS  secretencion_uno, 
+  				tes_cuentas_pagar.fecha_cuentas_pagar, 
+  				tes_cuentas_pagar.numero_autorizacion_cuentas_pagar
+				";
+		$tablas = " public.tri_retenciones,
+					public.tes_cuentas_pagar";
 		$where = "SUBSTRING ( tri_retenciones.infocompretencion_periodofiscal,1,2) = '$mesperiodofiscal'
-		AND SUBSTRING ( tri_retenciones.infocompretencion_periodofiscal,4,4) = '$anioDiario' ";
+		AND SUBSTRING ( tri_retenciones.infocompretencion_periodofiscal,4,4) = '$anioDiario' 
+		AND tes_cuentas_pagar.id_lote = tri_retenciones.id_lote ";
 			
-		$id = "creado";
+		$id = "tri_retenciones.creado";
 		
 		
 		$columnas_detalle = "  id_tri_retenciones_detalle, 
@@ -299,6 +307,18 @@ class TributarioGeneraAtsController extends ControladorBase{
 				$texto .= '<fechaEmision>'.$newDate_fechaemision.'</fechaEmision>';
 				$texto .= '<autorizacion>'.$res->infotributaria_claveacceso.'</autorizacion>';
 				
+				
+				
+
+				$_estabRetencion_uno  = $res->estabretencion_uno;
+				$_ptoemiRetencion_uno  = $res->ptoemiretencion_uno;
+				$_secRetencion_uno  = $res->secretencion_uno;
+				$originalfecha_cuentas_pagar = $res->fecha_cuentas_pagar;
+				$_fecha_cuentas_pagar = date("d/m/Y", strtotime($originalfecha_cuentas_pagar));
+				$_numero_autorizacion_cuentas_pagar  = $res->numero_autorizacion_cuentas_pagar;
+				
+				
+				
 				$where_detalle = "id_tri_retenciones = '$res->id_tri_retenciones' ";
 				$rsDetalle = $Participes->getCondiciones($columnas_detalle, $tablas_detalle, $where_detalle, $id_detalle);
 				foreach ($rsDetalle as $resDetalle){
@@ -375,17 +395,17 @@ class TributarioGeneraAtsController extends ControladorBase{
 					
 				$texto .= '</detalleAir>';
 				$texto .= '</air>';
-		/*
-				<estabRetencion1>003</estabRetencion1>
 				
-				<ptoEmiRetencion1>002</ptoEmiRetencion1>
 				
-				<secRetencion1>0002948</secRetencion1>
 				
-				<autRetencion1>3008201907171170737000120030020000029480000000110</autRetencion1>
 				
-				<fechaEmiRet1>30/08/2019</fechaEmiRet1>
-			*/	
+				$texto .= '<estabRetencion1>'.$_estabRetencion_uno.'</estabRetencion1>';
+				$texto .= '<ptoEmiRetencion1>'.$_ptoemiRetencion_uno.'</ptoEmiRetencion1>';
+				$texto .= '<secRetencion1>'.$_secRetencion_uno.'</secRetencion1>';
+				$texto .= '<autRetencion1>'.$_numero_autorizacion_cuentas_pagar.'</autRetencion1>';
+				$texto .= '<fechaEmiRet1>'.$_fecha_cuentas_pagar.'</fechaEmiRet1>';
+		
+		
 				
 				$texto .= '</detalleCompras>';
 				

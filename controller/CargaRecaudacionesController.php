@@ -916,7 +916,6 @@ class CargaRecaudacionesController extends ControladorBase{
         $_arhivo_carga_datos           = array();
         $_archivo_procesar             = "";
         $_error_cabecera               = "ARCHIVO NO FUE PROCESADO";
-        $_archivo_errores              = array();
         $_numero_lineas_archivo        = 0;
         $_suma_total_archivo           = 0.00;
         $_nombre_archivo_guardar       = "";
@@ -929,10 +928,12 @@ class CargaRecaudacionesController extends ControladorBase{
         try {
             
             $_id_entidad_patronal  = $_POST['id_entidad_patronal'];
+            $_id_descuentos_formatos       = $_POST['id_descuentos_formatos'];
             $_anio_carga_recaudaciones     = $_POST['anio_carga_recaudaciones'];
             $_mes_carga_recaudaciones      = $_POST['mes_carga_recaudaciones'];
             $_formato_carga_recaudaciones  = $_POST['formato_carga_recaudaciones'];
-            $_usuario_usuarios = $_SESSION['usuario_usuarios'];
+            $_usuario_usuarios  = $_SESSION['usuario_usuarios'];
+            $_id_usuarios       = $_SESSION['id_usuarios'];
             $_arhivo_carga_datos   = $_FILES["nombre_carga_recaudaciones"];
             
             $error = error_get_last();
@@ -945,62 +946,18 @@ class CargaRecaudacionesController extends ControladorBase{
             /** consulta a bd de los parametros que recibe.
              * antes de validar archivo. valida si el archivo ya fue cargado
              */
-            $_mes_carga_recaudaciones = str_pad($_mes_carga_recaudaciones, 2, "0", STR_PAD_LEFT);
-            
-            $this->devuelveNombreFormato($_formato_carga_recaudaciones); //aqui se setea las variables para comparar
-            
-            $_nombre_formato = $this->_nombre_formato;
-           
-            if( $_formato_carga_recaudaciones == 1 || $_formato_carga_recaudaciones == 2 ){
-                
-                $columnas1 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
-                $tablas1   = " core_carga_recaudaciones";
-                $where1    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
-                    " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '".$_nombre_formato."' ";
-                $id1       = "id_carga_recaudaciones";
-                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-                
-                if( !empty($rsConsulta1) ){
-                    throw new Exception(" tipo de formato ya se encuentra cargado ");
-                }else{
-                    
-                    $columnas2 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
-                    $tablas2   = " core_carga_recaudaciones";
-                    $where2    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
-                        " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '".$this->_nombre_combinado_formato."' ";
-                    $id2       = " id_carga_recaudaciones";
-                    $rsConsulta2 = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
-                    
-                    if( !empty($rsConsulta2) ){
-                        throw new Exception("Archivo no cargado . Razon: Existe un archivo Combinado cargado ");
-                    }
-                    
-                }
-                
-            }else if( $_formato_carga_recaudaciones == 3){
-                
-                $columnas1 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
-                $tablas1   = " core_carga_recaudaciones";
-                $where1    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
-                    " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '$_nombre_formato' ";
-                $id1       = " id_carga_recaudaciones";
-                $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-                
-                if( !empty($rsConsulta1) ){
-                    throw new Exception("tipo de formato ya se encuentra cargado ");
-                }else{
-                    $columnas2 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
-                    $tablas2   = " core_carga_recaudaciones";
-                    $where2    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
-                        " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones in ('DESCUENTOS CREDITOS','DESCUENTOS APORTES')";
-                    $id2       = " id_carga_recaudaciones";
-                    $rsConsulta1 = $Contribucion->getCondiciones($columnas2, $tablas2, $where2, $id2);
-                    if( !empty($rsConsulta1) ){
-                        throw new Exception("tipo de formato no se puede cargar existe un archivo individual.");
-                    }
-                }
-            }
+            $datos =  array(
+                'mes_recaudacion'   =>$_mes_carga_recaudaciones,
+                'anio_recaudacion'  =>$_anio_carga_recaudaciones,
+                'formato_recaudacion'   =>$_formato_carga_recaudaciones,
+                'id_entidad_patronal'   => $_id_entidad_patronal
+            );
+            $auxValidaBd    = $this->validarArchivoenBD($datos);
                        
+            if( $auxValidaBd['error'] ){
+                throw new Exception($auxValidaBd['mensaje']);
+            }
+                                   
         }catch (Exception $e) {
             echo "<message>".$e->getMessage()."<message>";
             exit();
@@ -1019,9 +976,9 @@ class CargaRecaudacionesController extends ControladorBase{
             $_nombre_archivo_guardar = $nombre;           
             
             $_archivo_procesar = $_ruta_archivo_recaudaciones.'/'.$nombre;
-            $archivo_move = move_uploaded_file($_FILES['nombre_carga_recaudaciones']['tmp_name'],$_archivo_procesar);
+            $archivo_move = move_uploaded_file($_arhivo_carga_datos ['tmp_name'],$_archivo_procesar);
             if( !$archivo_move ){
-                throw new Exception("Archivo no fue subido por favor vuelva intentarlo Error servidor");
+                throw new Exception("Error al leer Archivo. Por Favor subir nuevamente");
             }
             
         } catch (Exception $e) {
@@ -1032,167 +989,63 @@ class CargaRecaudacionesController extends ControladorBase{
         /**
          ****************************************************** validar formato del archivo ***********************************************************
          **/
+        $dataTableData      = array(); //variable donde se guarda los datos leidos
+        /** formato standar es multiarray 'linea'=>1,'cedula'=>'00000000000','valor'=>0.00,'id_participes'=>1 **/
+        
         try {
-                        
-            /** variables para la lectura del archivo **/
-            $_archivo_cedulas = array();
-          
-            /** comienza lectura de archivos **/
-            $file_abierto   = fopen($_archivo_procesar, "r");
-            if( !$file_abierto ){ throw new Exception("Archivo no fue posible leer"); }
             
-            /** AQUI VALIDACION DE FORMATOS */
-            $_linea = 0;
-            $_linea_llena = 0;
-            while(!feof($file_abierto))
-            {
-                //echo "\n",$_linea,"--**--";
-                $_valor     = 0.00;  
-                $_fila = fgets($file_abierto);
-                $_fila = trim($_fila);
-                $_fila = trim($_fila,"\n");
-                //echo "\n'",var_dump($_fila),"'";
-                if( $_linea > 0 && $_fila != "" ){  
-                    
-                    $_array_fila   = explode(";", $_fila);
-                    if( is_array($_array_fila) && sizeof( $_array_fila ) == 3 ){
-                        
-                        $_cedula    = $_array_fila[0];
-                        $_valor     = $_array_fila[2];
-                        if( strlen($_cedula) != 10 ){
-                            // se valida el formato de cedula esten 10 
-                            array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"cedula no tiene formato correcto","cantidad"=>0));
-                        }
-                        if( !is_numeric( $_valor ) ){
-                            // se valida si el valor es numerico 
-                            array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"valor no tiene formato numerico","cantidad"=>0));
-                        }
-                        
-                        array_push($_archivo_cedulas, array("linea"=>$_linea,"cedula"=>$_cedula));
-                        array_push($_filas_archivo, array("linea"=>$_linea,"cedula"=>$_cedula,"valor"=>$_valor));
-                        
-                        $_linea_llena++;
-                        $_suma_total_archivo = $_suma_total_archivo + (float)$_valor;
-                                                
-                    }else{
-                        
-                        //echo "\n","linea--**--",$_linea,"--**--","no es array";
-                        array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"cantidad columnas no encontradas","cantidad"=>0));
-                    }                                       
-                    
-                }else if( $_linea > 0 && $_fila == "" ){
-                    
-                    //echo "\n","linea--**--",$_linea,"--**--","linea vacia";
-                    array_push($_archivo_errores, array("linea"=>$_linea,"error"=>"linea se encuentra vacia","cantidad"=>0));
-                } 
-                $_linea++;
-            }
-            fclose($file_abierto);
+            /** validacion lineas archivo **/
+            $dataTableError     = array(); //variable donde se guarda si existe error en la lectura del archivo            
+            //$_archivo_procesar
+            $rowError   = true;
             
-            //echo $_linea_llena;
-            $_numero_lineas_archivo = $_linea_llena;
-            /** validaciones del archivo */
-            if( $_linea_llena < 1 ){
-                array_push($_archivo_errores, array("linea"=>"","error"=>"Archivo se encuentra vacio","cantidad"=>0));
-                echo json_encode(array("cabecera"=>"$_error_cabecera","dataerror"=>$_archivo_errores) );
-                throw new Exception(); //genera exepcion y sale del metodo
-            }else{
-                
-                if( sizeof($_archivo_errores) > 0 ){
-                    
-                    echo json_encode(array("cabecera"=>"$_error_cabecera","dataerror"=>$_archivo_errores) );
-                    throw new Exception(); //genera exepcion y sale del metodo
-                    
+            /** funcion que valida lineas del archivo a procesar **/
+            $this->validacionArchivoLineas($_archivo_procesar, $rowError, $dataTableError, $dataTableData);
+            
+            if( $rowError ){
+                if( sizeof( $dataTableError ) > 0 ){
+                    echo json_encode(array("cabecera"=>"$_error_cabecera","dataerror"=>$dataTableError) );
                 }else{
-                    
-                    $_array_cedulas_repetidas   = array(); //variable para registrar la repeticion de las cedulas
-                    if( sizeof($_archivo_cedulas) > 0 ){
-                        
-                        $_cantidad_repeticiones_cedulas = 0;
-                        $_array_buscar_cedulas  = $_archivo_cedulas;
-                        $_i = 0;
-                        // se recorre el array de cedulas generadas en el primera validacion
-                        foreach ( $_archivo_cedulas as $res_i ){
-                            
-                            $cedula_main = $res_i['cedula']; //cedula a validar
-                            $j = 0;
-                            $_array_disponibles = array(); // variable para reorganizar nuevamente el array copia de cedulas recogidas en el primer recorrido del archivo
-                            $_linea_error="[";
-                            
-                            foreach ( $_array_buscar_cedulas as $res_j ){
-                                $_linea_error .= $res_j['linea'].", "; //coleccionadndo en las filas donde ese encuentra repetida la cedula
-                                if( $cedula_main == $res_j['cedula'] ){
-                                    $_cantidad_repeticiones_cedulas ++; //se suma las cantidades de veces de repeticiones
-                                    unset($_array_buscar_cedulas[$j]); //eliminar el alemento del array ya encontrado
-                                }else{
-                                    $_array_disponibles[] = $_array_buscar_cedulas[$j]; //se agrega al array para resetear los indices
-                                }
-                                $j++;
-                            }
-                            $_linea_error.="]";
-                            if( $_cantidad_repeticiones_cedulas > 1 ){
-                                array_push($_array_cedulas_repetidas, array("linea"=>$_linea_error,"error"=>"cedula repetida - $cedula_main","repeticiones"=>$_cantidad_repeticiones_cedulas));
-                            }
-                            
-                            $_array_buscar_cedulas = $_array_disponibles; //variable seteada
-                            
-                            
-                            $_cantidad_repeticiones_cedulas = 0;
-                            $_i ++;
-                        }
-                        
-                    }
-                    
-                    /**validacion cedulas repetidas */
-                    if( sizeof($_array_cedulas_repetidas) > 0 ) {
-                        
-                        echo json_encode(array("cabecera"=>"$_error_cabecera","dataerror"=>$_archivo_errores) );
-                        throw new Exception(); //genera exepcion y sale del metodo
-                        
-                    }else{
-                        
-                        //si no existe cedulas repetidas se valida en BD
-                        
-                        $_array_cedulas_bd = array();
-                        /** recorrer cedula validas contra BD **/
-                        $columnas1  = " aa.id_participes, aa.cedula_participes";
-                        $tablas1    = " core_participes aa
-                            INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal";
-                        $where1     = " 1 = 1 AND bb.id_entidad_patronal = $_id_entidad_patronal";
-                        $id1        = "aa.id_participes";
-                        
-                        $_bd = true;
-                        foreach($_archivo_cedulas as $res){
-                            
-                            $_cedula_archivo = $res['cedula'];
-                            $where1 .= "AND aa.cedula_participes = '$_cedula_archivo'";
-                            $rsConsulta1 = $Contribucion->getCondiciones($columnas1, $tablas1, $where1, $id1);
-                            
-                            if( empty($rsConsulta1) ){
-                                $_bd = false;
-                                $_linea_archivo = $res['linea'];
-                                $_error_bd      = "cedula [$_cedula_archivo] no pertenece a la Entidad Patronal";
-                                array_push($_array_cedulas_bd, array("linea"=>$_linea_archivo,"error"=>$_error_bd,"cantidad"=>0));
-                            }
-                            
-                        }
-                        
-                        if( !$_bd ){
-                            
-                            echo json_encode( array("cabecera"=>$_error_cabecera,"dataerror"=>$_array_cedulas_bd) );
-                            throw new Exception(); //genera exepcion y sale del metodo
-                        }
-                        
-                    }
-                    
-                    
-                }// "end if" array errores
+                    $arr    = array( 'linea'=>"",'error'=>"Archivo se encuentra vacio",'cantidad'=>0);
+                    echo json_encode(array("cabecera"=>"$_error_cabecera","dataerror"=>$arr) );
+                }
                 
-                
-            }// end if .validacion numero de lineas
+                throw new Exception();
+            }
             
+            /** variables para funcion de validacion de cedulas **/
+            $dataFilasArchivo       = array(); //objeto donde guarda datos leidos y aprobados 
+            $rowError   = false; //se establece en false en caso de generar error se produce dentro de la funcion
             
+            /** funcion que valida cedulas repetidas **/
+            $this->validacionCedulasRepetidas($rowError, $dataTableData, $dataTableError);
+            
+            if( $rowError ){
+                $_error_cabecera    = "ERROR LECTURA CEDULAS";
+                echo json_encode(array("cabecera"=>"$_error_cabecera","dataerror"=>$dataTableError) );                
+                throw new Exception();
+            }
+            
+            /** funcion que valida cedulas contra BD y genera nuevo datatable **/
+            $rowError   = true;
+            $dataTableError = array();
+            $this->validacionArchivoCedulas( $_id_entidad_patronal, $rowError, $dataTableData, $dataTableError, $dataFilasArchivo);
                         
+            if( $rowError ){
+                $_error_cabecera    = "ERROR LECTURA VS BD";
+                echo json_encode(array("cabecera"=>"$_error_cabecera","dataerror"=>$dataTableError) );
+                throw new Exception();
+            }
+            
+            /** lectura de archivos para obtener numero de lineas y suma total **/
+            $_numero_lineas_archivo = 0;
+            $_suma_total_archivo    = 0.00;
+            foreach ( $dataFilasArchivo as $res ){
+                $_numero_lineas_archivo ++;
+                $_suma_total_archivo    += $res['valor'];
+            }
+            
+                
         } catch (Exception $e) {
             //echo "<message>".$e->getMessage()."<message>"; 
             exit();
@@ -1221,7 +1074,7 @@ class CargaRecaudacionesController extends ControladorBase{
             $funcion = "ins_core_carga_recaudaciones_detalle";
             $parametros = "";
             $_error_detalle = false;
-            foreach ( $_filas_archivo as $res ){
+            foreach ( $dataFilasArchivo as $res ){
                 
                 // set up vars.
                 $_det_linea  = $res['linea'];
@@ -1237,19 +1090,402 @@ class CargaRecaudacionesController extends ControladorBase{
             
             if( $_error_detalle ){ throw new Exception("Error insertado detalle de archivo"); }
             
+            /** aqui realizar insertado de aportes en la tablas de contribucion **/
+            $dataCabecera   = array();
+            $dataCabecera['id_entidad_patronal']    = $_id_entidad_patronal;
+            $dataCabecera['anio_recaudaciones']     = $_anio_carga_recaudaciones;
+            $dataCabecera['mes_recaudaciones']      = $_mes_carga_recaudaciones;
+            $dataCabecera['usuario_usuarios']       = $_usuario_usuarios;
+            $dataCabecera['id_usuarios']            = $_id_usuarios;
+            $dataCabecera['fecha_descuentos_registrados']   = date('Y-m-d H:i:s');
+            $dataCabecera['nombre_archivo_registrados']     = $_nombre_archivo_guardar;
+            $dataCabecera['id_descuentos_formatos']         = $_id_descuentos_formatos;
+            $dataCabecera['procesado_descuentos_registrados']   = 't';
+            $dataCabecera['error_descuentos_registrados']       = 'f';
+            $dataCabecera['tipo_credito']           = "null"; //aqui poner el valor de tipo_credito ..cambiaria si es tipo credito
+            $dataCabecera['observacion_descuentos_registrados']     = "";
+            $dataCabecera['fecha_proceso_descuentos_registrados']   = date('Y-m-d H:i:s');
+                        
+            $auxDescuentos  = $this->InsertDescuentos( $this->_nombre_formato, $dataCabecera, $dataFilasArchivo );
+            
+            var_dump($auxDescuentos);
+            
+            if( $auxDescuentos['error'] ){ throw new Exception( $auxDescuentos['mensaje'] ); }
+            
+            /*****************************************************************************************/
+            
             $respuesta['mensaje']   = "Carga Generada";
             $respuesta['respuesta'] = 1;
             $respuesta['id_archivo']= $_id_carga_recaudaciones;
-            echo json_encode( $respuesta);
+            echo json_encode( $respuesta );
             $Contribucion->endTran('COMMIT');
             
         } catch (Exception $ex) {
             $Contribucion->endTran();
-            echo '<message> Error Carga Archivo Recaudacion '.$ex->getMessage().' <message>';
+            echo '<message> Error Carga Archivo Recaudacion \n'.$ex->getMessage().' <message>';
         }
         
     }
     /** END DC CONFIG*/
+    
+    /** dc begin 2020/04/17 **/
+    private function InsertDescuentos( string $formato, array $paramsCab, array $datos){
+        
+        $resp   = null;  
+        $recaudaciones = new RecaudacionesModel();
+        
+        $funcion = "core_ins_descuentos_registrados_cabeza";
+        
+        //creacion de la variable parametros
+        $parametros = "";
+        $parametros .= $paramsCab['id_entidad_patronal'].",";
+        $parametros .= $paramsCab['anio_recaudaciones'].",";
+        $parametros .= $paramsCab['mes_recaudaciones'].",";
+        $parametros .= "'".$paramsCab['usuario_usuarios']."',";
+        $parametros .= $paramsCab['id_usuarios'].",";
+        $parametros .= "'".$paramsCab['fecha_descuentos_registrados']."',";
+        $parametros .= "'".$paramsCab['nombre_archivo_registrados']."',";
+        $parametros .= $paramsCab['id_descuentos_formatos'].",";
+        $parametros .= "'".$paramsCab['procesado_descuentos_registrados']."',";
+        $parametros .= "'".$paramsCab['error_descuentos_registrados']."',";
+        $parametros .= $paramsCab['tipo_credito'].",";
+        $parametros .= "'".$paramsCab['observacion_descuentos_registrados']."',";
+        $parametros .= "'".$paramsCab['fecha_proceso_descuentos_registrados']."'";
+        
+        $sqRecaudaciones    = $recaudaciones->getconsultaPG($funcion, $parametros);
+        
+        $resultadoCabecera  = $recaudaciones->llamarconsultaPG($sqRecaudaciones);
+        $id_cabecera    = $resultadoCabecera[0];
+        
+        if( $this->_nombre_aportes_formato == $formato ){ 
+            
+            $id_entidad_patronal    = $paramsCab['id_entidad_patronal']; 
+            $id_formatos_descuentos = $paramsCab['id_descuentos_formatos'];
+            $anio_recaudacion       = $paramsCab['anio_recaudaciones'];
+            $mes_recaudacion        = $paramsCab['mes_recaudaciones'];
+            /** formato standar revisar definicion code ant 'linea'=>1,'cedula'=>'00000000000','valor'=>0.00,'id_participes'=>1 **/
+            $detalle    = array();
+            $funcionDetalle = "core_ins_descuentos_registrados_detalle_aportes";
+            
+            foreach ( $datos as $res ){
+                                
+                $detalle['id_descuentos_registrados_cabeza']    = $id_cabecera;
+                $detalle['id_entidad_patronal']                 = $id_entidad_patronal;
+                $detalle['anio_descuentos']                     = $anio_recaudacion;
+                $detalle['mes_descuentos']                      = $mes_recaudacion;
+                $detalle['id_participes']                       = $res['id_participes'];
+                $detalle['aporte_personal']                     = $res['valor'];
+                $detalle['aporte_patronal']                     = "0.00";
+                $detalle['rmu_descuentos']                      = "0.00";
+                $detalle['liquido_descuentos']                  = "0.00";
+                $detalle['multas_descuentos']                   = "0.00";
+                $detalle['antiguedad_descuentos']               = "0.00";
+                $detalle['alta_descuentos']                     = "t";
+                $detalle['id_descuentos_formatos']              = $id_formatos_descuentos;
+                $detalle['procesado_descuentos']                = "t";
+                $detalle['saldo_descuentos']                    = "0.00";
+                
+                $parametrosDetalle  = "'".join("','", $detalle)."'";
+                $sqDetalle  = $recaudaciones->getconsultaPG($funcionDetalle, $parametrosDetalle);
+                
+                $recaudaciones->llamarconsultaPG($sqDetalle);
+                
+                if( !empty( pg_last_error() ) ){
+                    break;
+                }
+                
+            }
+            
+           
+            
+        }elseif ($this->_nombre_creditos_formato == $formato ){
+            
+        }else{
+            
+        }      
+        
+        if( !empty( error_get_last() ) || !empty( pg_last_error() ) ){
+            $resp['error'] = true;
+            $resp['mensaje'] = "Error en insertado de Descuentos";
+            return $resp;
+        }
+        
+        $resp['error']=false;
+        $resp['mensaje']="";
+        return $resp;
+        
+    }
+    /** dc end 2020/04/17 **/
+    
+    /** begin dc 2020/04/20 **/
+    public function validarArchivoenBD(array $datos){
+        
+        $resp = array();
+        $recaudaciones = new RecaudacionesModel();
+        
+        $_mes_carga_recaudaciones       = array_key_exists('mes_recaudacion', $datos) ? $datos['mes_recaudacion'] : null;
+        $_anio_carga_recaudaciones      = array_key_exists('anio_recaudacion', $datos) ? $datos['anio_recaudacion'] : null;
+        $_formato_carga_recaudaciones   = array_key_exists('formato_recaudacion', $datos) ? $datos['formato_recaudacion'] : null;
+        $_id_entidad_patronal           = array_key_exists('id_entidad_patronal', $datos) ? $datos['id_entidad_patronal'] : null;
+        
+        $_mes_carga_recaudaciones = str_pad($_mes_carga_recaudaciones, 2, "0", STR_PAD_LEFT);
+        
+        $this->devuelveNombreFormato($_formato_carga_recaudaciones); //aqui se setea las variables para comparar        
+        $_nombre_formato = $this->_nombre_formato;
+        
+        if( $_formato_carga_recaudaciones == 1 || $_formato_carga_recaudaciones == 2 ){
+            
+            $columnas1 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
+            $tablas1   = " core_carga_recaudaciones";
+            $where1    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
+                " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '".$_nombre_formato."' ";
+            $id1       = "id_carga_recaudaciones";
+            $rsConsulta1 = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
+            
+            if( !empty($rsConsulta1) ){
+                $resp['mensaje']    = " tipo de formato ya se encuentra cargado ";                
+            }else{
+                
+                $columnas2 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
+                $tablas2   = " core_carga_recaudaciones";
+                $where2    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
+                    " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '".$this->_nombre_combinado_formato."' ";
+                $id2       = " id_carga_recaudaciones";
+                $rsConsulta2 = $recaudaciones->getCondiciones($columnas2, $tablas2, $where2, $id2);
+                
+                if( !empty($rsConsulta2) ){
+                    $resp['mensaje']    = "Archivo no cargado . Razon: Existe un archivo Combinado cargado ";
+                }
+                
+            }
+            
+        }else if( $_formato_carga_recaudaciones == 3){
+            
+            $columnas1 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
+            $tablas1   = " core_carga_recaudaciones";
+            $where1    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
+                " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones = '$_nombre_formato' ";
+            $id1       = " id_carga_recaudaciones";
+            $rsConsulta1 = $recaudaciones->getCondiciones($columnas1, $tablas1, $where1, $id1);
+            
+            if( !empty($rsConsulta1) ){
+                $resp['mensaje']    = "tipo de formato ya se encuentra cargado ";
+            }else{
+                $columnas2 = " id_carga_recaudaciones, nombre_carga_recaudaciones";
+                $tablas2   = " core_carga_recaudaciones";
+                $where2    = " id_estatus = 1 AND id_entidad_patronal = $_id_entidad_patronal AND anio_carga_recaudaciones = $_anio_carga_recaudaciones".
+                    " AND mes_carga_recaudaciones = $_mes_carga_recaudaciones AND formato_carga_recaudaciones in ('DESCUENTOS CREDITOS','DESCUENTOS APORTES')";
+                $id2       = " id_carga_recaudaciones";
+                $rsConsulta1 = $recaudaciones->getCondiciones($columnas2, $tablas2, $where2, $id2);
+                if( !empty($rsConsulta1) ){
+                    $resp['mensaje']    = "tipo de formato no se puede cargar existe un archivo individual.";
+                }
+            }
+        }
+        
+        if( array_key_exists('mensaje', $resp) ){
+            $resp['error']  = true;
+            return $resp;
+        }
+        
+        return array('error'=>false,'mensaje'=>"");
+        
+    }
+    
+    public function cargaDescuentosFormatos(){
+        
+        $recaudaciones = new RecaudacionesModel();
+        $resp  = null;
+        
+        $id_entidad_patronal = $_POST['id_entidad_patronal'];
+        
+        $col1  = " id_descuentos_formatos,nombre_descuentos_formatos ";
+        $tab1  = " public.core_descuentos_formatos ";
+        $whe1  = " id_entidad_patronal = $id_entidad_patronal";
+        $id1   = " id_descuentos_formatos ";
+        $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);        
+        
+        try {
+            
+            $error_pg = pg_last_error();
+            if( !empty($error_pg)  || !empty( error_get_last() ) ){
+                throw new Exception( $error_pg );
+            }
+            
+            $resp['data'] = ( !empty( $rsConsulta1 ) ) ? $rsConsulta1 : null;
+                      
+        } catch (Exception $e) {
+            $buffer =  error_get_last();
+            $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+            $resp['mensaje'] = $e->getMessage();
+            $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+            $resp['estatus'] = "ERROR";
+        }
+        
+        error_clear_last();
+        if (ob_get_contents()) ob_end_clean();
+        
+        echo json_encode($resp);
+       
+    }
+    /** end dc 2020/04/20 **/
+    
+    /** begin dc 2020/04/21 **/
+    private function validacionArchivoLineas( string $file, string &$rowError, array  &$dataTableError, array &$dataTableData){
+        
+        /** variables para la lectura del archivo **/
+        $_archivo_cedulas = array();
+        $_suma_total_archivo = 0.00;
+        
+        $rowError   = false;
+        
+        $file_abierto   = fopen($file, "r");    // comienza lectura de archivo
+        if( !$file_abierto ){ $rowError = true; }
+       
+        /** AQUI VALIDACION DE FORMATOS */
+        $_linea = 0;
+        $_linea_llena = 0;
+        
+        while( !feof($file_abierto) )
+        {
+            $_valor     = 0.00;
+            $_fila = fgets($file_abierto);
+            $_fila = trim($_fila);
+            $_fila = trim($_fila,"\n");
+            
+            if( $_linea > 0 && $_fila != "" ){
+                
+                $_array_fila   = explode(";", $_fila);
+                if( is_array($_array_fila) && sizeof( $_array_fila ) == 3 ){
+                    
+                    $_cedula    = $_array_fila[0];
+                    $_valor     = $_array_fila[2];
+                    if( strlen($_cedula) != 10 ){
+                       //validacion del 
+                        array_push($dataTableError, array("linea"=>$_linea,"error"=>"cedula no tiene formato correcto","cantidad"=>0));
+                        $rowError   = true;
+                    }
+                    if( !is_numeric( $_valor ) ){
+                        // se valida si el valor es numerico
+                        array_push($dataTableError, array("linea"=>$_linea,"error"=>"valor no tiene formato numerico","cantidad"=>0));
+                        $rowError   = true;
+                    }
+                    
+                    //procesos para la fila que paso los filtros
+                    array_push($_archivo_cedulas, array("linea"=>$_linea,"cedula"=>$_cedula));
+                    array_push($dataTableData, array("linea"=>$_linea,"cedula"=>$_cedula,"valor"=>$_valor));
+                    
+                    $_linea_llena++;
+                    $_suma_total_archivo = $_suma_total_archivo + (float)$_valor;
+                    
+                }else{
+                    
+                    array_push($dataTableError, array("linea"=>$_linea,"error"=>"Numero de columnas no Validas --> <span class='text-danger'> Columnas Solicitadas es 3 <span> ","cantidad"=>0));
+                    $rowError   = true;
+                }
+                
+            }else if( $_linea > 0 && $_fila == "" ){
+                
+                array_push($dataTableError, array("linea"=>$_linea,"error"=>"linea se encuentra vacia","cantidad"=>0));
+                $rowError   = true;
+            }
+            $_linea++;
+        }
+        fclose($file_abierto); 
+        
+        
+        //         $resp   = array();
+        //         $resp['error']  = $rowError;
+        //         $resp['dtError']    = ( !empty( $_archivo_errores ) ) ? $_archivo_errores : null;
+        //         $resp['dtArchivo']  = ( !empty( $_filas_archivo ) ) ? $_filas_archivo : null;
+                
+        //         return $resp;
+        
+    }
+    
+    private function validacionCedulasRepetidas(string &$rowError, array $data,  array &$errorFilas){
+        
+        if( sizeof( $data ) > 0 ){
+            
+            $_cantidad_repeticiones_cedulas = 0;
+            $_array_buscar_cedulas  = $data; //ser realiza una copia del array de cedulas
+            $_i = 0;
+            
+            foreach ( $data as $res_i ){
+                
+                $cedula_main = $res_i['cedula']; //cedula a validar
+                $j = 0;
+                $_array_disponibles = array(); // variable para reorganizar nuevamente el array copia de cedulas recogidas en el primer recorrido del archivo
+                
+                $_linea_error="[";                
+                foreach ( $_array_buscar_cedulas as $res_j ){
+                    
+                    if( $cedula_main == $res_j['cedula'] ){
+                        $_linea_error .= $res_j['linea'].", "; //coleccionando en las filas donde ese encuentra repetida la cedula
+                        $_cantidad_repeticiones_cedulas ++; //se suma las cantidades de veces de repeticiones
+                        unset($_array_buscar_cedulas[$j]); //eliminar el alemento del array ya encontrado
+                    }else{
+                        $_array_disponibles[] = $_array_buscar_cedulas[$j]; //se agrega al array para resetear los indices
+                    }
+                    $j++;
+                }
+                $_linea_error.="]";
+                
+                if( $_cantidad_repeticiones_cedulas > 1 ){
+                    $rowError   = true;
+                    array_push($errorFilas, array("linea"=>$_linea_error,"error"=>"cedula repetida - $cedula_main","cantidad"=>$_cantidad_repeticiones_cedulas));
+                }
+                
+                $_array_buscar_cedulas = $_array_disponibles; //variable seteada                
+                
+                $_cantidad_repeticiones_cedulas = 0;
+                $_i ++;
+            }
+        }else{
+            $rowError   = true;
+            array_push($errorFilas, array('linea'=>1,'error'=>"Data Vacia Validacion Cedulas",'Cantidad'=>0));
+        }
+        
+    }
+    
+    private function validacionArchivoCedulas( string $id_entidad_patronal,string &$rowError, array $data,  array &$errorFilas, array &$ArchivoFilas ){
+        
+        $recaudaciones = new RecaudacionesModel();
+        
+        /** recorrer cedula validas contra BD **/
+        $columnas1  = " aa.id_participes, aa.cedula_participes";
+        $tablas1    = " core_participes aa
+                            INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal";
+        $where1     = " 1 = 1 AND bb.id_entidad_patronal = $id_entidad_patronal";
+        $id1        = "aa.id_participes";
+        
+        $_bd = true;
+        foreach(  $data as $res){
+            
+            $_linea_archivo  = $res['linea'];
+            $_cedula_archivo = $res['cedula'];
+            $_valor_archivo  = $res['valor'];
+            $whereCedula     = " AND aa.cedula_participes = '$_cedula_archivo'";
+            $wherefinal      = $where1.$whereCedula;
+            $rsConsulta1 = $recaudaciones->getCondiciones($columnas1, $tablas1, $wherefinal, $id1); 
+            if( empty($rsConsulta1) ){
+                $_bd = false;                
+                $_error_bd      = "cedula [$_cedula_archivo] no pertenece a la Entidad Patronal";
+                array_push( $errorFilas, array( 'linea'=>$_linea_archivo,'error'=>$_error_bd,'cantidad'=>0));
+            }else{
+                $id_participes = $rsConsulta1[0]->id_participes;
+                array_push($ArchivoFilas, array('linea'=>$_linea_archivo,'cedula'=>$_cedula_archivo,'valor'=>$_valor_archivo,'id_participes'=>$id_participes));
+            }
+            
+        }
+        
+        if( $_bd ){
+            
+            $rowError   = false;
+        }
+        
+    }
+    /** end dc 2020/04/21 **/
     
     /** BEGIN FUNCIONES UTILITARIAS PARA LA CLASE */
     private function devuelveMesNombre($_mes){
@@ -1258,6 +1494,12 @@ class CargaRecaudacionesController extends ControladorBase{
         $_intMes = (int)$_mes;
         return $meses[$_intMes-1];
         
+    }
+    
+    public function imprimirarray(){
+        
+        $meses = array('enero'=>'1','febrero'=>1256,'marzo'=>'1','abril'=>'1','mayo'=>'1','junio'=>'1','julio'=>'34','f'=>'1','septiembre'=>'1','octubre'=>'1','noviembre'=>'1','diciembre'=>'1');
+        echo "'".join("','", $meses)."'";
     }
     
     private function devuelveNombreFormato($_formato){
@@ -1351,6 +1593,10 @@ class CargaRecaudacionesController extends ControladorBase{
         fclose($file_abierto);
     }
     /** termina funcion de codigos reutilizads*/
+    
+    public function verapi(){
+         echo json_encode(array('error'=>true,'mensaje'=>'ha llegado conexion exitosa fectch'));
+    }
     
 }
 

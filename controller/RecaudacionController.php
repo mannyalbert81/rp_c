@@ -1825,7 +1825,7 @@ class RecaudacionController extends ControladorBase{
     	    INNER JOIN core_participes cc ON cc.id_participes = aa.id_participes
     	    LEFT JOIN core_creditos dd ON dd.id_creditos = aa.id_creditos";
 	        $where3    = "cc.id_estatus = 1
-    	    --AND dd.id_estatus = 1
+    	    AND dd.id_estatus = 1
     	    AND bb.id_archivo_recaudaciones IN ($_id_archivo_recaudaciones) ";
 	        $id3       = "cc.id_participes";
 	        $rsConsulta3 = $Contribucion->getCondiciones($columnas3, $tablas3, $where3, $id3);
@@ -1938,7 +1938,7 @@ class RecaudacionController extends ControladorBase{
         	    INNER JOIN core_participes cc ON cc.id_participes = aa.id_participes
         	    LEFT JOIN core_creditos dd ON dd.id_creditos = aa.id_creditos";
 	        $where3    = "cc.id_estatus = 1
-        	    --AND dd.id_estatus = 1
+        	    AND dd.id_estatus = 1
         	    AND bb.id_archivo_recaudaciones IN ($_id_archivo_recaudaciones) ";
 	        $id3       = "cc.id_participes";
 	        $rsConsulta3 = $Contribucion->getCondiciones($columnas3, $tablas3, $where3, $id3);

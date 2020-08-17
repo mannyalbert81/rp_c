@@ -112,7 +112,7 @@
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND b.cedula_participes ILIKE '".$search."%'";
+	            $where1=" AND id_representante ILIKE '".$search."%'";
 	            
 	            $where_to=$where.$where1;
 	            
@@ -346,7 +346,7 @@
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND b.cedula_participes ILIKE '".$search."%'";
+	            $where1=" AND id_representante ILIKE '".$search."%'";
 	            
 	            $where_to=$where.$where1;
 	            
@@ -568,7 +568,7 @@
 	        if(!empty($search)){
 	            
 	            
-	            $where1=" AND b.cedula_participes ILIKE '".$search."%'";
+	            $where1=" AND id_representante ILIKE '".$search."%'";
 	            
 	            $where_to=$where.$where1;
 	            

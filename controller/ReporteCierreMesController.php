@@ -390,6 +390,7 @@
 	    
 	    
 	    $reporte_cierre_mes = new ReporteCierreMesModel();
+
 	    $columnas = " core_creditos_cierre_mes.id_creditos_cierre_mes,
 	    cc.id_creditos,
 	    cc.numero_creditos,
@@ -421,9 +422,6 @@
 	        cc.id_creditos = core_creditos_cierre_mes.id_creditos AND
 	        core_estado_creditos.id_estado_creditos = cc.id_estado_creditos AND core_creditos_cierre_mes.dias_vencidos_sbs < 0";
 	    $id="core_participes.apellido_participes";
-	    
-	    
-	    
 
 	    //$id=" ORDER BY core_creditos_cierre_mes.id_creditos_cierre_mes LIMIT 100";
 	    $rsdatos = $reporte_cierre_mes->getCondiciones($columnas, $tablas, $where, $id);

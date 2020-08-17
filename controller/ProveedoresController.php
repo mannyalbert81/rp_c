@@ -194,11 +194,30 @@ class ProveedoresController extends ControladorBase{
 	        $_id_bancos                    = $_POST["id_bancos"];
 	        $_id_tipo_cuentas              = $_POST["id_tipo_cuentas"];
 	        $_numero_cuenta_proveedores    = $_POST["numero_cuenta_proveedores"];
+	        $file_imagen_registro      = $_FILES['imagen_registro'];
 	       	        
 	        $error = error_get_last();
 	        
 	        if(!empty($error))
 	            throw new Exception(" Variables no definidas ". $error['message'] );
+	        
+	            $imagen_registro   = 'null';
+	            if( $file_imagen_registro['tmp_name'] != "" ){
+	                $directorio = $_SERVER['DOCUMENT_ROOT'].'/rp_c/fotografias_documentos/';
+	                
+	                $nombre    = $file_imagen_registro['name'];
+	                //$tipo      = $_FILES['imagen_registro']['type'];
+	                //$tamano    = $_FILES['imagen_registro']['size'];
+	                
+	                move_uploaded_file($file_imagen_registro['tmp_name'],$directorio.$nombre);
+	                $data = file_get_contents($directorio.$nombre);
+	                $imagen_registro = pg_escape_bytea($data);
+	            }else{
+	                
+	                $directorio = dirname(__FILE__).'\..\view\images\usuario.jpg';
+	                $imagen_registro   = is_file( $directorio ) ? pg_escape_bytea( file_get_contents( $directorio ) ) : "null";
+	            } 
+	            
 	        
             if($_id_proveedores > 0){
                 
@@ -211,7 +230,8 @@ class ProveedoresController extends ControladorBase{
                               id_tipo_proveedores = '$_id_tipo_proveedores',
                               id_bancos = '$_id_bancos',
                               id_tipo_cuentas = '$_id_tipo_cuentas',
-                              numero_cuenta_proveedores = '$_numero_cuenta_proveedores'";
+                              numero_cuenta_proveedores = '$_numero_cuenta_proveedores',
+                              archivo_registro='$imagen_registro'";
                 
                 $tabla = "proveedores";
                 $where = "id_proveedores = '$_id_proveedores'";
@@ -229,7 +249,7 @@ class ProveedoresController extends ControladorBase{
                 $funcion = "ins_proveedores";
                 $parametros = " '$_nombre_proveedores','$_identificacion_proveedores','$_contactos_proveedores',
                                 '$_direccion_proveedores','$_telefono_proveedores','$_email_proveedores',
-                                '$_id_tipo_proveedores', '$_id_bancos', '$_id_tipo_cuentas', '$_numero_cuenta_proveedores'";
+                                '$_id_tipo_proveedores', '$_id_bancos', '$_id_tipo_cuentas', '$_numero_cuenta_proveedores', '$imagen_registro'";
                 $proveedores->setFuncion($funcion);
                 $proveedores->setParametros($parametros);
                 $resultado=$proveedores->llamafuncionPG();

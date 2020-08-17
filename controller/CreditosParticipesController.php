@@ -1142,7 +1142,7 @@ class CreditosParticipesController extends ControladorBase
             echo json_encode($response);
         }
     }
-    
+        
     public function cargarProductoCredito()
     {
         ob_start();

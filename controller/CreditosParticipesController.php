@@ -1142,6 +1142,31 @@ class CreditosParticipesController extends ControladorBase
             echo json_encode($response);
         }
     }
+    
+    public function cargarProductoCredito()
+    {
+        ob_start();
+        $creditos   = new CreditosModel();
+        
+        $codigo_tipo_creditos   = $_POST['codigo_tipo_creditos'];
+        
+        $col1   = " aa.id_creditos_productos, aa.nombre_creditos_productos";
+        $tab1   = " core_creditos_productos aa
+            INNER JOIN core_tipo_creditos bb ON bb.id_tipo_creditos = aa.id_tipo_creditos";
+        $whe1   = " aa.id_estatus = 1
+            AND bb.codigo_tipo_creditos = '$codigo_tipo_creditos' ";
+        $id1    = " aa.id_creditos_productos";
+        $rsConsulta1    = $creditos->getCondiciones($col1, $tab1, $whe1, $id1);
+               
+        $salida = ob_get_clean();
+        if( !empty($salida) ){
+            var_dump( $salida );
+            echo "Existe error en function php";
+        }else{
+            $respuesta  = $rsConsulta1 ?? null;
+            echo json_encode($respuesta);
+        }        
+    }
 
     /**
      * ************************************************************************** FUNCIONES UTILS DE CONTROLADOR ***************************

@@ -579,7 +579,6 @@ class SimulacionCreditosController extends ControladorBase
         $totalCtaIndividual = $creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
 
         // AQUI PONER ATENCION AL FINAL saldo_actual_creditos
-
         $columnas = "COALESCE(SUM(saldo_actual_creditos),0) AS total";
         $tablas = "core_creditos INNER JOIN core_participes
             ON core_creditos.id_participes  = core_participes.id_participes";
@@ -587,7 +586,6 @@ class SimulacionCreditosController extends ControladorBase
         $saldo_actual_credito = $creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
 
         // AQUI AGRUPAR POR MES valor_personal_contribucion PARA VER 3 ULTIMAS APORTACIONES
-
         $columnas = "to_char(c.fecha_registro_contribucion, 'MM') as mes, sum(c.valor_personal_contribucion) as aporte";
         $tablas = "core_contribucion c inner join core_participes p on c.id_participes = p.id_participes";
         $where = "p.cedula_participes='" . $cedula_garante . "' and p.id_estatus=1 and c.id_contribucion_tipo=1  AND c.fecha_registro_contribucion BETWEEN '" . $fecha_inicio . "' AND '" . $fecha_fin . "' AND c.id_estatus=1";
@@ -637,19 +635,19 @@ class SimulacionCreditosController extends ControladorBase
 
         $infoParticipe = $creditos->getCondiciones($columnas, $tablas, $where, $id);
 
-        if (! (empty($infoParticipe))) {
+        if ( !(empty( $infoParticipe )) ) {
 
             $columnas = "id_creditos_garantias";
-            $tablas = "core_creditos_garantias 
-                INNER JOIN core_participes ON core_creditos_garantias.id_participes = core_participes.id_participes
-                INNER JOIN estado ON core_creditos_garantias.id_estado=estado.id_estado";
-            $where = "core_participes.cedula_participes='" . $cedula_garante . "' AND estado.nombre_estado='ACTIVO'";
-            $id = "id_creditos_garantias";
-
+            $tablas = "core_creditos_garantias aa
+                INNER JOIN core_participes bb ON bb.id_participes = aa.id_participes
+                INNER JOIN estado cc ON cc.id_estado = aa.id_estado";
+            $where = "bb.id_estatus = 1 AND bb.cedula_participes ='" . $cedula_garante . "' AND cc.nombre_estado='ACTIVO'";
+            $id = "aa.id_creditos_garantias";
+          
             $Garantias = $creditos->getCondiciones($columnas, $tablas, $where, $id);
 
-            if (empty($Garantias)) {
-
+            if(empty($Garantias)) 
+            {
                 $saldo_cta_individual = number_format((float) $saldo_cta_individual, 2, '.', '');
                 $hoy = date("Y-m-d");
 
@@ -664,18 +662,21 @@ class SimulacionCreditosController extends ControladorBase
                 $fecha_nacimiento = $infoParticipe[0]->fecha_nacimiento_participes;
                 $observacion = "";
                 $estado_garante = true;
-                $solicitud = "no-obervacion";
-                if ($num_aporte < 3) {
-                    $observacion = "Garante no tiene los 3 últimos aportes pagados.";
+                $solicitud = "bg-olive";                
+                if ($num_aporte < 3) 
+                {
+                    $observacion .= "Garante no tiene los 3 últimos aportes pagados.";
                     $estado_garante = false;
+                    $solicitud = "bg-red";  
+                }
+                if( empty($disponible))
+                {
+                    $observacion .= " Garante no dispone de valores como garantias.";
+                    $estado_garante = false;
+                    $solicitud = "bg-red";
                 }
 
-                $html = '<div >
-                    <div class="pull-right">
-                    <button type="button" id="btn_cambiar_garante" class="close pull-right" aria-label="Quitar garante">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                    </div>                    
+                $html = '<div >                                       
                     <div class="box-footer no-padding bg-olive">
                         <div class="bio-row"><p>' . $nombre_completo . ' ==> (GARANTE)</p></div>
                         <div class="bio-row"><p><span class="tab2">Identificaci&oacute;n</span>: ' . $identificacion . '</p></div>
@@ -685,8 +686,14 @@ class SimulacionCreditosController extends ControladorBase
                         <div class="bio-row"><p><span class="tab2">Capital de créditos </span>: ' . $saldo_credito . '</p></div>
                         <div class="bio-row"><p><span class="tab2">Disponible </span>: ' . $disponible . '</p></div>
                         <div class="bio-row ' . $solicitud . '"><p><span class="tab2">Observaci&oacute;n </span>: ' . $observacion . '</p></div>
-                    </div>                   
+                    </div> 
+                    <div class="btn-contenedor">
+                        <button class="btn-flotante" id="btn_cambiar_garante" title="Quitar garante" >
+                          <span class="flotante">&times;</span>
+                        </button>
+                    </div>                                    
                  </div>';
+                
                 $data = array();
 
                 $data['estado_garante'] = $estado_garante;
@@ -701,6 +708,7 @@ class SimulacionCreditosController extends ControladorBase
                 $response['html'] = $html;
                 $response['estatus'] = "OK";
                 $response['data'] = $data;
+                
             } else {
                 $response['estatus'] = "ERROR";
                 $response['html'] = "<span>Garante no disponible</span>";
@@ -2669,7 +2677,6 @@ class SimulacionCreditosController extends ControladorBase
         $columnas = "numero_consecutivos";
         $tablas = "consecutivos";
         $where = "nombre_consecutivos='CREDITO'";
-
         $numero_credito = $credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
         $numero_credito = $numero_credito[0]->numero_consecutivos;
         $numero_credito ++;
@@ -3085,11 +3092,11 @@ class SimulacionCreditosController extends ControladorBase
         $db = new DB_Functions();
         $rp_capremci = new PlanCuentasModel();
 
-        $columnas = "		  solicitud_prestamo.nombre_banco_cuenta_bancaria,
-						  solicitud_prestamo.tipo_cuenta_cuenta_bancaria,
-						  solicitud_prestamo.numero_cuenta_cuenta_bancaria,
-						  solicitud_prestamo.numero_cedula_datos_personales,
-                      solicitud_prestamo.tipo_pago_cuenta_bancaria";
+        $columnas = " solicitud_prestamo.nombre_banco_cuenta_bancaria,
+				solicitud_prestamo.tipo_cuenta_cuenta_bancaria,
+				solicitud_prestamo.numero_cuenta_cuenta_bancaria,
+				solicitud_prestamo.numero_cedula_datos_personales,
+                solicitud_prestamo.tipo_pago_cuenta_bancaria";
         $tablas = " public.solicitud_prestamo";
         $where = "solicitud_prestamo.id_solicitud_prestamo='$id_solicitud'";
         $id = "solicitud_prestamo.id_solicitud_prestamo";
@@ -3669,11 +3676,11 @@ class SimulacionCreditosController extends ControladorBase
             $fecha_inicio = $fechasValidacion['desde'];
             $fecha_fin = $fechasValidacion['hasta'];
 
-            // PARA PRUEBAS TEMPORAL --cambiar fecha inicio y final
-            // 2019-12-01 --estos valores cambiar a su arbitrariedad
-            // 2020-02-28
-            // $fecha_inicio = '2019-12-01';
-            // $fecha_fin = '2020-02-28';
+            //PARA PRUEBAS TEMPORAL --cambiar fecha inicio y final
+            //2019-12-01 --estos valores cambiar a su arbitrariedad
+            //2020-02-28
+            //$fecha_inicio = '2020-04-01';
+            //$fecha_fin = '2020-06-30';
 
             $saldo_credito = 0;
             $saldo_cta_individual = 0;
@@ -3745,7 +3752,7 @@ class SimulacionCreditosController extends ControladorBase
             $hoy = date("Y-m-d");
             $tiempo = $this->dateDifference($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
             $dias_hasta = $this->dateDifference1($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
-            $dias_75 = 365 * 75;
+            $dias_75 = 365 * 75;           
             $diferencia_dias = $dias_75 - $dias_hasta;
             $diferencia_dias = $diferencia_dias / 30;
             $diferencia_dias = floor($diferencia_dias * 1) / 1;
@@ -3781,23 +3788,25 @@ class SimulacionCreditosController extends ControladorBase
             $data['aportes_participe'] = $num_aporte;
 
             // validacion para ver si puede acceder al credito
-
-            if ($disponible >= 150 && $edad >= 18 && $edad < 75 && $num_aporte == 3) {
+            $observacion = "";
+            if( $disponible >= 150 && $edad >= 18 && $edad < 75 && $num_aporte == 3) {
                 $solicitud = "bg-olive";
                 $data['estado_solicitud'] = true;
             } else {
                 $data['estado_solicitud'] = false;
-                $solicitud = "bg-red";
-            }
-
-            $observacion = "";
-            if ($num_aporte < 3) {
-                $observacion = "El participe no tiene los 3 últimos aportes pagados.";
-            }
-
+                $solicitud = "bg-red";              
+                
+                if ($num_aporte < 3) {
+                    $observacion .= "El participe no tiene los 3 últimos aportes pagados.";
+                }
+                if( $edad <= 18 || $edad >= 75){
+                    $observacion .= "Revisar edad Participe";
+                }
+            }            
+            
             $html = '<div id="info_participe_solicitud" class="row small-box bg-olive">
                     <h3 class="titulo">Antecedentes Participe</h3>
-                    <div class="col-md-6 col-md-6">
+                    <div class="col-md-6 col-lg-6">
                     <div class="box-footer no-padding bg-olive">
                         <div class="bio-row"><p>' . $data['nombre_participe_credito'] . '</p></div>
                         <div class="bio-row"><p><span class="tab2">Identificaci&oacute;n</span>: ' . $data['cedula_credito'] . '</p></div>
@@ -3809,7 +3818,7 @@ class SimulacionCreditosController extends ControladorBase
                         <div class="bio-row ' . $solicitud . '"><p><span class="tab2">Observaci&oacute;n</span>: ' . $observacion . '</p></div>
                     </div>
                     </div>
-                    <div class="col-md-6 col-md-6">
+                    <div class="col-md-6 col-lg-6">
                     <div id="div_info_garante"></div>
                     <div id="div_info_credito_renovar"></div>
                     </div>
@@ -3824,7 +3833,7 @@ class SimulacionCreditosController extends ControladorBase
             $response['data'] = $data;
         } catch (Exception $e) {
 
-            $response['html'] = "<span>Error al  cargar la informaci&oacute;n Antecedes Participe</span>";
+            $response['html'] = "<span>Error al  cargar la informaci&oacute;n Antecedes del Participe</span>";
             $response['estatus'] = "ERROR";
             $response['mensaje'] = "Error al cargar informacion de creditos";
             $response['buffer'] = error_get_last();
@@ -4604,8 +4613,7 @@ class SimulacionCreditosController extends ControladorBase
         $whe1   = " descripcion_formulas='seguro_de_desgravamen' AND estado.nombre_estado='ACTIVO' AND estado.tabla_estado='core_formulas'";
         $rsFormula  = $model->getCondicionesSinOrden($col1, $tab1, $whe1, "");
         
-        return $rsFormula[0]->expresion_formulas;
-        
+        return $rsFormula[0]->expresion_formulas;        
     }
     /** end dc 2020/07/03 **/
     

@@ -84,7 +84,7 @@ class ComprobantesController
     public function enviarXml($clave)
     {
 
-    try {
+        try {
             if (file_exists($this->config['firmados'] . DIRECTORY_SEPARATOR . $clave . ".xml") === false)
                 return array('error' => true, 'mensaje' => 'documento firmado no existe');
 

@@ -300,6 +300,18 @@
                           </table>
                     	</div>
           				</div> 
+          				
+                        <!--dc 2020-08-18 -->
+                        <!-- panel para saldos de valores -->
+          				<div id="pnl_saldos_creditos" class="panel panel-success" >
+          					<div class="panel-heading" >Información Saldos de Cr&eacute;dito</div>
+                      		<div class="panel-body">    
+              	            <!-- ESTA TABLA SE LLENA CON PROCESO DE JS PARA OBTENER SALDOS -->  
+                  				<div id="div_detalle_saldos">
+                  				</div>
+            				</div>
+      					</div>
+      					<!--end dc 2020-08-18 --> 
           		  
                       <div class="panel panel-primary">
                            <div class="panel-heading" >Reportes</div>
@@ -400,7 +412,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.14"></script>
+     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.18"></script>
   
 
   </body>

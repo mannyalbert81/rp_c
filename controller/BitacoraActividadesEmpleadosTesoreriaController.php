@@ -363,22 +363,22 @@ class BitacoraActividadesEmpleadosTesoreriaController extends ControladorBase{
                     
                     $i++;
                     $html.='<tr>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$i.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->fecha_registro.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->desde.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->hasta.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->credito.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->prestaciones.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->recaudaciones.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->tesoreria.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->contabilidad.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->auditoria.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->biess.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->sb.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->otras_actividades.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->cedula_participes.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->nombres_participes.'</td>';
-                    $html.='<td style="text-align: center; font-size: 10px;">'.$res->motivo_atencion.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$i.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->fecha_registro.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->desde.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->hasta.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->credito.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->prestaciones.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->recaudaciones.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->tesoreria.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->contabilidad.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->auditoria.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->biess.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->sb.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->otras_actividades.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->cedula_participes.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->nombres_participes.'</td>';
+                    $html.='<td style="text-align: justify; font-size: 10px;">'.$res->motivo_atencion.'</td>';
                     
                     
                     
@@ -623,22 +623,22 @@ class BitacoraActividadesEmpleadosTesoreriaController extends ControladorBase{
                 
                 $i++;
                 $html.='<tr>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$i.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->fecha_registro.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->desde.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->hasta.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->credito.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->prestaciones.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->recaudaciones.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->tesoreria.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->contabilidad.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->auditoria.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->biess.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->sb.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->otras_actividades.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->cedula_participes.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->nombres_participes.'</td>';
-                $html.='<td style="text-align: center; font-size: 10px;">'.$res->motivo_atencion.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$i.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->fecha_registro.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->desde.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->hasta.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->credito.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->prestaciones.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->recaudaciones.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->tesoreria.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->contabilidad.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->auditoria.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->biess.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->sb.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->otras_actividades.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->cedula_participes.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->nombres_participes.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->motivo_atencion.'</td>';
                 $html.='</tr>';
             }
             

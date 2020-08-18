@@ -134,62 +134,63 @@
             </div>        
   		<div class="box-body">
   		   	 <div class="row">
-        	  		   <div class="col-xs-12 col-md-6 col-md-6 ">
+        	  		   <div class="col-xs-12 col-lg-6 col-md-6 ">
             		    <div class="form-group">
-                          <label for="credito" class="control-label">Crédito:</label>.
-                            <input  type="text" class="form-control" id="credito" name="credito" value=""  placeholder="Crédito" required />
+                          <label for="credito" class="control-label">Crédito:</label>
+                              <textarea class="form-control" id="credito" name="credito" rows="3"  placeholder="....." required></textarea>
                         </div>
             		  </div>
-            		   <div class="col-xs-12 col-md-6 col-md-6 ">
+            		   <div class="col-xs-12 col-lg-6 col-md-6 ">
             		    <div class="form-group">
-                          <label for="prestaciones" class="control-label">Prestaciones:</label>.
-                            <input  type="text" class="form-control" id="prestaciones" name="prestaciones" value=""  placeholder="Prestaciones" required />
+                          <label for="prestaciones" class="control-label">Prestaciones:</label>
+      				    <textarea class="form-control" id="prestaciones" name="prestaciones" rows="3"  placeholder="....." required></textarea>
+                         </div>
+            		  </div>
+            		   <div class="col-xs-12 col-lg-6 col-md-6 ">
+            		    <div class="form-group">
+                          <label for="recaudaciones" class="control-label">Recaudaciones:</label>
+                    	    <textarea class="form-control" id="recaudaciones" name="recaudaciones" rows="3"  placeholder="....." required></textarea>
+                         </div>
+            		  </div>
+            		   <div class="col-xs-12 col-lg-6 col-md-6 ">
+            		    <div class="form-group">
+                          <label for="tesoreria" class="control-label">Tesorería:</label>
+                        	<textarea class="form-control" id="tesoreria" name="tesoreria" rows="3"  placeholder="....." required></textarea>
+                       </div>
+            		  </div>
+            		   <div class="col-xs-12 col-lg-6 col-md-6 ">
+            		    <div class="form-group">
+                          <label for="contabilidad" class="control-label">Contabilidad:</label>
+                      	<textarea class="form-control" id="contabilidad" name="contabilidad" rows="3"  placeholder="....." required></textarea>
+                         </div>
+            		  </div>
+            		   <div class="col-xs-12 col-lg-6 col-md-6 ">
+            		    <div class="form-group">
+                          <label for="auditoria" class="control-label">Auditoría:</label>
+                              	<textarea class="form-control" id="auditoria" name="auditoria" rows="3"  placeholder="....." required></textarea>
+                       </div>
+            		  </div>
+               		<div class="col-xs-12 col-lg-6 col-md-6 ">
+            		    <div class="form-group">
+                          <label for="biess" class="control-label">Biess:</label><br>
+                        <textarea class="form-control" id="biess" name="biess" rows="3"  placeholder="....." required></textarea>
+                       </div>
+            		  </div>
+            		    <div class="col-xs-12 col-lg-6 col-md-6 ">
+            		    <div class="form-group">
+                          <label for="sb" class="control-label">S. B.:</label><br>
+                        <textarea class="form-control" id="sb" name="sb" rows="3"  placeholder="....." required></textarea>
                         </div>
             		  </div>
-            		   <div class="col-xs-12 col-md-6 col-md-6 ">
+            		    <div class="col-xs-12 col-lg-12 col-md-12 ">
             		    <div class="form-group">
-                          <label for="recaudaciones" class="control-label">Recaudaciones:</label>.
-                            <input  type="text" class="form-control" id="recaudaciones" name="recaudaciones" value=""  placeholder="Recaudaciones" required />
-                        </div>
-            		  </div>
-            		   <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <label for="tesoreria" class="control-label">Tesorería:</label>.
-                            <input  type="text" class="form-control" id="tesoreria" name="tesoreria" value=""  placeholder="Tesorería" required />
-                        </div>
-            		  </div>
-            		   <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <label for="contabilidad" class="control-label">Contabilidad:</label>.
-                            <input  type="text" class="form-control" id="contabilidad" name="contabilidad" value=""  placeholder="Contabilidad" required />
-                        </div>
-            		  </div>
-            		   <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <label for="auditoria" class="control-label">Auditoría:</label>.
-                            <input  type="text" class="form-control" id="auditoria" name="auditoria" value=""  placeholder="Auditoría" required />
-                        </div>
-            		  </div>
-            		    <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <label for="biess" class="control-label">Biess:</label>.
-                            <input  type="text" class="form-control" id="biess" name="biess" value=""  placeholder="Biess" required />
-                        </div>
-            		  </div>
-            		    <div class="col-xs-12 col-md-6 col-md-6 ">
-            		    <div class="form-group">
-                          <label for="sb" class="control-label">S. B.:</label>.
-                            <input  type="text" class="form-control" id="sb" name="sb" value=""  placeholder="S. B." required />
-                        </div>
-            		  </div>
-            		    <div class="col-xs-12 col-md-12 col-md-12 ">
-            		    <div class="form-group">
-                          <label for="otras_actividades" class="control-label">Otras Actividades:</label>.
-                            <input  type="text" class="form-control" id="otras_actividades" name="otras_actividades" value=""  placeholder="Otras Actividades" required />
-                        </div>
+                          <label for="otras_actividades" class="control-label">Otras Actividades:</label><br>
+                       <textarea class="form-control" id="otras_actividades" name="otras_actividades" rows="3"  placeholder="....." required></textarea>
+                      </div>
             		  </div>
             		 
-			      </div>
+			      
+			      
     	</div>
     	</div>
     		<div class="box box-danger">

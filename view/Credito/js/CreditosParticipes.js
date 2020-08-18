@@ -114,7 +114,8 @@ let iniciar_datos_solicitud	= async() => {
 			view.boton_buscar_participe	= $("#buscar_participe");		
 			//ENLAZAR EVENTO BUSCAR PARTICIPE CON CLICK
 			$('body').on('click',"#buscar_participe",function(){				
-				buscar_datos_creditos();
+				//buscar_datos_creditos();
+				obtener_info_participes();
 			});		
 			//ACTIVAR BOTON
 			$("#buscar_participe").click();
@@ -247,7 +248,7 @@ var iniciar_eventos_controles	= function(){
 	});
 	
 	$('body').on('click','#btn_capacidad_pago',function(){
-		//$('.nav-tabs a[href="#panel_capacidad"]').tab('show'); //vavegar en tab bootstrap
+		//$('.nav-tabs a[href="#panel_capacidad"]').tab('show'); //vavegar en tab bootstrap		
 		analisis_capacidad_pago();
 	});
 	
@@ -277,7 +278,16 @@ var iniciar_eventos_controles	= function(){
 		evt_enviar_capacidad_pago_garante();
 	})
 	
-	$('#btn_numero_cuotas').on('click', function(){
+//	$('#btn_numero_cuotas').on('click', function(){
+//		
+//		if( validar_valores_simulacion() )
+//		{
+//			buscar_numero_cuotas();
+//		}
+//		
+//	})
+	
+	view.btn_numero_cuotas.on('click', function(){
 		
 		if( validar_valores_simulacion() )
 		{
@@ -305,7 +315,7 @@ var iniciar_eventos_controles	= function(){
 		}
 		
 	})
-	
+		
 	//ESTE EVENTE PErmITE JUGAR CON LOS BOTONES DE COLLAPSED
 	$(".botones-expandibles button[data-toggle='collapse']").on('click',function(){
 		var tag = $(this);
@@ -318,14 +328,13 @@ var iniciar_eventos_controles	= function(){
 	    {
 	    	tag.removeClass('btn-default').addClass('btn-info');
 	    }
+	});
+	
+	//EVENTO QUE PERMITE VALIDAR CAMBIO DE TIPO PRODUCTO
+	$("#ddl_credito_producto").on("change",function(){
+		change_tipo_producto_creditos( $(this) );
 	})
 
-}
-
-var buscar_datos_creditos = function(){
-	
-	console.log("INICIA EVENTO CLICK DE BOTON BUSCAR PARTICIPE..");
-	obtener_info_participes();
 }
 
 var obtener_info_participes = function(){
@@ -334,7 +343,7 @@ var obtener_info_participes = function(){
 		view.cedula_participes.notify("Cedula No Identificado",{ position:"buttom left", autoHideDelay: 2000});
 	}else{
 		
-		console.log("Cedula Participe -->"+ view.cedula_participes.val());
+		//console.log("Cedula Participe -->"+ view.cedula_participes.val());
 		$.ajax({
 		    url: 'index.php?controller=CreditosParticipes&action=BuscarParticipe',
 		    type: 'POST',
@@ -527,81 +536,18 @@ var iniciar_datos_simulacion = function(){
 		view.btn_numero_cuotas.attr("disabled",false);
 		
 		//BUSCAR SI TIENE CREDITOS A RENOVAR
-		obtener_creditos_renovacion();
+		obtener_creditos_renovacion();	
 		
+		//BUSCAR TIPO PRODUCTO POR TIPO CREDITO
+		obtener_tipo_producto_creditos();
 		
 		if( valor_tipo_credito == "ORD" )
-		{
-			
-			var html_agregar_garante	= "<label for=\"txt_cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
-			"<div class=\"input-group\">"+
-			"<input type=\"text\" data-inputmask=\"'mask': '9999999999'\" class=\"form-control\" id=\"txt_cedula_garante\"  placeholder=\"C.I.\">"+
-			"<div id=\"mensaje_cedula_garante\" class=\"errores\"></div>"+
-			"<span class=\"input-group-btn\">"+
-			"<button type=\"button\" class=\"btn btn-primary\" id=\"btn_buscar_garante\" >"+
-			"<i class=\"glyphicon glyphicon-plus\"></i>"+
-			"</button>"+
-			"<button type=\"button\" class=\"btn btn-danger\" id=\"btn_borrar_cedula\" >"+
-			"<i class=\"glyphicon glyphicon-arrow-left\"></i>"+
-			"</button>"+
-			"</span>"+
-			"</div>";
-			
-			// VACIO LOS CREDITOS A RENOVAR
-			$('#div_pnl_creditos_renovacion').html("");
-			// MUESTRO LA INFORMACION PARA ASIGNAR UN GARANTE 
-			$('#div_info_garante').html( html_agregar_garante );
-			
-			//AGREGAR EVENTO A BOTONES EN PANEL GARANTE
-			$('body').on('click','#btn_buscar_garante',function(){
-				buscar_garante();
-			});
-			
-			$('body').on('click','#btn_borrar_cedula',function(){
-				$('#txt_cedula_garante').val("");
-			});
-			
-			// AGREGO EVENTOS AL INPUT GARANTES
-			$("#txt_cedula_garante").inputmask();
-			$('#txt_cedula_garante').keypress( function( event ){
-				if(event.keyCode == 13){
-					console.log("garante")
-					$('#btn_buscar_garante').click();
-				}
-			});
-			
+		{	
+			//do stuff
 		}else if( valor_tipo_credito == "PH" ){
-			
-			var html_credito_hipotecario = "<label for=\"ddl_tipo_credito_hipotecario\" class=\"control-label\">Modalidad:</label>" +
-						"<select id=\"ddl_tipo_credito_hipotecario\"  class=\"form-control\" >"+
-						"<option value=\"\" selected=\"selected\">--Seleccione--</option>"+
-						"<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
-						"<option value=\"2\" >MEJORAS Y/O REPAROS</option></div>";
-			// MUESTRO HTML EN LA VISTA EN LA PARTE DEL GARANTE
-			$('#div_info_garante').html( html_credito_hipotecario );
-			
-			//onchange=\"ModalidadCreditoHP()\"
-			//ENLAZAR EVENTO A INPUT CREADO
-			$("#ddl_tipo_credito_hipotecario").on('change',function(){
-				obtener_valores_hipotecario( this );
-			});
-			
-			$("#ddl_tipo_credito_hipotecario").on('change',function(){
-				obtener_valores_hipotecario( this );
-			});
-			
-			
+			//do stuff			
 		}else if( valor_tipo_credito == "EME" ){
-			
-			$('#div_pnl_creditos_renovacion').html("");
-			$('#div_info_garante').html("");
-			
-			if ( cuenta_individual < 150){
-				
-				$("#div_pnl_info_participe").find('.bio-row.class-information').addClass('bg-red'); //SINTAXERROR agregar clase que viene desde controlador
-							
-			}
-			
+			//do stuff
 		}else
 		{			
 			console.info("TIPO DE CREDITO NO PARAMETRIZADO");
@@ -625,13 +571,99 @@ var iniciar_datos_simulacion = function(){
 		}else
 		{
 			view.tipo_creditos.notify( "Debe seleccionar un tipo de crédito" ,{ position:"buttom left", autoHideDelay: 2000});	
+		}		
+		
+	}//termina else -- if
+	
+}
+
+var obtener_tipo_producto_creditos	= function(){
+	
+	var codigo_tipo_creditos	= view.tipo_creditos.val();
+	var tipo_productos	= $("#ddl_credito_producto");
+	tipo_productos.empty();
+	$.ajax({
+		url:"index.php?controller=CreditosParticipes&action=cargarProductoCredito",
+		type:"POST",
+		dataType:"json",
+		data:{ 'codigo_tipo_creditos': codigo_tipo_creditos }
+	}).done( function(x){
+		var data	= x;
+		tipo_productos.append('<option value="0">--Seleccione--</option>');
+		$.each(data,function(i, v){
+			tipo_productos.append('<option value="'+v.id_creditos_productos+'">'+v.nombre_creditos_productos+'</option>');
+		});		
+	}).fail( function(xhr, status, error){
+		console.log(xhr.responseText);
+		tipo_productos.append('<option value="0">--Seleccione--</option>');
+	})
+}
+
+var change_tipo_producto_creditos	= function(a){	
+	var elemento	= $(a);
+	if( elemento.length ){
+		var textoElemento	= elemento.find('option:selected').text();
+		var panel	= $("#div_info_garante");
+		var textoHtml	= "";
+		if( textoElemento == "Sin Garante" || textoElemento == "Unico" ){
+			textoHtml	= "";
+			panel.html( textoHtml ); //panel queda vacio
+		}else if( textoElemento == "Con Garante"){
+			textoHtml	= "<label for=\"txt_cedula_garante\" class=\"control-label\">Añadir garante:</label>" +
+			"<div class=\"input-group\">"+
+			"<input type=\"text\" data-inputmask=\"'mask': '9999999999'\" class=\"form-control\" id=\"txt_cedula_garante\"  placeholder=\"C.I.\">"+			
+			"<span class=\"input-group-btn\">"+
+			"<button type=\"button\" class=\"btn btn-primary\" id=\"btn_buscar_garante\" >"+
+			"<i class=\"glyphicon glyphicon-plus\"></i>"+
+			"</button>"+
+			"<button type=\"button\" class=\"btn btn-danger\" id=\"btn_borrar_cedula\" >"+
+			"<i class=\"glyphicon glyphicon-arrow-left\"></i>"+
+			"</button>"+
+			"</span>"+
+			"</div>";
+			
+			// MUESTRO LA INFORMACION PARA ASIGNAR UN GARANTE 
+			panel.html( textoHtml );
+			
+			//AGREGAR EVENTO A BOTONES EN PANEL GARANTE
+			$('body').one('click','#btn_buscar_garante',function(){				
+				buscar_garante();
+			});
+			
+			$('body').off('click','#btn_borrar_cedula').on('click','#btn_borrar_cedula',function(){
+				$('#txt_cedula_garante').val("");
+			});
+			
+			// AGREGO EVENTOS AL INPUT GARANTES
+			$("#txt_cedula_garante").inputmask();			
+			$('#txt_cedula_garante').keypress( function( event ){
+				if(event.keyCode == 13){
+					$('#btn_buscar_garante').click();
+				}
+			});
+		}else if( textoElemento == "Para Terreno" || textoElemento == "Para Vivienda" ){
+			var html_credito_hipotecario = "<label for=\"ddl_tipo_credito_hipotecario\" class=\"control-label\">Modalidad:</label>" +
+			"<select id=\"ddl_tipo_credito_hipotecario\"  class=\"form-control\" >"+
+			"<option value=\"\" selected=\"selected\">--Seleccione--</option>"+
+			"<option value=\"1\" >COMPRA DE BIEN O TERRENO</option>"+
+			"<option value=\"2\" >MEJORAS Y/O REPAROS</option></div>";
+			// MUESTRO HTML EN LA VISTA EN LA PARTE DEL GARANTE
+			$('#div_info_garante').html( html_credito_hipotecario );
+			
+			//onchange=\"ModalidadCreditoHP()\"
+			//ENLAZAR EVENTO A INPUT CREADO
+			$("#ddl_tipo_credito_hipotecario").on('change',function(){
+				obtener_valores_hipotecario( this );
+			});
+			
+			$("#ddl_tipo_credito_hipotecario").on('change',function(){
+				obtener_valores_hipotecario( this );
+			});
+		}else{
+			textoHtml	= "";
+			panel.html( textoHtml ); //panel queda vacio
 		}
-		
-		
 	}
-	
-	//$('.nav-tabs a[href="#panel_info"]').tab('show'); //navegar a la pantalla de informacion en tab navs principal
-	
 }
 
 var analisis_capacidad_pago	= function(){
@@ -679,10 +711,7 @@ var analisis_capacidad_pago	= function(){
 				view.global_hay_renovacion = true;
 				var cuentaIndividual 	= dataSolicitud.cuenta_individual || 0.00; //obtener valor de cuenta individual
 				view.monto_creditos.val( cuentaIndividual );
-				
-				//llamo funcion que busca creditos a renovar
-				//obtener_creditos_renovacion();
-								
+											
 			}
 			
 		}
@@ -751,7 +780,7 @@ var enviar_capacidad_pago = function(){
 	var valor_total_ingresos	= view.total_ingresos.val();
 	
 	if( isNaN(  parseFloat( valor_total_ingresos ) ) ){
-		console.log("ERROR AL ENVIAR LA CAPACIDAD DE PAGO REVISAR FUNCION");
+		console.log("VALOR CAPACIDAD PAGO NO DEFINIDO");
 		view.total_ingresos.closest('tr').notify("Ingrese Cuota Pactada",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
@@ -796,7 +825,7 @@ var buscar_garante	= function(){
 	}
 	//validacion de cedula no sea igual al garante
 	if( view.cedula_participes.val() == element_cedula_garante.val() ){		
-		element_cedula_garante.notify("Cedula no Válida",{ position:"buttom left", autoHideDelay: 2000});
+		element_cedula_garante.notify("Cedula no Válida para ser garante",{ position:"buttom left", autoHideDelay: 2000});
 		element_cedula_garante.val("");
     	return false;
 	}
@@ -818,13 +847,7 @@ var buscar_garante	= function(){
 		$("#div_info_garante").html( garanteHtml ); //colocar informacion del garante solicitado
 		
 		if( x.estatus != undefined && x.estatus == "OK" ){
-			
-			//se genera un evento para el boton que se dibuja en el controlador
-			//btn id -- btn_cambiar_garante
-			$('body').on('click','#btn_cambiar_garante', function(){
-				iniciar_datos_simulacion();
-			})
-			
+						
 			view.global_hay_garantes	= true;
 			
 			//se inicializa valores de garante
@@ -839,17 +862,11 @@ var buscar_garante	= function(){
 			var limite_garante	= data.disponible_garante;
 			var edad_garante	= data.edad;			
 			var limite_total	= parseFloat( limite_garante ) + parseFloat( limite_participe );
-			var aportes_garante = data.aporte_garante;			
-			
-			var elementos	= limite_total.toString().split(".");
-			elementos[1]	= elementos[1].substring(0, 2);
-			
-			//obtengo limite total con dos decimales
-			limite_total	= elementos[0]+"."+elementos[1];
+			var aportes_garante = data.aporte_garante;	
 			
 			// si tienen los aportes doy paso al credito on garantia
-			if ( limite_total >= 150 && edad_garante < 75 && aportes_garante >= 3 && aportes_participe >= 3 ){
-				
+			if ( limite_total >= 150 && edad_garante < 75 && aportes_garante >= 3 && aportes_participe >= 3 )
+			{				
 				//aqui buscar cambiar el estado de solicitud
 				//document.getElementById("disponible_participe").classList.remove('bg-red');
 				//document.getElementById("disponible_participe").classList.add('bg-olive');
@@ -863,14 +880,14 @@ var buscar_garante	= function(){
 				$("#div_capacidad_pago_garante").removeClass('hidden');
 				
 				//RELACIONAR EVENTO CON EL BOTON CAPACIDAD PAGO GARANTE
-				$('body').on('click','#btn_capacidad_pago_garante',function(){
+				$('body').one('click','#btn_capacidad_pago_garante',function(){
 					//console.log("AGREGAR EVENTO BOTON CAPACIDAD PAGO GARANTE");
 					analisis_capacidad_pago_garante();
 				})
 				
 			}
 			
-			if( edad_garante < 75 && aportes_garante < 3 ){
+			if( edad_garante >= 75 || aportes_garante < 3 ){
 				
 				//aqui buscar cambiar el estado de solicitud
 				//document.getElementById("disponible_participe").classList.remove('bg-olive');
@@ -904,7 +921,21 @@ var buscar_garante	= function(){
 			  		  button: "Aceptar",
 			  		});
 			}
-		}		
+			
+			var boton_flotante = '<div class="btn-contenedor">'+
+			'<button class="btn-flotante" id="btn_cambiar_garante" title="Quitar garante" >'+
+            '<span class="flotante">&times;</span>'+
+            '</button>'+
+            '</div> ';
+			$("#div_info_garante").css({'height':$("#info_participe_solicitud").height() - 100});
+			$("#div_info_garante").append(boton_flotante);
+		}	
+		
+		//boton para cambiar garante ..se genera un evento para el boton que se dibuja en el controlador
+		$('body').one('click','#btn_cambiar_garante', function(){			
+			iniciar_datos_simulacion();
+			change_tipo_producto_creditos( "#ddl_credito_producto" );
+		})
 		
 	}).fail(function() {
 	    console.log("error");
@@ -1167,7 +1198,7 @@ var validar_valores_simulacion	= function(){
 	if( total_saldo_renovar > 0 &&  parseFloat( view.monto_creditos.val() ) < total_saldo_renovar )
 	{
 		view.monto_creditos.notify("Monto no valido ",{ position:"buttom left", autoHideDelay: 2000});
-		swal({title:"VALORES",text:"Saldo de creditos no debe superar al monto de credito. Revise los valores",icon:"warning"});
+		swal({title:"VALORES",text:"Saldo de creditos no debe superar al monto de credito Solicitado. Revise los valores",icon:"warning"});
 		return false;
 	}
 	

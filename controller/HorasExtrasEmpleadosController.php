@@ -120,10 +120,19 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         $idr = "rol.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         $id_gerente = $resultr[0]->id_rol;
+        
+        
+       
         if ($id_rol != $id_gerente)
         {
+            
+            
+          
+            
         $wherer = "rol.nombre_rol ILIKE '%Jefe de RR.HH'";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+        
+        
         $id_rh = $resultr[0]->id_rol;
         
         $columnadep = "departamentos.nombre_departamento";
@@ -135,6 +144,8 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         $iddep = "departamentos.id_departamento";
         $resultdep = $departamento->getCondiciones($columnadep, $tablasdep, $wheredep, $iddep);
         
+     
+        
         $tablar = "usuarios INNER JOIN empleados
                         ON usuarios.cedula_usuarios = empleados.numero_cedula_empleados
                         INNER JOIN departamentos 
@@ -144,13 +155,20 @@ class HorasExtrasEmpleadosController extends ControladorBase{
         $wherer = "departamentos.nombre_departamento='".$resultdep[0]->nombre_departamento."' AND (cargos_empleados.nombre_cargo ILIKE 'CONTADOR%' OR cargos_empleados.nombre_cargo ILIKE 'JEFE%')";
         $idr = "usuarios.id_rol";
         $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
+       
+      
         if (empty($resultr))
         {
             $wherer = "cargos_empleados.nombre_cargo ILIKE 'CONTADOR%'";
             $resultr = $rol->getCondiciones("*", $tablar, $wherer, $idr);
         }
+        
+        
         $id_jefi = $resultr[0]->id_rol;
         $id_dpto_jefe = $resultr[0]->id_departamento;
+        
+       
+        
         }
         $where_to="";
         $columnas = " empleados.nombres_empleados,
@@ -229,6 +247,9 @@ class HorasExtrasEmpleadosController extends ControladorBase{
             
             $html="";
             $resultSet=$horas_extras->getCantidad("*", $tablas, $where_to);
+            
+            
+            
             $cantidadResult=(int)$resultSet[0]->total;
             
             $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
@@ -240,12 +261,17 @@ class HorasExtrasEmpleadosController extends ControladorBase{
             $limit = " LIMIT   '$per_page' OFFSET '$offset'";
             
             $resultSet=$horas_extras->getCondicionesPagDesc($columnas, $tablas, $where_to, $id, $limit);
+           
+           
             $count_query   = $cantidadResult;
             $total_pages = ceil($cantidadResult/$per_page);
             
             
             if($cantidadResult>0)
             {
+                
+                
+                
                 
                 $html.='<div class="pull-left" style="margin-left:15px;">';
                 $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
@@ -312,6 +338,7 @@ class HorasExtrasEmpleadosController extends ControladorBase{
                         
                         if ($id_rol==$id_rh  && $res->nombre_estado=="EN REVISION" && !$tiene_jefe )
                         {
+                         
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-success" onclick="Aprobar('.$res->id_solicitud.',&quot;'.$res->nombre_estado.'&quot; )"><i class="glyphicon glyphicon-ok"></i></button></span></td>';
                             $html.='<td style="font-size: 18px;"><span class="pull-right"><button  type="button" class="btn btn-danger" onclick="Negar('.$res->id_solicitud.')"><i class="glyphicon glyphicon-remove"></i></button></span></td>';
                         }

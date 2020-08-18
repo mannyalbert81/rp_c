@@ -627,7 +627,7 @@ class ParticipesController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;"># Orden</th>';
 	            
-	            if($id_rol==1){
+	            if($id_rol==56 ){
 	                
 	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -679,7 +679,7 @@ class ParticipesController extends ControladorBase{
 	                
 	             
 	                
-	                if($id_rol==1){
+	                if($id_rol==56){
 	                    
 	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=index&id_participes='.$res->id_participes.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
 	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=borrarId&id_participes='.$res->id_participes.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
@@ -736,9 +736,6 @@ class ParticipesController extends ControladorBase{
                       core_tipo_cuentas.nombre_tipo_cuentas, 
                       core_participes_cuentas.id_estatus, 
                       core_participes_cuentas.cuenta_principal, 
-
-                      
-
                       core_participes_cuentas.usuario_usuarios, 
                       core_participes_cuentas.direccion_ip";
 	    
@@ -1087,7 +1084,7 @@ class ParticipesController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;"># Dependencias</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;"># Orden</th>';
-	            if($id_rol==1){
+	            if($id_rol==56){
 	                
 	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -1135,7 +1132,7 @@ class ParticipesController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_numero_orden_participes.'</td>';
 	                
 	                
-	                if($id_rol==1){
+	                if($id_rol==56 ){
 	                    
 	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=index&id_participes='.$res->id_participes.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
 	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=borrarId&id_participes='.$res->id_participes.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';
@@ -1321,7 +1318,7 @@ class ParticipesController extends ControladorBase{
 	            $html.='<th style="text-align: left;  font-size: 12px;"># Dependencias</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;">Código</th>';
 	            $html.='<th style="text-align: left;  font-size: 12px;"># Orden</th>';
-	            if($id_rol==1){
+	            if($id_rol==56){
 	                
 	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
 	                $html.='<th style="text-align: left;  font-size: 12px;"></th>';
@@ -1369,7 +1366,7 @@ class ParticipesController extends ControladorBase{
 	                $html.='<td style="font-size: 11px;">'.$res->fecha_numero_orden_participes.'</td>';
 	                
 	                
-	                if($id_rol==1){
+	                if($id_rol==56){
 	                    
 	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=index&id_participes='.$res->id_participes.'" class="btn btn-success" style="font-size:65%;"><i class="glyphicon glyphicon-edit"></i></a></span></td>';
 	                    $html.='<td style="font-size: 18px;"><span class="pull-right"><a href="index.php?controller=Participes&action=borrarId&id_participes='.$res->id_participes.'" class="btn btn-danger" style="font-size:65%;"><i class="glyphicon glyphicon-trash"></i></a></span></td>';

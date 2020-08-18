@@ -98,6 +98,36 @@
         width: 150px;
     }
     
+    .btn-contenedor{
+      width:90px;
+      height:100px;
+      position:absolute;
+      right:0px;
+      bottom:0px;
+    }
+    
+    .btn-flotante{
+      width:40px;
+      height:40px;
+      border-radius:100%;
+      background:#F44336;
+      right:0;
+      /*bottom:0;*/
+      position:absolute;
+      margin-right:16px;
+      margin-bottom:16px;
+      border:none;
+      outline:none;
+      color:#FFF;
+      font-size:20px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+      transition:.3s;  
+    }
+    
+    span.flotante{
+      transition:.5s;  
+    }
+    
  	</style>
    
   			        
@@ -150,9 +180,9 @@
           <h3 class="box-title">Ingreso Cr&eacute;ditos </h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i></button>
-            
+              <i class="fa fa-minus"></i></button>          
           </div>
+        </div>  
           <div class="box-body">
           	<div class="row">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
@@ -259,10 +289,24 @@
                                 
                                 
 							</div>	
-							
-							<br>
+														
+							<div class="row" style="margin-top: 5px;">
+								<div class="box box-default">                                  
+                                   <div class="box-body">
+                                   		<div class="row">
+                                      		<div class="col-xs-12 col-md-12 col-lg-12 ">
+                                      			<div class="box-footer no-padding">                                            
+                                                    <div class="bio-row"><p><span class="tab2">Monto solicitado</span>: <span id="span_monto_solicitado">0.00</span></p></div>
+                                                    <div class="bio-row"><p><span class="tab2">Total a recibir</span>: <span id="span_total_recibir">0.00</span></p></div>                                           
+                                                </div>
+                                      		</div>
+                                  		</div>
+                                  	</div>
+                          		</div>          		
+							</div>
 							
 							<div id="div_pnl_simulacion_credito">
+																
 								<div class="row">		    	 
                 		    	 	<div class="col-xs-12 col-md-3 col-lg-3 ">
                             		    <div class="form-group">                            		    					  
@@ -275,11 +319,13 @@
                             		  
                             		  <div class="col-xs-12 col-md-3 col-lg-3 ">
                             		    <div class="form-group">                            		    					  
-                                          <label for="txt_monto_creditos" class="control-label">Monto Credito:</label>
-                                          <input type="number" step="10" id="txt_monto_creditos" class="form-control" value="">                                                                                                      
+                                          <label for="ddl_credito_producto" class="control-label">Tipo Producto Creditos:</label>
+                                          <select class="form-control" id="ddl_credito_producto" name="ddl_credito_producto">
+                                            <option value="0" >--Seleccione--</option>
+                                          </select>                                                              
                                         </div>
                             		  </div>
-                            		                              		  
+                            		                              		                              		  
                             		  <div class="col-xs-12 col-md-3 col-lg-3 " >
                             		  	<label for="txt_capacidad_pago" class="control-label">Capacidad Pago:</label>
                             		  	<div class="input-group">
@@ -291,7 +337,14 @@
                         					</span>
         					
         								</div>
-                            		  </div>  
+                            		  </div> 
+                            		  
+                            		  <div class="col-xs-12 col-md-3 col-lg-3 ">
+                            		    <div class="form-group">                            		    					  
+                                          <label for="txt_monto_creditos" class="control-label">Monto Credito:</label>
+                                          <input type="number" step="10" id="txt_monto_creditos" class="form-control" value="">                                                                                                      
+                                        </div>
+                            		  </div> 
                             		  
                             		  <div class="col-xs-12 col-md-3 col-lg-3 " >
                             		  	<label for="ddl_numero_cuotas" class="control-label">N&uacute;mero de Cuotas:</label>
@@ -346,7 +399,7 @@
                     		
                     	</div>
                     	
-                    	<div class="tab-pane" id="panel_detalle">
+                    	    <div class="tab-pane" id="panel_detalle">
                     		
                     		<div id="div_pnl_participe_encontrado"></div>
                     		
@@ -357,59 +410,60 @@
                     		<div id="div_pnl_participe_creditos"></div>
                     		
                     	</div>
-                    	
+                    	<!-- EMPIEZA PANEL CAPACIDAD PAGO SOLICITANTE -->
                     	<div class="tab-pane" id="panel_capacidad">
-                    		<div class="col-xs-12 col-md-6 col-lg-6 ">
-            					<div class="form-group">
-                            		<table class="table-bordered" style="width: 100%;">
-                                    <tr>
-                                    <th>SUELDO LIQUIDO:</th>
-                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_sueldo_liquido" onkeyup="ObtenerAnalisis()"></td>
-                                    </tr>
-                                    <tr>
-                                    <th>CUOTA VIGENTE:</th>
-                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_cuota_vigente"  onkeyup="ObtenerAnalisis()"></td>
-                                    </tr>
-                                    <tr>
-                                    <th>FONDOS:</th>
-                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_fondos" onkeyup="ObtenerAnalisis()"></td>
-                                    </tr>
-                                    <tr>
-                                    <th>DECIMOS:</th>
-                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_decimos" onkeyup="ObtenerAnalisis()"></td>
-                                    </tr>
-                                    <tr >
-                                    <th>RANCHO:</th>
-                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_rancho" onkeyup="ObtenerAnalisis()"></td>
-                                    </tr>
-                                    <tr >
-                                    <th>INGRESOS NOTARIZADOS:</th>
-                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_ingresos_notarizados" onkeyup="ObtenerAnalisis()"></td>
-                                    </tr>
-                                    <tr >
-                                    <th>TOTAL INGRESO:</th>
-                                    <td id="td_total_ingreso" align="right" style="padding-right: 35px;"></td>
-                                    </tr>
-                                     <tr>
-                                    <th bgcolor="#F9E79F">CUOTA MAXIMA:</th>
-                                    <td bgcolor="#F9E79F" id="td_cuota_maxima" align="right" style="padding-right: 35px;"></td>
-                                    </tr>
-                                     <tr >
-                                    <th>CUOTA PACTADA:</th>
-                                    <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_cuota_pactada" onkeyup="ObtenerAnalisis()"></td>
-                                    </tr>
-                                    </table>
-                 			</div>
-                 			<div class="row">
-                				<div class="col-lg-12 col-md-12 col-xs-12">
-                					<div class="pull-right">
-                						<button type="button" id="btn_enviar_capacidad_pago" class="btn btn-primary" disabled>
-                                    		<i class="glyphicon glyphicon-ok"></i> ACEPTAR</button>
-                					</div>
+                    		<div class="row">
+                        		<div class="col-xs-12 col-md-6 col-lg-6 ">
+                					<div class="form-group">
+                                		<table class="table-bordered" style="width: 100%;">
+                                        <tr>
+                                        <th>SUELDO LIQUIDO:</th>
+                                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_sueldo_liquido" onkeyup="ObtenerAnalisis()"></td>
+                                        </tr>
+                                        <tr>
+                                        <th>CUOTA VIGENTE:</th>
+                                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_cuota_vigente"  onkeyup="ObtenerAnalisis()"></td>
+                                        </tr>
+                                        <tr>
+                                        <th>FONDOS:</th>
+                                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_fondos" onkeyup="ObtenerAnalisis()"></td>
+                                        </tr>
+                                        <tr>
+                                        <th>DECIMOS:</th>
+                                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_decimos" onkeyup="ObtenerAnalisis()"></td>
+                                        </tr>
+                                        <tr >
+                                        <th>RANCHO:</th>
+                                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_rancho" onkeyup="ObtenerAnalisis()"></td>
+                                        </tr>
+                                        <tr >
+                                        <th>INGRESOS NOTARIZADOS:</th>
+                                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_ingresos_notarizados" onkeyup="ObtenerAnalisis()"></td>
+                                        </tr>
+                                        <tr >
+                                        <th>TOTAL INGRESO:</th>
+                                        <td id="td_total_ingreso" align="right" style="padding-right: 35px;"></td>
+                                        </tr>
+                                         <tr>
+                                        <th bgcolor="#F9E79F">CUOTA MAXIMA:</th>
+                                        <td bgcolor="#F9E79F" id="td_cuota_maxima" align="right" style="padding-right: 35px;"></td>
+                                        </tr>
+                                         <tr >
+                                        <th>CUOTA PACTADA:</th>
+                                        <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_cuota_pactada" onkeyup="ObtenerAnalisis()"></td>
+                                        </tr>
+                                        </table>
+                     			</div>
+                     			<div class="row">
+                    				<div class="col-lg-12 col-md-12 col-xs-12">
+                    					<div class="pull-right">
+                    						<button type="button" id="btn_enviar_capacidad_pago" class="btn btn-primary" disabled>
+                                        		<i class="glyphicon glyphicon-ok"></i> ACEPTAR</button>
+                    					</div>
+                    				</div>
                 				</div>
-            				</div>
-             			</div>
-             				<div class="col-xs-12 col-md-6 col-lg-6 ">
+                 			</div>
+                 				<div class="col-xs-12 col-md-6 col-lg-6 ">
                 				<div class="form-group">
                     				<div id="credito_aprobado" class="small-box bg-red">
                                 		<div class="inner">
@@ -441,6 +495,7 @@
                                     </div>
                 				</div>
                 			</div>
+                    		</div>
                     	</div>
                     	<!-- EMPIEZA PANEL CAPACIDAD PAGO GARANTE -->
                     	<div class="tab-pane" id="panel_capacidad_garante">
@@ -536,12 +591,12 @@
         	           	<!-- TERMINA PANEL CUENTAS BANCOS -->
         	           	
                     </div>
-                 	
+                                     	
                  </div>
              </div>
              </div>             
            	
-          </div>
+          
        </div> 
     </section>
    </div>
@@ -606,8 +661,6 @@
 		</div>
 	</div>
 </div>
-
- 
 
 <!-- Modal Inserta Credito -->
  
@@ -762,7 +815,7 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Credito/js/CreditosParticipes.js?0.42"></script>
+    <script src="view/Credito/js/CreditosParticipes.js?0.60"></script>
     <script src="view/Credito/js/CreditosParicipesAnalisis.js?0.09"></script> 
     <script src="view/Credito/js/CreditosParticipesCuentasBancarias.js?0.06"></script> 
    </body>

@@ -205,6 +205,52 @@ class RolesController extends ControladorBase{
 	
 	}
 	
+	public function insertarmultiple()
+	{
+	    $model = new ModeloModel();
+	    
+	    $query = "SELECT * FROM rol";
+	    $resultado = $model->enviaquery($query);
+	    
+	    echo json_encode( $resultado );
+	    
+	    echo '<br>'," nombre base es --> ",pg_dbname();
+	    
+// 	    $model->beginTran();
+// 	    $validacion    = true;
+// 	    $function  = "ins_rol";
+// 	    $parametros    = "'dannyrol'";	    
+// 	    for ( $i=0; $i<10; $i++)
+// 	    {
+// 	        $parametros    = "'dannyrol".$i."'";
+// 	        $consulta  = $model->getconsultaPG( $function, $parametros);
+	        
+// 	        $insertado = $model->llamarconsultaPG($consulta);
+// // 	        if( $i == 8 )
+// // 	        {
+// // 	            $validacion    = false;
+// // 	            break;
+// // 	        }
+	        
+// 	        echo "<br> Respuesta de insertado --> ",json_encode( $insertado );
+	        
+// 	    }
+	    
+// 	    if( !$validacion )
+// 	    {
+// 	        $model->endTran();
+// 	    }else
+// 	    {
+// 	        $model->endTran("COMMIT");
+// 	    }
+	    
+	    $model = new ModeloModel();
+	    $resultado = $model->enviaquery($query);
+	    echo '<br>';
+	    echo json_encode( $resultado );
+	    
+	    
+	}
 	
 	
 }

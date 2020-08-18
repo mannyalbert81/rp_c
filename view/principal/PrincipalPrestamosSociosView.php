@@ -306,7 +306,16 @@
           				<div id="pnl_saldos_creditos" class="panel panel-success" >
           					<div class="panel-heading" >Información Saldos de Cr&eacute;dito</div>
                       		<div class="panel-body">    
-              	            <!-- ESTA TABLA SE LLENA CON PROCESO DE JS PARA OBTENER SALDOS -->  
+              	            <!-- ESTA TABLA SE LLENA CON PROCESO DE JS PARA OBTENER SALDOS --> 
+              	            	<div class="row">
+              	            		<div class="col-xs-6 col-md-6 col-lg-3">
+                            			<div class="form-group ">
+                            				<label for="txt_fecha_reporte" class=" control-label" >Fecha a:</label> 
+                                    		<input type="date" class="form-control" id="txt_fecha_reporte" onchange="mostrarSaldosCredito()" value="<?php echo date('Y-m-d'); ?>">   			 
+                            			</div>
+                            		</div> 
+                            		
+              	            	</div> 
                   				<div id="div_detalle_saldos">
                   				</div>
             				</div>
@@ -412,7 +421,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.18"></script>
+     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.19"></script>
   
 
   </body>

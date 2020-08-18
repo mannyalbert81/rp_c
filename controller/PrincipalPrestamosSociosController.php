@@ -1030,6 +1030,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
             
             $rs_Consulta2  = $creditos->getCondicionesSinOrden($col2, $tab2, $whe2, "");
             
+            $suma_valor = 0;
             //dibujar html
             $html .= ' <div>';
             $html .= ' <div class="box-footer no-padding ">';
@@ -1038,7 +1039,6 @@ class PrincipalPrestamosSociosController extends ControladorBase{
             {
                 $id = $fun->id_tabla_amortizacion_parametrizacion_out;
                 $valor  = $fun->valor_out;
-                $valor  = number_format( $valor,2,".",",");
                 $descripcion    = "";
                 $encontrado = false;
                 foreach ( $rs_Consulta2 as $res )
@@ -1046,13 +1046,19 @@ class PrincipalPrestamosSociosController extends ControladorBase{
                     if( $res->id_tabla_amortizacion_parametrizacion == $id ){
                         $descripcion  = $res->descripcion_tabla_amortizacion_parametrizacion;
                         $encontrado = true;
+                        $suma_valor += $valor;
                     }
                 }
+                
+                $valor  = number_format( $valor,2,".",",");
                 
                 if( $encontrado )
                     $html .= '<div class="bio-row"><p><span class="tab2">'.$descripcion.'</span>:&nbsp; &nbsp;' . $valor . '</p></div>'; 
                
             }
+            
+            $html .= '<div class="bio-row"><p><span class="tab2">_________________________</span>________</p></div>';
+            $html .= '<div class="bio-row"><p><span class="tab2">TOTAL</span>:&nbsp; &nbsp;' . $suma_valor . '</p></div>';
             
             $html .= ' </div>';
             $html .= ' </div>';

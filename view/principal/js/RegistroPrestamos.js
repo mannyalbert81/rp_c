@@ -178,6 +178,7 @@ var generar_pagare_cobros = function(obj){
 var mostrarSaldosCredito	= function(){
 	
 	var id_creditos	= $("#hdnid_participes_prestamos");
+	var fecha_busqueda	= $("#txt_fecha_reporte");
 	var panel_saldos= $("#pnl_saldos_creditos");
 	var panel_detalles	= $("#div_detalle_saldos");
 	
@@ -188,7 +189,7 @@ var mostrarSaldosCredito	= function(){
 			},
 		dataType:"json",
 		type:"POST",
-		data:{ 'id_creditos': id_creditos.val(), 'fecha_reporte':'2020-08-18'}
+		data:{ 'id_creditos': id_creditos.val(), 'fecha_reporte': fecha_busqueda.val() }
 	}).done(function(x){
 		if( x.estatus != undefined && x.estatus == "OK" ){
 			panel_detalles.html( x.html );

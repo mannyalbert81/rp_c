@@ -394,8 +394,8 @@ class ReporteDescuentosController extends ControladorBase{
         	c.id_participes = b.id_participes
         WHERE
         	b.id_entidad_patronal = $id_entidad_patronal
-        	AND to_char (ct.fecha_transacciones,'YYYY') = '2020'
-        	AND to_char(ct.fecha_transacciones, 'MM') = '03'
+        	AND to_char (ct.fecha_transacciones,'YYYY') = '$anio'
+        	AND to_char(ct.fecha_transacciones, 'MM') = '$mes'
         	AND ct.id_modo_pago = 24
         	AND ct.id_status = 1
         	AND ct.id_estado_transacciones = 1
@@ -450,6 +450,16 @@ class ReporteDescuentosController extends ControladorBase{
         //items en el orden de reporte
         $aitems=array(0=>'CAPITAL',1=>'INTERES',2=>'MORA',3=>'SEGURO DE DESGRAVAMEN',4=>'SEGURO DE INCENDIOS');
         
+        /** para sumas totales **/
+        $sumaCapital = 0;
+        $sumaInteres = 0;
+        $sumaMora = 0;
+        $sumaSegDesg = 0;
+        $sumaSegInc = 0;
+        $sumaTotal = 0;
+        $sumaCuota = 0;
+        /** end para sumas totales **/
+        
         $i=0;
         $ini_cedula = "";
         $ini_nombre = "";
@@ -482,7 +492,16 @@ class ReporteDescuentosController extends ControladorBase{
                         if( !empty($rsItem) ){
                             foreach ( $rsItem as $item){
                                 $sumaItems += $item['valor_nombre_credito'];
-                                $html.='<td align="right";>'.$item['valor_nombre_credito'].'</td>';
+                                $html.='<td align="right";>'.$item['valor_nombre_credito'].'</td>';          
+                                
+                                //para sumar valores para totalizar
+                                switch ($indice){
+                                    case 0: $sumaCapital    +=  $item['valor_nombre_credito']; break;
+                                    case 1: $sumaInteres    +=  $item['valor_nombre_credito']; break;
+                                    case 2: $sumaMora       +=  $item['valor_nombre_credito']; break;
+                                    case 3: $sumaSegDesg    +=  $item['valor_nombre_credito']; break;
+                                    case 4: $sumaSegInc     +=  $item['valor_nombre_credito']; break;
+                                }                                
                             }
                         }else{
                             $html.='<td align="right";>0.00</td>';
@@ -525,6 +544,15 @@ class ReporteDescuentosController extends ControladorBase{
                                 foreach ( $rsItem as $item){
                                     $sumaItems += $item['valor_nombre_credito'];
                                     $html.='<td align="right";>'.$item['valor_nombre_credito'].'</td>';
+                                    
+                                    //para sumar valores para totalizar
+                                    switch ($indice){
+                                        case 0: $sumaCapital    +=  $item['valor_nombre_credito']; break;
+                                        case 1: $sumaInteres    +=  $item['valor_nombre_credito']; break;
+                                        case 2: $sumaMora       +=  $item['valor_nombre_credito']; break;
+                                        case 3: $sumaSegDesg    +=  $item['valor_nombre_credito']; break;
+                                        case 4: $sumaSegInc     +=  $item['valor_nombre_credito']; break;
+                                    } 
                                 }
                             }else{
                                 $html.='<td align="right";>0.00</td>';
@@ -546,13 +574,35 @@ class ReporteDescuentosController extends ControladorBase{
                 }
                 
             }
-            
+                        
             $ini_cedula = $cedula;
             $ini_nombre = $nombre;
             $ini_tipo_credito = $tipo_credito;
             
         }
+               
+        $sumaTotal = $sumaCapital + $sumaInteres + $sumaMora + $sumaSegDesg + $sumaSegInc;
         
+        $html.='<tr >';
+        $html.='<td></td>';
+        $html.='<td align="left";></td>';
+        $html.='<td align="left";></td>';
+        $html.='<td align="right";></td>';
+        $html.='<td align="right";>TOTALES</td>';
+        $html.='<td align="right";>'.$sumaCapital.'</td>';
+        $html.='<td align="right";>'.$sumaInteres.'</td>';
+        $html.='<td align="right";>'.$sumaMora.'</td>';
+        $html.='<td align="right";>'.$sumaSegDesg.'</td>';
+        $html.='<td align="right";>'.$sumaSegInc.'</td>';        
+        $html.='<td align="right";>'.$sumaTotal.'</td>';
+        $html.='<td align="right";>'.$sumaTotal.'</td>';
+        $html.='<td align="right";></td>';
+        $html.='<td align="right";></td>';
+        $html.='<td align="right";></td>';
+        $html.='<td align="right";></td>';
+        $html.='<td align="right";></td>';
+        $html.='</td>';
+        $html.='</tr>';
         
         $html.='</table>';
         

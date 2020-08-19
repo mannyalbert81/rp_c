@@ -274,6 +274,16 @@ class EntidadBase{
     
     	return $resultSet;
     }
+    public function getCondicionesFunciones($columnas ,$tablas){
+        
+        $query=pg_query($this->con, "SELECT $columnas FROM $tablas");
+        $resultSet = array();
+        while ($row = pg_fetch_object($query)) {
+            $resultSet[]=$row;
+        }
+        
+        return $resultSet;
+    }
     
     public function getCondicionesValorMayor($columnas ,$tablas , $where){
     	 

@@ -330,7 +330,7 @@
                   	  				<a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Tabla de Amortización</a>
 	               					<a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Pagaré / Contrato de Mutuo Acuerdo</a>
 	               					<a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Recibo de Presentación de Solicitud</a>
-	               					<a class="btn btn-danger" onclick="generar_estado_cuenta(this)" title="Estado Cuenta" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Estado Cuenta</a>
+	               					<a class="btn btn-default" onclick="generar_estado_cuenta(this)" title="Estado Cuenta" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Estado Cuenta</a>
 	           
 	                	</div>
           		    	</div>

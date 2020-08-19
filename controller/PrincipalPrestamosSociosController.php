@@ -1058,7 +1058,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
             }
             
             $html .= '<div class="bio-row"><p><span class="tab2">_________________________</span>________</p></div>';
-            $html .= '<div class="bio-row"><p><span class="tab2">TOTAL</span>:&nbsp; &nbsp;' . $suma_valor . '</p></div>';
+            $html .= '<div class="bio-row"><p><span class="tab2">TOTAL</span>:&nbsp; &nbsp;' . number_format($suma_valor,2,".",",") . '</p></div>';
             
             $html .= ' </div>';
             $html .= ' </div>';

@@ -68,6 +68,7 @@
 			<form id="frm_carga_recaudaciones" action="<?php echo $helper->url("RecepcionArchivosRecaudaciones","InsertaRecepcionArchivosRecaudaciones"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
 							    
 		  	<input type="hidden" id="id_carga_recaudaciones" value="0">
+		  	<input type="hidden" value="0" id="hdnid_cabeza_descuentos">
             		  
             <div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
@@ -354,7 +355,7 @@
           <div class="modal-header bg-primary color-palette">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" align="center">DETALLE</h4>
+            <h4 class="modal-title" align="center">APORTES</h4>
           </div>
           <div class="modal-body" >
           	<div class="box-body no-padding">
@@ -364,7 +365,7 @@
           		<br>
               	<div class="letrasize11">
                 		<table id="tbl_detalle_modal" class="table table-striped table-bordered" >
-                        	<thead >
+          		        	<thead >
                         	    <tr class="danger" >
                         	    	<th >#</th>
                         			<th >Entidad</th>
@@ -376,11 +377,58 @@
                         			<th >Aporte Patronal</th>
                         			<th >Sueldo</th>
                         			<th >Liquido</th>
-                        			
                         		</tr>
                         	</thead>        
                         
                         </table>            	
+                 <a class="btn btn-success" onclick="reporte_aportes(this)" title="Reporte" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Reporte</a>
+	            
+                	</div>
+          		
+            	
+          	</div>
+          	
+          
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div>
+ <div class="modal fade" id="mod_mostrar_detalle_creditos" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog   modal-lg " role="document" >
+        <div class="modal-content">
+          <div class="modal-header bg-primary color-palette">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" align="center">CRÉDITOS</h4>
+          </div>
+          <div class="modal-body" >
+          	<div class="box-body no-padding">
+          		<div class="row">
+          		
+          		</div>
+          		<br>
+              	<div class="letrasize11">
+                		<table id="tbl_detalle_modal_creditos" class="table table-striped table-bordered" >
+          		        	<thead >
+                        	    <tr class="danger" >
+                        	    	<th >#</th>
+                        			<th >Entidad</th>
+                        			<th >Año</th>
+                        			<th >Mes</th>
+                        			<th >Cedula</th>
+                        			<th >Participe</th>
+                        			<th >Cuota</th>
+                        			<th >Mora</th>
+                        			
+                       		</tr>
+                        	</thead>        
+                        
+                        </table>            	
+                 <a class="btn btn-success" onclick="reporte_creditos(this)" title="Reporte" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Reporte</a>
+	            
                 	</div>
           		
             	
@@ -403,7 +451,7 @@
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <!-- FILE UPLOAD -->
    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js"></script>
-   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.19"></script> 
+   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.37"></script> 
 
   </body>
 </html>   

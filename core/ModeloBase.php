@@ -189,7 +189,7 @@ class ModeloBase extends EntidadBase{
         try{
             
             $result=pg_query($this->con(), $query);
-            
+          
             if( $result === false )
                 throw new Exception( "Error PostgreSQL ".pg_last_error() );
                 

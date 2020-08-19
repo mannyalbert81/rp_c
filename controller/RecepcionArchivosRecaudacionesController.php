@@ -1768,12 +1768,14 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                         a.rmu_descuentos_registrados_detalle_aportes,
                         a.liquido_descuentos_registrados_detalle_aportes,
                         a.multas_descuentos_registrados_detalle_aportes,
-                        a.antiguedad_descuentos_registrados_detalle_aportes";
+                        a.antiguedad_descuentos_registrados_detalle_aportes,
+                        a.procesado_descuentos_registrados_detalle_aportes";
           $tablas1   = "core_descuentos_registrados_detalle_aportes a 
                         inner join core_entidad_patronal b on a.id_entidad_patronal = b.id_entidad_patronal
                         inner join core_participes c on a.id_participes = c.id_participes";
           $where1    = "a.id_descuentos_registrados_cabeza = $id_descuentos_registrados_cabeza ";
-            
+          
+          
             /* PARA FILTROS DE CONSULTA */
             
             if( strlen( $searchDataTable ) > 0 )
@@ -1800,7 +1802,10 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 6 => '1',
                 7 => '1',
                 8 => '1',
-                9 => '1'
+                9 => '1',
+                10 => '1',
+                11 => '1',
+                12 => '1'
             );
             
             $orderby   = $columns[$requestData['order'][0]['column']];
@@ -1838,9 +1843,10 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 $dataFila['participe']  = $res->apellido_participes.' '.$res->nombre_participes;
                 $dataFila['aporte_personal']= $res->aporte_personal_descuentos_registrados_detalle_aportes;
                 $dataFila['aporte_patronal']  = $res->aporte_patronal_descuentos_registrados_detalle_aportes;
-                $dataFila['sueldo']  = $res->rmu_descuentos_registrados_detalle_aportes;
+                $dataFila['rmu']  = $res->rmu_descuentos_registrados_detalle_aportes;
                 $dataFila['liquido']  = $res->liquido_descuentos_registrados_detalle_aportes;
-                
+              
+            
                 $data[] = $dataFila;
             }
             

@@ -778,14 +778,14 @@ var listar_detalle_modal = function(){
 	    		{ data: 'participe' },
 	    		{ data: 'aporte_personal'},
 	    		{ data: 'aporte_patronal' },
-	    		{ data: 'sueldo' },
+	    		{ data: 'rmu' },
 	    		{ data: 'liquido' }
-	
+	    		
 	    		
 	    ],
 	    'columnDefs': [
 	        {className: "dt-center", targets:[0] },
-	        {sortable: false, targets: [ 0,3,4,9 ] }
+	        {sortable: false, targets: [ 0,3,4,9] }
 	      ],
 		'scrollY': "80vh",
         'scrollCollapse':true,

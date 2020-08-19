@@ -371,12 +371,12 @@
                         			<th >Entidad</th>
                         			<th >Año</th>
                         			<th >Mes</th>
-                        			<th >Cedula</th>
+                        			<th >Cédula</th>
                         			<th >Participe</th>
                         			<th >Aporte Personal</th>
                         			<th >Aporte Patronal</th>
-                        			<th >Sueldo</th>
-                        			<th >Liquido</th>
+                        			<th >RMU</th>
+                        			<th >Líquido</th>
                         		</tr>
                         	</thead>        
                         
@@ -451,7 +451,7 @@
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <!-- FILE UPLOAD -->
    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js"></script>
-   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.37"></script> 
+   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.39"></script> 
 
   </body>
 </html>   

@@ -265,89 +265,156 @@ class ReporteDescuentosController extends ControladorBase{
         $mes_reporte=$meses[($mes)-1];
         
         
-        $query = "select 1 as id,
-pcarga.cedula_participes as cedula,
-pcarga.apellido_participes || ' ' || pcarga.nombre_participes as nombre,
-coalesce(case when b.cedula_participes!=pcarga.cedula_participes then b.cedula_participes else '' end,''  ) as cedula_pago_otro,
-coalesce(case when b.apellido_participes!=pcarga.apellido_participes then b.apellido_participes else '' end,'' ) || '' || coalesce (case when b.nombre_participes!=pcarga.nombre_participes then b.nombre_participes  else '' end ,'' )as nombre_pago_otro,
-null as id_tipo_descuento,
-null as nombre_tipo_descuento,
-a.cuota_descuentos_registrados_detalle_creditos, 
-a.year_descuentos_registrados_detalle_creditos,
-a.mes_descuentos_registrados_detalle_creditos,
-a.procesado_descuentos_registrados_detalle_creditos,
-case when cty.nombre_tipo_creditos is null then 'INDEBIDO' else upper (cty.nombre_tipo_creditos) end as nombre_credito,
-sum (coalesce(ctd.valor_transaccion_detalle, coalesce(drct.valor_cxp_descuentos_registrados_detalle_creditos_trans,0))) valor_nombre_credito,
-drct.id_descuentos_registrados_detalle_creditos,
-c.id_tipo_creditos,
-cty.nombre_tipo_creditos,
-ata.descripcion_tabla_amortizacion_parametrizacion as item_name,
-drct.cxp_voucher_descuentos_registrados_detalle_creditos_trans,
-'' as estado_cuenta_x_pagar,
-drct.observacion_descuentos_registrados_detalle_creditos_trans,
-case  when a.procesado_descuentos_registrados_detalle_creditos = 't' then 'SI' when a.procesado_descuentos_registrados_detalle_creditos = 'f' then 'NO' else '' end estado_procesado,
-ata.id_tabla_amortizacion_parametrizacion
-from core_descuentos_registrados_detalle_creditos_trans drct 
-left outer join core_transacciones ct on drct.id_transacciones = ct.id_transacciones and ct.id_status = 1 and ct.id_estado_transacciones = 1
-left outer join core_transacciones_detalle ctd on ctd.id_transacciones = ct.id_transacciones and ctd.id_status = 1
-left outer join core_tabla_amortizacion_pagos aata on aata.id_tabla_amortizacion_pagos = ctd.id_tabla_amortizacion_pago
-left outer join core_tabla_amortizacion_parametrizacion ata on aata.id_tabla_amortizacion_parametrizacion = ata.id_tabla_amortizacion_parametrizacion
-left outer join core_creditos c on ct.id_creditos = c.id_creditos and c.id_estatus = 1
-left outer join core_tipo_creditos cty on c.id_tipo_creditos = cty.id_tipo_creditos and cty.id_estatus = 1
-left outer join core_descuentos_registrados_detalle_creditos a on a.id_descuentos_registrados_detalle_creditos = drct.id_descuentos_registrados_detalle_creditos
-left outer join core_participes b on c.id_participes = b.id_participes
-left outer join core_participes pcarga on pcarga.id_participes = a.id_participes
-where a.id_descuentos_registrados_cabeza = $id_descuentos_registrados_cabeza
-group by pcarga.nombre_participes, pcarga.apellido_participes, pcarga.cedula_participes, b.cedula_participes, b.apellido_participes, b.nombre_participes, a.cuota_descuentos_registrados_detalle_creditos, a.year_descuentos_registrados_detalle_creditos, a.mes_descuentos_registrados_detalle_creditos, a.procesado_descuentos_registrados_detalle_creditos,
-cty.nombre_tipo_creditos, a.id_descuentos_registrados_detalle_creditos, c.id_tipo_creditos, drct.cxp_voucher_descuentos_registrados_detalle_creditos_trans,
-drct.id_descuentos_registrados_detalle_creditos, c.id_tipo_creditos, drct.observacion_descuentos_registrados_detalle_creditos_trans,
-ata.id_tabla_amortizacion_parametrizacion,  ata.descripcion_tabla_amortizacion_parametrizacion,
-c.id_participes
-union
-select 1 as id, 
-b.cedula_participes as cedula,
-b.apellido_participes || ' ' || b.nombre_participes as nombre,
-coalesce(case when b.cedula_participes != b.cedula_participes then b.cedula_participes else '' end, '') as cedula_pago_otro,
-coalesce(case when b.apellido_participes != b.apellido_participes then b.apellido_participes else '' end, '') || ' ' || coalesce(case when b.nombre_participes != b.nombre_participes then b.nombre_participes else '' end, '') as nombre_pago_otro,
-null as id_tipo_descuento, 
-null as nombre_tipo_descuento, 
-0 as cuota_descuentos_registrados_detalle_creditos, 
-0 as year_descuentos_registrados_detalle_creditos,
-0 as mes_descuentos_registrados_detalle_creditos,
-'t' as procesado_descuentos_registrados_detalle_creditos,
-case when cty.nombre_tipo_creditos is null then 'INDEBIDO' else upper (cty.nombre_tipo_creditos) end as nombre_credito,
-sum (coalesce (ctd.valor_transaccion_detalle,0)) as valor_nombre_credito,
-0 as id_descuentos_registrados_detalle_creditos, 
-c.id_tipo_creditos, 
-cty.nombre_tipo_creditos, 
-ata.descripcion_tabla_amortizacion_parametrizacion as item_name, 
-'' as cxp_voucher_descuentos_registrados_detalle_creditos_trans,
-'' as estado_cuenta_x_pagar,
-'' as observacion_descuentos_registrados_detalle_creditos_trans,
-'SI' estado_procesado,
- ata.id_tabla_amortizacion_parametrizacion
-from core_transacciones ct 
-left outer join core_transacciones_detalle ctd on ctd.id_transacciones = ct.id_transacciones and ctd.id_status = 1
-left outer join core_tabla_amortizacion_pagos aata on aata.id_tabla_amortizacion_pagos = ctd.id_tabla_amortizacion_pago
-left outer join core_tabla_amortizacion_parametrizacion ata on aata.id_tabla_amortizacion_parametrizacion = ata.id_tabla_amortizacion_parametrizacion
-left outer join core_creditos c on ct.id_creditos = c.id_creditos and c.id_estatus = 1
-left outer join core_tipo_creditos  cty on c.id_tipo_creditos = c.id_tipo_creditos and cty.id_estatus = 1
-left outer join core_participes b on c.id_participes = b.id_participes
-where b.id_entidad_patronal = $id_entidad_patronal and to_char (ct.fecha_transacciones,'YYYY') = '$anio' and to_char(ct.fecha_transacciones,'MM') = '$mes' 
-and ct.id_modo_pago = 24 and ct.id_status  =1 and ct.id_estado_transacciones =1
-group by b.cedula_participes, b.apellido_participes, b.nombre_participes,
-cty.nombre_tipo_creditos, c.id_tipo_creditos,
-ata.tipo_tabla_amortizacion_parametrizacion, ata.descripcion_tabla_amortizacion_parametrizacion,
-c.id_participes, ata.id_tabla_amortizacion_parametrizacion
-order by
-nombre";
+        $query  = " SELECT
+        	1 AS id,
+        	pcarga.cedula_participes AS cedula,
+        	pcarga.apellido_participes || ' ' || pcarga.nombre_participes AS nombre,
+        	COALESCE(CASE WHEN b.cedula_participes != pcarga.cedula_participes THEN b.cedula_participes ELSE '' END, '' ) AS cedula_pago_otro,
+        	COALESCE(CASE WHEN b.apellido_participes != pcarga.apellido_participes THEN b.apellido_participes ELSE '' END, '' ) || '' || COALESCE
+        	(CASE
+        		WHEN b.nombre_participes != pcarga.nombre_participes THEN b.nombre_participes
+        		ELSE ''
+        	END ,
+        	'' ) AS nombre_pago_otro,
+        	null AS id_tipo_descuento,
+        	null AS nombre_tipo_descuento,
+        	a.cuota_descuentos_registrados_detalle_creditos,
+        	a.year_descuentos_registrados_detalle_creditos,
+        	a.mes_descuentos_registrados_detalle_creditos,
+        	a.procesado_descuentos_registrados_detalle_creditos,
+        	CASE
+        		WHEN cty.nombre_tipo_creditos IS NULL THEN 'INDEBIDO'
+        		ELSE upper (cty.nombre_tipo_creditos)
+        	END AS nombre_credito,
+        	SUM (COALESCE(ctd.valor_transaccion_detalle, COALESCE(drct.valor_cxp_descuentos_registrados_detalle_creditos_trans, 0))) valor_nombre_credito,
+        	drct.id_descuentos_registrados_detalle_creditos,
+        	c.id_tipo_creditos,
+        	cty.nombre_tipo_creditos,
+        	ata.descripcion_tabla_amortizacion_parametrizacion AS item_name,
+        	drct.cxp_voucher_descuentos_registrados_detalle_creditos_trans,
+        	'' AS estado_cuenta_x_pagar,
+        	drct.observacion_descuentos_registrados_detalle_creditos_trans,
+        	CASE
+        		WHEN a.procesado_descuentos_registrados_detalle_creditos = 't' THEN 'SI'
+        		WHEN a.procesado_descuentos_registrados_detalle_creditos = 'f' THEN 'NO'
+        		ELSE ''
+        	END estado_procesado,
+        	ata.id_tabla_amortizacion_parametrizacion
+         FROM
+        	core_descuentos_registrados_detalle_creditos_trans drct
+        LEFT OUTER JOIN core_transacciones ct ON
+        	drct.id_transacciones = ct.id_transacciones
+        	AND ct.id_status = 1
+        	AND ct.id_estado_transacciones = 1
+        LEFT OUTER JOIN core_transacciones_detalle ctd ON
+        	ctd.id_transacciones = ct.id_transacciones
+        	AND ctd.id_status = 1
+        LEFT OUTER JOIN core_tabla_amortizacion_pagos aata ON
+        	aata.id_tabla_amortizacion_pagos = ctd.id_tabla_amortizacion_pago
+        LEFT OUTER JOIN core_tabla_amortizacion_parametrizacion ata ON
+        	aata.id_tabla_amortizacion_parametrizacion = ata.id_tabla_amortizacion_parametrizacion
+        LEFT OUTER JOIN core_creditos c ON
+        	ct.id_creditos = c.id_creditos
+        	AND c.id_estatus = 1
+        LEFT OUTER JOIN core_tipo_creditos cty ON
+        	c.id_tipo_creditos = cty.id_tipo_creditos
+        	AND cty.id_estatus = 1
+        LEFT OUTER JOIN core_descuentos_registrados_detalle_creditos a ON
+        	a.id_descuentos_registrados_detalle_creditos = drct.id_descuentos_registrados_detalle_creditos
+        LEFT OUTER JOIN core_participes b ON
+        	c.id_participes = b.id_participes
+        LEFT OUTER JOIN core_participes pcarga ON
+        	pcarga.id_participes = a.id_participes
+        WHERE
+        	a.id_descuentos_registrados_cabeza = $id_descuentos_registrados_cabeza
+        GROUP BY
+        	pcarga.nombre_participes,
+        	pcarga.apellido_participes,
+        	pcarga.cedula_participes,
+        	b.cedula_participes,
+        	b.apellido_participes,
+        	b.nombre_participes,
+        	a.cuota_descuentos_registrados_detalle_creditos,
+        	a.year_descuentos_registrados_detalle_creditos,
+        	a.mes_descuentos_registrados_detalle_creditos,
+        	a.procesado_descuentos_registrados_detalle_creditos,
+        	cty.nombre_tipo_creditos,
+        	a.id_descuentos_registrados_detalle_creditos,
+        	c.id_tipo_creditos,
+        	drct.cxp_voucher_descuentos_registrados_detalle_creditos_trans,
+        	drct.id_descuentos_registrados_detalle_creditos,
+        	c.id_tipo_creditos,
+        	drct.observacion_descuentos_registrados_detalle_creditos_trans,
+        	ata.id_tabla_amortizacion_parametrizacion,
+        	ata.descripcion_tabla_amortizacion_parametrizacion,
+        	c.id_participes
+        UNION
+        SELECT
+        	1 AS id,
+        	b.cedula_participes AS cedula,
+        	b.apellido_participes || ' ' || b.nombre_participes AS nombre,
+        	COALESCE(CASE WHEN b.cedula_participes != b.cedula_participes THEN b.cedula_participes ELSE '' END, '') AS cedula_pago_otro,
+        	COALESCE(CASE WHEN b.apellido_participes != b.apellido_participes THEN b.apellido_participes ELSE '' END, '') || ' ' || COALESCE(CASE WHEN b.nombre_participes != b.nombre_participes THEN b.nombre_participes ELSE '' END, '') AS nombre_pago_otro,
+        	null AS id_tipo_descuento,
+        	null AS nombre_tipo_descuento,
+        	0 AS cuota_descuentos_registrados_detalle_creditos,
+        	0 AS year_descuentos_registrados_detalle_creditos,
+        	0 AS mes_descuentos_registrados_detalle_creditos,
+        	't' AS procesado_descuentos_registrados_detalle_creditos,
+        	CASE
+        		WHEN cty.nombre_tipo_creditos IS NULL THEN 'INDEBIDO'
+        		ELSE upper (cty.nombre_tipo_creditos)
+        	END AS nombre_credito,
+        	SUM ( COALESCE (ctd.valor_transaccion_detalle,0) ) AS valor_nombre_credito,
+        	0 AS id_descuentos_registrados_detalle_creditos,
+        	c.id_tipo_creditos,
+        	cty.nombre_tipo_creditos,
+        	ata.descripcion_tabla_amortizacion_parametrizacion AS item_name,
+        	'' AS cxp_voucher_descuentos_registrados_detalle_creditos_trans,
+        	'' AS estado_cuenta_x_pagar,
+        	'' AS observacion_descuentos_registrados_detalle_creditos_trans,
+        	'SI' estado_procesado,
+        	ata.id_tabla_amortizacion_parametrizacion
+        FROM
+        	core_transacciones ct
+        LEFT OUTER JOIN core_transacciones_detalle ctd ON
+        	ctd.id_transacciones = ct.id_transacciones
+        	AND ctd.id_status = 1
+        LEFT OUTER JOIN core_tabla_amortizacion_pagos aata ON
+        	aata.id_tabla_amortizacion_pagos = ctd.id_tabla_amortizacion_pago
+        LEFT OUTER JOIN core_tabla_amortizacion_parametrizacion ata ON
+        	aata.id_tabla_amortizacion_parametrizacion = ata.id_tabla_amortizacion_parametrizacion
+        LEFT OUTER JOIN core_creditos c ON
+        	ct.id_creditos = c.id_creditos
+        	AND c.id_estatus = 1
+        LEFT OUTER JOIN core_tipo_creditos cty ON
+        	c.id_tipo_creditos = c.id_tipo_creditos
+        	AND cty.id_estatus = 1
+        LEFT OUTER JOIN core_participes b ON
+        	c.id_participes = b.id_participes
+        WHERE
+        	b.id_entidad_patronal = $id_entidad_patronal
+        	AND to_char (ct.fecha_transacciones,'YYYY') = '2020'
+        	AND to_char(ct.fecha_transacciones, 'MM') = '03'
+        	AND ct.id_modo_pago = 24
+        	AND ct.id_status = 1
+        	AND ct.id_estado_transacciones = 1
+        GROUP BY
+        	b.cedula_participes,
+        	b.apellido_participes,
+        	b.nombre_participes,
+        	cty.nombre_tipo_creditos,
+        	c.id_tipo_creditos,
+        	ata.tipo_tabla_amortizacion_parametrizacion,
+        	ata.descripcion_tabla_amortizacion_parametrizacion,
+        	c.id_participes,
+        	ata.id_tabla_amortizacion_parametrizacion
+        ORDER BY
+        	cedula, nombre, id_tipo_creditos";
         
 
         
-        $desceuntos_aportes_personales = $descuentosaportes->enviaquery($query);
-        
-        //var_dump( $desceuntos_aportes_personales ); die();
-        
+        $rsConsulta = $descuentosaportes->enviaquery($query);
         
         
         $datos_reporte['ENTIDAD_PATRONAL']=$nombre_entidad_patronal;
@@ -368,6 +435,7 @@ nombre";
         $html.='<th>Interes</th>';
         $html.='<th>Mora</th>';
         $html.='<th>Seg. Degrav.</th>';
+        $html.='<th>Seg. Incendios.</th>';
         $html.='<th>Total</th>';
         $html.='<th>CUOTA CARGARDA</th>';
         $html.='<th>CUOTA ARCHIVO</th>';
@@ -377,41 +445,113 @@ nombre";
         $html.='<th>Observ.</th>';
         $html.='</tr>';
         
-       
+        $resulset2 = json_decode( json_encode( $rsConsulta ), true );
         
-        
+        //items en el orden de reporte
+        $aitems=array(0=>'CAPITAL',1=>'INTERES',2=>'MORA',3=>'SEGURO DE DESGRAVAMEN',4=>'SEGURO DE INCENDIOS');
         
         $i=0;
-        foreach ($desceuntos_aportes_personales as $res)
+        $ini_cedula = "";
+        $ini_nombre = "";
+        $ini_tipo_credito = 0;
+        foreach ( $rsConsulta as $res)
         {
-            
-           
-            
-            
+            $cedula = $res->cedula;
+            $nombre = $res->nombre;
+            $tipo_credito = $res->id_tipo_creditos;
             $i++;
-            $html.='<tr >';
-            $html.='<td>'.$i.'</td>';
-            $html.='<td align="left";>'.$res->cedula.'</td>';
-            $html.='<td align="left";>'.$res->nombre.'</td>';
-            $html.='<td align="right";>'.$res->nombre_pago_otro.'</td>';
-            $html.='<td align="right";>'.$res->nombre_tipo_creditos.'</td>';
-            $html.='<td align="right";></td>';
-            $html.='<td align="right";></td>';
-            $html.='<td align="right";></td>';
-            $html.='<td align="right";></td>';
-            $html.='<td align="right";></td>';
-            $html.='<td align="right";>'.$res->cuota_descuentos_registrados_detalle_creditos.'</td>';
-            $html.='<td align="right";>'.$res->cxp_voucher_descuentos_registrados_detalle_creditos_trans.'</td>';
-            $html.='<td align="right";></td>';
-            $html.='<td align="right";>'.$res->estado_procesado.'</td>';
-            $html.='<td align="right";>'.$res->estado_procesado.'</td>';
-            $html.='<td align="right";>'.$res->observacion_descuentos_registrados_detalle_creditos_trans.'</td>';
-            $html.='</td>';
-            $html.='</tr>';
+            
+            if( $ini_cedula !== $cedula && $ini_nombre !== $nombre  ){
+                
+                $html.='<tr >';
+                $html.='<td>'.$i.'</td>';
+                $html.='<td align="left";>'.$res->cedula.'</td>';
+                $html.='<td align="left";>'.$res->nombre.'</td>';
+                $html.='<td align="right";>'.$res->nombre_pago_otro.'</td>';
+                $html.='<td align="right";>'.$res->nombre_tipo_creditos.'</td>';
+                
+                
+                $rsValores = $this->devuelveArrayFiltrado($resulset2,$cedula,$tipo_credito);
+                
+                //variable para sumar valores
+                $sumaItems = 0;
+                //orden valores --> Capital	Interes	Mora	Seg. Degrav. Seg Inc
+                if( !empty($rsValores) ){
+                    foreach ( $aitems as $indice => $value ){
+                        $rsItem = $this->devuelveItemFiltrado($rsValores, $value);
+                        if( !empty($rsItem) ){
+                            foreach ( $rsItem as $item){
+                                $sumaItems += $item['valor_nombre_credito'];
+                                $html.='<td align="right";>'.$item['valor_nombre_credito'].'</td>';
+                            }
+                        }else{
+                            $html.='<td align="right";>0.00</td>';
+                            $sumaItems += 0;
+                        }
+                        
+                    }
+                }
+                
+                $html.='<td align="right";>'.$sumaItems.'</td>';
+                $html.='<td align="right";>'.$res->cuota_descuentos_registrados_detalle_creditos.'</td>';
+                $html.='<td align="right";>'.$res->cxp_voucher_descuentos_registrados_detalle_creditos_trans.'</td>';
+                $html.='<td align="right";></td>';
+                $html.='<td align="right";>'.$res->estado_procesado.'</td>';
+                $html.='<td align="right";>'.$res->estado_procesado.'</td>';
+                $html.='<td align="right";>'.$res->observacion_descuentos_registrados_detalle_creditos_trans.'</td>';
+                $html.='</td>';
+                $html.='</tr>';
+                
+            }else{
+                
+                if( $ini_cedula === $cedula && $ini_nombre === $nombre && $ini_tipo_credito !== $tipo_credito )
+                {
+                    $html.='<tr >';
+                    $html.='<td></td>';
+                    $html.='<td align="left";></td>';
+                    $html.='<td align="left";></td>';
+                    $html.='<td align="right";></td>';
+                    $html.='<td align="right";></td>';
+                    
+                    $rsValores = $this->devuelveArrayFiltrado($resulset2,$cedula,$tipo_credito);
+                    
+                    //variable para sumar valores
+                    $sumaItems = 0;
+                    //orden valores --> Capital	Interes	Mora	Seg. Degrav. Seg Inc
+                    if( !empty($rsValores) ){
+                        foreach ( $aitems as $indice => $value ){
+                            $rsItem = $this->devuelveItemFiltrado($rsValores, $value);
+                            if( !empty($rsItem) ){
+                                foreach ( $rsItem as $item){
+                                    $sumaItems += $item['valor_nombre_credito'];
+                                    $html.='<td align="right";>'.$item['valor_nombre_credito'].'</td>';
+                                }
+                            }else{
+                                $html.='<td align="right";>0.00</td>';
+                                $sumaItems += 0;
+                            }
+                            
+                        }
+                    }
+                    
+                    $html.='<td align="right";>'.$sumaItems.'</td>';
+                    $html.='<td align="right";></td>';
+                    $html.='<td align="right";></td>';
+                    $html.='<td align="right";></td>';
+                    $html.='<td align="right";></td>';
+                    $html.='<td align="right";></td>';
+                    $html.='<td align="right";></td>';
+                    $html.='</td>';
+                    $html.='</tr>';
+                }
+                
+            }
+            
+            $ini_cedula = $cedula;
+            $ini_nombre = $nombre;
+            $ini_tipo_credito = $tipo_credito;
+            
         }
-        
-        
-    
         
         
         $html.='</table>';
@@ -425,7 +565,25 @@ nombre";
         
     }
     
+    public function devuelveArrayFiltrado(array $resulset, $v1, $v2)
+    {
+        $arrayValores = array();
+        $arrayValores  =  array_filter( $resulset, function($ar) use( $v1, $v2)  {
+            return ( $ar['cedula'] == $v1 AND $ar['id_tipo_creditos'] == $v2 );
+        });
+            
+            return $arrayValores;
+    }
     
+    public function devuelveItemFiltrado(array $resulset, $v1)
+    {
+        $arrayValores = array();
+        $arrayValores  =  array_filter( $resulset, function($ar) use( $v1)  {
+            return ( $ar['item_name'] == $v1);
+        });
+            
+            return $arrayValores;
+    }
    
 }
 ?>

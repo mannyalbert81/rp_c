@@ -174,6 +174,16 @@ var generar_pagare_cobros = function(obj){
 	return true;
 }
 
+var generar_estado_cuenta = function(obj){
+	
+	var elemento = $(obj);
+	var id_creditos	= $("#hdnid_creditos").val();
+	var url 	 = "index.php?controller=EstadoCuenta&action=Estado_Cuenta&id_creditos="+id_creditos;
+	
+	elemento.attr('href',url);
+	return true;
+}
+
 /* dc 2020-08-18 */
 var mostrarSaldosCredito	= function(){
 	

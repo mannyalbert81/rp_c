@@ -522,7 +522,6 @@ class ReporteDescuentosController extends ControladorBase{
                 if( $ini_cedula === $cedula && $ini_nombre === $nombre && $ini_tipo_credito !== $tipo_credito )
                 {
                     $html.='<tr >';
-                    $html.='<td></td>';
                     $html.='<td align="left";></td>';
                     $html.='<td align="left";></td>';
                     $html.='<td align="right";></td>';
@@ -580,7 +579,6 @@ class ReporteDescuentosController extends ControladorBase{
         $sumaTotal = $sumaCapital + $sumaInteres + $sumaMora + $sumaSegDesg + $sumaSegInc;
         
         $html.='<tr >';
-        $html.='<td></td>';
         $html.='<td align="left";></td>';
         $html.='<td align="left";></td>';
         $html.='<td align="right";></td>';

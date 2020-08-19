@@ -983,6 +983,107 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	        
 	}
 	
+	/* dc 2020-08-18 */
+	public function ObtenerSaldosCredito()
+	{
+	    ob_start();
+	    $resp  = array();
+	    $html  = "";
+	    try {
+	        
+	        $creditos  = new CreditosModel();
+	        
+	        if( !isset($_SESSION) )
+	        {
+	            session_start();
+	        }
+	        
+	        $id_creditos   = $_POST['id_creditos'];
+	        $fecha_reporte = $_POST['fecha_reporte'];
+	        if( !empty( error_get_last() ) )
+	            throw new Exception("variables no Recibidas");
+	        
+            $tipo_credito   = 0;
+	        
+	        $col1  = " id_creditos, id_tipo_creditos";
+	        $tab1  = " public.core_creditos";
+	        $whe1  = " id_estado_creditos = 4 AND id_estatus = 1 AND id_creditos = $id_creditos";
+	        
+	        $rs_Consulta1  = $creditos->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+	        
+	        if( empty($rs_Consulta1) )
+	            throw  new Exception("Credito no cumple parametros");
+	        
+            $tipo_credito = $rs_Consulta1[0]->id_tipo_creditos;
+	        
+	        $paramsQuery   = " $id_creditos, '$fecha_reporte', 1000000 ";
+            $functionquery = " SELECT id_tabla_amortizacion_parametrizacion_out, valor_out FROM fc_simular_pago_credito_por_fecha($paramsQuery)";
+	        
+            $rs_function   = $creditos->enviaquery( $functionquery );
+            
+            if( empty($rs_function) )
+                throw new Exception("Datos no obtenidos");
+            
+            $col2  = " id_tabla_amortizacion_parametrizacion, descripcion_tabla_amortizacion_parametrizacion,orden_tabla_amortizacion_parametrizacion";
+            $tab2  = " public.core_tabla_amortizacion_parametrizacion";
+            $whe2  = " id_tipo_creditos = $tipo_credito";
+            
+            $rs_Consulta2  = $creditos->getCondicionesSinOrden($col2, $tab2, $whe2, "");
+            
+            $suma_valor = 0;
+            //dibujar html
+            $html .= ' <div>';
+            $html .= ' <div class="box-footer no-padding ">';
+            
+            foreach ( $rs_function as $fun)
+            {
+                $id = $fun->id_tabla_amortizacion_parametrizacion_out;
+                $valor  = $fun->valor_out;
+                $descripcion    = "";
+                $encontrado = false;
+                foreach ( $rs_Consulta2 as $res )
+                {
+                    if( $res->id_tabla_amortizacion_parametrizacion == $id ){
+                        $descripcion  = $res->descripcion_tabla_amortizacion_parametrizacion;
+                        $encontrado = true;
+                        $suma_valor += $valor;
+                    }
+                }
+                
+                $valor  = number_format( $valor,2,".",",");
+                
+                if( $encontrado )
+                    $html .= '<div class="bio-row"><p><span class="tab2">'.$descripcion.'</span>:&nbsp; &nbsp;' . $valor . '</p></div>'; 
+               
+            }
+            
+            $html .= '<div class="bio-row"><p><span class="tab2">_________________________</span>________</p></div>';
+            $html .= '<div class="bio-row"><p><span class="tab2">TOTAL</span>:&nbsp; &nbsp;' . $suma_valor . '</p></div>';
+            
+            $html .= ' </div>';
+            $html .= ' </div>';
+            
+            $resp['estatus']    = "OK";
+            $resp['mensaje']    = "";
+            $resp['html']   = $html;
+                      
+	        
+	    } catch (Exception $e) {
+	        $resp['estatus']    = "ERROR";
+	        $resp['mensaje']    = $e->getMessage();
+	        $resp['html']   = $html;
+	    }
+	    
+	    $salida = ob_get_clean();
+	    
+	    if( !empty($salida) ){
+	        echo "Existen valores en Buffer de salida";
+	    }else{
+	        echo json_encode($resp);
+	    }
+	        
+	}
+	
 	
 }
 ?>

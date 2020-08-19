@@ -609,11 +609,11 @@ class BitacoraActividadesEmpleadosTesoreriaController extends ControladorBase{
             $html.='<th style="text-align: center;  font-size: 10px;">Contabilidad</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Auditoría</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Biess</th>';
-            $html.='<th style="text-align: center;  font-size: 10px;">S. B.</th>';
+            $html.='<th style="text-align: center;  font-size: 10px;">Superintendencia Bancos</th>';
             $html.='<th style="text-align: center;  font-size: 10px;">Otras Actividades</th>';
-            $html.='<th style="text-align: center;  font-size: 10px;">Cédula</th>';
-            $html.='<th style="text-align: center;  font-size: 10px;">Participes</th>';
-            $html.='<th style="text-align: center;  font-size: 10px;">Motivo de Atención</th>';
+            //$html.='<th style="text-align: center;  font-size: 10px;">Cédula</th>';
+            //$html.='<th style="text-align: center;  font-size: 10px;">Participes</th>';
+            //$html.='<th style="text-align: center;  font-size: 10px;">Motivo de Atención</th>';
             $html.='</tr>';
             
             
@@ -636,9 +636,9 @@ class BitacoraActividadesEmpleadosTesoreriaController extends ControladorBase{
                 $html.='<td style="text-align: justify; font-size: 10px;">'.$res->biess.'</td>';
                 $html.='<td style="text-align: justify; font-size: 10px;">'.$res->sb.'</td>';
                 $html.='<td style="text-align: justify; font-size: 10px;">'.$res->otras_actividades.'</td>';
-                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->cedula_participes.'</td>';
+                /*$html.='<td style="text-align: justify; font-size: 10px;">'.$res->cedula_participes.'</td>';
                 $html.='<td style="text-align: justify; font-size: 10px;">'.$res->nombres_participes.'</td>';
-                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->motivo_atencion.'</td>';
+                $html.='<td style="text-align: justify; font-size: 10px;">'.$res->motivo_atencion.'</td>';*/
                 $html.='</tr>';
             }
             

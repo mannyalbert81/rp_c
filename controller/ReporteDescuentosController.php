@@ -116,7 +116,6 @@ class ReporteDescuentosController extends ControladorBase{
         
         $html.='<table class="1" border=1>';
         $html.='<tr>';
-        $html.='<th>N°</th>';
         $html.='<th>Cédula</th>';
         $html.='<th>Nombre</th>';
         $html.='<th>Aporte Personal</th>';
@@ -161,8 +160,7 @@ class ReporteDescuentosController extends ControladorBase{
             
             $i++;
             $html.='<tr >';
-            $html.='<td>'.$i.'</td>';
-            $html.='<td align="left";>'.$res->cedula.'</td>';
+           $html.='<td align="left";>'.$res->cedula.'</td>';
             $html.='<td align="left";>'.$res->nombre.'</td>';
             $html.='<td align="right";>'.$res->aporte_personal.'</td>';
             $html.='<td align="right";>'.$res->aporte_patronal.'</td>';
@@ -426,7 +424,6 @@ class ReporteDescuentosController extends ControladorBase{
         
         $html.='<table class="1" border=1>';
         $html.='<tr>';
-        $html.='<th>N°</th>';
         $html.='<th>Cédula</th>';
         $html.='<th>Nombre</th>';
         $html.='<th>Garantizado</th>';
@@ -464,7 +461,6 @@ class ReporteDescuentosController extends ControladorBase{
             if( $ini_cedula !== $cedula && $ini_nombre !== $nombre  ){
                 
                 $html.='<tr >';
-                $html.='<td>'.$i.'</td>';
                 $html.='<td align="left";>'.$res->cedula.'</td>';
                 $html.='<td align="left";>'.$res->nombre.'</td>';
                 $html.='<td align="right";>'.$res->nombre_pago_otro.'</td>';

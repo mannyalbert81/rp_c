@@ -137,7 +137,6 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    $columnas = " core_creditos.id_creditos,
                       core_tabla_amortizacion.fecha_tabla_amortizacion,
                       core_tabla_amortizacion.capital_tabla_amortizacion,
-                      core_tabla_amortizacion.seguro_desgravamen_tabla_amortizacion,
                       core_tabla_amortizacion.interes_tabla_amortizacion,
                       core_tabla_amortizacion.total_valor_tabla_amortizacion,
                       core_tabla_amortizacion.mora_tabla_amortizacion,
@@ -153,9 +152,6 @@ class PrincipalPrestamosSociosController extends ControladorBase{
                       (select sum(c1.interes_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalintereses\",
-                      (select sum(c1.seguro_desgravamen_tabla_amortizacion)
-                      from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalseguro\",
                       (select sum(c1.total_valor_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalcuota\",
@@ -232,7 +228,6 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	            $html.='<th style="text-align: center; font-size: 11px;">Fecha</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Capital</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Intereses</th>';
-	            $html.='<th style="text-align: center; font-size: 11px;">Seg. Desgrav.</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Mora</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Cuota</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Saldo Cuota</th>';
@@ -259,7 +254,6 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->capital_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->interes_tabla_amortizacion, 2, ",", ".").'</td>';
-	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->seguro_desgravamen_final, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->mora_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_valor_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->saldo_final, 2, ",", ".").'</td>';

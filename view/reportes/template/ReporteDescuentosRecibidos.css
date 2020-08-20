@@ -55,10 +55,10 @@ table.1 {
 }
 
 table.2 {
-  
-
+  font-size:11px;
    text-align: center;
      border-collapse: collapse;
+     width: 30%;
 }
 
 

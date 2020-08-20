@@ -461,6 +461,49 @@ class ReporteDescuentosController extends ControladorBase{
         $ini_cedula = "";
         $ini_nombre = "";
         $ini_tipo_credito = 0;
+        
+        $total_credito_2x1 = 0;
+        $total_credito_2x1_capital = 0;
+        $total_credito_2x1_interes = 0;
+        $total_credito_2x1_mora = 0;
+        $total_credito_2x1_seg_des = 0;
+        
+        $total_credito_emergente = 0;
+        $total_credito_emergente_capital = 0;
+        $total_credito_emergente_interes = 0;
+        $total_credito_emergente_mora = 0;
+        $total_credito_emergente_seg_des = 0;
+        
+        $total_credito_hipotecario = 0;
+        $total_credito_hipotecario_capital = 0;
+        $total_credito_hipotecario_interes = 0;
+        $total_credito_hipotecario_mora = 0;
+        $total_credito_hipotecario_seg_inc = 0;
+        
+        $total_credito_ordinario = 0;
+        $total_credito_ordinario_capital = 0;
+        $total_credito_ordinario_interes = 0;
+        $total_credito_ordinario_mora = 0;
+        $total_credito_ordinario_seg_des = 0;
+        
+        $total_credito_refinanciamiento = 0;
+        $total_credito_refinanciamiento_capital = 0;
+        $total_credito_refinanciamiento_interes = 0;
+        $total_credito_refinanciamiento_mora = 0;
+        $total_credito_refinanciamiento_seg_des = 0;
+        
+        $total_credito_acuerdo_pago = 0;
+        $total_credito_acuerdo_pago_capital = 0;
+        $total_credito_acuerdo_pago_interes = 0;
+        $total_credito_acuerdo_pago_mora = 0;
+        $total_credito_acuerdo_pago_seg_des = 0;
+        
+        $total_credito_mediacion = 0;
+        $total_credito_mediacion_capital = 0;
+        $total_credito_mediacion_interes = 0;
+        $total_credito_mediacion_mora = 0;
+        $total_credito_mediacion_seg_des = 0;
+        
         foreach ( $rsConsulta as $res)
         {
             $cedula = $res->cedula;
@@ -574,22 +617,193 @@ class ReporteDescuentosController extends ControladorBase{
             $ini_nombre = $nombre;
             $ini_tipo_credito = $tipo_credito;
             
+            //para sacar totales por tipo credito
+            
+            //2x1
+            if($res->id_tipo_creditos == 1){
+                
+                        if($res->item_name == "CAPITAL"){
+                         
+                            $total_credito_2x1_capital = $total_credito_2x1_capital + $res->valor_nombre_credito;
+                            
+                        }else if($res->item_name == "INTERES"){
+                            
+                            $total_credito_2x1_interes = $total_credito_2x1_interes + $res->valor_nombre_credito;
+                            
+                        }else if($res->item_name == "MORA"){
+                            
+                            $total_credito_2x1_mora = $total_credito_2x1_mora + $res->valor_nombre_credito;
+                            
+                        }
+                        else if($res->item_name == "SEGURO DE DESGRAVAMEN"){
+                            
+                            $total_credito_2x1_seg_des = $total_credito_2x1_seg_des + $res->valor_nombre_credito;
+                            
+                        }
+             }
+             //emergente
+             if($res->id_tipo_creditos == 2){
+                 
+                 if($res->item_name == "CAPITAL"){
+                     
+                     $total_credito_emergente_capital = $total_credito_emergente_capital + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "INTERES"){
+                     
+                     $total_credito_emergente_interes = $total_credito_emergente_interes + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "MORA"){
+                     
+                     $total_credito_emergente_mora = $total_credito_emergente_mora + $res->valor_nombre_credito;
+                     
+                 }
+                 else if($res->item_name == "SEGURO DE DESGRAVAMEN"){
+                     
+                     $total_credito_emergente_seg_des = $total_credito_emergente_seg_des + $res->valor_nombre_credito;
+                     
+                 }
+             }
+            //hipotecario
+             if($res->id_tipo_creditos == 3){
+                 
+                 if($res->item_name == "CAPITAL"){
+                     
+                     $total_credito_hipotecario_capital = $total_credito_hipotecario_capital + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "INTERES"){
+                     
+                     $total_credito_hipotecario_interes = $total_credito_hipotecario_interes + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "MORA"){
+                     
+                     $total_credito_hipotecario_mora = $total_credito_hipotecario_mora + $res->valor_nombre_credito;
+                     
+                 }
+                 else if($res->item_name == "SEGURO DE INCENDIOS"){
+                     
+                     $total_credito_hipotecario_seg_inc = $total_credito_hipotecario_seg_inc + $res->valor_nombre_credito;
+                     
+                 }
+             }
+             //ordinario
+             if($res->id_tipo_creditos == 4){
+                 
+                 if($res->item_name == "CAPITAL"){
+                     
+                     $total_credito_ordinario_capital = $total_credito_ordinario_capital + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "INTERES"){
+                     
+                     $total_credito_ordinario_interes = $total_credito_ordinario_interes + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "MORA"){
+                     
+                     $total_credito_ordinario_mora = $total_credito_ordinario_mora + $res->valor_nombre_credito;
+                     
+                 }
+                 else if($res->item_name == "SEGURO DE DESGRAVAMEN"){
+                     
+                     $total_credito_ordinario_seg_des = $total_credito_ordinario_seg_des + $res->valor_nombre_credito;
+                     
+                 }
+             }
+             //ordinario
+             if($res->id_tipo_creditos == 5){
+                 
+                 if($res->item_name == "CAPITAL"){
+                     
+                     $total_credito_acuerdo_pago_capital = $total_credito_acuerdo_pago_capital + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "INTERES"){
+                     
+                     $total_credito_acuerdo_pago_interes = $total_credito_acuerdo_pago_interes + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "MORA"){
+                     
+                     $total_credito_acuerdo_pago_mora = $total_credito_acuerdo_pago_mora + $res->valor_nombre_credito;
+                     
+                 }
+                 else if($res->item_name == "SEGURO DE DESGRAVAMEN"){
+                     
+                     $total_credito_acuerdo_pago_seg_des = $total_credito_acuerdo_pago_seg_des + $res->valor_nombre_credito;
+                     
+                 }
+             }
+             //refinanciamiento
+             if($res->id_tipo_creditos == 6){
+                 
+                 if($res->item_name == "CAPITAL"){
+                     
+                     $total_credito_refinanciamiento_capital = $total_credito_refinanciamiento_capital + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "INTERES"){
+                     
+                     $total_credito_refinanciamiento_interes = $total_credito_refinanciamiento_interes + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "MORA"){
+                     
+                     $total_credito_refinanciamiento_mora = $total_credito_refinanciamiento_mora + $res->valor_nombre_credito;
+                     
+                 }
+                 else if($res->item_name == "SEGURO DE DESGRAVAMEN"){
+                     
+                     $total_credito_refinanciamiento_seg_des = $total_credito_refinanciamiento_seg_des + $res->valor_nombre_credito;
+                     
+                 }
+             }
+             //mediacion
+             if($res->id_tipo_creditos == 7){
+                 
+                 if($res->item_name == "CAPITAL"){
+                     
+                     $total_credito_mediacion_capital = $total_credito_mediacion_capital + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "INTERES"){
+                     
+                     $total_credito_mediacion_interes = $total_credito_mediacion_interes + $res->valor_nombre_credito;
+                     
+                 }else if($res->item_name == "MORA"){
+                     
+                     $total_credito_mediacion_mora = $total_credito_mediacion_mora + $res->valor_nombre_credito;
+                     
+                 }
+                 else if($res->item_name == "SEGURO DE DESGRAVAMEN"){
+                     
+                     $total_credito_mediacion_seg_des = $total_credito_mediacion_seg_des + $res->valor_nombre_credito;
+                     
+                 }
+             }
+            
         }
                
         $sumaTotal = $sumaCapital + $sumaInteres + $sumaMora + $sumaSegDesg + $sumaSegInc;
+        
+        $total_credito_2x1 = $total_credito_2x1_capital + $total_credito_2x1_interes + $total_credito_2x1_mora + $total_credito_2x1_seg_des;
+        
+        $total_credito_emergente = $total_credito_emergente_capital + $total_credito_emergente_interes + $total_credito_emergente_mora + $total_credito_emergente_seg_des;
+        
+        $total_credito_hipotecario = $total_credito_hipotecario_capital + $total_credito_hipotecario_interes + $total_credito_hipotecario_mora + $total_credito_hipotecario_seg_inc;
+        
+        $total_credito_ordinario = $total_credito_ordinario_capital + $total_credito_ordinario_interes + $total_credito_ordinario_mora + $total_credito_ordinario_seg_des;
+        
+        $total_credito_refinanciamiento = $total_credito_refinanciamiento_capital + $total_credito_refinanciamiento_interes + $total_credito_refinanciamiento_mora + $total_credito_refinanciamiento_seg_des;
+        
+        $total_credito_acuerdo_pago = $total_credito_acuerdo_pago_capital + $total_credito_acuerdo_pago_interes + $total_credito_acuerdo_pago_mora + $total_credito_acuerdo_pago_seg_des;
+        
+        $total_credito_mediacion = $total_credito_mediacion_capital + $total_credito_mediacion_interes + $total_credito_mediacion_mora + $total_credito_mediacion_seg_des;
         
         $html.='<tr >';
         $html.='<td align="left";></td>';
         $html.='<td align="left";></td>';
         $html.='<td align="right";></td>';
         $html.='<td align="right";><b>TOTALES</b></td>';
-        $html.='<td align="right";><b>'.$sumaCapital.'</b></td>';
-        $html.='<td align="right";><b>'.$sumaInteres.'</b></td>';
-        $html.='<td align="right";><b>'.$sumaMora.'</b></td>';
-        $html.='<td align="right";><b>'.$sumaSegDesg.'</b></td>';
-        $html.='<td align="right";><b>'.$sumaSegInc.'</b></td>';        
-        $html.='<td align="right";><b>'.$sumaTotal.'</b></td>';
-        $html.='<td align="right";><b>'.$sumaTotal.'</b></td>';
+        $html.='<td align="right";><b>'.number_format($sumaCapital, 2, ",", ".").'</b></td>';
+        $html.='<td align="right";><b>'.number_format($sumaInteres, 2, ",", ".").'</b></td>';
+        $html.='<td align="right";><b>'.number_format($sumaMora, 2, ",", ".").'</b></td>';
+        $html.='<td align="right";><b>'.number_format($sumaSegDesg, 2, ",", ".").'</b></td>';
+        $html.='<td align="right";><b>'.number_format($sumaSegInc, 2, ",", ".").'</b></td>';        
+        $html.='<td align="right";><b>'.number_format($sumaTotal, 2, ",", ".").'</b></td>';
+        $html.='<td align="right";><b>'.number_format($sumaTotal, 2, ",", ".").'</b></td>';
         $html.='<td align="right";></td>';
         $html.='<td align="right";></td>';
         $html.='<td align="right";></td>';
@@ -597,8 +811,188 @@ class ReporteDescuentosController extends ControladorBase{
         $html.='<td align="right";></td>';
         $html.='</td>';
         $html.='</tr>';
-        
         $html.='</table>';
+          
+        
+        if ($total_credito_2x1 > 0) {
+            
+            $html.='<br>';
+            $html.='<table class="2" border=1>';
+            $html.='<tr >';
+            $html.='<th colspan=5 align="center";><b>PQ-CRÉDITO 2X1</b></th>';
+            $html.='</tr>';
+            $html.='<tr >';
+            $html.='<th align="center";><b>Capital</b></th>';
+            $html.='<th align="center";><b>Interes</b></th>';
+            $html.='<th align="center";><b>Mora</b></th>';
+            $html.='<th align="center";><b>Seguro Desg.</b></th>';
+            $html.='<th align="center";><b>TOTAL</b></th>';
+            $html.='</tr>';
+            $html.='<tr>';
+            $html.='<td align="right";>'.number_format($total_credito_2x1_capital, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_2x1_interes, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_2x1_mora, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_2x1_seg_des, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_2x1, 2, ",", ".").'</td>';
+            $html.='</tr>';
+            $html.='</table>';
+             
+        }
+       
+      
+        if ($total_credito_ordinario > 0) {
+            
+            $html.='<br>';
+            $html.='<table class="2" border=1>';
+            $html.='<tr >';
+            $html.='<th colspan=5 align="center";><b>PQ-CRÉDITO ORDINARIO</b></th>';
+            $html.='</tr>';
+            $html.='<tr >';
+            $html.='<th align="center";><b>Capital</b></th>';
+            $html.='<th align="center";><b>Interes</b></th>';
+            $html.='<th align="center";><b>Mora</b></th>';
+            $html.='<th align="center";><b>Seguro Desg.</b></th>';
+            $html.='<th align="center";><b>TOTAL</b></th>';
+            $html.='</tr>';
+            $html.='<tr>';
+            $html.='<td align="right";>'.number_format($total_credito_ordinario_capital, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_ordinario_interes, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_ordinario_mora, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_ordinario_seg_des, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_ordinario, 2, ",", ".").'</td>';
+            $html.='</tr>';
+            $html.='</table>';
+              
+        }
+        
+        if ($total_credito_emergente > 0) {
+       
+            $html.='<br>';
+            $html.='<table class="2" border=1>';
+            $html.='<tr >';
+            $html.='<th colspan=5 align="center";><b>PQ-CRÉDITO EMERGENTE</b></th>';
+            $html.='</tr>';
+            $html.='<tr >';
+            $html.='<th align="center";><b>Capital</b></th>';
+            $html.='<th align="center";><b>Interes</b></th>';
+            $html.='<th align="center";><b>Mora</b></th>';
+            $html.='<th align="center";><b>Seguro Desg.</b></th>';
+            $html.='<th align="center";><b>TOTAL</b></th>';
+            $html.='</tr>';
+            $html.='<tr>';
+            $html.='<td align="right";>'.number_format($total_credito_emergente_capital, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_emergente_interes, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_emergente_mora, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_emergente_seg_des, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_emergente, 2, ",", ".").'</td>';
+            $html.='</tr>';
+            $html.='</table>';
+            
+        }
+        
+        if ($total_credito_hipotecario > 0) {
+            
+            $html.='<br>';
+            $html.='<table class="2" border=1>';
+            $html.='<tr >';
+            $html.='<th colspan=5 align="center";><b>PQ-CRÉDITO HIPOTECARIO</b></th>';
+            $html.='</tr>';
+            $html.='<tr >';
+            $html.='<th align="center";><b>Capital</b></th>';
+            $html.='<th align="center";><b>Interes</b></th>';
+            $html.='<th align="center";><b>Mora</b></th>';
+            $html.='<th align="center";><b>Seguro Ince.</b></th>';
+            $html.='<th align="center";><b>TOTAL</b></th>';
+            $html.='</tr>';
+            $html.='<tr>';
+            $html.='<td align="right";>'.number_format($total_credito_hipotecario_capital, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_hipotecario_interes, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_hipotecario_mora, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_hipotecario_seg_inc, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_hipotecario, 2, ",", ".").'</td>';
+            $html.='</tr>';
+            $html.='</table>';
+            
+        }
+        
+        if ($total_credito_refinanciamiento > 0) {
+            
+            $html.='<br>';
+            $html.='<table class="2" border=1>';
+            $html.='<tr >';
+            $html.='<th colspan=5 align="center";><b>PQ-CRÉDITO REFINANCIAMIENTO</b></th>';
+            $html.='</tr>';
+            $html.='<tr >';
+            $html.='<th align="center";><b>Capital</b></th>';
+            $html.='<th align="center";><b>Interes</b></th>';
+            $html.='<th align="center";><b>Mora</b></th>';
+            $html.='<th align="center";><b>Seguro Desg.</b></th>';
+            $html.='<th align="center";><b>TOTAL</b></th>';
+            $html.='</tr>';
+            $html.='<tr>';
+            $html.='<td align="right";>'.number_format($total_credito_refinanciamiento_capital, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_refinanciamiento_interes, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_refinanciamiento_mora, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_refinanciamiento_seg_des, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_refinanciamiento, 2, ",", ".").'</td>';
+            $html.='</tr>';
+            $html.='</table>';
+            
+        }
+        
+        if ($total_credito_mediacion > 0) {
+         
+            $html.='<br>';
+            $html.='<table class="2" border=1>';
+            $html.='<tr >';
+            $html.='<th colspan=5 align="center";><b>PQ-CRÉDITO ACUERDO DE PAGO</b></th>';
+            $html.='</tr>';
+            $html.='<tr >';
+            $html.='<th align="center";><b>Capital</b></th>';
+            $html.='<th align="center";><b>Interes</b></th>';
+            $html.='<th align="center";><b>Mora</b></th>';
+            $html.='<th align="center";><b>Seguro Desg.</b></th>';
+            $html.='<th align="center";><b>TOTAL</b></th>';
+            $html.='</tr>';
+            $html.='<tr>';
+            $html.='<td align="right";>'.number_format($total_credito_mediacion_capital, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_mediacion_interes, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_mediacion_mora, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_mediacion_seg_des, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_mediacion, 2, ",", ".").'</td>';
+            $html.='</tr>';
+            $html.='</table>';
+            
+        }
+        
+        if ($total_credito_acuerdo_pago > 0) {
+            
+            $html.='<br>';
+            $html.='<table class="2" border=1>';
+            $html.='<tr >';
+            $html.='<th colspan=5 align="center";><b>PQ-CRÉDITO ACUERDO DE PAGO</b></th>';
+            $html.='</tr>';
+            $html.='<tr >';
+            $html.='<th align="center";><b>Capital</b></th>';
+            $html.='<th align="center";><b>Interes</b></th>';
+            $html.='<th align="center";><b>Mora</b></th>';
+            $html.='<th align="center";><b>Seguro Desg.</b></th>';
+            $html.='<th align="center";><b>TOTAL</b></th>';
+            $html.='</tr>';
+            $html.='<tr>';
+            $html.='<td align="right";>'.number_format($total_credito_acuerdo_pago_capital, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_acuerdo_pago_interes, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_acuerdo_pago_mora, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_acuerdo_pago_seg_des, 2, ",", ".").'</td>';
+            $html.='<td align="right";>'.number_format($total_credito_acuerdo_pago, 2, ",", ".").'</td>';
+            $html.='</tr>';
+            $html.='</table>';
+            
+        }
+       
+       
+        
+        
         
         $datos_reporte['DETALLE_DESCUENTOS_APORTES']= $html;
         

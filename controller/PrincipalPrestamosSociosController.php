@@ -929,23 +929,56 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    $id_transacciones =  (isset($_REQUEST['id_transacciones'])&& $_REQUEST['id_transacciones'] !=NULL)?$_REQUEST['id_transacciones']:'';
 	      $datos_reporte = array();
 	     
-	      $columnas =  "fvalue, fobservation, fname, fcredit_name, credit_payment_mode, fcredittransactionid, fidentificacion, fjournalid";
+	      $columnas =   "fvalue,
+                         fobservation,
+                         fname,
+                         fcredit_name,
+                         credit_payment_mode,
+                         fcredittransactionid,
+                         fidentificacion,
+                         fjournalid,
+                         fecha_creditos_pagos,
+                         valor_creditos_pagos,
+                         numero_referencia_creditos_pagos,
+                         nombre_bancos_creditos_pagos,
+                         cuenta_creditos_pagos,
+                         descripcion_creditos_tipo_pagos_transacciones";
 	      $tablas ="fc_creditos_reporte_transacciones ($id_transacciones)";
 	      
 	      
 	      $rsdatos = $participes->getCondicionesFunciones($columnas, $tablas);
 	      
-	      $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->fvalue;
-	      $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->fobservation;
-	      $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->fname;
-	      $datos_reporte['TIPO_CREDITOS']=$rsdatos[0]->fcredit_name;
-	      $datos_reporte['NUMERO_CREDITOS']=$rsdatos[0]->credit_payment_mode;
-	      $datos_reporte['FECHA_CONSECION']=$rsdatos[0]->fcredittransactionid;
-	      $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->fidentificacion;
-	      $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->fjournalid;
+	      $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->fname;
+	      $datos_reporte['IDENTIFICACION_PARTICIPES']=$rsdatos[0]->fidentificacion;
+	      $datos_reporte['CANTIDAD']=$rsdatos[0]->fvalue;
+	      $datos_reporte['CONCEPTO']=$rsdatos[0]->fobservation;
+	      $datos_reporte['CREDITO']=$rsdatos[0]->fcredit_name;
+	      $datos_reporte['NUMERO_TRANSACCION']=$rsdatos[0]->fcredittransactionid;
+	      $datos_reporte['NUMERO_ASIENTO']=$rsdatos[0]->fjournalid;
+	      $datos_reporte['FORMA_DE_PAGO']=$rsdatos[0]->credit_payment_mode;
+	      $datos_reporte['FECHA_PAGO']=$rsdatos[0]->fecha_creditos_pagos;
+	      $datos_reporte['VALOR']=$rsdatos[0]->valor_creditos_pagos;
+	      $datos_reporte['BANCO']=$rsdatos[0]->nombre_bancos_creditos_pagos;
+	      $datos_reporte['DOCUMENTO']=$rsdatos[0]->numero_referencia_creditos_pagos;
+	      $datos_reporte['MOTIVO_DE_PAGO']=$rsdatos[0]->descripcion_creditos_tipo_pagos_transacciones;
+	    
+	    $query = "select atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, sum(ctd.valor_transaccion_detalle) as value, ct.fecha_transacciones
+	    from core_transacciones ct
+	    inner join core_transacciones_detalle ctd on ct.id_transacciones = ctd.id_transacciones
+	    inner join core_tabla_amortizacion_pagos aatv on ctd.id_tabla_amortizacion_pago = aatv.id_tabla_amortizacion_pagos
+	    inner join core_tabla_amortizacion_parametrizacion atav on atav.id_tabla_amortizacion_parametrizacion = aatv.id_tabla_amortizacion_parametrizacion
+	    where aatv.id_estatus = 1 and ctd.id_status = 1 and ctd.id_estado_transacciones = 1
+	    and ct.id_transacciones = $id_transacciones
+	    group by atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, ct.fecha_transacciones";
+	    
+	    $rsdatos = $participes->enviaquery($query);
+	    
+	    $datos_reporte['TIPO_TABLA']=$rsdatos[0]->tipo_tabla_amortizacion_parametrizacion;
+	    $datos_reporte['DESCRIPCION_TABLA']=$rsdatos[0]->descripcion_tabla_amortizacion_parametrizacion;
+	    $datos_reporte['VALUE']=$rsdatos[0]->value;
+	    $datos_reporte['FECHA_TRANSACCIONES']=$rsdatos[0]->fecha_transacciones;
 	    
 	    
-	    $datos = array();
 	    
 	    $cedula_capremci = $rsdatos[0]->cedula_participes;
 	    $numero_credito = $rsdatos[0]->numero_creditos;

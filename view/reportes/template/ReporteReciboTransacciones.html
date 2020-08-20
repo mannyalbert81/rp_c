@@ -9,44 +9,44 @@
   	<div>
     <h2 align="center"><strong>RECIBO DE TRANSACCIÓN</strong></h2>	
 	</div>
-	<p class="1"><strong>RECIBIMOS DE SR. (A): </strong>{APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}</p>
-	<p class="1"><strong>NÚMERO DE IDENTIDAD : </strong>{APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}</p>
-	<p class="1"><strong>CANTIDAD: </strong>{APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}</p>
-	<p class="1"><strong>CONCEPTO: </strong>{APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}</p>
-	<p class="1"><strong>APLICACIÓN AL CRÉDITO: </strong>{APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}</p>
+	<p class="1"><strong>RECIBIMOS DE SR. (A): </strong>{NOMBRE_PARTICIPES}</p>
+	<p class="1"><strong>NÚMERO DE IDENTIDAD : </strong>{IDENTIFICACION_PARTICIPES}</p>
+	<p class="1"><strong>CANTIDAD: </strong>{CANTIDAD}</p>
+	<p class="1"><strong>CONCEPTO: </strong>{CONCEPTO}</p>
+	<p class="1"><strong>APLICACIÓN AL CRÉDITO: </strong>{CREDITO}</p>
 	<div class="izq">
-	<p class="1"><strong>NÚMERO DE TRANSACCIÓN </strong>{APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}</p>
+	<p class="1"><strong>NÚMERO DE TRANSACCIÓN </strong>{NUMERO_TRANSACCION}</p>
 	</div>
 	<div class="der">
-	<p class="1"><strong>NÚMERO ASIENTO: </strong>{APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}</p>
+	<p class="1"><strong>NÚMERO ASIENTO: </strong>{NUMERO_ASIENTO}</p>
 	</div>
  <div  class="completa">  
 	
-	<table class="2">
+	<table class="5">
 	<tr>
 		<th class="3">FORMA DE PAGO</th> <th class="3">FECHA</th> <th class="3">VALOR</th> <th class="3">BANCO</th> <th class="3">DOCUMENTO</th> <th class="3">MOTIVO DE PAGO</th>
 	</tr>
 	<tr>
-		<td class="3">Recomendado por:</td> <td class="3">Atención al Cliente</td> <td class="3">{APELLIDO_USUARIO} {NOMBRE_USUARIO}</td> <td class="3"></td> <td class="3"></td><td class="3"></td>
+		<td class="3">{FORMA_DE_PAGO}</td> <td class="3">{FECHA_PAGO}</td> <td class="3">{VALOR}</td> <td class="3">{BANCO}</td> <td class="3">{DOCUMENTO}</td><td class="3">{MOTIVO_DE_PAGO}</td>
 	</tr>
 
 </table>
 <br><br>
-	<table class="2">
+	<table class="5">
 	<tr>
-		<th class="4" colspan="2">DESGLOSE DEL PAGO</th><th class="5">Valor</th>
+		<th class="4" colspan="2">DESGLOSE DEL PAGO</th><th class="5"></th>
 	</tr>
 	<tr>
-		<th class="4" colspan="2">CAPITAL</th><th class="5">FECHA</th>
+		<th class="4" colspan="2">TIPO</th><th class="5">{TIPO_TABLA}</th>
 	</tr>
 	<tr>
-		<th class="4" colspan="2">INTERES</th><th class="5">FECHA</th>
+		<th class="4" colspan="2">DESCRIPCION</th><th class="5">{DESCRIPCION_TABLA}</th>
 	</tr>
 	<tr>
-		<th class="4" colspan="2">MORA</th><th class="5">FECHA</th>
+		<th class="4" colspan="2">VALOR</th><th class="5">{VALUE}</th>
 	</tr>
 	<tr>
-		<th class="5" colspan="2">Valor Pago</th><th class="5">FECHA</th>
+		<th class="4" colspan="2">FECHA</th><th class="5">{FECHA_TRANSACCIONES}</th>
 	</tr>
 
 </table>

@@ -899,7 +899,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    session_start();
 	    
 	    $entidades = new EntidadesModel();
-	    //PARA OBTENER DATOS DE LA EMPRESAS
+	    //PARA OBTENER DATOS DE LA EMPRESA
 	    $datos_empresa = array();
 	    $rsdatosEmpresa = $entidades->getBy("id_entidades = 1");
 	    

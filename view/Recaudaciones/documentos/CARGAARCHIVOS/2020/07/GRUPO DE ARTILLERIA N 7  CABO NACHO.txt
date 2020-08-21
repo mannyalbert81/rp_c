@@ -1,0 +1,2 @@
+cedula	nombre	valor
+1103187363	LOPEZ CUENCA RUTH MARLENE	111.17

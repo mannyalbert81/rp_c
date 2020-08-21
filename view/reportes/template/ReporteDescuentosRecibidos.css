@@ -48,17 +48,17 @@ td.espacio{
 
 table.1 {
   
-   font-size:15px;
+   font-size:11px;
    text-align: center;
      border-collapse: collapse;
      width: 100%;
 }
 
 table.2 {
-  
-
+  font-size:11px;
    text-align: center;
      border-collapse: collapse;
+     width: 30%;
 }
 
 

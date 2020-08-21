@@ -300,15 +300,38 @@
                           </table>
                     	</div>
           				</div> 
+          				
+                        <!--dc 2020-08-18 -->
+                        <!-- panel para saldos de valores -->
+          				<div id="pnl_saldos_creditos" class="panel panel-success" >
+          					<div class="panel-heading" >Información Saldos de Cr&eacute;dito</div>
+                      		<div class="panel-body">    
+              	            <!-- ESTA TABLA SE LLENA CON PROCESO DE JS PARA OBTENER SALDOS --> 
+              	            	<div class="row">
+              	            		<div class="col-xs-6 col-md-6 col-lg-3">
+                            			<div class="form-group ">
+                            				<label for="txt_fecha_reporte" class=" control-label" >Fecha a:</label> 
+                                    		<input type="date" class="form-control" id="txt_fecha_reporte" onchange="mostrarSaldosCredito()" value="<?php echo date('Y-m-d'); ?>">   			 
+                            			</div>
+                            		</div> 
+                            		
+              	            	</div> 
+                  				<div id="div_detalle_saldos">
+                  				</div>
+            				</div>
+      					</div>
+      					<!--end dc 2020-08-18 --> 
           		  
                       <div class="panel panel-primary">
                            <div class="panel-heading" >Reportes</div>
                           <div class="panel-body">    
                     	   	<div class="col-lg-12 col-md-12 col-xs-12" style ="text-align:center;">
                   	
-                  	  				<a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Tabla de Amortización</a>
-	               					<a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Pagaré / Contrato de Mutuo Acuerdo</a>
-	               					<a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Imprimir Recibo de Presentación de Solicitud</a>
+                  	  				<a class="btn btn-success" onclick="generar_tabla_amortizacion(this)" title="Tabla Amortización" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Tabla de Amortización</a>
+	               					<a class="btn btn-info" onclick="generar_pagare(this)" title="Pagaré" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Pagaré / Contrato de Mutuo Acuerdo</a>
+	               					<a class="btn btn-warning" onclick="generar_recibo(this)" title="Recibo" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Recibo de Presentación de Solicitud</a>
+	               					<a class="btn btn-default" onclick="generar_estado_cuenta(this)" title="Estado Cuenta" href="#" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Estado Cuenta</a>
+	           
 	                	</div>
           		    	</div>
           				</div>        
@@ -400,7 +423,7 @@
     <!-- FILE UPLOAD -->
     <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js?01"></script>
     <!-- js personales -->
-     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.14"></script>
+     <script type="text/javascript" src="view/principal/js/RegistroPrestamos.js?0.19"></script>
   
 
   </body>

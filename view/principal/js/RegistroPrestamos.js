@@ -1,16 +1,22 @@
 
 
 $(document).ready(function(){
-	
-	loadDataParticipesPrestamos();
+	inicializarPagina();
+	mostrarSaldosCredito();
+	loadDataParticipesPrestamos();	
 })
 
-function loadDataParticipesPrestamos(){
-	
-	var hdnid_participes_prestamos = $("#hdnid_participes_prestamos");
-	
+function inicializarPagina(){
+	//error SINTAXERROR
+	//identificador de credito esta como hdnid_participes_prestamos
+	//tomamos datos de la ventana padre
 	document.getElementById("hdnid_participes_prestamos").value = window.opener.document.getElementById("hdnid_participes_padre_prestamos").value; 
 	
+} 
+
+function loadDataParticipesPrestamos(){	
+
+	var hdnid_participes_prestamos = $("#hdnid_participes_prestamos");	
     var params	= {id_creditos:hdnid_participes_prestamos.val()}
 	
 	$.ajax({
@@ -167,6 +173,48 @@ var generar_pagare_cobros = function(obj){
 	elemento.attr('href',url);
 	return true;
 }
+
+var generar_estado_cuenta = function(obj){
+	
+	var elemento = $(obj);
+	var id_creditos	= $("#hdnid_creditos").val();
+	var url 	 = "index.php?controller=EstadoCuenta&action=Estado_Cuenta&id_creditos="+id_creditos;
+	
+	elemento.attr('href',url);
+	return true;
+}
+
+/* dc 2020-08-18 */
+var mostrarSaldosCredito	= function(){
+	
+	var id_creditos	= $("#hdnid_participes_prestamos");
+	var fecha_busqueda	= $("#txt_fecha_reporte");
+	var panel_saldos= $("#pnl_saldos_creditos");
+	var panel_detalles	= $("#div_detalle_saldos");
+	
+	$.ajax({
+		url:"index.php?controller=PrincipalPrestamosSocios&action=ObtenerSaldosCredito",
+		beforeSend:function(){  
+			panel_detalles.html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+			},
+		dataType:"json",
+		type:"POST",
+		data:{ 'id_creditos': id_creditos.val(), 'fecha_reporte': fecha_busqueda.val() }
+	}).done(function(x){
+		if( x.estatus != undefined && x.estatus == "OK" ){
+			panel_detalles.html( x.html );
+			panel_saldos.removeClass("hidden");
+		}else{
+			panel_detalles.html( x.html );
+			panel_saldos.removeClass("hidden");
+		}
+	}).fail(function(xhr, status, error){
+		panel_detalles.html( "" );
+		panel_saldos.addClass("hidden");
+	})
+	
+}
+/* end dc 2020-08-18 */
 
 
 

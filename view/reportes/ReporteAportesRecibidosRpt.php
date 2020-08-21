@@ -41,7 +41,7 @@ $footer = file_get_contents('view/reportes/template/pieret.html');
 ob_end_clean();
 //creacion del pdf
 //$mpdf=new mPDF('c','A4','','' , 0 , 0 , 0 , 0 , 0 , 0);
-$mpdf= new mPDF('c', 'A4-L');
+$mpdf= new mPDF('c', 'A4');
 $mpdf->SetDisplayMode('fullpage');
 $mpdf->allow_charset_conversion = true;
 $mpdf->setAutoTopMargin = 'stretch';

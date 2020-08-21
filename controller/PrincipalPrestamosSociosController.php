@@ -137,7 +137,6 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    $columnas = " core_creditos.id_creditos,
                       core_tabla_amortizacion.fecha_tabla_amortizacion,
                       core_tabla_amortizacion.capital_tabla_amortizacion,
-                      core_tabla_amortizacion.seguro_desgravamen_tabla_amortizacion,
                       core_tabla_amortizacion.interes_tabla_amortizacion,
                       core_tabla_amortizacion.total_valor_tabla_amortizacion,
                       core_tabla_amortizacion.mora_tabla_amortizacion,
@@ -153,9 +152,6 @@ class PrincipalPrestamosSociosController extends ControladorBase{
                       (select sum(c1.interes_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalintereses\",
-                      (select sum(c1.seguro_desgravamen_tabla_amortizacion)
-                      from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalseguro\",
                       (select sum(c1.total_valor_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalcuota\",
@@ -232,7 +228,6 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	            $html.='<th style="text-align: center; font-size: 11px;">Fecha</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Capital</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Intereses</th>';
-	            $html.='<th style="text-align: center; font-size: 11px;">Seg. Desgrav.</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Mora</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Cuota</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Saldo Cuota</th>';
@@ -259,7 +254,6 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->capital_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->interes_tabla_amortizacion, 2, ",", ".").'</td>';
-	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->seguro_desgravamen_final, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->mora_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_valor_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->saldo_final, 2, ",", ".").'</td>';
@@ -929,23 +923,56 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    $id_transacciones =  (isset($_REQUEST['id_transacciones'])&& $_REQUEST['id_transacciones'] !=NULL)?$_REQUEST['id_transacciones']:'';
 	      $datos_reporte = array();
 	     
-	      $columnas =  "fvalue, fobservation, fname, fcredit_name, credit_payment_mode, fcredittransactionid, fidentificacion, fjournalid";
+	      $columnas =   "fvalue,
+                         fobservation,
+                         fname,
+                         fcredit_name,
+                         credit_payment_mode,
+                         fcredittransactionid,
+                         fidentificacion,
+                         fjournalid,
+                         fecha_creditos_pagos,
+                         valor_creditos_pagos,
+                         numero_referencia_creditos_pagos,
+                         nombre_bancos_creditos_pagos,
+                         cuenta_creditos_pagos,
+                         descripcion_creditos_tipo_pagos_transacciones";
 	      $tablas ="fc_creditos_reporte_transacciones ($id_transacciones)";
 	      
 	      
 	      $rsdatos = $participes->getCondicionesFunciones($columnas, $tablas);
 	      
-	      $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->fvalue;
-	      $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->fobservation;
-	      $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->fname;
-	      $datos_reporte['TIPO_CREDITOS']=$rsdatos[0]->fcredit_name;
-	      $datos_reporte['NUMERO_CREDITOS']=$rsdatos[0]->credit_payment_mode;
-	      $datos_reporte['FECHA_CONSECION']=$rsdatos[0]->fcredittransactionid;
-	      $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->fidentificacion;
-	      $datos_reporte['RECEPTOR_SOLICITUD']=$rsdatos[0]->fjournalid;
+	      $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->fname;
+	      $datos_reporte['IDENTIFICACION_PARTICIPES']=$rsdatos[0]->fidentificacion;
+	      $datos_reporte['CANTIDAD']=$rsdatos[0]->fvalue;
+	      $datos_reporte['CONCEPTO']=$rsdatos[0]->fobservation;
+	      $datos_reporte['CREDITO']=$rsdatos[0]->fcredit_name;
+	      $datos_reporte['NUMERO_TRANSACCION']=$rsdatos[0]->fcredittransactionid;
+	      $datos_reporte['NUMERO_ASIENTO']=$rsdatos[0]->fjournalid;
+	      $datos_reporte['FORMA_DE_PAGO']=$rsdatos[0]->credit_payment_mode;
+	      $datos_reporte['FECHA_PAGO']=$rsdatos[0]->fecha_creditos_pagos;
+	      $datos_reporte['VALOR']=$rsdatos[0]->valor_creditos_pagos;
+	      $datos_reporte['BANCO']=$rsdatos[0]->nombre_bancos_creditos_pagos;
+	      $datos_reporte['DOCUMENTO']=$rsdatos[0]->numero_referencia_creditos_pagos;
+	      $datos_reporte['MOTIVO_DE_PAGO']=$rsdatos[0]->descripcion_creditos_tipo_pagos_transacciones;
+	    
+	    $query = "select atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, sum(ctd.valor_transaccion_detalle) as value, ct.fecha_transacciones
+	    from core_transacciones ct
+	    inner join core_transacciones_detalle ctd on ct.id_transacciones = ctd.id_transacciones
+	    inner join core_tabla_amortizacion_pagos aatv on ctd.id_tabla_amortizacion_pago = aatv.id_tabla_amortizacion_pagos
+	    inner join core_tabla_amortizacion_parametrizacion atav on atav.id_tabla_amortizacion_parametrizacion = aatv.id_tabla_amortizacion_parametrizacion
+	    where aatv.id_estatus = 1 and ctd.id_status = 1 and ctd.id_estado_transacciones = 1
+	    and ct.id_transacciones = $id_transacciones
+	    group by atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, ct.fecha_transacciones";
+	    
+	    $rsdatos = $participes->enviaquery($query);
+	    
+	    $datos_reporte['TIPO_TABLA']=$rsdatos[0]->tipo_tabla_amortizacion_parametrizacion;
+	    $datos_reporte['DESCRIPCION_TABLA']=$rsdatos[0]->descripcion_tabla_amortizacion_parametrizacion;
+	    $datos_reporte['VALUE']=$rsdatos[0]->value;
+	    $datos_reporte['FECHA_TRANSACCIONES']=$rsdatos[0]->fecha_transacciones;
 	    
 	    
-	    $datos = array();
 	    
 	    $cedula_capremci = $rsdatos[0]->cedula_participes;
 	    $numero_credito = $rsdatos[0]->numero_creditos;
@@ -980,6 +1007,107 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	        
 	        $this->verReporte("ReporteReciboTransacciones", array('datos_reporte'=>$datos_reporte, 'datos_empresa'=>$datos_empresa, 'datos_cabecera'=>$datos_cabecera, 'datos'=>$datos));
 	        
+	        
+	}
+	
+	/* dc 2020-08-18 */
+	public function ObtenerSaldosCredito()
+	{
+	    ob_start();
+	    $resp  = array();
+	    $html  = "";
+	    try {
+	        
+	        $creditos  = new CreditosModel();
+	        
+	        if( !isset($_SESSION) )
+	        {
+	            session_start();
+	        }
+	        
+	        $id_creditos   = $_POST['id_creditos'];
+	        $fecha_reporte = $_POST['fecha_reporte'];
+	        if( !empty( error_get_last() ) )
+	            throw new Exception("variables no Recibidas");
+	        
+            $tipo_credito   = 0;
+	        
+	        $col1  = " id_creditos, id_tipo_creditos";
+	        $tab1  = " public.core_creditos";
+	        $whe1  = " id_estado_creditos = 4 AND id_estatus = 1 AND id_creditos = $id_creditos";
+	        
+	        $rs_Consulta1  = $creditos->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+	        
+	        if( empty($rs_Consulta1) )
+	            throw  new Exception("Credito no cumple parametros");
+	        
+            $tipo_credito = $rs_Consulta1[0]->id_tipo_creditos;
+	        
+	        $paramsQuery   = " $id_creditos, '$fecha_reporte', 1000000 ";
+            $functionquery = " SELECT id_tabla_amortizacion_parametrizacion_out, valor_out FROM fc_simular_pago_credito_por_fecha($paramsQuery)";
+	        
+            $rs_function   = $creditos->enviaquery( $functionquery );
+            
+            if( empty($rs_function) )
+                throw new Exception("Datos no obtenidos");
+            
+            $col2  = " id_tabla_amortizacion_parametrizacion, descripcion_tabla_amortizacion_parametrizacion,orden_tabla_amortizacion_parametrizacion";
+            $tab2  = " public.core_tabla_amortizacion_parametrizacion";
+            $whe2  = " id_tipo_creditos = $tipo_credito";
+            
+            $rs_Consulta2  = $creditos->getCondicionesSinOrden($col2, $tab2, $whe2, "");
+            
+            $suma_valor = 0;
+            //dibujar html
+            $html .= ' <div>';
+            $html .= ' <div class="box-footer no-padding ">';
+            
+            foreach ( $rs_function as $fun)
+            {
+                $id = $fun->id_tabla_amortizacion_parametrizacion_out;
+                $valor  = $fun->valor_out;
+                $descripcion    = "";
+                $encontrado = false;
+                foreach ( $rs_Consulta2 as $res )
+                {
+                    if( $res->id_tabla_amortizacion_parametrizacion == $id ){
+                        $descripcion  = $res->descripcion_tabla_amortizacion_parametrizacion;
+                        $encontrado = true;
+                        $suma_valor += $valor;
+                    }
+                }
+                
+                $valor  = number_format( $valor,2,".",",");
+                
+                if( $encontrado )
+                    $html .= '<div class="bio-row"><p><span class="tab2">'.$descripcion.'</span>:&nbsp; &nbsp;' . $valor . '</p></div>'; 
+               
+            }
+            
+            $html .= '<div class="bio-row"><p><span class="tab2">_________________________</span>________</p></div>';
+            $html .= '<div class="bio-row"><p><span class="tab2">TOTAL</span>:&nbsp; &nbsp;' . number_format($suma_valor,2,".",",") . '</p></div>';
+            
+            $html .= ' </div>';
+            $html .= ' </div>';
+            
+            $resp['estatus']    = "OK";
+            $resp['mensaje']    = "";
+            $resp['html']   = $html;
+                      
+	        
+	    } catch (Exception $e) {
+	        $resp['estatus']    = "ERROR";
+	        $resp['mensaje']    = $e->getMessage();
+	        $resp['html']   = $html;
+	    }
+	    
+	    $salida = ob_get_clean();
+	    
+	    if( !empty($salida) ){
+	        echo "Existen valores en Buffer de salida";
+	    }else{
+	        echo json_encode($resp);
+	    }
 	        
 	}
 	

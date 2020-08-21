@@ -527,14 +527,14 @@
                                   			</select>                              			
                                   		</td>
                               		</tr> 
-                              		<tr>
+                              		<!-- <tr>
                                   		<td><label>Entidad Patronal:</label></td>
                                   		<td>
                                   			<select id="id_entidad_patronal" class="form-control">
                                   				<option value="0">Todas</option>                              				
                                   			</select>                              			
                                   		</td>
-                              		</tr>  
+                              		</tr> -->  
                               	</tbody>
                               	<tfoot>
                               	</tfoot>                         

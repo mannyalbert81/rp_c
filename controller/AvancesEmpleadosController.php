@@ -131,7 +131,7 @@ class AvancesEmpleadosController extends ControladorBase{
         $total=0;
         foreach ($resultSet as $res)
         {
-            $total+=$res->liquido *2;
+            $total+=$res->liquido *3;
         }
         
         echo $total;

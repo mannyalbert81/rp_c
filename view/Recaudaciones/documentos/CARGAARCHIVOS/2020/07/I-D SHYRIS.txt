@@ -1,0 +1,2 @@
+cedula	nombre	valor
+1103660872	ANDRADE ROBLEZ  ROCIO MARILU	1.17

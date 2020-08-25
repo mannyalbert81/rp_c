@@ -149,6 +149,9 @@ class PrincipalPrestamosSociosController extends ControladorBase{
                       (select sum(c1.capital_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalcapital\",
+                      (select sum(c1.seguro_desgravamen_tabla_amortizacion)
+                      from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
+                      ) as \"totalseguro\",
                       (select sum(c1.interes_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalintereses\",
@@ -228,6 +231,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	            $html.='<th style="text-align: center; font-size: 11px;">Fecha</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Capital</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Intereses</th>';
+	            $html.='<th style="text-align: center; font-size: 11px;">Seg. Desgrav.</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Mora</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Cuota</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Saldo Cuota</th>';
@@ -254,6 +258,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->capital_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->interes_tabla_amortizacion, 2, ",", ".").'</td>';
+	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->seguro_desgravamen_final, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->mora_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_valor_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->saldo_final, 2, ",", ".").'</td>';
@@ -944,17 +949,17 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	      
 	      $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->fname;
 	      $datos_reporte['IDENTIFICACION_PARTICIPES']=$rsdatos[0]->fidentificacion;
-	      $datos_reporte['CANTIDAD']=$rsdatos[0]->fvalue;
+	      $datos_reporte['CANTIDAD']=number_format($rsdatos[0]->fvalue, 2, ",", ".");
 	      $datos_reporte['CONCEPTO']=$rsdatos[0]->fobservation;
 	      $datos_reporte['CREDITO']=$rsdatos[0]->fcredit_name;
 	      $datos_reporte['NUMERO_TRANSACCION']=$rsdatos[0]->fcredittransactionid;
 	      $datos_reporte['NUMERO_ASIENTO']=$rsdatos[0]->fjournalid;
-	      $datos_reporte['FORMA_DE_PAGO']=$rsdatos[0]->credit_payment_mode;
+	      $datos_reporte['FORMA_DE_PAGO']=$rsdatos[0]->descripcion_creditos_tipo_pagos_transacciones;
 	      $datos_reporte['FECHA_PAGO']=$rsdatos[0]->fecha_creditos_pagos;
 	      $datos_reporte['VALOR']=$rsdatos[0]->valor_creditos_pagos;
 	      $datos_reporte['BANCO']=$rsdatos[0]->nombre_bancos_creditos_pagos;
 	      $datos_reporte['DOCUMENTO']=$rsdatos[0]->numero_referencia_creditos_pagos;
-	      $datos_reporte['MOTIVO_DE_PAGO']=$rsdatos[0]->descripcion_creditos_tipo_pagos_transacciones;
+	      $datos_reporte['MOTIVO_DE_PAGO']=$rsdatos[0]->credit_payment_mode;
 	    
 	    $query = "select atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, sum(ctd.valor_transaccion_detalle) as value, ct.fecha_transacciones
 	    from core_transacciones ct
@@ -965,18 +970,52 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    and ct.id_transacciones = $id_transacciones
 	    group by atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, ct.fecha_transacciones";
 	    
-	    $rsdatos = $participes->enviaquery($query);
+	    $rsdatos1 = $participes->enviaquery($query);
+	    $html1="";
 	    
-	    $datos_reporte['TIPO_TABLA']=$rsdatos[0]->tipo_tabla_amortizacion_parametrizacion;
-	    $datos_reporte['DESCRIPCION_TABLA']=$rsdatos[0]->descripcion_tabla_amortizacion_parametrizacion;
-	    $datos_reporte['VALUE']=$rsdatos[0]->value;
-	    $datos_reporte['FECHA_TRANSACCIONES']=$rsdatos[0]->fecha_transacciones;
+	    if(!empty($rsdatos1)){
+	        
+	        $html1.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
+	        $html1.='<tr>';
+	        $html1.='<th style="font-size: 11px; "align="left">DESGLOSE DEL PAGO</th>';
+	        $html1.='<th style="font-size: 11px; "align="right">VALOR</th>';
+	        $html1.='</tr>';
+	        
+	        $valor_total = "";
+	        
+	        foreach ($rsdatos1 as $res) {
+	           
+	            $html1.='<tr>';
+	            $html1.='<td style="font-size: 11px; "align="left">'.$res->descripcion_tabla_amortizacion_parametrizacion.'</td>';
+	            $html1.='<td style="font-size: 11px; "align="right">'.number_format($res->value, 2, ",", ".").'</td>';
+	            $html1.='</tr>';
+	            
+	            
+	        }
+	        
+	        $valor_total = $valor_total+$res->value;
+	        
+	        
+	        $html1.='<tr >';
+	        $html1.='<td align="right";><b>TOTAL</b></td>';
+	        $html1.='<td style="font-size: 11px; "align="right">'.number_format($valor_total, 2, ",", ".").'</td>';
+	        $html1.='</tr>';
+	        $html1.='</table>';
+	        
+	        
+	    }
 	    
+	    
+	    $datos_reporte['TABLA_VALORES']=$html1;
+	    
+	   
 	    
 	    
 	    $cedula_capremci = $rsdatos[0]->cedula_participes;
 	    $numero_credito = $rsdatos[0]->numero_creditos;
 	    $tipo_documento="RECIBO DE PRESENTACION DE SOLICITUD";
+	    
+	    
 	    
 	    require dirname(__FILE__)."\phpqrcode\qrlib.php";
 	    

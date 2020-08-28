@@ -117,7 +117,7 @@ class TablaAmortizacionController extends ControladorBase{
 	    $datos_reporte['SALDO']=$rsdatos[0]->saldo_actual_creditos;
 	    $datos_reporte['MONTORECIBIR']=$rsdatos[0]->monto_neto_entregado_creditos;
 	    $datos_reporte['MONTORECIBIRLETRAS']=$tab_amortizacion->numtoletras($rsdatos[0]->monto_neto_entregado_creditos);
-	  
+	    
 	    
 	    //DATOS DE LA CIUDAD 
 	    

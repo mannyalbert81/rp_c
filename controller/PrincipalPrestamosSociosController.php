@@ -134,7 +134,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    $id_creditos =  (isset($_POST['id_creditos'])&& $_POST['id_creditos'] !=NULL)?$_POST['id_creditos']:'';
 	    
 	    $where_to="";
-	    $columnas = " core_creditos.id_creditos,
+	     $columnas = " core_creditos.id_creditos,
                       core_tabla_amortizacion.fecha_tabla_amortizacion,
                       core_tabla_amortizacion.capital_tabla_amortizacion,
                       core_tabla_amortizacion.interes_tabla_amortizacion,
@@ -149,12 +149,15 @@ class PrincipalPrestamosSociosController extends ControladorBase{
                       (select sum(c1.capital_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalcapital\",
-                      (select sum(c1.seguro_desgravamen_tabla_amortizacion)
-                      from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalseguro\",
                       (select sum(c1.interes_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalintereses\",
+                      (select COALESCE(SUM (r1.valor_pago_tabla_amortizacion_pagos),0)
+						from core_tabla_amortizacion_pagos r1 
+						INNER JOIN core_tabla_amortizacion_parametrizacion p ON r1.id_tabla_amortizacion_parametrizacion = p.id_tabla_amortizacion_parametrizacion
+						inner join core_tabla_amortizacion aa on aa.id_tabla_amortizacion=r1.id_tabla_amortizacion
+						where p.tipo_tabla_amortizacion_parametrizacion = 8 and aa.id_estatus=1 and aa.id_creditos ='$id_creditos'
+					  ) as \"totalseguro\",
                       (select sum(c1.total_valor_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalcuota\",
@@ -169,7 +172,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
             	    select COALESCE(SUM (r.saldo_cuota_tabla_amortizacion_pagos),0)
             	    from core_tabla_amortizacion_pagos r INNER JOIN core_tabla_amortizacion_parametrizacion p ON r.id_tabla_amortizacion_parametrizacion = p.id_tabla_amortizacion_parametrizacion
             	    where r.id_tabla_amortizacion = core_tabla_amortizacion.id_tabla_amortizacion) as saldo_final";
-	    
+            	   
 	    
 	    $tablas = "   public.core_creditos,
                       public.core_tabla_amortizacion,
@@ -949,17 +952,17 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	      
 	      $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->fname;
 	      $datos_reporte['IDENTIFICACION_PARTICIPES']=$rsdatos[0]->fidentificacion;
-	      $datos_reporte['CANTIDAD']=number_format($rsdatos[0]->fvalue, 2, ",", ".");
+	      $datos_reporte['CANTIDAD']=$rsdatos[0]->fvalue;
 	      $datos_reporte['CONCEPTO']=$rsdatos[0]->fobservation;
 	      $datos_reporte['CREDITO']=$rsdatos[0]->fcredit_name;
 	      $datos_reporte['NUMERO_TRANSACCION']=$rsdatos[0]->fcredittransactionid;
 	      $datos_reporte['NUMERO_ASIENTO']=$rsdatos[0]->fjournalid;
-	      $datos_reporte['FORMA_DE_PAGO']=$rsdatos[0]->descripcion_creditos_tipo_pagos_transacciones;
+	      $datos_reporte['FORMA_DE_PAGO']=$rsdatos[0]->credit_payment_mode;
 	      $datos_reporte['FECHA_PAGO']=$rsdatos[0]->fecha_creditos_pagos;
 	      $datos_reporte['VALOR']=$rsdatos[0]->valor_creditos_pagos;
 	      $datos_reporte['BANCO']=$rsdatos[0]->nombre_bancos_creditos_pagos;
 	      $datos_reporte['DOCUMENTO']=$rsdatos[0]->numero_referencia_creditos_pagos;
-	      $datos_reporte['MOTIVO_DE_PAGO']=$rsdatos[0]->credit_payment_mode;
+	      $datos_reporte['MOTIVO_DE_PAGO']=$rsdatos[0]->descripcion_creditos_tipo_pagos_transacciones;
 	    
 	    $query = "select atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, sum(ctd.valor_transaccion_detalle) as value, ct.fecha_transacciones
 	    from core_transacciones ct
@@ -975,47 +978,29 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    
 	    if(!empty($rsdatos1)){
 	        
-	        $html1.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
-	        $html1.='<tr>';
-	        $html1.='<th style="font-size: 11px; "align="left">DESGLOSE DEL PAGO</th>';
-	        $html1.='<th style="font-size: 11px; "align="right">VALOR</th>';
-	        $html1.='</tr>';
 	        
-	        $valor_total = "";
 	        
 	        foreach ($rsdatos1 as $res) {
 	           
-	            $html1.='<tr>';
-	            $html1.='<td style="font-size: 11px; "align="left">'.$res->descripcion_tabla_amortizacion_parametrizacion.'</td>';
-	            $html1.='<td style="font-size: 11px; "align="right">'.number_format($res->value, 2, ",", ".").'</td>';
-	            $html1.='</tr>';
 	            
 	            
 	        }
-	        
-	        $valor_total = $valor_total+$res->value;
-	        
-	        
-	        $html1.='<tr >';
-	        $html1.='<td align="right";><b>TOTAL</b></td>';
-	        $html1.='<td style="font-size: 11px; "align="right">'.number_format($valor_total, 2, ",", ".").'</td>';
-	        $html1.='</tr>';
-	        $html1.='</table>';
-	        
 	        
 	    }
 	    
 	    
 	    $datos_reporte['TABLA_VALORES']=$html1;
 	    
-	   
+	    $datos_reporte['TIPO_TABLA']=$rsdatos[0]->tipo_tabla_amortizacion_parametrizacion;
+	    $datos_reporte['DESCRIPCION_TABLA']=$rsdatos[0]->descripcion_tabla_amortizacion_parametrizacion;
+	    $datos_reporte['VALUE']=$rsdatos[0]->value;
+	    $datos_reporte['FECHA_TRANSACCIONES']=$rsdatos[0]->fecha_transacciones;
+	    
 	    
 	    
 	    $cedula_capremci = $rsdatos[0]->cedula_participes;
 	    $numero_credito = $rsdatos[0]->numero_creditos;
 	    $tipo_documento="RECIBO DE PRESENTACION DE SOLICITUD";
-	    
-	    
 	    
 	    require dirname(__FILE__)."\phpqrcode\qrlib.php";
 	    

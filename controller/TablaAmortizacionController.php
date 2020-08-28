@@ -7,7 +7,7 @@ class TablaAmortizacionController extends ControladorBase{
 	}
 
 	public function index(){
-	    
+	   //steven 
 	    session_start();
 	    $cuentas_pagar = new CuentasPagarModel();
 	    
@@ -194,44 +194,57 @@ class TablaAmortizacionController extends ControladorBase{
 	    
 	    //////retencion detalle
 	    
-	    $columnas = " core_creditos.id_creditos, 
-                      core_tabla_amortizacion.fecha_tabla_amortizacion, 
+	  $columnas = " core_creditos.id_creditos,
+                      core_tabla_amortizacion.fecha_tabla_amortizacion,
                       core_tabla_amortizacion.capital_tabla_amortizacion,
-                      core_tabla_amortizacion.seguro_desgravamen_tabla_amortizacion,  
-                      core_tabla_amortizacion.interes_tabla_amortizacion, 
+                      core_tabla_amortizacion.interes_tabla_amortizacion,
                       core_tabla_amortizacion.total_valor_tabla_amortizacion,
                       core_tabla_amortizacion.mora_tabla_amortizacion,
                       core_tabla_amortizacion.balance_tabla_amortizacion,
+                      core_tabla_amortizacion.id_estado_tabla_amortizacion,
                       core_tabla_amortizacion.numero_pago_tabla_amortizacion,
-                      core_tabla_amortizacion.total_balance_tabla_amortizacion,  
-                      core_estado_tabla_amortizacion.nombre_estado_tabla_amortizacion, 
+                      core_tabla_amortizacion.total_balance_tabla_amortizacion,
+                      core_estado_tabla_amortizacion.nombre_estado_tabla_amortizacion,
                       core_tabla_amortizacion.total_valor_tabla_amortizacion,
-                      (select sum(c1.capital_tabla_amortizacion) 
+                      (select sum(c1.capital_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalcapital\",  
-                      (select sum(c1.interes_tabla_amortizacion) 
+                      ) as \"totalcapital\",
+                      (select sum(c1.interes_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalintereses\",  
-                      (select sum(c1.seguro_desgravamen_tabla_amortizacion) 
+                      ) as \"totalintereses\",
+                      (select COALESCE(SUM (r1.valor_pago_tabla_amortizacion_pagos),0)
+						from core_tabla_amortizacion_pagos r1 
+						INNER JOIN core_tabla_amortizacion_parametrizacion p ON r1.id_tabla_amortizacion_parametrizacion = p.id_tabla_amortizacion_parametrizacion
+						inner join core_tabla_amortizacion aa on aa.id_tabla_amortizacion=r1.id_tabla_amortizacion
+						where p.tipo_tabla_amortizacion_parametrizacion = 8 and aa.id_estatus=1 and aa.id_creditos ='$id_creditos'
+					  ) as \"totalseguro\",
+                      (select sum(c1.total_valor_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalseguro\", 
-                      (select sum(c1.total_valor_tabla_amortizacion) 
+                      ) as \"totalcuota\",
+                      (select sum(c1.mora_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalcuota\"               
-";
+                      ) as \"totalmora\",
+                                   (
+	                    select COALESCE(SUM (r.valor_pago_tabla_amortizacion_pagos),0)
+						from core_tabla_amortizacion_pagos r INNER JOIN core_tabla_amortizacion_parametrizacion p ON r.id_tabla_amortizacion_parametrizacion = p.id_tabla_amortizacion_parametrizacion
+						where r.id_tabla_amortizacion = core_tabla_amortizacion.id_tabla_amortizacion AND p.tipo_tabla_amortizacion_parametrizacion = 8) as seguro_desgravamen_final,
+            	    (
+            	    select COALESCE(SUM (r.saldo_cuota_tabla_amortizacion_pagos),0)
+            	    from core_tabla_amortizacion_pagos r INNER JOIN core_tabla_amortizacion_parametrizacion p ON r.id_tabla_amortizacion_parametrizacion = p.id_tabla_amortizacion_parametrizacion
+            	    where r.id_tabla_amortizacion = core_tabla_amortizacion.id_tabla_amortizacion) as saldo_final";
+            	   
 	    
-	    $tablas = "   public.core_creditos, 
-                      public.core_tabla_amortizacion, 
+	    $tablas = "   public.core_creditos,
+                      public.core_tabla_amortizacion,
                       public.core_estado_tabla_amortizacion";
 	    $where= "   core_tabla_amortizacion.id_creditos = core_creditos.id_creditos AND
                     core_estado_tabla_amortizacion.id_estado_tabla_amortizacion = core_tabla_amortizacion.id_estado_tabla_amortizacion
-                    AND core_creditos.id_creditos ='$id_creditos'AND core_tabla_amortizacion.id_estatus=1";
+                    AND core_creditos.id_creditos ='$id_creditos' AND core_tabla_amortizacion.id_estatus=1";
 	    $id="core_tabla_amortizacion.numero_pago_tabla_amortizacion";
+
 	    
 	    $amortizacion_detalle = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);
-	    
-	    
-	    
+
 	    
 	    
 	    $html='';
@@ -239,33 +252,53 @@ class TablaAmortizacionController extends ControladorBase{
 	    
 	    $html.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
 	    $html.='<tr>';
-	    $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
+	    $html.='<th>#</th>';
 	    $html.='<th style="text-align: center; font-size: 11px;">Fecha</th>';
 	    $html.='<th style="text-align: center; font-size: 11px;">Capital</th>';
 	    $html.='<th style="text-align: center; font-size: 11px;">Intereses</th>';
 	    $html.='<th style="text-align: center; font-size: 11px;">Seg. Desgrav.</th>';
+	    $html.='<th style="text-align: center; font-size: 11px;">Mora</th>';
 	    $html.='<th style="text-align: center; font-size: 11px;">Cuota</th>';
-	    $html.='<th style="text-align: center; font-size: 11px;">Saldo</th>';
-	   
+	    $html.='<th style="text-align: center; font-size: 11px;">Saldo Cuota</th>';
+	    $html.='<th style="text-align: center; font-size: 11px;">Saldo Capital</th>';
+	    $html.='<th style="text-align: center; font-size: 11px;">Estado</th>';
+	    
 	    $html.='</tr>';
 	    
 	    
-
+	    $saldof= 0;
 	    
 	    foreach ($amortizacion_detalle as $res)
 	    {
-	     
+	        
+	        
+	        if($res->id_estado_tabla_amortizacion==1){
+	       
+	            
+	            $saldof=$res->total_balance_tabla_amortizacion;
+	            
+	        }
+	        
+	        else{
+	            
+	            $saldof=0;
+	            
+	        }
+	        
 	        if ($res->numero_pago_tabla_amortizacion!=0)
 	        {
-	          
-	            $html.='<tr >';
+	            
+	            $html.='<tr>';
 	            $html.='<td style="font-size: 11px;"align="center">'.$res->numero_pago_tabla_amortizacion.'</td>';
 	            $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
 	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->capital_tabla_amortizacion, 2, ",", ".").'</td>';
 	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->interes_tabla_amortizacion, 2, ",", ".").'</td>';
-	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->seguro_desgravamen_tabla_amortizacion, 2, ",", ".").'</td>';
+	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->seguro_desgravamen_final, 2, ",", ".").'</td>';
+	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->mora_tabla_amortizacion, 2, ",", ".").'</td>';
 	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_valor_tabla_amortizacion, 2, ",", ".").'</td>';
+	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->saldo_final, 2, ",", ".").'</td>';
 	            $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->balance_tabla_amortizacion, 2, ",", ".").'</td>';
+	            $html.='<td style="text-align: center; font-size: 11px;"align="center">'.$res->nombre_estado_tabla_amortizacion.'</td>';
 	            
 	            
 	            
@@ -273,8 +306,8 @@ class TablaAmortizacionController extends ControladorBase{
 	            $html.='</tr>';
 	        }
 	        
-	       
-	       
+	        
+	        
 	    }
 	    
 	    $html.='<tr>';
@@ -283,12 +316,15 @@ class TablaAmortizacionController extends ControladorBase{
 	    $html.='<th style="font-size: 11px;" align="right">'.number_format($res->totalcapital, 2, ",", ".").'</th>';
 	    $html.='<th style="font-size: 11px;" align="right">'.number_format($res->totalintereses, 2, ",", ".").'</th>';
 	    $html.='<th style="font-size: 11px;" align="right">'.number_format($res->totalseguro, 2, ",", ".").'</th>';
+	    $html.='<th style="font-size: 11px;" align="right">'.number_format($res->totalmora, 2, ",", ".").'</th>';
 	    $html.='<th style="font-size: 11px;" align="right">'.number_format($res->totalcuota, 2, ",", ".").'</th>';
+	    $html.='<th style="font-size: 11px;" align="right"></th>';
+	    $html.='<th style="font-size: 11px;" align="right"></th>';
 	    $html.='<th style="text-align: center; font-size: 11px;"></th>';
 	    
 	    $html.='</tr>';
 	    $html.='</table>';
-	    
+	      
 	    $datos_reporte['DETALLE_AMORTIZACION']= $html;
 	    
 	    
@@ -400,6 +436,7 @@ class TablaAmortizacionController extends ControladorBase{
                       AND core_creditos.id_creditos ='$id_creditos'";
 	    $id="core_creditos.id_creditos";
 	    
+
 	    $rsdatos = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);
 	    
 	    $datos_reporte['CODCREDITO']=$rsdatos[0]->codigo_tipo_creditos;
@@ -474,9 +511,12 @@ class TablaAmortizacionController extends ControladorBase{
                       (select sum(c1.interes_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalintereses\",
-                      (select sum(c1.seguro_desgravamen_tabla_amortizacion)
-                      from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
-                      ) as \"totalseguro\",
+                      (select COALESCE(SUM (r1.valor_pago_tabla_amortizacion_pagos),0)
+						from core_tabla_amortizacion_pagos r1 
+						INNER JOIN core_tabla_amortizacion_parametrizacion p ON r1.id_tabla_amortizacion_parametrizacion = p.id_tabla_amortizacion_parametrizacion
+						inner join core_tabla_amortizacion aa on aa.id_tabla_amortizacion=r1.id_tabla_amortizacion
+						where p.tipo_tabla_amortizacion_parametrizacion = 8 and aa.id_estatus=1 and aa.id_creditos ='$id_creditos'
+					  ) as \"totalseguro\",
                       (select sum(c1.total_valor_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalcuota\",
@@ -500,11 +540,10 @@ class TablaAmortizacionController extends ControladorBase{
                     core_estado_tabla_amortizacion.id_estado_tabla_amortizacion = core_tabla_amortizacion.id_estado_tabla_amortizacion
                     AND core_creditos.id_creditos ='$id_creditos' AND core_tabla_amortizacion.id_estatus=1";
 	    $id="core_tabla_amortizacion.numero_pago_tabla_amortizacion";
+
 	    
 	    $amortizacion_detalle = $tab_amortizacion->getCondiciones($columnas, $tablas, $where, $id);
-	    
-	    
-	    
+
 	    
 	    
 	    $html='';

@@ -10,6 +10,15 @@ if(!empty($datos_reporte))
     }
 }
 
+if(!empty($datos))
+{
+    
+    foreach ($datos as $clave=>$valor) {
+        echo $clave; echo "\n";
+        $template = str_replace('{'.$clave.'}', $valor, $template);
+    }
+}
+
 ob_end_clean();
 $mpdf=new mPDF();
 $mpdf->SetDisplayMode('fullpage');

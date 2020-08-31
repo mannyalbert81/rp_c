@@ -887,7 +887,8 @@
 	    $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
 	    
 	    $datos_reporte = array();
-	    $columnas = "a.cedula_participes,
+	    $columnas = "lpad(d.id_padron_electoral_traza_votos::text ,5,'0') as consecutivo,
+                     a.cedula_participes,
                      a.apellido_participes,
                      a.nombre_participes,
                      b.nombre_entidad_patronal,
@@ -895,7 +896,8 @@
                      a.id_genero_participes";
 	    $tablas =  "core_participes a
                     inner join core_entidad_patronal b on b.id_entidad_patronal = a.id_entidad_patronal
-                    inner join core_entidad_mayor_patronal c on c.id_entidad_mayor_patronal = a.id_entidad_mayor_patronal";
+                    inner join core_entidad_mayor_patronal c on c.id_entidad_mayor_patronal = a.id_entidad_mayor_patronal
+                    inner join padron_electoral_traza_votos d on d.id_participe_vota = a.id_participes ";
 	    $where= "a.id_participes = '$id_participes'";
 	    $id="a.id_participes";
 	    $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
@@ -917,8 +919,42 @@
 	    $datos_reporte['ENTIDAD_PATRONAL']=$rsdatos[0]->nombre_entidad_patronal;
 	    $datos_reporte['ENTIDAD_MAYOR_PATRONAL']=$rsdatos[0]->nombre_entidad_mayor_patronal;
 	    $datos_reporte['GENERO']=$genero;
+	    $datos_reporte['CONSECUTIVO']=$rsdatos[0]->consecutivo;
 	    
-	    $this->verReporte("ReporteCertificadoVotacion", array('datos_reporte'=>$datos_reporte ));
+	    
+	    $cedula_capremci = $rsdatos[0]->cedula_participes;
+	    $consecutivo = $rsdatos[0]->consecutivo;
+	    
+	    $tipo_documento="CERTIFICADO VALIDO DE VOTACIÓN NUMERO: ";
+	    
+	    $datos = "";
+	    require dirname(__FILE__)."\phpqrcode\qrlib.php";
+	    
+	    $ubicacion = dirname(__FILE__).'\..\barcode_participes\\';
+	    
+	    //Si no existe la carpeta la creamos
+	    if (!file_exists($ubicacion))
+	        mkdir($ubicacion);
+	        
+	        $filename = $ubicacion.$cedula_capremci.'.png';
+	        
+	        //Parametros de Condiguracion
+	        
+	        $tamaño = 2.5; //Tama�o de Pixel
+	        $level = 'L'; //Precisi�n Baja
+	        $framSize = 3; //Tama�o en blanco
+	        $contenido = $tipo_documento.''.$consecutivo; //Texto
+	     
+	        //Enviamos los parametros a la Funci�n para generar c�digo QR
+	        QRcode::png($contenido, $filename, $level, $tamaño, $framSize);
+	        
+	        $qr_participes = '<img src="'.$filename.'">';
+	        
+	        
+	        $datos['CODIGO_QR']= $qr_participes;
+	        
+	    
+	        $this->verReporte("ReporteCertificadoVotacion", array('datos_reporte'=>$datos_reporte, 'datos'=>$datos ));
 	    
 	    
 	    
@@ -936,7 +972,7 @@
 	        
 	        $_cedula_participes = $_POST["cedula_participes"];
 	        
-	        $columna = "padron_electroal.id_padron_electroal, core_participes.id_participes";
+	        $columnas = "padron_electroal.id_padron_electroal, core_participes.id_participes";
 	        $tablas = " public.padron_electroal,
 	                    public.core_participes";
 	        $where= "padron_electroal.id_participes = core_participes.id_participes

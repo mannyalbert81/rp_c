@@ -803,8 +803,51 @@
 	    
 	    
 	}
+/////////////////////////////////////////////////////////////////////STEVEN ///////////////////////////////////////////////////////////////////////
 
-	
+    	public function ReporteCertificadoVotacion(){
+    	    
+	    session_start();
+	    $participes = new ParticipesModel();
+	    $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
+	    
+	    $datos_reporte = array();
+	    $columnas = "a.cedula_participes,
+                     a.apellido_participes,
+                     a.nombre_participes,
+                     b.nombre_entidad_patronal,
+                     c.nombre_entidad_mayor_patronal,
+                     a.id_genero_participes";
+	    $tablas =  "core_participes a
+                    inner join core_entidad_patronal b on b.id_entidad_patronal = a.id_entidad_patronal
+                    inner join core_entidad_mayor_patronal c on c.id_entidad_mayor_patronal = a.id_entidad_mayor_patronal";
+	    $where= "a.id_participes = '$id_participes'";
+	    $id="a.id_participes";
+	    $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+	    
+	    $genero = "";
+	    
+	    if($rsdatos[0]->id_genero_participes == 1){
+	        
+	        $genero = "ESTIMADO";
+	        
+	    }else if ($rsdatos[0]->id_genero_participes == 2){
+	        
+	        $genero = "ESTIMADA";
+	    }
+	    
+	    $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->cedula_participes;
+	    $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
+	    $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->nombre_participes;
+	    $datos_reporte['ENTIDAD_PATRONAL']=$rsdatos[0]->nombre_entidad_patronal;
+	    $datos_reporte['ENTIDAD_MAYOR_PATRONAL']=$rsdatos[0]->nombre_entidad_mayor_patronal;
+	    $datos_reporte['GENERO']=$genero;
+	    
+	    $this->verReporte("ReporteCertificadoVotacion", array('datos_reporte'=>$datos_reporte ));
+	    
+	    
+	    
+	}
 	
 	
     }

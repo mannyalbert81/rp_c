@@ -911,9 +911,9 @@
 	        $genero = "ESTIMADA";
 	    }
 	    
-	    $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->cedula_participes;
+	    $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
 	    $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
-	    $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->nombre_participes;
+	    $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
 	    $datos_reporte['ENTIDAD_PATRONAL']=$rsdatos[0]->nombre_entidad_patronal;
 	    $datos_reporte['ENTIDAD_MAYOR_PATRONAL']=$rsdatos[0]->nombre_entidad_mayor_patronal;
 	    $datos_reporte['GENERO']=$genero;
@@ -2091,9 +2091,5 @@
     
     
     
-    
-    
-    
-    }
     
     ?>

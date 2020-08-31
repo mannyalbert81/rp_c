@@ -212,6 +212,18 @@ class ControladorBase{
         require_once 'view/Turnos/'.$vista.'View.php';
     }
  
+    
+    public function view_Elecciones($vista,$datos){
+        foreach ($datos as $id_assoc => $valor) {
+            ${$id_assoc}=$valor;
+        }
+        
+        require_once 'core/AyudaVistas.php';
+        $helper=new AyudaVistas();
+        
+        require_once 'view/elecciones/'.$vista.'View.php';
+    }
+    
     public function view_Informativo($vista,$datos){
     	foreach ($datos as $id_assoc => $valor) {
     		${$id_assoc}=$valor;

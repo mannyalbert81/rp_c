@@ -16,6 +16,7 @@ view.btn_numero_cuotas		= $("#btn_numero_cuotas");
 view.capacidad_pago_garante			= $("#txt_capacidad_pago_garante"); 
 view.numero_cuotas			= $("#ddl_numero_cuotas"); 
 view.btn_generar_simulacion	= $("#btn_generar_simulacion");
+view.creditos_productos		= $("#ddl_credito_producto");
 
 /** para valores de tab de capacidad de pago **/
 view.sueldo_liquido		= $("#txt_sueldo_liquido");
@@ -1642,6 +1643,7 @@ var registrar_credito_nuevo	= function(){
 		    url: 'index.php?controller=SimulacionCreditos&action=InsertarSimulacionCredito',
 		    type: 'POST',
 		    data: {
+		    	'id_creditos_productos': view.creditos_productos.val(),
 		    	monto_credito: monto_credito,
 		    	tipo_credito: valor_tipo_creditos,
 		    	fecha_pago: fecha_corte,
@@ -1683,7 +1685,8 @@ var registrar_credito_nuevo	= function(){
 	}else
 	{
 		
-		var datamm = {
+		var params = {
+			'id_creditos_productos': view.creditos_productos.val(),
 	    	'monto_credito': monto_credito,
 	    	'tipo_credito': valor_tipo_creditos,
 	    	'fecha_pago': fecha_corte,
@@ -1696,20 +1699,9 @@ var registrar_credito_nuevo	= function(){
 	    };
 		
 		$.ajax({
-		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionRenovacionCredito',
+		    url: 'index.php?controller=SimulacionCreditos&action=insertarRenovacionCredito',
 		    type: 'POST',
-		    data: {
-		    	monto_credito: monto_credito,
-		    	tipo_credito: valor_tipo_creditos,
-		    	fecha_pago: fecha_corte,
-		    	cuota_credito: cuota_credito,
-		    	cedula_participe: ciparticipe,
-		    	observacion_credito: observacion,
-		    	'id_solicitud':id_solicitud,
-		    	con_garante: view.global_hay_garantes,
-		    	cedula_garante:cigarante
-		    	
-		    },
+		    data: params,
 		}).done(function(x) {
 			console.log(x);
 			x=x.trim();

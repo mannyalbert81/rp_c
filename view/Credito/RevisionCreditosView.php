@@ -14,7 +14,7 @@
         width: 45%;
         }
      .observacion {
-    width: 75%;
+        width: 75%;
     }
 
     </style>
@@ -65,6 +65,7 @@
         <li class="active">Revisión Créditos</li>
     </ol>
   </section>
+  
   <section class="content">
   	<div class="box box-primary">
   		<div class="box-header with-border">
@@ -91,6 +92,7 @@
           </div>
   	</div>
   </section>
+  
   <section class="content">
   	<div class="box box-primary">
   		<div class="box-header with-border">
@@ -198,21 +200,22 @@
 		<div class="modal-content">
 	    	<div class="modal-header bg-primary">
 	    		<button type="button" id="cerrar_observacion" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Contenidos del reporte</h4>
+				<h4 class="modal-title" id="myModalLabel">Negar Credito al Reporte</h4>
 			</div>
 			<div class="modal-body">
 				<div class="form-group" align="center">
           	 		<div class="row">
-          	 		<div class="form-group" align="center">
-          	 		<input type="text" class="observacion" maxlength="200" class="form-control" id="observacion_credito" name="observacion_credito" placeholder="Observación Crédito">
-                 	<div id="mensaje_observacion_credito" class="errores"></div>
-                 	<div class="row">
-          	 		<div class="form-group" align="center">
-          	 		<button type="button" id="registrar_observacion" name="registrar_observacion" class="btn btn-primary" onclick="ContinuaNegar()"> CONTINUAR</button>
-                 	</div>
+          	 			<div class="form-group" align="center">
+          	 				<label for="observacion_credito" class="control-label">OBSERVACI&Oacute;N:</label>
+          	 				<input type="text" class="observacion" maxlength="200" class="form-control" id="observacion_credito" name="observacion_credito" placeholder="Observación Crédito">
+                 			<div id="mensaje_observacion_credito" class="errores"></div>                 			
+                 		</div>
               		</div>
-                 </div>
-              </div>
+              		<div class="row">
+          	 			<div class="form-group" align="center">
+          	 				<button type="button" id="registrar_observacion" name="registrar_observacion" class="btn btn-primary" onclick="ContinuaNegar()"> CONTINUAR</button>
+                 		</div>
+              		</div>
 				</div>
 				<br>
 			</div>			
@@ -235,8 +238,9 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Credito/js/RevisionCreditos.js?0.19"></script>
+    <script src="view/Credito/js/RevisionCreditos.js?0.29"></script>
 	
 	
   </body>

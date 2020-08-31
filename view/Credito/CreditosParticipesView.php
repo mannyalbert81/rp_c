@@ -815,7 +815,7 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Credito/js/CreditosParticipes.js?0.60"></script>
+    <script src="view/Credito/js/CreditosParticipes.js?0.62"></script>
     <script src="view/Credito/js/CreditosParicipesAnalisis.js?0.09"></script> 
     <script src="view/Credito/js/CreditosParticipesCuentasBancarias.js?0.06"></script> 
    </body>

@@ -354,9 +354,8 @@ class CreditosController extends ControladorBase{
 	        $consultaProveedor = $Credito->getconsultaPG($funcionProveedor, $parametrosProveedor);
 	        $ResultadoProveedor= $Credito->llamarconsultaPG($consultaProveedor);
 	        $_id_proveedor = 0;
-	        $error = "";
-	        $error = pg_last_error();
 	        
+	        $error = pg_last_error();	        
 	        if( !empty( $error ) )
 	        {
 	            throw new Exception('ERROR INGRESAR DATOS PARTICIPE COMO PROVEEDOR .. fn-ins_proveedores_participes');
@@ -379,15 +378,13 @@ class CreditosController extends ControladorBase{
 	        /* comienza validacion de creditos para diferentes casos */
 	        $Columnas1 = " bb.id_tipo_creditos, bb.nombre_tipo_creditos, bb.codigo_tipo_creditos";
 	        $Tablas1   = " core_creditos aa
-            	        INNER JOIN core_tipo_creditos bb
-            	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
+            	        INNER JOIN core_tipo_creditos bb ON bb.id_tipo_creditos = aa.id_tipo_creditos";
 	        $Where1    = "id_creditos = $id_creditos ";
 	        $Id1       = "aa.id_creditos";
 	        
 	        $rsConsulta1   = $Credito->getCondiciones($Columnas1, $Tablas1, $Where1, $Id1);
 	        
-	        $_codigo_tipo_credito  = $rsConsulta1[0]->codigo_tipo_creditos;
-	             
+	        $_codigo_tipo_credito  = $rsConsulta1[0]->codigo_tipo_creditos;	             
 	        
 	        switch ($_codigo_tipo_credito){
 	            case 'EME':
@@ -431,7 +428,7 @@ class CreditosController extends ControladorBase{
 	    $Credito           = new CreditosModel();
 	    //creacion de lote
 	    
-	    $nombreLote        = "INGRESO CREDITOS";
+	    $nombreLote        = "CREDIT".date('Ymd');
 	    $descripcionLote   = "GENERACION CREDITO";
 	    $id_frecuencia     = 1;
 	    $id_usuarios       = $_SESSION['id_usuarios'];
@@ -463,7 +460,7 @@ class CreditosController extends ControladorBase{
 	    $_descripcion_cuentas_pagar        = ""; //se llena mas adelante
 	    $_fecha_cuentas_pagar              = date('Y-m-d');
 	    $_condiciones_pago_cuentas_pagar   = "";
-	    $_num_documento_cuentas_pagar      = "";
+	    $_num_documento_cuentas_pagar      = "1111111111";
 	    $_num_ord_compra                   = "";
 	    $_metodo_envio_cuentas_pagar       = "";
 	    $_compra_cuentas_pagar             = ""; //valor de credito
@@ -478,7 +475,10 @@ class CreditosController extends ControladorBase{
 	    $_tarjeta_credito_cuentas_pagar    = 0.00;
 	    $_condonaciones_cuentas_pagar      = 0.00;
 	    $_saldo_cuentas_pagar              = 0.00;
-	    $_id_cuentas_pagar                 = 0;
+	    
+	    // SINTAXERROR --buscar como va con lo de creditos
+	    $_compra_cero_cuentas_pagar        = 0;
+	    $_compra_iva_cuentas_pagar         = 0;
 	    
 	    //busca consecutivo
 	    $ResultConsecutivo= $Consecutivos->getConsecutivoByNombre("CxP");
@@ -513,8 +513,10 @@ class CreditosController extends ControladorBase{
 	    $_compra_cuentas_pagar = $monto_credito;
 	    $_total_cuentas_pagar  = $_compra_cuentas_pagar;
 	    $_saldo_cuentas_pagar  = $monto_entregado_credito - $_impuesto_cuentas_pagar;
-	    $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito Num $numero_credito ".$ext_descripcion;
+	    $_descripcion_cuentas_pagar = "Cuenta x Pagar Credito Num: $numero_credito ".$ext_descripcion;
 	    $_origen_cuentas_pagar      = "CREDITOS";
+	    
+	    $_compra_cero_cuentas_pagar        = $_compra_cuentas_pagar;
 	    
 	    $_id_bancos = "null"; /* se setea nulo porq luego se actualiza*/
 	    
@@ -545,9 +547,9 @@ class CreditosController extends ControladorBase{
                             '$_condonaciones_cuentas_pagar', 
                             '$_saldo_cuentas_pagar', 
                             '$_origen_cuentas_pagar', 
-                            '$_id_cuentas_pagar'";
-	    
-	    
+                            '$_compra_cero_cuentas_pagar',
+                            '$_compra_iva_cuentas_pagar'";
+	    	    
 	    $consultaCuentasPagar = $Credito->getconsultaPG($funcionCuentasPagar, $paramCuentasPagar);
 	    $ResultCuentaPagar = $Credito -> llamarconsultaPG($consultaCuentasPagar);
 	    
@@ -570,11 +572,11 @@ class CreditosController extends ControladorBase{
 	    $_usuario_usuarios = $_SESSION['usuario_usuarios'];
 	    
 	    $TipoComprobantes  = new TipoComprobantesModel();
+	    
 	    //buscar tipo de comprobante
 	    $rsTipoComprobantes = $TipoComprobantes->getTipoComprobanteByNombre("CONTABLE");
 	    $_id_tipo_comprobantes = (!empty($rsTipoComprobantes)) ? $rsTipoComprobantes[0]->id_tipo_comprobantes : "null";
-	    
-	    
+	    	    
 	    $funcionComprobante     = "core_ins_ccomprobantes_activacion_credito";
 	    $valor_letras           = $Credito->numtoletras($_valor_comprobantes);
 	   
@@ -889,11 +891,9 @@ class CreditosController extends ControladorBase{
 	   
 	   /* datos de credito */
 	   $columnas1 = " bb.id_tipo_creditos, bb.nombre_tipo_creditos, bb.codigo_tipo_creditos, aa.numero_creditos,
-                      aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes,
-                      aa.id_forma_pago";
+                  aa.id_creditos, aa.monto_neto_entregado_creditos, aa.monto_otorgado_creditos, aa.id_participes, aa.id_forma_pago";
 	   $tablas1   = " core_creditos aa
-            	        INNER JOIN core_tipo_creditos bb
-            	        ON bb.id_tipo_creditos = aa.id_tipo_creditos";
+        	        INNER JOIN core_tipo_creditos bb ON bb.id_tipo_creditos = aa.id_tipo_creditos";
 	   $where1    = "id_creditos = $_id_credito ";
 	   $id1       = "aa.id_creditos";
 	   
@@ -938,13 +938,13 @@ class CreditosController extends ControladorBase{
 	   $_monto_credito = $_monto_neto_credito;
 	   $_descripcion_distribucion  = "Concesion Credito Num [".$_numero_creditos."]";
 	   /* se inserta 3 cuentas para ordinario nuevo */
+	   $orden_distribucion = 0;
 	   /* cuenta de debito */
-	   $queryCuentaCredito = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_debe, "COMPRA", $_monto_debito, '0.00', 1, $_descripcion_distribucion);
-	   /* cuenta de credito */
-	   $queryCuentaDebito  = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_haber, "PAGOS", '0.00', $_monto_credito, 2, $_descripcion_distribucion);
+	   $orden_distribucion++;
+	   $queryCuentaCredito = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_debe, "COMPRA", $_monto_debito, '0.00', $orden_distribucion, $_descripcion_distribucion);	   
 	   /* validar si existe retencion */
 	   if( $_monto_retencion > 0 ){
-	       
+	       $orden_distribucion++;
 	       /* buscar cuenta retencion*/
 	       $columnas4  = " id_plan_cuentas, codigo_plan_cuentas, nombre_plan_cuentas";
 	       $tablas4    = " public.plan_cuentas";
@@ -956,8 +956,11 @@ class CreditosController extends ControladorBase{
 	       
 	       $_id_cuenta_interes = $rsConsulta4[0]->id_plan_cuentas;
 	       
-	       $queryCuentaRetencion  = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_interes, "PAGOS", '0.00', $_monto_retencion, 3, $_descripcion_distribucion);
+	       $queryCuentaRetencion  = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_interes, "COMPRA", '0.00', $_monto_retencion, 3, $_descripcion_distribucion);
 	   }
+	   /* cuenta de credito */
+	   $orden_distribucion++;
+	   $queryCuentaDebito  = $this->getQueryInsertDistribucion($_id_lote, $_id_cuenta_haber, "PAGO", '0.00', $_monto_credito, $orden_distribucion, $_descripcion_distribucion);
 	   
 	   $_error_pg  = pg_last_error();
 	   $_error_php = error_get_last();
@@ -978,7 +981,7 @@ class CreditosController extends ControladorBase{
 	   $_id_cuentas_pagar  = $this->generaCuentaPagarCredito($_id_lote, $_id_credito, $_id_proveedor, $_descripcion_cuentas_pagar );
 	   	   
 	   /* viene insertado del comprobante */
-	   $_concepto_comprobantes = "Consecion Creditos Sol:$_numero_creditos";
+	   $_concepto_comprobantes = "Consecion Creditos Num: $_numero_creditos";
 	   $_id_comprobantes   = $this->generaComprobante($_id_lote, $_id_proveedor, $_id_forma_pago, $_monto_otorgado_credito, $_concepto_comprobantes, $_fecha_proceso);
 	   
 	   /* se actualiza el comprobante generado en las tes_cuentas_pagar y credito*/
@@ -1448,8 +1451,7 @@ class CreditosController extends ControladorBase{
 	    
 	    $columnas1 = "aa.id_creditos,cc.id_bancos";
 	    $tablas1   = "core_creditos aa
-                    iNNER JOIN core_participes_cuentas cc
-                    ON cc.id_participes = aa.id_participes
+                    INNER JOIN core_participes_cuentas cc ON cc.id_participes = aa.id_participes
                     AND cc.cuenta_principal = true";
 	    $where1     = "aa.id_estatus = 1 AND aa.id_creditos = $_id_credito";
 	    $id1        = "aa.id_creditos";
@@ -1463,6 +1465,7 @@ class CreditosController extends ControladorBase{
 	        $_id_bancos    = $rsConsulta1[0]->id_bancos;
 	        $columnaPago   = "id_ccomprobantes = $_id_comprobantes, id_forma_pago = $_id_forma_pago , id_banco = $_id_bancos ";
 	    }
+	    
 	    /* actualizacion CXP */	    
 	    $tablasPago = "tes_cuentas_pagar";
 	    $wherePago = "id_cuentas_pagar = $_id_cuentas_pagar";

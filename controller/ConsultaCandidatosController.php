@@ -2119,9 +2119,8 @@
         
         session_start();
         
-        $id_participes =1922 ; // $_SESSION['ele_id_participes'];
         $participes = new ParticipesModel();
-        //$id_participes =  $_id_participes;//(isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
+        $id_participes = (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
         
         $datos_reporte = array();
         $columnas = "lpad(d.id_padron_electoral_traza_votos::text ,5,'0') as consecutivo,

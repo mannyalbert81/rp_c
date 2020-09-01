@@ -120,8 +120,11 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     $html.='<tr>';
                     $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
                     $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
-                    $html.='<td style="font-size: 12px;"><b>CANTIDAD VOTOS: </b>'.$res->voto_padron_electoral_representantes.'</td>';
-                    
+                    $html.="<td style='font-size: 12px;'><b>CANTIDAD VOTOS: </b>";
+                    $html.='<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="'.$res->voto_padron_electoral_representantes.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$res->voto_padron_electoral_representantes.'%">'.$res->voto_padron_electoral_representantes.'</div>
+                            </div>';
+                    $html.='</td>';
                     $html.='</tr>';
                 }
                 
@@ -330,8 +333,11 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     
                     $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
                     $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
-                    $html.='<td style="font-size: 12px;"><b>CANTIDAD VOTOS: </b>'.$res->voto_padron_electoral_representantes.'</td>';
-                    
+                    $html.="<td style='font-size: 12px;'><b>CANTIDAD VOTOS: </b>";
+                    $html.='<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="'.$res->voto_padron_electoral_representantes.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$res->voto_padron_electoral_representantes.'%">'.$res->voto_padron_electoral_representantes.'</div>
+                            </div>';
+                    $html.='</td>';
                     $html.='</tr>';
                 }
                 
@@ -540,8 +546,11 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     
                     $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
                     $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
-                    $html.='<td style="font-size: 12px;"><b>CANTIDAD VOTOS: </b>'.$res->voto_padron_electoral_representantes.'</td>';
-                    
+                    $html.="<td style='font-size: 12px;'><b>CANTIDAD VOTOS: </b>";
+                    $html.='<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="'.$res->voto_padron_electoral_representantes.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$res->voto_padron_electoral_representantes.'%">'.$res->voto_padron_electoral_representantes.'</div>
+                            </div>';
+                    $html.='</td>';
                     $html.='</tr>';
                 }
                 
@@ -749,8 +758,11 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     $html.='<tr>';
                     $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
                     $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
-                    $html.='<td style="font-size: 12px;"><b>CANTIDAD VOTOS: </b>'.$res->voto_padron_electoral_representantes.'</td>';
-                    
+                    $html.="<td style='font-size: 12px;'><b>CANTIDAD VOTOS: </b>";
+                    $html.='<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="'.$res->voto_padron_electoral_representantes.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$res->voto_padron_electoral_representantes.'%">'.$res->voto_padron_electoral_representantes.'</div>
+                            </div>';
+                    $html.='</td>';
                     $html.='</tr>';
                 }
                 
@@ -959,8 +971,11 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                
                     $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
                     $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
-                    $html.='<td style="font-size: 12px;"><b>CANTIDAD VOTOS: </b>'.$res->voto_padron_electoral_representantes.'</td>';
-                    
+                    $html.="<td style='font-size: 12px;'><b>CANTIDAD VOTOS: </b>";
+                    $html.='<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="'.$res->voto_padron_electoral_representantes.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$res->voto_padron_electoral_representantes.'%">'.$res->voto_padron_electoral_representantes.'</div>
+                            </div>';
+                    $html.='</td>';
                     $html.='</tr>';
                 }
                 

@@ -7,12 +7,17 @@ $(document).ready(function(){
 	ConsultaCandidatosFuerzaTerrestre();
 
 })
+setInterval(ConsultaCandidatosFuerzaAerea, 10000);
+setInterval(ConsultaCandidatosComandoConjunto, 10000);
+setInterval(ConsultaCandidatosMinisterioDefensa, 10000);
+setInterval(ConsultaCandidatosFuerzaNaval, 10000);
+setInterval(ConsultaCandidatosFuerzaTerrestre, 10000);
 
 function ConsultaCandidatosFuerzaAerea(_page = 1){
 	
 	var buscador_fuerza_aerea = $("#buscador_fuerza_aerea").val();
 	$.ajax({
-		beforeSend:function(){$("#divLoaderPageFuerzaAerea").addClass("loader")},
+		//beforeSend:function(){$("#divLoaderPageFuerzaAerea").addClass("loader")},
 		url:"index.php?controller=ConsultaVotosElecciones&action=ConsultaCandidatosFuerzaAerea",
 		type:"POST",
 		data:{page:_page,search:buscador_fuerza_aerea,peticion:'ajax'}
@@ -37,7 +42,7 @@ function ConsultaCandidatosComandoConjunto(_page = 1){
 	
 	var buscador_comando_conjunto = $("#buscador_comando_conjunto").val();
 	$.ajax({
-		beforeSend:function(){$("#divLoaderPageComandoConjunto").addClass("loader")},
+		//beforeSend:function(){$("#divLoaderPageComandoConjunto").addClass("loader")},
 		url:"index.php?controller=ConsultaVotosElecciones&action=ConsultaCandidatosComandoConjunto",
 		type:"POST",
 		data:{page:_page,search:buscador_comando_conjunto,peticion:'ajax'}
@@ -62,7 +67,7 @@ function ConsultaCandidatosMinisterioDefensa(_page = 1){
 	
 	var buscador_ministerio_defensa = $("#buscador_ministerio_defensa").val();
 	$.ajax({
-		beforeSend:function(){$("#divLoaderPageMinisterioDefensa").addClass("loader")},
+		//beforeSend:function(){$("#divLoaderPageMinisterioDefensa").addClass("loader")},
 		url:"index.php?controller=ConsultaVotosElecciones&action=ConsultaCandidatosMinisterioDefensa",
 		type:"POST",
 		data:{page:_page,search:buscador_ministerio_defensa,peticion:'ajax'}
@@ -87,7 +92,7 @@ function ConsultaCandidatosFuerzaNaval(_page = 1){
 	
 	var buscador_fuerza_naval = $("#buscador_fuerza_naval").val();
 	$.ajax({
-		beforeSend:function(){$("#divLoaderPageFuerzaNaval").addClass("loader")},
+		//beforeSend:function(){$("#divLoaderPageFuerzaNaval").addClass("loader")},
 		url:"index.php?controller=ConsultaVotosElecciones&action=ConsultaCandidatosFuerzaNaval",
 		type:"POST",
 		data:{page:_page,search:buscador_fuerza_naval,peticion:'ajax'}
@@ -112,7 +117,7 @@ function ConsultaCandidatosFuerzaTerrestre(_page = 1){
 	
 	var buscador_fuerza_terrestre = $("#buscador_fuerza_terrestre").val();
 	$.ajax({
-		beforeSend:function(){$("#divLoaderPageFuerzaTerrestre").addClass("loader")},
+		//beforeSend:function(){$("#divLoaderPageFuerzaTerrestre").addClass("loader")},
 		url:"index.php?controller=ConsultaVotosElecciones&action=ConsultaCandidatosFuerzaTerrestre",
 		type:"POST",
 		data:{page:_page,search:buscador_fuerza_terrestre,peticion:'ajax'}

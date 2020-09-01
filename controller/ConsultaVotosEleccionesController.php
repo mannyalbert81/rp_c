@@ -48,7 +48,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                  	 inner join core_participes b1 on a1.id_suplente = b1.id_participes and b1.id_estatus = 1
                   	)c on a.id_padron_electoral_representantes = c.id_padron_electoral_representantes";
         $where = "1=1 and d.id_entidad_mayor_patronal = 7";
-        $id = "a.id_padron_electoral_representantes";
+        $id = "a.voto_padron_electoral_representantes";
         
         
         
@@ -100,9 +100,8 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                 $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
-                
-                $html.='<th style="text-align: left;  font-size: 13px;">Datos Representante</th>';
-                $html.='<th style="text-align: left;  font-size: 13px;">Foto</th>';
+                $html.='<th style="text-align: left;   font-size: 13px;">Foto</th>';
+                $html.='<th style="text-align: left; width:450px; font-size: 13px;">Datos Representante</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Votos</th>';
                 $html.='</tr>';
                 
@@ -119,9 +118,8 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     
                     $i++;
                     $html.='<tr>';
-                    
-                    $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
                     $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
+                    $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
                     $html.='<td style="font-size: 12px;"><b>CANTIDAD VOTOS: </b>'.$res->voto_padron_electoral_representantes.'</td>';
                     
                     $html.='</tr>';
@@ -258,7 +256,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                  	 inner join core_participes b1 on a1.id_suplente = b1.id_participes and b1.id_estatus = 1
                   	)c on a.id_padron_electoral_representantes = c.id_padron_electoral_representantes";
         $where = "1=1 and d.id_entidad_mayor_patronal = 8";
-        $id = "a.id_padron_electoral_representantes";
+        $id = "a.voto_padron_electoral_representantes";
         
         
         
@@ -311,8 +309,8 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                 $html.= "<thead>";
                 $html.= "<tr>";
                
-                $html.='<th style="text-align: left;  font-size: 13px;">Datos Representante</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Foto</th>';
+                $html.='<th style="text-align: left; width:450px; font-size: 13px;">Datos Representante</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Votos</th>';
                 $html.='</tr>';
                 
@@ -329,9 +327,9 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     
                     $i++;
                     $html.='<tr>';
-                
-                    $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
+                    
                     $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
+                    $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
                     $html.='<td style="font-size: 12px;"><b>CANTIDAD VOTOS: </b>'.$res->voto_padron_electoral_representantes.'</td>';
                     
                     $html.='</tr>';
@@ -468,7 +466,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                  	 inner join core_participes b1 on a1.id_suplente = b1.id_participes and b1.id_estatus = 1
                   	)c on a.id_padron_electoral_representantes = c.id_padron_electoral_representantes";
         $where = "1=1 and d.id_entidad_mayor_patronal = 9";
-        $id = "a.id_padron_electoral_representantes";
+        $id = "a.voto_padron_electoral_representantes";
         
         
         
@@ -521,8 +519,8 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                 $html.= "<thead>";
                 $html.= "<tr>";
                 
-                $html.='<th style="text-align: left;  font-size: 13px;">Datos Representante</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Foto</th>';
+                $html.='<th style="text-align: left; width:450px; font-size: 13px;">Datos Representante</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Votos</th>';
                 $html.='</tr>';
                 
@@ -540,8 +538,8 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     $i++;
                     $html.='<tr>';
                     
-                    $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
                     $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
+                    $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
                     $html.='<td style="font-size: 12px;"><b>CANTIDAD VOTOS: </b>'.$res->voto_padron_electoral_representantes.'</td>';
                     
                     $html.='</tr>';
@@ -678,7 +676,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                  	 inner join core_participes b1 on a1.id_suplente = b1.id_participes and b1.id_estatus = 1
                   	)c on a.id_padron_electoral_representantes = c.id_padron_electoral_representantes";
         $where = "1=1 and d.id_entidad_mayor_patronal = 10";
-        $id = "a.id_padron_electoral_representantes";
+        $id = "a.voto_padron_electoral_representantes";
         
         
         
@@ -731,8 +729,8 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                 $html.= "<thead>";
                 $html.= "<tr>";
                 
-                $html.='<th style="text-align: left;  font-size: 13px;">Datos Representante</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Foto</th>';
+                $html.='<th style="text-align: left; width:450px; font-size: 13px;">Datos Representante</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Votos</th>';
                 $html.='</tr>';
                 
@@ -749,9 +747,8 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     
                     $i++;
                     $html.='<tr>';
-                    
-                    $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
                     $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
+                    $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
                     $html.='<td style="font-size: 12px;"><b>CANTIDAD VOTOS: </b>'.$res->voto_padron_electoral_representantes.'</td>';
                     
                     $html.='</tr>';
@@ -941,8 +938,8 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                 $html.= "<thead>";
                 $html.= "<tr>";
                 
-                $html.='<th style="text-align: left;  font-size: 13px;">Datos Representante</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Foto</th>';
+                $html.='<th style="text-align: left; width:450px; font-size: 13px;">Datos Representante</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Votos</th>';
                 $html.='</tr>';
                 
@@ -959,9 +956,9 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     
                     $i++;
                     $html.='<tr>';
-                    
-                    $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
+               
                     $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
+                    $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</td>';
                     $html.='<td style="font-size: 12px;"><b>CANTIDAD VOTOS: </b>'.$res->voto_padron_electoral_representantes.'</td>';
                     
                     $html.='</tr>';

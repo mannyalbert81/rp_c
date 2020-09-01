@@ -2195,7 +2195,6 @@
             
             
             
-            
             $this->verReporte("ReporteCertificadoVotacion", array('datos_reporte'=>$datos_reporte, 'datos'=>$datos ));
             
             

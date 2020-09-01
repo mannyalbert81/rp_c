@@ -92,7 +92,7 @@
 	            $_SESSION["ele_cedula_participes"] =  $res->cedula_participes;
 	            $_SESSION["ele_id_entidad_patronal"] =  $res->id_entidad_patronal;
 	            $_SESSION["ele_id_entidad_mayor_patronal"] =  $res->id_entidad_mayor_patronal;
-	            $_SESSION["ele_ip_usuarios"] =  $ip_usuariosl;
+	            $_SESSION["ele_ip_usuarios"] =  $ip_usuarios;
 	            
 	            
 	            $this->view_Elecciones("PapeletaCandidatos",array(
@@ -102,6 +102,10 @@
 	            
 	        }
 	        
+	    }
+	    else
+	    {
+	        echo "Usted no tiene derecho al voto";
 	    }
 	    
 	    
@@ -878,87 +882,8 @@
 	    
 	    
 	}
-/////////////////////////////////////////////////////////////////////STEVEN ///////////////////////////////////////////////////////////////////////
 
-    	public function ReporteCertificadoVotacion(){
-    	    
-	    session_start();
-	    $participes = new ParticipesModel();
-	    $id_participes =  (isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
-	    
-	    $datos_reporte = array();
-	    $columnas = "lpad(d.id_padron_electoral_traza_votos::text ,5,'0') as consecutivo,
-                     a.cedula_participes,
-                     a.apellido_participes,
-                     a.nombre_participes,
-                     b.nombre_entidad_patronal,
-                     c.nombre_entidad_mayor_patronal,
-                     a.id_genero_participes";
-	    $tablas =  "core_participes a
-                    inner join core_entidad_patronal b on b.id_entidad_patronal = a.id_entidad_patronal
-                    inner join core_entidad_mayor_patronal c on c.id_entidad_mayor_patronal = a.id_entidad_mayor_patronal
-                    inner join padron_electoral_traza_votos d on d.id_participe_vota = a.id_participes ";
-	    $where= "a.id_participes = '$id_participes'";
-	    $id="a.id_participes";
-	    $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
-	    
-	    $genero = "";
-	    
-	    if($rsdatos[0]->id_genero_participes == 1){
-	        
-	        $genero = "ESTIMADO";
-	        
-	    }else if ($rsdatos[0]->id_genero_participes == 2){
-	        
-	        $genero = "ESTIMADA";
-	    }
-	    
-	    $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
-	    $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
-	    $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
-	    $datos_reporte['ENTIDAD_PATRONAL']=$rsdatos[0]->nombre_entidad_patronal;
-	    $datos_reporte['ENTIDAD_MAYOR_PATRONAL']=$rsdatos[0]->nombre_entidad_mayor_patronal;
-	    $datos_reporte['GENERO']=$genero;
-	    $datos_reporte['CONSECUTIVO']=$rsdatos[0]->consecutivo;
-	    
-	    
-	    $cedula_capremci = $rsdatos[0]->cedula_participes;
-	    $consecutivo = $rsdatos[0]->consecutivo;
-	    
-	    $tipo_documento="CERTIFICADO VALIDO DE VOTACIÓN NUMERO: ";
-	    
-	    $datos = "";
-	    require dirname(__FILE__)."\phpqrcode\qrlib.php";
-	    
-	    $ubicacion = dirname(__FILE__).'\..\barcode_participes\\';
-	    
-	    //Si no existe la carpeta la creamos
-	    if (!file_exists($ubicacion))
-	        mkdir($ubicacion);
-	        
-	        $filename = $ubicacion.$cedula_capremci.'.png';
-	        
-	        //Parametros de Condiguracion
-	        
-	        $tamaño = 2.5; //Tama�o de Pixel
-	        $level = 'L'; //Precisi�n Baja
-	        $framSize = 3; //Tama�o en blanco
-	        $contenido = $tipo_documento.''.$consecutivo; //Texto
-	     
-	        //Enviamos los parametros a la Funci�n para generar c�digo QR
-	        QRcode::png($contenido, $filename, $level, $tamaño, $framSize);
-	        
-	        $qr_participes = '<img src="'.$filename.'">';
-	        
-	        
-	        $datos['CODIGO_QR']= $qr_participes;
-	        
-	    
-	        $this->verReporte("ReporteCertificadoVotacion", array('datos_reporte'=>$datos_reporte, 'datos'=>$datos ));
-	    
-	    
-	    
-	}
+	
 	
 	
 	///coienza lo de las elecciones
@@ -972,7 +897,7 @@
 	        
 	        $_cedula_participes = $_POST["cedula_participes"];
 	        
-	        $columnas = "padron_electroal.id_padron_electroal, core_participes.id_participes";
+	        $columna = "padron_electroal.id_padron_electroal, core_participes.id_participes";
 	        $tablas = " public.padron_electroal,
 	                    public.core_participes";
 	        $where= "padron_electroal.id_participes = core_participes.id_participes
@@ -2038,74 +1963,81 @@
             echo 'Session Caducada';
             exit();
         }
-        
-        
-        
-        
         $participes = new ParticipesModel();
         $html="";
         $resultado = "";
         
         if(isset($_POST["id_padron_electoral_representantes"])){
             
-            
-            
-            $_id_padron_electoral_representantes = (int)$_POST["id_padron_electoral_representantes"];
-            
-            $_id_participes_vota = $_SESSION["ele_id_participes"] ;
-            $_ip_padron_electoral_traza_votos    =  $_SESSION["ele_ip_usuarios"] ;
-            
-            
-            ///inserto voto
-            
-            $funcion = "ins_padron_electoral_traza_votos";
-            $parametros = "'$_id_padron_electoral_representantes',
-    		    				   '$_id_participes_vota',
-                                   '$_ip_padron_electoral_traza_votos'";
-            $participes->setFuncion($funcion);
-            $participes->setParametros($parametros);
-            
-            
-            //actualizo estado voto
-            $columna = "voto_padron_electroal='true' ";
-            $tablas = "padron_electroal";
-            $where= "tipo_padron_electoral = 1 AND
-                    	id_participes = '$_id_participes_vota')";
-            
-            
-            
-            ///contabilizo voto
-            
-            $columnaR = "voto_padron_electroal_representantes = voto_padron_electroal_representantes + 1 ";
-            $tablasR = "padron_electroal_representantes";
-            $whereR = "id_padron_electoral_representantes = '$_id_padron_electoral_representantes')";
-            
-            
-            
-            try {
-                    $resultado=$participes->llamafuncion();
-                    
-                    
-                    $res= $participes -> ActualizarBy($columnaR, $tablasR, $whereR);
-                    
-                    $res= $participes -> ActualizarBy($columna, $tablas, $where);
-                    
-                    
+                $_id_padron_electoral_representantes = (int)$_POST["id_padron_electoral_representantes"];
                 
-            } catch (Exception $e) {
-                echo 'Excepción capturada: ',  $e->getMessage(), "\n";
-            }
-            
-            
+                $_id_participes_vota = $_SESSION["ele_id_participes"] ;
+                $_ip_padron_electoral_traza_votos    =  $_SESSION["ele_ip_usuarios"] ;
                 
-                echo $html;
                 
-            }else{
+                ///inserto voto
                 
-                echo $resultado;
-            }
+                $funcion = "ins_padron_electoral_traza_votos";
+                $parametros = "'$_id_padron_electoral_representantes',
+        		    				   '$_id_participes_vota',
+                                       '$_ip_padron_electoral_traza_votos'";
+                $participes->setFuncion($funcion);
+                $participes->setParametros($parametros);
+                
+                
+                //actualizo estado voto
+                
+                $columna = "voto_padron_electroal='true' ";
+                $tablas = "padron_electroal";
+                $where= "tipo_padron_electoral = 1 AND
+                        	id_participes = '$_id_participes_vota' ";
+                
+                ///contabilizo voto
+                
+                $columnaR = "voto_padron_electoral_representantes = voto_padron_electoral_representantes + 1 ";
+                $tablasR = "padron_electoral_representantes";
+                $whereR = "id_padron_electoral_representantes = '$_id_padron_electoral_representantes'";
+                
+                
+                
+                try {
+                    
+                    if ( $this->VerificaSiVoto($_id_participes_vota))
+                    {
+                        
+                        echo 'ya voto';
+                    }
+                    else
+                    {
+                       
+                        $resultado=$participes->Insert();
+                        
+                        
+                        $res= $participes -> ActualizarBy($columnaR, $tablasR, $whereR);
+                        
+                        $res= $participes -> ActualizarBy($columna, $tablas, $where);
+                        
+                    }
+                    
+                    
+                    
+                        
+                        
+                    
+                } catch (Exception $e) 
+                {
+                    echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+                }
+                
+                
+                    
+                 echo $html;
+        
+             
+        }else{
             
-            
+            echo $resultado;
+    
             
         }
         
@@ -2113,6 +2045,161 @@
         
         
         
+    }
+    
+    
+    
+    public function VerificaSiVoto($_id_participes_vota){
+        
+        
+        
+        $resultado = false;
+        
+        if(!isset($_SESSION['ele_id_participes'])){
+            echo 'Session Caducada';
+            exit();
+        }
+        $participes = new ParticipesModel();
+        $html="";
+        
+            
+            
+            
+            
+            //actualizo estado voto
+            $columna = "voto_padron_electroal='true' ";
+            $tablas = "padron_electroal";
+            $where= "tipo_padron_electoral = 1 AND
+                        	id_participes = '$_id_participes_vota' ";
+            
+            ///contabilizo voto
+            
+            $columna = "voto_padron_electroal ";
+            $tablas = "padron_electroal";
+            $where = "voto_padron_electroal = true AND tipo_padron_electoral = 1 AND id_participes = '$_id_participes_vota'";
+            $id = "voto_padron_electroal ";
+            
+            
+            try {
+            
+                $resultSet=$participes->getCondiciones($columna, $tablas, $where, $id);
+                
+                
+                if(!empty($resultSet)){
+                    
+                    
+                    foreach ($resultSet as $res)
+                    {
+                        
+                        $resultado = true;       
+                    }
+                }
+            
+                
+                
+            } catch (Exception $e)
+            {
+                echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+            }
+            
+            
+          
+            return $resultado;
+        
+            
+            
+    }
+        
+        
+    
+    
+    
+    
+    public function ReporteCertificadoVotacion(){
+        
+        session_start();
+        
+        $id_participes =1922 ; // $_SESSION['ele_id_participes'];
+        $participes = new ParticipesModel();
+        //$id_participes =  $_id_participes;//(isset($_REQUEST['id_participes'])&& $_REQUEST['id_participes'] !=NULL)?$_REQUEST['id_participes']:'';
+        
+        $datos_reporte = array();
+        $columnas = "lpad(d.id_padron_electoral_traza_votos::text ,5,'0') as consecutivo,
+                     a.cedula_participes,
+                     a.apellido_participes,
+                     a.nombre_participes,
+                     b.nombre_entidad_patronal,
+                     c.nombre_entidad_mayor_patronal,
+                     a.id_genero_participes";
+        $tablas =  "core_participes a
+                    inner join core_entidad_patronal b on b.id_entidad_patronal = a.id_entidad_patronal
+                    inner join core_entidad_mayor_patronal c on c.id_entidad_mayor_patronal = a.id_entidad_mayor_patronal
+                    inner join padron_electoral_traza_votos d on d.id_participe_vota = a.id_participes ";
+        $where= "a.id_participes = '$id_participes'";
+        $id="a.id_participes";
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        $genero = "";
+        
+        if($rsdatos[0]->id_genero_participes == 1){
+            
+            $genero = "ESTIMADO";
+            
+        }else if ($rsdatos[0]->id_genero_participes == 2){
+            
+            $genero = "ESTIMADA";
+        }
+        
+        $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
+        $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
+        $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
+        $datos_reporte['ENTIDAD_PATRONAL']=$rsdatos[0]->nombre_entidad_patronal;
+        $datos_reporte['ENTIDAD_MAYOR_PATRONAL']=$rsdatos[0]->nombre_entidad_mayor_patronal;
+        $datos_reporte['GENERO']=$genero;
+        $datos_reporte['CONSECUTIVO']=$rsdatos[0]->consecutivo;
+        
+        
+        $cedula_capremci = $rsdatos[0]->cedula_participes;
+        $consecutivo = $rsdatos[0]->consecutivo;
+        
+        $tipo_documento="CERTIFICADO VALIDO DE VOTACIÓN NUMERO: ";
+        
+        $datos = "";
+        require dirname(__FILE__)."\phpqrcode\qrlib.php";
+        
+        $ubicacion = dirname(__FILE__).'\..\barcode_participes\\';
+        
+        //Si no existe la carpeta la creamos
+        if (!file_exists($ubicacion))
+            mkdir($ubicacion);
+            
+            $filename = $ubicacion.$cedula_capremci.'.png';
+            
+            
+            
+            //Parametros de Condiguracion
+            
+            $tamaño = 2.5; //Tama�o de Pixel
+            $level = 'L'; //Precisi�n Baja
+            $framSize = 3; //Tama�o en blanco
+            $contenido = $tipo_documento.''.$consecutivo; //Texto
+            
+            //Enviamos los parametros a la Funci�n para generar c�digo QR
+            QRcode::png($contenido, $filename, $level, $tamaño, $framSize);
+            
+            $qr_participes = '<img src="'.$filename.'">';
+            
+            
+            
+            $datos['CODIGO_QR']=  $qr_participes;
+            
+            
+            
+            
+            $this->verReporte("ReporteCertificadoVotacion", array('datos_reporte'=>$datos_reporte, 'datos'=>$datos ));
+            
+            
+            
     }
     
     
@@ -2125,7 +2212,6 @@
     
     
     
-    
-    
+    }
     
     ?>

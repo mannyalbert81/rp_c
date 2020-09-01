@@ -7,11 +7,8 @@ $(document).ready(function(){
 	ConsultaCandidatosFuerzaTerrestre();
 
 })
-setInterval(ConsultaCandidatosFuerzaAerea, 10000);
-setInterval(ConsultaCandidatosComandoConjunto, 10000);
-setInterval(ConsultaCandidatosMinisterioDefensa, 10000);
-setInterval(ConsultaCandidatosFuerzaNaval, 10000);
-setInterval(ConsultaCandidatosFuerzaTerrestre, 10000);
+
+
 
 function ConsultaCandidatosFuerzaAerea(_page = 1){
 	
@@ -137,3 +134,12 @@ function ConsultaCandidatosFuerzaTerrestre(_page = 1){
 	})
 	
 }
+
+
+
+
+setInterval(ConsultaCandidatosFuerzaAerea, 10000);
+setInterval(ConsultaCandidatosComandoConjunto, 10000);
+setInterval(ConsultaCandidatosMinisterioDefensa, 10000);
+setInterval(ConsultaCandidatosFuerzaNaval, 10000);
+setInterval(ConsultaCandidatosFuerzaTerrestre, 10000);

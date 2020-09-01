@@ -13,6 +13,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
     }
     
     
+    
     public function ConsultaCandidatosFuerzaAerea(){
         
         

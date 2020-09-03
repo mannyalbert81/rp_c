@@ -70,7 +70,7 @@
       <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Fuerzas</h3>
+              <h3 class="box-title">Consulta de Votos por Fuerzas</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -94,6 +94,11 @@
             <div class="tab-content">
             <br>
  			 <div class="tab-pane active" id="fuerza_aerea">
+ 			 
+ 			  	<div class="col-lg-12 col-md-12 col-xs-12" style ="text-align:center;">
+                   						<a class="btn btn-info"  title="Reporte" href="index.php?controller=ConsultaVotosElecciones&action=ReporteConsultaVotosFuerza&id_entidad_mayor_patronal=7" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Reporte</a>
+	                </div> 
+          
                 
 				<div class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="buscador_fuerza_aerea" name="buscador_fuerza_aerea" onkeyup="ConsultaCandidatosFuerzaAerea(1)" placeholder="Buscar.."/>
@@ -107,6 +112,11 @@
               </div>
               
               <div class="tab-pane" id="comando_conjunto">
+              
+               	<div class="col-lg-12 col-md-12 col-xs-12" style ="text-align:center;">
+                  				<a class="btn btn-info"  title="Reporte" href="index.php?controller=ConsultaVotosElecciones&action=ReporteConsultaVotosFuerza&id_entidad_mayor_patronal=8" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Reporte</a>
+	                   	</div> 
+          
                 
                  <div class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="buscador_comando_conjunto" name="buscador_comando_conjunto" onkeyup="ConsultaCandidatosComandoConjunto(1)" placeholder="Buscar.."/>
@@ -119,6 +129,10 @@
               </div>
               
                <div class="tab-pane" id="ministerio_defensa">
+                	<div class="col-lg-12 col-md-12 col-xs-12" style ="text-align:center;">
+                   					<a class="btn btn-info"  title="Reporte" href="index.php?controller=ConsultaVotosElecciones&action=ReporteConsultaVotosFuerza&id_entidad_mayor_patronal=9" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Reporte</a>
+	                 	</div> 
+          
                 
                  <div class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="buscador_ministerio_defensa" name="buscador_ministerio_defensa" onkeyup="ConsultaCandidatosMinisterioDefensa(1)" placeholder="Buscar.."/>
@@ -130,6 +144,10 @@
 					
               </div>
               <div class="tab-pane" id="fuerza_naval">
+               	<div class="col-lg-12 col-md-12 col-xs-12" style ="text-align:center;">
+                   					<a class="btn btn-info"  title="Reporte" href="index.php?controller=ConsultaVotosElecciones&action=ReporteConsultaVotosFuerza&id_entidad_mayor_patronal=10" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Reporte</a>
+	                             	</div> 
+          
                 
                  <div class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="buscador_fuerza_naval" name="buscador_fuerza_naval" onkeyup="ConsultaCandidatosFuerzaNaval(1)" placeholder="Buscar.."/>
@@ -141,6 +159,10 @@
 					
               </div>
               <div class="tab-pane" id="fuerza_terrestre">
+               	<div class="col-lg-12 col-md-12 col-xs-12" style ="text-align:center;">
+                   					<a class="btn btn-info"  title="Reporte" href="index.php?controller=ConsultaVotosElecciones&action=ReporteConsultaVotosFuerza&id_entidad_mayor_patronal=11" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i> Reporte</a>
+	                	</div> 
+          
                 
                  <div class="pull-right" style="margin-right:15px;">
 					<input type="text" value="" class="form-control" id="buscador_fuerza_terrestre" name="buscador_fuerza_terrestre" onkeyup="ConsultaCandidatosFuerzaTerrestre(1)" placeholder="Buscar.."/>
@@ -179,7 +201,7 @@
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/elecciones/js/ConsultaVotosElecciones.js?0.9"></script>
+    <script src="view/elecciones/js/ConsultaVotosElecciones.js?0.14"></script>
 	
 	
   </body>

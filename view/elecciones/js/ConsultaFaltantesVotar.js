@@ -5,6 +5,7 @@ $(document).ready(function(){
 
 
 
+
 function ConsultaVotosRealizados(_page = 1){
 	
 	var buscador_votos_realizados = $("#buscador_votos_realizados").val();

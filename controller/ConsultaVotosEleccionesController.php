@@ -11,7 +11,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
            
         ));
     }
-    
+    //MAYCOL
     
     
     public function ConsultaCandidatosFuerzaAerea(){

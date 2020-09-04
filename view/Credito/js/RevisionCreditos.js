@@ -4,6 +4,16 @@ var idreporte = 0;
 $(document).ready( function (){
 	load_creditos(1);
 	load_reportes(1);
+	
+	/*** para check en vista de TESORERIA **/
+	$("#myModalVer").on( 'change','.chk_credito_seleccionado', function() {
+		fnSeleccionaCreditosIndividuales(this);
+	});	
+	
+	$("#myModalVer").on( 'change','#chk_creditos_all', function() {
+		fnSeleccionaCreditos(this);
+	});	
+	
 });
 
 $("#myModalObservacion").on("hidden.bs.modal", function () {
@@ -201,7 +211,7 @@ function GetDatosReporte(id_reporte)
 		}else
 		{
 			$("#datos_reporte").html(x);
-		    $("#tabla_creditos_reporte").tablesorter(); 
+		    //$("#tabla_creditos_reporte").tablesorter(); 
 		}
 		
 	}).fail(function(xhr, status, error){
@@ -488,39 +498,88 @@ function AprobarGerente(id_reporte)
 
 function AprobarTesoreria(id_reporte)
 {
-	$.ajax({
-	    url: 'index.php?controller=RevisionCreditos&action=AprobarReporteTesoreria',
-	    type: 'POST',
-	    data: {
-	    	id_reporte: id_reporte
-	    },
-	}).done(function(x) {
-		x=x.trim();
-		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
-  		{
-  		  swal({
-		  		  title: "Créditos",
-		  		  text: "Hubo un error aprobando el reporte",
-		  		  icon: "warning",
-		  		  button: "Aceptar",
-		  		});
-  		}
-  	  	else
-  	  	{
-  	  		load_reportes_aprobados(1);
-  	  		load_reportes(1);
-  	  		$('#cerrar_ver').click();
-  	  		swal({
-	  		  title: "Créditos",
-	  		  text: "Reporte aprobado",
-	  		  icon: "success",
-	  		  button: "Aceptar",
-	  		});
-  	  	}
+	swal({
+		  title: "Aprobar Reporte",
+		  text: "Continuaremos con la activación del crédito. Recomendamos revisar los valores",
+		  icon: "info",
+		  buttons: true,
+	}).then((isConfirm) => {
 		
-	}).fail(function() {
-	    console.log("error");
+		  if (isConfirm) 
+		  {  
+			  console.log("continuo con la aprobación de créditos");
+			  var listaCreditosAprobar = [];
+			  var contador = 0;
+			  var msgerror = true;
+
+			  $.each( $(".chk_credito_seleccionado"), function( index, valor){
+
+			      var elemento = $(this);
+			  	  var item	= {};
+			  	  contador++;
+
+			      if( elemento.is(":checked") )
+			      {
+			    	  item['index']	= contador;
+			    	  item['id_reporte']	= id_reporte;
+			    	  item['id_creditos']	= elemento.val();
+			  		
+			    	  listaCreditosAprobar.push(item);
+			    	  msgerror	= false;
+			  		
+			    	  if( isNaN(item.id_creditos) || item.id_creditos.length == 0 )
+			    	  {
+			    		  msgerror	= true;
+				  	  }
+			      }
+			  				      
+			  });
+			
+			  if( !msgerror )
+			  {				  
+				  $.ajax({
+					    url: 'index.php?controller=RevisionCreditos&action=AprobarReporteTesoreria',
+					    type: 'POST',
+					    data: { "id_reporte": id_reporte, "listacreditos":JSON.stringify(listaCreditosAprobar) },
+					}).done(function(x) {
+						x=x.trim();
+						if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
+				  		{
+							swal({
+						  		  title: "Créditos",
+						  		  text: "Hubo un error aprobando el reporte",
+						  		  icon: "warning",
+						  		  button: "Aceptar",
+						  		});
+				  		}
+				  	  	else
+				  	  	{
+				  	  		load_reportes_aprobados(1);
+				  	  		load_reportes(1);
+				  	  		$('#cerrar_ver').click();
+				  	  		swal({
+					  		  title: "Créditos",
+					  		  text: "Reporte aprobado",
+					  		  icon: "success",
+					  		  button: "Aceptar",
+					  		});
+				  	  	}
+						
+					}).fail(function() {
+					    console.log("error");
+					});
+			  }else
+			  {
+				  swal({title:'Reporte Créditos',text:'Revise créditos seleccionados',dangerMode:true,icon:'warning'});
+			  }
+			  
+		  }else 
+		  {
+			  console.log("No continuo con la aprobación de créditos");
+		  }
 	});
+	
+	
 	
 }
 
@@ -540,7 +599,6 @@ function ContinuaNegar()
 	{
 		$('#cerrar_observacion').click();
 		
-		observacion_credito.val("");
 		$('#cuerpo').removeClass('modal-open');
 		
 		$.ajax({
@@ -552,8 +610,9 @@ function ContinuaNegar()
 		    	'observacion_credito': observacion_credito.val()
 		    },
 		}).done(function(x) {
-			console.log(x);
-			x=x.trim();
+
+			observacion_credito.val("");
+			
 			if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
   		  	{
 	  		  	swal( { title: "Créditos", text: "Hubo un error cambiando el estado del reporte", icon: "warning", button: "Aceptar" });
@@ -583,51 +642,83 @@ function ContinuaNegar()
 }
 
 function Quitar(id_reporte, id_creditos)
-{
-	
-		
-			$.ajax({
-			    url: 'index.php?controller=RevisionCreditos&action=QuitarCredito',
-			    type: 'POST',
-			    data: {
-			    	id_reporte: id_reporte,
-			    	numero_credito: id_creditos
-			    },
-			})
-			.done(function(x) {
-				x=x.trim();
-				console.log(x);
-				if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
-		  		  {
-		  		  swal({
-				  		  title: "Créditos",
-				  		  text: "Hubo un error cambiando el estado del credito",
-				  		  icon: "warning",
-				  		  button: "Aceptar",
-				  		});
-		  		  }
-		  	  else
-	  		  {
-		  		load_creditos(1);
-				load_reportes(1);
-				$('#cerrar_ver').click();
-				swal({
-			  		  title: "Créditos",
-			  		  text: "Crédito retirado del reporte",
-			  		  icon: "success",
-			  		  button: "Aceptar",
-			  		});
-	  		  }
-		     
-			})
-			.fail(function() {
-			    console.log("error");
+{		
+	$.ajax({
+		url: 'index.php?controller=RevisionCreditos&action=QuitarCredito',
+		type: 'POST',
+		data: { "id_reporte": id_reporte, "numero_credito": id_creditos },
+	}).done(function(x) {
+		x=x.trim();		
+		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
+		{
+			swal({
+				title: "Créditos",
+				text: "Hubo un error cambiando el estado del credito",
+				icon: "warning",
+				button: "Aceptar",
+	  		});
+		}else
+		{
+			load_creditos(1);
+			load_reportes(1);
+			$('#cerrar_ver').click();
+			swal({
+				title: "Créditos",
+				text: "Crédito retirado del reporte",
+				icon: "success",
+				button: "Aceptar",
 			});
+		}
+	}).fail(function() {
+		console.log("error");
+	});
+}
+
+var DevolverRevision = function(a,b){
+	
+	var vid_reporte = a; var vid_creditos = b; 
+	
+	$.ajax({
+		url:"index.php?controller=RevisionCreditos&action=devolverRevisionListado",
+		type:"POST",
+		/*dataType:""*/
+		data:{"id_creditos":vid_creditos, "id_reporte":vid_reporte}
+	}).done(function(x){		
+		x=x.trim();
+		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
+		{
+			swal({
+		  		  title: "Créditos",
+		  		  text: "Hubo un error cambiando el estado del credito",
+		  		  icon: "warning",
+		  		  button: "Aceptar",
+		  		});
+		}else
+		{
+			load_creditos(1);
+			load_reportes(1);
+			$('#cerrar_ver').click();
+			swal({
+		  		  title: "Créditos",
+		  		  text: "Crédito retirado del reporte",
+		  		  icon: "success",
+		  		  button: "Aceptar",
+		  		});
+		}
+		
+	}).fail(function(xhr,status,error){
+		swal({
+			title:"REPORTE CRÉDITOS",
+			text:"Hubo error al realizar proceso",
+			icon:"success",
+			button: "Aceptar"
+		})
+	})
+	
 }
 
 function MostrarComprobantes(id_comprobantes)
 {
-	
 	
 	$("#datos_comprobante").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
 	$("#myModalComprobantes").modal();
@@ -637,28 +728,23 @@ function MostrarComprobantes(id_comprobantes)
 	    data: {
 	    	id_ccomprobantes: id_comprobantes,
 	    },
-	})
-	.done(function(x) {
+	}).done(function(x) {
 		x=x.trim();
-		console.log(x);
 		if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
-  		  {
+		{
 			$('#cerrar_comprobantes').click();
-  		  swal({
+			swal({
 		  		  title: "Créditos",
 		  		  text: "Hubo un error cargando los comprobantes",
 		  		  icon: "warning",
 		  		  button: "Aceptar",
 		  		});
-  		  }
-  	  else
-  		  {
-  		
+  		 }else
+  		 {  		
   		  $("#datos_comprobante").html(x);
-  		  }
+  		 }
      
-	})
-	.fail(function() {
+	}).fail(function() {
 	    console.log("error");
 	});
 	
@@ -668,3 +754,25 @@ function ImprimirReporte(id_reporte)
 {
 	console.log(id_reporte);
 }
+
+var fnSeleccionaCreditos	= function(a){
+	var elemento = $(a);
+	if( elemento.is(':checked') ) {
+        $(".chk_credito_seleccionado").prop("checked", true);
+    } else {
+        $(".chk_credito_seleccionado").prop("checked", false);
+    }
+	
+}
+	
+var fnSeleccionaCreditosIndividuales	= function(a){
+	var elemento = $(a);		
+	if ($(".chk_credito_seleccionado").length == $(".chk_credito_seleccionado:checked").length) {  
+		$("#chk_creditos_all").prop("checked", true);  
+	} else {  
+		$("#chk_creditos_all").prop("checked", false);  
+	}  
+	
+}
+
+

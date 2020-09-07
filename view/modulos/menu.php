@@ -822,6 +822,9 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
                	  <li style="<?php echo getcontrolador("ConsultaCandidatos",$controladores) ?>"><a href="index.php?controller=ConsultaCandidatos&action=index"><i class="fa fa-circle-o"></i>Consulta Candidatos</a></li>
+      	        	  <li style="<?php echo getcontrolador("ConsultaVotosElecciones",$controladores) ?>"><a href="index.php?controller=ConsultaVotosElecciones&action=index"><i class="fa fa-circle-o"></i>Consulta Votos Elecciones</a></li>
+      	        	  <li style="<?php echo getcontrolador("ConsultaVotosElecciones",$controladores) ?>"><a href="index.php?controller=ConsultaVotosElecciones&action=index2"><i class="fa fa-circle-o"></i>Consulta Faltantes Votar</a></li>
+      	
       	  </ul>
             </li>
         </ul>

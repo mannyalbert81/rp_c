@@ -1373,7 +1373,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
             $html.= '</table>';
             
          }
-        
+         $datos_reporte['FECHAIMPRESION']=date('Y-m-d H:i');
          $datos_reporte['TABLA_VALORES']=$html;
   
          $this->verReporte("ReporteConsultaVotosRealizados", array('datos_reporte'=>$datos_reporte ));
@@ -1451,7 +1451,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
             $html.= '</table>';
             
         }
-        
+        $datos_reporte['FECHAIMPRESION']=date('Y-m-d H:i');
         $datos_reporte['TABLA_VALORES']=$html;
         $datos_reporte['ENTIDAD']=$nombre_entidad;
         
@@ -1558,7 +1558,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
             
             
             
-            
+            $datos_reporte['FECHAIMPRESION']=date('Y-m-d H:i');
             $datos_reporte['TABLA_VALORES']=$html;
             $datos_reporte['ENTIDAD']=$nombre_entidad;
             

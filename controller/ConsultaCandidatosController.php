@@ -2148,7 +2148,7 @@
             
             $genero = "ESTIMADA";
         }
-        
+        $datos_reporte['FECHAIMPRESION']=date('Y-m-d H:i');
         $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
         $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
         $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;

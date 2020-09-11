@@ -1092,6 +1092,8 @@ class ConsultaVotosEleccionesController extends ControladorBase{
         
         session_start();
         $registro = new RegistroModel();
+        $id_rol= $_SESSION['id_rol'];
+        
         
         $where_to="";
         
@@ -1166,7 +1168,9 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                 $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
-                $html.='<th style="text-align: left;  font-size: 13px;">Acciones</th>';
+                if($id_rol == "1" || $id_rol == "65"){
+                    $html.='<th style="text-align: left;  font-size: 13px;">Acciones</th>';
+                }
                 $html.='<th style="text-align: left;  font-size: 13px;">Nombre Entidad Patronal</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Total Votantes</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Votos Faltantes</th>';
@@ -1188,7 +1192,9 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     
                     $i++;
                     $html.='<tr>';
-                    $html.='<td><a title="Ver Detalle" href="index.php?controller=ConsultaVotosElecciones&action=ReporteDetalleVotos&id_entidad_mayor_patronal='.$res->id_entidad_mayor_patronal.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+                    if($id_rol == "1" || $id_rol == "65"){
+                        $html.='<td><a title="Ver Detalle" href="index.php?controller=ConsultaVotosElecciones&action=ReporteDetalleVotos&id_entidad_mayor_patronal='.$res->id_entidad_mayor_patronal.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+                    }
                     $html.='<td style="font-size: 12px;">'.$res->nombre_entidad_mayor_patronal.'</td>';
                     $html.='<td style="font-size: 12px;">'.$res->total_votantes.'</td>';
                     $html.='<td style="font-size: 12px;">'.$res->total_votos_faltantes.'</td>';

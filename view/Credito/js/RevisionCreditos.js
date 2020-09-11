@@ -185,14 +185,24 @@ function AbrirReporte(id_reporte)
 {
 	$("#myModalVer").modal();
 	console.log("CARGADO REPORTE /. -. \. " + id_reporte);
-	GetDatosReporte(id_reporte);
+	GetDatosReporte(id_reporte,0);
 }
 
-function GetDatosReporte(id_reporte)
+/** dc 2020/09/10 **/
+function AbrirReporteListado(id_reporte)
+{
+	$("#myModalVer").modal();
+	console.log("CARGADO REPORTE /. -. \. " + id_reporte);
+	GetDatosReporte(id_reporte,1);
+}
+/** end dc 2020/09/10 **/
+
+
+function GetDatosReporte(id_reporte, detalle = 0 )
 {
 	console.log("cargando reporte")
 	$("#datos_reporte").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	var params	= { action:'ajax', 'id_reporte':id_reporte };
+	var params	= { action:'ajax', 'id_reporte':id_reporte, 'detalle': detalle };
 	
 	$.ajax({
 		url:"index.php?controller=RevisionCreditos&action=getInfoReporte",
@@ -250,49 +260,91 @@ function SubirReporte()
 	var id_reporte=$("#reportes_creditos").val();
 	console.log(id_reporte);
 	
-	$.ajax({
-	    url: 'index.php?controller=RevisionCreditos&action=GenerarReportes',
-	    type: 'POST',
-	    data: {
-	    	id_reporte: id_reporte,
-	    	id_credito: numero_credito
-	    },
-	}).done(function(x) {
-		x=x.trim();
-		
-		if( x == '' || x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
-		{
-			swal({
-	  		  	title: "Créditos",
-  		  		text: "Hubo un error creando el reporte",
-  		  		icon: "warning",
-  		  		button: "Aceptar",
-	  			});
+	//validacion de reportes
+	try
+	{
+		$.ajax({
+		    url: 'index.php?controller=RevisionCreditos&action=buscarReportesRevision',
+		    type: 'POST',
+		    dataType:'json',
+		    data: null
+		})
+		.done(function(x) {
 			
-		}else if (x=="REPORTE CERRADO")
-  		{
-			swal({
-				title: "Créditos",
-	  		  	text: "El Reporte ya se encuentra cerrado",
-	  		  	icon: "warning",
-	  		  	button: "Aceptar",
-	  			});
-  		}else
-		{
-	  		load_creditos(1);
-			load_reportes(1);
-			$('#cerrar_insertar').click();
-			swal({
-		  		  title: "Créditos",
-		  		  text: "Crédito insertado en el reporte",
-		  		  icon: "success",
-		  		  button: "Aceptar",
-		  		});
-		}
-     
-	}).fail(function() {
-	    console.log("error");
-	});
+			if( x[0] != undefined && x[0] == "EXISTE" )
+			{
+				swal({title:"Reporte Créditos",text:"Existe un reporte en estado 'DEVUELTO A REVISIÓN' con le fecha seleccionada , se recomienda revisar el reporte ", icon:"info",dangerMode:true});
+				
+			}else
+			{
+				$.ajax({
+				    url: 'index.php?controller=RevisionCreditos&action=GenerarReportes',
+				    type: 'POST',
+				    data: {
+				    	id_reporte: id_reporte,
+				    	id_credito: numero_credito
+				    },
+				}).done(function(x) {
+					x=x.trim();
+					
+					if( x == '' || x.includes("Notice") || x.includes("Warning") || x.includes("Error"))
+					{
+						swal({
+				  		  	title: "Créditos",
+			  		  		text: "Hubo un error creando el reporte",
+			  		  		icon: "warning",
+			  		  		button: "Aceptar",
+				  			});
+						
+					}else if (x=="REPORTE CERRADO")
+			  		{
+						swal({
+							title: "Créditos",
+				  		  	text: "El Reporte ya se encuentra cerrado",
+				  		  	icon: "warning",
+				  		  	button: "Aceptar",
+				  			});
+			  		}else
+					{
+			  			if( x.includes("OK") )
+		  				{
+			  				load_creditos(1);
+							load_reportes(1);
+							$('#cerrar_insertar').click();
+							swal({
+						  		  title: "Créditos",
+						  		  text: "Crédito insertado en el reporte",
+						  		  icon: "success",
+						  		  button: "Aceptar",
+						  		});
+		  				}else
+	  					{
+		  					swal({
+					  		  	title: "Créditos",
+				  		  		text: "Revisar Buffer del metodo",
+				  		  		icon: "info",
+				  		  		button: "Aceptar",
+					  			});
+	  					}
+				  		
+					}
+			     
+				}).fail(function() {
+				    console.log("error");
+				});
+			}
+			
+		})
+		.fail(function(xhr, status, error){
+			swal({title:"ERROR",text:"existe error de conexión con el servidor", icon:"error",dangerMode:true});
+		});
+									
+	}catch(err)
+	{
+		swal({title:"ERROR",text:"Error de sintaxis --> "+err.message, icon:"error",dangerMode:true});		
+	}
+	
+	
 }
 
 function AprobarJefeCreditos(id_reporte)
@@ -583,6 +635,38 @@ function AprobarTesoreria(id_reporte)
 	
 }
 
+var ActivarReporte	= function(a){
+	
+	var reporteId	= a;
+	
+	$.ajax({
+		url:"index.php?controller=RevisionCreditos&action=activarReporteCreditos",
+		type:"POST",
+		dataType:"json",
+		data:{ "id_reporte":reporteId}
+	})
+	.done(function(x){
+		if( x.estatus != undefined && x.estatus == "OK" )
+		{
+			$('#cerrar_ver').click();		
+			load_creditos(1);
+			load_reportes(1);
+			swal({title:"Reporte Créditos", text:"Reporte Abierto", icon:"info"});
+			
+		}else
+		{
+			swal({title:"Reporte Créditos", text:x.mensaje, icon:"info", dangerMode:true});
+		}
+		
+	})
+	.fail(function(xhr, status, error ){
+		console.error(xhr.responseText);
+		swal({title:"Reporte Créditos", text:"Error Conexión Servidor", icon:"info", dangerMode:true});
+	})
+	
+	swal("seguimiento #001");
+}
+
 
 function Negar(id_reporte, id_creditos)
 {
@@ -595,50 +679,65 @@ function ContinuaNegar()
 {
 	var observacion_credito	= $('#observacion_credito');
 	
-	if ( observacion_credito.val() != "" )
-	{
-		$('#cerrar_observacion').click();
-		
-		$('#cuerpo').removeClass('modal-open');
-		
-		$.ajax({
-		    url: 'index.php?controller=RevisionCreditos&action=NegarCredito',
-		    type: 'POST',
-		    data: {
-		    	'id_reporte': idreporte,
-		    	'numero_credito': numero_credito,
-		    	'observacion_credito': observacion_credito.val()
-		    },
-		}).done(function(x) {
-
-			observacion_credito.val("");
-			
-			if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
-  		  	{
-	  		  	swal( { title: "Créditos", text: "Hubo un error cambiando el estado del reporte", icon: "warning", button: "Aceptar" });
-  		  	}
-		  	else
-		  	{
-				load_reportes(1);
-				$('#cerrar_ver').click();
-				swal({
-			  		  title: "Créditos",
-			  		  text: "Reporte devuelto a revisión",
-			  		  icon: "success",
-			  		  button: "Aceptar",
-			  		});
-		  	}
-		     
-		}).fail(function() {
-		    console.log("error");
-		});
-	}
-	else
+	if( observacion_credito.val() == "" )
 	{
 		observacion_credito.notify("Ingrese una Observacion",{ position:"buttom left", autoHideDelay: 2000});
-		
+		return false;
 	}
 	
+	$('#cerrar_observacion').click();
+	$('#cuerpo').removeClass('modal-open');
+	
+	swal({
+		  title: "Anular Crédito",
+		  text: "Aviso, al realizar la siguiente acción se anulará todos los créditos pertenecientes al reporte",
+		  icon: "info",
+		  buttons: true,
+		  closeOnClickOutside: false,
+		  closeOnEsc: false,
+	})
+	.then((isConfirm) => {
+		
+		if (isConfirm) 
+		{
+			$.ajax({
+			    url: 'index.php?controller=RevisionCreditos&action=NegarCredito',
+			    type: 'POST',
+			    data: {
+			    	'id_reporte': idreporte,
+			    	'numero_credito': numero_credito,
+			    	'observacion_credito': observacion_credito.val()
+			    },
+			}).done(function(x) {
+
+				observacion_credito.val("");
+				
+				if (x.includes("Notice") || x.includes("Warning") || x.includes("Error") || x.includes("ERROR"))
+			  	{
+					swal( { title: "Créditos", text: "Hubo un error cambiando el estado del reporte", icon: "warning", button: "Aceptar" });
+			  	}
+			  	else
+			  	{
+					load_reportes(1);
+					$('#cerrar_ver').click();
+					swal({
+				  		  title: "Créditos",
+				  		  text: "Reporte devuelto a revisión",
+				  		  icon: "success",
+				  		  button: "Aceptar",
+				  		});
+			  	}
+			     
+			}).fail(function() {
+			    console.log("error");
+			});	
+		   
+		}else 
+		{
+			console.log("No continuo con la aprobación de créditos");
+		}
+	});
+			
 }
 
 function Quitar(id_reporte, id_creditos)
@@ -716,6 +815,37 @@ var DevolverRevision = function(a,b){
 	})
 	
 }
+
+/** dc 2020/09/08 **/
+var AnularCredito	= function(a){
+	
+	var pid_creditos	= a;
+	
+	if( !isNaN(pid_creditos) && pid_creditos > 0 )
+	{
+		$.ajax({
+			url:"index.php?controller=RevisionCreditos&action=anularCredito",
+			dataType:"json",
+			type:"POST",
+			data:{"id_creditos":pid_creditos}
+		})
+		.done(function(x){
+			if( x.estatus != undefined && x.estatus == "OK" )
+			{
+				load_creditos(1);
+				load_reportes(1);
+				swal({ title:"CRÉDITO ANULADO", icon:"success", text:"Se procedió con la anulación del Crédito", });
+			}else
+			{
+				swal({ title:"CRÉDITO ANULADO", icon:"warning", text:"Error \n "+x.mensaje, });
+			}
+		})
+		.fail(function(xhr, status, error){
+			swal({ title:"ERROR", icon:"error", text:"Error conexión con servidor.", dangerMode:true });
+		});
+	}
+}
+/** end dc 2020/09/08 **/
 
 function MostrarComprobantes(id_comprobantes)
 {

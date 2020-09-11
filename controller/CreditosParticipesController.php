@@ -1250,6 +1250,7 @@ class CreditosParticipesController extends ControladorBase
         }else
         {
             $response['estatus'] = "OK";
+            $response['mensaje'] = "No hay texto";
         }
         
         echo json_encode( $response );

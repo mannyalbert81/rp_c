@@ -2552,6 +2552,7 @@
         
         $datos_reporte = array();
         $columnas = "lpad(d.id_padron_electoral_traza_votos::text ,5,'0') as consecutivo,
+                     d.id_padron_electoral_traza_votos,
                      a.cedula_participes,
                      a.apellido_participes,
                      a.nombre_participes,
@@ -2587,9 +2588,9 @@
         
         
         $cedula_capremci = $rsdatos[0]->cedula_participes;
-        $consecutivo = $rsdatos[0]->consecutivo;
+        $id_padron_electoral_traza_votos = $rsdatos[0]->id_padron_electoral_traza_votos;
         
-        $tipo_documento="CERTIFICADO VALIDO DE VOTACIÓN NUMERO: ";
+        $tipo_documento="http://186.4.157.125/rp_c/index.php?controller=ConsultaCandidatos&action=index3&id_padron_electoral_traza_votos=";
         
         $datos = "";
         require dirname(__FILE__)."\phpqrcode\qrlib.php";
@@ -2609,7 +2610,7 @@
             $tamaño = 2.5; //Tama�o de Pixel
             $level = 'L'; //Precisi�n Baja
             $framSize = 3; //Tama�o en blanco
-            $contenido = $tipo_documento.''.$consecutivo; //Texto
+            $contenido = $tipo_documento.''.$id_padron_electoral_traza_votos; //Texto
             
             //Enviamos los parametros a la Funci�n para generar c�digo QR
             QRcode::png($contenido, $filename, $level, $tamaño, $framSize);
@@ -2629,14 +2630,34 @@
     }
     
     
+    public function index3(){
+        session_start();
     
-    
-    
-    
-    
-    
-    
-    
+        $participes = new ParticipesModel();
+        
+        
+        $id_padron_electoral_traza_votos = (isset($_REQUEST['id_padron_electoral_traza_votos'])&& $_REQUEST['id_padron_electoral_traza_votos'] !=NULL)?$_REQUEST['id_padron_electoral_traza_votos']:'';
+        $columnas = "lpad(d.id_padron_electoral_traza_votos::text ,5,'0') as consecutivo,
+                     a.cedula_participes,
+                     a.apellido_participes,
+                     a.nombre_participes,
+                     b.nombre_entidad_patronal,
+                     c.nombre_entidad_mayor_patronal,
+                     a.id_genero_participes,
+                     d.id_padron_electoral_representantes ";
+        $tablas =  "core_participes a
+                    inner join core_entidad_patronal b on b.id_entidad_patronal = a.id_entidad_patronal
+                    inner join core_entidad_mayor_patronal c on c.id_entidad_mayor_patronal = a.id_entidad_mayor_patronal
+                    inner join padron_electoral_traza_votos d on d.id_participe_vota = a.id_participes ";
+        $where= "1=1";
+        $id="d.id_padron_electoral_traza_votos = $id_padron_electoral_traza_votos";
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+      
+        $this->view_Elecciones("ConsultaQR",array(""=>"","rsdatos"=>$rsdatos
+            
+        ));
+    }
     }
     
     ?>

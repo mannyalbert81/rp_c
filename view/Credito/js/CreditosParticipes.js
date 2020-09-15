@@ -66,13 +66,7 @@ var avaluo_bien_sin_solicitud=0;
 $(document).ready( function (){
 	
 	view.page_load	= true; //VALIDAR ESTA CARGADA
-	
-	// ESTABLESCO LA MASCARA AL CAMPO CEDULA PARTICIPE
-	$(":input").inputmask();
-	
-	//buscar los tipos de creditos
-	obtener_tipo_creditos();
-	
+		
 	//valida que no haya cuotas en mora por parte del participe
 	iniciar_datos_solicitud();
 	
@@ -90,7 +84,10 @@ let iniciar_datos_solicitud	= async() => {
 	{
 		//validamos los datos de la vista 
 		if( !view.hdn_id_solicitud.val().length || view.hdn_id_solicitud.val() == 0 || view.hdn_cedula_participes.val() == "" || !view.hdn_cedula_participes.val().length ) throw "SWAL DATOS DE SOLICITUD NO CARGADOS";
-						
+		
+		//buscar los tipos de creditos
+		let resp = await obtener_tipo_creditos();
+							
 		//validamos requisitos de Solictud para proceder al credito
 		//--si tiene moras
 		let misCabeceras = {'Content-Type':"application/json"};
@@ -145,6 +142,9 @@ let iniciar_datos_solicitud	= async() => {
 } 
 
 var iniciar_elementos	= function(){
+	
+	// ESTABLESCO LA MASCARA AL CAMPO CEDULA PARTICIPE
+	$(":input").inputmask();
 	
 	view.btn_generar_simulacion.attr("disabled",true);
 	

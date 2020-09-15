@@ -63,7 +63,6 @@ class ParticipesModel extends ModeloBase{
 	    
 	    return  $resultado;
 	}
-	
-	
+		
 }
 ?>

@@ -1356,7 +1356,8 @@ class CargarParticipesController extends ControladorBase{
                     case when a.acepto_suplente_padron_electoral_representantes=0 THEN 'Pendiente' when a.acepto_suplente_padron_electoral_representantes=1 THEN 'Acepto' else 'Rechazo' end acepto_suplente,
                     d.nombre_entidad_patronal,
                     f.nombre_provincias,
-                    g.nombre_ciudades";
+                    g.nombre_ciudades,
+                    h.nombre_entidad_mayor_patronal";
         
         $tablas =  "padron_electoral_representantes a
                     inner join core_participes b on a.id_representante = b.id_participes and b.id_estatus = 1
@@ -1364,6 +1365,7 @@ class CargarParticipesController extends ControladorBase{
                     inner join core_participes_informacion_adicional e on b.id_participes = e.id_participes
                     inner join core_provincias f on e.id_provincias = f.id_provincias
                     inner join core_ciudades g on e.id_ciudades = g.id_ciudades
+                    inner join core_entidad_mayor_patronal h on b.id_entidad_mayor_patronal = h.id_entidad_mayor_patronal 
                     left join
                 	(
                 	select b1.cedula_participes, b1.apellido_participes, b1.nombre_participes, a1.id_padron_electoral_representantes
@@ -1387,6 +1389,7 @@ class CargarParticipesController extends ControladorBase{
         $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
         $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
         $datos_reporte['CORREO_PARTICIPES']=$rsdatos[0]->correo_representante;
+        $datos_reporte['ENTIDAD_MAYOR']=$rsdatos[0]->nombre_entidad_mayor_patronal;
         
         $html_sup ="";
         $html_sup_firmas ="";

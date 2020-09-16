@@ -2649,8 +2649,8 @@
                     inner join core_entidad_patronal b on b.id_entidad_patronal = a.id_entidad_patronal
                     inner join core_entidad_mayor_patronal c on c.id_entidad_mayor_patronal = a.id_entidad_mayor_patronal
                     inner join padron_electoral_traza_votos d on d.id_participe_vota = a.id_participes ";
-        $where= "1=1";
-        $id="d.id_padron_electoral_traza_votos = $id_padron_electoral_traza_votos";
+        $where= "d.id_padron_electoral_traza_votos = $id_padron_electoral_traza_votos";
+        $id="d.id_padron_electoral_traza_votos";
         $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
         
       

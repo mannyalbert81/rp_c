@@ -1575,6 +1575,46 @@ class ConsultaVotosEleccionesController extends ControladorBase{
         
     }
     
+    public function validar_menu()
+    
+    {
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $resp   = array();
+            $callBack = $_GET['jsoncallback'];
+            
+            $columnas_1= "a.cedula_participes, a.nombre_participes, a.apellido_participes, a.celular_participes, a.correo_participes, b.nombre_entidad_mayor_patronal, c.id_padron_electoral_traza_votos, to_char(c.creado, 'YYYY-MM-DD HH:MM') as creado";
+            $tablas_1 =  "core_participes a
+            inner join core_entidad_mayor_patronal b on a.id_entidad_mayor_patronal=b.id_entidad_mayor_patronal
+            inner join padron_electoral_traza_votos c on a.id_participes=c.id_participe_vota";
+            $where_1 = "a.id_estatus=1 and a.cedula_participes = '$cedula'";
+            $id_1 = "a.apellido_participes";
+              $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            if( !empty( $resultUsu ) )
+            {
+                
+                // $resp['id_representante'] = $resultUsu->id_padron_electoral_representantes;
+                $resp['modal'] = "SI";
+                
+            }else
+            {
+                // $resp['id_representante'] =0;
+                $resp['modal'] = "NO";
+            }
+            
+        }else
+        {
+            // $resp['id_representante'] =0;
+            $resp['modal'] = "NO";
+        }
+        
+        $respuesta	= json_encode( $resp );
+        echo $callBack."(".$respuesta.");";
+    }
     
 }
 

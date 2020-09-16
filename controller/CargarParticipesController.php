@@ -1376,6 +1376,10 @@ class CargarParticipesController extends ControladorBase{
         $id = "a.id_padron_electoral_representantes";
         $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
         
+        
+        
+        
+        
         $datos_reporte['ENTIDAD_PATRONAL']=$rsdatos[0]->nombre_entidad_patronal;
         $datos_reporte['NOMBRE_PROVINCIAS']=$rsdatos[0]->nombre_provincias;
         $datos_reporte['NOMBRE_CUIDADES']=$rsdatos[0]->nombre_ciudades;
@@ -1383,13 +1387,60 @@ class CargarParticipesController extends ControladorBase{
         $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
         $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
         $datos_reporte['CORREO_PARTICIPES']=$rsdatos[0]->correo_representante;
-        $datos_reporte['APELLIDO_SUPLENTE']=$rsdatos[0]->apellido_suplente;
-        $datos_reporte['NOMBRE_SUPLENTE']=$rsdatos[0]->nombre_suplente;
-        $datos_reporte['CEDULA_SUPLENTE']=$rsdatos[0]->cedula_suplente;
-        $datos_reporte['CORREO_SUPLENTE']=$rsdatos[0]->correo_suplente;
         
-        $foto_suplente='<img src="view/Administracion/DevuelveImagenView.php?id_valor='.$rsdatos[0]->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_suplente" width="100" height="80">';
-        $datos_reporte['FOTO_SUPLENTE']=$foto_suplente;
+        $html_sup ="";
+        $html_sup_firmas ="";
+        
+        
+        if($rsdatos[0]->cedula_suplente!=""){
+            
+            $datos_reporte['APELLIDO_SUPLENTE']=$rsdatos[0]->apellido_suplente;
+            $datos_reporte['NOMBRE_SUPLENTE']=$rsdatos[0]->nombre_suplente;
+            $datos_reporte['CEDULA_SUPLENTE']=$rsdatos[0]->cedula_suplente;
+            $datos_reporte['CORREO_SUPLENTE']=$rsdatos[0]->correo_suplente;
+            
+            $foto_suplente='<img src="view/Administracion/DevuelveImagenView.php?id_valor='.$rsdatos[0]->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_suplente" width="100" height="80">';
+            $datos_reporte['FOTO_SUPLENTE']=$foto_suplente;
+            
+            $html_sup .='<table class="2">
+            <tr>
+            
+            <td align="justify" class="htexto2"><strong>• REPRESENTANTE SUPLENTE</strong><br><br>
+            <p align="justify" class="htexto1">
+            <strong>Nombres y Apellidos: </strong>'.$rsdatos[0]->apellido_suplente.' '.$rsdatos[0]->nombre_suplente.'<br>
+            <strong>Cédula de Ciudadanía: </strong>'.$rsdatos[0]->cedula_suplente.'<br>
+            <strong>Correo Electrónico: </strong>'.$rsdatos[0]->correo_suplente.'</td></p>
+            
+            <td>'.$foto_suplente.'</td>
+            </tr>
+            </table>';
+            
+            
+            $html_sup_firmas .='<div class="der">
+            <p class="htexto1"><strong><br>
+            NOMBRES: '.$rsdatos[0]->apellido_suplente.' '.$rsdatos[0]->nombre_suplente.'<br>
+            CÉDULA:  '.$rsdatos[0]->cedula_suplente.'<br>
+            REPRESENTANTE SUPLENTE
+            </strong></p>
+            </div>';
+            
+            
+        }else{
+            
+            $datos_reporte['APELLIDO_SUPLENTE']="";
+            $datos_reporte['NOMBRE_SUPLENTE']="";
+            $datos_reporte['CEDULA_SUPLENTE']="";
+            $datos_reporte['CORREO_SUPLENTE']="";
+            $datos_reporte['FOTO_SUPLENTE']="";
+            $html_sup .="";
+            $html_sup_firmas .="";
+            
+        }
+        
+        $datos_reporte['DATOS_SUPLENTE']=$html_sup;
+        
+        $datos_reporte['DATOS_SUPLENTE_FIRMA']=$html_sup_firmas;
+       
         
         $foto_representante='<img src="view/Administracion/DevuelveImagenView.php?id_valor='.$rsdatos[0]->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="100" height="80">';
         $datos_reporte['FOTO_REPRESENTANTE']=$foto_representante;

@@ -237,7 +237,7 @@ class ModeloBase extends EntidadBase{
             if( $result === false )
                 throw new Exception( "Error PostgreSQL ".pg_last_error() );
                 
-                $resultSet = pg_affected_rows($result);
+            $resultSet = pg_affected_rows($result);
                 
         }catch (Exception $Ex){
             

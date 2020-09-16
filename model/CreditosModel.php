@@ -70,5 +70,15 @@ class CreditosModel extends ModeloBase{
         
         return  $resultado;
     }
+    
+    public function obtenerIdEstado($nombre)
+    {
+        $query  = " SELECT id_estado_creditos FROM core_estado_creditos WHERE id_estatus = 1 AND nombre_estado_creditos = '$nombre' LIMIT 1";
+        
+        $resultado  = $this->enviaquery($query);
+        
+        return $resultado[0]->id_estado_creditos ?? 0;
+        
+    }
 }
 ?>

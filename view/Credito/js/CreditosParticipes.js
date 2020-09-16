@@ -44,6 +44,7 @@ view.global_hay_solicitud	= false; //SINTAXERROR
 view.global_capacidad_pago_garante_suficiente	= false; //SINTAXERROR
 view.page_load	= false; //SINTAXERROR
 view.global_avaluo_sin_solicitud	= 0; //SINTAXERROR
+view.global_hay_reafiliacion	= false;
 
 /** para valores de Solicitud **/
 var dataSolicitud	= dataSolicitud || {};
@@ -65,15 +66,9 @@ var avaluo_bien_sin_solicitud=0;
 $(document).ready( function (){
 	
 	view.page_load	= true; //VALIDAR ESTA CARGADA
-	
-	// ESTABLESCO LA MASCARA AL CAMPO CEDULA PARTICIPE
-	$(":input").inputmask();
-	
-	//buscar los tipos de creditos
-	obtener_tipo_creditos();
-	
+		
 	//valida que no haya cuotas en mora por parte del participe
-	iniciar_datos_solicitud();	
+	iniciar_datos_solicitud();
 	
 	//iniciar eventos de elementos de la vista
 	iniciar_eventos_controles();
@@ -89,11 +84,14 @@ let iniciar_datos_solicitud	= async() => {
 	{
 		//validamos los datos de la vista 
 		if( !view.hdn_id_solicitud.val().length || view.hdn_id_solicitud.val() == 0 || view.hdn_cedula_participes.val() == "" || !view.hdn_cedula_participes.val().length ) throw "SWAL DATOS DE SOLICITUD NO CARGADOS";
-						
+		
+		//buscar los tipos de creditos
+		let resp = await obtener_tipo_creditos();
+							
 		//validamos requisitos de Solictud para proceder al credito
 		//--si tiene moras
 		let misCabeceras = {'Content-Type':"application/json"};
-		let data = { 'cedula_participes' : view.hdn_id_solicitud.val() };
+		let data = { 'cedula_participes' : view.cedula_participes.val() };
 		data = JSON.stringify(data);
 		let miInit = { method: 'POST',
 			   headers: misCabeceras,
@@ -123,26 +121,30 @@ let iniciar_datos_solicitud	= async() => {
 			
 		}else
 		{
-			var mensaje = x.mensaje || "ERROR AL PROCESAR LOS DATOS";
+			var mensaje = respuesta.mensaje || "ERROR AL PROCESAR LOS DATOS";
 			swal({title:"ERROR",text:mensaje,icon:"error",dangerMode:true});
 		}
 					
 	}catch(err)
 	{
-		if( err.includes("SWAL") )
+		console.log(err);
+		if( err.message.includes("SWAL") )
 		{
 			var regex 	= /swal/gi;
 			var mensaje = err.replace(regex,'') + " \n PROCESO TERMINADO ";
 			swal({title:"ERROR",text:mensaje,icon:"error",dangerMode:true});
 		}else
 		{
-			console.error(err);
+			swal({title:"ERROR",text:"Error de sintaxis --> "+err.message, icon:"error",dangerMode:true});
 		}		
 	}
 	
 } 
 
 var iniciar_elementos	= function(){
+	
+	// ESTABLESCO LA MASCARA AL CAMPO CEDULA PARTICIPE
+	$(":input").inputmask();
 	
 	view.btn_generar_simulacion.attr("disabled",true);
 	
@@ -299,7 +301,7 @@ var iniciar_eventos_controles	= function(){
 	
 	$( '#'+view.tipo_creditos.attr("id") ).on('change',function(){
 		iniciar_datos_simulacion();
-	})
+	});
 	
 	$( "#"+view.btn_generar_simulacion.attr("id") ).on('click',function(){
 		

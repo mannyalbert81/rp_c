@@ -2292,183 +2292,8 @@ class SimulacionCreditosController extends ControladorBase
     /**
      * *** BEGIN DC cambios nuevos *******
      */
-    /**
-     * 2020/05/08
-     */
-    public function InformacionCrediticiaParticipe()
-    {
-        session_start();
-        $creditos = new ParticipesModel();
-        $response = array();
-
-        try {
-            ob_start();
-            $cedula_participes = $_POST['cedula_participe']; // controlar los aportes hasta agosto
-
-            if (! empty(error_get_last())) {
-                throw new Exception('Variables no definidas');
-            }
-
-            $fechasValidacion = $this->getFechasUltimas3Cuotas();
-            $fecha_inicio = $fechasValidacion['desde'];
-            $fecha_fin = $fechasValidacion['hasta'];
-
-            //PARA PRUEBAS TEMPORAL --cambiar fecha inicio y final
-            //2019-12-01 --estos valores cambiar a su arbitrariedad
-            //2020-02-28
-            //$fecha_inicio = '2020-04-01';
-            //$fecha_fin = '2020-06-30';
-
-            $saldo_credito = 0;
-            $saldo_cta_individual = 0;
-
-            // AQUI OBTENGO TOTAL DE CUENTA INDIVIDUAL
-            $columnas = "COALESCE(SUM(valor_personal_contribucion),0)+COALESCE(SUM(valor_patronal_contribucion),0) AS total";
-            $tablas = "core_contribucion INNER JOIN core_participes
-            ON core_contribucion.id_participes  = core_participes.id_participes";
-            $where = "core_participes.cedula_participes='" . $cedula_participes . "' AND core_contribucion.id_estatus=1";
-            $totalCtaIndividual = $creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
-
-            // AQUI PONER ATENCION AL FINAL saldo_actual_creditos
-            $columnas = "COALESCE(SUM(saldo_actual_creditos),0) AS total";
-            $tablas = "core_creditos INNER JOIN core_participes
-            ON core_creditos.id_participes  = core_participes.id_participes";
-            $where = "core_participes.cedula_participes='" . $cedula_participes . "' AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
-            $saldo_actual_credito = $creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
-
-            // AQUI AGRUPAR POR MES valor_personal_contribucion PARA VER 3 ULTIMAS APORTACIONES
-            $columnas = "to_char(c.fecha_registro_contribucion, 'MM') as mes, sum(c.valor_personal_contribucion) as aporte";
-            $tablas = "core_contribucion c inner join core_participes p on c.id_participes = p.id_participes";
-            $where = "p.cedula_participes='" . $cedula_participes . "' and p.id_estatus=1 and c.id_contribucion_tipo=1  AND c.fecha_registro_contribucion BETWEEN '" . $fecha_inicio . "' AND '" . $fecha_fin . "' AND c.id_estatus=1";
-            $grupo = "to_char(c.fecha_registro_contribucion, 'MM')";
-            $having = "sum(c.valor_personal_contribucion)>0";
-            $aportes = $creditos->getCondiciones_Grupo_Having($columnas, $tablas, $where, $grupo, $having);
-            $num_aporte = sizeof($aportes);
-
-            // capturo los saldos de las consultas
-            $saldo_cta_individual = $totalCtaIndividual[0]->total;
-            $saldo_credito = $saldo_actual_credito[0]->total;
-            // $saldo_credito_renovar=$_result_creditos_renovar[0]->total;
-
-            if ($saldo_cta_individual > 0 && $saldo_credito > 0) {
-
-                if ($saldo_cta_individual > $saldo_credito) {
-
-                    $disponible = $saldo_cta_individual - $saldo_credito;
-                } else {
-
-                    $disponible = 0.00;
-                }
-            } else if ($saldo_cta_individual == 0.00 && $saldo_credito > 0) {
-
-                $disponible = 0.00;
-            } else if ($saldo_cta_individual > 0 && $saldo_credito == 0.00) {
-
-                $disponible = $saldo_cta_individual;
-            } else {
-
-                $disponible = 0.00;
-            }
-
-            $saldo_cta_individual = number_format((float) $saldo_cta_individual, 2, '.', '');
-            $disponible = number_format((float) $disponible, 2, '.', '');
-
-            $columnas = "id_participes, nombre_participes, apellido_participes, cedula_participes, fecha_nacimiento_participes";
-            $tablas = "public.core_participes";
-            $where = " id_estatus = 1 AND cedula_participes='" . $cedula_participes . "'";
-            $id = "id_participes";
-
-            $infoParticipe = $creditos->getCondiciones($columnas, $tablas, $where, $id);
-
-            // VERIFICO LA EDAD DEL PARTICIPE
-            $hoy = date("Y-m-d");
-            $tiempo = $this->dateDifference($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
-            $dias_hasta = $this->dateDifference1($infoParticipe[0]->fecha_nacimiento_participes, $hoy);
-            $dias_75 = 365 * 75;           
-            $diferencia_dias = $dias_75 - $dias_hasta;
-            $diferencia_dias = $diferencia_dias / 30;
-            $diferencia_dias = floor($diferencia_dias * 1) / 1;
-            $edad = explode(",", $tiempo);
-            $edad = $edad[0];
-            $edad = explode(" ", $edad);
-            $edad = $edad[0];
-           
-
-            // valores para ser procesados en vista
-            $data = array();
-
-            $data['estado_solicitud'] = false;
-            $data['mensaje_solicitud'] = "";
-            $data['nombre_participe_credito'] = $infoParticipe[0]->nombre_participes . ' ' . $infoParticipe[0]->apellido_participes;
-            $data['cedula_credito'] = $infoParticipe[0]->cedula_participes;
-            $data['cuenta_individual'] = $saldo_cta_individual;
-            $data['capital_creditos'] = $saldo_credito;
-            $data['liquido_recibir'] = $disponible;
-            $data['aportes_participe'] = $num_aporte;
-
-            // validacion para ver si puede acceder al credito
-            $observacion = "";
-            if( $disponible >= 150 && $edad >= 18 && $edad < 75 && $num_aporte == 3) {
-                $solicitud = "bg-olive";
-                $data['estado_solicitud'] = true;
-            } else {
-                $data['estado_solicitud'] = false;
-                $solicitud = "bg-red";              
-                
-                if ($num_aporte < 3) {
-                    
-                    #validamos si hay reafiliacion
-                    if( $this->validarReAfiliacion( $infoParticipe[0]->id_participes ) ){
-                        $observacion .= "Partícipe en proceso de Reafiliación.";                        
-                        $solicitud = "bg-orange"; 
-                        $data['estado_solicitud'] = true;
-                    }else{
-                        $observacion .= "El participe no tiene los 3 últimos aportes pagados.";
-                    }
-                    
-                }
-                if( $edad <= 18 || $edad >= 75){
-                    $observacion .= "Revisar edad Participe";
-                }
-            }            
-            
-            $html = '<div id="info_participe_solicitud" class="row small-box bg-olive">
-                    <h3 class="titulo">Antecedentes Participe</h3>
-                    <div class="col-md-6 col-lg-6">
-                    <div class="box-footer no-padding bg-olive">
-                        <div class="bio-row"><p>' . $data['nombre_participe_credito'] . '</p></div>
-                        <div class="bio-row"><p><span class="tab2">Identificaci&oacute;n</span>: ' . $data['cedula_credito'] . '</p></div>
-                        <div class="bio-row"><p><span class="tab2">Fecha Nacimiento</span>: ' . $infoParticipe[0]->fecha_nacimiento_participes . '</p></div>
-                        <div class="bio-row"><p><span class="tab2">Edad</span>: ' . $tiempo . '</p></div>
-                        <div class="bio-row"><p><span class="tab2">Cuenta Individual  </span>: ' . $saldo_cta_individual . '</p></div> 
-                        <div class="bio-row"><p><span class="tab2">Capital de créditos </span>: ' . $saldo_credito . '</p></div>
-                        <div class="bio-row"><p><span class="tab2">Disponible </span>: ' . $disponible . '</p></div>
-                        <div class="bio-row ' . $solicitud . '"><p><span class="tab2">Observaci&oacute;n</span>: ' . $observacion . '</p></div>
-                    </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6">
-                    <div id="div_info_garante"></div>
-                    <div id="div_info_credito_renovar"></div>
-                    </div>
-                 </div>';
-
-            $salida = ob_get_clean();
-            if (! empty($salida)) {
-                throw new Exception("");
-            }
-
-            $response['html'] = $html;
-            $response['data'] = $data;
-        } catch (Exception $e) {
-
-            $response['html'] = "<span>Error al  cargar la informaci&oacute;n Antecedes del Participe</span>";
-            $response['estatus'] = "ERROR";
-            $response['mensaje'] = "Error al cargar informacion de creditos";
-            $response['buffer'] = error_get_last();
-        }
-
-        echo json_encode($response);
-    }
+    
+    
     /**
      * ****************************** END CAMBIOS DC ******************************
      */
@@ -2958,13 +2783,13 @@ class SimulacionCreditosController extends ControladorBase
            
             $query = "INSERT INTO core_creditos_renovaciones
                     (id_creditos_renovado, id_creditos_nuevo, saldo_credito_renovado_creditos_renovaciones, seguro_desgravamen_creditos_renovaciones)
-                VALUES $id_creditos_renovar," . $id_creditos . ",$capital_renovar," . $desgravamen_renovar . ")";            
+                VALUES ( $id_creditos_renovar," . $id_creditos . ",$capital_renovar," . $desgravamen_renovar . ")";            
             $credito->executeNonQuery($query);
             
             $query = "UPDATE core_creditos SET id_estado_creditos=" . $id_estado_renovacion . " WHERE id_creditos=" . $id_creditos_renovar;
             $credito->executeNonQuery($query);
         }
-               
+                       
         $total_retencion = number_format((float) $total_retencion, 2, ".", "");
         $monto_neto = $monto_credito - $total_retencion;
         
@@ -2997,6 +2822,7 @@ class SimulacionCreditosController extends ControladorBase
         
         foreach ($resultAmortizacion as $res)
         {
+            
             $fecha_pago = $res['fecha_pago'];
             $num_cuota = $res['pagos_trimestrales'];
             $amortizacion = $res['amortizacion'];
@@ -3030,10 +2856,10 @@ class SimulacionCreditosController extends ControladorBase
             
             //trabajar con el desgloge de pagos-amortizacion
             $this->generarDesglosePagos( $datosDesglosePagos, $valores, $id_tabla_amortizacion);            
-            
+           
             $errores = ob_get_clean();
             $errores = trim($errores);
-            
+                        
             if (! (empty($errores))) 
             {
                 $credito->endTran('ROLLBACK');
@@ -3046,12 +2872,12 @@ class SimulacionCreditosController extends ControladorBase
         if ($respuesta) {
             $actualizacion_solicitud = $this->ActualizarSolicitud($id_solicitud, $monto_credito, $cuota, $numero_credito);
             $plan_cuentas = new PlanCuentasModel();
-            $colval = "numero_consecutivos=" . $numero_credito;
-            $tabla = "consecutivos";
-            $where = "nombre_consecutivos='CREDITO'";
             $actualizacion_solicitud = trim($actualizacion_solicitud);
             if (empty($actualizacion_solicitud)) {
-                ob_start();
+                ob_start();                
+                $colval = "numero_consecutivos=" . $numero_credito;
+                $tabla = "consecutivos";
+                $where = "nombre_consecutivos='CREDITO'";
                 $plan_cuentas->ActualizarBy($colval, $tabla, $where);
                 $actualizacion_consecutivo = ob_get_clean();
                 $actualizacion_consecutivo = trim($actualizacion_consecutivo);
@@ -3504,8 +3330,8 @@ VALUES( $id_creditos, $valor_retencion)";
         
         return $resultado[0];
     }
-    /** end dc 2020/09/14 **/
-    
+    /** end dc 2020/09/14 **/    
+      
 }
 
 ?>

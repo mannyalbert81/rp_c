@@ -115,7 +115,8 @@ let iniciar_datos_solicitud	= async() => {
 			$('body').on('click',"#buscar_participe",function(){				
 				//buscar_datos_creditos();
 				obtener_info_participes();
-			});		
+			});	
+			
 			//ACTIVAR BOTON
 			$("#buscar_participe").click();
 			
@@ -471,14 +472,13 @@ var obtener_informacion_solicitud 	= function(){
 
 var obtener_informacion_participe	= function(){
 	
-	//BUSCAR INFORMACION PARA CREDITOS
-	
+	//BUSCAR INFORMACION PARA CREDITOS	
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=InformacionCrediticiaParticipe',
+	    url: 'index.php?controller=CreditosParticipes&action=InformacionCrediticiaParticipe',
 	    type: 'POST',
 	    dataType:'json',
 	    data: {
-	    	cedula_participe:view.cedula_participes.val(),
+	    	cedula_participe:view.cedula_participes.val(), 'id_solicitud':view.hdn_id_solicitud.val(), 'id_participes':view.hdn_id_participes.val()
 	 	    },
 	}).done(function(x) {
 		

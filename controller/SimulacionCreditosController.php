@@ -2763,9 +2763,8 @@ class SimulacionCreditosController extends ControladorBase
         $credito->setParametros($parametros);
         $queryInsert = $credito->getconsultaPG($credito->getFuncion(), $credito->getParametros());
         $resultado = $credito->llamarconsultaPG($queryInsert);
-        $id_creditos = $resultado[0];        
-        
-        
+        $id_creditos = $resultado[0];       
+                
         // BUSCAR CREDITOS A RENOVAR CON SU VALOR        
         $colfun1    = " id_creditos_out, suma_capital_out, suma_seguro_out, suma_total_out";
         $tabfun1    = " cre_obtener_saldos_renovacion_creditos('$tipo_credito','$fecha_pago',$id_participe) ";
@@ -2788,7 +2787,26 @@ class SimulacionCreditosController extends ControladorBase
             
             $query = "UPDATE core_creditos SET id_estado_creditos=" . $id_estado_renovacion . " WHERE id_creditos=" . $id_creditos_renovar;
             $credito->executeNonQuery($query);
+            
+            #INSERTAR en la tabla migrada
+            $datosRenovacion    = array();
+            $datosRenovacion['id_creditos']         = $id_creditos;
+            $datosRenovacion['id_creditos_renovar'] = $id_creditos_renovar;
+            $datosRenovacion['saldo']               = ($capital_renovar + $desgravamen_renovar);
+            $datosRenovacion['observacion']         = "Generación de proceso de renovación";
+            $datosRenovacion['estado']              = 1;
+            
+            $respRenovacion = $this->ingresarRegistroRenovaciones($datosRenovacion);
+            
+            if( $respRenovacion['error'] )
+            {
+                echo $respRenovacion['mensaje'];
+            }            
         }
+        
+        #ACTUALUZAR consecutivo de credito
+        //$query = "UPDATE consecutivos SET numero_consecutivos ='" . $numero_credito . "' WHERE nombre_consecutivos='CREDITO'";
+        //$credito->executeNonQuery($query);
                        
         $total_retencion = number_format((float) $total_retencion, 2, ".", "");
         $monto_neto = $monto_credito - $total_retencion;
@@ -3330,7 +3348,36 @@ VALUES( $id_creditos, $valor_retencion)";
         
         return $resultado[0];
     }
-    /** end dc 2020/09/14 **/    
+    /** end dc 2020/09/14 **/
+    
+    /** dc 2020/09/21 **/
+    /***
+     * @desc permite ingresar datos a la tabla core_creditos_a_pagar_renovaciones mediante un array como parametro
+     * @param array $params
+     * @return boolean[]|mixed[]|boolean[]|string[]
+     */
+    public function ingresarRegistroRenovaciones(array $params)
+    {
+        $creditos   = new CreditosModel();
+        
+        $sqlInsertRenovacion = "INSERT INTO public.core_creditos_a_pagar_renovaciones (
+            id_creditos, id_creditos_renovaciones, saldo_a_la_fecha_creditos_a_pagar_renovaciones,
+            fecha_creditos_a_pagar_renovaciones, observacion_creditos_a_pagar_renovaciones, id_estatus,	id_transacciones
+            ) VALUES(".$params['id_creditos'].",".$params['id_creditos_renovar'].",".$params['saldo'].",
+            NOW()::TIMESTAMP,'".$params['observacion']."',".$params['estado'].",null)";
+        
+        $creditos->executeNonQuery($sqlInsertRenovacion);
+        
+        if( !empty(error_get_last()) )
+        {
+            return array('error'=>true,'mensaje'=>error_get_last()['message']);
+        }else
+        {
+            return array('error'=>false,'mensaje'=>"OK");
+        }
+	
+    }
+    /** end dc 2020/09/21 **/
       
 }
 

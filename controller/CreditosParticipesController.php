@@ -976,7 +976,7 @@ class CreditosParticipesController extends ControladorBase
                  <td >' . $res1->monto_otorgado_creditos . '</font></td>
                  <td >' . $res1->fecha_concesion_creditos . '</font></td>
                  <td>' . $res1->nombre_tipo_creditos . '</td>
-                <td align="right" id="saldo_credito_a_renovar">' . $saldo . '</font></td>
+                 <td align="right" id="saldo_credito_a_renovar">' . $saldo . '</font></td>
                 </tr>';
             }
         }

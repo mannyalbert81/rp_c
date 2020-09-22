@@ -29,7 +29,7 @@ class RevisionCreditosController extends ControladorBase{
                 INNER JOIN core_participes cc ON cc.id_participes = aa.id_participes
                 INNER JOIN core_tipo_creditos dd ON dd.id_tipo_creditos = aa.id_tipo_creditos
                 LEFT JOIN usuarios ee ON ee.usuario_usuarios = aa.receptor_solicitud_creditos
-                INNER JOIN oficina ff ON ff.id_oficina = ee.id_oficina";
+                LEFT JOIN oficina ff ON ff.id_oficina = ee.id_oficina";
             $where="aa.id_estado_creditos = 2 AND aa.incluido_reporte_creditos IS NULL";
             
             
@@ -292,7 +292,7 @@ class RevisionCreditosController extends ControladorBase{
         if($resultRol=="Contador / Jefe de RR.HH")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza >= 93 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         if($resultRol=="Gerente")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=95 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
         //if($resultRol=="Jefe de tesorería")$where="core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza>=96 AND NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98)";
-        if($resultRol=="Jefe de tesorería")$where=" NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98) AND ( SELECT COUNT(1) FROM core_creditos_trabajados_detalle WHERE id_estado_detalle_creditos_trabajados = 95) > 0";
+        if($resultRol=="Jefe de tesorería")$where=" NOT (core_creditos_trabajados_cabeza.id_estado_creditos_trabajados_cabeza=98) AND ( SELECT COUNT(1) FROM core_creditos_trabajados_detalle WHERE id_estado_detalle_creditos_trabajados = 96) > 0";
         
         if(!(empty($fecha_reporte)))
         {

@@ -2882,6 +2882,20 @@ class SolicitudPrestamoController extends ControladorBase{
 	                    
 	                    
 	                    
+	            }else{
+	                
+	                $html.='<table style="width: 100%;"  border=1 cellspacing=0.0001 >';
+                    $html.='<tr>';
+                    $html.='<th colspan="12" style="text-align:center; font-size: 18px;"><b>FONDO COMPLEMENTARIO PREVISIONAL CERRADO DE CESANTÍA DE SERVIDORES Y TRABAJADORES PÚBLICOS DE FUERZAS ARMADAS CAPREMCI<br>CRÉDITO N/D <br>SOLICITUD DE PRESTAMO N.-<b></th>';
+                    $html.='</tr>';
+                    
+                    $html.='<tr>';
+                    $html.='<th colspan="12" style="text-align:center; font-size: 16px;"><b>DATOS DEL PRESTAMO<b></th>';
+                    $html.='</tr>';
+                    $html.='<tr>';
+                    $html.='<td colspan="12" style="padding:10px; text-align:left; font-size: 12px;"><b>DATOS NO ENCONTRADOS<b></th>';
+                    $html.='</tr>';
+                    $html.='</table>';
 	            }
 	            
 	            $this->report("SolicitudPrestamo",array("resultSet"=>$html));

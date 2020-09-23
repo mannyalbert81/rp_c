@@ -134,7 +134,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    $id_creditos =  (isset($_POST['id_creditos'])&& $_POST['id_creditos'] !=NULL)?$_POST['id_creditos']:'';
 	    
 	    $where_to="";
-	    $columnas = " core_creditos.id_creditos,
+	     $columnas = " core_creditos.id_creditos,
                       core_tabla_amortizacion.fecha_tabla_amortizacion,
                       core_tabla_amortizacion.capital_tabla_amortizacion,
                       core_tabla_amortizacion.interes_tabla_amortizacion,
@@ -152,6 +152,12 @@ class PrincipalPrestamosSociosController extends ControladorBase{
                       (select sum(c1.interes_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalintereses\",
+                      (select COALESCE(SUM (r1.valor_pago_tabla_amortizacion_pagos),0)
+						from core_tabla_amortizacion_pagos r1 
+						INNER JOIN core_tabla_amortizacion_parametrizacion p ON r1.id_tabla_amortizacion_parametrizacion = p.id_tabla_amortizacion_parametrizacion
+						inner join core_tabla_amortizacion aa on aa.id_tabla_amortizacion=r1.id_tabla_amortizacion
+						where p.tipo_tabla_amortizacion_parametrizacion = 8 and aa.id_estatus=1 and aa.id_creditos ='$id_creditos'
+					  ) as \"totalseguro\",
                       (select sum(c1.total_valor_tabla_amortizacion)
                       from core_tabla_amortizacion c1 where id_creditos = '$id_creditos' and id_estatus=1 limit 1
                       ) as \"totalcuota\",
@@ -166,7 +172,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
             	    select COALESCE(SUM (r.saldo_cuota_tabla_amortizacion_pagos),0)
             	    from core_tabla_amortizacion_pagos r INNER JOIN core_tabla_amortizacion_parametrizacion p ON r.id_tabla_amortizacion_parametrizacion = p.id_tabla_amortizacion_parametrizacion
             	    where r.id_tabla_amortizacion = core_tabla_amortizacion.id_tabla_amortizacion) as saldo_final";
-	    
+            	   
 	    
 	    $tablas = "   public.core_creditos,
                       public.core_tabla_amortizacion,
@@ -228,6 +234,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	            $html.='<th style="text-align: center; font-size: 11px;">Fecha</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Capital</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Intereses</th>';
+	            $html.='<th style="text-align: center; font-size: 11px;">Seg. Desgrav.</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Mora</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Cuota</th>';
 	            $html.='<th style="text-align: center; font-size: 11px;">Saldo Cuota</th>';
@@ -254,6 +261,7 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	                $html.='<td style="text-align: center; font-size: 11px;">'.$res->fecha_tabla_amortizacion.'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->capital_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->interes_tabla_amortizacion, 2, ",", ".").'</td>';
+	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->seguro_desgravamen_final, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->mora_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->total_valor_tabla_amortizacion, 2, ",", ".").'</td>';
 	                $html.='<td style="text-align: center; font-size: 11px;"align="right">'.number_format($res->saldo_final, 2, ",", ".").'</td>';
@@ -965,7 +973,23 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    and ct.id_transacciones = $id_transacciones
 	    group by atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, ct.fecha_transacciones";
 	    
-	    $rsdatos = $participes->enviaquery($query);
+	    $rsdatos1 = $participes->enviaquery($query);
+	    $html1="";
+	    
+	    if(!empty($rsdatos1)){
+	        
+	        
+	        
+	        foreach ($rsdatos1 as $res) {
+	           
+	            
+	            
+	        }
+	        
+	    }
+	    
+	    
+	    $datos_reporte['TABLA_VALORES']=$html1;
 	    
 	    $datos_reporte['TIPO_TABLA']=$rsdatos[0]->tipo_tabla_amortizacion_parametrizacion;
 	    $datos_reporte['DESCRIPCION_TABLA']=$rsdatos[0]->descripcion_tabla_amortizacion_parametrizacion;

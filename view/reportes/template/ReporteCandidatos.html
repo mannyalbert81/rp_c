@@ -33,8 +33,9 @@ table.2 {
   </head>
   <body>  
 
-<p align="center" class="htexto2"><strong>FORMULARIO DE INSCRIPCIÓN A CANDIDATO PARA REPRESENTANTES ASAMBLEA GENERAL CAPREMCI</strong></p>
+<p align="center" class="htexto2"><strong>FORMULARIO DE INSCRIPCIÓN A CANDIDATO PARA REPRESENTANTES DE LA ASAMBLEA GENERAL CAPREMCI</strong></p>
 <br>
+<p align="justify" class="htexto1"><strong>Entidad Mayor Patronal: </strong>{ENTIDAD_MAYOR}</p>
 <p align="justify" class="htexto1"><strong>Entidad Patronal: </strong>{ENTIDAD_PATRONAL}</p>
 	<div class="izq">
 	<p class="htexto1"><strong>Provincia: </strong>{NOMBRE_PROVINCIAS}</p>
@@ -57,23 +58,14 @@ table.2 {
  </tr>
 </table>
 <br>
-	<table class="2">
-<tr>
-
-    <td align="justify" class="htexto2"><strong>• REPRESENTANTE SUPLENTE</strong><br><br>
-    <p align="justify" class="htexto1">
-    <strong>Nombres y Apellidos: </strong>{APELLIDO_SUPLENTE} {NOMBRE_SUPLENTE}<br>
-    <strong>Cédula de Ciudadanía: </strong>{CEDULA_SUPLENTE}<br>
-    <strong>Correo Electrónico: </strong>{CORREO_SUPLENTE}</td></p>
-
-    <td>{FOTO_SUPLENTE}</td>
- </tr>
-</table>
+	{DATOS_SUPLENTE}
 <br>
 <p align="justify" class="htexto1">Aceptamos expresamente estas candidaturas y bajo juramento declaramos no hallarnos incursos en alguna de las prohibiciones e inhabilidades determinadas en el Reglamento de Elecciones de Representantes de la Asamblea General del Fondo Complementario Previsional Cerrado de Cesantía de Servidores y Trabajadores Públicos de Fuerzas Armadas CAPREMCI; así mismo no mantenemos deudas pendientes con el Fondo.</p>
 <p align="justify" class="htexto1">Las y los firmantes señalamos las direcciones electrónicas consignadas en la presente solicitud y autorizamos a la Junta General Electoral a que, por medio de ellas, nos hagan conocer toda información, citación y notificación que nos corresponda.</p>
 <p align="justify" class="htexto1">Este documento es válido, para lo cual el participe candidato a Representante con su Suplente ha ingresado a través del portal web del Fondo, digitando su clave personal y generando el proceso para calificación; por ende, se acepta todos los términos del presente documento.</p>
 <p align="justify" class="htexto1"><i><strong>Nota:</strong> El ejercicio del cargo de Representante Principal y Suplente para el que se postula no genera erogación alguna de valores por parte del Fondo. Por ende no se recibirán dietas.</i></p><br><br><br>
+
+
 
 <div class="izq">
 <p class="htexto1"><strong><br>
@@ -82,13 +74,7 @@ CÉDULA:  {CEDULA_PARTICIPES}<br>
 REPRESENTANTE PRINCIPAL
 </strong></p>
 </div>
-<div class="der">
-<p class="htexto1"><strong><br>
-NOMBRES: {APELLIDO_SUPLENTE} {NOMBRE_SUPLENTE}<br>
-CÉDULA:  {CEDULA_SUPLENTE}<br>
-REPRESENTANTE SUPLENTE
-</strong></p>
-</div>
+{DATOS_SUPLENTE_FIRMA}
 	
   </body>
   </html>

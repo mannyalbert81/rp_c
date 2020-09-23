@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  	<meta charset="utf-8"/>
+  	<title>Certificado Votación</title>
+ 
+ <style>
+  	.htexto1{		
+	font-size: 12px;
+	font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+  	.htexto2{		
+	font-size: 15px;
+	font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+table.2 {
+   width: 100%;
+   text-align: left;
+   border: 0px solid;
+   font-size: 12px;
+   font-family: Tahoma, Verdana, Segoe, sans-serif;
+}
+  	</style>
+  </head>
+  <body>
+  <p align="right" class="htexto1"><strong>Fecha y Hora de Impresión: </strong>{FECHAIMPRESION}</p>
+  
+  <div align="center">  
+  <img  src="view/images/Logo-Capremci-h-200.jpg" width="500" height="60"></img>
+  </div>
+  
+<p align="center" class="htexto2"><i><strong>JUNTA GENERAL ELECTORAL<br>
+CERTIFICADO VOTACIÓN<br>
+ELECCIONES PARA REPRESENTANTES ASAMBLEA 2020-2022</strong></i></p>
+
+
+<p align="center" class="htexto2"><strong>CERTIFICADO: {CONSECUTIVO}</strong></p>
+
+<table class="2">
+
+  <tr>
+
+    <td>CÉDULA:</td>
+
+    <td >{CEDULA_PARTICIPES}</td>
+ 
+  </tr>
+  <tr>
+
+    <td>APELLIDOS Y NOMBRES:</td>
+
+    <td>{APELLIDO_PARTICIPES} {NOMBRE_PARTICIPES}</td>
+ 
+  </tr>
+  <tr>
+
+    <td>ENTIDAD MAYOR PATRONAL:</td>
+
+    <td>{ENTIDAD_MAYOR_PATRONAL}</td>
+ 
+  </tr>
+   <tr>
+
+    <td>ENTIDAD PATRONAL:</td>
+
+    <td>{ENTIDAD_PATRONAL}</td>
+ 
+  </tr>
+
+
+
+ 
+
+</table>
+
+<p align="left" class="htexto1">{GENERO} PARTÍCIPE, ESTE DOCUMENTO ACREDITA QUE USTED SUFRAGÓ EN EL PROCESO ELECTORAL 2020</p>	
+<div align="center">  
+<img  src="view/images/presidente_junta.jpg" width="200" height="60">
+</div>
+<p align="center" class="htexto1"><strong>PESIDENTE DE LA JUNTA ELECTORAL</strong>
+<div align="center">  
+  {CODIGO_QR}
+  </div>
+
+
+  </body>
+  </html>

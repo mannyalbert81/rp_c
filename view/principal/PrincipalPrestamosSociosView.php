@@ -371,8 +371,7 @@
             				<div class="pull-right" style="margin-right:15px;">
             					<input type="text" value="" class="form-control" id="buscador1" name="buscador1" onkeyup="Transacciones(1)" placeholder="Buscar.."/>
                 			</div>  
-                			
-                    			<div id="Transacciones"></div>  
+                			<div id="Transacciones"></div>  
                     	    	<div id="transacciones" ></div>
                     	    	<div id="divLoaderPage1" ></div>
 				  

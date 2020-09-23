@@ -16,6 +16,7 @@ view.btn_numero_cuotas		= $("#btn_numero_cuotas");
 view.capacidad_pago_garante			= $("#txt_capacidad_pago_garante"); 
 view.numero_cuotas			= $("#ddl_numero_cuotas"); 
 view.btn_generar_simulacion	= $("#btn_generar_simulacion");
+view.creditos_productos		= $("#ddl_credito_producto");
 
 /** para valores de tab de capacidad de pago **/
 view.sueldo_liquido		= $("#txt_sueldo_liquido");
@@ -43,6 +44,7 @@ view.global_hay_solicitud	= false; //SINTAXERROR
 view.global_capacidad_pago_garante_suficiente	= false; //SINTAXERROR
 view.page_load	= false; //SINTAXERROR
 view.global_avaluo_sin_solicitud	= 0; //SINTAXERROR
+view.global_hay_reafiliacion	= false;
 
 /** para valores de Solicitud **/
 var dataSolicitud	= dataSolicitud || {};
@@ -64,15 +66,9 @@ var avaluo_bien_sin_solicitud=0;
 $(document).ready( function (){
 	
 	view.page_load	= true; //VALIDAR ESTA CARGADA
-	
-	// ESTABLESCO LA MASCARA AL CAMPO CEDULA PARTICIPE
-	$(":input").inputmask();
-	
-	//buscar los tipos de creditos
-	obtener_tipo_creditos();
-	
+		
 	//valida que no haya cuotas en mora por parte del participe
-	iniciar_datos_solicitud();	
+	iniciar_datos_solicitud();
 	
 	//iniciar eventos de elementos de la vista
 	iniciar_eventos_controles();
@@ -88,11 +84,14 @@ let iniciar_datos_solicitud	= async() => {
 	{
 		//validamos los datos de la vista 
 		if( !view.hdn_id_solicitud.val().length || view.hdn_id_solicitud.val() == 0 || view.hdn_cedula_participes.val() == "" || !view.hdn_cedula_participes.val().length ) throw "SWAL DATOS DE SOLICITUD NO CARGADOS";
-						
+		
+		//buscar los tipos de creditos
+		let resp = await obtener_tipo_creditos();
+							
 		//validamos requisitos de Solictud para proceder al credito
 		//--si tiene moras
 		let misCabeceras = {'Content-Type':"application/json"};
-		let data = { 'cedula_participes' : view.hdn_id_solicitud.val() };
+		let data = { 'cedula_participes' : view.cedula_participes.val() };
 		data = JSON.stringify(data);
 		let miInit = { method: 'POST',
 			   headers: misCabeceras,
@@ -116,32 +115,37 @@ let iniciar_datos_solicitud	= async() => {
 			$('body').on('click',"#buscar_participe",function(){				
 				//buscar_datos_creditos();
 				obtener_info_participes();
-			});		
+			});	
+			
 			//ACTIVAR BOTON
 			$("#buscar_participe").click();
 			
 		}else
 		{
-			var mensaje = x.mensaje || "ERROR AL PROCESAR LOS DATOS";
+			var mensaje = respuesta.mensaje || "ERROR AL PROCESAR LOS DATOS";
 			swal({title:"ERROR",text:mensaje,icon:"error",dangerMode:true});
 		}
 					
 	}catch(err)
 	{
-		if( err.includes("SWAL") )
+		console.log(err);
+		if( err.message.includes("SWAL") )
 		{
 			var regex 	= /swal/gi;
 			var mensaje = err.replace(regex,'') + " \n PROCESO TERMINADO ";
 			swal({title:"ERROR",text:mensaje,icon:"error",dangerMode:true});
 		}else
 		{
-			console.error(err);
+			swal({title:"ERROR",text:"Error de sintaxis --> "+err.message, icon:"error",dangerMode:true});
 		}		
 	}
 	
 } 
 
 var iniciar_elementos	= function(){
+	
+	// ESTABLESCO LA MASCARA AL CAMPO CEDULA PARTICIPE
+	$(":input").inputmask();
 	
 	view.btn_generar_simulacion.attr("disabled",true);
 	
@@ -298,7 +302,7 @@ var iniciar_eventos_controles	= function(){
 	
 	$( '#'+view.tipo_creditos.attr("id") ).on('change',function(){
 		iniciar_datos_simulacion();
-	})
+	});
 	
 	$( "#"+view.btn_generar_simulacion.attr("id") ).on('click',function(){
 		
@@ -468,14 +472,13 @@ var obtener_informacion_solicitud 	= function(){
 
 var obtener_informacion_participe	= function(){
 	
-	//BUSCAR INFORMACION PARA CREDITOS
-	
+	//BUSCAR INFORMACION PARA CREDITOS	
 	$.ajax({
-	    url: 'index.php?controller=SimulacionCreditos&action=InformacionCrediticiaParticipe',
+	    url: 'index.php?controller=CreditosParticipes&action=InformacionCrediticiaParticipe',
 	    type: 'POST',
 	    dataType:'json',
 	    data: {
-	    	cedula_participe:view.cedula_participes.val(),
+	    	cedula_participe:view.cedula_participes.val(), 'id_solicitud':view.hdn_id_solicitud.val(), 'id_participes':view.hdn_id_participes.val()
 	 	    },
 	}).done(function(x) {
 		
@@ -1642,6 +1645,7 @@ var registrar_credito_nuevo	= function(){
 		    url: 'index.php?controller=SimulacionCreditos&action=InsertarSimulacionCredito',
 		    type: 'POST',
 		    data: {
+		    	'id_creditos_productos': view.creditos_productos.val(),
 		    	monto_credito: monto_credito,
 		    	tipo_credito: valor_tipo_creditos,
 		    	fecha_pago: fecha_corte,
@@ -1683,7 +1687,8 @@ var registrar_credito_nuevo	= function(){
 	}else
 	{
 		
-		var datamm = {
+		var params = {
+			'id_creditos_productos': view.creditos_productos.val(),
 	    	'monto_credito': monto_credito,
 	    	'tipo_credito': valor_tipo_creditos,
 	    	'fecha_pago': fecha_corte,
@@ -1696,20 +1701,9 @@ var registrar_credito_nuevo	= function(){
 	    };
 		
 		$.ajax({
-		    url: 'index.php?controller=SimulacionCreditos&action=SubirInformacionRenovacionCredito',
+		    url: 'index.php?controller=SimulacionCreditos&action=insertarRenovacionCredito',
 		    type: 'POST',
-		    data: {
-		    	monto_credito: monto_credito,
-		    	tipo_credito: valor_tipo_creditos,
-		    	fecha_pago: fecha_corte,
-		    	cuota_credito: cuota_credito,
-		    	cedula_participe: ciparticipe,
-		    	observacion_credito: observacion,
-		    	'id_solicitud':id_solicitud,
-		    	con_garante: view.global_hay_garantes,
-		    	cedula_garante:cigarante
-		    	
-		    },
+		    data: params,
 		}).done(function(x) {
 			console.log(x);
 			x=x.trim();

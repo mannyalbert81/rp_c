@@ -108,7 +108,7 @@ $("#GuardarReclamos").on("click",function(event){
 		//console.log(x)
 		if( x.respuesta == 1 ){    			
 			
-			swal({title:"TRANSACCION OK",text:'FORMULARIO',icon:"success",closeOnClickOutside: false}).then( isValidate => { 
+			swal({title:"RECLAMO REGISTRADO",text:'FORMULARIO',icon:"success",closeOnClickOutside: false}).then( isValidate => { 
 				
 				let identificador =x.identificador;
     			let urlReporte = "index.php?controller=FormularioReclamos&action=ReporteReclamos&id_form_reclamos="+identificador;

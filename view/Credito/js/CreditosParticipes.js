@@ -83,7 +83,7 @@ let iniciar_datos_solicitud	= async() => {
 	try
 	{
 		//validamos los datos de la vista 
-		if( !view.hdn_id_solicitud.val().length || view.hdn_id_solicitud.val() == 0 || view.hdn_cedula_participes.val() == "" || !view.hdn_cedula_participes.val().length ) throw "SWAL DATOS DE SOLICITUD NO CARGADOS";
+		if( !view.hdn_id_solicitud.val().length || view.hdn_id_solicitud.val() == 0 || view.hdn_cedula_participes.val() == "" || !view.hdn_cedula_participes.val().length ) throw new Error("SWAL DATOS DE SOLICITUD NO CARGADOS");
 		
 		//buscar los tipos de creditos
 		let resp = await obtener_tipo_creditos();
@@ -132,7 +132,7 @@ let iniciar_datos_solicitud	= async() => {
 		if( err.message.includes("SWAL") )
 		{
 			var regex 	= /swal/gi;
-			var mensaje = err.replace(regex,'') + " \n PROCESO TERMINADO ";
+			var mensaje = err.message.replace(regex,'') + " \n PROCESO TERMINADO ";
 			swal({title:"ERROR",text:mensaje,icon:"error",dangerMode:true});
 		}else
 		{

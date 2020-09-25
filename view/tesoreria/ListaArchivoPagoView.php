@@ -7,10 +7,11 @@
     <title>Capremci</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+    <?php include("view/modulos/links_css.php"); ?>    
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    
-    <?php include("view/modulos/links_css.php"); ?>
-    
+    <!-- <link href="//cdn.datatables.net/fixedheader/2.1.0/css/dataTables.fixedHeader.min.css"/>    
+    <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/1.10.20/integration/font-awesome/dataTables.fontAwesome.css"/> -->    
+        
  	<style type="text/css">
  	  .loader {
         position: fixed;
@@ -21,7 +22,19 @@
         z-index: 9999;
         background: url('view/images/ajax-loader.gif') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;
-        } 	  
+        } 
+       .letrasize10{
+        font-size: 10px;
+       }
+       .letrasize11{
+        font-size: 11px;
+       }
+       .letrasize12{
+        font-size: 12px;
+       }
+       .tooltip[aria-hidden=false] {
+        opacity: 1;
+       }	  
  	</style>   
   			        
     </head>
@@ -113,6 +126,17 @@
             			</div>
             		</div> 
             		
+            		<div class="col-xs-12 col-md-3 col-lg-3">
+            			<div class="form-group ">
+            				<label for="ddl_usuario_departamento" class=" control-label" >Usuario:</label> 
+                    		<div class="form-group-sm">           
+                    			<select class="form-control" id="ddl_usuario_departamento">
+                    				<option value="0">--Seleccione--</option>
+                    			</select> 
+                    		</div>        			 
+            			</div>
+            		</div> 
+            		
 <!--             		<div class="col-xs-12 col-md-3 col-lg-3"> -->
 <!--             			<div class="form-group "> -->
 <!--             				<label for="tipo_pago_archivo" class=" control-label" >Tipo Pago:</label>  -->
@@ -165,6 +189,41 @@
                         </div>
             		</div>
             		
+            	</div>
+            	
+            	<div class="row">
+            		<div class="col-xs-12 col-md-12 col-lg-12">
+                		<div class="panel panel-default">
+                        	<div class="panel-heading">Datos Encontrados</div>
+                            
+                    		<div class="panel-body">
+                    			<div id="div_datos_archivos" class="letrasize11">
+            						<table id="tbl_archivo_pago" class="table table-bordered display compact">
+            							<thead>
+            								<tr>
+            	    							<th><input type="checkbox" id="chk_pagos_all"></th>
+                                        	    <th>#</th>
+                                        	    <th>Tipo</th>
+                                        	    <th>Fecha</th>
+                                        	    <th>Banco Beneficiario</th>
+                                        	    <th>Tipo Pago</th>
+                                        	    <th>Identificacion</th>
+                                        	    <th>Beneficiario</th>
+                                        	    <th>Cod. Banco</th>
+                                        	    <th>Valor</th>
+                                    	    </tr>
+            	    					</thead>
+            	    					<tbody>
+            	    						
+            	    					</tbody>
+            	    					<tfoot>
+            	    					</tfoot>
+            						</table>
+        						</div>  
+                    		</div> <!-- AQUI TERMINA BODY DE PANEL -->                 		
+                    		                        
+                        </div>
+            		</div>
             	</div>
             	 
            </form>
@@ -249,6 +308,8 @@
           	          	
 		  	<div class="box-body">        
 				<div id="lista_distribucion_transferencia" ></div>
+				
+				
         	</div>
 			  
           	</form>
@@ -274,7 +335,7 @@
     <script src="view/bootstrap/bower_components/inputmask/dist/jquery.inputmask.bundle.js"></script>
     <script src="view/bootstrap/bower_components/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="view/bootstrap/otros/notificaciones/notify.js"></script>
-	<script type="text/javascript" src="view/tesoreria/js/ListaArchivoPago.js?0.11"></script>
+	<script type="text/javascript" src="view/tesoreria/js/ListaArchivoPago.js?0.20"></script>
 
   </body>
 </html>   

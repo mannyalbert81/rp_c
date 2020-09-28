@@ -67,7 +67,9 @@ var avaluo_bien_sin_solicitud=0;
 view.hdn_id_solicitud.val(1);	
 
 $(document).ready( function (){
-	
+	 
+
+	   
 	view.page_load	= true; //VALIDAR ESTA CARGADA
 		
 	//valida que no haya cuotas en mora por parte del participe
@@ -78,8 +80,12 @@ $(document).ready( function (){
 	
 	//iniciar atributos de ciertos elementos en la vista
 	iniciar_elementos();
+	 
+	
 		
 });
+
+
 
 let iniciar_datos_solicitud	= async() => {
 	
@@ -256,6 +262,8 @@ var setValTipoCreditos = function(a){
 var iniciar_eventos_controles	= function(){
 	
 	//$('[data-toggle="popover"]').popover();
+	
+	
 	
 	$("#btn_mostrar_numero_aportes").on('click',function(e){
 		//$(this).off(e);
@@ -1914,4 +1922,40 @@ function roundNumber(value, decimals) {
 
 
 /**** TERMINAMOS CON LA INSERSION DE CREDITOS *****/ 
+
+/*** VIDEO ***/
+
+function video(){
+
+    imgficha = 'view/images/SIMULADOR.mp4';
+
+$("#reproducir_video").attr({'src':imgficha});
+	
+	
+}
+
+
+function scroll(){
+
+
+
+$('html, body, #mostrarmodalIntro').animate({scrollTop: 30 }, "slow"); 
+
+//$("#reproducir_video").contents().find("video").trigger('play');
+
+
+}
+
+
+$("#btn_video").on('click',function(e){
+
+     $("#mostrarmodalIntro").modal("show"); 
+
+   //setTimeout(function(){ video(); }, 1000);
+   //setTimeout(function(){ scroll(); }, 2500);
+
+
+});
+
+/*** END VIDEO ***/
 

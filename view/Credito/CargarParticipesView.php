@@ -11,7 +11,7 @@
     <?php include("view/modulos/links_css.php"); ?>
         
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
     <link rel="stylesheet" href="view/estilos/principal/imagenHover.css">
     <link rel="stylesheet" href="view/credito/html/css/scrolltable.css?0.2">
     
@@ -184,6 +184,8 @@
      <div class="box box-primary">
        <div class="box-header">
           <h3 class="box-title">Simulador Cr&eacute;ditos </h3>
+              <button type="button" id="btn_video" class="btn btn-primary">Ver Tutorial</button>
+      
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
               <i class="fa fa-minus"></i></button>          
@@ -222,6 +224,7 @@
                       <li><a href="#panel_detalle" data-toggle="tab" class="disabledTab" >Detalle Valores</a></li>
                       <li><a href="#panel_capacidad" data-toggle="tab" class="disabledTab" >Capacidad Pago</a></li>
                       <li><a href="#panel_capacidad_garante" data-toggle="tab" class="disabledTab" >Capacidad Pago Garante</a></li>
+                      
                     </ul>
                     <div class="tab-content">
                     
@@ -557,13 +560,66 @@
        </div> 
     </section>
   	<!-- TERMINA COPIA DE CREDITOS PARTICIPES --> 
+   
+   
+  
+
     
     
    </div>
+   
+   <div class="modal fade" id="mostrarmodalIntro" tabindex="-1" role="dialog" aria-labelledby="basicModal" >
+          <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+		
+				
+			<div class="col-xs-12 col-md-12 col-lg-12" style="; margin-top:10px">
+			<h5 class="card-title" style="text-align: center"><b>TUTORIAL SIMULADOR DE CRÉDITOS</b></h5>
+		
+	        </div>	
+	        <br>
+	       <div class="modal-body" style="text-align: center;" >
+	
+				
+				 <div class="col-lg-12 col-md-12 col-xs-12">
+              
+           			<iframe id="reproducir_video" width="100%" height="550px" src='view/images/SIMULADOR.mp4'></iframe>
+           			
+                 </div>
+
+		  </div>
+          	<div class="modal-footer">
+				<a href="mostrarmodalIntro" data-dismiss="modal" data-toggle="modal"  class="btn btn-danger">Cerrar</a>
+			</div>
+        	  
+	      </div>
+	     </div>
+	   </div>
+   
+   <div class="modal fade bs-example-modal-lg" id="myModalCreditosActivos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+	    	<div class="modal-header bg-primary">
+	    		<button type="button" id="cerrar_renovar_credito" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Créditos Activos</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+				 <div id="info_participe_creditos_activos"></div>				 
+            	<div id="tabla_creditos_activos"></div>
+				</div>
+				<br>
+			</div>			
+		</div>
+	</div>
+</div>
 
  	<?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
+   
+    
+   
  </div>
      
     <?php include("view/modulos/links_js.php"); ?>
@@ -576,6 +632,6 @@
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <!--  <script src="view/Credito/js/CargarParticipes.js?1.4"></script>-->
     <script src="view/Credito/js/CreditosParicipesAnalisis.js?0.00"></script>
-   	<script src="view/Credito/js/CargarParticipesSimulacion.js?0.05"></script>  
+   	<script src="view/Credito/js/CargarParticipesSimulacion.js?0.14"></script>  
    </body>
 </html>   

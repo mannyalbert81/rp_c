@@ -837,7 +837,7 @@ var enviar_capacidad_pago = function(){
 	
 	if( isNaN(  parseFloat( valor_total_ingresos ) ) ){
 		console.log("VALOR CAPACIDAD PAGO NO DEFINIDO");
-		view.total_ingresos.closest('tr').notify("Ingrese Cuota Pactada",{ position:"buttom left", autoHideDelay: 2000});
+		view.total_ingresos.closest('tr').notify("Ingrese cuota que desea pagar ",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
 	}
 	

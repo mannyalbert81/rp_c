@@ -11,7 +11,6 @@
     <?php include("view/modulos/links_css.php"); ?>
         
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
     <link rel="stylesheet" href="view/estilos/principal/imagenHover.css">
     <link rel="stylesheet" href="view/credito/html/css/scrolltable.css?0.2">
     
@@ -327,27 +326,27 @@
                                         </div>
                             		  </div>
                             		                              		                              		  
-                            		  <div class="col-xs-12 col-md-3 col-lg-3 " >
+                            		  <div class="col-xs-12 col-md-4 col-lg-4 " >
                             		  	<label for="txt_capacidad_pago" class="control-label">Capacidad Pago:</label>
                             		  	<div class="input-group">
                 							<input type="text" value="" class="form-control" id="txt_capacidad_pago" readonly>                			
                             				<span class="input-group-btn">
                             					<button type="button" title="Análisis crédito" class="btn bg-olive"  id="btn_capacidad_pago">
-                        						 <i class="glyphicon glyphicon-new-window"></i>
+                        						 <i class="glyphicon glyphicon-new-window"></i> Buscar Cuota Maxima
                         						</button>
                         					</span>
         					
         								</div>
                             		  </div> 
                             		  
-                            		  <div class="col-xs-12 col-md-3 col-lg-3 ">
+                            		  <div class="col-xs-12 col-md-2 col-lg-2 ">
                             		    <div class="form-group">                            		    					  
                                           <label for="txt_monto_creditos" class="control-label">Monto Credito:</label>
                                           <input type="number" step="10" id="txt_monto_creditos" class="form-control" value="">                                                                                                      
                                         </div>
                             		  </div> 
                             		  
-                            		  <div class="col-xs-12 col-md-3 col-lg-3 " >
+                            		  <div class="col-xs-12 col-md-4 col-lg-4 " >
                             		  	<label for="ddl_numero_cuotas" class="control-label">N&uacute;mero de Cuotas:</label>
                             		  	<div class="input-group">
                 							<select id="ddl_numero_cuotas" class="form-control" disabled>
@@ -355,7 +354,7 @@
                 							</select>                			
                             				<span class="input-group-btn">
                             					<button type="button" title="Buscar Cuotas" class="btn btn-info"  id="btn_numero_cuotas">
-                        						 <i class="glyphicon glyphicon-repeat"></i>
+                        						 <i class="glyphicon glyphicon-repeat"></i> Buscar plazo - cuota
                         						</button>
                         					</span>
         					
@@ -376,8 +375,7 @@
                         					</span>
         					
         								</div>                           		  	
-                            		  </div>                           		  
-                            		                            		  
+                            		  </div>                    		  
                         		  </div>
                         		  
                         		  <div class="row">
@@ -450,7 +448,7 @@
                                         <td bgcolor="#F9E79F" id="td_cuota_maxima" align="right" style="padding-right: 35px;"></td>
                                         </tr>
                                          <tr >
-                                        <th>CUOTA PACTADA:</th>
+                                        <th>Cuota que desea pagar <span class='text-danger'>(No exceder la cuota máxima)</span>:</th>
                                         <td><input style="text-align: right" type="number" step="0.01"  class="form-control" id="txt_cuota_pactada" onkeyup="ObtenerAnalisis()"></td>
                                         </tr>
                                         </table>

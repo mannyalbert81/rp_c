@@ -1138,85 +1138,90 @@ class CreditosParticipesController extends ControladorBase
             $response['mensaje']    = "Existen cuotas en Mora";
         }
         
-        #ESTABLECEMOS valores de fecha inicio y fin
-        $fecha_inicio   = $fechasValidacion['desde'];
-        $fecha_fin      = $fechasValidacion['hasta'];        
-        
-        $col2   = " TO_CHAR(c.fecha_registro_contribucion, 'MM') AS mes, SUM(c.valor_personal_contribucion) AS aporte";
-        $tab2   = " core_contribucion c INNER JOIN core_participes p ON c.id_participes = p.id_participes";
-        $whe2   = "  p.id_estatus = 1 AND c.id_contribucion_tipo = 1  AND c.id_estatus = 1
-            AND  p.cedula_participes='" . $cedula_participes . "'
-            AND  c.fecha_registro_contribucion BETWEEN '" . $fecha_inicio . "' AND '" . $fecha_fin . "'";
-        $gru2   = " TO_CHAR(c.fecha_registro_contribucion, 'MM')";
-        $hav2   = " SUM( c.valor_personal_contribucion ) > 0";
-        
-        $rsAportes = $participes->getCondiciones_Grupo_Having($col2, $tab2, $whe2, $gru2, $hav2);
-        
-        if( sizeof($rsAportes) >= 0 )
+        #VALIDAMOS aportes
+        if ( !isset( $response['error'] ) )
         {
-            $num_aporte = sizeof($rsAportes);
+            #BUSCAMOS identificador del participe
+            $col3   = " id_participes";
+            $tab3   = " public.core_participes";
+            $whe3   = " id_estatus = 1 and id_estado_participes = 1 and cedula_participes = '$cedula_participes' ";
             
-            if( $num_aporte < 3 )
-            {
-                #BUSCAMOS identificador del participe
-                $col3   = " id_participes";
-                $tab3   = " public.core_participes";
-                $whe3   = " id_estatus = 1 and id_estado_participes = 1 and cedula_participes = '$cedula_participes' ";
-                
-                $rsParticipe = $participes->getCondicionesSinOrden($col3, $tab3, $whe3, "");
-                
-                #VALIDAMOS datos del participe
-                if(  !empty( $rsParticipe ) )
-                {
-                    $id_participe   = $rsParticipe[0]->id_participes;
-                    
-                    #BUSCAMOS si existe reafiliacion
-                    $reafiliacion = $this->validarReAfiliacion($id_participe);
-                    
-                    if( $reafiliacion )
-                    {
-                        #BUSCAMOS valores de contribucion tipo
-                        $col4   = " bb.nombre_tipo_aportacion, aa.id_contribucion_tipo, aa.valor_contribucion_tipo_participes, 
-                            aa.sueldo_liquido_contribucion_tipo_participes";
-                        $tab4   = " public.core_contribucion_tipo_participes aa
-                            INNER JOIN public.core_tipo_aportacion bb ON bb.id_tipo_aportacion = aa.id_tipo_aportacion";
-                        $whe4   = " id_contribucion_tipo = 1  AND id_participes = $id_participe ";
-                       
-                        $rsContribucion = $participes->getCondicionesSinOrden($col4, $tab4, $whe4, "");
+            $rsParticipe = $participes->getCondicionesSinOrden($col3, $tab3, $whe3, "");
                         
-                        if( !empty($rsContribucion) )
+            if(  !empty( $rsParticipe ) )
+            {
+                $id_participe   = $rsParticipe[0]->id_participes;
+                
+                #BUSCAR aportes de participe en formato ResultSet
+                $rsAportes  = $this->obtenerAportesParticipes($cedula_participes, $fechasValidacion);
+                $cantidadAportes    = sizeof($rsAportes);
+                
+                if( $cantidadAportes == 3 )
+                {
+                    $response['error']      = false;
+                    $response['mensaje']    = "";
+                }else
+                {
+                    if( $cantidadAportes > 0 && $cantidadAportes < 3 )
+                    {
+                        $response['error']      = true;
+                        $response['mensaje']    = "Participe no tiene número de aportes requeridos";
+                    }else
+                    {
+                        #BUSCAMOS si existe reafiliacion
+                        $reafiliacion = $this->validarReAfiliacion($id_participe);
+                        
+                        if( $reafiliacion )
                         {
-                            $tipo_aportacion    = $rsContribucion[0]->nombre_tipo_aportacion;
+                            #BUSCAMOS valores de contribucion tipo
+                            $col4   = " bb.nombre_tipo_aportacion, aa.id_contribucion_tipo, aa.valor_contribucion_tipo_participes,
+                            aa.sueldo_liquido_contribucion_tipo_participes";
+                            $tab4   = " public.core_contribucion_tipo_participes aa
+                            INNER JOIN public.core_tipo_aportacion bb ON bb.id_tipo_aportacion = aa.id_tipo_aportacion";
+                            $whe4   = " id_contribucion_tipo = 1  AND id_participes = $id_participe ";
                             
-                            if( $tipo_aportacion == 'PORCENTAJE' )
+                            $rsContribucion = $participes->getCondicionesSinOrden($col4, $tab4, $whe4, "");
+                            
+                            if( !empty($rsContribucion) )
                             {
-                                $rmu_participe  = $rsContribucion[0]->sueldo_liquido_contribucion_tipo_participes;
-                                $valor  = $rsContribucion[0]->valor_contribucion_tipo_participes;
-                                if( !empty($rmu_participe) && !empty($valor) )
-                                {
-                                    #OK
-                                    $response['error']      = false;
-                                    $response['mensaje']    = "";
-                                }else
-                                {
-                                    #ERROR --
-                                    $response['error']      = true;
-                                    $response['mensaje']    = "Participe no tiene establecido valores 'core_contribucion_tipo_participes'";
-                                }                                    
+                                $tipo_aportacion    = $rsContribucion[0]->nombre_tipo_aportacion;
                                 
-                            }elseif( $tipo_aportacion == 'VALOR' )
-                            {
-                                if( !empty($rmu_participe) && !empty($valor) )
+                                if( $tipo_aportacion == 'PORCENTAJE' )
                                 {
-                                    #OK
-                                    $response['error']      = false;
-                                    $response['mensaje']    = "";
+                                    $rmu_participe  = $rsContribucion[0]->sueldo_liquido_contribucion_tipo_participes;
+                                    $valor  = $rsContribucion[0]->valor_contribucion_tipo_participes;
+                                    if( !empty($rmu_participe) && !empty($valor) )
+                                    {
+                                        #OK
+                                        $response['error']      = false;
+                                        $response['mensaje']    = "";
+                                    }else
+                                    {
+                                        #ERROR --
+                                        $response['error']      = true;
+                                        $response['mensaje']    = "Participe no tiene establecido valores 'core_contribucion_tipo_participes'";
+                                    }
+                                    
+                                }elseif( $tipo_aportacion == 'VALOR' )
+                                {
+                                    if( !empty($rmu_participe) && !empty($valor) )
+                                    {
+                                        #OK
+                                        $response['error']      = false;
+                                        $response['mensaje']    = "";
+                                    }else
+                                    {
+                                        #ERROR --
+                                        $response['error']      = true;
+                                        $response['mensaje']    = "Partícipe no tiene establecido valores 'core_contribucion_tipo_participes'";
+                                    }
                                 }else
                                 {
-                                    #ERROR --
+                                    #ERROR --Partcipe no tiene establecido valor de aporte
                                     $response['error']      = true;
-                                    $response['mensaje']    = "Partícipe no tiene establecido valores 'core_contribucion_tipo_participes'";
-                                }  
+                                    $response['mensaje']    = "Partícipe no tiene establecido valores de aporte";
+                                }
+                                
                             }else
                             {
                                 #ERROR --Partcipe no tiene establecido valor de aporte
@@ -1226,39 +1231,22 @@ class CreditosParticipesController extends ControladorBase
                             
                         }else
                         {
-                            #ERROR --Partcipe no tiene establecido valor de aporte
+                            #ERROR --Participe no tiene Solicitud de reafiliación activa
                             $response['error']      = true;
-                            $response['mensaje']    = "Partícipe no tiene establecido valores de aporte";
+                            $response['mensaje']    = "Partícipe no tiene 'Solicitud de Reafiliación' activa";
                         }
                         
-                    }else
-                    {
-                        #ERROR --Participe no tiene Solicitud de reafiliación activa
-                        $response['error']      = true;
-                        $response['mensaje']    = "Partícipe no tiene 'Solicitud de Reafiliación' activa";
                     }
-                    
-                }else
-                {
-                    #ERROR --Partcipe no se encuentra Activo
-                    $response['error']      = true;
-                    $response['mensaje']    = "Partícipe no se encuentra Activo";
                 }
                 
             }else
             {
-                #OK --numero de aportes aceptados
-                $response['error']      = false;
-                $response['mensaje']    = "";
+                $response['error']      = true;
+                $response['mensaje']    = "Participe no se encuentra activo";
             }
             
-        }else
-        {
-            #ERROR --Partcipe no cuenta con numero de aportes necesarios
-            $response['error']      = true;
-            $response['mensaje']    = "Partícipe no cuenta con número de aportes necesarios";
         }
-                
+                        
         $salida = ob_get_contents();
         if( !empty( $salida ) || $response['error'] )
         {
@@ -1364,8 +1352,8 @@ class CreditosParticipesController extends ControladorBase
         $this->verReporte( "ReporteSimulacionCreditos", array(
             'datos_empresa'=> $datos_empresa,
             'dictionary'   => $dictionary
-        )
-            ) ;
+            )
+        );
         
     }
     
@@ -2149,6 +2137,7 @@ class CreditosParticipesController extends ControladorBase
         
         $saldo_credito = 0;
         $saldo_cta_individual = 0;
+        $fecha_hoy  = date('Y-m-d');
         
         $fechasValidacion = $this->getFechasUltimas3Cuotas();
         
@@ -2161,15 +2150,10 @@ class CreditosParticipesController extends ControladorBase
         #CONSULTA un objeto resulset para obtener aportes 
         $aportes = $this->obtenerAportesParticipes($cedula_garante, $fechasValidacion);
         $num_aporte = sizeof($aportes);
-                
-        // AQUI PONER ATENCION AL FINAL saldo_actual_creditos
-        $columnas = "COALESCE(SUM(saldo_actual_creditos),0) AS total";
-        $tablas = "core_creditos INNER JOIN core_participes
-            ON core_creditos.id_participes  = core_participes.id_participes";
-        $where = "core_participes.cedula_participes='" . $cedula_garante . "' AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
-        $saldo_actual_credito = $creditos->getCondicionesSinOrden($columnas, $tablas, $where, "");
-               
-        $saldo_credito = $saldo_actual_credito[0]->total;
+                        
+        #BUSCAR saldos de creditos -- return capital, seguro_desg, total
+        $rsSaldoCredito = $this->obtenerSaldosTotalCreditos($cedula_garante, $fecha_hoy);
+        $saldo_credito  = ( !empty($rsSaldoCredito) ) ? $rsSaldoCredito[0]->suma_total_out : 0.00;
         
         // variable para enviar a la vista
         $response = array();
@@ -2197,11 +2181,8 @@ class CreditosParticipesController extends ControladorBase
         $saldo_cta_individual = number_format((float) $saldo_cta_individual, 2, '.', '');
         $disponible = number_format((float) $disponible, 2, '.', '');
         
-        $columnas = "  core_participes.nombre_participes,
-                    core_participes.apellido_participes,
-                    core_participes.cedula_participes,
-                    core_participes.fecha_nacimiento_participes";
-        $tablas = "public.core_participes";
+        $columnas = " nombre_participes, apellido_participes, cedula_participes, fecha_nacimiento_participes";
+        $tablas   = " public.core_participes";
         $where = "core_participes.cedula_participes='" . $cedula_garante . "' AND core_participes.id_estado_participes=1";
         $id = "core_participes.id_participes";
         
@@ -2294,6 +2275,7 @@ class CreditosParticipesController extends ControladorBase
         if (! empty($salida)) {
             $response['estatus'] = "ERROR";
             $response['html'] = "<span>Error al buscar el participe </span>";
+            $response['salida'] = $salida;
         }
         
         echo json_encode($response);
@@ -2428,34 +2410,24 @@ class CreditosParticipesController extends ControladorBase
         ob_start();
         session_start();
         $cuotas = new EstadoModel();
-        $monto_credito = $_POST['monto_credito'];
-        $cedula_participes = $_POST['cedula_participe'];
-        $cedula_garante = $_POST['cedula_garante'];
-        $sueldo_partcipe = $_POST['sueldo_participe'];
-        $sueldo_garante = $_POST['sueldo_garante'];
-        $tipo_credito = $_POST['tipo_credito'];
+        $monto_credito      = $_POST['monto_credito'];
+        $cedula_participes  = $_POST['cedula_participe'];
+        $cedula_garante     = $_POST['cedula_garante'];
+        $sueldo_solicitante = $_POST['sueldo_participe'];
+        $sueldo_garante     = $_POST['sueldo_garante'];
+        $tipo_credito       = $_POST['tipo_credito'];
         
-        $columnas = "      core_participes.nombre_participes,
-                    core_participes.apellido_participes,
-                    core_participes.cedula_participes,
-                    core_participes.fecha_nacimiento_participes";
-        $tablas = "public.core_participes";
-        
-        $where = "core_participes.cedula_participes='" . $cedula_participes . "'";
-        
-        $id = "core_participes.id_participes";
+        $columnas = " nombre_participes, apellido_participes, cedula_participes, fecha_nacimiento_participes";
+        $tablas = "public.core_participes";        
+        $where = "cedula_participes='" . $cedula_participes . "'";        
+        $id = "id_participes";
         
         $infoParticipe = $cuotas->getCondiciones($columnas, $tablas, $where, $id);
         
-        $columnas = "      core_participes.nombre_participes,
-                    core_participes.apellido_participes,
-                    core_participes.cedula_participes,
-                    core_participes.fecha_nacimiento_participes";
-        $tablas = "public.core_participes";
-        
-        $where = "core_participes.cedula_participes='" . $cedula_garante . "' AND core_participes.id_estado_participes=1";
-        
-        $id = "core_participes.id_participes";
+        $columnas = " nombre_participes, apellido_participes, cedula_participes, fecha_nacimiento_participes";
+        $tablas = " public.core_participes";        
+        $where = " id_estado_participes = 1 AND cedula_participes ='" . $cedula_garante . "' ";        
+        $id = "id_participes";
         
         $infoGarante = $cuotas->getCondiciones($columnas, $tablas, $where, $id);
         
@@ -2468,84 +2440,86 @@ class CreditosParticipesController extends ControladorBase
         
         $diferencia_dias = $dias_75 - $dias_hasta;
         $diferencia_dias_garante = $dias_75 - $dias_hasta_garante;
-        
+                
         $diferencia_dias = $diferencia_dias / 30;
         $diferencia_dias_garante = $diferencia_dias_garante / 30;
-        
+                
         $diferencia_dias = floor($diferencia_dias * 1) / 1;
         $diferencia_dias_garante = floor($diferencia_dias_garante * 1) / 1;
-        if ($diferencia_dias_garante < $diferencia_dias)
-            $diferencia_dias = $diferencia_dias_garante;
-            
-            $columnas = "interes_tipo_creditos";
-            $tablas = "core_tipo_creditos";
-            $where = "codigo_tipo_creditos='" . $tipo_credito . "'";
-            
-            $resultSet = $cuotas->getCondicionesSinOrden($columnas, $tablas, $where, "");
-            $tasa_interes = $resultSet[0]->interes_tipo_creditos;
-            $tasa_interes = $tasa_interes / 100;
-            $interes_mensual = $tasa_interes / 12;
-            
-            $pago_garante = 1;
-            
-            //$sueldo_partcipe = $sueldo_partcipe / 2;  // dc2020-06-15 la capacidad de pago viene de la vista
-            $sueldo_garante = $sueldo_garante / 2;
-            
-            $columnas = "cuotas_rango_plazos_creditos";
-            $tablas = "public.core_plazos_creditos";
-            $where = $monto_credito . ">=minimo_rango_plazos_creditos AND " . $monto_credito . " <= maximo_rango_plazos_creditos";
-            $id = "core_plazos_creditos.id_plazos_creditos";
-            $resultSet = $cuotas->getCondiciones($columnas, $tablas, $where, $id);
-            $cuota = $resultSet[0]->cuotas_rango_plazos_creditos;
-            
-            $valor_cuota = ( $monto_credito * $interes_mensual ) / (1 - pow((1 + $interes_mensual), - $cuota));
-            $valor_cuota = round($valor_cuota, 2);
-            
-            if ( $valor_cuota > $sueldo_partcipe || $cuota > $diferencia_dias) {
                 
-                //! nota dc 2020/05/26 el valor minimo de monto debe ser 100
-                while( $valor_cuota > $sueldo_partcipe || $cuota > $diferencia_dias )  {
+        #VALIDAR si meses disponibles para credito de solicitante es mayor al de garante se toma cantidad de meses disponbles de garante
+        if( $diferencia_dias_garante < $diferencia_dias ) $diferencia_dias = $diferencia_dias_garante;
                     
-                    $monto_credito -= 10;
-                    $where = $monto_credito . " >= minimo_rango_plazos_creditos AND " . $monto_credito . " <= maximo_rango_plazos_creditos";
-                    $resultSet = $cuotas->getCondiciones($columnas, $tablas, $where, $id);
-                    // dc 2020/05/26 para validar que no llegue a cero numero minimo de plazo
-                    $cuota = ( empty( $resultSet[0]->cuotas_rango_plazos_creditos ) ) ? 3 : $resultSet[0]->cuotas_rango_plazos_creditos ;
-                    
-                    $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $cuota));
-                    $valor_cuota = round($valor_cuota, 2);
-                }
+        $columnas = "interes_tipo_creditos";
+        $tablas = "core_tipo_creditos";
+        $where = "codigo_tipo_creditos='" . $tipo_credito . "'";
+        
+        $resultSet = $cuotas->getCondicionesSinOrden($columnas, $tablas, $where, "");
+        $tasa_interes = $resultSet[0]->interes_tipo_creditos;
+        $tasa_interes = $tasa_interes / 100;
+        $interes_mensual = $tasa_interes / 12;
+        
+        $pago_garante = 1;
+        
+        //$sueldo_partcipe = $sueldo_partcipe / 2;  // dc2020-06-15 la capacidad de pago viene de la vista
+        $sueldo_garante = $sueldo_garante / 2;
+        
+        $columnas = "cuotas_rango_plazos_creditos";
+        $tablas = "public.core_plazos_creditos";
+        $where = $monto_credito . ">=minimo_rango_plazos_creditos AND " . $monto_credito . " <= maximo_rango_plazos_creditos";
+        $id = "core_plazos_creditos.id_plazos_creditos";
+        $resultSet = $cuotas->getCondiciones($columnas, $tablas, $where, $id);
+        $cuota = $resultSet[0]->cuotas_rango_plazos_creditos;
+        
+        $valor_cuota = ( $monto_credito * $interes_mensual ) / (1 - pow((1 + $interes_mensual), - $cuota));
+        $valor_cuota = round($valor_cuota, 2);
                 
+        #NOTA  var $diferencia_dias en este punto ya es representacion en meses 
+        
+        if ( $valor_cuota > $sueldo_solicitante || $cuota > $diferencia_dias) {
+            
+            //! nota dc 2020/05/26 el valor minimo de monto debe ser 100
+            while( $valor_cuota > $sueldo_solicitante || $cuota > $diferencia_dias )  {
+                              
+                $monto_credito -= 10;
+                $where = $monto_credito . " >= minimo_rango_plazos_creditos AND " . $monto_credito . " <= maximo_rango_plazos_creditos";
+                $resultSet = $cuotas->getCondiciones($columnas, $tablas, $where, $id);
+                // dc 2020/05/26 para validar que no llegue a cero numero minimo de plazo
+                $cuota = ( empty( $resultSet[0]->cuotas_rango_plazos_creditos ) ) ? 3 : $resultSet[0]->cuotas_rango_plazos_creditos ;
+                
+                $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $cuota));
+                $valor_cuota = round($valor_cuota, 2);
             }
             
-            if ($valor_cuota > $sueldo_garante)
-                $pago_garante = 0;
-                
-                $data = array(); // variable donde guarda las cuotas
-                
-                for( $cuota; $cuota >= 3; $cuota -= 3) {
-                    
-                    $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $cuota));
-                    $valor_cuota = round($valor_cuota, 2);
-                    
-                    if ($cuota <= $diferencia_dias && $valor_cuota <= $sueldo_partcipe)
-                        $data[] = array( 'plazo'=>$cuota, 'valor'=>$valor_cuota);
-                }
-                
-                $response = array();
-                $response['estatus'] = "OK";
-                $response['cuotas'] = $data;
-                $response['monto'] = $monto_credito;
-                $response['pago_garante'] = $pago_garante;
-                
-                $salida = ob_get_clean();
-                if (! empty($salida)) {
-                    $response['estatus'] = "ERROR";
-                    $response['buffer'] = error_get_last();
-                    $response['echo'] =$salida;
-                }
-                
-                echo json_encode($response);
+        }
+            
+        if( $valor_cuota > $sueldo_garante ) $pago_garante = 0;       
+                        
+        $data = array(); // variable donde guarda las cuotas
+        
+        for( $cuota; $cuota >= 3; $cuota -= 3) {
+            
+            $valor_cuota = ($monto_credito * $interes_mensual) / (1 - pow((1 + $interes_mensual), - $cuota));
+            $valor_cuota = round($valor_cuota, 2);
+            
+            if ($cuota <= $diferencia_dias && $valor_cuota <= $sueldo_solicitante)
+                $data[] = array( 'plazo'=>$cuota, 'valor'=>$valor_cuota);
+        }
+        
+        $response = array();
+        $response['estatus'] = "OK";
+        $response['cuotas'] = $data;
+        $response['monto'] = $monto_credito;
+        $response['pago_garante'] = $pago_garante;
+        
+        $salida = ob_get_clean();
+        if (! empty($salida)) {
+            $response['estatus'] = "ERROR";
+            $response['buffer'] = error_get_last();
+            $response['echo'] =$salida;
+        }
+        
+        echo json_encode($response);
     }
     
     // genera tablas de amortizacion
@@ -4035,6 +4009,7 @@ class CreditosParticipesController extends ControladorBase
         if( $con_garante )
         {
             $id_garante = $_POST['cedula_garante'];
+            $cedula_garante = $_POST['cedula_garante'];
         }
         
         $interes_consecion = 0;
@@ -4168,16 +4143,34 @@ class CreditosParticipesController extends ControladorBase
                 {
                     $columnas = "id_participes";
                     $tablas = "core_participes";
-                    $where = "cedula_participes='" . $id_garante . "'";
+                    $where = "cedula_participes='" . $cedula_garante . "'";
                     
                     $id_garante = $credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
                     $id_garante = $id_garante[0]->id_participes;
                     
-                    $query = "INSERT INTO core_creditos_garantias
-                       (id_creditos, id_participes, id_estado, usuario_usuarios)
-                       VALUES(" . $id_creditos . ", " . $id_garante . ", " . $id_estado . ", '" . $usuario . "')";
+                    $cta_individual_garante = $this->obtenerCuentaIndividual($cedula_garante);
+                    $saldo_creditos_garante = $this->obtenerSaldosTotalCreditos($cedula_garante, $fecha_pago );
+                    $saldo_creditos_garante = $saldo_creditos_garante[0]->suma_total_out;
+                    $disponible_garante     = $cta_individual_garante - $saldo_creditos_garante;
                     
-                    $credito->executeNonQuery($query);
+                    $params = array();
+                    $params['id_creditos']  = $id_creditos;
+                    $params['id_participes']= $id_garante;
+                    $params['id_estado']    = 1;
+                    $params['usuario_usuarios'] = $_SESSION['usuario_usuarios'] ?? 'null';
+                    $params['observacion']      = 'Ingreso Garante';
+                    $params['valor_credito']    = $monto_credito;
+                    $params['saldo_credito']    = $monto_credito;
+                    $params['porcentaje']   = $tasa_interes;
+                    $params['cuenta_individual']= $cta_individual_garante;
+                    $params['saldo_disponible'] = $disponible_garante;
+                    
+                    $respGarantias  = $this->ingresarRegistroGarantias($params);
+                    
+                    if( $respGarantias['error'] )
+                    {
+                        echo $respGarantias['mensaje'];
+                    }
                 }
                 
                 #INSERTAR se realiza insercion primera cuota
@@ -4334,6 +4327,7 @@ class CreditosParticipesController extends ControladorBase
         if ($con_garante)
         {
             $id_garante = $_POST['cedula_garante'];
+            $cedula_garante = $_POST['cedula_garante'];
         }
         
         $columnas = "interes_tipo_creditos";
@@ -4492,7 +4486,7 @@ class CreditosParticipesController extends ControladorBase
         $query = "UPDATE core_creditos SET monto_neto_entregado_creditos='" . $monto_neto . "' WHERE id_creditos=" . $id_creditos;
         $credito->executeNonQuery($query);
         
-        if ($con_garante == "true")
+        if( $con_garante == "true")
         {
             $columnas = "id_participes";
             $tablas = "core_participes";
@@ -4501,11 +4495,30 @@ class CreditosParticipesController extends ControladorBase
             $id_garante = $credito->getCondicionesSinOrden($columnas, $tablas, $where, "");
             $id_garante = $id_garante[0]->id_participes;
             
-            $query = "INSERT INTO core_creditos_garantias
-                   (id_creditos, id_participes, id_estado, usuario_usuarios)
-                   VALUES(" . $id_creditos . ", " . $id_garante . ", " . $id_estado . ", '" . $usuario . "')";
+            $cta_individual_garante = $this->obtenerCuentaIndividual($cedula_garante);
+            $saldo_creditos_garante = $this->obtenerSaldosTotalCreditos($cedula_garante, $fecha_pago ); 
+            $saldo_creditos_garante = $saldo_creditos_garante[0]->suma_total_out;
+            $disponible_garante     = $cta_individual_garante - $saldo_creditos_garante;
             
-            $credito->executeNonQuery($query);
+            $params = array();
+            $params['id_creditos']  = $id_creditos;
+            $params['id_participes']= $id_garante;
+            $params['id_estado']    = 1;
+            $params['usuario_usuarios'] = $_SESSION['usuario_usuarios'] ?? 'null';
+            $params['observacion']      = 'Ingreso Garante';
+            $params['valor_credito']    = $monto_credito;
+            $params['saldo_credito']    = $monto_credito;
+            $params['porcentaje']   = $tasa_interes;
+            $params['cuenta_individual']= $cta_individual_garante;
+            $params['saldo_disponible'] = $disponible_garante;
+            
+            $respGarantias  = $this->ingresarRegistroGarantias($params);
+            
+            if( $respGarantias['error'] )
+            {
+                echo $respGarantias['mensaje'];
+            }
+            
         }
         
         //buscar parametros para desglose de amortizacion
@@ -4528,7 +4541,7 @@ class CreditosParticipesController extends ControladorBase
                 $incendios = $res['seguro_incendios'];
             }
             
-            $total_valor = $amortizacion + $intereses + $desgravamen;
+            $total_valor = $amortizacion + $intereses + $desgravamen + $incendios;
             
             $function   = "cre_ins_core_tabla_amortizacion";
             $params     = " '1', '$id_creditos', '$fecha_pago', '$num_cuota', '$amortizacion', '$intereses', '$dividendo',
@@ -4560,6 +4573,7 @@ class CreditosParticipesController extends ControladorBase
             }
         }
         
+                
         if ($respuesta) {
             $actualizacion_solicitud = $this->ActualizarSolicitud($id_solicitud, $monto_credito, $cuota, $numero_credito);
             $plan_cuentas = new PlanCuentasModel();
@@ -5108,11 +5122,53 @@ VALUES( $id_creditos, $valor_retencion)";
     /** end dc 2020/09/28 **/
     
     /** dc 2020/09/28 **/
-    public function obtenerSaldosCreditos(string $codigo_tipo_creditos)
+    public function obtenerSaldosTotalCreditos(string $cedula, string $fecha)
     {
+        $creditos   = new CreditosModel();
         
+        $sqlFuncion = " SELECT suma_capital_out, suma_seguro_out, suma_total_out 
+            FROM cre_obtener_saldos_total_creditos_participe('$cedula','$fecha')";
+        
+        $resultado  = $creditos->enviaquery( $sqlFuncion );
+        
+        return $resultado ?? null;        
     }
     /** end dc 2020/09/28 **/
+    
+    /** end dc 2020/09/30 **/
+    /***
+     * @desc fn para ingresar garatias de los creditos
+     * @param array $params
+     * @return boolean[]|mixed[]|boolean[]|string[]
+     */
+    public function ingresarRegistroGarantias(array $params)
+    {
+        $creditos   = new CreditosModel();
+        
+        $usuario    = ( $params['usuario_usuarios'] == 'null' ) ? 'null' : "'".$params['usuario_usuarios']."'"; 
+        
+        $sqlInsertGarantias = "INSERT INTO public.core_creditos_garantias (
+            id_creditos, id_participes, id_estado, usuario_usuarios, id_estatus, fecha_creditos_garantias, 
+            razon_movimiento_creditos_garantias, fecha_servidor_creditos_garantias, valor_creditos_garantias, 
+            balance_creditos_garantias, porcentaje_creditos_garantias, cuenta_individual_creditos_garantias, 
+            balance_disponible_creditos_garantias
+            ) VALUES(".$params['id_creditos'].",".$params['id_participes'].",".$params['id_estado'].",".$usuario.",".
+            $params['id_estado'].", NOW()::TIMESTAMP, '".$params['observacion']."', NOW()::TIMESTAMP ,".
+            $params['valor_credito'].", ".$params['saldo_credito'].", ".$params['porcentaje'].", ".$params['cuenta_individual'].
+            ", ".$params['saldo_disponible']."  )";
+        
+        $creditos->executeNonQuery($sqlInsertGarantias);
+        
+        if( !empty(error_get_last()) )
+        {
+            return array('error'=>true,'mensaje'=>error_get_last()['message']);
+        }else
+        {
+            return array('error'=>false,'mensaje'=>"OK");
+        }
+        
+    }
+    /** end dc 2020/09/30 **/
                 
 }
 

@@ -55,7 +55,7 @@ class CargarSimulacionCreditosController extends ControladorBase{
         
         echo $html;
     }
-    
+    //steven 
     public function getTipoCredito1()
     {
         session_start();

@@ -2675,7 +2675,7 @@ WHERE id_cuentas_pagar_impuestos = $id_cuentas_pagar_impuestos";
 	
 	public function obtenerDigitoVerificador_ClaveAcceso(){
 	    
-	    $_strClaveAcceso = '300620200717917003760012001001000009191123456781';
+	    $_strClaveAcceso = '230920200717917003760012001001000009244123456781'; #7
 	    
 	    $_digitoVerificador = $this->getDigVerificador($_strClaveAcceso);
 	    

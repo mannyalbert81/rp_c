@@ -118,8 +118,7 @@ class TributarioGeneraAtsController extends ControladorBase{
 		$where = "tri_retenciones_detalle.id_tri_retenciones = tri_retenciones.id_tri_retenciones
 					  AND SUBSTRING ( tri_retenciones.infocompretencion_periodofiscal,1,2) = '$mesperiodofiscal'
 					  AND SUBSTRING ( tri_retenciones.infocompretencion_periodofiscal,4,4) = '$anioDiario'  
-					  GROUP BY tri_retenciones_detalle.impuesto_codigo, tri_retenciones_detalle.impuesto_codigoretencion
-					  ";
+					  GROUP BY tri_retenciones_detalle.impuesto_codigo, tri_retenciones_detalle.impuesto_codigoretencion";
 			
 		$id = "tri_retenciones_detalle.impuesto_codigo,tri_retenciones_detalle.impuesto_codigoretencion";
 		$rsHistorial = $Participes->getCondiciones($columnas, $tablas, $where, $id);

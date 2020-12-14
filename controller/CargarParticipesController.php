@@ -5437,9 +5437,9 @@ VALUES( $id_creditos, $valor_retencion)";
                 $html .= '<li>';
                 $html .= '<table style = "width:100%; border-collapse: collapse;" border="1">';
                 $html .= '<tbody>';
-                $html .= '<tr height = "25">';
-                $html .= '<td><a class="btn bg-olive" title="Pagaré" href="index.php?controller=TablaAmortizacion&action=ReportePagare&id_creditos=' . $resultCreditos[$i]->id_creditos . '" role="button" target="_blank"><i class="glyphicon glyphicon-list"></i></a></font></td>';
-                $html .= '</tr>';
+                //$html .= '<tr height = "25">';
+                //$html .= '<td><a class="btn bg-olive" title="Pagaré" href="index.php?controller=TablaAmortizacion&action=ReportePagare&id_creditos=' . $resultCreditos[$i]->id_creditos . '" role="button" target="_blank"><i class="glyphicon glyphicon-list"></i></a></font></td>';
+                //$html .= '</tr>';
                 $html .= '<tr height = "25">';
                 $html .= '<td><a class="btn bg-olive" title="Tabla Amortización" href="index.php?controller=TablaAmortizacion&action=ReporteTablaAmortizacion&id_creditos=' . $resultCreditos[$i]->id_creditos . '" role="button" target="_blank"><i class="glyphicon glyphicon-list-alt"></i></a></font></td>';
                 $html .= '</tr>';
@@ -5818,88 +5818,90 @@ VALUES( $id_creditos, $valor_retencion)";
             $response['mensaje']    = "Existen cuotas en Mora";
         }
         
-        #IMPORTAR funcion de clase simulacion
-        $fechas = $this->getFechasUltimas3Cuotas();
-        
-        #ESTABLECEMOS valores de fecha inicio y fin
-        $fecha_inicio   = $fechas['desde'];
-        $fecha_fin      = $fechas['hasta'];
-        
-        $col2   = " TO_CHAR(c.fecha_registro_contribucion, 'MM') AS mes, SUM(c.valor_personal_contribucion) AS aporte";
-        $tab2   = " core_contribucion c INNER JOIN core_participes p ON c.id_participes = p.id_participes";
-        $whe2   = "  p.id_estatus = 1 AND c.id_contribucion_tipo = 1  AND c.id_estatus = 1
-            AND  p.cedula_participes='" . $cedula_participes . "'
-            AND  c.fecha_registro_contribucion BETWEEN '" . $fecha_inicio . "' AND '" . $fecha_fin . "'";
-        $gru2   = " TO_CHAR(c.fecha_registro_contribucion, 'MM')";
-        $hav2   = " SUM( c.valor_personal_contribucion ) > 0";
-        
-        $rsAportes = $participes->getCondiciones_Grupo_Having($col2, $tab2, $whe2, $gru2, $hav2);
-        
-        if( sizeof($rsAportes) >= 0 )
+        #VALIDAMOS aportes
+        if ( !isset( $response['error'] ) )
         {
-            $num_aporte = sizeof($rsAportes);
+            #BUSCAMOS identificador del participe
+            $col3   = " id_participes";
+            $tab3   = " public.core_participes";
+            $whe3   = " id_estatus = 1 and id_estado_participes = 1 and cedula_participes = '$cedula_participes' ";
             
-            if( $num_aporte < 3 )
+            $rsParticipe = $participes->getCondicionesSinOrden($col3, $tab3, $whe3, "");
+            
+            if(  !empty( $rsParticipe ) )
             {
-                #BUSCAMOS identificador del participe
-                $col3   = " id_participes";
-                $tab3   = " public.core_participes";
-                $whe3   = " id_estatus = 1 and id_estado_participes = 1 and cedula_participes = '$cedula_participes' ";
+                $id_participe   = $rsParticipe[0]->id_participes;
                 
-                $rsParticipe = $participes->getCondicionesSinOrden($col3, $tab3, $whe3, "");
+                #BUSCAR aportes de participe en formato ResultSet
+                $rsAportes  = $this->obtenerAportesParticipes($cedula_participes, $fechasValidacion);
+                $cantidadAportes    = sizeof($rsAportes);
                 
-                #VALIDAMOS datos del participe
-                if(  !empty( $rsParticipe ) )
+                if( $cantidadAportes == 3 )
                 {
-                    $id_participe   = $rsParticipe[0]->id_participes;
-                    
-                    #BUSCAMOS si existe reafiliacion                    
-                    $reafiliacion = $this->validarReAfiliacion($id_participe);
-                    
-                    if( $reafiliacion )
+                    $response['error']      = false;
+                    $response['mensaje']    = "";
+                }else
+                {
+                    if( $cantidadAportes > 0 && $cantidadAportes < 3 )
                     {
-                        #BUSCAMOS valores de contribucion tipo
-                        $col4   = " bb.nombre_tipo_aportacion, aa.id_contribucion_tipo, aa.valor_contribucion_tipo_participes,
-                            aa.sueldo_liquido_contribucion_tipo_participes";
-                        $tab4   = " public.core_contribucion_tipo_participes aa
-                            INNER JOIN public.core_tipo_aportacion bb ON bb.id_tipo_aportacion = aa.id_tipo_aportacion";
-                        $whe4   = " id_contribucion_tipo = 1  AND id_participes = 10323 ";
+                        $response['error']      = true;
+                        $response['mensaje']    = "Participe no tiene número de aportes requeridos";
+                    }else
+                    {
+                        #BUSCAMOS si existe reafiliacion
+                        $reafiliacion = $this->validarReAfiliacion($id_participe);
                         
-                        $rsContribucion = $participes->getCondicionesSinOrden($col4, $tab4, $whe4, "");
-                        
-                        if( !empty($rsContribucion) )
+                        if( $reafiliacion )
                         {
-                            $tipo_aportacion    = $rsContribucion[0]->nombre_tipo_aportacion;
+                            #BUSCAMOS valores de contribucion tipo
+                            $col4   = " bb.nombre_tipo_aportacion, aa.id_contribucion_tipo, aa.valor_contribucion_tipo_participes,
+                            aa.sueldo_liquido_contribucion_tipo_participes";
+                            $tab4   = " public.core_contribucion_tipo_participes aa
+                            INNER JOIN public.core_tipo_aportacion bb ON bb.id_tipo_aportacion = aa.id_tipo_aportacion";
+                            $whe4   = " id_contribucion_tipo = 1  AND id_participes = $id_participe ";
                             
-                            if( $tipo_aportacion == 'PORCENTAJE' )
+                            $rsContribucion = $participes->getCondicionesSinOrden($col4, $tab4, $whe4, "");
+                            
+                            if( !empty($rsContribucion) )
                             {
-                                $rmu_participe  = $rsContribucion[0]->sueldo_liquido_contribucion_tipo_participes;
-                                $valor  = $rsContribucion[0]->valor_contribucion_tipo_participes;
-                                if( !empty($rmu_participe) && !empty($valor) )
+                                $tipo_aportacion    = $rsContribucion[0]->nombre_tipo_aportacion;
+                                
+                                if( $tipo_aportacion == 'PORCENTAJE' )
                                 {
-                                    #OK
-                                    $response['error']      = false;
-                                    $response['mensaje']    = "";
+                                    $rmu_participe  = $rsContribucion[0]->sueldo_liquido_contribucion_tipo_participes;
+                                    $valor  = $rsContribucion[0]->valor_contribucion_tipo_participes;
+                                    if( !empty($rmu_participe) && !empty($valor) )
+                                    {
+                                        #OK
+                                        $response['error']      = false;
+                                        $response['mensaje']    = "";
+                                    }else
+                                    {
+                                        #ERROR --
+                                        $response['error']      = true;
+                                        $response['mensaje']    = "Participe no tiene establecido valores 'core_contribucion_tipo_participes'";
+                                    }
+                                    
+                                }elseif( $tipo_aportacion == 'VALOR' )
+                                {
+                                    if( !empty($rmu_participe) && !empty($valor) )
+                                    {
+                                        #OK
+                                        $response['error']      = false;
+                                        $response['mensaje']    = "";
+                                    }else
+                                    {
+                                        #ERROR --
+                                        $response['error']      = true;
+                                        $response['mensaje']    = "Partícipe no tiene establecido valores 'core_contribucion_tipo_participes'";
+                                    }
                                 }else
                                 {
-                                    #ERROR --
+                                    #ERROR --Partcipe no tiene establecido valor de aporte
                                     $response['error']      = true;
-                                    $response['mensaje']    = "Participe no tiene establecido valores 'core_contribucion_tipo_participes'";
+                                    $response['mensaje']    = "Partícipe no tiene establecido valores de aporte";
                                 }
                                 
-                            }elseif( $tipo_aportacion == 'VALOR' )
-                            {
-                                if( !empty($rmu_participe) && !empty($valor) )
-                                {
-                                    #OK
-                                    $response['error']      = false;
-                                    $response['mensaje']    = "";
-                                }else
-                                {
-                                    #ERROR --
-                                    $response['error']      = true;
-                                    $response['mensaje']    = "Partícipe no tiene establecido valores 'core_contribucion_tipo_participes'";
-                                }
                             }else
                             {
                                 #ERROR --Partcipe no tiene establecido valor de aporte
@@ -5909,37 +5911,20 @@ VALUES( $id_creditos, $valor_retencion)";
                             
                         }else
                         {
-                            #ERROR --Partcipe no tiene establecido valor de aporte
+                            #ERROR --Participe no tiene Solicitud de reafiliación activa
                             $response['error']      = true;
-                            $response['mensaje']    = "Partícipe no tiene establecido valores de aporte";
+                            $response['mensaje']    = "Partícipe no tiene 'Solicitud de Reafiliación' activa";
                         }
                         
-                    }else
-                    {
-                        #ERROR --Participe no tiene Solicitud de reafiliación activa
-                        $response['error']      = true;
-                        $response['mensaje']    = "Partícipe no tiene 'Solicitud de Reafiliación' activa";
                     }
-                    
-                }else
-                {
-                    #ERROR --Partcipe no se encuentra Activo
-                    $response['error']      = true;
-                    $response['mensaje']    = "Partícipe no se encuentra Activo";
                 }
                 
             }else
             {
-                #OK --numero de aportes aceptados
-                $response['error']      = false;
-                $response['mensaje']    = "";
+                $response['error']      = true;
+                $response['mensaje']    = "Participe no se encuentra activo";
             }
             
-        }else
-        {
-            #ERROR --Partcipe no cuenta con numero de aportes necesarios
-            $response['error']      = true;
-            $response['mensaje']    = "Partícipe no cuenta con número de aportes necesarios";
         }
         
         $salida = ob_get_contents();
@@ -5957,6 +5942,31 @@ VALUES( $id_creditos, $valor_retencion)";
         }
         
     }
+    
+    /** dc 2020/09/28 **/
+    /***
+     * @desc AQUI OBTENGO TOTAL DE CUENTA INDIVIDUAL
+     * @param string $cedula
+     * @param array $fecha
+     * @return NULL|object[]
+     */
+    public function obtenerAportesParticipes(string $cedula, array $fecha)
+    {
+        $creditos   = new CreditosModel();
+        
+        // AQUI OBTENGO TOTAL DE CUENTA INDIVIDUAL
+        $col1   = " TO_CHAR(c.fecha_registro_contribucion, 'MM') AS mes, SUM(c.valor_personal_contribucion) AS aporte";
+        $tab1   = " core_contribucion c INNER JOIN core_participes p ON c.id_participes = p.id_participes";
+        $whe1   = " p.id_estatus = 1 AND c.id_contribucion_tipo = 1 AND c.id_estatus = 1
+            AND ( c.fecha_registro_contribucion BETWEEN '".$fecha['desde']."' AND '".$fecha['hasta']."')
+            AND p.cedula_participes = '$cedula' ";
+        $grupo  = " TO_CHAR(c.fecha_registro_contribucion, 'MM')";
+        $having = " SUM(c.valor_personal_contribucion) > 0";
+        $rsConsulta = $creditos->getCondiciones_Grupo_Having($col1, $tab1, $whe1, $grupo, $having);
+        
+        return $rsConsulta ?? null;
+    }
+    /** end dc 2020/09/28 **/
     
     public function imprimirSimulacionCredito()
     {

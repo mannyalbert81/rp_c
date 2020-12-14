@@ -376,6 +376,7 @@ $controladores=$_SESSION['controladores'];
                 <li style="<?php echo getcontrolador("RecepcionArchivosRecaudaciones",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Recepción Archivos</a></li>   
                 <li style="<?php echo getcontrolador("RecepcionArchivosDebitosBancarios",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosDebitosBancarios&action=index"><i class="fa fa-circle-o"></i> Debitos Bancarios</a></li>   
                 <li style="<?php echo getcontrolador("SolicitudAportes",$controladores) ?>"><a href="index.php?controller=SolicitudAportes&action=index"><i class="fa fa-circle-o"></i> Solicitud Aportes</a></li>             
+                <li style="<?php echo getcontrolador("PrincipalBusquedasRecaudaciones",$controladores) ?>"><a href="index.php?controller=PrincipalBusquedasRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Ingreso a Bancos</a></li>             
              
                 </ul>
             </li>

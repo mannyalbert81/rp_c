@@ -24,7 +24,7 @@ function init_controles(){
 		
 		
 		
-		/*$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { var element=$(this); if( element.attr("href") == "#pendientes" ){	dt_view1.dt_tabla_pendientes.ajax.reload(); }else if( element.attr("href") == "#procesados" ){ dt_view1.dt_tabla_procesados.ajax.reload(); }else if( element.attr("href") == "#negados" ){ dt_view1.dt_tabla_error.ajax.reload(); } });*/
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { var element=$(this); if( element.attr("href") == "#personales_dt" ){	dt_view1.dt_tabla_personales.ajax.reload(); }else if( element.attr("href") == "#patronales_dt" ){ dt_view1.dt_tabla_patronales.ajax.reload(); } });
 		
 	} catch (e) {
 		// TODO: handle exception

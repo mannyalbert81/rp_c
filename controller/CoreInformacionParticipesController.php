@@ -1,5 +1,6 @@
 <?php
 class CoreInformacionParticipesController extends ControladorBase{
+    
     public function index(){
         
         $participes = new CoreInformacionParticipesModel();
@@ -1148,10 +1149,7 @@ class CoreInformacionParticipesController extends ControladorBase{
         if( !isset( $_SESSION ) ){
             session_start();
         }
-        
-        
-       
-        
+                
         try {
             ob_start();
             
@@ -1165,13 +1163,17 @@ class CoreInformacionParticipesController extends ControladorBase{
             $_usuario_logueado = $_SESSION['usuario_usuarios'];
             
             $condicion_id_contribucion_tipo="";
-            $where_to="";
-            
-                        
+                    
             $id_participes =  (isset($_POST['id_participes'])&& $_POST['id_participes'] !=NULL)?$_POST['id_participes']:0;
             $id_contribucion_tipo  =  (isset($_POST['id_contribucion_tipo'])&& $_POST['id_contribucion_tipo'] !=NULL)?$_POST['id_contribucion_tipo']:0;
             
             //$id_entidad_patronal = $_POST['id_entidad_patronal'];
+            
+            if($id_contribucion_tipo<>0){
+                
+                $condicion_id_contribucion_tipo = " and c1.id_contribucion_tipo = '$id_contribucion_tipo'";
+                
+            }
             
             $columnas1 = " aa.anio,
                 (select sum(c1.valor_personal_contribucion) 
@@ -1237,7 +1239,7 @@ class CoreInformacionParticipesController extends ControladorBase{
                 	group by to_char(fecha_registro_contribucion,'YYYY')
                 	order by to_char(fecha_registro_contribucion,'YYYY')
                 	) aa";
-            $where1    = "1=1 ";
+            $where1    = " 1=1 ";
             
             /* PARA FILTROS DE CONSULTA */
             
@@ -1249,13 +1251,7 @@ class CoreInformacionParticipesController extends ControladorBase{
                 $where1 .= " ) ";
                 
             }*/
-            
-            if($id_contribucion_tipo<>0){
-                
-                $where1 = " and c1.id_contribucion_tipo = '$id_contribucion_tipo'";
-                
-            }
-            
+                        
             
             $rsCantidad    = $contribucion->getCantidad("*", $tablas1, $where1);
             $cantidadBusqueda = (int)$rsCantidad[0]->total;
@@ -1361,9 +1357,6 @@ class CoreInformacionParticipesController extends ControladorBase{
             session_start();
         }
         
-        
-        
-        
         try {
             ob_start();
             
@@ -1377,13 +1370,16 @@ class CoreInformacionParticipesController extends ControladorBase{
             $_usuario_logueado = $_SESSION['usuario_usuarios'];
             
             $condicion_id_contribucion_tipo="";
-            $where_to="";
-            
-            
+           
             $id_participes =  (isset($_POST['id_participes'])&& $_POST['id_participes'] !=NULL)?$_POST['id_participes']:0;
             $id_contribucion_tipo  =  (isset($_POST['id_contribucion_tipo'])&& $_POST['id_contribucion_tipo'] !=NULL)?$_POST['id_contribucion_tipo']:0;
             
             //$id_entidad_patronal = $_POST['id_entidad_patronal'];
+            if($id_contribucion_tipo<>0){
+                
+                $condicion_id_contribucion_tipo = " and c1.id_contribucion_tipo = '$id_contribucion_tipo'";
+                
+            }
             
             $columnas1 = "  aa.anio,
                 (select sum(c1.valor_patronal_contribucion)
@@ -1449,7 +1445,7 @@ class CoreInformacionParticipesController extends ControladorBase{
                 	group by to_char(fecha_registro_contribucion,'YYYY')
                 	order by to_char(fecha_registro_contribucion,'YYYY')
                 	) aa";
-            $where1    = "1=1 ";
+            $where1    = " 1=1 ";
             
             /* PARA FILTROS DE CONSULTA */
             
@@ -1462,11 +1458,7 @@ class CoreInformacionParticipesController extends ControladorBase{
              
              }*/
             
-            if($id_contribucion_tipo<>0){
-                
-                $where1 = " and c1.id_contribucion_tipo = '$id_contribucion_tipo'";
-                
-            }
+           
             
             
             $rsCantidad    = $contribucion->getCantidad("*", $tablas1, $where1);
@@ -1566,6 +1558,21 @@ class CoreInformacionParticipesController extends ControladorBase{
     }
     /** end dc 2020/06/30 **/
     
+    
+    public function getcontribucion_tipo(){
+        
+        $contribucion_tipo = null;
+        $contribucion_tipo = new ContribucionTipoModel();
+        
+        $query = "SELECT  id_contribucion_tipo, nombre_contribucion_tipo FROM public.core_contribucion_tipo WHERE 1=1 ORDER BY nombre_contribucion_tipo ";
+        
+        $resulset = $contribucion_tipo->enviaquery($query);
+        
+        if(!empty($resulset) && count($resulset)>0){
+            
+            echo json_encode(array('data'=>$resulset));            
+        }                
+    }
     
     
 }

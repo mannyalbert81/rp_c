@@ -1,107 +1,62 @@
 $(document).ready( function (){
 
-   load_personal_cta_individual(1);
-   load_patronal_cta_individual(1);
+   /*load_personal_cta_individual(1);*/
+   /*load_patronal_cta_individual(1);*/
    
    mostrar_aportes_personales_cta_indvidual();
    mostrar_aportes_patronales_cta_indvidual();
+   
+   init_controles();
+   
 });
-
-        	
-
-
-	   function load_personal_cta_individual(pagina){
-
-		   var id_participes=$("#id_participes").val();
-		   var id_contribucion_tipo= $("#id_contribucion_tipo").val();
-		  
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_personales_cta_individual").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_personales_cta_individual").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_personal_cta_individual&id_participes='+id_participes+'&id_contribucion_tipo='+id_contribucion_tipo, 
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#personales_registrados").html(x);
-	                 $("#load_personales_cta_individual").html("");
-	                 $("#tabla_personal_cta_individual").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#personales_registrados").html("Ocurrio un error al cargar la informacion de Aportes Personales..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
-	   function load_patronal_cta_individual(pagina){
-
-		   var id_participes=$("#id_participes").val();
-		   var id_contribucion_tipo= $("#id_contribucion_tipo").val();
-		  
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_patronal_cta_individual").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_patronal_cta_individual").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_patronal_cta_individual&id_participes='+id_participes+'&id_contribucion_tipo='+id_contribucion_tipo, 
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#patronal_registrados").html(x);
-	                 $("#load_patronal_cta_individual").html("");
-	                 $("#tabla_patronal_cta_individual").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#patronal_registrados").html("Ocurrio un error al cargar la informacion de Aportes Patronales..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
-
-
 
 
 function init_controles(){
 	try {
 		
-		 $("#nombre_carga_recaudaciones").fileinput({			
-		 	showPreview: false,
-	        showUpload: false,
-	        elErrorContainer: '#errorImagen',
-	        allowedFileExtensions: ["txt"],
-	        language: 'esp' 
-		 });
-		 
-		 /*$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { var element=$(this); if( element.attr("href") == "#pendientes" ){	dt_view1.dt_tabla_pendientes.ajax.reload(); }else if( element.attr("href") == "#procesados" ){ dt_view1.dt_tabla_procesados.ajax.reload(); }else if( element.attr("href") == "#negados" ){ dt_view1.dt_tabla_error.ajax.reload(); } });*/
+		$('#pnl_div_aportes_personales').on('change','#id_contribucion_tipo_personales',function(){
+			dt_view1.dt_tabla_personales.ajax.reload();			
+		});
+		
+		$('#pnl_div_aportes_patronales').on('change','#id_contribucion_tipo_patronales',function(){
+			dt_view1.dt_tabla_patronales.ajax.reload();			
+		});
+		
+		
+		
+		/*$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { var element=$(this); if( element.attr("href") == "#pendientes" ){	dt_view1.dt_tabla_pendientes.ajax.reload(); }else if( element.attr("href") == "#procesados" ){ dt_view1.dt_tabla_procesados.ajax.reload(); }else if( element.attr("href") == "#negados" ){ dt_view1.dt_tabla_error.ajax.reload(); } });*/
 		
 	} catch (e) {
 		// TODO: handle exception
 		console.log("ERROR AL IMPLEMENTAR PLUGIN DE FILEUPLOAD");
-	}
+	}	
+}
+
+var fn_listar_contribucion_tipo	= function(a){
 	
-	//iniciar eventos de cambio en select de entidad patronal
-	$("#id_entidad_patronal").on("change",function(){
-		cambio_entidad_patronal();
-	});
+	var elemento = $('#'+a);
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=CoreInformacionParticipes&action=getcontribucion_tipo",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		elemento.empty();
+		elemento.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			elemento.append("<option value= " +value.id_contribucion_tipo +" >" + value.nombre_contribucion_tipo  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		elemento.empty();
+	})
+	
 }
 
 var idioma_espanol = {
@@ -141,9 +96,16 @@ dt_view1.nombre_tabla_personales = 'tbl_personales';
 dt_view1.dt_tabla_patronales = null;
 dt_view1.nombre_tabla_patronales = 'tbl_patronales';
 
-dt_view1.params = function(){
+dt_view1.params_personales = function(){
 	return {id_participes: $("#id_participes").val(),
-		id_contribucion_tipo: $("#id_contribucion_tipo").val()};
+		id_contribucion_tipo: $('#id_contribucion_tipo_personales').length ? $('#id_contribucion_tipo_personales').val() : 0
+	};
+}
+
+dt_view1.params_patronales = function(){
+	return {id_participes: $("#id_participes").val(),
+		id_contribucion_tipo: $('#id_contribucion_tipo_patronales').length ? $('#id_contribucion_tipo_patronales').val() : 0
+	};
 }
 
 var mostrar_aportes_personales_cta_indvidual = function(){
@@ -158,7 +120,7 @@ var mostrar_aportes_personales_cta_indvidual = function(){
 	    'ajax': {
 	        'url':'index.php?controller=CoreInformacionParticipes&action=dtmostrar_aportes_personales_cta_indvidual',
 	        'data': function ( d ) {
-	            return $.extend( {}, d, dt_view1.params() );
+	            return $.extend( {}, d, dt_view1.params_personales() );
 	            },
             'dataSrc': function ( json ) {                
                 return json.data;
@@ -194,9 +156,18 @@ var mostrar_aportes_personales_cta_indvidual = function(){
             header: true,
             footer: true
         },
-        'language':idioma_espanol
+        'language':idioma_espanol,
+        dom: "<'row'<'col-sm-6'<'box-tools pull-right'B>>><'row'<'col-sm-6'l><'col-sm-6' <'tag_personales'> >><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'<'#colvis'>p>>",
+        buttons: [
+        	/*{ "extend": 'excelHtml5',  "titleAttr": 'Excel', "text":'<span class="fa fa-file-excel-o fa-2x fa-fw"></span>',"className": 'no-padding btn btn-default btn-sm' }*/
+        ],
 	 });	
 	
+	/* PARA DIBUJAR BUSCADOR DE TIPO SELECT */
+	$('.tag_personales').html("<select class =\"form-control pull-right col-xs-12 col-md-12\" id =\"id_contribucion_tipo_personales\"  ><option>aportacion personal</option><option>2</option></select>");
+	
+	/* AQUI PONER EL NOMBRE DE ELEMENTO GENERADO */
+	fn_listar_contribucion_tipo("id_contribucion_tipo_personales");
 } 
 
 
@@ -213,7 +184,7 @@ var mostrar_aportes_patronales_cta_indvidual = function(){
 	    'ajax': {
 	        'url':'index.php?controller=CoreInformacionParticipes&action=dtmostrar_aportes_patronales_cta_indvidual',
 	        'data': function ( d ) {
-	            return $.extend( {}, d, dt_view1.params() );
+	            return $.extend( {}, d, dt_view1.params_patronales() );
 	            },
             'dataSrc': function ( json ) {                
                 return json.data;
@@ -249,8 +220,18 @@ var mostrar_aportes_patronales_cta_indvidual = function(){
             header: true,
             footer: true
         },
-        'language':idioma_espanol
+        'language':idioma_espanol,
+        dom: "<'row'<'col-sm-6'<'box-tools pull-right'B>>><'row'<'col-sm-6'l><'col-sm-6' <'tag_patronales'> >><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'<'#colvis'>p>>",
+        buttons: [
+        	/*{ "extend": 'excelHtml5',  "titleAttr": 'Excel', "text":'<span class="fa fa-file-excel-o fa-2x fa-fw"></span>',"className": 'no-padding btn btn-default btn-sm' }*/
+        ],
 	 });	
+	
+	/* PARA DIBUJAR BUSCADOR DE TIPO SELECT */
+	$('.tag_patronales').html("<select class =\"form-control pull-right col-xs-12 col-md-12\" id =\"id_contribucion_tipo_patronales\"  ><option>aportacion personal</option><option>2</option></select>");
+	
+	/* AQUI PONER EL NOMBRE DE ELEMENTO GENERADO */
+	fn_listar_contribucion_tipo("id_contribucion_tipo_patronales");
 	
 } 
 

@@ -85,6 +85,9 @@
               </div>
             </div>
             <div class="box-body">
+            
+            <?php //echo count($resultRep); print_r($resultRep); ?>
+            
             <?php if ($resultRep !="" ) { foreach($resultRep as $resEdit) {?>
            
             <div class="row">
@@ -142,10 +145,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Tiempo de Aportación:</label>
+                    				<label for="input001" class="col-sm-4 control-label" >Tiempo de Aportación:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $tiempo2[0]?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input001" name="input001" value="<?php echo $tiempo2[0]?>" >
+                    				  <div id="mensaje_input001" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -164,10 +167,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >N° de Aportes:</label>
+                    				<label for="input002" class="col-sm-4 control-label" >N° de Aportes:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $aportes[0]?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input002" name="input002" value="<?php echo $aportes[0]?>" >
+                    				  <div id="mensaje_input002" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -176,10 +179,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Edad:</label>
+                    				<label for="input003" class="col-sm-4 control-label" >Edad:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $tiempo[0]?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input003" name="input003" value="<?php echo $tiempo[0]?>" >
+                    				  <div id="mensaje_input003" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -188,7 +191,7 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Acum.de Aport. Pers. :</label>
+                    				<label for="input004" class="col-sm-4 control-label" >Acum.de Aport. Pers. :</label>
                     				<div class="col-sm-8">
                     				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="total" name="total" value="<?php echo number_format($resEdit->total, 2, ",", "."); ?>" >
                     				  <div id="mensaje_total" class="errores"></div>
@@ -211,10 +214,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Años de Servicio:</label>
+                    				<label for="input005" class="col-sm-4 control-label" >Años de Servicio:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $tiempo2[0]?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input005" name="input005" value="<?php echo $tiempo2[0]?>" >
+                    				  <div id="mensaje_input005" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -223,10 +226,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Cuenta Individual:</label>
+                    				<label for="input006" class="col-sm-4 control-label" >Cuenta Individual:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo number_format($resEdit->totalaporte, 2, ",", "."); ?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input006" name="input006" value="<?php echo number_format($resEdit->totalaporte, 2, ",", "."); ?>" >
+                    				  <div id="mensaje_input006" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -235,10 +238,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Credito Activo:</label>
+                    				<label for="input007" class="col-sm-4 control-label" >Credito Activo:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input007" name="input007" value="-" >
+                    				  <div id="mensaje_input007" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -246,10 +249,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Estado:</label>
+                    				<label for="input008" class="col-sm-4 control-label" >Estado:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $resEdit->nombre_estado_participes; ?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input008" name="input008" value="<?php echo $resEdit->nombre_estado_participes; ?>" >
+                    				  <div id="mensaje_input008" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -263,10 +266,10 @@
       <div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Observaciones:</label>
+                    				<label for="input009" class="col-sm-4 control-label" >Observaciones:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="width:315px; height:50px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $resEdit->observacion_participes; ?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="width:315px; height:50px" readonly="readonly" class="form-control" id="input009" name="input009" value="<?php echo $resEdit->observacion_participes; ?>" >
+                    				  <div id="input009" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -285,74 +288,12 @@
       	</div>
     </section>
     		
-    <!-- seccion para el listado de roles -->
 
-
-     <section class="content">
-          <div class="box box-primary">
-            <div class="box-header with-border">
-              <h3 class="box-title">Aportaciones</h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                  <i class="fa fa-minus"></i></button>
-                
-              </div>
-            </div>
-            
-            <div class="box-body">
-
-           <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-              <li class="active"><a href="#personales" data-toggle="tab">Personales</a></li>
-              <li><a href="#patronales" data-toggle="tab">Patronales</a></li>
-            </ul>
-            
-            <div class="col-md-12 col-lg-12 col-xs-12">
-            <div class="tab-content">
-            <br>
-              <div class="tab-pane active" id="personales">
-                
-					<div class="pull-right" style="margin-right:15px;">
-					 					<select name="id_contribucion_tipo" id="id_contribucion_tipo"  onchange="load_personal_cta_individual(1);" class="form-control" >
-                                      <option value="0" selected="selected">--TODOS--</option>
-    									<?php  foreach($resContriTipo as $res) {?>
-    										<option value="<?php echo $res->id_contribucion_tipo; ?>" ><?php echo $res->nombre_contribucion_tipo; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-					</div>
-					<div id="load_personales_cta_individual" ></div>	
-					<div id="personales_registrados"></div>	
-                
-              </div>
-              
-              <div class="tab-pane" id="patronales">
-                
-                    <div class="pull-right" style="margin-right:15px;">
-					<select name="id_contribucion_tipo" id="id_contribucion_tipo"  onchange="load_patronal_cta_individual(1);" class="form-control" >
-                                      <option value="0" selected="selected">--TODOS--</option>
-    									<?php  foreach($resContriTipo as $res) {?>
-    										<option value="<?php echo $res->id_contribucion_tipo; ?>" ><?php echo $res->nombre_contribucion_tipo; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-					</div>
-					<div id="load_patronal_cta_individual" ></div>	
-					<div id="patronal_registrados"></div>	
-              </div>
-             </div>
-            </div>
-           </div>
-         
-            </div>
-            
-         
-            
-            </div>
-            </section>
             
           <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Registros</h3>
+              <h3 class="box-title">Aportaciones</h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                   <i class="fa fa-minus"></i></button>
@@ -464,7 +405,7 @@
    <?php include("view/modulos/links_js.php"); ?>
    <script src="view/Administracion/js/B17.js?0.12" ></script>
    
-   <script src="view/Core/js/ConsultaGeneral.js?2.1"></script> 
+   <script src="view/Core/js/ConsultaGeneral.js?2.15"></script> 
 
  
 

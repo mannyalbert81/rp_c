@@ -25,7 +25,8 @@ class ConectarService{
         if($this->driver=="pgsql" || $this->driver==null){
        
         	//$con = pg_connect("host=186.4.157.125 port=5432 dbname=web_capremci user=postgres password=Programadores2018");
-        	$con = pg_connect("host=186.4.157.125 port=5432 dbname=web_capremci_pruebas user=postgres password=Programadores2018");
+            $con = pg_connect("host=186.4.157.125 port=5432 dbname=web_capremci_pruebas user=postgres password=Programadores2018");
+        	//$con = pg_connect("host=186.4.157.125 port=5432 dbname=rp_capremci user=postgres password=Programadores2018");
         	if(!$con){
         		echo "No se puedo Conectar a la Base";
         	} else {
@@ -40,7 +41,8 @@ class ConectarService{
         if($this->driver=="pgsql" || $this->driver==null){
 
         	//$pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=web_capremci', 'postgres', 'Programadores2018' );
-        	$pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=web_capremci_pruebas', 'postgres', 'Programadores2018' );
+            $pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=web_capremci_pruebas', 'postgres', 'Programadores2018' );
+        	//$pdo = new PDO('pgsql:host=186.4.157.125;port=5432;dbname=rp_capremci', 'postgres', 'Programadores2018' );
             
             try 
             {

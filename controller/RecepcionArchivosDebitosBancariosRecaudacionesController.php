@@ -1,6 +1,5 @@
 <?php
-
-class RecepcionArchivosRecaudacionesController extends ControladorBase{
+class RecepcionArchivosDebitosBancariosRecaudacionesController extends ControladorBase{
     
     private $_nombre_formato="";
     private $_nombre_creditos_formato  = "DESCUENTOS CREDITOS";
@@ -24,7 +23,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
 		    return;
 		}
 		
-		$nombre_controladores = "RecepcionArchivosRecaudaciones";
+		$nombre_controladores = "RecepcionArchivosDebitosBancarios";
 		$id_rol= $_SESSION['id_rol'];
 		$resultPer = $carga_recaudaciones->getPermisosVer("controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 			
@@ -39,7 +38,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
 			
 	
 				
-		$this->view_Recaudaciones("RecepcionArchivosRecaudaciones",array(
+		$this->view_Recaudaciones("RecepcionArchivosDebitosBancariosRecaudaciones",array(
 		    "resultSet"=>""
 	
 		));
@@ -134,8 +133,6 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
 	            $html.='</thead>';
 	            $html.='<tbody>';
 	            
-	            
-	     
 	            
 	            $i=0;
 	            
@@ -509,7 +506,6 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
     {       
         
         $Contribucion      = new CoreContribucionModel();
-        $carga_recaudaciones = new CargaRecaudacionesModel();
         $recaudaciones      = new RecaudacionesModel();
         $respuesta         = array();
         $error             = "";
@@ -532,6 +528,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         $_nombre_archivo_guardar       = "";
         $_ruta_archivo_guardar         = "";
         //$_filas_archivo                = array();
+        $_comentario_carga_recaudaciones    = "";
         
         /**
          ****************************************************** validar las variables a procesar ****************************************************
@@ -545,6 +542,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $_usuario_usuarios  = $_SESSION['usuario_usuarios'];
             $_id_usuarios       = $_SESSION['id_usuarios'];
             $_arhivo_carga_datos   = $_FILES["nombre_carga_recaudaciones"];
+            $_comentario_carga_recaudaciones    = $_POST['comentario_carga_recaudaciones'];
             
             $error = error_get_last();
             if(!empty($error)){    throw new Exception("Variables no definidas"); }
@@ -584,8 +582,8 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $directorio = $this->crearPath($_anio_carga_recaudaciones, $_mes_carga_recaudaciones, "CARGAARCHIVOS");
             $_ruta_archivo_recaudaciones   = $directorio['ruta'];
             $nombre = $_arhivo_carga_datos['name'];
-            $_ruta_archivo_guardar = $_ruta_archivo_recaudaciones;
-            $_nombre_archivo_guardar = $nombre;
+            $_ruta_archivo_guardar      = $_ruta_archivo_recaudaciones;
+            $_nombre_archivo_guardar    = $nombre;
             $_nombre_archivo_guardar_descuentos = "";
             
             $colEntidad = " id_entidad_patronal, nombre_entidad_patronal";
@@ -742,8 +740,8 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $dataCabecera['observacion_descuentos_registrados']     = "";
             $dataCabecera['fecha_proceso_descuentos_registrados']   = $fecha_actual;
             $dataCabecera['fecha_contable_descuentos_registrados']  = $fecha_contable;
-            $dataCabecera['is_debito_bancario']     = 'f';
-            $dataCabecera['comentario_descuentos']  = '';
+            $dataCabecera['is_debito_bancario']     = 't';
+            $dataCabecera['comentario_descuentos']  = $_comentario_carga_recaudaciones;
                         
                         
             $auxDescuentos  = $this->InsertDescuentos( $tipoFormatoDescuentos, $dataCabecera, $dataFilasArchivo );
@@ -867,7 +865,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 $detalle['mora_descuentos']                     = "0.00";
                 $detalle['credito_pay_descuentos']              = "0";
                 $detalle['mes_desc_descuentos']                 = "null";
-                $detalle['valor_usuario_descuentos']            = "0.00";
+                $detalle['valor_usuario_descuentos']            = "null";
                 
                 $parametrosDetalle  = "'".join("','", $detalle)."'";
                 $parametrosDetalle  = str_replace("'null'","null",$parametrosDetalle);
@@ -952,7 +950,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         $col1  = " id_descuentos_formatos, nombre_descuentos_formatos ";
         $tab1  = " public.core_descuentos_formatos ";
         $whe1  = "entrada_descuentos_formatos = 't'
-        	    AND sp_descuentos_formatos = 'RP'";
+        	    AND sp_descuentos_formatos = 'RP_DEBITOS'";
         $id1   = " nombre_descuentos_formatos ";
         
         $rsConsulta1   = $recaudaciones->getCondiciones($col1, $tab1, $whe1, $id1);
@@ -1175,7 +1173,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
     }
     /** end dc 2020/06/30 **/
     
-    /** dc 2020/06/30 **/
+    /** dc 2020/12/15 **/
     public function dtMostrarDescuentosPendientes()
     {
         if( !isset( $_SESSION ) ){
@@ -1200,12 +1198,13 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 cc.parametro_uno_descuentos_formatos, dd.nombre_descuentos_registrados_archivo, aa.nombre_archivo_descuentos_registrados_cabeza,
                 TO_CHAR(aa.fecha_descuentos_registrados_cabeza,'YYYY-MM-DD') fecha_descuentos, aa.fecha_contable_descuentos_registrados_cabeza";
             $tablas1   = " core_descuentos_registrados_cabeza aa
-                INNER JOIN core_entidad_patronal bb on bb.id_entidad_patronal = aa.id_entidad_patronal
-                INNER JOIN core_descuentos_formatos cc on cc.id_descuentos_formatos = aa.id_descuentos_formatos
-                LEFT JOIN core_descuentos_registrados_archivo dd on dd.id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza";
+                INNER JOIN core_entidad_patronal bb ON bb.id_entidad_patronal = aa.id_entidad_patronal
+                INNER JOIN core_descuentos_formatos cc ON cc.id_descuentos_formatos = aa.id_descuentos_formatos
+                LEFT JOIN core_descuentos_registrados_archivo dd ON dd.id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza";
             $where1    = " cc.entrada_descuentos_formatos = true
                 AND aa.procesado_descuentos_registrados_cabeza = false
                 AND aa.erro_descuentos_registrados_cabeza = false
+                AND aa.es_debito_bancario_descuentos_registrados_cabeza = true
                 AND aa.id_entidad_patronal = $id_entidad_patronal ";
                         
             /* PARA FILTROS DE CONSULTA */
@@ -1326,9 +1325,9 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         
         echo json_encode($json_data);
     }
-    /** end dc 2020/06/30 **/
+    /** end dc 2020/12/15 **/
     
-    /** dc 2020/06/30 **/
+    /** dc 2020/12/15 **/
     public function dtMostrarDescuentosProcesados()
     {
         if( !isset( $_SESSION ) ){
@@ -1359,6 +1358,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $where1    = " cc.entrada_descuentos_formatos = true
                 AND aa.procesado_descuentos_registrados_cabeza = true
                 AND aa.erro_descuentos_registrados_cabeza = false
+                AND aa.es_debito_bancario_descuentos_registrados_cabeza = true
                 AND aa.id_entidad_patronal = $id_entidad_patronal ";
             
             /* PARA FILTROS DE CONSULTA */
@@ -1492,9 +1492,9 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         
         echo json_encode($json_data);
     }
-    /** end dc 2020/06/30 **/
+    /** end dc 2020/12/15 **/
     
-    /** dc 2020/06/30 **/
+    /** dc 2020/12/15 **/
     public function dtMostrarDescuentosError()
     {
         if( !isset( $_SESSION ) ){
@@ -1525,6 +1525,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $where1    = " cc.entrada_descuentos_formatos = true
                 AND aa.procesado_descuentos_registrados_cabeza = true
                 AND aa.erro_descuentos_registrados_cabeza = true
+                AND aa.es_debito_bancario_descuentos_registrados_cabeza = true
                 AND aa.id_entidad_patronal = $id_entidad_patronal ";
             
             /* PARA FILTROS DE CONSULTA */
@@ -1645,9 +1646,9 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         
         echo json_encode($json_data);
     }
-    /** end dc 2020/06/30 **/
+    /** end dc 2020/12/15 **/
     
-    /** dc 2020/06/30 **/
+    /** dc 2020/12/15 **/
     public function mostrarArchivoTxt()
     {
         $recaudaciones = new RecaudacionesModel();
@@ -1677,11 +1678,13 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 $ubicacionFile = $rsValidacion[0]->ubicacion_descuentos_registrados_archivo;
                 $nombreFile    = $rsValidacion[0]->nombre_descuentos_registrados_archivo;
                 
-                header("Content-disposition: attachment; filename=$nombreFile");
-                header("Content-type: MIME");
+                $archivoToOpen  = $ubicacionFile.'/'.$nombreFile.'.txt';
+                
+                header("Content-type: text/plain;");
+                header("Content-disposition: attachment; filename=$nombreFile.txt");
                 ob_clean();
                 flush();
-                readfile($ubicacionFile);
+                readfile( $archivoToOpen );
                 exit;
             }
                         
@@ -1704,7 +1707,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             exit();
         }
     }
-    /** end dc 2020/06/30 **/
+    /** end dc 2020/12/15 **/
     
     
     
@@ -1879,6 +1882,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
         
         echo json_encode($json_data);
     }
+    
     public function dtMostrarDetallesCreditosModal()
     {
         if( !isset( $_SESSION ) ){

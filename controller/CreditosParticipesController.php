@@ -4067,7 +4067,7 @@ class CreditosParticipesController extends ControladorBase
         $id_estado = $id_estado[0]->id_estado;
         
         //buscar parametros para desglose de amortizacion
-        $datosDesglosePagos = $this->obtenerTipoPagosAmortizacion($tipo_credito);
+        $datosDesglosePagos = $this->obtenerTipoPagosAmortizacion($tipo_credito, $id_creditos_productos);
         
         // cambiar numero de credito por numero solicitud
         $credito->beginTran();
@@ -4522,7 +4522,7 @@ class CreditosParticipesController extends ControladorBase
         }
         
         //buscar parametros para desglose de amortizacion
-        $datosDesglosePagos = $this->obtenerTipoPagosAmortizacion($tipo_credito);
+        $datosDesglosePagos = $this->obtenerTipoPagosAmortizacion($tipo_credito, $id_creditos_productos);
         
         foreach ($resultAmortizacion as $res)
         {
@@ -4900,7 +4900,7 @@ class CreditosParticipesController extends ControladorBase
     /** end dc 2020/07/03 **/
     
     /** dc 2020/08/01 **/
-    public function obtenerTipoPagosAmortizacion($tipo_credito){
+    public function obtenerTipoPagosAmortizacion($tipo_credito, $id_creditos_productos){
         
         $model = new ModeloModel();
         
@@ -4910,6 +4910,7 @@ class CreditosParticipesController extends ControladorBase
             INNER JOIN core_tipo_creditos bb ON bb.id_tipo_creditos = aa.id_tipo_creditos";
         $whe1   = " 1 = 1
             AND bb.codigo_tipo_creditos='$tipo_credito'
+            AND aa.id_creditos_productos = $id_creditos_productos
             AND aa.id_estado=114";
         $id1    = " aa.tipo_tabla_amortizacion_parametrizacion";
         
@@ -4932,56 +4933,55 @@ class CreditosParticipesController extends ControladorBase
             
             if( trim($tipo_pago, " " )  == 'CAPITAL' )
             {
-                //echo "ID es --> $id_pago aqui inserto el pago capital ",$datos['capital'],"<br>";
-                $query = "INSERT INTO core_tabla_amortizacion_pagos
-                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
-                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
-                    VALUES ($id_pago, $id_amortizacion, '" . $valores['capital'] . "',
-                            '" . $valores['capital'] . "', 1)";
-                $model->executeNonQuery($query);
+                //echo "ID es --> $id_pago aqui inserto el pago capital ",$datos['capital'],"<br>";                               
+                $function   = "cre_ins_tabla_amortizacion_pagos";
+                $params     = " $id_amortizacion, $id_pago, " . $valores['capital'] . ", " . $valores['capital'] . " ";
+                
+                $queryInsert    = $model->getconsultaPG($function, $params);
+                $model->llamarconsultaPG($queryInsert);
+                
             }
             
             if( trim( $tipo_pago, " " )  == 'INTERES' )
             {
                 //echo "ID es --> $id_pago aqui inserto el pago interes ",$datos['interes'],"<br>";
-                $query = "INSERT INTO core_tabla_amortizacion_pagos
-                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
-                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
-                    VALUES ($id_pago, $id_amortizacion, '" . $valores['interes'] . "',
-                            '" . $valores['interes'] . "', 1)";
-                $model->executeNonQuery($query);
+                $function   = "cre_ins_tabla_amortizacion_pagos";
+                $params     = " $id_amortizacion, $id_pago, " . $valores['interes'] . ", " . $valores['interes'] . " ";
+                
+                $queryInsert    = $model->getconsultaPG($function, $params);
+                $model->llamarconsultaPG($queryInsert);
             }
             
             if( trim( $tipo_pago, " " )  == 'MORA' )
             {
                 //echo "ID es --> $id_pago aqui inserto el pago mora ",$datos['mora'],"<br>";
-                $query = "INSERT INTO core_tabla_amortizacion_pagos
-                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
-                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
-                    VALUES ($id_pago, $id_amortizacion, '0.00','0.00', 1)";
-                $model->executeNonQuery($query);
+                $function   = "cre_ins_tabla_amortizacion_pagos";
+                $params     = " $id_amortizacion, $id_pago, '0.00' , '0.00' ";
+                
+                $queryInsert    = $model->getconsultaPG($function, $params);
+                $model->llamarconsultaPG($queryInsert);
             }
             
             if( trim( $tipo_pago, " " )  == 'SEGURO DE DESGRAVAMEN' )
             {
                 //echo "ID es --> $id_pago aqui inserto el pago desgavamen ",$datos['desgravamen'],"<br>";
-                $query = "INSERT INTO core_tabla_amortizacion_pagos
-                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
-                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
-                    VALUES ($id_pago, $id_amortizacion, '" . $valores['desgravamen'] . "','" . $valores['desgravamen'] . "', 1)";
-                $model->executeNonQuery($query);
+                $function   = "cre_ins_tabla_amortizacion_pagos";
+                $params     = " $id_amortizacion, $id_pago, " . $valores['desgravamen'] . ", " . $valores['desgravamen'] . " ";
+                
+                $queryInsert    = $model->getconsultaPG($function, $params);
+                $model->llamarconsultaPG($queryInsert);
             }
             
             if( trim( $tipo_pago, " " )  == 'SEGURO DE INCENDIOS' )
             {
                 //echo "ID es --> $id_pago aqui inserto el pago incendios ",$datos['incendios'],"<br>";
-                $query = "INSERT INTO core_tabla_amortizacion_pagos
-                    (id_tabla_amortizacion_parametrizacion, id_tabla_amortizacion, valor_pago_tabla_amortizacion_pagos,
-                    saldo_cuota_tabla_amortizacion_pagos, id_estatus)
-                    VALUES ($id_pago, $id_amortizacion, '" . $valores['incendios'] . "','" . $valores['incendios'] . "', 1)";
-                $model->executeNonQuery($query);
+                $function   = "cre_ins_tabla_amortizacion_pagos";
+                $params     = " $id_amortizacion, $id_pago, " . $valores['incendios'] . ", " . $valores['incendios'] . " ";
+                
+                $queryInsert    = $model->getconsultaPG($function, $params);
+                $model->llamarconsultaPG($queryInsert);
             }
-        }
+        } #end foreach
     }
     /** end dc 2020/08/03 **/
     

@@ -11,6 +11,14 @@
     <?php include("view/modulos/links_css.php"); ?>
     <link rel="stylesheet" href="view/bootstrap/otros/css/tablaFixed.css?1"/> 
     <link rel="stylesheet" href="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/css/fileinput.min.css">
+    
+    <style type="text/css">
+    
+    .letrasize11{
+        font-size: 11px;
+       }
+    
+    </style>
   			        
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini"  >

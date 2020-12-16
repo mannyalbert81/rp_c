@@ -1143,6 +1143,431 @@ class CoreInformacionParticipesController extends ControladorBase{
     }
     
     
+    public function dtmostrar_aportes_personales_cta_indvidual()
+    {
+        if( !isset( $_SESSION ) ){
+            session_start();
+        }
+        
+        
+       
+        
+        try {
+            ob_start();
+            
+            $contribucion = new CoreContribucionModel();
+            
+            //dato que viene de parte del plugin DataTable
+            $requestData = $_REQUEST;
+            $searchDataTable   = $requestData['search']['value'];
+            
+            /** buscar por el usuario que se encuentra logueado */
+            $_usuario_logueado = $_SESSION['usuario_usuarios'];
+            
+            $condicion_id_contribucion_tipo="";
+            $where_to="";
+            
+                        
+            $id_participes =  (isset($_POST['id_participes'])&& $_POST['id_participes'] !=NULL)?$_POST['id_participes']:0;
+            $id_contribucion_tipo  =  (isset($_POST['id_contribucion_tipo'])&& $_POST['id_contribucion_tipo'] !=NULL)?$_POST['id_contribucion_tipo']:0;
+            
+            //$id_entidad_patronal = $_POST['id_entidad_patronal'];
+            
+            $columnas1 = " aa.anio,
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 1 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"enero\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 2 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"febrero\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 3 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"marzo\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 4 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"abril\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 5 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"mayo\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 6 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"junio\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 7 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"julio\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 8 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"agosto\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 9 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"septiembre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 10 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"octubre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 11 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"noviembre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 12 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"diciembre\",
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"acumulado\",
+                
+                (select sum(c1.valor_personal_contribucion) 
+                	from core_contribucion c1 where id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"total\"
+";
+            $tablas1   = "(select to_char(fecha_registro_contribucion,'YYYY') as anio
+                	from core_contribucion
+                	where id_participes = '$id_participes'
+                	group by to_char(fecha_registro_contribucion,'YYYY')
+                	order by to_char(fecha_registro_contribucion,'YYYY')
+                	) aa";
+            $where1    = "1=1 ";
+            
+            /* PARA FILTROS DE CONSULTA */
+            
+            /*if( strlen( $searchDataTable ) > 0 )
+            {
+                $where1 .= " AND ( ";
+                $where1 .= " bb.nombre_entidad_patronal ILIKE '%$searchDataTable%' ";
+                $where1 .= " OR TO_CHAR(aa.year_descuentos_registrados_cabeza,'9999') ilike '%$searchDataTable%' ";
+                $where1 .= " ) ";
+                
+            }*/
+            
+            if($id_contribucion_tipo<>0){
+                
+                $where1 = " and c1.id_contribucion_tipo = '$id_contribucion_tipo'";
+                
+            }
+            
+            
+            $rsCantidad    = $contribucion->getCantidad("*", $tablas1, $where1);
+            $cantidadBusqueda = (int)$rsCantidad[0]->total;
+            
+            /**PARA ORDENAMIENTO Y  LIMITACIONES DE DATATABLE **/
+            
+            // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
+            $columns = array(
+                0 => '1',
+                1 => '1',
+                2 => '1',
+                3 => '1',
+                4 => '1',
+                5 => '1',
+                6 => '1',
+                7 => '1',
+                8 => '1',
+                9 => '1',
+                10 => '1',
+                11 => '1',
+                12 => '1',
+                13 => '1',
+                14 => '1'
+            );
+            
+            $orderby   = $columns[$requestData['order'][0]['column']];
+            $orderdir  = $requestData['order'][0]['dir'];
+            $orderdir  = strtoupper($orderdir);
+            /**PAGINACION QUE VIEN DESDE DATATABLE**/
+            $per_page  = $requestData['length'];
+            $offset    = $requestData['start'];
+            
+            //para validar que consulte todos
+            $per_page  = ( $per_page == "-1" ) ? "ALL" : $per_page;
+            
+            $limit = " ORDER BY $orderby $orderdir LIMIT   $per_page OFFSET '$offset'";
+            
+            $sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+            //$sql = "";
+            
+            $resultSet=$contribucion->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
+            
+            /** crear el array data que contiene columnas en plugins **/
+            $data = array();
+            $dataFila = array();
+          
+            foreach ( $resultSet as $res){
+                
+                $dataFila['anio'] = $res->anio;
+                $dataFila['enero'] = number_format($res->enero, 2, ",", ".");
+                $dataFila['febrero']  = number_format($res->febrero, 2, ",", ".");
+                $dataFila['marzo'] = number_format($res->marzo, 2, ",", ".");
+                $dataFila['abril']  = number_format($res->abril, 2, ",", ".");
+                $dataFila['mayo'] = number_format($res->mayo, 2, ",", ".");
+                $dataFila['junio']  = number_format($res->junio, 2, ",", ".");
+                $dataFila['julio'] = number_format($res->julio, 2, ",", ".");
+                $dataFila['agosto']  = number_format($res->agosto, 2, ",", ".");
+                $dataFila['septiembre'] = number_format($res->septiembre, 2, ",", ".");
+                $dataFila['octubre']  = number_format($res->octubre, 2, ",", ".");
+                $dataFila['noviembre'] = number_format($res->noviembre, 2, ",", ".");
+                $dataFila['diciembre']  = number_format($res->diciembre, 2, ",", ".");
+                $dataFila['acumulado']  = number_format($res->acumulado, 2, ",", ".");
+                $dataFila['total']  = number_format($res->total, 2, ",", ".");
+                
+                $data[] = $dataFila;
+            }
+            
+            $salida = ob_get_clean();
+            
+            if( !empty($salida) )
+                throw new Exception($salida);
+                
+                $json_data = array(
+                    "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                    "recordsTotal" => intval($cantidadBusqueda),  // total number of records
+                    "recordsFiltered" => intval($cantidadBusqueda), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                    "data" => $data,   // total data array
+                    "sql" => $sql
+                );
+                
+        } catch (Exception $e) {
+            
+            $json_data = array(
+                "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                "recordsTotal" => intval("0"),  // total number of records
+                "recordsFiltered" => intval("0"), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                "data" => array(),   // total data array
+                "sql" => $sql,
+                "buffer" => error_get_last(),
+                "ERRORDATATABLE" => $e->getMessage()
+            );
+        }
+        
+        
+        echo json_encode($json_data);
+    }
+    /** end dc 2020/06/30 **/
+    
+    
+    public function dtmostrar_aportes_patronales_cta_indvidual()
+    {
+        if( !isset( $_SESSION ) ){
+            session_start();
+        }
+        
+        
+        
+        
+        try {
+            ob_start();
+            
+            $contribucion = new CoreContribucionModel();
+            
+            //dato que viene de parte del plugin DataTable
+            $requestData = $_REQUEST;
+            $searchDataTable   = $requestData['search']['value'];
+            
+            /** buscar por el usuario que se encuentra logueado */
+            $_usuario_logueado = $_SESSION['usuario_usuarios'];
+            
+            $condicion_id_contribucion_tipo="";
+            $where_to="";
+            
+            
+            $id_participes =  (isset($_POST['id_participes'])&& $_POST['id_participes'] !=NULL)?$_POST['id_participes']:0;
+            $id_contribucion_tipo  =  (isset($_POST['id_contribucion_tipo'])&& $_POST['id_contribucion_tipo'] !=NULL)?$_POST['id_contribucion_tipo']:0;
+            
+            //$id_entidad_patronal = $_POST['id_entidad_patronal'];
+            
+            $columnas1 = "  aa.anio,
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 1 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"enero\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 2 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"febrero\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 3 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"marzo\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 4 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"abril\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 5 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"mayo\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 6 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"junio\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 7 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"julio\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 8 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"agosto\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 9 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"septiembre\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 10 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"octubre\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 11 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"noviembre\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	and extract(month from c1.fecha_registro_contribucion) = 12 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"diciembre\",
+                (select sum(c1.valor_patronal_contribucion)
+                	from core_contribucion c1 where to_char(c1.fecha_registro_contribucion,'YYYY') = aa.anio
+                	 and id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"acumulado\",
+                
+                (select sum(c1.valor_patronal_contribucion) 
+                	from core_contribucion c1 where id_participes = '$id_participes' $condicion_id_contribucion_tipo and id_estatus=1 limit 1
+                ) as \"total\"
+";
+            $tablas1   = "(select to_char(fecha_registro_contribucion,'YYYY') as anio
+                	from core_contribucion
+                	where id_participes = '$id_participes'
+                	group by to_char(fecha_registro_contribucion,'YYYY')
+                	order by to_char(fecha_registro_contribucion,'YYYY')
+                	) aa";
+            $where1    = "1=1 ";
+            
+            /* PARA FILTROS DE CONSULTA */
+            
+            /*if( strlen( $searchDataTable ) > 0 )
+             {
+             $where1 .= " AND ( ";
+             $where1 .= " bb.nombre_entidad_patronal ILIKE '%$searchDataTable%' ";
+             $where1 .= " OR TO_CHAR(aa.year_descuentos_registrados_cabeza,'9999') ilike '%$searchDataTable%' ";
+             $where1 .= " ) ";
+             
+             }*/
+            
+            if($id_contribucion_tipo<>0){
+                
+                $where1 = " and c1.id_contribucion_tipo = '$id_contribucion_tipo'";
+                
+            }
+            
+            
+            $rsCantidad    = $contribucion->getCantidad("*", $tablas1, $where1);
+            $cantidadBusqueda = (int)$rsCantidad[0]->total;
+            
+            /**PARA ORDENAMIENTO Y  LIMITACIONES DE DATATABLE **/
+            
+            // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
+            $columns = array(
+                0 => '1',
+                1 => '1',
+                2 => '1',
+                3 => '1',
+                4 => '1',
+                5 => '1',
+                6 => '1',
+                7 => '1',
+                8 => '1',
+                9 => '1',
+                10 => '1',
+                11 => '1',
+                12 => '1',
+                13 => '1',
+                14 => '1'
+            );
+            
+            $orderby   = $columns[$requestData['order'][0]['column']];
+            $orderdir  = $requestData['order'][0]['dir'];
+            $orderdir  = strtoupper($orderdir);
+            /**PAGINACION QUE VIEN DESDE DATATABLE**/
+            $per_page  = $requestData['length'];
+            $offset    = $requestData['start'];
+            
+            //para validar que consulte todos
+            $per_page  = ( $per_page == "-1" ) ? "ALL" : $per_page;
+            
+            $limit = " ORDER BY $orderby $orderdir LIMIT   $per_page OFFSET '$offset'";
+            
+            $sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+            //$sql = "";
+            
+            $resultSet=$contribucion->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
+            
+            /** crear el array data que contiene columnas en plugins **/
+            $data = array();
+            $dataFila = array();
+            
+            foreach ( $resultSet as $res){
+                
+                $dataFila['anio'] = $res->anio;
+                $dataFila['enero'] = $res->enero;
+                $dataFila['febrero']  = $res->febrero;
+                $dataFila['marzo'] = $res->marzo;
+                $dataFila['abril']  = $res->abril;
+                $dataFila['mayo'] = $res->mayo;
+                $dataFila['junio']  = $res->junio;
+                $dataFila['julio'] = $res->julio;
+                $dataFila['agosto']  = $res->agosto;
+                $dataFila['septiembre'] = $res->septiembre;
+                $dataFila['octubre']  = $res->octubre;
+                $dataFila['noviembre'] = $res->noviembre;
+                $dataFila['diciembre']  = $res->diciembre;
+                $dataFila['acumulado']  = $res->acumulado;
+                $dataFila['total']  = $res->total;
+                
+                $data[] = $dataFila;
+            }
+            
+            $salida = ob_get_clean();
+            
+            if( !empty($salida) )
+                throw new Exception($salida);
+                
+                $json_data = array(
+                    "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                    "recordsTotal" => intval($cantidadBusqueda),  // total number of records
+                    "recordsFiltered" => intval($cantidadBusqueda), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                    "data" => $data,   // total data array
+                    "sql" => $sql
+                );
+                
+        } catch (Exception $e) {
+            
+            $json_data = array(
+                "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+                "recordsTotal" => intval("0"),  // total number of records
+                "recordsFiltered" => intval("0"), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                "data" => array(),   // total data array
+                "sql" => $sql,
+                "buffer" => error_get_last(),
+                "ERRORDATATABLE" => $e->getMessage()
+            );
+        }
+        
+        
+        echo json_encode($json_data);
+    }
+    /** end dc 2020/06/30 **/
+    
+    
+    
 }
 
 ?>

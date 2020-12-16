@@ -2,47 +2,43 @@
 <html lang="en">
   <head>
   
+  	<title>Capremci</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+   	<?php include("view/modulos/links_css.php"); ?>
+   	<link rel="stylesheet" href="view/bootstrap/otros/css/tablaFixed.css?1"/> 
+    
     <style type="text/css">
-    
-    
 
-#ico{ list-style-image:url(ico.png);}
-#ico a{ font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px; text-decoration:none; color:#047;}
-#ico a:hover{text-decoration:underline; color:#C00;}
+        #ico{ list-style-image:url(ico.png);}
+        #ico a{ font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px; text-decoration:none; color:#047;}
+        #ico a:hover{text-decoration:underline; color:#C00;}
 
-    .scrollable-menu {
-    height: auto;
-    max-height: 200px;
-    overflow-x: hidden;
-}
+        .scrollable-menu {
+            height: auto;
+            max-height: 200px;
+            overflow-x: hidden;
+        }
 
-	ul{
-        list-style-type:none;
-      }
-  li{
-    list-style-type:none;
-    }
-    td.fila {
-
-    width: 100px;
-
-}
-    
-    
+	    ul{
+            list-style-type:none;
+        }
+        li{
+            list-style-type:none;
+        }
+        td.fila {
+            width: 100px;
+        }
+        .letrasize11{
+        font-size: 11px;
+       }    
+       
+       
     </style>
     
     
-    <title>Capremci</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-   <?php include("view/modulos/links_css.php"); ?>
-
-
-   
-   
-   
 </head>
 
   <body class="hold-transition skin-blue fixed sidebar-mini">   
@@ -347,8 +343,116 @@
            </div>
          
             </div>
+            
+         
+            
             </div>
             </section>
+            
+          <section class="content">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Registros</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i class="fa fa-minus"></i></button>
+                
+              </div>
+            </div>
+            
+            <div class="box-body">
+
+           <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#personales_dt" data-toggle="tab">Personales</a></li>
+              <li ><a href="#patronales_dt" data-toggle="tab">Patronales</a></li> 
+            </ul>
+            
+            <div class="col-md-12 col-lg-12 col-xs-12">
+            <div class="tab-content">
+            <br>
+ 			 <div class="tab-pane active" id="personales_dt">
+                              	
+              		<div id="pnl_div_aportes_personales" class="letrasize11">
+                		<table id="tbl_personales" class="table table-striped table-bordered" > <!--   -->
+                        	<thead >
+                        	    <tr class="danger" >
+                        	    	<th >A&ntilde;o</th>
+                        			<th >Enero</th>
+                        			<th >Febrero</th>
+                        			<th >marzo</th>
+                        			<th >Abril</th>
+                        			<th >Mayo</th>
+                        			<th >Junio</th>
+                        			<th >Julio</th>
+                        			<th >Agosto</th>
+                        			<th >Septiembre</th>   
+                        			<th >Octubre</th>
+                        			<th >Noviembre</th>
+                        			<th >Diciembre</th>    
+                        			<th >Acumulado</th>                  			
+                        		</tr>                        		
+                        	</thead>        
+                        	<tfoot>
+                        		<tr>
+                        			<td colspan="14"></td> 
+                    			</tr>
+                			</tfoot>
+                        </table>            	
+                	</div>
+          		
+            	
+          		
+		       
+              </div>
+              
+              <div class="tab-pane" id="patronales_dt">
+              
+              	<div class="box-body no-padding">
+          		
+              		<div id="pnl_div_aportes_patronales" class="letrasize11">
+                		<table id="tbl_patronales" class="table table-striped table-bordered" > <!--   -->
+                        	<thead >
+                        	    <tr class="danger" >
+                        	    	<th >A&ntilde;o</th>
+                        			<th >Enero</th>
+                        			<th >Febrero</th>
+                        			<th >marzo</th>
+                        			<th >Abril</th>
+                        			<th >Mayo</th>
+                        			<th >Junio</th>
+                        			<th >Julio</th>
+                        			<th >Agosto</th>
+                        			<th >Septiembre</th>   
+                        			<th >Octubre</th>
+                        			<th >Noviembre</th>
+                        			<th >Diciembre</th>    
+                        			<th >Acumulado</th>                  			
+                        		</tr>
+                        	</thead>        
+                        	<tfoot>
+                        		<tr>
+                        			<td colspan="10"></td>
+                    			</tr>
+                			</tfoot>
+                        </table>            	
+                	</div>          		
+            	
+          		</div>
+                
+        			
+              </div>
+                            
+            
+              
+             </div>
+            </div>
+           </div>
+         
+            </div>
+            </div>
+            </section>
+            
             
 
  </div>
@@ -360,86 +464,8 @@
    <?php include("view/modulos/links_js.php"); ?>
    <script src="view/Administracion/js/B17.js?0.12" ></script>
    
-   	<script type="text/javascript">
+   <script src="view/Core/js/ConsultaGeneral.js?2.1"></script> 
 
-        	   $(document).ready( function (){
-
-        		   load_personal_cta_individual(1);
-        		   load_patronal_cta_individual(1);
-        		   
-        		   
-	   			});
-
-        	
-
-
-	   function load_personal_cta_individual(pagina){
-
-		   var id_participes=$("#id_participes").val();
-		   var id_contribucion_tipo= $("#id_contribucion_tipo").val();
-		  
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_personales_cta_individual").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_personales_cta_individual").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_personal_cta_individual&id_participes='+id_participes+'&id_contribucion_tipo='+id_contribucion_tipo, 
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#personales_registrados").html(x);
-	                 $("#load_personales_cta_individual").html("");
-	                 $("#tabla_personal_cta_individual").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#personales_registrados").html("Ocurrio un error al cargar la informacion de Aportes Personales..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
-	   function load_patronal_cta_individual(pagina){
-
-		   var id_participes=$("#id_participes").val();
-		   var id_contribucion_tipo= $("#id_contribucion_tipo").val();
-		  
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_patronal_cta_individual").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_patronal_cta_individual").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_patronal_cta_individual&id_participes='+id_participes+'&id_contribucion_tipo='+id_contribucion_tipo, 
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#patronal_registrados").html(x);
-	                 $("#load_patronal_cta_individual").html("");
-	                 $("#tabla_patronal_cta_individual").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#patronal_registrados").html("Ocurrio un error al cargar la informacion de Aportes Patronales..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-	
- </script>
  
 
    

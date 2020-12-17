@@ -1559,6 +1559,11 @@ class CoreInformacionParticipesController extends ControladorBase{
     /** end dc 2020/06/30 **/
     
     
+    /***
+     * @author dc 
+     * @version 1
+     * @desc 2020-12-16
+     */
     public function getcontribucion_tipo(){
         
         $contribucion_tipo = null;
@@ -1572,6 +1577,17 @@ class CoreInformacionParticipesController extends ControladorBase{
             
             echo json_encode(array('data'=>$resulset));            
         }                
+    }
+        
+    public function verImagen(){
+        
+        $path = 'view/images/logo.png';
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        
+        echo $base64;
+        
     }
     
     

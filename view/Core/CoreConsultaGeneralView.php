@@ -405,7 +405,7 @@
    <?php include("view/modulos/links_js.php"); ?>
    <script src="view/Administracion/js/B17.js?0.12" ></script>
    
-   <script src="view/Core/js/ConsultaGeneral.js?2.15"></script> 
+   <script src="view/Core/js/ConsultaGeneral.js?2.32"></script> 
 
  
 

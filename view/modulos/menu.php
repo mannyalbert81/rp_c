@@ -371,10 +371,11 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
               	<li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=RecaudacionGeneracionArchivo&action=index"><i class="fa fa-circle-o"></i> Generacion Archivo</a></li>
+
                <li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=Recaudacion&action=index"><i class="fa fa-circle-o"></i> Arc. Entidad Patronal</a></li>                
-                <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Carga Recaudaciones</a></li>
+
                 <li style="<?php echo getcontrolador("RecepcionArchivosRecaudaciones",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Recepción Archivos</a></li>   
-                <li style="<?php echo getcontrolador("RecepcionArchivosDebitosBancarios",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosDebitosBancarios&action=index"><i class="fa fa-circle-o"></i> Debitos Bancarios</a></li>   
+                <li style="<?php echo getcontrolador("RecepcionArchivosDebitosBancarios",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosDebitosBancariosRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Recepción Debitos Bancarios</a></li>   
                 <li style="<?php echo getcontrolador("SolicitudAportes",$controladores) ?>"><a href="index.php?controller=SolicitudAportes&action=index"><i class="fa fa-circle-o"></i> Solicitud Aportes</a></li>             
                 <li style="<?php echo getcontrolador("PrincipalBusquedasRecaudaciones",$controladores) ?>"><a href="index.php?controller=PrincipalBusquedasRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Ingreso a Bancos</a></li>             
              
@@ -401,7 +402,7 @@ $controladores=$_SESSION['controladores'];
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
-          <ul class="treeview-menu">
+         <ul class="treeview-menu">
             </ul>
         </li>
        </ul>

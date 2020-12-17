@@ -80,6 +80,9 @@
                 </div>
             </div>
             </section>
+            
+            
+      
     
      
     
@@ -97,51 +100,6 @@
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     
 
-    
-	<script type="text/javascript">
-     
-        	   $(document).ready( function (){
-        		   
-        		   load_informacionparticipes(1);
-        		   
-        		   
-	   			});
-
-        	
-
-
-	   function load_informacionparticipes(pagina){
-
-		   var search=$("#search_informacionparticipes").val();
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_informacionparticipes").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_informacionparticipes").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_informacion_participes&search='+search,
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#participes_registrados_detalle").html(x);
-	                 $("#load_informacionparticipes").html("");
-	                 $("#tabla_informacionparticipes").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#participes_registrados_detalle").html("Ocurrio un error al cargar la informacion de Detalle Participes..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
- </script>
 	
 	<script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
 	  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -150,7 +108,7 @@
       <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     
-    
+    <script src="view/Core/js/CargaInformacionParticipes.js?1.2"></script> 
     
     
     

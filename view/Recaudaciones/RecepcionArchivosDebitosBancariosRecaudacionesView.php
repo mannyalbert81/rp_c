@@ -11,14 +11,6 @@
     <?php include("view/modulos/links_css.php"); ?>
     <link rel="stylesheet" href="view/bootstrap/otros/css/tablaFixed.css?1"/> 
     <link rel="stylesheet" href="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/css/fileinput.min.css">
-    
-    <style type="text/css">
-    
-    .letrasize11{
-        font-size: 11px;
-       }
-    
-    </style>
   			        
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini"  >
@@ -63,11 +55,11 @@
     <section class="content">
      <div class="box box-primary">
      <div class="box-header">
-          <h3 class="box-title">Recepcion de Archivos</h3>
+          <h3 class="box-title">Recepción de Archivos - Débitos Bancarios </h3>
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i></button>
-            
+              <i class="fa fa-minus"></i>
+            </button>            
           </div>
         </div>
         
@@ -130,9 +122,7 @@
             			</div>
     				</div>
         		</div>
-            		              		  
-           
-        		
+            		          		
         		<div class="row">        	
         			<div class="col-lg-6 col-md-6 col-xs-12">        		
             			<div class="form-group "> 
@@ -146,8 +136,20 @@
             			</div>
     				</div>
         		</div>
-            		 
-      
+        		
+        		<div class="row">        	
+        			<div class="col-lg-6 col-md-6 col-xs-12">        		
+            			<div class="form-group "> 
+                			 <div class="form-group-sm">
+                				<label for="comentario_carga_recaudaciones" class	="col-sm-4 control-label" >Comentario:</label>
+                				<div class="col-sm-8">
+                					<input type="text" name="comentario_carga_recaudaciones" id="comentario_carga_recaudaciones" value="" class="form-control" >
+                                </div>
+                			 </div>        			 
+            			</div>
+    				</div>
+        		</div>
+            	      
     			    
       <hr style="border-color:#FFFFFF;">
         		
@@ -459,7 +461,7 @@
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <!-- FILE UPLOAD -->
    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js"></script>
-   <script src="view/Recaudaciones/js/RecepcionArchivosRecaudaciones.js?0.39"></script> 
+   <script src="view/Recaudaciones/js/RecepcionArchivosDebitosBancariosRecaudaciones.js?0.04"></script> 
 
   </body>
 </html>   

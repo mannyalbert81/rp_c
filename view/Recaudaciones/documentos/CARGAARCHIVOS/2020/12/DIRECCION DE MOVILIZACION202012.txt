@@ -1,0 +1,2 @@
+cedula nombre valor
+0200254969	PARTICIPE-1	200.00 

@@ -1261,7 +1261,25 @@ class RecepcionArchivosDebitosBancariosRecaudacionesController extends Controlad
                 
                 $opciones = ""; //variable donde guardare los datos creados automaticamente                
                 
-                $opciones = '<div class="pull-right ">
+                $nombretipo_descuentos = "";
+                if( $res->parametro_uno_descuentos_formatos == "C")
+                {
+                    $nombretipo_descuentos  = "CREDITOS";
+                    $opciones = '<div class="pull-right ">
+                            <span >
+                                <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                            <span >
+                                <a onclick="mostrar_detalle_modal_creditos(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                                    
+                            </div>';
+                }else
+                {
+                    $nombretipo_descuentos  = "APORTES";
+                    $opciones = '<div class="pull-right ">
                             <span >
                                 <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
 	                           </a>
@@ -1270,16 +1288,8 @@ class RecepcionArchivosDebitosBancariosRecaudacionesController extends Controlad
                                 <a onclick="mostrar_detalle_modal(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
 	                           </a>
                             </span>
-              
+                                    
                             </div>';
-                
-                $nombretipo_descuentos = "";
-                if( $res->parametro_uno_descuentos_formatos == "C")
-                {
-                    $nombretipo_descuentos  = "CREDITOS";
-                }else
-                {
-                    $nombretipo_descuentos  = "APORTES";
                 }
                 
                 $dataFila['numfila'] = $columnIndex;

@@ -20,9 +20,8 @@ var init_controles	= function(){
 var cambio_entidad_patronal	= function(){
 	
 	//para empezar los datatables
-	dt_view1.dt_tabla_pendientes.ajax.reload();
-	dt_view1.dt_tabla_procesados.ajax.reload();
-	dt_view1.dt_tabla_error.ajax.reload();
+	dt_view1.dt_ingreso_bancos.ajax.reload();
+	
 }
 
 function cargaEntidadPatronal(){
@@ -142,6 +141,32 @@ var listar_ingreso_bancos = function(){
 	 });	
 	
 } 
+
+var mostrar_detalle_modal = function(a){
+	
+	
+	var element = $(a);
+	
+	let $link = $(a);	
+	
+	var id_ingreso_bancos_cabeza	= $link.data("id_ingreso_bancos_cabeza");
+		
+	if( id_ingreso_bancos_cabeza <= 0 || id_ingreso_bancos_cabeza == "" || id_ingreso_bancos_cabeza == undefined ){
+		return false;
+	}	
+		
+	view.id_ingreso_bancos_cabeza = id_ingreso_bancos_cabeza;
+	
+	if( element.length )
+	{			
+		$("#hdnid_ingreso_bancos_cabeza").val(id_ingreso_bancos_cabeza);
+		var modaledit = $("#mod_mostrar_detalle");	
+		modaledit.modal();
+		listar_detalle_modal();
+		
+	}	
+	
+}
 
 
 

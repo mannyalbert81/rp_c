@@ -63,6 +63,7 @@ class PrincipalBusquedasRecaudacionesController extends ControladorBase{
 	}
 	
 	public function dtIngresoBancos()
+	
 	{
 	    if( !isset( $_SESSION ) ){
 	        session_start();
@@ -102,8 +103,8 @@ class PrincipalBusquedasRecaudacionesController extends ControladorBase{
                         id_estatus";
 	        $tablas1   = "core_ingreso_bancos_cabeza";
 	        $where1    = "id_entidad_patronal = $id_entidad_patronal
-                        /*and anio_ingreso_bancos_cabeza = $anio_ingreso_bancos_cabeza
-                        and mes_ingreso_bancos_cabeza = $mes_ingreso_bancos_cabeza*/
+                        and anio_ingreso_bancos_cabeza = $anio_ingreso_bancos_cabeza
+                        and mes_ingreso_bancos_cabeza = $mes_ingreso_bancos_cabeza
                         and id_estatus = 1";
 	        
 	        /* PARA FILTROS DE CONSULTA */
@@ -142,8 +143,8 @@ class PrincipalBusquedasRecaudacionesController extends ControladorBase{
 	        
 	        $limit = " ORDER BY $orderby $orderdir LIMIT   $per_page OFFSET '$offset'";
 	        
-	        //$sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
-	        $sql = "";
+	        $sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+	        //$sql = "";
 	        
 	        $resultSet=$ingreso_bancos->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
 	        
@@ -156,10 +157,57 @@ class PrincipalBusquedasRecaudacionesController extends ControladorBase{
 	            
 	            $opciones = "";
 	            
+	            $opciones = '<div class="pull-right ">
+                            <span >
+                                <a onclick="mostrar_detalle_modal(this)" id="" data-id_ingreso_bancos_cabeza="'.$res->id_ingreso_bancos_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                                    
+                            </div>';
+	            
+	            $mes = "";
+	            if($res->mes_ingreso_bancos_cabeza == 1){
+	                $mes = 'Enero';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 2){
+	                $mes = 'Febrero';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 3){
+	                $mes = 'Marzo';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 4){
+	                $mes = 'Abril';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 5){
+	                $mes = 'Mayo';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 6){
+	                $mes = 'Junio';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 7){
+	                $mes = 'Julio';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 8){
+	                $mes = 'Agosto';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 9){
+	                $mes = 'Septiembre';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 10){
+	                $mes = 'Octubre';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 11){
+	                $mes = 'Noviembre';
+	            };
+	            if($res->mes_ingreso_bancos_cabeza == 12){
+	                $mes = 'Diciembre';
+	            };
+	            
+	            
 	        
 	            $dataFila['numfila'] = $columnIndex;
-	            $dataFila['mes_ingreso_bancos_cabeza']  = $res->diferencia_ingreso_bancos_cabeza;
-	            $dataFila['valor_ingreso_bancos_cabeza'] = $res->diferencia_ingreso_bancos_cabeza;
+	            $dataFila['mes_ingreso_bancos_cabeza']  = $mes;
+	            $dataFila['valor_ingreso_bancos_cabeza'] = $res->valor_transaccion_ingreso_bancos_cabeza;
 	            $dataFila['diario_ingreso_bancos_cabeza'] = $res->diferencia_ingreso_bancos_cabeza;
 	            $dataFila['opciones'] = $opciones;
 	            

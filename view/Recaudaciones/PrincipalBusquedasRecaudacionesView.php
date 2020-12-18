@@ -168,45 +168,57 @@
 			<form id="frm_principal_busqueda_recaudaciones" action="<?php echo $helper->url("PrincipalBusquedaRecaudaciones","InsertaIngresoBancos"); ?>" method="post" class="col-lg-12 col-md-12 col-xs-12">
 							    
 		  	<input type="hidden" id="id_ingreso_bancos_cabeza" value="0">
+		  	
+		  	<div class="row">        	
+    			<div class="col-lg-6 col-md-6 col-xs-12">        		
+        			<div class="form-group "> 
+            			 <div class="form-group-sm">
+            				<label for="anio_ingreso_bancos_cabeza" class="col-sm-4 control-label" >Año y Mes:</label>
+            				<div class="col-sm-4">
+                              	<input type="number" max="<?php echo date('Y') ?>" class=" cls_interaccion_elementos form-control" id="anio_ingreso_bancos_cabeza" name="anio_ingreso_bancos_cabeza"  autocomplete="off" value="<?php echo date('Y') ?>" autofocus>
+                             </div>
+                             <div class="col-sm-4">
+                              	<select id="mes_ingreso_bancos_cabeza" name="mes_ingreso_bancos_cabeza" class=" cls_interaccion_elementos form-control">
+                              	<?php for ( $i=1; $i<=count($meses); $i++){ ?>
+                              	<?php if( $i == date('n')){ ?>
+                              	<option value="<?php echo $i;?>" selected ><?php echo $meses[$i-1]; ?></option>
+                              	<?php }else{?>
+                              	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>
+                              	<?php }}?>
+                              	</select>
+                             </div>
+            			 </div>        			 
+        			</div>
+				</div>
+    		</div>
 		    		  
             <div class="row">        	
-        			<div class="col-lg-6 col-md-6 col-xs-12">        		
-            			<div class="form-group "> 
-                			 <div class="form-group-sm">
-                				<label for="id_entidad_patronal" class="col-sm-4 control-label" >Entidad Patronal:</label>
-                				<div class="col-sm-8">
-                                  	<select id="id_entidad_patronal" name="id_entidad_patronal" class="form-control" >
-                              	<option value="0">--Seleccione--</option>
-                              	</select>
-                                 </div>
-                			 </div>        			 
-            			</div>
-    				</div>
-        		</div>
-        		
-        		
-        		<div class="row">        	
-        			<div class="col-lg-6 col-md-6 col-xs-12">        		
-            			<div class="form-group "> 
-                			 <div class="form-group-sm">
-                				<label for="anio_ingreso_bancos_cabeza" class="col-sm-4 control-label" >Año y Mes:</label>
-                				<div class="col-sm-4">
-                                  	<input type="number" max="<?php echo date('Y') ?>" class="form-control" id="anio_ingreso_bancos_cabeza" name="anio_ingreso_bancos_cabeza"  autocomplete="off" value="<?php echo date('Y') ?>" autofocus>
-                                 </div>
-                                 <div class="col-sm-4">
-                                  	<select id="mes_ingreso_bancos_cabeza" name="mes_ingreso_bancos_cabeza" class="form-control">
-                                  	<?php for ( $i=1; $i<=count($meses); $i++){ ?>
-                                  	<?php if( $i == date('n')){ ?>
-                                  	<option value="<?php echo $i;?>" selected ><?php echo $meses[$i-1]; ?></option>
-                                  	<?php }else{?>
-                                  	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>
-                                  	<?php }}?>
-                                  	</select>
-                                 </div>
-                			 </div>        			 
-            			</div>
-    				</div>
-        		</div>
+    			<div class="col-lg-6 col-md-6 col-xs-12">        		
+        			<div class="form-group "> 
+            			 <div class="form-group-sm">
+            				<label for="id_entidad_patronal" class="col-sm-4 control-label" >Entidad Patronal:</label>
+            				<div class="col-sm-8">
+                              	<select id="id_entidad_patronal" name="id_entidad_patronal" class=" cls_interaccion_elementos form-control" >
+                          	<option value="0">--Seleccione--</option>
+                          	</select>
+                             </div>
+            			 </div>        			 
+        			</div>
+				</div>
+        	</div>
+        	<br>
+        	<div class="row hide" id="pnl_nuevo">        	
+    			<div class="col-lg-6 col-md-6 col-xs-12">        		
+        			<div class="form-group "> 
+            			 <div class="form-group-sm">
+            				<label for="btn_agregar" class="col-sm-4 control-label" >&nbsp;</label>
+            				<div class="col-sm-8">
+                              	<input type="button" class="pull-right btn btn-primary" id="btn_nuevo_registro" value="Agregar Registro">
+                             </div>
+            			 </div>        			 
+        			</div>
+				</div>
+        	</div>        		
      
            </form>
                       
@@ -348,19 +360,19 @@
                           		</tr> 
                           		<tr>
                               		<td><label>Fecha Deposito:</label></td>
-                              		<td><input type="text" class="form-control" id="lblApellidos"></td>
+                              		<td><input type="text" class="form-control" id="lbl_fcha_deposito"></td>
                           		</tr> 
                           		<tr>
                               		<td><label>Fecha Contable:</label></td>
-                              		<td><input type="text" class="form-control" id="lblApellidos"></td>
+                              		<td><input type="text" class="form-control" id="lbl_fcha_contable"></td>
                           		</tr> 
                           		<tr>
                               		<td><label>Referencia / Papeleta / Número Documento:</label></td>
-                              		<td><input type="text" class="form-control" id="lblApellidos"></td>
+                              		<td><input type="text" class="form-control" id="lbl_referencia"></td>
                           		</tr> 
                           		<tr>
                               		<td><label>Valor Transacción:</label></td>
-                              		<td><input type="text" class="form-control" id="lblApellidos"></td>
+                              		<td><input type="text" class="form-control" id="lbl_valor_transaccion"></td>
                           		</tr> 
                           		
                           		
@@ -418,15 +430,15 @@
                           		</tr>
                           		<tr>
                               		<td><label>Valor Ingreso Desglose:</label></td>
-                              		<td><input type="text" class="form-control" id="lblApellidos"></td>
+                              		<td><input type="text" class="form-control" id="lbl_ingreso"></td>
                           		</tr> 
                           		<tr>
                               		<td><label>Total:</label></td>
-                              		<td><input type="text" class="form-control" id="lblApellidos"></td>
+                              		<td><input type="text" class="form-control" id="lbl_total"></td>
                           		</tr> 
                           		<tr>
                               		<td><label>Diferencia:</label></td>
-                              		<td><input type="text" class="form-control" id="lblApellidos"></td>
+                              		<td><input type="text" class="form-control" id="lbl_diferencia"></td>
                           		</tr> 
                           		<tr>
                               		<td><label>Descripción:</label></td>
@@ -477,11 +489,210 @@
 </div> 
     
   </div>
+  
+    <!-- BEGIN MODAL NUEVO REGISTRO -->
+    <div class="modal fade" id="mod_nuevo_registro" data-backdrop="static" data-keyboard="false">
+    	<div class="modal-dialog   modal-lg " role="document" >
+        	<div class="modal-content">
+          		<div class="modal-header bg-primary color-palette">
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  		<span aria-hidden="true">&times;</span>
+              		</button>
+                	<h4 class="modal-title" align="center">Información Ingreso a Bancos</h4>
+          		</div>
+          		
+          		
+          	<div class="modal-body" >
+     			<section class="content">
+  					<div class="box box-primary">
+    					<div class="box-header">
+    		  				<h3 class="box-title">Registros</h3>
+    					</div>
+    					<div class="box-body">
+  		  		
+          				<div class="row">
+          				
+          			    <!-- Este div es para .. -->
+          				<div class="col-sm-12 col-md-12 col-lg-12">
+          					
+          					<div class="panel panel-default">
+                          		<div class="panel-heading">                         	
+                  			
+                                <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          		<table id="tbldatosParticipe" class="table">
+                          			<thead>
+                      				</thead>
+                                  	<tbody>
+                                  		<tr>
+                                      		<td><label>Diario:</label></td>
+                                      		<td><input type="text" class="form-control" id="lblIdentificacion"></td>                     		
+                                  		</tr>
+                                  		<tr>
+                                      		<td><label>Banco:</label></td>
+                                      		<td>
+                                      			<select class="form-control" id="id_entidad_patronal">
+                                      			<option value="">--Seleccione--</option>
+                                      			</select>
+                                  			</td>
+                                  		</tr>
+                                  		<tr>
+                                      		<td><label>Periodo Carga :</label></td>
+                                      		<td>
+                                  			<div class="col-sm-6">
+                                          	<input type="number" max="<?php echo date('Y') ?>" class="form-control" id="anio_ingreso_bancos_cabeza" name="anio_ingreso_bancos_cabeza"  autocomplete="off" value="<?php echo date('Y') ?>" autofocus>
+                                         </div>
+                                         <div class="col-sm-6">
+                                          	<select id="mes_ingreso_bancos_cabeza" name="mes_ingreso_bancos_cabeza" class="form-control">
+                                          	<?php for ( $i=1; $i<=count($meses); $i++){ ?>
+                                          	<?php if( $i == date('n')){ ?>
+                                          	<option value="<?php echo $i;?>" selected ><?php echo $meses[$i-1]; ?></option>
+                                          	<?php }else{?>
+                                          	<option value="<?php echo $i;?>" ><?php echo $meses[$i-1]; ?></option>
+                                          	<?php }}?>
+                                          	</select>
+                                         </div>
+                                         </td>
+                                  		</tr>
+                                  		<tr>
+                                  		<td><label>Tipo Ingreso:</label></td>
+                                      		<td>
+                                      		<div class="col-xs-12 col-md-6 col-md-6 ">
+                                      		<strong><input class="seleccionado" type="checkbox" id="cesantia" name="cesantia" value="0"> Ingreso Bancos </strong>
+                                      		</div>
+                                      		<div class="col-xs-12 col-md-6 col-md-6 ">
+                                      		<strong><input class="seleccionado" type="checkbox" id="cesantia" name="cesantia" value="0"> Depósito sin Cpt. </strong>
+                                      		</div>
+                                      		</td>
+                                  		</tr> 
+                                  		<tr>
+                                      		<td><label>Fecha Deposito:</label></td>
+                                      		<td><input type="text" class="form-control" id="lbl_fcha_deposito"></td>
+                                  		</tr> 
+                                  		<tr>
+                                      		<td><label>Fecha Contable:</label></td>
+                                      		<td><input type="text" class="form-control" id="lbl_fcha_contable"></td>
+                                  		</tr> 
+                                  		<tr>
+                                      		<td><label>Referencia / Papeleta / Número Documento:</label></td>
+                                      		<td><input type="text" class="form-control" id="lbl_referencia"></td>
+                                  		</tr> 
+                                  		<tr>
+                                      		<td><label>Valor Transacción:</label></td>
+                                      		<td><input type="text" class="form-control" id="lbl_valor_transaccion"></td>
+                                  		</tr> 
+                                  		
+                                  		
+                                  	</tbody>
+                                  	<tfoot>
+                                  	</tfoot>
+                                  </table>
+                        		</div><!-- //end panel head -->
+          					</div>   
+          				
+          				<div class="box-header">
+    		  				<h3 class="box-title">Detalle Pago</h3>
+    					</div>       
+    					
+    					<div class="panel panel-default">
+                      		<div class="panel-heading">                         	
+              			
+                            <!-- ESTA TABLA SE LLENA CON PROCESO DE JS -->  
+                          	<table id="tbldatosRegistro" class="table">
+                          	<thead>
+                          	</thead>
+                          	<tbody>
+                          		<tr>
+                              		<td><label>Pago:</label></td>
+                          			<td>
+                          			<div class="row">
+                          				<div class="col-xs-4 col-md-2 col-lg-2">
+                                  		<strong><input class="seleccionado" type="checkbox" id="chk_creditos" name="cesantia" value="0"> Crédito</strong>
+                                  		</div>
+                                  		<div class="col-xs-4 col-md-2 col-lg-2 ">
+                                  		<strong><input class="seleccionado" type="checkbox" id="chk_aportes" name="cesantia" value="0"> Aporte</strong>
+                                  		</div>
+                                  		<div class="col-xs-4 col-md-2 col-lg-2 ">
+                                  		<strong><input class="seleccionado" type="checkbox" id="chk_indebidos" name="cesantia" value="0"> Indebido</strong>
+                                  		</div>
+                          			</div>                              		
+                              		</td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Tipo Credito:</label></td>
+                              		<td>
+                              			<select class="form-control" id="id_entidad_patronal">
+                              			<option value="">--Seleccione--</option>
+                              			</select>
+                          			</td>
+                          		</tr>
+                          		
+                          		<tr>
+                              		<td><label>Razón:</label></td>
+                              		<td><input type="text" class="form-control" id="lblNombres"></td>
+                          		</tr>
+                          		<tr>
+                              		<td><label>Valor Ingreso Desglose:</label></td>
+                              		<td><input type="text" class="form-control" id="lbl_ingreso"></td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Total:</label></td>
+                              		<td><input type="text" class="form-control" id="lbl_total"></td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Diferencia:</label></td>
+                              		<td><input type="text" class="form-control" id="lbl_diferencia"></td>
+                          		</tr> 
+                          		<tr>
+                              		<td><label>Descripción:</label></td>
+                              		<td>
+                              		<div class="box-body pad">
+            	                    <textarea id="editor1" name="editor1" rows="2" cols="20"></textarea>
+            	                    <div id="mensaje_editor1" class="errores"></div>
+            	            		</div>
+            	            		</td>
+                          		</tr> 
+                          		
+                          		<tr>
+                              		<td><label></label></td>
+                              		
+                              		<td>
+                              			<button type="button" class="btn btn-success" id="btnGuardar" value="guardar" onclick="fnIngresarRegistro()">Guardar</button>
+                              			<button type="button" class="btn btn-danger" id="btnCancelar" value="cancelar" onclick="fnCancelarRegistro()" >Cancelar</button>
+                          			</td>                              		
+                          		</tr> 
+                          		
+                           		
+                          	</tbody>
+                          	<tfoot>
+                          	</tfoot>
+                          </table>
+                          
+                        		</div><!-- //end panel head -->
+          					</div>   
+          							
+          	
+          			</div>
+          			
+          		</div>
+          	</div>
+		</div>
+  	</section>
+          	
+          
+          </div>
+          
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+</div> 
+    
+    <!-- END MODAL NUEVO REGISTRO -->
  
- 	<?php include("view/modulos/footer.php"); ?>	
+	<?php include("view/modulos/footer.php"); ?>	
 
-   <div class="control-sidebar-bg"></div>
- </div>
+   	<div class="control-sidebar-bg"></div>
+	</div>
  
 
     
@@ -492,7 +703,7 @@
    <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
    <!-- FILE UPLOAD -->
    <script src="view/bootstrap/plugins/bootstrap_fileinput_v5.0.8-4/js/fileinput.min.js"></script>
-   <script src="view/Recaudaciones/js/PrincipalBusquedaRecaudaciones.js?0.08"></script> 
+   <script src="view/Recaudaciones/js/PrincipalBusquedaRecaudaciones.js?0.12"></script> 
 
   </body>
 </html>   

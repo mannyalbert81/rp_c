@@ -112,6 +112,32 @@ table.2 {
 }
 
 
+
+td.derecha {
+  
+   text-align: right;
+
+}
+
+
+td.izquierda {
+  
+   text-align: left;
+ 
+}
+
+th.derecha {
+  
+   text-align: right;
+ }
+
+
+th.izquierda {
+  
+   text-align: left;
+  
+}
+
 td.2 {
    width: 25%;
    text-align: center;

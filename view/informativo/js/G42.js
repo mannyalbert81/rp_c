@@ -3,9 +3,12 @@
 $("#btnDetalles").on("click",function(event){
 	
 
-	let $mes= $('#mes_reporte');
+	let $mes=$('#mes_reporte');
 	let $anio=$('#a_reporte');
-
+	
+	let 
+	
+	
 	$divResultados = $("#div_estructura");
 	$divResultados.html();
 	
@@ -54,9 +57,14 @@ $("#btngenera").on("click",function(event){
 	
 
 
-	let $mes=$('#mes_reporte');
+	$mes=$('#mes_reporte');
 	let $anio=$('#a_reporte');
-
+	
+	let $mes_actual = parseInt($mes.val()) + parseInt(1);
+	
+		
+	console.log("Mes: " + $mes_actual); 
+	  
 	
 	if($anio.val() == ''){
 		$anioProcesos.notify("Digite Año",{ position:"buttom left", autoHideDelay: 2000});
@@ -68,7 +76,7 @@ $("#btngenera").on("click",function(event){
 	}
 	
 	
-	 swal("Generando XML", {
+	 swal("Generando XML G42", {
 	      icon: "success",
 	      buttons: false,
 	      timer: 8000
@@ -77,21 +85,22 @@ $("#btngenera").on("click",function(event){
 	$.ajax({
 		 url: 'index.php?controller=EstructurasBiess&action=generaG42',
 		    type: 'POST',
-		    dataType:"json",
+		    
 		    data: {
-		    	 mes_reporte:$mes.val(),
+		    	 mes_reporte:$mes_actual,
 		    	 anio_reporte:$anio.val()	    	      	   
 		    }
 	 }).done(function(x){
 	
 		 
-		 console.log("Mesaje: " + x.tabladatos);
-		
+		// console.log("Mesaje: " + x.tabladatos);
+		 console.log("Mesaje: ");
+		 	
 		
 		 
 	 }).fail(function(xhr,status,error){
 		 let err = xhr.responseText;
-		 console.log(err);
+		 //console.log(err);
 		 
 		 var mensaje = /<message>(.*?)<message>/.exec(err.replace(/\n/g,"|"))
 		 if( mensaje !== null ){

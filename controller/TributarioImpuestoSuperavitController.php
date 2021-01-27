@@ -14,7 +14,6 @@ class TributarioImpuestoSuperavitController extends ControladorBase{
 	if (isset($_SESSION['id_usuarios']) )
 	{
 		
-		
 		$usuarios = new UsuariosModel();
 
 		$nombre_controladores = "TributarioImpuestoSuperavit";
@@ -441,6 +440,173 @@ class TributarioImpuestoSuperavitController extends ControladorBase{
 	            $html.='<div class="table-pagination pull-right">';
 	            $html.=''. $this->paginate_superavit("index.php", $page, $total_pages, $adjacents,"load_cesantes").'';
 	            $html.='</div>';
+	        
+	            
+	            
+	        }else{
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+	            $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+	            $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay Impuestos Superavit Patronal registrados...</b>';
+	            $html.='</div>';
+	            $html.='</div>';
+	        }
+	        
+	        
+	        echo $html;
+	        die();
+	        
+	    }
+	    
+	}
+	
+	
+	
+	
+	
+	public function consulta_cesantias_patronales(){
+	    
+	    session_start();
+	    $superavit_pagos = new CoreSuperavitPagosModel();
+	    
+	    $base_calcuo_liquidacion_detalle = 0;
+	    $valor_liquidacion_detalle = 0;
+	    
+	    $where_to="";
+	    
+	    
+	    $columnas = "cp.id_participes, clc.fecha_pago_carpeta_liquidacion_cabeza, cp.cedula_participes ,
+	                 cp.apellido_participes , cp.nombre_participes , cld.motivo_liquidacion_detalle ,
+	                  cld.porcentaje_liquidacion_detalle , cld.base_calcuo_liquidacion_detalle , cld.valor_liquidacion_detalle";
+	    $tablas = "core_participes cp , core_liquidacion_cabeza clc ,
+	    core_liquidacion_detalle cld";
+	    $where = "clc.id_participes = cp.id_participes
+            	    and clc.id_liquidacion_cabeza = cld.id_liquidacion_cabeza
+            	      and clc.retencion_liquidacion_cabeza='false'
+            	    and clc.id_estado_prestaciones in (3,4)
+            	    and clc.id_tipo_prestaciones not in (3)
+            	    and cld.id_tipo_pago_liquidacion = 8
+            	    and (cld.motivo_liquidacion_detalle LIKE '%Patronal%' or cld.motivo_liquidacion_detalle LIKE '%PATRONAL%' )";
+	    
+	    //$grupo = "cp.id_participes";
+	    //$condicion_grupo = "sum(cld.base_calcuo_liquidacion_detalle+cld.valor_liquidacion_detalle)>0";
+	    $id       = "clc.fecha_pago_carpeta_liquidacion_cabeza";
+	    
+	    
+	    $action = (isset($_REQUEST['action'])&& $_REQUEST['action'] !=NULL)?$_REQUEST['action']:'';
+	    $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+	    $search_fechadesde =  (isset($_REQUEST['search_fechadesde'])&& $_REQUEST['search_fechadesde'] !=NULL)?$_REQUEST['search_fechadesde']:'';
+	    $search_fechahasta =  (isset($_REQUEST['search_fechahasta'])&& $_REQUEST['search_fechahasta'] !=NULL)?$_REQUEST['search_fechahasta']:'';
+	    
+	    
+	    
+	    if($action == 'ajax')
+	    {
+	        
+	        $where1="";
+	        if(!empty($search_fechadesde)  && !empty($search_fechahasta)    ){
+	            
+	                
+	            $where1.=" AND  clc.fecha_pago_carpeta_liquidacion_cabeza BETWEEN '$search_fechadesde' AND  '$search_fechahasta'  ";
+       
+	            
+	        }
+	        
+	        
+	        
+	        if(!empty($search)){
+	            
+	            
+	            $where1.=" AND (cp.cedula_participes LIKE '%".$search."%' OR cp.nombre_participes LIKE '%".$search."%' OR cp.apellido_participes LIKE '%".$search."%' ) ";
+	            
+	            
+	        }
+	        
+	        
+	        
+	        $where_to=$where.$where1;
+	        
+	        $html="";
+	        $resultSet=$superavit_pagos->getCondiciones($columnas, $tablas, $where_to, $id);
+	        $cantidadResult=count($resultSet);
+	        
+	    
+	        
+	        $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+	        
+	        $per_page = 100; //la cantidad de registros que desea mostrar
+	        $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+	        $offset = ($page - 1) * $per_page;
+	        
+	        $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+	        
+	        $resultSet=$superavit_pagos->getCondicionesPag($columnas, $tablas, $where_to,  $id, $limit);
+	        $count_query   = $cantidadResult;
+	        $total_pages = ceil($cantidadResult/$per_page);
+	        
+	        
+	        if($cantidadResult>0)
+	        {
+	            
+	            $html.='<div class="pull-left" style="margin-left:15px;">';
+	            $html.='<span class="form-control"><strong>Registros: </strong>'.$cantidadResult.'</span>';
+	            $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+	            $html.='</div>';
+	            $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+	            $html.='<section style="height:425px; overflow-y:scroll;">';
+	            $html.= "<table id='tabla_cesantes' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+	            $html.= "<thead>";
+	            $html.= "<tr>";
+	            $html.='<th style="text-align: left;  font-size: 12px;">#</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Fecha Pago</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Cedula</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Nombre</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Apellido</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Motivo</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Base Imponible</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Porcentaje</th>';
+	            $html.='<th style="text-align: left;  font-size: 12px;">Valor Retención</th>';
+	            $html.='</tr>';
+	            $html.='</thead>';
+	            $html.='<tbody>';
+	            
+	            
+	            $i=0;
+	            
+	            foreach ($resultSet as $res)
+	            {
+	                $i++;
+	                $html.='<tr>';
+	                $html.='<td style="font-size: 11px;">'.$i.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->fecha_pago_carpeta_liquidacion_cabeza.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->cedula_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->nombre_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->apellido_participes.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->motivo_liquidacion_detalle.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->base_calcuo_liquidacion_detalle.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->porcentaje_liquidacion_detalle.'</td>';
+	                $html.='<td style="font-size: 11px;">'.$res->valor_liquidacion_detalle.'</td>';
+	                
+	                $html.='</tr>';
+	                
+	                
+	                $base_calcuo_liquidacion_detalle =  $base_calcuo_liquidacion_detalle + $res->base_calcuo_liquidacion_detalle;
+	                $valor_liquidacion_detalle       =  $valor_liquidacion_detalle + $res->valor_liquidacion_detalle;
+	                
+	            }
+	            
+	            
+	            $html.='</tbody>';
+	            $html.='</table>';
+	            $html.='</section></div>';
+	            $html.='<div class="pull-left"><button id="btn_cesantias_patronales" class="btn btn-primary" type="button" data-toggle="modal" data-target="#mod_cesantias_patronales" ><i class="glyphicon glyphicon-plus"> Procesar</i></button></div>';
+	            $html.='<div class="pull-left"><label  class="col-sm-3 col-form-label">Total Base: '. $base_calcuo_liquidacion_detalle . '</label> </div>';
+	            $html.='<div class="pull-left"><label  class="col-sm-3 col-form-label">Total Ret: '.  $valor_liquidacion_detalle. '</label> </div>';
+	            
+	            $html.='<div class="table-pagination pull-right">';
+	            $html.=''. $this->paginate_superavit("index.php", $page, $total_pages, $adjacents,"load_cesantes").'';
+	            
+	            $html.='</div>';
 	            
 	            
 	            
@@ -465,9 +631,6 @@ class TributarioImpuestoSuperavitController extends ControladorBase{
 	    }
 	    
 	}
-	
-	
-	
 	
 	
 	
@@ -2589,6 +2752,410 @@ public function Procesar_Cesantes(){
 
 
 
+public function cargar_cesantias_patronales_a_procesar(){
+    
+    session_start();
+    
+    $contribucion = new CoreSuperavitPagosModel();
+    
+    
+    
+    $cantidad_cesantes=  100 ;//(isset($_REQUEST['cantidad_cesantes'])&& $_REQUEST['cantidad_cesantes'] !=NULL)?$_REQUEST['cantidad_cesantes']:0;
+    
+    
+    $_search_fechadesde =(isset($_REQUEST['search_fechadesde'])&& $_REQUEST['search_fechadesde'] !=NULL)?$_REQUEST['search_fechadesde']:0;
+    $_search_fechahasta =(isset($_REQUEST['search_fechahasta'])&& $_REQUEST['search_fechahasta'] !=NULL)?$_REQUEST['search_fechahasta']:0;
+    
+    
+    /*  
+    $resultado = $cantidad_cesantes ;
+    echo json_encode($resultado);
+    die();
+    */
+    
+    $html="";
+    
+    if($cantidad_cesantes>0){
+        
+        
+        
+        
+        $columnas = "cp.id_participes, clc.fecha_pago_carpeta_liquidacion_cabeza, cp.cedula_participes ,
+	                 cp.apellido_participes , cp.nombre_participes , cld.motivo_liquidacion_detalle ,
+	                  cld.porcentaje_liquidacion_detalle , cld.base_calcuo_liquidacion_detalle , cld.valor_liquidacion_detalle";
+        $tablas = "core_participes cp , core_liquidacion_cabeza clc ,  core_liquidacion_detalle cld";
+        $where = "clc.id_participes = cp.id_participes
+                    AND  clc.fecha_pago_carpeta_liquidacion_cabeza BETWEEN '$_search_fechadesde' AND  '$_search_fechahasta'
+                    and clc.retencion_liquidacion_cabeza='false'  
+            	    and clc.id_liquidacion_cabeza = cld.id_liquidacion_cabeza
+            	    and clc.id_estado_prestaciones in (3,4)
+            	    and clc.id_tipo_prestaciones not in (3)
+            	    and cld.id_tipo_pago_liquidacion = 8
+            	    and (cld.motivo_liquidacion_detalle LIKE '%Patronal%' or cld.motivo_liquidacion_detalle LIKE '%PATRONAL%' )";
+        
+        $id       = "clc.fecha_pago_carpeta_liquidacion_cabeza";
+        
+        
+        $limit = "limit ".$cantidad_cesantes;
+        
+        $resultSet=$contribucion->getCondicionesPag($columnas, $tablas, $where, $id, $limit);
+        
+        
+        
+        if(!empty($resultSet)){
+            
+            $i=0;
+            
+            
+            $html.='<div class="box">';
+            $html.='<div class="box-body table-responsive pad">';
+            $html.='<table class="table table-bordered">';
+            $html.='<tr>';
+            $html.='<td>';
+            $html.='<div class="btn-group">';
+            foreach ($resultSet as $res){
+                $i++;
+                
+                $html.='<button type="button" class="btn btn-default" id="id_'.$res->id_participes.'" value="'.$res->id_participes.'">'.str_pad($i, 2, "0", STR_PAD_LEFT).'</button>';
+                
+            }
+            
+            $html.='</div>';
+            $html.='</td>';
+            $html.='</tr>';
+            $html.='</table>';
+            $html.='</div>';
+            $html.='</div>';
+            
+            
+            
+            $resultado=array();
+            
+            array_push($resultado, $resultSet, $html);
+            
+            echo json_encode($resultado);
+            
+        }
+        
+    }
+    
+}
+
+
+
+
+
+
+
+
+public function Procesar_Cesantias_Patronales(){
+    
+    
+    $contribucion = new CoreSuperavitPagosModel();
+    $cuentasPagar  = new CuentasPagarModel();
+    $respuesta = array();
+    
+    
+    $_cantidad_cesantes =(isset($_POST['cantidad_cesantes'])) ? $_POST['cantidad_cesantes'] : 0;
+    $_array_procesar_cesantias_patronales =(isset($_POST['array_procesar_cesantias_patronales'])) ? $_POST['array_procesar_cesantias_patronales'] : 0;
+    
+    $_search_fechadesde =(isset($_POST['search_fechadesde'])) ? $_POST['search_fechadesde'] : 0;
+    $_search_fechahasta =(isset($_POST['search_fechahasta'])) ? $_POST['search_fechahasta'] : 0;
+    
+    
+    $html="";
+    $correcto=0;
+    $incorrecto=0;
+    $xml_error=0;
+    if(!empty($_search_fechadesde) && !empty($_search_fechahasta) &&  !empty($_cantidad_cesantes) && !empty($_array_procesar_cesantes) ){
+        
+        
+        $i=0;
+        $errorXml = false;
+        
+        foreach ($_array_procesar_cesantias_patronales as $value) {
+            
+            $i++;
+            //$_id_contribucion=  $value['id_contribucion_pagada'];
+            $_id_participes = $value['id_participes'];
+            
+            
+        
+            $resp = $this->genXmlRetencionCesantes($_id_participes, $_search_fechadesde, $_search_fechahasta);
+            
+            
+            
+            
+            
+            $respuesta['xml'] = '';
+            $respuesta['file']= $resp;
+            
+            
+            
+            
+            /// significa que hubo un erro al generar el xml
+            if( $resp['error'] === true ){
+                
+                
+                $xml_error=$xml_error+1;
+                
+                $errorXml = true;
+                if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML NO GENERADO" ){
+                    
+                    $respuesta['xml'] = 'XML NO GENERADO';
+                }
+                
+                
+                if (array_key_exists('claveAcceso', $resp) && strlen( $resp['claveAcceso'] ) == 49 ) {
+                    
+                    $respuesta['xml'] = 'DATOS xml EN BD No fueron ingresados';
+                    
+                    $claveAcceso = $resp['claveAcceso'];
+                    $_columnaActualizar = " autorizado_retenciones = false ";
+                    $_tablaActualizar   = " tri_retenciones";
+                    $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
+                    
+                    $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
+                }
+                
+                
+                
+            }else{
+                
+                $respuesta['xml'] = " ARCHIVO ENTRO XML";
+                
+                if( array_key_exists('mensaje', $resp) && $resp['mensaje'] == "XML GENERADO" ){
+                    
+                    $errorXml = false;
+                    
+                    $respuesta['xml'] = " ARCHIVO ENTRO XML IF";
+                    
+                    $clave = ( array_key_exists('claveAcceso', $resp) ) ? $resp['claveAcceso'] : '' ;
+                    
+                    require_once __DIR__ . '/../vendor/autoload.php';
+                    
+                    $config = $this->getConfigXml();
+                    
+                    $comprobante = new \Shara\ComprobantesController($config);
+                    
+                    $xml = file_get_contents($config['generados'] . DIRECTORY_SEPARATOR . $clave.'.xml', FILE_USE_INCLUDE_PATH);
+                    
+                    $aux = $comprobante->validarFirmarXml($xml, $clave);
+                    
+                    
+                    
+                    $respuesta['Archivo'] = "";
+                    $respuesta['xml'] = $aux;
+                    
+                    if($aux['error'] === false){
+                        
+                        $Envioresp = $comprobante->enviarXml($clave);
+                        //$aux['recibido'] = true; //para pruebas
+                        
+                        
+                        if($Envioresp['recibido'] === true){
+                            
+                            $respuesta['xml'] = " Archivo Xml RECIBIDO";
+                            
+                            $finalresp = $comprobante->autorizacionXml($clave);
+                            
+                            //$finalresp = null;. //para pruebas
+                            //$finalresp['error'] = false; //para pruebas
+                            if($finalresp['error'] === true ){
+                                
+                                $respuesta['xml'] = " Archivo Xml RECIBIDO NO AUTORIZADO";
+                                $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+                                $errorXml = true;
+                            }else{
+                                
+                                $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
+                                $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
+                                
+                                $fechaAutorizado = $finalresp['fecauto'];
+                                
+                                
+                            }
+                            
+                            
+                        }else{
+                            
+                            $respuesta['xml'] = " Archivo Xml NO RECIBIDO";
+                            $respuesta['Archivo'] = ( array_key_exists('mensaje', $Envioresp) ) ? $Envioresp['mensaje'] : '' ;
+                            $errorXml = true;
+                        }
+                        
+                    }else{
+                        
+                        $respuesta['xml'] = " Archivo Xml NO FIRMADO";
+                        $respuesta['Archivo'] = ( array_key_exists('mensaje', $aux) ) ? $aux['mensaje'] : '' ;
+                        $errorXml = true;
+                    }
+                    
+                    
+                    if( $errorXml ){
+                        
+                        $claveAcceso = $resp['claveAcceso'];
+                        $_columnaActualizar = " autorizado_retenciones = false ";
+                        $_tablaActualizar   = " tri_retenciones";
+                        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
+                        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
+                        
+                        
+                    }
+                    
+                }else{
+                    $respuesta['xml'] = " ARCHIVO NO ENTRO XML";
+                }
+            }
+            
+            
+            
+            
+            if( $errorXml ){
+                
+                /*
+                 $respuesta['icon'] = 'warning';
+                 $respuesta['mensaje'] = "Retención Rechazada";
+                 $respuesta['estatus'] = 'ERROR';
+                 echo json_encode($respuesta);
+                 */
+                $incorrecto=$incorrecto+1;
+                
+                
+                
+                
+                
+                //actualizar el codigo de retencion
+                $_actCol = " valor_consecutivos = valor_consecutivos - 1, numero_consecutivos = LPAD( ( valor_consecutivos - 1)::TEXT,espacio_consecutivos,'0')";
+                $_actTab = " consecutivos ";
+                $_actWhe = " nombre_consecutivos = 'RETENCION' ";
+                $resultadoAct =  $contribucion->ActualizarBy($_actCol, $_actTab, $_actWhe);
+                
+                if( $resultadoAct == -1 ){
+                    return array('error' => true, 'mensaje' => 'Numero Retencion no actualizada');
+                }
+                
+                
+                
+                
+                
+                $_triCol1  = " id_tri_retenciones";
+                $_triTab1  = " tri_retenciones";
+                $_triWhe1  = " infotributaria_claveacceso = '$claveAcceso'";
+                $_rstriConsulta1   = $cuentasPagar->getCondicionesSinOrden($_triCol1, $_triTab1, $_triWhe1, "");
+                
+                if( !empty($_rstriConsulta1) ){
+                    
+                    $_id_tri_retenciones       = $_rstriConsulta1[0]->id_tri_retenciones;
+                    
+                    
+                    $resuldelte=$cuentasPagar->eliminarFila("tri_retenciones_detalle", "id_tri_retenciones='$_id_tri_retenciones'");
+                    $resuldelte1=$cuentasPagar->eliminarFila("tri_retenciones", "id_tri_retenciones='$_id_tri_retenciones'");
+                    
+                    
+                    
+                    
+                }
+                
+                
+                
+                
+                
+            }else{
+                
+                
+                //procesado correctamente
+                
+                $claveAcceso = $resp['claveAcceso'];
+                $_columnaActualizar = " fecha_autorizacion = '$fechaAutorizado' ";
+                $_tablaActualizar   = " tri_retenciones";
+                $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
+                $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
+                
+                
+                
+                
+                $_columnaActualizar1 = " retencion_liquidacion_cabeza= = 'TRUE' ";
+                $_tablaActualizar1   = " core_liquidacion_cabeza";
+                $_whereActualizar1   = " id_participes='$_id_participes'";
+                $cuentasPagar->ActualizarBy($_columnaActualizar1, $_tablaActualizar1, $_whereActualizar1);
+                
+                
+                
+                $correcto=$correcto+1;
+                /*
+                 $respuesta['icon'] = 'success';
+                 $respuesta['mensaje'] = "Retención Generada Correctamente";
+                 $respuesta['estatus'] = 'OK';
+                 
+                 echo json_encode($respuesta);
+                 
+                 */
+                
+                
+            }
+            
+            
+            
+        }
+        
+        
+        
+        
+        //aqui envio respuesta
+        
+        $html="";
+        
+        $respuesta['icon'] = 'success';
+        $respuesta['mensaje'] = "Retención Generada Correctamente";
+        $respuesta['estatus'] = 'OK';
+        $respuesta['html'] = $html;
+        $respuesta['correcto'] = $correcto;
+        $respuesta['incorrecto'] = $incorrecto;
+        $respuesta['xml_error'] = $xml_error;
+        
+        
+        echo json_encode($respuesta);
+        
+        
+        
+        
+        
+    }else{
+        
+        
+        $respuesta['icon'] = 'warning';
+        $respuesta['mensaje'] = "No se pudo procesar";
+        $respuesta['estatus'] = 'ERROR';
+        $respuesta['html'] = $html;
+        $respuesta['correcto'] = $correcto;
+        $respuesta['incorrecto'] = $incorrecto;
+        $respuesta['xml_error'] = $xml_error;
+        
+        echo json_encode($respuesta);
+        
+    }
+    
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 public function genXmlRetencionCesantes($_id_participes){
@@ -2912,6 +3479,354 @@ public function genXmlRetencionCesantes($_id_participes){
     
     
 }
+
+
+
+
+
+
+
+public function genXmlRetencionCesantiasPatronales($_id_participes, $_search_fechadesde, $_search_fechahasta){
+    
+    // session_start();
+    $contribucion = new CoreSuperavitPagosModel();
+    $cuentasPagar  = new CuentasPagarModel();
+    
+    
+    //codigo 323
+    
+    //impuestos de tipo retencion
+    
+    
+    
+    
+    $columnas = "cp.id_participes, clc.fecha_pago_carpeta_liquidacion_cabeza, cp.cedula_participes ,
+	                 cp.apellido_participes , cp.nombre_participes , cld.motivo_liquidacion_detalle ,
+	                  cld.porcentaje_liquidacion_detalle , cld.base_calcuo_liquidacion_detalle , cld.valor_liquidacion_detalle";
+    $tablas = "core_participes cp , core_liquidacion_cabeza clc ,
+	    core_liquidacion_detalle cld";
+    $where = "clc.id_participes = cp.id_participes
+                     and clc.retencion_liquidacion_cabeza='false'
+                    AND  clc.fecha_pago_carpeta_liquidacion_cabeza BETWEEN '$_search_fechadesde' AND  '$_search_fechahasta'
+                    and cp.id_participes = '$_id_participes'
+            	    and clc.id_liquidacion_cabeza = cld.id_liquidacion_cabeza
+            	    and clc.id_estado_prestaciones in (3,4)
+            	    and clc.id_tipo_prestaciones not in (3)
+            	    and cld.id_tipo_pago_liquidacion = 8
+            	    and (cld.motivo_liquidacion_detalle LIKE '%Patronal%' or cld.motivo_liquidacion_detalle LIKE '%PATRONAL%' )    ";
+    
+    $id       = "clc.fecha_pago_carpeta_liquidacion_cabeza";
+    
+    
+    
+    
+    $rsConsulta1=$contribucion->getCondiciones($columnas, $tablas, $where, $id);
+    
+    
+    
+    
+    //datos de la empresa
+    $col3  = " id_entidades, ruc_entidades, nombre_entidades, telefono_entidades, direccion_entidades, ciudad_entidades, razon_social_entidades";
+    $tab3  = " entidades";
+    $whe3  = " 1 = 1
+               AND nombre_entidades = 'CAPREMCI'";
+    $id3   = " creado";
+    $rsConsulta3   = $contribucion->getCondiciones($col3, $tab3, $whe3, $id3); //array de empresa
+    
+    
+    
+    
+    //datos de consecutivo
+    $col4  = " LPAD( valor_consecutivos::TEXT,espacio_consecutivos,'0') secuencial";
+    $tab4  = " consecutivos";
+    $whe4  = " 1 = 1
+               AND nombre_consecutivos = 'RETENCION'";
+    $id4   = " creado";
+    $rsConsulta4   = $contribucion->getCondiciones($col4, $tab4, $whe4, $id4); //array de empresa
+    
+    
+    
+    
+    //actualizar el codigo de retencion
+    $_actCol = " valor_consecutivos = valor_consecutivos + 1, numero_consecutivos = LPAD( ( valor_consecutivos + 1)::TEXT,espacio_consecutivos,'0')";
+    $_actTab = " consecutivos ";
+    $_actWhe = " nombre_consecutivos = 'RETENCION' ";
+    $resultadoAct =  $contribucion->ActualizarBy($_actCol, $_actTab, $_actWhe);
+    
+    if( $resultadoAct == -1 ){
+        return array('error' => true, 'mensaje' => 'Numero Retencion no actualizada');
+    }
+    
+    
+    
+    
+    /** validacion de parametros **/
+    if( empty($rsConsulta1) || empty($rsConsulta3) || empty($rsConsulta4) ){
+        //echo "Error validacion llego ";
+        return array('error' => true, 'mensaje' => 'Consultas no contiene todos los datos');
+    }
+    
+    
+    
+    
+    
+    
+    /** AUX de VARIABLES **/
+    
+    
+    $_fechaDocumento =    "31".'/'."10".'/'."2020";
+    
+    /** VARIABLES DE XML **/
+    $_ambiente = 1; //1 pruebas  2 produccion
+    $_tipoEmision = 1; //1 emision normal deacuerdo a la tabla 2 SRI
+    $_rucEmisor  = $rsConsulta3[0]->ruc_entidades;
+    $_razonSocial = $rsConsulta3[0]->razon_social_entidades;
+    $_nomComercial= $rsConsulta3[0]->nombre_entidades;
+    $_codDocumento= "07"; // referenciado a la tabla 4 del sri
+    $_establecimiento = "001"; //definir de la estructura  001-001-000000 -- factura !!!!------>NOTA
+    $_puntoEmision    = "001"; //solo existe un establecimiento
+    $_secuencial      = $rsConsulta4[0]->secuencial;   // es un secuencial tiene que definirse
+    $_dirMatriz       = $rsConsulta3[0]->direccion_entidades;
+    $_fechaEmision    =  $_fechaDocumento;//definir la fecha
+    $_dirEstablecimiento   = $rsConsulta3[0]->direccion_entidades;
+    
+    // /** informacion rtencion **/ //datos obtener de la tabla proveedores
+    $_contriEspecial  = "624";  //numero definir para otra empresa !!!!------>NOTA ----- OJO -- tomara de la tabla entidades
+    $_obligadoContabilidad = "SI"; //TEXTO definir para otra empresa !!!!------>NOTA ----- OJO --tomara de la tabla entidades
+    $_tipoIdentificacionRetenido   = $rsConsulta1[0]->tipo_identificacion; // deacuerdo a la tabla 7 --> ruc 04
+    $_razonSocialRetenido  = $rsConsulta1[0]->nombres_participes;
+    $_identificacionSujetoRetenido = $rsConsulta1[0]->cedula_participes;
+    $_periodoFiscal        = "10".'/'."2020";
+    
+    $_claveAcceso = $this->genClaveAcceso($_fechaEmision, $_rucEmisor, $_ambiente, $_establecimiento, $_puntoEmision, $_secuencial, $_tipoEmision);
+    
+    if( $_claveAcceso == "" || strlen($_claveAcceso) != 49 ){
+        return array('error' => true, 'mensaje' => 'Clave de acceso no generada','ErrClave'=>$_claveAcceso);
+    }
+    
+    $texto = "";
+    $texto .='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    $texto .= '<comprobanteRetencion id="comprobante" version="1.0.0">';
+    $texto .= '<infoTributaria>';
+    $texto .= '<ambiente>'.$_ambiente.'</ambiente>'; //conforme a la tabla 4
+    $texto .= '<tipoEmision>'.$_tipoEmision.'</tipoEmision>'; //conforme a la tabla 2
+    $texto .= '<razonSocial>'.htmlspecialchars($_razonSocial).'</razonSocial>';
+    $texto .= '<nombreComercial>'.htmlspecialchars($_nomComercial).'</nombreComercial>';
+    $texto .= '<ruc>'.$_rucEmisor.'</ruc>';
+    $texto .= '<claveAcceso>'.$_claveAcceso.'</claveAcceso>'; //conforme a la tabla 1
+    $texto .= '<codDoc>'.$_codDocumento.'</codDoc>'; //conforme a la tabla 3
+    $texto .= '<estab>'.$_establecimiento.'</estab>';
+    $texto .= '<ptoEmi>'.$_puntoEmision.'</ptoEmi>';
+    $texto .= '<secuencial>'.$_secuencial.'</secuencial>';
+    $texto .= '<dirMatriz>'.$_dirMatriz.'</dirMatriz>';
+    $texto .= '</infoTributaria>';
+    
+    $texto .= '<infoCompRetencion>';
+    $texto .= '<fechaEmision>'.$_fechaEmision.'</fechaEmision>'; //conforme al formato -- dd/mm/aaaa
+    $texto .= '<dirEstablecimiento>'.$_dirEstablecimiento.'</dirEstablecimiento>';
+    $texto .= '<contribuyenteEspecial>'.$_contriEspecial.'</contribuyenteEspecial>';
+    $texto .= '<obligadoContabilidad>'.$_obligadoContabilidad.'</obligadoContabilidad>';
+    $texto .= '<tipoIdentificacionSujetoRetenido>'.$_tipoIdentificacionRetenido.'</tipoIdentificacionSujetoRetenido>'; // conforme a la tabla 6
+    $texto .= '<razonSocialSujetoRetenido>'.$_razonSocialRetenido.'</razonSocialSujetoRetenido>';
+    $texto .= '<identificacionSujetoRetenido>'.$_identificacionSujetoRetenido.'</identificacionSujetoRetenido>';
+    $texto .= '<periodoFiscal>'.$_periodoFiscal.'</periodoFiscal>'; //conforme a formato mm/aaaa
+    $texto .= '</infoCompRetencion>';
+    
+    $texto .= '<impuestos>'; //aqui comienza el foreach de impuestos
+    
+    /** VARIABLES PARA CADA IMPUESTO **/
+    $_impCodigo = "";
+    $_impCodRetencion = "";
+    $_impBaseImponible = "";
+    $_impPorcetajeRet  = "";
+    $_impValorRet      = "";
+    $_impCodDocumentoSustentoRet = "12"; //!NOTA
+    $_impNumDocumentoSustentoRet = "";
+    $_impfechaEmisionRet   = $_fechaEmision;
+    
+    $_impNumDocumentoSustentoRet = "999999999999999";
+    //$_impNumDocumentoSustentoRet = str_replace("-", "", $_impNumDocumentoSustentoRet);
+    
+    
+    
+    $_impCodigo = 1;
+    $_impCodRetencion = 323;
+    $_impBaseImponible = $rsConsulta1[0]->base_calcuo_liquidacion_detalle;
+    $_impPorcetajeRet = -2.00;
+    $_impValorRet = $rsConsulta1[0]->valor_liquidacion_detalle;
+    
+    $texto .= '<impuesto>';
+    $texto .= '<codigo>'.$_impCodigo.'</codigo>'; //conforme a la tabla 20
+    $texto .= '<codigoRetencion>'.$_impCodRetencion.'</codigoRetencion>'; //conforme a la tabla 21
+    $texto .= '<baseImponible>'.round($_impBaseImponible,2).'</baseImponible>';
+    $texto .= '<porcentajeRetener>'.round(abs($_impPorcetajeRet),2).'</porcentajeRetener>';//conforme a la tabla 21
+    $texto .= '<valorRetenido>'.round(abs($_impValorRet),2).'</valorRetenido>';
+    $texto .= '<codDocSustento>'.$_impCodDocumentoSustentoRet.'</codDocSustento>';
+    $texto .= '<numDocSustento>'.$_impNumDocumentoSustentoRet.'</numDocSustento>'; //num documento soporte sin '-'
+    $texto .= '<fechaEmisionDocSustento>'.$_impfechaEmisionRet.'</fechaEmisionDocSustento>'; //obligatorio cuando corresponda **formato dd/mm/aaaa
+    $texto .= '</impuesto>';
+    
+    $texto .= '</impuestos>';
+    
+    /** obligatorio cuando corresponda **/
+    // se toma datos de proveedor -- Direccion. Telefono. Correo
+    /**CAMPOS ADICIONALES **/
+    $_adicional1 = $rsConsulta1[0]->direccion_participes;
+    if(!empty($_adicional1)){
+        
+    }else{
+        
+        $_adicional1="Ninguna";
+    }
+    
+    $_adicional2 = $rsConsulta1[0]->celular_participes;
+    
+    if(!empty($_adicional2)){
+        
+    }else{
+        
+        $_adicional2="0999999999";
+    }
+    
+    $_adicional3 = $rsConsulta1[0]->correo_participes;
+    
+    if(!empty($_adicional3)){
+        
+    }else{
+        
+        $_adicional3="ninguno@capremci.com.ec";
+    }
+    
+    $texto .= '<infoAdicional>';
+    $texto .= '<campoAdicional nombre="Dirección">'.$_adicional1.'</campoAdicional>';
+    $texto .= '<campoAdicional nombre="Teléfono">'.$_adicional2.'</campoAdicional>';
+    $texto .= '<campoAdicional nombre="Email">'.$_adicional3.'</campoAdicional>';
+    $texto .= '</infoAdicional>';
+    /** termina obligatorio cuando corresponda **/
+    
+    $texto .= '</comprobanteRetencion>';
+    
+    $resp = null;
+    
+    
+    
+    try {
+        
+        
+        $nombre_archivo = $_claveAcceso.".xml";
+        $ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\rp_c\\DOCUMENTOSELECTRONICOS\\docGenerados\\";
+        $ubicacion = $ubicacionServer.$nombre_archivo;
+        
+        $textoXML = mb_convert_encoding($texto, "UTF-8");
+        
+        $gestor = fopen($ubicacionServer.$nombre_archivo, 'w');
+        fwrite($gestor, $textoXML);
+        fclose($gestor);
+        
+        if( file_exists( $ubicacion ) ){
+            //echo "archivo existe";
+            /** SE GENERA UN INSERT A LA TABLA tri_retenciones con la columnName autorizado_retenciones en true **/
+            
+            $_trifuncion = "ins_tri_retenciones";
+            $_triparametros =  "$_ambiente,$_tipoEmision,'$_razonSocial','$_nomComercial','$_rucEmisor','$_claveAcceso','$_codDocumento','$_establecimiento',";
+            $_triparametros .= "'$_puntoEmision','$_secuencial','$_dirMatriz','$_fechaEmision','$_dirEstablecimiento',$_contriEspecial,'$_obligadoContabilidad',";
+            $_triparametros .= "'$_tipoIdentificacionRetenido','$_razonSocialRetenido','$_identificacionSujetoRetenido','$_periodoFiscal',0,0,0.00,0.00,0.00,";
+            $_triparametros .= "'','','$_fechaEmision',0,0,0.00,0.00,0.00,'','','$_fechaEmision','$_adicional1','$_adicional2','$_adicional3','$_fechaEmision'";
+            
+            $_qryTriRetenciones    = $cuentasPagar->getconsultaPG($_trifuncion, $_triparametros);
+            $resultado     = $cuentasPagar->llamarconsultaPG($_qryTriRetenciones);
+            
+            $error = pg_last_error();
+            if( !empty($error) ){
+                throw new Exception('Error al guardar datos Xml en BD');
+            }
+            
+            if( $resultado[0] == 1 ){
+                
+                    
+                /** SE GENERA INSERTADO DEL DETALLE DEL ARCHIVO XML **/
+                $_triCol1  = " id_tri_retenciones ";
+                $_triTab1  = " tri_retenciones ";
+                $_triWhe1  = " infotributaria_claveacceso = '$_claveAcceso'";
+                $_rstriConsulta1   = $cuentasPagar->getCondicionesSinOrden($_triCol1, $_triTab1, $_triWhe1, "");
+                
+                if( !empty($_rstriConsulta1) ){
+                    
+                    $_tri_detallefuncion       = "ins_tri_retenciones_detalle";
+                    $_id_tri_retenciones       = $_rstriConsulta1[0]->id_tri_retenciones;
+                    
+                    
+                    
+                    $_tri_detalleparametros    = "";
+                    
+                    
+                    $_impPorcetajeRet = abs(-2.00);
+                    
+                    
+                    $_tri_detalleparametros    .= "$_id_tri_retenciones,$_impCodigo,'$_impCodRetencion',$_impBaseImponible,$_impPorcetajeRet,$_impValorRet,";
+                    $_tri_detalleparametros    .= "'$_impCodDocumentoSustentoRet','$_impNumDocumentoSustentoRet','$_impfechaEmisionRet'";
+                    $_qryTriDetalleRetenciones = $cuentasPagar->getconsultaPG($_tri_detallefuncion, $_tri_detalleparametros);
+                    
+                    $resultadoDetalle  = $cuentasPagar->llamarconsultaPG($_qryTriDetalleRetenciones); /** insertado del detalle de retenciones **/
+                    
+                    
+                    
+                    
+                    
+                    
+                    $error = pg_last_error();
+                    if( !empty($error) ){
+                        $ins_detalle = false;
+                        
+                    }
+                    
+                    
+                    if( !empty($error) && isset($ins_detalle) && !$ins_detalle){
+                        throw new Exception('Error al guardar Detalles Impuestos datos Xml en BD');
+                    }
+                    
+                }
+                
+            }
+            
+            $resp['error'] = false;
+            $resp['mensaje'] = 'XML GENERADO';
+            $resp['claveAcceso'] = $_claveAcceso;
+            
+        }else{
+            throw new Exception('XML NO GENERADO');
+            
+        }
+        
+    } catch (Exception $e) {
+        
+        $resp['error'] = true;
+        $resp['mensaje'] = $e->getMessage();
+        $resp['claveAcceso'] = $_claveAcceso;
+    }
+    
+    
+    return $resp;
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	

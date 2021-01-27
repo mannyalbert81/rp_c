@@ -1166,7 +1166,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                 $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
-                $html.='<th style="text-align: left;  font-size: 13px;">Acciones</th>';
+               // $html.='<th style="text-align: left;  font-size: 13px;">Acciones</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Nombre Entidad Patronal</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Total Votantes</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Votos Faltantes</th>';
@@ -1180,22 +1180,30 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                 
                 
                 $i=0;
+                $total_total_votantes = 0;
+                $total_total_votos_faltantes = 0;
+                $total_total_votos_realizados = 0;
+                $total_procentaje_global=0;
+                
                 
                 foreach ($resultSet as $res)
                 {
                     
+                    $total_total_votantes = $total_total_votantes+$res->total_votantes;
+                    $total_total_votos_faltantes = $total_total_votos_faltantes+$res->total_votos_faltantes;
+                    $total_total_votos_realizados = $total_total_votos_realizados+$res->total_votos_realizados;
                     
                     
                     $i++;
                     $html.='<tr>';
-                    $html.='<td><a title="Ver Detalle" href="index.php?controller=ConsultaVotosElecciones&action=ReporteDetalleVotos&id_entidad_mayor_patronal='.$res->id_entidad_mayor_patronal.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+                   // $html.='<td><a title="Ver Detalle" href="index.php?controller=ConsultaVotosElecciones&action=ReporteDetalleVotos&id_entidad_mayor_patronal='.$res->id_entidad_mayor_patronal.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
                     $html.='<td style="font-size: 12px;">'.$res->nombre_entidad_mayor_patronal.'</td>';
                     $html.='<td style="font-size: 12px;">'.$res->total_votantes.'</td>';
                     $html.='<td style="font-size: 12px;">'.$res->total_votos_faltantes.'</td>';
                     $html.='<td style="font-size: 12px;">'.$res->total_votos_realizados.'</td>';
                     $html.="<td>";
                     $html.='<div class="progress">
-                              <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="'.$res->total_procentaje.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$res->total_procentaje.'%">'.$res->total_votos_realizados.'</div>
+                              <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="'.$res->total_procentaje.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$res->total_procentaje.'%"><font size=2 style="color:#0A0A0A;" ><b>'.number_format($res->total_procentaje, 2, ".", ",").'%</b></font></div>
                             </div>';
                     $html.='</td>';
                     $html.='</tr>';
@@ -1204,6 +1212,20 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     
                 }
                 
+                $total_procentaje_global= ($total_total_votos_realizados / $total_total_votantes)*100;
+                
+                $html.= '<tr>';
+                //$html.='<td style="font-size: 16px;" align="left"><strong></strong></td>';
+                $html.='<td style="font-size: 16px;" align="left"><strong>TOTAL</strong></td>';
+                $html.='<td style="font-size: 16px;" align="left"><strong>'.$total_total_votantes.'</strong></td>';
+                $html.='<td style="font-size: 16px;" align="left"><strong>'.$total_total_votos_faltantes.'</strong></td>';
+                $html.='<td style="font-size: 16px;" align="left"><strong>'.$total_total_votos_realizados.'</strong></td>';
+                $html.="<td>";
+                $html.='<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="'.$total_procentaje_global.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$total_procentaje_global.'%"><font size=3 style="color:#0A0A0A;" ><b>'.number_format($total_procentaje_global, 2, ".", ",").'%</b></font></div>
+                            </div>';
+                $html.='</td>';
+                $html.= '</tr>';
                 
                 
                 $html.='</tbody>';
@@ -1335,7 +1357,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
         $total_total_votantes = 0;
         $total_total_votos_faltantes = 0;
         $total_total_votos_realizados = 0;
-        
+        $total_procentaje_global=0;
         
         if(!empty($rsdatos)){
             
@@ -1345,6 +1367,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
             $html.='<th style="text-align: left;  font-size: 13px;">Total Votantes</th>';
             $html.='<th style="text-align: left;  font-size: 13px;">Votos Faltantes</th>';
             $html.='<th style="text-align: left;  font-size: 13px;">Votos Recibidos</th>';
+            $html.='<th style="text-align: left;  font-size: 13px;">Porcentaje</th>';
             $html.= '</tr>';
             
             
@@ -1359,15 +1382,31 @@ class ConsultaVotosEleccionesController extends ControladorBase{
             $html.='<td style="font-size: 12px;" align="right">'.$res->total_votantes.'</td>';
             $html.='<td style="font-size: 12px;" align="right">'.$res->total_votos_faltantes.'</td>';
             $html.='<td style="font-size: 12px;" align="right">'.$res->total_votos_realizados.'</td>';
+            $html.="<td style='font-size: 12px;' align='right'>";
+            $html.='<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="'.$res->total_procentaje.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$res->total_procentaje.'%"><font size=2 style="color:#0A0A0A;" >'.number_format($res->total_procentaje, 2, ".", ",").'%</font></div>
+                            </div>';
+            $html.='</td>';
             $html.= '</tr>';
             
                 
             }
+            
+            $total_procentaje_global= ($total_total_votos_realizados / $total_total_votantes)*100;
+            
+            
             $html.= '<tr>';
             $html.='<td style="font-size: 12px;" align="right"><strong>TOTAL</strong></td>';
             $html.='<td style="font-size: 12px;" align="right"><strong>'.$total_total_votantes.'</strong></td>';
             $html.='<td style="font-size: 12px;" align="right"><strong>'.$total_total_votos_faltantes.'</strong></td>';
             $html.='<td style="font-size: 12px;" align="right"><strong>'.$total_total_votos_realizados.'</strong></td>';
+            
+            $html.="<td style='font-size: 12px;' align='right'>";
+            $html.='<div class="progress">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" aria-valuenow="'.$total_procentaje_global.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$total_procentaje_global.'%"><font size=3 style="color:#0A0A0A;" ><b>'.number_format($total_procentaje_global, 2, ".", ",").'%</b></font></div>
+                            </div>';
+            $html.='</td>';
+            
             $html.= '</tr>';
             
             $html.= '</table>';
@@ -1558,7 +1597,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
             
             
             
-            
+            $datos_reporte['FECHAIMPRESION']=$html;
             $datos_reporte['TABLA_VALORES']=$html;
             $datos_reporte['ENTIDAD']=$nombre_entidad;
             

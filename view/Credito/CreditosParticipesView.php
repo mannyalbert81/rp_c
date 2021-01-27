@@ -162,6 +162,9 @@
   </aside>
 
   <div class="content-wrapper">
+  
+  <!-- DIV PARA BLOQUEAR PANTALLA -->
+  <div id="divLoaderPage" ></div>
     
   <section class="content-header">
       <h1>
@@ -184,7 +187,7 @@
           </div>
         </div>  
           <div class="box-body">
-          	<div class="row">
+          	<div class="row hide">
           		<div class="col-xs-6 col-md-3 col-lg-3 ">
             		<div class="form-group">
                 		<label for="cedula_participe" class="control-label">Cedula:</label>
@@ -232,6 +235,8 @@
                     	<div class="active tab-pane" id="panel_index">
                     		<?php include 'view/credito/html/panelindex.php'; ?>
                     	</div>
+                    	
+                    	<!-- PANEL SIMULADOR -->
                     	<div class="tab-pane" id="panel_info">
                     		<!-- AQUI VA LA INFORMACION DE LA SOLICITUD -->
                     		<div id="div_pnl_info_solicitud">
@@ -305,6 +310,7 @@
                           		</div>          		
 							</div>
 							
+							<!-- ESPACIO PARA ELEMENTOS DE SIMULADOR -->
 							<div id="div_pnl_simulacion_credito">
 																
 								<div class="row">		    	 
@@ -325,17 +331,20 @@
                                           </select>                                                              
                                         </div>
                             		  </div>
+                            		  
+                            		                           		  
                             		                              		                              		  
                             		  <div class="col-xs-12 col-md-3 col-lg-3 " >
-                            		  	<label for="txt_capacidad_pago" class="control-label">Capacidad Pago:</label>
-                            		  	<div class="input-group">
-                							<input type="text" value="" class="form-control" id="txt_capacidad_pago" readonly>                			
-                            				<span class="input-group-btn">
-                            					<button type="button" title="Análisis crédito" class="btn bg-olive"  id="btn_capacidad_pago">
-                        						 <i class="glyphicon glyphicon-new-window"></i>
-                        						</button>
-                        					</span>
-        					
+                            		  	<div class="form-group">
+                                		  	<label for="txt_capacidad_pago" class="control-label">Capacidad Pago:</label>
+                                		  	<div class="input-group">
+                    							<input type="text" value="" class="form-control" id="txt_capacidad_pago" readonly>                			
+                                				<span class="input-group-btn">
+                                					<button type="button" title="Análisis crédito" class="btn bg-olive"  id="btn_capacidad_pago">
+                            						 <i class="glyphicon glyphicon-new-window"></i>
+                            						</button>
+                            					</span>
+        									</div>
         								</div>
                             		  </div> 
                             		  
@@ -344,26 +353,74 @@
                                           <label for="txt_monto_creditos" class="control-label">Monto Credito:</label>
                                           <input type="number" step="10" id="txt_monto_creditos" class="form-control" value="">                                                                                                      
                                         </div>
-                            		  </div> 
-                            		  
-                            		  <div class="col-xs-12 col-md-3 col-lg-3 " >
-                            		  	<label for="ddl_numero_cuotas" class="control-label">N&uacute;mero de Cuotas:</label>
-                            		  	<div class="input-group">
-                							<select id="ddl_numero_cuotas" class="form-control" disabled>
-                								<option value="0">--Seleccione--</option>
-                							</select>                			
-                            				<span class="input-group-btn">
-                            					<button type="button" title="Buscar Cuotas" class="btn btn-info"  id="btn_numero_cuotas">
-                        						 <i class="glyphicon glyphicon-repeat"></i>
-                        						</button>
-                        					</span>
-        					
+                            		  </div>
+                            		        
+                        		  </div>
+                        		            
+                        		                          		  
+                        		  <div class="row">
+                        		      
+                        		      <div id="div_titulo_garante" class="hidden col-xs-12 col-md-12 col-lg-12">
+                        		      	<h3 class="text-info no-padding no-margin">DATOS GARANTE</h3>
+                        		      </div>
+                        		                          		  
+                    		  	      <!-- DIV PARA SELECCIONAR GARANTE --dinamico -->
+                            		  <div id="div_identificacion_garante" class=" hidden col-xs-12 col-md-3 col-lg-3 " >
+                            		  	<div class="form-group">
+                                		  	<label for="txt_cedula_garante" class="control-label">Identificaci&oacute;n Garante:</label>
+                                		  	<div class="input-group">
+                    							<input type="text" data-inputmask="'mask': '9999999999'" class="form-control" id="txt_cedula_garante"  placeholder="cedula">               			
+                                				<span class="input-group-btn">
+                                					<button type="button" class="btn btn-primary" id="btn_buscar_garante" >
+    													<i class="glyphicon glyphicon-plus"></i>
+    												</button>
+    												<button type="button" class="btn btn-danger" id="btn_borrar_cedula" >
+    													<i class="glyphicon glyphicon-arrow-left"></i>
+    												</button>
+                            					</span>     
+                        					</div>   					
         								</div>                            		  	
                             		  </div> 
+                            		  <!-- END DIV PARA SELECCIONAR GARANTE -->  
                             		  
+                            		  <!-- DIV PARA CAPACIDAD PAGO GARANTE --dinamico -->
+                            		  <div id="div_capacidad_pago_garante" class=" hidden col-xs-12 col-md-3 col-lg-3 " >
+                            		  	<div class="form-group">
+                                		  	<label for="ddl_numero_cuotas" class="control-label">Capacidad Pago Garante:</label>
+                                		  	<div class="input-group">
+                    							<input type="text" value="" class="form-control" id="txt_capacidad_pago_garante" readonly>                			
+                                				<span class="input-group-btn">
+                                					<button type="button" title="Análisis crédito" class="btn bg-olive"  id="btn_capacidad_pago_garante">
+                            						 <i class="glyphicon glyphicon-new-window"></i>
+                            						</button>
+                            					</span>        					
+            								</div>
+        								</div>                            		  	
+                            		  </div> 
+                            		  <!-- END DIV PARA CAPACIDAD PAGO GARANTE --> 
+                        		  	
+                        		  </div>
+                        		  
+                        		  <div class="row">
+                        		  	<div class="col-xs-12 col-md-4 col-lg-4 " >
+                            		  	<div class="form-group">
+                                		  	<label for="ddl_numero_cuotas" class="control-label">N&uacute;mero de Cuotas:</label>
+                                		  	<div class="input-group">
+                    							<select id="ddl_numero_cuotas" class="form-control" disabled>
+                    								<option value="0">--Seleccione--</option>
+                    							</select>                			
+                                				<span class="input-group-btn">
+                                					<button type="button" title="Buscar Cuotas" class="btn btn-info"  id="btn_numero_cuotas">
+                            						 <i class="glyphicon glyphicon-repeat"></i> Buscar plazo - cuota
+                            						</button>
+                            					</span>
+            					
+            								</div>  
+        								</div>                          		  	
+                            		  </div> 
                         		  </div>
                             		  
-                        		  <div class="row">                             		  
+                        		  <!--<div class="row">                             		  
                             		  <div id="div_capacidad_pago_garante" class="col-xs-12 col-md-3 col-lg-3 " >
                             		  	<label for="txt_capacidad_pago_garante" class="control-label">Capacidad Pago Garante:</label>
                             		  	<div class="input-group">
@@ -372,12 +429,10 @@
                             					<button type="button" title="Análisis crédito" class="btn bg-olive"  id="btn_capacidad_pago_garante">
                         						 <i class="glyphicon glyphicon-new-window"></i>
                         						</button>
-                        					</span>
-        					
+                        					</span>        					
         								</div>                           		  	
-                            		  </div>                           		  
-                            		                            		  
-                        		  </div>
+                            		  </div>                    		  
+                        		  </div>-->
                         		  
                         		  <div class="row">
                         		  	<div class="col-md-offset-6 col-lg-offset-6 col-xs-12 col-md-3 col-md-3 ">
@@ -815,7 +870,7 @@
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Credito/js/CreditosParticipes.js?0.62"></script>
+    <script src="view/Credito/js/CreditosParticipes.js?0.69"></script>
     <script src="view/Credito/js/CreditosParicipesAnalisis.js?0.09"></script> 
     <script src="view/Credito/js/CreditosParticipesCuentasBancarias.js?0.06"></script> 
    </body>

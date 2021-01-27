@@ -104,6 +104,8 @@ $controladores=$_SESSION['controladores'];
            	    <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosRecaudaciones",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosRecaudaciones&action=index"><i class="fa fa-circle-o"></i>Bitácora Recaudaciones</a></li>
            	    <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosSistemas",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosSistemas&action=index"><i class="fa fa-circle-o"></i>Bitácora Sistemas</a></li>
                 <li style="<?php echo getcontrolador("BitacoraActividadesEmpleadosTesoreria",$controladores) ?>"><a href="index.php?controller=BitacoraActividadesEmpleadosTesoreria&action=index"><i class="fa fa-circle-o"></i>Bitácora Tesorería</a></li>
+  				<li style="<?php echo getcontrolador("ConsultaFormReclamos",$controladores) ?>"><a href="index.php?controller=ConsultaFormReclamos&action=index"><i class="fa fa-circle-o"></i>Reclamos</a></li>
+                        
              </ul>
             </li>
         
@@ -369,11 +371,13 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
               	<li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=RecaudacionGeneracionArchivo&action=index"><i class="fa fa-circle-o"></i> Generacion Archivo</a></li>
+
                <li style="<?php echo getcontrolador("GenArchRecaudacion",$controladores) ?>"><a href="index.php?controller=Recaudacion&action=index"><i class="fa fa-circle-o"></i> Arc. Entidad Patronal</a></li>                
-                <li style="<?php echo getcontrolador("CargaRecaudaciones",$controladores) ?>"><a href="index.php?controller=CargaRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Carga Recaudaciones</a></li>
+
                 <li style="<?php echo getcontrolador("RecepcionArchivosRecaudaciones",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Recepción Archivos</a></li>   
-                <li style="<?php echo getcontrolador("RecepcionArchivosDebitosBancarios",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosDebitosBancarios&action=index"><i class="fa fa-circle-o"></i> Debitos Bancarios</a></li>   
+                <li style="<?php echo getcontrolador("RecepcionArchivosDebitosBancarios",$controladores) ?>"><a href="index.php?controller=RecepcionArchivosDebitosBancariosRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Recepción Debitos Bancarios</a></li>   
                 <li style="<?php echo getcontrolador("SolicitudAportes",$controladores) ?>"><a href="index.php?controller=SolicitudAportes&action=index"><i class="fa fa-circle-o"></i> Solicitud Aportes</a></li>             
+                <li style="<?php echo getcontrolador("PrincipalBusquedasRecaudaciones",$controladores) ?>"><a href="index.php?controller=PrincipalBusquedasRecaudaciones&action=index"><i class="fa fa-circle-o"></i> Ingreso a Bancos</a></li>             
              
                 </ul>
             </li>
@@ -398,7 +402,7 @@ $controladores=$_SESSION['controladores'];
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
-          <ul class="treeview-menu">
+         <ul class="treeview-menu">
             </ul>
         </li>
        </ul>
@@ -643,6 +647,9 @@ $controladores=$_SESSION['controladores'];
               <ul class="treeview-menu">
                 <li style="<?php echo getcontrolador("EstructurasBiess",$controladores) ?>"><a href="index.php?controller=EstructurasBiess&action=index"><i class="fa fa-circle-o"></i>G41</a></li>
                 <li style="<?php echo getcontrolador("EstructurasBiess",$controladores) ?>"><a href="index.php?controller=EstructurasBiess&action=index2"><i class="fa fa-circle-o"></i>G42</a></li>
+                <li style="<?php echo getcontrolador("EstructurasBiess",$controladores) ?>"><a href="index.php?controller=EstructurasBiess&action=index3"><i class="fa fa-circle-o"></i>G45</a></li>
+                <li style="<?php echo getcontrolador("EstructurasBiess",$controladores) ?>"><a href="index.php?controller=EstructurasBiess&action=index4"><i class="fa fa-circle-o"></i>G46</a></li>
+              
               </ul>
             </ul>
               
@@ -822,6 +829,9 @@ $controladores=$_SESSION['controladores'];
               </a>
               <ul class="treeview-menu">
                	  <li style="<?php echo getcontrolador("ConsultaCandidatos",$controladores) ?>"><a href="index.php?controller=ConsultaCandidatos&action=index"><i class="fa fa-circle-o"></i>Consulta Candidatos</a></li>
+      	        	  <li style="<?php echo getcontrolador("ConsultaVotosElecciones",$controladores) ?>"><a href="index.php?controller=ConsultaVotosElecciones&action=index"><i class="fa fa-circle-o"></i>Consulta Votos Elecciones</a></li>
+      	        	  <li style="<?php echo getcontrolador("ConsultaVotosElecciones",$controladores) ?>"><a href="index.php?controller=ConsultaVotosElecciones&action=index2"><i class="fa fa-circle-o"></i>Consulta Faltantes Votar</a></li>
+      	
       	  </ul>
             </li>
         </ul>

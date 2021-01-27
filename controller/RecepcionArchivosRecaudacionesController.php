@@ -743,7 +743,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
             $dataCabecera['fecha_proceso_descuentos_registrados']   = $fecha_actual;
             $dataCabecera['fecha_contable_descuentos_registrados']  = $fecha_contable;
             $dataCabecera['is_debito_bancario']     = 'f';
-            $dataCabecera['comentario_descuentos']  = 'null';
+            $dataCabecera['comentario_descuentos']  = '';
                         
                         
             $auxDescuentos  = $this->InsertDescuentos( $tipoFormatoDescuentos, $dataCabecera, $dataFilasArchivo );
@@ -867,7 +867,7 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 $detalle['mora_descuentos']                     = "0.00";
                 $detalle['credito_pay_descuentos']              = "0";
                 $detalle['mes_desc_descuentos']                 = "null";
-                $detalle['valor_usuario_descuentos']            = "null";
+                $detalle['valor_usuario_descuentos']            = "0.00";
                 
                 $parametrosDetalle  = "'".join("','", $detalle)."'";
                 $parametrosDetalle  = str_replace("'null'","null",$parametrosDetalle);
@@ -1261,8 +1261,26 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 $columnIndex++;
                 
                 $opciones = ""; //variable donde guardare los datos creados automaticamente                
-                
-                $opciones = '<div class="pull-right ">
+                                
+                $nombretipo_descuentos = "";
+                if( $res->parametro_uno_descuentos_formatos == "C")
+                {
+                    $nombretipo_descuentos  = "CREDITOS";
+                    $opciones = '<div class="pull-right ">
+                            <span >
+                                <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                            <span >
+                                <a onclick="mostrar_detalle_modal_creditos(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                                    
+                            </div>';
+                }else
+                {
+                    $nombretipo_descuentos  = "APORTES";
+                    $opciones = '<div class="pull-right ">
                             <span >
                                 <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
 	                           </a>
@@ -1271,16 +1289,8 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                                 <a onclick="mostrar_detalle_modal(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
 	                           </a>
                             </span>
-              
+                                    
                             </div>';
-                
-                $nombretipo_descuentos = "";
-                if( $res->parametro_uno_descuentos_formatos == "C")
-                {
-                    $nombretipo_descuentos  = "CREDITOS";
-                }else
-                {
-                    $nombretipo_descuentos  = "APORTES";
                 }
                 
                 $dataFila['numfila'] = $columnIndex;
@@ -1581,25 +1591,40 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 
                 $opciones = ""; //variable donde guardare los datos creados automaticamente
                 
-                $opciones = '<div class="pull-right ">
-                            <span >
-                                <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
-	                           </a>
-                            </span>
-                            <span >
-                                <a onclick="mostrar_detalle_modal(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
-	                           </a>
-                            </span>
+                //se comento esos archivos no necesian ser descargados solo mostrar detalles
+//                 $opciones = '<div class="pull-right ">
+//                             <span >
+//                                 <a onclick="mostrar_detalle(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+// 	                           </a>
+//                             </span>
+//                             <span >
+//                                 <a onclick="mostrar_detalle_modal(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+// 	                           </a>
+//                             </span>
               
-                            </div>';
+//                             </div>';
                               
                 $nombretipo_descuentos = "";
                 if( $res->parametro_uno_descuentos_formatos == "C")
                 {
                     $nombretipo_descuentos  = "CREDITOS";
+                    
+                    $opciones = '<div class="pull-right ">
+                              <span >
+                                <a onclick="mostrar_detalle_modal_creditos(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                            </div>';
                 }else
                 {
                     $nombretipo_descuentos  = "APORTES";
+                    
+                    $opciones = '<div class="pull-right ">
+                              <span >
+                                <a onclick="mostrar_detalle_modal(this)" id="" data-id_descuentos_cabeza="'.$res->id_descuentos_registrados_cabeza.'" href="#" class=" no-padding btn btn-sm btn-default" data-toggle="tooltip" data-placement="right" title="Ver Detalle Modal"> <i class="fa  fa-file-text-o fa-2x fa-fw" aria-hidden="true" ></i>
+	                           </a>
+                            </span>
+                            </div>';
                 }
                 
                 $dataFila['numfila'] = $columnIndex;
@@ -1677,11 +1702,13 @@ class RecepcionArchivosRecaudacionesController extends ControladorBase{
                 $ubicacionFile = $rsValidacion[0]->ubicacion_descuentos_registrados_archivo;
                 $nombreFile    = $rsValidacion[0]->nombre_descuentos_registrados_archivo;
                 
-                header("Content-disposition: attachment; filename=$nombreFile");
-                header("Content-type: MIME");
+                $archivoDescargar   = $ubicacionFile."/".$nombreFile.".txt";
+                
+                header('Content-type: text/plain');
+                header("Content-disposition: attachment; filename=$nombreFile.txt");
                 ob_clean();
                 flush();
-                readfile($ubicacionFile);
+                readfile($archivoDescargar);
                 exit;
             }
                         

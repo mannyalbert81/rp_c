@@ -37,8 +37,24 @@ class TablaAmortizacionController extends ControladorBase{
 
 	
 	public function ReportePagare(){
+	    
 	    session_start();
-	    $id_usuarios = $_SESSION["id_usuarios"];
+	    
+	    if( empty($_SESSION) ){
+	        
+	        header("location: index.php");   
+	        
+	    }else{
+	        
+	        if( isset($_SESSION['usuario_usuarios'])  )
+	        {
+	            if( empty( $_SESSION['usuario_usuarios'] ) || $_SESSION['usuario_usuarios'] == '' )
+	            {
+	                header("location: index.php");
+	            }	           
+	        }
+	    }
+	   
 	    $entidades = new EntidadesModel();
 	    //PARA OBTENER DATOS DE LA EMPRESA
 	    $datos_empresa = array();
@@ -148,9 +164,10 @@ class TablaAmortizacionController extends ControladorBase{
 	  
 	    
 	    
-	    setlocale(LC_ALL,"es_ES@euro","es_ES","esp");
-	    $datos_reporte['fechaactual'] = strftime("%d de %B del %Y", strtotime(date("d/m/Y")));
+	    setlocale(LC_ALL,"es_ES@euro","es_ES","esp");	   
+	    //$datos_reporte['fechaactual'] = strftime("%d de %B del %Y", strtotime(date("d/m/Y")));
 	    
+	    $datos_reporte['fechaactual'] = date('d') . " de ". $this->devuelveMesNombre(date('m'))." de ".date('Y');
 	    
 	    
 	    //DATOS DEL GARANTE
@@ -668,9 +685,13 @@ class TablaAmortizacionController extends ControladorBase{
 	    
 	}
 
-	
-
-	
+	private function devuelveMesNombre($_mes){
+	    
+	    $meses = array('enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre');
+	    $_intMes = (int)$_mes;
+	    return $meses[$_intMes-1];
+	    
+	}
 	
 }
 

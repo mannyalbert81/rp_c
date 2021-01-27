@@ -13,7 +13,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
     }
     //MAYCOL
     
-    
+    //steven
     public function ConsultaCandidatosFuerzaAerea(){
         
         
@@ -1092,6 +1092,8 @@ class ConsultaVotosEleccionesController extends ControladorBase{
         
         session_start();
         $registro = new RegistroModel();
+        $id_rol= $_SESSION['id_rol'];
+        
         
         $where_to="";
         
@@ -1166,7 +1168,13 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                 $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
                 $html.= "<thead>";
                 $html.= "<tr>";
+<<<<<<< HEAD
                // $html.='<th style="text-align: left;  font-size: 13px;">Acciones</th>';
+=======
+                if($id_rol == "1" || $id_rol == "65"){
+                    $html.='<th style="text-align: left;  font-size: 13px;">Acciones</th>';
+                }
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
                 $html.='<th style="text-align: left;  font-size: 13px;">Nombre Entidad Patronal</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Total Votantes</th>';
                 $html.='<th style="text-align: left;  font-size: 13px;">Votos Faltantes</th>';
@@ -1196,7 +1204,13 @@ class ConsultaVotosEleccionesController extends ControladorBase{
                     
                     $i++;
                     $html.='<tr>';
+<<<<<<< HEAD
                    // $html.='<td><a title="Ver Detalle" href="index.php?controller=ConsultaVotosElecciones&action=ReporteDetalleVotos&id_entidad_mayor_patronal='.$res->id_entidad_mayor_patronal.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+=======
+                    if($id_rol == "1" || $id_rol == "65"){
+                        $html.='<td><a title="Ver Detalle" href="index.php?controller=ConsultaVotosElecciones&action=ReporteDetalleVotos&id_entidad_mayor_patronal='.$res->id_entidad_mayor_patronal.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="30" height="30"></a></font></td>';
+                    }
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
                     $html.='<td style="font-size: 12px;">'.$res->nombre_entidad_mayor_patronal.'</td>';
                     $html.='<td style="font-size: 12px;">'.$res->total_votantes.'</td>';
                     $html.='<td style="font-size: 12px;">'.$res->total_votos_faltantes.'</td>';
@@ -1412,7 +1426,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
             $html.= '</table>';
             
          }
-        
+         $datos_reporte['FECHAIMPRESION']=date('Y-m-d H:i');
          $datos_reporte['TABLA_VALORES']=$html;
   
          $this->verReporte("ReporteConsultaVotosRealizados", array('datos_reporte'=>$datos_reporte ));
@@ -1490,7 +1504,7 @@ class ConsultaVotosEleccionesController extends ControladorBase{
             $html.= '</table>';
             
         }
-        
+        $datos_reporte['FECHAIMPRESION']=date('Y-m-d H:i');
         $datos_reporte['TABLA_VALORES']=$html;
         $datos_reporte['ENTIDAD']=$nombre_entidad;
         
@@ -1597,7 +1611,11 @@ class ConsultaVotosEleccionesController extends ControladorBase{
             
             
             
+<<<<<<< HEAD
             $datos_reporte['FECHAIMPRESION']=$html;
+=======
+            $datos_reporte['FECHAIMPRESION']=date('Y-m-d H:i');
+>>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
             $datos_reporte['TABLA_VALORES']=$html;
             $datos_reporte['ENTIDAD']=$nombre_entidad;
             
@@ -1608,6 +1626,46 @@ class ConsultaVotosEleccionesController extends ControladorBase{
         
     }
     
+    public function validar_menu()
+    
+    {
+        $registro = new RegistroModel();
+        $cedula = $_GET['cedula'];
+        
+        if(isset( $_GET['cedula']) && !empty($_GET['cedula']))
+        {
+            $resp   = array();
+            $callBack = $_GET['jsoncallback'];
+            
+            $columnas_1= "a.cedula_participes, a.nombre_participes, a.apellido_participes, a.celular_participes, a.correo_participes, b.nombre_entidad_mayor_patronal, c.id_padron_electoral_traza_votos, to_char(c.creado, 'YYYY-MM-DD HH:MM') as creado";
+            $tablas_1 =  "core_participes a
+            inner join core_entidad_mayor_patronal b on a.id_entidad_mayor_patronal=b.id_entidad_mayor_patronal
+            inner join padron_electoral_traza_votos c on a.id_participes=c.id_participe_vota";
+            $where_1 = "a.id_estatus=1 and a.cedula_participes = '$cedula'";
+            $id_1 = "a.apellido_participes";
+              $resultUsu=$registro->getCondiciones($columnas_1, $tablas_1, $where_1, $id_1);
+            
+            if( !empty( $resultUsu ) )
+            {
+                
+                // $resp['id_representante'] = $resultUsu->id_padron_electoral_representantes;
+                $resp['modal'] = "SI";
+                
+            }else
+            {
+                // $resp['id_representante'] =0;
+                $resp['modal'] = "NO";
+            }
+            
+        }else
+        {
+            // $resp['id_representante'] =0;
+            $resp['modal'] = "NO";
+        }
+        
+        $respuesta	= json_encode( $resp );
+        echo $callBack."(".$respuesta.");";
+    }
     
 }
 

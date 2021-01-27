@@ -1031,7 +1031,7 @@ function BuscarParticipe()
 {
 		
 		$.ajax({
-		    url: 'index.php?controller=CargarParticipes&action=BuscarParticipe',
+		    url: 'index.php?controller=CargarParticipes&action=BuscarParticipe_carga',
 		    type: 'POST',
 		    data: {
 		    },

@@ -2,6 +2,7 @@
 var array_procesar_personal;
 var array_procesar_patronal;
 var array_procesar_cesantes;
+var array_procesar_cesantias_patronales;
 
 
 $(document).ready( function (){
@@ -9,10 +10,12 @@ $(document).ready( function (){
 	load_personal(1);
 	load_patronal(1);
 	load_cesantes(1);
+	load_cesantias_patronales(1);
 		
 	array_procesar_personal="";
 	array_procesar_patronal="";
 	array_procesar_cesantes="";
+	array_procesar_cesantias_patronales="";
 	
 });
   
@@ -108,6 +111,44 @@ function load_cesantes(pagina){
            }
          });
 }
+
+
+	
+function load_cesantias_patronales(pagina){
+
+	var search=$("#search_cesantes").val();
+    var search_fechadesde=$("#search_fechadesde_cesantes").val();
+	var search_fechahasta=$("#search_fechahasta_cesantes").val();
+
+	
+    var con_datos={
+				  action:'ajax',
+				  page:pagina,
+				  search:search,
+		  		  search_fechadesde:search_fechadesde,
+				  search_fechahasta:search_fechahasta	
+				  };
+		  
+  $("#load_cesantias_patronales_registrados").fadeIn('slow');
+  
+  $.ajax({
+            beforeSend: function(objeto){
+              $("#load_cesantias_patronales_registrados").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
+            },
+            url: 'index.php?controller=TributarioImpuestoSuperavit&action=consulta_cesantias_patronales&search='+search,
+            type: 'POST',
+            data: con_datos,
+            success: function(x){
+              $("#cesantias_patronales_registrados").html(x);
+              $("#load_cesantias_patronales_registrados").html("");
+              $("#tabla_cesantias_patronales").tablesorter(); 
+              
+            },
+           error: function(jqXHR,estado,error){
+             $("#cesantias_patronales_registrados").html("Ocurrio un error al cargar la información de Superavit Patronal..."+estado+"    "+error);
+           }
+         });
+}	
 
 
 
@@ -618,4 +659,191 @@ function Procesar_Cesantes(){
 
 
 // termina patronal cesantes
+
+
+
+
+
+
+///cesantias Manuel
+
+
+
+$("#cesantias_patronales_registrados").on("click","#btn_cesantias_patronales",function(event){
+
+	
+	var $div_respuesta = $("#msg_frm_cesantias_patronales"); 
+	
+	$div_respuesta.text("").removeClass();
+	  
+	$("#mod_cesantias_patronales").on('show.bs.modal',function(e){
+
+		 var modal = $(this)
+		 
+		
+		
+		cargar_cesantias_patronales_a_procesar();
+		 
+	}) 
+	
+})
+
+
+
+function cargar_cesantias_patronales_a_procesar(){
+     	 
+	var cantidad_cesantias_patronales = $("#mod_cantidad_cesantias_patronales").val();
+	
+	var search_fechadesde=$("#search_fechadesde_cesantes").val();
+	var search_fechahasta=$("#search_fechahasta_cesantes").val();
+
+	
+	
+		$.ajax({
+			beforeSend:function(){},
+			url:"index.php?controller=TributarioImpuestoSuperavit&action=cargar_cesantias_patronales_a_procesar",
+			type:"POST",
+			//dataType:"json",
+			data:{cantidad_cesantias_patronales:cantidad_cesantias_patronales,
+				  search_fechadesde:search_fechadesde,
+				  search_fechahasta:search_fechahasta 
+			}
+		}).done(function(x){		
+			
+			
+			
+			x=JSON.parse(x);
+			
+			// imprimo html
+			$("#msg_frm_cesantias_patronales").html(x[1]);
+			
+			// lleno el array
+			array_procesar_cesantias_patronales="";
+			array_procesar_cesantias_patronales=x[0];
+		
+			
+			
+		}).fail(function(xhr,status,error){
+			var err = xhr.responseText
+			console.log(err)
+			
+		})
+	}
+
+
+
+
+
+function Procesar_Cesantias_Patronales(){
+	
+	
+	
+	if(array_procesar_cesantias_patronales !=""){
+		
+		
+	
+		var cantidad_cesantias_patronales = $("#mod_cantidad_cesantias_patronales").val();
+		var  search_fechadesde=$("#search_fechadesde_cesantes").val();
+    	var search_fechahasta=$("#search_fechahasta_cesantes").val();
+	
+			
+		var parametros = {cantidad_cesantias_patronales:cantidad_cesantias_patronales, array_procesar_cesantias_patronales:array_procesar_cesantias_patronales, search_fechadesde:search_fechadesde, search_fechahasta:search_fechahasta  }
+
+		
+		$.ajax({
+			beforeSend:function(){
+				
+				
+				swal({
+					  title: "Retenciones",
+					  text: "Procesando",
+					  icon: "view/images/capremci_load.gif",
+					  buttons: false,
+					  closeModal: false,
+					  allowOutsideClick: false
+					});
+				
+			},
+			url:"index.php?controller=TributarioImpuestoSuperavit&action=Procesar_Cesantias_Patronales",
+			type:"POST",
+			dataType:"json",
+			data:parametros
+		}).done(function(x){
+			/*
+			if( x.estatus == "PRUEBA" )
+			{
+				console.log('Hola');
+				console.log(x.html);
+			}
+			*/
+			if( x.estatus != undefined ){
+				
+				if( x.estatus == "OK"){
+					var stext = x.mensaje;
+					if(x.xml != ""){
+						stext += x.xml;
+					}
+					$("#msg_frm_cesantias_patronales").html("");
+					$("#msg_frm_cesantias_patronales").html(x.html);
+					
+					swal({title:"TRANSACCIÓN OK",text:x.mensaje, icon:"success"})
+		    		.then((value) => {
+		    			
+		    			window.location.reload();
+		    		});	
+									
+				}else{
+					$("#msg_frm_cesantes").html("");
+                  $("#msg_frm_cesantes").html(x.html);
+					
+                  swal({title:"ERROR TRANSACCIÓN",text:"REVISAR DATOS ENVIADOS \n"+x.mensaje,icon:"error"})
+                  .then((value) => {
+		    			
+		    			window.location.reload();
+		    		});
+                  
+					
+					
+				}
+			
+			}
+			
+			
+			
+		}).fail(function(xhr,status,error){
+			
+			
+			let err = xhr.responseText		
+			console.log(err);
+			if (err.includes("Warning") || err.includes("Notice") || err.includes("Error")){			
+				
+				swal({title:"ERROR TRANSACCIÓN",text:"REVISAR DATOS ENVIADOS \n",icon:"error"})
+              .then((value) => {
+	    			
+	    			window.location.reload();
+	    		});
+						
+			}
+			
+			
+		})
+		
+		
+		
+	}	else{
+		
+		
+		
+		swal({title:"ERROR TRANSACCIÓN",text:"NO EXISTE DATOS PARA PROCESAR \n",icon:"error"})
+      .then((value) => {
+			
+			window.location.reload();
+		});
+		
+		
+		
+	}
+	
+	
+}
 

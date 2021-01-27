@@ -2,47 +2,43 @@
 <html lang="en">
   <head>
   
+  	<title>Capremci</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
+   	<?php include("view/modulos/links_css.php"); ?>
+   	<link rel="stylesheet" href="view/bootstrap/otros/css/tablaFixed.css?1"/> 
+    
     <style type="text/css">
-    
-    
 
-#ico{ list-style-image:url(ico.png);}
-#ico a{ font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px; text-decoration:none; color:#047;}
-#ico a:hover{text-decoration:underline; color:#C00;}
+        #ico{ list-style-image:url(ico.png);}
+        #ico a{ font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px; text-decoration:none; color:#047;}
+        #ico a:hover{text-decoration:underline; color:#C00;}
 
-    .scrollable-menu {
-    height: auto;
-    max-height: 200px;
-    overflow-x: hidden;
-}
+        .scrollable-menu {
+            height: auto;
+            max-height: 200px;
+            overflow-x: hidden;
+        }
 
-	ul{
-        list-style-type:none;
-      }
-  li{
-    list-style-type:none;
-    }
-    td.fila {
-
-    width: 100px;
-
-}
-    
-    
+	    ul{
+            list-style-type:none;
+        }
+        li{
+            list-style-type:none;
+        }
+        td.fila {
+            width: 100px;
+        }
+        .letrasize11{
+        font-size: 11px;
+       }    
+       
+       
     </style>
     
     
-    <title>Capremci</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="icon" type="image/png" href="view/bootstrap/otros/login/images/icons/favicon.ico"/>
-   <?php include("view/modulos/links_css.php"); ?>
-
-
-   
-   
-   
 </head>
 
   <body class="hold-transition skin-blue fixed sidebar-mini">   
@@ -89,6 +85,9 @@
               </div>
             </div>
             <div class="box-body">
+            
+            <?php //echo count($resultRep); print_r($resultRep); ?>
+            
             <?php if ($resultRep !="" ) { foreach($resultRep as $resEdit) {?>
            
             <div class="row">
@@ -146,10 +145,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Tiempo de Aportación:</label>
+                    				<label for="input001" class="col-sm-4 control-label" >Tiempo de Aportación:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $tiempo2[0]?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input001" name="input001" value="<?php echo $tiempo2[0]?>" >
+                    				  <div id="mensaje_input001" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -168,10 +167,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >N° de Aportes:</label>
+                    				<label for="input002" class="col-sm-4 control-label" >N° de Aportes:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $aportes[0]?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input002" name="input002" value="<?php echo $aportes[0]?>" >
+                    				  <div id="mensaje_input002" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -180,10 +179,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Edad:</label>
+                    				<label for="input003" class="col-sm-4 control-label" >Edad:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $tiempo[0]?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input003" name="input003" value="<?php echo $tiempo[0]?>" >
+                    				  <div id="mensaje_input003" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -192,7 +191,7 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Acum.de Aport. Pers. :</label>
+                    				<label for="input004" class="col-sm-4 control-label" >Acum.de Aport. Pers. :</label>
                     				<div class="col-sm-8">
                     				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="total" name="total" value="<?php echo number_format($resEdit->total, 2, ",", "."); ?>" >
                     				  <div id="mensaje_total" class="errores"></div>
@@ -215,10 +214,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Años de Servicio:</label>
+                    				<label for="input005" class="col-sm-4 control-label" >Años de Servicio:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $tiempo2[0]?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input005" name="input005" value="<?php echo $tiempo2[0]?>" >
+                    				  <div id="mensaje_input005" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -227,10 +226,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Cuenta Individual:</label>
+                    				<label for="input006" class="col-sm-4 control-label" >Cuenta Individual:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo number_format($resEdit->totalaporte, 2, ",", "."); ?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input006" name="input006" value="<?php echo number_format($resEdit->totalaporte, 2, ",", "."); ?>" >
+                    				  <div id="mensaje_input006" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -239,10 +238,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Credito Activo:</label>
+                    				<label for="input007" class="col-sm-4 control-label" >Credito Activo:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="-" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input007" name="input007" value="-" >
+                    				  <div id="mensaje_input007" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -250,10 +249,10 @@
                  		<div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Estado:</label>
+                    				<label for="input008" class="col-sm-4 control-label" >Estado:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $resEdit->nombre_estado_participes; ?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="height:20px" readonly="readonly" class="form-control" id="input008" name="input008" value="<?php echo $resEdit->nombre_estado_participes; ?>" >
+                    				  <div id="mensaje_input008" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -267,10 +266,10 @@
       <div class="col-lg-6 col-md-6 col-xs-12">
                 			<div class="form-group "> 
                     			 <div class="form-group-sm">
-                    				<label for="fecha_ingreso_participes" class="col-sm-4 control-label" >Observaciones:</label>
+                    				<label for="input009" class="col-sm-4 control-label" >Observaciones:</label>
                     				<div class="col-sm-8">
-                    				  <input type="text" style="width:315px; height:50px" readonly="readonly" class="form-control" id="fecha_ingreso_participes" name="fecha_ingreso_participes" value="<?php echo $resEdit->observacion_participes; ?>" >
-                    				  <div id="mensaje_fecha_ingreso_participes" class="errores"></div>
+                    				  <input type="text" style="width:315px; height:50px" readonly="readonly" class="form-control" id="input009" name="input009" value="<?php echo $resEdit->observacion_participes; ?>" >
+                    				  <div id="input009" class="errores"></div>
                     				</div>
                     			 </div>        			 
                 			</div>
@@ -289,10 +288,9 @@
       	</div>
     </section>
     		
-    <!-- seccion para el listado de roles -->
 
-
-     <section class="content">
+            
+          <section class="content">
           <div class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Aportaciones</h3>
@@ -307,41 +305,87 @@
 
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#personales" data-toggle="tab">Personales</a></li>
-              <li><a href="#patronales" data-toggle="tab">Patronales</a></li>
+              <li class="active"><a href="#personales_dt" data-toggle="tab">Personales</a></li>
+              <li ><a href="#patronales_dt" data-toggle="tab">Patronales</a></li> 
             </ul>
             
             <div class="col-md-12 col-lg-12 col-xs-12">
             <div class="tab-content">
             <br>
-              <div class="tab-pane active" id="personales">
-                
-					<div class="pull-right" style="margin-right:15px;">
-					 					<select name="id_contribucion_tipo" id="id_contribucion_tipo"  onchange="load_personal_cta_individual(1);" class="form-control" >
-                                      <option value="0" selected="selected">--TODOS--</option>
-    									<?php  foreach($resContriTipo as $res) {?>
-    										<option value="<?php echo $res->id_contribucion_tipo; ?>" ><?php echo $res->nombre_contribucion_tipo; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-					</div>
-					<div id="load_personales_cta_individual" ></div>	
-					<div id="personales_registrados"></div>	
-                
+ 			 <div class="tab-pane active" id="personales_dt">
+                              	
+              		<div id="pnl_div_aportes_personales" class="letrasize11">
+                		<table id="tbl_personales" class="table table-striped table-bordered" > <!--   -->
+                        	<thead >
+                        	    <tr class="danger" >
+                        	    	<th >A&ntilde;o</th>
+                        			<th >Enero</th>
+                        			<th >Febrero</th>
+                        			<th >marzo</th>
+                        			<th >Abril</th>
+                        			<th >Mayo</th>
+                        			<th >Junio</th>
+                        			<th >Julio</th>
+                        			<th >Agosto</th>
+                        			<th >Septiembre</th>   
+                        			<th >Octubre</th>
+                        			<th >Noviembre</th>
+                        			<th >Diciembre</th>    
+                        			<th >Acumulado</th>                  			
+                        		</tr>                        		
+                        	</thead>        
+                        	<tfoot>
+                        		<tr>
+                        			<td colspan="14"></td> 
+                    			</tr>
+                			</tfoot>
+                        </table>            	
+                	</div>
+          		
+            	
+          		
+		       
               </div>
               
-              <div class="tab-pane" id="patronales">
+              <div class="tab-pane" id="patronales_dt">
+              
+              	<div class="box-body no-padding">
+          		
+              		<div id="pnl_div_aportes_patronales" class="letrasize11">
+                		<table id="tbl_patronales" class="table table-striped table-bordered" > <!--   -->
+                        	<thead >
+                        	    <tr class="danger" >
+                        	    	<th >A&ntilde;o</th>
+                        			<th >Enero</th>
+                        			<th >Febrero</th>
+                        			<th >marzo</th>
+                        			<th >Abril</th>
+                        			<th >Mayo</th>
+                        			<th >Junio</th>
+                        			<th >Julio</th>
+                        			<th >Agosto</th>
+                        			<th >Septiembre</th>   
+                        			<th >Octubre</th>
+                        			<th >Noviembre</th>
+                        			<th >Diciembre</th>    
+                        			<th >Acumulado</th>                  			
+                        		</tr>
+                        	</thead>        
+                        	<tfoot>
+                        		<tr>
+                        			<td colspan="10"></td>
+                    			</tr>
+                			</tfoot>
+                        </table>            	
+                	</div>          		
+            	
+          		</div>
                 
-                    <div class="pull-right" style="margin-right:15px;">
-					<select name="id_contribucion_tipo" id="id_contribucion_tipo"  onchange="load_patronal_cta_individual(1);" class="form-control" >
-                                      <option value="0" selected="selected">--TODOS--</option>
-    									<?php  foreach($resContriTipo as $res) {?>
-    										<option value="<?php echo $res->id_contribucion_tipo; ?>" ><?php echo $res->nombre_contribucion_tipo; ?> </option>
-    							        <?php } ?>
-    								   </select> 
-					</div>
-					<div id="load_patronal_cta_individual" ></div>	
-					<div id="patronal_registrados"></div>	
+        			
               </div>
+                            
+            
+              
              </div>
             </div>
            </div>
@@ -349,6 +393,7 @@
             </div>
             </div>
             </section>
+            
             
 
  </div>
@@ -360,86 +405,8 @@
    <?php include("view/modulos/links_js.php"); ?>
    <script src="view/Administracion/js/B17.js?0.12" ></script>
    
-   	<script type="text/javascript">
+   <script src="view/Core/js/ConsultaGeneral.js?2.32"></script> 
 
-        	   $(document).ready( function (){
-
-        		   load_personal_cta_individual(1);
-        		   load_patronal_cta_individual(1);
-        		   
-        		   
-	   			});
-
-        	
-
-
-	   function load_personal_cta_individual(pagina){
-
-		   var id_participes=$("#id_participes").val();
-		   var id_contribucion_tipo= $("#id_contribucion_tipo").val();
-		  
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_personales_cta_individual").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_personales_cta_individual").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_personal_cta_individual&id_participes='+id_participes+'&id_contribucion_tipo='+id_contribucion_tipo, 
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#personales_registrados").html(x);
-	                 $("#load_personales_cta_individual").html("");
-	                 $("#tabla_personal_cta_individual").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#personales_registrados").html("Ocurrio un error al cargar la informacion de Aportes Personales..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-
-	   function load_patronal_cta_individual(pagina){
-
-		   var id_participes=$("#id_participes").val();
-		   var id_contribucion_tipo= $("#id_contribucion_tipo").val();
-		  
-	       var con_datos={
-					  action:'ajax',
-					  page:pagina
-					  };
-			  
-	     $("#load_patronal_cta_individual").fadeIn('slow');
-	     
-	     $.ajax({
-	               beforeSend: function(objeto){
-	                 $("#load_patronal_cta_individual").html('<center><img src="view/images/ajax-loader.gif"> Cargando...</center>');
-	               },
-	               url: 'index.php?controller=CoreInformacionParticipes&action=consulta_patronal_cta_individual&id_participes='+id_participes+'&id_contribucion_tipo='+id_contribucion_tipo, 
-	               type: 'POST',
-	               data: con_datos,
-	               success: function(x){
-	                 $("#patronal_registrados").html(x);
-	                 $("#load_patronal_cta_individual").html("");
-	                 $("#tabla_patronal_cta_individual").tablesorter(); 
-	                 
-	               },
-	              error: function(jqXHR,estado,error){
-	                $("#patronal_registrados").html("Ocurrio un error al cargar la informacion de Aportes Patronales..."+estado+"    "+error);
-	              }
-	            });
-
-
-		   }
-	
- </script>
  
 
    

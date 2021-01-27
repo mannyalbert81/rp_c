@@ -223,24 +223,21 @@
 	</div>
 </div>
 
-
-
  
  	<?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
  </div>
     
-    <?php include("view/modulos/links_js.php"); ?>
-	
+    <?php include("view/modulos/links_js.php"); ?>	
 	 
-   <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
+   	<script src="view/bootstrap/plugins/input-mask/jquery.inputmask.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
     <script src="view/bootstrap/plugins/input-mask/jquery.inputmask.extensions.js"></script>
     <script src="view/bootstrap/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-    <script src="view/Credito/js/RevisionCreditos.js?0.29"></script>
+    <script src="view/Credito/js/RevisionCreditos.js?0.46"></script>
 	
 	
   </body>

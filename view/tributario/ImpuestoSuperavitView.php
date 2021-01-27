@@ -75,6 +75,7 @@
               <li class="active"><a href="#personal" data-toggle="tab">Cuenta Individual (Superavit Personal)</a></li>
               <li><a href="#patronal" data-toggle="tab">Cuenta Desembolsar (Superavit Personal)</a></li>
               <li><a href="#cesantes" data-toggle="tab">Cesantes (Superavit Patronal)</a></li>
+              <li><a href="#cesantias_patronales" data-toggle="tab">Cesantías (Patronales))</a></li>
             </ul>
             
             <div class="col-md-12 col-lg-12 col-xs-12">
@@ -85,7 +86,6 @@
               
                 
 					<div class="pull-right" style="margin-right:15px;">
-					
 						<input type="text" value="" class="form-control" id="search_personal" name="search_personal" onkeyup="load_personal(1)" placeholder="search.."/>
 					</div>
 					<div id="load_registrados" ></div>	
@@ -110,12 +110,38 @@
                <div class="tab-pane" id="cesantes">
                 
                     <div class="pull-right" style="margin-right:15px;">
-					<input type="text" value="" class="form-control" id="search_cesantes" name="search_cesantes" onkeyup="load_cesantes(1)" placeholder="search.."/>
+					    <input type="text" value="" class="form-control" id="search_cesantes" name="search_cesantes" onkeyup="load_cesantes(1)" placeholder="search.."/>
 					</div>
 					
 					
 					<div id="load_cesantes_registrados" ></div>	
 					<div id="cesantes_registrados"></div>
+                
+                
+              </div>
+              
+              
+              <div class="tab-pane" id="cesantias_patronales">
+                
+                	<div class="form-group row pull-right">
+                	  
+                	  	<label for="fordesde" class="col-sm-1 col-form-label">Desde: </label>
+                        <div class="col-sm-3">
+                          <input type="date" value="" class="form-control" id="search_fechadesde_cesantes" name="search_fechadesde_cesantes" onkeyup="load_cesantias_patronales(1)" placeholder="search.."/>
+                        </div>
+                	  
+                	    <label for="forhasta" class="col-sm-1 col-form-label">Hasta: </label>
+                        <div class="col-sm-3">
+                          <input type="date" value="" class="form-control" id="search_fechahasta_cesantes" name="search_fechahasta_cesantes" onkeyup="load_cesantias_patronales(1)" placeholder="search.."/>
+                        </div>
+                        
+                         <div class="col-sm-3">
+                          <input type="text" value="" class="form-control" id="search_cesantes" name="search_cesantes" onkeyup="load_cesantias_patronales(1)" placeholder="search.."/>
+                        </div>
+                      </div>
+                      	
+					<div id="load_cesantias_patronales_registrados" ></div>	
+					<div id="cesantias_patronales_registrados"></div>
                 
                 
               </div>
@@ -263,6 +289,48 @@
 </div>
              
                
+    
+    
+     <div class="modal fade" id="mod_cesantias_patronales" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Cesantías (Generar Retenciones Patronal)</h4>
+          </div>
+          <div class="modal-body">
+          <!-- empieza el formulario modal productos -->
+          	<form class="form-horizontal" method="post" id="frm_cesantes" name="frm_cesantes">
+          			  
+          	  <div class="form-group">
+				<label for="mod_cantidad_cesantias_patronales" class="col-sm-3 control-label"># Procesar:</label>
+				<div class="col-sm-4">
+				 <select class="form-control" id="mod_cantidad_cesantias_patronales" name="mod_cantidad_cesantias_patronales" onchange="cargar_cesantes_a_procesar()">
+					<option value="1">1</option>
+					<option value="10">10</option>
+					<option value="20">20</option>
+					<option value="50">50</option>
+					<option value="100">100</option>	
+					<option value="1000" selected="selected">1000</option>				
+				  </select>
+				</div>
+			  </div>
+			  
+			
+			  <div id="msg_frm_cesantias_patronales" class=""></div>
+			  
+          	</form>
+          	<!-- termina el formulario modal lote -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			<button type="button" form="frm_patronal" class="btn btn-primary" id="guardar_datos2" onclick="Procesar_Cesantias_Patronales()">Procesar</button>
+          </div>
+        </div>
+      </div>
+</div>
+             
             
             
             

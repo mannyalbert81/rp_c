@@ -64,56 +64,99 @@
 	    $_cedula_participes =(isset($_GET['cedula_participes'])) ? $_GET['cedula_participes'] : 0;
 	    
 	    
-	    
-	    $columnasP = "id_participes, apellido_participes, nombre_participes, cedula_participes, 
-                    id_entidad_patronal, id_entidad_mayor_patronal";
-	    $tablasP = "public.core_participes";
-	    $whereP = "cedula_participes = '$_cedula_participes'";
-	    $idP = "id_participes";
+	    $id_participes_vota = $this->DevuelveIdparticipes($_cedula_participes);
 	    
 	    
-	    //consultar si voto
-	    $resultSetP= $participes->getCondiciones($columnasP, $tablasP, $whereP, $idP);
-	    
-	    $ip_usuarios = $participes->getRealIP();
-	    
-	    
-	    
-	    $iP=count($resultSetP);
-	    
-	    
-	    if($iP>0)
+	    if ($this->VerificaDerechoVoto($_id_participes_vota))
 	    {
-	        
-	        foreach ($resultSetP as $res)
+	        if ($this->VerificaSiVoto($_id_participes_vota))
 	        {
-	            session_start();
-	            $_SESSION["ele_id_participes"] =  $res->id_participes;
-	            $_SESSION["ele_cedula_participes"] =  $res->cedula_participes;
-	            $_SESSION["ele_id_entidad_patronal"] =  $res->id_entidad_patronal;
-	            $_SESSION["ele_id_entidad_mayor_patronal"] =  $res->id_entidad_mayor_patronal;
-	            $_SESSION["ele_ip_usuarios"] =  $ip_usuarios;
+	            header('Location:http://186.4.157.125/webcapremci/index.php?controller=Usuarios&action=Loguear');
 	            
 	            
-	            $this->view_Elecciones("PapeletaCandidatos",array(
-	                "res_cedula_participes"=>$_cedula_participes
-	            ));
+	        }
+	        else 
+	        {
+	            $columnasP = "id_participes, apellido_participes, nombre_participes, cedula_participes,
+                    id_entidad_patronal, id_entidad_mayor_patronal";
+	            $tablasP = "public.core_participes";
+	            $whereP = "id_estatus = 1 AND  cedula_participes = '$_cedula_participes'";
+	            $idP = "id_participes";
 	            
+	            
+	            //consultar si voto
+	            $resultSetP= $participes->getCondiciones($columnasP, $tablasP, $whereP, $idP);
+	            
+	            $ip_usuarios = $participes->getRealIP();
+	            
+	            
+	            
+	            $iP=count($resultSetP);
+	            
+	            
+	            if($iP>0)
+	            {
+	                
+	                foreach ($resultSetP as $res)
+	                {
+	                    session_start();
+	                    $_SESSION["ele_id_participes"] =  $res->id_participes;
+	                    $_SESSION["ele_cedula_participes"] =  $res->cedula_participes;
+	                    $_SESSION["ele_id_entidad_patronal"] =  $res->id_entidad_patronal;
+	                    $_SESSION["ele_id_entidad_mayor_patronal"] =  $res->id_entidad_mayor_patronal;
+	                    $_SESSION["ele_ip_usuarios"] =  $ip_usuarios;
+	                    
+	                    
+	                    $this->view_Elecciones("PapeletaCandidatos",array(
+	                        "res_cedula_participes"=>$_cedula_participes
+	                    ));
+	                    
+	                    
+	                }
+	                
+	            }
+	            else
+	            {  
+	                echo "Usted no tiene derecho al voto";
+	            }
 	            
 	        }
 	        
 	    }
 	    else
 	    {
-	        echo "Usted no tiene derecho al voto";
+	        
+	        header('Location:http://186.4.157.125/webcapremci/index.php?controller=Usuarios&action=Loguear');
+	        
 	    }
 	    
+	        
+	        
+	   	    
 	    
 	    
 	    	    
 	}
 	
 
+	public function indexListado(){
+	    
+	    
+	    
+	    $callBack = $_GET['jsoncallback'];
+	    
+	    
+	    $_id_entidad_mayor_patronal = (isset($_GET['id_entidad_mayor_patronal'])) ? $_GET['id_entidad_mayor_patronal'] : 0;
+	    
+	    
+	    $this->view_Elecciones("ListadoCandidatos",array(
+	        "res_id_entidad_mayor_patronal"=>$_id_entidad_mayor_patronal
+	    ));
+	    
+	    
+	    
+	    
+	}
 	
 
 	
@@ -234,15 +277,11 @@
 	                $i++;
 	                $html.='<tr>';
 	                
-	                if($res->acepto_representante==-'Acepto' && $res->acepto_suplente=='Acepto'){
+	                
 	                    
 	                    $html.='<td style="font-size: 14px;"><a onclick="AprobarRegistro('.$res->id_padron_electoral_representantes.')"   href="JavaScript:void(0);" class="btn btn-success" style="font-size:65%;"data-toggle="tooltip" title="Aprobar"><i class="glyphicon glyphicon-plus"></i></a>
                     <a onclick="NegarRegistro('.$res->id_padron_electoral_representantes.')"   href="JavaScript:void(0);" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Negar"><i class="glyphicon glyphicon-remove"></i></a></td>';
-	                }
-	                else {
-	                    $html.='<td style="font-size: 14px;"><a href="JavaScript:void(0);" class="btn btn-success" style="font-size:65%;"data-toggle="tooltip" title="Aprobar" disabled><i class="glyphicon glyphicon-plus"></i></a>
-                    <a href="JavaScript:void(0);" class="btn btn-danger" style="font-size:65%;"data-toggle="tooltip" title="Negar" disabled><i class="glyphicon glyphicon-remove"></i></a></td>';
-	                }
+	                
 	                $html.='<td style="font-size: 11px; width:15px;"><img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante" width="120" height="100"></td>';
 	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_participes.'</br><b>NOMBRE: </b>'.$res->apellido_participes.' '.$res->nombre_participes.'</br><b>CORREO: </b>'.$res->correo_representante.'</br><b>TELÉFONO: </b>'.$res->telefono_participes.'</br><b>CELULAR: </b>'.$res->celular_participes.'</br><b>ACEPTO: </b>'.$res->acepto_representante.'</td>';
 	                
@@ -250,13 +289,9 @@
 	                $html.='<td style="font-size: 12px;"><b>CÉDULA: </b>'.$res->cedula_suplente.'</br><b>NOMBRE: </b>'.$res->apellido_suplente.' '.$res->nombre_suplente.'</br><b>CORREO: </b>'.$res->correo_suplente.'</br><b>TELÉFONO: </b>'.$res->telefono_suplente.'</br><b>CELULAR: </b>'.$res->celular_suplente.'</br><b>ACEPTO: </b>'.$res->acepto_suplente.'</td>';
 	                
 	                
-	                if($res->acepto_representante==-'Acepto' && $res->acepto_suplente=='Acepto'){
+	                
 	                    
 	                    $html.='<td><a title="PDF" href="index.php?controller=CargarParticipes&action=ReporteCandidatos&id_padron_electoral_representantes='.$res->id_padron_electoral_representantes.'" role="button" target="_blank"><img src="view/images/logo_pdf.png" width="60" height="60"></a></font></td>';
-	                }
-	                else {
-	                    
-	                }
 	                
 	                $html.='</tr>';
 	            }
@@ -957,25 +992,19 @@
 	        if($iV>0)
 	        {
 	            ///ya voto
-                $html .= '<h1 style="color: blue; class="display-4">Estamos en Elecciones!</h1> ';
-	            $html .= '<p style="color: blue;"  class="lead">ESTIMADO PARTICIPE USTED YA HA SUFRAGADO.</p>';
-	            $html .= '<hr class="my-4">';
-	            $html .= '<div class="form-group row col-md-6 col-sm-12 col-lg-6" >';
-	            $html .= '<div class="col-md-12 col-sm-12 col-lg-12">';
-	            $html .= '</div>';
-	            $html .= '</div>';
-	            $html .= '<div class="form-group row col-md-6 col-sm-12 col-lg-6">';
-	            $html .= '<div class="col-md-12 col-sm-12 col-lg-12">';
-	            $html .= '</div>';
-	            $html .= '</div>';
-	            $html .= '<div style="text-align: center;" class="form-group row col-md-12 col-sm-12 col-lg-12">';
-	            $html .= '</div>';
-	            $html .= '<br>';
-	            $html .= ' <br>';
-	            $html .= '<br>';
-	            $html .= '<br>';
+           
+	            
+	            $html .= '<div class="alert alert-warning" role="alert"> ';
+	            $html .= '<h3 style="font-size: x-large" class="alert-heading"><b>Estamos en Elecciones!</b></h3> ';
+	            $html .= '<hr>';
+	            $html .= '<p  style="font-size: medium">Estimado/a Partícipe, usted ya ejerció su derecho al voto.</p>';
 	            
 	            
+	            $html .= '</div>';
+	            
+	            
+	            
+	               
 	        }
 	        else 
 	        {
@@ -1015,26 +1044,29 @@
     	            
     	               if ($_pin_padron_electroal !="")  //tiene pin
     	               {
-            	            //no ha votado
-            	            $html .= '<h1 style="color: blue; class="display-4">Estamos en Elecciones!</h1> ';
-            	            $html .= '<p style="color: blue;"  class="lead">ESTIMADO PARTICIPE INGRESE EL PIN ENVIADO A TELÉFONO Y AL CORREO ELECTRÓNICO.</p>';
-            	            $html .= '<hr class="my-4">';
-            	            $html .= '<p>Para validar su voto es necesario ingrese el PIN mediante SMS y email al teléfono y correo:</p>';
-            	            $html .= '<div class="form-group row col-md-6 col-sm-12 col-lg-6" >';
-            	            $html .= '<label for="staticEmail" class="col-md-12 col-sm-12 col-lg-12 col-form-label">PIN</label>';
-            	            $html .= '<div class="col-md-12 col-sm-12 col-lg-12">';
-            	            $html .= '<input type="text"  class="form-control" id="pin_padron_electoral" placeholder="Escriba aqui el pin recibido" >';
-            	            $html .= '</div>';
-            	            $html .= '</div>';
-            	            $html .= '<div style="text-align: center;" class="form-group row col-md-12 col-sm-12 col-lg-12">';
-            	            
-            	            $html .= '<a class="btn btn-primary id="btn_validar_pin"  onclick="VerificaCodigo(this)"  role="button">Validar PIN</a>';
-            	            
-            	            $html .= '</div>';
-            	            $html .= '<br>';
-            	            $html .= ' <br>';
-            	            $html .= '<br>';
-            	            $html .= '<br>';
+            	           
+            	           //no ha votado
+    	                   
+    	                   $html .= '<div class="alert alert-info" role="alert"> ';
+    	                   $html .= '<h3 style="font-size: x-large" class="alert-heading"><b>Estamos en Elecciones!</b></h3> ';
+    	                   $html .= '<hr>';
+    	                   $html .= '<p  style="font-size: medium;">Estimado/a Partícipe, usted tiene derecho al voto.</p>';
+    	                   $html .= '<p  style="font-size: small;">Para verificar su identidad enviaremos un PIN de 4 dígitos mediante SMS y correo electrónico que aparecen a continuación.</p>';
+    	                   $html .= '</div>';
+    	                   $html .= '<div class="row" >';
+    	                   $html .= '<div class="form-group row col-md-6 col-sm-12 col-lg-6" >';
+    	                   $html .= '<label for="staticEmail" class="col-form-label"><b>PIN</b></label>';
+    	                   $html .= '<input type="text"  class="form-control" id="pin_padron_electoral" placeholder="Escriba aqui el pin recibido" >';
+    	                   $html .= '</div>';
+    	                   $html .= '</div>';
+    	                   $html .= '<div class="row" >';
+    	                   $html .= '<div class="form-group row col-md-6 col-sm-12 col-lg-6" >';
+    	                   $html .= '<div style="text-align: center;" class="form-group">';
+    	                   $html .= '<a class="btn btn-primary id="btn_validar_pin"  onclick="VerificaCodigo(this)"  role="button">VALIDAR PIN</a>';
+    	                   $html .= '</div>';
+    	                   $html .= '</div>';
+    	                   $html .= '</div>';
+    	                    
     	               }
     	               else   //no tiene pin
     	               {
@@ -1059,33 +1091,31 @@
     	                       foreach ($resultSet as $res)
     	                       {
     	                           $i++;
-    	                           $html .= '<h1 style="color: blue; class="display-4">Estamos en Elecciones!</h1> ';
-    	                           $html .= '<p style="color: blue;"  class="lead">ESTIMADO PARTICIPE USTED TIENE DERECHO AL VOTO.</p>';
-    	                           $html .= '<hr class="my-4">';
-    	                           $html .= '<p>Para validar su voto le enviaremos un PIN mediante SMS y email al teléfono y correo que aparecen a continuación:</p>';
+    	                           
+    	                           $html .= '<div class="alert alert-success" role="alert"> ';
+    	                           $html .= '<h3 style="font-size: x-large" class="alert-heading"><b>Estamos en Elecciones!</b></h3> ';
+    	                           $html .= '<hr>';
+    	                           $html .= '<p  style="font-size: medium;">Estimado/a Partícipe, usted tiene derecho al voto.</p>';
+    	                           $html .= '<p  style="font-size: small;">Para verificar su identidad enviaremos un PIN de 4 dígitos mediante SMS y correo electrónico que aparecen a continuación.</p>';
+    	                           
+    	                           
+    	                           $html .= '</div>';
+    	                           
+    	                           
     	                           $html .= '<div class="form-group row col-md-6 col-sm-12 col-lg-6" >';
-    	                           $html .= '<label for="staticEmail" class="col-md-12 col-sm-12 col-lg-12 col-form-label">Correo Electrónico</label>';
-    	                           $html .= '<div class="col-md-12 col-sm-12 col-lg-12">';
+    	                           $html .= '<label for="staticEmail" class="col-form-label"><b>Correo Electrónico</b></label>';
     	                           $html .= '<input type="text"  class="form-control" id="correo_participes" value=" '.$res->correo_participes.' ">';
     	                           $html .= '</div>';
-    	                           $html .= '</div>';
+    	                       
     	                           $html .= '<div class="form-group row col-md-6 col-sm-12 col-lg-6">';
-    	                           $html .= '<label for="inputPassword" class="col-md-12 col-sm-12 col-lg-12 col-form-label">Teléfono Celular</label>';
-    	                           $html .= '<div class="col-md-12 col-sm-12 col-lg-12">';
+    	                           $html .= '<label for="inputPassword" class="col-form-label"><b>Teléfono Celular</b></label>';
     	                           $html .= '<input type="text" class="form-control" id="celular_participes" value="'.$res->celular_participes.'">';
     	                           $html .= '</div>';
+    	                           $html .= '<div style="text-align: center;" class="form-group">';
+    	                           $html .= '<a class="btn btn-primary id="btn_generar_codigo"  onclick="RegistraEnviaCodigo(this)"  role="button">GUARDAR Y SOLICITAR PIN</a>';
     	                           $html .= '</div>';
-    	                           $html .= '<div style="text-align: center;" class="form-group row col-md-12 col-sm-12 col-lg-12">';
     	                           
-    	                           $html .= '<a class="btn btn-primary id="btn_generar_codigo"  onclick="RegistraEnviaCodigo(this)"  role="button">Guardar y Solicitar PIN</a>';
-    	                           
-    	                           $html .= '</div>';
-    	                           $html .= '<br>';
-    	                           $html .= ' <br>';
-    	                           $html .= '<br>';
-    	                           $html .= '<br>';
-    	                           
-    	                           
+    	                           $html .= '<p  style="font-size: small;"><b>* Si los datos no coinciden con su teléfono y correo puede actualizar sus datos.</b></p>';
     	                           
     	                           
     	                       }
@@ -1096,23 +1126,14 @@
     	                       //NO TIENE DERECHO AL VOTO
     	                       
     	                       
-    	                       $html .= '<h1 style="color: blue; class="display-4">Estamos en Elecciones!</h1> ';
-    	                       $html .= '<p style="color: blue;"  class="lead">ESTIMADO PARTICIPE USTED NO TIENE DERECHO AL VOTO.</p>';
-    	                       $html .= '<hr class="my-4">';
-    	                       $html .= '<div class="form-group row col-md-6 col-sm-12 col-lg-6" >';
-    	                       $html .= '<div class="col-md-12 col-sm-12 col-lg-12">';
+    	                       $html .= '<div class="alert alert-danger" role="alert"> ';
+    	                       $html .= '<h3 style="font-size: x-large" class="alert-heading"><b>Estamos en Elecciones!</b></h3> ';
+    	                       $html .= '<hr>';
+    	                       $html .= '<p  style="font-size: medium;">Estimado/a Partícipe, usted NO tiene derecho al voto.</p>';
+    	                       
+    	                       
     	                       $html .= '</div>';
-    	                       $html .= '</div>';
-    	                       $html .= '<div class="form-group row col-md-6 col-sm-12 col-lg-6">';
-    	                       $html .= '<div class="col-md-12 col-sm-12 col-lg-12">';
-    	                       $html .= '</div>';
-    	                       $html .= '</div>';
-    	                       $html .= '<div style="text-align: center;" class="form-group row col-md-12 col-sm-12 col-lg-12">';
-    	                       $html .= '</div>';
-    	                       $html .= '<br>';
-    	                       $html .= ' <br>';
-    	                       $html .= '<br>';
-    	                       $html .= '<br>';
+    	                       
     	                       
     	                       
     	                       
@@ -1246,31 +1267,52 @@
 	public function RegistraEnviaCodigo()
 	{
 	    
-	    $callBack = $_POST['jsoncallback'];
+	    $callBack = $_GET['jsoncallback'];
 	    
-	    $_cedula_participes =(isset($_POST['cedula_participes'])) ? $_POST['cedula_participes'] : 0;
-	    $_celular_participes =(isset($_POST['celular_participes'])) ? $_POST['celular_participes'] : 0;
-	    $_correo_participes =(isset($_POST['correo_participes'])) ? $_POST['correo_participes'] : 0;
+	    $_cedula_participes =(isset($_GET['cedula_participes'])) ? $_GET['cedula_participes'] : 0;
+	    $_celular_participes =(isset($_GET['celular_participes'])) ? $_GET['celular_participes'] : 0;
+	    $_correo_participes =(isset($_GET['correo_participes'])) ? $_GET['correo_participes'] : 0;
 	    
 	    
-	    $_id_participes;
-	    $_voto_padron_electroal;
-	    $_celular_padron_electroal;
-	    $_correo_padron_electroal;
-	    $_pin_padron_electroal;
 	    
 	    
 	    $participes= new ParticipesModel();
 	    $respuesta= array();
 	    
 	    
-	    $res = "Sin Ejecutar";
+	    $resIP = "";
+	    $resCEL = "";
+	    $resCOR = "";
+	    $ip_usuarios = $participes->getRealIP();
+	    $id_participes = $this->DevuelveIdparticipes($_cedula_participes);
+	    
+	    $procesar = true;
+	    
+	    
+	    if ($this->VerificaIp($ip_usuarios, $id_participes))
+	    {
+	        $resIP .= "IP";
+	        $procesar = false;
+	    }
+	    
+	    if ($this->VerificaCelular($_celular_participes, $id_participes))
+	    {
+	        $resCEL .= "CELULAR";
+	        $procesar = false;
+	    }
+	    
+	    if ($this->VerificaCorreo($_correo_participes, $id_participes))
+	    {
+	        $resCOR .= "CORREO";
+	        $procesar = false;
+	    }
+	    
+	    
 	    
 	    
 	    
 	    if($_cedula_participes != ""  )
 	    {
-	        $res = "Ejecutando";
 	        $html = '';
 	        $_pin_padron_electroal =  mt_rand(1000,9999);
 	        
@@ -1292,11 +1334,15 @@
 	        
 	        try
 	        {
-	            $res= $participes -> ActualizarBy($columna, $tablas, $where);
-	            
-	            $res = $this->EnviarSMS($_cedula_participes, '0987968467', $_pin_padron_electroal);
-	            
-	             $res = $this->enviar_email('manuel@masoft.net', $_cedula_participes, $_pin_padron_electroal);
+	            if ($procesar)
+	            {
+	                $res= $participes -> ActualizarBy($columna, $tablas, $where);
+	                
+	                $res = $this->EnviarSMS($_cedula_participes, $_celular_participes, $_pin_padron_electroal);
+	                
+	                $res = $this->enviar_email($_correo_participes, $_cedula_participes, $_pin_padron_electroal);
+	                
+	            }
 	            
 	            ///todo enviado
 	           
@@ -1311,7 +1357,10 @@
 	    }
 	    
 	    
-	    $respuesta	= json_encode( array('mensaje_modal' => $html)) ;
+	    
+	    
+	    
+	    $respuesta	= json_encode( array('mensaje_modal' => $html,'resIP'=>$resIP,'resCEL'=>$resCEL,'resCOR'=>$resCOR , "procesar"=>$procesar )) ;
 	    echo $callBack."(".$respuesta.");";
 	    die();
 	    
@@ -1325,7 +1374,7 @@
 	
 	public function EnviarSMS($cedula, $celular, $codigo){
 	    
-	    session_start();
+	    
 	    //$solicitud_prestamo = new SolicitudPrestamoModel();
 	    
 	    $participes = new ParticipesModel();
@@ -1334,11 +1383,12 @@
 	    //$codigo_verificacion = new CodigoVerificacionModel();
 	    $mensaje_retorna="";
 	    
+	    /*
 	    if(!isset($_SESSION['id_usuarios'])){
 	        echo 'Session Caducada';
 	        exit();
 	    }
-	    
+	    */
 	    
 	    
 	    
@@ -1365,7 +1415,7 @@
 	                if($cadena_recortada=='100'){
 	                    
 	                    
-	                    $mensaje_retorna="Enviado Correctamente";
+	                 //   $mensaje_retorna="Enviado Correctamente";
 	                    
 	                }else if ($cadena_recortada=='101'){
 	                    
@@ -1437,7 +1487,7 @@
 	                
 	                if((int)$resultado > 0){
 	                    
-	                    echo json_encode(array('valor' => $resultado, 'mensaje'=>$mensaje_retorna));
+	                 //   echo json_encode(array('valor' => $resultado, 'mensaje'=>$mensaje_retorna));
 	                   // die();
 	                    
 	                }
@@ -1453,7 +1503,7 @@
 	    
 	    $pgError = pg_last_error();
 	    
-	    echo "no se envio sms. ".$pgError;
+	   // echo "no se envio sms. ".$pgError;
 	    
 	}
 	
@@ -1638,14 +1688,8 @@
         
         
         $_id_entidad_mayor_patronal = $_SESSION["ele_id_entidad_mayor_patronal"];
-        
-        /*
-        $_SESSION["ele_id_participes"] =  $res->id_participes;
-        $_SESSION["ele_cedula_participes"] =  $res->cedula_participes;
-        $_SESSION["ele_id_entidad_patronal"] =  $res->id_entidad_patronal;
-        $_SESSION["ele_id_entidad_mayor_patronal"] =  $res->id_entidad_mayor_patronal;
-        */
-        
+        $_id_participes_vota =  $_SESSION['ele_id_participes'];
+      
         
         $registro = new RegistroModel();
         
@@ -1718,79 +1762,257 @@
             
             $resultSet=$registro->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
             $total_pages = ceil($cantidadResult/$per_page);
-            
-            if($cantidadResult > 0)
+         
+            if ($this->VerificaDerechoVoto($_id_participes_vota) )
             {
-                
-                $html.='<div class="pull-left" style="margin-left:15px;">';
-                $html.='<span class="form-control"><strong>Candidatos Habilitados: </strong>'.$cantidadResult.'</span>';
-                $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
-                $html.='</div>';
-                $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
-                $html.='<section style="height:400px; overflow-y:scroll;">';
-                $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
-                $html.= "<thead>";
-                $html.= "<tr>";
-                $html.='<th style="text-align: left;  font-size: 12px;">Acciones</th>';
-                $html.='<th style="text-align: left;  font-size: 13px;">Ordinal</th>';
-                $html.='<th style="text-align: left;  font-size: 13px;">Foto Candidato</th>';
-                $html.='<th style="text-align: left;  font-size: 13px;">Candidato Pincipal</th>';
-                $html.='<th style="text-align: left;  font-size: 13px;">Entidad Patronal</th>';
-                $html.='<th style="text-align: left;  font-size: 13px;">Entidad Mayor Patronal</th>';
-                
-                
-                $html.='</tr>';
-                $html.='</thead>';
-                $html.='<tbody>';
-                
-                
-                $i=0;
-                
-                foreach ($resultSet as $res)
+                if($cantidadResult > 0)
                 {
                     
-                    
-                    
-                    $i++;
-                    $html.='<tr>';
-                    
-                    
-                    $html.='<td style="font-size: 14px;"><a onclick="ConfirmarVoto('.$res->id_padron_electoral_representantes.')"
-                                href="JavaScript:void(0);" class="btn btn-success" style="font-size:65%;"data-toggle="tooltip"
-                                title="Aprobar"><i class="glyphicon glyphicon-ok"> VOTAR</i></a></td>';
-                    
-                    $html.='<td style="font-size: 12px;"><b>'.$i.'</b></td>';
-                    $html.='<td style="font-size: 11px; width:15px;">
-                                <img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante"
-                              width="80" height="60"></td>';
-                    $html.='<td style="font-size: 12px;">'.$res->apellido_participes.' '.$res->nombre_participes.'</td>';
-                    
-                    $html.='<td style="font-size: 12px;">'.$res->nombre_entidad_patronal .'</br></td>';
-                    $html.='<td style="font-size: 12px;">'.$res->nombre_entidad_mayor_patronal .'</td>';
+                    $html.='<div class="pull-left" style="margin-left:15px;">';
+                    $html.='<span class="form-control"><strong>Candidatos Habilitados: </strong>'.$cantidadResult.'</span>';
+                    $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                    $html.='</div>';
+                    $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                    $html.='<section style="height:400px; overflow-y:scroll;">';
+                    $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                    $html.= "<thead>";
+                    $html.= "<tr>";
+                    $html.='<th style="text-align: left;  font-size: 12px;">Acciones</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Ordinal</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Foto Candidato</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Candidato Principal</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Entidad Patronal</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Entidad Mayor Patronal</th>';
                     
                     
                     $html.='</tr>';
+                    $html.='</thead>';
+                    $html.='<tbody>';
+                    
+                    
+                    $i=0;
+                    
+                    foreach ($resultSet as $res)
+                    {
+                        
+                        
+                        
+                        $i++;
+                        $html.='<tr>';
+                        
+                        
+                        $html.='<td style="font-size: 14px;"><a onclick="ConfirmarVoto('.$res->id_padron_electoral_representantes.')"
+                                href="JavaScript:void(0);" class="btn btn-success" style="font-size:65%;"data-toggle="tooltip"
+                                title="Aprobar"><i class="glyphicon glyphicon-ok"> VOTAR</i></a></td>';
+                        
+                        $html.='<td style="font-size: 12px;"><b>'.$i.'</b></td>';
+                        $html.='<td style="font-size: 11px; width:15px;">
+                                <img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante"
+                              width="80" height="60"></td>';
+                        $html.='<td style="font-size: 12px;">'.$res->apellido_participes.' '.$res->nombre_participes.'</td>';
+                        
+                        $html.='<td style="font-size: 12px;">'.$res->nombre_entidad_patronal .'</br></td>';
+                        $html.='<td style="font-size: 12px;">'.$res->nombre_entidad_mayor_patronal .'</td>';
+                        
+                        
+                        $html.='</tr>';
+                    }
+                    
+                    
+                    
+                    $html.='</tbody>';
+                    $html.='</table>';
+                    $html.='</section></div>';
+                    $html.='<div class="table-pagination pull-right">';
+                    $html.=''. $this->paginate_ConsultaCandidatos("index.php", $page, $total_pages, $adjacents,"ConsultaCandidatos").'';
+                    $html.='</div>';
+                    
+                    
+                    
+                }else{
+                    $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                    $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+                    $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                    $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay  Registros...</b>';
+                    $html.='</div>';
+                    $html.='</div>';
                 }
                 
                 
                 
-                $html.='</tbody>';
-                $html.='</table>';
-                $html.='</section></div>';
-                $html.='<div class="table-pagination pull-right">';
-                $html.=''. $this->paginate_ConsultaCandidatos("index.php", $page, $total_pages, $adjacents,"ConsultaCandidatos").'';
-                $html.='</div>';
                 
-                
-                
-            }else{
+            }
+            else 
+            {
                 $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
                 $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
                 $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
-                $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay  Registros...</b>';
+                $html.='<h4>Aviso!!!</h4> <b>Usted No tiene derecho al Voto...</b>';
                 $html.='</div>';
                 $html.='</div>';
+            
             }
+            
+                    
+            
+            echo $html;
+            
+        }
+        
+    }
+    
+    
+    
+    public function ListadoCandidatos(){
+        
+        
+        
+        $_id_entidad_mayor_patronal = (isset($_POST['txt_id_entidad_mayor_patronal'])) ? $_POST['txt_id_entidad_mayor_patronal'] : 0;
+        
+        
+        $registro = new RegistroModel();
+        
+        $where_to="";
+        
+        $columnas= "padron_electoral_representantes.id_padron_electoral_representantes,
+                    padron_electoral_representantes.foto_representante,
+                    core_participes.cedula_participes,
+                    core_participes.id_entidad_mayor_patronal,
+                    core_participes.apellido_participes,
+                    core_participes.nombre_participes,
+                    core_entidad_patronal.nombre_entidad_patronal,
+                    core_entidad_mayor_patronal.nombre_entidad_mayor_patronal,
+                    core_provincias.nombre_provincias,
+                    core_ciudades.nombre_ciudades";
+        
+        $tablas =  "core_participes,
+                    core_entidad_patronal,
+                    core_entidad_mayor_patronal,
+                    core_provincias,
+                    core_ciudades,
+                    core_participes_informacion_adicional,
+                    padron_electoral_representantes";
+        
+        $where = "core_participes.id_entidad_patronal = core_entidad_patronal.id_entidad_patronal AND
+                    core_participes.id_participes = core_participes_informacion_adicional.id_participes AND
+                    core_participes_informacion_adicional.id_provincias = core_provincias.id_provincias AND
+                    core_participes_informacion_adicional.id_ciudades = core_ciudades.id_ciudades AND
+                    core_participes.id_participes = padron_electoral_representantes.id_representante AND
+                    core_participes.id_entidad_mayor_patronal = core_entidad_mayor_patronal.id_entidad_mayor_patronal AND
+                    estado_candidato_padron_electoral_representantes = 0 AND
+                    core_entidad_mayor_patronal.id_entidad_mayor_patronal = '$_id_entidad_mayor_patronal'  ";
+        
+        $id = "core_participes.apellido_participes ";
+        
+        
+        $action = (isset($_REQUEST['peticion'])&& $_REQUEST['peticion'] !=NULL)?$_REQUEST['peticion']:'';
+        $search =  (isset($_REQUEST['search'])&& $_REQUEST['search'] !=NULL)?$_REQUEST['search']:'';
+        
+        if($action == 'ajax')
+        {
+            
+            
+            if(!empty($search)){
+                
+                
+                $where1=" AND core_participes.apellido_participes ILIKE '%".$search."%'   OR core_participes.nombre_participes ILIKE '%".$search."%'        ";
+                
+                $where_to=$where.$where1;
+                
+            }else{
+                
+                $where_to=$where;
+                
+            }
+            
+            $html="";
+            $resultSet=$registro->getCantidad("*", $tablas, $where_to);
+            $cantidadResult=(int)$resultSet[0]->total;
+            
+            $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
+            
+            $per_page = 15; //la cantidad de registros que desea mostrar
+            $adjacents  = 9; //brecha entre páginas después de varios adyacentes
+            $offset = ($page - 1) * $per_page;
+            
+            $limit = " LIMIT   '$per_page' OFFSET '$offset'";
+            
+            $resultSet=$registro->getCondicionesPag($columnas, $tablas, $where_to, $id, $limit);
+            $total_pages = ceil($cantidadResult/$per_page);
+            
+                if($cantidadResult > 0)
+                {
+                    $_fuerza =   $resultSet[0]->nombre_entidad_mayor_patronal;
+                    $html.='<div class="pull-left" style="margin-left:15px;">';
+                    $html.='<span class="form-control"><strong>'.$_fuerza.' | Candidatos Habilitados: </strong>'.$cantidadResult.'</span>';
+                    $html.='<input type="hidden" value="'.$cantidadResult.'" id="total_query" name="total_query"/>' ;
+                    $html.='</div>';
+                    $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                    $html.='<section style="height:400px; overflow-y:scroll;">';
+                    $html.= "<table id='tabla_registros_tres_cuotas' class='tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example'>";
+                    $html.= "<thead>";
+                    $html.= "<tr>";
+                    
+                    $html.='<th style="text-align: left;  font-size: 13px;">Ordinal</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Foto Candidato</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Candidato Principal</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Entidad Patronal</th>';
+                    $html.='<th style="text-align: left;  font-size: 13px;">Entidad Mayor Patronal</th>';
+                    
+                    
+                    $html.='</tr>';
+                    $html.='</thead>';
+                    $html.='<tbody>';
+                    
+                    
+                    $i=0;
+                    
+                    foreach ($resultSet as $res)
+                    {
+                        
+                        
+                        
+                        $i++;
+                        $html.='<tr>';
+                        
+                        
+                        $html.='<td style="font-size: 12px;"><b>'.$i.'</b></td>';
+                        $html.='<td style="font-size: 11px; width:15px;">
+                                <img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante"
+                              width="80" height="60"></td>';
+                        $html.='<td style="font-size: 12px;">'.$res->apellido_participes.' '.$res->nombre_participes.'</td>';
+                        
+                        $html.='<td style="font-size: 12px;">'.$res->nombre_entidad_patronal .'</br></td>';
+                        $html.='<td style="font-size: 12px;">'.$res->nombre_entidad_mayor_patronal .'</td>';
+                        
+                        
+                        $html.='</tr>';
+                    }
+                    
+                    
+                    
+                    $html.='</tbody>';
+                    $html.='</table>';
+                    $html.='</section></div>';
+                    $html.='<div class="table-pagination pull-right">';
+                    $html.=''. $this->paginate_ConsultaCandidatos("index.php", $page, $total_pages, $adjacents,"ConsultaCandidatos").'';
+                    $html.='</div>';
+                    
+                    
+                    
+                }else{
+                    $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
+                    $html.='<div class="alert alert-warning alert-dismissable" style="margin-top:40px;">';
+                    $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+                    $html.='<h4>Aviso!!!</h4> <b>Actualmente no hay  Registros...</b>';
+                    $html.='</div>';
+                    $html.='</div>';
+                }
+                
+                
+                
+                
+            
             
             
             echo $html;
@@ -1798,6 +2020,11 @@
         }
         
     }
+    
+    
+    
+    
+    
     
     
     
@@ -1872,8 +2099,8 @@
                     $html.='<div class="modal" id="modal_confirmacion_voto" tabindex="-1" role="dialog"> ';
                     $html.='<div class="modal-dialog" role="document">';
                     $html.='<div class="modal-content">';
-                    $html.='<div class="modal-header">';
-                    $html.='<h4 class="modal-title">CONFIRMAR VOTO</h4>';
+                    $html.='<div class="modal-header alert alert-primary">';
+                    $html.='<h4 class="modal-title"><b>CONFIRMAR VOTO</b></h4>';
                     $html.='<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
                     $html.='<span aria-hidden="true">&times;</span>';
                     $html.='</button>';
@@ -1883,7 +2110,7 @@
                     $html.='<div style="text-align: center;">';
                     $html.='<br>';
                     $html.='<img src="view/Administracion/DevuelveImagenView.php?id_valor='.$res->id_padron_electoral_representantes.'&id_nombre=id_padron_electoral_representantes&tabla=padron_electoral_representantes&campo=foto_representante"
-                    width="160" height="150">';
+                    width="160" height="170">';
                     $html.='<br>';
                     $html.='<h4>'.$res->apellido_participes.' '.$res->nombre_participes.'</h4>';
                     $html.='</div>';
@@ -1893,7 +2120,7 @@
                     $html.='<div class="modal-footer">';
                     $html.='<a onclick="Votar('.$res->id_padron_electoral_representantes.')"
                                 href="JavaScript:void(0);" type="button" class="btn btn-success">CONFIRMAR VOTO</a>';
-                    $html.='<button type="button" class="btn btn-danger" data-dismiss="modal">CANVELAR</button>';
+                    $html.='<button type="button" class="btn btn-danger" data-dismiss="modal">CANCELAR</button>';
                     $html.='</div>';
                     $html.='</div>';
                     $html.='</div>';
@@ -2002,22 +2229,28 @@
                 
                 try {
                     
-                    if ( $this->VerificaSiVoto($_id_participes_vota))
+                    if ($this->VerificaDerechoVoto($_id_participes_vota) )
                     {
                         
-                        echo 'ya voto';
+                        if ( $this->VerificaSiVoto($_id_participes_vota))
+                        {
+                            
+                            echo 'ya voto';
+                        }
+                        else
+                        {
+                            
+                            $resultado=$participes->Insert();
+                            
+                            
+                            $res= $participes -> ActualizarBy($columnaR, $tablasR, $whereR);
+                            
+                            $res= $participes -> ActualizarBy($columna, $tablas, $where);
+                            
+                        }
+                        
                     }
-                    else
-                    {
-                       
-                        $resultado=$participes->Insert();
-                        
-                        
-                        $res= $participes -> ActualizarBy($columnaR, $tablasR, $whereR);
-                        
-                        $res= $participes -> ActualizarBy($columna, $tablas, $where);
-                        
-                    }
+                    
                     
                     
                     
@@ -2048,20 +2281,16 @@
     }
     
     
-    
     public function VerificaSiVoto($_id_participes_vota){
         
         
         
         $resultado = false;
         
-        if(!isset($_SESSION['ele_id_participes'])){
-            echo 'Session Caducada';
-            exit();
-        }
-        $participes = new ParticipesModel();
-        $html="";
-        
+            
+            $participes = new ParticipesModel();
+            $html="";
+            
             
             
             
@@ -2081,7 +2310,7 @@
             
             
             try {
-            
+                
                 $resultSet=$participes->getCondiciones($columna, $tablas, $where, $id);
                 
                 
@@ -2091,10 +2320,10 @@
                     foreach ($resultSet as $res)
                     {
                         
-                        $resultado = true;       
+                        $resultado = true;
                     }
                 }
-            
+                
                 
                 
             } catch (Exception $e)
@@ -2102,6 +2331,8 @@
                 echo 'Excepción capturada: ',  $e->getMessage(), "\n";
             }
             
+        
+                
             
           
             return $resultado;
@@ -2114,8 +2345,205 @@
     
     
     
+    public function VerificaDerechoVoto($_id_participes_vota){
+        
+        
+        
+        $resultado = false;
+        
+        
+            
+            $participes = new ParticipesModel();
+            
+            
+            $columnas = "padron_electroal.id_padron_electroal, core_participes.id_participes,
+                                  core_participes.celular_participes,
+                                  core_participes.correo_participes";
+            $tablas = " public.padron_electroal,
+        	                    public.core_participes";
+            $where= "padron_electroal.id_participes = core_participes.id_participes
+        	                   AND padron_electroal.tipo_padron_electoral = 1
+        	                   AND  core_participes.id_participes = '$_id_participes_vota'   ";
+            $id = "padron_electroal.id_padron_electroal";
+            $resultSet= $participes->getCondiciones($columnas, $tablas, $where, $id);
+            
+            
+            $i=count($resultSet);
+            
+            if($i>0)
+            {
+                $resultado = true;
+            }
+            
+            
+        
+            
+        
+        
+        
+        return $resultado;
+        
+        
+        
+    }
     
-    public function ReporteCertificadoVotacion(){
+    
+    public function VerificaIp($_ip_participe_vota, $_id_participe_vota){
+        
+        
+        
+        $resultado = false;
+        
+        
+        
+        
+        
+        $participes = new ParticipesModel();
+        
+        
+        $columnas = "id_padron_electoral_representantes, id_participe_vota,
+                        ip_padron_electoral_traza_votos";
+        $tablas = " public.padron_electoral_traza_votos";
+        $where= "ip_padron_electoral_traza_votos = '$_ip_participe_vota' AND  id_participe_vota <> '$_id_participe_vota'   ";
+        $id = "id_padron_electoral_representantes";
+        $resultSet= $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $i=count($resultSet);
+        
+        if($i>0)
+        {
+            $resultado = true;
+        }
+        
+        
+        
+        
+        return $resultado;
+        
+        
+        
+    }
+    
+    public function VerificaCelular($_celular_participe_vota, $_id_participe_vota){
+        
+        
+        
+        $resultado = false;
+        
+        
+        
+        
+        
+        $participes = new ParticipesModel();
+        
+        
+        $columnas = "voto_padron_electroal, 
+                    celular_padron_electroal, 
+                    correo_padron_electroal";
+        $tablas = " padron_electroal";
+        $where= "tipo_padron_electoral = 1 AND celular_padron_electroal = '$_celular_participe_vota'  AND  id_participes <> '$_id_participe_vota'  ";
+        $id = "voto_padron_electroal";
+        $resultSet= $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $i=count($resultSet);
+        
+        if($i>0)
+        {
+            $resultado = true;
+        }
+        
+        
+        
+        
+        return $resultado;
+        
+        
+        
+    }
+    
+    
+    public function VerificaCorreo($_correo_participe_vota, $_id_participe_vota){
+        
+        
+        $resultado = false;
+        
+        
+        
+        $participes = new ParticipesModel();
+        
+        
+        $columnas = "voto_padron_electroal,
+                    celular_padron_electroal,
+                    correo_padron_electroal";
+        $tablas = " padron_electroal";
+        $where= "tipo_padron_electoral = 1 AND correo_padron_electroal = '$_correo_participe_vota' AND  id_participes <> '$_id_participe_vota'  ";
+        $id = "voto_padron_electroal";
+        $resultSet= $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $i=count($resultSet);
+        
+        if($i>0)
+        {
+            $resultado = true;
+        }
+        
+        
+        
+        
+        return $resultado;
+        
+        
+        
+    }
+    
+    
+    
+    
+    public function DevuelveIdparticipes($_cedula_participes){
+        
+        
+        $resultado = "";
+        
+        $participes = new ParticipesModel();
+        
+        $columnas = "id_participes";
+        $tablas = " core_participes";
+        $where= "  cedula_participes = '$_cedula_participes'  ";
+        $id = "id_participes";
+        $resultSet= $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+        
+        $i=count($resultSet);
+        
+        if($i>0)
+        {
+            foreach ($resultSet as $res)
+            {
+                $resultado = $res->id_participes;
+            }
+        }
+        
+        
+        
+        
+        return $resultado;
+        
+        
+        
+    }
+    
+    
+    
+        
+    
+    
+    
+    
+    
+   public function ReporteCertificadoVotacion(){
         
         session_start();
         
@@ -2124,6 +2552,7 @@
         
         $datos_reporte = array();
         $columnas = "lpad(d.id_padron_electoral_traza_votos::text ,5,'0') as consecutivo,
+                     d.id_padron_electoral_traza_votos,
                      a.cedula_participes,
                      a.apellido_participes,
                      a.nombre_participes,
@@ -2148,7 +2577,7 @@
             
             $genero = "ESTIMADA";
         }
-        
+        $datos_reporte['FECHAIMPRESION']=date('Y-m-d H:i');
         $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->nombre_participes;
         $datos_reporte['APELLIDO_PARTICIPES']=$rsdatos[0]->apellido_participes;
         $datos_reporte['CEDULA_PARTICIPES']=$rsdatos[0]->cedula_participes;
@@ -2159,9 +2588,9 @@
         
         
         $cedula_capremci = $rsdatos[0]->cedula_participes;
-        $consecutivo = $rsdatos[0]->consecutivo;
+        $id_padron_electoral_traza_votos = $rsdatos[0]->id_padron_electoral_traza_votos;
         
-        $tipo_documento="CERTIFICADO VALIDO DE VOTACIÓN NUMERO: ";
+        $tipo_documento="http://186.4.157.125/rp_c/index.php?controller=ConsultaCandidatos&action=index3&id_padron_electoral_traza_votos=";
         
         $datos = "";
         require dirname(__FILE__)."\phpqrcode\qrlib.php";
@@ -2181,7 +2610,7 @@
             $tamaño = 2.5; //Tama�o de Pixel
             $level = 'L'; //Precisi�n Baja
             $framSize = 3; //Tama�o en blanco
-            $contenido = $tipo_documento.''.$consecutivo; //Texto
+            $contenido = $tipo_documento.''.$id_padron_electoral_traza_votos; //Texto
             
             //Enviamos los parametros a la Funci�n para generar c�digo QR
             QRcode::png($contenido, $filename, $level, $tamaño, $framSize);
@@ -2201,15 +2630,34 @@
     }
     
     
+    public function index3(){
+        session_start();
     
-    
-    
-    
-    
-    
-    
-    
-    
+        $participes = new ParticipesModel();
+        
+        
+        $id_padron_electoral_traza_votos = (isset($_REQUEST['id_padron_electoral_traza_votos'])&& $_REQUEST['id_padron_electoral_traza_votos'] !=NULL)?$_REQUEST['id_padron_electoral_traza_votos']:'';
+        $columnas = "lpad(d.id_padron_electoral_traza_votos::text ,5,'0') as consecutivo,
+                     a.cedula_participes,
+                     a.apellido_participes,
+                     a.nombre_participes,
+                     b.nombre_entidad_patronal,
+                     c.nombre_entidad_mayor_patronal,
+                     a.id_genero_participes,
+                     d.id_padron_electoral_representantes ";
+        $tablas =  "core_participes a
+                    inner join core_entidad_patronal b on b.id_entidad_patronal = a.id_entidad_patronal
+                    inner join core_entidad_mayor_patronal c on c.id_entidad_mayor_patronal = a.id_entidad_mayor_patronal
+                    inner join padron_electoral_traza_votos d on d.id_participe_vota = a.id_participes ";
+        $where= "d.id_padron_electoral_traza_votos = $id_padron_electoral_traza_votos";
+        $id="d.id_padron_electoral_traza_votos";
+        $rsdatos = $participes->getCondiciones($columnas, $tablas, $where, $id);
+        
+      
+        $this->view_Elecciones("ConsultaQR",array(""=>"","rsdatos"=>$rsdatos
+            
+        ));
+    }
     }
     
     ?>

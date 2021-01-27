@@ -36,7 +36,7 @@ class G42Model extends ModeloBase{
 
 
 	public function __construct(){
-		$this->table="core_g42_biess";
+		$this->table="fc_biess_g45";
 	
 		parent::__construct($this->table);
 	}

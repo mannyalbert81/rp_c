@@ -452,9 +452,10 @@ class ArchivoPagoController extends ControladorBase{
 	    $tablas1   = " tes_archivo_pago aa
 	       INNER JOIN tes_pagos bb ON bb.id_pagos = aa.id_pagos
 	       INNER JOIN tes_tipo_pago_archivo cc ON cc.id_tipo_pago_archivo = aa.id_tipo_pago_archivo";
-	    $where1    = " 1 = 1
-    	    AND aa.fecha_proceso_archivo_pago = '$fecha_proceso'
-    	    AND aa.id_tipo_pago_archivo = $id_tipo_archivo_pago ";
+// 	    $where1    = " 1 = 1
+//     	    AND aa.fecha_proceso_archivo_pago = '$fecha_proceso'
+//     	    AND aa.id_tipo_pago_archivo = $id_tipo_archivo_pago ";
+	    $where1    = " 1 = 1";
 	    $id1       = " aa.id_archivo_pago";
 	    
 	    if( !empty( $id_bancos ) )
@@ -495,15 +496,16 @@ class ArchivoPagoController extends ControladorBase{
 	    $htmlHead = "";
 	    $htmlHead .= "<thead>";
 	    $htmlHead .= "<tr>";
-	    $htmlHead .= "<th>#</td>";
-	    $htmlHead .= "<th>Tipo</td>";
-	    $htmlHead .= "<th>Fecha</td>";
-	    $htmlHead .= "<th>Banco Beneficiario</td>";
-	    $htmlHead .= "<th>Tipo Pago</td>";
-	    $htmlHead .= "<th>Identificacion</td>";
-	    $htmlHead .= "<th>Beneficiario</td>";
-	    $htmlHead .= "<th>Cod. Banco</td>";
-	    $htmlHead .= "<th>Valor</td>";
+	    $htmlHead .= "<th></th>";
+	    $htmlHead .= "<th>#</th>";
+	    $htmlHead .= "<th>Tipo</th>";
+	    $htmlHead .= "<th>Fecha</th>";
+	    $htmlHead .= "<th>Banco Beneficiario</th>";
+	    $htmlHead .= "<th>Tipo Pago</th>";
+	    $htmlHead .= "<th>Identificacion</th>";
+	    $htmlHead .= "<th>Beneficiario</th>";
+	    $htmlHead .= "<th>Cod. Banco</th>";
+	    $htmlHead .= "<th>Valor</th>";
 	    $htmlHead .= "</tr>";
 	    $htmlHead .= "</thead>";
 	    
@@ -563,18 +565,22 @@ class ArchivoPagoController extends ControladorBase{
 	public function GenerarArchivoPago(){
 	    
 	    $archivoPago = new ArchivoPagoModel();
-	    $resp = null;	    
-	    
+	    $resp = null;	  
+	    	    
 	    try {
-	        //varaibles de parametros de busqueda
-	        $fecha_proceso         = ( isset( $_POST['fecha_proceso'] ) ) ? $_POST['fecha_proceso'] : "";
-	        $id_tipo_archivo_pago  = ( isset( $_POST['id_tipo_archivo_pago'] ) ) ? $_POST['id_tipo_archivo_pago'] : "0";
-	        $id_bancos             = ( isset( $_POST['id_bancos'] ) ) ? $_POST['id_bancos'] : "0";
-	        //$tipo_pago_archivo_pago= ( isset( $_POST['tipo_pago_archivo'] ) ) ? strtoupper($_POST['tipo_pago_archivo']) : "";	        
 	        
-	        $oFecha = new DateTime( str_replace("/", "-", $fecha_proceso) );
-	        $anioProceso   = $oFecha->format('Y');
-	        $mesProceso    = $oFecha->format('m');
+	        //varaibles de parametros de busqueda
+	        //$fecha_proceso         = ( isset( $_POST['fecha_proceso'] ) ) ? $_POST['fecha_proceso'] : "";
+	        //$id_tipo_archivo_pago  = ( isset( $_POST['id_tipo_archivo_pago'] ) ) ? $_POST['id_tipo_archivo_pago'] : "0";
+	        //$id_bancos             = ( isset( $_POST['id_bancos'] ) ) ? $_POST['id_bancos'] : "0";
+	        //$tipo_pago_archivo_pago= ( isset( $_POST['tipo_pago_archivo'] ) ) ? strtoupper($_POST['tipo_pago_archivo']) : "";
+	        $listaArchivoPagos     = $_POST['lista_archivo_pagos'];	        
+	        $listaArchivoPagos     = json_decode($listaArchivoPagos);
+	        
+	        //$oFecha = new DateTime( str_replace("/", "-", $fecha_proceso) );
+	        
+	        $anioProceso   = date('Y');
+	        $mesProceso    = date('m');
 	        //$diaProceso    = $oFecha->format('d');
 	        //echo "FECHA DE PROCESO ES -->",$anioProceso,"\n";
 	        
@@ -589,69 +595,83 @@ class ArchivoPagoController extends ControladorBase{
 	        $tablas1   = " tes_archivo_pago aa
 	           INNER JOIN tes_pagos bb ON bb.id_pagos = aa.id_pagos
 	           INNER JOIN tes_tipo_pago_archivo cc ON cc.id_tipo_pago_archivo = aa.id_tipo_pago_archivo";
-	        $where1    = " 1 = 1
-    	       AND aa.fecha_proceso_archivo_pago = '$fecha_proceso'
-    	       AND aa.id_tipo_pago_archivo = $id_tipo_archivo_pago ";
+	        $where1    = " 1 = 1 ";
 	        
-	        //$resp['mensajeECHO'] = "SELECT ".$columnas1." FROM ".$tablas1." WHERE ".$where1;
+	        $lista_id_archivo_pago = "";
+	        $tipoPagoArchivo       = "";
+	        $baseTipoPago          = "";
+	        $baseNombreTxt         = "";
 	        
-	        if( !empty($id_bancos) ){
-	            $where1 .= " AND bb.id_bancos_local = $id_bancos";
+	        $databody  = "";
+	        $contFila  = 0;
+	        $index     = 0; 
+	        
+	        foreach( $listaArchivoPagos as $res )
+	        {
+	            $id_archivo_pago   = $res->id_archivo_pago;	            
+	            $whereid   = " AND aa.id_archivo_pago = $id_archivo_pago ";
+	            $wherefin  = $where1.$whereid;	            
+	            $rsConsulta1 = $archivoPago->getCondicionesSinOrden($columnas1, $tablas1, $wherefin, "");
+	            
+	            if( !empty($rsConsulta1) )
+	            {	                              
+	                $lista_id_archivo_pago .= $id_archivo_pago.",";
+	                $tipoPagoArchivo   = $rsConsulta1[0]->tipo_pago_archivo_pago;
+	                if( strtoupper($tipoPagoArchivo) == "I" )
+	                {
+	                    $baseTipoPago          = "INTER";
+	                }
+	                $baseNombreTxt     = $rsConsulta1[0]->nombre_tipo_pago_archivo;
+	                $baseNombreTxt = mb_strtoupper($baseNombreTxt);
+	                
+	                $tmpcol1   = $rsConsulta1[$index]->pago_archivo_pago;
+	                $tmpcol2   = $rsConsulta1[$index]->contrapartida_archivo_pago;
+	                $tmpcol3   = $rsConsulta1[$index]->moneda_archivo_pago;
+	                $tmpcol4   = $rsConsulta1[$index]->valor_archivo_pago;
+	                $tmpcol5   = $rsConsulta1[$index]->cuenta_archivo_pago;
+	                $tmpcol6   = $rsConsulta1[$index]->tipo_cuenta_archivo_pago;
+	                $tmpcol7   = $rsConsulta1[$index]->numero_cuenta_archivo_pago;
+	                $tmpcol8   = $rsConsulta1[$index]->referencia_archivo_pago;
+	                $tmpcol9   = $rsConsulta1[$index]->tipo_identificacion_archivo_pago;
+	                $tmpcol10  = $rsConsulta1[$index]->numero_identificacion_archivo_pago;
+	                $tmpcol11  = $rsConsulta1[$index]->beneficiario_archivo_pago;
+	                $tmpcol12  = $rsConsulta1[$index]->codigo_banco_archivo_pago;
+	                
+	                $databody  .=  trim($tmpcol1)."\t".trim($tmpcol2)."\t".trim($tmpcol3)." ".trim($tmpcol4)."\t".trim($tmpcol5)."\t".trim($tmpcol6)."\t";
+	                $databody  .=  trim($tmpcol7)."\t".trim($tmpcol8)."\t".trim($tmpcol9)." ".trim($tmpcol10)."\t".trim($tmpcol11)."\t".trim($tmpcol12).PHP_EOL;
+	                
+	                $contFila ++;
+	            }
+	            
 	        }
 	        
-	        $rsConsulta1 = $archivoPago->getCondicionesSinOrden($columnas1, $tablas1, $where1, "");
+	        #TRANSACCIONABILIDAD --comienza cambios a la base de datos
+	        $archivoPago->beginTran();
 	        
-	        $error = error_get_last();
-	        if( !empty($error) ||  empty( $rsConsulta1 ) ){
-	            throw new Exception("Consulta a la Bd No definida! LLamar al Administrador Sistema");
-	        }
-	      	
+	        $sqlSecuencialAP  = "SELECT nextval('index_consecutivo_archivo_pago_seq')";
+	        $rsSecuencialAP   = $archivoPago->llamarconsultaPG($sqlSecuencialAP);
+	        $SecuencialAP     = $rsSecuencialAP[0];
 	        
-	        $baseNombreTxt = $rsConsulta1[0]->nombre_tipo_pago_archivo; // se toma el nombre del archivo
-	        $baseNombreTxt = strtoupper($baseNombreTxt);
-	        $tipoPagoArchivo   = $rsConsulta1[0]->tipo_pago_archivo_pago; // variable para almacenar tipo pago Directa|Interbancaria 
-	        
-	        if( strtoupper($tipoPagoArchivo) == "D" ){
-	            $baseNombreTxt = $baseNombreTxt."_";
-	        }else{
-	            $baseNombreTxt = $baseNombreTxt."_Inter_";
-	        }	        
-	        
+	        $baseNombreTxt = (!empty($baseTipoPago) ) ? $baseNombreTxt.'_'.$baseTipoPago.'_' : $baseNombreTxt.'_';
+	        	        
+	        #ESTABLESCO nombre de archivo con secuencial
+	        $baseNombreTxt = "AP".$SecuencialAP."_".$baseNombreTxt;
 	        //datos archivo txt
 	        $_TXT_Pago = $this->obtienePath($baseNombreTxt, $anioProceso, $mesProceso);
 	        $_nombre_archivo_pago  = $_TXT_Pago['nombre'];
 	        $_ruta_archivo_pago    = $_TXT_Pago['ruta'];
 	        
-	        $_cantidad_registros   = sizeof($rsConsulta1);
-	        /* para generar grupos */
-	        //$_ultima_fila = $_cantidad_registros-1;
-	        
-	        $databody	= "";
-	        $contFila = 0;
-	        for( $i=0; $i<$_cantidad_registros; $i++){
-	            
-	            $tmpcol1   = $rsConsulta1[$i]->pago_archivo_pago;
-	            $tmpcol2   = $rsConsulta1[$i]->contrapartida_archivo_pago;
-	            $tmpcol3   = $rsConsulta1[$i]->moneda_archivo_pago;
-	            $tmpcol4   = $rsConsulta1[$i]->valor_archivo_pago;
-	            $tmpcol5   = $rsConsulta1[$i]->cuenta_archivo_pago;
-	            $tmpcol6   = $rsConsulta1[$i]->tipo_cuenta_archivo_pago;
-	            $tmpcol7   = $rsConsulta1[$i]->numero_cuenta_archivo_pago;
-	            $tmpcol8   = $rsConsulta1[$i]->referencia_archivo_pago;
-	            $tmpcol9   = $rsConsulta1[$i]->tipo_identificacion_archivo_pago;
-	            $tmpcol10  = $rsConsulta1[$i]->numero_identificacion_archivo_pago;
-	            $tmpcol11  = $rsConsulta1[$i]->beneficiario_archivo_pago;
-	            $tmpcol12  = $rsConsulta1[$i]->codigo_banco_archivo_pago;
-	            	            
-	            $databody  .=  trim($tmpcol1)."\t".trim($tmpcol2)."\t".trim($tmpcol3)." ".trim($tmpcol4)."\t".trim($tmpcol5)."\t".trim($tmpcol6)."\t";
-	            $databody  .=  trim($tmpcol7)."\t".trim($tmpcol8)."\t".trim($tmpcol9)." ".trim($tmpcol10)."\t".trim($tmpcol11)."\t".trim($tmpcol12).PHP_EOL;
-	            
-	            $contFila ++;                       
-	            
-	        }
-	        
 	        /* estructurar el archivo */
-	        $datahead	= ""; //archivo no tiene cabecera 
+	        $datahead	= ""; //archivo no tiene cabecera
+	        
+	        $fechaHoy  = date('Y-m-d H:i:s');
+	        
+	        $lista_id_archivo_pago = trim($lista_id_archivo_pago,',');
+	        $lista_id_archivo_pago = $lista_id_archivo_pago;
+	        	        	        
+	        
+	        $sqlUpdate = " UPDATE tes_archivo_pago SET generado_archivo_pago = 't', nombre_txt_archivo_pago = '$_nombre_archivo_pago' , fecha_generado_archivo_pago = '$fechaHoy'  WHERE id_archivo_pago IN ($lista_id_archivo_pago) ";
+	        $archivoPago->executeNonQuery($sqlUpdate);
 	        
 	        /*** buscar otro metodo para archivos grandes evitar acumulacion memoria al generar todo en una variable */
 	        $archivo = fopen($_ruta_archivo_pago, 'w');
@@ -659,14 +679,20 @@ class ArchivoPagoController extends ControladorBase{
 	        fclose($archivo);
 	        
 	        $error = error_get_last();
+	        var_dump($error);
+	        
 	        if(!empty($error)){
+	            $archivoPago->endTran('ROLLBACK');
 	            throw new Exception('Archivo no generado');
 	        }
 	        
 	        $resp['nombreFile'] = $_nombre_archivo_pago;
-	        $resp['urlFile'] = $_ruta_archivo_pago; 
-	        $resp['estatus'] = "OK";	        
-	       
+	        $resp['urlFile'] = $_ruta_archivo_pago;
+	        $resp['estatus'] = "OK";
+	        
+	        #TRANSACCIONABILIDAD termina
+	        $archivoPago->endTran('COMMIT');
+	        
 	        
 	    } catch (Exception $e) {
 	        
@@ -689,7 +715,7 @@ class ArchivoPagoController extends ControladorBase{
 	    $ubicacionArchivo  = $_POST['urlFile'];
 	    $nombreArchivo     = $_POST['nombreFile'];
 	    
-	    $ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\rp_c\\";
+	    $ubicacionServer = $_SERVER['DOCUMENT_ROOT']."\\".CARPETA_APP."\\";
 	    $ubicacion = $ubicacionServer.$ubicacionArchivo;
 	    
 	    // Define headers
@@ -715,7 +741,7 @@ class ArchivoPagoController extends ControladorBase{
 	    
 	    $respuesta     = array();
 	    $nArchivo      = $nombreArchivo.$mesArchivo.$anioArchivo.".txt";
-	    $carpeta_base      = 'view\\tesoreria\\documentos\\transferencias\\';
+	    $carpeta_base      = 'DOCUMENTOS_GENERADOS\\ARCHIVOPAGO\\transferencias\\';
 	    $_carpeta_buscar   = $carpeta_base.$anioArchivo;
 	    $file_buscar       = "";
 	    if( file_exists($_carpeta_buscar)){
@@ -744,8 +770,349 @@ class ArchivoPagoController extends ControladorBase{
 	    
 	    return $respuesta;
 	}
-	
 	/****************************************************** END VER ARCHIVOS CREADOS *************************************/
+	
+	/** dc 2020/09/22 */
+	public function CargaUsuarioDepartamento()
+	{
+	    ob_start();
+	    $pagos = new PagosModel();
+	    $resp  = null;
+	    
+	    $col1  = " bb.id_usuarios, bb.nombre_usuarios, bb.apellidos_usuarios, aa.id_rol, bb.id_oficina";
+	    $tab1  = " public.rol aa
+	       INNER JOIN public.usuarios bb ON bb.id_rol = aa.id_rol";
+	    $whe1  = " bb.id_estado = 1
+	       AND aa.nombre_rol = 'Jefe de crédito y prestaciones'";
+	    $id1   = " bb.nombre_usuarios ";
+	    $rsConsulta1   = $pagos->getCondiciones($col1, $tab1, $whe1, $id1);
+	    	    
+	    try {
+	        
+	        $error_pg = pg_last_error();
+	        if( !empty($error_pg) ){
+	            throw new Exception( $error_pg );
+	        }
+	        
+	        $resp['data']  = $rsConsulta1 ?? null;
+	       	        
+	    } catch (Exception $e) {
+	        $buffer =  error_get_last();
+	        $resp['icon'] = isset($resp['icon']) ? $resp['icon'] : "error";
+	        $resp['mensaje'] = $e->getMessage();
+	        $resp['msgServer'] = $buffer; //buscar guardar buffer y guaradr en variable
+	        $resp['estatus'] = "ERROR";
+	    }
+	    
+	    $salida    = trim(ob_get_clean());
+	    $resp['buffer'] = isset($resp['buffer']) ? $resp['buffer'] : "$salida";
+
+	    echo json_encode($resp);
+	}
+	/** end dc 2020/09/22 **/
+	
+	/** dc 2020/09/22 **/
+	public function dtdatosArchivoPago()
+	{
+	    ob_start();
+	    $archivo   = new ArchivoPagoModel();
+	    
+	    try {
+	        
+	        $requestData = $_REQUEST;
+	        	        
+	        #ESTABLECEMOS variables de vista
+	        $id_tipo_archivo   = $_POST['tipo_archivo'];
+	        $fecha_proceso     = $_POST['fecha_proceso'];
+	        $id_bancos         = $_POST['id_bancos'];
+	        $id_usuario        = $_POST['id_usuario']; // el usuario obtenido es de jefe de area
+	        $id_oficina        = $_POST['id_oficina']; // oficina del usuario seleccionado
+	        
+	        $col1  = " id_tipo_pago_archivo, nombre_tipo_pago_archivo";
+	        $tab1  = " public.tes_tipo_pago_archivo";
+	        $whe1  = " id_tipo_pago_archivo = $id_tipo_archivo ";
+	        
+	        $rsConsulta1   = $archivo->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+	        
+	        if( empty($rsConsulta1) ) throw new Exception("Revisar Variables enviadas");
+	        
+	        $nombre_archivo    = strtoupper($rsConsulta1[0]->nombre_tipo_pago_archivo); 
+	        $fecha_proceso     = str_replace("/","-",$fecha_proceso);
+	        
+	        $data  = array();
+	        $cantidad  = 0;
+	        $sql   = "";
+	        #Ejemplo array a llenar
+	        
+	        #los metodos solo devuelven array con datos de acuerdo a la estrucutra en el ejemplo
+	        switch ($nombre_archivo)
+	        {
+	            case 'CREDITOS':
+	                # aqui llenar datos enviar a vista
+	                $parametros = array();
+	                $parametros['id_bancos']   = $id_bancos;
+	                $parametros['id_oficina']  = $id_oficina;
+	                $parametros['fecha_proceso'] = $fecha_proceso;
+	                
+	                $resultado = $this->getArchivoPagoCreditos($requestData, $parametros); 
+	                
+	                $data      = $resultado['data'];
+	                $cantidad  = $resultado['cantidad'];  
+	                $sql       = $resultado['sql'];
+	                
+                break;
+	            case 'PROVEEDORES':
+	                # aqui llenar datos enviar a vista
+	                $parametros = array();
+	                $parametros['id_bancos']   = $id_bancos;
+	                $parametros['id_oficina']  = $id_oficina;
+	                $parametros['fecha_proceso'] = $fecha_proceso;
+	                $parametros['id_tipo_pago_archivo'] = $id_tipo_archivo;
+	                
+	                $resultado = $this->getArchivoPagoProveedores($requestData, $parametros);
+	                
+	                $data      = $resultado['data'];
+	                $cantidad  = $resultado['cantidad'];
+	                $sql       = $resultado['sql'];
+	                
+                break;
+	            default:
+	                $data  = array();
+                break;
+	                
+	        }
+	        	        	        
+	        $salida = ob_get_clean();
+	        if( !empty($salida ) ) throw new Exception();
+	        
+	        $json_data = array(
+	            "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+	            "recordsTotal" => intval($cantidad),  // total number of records
+	            "recordsFiltered" => intval($cantidad), // total number of records after searching, if there is no searching then totalFiltered = totalData
+	            "data" => $data,   // total data array
+	            "sql" => $sql
+	        );
+	        
+    	} catch (Exception $e) {
+    	    
+    	    $salida = ob_get_clean();
+    	    
+    	    $json_data = array(
+    	        "draw" => intval($requestData['draw']),   // for every request/draw by clientside , they send a number as a parameter, when they recieve a response/data they first check the draw number, so we are sending same number in draw.
+    	        "recordsTotal" => intval("0"),  // total number of records
+    	        "recordsFiltered" => intval("0"), // total number of records after searching, if there is no searching then totalFiltered = totalData
+    	        "data" => array(),   // total data array
+    	        "sql" => $sql ?? "" ,
+    	        "buffer" => error_get_last(),
+    	        "ERRORDATATABLE" => $e->getMessage()
+    	    );
+    	}	
+	    
+	    echo json_encode($json_data);
+	}
+	/** end dc 2020/09/22 **/
+	
+	/** dc 2020/09/22 */
+	public function getArchivoPagoCreditos(array $dtRequest, array $datos)
+	{
+	    $archivo   = new ArchivoPagoModel();
+	    
+	    #DATOS plugin datatable
+	    $searchDataTable   = $dtRequest['search']['value'];
+	    
+	    #DATOS parametros vista
+	    $id_bancos     = $datos['id_bancos'];
+	    $id_oficina    = $datos['id_oficina'];
+	    $fecha_proceso = $datos['fecha_proceso'];
+	    
+	    $columnas1 = " aa.id_archivo_pago, cc.nombre_tipo_pago_archivo,aa.fecha_proceso_archivo_pago,
+    	    (SELECT nombre_bancos FROM tes_bancos WHERE id_bancos = bb.id_bancos) nombre_bancos,
+    	    aa.tipo_pago_archivo_pago, aa.numero_identificacion_archivo_pago, aa.beneficiario_archivo_pago, bb.valor_pagos,
+    	    aa.codigo_banco_archivo_pago";
+	    $tablas1   = " tes_archivo_pago aa
+    	    INNER JOIN tes_pagos bb ON bb.id_pagos = aa.id_pagos
+    	    INNER JOIN tes_tipo_pago_archivo cc ON cc.id_tipo_pago_archivo = aa.id_tipo_pago_archivo";
+	    $where1    = " aa.id_tipo_pago_archivo = 1
+    	    AND aa.generado_archivo_pago = false
+    	    AND bb.id_bancos_local = $id_bancos
+    	    --AND aa.fecha_proceso_archivo_pago = '$fecha_proceso'
+    	    AND bb.id_pagos IN (
+    	        SELECT ee.id_pagos
+    	        FROM core_creditos_trabajados_cabeza aa
+    	        INNER JOIN core_creditos_trabajados_detalle bb
+    	        ON bb.id_cabeza_creditos_trabajados = aa.id_creditos_trabajados_cabeza
+    	        INNER JOIN core_creditos cc on cc.id_creditos = bb.id_creditos
+    	        INNER JOIN tes_cuentas_pagar dd on dd.id_ccomprobantes = cc.id_ccomprobantes
+    	        INNER JOIN tes_pagos ee on ee.id_cuentas_pagar = dd.id_cuentas_pagar
+    	        WHERE  aa.anio_creditos_trabajados_cabeza||'-'||lpad(aa.mes_creditos_trabajados_cabeza::text,2,'0')||'-'||lpad(aa.dia_creditos_trabajados_cabeza::text,2,'0') = '$fecha_proceso'
+    	        AND aa.id_oficina = $id_oficina
+    	        )";
+	    
+	    if( strlen( $searchDataTable ) > 0 )
+	    {
+	        $where1 .= " AND ( ";
+	        $where1 .= " aa.numero_identificacion_archivo_pago ILIKE '%$searchDataTable%' ";
+	        $where1 .= " OR aa.beneficiario_archivo_pago ILIKE '%$searchDataTable%' ";
+	        $where1 .= " ) ";
+	        
+	    }
+	    
+	    $rsCantidad    = $archivo->getCantidad("*", $tablas1, $where1);
+	    $cantidadBusqueda = (int)$rsCantidad[0]->total;
+	    
+	    /**PARA ORDENAMIENTO Y  LIMITACIONES DE DATATABLE **/	    
+	    // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
+	    $columns = array(
+	        0 => '1',
+	        1 => '1',
+	        2 => '1',
+	        3 => '1',
+	        4 => '1',
+	        5 => '1',
+	        6 => '1',
+	        7 => '1',
+	        8 => '1',
+	        9 => '1'
+	    );
+	    
+	    $orderby   = $columns[$dtRequest['order'][0]['column']];
+	    $orderdir  = $dtRequest['order'][0]['dir'];
+	    $orderdir  = strtoupper($orderdir);
+	    /**PAGINACION QUE VIEN DESDE DATATABLE**/
+	    $per_page  = $dtRequest['length'];
+	    $offset    = $dtRequest['start'];
+	    
+	    //para validar que consulte todos
+	    $per_page  = ( $per_page == "-1" ) ? "ALL" : $per_page;
+	    
+	    $limit = " ORDER BY $orderby $orderdir LIMIT   $per_page OFFSET '$offset'";	    
+	    $sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+	    //$sql = "";
+	    
+	    $resultSet=$archivo->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
+	    
+	    /** crear el array data que contiene columnas en plugins **/
+	    $data = array();
+	    $dataFila = array();
+	    $columnIndex = 0;
+	    foreach ( $resultSet as $res){
+	        $columnIndex++;
+	        
+	        $opciones = '<input type="checkbox" class="chk_pago_seleccionado" value="'.$res->id_archivo_pago.'">';
+	        	        
+	        $dataFila['numfila'] = $columnIndex;
+	        $dataFila['tipo']  = $res->nombre_tipo_pago_archivo;
+	        $dataFila['fecha'] = $res->fecha_proceso_archivo_pago;
+	        $dataFila['banco'] = $res->nombre_bancos;
+	        $dataFila['tipo_pago']  = $res->tipo_pago_archivo_pago;
+	        $dataFila['identificacion']  = $res->numero_identificacion_archivo_pago;
+	        $dataFila['beneficiario']  = $res->beneficiario_archivo_pago;
+	        $dataFila['codigo_banco']= $res->codigo_banco_archivo_pago;
+	        $dataFila['valor']  = $res->valor_pagos;
+	        $dataFila['opciones'] = $opciones;
+	        	        
+	        $data[] = $dataFila;
+	    }
+	    	    
+	    return array('cantidad'=> $cantidadBusqueda, 'sql'=>$sql, 'data'=>$data);
+	}
+	/** end dc 2020/09/22 */
+	
+	/** end dc 2020/09/23 */
+	public function getArchivoPagoProveedores(array $dtRequest, array $datos)
+	{
+	    $archivo   = new ArchivoPagoModel();
+	    
+	    #DATOS plugin datatable
+	    $searchDataTable   = $dtRequest['search']['value'];
+	    
+	    #DATOS parametros vista
+	    $id_tipo_pago_archivo  = $datos['id_tipo_pago_archivo'];
+	    $id_bancos     = $datos['id_bancos'];
+	    //$id_oficina    = $datos['id_oficina'];
+	    $fecha_proceso = $datos['fecha_proceso'];
+	    
+	    $columnas1 = " aa.id_archivo_pago, cc.nombre_tipo_pago_archivo,aa.fecha_proceso_archivo_pago,
+    	    (SELECT nombre_bancos FROM tes_bancos WHERE id_bancos = bb.id_bancos) nombre_bancos,
+    	    aa.tipo_pago_archivo_pago, aa.numero_identificacion_archivo_pago, aa.beneficiario_archivo_pago, bb.valor_pagos,
+    	    aa.codigo_banco_archivo_pago";
+	    $tablas1   = " tes_archivo_pago aa
+    	    INNER JOIN tes_pagos bb ON bb.id_pagos = aa.id_pagos
+    	    INNER JOIN tes_tipo_pago_archivo cc ON cc.id_tipo_pago_archivo = aa.id_tipo_pago_archivo";
+	    $where1    = " aa.id_tipo_pago_archivo = $id_tipo_pago_archivo
+    	    AND aa.generado_archivo_pago = false
+    	    AND bb.id_bancos_local = $id_bancos
+    	    AND aa.fecha_proceso_archivo_pago = '$fecha_proceso' ";
+	    
+	    if( strlen( $searchDataTable ) > 0 )
+	    {
+	        $where1 .= " AND ( ";
+	        $where1 .= " aa.numero_identificacion_archivo_pago ILIKE '%$searchDataTable%' ";
+	        $where1 .= " OR aa.beneficiario_archivo_pago ILIKE '%$searchDataTable%' ";
+	        $where1 .= " ) ";
+	        
+	    }
+	    
+	    $rsCantidad    = $archivo->getCantidad("*", $tablas1, $where1);
+	    $cantidadBusqueda = (int)$rsCantidad[0]->total;
+	    
+	    /**PARA ORDENAMIENTO Y  LIMITACIONES DE DATATABLE **/
+	    // datatable column index  => database column name estas columas deben en el mismo orden que defines la cabecera de la tabla
+	    $columns = array(
+	        0 => '1',
+	        1 => '1',
+	        2 => '1',
+	        3 => '1',
+	        4 => '1',
+	        5 => '1',
+	        6 => '1',
+	        7 => '1',
+	        8 => '1',
+	        9 => '1'
+	    );
+	    
+	    $orderby   = $columns[$dtRequest['order'][0]['column']];
+	    $orderdir  = $dtRequest['order'][0]['dir'];
+	    $orderdir  = strtoupper($orderdir);
+	    /**PAGINACION QUE VIEN DESDE DATATABLE**/
+	    $per_page  = $dtRequest['length'];
+	    $offset    = $dtRequest['start'];
+	    
+	    //para validar que consulte todos
+	    $per_page  = ( $per_page == "-1" ) ? "ALL" : $per_page;
+	    
+	    $limit = " ORDER BY $orderby $orderdir LIMIT   $per_page OFFSET '$offset'";
+	    $sql = " SELECT $columnas1 FROM $tablas1 WHERE $where1  $limit ";
+	    //$sql = "";
+	    
+	    $resultSet=$archivo->getCondicionesSinOrden($columnas1, $tablas1, $where1, $limit);
+	    
+	    /** crear el array data que contiene columnas en plugins **/
+	    $data = array();
+	    $dataFila = array();
+	    $columnIndex = 0;
+	    foreach ( $resultSet as $res){
+	        $columnIndex++;
+	        
+	        $opciones = '<input type="checkbox" class="chk_pago_seleccionado" value="'.$res->id_archivo_pago.'">';
+	        
+	        $dataFila['numfila'] = $columnIndex;
+	        $dataFila['tipo']  = $res->nombre_tipo_pago_archivo;
+	        $dataFila['fecha'] = $res->fecha_proceso_archivo_pago;
+	        $dataFila['banco'] = $res->nombre_bancos;
+	        $dataFila['tipo_pago']  = $res->tipo_pago_archivo_pago;
+	        $dataFila['identificacion']  = $res->numero_identificacion_archivo_pago;
+	        $dataFila['beneficiario']  = $res->beneficiario_archivo_pago;
+	        $dataFila['codigo_banco']= $res->codigo_banco_archivo_pago;
+	        $dataFila['valor']  = $res->valor_pagos;
+	        $dataFila['opciones'] = $opciones;
+	        
+	        $data[] = $dataFila;
+	    }
+	    
+	    return array('cantidad'=> $cantidadBusqueda, 'sql'=>$sql, 'data'=>$data);
+	}
+	/** end dc 2020/09/23 */
 	
 }
 ?>
